@@ -1,0 +1,55 @@
+# (c) https://github.com/MontiCore/monticore
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.5-jdk11
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
+
+cache:
+  paths:
+    - .gradle/wrapper
+  key: ${CI_COMMIT_REF_SLUG}
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+stages:
+  - build
+  - test
+  - deploy
+  - check
+
+build:
+  stage: build
+  script:
+    - "gradle assemble --refresh-dependencies $GRADLE_OPTS $ARGS1"
+
+test:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - "gradle check $GRADLE_OPTS $ARGS2"
+
+deploy:
+  stage: deploy
+  dependencies:
+    - build
+  script:
+    - "gradle publish $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
+  only:
+    - master
+    - develop
+
+checkMDLinks:
+  stage: check
+  dependencies:
+    - test
+  script:
+    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
+    - "url=https://git.rwth-aachen.de/monticore/languages/mlc/-/tree/master"
+    - "linkCheckRes=$(java -jar MDLinkCheckerCLI.jar -url $url -t $secibuildtoken -p)"
+    - "echo \"$linkCheckRes\""
+    - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
+  only:
+    - master

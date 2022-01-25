@@ -1,0 +1,182 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+    id 'java'
+    id 'monticore' version "$mc_version"
+    id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
+}
+
+allprojects {
+    group = 'umlp'
+    repositories {
+        maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            url repo
+        }
+        mavenLocal()
+        mavenCentral()
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    jar {
+        onlyIf { !sourceSets.main.allSource.files.isEmpty() }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+
+    dependencies {
+        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
+        implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+        implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+        implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+
+//        implementation group: 'com.google.guava', name: 'guava', version: guava_version
+//        implementation group: 'org.antlr', name: 'antlr4', version: antlr_version
+//        implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
+
+        testImplementation group: 'junit', name: 'junit', version: junit_version
+//        testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
+    }
+    // configure non-standard source sets
+    sourceSets {
+        main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
+
+        grammars {
+            resources {
+                srcDirs([grammarDir])
+                include "**/*.mc4"
+            }
+        }
+
+    }
+
+    java {
+        registerFeature('grammars') { usingSourceSet(sourceSets.grammars) }
+    }
+
+
+    buildDir = file("$projectDir/target")
+
+    sourceCompatibility = '1.8'
+}
+
+project(':umlp-lang') {
+    apply plugin: 'java'
+    apply plugin: 'monticore'
+
+    dependencies {
+        grammar("de.monticore.lang:cd4analysis:$mc_version") {
+            capabilities { requireCapability("de.monticore.lang:cd4analysis-grammars") }
+        }
+        grammar("de.monticore:monticore-grammar:$mc_version") {
+            capabilities { requireCapability("de.monticore:monticore-grammar-grammars") }
+        }
+    }
+
+    description = 'UML/P Language'
+
+    task generateUMLP(type: MCTask) {
+        grammar = file "$grammarDir/UMLP.mc4"
+        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+//        def uptoDate = incCheck("UMLP.mc4")
+//        outputs.upToDateWhen { uptoDate }
+    }
+
+    compileJava {
+        dependsOn project.collect { it.tasks.withType(MCTask) }
+    }
+
+    // build sources jar with handwritten + generated sources
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from(sourceSets.main.allJava)
+    }
+
+    sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
+
+    jar.dependsOn(sourcesJar)
+
+    // configure deployment
+    publishing {
+        // configure what artifacts to publish
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = "$project.name"
+                from components.java
+                artifact sourcesJar
+            }
+        }
+        repositories.maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
+
+project(':umlp-tool') {
+
+    apply plugin: 'java'
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    dependencies {
+        implementation project(':umlp-lang')
+//        implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
+//        implementation group: 'org.apache.commons', name: 'commons-lang3', version: commons_lang3_version
+    }
+
+    description = 'UML/P Tool'
+
+    // build sources jar with handwritten + generated sources
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from(sourceSets.main.allJava)
+    }
+
+    shadowJar { // all in one jar
+        manifest {
+            attributes "Main-Class": "umlp.UMLPTool"
+        }
+        archiveClassifier = 'cli'
+        archiveFileName = "UMLPTool.jar"
+        minimize()
+        duplicatesStrategy DuplicatesStrategy.INCLUDE
+    }
+
+    sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
+    jar.dependsOn(sourcesJar)
+    jar.dependsOn(shadowJar)
+
+    // configure deployment
+    publishing {
+        // configure what artifacts to publish
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = "$project.name"
+                from components.java
+                artifact sourcesJar
+            }
+            mavenCLI(MavenPublication) {
+                artifactId = "$project.name"
+                artifact shadowJar
+            }
+        }
+        repositories.maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}

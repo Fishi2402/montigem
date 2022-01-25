@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+/**
+ * Grammar for the UMLP Language that includes CDs, ODs, and other languages
+ * into a single kind of model.
+ */
+grammar UMLP extends de.monticore.CD4Analysis {
+
+  UMLPCompilationUnit = MCPackageDeclaration? MCImportStatement* UMLPDef;
+
+  symbol UMLPDef = "umlp" Name "{" UMLPElement* "}";
+
+  interface UMLPElement;
+
+  UMLPCDElement implements UMLPElement = CDElement | CDTargetImportStatement;
+
+}
