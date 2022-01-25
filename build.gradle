@@ -31,19 +31,13 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
 
-
     dependencies {
         implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
         implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
         implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
         implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
 
-//        implementation group: 'com.google.guava', name: 'guava', version: guava_version
-//        implementation group: 'org.antlr', name: 'antlr4', version: antlr_version
-//        implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
-
         testImplementation group: 'junit', name: 'junit', version: junit_version
-//        testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
     }
     // configure non-standard source sets
     sourceSets {
@@ -62,9 +56,7 @@ subprojects {
         registerFeature('grammars') { usingSourceSet(sourceSets.grammars) }
     }
 
-
     buildDir = file("$projectDir/target")
-
     sourceCompatibility = '1.8'
 }
 
@@ -86,8 +78,8 @@ project(':umlp-lang') {
     task generateUMLP(type: MCTask) {
         grammar = file "$grammarDir/UMLP.mc4"
         outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-//        def uptoDate = incCheck("UMLP.mc4")
-//        outputs.upToDateWhen { uptoDate }
+        def uptoDate = incCheck("UMLP.mc4")
+        outputs.upToDateWhen { uptoDate }
     }
 
     compileJava {
@@ -131,8 +123,6 @@ project(':umlp-tool') {
 
     dependencies {
         implementation project(':umlp-lang')
-//        implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
-//        implementation group: 'org.apache.commons', name: 'commons-lang3', version: commons_lang3_version
     }
 
     description = 'UML/P Tool'
