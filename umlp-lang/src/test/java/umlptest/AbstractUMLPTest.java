@@ -2,6 +2,7 @@
 
 package umlptest;
 
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -38,13 +39,24 @@ public abstract class AbstractUMLPTest {
     assertTrue(m.toFile().exists());
     try {
       Optional<ASTUMLPCompilationUnit> ast = parser.parse(m.toString());
-      assertTrue(ast.isPresent());
-      return ast.get();
+      return ast.orElse(null);
     }
     catch (IOException e) {
       e.printStackTrace();
       fail();
     }
     return null;
+  }
+
+  public static void assertNoErrors(){
+    if(Log.getErrorCount()>0){
+      System.err.println("Expected no errors, but got: ");
+      for(Finding f : Log.getFindings()){
+        if(f.isError()){
+          System.err.println(f.toString());
+        }
+      }
+      fail();
+    }
   }
 }

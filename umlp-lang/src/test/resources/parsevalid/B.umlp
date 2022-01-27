@@ -1,0 +1,15 @@
+package mypackage;
+
+import A;
+
+umlp B {
+  interface I;
+
+  enum E {
+    MY_ENTRY;
+  }
+
+  class C {
+    I i;
+  }
+}

@@ -2,6 +2,7 @@
 
 package umlp._cocos;
 
+import de.monticore.cd4analysis.cocos.CD4AnalysisCoCos;
 import umlp._ast.ASTUMLPNode;
 
 /**
@@ -9,11 +10,24 @@ import umlp._ast.ASTUMLPNode;
  */
 public class UMLPCoCos {
 
-  public static void checkAll(ASTUMLPNode node) {
-    UMLPCoCoChecker umlpCoCoChecker = new UMLPCoCoChecker();
-//    umlpCoCoChecker.addCoCo(new UseBlockOrder());
-//    umlpCoCoChecker.addCoCo(new PrefixOnlyInFileBlock());
-    umlpCoCoChecker.checkAll(node);
+  public static void checkAll(ASTUMLPNode ast) {
+    checkAll(ast, new UMLPCoCoChecker());
+  }
+
+  public static void checkAll(ASTUMLPNode ast, UMLPCoCoChecker checker) {
+    // TODO Add custom cocos
+    checker.checkAll(ast);
+
+    checkAllCDCoCos(ast, checker);
+    //TODO add for other languages too
+  }
+
+  public static void checkAllCDCoCos(ASTUMLPNode ast) {
+    checkAllCDCoCos(ast, new UMLPCoCoChecker());
+  }
+
+  public static void checkAllCDCoCos(ASTUMLPNode ast, UMLPCoCoChecker checker) {
+//    CD4AnalysisCoCos TODO
   }
 
 }
