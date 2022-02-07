@@ -140,4 +140,10 @@ public class UMLPTool extends UMLPToolTOP {
 
     return options;
   }
+
+  public static void main(String[] args) {
+    UMLPMill.init();
+    UMLPTool tool = new  UMLPTool();
+    tool.run(args);
+  }
 }

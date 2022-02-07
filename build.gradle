@@ -63,6 +63,7 @@ subprojects {
 project(':umlp-tool') {
     apply plugin: 'java'
     apply plugin: 'monticore'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
     dependencies {
         implementation "org.codehaus.groovy:groovy:$groovy_version"
@@ -104,11 +105,12 @@ project(':umlp-tool') {
         }
         archiveClassifier = 'cli'
         archiveFileName = "UMLPTool.jar"
-        minimize()
+//        minimize()
         duplicatesStrategy DuplicatesStrategy.INCLUDE
     }
 
     jar.dependsOn(sourcesJar)
+    jar.dependsOn(shadowJar)
 
     /////////////////////////   Deployment  //////////////////////////////////
 
