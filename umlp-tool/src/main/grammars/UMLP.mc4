@@ -4,7 +4,7 @@
  * Grammar for the UMLP Language that includes CDs, ODs, and other languages
  * into a single kind of model.
  */
-grammar UMLP extends de.monticore.CD4Analysis {
+grammar UMLP extends de.monticore.CD4Code {
 
   UMLPCompilationUnit = MCPackageDeclaration? MCImportStatement* UMLPDef;
 

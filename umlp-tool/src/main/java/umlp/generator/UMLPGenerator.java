@@ -7,7 +7,6 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.trafo.CD4AnalysisAfterParseTrafo;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp._ast.ASTUMLPCompilationUnit;
 
 /**
@@ -24,18 +23,23 @@ public class UMLPGenerator {
 
   public UMLPGenerator(GeneratorSetup generatorSetup) {
     generatorSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter());
-    CD4C.reset();
+    CD4C.init(generatorSetup);
 
     cdGenerator = new CDGenerator(generatorSetup);
     cdAfterParseTrafo = new CD4AnalysisAfterParseTrafo();
   }
 
   public void generate(ASTUMLPCompilationUnit modelAST) {
+
+    // Translate AST of UMLP Model into initial CD-AST
     ASTCDCompilationUnit cdAST = UMLP2CDTrafo.run(modelAST);
+
+    // execute some basic CD-AST trafos (e.g., put everything in packages)
     cdAfterParseTrafo.transform(cdAST);
 
     // TODO hier trafos realisieren
 
+    // translate the CD-AST into Java with the CD Generator
     cdGenerator.generate(cdAST);
   }
 
