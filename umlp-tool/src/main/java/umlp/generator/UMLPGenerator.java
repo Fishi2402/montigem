@@ -2,10 +2,12 @@
 package umlp.generator;
 
 import de.monticore.cd.codegen.CDGenerator;
-import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4analysis.trafo.CD4AnalysisAfterParseTrafo;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp._ast.ASTUMLPCompilationUnit;
 
 /**
@@ -18,42 +20,23 @@ public class UMLPGenerator {
 
   protected CDGenerator cdGenerator;
 
+  protected CD4AnalysisAfterParseTrafo cdAfterParseTrafo;
+
   public UMLPGenerator(GeneratorSetup generatorSetup) {
+    generatorSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter());
+    CD4C.reset();
+
     cdGenerator = new CDGenerator(generatorSetup);
+    cdAfterParseTrafo = new CD4AnalysisAfterParseTrafo();
   }
 
   public void generate(ASTUMLPCompilationUnit modelAST) {
-    ASTCDCompilationUnit cdAST = trafoUMLP2CD(modelAST);
-    genCD2Java(cdAST);
+    ASTCDCompilationUnit cdAST = UMLP2CDTrafo.run(modelAST);
+    cdAfterParseTrafo.transform(cdAST);
+
+    // TODO hier trafos realisieren
+
+    cdGenerator.generate(cdAST);
   }
-
-  public void genCD2Java(ASTCDCompilationUnit ast) {
-    cdGenerator.generate(ast);
-  }
-
-  // TODO Importe zwischen UMLP Modellen auflösen, falls es welche geben soll
-  public ASTCDCompilationUnit trafoUMLP2CD(ASTUMLPCompilationUnit modelAST) {
-
-    // use visitor to collect CD parts of the UMLP AST (to avoid casts)
-    CDElementFinder finder = new CDElementFinder();
-    finder.run(modelAST);
-
-    // create a CD definition with all the CDElemnts of the UMLP model...
-    ASTCDDefinition cdDef = CD4CodeMill.cDDefinitionBuilder()
-        .setName(modelAST.getUMLPDef().getName())
-        .setCDElementsList(finder.getCDElements())
-        .build();
-
-    // ... and add it to a new CD compilation unit
-    ASTCDCompilationUnit cdAST = CD4CodeMill.cDCompilationUnitBuilder()
-        .setMCPackageDeclaration(modelAST.getMCPackageDeclaration())
-        .setCDTargetImportStatementsList(finder.getCDTargetImportStatements())
-        .setCDDefinition(cdDef)
-        .build();
-
-    // TODO create symtab with cd tool
-    return cdAST;
-  }
-
 
 }

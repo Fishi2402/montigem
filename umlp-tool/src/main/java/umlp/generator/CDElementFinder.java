@@ -12,6 +12,9 @@ import umlp._visitor.UMLPTraverser;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Visitor that collects elements of the CD language in an UMLP model
+ */
 public class CDElementFinder implements CDBasisVisitor2 {
 
   protected List<ASTCDElement> cDElements;
@@ -36,7 +39,7 @@ public class CDElementFinder implements CDBasisVisitor2 {
   }
 
   public void run(ASTUMLPNode node) {
-    UMLPTraverser traverser = UMLPMill.traverser();
+    UMLPTraverser traverser = UMLPMill.inheritanceTraverser();
     traverser.add4CDBasis(this);
     node.accept(traverser);
   }

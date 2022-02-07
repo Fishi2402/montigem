@@ -2,6 +2,7 @@
 package umlp;
 
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -14,7 +15,10 @@ import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp.generator.UMLPGenerator;
 
-import static umlp.UMLToolCommands.*;
+import java.io.File;
+import java.nio.file.Paths;
+
+import static umlp.UMLPToolOptions.*;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -23,6 +27,7 @@ import static umlp.UMLToolCommands.*;
 public class UMLPTool extends UMLPToolTOP {
 
   protected static final String SYM_IO = "target/symbols/";
+  protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
 
   /**
    * This method realizes a tool for processing FC models. See the project's Readme for a
@@ -33,8 +38,6 @@ public class UMLPTool extends UMLPToolTOP {
   public void run(String[] args) {
     //init CLI options
     Options options = initOptions();
-
-    GeneratorSetup genSetup = new GeneratorSetup();
 
     try {
       CommandLineParser parser = new DefaultParser();
@@ -55,8 +58,9 @@ public class UMLPTool extends UMLPToolTOP {
       if (!INPUT.isSelected(cmd)) {
         Log.error("0xE0000 Indicating an input file with the option 'i' is mandatory");
       }
+      String input = INPUT.getValue(cmd);
 
-      String input = cmd.getOptionValue(INPUT.getCMD());
+      ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
 
       // parse, create symbol table, check all cocos
       ASTUMLPCompilationUnit ast = parse(input);
@@ -65,7 +69,7 @@ public class UMLPTool extends UMLPToolTOP {
 
       // print or store symbol table
       if (SYMTAB.isSelected(cmd)) {
-        String s = cmd.getOptionValue(SYMTAB.getCMD());
+        String s = SYMTAB.getValue(cmd);
         if (null != s) {
           // store symbol table to passed file
           JsonPrinter.disableIndentation();
@@ -81,8 +85,24 @@ public class UMLPTool extends UMLPToolTOP {
 
       // pretty print model and either output on stdout or store to file
       if (PRETTYPRINT.isSelected(cmd)) {
-        prettyPrint(ast, cmd.getOptionValue(PRETTYPRINT.getCMD()));
+        prettyPrint(ast, PRETTYPRINT.getValue(cmd));
       }
+
+      ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
+      GeneratorSetup genSetup = new GeneratorSetup();
+
+      // set output directory
+      File outDir = new File(OUTPUT.getValue(cmd, DEFAULT_OUT));
+      genSetup.setOutputDirectory(outDir);
+
+      // set hwc directories
+      MCPath hwcPath = new MCPath();
+      if(HWC_PATH.isSelected(cmd)){
+        for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
+          hwcPath.addEntry(Paths.get(v));
+        }
+      }
+      genSetup.setHandcodedPath(hwcPath);
 
       // execute generator
       UMLPGenerator generator = new UMLPGenerator(genSetup);
@@ -102,7 +122,7 @@ public class UMLPTool extends UMLPToolTOP {
   @Override
   public Options initOptions() {
     Options options = new Options();
-    for (UMLToolCommands cmd : UMLToolCommands.values()) {
+    for (UMLPToolOptions cmd : UMLPToolOptions.values()) {
       options.addOption(cmd.getOption());
     }
     return options;
