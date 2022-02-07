@@ -60,11 +60,13 @@ subprojects {
     sourceCompatibility = '1.8'
 }
 
-project(':umlp-lang') {
+project(':umlp-tool') {
     apply plugin: 'java'
     apply plugin: 'monticore'
 
     dependencies {
+        implementation "org.codehaus.groovy:groovy:$groovy_version"
+        implementation "de.se_rwth.commons:se-commons-groovy:$mc_version"
         grammar("de.monticore.lang:cd4analysis:$mc_version") {
             capabilities { requireCapability("de.monticore.lang:cd4analysis-grammars") }
         }
@@ -73,7 +75,7 @@ project(':umlp-lang') {
         }
     }
 
-    description = 'UML/P Language'
+    description = 'UML/P Language and Tool'
 
     task generateUMLP(type: MCTask) {
         grammar = file "$grammarDir/UMLP.mc4"
@@ -86,6 +88,8 @@ project(':umlp-lang') {
         dependsOn project.collect { it.tasks.withType(MCTask) }
     }
 
+    ///////////////////////// Building Jars //////////////////////////////////
+
     // build sources jar with handwritten + generated sources
     task sourcesJar(type: Jar) {
         archiveClassifier = 'sources'
@@ -94,7 +98,19 @@ project(':umlp-lang') {
 
     sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
 
+    shadowJar { // all in one jar
+        manifest {
+            attributes "Main-Class": "umlp.UMLPTool"
+        }
+        archiveClassifier = 'cli'
+        archiveFileName = "UMLPTool.jar"
+        minimize()
+        duplicatesStrategy DuplicatesStrategy.INCLUDE
+    }
+
     jar.dependsOn(sourcesJar)
+
+    /////////////////////////   Deployment  //////////////////////////////////
 
     // configure deployment
     publishing {
@@ -116,57 +132,6 @@ project(':umlp-lang') {
     }
 }
 
-project(':umlp-tool') {
+project(':examples') {
 
-    apply plugin: 'java'
-    apply plugin: 'com.github.johnrengelman.shadow'
-
-    dependencies {
-        implementation project(':umlp-lang')
-    }
-
-    description = 'UML/P Tool'
-
-    // build sources jar with handwritten + generated sources
-    task sourcesJar(type: Jar) {
-        archiveClassifier = 'sources'
-        from(sourceSets.main.allJava)
-    }
-
-    shadowJar { // all in one jar
-        manifest {
-            attributes "Main-Class": "umlp.UMLPTool"
-        }
-        archiveClassifier = 'cli'
-        archiveFileName = "UMLPTool.jar"
-        minimize()
-        duplicatesStrategy DuplicatesStrategy.INCLUDE
-    }
-
-    sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
-    jar.dependsOn(sourcesJar)
-    jar.dependsOn(shadowJar)
-
-    // configure deployment
-    publishing {
-        // configure what artifacts to publish
-        publications {
-            mavenJava(MavenPublication) {
-                artifactId = "$project.name"
-                from components.java
-                artifact sourcesJar
-            }
-            mavenCLI(MavenPublication) {
-                artifactId = "$project.name"
-                artifact shadowJar
-            }
-        }
-        repositories.maven {
-            credentials.username mavenUser
-            credentials.password mavenPassword
-            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
-            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
-            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-        }
-    }
 }
