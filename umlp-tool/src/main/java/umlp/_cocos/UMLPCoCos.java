@@ -3,6 +3,9 @@
 package umlp._cocos;
 
 import de.monticore.cd4analysis.cocos.CD4AnalysisCoCos;
+import de.monticore.cdassociation.CDAssociationMill;
+import de.monticore.cdassociation.cocos.CDAssociationCoCos;
+import de.monticore.cdinterfaceandenum.cocos.CDInterfaceAndEnumCoCos;
 import umlp._ast.ASTUMLPNode;
 
 /**
@@ -27,9 +30,8 @@ public class UMLPCoCos {
   }
 
   public static void checkAllCDCoCos(ASTUMLPNode ast, UMLPCoCoChecker checker) {
-//    CD4AnalysisCoCos TODO
-    CD4AnalysisCoCos c = new CD4AnalysisCoCos();
-    checker.addChecker(c.getCheckerForAllCoCos());
+    CD4AnalysisCoCos analysisCoCos = new CD4AnalysisCoCos();
+    checker.addChecker(analysisCoCos.getCheckerForAllCoCos());
   }
 
 }

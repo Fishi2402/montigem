@@ -1,0 +1,4 @@
+umlp CDInterfaceExtendsCyclic {
+  class Foo;
+  interface Bar extends Foo;
+}
