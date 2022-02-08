@@ -28,6 +28,8 @@ public class UMLPCoCos {
 
   public static void checkAllCDCoCos(ASTUMLPNode ast, UMLPCoCoChecker checker) {
 //    CD4AnalysisCoCos TODO
+    CD4AnalysisCoCos c = new CD4AnalysisCoCos();
+    checker.addChecker(c.getCheckerForAllCoCos());
   }
 
 }
