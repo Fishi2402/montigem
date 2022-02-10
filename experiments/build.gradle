@@ -1,0 +1,52 @@
+/* (c) https://github.com/MontiCore/monticore */
+import de.monticore.MCTask
+
+plugins {
+    id "monticore" // MontiCore Plugin
+    id "jacoco"
+}
+
+subprojects {
+    apply plugin: 'monticore'
+    apply plugin: 'jacoco'
+
+    ext.grammarDir = 'src/main/grammars'
+    ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
+
+    dependencies {
+        implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
+        testImplementation group:'junit', name:'junit', version:junit_version
+    }
+
+
+    sourceSets {
+        main.java.srcDirs += [ outDir ]
+    }
+
+    compileJava {
+        dependsOn project.collect { it.tasks.withType(MCTask) }
+    }
+
+}
+
+configure(subprojects)  {
+    dependencies {
+        implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+        implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
+
+        implementation "de.monticore:monticore-runtime:$mc_version"
+        implementation "de.monticore:monticore-grammar:$mc_version"
+        grammar ("de.monticore:monticore-grammar:$mc_version"){
+            capabilities {
+                requireCapability("de.monticore:monticore-grammar-grammars")
+            }
+        }
+        testImplementation group:'junit', name:'junit', version:junit_version
+    }
+}
+
+clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
+
+build.dependsOn(subprojects.collect{ it.getTasksByName("build", false)})
+
+jar.enabled = false

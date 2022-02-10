@@ -137,3 +137,31 @@ project(':umlp-tool') {
 project(':examples') {
 
 }
+
+/**
+ *  Builds the core projects, i.e. the umlp-tool and the examples.
+ *  Executes JUnit tests and assembles the jars.
+ */
+task buildUMLP {
+    group("build")
+    description('Builds the core projects, i.e. the umlp-tool and the examples.')
+    dependsOn(
+            ":umlp-tool:build",
+            ":examples:build"
+    )
+}
+
+/**
+ *  Publishes the jars of the core projects, i.e. the umlp-tool and the examples
+ *  to the nexus repository.
+ *  Assembles the jars and publishes them, but does not execute JUnit tests.
+ */
+task deployUMLP {
+    group("build")
+    description('Publishes the core projects, i.e. the umlp-tool and the examples.')
+
+    dependsOn(
+            ":umlp-tool:publish",
+            ":examples:publish"
+    )
+}
