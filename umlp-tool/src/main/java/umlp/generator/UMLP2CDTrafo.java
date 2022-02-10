@@ -17,7 +17,7 @@ public class UMLP2CDTrafo {
     CDElementFinder finder = new CDElementFinder();
     finder.run(umlpAST);
 
-    // create a CD definition with all the CDElemnts of the UMLP model...
+    // create a CD definition with all the CDElements of the UMLP model...
     ASTCDDefinition cdDef = CD4CodeMill.cDDefinitionBuilder()
         .setName(umlpAST.getUMLPDef().getName())
         .setCDElementsList(finder.getCDElements())
@@ -35,7 +35,7 @@ public class UMLP2CDTrafo {
       cdAST.setMCPackageDeclaration(umlpAST.getMCPackageDeclaration());
     }
 
-    // TODO create symtab with cd tool
+    // TODO create symtab with cd tool ?
     return cdAST;
   }
 

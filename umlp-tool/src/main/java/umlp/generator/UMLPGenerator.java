@@ -5,6 +5,8 @@ import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.trafo.CD4AnalysisAfterParseTrafo;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import umlp._ast.ASTUMLPCompilationUnit;
@@ -21,7 +23,13 @@ public class UMLPGenerator {
 
   protected CD4AnalysisAfterParseTrafo cdAfterParseTrafo;
 
+//  protected AccessMethodsTrafo accessMethodsTrafo;
+
+  CD4CodeFullPrettyPrinter astPrinter;
+
   public UMLPGenerator(GeneratorSetup generatorSetup) {
+    astPrinter = new CD4CodeFullPrettyPrinter();
+
     generatorSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter());
     CD4C.init(generatorSetup);
 
@@ -36,6 +44,7 @@ public class UMLPGenerator {
 
     // execute some basic CD-AST trafos (e.g., put everything in packages)
     cdAfterParseTrafo.transform(cdAST);
+
 
     // TODO hier trafos realisieren
 
