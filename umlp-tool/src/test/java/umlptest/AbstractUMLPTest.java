@@ -2,6 +2,9 @@
 
 package umlptest;
 
+import de.monticore.cd4analysis._symboltable.CD4AnalysisSymbolTableCompleter;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -49,7 +52,14 @@ public abstract class AbstractUMLPTest {
   }
 
   public IUMLPArtifactScope createSymTab(ASTUMLPCompilationUnit ast) {
-    return UMLPMill.scopesGenitorDelegator().createFromAST(ast);
+    ASTMCQualifiedName pck = ast.isPresentMCPackageDeclaration()
+        ? ast.getMCPackageDeclaration().getMCQualifiedName()
+        : MCBasicTypesMill.mCQualifiedNameBuilder().build();
+        IUMLPArtifactScope as = UMLPMill.scopesGenitorDelegator().createFromAST(ast);
+    CD4AnalysisSymbolTableCompleter c = new CD4AnalysisSymbolTableCompleter(
+        ast.getMCImportStatementList(), pck);
+    ast.accept(c.getTraverser());
+    return as;
   }
 
   public static void assertNoErrors() {
