@@ -10,20 +10,21 @@ public enum UMLPToolOptions {
   VERSION("v", "version", "Prints version information"),
   DEBUG("d", "debug", "Produces more detailed log"),
 
-  // with mandatory arg
+  // with one arg
   INPUT("i", "input", "Reads the source file (mandatory) and parses the contents", "file"),
-  SYMTAB("s", "symboltable", "Serialized the Symbol table of the given artifact.", "file"),
+  SYMTAB("s", "symboltable", "Serializes the symbol table of the given artifact.", "file", true),
   OUTPUT("o", "out", "Path of the output files.", "dir"),
-  REPORTS("r", "report", "Prints reports of the artifact to the specified directory.", "dir"),
+  REPORTS("r", "report", "Prints reports of the artifact to the specified directory.", "dir", true),
+  CFGTMPL("ct", "configTemplate", "Executes this template at the beginning of code generation to customize it. (template path may have to be set)", "file"),
+  PRETTYPRINT("pp", "prettyprint", "Prints the AST to stdout or the specified file (optional)", "file", true),
 
-  //others
+  //with multiple args
   PATH(Option.builder("path").hasArgs()
       .desc("Sets the artifact path for imported symbols, space separated.").build()),
   HWC_PATH(Option.builder("hwc").hasArgs()
       .desc("Sets the artifact paths for handwritten code, space separated.").build()),
-  PRETTYPRINT(
-      Option.builder("pp").longOpt("prettyprint").argName("file").optionalArg(true).numberOfArgs(1)
-          .desc("Prints the AST to stdout or the specified file (optional)").build()),
+  TMPL_PATH(Option.builder("fp").longOpt("templatePath").hasArgs()
+      .desc("Directories and jars for handwritten templates, space separated.").build()),
   ;
 
   UMLPToolOptions(Option option) {
@@ -38,9 +39,14 @@ public enum UMLPToolOptions {
   }
 
   UMLPToolOptions(String opt, String longOpt, String desc, String argName) {
+    this(opt, longOpt, desc, argName, false);
+  }
+
+  UMLPToolOptions(String opt, String longOpt, String desc, String argName, boolean isArgOptional) {
     this.option = Option.builder(opt)
         .longOpt(longOpt)
         .argName(argName)
+        .optionalArg(isArgOptional)
         .hasArg()
         .desc(desc)
         .build();

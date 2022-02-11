@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp;
 
+import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -17,6 +20,8 @@ import umlp.generator.UMLPGenerator;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 import static umlp.UMLPToolOptions.*;
 
@@ -26,8 +31,9 @@ import static umlp.UMLPToolOptions.*;
  */
 public class UMLPTool extends UMLPToolTOP {
 
-  protected static final String SYM_IO = "target/symbols/";
+//  protected static final String SYM_IO = "target/symbols/";
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
+  protected static final String DEFAULT_CONFIGTEMPLATE = "cd2java.CD2Java";
 
   /**
    * This method realizes a tool for processing FC models. See the project's Readme for a
@@ -107,6 +113,13 @@ public class UMLPTool extends UMLPToolTOP {
       // execute generator
       UMLPGenerator generator = new UMLPGenerator(genSetup);
       generator.generate(ast);
+
+      String configTemplate = cmd.getOptionValue("ct", "cd2java.CD2Java");
+      TemplateController tc = genSetup.getNewTemplateController(configTemplate);
+      TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
+      List<Object> configTemplateArgs = Arrays.asList(genSetup.getGlex(), generator);
+      hpp.processValue(tc, ast, configTemplateArgs);
+
     }
     catch (Exception e) {
       Log.error("0x1C005 An exception occured while processing the CLI input!", e);

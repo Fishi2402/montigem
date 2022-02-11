@@ -3,7 +3,6 @@
 package umlp.generator;
 
 import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -40,6 +39,7 @@ public class UMLP2CDTrafo {
     }
 
     // create symtab
+    CD4CodeMill.init();
     CD4CodeMill.scopesGenitorDelegator().createFromAST(cdAST);
     cdAST.accept(new CD4CodeSymbolTableCompleter(cdAST).getTraverser());
     return cdAST;
