@@ -3,15 +3,19 @@
 package umlp.generator;
 
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
+import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
 
 // TODO Importe zwischen UMLP Modellen auflösen, falls es welche geben soll
 public class UMLP2CDTrafo {
 
   public static ASTCDCompilationUnit run(ASTUMLPCompilationUnit umlpAST) {
+    UMLPMill.globalScope().clear();
 
     // use visitor to collect CD parts of the UMLP AST (to avoid casts)
     CDElementFinder finder = new CDElementFinder();
@@ -35,7 +39,9 @@ public class UMLP2CDTrafo {
       cdAST.setMCPackageDeclaration(umlpAST.getMCPackageDeclaration());
     }
 
-    // TODO create symtab with cd tool ?
+    // create symtab
+    CD4CodeMill.scopesGenitorDelegator().createFromAST(cdAST);
+    cdAST.accept(new CD4CodeSymbolTableCompleter(cdAST).getTraverser());
     return cdAST;
   }
 
