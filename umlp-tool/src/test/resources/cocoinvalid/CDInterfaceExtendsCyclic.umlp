@@ -1,0 +1,4 @@
+umlp CDInterfaceExtendsCyclic {
+  interface A extends B;
+  interface B extends A;
+}

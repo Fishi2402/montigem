@@ -1,0 +1,5 @@
+umlp CDClassLowerName {
+  class foo;
+  public class Bar;
+  association foo -> Bar;
+}
