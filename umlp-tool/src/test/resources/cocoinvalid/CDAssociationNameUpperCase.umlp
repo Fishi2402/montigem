@@ -1,0 +1,5 @@
+umlp CDAssociationNameUpperCase {
+  class Foo;
+  class Bar;
+  association Assoc Foo -> Bar;
+}
