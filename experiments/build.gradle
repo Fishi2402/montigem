@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-import de.monticore.MCTask
 
 plugins {
     id "monticore" // MontiCore Plugin
@@ -14,7 +13,7 @@ subprojects {
     ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
 
     dependencies {
-        implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
+        implementation "de.se_rwth.commons:se-commons-utilities:$mc_version"
         testImplementation group:'junit', name:'junit', version:junit_version
     }
 
@@ -31,16 +30,11 @@ subprojects {
 
 configure(subprojects)  {
     dependencies {
-        implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
-        implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
-
-        implementation "de.monticore:monticore-runtime:$mc_version"
-        implementation "de.monticore:monticore-grammar:$mc_version"
-        grammar ("de.monticore:monticore-grammar:$mc_version"){
-            capabilities {
-                requireCapability("de.monticore:monticore-grammar-grammars")
-            }
-        }
+//        implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+//        implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
+//
+//        implementation "de.monticore:monticore-runtime:$mc_version"
+//        implementation "de.monticore:monticore-grammar:$mc_version"
         testImplementation group:'junit', name:'junit', version:junit_version
     }
 }
