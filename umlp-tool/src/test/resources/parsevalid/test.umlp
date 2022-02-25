@@ -1,4 +1,4 @@
-umlp test{
+umlp mediaHub{
    package people{
        class Author  {
             String name;
@@ -6,15 +6,16 @@ umlp test{
             int authorID;
             List<Book> portfolio;
        }
-       class Reader {
+       class User {
             String name;
-            int readerID;
+            int userID;
             Account account;
        }
+
    }
    class Account {
         int accountID;
-        Reader reader;
+        User use;
    }
    class Library {
            String name;
@@ -37,9 +38,10 @@ umlp test{
    }
 
 
-   association borrow [0..1] people.Reader -> multimedia.Book [*] ;
+   association borrow [0..1] people.User -> multimedia.Book [*] ;
    association writtenBy [1] people.Author (book) <-  (author) Book [*] ;
    composition Library -> Book [*] ;
+   composition Library -> Video [*] ;
    association resolution Video (quality) -> VideoQuality ;
-   association accountbook Reader [Account] -> Account;
+   association accountbook User [Account] -> Account;
 }
