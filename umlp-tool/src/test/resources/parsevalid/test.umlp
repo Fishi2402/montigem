@@ -1,0 +1,45 @@
+umlp test{
+   package people{
+       class Author  {
+            String name;
+            Date birth;
+            int authorID;
+            List<Book> portfolio;
+       }
+       class Reader {
+            String name;
+            int readerID;
+            Account account;
+       }
+   }
+   class Account {
+        int accountID;
+        Reader reader;
+   }
+   class Library {
+           String name;
+           String address;
+           List<Book> books;
+           List<Video> vids;
+       }
+   package multimedia{
+       class Book{
+            int ID;
+            Date issueDate;
+            Author author;
+       }
+       class Video {
+            String name;
+            double size;
+            String password;
+       }
+       enum VideoQuality { UltraHD, HD, LowQuality; }
+   }
+
+
+   association borrow [0..1] people.Reader -> multimedia.Book [*] ;
+   association writtenBy [1] people.Author (book) <-  (author) Book [*] ;
+   composition Library -> Book [*] ;
+   association resolution Video (quality) -> VideoQuality ;
+   association accountbook Reader [Account] -> Account;
+}

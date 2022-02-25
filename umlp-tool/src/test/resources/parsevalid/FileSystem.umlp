@@ -1,0 +1,7 @@
+umlp FileSystem{
+
+    class Artifact{}
+    class File extends Artifact {}
+    class Folder extends Artifact {}
+   association Folder -> Artifact [*] ;
+}

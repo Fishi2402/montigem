@@ -1,0 +1,34 @@
+umlp RestaurantOrg{
+  package human {
+    class Person {
+        String name;
+        String lastName;
+        Date birthday;
+        String address;
+    }
+     class Customer extends Person {
+            Date reservationDate;
+     }
+     class Employee extends Person{
+            int ID;
+     }
+  }
+    class Restaurant {
+        String name;
+        String address;
+    }
+    class Job {
+        String jobName;
+        int roleID;
+    }
+
+    class ServingPersonel extends Job {}
+    class Waiter extends ServingPersonel{}
+    class KitchenPersonel extends Job {}
+    class SousChef extends KitchenPersonel {}
+
+    association service [*] human.Customer <-> ServingPersonel [*] ;
+    association visit [*] human.Person <-> Restaurant [*] ;
+    aggregation [1] Restaurant  -> Job [*] ;
+    association Person (job) -> Job [0..1];
+}
