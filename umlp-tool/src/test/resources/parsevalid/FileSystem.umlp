@@ -1,7 +1,13 @@
 umlp FileSystem{
+  class Artifact {
+    String name;  
+  }
 
-    class Artifact{}
-    class File extends Artifact {}
-    class Folder extends Artifact {}
-   association Folder -> Artifact [*] ;
+  class File extends Artifact {
+    String fileExtension;
+  }
+
+  class Folder extends Artifact;
+  
+  association Folder -> Artifact [*];
 }
