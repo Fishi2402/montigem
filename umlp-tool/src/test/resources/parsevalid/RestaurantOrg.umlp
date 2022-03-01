@@ -30,6 +30,6 @@ umlp RestaurantOrg{
 
   association service [*] human.Customer <-> ServingPersonel [*] ;
   association [*] human.Person (visitedBy) <-> (visits) Restaurant [*] ;
-  aggregation [1] Restaurant  -> Employee [*] ;
+  aggregation [1] Restaurant  -> (staff) Employee [*] ;
   association Person -> Job [0..1];
 }
