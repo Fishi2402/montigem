@@ -1,4 +1,4 @@
-umlp mediaHub{
+umlp MediaHub{
    package people{
        class Author  {
             String name;
