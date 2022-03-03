@@ -5,6 +5,7 @@ umlp University {
     String Name;
     String nationality;
   }
+
   class Contact {
     String city;
     int zip;
@@ -31,8 +32,10 @@ umlp University {
 
     enum StudentStatus { ENROLLED, EXMATRICULATED, GRADUATED; }
   }
-   composition Student -> Course [*];
-   association contactBook Person [String] -> Contact;
-   association [0..2] Person (parent) <-> (children) Student [*];
-   aggregation Course -> SportHall [0..*] ;
+
+  composition Student -> Course [*];
+  association contactBook Person [String] -> Contact;
+  association [0..2] Person (parent) <-> (children) Student [*];
+  aggregation Course -> SportHall [0..*] ;
+
 }
