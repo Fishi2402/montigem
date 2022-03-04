@@ -3,6 +3,8 @@
 package umlptest;
 
 import de.monticore.cd4analysis._symboltable.CD4AnalysisSymbolTableCompleter;
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.se_rwth.commons.logging.Finding;
@@ -14,12 +16,15 @@ import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._parser.UMLPParser;
 import umlp._symboltable.IUMLPArtifactScope;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
+import static umlp.UMLPToolOptions.HWC_PATH;
+import static umlp.UMLPToolOptions.OUTPUT;
 
 public abstract class AbstractUMLPTest {
 
@@ -91,5 +96,18 @@ public abstract class AbstractUMLPTest {
             expectedErrorCode + "', but the error did not occur!");
       }
     }
+  }
+
+  public static GeneratorSetup getGenSetup(){
+    GeneratorSetup genSetup = new GeneratorSetup();
+
+    // set output directory
+    File outDir = new File("target/generated-test-sources");
+    genSetup.setOutputDirectory(outDir);
+
+    // set hwc directories
+    MCPath hwcPath = new MCPath();
+    genSetup.setHandcodedPath(hwcPath);
+    return genSetup;
   }
 }
