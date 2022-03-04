@@ -1,4 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
 package monticore;
+
 umlp University {
 
   abstract class Person {
@@ -35,7 +37,7 @@ umlp University {
 
   composition Student -> Course [*];
   association contactBook Person [String] -> Contact;
-  association [0..2] Person (parent) <-> (children) Student [*];
-  aggregation Course -> SportHall [0..*] ;
+  association [*] Person (parent) <-> (children) Student [*]; // [0..2] not allowed, has to be checkd by a CoCo
+//  aggregation Course -> SportHall [0..*] ; // TODO: aggregations do not exist in CD4A
 
 }

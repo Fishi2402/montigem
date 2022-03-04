@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 umlp RestaurantOrg {
 
   package actors {
@@ -33,7 +35,7 @@ umlp RestaurantOrg {
 
   association service [*] human.Customer <-> ServingPersonel [*] ;
   association [*] human.Person (visitedBy) <-> (visits) Restaurant [*] ;
-  aggregation [1] Restaurant  -> (staff) Employee [*] ;
+//  aggregation [1] Restaurant  -> (staff) Employee [*] ; // TODO: aggregations do not exist in CD4A
   association Person -> Job [0..1];
 
 }

@@ -1,5 +1,7 @@
-umlp MediaHub{
-   package people{
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp MediaHub {
+   package people {
        class Author  {
             String name;
             Date birth;
