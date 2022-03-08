@@ -4,7 +4,7 @@ package de.myWorld;
 umlp Cars {
 
   class Person {
-    String surame, forename;
+//    String surname, forename;  // TODO: should this be allowed?
     int age;
     -> Contact [0..1];
   }

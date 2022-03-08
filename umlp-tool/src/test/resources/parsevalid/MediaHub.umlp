@@ -1,0 +1,49 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp MediaHub {
+   package people {
+       class Author  {
+            String name;
+            Date birth;
+            int authorID;
+            List<Book> portfolio;
+       }
+       class User {
+            String name;
+            int userID;
+            Account account;
+       }
+
+   }
+   class Account {
+        int accountID;
+        User use;
+   }
+   class Library {
+           String name;
+           String address;
+           List<Book> books;
+           List<Video> vids;
+       }
+   package multimedia{
+       class Book{
+            int ID;
+            Date issueDate;
+            Author author;
+       }
+       class Video {
+            String name;
+            double size;
+            String password;
+       }
+       enum VideoQuality { UltraHD, HD, LowQuality; }
+   }
+
+
+   association borrow [0..1] people.User -> multimedia.Book [*] ;
+   association writtenBy [1] people.Author (book) <-  (author) Book [*] ;
+   composition Library -> Book [*] ;
+   composition Library -> Video [*] ;
+   association resolution Video (quality) -> VideoQuality ;
+   association accountbook User [Account] -> Account;
+}
