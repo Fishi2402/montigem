@@ -4,7 +4,8 @@ package de.myWorld;
 ontology Cars {
 
   class Person {
-    String surame, forename;
+    String surname;
+    String forename;
     int age;
     -> Contact [0..1];
   }
