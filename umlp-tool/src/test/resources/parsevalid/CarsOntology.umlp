@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.myWorld;
+
+ontology Cars {
+
+  class Person {
+    String surame, forename;
+    int age;
+    -> Contact [0..1];
+  }
+
+  class Contact {
+    String city;
+    int zip;
+    String street;
+    List<String> email;
+  }
+
+  class Car {
+    String plate;
+  }
+
+  association Person -> Car [*];
+
+}
+
