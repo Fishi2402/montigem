@@ -115,7 +115,7 @@ abstract class UmlPTask extends DefaultTask {
     @TaskAction
     void generate(){
         // Previous outputs must be removed
-        this.getOutputs().getPreviousOutputFiles().forEach(x -> x.delete()) // TODO: Smarter
+        this.getOutputs().getPreviousOutputFiles().forEach({File x -> x.delete()}) // TODO: Smarter
 
         this.javaExecSpec.setArgs(
                 ["-i", this.getUmlPFile().get().toString(),
