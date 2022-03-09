@@ -1,0 +1,15 @@
+umlp AllElements {
+  class A;
+
+  interface I;
+
+  class B extends A implements I{
+    String b;
+  }
+
+  class Target;
+
+  association B -> Target;
+
+
+}
