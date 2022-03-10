@@ -165,6 +165,12 @@ task dynamicGeneralAllUMLP(type: DynamicUmlPTask) {
     dependsOn(project(":umlp-tool").tasks.getByName("shadowJar"))
 }
 
+
+public class NullOutputStream extends OutputStream {
+    @Override
+    public void write(int b) throws IOException {
+    }
+}
 abstract class DynamicUmlPTask extends DefaultTask {
 
     @Incremental
@@ -213,7 +219,7 @@ abstract class DynamicUmlPTask extends DefaultTask {
         JavaExecAction javaExecAction = this.getExecActionFactory().newJavaExecAction();
         this.javaExecSpec.copyTo(javaExecAction);
         javaExecAction.setExecutable("java");       // TODO: Is this the right java version?!?
-        javaExecAction.setStandardOutput(OutputStream.nullOutputStream()) // do not pollute console output
+        javaExecAction.setStandardOutput(new NullOutputStream()) // do not pollute console output
         javaExecAction.execute();
 
     }
@@ -223,9 +229,9 @@ abstract class DynamicUmlPTask extends DefaultTask {
 
         // If a ".java" file was added or removed in the HWC-Directory, everything has to be regenerated
         FileChange changeInHWC = inputChanges.getFileChanges(getHwcDir()).find {ch ->
-            (ch.changeType == ChangeType.ADDED || ch.changeType == ChangeType.REMOVED)
+            ((ch.changeType == ChangeType.ADDED || ch.changeType == ChangeType.REMOVED)
                     && (ch.getFileType() == FileType.FILE)
-                    && (ch.getFile().getName().substring(ch.getFile().getName().lastIndexOf('.')) == ".java")
+                    && (ch.getFile().getName().substring(ch.getFile().getName().lastIndexOf('.')) == ".java"))
         }
         if(changeInHWC != null) print("HWC CHANGE = " + changeInHWC.getFile() + changeInHWC.getChangeType())
 
