@@ -16,4 +16,40 @@ public class UMLPParserTest extends AbstractUMLPTest {
     this.parse("parsevalid/B.umlp");
     assertNoErrors();
   }
+
+  @Test
+  public void testParseCars() {
+    this.parse("parsevalid/Cars.umlp");
+    assertNoErrors();
+  }
+
+  @Test
+  public void testParseCarsOntology() {
+    this.parse("parsevalid/CarsOntology.umlp");
+    assertNoErrors();
+  }
+
+  @Test
+  public void testParseFileSystem() {
+    this.parse("parsevalid/FileSystem.umlp");
+    assertNoErrors();
+  }
+
+  @Test
+  public void testParseMediaHub() {
+    this.parse("parsevalid/MediaHub.umlp");
+    assertNoErrors();
+  }
+
+  @Test
+  public void testParseRestaurantOrg() {
+    this.parse("parsevalid/RestaurantOrg.umlp");
+    assertNoErrors();
+  }
+
+  @Test
+  public void testParseUniversity() {
+    this.parse("parsevalid/University.umlp");
+    assertNoErrors();
+  }
 }
