@@ -12,22 +12,15 @@ import de.monticore.cd4code.trafo.CD4CodeDirectCompositionTrafo;
 import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
-import de.se_rwth.commons.configuration.Configuration;
-import de.se_rwth.commons.groovy.GroovyInterpreter;
 import umlp._ast.ASTUMLPCompilationUnit;
-import umlp.generator.configure.ConfigurationOptions;
-import umlp.generator.configure.UMLPConfiguration;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
  * code. Currently, it uses only the CDGenerator.
- * <p>
+ *
  * Later do: make this customizable as Groovy script
  */
 public class UMLPGenerator {
-
-  protected static final String[] DEFAULT_IMPORTS = {
-      "de.monticore.cdbasis._ast.ASTCDCompilationUnit" };
 
   protected CDGenerator cdGenerator;
 
@@ -76,38 +69,16 @@ public class UMLPGenerator {
     cDAssociationCreateFieldsFromNavigableRoles.transform(cdAST);
     logTrafoExec("CDAssociationCreateFieldsFromNavigableRoles", cdAST);
 
+
     // TODO hier trafos realisieren
+
 
     // translate the CD-AST into Java with the CD Generator
     cdGenerator.generate(cdAST);
   }
 
-  public CDGenerator getCdGenerator() {
-    return cdGenerator;
-  }
-
-  public static CD4CodeFullPrettyPrinter getAstPrinter() {
-    return astPrinter;
-  }
-
-  public CD4CodeAfterParseTrafo getcD4CodeAfterParseTrafo() {
-    return cD4CodeAfterParseTrafo;
-  }
-
-  public CD4CodeTrafo4Defaults getcD4CodeTrafo4Defaults() {
-    return cD4CodeTrafo4Defaults;
-  }
-
-  public CD4CodeDirectCompositionTrafo getcD4CodeDirectCompositionTrafo() {
-    return cD4CodeDirectCompositionTrafo;
-  }
-
-  public CDAssociationCreateFieldsFromNavigableRoles getcDAssociationCreateFieldsFromNavigableRoles() {
-    return cDAssociationCreateFieldsFromNavigableRoles;
-  }
-
-  public static void logTrafoExec(String trafo, ASTCDCompilationUnit ast) {
-    System.out.println("========= CD after '" + trafo + "': =========");
+  protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
+    System.out.println("========= CD after '"+trafo+"': =========");
     System.out.println(astPrinter.prettyprint(ast));
   }
 
