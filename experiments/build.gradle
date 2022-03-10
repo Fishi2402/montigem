@@ -78,6 +78,8 @@ fileTree(".").matching { include '**/*.umlp' }.each {File f ->
     def t = tasks.register("generate"+f.getName(), StaticUmlPTask) {
         umlPJar = file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile)
         umlPFile = file(f)
+        hwcDir = layout.projectDirectory.dir("initial/hwc/")
+
         outputDir = layout.buildDirectory.dir("test/static/" + name)
 
         // classpath = files(file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile))
@@ -99,6 +101,10 @@ abstract class StaticUmlPTask extends DefaultTask {
 
     @OutputDirectory
     abstract DirectoryProperty getOutputDir()
+
+    @InputDirectory
+    abstract DirectoryProperty getHwcDir()
+
 
     @Inject
     protected ExecActionFactory getExecActionFactory() {
@@ -124,9 +130,11 @@ abstract class StaticUmlPTask extends DefaultTask {
         // Previous outputs must be removed
         this.getOutputs().getPreviousOutputFiles().forEach({File x -> x.delete()}) // TODO: Smarter
 
+        println "HWC " + this.getHwcDir().get().toString()
         this.javaExecSpec.setArgs(
                 ["-i", this.getUmlPFile().get().toString(),
-                "-o", this.getOutputDir().get().toString()])
+                "-o", this.getOutputDir().get().toString(),
+                "-hwc", this.getHwcDir().get().toString()])
         JavaExecAction javaExecAction = this.getExecActionFactory().newJavaExecAction();
         this.javaExecSpec.copyTo(javaExecAction);
         javaExecAction.setExecutable("java");       // TODO: Is this the right java version?!?
@@ -151,6 +159,7 @@ task dynamicGeneralAllUMLP(type: DynamicUmlPTask) {
     umlPJar = file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile)
     umlPDir = file(projectDir.path + "/initial/")
 
+    hwcDir = layout.projectDirectory.dir("initial/hwc/")
     outputDir = layout.buildDirectory.dir("test/dyamic/")
 
     dependsOn(project(":umlp-tool").tasks.getByName("shadowJar"))
@@ -161,6 +170,10 @@ abstract class DynamicUmlPTask extends DefaultTask {
     @Incremental
     @InputDirectory
     abstract DirectoryProperty getUmlPDir()
+
+    @InputDirectory
+    @Incremental
+    abstract DirectoryProperty getHwcDir()
 
     @InputFile
     abstract RegularFileProperty getUmlPJar()
@@ -186,36 +199,63 @@ abstract class DynamicUmlPTask extends DefaultTask {
         this.javaExecSpec.setClasspath(this.getObjectFactory().fileCollection().from(this.getUmlPJar()))
     }
 
+    protected Directory getFileSpecificOutDir(File f){
+        def fileName = f.getName().substring(0, f.getName().lastIndexOf('.'))
+        return getOutputDir().dir(fileName).get()
+    }
+
+    protected generateFromSingleUMLP(File f){
+        logger.warn(f.getName() + ":\t generating")
+        this.javaExecSpec.setArgs(
+                ["-i", f.absolutePath,
+                 "-o", getFileSpecificOutDir(f).getAsFile().absolutePath,
+                "-hwc", this.getHwcDir().get().asFile.absolutePath])
+        JavaExecAction javaExecAction = this.getExecActionFactory().newJavaExecAction();
+        this.javaExecSpec.copyTo(javaExecAction);
+        javaExecAction.setExecutable("java");       // TODO: Is this the right java version?!?
+        javaExecAction.setStandardOutput(OutputStream.nullOutputStream()) // do not pollute console output
+        javaExecAction.execute();
+
+    }
+
     @TaskAction
     void generate(InputChanges inputChanges){
+
+        // If a ".java" file was added or removed in the HWC-Directory, everything has to be regenerated
+        FileChange changeInHWC = inputChanges.getFileChanges(getHwcDir()).find {ch ->
+            (ch.changeType == ChangeType.ADDED || ch.changeType == ChangeType.REMOVED)
+                    && (ch.getFileType() == FileType.FILE)
+                    && (ch.getFile().getName().substring(ch.getFile().getName().lastIndexOf('.')) == ".java")
+        }
+        if(changeInHWC != null) print("HWC CHANGE = " + changeInHWC.getFile() + changeInHWC.getChangeType())
+
+        if(changeInHWC != null) {
+            println("Change in HWC => Regenerate Everything")
+            this.getUmlPDir().asFileTree.matching { include '**/*.umlp' }.each { File f ->
+                generateFromSingleUMLP(f)
+            }
+        } else {
         inputChanges.getFileChanges(getUmlPDir()).each { FileChange ch ->
             if (ch.fileType == FileType.DIRECTORY) return
 
             def fileName = ch.getFile().getName().substring(0, ch.getFile().getName().lastIndexOf('.'))
             def fileEnding = ch.getFile().getName().substring(ch.getFile().getName().lastIndexOf('.'))
-            if(fileEnding != ".umlp") return
+            if (fileEnding != ".umlp") return
 
             def outDir = getOutputDir().dir(fileName)
 
             // Delete old Files
             if (ch.changeType == ChangeType.MODIFIED || ch.changeType == ChangeType.REMOVED) {
                 logger.warn(fileName + ":\t Deleting previous generated files")
-                outDir.get().getAsFileTree().forEach({File x -> x.delete()})
+                outDir.get().getAsFileTree().forEach({ File x -> x.delete() })
             }
 
             // Spawn generate task
             // TODO: Run in Parallel!
             if (ch.changeType == ChangeType.ADDED || ch.changeType == ChangeType.MODIFIED) {
-                logger.warn(fileName + ":\t generating")
-                this.javaExecSpec.setArgs(
-                        ["-i", ch.getFile().absolutePath,
-                         "-o", outDir.get().getAsFile().absolutePath])
-                JavaExecAction javaExecAction = this.getExecActionFactory().newJavaExecAction();
-                this.javaExecSpec.copyTo(javaExecAction);
-                javaExecAction.setExecutable("java");       // TODO: Is this the right java version?!?
-                javaExecAction.setStandardOutput(OutputStream.nullOutputStream()) // do not pollute console output
-                javaExecAction.execute();
+                generateFromSingleUMLP(ch.getFile())
             }
+        }
         }
     }
 }
