@@ -1,7 +1,10 @@
 import org.gradle.process.internal.DefaultJavaExecSpec
 import org.gradle.process.internal.ExecActionFactory
 import org.gradle.process.internal.JavaExecAction
+import org.gradle.work.ChangeType
+import org.gradle.work.FileChange
 import org.gradle.work.Incremental
+import org.gradle.work.InputChanges
 
 import javax.annotation.Nullable
 import javax.inject.Inject
@@ -57,32 +60,36 @@ dependencies{
     implementation project(':umlp-tool')
 }
 
-// Collects all "generate" Tasks for "*.umlp" files
-task generateFromUMLP {}
 
+
+/********************************
+ * Static Build
+ ********************************/
+// Assumption: All Input-Files for each task already exist at gradle-start
+// Then for each Input-File, a gradle-task can be spawned
+
+
+// Collects all "generate" Tasks for "*.umlp" files
+task staticGeneralAllUMLP {}
 
 fileTree(".").matching { include '**/*.umlp' }.each {File f ->
     def name = f.getName().substring(0, f.getName().lastIndexOf('.'))
 
-    def t = tasks.register("generate"+f.getName(), UmlPTask) {
+    def t = tasks.register("generate"+f.getName(), StaticUmlPTask) {
         umlPJar = file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile)
         umlPFile = file(f)
-        outputDir = layout.buildDirectory.dir("test/" + name)
+        outputDir = layout.buildDirectory.dir("test/static/" + name)
 
-        // classpath = files("C:\\Users\\Stueber\\Documents\\projekte\\umlP\\umlp-tool\\target\\libs\\UMLPTool.jar")
+        // classpath = files(file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile))
         // mainClass = 'umlp.UMLPTool'
         // args '-i', f
 
         dependsOn(project(":umlp-tool").tasks.getByName("shadowJar"))
     }
-    generateFromUMLP.dependsOn(t)
+    staticGeneralAllUMLP.dependsOn(t)
 }
 
-
-
-
-//////////////////////////////
-abstract class UmlPTask extends DefaultTask {
+abstract class StaticUmlPTask extends DefaultTask {
 
     @InputFile
     abstract RegularFileProperty getUmlPFile()
@@ -102,9 +109,9 @@ abstract class UmlPTask extends DefaultTask {
         throw new UnsupportedOperationException();
     }
 
-    private final DefaultJavaExecSpec javaExecSpec;
+    private DefaultJavaExecSpec javaExecSpec;
 
-    UmlPTask() {
+    StaticUmlPTask() {
         ObjectFactory objectFactory = this.getObjectFactory();
         this.javaExecSpec = (DefaultJavaExecSpec)objectFactory.newInstance(DefaultJavaExecSpec.class, new Object[0]);
         this.javaExecSpec.getMainClass().convention('umlp.UMLPTool');
@@ -127,3 +134,94 @@ abstract class UmlPTask extends DefaultTask {
         javaExecAction.execute();
     }
 }
+
+
+
+
+
+
+/********************************
+ * Dynamic Build
+ ********************************/
+// Gradle watches the directory and informs the task about changes
+// Only ONE generate task exists
+// Benefit: Not everything needs to be know at the start of gradle
+
+task dynamicGeneralAllUMLP(type: DynamicUmlPTask) {
+    umlPJar = file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile)
+    umlPDir = file(projectDir.path + "/initial/")
+
+    outputDir = layout.buildDirectory.dir("test/dyamic/")
+
+    dependsOn(project(":umlp-tool").tasks.getByName("shadowJar"))
+}
+
+abstract class DynamicUmlPTask extends DefaultTask {
+
+    @Incremental
+    @InputDirectory
+    abstract DirectoryProperty getUmlPDir()
+
+    @InputFile
+    abstract RegularFileProperty getUmlPJar()
+
+    @OutputDirectory
+    abstract DirectoryProperty getOutputDir()
+
+    @Inject
+    protected ExecActionFactory getExecActionFactory() {
+        throw new UnsupportedOperationException();
+    }
+    @Inject
+    protected ObjectFactory getObjectFactory() {
+        throw new UnsupportedOperationException();
+    }
+
+    protected DefaultJavaExecSpec javaExecSpec;
+
+    DynamicUmlPTask() {
+        ObjectFactory objectFactory = this.getObjectFactory();
+        this.javaExecSpec = (DefaultJavaExecSpec)objectFactory.newInstance(DefaultJavaExecSpec.class, new Object[0]);
+        this.javaExecSpec.getMainClass().convention('umlp.UMLPTool');
+        this.javaExecSpec.setClasspath(this.getObjectFactory().fileCollection().from(this.getUmlPJar()))
+    }
+
+    @TaskAction
+    void generate(InputChanges inputChanges){
+        inputChanges.getFileChanges(getUmlPDir()).each { FileChange ch ->
+            if (ch.fileType == FileType.DIRECTORY) return
+
+            def fileName = ch.getFile().getName().substring(0, ch.getFile().getName().lastIndexOf('.'))
+            def fileEnding = ch.getFile().getName().substring(ch.getFile().getName().lastIndexOf('.'))
+            if(fileEnding != ".umlp") return
+
+            def outDir = getOutputDir().dir(fileName)
+
+            // Delete old Files
+            if (ch.changeType == ChangeType.MODIFIED || ch.changeType == ChangeType.REMOVED) {
+                logger.warn(fileName + ":\t Deleting previous generated files")
+                outDir.get().getAsFileTree().forEach({File x -> x.delete()})
+            }
+
+            // Spawn generate task
+            // TODO: Run in Parallel!
+            if (ch.changeType == ChangeType.ADDED || ch.changeType == ChangeType.MODIFIED) {
+                logger.warn(fileName + ":\t generating")
+                this.javaExecSpec.setArgs(
+                        ["-i", ch.getFile().absolutePath,
+                         "-o", outDir.get().getAsFile().absolutePath])
+                JavaExecAction javaExecAction = this.getExecActionFactory().newJavaExecAction();
+                this.javaExecSpec.copyTo(javaExecAction);
+                javaExecAction.setExecutable("java");       // TODO: Is this the right java version?!?
+                javaExecAction.setStandardOutput(OutputStream.nullOutputStream()) // do not pollute console output
+                javaExecAction.execute();
+            }
+        }
+    }
+}
+
+
+
+
+
+
