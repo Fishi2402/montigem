@@ -278,3 +278,36 @@ abstract class DynamicUmlPTask extends DefaultTask {
 build.dependsOn(staticGeneralAllUMLP)
 build.dependsOn(dynamicGeneralAllUMLP)
 
+
+
+
+
+// Test Gradle parallel execution
+abstract class SleepTask extends DefaultTask {
+
+    @TaskAction
+    public void run(){
+        println (this.getName() + " going to sleep")
+        sleep(10000)
+        println (this.getName() + " finished")
+    }
+}
+
+task parallelA(type: SleepTask) {
+    group = "testParallel"
+}
+task parallelB(type: SleepTask) {
+    group = "testParallel"
+}
+task parallelC(type: SleepTask) {
+    group = "testParallel"
+}
+task parallelD(type: SleepTask) {
+    group = "testParallel"
+}
+task parallelAll{
+    dependsOn parallelA
+    dependsOn parallelB
+    dependsOn parallelC
+    dependsOn parallelD
+}
