@@ -34,19 +34,22 @@ public class UMLPGenerator {
 
   protected CDAssociationCreateFieldsFromNavigableRoles cDAssociationCreateFieldsFromNavigableRoles;
 
+  protected TopDecorator topDecorator;
 
-  public UMLPGenerator(GeneratorSetup generatorSetup) {
+  public UMLPGenerator(GeneratorSetup genSetup) {
     astPrinter = new CD4CodeFullPrettyPrinter();
 
-    generatorSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter());
-    CD4C.init(generatorSetup);
+    genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter());
+    CD4C.init(genSetup);
 
-    cdGenerator = new CDGenerator(generatorSetup);
+    cdGenerator = new CDGenerator(genSetup);
     cD4CodeAfterParseTrafo = new CD4CodeAfterParseTrafo();
     cD4CodeTrafo4Defaults = new CD4CodeTrafo4Defaults();
     cD4CodeDirectCompositionTrafo = new CD4CodeDirectCompositionTrafo();
     cDAssociationCreateFieldsFromNavigableRoles = new CDAssociationCreateFieldsFromNavigableRoles();
     cDAssociationCreateFieldsFromNavigableRoles.setTraverser(CD4CodeMill.traverser());
+
+    topDecorator = new TopDecorator(genSetup.getHandcodedPath());
   }
 
   public void generate(ASTUMLPCompilationUnit modelAST) {
@@ -69,9 +72,11 @@ public class UMLPGenerator {
     cDAssociationCreateFieldsFromNavigableRoles.transform(cdAST);
     logTrafoExec("CDAssociationCreateFieldsFromNavigableRoles", cdAST);
 
+    // TODO hier weitere trafos realisieren
 
-    // TODO hier trafos realisieren
-
+    // Integrate Suffixes for TOP mechanism
+    topDecorator.decorate(cdAST);
+    logTrafoExec("TopDecorator", cdAST);
 
     // translate the CD-AST into Java with the CD Generator
     cdGenerator.generate(cdAST);

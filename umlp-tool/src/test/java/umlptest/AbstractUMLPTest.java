@@ -106,7 +106,7 @@ public abstract class AbstractUMLPTest {
     genSetup.setOutputDirectory(outDir);
 
     // set hwc directories
-    MCPath hwcPath = new MCPath();
+    MCPath hwcPath = new MCPath("src/test/java/");
     genSetup.setHandcodedPath(hwcPath);
     return genSetup;
   }
