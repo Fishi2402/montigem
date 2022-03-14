@@ -58,6 +58,10 @@ public class UMLPGenerator {
     ASTCDCompilationUnit cdAST = UMLP2CDTrafo.run(modelAST);
     logTrafoExec("UMLP2CDTrafo", cdAST);
 
+    // Integrate Suffixes for TOP mechanism
+    topDecorator.decorate(cdAST);
+    logTrafoExec("TopDecorator", cdAST);
+
     // execute some basic CD-AST trafos (e.g., put everything in packages)
     cD4CodeAfterParseTrafo.transform(cdAST);
     logTrafoExec("CD4AnalysisAfterParseTrafo", cdAST);
@@ -73,10 +77,6 @@ public class UMLPGenerator {
     logTrafoExec("CDAssociationCreateFieldsFromNavigableRoles", cdAST);
 
     // TODO hier weitere trafos realisieren
-
-    // Integrate Suffixes for TOP mechanism
-    topDecorator.decorate(cdAST);
-    logTrafoExec("TopDecorator", cdAST);
 
     // translate the CD-AST into Java with the CD Generator
     cdGenerator.generate(cdAST);
