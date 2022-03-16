@@ -8,7 +8,7 @@ grammar UMLP extends de.monticore.CD4Code {
 
   UMLPCompilationUnit = MCPackageDeclaration? MCImportStatement* UMLPDef;
 
-  symbol UMLPDef = "umlp" Name "{" UMLPElement* "}";
+  symbol UMLPDef = ("umlp"|"ontology"|"classdigramm") Name "{" UMLPElement* "}";
 
   interface UMLPElement;
 
