@@ -5,6 +5,8 @@ import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -19,9 +21,11 @@ import umlp._symboltable.UMLPSymbols2Json;
 import umlp.generator.UMLPGenerator;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static umlp.UMLPToolOptions.*;
 
@@ -68,12 +72,29 @@ public class UMLPTool extends UMLPToolTOP {
 
       ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
 
+
+      ReportManager.ReportManagerFactory reportManagerFactory = new UMLPReports("DummyOutDir",
+                "target/reportDir", new MCPath("dummyHWC"), new MCPath("dummyTemlpatePath"));
+
+      Reporting.init("target/outDir",
+                "target/reportDir", reportManagerFactory);
+
+      // A Test
+      // TODO: Remove
+      Reporting.reportFileExistenceChecking(List.of(Path.of("Empty")), Path.of("ReadThisFile"));
+      Reporting.reportHWCExistenceCheck(new MCPath("TEST"), Paths.get("ReadThisFile"), Optional.empty() );
+
+
       // parse, create symbol table, check all cocos
       ASTUMLPCompilationUnit ast = parse(input);
       IUMLPArtifactScope symbolTable = createSymbolTable(ast);
       runDefaultCoCos(ast);
 
-      // print or store symbol table
+      // TODO: flush later
+      Reporting.flush(ast);
+
+
+        // print or store symbol table
       if (SYMTAB.isSelected(cmd)) {
         String s = SYMTAB.getValue(cmd);
         if (null != s) {
