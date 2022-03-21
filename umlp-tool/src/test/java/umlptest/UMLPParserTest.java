@@ -21,4 +21,9 @@ public class UMLPParserTest extends AbstractUMLPTest {
     this.parse("parsevalid/test.umlp");
     assertNoErrors();
   }
+  @Test
+  public void testParseUni() {
+    this.parse("parsevalid/University.umlp");
+    assertNoErrors();
+  }
 }
