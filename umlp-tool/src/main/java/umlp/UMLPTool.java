@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
@@ -81,7 +82,7 @@ public class UMLPTool extends UMLPToolTOP {
 
       // A Test
       // TODO: Remove
-      Reporting.reportFileExistenceChecking(List.of(Path.of("Empty")), Path.of("ReadThisFile"));
+      Reporting.reportFileExistenceChecking(Arrays.asList(Paths.get("Empty")), Paths.get("ReadThisFile"));
       Reporting.reportHWCExistenceCheck(new MCPath("TEST"), Paths.get("ReadThisFile"), Optional.empty() );
 
 
