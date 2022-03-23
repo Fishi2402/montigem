@@ -1,0 +1,6 @@
+import A.Foo;
+
+umlp CimportsA {
+  class Bla;
+  association Bla -> Foo;
+}
