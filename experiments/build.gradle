@@ -61,7 +61,6 @@ dependencies{
 }
 
 
-
 /********************************
  * Static Build
  ********************************/
@@ -70,12 +69,16 @@ dependencies{
 
 
 // Collects all "generate" Tasks for "*.umlp" files
-task staticGeneralAllUMLP {}
+task staticGeneralAllUMLP {
+    group = "umlP"
+}
 
 fileTree(".").matching { include '**/*.umlp' }.each {File f ->
     def name = f.getName().substring(0, f.getName().lastIndexOf('.'))
 
     def t = tasks.register("generate"+f.getName(), StaticUmlPTask) {
+        group = "umlP"
+
         umlPJar = file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile)
         umlPFile = file(f)
         hwcDir = layout.projectDirectory.dir("initial/hwc/")
@@ -156,6 +159,7 @@ abstract class StaticUmlPTask extends DefaultTask {
 // Benefit: Not everything needs to be know at the start of gradle
 
 task dynamicGeneralAllUMLP(type: DynamicUmlPTask) {
+    group = "umlP"
     umlPJar = file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile)
     umlPDir = file(projectDir.path + "/initial/")
 
@@ -271,3 +275,39 @@ abstract class DynamicUmlPTask extends DefaultTask {
 
 
 
+build.dependsOn(staticGeneralAllUMLP)
+build.dependsOn(dynamicGeneralAllUMLP)
+
+
+
+
+
+// Test Gradle parallel execution
+abstract class SleepTask extends DefaultTask {
+
+    @TaskAction
+    public void run(){
+        println (this.getName() + " going to sleep")
+        sleep(10000)
+        println (this.getName() + " finished")
+    }
+}
+
+task parallelA(type: SleepTask) {
+    group = "testParallel"
+}
+task parallelB(type: SleepTask) {
+    group = "testParallel"
+}
+task parallelC(type: SleepTask) {
+    group = "testParallel"
+}
+task parallelD(type: SleepTask) {
+    group = "testParallel"
+}
+task parallelAll{
+    dependsOn parallelA
+    dependsOn parallelB
+    dependsOn parallelC
+    dependsOn parallelD
+}
