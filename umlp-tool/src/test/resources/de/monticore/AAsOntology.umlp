@@ -1,0 +1,5 @@
+umlp AAsOntology {
+  class Foo;
+  public class Bar;
+  association Foo -> Bar;
+}

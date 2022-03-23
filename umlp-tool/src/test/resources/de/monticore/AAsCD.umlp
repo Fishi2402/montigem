@@ -1,0 +1,5 @@
+umlp AAsCD {
+  class Foo;
+  public class Bar;
+  association Foo -> Bar;
+}
