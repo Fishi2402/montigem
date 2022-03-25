@@ -1,0 +1,43 @@
+/* (c) https://github.com/MontiCore/monticore */
+package monticore;
+
+umlp University {
+
+  abstract class Person {
+    String Name;
+    String nationality;
+  }
+
+  class Contact {
+    String city;
+    int zip;
+    String street;
+    String email;
+  }
+
+  package uni {
+    class Student extends Person {
+      int semester;
+      List<Course> courses;
+      StudentStatus status;
+      -> Contact [1..*] {ordered};
+    }
+
+    class Course {
+      String name;
+      Person professor;
+      Course requirement;
+      double grade;
+    }
+
+    class SportHall ;
+
+    enum StudentStatus { ENROLLED, EXMATRICULATED, GRADUATED; }
+  }
+
+  composition Student -> Course [*];
+  association contactBook Person [String] -> Contact;
+  association [*] Person (parent) <-> (children) Student [*]; // [0..2] not allowed, has to be checkd by a CoCo
+//  aggregation Course -> SportHall [0..*] ; // TODO: aggregations do not exist in CD4A
+
+}

@@ -7,10 +7,12 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.class2mc.Class2MCResolver;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
 
-// TODO Importe zwischen UMLP Modellen auflösen, falls es welche geben soll
+// TODO Importe zwischen UMLP Modellen auflösen
 public class UMLP2CDTrafo {
 
   public static ASTCDCompilationUnit run(ASTUMLPCompilationUnit umlpAST) {
@@ -40,6 +42,7 @@ public class UMLP2CDTrafo {
 
     // create symtab
     CD4CodeMill.init();
+    CD4CodeMill.globalScope().addAdaptedTypeSymbolResolver(new Class2MCResolver());
     CD4CodeMill.scopesGenitorDelegator().createFromAST(cdAST);
     cdAST.accept(new CD4CodeSymbolTableCompleter(cdAST).getTraverser());
     return cdAST;

@@ -1,0 +1,12 @@
+umlp D {
+  class Foo {
+    -> Bar;
+    int i;
+    List<boolean> t;
+//   V v; // TODO: Fix Enums in cd4c
+  }
+
+  public class Bar;
+
+  //enum V { X,Y,Z; } // TODO: Fix Enums in cd4c
+}

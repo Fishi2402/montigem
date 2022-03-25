@@ -1,0 +1,84 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+    id 'java'
+//    id "maven-publish"
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    repositories {
+        maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            url repo
+        }
+        mavenLocal()
+        mavenCentral()
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    dependencies {
+        implementation group: 'umlp', name: 'umlp-tool', version: mc_version
+//        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
+//        implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+//        implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+//        implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+        testImplementation group: 'junit', name: 'junit', version: junit_version
+    }
+
+    sourceSets {
+        main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
+    }
+    buildDir = file("$projectDir/target")
+    sourceCompatibility = '1.8'
+}
+
+project('cars') {
+    task generateCars (type: JavaExec) {
+        group = 'umlp'
+        classpath = sourceSets.main.runtimeClasspath
+        mainClass = 'umlp.UMLPTool'
+        args '-i', 'src/Cars.umlp', '-o', 'target'
+    }
+}
+
+project('filesystem') {
+    task generateFileSystem (type: JavaExec) {
+        group = 'umlp'
+        classpath = sourceSets.main.runtimeClasspath
+        mainClass = 'umlp.UMLPTool'
+        args '-i', 'src/FileSystem.umlp', '-o', 'target'
+    }
+}
+
+project('mediahub') {
+    task generateMediaHub (type: JavaExec) {
+        group = 'umlp'
+        classpath = sourceSets.main.runtimeClasspath
+        mainClass = 'umlp.UMLPTool'
+        args '-i', 'src/MediaHub.umlp', '-o', 'target'
+    }
+}
+
+project('restaurant') {
+    task generateRestaurantOrg (type: JavaExec) {
+        group = 'umlp'
+        classpath = sourceSets.main.runtimeClasspath
+        mainClass = 'umlp.UMLPTool'
+        args '-i', 'src/RestaurantOrg.umlp', '-o', 'target'
+    }
+}
+
+project('university') {
+    task generateUniversity (type: JavaExec) {
+        group = 'umlp'
+        classpath = sourceSets.main.runtimeClasspath
+        mainClass = 'umlp.UMLPTool'
+        args '-i', 'src/University.umlp', '-o', 'target'
+    }
+}

@@ -1,11 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp;
 
-import de.monticore.cd.codegen.CDGenerator;
+import de.monticore.cd._parser.CDAfterParseHelper;
+import de.monticore.cd4analysis.trafo.CD4AnalysisAfterParseTrafo;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
+import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
+import de.monticore.cd4code.trafo.CD4CodeDirectCompositionTrafo;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -15,7 +23,10 @@ import org.apache.commons.cli.Options;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
+import umlp._symboltable.UMLPSymbolTableCompleter;
 import umlp._symboltable.UMLPSymbols2Json;
+import umlp._visitor.UMLPTraverser;
+import umlp.generator.UMLP2CDTrafo;
 import umlp.generator.UMLPGenerator;
 
 import java.io.File;
@@ -34,6 +45,14 @@ public class UMLPTool extends UMLPToolTOP {
 //  protected static final String SYM_IO = "target/symbols/";
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
   protected static final String DEFAULT_CONFIGTEMPLATE = "cd2java.CD2Java";
+
+//  protected CD4CodeAfterParseTrafo apTrafo;
+
+//  public UMLPTool(){
+//    apTrafo = new CD4CodeAfterParseTrafo();
+//    apTrafo.in
+//    apTrafo.setTraverser(UMLPMill.traverser());
+//  }
 
   /**
    * This method realizes a tool for processing FC models. See the project's Readme for a
@@ -68,10 +87,23 @@ public class UMLPTool extends UMLPToolTOP {
 
       ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
 
-      // parse, create symbol table, check all cocos
+      // parse model
       ASTUMLPCompilationUnit ast = parse(input);
+      runAfterParseTrafo(ast);
       IUMLPArtifactScope symbolTable = createSymbolTable(ast);
       runDefaultCoCos(ast);
+
+      // perform everything (coco checks, sym tab, etc. on local copy of AST
+//      apTrafo.transform(ast4FE);
+//      IUMLPArtifactScope symbolTable = createSymbolTable(ast4FE);
+//      runDefaultCoCos(ast4FE);
+
+//      ASTCDCompilationUnit cdAST = UMLP2CDTrafo.run(ast4FE);
+//      new CD4CodeAfterParseTrafo().transform(cdAST);
+//      new CD4CodeDirectCompositionTrafo().transform(cdAST);
+//      CD4CodeMill.scopesGenitorDelegator().createFromAST(cdAST);
+//      cdAST.accept(new CD4CodeSymbolTableCompleter(cdAST).getTraverser());
+
 
       // print or store symbol table
       if (SYMTAB.isSelected(cmd)) {
@@ -122,7 +154,7 @@ public class UMLPTool extends UMLPToolTOP {
 
     }
     catch (Exception e) {
-      Log.error("0x1C005 An exception occured while processing the CLI input!", e);
+      Log.error("0xB005 An exception occured while processing the CLI input!", e);
       printHelp(options);
     }
   }
@@ -146,12 +178,25 @@ public class UMLPTool extends UMLPToolTOP {
     UMLPCoCos.checkAll(ast);
   }
 
+  @Override public IUMLPArtifactScope createSymbolTable(ASTUMLPCompilationUnit node) {
+    UMLPMill.globalScope().addAdaptedTypeSymbolResolver(new Class2MCResolver());
+    IUMLPArtifactScope as = super.createSymbolTable(node);
+    node.accept(new UMLPSymbolTableCompleter(node).getTraverser()); // run symbol table completer
+    return as;
+  }
+
   @Override
   public Options addAdditionalOptions(Options options) {
 
     // TODO discuss which ones
 
     return options;
+  }
+
+  protected void runAfterParseTrafo(ASTUMLPCompilationUnit node){
+    UMLPTraverser trav = UMLPMill.traverser();
+    CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
+    node.accept(trav);
   }
 
   public static void main(String[] args) {

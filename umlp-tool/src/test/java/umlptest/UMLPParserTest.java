@@ -34,9 +34,11 @@ public class UMLPParserTest extends AbstractUMLPTest {
     this.parse("de/monticore/CimportsA.umlp");
     assertNoErrors();
   }
+
   @Test
-  public void testParseUni() {
-    this.parse("parsevalid/University.umlp");
+  public void testParseD() {
+    this.parse("de/monticore/D.umlp");
     assertNoErrors();
   }
+
 }

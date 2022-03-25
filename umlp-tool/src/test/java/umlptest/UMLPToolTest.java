@@ -14,11 +14,18 @@ public class UMLPToolTest extends AbstractUMLPTest {
     assertNoErrors();
   }
 
-  @Ignore
+  @Ignore // TODO: Fix imports in UMLP Language
   @Test
   public void testRunMethod4CimportsA() {
     UMLPTool tool = new UMLPTool();
     tool.run(new String[]{"-i", "src/test/resources/de/monticore/CimportsA.umlp"});
+    assertNoErrors();
+  }
+
+  @Test
+  public void testRunMethod4D() {
+    UMLPTool tool = new UMLPTool();
+    tool.run(new String[]{"-i", "src/test/resources/de/monticore/D.umlp"});
     assertNoErrors();
   }
 

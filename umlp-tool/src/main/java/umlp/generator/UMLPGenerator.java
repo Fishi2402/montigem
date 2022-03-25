@@ -13,6 +13,7 @@ import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import umlp._ast.ASTUMLPCompilationUnit;
+import umlp._cocos.UMLPCoCos;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -69,9 +70,6 @@ public class UMLPGenerator {
     cD4CodeTrafo4Defaults.transform(cdAST);
     logTrafoExec("CD4CodeTrafo4Defaults", cdAST);
 
-    cD4CodeDirectCompositionTrafo.transform(cdAST);
-    logTrafoExec("CD4CodeDirectCompositionTrafo", cdAST);
-
     cDAssociationCreateFieldsFromNavigableRoles.init(cdAST);
     cDAssociationCreateFieldsFromNavigableRoles.transform(cdAST);
     logTrafoExec("CDAssociationCreateFieldsFromNavigableRoles", cdAST);
@@ -86,5 +84,4 @@ public class UMLPGenerator {
     System.out.println("========= CD after '"+trafo+"': =========");
     System.out.println(astPrinter.prettyprint(ast));
   }
-
 }
