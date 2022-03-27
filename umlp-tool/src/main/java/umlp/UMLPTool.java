@@ -85,7 +85,8 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
 
-      ReportManager.ReportManagerFactory reportManagerFactory = new UMLPReports(reportDir.getPath(), hwcPath);
+      ReportManager.ReportManagerFactory reportManagerFactory = new UMLPReports(outDir.getPath(),
+              reportDir.getPath(), hwcPath);
 
       Reporting.init(outDir.getPath(), reportDir.getPath(), reportManagerFactory);
       Reporting.on("SOMENAME_FOR_REPORT");  // TODO: What name?
