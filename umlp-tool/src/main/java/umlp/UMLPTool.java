@@ -70,7 +70,7 @@ public class UMLPTool extends UMLPToolTOP {
       if (!INPUT.isSelected(cmd)) {
         Log.error("0xE0000 Indicating an input file with the option 'i' is mandatory");
       }
-      String input = INPUT.getValue(cmd);
+      File inputFile = new File(INPUT.getValue(cmd));
 
 
         ///////////////////////// SETUP REPORTING  /////////////////////////////
@@ -89,13 +89,13 @@ public class UMLPTool extends UMLPToolTOP {
               reportDir.getPath(), hwcPath);
 
       Reporting.init(outDir.getPath(), reportDir.getPath(), reportManagerFactory);
-      Reporting.on("SOMENAME_FOR_REPORT");  // TODO: What name?
+      Reporting.on(inputFile.getName().replace(".","__"));  // TODO: Is this name unique? Should it be unique?
 
 
         ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
 
       // parse, create symbol table, check all cocos
-      ASTUMLPCompilationUnit ast = parse(input);
+      ASTUMLPCompilationUnit ast = parse(inputFile.getPath());
       IUMLPArtifactScope symbolTable = createSymbolTable(ast);
       runDefaultCoCos(ast);
 
