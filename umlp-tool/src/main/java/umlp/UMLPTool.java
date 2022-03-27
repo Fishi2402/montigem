@@ -38,6 +38,7 @@ public class UMLPTool extends UMLPToolTOP {
 
 //  protected static final String SYM_IO = "target/symbols/";
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
+  protected static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   protected static final String DEFAULT_CONFIGTEMPLATE = "cd2java.CD2Java";
 
   /**
@@ -71,28 +72,31 @@ public class UMLPTool extends UMLPToolTOP {
       }
       String input = INPUT.getValue(cmd);
 
-      ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
+
+        ///////////////////////// SETUP REPORTING  /////////////////////////////
+      File outDir = new File(OUTPUT.getValue(cmd, DEFAULT_OUT));
+
+      File reportDir = new File(REPORTS.getValue(cmd, DEFAULT_REPORT_OUT));
+
+      MCPath hwcPath = new MCPath();
+      if(HWC_PATH.isSelected(cmd)){
+        for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
+          hwcPath.addEntry(Paths.get(v));
+        }
+      }
+
+      ReportManager.ReportManagerFactory reportManagerFactory = new UMLPReports(reportDir.getPath(), hwcPath);
+
+      Reporting.init(outDir.getPath(), reportDir.getPath(), reportManagerFactory);
+      Reporting.on("SOMENAME_FOR_REPORT");  // TODO: What name?
 
 
-      ReportManager.ReportManagerFactory reportManagerFactory = new UMLPReports("DummyOutDir",
-                "target/reportDir", new MCPath("dummyHWC"), new MCPath("dummyTemlpatePath"));
-
-      Reporting.init("target/outDir",
-                "target/reportDir", reportManagerFactory);
-
-      // A Test
-      // TODO: Remove
-      Reporting.reportFileExistenceChecking(Arrays.asList(Paths.get("Empty")), Paths.get("ReadThisFile"));
-      Reporting.reportHWCExistenceCheck(new MCPath("TEST"), Paths.get("ReadThisFile"), Optional.empty() );
-
+        ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
 
       // parse, create symbol table, check all cocos
       ASTUMLPCompilationUnit ast = parse(input);
       IUMLPArtifactScope symbolTable = createSymbolTable(ast);
       runDefaultCoCos(ast);
-
-      // TODO: flush later
-      Reporting.flush(ast);
 
 
         // print or store symbol table
@@ -120,16 +124,9 @@ public class UMLPTool extends UMLPToolTOP {
       GeneratorSetup genSetup = new GeneratorSetup();
 
       // set output directory
-      File outDir = new File(OUTPUT.getValue(cmd, DEFAULT_OUT));
       genSetup.setOutputDirectory(outDir);
 
       // set hwc directories
-      MCPath hwcPath = new MCPath();
-      if(HWC_PATH.isSelected(cmd)){
-        for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
-          hwcPath.addEntry(Paths.get(v));
-        }
-      }
       genSetup.setHandcodedPath(hwcPath);
 
       // execute generator
@@ -142,6 +139,9 @@ public class UMLPTool extends UMLPToolTOP {
       List<Object> configTemplateArgs = Arrays.asList(genSetup.getGlex(), generator);
       hpp.processValue(tc, ast, configTemplateArgs);
 
+
+      // write reports
+      Reporting.flush(ast);
     }
     catch (Exception e) {
       Log.error("0x1C005 An exception occured while processing the CLI input!", e);

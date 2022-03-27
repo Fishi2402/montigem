@@ -18,19 +18,18 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
 
         protected MCPath handwrittenPath;
 
-        protected MCPath templatePath;
+        // protected MCPath templatePath;
 
         /**
          * Constructor for de.monticore.MontiCoreReports
          */
         protected UMLPReports(
-                String outputDirectory,
+                // String outputDirectory,
                 String reportDirectory,
-                MCPath handwrittenPath,
-                MCPath templatePath) {
-            this.outputDirectory = outputDirectory;
+                MCPath handwrittenPath) {
+            this.outputDirectory = reportDirectory;
             this.handwrittenPath = handwrittenPath;
-            this.templatePath = templatePath;
+            // this.templatePath = templatePath;
         }
 
         /**
