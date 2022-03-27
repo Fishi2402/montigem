@@ -1,10 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -19,9 +22,11 @@ import umlp._symboltable.UMLPSymbols2Json;
 import umlp.generator.UMLPGenerator;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static umlp.UMLPToolOptions.*;
 
@@ -33,6 +38,7 @@ public class UMLPTool extends UMLPToolTOP {
 
 //  protected static final String SYM_IO = "target/symbols/";
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
+  protected static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   protected static final String DEFAULT_CONFIGTEMPLATE = "cd2java.CD2Java";
 
   /**
@@ -66,14 +72,34 @@ public class UMLPTool extends UMLPToolTOP {
       }
       String input = INPUT.getValue(cmd);
 
-      ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
+
+        ///////////////////////// SETUP REPORTING  /////////////////////////////
+      File outDir = new File(OUTPUT.getValue(cmd, DEFAULT_OUT));
+
+      File reportDir = new File(REPORTS.getValue(cmd, DEFAULT_REPORT_OUT));
+
+      MCPath hwcPath = new MCPath();
+      if(HWC_PATH.isSelected(cmd)){
+        for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
+          hwcPath.addEntry(Paths.get(v));
+        }
+      }
+
+      ReportManager.ReportManagerFactory reportManagerFactory = new UMLPReports(reportDir.getPath(), hwcPath);
+
+      Reporting.init(outDir.getPath(), reportDir.getPath(), reportManagerFactory);
+      Reporting.on("SOMENAME_FOR_REPORT");  // TODO: What name?
+
+
+        ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
 
       // parse, create symbol table, check all cocos
       ASTUMLPCompilationUnit ast = parse(input);
       IUMLPArtifactScope symbolTable = createSymbolTable(ast);
       runDefaultCoCos(ast);
 
-      // print or store symbol table
+
+        // print or store symbol table
       if (SYMTAB.isSelected(cmd)) {
         String s = SYMTAB.getValue(cmd);
         if (null != s) {
@@ -98,16 +124,9 @@ public class UMLPTool extends UMLPToolTOP {
       GeneratorSetup genSetup = new GeneratorSetup();
 
       // set output directory
-      File outDir = new File(OUTPUT.getValue(cmd, DEFAULT_OUT));
       genSetup.setOutputDirectory(outDir);
 
       // set hwc directories
-      MCPath hwcPath = new MCPath();
-      if(HWC_PATH.isSelected(cmd)){
-        for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
-          hwcPath.addEntry(Paths.get(v));
-        }
-      }
       genSetup.setHandcodedPath(hwcPath);
 
       // execute generator
@@ -120,6 +139,9 @@ public class UMLPTool extends UMLPToolTOP {
       List<Object> configTemplateArgs = Arrays.asList(genSetup.getGlex(), generator);
       hpp.processValue(tc, ast, configTemplateArgs);
 
+
+      // write reports
+      Reporting.flush(ast);
     }
     catch (Exception e) {
       Log.error("0x1C005 An exception occured while processing the CLI input!", e);
