@@ -149,7 +149,7 @@ task buildUMLP {
     description('Builds the core projects, i.e. the umlp-tool and the examples.')
     dependsOn(
             ":umlp-tool:build",
-            ":examples:build"
+            ":experiments:build"
     )
 }
 
