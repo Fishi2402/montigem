@@ -23,7 +23,7 @@ stages:
 build:
   stage: build
   script:
-    - "gradle buildUMLP --refresh-dependencies $GRADLE_OPTS $ARGS1"
+    - "gradle build --refresh-dependencies $GRADLE_OPTS $ARGS1"
 
 test_experiments:
   stage: test
