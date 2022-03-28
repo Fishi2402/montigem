@@ -16,6 +16,7 @@ before_script:
 stages:
   - build
   - test
+  - buildExamples
   - deploy
   - check
 
@@ -30,6 +31,53 @@ test_experiments:
     - build
   script:
     - "gradle -p experiments build $GRADLE_OPTS $ARGS2"
+
+
+        include ':cars'
+        include ':filesystem'
+        include ':mediahub'
+        include ':restaurant'
+        include ':university'
+
+example_cars:
+  stage: buildExamples
+  dependencies:
+    - build
+  script:
+    - cd examples
+    - "gradle -p cars build $GRADLE_OPTS $ARGS2"
+
+example_filesystem:
+  stage: buildExamples
+  dependencies:
+    - build
+  script:
+    - cd examples
+    - "gradle -p filesystem build $GRADLE_OPTS $ARGS2"
+
+example_mediahub:
+  stage: buildExamples
+  dependencies:
+    - build
+  script:
+    - cd examples
+    - "gradle -p mediahub build $GRADLE_OPTS $ARGS2"
+
+example_restaurant:
+  stage: buildExamples
+  dependencies:
+    - build
+  script:
+    - cd examples
+    - "gradle -p restaurant build $GRADLE_OPTS $ARGS2"
+
+example_university:
+  stage: buildExamples
+  dependencies:
+    - build
+  script:
+    - cd examples
+    - "gradle -p university build $GRADLE_OPTS $ARGS2"
 
 deploy:
   stage: deploy

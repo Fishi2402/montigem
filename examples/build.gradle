@@ -45,6 +45,7 @@ project('cars') {
         mainClass = 'umlp.UMLPTool'
         args '-i', 'src/Cars.umlp', '-o', 'target'
     }
+    build.dependsOn(generateCars)
 }
 
 project('filesystem') {
@@ -54,6 +55,7 @@ project('filesystem') {
         mainClass = 'umlp.UMLPTool'
         args '-i', 'src/FileSystem.umlp', '-o', 'target'
     }
+    build.dependsOn(generateFileSystem)
 }
 
 project('mediahub') {
@@ -63,6 +65,7 @@ project('mediahub') {
         mainClass = 'umlp.UMLPTool'
         args '-i', 'src/MediaHub.umlp', '-o', 'target'
     }
+    build.dependsOn(generateMediaHub)
 }
 
 project('restaurant') {
@@ -72,6 +75,7 @@ project('restaurant') {
         mainClass = 'umlp.UMLPTool'
         args '-i', 'src/RestaurantOrg.umlp', '-o', 'target'
     }
+    build.dependsOn(generateRestaurantOrg)
 }
 
 project('university') {
@@ -81,4 +85,5 @@ project('university') {
         mainClass = 'umlp.UMLPTool'
         args '-i', 'src/University.umlp', '-o', 'target'
     }
+    build.dependsOn(generateUniversity)
 }
