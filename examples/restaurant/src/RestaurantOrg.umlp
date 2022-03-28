@@ -6,16 +6,18 @@ umlp RestaurantOrg {
     class Person {
       String name;
       String lastName;
-      Date birthday;
+      java.util.Date birthday;
       String address;
     }
-     class Customer extends Person {
-       Date reservationDate;
-     }
-     class Employee extends Person{
-       int id;
-       String contract;
-     }
+
+    class Customer extends Person {
+      java.util.Date reservationDate;
+    }
+
+    class Employee extends Person {
+      int id;
+      String contract;
+    }
   }
 
   class Restaurant {
@@ -31,10 +33,10 @@ umlp RestaurantOrg {
   class ServingPersonel extends Job;
   class Waiter extends ServingPersonel;
   class KitchenPersonel extends Job;
-  class SousChef extends KitchenPersonel;
+  class Chef extends KitchenPersonel;
 
-  association service [*] human.Customer <-> ServingPersonel [*] ;
-  association [*] human.Person (visitedBy) <-> (visits) Restaurant [*] ;
+  association service [*] actors.Customer <-> ServingPersonel [*] ;
+  association [*] actors.Person (visitedBy) <-> (visits) Restaurant [*] ;
 //  aggregation [1] Restaurant  -> (staff) Employee [*] ; // TODO: aggregations do not exist in CD4A
   association Person -> Job [0..1];
 

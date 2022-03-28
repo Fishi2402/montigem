@@ -1,0 +1,15 @@
+
+// This tests the default cardinalities of associations
+// "java.awt.Color" is a representative for an external type
+umlp DefaultAssocCardinalities {
+  class A;
+  class B;
+
+  association uniDir A  -> B;  // ≙    [*] A  -> B [*]
+  association biDir  A <-> B;  // ≙    [*] A <-> B [*]
+  association noDir  A  -- B;  // ≙    [*] A <-> B [*]
+  composition comp   A <-> B;  // ≙    [0..1] A <-> B [*]
+
+  association noDirExt A  -- java.awt.Color;  // ≙    [*] A  -> E [*]
+  composition compExt  A  -- java.awt.Color;  // ≙    [0..1] A  -> E [*]
+}

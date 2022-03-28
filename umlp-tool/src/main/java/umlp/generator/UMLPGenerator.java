@@ -76,6 +76,8 @@ public class UMLPGenerator {
 
     // TODO hier weitere trafos realisieren
 
+//    UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
+
     // translate the CD-AST into Java with the CD Generator
     cdGenerator.generate(cdAST);
   }

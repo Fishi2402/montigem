@@ -4,6 +4,7 @@ package umlp.generator;
 
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._symboltable.CD4CodeGlobalScope;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
@@ -40,12 +41,15 @@ public class UMLP2CDTrafo {
       cdAST.setMCPackageDeclaration(umlpAST.getMCPackageDeclaration());
     }
 
+    createCD4CodeSymTab(cdAST);
+
     return cdAST;
   }
 
-  protected void createCD4CodeSymTab(ASTCDCompilationUnit cdAST) {
+  public static void createCD4CodeSymTab(ASTCDCompilationUnit cdAST) {
     // create symtab
     CD4CodeMill.init();
+    CD4CodeMill.globalScope().clear();
     BasicSymbolsMill.initializePrimitives();
     CD4CodeMill.globalScope().addAdaptedTypeSymbolResolver(new Class2MCResolver());
     CD4CodeMill.scopesGenitorDelegator().createFromAST(cdAST);
