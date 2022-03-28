@@ -179,7 +179,6 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   @Override public IUMLPArtifactScope createSymbolTable(ASTUMLPCompilationUnit node) {
-    UMLPMill.globalScope().addAdaptedTypeSymbolResolver(new Class2MCResolver());
     IUMLPArtifactScope as = super.createSymbolTable(node);
     node.accept(new UMLPSymbolTableCompleter(node).getTraverser()); // run symbol table completer
     return as;

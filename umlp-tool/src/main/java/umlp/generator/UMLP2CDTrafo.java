@@ -36,16 +36,20 @@ public class UMLP2CDTrafo {
         .build();
 
     // set the package
-    if(umlpAST.isPresentMCPackageDeclaration()){
+    if (umlpAST.isPresentMCPackageDeclaration()) {
       cdAST.setMCPackageDeclaration(umlpAST.getMCPackageDeclaration());
     }
 
+    return cdAST;
+  }
+
+  protected void createCD4CodeSymTab(ASTCDCompilationUnit cdAST) {
     // create symtab
     CD4CodeMill.init();
+    BasicSymbolsMill.initializePrimitives();
     CD4CodeMill.globalScope().addAdaptedTypeSymbolResolver(new Class2MCResolver());
     CD4CodeMill.scopesGenitorDelegator().createFromAST(cdAST);
     cdAST.accept(new CD4CodeSymbolTableCompleter(cdAST).getTraverser());
-    return cdAST;
   }
 
 }

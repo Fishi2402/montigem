@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 umlp FileSystem {
-  class Artifact {
-     int name;
+
+  abstract class Artifact {
+     String name;
   }
 
   class File extends Artifact {

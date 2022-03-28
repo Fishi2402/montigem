@@ -2,6 +2,8 @@ umlp D {
   class Foo {
     -> Bar;
     int i;
+    String s;
+    double d;
     List<boolean> t;
 //   V v; // TODO: Fix Enums in cd4c
   }
