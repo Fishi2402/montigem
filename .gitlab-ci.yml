@@ -32,13 +32,6 @@ test_experiments:
   script:
     - "gradle -p experiments build $GRADLE_OPTS $ARGS2"
 
-
-        include ':cars'
-        include ':filesystem'
-        include ':mediahub'
-        include ':restaurant'
-        include ':university'
-
 example_cars:
   stage: buildExamples
   dependencies:
