@@ -137,7 +137,8 @@ abstract class StaticUmlPTask extends DefaultTask {
         this.javaExecSpec.setArgs(
                 ["-i", this.getUmlPFile().get().toString(),
                 "-o", this.getOutputDir().get().toString(),
-                "-hwc", this.getHwcDir().get().toString()])
+                 "-r", this.getOutputDir().dir("reports").get().toString(),
+                 "-hwc", this.getHwcDir().get().toString()])
         JavaExecAction javaExecAction = this.getExecActionFactory().newJavaExecAction();
         this.javaExecSpec.copyTo(javaExecAction);
         javaExecAction.setExecutable("java");       // TODO: Is this the right java version?!?

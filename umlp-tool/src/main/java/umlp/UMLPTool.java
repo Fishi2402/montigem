@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp;
 
+import com.google.common.collect.Lists;
+import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd4analysis.trafo.CD4AnalysisAfterParseTrafo;
 import de.monticore.cd4code.CD4CodeMill;
@@ -12,6 +14,8 @@ import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -30,9 +34,11 @@ import umlp.generator.UMLP2CDTrafo;
 import umlp.generator.UMLPGenerator;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static umlp.UMLPToolOptions.*;
 
@@ -44,6 +50,7 @@ public class UMLPTool extends UMLPToolTOP {
 
 //  protected static final String SYM_IO = "target/symbols/";
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
+  protected static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   protected static final String DEFAULT_CONFIGTEMPLATE = "cd2java.CD2Java";
 
 //  protected CD4CodeAfterParseTrafo apTrafo;
@@ -83,29 +90,38 @@ public class UMLPTool extends UMLPToolTOP {
       if (!INPUT.isSelected(cmd)) {
         Log.error("0xE0000 Indicating an input file with the option 'i' is mandatory");
       }
-      String input = INPUT.getValue(cmd);
+      File inputFile = new File(INPUT.getValue(cmd));
 
-      ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
 
-      // parse model
-      ASTUMLPCompilationUnit ast = parse(input);
+        ///////////////////////// SETUP REPORTING  /////////////////////////////
+      File outDir = new File(OUTPUT.getValue(cmd, DEFAULT_OUT));
+
+      File reportDir = new File(REPORTS.getValue(cmd, DEFAULT_REPORT_OUT));
+
+      MCPath hwcPath = new MCPath();
+      if(HWC_PATH.isSelected(cmd)){
+        for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
+          hwcPath.addEntry(Paths.get(v));
+        }
+      }
+
+      ReportManager.ReportManagerFactory reportManagerFactory = new UMLPReports(outDir.getPath(),
+              reportDir.getPath(), hwcPath);
+
+      Reporting.init(outDir.getPath(), reportDir.getPath(), reportManagerFactory);
+      Reporting.on(inputFile.getName().replace(".","__"));  // TODO: Is this name unique? Should it be unique?
+
+
+        ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
+
+      // parse, create symbol table, check all cocos
+      ASTUMLPCompilationUnit ast = parse(inputFile.getPath());
       runAfterParseTrafo(ast);
       IUMLPArtifactScope symbolTable = createSymbolTable(ast);
       runDefaultCoCos(ast);
 
-      // perform everything (coco checks, sym tab, etc. on local copy of AST
-//      apTrafo.transform(ast4FE);
-//      IUMLPArtifactScope symbolTable = createSymbolTable(ast4FE);
-//      runDefaultCoCos(ast4FE);
 
-//      ASTCDCompilationUnit cdAST = UMLP2CDTrafo.run(ast4FE);
-//      new CD4CodeAfterParseTrafo().transform(cdAST);
-//      new CD4CodeDirectCompositionTrafo().transform(cdAST);
-//      CD4CodeMill.scopesGenitorDelegator().createFromAST(cdAST);
-//      cdAST.accept(new CD4CodeSymbolTableCompleter(cdAST).getTraverser());
-
-
-      // print or store symbol table
+        // print or store symbol table
       if (SYMTAB.isSelected(cmd)) {
         String s = SYMTAB.getValue(cmd);
         if (null != s) {
@@ -130,16 +146,9 @@ public class UMLPTool extends UMLPToolTOP {
       GeneratorSetup genSetup = new GeneratorSetup();
 
       // set output directory
-      File outDir = new File(OUTPUT.getValue(cmd, DEFAULT_OUT));
       genSetup.setOutputDirectory(outDir);
 
       // set hwc directories
-      MCPath hwcPath = new MCPath();
-      if(HWC_PATH.isSelected(cmd)){
-        for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
-          hwcPath.addEntry(Paths.get(v));
-        }
-      }
       genSetup.setHandcodedPath(hwcPath);
 
       // execute generator
@@ -152,6 +161,9 @@ public class UMLPTool extends UMLPToolTOP {
       List<Object> configTemplateArgs = Arrays.asList(genSetup.getGlex(), generator);
       hpp.processValue(tc, ast, configTemplateArgs);
 
+
+      // write reports
+      Reporting.flush(ast);
     }
     catch (Exception e) {
       Log.error("0xB005 An exception occured while processing the CLI input!", e);
