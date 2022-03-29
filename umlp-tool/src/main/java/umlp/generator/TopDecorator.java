@@ -3,7 +3,6 @@
 package umlp.generator;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.codegen.AbstractCreator;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -23,14 +22,14 @@ import static de.se_rwth.commons.Names.constructQualifiedName;
  * used because it would cause version conflicts of MC-generator. Furthermore,
  * the class has an adjustment from the original to support the default package
  * of CD4A.
+ * TODO: Relocate to CD4A?
  */
-public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDCompilationUnit> {
+public class TopDecorator {
 
   /*
   Adds the suffix TOP to hand coded ASTs and makes generated TOP class abstract
   Attention! does not actually create a new CD object, because then the glex has the wrong objects referenced
    */
-
   public static final String TOP_SUFFIX = "TOP";
 
   protected final MCPath hwPath;
@@ -43,7 +42,6 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
     this.hwPath = hwPath;
   }
 
-  @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalCD) {
     ASTCDCompilationUnit topCD = originalCD;
     if(!topCD.isPresentMCPackageDeclaration()){

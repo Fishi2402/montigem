@@ -2,7 +2,9 @@
 
 package umlptest;
 
+import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd4analysis._symboltable.CD4AnalysisSymbolTableCompleter;
+import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
@@ -15,6 +17,7 @@ import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._parser.UMLPParser;
 import umlp._symboltable.IUMLPArtifactScope;
+import umlp._visitor.UMLPTraverser;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +68,12 @@ public abstract class AbstractUMLPTest {
         ast.getMCImportStatementList(), pck);
     ast.accept(c.getTraverser());
     return as;
+  }
+
+  protected void runAfterParseTrafo(ASTUMLPCompilationUnit node){
+    UMLPTraverser trav = UMLPMill.traverser();
+    CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
+    node.accept(trav);
   }
 
   public static void assertNoErrors() {
