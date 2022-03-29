@@ -2,7 +2,7 @@
 image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk8
 
 variables:
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
 
 cache:
@@ -23,7 +23,7 @@ stages:
 build:
   stage: build
   script:
-    - "gradle buildUMLP --refresh-dependencies $GRADLE_OPTS $ARGS1"
+    - "gradle build --refresh-dependencies $GRADLE_OPTS $ARGS1"
 
 test_experiments:
   stage: test
