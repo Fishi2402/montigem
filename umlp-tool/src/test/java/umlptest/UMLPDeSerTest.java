@@ -3,11 +3,13 @@ package umlptest;
 
 import de.monticore.symboltable.serialization.JsonParser;
 import org.junit.Test;
+import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbolTableCompleter;
 import umlp._symboltable.UMLPSymbols2Json;
 
+import java.io.File;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,12 +48,31 @@ public class UMLPDeSerTest extends AbstractUMLPTest {
     assertCDTypeSymEquals(expected, actual);
   }
 
+  @Test
+  public void storeLoadD() {
+    String symFile = "target/symboltests/D.umlpsym";
+    UMLPSymbols2Json s2j = new UMLPSymbols2Json();
+    IUMLPArtifactScope expected = processModel("de/monticore/D.umlp");
+
+    s2j.store(expected, symFile);
+    assertNoErrors();
+    assertTrue(new File(symFile).exists());
+
+    IUMLPArtifactScope actual = s2j.load(symFile);
+    assertNoErrors();
+
+    assertEquals(expected.getSymbolsSize(), actual.getSymbolsSize());
+    assertUMLPSymEquals(expected, actual);
+    assertCDTypeSymEquals(expected, actual);
+
+  }
+
   protected IUMLPArtifactScope processModel(String model) {
     ASTUMLPCompilationUnit ast = parse(model);
     runAfterParseTrafo(ast);
-    IUMLPArtifactScope symTab = createSymTab(ast);
+    IUMLPArtifactScope as = UMLPMill.scopesGenitorDelegator().createFromAST(ast);
     ast.accept(new UMLPSymbolTableCompleter(ast).getTraverser());
-    return symTab;
+    return as;
   }
 
   private void assertUMLPSymEquals(IUMLPArtifactScope expected,
