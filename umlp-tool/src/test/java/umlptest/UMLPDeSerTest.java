@@ -88,9 +88,11 @@ public class UMLPDeSerTest extends AbstractUMLPTest {
   private void assertCDTypeSymEquals(IUMLPArtifactScope expected, IUMLPArtifactScope actual) {
     assertEquals(expected.getCDTypeSymbols().size(), actual.getCDTypeSymbols().size());
 
-    Set<String> expNames = expected.getCDTypeSymbols().values().stream().map(s -> s.getName())
+    Set<String> expNames = expected.getCDTypeSymbols().values().stream()
+        .map(s -> s.getName())
         .collect(Collectors.toSet());
-    Set<String> actNames = actual.getCDTypeSymbols().values().stream().map(s -> s.getName())
+    Set<String> actNames = actual.getCDTypeSymbols().values().stream()
+        .map(s -> s.getName())
         .collect(Collectors.toSet());
     assertEquals(expNames, actNames);
   }

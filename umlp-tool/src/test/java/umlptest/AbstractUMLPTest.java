@@ -17,6 +17,7 @@ import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._parser.UMLPParser;
 import umlp._symboltable.IUMLPArtifactScope;
+import umlp._symboltable.UMLPSymbolTableCompleter;
 import umlp._visitor.UMLPTraverser;
 
 import java.io.File;
@@ -64,8 +65,7 @@ public abstract class AbstractUMLPTest {
         ? ast.getMCPackageDeclaration().getMCQualifiedName()
         : MCBasicTypesMill.mCQualifiedNameBuilder().build();
         IUMLPArtifactScope as = UMLPMill.scopesGenitorDelegator().createFromAST(ast);
-    CD4AnalysisSymbolTableCompleter c = new CD4AnalysisSymbolTableCompleter(
-        ast.getMCImportStatementList(), pck);
+    UMLPSymbolTableCompleter c = new UMLPSymbolTableCompleter(ast);
     ast.accept(c.getTraverser());
     return as;
   }
