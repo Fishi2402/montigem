@@ -51,7 +51,6 @@ subprojects {
                 include "**/*.mc4"
             }
         }
-
     }
 
     java {
@@ -136,20 +135,17 @@ project(':umlp-tool') {
     }
 }
 
-//project(':examples') {
-//
-//}
-
 /**
  *  Builds the core projects, i.e. the umlp-tool and the examples.
  *  Executes JUnit tests and assembles the jars.
  */
 task buildUMLP {
     group("build")
-    description('Builds the core projects, i.e. the umlp-tool and the examples.')
+    description('Builds the core projects, i.e. the umlp-tool, experiments, and examples.')
     dependsOn(
             ":umlp-tool:build",
-            ":experiments:build"
+            ":experiments:build",
+            ":examples:build"
     )
 }
 

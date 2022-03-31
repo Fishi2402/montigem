@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+description 'cars example'
+
+task generateCars(type: JavaExec) {
+    group = 'umlp'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'umlp.UMLPTool'
+    args '-i', 'src/Cars.umlp', '-o', 'target'
+}
+
+build.dependsOn(generateCars)

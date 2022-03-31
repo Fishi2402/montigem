@@ -38,52 +38,8 @@ subprojects {
     sourceCompatibility = '1.8'
 }
 
-project('cars') {
-    task generateCars (type: JavaExec) {
-        group = 'umlp'
-        classpath = sourceSets.main.runtimeClasspath
-        mainClass = 'umlp.UMLPTool'
-        args '-i', 'src/Cars.umlp', '-o', 'target'
-    }
-    build.dependsOn(generateCars)
-}
+clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
 
-project('filesystem') {
-    task generateFileSystem (type: JavaExec) {
-        group = 'umlp'
-        classpath = sourceSets.main.runtimeClasspath
-        mainClass = 'umlp.UMLPTool'
-        args '-i', 'src/FileSystem.umlp', '-o', 'target'
-    }
-    build.dependsOn(generateFileSystem)
-}
+build.dependsOn(subprojects.collect{ it.getTasksByName("build", false)})
 
-project('mediahub') {
-    task generateMediaHub (type: JavaExec) {
-        group = 'umlp'
-        classpath = sourceSets.main.runtimeClasspath
-        mainClass = 'umlp.UMLPTool'
-        args '-i', 'src/MediaHub.umlp', '-o', 'target'
-    }
-    build.dependsOn(generateMediaHub)
-}
-
-project('restaurant') {
-    task generateRestaurantOrg (type: JavaExec) {
-        group = 'umlp'
-        classpath = sourceSets.main.runtimeClasspath
-        mainClass = 'umlp.UMLPTool'
-        args '-i', 'src/RestaurantOrg.umlp', '-o', 'target'
-    }
-    build.dependsOn(generateRestaurantOrg)
-}
-
-project('university') {
-    task generateUniversity (type: JavaExec) {
-        group = 'umlp'
-        classpath = sourceSets.main.runtimeClasspath
-        mainClass = 'umlp.UMLPTool'
-        args '-i', 'src/University.umlp', '-o', 'target'
-    }
-    build.dependsOn(generateUniversity)
-}
+jar.enabled = false
