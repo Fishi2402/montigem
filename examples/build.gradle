@@ -23,7 +23,7 @@ subprojects {
     }
 
     dependencies {
-        implementation group: 'umlp', name: 'umlp-tool', version: mc_version
+        implementation project(":umlp-tool")
 //        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
 //        implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
 //        implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
