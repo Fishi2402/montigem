@@ -28,7 +28,8 @@ public class TopDecorator {
 
   /*
   Adds the suffix TOP to hand coded ASTs and makes generated TOP class abstract
-  Attention! does not actually create a new CD object, because then the glex has the wrong objects referenced
+  Attention! does not actually create a new CD object, because then the glex
+  has the wrong objects referenced
    */
   public static final String TOP_SUFFIX = "TOP";
 
@@ -36,7 +37,7 @@ public class TopDecorator {
 
   protected static final ASTMCQualifiedName DEFAULT_PACKAGE = MCBasicTypesMill
       .mCQualifiedNameBuilder()
-      .setPartsList(    Lists.newArrayList("de", "monticore")).build();
+      .setPartsList(Lists.newArrayList("de", "monticore")).build();
 
   public TopDecorator(MCPath hwPath) {
     this.hwPath = hwPath;
@@ -44,20 +45,23 @@ public class TopDecorator {
 
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalCD) {
     ASTCDCompilationUnit topCD = originalCD;
-    if(!topCD.isPresentMCPackageDeclaration()){
+    if (!topCD.isPresentMCPackageDeclaration()) {
       topCD.setMCPackageDeclaration(UMLPMill.mCPackageDeclarationBuilder()
           .setMCQualifiedName(DEFAULT_PACKAGE).build());
     }
     topCD.getCDDefinition().getCDClassesList().stream()
-        .filter(cdClass -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getCDPackageList(), cdClass.getName())))
+        .filter(cdClass -> existsHandwrittenClass(hwPath,
+            constructQualifiedName(topCD.getCDPackageList(), cdClass.getName())))
         .forEach(this::applyTopMechanism);
 
     topCD.getCDDefinition().getCDInterfacesList().stream()
-        .filter(cdInterface -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getCDPackageList(), cdInterface.getName())))
+        .filter(cdInterface -> existsHandwrittenClass(hwPath,
+            constructQualifiedName(topCD.getCDPackageList(), cdInterface.getName())))
         .forEach(this::applyTopMechanism);
 
     topCD.getCDDefinition().getCDEnumsList().stream()
-        .filter(cdEnum -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getCDPackageList(), cdEnum.getName())))
+        .filter(cdEnum -> existsHandwrittenClass(hwPath,
+            constructQualifiedName(topCD.getCDPackageList(), cdEnum.getName())))
         .forEach(this::applyTopMechanism);
 
     return topCD;
