@@ -15,7 +15,7 @@ pluginManagement {
 }
 
 rootProject.name = 'umlp'
-include ":umlp-tool"
+includeBuild "umlp-tool"
 
 include ":experiments"
 include ":experiments:initial"

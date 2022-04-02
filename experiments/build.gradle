@@ -52,18 +52,28 @@ configure(subprojects)  {
 
 clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
 
-build.dependsOn(subprojects.collect{ it.getTasksByName("build", false)})
+// build.dependsOn(subprojects.collect{ it.getTasksByName("build", false)})
 
 jar.enabled = false
 
 dependencies{
-    implementation project(':umlp-tool')
+    //implementation project(':umlp-tool')
 }
 
+//import de.rwth.se.umlp.gradle_testing.UMLPTask
+import gradle.UMLPTask
+task generateJava(type: UMLPTask) {
+    group = "umlP"
+    inputDir = file(projectDir.path + "/initial/")
+    hwcDir = layout.projectDirectory.dir("initial/hwc/")
 
-/********************************
- * Static Build
- ********************************/
+    outputDir = layout.buildDirectory.dir("test/dyamic/")
+}
+/*
+
+// ********************************
+// * Static Build
+// ********************************
 // Assumption: All Input-Files for each task already exist at gradle-start
 // Then for each Input-File, a gradle-task can be spawned
 
@@ -73,23 +83,23 @@ task staticGeneralAllUMLP {
     group = "umlP"
 }
 
-fileTree(".").matching { include '**/*.umlp' }.each {File f ->
+fileTree(".").matching { include '**.umlp' }.each {File f ->
     def name = f.getName().substring(0, f.getName().lastIndexOf('.'))
 
     def t = tasks.register("generate"+f.getName(), StaticUmlPTask) {
         group = "umlP"
 
-        umlPJar = file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile)
+        umlPJar = file(gradle.includedBuild("umlp-tool").task(":shadowJar").archiveFile)
         umlPFile = file(f)
         hwcDir = layout.projectDirectory.dir("initial/hwc/")
 
         outputDir = layout.buildDirectory.dir("test/static/" + name)
 
-        // classpath = files(file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile))
+        // classpath = files(file(gradle.includedBuild("umlp-tool").task(":shadowJar").archiveFile))
         // mainClass = 'umlp.UMLPTool'
         // args '-i', f
 
-        dependsOn(project(":umlp-tool").tasks.getByName("shadowJar"))
+        dependsOn(gradle.includedBuild("umlp-tool").task(":shadowJar"))
     }
     staticGeneralAllUMLP.dependsOn(t)
 }
@@ -152,22 +162,22 @@ abstract class StaticUmlPTask extends DefaultTask {
 
 
 
-/********************************
- * Dynamic Build
- ********************************/
+// ********************************
+// * Dynamic Build
+// ********************************
 // Gradle watches the directory and informs the task about changes
 // Only ONE generate task exists
 // Benefit: Not everything needs to be know at the start of gradle
 
 task dynamicGeneralAllUMLP(type: DynamicUmlPTask) {
     group = "umlP"
-    umlPJar = file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile)
+    //umlPJar = file(gradle.includedBuild("umlp-tool").task(":shadowJar").archiveFile)
     umlPDir = file(projectDir.path + "/initial/")
 
     hwcDir = layout.projectDirectory.dir("initial/hwc/")
     outputDir = layout.buildDirectory.dir("test/dyamic/")
 
-    dependsOn(project(":umlp-tool").tasks.getByName("shadowJar"))
+    dependsOn(gradle.includedBuild("umlp-tool").task(":shadowJar"))
 }
 
 
@@ -242,7 +252,7 @@ abstract class DynamicUmlPTask extends DefaultTask {
 
         if(changeInHWC != null) {
             println("Change in HWC => Regenerate Everything")
-            this.getUmlPDir().asFileTree.matching { include '**/*.umlp' }.each { File f ->
+            this.getUmlPDir().asFileTree.matching { include '**.umlp' }.each { File f ->
                 generateFromSingleUMLP(f)
             }
         } else {
@@ -312,3 +322,4 @@ task parallelAll{
     dependsOn parallelC
     dependsOn parallelD
 }
+*/
