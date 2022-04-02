@@ -54,6 +54,7 @@ sourceSets {
     }
 }
 description = 'UML/P Language and Tool'
+buildDir = file("$projectDir/target")
 
 task generateUMLP(type: MCTask) {
     grammar = file "$grammarDir/UMLP.mc4"
