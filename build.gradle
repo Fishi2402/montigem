@@ -44,6 +44,7 @@ subprojects {
         implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
         implementation group: 'de.monticore', name: 'class2mc', version: mc_version
         implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+        implementation group: 'com.google.guava', name: 'guava', version: guava_version
 
         testImplementation group: 'junit', name: 'junit', version: junit_version
     }
