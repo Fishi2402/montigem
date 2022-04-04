@@ -69,6 +69,8 @@ task generateJava(type: UMLPTask) {
 
     outputDir = layout.buildDirectory.dir("test/dyamic/")
 }
+build.dependsOn(generateJava)
+
 /*
 
 // ********************************
