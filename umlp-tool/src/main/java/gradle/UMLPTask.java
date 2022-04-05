@@ -49,8 +49,7 @@ public abstract class UMLPTask extends DefaultTask {
     @Inject
     abstract public WorkerExecutor getWorkerExecutor();
 
-    @Internal
-    protected WorkQueue workQueue;
+    private WorkQueue workQueue;
 
     protected void runOnSingleInputFile(File f){
         workQueue.submit(UMLPAction.class, param -> {
