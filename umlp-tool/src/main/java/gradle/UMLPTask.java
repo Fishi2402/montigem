@@ -46,6 +46,7 @@ public abstract class UMLPTask extends DefaultTask {
     }
     @TaskAction
     public void run(InputChanges inputChanges) throws IOException {
+        Log.warn("Start UMLPTask");
         getInputDir().getAsFileTree().getFiles().stream()
                 .filter(f -> f.getName().endsWith(".umlp"))
                 .forEach(this::runOnSingleInputFile);

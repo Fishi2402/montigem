@@ -12,12 +12,12 @@ import javax.inject.Inject
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-    id "monticore" // MontiCore Plugin
+    // id "monticore" // MontiCore Plugin
     id "jacoco"
 }
 
 subprojects {
-    apply plugin: 'monticore'
+//    apply plugin: 'monticore'
     apply plugin: 'jacoco'
 
     ext.grammarDir = 'src/main/grammars'
@@ -33,9 +33,9 @@ subprojects {
         main.java.srcDirs += [ outDir ]
     }
 
-    compileJava {
+/*    compileJava {
         dependsOn project.collect { it.tasks.withType(MCTask) }
-    }
+    }*/
 
 }
 

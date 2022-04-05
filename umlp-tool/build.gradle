@@ -84,12 +84,13 @@ shadowJar { // all in one jar
     }
     archiveClassifier = 'cli'
     archiveFileName = "UMLPTool.jar"
+    zip64 = true
 //        minimize()
     duplicatesStrategy DuplicatesStrategy.INCLUDE
 }
 
 jar.dependsOn(sourcesJar)
-//jar.dependsOn(shadowJar)
+// jar.dependsOn(shadowJar)
 
 gradlePlugin {
     plugins {
