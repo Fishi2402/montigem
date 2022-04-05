@@ -20,11 +20,10 @@ includeBuild "umlp-tool"
 include ":experiments"
 include ":experiments:initial"
 
-/*
+
 include ":examples"
 include ':examples:cars'
 include ':examples:filesystem'
 include ':examples:mediahub'
 include ':examples:restaurant'
 include ':examples:university'
-*/

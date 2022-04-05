@@ -94,7 +94,7 @@ jar.dependsOn(sourcesJar)
 
 gradlePlugin {
     plugins {
-        customPlugin  {
+        umlpplugin  {
             id = "de.rwth.se.umlp.gradle_testing"
             implementationClass = "gradle.UMLPPlugin"
         }

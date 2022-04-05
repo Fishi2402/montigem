@@ -2,11 +2,9 @@
 
 description 'filesystem example'
 
-task generateFileSystem(type: JavaExec) {
-    group = 'umlp'
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'umlp.UMLPTool'
-    args '-i', 'src/FileSystem.umlp', '-o', 'target'
+task generateFileSystem(type: UMLPTask) {
+    inputFile = file("src/FileSystem.umlp")
+    outputDir = layout.buildDirectory.dir("gen")
 }
 
 build.dependsOn(generateFileSystem)

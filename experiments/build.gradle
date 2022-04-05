@@ -61,7 +61,8 @@ dependencies{
 }
 
 //import de.rwth.se.umlp.gradle_testing.UMLPTask
-import gradle.UMLPTask
+// import gradle.UMLPTask
+
 task generateJava(type: UMLPTask) {
     group = "umlP"
     inputDir = file(projectDir.path + "/initial/")

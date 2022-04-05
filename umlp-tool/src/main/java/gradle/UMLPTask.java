@@ -16,15 +16,23 @@ import umlp.UMLPTool;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public abstract class UMLPTask extends DefaultTask {
 
     @Incremental
+    @Optional
     @InputDirectory
     abstract DirectoryProperty getInputDir();
 
+    @Optional
+    @InputFile
+    abstract RegularFileProperty getInputFile();
+
     @InputDirectory
+    @Optional
     @Incremental
     abstract DirectoryProperty getHwcDir();
 
@@ -37,19 +45,38 @@ public abstract class UMLPTask extends DefaultTask {
 
     protected void runOnSingleInputFile(File f){
         Log.warn("Running on file " + f.getName());
-        String[] args = {"-i", f.getPath(),
-                "-o", getOutputDir().getAsFile().get().getPath(),
-                "-hwc", getHwcDir().getAsFile().get().getPath()
-        };
-        Log.warn(Arrays.toString(args));
-        UMLPTool.main(args);
+        List<String> args = new ArrayList<>();
+        args.add("-i");
+        args.add(f.getPath());
+
+        args.add("-o");
+        args.add(getOutputDir().getAsFile().get().getPath());
+
+        if(getHwcDir().isPresent()){
+            args.add("-hwc");
+            args.add(getHwcDir().getAsFileTree().getAsPath());
+        }
+
+        String[] arrayArgs = args.toArray(new String[0]);
+
+        Log.warn(arrayArgs[0]);
+        Log.warn(arrayArgs[1]);
+        Log.warn(Arrays.toString(arrayArgs));
+
+        UMLPTool.main(arrayArgs);
     }
     @TaskAction
     public void run(InputChanges inputChanges) throws IOException {
         Log.warn("Start UMLPTask");
-        getInputDir().getAsFileTree().getFiles().stream()
-                .filter(f -> f.getName().endsWith(".umlp"))
-                .forEach(this::runOnSingleInputFile);
+        if(getInputDir().isPresent()) {
+            getInputDir().getAsFileTree().getFiles().stream()
+                    .filter(f -> f.getName().endsWith(".umlp"))
+                    .forEach(this::runOnSingleInputFile);
+        }
+        if(getInputFile().isPresent()){
+            runOnSingleInputFile(getInputFile().get().getAsFile());
+        }
+
 
    /*         inputChanges.getFileChanges(getInputDir()).forEach(ch -> {
                 if (ch.getFileType() == FileType.DIRECTORY) return;
