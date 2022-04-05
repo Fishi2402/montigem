@@ -12,8 +12,11 @@ import org.gradle.work.ChangeType;
 import org.gradle.work.FileChange;
 import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
+import org.gradle.workers.WorkQueue;
+import org.gradle.workers.WorkerExecutor;
 import umlp.UMLPTool;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,38 +46,32 @@ public abstract class UMLPTask extends DefaultTask {
     @OutputDirectory
     abstract DirectoryProperty getOutputDir();
 
+    @Inject
+    abstract public WorkerExecutor getWorkerExecutor();
+
+    @Internal
+    protected WorkQueue workQueue;
+
     protected void runOnSingleInputFile(File f){
-        Log.warn("Running on file " + f.getName());
-        List<String> args = new ArrayList<>();
-        args.add("-i");
-        args.add(f.getPath());
-
-        args.add("-o");
-        args.add(getOutputDir().getAsFile().get().getPath());
-
-        if(getHwcDir().isPresent()){
-            args.add("-hwc");
-            args.add(getHwcDir().getAsFileTree().getAsPath());
-        }
-
-        String[] arrayArgs = args.toArray(new String[0]);
-
-        Log.warn(arrayArgs[0]);
-        Log.warn(arrayArgs[1]);
-        Log.warn(Arrays.toString(arrayArgs));
-
-        UMLPTool.main(arrayArgs);
+        workQueue.submit(UMLPAction.class, param -> {
+            param.getInputFile().set(f);
+            param.getOutputDir().set(this.getOutputDir());
+            param.getHwcDir().set(this.getHwcDir());
+        });
     }
+
     @TaskAction
     public void run(InputChanges inputChanges) throws IOException {
+        workQueue = getWorkerExecutor().classLoaderIsolation();
+
         Log.warn("Start UMLPTask");
         if(getInputDir().isPresent()) {
             getInputDir().getAsFileTree().getFiles().stream()
                     .filter(f -> f.getName().endsWith(".umlp"))
                     .forEach(this::runOnSingleInputFile);
         }
-        if(getInputFile().isPresent()){
-            runOnSingleInputFile(getInputFile().get().getAsFile());
+        if(this.getInputFile().isPresent()){
+            runOnSingleInputFile(this.getInputFile().get().getAsFile());
         }
 
 

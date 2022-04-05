@@ -152,6 +152,7 @@ public class UMLPTool extends UMLPToolTOP {
 
       // write reports
       Reporting.flush(ast);
+      UMLPMill.globalScope().clear();
     }
     catch (Exception e) {
       Log.error("0xB005 An exception occured while processing the CLI input!", e);
