@@ -121,6 +121,10 @@ public abstract class UMLPTask extends DefaultTask {
         if(getScript().isPresent()){
             throw new IllegalArgumentException("<script> not yet supported");
         }
+
+        if(getInputFile().isPresent() && !isUMLPFile(this.getInputFile().getAsFile().get())){
+            throw new IllegalArgumentException("<inputFile> must be a umlp-file");
+        }
     }
 
     protected boolean isUMLPFile(File f){
@@ -151,7 +155,6 @@ public abstract class UMLPTask extends DefaultTask {
 
         // Generate from InputFile
         if(this.getInputFile().isPresent()){
-            assert isUMLPFile(this.getInputFile().getAsFile().get());
             runOnSingleInputFile(this.getInputFile().get().getAsFile(),inputChanges);
         }
     }
