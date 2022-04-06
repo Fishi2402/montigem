@@ -57,7 +57,7 @@ jar.enabled = false
 
 task generateJava(type: UMLPTask) {
     group = "umlP"
-    inputDir = layout.projectDirectory.dir("/initial/models")
+    inputDir = layout.projectDirectory.dir("initial/models")
     hwcDir = layout.projectDirectory.dir("initial/hwc/")
 
     outputDir = layout.buildDirectory.dir("generated-sources/")
