@@ -12,12 +12,12 @@ import javax.inject.Inject
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-    id "monticore" // MontiCore Plugin
+    // id "monticore" // MontiCore Plugin
     id "jacoco"
 }
 
 subprojects {
-    apply plugin: 'monticore'
+//    apply plugin: 'monticore'
     apply plugin: 'jacoco'
 
     ext.grammarDir = 'src/main/grammars'
@@ -33,9 +33,9 @@ subprojects {
         main.java.srcDirs += [ outDir ]
     }
 
-    compileJava {
+/*    compileJava {
         dependsOn project.collect { it.tasks.withType(MCTask) }
-    }
+    }*/
 
 }
 
@@ -52,263 +52,14 @@ configure(subprojects)  {
 
 clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
 
-build.dependsOn(subprojects.collect{ it.getTasksByName("build", false)})
-
 jar.enabled = false
 
-dependencies{
-    implementation project(':umlp-tool')
-}
 
-
-/********************************
- * Static Build
- ********************************/
-// Assumption: All Input-Files for each task already exist at gradle-start
-// Then for each Input-File, a gradle-task can be spawned
-
-
-// Collects all "generate" Tasks for "*.umlp" files
-task staticGeneralAllUMLP {
+task generateJava(type: UMLPTask) {
     group = "umlP"
-}
-
-fileTree(".").matching { include '**/*.umlp' }.each {File f ->
-    def name = f.getName().substring(0, f.getName().lastIndexOf('.'))
-
-    def t = tasks.register("generate"+f.getName(), StaticUmlPTask) {
-        group = "umlP"
-
-        umlPJar = file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile)
-        umlPFile = file(f)
-        hwcDir = layout.projectDirectory.dir("initial/hwc/")
-
-        outputDir = layout.buildDirectory.dir("test/static/" + name)
-
-        // classpath = files(file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile))
-        // mainClass = 'umlp.UMLPTool'
-        // args '-i', f
-
-        dependsOn(project(":umlp-tool").tasks.getByName("shadowJar"))
-    }
-    staticGeneralAllUMLP.dependsOn(t)
-}
-
-abstract class StaticUmlPTask extends DefaultTask {
-
-    @InputFile
-    abstract RegularFileProperty getUmlPFile()
-
-    @InputFile
-    abstract RegularFileProperty getUmlPJar()
-
-    @OutputDirectory
-    abstract DirectoryProperty getOutputDir()
-
-    @InputDirectory
-    abstract DirectoryProperty getHwcDir()
-
-
-    @Inject
-    protected ExecActionFactory getExecActionFactory() {
-        throw new UnsupportedOperationException();
-    }
-    @Inject
-    protected ObjectFactory getObjectFactory() {
-        throw new UnsupportedOperationException();
-    }
-
-    private DefaultJavaExecSpec javaExecSpec;
-
-    StaticUmlPTask() {
-        ObjectFactory objectFactory = this.getObjectFactory();
-        this.javaExecSpec = (DefaultJavaExecSpec)objectFactory.newInstance(DefaultJavaExecSpec.class, new Object[0]);
-        this.javaExecSpec.getMainClass().convention('umlp.UMLPTool');
-        this.javaExecSpec.setClasspath(this.getObjectFactory().fileCollection().from(this.getUmlPJar()))
-    }
-
-    // TODO: The java-startup seems to take a lot of time... reuse current jvm?
-    @TaskAction
-    void generate(){
-        // Previous outputs must be removed
-        this.getOutputs().getPreviousOutputFiles().forEach({File x -> x.delete()}) // TODO: Smarter
-
-        println "HWC " + this.getHwcDir().get().toString()
-        this.javaExecSpec.setArgs(
-                ["-i", this.getUmlPFile().get().toString(),
-                "-o", this.getOutputDir().get().toString(),
-                 "-r", this.getOutputDir().dir("reports").get().toString(),
-                 "-hwc", this.getHwcDir().get().toString()])
-        JavaExecAction javaExecAction = this.getExecActionFactory().newJavaExecAction();
-        this.javaExecSpec.copyTo(javaExecAction);
-        javaExecAction.setExecutable("java");       // TODO: Is this the right java version?!?
-
-        javaExecAction.execute();
-    }
-}
-
-
-
-
-
-
-/********************************
- * Dynamic Build
- ********************************/
-// Gradle watches the directory and informs the task about changes
-// Only ONE generate task exists
-// Benefit: Not everything needs to be know at the start of gradle
-
-task dynamicGeneralAllUMLP(type: DynamicUmlPTask) {
-    group = "umlP"
-    umlPJar = file(project(":umlp-tool").tasks.getByName("shadowJar").archiveFile)
-    umlPDir = file(projectDir.path + "/initial/")
-
+    inputDir = file(projectDir.path + "/initial/")
     hwcDir = layout.projectDirectory.dir("initial/hwc/")
+
     outputDir = layout.buildDirectory.dir("test/dyamic/")
-
-    dependsOn(project(":umlp-tool").tasks.getByName("shadowJar"))
 }
-
-
-public class NullOutputStream extends OutputStream {
-    @Override
-    public void write(int b) throws IOException {
-    }
-}
-abstract class DynamicUmlPTask extends DefaultTask {
-
-    @Incremental
-    @InputDirectory
-    abstract DirectoryProperty getUmlPDir()
-
-    @InputDirectory
-    @Incremental
-    abstract DirectoryProperty getHwcDir()
-
-    @InputFile
-    abstract RegularFileProperty getUmlPJar()
-
-    @OutputDirectory
-    abstract DirectoryProperty getOutputDir()
-
-    @Inject
-    protected ExecActionFactory getExecActionFactory() {
-        throw new UnsupportedOperationException();
-    }
-    @Inject
-    protected ObjectFactory getObjectFactory() {
-        throw new UnsupportedOperationException();
-    }
-
-    protected DefaultJavaExecSpec javaExecSpec;
-
-    DynamicUmlPTask() {
-        ObjectFactory objectFactory = this.getObjectFactory();
-        this.javaExecSpec = (DefaultJavaExecSpec)objectFactory.newInstance(DefaultJavaExecSpec.class, new Object[0]);
-        this.javaExecSpec.getMainClass().convention('umlp.UMLPTool');
-        this.javaExecSpec.setClasspath(this.getObjectFactory().fileCollection().from(this.getUmlPJar()))
-    }
-
-    protected Directory getFileSpecificOutDir(File f){
-        def fileName = f.getName().substring(0, f.getName().lastIndexOf('.'))
-        return getOutputDir().dir(fileName).get()
-    }
-
-    protected generateFromSingleUMLP(File f){
-        logger.warn(f.getName() + ":\t generating")
-        this.javaExecSpec.setArgs(
-                ["-i", f.absolutePath,
-                 "-o", getFileSpecificOutDir(f).getAsFile().absolutePath,
-                "-hwc", this.getHwcDir().get().asFile.absolutePath])
-        JavaExecAction javaExecAction = this.getExecActionFactory().newJavaExecAction();
-        this.javaExecSpec.copyTo(javaExecAction);
-        javaExecAction.setExecutable("java");       // TODO: Is this the right java version?!?
-        javaExecAction.setStandardOutput(new NullOutputStream()) // do not pollute console output
-        javaExecAction.execute();
-
-    }
-
-    @TaskAction
-    void generate(InputChanges inputChanges){
-
-        // If a ".java" file was added or removed in the HWC-Directory, everything has to be regenerated
-        FileChange changeInHWC = inputChanges.getFileChanges(getHwcDir()).find {ch ->
-            ((ch.changeType == ChangeType.ADDED || ch.changeType == ChangeType.REMOVED)
-                    && (ch.getFileType() == FileType.FILE)
-                    && (ch.getFile().getName().substring(ch.getFile().getName().lastIndexOf('.')) == ".java"))
-        }
-        if(changeInHWC != null) print("HWC CHANGE = " + changeInHWC.getFile() + changeInHWC.getChangeType())
-
-        if(changeInHWC != null) {
-            println("Change in HWC => Regenerate Everything")
-            this.getUmlPDir().asFileTree.matching { include '**/*.umlp' }.each { File f ->
-                generateFromSingleUMLP(f)
-            }
-        } else {
-        inputChanges.getFileChanges(getUmlPDir()).each { FileChange ch ->
-            if (ch.fileType == FileType.DIRECTORY) return
-
-            def fileName = ch.getFile().getName().substring(0, ch.getFile().getName().lastIndexOf('.'))
-            def fileEnding = ch.getFile().getName().substring(ch.getFile().getName().lastIndexOf('.'))
-            if (fileEnding != ".umlp") return
-
-            def outDir = getOutputDir().dir(fileName)
-
-            // Delete old Files
-            if (ch.changeType == ChangeType.MODIFIED || ch.changeType == ChangeType.REMOVED) {
-                logger.warn(fileName + ":\t Deleting previous generated files")
-                outDir.get().getAsFileTree().forEach({ File x -> x.delete() })
-            }
-
-            // Spawn generate task
-            // TODO: Run in Parallel!
-            if (ch.changeType == ChangeType.ADDED || ch.changeType == ChangeType.MODIFIED) {
-                generateFromSingleUMLP(ch.getFile())
-            }
-        }
-        }
-    }
-}
-
-
-
-
-
-
-build.dependsOn(staticGeneralAllUMLP)
-build.dependsOn(dynamicGeneralAllUMLP)
-
-
-
-
-
-// Test Gradle parallel execution
-abstract class SleepTask extends DefaultTask {
-
-    @TaskAction
-    public void run(){
-        println (this.getName() + " going to sleep")
-        sleep(10000)
-        println (this.getName() + " finished")
-    }
-}
-
-task parallelA(type: SleepTask) {
-    group = "testParallel"
-}
-task parallelB(type: SleepTask) {
-    group = "testParallel"
-}
-task parallelC(type: SleepTask) {
-    group = "testParallel"
-}
-task parallelD(type: SleepTask) {
-    group = "testParallel"
-}
-task parallelAll{
-    dependsOn parallelA
-    dependsOn parallelB
-    dependsOn parallelC
-    dependsOn parallelD
-}
+build.dependsOn(generateJava)

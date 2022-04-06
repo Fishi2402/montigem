@@ -2,11 +2,9 @@
 
 description 'restaurant example'
 
-task generateRestaurantOrg(type: JavaExec) {
-    group = 'umlp'
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'umlp.UMLPTool'
-    args '-i', 'src/RestaurantOrg.umlp', '-o', 'target'
+task generateRestaurantOrg(type: UMLPTask) {
+    inputFile = file("src/RestaurantOrg.umlp")
+    outputDir = layout.buildDirectory.dir("gen")
 }
 
 build.dependsOn(generateRestaurantOrg)

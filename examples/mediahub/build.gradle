@@ -2,11 +2,9 @@
 
 description 'mediahub example'
 
-task generateMediaHub(type: JavaExec) {
-    group = 'umlp'
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'umlp.UMLPTool'
-    args '-i', 'src/MediaHub.umlp', '-o', 'target'
+task generateMediaHub(type: UMLPTask) {
+    inputFile = file("src/MediaHub.umlp")
+    outputDir = layout.buildDirectory.dir("gen")
 }
 
 build.dependsOn(generateMediaHub)

@@ -1,0 +1,123 @@
+
+plugins {
+    id 'java'
+    id 'java-gradle-plugin'
+
+    id 'monticore' version "$mc_version"
+    id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
+    id 'maven-publish'
+}
+
+dependencies {
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+    implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
+    implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+    implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+    implementation group: 'de.monticore', name: 'class2mc', version: mc_version
+    implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+
+    testImplementation group: 'junit', name: 'junit', version: junit_version
+
+
+
+
+    implementation "org.codehaus.groovy:groovy:$groovy_version"
+    implementation "de.se_rwth.commons:se-commons-groovy:$mc_version"
+    grammar("de.monticore.lang:cd4analysis:$mc_version") {
+        capabilities { requireCapability("de.monticore.lang:cd4analysis-grammars") }
+    }
+    grammar("de.monticore:monticore-grammar:$mc_version") {
+        capabilities { requireCapability("de.monticore:monticore-grammar-grammars") }
+    }
+}
+
+group = 'umlp'
+repositories {
+    maven {
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        url repo
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+// configure non-standard source sets
+sourceSets {
+    main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
+
+    grammars {
+        resources {
+            srcDirs([grammarDir])
+            include "**/*.mc4"
+        }
+    }
+}
+description = 'UML/P Language and Tool'
+buildDir = file("$projectDir/target")
+
+task generateUMLP(type: MCTask) {
+    grammar = file "$grammarDir/UMLP.mc4"
+    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+    def uptoDate = incCheck("UMLP.mc4")
+    outputs.upToDateWhen { uptoDate }
+}
+
+compileJava {
+    dependsOn project.collect { it.tasks.withType(MCTask) }
+}
+
+///////////////////////// Building Jars //////////////////////////////////
+
+// build sources jar with handwritten + generated sources
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from(sourceSets.main.allJava)
+}
+
+sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
+
+
+shadowJar { // all in one jar
+    manifest {
+        attributes "Main-Class": "umlp.UMLPTool"
+    }
+    archiveClassifier = 'cli'
+    archiveFileName = "UMLPTool.jar"
+    zip64 = true
+//        minimize()
+    duplicatesStrategy DuplicatesStrategy.INCLUDE
+}
+
+jar.dependsOn(sourcesJar)
+// jar.dependsOn(shadowJar)
+
+gradlePlugin {
+    plugins {
+        umlpplugin  {
+            id = "de.rwth.se.umlp.gradle_testing"
+            implementationClass = "gradle.UMLPPlugin"
+        }
+    }
+}
+
+/////////////////////////   Deployment  //////////////////////////////////
+
+// configure deployment
+publishing {
+    // configure what artifacts to publish
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = "$project.name"
+            from components.java
+            artifact sourcesJar
+        }
+    }
+    repositories.maven {
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+        def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+        url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+    }
+}
