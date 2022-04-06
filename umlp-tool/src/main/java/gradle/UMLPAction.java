@@ -24,6 +24,10 @@ public abstract class UMLPAction implements WorkAction<UMLPParameter> {
             args.add(this.getParameters().getHwcDir().getAsFileTree().getAsPath());
         }
 
+        if(this.getParameters().getMoreArgs().isPresent()){
+            args.addAll(this.getParameters().getMoreArgs().get());
+        }
+
         String[] arrayArgs = args.toArray(new String[0]);
 
         Log.warn(Arrays.toString(arrayArgs));
