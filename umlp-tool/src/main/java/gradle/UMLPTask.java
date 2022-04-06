@@ -30,6 +30,7 @@ public abstract class UMLPTask extends DefaultTask {
 
     @Optional
     @InputFile
+    @Incremental
     @Incubating // Use `inputDir` instead!
     abstract RegularFileProperty getInputFile();
 
@@ -60,6 +61,17 @@ public abstract class UMLPTask extends DefaultTask {
     protected boolean isUpToDate(File f, InputChanges inputChanges){
         AtomicBoolean result = new AtomicBoolean(true);  // File is up-to-date, unless a change is found
 
+        // inputFile is not part of inputChanges
+        // TODO: Better Solution
+        try {
+            if (getInputFile().isPresent() && getInputFile().getAsFile().get().getCanonicalPath().equals(f.getCanonicalPath())) {
+                result.set(false);
+            }
+        } catch (IOException e){
+            result.set(false);
+        }
+
+        // Check for changes in <inputDir>
         inputChanges.getFileChanges(getInputDir()).forEach(ch -> {
             try {
                 if (ch.getFile().getCanonicalPath().equals(f.getCanonicalPath())) {
@@ -97,13 +109,17 @@ public abstract class UMLPTask extends DefaultTask {
         }
     }
 
-    protected void checkMoreArgs() throws IllegalArgumentException{
+    protected void checkParameters() throws IllegalArgumentException{
         if(!getMoreArgs().isPresent()){
             return;
         }
         List<String> arg = this.getMoreArgs().get();
         if(arg.contains("-i") || arg.contains("-o") || arg.contains("-hwc")){
             throw new IllegalArgumentException("'moreArgs' must not contain '-i' / '-o' or '-hwc' flag. Use UMLPTask parameter instead");
+        }
+
+        if(getScript().isPresent()){
+            throw new IllegalArgumentException("<script> not yet supported");
         }
     }
 
@@ -113,7 +129,7 @@ public abstract class UMLPTask extends DefaultTask {
 
     @TaskAction
     public void run(InputChanges inputChanges) throws IOException {
-        checkMoreArgs();
+        checkParameters();
         workQueue = getWorkerExecutor().classLoaderIsolation();
 
         Log.warn("Start UMLPTask");
@@ -125,12 +141,17 @@ public abstract class UMLPTask extends DefaultTask {
             }
         });
 
+
+        // Generate from InputDir
         if(getInputDir().isPresent()) {
             getInputDir().getAsFileTree().getFiles().stream()
                     .filter(this::isUMLPFile)
                     .forEach(x->runOnSingleInputFile(x,inputChanges));
         }
+
+        // Generate from InputFile
         if(this.getInputFile().isPresent()){
+            assert isUMLPFile(this.getInputFile().getAsFile().get());
             runOnSingleInputFile(this.getInputFile().get().getAsFile(),inputChanges);
         }
     }
