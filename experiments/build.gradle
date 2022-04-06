@@ -57,9 +57,9 @@ jar.enabled = false
 
 task generateJava(type: UMLPTask) {
     group = "umlP"
-    inputDir = file(projectDir.path + "/initial/")
+    inputDir = layout.projectDirectory.dir("/initial/models")
     hwcDir = layout.projectDirectory.dir("initial/hwc/")
 
-    outputDir = layout.buildDirectory.dir("test/dyamic/")
+    outputDir = layout.buildDirectory.dir("generated-sources/")
 }
 build.dependsOn(generateJava)
