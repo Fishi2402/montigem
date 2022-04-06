@@ -18,5 +18,7 @@ public interface UMLPParameter extends WorkParameters {
 
     DirectoryProperty getOutputDir();
 
+    DirectoryProperty getReportDir();
+
     ListProperty<String> getMoreArgs();
 }

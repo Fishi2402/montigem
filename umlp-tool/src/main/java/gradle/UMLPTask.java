@@ -3,10 +3,12 @@ package gradle;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Incubating;
+import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.*;
 import org.gradle.api.tasks.Optional;
 import org.gradle.work.ChangeType;
@@ -18,6 +20,7 @@ import org.gradle.workers.WorkerExecutor;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -51,12 +54,21 @@ public abstract class UMLPTask extends DefaultTask {
     @OutputDirectory
     abstract DirectoryProperty getOutputDir();
 
+    @OutputDirectory
+    abstract DirectoryProperty getReportDir();
+
     @Inject
     abstract public WorkerExecutor getWorkerExecutor();
 
     private WorkQueue workQueue;
 
 
+
+    public UMLPTask(){
+    this.getReportDir().convention(
+            getProject().getLayout().getBuildDirectory().dir("umlp_reports/task_"+this.getName())
+        );
+    }
 
     protected boolean isUpToDate(File f, InputChanges inputChanges){
         AtomicBoolean result = new AtomicBoolean(true);  // File is up-to-date, unless a change is found
@@ -89,6 +101,16 @@ public abstract class UMLPTask extends DefaultTask {
         // TODO
     }
 
+    protected Directory getReportDirOfFile(File f){
+        String pathName = f.getName();
+        if(getInputDir().isPresent()) {
+            Path dirPath = getInputDir().get().getAsFile().toPath();
+            Path filePath = f.toPath();
+            pathName = dirPath.relativize(filePath).toString();
+        }
+        return getReportDir().dir(pathName.replace(".","__")).get();
+    }
+
     protected void runOnSingleInputFile(File f,InputChanges inputChanges){
         assert f.exists();
         assert f.isFile();
@@ -98,11 +120,13 @@ public abstract class UMLPTask extends DefaultTask {
             Log.warn(f.getName() + " is *NOT* UP-TO-DATE, starting generation process");
 
             deletePreviousOutput(f);
+
             workQueue.submit(UMLPAction.class, param -> {
                 param.getInputFile().set(f);
                 param.getOutputDir().set(this.getOutputDir());
                 param.getHwcDir().set(this.getHwcDir());
                 param.getMoreArgs().set(this.getMoreArgs());
+                param.getReportDir().set(getReportDirOfFile(f));
             });
         } else {
             Log.warn(f.getName() + " is UP-TO-DATE, no action required");
@@ -148,6 +172,7 @@ public abstract class UMLPTask extends DefaultTask {
 
         // Generate from InputDir
         if(getInputDir().isPresent()) {
+            assert(getInputDir().getAsFile().get().isDirectory());
             getInputDir().getAsFileTree().getFiles().stream()
                     .filter(this::isUMLPFile)
                     .forEach(x->runOnSingleInputFile(x,inputChanges));

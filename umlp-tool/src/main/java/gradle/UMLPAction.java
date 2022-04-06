@@ -19,9 +19,12 @@ public abstract class UMLPAction implements WorkAction<UMLPParameter> {
         args.add("-o");
         args.add(this.getParameters().getOutputDir().getAsFile().get().getPath());
 
+        args.add("-r");
+        args.add(this.getParameters().getReportDir().getAsFile().get().getPath());
+
         if(this.getParameters().getHwcDir().isPresent()){
             args.add("-hwc");
-            args.add(this.getParameters().getHwcDir().getAsFileTree().getAsPath());
+            args.add(this.getParameters().getHwcDir().getAsFile().get().getPath());
         }
 
         if(this.getParameters().getMoreArgs().isPresent()){
