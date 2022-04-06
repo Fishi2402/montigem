@@ -12,6 +12,7 @@ import de.monticore.cd4code.trafo.CD4CodeDirectCompositionTrafo;
 import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
+import de.se_rwth.commons.logging.Log;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._cocos.UMLPCoCos;
 
@@ -83,7 +84,7 @@ public class UMLPGenerator {
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
-    System.out.println("========= CD after '"+trafo+"': =========");
-    System.out.println(astPrinter.prettyprint(ast));
+    Log.info("========= CD after '"+trafo+"': =========", UMLPGenerator.class.getName());
+    Log.info(astPrinter.prettyprint(ast), UMLPGenerator.class.getName());
   }
 }
