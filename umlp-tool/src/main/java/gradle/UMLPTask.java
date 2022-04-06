@@ -1,10 +1,12 @@
 package gradle;
 
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Incubating;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileType;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
@@ -98,7 +100,14 @@ public abstract class UMLPTask extends DefaultTask {
     }
 
     protected void deletePreviousOutput(File f){
-        // TODO
+        // TODO delete generated Output-Artifacts
+
+        // Deleting Old Reports
+        try {
+            FileUtils.deleteDirectory(this.getReportDirOfFile(f).getAsFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     protected Directory getReportDirOfFile(File f){
@@ -152,7 +161,7 @@ public abstract class UMLPTask extends DefaultTask {
     }
 
     protected boolean isUMLPFile(File f){
-      return f.getName().endsWith(".umlp") && f.isFile();
+      return f.getName().endsWith(".umlp");
     }
 
     @TaskAction
@@ -164,7 +173,7 @@ public abstract class UMLPTask extends DefaultTask {
 
         // Remove Artifacts from deleted inputs
         inputChanges.getFileChanges(this.getInputDir()).forEach(ch -> {
-            if(ch.getChangeType() == ChangeType.REMOVED && isUMLPFile(ch.getFile())){
+            if(ch.getChangeType() == ChangeType.REMOVED && isUMLPFile(ch.getFile()) && ch.getFileType() == FileType.FILE){
                 this.deletePreviousOutput(ch.getFile());
             }
         });
