@@ -100,9 +100,17 @@ public abstract class UMLPTask extends DefaultTask {
     }
 
     protected void deletePreviousOutput(File f){
-        // TODO delete generated Output-Artifacts
+        // TODO do not parse IncGenFile both in up-to-date check and delete
+      try {
+        IncGenData lastRun = new IncGenData(getIncGenFile(f));
+        Log.warn("Deleting generated artifacts from previous run of " + f.getName());
+        lastRun.getGeneratedFiles().forEach( toDelete -> {
+          Log.warn("\t Delete " + toDelete.getPath() );
+          toDelete.delete();
+        });
+      } catch (IOException e) {}
 
-        // Deleting Old Reports
+      // Deleting Old Reports
         try {
             FileUtils.deleteDirectory(this.getReportDirOfFile(f).getAsFile());
         } catch (IOException e) {
@@ -118,6 +126,12 @@ public abstract class UMLPTask extends DefaultTask {
             pathName = dirPath.relativize(filePath).toString();
         }
         return getReportDir().dir(pathName.replace(".","__")).get();
+    }
+
+    protected File getIncGenFile(File inputFile){
+      return getReportDirOfFile(inputFile).dir(
+          inputFile.getName().toLowerCase().replace(".","__")
+        ).file("IncGenGradleCheck.txt").getAsFile();
     }
 
     protected void runOnSingleInputFile(File f,InputChanges inputChanges){
