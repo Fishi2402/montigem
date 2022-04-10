@@ -8,4 +8,16 @@ task generateBuilder(type: UMLPTask) {
 
     outputDir = layout.buildDirectory.dir("generated-sources/")
 }
-build.dependsOn(generateBuilder)
+
+
+sourceSets {
+    main.java.srcDirs += ["$projectDir/target/generated-sources/"]
+}
+compileJava {
+    dependsOn project.collect { it.tasks.withType(UMLPTask) }
+}
+
+task runApp(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'Main'
+}
