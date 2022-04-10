@@ -19,6 +19,7 @@ includeBuild "umlp-tool"
 
 include ":experiments"
 include ":experiments:initial"
+include ":experiments:coreRequirements"
 
 
 include ":examples"
