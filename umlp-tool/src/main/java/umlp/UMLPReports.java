@@ -67,7 +67,7 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
             reports.addReportEventHandler(new InvolvedFilesReporter(this.reportDirectory));
 
             UMLPTraverser traverserNodeTree = UMLPMill.inheritanceTraverser();
-            //reports.addReportEventHandler(new NodeTreeReporter(this.reportDirectory, lowerCaseName, repository, traverserNodeTree));
+            reports.addReportEventHandler(new NodeTreeReporter(this.reportDirectory, lowerCaseName, repository, traverserNodeTree));
             reports.addReportEventHandler(new NodeTreeDecoratedReporter(
                     this.reportDirectory, lowerCaseName, repository, traverserNodeTree));
             UMLPTraverser traverserNodeType = UMLPMill.inheritanceTraverser();
