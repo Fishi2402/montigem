@@ -62,4 +62,21 @@ public class Person extends Human {
       return this;
     }
 
+/* Ausbaustufen, die wir optional setzen (ohne sie explizit im CD zu haben:
+
+    class X ... {
+        long gemId;             // fuer die Persistierung in der DB
+        String comment;         // das ist immer nützlich
+        List<String> label;      // @todo, @forBR oder ähnliches (spezielle behandlung bei Suche u.ä.)
+        (Alternativ: List<Label> label;
+    }
+
+    Nächste (und dringendere) Ausbaustufe (TODO):
+    * Entkopplung der Ladestrategien durch
+    **  gemID  statt direktLink (und die transparente Realisierung in den Objekten)
+    **  LazyLoadedList  (siehe dazu andere Emails/Diskussionen)
+
+*/
+
+
 }
