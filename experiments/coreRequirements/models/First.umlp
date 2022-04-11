@@ -14,5 +14,5 @@ umlp First {
     }
 
     association owns [1] Person -> Car [*];
-    association parent [*] Person <-> (child) Person [*];
+    // association parent [*] Person <-> (child) Person [*];
 }

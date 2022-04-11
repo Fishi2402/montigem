@@ -1,18 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 description = "Experiments: Core Requirements"
 
-task generateBuilder(type: UMLPTask) {
-    group = "umlP"
-    inputDir = layout.projectDirectory.dir("models")
-    // moreArgs = ["-h"]
-
-    outputDir = layout.buildDirectory.dir("generated-sources/")
-}
-
-
 sourceSets {
     main.java.srcDirs += ["$projectDir/target/generated-sources/"]
 }
+
 compileJava {
     dependsOn project.collect { it.tasks.withType(UMLPTask) }
 }
