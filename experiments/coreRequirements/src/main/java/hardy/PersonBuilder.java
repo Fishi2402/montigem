@@ -20,7 +20,7 @@ public class PersonBuilder extends Person {
     protected boolean ownsPresent = false;
 
     public PersonBuilder() {
-       init();
+        init();
     }
 
     public PersonBuilder nickname(String nickname) {
@@ -70,6 +70,29 @@ befindliche Objekte ebenfalls anzumelden und dann später alle gleichzeitig zu
 bilden (wg. Subklassenbildung)
 
 */
+
+    public Person build() {
+        if (!buildFinished && this.isValid() && this.oclConstraintsAreSatisfied()) {
+            for (Car own : owns) {
+                own.build();
+            }
+            buildFinished = true;
+            return this;
+        }
+        throw new DataConsistencyViolationException("0xD4311: Person.build(): Cannot build Person object because it violates the data structure.");
+    }
+
+    public boolean isValid() {
+        if (this.nickname == null) {
+            return false;
+        } else {
+            return !this.nickname.isEmpty();
+        }
+    }
+
+    public boolean oclConstraintsAreSatisfied() {
+        return true;
+    }
 
 //  public Person build() {
 //    if(!buildFinished) {

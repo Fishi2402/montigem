@@ -22,6 +22,10 @@ public class Car implements DexObservable {
     protected Car() {
     }
 
+    public Car build() {
+        return this;
+    }
+
     public Long getGemId() {
         return this.gemId;
     }

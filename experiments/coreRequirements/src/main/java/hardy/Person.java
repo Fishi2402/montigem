@@ -26,7 +26,7 @@ public class Person extends Human implements DexObservable {
 
     protected String nickname;
 
-    protected List<Car> owns;
+    protected Set<Car> owns = new HashSet();
     // todo + 30 generierte Ftnen (siehe Dex)
 
     // protected List<Person> childs;
@@ -58,7 +58,7 @@ public class Person extends Human implements DexObservable {
     protected void init() {
         super.init();
         nickname = "";
-        owns = new LinkedList<>();
+        owns = new HashSet<>();
     }
 
     //+ Pseudo build for all classes: normally nothing happens
