@@ -1,10 +1,8 @@
 package hardy;
 
-import com.google.common.base.Preconditions;
-
-import java.util.*;
-
-import static com.google.common.base.Objects.toStringHelper;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /* Source:
 
