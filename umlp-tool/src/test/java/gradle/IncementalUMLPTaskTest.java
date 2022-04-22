@@ -15,7 +15,7 @@ import java.util.UUID;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class UMLPTaskTest {
+public class IncementalUMLPTaskTest {
 
   @Rule
   public TemporaryFolder hwcDir= new TemporaryFolder();
@@ -46,33 +46,31 @@ public class UMLPTaskTest {
   }
 
   @Test
-  public void noChange() {
-    InputChanges ch = new MockInputChanges();
-
-    assertTrue(umlpTask.isUpToDate(inputFile, ch));
-  }
-
-  @Test
   public void inputFileModified() {
     InputChanges ch = new MockInputChanges()
         .modified(inputFile);
+    IncGenData lastRun = new IncGenData();
 
-    assertFalse(umlpTask.isUpToDate(inputFile, ch));
+
+    assertFalse(umlpTask.isUpToDate(lastRun, ch));
   }
 
   @Test
   public void inputFileAdded() {
     InputChanges ch = new MockInputChanges()
         .added(inputFile);
+    IncGenData lastRun = new IncGenData();
 
-    assertFalse(umlpTask.isUpToDate(inputFile, ch));
+
+    assertFalse(umlpTask.isUpToDate(lastRun, ch));
   }
 
   @Test
   public void inputFileRemoved() {
     InputChanges ch = new MockInputChanges()
         .removed(inputFile);
+    IncGenData lastRun = new IncGenData();
 
-    assertFalse(umlpTask.isUpToDate(inputFile, ch));
+    assertFalse(umlpTask.isUpToDate(lastRun, ch));
   }
 }

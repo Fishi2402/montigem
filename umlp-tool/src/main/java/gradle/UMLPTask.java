@@ -22,34 +22,34 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class UMLPTask extends DefaultTask {
 
     @Incremental
-    @Optional
+    @org.gradle.api.tasks.Optional
     @InputDirectory
     abstract DirectoryProperty getInputDir();
 
-    @Optional
+    @org.gradle.api.tasks.Optional
     @InputFile
     @Incremental
     @Incubating // Use `inputDir` instead!
     abstract RegularFileProperty getInputFile();
 
     @InputDirectory
-    @Optional
+    @org.gradle.api.tasks.Optional
     @Incremental
     abstract DirectoryProperty getHwcDir();
 
     @InputFile
-    @Optional
+    @org.gradle.api.tasks.Optional
     abstract RegularFileProperty getScript();
 
     @Input
-    @Optional
+    @org.gradle.api.tasks.Optional
     abstract ListProperty<String> getMoreArgs();
-
 
     @OutputDirectory
     abstract DirectoryProperty getOutputDir();
@@ -62,10 +62,9 @@ public abstract class UMLPTask extends DefaultTask {
 
     private WorkQueue workQueue;
 
-
-
     public UMLPTask(){
-    this.getReportDir().convention(
+      super();
+      this.getReportDir().convention(
             getProject().getLayout().getBuildDirectory().dir("umlp_reports/task_"+this.getName())
         );
     }
@@ -73,7 +72,7 @@ public abstract class UMLPTask extends DefaultTask {
   /**
    *
    * @param filePath Path of InputFile
-   * @return
+   * @return Arguments that can be used to start CLI-Tool
    */
   protected List<String> createArgList(Path filePath){
       assert(filePath.toFile().isFile());
@@ -101,55 +100,36 @@ public abstract class UMLPTask extends DefaultTask {
       return result;
     }
 
-    protected boolean isUpToDate(File f, InputChanges inputChanges){
-        assert(isInputFile(f));
-
-        AtomicBoolean result = new AtomicBoolean(true);  // File is up-to-date, unless a change is found
-
-        // inputFile is not part of inputChanges
-        // TODO: Better Solution
-        try {
-            if (getInputFile().isPresent() && getInputFile().getAsFile().get().getCanonicalPath().equals(f.getCanonicalPath())) {
-                result.set(false);
-            }
-        } catch (IOException e){
-            result.set(false);
-        }
-
-        // Check for changes in <inputDir>
-        inputChanges.getFileChanges(getInputDir()).forEach(ch -> {
-            try {
-                if (ch.getFile().getCanonicalPath().equals(f.getCanonicalPath())) {
-                    result.set(false);
-                }
-            } catch (IOException e){
-                result.set(false);  // If an error occurs, it is not up-to-date
-            }
-        });
-        // TODO: Use IncGenResult
-        return result.get();
+  /**
+   *
+   * @param lastRun Data from previous run, used to check if inputs have changed
+   * @param inputChanges List of file-changes from gradle
+   * @return if the tool should run again, or if the previous output can be reused
+   */
+    protected boolean isUpToDate(IncGenData lastRun, InputChanges inputChanges){
+        // TODO: BETTER!!
+        return false;
     }
 
-    protected void deletePreviousOutput(File f){
-        // TODO do not parse IncGenFile both in up-to-date check and delete
-      try {
-        IncGenData lastRun = new IncGenData(getIncGenFile(f));
-        Log.warn("Deleting generated artifacts from previous run of " + f.getName());
-        lastRun.getGeneratedFiles().forEach( toDelete -> {
-          Log.warn("\t Delete " + toDelete.getPath() );
-          toDelete.delete();
-        });
-      } catch (IOException e) {}
+    protected void deletePreviousOutput(File f, IncGenData lastRun){
+      Log.warn("Deleting generated artifacts from previous run of " + f.getName());
+      lastRun.deleteGeneratedFiles();
 
       // Deleting Old Reports
         try {
             FileUtils.deleteDirectory(this.getReportDirOfFile(f).getAsFile());
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.warn("Error deleting old reports. " +
+                "This could cause errors in upcoming incremental builds." +
+                "Affected directory: " + this.getReportDirOfFile(f));
         }
     }
 
-    protected Directory getReportDirOfFile(File f){
+  /**
+   * @param f File, which is used as tool-input
+   * @return Sub-Directory in <ReportDir>, where reports for input file should be stored
+   */
+  protected Directory getReportDirOfFile(File f){
         String pathName = f.getName();
         if(getInputDir().isPresent()) {
             Path dirPath = getInputDir().get().getAsFile().toPath();
@@ -159,21 +139,27 @@ public abstract class UMLPTask extends DefaultTask {
         return getReportDir().dir(pathName.replace(".","__")).get();
     }
 
+  /**
+   * @param inputFile File, which is used as tool-input
+   * @return Generated 'IncGenGradleCheck' file from previous run. File might not always exist.
+   */
     protected File getIncGenFile(File inputFile){
       return getReportDirOfFile(inputFile).dir(
           inputFile.getName().toLowerCase().replace(".","__")
         ).file("IncGenGradleCheck.txt").getAsFile();
     }
 
-    protected void runOnSingleInputFile(File f,InputChanges inputChanges){
+    protected void runOnSingleInputFile(File f, InputChanges inputChanges){
         assert f.exists();
         assert f.isFile();
         assert isInputFile(f);
 
-        if(!isUpToDate(f, inputChanges)) {
+      IncGenData lastRun = new IncGenData(getIncGenFile(f));
+
+        if(!isUpToDate(lastRun, inputChanges)) {
             Log.warn(f.getName() + " is *NOT* UP-TO-DATE, starting generation process");
 
-            deletePreviousOutput(f);
+            deletePreviousOutput(f, lastRun);
 
             workQueue.submit(UMLPAction.class, param -> {
                 param.getArgs().set(createArgList(f.toPath()));
@@ -217,7 +203,7 @@ public abstract class UMLPTask extends DefaultTask {
         // Remove Artifacts from deleted inputs
         inputChanges.getFileChanges(this.getInputDir()).forEach(ch -> {
             if(ch.getChangeType() == ChangeType.REMOVED && isInputFile(ch.getFile()) && ch.getFileType() == FileType.FILE){
-                this.deletePreviousOutput(ch.getFile());
+                this.deletePreviousOutput(ch.getFile(), new IncGenData(getIncGenFile(ch.getFile())));
             }
         });
 
