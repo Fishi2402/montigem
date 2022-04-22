@@ -4,7 +4,10 @@ import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Incubating;
-import org.gradle.api.file.*;
+import org.gradle.api.file.Directory;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileType;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.tasks.*;
 import org.gradle.work.ChangeType;
@@ -20,6 +23,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -91,23 +96,25 @@ public abstract class UMLPTask extends DefaultTask {
    * @param filePath Path of InputFile
    * @return Arguments that can be used to start CLI-Tool
    */
-  protected List<String> createArgList(Path filePath) {
+  protected List<String> createArgList(Path filePath, Function<Path, String> handlePath) {
     assert (filePath.toFile().isFile());
     assert (isInputFile(filePath.toFile()));
 
+    Path cwd = this.getProject().getProjectDir().toPath().toAbsolutePath();
+
     List<String> result = new ArrayList<>();
     result.add("-i");
-    result.add(filePath.toString());
+    result.add(handlePath.apply(filePath));
 
     result.add("-o");
-    result.add(this.getOutputDir().getAsFile().get().getPath());
+    result.add(handlePath.apply(getOutputDir().getAsFile().get().toPath()));
 
     result.add("-r");
-    result.add(this.getReportDirOfFile(filePath.toFile()).getAsFile().getPath());
+    result.add(handlePath.apply(getReportDirOfFile(filePath.toFile()).getAsFile().toPath()));
 
     if (this.getHwcDir().isPresent()) {
       result.add("-hwc");
-      result.add(this.getHwcDir().getAsFile().get().getPath());
+      result.add(handlePath.apply(getHwcDir().getAsFile().get().toPath()));
     }
 
     if (this.getMoreArgs().isPresent()) {
@@ -168,13 +175,22 @@ public abstract class UMLPTask extends DefaultTask {
       Log.warn(f.getName() + " is *NOT* UP-TO-DATE, starting generation process");
 
       deletePreviousOutput(f, lastRun);
-
-      workQueue.submit(UMLPAction.class, param -> {
-        param.getArgs().set(createArgList(f.toPath()));
-      });
+      startGeneration(f);
     } else {
       Log.warn(f.getName() + " is UP-TO-DATE, no action required");
     }
+  }
+
+  private void startGeneration(File f) {
+    Path cwd = getProject().getProjectDir().toPath().toAbsolutePath();
+    Log.warn("Starting UMLPTool: \n" +
+        "\t  java -jar UMLPTool.jar " +
+        createArgList(f.toPath(), p -> cwd.relativize(p).toString()).stream().collect(Collectors.joining(" "))
+    );
+
+    workQueue.submit(UMLPAction.class, param -> {
+      param.getArgs().set(createArgList(f.toPath(), p -> p.toAbsolutePath().toString()));
+    });
   }
 
   private Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
