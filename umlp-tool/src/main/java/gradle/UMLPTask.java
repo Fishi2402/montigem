@@ -70,10 +70,18 @@ public abstract class UMLPTask extends DefaultTask {
         );
     }
 
-    protected List<String> createArgList(File f){
+  /**
+   *
+   * @param filePath Path of InputFile
+   * @return
+   */
+  protected List<String> createArgList(Path filePath){
+      assert(filePath.toFile().isFile());
+      assert(isInputFile(filePath.toFile()));
+
       List<String> result = new ArrayList<>();
       result.add("-i");
-      result.add(f.getPath());
+      result.add(filePath.toString());
 
       result.add("-o");
       result.add(this.getOutputDir().getAsFile().get().getPath());
@@ -94,6 +102,8 @@ public abstract class UMLPTask extends DefaultTask {
     }
 
     protected boolean isUpToDate(File f, InputChanges inputChanges){
+        assert(isInputFile(f));
+
         AtomicBoolean result = new AtomicBoolean(true);  // File is up-to-date, unless a change is found
 
         // inputFile is not part of inputChanges
@@ -158,7 +168,7 @@ public abstract class UMLPTask extends DefaultTask {
     protected void runOnSingleInputFile(File f,InputChanges inputChanges){
         assert f.exists();
         assert f.isFile();
-        assert isUMLPFile(f);
+        assert isInputFile(f);
 
         if(!isUpToDate(f, inputChanges)) {
             Log.warn(f.getName() + " is *NOT* UP-TO-DATE, starting generation process");
@@ -166,7 +176,7 @@ public abstract class UMLPTask extends DefaultTask {
             deletePreviousOutput(f);
 
             workQueue.submit(UMLPAction.class, param -> {
-                param.getArgs().set(createArgList(f));
+                param.getArgs().set(createArgList(f.toPath()));
             });
         } else {
             Log.warn(f.getName() + " is UP-TO-DATE, no action required");
@@ -186,25 +196,27 @@ public abstract class UMLPTask extends DefaultTask {
             throw new IllegalArgumentException("<script> not yet supported");
         }
 
-        if(getInputFile().isPresent() && !isUMLPFile(this.getInputFile().getAsFile().get())){
+        if(getInputFile().isPresent() && !isInputFile(this.getInputFile().getAsFile().get())){
             throw new IllegalArgumentException("<inputFile> must be a umlp-file");
         }
     }
 
-    protected boolean isUMLPFile(File f){
+    protected boolean isInputFile(File f){
       return f.getName().endsWith(".umlp");
     }
 
     @TaskAction
     public void run(InputChanges inputChanges) throws IOException {
-        checkParameters();
+      Log.warn("Start UMLPTask" + this.getName());
+
+      checkParameters();
         workQueue = getWorkerExecutor().classLoaderIsolation();
 
-        Log.warn("Start UMLPTask");
+        Log.warn("Started UMLPTask " + this.getName());
 
         // Remove Artifacts from deleted inputs
         inputChanges.getFileChanges(this.getInputDir()).forEach(ch -> {
-            if(ch.getChangeType() == ChangeType.REMOVED && isUMLPFile(ch.getFile()) && ch.getFileType() == FileType.FILE){
+            if(ch.getChangeType() == ChangeType.REMOVED && isInputFile(ch.getFile()) && ch.getFileType() == FileType.FILE){
                 this.deletePreviousOutput(ch.getFile());
             }
         });
@@ -214,7 +226,7 @@ public abstract class UMLPTask extends DefaultTask {
         if(getInputDir().isPresent()) {
             assert(getInputDir().getAsFile().get().isDirectory());
             getInputDir().getAsFileTree().getFiles().stream()
-                    .filter(this::isUMLPFile)
+                    .filter(this::isInputFile)
                     .forEach(x->runOnSingleInputFile(x,inputChanges));
         }
 
