@@ -8,11 +8,8 @@ import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileType;
 import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.*;
-import org.gradle.api.tasks.Optional;
 import org.gradle.work.ChangeType;
 import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
@@ -23,7 +20,8 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class UMLPTask extends DefaultTask {
@@ -70,6 +68,29 @@ public abstract class UMLPTask extends DefaultTask {
     this.getReportDir().convention(
             getProject().getLayout().getBuildDirectory().dir("umlp_reports/task_"+this.getName())
         );
+    }
+
+    protected List<String> createArgList(File f){
+      List<String> result = new ArrayList<>();
+      result.add("-i");
+      result.add(f.getPath());
+
+      result.add("-o");
+      result.add(this.getOutputDir().getAsFile().get().getPath());
+
+      result.add("-r");
+      result.add(this.getReportDir().getAsFile().get().getPath());
+
+      if(this.getHwcDir().isPresent()){
+        result.add("-hwc");
+        result.add(this.getHwcDir().getAsFile().get().getPath());
+      }
+
+      if(this.getMoreArgs().isPresent()){
+        result.addAll(this.getMoreArgs().get());
+      }
+
+      return result;
     }
 
     protected boolean isUpToDate(File f, InputChanges inputChanges){
@@ -145,11 +166,7 @@ public abstract class UMLPTask extends DefaultTask {
             deletePreviousOutput(f);
 
             workQueue.submit(UMLPAction.class, param -> {
-                param.getInputFile().set(f);
-                param.getOutputDir().set(this.getOutputDir());
-                param.getHwcDir().set(this.getHwcDir());
-                param.getMoreArgs().set(this.getMoreArgs());
-                param.getReportDir().set(getReportDirOfFile(f));
+                param.getArgs().set(createArgList(f));
             });
         } else {
             Log.warn(f.getName() + " is UP-TO-DATE, no action required");
