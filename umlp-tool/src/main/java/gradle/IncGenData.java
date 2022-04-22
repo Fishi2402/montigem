@@ -38,7 +38,10 @@ public class IncGenData {
           checkAndAddToSet("out:", generatedFiles, line);
           checkAndAddToSet("hwc:", existenceCheckedFiles, line);
           checkAndAddToSet("gen:", existenceCheckedFiles, line);
-          checkAndAddToSet("mc4:", readFiles, line);
+
+          checkAndAddToSet("mc4:", readFiles, line.substring(0, line.length() - 33));
+            // manually remove md5 hash for input files
+            // TODO: Better
         });
       } catch (Exception e) {
         Log.warn("Error parsing report from previous run. Incremental check not working. \n" +
@@ -46,6 +49,7 @@ public class IncGenData {
         reportExists = false;
       }
     } else {
+      Log.warn("Report from previous run not found. No incremental check");
       reportExists = false;
     }
   }

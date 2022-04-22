@@ -103,7 +103,7 @@ public abstract class UMLPTask extends DefaultTask {
     result.add(this.getOutputDir().getAsFile().get().getPath());
 
     result.add("-r");
-    result.add(this.getReportDir().getAsFile().get().getPath());
+    result.add(this.getReportDirOfFile(filePath.toFile()).getAsFile().getPath());
 
     if (this.getHwcDir().isPresent()) {
       result.add("-hwc");
@@ -165,7 +165,7 @@ public abstract class UMLPTask extends DefaultTask {
     IncGenData lastRun = new IncGenData(getIncGenFile(f));
 
     if (!lastRun.isUpToDate(getStreamOfChanges(changedInput))) {
-      Log.info(f.getName() + " is *NOT* UP-TO-DATE, starting generation process", getName());
+      Log.warn(f.getName() + " is *NOT* UP-TO-DATE, starting generation process");
 
       deletePreviousOutput(f, lastRun);
 
@@ -173,7 +173,7 @@ public abstract class UMLPTask extends DefaultTask {
         param.getArgs().set(createArgList(f.toPath()));
       });
     } else {
-      Log.info(f.getName() + " is UP-TO-DATE, no action required", getName());
+      Log.warn(f.getName() + " is UP-TO-DATE, no action required");
     }
   }
 
