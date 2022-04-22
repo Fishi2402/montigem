@@ -2,6 +2,7 @@ package gradle;
 
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
+import org.gradle.work.FileChange;
 import org.gradle.work.InputChanges;
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,6 +12,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -47,18 +49,15 @@ public class IncementalUMLPTaskTest {
 
   @Test
   public void inputFileModified() {
-    InputChanges ch = new MockInputChanges()
-        .modified(inputFile);
+    Stream<FileChange> ch = Stream.empty();
     IncGenData lastRun = new IncGenData();
-
 
     assertFalse(lastRun.isUpToDate(ch));
   }
 
   @Test
   public void inputFileAdded() {
-    InputChanges ch = new MockInputChanges()
-        .added(inputFile);
+    Stream<FileChange> ch = Stream.empty();
     IncGenData lastRun = new IncGenData();
 
 
@@ -67,8 +66,7 @@ public class IncementalUMLPTaskTest {
 
   @Test
   public void inputFileRemoved() {
-    InputChanges ch = new MockInputChanges()
-        .removed(inputFile);
+    Stream<FileChange> ch = Stream.empty();
     IncGenData lastRun = new IncGenData();
 
     assertFalse(lastRun.isUpToDate(ch));

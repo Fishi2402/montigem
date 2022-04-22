@@ -8,6 +8,7 @@ import org.gradle.api.file.*;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.tasks.*;
 import org.gradle.work.ChangeType;
+import org.gradle.work.FileChange;
 import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
 import org.gradle.workers.WorkQueue;
@@ -19,6 +20,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public abstract class UMLPTask extends DefaultTask {
 
@@ -154,14 +157,14 @@ public abstract class UMLPTask extends DefaultTask {
   }
 
 
-  protected void runOnSingleInputFile(File f, InputChanges inputChanges) {
+  protected void runOnSingleInputFile(File f, InputChanges changedInput) {
     assert f.exists();
     assert f.isFile();
     assert isInputFile(f);
 
     IncGenData lastRun = new IncGenData(getIncGenFile(f));
 
-    if (!lastRun.isUpToDate(inputChanges)) {
+    if (!lastRun.isUpToDate(getStreamOfChanges(changedInput))) {
       Log.info(f.getName() + " is *NOT* UP-TO-DATE, starting generation process", getName());
 
       deletePreviousOutput(f, lastRun);
@@ -172,6 +175,14 @@ public abstract class UMLPTask extends DefaultTask {
     } else {
       Log.info(f.getName() + " is UP-TO-DATE, no action required", getName());
     }
+  }
+
+  private Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
+    Stream<FileChange> result = StreamSupport.stream(inputChanges.getFileChanges(getInputDir()).spliterator(), false);
+    result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(getHwcDir()).spliterator(), false));
+    result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(getInputFile()).spliterator(), false));
+
+    return result;
   }
 
   protected boolean isInputFile(File f) {
