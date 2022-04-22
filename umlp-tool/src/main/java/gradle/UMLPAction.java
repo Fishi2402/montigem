@@ -11,7 +11,8 @@ public abstract class UMLPAction implements WorkAction<ArgActionParameter> {
     public void execute() {
         String[] arrayArgs = this.getParameters().getArgs().get().toArray(new String[0]);
 
-        Log.warn("Starting UMLPTool: \t  java -jar UMLPTool.jar " + Arrays.toString(arrayArgs));
+        Log.warn("Starting UMLPTool: \n" +
+            "\t  java -jar UMLPTool.jar " + Arrays.toString(arrayArgs));
         UMLPTool.main(arrayArgs);
     }
 }

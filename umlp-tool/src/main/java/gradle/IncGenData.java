@@ -1,13 +1,13 @@
 package gradle;
 
 import de.se_rwth.commons.logging.Log;
+import org.gradle.work.InputChanges;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 
 public class IncGenData {
   protected Set<String> generatedFiles = new TreeSet<>();
+  protected Set<String> readFiles = new TreeSet<>();
+  protected Set<String> existenceCheckedFiles = new TreeSet<>();
 
   protected boolean reportExists;
 
@@ -32,6 +34,9 @@ public class IncGenData {
 
         lines.forEach(line -> {
           checkAndAddToSet("out:", generatedFiles, line);
+          checkAndAddToSet("hwc:", existenceCheckedFiles, line);
+          checkAndAddToSet("gen:", existenceCheckedFiles, line);
+          checkAndAddToSet("mc4:", readFiles, line);
         });
       } catch (IOException e) {
         Log.warn("Error parsing report from previous run. Incremental check not working. \n" +
@@ -58,5 +63,19 @@ public class IncGenData {
       Log.warn("\t Delete " + toDelete.getPath() );
       toDelete.delete();
     });
+  }
+
+  /**
+   * @param inputChanges List of file-changes from gradle
+   * @return if the tool should run again, or if the previous output can be reused
+   */
+  public boolean isUpToDate(InputChanges inputChanges) {
+    if(!reportExists){
+      // If no report exists, we assume it is NOT up-to-date
+      return false;
+    } else {
+      // TODO
+      return false;
+    }
   }
 }

@@ -52,7 +52,7 @@ public class IncementalUMLPTaskTest {
     IncGenData lastRun = new IncGenData();
 
 
-    assertFalse(umlpTask.isUpToDate(lastRun, ch));
+    assertFalse(lastRun.isUpToDate(ch));
   }
 
   @Test
@@ -62,7 +62,7 @@ public class IncementalUMLPTaskTest {
     IncGenData lastRun = new IncGenData();
 
 
-    assertFalse(umlpTask.isUpToDate(lastRun, ch));
+    assertFalse(lastRun.isUpToDate(ch));
   }
 
   @Test
@@ -71,6 +71,6 @@ public class IncementalUMLPTaskTest {
         .removed(inputFile);
     IncGenData lastRun = new IncGenData();
 
-    assertFalse(umlpTask.isUpToDate(lastRun, ch));
+    assertFalse(lastRun.isUpToDate(ch));
   }
 }
