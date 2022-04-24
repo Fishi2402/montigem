@@ -171,7 +171,7 @@ public abstract class UMLPTask extends DefaultTask {
 
     IncGenData lastRun = new IncGenData(getIncGenFile(f));
 
-    if (!lastRun.isUpToDate(getStreamOfChanges(changedInput))) {
+    if (!changedInput.isIncremental()  || !lastRun.isUpToDate(getStreamOfChanges(changedInput))) {
       Log.warn(f.getName() + " is *NOT* UP-TO-DATE, starting generation process");
 
       deletePreviousOutput(f, lastRun);
