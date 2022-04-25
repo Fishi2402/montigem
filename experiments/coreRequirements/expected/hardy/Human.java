@@ -1,8 +1,10 @@
 package hardy;
 
+//+ GEN-P        : generated for the product
+
 import java.util.*;
 
-// to be done
+// todo complete
 
 /* Source:
 
@@ -14,10 +16,12 @@ import java.util.*;
 
 // --------------------------
 
-public class Human {
+public class Human implements Observable {
 
+    // todo CKn: implements Observable komplettieren (soweit noch was zu tun ist)
+    
     protected int age;
-    // + get, set
+    // todo + get, set
 
-    // more: see class Person
+    //+ more infrastructure: see class Person
 }

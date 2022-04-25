@@ -1,9 +1,14 @@
 
-# Core requirments
+# **Core Requirments** definiert durch dieses Experiment
 
 Dieses Verzeichnis dient als Referenz dafür, welche Funktionalitäten 
 wir insgesamt generieren wollen und wie die handgeschriebenen 
 Ergänzungen dazu passen. 
+
+Einige Design-Entscheidungen sind hier eingetragen, andere 
+Detail-Entscheidungen werden mit ihren Konsequenzen direkt bei dem 
+handgeschriebenen Code dokumentiert. 
+
 
 ## Vergleiche auch die wichtigsten Tickets dazu:
 
@@ -15,20 +20,22 @@ beinhaltet. u.a. den Status zu diesen Aktivitäten
 
 * Der Code sollte bitte permanent lauffähig gehalten werden. Um 
 allerdings jetzt mal voran zu kommen, erlaubt BR sich erstmal kaputte 
-Codestrujkturen aufzubauen (solange bis Substanz da ist und er weiss, 
+Codestrukturen aufzubauen (solange bis Substanz da ist und er weiss, 
 wie man testet) 
 
 * So wird getestet:
 
 ```
- TODO
+ // todo 
 ```
 
-* `todo` im Code sind schnellstmöglich zu adressieren, man beachte auch 
-`todo`+ Kürzel, Kommentare, Fragen etc. -- das unterstützt jetzt 
-erstmal kollaboratives Arbeiten. 
+* `to`+`do` im Code sind schnellstmöglich zu adressieren, man beachte 
+auch `to`+`do` + Kürzel, Kommentare, Fragen etc. -- das unterstützt 
+jetzt erstmal kollaboratives Arbeiten. Diese Kommentare sind nach 
+Abbarbeitung der Aufgaben zu entfernen, die Kommentare mit `//+` 
+bleiben (zB als Hinweise für den Generatorentwickler) 
 
-* Auf keinen Fall wird in Branches gearbeitet
+* Auf keinen Fall werden Branches angelegt
 
 ## Beispiel
 
@@ -104,7 +111,15 @@ wreden, zB `GEN-T`  oder `HWC-P`.
 Der Generator an sich ist nicht Teil dieses Experiments.
 
 
-## X:
 
+## Ausbaustufen (niedrige Prio):
 
- 
+Ausbaustufen, die wir optional reingenerieren können (ohne sie explizit im CD 
+zu nennen: 
+
+```
+        String comment;         // das ist immer nützlich
+        List<String> label;      // @todo, @forBR oder ähnliches (spezielle behandlung bei Suche u.ä.)
+        (Alternativ: List<Label> label;
+```
+

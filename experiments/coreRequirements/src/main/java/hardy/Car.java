@@ -1,5 +1,7 @@
 package hardy;
 
+//+ GEN-P        : generated for the product
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -11,11 +13,12 @@ import java.util.Set;
 
 // --------------------------
 
-public class Car implements DexObservable {
+public class Car implements Observable {
+
+// Bem: This is an ordinary class, comments to the design 
+// decisions can be found at Human and Person
 
     protected Long gemId;
-
-    private Set<DexObserver> observers = new HashSet();
 
     protected Car() {
     }
@@ -24,33 +27,4 @@ public class Car implements DexObservable {
         return this.gemId;
     }
 
-    @Override
-    public void addObserver(DexObserver observer) {
-        this.observers.add(observer);
-    }
-
-    @Override
-    public void deleteObserver(DexObserver observer) {
-        this.observers.remove(observer);
-    }
-
-    @Override
-    public void deleteObservers() {
-        this.observers.clear();
-    }
-
-    @Override
-    public void notifyObservers() {
-        this.notifyObservers((Object)null);
-    }
-
-    @Override
-    public void notifyObservers(Object argument) {
-        Iterator var2 = this.observers.iterator();
-
-        while(var2.hasNext()) {
-            DexObserver o = (DexObserver)var2.next();
-            o.update(this, argument);
-        }
-    }
 }

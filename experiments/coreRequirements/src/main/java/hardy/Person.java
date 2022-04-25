@@ -1,5 +1,9 @@
 package hardy;
 
+//+ GEN-P        : generated for the product
+
+// todo NN: com.google.common.: Muss das Teil dieser Imports sein, Rücksprache mit BR
+// todo FDr: hier muss die LazyList hin, keine Sets, keine anderen Lists
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
@@ -19,65 +23,12 @@ import java.util.*;
 
 // --------------------------
 
-public class Person extends Human implements DexObservable {
+public class Person extends Human implements Observable {
 
+    // todo CKn: implements Observable komplettieren (soweit noch was zu tun ist)
+
+    // an Attribute: ------------------------------------------
     protected String nickname;
-
-    protected List<Car> owns;
-    // todo + 30 generierte Ftnen (siehe Dex)
-
-    // protected List<Person> childs;
-    // todo + die üblichen generierten Ftnen (siehe Dex)
-    // incl. Sicherung der Assoziationskorrektheit (wg. Navigierbarkeit in beide Richtungen)
-    
-    // please observe the added "s" for *-Associations  (see Dex conventions)
-    // protected List<Person> parents;
-    //- todo dito
-
-    private Set<DexObserver> observers = new HashSet();
-
-    //+ Constructors are protected: only to be used by the Builder and Mill
-    //+ This constructuctor builds incorrect and models (incl. null-pointers)
-    // and should only be used by the builder
-    protected Person() {
-        super();
-        init();
-    }
-
-    protected Person(int age, String nickname) {
-        super(age);
-        init();
-        this.nickname = nickname;
-    }
-
-    //+ do an initialisation of optional and default parts
-    // (makes the system robust, but shadows potential errors for a while)
-    protected void init() {
-        super.init();
-        nickname = "";
-        owns = new LinkedList<>();
-    }
-
-    //+ Pseudo build for all classes: normally nothing happens
-    public Person build() {
-      return this;
-    }
-
-/* Ausbaustufen, die wir optional setzen (ohne sie explizit im CD zu haben:
-
-    class X ... {
-        long gemId;             // fuer die Persistierung in der DB
-        String comment;         // das ist immer nützlich
-        List<String> label;      // @todo, @forBR oder ähnliches (spezielle behandlung bei Suche u.ä.)
-        (Alternativ: List<Label> label;
-    }
-
-    Nächste (und dringendere) Ausbaustufe (TODO):
-    * Entkopplung der Ladestrategien durch
-    **  gemID  statt direktLink (und die transparente Realisierung in den Objekten)
-    **  LazyLoadedList  (siehe dazu andere Emails/Diskussionen)
-
-*/
 
     public String getNickname() {
         return this.nickname;
@@ -87,6 +38,14 @@ public class Person extends Human implements DexObservable {
         Preconditions.checkNotNull(o);
         this.nickname = o;
     }
+    
+
+    // an Association: ------------------------------------------
+    protected List<Car> owns;
+    // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
+
+    //+ Bem: insgesamt sind es etwa 30 generierte Ftnen, von denen hier nur einige dargestellt sind
+ 
 
     public boolean removeOwns(Car o) {
         if (this.owns.contains(o)) {
@@ -161,4 +120,55 @@ public class Person extends Human implements DexObservable {
     public boolean isEmptyOwnss() {
         return this.owns.isEmpty();
     }
+    
+    
+    // -----------------------------------------------------------------
+     
+    // a recusrsive, bidirectional Association: ------------------------------
+    // protected List<Person> childs;
+    // later do + die üblichen generierten Ftnen (siehe Dex)
+    // incl. Sicherung der Assoziationskorrektheit (wg. Navigierbarkeit in beide Richtungen)
+    
+    // please observe the added "s" for *-Associations  (see Dex conventions)
+    // protected List<Person> parents;
+    //- todo dito
+
+
+    // --------------------------------------------------------------------
+    //+ Constructors are protected: only to be used by the Builder and Mill
+
+    //+ This constructuctor builds incorrect and models (incl. null-pointers)
+    // and should only be used by the builder
+    protected Person() {
+        super();
+        init();
+    }
+
+    //+ This constructor is better, but still may construct invalid objects
+    protected Person(int age, String nickname) {
+        super(age);
+        init();
+        this.nickname = nickname;
+    }
+
+    //+ initialization is externalized to be reusable (if needed)
+    //+ do an initialisation of optional and default parts
+    // (makes the system robust, but shadows potential errors for a while)
+    protected void init() {
+        super.init();
+        nickname = "";
+        // todo FDr, CKn: use LazyList here
+        owns = new LinkedList<>();
+    }
+
+    // -----------------------------------------------------------------
+
+/* Ausbaustufen (todo):
+
+    * Entkopplung der Ladestrategien durch
+    **  gemID  statt direktLink (und die transparente Realisierung in den Objekten)
+    **  LazyLoadedList  (siehe dazu andere Emails/Diskussionen)
+
+*/
+    
 }

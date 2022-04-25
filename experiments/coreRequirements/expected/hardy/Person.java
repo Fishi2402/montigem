@@ -1,5 +1,7 @@
 package builder;
 
+// GEN-P        : generated for the product
+
 import java.util.*;
 
 /* Source:
@@ -15,17 +17,24 @@ import java.util.*;
 
 // --------------------------
 
-public class Person extends Human {
+public class Person extends Human implements Observable {
 
-    protected int age;
-    // + get, set
+    // todo CKn: implements Observable komplettieren (soweit noch was zu tun ist)
 
+    // int age;  and methods are inherited from Human: nothing to do here
+
+    // an Attribute: ------------------------------------------
     protected String nickname;
     // todo + get, set
                 
+    // an Association: ------------------------------------------
     protected List<Car> owns;
-    // todo + 30 generierte Ftnen (siehe Dex)
+    // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
+    
+    //+ Bem: insgesamt sind es etwa 30 generierte Ftnen, von denen hier nur einige dargestellt sind
 
+
+    // a recusrsive, bidirectional Association: --------------------
     protected List<Person> childs;
     // todo + die üblichen generierten Ftnen (siehe Dex)
     // incl. Sicherung der Assoziationskorrektheit (wg. Navigierbarkeit in beide Richtungen)
@@ -34,19 +43,24 @@ public class Person extends Human {
     protected List<Person> parents;
     //- todo dito
 
+
+    // --------------------------------------------------------------------
     //+ Constructors are protected: only to be used by the Builder and Mill
+
     //+ This constructuctor builds incorrect and models (incl. null-pointers)
     // and should only be used by the builder
     protected Person() {
         init();
     }
 
+    //+ This constructor is better, but still may construct invalid objects
     protected Person(int age, String nickname) {
         init();
         this.age = age;
         this.nickname = nickname;
     }
 
+    //+ initialization is externalized to be reusable (if needed)
     //+ do an initialisation of optional and default parts
     // (makes the system robust, but shadows potential errors for a while)
     protected init() {
@@ -57,26 +71,14 @@ public class Person extends Human {
       parent = new LinkedList<>();
     }
 
-    //+ Pseudo build for all classes: normally nothing happens
-    public Person build() {
-      return this;
-    }
 
-/* Ausbaustufen, die wir optional setzen (ohne sie explizit im CD zu haben:
 
-    class X ... {
-        long gemId;             // fuer die Persistierung in der DB
-        String comment;         // das ist immer nützlich
-        List<String> label;      // @todo, @forBR oder ähnliches (spezielle behandlung bei Suche u.ä.)
-        (Alternativ: List<Label> label;
-    }
+/* Ausbaustufen (todo):
 
-    Nächste (und dringendere) Ausbaustufe (TODO):
     * Entkopplung der Ladestrategien durch
     **  gemID  statt direktLink (und die transparente Realisierung in den Objekten)
     **  LazyLoadedList  (siehe dazu andere Emails/Diskussionen)
 
 */
-
 
 }
