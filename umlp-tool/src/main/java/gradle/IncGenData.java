@@ -35,17 +35,18 @@ public class IncGenData {
 
         lines.forEach(line -> {
 
-          checkAndAddToSet("out:", generatedFiles, line);
-          checkAndAddToSet("hwc:", existenceCheckedFiles, line);
-          checkAndAddToSet("gen:", existenceCheckedFiles, line);
+          checkAndAddToSet("out:", generatedFiles, line, 0);
+          checkAndAddToSet("hwc:", existenceCheckedFiles, line, 0);
+          checkAndAddToSet("gen:", existenceCheckedFiles, line, 0);
 
-          checkAndAddToSet("mc4:", readFiles, line.substring(0, line.length() - 33));
+          checkAndAddToSet("mc4:", readFiles, line, 33);
             // manually remove md5 hash for input files
             // TODO: Better
         });
       } catch (Exception e) {
         Log.warn("Error parsing report from previous run. Incremental check not working. \n" +
             e.getMessage());
+        Log.error("Aborintg", e);
         reportExists = false;
       }
     } else {
@@ -54,9 +55,9 @@ public class IncGenData {
     }
   }
 
-  protected void checkAndAddToSet(String prefix, Set<File> store, String line) throws RuntimeException {
+  protected void checkAndAddToSet(String prefix, Set<File> store, String line, int deleteSuffix) throws RuntimeException {
     if (line.startsWith(prefix)) {
-      String path = line.substring(prefix.length());
+      String path = line.substring(prefix.length(), line.length() - deleteSuffix);
       try {
         store.add(Paths.get(path).toFile().getCanonicalFile());
       } catch (IOException e) {
@@ -72,7 +73,7 @@ public class IncGenData {
     });
   }
 
-  private boolean isRelevantChange(FileChange ch) {
+  protected boolean isRelevantChange(FileChange ch) {
     try {
       File f = ch.getFile().getCanonicalFile();
 
@@ -96,7 +97,6 @@ public class IncGenData {
       return false;
     } else {
       Optional<FileChange> change = inputChanges
-          .filter(f -> f.getFile().isFile())
           .filter(this::isRelevantChange)
           .findAny();
       return !change.isPresent();
