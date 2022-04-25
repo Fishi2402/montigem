@@ -39,14 +39,16 @@ bleiben (zB als Hinweise für den Generatorentwickler)
 
 ## Beispiel
 
-Anhand eines konkreten Beispiels, konkret `models/First.umlp`.
-Anbei eine Fassung vom 20. April, mit einigen Erklärungen:
+Anhand eines konkreten Beispiels, konkret `models/Flensburg.umlp`. 
+Anbei eine Fassung vom 20. April, mit einigen Erklärungen: 
 
 ``` 
-// hardy als package, um es mit nichts aanderem zu verwechseln. 
+// hardy und Flensburg als Namen, um sie definitiv mit nichts 
+// anderem zu verwechseln. 
+
 package hardy; 
 
-umlp First { 
+umlp Flensburg { 
 
 // drei simple Klassen und eine Assoziation // sollte erstmal reichen. 
 

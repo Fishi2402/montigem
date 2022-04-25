@@ -18,7 +18,7 @@ public class Car implements Observable {
 // Bem: This is an ordinary class, comments to the design 
 // decisions can be found at Human and Person
 
-    protected Long gemId;
+    protected Long gemId = -34;
 
     protected Car() {
     }

@@ -24,7 +24,9 @@ public class Human implements Observable {
     // Two purposes: it serves as identifier in the data base
     // and it serves as surrogate for the real object if the 
     // real object is not (yet) loaded, e.g. in the client
-    protected Long gemId;
+    //
+    // -32: is an illegal value showing that an has error occurred somewhere
+    protected Long gemId = -32;
 
     public Long getGemId() {
         return gemId;

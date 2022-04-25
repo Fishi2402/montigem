@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package hardy;
 
-umlp First {
+umlp Flensburg {
 
     class Car;
 

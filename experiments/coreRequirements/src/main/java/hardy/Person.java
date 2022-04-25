@@ -41,10 +41,14 @@ public class Person extends Human implements Observable {
     
 
     // an Association: ------------------------------------------
+    // The signature is a List, even though it might have been an 
+    // unordered Association.
+    // The implementation will be a LazyList
     protected List<Car> owns;
     // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
 
-    //+ Bem: insgesamt sind es etwa 30 generierte Ftnen, von denen hier nur einige dargestellt sind
+    //+ Bem: insgesamt sind es etwa 30 generierte Ftnen, von denen hier 
+    // nur einige dargestellt sind
  
 
     public boolean removeOwns(Car o) {
@@ -57,7 +61,7 @@ public class Person extends Human implements Observable {
     }
 
     public void retainAllOwnss(Collection<Car> o) {
-        Preconditions.checkNotNull(o);
+        Preconditions.checkNotNull(o);   /// todo: Das können wir händisch besser
         Sets.difference(Sets.newHashSet(this.owns), Sets.newHashSet(o)).forEach((s) -> {
             this.removeOwns(s);
         });
@@ -66,7 +70,8 @@ public class Person extends Human implements Observable {
     public boolean removeAllOwnss(Collection<Car> o) {
         boolean success = false;
         Car element;
-        for(Iterator var3 = o.iterator(); var3.hasNext(); success &= this.removeOwns(element)) {
+        for(Iterator var3 = o.iterator(); var3.hasNext(); 
+                    success &= this.removeOwns(element)) {
             element = (Car)var3.next();
         }
         return success;
@@ -82,7 +87,7 @@ public class Person extends Human implements Observable {
     }
 
     public boolean addOwns(Car o) {
-        Preconditions.checkNotNull(o);
+        Preconditions.checkNotNull(o);          // todo: ersetzen
         if (this.owns.contains(o)) {
             return false;
         } else {
@@ -92,7 +97,7 @@ public class Person extends Human implements Observable {
     }
 
     public boolean addAllOwnss(Collection<Car> o) {
-        Preconditions.checkNotNull(o);
+        Preconditions.checkNotNull(o);          // todo: ersetzen
         boolean success = true;
         Car element;
         for(Iterator var3 = o.iterator(); var3.hasNext(); success &= this.addOwns(element)) {
@@ -137,14 +142,15 @@ public class Person extends Human implements Observable {
     // --------------------------------------------------------------------
     //+ Constructors are protected: only to be used by the Builder and Mill
 
-    //+ This constructuctor builds incorrect and models (incl. null-pointers)
-    // and should only be used by the builder
+    //+ These constructuctors build incorrect objects (incl. null-pointers)   
+    // the objects are NOT per se under Management and thus not connected to the
+    // overall infrastructure, etc.
+    // and should only be used by the builder(!)
     protected Person() {
         super();
         init();
     }
 
-    //+ This constructor is better, but still may construct invalid objects
     protected Person(int age, String nickname) {
         super(age);
         init();
