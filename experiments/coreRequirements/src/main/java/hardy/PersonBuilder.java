@@ -27,10 +27,14 @@ public class PersonBuilder extends Person {
     protected boolean nicknamePresent = false;
     protected boolean ownsPresent = false;
 
+    PersonValidator validator;
+
     // the Builder:
     //+ gemId wird bereits beim initialisieren des Builders besetzt
-    public PersonBuilder(long gemId) {
+    // und ein Validator wird auch mitgeliefert (und erstmal gespeichert)
+    public PersonBuilder(long gemId, PersonValidator validator) {
        this.gemId = gemId;
+       this.validator = validator;
        init();
     }
 
@@ -89,9 +93,13 @@ public class PersonBuilder extends Person {
     public Person build() {
       // todo: incomplete! (checks, and build dependent objects)
       if(!buildFinished) {
-        buildFinished = true;
-        // todo: add object to the Manager (for Persistence)
-        notifyObservers();      //+ an initial notification
+        if(validator.buildingCheck(this)) {
+          buildFinished = true;
+          // todo: add object to the Manager (for Persistence)
+          notifyObservers();      //+ an initial notification
+          return this;
+        else
+          // todo reject the build
       }
     }
 

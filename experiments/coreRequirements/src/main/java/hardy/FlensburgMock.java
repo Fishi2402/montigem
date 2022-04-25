@@ -46,11 +46,17 @@ public class FlensburgMock implements FlensburgManager {
   
   // get a Builder ---------------------------------------
   protected PersonBuilder _doPerson() {
-    return new PersonBuilder(_doGetFreeGemId());
+    return new PersonBuilder(_doGetFreeGemId(), thePersonValidator);
     // todo: überlegen hier schon mal das Objekt merken??? Oder Observer setzen?
   }
+  
+  // der Validator zum Builder 
+  // könnte als eigenständiges Objekt sinnvoll sein, da TOP angewandt werden kann
+  // da eher Zustandslos würde sich hier ein Singelton anbieten
+  PersonValidator thePersonValidator = new PersonValidator();
 
-  // todo: ggf. auslagern dieser Funktionen in eine generische Storage<...> Klasse
+
+  // todo: ggf. auslagern nachfolgender Funktionen in eine generische Storage<...> Klasse
   // analog zu Dex, die dann mehrfach instantiert wird
   // (man kann dann die Storage austauschen, um die Persistenz zu realisieren?)
   
