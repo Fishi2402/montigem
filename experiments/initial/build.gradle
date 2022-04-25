@@ -1,2 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 description = "Experiments: Initial Experiment"
+
+task generateJava(type: UMLPTask) {
+  group = "umlP"
+  inputDir = layout.projectDirectory.dir("models")
+  hwcDir = layout.projectDirectory.dir("hwc/")
+
+  outputDir = layout.buildDirectory.dir("generated-sources/")
+}
+build.dependsOn(generateJava)

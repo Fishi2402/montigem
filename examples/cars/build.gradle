@@ -2,7 +2,7 @@
 description 'cars example'
 
 task generateCars(type: UMLPTask) {
-    inputFile = file("src/Cars.umlp")
+    inputDir = file("src")
     outputDir = layout.buildDirectory.dir("gen")
 }
 

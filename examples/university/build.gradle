@@ -3,7 +3,7 @@
 description 'university example'
 
 task generateUniversity(type: UMLPTask) {
-    inputFile = file("src/University.umlp")
+    inputDir = file("src/models")
     outputDir = layout.buildDirectory.dir("gen")
 }
 

@@ -3,7 +3,7 @@
 description 'restaurant example'
 
 task generateRestaurantOrg(type: UMLPTask) {
-    inputFile = file("src/RestaurantOrg.umlp")
+    inputDir = file("src/models")
     outputDir = layout.buildDirectory.dir("gen")
 }
 

@@ -3,7 +3,7 @@
 description 'mediahub example'
 
 task generateMediaHub(type: UMLPTask) {
-    inputFile = file("src/MediaHub.umlp")
+    inputDir = file("src/models")
     outputDir = layout.buildDirectory.dir("gen")
 }
 

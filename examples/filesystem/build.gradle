@@ -3,7 +3,7 @@
 description 'filesystem example'
 
 task generateFileSystem(type: UMLPTask) {
-    inputFile = file("src/FileSystem.umlp")
+    inputDir = file("src/models")
     outputDir = layout.buildDirectory.dir("gen")
 }
 
