@@ -1,5 +1,4 @@
-
-# **Core Requirments** definiert durch dieses Experiment
+# **Core Requirements** definiert durch dieses Experiment
 
 Dieses Verzeichnis dient als Referenz dafür, welche Funktionalitäten 
 wir insgesamt generieren wollen und wie die handgeschriebenen 
