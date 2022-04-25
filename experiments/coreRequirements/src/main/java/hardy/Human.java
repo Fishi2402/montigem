@@ -26,9 +26,9 @@ public class Human implements Observable {
     // real object is not (yet) loaded, e.g. in the client
     //
     // -32: is an illegal value showing that an has error occurred somewhere
-    protected Long gemId = -32;
+    protected long gemId = -32;
 
-    public Long getGemId() {
+    public long getGemId() {
         return gemId;
     }
 
