@@ -16,6 +16,7 @@ package hardy;
  *
  * @see     java.util.Observable
  */
+@Deprecated
 public interface DexObserver {
     /**
      * This method is called whenever the observed object is changed. An
