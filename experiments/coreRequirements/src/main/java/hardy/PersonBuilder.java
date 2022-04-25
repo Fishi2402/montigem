@@ -27,11 +27,11 @@ public class PersonBuilder extends Person {
     protected boolean nicknamePresent = false;
     protected boolean ownsPresent = false;
 
-    public PersonBuilder() {
-       // etwa: gemId = FlensburgManager.getFreeGemId();
+    // the Builder:
+    //+ gemId wird bereits beim initialisieren des Builders besetzt
+    public PersonBuilder(long gemId) {
+       this.gemId = gemId;
        init();
-       // todo: gemId entweder hier oder beim Build definieren: Dazu Manager befragen!
-       // (ich tendiere zu hier, dann ist die gemId schon verwendbar)
     }
 
     // Standard set-Function:

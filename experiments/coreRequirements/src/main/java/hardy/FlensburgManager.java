@@ -1,5 +1,7 @@
 package hardy;
 
+//+ GEN-P        : generated for the product
+
 /*+
   Aufgaben des Managers:
   * Verwaltung aller geladenen Objekte 
@@ -54,6 +56,7 @@ public interface FlensburgManager {
 
   protected PersonBuilder _doPerson();
 
+
   //+ get an Object for an existing gemId ---------------------------------
   // absent, if Object not existent
   public static Optional<Person> personOpt(long gemId) {
@@ -62,14 +65,21 @@ public interface FlensburgManager {
 
   protected Optional<Person> _doPersonOpt(long gemId);
   
-
   //+ throwns an Exception, if no Person exists.
   //+ When unsure that one exists: use personOpt() instead
   public static Person getPersonSure(long gemId) {
     return getSingleton()._doGetPersonSure(gemId);
   }
 
-  protected Person getPersonSure();
+  protected Person _doGetPersonSure(long gemId);
 
+
+  //+ add an Object when Build is complete ---------------------------------
+  // to be called by a builder only
+  public static void addPerson(Person o) {
+    return getSingleton()._doAddPerson(Person o);
+  }
+
+  protected void _doAddPerson(Person o);
     
 }
