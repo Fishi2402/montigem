@@ -34,52 +34,67 @@ package hardy;
 
 // todo CKI: zu realisieren gemäß ublichem Singleton-Muster
 
+import java.util.Optional;
+
 public interface FlensburgManager {
 
-  // get the next free GemId -----------------------------------
-  public static long getFreeGemId() {
-    return getSingleton()._doGetFreeGemId();
-  }
+    public static FlensburgManager instance;
 
-  protected long _doGetFreeGemId();
+    // get the next free GemId -----------------------------------
+    public static long getFreeGemId() {
+        return getSingleton()._doGetFreeGemId();
+    }
 
-// todo: to be completed for other classes: Human, Car
+    protected long _doGetFreeGemId();
 
-  // ------------------------------------------- Methods for class Person
-  
-  // get a Builder ---------------------------------------
-  // todo: discuss name, Ich mag ja kürzere Namen, option wäre auch 
-  // "getPersonBuilder()" oder personBuilder()
-  public static PersonBuilder person() {
-    return getSingleton()._doPerson();
-  }
+    public static FlensburgManager getSingleton() {
+        if (instance == null) {
+            init();
+        }
+        return instance;
+    }
 
-  protected PersonBuilder _doPerson();
+    public static void init() {
+        instance = new FlensburgManager();
+    }
 
-
-  //+ get an Object for an existing gemId ---------------------------------
-  // absent, if Object not existent
-  public static Optional<Person> personOpt(long gemId) {
-    return getSingleton()._doPersonOpt(gemId);
-  }
-
-  protected Optional<Person> _doPersonOpt(long gemId);
-  
-  //+ throwns an Exception, if no Person exists.
-  //+ When unsure that one exists: use personOpt() instead
-  public static Person getPersonSure(long gemId) {
-    return getSingleton()._doGetPersonSure(gemId);
-  }
-
-  protected Person _doGetPersonSure(long gemId);
+    // todo: to be completed for other classes: Human, Car
 
 
-  //+ add an Object when Build is complete ---------------------------------
-  // to be called by a builder only
-  public static void addPerson(Person o) {
-    return getSingleton()._doAddPerson(Person o);
-  }
 
-  protected void _doAddPerson(Person o);
-    
+
+    // ------------------------------------------- Methods for class Person
+
+    // get a Builder ---------------------------------------
+    // todo: discuss name, Ich mag ja kürzere Namen, option wäre auch
+    // "getPersonBuilder()" oder personBuilder()
+    public static PersonBuilder person() {
+        return getSingleton()._doPerson();
+    }
+
+    protected PersonBuilder _doPerson();
+
+    //+ get an Object for an existing gemId ---------------------------------
+    // absent, if Object not existent
+    public static Optional<Person> personOpt(long gemId) {
+        return getSingleton()._doPersonOpt(gemId);
+    }
+
+    protected Optional<Person> _doPersonOpt(long gemId);
+
+    //+ throwns an Exception, if no Person exists.
+    //+ When unsure that one exists: use personOpt() instead
+    public static Person getPersonSure(long gemId) {
+        return getSingleton()._doGetPersonSure(gemId);
+    }
+
+    protected Person _doGetPersonSure(long gemId);
+
+    //+ add an Object when Build is complete ---------------------------------
+    // to be called by a builder only
+    public static void addPerson(Person o) {
+        getSingleton()._doAddPerson(o);
+    }
+
+    protected void _doAddPerson(Person o);
 }

@@ -19,6 +19,8 @@ package hardy;
 
 // todo CKI: zu realisieren gemäß ublichem Singleton-Muster
 
+import java.util.Optional;
+
 public class FlensburgMock implements FlensburgManager {
 
   // initializes Static Singleton with subclass

@@ -2,9 +2,7 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.Observable;
 
 /* Source:
     class Human {
@@ -14,7 +12,7 @@ import java.util.Set;
 
 // --------------------------
 
-public class Human implements Observable {
+public class Human extends Observable {
 
     // todo CKn: implements Observable komplettieren (soweit noch was zu tun ist)
 
@@ -26,10 +24,10 @@ public class Human implements Observable {
     // real object is not (yet) loaded, e.g. in the client
     //
     // -32: is an illegal value showing that an has error occurred somewhere
-    protected long gemId = -32;
+    protected long umlpId = -32;
 
-    public long getGemId() {
-        return gemId;
+    public long getUmlpId() {
+        return umlpId;
     }
 
     // an Attribute: ------------------------------------------

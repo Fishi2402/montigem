@@ -33,7 +33,7 @@ public class PersonBuilder extends Person {
     //+ gemId wird bereits beim initialisieren des Builders besetzt
     // und ein Validator wird auch mitgeliefert (und erstmal gespeichert)
     public PersonBuilder(long gemId, PersonValidator validator) {
-       this.gemId = gemId;
+       this.umlpId = gemId;
        this.validator = validator;
        init();
     }
@@ -74,6 +74,14 @@ public class PersonBuilder extends Person {
         return this.nicknamePresent;
     }
 
+    public boolean isAgePresent() {
+        return agePresent;
+    }
+
+    public boolean isOwnsPresent() {
+        return ownsPresent;
+    }
+
     // todo: selbes für die anderen beiden Booleans und buildFinished
 
 
@@ -94,17 +102,19 @@ public class PersonBuilder extends Person {
       // todo: incomplete! (checks, and build dependent objects)
       if(!buildFinished) {
         if(validator.buildingCheck(this)) {
-          buildFinished = true;
-          // todo: add object to the Manager (for Persistence)
-          notifyObservers();      //+ an initial notification
-          return this;
-        else
+            buildFinished = true;
+            // todo: add object to the Manager (for Persistence)
+            notifyObservers();      //+ an initial notification
+            return this;
+        } else {
+            throw new DataConsistencyViolationException("0xU1234: Person cannot be built.");
           // todo reject the build
+        }
       }
+      return null;
     }
 
-
-/*- Das regeln wir anders:, denn dieser Sonderfall erlaubt ja nur eine
+    /*- Das regeln wir anders:, denn dieser Sonderfall erlaubt ja nur eine
     2er Konstruktion:
       public Person build(boolean addToBidirectionalAssociation) {
 

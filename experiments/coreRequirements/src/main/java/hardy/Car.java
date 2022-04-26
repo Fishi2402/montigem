@@ -4,6 +4,7 @@ package hardy;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Observable;
 import java.util.Set;
 
 /* Source:
@@ -13,7 +14,7 @@ import java.util.Set;
 
 // --------------------------
 
-public class Car implements Observable {
+public class Car extends Observable {
 
 // Bem: This is an ordinary class, comments to the design 
 // decisions can be found at Human and Person

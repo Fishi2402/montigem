@@ -17,7 +17,7 @@ public abstract class PersonValidatorTOP {
     // sagen: es ist was zu tun
     public boolean buildingCheck(PersonBuilder o) {
       boolean result = true;
-      if (!getagePresent()) {
+      if (!o.isAgePresent()) {
         result = false;
         // short notice, e.g. fürs Webformular
         log.add("age not defined");

@@ -23,8 +23,10 @@ import java.util.*;
 
 // --------------------------
 
-public class Person extends Human implements Observable {
+public class Person extends Human {
 
+    // @BR: java.util.Observable is a class, not an interface. We have to inherit the according functionality from class Human.
+    // Maybe this is why DEx added the DexObserver and DexObservable interfaces?
     // todo CKn: implements Observable komplettieren (soweit noch was zu tun ist)
 
     // an Attribute: ------------------------------------------
