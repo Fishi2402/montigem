@@ -113,7 +113,7 @@ Kategorieren des Produkts beziehen:
       Tests, die genau zum generierten Code von `Flensburg.cd` passen und damit
       den Generator testen.
 
-* `E2E-T´ testet das Gesamtsystem (also alle Komponenten) und sind ebenfalls
+* `E2E-T` testet das Gesamtsystem (also alle Komponenten) und sind ebenfalls
       genau abhängig auf `Flensburg.cd`, die daraus generierten Klassen und auch
       die handgeschriebenen Ergänzungen abgestimmt. Handgeschrieben.
 
