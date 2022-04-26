@@ -1,7 +1,7 @@
 package hardy;
 
-//+ GEN-T        : generated for tests
-//+ GEN-P        : generated for the product (Demoversion)
+//+ GEN4T        : generated for test infrastuktur
+//+ GEN-P        : generated for the product (z.B. eine Demoversion)
 
 // auch speziell gut geeignet für TOP
 
