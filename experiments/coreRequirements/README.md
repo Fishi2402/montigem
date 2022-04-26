@@ -146,7 +146,7 @@ zu nennen:
 
 ```
         String comment;         // das ist immer nützlich
-        List<String> label;      // @todo, @forBR oder ähnliches (spezielle behandlung bei Suche u.ä.)
+        List<String> label;      // @tobedone, @forBR oder ähnliches (spezielle behandlung bei Suche u.ä.)
         (Alternativ: List<Label> label;
 ```
 
