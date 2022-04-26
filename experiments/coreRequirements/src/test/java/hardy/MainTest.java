@@ -1,5 +1,7 @@
 package hardy;
 
+//+ E2E-T        : handwritten testss
+
 import org.junit.Test;
 
 public class MainTest {

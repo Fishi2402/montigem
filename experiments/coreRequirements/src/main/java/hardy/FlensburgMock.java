@@ -1,6 +1,6 @@
 package hardy;
 
-//+ GEN-P        : generated for the product
+//+ GEN-P        : generated for the product  (Demonstrator)
 // oder:  (kann man evtl. beidseitig verwenden, zB auch um stand alone Demos zu machen, ohne DB)
 //+ GEN-T        : generated for tests
 

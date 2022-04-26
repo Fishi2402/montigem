@@ -1,5 +1,7 @@
 package hardy;
 
+//+ GEN-T        : handwritten, testet generiertes product
+
 import org.junit.Before;
 import org.junit.Test;
 

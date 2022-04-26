@@ -1,5 +1,7 @@
 package hardy;
 
+//+ HWC-P        : entry point for the product
+
 public class Main {
 
 // todo: ausbauen:

@@ -1,7 +1,7 @@
 package hardy;
 
-// oder:  (kann man evtl. verwenden, um stand alone Demos zu machen, ohne DB)
 //+ GEN-T        : generated for tests
+//+ GEN-P        : generated for the product (Demoversion)
 
 // auch speziell gut geeignet für TOP
 

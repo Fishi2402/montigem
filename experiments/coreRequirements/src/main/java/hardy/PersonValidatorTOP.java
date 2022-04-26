@@ -8,7 +8,7 @@ import java.util.*;
     it can be called on objects in building or on Objects anywhere around
         
 */
-public class PersonValidatorTOP {
+public abstract class PersonValidatorTOP {
 
     ResultLog log;     //todo: effizient gestalten, ggf. über mehrere Builder hinweg
 
