@@ -120,9 +120,11 @@ Kategorieren des Produkts beziehen:
 * `GEN4T` sind generierte Klassen, die als Testinfrastruktur dienen. 
       Zum Beispiel die Hilfe zum Aufbau von Dummy-Datensätzen oder die Einstiegsklasse
       für die JUnit-Test-Suite.
+      Sie gehören nicht zum Produkt, können aber bei `HWC-PT`, `HWC-GT` und `E2E-T`
+      Tests hilfreich eingesetzt werden. 
 
 * `RTE4T` sind handgeschriebene Klassen, die als RTE der Testinfrastruktur dienen. 
-      Sie gehören nicht zum Produkt, können aber bei Tests hilfreich eingesetzt werden. 
+      Sie gehören wie `GEN4T` nicht zum Produkt. 
 
 Beobachtungen:
 
