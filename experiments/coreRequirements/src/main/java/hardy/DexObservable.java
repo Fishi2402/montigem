@@ -48,6 +48,7 @@ package hardy;
  * @see     java.util.Observer
  * @see     java.util.Observer#update(java.util.Observable, Object)
  */
+@Deprecated
 public interface DexObservable {
 
     /**

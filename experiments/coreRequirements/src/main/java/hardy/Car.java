@@ -1,10 +1,10 @@
 package hardy;
 
-import com.google.common.base.Preconditions;
+//+ GEN-P        : generated for the product
 
-import java.util.*;
-
-import static com.google.common.base.Objects.toStringHelper;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /* Source:
 
@@ -13,50 +13,18 @@ import static com.google.common.base.Objects.toStringHelper;
 
 // --------------------------
 
-public class Car implements DexObservable {
+public class Car implements Observable {
 
-    protected Long gemId;
+// Bem: This is an ordinary class, comments to the design 
+// decisions can be found at Human and Person
 
-    private Set<DexObserver> observers = new HashSet();
+    protected long gemId = -34;
 
     protected Car() {
     }
 
-    public Car build() {
-        return this;
-    }
-
-    public Long getGemId() {
+    public long getGemId() {
         return this.gemId;
     }
 
-    @Override
-    public void addObserver(DexObserver observer) {
-        this.observers.add(observer);
-    }
-
-    @Override
-    public void deleteObserver(DexObserver observer) {
-        this.observers.remove(observer);
-    }
-
-    @Override
-    public void deleteObservers() {
-        this.observers.clear();
-    }
-
-    @Override
-    public void notifyObservers() {
-        this.notifyObservers((Object)null);
-    }
-
-    @Override
-    public void notifyObservers(Object argument) {
-        Iterator var2 = this.observers.iterator();
-
-        while(var2.hasNext()) {
-            DexObserver o = (DexObserver)var2.next();
-            o.update(this, argument);
-        }
-    }
 }

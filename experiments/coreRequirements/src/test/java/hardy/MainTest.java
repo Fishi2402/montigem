@@ -1,9 +1,12 @@
 package hardy;
 
+//+ E2E-T        : handwritten testss
+
 import org.junit.Test;
 
 public class MainTest {
 
+// todo: ordentlich ausbauen und Unit Tests, zeitnah
 
 
     @Test

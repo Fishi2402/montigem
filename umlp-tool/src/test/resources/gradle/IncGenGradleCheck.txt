@@ -1,0 +1,4 @@
+mc4:models/InputFile.umlp 3063b8c69bba20ab47131e5a9fb96967
+gen:hwc/de/HWCFile.java
+out:target\generated-sources\Output1.java
+out:target\generated-sources\Output2.java

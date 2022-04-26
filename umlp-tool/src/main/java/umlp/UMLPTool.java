@@ -97,13 +97,16 @@ public class UMLPTool extends UMLPToolTOP {
               reportDir.getPath(), hwcPath);
 
       Reporting.init(outDir.getPath(), reportDir.getPath(), reportManagerFactory);
-      Reporting.on(inputFile.getName().replace(".","__"));  // TODO: Is this name unique? Should it be unique?
+      String report_on = inputFile.getName().replace(".","__");   // TODO: Is this name unique? Should it be unique?
+      Reporting.on(report_on);
 
 
         ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
 
       // parse, create symbol table, check all cocos
       ASTUMLPCompilationUnit ast = parse(inputFile.getPath());
+      Reporting.reportParseInputFile(inputFile.toPath(), report_on);
+
       runAfterParseTrafo(ast);
       IUMLPArtifactScope symbolTable = createSymbolTable(ast);
       runDefaultCoCos(ast);
