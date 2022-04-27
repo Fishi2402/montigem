@@ -1,11 +1,10 @@
 // (c) https://github.com/MontiCore/monticore
 package umlp.util;
 
-import groovy.lang.MetaClassImpl;
-
 import java.util.AbstractList;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -15,13 +14,13 @@ import java.util.Map;
  */
 public class LazyList<E> extends AbstractList<E> {
 
-  protected Map<Integer, E> loadedObjects = new HashMap<>();
+  List<Long> listOfIDs = new LinkedList<>();
 
-  protected Integer sizeOfList;
+  protected Map<Long, E> loadedObjects = new HashMap<>();
 
   @Override
   public int size() {
-    return sizeOfList;
+    return getListOfIDs().size();
   }
 
   @Override
@@ -30,14 +29,14 @@ public class LazyList<E> extends AbstractList<E> {
     if(!isLoaded(idx)) {
       loadObjects(idx, idx);
     }
-    return loadedObjects.get(idx);
+    return loadedObjects.get(getListOfIDs().get(idx));
   }
 
   @Override
   public E set(int idx, E elem) {
     assertIdxInBounds(idx);
     E oldElem = get(idx);
-    loadedObjects.put(idx, elem);
+    loadedObjects.put(getUMLPId(elem), elem);
     //todo implement when interface to load models is available
     return oldElem;
   }
@@ -57,11 +56,15 @@ public class LazyList<E> extends AbstractList<E> {
     return elem;
   }
 
-  protected boolean isLoaded(int idx) {
-    return loadedObjects.containsKey(idx);
+  protected boolean isLoaded(int idx){
+    return isLoaded(getListOfIDs().get(idx));
   }
 
-  protected void loadObjects(int startIdx, int endIdx) {
+  protected boolean isLoaded(Long id) {
+    return loadedObjects.containsKey(id);
+  }
+
+  protected void loadObjects(int start, int endIdx) {
     //todo implement when interface to load models is available
   }
 
@@ -73,5 +76,15 @@ public class LazyList<E> extends AbstractList<E> {
     if (idx < 0 || idx >= size()) {
       throw new IndexOutOfBoundsException();
     }
+  }
+
+  protected List<Long> getListOfIDs() {
+    return listOfIDs;
+  }
+
+  protected Long getUMLPId(E elem) {
+    //todo get new id? or has the element an ID? -> would require interface
+    //todo implement when interface to load models is available
+    return -32l;
   }
 }
