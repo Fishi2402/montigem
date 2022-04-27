@@ -1,7 +1,10 @@
 // (c) https://github.com/MontiCore/monticore
 package umlp.util;
 
+import groovy.lang.MetaClassImpl;
+
 import java.util.AbstractList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,10 +26,35 @@ public class LazyList<E> extends AbstractList<E> {
 
   @Override
   public E get(int idx) {
+    assertIdxInBounds(idx);
     if(!isLoaded(idx)) {
       loadObjects(idx, idx);
     }
     return loadedObjects.get(idx);
+  }
+
+  @Override
+  public E set(int idx, E elem) {
+    assertIdxInBounds(idx);
+    E oldElem = get(idx);
+    loadedObjects.put(idx, elem);
+    //todo implement when interface to load models is available
+    return oldElem;
+  }
+
+  @Override
+  public void add(int idx, E elem) {
+    if (idx < 0 || idx > size()) {
+      throw new IndexOutOfBoundsException();
+    }
+    //todo implement when interface to load models is available
+  }
+
+  @Override
+  public E remove(int idx) {
+    E elem = get(idx);
+    //todo implement when interface to load models is available
+    return elem;
   }
 
   protected boolean isLoaded(int idx) {
@@ -41,4 +69,9 @@ public class LazyList<E> extends AbstractList<E> {
     loadObjects(0, size() - 1);
   }
 
+  protected void assertIdxInBounds(int idx) {
+    if (idx < 0 || idx >= size()) {
+      throw new IndexOutOfBoundsException();
+    }
+  }
 }
