@@ -15,7 +15,7 @@ public class FlensburgDummies {
 
   // really handwritten
   // could we generate such a half way intelligent dummy set?
-  public inventDummiesOne() {
+  public void inventDummiesOne() {
   
     FlensburgMock.init();
     FlensburgMock.secretlyAdaptnextGemIds(1101);
@@ -49,9 +49,9 @@ public class FlensburgDummies {
   } 
     
   // really handwritten
-  public inventDummiesTwo(int number) {
+  public void inventDummiesTwo(int number) {
     FlensburgMock.init();
-    for(i = 1; i < number; i++) {
+    for(int i = 1; i < number; i++) {
 
       Car o1 = FlensburgManager.car().build();
     
@@ -64,5 +64,29 @@ public class FlensburgDummies {
       // todo: Ausbauoption: variable Menge von Cars
       // (das erfordert insgesamt Smartness beim generieren, um sinnvolle graphen zu bauen)
     }
+  }
+
+  // How a generated method could look like
+  // alternative: numberOfObjects
+  public void inventDummiesGenerated(
+      int numberOfPersonInstances,
+      int numberOfCarInstance,
+      int numberOfHumanInstances // excluding Persons?
+      // TODO: some way to influence associations?
+  ){
+    for (int i = 0; i < numberOfPersonInstances; i++) {
+      FlensburgDummyManager.inventPerson();
+    }
+
+    for (int i = 0; i < numberOfCarInstance; i++) {
+      FlensburgDummyManager.inventCar();
+    }
+
+    // Since every Car needs a Person, the parameter numberOfPersonOwnsCar can be omitted
+    // Maybe this should be done in FlensburgDummyManager.inventCar?
+    // - But: would be a special case, for "* <-> *" this would not be needed
+    FlensburgDummyManager.inventPersonOwnsCar(numberOfCarInstance);
+
+    // TODO: how do we guarantee that the generated object structure is an instance of the class diagram
   }
 }
