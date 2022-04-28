@@ -17,15 +17,16 @@ package hardy;
   
 */
 
-// todo CKI: zu realisieren gemäß ublichem Singleton-Muster
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
-public class FlensburgMock implements FlensburgManager {
+public class FlensburgMock extends FlensburgManager {
 
   // initializes Static Singleton with subclass
-  public static init() {
-    FlensburgManager.init(new FlensburgMock());
+  public static void init() {
+    instance = new FlensburgMock();
   }
 
   // get the next free GemId -----------------------------------
@@ -34,7 +35,7 @@ public class FlensburgMock implements FlensburgManager {
   
   //+ geheimes Hilfsmethode um gemId's für tests zu 
   // manipulieren (wenn notwendig)
-  public static secretlyAdaptnextGemIds(long gemId) {
+  public static void secretlyAdaptnextGemIds(long gemId) {
     freeGemId = gemId;
   }
   
@@ -51,8 +52,8 @@ public class FlensburgMock implements FlensburgManager {
     return new PersonBuilder(_doGetFreeGemId(), thePersonValidator);
     // todo: überlegen hier schon mal das Objekt merken??? Oder Observer setzen?
   }
-  
-  // der Validator zum Builder 
+
+  // der Validator zum Builder
   // könnte als eigenständiges Objekt sinnvoll sein, da TOP angewandt werden kann
   // da eher Zustandslos würde sich hier ein Singelton anbieten
   PersonValidator thePersonValidator = new PersonValidator();
@@ -64,27 +65,27 @@ public class FlensburgMock implements FlensburgManager {
   
   
   //+ get an Object for an existing gemId ---------------------------------
-  // absent, if Object not existent
+  // empty, if Object not existent
   protected Optional<Person> _doPersonOpt(long gemId) {
-    if(persons.has(gemId)) 
-      return Optional.value(persons.get(gemId));
+    if(persons.containsKey(gemId))
+      return Optional.of(persons.get(gemId));
     else
-      return Optional.absent();
+      return Optional.empty();
   }
-  
-  //+ throwns an Exception, if no Person exists.
-  protected Person getPersonSure(long gemId) {
-    return persons.get(gemId);
-    // potentially announce a warning here is missing (although we are in a dummy class
+
+  //+ throws an Exception, if no Person exists.
+  @Override
+  protected Person _doGetPersonSure(long gemId) {
+    return Objects.requireNonNull(persons.get(gemId), "Person with id " + gemId + " is unknown!");
   }
 
   //+ add an Object when Build is complete ---------------------------------
   // Manages a Map<Long, Object>  for each class
     
-  protected Map<long,Person> persons = emptyMap(); 
+  protected Map<Long,Person> persons = new HashMap<>();
 
   protected void _doAddPerson(Person o) {
-    persons.add(o);
+    persons.put(o.getUmlpId(), o);
   } 
     
 }

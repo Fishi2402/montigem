@@ -4,23 +4,8 @@ package hardy;
 
 import java.util.Optional;
 
-public class FlensburgManagerImpl implements FlensburgManager {
-
-    private static FlensburgManager instance;
-
-    // get the next free GemId -----------------------------------
-    public static long getFreeGemId() {
-        return getSingleton()._doGetFreeGemId();
-    }
-
+public class FlensburgManagerImpl extends FlensburgManager {
     protected long _doGetFreeGemId();
-
-    public static FlensburgManagerImpl getSingleton() {
-        if (instance == null) {
-            init();
-        }
-        return instance;
-    }
 
     public static void init() {
         instance = new FlensburgManagerImpl();

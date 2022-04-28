@@ -36,8 +36,7 @@ package hardy;
 
 import java.util.Optional;
 
-public interface FlensburgManager {
-
+public abstract class FlensburgManager {
     public static FlensburgManager instance;
 
     // get the next free GemId -----------------------------------
@@ -45,7 +44,9 @@ public interface FlensburgManager {
         return getSingleton()._doGetFreeGemId();
     }
 
-    protected long _doGetFreeGemId();
+    protected long _doGetFreeGemId(){
+        throw new RuntimeException("TODO AHe: implement");
+    }
 
     public static FlensburgManager getSingleton() {
         if (instance == null) {
@@ -55,7 +56,8 @@ public interface FlensburgManager {
     }
 
     public static void init() {
-        instance = new FlensburgManager();
+        // TODO AHe: should FlensburgManagerImpl be used instead? Then remove this method
+        instance = new FlensburgManagerImpl();
     }
 
     // todo: to be completed for other classes: Human, Car
@@ -72,15 +74,15 @@ public interface FlensburgManager {
         return getSingleton()._doPerson();
     }
 
-    protected PersonBuilder _doPerson();
+    protected abstract PersonBuilder _doPerson();
 
     //+ get an Object for an existing gemId ---------------------------------
-    // absent, if Object not existent
+    // empty, if Object not existent
     public static Optional<Person> personOpt(long gemId) {
         return getSingleton()._doPersonOpt(gemId);
     }
 
-    protected Optional<Person> _doPersonOpt(long gemId);
+    protected abstract Optional<Person> _doPersonOpt(long gemId);
 
     //+ throwns an Exception, if no Person exists.
     //+ When unsure that one exists: use personOpt() instead
@@ -88,7 +90,7 @@ public interface FlensburgManager {
         return getSingleton()._doGetPersonSure(gemId);
     }
 
-    protected Person _doGetPersonSure(long gemId);
+    protected abstract Person _doGetPersonSure(long gemId);
 
     //+ add an Object when Build is complete ---------------------------------
     // to be called by a builder only
@@ -96,5 +98,5 @@ public interface FlensburgManager {
         getSingleton()._doAddPerson(o);
     }
 
-    protected void _doAddPerson(Person o);
+    protected abstract void _doAddPerson(Person o);
 }
