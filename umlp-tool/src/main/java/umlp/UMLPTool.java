@@ -11,10 +11,7 @@ import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
+import org.apache.commons.cli.*;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
@@ -155,11 +152,13 @@ public class UMLPTool extends UMLPToolTOP {
 
       // write reports
       Reporting.flush(ast);
-      UMLPMill.globalScope().clear();
     }
-    catch (Exception e) {
-      Log.error("0xB005 An exception occured while processing the CLI input!", e);
+    catch (ParseException e) {
       printHelp(options);
+      Log.error("0xB005 An exception occurred while processing the CLI input!", e);
+    } finally {
+      UMLPMill.globalScope().clear();
+      Reporting.off();
     }
   }
 
