@@ -1,3 +1,5 @@
+import org.apache.commons.io.FileUtils
+
 /* (c) https://github.com/MontiCore/monticore */
 description = "Experiments: Initial Experiment"
 
@@ -7,5 +9,66 @@ task generateJava(type: UMLPTask) {
   hwcDir = layout.projectDirectory.dir("hwc/")
 
   outputDir = layout.buildDirectory.dir("generated-sources/")
+  outputs.cacheIf { false } // This task is used to TEST THE CACHE! So it shouldn't be cached
 }
-build.dependsOn(generateJava)
+
+
+task copyInputDir(type: Copy) {
+  dependsOn generateJava
+
+  from generateJava.inputDir
+  into layout.buildDirectory.dir("repro_test/inputDir/")
+}
+task copyHWCDir(type: Copy) {
+  dependsOn generateJava
+
+  from generateJava.hwcDir
+  into layout.buildDirectory.dir("repro_test/hwcDir/")
+}
+
+
+task generateJava_second_run(type: UMLPTask) {
+  dependsOn copyInputDir
+  dependsOn copyHWCDir
+
+  inputDir = copyInputDir.getDestinationDir()
+  hwcDir = copyHWCDir.getDestinationDir()
+
+  outputDir = layout.buildDirectory.dir("repro_test/output")
+  outputs.cacheIf { false } // This task is used to TEST THE CACHE! So it shouldn't be cached
+}
+
+task checkEquality(type: CheckDirEquality){
+  dir1 = generateJava.outputDir
+  dir2 = generateJava_second_run.outputDir
+}
+
+build.dependsOn(checkEquality)
+
+
+
+
+
+abstract class CheckDirEquality extends DefaultTask {
+  @Input
+  abstract DirectoryProperty getDir1()
+
+  @Input
+  abstract DirectoryProperty getDir2()
+
+  @TaskAction
+  def greet() {
+    java.io.File dir1 = getDir1().asFile.get();
+    java.io.File dir2 = getDir2().asFile.get();
+    for (File f1 : FileUtils.listFiles(dir1, null, true)) {
+      if (f1.isFile()) {
+        String relPath1 = dir1.toPath().relativize(f1.toPath()).toString();
+        File f2 = java.nio.file.Paths.get(dir2.toString(), relPath1).toFile();
+        if (!FileUtils.contentEquals(f1, f2)) {
+          throw new java.lang.RuntimeException("Generated Files are not equal! Gradle Task cannot be cached! \n" +
+              "\t " + f1.toPath() + "\n\t " + f2.toPath())
+        }
+      }
+    }
+  }
+}
