@@ -139,6 +139,38 @@ public abstract class FlensburgManager {
     protected abstract Collection<Human> _doGetHumanList();
 
 
+    // ------------------------------------------- Methods for class Address
+    public static AddressBuilder address() {
+        return getSingleton()._doAddress();
+    }
+
+    protected abstract AddressBuilder _doAddress();
+
+    public static Optional<Address> addressOpt(long gemId) {
+        return getSingleton()._doAddressOpt(gemId);
+    }
+
+    protected abstract Optional<Address> _doAddressOpt(long gemId);
+
+    public static Address getAddressSure(long gemId) {
+        return getSingleton()._doGetAddressSure(gemId);
+    }
+
+    protected abstract Address _doGetAddressSure(long gemId);
+
+    public static void addAddress(Address o) {
+        getSingleton()._doAddAddress(o);
+    }
+
+    protected abstract void _doAddAddress(Address o);
+
+    protected static Collection<Address> getAddressList() {
+        return getSingleton()._doGetAddressList();
+    }
+
+    protected abstract Collection<Address> _doGetAddressList();
+
+
     // ------------------------------------------- Methods for class Car
     public static CarBuilder car() {
         return getSingleton()._doCar();
