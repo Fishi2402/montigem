@@ -34,6 +34,7 @@ package hardy;
 
 // todo CKI: zu realisieren gemäß ublichem Singleton-Muster
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,6 +100,12 @@ public abstract class FlensburgManager {
 
     protected abstract void _doAddPerson(Person o);
 
+    protected static Collection<Person> getPersonList() {
+        return getSingleton()._doGetPersonList();
+    }
+
+    protected abstract Collection<Person> _doGetPersonList();
+
 
     // ------------------------------------------- Methods for class Human
     public static HumanBuilder human() {
@@ -124,6 +131,12 @@ public abstract class FlensburgManager {
     }
 
     protected abstract void _doAddHuman(Human o);
+
+    protected static Collection<Human> getHumanList() {
+        return getSingleton()._doGetHumanList();
+    }
+
+    protected abstract Collection<Human> _doGetHumanList();
 
 
     // ------------------------------------------- Methods for class Car
