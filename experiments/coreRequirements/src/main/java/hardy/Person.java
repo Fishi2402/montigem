@@ -166,6 +166,7 @@ public class Person extends Human {
         super.init();
         nickname = "";
         // todo FDr, CKn: use LazyList here
+
         owns = new LinkedList<>();
     }
 

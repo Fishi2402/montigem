@@ -6,17 +6,28 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /*
  * A lazy list
  * Elements are loaded as they are required.
  * Useful if e.g. the elements are loaded over a network.
+ * Deprecated, as specific lists will be generated accordingly
  */
 public class LazyList<E> extends AbstractList<E> {
 
   List<Long> listOfIDs = new LinkedList<>();
 
-  protected Map<Long, E> loadedObjects = new HashMap<>();
+  protected Map<Long, LazyListElement<E>> loadedObjects = new HashMap<>();
+
+  protected Function<Long, LazyListElement<E>> loadFunction;
+  //new id
+  //load ids / update (observer?)
+  //C(R)UD
+
+  public LazyList(Function<Long, LazyListElement<E>> loadFunction) {
+    this.loadFunction = loadFunction;
+  }
 
   @Override
   public int size() {
@@ -27,7 +38,7 @@ public class LazyList<E> extends AbstractList<E> {
   public E get(int idx) {
     assertIdxInBounds(idx);
     if(!isLoaded(idx)) {
-      loadObjects(idx, idx);
+      loadObject(idx);
     }
     return loadedObjects.get(getListOfIDs().get(idx));
   }
@@ -64,7 +75,10 @@ public class LazyList<E> extends AbstractList<E> {
     return loadedObjects.containsKey(id);
   }
 
-  protected void loadObjects(int start, int endIdx) {
+  protected void loadObject(int idx) {
+    get
+    LazyListElement<E> elem = loadFunction.apply(idx);
+
     //todo implement when interface to load models is available
   }
 

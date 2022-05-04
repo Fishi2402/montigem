@@ -34,6 +34,7 @@ package hardy;
 
 // todo CKI: zu realisieren gemäß ublichem Singleton-Muster
 
+import java.util.List;
 import java.util.Optional;
 
 public abstract class FlensburgManager {
@@ -98,5 +99,55 @@ public abstract class FlensburgManager {
         getSingleton()._doAddPerson(o);
     }
 
-    protected abstract void _doAddPerson(Person o);
+    protected void _doAddPerson(Person o);
+
+  public static CarBuilder car() {
+    return getSingleton()._doCar();
+  }
+
+  protected CarBuilder _doCar();
+
+  public static Optional<Car> carOpt(long gemId) {
+    return getSingleton()._doCarOpt(gemId);
+  }
+
+  protected Optional<Car> _doCarOpt(long gemId);
+
+  public static Person getCarSure(long gemId) {
+    return getSingleton()._doGetCarSure(gemId);
+  }
+
+  protected Person _doGetCarSure(long gemId);
+
+  public static void addCar(Car o) {
+    getSingleton()._doAddCar(o);
+  }
+
+  protected void _doAddCar(Car o);
+
+    //same methods as for Person but with Lists of Cars:
+    protected List<Car> cars() {
+      return getSingleton()._doCars();
+    }
+
+    protected  List<Car> _doCars();
+
+    public static List<Car> getCarsSure(long gemId) {
+      return getSingleton()._doGetCarsSure(gemId);
+    }
+
+    protected List<Car> _doGetCarsSure(long gemId);
+
+    public static List<Car> carsOpt(long gemId) {
+      return getSingleton()._doCarsOpt(gemId);
+    }
+
+    protected List<Car> _doCarsOpt(long gemId);
+
+    public static void addCars(CarList o) {
+      getSingleton()._doAddCars(o);
+    }
+
+    protected void _doAddCars(CarList o);
+
 }
