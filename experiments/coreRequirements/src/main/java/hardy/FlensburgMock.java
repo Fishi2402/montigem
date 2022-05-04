@@ -17,10 +17,7 @@ package hardy;
   
 */
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class FlensburgMock extends FlensburgManager {
 
@@ -46,7 +43,11 @@ public class FlensburgMock extends FlensburgManager {
 // todo: to be completed for other classes: Human, Car
 
   // ------------------------------------------- Methods for class Person
-  
+
+  // Manages a Map<Long, Object>  for each class
+
+  protected Map<Long,Person> persons = new HashMap<>();
+
   // get a Builder ---------------------------------------
   protected PersonBuilder _doPerson() {
     return new PersonBuilder(_doGetFreeGemId(), thePersonValidator);
@@ -62,8 +63,7 @@ public class FlensburgMock extends FlensburgManager {
   // todo: ggf. auslagern nachfolgender Funktionen in eine generische Storage<...> Klasse
   // analog zu Dex, die dann mehrfach instantiert wird
   // (man kann dann die Storage austauschen, um die Persistenz zu realisieren?)
-  
-  
+
   //+ get an Object for an existing gemId ---------------------------------
   // empty, if Object not existent
   protected Optional<Person> _doPersonOpt(long gemId) {
@@ -80,12 +80,71 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   //+ add an Object when Build is complete ---------------------------------
-  // Manages a Map<Long, Object>  for each class
-    
-  protected Map<Long,Person> persons = new HashMap<>();
 
   protected void _doAddPerson(Person o) {
     persons.put(o.getGemId(), o);
-  } 
-    
+  }
+
+  @Override
+  protected Collection<Person> _doGetPersonList() {
+    return persons.values();
+  }
+
+  // --- Class Human ---
+  protected Map<Long, Human> humans = new HashMap<>();
+  protected HumanValidator theHumanValidator = new HumanValidator();
+
+  @Override
+  protected HumanBuilder _doHuman() {
+    return new HumanBuilder(getFreeGemId(), theHumanValidator);
+  }
+
+  @Override
+  protected Optional<Human> _doHumanOpt(long gemId) {
+    return Optional.ofNullable(humans.getOrDefault(gemId, null));
+  }
+
+  @Override
+  protected Human _doGetHumanSure(long gemId) {
+    return Objects.requireNonNull(humans.get(gemId));
+  }
+
+  @Override
+  protected void _doAddHuman(Human o) {
+    humans.put(o.gemId, o);
+  }
+
+  @Override
+  protected Collection<Human> _doGetHumanList() {
+    return humans.values();
+  }
+
+  // --- Class Car ---
+  protected Map<Long, Car> cars = new HashMap<>();
+  protected CarValidator theCarValidator = new CarValidator();
+
+  @Override
+  protected CarBuilder _doCar() {
+    return new CarBuilder(getFreeGemId(), theCarValidator);
+  }
+
+  @Override
+  protected Optional<Car> _doCarOpt(long gemId) {
+    return Optional.ofNullable(cars.getOrDefault(gemId, null));
+  }
+
+  @Override
+  protected Car _doGetCarSure(long gemId) {
+    return Objects.requireNonNull(cars.get(gemId));
+  }
+
+  @Override
+  protected void _doAddCar(Car o) {
+    cars.put(o.gemId, o);
+  }
+
+  @Override
+  protected Collection<Car> _doGetCarList() {
+    return cars.values();
+  }
 }

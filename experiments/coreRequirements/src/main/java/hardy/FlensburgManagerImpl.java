@@ -101,7 +101,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected Person _doGetCarSure(long gemId) {
+    protected Car _doGetCarSure(long gemId) {
         return null;
     }
 
@@ -111,22 +111,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected List<Car> _doCars() {
+    protected Collection<Car> _doGetCarList() {
         return null;
-    }
-
-    @Override
-    protected List<Car> _doGetCarsSure(long gemId) {
-        return null;
-    }
-
-    @Override
-    protected List<Car> _doCarsOpt(long gemId) {
-        return null;
-    }
-
-    @Override
-    protected void _doAddCars(List<Car> o) {
-
     }
 }

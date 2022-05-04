@@ -152,11 +152,11 @@ public abstract class FlensburgManager {
 
     protected abstract Optional<Car> _doCarOpt(long gemId);
 
-    public static Person getCarSure(long gemId) {
+    public static Car getCarSure(long gemId) {
         return getSingleton()._doGetCarSure(gemId);
     }
 
-    protected abstract Person _doGetCarSure(long gemId);
+    protected abstract Car _doGetCarSure(long gemId);
 
     public static void addCar(Car o) {
         getSingleton()._doAddCar(o);
@@ -164,28 +164,9 @@ public abstract class FlensburgManager {
 
     protected abstract void _doAddCar(Car o);
 
-    //same methods as for Person but with Lists of Cars:
-    protected List<Car> cars() {
-        return getSingleton()._doCars();
+    public static Collection<Car> getCarList() {
+        return getSingleton()._doGetCarList();
     }
 
-    protected abstract List<Car> _doCars();
-
-    public static List<Car> getCarsSure(long gemId) {
-        return getSingleton()._doGetCarsSure(gemId);
-    }
-
-    protected abstract List<Car> _doGetCarsSure(long gemId);
-
-    public static List<Car> carsOpt(long gemId) {
-        return getSingleton()._doCarsOpt(gemId);
-    }
-
-    protected abstract List<Car> _doCarsOpt(long gemId);
-
-    public static void addCars(List<Car> o) {
-        getSingleton()._doAddCars(o);
-    }
-
-    protected abstract void _doAddCars(List<Car> o);
+    protected abstract Collection<Car> _doGetCarList();
 }
