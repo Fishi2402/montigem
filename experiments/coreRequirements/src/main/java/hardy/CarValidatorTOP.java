@@ -5,7 +5,7 @@ package hardy;
 // TODO: siehe Klasse PersonValidatorTOP
 public abstract class CarValidatorTOP {
 
-    ResultLog log;
+    ResultLog log = new ResultLog();
 
     public boolean buildingCheck(CarBuilder o) {
       boolean result = true;

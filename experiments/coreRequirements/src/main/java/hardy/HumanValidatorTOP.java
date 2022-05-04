@@ -5,7 +5,7 @@ package hardy;
 // TODO: siehe Klasse PersonValidatorTOP
 public abstract class HumanValidatorTOP {
 
-    ResultLog log;
+    ResultLog log = new ResultLog();
 
     public boolean buildingCheck(HumanBuilder o) {
       boolean result = true;

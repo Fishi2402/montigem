@@ -10,7 +10,7 @@ import java.util.*;
 */
 public abstract class PersonValidatorTOP {
 
-    ResultLog log;     //todo: effizient gestalten, ggf. über mehrere Builder hinweg
+    ResultLog log = new ResultLog();     //todo: effizient gestalten, ggf. über mehrere Builder hinweg
 
     //+buildingCheck wird benutzt vom Builder 
     // zB via einem Webformular um Nutzer zu 
@@ -22,7 +22,13 @@ public abstract class PersonValidatorTOP {
         // short notice, e.g. fürs Webformular
         log.add("age not defined");
       }
-      // todo: analog für beide anderen attribute
+      if (!o.isNicknamePresent()) {
+        result = false;
+        // short notice, e.g. fürs Webformular
+        log.add("nickname not defined");
+      }
+
+      // todo: analog für owns?
       result &= extraBuildingChecks( o, log);
       return result;
     }

@@ -91,6 +91,31 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
+    protected AddressBuilder _doAddress() {
+        return null;
+    }
+
+    @Override
+    protected Optional<Address> _doAddressOpt(long gemId) {
+        return Optional.empty();
+    }
+
+    @Override
+    protected Address _doGetAddressSure(long gemId) {
+        return null;
+    }
+
+    @Override
+    protected void _doAddAddress(Address o) {
+
+    }
+
+    @Override
+    protected Collection<Address> _doGetAddressList() {
+        return null;
+    }
+
+    @Override
     protected CarBuilder _doCar() {
         return null;
     }

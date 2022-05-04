@@ -119,6 +119,35 @@ public class FlensburgMock extends FlensburgManager {
     return humans.values();
   }
 
+  // --- Address class ---
+  protected Map<Long, Address> addresses = new HashMap<>();
+  protected AddressValidator theAddressValidator = new AddressValidator();
+
+  @Override
+  protected AddressBuilder _doAddress() {
+    return new AddressBuilder(getFreeGemId(), theAddressValidator);
+  }
+
+  @Override
+  protected Optional<Address> _doAddressOpt(long gemId) {
+    return Optional.ofNullable(addresses.getOrDefault(gemId, null));
+  }
+
+  @Override
+  protected Address _doGetAddressSure(long gemId) {
+    return Objects.requireNonNull(addresses.get(gemId));
+  }
+
+  @Override
+  protected void _doAddAddress(Address o) {
+    addresses.put(o.gemId, o);
+  }
+
+  @Override
+  protected Collection<Address> _doGetAddressList() {
+    return addresses.values();
+  }
+
   // --- Class Car ---
   protected Map<Long, Car> cars = new HashMap<>();
   protected CarValidator theCarValidator = new CarValidator();

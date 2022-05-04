@@ -57,6 +57,8 @@ public class FlensburgDummyManager {
   }
 
   protected void _inventPersonOwnsCar(int count) {
+    // TODO AHe: rewrite with available methods
+    /*
     // Get instances of Person and Car that can be associated with each other
     // - For "1 -> *":
     //   - Get Cars without a Person
@@ -77,7 +79,7 @@ public class FlensburgDummyManager {
     // TODO AHe: loading all when only a subset is needed is slow
     // Alt: get number of persons, choose random index
     // - But: Not easily possible if filtering is needed
-    List<Person> validPersons = FlensburgManager.getPersonList();
+    Collection<Person> validPersons = FlensburgManager.getPersonList();
 
     // TODO AHe: maybe assert there are enough cars
 
@@ -88,6 +90,7 @@ public class FlensburgDummyManager {
       person.addOwns(car);
       // TODO AHe: write back to FlensburgManager?
     }
+     */
   }
 
   protected Person _inventPerson(){
