@@ -69,9 +69,8 @@ public class Person extends Human {
     // (makes the system robust, but shadows potential errors for a while)
     protected void init() {
         super.init();
-        nickname = "";
+        this.nickname = "";
         // todo FDr, CKn: use LazyList here
-
         owns = new LinkedList<>();
     }
 
@@ -89,7 +88,11 @@ public class Person extends Human {
     }
 
     public void setMainResidence(Address mainResidence) {
-        this.mainResidence.set(mainResidence);
+        if (this.mainResidence == null) {
+            this.mainResidence = new Gem<Address>(mainResidence);
+        } else {
+            this.mainResidence.set(mainResidence);
+        }
     }
 
     public boolean removeOwns(Car o) {
