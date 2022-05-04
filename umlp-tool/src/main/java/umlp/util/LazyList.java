@@ -1,12 +1,21 @@
 // (c) https://github.com/MontiCore/monticore
 package umlp.util;
 
+import de.se_rwth.commons.logging.Log;
+
 import java.util.AbstractList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /*
  * A lazy list
@@ -16,39 +25,73 @@ import java.util.function.Function;
  */
 public class LazyList<E> extends AbstractList<E> {
 
-  List<Long> listOfIDs = new LinkedList<>();
+  protected final static String UNEXPECTED_LIST_LENGTH_ERROR =
+      "0xAC724 recieved list of unexpected length";
 
-  protected Map<Long, LazyListElement<E>> loadedObjects = new HashMap<>();
+  protected final static int UNKNOWN_SIZE = -32;
 
-  protected Function<Long, LazyListElement<E>> loadFunction;
-  //new id
-  //load ids / update (observer?)
-  //C(R)UD
+  protected final static int INITIAL_LOAD_SIZE = 10;
 
-  public LazyList(Function<Long, LazyListElement<E>> loadFunction) {
-    this.loadFunction = loadFunction;
+  protected int size = UNKNOWN_SIZE;
+
+  protected Map<Integer, Long> idx2IDMap = new HashMap<>();
+
+  protected Map<Long, LazyListElement<E>> id2ObjectMap = new HashMap<>();
+
+  protected Supplier<Integer> loadSizeFunction;
+
+  protected BiFunction<Integer, Integer, List<Long>> loadIDsFunction;
+
+  protected Function<List<Long>, List<LazyListElement<E>>> loadObjectsFunction;
+
+  protected Consumer<Map<Integer, Long>> setIdxsFunction;
+
+  protected BiConsumer<Integer, List<Long>> addIDsFunction;
+
+  protected Consumer<Set<Integer>> removeIdxsFunction;
+
+  public LazyList(
+      Supplier<Integer> loadSizeFunction,
+      BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
+      Function<List<Long>, List<LazyListElement<E>>> loadObjectsFunction,
+      Consumer<Map<Integer, Long>> setIdxsFunction,
+      BiConsumer<Integer, List<Long>> addIDsFunction,
+      Consumer<Set<Integer>> removeIdxsFunction
+  ) {
+    this.loadSizeFunction = loadSizeFunction;
+    this.loadIDsFunction = loadIDsFunction;
+    this.loadObjectsFunction = loadObjectsFunction;
+    this.setIdxsFunction = setIdxsFunction;
+    this.addIDsFunction = addIDsFunction;
+    this.removeIdxsFunction = removeIdxsFunction;
+    //initial load
+    //alternative: accept size + first few objects in constructor
+    int loadSize = Math.min(size(), INITIAL_LOAD_SIZE);
+    loadObjects(0, loadSize - 1);
   }
 
   @Override
   public int size() {
-    return getListOfIDs().size();
+    if (size == UNKNOWN_SIZE) {
+      size = loadSizeFunction.get();
+    }
+    return size;
   }
 
   @Override
   public E get(int idx) {
     assertIdxInBounds(idx);
-    if(!isLoaded(idx)) {
+    if (!isLoaded(idx)) {
       loadObject(idx);
     }
-    return loadedObjects.get(getListOfIDs().get(idx));
+    return id2ObjectMap.get(getID(idx)).get();
   }
 
   @Override
   public E set(int idx, E elem) {
     assertIdxInBounds(idx);
-    E oldElem = get(idx);
-    loadedObjects.put(getUMLPId(elem), elem);
-    //todo implement when interface to load models is available
+    final E oldElem = get(idx);
+    setIDs(Collections.singletonMap(idx, getID(elem)));
     return oldElem;
   }
 
@@ -57,29 +100,71 @@ public class LazyList<E> extends AbstractList<E> {
     if (idx < 0 || idx > size()) {
       throw new IndexOutOfBoundsException();
     }
-    //todo implement when interface to load models is available
+    addIDs(idx, Collections.singletonList(getID(elem)));
   }
 
   @Override
   public E remove(int idx) {
     E elem = get(idx);
-    //todo implement when interface to load models is available
+    removeIdxs(Collections.singleton(idx));
     return elem;
   }
 
-  protected boolean isLoaded(int idx){
-    return isLoaded(getListOfIDs().get(idx));
+  public void setIDs(Map<Integer, Long> changes) {
+    setIdxsFunction.accept(changes);
   }
 
-  protected boolean isLoaded(Long id) {
-    return loadedObjects.containsKey(id);
+  public void addIDs(int idx, List<Long> additions) {
+    addIDsFunction.accept(idx, additions);
+  }
+
+  public void removeIdxs(Set<Integer> idxs) {
+    removeIdxsFunction.accept(idxs);
+  }
+
+  protected boolean isLoaded(int idx) {
+    return isLoaded(getID(idx));
+  }
+
+  protected boolean isLoaded(long id) {
+    return id2ObjectMap.containsKey(id);
+  }
+
+  protected boolean isLoadedID(int idx) {
+    return idx2IDMap.containsKey(idx);
   }
 
   protected void loadObject(int idx) {
-    get
-    LazyListElement<E> elem = loadFunction.apply(idx);
+    loadObjects(idx, idx);
+  }
 
-    //todo implement when interface to load models is available
+  protected void loadObjects(int startIdx, int endIdx) {
+    List<Long> ids = getIDs(startIdx, endIdx);
+    List<LazyListElement<E>> objects = loadObjectsFunction.apply(ids);
+    if (ids.size() != objects.size()) {
+      Log.error(UNEXPECTED_LIST_LENGTH_ERROR);
+    }
+    Iterator<Long> idIt = ids.iterator();
+    Iterator<LazyListElement<E>> objIt = objects.iterator();
+    while (idIt.hasNext() && objIt.hasNext()) {
+      id2ObjectMap.put(idIt.next(), objIt.next());
+    }
+  }
+
+  protected void loadID(int idx) {
+    loadIDs(idx, idx);
+  }
+
+  protected void loadIDs(int startIdx, int endIdx) {
+    assertIdxInBounds(startIdx);
+    assertIdxInBounds(endIdx);
+    List<Long> ids = loadIDsFunction.apply(startIdx, endIdx);
+    if (ids.size() != endIdx - startIdx + 1) {
+      Log.error(UNEXPECTED_LIST_LENGTH_ERROR);
+    }
+    for (int idx = 0; idx <= endIdx - startIdx; idx++) {
+      idx2IDMap.put(idx + startIdx, ids.get(idx));
+    }
   }
 
   protected void loadObjects() {
@@ -92,11 +177,49 @@ public class LazyList<E> extends AbstractList<E> {
     }
   }
 
-  protected List<Long> getListOfIDs() {
-    return listOfIDs;
+  protected Long getID(int idx) {
+    assertIdxInBounds(idx);
+    if (isLoadedID(idx)) {
+      loadID(idx);
+    }
+    return idx2IDMap.get(idx);
   }
 
-  protected Long getUMLPId(E elem) {
+  protected List<Long> getIDs(int startIdx, int endIdx) {
+    assertIdxInBounds(startIdx);
+    assertIdxInBounds(endIdx);
+    boolean allLoaded = true;
+    for (int idx = startIdx; idx <= endIdx; idx++) {
+      if (!isLoadedID(idx)) {
+        allLoaded = false;
+      }
+    }
+    if (!allLoaded) {
+      loadIDs(startIdx, endIdx);
+    }
+    List<Long> ids = new LinkedList<>();
+    for (int idx = startIdx; idx <= endIdx; idx++) {
+      ids.add(idx2IDMap.get(idx));
+    }
+    return ids;
+  }
+
+  /**
+   * to be called (by the manager) if the list has been changed
+   * on the side of the server
+   */
+  public void resetStructureCache() {
+    size = UNKNOWN_SIZE;
+    idx2IDMap = new HashMap<>();
+  }
+
+  public void resetCache() {
+    resetStructureCache();
+    id2ObjectMap = new HashMap<>();
+  }
+
+
+  protected Long getID(E elem) {
     //todo get new id? or has the element an ID? -> would require interface
     //todo implement when interface to load models is available
     return -32l;
