@@ -3,21 +3,23 @@ package umlp.util;
 
 import de.se_rwth.commons.logging.Log;
 
+//result of trying to load an object
 //alpha, this class is not fully developed,
 //only to try it out and might change
-public class LazyListElement<E> {
+public class LoadResult<E> {
 
   protected E obj = null;
-  protected LoadingState loadingState = LoadingState.NOT_YET_LOADED;
 
-  public LazyListElement(E obj) {
+  protected LoadingState loadingState;
+
+  public LoadResult(E obj) {
     this.obj = obj;
     this.loadingState = LoadingState.LOADED;
   }
 
-  public LazyListElement(LoadingState loadingState) {
-    if (loadingState == LoadingState.LOADED) {
-      Log.error("0xE2921 Object was set to LOADED but not passed to constructor");
+  public LoadResult(LoadingState loadingState) {
+    if (loadingState == LoadingState.LOADED || loadingState == LoadingState.NOT_YET_LOADED) {
+      Log.error("0xE2922 Object was set to unexpected state");
     }
     this.loadingState = loadingState;
   }
