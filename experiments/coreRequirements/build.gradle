@@ -9,6 +9,10 @@ compileJava {
     dependsOn project.collect { it.tasks.withType(UMLPTask) }
 }
 
+dependencies {
+    implementation "com.google.code.gson:gson:$gson_version"
+}
+
 task runApp(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'builder.Main'
