@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package umlp.generator;
+package umlp.generator.decorator;
 
 import com.google.common.collect.Lists;
 import de.monticore.cdbasis._ast.ASTCDClass;

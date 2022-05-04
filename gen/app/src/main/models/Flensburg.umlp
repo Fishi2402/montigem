@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package hardy;
+
+umlp Flensburg {
+
+    class Car;
+
+    class Human {
+        int age;
+    }
+
+    class Person extends Human {
+        String nickname;
+    }
+
+    association owns [1] Person <-> Car [*];
+    // association parent [*] Person <-> (child) Person [*];
+}

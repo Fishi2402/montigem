@@ -3,7 +3,6 @@ package umlp.generator;
 
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.trafo.CDAssociationCreateFieldsFromNavigableRoles;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
@@ -14,7 +13,9 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
 import umlp._ast.ASTUMLPCompilationUnit;
-import umlp._cocos.UMLPCoCos;
+import umlp.generator.decorator.BuilderDecorator;
+import umlp.generator.decorator.DomainClassDecorator;
+import umlp.generator.decorator.TopDecorator;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -36,13 +37,16 @@ public class UMLPGenerator {
 
   protected CDAssociationCreateFieldsFromNavigableRoles cDAssociationCreateFieldsFromNavigableRoles;
 
+  protected DomainClassDecorator domainClassDecorator;
+
+  protected BuilderDecorator builderDecorator;
+
   protected TopDecorator topDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
     astPrinter = new CD4CodeFullPrettyPrinter();
 
     genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter());
-    CD4C.init(genSetup);
 
     cdGenerator = new CDGenerator(genSetup);
     cD4CodeAfterParseTrafo = new CD4CodeAfterParseTrafo();
@@ -51,6 +55,8 @@ public class UMLPGenerator {
     cDAssociationCreateFieldsFromNavigableRoles = new CDAssociationCreateFieldsFromNavigableRoles();
     cDAssociationCreateFieldsFromNavigableRoles.setTraverser(CD4CodeMill.traverser());
 
+    domainClassDecorator = new DomainClassDecorator(genSetup.getGlex());
+    builderDecorator = new BuilderDecorator(genSetup.getGlex(), genSetup.getHandcodedPath());
     topDecorator = new TopDecorator(genSetup.getHandcodedPath());
   }
 
@@ -74,6 +80,15 @@ public class UMLPGenerator {
     cDAssociationCreateFieldsFromNavigableRoles.init(cdAST);
     cDAssociationCreateFieldsFromNavigableRoles.transform(cdAST);
     logTrafoExec("CDAssociationCreateFieldsFromNavigableRoles", cdAST);
+
+    domainClassDecorator.transform(cdAST);
+    logTrafoExec("DomainClassDecorator", cdAST);
+    UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
+
+    // Generate builder classes
+    builderDecorator.transform(cdAST);
+    logTrafoExec("BuilderDecorator", cdAST);
+    UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
 
     // TODO hier weitere trafos realisieren
 

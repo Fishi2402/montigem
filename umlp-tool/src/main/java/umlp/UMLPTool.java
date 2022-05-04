@@ -102,7 +102,7 @@ public class UMLPTool extends UMLPToolTOP {
 
       // parse, create symbol table, check all cocos
       ASTUMLPCompilationUnit ast = parse(inputFile.getPath());
-      Reporting.reportParseInputFile(inputFile.toPath(), report_on);
+      // Reporting.reportParseInputFile(inputFile.toPath(), report_on); TODO: causes NullPointerException
 
       runAfterParseTrafo(ast);
       IUMLPArtifactScope symbolTable = createSymbolTable(ast);
@@ -141,9 +141,9 @@ public class UMLPTool extends UMLPToolTOP {
 
       // execute generator
       UMLPGenerator generator = new UMLPGenerator(genSetup);
-      generator.generate(ast);
+      //generator.generate(ast);
 
-      String configTemplate = cmd.getOptionValue("ct", "cd2java.CD2Java");
+      String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
       TemplateController tc = genSetup.getNewTemplateController(configTemplate);
       TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
       List<Object> configTemplateArgs = Arrays.asList(genSetup.getGlex(), generator);

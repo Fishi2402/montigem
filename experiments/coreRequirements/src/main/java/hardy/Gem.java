@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 //only to try it out and might change
 public class Gem<E> {
 
-  protected E obj = null;
+  protected E object = null;
 
   protected long gemID;
 
@@ -21,10 +21,10 @@ public class Gem<E> {
     return gemID;
   }
 
-  public Gem(E obj) {
+  public Gem(E object) {
     //todo gemID -> get from obj?
     gemID = -32l;
-    this.obj = obj;
+    this.object = object;
     this.loadingState = LoadingState.LOADED;
   }
 
@@ -46,24 +46,29 @@ public class Gem<E> {
     return loadingState;
   }
 
-  boolean isPresent() {
+  public boolean isPresent() {
     loadIfRequired();
-    return loadingState == LoadingState.LOADED && obj != null;
+    return loadingState == LoadingState.LOADED && object != null;
   }
 
-  E get() {
+  public E get() {
     loadIfRequired();
     if (!isPresent()) {
       Log.error("0xE2921 Object was not loaded: " + loadingState.toString());
     }
-    return obj;
+    return object;
+  }
+
+  public void set(E object) {
+    this.object = object;
+    this.loadingState = LoadingState.LOADED;
   }
 
   protected void loadIfRequired() {
     if (loadingState == LoadingState.NOT_YET_LOADED) {
       LoadResult<E> result = loadFunction.get();
       if (result.isPresent()) {
-        obj = result.get();
+        object = result.get();
       }
       else {
         loadingState = result.loadingState;
