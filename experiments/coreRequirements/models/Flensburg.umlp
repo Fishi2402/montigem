@@ -13,6 +13,9 @@ umlp Flensburg {
         String nickname;
     }
 
+    class DriverLicense;
+
     association owns [1] Person -> Car [*];
+    association driverLicense [1] Person -> DriverLicense [1];
     // association parent [*] Person <-> (child) Person [*];
 }
