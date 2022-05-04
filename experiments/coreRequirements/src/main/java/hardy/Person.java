@@ -18,6 +18,7 @@ import java.util.*;
     }
 
     association owns [1] Person -> Car [*];
+    association mainResidence [1] Person -> Address [1];
     // association parent [*] Person <-> (child) Person [*];
 */
 
@@ -32,6 +33,47 @@ public class Person extends Human {
     // an Attribute: ------------------------------------------
     protected String nickname;
 
+    // an Association: ------------------------------------------
+    // The signature is a List, even though it might have been an
+    // unordered Association.
+    // The implementation will be a LazyList
+    protected List<Car> owns;
+    // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
+
+    //+ Bem: insgesamt sind es etwa 30 generierte Ftnen, von denen hier
+    // nur einige dargestellt sind
+
+    protected Gem<Address> mainResidence;
+
+    // --------------------------------------------------------------------
+    //+ Constructors are protected: only to be used by the Builder and Mill
+
+    //+ These constructuctors build incorrect objects (incl. null-pointers)
+    // the objects are NOT per se under Management and thus not connected to the
+    // overall infrastructure, etc.
+    // and should only be used by the builder(!)
+    protected Person() {
+        super();
+        init();
+    }
+
+    protected Person(int age, String nickname) {
+        super(age);
+        init();
+        this.nickname = nickname;
+    }
+
+    //+ initialization is externalized to be reusable (if needed)
+    //+ do an initialisation of optional and default parts
+    // (makes the system robust, but shadows potential errors for a while)
+    protected void init() {
+        super.init();
+        nickname = "";
+        // todo FDr, CKn: use LazyList here
+
+        owns = new LinkedList<>();
+    }
+
     public String getNickname() {
         return this.nickname;
     }
@@ -40,18 +82,6 @@ public class Person extends Human {
         Preconditions.checkNotNull(o);
         this.nickname = o;
     }
-    
-
-    // an Association: ------------------------------------------
-    // The signature is a List, even though it might have been an 
-    // unordered Association.
-    // The implementation will be a LazyList
-    protected List<Car> owns;
-    // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
-
-    //+ Bem: insgesamt sind es etwa 30 generierte Ftnen, von denen hier 
-    // nur einige dargestellt sind
- 
 
     public boolean removeOwns(Car o) {
         if (this.owns.contains(o)) {
@@ -140,36 +170,6 @@ public class Person extends Human {
     // protected List<Person> parents;
     //- todo dito
 
-
-    // --------------------------------------------------------------------
-    //+ Constructors are protected: only to be used by the Builder and Mill
-
-    //+ These constructuctors build incorrect objects (incl. null-pointers)   
-    // the objects are NOT per se under Management and thus not connected to the
-    // overall infrastructure, etc.
-    // and should only be used by the builder(!)
-    protected Person() {
-        super();
-        init();
-    }
-
-    protected Person(int age, String nickname) {
-        super(age);
-        init();
-        this.nickname = nickname;
-    }
-
-    //+ initialization is externalized to be reusable (if needed)
-    //+ do an initialisation of optional and default parts
-    // (makes the system robust, but shadows potential errors for a while)
-    protected void init() {
-        super.init();
-        nickname = "";
-        // todo FDr, CKn: use LazyList here
-
-        owns = new LinkedList<>();
-    }
-
     // -----------------------------------------------------------------
 
 /* Ausbaustufen (todo):
@@ -177,7 +177,5 @@ public class Person extends Human {
     * Entkopplung der Ladestrategien durch
     **  gemID  statt direktLink (und die transparente Realisierung in den Objekten)
     **  LazyLoadedList  (siehe dazu andere Emails/Diskussionen)
-
 */
-    
 }

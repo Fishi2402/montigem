@@ -4,7 +4,6 @@ package hardy;
 
 /*+ PersonValidator checks a Person object for Validity:
     it can be called on objects in building or on Objects anywhere around
-        
 */
 public class PersonValidator extends PersonValidatorTOP {
 
@@ -23,7 +22,7 @@ public class PersonValidator extends PersonValidatorTOP {
             return true;
         } else {
             // Aussagekräftigere Fehlermeldung
-            log.add("%09d: Alter %d bei Person %s unter 18", o.getUmlpId(), o.getAge(), o.getNickname());
+            log.add("%09d: Alter %d bei Person %s unter 18", o.getGemId(), o.getAge(), o.getNickname());
             return false;
         }
     }

@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class FlensburgManager {
+
     public static FlensburgManager instance;
 
     // get the next free GemId -----------------------------------
@@ -45,7 +46,7 @@ public abstract class FlensburgManager {
         return getSingleton()._doGetFreeGemId();
     }
 
-    protected long _doGetFreeGemId(){
+    protected long _doGetFreeGemId() {
         throw new RuntimeException("TODO AHe: implement");
     }
 
@@ -64,10 +65,7 @@ public abstract class FlensburgManager {
     // todo: to be completed for other classes: Human, Car
 
 
-
-
     // ------------------------------------------- Methods for class Person
-
     // get a Builder ---------------------------------------
     // todo: discuss name, Ich mag ja kürzere Namen, option wäre auch
     // "getPersonBuilder()" oder personBuilder()
@@ -99,55 +97,82 @@ public abstract class FlensburgManager {
         getSingleton()._doAddPerson(o);
     }
 
-    protected void _doAddPerson(Person o);
+    protected abstract void _doAddPerson(Person o);
 
-  public static CarBuilder car() {
-    return getSingleton()._doCar();
-  }
 
-  protected CarBuilder _doCar();
+    // ------------------------------------------- Methods for class Human
+    public static HumanBuilder human() {
+        return getSingleton()._doHuman();
+    }
 
-  public static Optional<Car> carOpt(long gemId) {
-    return getSingleton()._doCarOpt(gemId);
-  }
+    protected abstract HumanBuilder _doHuman();
 
-  protected Optional<Car> _doCarOpt(long gemId);
+    public static Optional<Human> humanOpt(long gemId) {
+        return getSingleton()._doHumanOpt(gemId);
+    }
 
-  public static Person getCarSure(long gemId) {
-    return getSingleton()._doGetCarSure(gemId);
-  }
+    protected abstract Optional<Human> _doHumanOpt(long gemId);
 
-  protected Person _doGetCarSure(long gemId);
+    public static Human getHumanSure(long gemId) {
+        return getSingleton()._doGetHumanSure(gemId);
+    }
 
-  public static void addCar(Car o) {
-    getSingleton()._doAddCar(o);
-  }
+    protected abstract Human _doGetHumanSure(long gemId);
 
-  protected void _doAddCar(Car o);
+    public static void addHuman(Human o) {
+        getSingleton()._doAddHuman(o);
+    }
+
+    protected abstract void _doAddHuman(Human o);
+
+
+    // ------------------------------------------- Methods for class Car
+    public static CarBuilder car() {
+        return getSingleton()._doCar();
+    }
+
+    protected abstract CarBuilder _doCar();
+
+    public static Optional<Car> carOpt(long gemId) {
+        return getSingleton()._doCarOpt(gemId);
+    }
+
+    protected abstract Optional<Car> _doCarOpt(long gemId);
+
+    public static Person getCarSure(long gemId) {
+        return getSingleton()._doGetCarSure(gemId);
+    }
+
+    protected abstract Person _doGetCarSure(long gemId);
+
+    public static void addCar(Car o) {
+        getSingleton()._doAddCar(o);
+    }
+
+    protected abstract void _doAddCar(Car o);
 
     //same methods as for Person but with Lists of Cars:
     protected List<Car> cars() {
-      return getSingleton()._doCars();
+        return getSingleton()._doCars();
     }
 
-    protected  List<Car> _doCars();
+    protected abstract List<Car> _doCars();
 
     public static List<Car> getCarsSure(long gemId) {
-      return getSingleton()._doGetCarsSure(gemId);
+        return getSingleton()._doGetCarsSure(gemId);
     }
 
-    protected List<Car> _doGetCarsSure(long gemId);
+    protected abstract List<Car> _doGetCarsSure(long gemId);
 
     public static List<Car> carsOpt(long gemId) {
-      return getSingleton()._doCarsOpt(gemId);
+        return getSingleton()._doCarsOpt(gemId);
     }
 
-    protected List<Car> _doCarsOpt(long gemId);
+    protected abstract List<Car> _doCarsOpt(long gemId);
 
-    public static void addCars(CarList o) {
-      getSingleton()._doAddCars(o);
+    public static void addCars(List<Car> o) {
+        getSingleton()._doAddCars(o);
     }
 
-    protected void _doAddCars(CarList o);
-
+    protected abstract void _doAddCars(List<Car> o);
 }

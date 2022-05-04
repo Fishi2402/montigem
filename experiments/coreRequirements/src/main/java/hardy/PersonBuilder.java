@@ -33,7 +33,7 @@ public class PersonBuilder extends Person {
     //+ gemId wird bereits beim initialisieren des Builders besetzt
     // und ein Validator wird auch mitgeliefert (und erstmal gespeichert)
     public PersonBuilder(long gemId, PersonValidator validator) {
-       this.umlpId = gemId;
+       this.gemId = gemId;
        this.validator = validator;
        init();
     }
@@ -70,6 +70,10 @@ public class PersonBuilder extends Person {
     }
 
     // + Understand condition of builder -------------------------------------
+    public boolean isBuildFinished() {
+        return buildFinished;
+    }
+
     public boolean isNicknamePresent() {
         return this.nicknamePresent;
     }
@@ -82,11 +86,8 @@ public class PersonBuilder extends Person {
         return ownsPresent;
     }
 
-    // todo: selbes für die anderen beiden Booleans und buildFinished
 
-
-
-// todo: Build-Methode komplettieren ähnlich zu unten beschrieben
+    // todo: Build-Methode komplettieren ähnlich zu unten beschrieben
 
     //+ Build ---------------------------------------------------------------
     /*+

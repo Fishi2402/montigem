@@ -28,4 +28,6 @@ public class Car extends Observable {
         return this.gemId;
     }
 
+    protected void init() {
+    }
 }

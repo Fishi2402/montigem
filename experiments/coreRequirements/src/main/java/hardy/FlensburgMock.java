@@ -85,7 +85,7 @@ public class FlensburgMock extends FlensburgManager {
   protected Map<Long,Person> persons = new HashMap<>();
 
   protected void _doAddPerson(Person o) {
-    persons.put(o.getUmlpId(), o);
+    persons.put(o.getGemId(), o);
   } 
     
 }

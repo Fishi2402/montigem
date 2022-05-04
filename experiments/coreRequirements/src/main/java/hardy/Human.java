@@ -24,34 +24,21 @@ public class Human extends Observable {
     // real object is not (yet) loaded, e.g. in the client
     //
     // -32: is an illegal value showing that an has error occurred somewhere
-    protected long umlpId = -32;
-
-    public long getUmlpId() {
-        return umlpId;
-    }
+    protected long gemId = -32;
 
     // an Attribute: ------------------------------------------
     protected int age;
-
-    public int getAge() {
-        return this.age;
-    }
-
-    public void setAge(int o) {
-        this.age = o;
-    }
-
 
     // --------------------------------------------------------------------
     //+ Constructors are protected: only to be used by the Builder and Mill
 
     //+ This constructuctor builds incorrect and models (incl. null-pointers)
-    // and should only be used by the builder    
+    // and should only be used by the builder
     protected Human() {
         init();
     }
 
-    //+ This constructor is better, but still may construct invalid 
+    //+ This constructor is better, but still may construct invalid
     // objects in principle
     protected Human(int age) {
         this.age = age;
@@ -64,5 +51,15 @@ public class Human extends Observable {
         age = 0;
     }
 
+    public long getGemId() {
+        return gemId;
+    }
 
+    public int getAge() {
+        return this.age;
+    }
+
+    public void setAge(int o) {
+        this.age = o;
+    }
 }
