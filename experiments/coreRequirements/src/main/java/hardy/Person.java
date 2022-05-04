@@ -33,6 +33,9 @@ public class Person extends Human {
     // an Attribute: ------------------------------------------
     protected String nickname;
 
+    // Association with cardinality [1]
+    protected Gem<Address> mainResidence;
+
     // an Association: ------------------------------------------
     // The signature is a List, even though it might have been an
     // unordered Association.
@@ -42,8 +45,6 @@ public class Person extends Human {
 
     //+ Bem: insgesamt sind es etwa 30 generierte Ftnen, von denen hier
     // nur einige dargestellt sind
-
-    protected Gem<Address> mainResidence;
 
     // --------------------------------------------------------------------
     //+ Constructors are protected: only to be used by the Builder and Mill
@@ -81,6 +82,14 @@ public class Person extends Human {
     public void setNickname(String o) {
         Preconditions.checkNotNull(o);
         this.nickname = o;
+    }
+
+    public Address getMainResidence() {
+        return mainResidence.get();
+    }
+
+    public void setMainResidence(Address mainResidence) {
+        this.mainResidence.set(mainResidence);
     }
 
     public boolean removeOwns(Car o) {
