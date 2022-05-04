@@ -11,6 +11,10 @@ package hardy;
   * und setzt den Manager auf Simulation   
 */
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+
 public class FlensburgDummies {
 
   // really handwritten
@@ -33,17 +37,18 @@ public class FlensburgDummies {
     
     FlensburgMock.secretlyAdaptnextGemIds(3101);
     
-    Person p3101 = FlensburgManager.human()
-                        .age(25).nickname("Anna").addCar(c1101).build();
-    Person p3102 = FlensburgManager.human()
+    Person p3101 = FlensburgManager.person()
+                        .age(25).nickname("Anna").owns(Collections.singleton(c1101)).build();
+    Person p3102 = FlensburgManager.person()
                         .age(26).nickname("Bert").build();
-    Person p3103 = FlensburgManager.human()
+    Person p3103 = FlensburgManager.person()
                         .age(3).nickname("Charly")
-                        .addCar(c1102).addCar(c1103).build();
-    Person p3104 = FlensburgManager.human()
+                        // TODO AHe: cumbersome, can not use addOwns since it is already defined by Person with return type boolean
+                        .owns(new HashSet<>(Arrays.asList(c1102, c1103))).build();
+    Person p3104 = FlensburgManager.person()
                         .age(104).nickname("Doro")
-                        .addCar(c1104).addCar(c1105).build();
-    Person p3105 = FlensburgManager.human()
+                        .owns(new HashSet<>(Arrays.asList(c1104, c1105))).build();
+    Person p3105 = FlensburgManager.person()
                         .age(105).nickname("Emil").build();
       
   } 
@@ -57,10 +62,10 @@ public class FlensburgDummies {
     
       Human o2 = FlensburgManager.human().age(100+i).build();
     
-      Person o3 = FlensburgManager.human()
+      Person o3 = FlensburgManager.person()
                         .age(200+i)
                         .nickname("Nick"+i)
-                        .addCar(o1).build();
+                        .owns(Collections.singleton(o1)).build();
       // todo: Ausbauoption: variable Menge von Cars
       // (das erfordert insgesamt Smartness beim generieren, um sinnvolle graphen zu bauen)
     }
