@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 package hardy.command_infrastructure.send;
-
+// RTE-P
 /**
  * Promise to wait for the result of a command execution
  */

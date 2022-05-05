@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 package hardy.command_infrastructure.send;
-
+// RTE-P
 import de.se_rwth.commons.logging.Log;
 import hardy.command_infrastructure.impl.Command;
 import hardy.error.MontiGemError;

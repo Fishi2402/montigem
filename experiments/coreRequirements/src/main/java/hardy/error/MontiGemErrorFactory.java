@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package hardy.error;
 
+// RTE-P
+
 import hardy.command_infrastructure.impl.Command;
 import hardy.error.mock.Status;
 

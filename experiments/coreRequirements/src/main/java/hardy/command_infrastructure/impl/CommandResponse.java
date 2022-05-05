@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 package hardy.command_infrastructure.impl;
-
+// RTE-P
 import java.util.ArrayList;
 import java.util.List;
 

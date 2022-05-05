@@ -1,27 +1,28 @@
-package hardy.commands;
+package hardy.commands.car;
 
 import hardy.FlensburgManager;
-import hardy.Human;
+import hardy.Car;
 import hardy.command_infrastructure.impl.Command;
 import hardy.error.MontiGemError;
 
 import java.util.Optional;
+// RTE-P
 
-public class Human_update extends Command {
-  protected final Human human;
+public class Car_delete extends Command {
+  protected final Car car;
 
-  protected Human_update(long id, Human human) {
+  protected Car_delete(long id, Car car) {
     super(
         id,
-        "hardy.Human",
+        "hardy.Car",
         false
     );
-    this.human = human;
+    this.car = car;
   }
 
   @Override
   public Optional<?> doRun() throws MontiGemError {
-    // TODO AHe: update
+    FlensburgManager.deleteCar(car);
     return Optional.empty();
   }
 }

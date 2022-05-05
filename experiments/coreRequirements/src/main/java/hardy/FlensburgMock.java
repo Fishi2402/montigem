@@ -90,6 +90,16 @@ public class FlensburgMock extends FlensburgManager {
     return persons.values();
   }
 
+  @Override
+  protected void _doDeletePerson(Person o) {
+
+  }
+
+  @Override
+  protected void _doUpdatePerson(Person o) {
+
+  }
+
   // --- Class Human ---
   protected Map<Long, Human> humans = new HashMap<>();
   protected HumanValidator theHumanValidator = new HumanValidator();
@@ -111,12 +121,24 @@ public class FlensburgMock extends FlensburgManager {
 
   @Override
   protected void _doAddHuman(Human o) {
-    humans.put(o.gemId, o);
+    humans.put(o.getGemId(), o);
   }
 
   @Override
   protected Collection<Human> _doGetHumanList() {
     return humans.values();
+  }
+
+  @Override
+  protected void _doUpdateHuman(Human o) {
+    assert humans.containsKey(o.getGemId());
+    humans.put(o.getGemId(), o);
+  }
+
+  @Override
+  protected void _doDeleteHuman(Human o) {
+    assert humans.containsKey(o.getGemId());
+    humans.remove(o.getGemId());
   }
 
   // --- Address class ---
@@ -140,12 +162,24 @@ public class FlensburgMock extends FlensburgManager {
 
   @Override
   protected void _doAddAddress(Address o) {
-    addresses.put(o.gemId, o);
+    addresses.put(o.getGemId(), o);
   }
 
   @Override
   protected Collection<Address> _doGetAddressList() {
     return addresses.values();
+  }
+
+  @Override
+  protected void _doUpdateAddress(Address o) {
+    assert addresses.containsKey(o.getGemId());
+    addresses.put(o.getGemId(), o);
+  }
+
+  @Override
+  protected void _doDeleteAddress(Address o) {
+    assert addresses.containsKey(o.getGemId());
+    addresses.remove(o.getGemId());
   }
 
   // --- Class Car ---
@@ -169,11 +203,23 @@ public class FlensburgMock extends FlensburgManager {
 
   @Override
   protected void _doAddCar(Car o) {
-    cars.put(o.gemId, o);
+    cars.put(o.getGemId(), o);
   }
 
   @Override
   protected Collection<Car> _doGetCarList() {
     return cars.values();
+  }
+
+  @Override
+  protected void _doDeleteCar(Car o) {
+    assert cars.containsKey(o.getGemId());
+    cars.put(o.getGemId(), o);
+  }
+
+  @Override
+  protected void _doUpdateCar(Car o) {
+    assert cars.containsKey(o.getGemId());
+    cars.remove(o.getGemId());
   }
 }

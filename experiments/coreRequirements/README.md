@@ -24,8 +24,22 @@ wie man testet)
 * So wird getestet:
 
 ```
- // todo   (javac ... ; java ...)
- // oder gradle ... ; java test ...
+      // Alle tests im coreRequirements experiment
+      gradle :experiments:coreRequirements:test
+      
+      // Alle tests einer Testklasse im coreRequirements experiment, hier PersonBuilderTest
+      gradle :experiments:coreRequirements:test --tests hardy.PersonBuilderTest
+      
+      // Ein spezifischer Test
+      gradle :experiments:coreRequirements:test --tests hardy.PersonBuilderTest.testBuildValidPerson
+```
+
+* So wird die Main-Klasse gestartet
+```
+      gradle :experiments:coreRequirements:runApp
+      
+      // Mit Argumenten
+      gradle :experiments:coreRequirements:runApp --args="Hello World"
 ```
 
 * `to`+`do` im Code sind schnellstmöglich zu adressieren, man beachte 

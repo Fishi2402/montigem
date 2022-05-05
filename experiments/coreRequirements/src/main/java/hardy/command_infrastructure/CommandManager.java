@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 package hardy.command_infrastructure;
+// RTE-P
+// RTE-T
 
 import de.se_rwth.commons.logging.Log;
 import hardy.command_infrastructure.impl.Command;

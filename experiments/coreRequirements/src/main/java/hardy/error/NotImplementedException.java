@@ -4,6 +4,8 @@
 
 package hardy.error;
 
+// RTE-P
+
 public class NotImplementedException extends RuntimeException {
   public NotImplementedException() {
   }
