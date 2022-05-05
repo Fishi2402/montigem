@@ -5,6 +5,8 @@ package hardy;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Optional;
+
 import static org.junit.Assert.*;
 
 public class PersonBuilderTest {
@@ -16,16 +18,33 @@ public class PersonBuilderTest {
     public void before() {
         this.validator = new PersonValidator();
         this.personBuilder = new PersonBuilder(1001L, validator);
+        FlensburgMock.init();
     }
 
     @Test
     public void testBuildValidPerson(){
-        personBuilder.age(18).nickname("Hardy").build();
+        int id = 1001;
+        FlensburgMock.secretlyAdaptnextGemIds(id);
+
+        String name = "Hardy";
+        int age = 18;
+        personBuilder.age(age).nickname(name).build();
         assertTrue(validator.log.isEmpty());
+
+        Optional<Person> personOpt = FlensburgManager.personOpt(id);
+
+        assertTrue(personOpt.isPresent());
+        Person person = personOpt.get();
+
+        assertEquals(name, person.getNickname());
+        assertEquals(age, person.getAge());
     }
 
     @Test
     public void testBuildInvalidPersonNoNickname(){
+        int id = 1001;
+        FlensburgMock.secretlyAdaptnextGemIds(id);
+
         DataConsistencyViolationException dataConsistencyViolationException = null;
         try {
             personBuilder.age(18).build();
@@ -38,5 +57,7 @@ public class PersonBuilderTest {
 
         LogEntry e = validator.log.getEntry(0);
         assertEquals("nickname not defined", e.getMessage());
+
+        assertFalse(FlensburgManager.personOpt(id).isPresent());
     }
 }
