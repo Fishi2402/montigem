@@ -36,13 +36,13 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
 
   protected Map<Integer, Long> idx2IDMap = new HashMap<>();
 
-  protected Map<Long, LazyListElement<E>> id2ObjectMap = new HashMap<>();
+  protected Map<Long, LoadResult<E>> id2ObjectMap = new HashMap<>();
 
   protected Supplier<Integer> loadSizeFunction;
 
   protected BiFunction<Integer, Integer, List<Long>> loadIDsFunction;
 
-  protected Function<List<Long>, List<LazyListElement<E>>> loadObjectsFunction;
+  protected Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction;
 
   protected Consumer<Map<Integer, Long>> setIdxsFunction;
 
@@ -53,7 +53,7 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
   public LazyList(
       Supplier<Integer> loadSizeFunction,
       BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
-      Function<List<Long>, List<LazyListElement<E>>> loadObjectsFunction,
+      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
       Consumer<Map<Integer, Long>> setIdxsFunction,
       BiConsumer<Integer, List<Long>> addIDsFunction,
       Consumer<Set<Integer>> removeIdxsFunction
@@ -66,8 +66,10 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
     this.removeIdxsFunction = removeIdxsFunction;
     //initial load
     //alternative: accept size + first few objects in constructor
+
     int loadSize = Math.min(size(), INITIAL_LOAD_SIZE);
-    loadObjects(0, loadSize - 1);
+
+    loadObjects(0, loadSize);
   }
 
   @Override
@@ -80,16 +82,24 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
 
   @Override
   public E get(int idx) {
-    assertIdxInBounds(idx);
+    assertInclusiveIdxInBounds(idx);
     if (!isLoaded(idx)) {
       loadObject(idx);
     }
-    return id2ObjectMap.get(getID(idx)).get();
+    if (!isLoaded(idx)) {
+      throw new RuntimeException();
+    }
+    if (id2ObjectMap.get(getID(idx)).isPresent()) {
+      return id2ObjectMap.get(getID(idx)).get();
+    }
+    //not according to java.util.List interface
+    //however, we may run into this problem
+    throw new IllegalArgumentException();
   }
 
   @Override
   public E set(int idx, E elem) {
-    assertIdxInBounds(idx);
+    assertInclusiveIdxInBounds(idx);
     final E oldElem = get(idx);
     setIDs(Collections.singletonMap(idx, getID(elem)));
     return oldElem;
@@ -97,9 +107,7 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
 
   @Override
   public void add(int idx, E elem) {
-    if (idx < 0 || idx > size()) {
-      throw new IndexOutOfBoundsException();
-    }
+    assertExclusiveIdxInBounds(idx);
     addIDs(idx, Collections.singletonList(getID(elem)));
   }
 
@@ -140,56 +148,55 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
 
   protected void loadObjects(int startIdx, int endIdx) {
     List<Long> ids = getIDs(startIdx, endIdx);
-    List<LazyListElement<E>> objects = loadObjectsFunction.apply(ids);
+    List<LoadResult<E>> objects = loadObjectsFunction.apply(ids);
     if (ids.size() != objects.size()) {
       Log.error(UNEXPECTED_LIST_LENGTH_ERROR);
     }
+
     Iterator<Long> idIt = ids.iterator();
-    Iterator<LazyListElement<E>> objIt = objects.iterator();
+    Iterator<LoadResult<E>> objIt = objects.iterator();
     while (idIt.hasNext() && objIt.hasNext()) {
       id2ObjectMap.put(idIt.next(), objIt.next());
     }
   }
 
   protected void loadID(int idx) {
-    loadIDs(idx, idx);
+    loadIDs(idx, idx + 1);
   }
 
   protected void loadIDs(int startIdx, int endIdx) {
-    assertIdxInBounds(startIdx);
-    assertIdxInBounds(endIdx);
+    assertExclusiveIdxInBounds(startIdx);
+    assertExclusiveIdxInBounds(endIdx);
     List<Long> ids = loadIDsFunction.apply(startIdx, endIdx);
-    if (ids.size() != endIdx - startIdx + 1) {
+    if (ids.size() != endIdx - startIdx) {
       Log.error(UNEXPECTED_LIST_LENGTH_ERROR);
     }
-    for (int idx = 0; idx <= endIdx - startIdx; idx++) {
+    for (int idx = 0; idx < endIdx - startIdx; idx++) {
       idx2IDMap.put(idx + startIdx, ids.get(idx));
     }
   }
 
-  protected void loadObjects() {
-    loadObjects(0, size() - 1);
-  }
-
-  protected void assertIdxInBounds(int idx) {
+  protected void assertInclusiveIdxInBounds(int idx) {
     if (idx < 0 || idx >= size()) {
       throw new IndexOutOfBoundsException();
     }
   }
 
-  protected Long getID(int idx) {
-    assertIdxInBounds(idx);
-    if (isLoadedID(idx)) {
-      loadID(idx);
+  protected void assertExclusiveIdxInBounds(int idx) {
+    if (idx < 0 || idx > size()) {
+      throw new IndexOutOfBoundsException();
     }
-    return idx2IDMap.get(idx);
+  }
+
+  protected Long getID(int idx) {
+    return getIDs(idx, idx + 1).get(0);
   }
 
   protected List<Long> getIDs(int startIdx, int endIdx) {
-    assertIdxInBounds(startIdx);
-    assertIdxInBounds(endIdx);
+    assertExclusiveIdxInBounds(startIdx);
+    assertExclusiveIdxInBounds(endIdx);
     boolean allLoaded = true;
-    for (int idx = startIdx; idx <= endIdx; idx++) {
+    for (int idx = startIdx; idx < endIdx; idx++) {
       if (!isLoadedID(idx)) {
         allLoaded = false;
       }
@@ -198,7 +205,7 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
       loadIDs(startIdx, endIdx);
     }
     List<Long> ids = new LinkedList<>();
-    for (int idx = startIdx; idx <= endIdx; idx++) {
+    for (int idx = startIdx; idx < endIdx; idx++) {
       ids.add(idx2IDMap.get(idx));
     }
     return ids;
@@ -217,7 +224,6 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
     resetStructureCache();
     id2ObjectMap = new HashMap<>();
   }
-
 
   protected Long getID(E elem) {
     return elem.getGemId();
