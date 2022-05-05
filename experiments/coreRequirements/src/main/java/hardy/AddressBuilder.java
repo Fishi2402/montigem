@@ -26,7 +26,7 @@ public class AddressBuilder extends Address {
       if(!buildFinished) {
         if(validator.buildingCheck(this)) {
             buildFinished = true;
-            // todo: add object to the Manager (for Persistence)
+            FlensburgManager.addAddress(this);
             notifyObservers();      //+ an initial notification
             return this;
         } else {

@@ -28,7 +28,7 @@ public class CarBuilder extends Car {
       if(!buildFinished) {
         if(validator.buildingCheck(this)) {
             buildFinished = true;
-            // todo: add object to the Manager (for Persistence)
+            FlensburgManager.addCar(this);
             notifyObservers();      //+ an initial notification
             return this;
         } else {

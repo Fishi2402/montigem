@@ -38,7 +38,7 @@ public class HumanBuilder extends Human {
       if(!buildFinished) {
         if(validator.buildingCheck(this)) {
             buildFinished = true;
-            // todo: add object to the Manager (for Persistence)
+            FlensburgManager.addHuman(this);
             notifyObservers();      //+ an initial notification
             return this;
         } else {
