@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package hardy.error;
 
-import hardy.command.dto.CommandDTO;
+import hardy.command.impl.Command;
 import hardy.error.mock.Status;
 
 public class MontiGemErrorFactory {
@@ -106,7 +106,7 @@ public class MontiGemErrorFactory {
     return new MontiGemError(MontiGemErrorCode.MAIL_EXCEPTION, Status.NOT_ACCEPTABLE, " Die angegebene Mail Adresse ist nicht korrekt oder die Mail Properties sind nicht vorhanden");
   }
 
-  public static MontiGemError undoError(String code, CommandDTO commandDTO) {
-    return new MontiGemError(MontiGemErrorCode.UNDO, Status.NOT_ACCEPTABLE, code + ": Command " + commandDTO + " cannot be undone before being called at least once");
+  public static MontiGemError undoError(String code, Command command) {
+    return new MontiGemError(MontiGemErrorCode.UNDO, Status.NOT_ACCEPTABLE, code + ": Command " + command + " cannot be undone before being called at least once");
   }
 }

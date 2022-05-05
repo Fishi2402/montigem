@@ -2,16 +2,16 @@
 
 package hardy.command.send;
 
-import hardy.dto.DTO;
+import hardy.command.DomainObject;
 
 /**
  * Promise to wait for the result of a command execution
  */
 public class CommandPromise {
   private long id;
-  private CommandCallback<DTO> method;
+  private CommandCallback<DomainObject> method;
 
-  public CommandPromise(long id, CommandCallback<DTO> method) {
+  public CommandPromise(long id, CommandCallback<DomainObject> method) {
     this.id = id;
     this.method = method;
   }
@@ -24,11 +24,11 @@ public class CommandPromise {
     this.id = id;
   }
 
-  public CommandCallback<DTO> getMethod() {
+  public CommandCallback<DomainObject> getMethod() {
     return method;
   }
 
-  public void setMethod(CommandCallback<DTO> method) {
+  public void setMethod(CommandCallback<DomainObject> method) {
     this.method = method;
   }
 }

@@ -3,8 +3,8 @@
 package hardy.command.send;
 
 import de.se_rwth.commons.logging.Log;
-import hardy.command.dto.CommandDTO;
-import hardy.dto.DTO;
+import hardy.command.DomainObject;
+import hardy.command.impl.Command;
 import hardy.error.MontiGemError;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.Optional;
  */
 public class CommandCaller {
 
-  private final List<CommandDTO> commands;
+  private final List<Command> commands;
   private final List<CommandPromise> promises;
   private long id;
 
@@ -32,11 +32,11 @@ public class CommandCaller {
    * @param cmd    any given command
    * @param method the callback method to use when given cmd is executed
    */
-  public CommandCaller add(CommandDTO cmd, CommandCallback<DTO> method) {
+  public CommandCaller add(Command cmd, CommandCallback<DomainObject> method) {
     long id = this.id;
     this.id++;
 
-    cmd.setCommandId(id);
+    cmd.setId(id);
     this.commands.add(cmd);
     this.promises.add(new CommandPromise(id, method));
 
@@ -58,7 +58,7 @@ public class CommandCaller {
    * @param commandId
    * @return corresponding callback
    */
-  private Optional<CommandCallback<DTO>> getById(long commandId) {
+  private Optional<CommandCallback<DomainObject>> getById(long commandId) {
     return promises.stream().filter(promise -> promise.getId() == commandId).map(CommandPromise::getMethod)
       .findAny();
   }
@@ -70,13 +70,13 @@ public class CommandCaller {
    */
   public void execute() throws RuntimeException {
     this.commands.forEach(cmd -> {
-      Optional<CommandCallback<DTO>> method = getById(cmd.getCommandId());
+      Optional<CommandCallback<DomainObject>> method = getById(cmd.getId());
       if (!method.isPresent()) {
-        Log.warn("MAB0xA100: could not find callback method for id " + cmd.getCommandId());
-        throw new RuntimeException("MAB0xA100: could not find callback method for id " + cmd.getCommandId());
+        Log.warn("MAB0xA100: could not find callback method for id " + cmd.getId());
+        throw new RuntimeException("MAB0xA100: could not find callback method for id " + cmd.getId());
       }
 
-      DTO d = cmd.doRun();
+      DomainObject d = cmd.doRun();
       method.get().onOk(d);
     });
 
@@ -86,18 +86,18 @@ public class CommandCaller {
   /**
    * Run the given command directly
    *
-   * @param commandDTO any given command
-   * @param <D>        the type of the result DTO
+   * @param command any given command
+   * @param <D>        the type of the result domain object
    * @return the result of the command execution
    * @throws ClassCastException when the result doesn't have the intended type
    * @throws MontiGemError      on any error in the command itself
    */
-  public <D extends DTO> D runCommand(CommandDTO commandDTO)
+  public <D extends DomainObject> D runCommand(Command command)
     throws ClassCastException, MontiGemError {
-    DTO dto = commandDTO.doRun();
+    DomainObject domainObject = command.doRun();
     @SuppressWarnings("unchecked")
-    D specificDTO = (D) dto;
-    return specificDTO;
+    D specificDomainObject = (D) domainObject;
+    return specificDomainObject;
   }
 }
 

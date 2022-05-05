@@ -3,27 +3,29 @@
 package hardy.command;
 
 import de.se_rwth.commons.logging.Log;
-import hardy.command.dto.CommandDTO;
-import hardy.command.dto.CommandDTOList;
-import hardy.command.dto.CommandResponseDTO;
-import hardy.dto.DTO;
-import hardy.dto.NotImplementedDTO;
+import hardy.command.impl.Command;
+import hardy.command.impl.CommandList;
+import hardy.command.impl.CommandResponse;
+import hardy.command.impl.CommandResult;
 import hardy.error.MontiGemError;
 import hardy.error.MontiGemErrorFactory;
 import hardy.error.NotImplementedException;
 
+import static hardy.error.MontiGemErrorCode.NOT_IMPLEMENTED;
+
 // TODO AHe: as Mill?
 public class CommandManager {
 
+  // TODO AHe: problem for generics: CommandList can contain commands of multiple types
   /**
    * run all given commands
    *
-   * @param commandDTOList a complete list of commands to run
+   * @param commandList a complete list of commands to run
    * @return a combined response for all the command results
    */
-  public static CommandResponseDTO runCommands(CommandDTOList commandDTOList) {
+  public static CommandResponse runCommands(CommandList commandList) {
     // create an empty response with the id to identify the response on the other end
-    CommandResponseDTO response = new CommandResponseDTO(commandDTOList.getId());
+    CommandResponse response = new CommandResponse(commandList.getId());
     // EntityTransaction transaction = em.getTransaction();
 
     Log.debug("MAB0xA003: Start transaction", CommandManager.class.getName());
@@ -32,16 +34,20 @@ public class CommandManager {
 
     try {
       // iterate all the commands
-      for (CommandDTO command : commandDTOList.getCommands()) {
-        cmdId = command.getCommandId();
-        DTO result;
+      for (Command command : commandList.getCommands()) {
+        cmdId = command.getId();
+        DomainObject result;
         try {
           result = command.doRun();
+          if(command.isReturnsGem()) {
+            response.addResponse(CommandResult.gemOk(command.getId(), result));
+          }else{
+            response.addResponse(CommandResult.ok(command.getId()));
+          }
         }
         catch (NotImplementedException e) {
-          result = new NotImplementedDTO(command.getTypeName());
+          response.addResponse(CommandResult.error(command.getId(), new MontiGemError(NOT_IMPLEMENTED, null, "Mathod not implemented")));
         }
-        response.addResponse(command.getCommandId(), result);
       }
 
       // transaction.commit();
@@ -49,19 +55,19 @@ public class CommandManager {
     }
     catch (NullPointerException np) {
       response.clear();
-      response.addResponse(cmdId, MontiGemErrorFactory.unknown("" + np + ": " + np.getStackTrace()[0]));
+      response.addResponse(CommandResult.error(cmdId, MontiGemErrorFactory.unknown("" + np + ": " + np.getStackTrace()[0])));
       Log.debug("MAB0xA005: Error in transaction: " + np.getMessage(), CommandManager.class.getName());
     }
     catch (MontiGemError e) {
       // transaction.rollback();
       response.clear();
-      response.addResponse(cmdId, e);
+      response.addResponse(CommandResult.error(cmdId, e));
       Log.debug("MAB0xA006: Error in transaction: " + e.getMessage(), CommandManager.class.getName());
     }
     catch (Exception e) {
       // transaction.rollback();
       response.clear();
-      response.addResponse(cmdId, MontiGemErrorFactory.exceptionCaught(e));
+      response.addResponse(CommandResult.error(cmdId, MontiGemErrorFactory.exceptionCaught(e)));
       Log.debug("MAB0xA007: Error in transaction: " + e.getMessage(), CommandManager.class.getName());
     }
 

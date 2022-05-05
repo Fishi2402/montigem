@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package hardy.command.dto;
+package hardy.command.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,18 +8,18 @@ import java.util.List;
 /**
  * Container for a command
  */
-public class CommandDTOList {
+public class CommandList {
   /**
    * running (unique) id, to identify the sent commands
    */
   private long id;
-  private List<CommandDTO> commands;
+  private List<Command> commands;
 
-  public CommandDTOList() {
+  public CommandList() {
     this.commands = new ArrayList<>();
   }
 
-  public CommandDTOList(List<CommandDTO> commands) {
+  public CommandList(List<Command> commands) {
     this.commands = commands;
   }
 
@@ -31,15 +31,15 @@ public class CommandDTOList {
     this.id = id;
   }
 
-  public List<CommandDTO> getCommands() {
+  public List<Command> getCommands() {
     return commands;
   }
 
-  public void setCommands(List<CommandDTO> commands) {
+  public void setCommands(List<Command> commands) {
     this.commands = commands;
   }
 
-  public void addCommand(CommandDTO command) {
+  public void addCommand(Command command) {
     if (this.commands == null) {
       this.commands = new ArrayList<>();
     }
