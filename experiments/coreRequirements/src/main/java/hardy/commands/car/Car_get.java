@@ -1,19 +1,19 @@
-package hardy.commands;
+package hardy.commands.car;
 
 import hardy.FlensburgManager;
-import hardy.Human;
+import hardy.Car;
 import hardy.command_infrastructure.impl.Command;
 import hardy.error.MontiGemError;
 
 import java.util.Optional;
 
-public class Human_get extends Command {
+public class Car_get extends Command {
   protected final int gemId;
 
-  protected Human_get(long commandId, int gemId) {
+  protected Car_get(long commandId, int gemId) {
     super(
         commandId,
-        "hardy.Human",
+        "hardy.Car",
         true
     );
 
@@ -21,7 +21,7 @@ public class Human_get extends Command {
   }
 
   @Override
-  public Optional<Human> doRun() throws MontiGemError {
-    return FlensburgManager.humanOpt(gemId);
+  public Optional<Car> doRun() throws MontiGemError {
+    return FlensburgManager.carOpt(gemId);
   }
 }

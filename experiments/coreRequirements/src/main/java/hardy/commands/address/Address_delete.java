@@ -1,27 +1,27 @@
-package hardy.commands;
+package hardy.commands.address;
 
 import hardy.FlensburgManager;
-import hardy.Human;
+import hardy.Address;
 import hardy.command_infrastructure.impl.Command;
 import hardy.error.MontiGemError;
 
 import java.util.Optional;
 
-public class Human_update extends Command {
-  protected final Human human;
+public class Address_delete extends Command {
+  protected final Address address;
 
-  protected Human_update(long id, Human human) {
+  protected Address_delete(long id, Address address) {
     super(
         id,
-        "hardy.Human",
+        "hardy.Address",
         false
     );
-    this.human = human;
+    this.address = address;
   }
 
   @Override
   public Optional<?> doRun() throws MontiGemError {
-    // TODO AHe: update
+    FlensburgManager.deleteAddress(address);
     return Optional.empty();
   }
 }

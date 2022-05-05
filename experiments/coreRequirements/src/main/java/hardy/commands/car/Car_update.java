@@ -1,0 +1,27 @@
+package hardy.commands.car;
+
+import hardy.FlensburgManager;
+import hardy.Car;
+import hardy.command_infrastructure.impl.Command;
+import hardy.error.MontiGemError;
+
+import java.util.Optional;
+
+public class Car_update extends Command {
+  protected final Car car;
+
+  protected Car_update(long id, Car car) {
+    super(
+        id,
+        "hardy.Car",
+        false
+    );
+    this.car = car;
+  }
+
+  @Override
+  public Optional<?> doRun() throws MontiGemError {
+    FlensburgManager.deleteCar(car);
+    return Optional.empty();
+  }
+}

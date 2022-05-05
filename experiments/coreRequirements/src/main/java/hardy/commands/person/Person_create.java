@@ -1,28 +1,28 @@
-package hardy.commands;
+package hardy.commands.person;
 
 import hardy.FlensburgManager;
-import hardy.Human;
+import hardy.Person;
 import hardy.command_infrastructure.impl.Command;
 import hardy.error.MontiGemError;
 
 import java.util.Optional;
 
-public class Human_create extends Command {
-  protected final Human human;
+public class Person_create extends Command {
+  protected final Person person;
 
-  protected Human_create(long commandId, Human human) {
+  protected Person_create(long commandId, Person person) {
     super(
         commandId,
-        "hardy.Human",
+        "hardy.Person",
         false
     );
 
-    this.human = human;
+    this.person = person;
   }
 
   @Override
   public Optional<Void> doRun() throws MontiGemError {
-    FlensburgManager.addHuman(human);
+    FlensburgManager.addPerson(person);
     return Optional.empty();
   }
 
