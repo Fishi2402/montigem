@@ -2,6 +2,8 @@ package hardy;
 
 //+ HWC-P        : entry point for the product
 
+import java.util.Arrays;
+
 public class Main {
 
 // todo: ausbauen:
@@ -11,6 +13,7 @@ public class Main {
 // (die ja auch im Produkt dabei sein dürfen)
 
   public static void main(String[] args){
-    System.out.println("TODO: Do something! Anything!!");
+    // TODO: Do something useful
+    System.out.println("Got the arguments: " + Arrays.toString(args));
   }
 }
