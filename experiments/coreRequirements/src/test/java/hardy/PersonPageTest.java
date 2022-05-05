@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+// Tests the frontend HWC PersonPageSim#decreaseAge and the backend HWC PersonValidator#extraConsistencyChecks
 public class PersonPageTest {
 
   @Test
