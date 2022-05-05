@@ -29,7 +29,7 @@ public class FlensburgMock extends FlensburgManager {
   // get the next free GemId -----------------------------------
   // simple solution: just counting, starting with 1001
   static protected long freeGemId = 1001;
-  
+
   //+ geheimes Hilfsmethode um gemId's für tests zu 
   // manipulieren (wenn notwendig)
   public static void secretlyAdaptnextGemIds(long gemId) {
@@ -40,7 +40,20 @@ public class FlensburgMock extends FlensburgManager {
     return freeGemId++;
   }
 
-// todo: to be completed for other classes: Human, Car
+  // Log that is used by all validators, can be used to assert in tests
+  static protected ResultLog log = new ResultLog();
+  public static ResultLog getLog(){
+    return log;
+  }
+
+  public static void resetLog(){
+    log.clear();
+  }
+
+  public static void setLog(ResultLog log){
+    FlensburgMock.log = log;
+  }
+
 
   // ------------------------------------------- Methods for class Person
 
@@ -92,12 +105,17 @@ public class FlensburgMock extends FlensburgManager {
 
   @Override
   protected void _doDeletePerson(Person o) {
-
+    assert persons.containsKey(o.getGemId());
+    persons.remove(o.getGemId());
   }
 
   @Override
   protected void _doUpdatePerson(Person o) {
+    assert persons.containsKey(o.getGemId());
 
+    if(thePersonValidator.consistencyCheck(o, log)) {
+      persons.put(o.getGemId(), o);
+    }
   }
 
   // --- Class Human ---
@@ -214,12 +232,12 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doDeleteCar(Car o) {
     assert cars.containsKey(o.getGemId());
-    cars.put(o.getGemId(), o);
+    cars.remove(o.getGemId(), o);
   }
 
   @Override
   protected void _doUpdateCar(Car o) {
     assert cars.containsKey(o.getGemId());
-    cars.remove(o.getGemId());
+    cars.put(o.getGemId(),o);
   }
 }

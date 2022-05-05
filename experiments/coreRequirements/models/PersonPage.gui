@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+// Question AHe: how will the gui-dsl be integrated into UmlP
+package hardy;
+
+// Displays the nickname and age of a person and allows the user to decrease the age
+card PersonPage(Person p){
+  label "Nickname"
+  label <  (p.nickname)
+  label "Age"
+  label <  (p.age)
+  botton "Decrease age" decreaseAge
+}

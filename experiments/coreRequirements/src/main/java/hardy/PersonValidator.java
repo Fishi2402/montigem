@@ -7,6 +7,7 @@ package hardy;
 */
 public class PersonValidator extends PersonValidatorTOP {
 
+    @Override
     public boolean extraBuildingChecks(PersonBuilder o, ResultLog log) {
         if (o.getAge() >= 18) {
             return true;
@@ -17,6 +18,7 @@ public class PersonValidator extends PersonValidatorTOP {
         }
     }
 
+    @Override
     public boolean extraConsistencyChecks(Person o, ResultLog log) {
         if (o.getAge() >= 18) {
             return true;
