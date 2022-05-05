@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 package hardy.command_infrastructure.impl;
-
+// RTE-P
 public abstract class GetAllCommand extends Command {
   protected int limit = -1;
 

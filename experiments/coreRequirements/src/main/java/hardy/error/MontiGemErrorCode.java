@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package hardy.error;
 
+// RTE-P
+
 import com.google.gson.annotations.SerializedName;
 
 /**
