@@ -1,17 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package hardy.command.send;
-
-import hardy.command.DomainObject;
+package hardy.command_infrastructure.send;
 
 /**
  * Promise to wait for the result of a command execution
  */
 public class CommandPromise {
   private long id;
-  private CommandCallback<DomainObject> method;
+  private CommandCallback<Object> method;
 
-  public CommandPromise(long id, CommandCallback<DomainObject> method) {
+  public CommandPromise(long id, CommandCallback<Object> method) {
     this.id = id;
     this.method = method;
   }
@@ -24,11 +22,11 @@ public class CommandPromise {
     this.id = id;
   }
 
-  public CommandCallback<DomainObject> getMethod() {
+  public CommandCallback<Object> getMethod() {
     return method;
   }
 
-  public void setMethod(CommandCallback<DomainObject> method) {
+  public void setMethod(CommandCallback<Object> method) {
     this.method = method;
   }
 }

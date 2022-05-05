@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package hardy.error;
 
-import hardy.command.impl.Command;
+import hardy.command_infrastructure.impl.Command;
 import hardy.error.mock.Status;
 
 public class MontiGemErrorFactory {

@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package hardy.command.impl;
+package hardy.command_infrastructure.impl;
 
 public abstract class GetAllCommand extends Command {
   protected int limit = -1;

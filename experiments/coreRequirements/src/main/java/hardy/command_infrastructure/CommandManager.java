@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package hardy.command;
+package hardy.command_infrastructure;
 
 import de.se_rwth.commons.logging.Log;
-import hardy.command.impl.Command;
-import hardy.command.impl.CommandList;
-import hardy.command.impl.CommandResponse;
-import hardy.command.impl.CommandResult;
+import hardy.command_infrastructure.impl.Command;
+import hardy.command_infrastructure.impl.CommandList;
+import hardy.command_infrastructure.impl.CommandResponse;
+import hardy.command_infrastructure.impl.CommandResult;
 import hardy.error.MontiGemError;
 import hardy.error.MontiGemErrorFactory;
 import hardy.error.NotImplementedException;
@@ -36,7 +36,7 @@ public class CommandManager {
       // iterate all the commands
       for (Command command : commandList.getCommands()) {
         cmdId = command.getId();
-        DomainObject result;
+        Object result;
         try {
           result = command.doRun();
           if(command.isReturnsGem()) {

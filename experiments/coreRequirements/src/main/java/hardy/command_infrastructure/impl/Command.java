@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package hardy.command.impl;
+package hardy.command_infrastructure.impl;
 
 import de.se_rwth.commons.logging.Log;
-import hardy.command.DomainObject;
 import hardy.error.MontiGemError;
 import hardy.error.NotImplementedException;
 
@@ -13,7 +12,6 @@ public abstract class Command {
 
   private long id;
   private final String typeName;
-  // TODO AHe: might be possible as Optional in return type?
   private final boolean returnsGem;
 
   protected Command(long id, String typeName, boolean returnsGem) {
@@ -22,16 +20,13 @@ public abstract class Command {
     this.returnsGem = returnsGem;
   }
 
-  // Diese Methode muss immer überschrieben werden.
-  // Sie kann aber hier nicht abstrakt sein, weil generierte Subklassen eine Impmentierung brauchen
-  public DomainObject doRun()
-    throws MontiGemError {
-    String res = "MAB0x9001: No implementation for operation " + getClass().getName();
-    Log.warn(res);
-    throw new NotImplementedException(res);
-  }
+  /**
+   *   Must return a domain object iff isReturnsGem returns true and the command was executed without exceptions
+   *   This method must always be overridden
+   */
+  public abstract Optional<?> doRun() throws MontiGemError;
 
-  public DomainObject undoRun() {
+  public void undoRun() {
     String res = "MAB0x9000: No undo for operation " + getClass().getName() + "available";
     Log.warn(res);
     throw new NotImplementedException(res);
@@ -42,7 +37,8 @@ public abstract class Command {
   }
 
   // TODO AHe: a DTO was returned here, how about a boolean?
-  protected abstract Optional<DomainObject> checkContract();
+  // TODO AHe: What is this used for?
+  // protected abstract Optional<Object> checkContract();
 
   public String getTypeName(){
     return typeName;

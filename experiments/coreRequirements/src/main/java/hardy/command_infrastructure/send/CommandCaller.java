@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package hardy.command.send;
+package hardy.command_infrastructure.send;
 
 import de.se_rwth.commons.logging.Log;
-import hardy.command.DomainObject;
-import hardy.command.impl.Command;
+import hardy.command_infrastructure.impl.Command;
 import hardy.error.MontiGemError;
 
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ public class CommandCaller {
    * @param cmd    any given command
    * @param method the callback method to use when given cmd is executed
    */
-  public CommandCaller add(Command cmd, CommandCallback<DomainObject> method) {
+  public CommandCaller add(Command cmd, CommandCallback<Object> method) {
     long id = this.id;
     this.id++;
 
@@ -58,7 +57,7 @@ public class CommandCaller {
    * @param commandId
    * @return corresponding callback
    */
-  private Optional<CommandCallback<DomainObject>> getById(long commandId) {
+  private Optional<CommandCallback<Object>> getById(long commandId) {
     return promises.stream().filter(promise -> promise.getId() == commandId).map(CommandPromise::getMethod)
       .findAny();
   }
@@ -70,13 +69,13 @@ public class CommandCaller {
    */
   public void execute() throws RuntimeException {
     this.commands.forEach(cmd -> {
-      Optional<CommandCallback<DomainObject>> method = getById(cmd.getId());
+      Optional<CommandCallback<Object>> method = getById(cmd.getId());
       if (!method.isPresent()) {
         Log.warn("MAB0xA100: could not find callback method for id " + cmd.getId());
         throw new RuntimeException("MAB0xA100: could not find callback method for id " + cmd.getId());
       }
 
-      DomainObject d = cmd.doRun();
+      Object d = cmd.doRun();
       method.get().onOk(d);
     });
 
@@ -92,9 +91,9 @@ public class CommandCaller {
    * @throws ClassCastException when the result doesn't have the intended type
    * @throws MontiGemError      on any error in the command itself
    */
-  public <D extends DomainObject> D runCommand(Command command)
+  public <D> D runCommand(Command command)
     throws ClassCastException, MontiGemError {
-    DomainObject domainObject = command.doRun();
+    Object domainObject = command.doRun();
     @SuppressWarnings("unchecked")
     D specificDomainObject = (D) domainObject;
     return specificDomainObject;
