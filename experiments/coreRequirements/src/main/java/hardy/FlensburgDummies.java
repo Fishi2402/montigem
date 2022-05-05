@@ -21,48 +21,46 @@ public class FlensburgDummies {
   // could we generate such a half way intelligent dummy set?
   public void inventDummiesOne() {
   
-    FlensburgMock.init();
     FlensburgMock.secretlyAdaptnextGemIds(1101);
     
-    Car c1101 = FlensburgManager.car().build();
-    Car c1102 = FlensburgManager.car().build();
-    Car c1103 = FlensburgManager.car().build();
-    Car c1104 = FlensburgManager.car().build();
-    Car c1105 = FlensburgManager.car().build();
-    Car c1106 = FlensburgManager.car().build();
+    Car c1101 = AbstractFlensburgManager.carBuilder().build();
+    Car c1102 = AbstractFlensburgManager.carBuilder().build();
+    Car c1103 = AbstractFlensburgManager.carBuilder().build();
+    Car c1104 = AbstractFlensburgManager.carBuilder().build();
+    Car c1105 = AbstractFlensburgManager.carBuilder().build();
+    Car c1106 = AbstractFlensburgManager.carBuilder().build();
     
     FlensburgMock.secretlyAdaptnextGemIds(2101);
     
-    Human h2101 = FlensburgManager.human().age(21).build();
+    Human h2101 = AbstractFlensburgManager.humanBuilder().age(21).build();
     
     FlensburgMock.secretlyAdaptnextGemIds(3101);
     
-    Person p3101 = FlensburgManager.person()
+    Person p3101 = AbstractFlensburgManager.personBuilder()
                         .age(25).nickname("Anna").owns(Collections.singleton(c1101)).build();
-    Person p3102 = FlensburgManager.person()
+    Person p3102 = AbstractFlensburgManager.personBuilder()
                         .age(26).nickname("Bert").build();
-    Person p3103 = FlensburgManager.person()
+    Person p3103 = AbstractFlensburgManager.personBuilder()
                         .age(3).nickname("Charly")
                         // TODO AHe: cumbersome, can not use addOwns since it is already defined by Person with return type boolean
                         .owns(new HashSet<>(Arrays.asList(c1102, c1103))).build();
-    Person p3104 = FlensburgManager.person()
+    Person p3104 = AbstractFlensburgManager.personBuilder()
                         .age(104).nickname("Doro")
                         .owns(new HashSet<>(Arrays.asList(c1104, c1105))).build();
-    Person p3105 = FlensburgManager.person()
+    Person p3105 = AbstractFlensburgManager.personBuilder()
                         .age(105).nickname("Emil").build();
       
   } 
     
   // really handwritten
   public void inventDummiesTwo(int number) {
-    FlensburgMock.init();
     for(int i = 1; i < number; i++) {
 
-      Car o1 = FlensburgManager.car().build();
+      Car o1 = AbstractFlensburgManager.carBuilder().build();
     
-      Human o2 = FlensburgManager.human().age(100+i).build();
+      Human o2 = AbstractFlensburgManager.humanBuilder().age(100+i).build();
     
-      Person o3 = FlensburgManager.person()
+      Person o3 = AbstractFlensburgManager.personBuilder()
                         .age(200+i)
                         .nickname("Nick"+i)
                         .owns(Collections.singleton(o1)).build();

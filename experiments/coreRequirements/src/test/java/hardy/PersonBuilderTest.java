@@ -18,7 +18,6 @@ public class PersonBuilderTest {
     public void before() {
         this.validator = new PersonValidator();
         this.personBuilder = new PersonBuilder(1001L, validator);
-        FlensburgMock.init();
     }
 
     @Test

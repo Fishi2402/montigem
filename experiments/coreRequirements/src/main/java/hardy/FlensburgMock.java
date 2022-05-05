@@ -19,10 +19,11 @@ package hardy;
 
 import java.util.*;
 
-public class FlensburgMock extends FlensburgManager {
+public class FlensburgMock extends AbstractFlensburgManager {
 
   // initializes Static Singleton with subclass
-  public static void init() {
+  @Override
+  protected void _doInit() {
     instance = new FlensburgMock();
   }
 
@@ -49,7 +50,7 @@ public class FlensburgMock extends FlensburgManager {
   protected Map<Long,Person> persons = new HashMap<>();
 
   // get a Builder ---------------------------------------
-  protected PersonBuilder _doPerson() {
+  protected PersonBuilder _doPersonBuilder() {
     return new PersonBuilder(_doGetFreeGemId(), thePersonValidator);
     // todo: überlegen hier schon mal das Objekt merken??? Oder Observer setzen?
   }
@@ -81,8 +82,8 @@ public class FlensburgMock extends FlensburgManager {
 
   //+ add an Object when Build is complete ---------------------------------
 
-  protected void _doAddPerson(Person o) {
-    persons.put(o.getGemId(), o);
+  protected void _doAddPerson(Person person) {
+    persons.put(person.getGemId(), person);
   }
 
   @Override

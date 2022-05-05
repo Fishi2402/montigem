@@ -2,10 +2,8 @@ package hardy;
 
 import com.google.common.collect.Streams;
 
-import java.util.List;
 import java.util.Random;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 //+ GEN4T        : generated for test infrastructure
@@ -40,12 +38,12 @@ public class FlensburgDummyManager {
   }
 
   protected Car _inventCar(){
-    Car c = FlensburgManager
-        .car()
+    Car c = AbstractFlensburgManager
+        .carBuilder()
         .build();
 
     // TODO AHe: each car needs to have a Person
-    FlensburgManager.addCar(c);
+    AbstractFlensburgManager.addCar(c);
     return c;
   }
 
@@ -94,13 +92,13 @@ public class FlensburgDummyManager {
   }
 
   protected Person _inventPerson(){
-    Person p = FlensburgManager
-        .person()
+    Person p = AbstractFlensburgManager
+        .personBuilder()
         .age(_inventPersonAge())
         .nickname(_inventPersonNickname())
         .build();
 
-    FlensburgManager.addPerson(p);
+    AbstractFlensburgManager.addPerson(p);
     return p;
   }
 
