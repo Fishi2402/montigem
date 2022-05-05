@@ -38,12 +38,12 @@ public class FlensburgDummyManager {
   }
 
   protected Car _inventCar(){
-    Car c = AbstractFlensburgManager
+    Car c = FlensburgManager
         .carBuilder()
         .build();
 
     // TODO AHe: each car needs to have a Person
-    AbstractFlensburgManager.addCar(c);
+    FlensburgManager.addCar(c);
     return c;
   }
 
@@ -92,13 +92,13 @@ public class FlensburgDummyManager {
   }
 
   protected Person _inventPerson(){
-    Person p = AbstractFlensburgManager
+    Person p = FlensburgManager
         .personBuilder()
         .age(_inventPersonAge())
         .nickname(_inventPersonNickname())
         .build();
 
-    AbstractFlensburgManager.addPerson(p);
+    FlensburgManager.addPerson(p);
     return p;
   }
 

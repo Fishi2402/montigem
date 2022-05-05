@@ -19,12 +19,11 @@ package hardy;
 
 import java.util.*;
 
-public class FlensburgMock extends AbstractFlensburgManager {
+public class FlensburgMock extends FlensburgManager {
 
   // initializes Static Singleton with subclass
-  @Override
-  protected void _doInit() {
-    instance = new FlensburgMock();
+  public static void init() {
+    FlensburgManager.setInstance(new FlensburgMock());
   }
 
   // get the next free GemId -----------------------------------
