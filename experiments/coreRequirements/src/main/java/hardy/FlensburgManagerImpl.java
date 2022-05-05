@@ -5,6 +5,7 @@ package hardy;
 import java.util.Collection;
 import java.util.Optional;
 
+// TODO: implement using a database connection
 public class FlensburgManagerImpl extends FlensburgManager {
 
     /**
@@ -50,6 +51,16 @@ public class FlensburgManagerImpl extends FlensburgManager {
         return null;
     }
 
+    @Override
+    protected void _doUpdateHuman(Human o) {
+
+    }
+
+    @Override
+    protected void _doDeleteHuman(Human o) {
+
+    }
+
     /* === Methods for class Person === */
 
     @Override
@@ -74,6 +85,16 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected Collection<Person> _doGetPersonList() {
         return null;
+    }
+
+    @Override
+    protected void _doDeletePerson(Person o) {
+
+    }
+
+    @Override
+    protected void _doUpdatePerson(Person o) {
+
     }
 
     /* === Methods for class Address === */
@@ -103,6 +124,16 @@ public class FlensburgManagerImpl extends FlensburgManager {
         return null;
     }
 
+    @Override
+    protected void _doUpdateAddress(Address o) {
+
+    }
+
+    @Override
+    protected void _doDeleteAddress(Address o) {
+
+    }
+
     /* === Methods for class Car === */
 
     @Override
@@ -128,5 +159,15 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected Collection<Car> _doGetCarList() {
         return null;
+    }
+
+    @Override
+    protected void _doDeleteCar(Car o) {
+
+    }
+
+    @Override
+    protected void _doUpdateCar(Car o) {
+
     }
 }
