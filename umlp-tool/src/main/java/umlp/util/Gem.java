@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 
 //alpha, this class is not fully developed,
 //only to try it out and might change
-public class Gem<E> {
+public class Gem<E extends GemIdentifiable> {
 
   protected E obj = null;
 
@@ -22,8 +22,7 @@ public class Gem<E> {
   }
 
   public Gem(E obj) {
-    //todo gemID -> get from obj?
-    gemID = -32l;
+    this.gemID = obj.getGemId();
     this.obj = obj;
     this.loadingState = LoadingState.LOADED;
   }

@@ -23,7 +23,7 @@ import java.util.function.Supplier;
  * Useful if e.g. the elements are loaded over a network.
  * Deprecated, as specific lists will be generated accordingly
  */
-public class LazyList<E> extends AbstractList<E> {
+public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
 
   protected final static String UNEXPECTED_LIST_LENGTH_ERROR =
       "0xAC724 recieved list of unexpected length";
@@ -220,8 +220,6 @@ public class LazyList<E> extends AbstractList<E> {
 
 
   protected Long getID(E elem) {
-    //todo get new id? or has the element an ID? -> would require interface
-    //todo implement when interface to load models is available
-    return -32l;
+    return elem.getGemId();
   }
 }
