@@ -112,7 +112,7 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doUpdatePerson(Person o) {
     assert persons.containsKey(o.getGemId());
-
+    // TODO AHe: throw exception?
     if(thePersonValidator.consistencyCheck(o, log)) {
       persons.put(o.getGemId(), o);
     }
@@ -150,7 +150,10 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doUpdateHuman(Human o) {
     assert humans.containsKey(o.getGemId());
-    humans.put(o.getGemId(), o);
+    // TODO AHe: throw exception?
+    if(theHumanValidator.consistencyCheck(o, log)) {
+      humans.put(o.getGemId(), o);
+    }
   }
 
   @Override
@@ -191,7 +194,10 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doUpdateAddress(Address o) {
     assert addresses.containsKey(o.getGemId());
-    addresses.put(o.getGemId(), o);
+    // TODO AHe: throw exception?
+    if(theAddressValidator.consistencyCheck(o, log)) {
+      addresses.put(o.getGemId(), o);
+    }
   }
 
   @Override
@@ -238,6 +244,9 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doUpdateCar(Car o) {
     assert cars.containsKey(o.getGemId());
-    cars.put(o.getGemId(),o);
+    // TODO AHe: throw exception?
+    if(theCarValidator.consistencyCheck(o, log)) {
+      cars.put(o.getGemId(),o);
+    }
   }
 }

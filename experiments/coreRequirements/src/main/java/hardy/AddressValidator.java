@@ -4,10 +4,12 @@ package hardy;
 
 public class AddressValidator extends AddressValidatorTOP {
 
+    @Override
     public boolean extraBuildingChecks(AddressBuilder o, ResultLog log) {
         return true;
     }
 
+    @Override
     public boolean extraConsistencyChecks(Address o, ResultLog log) {
         return true;
     }
