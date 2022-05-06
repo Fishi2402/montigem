@@ -28,6 +28,9 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
   protected final static String UNEXPECTED_LIST_LENGTH_ERROR =
       "0xAC724 recieved list of unexpected length";
 
+  protected final static String ELEMENT_NOT_AVAILABLE_ERROR =
+      "0xAC726 reqested element has not been loaded";
+
   protected final static int UNKNOWN_SIZE = -32;
 
   protected final static int INITIAL_LOAD_SIZE = 10;
@@ -86,15 +89,11 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
     if (!isLoaded(idx)) {
       loadObject(idx);
     }
-    if (!isLoaded(idx)) {
-      throw new RuntimeException();
+    if (!isLoaded(idx)
+        || !id2ObjectMap.get(getID(idx)).isPresent()) {
+      Log.error(ELEMENT_NOT_AVAILABLE_ERROR);
     }
-    if (id2ObjectMap.get(getID(idx)).isPresent()) {
-      return id2ObjectMap.get(getID(idx)).get();
-    }
-    //not according to java.util.List interface
-    //however, we may run into this problem
-    throw new IllegalArgumentException();
+    return id2ObjectMap.get(getID(idx)).get();
   }
 
   @Override
@@ -143,7 +142,7 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
   }
 
   protected void loadObject(int idx) {
-    loadObjects(idx, idx);
+    loadObjects(idx, idx + 1);
   }
 
   protected void loadObjects(int startIdx, int endIdx) {

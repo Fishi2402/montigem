@@ -2,7 +2,6 @@
 package umlptest;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import umlp.util.LazyList;
 import umlptest.listTestUtil.Elem;
@@ -100,7 +99,6 @@ public class LazyListTest extends AbstractUMLPTest {
     assertElemNr(list1_0.get(5), 2);
   }
 
-  @Ignore("FDr: fix me")
   @Test
   public void lazyListTestSet() {
     list1_0.set(0, getElem(4));
