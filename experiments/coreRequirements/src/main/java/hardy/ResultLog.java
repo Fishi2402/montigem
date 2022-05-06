@@ -3,6 +3,9 @@ package hardy;
 // RTE-P
 // RTE-T
 
+
+// todo: fehlt: Zweck
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

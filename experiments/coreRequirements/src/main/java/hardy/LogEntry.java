@@ -2,6 +2,8 @@ package hardy;
 
 import java.util.List;
 
+// todo: Fehlt Erklärung , Zweck
+
 public class LogEntry {
   private final String message;
   // Question AHe: What purpose does this serve?

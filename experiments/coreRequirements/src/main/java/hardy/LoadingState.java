@@ -1,6 +1,8 @@
 // (c) https://github.com/MontiCore/monticore
 package hardy;
 
+// todo: Fehlt Erklärung 
+
 //alpha, this class is not fully developed,
 //only to try it out and might change (change name?)
 public enum LoadingState {
