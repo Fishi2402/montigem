@@ -8,10 +8,12 @@ import umlptest.listTestUtil.Elem;
 import umlptest.listTestUtil.ListBasedLazyListServer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -25,11 +27,16 @@ public class LazyListTest extends AbstractUMLPTest {
   //starts with 4 elements
   ListBasedLazyListServer<Elem> listServer1;
 
+  //has elements not authorized
+  ListBasedLazyListServer<Elem> listServer2;
+
   LazyList<Elem> list0;
 
   LazyList<Elem> list1_0;
 
   LazyList<Elem> list1_1;
+
+  LazyList<Elem> list2;
 
   @Before
   public void init() {
@@ -46,6 +53,11 @@ public class LazyListTest extends AbstractUMLPTest {
     listServer1.addKnownObjects(allElems);
     list1_0 = listServer1.createLazyList();
     list1_1 = listServer1.createLazyList();
+
+    listServer2 = new ListBasedLazyListServer<>(allElems.subList(0, 2));
+    listServer2.addKnownObjects(allElems);
+    listServer2.setIdsNotAutorized(Collections.singleton(getElem(1).getGemId()));
+    list2 = listServer2.createLazyList();
   }
 
   @Test
@@ -110,6 +122,14 @@ public class LazyListTest extends AbstractUMLPTest {
     assertElemNr(list1_1.get(1), 1);
     assertElemNr(list1_1.get(2), 2);
     assertElemNr(list1_1.get(3), 7);
+    assertNoErrors();
+  }
+
+  @Test
+  public void lazyListTestIsPresent() {
+    assertEquals(list2.size(), 2);
+    assertTrue(list2.isPresent(0));
+    assertFalse(list2.isPresent(1));
     assertNoErrors();
   }
 

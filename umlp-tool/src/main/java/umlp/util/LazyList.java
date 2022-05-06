@@ -86,11 +86,7 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
   @Override
   public E get(int idx) {
     assertInclusiveIdxInBounds(idx);
-    if (!isLoaded(idx)) {
-      loadObject(idx);
-    }
-    if (!isLoaded(idx)
-        || !id2ObjectMap.get(getID(idx)).isPresent()) {
+    if (!isPresent(idx)) {
       Log.error(ELEMENT_NOT_AVAILABLE_ERROR);
     }
     return id2ObjectMap.get(getID(idx)).get();
@@ -115,6 +111,15 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
     E elem = get(idx);
     removeIdxs(Collections.singleton(idx));
     return elem;
+  }
+
+  public boolean isPresent(int idx) {
+    assertInclusiveIdxInBounds(idx);
+    if (!isLoaded(idx)) {
+      loadObject(idx);
+    }
+    return isLoaded(idx)
+        && id2ObjectMap.get(getID(idx)).isPresent();
   }
 
   public void setIDs(Map<Integer, Long> changes) {
