@@ -6,8 +6,12 @@ import hardy.Person;
 import hardy.command_infrastructure.impl.Command;
 import hardy.error.MontiGemError;
 
+// todo: Dieses Command scheint völlig ungeeignet: Wir ersetzen doch keine Personenobjekte
+// --> entfernen
+
 import java.util.Optional;
 
+@Deprecated
 public class Person_update extends Command {
   protected final Person person;
 
