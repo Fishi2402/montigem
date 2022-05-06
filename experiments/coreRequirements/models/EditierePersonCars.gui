@@ -1,0 +1,40 @@
+/* (c) https://github.com/MontiCore/monticore */
+package stanley;
+
+// HWC-P: eigentlich ein Modell, aber fuers Produkt
+
+// hier werden die Datenklassen gefunden
+import hardy.Flensburg;
+
+// hier werden importierte GUI-Modelle gefunden
+import umlp.gui.TextInput;
+import umlp.gui.NumberInput;
+import umlp.gui.Button;
+
+/**
+ * This example defines a Visualization including a numer of Calculated 
+ * values (that may change externally over time)
+ *
+ * Situation is that the Person p exists aleady 
+ */
+page EditierePersonCars(Person p) {
+
+  // show and edit the nickname
+  :TextInput(value = p.nickname)
+
+  // show and edit the age as number
+  :NumberInput(value = p.age)
+
+  // show the number of cars as number
+  // this attribute is calulated (which makes from the GUI point of view
+  // not a difference)
+  :NumberShow(value = p.age)
+
+// todo: we might show a list of cars here as well
+// where we might add and delete cars?
+
+  :Button(text = "Ok", leftClick = submit())
+  // todo: Wo steht, wie es danach weitergeht (welche Seite wird gezeigt?)
+
+}
+
