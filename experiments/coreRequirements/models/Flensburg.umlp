@@ -1,6 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package hardy;
 
+// HWC-P: eigentlich ein Modell, aber fuers Produkt
+
+/*
+ * Simple class diagram with 3 classes, some assocs, and inheritance
+ */
+
 umlp Flensburg {
 
     class Car;
