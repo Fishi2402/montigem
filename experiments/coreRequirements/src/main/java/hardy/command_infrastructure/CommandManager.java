@@ -1,5 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+/*
+  // todo: to be handled:
+a) expand CommandList
+b) Erklärungen hinzufügen
+  
+*/ 
+
 package hardy.command_infrastructure;
 // RTE-P
 // RTE-T
@@ -13,6 +20,7 @@ import hardy.error.MontiGemError;
 import hardy.error.MontiGemErrorFactory;
 import hardy.error.NotImplementedException;
 
+// todo Braucht es dies?
 import static hardy.error.MontiGemErrorCode.NOT_IMPLEMENTED;
 
 // TODO AHe: as Mill?
@@ -58,18 +66,21 @@ public class CommandManager {
     catch (NullPointerException np) {
       response.clear();
       response.addResponse(CommandResult.error(cmdId, MontiGemErrorFactory.unknown("" + np + ": " + np.getStackTrace()[0])));
+      // todo: Wie kann eine Fehlermeldung "Error" ...vi "Debug rausgehen ..."????
       Log.debug("MAB0xA005: Error in transaction: " + np.getMessage(), CommandManager.class.getName());
     }
     catch (MontiGemError e) {
       // transaction.rollback();
       response.clear();
       response.addResponse(CommandResult.error(cmdId, e));
+      // todo: Wie kann eine Fehlermeldung "Error" ...vi "Debug rausgehen ..."????
       Log.debug("MAB0xA006: Error in transaction: " + e.getMessage(), CommandManager.class.getName());
     }
     catch (Exception e) {
       // transaction.rollback();
       response.clear();
       response.addResponse(CommandResult.error(cmdId, MontiGemErrorFactory.exceptionCaught(e)));
+      // todo: Wie kann eine Fehlermeldung "Error" ...vi "Debug rausgehen ..."????
       Log.debug("MAB0xA007: Error in transaction: " + e.getMessage(), CommandManager.class.getName());
     }
 
@@ -83,6 +94,10 @@ public class CommandManager {
    * @return the result of the command executions
    */
   // TODO AHe: impl
+  // todo: also das Deserialisieren von Objekten ist definitiv nicht hier anzuseiedeln!
+  // Aus sicht des Datenstransfers sind Commands ja auch nichts anderes als Daten, und daher 
+  // dortz zu behandeln, wo die Kommunikation sitzt
+  
   /*public static CommandResponseDTO manage(String jsonCmd) { // TODO SVa: have the deserialization outside, just handle CommandDTOList?
     CommandDTOList commandList;
     Log.debug("MAB0xA000: Manage commands: '" + jsonCmd + "'", CommandManager.class.getName());

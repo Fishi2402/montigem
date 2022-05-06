@@ -2,6 +2,9 @@
 
 package hardy.command_infrastructure.impl;
 // RTE-P
+
+// todo: erläutern
+
 import hardy.Gem;
 import hardy.LoadingState;
 import hardy.error.MontiGemError;
@@ -35,6 +38,14 @@ public class CommandResult<T> {
     this.commandId = id;
     this.forGemCommand = false;
   }
+
+
+/* 
+  // todo:
+  wieso ist es so relevant, ob es ein "domänenobjekt" oder einen anderen
+  Datensatz returniert?
+  Ich kann den Bedarf hierzu noch nicht sehen?
+*/
 
   /**
    * Successful CommandResult of a command that does not return a domain object

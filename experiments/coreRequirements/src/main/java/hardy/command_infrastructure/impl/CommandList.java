@@ -1,7 +1,26 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package hardy.command_infrastructure.impl;
 // RTE-P
+
+/*
+  // todo: to be handled:
+  
+  a) es handelt sich um RTE-Klassen, die werden nicht generiert, können
+   also notwendigerweise nicht Teil eines Pakets (hardy...) sein, das 
+   den CD-Namen beinhaltet.
+   --> verschieben nach ./src/main/java/umlp/command; package umlp.command;
+ 
+ b) Zwecke von CommandList erklären:
+ wenn ich das richtig sehe, dann ist es ausschließlich eine Liste, die 
+  hier verbreitet wird. Dafür benötigen wir diese Klasse nicht.
+  Der zweck des Zählers id sist auch unklar: Entfernen oder besser im 
+  CommandProcessor aufheben.
+  
+ c) Oder ist das eine unvollständige und daher misslungene Form für Commands ein
+ Composite einzuführen? --> dann Rücksprache und Erklärung
+ 
+*/ 
+
 import java.util.ArrayList;
 import java.util.List;
 

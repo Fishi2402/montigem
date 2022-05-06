@@ -1,5 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+
+// todo: Was soll dies? Sonst streichen und was vernünftiges anbieten
+
 package hardy.command_infrastructure.impl;
 // RTE-P
 public abstract class GetAllCommand extends Command {

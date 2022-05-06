@@ -1,5 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+// todo: Zweck unklar; Streichen? !!!
+
+
 package hardy.command_infrastructure.send;
 // RTE-P
 /**
