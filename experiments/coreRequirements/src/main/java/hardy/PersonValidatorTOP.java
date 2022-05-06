@@ -28,6 +28,8 @@ public abstract class PersonValidatorTOP {
         log.add("nickname not defined");
       }
 
+      if (!o.isOwnsPresent())
+
       // todo: analog für owns?
       result &= extraBuildingChecks( o, log);
       return result;
@@ -42,7 +44,18 @@ public abstract class PersonValidatorTOP {
     // zB. wenn das Risko besteht, dass Inkonsistenz herrscht 
     // Was tun wir dann? Fehler melden? Log, Error, Robustes Weitermachen?
 
-    // todo: analog die schärfere Konsistenz variante:
+    public boolean consistencyCheck(Person p, ResultLog log){
+      boolean result = true;
+      // TODO AHe: what checks are needed here?
+      result &= extraConsistencyChecks(p, log);
+      return result;
+    }
+
+  public boolean extraConsistencyChecks(Person p, ResultLog log) {
+    return true;
+  }
+
+  // todo: analog die schärfere Konsistenz variante:
 
 }
 

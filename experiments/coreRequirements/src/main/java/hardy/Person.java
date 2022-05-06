@@ -4,7 +4,6 @@ package hardy;
 
 // todo NN: com.google.common.: Muss das Teil dieser Imports sein, Rücksprache mit BR
 // todo FDr: hier muss die LazyList hin, keine Sets, keine anderen Lists
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -28,7 +27,6 @@ public class Person extends Human {
 
     // @BR: java.util.Observable is a class, not an interface. We have to inherit the according functionality from class Human.
     // Maybe this is why DEx added the DexObserver and DexObservable interfaces?
-    // todo CKn: implements Observable komplettieren (soweit noch was zu tun ist)
 
     // an Attribute: ------------------------------------------
     protected String nickname;
@@ -79,7 +77,9 @@ public class Person extends Human {
     }
 
     public void setNickname(String o) {
-        Preconditions.checkNotNull(o);
+        if (o == null) {
+            throw new IllegalArgumentException("Null argument not allowed here");
+        }
         this.nickname = o;
     }
 
@@ -105,7 +105,9 @@ public class Person extends Human {
     }
 
     public void retainAllOwnss(Collection<Car> o) {
-        Preconditions.checkNotNull(o);   /// todo: Das können wir händisch besser
+        if (o == null) {
+            throw new IllegalArgumentException("Null argument not allowed here");
+        }
         Sets.difference(Sets.newHashSet(this.owns), Sets.newHashSet(o)).forEach((s) -> {
             this.removeOwns(s);
         });
@@ -131,7 +133,9 @@ public class Person extends Human {
     }
 
     public boolean addOwns(Car o) {
-        Preconditions.checkNotNull(o);          // todo: ersetzen
+        if (o == null) {
+            throw new IllegalArgumentException("Null argument not allowed here");
+        }
         if (this.owns.contains(o)) {
             return false;
         } else {
@@ -141,7 +145,9 @@ public class Person extends Human {
     }
 
     public boolean addAllOwnss(Collection<Car> o) {
-        Preconditions.checkNotNull(o);          // todo: ersetzen
+        if (o == null) {
+            throw new IllegalArgumentException("Null argument not allowed here");
+        }
         boolean success = true;
         Car element;
         for(Iterator var3 = o.iterator(); var3.hasNext(); success &= this.addOwns(element)) {
@@ -169,7 +175,10 @@ public class Person extends Human {
     public boolean isEmptyOwnss() {
         return this.owns.isEmpty();
     }
-    
+
+    public Person build() {
+        throw new UnsupportedOperationException("Only to be accessed through the builder.");
+    }
     
     // -----------------------------------------------------------------
      

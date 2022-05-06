@@ -30,4 +30,8 @@ public class Car extends Observable {
 
     protected void init() {
     }
+
+    public Car build() {
+        throw new UnsupportedOperationException("Only to be accessed through the builder.");
+    }
 }

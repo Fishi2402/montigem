@@ -14,7 +14,7 @@ import java.util.*;
 public class PersonBuilder extends Person {
 
     //+ Note: PersonBuilder does not extend HumanBuilder 
-    
+
     // -----------------------------------------------------
     // flag: if Build has finished: Object behaves like an 
     // ordinary Person Object
@@ -26,6 +26,7 @@ public class PersonBuilder extends Person {
     protected boolean agePresent = false;
     protected boolean nicknamePresent = false;
     protected boolean ownsPresent = false;
+    protected boolean mainResidencePresent = false;
 
     PersonValidator validator;
 
@@ -33,9 +34,9 @@ public class PersonBuilder extends Person {
     //+ gemId wird bereits beim initialisieren des Builders besetzt
     // und ein Validator wird auch mitgeliefert (und erstmal gespeichert)
     public PersonBuilder(long gemId, PersonValidator validator) {
-       this.gemId = gemId;
-       this.validator = validator;
-       init();
+        this.gemId = gemId;
+        this.validator = validator;
+        init();
     }
 
     // Standard set-Function:
@@ -51,6 +52,12 @@ public class PersonBuilder extends Person {
     public PersonBuilder age(int age) {
         this.age = age;
         this.agePresent = true;
+        return this;
+    }
+
+    public PersonBuilder mainResidence(Address mainResidence) {
+        this.mainResidence = new Gem<Address>(mainResidence);
+        this.mainResidencePresent = true;
         return this;
     }
 
@@ -86,33 +93,37 @@ public class PersonBuilder extends Person {
         return ownsPresent;
     }
 
-
-    // todo: Build-Methode komplettieren ähnlich zu unten beschrieben
+    public boolean isMainResidencePresent() {
+        return mainResidencePresent;
+    }
 
     //+ Build ---------------------------------------------------------------
     /*+
      *  Build checks all mandatory requirements (i.e. using a validator)
-     * then sets the buildFinished to true and the 
-     * object behaves like a normal object 
-     * Main differences:    
-     *  - from now on all changes are persisted 
+     * then sets the buildFinished to true and the
+     * object behaves like a normal object
+     * Main differences:
+     *  - from now on all changes are persisted
      *  - observers are now notified
-     */   
-     
+     */
+
     public Person build() {
-      // todo: incomplete! (checks, and build dependent objects)
-      if(!buildFinished) {
-        if(validator.buildingCheck(this)) {
-            buildFinished = true;
-            FlensburgManager.addPerson(this);
-            notifyObservers();      //+ an initial notification
-            return this;
-        } else {
-            throw new DataConsistencyViolationException("0xU1234: Person cannot be built.");
-          // todo reject the build
+        if (!buildFinished) {
+            if (validator.buildingCheck(this)) {
+                for (Car own : owns) {
+                    own.build();
+                }
+                FlensburgManager.addPerson(this);
+                notifyObservers();      //+ an initial notification
+                buildFinished = true;
+                return this;
+            }
         }
-      }
-      return null;
+        throw new DataConsistencyViolationException("0xU1234: Person cannot be built.");
+    }
+
+    public boolean isBuildable() {
+        return validator.buildingCheck(this);
     }
 
     /*- Das regeln wir anders:, denn dieser Sonderfall erlaubt ja nur eine

@@ -25,4 +25,8 @@ public class ResultLog {
   public LogEntry getEntry(int index){
       return logEntries.get(index);
   }
+
+  public void clear() {
+    logEntries.clear();
+  }
 }
