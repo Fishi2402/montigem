@@ -51,6 +51,7 @@ public class LazyListTest extends AbstractUMLPTest {
   @Test
   public void lazyListTestSize() {
     assertEquals(list0.size(), 0);
+    assertTrue(list0.isEmpty());
     assertEquals(list1_0.size(), 4);
     assertEquals(list1_1.size(), 4);
     assertNoErrors();
@@ -89,14 +90,15 @@ public class LazyListTest extends AbstractUMLPTest {
     assertEquals(list1_1.size(), 5);
     assertElemNr(list1_0.get(4), 2);
     assertElemNr(list1_1.get(4), 2);
-    list1_0.add(2, getElem(2));
+    list1_0.add(2, getElem(8));
     assertEquals(list1_0.size(), 6);
     assertElemNr(list1_0.get(0), 0);
     assertElemNr(list1_0.get(1), 1);
-    assertElemNr(list1_0.get(2), 2);
+    assertElemNr(list1_0.get(2), 8);
     assertElemNr(list1_0.get(3), 2);
     assertElemNr(list1_0.get(4), 3);
     assertElemNr(list1_0.get(5), 2);
+    assertNoErrors();
   }
 
   @Test
@@ -108,6 +110,7 @@ public class LazyListTest extends AbstractUMLPTest {
     assertElemNr(list1_1.get(1), 1);
     assertElemNr(list1_1.get(2), 2);
     assertElemNr(list1_1.get(3), 7);
+    assertNoErrors();
   }
 
   protected Elem getElem(int idx) {
