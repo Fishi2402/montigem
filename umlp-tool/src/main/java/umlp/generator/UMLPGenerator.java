@@ -81,14 +81,14 @@ public class UMLPGenerator {
     cDAssociationCreateFieldsFromNavigableRoles.transform(cdAST);
     logTrafoExec("CDAssociationCreateFieldsFromNavigableRoles", cdAST);
 
-    domainClassDecorator.transform(cdAST);
-    logTrafoExec("DomainClassDecorator", cdAST);
-    UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
-
-    // Generate builder classes
-    builderDecorator.transform(cdAST);
-    logTrafoExec("BuilderDecorator", cdAST);
-    UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
+//    domainClassDecorator.transform(cdAST);
+//    logTrafoExec("DomainClassDecorator", cdAST);
+//    UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
+//
+//    // Generate builder classes
+//    builderDecorator.transform(cdAST);
+//    logTrafoExec("BuilderDecorator", cdAST);
+//    UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
 
     // TODO hier weitere trafos realisieren
 
