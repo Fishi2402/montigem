@@ -29,6 +29,10 @@ package hardy;
   sonst etwas aufwändig zu kriegen ... zB in "FlensburgMg"
     Antwort CKn: ich persönlich finde den Namen 'FlensburgManager' ok. Da wir in der IDE Auto-Completion haben,
     macht die Länge hier denke ich keinen spürbaren Unterschied.
+    BR: Man bedenke aber, dass wir das öfter lesen als Schreiben müssen und die Erfahrung zeigt,
+    dass lange Namen mit vielen bestandteilen langsamer zu erfassen sind.
+    Ausserdem: Auf Folien ist das schwerer darzustellen.
+    Aber in diesem Fall soll es ok sein.
 
   Wir nutzen den static Singleton Ansatz für alle zu realisierenden Funktionen
   
@@ -47,7 +51,7 @@ public abstract class FlensburgManager {
     }
 
     protected long _doGetFreeGemId() {
-        throw new RuntimeException("TODO AHe: implement");
+        return 42;  // todo TODO AHe: implement");
     }
 
     /**

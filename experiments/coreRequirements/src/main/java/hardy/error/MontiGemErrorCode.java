@@ -3,6 +3,8 @@ package hardy.error;
 
 // RTE-P
 
+// todo: Zweck unklar, rauswerfen?
+
 import com.google.gson.annotations.SerializedName;
 
 /**

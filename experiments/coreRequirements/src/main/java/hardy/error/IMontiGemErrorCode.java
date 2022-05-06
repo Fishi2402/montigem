@@ -1,5 +1,7 @@
 package hardy.error;
 
+// todo: Zweck unklar, rauswerfen?
+
 // RTE-P
 
 import java.io.Serializable;

@@ -9,7 +9,8 @@ import java.util.stream.IntStream;
 //+ GEN4T        : generated for test infrastructure
 //+ GEN-P        : generated for the product (z.B. eine Demoversion)
 
-public class FlensburgDummyManager {
+public class FlensburgDummyManager extends FlensburgManager {
+
   protected static Random random = new Random();
   protected static FlensburgDummyManager instance;
 
