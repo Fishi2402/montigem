@@ -127,13 +127,14 @@ public class PersonBuilder extends Person {
     }
 
     /*- Das regeln wir anders:, denn dieser Sonderfall erlaubt ja nur eine
-    2er Konstruktion:
+    2Objekte-Parallel instantiieren Konstruktion:
       public Person build(boolean addToBidirectionalAssociation) {
 
 Wir führen stattdessen die Möglichkeit ein andere ebenfalls noch in Konstruktion 
 befindliche Objekte ebenfalls anzumelden und dann später alle gleichzeitig zu 
 bilden (wg. Subklassenbildung)
 
+    // todo: Bitte realisieren
 */
 
 //  public Person build() {

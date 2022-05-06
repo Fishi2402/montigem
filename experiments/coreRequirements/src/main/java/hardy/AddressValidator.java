@@ -1,18 +1,31 @@
 package hardy;
 
-//+ HWC-P        : extension for the product
+//+ GEN-P        : generated for the product
 
-public class AddressValidator extends AddressValidatorTOP {
+// TODO: siehe Klasse PersonValidatorTOP
+public class AddressValidator {
 
-    @Override
-    public boolean extraBuildingChecks(AddressBuilder o, ResultLog log) {
-        return true;
-    }
+  ResultLog log;
 
-    @Override
-    public boolean extraConsistencyChecks(Address o, ResultLog log) {
-        return true;
-    }
+  public boolean buildingCheck(AddressBuilder o) {
+    boolean result = true;
+    result &= extraBuildingChecks( o, log);
+    return result;
+  }
+
+  public boolean extraBuildingChecks(AddressBuilder o, ResultLog log) {
+      return true;
+  }
+
+  public boolean consistencyCheck(Address o, ResultLog log) {
+    boolean result = true;
+    result &= extraConsistencyChecks(o, log);
+    return result;
+  }
+
+  protected boolean extraConsistencyChecks(Address o, ResultLog log){
+    return true;
+  }
 }
 
 

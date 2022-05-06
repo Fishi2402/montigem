@@ -2,8 +2,8 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-// todo NN: com.google.common.: Muss das Teil dieser Imports sein, Rücksprache mit BR
-// todo FDr: hier muss die LazyList hin, keine Sets, keine anderen Lists
+// todo NN: !com.google.common.: Muss das Teil dieser Imports sein, Rücksprache mit BR
+// todo FDr: !hier muss die LazyList hin, keine Sets, keine anderen Lists
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -25,8 +25,7 @@ import java.util.*;
 
 public class Person extends Human {
 
-    // @BR: java.util.Observable is a class, not an interface. We have to inherit the according functionality from class Human.
-    // Maybe this is why DEx added the DexObserver and DexObservable interfaces?
+    // Bem: java.util.Observable wird via Human geerbt
 
     // an Attribute: ------------------------------------------
     protected String nickname;
@@ -68,7 +67,7 @@ public class Person extends Human {
     protected void init() {
         super.init();
         this.nickname = "";
-        // todo FDr, CKn: use LazyList here
+        // todo FDr, CKn: use LazyList here!
         owns = new LinkedList<>();
     }
 

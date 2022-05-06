@@ -1,18 +1,29 @@
 package hardy;
 
-//+ HWC-P        : extension for the product
+//+ GEN-P        : generated for the product
 
-public class CarValidator extends CarValidatorTOP {
+public class CarValidator {
+  ResultLog log = new ResultLog();
 
-    @Override
-    public boolean extraBuildingChecks(CarBuilder o, ResultLog log) {
-        return true;
-    }
+  public boolean buildingCheck(CarBuilder o) {
+    boolean result = true;
+    result &= extraBuildingChecks( o, log);
+    return result;
+  }
 
-    @Override
-    public boolean extraConsistencyChecks(Car o, ResultLog log) {
-        return true;
-    }
+  public boolean extraBuildingChecks(CarBuilder o, ResultLog log) {
+      return true;
+  }
+
+  public boolean consistencyCheck(Car o, ResultLog log) {
+    boolean result = true;
+    result &= extraConsistencyChecks(o, log);
+    return result;
+  }
+
+  protected boolean extraConsistencyChecks(Car o, ResultLog log){
+    return true;
+  }
 }
 
 

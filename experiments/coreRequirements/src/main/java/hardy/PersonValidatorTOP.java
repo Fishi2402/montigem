@@ -10,7 +10,9 @@ import java.util.*;
 */
 public abstract class PersonValidatorTOP {
 
-    ResultLog log = new ResultLog();     //todo: effizient gestalten, ggf. über mehrere Builder hinweg
+    ResultLog log = new ResultLog();     
+    //todo: das Log effizient gestalten, ggf. über mehrere Builder hinweg
+    // und zwar dann, wenn man eine gemeinsame/synchronisierte Build-Konstruktion braucht
 
     //+buildingCheck wird benutzt vom Builder 
     // zB via einem Webformular um Nutzer zu 
@@ -28,9 +30,9 @@ public abstract class PersonValidatorTOP {
         log.add("nickname not defined");
       }
 
-      if (!o.isOwnsPresent())
-
+      if (!o.isOwnsPresent()) // todo
       // todo: analog für owns?
+    
       result &= extraBuildingChecks( o, log);
       return result;
     }
