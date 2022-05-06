@@ -28,6 +28,8 @@ public abstract class PersonValidatorTOP {
         log.add("nickname not defined");
       }
 
+      if (!o.isOwnsPresent())
+
       // todo: analog für owns?
       result &= extraBuildingChecks( o, log);
       return result;

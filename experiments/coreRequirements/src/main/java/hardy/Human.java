@@ -14,8 +14,6 @@ import java.util.Observable;
 
 public class Human extends Observable {
 
-    // todo CKn: implements Observable komplettieren (soweit noch was zu tun ist)
-
     // gemId: ------------------------------------------
     //+ Special attribute gemID is used to identify this object
     // the id is unique throughout the system (Data Base)
@@ -61,5 +59,9 @@ public class Human extends Observable {
 
     public void setAge(int o) {
         this.age = o;
+    }
+
+    public Human build() {
+        throw new UnsupportedOperationException("Only to be accessed through the builder.");
     }
 }

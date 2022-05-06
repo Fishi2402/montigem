@@ -8,13 +8,17 @@ public abstract class HumanValidatorTOP {
     ResultLog log = new ResultLog();
 
     public boolean buildingCheck(HumanBuilder o) {
-      boolean result = true;
-      result &= extraBuildingChecks( o, log);
-      return result;
+        boolean result = true;
+        if (!o.isAgePresent()) {
+            result = false;
+            log.add("age not defined");
+        }
+        result &= extraBuildingChecks(o, log);
+        return result;
     }
 
     public boolean extraBuildingChecks(HumanBuilder o, ResultLog log) {
-        return true;    
+        return true;
     }
 }
 
