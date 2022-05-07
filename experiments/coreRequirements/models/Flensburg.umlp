@@ -54,4 +54,11 @@ umlp Flensburg {
 
     association / cities: CityMap -> String [*]
 
+    // todo AHe: "generierten" Code fuer die beiden Schreiben (der ja alles 
+    // genau so macht wie gehabt, aber nicht persistiert
+    // generierte TOP-Klasse "CityInfoTOP" mit Signaturen
+    // für den Server: HWC ergänzung "CityInfo" der Methodenrümpfe (zur Berechnung)
+    // die Ineffizienz bei der Berechnung ist erstmal egal (erlaubt uns ja 
+    // DB und Kommunikation zu testen)
+    
 }
