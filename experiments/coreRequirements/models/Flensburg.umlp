@@ -34,4 +34,6 @@ umlp Flensburg {
     // man beachte hier die intern gekapselte bidirektionale Verwaltung
     // association parent [*] Person <-> (child) Person [*];
 
+    // folgende Klasse ist nicht(!) zu persistieren und dient 
+
 }
