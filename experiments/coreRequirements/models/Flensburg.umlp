@@ -34,6 +34,24 @@ umlp Flensburg {
     // man beachte hier die intern gekapselte bidirektionale Verwaltung
     // association parent [*] Person <-> (child) Person [*];
 
-    // folgende Klasse ist nicht(!) zu persistieren und dient 
+    // ---------------------------------------------------------------------------
+    
+    // folgende Klasse ist nicht(!) zu persistieren und kann zu Berechnungen im
+    // Server oder auch zur Anzeige von Daten dienen:
+    
+    // todo: Entscheidung zu: Markierung für nicht-speicherung bei Klassen 
+    // und Assoziaionen?
+    // Optionen: Ablage in extra Modell? Oder Stereotyp? Oder Tagging --
+    // Wir nehmen hier jetzt erstmal die einfachste Lösung: 
+    // Stereotyp <calculated> oder geht auch "/"?
+    / class CityInfo {
+        int numberOfCities;
+        int totalNumberOfCars;
+        String cityWithMostCars;
+        Person personWithMostCars;
+        int averageNumberOfCars;
+    }
+
+    association / cities: CityMap -> String [*]
 
 }
