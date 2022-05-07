@@ -13,7 +13,7 @@ import umlp.gui.Button;
 
 /**
  * This example defines a 
- * Form to fill out person data
+ * Form to fill out Person data
  * it has only simple default layout, which generates some 
  * interesting pieces of code
  *

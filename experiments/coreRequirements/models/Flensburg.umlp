@@ -17,9 +17,15 @@ umlp Flensburg {
 
     class Person extends Human {
         String nickname;
+        
+        // calculated attribute: wird nicht persistiert, 
+        // deshalb gibt es nur einen getter, der dies berechnet
+        / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
     }
 
-    class Address;
+    class Address {
+       String city;
+    };
 
     association owns [1] Person -> Car [*];
     association mainResidence [1] Person -> Address [1];
