@@ -13,8 +13,10 @@ import java.util.function.Supplier;
 //alpha, this class is not fully developed,
 //only to try it out and might change
 
-// todo: geht dies: Gem<E> extends E
-// wenn dies nicht der Fall ist, dass ist es wharscheinlich doch notwendig GemE zu generieren?
+// todo: kann man dies machen?: Gem<E> extends E
+// weil dies m.W. nicht der Fall ist, dass ist es wharscheinlich doch notwendig 
+// bei den aufrufenden Stellen Gem<E> Funktionalität reingeneriert werden
+
 public class Gem<E> {
 
 // todo: Beschreiben, in welchen Modi die Attribute wie besetzt (oder irrelevant sind)

@@ -97,10 +97,13 @@ public abstract class PersonTOP extends Human {
     
     // todo: Hier wird wohl auch die Möglichkeit benötigt mit Gem<Adress> umzugehen
     // zB zu Fragen, ob es ladbar war, oder auch die ungeladene Gem weiter zu geben.
-    //   public Gem<Address> getMainResidence()   (das ist nur notwendig, wenn Gem<E> NICHT subclass von E
-    //   public boolean availableMainResidence()
+    //   public Gem<Address> getMainResidence()   
+    //      (das ist nur notwendig, wenn Gem<E> NICHT subclass von E
+    //   public boolean availableMainResidence()  
+    //      true, wenn geladen  (und versucht auch zu laden, damit Verfügbarkeit geklärt)
     //   public LoadStatus statusMainResidence()   
     //   void setMainResidence(Gem<Address> mainResidence), ggf. weitere Gem-Methoden
+    
     public Address getMainResidence() {
         return mainResidence.get();
     }

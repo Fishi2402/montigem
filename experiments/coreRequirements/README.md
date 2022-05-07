@@ -7,7 +7,8 @@ Ergänzungen dazu passen.
 Einige Design-Entscheidungen sind hier eingetragen, andere 
 Detail-Entscheidungen werden mit ihren Konsequenzen direkt bei dem 
 handgeschriebenen Code dokumentiert. 
-
+Interne Kommentare sind meist deutsch, während Kommentare markiert mit `//+` 
+oder als Mehrzeiler `/**` eher dazu gedacht sind auch im generierten Code sichtbar zu sein.
 
 ## Vergleiche auch die wichtigsten Tickets dazu:
 
@@ -16,10 +17,9 @@ beinhaltet. u.a. den Status zu diesen Aktivitäten
 
 ## Konventionen:
 
-* Der Code sollte bitte permanent lauffähig gehalten werden. Um 
-allerdings jetzt mal voran zu kommen, erlaubt BR sich erstmal kaputte 
-Codestrukturen aufzubauen (solange bis Substanz da ist und er weiss, 
-wie man testet) 
+* Der Code sollte bitte permanent lauffähig gehalten werden. 
+* Die einzige Ausnahme: BR darf gelegentlich unvollständige Ergänzungen einbauen, 
+  um zu zeigen, wie weiter ergänzt wird (und später wird auch BR das lassen)
 
 * So wird getestet:
 
@@ -42,8 +42,8 @@ wie man testet)
       gradle :experiments:coreRequirements:runApp --args="Hello World"
 ```
 
-* `to`+`do` im Code sind schnellstmöglich zu adressieren, man beachte 
-auch `to`+`do` + Kürzel, Kommentare, Fragen etc. -- das unterstützt 
+* `to``do` und `TO``DO` im Code sind schnellstmöglich zu adressieren, man beachte 
+auch `to``do` + Kürzel, Kommentare, Fragen etc. -- das unterstützt 
 jetzt erstmal kollaboratives Arbeiten. Diese Kommentare sind nach 
 Abbarbeitung der Aufgaben zu entfernen, die Kommentare mit `//+` 
 bleiben (zB als Hinweise für den Generatorentwickler) 
@@ -59,6 +59,7 @@ Anbei eine Fassung vom 20. April, mit einigen Erklärungen:
 ``` 
 // hardy, Flensburg, Car, Human ... sind Namen, die  mit nichts 
 // anderem zu verwechseln sind. 
+// Klassen des RTE kennend aher den Namen `hardy` nicht
 
 package hardy; 
 
@@ -75,6 +76,8 @@ umlp Flensburg {
 // einmal Vererbung eingebaut
     class Person extends Human {
         String nickname;
+        / String clubname;  // calculated
+        
     }
 
 // *-Assoziation (als Liste zu realisieren)
@@ -86,9 +89,15 @@ umlp Flensburg {
 } 
 ``` 
 
+Daneben existieren in `models` mehrere GUI-modelle, die zeigen, wie
+einzelne Teile aus dem Klassendiagramm angezeigt werden können.
+Das umlp-Modell sagt von sich es gehört zu Paket `hardy`. Die GUI-Modelle 
+haben wir mal in ein einzelnes anderes Paket `stanley` gelegt.
+
+
 ## Folgende Verzeichnisse:
 
-* `./models`  hier liegt das Quell-Modell 
+* `./models`  hier liegen die Quell-Modell (umlp und guis)
 
 * `./src/main/java` hier liegen aktuell alle handgeschriebenen Dateien 
 (ausser die die für Tests vorgesehen sind). Dies beinhaltet mehrere 
@@ -101,9 +110,22 @@ Die aktuelle Ablage der Dateien ist noch optimiert war, denn weder ist
 (1) fixiert, dass alle im selben Paket landen (`hardy`), noch sind (2) 
 alle Dateien dem src Bereich zuzuordnen.
 
+* `./src/main/java/hardy` und `./src/test/java/hardy` 
+   alle Klassen, die aus `Flensburg.umlp` generiert werden
+   (sollen) oder als handgeschriebene Ergänzungen dazu kommen.
+
+* `./src/main/java/stanley` und `./src/test/java/stanley` 
+   alle Klassen, die aus den GUIs generiert werden
+   (sollen) oder als handgeschriebene Ergänzungen dazu kommen.
+
+* `./src/main/java/umlp` und `./src/test/java/umlp`
+    Klassen des RTE und ihre Qualitätssicherung durch Tests
+    
+
 ## Kategorien von Dateien: 
 
-wir unterscheiden für das Produkt folgende Kategorien:
+wir unterscheiden für das Produkt folgende Kategorien, und jede Datei ist mit 
+einem entsprechenden Kommentar zu versehen:
 
 * `RTE-P`: Klassen, die jedem Produkt gleich zuzuordnen sind, zB die LazyList
 
@@ -114,21 +136,20 @@ der Klasse `Car` zuzuordnen .
 * `GEN-P`: Genrierte Klassen des Produkts, die später der Generator in dieser Form 
 erzeugen wird.
 
-Zusätzlich treffen wir noch die Unterscheidung zwischen Produkt und 
-Testinfrastruktur, wobei Tests und Testinfrastruktur sich nicht auf einzelne
-Kategorieren des Produkts beziehen:
+Zusätzlich treffen wir noch die Unterscheidung zwischen Produkt (P) und 
+Testinfrastruktur (T):
 
 * `RTE-T` testet Klassen des `RTE-P` und sind handgeschrieben.
 
-* `HWC-PT` testet `HWC-P`  (und solche werden kaum gebraucht, 
+* `HWC-PT` testet `HWC-P`  (und solche werden hier jetzt kaum gebraucht, 
         höchstens als Beispiel-Demonstration, um zu zeigen wie das im echten Projekt geht), 
 
 * `HWC-GT` testet `GEN-P` (und damit indirekt wohl auch `RTE-P`). Dies sind handgeschriebene(!) 
-      Tests, die genau zum generierten Code von `Flensburg.cd` passen und damit
+      Tests, die genau zum generierten Code von `Flensburg.umlp` passen und damit
       den Generator testen.
 
 * `E2E-T` testet das Gesamtsystem (also alle Komponenten) und sind ebenfalls
-      genau abhängig auf `Flensburg.cd`, die daraus generierten Klassen und auch
+      genau abhängig auf `Flensburg.umlp`, die daraus generierten Klassen und auch
       die handgeschriebenen Ergänzungen abgestimmt. Handgeschrieben.
 
 * `GEN4T` sind generierte Klassen, die als Testinfrastruktur dienen. 
