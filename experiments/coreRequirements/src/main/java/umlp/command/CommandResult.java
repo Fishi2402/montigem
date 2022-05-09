@@ -5,7 +5,7 @@ package umlp.command;
 
 // todo: erläutern
 
-import hardy.error.MontiGemError;
+import umlp.command.error.MontiGemError;
 import umlp.rte.Gem;
 import umlp.rte.LoadingState;
 

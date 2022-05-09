@@ -1,10 +1,13 @@
-package hardy;
+package stanley;
 
 // HWC-T
 // HWC-P: Will be converted to frontend code
 
-public class PersonPageSim extends PersonPageSimTOP {
-  public PersonPageSim(Person p) {
+import hardy.FlensburgManager;
+import hardy.Person;
+
+public class PersonPageGUI extends PersonPageGUITOP {
+  public PersonPageGUI(Person p) {
     super(p);
   }
 

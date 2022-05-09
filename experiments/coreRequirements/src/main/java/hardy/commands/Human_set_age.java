@@ -1,9 +1,9 @@
 package hardy.commands;
 
 import hardy.FlensburgManager;
-import hardy.error.MontiGemError;
-import hardy.error.MontiGemErrorCode;
-import hardy.error.mock.Status;
+import umlp.command.error.MontiGemError;
+import umlp.command.error.MontiGemErrorCode;
+import umlp.command.error.mock.Status;
 import umlp.command.Command;
 
 import java.util.Optional;
@@ -16,7 +16,6 @@ public class Human_set_age extends Command {
   public Human_set_age(int commandId, int gemId, int age) {
     super(
         commandId,
-        "hardy.Human",
         false
       );
     this.gemId = gemId;

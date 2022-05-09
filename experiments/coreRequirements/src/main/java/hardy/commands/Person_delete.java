@@ -4,7 +4,7 @@ package hardy.commands;
 import hardy.FlensburgManager;
 import hardy.Person;
 import umlp.command.Command;
-import hardy.error.MontiGemError;
+import umlp.command.error.MontiGemError;
 
 import java.util.Optional;
 
@@ -14,7 +14,6 @@ public class Person_delete extends Command {
   protected Person_delete(long id, Person person) {
     super(
         id,
-        "hardy.Person",
         false
     );
     this.person = person;

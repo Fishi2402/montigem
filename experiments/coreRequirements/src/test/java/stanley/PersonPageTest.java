@@ -1,7 +1,8 @@
-package hardy;
+package stanley;
 
 // HWC-T
 
+import hardy.*;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -17,7 +18,7 @@ public class PersonPageTest {
     FlensburgMock.resetLog();
 
     Person p = FlensburgManager.personBuilder().age(30).nickname("Mustermann").build();
-    PersonPageSim pageSim = new PersonPageSim(p);
+    PersonPageGUI pageSim = new PersonPageGUI(p);
 
     // Simulate user input
     pageSim.decreaseAge();
@@ -33,7 +34,7 @@ public class PersonPageTest {
     FlensburgMock.resetLog();
 
     Person p = FlensburgManager.personBuilder().age(18).nickname("Mustermann").build();
-    PersonPageSim pageSim = new PersonPageSim(p);
+    PersonPageGUI pageSim = new PersonPageGUI(p);
 
     // Simulate user input
     pageSim.decreaseAge();

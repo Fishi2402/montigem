@@ -2,7 +2,7 @@
  *  (c) Monticore license: https://github.com/MontiCore/monticore
  */
 
-package hardy.error;
+package umlp.command.error;
 
 // RTE-P
 

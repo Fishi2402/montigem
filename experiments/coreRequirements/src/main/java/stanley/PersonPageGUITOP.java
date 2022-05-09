@@ -1,11 +1,13 @@
-package hardy;
+package stanley;
 
 // GEN-T
 
-public class PersonPageSimTOP {
+import hardy.Person;
+
+public class PersonPageGUITOP {
   protected final Person p;
 
-  public PersonPageSimTOP(Person p){
+  public PersonPageGUITOP(Person p){
     this.p = p;
   }
 

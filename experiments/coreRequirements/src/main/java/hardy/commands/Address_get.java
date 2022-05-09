@@ -3,7 +3,7 @@ package hardy.commands;
 import hardy.FlensburgManager;
 import hardy.Address;
 import umlp.command.Command;
-import hardy.error.MontiGemError;
+import umlp.command.error.MontiGemError;
 
 import java.util.Optional;
 // GEN-P
@@ -14,7 +14,6 @@ public class Address_get extends Command {
   protected Address_get(long commandId, int gemId) {
     super(
         commandId,
-        "hardy.Address",
         true
     );
 

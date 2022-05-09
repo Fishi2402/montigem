@@ -1,4 +1,4 @@
-package hardy.error;
+package umlp.command.error;
 
 // todo: Zweck unklar, rauswerfen?
 

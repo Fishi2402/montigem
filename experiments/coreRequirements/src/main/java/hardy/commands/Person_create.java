@@ -5,7 +5,7 @@ package hardy.commands;
 import hardy.FlensburgManager;
 import hardy.Person;
 import umlp.command.Command;
-import hardy.error.MontiGemError;
+import umlp.command.error.MontiGemError;
 
 /*
 // todo: Anforderungen für Commands (vor allem auch welche) mit BR besprechen
@@ -34,7 +34,6 @@ public class Person_create extends Command {
   protected Person_create(long commandId, Person person) {
     super(
         commandId,
-        "hardy.Person",
         false
     );
 

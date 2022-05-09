@@ -3,7 +3,7 @@ package hardy.commands;
 import hardy.FlensburgManager;
 import hardy.Car;
 import umlp.command.Command;
-import hardy.error.MontiGemError;
+import umlp.command.error.MontiGemError;
 
 import java.util.Optional;
 // GEN-P
@@ -14,7 +14,6 @@ public class Car_create extends Command {
   protected Car_create(long commandId, Car car) {
     super(
         commandId,
-        "hardy.Car",
         false
     );
 

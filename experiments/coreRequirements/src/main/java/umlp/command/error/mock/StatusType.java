@@ -1,4 +1,4 @@
-package hardy.error.mock;
+package umlp.command.error.mock;
 
 // todo: Zweck unklar, rauswerfen?
 

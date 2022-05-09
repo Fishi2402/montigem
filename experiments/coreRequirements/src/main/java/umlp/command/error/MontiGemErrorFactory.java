@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
-package hardy.error;
+package umlp.command.error;
 
 // RTE-P
 
 // todo: Zweck unklar, rauswerfen? Also eine ErrofFactory brauchen wir nun wirklich nicht
 
 import umlp.command.Command;
-import hardy.error.mock.Status;
+import umlp.command.error.mock.Status;
 
 public class MontiGemErrorFactory {
 

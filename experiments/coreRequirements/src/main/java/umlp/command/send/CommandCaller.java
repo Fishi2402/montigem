@@ -6,7 +6,7 @@ package umlp.command.send;
 // RTE-P
 import de.se_rwth.commons.logging.Log;
 import umlp.command.Command;
-import hardy.error.MontiGemError;
+import umlp.command.error.MontiGemError;
 
 import java.util.ArrayList;
 import java.util.List;

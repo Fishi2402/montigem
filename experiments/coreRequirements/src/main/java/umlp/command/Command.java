@@ -4,35 +4,37 @@ package umlp.command;
 // RTE-P
 
 import de.se_rwth.commons.logging.Log;
-import hardy.error.MontiGemError;
-import hardy.error.NotImplementedException;
+import umlp.command.error.MontiGemError;
+import umlp.command.error.NotImplementedException;
 
 import java.util.Optional;
 
 public abstract class Command {
-
-  // this is the commandId (was immer das bedeutet - notwendig?)
-  // todo: explain id, ggf. weglassen
+  // Der Ersteller des Commands vergibt diese id und nutzt sie nachher um die Response des Backends, welche dieselbe id enthält, diesem Command zuzuordnen.
+  // Ansonsten können parallel ankommende Responses nicht eindeutig ihren Commands zugeordnet werden.
   private long id;
   
-  // Reflectively storing the name of the object it operates on
-  // todo: wozu notwendig?, ggf, weglassen?
-  private final String typeName;
-  
-  // todo: explain
+  // Enthielt in MontiGem das feld typeName, welches den Typ des zurückgegebenen commands enthielt.
+  // Hier nicht unbedingt notwendig, wenn die Subklassen sich selber um (De)-Serialisierung kümmern
+
+  // Falls die Response zu diesem Command keine Daten liefert, ist returnsGem false.
+  // Eingebaut um den früheren OkDTO zu ersetzten.
   private final boolean returnsGem;
 
-  protected Command(long id, String typeName, boolean returnsGem) {
+  // TODO AHe: returnsGem und typeName können weggelassen werden, wenn die (De)-Serialisierung verschoben wird, z.B. wenn sie im Command liegt, so ist der Returntyp bekannt und kann dort gecasted werden.
+  // cont: Dann hat allerdings die Klasse Command mehrere Aufgaben: (De)-Serialisierung, Ausführung
+
+  protected Command(long id, boolean returnsGem) {
     this.id = id;
-    this.typeName = typeName;
     this.returnsGem = returnsGem;
   }
 
   /**
-   *   Must return a domain object iff isReturnsGem returns true and the command was executed without exceptions
+   *   Must return an object iff isReturnsGem returns true and the command was executed without exceptions.
+   *   Returns Optional.empty if the Response should not contain an object.
+   *   TODO AHe: Warum dann ein Optional zurückgeben? isReturnsGem == false könnte einen return von null implizieren
    *   This method must always be overridden
    */
-   // todo: was bedeutet in der Erklärung der Begriff "domain object"?
   public abstract Optional<?> doRun() throws MontiGemError;
 
   public void undoRun() {
@@ -57,10 +59,6 @@ public abstract class Command {
   // TODO AHe: a DTO was returned here, how about a boolean?
   // TODO AHe: What is this used for?
   // protected abstract Optional<Object> checkContract();
-
-  public String getTypeName(){
-    return typeName;
-  }
 
   public boolean isReturnsGem() {
     return returnsGem;

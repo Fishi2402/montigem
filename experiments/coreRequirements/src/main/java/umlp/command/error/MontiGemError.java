@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-package hardy.error;
+package umlp.command.error;
 
 // RTE-P
 
 // todo: Zweck unklar, rauswerfen?
 
-import hardy.error.mock.StatusType;
+import umlp.command.error.mock.StatusType;
 
 /**
  * TODO: Write me!

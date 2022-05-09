@@ -12,12 +12,12 @@ package umlp.command;
 // RTE-T
 
 import de.se_rwth.commons.logging.Log;
-import hardy.error.MontiGemError;
-import hardy.error.MontiGemErrorFactory;
-import hardy.error.NotImplementedException;
+import umlp.command.error.MontiGemError;
+import umlp.command.error.MontiGemErrorFactory;
+import umlp.command.error.NotImplementedException;
 
 // todo Braucht es dies?
-import static hardy.error.MontiGemErrorCode.NOT_IMPLEMENTED;
+import static umlp.command.error.MontiGemErrorCode.NOT_IMPLEMENTED;
 
 // TODO AHe: as Mill?
 public class CommandManager {
