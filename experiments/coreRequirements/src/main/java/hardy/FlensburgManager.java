@@ -39,6 +39,7 @@ package hardy;
 */
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public abstract class FlensburgManager {
@@ -363,4 +364,51 @@ public abstract class FlensburgManager {
         getSingleton()._doUpdateCar(o);
     }
     protected abstract void _doUpdateCar(Car o);
+
+  /* === Methods for Lists of class Car === */
+
+  /**
+   * Returns a new {@link List} of class {@link Car}.
+   *
+   * @return {@link List} the class {@link Car}.
+   */
+  public static List<Car> createCars() {
+    return getSingleton()._doCreateCars();
+  }
+
+  protected abstract List<Car> _doCreateCars();
+
+  /**
+   * Gives the {@link List} of {@link Car} with the given gemId.
+   *
+   * @param gemId
+   * @return {@link Optional} initialized with the {@link List} of {@link Car}
+   * with the given gemId or an empty {@link Optional},
+   * if the {@link List} could not be loaded.
+   */
+  public static Optional<List<Car>> carsOpt(long gemId) {
+    return getSingleton()._doCarsOpt(gemId);
+  }
+
+  protected abstract Optional<List<Car>> _doCarsOpt(long gemId);
+
+  /**
+   * Gives the {@link List} of {@link Car} with the given gemId. Use {@link #carsOpt(long)} instead,
+   * if unsure that a {@link List} with the given gemId exists.
+   *
+   * @param gemId
+   * @return {@link List} of {@link Car} with the given gemId.
+   * @throws ObjectNotKnownException if the {@link List} of {@link Car} with the given gemId does not exist.
+   */
+  public static Car getCarsSure(long gemId) {
+    return getSingleton()._doGetCarSure(gemId);
+  }
+
+  protected abstract Car _doGetCarsSure(long gemId);
+
+  public static void deleteCars(List<Car> o){
+    getSingleton()._doDeleteCars(o);
+  }
+  protected abstract void _doDeleteCars(List<Car> o);
+
 }
