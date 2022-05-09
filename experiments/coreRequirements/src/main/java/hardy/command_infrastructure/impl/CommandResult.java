@@ -5,9 +5,9 @@ package hardy.command_infrastructure.impl;
 
 // todo: erläutern
 
-import hardy.Gem;
-import hardy.LoadingState;
 import hardy.error.MontiGemError;
+import umlp.rte.Gem;
+import umlp.rte.LoadingState;
 
 import java.util.Optional;
 

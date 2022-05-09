@@ -3,6 +3,16 @@ package umlp.rte;
 
 import de.se_rwth.commons.logging.Log;
 
+// todo: Fehlt erklärung, Zweck
+// also wenn man diese Klasse noch dazwischen schieben muss, um 
+// neben dem Ergebnis den Load-State zu speichern, dann könnte ich das
+// auch andersherum direkt in der Loading-Funktion speichern und dies nicht als Funktion, 
+// sondern als Objekt mit Zustand ablegen.
+
+// Oder noch besser: man könnte der Lade-Funktion das Gem-Objekt mitgeben
+// dann kann diese den Ergebniszustand direkt ins Gem-Objekt reinlegen
+// und dieses Zwischenobjekt wird unnötig
+
 //result of trying to load an object
 //alpha, this class is not fully developed,
 //only to try it out and might change
