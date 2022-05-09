@@ -57,7 +57,7 @@ abstract class CheckDirEquality extends DefaultTask {
   abstract DirectoryProperty getDir2()
 
   @TaskAction
-  def greet() {
+  def run() {
     java.io.File dir1 = getDir1().asFile.get();
     java.io.File dir2 = getDir2().asFile.get();
     for (File f1 : FileUtils.listFiles(dir1, null, true)) {
@@ -66,7 +66,8 @@ abstract class CheckDirEquality extends DefaultTask {
         File f2 = java.nio.file.Paths.get(dir2.toString(), relPath1).toFile();
         if (!FileUtils.contentEquals(f1, f2)) {
           throw new java.lang.RuntimeException("Generated Files are not equal! Gradle Task cannot be cached! \n" +
-              "\t " + f1.toPath() + "\n\t " + f2.toPath())
+              "\t " + f1.toPath() + "\n\t " + f2.toPath() + "\n" +
+              "Often this is caused by iterating over a `HashSet` (or `HashMap`). Instead use `LinkedHashSet` / `TreeSet` (or `LinkedHashMap` / `TreeMap`)")
         }
       }
     }
