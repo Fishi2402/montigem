@@ -10,7 +10,6 @@ import de.monticore.cdassociation._symboltable.CDRoleSymbol;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 
 import java.util.Collection;
@@ -19,7 +18,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.builder.CDAssociationUtil.getAssociationName;
+import static umlp.generator.builder.CDAssociationUtil.getRoleName;
 import static umlp.generator.builder.CDAssociationUtil.getAssociationType;
 
 public class DomainClassDecorator extends AbstractDecorator {
@@ -71,7 +70,7 @@ public class DomainClassDecorator extends AbstractDecorator {
             String packageName = typeInfo.getPackageName();
             ASTCDClass astNode = (ASTCDClass) typeInfo.getAstNode();
             attributes.add(getCDAttributeFacade().createAttribute(PROTECTED.build(), getAssociationType(cdRole),
-                    getAssociationName(cdRole)));
+                    getRoleName(cdRole)));
             addImport(clazz, typeInfo.getName(), rootPackage);
         }
         return attributes;

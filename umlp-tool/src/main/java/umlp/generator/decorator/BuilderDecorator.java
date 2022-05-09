@@ -254,7 +254,7 @@ public class BuilderDecorator extends AbstractDecorator {
   private ASTCDMethod createSetAssociationMethod(String builderName, CDRoleSymbol association) {
     ASTCDParameter parameter = associationToCDParameter(association);
     ASTModifier modifier = isOppositeQualified(association) ? PROTECTED.build() : PUBLIC.build();
-    String associationName = getAssociationName(association);
+    String associationName = getRoleName(association);
     ASTCDMethod method = getCDMethodFacade().createMethod(modifier, builderName,
             "set" + capitalize(associationName), parameter);
     getGlex().replaceTemplate(CD2JavaTemplates.EMPTY_BODY, method,
@@ -265,7 +265,7 @@ public class BuilderDecorator extends AbstractDecorator {
 
   private ASTCDMethod createSetMultipleAssociationMethod(String builderName, CDRoleSymbol association) {
     ASTCDParameter parameter = associationToCDParameter(association);
-    String associationName = getAssociationName(association);
+    String associationName = getRoleName(association);
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), builderName, associationName, parameter);
     getGlex().replaceTemplate(CD2JavaTemplates.EMPTY_BODY, method,
             new StringHookPoint("{ this." + associationName + "= " + associationName + "; return this;}"));
@@ -273,7 +273,7 @@ public class BuilderDecorator extends AbstractDecorator {
   }
 
   private ASTCDMethod createAddMultipleAssociationMethod(String builderName, CDRoleSymbol association) {
-    String associationName = getAssociationName(association);
+    String associationName = getRoleName(association);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(association.getType().print(), associationName);
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), builderName,
@@ -285,7 +285,7 @@ public class BuilderDecorator extends AbstractDecorator {
 
   private ASTCDMethod createGetMethod(CDRoleSymbol association) {
     ASTCDParameter parameter = associationToCDParameter(association);
-    String associationName = getAssociationName(association);
+    String associationName = getRoleName(association);
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), parameter.getMCType(),
             makeCamelCase("get", capitalize(associationName)));
     getGlex().replaceTemplate(CD2JavaTemplates.EMPTY_BODY, method,
@@ -298,7 +298,7 @@ public class BuilderDecorator extends AbstractDecorator {
     ASTCDParameter param = associationToCDParameter(association);
 
     // add method
-    String associationName = getAssociationName(association);
+    String associationName = getRoleName(association);
     ASTCDParameter setMethodParameter = getCDParameterFacade().createParameter(param.getMCType(), associationName);
     ASTModifier modifier = isOppositeQualified(association) ? PROTECTED.build() : PUBLIC.build();
     ASTCDMethod setMethod = getCDMethodFacade().createMethod(modifier, className + BUILDER_SUFFIX,
