@@ -369,16 +369,18 @@ public abstract class FlensburgManager {
 
   /* === Methods for Lists of class Car === */
 
+  // TODO: do the users need those, if so, how should they look like?
+
   /**
    * Returns a new {@link List} of class {@link Car}.
    *
    * @return {@link List} the class {@link Car}.
    */
-  public static GemIdentifiableList<Car> createCars() {
-    return getSingleton()._doCreateCars();
-  }
+  //public static GemIdentifiableList<Car> createCars() {
+  //  return getSingleton()._doCreateCars();
+  //}
 
-  protected abstract GemIdentifiableList<Car> _doCreateCars();
+  //protected abstract GemIdentifiableList<Car> _doCreateCars();
 
   /**
    * Gives the {@link List} of {@link Car} with the given gemId.
@@ -388,11 +390,11 @@ public abstract class FlensburgManager {
    * with the given gemId or an empty {@link Optional},
    * if the {@link List} could not be loaded.
    */
-  public static Optional<GemIdentifiableList<Car>> carsOpt(long gemId) {
-    return getSingleton()._doCarsOpt(gemId);
-  }
+  //public static Optional<GemIdentifiableList<Car>> carsOpt(long gemId) {
+  //  return getSingleton()._doCarsOpt(gemId);
+  //}
 
-  protected abstract Optional<GemIdentifiableList<Car>> _doCarsOpt(long gemId);
+  //protected abstract Optional<GemIdentifiableList<Car>> _doCarsOpt(long gemId);
 
   /**
    * Gives the {@link List} of {@link Car} with the given gemId. Use {@link #carsOpt(long)} instead,
@@ -402,15 +404,16 @@ public abstract class FlensburgManager {
    * @return {@link List} of {@link Car} with the given gemId.
    * @throws ObjectNotKnownException if the {@link List} of {@link Car} with the given gemId does not exist.
    */
-  public static GemIdentifiableList<Car> getCarsSure(long gemId) {
-    return getSingleton()._doGetCarsSure(gemId);
-  }
+  //public static GemIdentifiableList<Car> getCarsSure(long gemId) {
+  //  return getSingleton()._doGetCarsSure(gemId);
+  //}
 
-  protected abstract GemIdentifiableList<Car> _doGetCarsSure(long gemId);
+  //protected abstract GemIdentifiableList<Car> _doGetCarsSure(long gemId);
 
-  public static void deleteCars(GemIdentifiableList<Car> o){
-    getSingleton()._doDeleteCars(o);
-  }
-  protected abstract void _doDeleteCars(GemIdentifiableList<Car> o);
+  //public static void deleteCars(GemIdentifiableList<Car> o){
+  //  getSingleton()._doDeleteCars(o);
+  //}
+
+  //protected abstract void _doDeleteCars(GemIdentifiableList<Car> o);
 
 }

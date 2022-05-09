@@ -173,19 +173,4 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     }
 
-  @Override protected GemIdentifiableList<Car> _doCreateCars() {
-    return null;
-  }
-
-  @Override protected Optional<GemIdentifiableList<Car>> _doCarsOpt(long gemId) {
-    return Optional.empty();
-  }
-
-  @Override protected GemIdentifiableList<Car> _doGetCarsSure(long gemId) {
-    return null;
-  }
-
-  @Override protected void _doDeleteCars(GemIdentifiableList<Car> o) {
-
-  }
 }
