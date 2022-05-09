@@ -1,7 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
-package umlptest.listTestUtil;
+package umlp.rte.listTestUtil;
 
-import umlp.util.GemIdentifiable;
+import umlp.rte.GemIdentifiable;
 
 /**
  * objects are used as testEntries

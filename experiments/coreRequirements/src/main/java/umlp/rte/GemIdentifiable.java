@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package umlp.util;
+package umlp.rte;
 
 public interface GemIdentifiable {
 

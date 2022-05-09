@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package umlp.util;
+package umlp.rte;
 
 import de.se_rwth.commons.logging.Log;
 
@@ -23,7 +23,7 @@ import java.util.function.Supplier;
  * Useful if e.g. the elements are loaded over a network.
  * Deprecated, as specific lists will be generated accordingly
  */
-public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
+public class LazyList<E extends GemIdentifiable> extends AbstractList<E> implements GemIdentifiableList<E>{
 
   protected final static String UNEXPECTED_LIST_LENGTH_ERROR =
       "0xAC724 recieved list of unexpected length";
@@ -34,6 +34,8 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
   protected final static int UNKNOWN_SIZE = -32;
 
   protected final static int INITIAL_LOAD_SIZE = 10;
+
+  protected long gemID = -32l;
 
   protected int size = UNKNOWN_SIZE;
 
@@ -113,6 +115,11 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
     return elem;
   }
 
+  /**
+   * returns if the element is available
+   * e.g. one is authorized to access it
+   * this is NOT a range check
+   */
   public boolean isPresent(int idx) {
     assertInclusiveIdxInBounds(idx);
     if (!isLoaded(idx)) {
@@ -229,7 +236,14 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E> {
     id2ObjectMap = new HashMap<>();
   }
 
+  /**
+   * returns the gemID of a given element
+   */
   protected Long getID(E elem) {
     return elem.getGemId();
+  }
+
+  @Override public long getGemId() {
+    return 0;
   }
 }

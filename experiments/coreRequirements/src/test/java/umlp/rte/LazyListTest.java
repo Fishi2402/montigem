@@ -1,11 +1,10 @@
 // (c) https://github.com/MontiCore/monticore
-package umlptest;
+package umlp.rte;
 
 import org.junit.Before;
 import org.junit.Test;
-import umlp.util.LazyList;
-import umlptest.listTestUtil.Elem;
-import umlptest.listTestUtil.ListBasedLazyListServer;
+import umlp.rte.listTestUtil.ListBasedLazyListServer;
+import umlp.rte.listTestUtil.Elem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-public class LazyListTest extends AbstractUMLPTest {
+public class LazyListTest extends AbstractUMLPRTETest {
 
   List<Elem> allElems;
 

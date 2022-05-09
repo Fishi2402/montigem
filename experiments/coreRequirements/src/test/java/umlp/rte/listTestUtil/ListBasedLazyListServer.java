@@ -1,10 +1,10 @@
 // (c) https://github.com/MontiCore/monticore
-package umlptest.listTestUtil;
+package umlp.rte.listTestUtil;
 
-import umlp.util.GemIdentifiable;
-import umlp.util.LazyList;
-import umlp.util.LoadResult;
-import umlp.util.LoadingState;
+import umlp.rte.GemIdentifiable;
+import umlp.rte.LazyList;
+import umlp.rte.LoadResult;
+import umlp.rte.LoadingState;
 
 import java.util.AbstractList;
 import java.util.Collection;

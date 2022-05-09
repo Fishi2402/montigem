@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package umlp.util;
+package umlp.rte;
 
 import de.se_rwth.commons.logging.Log;
 
