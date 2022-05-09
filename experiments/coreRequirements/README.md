@@ -187,3 +187,25 @@ zu nennen:
         (Alternativ: List<Label> label;
 ```
 
+
+## Grundregeln des Entwickelns:
+
+1. Wir halten uns an die Regeln des SE (Einrückung, KOmmentierung etc.)
+1. Da wir hier exemplarisch Code schreiben sind bestimmte Entscheidungen
+   noch besonders zu kommentieren.
+1. Alle sind für alles gemeinschaftlich verantwortlich. Und wir nehmen das auch ernst!
+1. Keine Big-Bang Entwicklungen: kleine Ergänzungen mehrmals täglich einchecken
+1. Kein Branching  
+1. Wir üben hier auch, wie man schnell und effektiv einen Generator (quasi neu)
+   baut. Das ist auf dieser Ebene auch ein Meta-Experiment an sich.
+
+Konkreter:
+
+1. Konsistente Strategie im Umgang mit Fehlern / Fehlermeldungen
+   * Unterscheide: Interne Fehler vs. Nutzerfehler (wohl auch vs. Kommunikationsprobleme)
+   * Wenn Fehlermeldung, dass **aus Nutzersicht** aussagekräftig
+     (das wird sonst ein echtes Problem)
+1. todo's schnell erledigen, ggf. Entscheidungen dokumentieren / erklären
+1. Testen! Wir sollten stabilen Code des RTE sehr schnell mit Tests
+   behandeln (denn später ist es zu spät ...)  
+   * Test-First heisst übrigens, dass man zunächst den Test schreibt, dann den Code

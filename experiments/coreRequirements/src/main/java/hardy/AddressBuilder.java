@@ -28,6 +28,8 @@ public class AddressBuilder extends Address {
                 return this;
             }
         }
+        // todo: discuss: ist das Werfen einer Exception hier das richtige? Log.error?
+        // todo: wir brauchen offensichtlich eine saubere Planung unser Fehlerstrategie
         throw new DataConsistencyViolationException("0xU1234: Address cannot be built.");
     }
 

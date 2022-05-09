@@ -31,7 +31,10 @@ public class Car extends Observable {
     protected void init() {
     }
 
-    public Car build() {
-        throw new UnsupportedOperationException("Only to be accessed through the builder.");
-    }
+    /* public Car build() {
+    !   // zur Info: das kann hier so nicht stehen bleiben: Ohne Log.error,
+    !    // und warum wir die Methode überhaupt angeboten, wenn sie nicht erlaubt ist
+    !    throw new UnsupportedOperationException("Only to be accessed through the builder.");
+    !} 
+    */
 }
