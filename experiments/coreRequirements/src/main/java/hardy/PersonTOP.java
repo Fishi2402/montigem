@@ -116,6 +116,14 @@ public abstract class PersonTOP extends Human {
         }
     }
 
+    public boolean availableMainResidence(){
+        if(mainResidence == null){
+            return false;
+        } else {
+            return mainResidence.isPresent();
+        }
+    }
+
     public boolean removeOwns(Car o) {
         if (this.owns.contains(o)) {
             this.notifyObservers(o);

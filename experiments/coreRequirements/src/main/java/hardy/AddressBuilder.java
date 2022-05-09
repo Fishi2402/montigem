@@ -6,6 +6,7 @@ package hardy;
 public class AddressBuilder extends Address {
 
     protected boolean buildFinished = false;
+    protected boolean isPresentCity = false;
 
     AddressValidator validator;
 
@@ -17,6 +18,12 @@ public class AddressBuilder extends Address {
 
     public boolean isBuildFinished() {
         return buildFinished;
+    }
+
+    public AddressBuilder city(String city){
+        this.city = city;
+        isPresentCity = true;
+        return this;
     }
 
     public Address build() {

@@ -7,7 +7,9 @@ import umlp.rte.GemIdentifiable;
 import java.util.Observable;
 
 /* Source:
-    class Address;
+    class Address{
+        String city;
+    }
 */
 
 // --------------------------
@@ -16,10 +18,19 @@ import java.util.Observable;
 public class Address extends Observable implements GemIdentifiable {
 
     protected long gemId = -32;
+    protected String city;
 
     @Override
     public long getGemId() {
         return gemId;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     protected Address() {

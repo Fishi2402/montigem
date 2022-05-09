@@ -23,7 +23,7 @@ public class Person extends PersonTOP {
     public String getClubname() {
       // Bem: we demonstrate how to deal with missing data (which is actually not necessary here)
       if(availableMainResidence()) {
-        return nickname + "@" + mainResidence.city;
+        return nickname + "@" + mainResidence.get().getCity();
       } else {
         return nickname +"@"+ "obdachlos"; // should not happen
       }
