@@ -2,6 +2,8 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import umlp.rte.GemIdentifiable;
+
 import java.util.Observable;
 
 /* Source:
@@ -11,10 +13,11 @@ import java.util.Observable;
 // --------------------------
 
 // TODO: ähnlich wie Klasse Person aufbauen
-public class Address extends Observable {
+public class Address extends Observable implements GemIdentifiable {
 
     protected long gemId = -32;
 
+    @Override
     public long getGemId() {
         return gemId;
     }
