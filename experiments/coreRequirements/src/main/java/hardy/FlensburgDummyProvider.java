@@ -9,18 +9,13 @@ import java.util.stream.IntStream;
 //+ GEN4T        : generated for test infrastructure
 //+ GEN-P        : generated for the product (z.B. eine Demoversion)
 
+public class FlensburgDummyProvider {
 
-// TODO: Frage AHe an BR
-// "extends FlensburgManager" wurde hinzugefügt, damit würde diese Klasse die Objekte eines System mit Dummy-Daten verwalten.
-// Mmn kann diese Aufgabe aber von der aktuellen impl. von FlensburgManager erledigt werden, also FlensburgManagerImpl für Produktivsysteme/Demos und FlensburgMock für Tests.
-// Diese Klasse kann dann benutzt werden um Dummy-Daten zu erfinden und im FlensburgManager zu speichern.
-// => Ggf. Umbenennen von FlensburgDummyManager nach FlensburgDummyInventor o.ä.
-public class FlensburgDummyManager { // TODO: extends FlensburgManager? siehe oben
-
+  // TODO AHe: does this have to be a singleton?
   protected static Random random = new Random();
-  protected static FlensburgDummyManager instance;
+  protected static FlensburgDummyProvider instance;
 
-  protected static FlensburgDummyManager getInstance(){
+  protected static FlensburgDummyProvider getInstance(){
     if(instance == null){
       init();
     }
@@ -28,7 +23,7 @@ public class FlensburgDummyManager { // TODO: extends FlensburgManager? siehe ob
   }
 
   public static void init(){
-    instance = new FlensburgDummyManager();
+    instance = new FlensburgDummyProvider();
   }
 
   // Can be used to generate the same random instances every time

@@ -26,6 +26,14 @@ public class FlensburgMock extends FlensburgManager {
     FlensburgManager.setInstance(new FlensburgMock());
   }
 
+  protected static FlensburgDummyProvider dummyProvider;
+
+  // Wird der dummyProvider gesetzt, so erfindet der DummyManager neue Daten, aber erst wenn sie angefragt werden
+  public static void dummyInit(FlensburgDummyProvider dummyProvider){
+    FlensburgMock.dummyProvider = dummyProvider;
+    // TODO: add to all methods
+  }
+
   // get the next free GemId -----------------------------------
   // simple solution: just counting, starting with 1001
   static protected long freeGemId = 1001;
