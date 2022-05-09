@@ -2,6 +2,8 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import umlp.rte.GemIdentifiable;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Observable;
@@ -14,7 +16,7 @@ import java.util.Set;
 
 // --------------------------
 
-public class Car extends Observable {
+public class Car extends Observable implements GemIdentifiable {
 
 // Bem: This is an ordinary class, comments to the design 
 // decisions can be found at Human and Person
@@ -24,6 +26,7 @@ public class Car extends Observable {
     protected Car() {
     }
 
+    @Override
     public long getGemId() {
         return this.gemId;
     }

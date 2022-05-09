@@ -2,6 +2,8 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import umlp.rte.GemIdentifiableList;
+
 import java.util.Collection;
 import java.util.Optional;
 
@@ -170,4 +172,5 @@ public class FlensburgManagerImpl extends FlensburgManager {
     protected void _doUpdateCar(Car o) {
 
     }
+
 }

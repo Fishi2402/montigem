@@ -34,7 +34,7 @@ if (addToBidirectionalAssociation) {
             <#elseif assocUtil.isOptional(assoc)>
                 ${assocUtil.associationToCDParameter(assoc).getName()}.ifPresent(o -> o.rawSet${(assocUtil.getOppositeAssociationName(assoc))?cap_first}(newObj));
             <#elseif assocUtil.isMultiple(assoc)>
-              for (${typeHelper.getFirstTypeArgumentOfGeneric(assocUtil.getAssociationType(assoc))} o : this.${assocUtil.getAssociationName(assoc)}) {
+              for (${typeHelper.getFirstTypeArgumentOfGeneric(assocUtil.getAssociationType(assoc))} o : this.${assocUtil.getRoleName(assoc)}) {
               o.set${(assocUtil.getOppositeAssociationName(assoc))?cap_first}(newObj);
               }
             </#if>
@@ -44,7 +44,7 @@ if (addToBidirectionalAssociation) {
             <#elseif assocUtil.isOptional(assoc)>
                 ${assocUtil.associationToCDParameter(assoc).getName()}.ifPresent(o -> o.add${(assocUtil.getOppositeAssociationName(assoc))?cap_first}(newObj));
             <#elseif assocUtil.isMultiple(assoc)>
-              for (${typeHelper.getFirstTypeArgumentOfGeneric(assocUtil.getAssociationType(assoc))} o : this.${assocUtil.getAssociationName(assoc)}) {
+              for (${typeHelper.getFirstTypeArgumentOfGeneric(assocUtil.getAssociationType(assoc))} o : this.${assocUtil.getRoleName(assoc)}) {
               o.add${(assocUtil.getOppositeAssociationName(assoc))?cap_first}(newObj);
               }
             </#if>

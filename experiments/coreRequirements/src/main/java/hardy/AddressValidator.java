@@ -9,6 +9,7 @@ public class AddressValidator {
 
   public boolean buildingCheck(AddressBuilder o) {
     boolean result = true;
+    result &= o.isPresentCity;
     result &= extraBuildingChecks( o, log);
     return result;
   }

@@ -2,6 +2,8 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import umlp.rte.GemIdentifiable;
+
 import java.util.Observable;
 
 /* Source:
@@ -12,7 +14,7 @@ import java.util.Observable;
 
 // --------------------------
 
-public class Human extends Observable {
+public class Human extends Observable implements GemIdentifiable {
 
     // gemId: ------------------------------------------
     //+ Special attribute gemID is used to identify this object
@@ -49,6 +51,7 @@ public class Human extends Observable {
         age = 0;
     }
 
+    @Override
     public long getGemId() {
         return gemId;
     }

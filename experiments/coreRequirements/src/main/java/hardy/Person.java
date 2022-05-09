@@ -3,7 +3,7 @@ package hardy;
 //+ HWC-P        : adds implementation for derived attribute
 
 
-public class Person extends PersonTop {
+public class Person extends PersonTOP {
 
     // --------------------------------------------------------------------
     // Constructor (gibt es nur ohne Argumente, weil
@@ -23,8 +23,8 @@ public class Person extends PersonTop {
     public String getClubname() {
       // Bem: we demonstrate how to deal with missing data (which is actually not necessary here)
       if(availableMainResidence()) {
-        return nickname +"@"+ mainResidence.city;
-      else 
+        return nickname + "@" + mainResidence.get().getCity();
+      } else {
         return nickname +"@"+ "obdachlos"; // should not happen
       }
     }

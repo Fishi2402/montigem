@@ -6,13 +6,11 @@ import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdassociation._symboltable.CDRoleSymbol;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDExtendUsage;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import umlp.UMLPMill;
 
 import java.util.*;
@@ -38,7 +36,7 @@ public class CDAssociationUtil {
                         getMCTypeFacade().createBasicTypeArgumentOf(valueType));
             } else {
                 String valueType = isOptional(symbol) ? "Optional<" + targetType + ">" : targetType;
-                type = getMCTypeFacade().createBasicGenericTypeOf("Multimap",
+                type = getMCTypeFacade().createMapTypeOf(
                         getMCTypeFacade().createBasicTypeArgumentOf(getQualifierType(symbol).get()),
                         getMCTypeFacade().createBasicTypeArgumentOf(valueType));
             }
@@ -59,13 +57,6 @@ public class CDAssociationUtil {
         } else if (isMultiple(symbol)) {
             type = getMCTypeFacade().createListTypeOf(targetType);
 
-//            mCType = {ASTMCListType@3805}
-//            names = {ArrayList@3814}  size = 1
-//            typeArguments = {ArrayList@3815}  size = 1
-//            mCTypeArgument = {ASTMCBasicTypeArgument@3816}
-//            mCQualifiedType = {ASTMCQualifiedType@3823}
-//            mCQualifiedName = {ASTMCQualifiedName@3830} "String"
-
         } else if (isOptional(symbol)) {
             type = getMCTypeFacade().createOptionalTypeOf(targetType);
 
@@ -75,12 +66,12 @@ public class CDAssociationUtil {
         return type;
     }
 
-    public static String getAssociationName(CDRoleSymbol symbol) {
-        return leftToRight ? getAssociationNameInternal(symbol) :
-                getAssociationNameInternal(symbol.getOtherSide());
+    public static String getRoleName(CDRoleSymbol symbol) {
+        return leftToRight ? getRoleNameInternal(symbol) :
+                getRoleNameInternal(symbol.getOtherSide());
     }
 
-    private static String getAssociationNameInternal(CDRoleSymbol symbol) {
+    private static String getRoleNameInternal(CDRoleSymbol symbol) {
         StringBuilder name = new StringBuilder();
         if (!Strings.isNullOrEmpty(symbol.getName())) {
             name.append(symbol.getName());
@@ -128,9 +119,6 @@ public class CDAssociationUtil {
         CDTypeSymbol cdType = clazz.getSymbol();
         List<ASTCDAttribute> visibleAttr = new ArrayList<>();
         if (cdType.isPresentSuperClass()) {
-            List<ASTMCObjectType> superclassList = clazz.getSuperclassList();
-            ASTCDExtendUsage cdExtendUsage = clazz.getCDExtendUsage();
-            List<ASTMCObjectType> superclassList1 = cdExtendUsage.getSuperclassList();
             ASTCDClass superClass = (ASTCDClass) cdType.getSuperClass().getTypeInfo().getAstNode();
             visibleAttr.addAll(getVisibleNotDerivedAttributesInHierarchy(superClass));
         }
@@ -267,11 +255,11 @@ public class CDAssociationUtil {
 
     public static String getOppositeAssociationName(CDRoleSymbol symbol) {
         CDRoleSymbol s = symbol.getOtherSide();
-        return getAssociationName(s);
+        return getRoleName(s);
     }
 
     public static ASTCDParameter associationToCDParameter(CDRoleSymbol symbol) {
-        return UMLPMill.cDParameterBuilder().setName(getAssociationName(symbol))
+        return UMLPMill.cDParameterBuilder().setName(getRoleName(symbol))
                 .setMCType(getAssociationType(symbol)).build();
     }
 }

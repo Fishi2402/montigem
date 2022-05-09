@@ -15,25 +15,24 @@ umlp University {
     String email;
   }
 
-  package uni {
+//  package uni { // TODO: Bug in cd4c: classes in this package are added twice to the AST
     class Student extends Person {
       int semester;
       List<Course> courses;
 //      StudentStatus status;  //TODO: Fix Enum Bug in cd4c
-      -> Contact [1..*] {ordered};
     }
 
     class Course {
       String name;
       Person professor;
-      Course requirement;
+      // Course requirement;
       double grade;
     }
 
     class SportHall ;
 
- //   enum StudentStatus { ENROLLED, EXMATRICULATED, GRADUATED; }  //TODO: Fix Enum Bug in cd4c
-  }
+//   enum StudentStatus { ENROLLED, EXMATRICULATED, GRADUATED; }  //TODO: Fix Enum Bug in cd4c
+// }
 
   composition Student -> Course [*];
   association contactBook Person [String] -> Contact;

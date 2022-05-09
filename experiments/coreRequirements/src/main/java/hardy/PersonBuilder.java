@@ -2,6 +2,8 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import umlp.rte.Gem;
+
 import java.util.*;
 
 /*+ PersonBuilder extends Person: it thus can be used as person even if 

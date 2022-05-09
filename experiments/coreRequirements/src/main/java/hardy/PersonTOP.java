@@ -10,7 +10,7 @@ import com.google.common.collect.Sets;
 
 import java.util.*;
 
-import hardy.Person;
+import umlp.rte.Gem;
 
 /* Source:
 
@@ -113,6 +113,14 @@ public abstract class PersonTOP extends Human {
             this.mainResidence = new Gem<Address>(mainResidence);
         } else {
             this.mainResidence.set(mainResidence);
+        }
+    }
+
+    public boolean availableMainResidence(){
+        if(mainResidence == null){
+            return false;
+        } else {
+            return mainResidence.isPresent();
         }
     }
 

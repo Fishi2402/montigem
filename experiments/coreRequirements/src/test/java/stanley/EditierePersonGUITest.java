@@ -7,26 +7,39 @@ package stanley;
 */
 
 
+import hardy.FlensburgManager;
+import hardy.FlensburgMock;
+import hardy.Person;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
 public class EditierePersonGUITest {
 
-runATest() {
-  // eine Ausbaustufe wäre: einen Validator hinzufügen und wenn der failed,
-  // zusaetlich eine Fehlermeldung anzeigen (die analog angezeigt wird)
+  @Test
+  public void runATest() {
+    // eine Ausbaustufe wäre: einen Validator hinzufügen und wenn der failed,
+    // zusaetlich eine Fehlermeldung anzeigen (die analog angezeigt wird)
+    FlensburgMock.init();
 
-// todo: Testklasse kann nun geschrieben werden: tests wären zB:
+    Person p = FlensburgManager.personBuilder().age(24).nickname("theo").build();
+    EditierePersonGUI e = new EditierePersonGUI(p);
 
-    Person p = get... PersonDummy... // "theo", 24
-    EditierePersonGUI e = EditierePersonGUI(p);
-    assert "theo", e.getNickname();
-    assert 24, e.getAge();
-    e.setAge(33);
-    assert 33, e.getAge();
+    // Check GUI has contains correct values
+    assertEquals("theo", e.getTextInput());
+    assertEquals(24, e.getNumberInput());
+
+    // Check setting the age in the gui changes the age of the person
+    e.setNumberInput(33);
+    assertEquals(33, p.getAge());
+
+    // Check decrease button decreases age in GUI and Object
     e.pressButtonDecrease();
     e.pressButtonDecrease();
-    assert 31, e.getAge();
+    assertEquals(31, e.getNumberInput());
+    assertEquals(31, p.getAge());
 
-// und später kombinieren wir das mit Server/Client kommunikation und prüefen dann 
-// nicht nur am lokalen Objekt, sondern simuliert im Gesamten System die Konsistente Änderung
-
+    // und später kombinieren wir das mit Server/Client kommunikation und prüefen dann
+    // nicht nur am lokalen Objekt, sondern simuliert im Gesamten System die Konsistente Änderung
   }
 }
