@@ -38,6 +38,8 @@ package hardy;
   
 */
 
+import umlp.rte.GemIdentifiableList;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -372,11 +374,11 @@ public abstract class FlensburgManager {
    *
    * @return {@link List} the class {@link Car}.
    */
-  public static List<Car> createCars() {
+  public static GemIdentifiableList<Car> createCars() {
     return getSingleton()._doCreateCars();
   }
 
-  protected abstract List<Car> _doCreateCars();
+  protected abstract GemIdentifiableList<Car> _doCreateCars();
 
   /**
    * Gives the {@link List} of {@link Car} with the given gemId.
@@ -386,11 +388,11 @@ public abstract class FlensburgManager {
    * with the given gemId or an empty {@link Optional},
    * if the {@link List} could not be loaded.
    */
-  public static Optional<List<Car>> carsOpt(long gemId) {
+  public static Optional<GemIdentifiableList<Car>> carsOpt(long gemId) {
     return getSingleton()._doCarsOpt(gemId);
   }
 
-  protected abstract Optional<List<Car>> _doCarsOpt(long gemId);
+  protected abstract Optional<GemIdentifiableList<Car>> _doCarsOpt(long gemId);
 
   /**
    * Gives the {@link List} of {@link Car} with the given gemId. Use {@link #carsOpt(long)} instead,
@@ -400,15 +402,15 @@ public abstract class FlensburgManager {
    * @return {@link List} of {@link Car} with the given gemId.
    * @throws ObjectNotKnownException if the {@link List} of {@link Car} with the given gemId does not exist.
    */
-  public static Car getCarsSure(long gemId) {
-    return getSingleton()._doGetCarSure(gemId);
+  public static GemIdentifiableList<Car> getCarsSure(long gemId) {
+    return getSingleton()._doGetCarsSure(gemId);
   }
 
-  protected abstract Car _doGetCarsSure(long gemId);
+  protected abstract GemIdentifiableList<Car> _doGetCarsSure(long gemId);
 
-  public static void deleteCars(List<Car> o){
+  public static void deleteCars(GemIdentifiableList<Car> o){
     getSingleton()._doDeleteCars(o);
   }
-  protected abstract void _doDeleteCars(List<Car> o);
+  protected abstract void _doDeleteCars(GemIdentifiableList<Car> o);
 
 }

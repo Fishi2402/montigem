@@ -2,8 +2,9 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import umlp.rte.GemIdentifiableList;
+
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 // TODO: implement using a database connection
@@ -172,19 +173,19 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     }
 
-  @Override protected List<Car> _doCreateCars() {
+  @Override protected GemIdentifiableList<Car> _doCreateCars() {
     return null;
   }
 
-  @Override protected Optional<List<Car>> _doCarsOpt(long gemId) {
+  @Override protected Optional<GemIdentifiableList<Car>> _doCarsOpt(long gemId) {
     return Optional.empty();
   }
 
-  @Override protected Car _doGetCarsSure(long gemId) {
+  @Override protected GemIdentifiableList<Car> _doGetCarsSure(long gemId) {
     return null;
   }
 
-  @Override protected void _doDeleteCars(List<Car> o) {
+  @Override protected void _doDeleteCars(GemIdentifiableList<Car> o) {
 
   }
 }
