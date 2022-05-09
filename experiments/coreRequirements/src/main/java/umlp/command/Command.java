@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package hardy.command_infrastructure.impl;
+package umlp.command;
 // RTE-P
 
 import de.se_rwth.commons.logging.Log;

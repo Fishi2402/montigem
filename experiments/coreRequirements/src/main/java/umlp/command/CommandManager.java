@@ -7,15 +7,11 @@ b) Erklärungen hinzufügen
   
 */ 
 
-package hardy.command_infrastructure;
+package umlp.command;
 // RTE-P
 // RTE-T
 
 import de.se_rwth.commons.logging.Log;
-import hardy.command_infrastructure.impl.Command;
-import hardy.command_infrastructure.impl.CommandList;
-import hardy.command_infrastructure.impl.CommandResponse;
-import hardy.command_infrastructure.impl.CommandResult;
 import hardy.error.MontiGemError;
 import hardy.error.MontiGemErrorFactory;
 import hardy.error.NotImplementedException;

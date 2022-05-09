@@ -1,15 +1,10 @@
-package hardy.commands.person;
+package hardy.commands;
 
-// todo: Bitte verstehen, dies ist nicht: // RTE-P, sondern:
 // GEN-P
-
-// todo: hardy.commands.person.Person_create   ist suboptimal, alternativen:
-// hardy.command.Person_create  
-// (analog dann die anderen Kommandos anpassen)
 
 import hardy.FlensburgManager;
 import hardy.Person;
-import hardy.command_infrastructure.impl.Command;
+import umlp.command.Command;
 import hardy.error.MontiGemError;
 
 /*

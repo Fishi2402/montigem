@@ -1,17 +1,17 @@
-package hardy.commands.human;
-// RTE-P
+package hardy.commands;
+// GEN-P
 
 import hardy.FlensburgManager;
 import hardy.Human;
-import hardy.command_infrastructure.impl.Command;
+import umlp.command.Command;
 import hardy.error.MontiGemError;
 
 import java.util.Optional;
 
-public class Human_update extends Command {
+public class Human_delete extends Command {
   protected final Human human;
 
-  protected Human_update(long id, Human human) {
+  protected Human_delete(long id, Human human) {
     super(
         id,
         "hardy.Human",

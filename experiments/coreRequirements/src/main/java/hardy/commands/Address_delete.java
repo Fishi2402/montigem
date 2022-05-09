@@ -1,12 +1,12 @@
-package hardy.commands.address;
+package hardy.commands;
 
 import hardy.FlensburgManager;
 import hardy.Address;
-import hardy.command_infrastructure.impl.Command;
+import umlp.command.Command;
 import hardy.error.MontiGemError;
 
 import java.util.Optional;
-// RTE-P
+// GEN-P
 
 public class Address_delete extends Command {
   protected final Address address;

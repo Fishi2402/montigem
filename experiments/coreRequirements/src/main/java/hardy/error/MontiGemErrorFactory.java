@@ -5,7 +5,7 @@ package hardy.error;
 
 // todo: Zweck unklar, rauswerfen? Also eine ErrofFactory brauchen wir nun wirklich nicht
 
-import hardy.command_infrastructure.impl.Command;
+import umlp.command.Command;
 import hardy.error.mock.Status;
 
 public class MontiGemErrorFactory {

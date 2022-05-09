@@ -1,9 +1,9 @@
-package hardy.commands.person;
-// RTE-P
+package hardy.commands;
+// GEN-P
 
 import hardy.FlensburgManager;
 import hardy.Person;
-import hardy.command_infrastructure.impl.Command;
+import umlp.command.Command;
 import hardy.error.MontiGemError;
 
 import java.util.Optional;

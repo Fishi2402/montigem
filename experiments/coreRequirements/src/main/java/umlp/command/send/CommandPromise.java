@@ -3,7 +3,7 @@
 // todo: Zweck unklar; Streichen? !!!
 
 
-package hardy.command_infrastructure.send;
+package umlp.command.send;
 // RTE-P
 /**
  * Promise to wait for the result of a command execution

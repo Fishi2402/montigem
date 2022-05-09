@@ -1,14 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
-package hardy.command_infrastructure.impl;
+package umlp.command;
 // RTE-P
 
 /*
   // todo: to be handled:
-  
-  a) es handelt sich um RTE-Klassen, die werden nicht generiert, können
-   also notwendigerweise nicht Teil eines Pakets (hardy...) sein, das 
-   den CD-Namen beinhaltet.
-   --> verschieben nach ./src/main/java/umlp/command; package umlp.command;
  
  b) Zwecke von CommandList erklären:
  wenn ich das richtig sehe, dann ist es ausschließlich eine Liste, die 

@@ -2,7 +2,7 @@
 
 // todo: Zweck unklar; Streichen?
 
-package hardy.command_infrastructure.send;
+package umlp.command.send;
 // RTE-P
 public interface CommandCallback<Response> {
   void onOk(Response response);
