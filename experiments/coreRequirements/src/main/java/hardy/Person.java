@@ -3,7 +3,7 @@ package hardy;
 //+ HWC-P        : adds implementation for derived attribute
 
 
-public class Person extends PersonTop {
+public class Person extends PersonTOP {
 
     // --------------------------------------------------------------------
     // Constructor (gibt es nur ohne Argumente, weil
