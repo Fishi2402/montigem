@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 // "extends FlensburgManager" wurde hinzugefügt, damit würde diese Klasse die Objekte eines System mit Dummy-Daten verwalten.
 // Mmn kann diese Aufgabe aber von der aktuellen impl. von FlensburgManager erledigt werden, also FlensburgManagerImpl für Produktivsysteme/Demos und FlensburgMock für Tests.
 // Diese Klasse kann dann benutzt werden um Dummy-Daten zu erfinden und im FlensburgManager zu speichern.
-// => Ggf. Umbenennen von FlensburgDummyManager nach FlensburgDummyInverter o.ä.
+// => Ggf. Umbenennen von FlensburgDummyManager nach FlensburgDummyInventor o.ä.
 public class FlensburgDummyManager { // TODO: extends FlensburgManager? siehe oben
 
   protected static Random random = new Random();
