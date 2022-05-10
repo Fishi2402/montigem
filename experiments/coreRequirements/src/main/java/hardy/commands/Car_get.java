@@ -1,9 +1,12 @@
 package hardy.commands;
 
-import hardy.FlensburgManager;
 import hardy.Car;
+import hardy.FlensburgManager;
 import umlp.command.Command;
+import umlp.command.GemResult;
 import umlp.command.error.MontiGemError;
+import umlp.rte.Gem;
+import umlp.rte.LoadingState;
 
 import java.util.Optional;
 // GEN-P
@@ -14,14 +17,19 @@ public class Car_get extends Command {
   protected Car_get(long commandId, int gemId) {
     super(
         commandId,
-        true
+        "hardy.commands.Car_get"
     );
 
     this.gemId = gemId;
   }
 
   @Override
-  public Optional<Car> doRun() throws MontiGemError {
-    return FlensburgManager.carOpt(gemId);
+  public GemResult<Car> doRun() throws MontiGemError {
+    Optional<Car> car = FlensburgManager.carOpt(gemId);
+    if(car.isPresent()){
+      return new GemResult<>(getId(), new Gem<>(car.get()));
+    } else {
+      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY));
+    }
   }
 }

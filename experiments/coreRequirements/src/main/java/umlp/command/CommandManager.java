@@ -16,7 +16,6 @@ import umlp.command.error.MontiGemError;
 import umlp.command.error.MontiGemErrorFactory;
 import umlp.command.error.NotImplementedException;
 
-// todo Braucht es dies?
 import static umlp.command.error.MontiGemErrorCode.NOT_IMPLEMENTED;
 
 // TODO AHe: as Mill?
@@ -42,17 +41,11 @@ public class CommandManager {
       // iterate all the commands
       for (Command command : commandList.getCommands()) {
         cmdId = command.getId();
-        Object result;
         try {
-          result = command.doRun();
-          if(command.isReturnsGem()) {
-            response.addResponse(CommandResult.gemOk(command.getId(), result));
-          }else{
-            response.addResponse(CommandResult.ok(command.getId()));
-          }
+          response.addResponse(command.doRun());
         }
         catch (NotImplementedException e) {
-          response.addResponse(CommandResult.error(command.getId(), new MontiGemError(NOT_IMPLEMENTED, null, "Mathod not implemented")));
+          response.addResponse(StatusResult.error(cmdId, new MontiGemError(NOT_IMPLEMENTED, null, "Mathod not implemented")));
         }
       }
 
@@ -61,21 +54,21 @@ public class CommandManager {
     }
     catch (NullPointerException np) {
       response.clear();
-      response.addResponse(CommandResult.error(cmdId, MontiGemErrorFactory.unknown("" + np + ": " + np.getStackTrace()[0])));
+      response.addResponse(StatusResult.error(cmdId, MontiGemErrorFactory.unknown("" + np + ": " + np.getStackTrace()[0])));
       // todo: Wie kann eine Fehlermeldung "Error" ...vi "Debug rausgehen ..."????
       Log.debug("MAB0xA005: Error in transaction: " + np.getMessage(), CommandManager.class.getName());
     }
     catch (MontiGemError e) {
       // transaction.rollback();
       response.clear();
-      response.addResponse(CommandResult.error(cmdId, e));
+      response.addResponse(StatusResult.error(cmdId, e));
       // todo: Wie kann eine Fehlermeldung "Error" ...vi "Debug rausgehen ..."????
       Log.debug("MAB0xA006: Error in transaction: " + e.getMessage(), CommandManager.class.getName());
     }
     catch (Exception e) {
       // transaction.rollback();
       response.clear();
-      response.addResponse(CommandResult.error(cmdId, MontiGemErrorFactory.exceptionCaught(e)));
+      response.addResponse(StatusResult.error(cmdId, MontiGemErrorFactory.exceptionCaught(e)));
       // todo: Wie kann eine Fehlermeldung "Error" ...vi "Debug rausgehen ..."????
       Log.debug("MAB0xA007: Error in transaction: " + e.getMessage(), CommandManager.class.getName());
     }

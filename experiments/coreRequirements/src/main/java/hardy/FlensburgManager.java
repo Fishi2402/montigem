@@ -38,8 +38,6 @@ package hardy;
   
 */
 
-import umlp.rte.GemIdentifiableList;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -159,6 +157,8 @@ public abstract class FlensburgManager {
     }
 
     protected abstract PersonBuilder _doPersonBuilder();
+
+    // TODO AHe: immer ein Gem zurückgeben und ...Sure streichen?
 
     /**
      * Gives the {@link Person} object with the given gemId.

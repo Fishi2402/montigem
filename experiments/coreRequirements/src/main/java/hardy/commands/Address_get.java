@@ -1,9 +1,12 @@
 package hardy.commands;
 
-import hardy.FlensburgManager;
 import hardy.Address;
+import hardy.FlensburgManager;
 import umlp.command.Command;
+import umlp.command.GemResult;
 import umlp.command.error.MontiGemError;
+import umlp.rte.Gem;
+import umlp.rte.LoadingState;
 
 import java.util.Optional;
 // GEN-P
@@ -14,14 +17,19 @@ public class Address_get extends Command {
   protected Address_get(long commandId, int gemId) {
     super(
         commandId,
-        true
+        "hardy.commands.Address_get"
     );
 
     this.gemId = gemId;
   }
 
   @Override
-  public Optional<Address> doRun() throws MontiGemError {
-    return FlensburgManager.addressOpt(gemId);
+  public GemResult<Address> doRun() throws MontiGemError {
+    Optional<Address> address = FlensburgManager.addressOpt(gemId);
+    if(address.isPresent()){
+      return new GemResult<>(getId(), new Gem<>(address.get()));
+    } else {
+      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY));
+    }
   }
 }

@@ -4,7 +4,10 @@ package hardy.commands;
 import hardy.FlensburgManager;
 import hardy.Human;
 import umlp.command.Command;
+import umlp.command.GemResult;
 import umlp.command.error.MontiGemError;
+import umlp.rte.Gem;
+import umlp.rte.LoadingState;
 
 import java.util.Optional;
 
@@ -14,14 +17,19 @@ public class Human_get extends Command {
   protected Human_get(long commandId, int gemId) {
     super(
         commandId,
-        true
+        "hardy.commands.Human_get"
     );
 
     this.gemId = gemId;
   }
 
   @Override
-  public Optional<Human> doRun() throws MontiGemError {
-    return FlensburgManager.humanOpt(gemId);
+  public GemResult<Human> doRun() throws MontiGemError {
+    Optional<Human> human = FlensburgManager.humanOpt(gemId);
+    if(human.isPresent()){
+      return new GemResult<>(getId(), new Gem<>(human.get()));
+    } else {
+      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY));
+    }
   }
 }
