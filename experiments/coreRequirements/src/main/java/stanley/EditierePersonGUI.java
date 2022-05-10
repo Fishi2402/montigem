@@ -11,6 +11,7 @@ public class EditierePersonGUI extends EditierePersonGUITOP{
 
   @Override
   void decreaseAge(Person p) {
+    // TODO AHe: Error handling? Permission etc
     p.setAge(p.getAge() - 1);
   }
 }

@@ -4,38 +4,24 @@ package umlp.command;
 // RTE-P
 
 import de.se_rwth.commons.logging.Log;
-import umlp.command.error.MontiGemError;
 import umlp.command.error.NotImplementedException;
 
-import java.util.Optional;
 
 public abstract class Command {
   // Der Ersteller des Commands vergibt diese id und nutzt sie nachher um die Response des Backends, welche dieselbe id enthält, diesem Command zuzuordnen.
   // Ansonsten können parallel ankommende Responses nicht eindeutig ihren Commands zugeordnet werden.
   private long id;
-  
-  // Enthielt in MontiGem das feld typeName, welches den Typ des zurückgegebenen commands enthielt.
-  // Hier nicht unbedingt notwendig, wenn die Subklassen sich selber um (De)-Serialisierung kümmern
 
-  // Falls die Response zu diesem Command keine Daten liefert, ist returnsGem false.
-  // Eingebaut um den früheren OkDTO zu ersetzten.
-  private final boolean returnsGem;
+  // Identifiziert den typen des Commands
+  // Wird bei der Deserialisierung benötigt um die korrekte Subklasse von Command zu instanziieren
+  private final String commandType;
 
-  // TODO AHe: returnsGem und typeName können weggelassen werden, wenn die (De)-Serialisierung verschoben wird, z.B. wenn sie im Command liegt, so ist der Returntyp bekannt und kann dort gecasted werden.
-  // cont: Dann hat allerdings die Klasse Command mehrere Aufgaben: (De)-Serialisierung, Ausführung
-
-  protected Command(long id, boolean returnsGem) {
+  protected Command(long id, String commandType) {
     this.id = id;
-    this.returnsGem = returnsGem;
+    this.commandType = commandType;
   }
 
-  /**
-   *   Must return an object iff isReturnsGem returns true and the command was executed without exceptions.
-   *   Returns Optional.empty if the Response should not contain an object.
-   *   TODO AHe: Warum dann ein Optional zurückgeben? isReturnsGem == false könnte einen return von null implizieren
-   *   This method must always be overridden
-   */
-  public abstract Optional<?> doRun() throws MontiGemError;
+  public abstract CommandResult<?> doRun();
 
   public void undoRun() {
     String res = "MAB0x9000: No undo for operation " + getClass().getName() + "available";
@@ -56,15 +42,11 @@ public abstract class Command {
     return id;
   }
 
-  // TODO AHe: a DTO was returned here, how about a boolean?
-  // TODO AHe: What is this used for?
-  // protected abstract Optional<Object> checkContract();
-
-  public boolean isReturnsGem() {
-    return returnsGem;
-  }
-
   public void setId(long id) {
     this.id = id;
+  }
+
+  public String getCommandType(){
+    return commandType;
   }
 }

@@ -1,11 +1,10 @@
 package hardy.commands;
 
-import hardy.FlensburgManager;
 import hardy.Car;
+import hardy.FlensburgManager;
 import umlp.command.Command;
+import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
-
-import java.util.Optional;
 // GEN-P
 
 public class Car_create extends Command {
@@ -14,16 +13,16 @@ public class Car_create extends Command {
   protected Car_create(long commandId, Car car) {
     super(
         commandId,
-        false
+        "hardy.commands.Car_create"
     );
 
     this.car = car;
   }
 
   @Override
-  public Optional<Void> doRun() throws MontiGemError {
+  public StatusResult doRun() throws MontiGemError {
     FlensburgManager.addCar(car);
-    return Optional.empty();
+    return StatusResult.ok(getId());
   }
 
   // TODO AHe: undo

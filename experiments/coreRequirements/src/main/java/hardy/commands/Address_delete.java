@@ -1,11 +1,11 @@
 package hardy.commands;
 
-import hardy.FlensburgManager;
 import hardy.Address;
+import hardy.FlensburgManager;
 import umlp.command.Command;
+import umlp.command.CommandResult;
+import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
-
-import java.util.Optional;
 // GEN-P
 
 public class Address_delete extends Command {
@@ -14,14 +14,14 @@ public class Address_delete extends Command {
   protected Address_delete(long id, Address address) {
     super(
         id,
-        false
+        "hary.commands.Address_delete"
     );
     this.address = address;
   }
 
   @Override
-  public Optional<?> doRun() throws MontiGemError {
-    FlensburgManager.deleteAddress(address);
-    return Optional.empty();
+  public CommandResult<Void> doRun() throws MontiGemError {
+    FlensburgManager.deleteAddress(address); // TODO AHe: check car exists or return result of delete call
+    return StatusResult.ok(getId());
   }
 }

@@ -5,26 +5,8 @@ package hardy.commands;
 import hardy.FlensburgManager;
 import hardy.Person;
 import umlp.command.Command;
+import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
-
-/*
-// todo: Anforderungen für Commands (vor allem auch welche) mit BR besprechen
-
-    Ich sehe folgende Anforderungen als relevant an (BR):
-    * Objekte (zum Beispiel) können erzeugt und gelöscht werden
-        --> Erzeugung: ist wie eine Factory? 
-        Oder gibt es das Objekt schon intern und es wird nur gespeichert?
-    * Attribute in Objekten können geändert werden
-        (z.B. Person_set_age, Person_addCar, Person_+ListOperator+Car)
-    * und Attribute können gelesen werden (wobei ich nicht davon überzeugt bin, dass hier ein Command notwendig ist)
-        ((z.B. Person_get_age, Person_addCar, Person_)
-
-    --> dies bitte adäquat abbilden
-    --> dann Rücksprache BR
-
-*/
-
-import java.util.Optional;
 
 public class Person_create extends Command {
 
@@ -34,16 +16,16 @@ public class Person_create extends Command {
   protected Person_create(long commandId, Person person) {
     super(
         commandId,
-        false
+        "hardy.commands.Human_set_age"
     );
 
     this.person = person;
   }
 
   @Override
-  public Optional<Void> doRun() throws MontiGemError {
+  public StatusResult doRun() throws MontiGemError {
     FlensburgManager.addPerson(person);
-    return Optional.empty();
+    return StatusResult.ok(getId());
   }
 
   // TODO AHe: undo
