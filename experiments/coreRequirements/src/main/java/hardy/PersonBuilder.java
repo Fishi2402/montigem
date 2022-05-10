@@ -121,7 +121,7 @@ public class PersonBuilder extends Person {
                 return this;
             }
         }
-        throw new DataConsistencyViolationException("0xU1234: Person cannot be built.");
+        throw new IllegalStateException("0xU1234: Person cannot be built.");
     }
 
     public boolean isBuildable() {

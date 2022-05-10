@@ -40,7 +40,7 @@ public class HumanBuilder extends Human {
                 return this;
             }
         }
-        throw new DataConsistencyViolationException("0xU1234: Human cannot be built.");
+        throw new IllegalStateException("0xU1234: Human cannot be built.");
     }
 
     public boolean isBuildable() {
