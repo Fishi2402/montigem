@@ -45,14 +45,14 @@ public class PersonBuilderTest {
         int id = 1001;
         FlensburgMock.secretlyAdaptnextGemIds(id);
 
-        DataConsistencyViolationException dataConsistencyViolationException = null;
+        IllegalStateException illegalStateException = null;
         try {
             personBuilder.age(18).build();
-        }catch (DataConsistencyViolationException e){
-            dataConsistencyViolationException = e;
+        }catch (IllegalStateException e){
+            illegalStateException = e;
         }
 
-        assertNotNull(dataConsistencyViolationException);
+        assertNotNull(illegalStateException);
         assertEquals(1, validator.log.size());
 
         LogEntry e = validator.log.getEntry(0);

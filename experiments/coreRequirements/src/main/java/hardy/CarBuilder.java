@@ -30,7 +30,7 @@ public class CarBuilder extends Car {
                 return this;
             }
         }
-        throw new DataConsistencyViolationException("0xU1234: Car cannot be built.");
+        throw new IllegalStateException("0xU1234: Car cannot be built.");
     }
 
     public boolean isBuildable() {
