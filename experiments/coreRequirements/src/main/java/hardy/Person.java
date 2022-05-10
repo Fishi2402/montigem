@@ -28,6 +28,4 @@ public class Person extends PersonTOP {
         return nickname +"@"+ "obdachlos"; // should not happen
       }
     }
-
-
 }

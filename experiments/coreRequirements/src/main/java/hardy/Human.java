@@ -64,7 +64,8 @@ public class Human extends Observable implements GemIdentifiable {
         this.age = o;
     }
 
+    //+ Pseudo build for all classes: normally nothing happens
     public Human build() {
-        throw new UnsupportedOperationException("Only to be accessed through the builder.");
+        return this;
     }
 }

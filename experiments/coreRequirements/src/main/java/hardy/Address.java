@@ -39,4 +39,9 @@ public class Address extends Observable implements GemIdentifiable {
 
     protected void init() {
     }
+
+    //+ Pseudo build for all classes: normally nothing happens
+    public Address build() {
+        return this;
+    }
 }

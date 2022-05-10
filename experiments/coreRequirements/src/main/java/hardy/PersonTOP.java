@@ -4,13 +4,13 @@ package hardy;
 
 // todo NN: !com.google.common.: Muss das Teil dieser Imports sein, Rücksprache mit BR
 // todo FDr: !hier muss die LazyList hin, keine Sets, keine anderen Lists
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import java.util.*;
 
+import com.google.common.collect.Sets;
 import umlp.rte.Gem;
+import umlp.rte.LoadResult;
+import umlp.rte.LoadingState;
 
 /* Source:
 
@@ -72,6 +72,8 @@ public abstract class PersonTOP extends Human {
     //+ initializes Person-Elements, but not of superclasses
     protected void initPerson() {
         this.nickname = "";
+        this.mainResidence = new Gem<Address>(() ->
+                new LoadResult<Address>(FlensburgManager.getAddressSure(gemId)));
         // todo FDr, CKn: use LazyList here!
         owns = new LinkedList<>();
     }
@@ -80,6 +82,8 @@ public abstract class PersonTOP extends Human {
     //+ do an initialisation of optional and default parts
     protected void init(String nickname) {
         this.nickname = nickname;
+        this.mainResidence = new Gem<Address>(() ->
+                new LoadResult<Address>(FlensburgManager.getAddressSure(gemId)));
         // todo FDr, CKn: use LazyList here!
         owns = new LinkedList<>();
     }
@@ -94,7 +98,7 @@ public abstract class PersonTOP extends Human {
         }
         this.nickname = o;
     }
-    
+
     // todo: Hier wird wohl auch die Möglichkeit benötigt mit Gem<Adress> umzugehen
     // zB zu Fragen, ob es ladbar war, oder auch die ungeladene Gem weiter zu geben.
     //   public Gem<Address> getMainResidence()   
@@ -103,7 +107,7 @@ public abstract class PersonTOP extends Human {
     //      true, wenn geladen  (und versucht auch zu laden, damit Verfügbarkeit geklärt)
     //   public LoadStatus statusMainResidence()   
     //   void setMainResidence(Gem<Address> mainResidence), ggf. weitere Gem-Methoden
-    
+
     public Address getMainResidence() {
         return mainResidence.get();
     }
@@ -116,12 +120,12 @@ public abstract class PersonTOP extends Human {
         }
     }
 
-    public boolean availableMainResidence(){
-        if(mainResidence == null){
-            return false;
-        } else {
-            return mainResidence.isPresent();
-        }
+    public LoadingState statusMainResidence() {
+        return this.mainResidence.getLoadingState();
+    }
+
+    public boolean availableMainResidence() {
+        return mainResidence.isPresent();
     }
 
     public boolean removeOwns(Car o) {
@@ -137,7 +141,8 @@ public abstract class PersonTOP extends Human {
         if (o == null) {
             throw new IllegalArgumentException("Null argument not allowed here");
         }
-        Sets.difference(Sets.newHashSet(this.owns), Sets.newHashSet(o)).forEach((s) -> {
+
+        Sets.difference(new HashSet<>(this.owns), new HashSet<>(o)).forEach((s) -> {
             this.removeOwns(s);
         });
     }
@@ -145,17 +150,17 @@ public abstract class PersonTOP extends Human {
     public boolean removeAllOwnss(Collection<Car> o) {
         boolean success = false;
         Car element;
-        for(Iterator var3 = o.iterator(); var3.hasNext(); 
-                    success &= this.removeOwns(element)) {
-            element = (Car)var3.next();
+        for (Iterator var3 = o.iterator(); var3.hasNext();
+             success &= this.removeOwns(element)) {
+            element = (Car) var3.next();
         }
         return success;
     }
 
     public void clearOwnss() {
-        Iterator var1 = Lists.newArrayList(this.owns).iterator();
-        while(var1.hasNext()) {
-            Car element = (Car)var1.next();
+        Iterator var1 = new ArrayList<>(this.owns).iterator();
+        while (var1.hasNext()) {
+            Car element = (Car) var1.next();
             this.removeOwns(element);
         }
 
@@ -179,8 +184,8 @@ public abstract class PersonTOP extends Human {
         }
         boolean success = true;
         Car element;
-        for(Iterator var3 = o.iterator(); var3.hasNext(); success &= this.addOwns(element)) {
-            element = (Car)var3.next();
+        for (Iterator var3 = o.iterator(); var3.hasNext(); success &= this.addOwns(element)) {
+            element = (Car) var3.next();
         }
         return success;
     }
@@ -198,24 +203,25 @@ public abstract class PersonTOP extends Human {
     }
 
     public Iterator<Car> iteratorOwnss() {
-        return Iterators.unmodifiableIterator(this.owns.iterator());
+        return Collections.unmodifiableList(owns).listIterator();
     }
 
     public boolean isEmptyOwnss() {
         return this.owns.isEmpty();
     }
 
-    public Person build() {
-        throw new UnsupportedOperationException("Only to be accessed through the builder.");
+    //+ Pseudo build for all classes: normally nothing happens
+    public PersonTOP build() {
+        return this;
     }
-    
+
     // -----------------------------------------------------------------
-     
+
     // a recusrsive, bidirectional Association: ------------------------------
     // protected List<Person> childs;
     // later do + die üblichen generierten Ftnen (siehe Dex)
     // incl. Sicherung der Assoziationskorrektheit (wg. Navigierbarkeit in beide Richtungen)
-    
+
     // please observe the added "s" for *-Associations  (see Dex conventions)
     // protected List<Person> parents;
     //- todo dito
@@ -224,16 +230,16 @@ public abstract class PersonTOP extends Human {
 
     /**
      * Derived attribute becomes an abstract Method for calculation
-        / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
+     * / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
      */
-    public abstract String getClubname() ;
+    public abstract String getClubname();
 
     // -----------------------------------------------------------------
 
-/* Ausbaustufen (todo):
+    /* Ausbaustufen (todo):
 
-    * Entkopplung der Ladestrategien durch
-    **  gemID  statt direktLink (und die transparente Realisierung in den Objekten)
-    **  LazyLoadedList  (siehe dazu andere Emails/Diskussionen)
-*/
+     * Entkopplung der Ladestrategien durch
+     **  gemID  statt direktLink (und die transparente Realisierung in den Objekten)
+     **  LazyLoadedList  (siehe dazu andere Emails/Diskussionen)
+     */
 }

@@ -103,7 +103,6 @@ public abstract class FlensburgManager {
      *
      * @param gemId
      * @return {@link Human} object with the given gemId.
-     * @throws ObjectNotKnownException if the {@link Human} with the given gemId does not exist.
      */
     public static Human getHumanSure(long gemId) {
         return getSingleton()._doGetHumanSure(gemId);
@@ -179,13 +178,12 @@ public abstract class FlensburgManager {
      *
      * @param gemId
      * @return {@link Person} object with the given gemId.
-     * @throws ObjectNotKnownException if the {@link Person} with the given gemId does not exist.
      */
-    public static Person getPersonSure(long gemId) throws ObjectNotKnownException {
+    public static Person getPersonSure(long gemId) {
         return getSingleton()._doGetPersonSure(gemId);
     }
 
-    protected abstract Person _doGetPersonSure(long gemId) throws ObjectNotKnownException;
+    protected abstract Person _doGetPersonSure(long gemId);
 
     /**
      * Adds a {@link Person} object when build is complete to be maintained by this manager.
@@ -252,7 +250,6 @@ public abstract class FlensburgManager {
      *
      * @param gemId
      * @return {@link Address} object with the given gemId.
-     * @throws ObjectNotKnownException if the {@link Address} with the given gemId does not exist.
      */
     public static Address getAddressSure(long gemId) {
         return getSingleton()._doGetAddressSure(gemId);
@@ -326,7 +323,6 @@ public abstract class FlensburgManager {
      *
      * @param gemId
      * @return {@link Car} object with the given gemId.
-     * @throws ObjectNotKnownException if the {@link Car} with the given gemId does not exist.
      */
     public static Car getCarSure(long gemId) {
         return getSingleton()._doGetCarSure(gemId);

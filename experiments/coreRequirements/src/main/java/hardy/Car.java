@@ -34,10 +34,8 @@ public class Car extends Observable implements GemIdentifiable {
     protected void init() {
     }
 
-    /* public Car build() {
-    !   // zur Info: das kann hier so nicht stehen bleiben: Ohne Log.error,
-    !    // und warum wir die Methode überhaupt angeboten, wenn sie nicht erlaubt ist
-    !    throw new UnsupportedOperationException("Only to be accessed through the builder.");
-    !} 
-    */
+    //+ Pseudo build for all classes: normally nothing happens
+    public Car build() {
+        return this;
+    }
 }

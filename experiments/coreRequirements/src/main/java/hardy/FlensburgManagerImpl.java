@@ -76,7 +76,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected Person _doGetPersonSure(long gemId) throws ObjectNotKnownException {
+    protected Person _doGetPersonSure(long gemId) {
         return null;
     }
 

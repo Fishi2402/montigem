@@ -109,6 +109,25 @@ public class PersonBuilder extends Person {
      *  - observers are now notified
      */
 
+    //  public Person build() {
+//    if(!buildFinished) {
+//      if( ... all mandatory attributes are set)
+//      {
+//        if( .. an OCL constraint attached to the class says ok)
+//        {
+//          buildFinished = true;
+//          // also run Build on all contained objects
+//            for (Person o : child) {
+//                o.build();
+//            }
+//            for (Person o : parent) {
+//                o.build();
+//            }
+//        return this;
+//    }
+//    throw an Exception here -- this should not happen
+//  }
+
     public Person build() {
         if (!buildFinished) {
             if (validator.buildingCheck(this)) {
