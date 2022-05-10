@@ -105,8 +105,7 @@ public class Gem<E> {
     if (loadingState == LoadingState.NOT_YET_LOADED) {
       LoadResult<E> result = loadFunction.get();
       if (result.isPresent()) {
-        object = result.get();
-        // todo: hier fehlt:?   this.loadingState = LoadingState.LOADED; 
+        this.set(result.get());
       }
       else {
         loadingState = result.loadingState;
