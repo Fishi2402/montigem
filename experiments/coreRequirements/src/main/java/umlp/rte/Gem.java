@@ -3,9 +3,6 @@ package umlp.rte;
 
 // RTE
 
-// todo: Wie alle RTE-Klassen: die müssen unabhängig vom Package "hardy" sein
-// daher: Anderes Package "umlp"  oder hier auch: "umlp.data"
-
 import de.se_rwth.commons.logging.Log;
 
 import java.util.function.Supplier;
@@ -16,30 +13,34 @@ import java.util.function.Supplier;
 // todo: kann man dies machen?: Gem<E> extends E
 // weil dies m.W. nicht der Fall ist, dass ist es wharscheinlich doch notwendig 
 // bei den aufrufenden Stellen Gem<E> Funktionalität reingeneriert werden
+// -> this might be realized using the realthis pattern?
+//    however, this assummes that E is written accordingly...
 
 public class Gem<E> {
 
 // todo: Beschreiben, in welchen Modi die Attribute wie besetzt (oder irrelevant sind)
 
+  /**
+   * The object stored
+   * is not null iff the object has been loaded ({@link Gem#loadingState} == {@link LoadingState#LOADED})
+   */
   protected E object = null;
 
-  protected long gemID;
-
+  /**
+   * whether the object has been loaded or (why) not
+   * the object can be {@link LoadingState#LOADED} or {@link LoadingState#NOT_YET_LOADED}
+   * alternatively the state indicates that the attempt to load
+   * failed for some reason (s. {@link LoadingState})
+   */
   protected LoadingState loadingState;
 
    // todo: warum doppelt geschachtelt? Supplier<LoadResult ?
   protected Supplier<LoadResult<E>> loadFunction = null;
 
-  protected long getGemID() {
-    return gemID;
-  }
-
-  /* 
+  /*
    * Constructor for: Object exists and is loaded
    */
   public Gem(E object) {
-    //todo gemID -> get from obj?
-    gemID = -32l;
     this.object = object;
     this.loadingState = LoadingState.LOADED;
   }
@@ -47,8 +48,7 @@ public class Gem<E> {
   /* 
    * Constructor for: Object is not yet loaded, but we know the loading supplier
    */
-  public Gem(long gemID, Supplier<LoadResult<E>> supplier) {
-    this.gemID = gemID;
+  public Gem(Supplier<LoadResult<E>> supplier) {
     this.loadFunction = supplier;
     this.loadingState = LoadingState.NOT_YET_LOADED;
   }
@@ -57,7 +57,6 @@ public class Gem<E> {
    * Constructor for: Object is not yet loaded
    */
   public Gem(long gemID, LoadingState loadingState) {
-    this.gemID = gemID;
     if (loadingState == LoadingState.LOADED || loadingState == LoadingState.NOT_YET_LOADED) {
       Log.error("0xE2921 Object created with unexpected state");
     }
