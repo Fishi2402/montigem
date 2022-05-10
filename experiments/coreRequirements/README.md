@@ -17,7 +17,7 @@ beinhaltet. u.a. den Status zu diesen Aktivitäten
 
 * [Code Design](codedesign.md) für Design Entscheidungen im Applikationskern
 
-* [GUI Design](codedesign.md) für Design Entscheidungen im GUI/Visualisierungsbereich
+* [GUI Design](guidesign.md) für Design Entscheidungen im GUI/Visualisierungsbereich
 
 ## Konventionen:
 
