@@ -8,6 +8,8 @@ import umlp.command.Command;
 import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
 
+// TODO AHe: Commands to set attributes and change associations
+
 public class Person_create extends Command {
 
   protected final Person person;
