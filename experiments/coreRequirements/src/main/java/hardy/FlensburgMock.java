@@ -26,10 +26,10 @@ public class FlensburgMock extends FlensburgManager {
     FlensburgManager.setInstance(new FlensburgMock());
   }
 
-  protected static FlensburgDummyProvider dummyProvider;
+  protected static FlensburgDummyProviderTOP dummyProvider;
 
   // Wird der dummyProvider gesetzt, so erfindet der DummyManager neue Daten, aber erst wenn sie angefragt werden
-  public static void dummyInit(FlensburgDummyProvider dummyProvider){
+  public static void dummyInit(FlensburgDummyProviderTOP dummyProvider){
     FlensburgMock.dummyProvider = dummyProvider;
     // TODO: add to all methods
   }
@@ -88,28 +88,40 @@ public class FlensburgMock extends FlensburgManager {
   //+ get an Object for an existing gemId ---------------------------------
   // empty, if Object not existent
   protected Optional<Person> _doPersonOpt(long gemId) {
-    if(persons.containsKey(gemId))
+    if(persons.containsKey(gemId)) {
       return Optional.of(persons.get(gemId));
-    else
+    } else if(dummyProvider != null) {
+      return Optional.of(dummyProvider.inventPerson());
+    } else {
       return Optional.empty();
+    }
   }
 
   //+ throws an Exception, if no Person exists.
   @Override
   protected Person _doGetPersonSure(long gemId) {
-    return Objects.requireNonNull(persons.get(gemId), "Person with id " + gemId + " is unknown!");
+    return _doPersonOpt(gemId).get();
   }
 
   //+ add an Object when Build is complete ---------------------------------
 
   protected void _doAddPerson(Person person) {
+    // TODO AHe: Do we get fresh gemId here or is it set by the user?
     persons.put(person.getGemId(), person);
   }
 
   @Override
   protected Collection<Person> _doGetPersonList() {
+    if(dummyProvider != null){
+      // TODO AHE: Use LazyList to create these on-demand?
+      while (dummyProvider.getMaxPersons() < persons.size()){
+        dummyProvider.inventPerson();
+      }
+    }
     return persons.values();
   }
+
+  // TODO AHe: Impl dummyProvider for all Classes and use in test
 
   @Override
   protected void _doDeletePerson(Person o) {

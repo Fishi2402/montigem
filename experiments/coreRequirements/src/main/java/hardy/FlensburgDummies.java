@@ -79,18 +79,20 @@ public class FlensburgDummies {
       int numberOfHumanInstances // excluding Persons?
       // TODO: some way to influence associations?
   ){
+    FlensburgDummyProvider provider = new FlensburgDummyProvider();
+
     for (int i = 0; i < numberOfPersonInstances; i++) {
-      FlensburgDummyProvider.inventPerson();
+      provider.inventPerson();
     }
 
     for (int i = 0; i < numberOfCarInstance; i++) {
-      FlensburgDummyProvider.inventCar();
+      provider.inventCar();
     }
 
     // Since every Car needs a Person, the parameter numberOfPersonOwnsCar can be omitted
     // Maybe this should be done in FlensburgDummyManager.inventCar?
     // - But: would be a special case, for "* <-> *" this would not be needed
-    FlensburgDummyProvider.inventPersonOwnsCar(numberOfCarInstance);
+    provider.inventPersonOwnsCar(numberOfCarInstance);
 
     // TODO: how do we guarantee that the generated object structure is an instance of the class diagram
   }
