@@ -15,9 +15,9 @@ oder als Mehrzeiler `/**` eher dazu gedacht sind auch im generierten Code sichtb
 * https://git.rwth-aachen.de/monticore/montigem/montigem-gen/-/issues/115 
 beinhaltet. u.a. den Status zu diesen Aktivitäten 
 
-* [codedesign.md](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/experiments/coreRequirements/codedesign.md)
+* [Code Design](codedesign.md) für Design Entscheidungen im Applikationskern
 
-* [codedesign.md](codedesign.md)
+* [GUI Design](codedesign.md) für Design Entscheidungen im GUI/Visualisierungsbereich
 
 ## Konventionen:
 
