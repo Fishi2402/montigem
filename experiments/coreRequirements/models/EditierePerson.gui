@@ -12,13 +12,13 @@ import umlp.gui.NumberInput;
 import umlp.gui.Button;
 
 /**
- * This example defines a 
+ * This example defines a
  * Form to fill out Person data
- * it has only simple default layout, which generates some 
+ * it has only simple default layout, which generates some
  * interesting pieces of code
  *
- * Situation is that the Person p exists aleady and
- * that ist values can be changed
+ * Situation is that the Person p exists already and
+ * that its values can be changed
  */
 page EditierePerson(Person p) {
 
@@ -30,14 +30,16 @@ page EditierePerson(Person p) {
 
   // Button mit Text "Ok" und Aufruf der Speicherung der Änderungen
   // (und die Logik dafür ist generiert und verfügbar)
-  :Button(text = "Ok", leftClick = submit())
+  :Button(text = "Ok", leftClick = submitAndNavigate(:EditierePersonCars(p))
   // todo: Wo steht, wie es danach weitergeht (welche Seite wird gezeigt?)
+  // AGe: wir definieren Methoden die häufigst benutzte Aktionen darstellen
 
   // Button mit Text "Decrease", und einer handgeschriebenen Aktion,
   // auch wenn hier nur eine Signatur steht, wuerde ich gerne eine Expression schreiben 
   // in welchem Kontext wird die ausgewertet?
   // todo AGe: wenn ich da nur eine Signatur angeben kann, dann könnte ich gleich eine synthetische nehmen
-  // zB. onLeftClickButtonDecrease() ... und braucht enicht noch einen extraNamen
+  // zB. onLeftClickButtonDecrease() ... und braucht nicht noch einen extraNamen
+  // AGe: manche Methoden brauchen Parameter, eine synthetische würde nicht immer gehen
   :Button(text = "Decrease", leftClick = decreaseAge(p))
 }
 
