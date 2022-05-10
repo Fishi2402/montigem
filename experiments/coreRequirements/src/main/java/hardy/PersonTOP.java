@@ -12,6 +12,10 @@ import umlp.rte.Gem;
 import umlp.rte.LoadResult;
 import umlp.rte.LoadingState;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 /* Source:
 
     class Person extends Human {
@@ -74,8 +78,7 @@ public abstract class PersonTOP extends Human {
         this.nickname = "";
         this.mainResidence = new Gem<Address>(() ->
                 new LoadResult<Address>(FlensburgManager.getAddressSure(gemId)));
-        // todo FDr, CKn: use LazyList here!
-        owns = new LinkedList<>();
+        this.owns = FlensburgManager.createCars();
     }
 
     //+ initialization is externalized to be reusable (if needed)
@@ -84,8 +87,14 @@ public abstract class PersonTOP extends Human {
         this.nickname = nickname;
         this.mainResidence = new Gem<Address>(() ->
                 new LoadResult<Address>(FlensburgManager.getAddressSure(gemId)));
-        // todo FDr, CKn: use LazyList here!
-        owns = new LinkedList<>();
+        this.owns = FlensburgManager.createCars();
+    }
+
+    protected void init(String nickname, List<Car> owns) {
+        this.nickname = nickname;
+        this.owns = owns;
+        // todo: should we limit the init method to lazylist
+        // to assure that it is a lazy list and not any other?
     }
 
     public String getNickname() {
@@ -98,7 +107,7 @@ public abstract class PersonTOP extends Human {
         }
         this.nickname = o;
     }
-
+    
     // todo: Hier wird wohl auch die Möglichkeit benötigt mit Gem<Adress> umzugehen
     // zB zu Fragen, ob es ladbar war, oder auch die ungeladene Gem weiter zu geben.
     //   public Gem<Address> getMainResidence()   
@@ -107,7 +116,7 @@ public abstract class PersonTOP extends Human {
     //      true, wenn geladen  (und versucht auch zu laden, damit Verfügbarkeit geklärt)
     //   public LoadStatus statusMainResidence()   
     //   void setMainResidence(Gem<Address> mainResidence), ggf. weitere Gem-Methoden
-
+    
     public Address getMainResidence() {
         return mainResidence.get();
     }
@@ -120,12 +129,12 @@ public abstract class PersonTOP extends Human {
         }
     }
 
-    public LoadingState statusMainResidence() {
-        return this.mainResidence.getLoadingState();
-    }
-
-    public boolean availableMainResidence() {
-        return mainResidence.isPresent();
+    public boolean availableMainResidence(){
+        if(mainResidence == null){
+            return false;
+        } else {
+            return mainResidence.isPresent();
+        }
     }
 
     public boolean removeOwns(Car o) {
