@@ -14,11 +14,11 @@ import java.util.function.Supplier;
 // weil dies m.W. nicht der Fall ist, dass ist es wharscheinlich doch notwendig 
 // bei den aufrufenden Stellen Gem<E> Funktionalität reingeneriert werden
 // -> this might be realized using the realthis pattern?
-//    however, this assummes that E is written accordingly...
+//    however, this assumes that E is written accordingly...
 
 public class Gem<E> {
 
-// todo: Beschreiben, in welchen Modi die Attribute wie besetzt (oder irrelevant sind)
+  // todo: Beschreiben, in welchen Modi die Attribute wie besetzt (oder irrelevant sind)
 
   /**
    * The object stored
@@ -34,7 +34,9 @@ public class Gem<E> {
    */
   protected LoadingState loadingState;
 
-   // todo: warum doppelt geschachtelt? Supplier<LoadResult ?
+  // todo: warum doppelt geschachtelt? Supplier<LoadResult ?
+  // -> LoadResult may return the loaded object
+  //    for type safety the value is typed
   protected Supplier<LoadResult<E>> loadFunction = null;
 
   /*
@@ -45,7 +47,7 @@ public class Gem<E> {
     this.loadingState = LoadingState.LOADED;
   }
 
-  /* 
+  /*
    * Constructor for: Object is not yet loaded, but we know the loading supplier
    */
   public Gem(Supplier<LoadResult<E>> supplier) {
@@ -53,7 +55,7 @@ public class Gem<E> {
     this.loadingState = LoadingState.NOT_YET_LOADED;
   }
 
-  /* 
+  /*
    * Constructor for: Object is not yet loaded
    */
   public Gem(long gemID, LoadingState loadingState) {
@@ -67,7 +69,7 @@ public class Gem<E> {
   /* The following functions resemble 
      an Optional with their 6 functions, aber können nicht von Optiona<E> erben
      weil Java das nicht hergibt.
-    */ 
+    */
   public LoadingState getLoadingState() {
     return loadingState;
   }
@@ -81,14 +83,14 @@ public class Gem<E> {
     loadIfRequired();
     if (!isPresent()) {
       Log.error("0xE2921 Object was not loaded: " + loadingState.toString());
-// todo: wir müssen allgemein mal über den Umgang mit fatalen Fehlern reden 
-// und was wir daraus machen. Ein Websystem ist ja was anderes als ein Batch-Generator
+      // todo: wir müssen allgemein mal über den Umgang mit fatalen Fehlern reden
+      // und was wir daraus machen. Ein Websystem ist ja was anderes als ein Batch-Generator
     }
     return object;
   }
 
   public void set(E object) {
-    if(object != null) {
+    if (object != null) {
       this.object = object;
       this.loadingState = LoadingState.LOADED;
     }
@@ -97,7 +99,7 @@ public class Gem<E> {
   /*
    * tries to load a yet unloaded object.
    * Returns only when the load was completed.
-   *  (If the load is unsuccesful a lower mechanism checks all the 
+   *  (If the load is unsuccesful a lower mechanism checks all the
    *   communicative aspects)
    */
   protected void loadIfRequired() {

@@ -23,7 +23,8 @@ import java.util.function.Supplier;
  * Useful if e.g. the elements are loaded over a network.
  * Deprecated, as specific lists will be generated accordingly
  */
-public class LazyList<E extends GemIdentifiable> extends AbstractList<E> implements GemIdentifiableList<E>{
+public class LazyList<E extends GemIdentifiable> extends AbstractList<E>
+    implements GemIdentifiableList<E> {
 
   protected final static String UNEXPECTED_LIST_LENGTH_ERROR =
       "0xAC724 recieved list of unexpected length";
