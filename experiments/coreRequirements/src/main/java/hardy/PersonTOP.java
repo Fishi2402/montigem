@@ -75,8 +75,7 @@ public abstract class PersonTOP extends Human {
     //+ initializes Person-Elements, but not of superclasses
     protected void initPerson() {
         this.nickname = "";
-        this.mainResidence = new Gem<Address>(() ->
-                new LoadResult<Address>(FlensburgManager.getAddressSure(gemId)));
+        this.mainResidence = null;
         this.owns = FlensburgManager.createCars();
     }
 
@@ -84,13 +83,13 @@ public abstract class PersonTOP extends Human {
     //+ do an initialisation of optional and default parts
     protected void init(String nickname) {
         this.nickname = nickname;
-        this.mainResidence = new Gem<Address>(() ->
-                new LoadResult<Address>(FlensburgManager.getAddressSure(gemId)));
+        this.mainResidence = null;
         this.owns = FlensburgManager.createCars();
     }
 
     protected void init(String nickname, List<Car> owns) {
         this.nickname = nickname;
+        this.mainResidence = null;
         this.owns = owns;
         // todo: should we limit the init method to lazylist
         // to assure that it is a lazy list and not any other?
