@@ -52,7 +52,7 @@ umlp Flensburg {
         int averageNumberOfCars;
     }
 
-    association / cities: CityMap -> String [*]
+    association / cities: CityInfo -> String [*]
 
     // todo AHe: "generierten" Code fuer die beiden Schreiben (der ja alles 
     // genau so macht wie gehabt, aber nicht persistiert
