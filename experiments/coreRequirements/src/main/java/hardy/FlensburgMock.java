@@ -113,7 +113,7 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected Collection<Person> _doGetPersonList() {
     if(dummyProvider != null){
-      // TODO AHE: Use LazyList to create these on-demand?
+      // TODO AHE: Use LazyList to create these on-demand? Also in all other doGet...List
       while (dummyProvider.getMaxPersons() < persons.size()){
         dummyProvider.inventPerson();
       }
@@ -149,12 +149,18 @@ public class FlensburgMock extends FlensburgManager {
 
   @Override
   protected Optional<Human> _doHumanOpt(long gemId) {
-    return Optional.ofNullable(humans.getOrDefault(gemId, null));
+    if(humans.containsKey(gemId)){
+      return Optional.of(humans.get(gemId));
+    } else if(dummyProvider != null) {
+      return Optional.of(dummyProvider.inventHuman());
+    } else {
+      return Optional.empty();
+    }
   }
 
   @Override
   protected Human _doGetHumanSure(long gemId) {
-    return Objects.requireNonNull(humans.get(gemId));
+    return _doHumanOpt(gemId).get();
   }
 
   @Override
@@ -164,6 +170,11 @@ public class FlensburgMock extends FlensburgManager {
 
   @Override
   protected Collection<Human> _doGetHumanList() {
+    if(dummyProvider != null){
+      while (humans.size() < dummyProvider.getMaxHumans()){
+        dummyProvider.inventHuman();
+      }
+    }
     return humans.values();
   }
 
@@ -193,12 +204,18 @@ public class FlensburgMock extends FlensburgManager {
 
   @Override
   protected Optional<Address> _doAddressOpt(long gemId) {
-    return Optional.ofNullable(addresses.getOrDefault(gemId, null));
+    if(addresses.containsKey(gemId)) {
+      return Optional.of(addresses.get(gemId));
+    }else if(dummyProvider != null){
+      return Optional.of(dummyProvider.inventAddress());
+    }else{
+      return Optional.empty();
+    }
   }
 
   @Override
   protected Address _doGetAddressSure(long gemId) {
-    return Objects.requireNonNull(addresses.get(gemId));
+    return _doAddressOpt(gemId).get();
   }
 
   @Override
@@ -208,6 +225,12 @@ public class FlensburgMock extends FlensburgManager {
 
   @Override
   protected Collection<Address> _doGetAddressList() {
+    if(dummyProvider != null){
+      while (addresses.size() < dummyProvider.getMaxAddresses()){
+        dummyProvider.inventAddress();
+      }
+    }
+
     return addresses.values();
   }
 
@@ -237,12 +260,18 @@ public class FlensburgMock extends FlensburgManager {
 
   @Override
   protected Optional<Car> _doCarOpt(long gemId) {
-    return Optional.ofNullable(cars.getOrDefault(gemId, null));
+    if(cars.containsKey(gemId)) {
+      return Optional.of(cars.get(gemId));
+    }else if (dummyProvider != null){
+      return Optional.of(dummyProvider.inventCar());
+    }else{
+      return Optional.empty();
+    }
   }
 
   @Override
   protected Car _doGetCarSure(long gemId) {
-    return Objects.requireNonNull(cars.get(gemId));
+    return _doCarOpt(gemId).get();
   }
 
   @Override
@@ -252,6 +281,12 @@ public class FlensburgMock extends FlensburgManager {
 
   @Override
   protected Collection<Car> _doGetCarList() {
+    if(dummyProvider != null){
+      while (cars.size() < dummyProvider.getMaxCars()){
+        dummyProvider.inventCar();
+      }
+    }
+
     return cars.values();
   }
 

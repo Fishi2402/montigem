@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 //+ GEN4T        : generated for test infrastructure
 //+ GEN-P        : generated for the product (z.B. eine Demoversion)
 
+// TODO: consistency with associations
 public class FlensburgDummyProviderTOP {
   protected int maxCars = 100;
   protected int maxHumans = 100;
@@ -88,6 +89,16 @@ public class FlensburgDummyProviderTOP {
     return c;
   }
 
+  public Human inventHuman() {
+    Human h = FlensburgManager
+        .humanBuilder()
+        .age(inventHumanAge())
+        .build();
+
+    FlensburgManager.addHuman(h);
+    return h;
+  }
+
   // Use count as a parameter, since the association needs to filter valid Persons and Cars
   // Filtering multiple times is wasteful
   // TODO AHe: signature is different from other invent methods
@@ -157,6 +168,10 @@ public class FlensburgDummyProviderTOP {
     return random.nextInt();
   }
 
+  protected int inventHumanAge(){
+    return random.nextInt();
+  }
+
   // Could be overridden with
   // Also: a Library of these invent functions could be written with methods such as:
   // - inventFirstName
@@ -167,4 +182,13 @@ public class FlensburgDummyProviderTOP {
     return min + random.nextInt(max - min);
   }
 
+  public Address inventAddress() {
+    Address a = FlensburgManager.addressBuilder().city(inventAddressCity()).build();
+    FlensburgManager.addAddress(a);
+    return a;
+  }
+
+  protected String inventAddressCity() {
+    return _inventString(10);
+  }
 }
