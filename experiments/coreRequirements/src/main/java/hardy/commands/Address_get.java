@@ -11,6 +11,7 @@ import umlp.rte.LoadingState;
 import java.util.Optional;
 // GEN-P
 
+// TODO AHe: alle get commands entfernen, aus mail von BR: Daten holen: Da spricht man direkt mit dem Manager, Client- wie Serverseitig
 public class Address_get extends Command {
   protected final int gemId;
 

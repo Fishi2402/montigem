@@ -7,6 +7,10 @@ public class CarValidator {
 
   public boolean buildingCheck(CarBuilder o) {
     boolean result = true;
+    if(!o.isPresentOwns){
+      result = false;
+      log.add("Car can not be build since it has no owner");
+    }
     result &= extraBuildingChecks( o, log);
     return result;
   }

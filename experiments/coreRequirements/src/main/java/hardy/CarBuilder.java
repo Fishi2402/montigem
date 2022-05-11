@@ -2,12 +2,19 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import java.util.Set;
-
 // TODO: ähnlich wie PersonBuilder aufbauen
 public class CarBuilder extends Car {
 
     protected boolean buildFinished = false;
+
+    // Die Assoziation owns ist im Builder bidirektional, damit der CarValidator sicherstellen kann,
+    // dass jedes Car eine Person hat.
+    // TODO: owns klingt als ob die Person eigentum vom Car ist.
+    // Besser wäre ownedBy, automatische Übersetzung klappt nicht. Ggf. postfix _inverted hinzufügen
+    Person owns;
+    protected boolean isPresentOwns = false;
+
+    // TODO AHe: für mainResidence das selbe
 
     CarValidator validator;
 
@@ -21,12 +28,19 @@ public class CarBuilder extends Car {
         return buildFinished;
     }
 
+    public CarBuilder owns(Person p){
+        this.owns = p;
+        isPresentOwns = true;
+        return this;
+    }
+
     public Car build() {
         if (!buildFinished) {
             if (validator.buildingCheck(this)) {
                 FlensburgManager.addCar(this);
                 notifyObservers();      //+ an initial notification
                 buildFinished = true;
+                owns.addOwns(this);
                 return this;
             }
         }
