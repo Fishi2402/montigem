@@ -412,22 +412,16 @@ public abstract class FlensburgManager {
   protected abstract void _doDeleteCars(List<Car> o);
 
   /* === Methods for calculated class CityInfo === */
-  protected CityInfoValidator theCityInfoValidator = new CityInfoValidator();
-
+  // Berechnete Klasse => Niemand baut per builder => Kein validator notwendig
 
   // Berechnete Klasse, => nicht persistiert => keine gemId
   public static CityInfo getCityInfo(){
     return getSingleton()._doGetCityInfo();
   }
 
-  public abstract CityInfo _doGetCityInfo();
-
-
-  // Da berechnete Klassen nicht persistiert werden, können sie auch nicht zum Manager hinzugefügt werden.
-  // Damit hat niemand einen Grund den Builder von außerhalb zu benutzten
-  // => Funktion cityInfo wird nicht generiert.
-  // Intern wird aber _doCityInfo für getCityInfo benötigt
-  protected CityInfoBuilder _doCityInfo(){
-      return new CityInfoBuilder(theCityInfoValidator);
+  // Da berechnete Klassen nicht per gemId aus der Persistenz geladen werden müssen,
+  // kann direkt hier eine neue Instanz zurückgegeben werden.
+  public CityInfo _doGetCityInfo(){
+    return new CityInfo();
   }
 }

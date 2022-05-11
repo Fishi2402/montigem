@@ -51,6 +51,6 @@ public class CityInfoTest {
     assertEquals(6, cityInfo.getTotalNumberOfCars());
     assertEquals("Flensburg", cityInfo.getCityWithMostCars());
     assertEquals(p2, cityInfo.getPersonWithMostCars());
-    assertEquals(3, cityInfo.averageNumberOfCars);
+    assertEquals(3, cityInfo.getAverageNumberOfCars());
   }
 }
