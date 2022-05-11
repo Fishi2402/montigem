@@ -2,6 +2,7 @@ package hardy;
 
 //+ GEN-P
 
+import java.util.List;
 import java.util.Observable;
 
 // Berechnete Klasse!
@@ -16,7 +17,6 @@ public abstract class CityInfoTOP extends Observable {
 
   }
 
-
   public abstract int getNumberOfCities();
 
   public abstract int getTotalNumberOfCars();
@@ -26,4 +26,13 @@ public abstract class CityInfoTOP extends Observable {
   public abstract Person getPersonWithMostCars();
 
   public abstract int getAverageNumberOfCars();
+
+  // Berechnete association cities
+  public abstract int sizeCities();
+
+  public abstract List<String> getCities();
+
+  // + weitere lesende Listen Methoden
+
+  // Da cities berechnet ist, gibt es keine Methoden zum Manipulieren
 }

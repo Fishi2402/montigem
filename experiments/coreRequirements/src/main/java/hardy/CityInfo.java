@@ -1,9 +1,9 @@
 package hardy;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+// HWC-P
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CityInfo extends CityInfoTOP{
 
@@ -64,5 +64,19 @@ public class CityInfo extends CityInfoTOP{
   @Override
   public int getAverageNumberOfCars() {
     return FlensburgManager.getCarList().size()/FlensburgManager.getPersonList().size();
+  }
+
+  @Override
+  public int sizeCities() {
+    return getNumberOfCities();
+  }
+
+  @Override
+  public List<String> getCities() {
+    return FlensburgManager
+        .getAddressList()
+        .stream()
+        .map(Address::getCity)
+        .collect(Collectors.toList());
   }
 }
