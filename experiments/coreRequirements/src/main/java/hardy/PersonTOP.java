@@ -10,7 +10,6 @@ import java.util.*;
 import com.google.common.collect.Sets;
 import umlp.rte.Gem;
 import umlp.rte.LoadResult;
-import umlp.rte.LoadingState;
 
 import java.util.Collection;
 import java.util.Iterator;
