@@ -4,10 +4,7 @@ package hardy;
 
 import umlp.rte.GemIdentifiable;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Observable;
-import java.util.Set;
 
 /* Source:
 
@@ -35,6 +32,7 @@ public class Car extends Observable implements GemIdentifiable {
     }
 
     //+ Pseudo build for all classes: normally nothing happens
+    // TODO: Question from AHe: Why does a normal Car need a build method?
     public Car build() {
         return this;
     }

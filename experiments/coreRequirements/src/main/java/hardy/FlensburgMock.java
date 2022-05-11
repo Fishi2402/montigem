@@ -269,4 +269,24 @@ public class FlensburgMock extends FlensburgManager {
       cars.put(o.getGemId(),o);
     }
   }
+
+  // TODO AHe: All of the cars methods are stubs. Implement once purpose is clear
+  @Override
+  protected List<Car> _doCreateCars() {
+    return new ArrayList<>();
+  }
+
+  @Override
+  protected Optional<List<Car>> _doCarsOpt(long gemId) {
+    return Optional.empty();
+  }
+
+  @Override
+  protected List<Car> _doGetCarsSure(long gemId) {
+    return new ArrayList<>();
+  }
+
+  @Override
+  protected void _doDeleteCars(List<Car> o) {
+  }
 }

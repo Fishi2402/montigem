@@ -12,13 +12,13 @@ public class CityInfoTest {
   public void testCityInfo(){
     FlensburgMock.init();
 
-    Car c1 = FlensburgManager.carBuilder().build();
-    Car c2 = FlensburgManager.carBuilder().build();
+    Car c1 = FlensburgManager.carBuilder();
+    Car c2 = FlensburgManager.carBuilder();
 
-    Car c3 = FlensburgManager.carBuilder().build();
-    Car c4 = FlensburgManager.carBuilder().build();
-    Car c5 = FlensburgManager.carBuilder().build();
-    Car c6 = FlensburgManager.carBuilder().build();
+    Car c3 = FlensburgManager.carBuilder();
+    Car c4 = FlensburgManager.carBuilder();
+    Car c5 = FlensburgManager.carBuilder();
+    Car c6 = FlensburgManager.carBuilder();
 
     Address a1 = FlensburgManager.addressBuilder().city("Aachen").build();
     Address a2 = FlensburgManager.addressBuilder().city("Flensburg").build();
