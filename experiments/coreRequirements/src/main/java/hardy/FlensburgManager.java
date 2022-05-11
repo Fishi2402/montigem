@@ -398,7 +398,6 @@ public abstract class FlensburgManager {
    *
    * @param gemId
    * @return {@link List} of {@link Car} with the given gemId.
-   * @throws ObjectNotKnownException if the {@link List} of {@link Car} with the given gemId does not exist.
    */
   public static List<Car> getCarsSure(long gemId) {
     return getSingleton()._doGetCarsSure(gemId);
@@ -412,4 +411,17 @@ public abstract class FlensburgManager {
 
   protected abstract void _doDeleteCars(List<Car> o);
 
+  /* === Methods for calculated class CityInfo === */
+  // Berechnete Klasse => Niemand baut per builder => Kein validator notwendig
+
+  // Berechnete Klasse, => nicht persistiert => keine gemId
+  public static CityInfo getCityInfo(){
+    return getSingleton()._doGetCityInfo();
+  }
+
+  // Da berechnete Klassen nicht per gemId aus der Persistenz geladen werden müssen,
+  // kann direkt hier eine neue Instanz zurückgegeben werden.
+  public CityInfo _doGetCityInfo(){
+    return new CityInfo();
+  }
 }
