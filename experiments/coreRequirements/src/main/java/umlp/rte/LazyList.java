@@ -24,7 +24,7 @@ import java.util.function.Supplier;
  * Deprecated, as specific lists will be generated accordingly
  */
 public class LazyList<E extends GemIdentifiable> extends AbstractList<E>
-    implements GemIdentifiableList<E> {
+    implements GemIdentifiable {
 
   protected final static String UNEXPECTED_LIST_LENGTH_ERROR =
       "0xAC724 recieved list of unexpected length";
@@ -244,7 +244,8 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E>
     return elem.getGemId();
   }
 
-  @Override public long getGemId() {
-    return 0;
+  @Override
+  public long getGemId() {
+    return gemID;
   }
 }
