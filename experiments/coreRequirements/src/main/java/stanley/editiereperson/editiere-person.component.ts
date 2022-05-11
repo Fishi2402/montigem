@@ -26,10 +26,8 @@ Z5  :Button(text = "Discard", leftClick = nichts-tun,aber andere Seite anzeigen)
 export class EditierePersonTOP {
 
   public constructor(
-    public notify: NotificationManager,
-    public epForm: EditierePersonForm
   ) {
-    super(cmdManager, route, notify, epForm);
+    super();
   }
 
   public decreaseAge(Person p): void {
