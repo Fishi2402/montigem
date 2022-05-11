@@ -1,4 +1,4 @@
-// GEN (generated from EditierePerson.gui or
+// GEN-P (generated from EditierePerson.gui or
 // translated from EditierePrsonGUITOP.java)
 
 /* This is the code that is generated from model (or translated from
@@ -14,9 +14,9 @@ Z2  :TextInput(value = p.nickname)
   // show and edit the age as number
 Z3  :NumberInput(value = p.age)
 
-  // Button mit Text "Ok" und Aufruf der Speicherung der Änderungen
+  // Button mit Text "Ok" und Navigation auf eine andere Seite
   // (und die Logik dafür ist generiert und verfügbar)
-Z4  :Button(text = "Ok", leftClick = submitAndNavigate(:EditierePersonCars(p)))
+Z4  :Button(text = "Ok", leftClick = navigate(:EditierePersonCars(p)))
   // todo: Wo steht, wie es danach weitergeht (welche Seite wird gezeigt?)
 
   // Button mit Text "Discard", und ohne weitere Aktion
@@ -38,100 +38,62 @@ export class EditierePersonTOP implements OnInit {
 
   // Z1: Input parameter
 
-  /* Internal state, also an input if the page is used as a reusable component.
-   * The data value(s): here only Person
+  /* Internal state, also an input, i.e. the object is initialized by other
+   * component (@Input annotation functionality)
+   * The data value(s): here only Person, value is retrieved automatically if
+   * not set explicitly by other component (@DB annotation functionality)
    */
   @Input()
+  @DB()
   public p: Person;
 
   // Z1: Page initialization consists of constructor and ngOnInit method
 
   /*
-   * Constructor: services (singletons) are injected and are usable as class
-   * fields.
-   * CommandManager - run commands, which are sent to the server
-   * ActivatedRoute - holds meta-information on current page, such as URL
-   * and provides navigation
-   * NotificationService - used to show pop-up windows
-   * EditierePersonForm - a proxy-like object, controlling user input (see
-   * editiere-person.form.ts)
+   * Constructor: empty, person is set from another component upon navigation or
+   * automatically
    */
-  public constructor(
-    public cmdManager: CommandManager,
-    public route: ActivatedRoute,
-    public notify: NotificationService,
-    public epForm: EditierePersonForm
-  ) {
+  public constructor() {
   }
 
-  /*
-   * Method, which is called when GUI is ready for rendering. Constructor is
-   * used purely for class initialization, which is why most of the
-   * initialization logic is located here.
-   */
-  public ngOnInit(): void {
-    // Z2, Z3 initialize form
-    this.form.init();
-    // page initialization is tied to URL changes, since change of a single
-    // parameter (e.g. person id) should only reinitialize data, not the
-    // rendering of the page
-    this.route.paramMap.subscribe(params => this.initPerson(params));
+  // Z2, Z3: getter for current values of the input fields
+
+  public getTextInput(): string {
+    return p.getNickname();
+  }
+  public getNumberInput(): number {
+    return p.getAge();
   }
 
-  /*
-   * Request data from server
-   * ParamMap is used to retrieve person id from URL
-   * (e.g. montigem.com/person/$id)
-   */
-  protected initPerson(params: ParamMap): void {
-    if (params.personId > 0) {
-      this.cmdManager.runCommand(
-        new GetPersonCommand(params.personId),
-        // execute function when command is done and data is received
-        this.setPageData
-      );
-    }
+  // Z2, Z3: setter method, used to programmatically set the value of input fields
+
+  public setTextInput(nickname: string): void {
+    p.setNickname(nickname);
   }
 
-  /*
-   * Initialize input fields via form
-   */
-  protected setPageData(p: Person) {
-    this.form.setValue(p);
+  public setNumberInput(age: number): void {
+    p.setAge(age);
   }
 
-  // AGe: unnötig, die submitAndNavigate Methode kann direkt aufgerufen werden
+  // Z4: function to call on button press
   public pressButtonOk(): void {
-    this.submitAndNavigate();
+    this.navigate();
   }
 
   // Z4
   /*
    * Update person and navigate to another page
    */
-  public submitAndNavigate(): void {
-    const p: Person = this.form.getValue();
-    this.cmdManager.runCommand(
-      new SavePersonCommand(p),
-      // callback for successful result
-      () => this.onSuccess(p),
-      // callback for error
-      this.onError
-    );
+  public navigate(): void {
+    NavigationManager.navigate("editiere-person-cars", this.p.id);
   }
 
-  /*
-   * navigate on success
-   */
-  protected onSuccess(Person p) {
-    this.route.navigate("editiere-person-cars", p.id);
+  // Z5: function to call on button press
+  public pressButtonDecrease(): void {
+    this.decreaseAge(this.p);
   }
 
-  /*
-   * show notification on error
-   */
-  protected onError(error: GemError) {
-    this.notify.error(error)
+  public decreaseAge(p: Person): void {
   }
 
 }

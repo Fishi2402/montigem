@@ -28,9 +28,9 @@ page EditierePerson(Person p) {
   // show and edit the age as number
   :NumberInput(value = p.age)
 
-  // Button mit Text "Ok" und Aufruf der Speicherung der Änderungen
+  // Button mit Text "Ok" und Navigation auf eine andere Seite
   // (und die Logik dafür ist generiert und verfügbar)
-  :Button(text = "Ok", leftClick = submitAndNavigate(:EditierePersonCars(p))
+  :Button(text = "Ok", leftClick = navigate(:EditierePersonCars(p))
   // todo: Wo steht, wie es danach weitergeht (welche Seite wird gezeigt?)
   // AGe: wir definieren Methoden die häufigst benutzte Aktionen darstellen
 
@@ -39,7 +39,8 @@ page EditierePerson(Person p) {
   // in welchem Kontext wird die ausgewertet?
   // todo AGe: wenn ich da nur eine Signatur angeben kann, dann könnte ich gleich eine synthetische nehmen
   // zB. onLeftClickButtonDecrease() ... und braucht nicht noch einen extraNamen
-  // AGe: manche Methoden brauchen Parameter, eine synthetische würde nicht immer gehen
+  // Antwort AGe: manche Methoden brauchen Parameter, eine synthetische Methode
+  // würde nicht immer funktionieren
   :Button(text = "Decrease", leftClick = decreaseAge(p))
 }
 

@@ -1,4 +1,4 @@
-// GEN (translated from EditierePersonGUI.java)
+// GEN-P (translated from EditierePersonGUI.java)
 
 /* This is the code that is generated from hand-written Java file.
    It implements additional GUI page logic.
@@ -22,15 +22,10 @@ Z5  :Button(text = "Discard", leftClick = nichts-tun,aber andere Seite anzeigen)
   "styles": [
     ":host { display:flex; flex-direction:column; }"
   ],
-  "providers": [
-    EditierePersonForm
-  ]
 })
 export class EditierePersonTOP {
 
   public constructor(
-    public cmdManager: CommandManager,
-    public route: ActivatedRoute,
     public notify: NotificationManager,
     public epForm: EditierePersonForm
   ) {

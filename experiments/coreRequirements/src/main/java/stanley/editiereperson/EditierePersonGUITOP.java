@@ -17,9 +17,9 @@ Z2  :TextInput(value = p.nickname)
   // show and edit the age as number
 Z3  :NumberInput(value = p.age)
 
-  // Button mit Text "Ok" und Aufruf der Speicherung der Änderungen
+  // Button mit Text "Ok" und Navigation auf eine andere Seite
   // (und die Logik dafür ist generiert und verfügbar)
-Z4  :Button(text = "Ok", leftClick = submit())
+Z4  :Button(text = "Ok", leftClick = navigate(:EditierePersonCars(p)))
   // todo: Wo steht, wie es danach weitergeht (welche Seite wird gezeigt?)
 
   // Button mit Text "Discard", und ohne weitere Aktion
@@ -37,7 +37,7 @@ public class EditierePersonGUITOP {
 
   // there is internal state: 
   // Part 1: The data value(s): here only Person
-  Person p;
+  protected Person p;
   
   // Part 2: The subcomponents
   // gibt es hier nicht unebdingt, die einfachen eingebundenen Elemente
@@ -59,9 +59,9 @@ public class EditierePersonGUITOP {
   // **************************** What is shown? ********************
   // Values in the compartments are simulated via getter's
   
-  String getTextInput() { return p.getNickname(); }
-  
-  int getNumberInput() { return p.getAge(); }
+  public String getTextInput() { return p.getNickname(); }
+
+  public int getNumberInput() { return p.getAge(); }
 
   // das ist alles was auf der Seite gezeigt wird und variabel ist ...
 
@@ -76,7 +76,7 @@ public class EditierePersonGUITOP {
   // indem es ein entsprechendes Kommando absetzt
   // AGe: etwas unpraktisch, weil jede Tasteneingabe eine Änderung auslöst. Das
   // wäre ok, aber man muss wirklich aufpassen, dass dies vernünftig behandelt wird
-  void setTextInput(String nickname) {
+  public void setTextInput(String nickname) {
     p.setNickname(nickname);
   }
   
@@ -86,18 +86,28 @@ public class EditierePersonGUITOP {
   // Zusätzlich: Wenn der Validator hier erfolgreich ist, kann die 
   // Änderung im Server dennoch fehlschlagen: Auch hier wäre eine entsprechende
   // Fehlermeldung relevant
-  void setNumberInput(int age) { 
+  public void setNumberInput(int age) {
     p.setAge(age);
   }
 
+  // AGe: die Zwischenmethoden, z.B. "pressButtonOk" sind nicht notwendig,
+  // navigate oder descreaseAge können direkt aufgerufen werden.
   // Bemerkung: hier wurde der Text des Buttons in die Methode übernommen,
-  // ist das sinnvoll, oder gibt es andere Mechanismen die Unterscheidung 
+  // ist das sinnvoll, oder gibt es andere Mechanismen die Unterscheidung
   // sicherzustellen? (selbes Problem ja auch bei obigen Methoden)
-  void pressButtonOk() {
+  public EditierePersonCars pressButtonOk() {
+    return this.navigate();
     // todo: was kommt hier her ...: Wechsel zur neuen Seite
+    // Vorschlag AGe: wir geben die Seite, auf die navigiert wird zurück. In dem
+    // Fall kann man beim testen überprüfen, ob eine neue Seite "erstellt" wurde
+    // Das funktioniert in TypeScript jedoch anders (editiere-person-top.component.ts)
+  }
+
+  protected void navigate() {
+    return new EditierePersonCars(p);
   }
   
-  void pressButtonDecrease() {
+  public void pressButtonDecrease() {
     // Aufruf handgeschriebener Funktionalität in Form einer vorgegebenen Signatur
     // die handgeschriebene Funktion ist angenommen in XXX welcher Klasse?
     // Antwort AHe:
@@ -109,9 +119,9 @@ public class EditierePersonGUITOP {
     // AHe: Falls der decreaseAge stub in diese Klasse generiert wird, ist die GUI Seite über *this* zugreifbar
   }
 
-  // TODO AGe: würden wir lieber keine Methode explizit generieren und Compiler-Fehler sehen?
-  // Man könnte vergessen, die Methode (und Test dazu) zu implementieren.
-  void decreaseAge(Person p){
+  // Frage AGe: würden wir lieber keine Methode explizit generieren und Compiler-Fehler sehen?
+  // Man könnte "vergessen", die Methode (und Test dazu) zu implementieren.
+  protected void decreaseAge(Person p){
     // generated empty stub
   }
 
