@@ -44,6 +44,7 @@ public class CarBuilder extends Car {
                 return this;
             }
         }
+        // todo CKi, AHe: Generell können hier eine Exceptions geworfen werfen. Keine !
         throw new IllegalStateException("0xU1234: Car cannot be built.");
     }
 
