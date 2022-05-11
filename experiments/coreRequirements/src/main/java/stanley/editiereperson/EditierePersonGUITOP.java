@@ -41,15 +41,14 @@ public class EditierePersonGUITOP {
   
   // Part 2: The subcomponents
   // gibt es hier nicht unebdingt, die einfachen eingebundenen Elemente
-  // sind m besten direkt zu expandieren (das kann evtl. bei kompleren GUIs
-  // anders sein
+  // sind am besten direkt zu expandieren (das kann evtl. bei komplexeren GUIs
+  // anders sein)
 
 
-  /* 
-   * Constructor: uses the same parameters as the GUI-page), Z1
+  /* Z1
+   * Constructor: uses the same parameters as the GUI-page,
    * The constructor call mimicks the start of the Window: it is opened,
-   * its values are set
-   * etc.
+   * its values are set etc.
    */
   public EditierePersonGUITOP(Person p) {
     this.p = p;
@@ -75,7 +74,9 @@ public class EditierePersonGUITOP {
   // Bemerkung: Die Propagation der Änderung zB zum Server
   // übernimmt das Objekt selbst! (weshalb hier nichts weiter zu tun ist)
   // indem es ein entsprechendes Kommando absetzt
-  void setTextInput(String nickname) { 
+  // AGe: etwas unpraktisch, weil jede Tasteneingabe eine Änderung auslöst. Das
+  // wäre ok, aber man muss wirklich aufpassen, dass dies vernünftig behandelt wird
+  void setTextInput(String nickname) {
     p.setNickname(nickname);
   }
   
@@ -108,6 +109,8 @@ public class EditierePersonGUITOP {
     // AHe: Falls der decreaseAge stub in diese Klasse generiert wird, ist die GUI Seite über *this* zugreifbar
   }
 
+  // TODO AGe: würden wir lieber keine Methode explizit generieren und Compiler-Fehler sehen?
+  // Man könnte vergessen, die Methode (und Test dazu) zu implementieren.
   void decreaseAge(Person p){
     // generated empty stub
   }
