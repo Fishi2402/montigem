@@ -1,5 +1,5 @@
 package hardy;
-//+ HWC-T
+//+ HWC-PT
 
 import org.junit.Test;
 
