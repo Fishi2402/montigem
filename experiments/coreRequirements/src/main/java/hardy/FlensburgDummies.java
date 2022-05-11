@@ -11,9 +11,7 @@ package hardy;
   * und setzt den Manager auf Simulation   
 */
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 
 public class FlensburgDummies {
 
@@ -43,11 +41,17 @@ public class FlensburgDummies {
                         .age(26).nickname("Bert").build();
     Person p3103 = FlensburgManager.personBuilder()
                         .age(3).nickname("Charly")
-                        // TODO AHe: cumbersome, can not use addOwns since it is already defined by Person with return type boolean
-                        .owns(new HashSet<>(Arrays.asList(c1102, c1103))).build();
-    Person p3104 = FlensburgManager.personBuilder()
-                        .age(104).nickname("Doro")
-                        .owns(new HashSet<>(Arrays.asList(c1104, c1105))).build();
+                        .ownsAdd(c1102)
+                        .ownsAdd(c1103)
+                        .build();
+    Person p3104 = FlensburgManager
+                        .personBuilder()
+                        .age(104)
+                        .nickname("Doro")
+                        .ownsAdd(c1104)
+                        .ownsAdd(c1105)
+                        .build();
+
     Person p3105 = FlensburgManager.personBuilder()
                         .age(105).nickname("Emil").build();
       
