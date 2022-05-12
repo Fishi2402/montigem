@@ -13,6 +13,7 @@ public class Human_create extends Command {
   protected Human_create(long commandId, Human human) {
     super(
         commandId,
+        // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Human_create"
     );
 

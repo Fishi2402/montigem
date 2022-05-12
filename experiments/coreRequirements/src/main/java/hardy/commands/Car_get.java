@@ -17,6 +17,7 @@ public class Car_get extends Command {
   protected Car_get(long commandId, int gemId) {
     super(
         commandId,
+        // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Car_get"
     );
 

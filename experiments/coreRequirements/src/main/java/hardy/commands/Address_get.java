@@ -18,6 +18,7 @@ public class Address_get extends Command {
   protected Address_get(long commandId, int gemId) {
     super(
         commandId,
+        // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Address_get"
     );
 
