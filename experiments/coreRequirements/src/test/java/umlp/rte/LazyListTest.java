@@ -3,8 +3,8 @@ package umlp.rte;
 
 import org.junit.Before;
 import org.junit.Test;
-import umlp.rte.listTestUtil.ListBasedLazyListServer;
-import umlp.rte.listTestUtil.Elem;
+import umlp.rte.lazyloadTestUtil.ListBasedServer;
+import umlp.rte.lazyloadTestUtil.Elem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,13 +21,13 @@ public class LazyListTest extends AbstractUMLPRTETest {
   List<Elem> allElems;
 
   //starts empty
-  ListBasedLazyListServer<Elem> listServer0;
+  ListBasedServer<Elem> listServer0;
 
   //starts with 4 elements
-  ListBasedLazyListServer<Elem> listServer1;
+  ListBasedServer<Elem> listServer1;
 
   //has elements not authorized
-  ListBasedLazyListServer<Elem> listServer2;
+  ListBasedServer<Elem> listServer2;
 
   LazyList<Elem> list0;
 
@@ -44,16 +44,16 @@ public class LazyListTest extends AbstractUMLPRTETest {
       allElems.add(new Elem());
     }
 
-    listServer0 = new ListBasedLazyListServer<>(new LinkedList<>());
+    listServer0 = new ListBasedServer<>(new LinkedList<>());
     listServer0.addKnownObjects(allElems);
     list0 = listServer0.createLazyList();
 
-    listServer1 = new ListBasedLazyListServer<>(allElems.subList(0, 4));
+    listServer1 = new ListBasedServer<>(allElems.subList(0, 4));
     listServer1.addKnownObjects(allElems);
     list1_0 = listServer1.createLazyList();
     list1_1 = listServer1.createLazyList();
 
-    listServer2 = new ListBasedLazyListServer<>(allElems.subList(0, 2));
+    listServer2 = new ListBasedServer<>(allElems.subList(0, 2));
     listServer2.addKnownObjects(allElems);
     listServer2.setIdsNotAutorized(Collections.singleton(getElem(1).getGemId()));
     list2 = listServer2.createLazyList();

@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
-package umlp.rte.listTestUtil;
+package umlp.rte.lazyloadTestUtil;
 
+import umlp.rte.Gem;
 import umlp.rte.GemIdentifiable;
 import umlp.rte.LazyList;
 import umlp.rte.LoadResult;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
  * for testing purposes we use a List to be
  * object source instead of a manager
  */
-public class ListBasedLazyListServer<E extends GemIdentifiable> extends AbstractList<E> {
+public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> {
 
   /**
    * keeps the data, acting as a server
@@ -36,7 +37,7 @@ public class ListBasedLazyListServer<E extends GemIdentifiable> extends Abstract
    */
   protected List<LazyList<E>> lazyLists = new LinkedList<>();
 
-  public ListBasedLazyListServer(List<E> list) {
+  public ListBasedServer(List<E> list) {
     for (E obj : list) {
       this.getIds().add(obj.getGemId());
       this.getObjects().put(obj.getGemId(), obj);
@@ -70,6 +71,10 @@ public class ListBasedLazyListServer<E extends GemIdentifiable> extends Abstract
     );
     getLazyLists().add(lazyList);
     return lazyList;
+  }
+
+  public Gem<E> createGem(Long id) {
+    return new Gem(() -> this.getObject(id));
   }
 
   @Override
@@ -117,19 +122,21 @@ public class ListBasedLazyListServer<E extends GemIdentifiable> extends Abstract
   }
 
   protected List<LoadResult<E>> getObjects(List<Long> ids) {
-    List<LoadResult<E>> result = new LinkedList<>();
-    for (long id : ids) {
-      if (getIdsNotAutorized().contains(id)) {
-        result.add(new LoadResult<E>(LoadingState.NOT_AUTHORIZED));
-      }
-      else if (getObjects().containsKey(id)) {
-        result.add(new LoadResult<>(getObjects().get(id)));
-      }
-      else {
-        result.add(new LoadResult<E>(LoadingState.FAILED_TO_LOAD));
-      }
+    return ids.stream()
+        .map(this::getObject)
+        .collect(Collectors.toList());
+  }
+
+  protected LoadResult<E> getObject(Long id) {
+    if (getIdsNotAutorized().contains(id)) {
+      return new LoadResult<E>(LoadingState.NOT_AUTHORIZED);
     }
-    return result;
+    else if (getObjects().containsKey(id)) {
+      return new LoadResult<>(getObjects().get(id));
+    }
+    else {
+      return new LoadResult<E>(LoadingState.FAILED_TO_LOAD);
+    }
   }
 
   protected void setIdxs(Map<Integer, Long> idxs) {

@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package umlp.rte.listTestUtil;
+package umlp.rte.lazyloadTestUtil;
 
 import umlp.rte.GemIdentifiable;
 
