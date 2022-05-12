@@ -14,7 +14,9 @@ subprojects {
             credentials.password mavenPassword
             url repo
         }
-        mavenLocal()
+        if(("true").equals(getProperty('useLocalRepo'))) {
+            mavenLocal()
+        }
         mavenCentral()
     }
 
