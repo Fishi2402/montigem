@@ -11,6 +11,7 @@ import hardy.FlensburgManager;
 import hardy.FlensburgMock;
 import hardy.Person;
 import org.junit.Test;
+import stanley.editiereperson.EditierePersonGUI;
 
 import static org.junit.Assert.assertEquals;
 
