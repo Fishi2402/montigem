@@ -13,6 +13,7 @@ public class Car_delete extends Command {
   protected Car_delete(long id, Car car) {
     super(
         id,
+        // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Car_delete"
     );
     this.car = car;

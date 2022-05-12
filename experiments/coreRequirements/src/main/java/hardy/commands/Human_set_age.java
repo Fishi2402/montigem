@@ -18,6 +18,7 @@ public class Human_set_age extends Command {
   public Human_set_age(int commandId, int gemId, int age) {
     super(
         commandId,
+        // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Human_set_age"
       );
     this.gemId = gemId;

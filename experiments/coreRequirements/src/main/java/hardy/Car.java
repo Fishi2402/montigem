@@ -36,4 +36,10 @@ public class Car extends Observable implements GemIdentifiable {
     public Car build() {
         return this;
     }
+
+    // Falls build tatsächlich im Car gebraucht wird, wird auch isBuildFinished benötigt.
+    // Ansonsten kann es dazu kommen, dass 2 mal build auf einem Builder aufgerufen wird, was zu einer Exception führt.
+    public boolean isBuildFinished(){
+        return true;
+    }
 }

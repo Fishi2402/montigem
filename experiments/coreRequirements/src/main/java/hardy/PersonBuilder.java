@@ -4,7 +4,7 @@ package hardy;
 
 import umlp.rte.Gem;
 
-import java.util.*;
+import java.util.Set;
 
 /*+ PersonBuilder extends Person: it thus can be used as person even if 
     not yet completed: Helpful during creation, when entered values come in 
@@ -132,7 +132,9 @@ public class PersonBuilder extends Person {
         if (!buildFinished) {
             if (validator.buildingCheck(this)) {
                 for (Car own : owns) {
-                    own.build();
+                    if(!own.isBuildFinished()) {
+                        own.build();
+                    }
                 }
                 FlensburgManager.addPerson(this);
                 notifyObservers();      //+ an initial notification

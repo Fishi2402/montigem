@@ -7,7 +7,9 @@ import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
 // GEN-P
 
-// TODO AHe explain!
+// TODO AHe: Konzept für Daten-synchro zwischen den Managern erarbeiten.
+//   Werden dafür commands genutzt oder gibt es ein alternatives Konzept?
+//   Ggf. können Operationen wie get in Requests(~ Commands ohne undo)
 
 public class Address_create extends Command {
   protected final Address address;
@@ -15,7 +17,7 @@ public class Address_create extends Command {
   protected Address_create(long commandId, Address address) {
     super(
         commandId,
-        // TODO was soll dieses Argument bedeutet? sieht meta-generisch aus. Weglassen?
+        // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Address_create"
     );
 

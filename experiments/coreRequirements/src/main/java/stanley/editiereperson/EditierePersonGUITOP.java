@@ -1,4 +1,4 @@
-package stanley;
+package stanley.editiereperson;
 
 // GEN-T
 
@@ -30,6 +30,7 @@ Z5  :Button(text = "Discard", leftClick = nichts-tun,aber andere Seite anzeigen)
 */
 
 import hardy.Person;
+import stanley.editierepersoncars.EditierePersonCars;
 
 /********************************************************/
 
@@ -103,7 +104,7 @@ public class EditierePersonGUITOP {
     // Das funktioniert in TypeScript jedoch anders (editiere-person-top.component.ts)
   }
 
-  protected void navigate() {
+  protected EditierePersonCars navigate() {
     return new EditierePersonCars(p);
   }
   

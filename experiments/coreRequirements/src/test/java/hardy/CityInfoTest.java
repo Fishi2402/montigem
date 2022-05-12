@@ -12,37 +12,41 @@ public class CityInfoTest {
   public void testCityInfo(){
     FlensburgMock.init();
 
-    Car c1 = FlensburgManager.carBuilder();
-    Car c2 = FlensburgManager.carBuilder();
+    CarBuilder c1 = FlensburgManager.carBuilder();
+    CarBuilder c2 = FlensburgManager.carBuilder();
 
-    Car c3 = FlensburgManager.carBuilder();
-    Car c4 = FlensburgManager.carBuilder();
-    Car c5 = FlensburgManager.carBuilder();
-    Car c6 = FlensburgManager.carBuilder();
+    CarBuilder c3 = FlensburgManager.carBuilder();
+    CarBuilder c4 = FlensburgManager.carBuilder();
+    CarBuilder c5 = FlensburgManager.carBuilder();
+    CarBuilder c6 = FlensburgManager.carBuilder();
 
     Address a1 = FlensburgManager.addressBuilder().city("Aachen").build();
     Address a2 = FlensburgManager.addressBuilder().city("Flensburg").build();
 
-    Person p1 = FlensburgManager
+    PersonBuilder p1 = FlensburgManager
         .personBuilder()
         .nickname("1")
         .mainResidence(a1)
-        .age(18)
-        .ownsAdd(c1)
-        .ownsAdd(c2)
-        .build();
+        .age(18);
 
-    Person p2 = FlensburgManager
+    PersonBuilder p2 = FlensburgManager
         .personBuilder()
         .nickname("2")
         .mainResidence(a2)
-        .age(40)
-        .ownsAdd(c3)
-        .ownsAdd(c4)
-        .ownsAdd(c5)
-        .ownsAdd(c6)
-        .build();
+        .age(40);
 
+    // TODO AHe: Dieser Code für Assoziationen muss besser gehen
+
+    c1.owns(p1);
+    c2.owns(p1);
+
+    c3.owns(p2);
+    c4.owns(p2);
+    c5.owns(p2);
+    c6.owns(p2);
+
+    p1.ownsAdd(c1).ownsAdd(c2).build();
+    p2.ownsAdd(c3).ownsAdd(c4).ownsAdd(c5).ownsAdd(c6).build();
 
     CityInfo cityInfo = FlensburgManager.getCityInfo();
 

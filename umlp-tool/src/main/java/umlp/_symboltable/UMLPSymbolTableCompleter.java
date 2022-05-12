@@ -4,7 +4,8 @@ package umlp._symboltable;
 
 import de.monticore.cd._symboltable.CDSymbolTableHelper;
 import de.monticore.cd.facade.MCQualifiedNameFacade;
-import de.monticore.cd4code.typescalculator.DeriveSymTypeOfCD4Code;
+import de.monticore.cd4code.typescalculator.FullDeriveFromCD4Code;
+import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cd4codebasis._symboltable.CD4CodeBasisSymbolTableCompleter;
 import de.monticore.cdassociation._symboltable.CDAssociationSymbolTableCompleter;
 import de.monticore.cdbasis._symboltable.CDBasisSymbolTableCompleter;
@@ -16,8 +17,6 @@ import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._visitor.UMLPTraverser;
 
-import java.util.List;
-
 public class UMLPSymbolTableCompleter {
 
   protected UMLPTraverser traverser;
@@ -28,7 +27,7 @@ public class UMLPSymbolTableCompleter {
 //  }
 
 //  public UMLPSymbolTableCompleter(List<ASTMCImportStatement> imports, ASTMCQualifiedName packageDeclaration) {
-    this.symbolTableHelper = new CDSymbolTableHelper(new DeriveSymTypeOfCD4Code())
+    this.symbolTableHelper = new CDSymbolTableHelper(new FullDeriveFromCD4Code(), new FullSynthesizeFromCD4Code())
         .setPackageDeclaration(getPackage(ast));
     setupTraverser();
 

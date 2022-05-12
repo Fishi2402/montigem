@@ -17,6 +17,7 @@ public class Human_get extends Command {
   protected Human_get(long commandId, int gemId) {
     super(
         commandId,
+        // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Human_get"
     );
 

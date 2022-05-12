@@ -14,6 +14,7 @@ public class Address_delete extends Command {
   protected Address_delete(long id, Address address) {
     super(
         id,
+        // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hary.commands.Address_delete"
     );
     this.address = address;

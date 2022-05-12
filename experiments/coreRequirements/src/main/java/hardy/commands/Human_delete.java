@@ -13,6 +13,7 @@ public class Human_delete extends Command {
   protected Human_delete(long id, Human human) {
     super(
         id,
+        // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Human_delete"
     );
     this.human = human;
