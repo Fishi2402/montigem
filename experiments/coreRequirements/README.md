@@ -167,7 +167,7 @@ Testinfrastruktur (T):
 
 Beobachtungen:
 
-* `HWC-GT` und `E2E-T´ Klassen werden später genutzt (und ausgebaut), um den genrierten
+* `HWC-GT` und `E2E-T` Klassen werden später genutzt (und ausgebaut), um den generierten
 Code bzw. dann den Generator tatsächlich zu testen (auf Basis des aus einer 
 Erweiterung von `Flensburg.cd` generierten Systems).
 
