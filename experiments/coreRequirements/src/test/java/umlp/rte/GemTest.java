@@ -11,9 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class GemTest extends AbstractUMLPRTETest {
 
@@ -40,7 +38,7 @@ public class GemTest extends AbstractUMLPRTETest {
     listServer0.setIdsNotAutorized(Collections.singleton(getElem(2).getGemId()));
 
     gemLoadable0 = listServer0.createGem(getElem(0).getGemId());
-    gemLoadable0 = listServer0.createGem(getElem(1).getGemId());
+    gemLoadable1 = listServer0.createGem(getElem(1).getGemId());
     gemNotAuthorized0 = listServer0.createGem(getElem(2).getGemId());
     gemDoesNotExist0 = listServer0.createGem(8934583458973489435L);
   }
