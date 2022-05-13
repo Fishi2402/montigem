@@ -9,21 +9,42 @@ import java.util.stream.IntStream;
 //+ GEN4T        : generated for test infrastructure
 //+ GEN-P        : generated for the product (z.B. eine Demoversion)
 
-// TODO: consistency with associations
+// TODO: Wenn die Kommunikations-Infrastruktur steht: consistency with associations
+// Contains one invent method per class, simple field(String, int, ..., but not Person, Car, ...), and association.
+// Each method can be adapted with via the TOP mechanism to customize the generated dummy data
 public class FlensburgDummyProviderTOP {
+  // The maximum amount of objects created by the DummyManager for each Class
+  // Used in FlensburgMock
   protected int maxCars = 100;
   protected int maxHumans = 100;
   protected int maxPersons = 100;
   protected int maxAddresses = 100;
 
+  // Standards für erfindung von simplen Typen wie String oder int
+  protected int stringMinLength = 10;
+  protected int stringMaxLength = 100;
+
+  protected char[] possibleCharacters = Streams.concat(
+          IntStream.range('a', 'z'),
+          IntStream.range('A', 'Z'),
+          IntStream.range('0', '9'),
+          IntStream.of(' ')
+      )
+      .mapToObj(i -> (char) i)
+      .collect(Collector.of(StringBuilder::new, StringBuilder::append, StringBuilder::append, StringBuilder::toString))
+      .toCharArray();
+
+  protected int minInt = 0;
+  protected int maxInt = 1000;
+
   protected Random random;
 
   public FlensburgDummyProviderTOP(){
-    this(new Random());
+    this(new Random(1001L));     // Seed wird gesetzt, damit tests auf dummy-daten reproduzierbar sind
   }
 
   public FlensburgDummyProviderTOP(Random random){
-    this.random = new Random();
+    this.random = random;
   }
   
 
@@ -69,86 +90,54 @@ public class FlensburgDummyProviderTOP {
   }
 
   public Person inventPerson(){
-    Person p = FlensburgManager
+    // Der Builder fügt das Objekt zum FlensburgManager hinzu
+    return FlensburgManager
         .personBuilder()
         .age(inventPersonAge())
         .nickname(inventPersonNickname())
         .build();
-
-    FlensburgManager.addPerson(p);
-    return p;
   }
 
   public Car inventCar() {
-    Car c = FlensburgManager
+    // Der Builder fügt das Objekt zum FlensburgManager hinzu
+    return FlensburgManager
         .carBuilder()
         .build();
-
-    // TODO AHe: each car needs to have a Person
-    FlensburgManager.addCar(c);
-    return c;
   }
 
   public Human inventHuman() {
-    Human h = FlensburgManager
+    // Der Builder fügt das Objekt zum FlensburgManager hinzu
+    return FlensburgManager
         .humanBuilder()
         .age(inventHumanAge())
         .build();
-
-    FlensburgManager.addHuman(h);
-    return h;
   }
 
-  // Use count as a parameter, since the association needs to filter valid Persons and Cars
-  // Filtering multiple times is wasteful
-  // TODO AHe: signature is different from other invent methods
-  public void inventPersonOwnsCar(int count){
-    // TODO AHe: rewrite with available methods
-    /*
-    // Get instances of Person and Car that can be associated with each other
-    // - For "1 -> *":
-    //   - Get Cars without a Person
-    //   - Any Person is allowed
-    // - For "1 -> 0..x", x \in N, x > 0
-    //   - Get Cars without a Person
-    //   - Any person with less than x Cars
-    // TODO AHe: check all cases, how complex can these structures get?
-
-    // TODO AHe: filtering at client side is slow and wasteful
-    List<Car> validCars = FlensburgManager
-        .getCarList()
-        .stream()
-        // TODO AHe: Person -> Car => this navigation is invalid. Maybe a way to access associations directly is needed
-        .filter(c -> c.isAbsentPerson())
-        .collect(Collectors.toList());
-
-    // TODO AHe: loading all when only a subset is needed is slow
-    // Alt: get number of persons, choose random index
-    // - But: Not easily possible if filtering is needed
-    Collection<Person> validPersons = FlensburgManager.getPersonList();
-
-    // TODO AHe: maybe assert there are enough cars
-
-    for (int i = 0; i < count; i++) {
-      Person person = validPersons.get(random.nextInt(validPersons.size()));
-      // TODO AHe: remove might be slow
-      Car car = validCars.remove(random.nextInt(validCars.size()));
-      person.addOwns(car);
-      // TODO AHe: write back to FlensburgManager?
-    }
-     */
+  protected String inventPersonNickname() {
+    return _inventString(_inventIntInRange(stringMinLength, stringMaxLength));
   }
 
-  // TODO AHe: compact but probably slow
-  char[] possibleCharacters = Streams.concat(
-      IntStream.range('a', 'z'),
-      IntStream.range('A', 'Z'),
-      IntStream.range('0', '9'),
-      IntStream.of(' ')
-  )
-      .mapToObj(i -> (char) i)
-      .collect(Collector.of(StringBuilder::new, StringBuilder::append, StringBuilder::append, StringBuilder::toString))
-      .toCharArray();
+  protected int inventPersonAge(){
+    return _inventInt();
+  }
+
+  protected int inventHumanAge(){
+    return random.nextInt();
+  }
+
+  public Address inventAddress() {
+    // Der Builder fügt das Objekt zum FlensburgManager hinzu
+    return FlensburgManager.addressBuilder().city(inventAddressCity()).build();
+  }
+
+  protected String inventAddressCity() {
+    return _inventString();
+  }
+
+  // Utility Funktionen die nicht von Flensburg.umlp abhängen => Starten mit "_"
+  protected String _inventString(){
+    return _inventString(_inventIntInRange(stringMinLength, stringMaxLength));
+  }
 
   protected String _inventString(int length) {
     StringBuilder builder = new StringBuilder();
@@ -158,37 +147,11 @@ public class FlensburgDummyProviderTOP {
     return builder.toString();
   }
 
-  protected String inventPersonNickname() {
-    // TODO AHe: min and max as convention/configurable?
-    int length = 10 + random.nextInt(100);
-    return _inventString(length);
+  protected int _inventInt(){
+    return _inventIntInRange(minInt, maxInt);
   }
 
-  protected int inventPersonAge(){
-    return random.nextInt();
-  }
-
-  protected int inventHumanAge(){
-    return random.nextInt();
-  }
-
-  // Could be overridden with
-  // Also: a Library of these invent functions could be written with methods such as:
-  // - inventFirstName
-  // - inventAge
-  protected int alt_inventPersonAge(){
-    int min = 18;
-    int max = 99;
+  protected int _inventIntInRange(int min, int max){
     return min + random.nextInt(max - min);
-  }
-
-  public Address inventAddress() {
-    Address a = FlensburgManager.addressBuilder().city(inventAddressCity()).build();
-    FlensburgManager.addAddress(a);
-    return a;
-  }
-
-  protected String inventAddressCity() {
-    return _inventString(10);
   }
 }

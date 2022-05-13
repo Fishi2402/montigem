@@ -148,8 +148,14 @@ TODO
 ## Dummy-Daten
 
 * Aus dem CD heraus werden systematisch Dummies generiert und diese mit
-  genrierten (zufällig, aber ohne Random), halbwegs sinnvollen Daten gefüllt.
+  generierten (zufällig, aber ohne Random), halbwegs sinnvollen Daten gefüllt.
+  * Der generierte `FlensburgDummyProvider` enthält `invent` methoden für jede Klasse des CD. Jede dieser Methoden ruft eine `invent` Methode für jedes Feld auf.
+    * Erweiterung: Assoziationen mit korrekten Kardinalitäten erfinden
+  * Standardmäßig Felder mit zufälligen(aber reproduzierbaren Daten gefüllt).
+    * int: 0 - 1000, Änderbar über die Attribute `minInt` und `maxInt`.  
+    * String: Länge 10 bis 100, Zeichen aus `a-zA-Z0-9' '`, Änderbar über die Attribute `stringMinLength`, `stringMaxLength`, und `possibleCharacters` 
 * HWC-Ergänzungen zu den Dummies sind vorgesehen.
+  * Alle `invent` Methoden können via TOP überschrieben werden. Damit ist es z.B. möglich eine Liste an vorgegebenen Namen für Person#nickname zu benutzten, indem `inventPersonNickname` überschrieben wird.
 
 
 ## Fehlerbehandlung Strategie
