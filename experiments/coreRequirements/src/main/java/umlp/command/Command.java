@@ -23,6 +23,12 @@ public abstract class Command {
 
   public abstract CommandResult<?> doRun();
 
+
+  // TODO: undo kann nicht immer ausgeführt werden.
+  // Erste idee: Der FlensburgManager merkt sich zu jedem Objekt, welche Commands es als letztes
+  // beeinflusst haben(inkl. Assoziationen) und nur die letzte Änderung kann rückgängig gemacht werden.
+  // Als Stack könnten mehrere Änderungen eines Clients rückgängig gemacht werden, so lange kein anderer Client
+  // einen Command ausführt der die betroffenen Objekte bearbeitet.
   public void undoRun() {
     String res = "MAB0x9000: No undo for operation " + getClass().getName() + "available";
 
