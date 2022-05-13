@@ -95,6 +95,9 @@ public class FlensburgDummyProviderTOP {
         .personBuilder()
         .age(inventPersonAge())
         .nickname(inventPersonNickname())
+        // 1 zu 1 => keine vorhandene Addresse kann genutzt werden.
+        // Daher kann hier direkt eine neue erfunden werden
+        .mainResidence(inventAddress())
         .build();
   }
 
@@ -132,6 +135,10 @@ public class FlensburgDummyProviderTOP {
 
   protected String inventAddressCity() {
     return _inventString();
+  }
+
+  public void inventPersonOwnsCar(int numberOfCarInstance) {
+    // TODO
   }
 
   // Utility Funktionen die nicht von Flensburg.umlp abhängen => Starten mit "_"
