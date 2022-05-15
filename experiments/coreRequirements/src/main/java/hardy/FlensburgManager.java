@@ -44,7 +44,7 @@ import java.util.Optional;
 
 public abstract class FlensburgManager {
 
-    private static FlensburgManager instance;
+    protected static FlensburgManager instance;
 
     // get the next free GemId -----------------------------------
     public static long getFreeGemId() {
@@ -90,6 +90,8 @@ public abstract class FlensburgManager {
      * @param gemId
      * @return {@link Optional} initialized with the {@link Human} object with the given gemId or
      * an empty {@link Optional}, if the object does not exist.
+     *
+     * Method is used by Gem<Human> only!
      */
     public static Optional<Human> humanOpt(long gemId) {
         return getSingleton()._doHumanOpt(gemId);

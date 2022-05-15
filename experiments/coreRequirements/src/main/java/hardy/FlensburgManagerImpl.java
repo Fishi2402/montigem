@@ -85,6 +85,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected Collection<Person> _doGetPersonList() {
+	// return null ist voellig illegal. NIE verwenden!
         return null;
     }
 
