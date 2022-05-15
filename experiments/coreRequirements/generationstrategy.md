@@ -174,17 +174,11 @@ umlp FlensburgWithGems {
 * Calculation Options: see above
 
 ```
-
-    class FlensburgManager;
-    class FlensburgManagerImpl { 
-        long firstFreeGemId;
-        GemList<Car> loadedCars;
-        
-        // .. and various methods for effective Car management
+    class FlensburgManager {
+        // ... various methods for effective object management
         static HumanBuilder humanBuilder();
-        Optional<Human> humanOpt(long gemId);       
-    }
-}
+        Optional<Human> human(long gemId);       
+    }    
 ```
 
 * classes defined once for the whole diagram
@@ -207,20 +201,31 @@ umlp FlensburgWithGems {
 
 ```
     class Gem<.>, GemList<.>;
-}
+} // end umlp diagram 
 ```
 
 * a set of predefined classes (RTE)
 
 ## Laden und speichern (Datenbank und Server)
 
-TODO
+```
+umlp FlensburgDataBase {
+    class FlensburgServerPersistence extends FlensburgManager
+    {
+        // Verwaltung geladener Objekte
+        long firstFreeGemId;
+        GemList<Car> loadedCars;
+        
+        // todo: entsprechende Anfrage-Realisierung
+    }
+```
 
 * In der Datenbank finden sich nur persistierte Objekte und Attribute
 
-* Der Manager weiss, was geladen ist. Alle Anfragen laufen über ihn
+* Der Manager weiss, was geladen ist. Alle Objekt-Anfragen (aus den Gems heraus)
+  laufen über ihn.
 
-* Ist ein ungeladenes Objekt zu laden, so ruft er (im Server) selbst 
+* Ist ein ungeladenes Objekt zu laden, so ruft der Manager (im Server) selbst 
   entsprechende, generierte Ladefunktionalität auf  
   * an dieser Stelle wird zunächst nicht optimiert.
 
@@ -229,6 +234,119 @@ TODO
   * Wir nutzen kein Transaktionskonzept
   
 
+```
+    class FlensburgServerMock extends FlensburgManager
+    {
+        // Verwaltung geladener Objekte
+        long firstFreeGemId;
+        List<Car> loadedCars;
+        
+        // Alle Objekte sind geladen: Keine echte Persistenz
+    }
+```
+
+* der Mock simuliert die Datenbank, hät aber alle Objekte direkt im 
+  Speicher: keine Persistenz.
+  
+```
+    // fuer den Client
+    class FlensburgClientStub extends FlensburgManager
+    {
+        // Verwaltung geladener Objekte
+        List<Car> loadedCars;        
+    }
+```
+
+* der ClientStub simuliert den Manager auf ClientSeite: Nach aussen 
+  stellt er dieselbe Funktionalität zur Verfügung, wie jeder Manager
+  intern aber delegiert er alle Anfragen via Kommunikationsportal weiter
+  
+```
+    // fuers Testen
+    class FlensburgClientTestDummy extends FlensburgClientStub
+    {
+        FlensburgManager server;        
+    }
+}
+```
+
+* Der simuliert die Kommunikation nur: in Wirklichkeit ist er im selben
+  Speicherbereich wie der Server und kann daher einfach alle Aufrufe 
+  an den Server delegieren
+  (sowie ggf. die Ergebnisse kopieren und Duplikate im Client zu simulieren)
+
+
+## Kommunikation Server und Client
+
+TODO
+Coding/decoding, etc.
+tatsächliches Versenden via Websockets vs. simples copy in der simulation
+
+
+## Rechte und Rollen
+
+* Rechte und Rollen haben zunächst eine eigenständige Problematik, aber
+  deren Persistierung erfolgt genau wie die Persistierung der "normalen" 
+  Daten auch.
+  
+* Folgende Klassen werden dem CD hinzugefügt und damit Rechte und Rollen
+  persistiert:
+  
+  
+((Bem: das kann man auch ganz anders lösen, zB analog zu Reiss oder Macocco,
+habe deren Lösungen aber gerade nicht parat:)
+
+
+```
+umlp FlensburgRechteRollen {
+    class Person;  // falls noch nicht vorhanden
+    
+    class Rolle;
+    association rolle [*] Person -> Rolle [*];
+
+    class Right {
+      RightType type;
+    }
+    association [*] Rolle -> Right [*];
+```
+
+* We always add class `Person`if it doesn't exist yet.
+
+* Typical Person -> Role [*] -> Rights [*] situation
+
+```
+    class RightForObject extends Right;
+```
+
+* For certain rights, an object specific access right must be given 
+  and can be implemented in appropriate subclasses.
+  
+* some of them are generated, e.g. one that grants object-wise access
+  (but other specific solutions may appear handwritten).
+    
+```
+    enumeration RightType = [ 
+        // for a persisted class:
+        Car_Create, Car_Read, Car_Update, Car_Delete,
+       
+        // for a persisted association:
+        // like:      association owns [1] Person -> Car [*];
+        Owns_Create, Owns_Read, Owns_Update, Owns_Delete,
+
+        // for a calculated class:
+        // like    / class CityInfo 
+        CityInfo_Read
+    ]          
+}
+```
+
+* the list of rights: on various levels: 
+  * CRUD for objects and attributes
+  * read for calculated objects
+  * execute for activities
+  * rights to see cetain GUI websites are added here as well
+  * special rights for sub-parts of GUI visualizations, such as 
+    "expert-mode" or feature activation are possible.
 
 
  
