@@ -31,8 +31,18 @@ TODO, Zweck, Realisierung
 ## Datenmanagement
 
 ### Manager
+* `FlensburgManager` ist die Hauptklasse um Daten anzulegen und auf sie zuzugreifen
+* Im Frontend und Backend verfügbar
+* enthält entsprechende `get` Methoden für jede Klasse des CDs
+* liefert `builder` für jede persistierte Klasse.
 
-TODO
+* Im Backend lädt der Manager die Daten aus der entsprechenden Datenquelle. In einer Produktionsumgebung kann dies eine
+Datenbank sein, während eines Unittests kann dies eine lokale Datenstruktur sein(vgl. `FlensburgMock`).
+* Der Manager abstrahiert diese Datenquellen weg, sodass die Nutzer nicht wissen müssen, wo und wie die Daten gespeichert
+werden oder wie auf sie zugegriffen wird.
+* Im Frontend soll ein Cache das Neuladen von Daten verhindern, welche sich nicht geändert haben.
+Hierfür ist eine Konsistenzprüfung mit dem Backend notwendig.
+
 
 ### Builder
 
@@ -116,6 +126,13 @@ TODO
 
 TODO
 (i.W. keine Callbacks, Promises, keine Results/Responses, kein GetAllCommand) 
+
+AHe, bitte Diskutieren:
+* Wird im Frontend ein Attribut geändert, wie z.B. `age` einer `Person`, so wird die Änderung automatisch mit dem Command `Person_setAge` mit dem Backend synchronisiert.
+* Die entsprechende Methode `Person#setAge` muss blockieren, bis die Statusmeldung des Backends zurückkommt. Ansonsten wird im Fehlerfall im Frontend mit falschen Daten weitergerechnet.
+* Dies könnte zu einer schlechten Nutzererfahrung führen, da die GUI unresponsive wird, solange die Methode blockt
+  * Dies ist der Typescript/Javascript Verarbeitung via Event-Loop geschuldet, bei der es nur einen Thread gibt. Blockiert eine Methode diesen Thread, so kann die Website nicht mehr reagieren.
+  * Abhilfe können Promises, async/await, oder Webworker schaffen. Diese könnten aber zu einem abweichenden Interface des `FlensburgManager` im Frontend führen. 
 
 
 ## Rechte / Rollen-Konzept
