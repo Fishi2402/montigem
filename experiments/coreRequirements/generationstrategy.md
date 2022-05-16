@@ -290,11 +290,11 @@ tatsächliches Versenden via Websockets vs. simples copy in der simulation
   Daten auch.
   
 * Folgende Klassen werden dem CD hinzugefügt und damit Rechte und Rollen
-  persistiert:
+  persistiert. `FlensburgRechteRollen` wird aus `Flensburg` berechnet 
+  (genau genommen generiert):
   
-  
-((Bem: das kann man auch ganz anders lösen, zB analog zu Reiss oder Macocco,
-habe deren Lösungen aber gerade nicht parat:)
+((Bem: Die Datenstruktur kann auch anders aussehen, evtl. 
+analog zu Reiss oder Macocco, habe deren Lösungen aber gerade nicht parat:)
 
 
 ```
@@ -310,12 +310,12 @@ umlp FlensburgRechteRollen {
     association [*] Rolle -> Right [*];
 ```
 
-* We always add class `Person`if it doesn't exist yet.
+* We always add class `Person` if it doesn't exist yet.
 
 * Typical Person -> Role [*] -> Rights [*] situation
 
 ```
-    class RightForObject extends Right;
+    class RightForObjectList extends Right;
 ```
 
 * For certain rights, an object specific access right must be given 
@@ -325,7 +325,7 @@ umlp FlensburgRechteRollen {
   (but other specific solutions may appear handwritten).
     
 ```
-    enumeration RightType = [ 
+    enum RightType = [ 
         // for a persisted class:
         Car_Create, Car_Read, Car_Update, Car_Delete,
        
@@ -344,10 +344,93 @@ umlp FlensburgRechteRollen {
   * CRUD for objects and attributes
   * read for calculated objects
   * execute for activities
-  * rights to see cetain GUI websites are added here as well
+
+* Note: 
+  * rights to see certain GUI websites are added here as well and depend
+    on the GUI-models
   * special rights for sub-parts of GUI visualizations, such as 
     "expert-mode" or feature activation are possible.
 
+### HW Extension of the Rechte/Rollen model (optional):
 
- 
+* because many facets of the rights/roles model can directly be modelled as CD,
+  we might allow a handwritten addition (good that we have a CD-merge function):
+
+```
+umlp FlensburgRechteRollenHandwritten {
+    // ... e.g. allows access for parents automatically ... 
+    class RightForParents extends Right;
+} 
+```
+
+## GUI Ableitung (cd2gui)
+
+* Basierend auf `Flensburg.umlp` werden GUI modelle (AX.gui) automatisch generiert,
+  damit eine erste Visualisierung möglich wird.
+
+* Smarte Erweiterungen zusammengehörender Anzeigegruppen folgen später
+
+* Es entstehen zumindest Anzeigen für
+  * Car
+  * Human 
+  * Person 
+  * Address 
+  * association owns, weil [*]
+  * association parent, weil [*] und 
+  * child (weil auch in anderer Richtung [*] und navigierbar)
+  * CityInfo
+* Beispiele: 
+  * `CarShow` 
+  * todo LN, AGe
+* Listen von obigen Klassen
+* Die generierten gui-Seiten sind durch den TOP-mechanismus ergänzbar. Beispiel:
+
+TODO
+  
+* Notwendig ist auch eine Admin-Gui-Seite zum einrichten/loschen von Usern 
+  / Rollen / Rechten, die als normale GUI-Seite generiert wird:
+
+TODO
+
+* Optionale Ausbaustufen der CD2GUI-Generierung:
+  * `Flensburg.gui` Dashboard mit der Anzeige Anzahlen zu einzelnen
+    Klassen, u.ä. 
+
+* Weitere handgeschriebene GUI-Modelle (HX.gui) sind sinnvoll
+
+## Konfiguration
+
+* Jedes einzelne GUI-Modell bringt seine eigene Konfiguration mit
+* Die Konfiguration kann abhängen von (a) Usern oder (b) einzelnen 
+  anzuzeigenden Objekten
+* Die Konfiguration wird wie andere Daten auch in der DB persistiert 
+  weshalb für die obigen Generierungsoptionen
+
+```
+umlp FlensburgGuiConfig {
+  class PersonShow { 
+    int numberOfCarInList = 10;  
+  }
+```
+
+* `numberOfCarInList` is the shown number of cars in the list, i.e. it 
+   can be adapted (but is equal for all) 
+
+```
+  class CityInfoShow { 
+    int numberOfCities = 10;
+    Color color = green;
+    long personGemId;  // the person looking at
+  }
+} 
+```
+
+* `CityInfoShow` does store the presented number of cities in configurable 
+  color and individually for the perosn who looks at it.
+  // Hm, sichern, dass die DB die Verbindung zur gemID gut hinbekommt!
+
+
+* Es empfiehlt sich eine allgemeine Konfigurations-GUI-Seite für User 
+  mitzugenerieren
+
 
