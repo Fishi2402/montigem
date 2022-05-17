@@ -33,8 +33,9 @@ page EditierePersonCars(Person p) {
 // todo: we might show a list of cars here as well
 // where we might add and delete cars?
 
-  :Button(text = "Ok", leftClick = submit())
-  // todo: Wo steht, wie es danach weitergeht (welche Seite wird gezeigt?)
+  // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
+  // ueberschrieben werden z.B. navigate, copy, show(:ContextMenu(...)), ...
+  :Button(text = "Ok", leftClick = navigate())
 
 }
 
