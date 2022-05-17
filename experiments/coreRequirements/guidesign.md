@@ -5,11 +5,12 @@ für die GUI (incl. der Synchronisation).
 
 Allgemeine Entscheidungen:
 
-* *GUI* und *Client* werden hier als Synoym verwendet
+* *GUI* und *Client* werden hier als Synonym verwendet
 
 * Die GUI wird in JavaScript/TypeScript realisiert, die vordefinierten
-  Anzweigekomponenten sind bereits qualitätsgesichert und müssen 
+  Anzeigekomponenten sind bereits qualitätsgesichert und müssen 
   nicht separiert getestet werden.
+ 
 * Alle applikationsspezifischen Code-Stücke werden in Java geschrieben
   und Cross-Compiliert (oder direkt aus einem Modell generiert) 
 
@@ -20,9 +21,15 @@ Allgemeine Entscheidungen:
 
 ## Kernklassen/Assoziationen der Applikation
 
-* stehen der GUI in derselben Form zur Verfügung wie im Server 
+* stehen der GUI in derselben Form zur Verfügung wie im Server, d.h. die Schnittstellen der
+  Client-Klassen unterscheiden sich von Server-Klassen NICHT, obwohl die Implementierung sich
+  unterscheidet. Das ist notwendig, um die Java-Simulationen möglichst einfach nach TypeScript
+  übersetzen zu können und dabei die Äquivalenz der Funktionalität fürs Testen zu behalten.
 
-TODO
+* Manager (Beispiel: `FlensburgManager`)
+* Builder (Beispiel: `PersonBuilder`)
+* CommandManager (Beispiel: `CommandManager`)
+* Commands (Beispiel: `Person_setAge`)
 
 ## Datenmanagement
 
@@ -37,14 +44,25 @@ TODO
 
 ## Vorhandene GUI-Komponenten
 
-TODO (evtl. nur ein siehe auch ...)
+[Volle Liste](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/wikis/Documentation-(Eng))
+(wird aktualisiert)
 
+* Vordefinierte Komponenten in diesem Beispiel
+  * TextInput
+  * NumberInput
+  * Text
+  * Table
+  * Button
 
+* [GUI Seiten](../coreRequirements/models)
+  * EditierePerson - Beispiel einer einfachen Seite fürs Editieren
+  * EditierePersonCars - Beispiel einer komplexeren Seite fürs Editieren
+  * ShowCityInfo - Beispiel einer Anzeigeseite für aggregierte Daten
 
 ## Konfigurationsdaten
 
 * Konfigurierbarkeit ist für viele Zwecke relevant und will persistiert werden
-* Konfigurationsdaten werden wir inhaltliche Daten angefordert, geändert und 
+* Konfigurationsdaten werden wie inhaltliche Daten angefordert, geändert und 
   synchronisiert, nur die Nutzung dieser Daten unterscheidet sich, weil sie
   eben zur Konfiguration gedacht sind.
   
@@ -59,13 +77,18 @@ vgl auch Log.error, Exceptions, Warnungen, ...
 
 ## Die GUI Sprache
 
-TODO (evtl. nur ein siehe auch ...)
+Siehe [README](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/tree/dev)
 
-* GUI-Modelle werden beschrieben in `X.gui`
-* Sie beinhalten Zugriff auf Objekte des Datenmodells 
- (persistiert und nicht persistiert)
+### Generiert aus GUI-Modellen werden
 
-### Generiert aus GUI-Modellen werden:
+Eingaben: `X.gui` (`page X(...) {...}`), `Y.gui` in package `z`. 
 
-TODO
-
+Ausgaben:
+* `X.java`, `Y.java` - Java Simulation der GUIs
+* `x.component.ts`, `y.component.ts` - TypeScript Implementierung der GUIs
+* `x.component.html`, `y.component.html` - HTML Implementierung der GUIs
+* `z.module.ts` - TypeScript Module für Komponenten `X` und `Y`, interne Nutzung: Komponenten eines
+  Moduls werden zusammen geladen (Optimierung).
+* `z.routing.ts` - TypeScript Routing Konfiguration für Komponenten `X` und `Y`, interne Nutzung:
+  jede Komponente wird eine URL zugewiesen, die in Browser eingegeben werden kann, um entsprechende
+  Seiten zuzugreifen.
