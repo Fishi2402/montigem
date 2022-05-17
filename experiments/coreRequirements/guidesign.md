@@ -55,8 +55,8 @@ TODO
   * Button
 
 * [GUI Seiten](../coreRequirements/models)
-  * EditierePerson - Beispiel einer einfachen Seite fürs Editieren
-  * EditierePersonCars - Beispiel einer komplexeren Seite fürs Editieren
+  * EditierePerson - Beispiel einer einfachen Seite fürs Editieren und Erstellen
+  * EditierePersonCars - Beispiel einer komplexeren Seite fürs Editieren und Erstellen
   * ShowCityInfo - Beispiel einer Anzeigeseite für aggregierte Daten
 
 ## Konfigurationsdaten

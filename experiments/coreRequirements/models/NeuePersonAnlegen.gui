@@ -19,27 +19,38 @@ import umlp.gui.Button;
  *
  * Situation is that the Person will be newly created
  */
-page NeuePersonAnlegen() {
-
-  // lokale Variable, die beim Start der Anzeige initialisiert wird 
-  // und es werden Defaults eingetragen
-  PersonBuilder p = Mill.personBuilder().age(18) ;
-
+// AGe: Es gibt keinen Unterschied zu dem EditierePerson.gui Fall, wenn keine Person beim Navigieren
+// auf die Seite im Modell eingegeben wird, wird eine leere Person automatisch erstellt und
+// "aktualisiert".
+// Argumentation:
+//   Die Logik ist größtenteils dieselbe und die GUI ist auch.
+//   Das funktioniert gut in MaCoCo und dadurch wird sichergestellt, dass mehrere unterschiedlichen
+// Anzeigen zum sehr ähnlichen Zweck nicht existieren.
+//   Wir wollen auch die Details wie Mill.personBuilder()... verstecken.
+// Ich lasse erst die Seite hier, falls das Generat im Kontext einer neuen Struktur sich sehr
+// unterscheiden muss
+page NeuePersonAnlegen(Person p) { // "leere" Person
   // show and edit the nickname
   :TextInput(value = p.nickname)
 
   // show and edit the age as number
   :NumberInput(value = p.age)
 
-  // Button mit Text "Ok" und Aufruf der Speicherung der Änderungen
+  // Button mit Text "Ok" und Navigation auf eine andere Seite
   // (und die Logik dafür ist generiert und verfügbar)
-  :Button(text = "Ok", leftClick = BUILD!())
-  // todo: Wo steht, wie es danach weitergeht (welche Seite wird gezeigt?)
+  // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
+  // ueberschrieben werden z.B. navigate, copy, show(:ContextMenu(...)), ...
+  :Button(text = "Ok", leftClick = navigate(:EditierePersonCars(p))
 
-  // Button mit Text "Cancel", 
-  :Button(text = "Cancel", leftClick = ???what to do: ther page)
-  
-  
+  // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
+  // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird entweder generiert oder
+  // in einem handgeschriebenen Teil implementiert wird und importiert
+  // (siehe "import stanley.editiereperson.EditierePersonGUI")
+  // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "EditierePersonGUI.java".
+  // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
+  // deswegen wird eine Methode explizit importiert und aufgerufen
+  :Button(text = "Decrease", leftClick = decreaseAge(p))
+
   // todo: das daraus entstehende Generat auch noch schreiben vgl. andere GUI Seite
 }
 
