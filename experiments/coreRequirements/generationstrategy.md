@@ -371,32 +371,62 @@ umlp FlensburgRechteRollenHandwritten {
 * Smarte Erweiterungen zusammengehörender Anzeigegruppen folgen später
 
 * Es entstehen zumindest Anzeigen für
-  * Car
-  * Human 
-  * Person 
-  * Address 
-  * association owns, weil [*]
-  * association parent, weil [*] und 
-  * child (weil auch in anderer Richtung [*] und navigierbar)
-  * CityInfo
-* Beispiele: 
-  * `CarShow` 
+  * einzelne (1) Objekte von Klassen, (2) Listen von Objekten, 
+    (3) Listen von Links von navigierbaren *-Assoziationen allgemein 
+    (4) oder zu einem Ausgangsobjekt gehörend 
+  * reine (a) reine Anzeige, (b) editierbar/löschbar, (c) neu Erzeugbar
+    * Dies passiert für (i) einzelne Objekte und für (ii) Listen.
+
   * todo LN, AGe
-* Listen von obigen Klassen
+
 * Die generierten gui-Seiten sind durch den TOP-mechanismus ergänzbar. Beispiel:
 
-TODO
-  
+* Ein Beispiel:
+
+```
+page EditierePerson(Person p) {
+  :TextInput(value = p.nickname)
+  :NumberInput(value = p.age)
+```
+
+* show and edit the nickname
+* show and edit the age as number
+
+```
+  :Button(text = "Ok", leftClick = navigate(:EditierePersonCars(p))
+```
+
+* Button mit Text "Ok" und Navigation auf eine andere Seite
+  (und die Logik dafür ist generiert und verfügbar)
+
+* todo: Wo steht, wie es danach weitergeht (welche Seite wird gezeigt?)
+  (AGe: wir definieren Methoden die häufigst benutzte Aktionen darstellen,
+   BR: dennoch ist unklar: wo steht, auf welcher konkreten Seite es danach weiter geht)
+
+```
+  :Button(text = "Decrease", leftClick = decreaseAge(p))
+}  
+```
+
+* Button mit Text "Decrease", und einer handgeschriebenen Aktion,
+  auch wenn hier nur eine Signatur steht, wuerde ich gerne eine Expression schreiben 
+  in welchem Kontext wird die ausgewertet?
+  todo AGe: wenn ich da nur eine Signatur angeben kann, dann könnte ich gleich 
+  eine synthetische nehmen
+  zB. onLeftClickButtonDecrease() ... und braucht nicht noch einen extraNamen
+  // Antwort AGe: manche Methoden brauchen Parameter, eine synthetische Methode
+  // würde nicht immer funktionieren
+  BR: Synthetische Methoden können auch Parameter haben.
+
 * Notwendig ist auch eine Admin-Gui-Seite zum einrichten/loschen von Usern 
   / Rollen / Rechten, die als normale GUI-Seite generiert wird:
-
-TODO
 
 * Optionale Ausbaustufen der CD2GUI-Generierung:
   * `Flensburg.gui` Dashboard mit der Anzeige Anzahlen zu einzelnen
     Klassen, u.ä. 
 
 * Weitere handgeschriebene GUI-Modelle (HX.gui) sind sinnvoll
+
 
 ## Konfiguration
 
@@ -408,25 +438,25 @@ TODO
 
 ```
 umlp FlensburgGuiConfig {
-  class PersonShow { 
-    int numberOfCarInList = 10;  
+  class ConfigEditierePerson { 
+    Color color = green;
   }
 ```
 
-* `numberOfCarInList` is the shown number of cars in the list, i.e. it 
-   can be adapted (but is equal for all) 
+* `EditierePerson` does store the configurable 
+  color i.e. it can be adapted (but is equal for all) 
+  
 
 ```
   class CityInfoShow { 
     int numberOfCities = 10;
-    Color color = green;
     long personGemId;  // the person looking at
   }
 } 
 ```
 
-* `CityInfoShow` does store the presented number of cities in configurable 
-  color and individually for the perosn who looks at it.
+* `CityInfoShow` does store the presented number of cities 
+  individually for the person who looks at it.
   // Hm, sichern, dass die DB die Verbindung zur gemID gut hinbekommt!
 
 
