@@ -130,6 +130,8 @@ public class PersonBuilder extends Person {
 
     public Person build() {
         if (!buildFinished) {
+            // todo: discuss: sollte es nicht einen else Fall geben,
+            //  der präzisere Fehler wirft (siehe Log)?
             if (validator.buildingCheck(this)) {
                 for (Car own : owns) {
                     if(!own.isBuildFinished()) {
