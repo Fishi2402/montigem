@@ -5,26 +5,24 @@ package hardy;
 // TODO: siehe Klasse PersonValidatorTOP
 public class AddressValidator {
 
-  ResultLog log;
-
   public boolean buildingCheck(AddressBuilder o) {
     boolean result = true;
     result &= o.isPresentCity;
-    result &= extraBuildingChecks( o, log);
+    result &= extraBuildingChecks(o);
     return result;
   }
 
-  public boolean extraBuildingChecks(AddressBuilder o, ResultLog log) {
+  public boolean extraBuildingChecks(AddressBuilder o) {
       return true;
   }
 
-  public boolean consistencyCheck(Address o, ResultLog log) {
+  public boolean consistencyCheck(Address o) {
     boolean result = true;
-    result &= extraConsistencyChecks(o, log);
+    result &= extraConsistencyChecks(o);
     return result;
   }
 
-  protected boolean extraConsistencyChecks(Address o, ResultLog log){
+  protected boolean extraConsistencyChecks(Address o){
     return true;
   }
 }

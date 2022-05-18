@@ -34,6 +34,7 @@ public class HumanBuilder extends Human {
     public Human build() {
         if (!buildFinished) {
             if (validator.buildingCheck(this)) {
+                Human build = super.build();
                 FlensburgManager.addHuman(this);
                 notifyObservers();      //+ an initial notification
                 buildFinished = true;

@@ -17,6 +17,8 @@ package hardy;
   
 */
 
+import de.se_rwth.commons.logging.Log;
+
 import java.util.*;
 
 public class FlensburgMock extends FlensburgManager {
@@ -47,21 +49,6 @@ public class FlensburgMock extends FlensburgManager {
   protected long _doGetFreeGemId() {
     return freeGemId++;
   }
-
-  // Log that is used by all validators, can be used to assert in tests
-  static protected ResultLog log = new ResultLog();
-  public static ResultLog getLog(){
-    return log;
-  }
-
-  public static void resetLog(){
-    log.clear();
-  }
-
-  public static void setLog(ResultLog log){
-    FlensburgMock.log = log;
-  }
-
 
   // ------------------------------------------- Methods for class Person
 
@@ -133,7 +120,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doUpdatePerson(Person o) {
     assert persons.containsKey(o.getGemId());
     // TODO AHe: throw exception?
-    if(thePersonValidator.consistencyCheck(o, log)) {
+    if(thePersonValidator.consistencyCheck(o)) {
       persons.put(o.getGemId(), o);
     }
   }
@@ -182,7 +169,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doUpdateHuman(Human o) {
     assert humans.containsKey(o.getGemId());
     // TODO AHe: throw exception?
-    if(theHumanValidator.consistencyCheck(o, log)) {
+    if(theHumanValidator.consistencyCheck(o)) {
       humans.put(o.getGemId(), o);
     }
   }
@@ -238,7 +225,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doUpdateAddress(Address o) {
     assert addresses.containsKey(o.getGemId());
     // TODO AHe: throw exception?
-    if(theAddressValidator.consistencyCheck(o, log)) {
+    if(theAddressValidator.consistencyCheck(o)) {
       addresses.put(o.getGemId(), o);
     }
   }
@@ -300,7 +287,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doUpdateCar(Car o) {
     assert cars.containsKey(o.getGemId());
     // TODO AHe: throw exception?
-    if(theCarValidator.consistencyCheck(o, log)) {
+    if(theCarValidator.consistencyCheck(o)) {
       cars.put(o.getGemId(),o);
     }
   }

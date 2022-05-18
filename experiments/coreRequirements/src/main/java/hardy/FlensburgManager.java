@@ -51,9 +51,7 @@ public abstract class FlensburgManager {
         return getSingleton()._doGetFreeGemId();
     }
 
-    protected long _doGetFreeGemId() {
-        return 42;  // todo TODO AHe: implement");
-    }
+    protected abstract long _doGetFreeGemId();
 
     /**
      * Returns the singleton {@link FlensburgManager} instance.
