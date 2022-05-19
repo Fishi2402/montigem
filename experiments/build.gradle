@@ -13,8 +13,8 @@ subprojects {
     ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
 
     dependencies {
-        implementation "de.se_rwth.commons:se-commons-utilities:$mc_version"
-        testImplementation group:'junit', name:'junit', version:junit_version
+        implementation group: 'de.se_rwth.commons', name: 'se-commons-utilities', version: mc_version
+        testImplementation group: 'junit', name: 'junit', version: junit_version
     }
 
 

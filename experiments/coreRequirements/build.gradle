@@ -10,11 +10,10 @@ compileJava {
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
     implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
-
-    implementation 'com.h2database:h2:2.1.210'
-    implementation 'org.hibernate:hibernate-vibur:5.6.9.Final'
+    implementation group: 'org.hibernate', name: 'hibernate-vibur', version: hibernate_version
+    implementation group: 'com.h2database', name: 'h2', version: h2_database
 }
 
 task runApp(type: JavaExec) {
