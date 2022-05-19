@@ -4,18 +4,15 @@ package hardy;
 
 import umlp.rte.DatabaseAccessManager;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-// TODO: implement using a database connection
 public class FlensburgManagerImpl extends FlensburgManager {
 
     /**
      * Don't let anyone else instantiate this class.
      */
     private FlensburgManagerImpl() {
-        DatabaseAccessManager.setup();
+        DatabaseAccessManager.setup(getAnnotatedClasses());
     }
 
     /**
@@ -39,22 +36,22 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected Optional<Human> _doHumanOpt(long gemId) {
-        return Optional.ofNullable(DatabaseAccessManager.getObject(Human.class, gemId));
+        return Optional.ofNullable(DatabaseAccessManager.get(Human.class, gemId));
     }
 
     @Override
     protected Human _doGetHumanSure(long gemId) {
-        return DatabaseAccessManager.getObject(Human.class, gemId);
+        return DatabaseAccessManager.get(Human.class, gemId);
     }
 
     @Override
     protected void _doAddHuman(Human human) {
-        DatabaseAccessManager.addObject(Human.class.getName(), human);
+        DatabaseAccessManager.add(Human.class.getName(), human);
     }
 
     @Override
     protected Collection<Human> _doGetHumanList() {
-        return null;
+        return DatabaseAccessManager.getAll(Human.class);
     }
 
     @Override
@@ -64,7 +61,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected void _doDeleteHuman(Human human) {
-        DatabaseAccessManager.deleteObject(Human.class.getName(), human);
+        DatabaseAccessManager.delete(Human.class.getName(), human);
     }
 
     /* === Methods for class Person === */
@@ -76,28 +73,27 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected Optional<Person> _doPersonOpt(long gemId) {
-        return Optional.ofNullable(DatabaseAccessManager.getObject(Person.class, gemId));
+        return Optional.ofNullable(DatabaseAccessManager.get(Person.class, gemId));
     }
 
     @Override
     protected Person _doGetPersonSure(long gemId) {
-        return DatabaseAccessManager.getObject(Person.class, gemId);
+        return DatabaseAccessManager.get(Person.class, gemId);
     }
 
     @Override
     protected void _doAddPerson(Person person) {
-        DatabaseAccessManager.addObject(Person.class.getName(), person);
+        DatabaseAccessManager.add(Person.class.getName(), person);
     }
 
     @Override
     protected Collection<Person> _doGetPersonList() {
-        // return null ist voellig illegal. NIE verwenden!
-        return null;
+        return DatabaseAccessManager.getAll(Person.class);
     }
 
     @Override
     protected void _doDeletePerson(Person person) {
-        DatabaseAccessManager.deleteObject(Person.class.getName(), person);
+        DatabaseAccessManager.delete(Person.class.getName(), person);
     }
 
     @Override
@@ -114,22 +110,22 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected Optional<Address> _doAddressOpt(long gemId) {
-        return Optional.ofNullable(DatabaseAccessManager.getObject(Address.class, gemId));
+        return Optional.ofNullable(DatabaseAccessManager.get(Address.class, gemId));
     }
 
     @Override
     protected Address _doGetAddressSure(long gemId) {
-        return DatabaseAccessManager.getObject(Address.class, gemId);
+        return DatabaseAccessManager.get(Address.class, gemId);
     }
 
     @Override
     protected void _doAddAddress(Address address) {
-        DatabaseAccessManager.addObject(Address.class.getName(), address);
+        DatabaseAccessManager.add(Address.class.getName(), address);
     }
 
     @Override
     protected Collection<Address> _doGetAddressList() {
-        return null;
+        return DatabaseAccessManager.getAll(Address.class);
     }
 
     @Override
@@ -139,7 +135,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected void _doDeleteAddress(Address address) {
-        DatabaseAccessManager.deleteObject(Address.class.getName(), address);
+        DatabaseAccessManager.delete(Address.class.getName(), address);
     }
 
     /* === Methods for class Car === */
@@ -151,27 +147,27 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected Optional<Car> _doCarOpt(long gemId) {
-        return Optional.ofNullable(DatabaseAccessManager.getObject(Car.class, gemId));
+        return Optional.ofNullable(DatabaseAccessManager.get(Car.class, gemId));
     }
 
     @Override
     protected Car _doGetCarSure(long gemId) {
-        return DatabaseAccessManager.getObject(Car.class, gemId);
+        return DatabaseAccessManager.get(Car.class, gemId);
     }
 
     @Override
     protected void _doAddCar(Car car) {
-        DatabaseAccessManager.addObject(Car.class.getName(), car);
+        DatabaseAccessManager.add(Car.class.getName(), car);
     }
 
     @Override
     protected Collection<Car> _doGetCarList() {
-        return null;
+        return DatabaseAccessManager.getAll(Car.class);
     }
 
     @Override
     protected void _doDeleteCar(Car car) {
-        DatabaseAccessManager.deleteObject(Car.class.getName(), car);
+        DatabaseAccessManager.delete(Car.class.getName(), car);
     }
 
     @Override
@@ -199,4 +195,11 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     }
 
+    private Set<Class> getAnnotatedClasses() {
+        Set<Class> annotatedClasses = new HashSet<>();
+        annotatedClasses.add(Human.class);
+        annotatedClasses.add(Car.class);
+        annotatedClasses.add(Address.class);
+        return annotatedClasses;
+    }
 }

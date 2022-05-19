@@ -8,9 +8,16 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 public class DatabaseAccessManager {
 
@@ -24,14 +31,11 @@ public class DatabaseAccessManager {
         FlensburgManager.humanBuilder().age(20).build();
         FlensburgManager.humanBuilder().age(21).build();
 
-
-        FlensburgManager.carBuilder().build();
-        FlensburgManager.carBuilder().build();
-        FlensburgManager.carBuilder().build();
-        FlensburgManager.carBuilder().build();
-        FlensburgManager.carBuilder().build();
-        FlensburgManager.carBuilder().build();
-
+        FlensburgManager.addressBuilder().city("Aachen").build();
+        FlensburgManager.addressBuilder().city("Düsseldorf").build();
+        FlensburgManager.addressBuilder().city("Berlin").build();
+        FlensburgManager.addressBuilder().city("München").build();
+        FlensburgManager.addressBuilder().city("Flensburg").build();
     }
 
     private static final String DATABASE_PROPERTIES = "database.properties";
@@ -55,36 +59,45 @@ public class DatabaseAccessManager {
         return instance;
     }
 
-    public static void setup() {
-        getSingleton()._setup();
-    }
-
-    public static <T> T getObject(Class<T> domainType, long gemId) {
-        return getSingleton()._getObject(domainType, gemId);
-    }
-
-    public static void addObject(String domainType, Object domainObject) {
-        getSingleton()._addObject(domainType, domainObject);
-    }
-
-    public static void deleteObject(String domainType, Object domainObject) {
-        getSingleton()._deleteObject(domainType, domainObject);
+    public static void setup(Set<Class> annotatedClasses) {
+        getSingleton()._setup(annotatedClasses);
     }
 
     public static long getFreeGemId() {
-        return 0;
+        return 0; // TODO implement
     }
 
-    public <T> T _getObject(Class<T> domainType, long gemId) {
+    public static <T> T get(Class<T> domainType, long gemId) {
+        return getSingleton()._get(domainType, gemId);
+    }
+
+    public static void add(String domainType, Object domainObject) {
+        getSingleton()._add(domainType, domainObject);
+    }
+
+    public static void delete(String domainType, Object domainObject) {
+        getSingleton()._delete(domainType, domainObject);
+    }
+
+    public static <T> Collection<T> getAll(Class<T> domainType) {
+        return getSingleton()._getAll(domainType);
+    }
+
+    private <T> T _get(Class<T> domainType, long gemId) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         T object = session.get(domainType, gemId);
+//        CriteriaBuilder builder = session.getCriteriaBuilder();
+//        CriteriaQuery<T> query = builder.createQuery(domainType);
+//        Root<T> root = query.from(domainType);
+//        query.where(builder.equal(root.get("gemId"), gemId));
+//        T result = session.createQuery(query).getSingleResult();
         session.getTransaction().commit();
         session.close();
         return object;
     }
 
-    public void _addObject(String domainType, Object domainObject) {
+    private void _add(String domainType, Object domainObject) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         session.save(domainType, domainObject);
@@ -92,7 +105,7 @@ public class DatabaseAccessManager {
         session.close();
     }
 
-    private void _deleteObject(String domainType, Object domainObject) {
+    private void _delete(String domainType, Object domainObject) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         session.delete(domainType, domainObject);
@@ -100,16 +113,27 @@ public class DatabaseAccessManager {
         session.close();
     }
 
-    private void _setup() {
-        loadDatabaseProperties();
-        createSessionFactory();
+    private <T> Collection<T> _getAll(Class<T> domainType) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<T> query = builder.createQuery(domainType);
+        query.from(domainType);
+        Collection<T> result = session.createQuery(query).list();
+        session.getTransaction().commit();
+        session.close();
+        return result;
     }
 
-    private void createSessionFactory() {
+    private void _setup(Set<Class> annotatedClasses) {
+        loadDatabaseProperties();
+        createSessionFactory(annotatedClasses);
+    }
+
+    private void createSessionFactory(Set<Class> annotatedClasses) {
         Configuration configuration = new Configuration();
         configuration.addProperties(databaseProperties);
-        configuration.addAnnotatedClass(Human.class);
-        configuration.addAnnotatedClass(Car.class);
+        annotatedClasses.forEach(aClass -> configuration.addAnnotatedClass(aClass));
         sessionFactory = configuration.buildSessionFactory();
     }
 

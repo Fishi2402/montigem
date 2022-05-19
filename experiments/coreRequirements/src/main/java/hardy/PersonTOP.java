@@ -9,8 +9,10 @@ import java.util.*;
 
 import com.google.common.collect.Sets;
 import umlp.rte.Gem;
-import umlp.rte.LoadResult;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;

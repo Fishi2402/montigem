@@ -13,7 +13,6 @@ public class Main {
 // (die ja auch im Produkt dabei sein dürfen)
 
   public static void main(String[] args){
-    // TODO: Do something useful
     System.out.println("Got the arguments: " + Arrays.toString(args));
   }
 }

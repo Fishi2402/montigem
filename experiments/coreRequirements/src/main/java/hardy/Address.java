@@ -2,8 +2,10 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import org.hibernate.annotations.GenericGenerator;
 import umlp.rte.GemIdentifiable;
 
+import javax.persistence.*;
 import java.util.Observable;
 
 /* Source:
@@ -14,10 +16,16 @@ import java.util.Observable;
 
 // --------------------------
 
-// TODO: ähnlich wie Klasse Person aufbauen
+@Entity
+@Table(name = "address")
 public class Address extends Observable implements GemIdentifiable {
 
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     protected long gemId = -32;
+
+    @Column(name = "city")
     protected String city;
 
     @Override

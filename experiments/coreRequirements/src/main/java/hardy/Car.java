@@ -18,7 +18,7 @@ import java.util.Observable;
 
 // --------------------------
 @Entity
-@Table(name = "Car")
+@Table(name = "car")
 public class Car extends Observable implements GemIdentifiable {
 
 // Bem: This is an ordinary class, comments to the design 

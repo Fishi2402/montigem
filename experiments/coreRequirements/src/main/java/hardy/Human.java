@@ -16,7 +16,7 @@ import java.util.Observable;
 
 // --------------------------
 @Entity
-@Table(name = "Human")
+@Table(name = "human")
 public class Human extends Observable implements GemIdentifiable {
 
     // gemId: ------------------------------------------

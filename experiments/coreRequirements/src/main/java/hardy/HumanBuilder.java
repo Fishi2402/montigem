@@ -2,7 +2,6 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-// TODO: ähnlich wie PersonBuilder aufbauen
 public class HumanBuilder extends Human {
 
     protected boolean buildFinished = false;
@@ -41,7 +40,7 @@ public class HumanBuilder extends Human {
                 return this;
             }
         }
-        throw new IllegalStateException("0xU1234: Human cannot be built.");
+        throw new IllegalStateException("0xU1234: Human cannot be built."); // TODO
     }
 
     public boolean isBuildable() {
