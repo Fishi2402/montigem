@@ -101,10 +101,11 @@ public class FlensburgDummyProviderTOP {
         .build();
   }
 
-  public Car inventCar() {
+  public Car inventCar(Person person) {
     // Der Builder fügt das Objekt zum FlensburgManager hinzu
     return FlensburgManager
         .carBuilder()
+        .owns(person)
         .build();
   }
 
@@ -135,10 +136,6 @@ public class FlensburgDummyProviderTOP {
 
   protected String inventAddressCity() {
     return _inventString();
-  }
-
-  public void inventPersonOwnsCar(int numberOfCarInstance) {
-    // TODO
   }
 
   // Utility Funktionen die nicht von Flensburg.umlp abhängen => Starten mit "_"

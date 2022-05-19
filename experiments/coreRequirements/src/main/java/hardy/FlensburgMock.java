@@ -17,9 +17,12 @@ package hardy;
   
 */
 
-import de.se_rwth.commons.logging.Log;
+import umlp.rte.HashMapWithOrderedKeys;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public class FlensburgMock extends FlensburgManager {
 
@@ -28,12 +31,11 @@ public class FlensburgMock extends FlensburgManager {
     FlensburgManager.setInstance(new FlensburgMock());
   }
 
-  protected static FlensburgDummyProviderTOP dummyProvider;
+  protected static FlensburgDummyProvider dummyProvider;
 
   // Wird der dummyProvider gesetzt, so erfindet der DummyManager neue Daten, aber erst wenn sie angefragt werden
-  public static void dummyInit(FlensburgDummyProviderTOP dummyProvider){
+  public static void dummyInit(FlensburgDummyProvider dummyProvider){
     FlensburgMock.dummyProvider = dummyProvider;
-    // TODO: add to all methods
   }
 
   // get the next free GemId -----------------------------------
@@ -54,7 +56,7 @@ public class FlensburgMock extends FlensburgManager {
 
   // Manages a Map<Long, Object>  for each class
 
-  protected Map<Long,Person> persons = new HashMap<>();
+  protected HashMapWithOrderedKeys<Long,Person> persons = new HashMapWithOrderedKeys<>();
 
   // get a Builder ---------------------------------------
   protected PersonBuilder _doPersonBuilder() {
@@ -126,7 +128,7 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   // --- Class Human ---
-  protected Map<Long, Human> humans = new HashMap<>();
+  protected HashMapWithOrderedKeys<Long, Human> humans = new HashMapWithOrderedKeys<>();
   protected HumanValidator theHumanValidator = new HumanValidator();
 
   @Override
@@ -181,7 +183,7 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   // --- Address class ---
-  protected Map<Long, Address> addresses = new HashMap<>();
+  protected HashMapWithOrderedKeys<Long, Address> addresses = new HashMapWithOrderedKeys<>();
   protected AddressValidator theAddressValidator = new AddressValidator();
 
   @Override
@@ -237,7 +239,7 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   // --- Class Car ---
-  protected Map<Long, Car> cars = new HashMap<>();
+  protected HashMapWithOrderedKeys<Long, Car> cars = new HashMapWithOrderedKeys<>();
   protected CarValidator theCarValidator = new CarValidator();
 
   @Override
@@ -250,7 +252,7 @@ public class FlensburgMock extends FlensburgManager {
     if(cars.containsKey(gemId)) {
       return Optional.of(cars.get(gemId));
     }else if (dummyProvider != null){
-      return Optional.of(dummyProvider.inventCar());
+      return Optional.of(dummyProvider.inventCar(persons.getRandomValue(dummyProvider.getRandom())));
     }else{
       return Optional.empty();
     }
@@ -270,7 +272,7 @@ public class FlensburgMock extends FlensburgManager {
   protected Collection<Car> _doGetCarList() {
     if(dummyProvider != null){
       while (cars.size() < dummyProvider.getMaxCars()){
-        dummyProvider.inventCar();
+        dummyProvider.inventCar(persons.getRandomValue(dummyProvider.getRandom()));
       }
     }
 
