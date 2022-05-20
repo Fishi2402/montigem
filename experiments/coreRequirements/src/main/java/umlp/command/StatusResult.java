@@ -1,9 +1,13 @@
 package umlp.command;
 
+// RTE-P
+
 import umlp.command.error.MontiGemError;
 
 import java.util.Optional;
 
+// Repräsentiert das Ergebnis eines ausgeführten Commands ohne zusätzliche Rückgabe, z.B. eines set Commands für ein
+// Attribut. Der Sender des Commands muss trotzdem wissen, ob dieser erfolgreich ausgeführt wurde.
 public class StatusResult extends CommandResult<Void> {
   protected Optional<MontiGemError> error;
   protected StatusResult(long id, MontiGemError error) {
@@ -25,5 +29,10 @@ public class StatusResult extends CommandResult<Void> {
 
   public MontiGemError getError(){
     return error.get();
+  }
+
+  @Override
+  public boolean isStatusResult() {
+    return true;
   }
 }

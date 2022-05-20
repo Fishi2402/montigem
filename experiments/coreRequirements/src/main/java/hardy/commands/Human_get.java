@@ -11,10 +11,10 @@ import umlp.rte.LoadingState;
 
 import java.util.Optional;
 
-public class Human_get extends Command {
-  protected final int gemId;
+public class Human_get extends Command<Human> {
+  protected final long gemId;
 
-  protected Human_get(long commandId, int gemId) {
+  public Human_get(long commandId, long gemId) {
     super(
         commandId,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
