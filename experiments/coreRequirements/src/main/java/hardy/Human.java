@@ -34,26 +34,27 @@ public class Human extends Observable implements GemIdentifiable {
     protected long gemId = -32;
 
     // an Attribute: ------------------------------------------
+    // Attribute has non-primitive type to allow null values for objects, which are not yet
+    // completely built, but require some value (required field in GUI)
     @Column(name = "age")
-    protected int age;
+    protected Integer age;
 
     // --------------------------------------------------------------------
     //+ Constructors are protected: only to be used by the Builder and Mill
 
-    //+ This constructuctor builds incorrect and models (incl. null-pointers)
+    //+ This constructor builds incorrect and models (incl. null-pointers)
     // and should only be used by the builder
     protected Human() {
-        init();
     }
 
     //+ This constructor is better, but still may construct invalid
     // objects in principle
-    protected Human(int age) {
+    protected Human(Integer age) {
         this.age = age;
     }
 
     //+ initialization is externalized to be reusable (if needed)
-    //+ do an initialisation of optional and default parts
+    //+ do an initialisation of optional and default parts if required
     // (makes the system robust, but shadows potential errors for a while)
     protected void init() {
         age = 0;
@@ -64,11 +65,11 @@ public class Human extends Observable implements GemIdentifiable {
         return gemId;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return this.age;
     }
 
-    public void setAge(int o) {
+    public void setAge(Integer o) {
         this.age = o;
     }
 

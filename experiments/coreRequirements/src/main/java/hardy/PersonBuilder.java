@@ -41,7 +41,6 @@ public class PersonBuilder extends Person {
     public PersonBuilder(long gemId, PersonValidator validator) {
         this.gemId = gemId;
         this.validator = validator;
-        init();
     }
 
     // Standard set-Function:

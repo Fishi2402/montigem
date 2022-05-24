@@ -42,7 +42,7 @@ public class PersonBuilderTest {
         Person person = personOpt.get();
 
         assertEquals(name, person.getNickname());
-        assertEquals(age, person.getAge());
+        assertEquals(age, person.getAge().intValue());
     }
 
     @Test

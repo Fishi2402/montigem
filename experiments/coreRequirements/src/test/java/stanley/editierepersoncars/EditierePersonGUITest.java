@@ -26,17 +26,17 @@ public class EditierePersonGUITest extends AbstractGUITest {
 
     // Check GUI has contains correct values
     assertEquals("theo", e.getTextInput());
-    assertEquals(24, e.getNumberInput());
+    assertEquals(24, e.getNumberInput().intValue());
 
     // Check setting the age in the gui changes the age of the person
     e.setNumberInput(33);
-    assertEquals(33, p.getAge());
+    assertEquals(33, p.getAge().intValue());
 
     // Check decrease button decreases age in GUI and Object
     e.pressButtonDecrease();
     e.pressButtonDecrease();
-    assertEquals(31, e.getNumberInput());
-    assertEquals(31, p.getAge());
+    assertEquals(31, e.getNumberInput().intValue());
+    assertEquals(31, p.getAge().intValue());
 
     // und später kombinieren wir das mit Server/Client kommunikation und prüefen dann
     // nicht nur am lokalen Objekt, sondern simuliert im Gesamten System die Konsistente Änderung

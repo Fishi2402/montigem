@@ -18,7 +18,6 @@ public class HumanBuilder extends Human {
     public HumanBuilder(long gemId, HumanValidator validator) {
        this.gemId = gemId;
        this.validator = validator;
-       init();
     }
 
     public HumanBuilder age(int age) {

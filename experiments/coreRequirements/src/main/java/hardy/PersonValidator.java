@@ -12,7 +12,7 @@ public class PersonValidator extends PersonValidatorTOP {
 
     @Override
     public boolean extraBuildingChecks(PersonBuilder o) {
-        if (o.getAge() >= 18) {
+        if (o.isAgePresent() && o.getAge() >= 18) {
             return true;
         } else {
             // short notice, e.g. fürs Webformular

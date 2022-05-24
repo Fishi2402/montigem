@@ -61,7 +61,7 @@ public class EditierePersonGUITOP {
   
   public String getTextInput() { return p.getNickname(); }
 
-  public int getNumberInput() { return p.getAge(); }
+  public Integer getNumberInput() { return p.getAge(); }
 
   // das ist alles was auf der Seite gezeigt wird und variabel ist ...
 
@@ -82,7 +82,7 @@ public class EditierePersonGUITOP {
   // Zusätzlich: Wenn der Validator hier erfolgreich ist, kann die 
   // Änderung im Server dennoch fehlschlagen: Auch hier wäre eine entsprechende
   // Fehlermeldung relevant
-  public void setNumberInput(int age) {
+  public void setNumberInput(Integer age) {
     p.setAge(age);
   }
 
