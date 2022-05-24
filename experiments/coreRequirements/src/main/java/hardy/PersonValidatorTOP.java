@@ -2,31 +2,36 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import com.google.common.collect.Lists;
 import de.se_rwth.commons.logging.Log;
+import umlp.rte.ValidationMessage;
+
+import java.util.List;
 
 /*+ PersonValidator checks a Person object for Validity:
     it can be called on objects in building or on Objects anywhere around
-        
 */
 public abstract class PersonValidatorTOP {
 
-    //todo: das Log effizient gestalten, ggf. über mehrere Builder hinweg
-    // und zwar dann, wenn man eine gemeinsame/synchronisierte Build-Konstruktion braucht
+    protected List<ValidationMessage> validationMessages = Lists.newLinkedList();
 
     //+buildingCheck wird benutzt vom Builder 
     // zB via einem Webformular um Nutzer zu 
     // sagen: es ist was zu tun
     public boolean buildingCheck(PersonBuilder o) {
+        validationMessages.clear();
         boolean result = true;
         if (!o.isAgePresent()) {
             result = false;
             // short notice, e.g. fürs Webformular
             Log.error("age not defined");
+            validationMessages.add(ValidationMessage.create("age not defined"));
         }
         if (!o.isNicknamePresent()) {
             result = false;
             // short notice, e.g. fürs Webformular
             Log.error("nickname not defined");
+            validationMessages.add(ValidationMessage.create("nickname not defined"));
         }
 
         if (!o.isOwnsPresent()) // todo
@@ -58,6 +63,9 @@ public abstract class PersonValidatorTOP {
 
     // todo: analog die schärfere Konsistenz variante:
 
+    public List<ValidationMessage> getValidationMessages() {
+        return validationMessages;
+    }
 }
 
 

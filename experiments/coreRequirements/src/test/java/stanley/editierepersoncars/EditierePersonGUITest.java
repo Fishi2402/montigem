@@ -21,7 +21,7 @@ public class EditierePersonGUITest extends AbstractGUITest {
     // zusaetlich eine Fehlermeldung anzeigen (die analog angezeigt wird)
     FlensburgMock.init();
 
-    Person p = FlensburgManager.personBuilder().age(24).nickname("theo").build();
+    Person p = FlensburgManager.personBuilder().age(24).nickname("theo").build().get();
     EditierePersonGUI e = new EditierePersonGUI(p);
 
     // Check GUI has contains correct values

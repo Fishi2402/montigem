@@ -7,6 +7,7 @@ import umlp.rte.GemIdentifiable;
 
 import javax.persistence.*;
 import java.util.Observable;
+import java.util.Optional;
 
 /* Source:
     class Address{
@@ -49,7 +50,7 @@ public class Address extends Observable implements GemIdentifiable {
     }
 
     //+ Pseudo build for all classes: normally nothing happens
-    public Address build() {
-        return this;
+    public Optional<Address> build() {
+        return Optional.empty();
     }
 }

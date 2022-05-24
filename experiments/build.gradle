@@ -17,7 +17,6 @@ subprojects {
         testImplementation group: 'junit', name: 'junit', version: junit_version
     }
 
-
     sourceSets {
         main.java.srcDirs += [ outDir ]
     }

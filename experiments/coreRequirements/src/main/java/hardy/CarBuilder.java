@@ -2,7 +2,10 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import umlp.rte.ValidationMessage;
+
 import java.util.List;
+import java.util.Optional;
 
 public class CarBuilder extends Car {
 
@@ -36,23 +39,25 @@ public class CarBuilder extends Car {
     }
 
     @Override
-    public Car build() {
+    public Optional<Car> build() {
         if (!buildFinished) {
             if (validator.buildingCheck(this)) {
                 FlensburgManager.addCar(this);
                 notifyObservers();      //+ an initial notification
                 buildFinished = true;
                 owns.addOwns(this);
-                return this;
+                return Optional.of(this);
             }
         }
-        // todo CKi, AHe: Generell können hier eine Exceptions geworfen werfen. Keine !
-        // @BR: wie wäre es hier mit einem Optional<Car> statt einer Exception?
-        throw new IllegalStateException("0xU1234: Car cannot be built.");
+        return Optional.empty();
     }
 
     public boolean isBuildable() {
         return validator.buildingCheck(this);
+    }
+
+    public List<ValidationMessage> getValidationMessages() {
+        return validator.getValidationMessages();
     }
 }
 

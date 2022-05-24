@@ -3,7 +3,10 @@ package hardy;
 //+ GEN-P        : generated for the product
 
 import umlp.rte.Gem;
+import umlp.rte.ValidationMessage;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /*+ PersonBuilder extends Person: it thus can be used as person even if 
@@ -109,26 +112,7 @@ public class PersonBuilder extends Person {
      *  - observers are now notified
      */
 
-    //  public Person build() {
-//    if(!buildFinished) {
-//      if( ... all mandatory attributes are set)
-//      {
-//        if( .. an OCL constraint attached to the class says ok)
-//        {
-//          buildFinished = true;
-//          // also run Build on all contained objects
-//            for (Person o : child) {
-//                o.build();
-//            }
-//            for (Person o : parent) {
-//                o.build();
-//            }
-//        return this;
-//    }
-//    throw an Exception here -- this should not happen
-//  }
-
-    public Person build() {
+    public Optional<Person> build() {
         if (!buildFinished) {
             if (validator.buildingCheck(this)) {
                 for (Car own : owns) {
@@ -139,14 +123,18 @@ public class PersonBuilder extends Person {
                 FlensburgManager.addPerson(this);
                 notifyObservers();      //+ an initial notification
                 buildFinished = true;
-                return this;
+                return Optional.of(this);
             }
         }
-        throw new IllegalStateException("0xU1234: Person cannot be built.");
+        return Optional.empty();
     }
 
     public boolean isBuildable() {
         return validator.buildingCheck(this);
+    }
+
+    public List<ValidationMessage> getValidationMessages() {
+        return validator.getValidationMessages();
     }
 
     /*- Das regeln wir anders:, denn dieser Sonderfall erlaubt ja nur eine

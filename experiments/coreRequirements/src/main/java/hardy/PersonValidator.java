@@ -3,6 +3,7 @@ package hardy;
 //+ HWC-P        : extension for the product
 
 import de.se_rwth.commons.logging.Log;
+import umlp.rte.ValidationMessage;
 
 /*+ PersonValidator checks a Person object for Validity:
     it can be called on objects in building or on Objects anywhere around
@@ -15,7 +16,7 @@ public class PersonValidator extends PersonValidatorTOP {
             return true;
         } else {
             // short notice, e.g. fürs Webformular
-            Log.error("Alter unter 18");
+            validationMessages.add(ValidationMessage.create("Alter unter 18"));
             return false;
         }
     }
@@ -26,7 +27,8 @@ public class PersonValidator extends PersonValidatorTOP {
             return true;
         } else {
             // Aussagekräftigere Fehlermeldung
-            Log.error(String.format("%09d: Alter %d bei Person %s unter 18", o.getGemId(), o.getAge(), o.getNickname()));
+            validationMessages.add(ValidationMessage.create(String.format("%09d: Alter %d bei Person %s unter 18",
+                    o.getGemId(), o.getAge(), o.getNickname())));
             return false;
         }
     }

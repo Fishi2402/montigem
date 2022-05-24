@@ -7,6 +7,7 @@ import umlp.rte.GemIdentifiable;
 
 import javax.persistence.*;
 import java.util.Observable;
+import java.util.Optional;
 
 /* Source:
     class Human {
@@ -72,7 +73,7 @@ public class Human extends Observable implements GemIdentifiable {
     }
 
     //+ Pseudo build for all classes: normally nothing happens
-    public Human build() {
-        return this;
+    public Optional<? extends Human> build() {
+        return Optional.empty();
     }
 }

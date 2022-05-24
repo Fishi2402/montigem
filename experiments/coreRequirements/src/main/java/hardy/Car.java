@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Observable;
+import java.util.Optional;
 
 /* Source:
 
@@ -43,8 +44,8 @@ public class Car extends Observable implements GemIdentifiable {
 
     //+ Pseudo build for all classes: normally nothing happens
     // TODO: Question from AHe: Why does a normal Car need a build method?
-    public Car build() {
-        return this;
+    public Optional<Car> build() {
+        return Optional.of(this);
     }
 
     // Falls build tatsächlich im Car gebraucht wird, wird auch isBuildFinished benötigt.

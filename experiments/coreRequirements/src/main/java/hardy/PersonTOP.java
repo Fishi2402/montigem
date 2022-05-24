@@ -10,9 +10,6 @@ import java.util.*;
 import com.google.common.collect.Sets;
 import umlp.rte.Gem;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -220,8 +217,8 @@ public abstract class PersonTOP extends Human {
     }
 
     //+ Pseudo build for all classes: normally nothing happens
-    public PersonTOP build() {
-        return this;
+    public Optional<Person> build() {
+        return Optional.empty();
     }
 
     // -----------------------------------------------------------------

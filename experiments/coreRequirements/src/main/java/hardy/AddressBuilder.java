@@ -2,6 +2,11 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import umlp.rte.ValidationMessage;
+
+import java.util.List;
+import java.util.Optional;
+
 public class AddressBuilder extends Address {
 
     protected boolean buildFinished = false;
@@ -25,18 +30,20 @@ public class AddressBuilder extends Address {
         return this;
     }
 
-    public Address build() {
+    public Optional<Address> build() {
         if (!buildFinished) {
             if (validator.buildingCheck(this)) {
                 FlensburgManager.addAddress(this);
                 notifyObservers();      //+ an initial notification
                 buildFinished = true;
-                return this;
+                return Optional.of(this);
             }
         }
-        throw new IllegalStateException("0xU1234: Address cannot be built.");
-        // todo: discuss: ist das Werfen einer Exception hier das richtige? Log.error?
-        // todo: wir brauchen offensichtlich eine saubere Planung unser Fehlerstrategie
+        return Optional.empty();
+    }
+
+    public List<ValidationMessage> getValidatorMessages() {
+        return validator.getValidatorMessages();
     }
 
     public boolean isBuildable() {
