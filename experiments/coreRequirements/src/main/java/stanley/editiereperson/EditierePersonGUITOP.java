@@ -123,4 +123,6 @@ public class EditierePersonGUITOP {
   // eine Ausbaustufe wäre: einen Validator hinzufügen und wenn der failed,
   // zusaetlich eine Fehlermeldung anzeigen (die analog angezeigt wird)
 
+// todo: Testklasse kann nun geschrieben werden: siwhe ersten Rohling
+
 }

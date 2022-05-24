@@ -28,7 +28,6 @@ Z5  :Button(text = "Decrease", leftClick = decreaseAge(p))
 
 */
 
-import hardy.FlensburgManager;
 import hardy.PersonBuilder;
 import stanley.editierepersoncars.EditierePersonCarsGUI;
 
@@ -44,8 +43,8 @@ public class NeuePersonAnlegenGUITOP {
    * The constructor call mimicks the start of the Window: it is opened,
    * its values are set etc.
    */
-  public NeuePersonAnlegenGUITOP() {
-    this.pb = FlensburgManager.personBuilder();
+  public NeuePersonAnlegenGUITOP(PersonBuilder pb) {
+    this.pb = pb;
     this.build();
     // subcomponents, wie TextFeld werden in der Simulation nicht extra besetzt
     // weil der Wert direkt in Person gespeichert bleibt.
@@ -137,5 +136,7 @@ public class NeuePersonAnlegenGUITOP {
 
   // eine Ausbaustufe wäre: einen Validator hinzufügen und wenn der failed,
   // zusaetlich eine Fehlermeldung anzeigen (die analog angezeigt wird)
+
+// todo: Testklasse kann nun geschrieben werden: siehe ersten Rohling
 
 }
