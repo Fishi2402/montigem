@@ -1,24 +1,22 @@
-package stanley;
+package stanley.editierepersoncars;
 
 // HW-T
-
-/* This is sime code that tests the GUI (or later also E2E)
-   functionality within Java:
-*/
-
 
 import hardy.FlensburgManager;
 import hardy.FlensburgMock;
 import hardy.Person;
 import org.junit.Test;
+import stanley.AbstractGUITest;
 import stanley.editiereperson.EditierePersonGUI;
 
 import static org.junit.Assert.assertEquals;
 
-public class EditierePersonGUITest {
+/* Test GUI (or later also E2E) for Person editing
+*/
+public class EditierePersonGUITest extends AbstractGUITest {
 
   @Test
-  public void runATest() {
+  public void editPersonGUITest() {
     // eine Ausbaustufe wäre: einen Validator hinzufügen und wenn der failed,
     // zusaetlich eine Fehlermeldung anzeigen (die analog angezeigt wird)
     FlensburgMock.init();
