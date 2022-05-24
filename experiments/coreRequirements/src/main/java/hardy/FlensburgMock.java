@@ -17,7 +17,12 @@ package hardy;
   
 */
 
-import java.util.*;
+import umlp.rte.HashMapWithOrderedKeys;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public class FlensburgMock extends FlensburgManager {
 
@@ -26,12 +31,11 @@ public class FlensburgMock extends FlensburgManager {
     FlensburgManager.setInstance(new FlensburgMock());
   }
 
-  protected static FlensburgDummyProviderTOP dummyProvider;
+  protected static FlensburgDummyProvider dummyProvider;
 
   // Wird der dummyProvider gesetzt, so erfindet der DummyManager neue Daten, aber erst wenn sie angefragt werden
-  public static void dummyInit(FlensburgDummyProviderTOP dummyProvider){
+  public static void dummyInit(FlensburgDummyProvider dummyProvider){
     FlensburgMock.dummyProvider = dummyProvider;
-    // TODO: add to all methods
   }
 
   // get the next free GemId -----------------------------------
@@ -48,26 +52,11 @@ public class FlensburgMock extends FlensburgManager {
     return freeGemId++;
   }
 
-  // Log that is used by all validators, can be used to assert in tests
-  static protected ResultLog log = new ResultLog();
-  public static ResultLog getLog(){
-    return log;
-  }
-
-  public static void resetLog(){
-    log.clear();
-  }
-
-  public static void setLog(ResultLog log){
-    FlensburgMock.log = log;
-  }
-
-
   // ------------------------------------------- Methods for class Person
 
   // Manages a Map<Long, Object>  for each class
 
-  protected Map<Long,Person> persons = new HashMap<>();
+  protected HashMapWithOrderedKeys<Long,Person> persons = new HashMapWithOrderedKeys<>();
 
   // get a Builder ---------------------------------------
   protected PersonBuilder _doPersonBuilder() {
@@ -133,13 +122,13 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doUpdatePerson(Person o) {
     assert persons.containsKey(o.getGemId());
     // TODO AHe: throw exception?
-    if(thePersonValidator.consistencyCheck(o, log)) {
+    if(thePersonValidator.consistencyCheck(o)) {
       persons.put(o.getGemId(), o);
     }
   }
 
   // --- Class Human ---
-  protected Map<Long, Human> humans = new HashMap<>();
+  protected HashMapWithOrderedKeys<Long, Human> humans = new HashMapWithOrderedKeys<>();
   protected HumanValidator theHumanValidator = new HumanValidator();
 
   @Override
@@ -182,7 +171,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doUpdateHuman(Human o) {
     assert humans.containsKey(o.getGemId());
     // TODO AHe: throw exception?
-    if(theHumanValidator.consistencyCheck(o, log)) {
+    if(theHumanValidator.consistencyCheck(o)) {
       humans.put(o.getGemId(), o);
     }
   }
@@ -194,7 +183,7 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   // --- Address class ---
-  protected Map<Long, Address> addresses = new HashMap<>();
+  protected HashMapWithOrderedKeys<Long, Address> addresses = new HashMapWithOrderedKeys<>();
   protected AddressValidator theAddressValidator = new AddressValidator();
 
   @Override
@@ -238,7 +227,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doUpdateAddress(Address o) {
     assert addresses.containsKey(o.getGemId());
     // TODO AHe: throw exception?
-    if(theAddressValidator.consistencyCheck(o, log)) {
+    if(theAddressValidator.consistencyCheck(o)) {
       addresses.put(o.getGemId(), o);
     }
   }
@@ -250,7 +239,7 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   // --- Class Car ---
-  protected Map<Long, Car> cars = new HashMap<>();
+  protected HashMapWithOrderedKeys<Long, Car> cars = new HashMapWithOrderedKeys<>();
   protected CarValidator theCarValidator = new CarValidator();
 
   @Override
@@ -263,7 +252,7 @@ public class FlensburgMock extends FlensburgManager {
     if(cars.containsKey(gemId)) {
       return Optional.of(cars.get(gemId));
     }else if (dummyProvider != null){
-      return Optional.of(dummyProvider.inventCar());
+      return Optional.of(dummyProvider.inventCar(persons.getRandomValue(dummyProvider.getRandom())));
     }else{
       return Optional.empty();
     }
@@ -283,7 +272,7 @@ public class FlensburgMock extends FlensburgManager {
   protected Collection<Car> _doGetCarList() {
     if(dummyProvider != null){
       while (cars.size() < dummyProvider.getMaxCars()){
-        dummyProvider.inventCar();
+        dummyProvider.inventCar(persons.getRandomValue(dummyProvider.getRandom()));
       }
     }
 
@@ -300,7 +289,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doUpdateCar(Car o) {
     assert cars.containsKey(o.getGemId());
     // TODO AHe: throw exception?
-    if(theCarValidator.consistencyCheck(o, log)) {
+    if(theCarValidator.consistencyCheck(o)) {
       cars.put(o.getGemId(),o);
     }
   }

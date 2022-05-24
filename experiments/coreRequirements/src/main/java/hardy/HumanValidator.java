@@ -2,31 +2,31 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-public class HumanValidator {
+import de.se_rwth.commons.logging.Log;
 
-    ResultLog log = new ResultLog();
+public class HumanValidator {
 
     public boolean buildingCheck(HumanBuilder o) {
         boolean result = true;
         if (!o.isAgePresent()) {
             result = false;
-            log.add("age not defined");
+            Log.error("age not defined");
         }
-        result &= extraBuildingChecks(o, log);
+        result &= extraBuildingChecks(o);
         return result;
     }
 
-    public boolean extraBuildingChecks(HumanBuilder o, ResultLog log) {
+    public boolean extraBuildingChecks(HumanBuilder o) {
         return true;
     }
 
-    public boolean consistencyCheck(Human o, ResultLog log) {
+    public boolean consistencyCheck(Human o) {
         boolean result = true;
-        result &= extraConsistencyChecks(o, log);
+        result &= extraConsistencyChecks(o);
         return result;
     }
 
-    protected boolean extraConsistencyChecks(Human o, ResultLog log){
+    protected boolean extraConsistencyChecks(Human o){
         return true;
     }
 }

@@ -18,7 +18,8 @@ import umlp.command.error.NotImplementedException;
 
 import static umlp.command.error.MontiGemErrorCode.NOT_IMPLEMENTED;
 
-// TODO AHe: as Mill?
+// TODO AHe: Als Mill, sodass das Verhalten im Front und Backend simuliert werden kann? Bei E2E soll die Kommunikation
+// nicht getestet werden, daher aktuell noch nicht notwendig
 public class CommandManager {
 
   // TODO AHe: problem for generics: CommandList can contain commands of multiple types
@@ -75,6 +76,17 @@ public class CommandManager {
 
     return response;
   }
+
+  public static <T> CommandResult<T> executeSingleCommand(Command<T> command) {
+    return command.doRun();
+  }
+
+  protected static long freeCommandId;
+  // TODO: Kann das setzten von commandIds intern vom CommandManager übernommen werden?
+  public static long getFreeCommandId(){
+    return freeCommandId++;
+  }
+
 
   /**
    * deserialize and run commands

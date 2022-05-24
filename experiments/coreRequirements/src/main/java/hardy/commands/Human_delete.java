@@ -7,10 +7,10 @@ import umlp.command.Command;
 import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
 
-public class Human_delete extends Command {
+public class Human_delete extends Command<Void> {
   protected final Human human;
 
-  protected Human_delete(long id, Human human) {
+  public Human_delete(long id, Human human) {
     super(
         id,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen

@@ -10,12 +10,13 @@ import hardy.Flensburg;
 import umlp.gui.TextInput;
 import umlp.gui.NumberInput;
 import umlp.gui.Button;
+import umlp.gui.RowTable;
 
 /**
- * This example defines a Visualization including a numer of Calculated 
+ * This example defines a Visualization including a number of Calculated
  * values (that may change externally over time)
  *
- * Situation is that the Person p exists aleady 
+ * Situation is that the Person p exists already
  */
 page EditierePersonCars(Person p) {
 
@@ -26,12 +27,22 @@ page EditierePersonCars(Person p) {
   :NumberInput(value = p.age)
 
   // show the number of cars as number
-  // this attribute is calulated (which makes from the GUI point of view
+  // this attribute is calculated (which makes from the GUI point of view
   // not a difference)
   :NumberShow(value = p.age)
 
-// todo: we might show a list of cars here as well
-// where we might add and delete cars?
+  // show the list of person's cars in a table, row by row
+  // the table should be able to work with lazy lists
+  :RowTable(
+    rows = p.Car, // OCL-like navigation for unnamed associations
+    canDelete = true,
+    canEdit = true,
+    canAdd = true/*,
+    columns = List(
+      Col() // has to contain car attributes
+    )
+    */
+  )
 
   // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
   // ueberschrieben werden z.B. navigate, copy, show(:ContextMenu(...)), ...

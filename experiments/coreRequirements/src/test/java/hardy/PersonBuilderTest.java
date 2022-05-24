@@ -2,6 +2,8 @@ package hardy;
 
 //+ GEN-T        : handwritten, testet generiertes product
 
+import de.se_rwth.commons.logging.Finding;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,6 +18,8 @@ public class PersonBuilderTest {
 
     @Before
     public void before() {
+        Log.init();
+        Log.enableFailQuick(false);
         FlensburgMock.init();
         this.validator = new PersonValidator();
         this.personBuilder = new PersonBuilder(1001L, validator);
@@ -29,7 +33,7 @@ public class PersonBuilderTest {
         String name = "Hardy";
         int age = 18;
         personBuilder.age(age).nickname(name).build();
-        assertTrue(validator.log.isEmpty());
+        assertTrue(Log.getFindings().isEmpty());
 
         Optional<Person> personOpt = FlensburgManager.personOpt(id);
 
@@ -53,10 +57,10 @@ public class PersonBuilderTest {
         }
 
         assertNotNull(illegalStateException);
-        assertEquals(1, validator.log.size());
+        assertEquals(1, Log.getFindingsCount());
 
-        LogEntry e = validator.log.getEntry(0);
-        assertEquals("nickname not defined", e.getMessage());
+        Finding e = Log.getFindings().get(0);
+        assertEquals("nickname not defined", e.getMsg());
 
         assertFalse(FlensburgManager.personOpt(id).isPresent());
     }

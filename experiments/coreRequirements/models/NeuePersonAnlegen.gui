@@ -50,7 +50,5 @@ page NeuePersonAnlegen(Person p) { // "leere" Person
   // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
   // deswegen wird eine Methode explizit importiert und aufgerufen
   :Button(text = "Decrease", leftClick = decreaseAge(p))
-
-  // todo: das daraus entstehende Generat auch noch schreiben vgl. andere GUI Seite
 }
 

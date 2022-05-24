@@ -20,7 +20,6 @@ Z3  :NumberInput(value = p.age)
   // Button mit Text "Ok" und Navigation auf eine andere Seite
   // (und die Logik dafür ist generiert und verfügbar)
 Z4  :Button(text = "Ok", leftClick = navigate(:EditierePersonCars(p)))
-  // todo: Wo steht, wie es danach weitergeht (welche Seite wird gezeigt?)
 
   // Button mit Text "Discard", und ohne weitere Aktion
 Z5  :Button(text = "Discard", leftClick = nichts-tun,aber andere Seite anzeigen)
@@ -30,7 +29,7 @@ Z5  :Button(text = "Discard", leftClick = nichts-tun,aber andere Seite anzeigen)
 */
 
 import hardy.Person;
-import stanley.editierepersoncars.EditierePersonCars;
+import stanley.editierepersoncars.EditierePersonCarsGUI;
 
 /********************************************************/
 
@@ -71,17 +70,13 @@ public class EditierePersonGUITOP {
   // **************************** What can the User do? ********************
   // Actions that the User can make are simulated via setter's and related functions
 
-  // todo
   // Bemerkung: Die Propagation der Änderung zB zum Server
   // übernimmt das Objekt selbst! (weshalb hier nichts weiter zu tun ist)
   // indem es ein entsprechendes Kommando absetzt
-  // AGe: etwas unpraktisch, weil jede Tasteneingabe eine Änderung auslöst. Das
-  // wäre ok, aber man muss wirklich aufpassen, dass dies vernünftig behandelt wird
   public void setTextInput(String nickname) {
     p.setNickname(nickname);
   }
   
-  // todo
   // Bemerkung: ein Validator, zB (age >= 0) müsste hier vorgeschaltet werden
   // und statt einer Änderung dann eine Fehler-Anzeige in der GUi induzieren.
   // Zusätzlich: Wenn der Validator hier erfolgreich ist, kann die 
@@ -96,16 +91,15 @@ public class EditierePersonGUITOP {
   // Bemerkung: hier wurde der Text des Buttons in die Methode übernommen,
   // ist das sinnvoll, oder gibt es andere Mechanismen die Unterscheidung
   // sicherzustellen? (selbes Problem ja auch bei obigen Methoden)
-  public EditierePersonCars pressButtonOk() {
-    return this.navigate();
-    // todo: was kommt hier her ...: Wechsel zur neuen Seite
-    // Vorschlag AGe: wir geben die Seite, auf die navigiert wird zurück. In dem
+  public EditierePersonCarsGUI pressButtonOk() {
+    // Wir geben die Seite, auf die navigiert wird zurück. In dem
     // Fall kann man beim testen überprüfen, ob eine neue Seite "erstellt" wurde
     // Das funktioniert in TypeScript jedoch anders (editiere-person-top.component.ts)
+    return this.navigate();
   }
 
-  protected EditierePersonCars navigate() {
-    return new EditierePersonCars(p);
+  protected EditierePersonCarsGUI navigate() {
+    return new EditierePersonCarsGUI(p);
   }
   
   public void pressButtonDecrease() {

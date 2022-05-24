@@ -2,7 +2,6 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-// TODO: ähnlich wie PersonBuilder aufbauen
 public class AddressBuilder extends Address {
 
     protected boolean buildFinished = false;

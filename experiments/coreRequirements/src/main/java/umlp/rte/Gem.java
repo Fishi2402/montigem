@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 //alpha, this class is not fully developed,
 //only to try it out and might change
 
-// todo: kann man dies machen?: Gem<E> extends E
+// kann man dies machen?: Gem<E> extends E
 // weil dies m.W. nicht der Fall ist, dass ist es wharscheinlich doch notwendig 
 // bei den aufrufenden Stellen Gem<E> Funktionalität reingeneriert werden
 // -> this might be realized using the realthis pattern?

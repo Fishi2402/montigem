@@ -13,4 +13,9 @@ public class GemResult<T> extends CommandResult<T> {
   public Gem<T> getResult() {
     return result;
   }
+
+  @Override
+  public boolean isGemResult() {
+    return true;
+  }
 }

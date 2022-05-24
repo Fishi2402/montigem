@@ -2,7 +2,8 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-// TODO: ähnlich wie PersonBuilder aufbauen
+import java.util.List;
+
 public class CarBuilder extends Car {
 
     protected boolean buildFinished = false;
@@ -46,6 +47,7 @@ public class CarBuilder extends Car {
             }
         }
         // todo CKi, AHe: Generell können hier eine Exceptions geworfen werfen. Keine !
+        // @BR: wie wäre es hier mit einem Optional<Car> statt einer Exception?
         throw new IllegalStateException("0xU1234: Car cannot be built.");
     }
 

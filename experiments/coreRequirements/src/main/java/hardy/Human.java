@@ -2,8 +2,10 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import org.hibernate.annotations.GenericGenerator;
 import umlp.rte.GemIdentifiable;
 
+import javax.persistence.*;
 import java.util.Observable;
 
 /* Source:
@@ -13,7 +15,8 @@ import java.util.Observable;
 */
 
 // --------------------------
-
+@Entity
+@Table(name = "human")
 public class Human extends Observable implements GemIdentifiable {
 
     // gemId: ------------------------------------------
@@ -24,9 +27,13 @@ public class Human extends Observable implements GemIdentifiable {
     // real object is not (yet) loaded, e.g. in the client
     //
     // -32: is an illegal value showing that an has error occurred somewhere
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     protected long gemId = -32;
 
     // an Attribute: ------------------------------------------
+    @Column(name = "age")
     protected int age;
 
     // --------------------------------------------------------------------

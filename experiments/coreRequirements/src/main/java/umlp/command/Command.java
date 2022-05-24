@@ -6,8 +6,11 @@ package umlp.command;
 import de.se_rwth.commons.logging.Log;
 import umlp.command.error.NotImplementedException;
 
-
-public abstract class Command {
+// Der Typenparameter T gibt an, welchen Datentyp gewrapped in ein CommandResult<T> ein Command zurückgeben soll.
+// Falls es nur eine Status-Meldung ist, so wird T = Void genutzt und der Status aus dem CommandResult ausgelesen.
+// Bei Human_get wäre T = Human, sodass der Entwickler den Human aus dem CommandResult auslesen kann, oder am Status
+// erkennt, das ein Fehler aufgetreten ist.
+public abstract class Command<T> {
   // Der Ersteller des Commands vergibt diese id und nutzt sie nachher um die Response des Backends, welche dieselbe id enthält, diesem Command zuzuordnen.
   // Ansonsten können parallel ankommende Responses nicht eindeutig ihren Commands zugeordnet werden.
   private long id;
@@ -21,7 +24,7 @@ public abstract class Command {
     this.commandType = commandType;
   }
 
-  public abstract CommandResult<?> doRun();
+  public abstract CommandResult<T> doRun();
 
 
   // TODO: undo kann nicht immer ausgeführt werden.

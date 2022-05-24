@@ -37,7 +37,7 @@ subprojects {
         main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
     }
     buildDir = file("$projectDir/target")
-    sourceCompatibility = '1.8'
+    sourceCompatibility = '11'
 }
 
 clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})

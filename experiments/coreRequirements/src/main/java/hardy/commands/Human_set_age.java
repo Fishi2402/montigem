@@ -11,11 +11,11 @@ import umlp.command.error.mock.Status;
 import java.util.Optional;
 // GEN-P
 
-public class Human_set_age extends Command {
-  protected int gemId;
+public class Human_set_age extends Command<Void> {
+  protected long gemId;
   protected int age;
 
-  public Human_set_age(int commandId, int gemId, int age) {
+  public Human_set_age(long commandId, long gemId, int age) {
     super(
         commandId,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen

@@ -2,15 +2,14 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import java.util.*;
+import de.se_rwth.commons.logging.Log;
 
-/*+ PersonValidator checks a Person object for Validity: 
+/*+ PersonValidator checks a Person object for Validity:
     it can be called on objects in building or on Objects anywhere around
         
 */
 public abstract class PersonValidatorTOP {
 
-    ResultLog log = new ResultLog();     
     //todo: das Log effizient gestalten, ggf. über mehrere Builder hinweg
     // und zwar dann, wenn man eine gemeinsame/synchronisierte Build-Konstruktion braucht
 
@@ -18,46 +17,46 @@ public abstract class PersonValidatorTOP {
     // zB via einem Webformular um Nutzer zu 
     // sagen: es ist was zu tun
     public boolean buildingCheck(PersonBuilder o) {
-      boolean result = true;
-      if (!o.isAgePresent()) {
-        result = false;
-        // short notice, e.g. fürs Webformular
-        log.add("age not defined");
-      }
-      if (!o.isNicknamePresent()) {
-        result = false;
-        // short notice, e.g. fürs Webformular
-        log.add("nickname not defined");
-      }
+        boolean result = true;
+        if (!o.isAgePresent()) {
+            result = false;
+            // short notice, e.g. fürs Webformular
+            Log.error("age not defined");
+        }
+        if (!o.isNicknamePresent()) {
+            result = false;
+            // short notice, e.g. fürs Webformular
+            Log.error("nickname not defined");
+        }
 
-      if (!o.isOwnsPresent()) // todo
-      // todo: analog für owns?
-    
-      result &= extraBuildingChecks( o, log);
-      return result;
+        if (!o.isOwnsPresent()) // todo
+            // todo: analog für owns?
+
+            result &= extraBuildingChecks(o);
+        return result;
     }
 
     // einfach mal einen Extension point hier reingelegt
-    public boolean extraBuildingChecks(PersonBuilder o, ResultLog log) {
-        return true;    
+    public boolean extraBuildingChecks(PersonBuilder o) {
+        return true;
     }
 
     //+consistencyCheck kann zwischendurch benutzt werden 
     // zB. wenn das Risko besteht, dass Inkonsistenz herrscht 
     // Was tun wir dann? Fehler melden? Log, Error, Robustes Weitermachen?
 
-    public boolean consistencyCheck(Person p, ResultLog log){
-      boolean result = true;
-      // TODO AHe: what checks are needed here?
-      result &= extraConsistencyChecks(p, log);
-      return result;
+    public boolean consistencyCheck(Person p) {
+        boolean result = true;
+        // TODO AHe: what checks are needed here?
+        result &= extraConsistencyChecks(p);
+        return result;
     }
 
-  public boolean extraConsistencyChecks(Person p, ResultLog log) {
-    return true;
-  }
+    public boolean extraConsistencyChecks(Person p) {
+        return true;
+    }
 
-  // todo: analog die schärfere Konsistenz variante:
+    // todo: analog die schärfere Konsistenz variante:
 
 }
 
