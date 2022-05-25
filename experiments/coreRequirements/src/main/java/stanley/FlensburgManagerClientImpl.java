@@ -50,7 +50,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected Optional<Human> _doHumanOpt(long gemId) {
     Gem<Human> gem = CommandManager.executeSingleCommand(new Human_get(CommandManager.getFreeCommandId(), gemId)).asGemResult().getResult();
     if(gem.isPresent()){
-      return Optional.of(gem.get());
+      Human human = gem.get();
+      human.addObserver(new HumanCommandObserver());
+      return Optional.of(human);
     } else {
       return Optional.empty();
     }

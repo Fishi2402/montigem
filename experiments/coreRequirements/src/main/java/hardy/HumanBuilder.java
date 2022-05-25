@@ -38,7 +38,7 @@ public class HumanBuilder extends Human {
         if (!buildFinished) {
             if (validator.buildingCheck(this)) {
                 FlensburgManager.addHuman(this);
-                humanObservers.forEach(obs -> obs.humanCreated(this));
+                humanObservers.forEach(obs -> obs.humanBuild(this));
                 buildFinished = true;
                 return Optional.of(this);
             }

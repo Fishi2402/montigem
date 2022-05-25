@@ -17,8 +17,7 @@ public interface PersonObserver
     extends HumanObserver
 {
   // Es werden leere implementationen benutzt, damit nur gebrauchte überschrieben werden müssen
-  default void personCreated(Person p) { }
-  default void personDeleted(Person p){ }
+  default void personBuild(Person p) { }
   default void updateNickname(Person p, String nickname) { }
 
   // Alternative to gemIds: DomainObject(MainResidence) or Gem(Gem<MainResidence>)
