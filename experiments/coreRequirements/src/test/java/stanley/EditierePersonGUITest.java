@@ -10,10 +10,10 @@ package stanley;
 import hardy.FlensburgManager;
 import hardy.FlensburgMock;
 import hardy.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import stanley.editiereperson.EditierePersonGUI;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EditierePersonGUITest {
 

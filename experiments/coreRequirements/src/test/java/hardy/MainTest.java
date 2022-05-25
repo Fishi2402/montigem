@@ -2,7 +2,7 @@ package hardy;
 
 //+ E2E-T        : handwritten testss
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MainTest {
 

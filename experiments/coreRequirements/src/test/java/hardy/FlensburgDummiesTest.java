@@ -1,15 +1,15 @@
 package hardy;
 
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FlensburgDummiesTest {
 
-  @Before
+  @BeforeEach
   public void init(){
     Log.init();
     Log.enableFailQuick(false);
@@ -20,7 +20,7 @@ public class FlensburgDummiesTest {
   public void testInventDummies1(){
     new FlensburgDummies().inventDummiesOne();
 
-    assertTrue("Log not empty: " + Log.getFindings(), Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty(), "Log not empty: " + Log.getFindings());
 
     assertEquals(6, FlensburgManager.getCarList().size());
     assertEquals(1, FlensburgManager.getHumanList().size());
@@ -63,7 +63,7 @@ public class FlensburgDummiesTest {
     int n = 10;
     new FlensburgDummies().inventDummiesTwo(n);
 
-    assertTrue("Log not empty: " + Log.getFindings(), Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty(), "Log not empty: " + Log.getFindings());
 
     assertEquals(n, FlensburgManager.getCarList().size());
     assertEquals(n, FlensburgManager.getHumanList().size());
@@ -77,7 +77,7 @@ public class FlensburgDummiesTest {
     int numberOfHumanInstances = 5;
     new FlensburgDummies().inventDummiesGenerated(numberOfPersonInstances, numberOfCarInstance, numberOfHumanInstances);
 
-    assertTrue("Log not empty: " + Log.getFindings(), Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty(), "Log not empty: " + Log.getFindings());
 
     assertEquals(numberOfPersonInstances, FlensburgManager.getPersonList().size());
     assertEquals(numberOfCarInstance, FlensburgManager.getCarList().size());
