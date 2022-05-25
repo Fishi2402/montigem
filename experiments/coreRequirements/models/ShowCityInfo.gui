@@ -17,6 +17,7 @@ import umlp.gui.TableTypes.Row;
  * the persisted data (domain data structure).
  */
 page ShowCityInfo(CityInfo ci) {
+  // statistic about cities
   :Table(
     rows = List(
       Row("Number of cities", ci.numberOfCities),
@@ -26,5 +27,10 @@ page ShowCityInfo(CityInfo ci) {
       Row("Average number of cars", ci.averageNumberOfCars)
     )
   )
-}
 
+  // list of cities
+  :Text(value = "List of cities")
+  iterate(cityName : ci.cities) {
+    :Text(value = cityName)
+  }
+}
