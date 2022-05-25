@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlptest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UMLPParserTest extends AbstractUMLPTest {
 

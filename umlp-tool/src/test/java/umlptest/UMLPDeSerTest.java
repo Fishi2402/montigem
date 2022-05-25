@@ -2,7 +2,7 @@
 package umlptest;
 
 import de.monticore.symboltable.serialization.JsonParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._symboltable.IUMLPArtifactScope;
@@ -13,8 +13,8 @@ import java.io.File;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UMLPDeSerTest extends AbstractUMLPTest {
 

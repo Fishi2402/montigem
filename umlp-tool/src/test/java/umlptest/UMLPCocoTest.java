@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlptest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._cocos.UMLPCoCos;
 

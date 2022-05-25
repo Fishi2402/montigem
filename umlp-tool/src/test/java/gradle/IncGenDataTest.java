@@ -1,10 +1,10 @@
 package gradle;
 
+import org.gradle.internal.impldep.org.junit.Rule;
+import org.gradle.internal.impldep.org.junit.rules.TemporaryFolder;
 import org.gradle.work.ChangeType;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IncGenDataTest {
   protected IncGenData lastRun;
@@ -32,7 +32,7 @@ public class IncGenDataTest {
   public IncGenDataTest() throws IOException {
   }
 
-  @Before
+  @BeforeEach
   public void setup(){
     File input = Paths.get("src/test/resources/gradle", "IncGenGradleCheck.txt").toFile();
     assertTrue(input.isFile());
@@ -69,89 +69,89 @@ public class IncGenDataTest {
   @Test
   public void inputModified() {
     assertTrue(lastRun.readFiles.contains(inputF));
-    assertFalse("if an input is modified, it is not UP-TO-DATE",
-        lastRun.isUpToDate(
-            Stream.of(new MockFileChange(inputF, ChangeType.MODIFIED))
-        )
-    );
+    assertFalse(lastRun.isUpToDate(
+                Stream.of(new MockFileChange(inputF, ChangeType.MODIFIED))
+            ),
+        "if an input is modified, it is not UP-TO-DATE"
+        );
   }
 
   @Test
   public void inputRemoved() {
     assertTrue(lastRun.readFiles.contains(inputF));
-    assertFalse("if an input is removed, it is not UP-TO-DATE",
-        lastRun.isUpToDate(
-            Stream.of(new MockFileChange(inputF, ChangeType.REMOVED))
-        )
-    );
+    assertFalse(lastRun.isUpToDate(
+                Stream.of(new MockFileChange(inputF, ChangeType.REMOVED))
+            ),
+        "if an input is removed, it is not UP-TO-DATE"
+        );
   }
 
   @Test
   public void inputAdded() {
     assertTrue(lastRun.readFiles.contains(inputF));
-    assertFalse("if an input is added, it is not UP-TO-DATE",
-        lastRun.isUpToDate(
-            Stream.of(new MockFileChange(inputF, ChangeType.ADDED))
-        )
-    );
+    assertFalse(lastRun.isUpToDate(
+                Stream.of(new MockFileChange(inputF, ChangeType.ADDED))
+            ),
+        "if an input is added, it is not UP-TO-DATE"
+        );
   }
 
   @Test
   public void hwcAdded() {
     assertTrue(lastRun.existenceCheckedFiles.contains(hwcF));
-    assertFalse("if a hwc-file is added, it is not UP-TO-DATE",
-        lastRun.isUpToDate(
-            Stream.of(new MockFileChange(hwcF, ChangeType.ADDED))
-        )
-    );
+    assertFalse(lastRun.isUpToDate(
+                Stream.of(new MockFileChange(hwcF, ChangeType.ADDED))
+            ),
+        "if a hwc-file is added, it is not UP-TO-DATE"
+        );
   }
 
   @Test
   public void hwcRemoved() {
     assertTrue(lastRun.existenceCheckedFiles.contains(hwcF));
-    assertFalse("if a hwc-file is removed, it is not UP-TO-DATE",
-        lastRun.isUpToDate(
-            Stream.of(new MockFileChange(hwcF, ChangeType.REMOVED))
-        )
-    );
+    assertFalse(lastRun.isUpToDate(
+                Stream.of(new MockFileChange(hwcF, ChangeType.REMOVED))
+            ),
+        "if a hwc-file is removed, it is not UP-TO-DATE"
+        );
   }
 
   @Test
   public void hwcModified() {
     assertTrue(lastRun.existenceCheckedFiles.contains(hwcF));
-    assertTrue("if a hwc-file is modified, it is UP-TO-DATE!! Because HWC-Files are not read, only check if they exist",
-        lastRun.isUpToDate(
-            Stream.of(new MockFileChange(hwcF, ChangeType.MODIFIED))
-        )
-    );
+    assertTrue(lastRun.isUpToDate(
+                Stream.of(new MockFileChange(hwcF, ChangeType.MODIFIED))
+            ),
+        "if a hwc-file is modified, it is UP-TO-DATE!! Because HWC-Files are not read, only check if they exist"
+        );
   }
 
 
   @Test
   public void otherAdded() {
-    assertTrue("if an other-file is added, it is UP-TO-DATE",
-        lastRun.isUpToDate(
-            Stream.of(new MockFileChange(otherF, ChangeType.ADDED))
-        )
-    );
+    assertTrue(lastRun.isUpToDate(
+                Stream.of(new MockFileChange(otherF, ChangeType.ADDED))
+            ),
+        "if an other-file is added, it is UP-TO-DATE"
+        );
   }
 
   @Test
   public void otherRemoved() {
-    assertTrue("if an other-file is removed, it is UP-TO-DATE",
-        lastRun.isUpToDate(
-            Stream.of(new MockFileChange(otherF, ChangeType.REMOVED))
-        )
-    );
+    assertTrue(lastRun.isUpToDate(
+                Stream.of(new MockFileChange(otherF, ChangeType.REMOVED))
+            ),
+        "if an other-file is removed, it is UP-TO-DATE"
+        );
   }
 
   @Test
   public void otherModified() {
-    assertTrue("if an other-file is modified, it is UP-TO-DATE",
-        lastRun.isUpToDate(
-            Stream.of(new MockFileChange(otherF, ChangeType.MODIFIED))
-        )
-    );
+    assertTrue(lastRun.isUpToDate(
+                Stream.of(new MockFileChange(otherF, ChangeType.MODIFIED))
+            ),
+        "if an other-file is modified, it is UP-TO-DATE"
+        );
   }
 
 

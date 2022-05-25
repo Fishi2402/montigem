@@ -1,21 +1,19 @@
 package gradle;
 
 import org.gradle.api.Project;
+import org.gradle.internal.impldep.org.junit.Rule;
+import org.gradle.internal.impldep.org.junit.rules.TemporaryFolder;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.gradle.work.FileChange;
-import org.gradle.work.InputChanges;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class IncementalUMLPTaskTest {
 
@@ -35,7 +33,7 @@ public class IncementalUMLPTaskTest {
   public File inputFile;
 
 
-  @Before
+  @BeforeEach
   public void setupTest() throws IOException {
     Project project = ProjectBuilder.builder().build();
     umlpTask = project.getTasks().create("TEST" + UUID.randomUUID(), gradle.UMLPTask.class);

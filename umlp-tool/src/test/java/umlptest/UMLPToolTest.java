@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlptest;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.gradle.internal.impldep.org.junit.Ignore;
+import org.junit.jupiter.api.Test;
 import umlp.UMLPTool;
 
 public class UMLPToolTest extends AbstractUMLPTest {

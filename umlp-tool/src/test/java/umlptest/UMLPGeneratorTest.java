@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlptest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp.generator.UMLPGenerator;
 
 import java.io.File;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UMLPGeneratorTest extends AbstractUMLPTest {
 
