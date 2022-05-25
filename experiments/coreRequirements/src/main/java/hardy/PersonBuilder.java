@@ -120,7 +120,7 @@ public class PersonBuilder extends Person {
                     }
                 }
                 FlensburgManager.addPerson(this);
-                notifyObservers();      //+ an initial notification
+                personObservers.forEach(obs -> obs.personCreated(this)); //+ an initial notification
                 buildFinished = true;
                 return Optional.of(this);
             }

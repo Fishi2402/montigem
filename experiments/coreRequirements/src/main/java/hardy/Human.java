@@ -6,7 +6,8 @@ import org.hibernate.annotations.GenericGenerator;
 import umlp.rte.GemIdentifiable;
 
 import javax.persistence.*;
-import java.util.Observable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /* Source:
@@ -18,7 +19,8 @@ import java.util.Optional;
 // --------------------------
 @Entity
 @Table(name = "human")
-public class Human extends Observable implements GemIdentifiable {
+public class Human implements GemIdentifiable {
+    protected List<HumanObserver> humanObservers = new ArrayList<>();
 
     // gemId: ------------------------------------------
     //+ Special attribute gemID is used to identify this object
@@ -71,6 +73,15 @@ public class Human extends Observable implements GemIdentifiable {
 
     public void setAge(Integer o) {
         this.age = o;
+        humanObservers.forEach(obs -> obs.updateAge(this, o));
+    }
+
+    public void addObserver(HumanObserver o){
+        humanObservers.add(o);
+    }
+
+    public void removeObserver(HumanObserver o){
+        humanObservers.remove(o);
     }
 
     //+ Pseudo build for all classes: normally nothing happens
