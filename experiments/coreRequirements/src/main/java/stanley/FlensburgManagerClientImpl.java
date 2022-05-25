@@ -7,7 +7,6 @@ import hardy.*;
 import hardy.commands.Human_create;
 import hardy.commands.Human_delete;
 import hardy.commands.Human_get;
-import hardy.commands.Human_set_age;
 import umlp.command.CommandManager;
 import umlp.command.GemResult;
 import umlp.command.StatusResult;
@@ -107,23 +106,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     return Collections.emptyList();
   }
 
-
-
-
-  @Override
-  protected void _doUpdateHuman(Human o) {
-    // TODO: hier passen der Manager und die Commands/Requests nicht zusammen
-    // Ein Command ändert immer nur genau ein Attribut, der Manager immer ein ganzes Objekt
-    // Vorläufig werden hier alle attribute per Command gesetzt
-    // Alternativen:
-    // - Command Human_update wieder einführen
-    // - Im Manager updateHuman durch methoden für die einzelnen Attribute ersetzten, z.B. updateHumanAge
-    // - Den Manager oder die Objekte tracken lassen, welche Felder geändert wurden und nur für diese Commands schicken
-    StatusResult status = CommandManager.executeSingleCommand(new Human_set_age(CommandManager.getFreeCommandId(), o.getGemId(), o.getAge())).asStatusResult();
-
-    // TODO: error handling
-  }
-
   @Override
   protected void _doDeleteHuman(Human o) {
     StatusResult status = CommandManager.executeSingleCommand(new Human_delete(CommandManager.getFreeCommandId(), o)).asStatusResult();
@@ -165,11 +147,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected void _doUpdatePerson(Person o) {
-
-  }
-
-  @Override
   protected AddressBuilder _doAddress() {
     return null;
   }
@@ -192,11 +169,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected Collection<Address> _doGetAddressList() {
     return null;
-  }
-
-  @Override
-  protected void _doUpdateAddress(Address o) {
-
   }
 
   @Override
@@ -231,11 +203,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected void _doDeleteCar(Car o) {
-
-  }
-
-  @Override
-  protected void _doUpdateCar(Car o) {
 
   }
 

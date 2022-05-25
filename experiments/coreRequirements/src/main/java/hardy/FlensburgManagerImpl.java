@@ -55,11 +55,6 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected void _doUpdateHuman(Human human) {
-
-    }
-
-    @Override
     protected void _doDeleteHuman(Human human) {
         DatabaseAccessManager.delete(Human.class.getName(), human);
     }
@@ -96,11 +91,6 @@ public class FlensburgManagerImpl extends FlensburgManager {
         DatabaseAccessManager.delete(Person.class.getName(), person);
     }
 
-    @Override
-    protected void _doUpdatePerson(Person o) {
-
-    }
-
     /* === Methods for class Address === */
 
     @Override
@@ -126,11 +116,6 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected Collection<Address> _doGetAddressList() {
         return DatabaseAccessManager.getAll(Address.class);
-    }
-
-    @Override
-    protected void _doUpdateAddress(Address o) {
-
     }
 
     @Override
@@ -168,11 +153,6 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected void _doDeleteCar(Car car) {
         DatabaseAccessManager.delete(Car.class.getName(), car);
-    }
-
-    @Override
-    protected void _doUpdateCar(Car o) {
-
     }
 
     @Override
