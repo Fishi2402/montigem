@@ -70,6 +70,8 @@ subprojects {
     sourceCompatibility = '11'
 }
 
+build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
+
 /**
  *  Builds the core projects, i.e. the umlp-tool and the examples.
  *  Executes JUnit tests and assembles the jars.
