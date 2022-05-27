@@ -118,15 +118,6 @@ public class FlensburgMock extends FlensburgManager {
     persons.remove(o.getGemId());
   }
 
-  @Override
-  protected void _doUpdatePerson(Person o) {
-    assert persons.containsKey(o.getGemId());
-    // TODO AHe: throw exception?
-    if(thePersonValidator.consistencyCheck(o)) {
-      persons.put(o.getGemId(), o);
-    }
-  }
-
   // --- Class Human ---
   protected HashMapWithOrderedKeys<Long, Human> humans = new HashMapWithOrderedKeys<>();
   protected HumanValidator theHumanValidator = new HumanValidator();
@@ -165,15 +156,6 @@ public class FlensburgMock extends FlensburgManager {
       }
     }
     return humans.values();
-  }
-
-  @Override
-  protected void _doUpdateHuman(Human o) {
-    assert humans.containsKey(o.getGemId());
-    // TODO AHe: throw exception?
-    if(theHumanValidator.consistencyCheck(o)) {
-      humans.put(o.getGemId(), o);
-    }
   }
 
   @Override
@@ -221,15 +203,6 @@ public class FlensburgMock extends FlensburgManager {
     }
 
     return addresses.values();
-  }
-
-  @Override
-  protected void _doUpdateAddress(Address o) {
-    assert addresses.containsKey(o.getGemId());
-    // TODO AHe: throw exception?
-    if(theAddressValidator.consistencyCheck(o)) {
-      addresses.put(o.getGemId(), o);
-    }
   }
 
   @Override
@@ -283,15 +256,6 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doDeleteCar(Car o) {
     assert cars.containsKey(o.getGemId());
     cars.remove(o.getGemId(), o);
-  }
-
-  @Override
-  protected void _doUpdateCar(Car o) {
-    assert cars.containsKey(o.getGemId());
-    // TODO AHe: throw exception?
-    if(theCarValidator.consistencyCheck(o)) {
-      cars.put(o.getGemId(),o);
-    }
   }
 
   // TODO AHe: All of the cars methods are stubs. Implement once purpose is clear

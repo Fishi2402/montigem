@@ -30,6 +30,7 @@ public class UMLPToolTest extends AbstractUMLPTest {
   }
 
   @Test
+  @Ignore
   public void testRunMethod4DefaultAssocCardinalities() {
     UMLPTool tool = new UMLPTool();
     tool.run(new String[]{"-i", "src/test/resources/de/monticore/DefaultAssocCardinalities.umlp"});

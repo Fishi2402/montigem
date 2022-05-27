@@ -1,44 +1,42 @@
-package stanley;
+package stanley.editierepersoncars;
 
 // HW-T
-
-/* This is sime code that tests the GUI (or later also E2E)
-   functionality within Java:
-*/
-
 
 import hardy.FlensburgManager;
 import hardy.FlensburgMock;
 import hardy.Person;
 import org.junit.jupiter.api.Test;
+import stanley.AbstractGUITest;
 import stanley.editiereperson.EditierePersonGUI;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EditierePersonGUITest {
+/* Test GUI (or later also E2E) for Person editing
+*/
+public class EditierePersonGUITest extends AbstractGUITest {
 
   @Test
-  public void runATest() {
+  public void editPersonGUITest() {
     // eine Ausbaustufe wäre: einen Validator hinzufügen und wenn der failed,
     // zusaetlich eine Fehlermeldung anzeigen (die analog angezeigt wird)
     FlensburgMock.init();
 
-    Person p = FlensburgManager.personBuilder().age(24).nickname("theo").build();
+    Person p = FlensburgManager.personBuilder().age(24).nickname("theo").build().get();
     EditierePersonGUI e = new EditierePersonGUI(p);
 
     // Check GUI has contains correct values
     assertEquals("theo", e.getTextInput());
-    assertEquals(24, e.getNumberInput());
+    assertEquals(24, e.getNumberInput().intValue());
 
     // Check setting the age in the gui changes the age of the person
     e.setNumberInput(33);
-    assertEquals(33, p.getAge());
+    assertEquals(33, p.getAge().intValue());
 
     // Check decrease button decreases age in GUI and Object
     e.pressButtonDecrease();
     e.pressButtonDecrease();
-    assertEquals(31, e.getNumberInput());
-    assertEquals(31, p.getAge());
+    assertEquals(31, e.getNumberInput().intValue());
+    assertEquals(31, p.getAge().intValue());
 
     // und später kombinieren wir das mit Server/Client kommunikation und prüefen dann
     // nicht nur am lokalen Objekt, sondern simuliert im Gesamten System die Konsistente Änderung

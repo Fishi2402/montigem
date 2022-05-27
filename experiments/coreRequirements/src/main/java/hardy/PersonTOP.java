@@ -5,17 +5,10 @@ package hardy;
 // todo NN: !com.google.common.: Muss das Teil dieser Imports sein, Rücksprache mit BR
 // todo FDr: !hier muss die LazyList hin, keine Sets, keine anderen Lists
 
-import java.util.*;
-
 import com.google.common.collect.Sets;
 import umlp.rte.Gem;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /* Source:
 
@@ -33,8 +26,7 @@ import java.util.List;
 
 //+ we generate the TOP class, because there is a handwritten version
 public abstract class PersonTOP extends Human {
-
-    // Bem: java.util.Observable wird via Human geerbt
+    protected List<PersonObserver> personObservers = new ArrayList<>();
 
     // an Attribute: ------------------------------------------
     protected String nickname;
@@ -106,6 +98,8 @@ public abstract class PersonTOP extends Human {
             throw new IllegalArgumentException("Null argument not allowed here");
         }
         this.nickname = o;
+        // TODO AHe: ist der cast hier notwendig und sicher?
+        personObservers.forEach(obs -> obs.updateNickname((Person) this, o));
     }
     
     // todo: Hier wird wohl auch die Möglichkeit benötigt mit Gem<Adress> umzugehen
@@ -127,6 +121,8 @@ public abstract class PersonTOP extends Human {
         } else {
             this.mainResidence.set(mainResidence);
         }
+        // TODO AHe: ist der cast hier notwendig und sicher?
+        personObservers.forEach(obs -> obs.updateMainResidence((Person) this, mainResidence.getGemId()));
     }
 
     public boolean availableMainResidence(){
@@ -139,7 +135,8 @@ public abstract class PersonTOP extends Human {
 
     public boolean removeOwns(Car o) {
         if (this.owns.contains(o)) {
-            this.notifyObservers(o);
+            // TODO AHe: ist der cast hier notwendig und sicher?
+            personObservers.forEach(obs -> obs.removeOwns((Person) this, o.getGemId()));
             return this.owns.remove(o);
         } else {
             return false;
@@ -182,7 +179,8 @@ public abstract class PersonTOP extends Human {
         if (this.owns.contains(o)) {
             return false;
         } else {
-            this.notifyObservers(o);
+            // TODO AHe: ist der cast hier notwendig und sicher?
+            personObservers.forEach(obs -> obs.addOwns((Person) this, o.getGemId()));
             return this.owns.add(o);
         }
     }
@@ -220,8 +218,21 @@ public abstract class PersonTOP extends Human {
     }
 
     //+ Pseudo build for all classes: normally nothing happens
-    public PersonTOP build() {
-        return this;
+    public Optional<Person> build() {
+        return Optional.empty();
+    }
+
+    public void addObserver(PersonObserver o) {
+        // Durch Vererbung PersonObserver von HumanObserver kann o zu den HumanObservern von
+        // Human hinzugefügt werden
+        // => setAge muss nicht überschrieben werden um die PersonObserver zu benachrichtigen
+        super.addObserver(o);
+        personObservers.add(o);
+    }
+
+    public void removeObserver(PersonObserver o){
+        super.removeObserver(o);
+        personObservers.add(o);
     }
 
     // -----------------------------------------------------------------

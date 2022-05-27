@@ -2,6 +2,7 @@ package hardy;
 
 import com.google.common.collect.Streams;
 
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collector;
 import java.util.stream.IntStream;
@@ -98,7 +99,7 @@ public class FlensburgDummyProviderTOP {
         // 1 zu 1 => keine vorhandene Addresse kann genutzt werden.
         // Daher kann hier direkt eine neue erfunden werden
         .mainResidence(inventAddress())
-        .build();
+        .build().get();
   }
 
   public Car inventCar(Person person) {
@@ -106,7 +107,7 @@ public class FlensburgDummyProviderTOP {
     return FlensburgManager
         .carBuilder()
         .owns(person)
-        .build();
+        .build().get();
   }
 
   public Human inventHuman() {
@@ -114,7 +115,7 @@ public class FlensburgDummyProviderTOP {
     return FlensburgManager
         .humanBuilder()
         .age(inventHumanAge())
-        .build();
+        .build().get();
   }
 
   protected String inventPersonNickname() {
@@ -131,7 +132,7 @@ public class FlensburgDummyProviderTOP {
 
   public Address inventAddress() {
     // Der Builder fügt das Objekt zum FlensburgManager hinzu
-    return FlensburgManager.addressBuilder().city(inventAddressCity()).build();
+    return FlensburgManager.addressBuilder().city(inventAddressCity()).build().get();
   }
 
   protected String inventAddressCity() {

@@ -1,0 +1,44 @@
+package stanley.showcityinfo;
+
+// HW-T
+
+import hardy.*;
+import org.junit.Test;
+import stanley.AbstractGUITest;
+import stanley.editiereperson.EditierePersonGUI;
+
+import java.util.Collections;
+
+import static org.junit.Assert.assertEquals;
+
+/* Test GUI (or later also E2E) for city info
+*/
+public class ShowCityInfoGUITest extends AbstractGUITest {
+
+  @Test
+  public void showCityInfoTest() {
+    // eine Ausbaustufe wäre: einen Validator hinzufügen und wenn der failed,
+    // zusaetlich eine Fehlermeldung anzeigen (die analog angezeigt wird)
+    FlensburgMock.init();
+
+    Address a = FlensburgManager.addressBuilder().city("Aachen").build().get();
+    CarBuilder cb = FlensburgManager.carBuilder();
+    PersonBuilder pb = FlensburgManager.personBuilder()
+        .age(24)
+        .nickname("theo")
+        .mainResidence(a)
+        .owns(Collections.singleton(cb));
+    cb.owns(pb);
+    pb.build();
+
+    ShowCityInfoGUI ci = new ShowCityInfoGUI();
+
+    // Check GUI has contains correct values
+    assertEquals(1, ci.getTable().getNumberOfCities());
+    assertEquals(1, ci.getTable().getAverageNumberOfCars());
+    assertEquals(1, ci.getTable().getTotalNumberOfCars());
+    assertEquals("Aachen", ci.getTable().getCityWithMostCars());
+    assertEquals("theo", ci.getTable().getPersonWithMostCars().getNickname());
+  }
+
+}

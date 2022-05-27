@@ -2,6 +2,11 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import umlp.rte.ValidationMessage;
+
+import java.util.List;
+import java.util.Optional;
+
 public class HumanBuilder extends Human {
 
     protected boolean buildFinished = false;
@@ -13,7 +18,6 @@ public class HumanBuilder extends Human {
     public HumanBuilder(long gemId, HumanValidator validator) {
        this.gemId = gemId;
        this.validator = validator;
-       init();
     }
 
     public HumanBuilder age(int age) {
@@ -30,21 +34,24 @@ public class HumanBuilder extends Human {
         return agePresent;
     }
 
-    public Human build() {
+    public Optional<Human> build() {
         if (!buildFinished) {
             if (validator.buildingCheck(this)) {
-                Human build = super.build();
                 FlensburgManager.addHuman(this);
-                notifyObservers();      //+ an initial notification
+                humanObservers.forEach(obs -> obs.humanBuild(this));
                 buildFinished = true;
-                return this;
+                return Optional.of(this);
             }
         }
-        throw new IllegalStateException("0xU1234: Human cannot be built."); // TODO
+        return Optional.empty();
     }
 
     public boolean isBuildable() {
         return validator.buildingCheck(this);
+    }
+
+    public List<ValidationMessage> getValidationMessages() {
+        return validator.getValidationMessages();
     }
 }
 

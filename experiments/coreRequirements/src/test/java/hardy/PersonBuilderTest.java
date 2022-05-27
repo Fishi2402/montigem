@@ -6,6 +6,7 @@ import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import umlp.rte.ValidationMessage;
 
 import java.util.Optional;
 
@@ -41,7 +42,7 @@ public class PersonBuilderTest {
         Person person = personOpt.get();
 
         assertEquals(name, person.getNickname());
-        assertEquals(age, person.getAge());
+        assertEquals(age, person.getAge().intValue());
     }
 
     @Test
@@ -49,18 +50,13 @@ public class PersonBuilderTest {
         int id = 1001;
         FlensburgMock.secretlyAdaptnextGemIds(id);
 
-        IllegalStateException illegalStateException = null;
-        try {
-            personBuilder.age(18).build();
-        }catch (IllegalStateException e){
-            illegalStateException = e;
-        }
+        Optional<Person> personOpt = personBuilder.age(18).build();
 
-        assertNotNull(illegalStateException);
-        assertEquals(1, Log.getFindingsCount());
+        assertFalse(personOpt.isPresent());
+        assertEquals(1, personBuilder.getValidationMessages().size());
 
-        Finding e = Log.getFindings().get(0);
-        assertEquals("nickname not defined", e.getMsg());
+        ValidationMessage e = personBuilder.getValidationMessages().get(0);
+        assertEquals("nickname not defined", e.getMessage());
 
         assertFalse(FlensburgManager.personOpt(id).isPresent());
     }

@@ -34,7 +34,7 @@ public class FlensburgDummies {
     
     FlensburgMock.secretlyAdaptnextGemIds(2101);
     
-    Human h2101 = FlensburgManager.humanBuilder().age(21).build();
+    Human h2101 = FlensburgManager.humanBuilder().age(21).build().get();
     
     FlensburgMock.secretlyAdaptnextGemIds(3101);
 
@@ -43,17 +43,17 @@ public class FlensburgDummies {
     // Dies wird gebraucht, damit der CarValidator überprüfen kann, dass die owns assoziation korrekt ist
     // TODO: Es ist unschön, dass die Assoziation manuell in beide Richtungen gesetzt werden muss
     c1101.owns(pb3101);
-    Person p3101 = pb3101.build();
+    Person p3101 = pb3101.build().get();
 
     Person p3102 = FlensburgManager.personBuilder()
-                        .age(26).nickname("Bert").build();
+                        .age(26).nickname("Bert").build().get();
     PersonBuilder pb3103 = FlensburgManager.personBuilder()
         .age(31).nickname("Charly")
         .ownsAdd(c1102)
         .ownsAdd(c1103);
     c1102.owns(pb3103);
     c1103.owns(pb3103);
-    Person p3103 = pb3103.build();
+    Person p3103 = pb3103.build().get();
 
     PersonBuilder pb3104 = FlensburgManager
         .personBuilder()
@@ -63,12 +63,12 @@ public class FlensburgDummies {
         .ownsAdd(c1105);
     c1104.owns(pb3104);
     c1105.owns(pb3104);
-    Person p3104 = pb3104.build();
+    Person p3104 = pb3104.build().get();
 
     PersonBuilder pb3105 = FlensburgManager.personBuilder()
         .age(105).ownsAdd(c1106).nickname("Emil");
     c1106.owns(pb3105);
-    Person p3105 = pb3105.build();
+    Person p3105 = pb3105.build().get();
   }
     
   // really handwritten
@@ -77,7 +77,7 @@ public class FlensburgDummies {
     for(int i = 0; i < number; i++) {
       CarBuilder cb = FlensburgManager.carBuilder();
     
-      Human o2 = FlensburgManager.humanBuilder().age(100+i).build();
+      Human o2 = FlensburgManager.humanBuilder().age(100+i).build().get();
 
       PersonBuilder pb = FlensburgManager.personBuilder()
           .age(200 + i)
@@ -85,7 +85,7 @@ public class FlensburgDummies {
           .owns(Collections.singleton(cb));
 
       cb.owns(pb);
-      Person o3 = pb.build();
+      Person o3 = pb.build().get();
       // todo: Ausbauoption: variable Menge von Cars
       // (das erfordert insgesamt Smartness beim generieren, um sinnvolle graphen zu bauen)
     }

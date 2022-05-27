@@ -20,8 +20,8 @@ public class CityInfoTest {
     CarBuilder c5 = FlensburgManager.carBuilder();
     CarBuilder c6 = FlensburgManager.carBuilder();
 
-    Address a1 = FlensburgManager.addressBuilder().city("Aachen").build();
-    Address a2 = FlensburgManager.addressBuilder().city("Flensburg").build();
+    Address a1 = FlensburgManager.addressBuilder().city("Aachen").build().get();
+    Address a2 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
 
     PersonBuilder p1 = FlensburgManager
         .personBuilder()

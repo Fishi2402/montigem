@@ -6,7 +6,9 @@ import org.hibernate.annotations.GenericGenerator;
 import umlp.rte.GemIdentifiable;
 
 import javax.persistence.*;
-import java.util.Observable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /* Source:
     class Human {
@@ -17,7 +19,8 @@ import java.util.Observable;
 // --------------------------
 @Entity
 @Table(name = "human")
-public class Human extends Observable implements GemIdentifiable {
+public class Human implements GemIdentifiable {
+    protected List<HumanObserver> humanObservers = new ArrayList<>();
 
     // gemId: ------------------------------------------
     //+ Special attribute gemID is used to identify this object
@@ -33,26 +36,27 @@ public class Human extends Observable implements GemIdentifiable {
     protected long gemId = -32;
 
     // an Attribute: ------------------------------------------
+    // Attribute has non-primitive type to allow null values for objects, which are not yet
+    // completely built, but require some value (required field in GUI)
     @Column(name = "age")
-    protected int age;
+    protected Integer age;
 
     // --------------------------------------------------------------------
     //+ Constructors are protected: only to be used by the Builder and Mill
 
-    //+ This constructuctor builds incorrect and models (incl. null-pointers)
+    //+ This constructor builds incorrect and models (incl. null-pointers)
     // and should only be used by the builder
     protected Human() {
-        init();
     }
 
     //+ This constructor is better, but still may construct invalid
     // objects in principle
-    protected Human(int age) {
+    protected Human(Integer age) {
         this.age = age;
     }
 
     //+ initialization is externalized to be reusable (if needed)
-    //+ do an initialisation of optional and default parts
+    //+ do an initialisation of optional and default parts if required
     // (makes the system robust, but shadows potential errors for a while)
     protected void init() {
         age = 0;
@@ -63,16 +67,25 @@ public class Human extends Observable implements GemIdentifiable {
         return gemId;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return this.age;
     }
 
-    public void setAge(int o) {
+    public void setAge(Integer o) {
         this.age = o;
+        humanObservers.forEach(obs -> obs.updateAge(this, o));
+    }
+
+    public void addObserver(HumanObserver o){
+        humanObservers.add(o);
+    }
+
+    public void removeObserver(HumanObserver o){
+        humanObservers.remove(o);
     }
 
     //+ Pseudo build for all classes: normally nothing happens
-    public Human build() {
-        return this;
+    public Optional<? extends Human> build() {
+        return Optional.empty();
     }
 }

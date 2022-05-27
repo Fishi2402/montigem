@@ -26,7 +26,7 @@ public class FlensburgDummiesTest {
     assertEquals(1, FlensburgManager.getHumanList().size());
 
     Human h = FlensburgManager.getHumanSure(2101);
-    assertEquals(21, h.getAge());
+    assertEquals(21, h.getAge().intValue());
 
     assertEquals(5, FlensburgManager.getPersonList().size());
 

@@ -124,12 +124,6 @@ public abstract class FlensburgManager {
 
     protected abstract Collection<Human> _doGetHumanList();
 
-    public static void updateHuman(Human o){
-        getSingleton()._doUpdateHuman(o);
-    }
-
-    protected abstract void _doUpdateHuman(Human o);
-
     public static void deleteHuman(Human o){
         getSingleton()._doDeleteHuman(o);
     }
@@ -203,11 +197,6 @@ public abstract class FlensburgManager {
         getSingleton()._doDeletePerson(o);
     }
     protected abstract void _doDeletePerson(Person o);
-
-    public static void updatePerson(Person o){
-        getSingleton()._doUpdatePerson(o);
-    }
-    protected abstract void _doUpdatePerson(Person o);
     
     /* === Methods for class Address === */
 
@@ -270,12 +259,6 @@ public abstract class FlensburgManager {
     }
 
     protected abstract Collection<Address> _doGetAddressList();
-
-    public static void updateAddress(Address o){
-        getSingleton()._doUpdateAddress(o);
-    }
-    protected abstract void _doUpdateAddress(Address o);
-
 
     public static void deleteAddress(Address o){
         getSingleton()._doDeleteAddress(o);
@@ -348,11 +331,6 @@ public abstract class FlensburgManager {
         getSingleton()._doDeleteCar(o);
     }
     protected abstract void _doDeleteCar(Car o);
-
-    public static void updateCar(Car o){
-        getSingleton()._doUpdateCar(o);
-    }
-    protected abstract void _doUpdateCar(Car o);
 
   /* === Methods for Lists of class Car === */
 

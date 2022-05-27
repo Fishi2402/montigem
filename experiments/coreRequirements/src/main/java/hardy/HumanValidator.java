@@ -2,15 +2,21 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import com.google.common.collect.Lists;
 import de.se_rwth.commons.logging.Log;
+import umlp.rte.ValidationMessage;
+
+import java.util.List;
 
 public class HumanValidator {
+
+    protected List<ValidationMessage> validationMessages = Lists.newLinkedList();
 
     public boolean buildingCheck(HumanBuilder o) {
         boolean result = true;
         if (!o.isAgePresent()) {
             result = false;
-            Log.error("age not defined");
+            validationMessages.add(ValidationMessage.create("age not defined"));
         }
         result &= extraBuildingChecks(o);
         return result;
@@ -28,6 +34,10 @@ public class HumanValidator {
 
     protected boolean extraConsistencyChecks(Human o){
         return true;
+    }
+
+    public List<ValidationMessage> getValidationMessages() {
+        return validationMessages;
     }
 }
 
