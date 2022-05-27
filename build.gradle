@@ -8,6 +8,10 @@ plugins {
     id 'de.rwth.se.umlp.gradle_testing' // See "umlp-tool/src/main/java/gradle"
 }
 
+test {
+    useJUnitPlatform()
+}
+
 ext {   // TODO: Do this in UMLPPlugin!    (but how?)
     UMLPTask = gradle.UMLPTask
 }
