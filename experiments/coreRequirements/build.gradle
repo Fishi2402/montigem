@@ -14,11 +14,24 @@ dependencies {
     implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
     implementation group: 'org.hibernate', name: 'hibernate-vibur', version: hibernate_version
     implementation group: 'com.h2database', name: 'h2', version: h2_database
+    implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version) {
+        exclude module: 'spring-boot-starter-logging'
+        exclude module: 'logback-classic'
+    }
+    testImplementation (group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version) {
+        exclude module: 'Spring-boot-starter-logging'
+        exclude module: 'logback-classic'
+    }
 }
 
 task runApp(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'hardy.Main'
+}
+
+task runServer(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'hardy.UMLPApplication'
 }
 
 test {
