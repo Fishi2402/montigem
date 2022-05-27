@@ -235,6 +235,10 @@ public abstract class PersonTOP extends Human {
         personObservers.add(o);
     }
 
+    public boolean containsObserver(PersonObserver o){
+        return personObservers.contains(o);
+    }
+
     // -----------------------------------------------------------------
 
     // a recusrsive, bidirectional Association: ------------------------------
