@@ -2,8 +2,8 @@
 package umlp.rte;
 
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import umlp.rte.lazyloadTestUtil.Elem;
 import umlp.rte.lazyloadTestUtil.ListBasedServer;
 
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GemTest extends AbstractUMLPRTETest {
 
@@ -27,7 +27,7 @@ public class GemTest extends AbstractUMLPRTETest {
 
   Gem<Elem> gemDoesNotExist0;
 
-  @Before
+  @BeforeEach
   public void init() {
     allElems = new ArrayList<>();
     for (int i = 0; i < 3; i++) {

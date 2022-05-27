@@ -4,8 +4,8 @@ package stanley;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /* Setup for the GUI (or later also E2E) tests
  */
@@ -14,14 +14,14 @@ public abstract class AbstractGUITest {
   protected boolean logFailQuick;
 
   // GUI never fails quick
-  @Before
+  @BeforeEach
   public void setup() {
     logFailQuick = Log.isFailQuickEnabled();
     LogStub.init();
     Log.enableFailQuick(false);
   }
 
-  @After
+  @AfterEach
   public void reset() {
     Log.enableFailQuick(logFailQuick);
   }

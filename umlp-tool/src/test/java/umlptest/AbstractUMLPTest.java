@@ -12,7 +12,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._parser.UMLPParser;
@@ -26,15 +26,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static umlp.UMLPToolOptions.HWC_PATH;
-import static umlp.UMLPToolOptions.OUTPUT;
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractUMLPTest {
 
   protected UMLPParser parser = new UMLPParser();
 
-  @Before
+  @BeforeEach
   public void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -89,8 +87,8 @@ public abstract class AbstractUMLPTest {
   }
 
   public static void assertErrors(String... errorCodes) {
-    assertEquals("Expected and actual number of errors differ!",
-        errorCodes.length, Log.getErrorCount());
+    assertEquals(errorCodes.length, Log.getErrorCount(),
+        "Expected and actual number of errors differ!");
 
     for (String expectedErrorCode : errorCodes) {
       boolean foundError = false;

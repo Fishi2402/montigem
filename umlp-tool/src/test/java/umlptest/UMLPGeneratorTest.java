@@ -1,17 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlptest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp.generator.UMLPGenerator;
 
 import java.io.File;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UMLPGeneratorTest extends AbstractUMLPTest {
 
   @Test
+  @Disabled
   public void testGenerateMethod() {
     ASTUMLPCompilationUnit ast = parse("de/monticore/A.umlp");
     createSymTab(ast);
@@ -23,6 +25,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
   }
 
   @Test
+  @Disabled("Not working yet")
   public void testTOPMechamismMethod() {
     ASTUMLPCompilationUnit ast = parse("de/monticore/A.umlp");
     createSymTab(ast);

@@ -8,6 +8,10 @@ plugins {
     id 'de.rwth.se.umlp.gradle_testing' // See "umlp-tool/src/main/java/gradle"
 }
 
+test {
+    useJUnitPlatform()
+}
+
 ext {   // TODO: Do this in UMLPPlugin!    (but how?)
     UMLPTask = gradle.UMLPTask
 }
@@ -48,7 +52,7 @@ subprojects {
         implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
         implementation group: 'com.google.guava', name: 'guava', version: guava_version
 
-        testImplementation group: 'junit', name: 'junit', version: junit_version
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
     }
     // configure non-standard source sets
     sourceSets {
@@ -69,6 +73,8 @@ subprojects {
     buildDir = file("$projectDir/target")
     sourceCompatibility = '11'
 }
+
+build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
 
 /**
  *  Builds the core projects, i.e. the umlp-tool and the examples.

@@ -5,11 +5,11 @@ package stanley.editierepersoncars;
 import hardy.FlensburgManager;
 import hardy.FlensburgMock;
 import hardy.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import stanley.AbstractGUITest;
 import stanley.editiereperson.EditierePersonGUI;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /* Test GUI (or later also E2E) for Person editing
 */
