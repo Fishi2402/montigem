@@ -3,10 +3,10 @@ package stanley.newpersonanlegen;
 // HW-T
 
 import hardy.FlensburgMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import stanley.AbstractGUITest;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /* Tests GUI (or later also E2E) for creation of Person
 */

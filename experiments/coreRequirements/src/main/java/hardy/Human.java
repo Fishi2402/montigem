@@ -84,6 +84,10 @@ public class Human implements GemIdentifiable {
         humanObservers.remove(o);
     }
 
+    public boolean containsObserver(HumanObserver o){
+        return humanObservers.contains(o);
+    }
+
     //+ Pseudo build for all classes: normally nothing happens
     public Optional<? extends Human> build() {
         return Optional.empty();

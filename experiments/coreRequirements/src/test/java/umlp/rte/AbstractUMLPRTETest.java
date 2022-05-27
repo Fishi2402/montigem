@@ -5,14 +5,14 @@ package umlp.rte;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractUMLPRTETest {
 
-  @Before
+  @BeforeEach
   public void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -31,8 +31,7 @@ public abstract class AbstractUMLPRTETest {
   }
 
   public static void assertErrors(String... errorCodes) {
-    assertEquals("Expected and actual number of errors differ!",
-        errorCodes.length, Log.getErrorCount());
+    assertEquals(errorCodes.length, Log.getErrorCount(), "Expected and actual number of errors differ!");
 
     for (String expectedErrorCode : errorCodes) {
       boolean foundError = false;

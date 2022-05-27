@@ -7,6 +7,8 @@ import hardy.HumanObserver;
 import hardy.commands.Human_set_age;
 import umlp.command.CommandManager;
 
+// TODO: Ersetzen durch FlensburgCommandManager implements HumanObserver => eine Weiterleitung weniger
+
 // Ein Observer, der Änderungen von Attributen per CommandManager an das Backend schickt.
 public class HumanCommandObserver implements HumanObserver {
 

@@ -4,20 +4,20 @@ package hardy;
 
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import umlp.rte.ValidationMessage;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PersonBuilderTest {
 
     private PersonBuilder personBuilder;
     private PersonValidator validator;
 
-    @Before
+    @BeforeEach
     public void before() {
         Log.init();
         Log.enableFailQuick(false);

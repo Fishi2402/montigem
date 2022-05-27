@@ -3,13 +3,12 @@ package stanley.showcityinfo;
 // HW-T
 
 import hardy.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import stanley.AbstractGUITest;
-import stanley.editiereperson.EditierePersonGUI;
 
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /* Test GUI (or later also E2E) for city info
 */

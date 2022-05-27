@@ -1,8 +1,8 @@
 // (c) https://github.com/MontiCore/monticore
 package umlp.rte;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import umlp.rte.lazyloadTestUtil.ListBasedServer;
 import umlp.rte.lazyloadTestUtil.Elem;
 
@@ -11,10 +11,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LazyListTest extends AbstractUMLPRTETest {
 
@@ -37,7 +37,7 @@ public class LazyListTest extends AbstractUMLPRTETest {
 
   LazyList<Elem> list2;
 
-  @Before
+  @BeforeEach
   public void init() {
     allElems = new ArrayList<>();
     for (int i = 0; i < 10; i++) {

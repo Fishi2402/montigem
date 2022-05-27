@@ -2,7 +2,7 @@
 
 package umlptest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * This Test class processes the example models from markdown files that

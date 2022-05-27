@@ -22,6 +22,8 @@ import java.util.*;
 // TODO: Ausbaustufe: Lokaler cache für Daten, damit nicht immer unveränderte Daten nachgeladen werden müssen
 public class FlensburgManagerClientImpl extends FlensburgManager {
   protected HumanValidator theHumanValidator;
+  protected HumanCommandObserver theHumanCommandObserver = new HumanCommandObserver();
+  protected PersonCommandObserver thePersonCommandObserver = new PersonCommandObserver();
 
   public static void init(){
     instance = new FlensburgManagerClientImpl();
@@ -51,7 +53,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     Gem<Human> gem = CommandManager.executeSingleCommand(new Human_get(CommandManager.getFreeCommandId(), gemId)).asGemResult().getResult();
     if(gem.isPresent()){
       Human human = gem.get();
-      human.addObserver(new HumanCommandObserver());
+      if(!human.containsObserver(theHumanCommandObserver)) {
+        human.addObserver(theHumanCommandObserver);
+      }
       return Optional.of(human);
     } else {
       return Optional.empty();
@@ -67,10 +71,14 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected void _doAddHuman(Human o) {
     StatusResult res = CommandManager.executeSingleCommand(new Human_create(CommandManager.getFreeCommandId(), o)).asStatusResult();
     // TODO: Error handling
+    if(!o.containsObserver(theHumanCommandObserver)){
+      o.addObserver(theHumanCommandObserver);
+    }
   }
 
   @Override
   protected Collection<Human> _doGetHumanList() {
+    // TODO: theHumanCommandObserver zu jedem Member hinzufügen!
     return new LazyList<>(
         this::loadHumanSize,
         this::loadHumanGemIds,

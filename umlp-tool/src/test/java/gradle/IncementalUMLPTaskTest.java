@@ -3,48 +3,47 @@ package gradle;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.gradle.work.FileChange;
-import org.gradle.work.InputChanges;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class IncementalUMLPTaskTest {
 
-  @Rule
-  public TemporaryFolder hwcDir= new TemporaryFolder();
+  @TempDir
+  public File hwcDir;
 
-  @Rule
-  public TemporaryFolder inputDir= new TemporaryFolder();
+  @TempDir
+  public File inputDir;
 
-  @Rule
-  public TemporaryFolder outputDir= new TemporaryFolder();
+  @TempDir
+  public File outputDir;
 
-  @Rule
-  public TemporaryFolder reportDir= new TemporaryFolder();
+  @TempDir
+  public File reportDir;
 
   public UMLPTask umlpTask;
   public File inputFile;
 
 
-  @Before
+  @BeforeEach
   public void setupTest() throws IOException {
     Project project = ProjectBuilder.builder().build();
     umlpTask = project.getTasks().create("TEST" + UUID.randomUUID(), gradle.UMLPTask.class);
-    umlpTask.getHwcDir().set(hwcDir.getRoot());
-    umlpTask.getInputDir().set(inputDir.getRoot());
-    umlpTask.getOutputDir().set(outputDir.getRoot());
-    umlpTask.getReportDir().set(reportDir.getRoot());
+    umlpTask.getHwcDir().set(hwcDir);
+    umlpTask.getInputDir().set(inputDir);
+    umlpTask.getOutputDir().set(outputDir);
+    umlpTask.getReportDir().set(reportDir);
 
-    inputFile = inputDir.newFile("SomeInputFile.umlp");
+//    inputFile = inputDir.newFile("SomeInputFile.umlp");
+    inputFile = new File(inputDir, "SomeInputFile.umlp");
+    inputFile.createNewFile();
   }
 
   @Test
