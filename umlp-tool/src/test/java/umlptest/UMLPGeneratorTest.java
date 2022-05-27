@@ -25,7 +25,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
   }
 
   @Test
-  @Disabled
+  @Disabled("Not working yet")
   public void testTOPMechamismMethod() {
     ASTUMLPCompilationUnit ast = parse("de/monticore/A.umlp");
     createSymTab(ast);
