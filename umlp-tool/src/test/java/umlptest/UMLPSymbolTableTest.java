@@ -3,7 +3,7 @@ package umlptest;
 
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
-import org.gradle.internal.impldep.org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._symboltable.IUMLPArtifactScope;
@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UMLPSymbolTableTest extends AbstractUMLPTest {
 
-  @Ignore
+  @Disabled
   @Test
   public void testUseJavaTypes(){
     ASTUMLPCompilationUnit ast = parse("de/monticore/UseJavaTypes.umlp");

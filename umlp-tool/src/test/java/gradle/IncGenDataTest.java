@@ -1,10 +1,9 @@
 package gradle;
 
-import org.gradle.internal.impldep.org.junit.Rule;
-import org.gradle.internal.impldep.org.junit.rules.TemporaryFolder;
 import org.gradle.work.ChangeType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class IncGenDataTest {
   protected IncGenData lastRun;
 
-  @Rule
-  public TemporaryFolder outputDir = new TemporaryFolder();
+  @TempDir
+  public File outputDir;
 
   protected File inputF = new File("models/InputFile.umlp").getCanonicalFile();
   protected File hwcF = new File("hwc/de/HWCFile.java").getCanonicalFile();
@@ -157,8 +156,10 @@ public class IncGenDataTest {
 
   @Test
   public void deleteGenFiles() throws IOException {
-    File tempOut1 = outputDir.newFile("SomeOutput.java");
-    File tempOut2 = outputDir.newFile("MoreOutput.java");
+    File tempOut1 = new File(outputDir, "SomeOutput.java");
+    File tempOut2 = new File(outputDir, "MoreOutput.java");
+    tempOut1.createNewFile();
+    tempOut2.createNewFile();
 
     assertTrue(tempOut1.isFile());
     assertTrue(tempOut2.isFile());
