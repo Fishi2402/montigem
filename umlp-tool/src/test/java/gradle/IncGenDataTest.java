@@ -2,6 +2,7 @@ package gradle;
 
 import org.gradle.work.ChangeType;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -42,6 +43,7 @@ public class IncGenDataTest {
   }
 
   @Test
+  @Ignore
   public void parseReport() throws IOException {
     {
       Set<File> genFiles = new HashSet<>();
