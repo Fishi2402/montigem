@@ -1,6 +1,6 @@
 package umlp.rte;
 
-import hardy.Car;
+import hardy.Address;
 import hardy.FlensburgManager;
 import hardy.FlensburgManagerImpl;
 import hardy.Human;
@@ -81,6 +81,14 @@ public class DatabaseAccessManager {
 
     public static <T> Collection<T> getAll(Class<T> domainType) {
         return getSingleton()._getAll(domainType);
+    }
+
+    public static Session getSession(){
+        return getSingleton()._getSession();
+    }
+
+    protected Session _getSession() {
+        return sessionFactory.openSession();
     }
 
     private <T> T _get(Class<T> domainType, long gemId) {
