@@ -28,6 +28,7 @@ package hardy;
   Wir nutzen den static Singleton Ansatz für alle zu realisierenden Funktionen
 */
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +36,9 @@ import java.util.Optional;
 public abstract class FlensburgManager {
 
     protected static FlensburgManager instance;
+
+    // Alle Manager müssen einzeln beobachtbar sein, daher ein nicht-statisches Attribut
+    protected List<FlensburgObserver> flensburgObservers = new ArrayList<>();
 
     // get the next free GemId -----------------------------------
     // CKn: Frage @BR: brauchen wir diese Methode? Hibernate ist nämlich in der Lage, Primärschlüssel selber zu generieren

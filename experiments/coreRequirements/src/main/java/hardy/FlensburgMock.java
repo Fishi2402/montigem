@@ -97,6 +97,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doAddPerson(Person person) {
     // TODO AHe: Do we get fresh gemId here or is it set by the user?
     persons.put(person.getGemId(), person);
+    flensburgObservers.forEach(obs -> obs.notifyPersonAdded(person.getGemId()));
   }
 
   @Override
@@ -116,6 +117,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doDeletePerson(Person o) {
     assert persons.containsKey(o.getGemId());
     persons.remove(o.getGemId());
+    flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(o.getGemId()));
   }
 
   // --- Class Human ---
@@ -146,6 +148,7 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doAddHuman(Human o) {
     humans.put(o.getGemId(), o);
+    flensburgObservers.forEach(obs -> obs.notifyHumanAdded(o.getGemId()));
   }
 
   @Override
@@ -162,6 +165,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doDeleteHuman(Human o) {
     assert humans.containsKey(o.getGemId());
     humans.remove(o.getGemId());
+    flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(o.getGemId()));
   }
 
   // --- Address class ---
@@ -192,6 +196,7 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doAddAddress(Address o) {
     addresses.put(o.getGemId(), o);
+    flensburgObservers.forEach(obs -> obs.notifyAddressAdded(o.getGemId()));
   }
 
   @Override
@@ -209,6 +214,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doDeleteAddress(Address o) {
     assert addresses.containsKey(o.getGemId());
     addresses.remove(o.getGemId());
+    flensburgObservers.forEach(obs -> obs.notifyAddressDeleted(o.getGemId()));
   }
 
   // --- Class Car ---
@@ -239,6 +245,7 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doAddCar(Car o) {
     cars.put(o.getGemId(), o);
+    flensburgObservers.forEach(obs -> obs.notifyCarAdded(o.getGemId()));
   }
 
   @Override
@@ -256,6 +263,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doDeleteCar(Car o) {
     assert cars.containsKey(o.getGemId());
     cars.remove(o.getGemId(), o);
+    flensburgObservers.forEach(obs -> obs.notifyCarDeleted(o.getGemId()));
   }
 
   // TODO AHe: All of the cars methods are stubs. Implement once purpose is clear

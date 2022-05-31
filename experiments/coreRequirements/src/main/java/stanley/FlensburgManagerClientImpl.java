@@ -74,6 +74,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     if(!o.containsObserver(theHumanCommandObserver)){
       o.addObserver(theHumanCommandObserver);
     }
+    flensburgObservers.forEach(obs -> obs.notifyHumanAdded(o.getGemId()));
   }
 
   @Override
@@ -119,8 +120,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected void _doDeleteHuman(Human o) {
     StatusResult status = CommandManager.executeSingleCommand(new Human_delete(CommandManager.getFreeCommandId(), o)).asStatusResult();
-
     // TODO: error handling
+    // ...
+    flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(o.getGemId()));
   }
 
   // TODO: Implement for all other classes and associations
@@ -143,7 +145,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected void _doAddPerson(Person person) {
-
+    // ...
+    flensburgObservers.forEach(obs -> obs.notifyPersonAdded(person.getGemId()));
   }
 
   @Override
@@ -153,7 +156,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected void _doDeletePerson(Person o) {
-
+    // ...
+    flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(o.getGemId()));
   }
 
   @Override
@@ -173,7 +177,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected void _doAddAddress(Address o) {
-
+    // ...
+    flensburgObservers.forEach(obs -> obs.notifyAddressAdded(o.getGemId()));
   }
 
   @Override
@@ -183,7 +188,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected void _doDeleteAddress(Address o) {
-
+    // ...
+    flensburgObservers.forEach(obs -> obs.notifyAddressDeleted(o.getGemId()));
   }
 
   @Override
@@ -203,7 +209,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected void _doAddCar(Car o) {
-
+    // ...
+    flensburgObservers.forEach(obs -> obs.notifyCarAdded(o.getGemId()));
   }
 
   @Override
@@ -213,7 +220,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected void _doDeleteCar(Car o) {
-
+    // ...
+    flensburgObservers.forEach(obs -> obs.notifyCarDeleted(o.getGemId()));
   }
 
   @Override

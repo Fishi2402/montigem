@@ -47,6 +47,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected void _doAddHuman(Human human) {
         DatabaseAccessManager.add(Human.class.getName(), human);
+        flensburgObservers.forEach(obs -> obs.notifyHumanAdded(human.getGemId()));
     }
 
     @Override
@@ -57,6 +58,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected void _doDeleteHuman(Human human) {
         DatabaseAccessManager.delete(Human.class.getName(), human);
+        flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(human.getGemId()));
     }
 
     /* === Methods for class Person === */
@@ -79,6 +81,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected void _doAddPerson(Person person) {
         DatabaseAccessManager.add(Person.class.getName(), person);
+        flensburgObservers.forEach(obs -> obs.notifyPersonAdded(person.getGemId()));
     }
 
     @Override
@@ -89,6 +92,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected void _doDeletePerson(Person person) {
         DatabaseAccessManager.delete(Person.class.getName(), person);
+        flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(person.getGemId()));
     }
 
     /* === Methods for class Address === */
@@ -111,6 +115,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected void _doAddAddress(Address address) {
         DatabaseAccessManager.add(Address.class.getName(), address);
+        flensburgObservers.forEach(obs -> obs.notifyAddressAdded(address.getGemId()));
     }
 
     @Override
@@ -121,6 +126,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected void _doDeleteAddress(Address address) {
         DatabaseAccessManager.delete(Address.class.getName(), address);
+        flensburgObservers.forEach(obs -> obs.notifyAddressDeleted(address.getGemId()));
     }
 
     /* === Methods for class Car === */
@@ -143,6 +149,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected void _doAddCar(Car car) {
         DatabaseAccessManager.add(Car.class.getName(), car);
+        flensburgObservers.forEach(obs -> obs.notifyCarAdded(car.getGemId()));
     }
 
     @Override
@@ -153,6 +160,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected void _doDeleteCar(Car car) {
         DatabaseAccessManager.delete(Car.class.getName(), car);
+        flensburgObservers.forEach(obs -> obs.notifyCarDeleted(car.getGemId()));
     }
 
     @Override
