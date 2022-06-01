@@ -12,7 +12,7 @@ import umlp.command.GemResult;
 import umlp.command.StatusResult;
 import umlp.request.GetFreeGemIdRequest;
 import umlp.rte.Gem;
-import umlp.rte.LazyList;
+import umlp.rte.GemList;
 import umlp.rte.LoadResult;
 
 import java.util.*;
@@ -80,7 +80,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected Collection<Human> _doGetHumanList() {
     // TODO: theHumanCommandObserver zu jedem Member hinzufügen!
-    return new LazyList<>(
+    return new GemList<>(
         this::loadHumanSize,
         this::loadHumanGemIds,
         this::loadHumansByGemIds,

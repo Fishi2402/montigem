@@ -3,7 +3,7 @@ package umlp.rte.lazyloadTestUtil;
 
 import umlp.rte.Gem;
 import umlp.rte.GemIdentifiable;
-import umlp.rte.LazyList;
+import umlp.rte.GemList;
 import umlp.rte.LoadResult;
 import umlp.rte.LoadingState;
 
@@ -30,12 +30,12 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
 
   protected Map<Long, E> objects = new HashMap<>();
 
-  protected Set<Long> idsNotAutorized = new HashSet<>();
+  protected Set<Long> idsNotAuthorized = new HashSet<>();
 
   /**
    * stored to report updates
    */
-  protected List<LazyList<E>> lazyLists = new LinkedList<>();
+  protected List<GemList<E>> gemLists = new LinkedList<>();
 
   public ListBasedServer(List<E> list) {
     for (E obj : list) {
@@ -56,12 +56,12 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
         .collect(Collectors.toList());
   }
 
-  public void setIdsNotAutorized(Set<Long> ids) {
-    this.idsNotAutorized = ids;
+  public void setIdsNotAuthorized(Set<Long> ids) {
+    this.idsNotAuthorized = ids;
   }
 
-  public LazyList<E> createLazyList() {
-    LazyList<E> lazyList = new LazyList<>(
+  public GemList<E> createLazyList() {
+    GemList<E> gemList = new GemList<>(
         this::size,
         this::getIDs,
         this::getObjects,
@@ -69,8 +69,8 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
         this::addIDs,
         this::removeIdxs
     );
-    getLazyLists().add(lazyList);
-    return lazyList;
+    getLazyLists().add(gemList);
+    return gemList;
   }
 
   public Gem<E> createGem(Long id) {
@@ -112,8 +112,8 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
   }
 
   protected void reportChange() {
-    for (LazyList<E> lazyList : getLazyLists()) {
-      lazyList.resetStructureCache();
+    for (GemList<E> gemList : getLazyLists()) {
+      gemList.resetStructureCache();
     }
   }
 
@@ -128,7 +128,7 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
   }
 
   protected LoadResult<E> getObject(Long id) {
-    if (getIdsNotAutorized().contains(id)) {
+    if (getIdsNotAuthorized().contains(id)) {
       return new LoadResult<E>(LoadingState.NOT_AUTHORIZED);
     }
     else if (getObjects().containsKey(id)) {
@@ -170,11 +170,11 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
     return objects;
   }
 
-  protected Set<Long> getIdsNotAutorized() {
-    return idsNotAutorized;
+  protected Set<Long> getIdsNotAuthorized() {
+    return idsNotAuthorized;
   }
 
-  protected List<LazyList<E>> getLazyLists() {
-    return lazyLists;
+  protected List<GemList<E>> getLazyLists() {
+    return gemLists;
   }
 }

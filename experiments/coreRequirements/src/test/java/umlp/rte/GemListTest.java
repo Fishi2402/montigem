@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class LazyListTest extends AbstractUMLPRTETest {
+public class GemListTest extends AbstractUMLPRTETest {
 
   List<Elem> allElems;
 
@@ -29,13 +29,13 @@ public class LazyListTest extends AbstractUMLPRTETest {
   //has elements not authorized
   ListBasedServer<Elem> listServer2;
 
-  LazyList<Elem> list0;
+  GemList<Elem> list0;
 
-  LazyList<Elem> list1_0;
+  GemList<Elem> list1_0;
 
-  LazyList<Elem> list1_1;
+  GemList<Elem> list1_1;
 
-  LazyList<Elem> list2;
+  GemList<Elem> list2;
 
   @BeforeEach
   public void init() {
@@ -55,7 +55,7 @@ public class LazyListTest extends AbstractUMLPRTETest {
 
     listServer2 = new ListBasedServer<>(allElems.subList(0, 2));
     listServer2.addKnownObjects(allElems);
-    listServer2.setIdsNotAutorized(Collections.singleton(getElem(1).getGemId()));
+    listServer2.setIdsNotAuthorized(Collections.singleton(getElem(1).getGemId()));
     list2 = listServer2.createLazyList();
   }
 

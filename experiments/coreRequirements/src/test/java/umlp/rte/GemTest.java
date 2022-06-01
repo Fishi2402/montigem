@@ -35,7 +35,7 @@ public class GemTest extends AbstractUMLPRTETest {
     }
 
     listServer0 = new ListBasedServer<>(allElems);
-    listServer0.setIdsNotAutorized(Collections.singleton(getElem(2).getGemId()));
+    listServer0.setIdsNotAuthorized(Collections.singleton(getElem(2).getGemId()));
 
     gemLoadable0 = listServer0.createGem(getElem(0).getGemId());
     gemLoadable1 = listServer0.createGem(getElem(1).getGemId());

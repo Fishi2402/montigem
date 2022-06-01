@@ -23,7 +23,7 @@ import java.util.function.Supplier;
  * Useful if e.g. the elements are loaded over a network.
  * Deprecated, as specific lists will be generated accordingly
  */
-public class LazyList<E extends GemIdentifiable> extends AbstractList<E>
+public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     implements GemIdentifiable {
 
   protected final static String UNEXPECTED_LIST_LENGTH_ERROR =
@@ -56,7 +56,7 @@ public class LazyList<E extends GemIdentifiable> extends AbstractList<E>
 
   protected Consumer<Set<Integer>> removeIdxsFunction;
 
-  public LazyList(
+  public GemList(
       Supplier<Integer> loadSizeFunction,
       BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
       Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
