@@ -4,12 +4,8 @@ package stanley;
 // GEN-P: Only if this class is also automatically converted to typescript
 
 import hardy.*;
-import hardy.commands.Human_create;
-import hardy.commands.Human_delete;
-import hardy.commands.Human_get;
-import umlp.command.CommandManager;
-import umlp.command.GemResult;
-import umlp.command.StatusResult;
+import hardy.commands.*;
+import umlp.command.*;
 import umlp.request.GetFreeGemIdRequest;
 import umlp.rte.Gem;
 import umlp.rte.GemList;
@@ -21,12 +17,22 @@ import java.util.*;
 // Uses commands and requests to synchronize data with the backend
 // TODO: Ausbaustufe: Lokaler cache für Daten, damit nicht immer unveränderte Daten nachgeladen werden müssen
 public class FlensburgManagerClientImpl extends FlensburgManager {
-  protected HumanValidator theHumanValidator;
+  protected HumanValidator theHumanValidator = new HumanValidator();
   protected HumanCommandObserver theHumanCommandObserver = new HumanCommandObserver();
   protected PersonCommandObserver thePersonCommandObserver = new PersonCommandObserver();
 
   public static void init(){
     instance = new FlensburgManagerClientImpl();
+  }
+
+  // initialisiert diesen Client Manager und den entsprechenden CommandManager
+  // Code der nach dieser Methode ausgeführt wird, wird im Kontext dieses Clients ausgeführt.
+  // Nützlich zum Testen von Client/Server interaktionen und zum Testen mehrerer Clients
+  // FlensburgManager backendManager wird gebraucht, um ihn beim Ausführen von Commands als Kontext zu benutzten
+  // Somit werden Commands vom Backend ausgeführt und die Antwort in diesem Manager genutzt
+  public void use(FlensburgManager backendManager) {
+    instance = this;
+    CommandManager.initMe(new ClientCommandManager(backendManager));
   }
 
   @Override
@@ -77,44 +83,71 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     flensburgObservers.forEach(obs -> obs.notifyHumanAdded(o.getGemId()));
   }
 
+  protected List<Long> humanListGemIds = new ArrayList<>();
+
   @Override
   protected Collection<Human> _doGetHumanList() {
-    // TODO: theHumanCommandObserver zu jedem Member hinzufügen!
     return new GemList<>(
         this::loadHumanSize,
         this::loadHumanGemIds,
         this::loadHumansByGemIds,
-        this::mapIndexToGemId,
+        this::setIdxToGemIds,
         this::addHumans,
         this::removeHumansWithIndices
     );
   }
 
   private void removeHumansWithIndices(Set<Integer> indices) {
-    // TODO: understand and implement
+    // TODO: soll löschen auf diese Weise erlaubt sein?
+    throw new IllegalStateException("Not supported");
   }
 
   private void addHumans(int index, List<Long> gemIds) {
-    // TODO: understand and implement
+    // TODO: soll erstellen auf diese Weise erlaubt sein?
+    throw new IllegalStateException("Not supported");
   }
 
-  private void mapIndexToGemId(Map<Integer, Long> indicesToGemIds) {
-    // TODO: implement
+  private void setIdxToGemIds(Map<Integer, Long> indicesToGemIds) {
+    for(int i = 0; i< indicesToGemIds.size(); i++){
+      humanListGemIds.add(indicesToGemIds.get(i));
+    }
   }
 
   private List<LoadResult<Human>> loadHumansByGemIds(List<Long> gemIds) {
-    // TODO: eine LazyList zurückgeben, welche per command einzelne Humans nachlädt
-    return Collections.emptyList();
+    List<LoadResult<Human>> res = new ArrayList<>();
+
+    // Optimierung: Einen command um mehrere Objekte gleichzeitig zu laden
+    for (Long gemId : gemIds) {
+      GemResult<Human> resp = CommandManager.executeSingleCommand(new Human_get(CommandManager.getFreeCommandId(), gemId)).asGemResult();
+      Gem<Human> gem = resp.getResult();
+      if(gem.isPresent()){
+        Human human = gem.get();
+        human.addObserver(theHumanCommandObserver);
+        res.add(new LoadResult<>(human));
+      }else{
+        res.add(new LoadResult<>(gem.getLoadingState()));
+      }
+    }
+    return res;
   }
 
   protected int loadHumanSize(){
-    // TODO: impl with commands
-    return 0;
+    CommandResult<Integer> res = CommandManager.executeSingleCommand(new Human_size(CommandManager.getFreeCommandId()));
+    return res.asGemResult().getResult().get();
   }
 
+  private boolean humanGemIdsLoaded = false;
+  private List<Long> humanGemIds = new ArrayList<>();
+
   protected List<Long> loadHumanGemIds(int startIndex, int endIndex) {
-    // TODO: impl with commands
-    return Collections.emptyList();
+    if(!humanGemIdsLoaded) {
+      // TODO: könnte auch teilweise on-demand geladen werden
+      GemResult<List<Long>> res = CommandManager.executeSingleCommand(new Human_ids(CommandManager.getFreeCommandId())).asGemResult();
+      humanGemIds = res.getResult().get();
+      humanGemIdsLoaded = true;
+    }
+
+    return humanGemIds.subList(startIndex, endIndex);
   }
 
   @Override

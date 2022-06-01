@@ -18,11 +18,27 @@ import umlp.command.error.NotImplementedException;
 
 import static umlp.command.error.MontiGemErrorCode.NOT_IMPLEMENTED;
 
-// TODO AHe: Als Mill, sodass das Verhalten im Front und Backend simuliert werden kann? Bei E2E soll die Kommunikation
 // nicht getestet werden, daher aktuell noch nicht notwendig
 public class CommandManager {
+  protected CommandManager(){ }
 
-  // TODO AHe: problem for generics: CommandList can contain commands of multiple types
+  protected static CommandManager instance;
+
+  public static void init(){
+    instance = new CommandManager();
+  }
+
+  public static void initMe(CommandManager commandManager){
+    instance = commandManager;
+  }
+
+  public static CommandManager getInstance() {
+    if(instance == null){
+      instance = new CommandManager();
+    }
+    return instance;
+  }
+
   /**
    * run all given commands
    *
@@ -30,6 +46,10 @@ public class CommandManager {
    * @return a combined response for all the command results
    */
   public static CommandResponse runCommands(CommandList commandList) {
+    return getInstance()._runCommands(commandList);
+  }
+
+  protected CommandResponse _runCommands(CommandList commandList) {
     // create an empty response with the id to identify the response on the other end
     CommandResponse response = new CommandResponse(commandList.getId());
     // EntityTransaction transaction = em.getTransaction();
@@ -78,45 +98,20 @@ public class CommandManager {
   }
 
   public static <T> CommandResult<T> executeSingleCommand(Command<T> command) {
+    return getInstance()._executeSingleCommand(command);
+  }
+
+  protected  <T> CommandResult<T> _executeSingleCommand(Command<T> command) {
     return command.doRun();
   }
 
   protected static long freeCommandId;
   // TODO: Kann das setzten von commandIds intern vom CommandManager übernommen werden?
   public static long getFreeCommandId(){
-    return freeCommandId++;
+    return getInstance()._getFreeCommandId();
   }
 
-
-  /**
-   * deserialize and run commands
-   *
-   * @param jsonCmd all the commands as json
-   * @return the result of the command executions
-   */
-  // TODO AHe: impl
-  // todo: also das Deserialisieren von Objekten ist definitiv nicht hier anzuseiedeln!
-  // Aus sicht des Datenstransfers sind Commands ja auch nichts anderes als Daten, und daher 
-  // dortz zu behandeln, wo die Kommunikation sitzt
-  
-  /*public static CommandResponseDTO manage(String jsonCmd) { // TODO SVa: have the deserialization outside, just handle CommandDTOList?
-    CommandDTOList commandList;
-    Log.debug("MAB0xA000: Manage commands: '" + jsonCmd + "'", CommandManager.class.getName());
-
-    try {
-      // deserialize the command
-      commandList = JsonMarshal.getInstance().unmarshal(jsonCmd, CommandDTOList.class);
-    }
-    catch (JsonException e) {
-      Log.debug("MAB0xA001: Error: " + e.getMessage(), CommandManager.class.getName());
-      return new CommandResponseDTO(-1, MontiGemErrorFactory.deserializeError(e.getMessage() + ": " + jsonCmd));
-    }
-
-    if (commandList == null) {
-      Log.error("MAB0xA002: Empty Command List");
-      return new CommandResponseDTO(-1, MontiGemErrorFactory.resolverError("Empty command list: " + jsonCmd));
-    }
-
-    return runCommands(commandList);
-  }*/
+  protected long _getFreeCommandId() {
+    return freeCommandId++;
+  }
 }

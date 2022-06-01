@@ -46,6 +46,10 @@ public abstract class FlensburgManager {
         return getSingleton()._doGetFreeGemId();
     }
 
+    public static void initMe(FlensburgManager flensburgManager) {
+        instance = flensburgManager;
+    }
+
     protected abstract long _doGetFreeGemId();
 
     /**
