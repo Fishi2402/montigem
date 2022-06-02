@@ -1,60 +1,19 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#--
   The build method is generated to allow object creation.
-
 -->
-${tc.signature("class", "paramList", "allAssociations")}
+${tc.signature("name", "managerName")}
+${cd4c.method("public Optional<${name}> build()")}
 
-<#assign assocUtil = tc.instantiate("umlp.generator.builder.CDAssociationUtil")>
-<#assign transformationUtils = tc.instantiate("umlp.generator.builder.TransformationUtils")>
-<#assign typeHelper = tc.instantiate("umlp.generator.builder.TypeHelper")>
-
-<#if class.isIsAbstract()>
-throw new de.monticore.montigem.rte.be.error.NotImplementedException("${transformationUtils
-.getErrorCode()}: Cannot create ${class.name} object, because it is abstract.");
-<#else>
-<#assign constructorArguments = []>
-
-<#list paramList as attr>
-    <#assign constructorArguments = constructorArguments + ["${attr.getName()}"]>
-</#list>
-
-// Create the actual object
-${class.getName()} newObj = new ${class.getName()}( ${constructorArguments?join(",")} );
-
-// Set the id
-newObj.setUmlpId(umlpId);
-
-if (addToBidirectionalAssociation) {
-<#list allAssociations as assoc>
-    <#if transformationUtils.isBidirectional(assoc)>
-        <#if assocUtil.isSourceOne(assoc) || assocUtil.isSourceOptional(assoc)>
-            <#if assocUtil.isOne(assoc)>
-                ${assocUtil.associationToCDParameter(assoc).getName()}.rawSet${(assocUtil.getOppositeAssociationName(assoc))?cap_first}(newObj);
-            <#elseif assocUtil.isOptional(assoc)>
-                ${assocUtil.associationToCDParameter(assoc).getName()}.ifPresent(o -> o.rawSet${(assocUtil.getOppositeAssociationName(assoc))?cap_first}(newObj));
-            <#elseif assocUtil.isMultiple(assoc)>
-              for (${typeHelper.getFirstTypeArgumentOfGeneric(assocUtil.getAssociationType(assoc))} o : this.${assocUtil.getRoleName(assoc)}) {
-              o.set${(assocUtil.getOppositeAssociationName(assoc))?cap_first}(newObj);
-              }
-            </#if>
-        <#elseif assocUtil.isSourceMultiple(assoc)>
-            <#if assocUtil.isOne(assoc)>
-                ${assocUtil.associationToCDParameter(assoc).getName()}.add${(assocUtil.getOppositeAssociationName(assoc))?cap_first}(newObj);
-            <#elseif assocUtil.isOptional(assoc)>
-                ${assocUtil.associationToCDParameter(assoc).getName()}.ifPresent(o -> o.add${(assocUtil.getOppositeAssociationName(assoc))?cap_first}(newObj));
-            <#elseif assocUtil.isMultiple(assoc)>
-              for (${typeHelper.getFirstTypeArgumentOfGeneric(assocUtil.getAssociationType(assoc))} o : this.${assocUtil.getRoleName(assoc)}) {
-              o.add${(assocUtil.getOppositeAssociationName(assoc))?cap_first}(newObj);
-              }
-            </#if>
-        </#if>
-    </#if>
-</#list>
+if (!buildFinished) {
+  if (validator.buildingCheck(this)) {
+    ${managerName}.add${name}(this);
+    notifyObservers();      //+ an initial notification
+    buildFinished = true;
+    return Optional.of(this);
+  }
 }
+return Optional.empty();
 
-  // Result<Boolean, String> validationMessages = ${class.getName()}Validator.getValidator().getValidationErrors(newObj);
-  // validationMessages.throwOnError(validationMessages.isErr() ? new ValidationException(validationMessages.getErr()) : null);
 
-  return newObj;
-</#if>
+

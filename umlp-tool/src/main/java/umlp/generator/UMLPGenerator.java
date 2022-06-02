@@ -3,6 +3,7 @@ package umlp.generator;
 
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd4analysis.trafo.CDAssociationCreateFieldsFromNavigableRoles;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
@@ -15,7 +16,6 @@ import de.se_rwth.commons.logging.Log;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp.generator.decorator.BuilderDecorator;
 import umlp.generator.decorator.DomainClassDecorator;
-import umlp.generator.decorator.TopDecorator;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -56,7 +56,7 @@ public class UMLPGenerator {
     cDAssociationCreateFieldsFromNavigableRoles.setTraverser(CD4CodeMill.traverser());
 
     domainClassDecorator = new DomainClassDecorator(genSetup.getGlex());
-    builderDecorator = new BuilderDecorator(genSetup.getGlex(), genSetup.getHandcodedPath());
+    builderDecorator = new BuilderDecorator(genSetup.getGlex());
     topDecorator = new TopDecorator(genSetup.getHandcodedPath());
   }
 
@@ -66,13 +66,12 @@ public class UMLPGenerator {
     ASTCDCompilationUnit cdAST = UMLP2CDTrafo.run(modelAST);
     logTrafoExec("UMLP2CDTrafo", cdAST);
 
-    // Integrate Suffixes for TOP mechanism
-    topDecorator.decorate(cdAST);
-    logTrafoExec("TopDecorator", cdAST);
-
     // execute some basic CD-AST trafos (e.g., put everything in packages)
     cD4CodeAfterParseTrafo.transform(cdAST);
     logTrafoExec("CD4AnalysisAfterParseTrafo", cdAST);
+
+    UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
+    logTrafoExec("createCD4CodeSymTab", cdAST);
 
     cD4CodeTrafo4Defaults.transform(cdAST);
     logTrafoExec("CD4CodeTrafo4Defaults", cdAST);
@@ -81,21 +80,26 @@ public class UMLPGenerator {
     cDAssociationCreateFieldsFromNavigableRoles.transform(cdAST);
     logTrafoExec("CDAssociationCreateFieldsFromNavigableRoles", cdAST);
 
-    domainClassDecorator.transform(cdAST);
-    logTrafoExec("DomainClassDecorator", cdAST);
     UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
+    logTrafoExec("createCD4CodeSymTab", cdAST);
+
+    ASTCDCompilationUnit decoratedAST = UMLP2CDTrafo.createCompilationUnit(cdAST);
+
+    domainClassDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("DomainClassDecorator", cdAST);
 
     // Generate builder classes
-    builderDecorator.transform(cdAST);
+    builderDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("BuilderDecorator", cdAST);
-    UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
 
     // TODO hier weitere trafos realisieren
 
-//    UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
+
+    // Top-Decorator
+    topDecorator.decorate(decoratedAST);
 
     // translate the CD-AST into Java with the CD Generator
-    cdGenerator.generate(cdAST);
+    cdGenerator.generate(decoratedAST);
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){

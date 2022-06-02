@@ -2,6 +2,7 @@
 package umlp;
 
 import de.monticore.cd._parser.CDAfterParseHelper;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
@@ -143,6 +144,7 @@ public class UMLPTool extends UMLPToolTOP {
       UMLPGenerator generator = new UMLPGenerator(genSetup);
       //generator.generate(ast);
 
+      CD4C.init(genSetup);
       String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
       TemplateController tc = genSetup.getNewTemplateController(configTemplate);
       TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);

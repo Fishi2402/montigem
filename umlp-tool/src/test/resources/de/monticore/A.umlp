@@ -1,5 +1,7 @@
 umlp A {
-  class Foo;
+  class Foo {
+    int count;
+  }
   public class Bar;
   association Foo -> Bar;
 }

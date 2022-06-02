@@ -3,7 +3,6 @@
 package umlptest;
 
 import de.monticore.cd._parser.CDAfterParseHelper;
-import de.monticore.cd4analysis._symboltable.CD4AnalysisSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
@@ -49,7 +48,8 @@ public abstract class AbstractUMLPTest {
     assertTrue(m.toFile().exists());
     try {
       Optional<ASTUMLPCompilationUnit> ast = parser.parse(m.toString());
-      return ast.orElse(null);
+      assertTrue(ast.isPresent());
+      return ast.get();
     }
     catch (IOException e) {
       e.printStackTrace();

@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class UMLPGeneratorTest extends AbstractUMLPTest {
 
   @Test
-  @Disabled
   public void testGenerateMethod() {
     ASTUMLPCompilationUnit ast = parse("de/monticore/A.umlp");
     createSymTab(ast);

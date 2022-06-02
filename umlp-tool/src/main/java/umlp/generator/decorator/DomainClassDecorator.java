@@ -1,111 +1,128 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package umlp.generator.decorator;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd.methodtemplates.CD4C;
-import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cd4codebasis._ast.ASTCDParameter;
-import de.monticore.cdassociation._symboltable.CDRoleSymbol;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
-import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.umlmodifier._ast.ASTModifier;
+import umlp.UMLPMill;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.builder.CDAssociationUtil.getRoleName;
-import static umlp.generator.builder.CDAssociationUtil.getAssociationType;
+import static de.monticore.cd.facade.CDModifier.*;
+import static umlp.generator.decorator.GenService.createInitialValue;
 
 public class DomainClassDecorator extends AbstractDecorator {
 
-    public static final String UMLP_ID_NAME = "umlpId";
 
-    public DomainClassDecorator(GlobalExtensionManagement glex) {
-        super(glex);
+  public DomainClassDecorator(final GlobalExtensionManagement glex) {
+    super(glex);
+  }
+
+  public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
+    String name = origCD.getCDDefinition().getName();
+    origCD.getCDDefinition().getCDClassesList().forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
+  }
+
+  protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
+    ASTCDExtendUsage extendUsage;
+    if (domainClass.isPresentCDExtendUsage()) {
+      extendUsage = getExtendUsageFacade().createCDExtendUsage(domainClass.getCDExtendUsage().getSuperclass(0).deepClone());
+    } else {
+      extendUsage = getExtendUsageFacade().createCDExtendUsage("Observable");
     }
+    ASTModifier modifier = domainClass.getModifier().isAbstract() ? PUBLIC_ABSTRACT.build() : PUBLIC.build();
+    ASTCDClass clazz = UMLPMill.cDClassBuilder()
+            .setModifier(modifier)
+            .setCDExtendUsage(extendUsage)
+            .setName(domainClass.getName()).build();
+    glex.replaceTemplate("cd2java.Annotations", clazz,
+            new TemplateHookPoint("umlp.domain.ClassAnnotations", clazz.getName()));
 
-    public final void transform(ASTCDCompilationUnit topCD) {
-        checkNotNull(topCD);
-        checkNotNull(topCD.getCDDefinition());
+    // Constructors
+    getCD4C().addConstructor(clazz, "umlp.domain.Constructor", domainClass.getName());
 
-        ASTMCQualifiedName mcQualifiedName = topCD.getMCPackageDeclaration().getMCQualifiedName(); // TODO check case without package declaration
-        List<ASTCDClass> cdClassesList = topCD.getCDDefinition().getCDClassesList();
-        for (ASTCDClass clazz : cdClassesList) {
-            if (!clazz.isPresentCDExtendUsage()) {
-                ASTCDAttribute umlpIdAttribute = createUMLPIdAttribute();
-                clazz.addCDMember(umlpIdAttribute);
-                clazz.addAllCDMembers(createAccessMethodsForAssociations(Lists.newArrayList(umlpIdAttribute)));
-            }
+    // Attributes
+    List<ASTCDAttribute> attrList = Lists.newArrayList();
+    attrList.addAll(getAttributesForFields(domainClass));
+    attrList.addAll(getAttributesForAssociations(domainClass));
+    clazz.addAllCDMembers(attrList);
 
-            Collection<ASTCDAttribute> attributesForAssociations =
-                    createAttributesForAssociations(clazz.getSymbol().getCDRoleList(), clazz, mcQualifiedName);
-            // TODO bug: clazz.getCDRoleList() gives empty list, although clazz.getSymbol().getCDRoleList() does not
-            clazz.addAllCDMembers(attributesForAssociations);
-            clazz.addAllCDMembers(createAccessMethodsForAssociations(attributesForAssociations));
-            addImports(clazz, attributesForAssociations);
-            clazz.addCDMember(createNoArgumentConstructor(clazz));
-            clazz.addCDMember(createAllArgumentsConstructor(clazz));
-            // clazz.setCDExtendUsage(addExtendObservable());
-        }
+    // Attribute gemId
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(PROTECTED.build(), "long", "gemId");
+    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("-32"));
+    glex.replaceTemplate("cd2java.Annotations", attr,
+            new TemplateHookPoint("umlp.domain.GemAnnotations"));
+    attr.getModifier().setDerived(true);
+    clazz.addCDMember(attr);
+
+    // Methods
+    createGetterSetterMethods(domainClass, clazz, clazz.getCDAttributeList());
+    getCD4C().addMethod(clazz, "umlp.domain.Init");
+    getCD4C().addMethod(clazz, "umlp.domain.Build", domainClass.getName());
+
+    // Imports
+    addImports(clazz);
+
+    return clazz;
+  }
+
+  protected List<ASTCDAttribute> getAttributesForFields(ASTCDClass domainClass) {
+    List<ASTCDAttribute> attributesList = Lists.newLinkedList();
+    List<ASTCDAttribute> visibleAttributes = domainClass.getCDAttributeList().stream()
+            .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
+
+    // get all visible parameters
+    for (ASTCDAttribute visibleAttribute : visibleAttributes) {
+      ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+              visibleAttribute.getMCType().deepClone(), visibleAttribute.getName());
+      glex.replaceTemplate("cd2java.Annotations", attribute,
+              new TemplateHookPoint("umlp.domain.AttributeAnnotations", domainClass.getName()));
+      attributesList.add(attribute);
     }
+    return attributesList;
+  }
 
-    private ASTCDConstructor createNoArgumentConstructor(ASTCDClass clazz) {
-        return getCDConstructorFacade().createConstructor(PUBLIC.build(), clazz.getName());
+  protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDClass domainClass) {
+    List<ASTCDAttribute> attrList = Lists.newLinkedList();
+    List<ASTCDAssocSide> associations = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+            .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
+
+    // handle associations
+    for (ASTCDAssocSide association : associations) {
+      ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+              association.getSymbol().getType().print(), association.getName());
+      attribute.setInitial(createInitialValue(association.getSymbol().getType()));
+      attrList.add(attribute);
     }
+    return attrList;
+  }
 
-    private ASTCDConstructor createAllArgumentsConstructor(ASTCDClass clazz) {
-        List<ASTCDParameter> constructorParameters = getConstructorParameters(clazz, false);
-        return getCDConstructorFacade().createConstructor(PUBLIC.build(), clazz.getName(),constructorParameters);
+  protected void createGetterSetterMethods(ASTCDClass domainClass, ASTCDClass clazz,
+                                           List<ASTCDAttribute> attrList) {
+    MethodDecorator methodDecoarator = new MethodDecorator(glex);
+    List<ASTCDMethod> methodList = Lists.newArrayList();
+    for (ASTCDAttribute attribute : attrList) {
+      methodList.addAll(methodDecoarator.decorate(attribute));
     }
+    clazz.addAllCDMembers(methodList);
+  }
 
-    private Collection<ASTCDAttribute> createAttributesForAssociations(List<CDRoleSymbol> cdRoles, ASTCDClass clazz, ASTMCQualifiedName rootPackage) {
-        List<ASTCDAttribute> attributes = Lists.newArrayList();
-        for (CDRoleSymbol cdRole : cdRoles) {
-            CDTypeSymbol typeInfo = (CDTypeSymbol) cdRole.getType().getTypeInfo();
-            String packageName = typeInfo.getPackageName();
-            ASTCDClass astNode = (ASTCDClass) typeInfo.getAstNode();
-            attributes.add(getCDAttributeFacade().createAttribute(PROTECTED.build(), getAssociationType(cdRole),
-                    getRoleName(cdRole)));
-            addImport(clazz, typeInfo.getName(), rootPackage);
-        }
-        return attributes;
-    }
+  protected void addImports(ASTCDType clazz) {
+    getCD4C().addImport(clazz, "java.util.List");
+    getCD4C().addImport(clazz, "java.util.Optional");
+    getCD4C().addImport(clazz, "java.util.Observable");
+    getCD4C().addImport(clazz, "umlp.rte.GemIdentifiable");
+    getCD4C().addImport(clazz, "org.hibernate.annotations.GenericGenerator");
+    getCD4C().addImport(clazz, "javax.persistence.*");
+  }
 
-    private Collection<ASTCDMethod> createAccessMethodsForAssociations(Collection<ASTCDAttribute> attributes) {
-        List<ASTCDMethod> methods = Lists.newArrayList();
-        for (ASTCDAttribute attribute : attributes) {
-            methods.add(createGetterMethod(attribute));
-            methods.add(createSetterMethod(attribute));
-        }
-        return methods;
-    }
-
-    private ASTCDAttribute createUMLPIdAttribute() {
-        return getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-                "Long", UMLP_ID_NAME);
-    }
-
-    private void addImports(ASTCDClass clazz, Collection<ASTCDAttribute> attributes) {
-        CD4C instance = CD4C.getInstance();
-        for (ASTCDAttribute attribute : attributes) {
-
-        }
-        // instance.addImport(clazz, "java.util.List");
-        // getGlex().replaceTemplate("cd2java.Imports", clazz, new StringHookPoint(""));
-    }
-
-    private void addImport(ASTCDClass clazz, String name, ASTMCQualifiedName rootPackage) {
-        CD4C instance = CD4C.getInstance();
-        String qName = rootPackage.getQName();
-        instance.addImport(clazz, qName.concat(".").concat(name));
-    }
-
-    private ASTCDExtendUsage addExtendObservable() {
-        return getExtendUsageFacade().createCDExtendUsage("java.util.Observable");
-    }
 }

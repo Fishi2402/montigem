@@ -41,8 +41,6 @@ public class UMLP2CDTrafo {
       cdAST.setMCPackageDeclaration(umlpAST.getMCPackageDeclaration());
     }
 
-    createCD4CodeSymTab(cdAST);
-
     return cdAST;
   }
 
@@ -54,6 +52,12 @@ public class UMLP2CDTrafo {
     CD4CodeMill.globalScope().addAdaptedTypeSymbolResolver(new Class2MCResolver());
     CD4CodeMill.scopesGenitorDelegator().createFromAST(cdAST);
     cdAST.accept(new CD4CodeSymbolTableCompleter(cdAST).getTraverser());
+  }
+
+  public static ASTCDCompilationUnit createCompilationUnit(ASTCDCompilationUnit cd) {
+    ASTCDCompilationUnit newCD = cd.deepClone();
+    newCD.getCDDefinition().clearCDElements();
+    return newCD;
   }
 
 }
