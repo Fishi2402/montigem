@@ -12,7 +12,7 @@ import java.util.Optional;
 // GEN-P
 
 // TODO AHe: alle get commands entfernen, aus mail von BR: Daten holen: Da spricht man direkt mit dem Manager, Client- wie Serverseitig
-public class Address_get extends Command {
+public class Address_get extends Command<Address> {
   protected final int gemId;
 
   protected Address_get(long commandId, int gemId) {
@@ -29,9 +29,9 @@ public class Address_get extends Command {
   public GemResult<Address> doRun() throws MontiGemError {
     Optional<Address> address = FlensburgManager.addressOpt(gemId);
     if(address.isPresent()){
-      return new GemResult<>(getId(), new Gem<>(address.get()));
+      return new GemResult<>(getId(), new Gem<>(address.get()), "hardy.Address");
     } else {
-      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY));
+      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY), "hardy.Address");
     }
   }
 }

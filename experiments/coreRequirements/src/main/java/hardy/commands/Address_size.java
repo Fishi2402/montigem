@@ -19,7 +19,7 @@ public class Address_size extends Command<Integer> {
   @Override
   public GemResult<Integer> doRun() {
     // TODO: Optimieren, Liste muss nicht ganz geladen werden
-    return new GemResult<>(getId(), new Gem<>(FlensburgManager.getAddressList().size()));
+    return new GemResult<>(getId(), new Gem<>(FlensburgManager.getAddressList().size()), "java.lang.Integer");
   }
 
   // undo macht keinen Sinn

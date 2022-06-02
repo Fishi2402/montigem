@@ -28,9 +28,9 @@ public class Human_get extends Command<Human> {
   public GemResult<Human> doRun() throws MontiGemError {
     Optional<Human> human = FlensburgManager.humanOpt(gemId);
     if(human.isPresent()){
-      return new GemResult<>(getId(), new Gem<>(human.get()));
+      return new GemResult<>(getId(), new Gem<>(human.get()), "hardy.Human");
     } else {
-      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY));
+      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY), "hardy.Human");
     }
   }
 }

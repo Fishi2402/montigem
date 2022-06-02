@@ -20,7 +20,7 @@ import java.util.Optional;
 @Entity
 @Table(name = "human")
 public class Human implements GemIdentifiable {
-    protected List<HumanObserver> humanObservers = new ArrayList<>();
+    transient protected List<HumanObserver> humanObservers = new ArrayList<>();
 
     // gemId: ------------------------------------------
     //+ Special attribute gemID is used to identify this object

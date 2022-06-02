@@ -23,6 +23,6 @@ public class GetFreeGemIdRequest extends Command<Long> {
 
   @Override
   public GemResult<Long> doRun() {
-    return new GemResult<>(getId(), new Gem<>(FlensburgManager.getFreeGemId()));
+    return new GemResult<>(getId(), new Gem<>(FlensburgManager.getFreeGemId()), "java.lang.Long");
   }
 }

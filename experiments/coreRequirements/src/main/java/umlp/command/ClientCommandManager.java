@@ -5,8 +5,11 @@ package umlp.command;
 import hardy.FlensburgManager;
 
 // Simulation des CommandManagers im Client.
-// Aktuell werden zum Ausführen eines Commands der Backend-Kontext wiederhergestellt und der Command dann ausgeführt.
-// Dadurch wird die (De-)serialisierung nicht genutzt.
+// Aktuell werden zum Ausführen eines Commands der Backend-Kontext wiederhergestellt,
+// und der Command ausgeführt.
+// Das result wird serialisiert und dann deserialisiert bevor es an den Client weitergeleitet wird.
+// Die (de)-serialisierung sorgt dafür, dass unterschiedliche Instanzen der verschickten Objekte erstellt werden,
+// wodurch sich die Datensynchronisierung testen lässt.
 public class ClientCommandManager extends CommandManager{
   protected FlensburgManager backendManager;
 
@@ -23,10 +26,14 @@ public class ClientCommandManager extends CommandManager{
 
     // Exec command
     CommandResult<T> res = CommandManager.executeSingleCommand(command);
+    // Use (de)-serialization to simulate Communication
+    String resStr = CommandObjectMapper.serializeResponse(res);
+    CommandResult<?> recreatedRes = CommandObjectMapper.deserializeResponse(resStr);
+
 
     // Restore FlensburgManager and CommandManager to client
     FlensburgManager.initMe(clientManager);
     instance = this;
-    return res;
+    return (CommandResult<T>) recreatedRes;
   }
 }

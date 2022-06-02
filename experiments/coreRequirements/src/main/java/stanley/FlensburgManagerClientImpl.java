@@ -142,7 +142,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected List<Long> loadHumanGemIds(int startIndex, int endIndex) {
     if(!humanGemIdsLoaded) {
       // TODO: könnte auch teilweise on-demand geladen werden
-      GemResult<List<Long>> res = CommandManager.executeSingleCommand(new Human_ids(CommandManager.getFreeCommandId())).asGemResult();
+      GemResult<LongList> res = CommandManager.executeSingleCommand(new Human_ids(CommandManager.getFreeCommandId())).asGemResult();
       humanGemIds = res.getResult().get();
       humanGemIdsLoaded = true;
     }

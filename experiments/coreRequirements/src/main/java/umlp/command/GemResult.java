@@ -5,8 +5,8 @@ import umlp.rte.Gem;
 public class GemResult<T> extends CommandResult<T> {
   private final Gem<T> result;
 
-  public GemResult(long id, Gem<T> result) {
-    super(id);
+  public GemResult(long id, Gem<T> result, String gemTypeParameter) {
+    super(id, gemTypeParameter);
     this.result = result;
   }
 

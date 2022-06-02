@@ -11,8 +11,12 @@ package umlp.command;
 public abstract class CommandResult<T> {
   protected long commandId;
 
-  protected CommandResult(long id) {
+  // Wird genutzt um gson den Typ des Type Parameters T zum deserialisieren mitzuteilen
+  protected final String typeParameter;
+
+  protected CommandResult(long id, String typeParameter) {
     this.commandId = id;
+    this.typeParameter = typeParameter;
   }
 
   public long getCommandId() {

@@ -11,7 +11,7 @@ import umlp.rte.LoadingState;
 import java.util.Optional;
 // GEN-P
 
-public class Car_get extends Command {
+public class Car_get extends Command<Car> {
   protected final int gemId;
 
   protected Car_get(long commandId, int gemId) {
@@ -28,9 +28,9 @@ public class Car_get extends Command {
   public GemResult<Car> doRun() throws MontiGemError {
     Optional<Car> car = FlensburgManager.carOpt(gemId);
     if(car.isPresent()){
-      return new GemResult<>(getId(), new Gem<>(car.get()));
+      return new GemResult<>(getId(), new Gem<>(car.get()), "hardy.Car");
     } else {
-      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY));
+      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY), "hardy.Car");
     }
   }
 }

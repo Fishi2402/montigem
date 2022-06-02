@@ -21,7 +21,7 @@ public class Human_size extends Command<Integer> {
   @Override
   public GemResult<Integer> doRun() {
     // TODO: Optimieren, Liste muss nicht ganz geladen werden
-    return new GemResult<>(getId(), new Gem<>(FlensburgManager.getHumanList().size()));
+    return new GemResult<>(getId(), new Gem<>(FlensburgManager.getHumanList().size()), "java.lang.Integer");
   }
 
   // undo macht keinen Sinn

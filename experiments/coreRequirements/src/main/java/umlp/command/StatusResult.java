@@ -11,7 +11,7 @@ import java.util.Optional;
 public class StatusResult extends CommandResult<Void> {
   protected Optional<MontiGemError> error;
   protected StatusResult(long id, MontiGemError error) {
-    super(id);
+    super(id, "java.lang.Void");
     this.error = Optional.ofNullable(error);
   }
 

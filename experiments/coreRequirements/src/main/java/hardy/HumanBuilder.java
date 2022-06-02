@@ -9,11 +9,11 @@ import java.util.Optional;
 
 public class HumanBuilder extends Human {
 
-    protected boolean buildFinished = false;
+    transient protected boolean buildFinished = false;
 
-    protected boolean agePresent = false;
+    transient protected boolean agePresent = false;
 
-    HumanValidator validator;
+    transient HumanValidator validator;
 
     public HumanBuilder(long gemId, HumanValidator validator) {
        this.gemId = gemId;

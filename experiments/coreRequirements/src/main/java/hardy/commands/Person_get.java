@@ -26,11 +26,11 @@ public class Person_get extends Command {
 
   @Override
   public GemResult<Person> doRun() throws MontiGemError {
-    Optional<Person> human = FlensburgManager.personOpt(gemId);
-    if(human.isPresent()){
-      return new GemResult<>(getId(), new Gem<>(human.get()));
+    Optional<Person> person = FlensburgManager.personOpt(gemId);
+    if(person.isPresent()){
+      return new GemResult<>(getId(), new Gem<>(person.get()), "hardy.Person");
     } else {
-      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY));
+      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY), "hardy.Person");
     }
   }
 }
