@@ -12,9 +12,8 @@ import umlp.rte.Gem;
 // Wird von der GemList zurückgegeben von FlensburgManagerClientImpl#getHumanList
 // gebraucht, um die Humans später nachzuladen
 public class Human_ids extends Command<LongList> {
-  public Human_ids(long id){
+  public Human_ids(){
     super(
-        id,
         "hardy.commands.Human_ids"
     );
   }

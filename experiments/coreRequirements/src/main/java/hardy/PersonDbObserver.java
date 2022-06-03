@@ -13,7 +13,7 @@ import javax.persistence.criteria.Root;
 public class PersonDbObserver implements PersonObserver{
 
     @Override
-  public void updateAge(Human h, int age) {
+  public void notifySetAge(Human h, int age) {
     Session session = DatabaseAccessManager.getSession();
     CriteriaBuilder builder = session.getCriteriaBuilder();
     CriteriaUpdate<Person> update = builder.createCriteriaUpdate(Person.class);

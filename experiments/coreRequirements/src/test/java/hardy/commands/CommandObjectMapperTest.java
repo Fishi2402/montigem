@@ -18,9 +18,8 @@ public class CommandObjectMapperTest {
 
   @Test
   public void testCommandRoundtrip(){
-    int commandId = 1;
     int gemId = 1001;
-    Command<Human> getHuman = new Human_get(commandId, gemId);
+    Command<Human> getHuman = new Human_get(gemId);
     String commandStr = CommandObjectMapper.serializeCommand(getHuman);
 
     Command<?> resultUnknown = CommandObjectMapper.deserializeCommand(commandStr);
@@ -29,7 +28,7 @@ public class CommandObjectMapperTest {
     assertTrue(resultUnknown instanceof Human_get);
     Human_get known = (Human_get) resultUnknown;
 
-    assertEquals(commandId, known.getId());
+    assertEquals(getHuman.getId(), known.getId());
     assertEquals(gemId, known.gemId);
   }
 

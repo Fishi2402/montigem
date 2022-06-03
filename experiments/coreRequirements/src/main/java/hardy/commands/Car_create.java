@@ -10,9 +10,8 @@ import umlp.command.error.MontiGemError;
 public class Car_create extends Command {
   protected final Car car;
 
-  protected Car_create(long commandId, Car car) {
+  protected Car_create(Car car) {
     super(
-        commandId,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Car_create"
     );

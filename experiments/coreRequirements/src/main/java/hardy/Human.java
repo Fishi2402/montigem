@@ -4,6 +4,7 @@ package hardy;
 
 import org.hibernate.annotations.GenericGenerator;
 import umlp.rte.GemIdentifiable;
+import umlp.rte.NotificationScope;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -71,9 +72,13 @@ public class Human implements GemIdentifiable {
         return this.age;
     }
 
-    public void setAge(Integer o) {
+    public void setAge(Integer o){
+        this.setAge(o, NotificationScope.ALL);
+    }
+
+    public void setAge(Integer o, NotificationScope scope) {
         this.age = o;
-        humanObservers.forEach(obs -> obs.updateAge(this, o));
+        humanObservers.forEach(obs -> obs.maybeNotifySetAge(this, o, scope));
     }
 
     public void addObserver(HumanObserver o){

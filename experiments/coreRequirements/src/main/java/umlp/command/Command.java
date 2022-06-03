@@ -15,12 +15,17 @@ public abstract class Command<T> {
   // Ansonsten können parallel ankommende Responses nicht eindeutig ihren Commands zugeordnet werden.
   private long id;
 
+  // Id des Clients der diesen Command erstellt hat.
+  // Hiermit wird sichergestellt, dass ein Client keine Commands zurückgeschickt bekommt, die von ihm erstellt wurden
+  private long participantId;
+
   // Identifiziert den typen des Commands
   // Wird bei der Deserialisierung benötigt um die korrekte Subklasse von Command zu instanziieren
   private final String commandType;
 
-  protected Command(long id, String commandType) {
-    this.id = id;
+  protected Command(String commandType) {
+    this.id = CommandManager.getFreeCommandId();
+    this.participantId = CommandManager.getParticipantId();
     this.commandType = commandType;
   }
 
@@ -57,5 +62,16 @@ public abstract class Command<T> {
 
   public String getCommandType(){
     return commandType;
+  }
+
+  public long getParticipantId(){
+    return participantId;
+  }
+
+  // Ein request verändert die Daten nicht und muss daher nicht an andere Clients weitergeleitet werden
+  // z.B Human_get.
+  // Um die technische Umsetzung zu vereinfachen, nutzen Requests dieselbe Infrastruktur wie Commands
+  public boolean isRequest(){
+    return false;
   }
 }

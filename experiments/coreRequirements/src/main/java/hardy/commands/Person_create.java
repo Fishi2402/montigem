@@ -15,9 +15,8 @@ public class Person_create extends Command {
   protected final Person person;
 
   // todo: implementierung? oder zumindest mal erklären, was das Command nun wirklich macht
-  protected Person_create(long commandId, Person person) {
+  protected Person_create(Person person) {
     super(
-        commandId,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Human_set_age"
     );

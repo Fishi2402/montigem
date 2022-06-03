@@ -8,9 +8,8 @@ import umlp.command.GemResult;
 import umlp.rte.Gem;
 
 public class Address_size extends Command<Integer> {
-  public Address_size(long commandId) {
+  public Address_size() {
     super(
-        commandId,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Address_size"
     );

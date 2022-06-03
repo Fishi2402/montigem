@@ -2,7 +2,7 @@ package umlp.command;
 
 // RTE4T
 
-import hardy.FlensburgManager;
+import stanley.FlensburgTestContext;
 
 // Simulation des CommandManagers im Client.
 // Aktuell werden zum Ausführen eines Commands der Backend-Kontext wiederhergestellt,
@@ -11,29 +11,46 @@ import hardy.FlensburgManager;
 // Die (de)-serialisierung sorgt dafür, dass unterschiedliche Instanzen der verschickten Objekte erstellt werden,
 // wodurch sich die Datensynchronisierung testen lässt.
 public class ClientCommandManager extends CommandManager{
-  protected FlensburgManager backendManager;
+  protected FlensburgTestContext backendContext;
+  // Wegen beidseitiger navigation muss dieser per setter gesetzt werden
+  protected FlensburgTestContext clientContext;
 
-  public ClientCommandManager(FlensburgManager backendManager){
-    this.backendManager = backendManager;
+  public ClientCommandManager(FlensburgTestContext backendContext){
+    this.backendContext = backendContext;
+    participantId = backendContext.getCommandManager()._subscribe(new CommandSubscription() {
+      @Override
+      public <T> void sendCommand(Command<T> command) {
+        // TODO: Local error handling
+        clientContext.activate();
+        command.doRun();
+        backendContext.activate();
+      }
+    });
+  }
+
+  public FlensburgTestContext getClientContext() {
+    return clientContext;
+  }
+
+  public void setClientContext(FlensburgTestContext clientContext) {
+    this.clientContext = clientContext;
   }
 
   @Override
   protected <T> CommandResult<T> _executeSingleCommand(Command<T> command) {
-    // Set FlensburgManager and CommandManager to backend
-    FlensburgManager clientManager = FlensburgManager.getSingleton();
-    FlensburgManager.initMe(backendManager);
-    CommandManager.init();
+    backendContext.activate();
+    // Use (de)-serialization both ways to simulate Communication
+    // Also effectively clones objects, allowing us to test the sync mechanisms
 
-    // Exec command
-    CommandResult<T> res = CommandManager.executeSingleCommand(command);
-    // Use (de)-serialization to simulate Communication
+    String cmdStr = CommandObjectMapper.serializeCommand(command);
+    Command<?> recreatedCommand = CommandObjectMapper.deserializeCommand(cmdStr);
+
+    CommandResult<?> res = CommandManager.executeSingleCommand(recreatedCommand);
+
     String resStr = CommandObjectMapper.serializeResponse(res);
     CommandResult<?> recreatedRes = CommandObjectMapper.deserializeResponse(resStr);
 
-
-    // Restore FlensburgManager and CommandManager to client
-    FlensburgManager.initMe(clientManager);
-    instance = this;
+    clientContext.activate();
     return (CommandResult<T>) recreatedRes;
   }
 }

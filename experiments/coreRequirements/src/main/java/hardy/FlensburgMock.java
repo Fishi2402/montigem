@@ -17,6 +17,7 @@ package hardy;
   
 */
 
+import stanley.HumanCommandObserver;
 import umlp.rte.HashMapWithOrderedKeys;
 
 import java.util.ArrayList;
@@ -27,8 +28,10 @@ import java.util.Optional;
 public class FlensburgMock extends FlensburgManager {
 
   // initializes Static Singleton with subclass
-  public static void init() {
-    FlensburgManager.setInstance(new FlensburgMock());
+  public static FlensburgMock init() {
+    FlensburgMock i = new FlensburgMock();
+    FlensburgManager.setInstance(i);
+    return i;
   }
 
   protected static FlensburgDummyProvider dummyProvider;
@@ -123,6 +126,8 @@ public class FlensburgMock extends FlensburgManager {
   // --- Class Human ---
   protected HashMapWithOrderedKeys<Long, Human> humans = new HashMapWithOrderedKeys<>();
   protected HumanValidator theHumanValidator = new HumanValidator();
+  // TODO: for all classes
+  protected HumanCommandObserver theHumanCommandObserver = new HumanCommandObserver();
 
   @Override
   protected HumanBuilder _doHuman() {
@@ -131,13 +136,20 @@ public class FlensburgMock extends FlensburgManager {
 
   @Override
   protected Optional<Human> _doHumanOpt(long gemId) {
+    Human value = null;
     if(humans.containsKey(gemId)){
-      return Optional.of(humans.get(gemId));
+      value = humans.get(gemId);
     } else if(dummyProvider != null) {
-      return Optional.of(dummyProvider.inventHuman());
+      value = dummyProvider.inventHuman();
     } else {
       return Optional.empty();
     }
+
+    if(!value.containsObserver(theHumanCommandObserver)){
+      value.addObserver(theHumanCommandObserver);
+    }
+
+    return Optional.of(value);
   }
 
   @Override
@@ -148,6 +160,9 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doAddHuman(Human o) {
     humans.put(o.getGemId(), o);
+    if(!o.containsObserver(theHumanCommandObserver)){
+      o.addObserver(theHumanCommandObserver);
+    }
     flensburgObservers.forEach(obs -> obs.notifyHumanAdded(o.getGemId()));
   }
 
@@ -155,7 +170,8 @@ public class FlensburgMock extends FlensburgManager {
   protected Collection<Human> _doGetHumanList() {
     if(dummyProvider != null){
       while (humans.size() < dummyProvider.getMaxHumans()){
-        dummyProvider.inventHuman();
+        Human h = dummyProvider.inventHuman();
+        h.addObserver(theHumanCommandObserver);
       }
     }
     return humans.values();

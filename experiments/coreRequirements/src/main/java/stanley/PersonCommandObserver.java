@@ -16,27 +16,27 @@ import umlp.command.CommandManager;
 public class PersonCommandObserver implements PersonObserver {
 
   @Override
-  public void updateAge(Human h, int age) {
-    CommandManager.executeSingleCommand(new Person_setAge(CommandManager.getFreeCommandId(), h.getGemId(), age));
+  public void notifySetAge(Human h, int age) {
+    CommandManager.executeSingleCommand(new Person_setAge(h.getGemId(), age));
   }
 
   @Override
   public void updateNickname(Person p, String nickname) {
-    CommandManager.executeSingleCommand(new Person_setNickname(CommandManager.getFreeCommandId(), p.getGemId(), nickname));
+    CommandManager.executeSingleCommand(new Person_setNickname(p.getGemId(), nickname));
   }
 
   @Override
   public void updateMainResidence(Person p, long mainResidenceGemId) {
-    CommandManager.executeSingleCommand(new Person_setMainResidence(CommandManager.getFreeCommandId(), p.getGemId(), mainResidenceGemId));
+    CommandManager.executeSingleCommand(new Person_setMainResidence(p.getGemId(), mainResidenceGemId));
   }
 
   @Override
   public void addOwns(Person p, long carGemId) {
-    CommandManager.executeSingleCommand(new Person_addOwns(CommandManager.getFreeCommandId(), p.getGemId(), carGemId));
+    CommandManager.executeSingleCommand(new Person_addOwns(p.getGemId(), carGemId));
   }
 
   @Override
   public void removeOwns(Person p, long carGemId) {
-    CommandManager.executeSingleCommand(new Person_removeOwns(CommandManager.getFreeCommandId(), p.getGemId(), carGemId));
+    CommandManager.executeSingleCommand(new Person_removeOwns(p.getGemId(), carGemId));
   }
 }

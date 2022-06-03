@@ -3,20 +3,19 @@ package hardy.commands;
 
 import hardy.FlensburgManager;
 import hardy.Human;
-import umlp.command.Command;
 import umlp.command.GemResult;
 import umlp.command.error.MontiGemError;
+import umlp.request.Request;
 import umlp.rte.Gem;
 import umlp.rte.LoadingState;
 
 import java.util.Optional;
 
-public class Human_get extends Command<Human> {
+public class Human_get extends Request<Human> {
   protected final long gemId;
 
-  public Human_get(long commandId, long gemId) {
+  public Human_get(long gemId) {
     super(
-        commandId,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Human_get"
     );

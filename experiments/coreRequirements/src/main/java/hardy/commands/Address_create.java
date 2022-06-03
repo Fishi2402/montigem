@@ -11,12 +11,11 @@ import umlp.command.error.MontiGemError;
 //   Werden dafür commands genutzt oder gibt es ein alternatives Konzept?
 //   Ggf. können Operationen wie get in Requests(~ Commands ohne undo)
 
-public class Address_create extends Command {
+public class Address_create extends Command<Void> {
   protected final Address address;
 
-  protected Address_create(long commandId, Address address) {
+  protected Address_create(Address address) {
     super(
-        commandId,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Address_create"
     );

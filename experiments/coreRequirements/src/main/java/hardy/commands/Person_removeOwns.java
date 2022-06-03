@@ -15,9 +15,8 @@ import java.util.Optional;
 public class Person_removeOwns extends Command<Void> {
   protected long personGemId;
   protected long carGemId;
-  public Person_removeOwns(long id, long personGemId, long carGemId) {
+  public Person_removeOwns(long personGemId, long carGemId) {
     super(
-        id,
         "hardy.commands.Person_removeOwns"
     );
     this.personGemId = personGemId;

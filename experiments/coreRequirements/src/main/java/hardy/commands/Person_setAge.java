@@ -15,9 +15,8 @@ public class Person_setAge extends Command<Void> {
   protected long gemId;
   protected int age;
 
-  public Person_setAge(long id, long gemId, int age) {
+  public Person_setAge(long gemId, int age) {
     super(
-        id,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Person_setAge"
     );

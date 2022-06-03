@@ -12,17 +12,43 @@ package umlp.command;
 // RTE-T
 
 import de.se_rwth.commons.logging.Log;
-import umlp.command.error.MontiGemError;
-import umlp.command.error.MontiGemErrorFactory;
-import umlp.command.error.NotImplementedException;
+import umlp.util.LogUtil;
 
-import static umlp.command.error.MontiGemErrorCode.NOT_IMPLEMENTED;
+import java.util.HashMap;
+import java.util.Map;
 
-// nicht getestet werden, daher aktuell noch nicht notwendig
 public class CommandManager {
+  // Id dieses Clients/Servers
+  // Server ist immer 0
+  protected long participantId = 0;
+
   protected CommandManager(){ }
+  // Speichert alle verbundenen Clients und deren Ids, wird genutzt um die Commands die relevante objekte bearbeiten
+  // weiter zu verteilen.
+  protected Map<Long, CommandSubscription> subscribers = new HashMap<>();
+  protected long runningClientId = 1;
 
   protected static CommandManager instance;
+
+  public static long subscribe(CommandSubscription subscription){
+    return getInstance()._subscribe(subscription);
+  }
+
+  public static long getParticipantId() {
+    return getInstance()._getParticipantId();
+  }
+
+  protected long _getParticipantId(){
+    return participantId;
+  }
+
+  protected long _subscribe(CommandSubscription subscription) {
+    long id = runningClientId++;
+    subscribers.put(id, subscription);
+    return id;
+  }
+
+  // TODO: unsubscribe
 
   public static void init(){
     instance = new CommandManager();
@@ -39,74 +65,26 @@ public class CommandManager {
     return instance;
   }
 
-  /**
-   * run all given commands
-   *
-   * @param commandList a complete list of commands to run
-   * @return a combined response for all the command results
-   */
-  public static CommandResponse runCommands(CommandList commandList) {
-    return getInstance()._runCommands(commandList);
-  }
-
-  protected CommandResponse _runCommands(CommandList commandList) {
-    // create an empty response with the id to identify the response on the other end
-    CommandResponse response = new CommandResponse(commandList.getId());
-    // EntityTransaction transaction = em.getTransaction();
-
-    Log.debug("MAB0xA003: Start transaction", CommandManager.class.getName());
-
-    long cmdId = -1;
-
-    try {
-      // iterate all the commands
-      for (Command command : commandList.getCommands()) {
-        cmdId = command.getId();
-        try {
-          response.addResponse(command.doRun());
-        }
-        catch (NotImplementedException e) {
-          response.addResponse(StatusResult.error(cmdId, new MontiGemError(NOT_IMPLEMENTED, null, "Mathod not implemented")));
-        }
-      }
-
-      // transaction.commit();
-      Log.debug("MAB0xA004: Transaction commited", CommandManager.class.getName());
-    }
-    catch (NullPointerException np) {
-      response.clear();
-      response.addResponse(StatusResult.error(cmdId, MontiGemErrorFactory.unknown("" + np + ": " + np.getStackTrace()[0])));
-      // todo: Wie kann eine Fehlermeldung "Error" ...vi "Debug rausgehen ..."????
-      Log.debug("MAB0xA005: Error in transaction: " + np.getMessage(), CommandManager.class.getName());
-    }
-    catch (MontiGemError e) {
-      // transaction.rollback();
-      response.clear();
-      response.addResponse(StatusResult.error(cmdId, e));
-      // todo: Wie kann eine Fehlermeldung "Error" ...vi "Debug rausgehen ..."????
-      Log.debug("MAB0xA006: Error in transaction: " + e.getMessage(), CommandManager.class.getName());
-    }
-    catch (Exception e) {
-      // transaction.rollback();
-      response.clear();
-      response.addResponse(StatusResult.error(cmdId, MontiGemErrorFactory.exceptionCaught(e)));
-      // todo: Wie kann eine Fehlermeldung "Error" ...vi "Debug rausgehen ..."????
-      Log.debug("MAB0xA007: Error in transaction: " + e.getMessage(), CommandManager.class.getName());
-    }
-
-    return response;
-  }
-
   public static <T> CommandResult<T> executeSingleCommand(Command<T> command) {
+    Log.trace("Exec command " + command.getId() + " " + command.getCommandType() + " from " + command.getParticipantId(), LogUtil.getLoggerName());
     return getInstance()._executeSingleCommand(command);
   }
 
   protected  <T> CommandResult<T> _executeSingleCommand(Command<T> command) {
-    return command.doRun();
+    CommandResult<T> res = command.doRun();
+    // TODO: error handling if doRun fails
+    if(!command.isRequest()) {
+      for (Map.Entry<Long, CommandSubscription> e : subscribers.entrySet()) {
+        if (!e.getKey().equals(command.getParticipantId())) {
+          Log.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + e.getKey(), LogUtil.getLoggerName());
+          e.getValue().sendCommand(command);
+        }
+      }
+    }
+    return res;
   }
 
   protected static long freeCommandId;
-  // TODO: Kann das setzten von commandIds intern vom CommandManager übernommen werden?
   public static long getFreeCommandId(){
     return getInstance()._getFreeCommandId();
   }

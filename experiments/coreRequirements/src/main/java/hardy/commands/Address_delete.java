@@ -8,12 +8,11 @@ import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
 // GEN-P
 
-public class Address_delete extends Command {
+public class Address_delete extends Command<Void> {
   protected final Address address;
 
-  protected Address_delete(long id, Address address) {
+  protected Address_delete(Address address) {
     super(
-        id,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hary.commands.Address_delete"
     );

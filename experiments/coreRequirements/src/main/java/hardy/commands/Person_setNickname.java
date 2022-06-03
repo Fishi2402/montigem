@@ -15,9 +15,8 @@ public class Person_setNickname extends Command<Void> {
   protected long gemId;
   protected String nickname;
 
-  public Person_setNickname(long id, long gemId, String nickname) {
+  public Person_setNickname(long gemId, String nickname) {
     super(
-        id,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Person_setNickname"
     );

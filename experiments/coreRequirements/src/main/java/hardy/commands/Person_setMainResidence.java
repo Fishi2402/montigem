@@ -16,9 +16,8 @@ public class Person_setMainResidence extends Command<Void> {
   protected long personGemId;
   protected long mainResidenceGemId;
 
-  public Person_setMainResidence(long id, long personGemId, long mainResidenceGemId) {
+  public Person_setMainResidence(long personGemId, long mainResidenceGemId) {
     super(
-        id,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Person_setMainResidence"
     );

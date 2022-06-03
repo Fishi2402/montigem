@@ -10,9 +10,8 @@ import umlp.rte.Gem;
 // Gibt die Anzahl aller Humans zurück
 public class Human_size extends Command<Integer> {
 
-  public Human_size(long commandId) {
+  public Human_size() {
     super(
-        commandId,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Human_size"
     );

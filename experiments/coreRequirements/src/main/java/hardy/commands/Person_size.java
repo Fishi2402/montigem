@@ -8,9 +8,8 @@ import umlp.command.GemResult;
 import umlp.rte.Gem;
 
 public class Person_size extends Command<Integer> {
-  public Person_size(long commandId) {
+  public Person_size() {
     super(
-        commandId,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Person_size"
     );

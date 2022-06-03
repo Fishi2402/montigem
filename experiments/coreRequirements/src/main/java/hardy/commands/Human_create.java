@@ -3,16 +3,15 @@ package hardy.commands;
 
 import hardy.FlensburgManager;
 import hardy.Human;
-import umlp.command.Command;
 import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
+import umlp.request.Request;
 
-public class Human_create extends Command<Void> {
+public class Human_create extends Request<Void> {
   protected final Human human;
 
-  public Human_create(long commandId, Human human) {
+  public Human_create(Human human) {
     super(
-        commandId,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Human_create"
     );

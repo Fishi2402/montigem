@@ -10,9 +10,8 @@ import umlp.command.error.MontiGemError;
 public class Person_delete extends Command {
   protected final Person person;
 
-  protected Person_delete(long id, Person person) {
+  protected Person_delete(Person person) {
     super(
-        id,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Person_delete"
     );

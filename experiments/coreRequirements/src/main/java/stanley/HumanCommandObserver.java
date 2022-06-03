@@ -6,6 +6,7 @@ import hardy.Human;
 import hardy.HumanObserver;
 import hardy.commands.Human_set_age;
 import umlp.command.CommandManager;
+import umlp.rte.NotificationScope;
 
 // TODO: Ersetzen durch FlensburgCommandManager implements HumanObserver => eine Weiterleitung weniger
 
@@ -13,7 +14,14 @@ import umlp.command.CommandManager;
 public class HumanCommandObserver implements HumanObserver {
 
   @Override
-  public void updateAge(Human h, int age) {
-    CommandManager.executeSingleCommand(new Human_set_age(CommandManager.getFreeCommandId(), h.getGemId(), age));
+  public NotificationScope getScope() {
+    // Es werden nur Commands erstellt und versendet, falls die Events globalen Einfluss haben.
+    // Verhindert eine Endlosschleife in setAge
+    return NotificationScope.GLOBAL;
+  }
+
+  @Override
+  public void notifySetAge(Human h, int age) {
+    CommandManager.executeSingleCommand(new Human_set_age(h.getGemId(), age));
   }
 }

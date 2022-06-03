@@ -16,9 +16,8 @@ public class Person_addOwns extends Command<Void> {
   protected long personGemId;
   protected long carGemId;
 
-  public Person_addOwns(long id, long personGemId, long carGemId) {
+  public Person_addOwns(long personGemId, long carGemId) {
     super(
-        id,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Person_addOwns"
     );

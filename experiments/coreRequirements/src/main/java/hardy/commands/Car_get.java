@@ -2,21 +2,20 @@ package hardy.commands;
 
 import hardy.Car;
 import hardy.FlensburgManager;
-import umlp.command.Command;
 import umlp.command.GemResult;
 import umlp.command.error.MontiGemError;
+import umlp.request.Request;
 import umlp.rte.Gem;
 import umlp.rte.LoadingState;
 
 import java.util.Optional;
 // GEN-P
 
-public class Car_get extends Command<Car> {
+public class Car_get extends Request<Car> {
   protected final int gemId;
 
-  protected Car_get(long commandId, int gemId) {
+  protected Car_get(int gemId) {
     super(
-        commandId,
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Car_get"
     );
