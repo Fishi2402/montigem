@@ -53,6 +53,10 @@ public abstract class AbstractDecorator {
     return CDExtendUsageFacade.getInstance();
   }
 
+  protected CDInterfaceUsageFacade getInterfaceUsageFacade() {
+    return CDInterfaceUsageFacade.getInstance();
+  }
+
   protected CDStereotypeFacade getStereotypeFacade() {
     return CDStereotypeFacade.getInstance();
   }

@@ -34,8 +34,7 @@ public class CDSymbolTables {
   public static List<ASTCDAssocSide> getAssociationsInHierarchy(ASTCDType ast) {
     List<ASTCDAssocSide> assocs = Lists.newArrayList();
     for (ASTCDType sc : getTransitiveSuperTypes(ast)) {
-      // TODO
-      //assocs.addAll(sc.getCDRoleList().stream().map(a -> a.getSymbol().getSide()).collect(Collectors.toList()));
+      assocs.addAll(sc.getSymbol().getCDRoleList().stream().map(a -> a.getAssocSide()).collect(Collectors.toList()));
     }
     return assocs;
   }

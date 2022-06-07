@@ -95,7 +95,7 @@ public class BuilderDecorator extends AbstractDecorator {
     for (ASTCDAssocSide association : associations) {
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
               association.getSymbol().getType().print(), association.getName());
-      attribute.setInitial(createInitialValue(association.getSymbol().getType()));
+      //attribute.setInitial(createInitialValue(association.getSymbol().getType()));
       attrList.add(attribute);
     }
     return attrList;
