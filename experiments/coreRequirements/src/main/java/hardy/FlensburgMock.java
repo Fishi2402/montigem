@@ -233,11 +233,10 @@ public class FlensburgMock extends FlensburgManager {
 
   // --- Class Car ---
   protected HashMapWithOrderedKeys<Long, Car> cars = new HashMapWithOrderedKeys<>();
-  protected CarValidator theCarValidator = new CarValidator();
 
   @Override
   protected CarBuilder _doCar() {
-    return new CarBuilder(getFreeGemId(), theCarValidator);
+    return new CarBuilder(getFreeGemId());
   }
 
   @Override

@@ -40,7 +40,7 @@ public class FlensburgDummies {
 
     PersonBuilder pb3101 = FlensburgManager.personBuilder()
         .age(25).nickname("Anna").owns(Collections.singleton(c1101));
-    // Dies wird gebraucht, damit der CarValidator überprüfen kann, dass die owns assoziation korrekt ist
+    // Dies wird gebraucht, damit überprüfen kann, dass die owns assoziation korrekt ist
     // TODO: Es ist unschön, dass die Assoziation manuell in beide Richtungen gesetzt werden muss
     c1101.owns(pb3101);
     Person p3101 = pb3101.build().get();

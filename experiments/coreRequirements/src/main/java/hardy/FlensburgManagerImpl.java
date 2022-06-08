@@ -133,7 +133,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected CarBuilder _doCar() {
-        return new CarBuilder(getFreeGemId(), new CarValidator());
+        return new CarBuilder(getFreeGemId());
     }
 
     @Override
