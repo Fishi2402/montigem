@@ -186,11 +186,10 @@ public class FlensburgMock extends FlensburgManager {
 
   // --- Address class ---
   protected HashMapWithOrderedKeys<Long, Address> addresses = new HashMapWithOrderedKeys<>();
-  protected AddressValidator theAddressValidator = new AddressValidator();
 
   @Override
   protected AddressBuilder _doAddress() {
-    return new AddressBuilder(getFreeGemId(), theAddressValidator);
+    return new AddressBuilder(getFreeGemId());
   }
 
   @Override

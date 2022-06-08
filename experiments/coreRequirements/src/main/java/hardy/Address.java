@@ -40,6 +40,17 @@ public class Address extends Observable implements GemIdentifiable {
 
     public void setCity(String city) {
         this.city = city;
+        checkCity();
+    }
+
+    public boolean checkCity(){
+        boolean res = true;
+        if(city == null){
+            res = false;
+            AddressErrorCollector.reportCityInvalid(this);
+        }
+
+        return res;
     }
 
     protected Address() {

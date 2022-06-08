@@ -99,7 +99,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected AddressBuilder _doAddress() {
-        return new AddressBuilder(getFreeGemId(), new AddressValidator());
+        return new AddressBuilder(getFreeGemId());
     }
 
     @Override
