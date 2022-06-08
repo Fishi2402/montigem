@@ -3,5 +3,5 @@ umlp A {
     int count;
   }
   public class Bar;
-  association Foo -> Bar;
+  association Foo -> Bar [0..1];
 }

@@ -3,7 +3,12 @@
 package umlp.generator.decorator;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
+import de.monticore.cd.codegen.methods.MutatorDecorator;
+import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
+import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
@@ -55,9 +60,10 @@ public class DomainClassDecorator extends AbstractDecorator {
     getCD4C().addConstructor(clazz, "umlp.domain.Constructor", domainClass.getName());
 
     // Attributes
-    List<ASTCDAttribute> attrList = Lists.newArrayList();
-    attrList.addAll(getAttributesForFields(domainClass));
-    attrList.addAll(getAttributesForAssociations(domainClass));
+    List<ASTCDAttribute> attrFields = getAttributesForFields(domainClass);
+    List<ASTCDAttribute> attrAssocs = getAttributesForAssociations(domainClass);
+    List<ASTCDAttribute> attrList = Lists.newArrayList(attrFields);
+    attrList.addAll(attrAssocs);
     clazz.addAllCDMembers(attrList);
 
     // Attribute gemId
@@ -77,6 +83,7 @@ public class DomainClassDecorator extends AbstractDecorator {
 
     // Methods
     createGetterSetterMethods(domainClass, clazz, attrList);
+    createNofificationSetter(domainClass, clazz, attrFields);
     createGetterSetterMethods(domainClass, clazz, Arrays.asList(gemAttr));
     createObserverMethods(domainClass, clazz);
 
@@ -87,6 +94,13 @@ public class DomainClassDecorator extends AbstractDecorator {
     addImports(clazz);
 
     return clazz;
+  }
+
+  protected void createNofificationSetter(ASTCDClass domainClass, ASTCDClass clazz, List<ASTCDAttribute> attrFields) {
+    for (ASTCDAttribute attr: attrFields) {
+      getCD4C().addMethod(clazz, "umlp.domain.NotificationSetter",
+              domainClass.getName(), (new CdUtilsPrinter()).printType(attr.getMCType()), attr.getName());
+    }
   }
 
   protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
@@ -100,7 +114,6 @@ public class DomainClassDecorator extends AbstractDecorator {
     List<ASTCDAttribute> visibleAttributes = domainClass.getCDAttributeList().stream()
             .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
 
-    // get all visible parameters
     for (ASTCDAttribute visibleAttribute : visibleAttributes) {
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
               visibleAttribute.getMCType().deepClone(), visibleAttribute.getName());
@@ -136,7 +149,8 @@ public class DomainClassDecorator extends AbstractDecorator {
 
   protected void createGetterSetterMethods(ASTCDClass domainClass, ASTCDClass clazz,
                                            List<ASTCDAttribute> attrList) {
-    MethodDecorator methodDecoarator = new MethodDecorator(glex);
+    MethodDecorator methodDecoarator = new MethodDecorator(glex, new AccessorDecorator(glex),
+            new MutatorDecorator(glex, new SimpleMethodMutatorDecorator(glex), new OptionalMutatorDecorator(glex), new ListMutatorDecorator(glex)));
     List<ASTCDMethod> methodList = Lists.newArrayList();
     for (ASTCDAttribute attribute : attrList) {
       methodList.addAll(methodDecoarator.decorate(attribute));
