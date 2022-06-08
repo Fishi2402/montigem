@@ -7,8 +7,8 @@ import java.util.Optional;
 public class AddressBuilder extends Address {
 
     protected boolean buildFinished = false;
-    // Attribute wie isPresentCity sind nicht notwendig, da checkCity überprüft, ob city richtig
-    // gesetzt wurde
+    // Attribute der Form isPresentX sind nur für primitive Typen notwendig, bei nicht-primitiven
+    // kann checkX auf null überprüfen
 
     public AddressBuilder(long gemId) {
        this.gemId = gemId;

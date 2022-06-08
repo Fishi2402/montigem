@@ -2,27 +2,19 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import umlp.rte.ValidationMessage;
-
-import java.util.List;
 import java.util.Optional;
 
 public class HumanBuilder extends Human {
-
     transient protected boolean buildFinished = false;
+    // Attribute der Form isPresentX sind nur für primitive Typen notwendig, bei nicht-primitiven
+    // kann checkX auf null überprüfen
 
-    transient protected boolean agePresent = false;
-
-    transient HumanValidator validator;
-
-    public HumanBuilder(long gemId, HumanValidator validator) {
+    public HumanBuilder(long gemId) {
        this.gemId = gemId;
-       this.validator = validator;
     }
 
     public HumanBuilder age(int age) {
         this.age = age;
-        this.agePresent = true;
         return this;
     }
 
@@ -30,13 +22,9 @@ public class HumanBuilder extends Human {
         return buildFinished;
     }
 
-    public boolean isAgePresent() {
-        return agePresent;
-    }
-
     public Optional<Human> build() {
         if (!buildFinished) {
-            if (validator.buildingCheck(this)) {
+            if (buildChecks()) {
                 FlensburgManager.addHuman(this);
                 humanObservers.forEach(obs -> obs.notifyBuild(this));
                 buildFinished = true;
@@ -46,12 +34,8 @@ public class HumanBuilder extends Human {
         return Optional.empty();
     }
 
-    public boolean isBuildable() {
-        return validator.buildingCheck(this);
-    }
-
-    public List<ValidationMessage> getValidationMessages() {
-        return validator.getValidationMessages();
+    private boolean buildChecks() {
+        return checkAge();
     }
 }
 

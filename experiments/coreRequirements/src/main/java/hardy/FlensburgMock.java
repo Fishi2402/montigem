@@ -125,13 +125,12 @@ public class FlensburgMock extends FlensburgManager {
 
   // --- Class Human ---
   protected HashMapWithOrderedKeys<Long, Human> humans = new HashMapWithOrderedKeys<>();
-  protected HumanValidator theHumanValidator = new HumanValidator();
   // TODO: for all classes
   protected HumanCommandObserver theHumanCommandObserver = new HumanCommandObserver();
 
   @Override
   protected HumanBuilder _doHuman() {
-    return new HumanBuilder(getFreeGemId(), theHumanValidator);
+    return new HumanBuilder(getFreeGemId());
   }
 
   @Override

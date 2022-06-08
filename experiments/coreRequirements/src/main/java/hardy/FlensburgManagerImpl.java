@@ -31,7 +31,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected HumanBuilder _doHuman() {
-        return new HumanBuilder(getFreeGemId(), new HumanValidator());
+        return new HumanBuilder(getFreeGemId());
     }
 
     @Override
