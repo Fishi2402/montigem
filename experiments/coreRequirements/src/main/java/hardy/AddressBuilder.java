@@ -2,21 +2,16 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import umlp.rte.ValidationMessage;
-
-import java.util.List;
 import java.util.Optional;
 
 public class AddressBuilder extends Address {
 
     protected boolean buildFinished = false;
-    protected boolean isPresentCity = false;
+    // Attribute wie isPresentCity sind nicht notwendig, da checkCity überprüft, ob city richtig
+    // gesetzt wurde
 
-    AddressValidator validator;
-
-    public AddressBuilder(long gemId, AddressValidator validator) {
+    public AddressBuilder(long gemId) {
        this.gemId = gemId;
-       this.validator = validator;
        init();
     }
 
@@ -26,13 +21,12 @@ public class AddressBuilder extends Address {
 
     public AddressBuilder city(String city){
         this.city = city;
-        isPresentCity = true;
         return this;
     }
 
     public Optional<Address> build() {
         if (!buildFinished) {
-            if (validator.buildingCheck(this)) {
+            if(buildChecks()) {
                 FlensburgManager.addAddress(this);
                 notifyObservers();      //+ an initial notification
                 buildFinished = true;
@@ -42,12 +36,8 @@ public class AddressBuilder extends Address {
         return Optional.empty();
     }
 
-    public List<ValidationMessage> getValidatorMessages() {
-        return validator.getValidatorMessages();
-    }
-
-    public boolean isBuildable() {
-        return validator.buildingCheck(this);
+    private boolean buildChecks() {
+        return checkCity();
     }
 }
 
