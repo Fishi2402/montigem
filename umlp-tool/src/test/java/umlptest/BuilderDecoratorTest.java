@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import umlp.generator.decorator.AbstractDecorator;
 import umlp.generator.decorator.BuilderDecorator;
 
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BuilderDecoratorTest extends DecoratorTest {
@@ -17,9 +20,15 @@ public class BuilderDecoratorTest extends DecoratorTest {
 
   @Test
   public void check() {
-    for (ASTCDClass clazz: decoratedAST.getCDDefinition().getCDClassesList()) {
-      assertTrue(existsMethod(clazz, "build"));
-      assertTrue(existsMethod(clazz, "isBuildFinished"));
-    }
+    Optional<ASTCDClass> optClass = decoratedAST.getCDDefinition().getCDClassesList().stream().filter(c -> "FooBuilder".equals(c.getName())).findFirst();
+    assertTrue(optClass.isPresent());
+    ASTCDClass clazz = optClass.get();
+    assertAll(
+            () -> assertTrue(existsMethod(clazz, "build")),
+            () -> assertTrue(existsMethod(clazz, "isBuildFinished")),
+            () -> assertTrue(existsMethod(clazz, "isBuildable")),
+            () -> assertTrue(existsMethod(clazz, "getValidatorMessages"))
+    );
   }
+
 }
