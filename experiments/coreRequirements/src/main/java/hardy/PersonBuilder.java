@@ -3,9 +3,7 @@ package hardy;
 //+ GEN-P        : generated for the product
 
 import umlp.rte.Gem;
-import umlp.rte.ValidationMessage;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,14 +31,11 @@ public class PersonBuilder extends Person {
     protected boolean ownsPresent = false;
     protected boolean mainResidencePresent = false;
 
-    PersonValidator validator;
-
     // the Builder:
     //+ gemId wird bereits beim initialisieren des Builders besetzt
     // und ein Validator wird auch mitgeliefert (und erstmal gespeichert)
-    public PersonBuilder(long gemId, PersonValidator validator) {
+    public PersonBuilder(long gemId) {
         this.gemId = gemId;
-        this.validator = validator;
     }
 
     // Standard set-Function:
@@ -115,7 +110,7 @@ public class PersonBuilder extends Person {
         if (!buildFinished) {
             // todo: discuss: sollte es nicht einen else Fall geben,
             //  der präzisere Fehler wirft (siehe Log)?
-            if (validator.buildingCheck(this)) {
+            if (isBuildable()) {
                 for (Car own : owns) {
                     if(!own.isBuildFinished()) {
                         own.build();
@@ -130,12 +125,36 @@ public class PersonBuilder extends Person {
         return Optional.empty();
     }
 
-    public boolean isBuildable() {
-        return validator.buildingCheck(this);
+    public boolean isBuildable(){
+        // & anstelle von && damit immer alle Fehlermeldungen reported werden
+        return checkAgePresent()
+                & checkNicknamePresent()
+                & checkMainResidencePresent()
+                & checkAge()
+                & checkNickname()
+                & checkMainResidence()
+                & checkOwns();
     }
 
-    public List<ValidationMessage> getValidationMessages() {
-        return validator.getValidationMessages();
+    public boolean checkAgePresent() {
+        if(!agePresent){
+            PersonErrorCollector.reportAgeInvalid(this);
+        }
+        return agePresent;
+    }
+
+    public boolean checkNicknamePresent(){
+        if(!nicknamePresent){
+            PersonErrorCollector.reportNicknameInvalid(this);
+        }
+        return nicknamePresent;
+    }
+
+    public boolean checkMainResidencePresent() {
+        if(!mainResidencePresent){
+            PersonErrorCollector.reportMainResidenceInvalid(this);
+        }
+        return mainResidencePresent;
     }
 
     /*- Das regeln wir anders:, denn dieser Sonderfall erlaubt ja nur eine

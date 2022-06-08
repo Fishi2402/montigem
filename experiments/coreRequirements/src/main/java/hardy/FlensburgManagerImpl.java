@@ -65,7 +65,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected PersonBuilder _doPersonBuilder() {
-        return new PersonBuilder(getFreeGemId(), new PersonValidator());
+        return new PersonBuilder(getFreeGemId());
     }
 
     @Override

@@ -45,7 +45,7 @@ public class CarBuilder extends Car {
     @Override
     public Optional<Car> build() {
         if (!buildFinished) {
-            if (buildChecks()) {
+            if (isBuildable()) {
                 FlensburgManager.addCar(this);
                 notifyObservers();      //+ an initial notification
                 buildFinished = true;
@@ -56,7 +56,7 @@ public class CarBuilder extends Car {
         return Optional.empty();
     }
 
-    public boolean buildChecks(){
+    public boolean isBuildable(){
         return checkOwns();
     }
 }

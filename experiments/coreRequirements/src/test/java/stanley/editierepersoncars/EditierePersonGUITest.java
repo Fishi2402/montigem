@@ -2,6 +2,7 @@ package stanley.editierepersoncars;
 
 // HW-T
 
+import hardy.Address;
 import hardy.FlensburgManager;
 import hardy.FlensburgMock;
 import hardy.Person;
@@ -21,7 +22,9 @@ public class EditierePersonGUITest extends AbstractGUITest {
     // zusaetlich eine Fehlermeldung anzeigen (die analog angezeigt wird)
     FlensburgMock.init();
 
-    Person p = FlensburgManager.personBuilder().age(24).nickname("theo").build().get();
+    Address a = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+
+    Person p = FlensburgManager.personBuilder().age(24).nickname("theo").mainResidence(a).build().get();
     EditierePersonGUI e = new EditierePersonGUI(p);
 
     // Check GUI has contains correct values

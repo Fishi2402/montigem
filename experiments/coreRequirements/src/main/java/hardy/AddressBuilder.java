@@ -7,8 +7,7 @@ import java.util.Optional;
 public class AddressBuilder extends Address {
 
     protected boolean buildFinished = false;
-    // Attribute der Form isPresentX sind nur für primitive Typen notwendig, bei nicht-primitiven
-    // kann checkX auf null überprüfen
+    protected boolean isPresentCity = false;
 
     public AddressBuilder(long gemId) {
        this.gemId = gemId;
@@ -21,12 +20,13 @@ public class AddressBuilder extends Address {
 
     public AddressBuilder city(String city){
         this.city = city;
+        isPresentCity = true;
         return this;
     }
 
     public Optional<Address> build() {
         if (!buildFinished) {
-            if(buildChecks()) {
+            if(isBuildable()) {
                 FlensburgManager.addAddress(this);
                 notifyObservers();      //+ an initial notification
                 buildFinished = true;
@@ -36,8 +36,16 @@ public class AddressBuilder extends Address {
         return Optional.empty();
     }
 
-    private boolean buildChecks() {
-        return checkCity();
+    private boolean isBuildable() {
+        return checkCityPresent()
+                & checkCity();
+    }
+
+    private boolean checkCityPresent() {
+        if(!isPresentCity){
+            AddressErrorCollector.reportCityInvalid(this);
+        }
+        return isPresentCity;
     }
 }
 

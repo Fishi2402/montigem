@@ -23,6 +23,14 @@ public class FlensburgDummies {
   public void inventDummiesOne() {
   
     FlensburgMock.init();
+
+    FlensburgMock.secretlyAdaptnextGemIds(101);
+    Address a101 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Address a102 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Address a103 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Address a104 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Address a105 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+
     FlensburgMock.secretlyAdaptnextGemIds(1101);
     
     CarBuilder c1101 = FlensburgManager.carBuilder();
@@ -38,7 +46,11 @@ public class FlensburgDummies {
     
     FlensburgMock.secretlyAdaptnextGemIds(3101);
 
+
+
+
     PersonBuilder pb3101 = FlensburgManager.personBuilder()
+        .mainResidence(a101)
         .age(25).nickname("Anna").owns(Collections.singleton(c1101));
     // Dies wird gebraucht, damit überprüfen kann, dass die owns assoziation korrekt ist
     // TODO: Es ist unschön, dass die Assoziation manuell in beide Richtungen gesetzt werden muss
@@ -46,9 +58,11 @@ public class FlensburgDummies {
     Person p3101 = pb3101.build().get();
 
     Person p3102 = FlensburgManager.personBuilder()
-                        .age(26).nickname("Bert").build().get();
+        .mainResidence(a102)
+        .age(26).nickname("Bert").build().get();
     PersonBuilder pb3103 = FlensburgManager.personBuilder()
         .age(31).nickname("Charly")
+        .mainResidence(a103)
         .ownsAdd(c1102)
         .ownsAdd(c1103);
     c1102.owns(pb3103);
@@ -58,6 +72,7 @@ public class FlensburgDummies {
     PersonBuilder pb3104 = FlensburgManager
         .personBuilder()
         .age(104)
+        .mainResidence(a104)
         .nickname("Doro")
         .ownsAdd(c1104)
         .ownsAdd(c1105);
@@ -66,6 +81,7 @@ public class FlensburgDummies {
     Person p3104 = pb3104.build().get();
 
     PersonBuilder pb3105 = FlensburgManager.personBuilder()
+        .mainResidence(a105)
         .age(105).ownsAdd(c1106).nickname("Emil");
     c1106.owns(pb3105);
     Person p3105 = pb3105.build().get();
@@ -81,6 +97,7 @@ public class FlensburgDummies {
 
       PersonBuilder pb = FlensburgManager.personBuilder()
           .age(200 + i)
+          .mainResidence(FlensburgManager.addressBuilder().city("City" + i).build().get())
           .nickname("Nick" + i)
           .owns(Collections.singleton(cb));
 

@@ -6,8 +6,7 @@ import java.util.Optional;
 
 public class HumanBuilder extends Human {
     transient protected boolean buildFinished = false;
-    // Attribute der Form isPresentX sind nur für primitive Typen notwendig, bei nicht-primitiven
-    // kann checkX auf null überprüfen
+    transient protected boolean isAgePresent = false;
 
     public HumanBuilder(long gemId) {
        this.gemId = gemId;
@@ -15,6 +14,7 @@ public class HumanBuilder extends Human {
 
     public HumanBuilder age(int age) {
         this.age = age;
+        isAgePresent = true;
         return this;
     }
 
@@ -24,7 +24,7 @@ public class HumanBuilder extends Human {
 
     public Optional<Human> build() {
         if (!buildFinished) {
-            if (buildChecks()) {
+            if (isBuildable()) {
                 FlensburgManager.addHuman(this);
                 humanObservers.forEach(obs -> obs.notifyBuild(this));
                 buildFinished = true;
@@ -34,8 +34,17 @@ public class HumanBuilder extends Human {
         return Optional.empty();
     }
 
-    private boolean buildChecks() {
-        return checkAge();
+    private boolean isBuildable() {
+        // & anstelle von && damit immer alle Fehlermeldungen reported werden
+        return checkAgePresent()
+            & checkAge();
+    }
+
+    public boolean checkAgePresent() {
+        if(!isAgePresent){
+            HumanErrorCollector.reportAgeInvalid(this);
+        }
+        return isAgePresent;
     }
 }
 
