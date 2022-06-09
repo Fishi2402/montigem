@@ -2,27 +2,19 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import umlp.rte.ValidationMessage;
-
-import java.util.List;
 import java.util.Optional;
 
 public class HumanBuilder extends Human {
-
     transient protected boolean buildFinished = false;
+    transient protected boolean isAgePresent = false;
 
-    transient protected boolean agePresent = false;
-
-    transient HumanValidator validator;
-
-    public HumanBuilder(long gemId, HumanValidator validator) {
+    public HumanBuilder(long gemId) {
        this.gemId = gemId;
-       this.validator = validator;
     }
 
     public HumanBuilder age(int age) {
         this.age = age;
-        this.agePresent = true;
+        isAgePresent = true;
         return this;
     }
 
@@ -30,13 +22,9 @@ public class HumanBuilder extends Human {
         return buildFinished;
     }
 
-    public boolean isAgePresent() {
-        return agePresent;
-    }
-
     public Optional<Human> build() {
         if (!buildFinished) {
-            if (validator.buildingCheck(this)) {
+            if (isBuildable()) {
                 FlensburgManager.addHuman(this);
                 humanObservers.forEach(obs -> obs.notifyBuild(this));
                 buildFinished = true;
@@ -46,12 +34,17 @@ public class HumanBuilder extends Human {
         return Optional.empty();
     }
 
-    public boolean isBuildable() {
-        return validator.buildingCheck(this);
+    private boolean isBuildable() {
+        // & anstelle von && damit immer alle Fehlermeldungen reported werden
+        return checkAgePresent()
+            & checkAge();
     }
 
-    public List<ValidationMessage> getValidationMessages() {
-        return validator.getValidationMessages();
+    public boolean checkAgePresent() {
+        if(!isAgePresent){
+            HumanErrorCollector.reportAgeInvalid(this);
+        }
+        return isAgePresent;
     }
 }
 

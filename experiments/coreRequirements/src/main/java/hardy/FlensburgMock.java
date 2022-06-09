@@ -63,15 +63,9 @@ public class FlensburgMock extends FlensburgManager {
 
   // get a Builder ---------------------------------------
   protected PersonBuilder _doPersonBuilder() {
-    return new PersonBuilder(_doGetFreeGemId(), thePersonValidator);
+    return new PersonBuilder(_doGetFreeGemId());
     // todo: überlegen hier schon mal das Objekt merken??? Oder Observer setzen?
   }
-
-  // der Validator zum Builder
-  // könnte als eigenständiges Objekt sinnvoll sein, da TOP angewandt werden kann
-  // da eher Zustandslos würde sich hier ein Singelton anbieten
-  PersonValidator thePersonValidator = new PersonValidator();
-
 
   // todo: ggf. auslagern nachfolgender Funktionen in eine generische Storage<...> Klasse
   // analog zu Dex, die dann mehrfach instantiert wird
@@ -125,13 +119,12 @@ public class FlensburgMock extends FlensburgManager {
 
   // --- Class Human ---
   protected HashMapWithOrderedKeys<Long, Human> humans = new HashMapWithOrderedKeys<>();
-  protected HumanValidator theHumanValidator = new HumanValidator();
   // TODO: for all classes
   protected HumanCommandObserver theHumanCommandObserver = new HumanCommandObserver();
 
   @Override
   protected HumanBuilder _doHuman() {
-    return new HumanBuilder(getFreeGemId(), theHumanValidator);
+    return new HumanBuilder(getFreeGemId());
   }
 
   @Override
@@ -234,11 +227,10 @@ public class FlensburgMock extends FlensburgManager {
 
   // --- Class Car ---
   protected HashMapWithOrderedKeys<Long, Car> cars = new HashMapWithOrderedKeys<>();
-  protected CarValidator theCarValidator = new CarValidator();
 
   @Override
   protected CarBuilder _doCar() {
-    return new CarBuilder(getFreeGemId(), theCarValidator);
+    return new CarBuilder(getFreeGemId());
   }
 
   @Override

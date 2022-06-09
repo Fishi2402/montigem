@@ -89,6 +89,21 @@ public abstract class PersonTOP extends Human {
         // to assure that it is a lazy list and not any other?
     }
 
+    // Muss überschrieben werden, damit die Fehler an den PersonErrorCollector gesendet werden
+    // TODO: Hierdurch wird Human#checkAge ausgehebelt, auch wenn die Methode per TOP-mechanismus
+    // überschrieben wurde
+    @Override
+    public boolean checkAge() {
+        boolean res = true;
+
+        if(age == null){
+            res = false;
+            PersonErrorCollector.reportAgeInvalid((Person) this);
+        }
+
+        return res;
+    }
+
     public String getNickname() {
         return this.nickname;
     }
@@ -98,10 +113,22 @@ public abstract class PersonTOP extends Human {
             throw new IllegalArgumentException("Null argument not allowed here");
         }
         this.nickname = o;
+        checkNickname();
         // TODO AHe: ist der cast hier notwendig und sicher?
         personObservers.forEach(obs -> obs.updateNickname((Person) this, o));
     }
-    
+
+    public boolean checkNickname() {
+        boolean res = true;
+
+        if(nickname == null){
+            res = false;
+            PersonErrorCollector.reportNicknameInvalid((Person) this);
+        }
+
+        return res;
+    }
+
     // todo: Hier wird wohl auch die Möglichkeit benötigt mit Gem<Adress> umzugehen
     // zB zu Fragen, ob es ladbar war, oder auch die ungeladene Gem weiter zu geben.
     //   public Gem<Address> getMainResidence()   
@@ -121,8 +148,20 @@ public abstract class PersonTOP extends Human {
         } else {
             this.mainResidence.set(mainResidence);
         }
+        checkMainResidence();
         // TODO AHe: ist der cast hier notwendig und sicher?
         personObservers.forEach(obs -> obs.updateMainResidence((Person) this, mainResidence.getGemId()));
+    }
+
+    public boolean checkMainResidence(){
+        boolean res = true;
+
+        if(mainResidence == null || !mainResidence.isPresent()){
+            res = false;
+            PersonErrorCollector.reportMainResidenceInvalid((Person) this);
+        }
+
+        return res;
     }
 
     public boolean availableMainResidence(){
@@ -134,13 +173,26 @@ public abstract class PersonTOP extends Human {
     }
 
     public boolean removeOwns(Car o) {
+        boolean res = false;
         if (this.owns.contains(o)) {
+            res = this.owns.remove(o);
+            checkOwns();
             // TODO AHe: ist der cast hier notwendig und sicher?
             personObservers.forEach(obs -> obs.removeOwns((Person) this, o.getGemId()));
-            return this.owns.remove(o);
-        } else {
-            return false;
         }
+
+        return res;
+    }
+
+    public boolean checkOwns() {
+        boolean res = true;
+
+        if(owns == null){
+            res = false;
+            PersonErrorCollector.reportOwnsInvalid((Person) this);
+        }
+
+        return res;
     }
 
     public void retainAllOwnss(Collection<Car> o) {
@@ -173,16 +225,18 @@ public abstract class PersonTOP extends Human {
     }
 
     public boolean addOwns(Car o) {
+        boolean res = false;
+
         if (o == null) {
             throw new IllegalArgumentException("Null argument not allowed here");
         }
-        if (this.owns.contains(o)) {
-            return false;
-        } else {
+        if (!this.owns.contains(o)) {
             // TODO AHe: ist der cast hier notwendig und sicher?
+            res = this.owns.add(o);
+            checkOwns();
             personObservers.forEach(obs -> obs.addOwns((Person) this, o.getGemId()));
-            return this.owns.add(o);
         }
+        return res;
     }
 
     public boolean addAllOwnss(Collection<Car> o) {

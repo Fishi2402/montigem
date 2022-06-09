@@ -22,7 +22,6 @@ import java.util.*;
 public class FlensburgManagerClientImpl extends FlensburgManager {
   private FlensburgManagerClientImpl(){ }
 
-  protected HumanValidator theHumanValidator = new HumanValidator();
   protected HumanCommandObserver theHumanCommandObserver = new HumanCommandObserver();
   protected PersonCommandObserver thePersonCommandObserver = new PersonCommandObserver();
 
@@ -57,7 +56,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected HumanBuilder _doHuman() {
-    return new HumanBuilder(_doGetFreeGemId(), theHumanValidator);
+    return new HumanBuilder(_doGetFreeGemId());
   }
 
   // TODO: Falls ein Gem zurückgegeben wird kann deutlich detaillierter auf Fehler reagiert werden, z.B. mit

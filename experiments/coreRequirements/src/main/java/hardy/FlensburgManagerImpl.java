@@ -31,7 +31,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected HumanBuilder _doHuman() {
-        return new HumanBuilder(getFreeGemId(), new HumanValidator());
+        return new HumanBuilder(getFreeGemId());
     }
 
     @Override
@@ -65,7 +65,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected PersonBuilder _doPersonBuilder() {
-        return new PersonBuilder(getFreeGemId(), new PersonValidator());
+        return new PersonBuilder(getFreeGemId());
     }
 
     @Override
@@ -133,7 +133,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected CarBuilder _doCar() {
-        return new CarBuilder(getFreeGemId(), new CarValidator());
+        return new CarBuilder(getFreeGemId());
     }
 
     @Override

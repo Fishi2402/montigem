@@ -72,6 +72,17 @@ public class Human implements GemIdentifiable {
         return this.age;
     }
 
+    public boolean checkAge(){
+        boolean res = true;
+
+        if(age == null){
+            res = false;
+            HumanErrorCollector.reportAgeInvalid(this);
+        }
+
+        return res;
+    }
+
     public void setAge(Integer o){
         this.setAge(o, NotificationScope.ALL);
     }
