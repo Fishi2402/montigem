@@ -42,9 +42,10 @@ public class BuilderDecorator extends AbstractDecorator {
     getCD4C().addConstructor(builderClass, "umlp.builder.Constructor", domainClass.getName());
 
     // Attributes
-    List<ASTCDAttribute> attrList = Lists.newArrayList();
-    attrList.addAll(getAttributesForFields(domainClass));
-    attrList.addAll(getAttributesForAssociations(domainClass));
+    List<ASTCDAttribute> attrFields = getAttributesForFields(domainClass);
+    List<ASTCDAttribute> attrAssocs = getAttributesForAssociations(domainClass);
+    List<ASTCDAttribute> attrList = Lists.newArrayList(attrFields);
+    attrList.addAll(attrAssocs);
     builderClass.addAllCDMembers(attrList);
 
     /* Variante ohne CD4C
@@ -54,11 +55,10 @@ public class BuilderDecorator extends AbstractDecorator {
             .createAttribute(PROTECTED.build(),"boolean", "buildFinished)"));
     */
 
-    getCD4C().addAttribute(builderClass, "protected " + domainClass.getName() + "Validator validator;");
     getCD4C().addAttribute(builderClass, "protected boolean buildFinished = false");
 
     // Methods
-    createGetterSetterMethods(domainClass, builderClass, domainClass.getCDAttributeList());
+    createSetAndCheckMethods(domainClass, builderClass, attrList);
     getCD4C().addMethod(builderClass, "umlp.builder.Build", domainClass.getName(), name);
     getCD4C().addMethod(builderClass, "umlp.builder.IsFinished");
     getCD4C().addMethod(builderClass, "umlp.builder.GetValidatorMessages");
@@ -79,7 +79,7 @@ public class BuilderDecorator extends AbstractDecorator {
     for (ASTCDAttribute visibleAttribute : visibleAttributes) {
       ASTMCPrimitiveType type = getMCTypeFacade().createBooleanType();
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-              type, "isPresent" + visibleAttribute.getName());
+              type,  visibleAttribute.getName() + "Present");
       attribute.setInitial(createInitialValue(type));
       attributesList.add(attribute);
     }
@@ -98,11 +98,13 @@ public class BuilderDecorator extends AbstractDecorator {
     return attrList;
   }
 
-  protected void createGetterSetterMethods(ASTCDClass domainClass, ASTCDClass builderClass,
-                                           List<ASTCDAttribute> attrList) {
+  protected void createSetAndCheckMethods(ASTCDClass domainClass, ASTCDClass builderClass,
+                                          List<ASTCDAttribute> attrList) {
     for (ASTCDAttribute attribute : attrList) {
       getCD4C().addMethod(builderClass, "umlp.builder.Attr",
               attribute.getName(), getCDPrinter().prettyprint(attribute.getMCType()), domainClass.getName() + BUILDER_SUFFIX);
+      getCD4C().addMethod(builderClass, "umlp.builder.Check",
+              attribute.getName(), domainClass.getName());
     }
   }
 
