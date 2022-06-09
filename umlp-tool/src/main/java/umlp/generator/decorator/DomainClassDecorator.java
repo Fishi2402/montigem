@@ -68,7 +68,7 @@ public class DomainClassDecorator extends AbstractDecorator {
 
     // Attribute gemId
     ASTCDAttribute gemAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(), "long", "gemId");
-    glex.replaceTemplate("cd2java.Value", gemAttr, new StringHookPoint("-32"));
+    glex.replaceTemplate("cd2java.Value", gemAttr, new StringHookPoint("= -32"));
     glex.replaceTemplate("cd2java.Annotations", gemAttr,
             new TemplateHookPoint("umlp.domain.GemAnnotations"));
     gemAttr.getModifier().setDerived(true);
