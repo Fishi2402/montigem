@@ -3,6 +3,11 @@ import org.apache.commons.io.FileUtils
 /* (c) https://github.com/MontiCore/monticore */
 description = "Experiments: Initial Experiment"
 
+sourceSets {
+  main.java.srcDirs += ["$projectDir/target/generated-sources/",
+                        "$projectDir/hwc/"]
+}
+
 task generateJava(type: UMLPTask) {
   group = "umlP"
   inputDir = layout.projectDirectory.dir("models")
