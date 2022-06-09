@@ -26,8 +26,7 @@ public class BuilderDecoratorTest extends DecoratorTest {
     assertAll(
             () -> assertTrue(existsMethod(clazz, "build")),
             () -> assertTrue(existsMethod(clazz, "isBuildFinished")),
-            () -> assertTrue(existsMethod(clazz, "isBuildable")),
-            () -> assertTrue(existsMethod(clazz, "getValidatorMessages"))
+            () -> assertTrue(existsMethod(clazz, "isBuildable"))
     );
   }
 

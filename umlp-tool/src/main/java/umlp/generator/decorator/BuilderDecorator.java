@@ -61,8 +61,7 @@ public class BuilderDecorator extends AbstractDecorator {
     createSetAndCheckMethods(domainClass, builderClass, attrList);
     getCD4C().addMethod(builderClass, "umlp.builder.Build", domainClass.getName(), name);
     getCD4C().addMethod(builderClass, "umlp.builder.IsFinished");
-    getCD4C().addMethod(builderClass, "umlp.builder.GetValidatorMessages");
-    getCD4C().addMethod(builderClass, "umlp.builder.IsBuildable");
+    getCD4C().addMethod(builderClass, "umlp.builder.IsBuildable", attrList);
 
     // Imports
     addImports(builderClass);
@@ -111,7 +110,6 @@ public class BuilderDecorator extends AbstractDecorator {
   protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, "java.util.List");
     getCD4C().addImport(clazz, "java.util.Optional");
-    getCD4C().addImport(clazz, "umlp.rte.ValidationMessage");
   }
 
 }

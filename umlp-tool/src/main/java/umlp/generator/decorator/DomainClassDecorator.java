@@ -17,6 +17,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
+import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 
 import java.util.Arrays;
@@ -24,7 +25,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
-import static umlp.generator.decorator.GenService.createInitialValue;
 
 public class DomainClassDecorator extends AbstractDecorator {
 
@@ -76,8 +76,8 @@ public class DomainClassDecorator extends AbstractDecorator {
 
     // Attribute observerList
     ASTCDAttribute attrObserver = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-            "List<"+domainClass.getName()+"Observer>", domainClass.getName() +"Observers");
-    glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint("new ArrayList<>()"));
+            "List<"+domainClass.getName()+"Observer>", StringTransformations.uncapitalize(domainClass.getName()) +"Observers");
+    glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint("= new ArrayList<>()"));
     clazz.addCDMember(attrObserver);
 
 
@@ -87,7 +87,6 @@ public class DomainClassDecorator extends AbstractDecorator {
     createGetterSetterMethods(domainClass, clazz, Arrays.asList(gemAttr));
     createObserverMethods(domainClass, clazz);
 
-    getCD4C().addMethod(clazz, "umlp.domain.Init");
     getCD4C().addMethod(clazz, "umlp.domain.Build", domainClass.getName());
 
     // Imports

@@ -6,9 +6,9 @@ ${tc.signature("name", "managerName")}
 ${cd4c.method("public Optional<${name}> build()")}
 
 if (!buildFinished) {
-  if (validator.buildingCheck(this)) {
+  if (isBuildable()) {
     ${managerName}.add${name}(this);
-    notifyObservers();      //+ an initial notification
+    ${name?uncapFirst}Observers.forEach(obs -> obs.${name?uncapFirst}Build(this)); //+ an initial notification
     buildFinished = true;
     return Optional.of(this);
   }

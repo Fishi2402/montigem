@@ -2,7 +2,7 @@
 ${tc.signature("name")}
 ${cd4c.method("public void removeObserver(${name}Observer o)")}
 
-${name}Observers.remove(o);
+${name?uncap_first}Observers.remove(o);
 
 
 

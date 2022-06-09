@@ -16,6 +16,7 @@ import de.se_rwth.commons.logging.Log;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp.generator.decorator.BuilderDecorator;
 import umlp.generator.decorator.DomainClassDecorator;
+import umlp.generator.decorator.ErrorCollectorDecorator;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -41,6 +42,8 @@ public class UMLPGenerator {
 
   protected BuilderDecorator builderDecorator;
 
+  protected ErrorCollectorDecorator errorCollectorDecorator;
+
   protected TopDecorator topDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
@@ -57,6 +60,7 @@ public class UMLPGenerator {
 
     domainClassDecorator = new DomainClassDecorator(genSetup.getGlex());
     builderDecorator = new BuilderDecorator(genSetup.getGlex());
+    errorCollectorDecorator = new ErrorCollectorDecorator(genSetup.getGlex());
     topDecorator = new TopDecorator(genSetup.getHandcodedPath());
   }
 
@@ -92,6 +96,9 @@ public class UMLPGenerator {
     builderDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("BuilderDecorator", cdAST);
 
+    // Generate ErrorCollector classes
+    errorCollectorDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("ErrorCollectorDecorator", cdAST);
     // TODO hier weitere trafos realisieren
 
 
