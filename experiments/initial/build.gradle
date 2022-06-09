@@ -3,6 +3,15 @@ import org.apache.commons.io.FileUtils
 /* (c) https://github.com/MontiCore/monticore */
 description = "Experiments: Initial Experiment"
 
+sourceSets {
+  main.java.srcDirs += ["$projectDir/target/generated-sources/",
+                        "$projectDir/hwc/"]
+}
+
+compileJava.onlyIf { project.hasProperty('testCompile') }
+  // UMLP-Tool currently doesn't generate valid java code, so the compilation is not enabled by default
+  // You can stat gradle with "gradle assemble -PtestCompile" to test the compilation of the generated code.
+
 task generateJava(type: UMLPTask) {
   group = "umlP"
   inputDir = layout.projectDirectory.dir("models")
