@@ -96,7 +96,7 @@ public class UMLPGenerator {
 
 
     // Top-Decorator
-    topDecorator.decorate(decoratedAST);
+    topDecorator.decoratePackage(decoratedAST);
 
     // translate the CD-AST into Java with the CD Generator
     cdGenerator.generate(decoratedAST);

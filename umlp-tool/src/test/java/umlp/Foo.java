@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore;
+package umlp;
 
 // causes generation of FooTOP in UMLPGeneratorTest's testTOPMechamismMethod
 public class Foo {

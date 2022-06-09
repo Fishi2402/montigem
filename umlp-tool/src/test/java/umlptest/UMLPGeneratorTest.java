@@ -8,6 +8,7 @@ import umlp.generator.UMLPGenerator;
 
 import java.io.File;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UMLPGeneratorTest extends AbstractUMLPTest {
@@ -24,7 +25,6 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
   }
 
   @Test
-  @Disabled("Not working yet")
   public void testTOPMechamismMethod() {
     ASTUMLPCompilationUnit ast = parse("de/monticore/A.umlp");
     createSymTab(ast);
@@ -33,7 +33,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
 
     assertNoErrors();
 
-    File f = new File("target/generated-test-sources/de/monticore/FooTOP.java");
+    File f = new File("target/generated-test-sources/umlp/FooTOP.java");
     assertTrue(f.exists());
   }
 
