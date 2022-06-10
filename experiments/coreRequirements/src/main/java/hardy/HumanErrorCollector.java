@@ -3,6 +3,8 @@ package hardy;
 // GEN-P
 
 import de.se_rwth.commons.logging.Log;
+import hardy.commands.Human_error_age;
+import umlp.command.CommandManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,7 @@ public class HumanErrorCollector {
     instance = new HumanErrorCollector();
   }
 
-  protected static HumanErrorCollector getInstance(){
+  public static HumanErrorCollector getInstance(){
     if(instance == null){
       init();
     }
@@ -25,6 +27,10 @@ public class HumanErrorCollector {
 
   public static void addErrorObserver(HumanErrorObserver observer){
     getInstance()._addErrorObserver(observer);
+  }
+
+  public static void initMe(HumanErrorCollector humanErrorCollector) {
+    instance = humanErrorCollector;
   }
 
   protected void _addErrorObserver(HumanErrorObserver observer) {
@@ -51,10 +57,18 @@ public class HumanErrorCollector {
     getInstance()._reportAgeInvalid(human);
   }
 
+  // TODO: extract _buildXMsg in all other error collectors
+
   protected void _reportAgeInvalid(Human human){
-    String msg = "Age " + human.getAge() + " of Human with gemId " + human.getGemId() + " is invalid!";
+    // Mirror report to clients
+    CommandManager.sendCommandToSubscribers(new Human_error_age(human.getGemId()));
+    String msg = _buildAgeInvalidMsg(human);
     Log.warn(msg);
     observers.forEach(obs -> obs.notifyAgeInvalid(human, msg));
+  }
+
+  protected String _buildAgeInvalidMsg(Human human){
+    return "Age " + human.getAge() + " of Human with gemId " + human.getGemId() + " is invalid!";
   }
   
   

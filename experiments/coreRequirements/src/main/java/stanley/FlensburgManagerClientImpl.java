@@ -20,20 +20,12 @@ import java.util.*;
 // Uses commands and requests to synchronize data with the backend
 // TODO: Ausbaustufe: Lokaler cache für Daten, damit nicht immer unveränderte Daten nachgeladen werden müssen
 public class FlensburgManagerClientImpl extends FlensburgManager {
-  private FlensburgManagerClientImpl(){ }
+  FlensburgManagerClientImpl(){ }
 
   protected HumanCommandObserver theHumanCommandObserver = new HumanCommandObserver();
   protected PersonCommandObserver thePersonCommandObserver = new PersonCommandObserver();
 
-  public static FlensburgTestContext init(FlensburgTestContext backendContext){
-    FlensburgManagerClientImpl res = new FlensburgManagerClientImpl();
-    instance = res;
-
-    ClientCommandManager clientCommandManager = new ClientCommandManager(backendContext);
-    FlensburgTestContext flensburgTestContext = new FlensburgTestContext(res, clientCommandManager);
-    clientCommandManager.setClientContext(flensburgTestContext);
-    return flensburgTestContext;
-  }
+  // Must be created using builder, since we have one ErrorListener per DomainClass
 
   @Override
   protected long _doGetFreeGemId() {

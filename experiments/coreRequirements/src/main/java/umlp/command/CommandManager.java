@@ -73,6 +73,15 @@ public class CommandManager {
   protected  <T> CommandResult<T> _executeSingleCommand(Command<T> command) {
     CommandResult<T> res = command.doRun();
     // TODO: error handling if doRun fails
+    _sendCommandToSubscribers(command);
+    return res;
+  }
+
+  public static <T> void sendCommandToSubscribers(Command<T> command){
+    getInstance()._sendCommandToSubscribers(command);
+  }
+
+  protected <T> void _sendCommandToSubscribers(Command<T> command) {
     if(!command.isRequest()) {
       for (Map.Entry<Long, CommandSubscription> e : subscribers.entrySet()) {
         if (!e.getKey().equals(command.getParticipantId())) {
@@ -81,7 +90,6 @@ public class CommandManager {
         }
       }
     }
-    return res;
   }
 
   protected static long freeCommandId;

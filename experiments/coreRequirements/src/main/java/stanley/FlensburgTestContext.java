@@ -3,6 +3,7 @@ package stanley;
 // RTE-T
 
 import hardy.FlensburgManager;
+import hardy.HumanErrorCollector;
 import umlp.command.CommandManager;
 
 // Speichert die Instanzen zu allen genutzten static delegate pattern, wie den Managern.
@@ -12,10 +13,12 @@ import umlp.command.CommandManager;
 public class FlensburgTestContext {
   private FlensburgManager flensburgManager;
   private CommandManager commandManager;
+  private HumanErrorCollector humanErrorCollector;
 
-  public FlensburgTestContext(FlensburgManager flensburgManager, CommandManager commandManager) {
+  public FlensburgTestContext(FlensburgManager flensburgManager, CommandManager commandManager, HumanErrorCollector humanErrorCollector) {
     this.flensburgManager = flensburgManager;
     this.commandManager = commandManager;
+    this.humanErrorCollector = humanErrorCollector;
   }
 
   public FlensburgManager getFlensburgManager() {
@@ -34,8 +37,17 @@ public class FlensburgTestContext {
     this.commandManager = commandManager;
   }
 
+  public static FlensburgTestContext fromCurrentContext(){
+    return new FlensburgTestContext(
+        FlensburgManager.getSingleton(),
+        CommandManager.getInstance(),
+        HumanErrorCollector.getInstance()
+    );
+  }
+
   public void activate(){
       FlensburgManager.initMe(flensburgManager);
       CommandManager.initMe(commandManager);
+      HumanErrorCollector.initMe(humanErrorCollector);
   }
 }

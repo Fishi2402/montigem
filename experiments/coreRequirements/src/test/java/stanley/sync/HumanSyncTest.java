@@ -4,14 +4,13 @@ package stanley.sync;
 // HWC-GT: Testet synchronisation der "generierten" Klasse Human
 
 import de.se_rwth.commons.logging.Log;
-import hardy.FlensburgManager;
-import hardy.FlensburgMock;
-import hardy.Human;
+import hardy.*;
 import org.junit.jupiter.api.Test;
-import stanley.FlensburgManagerClientImpl;
+import stanley.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
-import umlp.command.CommandManager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,14 +21,15 @@ public class HumanSyncTest {
   public void testSyncBetweenTwoClients(){
     Log.initDEBUG();
 
-    // Create backend manager
-    FlensburgTestContext backendContext = new FlensburgTestContext(FlensburgMock.init(), CommandManager.getInstance());
+    // Create backend
+    FlensburgMock.init();
+    FlensburgTestContext backendContext = FlensburgTestContext.fromCurrentContext();
     long hGemId = 1001L;
     FlensburgMock.secretlyAdaptnextGemIds(hGemId);
 
     // Create clients
-    FlensburgTestContext clientContext1 = FlensburgManagerClientImpl.init(backendContext);
-    FlensburgTestContext clientContext2 = FlensburgManagerClientImpl.init(backendContext);
+    FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder().backendContext(backendContext).build().get();
+    FlensburgTestContext clientContext2 = new FlensburgManagerClientImplBuilder().backendContext(backendContext).build().get();
 
     // Create a human in client 1
     Log.info("Get Human in Client 1", "Test");
@@ -82,5 +82,64 @@ public class HumanSyncTest {
     assertEquals(40, hClient1.getAge());
     assertEquals(40, hClient2.getAge());
     assertEquals(40, hServer.getAge());
+  }
+
+  @Test
+  public void testInvalidAgeIsMirroredToClient(){
+    Log.initDEBUG();
+
+    // Create backend manager
+    FlensburgMock.init();
+    FlensburgTestContext backendContext = FlensburgTestContext.fromCurrentContext();
+    long gemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(gemId);
+
+    Human h = FlensburgManager.humanBuilder().age(18).build().get();
+
+    // Collect Server error messages
+    List<String> serverErrorMsgs = new ArrayList<>();
+    HumanErrorCollector.addErrorObserver(new HumanErrorObserver() {
+      @Override
+      public void notifyAgeInvalid(Human human, String msg) {
+        serverErrorMsgs.add(msg);
+      }
+    });
+
+    // Create client which prints different error messages
+    HumanErrorCollector clientErrorCollector = new HumanErrorCollector(){
+      @Override
+      protected String _buildAgeInvalidMsg(Human human) {
+        return "Client: Human age invalid " + human.getGemId();
+      }
+    };
+    FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
+        .backendContext(backendContext)
+        .humanErrorCollector(clientErrorCollector)
+        .build()
+        .get();
+
+    clientContext1.activate();
+    List<String> clientErrorMsgs = new ArrayList<>();
+
+    HumanErrorCollector.addErrorObserver(new HumanErrorObserver() {
+      @Override
+      public void notifyAgeInvalid(Human human, String msg) {
+        clientErrorMsgs.add(msg);
+      }
+    });
+
+    // report age invalid at server
+    backendContext.activate();
+    HumanErrorCollector.reportAgeInvalid(h);
+
+    assertEquals(1, serverErrorMsgs.size());
+    assertEquals(1, clientErrorMsgs.size());
+
+    String sError = serverErrorMsgs.get(0);
+    String cError = clientErrorMsgs.get(0);
+
+    assertEquals("Client: Human age invalid 1001", cError);
+
+    assertNotEquals(sError, cError);
   }
 }
