@@ -5,6 +5,7 @@ package stanley;
 import de.se_rwth.commons.logging.Log;
 import hardy.HumanErrorCollector;
 import umlp.command.ClientCommandManager;
+import umlp.rte.GeneralErrorCollector;
 
 import java.util.Optional;
 
@@ -12,8 +13,9 @@ import java.util.Optional;
 // Wird gebraucht, da jeder XErrorCollector ersetzbar sein muss, aber auch per default leer sein kann.
 // Dadurch bekäme ein gleichwertiger Konstruktor extrem viele Argumente, was die Nutzung erschwert.
 public class FlensburgManagerClientImplBuilder {
-  private FlensburgTestContext backendContext;
-  private HumanErrorCollector humanErrorCollector;
+  protected FlensburgTestContext backendContext;
+  protected GeneralErrorCollector generalErrorCollector;
+  protected HumanErrorCollector humanErrorCollector;
 
   public FlensburgManagerClientImplBuilder backendContext(FlensburgTestContext backendContext){
     this.backendContext = backendContext;
@@ -22,6 +24,11 @@ public class FlensburgManagerClientImplBuilder {
 
   public FlensburgManagerClientImplBuilder humanErrorCollector(HumanErrorCollector humanErrorCollector){
     this.humanErrorCollector = humanErrorCollector;
+    return this;
+  }
+
+  public FlensburgManagerClientImplBuilder generalErrorCollector(GeneralErrorCollector generalErrorCollector){
+    this.generalErrorCollector = generalErrorCollector;
     return this;
   }
 
@@ -36,8 +43,9 @@ public class FlensburgManagerClientImplBuilder {
     FlensburgTestContext flensburgTestContext = new FlensburgTestContext(
         res,
         clientCommandManager,
+        generalErrorCollector != null ? generalErrorCollector : new GeneralErrorCollector(),
         humanErrorCollector != null ? humanErrorCollector : new HumanErrorCollector()
-        );
+    );
     clientCommandManager.setClientContext(flensburgTestContext);
     return Optional.of(flensburgTestContext);
   }

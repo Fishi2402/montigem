@@ -5,6 +5,7 @@ package stanley;
 import hardy.FlensburgManager;
 import hardy.HumanErrorCollector;
 import umlp.command.CommandManager;
+import umlp.rte.GeneralErrorCollector;
 
 // Speichert die Instanzen zu allen genutzten static delegate pattern, wie den Managern.
 // Durch die activate Methode werden alle diese Instanzen in den entsprechenden Klassen eingesetzt,
@@ -13,11 +14,13 @@ import umlp.command.CommandManager;
 public class FlensburgTestContext {
   private FlensburgManager flensburgManager;
   private CommandManager commandManager;
+  private GeneralErrorCollector generalErrorCollector;
   private HumanErrorCollector humanErrorCollector;
 
-  public FlensburgTestContext(FlensburgManager flensburgManager, CommandManager commandManager, HumanErrorCollector humanErrorCollector) {
+  public FlensburgTestContext(FlensburgManager flensburgManager, CommandManager commandManager, GeneralErrorCollector generalErrorCollector, HumanErrorCollector humanErrorCollector) {
     this.flensburgManager = flensburgManager;
     this.commandManager = commandManager;
+    this.generalErrorCollector = generalErrorCollector;
     this.humanErrorCollector = humanErrorCollector;
   }
 
@@ -41,6 +44,7 @@ public class FlensburgTestContext {
     return new FlensburgTestContext(
         FlensburgManager.getSingleton(),
         CommandManager.getInstance(),
+        GeneralErrorCollector.getInstance(),
         HumanErrorCollector.getInstance()
     );
   }
@@ -48,6 +52,7 @@ public class FlensburgTestContext {
   public void activate(){
       FlensburgManager.initMe(flensburgManager);
       CommandManager.initMe(commandManager);
+      GeneralErrorCollector.initMe(generalErrorCollector);
       HumanErrorCollector.initMe(humanErrorCollector);
   }
 }

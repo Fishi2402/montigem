@@ -2,6 +2,10 @@ package umlp.rte;
 
 // RTE-P
 
+import umlp.command.CommandManager;
+import umlp.command.ServerError;
+import umlp.command.SyncError;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +19,7 @@ public class GeneralErrorCollector {
     instance = new GeneralErrorCollector();
   }
 
-  protected static GeneralErrorCollector getInstance(){
+  public static GeneralErrorCollector getInstance(){
     if(instance == null){
       init();
     }
@@ -24,6 +28,10 @@ public class GeneralErrorCollector {
 
   public static void addErrorObserver(GeneralErrorObserver observer){
     getInstance()._addErrorObserver(observer);
+  }
+
+  public static void initMe(GeneralErrorCollector generalErrorCollector) {
+    instance = generalErrorCollector;
   }
 
   protected void _addErrorObserver(GeneralErrorObserver observer) {
@@ -51,25 +59,42 @@ public class GeneralErrorCollector {
   }
 
   protected void _reportConnectionError() {
-    String msg = "Connection error!";
+    // Connection errors können nicht synchronisiert werden, die Verbindung ist nicht benutzbar!
+    String msg = _buildConnectionErrorMsg();
     observers.forEach(obs -> obs.notifyConnectionError(msg));
+  }
+
+  protected String _buildConnectionErrorMsg() {
+    return "Connection error!";
   }
 
   public static void reportServerError(Throwable t){
     getInstance()._reportServerError(t);
   }
 
+  // TODO: Scoping, aktuell wird der ServerError an alle clients gesendet!
   protected void _reportServerError(Throwable t) {
-    String msg = "Server error: " + t.getMessage();
+    CommandManager.sendCommandToSubscribers(new ServerError(t));
+    String msg = _buildServerErrorMsg(t);
     observers.forEach(obs -> obs.notifyServerError(msg));
   }
 
+  protected String _buildServerErrorMsg(Throwable t) {
+    return "Server error: " + t.getMessage();
+  }
+
+  // TODO: Scoping, aktuell wird der SyncError an alle clients gesendet, ob wohl nur manche dieses Objekt interessiert
   public static void reportSyncError(){
     getInstance()._reportSyncError();
   }
 
   protected void _reportSyncError() {
-    String msg = "Sync error!";
+    CommandManager.sendCommandToSubscribers(new SyncError());
+    String msg = _buildSyncErrorMsg();
     observers.forEach(obs -> obs.notifySyncError(msg));
+  }
+
+  protected String _buildSyncErrorMsg() {
+    return "Sync error!";
   }
 }

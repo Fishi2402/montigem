@@ -73,7 +73,9 @@ public class CommandManager {
   protected  <T> CommandResult<T> _executeSingleCommand(Command<T> command) {
     CommandResult<T> res = command.doRun();
     // TODO: error handling if doRun fails
-    _sendCommandToSubscribers(command);
+    if(!command.isRequest()) {
+      _sendCommandToSubscribers(command);
+    }
     return res;
   }
 
@@ -82,12 +84,10 @@ public class CommandManager {
   }
 
   protected <T> void _sendCommandToSubscribers(Command<T> command) {
-    if(!command.isRequest()) {
-      for (Map.Entry<Long, CommandSubscription> e : subscribers.entrySet()) {
-        if (!e.getKey().equals(command.getParticipantId())) {
-          Log.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + e.getKey(), LogUtil.getLoggerName());
-          e.getValue().sendCommand(command);
-        }
+    for (Map.Entry<Long, CommandSubscription> e : subscribers.entrySet()) {
+      if (!e.getKey().equals(command.getParticipantId())) {
+        Log.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + e.getKey(), LogUtil.getLoggerName());
+        e.getValue().sendCommand(command);
       }
     }
   }
