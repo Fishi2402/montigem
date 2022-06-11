@@ -10,8 +10,11 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
+import umlp._symboltable.IUMLPScope;
 
 // TODO Importe zwischen UMLP Modellen auflösen
 public class UMLP2CDTrafo {
@@ -49,6 +52,7 @@ public class UMLP2CDTrafo {
     CD4CodeMill.init();
     CD4CodeMill.globalScope().clear();
     BasicSymbolsMill.initializePrimitives();
+    createListSymbol();
     CD4CodeMill.globalScope().addAdaptedTypeSymbolResolver(new Class2MCResolver());
     CD4CodeMill.scopesGenitorDelegator().createFromAST(cdAST);
     cdAST.accept(new CD4CodeSymbolTableCompleter(cdAST).getTraverser());
@@ -60,4 +64,19 @@ public class UMLP2CDTrafo {
     return newCD;
   }
 
+  protected static void createListSymbol() {
+    IUMLPScope scope = UMLPMill.scope();
+    TypeVarSymbol t = CD4CodeMill.typeVarSymbolBuilder()
+        .setName("T")
+        .setSpannedScope(UMLPMill.scope())
+        .setEnclosingScope(scope)
+        .build();
+    scope.add(t);
+    OOTypeSymbol list = UMLPMill.oOTypeSymbolBuilder()
+        .setSpannedScope(UMLPMill.scope())
+        .setName("List")
+        .setEnclosingScope(UMLPMill.globalScope())
+        .build();
+    UMLPMill.globalScope().add(list);
+  }
 }
