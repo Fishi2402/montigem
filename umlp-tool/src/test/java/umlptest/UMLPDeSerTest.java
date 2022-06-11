@@ -1,11 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlptest;
 
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._symboltable.ICD4CodeScope;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.serialization.JsonParser;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._symboltable.IUMLPArtifactScope;
+import umlp._symboltable.IUMLPScope;
 import umlp._symboltable.UMLPSymbolTableCompleter;
 import umlp._symboltable.UMLPSymbols2Json;
 
@@ -51,6 +57,20 @@ public class UMLPDeSerTest extends AbstractUMLPTest {
   @Test
   public void storeLoadD() {
     String symFile = "target/symboltests/D.umlpsym";
+    IUMLPScope scope = UMLPMill.scope();
+    TypeVarSymbol t = CD4CodeMill.typeVarSymbolBuilder()
+        .setName("T")
+        .setSpannedScope(UMLPMill.scope())
+        .setEnclosingScope(scope)
+        .build();
+    scope.add(t);
+    OOTypeSymbol list = UMLPMill.oOTypeSymbolBuilder()
+        .setSpannedScope(UMLPMill.scope())
+        .setName("List")
+        .setEnclosingScope(UMLPMill.globalScope())
+        .build();
+    UMLPMill.globalScope().add(list);
+
     UMLPSymbols2Json s2j = new UMLPSymbols2Json();
     IUMLPArtifactScope expected = processModel("de/monticore/D.umlp");
 
