@@ -18,10 +18,10 @@ public class Person_create extends Request<Void> {
   protected final Person person;
 
   // todo: implementierung? oder zumindest mal erklären, was das Command nun wirklich macht
-  protected Person_create(Person person) {
+  public Person_create(Person person) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
-        "hardy.commands.Human_set_age"
+        "hardy.commands.Person_create"
     );
 
     this.person = person;

@@ -29,6 +29,7 @@ Z5  :Button(text = "Discard", leftClick = nichts-tun,aber andere Seite anzeigen)
 */
 
 import hardy.Person;
+import hardy.PersonObserver;
 import stanley.editierepersoncars.EditierePersonCarsGUI;
 
 /********************************************************/

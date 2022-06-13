@@ -44,6 +44,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   // Daher zusätzlich WeakReference<Human>, was dazu führt, das Humans garbage collected werden können, falls sie
   // nur hier gespeichert sind.
   protected Map<Long, WeakReference<Human>> knownHumans = Collections.synchronizedMap(new WeakHashMap<>());
+  protected Map<Long, WeakReference<Person>> knownPersons = Collections.synchronizedMap(new WeakHashMap<>());
   // TODO: for all classes
 
   @Override
@@ -103,7 +104,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
         this::loadHumanSize,
         this::loadHumanGemIds,
         this::loadHumansByGemIds,
-        this::setIdxToGemIds,
+        this::setHumanIdsToGemIds,
         this::addHumans,
         this::removeHumansWithIndices
     );
@@ -119,7 +120,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     throw new IllegalStateException("Not supported");
   }
 
-  private void setIdxToGemIds(Map<Integer, Long> indicesToGemIds) {
+  private void setHumanIdsToGemIds(Map<Integer, Long> indicesToGemIds) {
     for(int i = 0; i< indicesToGemIds.size(); i++){
       humanListGemIds.add(indicesToGemIds.get(i));
     }
@@ -175,32 +176,122 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected PersonBuilder _doPersonBuilder() {
-    return null;
+    return new PersonBuilder(_doGetFreeGemId());
   }
 
   @Override
   protected Optional<Person> _doPersonOpt(long gemId) {
-    return Optional.empty();
+    WeakReference<Person> personWeakReference = knownPersons.get(gemId);
+    if(personWeakReference != null){
+      Person h = personWeakReference.get();
+      if(h != null){
+        Log.trace("Returning known person " + h.getGemId(), LogUtil.getLoggerName());
+        return Optional.of(h);
+      }
+    }
+
+    Gem<Person> gem = CommandManager.executeSingleCommand(new Person_get(gemId)).asGemResult().getResult();
+    if(gem.isPresent()){
+      Person person = gem.get();
+      if(!person.containsObserver(thePersonCommandObserver)) {
+        person.addObserver(thePersonCommandObserver);
+      }
+      Log.trace("Adding known person " + gemId, LogUtil.getLoggerName());
+      knownPersons.put(person.getGemId(), new WeakReference<>(person));
+      return Optional.of(person);
+    } else {
+      return Optional.empty();
+    }
   }
 
   @Override
   protected Person _doGetPersonSure(long gemId) {
-    return null;
+    return _doPersonOpt(gemId).get();
   }
 
   @Override
-  protected void _doAddPerson(Person person) {
-    // ...
-    flensburgObservers.forEach(obs -> obs.notifyPersonAdded(person.getGemId()));
+  protected void _doAddPerson(Person o) {
+    StatusResult res = CommandManager.executeSingleCommand(new Person_create(o)).asStatusResult();
+    // TODO: Error handling
+    if(!o.containsObserver(thePersonCommandObserver)){
+      o.addObserver(thePersonCommandObserver);
+    }
+    Log.trace("Adding known person " + o.getGemId(), LogUtil.getLoggerName());
+    knownPersons.put(o.getGemId(), new WeakReference<>(o));
+    flensburgObservers.forEach(obs -> obs.notifyPersonAdded(o.getGemId()));
   }
+
+  protected List<Long> personListGemIds = new ArrayList<>();
 
   @Override
   protected Collection<Person> _doGetPersonList() {
-    return null;
+    return new GemList<>(
+        this::loadPersonSize,
+        this::loadPersonGemIds,
+        this::loadPersonsByGemIds,
+        this::setIdxToGemIds,
+        this::addPersons,
+        this::removePersonsWithIndices
+    );
+  }
+
+  private void removePersonsWithIndices(Set<Integer> indices) {
+    // TODO: soll löschen auf diese Weise erlaubt sein?
+    throw new IllegalStateException("Not supported");
+  }
+
+  private void addPersons(int index, List<Long> gemIds) {
+    // TODO: soll erstellen auf diese Weise erlaubt sein?
+    throw new IllegalStateException("Not supported");
+  }
+
+  private void setIdxToGemIds(Map<Integer, Long> indicesToGemIds) {
+    for(int i = 0; i< indicesToGemIds.size(); i++){
+      personListGemIds.add(indicesToGemIds.get(i));
+    }
+  }
+
+  private List<LoadResult<Person>> loadPersonsByGemIds(List<Long> gemIds) {
+    List<LoadResult<Person>> res = new ArrayList<>();
+
+    // Optimierung: Einen command um mehrere Objekte gleichzeitig zu laden
+    for (Long gemId : gemIds) {
+      GemResult<Person> resp = CommandManager.executeSingleCommand(new Person_get(gemId)).asGemResult();
+      Gem<Person> gem = resp.getResult();
+      if(gem.isPresent()){
+        Person person = gem.get();
+        person.addObserver(thePersonCommandObserver);
+        res.add(new LoadResult<>(person));
+      }else{
+        res.add(new LoadResult<>(gem.getLoadingState()));
+      }
+    }
+    return res;
+  }
+
+  protected int loadPersonSize(){
+    CommandResult<Integer> res = CommandManager.executeSingleCommand(new Person_size());
+    return res.asGemResult().getResult().get();
+  }
+
+  private boolean personGemIdsLoaded = false;
+  private List<Long> personGemIds = new ArrayList<>();
+
+  protected List<Long> loadPersonGemIds(int startIndex, int endIndex) {
+    if(!personGemIdsLoaded) {
+      // TODO: könnte auch teilweise on-demand geladen werden
+      GemResult<LongList> res = CommandManager.executeSingleCommand(new Person_ids()).asGemResult();
+      personGemIds = res.getResult().get();
+      personGemIdsLoaded = true;
+    }
+
+    return personGemIds.subList(startIndex, endIndex);
   }
 
   @Override
   protected void _doDeletePerson(Person o) {
+    StatusResult status = CommandManager.executeSingleCommand(new Person_delete(o)).asStatusResult();
+    // TODO: error handling
     // ...
     flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(o.getGemId()));
   }

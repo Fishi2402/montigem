@@ -16,7 +16,7 @@ import java.util.Optional;
 public class Person_get extends Request<Person> {
   protected final long gemId;
 
-  protected Person_get(long gemId) {
+  public Person_get(long gemId) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Person_get.Person_get"
