@@ -15,6 +15,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp.generator.decorator.BuilderDecorator;
+import umlp.generator.decorator.DiagramObserverDecorator;
 import umlp.generator.decorator.DomainClassDecorator;
 import umlp.generator.decorator.ErrorCollectorDecorator;
 
@@ -44,6 +45,8 @@ public class UMLPGenerator {
 
   protected ErrorCollectorDecorator errorCollectorDecorator;
 
+  protected DiagramObserverDecorator diagramObserverDecorator;
+
   protected TopDecorator topDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
@@ -61,6 +64,7 @@ public class UMLPGenerator {
     domainClassDecorator = new DomainClassDecorator(genSetup.getGlex());
     builderDecorator = new BuilderDecorator(genSetup.getGlex());
     errorCollectorDecorator = new ErrorCollectorDecorator(genSetup.getGlex());
+    diagramObserverDecorator = new DiagramObserverDecorator(genSetup.getGlex());
     topDecorator = new TopDecorator(genSetup.getHandcodedPath());
   }
 
@@ -99,6 +103,11 @@ public class UMLPGenerator {
     // Generate ErrorCollector classes
     errorCollectorDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("ErrorCollectorDecorator", cdAST);
+
+    // Generate DiagramObserver classes
+    diagramObserverDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("DiagramObserverDecorator", cdAST);
+
     // TODO hier weitere trafos realisieren
 
 
