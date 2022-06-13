@@ -2,12 +2,15 @@ package hardy.commands;
 
 import hardy.Car;
 import hardy.FlensburgManager;
-import umlp.command.Command;
 import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
+import umlp.request.Request;
+
+import java.util.Collection;
+import java.util.Collections;
 // GEN-P
 
-public class Car_create extends Command {
+public class Car_create extends Request<Void> {
   protected final Car car;
 
   protected Car_create(Car car) {
@@ -27,4 +30,8 @@ public class Car_create extends Command {
 
   // TODO AHe: undo
 
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Collections.singleton(car.getGemId());
+  }
 }

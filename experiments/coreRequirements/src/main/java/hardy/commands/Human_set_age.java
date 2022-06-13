@@ -11,6 +11,8 @@ import umlp.command.error.mock.Status;
 import umlp.rte.NotificationScope;
 import umlp.util.LogUtil;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 // GEN-P
 
@@ -37,5 +39,10 @@ public class Human_set_age extends Command<Void> {
     } else {
       return StatusResult.error(gemId, new MontiGemError(MontiGemErrorCode.UNKNOWN, Status.BAD_REQUEST, "Can not find Human with gemId " + gemId));
     }
+  }
+
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Collections.singleton(gemId);
   }
 }

@@ -9,12 +9,14 @@ import umlp.request.Request;
 import umlp.rte.Gem;
 import umlp.rte.LoadingState;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 public class Person_get extends Request<Person> {
-  protected final int gemId;
+  protected final long gemId;
 
-  protected Person_get(int gemId) {
+  protected Person_get(long gemId) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Person_get.Person_get"
@@ -31,5 +33,10 @@ public class Person_get extends Request<Person> {
     } else {
       return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY), "hardy.Person");
     }
+  }
+
+  @Override
+  public Collection<Long> getNewlySubscribedGemIds() {
+    return Collections.singleton(gemId);
   }
 }

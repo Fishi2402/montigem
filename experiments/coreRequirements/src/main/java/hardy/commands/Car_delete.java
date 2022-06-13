@@ -5,6 +5,9 @@ import hardy.FlensburgManager;
 import umlp.command.Command;
 import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
+
+import java.util.Collection;
+import java.util.Collections;
 // GEN-P
 
 public class Car_delete extends Command {
@@ -22,5 +25,10 @@ public class Car_delete extends Command {
   public StatusResult doRun() throws MontiGemError {
     FlensburgManager.deleteCar(car); // TODO AHe: check car exists or return result of delete call
     return StatusResult.ok(getId());
+  }
+
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Collections.singleton(car.getGemId());
   }
 }

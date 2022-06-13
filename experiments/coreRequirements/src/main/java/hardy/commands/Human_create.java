@@ -7,6 +7,9 @@ import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
 import umlp.request.Request;
 
+import java.util.Collection;
+import java.util.Collections;
+
 public class Human_create extends Request<Void> {
   protected final Human human;
 
@@ -27,4 +30,9 @@ public class Human_create extends Request<Void> {
 
   // TODO AHe: undo
 
+
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Collections.singleton(human.getGemId());
+  }
 }

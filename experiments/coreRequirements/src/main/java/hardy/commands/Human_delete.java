@@ -7,6 +7,9 @@ import umlp.command.Command;
 import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
 
+import java.util.Collection;
+import java.util.Collections;
+
 public class Human_delete extends Command<Void> {
   protected final Human human;
 
@@ -22,5 +25,10 @@ public class Human_delete extends Command<Void> {
   public StatusResult doRun() throws MontiGemError {
     FlensburgManager.deleteHuman(human);
     return StatusResult.ok(getId());
+  }
+
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Collections.singleton(human.getGemId());
   }
 }

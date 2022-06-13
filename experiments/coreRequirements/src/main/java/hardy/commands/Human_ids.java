@@ -27,4 +27,6 @@ public class Human_ids extends Command<LongList> {
     }
     return new GemResult<>(getId(), new Gem<>(res), "umlp.command.LongList");
   }
+
+  // TODO: gemId subscriptions
 }

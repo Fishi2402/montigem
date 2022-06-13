@@ -8,13 +8,15 @@ import umlp.request.Request;
 import umlp.rte.Gem;
 import umlp.rte.LoadingState;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 // GEN-P
 
 public class Car_get extends Request<Car> {
-  protected final int gemId;
+  protected final long gemId;
 
-  protected Car_get(int gemId) {
+  protected Car_get(long gemId) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Car_get"
@@ -31,5 +33,10 @@ public class Car_get extends Request<Car> {
     } else {
       return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY), "hardy.Car");
     }
+  }
+
+  @Override
+  public Collection<Long> getNewlySubscribedGemIds() {
+    return Collections.singleton(gemId);
   }
 }

@@ -9,6 +9,8 @@ import umlp.request.Request;
 import umlp.rte.Gem;
 import umlp.rte.LoadingState;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 public class Human_get extends Request<Human> {
@@ -31,5 +33,10 @@ public class Human_get extends Request<Human> {
     } else {
       return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY), "hardy.Human");
     }
+  }
+
+  @Override
+  public Collection<Long> getNewlySubscribedGemIds() {
+    return Collections.singleton(gemId);
   }
 }

@@ -128,6 +128,9 @@ public class HumanSyncTest {
       }
     });
 
+    // Make sure Client 1 is subscribed to updates for gemId 1001
+    Human h1001C1 = FlensburgManager.getHumanSure(gemId);
+
     // report age invalid at server
     backendContext.activate();
     HumanErrorCollector.reportAgeInvalid(h);
@@ -141,5 +144,7 @@ public class HumanSyncTest {
     assertEquals("Client: Human age invalid 1001", cError);
 
     assertNotEquals(sError, cError);
+
+    // TODO: only sender of invalid command should be notified of this error?
   }
 }

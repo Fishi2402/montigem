@@ -10,6 +10,8 @@ import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
 import umlp.command.error.MontiGemErrorCode;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 public class Person_removeOwns extends Command<Void> {
@@ -37,5 +39,10 @@ public class Person_removeOwns extends Command<Void> {
 
     personOpt.get().removeOwns(carOpt.get());
     return StatusResult.ok(getId());
+  }
+
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Arrays.asList(personGemId, carGemId);
   }
 }

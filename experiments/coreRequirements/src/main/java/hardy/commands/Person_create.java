@@ -4,13 +4,16 @@ package hardy.commands;
 
 import hardy.FlensburgManager;
 import hardy.Person;
-import umlp.command.Command;
 import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
+import umlp.request.Request;
+
+import java.util.Collection;
+import java.util.Collections;
 
 // TODO AHe: Commands to set attributes and change associations
 
-public class Person_create extends Command {
+public class Person_create extends Request<Void> {
 
   protected final Person person;
 
@@ -32,4 +35,8 @@ public class Person_create extends Command {
 
   // TODO AHe: undo
 
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Collections.singleton(person.getGemId());
+  }
 }

@@ -6,6 +6,9 @@ import umlp.command.Command;
 import umlp.command.CommandResult;
 import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
+
+import java.util.Collection;
+import java.util.Collections;
 // GEN-P
 
 public class Address_delete extends Command<Void> {
@@ -23,5 +26,10 @@ public class Address_delete extends Command<Void> {
   public CommandResult<Void> doRun() throws MontiGemError {
     FlensburgManager.deleteAddress(address); // TODO AHe: check car exists or return result of delete call
     return StatusResult.ok(getId());
+  }
+
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Collections.singleton(address.getGemId());
   }
 }

@@ -72,6 +72,10 @@ public class CommandManager {
 
   protected  <T> CommandResult<T> _executeSingleCommand(Command<T> command) {
     CommandResult<T> res = command.doRun();
+    // update subscribed gemIds
+    if(subscribers.containsKey(command.getParticipantId())){
+      subscribers.get(command.getParticipantId()).subscribe(command.getNewlySubscribedGemIds());
+    }
     // TODO: error handling if doRun fails
     if(!command.isRequest()) {
       _sendCommandToSubscribers(command);
@@ -86,8 +90,12 @@ public class CommandManager {
   protected <T> void _sendCommandToSubscribers(Command<T> command) {
     for (Map.Entry<Long, CommandSubscription> e : subscribers.entrySet()) {
       if (!e.getKey().equals(command.getParticipantId())) {
-        Log.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + e.getKey(), LogUtil.getLoggerName());
-        e.getValue().sendCommand(command);
+        if(command.getEffectedGemIds().stream().anyMatch(gemId -> e.getValue().isSubscribedTo(gemId))) {
+          Log.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + e.getKey(), LogUtil.getLoggerName());
+          e.getValue().sendCommand(command);
+        }else{
+          Log.trace("Skip sending command " + command.getCommandType() + " to " + e.getKey(), LogUtil.getLoggerName());
+        }
       }
     }
   }

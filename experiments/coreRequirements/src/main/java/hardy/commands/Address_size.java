@@ -7,6 +7,9 @@ import umlp.command.Command;
 import umlp.command.GemResult;
 import umlp.rte.Gem;
 
+import java.util.Collection;
+import java.util.Collections;
+
 public class Address_size extends Command<Integer> {
   public Address_size() {
     super(
@@ -22,4 +25,10 @@ public class Address_size extends Command<Integer> {
   }
 
   // undo macht keinen Sinn
+
+  // TODO: updates to the returned LazyList need to be send?
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Collections.emptyList();
+  }
 }

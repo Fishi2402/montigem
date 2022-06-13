@@ -2,16 +2,19 @@ package hardy.commands;
 
 import hardy.Address;
 import hardy.FlensburgManager;
-import umlp.command.Command;
 import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
+import umlp.request.Request;
+
+import java.util.Collection;
+import java.util.Collections;
 // GEN-P
 
 // TODO AHe: Konzept für Daten-synchro zwischen den Managern erarbeiten.
 //   Werden dafür commands genutzt oder gibt es ein alternatives Konzept?
 //   Ggf. können Operationen wie get in Requests(~ Commands ohne undo)
 
-public class Address_create extends Command<Void> {
+public class Address_create extends Request<Void> {
   protected final Address address;
 
   protected Address_create(Address address) {
@@ -27,6 +30,11 @@ public class Address_create extends Command<Void> {
   public StatusResult doRun() throws MontiGemError {
     FlensburgManager.addAddress(address);
     return StatusResult.ok(getId());
+  }
+
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Collections.singleton(address.getGemId());
   }
 
   // TODO AHe: undo

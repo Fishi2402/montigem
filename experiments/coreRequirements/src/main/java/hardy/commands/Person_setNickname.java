@@ -9,6 +9,8 @@ import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
 import umlp.command.error.MontiGemErrorCode;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 public class Person_setNickname extends Command<Void> {
@@ -34,5 +36,10 @@ public class Person_setNickname extends Command<Void> {
     }else{
       return StatusResult.error(getId(), new MontiGemError(MontiGemErrorCode.UNKNOWN, null, "Did not find Person with id " + gemId));
     }
+  }
+
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Collections.singleton(gemId);
   }
 }

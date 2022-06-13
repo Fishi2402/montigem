@@ -7,6 +7,9 @@ import umlp.command.Command;
 import umlp.command.GemResult;
 import umlp.rte.Gem;
 
+import java.util.Collection;
+import java.util.Collections;
+
 // Gibt die Anzahl aller Humans zurück
 public class Human_size extends Command<Integer> {
 
@@ -24,4 +27,10 @@ public class Human_size extends Command<Integer> {
   }
 
   // undo macht keinen Sinn
+
+  // TODO: updates to the returned LazyList need to be send?
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Collections.emptyList();
+  }
 }

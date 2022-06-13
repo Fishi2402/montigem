@@ -6,6 +6,8 @@ import hardy.HumanErrorCollector;
 import umlp.command.Command;
 import umlp.command.StatusResult;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 // GEN-P
@@ -26,5 +28,10 @@ public class Human_error_age extends Command<Void> {
       HumanErrorCollector.reportAgeInvalid(humanOpt.get());
     }
     return StatusResult.ok(getId());
+  }
+
+  @Override
+  public Collection<Long> getEffectedGemIds() {
+    return Collections.singleton(gemId);
   }
 }

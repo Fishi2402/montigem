@@ -6,6 +6,9 @@ package umlp.command;
 import de.se_rwth.commons.logging.Log;
 import umlp.command.error.NotImplementedException;
 
+import java.util.Collection;
+import java.util.Collections;
+
 // Der Typenparameter T gibt an, welchen Datentyp gewrapped in ein CommandResult<T> ein Command zurückgeben soll.
 // Falls es nur eine Status-Meldung ist, so wird T = Void genutzt und der Status aus dem CommandResult ausgelesen.
 // Bei Human_get wäre T = Human, sodass der Entwickler den Human aus dem CommandResult auslesen kann, oder am Status
@@ -73,5 +76,17 @@ public abstract class Command<T> {
   // Um die technische Umsetzung zu vereinfachen, nutzen Requests dieselbe Infrastruktur wie Commands
   public boolean isRequest(){
     return false;
+  }
+
+
+  // GemIds, der Daten welcher dieser Command verändert
+  // TODO: für alle Commands implementieren
+  public Collection<Long> getEffectedGemIds(){
+    return Collections.emptySet();
+  }
+
+  // GemIds, zu welchen dieser Client updates erhalten muss
+  public Collection<Long> getNewlySubscribedGemIds(){
+    return getEffectedGemIds();
   }
 }
