@@ -21,7 +21,6 @@ import java.util.function.Supplier;
  * A lazy list
  * Elements are loaded as they are required.
  * Useful if e.g. the elements are loaded over a network.
- * Deprecated, as specific lists will be generated accordingly
  */
 public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     implements GemIdentifiable {
