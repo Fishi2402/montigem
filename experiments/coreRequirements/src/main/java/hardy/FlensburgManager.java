@@ -214,10 +214,10 @@ public abstract class FlensburgManager {
      * @return builder object for the class {@link Address}.
      */
     public static AddressBuilder addressBuilder() {
-        return getSingleton()._doAddress();
+        return getSingleton()._doAddressBuilder();
     }
 
-    protected abstract AddressBuilder _doAddress();
+    protected abstract AddressBuilder _doAddressBuilder();
 
     /**
      * Gives the {@link Address} object with the given gemId.

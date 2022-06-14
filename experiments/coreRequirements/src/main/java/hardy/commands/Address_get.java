@@ -17,7 +17,7 @@ import java.util.Optional;
 public class Address_get extends Request<Address> {
   protected final long gemId;
 
-  protected Address_get(long gemId) {
+  public Address_get(long gemId) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Address_get"

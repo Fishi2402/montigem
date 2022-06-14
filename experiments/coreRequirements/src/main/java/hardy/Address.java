@@ -6,6 +6,8 @@ import org.hibernate.annotations.GenericGenerator;
 import umlp.rte.GemIdentifiable;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Optional;
 
@@ -19,49 +21,63 @@ import java.util.Optional;
 
 @Entity
 @Table(name = "address")
-public class Address extends Observable implements GemIdentifiable {
+public class Address implements GemIdentifiable {
+  protected transient List<AddressObserver> addressObservers = new ArrayList<>();
 
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name="increment", strategy = "increment")
-    protected long gemId = -32;
+  @Id
+  @GeneratedValue(generator = "increment")
+  @GenericGenerator(name = "increment", strategy = "increment")
+  protected long gemId = -32;
 
-    @Column(name = "city")
-    protected String city;
+  @Column(name = "city")
+  protected String city;
 
-    @Override
-    public long getGemId() {
-        return gemId;
+  @Override
+  public long getGemId() {
+    return gemId;
+  }
+
+  public String getCity() {
+    return city;
+  }
+
+  public void setCity(String city) {
+    this.city = city;
+    checkCity();
+  }
+
+  public boolean checkCity() {
+    boolean res = true;
+    if (city == null) {
+      res = false;
+      AddressErrorCollector.reportCityInvalid(this);
     }
 
-    public String getCity() {
-        return city;
-    }
+    return res;
+  }
 
-    public void setCity(String city) {
-        this.city = city;
-        checkCity();
-    }
+  protected Address() {
+    init();
+  }
 
-    public boolean checkCity(){
-        boolean res = true;
-        if(city == null){
-            res = false;
-            AddressErrorCollector.reportCityInvalid(this);
-        }
+  protected void init() {
+  }
 
-        return res;
-    }
+  public void addObserver(AddressObserver o) {
+    addressObservers.add(o);
+  }
 
-    protected Address() {
-        init();
-    }
+  public void removeObserver(AddressObserver o) {
+    addressObservers.add(o);
+  }
 
-    protected void init() {
-    }
+  public boolean containsObserver(AddressObserver o) {
+    return addressObservers.contains(o);
+  }
 
-    //+ Pseudo build for all classes: normally nothing happens
-    public Optional<Address> build() {
-        return Optional.empty();
-    }
+
+  //+ Pseudo build for all classes: normally nothing happens
+  public Optional<Address> build() {
+    return Optional.empty();
+  }
 }

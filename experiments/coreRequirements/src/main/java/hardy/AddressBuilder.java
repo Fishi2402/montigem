@@ -28,7 +28,7 @@ public class AddressBuilder extends Address {
         if (!buildFinished) {
             if(isBuildable()) {
                 FlensburgManager.addAddress(this);
-                notifyObservers();      //+ an initial notification
+                addressObservers.forEach(obs -> obs.notifyBuild(this));
                 buildFinished = true;
                 return Optional.of(this);
             }

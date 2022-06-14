@@ -14,7 +14,7 @@ import java.util.Collections;
 public class Address_delete extends Command<Void> {
   protected final Address address;
 
-  protected Address_delete(Address address) {
+  public Address_delete(Address address) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hary.commands.Address_delete"

@@ -19,7 +19,7 @@ public class Person_get extends Request<Person> {
   public Person_get(long gemId) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
-        "hardy.commands.Person_get.Person_get"
+        "hardy.commands.Person_get"
     );
 
     this.gemId = gemId;

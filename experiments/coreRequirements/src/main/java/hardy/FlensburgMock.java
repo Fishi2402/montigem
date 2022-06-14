@@ -18,6 +18,7 @@ package hardy;
 */
 
 import stanley.HumanCommandObserver;
+import stanley.PersonCommandObserver;
 import umlp.rte.HashMapWithOrderedKeys;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class FlensburgMock extends FlensburgManager {
 
   // get the next free GemId -----------------------------------
   // simple solution: just counting, starting with 1001
-  static protected long freeGemId = 1001;
+  static protected long freeGemId = 1001L;
 
   //+ geheimes Hilfsmethode um gemId's für tests zu 
   // manipulieren (wenn notwendig)
@@ -60,6 +61,7 @@ public class FlensburgMock extends FlensburgManager {
   // Manages a Map<Long, Object>  for each class
 
   protected HashMapWithOrderedKeys<Long,Person> persons = new HashMapWithOrderedKeys<>();
+  protected PersonCommandObserver thePersonCommandObserver = new PersonCommandObserver();
 
   // get a Builder ---------------------------------------
   protected PersonBuilder _doPersonBuilder() {
@@ -74,13 +76,20 @@ public class FlensburgMock extends FlensburgManager {
   //+ get an Object for an existing gemId ---------------------------------
   // empty, if Object not existent
   protected Optional<Person> _doPersonOpt(long gemId) {
-    if(persons.containsKey(gemId)) {
-      return Optional.of(persons.get(gemId));
+    Person value = null;
+    if(persons.containsKey(gemId)){
+      value = persons.get(gemId);
     } else if(dummyProvider != null) {
-      return Optional.of(dummyProvider.inventPerson());
+      value = dummyProvider.inventPerson();
     } else {
       return Optional.empty();
     }
+
+    if(!value.containsObserver(thePersonCommandObserver)){
+      value.addObserver(thePersonCommandObserver);
+    }
+
+    return Optional.of(value);
   }
 
   //+ throws an Exception, if no Person exists.
@@ -91,10 +100,13 @@ public class FlensburgMock extends FlensburgManager {
 
   //+ add an Object when Build is complete ---------------------------------
 
-  protected void _doAddPerson(Person person) {
+  protected void _doAddPerson(Person o) {
     // TODO AHe: Do we get fresh gemId here or is it set by the user?
-    persons.put(person.getGemId(), person);
-    flensburgObservers.forEach(obs -> obs.notifyPersonAdded(person.getGemId()));
+    persons.put(o.getGemId(), o);
+    if(!o.containsObserver(thePersonCommandObserver)){
+      o.addObserver(thePersonCommandObserver);
+    }
+    flensburgObservers.forEach(obs -> obs.notifyPersonAdded(o.getGemId()));
   }
 
   @Override
@@ -181,7 +193,7 @@ public class FlensburgMock extends FlensburgManager {
   protected HashMapWithOrderedKeys<Long, Address> addresses = new HashMapWithOrderedKeys<>();
 
   @Override
-  protected AddressBuilder _doAddress() {
+  protected AddressBuilder _doAddressBuilder() {
     return new AddressBuilder(getFreeGemId());
   }
 

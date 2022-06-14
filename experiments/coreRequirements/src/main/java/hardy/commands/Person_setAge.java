@@ -8,6 +8,7 @@ import umlp.command.Command;
 import umlp.command.StatusResult;
 import umlp.command.error.MontiGemError;
 import umlp.command.error.MontiGemErrorCode;
+import umlp.rte.NotificationScope;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class Person_setAge extends Command<Void> {
   public StatusResult doRun() {
     Optional<Person> personOpt = FlensburgManager.personOpt(gemId);
     if(personOpt.isPresent()){
-      personOpt.get().setAge(age);
+      personOpt.get().setAge(age, NotificationScope.LOCAL);
       return StatusResult.ok(getId());
     }else{
       return StatusResult.error(getId(), new MontiGemError(MontiGemErrorCode.UNKNOWN, null, "Did not find Person with id " + gemId));

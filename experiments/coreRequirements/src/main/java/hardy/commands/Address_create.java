@@ -17,7 +17,7 @@ import java.util.Collections;
 public class Address_create extends Request<Void> {
   protected final Address address;
 
-  protected Address_create(Address address) {
+  public Address_create(Address address) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Address_create"

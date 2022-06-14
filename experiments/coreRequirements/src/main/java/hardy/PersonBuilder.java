@@ -4,6 +4,7 @@ package hardy;
 
 import umlp.rte.Gem;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 
@@ -36,6 +37,8 @@ public class PersonBuilder extends Person {
     // und ein Validator wird auch mitgeliefert (und erstmal gespeichert)
     public PersonBuilder(long gemId) {
         this.gemId = gemId;
+        // TODO AGe initial value null or not?
+        this.owns = new ArrayList<>();
     }
 
     // Standard set-Function:
@@ -127,6 +130,8 @@ public class PersonBuilder extends Person {
 
     public boolean isBuildable(){
         // & anstelle von && damit immer alle Fehlermeldungen reported werden
+        // TODO AGe zu viele checks? Wie wird definiert, was unbedingt gesetzt werden muss
+        //  (Optional, List)?
         return checkAgePresent()
                 & checkNicknamePresent()
                 & checkMainResidencePresent()

@@ -98,7 +98,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     /* === Methods for class Address === */
 
     @Override
-    protected AddressBuilder _doAddress() {
+    protected AddressBuilder _doAddressBuilder() {
         return new AddressBuilder(getFreeGemId());
     }
 

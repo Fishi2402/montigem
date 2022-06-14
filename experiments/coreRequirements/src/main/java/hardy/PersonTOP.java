@@ -26,7 +26,7 @@ import java.util.*;
 
 //+ we generate the TOP class, because there is a handwritten version
 public abstract class PersonTOP extends Human {
-    protected List<PersonObserver> personObservers = new ArrayList<>();
+    protected transient List<PersonObserver> personObservers = new ArrayList<>();
 
     // an Attribute: ------------------------------------------
     protected String nickname;
