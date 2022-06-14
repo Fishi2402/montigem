@@ -5,9 +5,11 @@ package stanley.sync;
 
 import de.se_rwth.commons.logging.Log;
 import hardy.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import stanley.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
+import umlp.command.CommandManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,11 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HumanSyncTest {
+
+  @BeforeEach
+  public void clear(){
+    CommandManager.init();
+  }
 
   @Test
   public void testSyncBetweenTwoClients(){
