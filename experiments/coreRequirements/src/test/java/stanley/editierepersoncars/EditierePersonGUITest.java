@@ -6,11 +6,13 @@ import hardy.Address;
 import hardy.FlensburgManager;
 import hardy.FlensburgMock;
 import hardy.Person;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import stanley.AbstractGUITest;
 import stanley.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
 import stanley.editiereperson.EditierePersonGUI;
+import umlp.command.CommandManager;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -22,9 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class EditierePersonGUITest extends AbstractGUITest {
 
+  @BeforeEach
+  public void clear() {
+    FlensburgMock.init();
+    CommandManager.init();
+  }
+
   @Test
   public void editPersonGUITest() {
-    FlensburgMock.init();
     Address a = FlensburgMock.addressBuilder().city("Flensburg").build().get();
     // simulate two instances of a person located on two different clients
     Person p1 = FlensburgMock.personBuilder().age(24).nickname("theo").mainResidence(a).build().get();
@@ -50,7 +57,6 @@ public class EditierePersonGUITest extends AbstractGUITest {
 
   @Test
   public void observePersonGUITest() {
-    FlensburgMock.init();
     // simulate two instances of a person located on two different clients
     FlensburgTestContext backendContext = FlensburgTestContext.fromCurrentContext();
     long aGemId = 1001L;
