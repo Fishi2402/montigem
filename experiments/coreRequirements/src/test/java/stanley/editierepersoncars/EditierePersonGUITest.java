@@ -12,7 +12,6 @@ import stanley.AbstractGUITest;
 import stanley.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
 import stanley.editiereperson.EditierePersonGUI;
-import umlp.command.CommandManager;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -26,8 +25,8 @@ public class EditierePersonGUITest extends AbstractGUITest {
 
   @BeforeEach
   public void clear() {
+    FlensburgTestContext.clear();
     FlensburgMock.init();
-    CommandManager.init();
   }
 
   @Test

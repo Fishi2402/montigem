@@ -55,4 +55,11 @@ public class FlensburgTestContext {
       GeneralErrorCollector.initMe(generalErrorCollector);
       HumanErrorCollector.initMe(humanErrorCollector);
   }
+
+  public static void clear(){
+    FlensburgManager.initMe(null);
+    CommandManager.initMe(null);
+    GeneralErrorCollector.initMe(null);
+    HumanErrorCollector.initMe(null);
+  }
 }

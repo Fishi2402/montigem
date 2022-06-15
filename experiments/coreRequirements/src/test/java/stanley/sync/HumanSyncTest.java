@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import stanley.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
-import umlp.command.CommandManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public class HumanSyncTest {
 
   @BeforeEach
   public void clear(){
-    CommandManager.init();
+    FlensburgTestContext.clear();
   }
 
   @Test
