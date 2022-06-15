@@ -8,6 +8,8 @@ import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
+import de.se_rwth.commons.StringTransformations;
+import kotlin.reflect.jvm.internal.impl.name.NameUtils;
 import umlp.UMLPMill;
 
 import java.util.List;
@@ -48,13 +50,6 @@ public class BuilderDecorator extends AbstractDecorator {
     attrList.addAll(attrAssocs);
     builderClass.addAllCDMembers(attrList);
 
-    /* Variante ohne CD4C
-    builderClass.addCDMember(getCDAttributeFacade()
-            .createAttribute(PROTECTED.build(),domainClass.getName()+"Validator", "validator)"));
-    builderClass.addCDMember(getCDAttributeFacade()
-            .createAttribute(PROTECTED.build(),"boolean", "buildFinished)"));
-    */
-
     getCD4C().addAttribute(builderClass, "protected boolean buildFinished = false");
 
     // Methods
@@ -78,7 +73,7 @@ public class BuilderDecorator extends AbstractDecorator {
     for (ASTCDAttribute visibleAttribute : visibleAttributes) {
       ASTMCPrimitiveType type = getMCTypeFacade().createBooleanType();
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-              type,  visibleAttribute.getName() + "Present");
+              type,  "is" + StringTransformations.capitalize(visibleAttribute.getName()) + "Present");
       attribute.setInitial(createInitialValue(type));
       attributesList.add(attribute);
     }

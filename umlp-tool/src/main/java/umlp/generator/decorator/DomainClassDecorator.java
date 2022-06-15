@@ -9,12 +9,15 @@ import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.codegen.methods.MutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.check.TypeCheck;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
@@ -25,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.types.check.SymTypePrimitive.box;
 
 public class DomainClassDecorator extends AbstractDecorator {
 
@@ -40,19 +44,17 @@ public class DomainClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
-    ASTCDExtendUsage extendUsage;
-    if (domainClass.isPresentCDExtendUsage()) {
-      extendUsage = getExtendUsageFacade().createCDExtendUsage(domainClass.getCDExtendUsage().getSuperclass(0).deepClone());
-    } else {
-      extendUsage = getExtendUsageFacade().createCDExtendUsage("Observable");
-    }
     ASTCDInterfaceUsage implementsUsage = getInterfaceUsageFacade().createCDInterfaceUsage("GemIdentifiable");
     ASTModifier modifier = domainClass.getModifier().isAbstract() ? PUBLIC_ABSTRACT.build() : PUBLIC.build();
-    ASTCDClass clazz = UMLPMill.cDClassBuilder()
+    ASTCDClassBuilder builder = UMLPMill.cDClassBuilder()
             .setModifier(modifier)
-            .setCDExtendUsage(extendUsage)
             .setCDInterfaceUsage(implementsUsage)
-            .setName(domainClass.getName()).build();
+            .setName(domainClass.getName());
+    if (domainClass.isPresentCDExtendUsage()) {
+      builder.setCDExtendUsage(getExtendUsageFacade()
+              .createCDExtendUsage(domainClass.getCDExtendUsage().getSuperclass(0).deepClone()));
+    }
+    ASTCDClass clazz = builder.build();
     glex.replaceTemplate("cd2java.Annotations", clazz,
             new TemplateHookPoint("umlp.domain.ClassAnnotations", clazz.getName()));
 
@@ -84,6 +86,7 @@ public class DomainClassDecorator extends AbstractDecorator {
     // Methods
     createGetterSetterMethods(domainClass, clazz, attrList);
     createNofificationSetter(domainClass, clazz, attrFields);
+    createCheckMethods(domainClass, clazz, attrFields);
     createGetterSetterMethods(domainClass, clazz, Arrays.asList(gemAttr));
     createObserverMethods(domainClass, clazz);
 
@@ -102,6 +105,13 @@ public class DomainClassDecorator extends AbstractDecorator {
     }
   }
 
+  protected void createCheckMethods(ASTCDClass domainClass, ASTCDClass clazz, List<ASTCDAttribute> attrFields) {
+    for (ASTCDAttribute attr: attrFields) {
+      getCD4C().addMethod(clazz, "umlp.domain.Check",
+              domainClass.getName(), attr.getName());
+    }
+  }
+
   protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     getCD4C().addMethod(clazz, "umlp.domain.AddObserver", domainClass.getName());
     getCD4C().addMethod(clazz, "umlp.domain.RemoveObserver", domainClass.getName());
@@ -112,10 +122,11 @@ public class DomainClassDecorator extends AbstractDecorator {
     List<ASTCDAttribute> attributesList = Lists.newLinkedList();
     List<ASTCDAttribute> visibleAttributes = domainClass.getCDAttributeList().stream()
             .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
-
+    CD4CodeFullPrettyPrinter pp = new CD4CodeFullPrettyPrinter();
     for (ASTCDAttribute visibleAttribute : visibleAttributes) {
+      ASTMCQualifiedType attrType = getMCTypeFacade().createQualifiedType(box(pp.prettyprint(visibleAttribute.getMCType())));
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-              visibleAttribute.getMCType().deepClone(), visibleAttribute.getName());
+              attrType, visibleAttribute.getName());
       glex.replaceTemplate("cd2java.Annotations", attribute,
               new TemplateHookPoint("umlp.domain.AttributeAnnotations", attribute.getName()));
       attributesList.add(attribute);

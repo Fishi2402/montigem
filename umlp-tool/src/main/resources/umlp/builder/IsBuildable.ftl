@@ -7,7 +7,7 @@ ${cd4c.method("public boolean isBuildable()")}
 <#else>
   return
     <#list attrList as attr>
-      <#assign name=attr.getName()?cap_first?remove_ending("Present")>
+      <#assign name=attr.getName()?remove_beginning("is")?remove_ending("Present")>
         check${name}Present() & check${name}()
       </#list>
       ;

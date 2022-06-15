@@ -8,7 +8,7 @@ ${cd4c.method("public Optional<${name}> build()")}
 if (!buildFinished) {
   if (isBuildable()) {
     ${managerName}.add${name}(this);
-    ${name?uncapFirst}Observers.forEach(obs -> obs.${name?uncapFirst}Build(this)); //+ an initial notification
+    ${name?uncapFirst}Observers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
     buildFinished = true;
     return Optional.of(this);
   }
