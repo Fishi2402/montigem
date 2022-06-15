@@ -18,6 +18,7 @@ import umlp.generator.decorator.BuilderDecorator;
 import umlp.generator.decorator.DiagramObserverDecorator;
 import umlp.generator.decorator.DomainClassDecorator;
 import umlp.generator.decorator.ErrorCollectorDecorator;
+import umlp.generator.decorator.ErrorObserverDecorator;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -47,6 +48,8 @@ public class UMLPGenerator {
 
   protected DiagramObserverDecorator diagramObserverDecorator;
 
+  protected ErrorObserverDecorator errorObserverDecorator;
+
   protected TopDecorator topDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
@@ -65,6 +68,7 @@ public class UMLPGenerator {
     builderDecorator = new BuilderDecorator(genSetup.getGlex());
     errorCollectorDecorator = new ErrorCollectorDecorator(genSetup.getGlex());
     diagramObserverDecorator = new DiagramObserverDecorator(genSetup.getGlex());
+    errorObserverDecorator = new ErrorObserverDecorator(genSetup.getGlex());
     topDecorator = new TopDecorator(genSetup.getHandcodedPath());
   }
 
@@ -110,6 +114,9 @@ public class UMLPGenerator {
 
     // TODO hier weitere trafos realisieren
 
+    // Generate ErrorObserver interfaces
+    errorObserverDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("ErrorObserverDecorator", cdAST);
 
     // Top-Decorator
     topDecorator.decoratePackage(decoratedAST);

@@ -62,7 +62,7 @@ public abstract class AbstractUMLPTest {
     ASTMCQualifiedName pck = ast.isPresentMCPackageDeclaration()
         ? ast.getMCPackageDeclaration().getMCQualifiedName()
         : MCBasicTypesMill.mCQualifiedNameBuilder().build();
-        IUMLPArtifactScope as = UMLPMill.scopesGenitorDelegator().createFromAST(ast);
+    IUMLPArtifactScope as = UMLPMill.scopesGenitorDelegator().createFromAST(ast);
     UMLPSymbolTableCompleter c = new UMLPSymbolTableCompleter(ast);
     ast.accept(c.getTraverser());
     return as;
