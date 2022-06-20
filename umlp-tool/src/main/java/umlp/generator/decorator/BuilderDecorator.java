@@ -3,13 +3,13 @@
 package umlp.generator.decorator;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.se_rwth.commons.StringTransformations;
-import kotlin.reflect.jvm.internal.impl.name.NameUtils;
 import umlp.UMLPMill;
 
 import java.util.List;

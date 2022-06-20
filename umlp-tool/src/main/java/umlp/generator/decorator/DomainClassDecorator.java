@@ -3,6 +3,7 @@
 package umlp.generator.decorator;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
