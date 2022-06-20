@@ -22,6 +22,10 @@ build:
   stage: build
   script:
     - "gradle build --refresh-dependencies $GRADLE_OPTS $ARGS1"
+  artifacts:
+    reports:
+      # Lets gitlab render infos about failed tests
+      junit: "**/test/**/TEST-*.xml"
 
 #build_experiments:
 #  stage: it_tests
