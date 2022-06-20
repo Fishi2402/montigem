@@ -66,7 +66,7 @@ public class BuilderDecorator extends AbstractDecorator {
 
   protected List<ASTCDAttribute> getAttributesForFields(ASTCDClass domainClass) {
     List<ASTCDAttribute> attributesList = Lists.newLinkedList();
-    List<ASTCDAttribute> visibleAttributes = domainClass.getCDAttributeList().stream()
+    List<ASTCDAttribute> visibleAttributes = CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
             .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
 
     // get all visible parameters
