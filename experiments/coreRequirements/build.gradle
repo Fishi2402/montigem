@@ -34,6 +34,11 @@ task runServer(type: JavaExec) {
     mainClass = 'hardy.UMLPApplication'
 }
 
+task generateFlensburg(type: UMLPTask) {
+  inputDir = file("models")
+  outputDir = layout.buildDirectory.dir("gen")
+}
+
 test {
     testLogging {
         events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
