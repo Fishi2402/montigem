@@ -25,7 +25,7 @@ umlp Flensburg {
 
     class Address {
        String city;
-    };
+    }
 
     association owns [1] Person -> Car [*];
     association mainResidence [1] Person -> Address [1];
@@ -52,5 +52,5 @@ umlp Flensburg {
         int averageNumberOfCars;
     }
 
-    association / cities: CityInfo -> String [*]
+    / association cities CityInfo -> String [*];
 }
