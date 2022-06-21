@@ -2,7 +2,6 @@
 ${tc.signature("name")}
 ${cd4c.constructor("protected ${name}()")}
 
-init();
 
 
 

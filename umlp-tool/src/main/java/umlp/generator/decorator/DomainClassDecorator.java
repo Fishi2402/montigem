@@ -176,6 +176,7 @@ public class DomainClassDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "umlp.rte.GemIdentifiable");
     getCD4C().addImport(clazz, "org.hibernate.annotations.GenericGenerator");
     getCD4C().addImport(clazz, "javax.persistence.*");
+    getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
   }
 
 }
