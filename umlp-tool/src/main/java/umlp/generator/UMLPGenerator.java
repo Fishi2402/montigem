@@ -14,11 +14,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
 import umlp._ast.ASTUMLPCompilationUnit;
-import umlp.generator.decorator.BuilderDecorator;
-import umlp.generator.decorator.DiagramObserverDecorator;
-import umlp.generator.decorator.DomainClassDecorator;
-import umlp.generator.decorator.ErrorCollectorDecorator;
-import umlp.generator.decorator.ErrorObserverDecorator;
+import umlp.generator.decorator.*;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -50,6 +46,8 @@ public class UMLPGenerator {
 
   protected ErrorObserverDecorator errorObserverDecorator;
 
+  protected ManagerDecorator managerDecorator;
+
   protected TopDecorator topDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
@@ -69,6 +67,7 @@ public class UMLPGenerator {
     errorCollectorDecorator = new ErrorCollectorDecorator(genSetup.getGlex());
     diagramObserverDecorator = new DiagramObserverDecorator(genSetup.getGlex());
     errorObserverDecorator = new ErrorObserverDecorator(genSetup.getGlex());
+    managerDecorator = new ManagerDecorator(genSetup.getGlex());
     topDecorator = new TopDecorator(genSetup.getHandcodedPath());
   }
 
@@ -112,6 +111,9 @@ public class UMLPGenerator {
     diagramObserverDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("DiagramObserverDecorator", cdAST);
 
+    // Generate manager classes
+    managerDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("ManagerDecorator", cdAST);
     // TODO hier weitere trafos realisieren
 
     // Generate ErrorObserver interfaces
