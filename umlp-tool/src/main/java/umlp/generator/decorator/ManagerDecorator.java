@@ -76,6 +76,7 @@ public class ManagerDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.manager.GetList", name);
     getCD4C().addMethod(managerClass, "umlp.manager.DoGetList", name);
     getCD4C().addMethod(managerClass, "umlp.manager.Delete", name);
+    getCD4C().addMethod(managerClass, "umlp.manager.DoDelete", name);
   }
 
 }
