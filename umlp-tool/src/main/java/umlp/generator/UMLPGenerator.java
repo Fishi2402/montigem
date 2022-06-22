@@ -48,6 +48,8 @@ public class UMLPGenerator {
 
   protected ManagerDecorator managerDecorator;
 
+  protected ManagerImplDecorator managerImplDecorator;
+
   protected TopDecorator topDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
@@ -68,6 +70,7 @@ public class UMLPGenerator {
     diagramObserverDecorator = new DiagramObserverDecorator(genSetup.getGlex());
     errorObserverDecorator = new ErrorObserverDecorator(genSetup.getGlex());
     managerDecorator = new ManagerDecorator(genSetup.getGlex());
+    managerImplDecorator = new ManagerImplDecorator(genSetup.getGlex());
     topDecorator = new TopDecorator(genSetup.getHandcodedPath());
   }
 
@@ -114,6 +117,10 @@ public class UMLPGenerator {
     // Generate manager classes
     managerDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("ManagerDecorator", cdAST);
+
+    managerImplDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("ManagerImplDecorator", cdAST);
+
     // TODO hier weitere trafos realisieren
 
     // Generate ErrorObserver interfaces
