@@ -8,6 +8,12 @@ sourceSets {
                         "$projectDir/hwc/"]
 }
 
+dependencies {
+  api project(':experiments:coreRequirements')
+  implementation group: 'org.hibernate', name: 'hibernate-vibur', version: hibernate_version
+  implementation group: 'org.hibernate', name: 'hibernate-core', version: hibernate_version
+}
+
 compileJava.onlyIf { project.hasProperty('testCompile') }
   // UMLP-Tool currently doesn't generate valid java code, so the compilation is not enabled by default
   // You can stat gradle with "gradle assemble -PtestCompile" to test the compilation of the generated code.

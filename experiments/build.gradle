@@ -3,11 +3,13 @@
 plugins {
     // id "monticore" // MontiCore Plugin
     id "jacoco"
+    id "java-library"
 }
 
 subprojects {
 //    apply plugin: 'monticore'
     apply plugin: 'jacoco'
+    apply plugin: 'java-library'
 
     ext.grammarDir = 'src/main/grammars'
     ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
