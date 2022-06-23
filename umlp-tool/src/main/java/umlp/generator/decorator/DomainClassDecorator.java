@@ -70,12 +70,9 @@ public class DomainClassDecorator extends AbstractDecorator {
     clazz.addAllCDMembers(attrList);
 
     // Attribute gemId
-    ASTCDAttribute gemAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(), "long", "gemId");
-    glex.replaceTemplate("cd2java.Value", gemAttr, new StringHookPoint("= -32"));
+    ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz,"protected derived long gemId = -32;");
     glex.replaceTemplate("cd2java.Annotations", gemAttr,
             new TemplateHookPoint("umlp.domain.GemAnnotations"));
-    gemAttr.getModifier().setDerived(true);
-    clazz.addCDMember(gemAttr);
 
     // Attribute observerList
     ASTCDAttribute attrObserver = getCDAttributeFacade().createAttribute(PROTECTED.build(),
@@ -170,8 +167,6 @@ public class DomainClassDecorator extends AbstractDecorator {
   }
 
   protected void addImports(ASTCDType clazz) {
-    getCD4C().addImport(clazz, "java.util.List");
-    getCD4C().addImport(clazz, "java.util.Optional");
     getCD4C().addImport(clazz, "java.util.Observable");
     getCD4C().addImport(clazz, "umlp.rte.GemIdentifiable");
     getCD4C().addImport(clazz, "org.hibernate.annotations.GenericGenerator");
