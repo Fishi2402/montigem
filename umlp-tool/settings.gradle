@@ -11,5 +11,27 @@ pluginManagement {
     }
 }
 
+boolean isCi = System.getenv().containsKey("CI")
+
+String myGetProperty(String key){
+  return getProperties().get(key)
+}
+
+buildCache {
+  local {
+    enabled = !isCi // CI has no (persistent) local storage
+  }
+  remote(HttpBuildCache) {
+    enabled = myGetProperty("buildCacheURL") != null
+    url = ""+myGetProperty("buildCacheURL")
+    allowInsecureProtocol = false
+    push = isCi   // Only CI is allowed to push
+    credentials {
+      username = myGetProperty("buildCacheUser")
+      password = myGetProperty("buildCachePassword")
+    }
+  }
+}
+
 
 rootProject.name = 'umlp-tool'

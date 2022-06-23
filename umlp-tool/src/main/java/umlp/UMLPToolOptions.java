@@ -15,6 +15,8 @@ public enum UMLPToolOptions {
   SYMTAB("s", "symboltable", "Serializes the symbol table of the given artifact.", "file", true),
   OUTPUT("o", "out", "Path of the output files.", "dir"),
   REPORTS("r", "report", "Prints reports of the artifact to the specified directory.", "dir", true),
+  REPORT_BASE("rb", "report_base", "Base Directory used for relative paths in Reports.", "dir", true),
+
   CFGTMPL("ct", "configTemplate", "Executes this template at the beginning of code generation to customize it. (template path may have to be set)", "file"),
   PRETTYPRINT("pp", "prettyprint", "Prints the AST to stdout or the specified file (optional)", "file", true),
 

@@ -26,9 +26,11 @@ import umlp._visitor.UMLPTraverser;
 import umlp.generator.UMLPGenerator;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import static umlp.UMLPToolOptions.*;
 
@@ -88,6 +90,16 @@ public class UMLPTool extends UMLPToolTOP {
 
       File reportDir = new File(REPORTS.getValue(cmd, DEFAULT_REPORT_OUT));
 
+      String report_base = REPORT_BASE.getValue(cmd);
+      Function<Path,Path> reportPathOutput;
+      if (!report_base.isEmpty()) {
+        Path base_dir = Paths.get(report_base).toAbsolutePath();
+        reportPathOutput= p->base_dir.relativize(p.toAbsolutePath());
+      } else {
+        reportPathOutput= Path::toAbsolutePath;
+      }
+
+
       MCPath hwcPath = new MCPath();
       if(HWC_PATH.isSelected(cmd)){
         for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
@@ -96,7 +108,7 @@ public class UMLPTool extends UMLPToolTOP {
       }
 
       ReportManager.ReportManagerFactory reportManagerFactory = new UMLPReports(outDir.getPath(),
-              reportDir.getPath(), hwcPath);
+              reportDir.getPath(), reportPathOutput, hwcPath);
 
       Reporting.init(outDir.getPath(), reportDir.getPath(), reportManagerFactory);
       String report_on = inputFile.getName().replace(".","__");   // TODO: Is this name unique? Should it be unique?
@@ -107,7 +119,7 @@ public class UMLPTool extends UMLPToolTOP {
 
       // parse, create symbol table, check all cocos
       ASTUMLPCompilationUnit ast = parse(inputFile.getPath());
-      // Reporting.reportParseInputFile(inputFile.toPath(), report_on); TODO: causes NullPointerException
+      Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
       createListSymbol();
       runAfterParseTrafo(ast);
       IUMLPArtifactScope symbolTable = createSymbolTable(ast);

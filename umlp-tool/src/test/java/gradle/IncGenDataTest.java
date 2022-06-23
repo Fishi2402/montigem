@@ -38,7 +38,7 @@ public class IncGenDataTest {
     File input = Paths.get("src/test/resources/gradle", "IncGenGradleCheck.txt").toFile();
     assertTrue(input.isFile());
 
-    lastRun = new IncGenData(input);
+    lastRun = new IncGenData(input, Paths.get("").toFile());
     assertTrue(lastRun.reportExists);
   }
 
