@@ -45,7 +45,11 @@ public class UMLPGenerator {
   protected DiagramObserverDecorator diagramObserverDecorator;
 
   protected ErrorObserverDecorator errorObserverDecorator;
-
+  
+  protected ObserverDecorator observerDecorator;
+  
+  protected DbObserverDecorator dbObserverDecorator;
+  
   protected ManagerDecorator managerDecorator;
 
   protected ManagerImplDecorator managerImplDecorator;
@@ -69,6 +73,8 @@ public class UMLPGenerator {
     errorCollectorDecorator = new ErrorCollectorDecorator(genSetup.getGlex());
     diagramObserverDecorator = new DiagramObserverDecorator(genSetup.getGlex());
     errorObserverDecorator = new ErrorObserverDecorator(genSetup.getGlex());
+    observerDecorator = new ObserverDecorator(genSetup.getGlex());
+    dbObserverDecorator = new DbObserverDecorator(genSetup.getGlex());
     managerDecorator = new ManagerDecorator(genSetup.getGlex());
     managerImplDecorator = new ManagerImplDecorator(genSetup.getGlex());
     topDecorator = new TopDecorator(genSetup.getHandcodedPath());
@@ -109,7 +115,13 @@ public class UMLPGenerator {
     // Generate ErrorCollector classes
     errorCollectorDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("ErrorCollectorDecorator", cdAST);
-
+  
+    observerDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("ObserverDecorator", cdAST);
+  
+    dbObserverDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("dbObserverDecorator", cdAST);
+    
     // Generate DiagramObserver classes
     diagramObserverDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("DiagramObserverDecorator", cdAST);

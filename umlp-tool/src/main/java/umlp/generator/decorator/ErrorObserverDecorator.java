@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package umlp.generator.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
@@ -13,37 +12,37 @@ import umlp.UMLPMill;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class ErrorObserverDecorator extends AbstractDecorator {
-
+  
   public static final String SUFFIX = "ErrorObserver";
-
+  
   public ErrorObserverDecorator(final GlobalExtensionManagement glex) {
     super(glex);
   }
-
+  
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().forEach(c -> astcdPackage.addCDElement(createInterface(c)));
   }
-
+  
   protected ASTCDInterface createInterface(ASTCDClass domainClass) {
     String className = domainClass.getName();
+    
     ASTCDInterface ast = UMLPMill.cDInterfaceBuilder()
-            .setModifier(PUBLIC.build())
-            .setName(domainClass.getName() + SUFFIX).build();
-
+      .setModifier(PUBLIC.build())
+      .setName(className + SUFFIX).build();
+    
     // Add Notify for attributes
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-            .filter(c -> !c.getModifier().isDerived())
-            .forEach(c ->
-                    getCD4C().addMethod(ast, "umlp.errorobserver.NotifyInvalid", c.getName(), className));
-
+      .filter(c -> !c.getModifier().isDerived())
+      .forEach(c ->
+        getCD4C().addMethod(ast, "umlp.errorobserver.NotifyInvalid", c.getName(), className));
+    
     // Add Notify for associations
     CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
-            .filter(c -> !c.getModifier().isDerived())
-            .forEach(c ->
-                    getCD4C().addMethod(ast, "umlp.errorobserver.NotifyInvalid", c.getName(), className));
+      .filter(c -> !c.getModifier().isDerived())
+      .forEach(c ->
+        getCD4C().addMethod(ast, "umlp.errorobserver.NotifyInvalid", c.getName(), className));
     return ast;
   }
 }
