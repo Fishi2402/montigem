@@ -29,7 +29,8 @@ public class BuilderDecorator extends AbstractDecorator {
   public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
-    origCD.getCDDefinition().getCDClassesList().forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
+    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
+      .forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
   }
 
   protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
