@@ -5,9 +5,7 @@ import hardy.FlensburgManager;
 import hardy.Human;
 import umlp.command.Command;
 import umlp.command.StatusResult;
-import umlp.command.error.MontiGemError;
-import umlp.command.error.MontiGemErrorCode;
-import umlp.command.error.mock.Status;
+import umlp.rte.GeneralErrorCollector;
 import umlp.rte.NotificationScope;
 import umlp.util.LogUtil;
 
@@ -30,14 +28,16 @@ public class Human_set_age extends Command<Void> {
   }
 
   @Override
-  public StatusResult doRun() throws MontiGemError {
+  public StatusResult doRun() {
     Log.trace("Executing set_age to " + age + " on human " + gemId, LogUtil.getLoggerName());
     Optional<Human> humanOpt = FlensburgManager.humanOpt(gemId);
     if(humanOpt.isPresent()){
       humanOpt.get().setAge(age, NotificationScope.LOCAL);
       return StatusResult.ok(getId());
     } else {
-      return StatusResult.error(gemId, new MontiGemError(MontiGemErrorCode.UNKNOWN, Status.BAD_REQUEST, "Can not find Human with gemId " + gemId));
+      // TODO AHe: add GemId to reportSyncError or replace with <Class>ErrorCollector.reportPersonNotPresent(gemId)...
+      GeneralErrorCollector.reportSyncError();
+      return StatusResult.error(gemId);
     }
   }
 

@@ -5,7 +5,6 @@ import hardy.FlensburgManager;
 import hardy.Person;
 import umlp.command.Command;
 import umlp.command.StatusResult;
-import umlp.command.error.MontiGemError;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +21,7 @@ public class Person_delete extends Command {
   }
 
   @Override
-  public StatusResult doRun() throws MontiGemError {
+  public StatusResult doRun() {
     FlensburgManager.deletePerson(person);
     return StatusResult.ok(getId());
   }

@@ -6,8 +6,7 @@ import hardy.FlensburgManager;
 import hardy.Person;
 import umlp.command.Command;
 import umlp.command.StatusResult;
-import umlp.command.error.MontiGemError;
-import umlp.command.error.MontiGemErrorCode;
+import umlp.rte.GeneralErrorCollector;
 import umlp.rte.NotificationScope;
 
 import java.util.Collection;
@@ -35,7 +34,9 @@ public class Person_setAge extends Command<Void> {
       personOpt.get().setAge(age, NotificationScope.LOCAL);
       return StatusResult.ok(getId());
     }else{
-      return StatusResult.error(getId(), new MontiGemError(MontiGemErrorCode.UNKNOWN, null, "Did not find Person with id " + gemId));
+      // TODO AHe: add GemId to reportSyncError or replace with <Class>ErrorCollector.reportPersonNotPresent(gemId)...
+      GeneralErrorCollector.reportSyncError();
+      return StatusResult.error(getId());
     }
   }
 

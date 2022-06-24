@@ -3,7 +3,6 @@ package hardy.commands;
 import hardy.Car;
 import hardy.FlensburgManager;
 import umlp.command.GemResult;
-import umlp.command.error.MontiGemError;
 import umlp.request.Request;
 import umlp.rte.Gem;
 import umlp.rte.LoadingState;
@@ -26,7 +25,7 @@ public class Car_get extends Request<Car> {
   }
 
   @Override
-  public GemResult<Car> doRun() throws MontiGemError {
+  public GemResult<Car> doRun() {
     Optional<Car> car = FlensburgManager.carOpt(gemId);
     if(car.isPresent()){
       return new GemResult<>(getId(), new Gem<>(car.get()), "hardy.Car");

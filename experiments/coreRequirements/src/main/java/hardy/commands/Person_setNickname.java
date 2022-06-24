@@ -6,8 +6,7 @@ import hardy.FlensburgManager;
 import hardy.Person;
 import umlp.command.Command;
 import umlp.command.StatusResult;
-import umlp.command.error.MontiGemError;
-import umlp.command.error.MontiGemErrorCode;
+import umlp.rte.GeneralErrorCollector;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -34,7 +33,9 @@ public class Person_setNickname extends Command<Void> {
       personOpt.get().setNickname(nickname);
       return StatusResult.ok(getId());
     }else{
-      return StatusResult.error(getId(), new MontiGemError(MontiGemErrorCode.UNKNOWN, null, "Did not find Person with id " + gemId));
+      // TODO AHe: add GemId to reportSyncError or replace with <Class>ErrorCollector.reportPersonNotPresent(gemId)...
+      GeneralErrorCollector.reportSyncError();
+      return StatusResult.error(getId());
     }
   }
 

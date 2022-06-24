@@ -4,7 +4,6 @@ package hardy.commands;
 import hardy.FlensburgManager;
 import hardy.Person;
 import umlp.command.GemResult;
-import umlp.command.error.MontiGemError;
 import umlp.request.Request;
 import umlp.rte.Gem;
 import umlp.rte.LoadingState;
@@ -26,7 +25,7 @@ public class Person_get extends Request<Person> {
   }
 
   @Override
-  public GemResult<Person> doRun() throws MontiGemError {
+  public GemResult<Person> doRun() {
     Optional<Person> person = FlensburgManager.personOpt(gemId);
     if(person.isPresent()){
       return new GemResult<>(getId(), new Gem<>(person.get()), "hardy.Person");

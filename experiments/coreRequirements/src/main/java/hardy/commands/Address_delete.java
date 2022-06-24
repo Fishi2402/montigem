@@ -5,7 +5,6 @@ import hardy.FlensburgManager;
 import umlp.command.Command;
 import umlp.command.CommandResult;
 import umlp.command.StatusResult;
-import umlp.command.error.MontiGemError;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -23,7 +22,7 @@ public class Address_delete extends Command<Void> {
   }
 
   @Override
-  public CommandResult<Void> doRun() throws MontiGemError {
+  public CommandResult<Void> doRun() {
     FlensburgManager.deleteAddress(address); // TODO AHe: check car exists or return result of delete call
     return StatusResult.ok(getId());
   }

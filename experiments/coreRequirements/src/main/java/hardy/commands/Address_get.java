@@ -3,7 +3,6 @@ package hardy.commands;
 import hardy.Address;
 import hardy.FlensburgManager;
 import umlp.command.GemResult;
-import umlp.command.error.MontiGemError;
 import umlp.request.Request;
 import umlp.rte.Gem;
 import umlp.rte.LoadingState;
@@ -27,7 +26,7 @@ public class Address_get extends Request<Address> {
   }
 
   @Override
-  public GemResult<Address> doRun() throws MontiGemError {
+  public GemResult<Address> doRun() {
     Optional<Address> address = FlensburgManager.addressOpt(gemId);
     if(address.isPresent()){
       return new GemResult<>(getId(), new Gem<>(address.get()), "hardy.Address");

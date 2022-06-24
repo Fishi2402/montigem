@@ -4,7 +4,6 @@ package hardy.commands;
 import hardy.FlensburgManager;
 import hardy.Human;
 import umlp.command.StatusResult;
-import umlp.command.error.MontiGemError;
 import umlp.request.Request;
 
 import java.util.Collection;
@@ -23,7 +22,7 @@ public class Human_create extends Request<Void> {
   }
 
   @Override
-  public StatusResult doRun() throws MontiGemError {
+  public StatusResult doRun() {
     FlensburgManager.addHuman(human);
     return StatusResult.ok(getId());
   }
