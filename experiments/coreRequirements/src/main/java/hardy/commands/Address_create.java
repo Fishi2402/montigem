@@ -3,7 +3,6 @@ package hardy.commands;
 import hardy.Address;
 import hardy.FlensburgManager;
 import umlp.command.StatusResult;
-import umlp.command.error.MontiGemError;
 import umlp.request.Request;
 
 import java.util.Collection;
@@ -27,7 +26,7 @@ public class Address_create extends Request<Void> {
   }
 
   @Override
-  public StatusResult doRun() throws MontiGemError {
+  public StatusResult doRun() {
     FlensburgManager.addAddress(address);
     return StatusResult.ok(getId());
   }

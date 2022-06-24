@@ -3,7 +3,6 @@ package hardy.commands;
 import hardy.Car;
 import hardy.FlensburgManager;
 import umlp.command.StatusResult;
-import umlp.command.error.MontiGemError;
 import umlp.request.Request;
 
 import java.util.Collection;
@@ -23,7 +22,7 @@ public class Car_create extends Request<Void> {
   }
 
   @Override
-  public StatusResult doRun() throws MontiGemError {
+  public StatusResult doRun() {
     FlensburgManager.addCar(car);
     return StatusResult.ok(getId());
   }
