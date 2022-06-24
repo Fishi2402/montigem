@@ -18,6 +18,7 @@ public class IncGenData {
   protected Set<File> generatedFiles = new TreeSet<>();
   protected Set<File> readFiles = new TreeSet<>();
   protected Set<File> existenceCheckedFiles = new TreeSet<>();
+  protected File basePath;
 
   protected boolean reportExists;
 
@@ -26,7 +27,9 @@ public class IncGenData {
   }
 
   // Parse from file
-  public IncGenData(File file) {
+  public IncGenData(File file, File basePath) {
+    this.basePath = basePath;
+
     if (file.exists()) {
       assert (file.isFile());
       reportExists = true;
@@ -59,7 +62,10 @@ public class IncGenData {
     if (line.startsWith(prefix)) {
       String path = line.substring(prefix.length(), line.length() - deleteSuffix);
       try {
-        store.add(Paths.get(path).toFile().getCanonicalFile());
+        Log.info(this.basePath.getAbsolutePath(), "ASD");
+        Log.info("Found path in old Run file: " + Paths.get(this.basePath.getAbsolutePath(), path).toFile().getCanonicalFile().toPath().toString(),
+            this.getClass().getName());
+        store.add(Paths.get(this.basePath.getAbsolutePath(), path).toFile().getCanonicalFile());
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
@@ -99,6 +105,10 @@ public class IncGenData {
       Optional<FileChange> change = inputChanges
           .filter(this::isRelevantChange)
           .findAny();
+      if(change.isPresent()){
+        Log.info("Not UP-TO-DATE! Changed: " + change.get().getChangeType() + " on " + change.get().getFile().getAbsolutePath()
+        , this.getClass().getName());;
+      }
       return !change.isPresent();
     }
   }

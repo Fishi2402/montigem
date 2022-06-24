@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -28,26 +29,31 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+@CacheableTask
 public abstract class UMLPTask extends DefaultTask {
 
   @Incremental
   @org.gradle.api.tasks.Optional
   @InputDirectory
+  @PathSensitive(PathSensitivity.RELATIVE)
   abstract DirectoryProperty getInputDir();
 
   @org.gradle.api.tasks.Optional
   @InputFile
   @Incremental
+  @PathSensitive(PathSensitivity.RELATIVE)
   @Incubating // Use `inputDir` instead!
   abstract RegularFileProperty getInputFile();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
   @Incremental
   abstract DirectoryProperty getHwcDir();
 
   @InputFile
   @org.gradle.api.tasks.Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
   abstract RegularFileProperty getScript();
 
   @Input
@@ -112,6 +118,9 @@ public abstract class UMLPTask extends DefaultTask {
     result.add("-r");
     result.add(handlePath.apply(getReportDirOfFile(filePath.toFile()).getAsFile().toPath()));
 
+    result.add("-rb");
+    result.add(handlePath.apply(getProject().getProjectDir().toPath()));
+
     if (this.getHwcDir().isPresent()) {
       result.add("-hwc");
       result.add(handlePath.apply(getHwcDir().getAsFile().get().toPath()));
@@ -169,7 +178,7 @@ public abstract class UMLPTask extends DefaultTask {
     assert f.isFile();
     assert isInputFile(f);
 
-    IncGenData lastRun = new IncGenData(getIncGenFile(f));
+    IncGenData lastRun = new IncGenData(getIncGenFile(f), this.getProject().getProjectDir());
 
     if (!changedInput.isIncremental()  || !lastRun.isUpToDate(getStreamOfChanges(changedInput))) {
       Log.warn(f.getName() + " is *NOT* UP-TO-DATE, starting generation process");
@@ -217,7 +226,7 @@ public abstract class UMLPTask extends DefaultTask {
       if (ch.getChangeType() == ChangeType.REMOVED
           && isInputFile(ch.getFile())
           && ch.getFileType() == FileType.FILE) {
-        this.deletePreviousOutput(ch.getFile(), new IncGenData(getIncGenFile(ch.getFile())));
+        this.deletePreviousOutput(ch.getFile(), new IncGenData(getIncGenFile(ch.getFile()), Paths.get("").toFile()));
       }
     });
 

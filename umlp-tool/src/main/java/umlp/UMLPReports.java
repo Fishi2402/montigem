@@ -1,15 +1,14 @@
 package umlp;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.ASTNodeIdentHelper;
-import de.monticore.generating.templateengine.reporting.commons.IASTNodeIdentHelper;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.generating.templateengine.reporting.reporter.*;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.io.paths.MCPath;
 import umlp._visitor.UMLPTraverser;
+
+import java.nio.file.Path;
+import java.util.function.Function;
 
 /**
  * Initializes and provides the set of reports desired for UMLP to the
@@ -24,8 +23,10 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
         protected String reportDirectory;
 
         protected MCPath handwrittenPath;
+        protected Function<Path,Path> reportPathOutput;
 
-        // protected MCPath templatePath;
+
+  // protected MCPath templatePath;
 
         /**
          * Constructor for de.monticore.MontiCoreReports
@@ -33,10 +34,12 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
         protected UMLPReports(
                 String outputDirectory,
                 String reportDirectory,
+                Function<Path,Path> reportPathOutput,
                 MCPath handwrittenPath) {
             this.outputDirectory = outputDirectory;
             this.reportDirectory = reportDirectory;
             this.handwrittenPath = handwrittenPath;
+            this.reportPathOutput = reportPathOutput;
             // this.templatePath = templatePath;
         }
 
@@ -78,8 +81,8 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
             reports.addReportEventHandler(new ArtifactGVReporter(this.reportDirectory, lowerCaseName));
             //reports.addReportEventHandler(new ODReporter(this.reportDirectory, lowerCaseName, repository));
             reports.addReportEventHandler(new SuccessfulReporter(this.reportDirectory, lowerCaseName));
-            reports.addReportEventHandler(new IncGenCheckReporter(this.reportDirectory, lowerCaseName));
-            reports.addReportEventHandler(new IncGenGradleReporter(this.reportDirectory, lowerCaseName));
+
+            reports.addReportEventHandler(new IncGenGradleReporter(this.reportDirectory, reportPathOutput, lowerCaseName));
 
 
             return reports;
