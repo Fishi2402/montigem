@@ -1,8 +1,9 @@
 package hardy;
 
 import com.google.common.collect.Streams;
+import de.se_rwth.commons.logging.Log;
 
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collector;
 import java.util.stream.IntStream;
@@ -91,6 +92,7 @@ public class FlensburgDummyProviderTOP {
   }
 
   public Person inventPerson(){
+    Log.trace("Inventing Person", "DummyProvider");
     // Der Builder fügt das Objekt zum FlensburgManager hinzu
     return FlensburgManager
         .personBuilder()
@@ -103,14 +105,16 @@ public class FlensburgDummyProviderTOP {
   }
 
   public Car inventCar(Person person) {
+    Log.trace("Inventing Car for Person " + person, "DummyProvider");
     // Der Builder fügt das Objekt zum FlensburgManager hinzu
     return FlensburgManager
         .carBuilder()
-        .owns(person)
+        .owns(Objects.requireNonNull(person, "Person must not be null!"))
         .build().get();
   }
 
   public Human inventHuman() {
+    Log.trace("Inventing Human", "DummyProvider");
     // Der Builder fügt das Objekt zum FlensburgManager hinzu
     return FlensburgManager
         .humanBuilder()
@@ -119,23 +123,28 @@ public class FlensburgDummyProviderTOP {
   }
 
   protected String inventPersonNickname() {
+    Log.trace("Inventing Person nickname", "DummyProvider");
     return _inventString(_inventIntInRange(stringMinLength, stringMaxLength));
   }
 
   protected int inventPersonAge(){
+    Log.trace("Inventing Person age", "DummyProvider");
     return _inventInt();
   }
 
   protected int inventHumanAge(){
+    Log.trace("Inventing Human age", "DummyProvider");
     return random.nextInt();
   }
 
   public Address inventAddress() {
+    Log.trace("Inventing Address", "DummyProvider");
     // Der Builder fügt das Objekt zum FlensburgManager hinzu
     return FlensburgManager.addressBuilder().city(inventAddressCity()).build().get();
   }
 
   protected String inventAddressCity() {
+    Log.trace("Inventing City", "DummyProvider");
     return _inventString();
   }
 

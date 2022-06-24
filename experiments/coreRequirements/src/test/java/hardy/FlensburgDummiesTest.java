@@ -3,6 +3,7 @@ package hardy;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import stanley.FlensburgTestContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,8 +12,9 @@ public class FlensburgDummiesTest {
 
   @BeforeEach
   public void init(){
-    Log.init();
+    Log.initDEBUG();
     Log.enableFailQuick(false);
+    FlensburgTestContext.clear();
     FlensburgMock.init();
   }
 
