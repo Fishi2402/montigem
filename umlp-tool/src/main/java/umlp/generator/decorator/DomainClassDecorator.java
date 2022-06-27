@@ -76,11 +76,11 @@ public class DomainClassDecorator extends AbstractDecorator {
             new TemplateHookPoint("umlp.domain.GemAnnotations"));
 
     // Attribute observerList
-    ASTCDAttribute attrObserver = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-            "List<"+domainClass.getName()+"Observer>", StringTransformations.uncapitalize(domainClass.getName()) +"Observers");
+    ASTCDAttribute attrObserver = getCD4C().addAttribute(clazz,
+            " protected List<"+domainClass.getName()+"Observer> " + StringTransformations.uncapitalize(domainClass.getName()) +"Observers");
     glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint("= new ArrayList<>()"));
-    clazz.addCDMember(attrObserver);
-
+    glex.replaceTemplate("cd2java.Annotations", attrObserver,
+            new StringHookPoint("transient"));
 
     // Methods
     createGetterSetterMethods(domainClass, clazz, attrList);
@@ -172,7 +172,7 @@ public class DomainClassDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "umlp.rte.GemIdentifiable");
     getCD4C().addImport(clazz, "org.hibernate.annotations.GenericGenerator");
     getCD4C().addImport(clazz, "javax.persistence.*");
-    getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
+
   }
 
 }

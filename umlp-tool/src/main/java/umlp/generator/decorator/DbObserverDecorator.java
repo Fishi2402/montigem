@@ -32,7 +32,7 @@ public class DbObserverDecorator extends AbstractDecorator {
     
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
-      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(className + "Observer"))
+      .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(className + "Observer"))
       .setName(className + SUFFIX).build();
   
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()

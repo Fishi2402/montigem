@@ -2,20 +2,16 @@
 
 package umlp.generator.decorator;
 
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
-import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class ManagerImplDecorator extends AbstractDecorator {
 
@@ -34,7 +30,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     String name = origCD.getCDDefinition().getName();
 
     ASTCDClass managerClass = UMLPMill.cDClassBuilder()
-            .setModifier(PUBLIC_ABSTRACT.build())
+            .setModifier(PUBLIC.build())
             .setName(name+SUFFIX)
             .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(name + ManagerDecorator.SUFFIX))
             .build();
@@ -45,9 +41,10 @@ public class ManagerImplDecorator extends AbstractDecorator {
     List<String> classList = origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
                     .map(c -> c.getName()).collect(Collectors.toList());
     getCD4C().addMethod(managerClass, "umlp.managerimpl.GetAnnotatedClasses", classList);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFreeGemId");
 
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-            .forEach(c -> addClassElements(c, managerClass, name+ManagerDecorator.SUFFIX));
+            .forEach(c -> addClassElements(c, managerClass, name));
 
     // Imports
     getCD4C().addImport(managerClass, "umlp.rte.DatabaseAccessManager");

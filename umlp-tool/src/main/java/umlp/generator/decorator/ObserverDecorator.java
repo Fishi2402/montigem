@@ -46,7 +46,9 @@ public class ObserverDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.observer.GetScope");
     getCD4C().addMethod(ast, "umlp.observer.NotifyBuild", className);
     getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyBuild", className);
-    
+
+    getCD4C().addImport(ast, "umlp.rte.NotificationScope");
+
     return ast;
   }
 }
