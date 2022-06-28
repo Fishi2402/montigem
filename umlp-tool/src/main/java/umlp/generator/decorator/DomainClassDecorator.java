@@ -83,7 +83,7 @@ public class DomainClassDecorator extends AbstractDecorator {
             new StringHookPoint("transient"));
 
     // Methods
-    createGetterSetterMethods(domainClass, clazz, attrList);
+    createGetterSetterMethods(domainClass, clazz, attrFields);
     createNofificationSetter(domainClass, clazz, attrFields);
     createCheckMethods(domainClass, clazz, attrFields);
     createGetterSetterMethods(domainClass, clazz, Arrays.asList(gemAttr));

@@ -54,6 +54,8 @@ public class UMLPGenerator {
 
   protected ManagerImplDecorator managerImplDecorator;
 
+  protected DummyProviderDecorator dummyProviderDecorator;
+
   protected TopDecorator topDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
@@ -77,6 +79,7 @@ public class UMLPGenerator {
     dbObserverDecorator = new DbObserverDecorator(genSetup.getGlex());
     managerDecorator = new ManagerDecorator(genSetup.getGlex());
     managerImplDecorator = new ManagerImplDecorator(genSetup.getGlex());
+    dummyProviderDecorator = new DummyProviderDecorator(genSetup.getGlex());
     topDecorator = new TopDecorator(genSetup.getHandcodedPath());
   }
 
@@ -132,6 +135,9 @@ public class UMLPGenerator {
 
     managerImplDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("ManagerImplDecorator", cdAST);
+
+    dummyProviderDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("DummyProviderDecorator", cdAST);
 
     // TODO hier weitere trafos realisieren
 
