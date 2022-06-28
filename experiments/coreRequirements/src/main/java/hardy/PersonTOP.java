@@ -7,6 +7,7 @@ package hardy;
 
 import com.google.common.collect.Sets;
 import umlp.rte.Gem;
+import umlp.rte.NotificationScope;
 
 import java.util.*;
 
@@ -107,15 +108,19 @@ public abstract class PersonTOP extends Human {
   public String getNickname() {
     return this.nickname;
   }
-  
-  public void setNickname(String o) {
+
+  public void setNickname(String o){
+    setNickname(o, NotificationScope.ALL);
+  }
+
+  public void setNickname(String o, NotificationScope scope) {
     if (o == null) {
       throw new IllegalArgumentException("Null argument not allowed here");
     }
     this.nickname = o;
     checkNickname();
     // TODO AHe: ist der cast hier notwendig und sicher?
-    personObservers.forEach(obs -> obs.updateNickname((Person) this, o));
+    personObservers.forEach(obs -> obs.maybeNotifySetNickname((Person) this, o, scope));
   }
   
   public boolean checkNickname() {
@@ -141,8 +146,12 @@ public abstract class PersonTOP extends Human {
   public Address getMainResidence() {
     return mainResidence.get();
   }
-  
-  public void setMainResidence(Address mainResidence) {
+
+  public void setMainResidence(Address mainResidence){
+    setMainResidence(mainResidence, NotificationScope.ALL);
+  }
+
+  public void setMainResidence(Address mainResidence, NotificationScope scope) {
     if (this.mainResidence == null) {
       this.mainResidence = new Gem<Address>(mainResidence);
     } else {
@@ -150,7 +159,7 @@ public abstract class PersonTOP extends Human {
     }
     checkMainResidence();
     // TODO AHe: ist der cast hier notwendig und sicher?
-    personObservers.forEach(obs -> obs.updateMainResidence((Person) this, mainResidence.getGemId()));
+    personObservers.forEach(obs -> obs.maybeNotifySetMainResidence((Person) this, mainResidence.getGemId(), scope));
   }
   
   public boolean checkMainResidence() {
@@ -171,14 +180,18 @@ public abstract class PersonTOP extends Human {
       return mainResidence.isPresent();
     }
   }
-  
-  public boolean removeOwns(Car o) {
+
+  public boolean removeOwns(Car o){
+    return removeOwns(o, NotificationScope.ALL);
+  }
+
+  public boolean removeOwns(Car o, NotificationScope scope) {
     boolean res = false;
     if (this.owns.contains(o)) {
       res = this.owns.remove(o);
       checkOwns();
       // TODO AHe: ist der cast hier notwendig und sicher?
-      personObservers.forEach(obs -> obs.removeOwns((Person) this, o.getGemId()));
+      personObservers.forEach(obs -> obs.maybeNotifyRemoveOwns((Person) this, o.getGemId(), scope));
     }
     
     return res;
@@ -223,8 +236,12 @@ public abstract class PersonTOP extends Human {
     }
     
   }
-  
-  public boolean addOwns(Car o) {
+
+  public boolean addOwns(Car o){
+    return addOwns(o, NotificationScope.ALL);
+  }
+
+  public boolean addOwns(Car o, NotificationScope scope) {
     boolean res = false;
     
     if (o == null) {
@@ -234,7 +251,7 @@ public abstract class PersonTOP extends Human {
       // TODO AHe: ist der cast hier notwendig und sicher?
       res = this.owns.add(o);
       checkOwns();
-      personObservers.forEach(obs -> obs.addOwns((Person) this, o.getGemId()));
+      personObservers.forEach(obs -> obs.maybeNotifyAddOwns((Person) this, o.getGemId(), scope));
     }
     return res;
   }

@@ -3,19 +3,8 @@ package umlp.rte;
 
 import de.se_rwth.commons.logging.Log;
 
-import java.util.AbstractList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.*;
+import java.util.function.*;
 
 /*
  * A lazy list
@@ -56,6 +45,7 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   protected Consumer<Set<Integer>> removeIdxsFunction;
 
   public GemList(
+      long listGemId,
       Supplier<Integer> loadSizeFunction,
       BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
       Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
@@ -63,6 +53,7 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
       BiConsumer<Integer, List<Long>> addIDsFunction,
       Consumer<Set<Integer>> removeIdxsFunction
   ) {
+    this.gemID = listGemId;
     this.loadSizeFunction = loadSizeFunction;
     this.loadIDsFunction = loadIDsFunction;
     this.loadObjectsFunction = loadObjectsFunction;

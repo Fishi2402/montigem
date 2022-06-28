@@ -104,7 +104,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected Collection<Human> _doGetHumanList() {
+    // TODO AHe: manage all human in the GemList instead of a map in this class?
     return new GemList<>(
+        getFreeGemId(),
         this::loadHumanSize,
         this::loadHumanGemIds,
         this::loadHumansByGemIds,
@@ -231,7 +233,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected Collection<Person> _doGetPersonList() {
+    // TODO AHe: manage all human in the GemList instead of a map in this class?
     return new GemList<>(
+        getFreeGemId(),
         this::loadPersonSize,
         this::loadPersonGemIds,
         this::loadPersonsByGemIds,
@@ -356,6 +360,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected Collection<Address> _doGetAddressList() {
     return new GemList<>(
+        // TODO AHe: manage all human in the GemList instead of a map in this class?
+        getFreeGemId(),
         this::loadAddressSize,
         this::loadAddressGemIds,
         this::loadAddresssByGemIds,

@@ -8,6 +8,7 @@ import hardy.Person;
 import umlp.command.Command;
 import umlp.command.StatusResult;
 import umlp.rte.GeneralErrorCollector;
+import umlp.rte.NotificationScope;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,7 +44,7 @@ GeneralErrorCollector.reportSyncError();
       return StatusResult.error(getId());
     }
 
-    personOpt.get().setMainResidence(addressOpt.get());
+    personOpt.get().setMainResidence(addressOpt.get(), NotificationScope.LOCAL);
     return StatusResult.ok(getId());
   }
 

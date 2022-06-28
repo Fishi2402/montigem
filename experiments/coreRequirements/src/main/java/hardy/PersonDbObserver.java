@@ -26,7 +26,7 @@ public class PersonDbObserver implements PersonObserver{
   }
 
   @Override
-  public void updateNickname(Person p, String nickname) {
+  public void notifySetNickname(Person p, String nickname) {
     Session session = DatabaseAccessManager.getSession();
     CriteriaBuilder builder = session.getCriteriaBuilder();
     CriteriaUpdate<Person> update = builder.createCriteriaUpdate(Person.class);

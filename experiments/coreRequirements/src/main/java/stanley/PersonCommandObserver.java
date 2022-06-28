@@ -21,22 +21,22 @@ public class PersonCommandObserver implements PersonObserver {
   }
 
   @Override
-  public void updateNickname(Person p, String nickname) {
+  public void notifySetNickname(Person p, String nickname) {
     CommandManager.executeSingleCommand(new Person_setNickname(p.getGemId(), nickname));
   }
 
   @Override
-  public void updateMainResidence(Person p, long mainResidenceGemId) {
+  public void notifySetMainResidence(Person p, long mainResidenceGemId) {
     CommandManager.executeSingleCommand(new Person_setMainResidence(p.getGemId(), mainResidenceGemId));
   }
 
   @Override
-  public void addOwns(Person p, long carGemId) {
+  public void notifyAddOwns(Person p, long carGemId) {
     CommandManager.executeSingleCommand(new Person_addOwns(p.getGemId(), carGemId));
   }
 
   @Override
-  public void removeOwns(Person p, long carGemId) {
+  public void notifyRemoveOwns(Person p, long carGemId) {
     CommandManager.executeSingleCommand(new Person_removeOwns(p.getGemId(), carGemId));
   }
 }

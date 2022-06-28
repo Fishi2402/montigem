@@ -2,7 +2,7 @@ package hardy;
 
 // GEN-P
 
-import java.util.Collection;
+import umlp.rte.NotificationScope;
 
 // TODO AHe: java.util.Observable auch für alle anderen Klassen ersetzten
 
@@ -16,23 +16,47 @@ public interface PersonObserver
   // Alle Methoden des HumanObserver müssen auch im PersonObserver verfügbar sein
   extends HumanObserver {
   // Es werden leere implementationen benutzt, damit nur gebrauchte überschrieben werden müssen
-  default void personBuild(Person p) {
+  default void notifySetNickname (Person person,String nickname){ }
+
+  default void maybeNotifySetNickname (Person person, String nickname, NotificationScope scope){
+    if(scope.contains(getScope())) {
+      notifySetNickname(person, nickname);
+    }
   }
-  
-  default void updateNickname(Person p, String nickname) {
+
+  default void notifySetMainResidence(Person p, long mainResidenceId){ }
+
+  default void maybeNotifySetMainResidence(Person p, long mainResidenceId, NotificationScope scope){
+    if(scope.contains(getScope())) {
+      notifySetMainResidence(p, mainResidenceId);
+    }
   }
-  
-  // Alternative to gemIds: DomainObject(MainResidence) or Gem(Gem<MainResidence>)
-  default void updateMainResidence(Person p, long mainResidenceGemId) {
+
+  default void notifyAddOwns(Person p, long carId){ }
+
+  default void maybeNotifyAddOwns(Person p, long carId, NotificationScope scope){
+    if(scope.contains(getScope())){
+      notifyAddOwns(p, carId);
+    }
   }
-  
-  default void addOwns(Person p, long carGemId) {
+
+  default void notifyRemoveOwns(Person p, long carId){ }
+
+  default void maybeNotifyRemoveOwns(Person p, long carId, NotificationScope scope){
+    if(scope.contains(getScope())){
+      notifyRemoveOwns(p, carId);
+    }
   }
-  
-  default void addAllOwns(Person p, Collection<Long> carGemIds) {
-    carGemIds.forEach(cGemId -> addOwns(p, cGemId));
+
+  default NotificationScope getScope(){
+    return NotificationScope.ALL;
   }
-  
-  default void removeOwns(Person p, long carGemId) {
+
+  default void notifyBuild (Person person) { }
+
+  default void maybeNofityBuild (Person person,NotificationScope scope) {
+    if(getScope().contains(scope)) {
+      notifyBuild(person);
+    }
   }
 }
