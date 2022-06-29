@@ -96,17 +96,19 @@ public class PersonSyncTest {
     assertNotSame(p1001, p1001Server);
     assertTrue(p1001Server.isEmptyOwnss());
 
-    Log.info("Add Car from Client", "PersonSyncTest");
-    clientContext.activate();
-    Car c1 = FlensburgManager.carBuilder().owns(p1001).build().get();
+    for(int i = 0; i < 10; i++) {
+      Log.info("Add Car " + i + " from Client", "PersonSyncTest");
+      clientContext.activate();
+      Car c_i = FlensburgManager.carBuilder().owns(p1001).build().get();
 
-    Log.info("Check it is synced to server", "PersonSyncTest");
-    serverContext.activate();
-    assertEquals(1, p1001Server.sizeOwnss());
-    Car c1Server = p1001Server.getOwns(0);
-    assertNotNull(c1Server);
-    assertNotSame(c1, c1Server);
-    assertEquals(c1.getGemId(), c1Server.getGemId());
+      Log.info("Check it is synced to server", "PersonSyncTest");
+      serverContext.activate();
+      assertEquals(i + 1, p1001Server.sizeOwnss());
+      Car c_i_server = p1001Server.getOwns(i);
+      assertNotNull(c_i_server);
+      assertNotSame(c_i, c_i_server);
+      assertEquals(c_i.getGemId(), c_i_server.getGemId());
+    }
   }
 
   @Test
@@ -129,17 +131,19 @@ public class PersonSyncTest {
     assertNotSame(p1001, p1001Server);
     assertTrue(p1001Server.isEmptyOwnss());
 
-    Log.info("Add Car from Server", "PersonSyncTest");
-    serverContext.activate();
-    Car c1Server = FlensburgManager.carBuilder().owns(p1001Server).build().get();
+    for (int i = 0; i < 10; i++) {
+      Log.info("Add Car " + i + " from Server", "PersonSyncTest");
+      serverContext.activate();
+      Car c_i_server = FlensburgManager.carBuilder().owns(p1001Server).build().get();
 
-    Log.info("Check it is synced to the client", "PersonSyncTest");
-    clientContext.activate();
-    assertEquals(1, p1001.sizeOwnss());
-    Car c1Client = p1001.getOwns(0);
-    assertNotNull(c1Client);
-    assertNotSame(c1Server, c1Client);
-    assertEquals(c1Server.getGemId(), c1Client.getGemId());
+      Log.info("Check it is synced to the client", "PersonSyncTest");
+      clientContext.activate();
+      assertEquals(i + 1, p1001.sizeOwnss());
+      Car c_i_client = p1001.getOwns(i);
+      assertNotNull(c_i_client);
+      assertNotSame(c_i_server, c_i_client);
+      assertEquals(c_i_server.getGemId(), c_i_client.getGemId());
+    }
   }
 
 }

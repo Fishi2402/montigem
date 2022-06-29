@@ -32,11 +32,11 @@ public interface PersonObserver
     }
   }
 
-  default void notifyAddOwns(Person p, long carId){ }
+  default void notifyAddOwns(Person p, long carId, int indexInList){ }
 
-  default void maybeNotifyAddOwns(Person p, long carId, NotificationScope scope){
+  default void maybeNotifyAddOwns(Person p, long carId,  int indexInList, NotificationScope scope){
     if(scope.contains(getScope())){
-      notifyAddOwns(p, carId);
+      notifyAddOwns(p, carId, indexInList);
     }
   }
 

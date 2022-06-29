@@ -31,8 +31,8 @@ public class PersonCommandObserver implements PersonObserver {
   }
 
   @Override
-  public void notifyAddOwns(Person p, long carGemId) {
-    CommandManager.executeSingleCommand(new Person_addOwns(p.getGemId(), carGemId));
+  public void notifyAddOwns(Person p, long carGemId, int indexInList) {
+    CommandManager.executeSingleCommand(new Person_addOwns(p.getGemId(), carGemId, indexInList));
   }
 
   @Override

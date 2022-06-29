@@ -119,7 +119,6 @@ public abstract class PersonTOP extends Human {
     }
     this.nickname = o;
     checkNickname();
-    // TODO AHe: ist der cast hier notwendig und sicher?
     personObservers.forEach(obs -> obs.maybeNotifySetNickname((Person) this, o, scope));
   }
   
@@ -158,7 +157,6 @@ public abstract class PersonTOP extends Human {
       this.mainResidence.set(mainResidence);
     }
     checkMainResidence();
-    // TODO AHe: ist der cast hier notwendig und sicher?
     personObservers.forEach(obs -> obs.maybeNotifySetMainResidence((Person) this, mainResidence.getGemId(), scope));
   }
   
@@ -190,7 +188,6 @@ public abstract class PersonTOP extends Human {
     if (this.owns.contains(o)) {
       res = this.owns.remove(o);
       checkOwns();
-      // TODO AHe: ist der cast hier notwendig und sicher?
       personObservers.forEach(obs -> obs.maybeNotifyRemoveOwns((Person) this, o.getGemId(), scope));
     }
     
@@ -237,35 +234,38 @@ public abstract class PersonTOP extends Human {
     
   }
 
-  public boolean addOwns(Car o){
-    return addOwns(o, NotificationScope.ALL);
+  public void addOwns(Car o){
+    addOwns(o, NotificationScope.ALL);
   }
 
-  public boolean addOwns(Car o, NotificationScope scope) {
+  public void addOwns(Car o, NotificationScope scope) {
+    addOwns(owns.size(), o, scope);
+  }
+
+  public void addOwns(int index, Car o){
+    addOwns(index, o, NotificationScope.ALL);
+  }
+
+  public void addOwns(int index, Car o, NotificationScope scope){
     boolean res = false;
-    
+
     if (o == null) {
       throw new IllegalArgumentException("Null argument not allowed here");
     }
     if (!this.owns.contains(o)) {
-      // TODO AHe: ist der cast hier notwendig und sicher?
-      res = this.owns.add(o);
+      this.owns.add(index, o);
       checkOwns();
-      personObservers.forEach(obs -> obs.maybeNotifyAddOwns((Person) this, o.getGemId(), scope));
+      personObservers.forEach(obs -> obs.maybeNotifyAddOwns((Person) this, o.getGemId(), index, scope));
     }
-    return res;
   }
   
-  public boolean addAllOwnss(Collection<Car> o) {
+  public void addAllOwnss(Collection<Car> o) {
     if (o == null) {
       throw new IllegalArgumentException("Null argument not allowed here");
     }
-    boolean success = true;
-    Car element;
-    for (Iterator var3 = o.iterator(); var3.hasNext(); success &= this.addOwns(element)) {
-      element = (Car) var3.next();
+    for (Car car : o) {
+      addOwns(car);
     }
-    return success;
   }
   
   public boolean containsOwns(Car o) {

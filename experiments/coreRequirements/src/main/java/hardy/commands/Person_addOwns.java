@@ -8,6 +8,7 @@ import hardy.Person;
 import umlp.command.Command;
 import umlp.command.StatusResult;
 import umlp.rte.GeneralErrorCollector;
+import umlp.rte.NotificationScope;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,8 +17,9 @@ import java.util.Optional;
 public class Person_addOwns extends Command<Void> {
   protected long personGemId;
   protected long carGemId;
+  protected int indexInList;
 
-  public Person_addOwns(long personGemId, long carGemId) {
+  public Person_addOwns(long personGemId, long carGemId, int indexInList) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Person_addOwns"
@@ -25,6 +27,7 @@ public class Person_addOwns extends Command<Void> {
 
     this.personGemId = personGemId;
     this.carGemId = carGemId;
+    this.indexInList = indexInList;
   }
 
   @Override
@@ -43,7 +46,7 @@ public class Person_addOwns extends Command<Void> {
       return StatusResult.error(getId());
     }
 
-    personOpt.get().addOwns(carOpt.get());
+    personOpt.get().addOwns(indexInList, carOpt.get(), NotificationScope.LOCAL);
     return StatusResult.ok(getId());
   }
 
