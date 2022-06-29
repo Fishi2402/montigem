@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import stanley.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -143,6 +146,40 @@ public class PersonSyncTest {
       assertNotNull(c_i_client);
       assertNotSame(c_i_server, c_i_client);
       assertEquals(c_i_server.getGemId(), c_i_client.getGemId());
+    }
+  }
+
+  @Test
+  public void testExistingOwsIsLoadedOnClient(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Create a Person @ server", "PersonSyncTest");
+    PersonBuilder pb1001 = FlensburgManager.personBuilder();
+    Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
+
+    List<Car> cars = new ArrayList<>();
+
+    for (int i = 0; i < 10; i++) {
+      Log.info("Create Car " + i, "PersonSyncTest");
+      Car c = FlensburgManager.carBuilder().owns(p1001).build().get();
+      cars.add(c);
+    }
+
+    // Check that all cars are synced to the client
+    clientContext.activate();
+    Person p1001Client = FlensburgManager.getPersonSure(startGemId);
+    assertEquals(cars.size(), p1001Client.sizeOwnss());
+
+    for (int i = 0; i < cars.size(); i++) {
+      Car c1 = cars.get(i);
+      Car c2 = p1001Client.getOwns(i);
+      assertEquals(c1.getGemId(), c2.getGemId());
+      assertNotSame(c1, c2);
     }
   }
 
