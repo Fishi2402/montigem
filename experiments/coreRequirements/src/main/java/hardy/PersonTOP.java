@@ -146,6 +146,11 @@ public abstract class PersonTOP extends Human {
     return mainResidence.get();
   }
 
+  // Wird zum testen genutzt
+  public Gem<Address> getMainResidenceGem(){
+    return mainResidence;
+  }
+
   public void setMainResidence(Address mainResidence){
     setMainResidence(mainResidence, NotificationScope.ALL);
   }
@@ -159,7 +164,18 @@ public abstract class PersonTOP extends Human {
     checkMainResidence();
     personObservers.forEach(obs -> obs.maybeNotifySetMainResidence((Person) this, mainResidence.getGemId(), scope));
   }
-  
+
+  // Wird von Person_setMainResidence genutzt, damit das Address Objekt später lazy nachgeladen werden kann
+  public void setMainResidenceGem(Gem<Address> mainResidenceGem){
+    setMainResidenceGem(mainResidenceGem, NotificationScope.ALL);
+  }
+
+  public void setMainResidenceGem(Gem<Address> mainResidenceGem, NotificationScope scope) {
+    this.mainResidence = Objects.requireNonNull(mainResidenceGem);
+    checkMainResidence();
+    personObservers.forEach(obs -> obs.maybeNotifySetMainResidence((Person) this, mainResidenceGem.getGemId(), scope));
+  }
+
   public boolean checkMainResidence() {
     boolean res = true;
     

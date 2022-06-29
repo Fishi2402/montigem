@@ -4,6 +4,7 @@ package umlp.command;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import umlp.rte.Gem;
 
 import java.lang.reflect.Type;
 
@@ -13,7 +14,9 @@ import java.lang.reflect.Type;
 public class CommandResultTypeAdapter implements JsonDeserializer<CommandResult<?>>, JsonSerializer<CommandResult<?>> {
   protected static final String STATUS_RESULT = "statusResult";
   protected static final String SIMPLE_RESULT = "simpleResult";
-  protected final Gson simpleSerializer = new Gson();
+  protected final Gson simpleSerializer = new GsonBuilder()
+      .registerTypeHierarchyAdapter(Gem.class, new GemTypeAdapter())
+      .create();
 
   @Override
   public JsonElement serialize(CommandResult<?> src, Type typeOfSrc, JsonSerializationContext context) {

@@ -1,17 +1,15 @@
 package hardy.commands;
 
-import hardy.FlensburgManager;
-import hardy.FlensburgMock;
-import hardy.Human;
+import hardy.*;
 import org.junit.jupiter.api.Test;
 import umlp.command.Command;
 import umlp.command.CommandObjectMapper;
 import umlp.command.CommandResult;
 import umlp.command.SimpleResult;
+import umlp.rte.Gem;
 import umlp.rte.LoadingState;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CommandObjectMapperTest {
 
@@ -61,5 +59,43 @@ public class CommandObjectMapperTest {
 
     assertEquals(gemId, h1001deserialized.getGemId());
     assertEquals(age, h1001deserialized.getAge());
+  }
+
+  @Test
+  public void testGemSerializedUnloaded(){
+    FlensburgMock.init();
+
+    int commandId = 1;
+    int gemId = 1001;
+    FlensburgMock.secretlyAdaptnextGemIds(gemId);
+    int age = 20;
+
+    Address a1001 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Person p1002 = FlensburgManager
+        .personBuilder()
+        .age(age)
+        .nickname("Smith")
+        .mainResidence(a1001)
+        .build()
+        .get();
+
+    SimpleResult<Person> resp = new SimpleResult<>(commandId, p1002, "hardy.Person");
+
+    String respStr = CommandObjectMapper.serializeResponse(resp);
+    CommandResult<?> recreatedResp = CommandObjectMapper.deserializeResponse(respStr);
+
+    assertTrue(recreatedResp.isSimpleResult());
+
+    SimpleResult<?> simpleRes = recreatedResp.asSimpleResult();
+    assertTrue(simpleRes.isSuccessful());
+
+    assertTrue(simpleRes.get() instanceof Person);
+    Person recreatedPerson = (Person) simpleRes.get();
+
+    assertNotSame(p1002, recreatedPerson);
+    assertEquals(p1002.getGemId(), recreatedPerson.getGemId());
+
+    Gem<Address> mainResidenceGem = recreatedPerson.getMainResidenceGem();
+    assertEquals(LoadingState.NOT_YET_LOADED, mainResidenceGem.getLoadingState());
   }
 }

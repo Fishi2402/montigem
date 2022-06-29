@@ -2,7 +2,6 @@ package hardy.commands;
 
 // GEN-P
 
-import hardy.Address;
 import hardy.FlensburgManager;
 import hardy.Person;
 import umlp.command.Command;
@@ -33,18 +32,11 @@ public class Person_setMainResidence extends Command<Void> {
     Optional<Person> personOpt = FlensburgManager.personOpt(personGemId);
     if (personOpt.isEmpty()) {
       // TODO AHe: add GemId to reportSyncError or replace with <Class>ErrorCollector.reportPersonNotPresent(gemId)...
-GeneralErrorCollector.reportSyncError();
-      return StatusResult.error(getId());
-    }
-
-    Optional<Address> addressOpt = FlensburgManager.addressOpt(mainResidenceGemId);
-    if (addressOpt.isEmpty()) {
-      // TODO AHe: add GemId to reportSyncError or replace with <Class>ErrorCollector.reportPersonNotPresent(gemId)...
       GeneralErrorCollector.reportSyncError();
       return StatusResult.error(getId());
     }
 
-    personOpt.get().setMainResidence(addressOpt.get(), NotificationScope.LOCAL);
+    personOpt.get().setMainResidenceGem(FlensburgManager.createAddressGem(mainResidenceGemId), NotificationScope.LOCAL);
     return StatusResult.ok(getId());
   }
 
