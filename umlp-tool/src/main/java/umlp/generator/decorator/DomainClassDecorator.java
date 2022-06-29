@@ -170,9 +170,9 @@ public class DomainClassDecorator extends AbstractDecorator {
   protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, "java.util.Observable");
     getCD4C().addImport(clazz, "umlp.rte.GemIdentifiable");
+    getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
     getCD4C().addImport(clazz, "org.hibernate.annotations.GenericGenerator");
     getCD4C().addImport(clazz, "javax.persistence.*");
-
   }
 
 }

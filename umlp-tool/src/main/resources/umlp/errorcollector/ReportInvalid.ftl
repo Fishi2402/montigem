@@ -1,9 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name")}
-${cd4c.method("public static void init()")}
+${tc.signature("name", "domainName")}
+${cd4c.method("public static void report${name?capFirst}Invalid(${domainName} o)")}
 
-instance = new ${name}ErrorCollector();
-
+getInstance()._report${name?capFirst}Invalid(o);
 
 
 

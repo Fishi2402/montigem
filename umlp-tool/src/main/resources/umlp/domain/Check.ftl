@@ -6,7 +6,7 @@ boolean res = true;
 
 if(${name} == null){
   res = false;
-  ${domain}ErrorCollector.report${name?cap_first}Invalid(this);
+  ${domain}ErrorCollector.report${name?cap_first}Invalid((${domain}) this);
 }
 
 return res;

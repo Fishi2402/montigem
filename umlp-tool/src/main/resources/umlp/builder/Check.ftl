@@ -1,12 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("name", "clazz")}
-<#assign simpleName=name?remove_beginning("is")?remove_ending("Present")>
-${cd4c.method("public boolean check${simpleName}Present()")}
+${cd4c.method("public boolean check${name?cap_first}Present()")}
 
-if(!${name}){
-  ${clazz}ErrorCollector.report${simpleName}Invalid(this);
+if(!is${name?cap_first}Present){
+  ${clazz}ErrorCollector.report${name?cap_first}Invalid(this);
 }
-return ${name};
+return is${name?cap_first}Present;
 
 
 

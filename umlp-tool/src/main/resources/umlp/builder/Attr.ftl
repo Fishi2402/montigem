@@ -1,10 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("name", "type", "builder")}
-<#assign simpleName=name?remove_beginning("is")?remove_ending("Present")?uncap_first>
-${cd4c.method("public ${builder} ${simpleName}(${type} ${simpleName})")}
+${cd4c.method("public ${builder} ${name}(${type} ${name})")}
 
-this.${simpleName} = ${simpleName};
-${name} = true;
+this.${name} = ${name};
+is${name?cap_first}Present = true;
 return this;
 
 

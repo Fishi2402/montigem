@@ -8,7 +8,7 @@ ${cd4c.method("public boolean isBuildable()")}
   return
     <#list attrList as attr>
       <#assign name=attr.getName()?remove_beginning("is")?remove_ending("Present")>
-        check${name}Present() & check${name}()
+        check${name}Present() & check${name}() <#if attr?has_next>&</#if>
       </#list>
       ;
 </#if>

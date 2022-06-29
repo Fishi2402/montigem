@@ -25,7 +25,8 @@ public class ObserverDecorator extends AbstractDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().forEach(c -> astcdPackage.addCDElement(createInterface(c)));
+    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+            .forEach(c -> astcdPackage.addCDElement(createInterface(c)));
   }
   
   protected ASTCDInterface createInterface(ASTCDClass domainClass) {

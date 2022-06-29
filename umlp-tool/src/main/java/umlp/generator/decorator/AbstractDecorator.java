@@ -19,7 +19,7 @@ public abstract class AbstractDecorator {
     this.glex = glex;
   }
 
-  protected final String DEFAULT_PACKAGE = "umlp";
+  protected final String DEFAULT_PACKAGE = "hardy";
 
   protected final GlobalExtensionManagement glex;
 

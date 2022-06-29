@@ -29,7 +29,7 @@ public class BuilderDecorator extends AbstractDecorator {
   public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
+    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
       .forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
   }
 
@@ -43,18 +43,19 @@ public class BuilderDecorator extends AbstractDecorator {
 
     // Constructors
     getCD4C().addConstructor(builderClass, "umlp.builder.Constructor", domainClass.getName());
-
+    List<ASTCDAttribute> attrFields = CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+            .filter(a -> GenService.isVisibleNotDerived(a)).collect(Collectors.toList());
+    List<ASTCDAssocSide> attrAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+            .filter(a -> GenService.isVisibleNotDerived(a)).collect(Collectors.toList());
     // Attributes
-    List<ASTCDAttribute> attrFields = getAttributesForFields(domainClass);
-    List<ASTCDAttribute> attrAssocs = getAttributesForAssociations(domainClass);
-    List<ASTCDAttribute> attrList = Lists.newArrayList(attrFields);
-    attrList.addAll(attrAssocs);
+    List<ASTCDAttribute> attrList = getAttributesForFields(domainClass, attrFields);
+    attrList.addAll(getAttributesForAssociations(domainClass, attrAssocs));
     builderClass.addAllCDMembers(attrList);
 
     getCD4C().addAttribute(builderClass, "protected boolean buildFinished = false");
 
     // Methods
-    createSetAndCheckMethods(domainClass, builderClass, attrList);
+    createSetAndCheckMethods(domainClass, builderClass, attrFields);
     getCD4C().addMethod(builderClass, "umlp.builder.Build", domainClass.getName(), name);
     getCD4C().addMethod(builderClass, "umlp.builder.IsFinished");
     getCD4C().addMethod(builderClass, "umlp.builder.IsBuildable", attrList);
@@ -65,13 +66,11 @@ public class BuilderDecorator extends AbstractDecorator {
     return builderClass;
   }
 
-  protected List<ASTCDAttribute> getAttributesForFields(ASTCDClass domainClass) {
+  protected List<ASTCDAttribute> getAttributesForFields(ASTCDClass domainClass, List<ASTCDAttribute> domainAttrList) {
     List<ASTCDAttribute> attributesList = Lists.newLinkedList();
-    List<ASTCDAttribute> visibleAttributes = CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-            .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
 
     // get all visible parameters
-    for (ASTCDAttribute visibleAttribute : visibleAttributes) {
+    for (ASTCDAttribute visibleAttribute : domainAttrList) {
       ASTMCPrimitiveType type = getMCTypeFacade().createBooleanType();
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
               type,  "is" + StringTransformations.capitalize(visibleAttribute.getName()) + "Present");
@@ -81,13 +80,11 @@ public class BuilderDecorator extends AbstractDecorator {
     return attributesList;
   }
 
-  protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDClass domainClass) {
+  protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDClass domainClass, List<ASTCDAssocSide> domainAssocList) {
     List<ASTCDAttribute> attrList = Lists.newLinkedList();
-    List<ASTCDAssocSide> associations = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
-            .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
 
     // handle associations
-    for (ASTCDAssocSide association : associations) {
+    for (ASTCDAssocSide association : domainAssocList) {
       // TODO: Was muss hier gemacht werden
     }
     return attrList;
