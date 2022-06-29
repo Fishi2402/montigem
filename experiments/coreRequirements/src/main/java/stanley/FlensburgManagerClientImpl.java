@@ -50,7 +50,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected Map<Long, WeakReference<Person>> knownPersons = Collections.synchronizedMap(new WeakHashMap<>());
   protected Map<Long, WeakReference<Address>> knownAddresses = Collections.synchronizedMap(new WeakHashMap<>());
   protected Map<Long, WeakReference<Car>> knownCars = Collections.synchronizedMap(new WeakHashMap<>());
-  // TODO: for all classes
 
   @Override
   protected HumanBuilder _doHuman() {
@@ -442,12 +441,33 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected Optional<Car> _doCarOpt(long gemId) {
-    return Optional.empty();
+    WeakReference<Car> carWeakReference = knownCars.get(gemId);
+    if (carWeakReference != null) {
+      Car h = carWeakReference.get();
+      if (h != null) {
+        Log.trace("Returning known car " + h.getGemId(), LogUtil.getLoggerName());
+        return Optional.of(h);
+      }
+    }
+
+    Gem<Car> gem = CommandManager.executeSingleCommand(new Car_get(gemId)).asGemResult().getResult();
+    if (gem.isPresent()) {
+      Car car = gem.get();
+      if (!car.containsObserver(theCarCommandObserver)) {
+        car.addObserver(theCarCommandObserver);
+      }
+      Log.trace("Adding known car " + gemId, LogUtil.getLoggerName());
+      knownCars.put(car.getGemId(), new WeakReference<>(car));
+      return Optional.of(car);
+    }
+    else {
+      return Optional.empty();
+    }
   }
 
   @Override
   protected Car _doGetCarSure(long gemId) {
-    return null;
+    return _doCarOpt(gemId).get();
   }
 
   @Override

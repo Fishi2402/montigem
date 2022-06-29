@@ -12,7 +12,7 @@ public class CarBuilder extends Car {
     // dass jedes Car eine Person hat.
     // TODO: owns klingt als ob die Person eigentum vom Car ist.
     // Besser wäre ownedBy, automatische Übersetzung klappt nicht. Ggf. postfix _inverted hinzufügen
-    Person owns;
+    transient Person owns;
 
     // TODO AHe: für mainResidence das selbe
 

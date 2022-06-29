@@ -15,7 +15,7 @@ import java.util.Optional;
 public class Car_get extends Request<Car> {
   protected final long gemId;
 
-  protected Car_get(long gemId) {
+  public Car_get(long gemId) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Car_get"

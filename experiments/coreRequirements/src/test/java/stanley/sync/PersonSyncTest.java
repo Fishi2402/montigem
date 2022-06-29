@@ -77,14 +77,14 @@ public class PersonSyncTest {
   }
 
   @Test
-  public void testOwnsIsSyncedToServer(){
+  public void testAddOwnsIsSyncedToServer(){
     FlensburgMock.init();
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
     long startGemId = 1001L;
     FlensburgMock.secretlyAdaptnextGemIds(startGemId);
     FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
 
-    Log.info("Create a Person", "PersonSyncTest");
+    Log.info("Create a Person @ client", "PersonSyncTest");
     clientContext.activate();
     PersonBuilder pb1001 = FlensburgManager.personBuilder();
     Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
@@ -107,6 +107,39 @@ public class PersonSyncTest {
     assertNotNull(c1Server);
     assertNotSame(c1, c1Server);
     assertEquals(c1.getGemId(), c1Server.getGemId());
+  }
+
+  @Test
+  public void testAddOwnsIsSyncedToClient(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Create a Person @ client", "PersonSyncTest");
+    clientContext.activate();
+    PersonBuilder pb1001 = FlensburgManager.personBuilder();
+    Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
+
+    Log.info("Check owns is empty in Server", "PersonSyncTest");
+    serverContext.activate();
+    Person p1001Server = FlensburgManager.getPersonSure(startGemId);
+    assertNotSame(p1001, p1001Server);
+    assertTrue(p1001Server.isEmptyOwnss());
+
+    Log.info("Add Car from Server", "PersonSyncTest");
+    serverContext.activate();
+    Car c1Server = FlensburgManager.carBuilder().owns(p1001Server).build().get();
+
+    Log.info("Check it is synced to the client", "PersonSyncTest");
+    clientContext.activate();
+    assertEquals(1, p1001.sizeOwnss());
+    Car c1Client = p1001.getOwns(0);
+    assertNotNull(c1Client);
+    assertNotSame(c1Server, c1Client);
+    assertEquals(c1Server.getGemId(), c1Client.getGemId());
   }
 
 }
