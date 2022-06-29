@@ -26,6 +26,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected HumanCommandObserver theHumanCommandObserver = new HumanCommandObserver();
   protected PersonCommandObserver thePersonCommandObserver = new PersonCommandObserver();
   protected AddressCommandObserver theAddressCommandObserver = new AddressCommandObserver();
+  protected CarCommandObserver theCarCommandObserver = new CarCommandObserver();
 
   // Must be created using builder, since we have one ErrorListener per DomainClass
 
@@ -48,6 +49,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected Map<Long, WeakReference<Human>> knownHumans = Collections.synchronizedMap(new WeakHashMap<>());
   protected Map<Long, WeakReference<Person>> knownPersons = Collections.synchronizedMap(new WeakHashMap<>());
   protected Map<Long, WeakReference<Address>> knownAddresses = Collections.synchronizedMap(new WeakHashMap<>());
+  protected Map<Long, WeakReference<Car>> knownCars = Collections.synchronizedMap(new WeakHashMap<>());
   // TODO: for all classes
 
   @Override
@@ -435,7 +437,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected CarBuilder _doCar() {
-    return null;
+    return new CarBuilder(_doGetFreeGemId());
   }
 
   @Override
@@ -450,7 +452,13 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected void _doAddCar(Car o) {
-    // ...
+    StatusResult res = CommandManager.executeSingleCommand(new Car_create(o)).asStatusResult();
+    // TODO: Error handling
+    if (!o.containsObserver(theCarCommandObserver)) {
+      o.addObserver(theCarCommandObserver);
+    }
+    Log.trace("Adding known car " + o.getGemId(), LogUtil.getLoggerName());
+    knownCars.put(o.getGemId(), new WeakReference<>(o));
     flensburgObservers.forEach(obs -> obs.notifyCarAdded(o.getGemId()));
   }
 

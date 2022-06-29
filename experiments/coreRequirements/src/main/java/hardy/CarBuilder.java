@@ -47,7 +47,7 @@ public class CarBuilder extends Car {
         if (!buildFinished) {
             if (isBuildable()) {
                 FlensburgManager.addCar(this);
-                notifyObservers();      //+ an initial notification
+                carObservers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
                 buildFinished = true;
                 owns.addOwns(this);
                 return Optional.of(this);
