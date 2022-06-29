@@ -9,7 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Observable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /* Source:
@@ -20,8 +21,8 @@ import java.util.Optional;
 // --------------------------
 @Entity
 @Table(name = "car")
-public class Car extends Observable implements GemIdentifiable {
-
+public class Car implements GemIdentifiable {
+    protected List<CarObserver> carObservers = new ArrayList<>();
 // Bem: This is an ordinary class, comments to the design 
 // decisions can be found at Human and Person
 
@@ -52,5 +53,17 @@ public class Car extends Observable implements GemIdentifiable {
     // Ansonsten kann es dazu kommen, dass 2 mal build auf einem Builder aufgerufen wird, was zu einer Exception führt.
     public boolean isBuildFinished() {
         return true;
+    }
+
+    public void addObserver(CarObserver observer){
+        carObservers.add(observer);
+    }
+
+    public boolean removeObserver(CarObserver observer){
+        return carObservers.remove(observer);
+    }
+
+    public boolean containsObserver(CarObserver observer){
+        return carObservers.contains(observer);
     }
 }

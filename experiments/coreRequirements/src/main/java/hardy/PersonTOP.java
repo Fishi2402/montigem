@@ -287,7 +287,11 @@ public abstract class PersonTOP extends Human {
   public boolean isEmptyOwnss() {
     return this.owns.isEmpty();
   }
-  
+
+  public Car getOwns(int index){
+    return owns.get(index);
+  }
+
   //+ Pseudo build for all classes: normally nothing happens
   public Optional<Person> build() {
     return Optional.empty();
