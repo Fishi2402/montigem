@@ -34,7 +34,6 @@ public class ObserverDecorator extends AbstractDecorator {
       .setModifier(PUBLIC.build())
       .setName(className + SUFFIX).build();
 
-    
     //Add Notify for attributes
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
       .filter(a -> !a.getModifier().isDerived())

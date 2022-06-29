@@ -50,6 +50,8 @@ public class UMLPGenerator {
   
   protected DbObserverDecorator dbObserverDecorator;
   
+  protected DerivedClassDecorator derivedClassDecorator;
+  
   protected ManagerDecorator managerDecorator;
 
   protected ManagerImplDecorator managerImplDecorator;
@@ -77,6 +79,7 @@ public class UMLPGenerator {
     errorObserverDecorator = new ErrorObserverDecorator(genSetup.getGlex());
     observerDecorator = new ObserverDecorator(genSetup.getGlex());
     dbObserverDecorator = new DbObserverDecorator(genSetup.getGlex());
+    derivedClassDecorator = new DerivedClassDecorator(genSetup.getGlex());
     managerDecorator = new ManagerDecorator(genSetup.getGlex());
     managerImplDecorator = new ManagerImplDecorator(genSetup.getGlex());
     dummyProviderDecorator = new DummyProviderDecorator(genSetup.getGlex());
@@ -124,6 +127,9 @@ public class UMLPGenerator {
   
     dbObserverDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("dbObserverDecorator", cdAST);
+  
+    derivedClassDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("DerivedClassDecorator", cdAST);
     
     // Generate DiagramObserver classes
     diagramObserverDecorator.transform(cdAST, decoratedAST);
