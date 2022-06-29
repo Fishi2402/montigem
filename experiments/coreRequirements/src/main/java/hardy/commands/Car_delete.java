@@ -12,7 +12,7 @@ import java.util.Collections;
 public class Car_delete extends Command {
   protected final Car car;
 
-  protected Car_delete(Car car) {
+  public Car_delete(Car car) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Car_delete"
