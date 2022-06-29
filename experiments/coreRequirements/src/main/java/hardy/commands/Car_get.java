@@ -2,9 +2,8 @@ package hardy.commands;
 
 import hardy.Car;
 import hardy.FlensburgManager;
-import umlp.command.GemResult;
+import umlp.command.SimpleResult;
 import umlp.request.Request;
-import umlp.rte.Gem;
 import umlp.rte.LoadingState;
 
 import java.util.Collection;
@@ -25,12 +24,12 @@ public class Car_get extends Request<Car> {
   }
 
   @Override
-  public GemResult<Car> doRun() {
+  public SimpleResult<Car> doRun() {
     Optional<Car> car = FlensburgManager.carOpt(gemId);
     if(car.isPresent()){
-      return new GemResult<>(getId(), new Gem<>(car.get()), "hardy.Car");
+      return new SimpleResult<>(getId(), car.get(), "hardy.Car");
     } else {
-      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY), "hardy.Car");
+      return new SimpleResult<>(getId(), LoadingState.EMPTY, "hardy.Car");
     }
   }
 

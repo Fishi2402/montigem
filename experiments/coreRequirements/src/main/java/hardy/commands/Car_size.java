@@ -4,8 +4,7 @@ package hardy.commands;
 
 import hardy.FlensburgManager;
 import umlp.command.Command;
-import umlp.command.GemResult;
-import umlp.rte.Gem;
+import umlp.command.SimpleResult;
 
 public class Car_size extends Command<Integer> {
   public Car_size() {
@@ -16,9 +15,9 @@ public class Car_size extends Command<Integer> {
   }
 
   @Override
-  public GemResult<Integer> doRun() {
+  public SimpleResult<Integer> doRun() {
     // TODO: Optimieren, Liste muss nicht ganz geladen werden
-    return new GemResult<>(getId(), new Gem<>(FlensburgManager.getCarList().size()), "java.lang.Integer");
+    return new SimpleResult<>(getId(), FlensburgManager.getCarList().size(), "java.lang.Integer");
   }
 
   // undo macht keinen Sinn

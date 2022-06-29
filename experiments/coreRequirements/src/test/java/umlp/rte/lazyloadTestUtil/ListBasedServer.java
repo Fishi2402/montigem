@@ -65,7 +65,7 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
   }
 
   public Gem<E> createGem(Long id) {
-    return new Gem(() -> this.getObject(id));
+    return new Gem(id, () -> this.getObject(id));
   }
 
   @Override

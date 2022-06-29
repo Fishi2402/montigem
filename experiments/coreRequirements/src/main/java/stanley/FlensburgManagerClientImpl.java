@@ -8,7 +8,6 @@ import hardy.*;
 import hardy.commands.*;
 import umlp.command.*;
 import umlp.request.GetFreeGemIdRequest;
-import umlp.rte.Gem;
 import umlp.rte.GemList;
 import umlp.rte.LoadResult;
 import umlp.util.LogUtil;
@@ -32,11 +31,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected long _doGetFreeGemId() {
-    GemResult<Long> res = CommandManager.executeSingleCommand(new GetFreeGemIdRequest()).asGemResult();
-
-    Gem<Long> gem = res.getResult();
-    return gem.get();
-
+    SimpleResult<Long> res = CommandManager.executeSingleCommand(new GetFreeGemIdRequest()).asSimpleResult();
+    return res.get();
     // TODO: error handling
   }
 
@@ -69,9 +65,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
       }
     }
 
-    Gem<Human> gem = CommandManager.executeSingleCommand(new Human_get(gemId)).asGemResult().getResult();
-    if (gem.isPresent()) {
-      Human human = gem.get();
+    SimpleResult<Human> resp = CommandManager.executeSingleCommand(new Human_get(gemId)).asSimpleResult();
+    if (resp.isSuccessful()) {
+      Human human = resp.get();
       if (!human.containsObserver(theHumanCommandObserver)) {
         human.addObserver(theHumanCommandObserver);
       }
@@ -138,15 +134,14 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
     // Optimierung: Einen command um mehrere Objekte gleichzeitig zu laden
     for (Long gemId : gemIds) {
-      GemResult<Human> resp = CommandManager.executeSingleCommand(new Human_get(gemId)).asGemResult();
-      Gem<Human> gem = resp.getResult();
-      if (gem.isPresent()) {
-        Human human = gem.get();
+      SimpleResult<Human> resp = CommandManager.executeSingleCommand(new Human_get(gemId)).asSimpleResult();
+      if (resp.isSuccessful()) {
+        Human human = resp.get();
         human.addObserver(theHumanCommandObserver);
         res.add(new LoadResult<>(human));
       }
       else {
-        res.add(new LoadResult<>(gem.getLoadingState()));
+        res.add(new LoadResult<>(resp.getLoadingState()));
       }
     }
     return res;
@@ -154,7 +149,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   protected int loadHumanSize() {
     CommandResult<Integer> res = CommandManager.executeSingleCommand(new Human_size());
-    return res.asGemResult().getResult().get();
+    return res.asSimpleResult().get();
   }
 
   private boolean humanGemIdsLoaded = false;
@@ -163,8 +158,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected List<Long> loadHumanGemIds(int startIndex, int endIndex) {
     if (!humanGemIdsLoaded) {
       // TODO: könnte auch teilweise on-demand geladen werden
-      GemResult<LongList> res = CommandManager.executeSingleCommand(new Human_ids()).asGemResult();
-      humanGemIds = res.getResult().get();
+      SimpleResult<LongList> res = CommandManager.executeSingleCommand(new Human_ids()).asSimpleResult();
+      humanGemIds = res.get();
       humanGemIdsLoaded = true;
     }
 
@@ -198,9 +193,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
       }
     }
 
-    Gem<Person> gem = CommandManager.executeSingleCommand(new Person_get(gemId)).asGemResult().getResult();
-    if (gem.isPresent()) {
-      Person person = gem.get();
+    SimpleResult<Person> resp = CommandManager.executeSingleCommand(new Person_get(gemId)).asSimpleResult();
+    if (resp.isSuccessful()) {
+      Person person = resp.get();
       if (!person.containsObserver(thePersonCommandObserver)) {
         person.addObserver(thePersonCommandObserver);
       }
@@ -267,15 +262,14 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
     // Optimierung: Einen command um mehrere Objekte gleichzeitig zu laden
     for (Long gemId : gemIds) {
-      GemResult<Person> resp = CommandManager.executeSingleCommand(new Person_get(gemId)).asGemResult();
-      Gem<Person> gem = resp.getResult();
-      if (gem.isPresent()) {
-        Person person = gem.get();
+      SimpleResult<Person> resp = CommandManager.executeSingleCommand(new Person_get(gemId)).asSimpleResult();
+      if (resp.isSuccessful()) {
+        Person person = resp.get();
         person.addObserver(thePersonCommandObserver);
         res.add(new LoadResult<>(person));
       }
       else {
-        res.add(new LoadResult<>(gem.getLoadingState()));
+        res.add(new LoadResult<>(resp.getLoadingState()));
       }
     }
     return res;
@@ -283,7 +277,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   protected int loadPersonSize() {
     CommandResult<Integer> res = CommandManager.executeSingleCommand(new Person_size());
-    return res.asGemResult().getResult().get();
+    return res.asSimpleResult().get();
   }
 
   private boolean personGemIdsLoaded = false;
@@ -292,8 +286,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected List<Long> loadPersonGemIds(int startIndex, int endIndex) {
     if (!personGemIdsLoaded) {
       // TODO: könnte auch teilweise on-demand geladen werden
-      GemResult<LongList> res = CommandManager.executeSingleCommand(new Person_ids()).asGemResult();
-      personGemIds = res.getResult().get();
+      SimpleResult<LongList> res = CommandManager.executeSingleCommand(new Person_ids()).asSimpleResult();
+      personGemIds = res.get();
       personGemIdsLoaded = true;
     }
 
@@ -324,9 +318,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
       }
     }
 
-    Gem<Address> gem = CommandManager.executeSingleCommand(new Address_get(gemId)).asGemResult().getResult();
-    if (gem.isPresent()) {
-      Address address = gem.get();
+    SimpleResult<Address> res = CommandManager.executeSingleCommand(new Address_get(gemId)).asSimpleResult();
+    if (res.isSuccessful()) {
+      Address address = res.get();
       if (!address.containsObserver(theAddressCommandObserver)) {
         address.addObserver(theAddressCommandObserver);
       }
@@ -393,15 +387,14 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
     // Optimierung: Einen command um mehrere Objekte gleichzeitig zu laden
     for (Long gemId : gemIds) {
-      GemResult<Address> resp = CommandManager.executeSingleCommand(new Address_get(gemId)).asGemResult();
-      Gem<Address> gem = resp.getResult();
-      if (gem.isPresent()) {
-        Address address = gem.get();
+      SimpleResult<Address> resp = CommandManager.executeSingleCommand(new Address_get(gemId)).asSimpleResult();
+      if (resp.isSuccessful()) {
+        Address address = resp.get();
         address.addObserver(theAddressCommandObserver);
         res.add(new LoadResult<>(address));
       }
       else {
-        res.add(new LoadResult<>(gem.getLoadingState()));
+        res.add(new LoadResult<>(resp.getLoadingState()));
       }
     }
     return res;
@@ -409,7 +402,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   protected int loadAddressSize() {
     CommandResult<Integer> res = CommandManager.executeSingleCommand(new Address_size());
-    return res.asGemResult().getResult().get();
+    return res.asSimpleResult().get();
   }
 
   private boolean addressGemIdsLoaded = false;
@@ -418,8 +411,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected List<Long> loadAddressGemIds(int startIndex, int endIndex) {
     if (!addressGemIdsLoaded) {
       // TODO: könnte auch teilweise on-demand geladen werden
-      GemResult<LongList> res = CommandManager.executeSingleCommand(new Address_ids()).asGemResult();
-      addressGemIds = res.getResult().get();
+      SimpleResult<LongList> res = CommandManager.executeSingleCommand(new Address_ids()).asSimpleResult();
+      addressGemIds = res.get();
       addressGemIdsLoaded = true;
     }
 
@@ -450,9 +443,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
       }
     }
 
-    Gem<Car> gem = CommandManager.executeSingleCommand(new Car_get(gemId)).asGemResult().getResult();
-    if (gem.isPresent()) {
-      Car car = gem.get();
+    SimpleResult<Car> resp = CommandManager.executeSingleCommand(new Car_get(gemId)).asSimpleResult();
+    if (resp.isSuccessful()) {
+      Car car = resp.get();
       if (!car.containsObserver(theCarCommandObserver)) {
         car.addObserver(theCarCommandObserver);
       }

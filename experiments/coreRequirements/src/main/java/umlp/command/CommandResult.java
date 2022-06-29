@@ -31,17 +31,8 @@ public abstract class CommandResult<T> {
   // Durch Javas Type erasure ist es nicht möglich geschachtelte generics in einer Vererbung zu benutzten,
   // also kann der genaue return type von Command#doRun nicht per Typenparameter gesetzt werden.
   // Stattdessen wird immer CommandResult<T> zurückgegeben.
-  // Um zwischen StatusResult und GemResult<T> zu unterscheiden werden die folgenden Methoden genutzt,
+  // Um zwischen StatusResult und SimpleResult<T> zu unterscheiden werden die folgenden Methoden genutzt,
   // welche verhindern, dass instanceof genutzt werden muss
-
-  // Wird in GemResult so überschrieben, dass true zurückgegeben wird
-  public boolean isGemResult(){
-    return false;
-  }
-
-  public GemResult<T> asGemResult(){
-    return (GemResult<T>) this;
-  }
 
   // Wird in StatusResult so überschrieben, dass true zurückgegeben wird
   public boolean isStatusResult(){
@@ -50,5 +41,13 @@ public abstract class CommandResult<T> {
 
   public StatusResult asStatusResult(){
     return (StatusResult) this;
+  }
+
+  public boolean isSimpleResult(){
+    return false;
+  }
+
+  public SimpleResult<T> asSimpleResult(){
+    return (SimpleResult<T>) this;
   }
 }

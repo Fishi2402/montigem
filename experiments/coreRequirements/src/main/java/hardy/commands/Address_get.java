@@ -2,9 +2,8 @@ package hardy.commands;
 
 import hardy.Address;
 import hardy.FlensburgManager;
-import umlp.command.GemResult;
+import umlp.command.SimpleResult;
 import umlp.request.Request;
-import umlp.rte.Gem;
 import umlp.rte.LoadingState;
 
 import java.util.Collection;
@@ -26,12 +25,12 @@ public class Address_get extends Request<Address> {
   }
 
   @Override
-  public GemResult<Address> doRun() {
+  public SimpleResult<Address> doRun() {
     Optional<Address> address = FlensburgManager.addressOpt(gemId);
     if(address.isPresent()){
-      return new GemResult<>(getId(), new Gem<>(address.get()), "hardy.Address");
+      return new SimpleResult<>(getId(), address.get(), "hardy.Address");
     } else {
-      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY), "hardy.Address");
+      return new SimpleResult<>(getId(), LoadingState.EMPTY, "hardy.Address");
     }
   }
 

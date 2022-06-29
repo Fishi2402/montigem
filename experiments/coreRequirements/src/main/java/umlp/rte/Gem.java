@@ -25,6 +25,8 @@ public class Gem<E> {
    * is not null iff the object has been loaded ({@link Gem#loadingState} == {@link LoadingState#LOADED})
    */
   protected E object = null;
+  // Wird gebraucht, um das Gem zu (de-)serialisieren
+  protected long gemId;
 
   /**
    * whether the object has been loaded or (why) not
@@ -44,13 +46,19 @@ public class Gem<E> {
    */
   public Gem(E object) {
     this.object = object;
+    // TODO: change type parameter to <T extends GemIdentifiable>?
+    if(!(object instanceof GemIdentifiable)){
+      throw new IllegalStateException("Can only pass GemIdentifiable as content of Gem");
+    }
+    this.gemId = ((GemIdentifiable)object).getGemId();
     this.loadingState = LoadingState.LOADED;
   }
 
   /*
    * Constructor for: Object is not yet loaded, but we know the loading supplier
    */
-  public Gem(Supplier<LoadResult<E>> supplier) {
+  public Gem(long gemId, Supplier<LoadResult<E>> supplier) {
+    this.gemId = gemId;
     this.loadFunction = supplier;
     this.loadingState = LoadingState.NOT_YET_LOADED;
   }
@@ -59,6 +67,7 @@ public class Gem<E> {
    * Constructor for: Object is not yet loaded
    */
   public Gem(long gemID, LoadingState loadingState) {
+    this.gemId = gemID;
     if (loadingState == LoadingState.LOADED || loadingState == LoadingState.NOT_YET_LOADED) {
       Log.error("0xE2921 Object created with unexpected state");
     }
@@ -114,4 +123,7 @@ public class Gem<E> {
     }
   }
 
+  public long getGemId() {
+    return gemId;
+  }
 }

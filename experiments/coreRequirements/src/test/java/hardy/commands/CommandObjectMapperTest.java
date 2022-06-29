@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 import umlp.command.Command;
 import umlp.command.CommandObjectMapper;
 import umlp.command.CommandResult;
-import umlp.command.GemResult;
-import umlp.rte.Gem;
+import umlp.command.SimpleResult;
 import umlp.rte.LoadingState;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +32,7 @@ public class CommandObjectMapperTest {
   }
 
   @Test
-  public void testGemResultRoundtrip(){
+  public void testSimpleResultRoundtrip(){
     FlensburgMock.init();
 
     int commandId = 1;
@@ -42,21 +41,20 @@ public class CommandObjectMapperTest {
     int age = 20;
     Human h1001 = FlensburgManager.humanBuilder().age(age).build().get();
 
-    GemResult<Human> result = new GemResult<>(commandId, new Gem<>(h1001), "hardy.Human");
+    SimpleResult<Human> result = new SimpleResult<>(commandId, h1001, "hardy.Human");
 
     String resultStr = CommandObjectMapper.serializeResponse(result);
 
     CommandResult<?> unknownResult = CommandObjectMapper.deserializeResponse(resultStr);
 
     assertEquals(commandId, unknownResult.getCommandId());
-    assertTrue(unknownResult.isGemResult());
-    assertTrue(unknownResult instanceof GemResult);
+    assertTrue(unknownResult.isSimpleResult());
+    assertTrue(unknownResult instanceof SimpleResult);
 
-    GemResult<?> gemRes = unknownResult.asGemResult();
-    Gem<?> gem = gemRes.getResult();
+    SimpleResult<?> resp = unknownResult.asSimpleResult();
 
-    assertEquals(LoadingState.LOADED, gem.getLoadingState());
-    Object obj = gem.get();
+    assertEquals(LoadingState.LOADED, resp.getLoadingState());
+    Object obj = resp.get();
 
     assertTrue(obj instanceof Human);
     Human h1001deserialized = (Human) obj;

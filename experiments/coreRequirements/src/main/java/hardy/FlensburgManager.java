@@ -28,6 +28,10 @@ package hardy;
   Wir nutzen den static Singleton Ansatz für alle zu realisierenden Funktionen
 */
 
+import umlp.rte.Gem;
+import umlp.rte.LoadResult;
+import umlp.rte.LoadingState;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -50,7 +54,22 @@ public abstract class FlensburgManager {
         instance = flensburgManager;
     }
 
-    protected abstract long _doGetFreeGemId();
+  public static Gem<Address> createAddressGem(long gemId) {
+      return getSingleton()._createAddressGem(gemId);
+  }
+
+  protected Gem<Address> _createAddressGem(long gemId){
+      return new Gem<>(gemId, () -> {
+        Optional<Address> addrOpt = _doAddressOpt(gemId);
+        if(addrOpt.isPresent()){
+          return new LoadResult<>(addrOpt.get());
+        }else{
+          return new LoadResult<>(LoadingState.EMPTY);
+        }
+      });
+  }
+
+  protected abstract long _doGetFreeGemId();
 
     /**
      * Returns the singleton {@link FlensburgManager} instance.

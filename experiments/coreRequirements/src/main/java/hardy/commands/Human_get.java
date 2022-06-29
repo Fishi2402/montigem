@@ -3,9 +3,8 @@ package hardy.commands;
 
 import hardy.FlensburgManager;
 import hardy.Human;
-import umlp.command.GemResult;
+import umlp.command.SimpleResult;
 import umlp.request.Request;
-import umlp.rte.Gem;
 import umlp.rte.LoadingState;
 
 import java.util.Collection;
@@ -25,12 +24,12 @@ public class Human_get extends Request<Human> {
   }
 
   @Override
-  public GemResult<Human> doRun() {
+  public SimpleResult<Human> doRun() {
     Optional<Human> human = FlensburgManager.humanOpt(gemId);
     if(human.isPresent()){
-      return new GemResult<>(getId(), new Gem<>(human.get()), "hardy.Human");
+      return new SimpleResult<>(getId(), human.get(), "hardy.Human");
     } else {
-      return new GemResult<>(getId(), new Gem<>(gemId, LoadingState.EMPTY), "hardy.Human");
+      return new SimpleResult<>(getId(), LoadingState.EMPTY, "hardy.Human");
     }
   }
 

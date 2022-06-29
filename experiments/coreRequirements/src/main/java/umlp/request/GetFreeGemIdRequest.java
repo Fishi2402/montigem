@@ -3,8 +3,7 @@ package umlp.request;
 // RTE-P
 
 import hardy.FlensburgManager;
-import umlp.command.GemResult;
-import umlp.rte.Gem;
+import umlp.command.SimpleResult;
 
 // Da dies nicht rückgängig gemacht werden kann, heißt es Request anstatt command.
 // Zur vereinfachten technischen Umsetzung ist es trotzdem eine Subklasse von Command.
@@ -20,7 +19,7 @@ public class GetFreeGemIdRequest extends Request<Long> {
   }
 
   @Override
-  public GemResult<Long> doRun() {
-    return new GemResult<>(getId(), new Gem<>(FlensburgManager.getFreeGemId()), "java.lang.Long");
+  public SimpleResult<Long> doRun() {
+    return new SimpleResult<>(getId(), FlensburgManager.getFreeGemId(), "java.lang.Long");
   }
 }

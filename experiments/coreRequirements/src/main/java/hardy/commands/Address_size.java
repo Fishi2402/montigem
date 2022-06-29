@@ -4,8 +4,7 @@ package hardy.commands;
 
 import hardy.FlensburgManager;
 import umlp.command.Command;
-import umlp.command.GemResult;
-import umlp.rte.Gem;
+import umlp.command.SimpleResult;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -19,9 +18,9 @@ public class Address_size extends Command<Integer> {
   }
 
   @Override
-  public GemResult<Integer> doRun() {
+  public SimpleResult<Integer> doRun() {
     // TODO: Optimieren, Liste muss nicht ganz geladen werden
-    return new GemResult<>(getId(), new Gem<>(FlensburgManager.getAddressList().size()), "java.lang.Integer");
+    return new SimpleResult<>(getId(), FlensburgManager.getAddressList().size(), "java.lang.Integer");
   }
 
   // undo macht keinen Sinn
