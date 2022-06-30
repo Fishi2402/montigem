@@ -1,0 +1,46 @@
+package umlptest.decorator;
+
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import org.junit.jupiter.api.Test;
+import umlp.generator.decorator.AbstractDecorator;
+import umlp.generator.decorator.BuilderDecorator;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class BuilderDecoratorTest extends DecoratorTest {
+
+  @Override
+  AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
+    return new BuilderDecorator(glex);
+  }
+
+  @Test
+  public void check() {
+    ASTCDClass clazz = getClassByName("Foo" + BuilderDecorator.BUILDER_SUFFIX);
+    assertAll(
+            // check superclasses or superinterfaces
+            () -> hasSuperClass(clazz, "Foo"),
+
+            // check no of methods and attributes
+            () -> assertEquals(2, clazz.getCDAttributeList().size(), "number of attributes"),
+            () -> assertEquals(5, clazz.getCDMethodList().size(), "number of methods"),
+
+            // check attributes
+            () -> existsAttribute(clazz, "buildFinished"),
+            () -> existsAttribute(clazz, "isFooAttrPresent"),
+
+            // check methods
+            () -> existsMethod(clazz, "build"),
+            () -> existsMethod(clazz, "isBuildFinished"),
+            () -> existsMethod(clazz, "isBuildable")
+    );
+  }
+
+  @Test
+  public void testGeneratedCode() {
+    generateAndCheckCode(getClassByName("Foo" + BuilderDecorator.BUILDER_SUFFIX));
+  }
+
+}

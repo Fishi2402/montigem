@@ -18,9 +18,7 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: guava_version
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
-
-
-
+    testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version:javaparser_version
 
     implementation "org.apache.groovy:groovy:$groovy_version"
     implementation "de.se_rwth.commons:se-commons-groovy:$mc_version"

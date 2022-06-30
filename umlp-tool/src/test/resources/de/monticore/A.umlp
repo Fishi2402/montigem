@@ -1,6 +1,8 @@
 umlp A {
   class Foo {
-    int count;
+    int fooAttr;
+    // Optional<int> optFooAttr;
+    // List<int> ListFooAttr;
   }
   public class Bar;
   association Foo -> Bar [0..1];
