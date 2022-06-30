@@ -8,6 +8,7 @@ public class StatusResult extends CommandResult<Void> {
   protected boolean successful;
   protected StatusResult(long id, boolean successful) {
     super(id, "java.lang.Void");
+    this.successful = successful;
   }
 
   public static StatusResult ok(long id){

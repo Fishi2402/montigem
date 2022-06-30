@@ -59,4 +59,12 @@ public interface PersonObserver
       notifyBuild(person);
     }
   }
+
+  default void notifySetOwns(Person person, int idx, long carGemId){}
+
+  default void maybeNotifySetOwns(Person person, int idx, long carGemId, NotificationScope scope){
+    if(getScope().contains(scope)){
+      notifySetOwns(person, idx, carGemId);
+    }
+  }
 }

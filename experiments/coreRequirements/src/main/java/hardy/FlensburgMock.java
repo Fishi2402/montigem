@@ -286,8 +286,10 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   // TODO AHe: All of the cars methods are stubs. Implement once purpose is clear
+  // Da FlensburgMock alle Daten im Speicher verwaltet macht eine GemList hier wenig Sinn, da sonst an anderer Stelle
+  // eine weitere Verwaltung der Cars in einer Liste implementiert werden müsste.
   @Override
-  protected List<Car> _doCreateCars() {
+  protected List<Car> _doCreateOwns(Person p) {
     return new ArrayList<>();
   }
 

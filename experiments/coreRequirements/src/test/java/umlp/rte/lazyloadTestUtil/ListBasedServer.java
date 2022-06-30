@@ -1,7 +1,6 @@
 // (c) https://github.com/MontiCore/monticore
 package umlp.rte.lazyloadTestUtil;
 
-import hardy.FlensburgManager;
 import umlp.rte.*;
 
 import java.util.*;
@@ -52,7 +51,6 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
 
   public GemList<E> createLazyList() {
     GemList<E> gemList = new GemList<>(
-        FlensburgManager.getFreeGemId(),
         this::size,
         this::getIDs,
         this::getObjects,

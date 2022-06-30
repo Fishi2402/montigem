@@ -45,7 +45,6 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   protected Consumer<Set<Integer>> removeIdxsFunction;
 
   public GemList(
-      long listGemId,
       Supplier<Integer> loadSizeFunction,
       BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
       Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
@@ -53,7 +52,6 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
       BiConsumer<Integer, List<Long>> addIDsFunction,
       Consumer<Set<Integer>> removeIdxsFunction
   ) {
-    this.gemID = listGemId;
     this.loadSizeFunction = loadSizeFunction;
     this.loadIDsFunction = loadIDsFunction;
     this.loadObjectsFunction = loadObjectsFunction;
@@ -63,9 +61,16 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     //initial load
     //alternative: accept size + first few objects in constructor
 
-    int loadSize = Math.min(size(), INITIAL_LOAD_SIZE);
-
-    loadObjects(0, loadSize);
+    // TODO: Not possible in current initialization order, gemId is needed to exec loadSizeFunction
+    // new PersonBuilder()
+    //  -> initPerson()
+    //    -> createOwns()
+    //      -> new GemList()
+    //      -> (size() needs Person.gemId)
+    //    =>
+    //  => Person.gemId = gemId
+    //int loadSize = Math.min(size(), INITIAL_LOAD_SIZE);
+    //loadObjects(0, loadSize);
   }
 
   @Override
@@ -234,6 +239,7 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     return elem.getGemId();
   }
 
+  // TODO AHe: Why do we need this?
   @Override
   public long getGemId() {
     return gemID;

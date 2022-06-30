@@ -71,7 +71,7 @@ public abstract class PersonTOP extends Human {
   protected void initPerson() {
     this.nickname = "";
     this.mainResidence = null;
-    this.owns = FlensburgManager.createCars();
+    this.owns = FlensburgManager.createOwns((Person)this);
   }
   
   //+ initialization is externalized to be reusable (if needed)
@@ -79,7 +79,7 @@ public abstract class PersonTOP extends Human {
   protected void init(String nickname) {
     this.nickname = nickname;
     this.mainResidence = null;
-    this.owns = FlensburgManager.createCars();
+    this.owns = FlensburgManager.createOwns((Person)this);
   }
   
   protected void init(String nickname, List<Car> owns) {
@@ -209,6 +209,16 @@ public abstract class PersonTOP extends Human {
     
     return res;
   }
+
+  public Car removeOwns(int idx){
+    return removeOwns(idx, NotificationScope.ALL);
+  }
+
+  public Car removeOwns(int idx, NotificationScope scope){
+    Car c = owns.remove(idx);
+    personObservers.forEach(obs -> obs.maybeNotifyRemoveOwns((Person) this, c.getGemId(), scope));
+    return c;
+  }
   
   public boolean checkOwns() {
     boolean res = true;
@@ -283,6 +293,24 @@ public abstract class PersonTOP extends Human {
       addOwns(car);
     }
   }
+
+  public void addAllOwnss(int idx, Collection<Car> o){
+    addAllOwnss(idx, o, NotificationScope.ALL);
+  }
+
+  public void addAllOwnss(int idx, Collection<Car> o, NotificationScope scope){
+    if(idx < 0){
+      throw new IllegalStateException("idx must be 0 or higher");
+    }
+
+    if(idx > owns.size()){
+      throw new IllegalStateException("idx must be at most owns.size");
+    }
+
+    for(Car car : o){
+      addOwns(idx++, car, scope);
+    }
+  }
   
   public boolean containsOwns(Car o) {
     return this.owns.contains(o);
@@ -299,7 +327,23 @@ public abstract class PersonTOP extends Human {
   public Iterator<Car> iteratorOwnss() {
     return Collections.unmodifiableList(owns).listIterator();
   }
-  
+
+  public List<Car> subListOwns(int startIdxIncl, int endIdxExcl) {
+    return Collections.unmodifiableList(owns).subList(startIdxIncl, endIdxExcl);
+  }
+
+  public void setOwns(int idx, Car c, NotificationScope scope) {
+    if(idx < 0){
+      throw new IllegalStateException("idx must be 0 or higher");
+    }
+    if(idx > owns.size()){
+      throw new IllegalStateException("idx must be at most owns.size");
+    }
+
+    this.owns.set(idx, c);
+    personObservers.forEach(obs -> obs.maybeNotifySetOwns((Person) this, idx, c.getGemId(), scope));
+  }
+
   public boolean isEmptyOwnss() {
     return this.owns.isEmpty();
   }

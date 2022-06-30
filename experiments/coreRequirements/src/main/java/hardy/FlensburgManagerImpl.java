@@ -164,7 +164,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected List<Car> _doCreateCars() {
+    protected List<Car> _doCreateOwns(Person p) {
         return null;
     }
 

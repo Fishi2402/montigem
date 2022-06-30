@@ -364,15 +364,15 @@ public abstract class FlensburgManager {
   // TODO: do the users need those, if so, how should they look like?
 
   /**
-   * Returns a new {@link List} of class {@link Car}.
+   * Returns a new {@link List} of class {@link Car} for the association owns.
    *
    * @return {@link List} the class {@link Car}.
    */
-  public static List<Car> createCars() {
-    return getSingleton()._doCreateCars();
+  public static List<Car> createOwns(Person p) {
+    return getSingleton()._doCreateOwns(p);
   }
 
-  protected abstract List<Car> _doCreateCars();
+  protected abstract List<Car> _doCreateOwns(Person p);
 
   /**
    * Gives the {@link List} of {@link Car} with the given gemId.
