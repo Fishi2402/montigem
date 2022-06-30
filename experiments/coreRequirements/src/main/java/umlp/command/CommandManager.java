@@ -100,7 +100,7 @@ public class CommandManager {
     }
   }
 
-  protected static long freeCommandId;
+  protected long freeCommandId;
   public static long getFreeCommandId(){
     return getInstance()._getFreeCommandId();
   }

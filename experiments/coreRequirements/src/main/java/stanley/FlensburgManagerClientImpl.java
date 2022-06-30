@@ -12,7 +12,6 @@ import umlp.rte.GemList;
 import umlp.rte.LoadResult;
 import umlp.util.LogUtil;
 
-import java.lang.ref.WeakReference;
 import java.util.*;
 
 // Frontend implementation of the FlensburgManager
@@ -38,14 +37,12 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
 
   // Ermöglicht das Nachschlagen von Humans via der gemId
-  // WeakHashMap -> Entries werden entfernt, wenn der Key garbage collected wurde. Bei Long problematisch, da die
-  // JVM interne referenzen haben kann.
-  // Daher zusätzlich WeakReference<Human>, was dazu führt, das Humans garbage collected werden können, falls sie
-  // nur hier gespeichert sind.
-  protected Map<Long, WeakReference<Human>> knownHumans = Collections.synchronizedMap(new WeakHashMap<>());
-  protected Map<Long, WeakReference<Person>> knownPersons = Collections.synchronizedMap(new WeakHashMap<>());
-  protected Map<Long, WeakReference<Address>> knownAddresses = Collections.synchronizedMap(new WeakHashMap<>());
-  protected Map<Long, WeakReference<Car>> knownCars = Collections.synchronizedMap(new WeakHashMap<>());
+  // TODO: WeakReferences und WeakHashMap führte hier zu Flaky tests!
+  // TODO: Lokale instanzen wieder leeren, sonst läuft der Speicher irgendwann voll
+  protected Map<Long, Human> knownHumans = Collections.synchronizedMap(new HashMap<>());
+  protected Map<Long, Person> knownPersons = Collections.synchronizedMap(new HashMap<>());
+  protected Map<Long, Address> knownAddresses = Collections.synchronizedMap(new HashMap<>());
+  protected Map<Long, Car> knownCars = Collections.synchronizedMap(new HashMap<>());
 
   @Override
   protected HumanBuilder _doHuman() {
@@ -56,13 +53,10 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   // Fehlermeldung "Verbindungsfehler" oder "Existiert nicht" für den Nutzer
   @Override
   protected Optional<Human> _doHumanOpt(long gemId) {
-    WeakReference<Human> humanWeakReference = knownHumans.get(gemId);
-    if (humanWeakReference != null) {
-      Human h = humanWeakReference.get();
-      if (h != null) {
-        Log.trace("Returning known human " + h.getGemId(), LogUtil.getLoggerName());
-        return Optional.of(h);
-      }
+    Human h = knownHumans.get(gemId);
+    if (h != null) {
+      Log.trace("Returning known human " + h.getGemId(), LogUtil.getLoggerName());
+      return Optional.of(h);
     }
 
     SimpleResult<Human> resp = CommandManager.executeSingleCommand(new Human_get(gemId)).asSimpleResult();
@@ -72,7 +66,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
         human.addObserver(theHumanCommandObserver);
       }
       Log.trace("Adding known human " + gemId, LogUtil.getLoggerName());
-      knownHumans.put(human.getGemId(), new WeakReference<>(human));
+      knownHumans.put(human.getGemId(), human);
       return Optional.of(human);
     }
     else {
@@ -93,7 +87,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
       o.addObserver(theHumanCommandObserver);
     }
     Log.trace("Adding known human " + o.getGemId(), LogUtil.getLoggerName());
-    knownHumans.put(o.getGemId(), new WeakReference<>(o));
+    knownHumans.put(o.getGemId(), o);
     flensburgObservers.forEach(obs -> obs.notifyHumanAdded(o.getGemId()));
   }
 
@@ -183,13 +177,10 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected Optional<Person> _doPersonOpt(long gemId) {
-    WeakReference<Person> personWeakReference = knownPersons.get(gemId);
-    if (personWeakReference != null) {
-      Person h = personWeakReference.get();
-      if (h != null) {
-        Log.trace("Returning known person " + h.getGemId(), LogUtil.getLoggerName());
-        return Optional.of(h);
-      }
+    Person h = knownPersons.get(gemId);
+    if (h != null) {
+      Log.trace("Returning known person " + h.getGemId(), LogUtil.getLoggerName());
+      return Optional.of(h);
     }
 
     SimpleResult<Person> resp = CommandManager.executeSingleCommand(new Person_get(gemId)).asSimpleResult();
@@ -199,7 +190,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
         person.addObserver(thePersonCommandObserver);
       }
       Log.trace("Adding known person " + gemId, LogUtil.getLoggerName());
-      knownPersons.put(person.getGemId(), new WeakReference<>(person));
+      knownPersons.put(person.getGemId(), person);
       return Optional.of(person);
     }
     else {
@@ -220,7 +211,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
       o.addObserver(thePersonCommandObserver);
     }
     Log.trace("Adding known person " + o.getGemId(), LogUtil.getLoggerName());
-    knownPersons.put(o.getGemId(), new WeakReference<>(o));
+    knownPersons.put(o.getGemId(), o);
     flensburgObservers.forEach(obs -> obs.notifyPersonAdded(o.getGemId()));
   }
 
@@ -307,14 +298,11 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected Optional<Address> _doAddressOpt(long gemId) {
-    WeakReference<Address> addressWeakReference = knownAddresses.get(gemId);
-    if (addressWeakReference != null) {
-      Address h = addressWeakReference.get();
-      if (h != null) {
-        Log.trace("Returning known address " + h.getGemId(), LogUtil.getLoggerName());
-        return Optional.of(h);
-      }
-    }
+    Address h = knownAddresses.get(gemId);
+    if (h != null) {
+      Log.trace("Returning known address " + h.getGemId(), LogUtil.getLoggerName());
+      return Optional.of(h);
+  }
 
     SimpleResult<Address> res = CommandManager.executeSingleCommand(new Address_get(gemId)).asSimpleResult();
     if (res.isSuccessful()) {
@@ -323,7 +311,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
         address.addObserver(theAddressCommandObserver);
       }
       Log.trace("Adding known address " + gemId, LogUtil.getLoggerName());
-      knownAddresses.put(address.getGemId(), new WeakReference<>(address));
+      knownAddresses.put(address.getGemId(), address);
       return Optional.of(address);
     }
     else {
@@ -344,7 +332,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
       o.addObserver(theAddressCommandObserver);
     }
     Log.trace("Adding known address " + o.getGemId(), LogUtil.getLoggerName());
-    knownAddresses.put(o.getGemId(), new WeakReference<>(o));
+    knownAddresses.put(o.getGemId(), o);
     flensburgObservers.forEach(obs -> obs.notifyAddressAdded(o.getGemId()));
   }
 
@@ -431,13 +419,10 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected Optional<Car> _doCarOpt(long gemId) {
-    WeakReference<Car> carWeakReference = knownCars.get(gemId);
-    if (carWeakReference != null) {
-      Car h = carWeakReference.get();
-      if (h != null) {
-        Log.trace("Returning known car " + h.getGemId(), LogUtil.getLoggerName());
-        return Optional.of(h);
-      }
+    Car h = knownCars.get(gemId);
+    if (h != null) {
+      Log.trace("Returning known car " + h.getGemId(), LogUtil.getLoggerName());
+      return Optional.of(h);
     }
 
     SimpleResult<Car> resp = CommandManager.executeSingleCommand(new Car_get(gemId)).asSimpleResult();
@@ -447,7 +432,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
         car.addObserver(theCarCommandObserver);
       }
       Log.trace("Adding known car " + gemId, LogUtil.getLoggerName());
-      knownCars.put(car.getGemId(), new WeakReference<>(car));
+      knownCars.put(car.getGemId(), car);
       return Optional.of(car);
     }
     else {
@@ -468,7 +453,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
       o.addObserver(theCarCommandObserver);
     }
     Log.trace("Adding known car " + o.getGemId(), LogUtil.getLoggerName());
-    knownCars.put(o.getGemId(), new WeakReference<>(o));
+    knownCars.put(o.getGemId(), o);
     flensburgObservers.forEach(obs -> obs.notifyCarAdded(o.getGemId()));
   }
 
