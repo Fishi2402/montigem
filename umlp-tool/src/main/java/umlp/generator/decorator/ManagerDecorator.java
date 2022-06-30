@@ -2,10 +2,7 @@
 
 package umlp.generator.decorator;
 
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.StringTransformations;
@@ -45,6 +42,8 @@ public class ManagerDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> addClassElements(c, managerClass));
 
+    addImports(managerClass);
+
     return managerClass;
   }
 
@@ -58,15 +57,17 @@ public class ManagerDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.manager.GetSingleton", name);
     getCD4C().addMethod(managerClass, "umlp.manager.SetInstance", name);
 
-    getCD4C().addMethod(managerClass, "umlp.manager.DoGetFreeGemId");
     getCD4C().addMethod(managerClass, "umlp.manager.GetFreeGemId");
+    getCD4C().addMethod(managerClass, "umlp.manager.DoGetFreeGemId");
   }
 
   protected void addClassElements(ASTCDClass domainClass, ASTCDClass managerClass) {
     String name = domainClass.getName();
 
+    getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name);
+    getCD4C().addMethod(managerClass, "umlp.manager.DoCreateGem", name);
     getCD4C().addMethod(managerClass, "umlp.manager.Builder", name);
-    getCD4C().addMethod(managerClass, "umlp.manager.Do", name);
+    getCD4C().addMethod(managerClass, "umlp.manager.DoBuilder", name);
     getCD4C().addMethod(managerClass, "umlp.manager.Opt", name);
     getCD4C().addMethod(managerClass, "umlp.manager.DoOpt", name);
     getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name);
@@ -78,5 +79,12 @@ public class ManagerDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.manager.Delete", name);
     getCD4C().addMethod(managerClass, "umlp.manager.DoDelete", name);
   }
+
+  protected void addImports(ASTCDType clazz) {
+    getCD4C().addImport(clazz, "umlp.rte.Gem");
+    getCD4C().addImport(clazz, "umlp.rte.LoadResult");
+    getCD4C().addImport(clazz, "umlp.rte.LoadingState");
+  }
+
 
 }

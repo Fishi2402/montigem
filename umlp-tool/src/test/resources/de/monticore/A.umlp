@@ -6,4 +6,8 @@ umlp A {
   }
   public class Bar;
   association Foo -> Bar [0..1];
+
+  public derived class DFoo {
+    String dFooAttr;
+  }
 }

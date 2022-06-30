@@ -55,7 +55,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
   protected void addClassElements(ASTCDClass domainClass, ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
 
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.Do", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilder", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName);
