@@ -15,6 +15,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp.generator.decorator.*;
+import umlp.generator.decorator.commands.CreateDecorator;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -59,6 +60,8 @@ public class UMLPGenerator {
   protected DummyProviderDecorator dummyProviderDecorator;
 
   protected TopDecorator topDecorator;
+  
+  protected CreateDecorator createDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
     astPrinter = new CD4CodeFullPrettyPrinter();
@@ -71,7 +74,9 @@ public class UMLPGenerator {
     cD4CodeDirectCompositionTrafo = new CD4CodeDirectCompositionTrafo();
     cDAssociationCreateFieldsFromNavigableRoles = new CDAssociationCreateFieldsFromNavigableRoles();
     cDAssociationCreateFieldsFromNavigableRoles.setTraverser(CD4CodeMill.traverser());
-
+    
+    createDecorator = new CreateDecorator(genSetup.getGlex());
+    
     domainClassDecorator = new DomainClassDecorator(genSetup.getGlex());
     builderDecorator = new BuilderDecorator(genSetup.getGlex());
     errorCollectorDecorator = new ErrorCollectorDecorator(genSetup.getGlex());
@@ -150,6 +155,9 @@ public class UMLPGenerator {
     // Generate ErrorObserver interfaces
     errorObserverDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("ErrorObserverDecorator", cdAST);
+    
+    createDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("CreateDecorator", cdAST);
 
     // Top-Decorator
     topDecorator.decoratePackage(decoratedAST);

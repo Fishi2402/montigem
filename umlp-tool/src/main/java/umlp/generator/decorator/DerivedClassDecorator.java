@@ -12,8 +12,6 @@ import umlp.UMLPMill;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
-//import static de.monticore.cd.facade.CDModifier.PUBLIC;
-
 public class DerivedClassDecorator extends AbstractDecorator {
   
   public DerivedClassDecorator(GlobalExtensionManagement glex) {
