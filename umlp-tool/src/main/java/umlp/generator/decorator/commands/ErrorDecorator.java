@@ -43,8 +43,8 @@ public class ErrorDecorator extends AbstractDecorator {
       .setName(classname+NAME+attributename)
       .build();
     
-    getCD4C().addAttribute(ast, "private long gemId");
-    getCD4C().addConstructor(ast, "umlp.commands.error.Constructor", classname, attributename);
+    getCD4C().addAttribute(ast, "private final long gemId");
+    getCD4C().addConstructor(ast, "umlp.commands.error.Constructor",classname, attributename, NAME, "");
     getCD4C().addMethod(ast, "umlp.commands.error.DoRun", classname, attributename);
     getCD4C().addMethod(ast, "umlp.commands.error.GetEffectedGemIds");
     

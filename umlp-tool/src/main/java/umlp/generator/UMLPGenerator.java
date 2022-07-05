@@ -18,6 +18,7 @@ import umlp.generator.decorator.*;
 import umlp.generator.decorator.commands.CreateDecorator;
 import umlp.generator.decorator.commands.DeleteDecorator;
 import umlp.generator.decorator.commands.ErrorDecorator;
+import umlp.generator.decorator.commands.GetDecorator;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -68,6 +69,8 @@ public class UMLPGenerator {
   protected ErrorDecorator errorDecorator;
   
   protected DeleteDecorator deleteDecorator;
+  
+  protected GetDecorator getDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
     astPrinter = new CD4CodeFullPrettyPrinter();
@@ -84,6 +87,7 @@ public class UMLPGenerator {
     createDecorator = new CreateDecorator(genSetup.getGlex());
     errorDecorator = new ErrorDecorator(genSetup.getGlex());
     deleteDecorator = new DeleteDecorator(genSetup.getGlex());
+    getDecorator = new GetDecorator(genSetup.getGlex());
     
     domainClassDecorator = new DomainClassDecorator(genSetup.getGlex());
     builderDecorator = new BuilderDecorator(genSetup.getGlex());
@@ -172,6 +176,9 @@ public class UMLPGenerator {
   
     deleteDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("DeleteDecorator", cdAST);
+  
+    getDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("GetDecorator", cdAST);
 
     // Top-Decorator
     topDecorator.decoratePackage(decoratedAST);
