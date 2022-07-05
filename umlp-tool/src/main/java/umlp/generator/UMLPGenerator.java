@@ -16,6 +16,7 @@ import de.se_rwth.commons.logging.Log;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp.generator.decorator.*;
 import umlp.generator.decorator.commands.CreateDecorator;
+import umlp.generator.decorator.commands.ErrorDecorator;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -62,6 +63,8 @@ public class UMLPGenerator {
   protected TopDecorator topDecorator;
   
   protected CreateDecorator createDecorator;
+  
+  protected ErrorDecorator errorDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
     astPrinter = new CD4CodeFullPrettyPrinter();
@@ -76,6 +79,7 @@ public class UMLPGenerator {
     cDAssociationCreateFieldsFromNavigableRoles.setTraverser(CD4CodeMill.traverser());
     
     createDecorator = new CreateDecorator(genSetup.getGlex());
+    errorDecorator = new ErrorDecorator(genSetup.getGlex());
     
     domainClassDecorator = new DomainClassDecorator(genSetup.getGlex());
     builderDecorator = new BuilderDecorator(genSetup.getGlex());
@@ -158,6 +162,9 @@ public class UMLPGenerator {
     
     createDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("CreateDecorator", cdAST);
+  
+    errorDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("ErrorDecorator", cdAST);
 
     // Top-Decorator
     topDecorator.decoratePackage(decoratedAST);

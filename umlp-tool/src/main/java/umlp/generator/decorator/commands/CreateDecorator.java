@@ -11,7 +11,6 @@ import umlp.generator.decorator.AbstractDecorator;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
-
 public class CreateDecorator extends AbstractDecorator {
 
   public static final String SUFFIX = "_create";

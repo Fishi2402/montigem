@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("classname", "packageName")}
-${cd4c.constructor("public ${classname}()")}
+${cd4c.constructor("public ${classname}_create()")}
 
 super("${packageName}.commands.${classname}_create");
 
