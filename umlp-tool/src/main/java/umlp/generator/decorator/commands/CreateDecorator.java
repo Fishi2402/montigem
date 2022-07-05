@@ -9,22 +9,22 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
 import umlp.generator.decorator.AbstractDecorator;
 
-import java.util.Locale;
-
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 
 public class CreateDecorator extends AbstractDecorator {
 
   public static final String SUFFIX = "_create";
-  
+
+  public static final String COMMAND_Package = DEFAULT_PACKAGE + ".commands";
+
   public CreateDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
   
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
+    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_Package);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
       .forEach(c -> astcdPackage.addCDElement(createClass(c)));
   }
