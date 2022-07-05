@@ -42,10 +42,10 @@ public class CreateDecorator extends AbstractDecorator {
     getCD4C().addAttribute(ast, "protected final "+firstLetter+attributeName+" "
       +firstLetter.toLowerCase()+attributeName);
    
-    getCD4C().addConstructor(ast, "umlp.commands.create.Constructor",classname, DEFAULT_PACKAGE);
+    getCD4C().addConstructor(ast, "umlp.commands.Constructor",classname, DEFAULT_PACKAGE, SUFFIX);
     
     getCD4C().addMethod(ast, "umlp.commands.create.DoRun", classname);
-    getCD4C().addMethod(ast, "umlp.commands.create.GetEffectedGemIds", classname);
+    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", classname);
     
     return ast;
   }

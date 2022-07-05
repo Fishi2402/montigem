@@ -16,6 +16,7 @@ import de.se_rwth.commons.logging.Log;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp.generator.decorator.*;
 import umlp.generator.decorator.commands.CreateDecorator;
+import umlp.generator.decorator.commands.DeleteDecorator;
 import umlp.generator.decorator.commands.ErrorDecorator;
 
 /**
@@ -65,6 +66,8 @@ public class UMLPGenerator {
   protected CreateDecorator createDecorator;
   
   protected ErrorDecorator errorDecorator;
+  
+  protected DeleteDecorator deleteDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
     astPrinter = new CD4CodeFullPrettyPrinter();
@@ -80,6 +83,7 @@ public class UMLPGenerator {
     
     createDecorator = new CreateDecorator(genSetup.getGlex());
     errorDecorator = new ErrorDecorator(genSetup.getGlex());
+    deleteDecorator = new DeleteDecorator(genSetup.getGlex());
     
     domainClassDecorator = new DomainClassDecorator(genSetup.getGlex());
     builderDecorator = new BuilderDecorator(genSetup.getGlex());
@@ -165,6 +169,9 @@ public class UMLPGenerator {
   
     errorDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("ErrorDecorator", cdAST);
+  
+    deleteDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("DeleteDecorator", cdAST);
 
     // Top-Decorator
     topDecorator.decoratePackage(decoratedAST);
