@@ -40,10 +40,10 @@ beinhaltet. u.a. den Status zu diesen Aktivitäten
 
 * So wird die Main-Klasse gestartet
 ```
-      gradle :experiments:coreRequirements:runApp
+      gradle :experiments:coreRequirements:runServer
       
       // Mit Argumenten
-      gradle :experiments:coreRequirements:runApp --args="Hello World"
+      gradle :experiments:coreRequirements:runServer --args="Hello World"
 ```
 
 * `to``do` und `TO``DO` im Code sind schnellstmöglich zu adressieren, man beachte 

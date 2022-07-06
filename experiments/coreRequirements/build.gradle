@@ -1,4 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id 'application'
+  id 'org.springframework.boot' version "$spring_version"
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+application {
+  mainClass = 'hardy.UMLPApplication'
+}
+bootBuildImage {
+  imageName = "corerequirements"
+}
+
+
 description = "Experiments: Core Requirements"
 
 sourceSets {
@@ -14,24 +29,20 @@ dependencies {
     implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
     implementation group: 'org.hibernate', name: 'hibernate-vibur', version: hibernate_version
     implementation group: 'com.h2database', name: 'h2', version: h2_database
-    implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version) {
+
+    compileOnly("org.springframework.boot:spring-boot-devtools")
+    implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-web') {
         exclude module: 'spring-boot-starter-logging'
         exclude module: 'logback-classic'
     }
-    testImplementation (group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version) {
+    testImplementation (group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
         exclude module: 'Spring-boot-starter-logging'
         exclude module: 'logback-classic'
     }
 }
 
-task runApp(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'hardy.Main'
-}
-
-task runServer(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'hardy.UMLPApplication'
+task runServer {
+    dependsOn(bootRun)
 }
 
 task generateFlensburg(type: UMLPTask) {

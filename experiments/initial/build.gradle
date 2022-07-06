@@ -1,5 +1,11 @@
 import org.apache.commons.io.FileUtils
 
+plugins {
+  id 'application'
+  id 'org.springframework.boot' version "$spring_version"
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
 /* (c) https://github.com/MontiCore/monticore */
 description = "Experiments: Initial Experiment"
 
@@ -9,11 +15,13 @@ sourceSets {
 }
 
 dependencies {
-  api project(':experiments:coreRequirements')
+  implementation project(':experiments:coreRequirements')
   implementation group: 'org.hibernate', name: 'hibernate-vibur', version: hibernate_version
   implementation group: 'org.hibernate', name: 'hibernate-core', version: hibernate_version
+
 }
 
+bootJar.onlyIf { false }
 compileJava.onlyIf { project.hasProperty('testCompile') }
   // UMLP-Tool currently doesn't generate valid java code, so the compilation is not enabled by default
   // You can stat gradle with "gradle assemble -PtestCompile" to test the compilation of the generated code.

@@ -19,7 +19,8 @@ ext {   // TODO: Do this in UMLPPlugin!    (but how?)
 allprojects {
     group = 'umlp'
     repositories {
-        maven {
+      mavenCentral()
+      maven {
             credentials.username mavenUser
             credentials.password mavenPassword
             url repo
@@ -27,7 +28,6 @@ allprojects {
         if(("true").equals(getProperty('useLocalRepo'))) {
             mavenLocal()
         }
-        mavenCentral()
     }
 
     tasks.withType(JavaCompile) {
