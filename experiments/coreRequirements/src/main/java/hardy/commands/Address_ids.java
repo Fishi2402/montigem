@@ -11,6 +11,7 @@ import umlp.command.SimpleResult;
 // Wird von der GemList zurückgegeben von FlensburgManagerClientImpl#getHumanList
 // gebraucht, um die Humans später nachzuladen
 public class Address_ids extends Command<LongList> {
+  
   public Address_ids() {
     super("hardy.commands.Address_ids");
   }

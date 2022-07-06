@@ -33,13 +33,13 @@ public class GetDecorator extends AbstractDecorator {
     
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
-      .setCDExtendUsage(CDExtendUsageFacade.getInstance().createCDExtendUsage("Request<"+classname+">"))
+      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Request<"+classname+">"))
       .setName(classname+SUFFIX)
       .build();
     
     getCD4C().addAttribute(ast, "private final long gemId");
     getCD4C().addConstructor(ast, "umlp.commands.error.Constructor", classname,"", SUFFIX,COMMAND_Package);
-    getCD4C().addMethod(ast, "umlp.commands.get.DoRun", classname, DEFAULT_PACKAGE, definitionName);
+    getCD4C().addMethod(ast, "umlp.commands.get.DoRun", classname, COMMAND_Package, definitionName);
     getCD4C().addMethod(ast, "umlp.commands.get.GetEffectedGemIds");
     getCD4C().addMethod(ast, "umlp.commands.get.GetNewlySubscribedGemIds");
     getCD4C().addImport(ast, "umlp.request.Request");

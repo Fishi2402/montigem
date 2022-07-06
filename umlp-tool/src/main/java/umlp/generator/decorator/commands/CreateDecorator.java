@@ -33,7 +33,7 @@ public class CreateDecorator extends AbstractDecorator {
     
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
-      .setCDExtendUsage(CDExtendUsageFacade.getInstance().createCDExtendUsage("Request<Void>"))
+      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Request<Void>"))
       .setName(classname+SUFFIX)
       .build();
     

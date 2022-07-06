@@ -15,10 +15,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp.generator.decorator.*;
-import umlp.generator.decorator.commands.CreateDecorator;
-import umlp.generator.decorator.commands.DeleteDecorator;
-import umlp.generator.decorator.commands.ErrorDecorator;
-import umlp.generator.decorator.commands.GetDecorator;
+import umlp.generator.decorator.commands.*;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -71,6 +68,8 @@ public class UMLPGenerator {
   protected DeleteDecorator deleteDecorator;
   
   protected GetDecorator getDecorator;
+  
+  protected IdDecorator idDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
     astPrinter = new CD4CodeFullPrettyPrinter();
@@ -88,6 +87,7 @@ public class UMLPGenerator {
     errorDecorator = new ErrorDecorator(genSetup.getGlex());
     deleteDecorator = new DeleteDecorator(genSetup.getGlex());
     getDecorator = new GetDecorator(genSetup.getGlex());
+    idDecorator = new IdDecorator(genSetup.getGlex());
     
     domainClassDecorator = new DomainClassDecorator(genSetup.getGlex());
     builderDecorator = new BuilderDecorator(genSetup.getGlex());
@@ -179,6 +179,9 @@ public class UMLPGenerator {
   
     getDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("GetDecorator", cdAST);
+  
+    idDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("IdDecorator", cdAST);
 
     // Top-Decorator
     topDecorator.decoratePackage(decoratedAST);

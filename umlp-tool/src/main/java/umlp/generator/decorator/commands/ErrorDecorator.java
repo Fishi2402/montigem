@@ -39,7 +39,7 @@ public class ErrorDecorator extends AbstractDecorator {
     
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
-      .setCDExtendUsage(CDExtendUsageFacade.getInstance().createCDExtendUsage("Command<Void>"))
+      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
       .setName(classname+NAME+attributename)
       .build();
     
