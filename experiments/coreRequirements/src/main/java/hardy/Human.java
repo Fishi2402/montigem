@@ -89,6 +89,8 @@ public class Human implements GemIdentifiable {
 
     public void setAge(Integer o, NotificationScope scope) {
         this.age = o;
+        checkAge();
+        // TODO should we notify if the value is invalid?
         humanObservers.forEach(obs -> obs.maybeNotifySetAge(this, o, scope));
     }
 
