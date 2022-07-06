@@ -6,6 +6,7 @@ import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpressionBuilder;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
@@ -13,6 +14,11 @@ import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static de.monticore.types.check.SymTypePrimitive.box;
 
 public class GenService {
 
@@ -56,6 +62,16 @@ public class GenService {
     }
     Log.error("");
     return null;
+  }
+  public static ASTMCType createType(ASTCDAttribute attr) {
+    if (attr.getSymbol().getType().isGenericType()) {
+      SymTypeOfGenerics genericType = (SymTypeOfGenerics) attr.getSymbol().getType();
+      List<String> arguments = genericType.getArgumentList().stream().
+              map(a -> box(a.print())).collect(Collectors.toList());
+      return MCTypeFacade.getInstance().createBasicGenericTypeOf(genericType.getBaseName(), arguments.toArray(new String[0]));
+    } else {
+      return MCTypeFacade.getInstance().createQualifiedType(box(attr.getSymbol().getType().print()));
+    }
   }
 
   public static boolean isVisible(ASTCDAttribute attr) {

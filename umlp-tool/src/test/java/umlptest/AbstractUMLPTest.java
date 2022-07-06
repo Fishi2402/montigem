@@ -3,6 +3,7 @@
 package umlptest;
 
 import de.monticore.cd._parser.CDAfterParseHelper;
+import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
@@ -37,6 +38,7 @@ public abstract class AbstractUMLPTest {
     Log.enableFailQuick(false);
     UMLPMill.reset();
     UMLPMill.init();
+    BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
   }
 
   public ASTUMLPCompilationUnit parse(String model) {

@@ -57,19 +57,6 @@ public class UMLPDeSerTest extends AbstractUMLPTest {
   @Test
   public void storeLoadD() {
     String symFile = "target/symboltests/D.umlpsym";
-    IUMLPScope scope = UMLPMill.scope();
-    TypeVarSymbol t = CD4CodeMill.typeVarSymbolBuilder()
-        .setName("T")
-        .setSpannedScope(UMLPMill.scope())
-        .setEnclosingScope(scope)
-        .build();
-    scope.add(t);
-    OOTypeSymbol list = UMLPMill.oOTypeSymbolBuilder()
-        .setSpannedScope(UMLPMill.scope())
-        .setName("List")
-        .setEnclosingScope(UMLPMill.globalScope())
-        .build();
-    UMLPMill.globalScope().add(list);
 
     UMLPSymbols2Json s2j = new UMLPSymbols2Json();
     IUMLPArtifactScope expected = processModel("de/monticore/D.umlp");

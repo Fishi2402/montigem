@@ -1,6 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 umlp A {
-  class AFoo;
+  class AFoo {
+      int fooAttr;
+      List<int> listFooAttr;
+      Optional<Integer> optFooAttr;
+  }
   public class ABar;
   association AFoo -> ABar;
 }
