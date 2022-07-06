@@ -11,7 +11,7 @@ import java.util.List;
 
 // Siehe AddressErrorCollector
 public class HumanErrorCollector {
-   protected static HumanErrorCollector instance;
+  protected static HumanErrorCollector instance;
   protected List<HumanErrorObserver> observers = new ArrayList<>();
 
   public static void init(){

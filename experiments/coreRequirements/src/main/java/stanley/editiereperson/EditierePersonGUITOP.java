@@ -29,17 +29,23 @@ Z5  :Button(text = "Discard", leftClick = nichts-tun,aber andere Seite anzeigen)
 */
 
 import hardy.Person;
+import hardy.PersonErrorCollector;
+import hardy.PersonErrorObserver;
 import hardy.PersonObserver;
 import stanley.editierepersoncars.EditierePersonCarsGUI;
 
 /********************************************************/
 
-public class EditierePersonGUITOP {
+public class EditierePersonGUITOP implements PersonErrorObserver {
 
   // there is internal state: 
   // Part 1: The data value(s): here only Person
   protected Person p;
-  
+
+  // errors are shown for each of the input fields
+  protected String textInputError = "";
+  protected String numberInputError = "";
+
   // Part 2: The subcomponents
   // gibt es hier nicht unebdingt, die einfachen eingebundenen Elemente
   // sind am besten direkt zu expandieren (das kann evtl. bei komplexeren GUIs
@@ -53,6 +59,8 @@ public class EditierePersonGUITOP {
    */
   public EditierePersonGUITOP(Person p) {
     this.p = p;
+    // the page observes errors in person object to display to user
+    PersonErrorCollector.addErrorObserver(this);
     // subcomponents, wie TextFeld werden in der Simulation nicht extra besetzt
     // weil der Wert direkt in Person gespeichert bleibt.
   }
@@ -61,8 +69,18 @@ public class EditierePersonGUITOP {
   // Values in the compartments are simulated via getter's
   
   public String getTextInput() { return p.getNickname(); }
+  // text input will show errors when any are reported
+  public String getTextInputError() { return textInputError; }
+  // observe errors in person object
+  public void notifyNicknameInvalid(Person person, String msg) {
+    textInputError = msg;
+  }
 
   public Integer getNumberInput() { return p.getAge(); }
+  public String getNumberInputError() { return numberInputError; }
+  public void notifyAgeInvalid(Person person, String msg) {
+    numberInputError = msg;
+  }
 
   // das ist alles was auf der Seite gezeigt wird und variabel ist ...
 
@@ -77,7 +95,7 @@ public class EditierePersonGUITOP {
   public void setTextInput(String nickname) {
     p.setNickname(nickname);
   }
-  
+
   // Bemerkung: ein Validator, zB (age >= 0) müsste hier vorgeschaltet werden
   // und statt einer Änderung dann eine Fehler-Anzeige in der GUi induzieren.
   // Zusätzlich: Wenn der Validator hier erfolgreich ist, kann die 
