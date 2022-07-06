@@ -25,10 +25,10 @@ public class CreateDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_Package);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-      .forEach(c -> astcdPackage.addCDElement(createClass(c)));
+      .forEach(c -> astcdPackage.addCDElement(createClass(c, origCD.getCDDefinition().getName())));
   }
   
-  protected ASTCDClass createClass(ASTCDClass domainClass) {
+  protected ASTCDClass createClass(ASTCDClass domainClass, String definitionName) {
     String classname = domainClass.getName();
     
     ASTCDClass ast = UMLPMill.cDClassBuilder()
@@ -43,9 +43,12 @@ public class CreateDecorator extends AbstractDecorator {
       +firstLetter.toLowerCase()+attributeName);
    
     getCD4C().addConstructor(ast, "umlp.commands.Constructor",classname, COMMAND_Package, SUFFIX);
-    
-    getCD4C().addMethod(ast, "umlp.commands.create.DoRun", classname);
+    getCD4C().addMethod(ast, "umlp.commands.create.DoRun", classname, definitionName);
     getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", classname);
+    getCD4C().addImport(ast, "umlp.request.Request");
+    getCD4C().addImport(ast, "umlp."+classname);
+    getCD4C().addImport(ast, "umlp.command.StatusResult");
+    
     
     return ast;
   }

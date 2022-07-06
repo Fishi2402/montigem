@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("classname")}
+${tc.signature("classname","definition")}
 ${cd4c.method("public StatusResult doRun()")}
 
-FlensburgManager.delete${classname}(${classname?uncap_first});
+${definition}.delete${classname}(${classname?uncap_first});
 return StatusResult.ok(getId());
