@@ -8,11 +8,10 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import umlp.UMLPMill;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.decorator.GenService.createType;
 
 public class ObserverDecorator extends AbstractDecorator {
   
@@ -39,8 +38,8 @@ public class ObserverDecorator extends AbstractDecorator {
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
       .filter(a -> !a.getModifier().isDerived())
       .forEach(a -> {
-        getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, a.getMCType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-        getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, a.getMCType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+        getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, getCDPrinter().prettyprint(createType(a)));
+        getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, getCDPrinter().prettyprint(createType(a)));
       });
   
     getCD4C().addMethod(ast, "umlp.observer.GetScope");

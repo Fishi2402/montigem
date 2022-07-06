@@ -24,16 +24,14 @@ public class UMLPToolTest extends AbstractUMLPTest {
 
   @Test
   public void testRunMethod4D() {
-    UMLPTool tool = new UMLPTool();
-    tool.run(new String[]{"-i", "src/test/resources/de/monticore/D.umlp"});
+    UMLPTool.main(new String[]{"-i", "src/test/resources/de/monticore/D.umlp"});
     assertNoErrors();
   }
 
   @Test
   @Disabled
   public void testRunMethod4DefaultAssocCardinalities() {
-    UMLPTool tool = new UMLPTool();
-    tool.run(new String[]{"-i", "src/test/resources/de/monticore/DefaultAssocCardinalities.umlp"});
+    UMLPTool.main(new String[]{"-i", "src/test/resources/de/monticore/DefaultAssocCardinalities.umlp"});
     assertNoErrors();
   }
 

@@ -10,8 +10,6 @@ import de.monticore.cd4codebasis._symboltable.CD4CodeBasisSymbolTableCompleter;
 import de.monticore.cdassociation._symboltable.CDAssociationSymbolTableCompleter;
 import de.monticore.cdbasis._symboltable.CDBasisSymbolTableCompleter;
 import de.monticore.cdinterfaceandenum._symboltable.CDInterfaceAndEnumSymbolTableCompleter;
-import de.monticore.class2mc.Class2MCResolver;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
@@ -30,14 +28,6 @@ public class UMLPSymbolTableCompleter {
     this.symbolTableHelper = new CDSymbolTableHelper(new FullDeriveFromCD4Code(), new FullSynthesizeFromCD4Code())
         .setPackageDeclaration(getPackage(ast));
     setupTraverser();
-
-    // add built-in primitive types
-    if (BasicSymbolsMill.globalScope().getLocalTypeSymbols().isEmpty()) {
-      BasicSymbolsMill.initializePrimitives();
-    }
-
-    // add Java types
-    UMLPMill.globalScope().addAdaptedTypeSymbolResolver(new Class2MCResolver());
   }
 
   protected void setupTraverser() {

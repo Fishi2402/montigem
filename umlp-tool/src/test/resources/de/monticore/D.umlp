@@ -2,13 +2,13 @@ umlp D {
   class Foo {
     -> Bar;
     int i;
-    String s;
+    java.util.List s;
     double d;
     List<boolean> t;
-//   V v; // TODO: Fix Enums in cd4c
+    V v;
   }
 
   public class Bar;
 
-  //enum V { X,Y,Z; } // TODO: Fix Enums in cd4c
+  enum V { X,Y,Z; }
 }

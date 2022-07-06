@@ -2,6 +2,7 @@
 package umlp;
 
 import de.monticore.cd._parser.CDAfterParseHelper;
+import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
@@ -11,15 +12,12 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.io.paths.MCPath;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
-import umlp._symboltable.IUMLPScope;
 import umlp._symboltable.UMLPSymbolTableCompleter;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
@@ -44,6 +42,11 @@ public class UMLPTool extends UMLPToolTOP {
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
   protected static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   protected static final String DEFAULT_CONFIGTEMPLATE = "cd2java.CD2Java";
+
+  public UMLPTool() {
+    UMLPMill.init();
+    BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
+  }
 
 //  protected CD4CodeAfterParseTrafo apTrafo;
 
@@ -120,7 +123,6 @@ public class UMLPTool extends UMLPToolTOP {
       // parse, create symbol table, check all cocos
       ASTUMLPCompilationUnit ast = parse(inputFile.getPath());
       Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
-      createListSymbol();
       runAfterParseTrafo(ast);
       IUMLPArtifactScope symbolTable = createSymbolTable(ast);
       runDefaultCoCos(ast);
@@ -221,24 +223,8 @@ public class UMLPTool extends UMLPToolTOP {
 
   public static void main(String[] args) {
     Log.ensureInitalization(); // by default, don't use SLF4J log
-    UMLPMill.init();
     UMLPTool tool = new UMLPTool();
     tool.run(args);
   }
 
-  protected void createListSymbol() {
-    IUMLPScope scope = UMLPMill.scope();
-    TypeVarSymbol t = CD4CodeMill.typeVarSymbolBuilder()
-        .setName("T")
-        .setSpannedScope(UMLPMill.scope())
-        .setEnclosingScope(scope)
-        .build();
-    scope.add(t);
-    OOTypeSymbol list = UMLPMill.oOTypeSymbolBuilder()
-        .setSpannedScope(UMLPMill.scope())
-        .setName("List")
-        .setEnclosingScope(UMLPMill.globalScope())
-        .build();
-    UMLPMill.globalScope().add(list);
-  }
 }

@@ -17,8 +17,7 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.check.TypeCheck;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.types.check.SymTypePrimitive.box;
+import static umlp.generator.decorator.GenService.createType;
 
 public class DomainClassDecorator extends AbstractDecorator {
 
@@ -123,9 +123,8 @@ public class DomainClassDecorator extends AbstractDecorator {
             .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
     CD4CodeFullPrettyPrinter pp = new CD4CodeFullPrettyPrinter();
     for (ASTCDAttribute visibleAttribute : visibleAttributes) {
-      ASTMCQualifiedType attrType = getMCTypeFacade().createQualifiedType(box(pp.prettyprint(visibleAttribute.getMCType())));
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-              attrType, visibleAttribute.getName());
+              createType(visibleAttribute), visibleAttribute.getName());
       glex.replaceTemplate("cd2java.Annotations", attribute,
               new TemplateHookPoint("umlp.domain.AttributeAnnotations", attribute.getName()));
       attributesList.add(attribute);

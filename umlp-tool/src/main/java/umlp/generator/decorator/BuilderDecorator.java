@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.decorator.GenService.createInitialValue;
+import static umlp.generator.decorator.GenService.createType;
 
 public class BuilderDecorator extends AbstractDecorator {
 
@@ -94,7 +95,7 @@ public class BuilderDecorator extends AbstractDecorator {
                                           List<ASTCDAttribute> attrList) {
     for (ASTCDAttribute attribute : attrList) {
       getCD4C().addMethod(builderClass, "umlp.builder.Attr",
-              attribute.getName(), getCDPrinter().prettyprint(attribute.getMCType()), domainClass.getName() + BUILDER_SUFFIX);
+              attribute.getName(), getCDPrinter().prettyprint(createType(attribute)), domainClass.getName() + BUILDER_SUFFIX);
       getCD4C().addMethod(builderClass, "umlp.builder.Check",
               attribute.getName(), domainClass.getName());
     }
