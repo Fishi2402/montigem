@@ -12,7 +12,9 @@ public class GreetingService {
 
   @GetMapping("/greeting/{msg}")
   public ResponseEntity<String> runCommand(@PathVariable String msg) {
-    String res = String.format("Greeting REST hat funktioniert! Der gesendete Text war: \"%s\"", msg);
+    String res = String.format("Greeting REST hat funktioniert! \n" +
+        "Der gesendete Text war: \"%s\".\n" +
+        "Einen schönen Tag noch!", msg);
     Log.info(res, "REST");
     return ResponseEntity.ok(res);
   }
