@@ -1,27 +1,22 @@
 package umlp.rte;
 
-import hardy.Address;
 import hardy.FlensburgManager;
 import hardy.FlensburgManagerImpl;
-import hardy.Human;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
 public class DatabaseAccessManager {
 
-    public static void main(String[] args) {
+    public static void init(String[] args) {
         FlensburgManagerImpl.init();
 
         FlensburgManager.humanBuilder().age(16).build();
