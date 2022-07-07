@@ -46,10 +46,12 @@ deploy:
   dependencies:
     - build
   script:
-    - "gradle deployUMLP $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
+    - "gradle :experiments:coreRequirements:jib $GRADLE_OPTS $ARGS3 \ 
+      -Djib.to.image=$CI_REGISTRY_IMAGE/corerequirements:latest \
+      -Djib.to.auth.username=$CI_REGISTRY_USER  \
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
   only:
-    - master
-    - develop
+    - dev
 
 checkMDLinks:
   stage: check
