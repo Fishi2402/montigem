@@ -24,9 +24,12 @@ public class RestServiceTest {
     String msg = "Hi,_schoen,_dass_die_Rest_Verbindung_steht";
     String uri = String.format("http://localhost:%s/umlp/api/greeting/%s", port, msg);
     String result = restTemplate.getForObject(uri, String.class);
-    Assertions.assertEquals(
-        String.format("Greeting REST hat funktioniert! Der gesendete Text war: \"%s\"", msg),
-        result);
+    System.out.println(result);
+    Assertions.assertTrue(
+        result.startsWith(
+            String.format("Greeting REST hat funktioniert! \nDer gesendete Text war: \"%s\"", msg)
+        )
+    );
   }
 
   @Test
