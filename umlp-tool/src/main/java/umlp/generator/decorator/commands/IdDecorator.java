@@ -38,7 +38,8 @@ public class IdDecorator extends AbstractDecorator {
     
     getCD4C().addConstructor(ast, "umlp.commands.ids.Constructor", classname, COMMAND_Package);
     getCD4C().addMethod(ast, "umlp.commands.ids.DoRun", classname, definitionName);
-    getCD4C().addImport(ast, "umlp."+classname);
+
+    getCD4C().addImport(ast, "umlp.*");
     getCD4C().addImport(ast,"umlp.command.Command");
     getCD4C().addImport(ast, "umlp.command.LongList");
     getCD4C().addImport(ast, "umlp.command.SimpleResult");
