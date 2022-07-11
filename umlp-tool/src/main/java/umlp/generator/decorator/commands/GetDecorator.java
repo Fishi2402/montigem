@@ -42,8 +42,9 @@ public class GetDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.commands.get.DoRun", classname, COMMAND_Package, definitionName);
     getCD4C().addMethod(ast, "umlp.commands.get.GetEffectedGemIds");
     getCD4C().addMethod(ast, "umlp.commands.get.GetNewlySubscribedGemIds");
+
     getCD4C().addImport(ast, "umlp.request.Request");
-    getCD4C().addImport(ast, "umlp."+classname);
+    getCD4C().addImport(ast, "umlp.*");
     getCD4C().addImport(ast, "umlp.command.SimpleResult");
     getCD4C().addImport(ast, "umlp.rte.LoadingState");
   

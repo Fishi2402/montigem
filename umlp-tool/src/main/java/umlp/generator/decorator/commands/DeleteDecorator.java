@@ -45,8 +45,9 @@ public class DeleteDecorator extends AbstractDecorator {
     getCD4C().addConstructor(ast, "umlp.commands.Constructor", classname, DEFAULT_PACKAGE, SUFFIX);
     getCD4C().addMethod(ast, "umlp.commands.delete.DoRun", classname, definitionName);
     getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", classname);
+
     getCD4C().addImport(ast, "umlp.command.Command");
-    getCD4C().addImport(ast, "umlp."+classname);
+    getCD4C().addImport(ast, "umlp.*");
     getCD4C().addImport(ast, "umlp.command.StatusResult");
   
     return ast;

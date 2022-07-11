@@ -30,10 +30,10 @@ public class ErrorDecorator extends AbstractDecorator {
         c.getCDAttributeList()
           .stream()
           .filter(a -> !a.getModifier().isDerived())
-          .forEach(a -> astcdPackage.addCDElement(createClass(c, a))));
+          .forEach(a -> astcdPackage.addCDElement(createClass(c, a, origCD.getCDDefinition().getName()))));
   }
   
-  protected ASTCDClass createClass(ASTCDClass domainClass, ASTCDAttribute attribute) {
+  protected ASTCDClass createClass(ASTCDClass domainClass, ASTCDAttribute attribute, String definitionName) {
     String classname = domainClass.getName();
     String attributename = attribute.getName();
     
@@ -45,9 +45,13 @@ public class ErrorDecorator extends AbstractDecorator {
     
     getCD4C().addAttribute(ast, "private final long gemId");
     getCD4C().addConstructor(ast, "umlp.commands.error.Constructor",classname, attributename, NAME, "");
-    getCD4C().addMethod(ast, "umlp.commands.error.DoRun", classname, attributename);
+    getCD4C().addMethod(ast, "umlp.commands.error.DoRun", classname, attributename, definitionName);
     getCD4C().addMethod(ast, "umlp.commands.error.GetEffectedGemIds");
-    
+
+    getCD4C().addImport(ast,"umlp.command.Command");
+    getCD4C().addImport(ast,"umlp.command.StatusResult");
+    getCD4C().addImport(ast,"umlp.*");
+
     return ast;
   }
 }

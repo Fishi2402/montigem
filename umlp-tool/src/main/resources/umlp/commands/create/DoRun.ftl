@@ -2,5 +2,5 @@
 ${tc.signature("classname","definition")}
 ${cd4c.method("public StatusResult doRun()")}
 
-${definition}.add${classname}(${classname?uncap_first});
+${definition}Manager.add${classname}(${classname?uncap_first});
 return StatusResult.ok(getId());

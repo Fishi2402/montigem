@@ -73,6 +73,7 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "java.util.List");
     getCD4C().addImport(clazz, "java.util.ArrayList");
     getCD4C().addImport(clazz, "umlp.command.CommandManager");
+    getCD4C().addImport(clazz, "umlp.commands.*");
   }
 
 }
