@@ -21,6 +21,7 @@ stages:
 build:
   stage: build
   script:
+    - "gradle --version"
     - "gradle build --refresh-dependencies $GRADLE_OPTS $ARGS1"
   artifacts:
     reports:
