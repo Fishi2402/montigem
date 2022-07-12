@@ -14,8 +14,6 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class DeleteDecorator extends AbstractDecorator {
   
-  public static final String COMMAND_Package = DEFAULT_PACKAGE + ".commands";
-  
   private static final String SUFFIX = "_delete";
   
   public DeleteDecorator(GlobalExtensionManagement glex) {
@@ -49,7 +47,8 @@ public class DeleteDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, "umlp.command.Command");
     getCD4C().addImport(ast, "umlp.*");
     getCD4C().addImport(ast, "umlp.command.StatusResult");
-  
+    getCD4C().addImport(ast, "umlp."+definitionName+"Manager");
+    
     return ast;
   }
   

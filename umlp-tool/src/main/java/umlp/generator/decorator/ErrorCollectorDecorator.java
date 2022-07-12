@@ -61,6 +61,7 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
               getCD4C().addMethod(collectorClass, "umlp.errorcollector.ReportInvalid", a.getName(), domainClass.getName());
               getCD4C().addMethod(collectorClass, "umlp.errorcollector._ReportInvalid", a.getName(), domainClass.getName());
               getCD4C().addMethod(collectorClass, "umlp.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName());
+              getCD4C().addImport(collectorClass, "umlp.commands."+domainClass.getName()+"_error_"+a.getName());
             });
     // Imports
     addImports(collectorClass);

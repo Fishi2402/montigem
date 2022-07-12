@@ -14,8 +14,6 @@ public class IdDecorator extends AbstractDecorator {
   
   public static final String SUFFIX = "_ids";
   
-  public static final String COMMAND_Package = DEFAULT_PACKAGE + ".commands";
-  
   public IdDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
@@ -36,14 +34,15 @@ public class IdDecorator extends AbstractDecorator {
       .setName(classname+SUFFIX)
       .build();
     
-    getCD4C().addConstructor(ast, "umlp.commands.ids.Constructor", classname, COMMAND_Package);
+    getCD4C().addConstructor(ast, "umlp.commands.ids.Constructor", classname, COMMAND_Package, SUFFIX);
     getCD4C().addMethod(ast, "umlp.commands.ids.DoRun", classname, definitionName);
 
     getCD4C().addImport(ast, "umlp.*");
     getCD4C().addImport(ast,"umlp.command.Command");
     getCD4C().addImport(ast, "umlp.command.LongList");
     getCD4C().addImport(ast, "umlp.command.SimpleResult");
-    
+    getCD4C().addImport(ast, "umlp."+definitionName+"Manager");
+  
     return ast;
   }
 }

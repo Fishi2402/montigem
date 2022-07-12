@@ -2,7 +2,7 @@
 ${tc.signature("classname", "packagename", "definition")}
 ${cd4c.method("public SimpleResult<${classname}> doRun()")}
 
-Optional<${classname}> ${classname?uncap_first} = ${definition}Manager.${classname?uncap_first}Opt(gemId);
+Optional<${classname}> ${classname?uncap_first} = ${definition}Manager.${classname}Opt(gemId);
     if(${classname?uncap_first}.isPresent()){
     return new SimpleResult<>(getId(), ${classname?uncap_first}.get(), "${packagename}.${classname}");
     } else {

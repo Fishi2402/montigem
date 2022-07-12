@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("classname", "packageName")}
-${cd4c.constructor("public ${classname}_ids()")}
+${tc.signature("classname", "packageName", "type")}
+${cd4c.constructor("public ${classname}${type}()")}
 
 super("${packageName}.${classname}_ids");

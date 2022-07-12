@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.decorator.commands;/* (c) https://github.com/MontiCore/monticore */
 
-import de.monticore.cd.facade.CDExtendUsageFacade;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -14,8 +13,6 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 public class GetDecorator extends AbstractDecorator {
   
   public static final String SUFFIX = "_get";
-  
-  public static final String COMMAND_Package = DEFAULT_PACKAGE + ".commands";
   
   public GetDecorator(GlobalExtensionManagement glex) {
     super(glex);
@@ -47,6 +44,7 @@ public class GetDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, "umlp.*");
     getCD4C().addImport(ast, "umlp.command.SimpleResult");
     getCD4C().addImport(ast, "umlp.rte.LoadingState");
+    getCD4C().addImport(ast, "umlp."+definitionName+"Manager");
   
     return ast;
   }

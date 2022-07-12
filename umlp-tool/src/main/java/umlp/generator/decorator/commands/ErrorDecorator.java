@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.decorator.commands;
 
-import de.monticore.cd.facade.CDExtendUsageFacade;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -15,8 +14,6 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 public class ErrorDecorator extends AbstractDecorator {
   
   public static final String NAME = "_error_";
-  
-  public static final String COMMAND_Package = DEFAULT_PACKAGE + ".commands";
   
   public ErrorDecorator(GlobalExtensionManagement glex) {
     super(glex);
@@ -47,11 +44,12 @@ public class ErrorDecorator extends AbstractDecorator {
     getCD4C().addConstructor(ast, "umlp.commands.error.Constructor",classname, attributename, NAME, "");
     getCD4C().addMethod(ast, "umlp.commands.error.DoRun", classname, attributename, definitionName);
     getCD4C().addMethod(ast, "umlp.commands.error.GetEffectedGemIds");
-
+    getCD4C().addImport(ast, "umlp."+definitionName+"Manager");
     getCD4C().addImport(ast,"umlp.command.Command");
-    getCD4C().addImport(ast,"umlp.command.StatusResult");
-    getCD4C().addImport(ast,"umlp.*");
-
+    getCD4C().addImport(ast, "umlp.command.StatusResult");
+    getCD4C().addImport(ast, "umlp."+classname);
+    getCD4C().addImport(ast, "umlp."+classname+"ErrorCollector");
+  
     return ast;
   }
 }

@@ -12,19 +12,19 @@ import java.util.Collections;
 public class Address_size extends Command<Integer> {
   public Address_size() {
     super(
-        // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
-        "hardy.commands.Address_size"
+      // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
+      "hardy.commands.Address_size"
     );
   }
-
+  
   @Override
   public SimpleResult<Integer> doRun() {
     // TODO: Optimieren, Liste muss nicht ganz geladen werden
     return new SimpleResult<>(getId(), FlensburgManager.getAddressList().size(), "java.lang.Integer");
   }
-
+  
   // undo macht keinen Sinn
-
+  
   // TODO: updates to the returned LazyList need to be send?
   @Override
   public Collection<Long> getEffectedGemIds() {

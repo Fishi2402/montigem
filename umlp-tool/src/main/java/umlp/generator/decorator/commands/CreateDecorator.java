@@ -15,8 +15,6 @@ public class CreateDecorator extends AbstractDecorator {
 
   public static final String SUFFIX = "_create";
 
-  public static final String COMMAND_Package = DEFAULT_PACKAGE + ".commands";
-
   public CreateDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
@@ -49,7 +47,7 @@ public class CreateDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, "umlp.request.Request");
     getCD4C().addImport(ast, "umlp.*");
     getCD4C().addImport(ast, "umlp.command.StatusResult");
-    
+    getCD4C().addImport(ast, "umlp."+definitionName+"Manager");
     
     return ast;
   }
