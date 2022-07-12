@@ -71,6 +71,8 @@ public class UMLPGenerator {
   
   protected IdDecorator idDecorator;
   
+  protected SetDecorator setDecorator;
+  
   protected SizeDecorator sizeDecorator;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
@@ -91,6 +93,7 @@ public class UMLPGenerator {
     getDecorator = new GetDecorator(genSetup.getGlex());
     idDecorator = new IdDecorator(genSetup.getGlex());
     sizeDecorator = new SizeDecorator(genSetup.getGlex());
+    setDecorator = new SetDecorator(genSetup.getGlex());
     
     domainClassDecorator = new DomainClassDecorator(genSetup.getGlex());
     builderDecorator = new BuilderDecorator(genSetup.getGlex());
@@ -188,6 +191,9 @@ public class UMLPGenerator {
   
     sizeDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("SizeDecorator", cdAST);
+    
+    setDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("SetDecorator", cdAST);
 
     // Top-Decorator
     topDecorator.decoratePackage(decoratedAST);
