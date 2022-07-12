@@ -83,6 +83,7 @@ public class Human implements GemIdentifiable {
         return res;
     }
 
+    // TODO semi-duplicated implementation
     public void setAge(Integer o){
         this.age = o;
         NotificationScope scope = checkAge()

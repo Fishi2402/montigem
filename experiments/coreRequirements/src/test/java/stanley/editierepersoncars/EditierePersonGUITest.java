@@ -105,7 +105,7 @@ public class EditierePersonGUITest extends AbstractGUITest {
   }
 
   @Test
-  public void observeServerPersonErrorGUITest() {
+  public void observeServerToClientErrorTest() {
     Log.initDEBUG();
 
     // Create backend manager
@@ -146,7 +146,7 @@ public class EditierePersonGUITest extends AbstractGUITest {
   }
 
   @Test
-  public void observeClientPersonErrorGUITest() {
+  public void observeClientToServerErrorTest() {
     Log.initDEBUG();
 
     // Create backend manager
@@ -172,10 +172,10 @@ public class EditierePersonGUITest extends AbstractGUITest {
       }
     });
 
-    HumanErrorCollector clientErrorCollector = new HumanErrorCollector();
+    PersonErrorCollector clientErrorCollector = new PersonErrorCollector();
     FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
         .backendContext(backendContext)
-        .humanErrorCollector(clientErrorCollector)
+        .personErrorCollector(clientErrorCollector)
         .build()
         .get();
 
