@@ -9,6 +9,7 @@ import hardy.Flensburg;
 // hier werden importierte GUI-Modelle gefunden
 import umlp.gui.TextInput;
 import umlp.gui.NumberInput;
+import umlp.gui.NumberShow;
 import umlp.gui.Button;
 import umlp.gui.RowTable;
 

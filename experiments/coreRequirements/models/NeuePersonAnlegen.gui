@@ -40,7 +40,7 @@ page NeuePersonAnlegen(Person p) { // "leere" Person
   // (und die Logik dafür ist generiert und verfügbar)
   // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
   // ueberschrieben werden z.B. navigate, copy, show(:ContextMenu(...)), ...
-  :Button(text = "Ok", leftClick = navigate(:EditierePersonCars(p))
+  // :Button(text = "Ok", leftClick = navigate(:EditierePersonCars(p)) // TODO: wird nicht geparst
 
   // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
   // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird entweder generiert oder
@@ -49,6 +49,6 @@ page NeuePersonAnlegen(Person p) { // "leere" Person
   // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "EditierePersonGUI.java".
   // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
   // deswegen wird eine Methode explizit importiert und aufgerufen
-  :Button(text = "Decrease", leftClick = decreaseAge(p))
+  // :Button(text = "Decrease", leftClick = decreaseAge(p)) // TODO: wird nicht geparst
 }
 
