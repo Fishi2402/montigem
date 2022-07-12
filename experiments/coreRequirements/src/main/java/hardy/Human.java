@@ -84,13 +84,16 @@ public class Human implements GemIdentifiable {
     }
 
     public void setAge(Integer o){
-        this.setAge(o, NotificationScope.ALL);
+        this.age = o;
+        NotificationScope scope = checkAge()
+            ? NotificationScope.ALL
+            : FlensburgManager.getSingleton().errorNotificationScope();
+        humanObservers.forEach(obs -> obs.maybeNotifySetAge(this, o, scope));
     }
 
     public void setAge(Integer o, NotificationScope scope) {
         this.age = o;
         checkAge();
-        // TODO should we notify if the value is invalid?
         humanObservers.forEach(obs -> obs.maybeNotifySetAge(this, o, scope));
     }
 

@@ -31,6 +31,7 @@ package hardy;
 import umlp.rte.Gem;
 import umlp.rte.LoadResult;
 import umlp.rte.LoadingState;
+import umlp.rte.NotificationScope;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,6 +89,8 @@ public abstract class FlensburgManager {
     }
 
     /* === Methods for class Human === */
+
+    public abstract NotificationScope errorNotificationScope();
 
     /**
      * Gives a builder object for the class {@link Human}.

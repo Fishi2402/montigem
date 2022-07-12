@@ -16,11 +16,15 @@ public class PersonErrorCollector {
     instance = new PersonErrorCollector();
   }
 
-  protected static PersonErrorCollector getInstance(){
+  public static PersonErrorCollector getInstance(){
     if(instance == null){
       init();
     }
     return instance;
+  }
+
+  public static void initMe(PersonErrorCollector personErrorCollector) {
+    instance = personErrorCollector;
   }
 
   public static void addErrorObserver(PersonErrorObserver observer){

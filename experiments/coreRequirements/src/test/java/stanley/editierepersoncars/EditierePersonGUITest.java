@@ -33,7 +33,11 @@ public class EditierePersonGUITest extends AbstractGUITest {
   public void editPersonGUITest() {
     Address a = FlensburgMock.addressBuilder().city("Flensburg").build().get();
     // simulate two instances of a person located on two different clients
-    Person p1 = FlensburgMock.personBuilder().age(24).nickname("theo").mainResidence(a).build().get();
+    Person p1 = FlensburgMock.personBuilder()
+        .age(24)
+        .nickname("theo")
+        .mainResidence(a)
+        .build().get();
     EditierePersonGUI e = new EditierePersonGUI(p1);
 
     // Check GUI has contains correct values
@@ -61,8 +65,10 @@ public class EditierePersonGUITest extends AbstractGUITest {
     long aGemId = 1001L;
     long pGemId = 1002L;
 
-    FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder().backendContext(backendContext).build().get();
-    FlensburgTestContext clientContext2 = new FlensburgManagerClientImplBuilder().backendContext(backendContext).build().get();
+    FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
+        .backendContext(backendContext).build().get();
+    FlensburgTestContext clientContext2 = new FlensburgManagerClientImplBuilder()
+        .backendContext(backendContext).build().get();
 
     clientContext1.activate();
     FlensburgMock.secretlyAdaptnextGemIds(aGemId);
@@ -103,7 +109,6 @@ public class EditierePersonGUITest extends AbstractGUITest {
     Log.initDEBUG();
 
     // Create backend manager
-    FlensburgMock.init();
     FlensburgTestContext backendContext = FlensburgTestContext.fromCurrentContext();
     long gemId = 1000L;
     FlensburgMock.secretlyAdaptnextGemIds(gemId);
@@ -138,6 +143,56 @@ public class EditierePersonGUITest extends AbstractGUITest {
 
     assertEquals("Age 15 of Person with gemId 1001 is invalid!",
         e1.getNumberInputError());
+  }
+
+  @Test
+  public void observeClientPersonErrorGUITest() {
+    Log.initDEBUG();
+
+    // Create backend manager
+    FlensburgTestContext backendContext = FlensburgTestContext.fromCurrentContext();
+    long gemId = 1000L;
+    FlensburgMock.secretlyAdaptnextGemIds(gemId);
+    Address a = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    gemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(gemId);
+    FlensburgManager
+        .personBuilder()
+        .age(24)
+        .nickname("theo")
+        .mainResidence(a)
+        .owns(Collections.emptySet())
+        .build();
+
+    List<String> serverErrorMsgs = new ArrayList<>();
+    PersonErrorCollector.addErrorObserver(new PersonErrorObserver() {
+      @Override
+      public void notifyAgeInvalid(Person person, String msg) {
+        serverErrorMsgs.add(msg);
+      }
+    });
+
+    HumanErrorCollector clientErrorCollector = new HumanErrorCollector();
+    FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
+        .backendContext(backendContext)
+        .humanErrorCollector(clientErrorCollector)
+        .build()
+        .get();
+
+    clientContext1.activate();
+
+    Person p1001C1 = FlensburgManager.getPersonSure(gemId);
+    EditierePersonGUI e1 = new EditierePersonGUI(p1001C1);
+
+    e1.setNumberInput(15);
+
+    assertEquals("Age 15 of Person with gemId 1001 is invalid!",
+        e1.getNumberInputError());
+    // e1.setNumberInput(15);
+    backendContext.activate();
+    Person p1001S = FlensburgManager.getPersonSure(gemId);
+    assertEquals(24, p1001S.getAge());
+    assertTrue(serverErrorMsgs.isEmpty());
   }
 
 }

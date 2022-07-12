@@ -20,6 +20,7 @@ package hardy;
 import stanley.HumanCommandObserver;
 import stanley.PersonCommandObserver;
 import umlp.rte.HashMapWithOrderedKeys;
+import umlp.rte.NotificationScope;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +55,11 @@ public class FlensburgMock extends FlensburgManager {
   
   protected long _doGetFreeGemId() {
     return freeGemId++;
+  }
+
+  @Override
+  public NotificationScope errorNotificationScope() {
+    return NotificationScope.ALL;
   }
 
   // ------------------------------------------- Methods for class Person

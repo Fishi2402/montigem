@@ -4,6 +4,7 @@ package stanley;
 
 import de.se_rwth.commons.logging.Log;
 import hardy.HumanErrorCollector;
+import hardy.PersonErrorCollector;
 import umlp.command.ClientCommandManager;
 import umlp.rte.GeneralErrorCollector;
 
@@ -16,6 +17,7 @@ public class FlensburgManagerClientImplBuilder {
   protected FlensburgTestContext backendContext;
   protected GeneralErrorCollector generalErrorCollector;
   protected HumanErrorCollector humanErrorCollector;
+  protected PersonErrorCollector personErrorCollector;
 
   public FlensburgManagerClientImplBuilder backendContext(FlensburgTestContext backendContext){
     this.backendContext = backendContext;
@@ -24,6 +26,11 @@ public class FlensburgManagerClientImplBuilder {
 
   public FlensburgManagerClientImplBuilder humanErrorCollector(HumanErrorCollector humanErrorCollector){
     this.humanErrorCollector = humanErrorCollector;
+    return this;
+  }
+
+  public FlensburgManagerClientImplBuilder personErrorCollector(PersonErrorCollector personErrorCollector){
+    this.personErrorCollector = personErrorCollector;
     return this;
   }
 
@@ -44,7 +51,8 @@ public class FlensburgManagerClientImplBuilder {
         res,
         clientCommandManager,
         generalErrorCollector != null ? generalErrorCollector : new GeneralErrorCollector(),
-        humanErrorCollector != null ? humanErrorCollector : new HumanErrorCollector()
+        humanErrorCollector != null ? humanErrorCollector : new HumanErrorCollector(),
+        personErrorCollector != null ? personErrorCollector : new PersonErrorCollector()
     );
     clientCommandManager.setClientContext(flensburgTestContext);
     return Optional.of(flensburgTestContext);

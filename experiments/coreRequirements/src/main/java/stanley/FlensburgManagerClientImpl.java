@@ -10,6 +10,7 @@ import umlp.command.*;
 import umlp.request.GetFreeGemIdRequest;
 import umlp.rte.GemList;
 import umlp.rte.LoadResult;
+import umlp.rte.NotificationScope;
 import umlp.util.LogUtil;
 
 import java.util.*;
@@ -33,6 +34,11 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     SimpleResult<Long> res = CommandManager.executeSingleCommand(new GetFreeGemIdRequest()).asSimpleResult();
     return res.get();
     // TODO: error handling
+  }
+
+  @Override
+  public NotificationScope errorNotificationScope() {
+    return NotificationScope.LOCAL;
   }
 
 

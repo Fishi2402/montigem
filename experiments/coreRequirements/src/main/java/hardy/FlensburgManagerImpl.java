@@ -3,6 +3,7 @@ package hardy;
 //+ GEN-P        : generated for the product
 
 import umlp.rte.DatabaseAccessManager;
+import umlp.rte.NotificationScope;
 
 import java.util.*;
 
@@ -25,6 +26,11 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected long _doGetFreeGemId() {
         return DatabaseAccessManager.getFreeGemId();
+    }
+
+    @Override
+    public NotificationScope errorNotificationScope() {
+        return NotificationScope.GLOBAL;
     }
 
     /* === Methods for class Human === */

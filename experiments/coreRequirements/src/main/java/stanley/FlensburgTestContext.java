@@ -4,6 +4,7 @@ package stanley;
 
 import hardy.FlensburgManager;
 import hardy.HumanErrorCollector;
+import hardy.PersonErrorCollector;
 import umlp.command.CommandManager;
 import umlp.rte.GeneralErrorCollector;
 
@@ -16,12 +17,20 @@ public class FlensburgTestContext {
   private CommandManager commandManager;
   private GeneralErrorCollector generalErrorCollector;
   private HumanErrorCollector humanErrorCollector;
+  private PersonErrorCollector personErrorCollector;
 
-  public FlensburgTestContext(FlensburgManager flensburgManager, CommandManager commandManager, GeneralErrorCollector generalErrorCollector, HumanErrorCollector humanErrorCollector) {
+  public FlensburgTestContext(
+      FlensburgManager flensburgManager,
+      CommandManager commandManager,
+      GeneralErrorCollector generalErrorCollector,
+      HumanErrorCollector humanErrorCollector,
+      PersonErrorCollector personErrorCollector
+  ) {
     this.flensburgManager = flensburgManager;
     this.commandManager = commandManager;
     this.generalErrorCollector = generalErrorCollector;
     this.humanErrorCollector = humanErrorCollector;
+    this.personErrorCollector = personErrorCollector;
   }
 
   public FlensburgManager getFlensburgManager() {
@@ -40,26 +49,29 @@ public class FlensburgTestContext {
     this.commandManager = commandManager;
   }
 
-  public static FlensburgTestContext fromCurrentContext(){
+  public static FlensburgTestContext fromCurrentContext() {
     return new FlensburgTestContext(
         FlensburgManager.getSingleton(),
         CommandManager.getInstance(),
         GeneralErrorCollector.getInstance(),
-        HumanErrorCollector.getInstance()
+        HumanErrorCollector.getInstance(),
+        PersonErrorCollector.getInstance()
     );
   }
 
-  public void activate(){
-      FlensburgManager.initMe(flensburgManager);
-      CommandManager.initMe(commandManager);
-      GeneralErrorCollector.initMe(generalErrorCollector);
-      HumanErrorCollector.initMe(humanErrorCollector);
+  public void activate() {
+    FlensburgManager.initMe(flensburgManager);
+    CommandManager.initMe(commandManager);
+    GeneralErrorCollector.initMe(generalErrorCollector);
+    HumanErrorCollector.initMe(humanErrorCollector);
+    PersonErrorCollector.initMe(personErrorCollector);
   }
 
-  public static void clear(){
+  public static void clear() {
     FlensburgManager.initMe(null);
     CommandManager.initMe(null);
     GeneralErrorCollector.initMe(null);
     HumanErrorCollector.initMe(null);
+    PersonErrorCollector.initMe(null);
   }
 }
