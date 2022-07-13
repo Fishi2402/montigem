@@ -1,16 +1,19 @@
 package gradle;
 
 import de.monticore.AmbiguityException;
+import de.se_rwth.commons.logging.Log;
 import org.gradle.workers.WorkAction;
 import umlp.UMLPTool;
+
+import java.util.Arrays;
 
 public abstract class UMLPAction implements WorkAction<ArgActionParameter> {
   @Override
   public void execute() {
     String[] arrayArgs = this.getParameters().getArgs().get().toArray(new String[0]);
 
-        /* Log.warn("Starting UMLPTool: \n" +
-            "\t  java -jar UMLPTool.jar " + Arrays.toString(arrayArgs)); */
+    Log.info("Starting UMLPTool: \n" +
+            "\t  java -jar UMLPTool.jar " + Arrays.toString(arrayArgs), getClass().toString());
     try {
       UMLPTool.main(arrayArgs);
     }catch (AmbiguityException e){

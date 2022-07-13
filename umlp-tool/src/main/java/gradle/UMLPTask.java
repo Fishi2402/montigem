@@ -102,8 +102,6 @@ public abstract class UMLPTask extends DefaultTask {
     assert (filePath.toFile().isFile());
     assert (isInputFile(filePath.toFile()));
 
-    Path cwd = this.getProject().getProjectDir().toPath().toAbsolutePath();
-
     List<String> result = new ArrayList<>();
     result.add("-i");
     result.add(handlePath.apply(filePath));
@@ -195,7 +193,7 @@ public abstract class UMLPTask extends DefaultTask {
     Path cwd = getProject().getProjectDir().toPath().toAbsolutePath();
     Log.warn("Starting UMLPTool: \n" +
         "\t  java -jar UMLPTool.jar " +
-        createArgList(f.toPath(), p -> cwd.relativize(p).toString()).stream().collect(Collectors.joining(" "))
+        String.join(" ", createArgList(f.toPath(), p -> cwd.relativize(p).toString()))
     );
 
     workQueue.submit(UMLPAction.class, param -> {
