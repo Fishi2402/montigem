@@ -54,7 +54,7 @@ public abstract class UMLPTask extends DefaultTask {
   @InputFile
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  abstract RegularFileProperty getScript();
+  abstract RegularFileProperty getConfigTemplate();
 
   @Input
   @org.gradle.api.tasks.Optional
@@ -89,10 +89,6 @@ public abstract class UMLPTask extends DefaultTask {
       }
     }
 
-    if (getScript().isPresent()) {
-      throw new IllegalArgumentException("<script> not yet supported");
-    }
-
     if (getInputFile().isPresent() && !isInputFile(this.getInputFile().getAsFile().get())) {
       throw new IllegalArgumentException("<inputFile> must be an umlp-file");
     }
@@ -121,9 +117,14 @@ public abstract class UMLPTask extends DefaultTask {
     result.add("-rb");
     result.add(handlePath.apply(getProject().getProjectDir().toPath()));
 
-    if (this.getHwcDir().isPresent()) {
+    if(this.getHwcDir().isPresent()) {
       result.add("-hwc");
       result.add(handlePath.apply(getHwcDir().getAsFile().get().toPath()));
+    }
+
+    if(this.getConfigTemplate().isPresent()){
+      result.add("-ct");
+      result.add(handlePath.apply(getConfigTemplate().getAsFile().get().toPath()));
     }
 
     if (this.getMoreArgs().isPresent()) {
