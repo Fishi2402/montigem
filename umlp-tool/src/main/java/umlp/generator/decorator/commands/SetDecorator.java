@@ -20,7 +20,7 @@ public class SetDecorator extends AbstractDecorator {
   
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_Package);
+    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
       .forEach(c ->
         c.getCDAttributeList()
@@ -42,7 +42,7 @@ public class SetDecorator extends AbstractDecorator {
     getCD4C().addAttribute(ast, "protected "
       +attribute.getMCType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()))
       +" "+ attribute.getName());
-    getCD4C().addConstructor(ast, "umlp.commands.set.Constructor", classname, COMMAND_Package,
+    getCD4C().addConstructor(ast, "umlp.commands.set.Constructor", classname, COMMAND_PACKAGE,
       attribute.getName(), attribute.getMCType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
     getCD4C().addMethod(ast, "umlp.commands.set.DoRun", attribute.getName(), domainClass.getName(), definitionName);
     getCD4C().addMethod(ast, "umlp.commands.error.GetEffectedGemIds");

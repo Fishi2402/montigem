@@ -20,7 +20,7 @@ public class GetDecorator extends AbstractDecorator {
   
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_Package);
+    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
       .forEach(c -> astcdPackage.addCDElement(createClass(c, origCD.getCDDefinition().getName())));
   }
@@ -35,8 +35,8 @@ public class GetDecorator extends AbstractDecorator {
       .build();
     
     getCD4C().addAttribute(ast, "private final long gemId");
-    getCD4C().addConstructor(ast, "umlp.commands.error.Constructor", classname,"", SUFFIX,COMMAND_Package);
-    getCD4C().addMethod(ast, "umlp.commands.get.DoRun", classname, COMMAND_Package, definitionName);
+    getCD4C().addConstructor(ast, "umlp.commands.error.Constructor", classname,"", SUFFIX, COMMAND_PACKAGE);
+    getCD4C().addMethod(ast, "umlp.commands.get.DoRun", classname, COMMAND_PACKAGE, definitionName);
     getCD4C().addMethod(ast, "umlp.commands.get.GetEffectedGemIds");
     getCD4C().addMethod(ast, "umlp.commands.get.GetNewlySubscribedGemIds");
 

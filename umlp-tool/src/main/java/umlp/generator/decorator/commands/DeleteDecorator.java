@@ -1,11 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.decorator.commands;
 
-import de.monticore.cd.facade.CDExtendUsageFacade;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
-import de.monticore.expressions.tr.javaclassexpressionstr._cocos.JavaClassExpressionsTRASTGenericInvocationExpression_ListCoCo;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
 import umlp.generator.decorator.AbstractDecorator;
@@ -22,7 +20,7 @@ public class DeleteDecorator extends AbstractDecorator {
   
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_Package);
+    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
       .forEach(c -> astcdPackage.addCDElement(createClass(c, origCD.getCDDefinition().getName())));
   }

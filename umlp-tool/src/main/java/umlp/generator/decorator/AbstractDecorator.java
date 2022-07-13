@@ -21,7 +21,9 @@ public abstract class AbstractDecorator {
 
   public static final String DEFAULT_PACKAGE = "umlp";
   
-  public static final String COMMAND_Package = DEFAULT_PACKAGE+".commands";
+  public static final String COMMAND_PACKAGE = DEFAULT_PACKAGE+".commands";
+  
+  public static final String CLIENT_PACKAGE = DEFAULT_PACKAGE+".client";
 
   protected final GlobalExtensionManagement glex;
 

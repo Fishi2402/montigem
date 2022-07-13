@@ -20,7 +20,7 @@ public class IdDecorator extends AbstractDecorator {
   
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_Package);
+    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
       .forEach(c -> astcdPackage.addCDElement(createClass(c, origCD.getCDDefinition().getName())));
   }
@@ -34,7 +34,7 @@ public class IdDecorator extends AbstractDecorator {
       .setName(classname+SUFFIX)
       .build();
     
-    getCD4C().addConstructor(ast, "umlp.commands.ids.Constructor", classname, COMMAND_Package, SUFFIX);
+    getCD4C().addConstructor(ast, "umlp.commands.ids.Constructor", classname, COMMAND_PACKAGE, SUFFIX);
     getCD4C().addMethod(ast, "umlp.commands.ids.DoRun", classname, definitionName);
 
     getCD4C().addImport(ast, "umlp.*");

@@ -75,6 +75,8 @@ public class UMLPGenerator {
   
   protected SizeDecorator sizeDecorator;
 
+  protected CommandObserverDecorator commandObserverDecorator;
+  
   public UMLPGenerator(GeneratorSetup genSetup) {
     astPrinter = new CD4CodeFullPrettyPrinter();
 
@@ -95,6 +97,7 @@ public class UMLPGenerator {
     sizeDecorator = new SizeDecorator(genSetup.getGlex());
     setDecorator = new SetDecorator(genSetup.getGlex());
     
+    commandObserverDecorator = new CommandObserverDecorator(genSetup.getGlex());
     domainClassDecorator = new DomainClassDecorator(genSetup.getGlex());
     builderDecorator = new BuilderDecorator(genSetup.getGlex());
     errorCollectorDecorator = new ErrorCollectorDecorator(genSetup.getGlex());
@@ -194,6 +197,9 @@ public class UMLPGenerator {
     
     setDecorator.transform(cdAST, decoratedAST);
     logTrafoExec("SetDecorator", cdAST);
+    
+    commandObserverDecorator.transform(cdAST, decoratedAST);
+    logTrafoExec("CommandDecorator", cdAST);
 
     // Top-Decorator
     topDecorator.decoratePackage(decoratedAST);
