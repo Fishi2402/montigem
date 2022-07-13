@@ -11,7 +11,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class SizeDecorator extends AbstractDecorator {
   
-  private static final String SUFFIX = "_size";
+  public static final String SUFFIX = "_size";
   
   public SizeDecorator(GlobalExtensionManagement glex) {
     super(glex);

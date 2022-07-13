@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ObserverDecoratorTest extends DecoratorTest {
 
   @Override
-  AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
+  protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
     return new ObserverDecorator(glex);
   }
 

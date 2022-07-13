@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DiagramObserverDecoratorTest extends DecoratorTest {
 
   @Override
-  AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
+  protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
     return new DiagramObserverDecorator(glex);
   }
 

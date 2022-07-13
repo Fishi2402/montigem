@@ -77,7 +77,7 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
     decorator.transform(cdAST, decoratedAST);
   }
 
-  abstract AbstractDecorator getDecorator(GlobalExtensionManagement glex);
+  protected abstract AbstractDecorator getDecorator(GlobalExtensionManagement glex);
 
   protected void existsMethod(ASTCDType type, String methodName) {
     assertTrue(type.getCDMethodList().stream()

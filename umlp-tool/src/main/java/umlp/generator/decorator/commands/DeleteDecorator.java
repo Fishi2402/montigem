@@ -14,7 +14,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class DeleteDecorator extends AbstractDecorator {
   
-  private static final String SUFFIX = "_delete";
+  public static final String SUFFIX = "_delete";
   
   public DeleteDecorator(GlobalExtensionManagement glex) {
     super(glex);
