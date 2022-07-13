@@ -41,7 +41,7 @@ public class UMLPTool extends UMLPToolTOP {
 //  protected static final String SYM_IO = "target/symbols/";
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
   protected static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
-  protected static final String DEFAULT_CONFIGTEMPLATE = "cd2java.CD2Java";
+  protected static final String DEFAULT_CONFIGTEMPLATE = "umlp.UMLP2Java";
 
   public UMLPTool() {
     UMLPMill.init();
@@ -159,16 +159,14 @@ public class UMLPTool extends UMLPToolTOP {
       genSetup.setHandcodedPath(hwcPath);
 
       // execute generator
-      UMLPGenerator generator = new UMLPGenerator(genSetup);
-      //generator.generate(ast);
+      CD4CodeMill.init();
+      CD4CodeMill.globalScope().clear();
+      BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
 
+      UMLPGenerator generator = new UMLPGenerator(genSetup);
       CD4C.init(genSetup);
       String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
-      TemplateController tc = genSetup.getNewTemplateController(configTemplate);
-      TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
-      List<Object> configTemplateArgs = Arrays.asList(genSetup.getGlex(), generator);
-      hpp.processValue(tc, ast, configTemplateArgs);
-
+      generator.generate(ast, configTemplate);
 
       // write reports
       Reporting.flush(ast);

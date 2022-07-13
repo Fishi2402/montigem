@@ -3,6 +3,7 @@ package umlptest.decorator;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
@@ -45,12 +46,14 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
   public static void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
-    UMLPMill.reset();
-    UMLPMill.init();
   }
 
   @BeforeEach
   public void setup() {
+    UMLPMill.reset();
+    UMLPMill.init();
+    BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+
     ASTUMLPCompilationUnit inputAst = parse("de/monticore/A.umlp");
     // Translate AST of UMLP Model into initial CD-AST
     ASTCDCompilationUnit cdAST = UMLP2CDTrafo.run(inputAst);
@@ -59,9 +62,6 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
     (new CD4CodeAfterParseTrafo()).transform(cdAST);
     UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
     (new CD4CodeTrafo4Defaults()).transform(cdAST);
-    CDAssociationCreateFieldsFromNavigableRoles cDAssociationCreateFieldsFromNavigableRoles = new CDAssociationCreateFieldsFromNavigableRoles();
-    cDAssociationCreateFieldsFromNavigableRoles.setTraverser(CD4CodeMill.traverser());
-    cDAssociationCreateFieldsFromNavigableRoles.transform(cdAST);
     UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
 
     // Create new output CompilationUnit

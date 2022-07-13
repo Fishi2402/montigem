@@ -85,6 +85,7 @@ public abstract class AbstractDecorator {
       return p;
     }
   }
+
   abstract public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD);
 
 }
