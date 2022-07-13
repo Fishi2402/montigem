@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/* Test GUI (or later also E2E) for Person editing
+/* Test GUI (also E2E) for Person editing
  */
 public class EditierePersonGUITest extends AbstractGUITest {
 
@@ -29,6 +29,9 @@ public class EditierePersonGUITest extends AbstractGUITest {
     FlensburgMock.init();
   }
 
+  /**
+   * Changes in the fields of a GUI page change the object and vice versa
+   */
   @Test
   public void editPersonGUITest() {
     Address a = FlensburgMock.addressBuilder().city("Flensburg").build().get();
@@ -40,7 +43,7 @@ public class EditierePersonGUITest extends AbstractGUITest {
         .build().get();
     EditierePersonGUI e = new EditierePersonGUI(p1);
 
-    // Check GUI has contains correct values
+    // Check GUI contains correct values
     assertEquals("theo", e.getTextInput());
     assertEquals(24, e.getNumberInput().intValue());
 
@@ -53,24 +56,28 @@ public class EditierePersonGUITest extends AbstractGUITest {
     e.pressButtonDecrease();
     assertEquals(31, e.getNumberInput().intValue());
     assertEquals(31, p1.getAge().intValue());
-
-    // und später kombinieren wir das mit Server/Client kommunikation und prüefen dann
-    // nicht nur am lokalen Objekt, sondern simuliert im Gesamten System die Konsistente Änderung
   }
 
+  /**
+   * Valid changes in one client propagates to other clients
+   */
   @Test
   public void observePersonGUITest() {
-    // simulate two instances of a person located on two different clients
     FlensburgTestContext backendContext = FlensburgTestContext.fromCurrentContext();
+    // a - address, aGemId - gem id of address
     long aGemId = 1001L;
+    // p - person, pGemId - gem id of person
     long pGemId = 1002L;
 
+    // simulate two different clients, which communicate with the same server
     FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
         .backendContext(backendContext).build().get();
     FlensburgTestContext clientContext2 = new FlensburgManagerClientImplBuilder()
         .backendContext(backendContext).build().get();
 
+    // working with client 1
     clientContext1.activate();
+    // create initial person with an address
     FlensburgMock.secretlyAdaptnextGemIds(aGemId);
     Address a = FlensburgMock.addressBuilder().city("Flensburg").build().get();
     FlensburgMock.secretlyAdaptnextGemIds(pGemId);
@@ -81,34 +88,40 @@ public class EditierePersonGUITest extends AbstractGUITest {
         .mainResidence(a)
         .owns(Collections.emptySet())
         .build().get();
-    // Page 1 opened by one user
+    // page opened by a user on client 1
     EditierePersonGUI e1 = new EditierePersonGUI(p1);
 
+    // working with client 2
     clientContext2.activate();
+    // check that person is also available for client 2
     Optional<Person> pClient2Opt = FlensburgManager.personOpt(pGemId);
     assertTrue(pClient2Opt.isPresent());
     Person p2 = pClient2Opt.get();
-    // Page 2 opened by another user
+    // page opened by a user on client 2
     EditierePersonGUI e2 = new EditierePersonGUI(p2);
     // TODO AGe: strategy on input fields update, check current object/attribute status
-    // Check setting the age in the gui changes the input value for other client GUI
 
     clientContext1.activate();
+    // check setting the age in GUI of client 1 changes the input value for GUI of client 2
     e1.setNumberInput(33);
     assertEquals(33, e2.getNumberInput());
 
     clientContext2.activate();
-    // Check decrease button decreases age in both client GUIs
+    // check decrease button click in GUI of client 2 decreases age in GUI of client 1
     e2.pressButtonDecrease();
     e2.pressButtonDecrease();
     assertEquals(31, e1.getNumberInput());
   }
 
+  /**
+   * Error (invalid state) triggered on server will be shown in the client
+   * May happen when client requires calculation on the server
+   */
   @Test
   public void observeServerToClientErrorTest() {
     Log.initDEBUG();
 
-    // Create backend manager
+    // create initial person with an address
     FlensburgTestContext backendContext = FlensburgTestContext.fromCurrentContext();
     long gemId = 1000L;
     FlensburgMock.secretlyAdaptnextGemIds(gemId);
@@ -123,34 +136,39 @@ public class EditierePersonGUITest extends AbstractGUITest {
         .owns(Collections.emptySet())
         .build();
 
-    HumanErrorCollector clientErrorCollector = new HumanErrorCollector();
+    // simulate client which will communicate with server
     FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
         .backendContext(backendContext)
-        .humanErrorCollector(clientErrorCollector)
         .build()
         .get();
 
+    // work on client
     clientContext1.activate();
-
     Person p1001C1 = FlensburgManager.getPersonSure(gemId);
     EditierePersonGUI e1 = new EditierePersonGUI(p1001C1);
 
+    // no error initially in the GUI of client
     assertEquals("", e1.getNumberInputError());
-    // e1.setNumberInput(15);
+    // work on server
     backendContext.activate();
     Person p1001S = FlensburgManager.getPersonSure(gemId);
+    // set invalid age
     p1001S.setAge(15);
 
+    // error is shown in GUI of client
     assertEquals("Age 15 of Person with gemId 1001 is invalid!",
         e1.getNumberInputError());
   }
 
+  /**
+   * Error (invalid state) triggered on client will be not be propagated to server
+   */
   @Test
   public void observeClientToServerErrorTest() {
     Log.initDEBUG();
 
-    // Create backend manager
     FlensburgTestContext backendContext = FlensburgTestContext.fromCurrentContext();
+    // create initial person with an address
     long gemId = 1000L;
     FlensburgMock.secretlyAdaptnextGemIds(gemId);
     Address a = FlensburgManager.addressBuilder().city("Flensburg").build().get();
@@ -164,6 +182,7 @@ public class EditierePersonGUITest extends AbstractGUITest {
         .owns(Collections.emptySet())
         .build();
 
+    // add error collector for server to track errors
     List<String> serverErrorMsgs = new ArrayList<>();
     PersonErrorCollector.addErrorObserver(new PersonErrorObserver() {
       @Override
@@ -172,26 +191,29 @@ public class EditierePersonGUITest extends AbstractGUITest {
       }
     });
 
-    PersonErrorCollector clientErrorCollector = new PersonErrorCollector();
+    // simulate client which will communicate with server
     FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
         .backendContext(backendContext)
-        .personErrorCollector(clientErrorCollector)
         .build()
         .get();
 
+    // work on client
     clientContext1.activate();
-
     Person p1001C1 = FlensburgManager.getPersonSure(gemId);
     EditierePersonGUI e1 = new EditierePersonGUI(p1001C1);
-
+    // put invalid value into input field
     e1.setNumberInput(15);
 
+    // error check happens in client and shows error
     assertEquals("Age 15 of Person with gemId 1001 is invalid!",
         e1.getNumberInputError());
-    // e1.setNumberInput(15);
+
+    // work on server
     backendContext.activate();
     Person p1001S = FlensburgManager.getPersonSure(gemId);
+    // invalid value is not propagated from client to server
     assertEquals(24, p1001S.getAge());
+    // neither do errors
     assertTrue(serverErrorMsgs.isEmpty());
   }
 
