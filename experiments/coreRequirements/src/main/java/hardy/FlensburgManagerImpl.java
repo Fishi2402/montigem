@@ -3,6 +3,7 @@ package hardy;
 //+ GEN-P        : generated for the product
 
 import umlp.rte.DatabaseAccessManager;
+import umlp.rte.GemList;
 import umlp.rte.NotificationScope;
 
 import java.util.*;
@@ -25,6 +26,11 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected long _doGetFreeGemId() {
+        return DatabaseAccessManager.getFreeGemId();
+    }
+
+    protected long _doGetFreeGemListId() {
+        // TODO: implement second id pool, see FlensburgManager#getFreeGemListId for info
         return DatabaseAccessManager.getFreeGemId();
     }
 
@@ -170,7 +176,12 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected List<Car> _doCreateOwns(Person p) {
+    protected GemList<Car> _doCreateOwns(long gemListId, List<Long> initialCarGemIds) {
+        return null;
+    }
+
+    @Override
+    protected GemList<Car> _doCreateOwnsBuilder(long gemListId) {
         return null;
     }
 

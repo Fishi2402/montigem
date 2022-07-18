@@ -4,7 +4,6 @@ package umlp.rte;
 
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,7 +13,7 @@ public abstract class AbstractUMLPRTETest {
 
   @BeforeEach
   public void setup() {
-    LogStub.init();
+    Log.initDEBUG();
     Log.enableFailQuick(false);
   }
 

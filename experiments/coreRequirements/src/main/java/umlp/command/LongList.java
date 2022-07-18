@@ -3,6 +3,7 @@ package umlp.command;
 // RTE-P
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 // Deserialisierung von generischen Typen, wie List<Long>, ist mit Gson kompliziert, insbesondere wenn der Typ als
 // string geladen werden soll.
@@ -11,4 +12,11 @@ import java.util.ArrayList;
 // Daher wird hier eine Klasse erstellt, welche die geschachtelten Generics versteckt und eine Nutzung mit gson
 // vereinfacht.
 public class LongList extends ArrayList<Long> {
+
+  public LongList() {
+  }
+
+  public LongList(Collection<? extends Long> c) {
+    super(c);
+  }
 }

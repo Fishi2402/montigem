@@ -6,6 +6,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import stanley.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
+import umlp.command.ClientCommandManager;
+import umlp.command.Command;
+import umlp.command.CommandResult;
+import umlp.request.GetFreeGemIdRequest;
+import umlp.request.GetFreeGemListIdRequest;
+import umlp.rte.GemList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,4 +189,65 @@ public class PersonSyncTest {
     }
   }
 
+  @Test
+  public void testGemListSyncedToClientWithoutContent(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Create a Person with car @ server", "PersonSyncTest");
+    serverContext.activate();
+    PersonBuilder pb1001 = FlensburgManager.personBuilder();
+    Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Car c = FlensburgManager.carBuilder().owns(pb1001).build().get();
+    Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
+
+    assertTrue(c.isBuildFinished());
+
+    Log.info("Load Person in client", "PersonSyncTest");
+    clientContext.activate();
+    Person p1001Client = FlensburgManager.getPersonSure(startGemId);
+    assertNotNull(p1001Client);
+    assertNotSame(p1001, p1001Client);
+
+    Log.info("Assert that GemList owns was transferred empty", "PersonSyncTest");
+    GemList<Car> owns = p1001Client.getOwnsGemList();
+    assertEquals(0, owns.sizeLocallyKnownIds());
+
+    Log.info("Assert that GemList will correctly load elements on demand", "PersonSyncTest");
+    assertEquals(1, owns.size());
+
+    Car cClient = owns.get(0);
+    assertNotSame(c, cClient);
+    assertEquals(c.getGemId(), cClient.getGemId());
+  }
+
+  @Test
+  public void testGemListNotSyncedWhileBuilding(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder()
+        .backendContext(serverContext)
+        .commandManager(new ClientCommandManager(serverContext){
+          @Override
+          protected <T> CommandResult<T> _executeSingleCommand(Command<T> command) {
+            if(!(command instanceof GetFreeGemIdRequest || command instanceof GetFreeGemListIdRequest)){
+              fail("Received command that is not a GetFreeGemIdRequest: " + command);
+            }
+            return super._executeSingleCommand(command);
+          }
+        })
+        .build()
+        .get();
+
+    Log.info("Using PersonBuilder with CarBuilder @ client", "PersonSyncTest");
+    clientContext.activate();
+    PersonBuilder pb1001 = FlensburgManager.personBuilder();
+    CarBuilder c = FlensburgManager.carBuilder();
+    pb1001.ownsAdd(c);
+  }
 }

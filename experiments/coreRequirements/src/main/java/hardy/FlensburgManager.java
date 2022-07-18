@@ -28,15 +28,9 @@ package hardy;
   Wir nutzen den static Singleton Ansatz für alle zu realisierenden Funktionen
 */
 
-import umlp.rte.Gem;
-import umlp.rte.LoadResult;
-import umlp.rte.LoadingState;
-import umlp.rte.NotificationScope;
+import umlp.rte.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class FlensburgManager {
 
@@ -51,13 +45,43 @@ public abstract class FlensburgManager {
         return getSingleton()._doGetFreeGemId();
     }
 
-    public static void initMe(FlensburgManager flensburgManager) {
+  // In Tests wird oft die gemId für Objekte festgelegt und nachher überprüft, z.B. wenn die Synchronisierung getestet
+  // wird. Wenn gemLists ids aus demselben Pool wie Domänenobjekte bekommen, so ist der Test nicht stabil gegen
+  // Änderungen an der Klasse.
+  // Beispiel: Person p1 hat gemId 1001, p2 hat 1002; Eine Assoziation wird zu Person hinzugefügt und beim nächsten
+  // Ausführen des Tests hat p1 gemId 1001 und p2 hat 1003, da die GemList der Assoziation die id 1002 benutzt.
+  public static long getFreeGemListId(){
+    return getSingleton()._doGetFreeGemListId();
+  }
+
+  public static void initMe(FlensburgManager flensburgManager) {
         instance = flensburgManager;
     }
+
+  // Wird genutzt, um alle gemLists den Commandos zur synchronisierung der gemIds zur Verfügung zu stellen.
+  protected Map<Long, GemList<?>> gemLists = new HashMap<>();
+
+  public static Optional<GemList<?>> getGemListOpt(long gemListId) {
+    return getSingleton()._doGetGemListOpt(gemListId);
+  }
+
+  protected Optional<GemList<?>> _doGetGemListOpt(long gemListId) {
+    if(!gemLists.containsKey(gemListId)){
+      return Optional.empty();
+    }
+
+    return Optional.of(gemLists.get(gemListId));
+  }
 
   public static Gem<Address> createAddressGem(long gemId) {
       return getSingleton()._createAddressGem(gemId);
   }
+
+  public static GemList<Car> createOwnsBuilder(long gemListId) {
+    return getSingleton()._doCreateOwnsBuilder(gemListId);
+  }
+
+  protected abstract GemList<Car> _doCreateOwnsBuilder(long gemListId);
 
   protected Gem<Address> _createAddressGem(long gemId){
       return new Gem<>(gemId, () -> {
@@ -72,7 +96,9 @@ public abstract class FlensburgManager {
 
   protected abstract long _doGetFreeGemId();
 
-    /**
+  protected abstract long _doGetFreeGemListId();
+
+  /**
      * Returns the singleton {@link FlensburgManager} instance.
      *
      * @return
@@ -371,11 +397,19 @@ public abstract class FlensburgManager {
    *
    * @return {@link List} the class {@link Car}.
    */
-  public static List<Car> createOwns(Person p) {
-    return getSingleton()._doCreateOwns(p);
+  public static GemList<Car> createOwns(long gemListId, List<Long> initialCarGemIds) {
+    return getSingleton()._doCreateOwns(gemListId, initialCarGemIds);
   }
 
-  protected abstract List<Car> _doCreateOwns(Person p);
+  protected abstract GemList<Car> _doCreateOwns(long gemListId, List<Long> initialCarGemIds);
+
+  public static GemList<Car> createOwns(long gemListId) {
+    return getSingleton()._doCreateOwns(gemListId);
+  }
+
+  protected GemList<Car> _doCreateOwns(long gemListId){
+    return _doCreateOwns(gemListId, Collections.emptyList());
+  }
 
   /**
    * Gives the {@link List} of {@link Car} with the given gemId.

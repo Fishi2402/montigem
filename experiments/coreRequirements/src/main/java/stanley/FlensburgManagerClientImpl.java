@@ -8,7 +8,9 @@ import hardy.*;
 import hardy.commands.*;
 import umlp.command.*;
 import umlp.request.GetFreeGemIdRequest;
+import umlp.request.GetFreeGemListIdRequest;
 import umlp.rte.GemList;
+import umlp.rte.GemListBuilder;
 import umlp.rte.LoadResult;
 import umlp.rte.NotificationScope;
 import umlp.util.LogUtil;
@@ -32,6 +34,13 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected long _doGetFreeGemId() {
     SimpleResult<Long> res = CommandManager.executeSingleCommand(new GetFreeGemIdRequest()).asSimpleResult();
+    return res.get();
+    // TODO: error handling
+  }
+
+  @Override
+  protected long _doGetFreeGemListId() {
+    SimpleResult<Long> res = CommandManager.executeSingleCommand(new GetFreeGemListIdRequest()).asSimpleResult();
     return res.get();
     // TODO: error handling
   }
@@ -102,7 +111,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected Collection<Human> _doGetHumanList() {
     // TODO AHe: manage all human in the GemList instead of a map in this class?
+    // TODO: must be created by server to contain the correct gemId!
     return new GemList<>(
+        getFreeGemListId(),
         this::loadHumanSize,
         this::loadHumanGemIds,
         this::loadHumansByGemIds,
@@ -226,7 +237,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected Collection<Person> _doGetPersonList() {
     // TODO AHe: manage all human in the GemList instead of a map in this class?
+    // TODO: must be created by server to contain the correct gemId!
     return new GemList<>(
+        getFreeGemListId(),
         this::loadPersonSize,
         this::loadPersonGemIds,
         this::loadPersonsByGemIds,
@@ -346,8 +359,10 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected Collection<Address> _doGetAddressList() {
+    // TODO AHe: manage all human in the GemList instead of a map in this class?
+    // TODO: must be created by server to contain the correct gemId!
     return new GemList<>(
-        // TODO AHe: manage all human in the GemList instead of a map in this class?
+        getFreeGemListId(),
         this::loadAddressSize,
         this::loadAddressGemIds,
         this::loadAddresssByGemIds,
@@ -475,11 +490,12 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected List<Car> _doCreateOwns(Person p) {
+  protected GemList<Car> _doCreateOwns(long gemListId, List<Long> initialCarGemIds) {
     // TODO: this is not very easy to read
     return new GemList<>(
-        () -> CommandManager.executeSingleCommand(new Person_sizeOwns(p.getGemId())).asSimpleResult().get(),
-        (start, end) -> CommandManager.executeSingleCommand(new Person_idsOwns(p.getGemId(), start, end)).asSimpleResult().get(),
+        gemListId,
+        () -> CommandManager.executeSingleCommand(new GemList_size(gemListId)).asSimpleResult().get(),
+        (start, end) -> CommandManager.executeSingleCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
         ids -> {
           List<LoadResult<Car>> res = new ArrayList<>();
           for (Long id : ids) {
@@ -494,9 +510,36 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
         },
         // TODO AHe, FDr: Diese mutierenden Commands werden NICHT vom PersonCommandObserver erstellt
         // im gegensatz zu allen anderen settern
-        idxToId -> CommandManager.executeSingleCommand(new Person_setIdxsOwns(p.getGemId(), idxToId)),
-        (startIdx, ids) -> CommandManager.executeSingleCommand(new Person_addIdsOwns(p.getGemId(), startIdx, ids)),
-        indices -> CommandManager.executeSingleCommand(new Person_removeIdxsOwns(p.getGemId(), indices))
+        idxToId -> CommandManager.executeSingleCommand(new GemList_setIdxs(gemListId, idxToId)),
+        (startIdx, ids) -> CommandManager.executeSingleCommand(new Person_addIdsOwns(gemListId, startIdx, ids)),
+        indices -> CommandManager.executeSingleCommand(new GemList_removeIdxs(gemListId, indices))
+    );
+  }
+
+  @Override
+  protected GemList<Car> _doCreateOwnsBuilder(long gemListId) {
+    // TODO: duplicated code!
+    return new GemListBuilder<>(
+        gemListId,
+        () -> CommandManager.executeSingleCommand(new GemList_size(gemListId)).asSimpleResult().get(),
+        (start, end) -> CommandManager.executeSingleCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
+        ids -> {
+          List<LoadResult<Car>> res = new ArrayList<>();
+          for (Long id : ids) {
+            SimpleResult<Car> tmp = CommandManager.executeSingleCommand(new Car_get(id)).asSimpleResult();
+            if(tmp.isSuccessful()) {
+              res.add(new LoadResult<>(tmp.get()));
+            }else{
+              res.add(new LoadResult<>(tmp.getLoadingState()));
+            }
+          }
+          return res;
+        },
+        // TODO AHe, FDr: Diese mutierenden Commands werden NICHT vom PersonCommandObserver erstellt
+        // im gegensatz zu allen anderen settern
+        idxToId -> CommandManager.executeSingleCommand(new GemList_setIdxs(gemListId, idxToId)),
+        (startIdx, ids) -> CommandManager.executeSingleCommand(new Person_addIdsOwns(gemListId, startIdx, ids)),
+        indices -> CommandManager.executeSingleCommand(new GemList_removeIdxs(gemListId, indices))
     );
   }
 

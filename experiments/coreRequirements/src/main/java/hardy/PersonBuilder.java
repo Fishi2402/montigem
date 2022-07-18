@@ -4,7 +4,6 @@ package hardy;
 
 import umlp.rte.Gem;
 
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 
@@ -37,8 +36,8 @@ public class PersonBuilder extends Person {
     // und ein Validator wird auch mitgeliefert (und erstmal gespeichert)
     public PersonBuilder(long gemId) {
         this.gemId = gemId;
-        // TODO AGe initial value null or not?
-        this.owns = new ArrayList<>();
+        // während des bauens ist das eine unsychronisierte GemList!
+        this.owns = FlensburgManager.createOwnsBuilder(FlensburgManager.getFreeGemListId());
     }
 
     // Standard set-Function:
@@ -119,6 +118,7 @@ public class PersonBuilder extends Person {
                         own.build();
                     }
                 }
+                owns.build();
                 FlensburgManager.addPerson(this);
                 personObservers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
                 buildFinished = true;

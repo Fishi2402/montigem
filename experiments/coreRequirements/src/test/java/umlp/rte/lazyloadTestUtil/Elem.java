@@ -9,7 +9,7 @@ import umlp.rte.GemIdentifiable;
  */
 public class Elem implements GemIdentifiable {
 
-  protected static long nextID = 0;
+  public static long nextID = 0;
 
   protected long gemID;
 
@@ -22,4 +22,10 @@ public class Elem implements GemIdentifiable {
     return gemID;
   }
 
+  @Override
+  public String toString() {
+    return "Elem{" +
+        "gemID=" + gemID +
+        '}';
+  }
 }

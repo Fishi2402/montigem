@@ -46,11 +46,10 @@ public class ClientCommandManager extends CommandManager{
     Command<?> recreatedCommand = CommandObjectMapper.deserializeCommand(cmdStr);
 
     CommandResult<?> res = CommandManager.executeSingleCommand(recreatedCommand);
-
     String resStr = CommandObjectMapper.serializeResponse(res);
-    CommandResult<?> recreatedRes = CommandObjectMapper.deserializeResponse(resStr);
 
     clientContext.activate();
+    CommandResult<?> recreatedRes = CommandObjectMapper.deserializeResponse(resStr);
     return (CommandResult<T>) recreatedRes;
   }
 }

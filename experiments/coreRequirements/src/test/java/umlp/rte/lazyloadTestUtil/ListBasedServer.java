@@ -49,15 +49,10 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
     this.idsNotAuthorized = ids;
   }
 
+  public long id = 0;
+
   public GemList<E> createLazyList() {
-    GemList<E> gemList = new GemList<>(
-        this::size,
-        this::getIDs,
-        this::getObjects,
-        this::setIdxs,
-        this::addIDs,
-        this::removeIdxs
-    );
+    GemList<E> gemList = new MockGemList<>(id++, this::getObject, getIds());
     getLazyLists().add(gemList);
     return gemList;
   }
@@ -81,7 +76,6 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
     E oldElem = get(idx);
     getIds().set(idx, elem.getGemId());
     getObjects().put(elem.getGemId(), elem);
-    reportChange();
     return oldElem;
   }
 
@@ -89,21 +83,13 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
   public void add(int idx, E elem) {
     getIds().add(elem.getGemId());
     getObjects().put(elem.getGemId(), elem);
-    reportChange();
   }
 
   @Override
   public E remove(int idx) {
     E elem = get(idx);
     getIds().remove(idx);
-    reportChange();
     return elem;
-  }
-
-  protected void reportChange() {
-    for (GemList<E> gemList : getLazyLists()) {
-      gemList.resetStructureCache();
-    }
   }
 
   protected List<Long> getIDs(int startIdx, int endIdx) {
@@ -132,12 +118,10 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
     for (Map.Entry<Integer, Long> entry : idxs.entrySet()) {
       getIds().set(entry.getKey(), entry.getValue());
     }
-    reportChange();
   }
 
   protected void addIDs(int idx, List<Long> ids) {
     getIds().addAll(idx, ids);
-    reportChange();
   }
 
   protected void removeIdxs(Set<Integer> idxs) {
@@ -148,7 +132,6 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
         ids.add(oldIds.get(i));
       }
     }
-    reportChange();
   }
 
   protected List<Long> getIds() {

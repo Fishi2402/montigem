@@ -28,9 +28,9 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
 
   protected int size = UNKNOWN_SIZE;
 
-  protected Map<Integer, Long> idx2IDMap = new HashMap<>();
-
-  protected Map<Long, LoadResult<E>> id2ObjectMap = new HashMap<>();
+  // TODO: replace with efficient impl, maybe ChunkedIdStorage
+  // Lokaler speicher für die gemIds der enthaltenen Objekte. Speichert nur aktuell benötigte ids.
+  protected IdStorage idStorage = new SimpleIdStorage();
 
   protected Supplier<Integer> loadSizeFunction;
 
@@ -45,6 +45,29 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   protected Consumer<Set<Integer>> removeIdxsFunction;
 
   public GemList(
+      long gemId,
+      Supplier<Integer> loadSizeFunction,
+      BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
+      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
+      Consumer<Map<Integer, Long>> setIdxsFunction,
+      BiConsumer<Integer, List<Long>> addIDsFunction,
+      Consumer<Set<Integer>> removeIdxsFunction
+  ){
+    this(
+        gemId,
+        Collections.emptyList(),
+        loadSizeFunction,
+        loadIDsFunction,
+        loadObjectsFunction,
+        setIdxsFunction,
+        addIDsFunction,
+        removeIdxsFunction
+    );
+  }
+
+  public GemList(
+      long gemId,
+      List<Long> initialIds,
       Supplier<Integer> loadSizeFunction,
       BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
       Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
@@ -52,6 +75,11 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
       BiConsumer<Integer, List<Long>> addIDsFunction,
       Consumer<Set<Integer>> removeIdxsFunction
   ) {
+    this.gemID = gemId;
+    if(!initialIds.isEmpty()) {
+      idStorage.addAll(0, initialIds);
+    }
+
     this.loadSizeFunction = loadSizeFunction;
     this.loadIDsFunction = loadIDsFunction;
     this.loadObjectsFunction = loadObjectsFunction;
@@ -73,21 +101,30 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     //loadObjects(0, loadSize);
   }
 
-  @Override
-  public int size() {
+  public void ensureSizeLoaded(){
     if (size == UNKNOWN_SIZE) {
       size = loadSizeFunction.get();
     }
+  }
+
+  @Override
+  public int size() {
+    ensureSizeLoaded();
     return size;
   }
 
   @Override
   public E get(int idx) {
     assertInclusiveIdxInBounds(idx);
-    if (!isPresent(idx)) {
-      Log.error(ELEMENT_NOT_AVAILABLE_ERROR);
+    Long id = getID(idx);
+    LoadResult<E> lr = loadSingleObject(id);
+    if(lr.isPresent()){
+      return lr.get();
+    }else{
+      // TODO: rework error handling?
+      Log.error("Can not load Object with id " + id);
+      return null;
     }
-    return id2ObjectMap.get(getID(idx)).get();
   }
 
   @Override
@@ -116,55 +153,62 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
    * e.g. one is authorized to access it
    * this is NOT a range check
    */
+  // TODO: needed?
   public boolean isPresent(int idx) {
     assertInclusiveIdxInBounds(idx);
-    if (!isLoaded(idx)) {
-      loadObject(idx);
+    ensureIdLoaded(idx);
+    return loadSingleObject(getID(idx)).isPresent();
+  }
+
+  protected void ensureIdLoaded(int idx) {
+    if(!idStorage.containsIdx(idx)){
+      loadID(idx);
     }
-    return isLoaded(idx)
-        && id2ObjectMap.get(getID(idx)).isPresent();
   }
 
   public void setIDs(Map<Integer, Long> changes) {
     setIdxsFunction.accept(changes);
+    idStorage.set(changes);
   }
 
   public void addIDs(int idx, List<Long> additions) {
+    ensureSizeLoaded();
+    idStorage.addAll(idx, additions);
     addIDsFunction.accept(idx, additions);
+    size += additions.size();
   }
 
   public void removeIdxs(Set<Integer> idxs) {
+    ensureSizeLoaded();
+    idStorage.remove(idxs);
     removeIdxsFunction.accept(idxs);
+    size -= idxs.size();
   }
 
   protected boolean isLoaded(int idx) {
     return isLoaded(getID(idx));
   }
 
+  // TODO: why is this needed?
   protected boolean isLoaded(long id) {
-    return id2ObjectMap.containsKey(id);
+    return loadSingleObject(id).isPresent();
+  }
+
+  protected LoadResult<E> loadSingleObject(long id) {
+    List<LoadResult<E>> res = loadObjectsFunction.apply(Collections.singletonList(id));
+    if(res.isEmpty()){
+      return new LoadResult<>(LoadingState.FAILED_TO_LOAD);
+    }
+
+    return res.get(0);
   }
 
   protected boolean isLoadedID(int idx) {
-    return idx2IDMap.containsKey(idx);
+    return idStorage.containsIdx(idx);
   }
 
   protected void loadObject(int idx) {
-    loadObjects(idx, idx + 1);
-  }
 
-  protected void loadObjects(int startIdx, int endIdx) {
-    List<Long> ids = getIDs(startIdx, endIdx);
-    List<LoadResult<E>> objects = loadObjectsFunction.apply(ids);
-    if (ids.size() != objects.size()) {
-      Log.error(UNEXPECTED_LIST_LENGTH_ERROR);
-    }
-
-    Iterator<Long> idIt = ids.iterator();
-    Iterator<LoadResult<E>> objIt = objects.iterator();
-    while (idIt.hasNext() && objIt.hasNext()) {
-      id2ObjectMap.put(idIt.next(), objIt.next());
-    }
   }
 
   protected void loadID(int idx) {
@@ -178,9 +222,11 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     if (ids.size() != endIdx - startIdx) {
       Log.error(UNEXPECTED_LIST_LENGTH_ERROR);
     }
+    Map<Integer, Long> idx2IDMap = new HashMap<>();
     for (int idx = 0; idx < endIdx - startIdx; idx++) {
       idx2IDMap.put(idx + startIdx, ids.get(idx));
     }
+    idStorage.set(idx2IDMap);
   }
 
   protected void assertInclusiveIdxInBounds(int idx) {
@@ -199,7 +245,9 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     return getIDs(idx, idx + 1).get(0);
   }
 
-  protected List<Long> getIDs(int startIdx, int endIdx) {
+  // Wird intern genutzt, um ids nachzuladen.
+  // Muss public sein, damit im server die entsprechenden ids an den client zu schicken(auf Anfrage)
+  public List<Long> getIDs(int startIdx, int endIdx) {
     assertExclusiveIdxInBounds(startIdx);
     assertExclusiveIdxInBounds(endIdx);
     boolean allLoaded = true;
@@ -213,7 +261,14 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     }
     List<Long> ids = new LinkedList<>();
     for (int idx = startIdx; idx < endIdx; idx++) {
-      ids.add(idx2IDMap.get(idx));
+      // TODO: bulk operation
+      Optional<Long> idOpt = idStorage.getId(idx);
+      if(idOpt.isPresent()) {
+        ids.add(idOpt.get());
+      }else{
+        // TODO: Better error handling
+        throw new IllegalStateException("Can not find id for index " + idx);
+      }
     }
     return ids;
   }
@@ -224,12 +279,11 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
    */
   public void resetStructureCache() {
     size = UNKNOWN_SIZE;
-    idx2IDMap = new HashMap<>();
+    idStorage.clear();
   }
 
   public void resetCache() {
     resetStructureCache();
-    id2ObjectMap = new HashMap<>();
   }
 
   /**
@@ -239,9 +293,17 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     return elem.getGemId();
   }
 
-  // TODO AHe: Why do we need this?
   @Override
   public long getGemId() {
     return gemID;
+  }
+
+  public int sizeLocallyKnownIds(){
+    return idStorage.size();
+  }
+
+  // Pseudo-build that does nothing
+  public Optional<GemList<E>> build(){
+    return Optional.of(this);
   }
 }

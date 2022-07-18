@@ -19,13 +19,9 @@ package hardy;
 
 import stanley.HumanCommandObserver;
 import stanley.PersonCommandObserver;
-import umlp.rte.HashMapWithOrderedKeys;
-import umlp.rte.NotificationScope;
+import umlp.rte.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class FlensburgMock extends FlensburgManager {
 
@@ -46,6 +42,7 @@ public class FlensburgMock extends FlensburgManager {
   // get the next free GemId -----------------------------------
   // simple solution: just counting, starting with 1001
   static protected long freeGemId = 1001L;
+  static protected long freeGemListId = 20_000L;
 
   //+ geheimes Hilfsmethode um gemId's für tests zu 
   // manipulieren (wenn notwendig)
@@ -55,6 +52,11 @@ public class FlensburgMock extends FlensburgManager {
   
   protected long _doGetFreeGemId() {
     return freeGemId++;
+  }
+
+  @Override
+  protected long _doGetFreeGemListId() {
+    return freeGemListId++;
   }
 
   @Override
@@ -295,8 +297,25 @@ public class FlensburgMock extends FlensburgManager {
   // Da FlensburgMock alle Daten im Speicher verwaltet macht eine GemList hier wenig Sinn, da sonst an anderer Stelle
   // eine weitere Verwaltung der Cars in einer Liste implementiert werden müsste.
   @Override
-  protected List<Car> _doCreateOwns(Person p) {
-    return new ArrayList<>();
+  protected GemList<Car> _doCreateOwns(long gemListId, List<Long> initialCarGemIds) {
+    MockGemList<Car> res = new MockGemList<>(
+        gemListId,
+        id -> _doCarOpt(id).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),
+        initialCarGemIds
+    );
+    gemLists.put(gemListId, res);
+    return res;
+  }
+
+  @Override
+  protected GemList<Car> _doCreateOwnsBuilder(long gemListId) {
+    MockGemListBuilder<Car> res = new MockGemListBuilder<>(
+        gemListId,
+        gemId -> _doCarOpt(gemId).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),
+        Collections.emptyList()
+    );
+    gemLists.put(gemListId, res);
+    return res;
   }
 
   @Override

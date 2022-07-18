@@ -1,12 +1,19 @@
 package hardy;
 //+ HWC-PT
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import stanley.FlensburgTestContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CityInfoTest {
+
+  @BeforeEach
+  public void clear(){
+    FlensburgTestContext.clear();
+  }
 
   @Test
   public void testCityInfo(){

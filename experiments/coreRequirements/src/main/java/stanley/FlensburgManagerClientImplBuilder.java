@@ -18,6 +18,7 @@ public class FlensburgManagerClientImplBuilder {
   protected GeneralErrorCollector generalErrorCollector;
   protected HumanErrorCollector humanErrorCollector;
   protected PersonErrorCollector personErrorCollector;
+  protected ClientCommandManager commandManager;
 
   public FlensburgManagerClientImplBuilder backendContext(FlensburgTestContext backendContext){
     this.backendContext = backendContext;
@@ -39,6 +40,11 @@ public class FlensburgManagerClientImplBuilder {
     return this;
   }
 
+  public FlensburgManagerClientImplBuilder commandManager(ClientCommandManager commandManager){
+    this.commandManager = commandManager;
+    return this;
+  }
+
   public Optional<FlensburgTestContext> build(){
     if(backendContext == null){
       Log.error("Can not build FlensburgTestContext without a backend context!");
@@ -46,7 +52,7 @@ public class FlensburgManagerClientImplBuilder {
     }
 
     FlensburgManagerClientImpl res = new FlensburgManagerClientImpl();
-    ClientCommandManager clientCommandManager = new ClientCommandManager(backendContext);
+    ClientCommandManager clientCommandManager = commandManager != null ? commandManager : new ClientCommandManager(backendContext);
     FlensburgTestContext flensburgTestContext = new FlensburgTestContext(
         res,
         clientCommandManager,

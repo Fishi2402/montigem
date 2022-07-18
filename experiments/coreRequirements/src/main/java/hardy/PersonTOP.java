@@ -3,10 +3,11 @@ package hardy;
 //+ GEN-P        : generated for the product
 
 // todo NN: !com.google.common.: Muss das Teil dieser Imports sein, Rücksprache mit BR
-// todo FDr: !hier muss die LazyList hin, keine Sets, keine anderen Lists
 
 import com.google.common.collect.Sets;
+import com.google.gson.annotations.JsonAdapter;
 import umlp.rte.Gem;
+import umlp.rte.GemList;
 import umlp.rte.NotificationScope;
 
 import java.util.*;
@@ -39,7 +40,9 @@ public abstract class PersonTOP extends Human {
   // The signature is a List, even though it might have been an
   // unordered Association.
   // The implementation will be a LazyList
-  protected List<Car> owns;
+  // Siehe PersonOwnsTypeAdapter für Erklärung
+  @JsonAdapter(PersonOwnsTypeAdapter.class)
+  protected GemList<Car> owns;
   // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
   
   //+ Bem: insgesamt sind es etwa 30 generierte Ftnen, von denen hier
@@ -71,7 +74,7 @@ public abstract class PersonTOP extends Human {
   protected void initPerson() {
     this.nickname = "";
     this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns((Person)this);
+    this.owns = FlensburgManager.createOwns(FlensburgManager.getFreeGemListId());
   }
   
   //+ initialization is externalized to be reusable (if needed)
@@ -79,10 +82,10 @@ public abstract class PersonTOP extends Human {
   protected void init(String nickname) {
     this.nickname = nickname;
     this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns((Person)this);
+    this.owns = FlensburgManager.createOwns(FlensburgManager.getFreeGemListId());
   }
   
-  protected void init(String nickname, List<Car> owns) {
+  protected void init(String nickname, GemList<Car> owns) {
     this.nickname = nickname;
     this.mainResidence = null;
     this.owns = owns;
@@ -273,8 +276,6 @@ public abstract class PersonTOP extends Human {
   }
 
   public void addOwns(int index, Car o, NotificationScope scope){
-    boolean res = false;
-
     if (o == null) {
       throw new IllegalArgumentException("Null argument not allowed here");
     }
@@ -392,7 +393,13 @@ public abstract class PersonTOP extends Human {
    * / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
    */
   public abstract String getClubname();
-  
+
+  // Used for testing
+  // TODO: should not be used/usable when not testing
+  public GemList<Car> getOwnsGemList() {
+    return owns;
+  }
+
   // -----------------------------------------------------------------
   
   /* Ausbaustufen (todo):
