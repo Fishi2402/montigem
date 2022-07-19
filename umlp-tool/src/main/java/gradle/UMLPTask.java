@@ -9,6 +9,7 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileType;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.*;
 import org.gradle.work.ChangeType;
 import org.gradle.work.FileChange;
@@ -51,10 +52,15 @@ public abstract class UMLPTask extends DefaultTask {
   @Incremental
   abstract DirectoryProperty getHwcDir();
 
-  @InputFile
+  @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  abstract RegularFileProperty getConfigTemplate();
+  @Incremental
+  abstract DirectoryProperty getTmplDir();
+
+  @Input
+  @org.gradle.api.tasks.Optional
+  abstract Property<String> getConfigTemplate();
 
   @Input
   @org.gradle.api.tasks.Optional
@@ -120,9 +126,14 @@ public abstract class UMLPTask extends DefaultTask {
       result.add(handlePath.apply(getHwcDir().getAsFile().get().toPath()));
     }
 
+    if(this.getTmplDir().isPresent()) {
+      result.add("-fp");
+      result.add(handlePath.apply(getTmplDir().getAsFile().get().toPath()));
+    }
+
     if(this.getConfigTemplate().isPresent()){
       result.add("-ct");
-      result.add(handlePath.apply(getConfigTemplate().getAsFile().get().toPath()));
+      result.add(getConfigTemplate().get());
     }
 
     if (this.getMoreArgs().isPresent()) {

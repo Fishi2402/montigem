@@ -14,6 +14,16 @@ public class UMLPToolTest extends AbstractUMLPTest {
     assertNoErrors();
   }
 
+  @Test
+  public void testRunMethod4Config() {
+    UMLPTool tool = new UMLPTool();
+    tool.run(new String[]{"-i", "src/test/resources/de/monticore/A.umlp",
+            "-o", "target/generated/config",
+            "-fp", "src/test/resources",
+            "-ct", "MyConfig.ftl"});
+    assertNoErrors();
+  }
+
   @Disabled // TODO: Fix imports in UMLP Language
   @Test
   public void testRunMethod4CimportsA() {

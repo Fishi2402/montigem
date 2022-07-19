@@ -29,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static umlp.UMLPToolOptions.*;
 
@@ -110,6 +111,14 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
 
+      MCPath fpPath = new MCPath();
+      if(TMPL_PATH.isSelected(cmd)){
+        for (String v : cmd.getOptionValues(TMPL_PATH.getCMD())) {
+          fpPath.addEntry(Paths.get(v));
+        }
+      }
+
+
       ReportManager.ReportManagerFactory reportManagerFactory = new UMLPReports(outDir.getPath(),
               reportDir.getPath(), reportPathOutput, hwcPath);
 
@@ -157,6 +166,10 @@ public class UMLPTool extends UMLPToolTOP {
 
       // set hwc directories
       genSetup.setHandcodedPath(hwcPath);
+
+      // set template path
+      genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
+              .map(p -> p.toFile()).collect(Collectors.toList()));
 
       // execute generator
       CD4CodeMill.init();

@@ -29,8 +29,9 @@ compileJava.onlyIf { project.hasProperty('testCompile') }
 task generateJava(type: UMLPTask) {
   group = "umlP"
   inputDir = layout.projectDirectory.dir("models")
+  tmplDir = layout.projectDirectory.dir("src/main/resources")
   hwcDir = layout.projectDirectory.dir("hwc/")
-
+  configTemplate = "MyConfig.ftl"
   outputDir = layout.buildDirectory.dir("generated-sources/")
   outputs.cacheIf { false } // This task is used to TEST THE CACHE! So it shouldn't be cached
 }
