@@ -203,14 +203,13 @@ public abstract class PersonTOP extends Human {
   }
 
   public boolean removeOwns(Car o, NotificationScope scope) {
-    boolean res = false;
-    if (this.owns.contains(o)) {
-      res = this.owns.remove(o);
+    if (this.owns.remove(o)) {
       checkOwns();
       personObservers.forEach(obs -> obs.maybeNotifyRemoveOwns((Person) this, o.getGemId(), scope));
+      return true;
     }
     
-    return res;
+    return false;
   }
 
   public Car removeOwns(int idx){
@@ -221,6 +220,10 @@ public abstract class PersonTOP extends Human {
     Car c = owns.remove(idx);
     personObservers.forEach(obs -> obs.maybeNotifyRemoveOwns((Person) this, c.getGemId(), scope));
     return c;
+  }
+
+  public void removeOwnsByIdSure(long carGemId) {
+    owns.removeIdSure(carGemId);
   }
   
   public boolean checkOwns() {

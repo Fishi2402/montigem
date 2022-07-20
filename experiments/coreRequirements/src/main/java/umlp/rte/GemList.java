@@ -20,6 +20,9 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   protected final static String ELEMENT_NOT_AVAILABLE_ERROR =
       "0xAC726 reqested element has not been loaded";
 
+  protected final static String FAILED_TO_LOAD_IDS_ERROR =
+      "0xAC727 failed to load ids";
+
   protected final static int UNKNOWN_SIZE = -32;
 
   protected final static int INITIAL_LOAD_SIZE = 10;
@@ -219,6 +222,11 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     assertExclusiveIdxInBounds(startIdx);
     assertExclusiveIdxInBounds(endIdx);
     List<Long> ids = loadIDsFunction.apply(startIdx, endIdx);
+    if(ids == null){
+      Log.error(FAILED_TO_LOAD_IDS_ERROR);
+      return;
+    }
+
     if (ids.size() != endIdx - startIdx) {
       Log.error(UNEXPECTED_LIST_LENGTH_ERROR);
     }
@@ -305,5 +313,15 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   // Pseudo-build that does nothing
   public Optional<GemList<E>> build(){
     return Optional.of(this);
+  }
+
+  /**
+   * Removes the given gemId from the idStorage.
+   * Can only be called if the idStorage contains the gemId, otherwise the size will become invalid.
+   * The gemId is not required to be loaded in the idStorage, thus the result pf idStorage.removeId must not be returned
+   */
+  public void removeIdSure(long gemId) {
+    size--;
+    idStorage.removeId(gemId);
   }
 }

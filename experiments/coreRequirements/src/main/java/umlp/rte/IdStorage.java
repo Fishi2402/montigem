@@ -26,4 +26,6 @@ public interface IdStorage {
   void clear();
 
   int size();
+
+  boolean removeId(long gemId);
 }

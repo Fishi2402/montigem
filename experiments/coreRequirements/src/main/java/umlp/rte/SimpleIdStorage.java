@@ -98,4 +98,22 @@ public class SimpleIdStorage implements IdStorage{
   public int size() {
     return idxToId.size();
   }
+
+  @Override
+  public boolean removeId(long gemId) {
+    int key = -1;
+    for (Map.Entry<Integer, Long> e : idxToId.entrySet()) {
+      if(Objects.equals(e.getValue(), gemId)){
+        key = e.getKey();
+        break;
+      }
+    }
+
+    if(key >= 0){
+      idxToId.remove(key);
+      return true;
+    }else{
+      return false;
+    }
+  }
 }

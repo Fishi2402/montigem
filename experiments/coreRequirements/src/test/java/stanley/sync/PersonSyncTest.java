@@ -3,6 +3,7 @@ package stanley.sync;
 import de.se_rwth.commons.logging.Log;
 import hardy.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import stanley.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
@@ -249,5 +250,66 @@ public class PersonSyncTest {
     PersonBuilder pb1001 = FlensburgManager.personBuilder();
     CarBuilder c = FlensburgManager.carBuilder();
     pb1001.ownsAdd(c);
+  }
+
+  // TODO: id is removed twice in server, once via index and once via command
+  // Are other operations also executed twice? E.g. setAge?
+  // Also see testRemoveFromGemListInServer
+  @Disabled
+  @Test
+  public void testRemoveFromGemListInClient(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Create a Person with car @ server", "PersonSyncTest");
+    serverContext.activate();
+    PersonBuilder pb1001 = FlensburgManager.personBuilder();
+    Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Car c = FlensburgManager.carBuilder().owns(pb1001).build().get();
+    Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
+
+    clientContext.activate();
+    Person p1001Client = FlensburgManager.getPersonSure(startGemId);
+    assertNotSame(p1001, p1001Client);
+    assertEquals(1, p1001Client.sizeOwnss());
+
+    p1001Client.removeOwns(0);
+    assertEquals(0, p1001Client.sizeOwnss());
+
+    serverContext.activate();
+    assertEquals(0, p1001.sizeOwnss());
+  }
+
+
+  @Disabled
+  @Test
+  public void testRemoveFromGemListInServer(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Create a Person with car @ server", "PersonSyncTest");
+    serverContext.activate();
+    PersonBuilder pb1001 = FlensburgManager.personBuilder();
+    Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Car c = FlensburgManager.carBuilder().owns(pb1001).build().get();
+    Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
+
+    clientContext.activate();
+    Person p1001Client = FlensburgManager.getPersonSure(startGemId);
+    assertNotSame(p1001, p1001Client);
+    assertEquals(1, p1001Client.sizeOwnss());
+
+    serverContext.activate();
+    p1001.removeOwns(c);
+    assertEquals(0, p1001.sizeOwnss());
+
+    clientContext.activate();
+    assertEquals(0, p1001Client.sizeOwnss());
   }
 }

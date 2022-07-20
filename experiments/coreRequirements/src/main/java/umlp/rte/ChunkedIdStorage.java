@@ -207,6 +207,42 @@ public class ChunkedIdStorage implements IdStorage {
     return res;
   }
 
+  // TODO: test
+  @Override
+  public boolean removeId(long gemId) {
+    int chunkId = -1;
+    int idx = -1;
+    for (int i = 0; i < chunks.size(); i++) {
+      Chunk chunk = chunks.get(i);
+      List<Long> ids = chunk.ids;
+      for (int j = 0; j < ids.size(); j++) {
+        Long id = ids.get(j);
+        if (id == gemId) {
+          chunkId = i;
+          idx = j;
+          break;
+        }
+      }
+    }
+
+    if(chunkId >= 0 && idx >= 0){
+      Chunk toBeSplit = chunks.remove(chunkId);
+      List<Chunk> res = new ArrayList<>();
+
+      if(idx > 0){
+        res.add(new Chunk(toBeSplit.startIndex, toBeSplit.ids.subList(0, idx)));
+      }
+
+      if(idx < toBeSplit.ids.size() - 1){
+        res.add(new Chunk(toBeSplit.startIndex + idx + 1, toBeSplit.ids.subList(idx + 1, toBeSplit.ids.size())));
+      }
+      chunks.addAll(chunkId, res);
+      return true;
+    }
+
+    return false;
+  }
+
   public static class Chunk{
     int startIndex;
     List<Long> ids;
