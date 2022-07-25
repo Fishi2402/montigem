@@ -3,7 +3,9 @@ package umlp.rte;
 // RTE-P
 
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 
 // GemList, welche bei der Erstellung von Objekten benutzt werden muss, da sie in diesem Zustand
@@ -16,8 +18,8 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
   // Nach build() wird diese geleert und nicht weiter verwendet.
   protected Map<Integer, E> idxToBuilder = new HashMap<>();
 
-  public GemListBuilder(long gemID, Supplier<Integer> loadSizeFunction, BiFunction<Integer, Integer, List<Long>> loadIDsFunction, Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction, Consumer<Map<Integer, Long>> setIdxsFunction, BiConsumer<Integer, List<Long>> addIDsFunction, Consumer<Set<Integer>> removeIdxsFunction) {
-    super(gemID, loadSizeFunction, loadIDsFunction, loadObjectsFunction, setIdxsFunction, addIDsFunction, removeIdxsFunction);
+  public GemListBuilder(long gemID, Supplier<Integer> loadSizeFunction, BiFunction<Integer, Integer, List<Long>> loadIDsFunction, Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction) {
+    super(gemID, loadSizeFunction, loadIDsFunction, loadObjectsFunction);
   }
 
   public Optional<GemList<E>> build(){

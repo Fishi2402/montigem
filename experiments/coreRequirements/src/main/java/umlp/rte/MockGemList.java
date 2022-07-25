@@ -4,7 +4,9 @@ package umlp.rte;
 // GEN-P: Demos mit FlensburgMock
 
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 // Eine Implementierung der GemList, welche alle IDs lokal hält.
@@ -14,16 +16,13 @@ public class MockGemList<E extends GemIdentifiable> extends GemList<E> {
   protected Function<Long, LoadResult<E>> loadSingleObjectFunction;
 
   public MockGemList(long gemID, Function<Long, LoadResult<E>> loadSingleObjectFunction, List<Long> initialIds) {
-    super(gemID, null, null, null, null, null, null);
+    super(gemID, null, null, null);
     this.loadSingleObjectFunction = loadSingleObjectFunction;
     idStorage.addAll(0, initialIds);
 
     loadSizeFunction = idStorage::size;
     loadIDsFunction = this::doLoadIds;
     loadObjectsFunction = this::doLoadObjects;
-    setIdxsFunction = this::emptySet;
-    addIDsFunction = this::emptyAdd;
-    removeIdxsFunction = this::emptyRemove;
   }
 
   protected List<Long> doLoadIds(int startIncl, int endExcl) {
@@ -49,20 +48,5 @@ public class MockGemList<E extends GemIdentifiable> extends GemList<E> {
     }
 
     return res;
-  }
-
-
-  // TODO: Remove these from GemList as well?
-  // Id management is internal
-  private void emptyRemove(Set<Integer> integers) {
-
-  }
-
-  private void emptyAdd(Integer integer, List<Long> longs) {
-
-  }
-
-  private void emptySet(Map<Integer, Long> integerLongMap) {
-
   }
 }

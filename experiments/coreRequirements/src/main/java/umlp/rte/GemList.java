@@ -4,7 +4,13 @@ package umlp.rte;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+// TODO: Brauchen wir hier Observer, oder werden die Observer eine ebene höher genutzt?
+// Sonst kann es zu Dopplung kommen, z.B. gibt es bei Person#addOwns die Methode PersonObserver#notifyAddOwns,
+// welche Überschnitt mit GemListObserver#notifyAddIDs hätte.
 
 /*
  * A lazy list
@@ -41,30 +47,18 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
 
   protected Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction;
 
-  protected Consumer<Map<Integer, Long>> setIdxsFunction;
-
-  protected BiConsumer<Integer, List<Long>> addIDsFunction;
-
-  protected Consumer<Set<Integer>> removeIdxsFunction;
-
   public GemList(
       long gemId,
       Supplier<Integer> loadSizeFunction,
       BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
-      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
-      Consumer<Map<Integer, Long>> setIdxsFunction,
-      BiConsumer<Integer, List<Long>> addIDsFunction,
-      Consumer<Set<Integer>> removeIdxsFunction
+      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction
   ){
     this(
         gemId,
         Collections.emptyList(),
         loadSizeFunction,
         loadIDsFunction,
-        loadObjectsFunction,
-        setIdxsFunction,
-        addIDsFunction,
-        removeIdxsFunction
+        loadObjectsFunction
     );
   }
 
@@ -73,10 +67,7 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
       List<Long> initialIds,
       Supplier<Integer> loadSizeFunction,
       BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
-      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
-      Consumer<Map<Integer, Long>> setIdxsFunction,
-      BiConsumer<Integer, List<Long>> addIDsFunction,
-      Consumer<Set<Integer>> removeIdxsFunction
+      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction
   ) {
     this.gemID = gemId;
     if(!initialIds.isEmpty()) {
@@ -86,22 +77,6 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     this.loadSizeFunction = loadSizeFunction;
     this.loadIDsFunction = loadIDsFunction;
     this.loadObjectsFunction = loadObjectsFunction;
-    this.setIdxsFunction = setIdxsFunction;
-    this.addIDsFunction = addIDsFunction;
-    this.removeIdxsFunction = removeIdxsFunction;
-    //initial load
-    //alternative: accept size + first few objects in constructor
-
-    // TODO: Not possible in current initialization order, gemId is needed to exec loadSizeFunction
-    // new PersonBuilder()
-    //  -> initPerson()
-    //    -> createOwns()
-    //      -> new GemList()
-    //      -> (size() needs Person.gemId)
-    //    =>
-    //  => Person.gemId = gemId
-    //int loadSize = Math.min(size(), INITIAL_LOAD_SIZE);
-    //loadObjects(0, loadSize);
   }
 
   public void ensureSizeLoaded(){
@@ -170,22 +145,20 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   }
 
   public void setIDs(Map<Integer, Long> changes) {
-    setIdxsFunction.accept(changes);
     idStorage.set(changes);
   }
 
   public void addIDs(int idx, List<Long> additions) {
     ensureSizeLoaded();
     idStorage.addAll(idx, additions);
-    addIDsFunction.accept(idx, additions);
     size += additions.size();
   }
 
   public void removeIdxs(Set<Integer> idxs) {
     ensureSizeLoaded();
     idStorage.remove(idxs);
-    removeIdxsFunction.accept(idxs);
     size -= idxs.size();
+    assert size >= 0;
   }
 
   protected boolean isLoaded(int idx) {
@@ -208,10 +181,6 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
 
   protected boolean isLoadedID(int idx) {
     return idStorage.containsIdx(idx);
-  }
-
-  protected void loadObject(int idx) {
-
   }
 
   protected void loadID(int idx) {
@@ -322,6 +291,7 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
    */
   public void removeIdSure(long gemId) {
     size--;
+    assert size >= 0;
     idStorage.removeId(gemId);
   }
 }

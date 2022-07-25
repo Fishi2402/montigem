@@ -116,27 +116,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
         getFreeGemListId(),
         this::loadHumanSize,
         this::loadHumanGemIds,
-        this::loadHumansByGemIds,
-        this::setHumanIdsToGemIds,
-        this::addHumans,
-        this::removeHumansWithIndices
+        this::loadHumansByGemIds
     );
-  }
-
-  private void removeHumansWithIndices(Set<Integer> indices) {
-    // TODO: soll löschen auf diese Weise erlaubt sein?
-    throw new IllegalStateException("Not supported");
-  }
-
-  private void addHumans(int index, List<Long> gemIds) {
-    // TODO: soll erstellen auf diese Weise erlaubt sein?
-    throw new IllegalStateException("Not supported");
-  }
-
-  private void setHumanIdsToGemIds(Map<Integer, Long> indicesToGemIds) {
-    for (int i = 0; i < indicesToGemIds.size(); i++) {
-      humanListGemIds.add(indicesToGemIds.get(i));
-    }
   }
 
   private List<LoadResult<Human>> loadHumansByGemIds(List<Long> gemIds) {
@@ -242,27 +223,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
         getFreeGemListId(),
         this::loadPersonSize,
         this::loadPersonGemIds,
-        this::loadPersonsByGemIds,
-        this::setPersonIdsToGemIds,
-        this::addPersons,
-        this::removePersonsWithIndices
+        this::loadPersonsByGemIds
     );
-  }
-
-  private void removePersonsWithIndices(Set<Integer> indices) {
-    // TODO: soll löschen auf diese Weise erlaubt sein?
-    throw new IllegalStateException("Not supported");
-  }
-
-  private void addPersons(int index, List<Long> gemIds) {
-    // TODO: soll erstellen auf diese Weise erlaubt sein?
-    throw new IllegalStateException("Not supported");
-  }
-
-  private void setPersonIdsToGemIds(Map<Integer, Long> indicesToGemIds) {
-    for (int i = 0; i < indicesToGemIds.size(); i++) {
-      personListGemIds.add(indicesToGemIds.get(i));
-    }
   }
 
   private List<LoadResult<Person>> loadPersonsByGemIds(List<Long> gemIds) {
@@ -365,27 +327,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
         getFreeGemListId(),
         this::loadAddressSize,
         this::loadAddressGemIds,
-        this::loadAddresssByGemIds,
-        this::setAddressIdsToGemIds,
-        this::addAddresss,
-        this::removeAddresssWithIndices
+        this::loadAddresssByGemIds
     );
-  }
-
-  private void removeAddresssWithIndices(Set<Integer> indices) {
-    // TODO: soll löschen auf diese Weise erlaubt sein?
-    throw new IllegalStateException("Not supported");
-  }
-
-  private void addAddresss(int index, List<Long> gemIds) {
-    // TODO: soll erstellen auf diese Weise erlaubt sein?
-    throw new IllegalStateException("Not supported");
-  }
-
-  private void setAddressIdsToGemIds(Map<Integer, Long> indicesToGemIds) {
-    for (int i = 0; i < indicesToGemIds.size(); i++) {
-      addressListGemIds.add(indicesToGemIds.get(i));
-    }
   }
 
   private List<LoadResult<Address>> loadAddresssByGemIds(List<Long> gemIds) {
@@ -507,12 +450,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
             }
           }
           return res;
-        },
-        // TODO AHe, FDr: Diese mutierenden Commands werden NICHT vom PersonCommandObserver erstellt
-        // im gegensatz zu allen anderen settern
-        idxToId -> CommandManager.executeSingleCommand(new GemList_setIdxs(gemListId, idxToId)),
-        (startIdx, ids) -> CommandManager.executeSingleCommand(new Person_addIdsOwns(gemListId, startIdx, ids)),
-        indices -> CommandManager.executeSingleCommand(new GemList_removeIdxs(gemListId, indices))
+        }
     );
   }
 
@@ -534,12 +472,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
             }
           }
           return res;
-        },
-        // TODO AHe, FDr: Diese mutierenden Commands werden NICHT vom PersonCommandObserver erstellt
-        // im gegensatz zu allen anderen settern
-        idxToId -> CommandManager.executeSingleCommand(new GemList_setIdxs(gemListId, idxToId)),
-        (startIdx, ids) -> CommandManager.executeSingleCommand(new Person_addIdsOwns(gemListId, startIdx, ids)),
-        indices -> CommandManager.executeSingleCommand(new GemList_removeIdxs(gemListId, indices))
+        }
     );
   }
 
