@@ -17,8 +17,6 @@ package hardy;
   
 */
 
-import stanley.HumanCommandObserver;
-import stanley.PersonCommandObserver;
 import umlp.rte.*;
 
 import java.util.*;
@@ -69,7 +67,7 @@ public class FlensburgMock extends FlensburgManager {
   // Manages a Map<Long, Object>  for each class
 
   protected HashMapWithOrderedKeys<Long,Person> persons = new HashMapWithOrderedKeys<>();
-  protected PersonCommandObserver thePersonCommandObserver = new PersonCommandObserver();
+  protected PersonCommandSendingObserver thePersonCommandSendingObserver = new PersonCommandSendingObserver();
 
   // get a Builder ---------------------------------------
   protected PersonBuilder _doPersonBuilder() {
@@ -93,8 +91,8 @@ public class FlensburgMock extends FlensburgManager {
       return Optional.empty();
     }
 
-    if(!value.containsObserver(thePersonCommandObserver)){
-      value.addObserver(thePersonCommandObserver);
+    if(!value.containsObserver(thePersonCommandSendingObserver)){
+      value.addObserver(thePersonCommandSendingObserver);
     }
 
     return Optional.of(value);
@@ -111,8 +109,8 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doAddPerson(Person o) {
     // TODO AHe: Do we get fresh gemId here or is it set by the user?
     persons.put(o.getGemId(), o);
-    if(!o.containsObserver(thePersonCommandObserver)){
-      o.addObserver(thePersonCommandObserver);
+    if(!o.containsObserver(thePersonCommandSendingObserver)){
+      o.addObserver(thePersonCommandSendingObserver);
     }
     flensburgObservers.forEach(obs -> obs.notifyPersonAdded(o.getGemId()));
   }
@@ -140,7 +138,7 @@ public class FlensburgMock extends FlensburgManager {
   // --- Class Human ---
   protected HashMapWithOrderedKeys<Long, Human> humans = new HashMapWithOrderedKeys<>();
   // TODO: for all classes
-  protected HumanCommandObserver theHumanCommandObserver = new HumanCommandObserver();
+  protected HumanCommandSendingObserver theHumanCommandSendingObserver = new HumanCommandSendingObserver();
 
   @Override
   protected HumanBuilder _doHuman() {
@@ -158,8 +156,8 @@ public class FlensburgMock extends FlensburgManager {
       return Optional.empty();
     }
 
-    if(!value.containsObserver(theHumanCommandObserver)){
-      value.addObserver(theHumanCommandObserver);
+    if(!value.containsObserver(theHumanCommandSendingObserver)){
+      value.addObserver(theHumanCommandSendingObserver);
     }
 
     return Optional.of(value);
@@ -173,8 +171,8 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doAddHuman(Human o) {
     humans.put(o.getGemId(), o);
-    if(!o.containsObserver(theHumanCommandObserver)){
-      o.addObserver(theHumanCommandObserver);
+    if(!o.containsObserver(theHumanCommandSendingObserver)){
+      o.addObserver(theHumanCommandSendingObserver);
     }
     flensburgObservers.forEach(obs -> obs.notifyHumanAdded(o.getGemId()));
   }
@@ -184,7 +182,7 @@ public class FlensburgMock extends FlensburgManager {
     if(dummyProvider != null){
       while (humans.size() < dummyProvider.getMaxHumans()){
         Human h = dummyProvider.inventHuman();
-        h.addObserver(theHumanCommandObserver);
+        h.addObserver(theHumanCommandSendingObserver);
       }
     }
     return humans.values();
@@ -293,9 +291,6 @@ public class FlensburgMock extends FlensburgManager {
     flensburgObservers.forEach(obs -> obs.notifyCarDeleted(o.getGemId()));
   }
 
-  // TODO AHe: All of the cars methods are stubs. Implement once purpose is clear
-  // Da FlensburgMock alle Daten im Speicher verwaltet macht eine GemList hier wenig Sinn, da sonst an anderer Stelle
-  // eine weitere Verwaltung der Cars in einer Liste implementiert werden müsste.
   @Override
   protected GemList<Car> _doCreateOwns(long gemListId, List<Long> initialCarGemIds) {
     MockGemList<Car> res = new MockGemList<>(
