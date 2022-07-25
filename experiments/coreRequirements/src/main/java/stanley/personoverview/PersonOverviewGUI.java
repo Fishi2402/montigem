@@ -1,22 +1,24 @@
 package stanley.personoverview;
 
 import hardy.Person;
-import umlp.rte.GemList;
 // Col is a frontend (client) RTE class representing table column configuration
-import umlp.rte.Col;
+import umlp.rte.gui.Col;
+
+import java.util.List;
+import java.util.ArrayList;
 
 // page enables editing of a person and their children, used to test validations of dependent fields
 // in this case, age of parent has to be older than a child
 public class PersonOverviewGUI {
-  protected final List<Person> p;
+  protected final List<Person> ps;
+
+  protected List<? extends Object> rows = new ArrayList<>();
 
   // configuration of table columns
   protected List<Col> tableColumns = new ArrayList<>();
 
   public PersonOverviewGUI(List<Person> ps) {
     this.ps = ps;
-
-    PersonErrorCollector.addErrorObserver(this);
 
     setRows(ps);
 
@@ -26,11 +28,11 @@ public class PersonOverviewGUI {
     setTableColumns(initialTableColumns);
   }
 
-  public List<Object> getRows() {
+  public List<? extends Object> getRows() {
     return this.ps;
   }
 
-  public void setRows(List<Object> rows) {
+  public void setRows(List<? extends Object> rows) {
     this.rows = rows;
   }
 

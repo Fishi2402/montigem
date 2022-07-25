@@ -391,6 +391,11 @@ public abstract class PersonTOP extends Human {
   //- todo dito
   
   // -----------------------------------------------------------------
+
+  // TODO add children
+  public List<Person> getChildren() {
+    return new ArrayList();
+  }
   
   /**
    * Derived attribute becomes an abstract Method for calculation

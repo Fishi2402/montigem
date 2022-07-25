@@ -32,7 +32,7 @@ umlp Flensburg {
 
     // todo (etwas spaeter: Assoziation *<-->* mit einbauen 
     // man beachte hier die intern gekapselte bidirektionale Verwaltung
-    association parent [1] Person -> (child) Person [*];
+    association parent [1] Person -> (children) Person [*];
 
     // ---------------------------------------------------------------------------
     
