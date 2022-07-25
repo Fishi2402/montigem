@@ -3,7 +3,6 @@ package stanley.sync;
 import de.se_rwth.commons.logging.Log;
 import hardy.*;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import stanley.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
@@ -252,10 +251,6 @@ public class PersonSyncTest {
     pb1001.ownsAdd(c);
   }
 
-  // TODO: id is removed twice in server, once via index and once via command
-  // Are other operations also executed twice? E.g. setAge?
-  // Also see testRemoveFromGemListInServer
-  @Disabled
   @Test
   public void testRemoveFromGemListInClient(){
     FlensburgMock.init();
@@ -284,7 +279,6 @@ public class PersonSyncTest {
   }
 
 
-  @Disabled
   @Test
   public void testRemoveFromGemListInServer(){
     FlensburgMock.init();
