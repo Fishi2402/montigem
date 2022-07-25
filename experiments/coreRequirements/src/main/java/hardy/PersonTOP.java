@@ -34,6 +34,7 @@ public abstract class PersonTOP extends Human {
   protected String nickname;
   
   // Association with cardinality [1]
+  @JsonAdapter(PersonMainResidenceTypeAdapter.class)
   protected Gem<Address> mainResidence;
   
   // an Association: ------------------------------------------

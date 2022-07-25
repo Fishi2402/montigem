@@ -6,7 +6,10 @@ import umlp.rte.DatabaseAccessManager;
 import umlp.rte.GemList;
 import umlp.rte.NotificationScope;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class FlensburgManagerImpl extends FlensburgManager {
 
@@ -63,8 +66,9 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected Collection<Human> _doGetHumanList() {
-        return DatabaseAccessManager.getAll(Human.class);
+    protected GemList<Human> _doGetHumanList() {
+        // TODO: implement
+        throw new IllegalStateException("Not implemented");
     }
 
     @Override
@@ -97,8 +101,9 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected Collection<Person> _doGetPersonList() {
-        return DatabaseAccessManager.getAll(Person.class);
+    protected GemList<Person> _doGetPersonList() {
+        // TODO: impl
+        throw new IllegalStateException("Not implemented");
     }
 
     @Override
@@ -131,8 +136,9 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected Collection<Address> _doGetAddressList() {
-        return DatabaseAccessManager.getAll(Address.class);
+    protected GemList<Address> _doGetAddressList() {
+        // TODO: impl
+        throw new IllegalStateException("Not implemented");
     }
 
     @Override
@@ -165,8 +171,9 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected Collection<Car> _doGetCarList() {
-        return DatabaseAccessManager.getAll(Car.class);
+    protected GemList<Car> _doGetCarList() {
+        // TODO: impl
+        throw new IllegalStateException("Not implemented");
     }
 
     @Override

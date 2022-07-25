@@ -174,11 +174,11 @@ public abstract class FlensburgManager {
      *
      * @return a list of {@link Human} objects or an empty list, if no {@link Human} object is managed.
      */
-    public static Collection<Human> getHumanList() {
+    public static GemList<Human> getHumanList() {
         return getSingleton()._doGetHumanList();
     }
 
-    protected abstract Collection<Human> _doGetHumanList();
+    protected abstract GemList<Human> _doGetHumanList();
 
     public static void deleteHuman(Human o){
         getSingleton()._doDeleteHuman(o);
@@ -243,11 +243,11 @@ public abstract class FlensburgManager {
      *
      * @return a list of {@link Person} objects or an empty list, if no {@link Person} object is managed.
      */
-    public static Collection<Person> getPersonList() {
+    public static GemList<Person> getPersonList() {
         return getSingleton()._doGetPersonList();
     }
 
-    protected abstract Collection<Person> _doGetPersonList();
+    protected abstract GemList<Person> _doGetPersonList();
 
     public static void deletePerson(Person o){
         getSingleton()._doDeletePerson(o);
@@ -310,11 +310,11 @@ public abstract class FlensburgManager {
      *
      * @return a list of {@link Address} objects or an empty list, if no {@link Address} object is managed.
      */
-    public static Collection<Address> getAddressList() {
+    public static GemList<Address> getAddressList() {
         return getSingleton()._doGetAddressList();
     }
 
-    protected abstract Collection<Address> _doGetAddressList();
+    protected abstract GemList<Address> _doGetAddressList();
 
     public static void deleteAddress(Address o){
         getSingleton()._doDeleteAddress(o);
@@ -377,11 +377,11 @@ public abstract class FlensburgManager {
      *
      * @return a list of {@link Car} objects or an empty list, if no {@link Car} object is managed.
      */
-    public static Collection<Car> getCarList() {
+    public static GemList<Car> getCarList() {
         return getSingleton()._doGetCarList();
     }
 
-    protected abstract Collection<Car> _doGetCarList();
+    protected abstract GemList<Car> _doGetCarList();
 
     public static void deleteCar(Car o){
         getSingleton()._doDeleteCar(o);

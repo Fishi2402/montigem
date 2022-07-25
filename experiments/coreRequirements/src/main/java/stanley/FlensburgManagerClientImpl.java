@@ -106,18 +106,23 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     flensburgObservers.forEach(obs -> obs.notifyHumanAdded(o.getGemId()));
   }
 
-  protected List<Long> humanListGemIds = new ArrayList<>();
+  protected GemList<Human> humanGemList = null;
+
 
   @Override
-  protected Collection<Human> _doGetHumanList() {
-    // TODO AHe: manage all human in the GemList instead of a map in this class?
-    // TODO: must be created by server to contain the correct gemId!
-    return new GemList<>(
-        getFreeGemListId(),
-        this::loadHumanSize,
-        this::loadHumanGemIds,
-        this::loadHumansByGemIds
-    );
+  protected GemList<Human> _doGetHumanList() {
+    if(humanGemList == null){
+      // TODO: error handling
+      Long id = CommandManager.executeSingleCommand(new Human_get_gemListId()).asSimpleResult().get();
+      humanGemList = new GemList<>(
+          id,
+          this::loadHumanSize,
+          this::loadHumanGemIds,
+          this::loadHumansByGemIds
+      );
+    }
+
+    return humanGemList;
   }
 
   private List<LoadResult<Human>> loadHumansByGemIds(List<Long> gemIds) {
@@ -143,18 +148,10 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     return res.asSimpleResult().get();
   }
 
-  private boolean humanGemIdsLoaded = false;
-  private List<Long> humanGemIds = new ArrayList<>();
-
   protected List<Long> loadHumanGemIds(int startIndex, int endIndex) {
-    if (!humanGemIdsLoaded) {
-      // TODO: könnte auch teilweise on-demand geladen werden
-      SimpleResult<LongList> res = CommandManager.executeSingleCommand(new Human_ids()).asSimpleResult();
-      humanGemIds = res.get();
-      humanGemIdsLoaded = true;
-    }
-
-    return humanGemIds.subList(startIndex, endIndex);
+    // TODO: error handling
+    SimpleResult<LongList> res = CommandManager.executeSingleCommand(new Human_ids(startIndex, endIndex)).asSimpleResult();
+    return res.get();
   }
 
   @Override
@@ -213,18 +210,22 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     flensburgObservers.forEach(obs -> obs.notifyPersonAdded(o.getGemId()));
   }
 
-  protected List<Long> personListGemIds = new ArrayList<>();
-
+  protected GemList<Person> personGemList = null;
+  
   @Override
-  protected Collection<Person> _doGetPersonList() {
-    // TODO AHe: manage all human in the GemList instead of a map in this class?
-    // TODO: must be created by server to contain the correct gemId!
-    return new GemList<>(
-        getFreeGemListId(),
-        this::loadPersonSize,
-        this::loadPersonGemIds,
-        this::loadPersonsByGemIds
-    );
+  protected GemList<Person> _doGetPersonList() {
+    if(personGemList == null){
+      // TODO: error handling
+      Long id = CommandManager.executeSingleCommand(new Person_get_gemListId()).asSimpleResult().get();
+      personGemList = new GemList<>(
+          id,
+          this::loadPersonSize,
+          this::loadPersonGemIds,
+          this::loadPersonsByGemIds
+      );
+    }
+
+    return personGemList;
   }
 
   private List<LoadResult<Person>> loadPersonsByGemIds(List<Long> gemIds) {
@@ -250,18 +251,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     return res.asSimpleResult().get();
   }
 
-  private boolean personGemIdsLoaded = false;
-  private List<Long> personGemIds = new ArrayList<>();
-
   protected List<Long> loadPersonGemIds(int startIndex, int endIndex) {
-    if (!personGemIdsLoaded) {
-      // TODO: könnte auch teilweise on-demand geladen werden
-      SimpleResult<LongList> res = CommandManager.executeSingleCommand(new Person_ids()).asSimpleResult();
-      personGemIds = res.get();
-      personGemIdsLoaded = true;
-    }
-
-    return personGemIds.subList(startIndex, endIndex);
+    SimpleResult<LongList> res = CommandManager.executeSingleCommand(new Person_ids(startIndex, endIndex)).asSimpleResult();
+    return res.get();
   }
 
   @Override
@@ -317,18 +309,22 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     flensburgObservers.forEach(obs -> obs.notifyAddressAdded(o.getGemId()));
   }
 
-  protected List<Long> addressListGemIds = new ArrayList<>();
+  protected GemList<Address> addressGemList = null;
 
   @Override
-  protected Collection<Address> _doGetAddressList() {
-    // TODO AHe: manage all human in the GemList instead of a map in this class?
-    // TODO: must be created by server to contain the correct gemId!
-    return new GemList<>(
-        getFreeGemListId(),
-        this::loadAddressSize,
-        this::loadAddressGemIds,
-        this::loadAddresssByGemIds
-    );
+  protected GemList<Address> _doGetAddressList() {
+    if(addressGemList == null){
+      // TODO: error handling
+      Long id = CommandManager.executeSingleCommand(new Address_get_gemListId()).asSimpleResult().get();
+      addressGemList = new GemList<>(
+          id,
+          this::loadAddressSize,
+          this::loadAddressGemIds,
+          this::loadAddresssByGemIds
+      );
+    }
+
+    return addressGemList;
   }
 
   private List<LoadResult<Address>> loadAddresssByGemIds(List<Long> gemIds) {
@@ -354,18 +350,9 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     return res.asSimpleResult().get();
   }
 
-  private boolean addressGemIdsLoaded = false;
-  private List<Long> addressGemIds = new ArrayList<>();
-
   protected List<Long> loadAddressGemIds(int startIndex, int endIndex) {
-    if (!addressGemIdsLoaded) {
-      // TODO: könnte auch teilweise on-demand geladen werden
-      SimpleResult<LongList> res = CommandManager.executeSingleCommand(new Address_ids()).asSimpleResult();
-      addressGemIds = res.get();
-      addressGemIdsLoaded = true;
-    }
-
-    return addressGemIds.subList(startIndex, endIndex);
+    SimpleResult<LongList> res = CommandManager.executeSingleCommand(new Address_ids(startIndex, endIndex)).asSimpleResult();
+    return res.get();
   }
 
   @Override
@@ -421,10 +408,52 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     flensburgObservers.forEach(obs -> obs.notifyCarAdded(o.getGemId()));
   }
 
+  protected GemList<Car> carGemList = null;
+
   @Override
-  protected Collection<Car> _doGetCarList() {
-    return null;
+  protected GemList<Car> _doGetCarList() {
+    if(carGemList == null){
+      // TODO: error handling
+      Long id = CommandManager.executeSingleCommand(new Car_get_gemListId()).asSimpleResult().get();
+      carGemList = new GemList<>(
+          id,
+          this::loadCarSize,
+          this::loadCarGemIds,
+          this::loadCarsByGemIds
+      );
+    }
+
+    return carGemList;
   }
+
+  private List<LoadResult<Car>> loadCarsByGemIds(List<Long> gemIds) {
+    List<LoadResult<Car>> res = new ArrayList<>();
+
+    // Optimierung: Einen command um mehrere Objekte gleichzeitig zu laden
+    for (Long gemId : gemIds) {
+      SimpleResult<Car> resp = CommandManager.executeSingleCommand(new Car_get(gemId)).asSimpleResult();
+      if (resp.isSuccessful()) {
+        Car car = resp.get();
+        car.addObserver(theCarCommandObserver);
+        res.add(new LoadResult<>(car));
+      }
+      else {
+        res.add(new LoadResult<>(resp.getLoadingState()));
+      }
+    }
+    return res;
+  }
+
+  protected int loadCarSize() {
+    CommandResult<Integer> res = CommandManager.executeSingleCommand(new Car_size());
+    return res.asSimpleResult().get();
+  }
+
+  protected List<Long> loadCarGemIds(int startIndex, int endIndex) {
+    SimpleResult<LongList> res = CommandManager.executeSingleCommand(new Car_ids(startIndex, endIndex)).asSimpleResult();
+    return res.get();
+  }
+
 
   @Override
   protected void _doDeleteCar(Car o) {

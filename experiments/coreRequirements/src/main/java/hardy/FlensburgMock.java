@@ -19,7 +19,10 @@ package hardy;
 
 import umlp.rte.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class FlensburgMock extends FlensburgManager {
 
@@ -67,6 +70,13 @@ public class FlensburgMock extends FlensburgManager {
   // Manages a Map<Long, Object>  for each class
 
   protected HashMapWithOrderedKeys<Long,Person> persons = new HashMapWithOrderedKeys<>();
+  protected GemList<Person> personGemList = new MockGemList<>(
+      _doGetFreeGemListId(),
+      gemId -> Optional.ofNullable(persons.getOrDefault(gemId, null))
+          .map(LoadResult::new)
+          .orElse(new LoadResult<>(LoadingState.EMPTY)),
+      Collections.emptyList()
+  );
   protected PersonCommandSendingObserver thePersonCommandSendingObserver = new PersonCommandSendingObserver();
 
   // get a Builder ---------------------------------------
@@ -109,6 +119,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doAddPerson(Person o) {
     // TODO AHe: Do we get fresh gemId here or is it set by the user?
     persons.put(o.getGemId(), o);
+    personGemList.add(o);
     if(!o.containsObserver(thePersonCommandSendingObserver)){
       o.addObserver(thePersonCommandSendingObserver);
     }
@@ -116,14 +127,14 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   @Override
-  protected Collection<Person> _doGetPersonList() {
+  protected GemList<Person> _doGetPersonList() {
     if(dummyProvider != null){
       // TODO AHE: Use LazyList to create these on-demand? Also in all other doGet...List
       while (dummyProvider.getMaxPersons() < persons.size()){
         dummyProvider.inventPerson();
       }
     }
-    return persons.values();
+    return personGemList;
   }
 
   // TODO AHe: Impl dummyProvider for all Classes and use in test
@@ -132,11 +143,20 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doDeletePerson(Person o) {
     assert persons.containsKey(o.getGemId());
     persons.remove(o.getGemId());
+    personGemList.remove(o);
     flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(o.getGemId()));
   }
 
   // --- Class Human ---
+  // TODO: random can be implemented via gemlist => use normal hashmap instead
   protected HashMapWithOrderedKeys<Long, Human> humans = new HashMapWithOrderedKeys<>();
+  protected GemList<Human> humanGemList = new MockGemList<>(
+      _doGetFreeGemListId(),
+      gemId -> Optional.ofNullable(humans.getOrDefault(gemId, null))
+          .map(LoadResult::new)
+          .orElse(new LoadResult<>(LoadingState.EMPTY)),
+      Collections.emptyList()
+  );
   // TODO: for all classes
   protected HumanCommandSendingObserver theHumanCommandSendingObserver = new HumanCommandSendingObserver();
 
@@ -171,6 +191,7 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doAddHuman(Human o) {
     humans.put(o.getGemId(), o);
+    humanGemList.add(o);
     if(!o.containsObserver(theHumanCommandSendingObserver)){
       o.addObserver(theHumanCommandSendingObserver);
     }
@@ -178,26 +199,35 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   @Override
-  protected Collection<Human> _doGetHumanList() {
+  protected GemList<Human> _doGetHumanList() {
+    // TODO: dummy provider can be integrated into GemList loading function
     if(dummyProvider != null){
       while (humans.size() < dummyProvider.getMaxHumans()){
         Human h = dummyProvider.inventHuman();
         h.addObserver(theHumanCommandSendingObserver);
       }
     }
-    return humans.values();
+    return humanGemList;
   }
 
   @Override
   protected void _doDeleteHuman(Human o) {
     assert humans.containsKey(o.getGemId());
     humans.remove(o.getGemId());
+    humanGemList.remove(o);
     flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(o.getGemId()));
   }
 
   // --- Address class ---
   protected HashMapWithOrderedKeys<Long, Address> addresses = new HashMapWithOrderedKeys<>();
-
+  protected GemList<Address> addressGemList = new MockGemList<>(
+      _doGetFreeGemListId(),
+      gemId -> Optional.ofNullable(addresses.getOrDefault(gemId, null))
+          .map(LoadResult::new)
+          .orElse(new LoadResult<>(LoadingState.EMPTY)),
+      Collections.emptyList()
+  );
+  
   @Override
   protected AddressBuilder _doAddressBuilder() {
     return new AddressBuilder(getFreeGemId());
@@ -222,30 +252,39 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doAddAddress(Address o) {
     addresses.put(o.getGemId(), o);
+    addressGemList.add(o);
     flensburgObservers.forEach(obs -> obs.notifyAddressAdded(o.getGemId()));
   }
 
   @Override
-  protected Collection<Address> _doGetAddressList() {
+  protected GemList<Address> _doGetAddressList() {
     if(dummyProvider != null){
       while (addresses.size() < dummyProvider.getMaxAddresses()){
         dummyProvider.inventAddress();
       }
     }
 
-    return addresses.values();
+    return addressGemList;
   }
 
   @Override
   protected void _doDeleteAddress(Address o) {
     assert addresses.containsKey(o.getGemId());
     addresses.remove(o.getGemId());
+    addressGemList.remove(o);
     flensburgObservers.forEach(obs -> obs.notifyAddressDeleted(o.getGemId()));
   }
 
   // --- Class Car ---
   protected HashMapWithOrderedKeys<Long, Car> cars = new HashMapWithOrderedKeys<>();
-
+  protected GemList<Car> carGemList = new MockGemList<>(
+      _doGetFreeGemListId(),
+      gemId -> Optional.ofNullable(cars.getOrDefault(gemId, null))
+          .map(LoadResult::new)
+          .orElse(new LoadResult<>(LoadingState.EMPTY)),
+      Collections.emptyList()
+  );
+  
   @Override
   protected CarBuilder _doCar() {
     return new CarBuilder(getFreeGemId());
@@ -270,24 +309,26 @@ public class FlensburgMock extends FlensburgManager {
   @Override
   protected void _doAddCar(Car o) {
     cars.put(o.getGemId(), o);
+    carGemList.add(o);
     flensburgObservers.forEach(obs -> obs.notifyCarAdded(o.getGemId()));
   }
 
   @Override
-  protected Collection<Car> _doGetCarList() {
+  protected GemList<Car> _doGetCarList() {
     if(dummyProvider != null){
       while (cars.size() < dummyProvider.getMaxCars()){
         dummyProvider.inventCar(persons.getRandomValue(dummyProvider.getRandom()));
       }
     }
 
-    return cars.values();
+    return carGemList;
   }
 
   @Override
   protected void _doDeleteCar(Car o) {
     assert cars.containsKey(o.getGemId());
     cars.remove(o.getGemId(), o);
+    carGemList.remove(o);
     flensburgObservers.forEach(obs -> obs.notifyCarDeleted(o.getGemId()));
   }
 
