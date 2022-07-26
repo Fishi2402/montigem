@@ -29,12 +29,12 @@ public class EditierePersonChildrenGUI implements PersonErrorObserver {
   public List<Integer> getNumberInputChildren() {
     List<Integer> result = new ArrayList();
     for (Person child : p.getChildren()) {
-      child.getAge();
+      result.add(child.getAge());
     }
     return result;
   }
 
-  public List<String> getNumberInputError2() {
+  public List<String> getNumberInputErrorChildren() {
     return numberInputErrorChildren;
   }
 
