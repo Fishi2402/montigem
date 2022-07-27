@@ -11,7 +11,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GemListTest extends AbstractUMLPRTETest {
 
@@ -77,6 +81,16 @@ public class GemListTest extends AbstractUMLPRTETest {
   }
 
   @Test
+  public void lazyListTestGetOutOfBoundsNegative() {
+    assertThrows(IndexOutOfBoundsException.class, () -> list1_0.get(-3));
+  }
+
+  @Test
+  public void lazyListTestGetOutOfBoundsPositive() {
+    assertThrows(IndexOutOfBoundsException.class, () -> list1_0.get(list1_0.size()));
+  }
+
+  @Test
   public void lazyListTestRemove() {
     Elem old;
     old = list1_0.remove(3);
@@ -87,11 +101,21 @@ public class GemListTest extends AbstractUMLPRTETest {
     old = list1_1.remove(2);
     assertElemNr(old, 2);
     // TODO: re-implement sublist
-//    assertEquals(list1_0.size(), 2);
+    //    assertEquals(list1_0.size(), 2);
     assertEquals(list1_1.size(), 3);
     list1_0.removeAll(allElems);
     assertTrue(list1_0.isEmpty());
     assertNoErrors();
+  }
+
+  @Test
+  public void lazyListTestRemoveOutOfBoundsNegative() {
+    assertThrows(IndexOutOfBoundsException.class, () -> list1_0.remove(-3));
+  }
+
+  @Test
+  public void lazyListTestRemoveOutOfBoundsPositive() {
+    assertThrows(IndexOutOfBoundsException.class, () -> list1_0.remove(list1_0.size()));
   }
 
   @Test
@@ -135,6 +159,16 @@ public class GemListTest extends AbstractUMLPRTETest {
     assertTrue(list2.isPresent(0));
     assertFalse(list2.isPresent(1));
     assertNoErrors();
+  }
+
+  @Test
+  public void lazyListTestIsPresentOutOfBoundsNegative() {
+    assertThrows(IndexOutOfBoundsException.class, () -> list1_0.isPresent(-3));
+  }
+
+  @Test
+  public void lazyListTestIsPresentOutOfBoundsPositive() {
+    assertThrows(IndexOutOfBoundsException.class, () -> list1_0.isPresent(list1_0.size()));
   }
 
   protected Elem getElem(int idx) {
