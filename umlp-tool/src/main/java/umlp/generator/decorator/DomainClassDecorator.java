@@ -4,31 +4,32 @@ package umlp.generator.decorator;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.codegen.methods.MutatorDecorator;
+import de.monticore.cd.codegen.methods.accessor.ListAccessorDecorator;
+import de.monticore.cd.codegen.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
+import umlp.generator.decorator.methods.AssocMandatoryAccessorDecorator;
+import umlp.generator.decorator.methods.AssocMandatoryMutatorDecorator;
+import umlp.generator.decorator.methods.SimpleMethodMutatorDecorator;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
-import static de.monticore.types.check.SymTypePrimitive.box;
 import static umlp.generator.decorator.GenService.createType;
 
 public class DomainClassDecorator extends AbstractDecorator {
@@ -63,13 +64,6 @@ public class DomainClassDecorator extends AbstractDecorator {
     // Constructors
     getCD4C().addConstructor(clazz, "umlp.domain.Constructor", domainClass.getName());
 
-    // Attributes
-    List<ASTCDAttribute> attrFields = getAttributesForFields(domainClass);
-    List<ASTCDAttribute> attrAssocs = getAttributesForAssociations(domainClass);
-    List<ASTCDAttribute> attrList = Lists.newArrayList(attrFields);
-    attrList.addAll(attrAssocs);
-    clazz.addAllCDMembers(attrList);
-
     // Attribute gemId
     ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz,"protected derived long gemId = -32;");
     glex.replaceTemplate("cd2java.Annotations", gemAttr,
@@ -82,37 +76,44 @@ public class DomainClassDecorator extends AbstractDecorator {
     glex.replaceTemplate("cd2java.Annotations", attrObserver,
             new StringHookPoint("transient"));
 
-    // Methods
-    createGetterSetterMethods(domainClass, clazz, attrFields);
-    createNofificationSetter(domainClass, clazz, attrFields);
-    createCheckMethods(domainClass, clazz, attrFields);
-    createGetterSetterMethods(domainClass, clazz, Arrays.asList(gemAttr));
-    createObserverMethods(domainClass, clazz);
+    // Attributes
+    List<ASTCDAttribute> attrFields = getAttributesForFields(domainClass);
+    List<ASTCDAttribute> attrAssocs = getAttributesForAssociations(domainClass);
+    List<ASTCDAttribute> attrList = Lists.newArrayList(attrFields);
+    attrList.addAll(attrAssocs);
+    clazz.addAllCDMembers(attrList);
 
+    // General methods
+    clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
+    createObserverMethods(domainClass, clazz);
     getCD4C().addMethod(clazz, "umlp.domain.Build", domainClass.getName());
 
-    // Imports
+    // Methods for class attributes
+    createGetterSetterForAttrs(domainClass, clazz, attrFields);
+    createCheckMethods(domainClass, clazz);
+
+    // Methods for class assocs
+    createGetterSetterForAssocs(domainClass, clazz, attrAssocs);
+
+     // Imports
     addImports(clazz);
 
     return clazz;
   }
 
-  protected void createNofificationSetter(ASTCDClass domainClass, ASTCDClass clazz, List<ASTCDAttribute> attrFields) {
-    for (ASTCDAttribute attr: attrFields) {
-      getCD4C().addMethod(clazz, "umlp.domain.NotificationSetter",
-              domainClass.getName(), (new CdUtilsPrinter()).printType(attr.getMCType()), attr.getName());
-    }
-  }
-
-  protected void createCheckMethods(ASTCDClass domainClass, ASTCDClass clazz, List<ASTCDAttribute> attrFields) {
-    for (ASTCDAttribute attr: attrFields) {
+  protected void createCheckMethods(ASTCDClass domainClass, ASTCDClass clazz) {
+    for (ASTCDAttribute attr: CDSymbolTables.getAttributesInHierarchy(domainClass)) {
       getCD4C().addMethod(clazz, "umlp.domain.Check",
               domainClass.getName(), attr.getName());
+    }
+    for (ASTCDAssocSide assoc: CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
+      getCD4C().addMethod(clazz, "umlp.domain.Check",
+              domainClass.getName(), assoc.getName());
     }
   }
 
   protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
-    getCD4C().addMethod(clazz, "umlp.domain.AddObserver", domainClass.getName());
+    getCD4C().addMethod(clazz, "umlp.domain.AddObserver", domainClass.getName(), clazz.isPresentCDExtendUsage());
     getCD4C().addMethod(clazz, "umlp.domain.RemoveObserver", domainClass.getName());
     getCD4C().addMethod(clazz, "umlp.domain.ContainsObserver", domainClass.getName());
   }
@@ -134,42 +135,55 @@ public class DomainClassDecorator extends AbstractDecorator {
 
   protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDClass domainClass) {
     List<ASTCDAttribute> attrList = Lists.newLinkedList();
-    List<ASTCDAssocSide> associations = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+    List<ASTCDAssocSide> associations = CDSymbolTables.getAssociations(domainClass).stream()
             .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
 
     // handle associations
     for (ASTCDAssocSide assocSide : associations) {
-      ASTMCType type = assocSide.getMCQualifiedType().deepClone();
-      if (assocSide.isPresentCDCardinality()) {
-        if (assocSide.getCDCardinality().isMult()) {
-          type = getMCTypeFacade().createListTypeOf(type);
-        } else if(assocSide.getCDCardinality().isOpt()) {
-          type = getMCTypeFacade().createOptionalTypeOf(type);
-        }
+      String type = assocSide.getSymbol().getType().print();
+      ASTCDAttribute attribute;
+      if (GenService.isList(assocSide)) {
+        attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+                getMCTypeFacade().createBasicGenericTypeOf("GemList", type), assocSide.getName());
+        glex.replaceTemplate("cd2java.Annotations", attribute,
+                new TemplateHookPoint("umlp.domain.AssocAnnotations",
+                        domainClass.getName(), attribute.getName()));
+
+      } else {
+        attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+                getMCTypeFacade().createBasicGenericTypeOf("Gem", type), assocSide.getName());
       }
-      ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-              type, assocSide.getName());
-      //attribute.setInitial(createInitialValue(attribute.getMCType()));
       attrList.add(attribute);
     }
     return attrList;
   }
 
-  protected void createGetterSetterMethods(ASTCDClass domainClass, ASTCDClass clazz,
-                                           List<ASTCDAttribute> attrList) {
-    MethodDecorator methodDecoarator = new MethodDecorator(glex, new AccessorDecorator(glex),
-            new MutatorDecorator(glex, new SimpleMethodMutatorDecorator(glex), new OptionalMutatorDecorator(glex), new ListMutatorDecorator(glex)));
-    List<ASTCDMethod> methodList = Lists.newArrayList();
+  protected void createGetterSetterForAttrs(ASTCDClass domainClass, ASTCDClass clazz,
+                                            List<ASTCDAttribute> attrList) {
+    MethodDecorator methodDecorator = new MethodDecorator(glex, new AccessorDecorator(glex),
+            new MutatorDecorator(glex, new SimpleMethodMutatorDecorator(glex, domainClass), new OptionalMutatorDecorator(glex), new ListMutatorDecorator(glex)));
     for (ASTCDAttribute attribute : attrList) {
-      methodList.addAll(methodDecoarator.decorate(attribute));
+      clazz.addAllCDMembers(methodDecorator.decorate(attribute));
     }
-    clazz.addAllCDMembers(methodList);
+  }
+
+  protected void createGetterSetterForAssocs(ASTCDClass domainClass, ASTCDClass clazz,
+                                             List<ASTCDAttribute> attrList) {
+    MethodDecorator methodDecorator = new MethodDecorator(glex,
+            new AccessorDecorator(glex, new AssocMandatoryAccessorDecorator(glex), new OptionalAccessorDecorator(glex), new ListAccessorDecorator(glex)),
+            new MutatorDecorator(glex, new AssocMandatoryMutatorDecorator(glex, domainClass), new OptionalMutatorDecorator(glex), new ListMutatorDecorator(glex)));
+    for (ASTCDAttribute attribute : attrList) {
+      clazz.addAllCDMembers(methodDecorator.decorate(attribute));
+    }
   }
 
   protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, "java.util.Observable");
     getCD4C().addImport(clazz, "umlp.rte.GemIdentifiable");
     getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
+    getCD4C().addImport(clazz, "umlp.rte.Gem");
+    getCD4C().addImport(clazz, "umlp.rte.GemList");
+    getCD4C().addImport(clazz, "com.google.gson.annotations.JsonAdapter");
     getCD4C().addImport(clazz, "org.hibernate.annotations.GenericGenerator");
     getCD4C().addImport(clazz, "javax.persistence.*");
   }

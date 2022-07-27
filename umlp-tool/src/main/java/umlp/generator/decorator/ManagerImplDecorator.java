@@ -2,6 +2,8 @@
 
 package umlp.generator.decorator;
 
+import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -47,7 +49,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
             .forEach(c -> addClassElements(c, managerClass, name));
 
     // Imports
-    getCD4C().addImport(managerClass, "umlp.rte.DatabaseAccessManager");
+    getCD4C().addImport(managerClass, "umlp.rte.*");
 
     return managerClass;
   }
@@ -61,6 +63,13 @@ public class ManagerImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete", name, managerName);
+
+    // Associations
+    for (ASTCDAssocSide assoc: CDSymbolTables.getAssociations(domainClass)) {
+      String type = assoc.getSymbol().getType().print();
+      boolean isList = assoc.getSymbol().isPresentCardinality()?assoc.getSymbol().getCardinality().isMult():false;
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", name, type, isList);
+    }
   }
 
 }

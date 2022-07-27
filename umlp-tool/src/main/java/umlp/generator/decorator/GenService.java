@@ -3,6 +3,7 @@ package umlp.generator.decorator;
 import com.google.common.base.Defaults;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdassociation._ast.ASTCDCardinality;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpressionBuilder;
@@ -12,6 +13,8 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 
@@ -89,6 +92,14 @@ public class GenService {
     return attr.getModifier().isDerived();
   }
 
+  public static boolean isGem(ASTCDAttribute attr) {
+    if (attr.getMCType() instanceof ASTMCBasicGenericType) {
+      List<String> nameList = ((ASTMCBasicGenericType) attr.getMCType()).getNameList();
+      return "Gem".equals(nameList.get(nameList.size()-1)) || "GemList".equals(nameList.get(nameList.size()-1));
+    }
+    return false;
+  }
+
   public static boolean isVisible(ASTCDAssocSide attr) {
     return !attr.getModifier().isFinal()
             && !attr.getModifier().isStatic();
@@ -102,6 +113,10 @@ public class GenService {
 
   public static boolean isDerived(ASTCDAssocSide attr) {
     return attr.getModifier().isDerived();
+  }
+
+  public static boolean isList(ASTCDAssocSide assoc) {
+    return assoc.isPresentCDCardinality()?assoc.getCDCardinality().isMult():false;
   }
 
   /***************************************************************************/
