@@ -4,9 +4,6 @@ package hardy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Siehe auch {@link hardy.Main}
- */
 
 @SpringBootApplication
 public class UMLPApplication {
