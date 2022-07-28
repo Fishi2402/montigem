@@ -7,8 +7,6 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.codegen.methods.MutatorDecorator;
-import de.monticore.cd.codegen.methods.accessor.ListAccessorDecorator;
-import de.monticore.cd.codegen.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
@@ -17,13 +15,11 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
-import umlp.generator.decorator.methods.AssocMandatoryAccessorDecorator;
-import umlp.generator.decorator.methods.AssocMandatoryMutatorDecorator;
+import umlp.generator.decorator.methods.AssocAccessorDecorator;
+import umlp.generator.decorator.methods.AssocMutatorDecorator;
 import umlp.generator.decorator.methods.SimpleMethodMutatorDecorator;
 
 import java.util.List;
@@ -170,8 +166,8 @@ public class DomainClassDecorator extends AbstractDecorator {
   protected void createGetterSetterForAssocs(ASTCDClass domainClass, ASTCDClass clazz,
                                              List<ASTCDAttribute> attrList) {
     MethodDecorator methodDecorator = new MethodDecorator(glex,
-            new AccessorDecorator(glex, new AssocMandatoryAccessorDecorator(glex), new OptionalAccessorDecorator(glex), new ListAccessorDecorator(glex)),
-            new MutatorDecorator(glex, new AssocMandatoryMutatorDecorator(glex, domainClass), new OptionalMutatorDecorator(glex), new ListMutatorDecorator(glex)));
+            new AssocAccessorDecorator(glex),
+            new AssocMutatorDecorator(glex, domainClass));
     for (ASTCDAttribute attribute : attrList) {
       clazz.addAllCDMembers(methodDecorator.decorate(attribute));
     }
