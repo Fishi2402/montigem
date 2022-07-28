@@ -30,7 +30,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
 
     assertNoErrors();
 
-    File f = new File("target/generated-test-sources/umlp/FooTOP.java");
+    File f = new File("target/generated-test-sources/a/FooTOP.java");
     assertTrue(f.exists());
   }
 
