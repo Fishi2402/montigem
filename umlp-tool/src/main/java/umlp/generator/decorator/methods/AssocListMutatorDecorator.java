@@ -31,12 +31,11 @@ public class AssocListMutatorDecorator extends SimpleMethodMutatorDecorator {
     // generate getX-Method
     String name = String.format(SET, StringTransformations.capitalize(service.getNativeAttributeName(ast.getName())));
     if (ast.getMCType() instanceof ASTMCGenericType) {
-      System.out.println();
       String type = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
       ASTCDParameter param1 = getCDParameterFacade().createParameter("int", "idx");
       ASTCDParameter param2 = getCDParameterFacade().createParameter(type, "o");
       ASTCDParameter param3 = getCDParameterFacade().createParameter("NotificationScope", "scope");
-      ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name, param1, param2, param3);
+      ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, param1, param2, param3);
       this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.methods.AssocSet", ast.getName(), domainAst.getName()));
       methodList.add(method);
     }

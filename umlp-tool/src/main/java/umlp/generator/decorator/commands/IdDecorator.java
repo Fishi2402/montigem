@@ -22,10 +22,10 @@ public class IdDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-      .forEach(c -> astcdPackage.addCDElement(createClass(c, origCD.getCDDefinition().getName())));
+      .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
   }
   
-  protected ASTCDClass createClass(ASTCDClass domainClass, String definitionName) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
     String classname = domainClass.getName();
   
     ASTCDClass ast = UMLPMill.cDClassBuilder()
@@ -35,14 +35,13 @@ public class IdDecorator extends AbstractDecorator {
       .build();
     
     getCD4C().addConstructor(ast, "umlp.commands.ids.Constructor", classname, COMMAND_PACKAGE, SUFFIX);
-    getCD4C().addMethod(ast, "umlp.commands.ids.DoRun", classname, definitionName);
+    getCD4C().addMethod(ast, "umlp.commands.ids.DoRun", classname, origCD.getCDDefinition().getName());
 
-    getCD4C().addImport(ast, "umlp.*");
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
     getCD4C().addImport(ast,"umlp.command.Command");
     getCD4C().addImport(ast, "umlp.command.LongList");
     getCD4C().addImport(ast, "umlp.command.SimpleResult");
-    getCD4C().addImport(ast, "umlp."+definitionName+"Manager");
-  
+
     return ast;
   }
 }

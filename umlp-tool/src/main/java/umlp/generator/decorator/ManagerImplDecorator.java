@@ -65,11 +65,11 @@ public class ManagerImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete", name, managerName);
 
     // Associations
-    for (ASTCDAssocSide assoc: CDSymbolTables.getAssociations(domainClass)) {
-      String type = assoc.getSymbol().getType().print();
-      boolean isList = assoc.getSymbol().isPresentCardinality()?assoc.getSymbol().getCardinality().isMult():false;
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", name, type, isList);
-    }
+    CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
+      String type = a.getSymbol().getType().print();
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), type);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", a.getName(), type);
+    });
   }
 
 }

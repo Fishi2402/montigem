@@ -24,10 +24,10 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-            .forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
+            .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c, name)));
   }
 
-  protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String name) {
     String className = domainClass.getName() + SUFFIX;
 
     ASTCDClass collectorClass = UMLPMill.cDClassBuilder()
@@ -67,17 +67,17 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
               getCD4C().addMethod(collectorClass, "umlp.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName());
             });
     // Imports
-    addImports(collectorClass);
+    addImports(origCD, collectorClass);
 
     return collectorClass;
   }
 
 
-  protected void addImports(ASTCDType clazz) {
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDType clazz) {
     getCD4C().addImport(clazz, "java.util.List");
     getCD4C().addImport(clazz, "java.util.ArrayList");
     getCD4C().addImport(clazz, "umlp.command.CommandManager");
-    getCD4C().addImport(clazz, "umlp.commands.*");
+    getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE)+".*");
   }
 
 }

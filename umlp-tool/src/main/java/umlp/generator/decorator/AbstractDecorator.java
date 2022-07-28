@@ -9,7 +9,10 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.MCTypeFacade;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Names;
 
+import java.util.Locale;
 import java.util.Optional;
 
 // TODO refactor this class
@@ -19,11 +22,11 @@ public abstract class AbstractDecorator {
     this.glex = glex;
   }
 
-  public static final String DEFAULT_PACKAGE = "umlp";
+  public static final String DEFAULT_PACKAGE = "";
   
-  public static final String COMMAND_PACKAGE = DEFAULT_PACKAGE+".commands";
+  public static final String COMMAND_PACKAGE = DEFAULT_PACKAGE+"commands";
   
-  public static final String CLIENT_PACKAGE = DEFAULT_PACKAGE+".client";
+  public static final String CLIENT_PACKAGE = DEFAULT_PACKAGE+"client";
 
   protected final GlobalExtensionManagement glex;
 
@@ -74,16 +77,22 @@ public abstract class AbstractDecorator {
   }
 
   protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
+    String completeName = getPackageName(origCD, packageName);
     Optional<ASTCDPackage> astCDPackage = decoratedCD.getCDDefinition().getCDPackagesList().stream()
-            .filter(p -> p.getName().equals(packageName)).findFirst();
+            .filter(p -> p.getName().equals(completeName)).findFirst();
     if (astCDPackage.isPresent()) {
       return astCDPackage.get();
     } else {
       ASTCDPackage p = CD4CodeMill.cDPackageBuilder()
-              .setMCQualifiedName(getMCTypeFacade().createQualifiedName(packageName)).build();
+              .setMCQualifiedName(getMCTypeFacade().createQualifiedName(completeName)).build();
       decoratedCD.getCDDefinition().addCDElement(p);
       return p;
     }
+  }
+
+  protected String getPackageName(ASTCDCompilationUnit origCD, String subPackage) {
+    String origPackage = Names.constructQualifiedName(origCD.getCDPackageList(), origCD.getCDDefinition().getName());
+    return (subPackage.isEmpty()?origPackage:Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
   }
 
   abstract public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD);
