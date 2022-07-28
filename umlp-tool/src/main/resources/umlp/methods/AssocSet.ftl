@@ -8,5 +8,5 @@ if(idx > ${name}.size()){
 }
 
 this.${name}.set(idx, o);
-${className}Observers.forEach(obs -> obs.maybeNotifySet${name}((${className}) this, idx, o.getGemId(), scope));
+${className?uncap_first}Observers.forEach(obs -> obs.maybeNotifySet${name?cap_first}((${className}) this, idx, o.getGemId(), scope));
 
