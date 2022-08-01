@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("domain", "name")}
-${cd4c.method("boolean check${name?cap_first}()")}
+${cd4c.method("public boolean check${name?cap_first}()")}
 
 boolean res = true;
 
