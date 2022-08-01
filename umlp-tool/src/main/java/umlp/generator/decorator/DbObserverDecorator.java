@@ -7,8 +7,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import umlp.UMLPMill;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -38,7 +36,7 @@ public class DbObserverDecorator extends AbstractDecorator {
   
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
       .filter(a -> !a.getModifier().isDerived())
-      .forEach(a -> getCD4C().addMethod(ast, "umlp.dbobserver.Notify", a.getName(), className,a.getMCType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()))));
+      .forEach(a -> getCD4C().addMethod(ast, "umlp.dbobserver.Notify", a.getName(), className,a.getSymbol().getType().print()));
 
     addImports(ast);
 
