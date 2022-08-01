@@ -4,6 +4,7 @@ package umlp.generator.decorator;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
@@ -48,17 +49,19 @@ public class BuilderDecorator extends AbstractDecorator {
             .filter(a -> GenService.isVisibleNotDerived(a)).collect(Collectors.toList());
     List<ASTCDAssocSide> attrAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
             .filter(a -> GenService.isVisibleNotDerived(a)).collect(Collectors.toList());
-    // Attributes
-    List<ASTCDAttribute> attrList = getAttributesForFields(domainClass, attrFields);
-    attrList.addAll(getAttributesForAssociations(domainClass, attrAssocs));
-    builderClass.addAllCDMembers(attrList);
 
-    getCD4C().addAttribute(builderClass, "protected boolean buildFinished = false");
+    // Attributes
+    List<ASTCDAttribute> attrList = createAttributes(domainClass, attrFields.stream().map(a -> a.getName()).collect(Collectors.toList()));
+    attrList.addAll(createAttributes(domainClass, attrAssocs.stream().map(a -> a.getName()).collect(Collectors.toList())));
+    builderClass.addAllCDMembers(attrList);
+    ASTCDAttribute finishedAttr = getCD4C().addAttribute(builderClass, "protected boolean buildFinished = false");
 
     // Methods
-    createSetAndCheckMethods(domainClass, builderClass, attrFields);
+    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    attrList.forEach(a -> builderClass.addAllCDMembers(methodDecorator.decorate(a)));
+    builderClass.addAllCDMembers(methodDecorator.decorate(finishedAttr));
+    createSetAndCheckMethods(domainClass, builderClass, attrFields, attrAssocs);
     getCD4C().addMethod(builderClass, "umlp.builder.Build", domainClass.getName(), name);
-    getCD4C().addMethod(builderClass, "umlp.builder.IsFinished");
     getCD4C().addMethod(builderClass, "umlp.builder.IsBuildable", attrList);
 
     // Imports
@@ -67,39 +70,34 @@ public class BuilderDecorator extends AbstractDecorator {
     return builderClass;
   }
 
-  protected List<ASTCDAttribute> getAttributesForFields(ASTCDClass domainClass, List<ASTCDAttribute> domainAttrList) {
+  protected List<ASTCDAttribute> createAttributes(ASTCDClass domainClass, List<String> attrNames) {
     List<ASTCDAttribute> attributesList = Lists.newLinkedList();
 
     // get all visible parameters
-    for (ASTCDAttribute visibleAttribute : domainAttrList) {
+    for (String name : attrNames) {
       ASTMCPrimitiveType type = getMCTypeFacade().createBooleanType();
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-              type,  "is" + StringTransformations.capitalize(visibleAttribute.getName()) + "Present");
+              type,  name + "Present");
+      attribute.getModifier().setDerived(true);
       attribute.setInitial(createInitialValue(type));
       attributesList.add(attribute);
     }
     return attributesList;
   }
 
-  protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDClass domainClass, List<ASTCDAssocSide> domainAssocList) {
-    List<ASTCDAttribute> attrList = Lists.newLinkedList();
-
-    // handle associations
-    for (ASTCDAssocSide association : domainAssocList) {
-      // TODO: Was muss hier gemacht werden
-    }
-    return attrList;
-  }
-
   protected void createSetAndCheckMethods(ASTCDClass domainClass, ASTCDClass builderClass,
-                                          List<ASTCDAttribute> attrList) {
+                                          List<ASTCDAttribute> attrList,
+                                          List<ASTCDAssocSide> assocList) {
     for (ASTCDAttribute attribute : attrList) {
       getCD4C().addMethod(builderClass, "umlp.builder.Attr",
               attribute.getName(), getCDPrinter().prettyprint(createType(attribute)), domainClass.getName() + BUILDER_SUFFIX);
       getCD4C().addMethod(builderClass, "umlp.builder.Check",
               attribute.getName(), domainClass.getName());
     }
-  }
+    for (ASTCDAssocSide assoc : assocList) {
+      getCD4C().addMethod(builderClass, "umlp.builder.Check",
+              assoc.getName(), domainClass.getName());
+    } }
 
   protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, "java.util.List");
