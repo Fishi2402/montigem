@@ -2,11 +2,25 @@
 
 plugins {
     id 'java'
+    id 'application'
+    id 'org.springframework.boot' version "$spring_version"
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 //    id "maven-publish"
+}
+
+application {
+  mainClass = 'hardy.UMLPApplication'
 }
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'application'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    application {
+    mainClass = 'hardy.UMLPApplication'
+   }
 
     repositories {
         maven {
@@ -25,6 +39,11 @@ subprojects {
     }
 
     dependencies {
+      implementation project(':experiments:coreRequirements')
+      implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
+      implementation group: 'org.hibernate', name: 'hibernate-vibur', version: hibernate_version
+      implementation group: 'org.hibernate', name: 'hibernate-core', version: hibernate_version
+
 ///        implementation project(":umlp-tool")
 //        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
 //        implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version

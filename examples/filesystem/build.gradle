@@ -4,7 +4,7 @@ description 'filesystem example'
 
 task generateFileSystem(type: UMLPTask) {
     inputDir = file("src/models")
-    outputDir = layout.buildDirectory.dir("gen")
+    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
 }
 
 build.dependsOn(generateFileSystem)
