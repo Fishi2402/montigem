@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.MCTypeFacade;
+import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 
@@ -31,6 +32,8 @@ public abstract class AbstractDecorator {
   protected final GlobalExtensionManagement glex;
 
   protected final CD4CodeFullPrettyPrinter printer = new CD4CodeFullPrettyPrinter(new IndentPrinter());
+  
+  protected TypeCheck typeCheck;
 
   protected GlobalExtensionManagement getGlex() {
     return glex;
@@ -75,7 +78,15 @@ public abstract class AbstractDecorator {
   protected CD4CodeFullPrettyPrinter getCDPrinter (){
     return printer;
   }
-
+  
+  public TypeCheck getTypeCheck() {
+    return typeCheck;
+  }
+  
+  public void setTypeCheck(TypeCheck typeCheck) {
+    this.typeCheck = typeCheck;
+  }
+  
   protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
     String completeName = getPackageName(origCD, packageName);
     Optional<ASTCDPackage> astCDPackage = decoratedCD.getCDDefinition().getCDPackagesList().stream()

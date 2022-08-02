@@ -26,6 +26,8 @@ import static de.monticore.types.check.SymTypePrimitive.box;
 public class GenService {
 
   public static final String UMLP_ID_NAME = "umlpId";
+  
+  public static TypeCheck typeCheck = new TypeCheck();
 
   public static ASTExpression createInitialValue(SymTypeExpression type) {
     ASTNameExpressionBuilder exprBuilder = UMLPMill.nameExpressionBuilder();
@@ -35,21 +37,21 @@ public class GenService {
       exprBuilder.setName("new LinkedList<>()");
     } else if (isSet(type)) {
       exprBuilder.setName("new HashSet<>()");
-    } else if (TypeCheck.isInt(type)) {
+    } else if (typeCheck.isInt(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(int.class)));
-    } else if (TypeCheck.isDouble(type)) {
+    } else if (typeCheck.isDouble(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(double.class)));
-    } else if (TypeCheck.isChar(type)) {
+    } else if (typeCheck.isChar(type)) {
       exprBuilder.setName("\'\\" + "u0000\'");
-    } else if (TypeCheck.isShort(type)) {
+    } else if (typeCheck.isShort(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(short.class)));
-    } else if (TypeCheck.isFloat(type)) {
+    } else if (typeCheck.isFloat(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(float.class)) + "f");
-    } else if (TypeCheck.isLong(type)) {
+    } else if (typeCheck.isLong(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(long.class)) + "L");
-    } else if (TypeCheck.isBoolean(type)) {
+    } else if (typeCheck.isBoolean(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(boolean.class)));
-    } else if (TypeCheck.isByte(type)) {
+    } else if (typeCheck.isByte(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(byte.class)));
     } else if ("String".equals(type.print())) {
       exprBuilder.setName("\"\" ");

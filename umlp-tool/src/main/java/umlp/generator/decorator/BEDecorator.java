@@ -2,6 +2,7 @@ package umlp.generator.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
 
 public class BEDecorator extends AbstractDecorator {
