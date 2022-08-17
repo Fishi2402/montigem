@@ -44,7 +44,6 @@ export class EditierePersonTOP implements OnInit {
    * not set explicitly by other component (@DB annotation functionality)
    */
   @Input()
-  @DB()
   public p: Person;
 
   // Z1: Page initialization consists of constructor and ngOnInit method

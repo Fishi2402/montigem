@@ -2,20 +2,15 @@
 
 package umlp.generator.decorator;
 
-import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cd.facade.CDModifier;
-import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import umlp.UMLPMill;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.decorator.GenService.createInitialValue;
 
 public class ErrorCollectorDecorator extends AbstractDecorator {
 
@@ -29,10 +24,10 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-            .forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
+            .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c, name)));
   }
 
-  protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String name) {
     String className = domainClass.getName() + SUFFIX;
 
     ASTCDClass collectorClass = UMLPMill.cDClassBuilder()
@@ -56,25 +51,33 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
     getCD4C().addMethod(collectorClass, "umlp.errorcollector.RemoveErrorObserver", domainClass.getName());
     getCD4C().addMethod(collectorClass, "umlp.errorcollector._RemoveErrorObserver", domainClass.getName());
 
+    // Add methods for domain attributes
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream().filter(a -> !a.getModifier().isDerived())
             .forEach(a -> {
               getCD4C().addMethod(collectorClass, "umlp.errorcollector.ReportInvalid", a.getName(), domainClass.getName());
               getCD4C().addMethod(collectorClass, "umlp.errorcollector._ReportInvalid", a.getName(), domainClass.getName());
               getCD4C().addMethod(collectorClass, "umlp.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName());
-              getCD4C().addImport(collectorClass, "umlp.commands."+domainClass.getName()+"_error_"+a.getName());
+            });
+
+    // Add methods for domain associations
+    CDSymbolTables.getAssociationsInHierarchy(domainClass).stream().filter(a -> !a.getModifier().isDerived())
+            .forEach(a -> {
+              getCD4C().addMethod(collectorClass, "umlp.errorcollector.ReportInvalid", a.getName(), domainClass.getName());
+              getCD4C().addMethod(collectorClass, "umlp.errorcollector._ReportInvalid", a.getName(), domainClass.getName());
+              getCD4C().addMethod(collectorClass, "umlp.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName());
             });
     // Imports
-    addImports(collectorClass);
+    addImports(origCD, collectorClass);
 
     return collectorClass;
   }
 
 
-  protected void addImports(ASTCDType clazz) {
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDType clazz) {
     getCD4C().addImport(clazz, "java.util.List");
     getCD4C().addImport(clazz, "java.util.ArrayList");
     getCD4C().addImport(clazz, "umlp.command.CommandManager");
-    getCD4C().addImport(clazz, "umlp.commands.*");
+    getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE)+".*");
   }
 
 }

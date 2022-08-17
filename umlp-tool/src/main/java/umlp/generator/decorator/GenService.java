@@ -3,6 +3,7 @@ package umlp.generator.decorator;
 import com.google.common.base.Defaults;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdassociation._ast.ASTCDCardinality;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpressionBuilder;
@@ -12,6 +13,8 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 
@@ -23,6 +26,8 @@ import static de.monticore.types.check.SymTypePrimitive.box;
 public class GenService {
 
   public static final String UMLP_ID_NAME = "umlpId";
+  
+  public static TypeCheck typeCheck = new TypeCheck();
 
   public static ASTExpression createInitialValue(SymTypeExpression type) {
     ASTNameExpressionBuilder exprBuilder = UMLPMill.nameExpressionBuilder();
@@ -32,21 +37,21 @@ public class GenService {
       exprBuilder.setName("new LinkedList<>()");
     } else if (isSet(type)) {
       exprBuilder.setName("new HashSet<>()");
-    } else if (TypeCheck.isInt(type)) {
+    } else if (typeCheck.isInt(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(int.class)));
-    } else if (TypeCheck.isDouble(type)) {
+    } else if (typeCheck.isDouble(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(double.class)));
-    } else if (TypeCheck.isChar(type)) {
+    } else if (typeCheck.isChar(type)) {
       exprBuilder.setName("\'\\" + "u0000\'");
-    } else if (TypeCheck.isShort(type)) {
+    } else if (typeCheck.isShort(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(short.class)));
-    } else if (TypeCheck.isFloat(type)) {
+    } else if (typeCheck.isFloat(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(float.class)) + "f");
-    } else if (TypeCheck.isLong(type)) {
+    } else if (typeCheck.isLong(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(long.class)) + "L");
-    } else if (TypeCheck.isBoolean(type)) {
+    } else if (typeCheck.isBoolean(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(boolean.class)));
-    } else if (TypeCheck.isByte(type)) {
+    } else if (typeCheck.isByte(type)) {
       exprBuilder.setName(String.valueOf(Defaults.defaultValue(byte.class)));
     } else if ("String".equals(type.print())) {
       exprBuilder.setName("\"\" ");
@@ -89,6 +94,22 @@ public class GenService {
     return attr.getModifier().isDerived();
   }
 
+  public static boolean isGem(ASTCDAttribute attr) {
+    if (attr.getMCType() instanceof ASTMCBasicGenericType) {
+      List<String> nameList = ((ASTMCBasicGenericType) attr.getMCType()).getNameList();
+      return "Gem".equals(nameList.get(nameList.size()-1)) || "GemList".equals(nameList.get(nameList.size()-1));
+    }
+    return false;
+  }
+
+  public static boolean isGemList(ASTCDAttribute attr) {
+    if (attr.getMCType() instanceof ASTMCBasicGenericType) {
+      List<String> nameList = ((ASTMCBasicGenericType) attr.getMCType()).getNameList();
+      return "GemList".equals(nameList.get(nameList.size()-1));
+    }
+    return false;
+  }
+
   public static boolean isVisible(ASTCDAssocSide attr) {
     return !attr.getModifier().isFinal()
             && !attr.getModifier().isStatic();
@@ -102,6 +123,10 @@ public class GenService {
 
   public static boolean isDerived(ASTCDAssocSide attr) {
     return attr.getModifier().isDerived();
+  }
+
+  public static boolean isList(ASTCDAssocSide assoc) {
+    return assoc.isPresentCDCardinality()?assoc.getCDCardinality().isMult():false;
   }
 
   /***************************************************************************/

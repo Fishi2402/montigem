@@ -2,6 +2,7 @@ package umlp.generator.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
 
 public class BEDecorator extends AbstractDecorator {
@@ -34,6 +35,10 @@ public class BEDecorator extends AbstractDecorator {
     dbObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DbObserverDecorator", BEDecorator.class.getName());
 
+    CommandSendingObserverDecorator cmdSendingDecorator = new CommandSendingObserverDecorator(glex);
+    cmdSendingDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: CommandSendingObserverDecorator", BEDecorator.class.getName());
+
     DerivedClassDecorator derivedClassDecorator= new DerivedClassDecorator(glex);
     derivedClassDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DerivedClassDecorator", BEDecorator.class.getName());
@@ -60,6 +65,9 @@ public class BEDecorator extends AbstractDecorator {
     errorObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorObserverDecorator", BEDecorator.class.getName());
 
+    TypeAdapterDecorator typeAdapterDecorator = new TypeAdapterDecorator(glex);
+    typeAdapterDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: TypeAdapterDecorator", BEDecorator.class.getName());
   }
 
 }

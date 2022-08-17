@@ -5,8 +5,6 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import umlp.UMLPMill;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -23,10 +21,10 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, CLIENT_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-      .forEach(c -> astcdPackage.addCDElement(createClass(c)));
+      .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
   }
   
-  protected ASTCDClass createClass(ASTCDClass domainClass) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
     String classname = domainClass.getName() + SUFFIX;
     
     ASTCDClass ast = UMLPMill.cDClassBuilder()
@@ -40,23 +38,22 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     domainClass.getCDAttributeList().stream()
       .filter(a -> !a.getModifier().isDerived())
       .forEach(a -> getCD4C().addMethod(ast, "umlp.commandsendingobserver.NotifySetAttribute", domainClass.getName(),
-        a.getName(), a.getMCType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()))));
+        a.getName(), a.getSymbol().getType().print()));
     
-    addImports(ast, domainClass);
+    addImports(origCD, ast, domainClass);
     
     return ast;
   }
   
-  protected void addImports(ASTCDClass clazz, ASTCDClass domainclass) {
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz, ASTCDClass domainclass) {
     getCD4C().addImport(clazz,"umlp.rte.NotificationScope");
-    getCD4C().addImport(clazz,"umlp."+domainclass.getName()+"Observer");
+    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
     if(!domainclass.getCDAttributeList().isEmpty()) {
       getCD4C().addImport(clazz, "umlp.command.CommandManager");
-      getCD4C().addImport(clazz, "umlp."+domainclass.getName());
     }
     domainclass.getCDAttributeList().stream()
       .filter(a -> !a.getModifier().isDerived())
-      .forEach(a -> getCD4C().addImport(clazz, "umlp.commands."+domainclass.getName()+"_set_"+a.getName()));
+      .forEach(a -> getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE)+"."+domainclass.getName()+"_set_"+a.getName()));
   }
   
 }

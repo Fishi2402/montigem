@@ -10,7 +10,7 @@ import java.util.ArrayList;
 // page enables editing of a person and their children, used to test validations of dependent fields
 // in this case, age of parent has to be older than a child
 public class PersonOverviewGUI {
-  protected final List<Person> ps;
+  protected List<Person> ps;
 
   protected List<? extends Object> rows = new ArrayList<>();
 

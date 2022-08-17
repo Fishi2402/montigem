@@ -3,7 +3,7 @@ description 'cars example'
 
 task generateCars(type: UMLPTask) {
     inputDir = file("src")
-    outputDir = layout.buildDirectory.dir("gen")
+    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
 }
 
 build.dependsOn(generateCars)

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public abstract class PersonStatisticsGUITOP {
 
-  List<PieData> pieData = new ArrayList();
+  protected List<PieData> pieData = new ArrayList();
 
   public PersonStatisticsGUITOP(List<Person> ps) {
     setPieData(ps);

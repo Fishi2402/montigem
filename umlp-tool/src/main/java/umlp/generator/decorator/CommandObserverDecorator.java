@@ -5,8 +5,6 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import umlp.UMLPMill;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -40,7 +38,7 @@ public class CommandObserverDecorator extends AbstractDecorator {
     domainClass.getCDAttributeList().stream()
       .filter(a -> !a.getModifier().isDerived())
       .forEach(a -> getCD4C().addMethod(ast, "umlp.commandobserver.NotifySetAttribute", domainClass.getName(),
-        a.getName(), a.getMCType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()))));
+        a.getName(), a.getSymbol().getType().print()));
     
     addImports(ast, domainClass);
     

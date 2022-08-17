@@ -37,7 +37,8 @@ umlp RestaurantOrg {
 
   // association service [*] actors.Customer <-> ServingPersonel [*] ; TODO: Bug in cd4c: classes in this package are added twice to the AST
   // association [*] actors.Person (visitedBy) <-> (visits) Restaurant [*] ; TODO: Bug in cd4c: classes in this package are added twice to the AST
-  association service [*] Customer <-> ServingPersonel [*] ;
+  // association service [*] Customer <-> ServingPersonel [*] ; TODO: Müssen die Rollennamen in CD4A für bidrektionale Assocs anders vergeben werden?
+  association service [*] Customer <-> (serves) ServingPersonel [*] ;
   association [*] Person (visitedBy) <-> (visits) Restaurant [*] ;
 
 //  aggregation [1] Restaurant  -> (staff) Employee [*] ; // TODO: aggregations do not exist in CD4A

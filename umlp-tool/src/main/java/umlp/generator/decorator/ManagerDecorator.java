@@ -2,6 +2,8 @@
 
 package umlp.generator.decorator;
 
+import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -78,12 +80,23 @@ public class ManagerDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.manager.DoGetList", name);
     getCD4C().addMethod(managerClass, "umlp.manager.Delete", name);
     getCD4C().addMethod(managerClass, "umlp.manager.DoDelete", name);
+
+
+    // Associations
+    CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
+      String type = a.getSymbol().getType().print();
+      getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc", a.getName(), type, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.DoCreateAssoc", a.getName(), type, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc", a.getName(), type, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.DoCreateAssoc", a.getName(), type, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", a.getName(), type);
+      getCD4C().addMethod(managerClass, "umlp.manager.DoBuilderAssoc", a.getName(), type);
+    });
+
   }
 
   protected void addImports(ASTCDType clazz) {
-    getCD4C().addImport(clazz, "umlp.rte.Gem");
-    getCD4C().addImport(clazz, "umlp.rte.LoadResult");
-    getCD4C().addImport(clazz, "umlp.rte.LoadingState");
+    getCD4C().addImport(clazz, "umlp.rte.*");
   }
 
 

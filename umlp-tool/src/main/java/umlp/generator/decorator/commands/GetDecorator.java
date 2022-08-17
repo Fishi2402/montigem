@@ -22,10 +22,10 @@ public class GetDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-      .forEach(c -> astcdPackage.addCDElement(createClass(c, origCD.getCDDefinition().getName())));
+      .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
   }
 
-  protected ASTCDClass createClass(ASTCDClass domainClass, String definitionName) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
     String classname = domainClass.getName();
     
     ASTCDClass ast = UMLPMill.cDClassBuilder()
@@ -36,16 +36,15 @@ public class GetDecorator extends AbstractDecorator {
     
     getCD4C().addAttribute(ast, "private final long gemId");
     getCD4C().addConstructor(ast, "umlp.commands.error.Constructor", classname,"", SUFFIX, COMMAND_PACKAGE);
-    getCD4C().addMethod(ast, "umlp.commands.get.DoRun", classname, COMMAND_PACKAGE, definitionName);
+    getCD4C().addMethod(ast, "umlp.commands.get.DoRun", classname, COMMAND_PACKAGE, origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, "umlp.commands.get.GetEffectedGemIds");
     getCD4C().addMethod(ast, "umlp.commands.get.GetNewlySubscribedGemIds");
 
     getCD4C().addImport(ast, "umlp.request.Request");
-    getCD4C().addImport(ast, "umlp.*");
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
     getCD4C().addImport(ast, "umlp.command.SimpleResult");
     getCD4C().addImport(ast, "umlp.rte.LoadingState");
-    getCD4C().addImport(ast, "umlp."+definitionName+"Manager");
-  
+
     return ast;
   }
   

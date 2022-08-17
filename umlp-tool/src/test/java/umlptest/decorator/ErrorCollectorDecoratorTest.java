@@ -22,7 +22,7 @@ public class ErrorCollectorDecoratorTest extends DecoratorTest {
     assertAll(
             // check no of methods and attributes
             () -> assertEquals(2, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(11, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(14, clazz.getCDMethodList().size(), "number of methods"),
 
             // check attributes
             () -> existsAttribute(clazz, "instance"),
