@@ -22,6 +22,6 @@ public class HumanCommandObserver implements HumanObserver {
 
   @Override
   public void notifySetAge(Human h, int age) {
-    CommandManager.executeSingleCommand(new Human_set_age(h.getGemId(), age));
+    CommandManager.executeCommand(new Human_set_age(h.getGemId(), age));
   }
 }

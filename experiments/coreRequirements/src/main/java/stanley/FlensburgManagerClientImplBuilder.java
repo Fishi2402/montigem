@@ -5,7 +5,7 @@ package stanley;
 import de.se_rwth.commons.logging.Log;
 import hardy.HumanErrorCollector;
 import hardy.PersonErrorCollector;
-import umlp.command.ClientCommandManager;
+import umlp.command.TestClientCommandManager;
 import umlp.rte.GeneralErrorCollector;
 
 import java.util.Optional;
@@ -18,7 +18,7 @@ public class FlensburgManagerClientImplBuilder {
   protected GeneralErrorCollector generalErrorCollector;
   protected HumanErrorCollector humanErrorCollector;
   protected PersonErrorCollector personErrorCollector;
-  protected ClientCommandManager commandManager;
+  protected TestClientCommandManager commandManager;
 
   public FlensburgManagerClientImplBuilder backendContext(FlensburgTestContext backendContext){
     this.backendContext = backendContext;
@@ -40,7 +40,7 @@ public class FlensburgManagerClientImplBuilder {
     return this;
   }
 
-  public FlensburgManagerClientImplBuilder commandManager(ClientCommandManager commandManager){
+  public FlensburgManagerClientImplBuilder commandManager(TestClientCommandManager commandManager){
     this.commandManager = commandManager;
     return this;
   }
@@ -52,15 +52,15 @@ public class FlensburgManagerClientImplBuilder {
     }
 
     FlensburgManagerClientImpl res = new FlensburgManagerClientImpl();
-    ClientCommandManager clientCommandManager = commandManager != null ? commandManager : new ClientCommandManager(backendContext);
+    TestClientCommandManager testClientCommandManager = commandManager != null ? commandManager : new TestClientCommandManager(backendContext);
     FlensburgTestContext flensburgTestContext = new FlensburgTestContext(
         res,
-        clientCommandManager,
+        testClientCommandManager,
         generalErrorCollector != null ? generalErrorCollector : new GeneralErrorCollector(),
         humanErrorCollector != null ? humanErrorCollector : new HumanErrorCollector(),
         personErrorCollector != null ? personErrorCollector : new PersonErrorCollector()
     );
-    clientCommandManager.setClientContext(flensburgTestContext);
+    testClientCommandManager.setClientContext(flensburgTestContext);
     return Optional.of(flensburgTestContext);
   }
 

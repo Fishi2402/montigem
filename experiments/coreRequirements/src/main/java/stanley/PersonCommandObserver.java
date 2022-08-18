@@ -17,26 +17,26 @@ public class PersonCommandObserver implements PersonObserver {
 
   @Override
   public void notifySetAge(Human h, int age) {
-    CommandManager.executeSingleCommand(new Person_setAge(h.getGemId(), age));
+    CommandManager.executeCommand(new Person_setAge(h.getGemId(), age));
   }
 
   @Override
   public void notifySetNickname(Person p, String nickname) {
-    CommandManager.executeSingleCommand(new Person_setNickname(p.getGemId(), nickname));
+    CommandManager.executeCommand(new Person_setNickname(p.getGemId(), nickname));
   }
 
   @Override
   public void notifySetMainResidence(Person p, long mainResidenceGemId) {
-    CommandManager.executeSingleCommand(new Person_setMainResidence(p.getGemId(), mainResidenceGemId));
+    CommandManager.executeCommand(new Person_setMainResidence(p.getGemId(), mainResidenceGemId));
   }
 
   @Override
   public void notifyAddOwns(Person p, long carGemId, int indexInList) {
-    CommandManager.executeSingleCommand(new Person_addOwns(p.getGemId(), carGemId, indexInList));
+    CommandManager.executeCommand(new Person_addOwns(p.getGemId(), carGemId, indexInList));
   }
 
   @Override
   public void notifyRemoveOwns(Person p, long carGemId) {
-    CommandManager.executeSingleCommand(new Person_removeOwns(p.getGemId(), carGemId));
+    CommandManager.executeCommand(new Person_removeOwns(p.getGemId(), carGemId));
   }
 }

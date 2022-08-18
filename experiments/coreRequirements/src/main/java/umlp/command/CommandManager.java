@@ -34,6 +34,10 @@ public class CommandManager {
     return getInstance()._subscribe(subscription);
   }
 
+  public static void unsubscribe(long subscriberId) {
+    getInstance()._unsubscribe(subscriberId);
+  }
+
   public static long getParticipantId() {
     return getInstance()._getParticipantId();
   }
@@ -43,12 +47,15 @@ public class CommandManager {
   }
 
   protected long _subscribe(CommandSubscription subscription) {
-    long id = runningClientId++;
-    subscribers.put(id, subscription);
-    return id;
+    long subscriberId = runningClientId++;
+    subscribers.put(subscriberId, subscription);
+    return subscriberId;
   }
 
-  // TODO: unsubscribe
+  protected void _unsubscribe(long subscriberId) {
+    subscribers.remove(subscriberId);
+  }
+
 
   public static void init(){
     instance = new CommandManager();
@@ -65,16 +72,18 @@ public class CommandManager {
     return instance;
   }
 
-  public static <T> CommandResult<T> executeSingleCommand(Command<T> command) {
+  public static <T> CommandResult<T> executeCommand(Command<T> command) {
     Log.trace("Exec command " + command.getId() + " " + command.getCommandType() + " from " + command.getParticipantId(), LogUtil.getLoggerName());
-    return getInstance()._executeSingleCommand(command);
+    return getInstance()._executeCommand(command);
   }
 
-  protected  <T> CommandResult<T> _executeSingleCommand(Command<T> command) {
+  protected  <T> CommandResult<T> _executeCommand(Command<T> command) {
     CommandResult<T> res = command.doRun();
     // update subscribed gemIds
     if(subscribers.containsKey(command.getParticipantId())){
       subscribers.get(command.getParticipantId()).subscribe(command.getNewlySubscribedGemIds());
+    } else {
+      // TODO: MH: kann das passieren?
     }
     // TODO: error handling if doRun fails
     if(!command.isRequest()) {

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import stanley.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
-import umlp.command.ClientCommandManager;
+import umlp.command.TestClientCommandManager;
 import umlp.command.Command;
 import umlp.command.CommandResult;
 import umlp.request.GetFreeGemIdRequest;
@@ -232,13 +232,13 @@ public class PersonSyncTest {
     FlensburgMock.secretlyAdaptnextGemIds(startGemId);
     FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder()
         .backendContext(serverContext)
-        .commandManager(new ClientCommandManager(serverContext){
+        .commandManager(new TestClientCommandManager(serverContext){
           @Override
-          protected <T> CommandResult<T> _executeSingleCommand(Command<T> command) {
+          protected <T> CommandResult<T> _executeCommand(Command<T> command) {
             if(!(command instanceof GetFreeGemIdRequest || command instanceof GetFreeGemListIdRequest)){
               fail("Received command that is not a GetFreeGemIdRequest: " + command);
             }
-            return super._executeSingleCommand(command);
+            return super._executeCommand(command);
           }
         })
         .build()
