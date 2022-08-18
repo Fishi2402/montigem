@@ -37,20 +37,15 @@ dependencies {
     implementation group: 'com.h2database', name: 'h2', version: h2_database
 
     // Spring Boot Dependencies
+    def withoutSpringLogging = {
+        exclude module: 'spring-boot-starter-logging'
+        exclude module: 'logback-classic'
+    }
     compileOnly("org.springframework.boot:spring-boot-devtools")
-    implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-web') {
-        exclude module: 'spring-boot-starter-logging'
-        exclude module: 'logback-classic'
-    }
-    implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-websocket') {
-        exclude module: 'spring-boot-starter-logging'
-        exclude module: 'logback-classic'
-    }
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', withoutSpringLogging
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', withoutSpringLogging
 //    implementation group: 'org.webjars', name: 'stomp-websocket'
-    testImplementation (group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
-        exclude module: 'Spring-boot-starter-logging'
-        exclude module: 'logback-classic'
-    }
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', withoutSpringLogging
 }
 
 task runServer {
