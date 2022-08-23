@@ -6,6 +6,6 @@ import org.gradle.api.Project;
 public abstract class UMLPPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
-        // project.setProperty("UMLPTask", gradle.UMLPTask.class );
+      project.getExtensions().getExtraProperties().set("UMLPTask", gradle.UMLPTask.class);
     }
 }

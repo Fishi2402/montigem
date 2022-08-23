@@ -28,21 +28,7 @@ build:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
 
-#build_experiments:
-#  stage: it_tests
-#  dependencies:
-#    - build
-#  script:
-#    - "gradle -p experiments build $GRADLE_OPTS $ARGS2"
-#
-#build_examples:
-#  stage: it_tests
-#  dependencies:
-#    - build
-#  script:
-#    - "gradle -p examples build $GRADLE_OPTS $ARGS2"
-
-deploy:
+deployDockerImage:
   stage: deploy
   dependencies:
     - build
@@ -51,6 +37,15 @@ deploy:
       -Djib.to.image=$CI_REGISTRY_IMAGE/corerequirements:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+  only:
+    - dev
+
+deployUmlpTool:
+  stage: deploy
+  dependencies:
+    - build
+  script:
+    - "gradle :umlp-tool:publish"
   only:
     - dev
 

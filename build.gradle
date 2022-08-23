@@ -5,7 +5,7 @@ plugins {
     // id 'monticore' version "$mc_version"
     // id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
 
-    id 'de.rwth.se.umlp.gradle_testing' // See "umlp-tool/src/main/java/gradle"
+    id 'de.rwth.se.umlp-tool' // See "umlp-tool/src/main/java/gradle"
 }
 
 test {
@@ -94,17 +94,3 @@ task buildUMLP {
     )
 }
 
-/**
- *  Publishes the jars of the core projects, i.e. the umlp-tool and the examples
- *  to the nexus repository.
- *  Assembles the jars and publishes them, but does not execute JUnit tests.
- */
-task deployUMLP {
-    group("build")
-    description('Publishes the core projects, i.e. the umlp-tool and the examples.')
-
-    dependsOn(
-            ":umlp-tool:publish",
-            ":examples:publish"
-    )
-}

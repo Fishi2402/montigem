@@ -100,7 +100,7 @@ jar.dependsOn(sourcesJar)
 gradlePlugin {
     plugins {
         umlpplugin  {
-            id = "de.rwth.se.umlp.gradle_testing"
+            id = "de.rwth.se.umlp-tool"
             implementationClass = "gradle.UMLPPlugin"
         }
     }
@@ -110,17 +110,10 @@ gradlePlugin {
 
 // configure deployment
 publishing {
-    // configure what artifacts to publish
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = "$project.name"
-            from components.java
-            artifact sourcesJar
-        }
-    }
     repositories.maven {
         credentials.username mavenUser
         credentials.password mavenPassword
+
         def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
         def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
         url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
