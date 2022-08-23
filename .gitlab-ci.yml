@@ -45,7 +45,7 @@ deployUmlpTool:
   dependencies:
     - build
   script:
-    - "gradle :umlp-tool:publish"
+    - "gradle :umlp-tool:publish -P mavenPassword=$pass -P mavenUser=$user"
   only:
     - dev
 
