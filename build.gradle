@@ -12,10 +12,6 @@ test {
     useJUnitPlatform()
 }
 
-ext {   // TODO: Do this in UMLPPlugin!    (but how?)
-    UMLPTask = gradle.UMLPTask
-}
-
 allprojects {
     group = 'umlp'
     repositories {
