@@ -15,8 +15,11 @@ subprojects {
     ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
 
     dependencies {
-        implementation group: 'de.se_rwth.commons', name: 'se-commons-utilities', version: mc_version
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
+      implementation project(':umlp-rte')
+
+
+      implementation group: 'de.se_rwth.commons', name: 'se-commons-utilities', version: mc_version
+      testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
     }
 
     sourceSets {

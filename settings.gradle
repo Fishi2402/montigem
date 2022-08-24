@@ -39,6 +39,8 @@ buildCache {
 rootProject.name = 'umlp'
 includeBuild "umlp-tool"
 
+include ":umlp-rte"
+
 include ":experiments"
 include ":experiments:initial"
 include ":experiments:coreRequirements"

@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id 'application'
+}
+
+
+description = "UMLP RTE"
+
+
+dependencies {
+    implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
+}
+
+test {
+    testLogging {
+        events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+    }
+    useJUnitPlatform()
+}
