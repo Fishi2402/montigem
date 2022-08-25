@@ -5,7 +5,7 @@ package stanley;
 import de.se_rwth.commons.logging.Log;
 import hardy.HumanErrorCollector;
 import hardy.PersonErrorCollector;
-import umlp.command.TestClientCommandManager;
+import hardy.commands.TestClientCommandManager;
 import umlp.rte.GeneralErrorCollector;
 
 import java.util.Optional;

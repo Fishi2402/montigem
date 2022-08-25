@@ -6,11 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import stanley.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
-import umlp.command.TestClientCommandManager;
+import hardy.commands.TestClientCommandManager;
 import umlp.command.Command;
 import umlp.command.CommandResult;
-import umlp.request.GetFreeGemIdRequest;
-import umlp.request.GetFreeGemListIdRequest;
+import hardy.requests.GetFreeGemIdRequest;
+import hardy.requests.GetFreeGemListIdRequest;
 import umlp.rte.GemList;
 
 import java.util.ArrayList;

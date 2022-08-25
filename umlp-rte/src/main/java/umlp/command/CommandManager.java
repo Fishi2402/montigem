@@ -46,7 +46,7 @@ public class CommandManager {
     return participantId;
   }
 
-  protected long _subscribe(CommandSubscription subscription) {
+  public long _subscribe(CommandSubscription subscription) {
     long subscriberId = runningClientId++;
     subscribers.put(subscriberId, subscription);
     return subscriberId;

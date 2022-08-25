@@ -1,7 +1,5 @@
 package umlp.rte;
 
-import hardy.FlensburgManager;
-import hardy.FlensburgManagerImpl;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -17,20 +15,7 @@ import java.util.Set;
 public class DatabaseAccessManager {
 
     public static void init(String[] args) {
-        FlensburgManagerImpl.init();
 
-        FlensburgManager.humanBuilder().age(16).build();
-        FlensburgManager.humanBuilder().age(17).build();
-        FlensburgManager.humanBuilder().age(18).build();
-        FlensburgManager.humanBuilder().age(19).build();
-        FlensburgManager.humanBuilder().age(20).build();
-        FlensburgManager.humanBuilder().age(21).build();
-
-        FlensburgManager.addressBuilder().city("Aachen").build();
-        FlensburgManager.addressBuilder().city("Düsseldorf").build();
-        FlensburgManager.addressBuilder().city("Berlin").build();
-        FlensburgManager.addressBuilder().city("München").build();
-        FlensburgManager.addressBuilder().city("Flensburg").build();
     }
 
     private static final String DATABASE_PROPERTIES = "database.properties";

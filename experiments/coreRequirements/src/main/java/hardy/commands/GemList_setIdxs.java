@@ -1,8 +1,10 @@
-package umlp.command;
+package hardy.commands;
 
 // RTE-P
 
 import hardy.FlensburgManager;
+import umlp.command.Command;
+import umlp.command.StatusResult;
 import umlp.rte.GemList;
 import umlp.rte.GeneralErrorCollector;
 
@@ -18,7 +20,7 @@ public class GemList_setIdxs extends Command<Void> {
   public GemList_setIdxs(long gemListGemId, Map<Integer, Long> idxToId) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
-        "umlp.command.GemList_setIdxs"
+        "hardy.commands.GemList_setIdxs"
     );
 
     this.gemListGemId = gemListGemId;

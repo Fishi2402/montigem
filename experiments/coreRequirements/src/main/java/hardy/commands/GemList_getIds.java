@@ -1,8 +1,10 @@
-package umlp.command;
+package hardy.commands;
 
 // RTE-P
 
 import hardy.FlensburgManager;
+import umlp.command.LongList;
+import umlp.command.SimpleResult;
 import umlp.request.Request;
 import umlp.rte.GemList;
 import umlp.rte.GeneralErrorCollector;
@@ -19,7 +21,7 @@ public class GemList_getIds extends Request<LongList> {
   public GemList_getIds(long gemListId, int startIdxIncl, int endIdxExcl) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
-        "umlp.command.GemList_getIds"
+        "hardy.commands.GemList_getIds"
     );
 
     if(startIdxIncl < 0){
