@@ -46,6 +46,7 @@ deployUmlpTool:
     - build
   script:
     - "gradle :umlp-tool:publish -P mavenPassword=$pass -P mavenUser=$user"
+    - "gradle :umlp-rte:publish -P mavenPassword=$pass -P mavenUser=$user"
   only:
     - dev
 

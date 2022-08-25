@@ -1,8 +1,9 @@
-package umlp.command;
+package hardy.commands;
 
 // RTE-P
 
 import hardy.FlensburgManager;
+import umlp.command.SimpleResult;
 import umlp.request.Request;
 import umlp.rte.GemList;
 import umlp.rte.GeneralErrorCollector;
@@ -18,7 +19,7 @@ public class GemList_size extends Request<Integer> {
   public GemList_size(long gemListId) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
-        "umlp.command.GemList_size"
+        "hardy.commands.GemList_size"
     );
 
     this.gemListId = gemListId;
