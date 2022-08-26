@@ -2,6 +2,8 @@
 
 plugins {
   id 'application'
+  id 'org.springframework.boot' version "$spring_version"
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
 
@@ -10,28 +12,39 @@ description = "UMLP RTE"
 
 
 dependencies {
-    implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
-    implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
-    implementation group: 'org.hibernate', name: 'hibernate-vibur', version: hibernate_version
+  implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
+  implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
+  implementation group: 'org.hibernate', name: 'hibernate-vibur', version: hibernate_version
+
+  // Spring Boot Dependencies
+  def withoutSpringLogging = {
+    exclude module: 'spring-boot-starter-logging'
+    exclude module: 'logback-classic'
+  }
+  compileOnly("org.springframework.boot:spring-boot-devtools")
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', withoutSpringLogging
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', withoutSpringLogging
+//    implementation group: 'org.webjars', name: 'stomp-websocket'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', withoutSpringLogging
 }
 
 test {
-    testLogging {
-        events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-    }
-    useJUnitPlatform()
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform()
 }
 
 /////////////////////////   Deployment  //////////////////////////////////
 
 // configure deployment
 publishing {
-    repositories.maven {
-        credentials.username mavenUser
-        credentials.password mavenPassword
+  repositories.maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
 
-        def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
-        def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
-        url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-    }
+    def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+    def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+    url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+  }
 }

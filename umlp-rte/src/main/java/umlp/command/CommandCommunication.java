@@ -2,4 +2,5 @@
 package umlp.command;
 
 public interface CommandCommunication {
+  void sendCommand(Command command);
 }

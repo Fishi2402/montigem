@@ -18,7 +18,7 @@ public class TestClientCommandManager extends CommandManager {
 
   public TestClientCommandManager(FlensburgTestContext backendContext){
     this.backendContext = backendContext;
-    participantId = backendContext.getCommandManager()._subscribe(new CommandSubscription() {
+    participantId = backendContext.getCommandManager()._register(new Participant() {
       @Override
       public <T> void sendCommand(Command<T> command) {
         // TODO: Local error handling
