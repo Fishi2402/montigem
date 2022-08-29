@@ -44,6 +44,7 @@ include ":umlp-rte"
 include ":experiments"
 include ":experiments:initial"
 include ":experiments:coreRequirements"
+include ":experiments:coreRequirements:stanley"
 
 
 include ":examples"
