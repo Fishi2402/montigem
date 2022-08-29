@@ -2,6 +2,7 @@
 
 plugins {
   id 'application'
+  id 'maven-publish'
 }
 
 
@@ -26,6 +27,11 @@ test {
 
 // configure deployment
 publishing {
+    publications {
+      maven(MavenPublication) {
+        from(components.java)
+      }
+    }
     repositories.maven {
         credentials.username mavenUser
         credentials.password mavenPassword
