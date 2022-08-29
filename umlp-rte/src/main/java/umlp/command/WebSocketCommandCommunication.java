@@ -14,7 +14,7 @@ public class WebSocketCommandCommunication implements CommandCommunication {
   }
 
   @Override
-  public void sendCommand(Command command) {
+  public <T> void sendCommand(Command<T> command) {
     try {
       session.sendMessage(new TextMessage(CommandObjectMapper.serializeCommand(command)));
     } catch (IOException e) {
