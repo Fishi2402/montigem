@@ -1,4 +1,4 @@
-package stanley.showcityinfo;
+// package stanley.showcityinfo;
 
 // GEN-T
 
@@ -29,14 +29,17 @@ page ShowCityInfo(CityInfo ci) { // derived CityInfo
 
 */
 
+/*
 import hardy.CityInfo;
 import hardy.FlensburgManager;
 
 import java.util.List;
+ */
 
 /********************************************************/
 
 public class ShowCityInfoGUI {
+  /*
 
   // Person does not exist in the beginning, use builder instead
   protected CityInfo ci;
@@ -46,11 +49,12 @@ public class ShowCityInfoGUI {
    * The constructor call mimics the start of the Window: it is opened,
    * its values are set etc.
    */
+
+  /*
   public ShowCityInfoGUI() {
     this.ci = FlensburgManager.getCityInfo();
   }
 
-  // **************************** What is shown? ********************
   // Values in the compartments are simulated via getter's
   // If values are not present, GUI does not change or react
 
@@ -61,5 +65,6 @@ public class ShowCityInfoGUI {
   public List<String> getCities() {
     return ci.getCities();
   }
+  /**/
 
 }

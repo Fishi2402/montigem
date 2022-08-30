@@ -29,6 +29,15 @@ repositories {
   maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
 }
 
+sourceSets {
+  main {
+    java { srcDirs = [ 'src' ] }
+  }
+  test {
+    java { srcDirs = [] }
+  }
+}
+
 jsweet {
   verbose = true
   encoding = 'UTF-8'
