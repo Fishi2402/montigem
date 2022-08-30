@@ -3,9 +3,9 @@ buildscript {
   repositories {
     mavenCentral()
     maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+    // maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
     maven { url "https://repository.jsweet.org/artifactory/plugins-release-local" }
-    maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
+    // maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
     maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
   }
   dependencies {
@@ -17,18 +17,15 @@ buildscript {
 
 plugins {
   id "com.github.node-gradle.node" version "3.4.0"
-
   id "org.jsweet.jsweet-gradle-plugin" version "3.1.0"
-
 }
-
 
 repositories {
   mavenCentral()
   maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  // maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
   maven { url "https://repository.jsweet.org/artifactory/plugins-release-local" }
-  maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
+  // maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
   maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
 }
 
@@ -43,6 +40,9 @@ jsweet {
   // extraSystemPath = '/my/path/to/npm'
 }
 
+compileJava {
+  enabled = false
+}
 
 node {
   // Whether to download and install a specific Node.js version or not
