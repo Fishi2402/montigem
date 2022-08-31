@@ -2,7 +2,7 @@
 image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11
 
 variables:
-  GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+  GRADLE_OPTS: "-P mavenPassword=$pass -P mavenUser=$user -Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
 
 cache:
   paths:
@@ -45,7 +45,7 @@ deployUmlpTool:
   dependencies:
     - build
   script:
-    - "gradle :umlp-tool:publish :umlp-rte:publish -P mavenPassword=$pass -P mavenUser=$user"
+    - "gradle :umlp-tool:publish :umlp-rte:publish $GRADLE_OPTS"
   only:
     - dev
 
