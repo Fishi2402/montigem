@@ -7,7 +7,12 @@ pluginManagement {
         maven {
             credentials.username mavenUser
             credentials.password mavenPassword
-            url repo
+            url = repo
+        }
+        maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            url = prrepo
         }
         gradlePluginPortal()
         mavenCentral()
