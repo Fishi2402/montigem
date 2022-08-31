@@ -2,7 +2,7 @@
 image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11
 
 variables:
-  GRADLE_OPTS: "-P mavenPassword=$pass -P mavenUser=$user -Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+  GRADLE_OPTS: "-PmavenPassword=$pass -PmavenUser=$user -Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
 
 cache:
   paths:
