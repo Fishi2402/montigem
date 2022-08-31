@@ -2,7 +2,7 @@
 image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11
 
 variables:
-  GRADLE_OPTS: "-PmavenPassword=$pass -PmavenUser=$user -Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+  GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
 
 cache:
   paths:
@@ -22,7 +22,7 @@ build:
   stage: build
   script:
     - "gradle --version"
-    - "gradle build --refresh-dependencies $GRADLE_OPTS $ARGS1"
+    - "gradle build --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   artifacts:
     reports:
       # Lets gitlab render infos about failed tests
@@ -33,7 +33,7 @@ deployDockerImage:
   dependencies:
     - build
   script:
-    - "gradle :experiments:coreRequirements:jib $GRADLE_OPTS $ARGS3 \ 
+    - "gradle :experiments:coreRequirements:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \ 
       -Djib.to.image=$CI_REGISTRY_IMAGE/corerequirements:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
@@ -45,7 +45,7 @@ deployUmlpTool:
   dependencies:
     - build
   script:
-    - "gradle :umlp-tool:publish :umlp-rte:publish $GRADLE_OPTS"
+    - "gradle :umlp-tool:publish :umlp-rte:publish -P mavenPassword=$pass -P mavenUser=$user"
   only:
     - dev
 
