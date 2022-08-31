@@ -3,7 +3,7 @@ package umlptest;
 
 import org.junit.jupiter.api.Test;
 import umlp._ast.ASTUMLPCompilationUnit;
-import umlp.generator.UMLPGenerator;
+import umlp.generator.domain.UMLPGenerator;
 
 import java.io.File;
 

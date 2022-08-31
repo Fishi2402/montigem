@@ -3,14 +3,16 @@ package umlp;
 
 import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd._symboltable.BuiltInTypes;
-import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.TemplateController;
-import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
+import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._parser.GUIDSLParser;
+import de.monticore.guidsl._symboltable.GUIDSLScopesGenitorDelegator;
+import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -21,13 +23,12 @@ import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbolTableCompleter;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
-import umlp.generator.UMLPGenerator;
+import umlp.generator.gui.GUIGenerator;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -39,10 +40,11 @@ import static umlp.UMLPToolOptions.*;
  */
 public class UMLPTool extends UMLPToolTOP {
 
-//  protected static final String SYM_IO = "target/symbols/";
+  //  protected static final String SYM_IO = "target/symbols/";
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
   protected static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   protected static final String DEFAULT_CONFIGTEMPLATE = "umlp.UMLP2Java";
+  protected static final String DEFAULT_CONFIGTEMPLATE_GUI = "umlp.GUI2Java";
 
   public UMLPTool() {
     UMLPMill.init();
@@ -86,33 +88,36 @@ public class UMLPTool extends UMLPToolTOP {
       if (!INPUT.isSelected(cmd)) {
         Log.error("0xE0000 Indicating an input file with the option 'i' is mandatory");
       }
-      File inputFile = new File(INPUT.getValue(cmd));
+      String input = INPUT.getValue(cmd);
+      //   input = input.replace("Flensburg.umlp", "EditierePerson.gui");
+      File inputFile = new File(input);
+      // File inputFile = new File(INPUT.getValue(cmd));
 
-
-        ///////////////////////// SETUP REPORTING  /////////////////////////////
+      ///////////////////////// SETUP REPORTING  /////////////////////////////
       File outDir = new File(OUTPUT.getValue(cmd, DEFAULT_OUT));
 
       File reportDir = new File(REPORTS.getValue(cmd, DEFAULT_REPORT_OUT));
 
       String report_base = REPORT_BASE.getValue(cmd);
-      Function<Path,Path> reportPathOutput;
+      Function<Path, Path> reportPathOutput;
       if (!report_base.isEmpty()) {
         Path base_dir = Paths.get(report_base).toAbsolutePath();
-        reportPathOutput= p->base_dir.relativize(p.toAbsolutePath());
-      } else {
-        reportPathOutput= Path::toAbsolutePath;
+        reportPathOutput = p -> base_dir.relativize(p.toAbsolutePath());
+      }
+      else {
+        reportPathOutput = Path::toAbsolutePath;
       }
 
 
       MCPath hwcPath = new MCPath();
-      if(HWC_PATH.isSelected(cmd)){
+      if (HWC_PATH.isSelected(cmd)) {
         for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
           hwcPath.addEntry(Paths.get(v));
         }
       }
 
       MCPath fpPath = new MCPath();
-      if(TMPL_PATH.isSelected(cmd)){
+      if (TMPL_PATH.isSelected(cmd)) {
         for (String v : cmd.getOptionValues(TMPL_PATH.getCMD())) {
           fpPath.addEntry(Paths.get(v));
         }
@@ -120,74 +125,104 @@ public class UMLPTool extends UMLPToolTOP {
 
 
       ReportManager.ReportManagerFactory reportManagerFactory = new UMLPReports(outDir.getPath(),
-              reportDir.getPath(), reportPathOutput, hwcPath);
+          reportDir.getPath(), reportPathOutput, hwcPath);
 
       Reporting.init(outDir.getPath(), reportDir.getPath(), reportManagerFactory);
-      String report_on = inputFile.getName().replace(".","__");   // TODO: Is this name unique? Should it be unique?
+      String report_on = inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
       Reporting.on(report_on);
 
-
-        ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
-
-      // parse, create symbol table, check all cocos
-      ASTUMLPCompilationUnit ast = parse(inputFile.getPath());
-      Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
-      runAfterParseTrafo(ast);
-      IUMLPArtifactScope symbolTable = createSymbolTable(ast);
-      runDefaultCoCos(ast);
+      if (isUmlpFile(inputFile)) {
+        // parse, create symbol table, check all cocos
+        ASTUMLPCompilationUnit ast = parse(inputFile.getPath());
+        Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
+        runAfterParseTrafo(ast);
+        IUMLPArtifactScope symbolTable = createSymbolTable(ast);
+        runDefaultCoCos(ast);
 
 
         // print or store symbol table
-      if (SYMTAB.isSelected(cmd)) {
-        String s = SYMTAB.getValue(cmd);
-        if (null != s) {
-          // store symbol table to passed file
-          JsonPrinter.disableIndentation();
-          storeSymbols(symbolTable, s);
+        if (SYMTAB.isSelected(cmd)) {
+          String s = SYMTAB.getValue(cmd);
+          if (null != s) {
+            // store symbol table to passed file
+            JsonPrinter.disableIndentation();
+            storeSymbols(symbolTable, s);
+          }
+          else {
+            //print (formatted!) symboltable to console
+            UMLPSymbols2Json s2j = new UMLPSymbols2Json();
+            JsonPrinter.enableIndentation();
+            System.out.println(s2j.serialize(symbolTable));
+          }
         }
-        else {
-          //print (formatted!) symboltable to console
-          UMLPSymbols2Json s2j = new UMLPSymbols2Json();
-          JsonPrinter.enableIndentation();
-          System.out.println(s2j.serialize(symbolTable));
+
+        // pretty print model and either output on stdout or store to file
+        if (PRETTYPRINT.isSelected(cmd)) {
+          prettyPrint(ast, PRETTYPRINT.getValue(cmd));
         }
-      }
 
-      // pretty print model and either output on stdout or store to file
-      if (PRETTYPRINT.isSelected(cmd)) {
-        prettyPrint(ast, PRETTYPRINT.getValue(cmd));
-      }
 
-      ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
-      GeneratorSetup genSetup = new GeneratorSetup();
+        ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
+        GeneratorSetup genSetup = new GeneratorSetup();
 
-      // set output directory
-      genSetup.setOutputDirectory(outDir);
+        // set output directory
+        genSetup.setOutputDirectory(outDir);
 
-      // set hwc directories
-      genSetup.setHandcodedPath(hwcPath);
+        // set hwc directories
+        genSetup.setHandcodedPath(hwcPath);
 
-      // set template path
-      genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
-              .map(p -> p.toFile()).collect(Collectors.toList()));
+        // set template path
+        genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
+            .map(p -> p.toFile()).collect(Collectors.toList()));
 
-      // execute generator
-      CD4CodeMill.init();
-      CD4CodeMill.globalScope().clear();
-      BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
 
-      UMLPGenerator generator = new UMLPGenerator(genSetup);
+        // execute generator
+        CD4CodeMill.init();
+        CD4CodeMill.globalScope().clear();
+        BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
+
+      /*UMLPGenerator generator = new UMLPGenerator(genSetup);
       CD4C.init(genSetup);
       String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
-      generator.generate(ast, configTemplate);
+      generator.generate(ast, configTemplate);*/
 
-      // write reports
-      Reporting.flush(ast);
+        // write reports
+        Reporting.flush(ast);
+
+        ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
+      }
+      else if (isGuiFile(inputFile)) {
+
+        GUIDSLMill.init();
+        // parse, create symbol table, check all cocos
+        ASTGUICompilationUnit astGui = parseGUI(inputFile.getPath());
+        //  Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on);
+        IGUIDSLArtifactScope symbolTableGui = createSymbolTableGUI(astGui);
+
+        GeneratorSetup genSetup = new GeneratorSetup();
+        // set output directory
+        genSetup.setOutputDirectory(outDir);
+        // set hwc directories
+        genSetup.setHandcodedPath(hwcPath);
+        // set template path
+        genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
+            .map(p -> p.toFile()).collect(Collectors.toList()));
+
+        // execute generator
+        GUIDSLMill.init();
+        GUIGenerator generator = new GUIGenerator(genSetup);
+        String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI);
+        generator.generate(astGui, configTemplate);
+
+        // write reports
+        // Reporting.flush(astGui);
+      }
     }
     catch (ParseException e) {
       printHelp(options);
       Log.error("0xB005 An exception occurred while processing the CLI input!", e);
-    } finally {
+    }
+    finally {
       UMLPMill.globalScope().clear();
       Reporting.off();
     }
@@ -212,7 +247,8 @@ public class UMLPTool extends UMLPToolTOP {
     UMLPCoCos.checkAll(ast);
   }
 
-  @Override public IUMLPArtifactScope createSymbolTable(ASTUMLPCompilationUnit node) {
+  @Override
+  public IUMLPArtifactScope createSymbolTable(ASTUMLPCompilationUnit node) {
     IUMLPArtifactScope as = super.createSymbolTable(node);
     node.accept(new UMLPSymbolTableCompleter(node).getTraverser()); // run symbol table completer
     return as;
@@ -226,10 +262,56 @@ public class UMLPTool extends UMLPToolTOP {
     return options;
   }
 
-  protected void runAfterParseTrafo(ASTUMLPCompilationUnit node){
+  protected void runAfterParseTrafo(ASTUMLPCompilationUnit node) {
     UMLPTraverser trav = UMLPMill.traverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
+  }
+
+  protected boolean isUmlpFile(File f) {
+    return f.getName().endsWith(".umlp");
+  }
+
+  protected boolean isGuiFile(File f) {
+    return f.getName().endsWith(".gui");
+  }
+
+  public static ASTGUICompilationUnit parseGUI(String model) {
+    try {
+      GUIDSLParser parser = new GUIDSLParser();
+      Optional<ASTGUICompilationUnit> optAst = parser.parse(model);
+
+      if (!parser.hasErrors() && optAst.isPresent()) {
+        return optAst.get();
+      }
+      Log.error("0xA1050x72114 Model could not be parsed.");
+    }
+    catch (NullPointerException | java.io.IOException e) {
+      Log.error("0xA1051x37376 Failed to parse " + model, e);
+    }
+    // should never be reached (unless failquick is off)
+    return null;
+  }
+
+  public IGUIDSLArtifactScope createSymbolTableGUI(ASTGUICompilationUnit compUnit) {
+
+    GUIDSLScopesGenitorDelegator symbolTableCreator = GUIDSLMill.scopesGenitorDelegator();
+
+   /* symbolTableCreator.addAdaptedTypeSymbolResolver(new Class2MCResolver() {
+      @Override
+      protected Optional<URL> loadFromSymbolPath(String name) {
+        return GUIDSLMill.globalScope().getSymbolPath().find(Names.getPathFromPackage(name) + ".class");
+      }
+    });*/
+
+    IGUIDSLArtifactScope symTab = symbolTableCreator.createFromAST(compUnit);
+
+    return symTab;
+
+  }
+
+  public void prettyPrintGUI(de.monticore.guidsl._ast.ASTGUICompilationUnit ast, String file) {
+    Log.warn("0xA1052x84469 PrettyPrinting is not implemented yet.");
   }
 
   public static void main(String[] args) {
@@ -237,5 +319,4 @@ public class UMLPTool extends UMLPToolTOP {
     UMLPTool tool = new UMLPTool();
     tool.run(args);
   }
-
 }

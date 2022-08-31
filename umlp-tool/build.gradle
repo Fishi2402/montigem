@@ -15,7 +15,8 @@ dependencies {
     implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
     implementation group: 'de.monticore', name: 'class2mc', version: mc_version
     implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
-    implementation group: 'com.google.guava', name: 'guava', version: guava_version
+    implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version
+  //  implementation group: 'com.google.guava', name: 'guava', version: guava_version
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
     testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version:javaparser_version
@@ -28,6 +29,10 @@ dependencies {
     grammar("de.monticore:monticore-grammar:$mc_version") {
         capabilities { requireCapability("de.monticore:monticore-grammar-grammars") }
     }
+    grammar("de.monticore.lang:guidsl:$mc_version") {
+        capabilities { requireCapability("de.monticore.lang:guidsl-grammars") }
+    }
+
 }
 
 test {
@@ -43,6 +48,11 @@ repositories {
         credentials.username mavenUser
         credentials.password mavenPassword
         url repo
+    }
+    maven {
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        url prrepo
     }
     mavenCentral()
 }

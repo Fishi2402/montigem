@@ -221,7 +221,7 @@ public abstract class UMLPTask extends DefaultTask {
   }
 
   protected boolean isInputFile(File f) {
-    return f.getName().endsWith(".umlp");
+    return f.getName().endsWith(".umlp") || f.getName().endsWith(".gui");
   }
 
   @TaskAction
