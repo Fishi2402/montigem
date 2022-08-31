@@ -21,7 +21,12 @@ allprojects {
             credentials.password mavenPassword
             url repo
         }
-        if(("true").equals(getProperty('useLocalRepo'))) {
+      maven {
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        url prrepo
+      }
+      if(("true").equals(getProperty('useLocalRepo'))) {
             mavenLocal()
         }
     }

@@ -3,6 +3,7 @@ package umlp;
 
 import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd._symboltable.BuiltInTypes;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.generating.GeneratorSetup;
@@ -23,6 +24,7 @@ import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbolTableCompleter;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
+import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.gui.GUIGenerator;
 
 import java.io.File;
@@ -181,10 +183,10 @@ public class UMLPTool extends UMLPToolTOP {
         CD4CodeMill.globalScope().clear();
         BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
 
-      /*UMLPGenerator generator = new UMLPGenerator(genSetup);
+      UMLPGenerator generator = new UMLPGenerator(genSetup);
       CD4C.init(genSetup);
       String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
-      generator.generate(ast, configTemplate);*/
+      generator.generate(ast, configTemplate);
 
         // write reports
         Reporting.flush(ast);
