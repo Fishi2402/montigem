@@ -67,10 +67,10 @@ subprojects {
         registerFeature('grammars') { usingSourceSet(sourceSets.grammars) }
     }
 
-  compileJava {
-    dependsOn project.collect { it.tasks.withType(UMLPTask) }
-  }
-  buildDir = file("$projectDir/target")
+    compileJava {
+        dependsOn project.collect { it.tasks.withType(UMLPTask) }
+    }
+    buildDir = file("$projectDir/target")
     sourceCompatibility = '11'
 }
 

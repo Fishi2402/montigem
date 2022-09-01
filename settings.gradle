@@ -9,6 +9,11 @@ pluginManagement {
             credentials.password mavenPassword
             url repo
         }
+        maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            url = prrepo
+        }
         gradlePluginPortal()
         mavenCentral()
     }
@@ -44,6 +49,7 @@ include ":umlp-rte"
 include ":experiments"
 include ":experiments:initial"
 include ":experiments:coreRequirements"
+include ":experiments:coreRequirements:stanley"
 
 
 include ":examples"

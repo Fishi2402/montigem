@@ -10,6 +10,7 @@ import hardy.Flensburg;
 import umlp.gui.Table;
 // hier werden importierte Typen der GUI-Komponenten gefunden
 import umlp.gui.TableTypes.Row;
+import umlp.gui.TextInput;
 
 /**
  * This example defines a page with a table. Data in the table is read-only
@@ -29,8 +30,8 @@ page ShowCityInfo(CityInfo ci) {
   )
 
   // list of cities
-  :Text(value = "List of cities")
+  :TextInput(value = "List of cities") // TODO: Text vs. TextInput
   iterate(cityName : ci.cities) {
-    :Text(value = cityName)
+    :TextInput(value = cityName)
   }
 }

@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.9.2-jdk11-alpine
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11
 
 variables:
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
@@ -24,11 +24,13 @@ build:
     - "gradle --version"
     - "gradle build --refresh-dependencies $GRADLE_OPTS $ARGS1"
   artifacts:
+    paths:
+      - experiments/coreRequirements/stanley/dist/**
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
 
-deployDockerImage:
+deployBackendDocker:
   stage: deploy
   dependencies:
     - build
@@ -40,15 +42,31 @@ deployDockerImage:
   only:
     - dev
 
-deployUmlpTool:
+deployRTE:
   stage: deploy
   dependencies:
     - build
   script:
-    - "gradle :umlp-tool:publish -P mavenPassword=$pass -P mavenUser=$user"
-    - "gradle :umlp-rte:publish -P mavenPassword=$pass -P mavenUser=$user"
+    - "gradle :umlp-tool:publish :umlp-rte:publish -P mavenPassword=$pass -P mavenUser=$user"
   only:
     - dev
+
+### TODO: Do this via Gradle. e.g. similar to backend with JIB
+deployFrontendDocker:
+  stage: deploy
+  tags:
+    - shell
+    - docker
+  dependencies:
+    - build
+  script:
+    - "cd experiments/coreRequirements/stanley"
+    - "docker build . -t $CI_REGISTRY_IMAGE/corerequirements_frontend:latest"
+    - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+    - "docker push $CI_REGISTRY_IMAGE/corerequirements_frontend:latest"
+  only:
+    - dev
+
 
 checkMDLinks:
   stage: check

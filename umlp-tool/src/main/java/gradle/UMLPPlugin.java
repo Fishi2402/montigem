@@ -7,5 +7,6 @@ public abstract class UMLPPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
       project.getExtensions().getExtraProperties().set("UMLPTask", gradle.UMLPTask.class);
+      project.getExtensions().getExtraProperties().set("UMLPMergeTask", gradle.UMLPMergeTask.class);
     }
 }
