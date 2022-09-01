@@ -30,7 +30,7 @@ build:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
 
-deployDockerImage:
+deployBackendDocker:
   stage: deploy
   dependencies:
     - build
@@ -42,7 +42,7 @@ deployDockerImage:
   only:
     - dev
 
-deployBackendDocker:
+deployRTE:
   stage: deploy
   dependencies:
     - build
