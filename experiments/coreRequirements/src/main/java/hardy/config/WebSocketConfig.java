@@ -13,7 +13,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
   @Override
   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
     registry.addHandler(new CommandWebSocketService(), "/command")
-        .addInterceptors(new HttpSessionHandshakeInterceptor());
+        .addInterceptors(new HttpSessionHandshakeInterceptor())
+        .setAllowedOrigins("*");    // Doesn't work otherwise in deployed configuration (behind a proxy).
+                                    // TODO: Are there any unintended consequences from allowing all origins?
   }
 
 }
