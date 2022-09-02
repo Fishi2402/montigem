@@ -58,7 +58,9 @@ public abstract class PersonTOP extends Human {
   // and should only be used by the builder(!)
   protected PersonTOP() {
     super();
-    initPerson();
+    // TODO MH Wird beim deserialisiern im Client ausgeführt, wodurch unerwünschte
+    //  Nebeneffekte entstehen. Ist das hier wirklich nötig?
+//    initPerson();
   }
   
   // Bemerkung: Wir verzichten auf "volle" Konstruktoren

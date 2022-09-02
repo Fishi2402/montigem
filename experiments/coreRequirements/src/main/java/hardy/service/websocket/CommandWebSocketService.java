@@ -11,6 +11,7 @@ import umlp.command.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class CommandWebSocketService extends TextWebSocketHandler {
 
@@ -42,7 +43,11 @@ public class CommandWebSocketService extends TextWebSocketHandler {
     String returnResult = "";
     try {
       // TODO: check participant id is correct
-      Command command = CommandObjectMapper.deserializeCommand(message.getPayload());
+      Optional<Command<?>> commandOptional = CommandObjectMapper.deserializeCommand(message.getPayload());
+      if (!commandOptional.isPresent()) {
+        return;
+      }
+      Command command = commandOptional.get();
       CommandResult res = CommandManager.executeCommand(command);
       returnResult = CommandObjectMapper.serializeResponse(res);
     } catch (Exception e) {

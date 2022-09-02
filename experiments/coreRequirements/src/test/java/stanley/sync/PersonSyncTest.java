@@ -2,11 +2,12 @@ package stanley.sync;
 
 import de.se_rwth.commons.logging.Log;
 import hardy.*;
+import infrastructure.command.CommandDirectCommunication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import stanley.FlensburgManagerClientImplBuilder;
+import infrastructure.command.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
-import hardy.commands.TestClientCommandManager;
+import infrastructure.command.TestClientCommandManager;
 import umlp.command.Command;
 import umlp.command.CommandResult;
 import hardy.requests.GetFreeGemIdRequest;
@@ -230,9 +231,10 @@ public class PersonSyncTest {
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
     long startGemId = 1001L;
     FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    CommandDirectCommunication commandCommunication = new CommandDirectCommunication(serverContext);
     FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder()
         .backendContext(serverContext)
-        .commandManager(new TestClientCommandManager(serverContext){
+        .commandManager(new TestClientCommandManager(commandCommunication){
           @Override
           protected <T> CommandResult<T> _executeCommand(Command<T> command) {
             if(!(command instanceof GetFreeGemIdRequest || command instanceof GetFreeGemListIdRequest)){
@@ -243,6 +245,7 @@ public class PersonSyncTest {
         })
         .build()
         .get();
+    commandCommunication.setClientContext(clientContext);
 
     Log.info("Using PersonBuilder with CarBuilder @ client", "PersonSyncTest");
     clientContext.activate();

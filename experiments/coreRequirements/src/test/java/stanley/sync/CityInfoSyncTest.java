@@ -5,7 +5,7 @@ package stanley.sync;
 import hardy.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import stanley.FlensburgManagerClientImplBuilder;
+import infrastructure.command.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
 
 import java.util.List;

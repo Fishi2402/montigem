@@ -132,8 +132,9 @@ public class PersonBuilder extends Person {
         // & anstelle von && damit immer alle Fehlermeldungen reported werden
         // TODO AGe zu viele checks? Wie wird definiert, was unbedingt gesetzt werden muss
         //  (Optional, List)?
+        // TODO Warum wird hier Nickname zwei mal geprüft?
         return checkAgePresent()
-                & checkNicknamePresent()
+//                & checkNicknamePresent()
                 & checkMainResidencePresent()
                 & checkAge()
                 & checkNickname()

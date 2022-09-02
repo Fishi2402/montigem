@@ -1,12 +1,11 @@
-package service.websocket;
+package hardy.service.websocket;
 
 import hardy.FlensburgMock;
 import hardy.commands.Person_setAge;
 import hardy.requests.GetFreeGemIdRequest;
-import hardy.service.websocket.CommandWebSocketService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import stanley.FlensburgManagerClientImplBuilder;
+import infrastructure.command.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
 import umlp.command.CommandManager;
 import umlp.command.CommandResult;
@@ -14,6 +13,7 @@ import umlp.command.CommandResult;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// TODO MH AHe
 public class CommandCommunicationTest {
   @BeforeEach
   public void clear(){
