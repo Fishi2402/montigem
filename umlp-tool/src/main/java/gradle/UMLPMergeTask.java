@@ -8,8 +8,10 @@ import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
+import umlp.UMLPFullPrettyPrinter;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._parser.UMLPParser;
+import umlp.generator.CD2UMLPTrafo;
 import umlp.generator.UMLP2CDTrafo;
 
 import java.io.*;
@@ -42,12 +44,12 @@ public abstract class UMLPMergeTask extends SourceTask {
 
 
     ASTCDCompilationUnit merged = CDMerge.merge(cds);
-
-    CD4CodeFullPrettyPrinter prettyPrinter = new CD4CodeFullPrettyPrinter();
-    merged.accept(prettyPrinter.getTraverser());
+    ASTUMLPCompilationUnit umlp = CD2UMLPTrafo.run(merged);
+    UMLPFullPrettyPrinter umlpPrettyPrinter = new UMLPFullPrettyPrinter();
+    umlp.accept(umlpPrettyPrinter.getTraverser());
 
     try (PrintWriter out = new PrintWriter(new FileOutputStream(getOutputFile().get().getAsFile()), true)) {
-      out.println(prettyPrinter.getPrinter().getContent());
+      out.println(umlpPrettyPrinter.getPrinter().getContent());
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
