@@ -13,7 +13,7 @@ grammar UMLP extends de.monticore.CD4Code {
   /**
    * This nonterminal replaces CDDefinition
    */
-  symbol UMLPDef = ("umlp"|"ontology"|"classdigramm") Name "{" UMLPElement* "}";
+  symbol UMLPDef = (["umlp"]|["ontology"]|["classdigramm"]) Name "{" UMLPElement* "}";
 
   interface UMLPElement;
 
