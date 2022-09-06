@@ -43,6 +43,13 @@ werden oder wie auf sie zugegriffen wird.
 * Im Frontend soll ein Cache das Neuladen von Daten verhindern, welche sich nicht geändert haben.
 Hierfür ist eine Konsistenzprüfung mit dem Backend notwendig.
 
+* Der Manager erlaubt Zugriff auf die Liste je aller Elemente eines Typs (zu welchen Zugriffsrechte existieren).
+Diese Listen sind nicht direkt über die `Java.util.List`-API modifizierbar
+(z.B. können nur Elemente zugefügt werden, indem diese mit den `builder` des Managers erstellt werden,
+die entsprechende Liste wird dann entsprechend synchronisiert).
+Denn für das Hinzufügen von Elementen gibt es ohnehin nur die Option über `builder`
+und aus Gründen der API-Konsistenz soll auch das Entfernen ausschließlich über den Manager geschehen.
+Ein etwaiger Umbau um Modifizierbarkeit hinzuzufügen ist weiterhin möglich.
 
 ### Builder
 
