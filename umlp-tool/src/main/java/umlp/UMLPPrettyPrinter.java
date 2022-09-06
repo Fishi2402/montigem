@@ -3,10 +3,7 @@ package umlp;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import org.apache.tools.ant.taskdefs.optional.extension.LibFileSet;
-import umlp._ast.ASTUMLPCDElement;
-import umlp._ast.ASTUMLPCompilationUnit;
-import umlp._ast.ASTUMLPDef;
-import umlp._ast.ASTUMLPElement;
+import umlp._ast.*;
 import umlp._visitor.UMLPHandler;
 import umlp._visitor.UMLPTraverser;
 import umlp._visitor.UMLPVisitor2;
@@ -42,9 +39,10 @@ public class UMLPPrettyPrinter implements UMLPVisitor2, UMLPHandler {
 
     @Override
     public void handle(ASTUMLPDef node) {
-        if (node.isUmlp()) {
+        int kind = node.getKind();
+        if (kind == ASTConstantsUMLP.UMLP ) {
             getPrinter().print("umlp");
-        } else if (node.isClassdigramm()) {
+        } else if (kind == ASTConstantsUMLP.CLASSDIGRAMM) {
             getPrinter().print("classdigramm");
         } else {
             getPrinter().print("ontology");
