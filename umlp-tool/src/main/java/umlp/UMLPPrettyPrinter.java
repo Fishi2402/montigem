@@ -42,8 +42,8 @@ public class UMLPPrettyPrinter implements UMLPVisitor2, UMLPHandler {
         int kind = node.getKind();
         if (kind == ASTConstantsUMLP.UMLP ) {
             getPrinter().print("umlp");
-        } else if (kind == ASTConstantsUMLP.CLASSDIGRAMM) {
-            getPrinter().print("classdigramm");
+        } else if (kind == ASTConstantsUMLP.CLASSDIAGRAM) {
+            getPrinter().print("classdiagram");
         } else {
             getPrinter().print("ontology");
         }
