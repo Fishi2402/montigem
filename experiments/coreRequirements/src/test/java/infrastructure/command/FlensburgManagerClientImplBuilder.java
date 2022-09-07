@@ -1,11 +1,11 @@
-package stanley;
+package infrastructure.command;
 
 // GEN4T: For testing
 
 import de.se_rwth.commons.logging.Log;
 import hardy.HumanErrorCollector;
 import hardy.PersonErrorCollector;
-import hardy.commands.TestClientCommandManager;
+import stanley.FlensburgTestContext;
 import umlp.rte.GeneralErrorCollector;
 
 import java.util.Optional;
@@ -14,14 +14,15 @@ import java.util.Optional;
 // Wird gebraucht, da jeder XErrorCollector ersetzbar sein muss, aber auch per default leer sein kann.
 // Dadurch bekäme ein gleichwertiger Konstruktor extrem viele Argumente, was die Nutzung erschwert.
 public class FlensburgManagerClientImplBuilder {
-  protected FlensburgTestContext backendContext;
+  protected FlensburgTestContext serverContext;
   protected GeneralErrorCollector generalErrorCollector;
   protected HumanErrorCollector humanErrorCollector;
   protected PersonErrorCollector personErrorCollector;
   protected TestClientCommandManager commandManager;
+  protected ClientCommandCommunication commandCommunication;
 
   public FlensburgManagerClientImplBuilder backendContext(FlensburgTestContext backendContext){
-    this.backendContext = backendContext;
+    this.serverContext = backendContext;
     return this;
   }
 
@@ -45,24 +46,47 @@ public class FlensburgManagerClientImplBuilder {
     return this;
   }
 
+  public FlensburgManagerClientImplBuilder commandCommunication(
+      ClientCommandCommunication commandCommunication){
+    this.commandCommunication = commandCommunication;
+    return this;
+  }
+
   public Optional<FlensburgTestContext> build(){
-    if(backendContext == null){
+    if(serverContext == null){
       Log.error("Can not build FlensburgTestContext without a backend context!");
       return Optional.empty();
     }
+    boolean defaultCommandCommunication = commandCommunication == null;
 
     FlensburgManagerClientImpl res = new FlensburgManagerClientImpl();
-    TestClientCommandManager testClientCommandManager = commandManager != null ? commandManager : new TestClientCommandManager(backendContext);
+    if (commandManager == null) {
+      if (defaultCommandCommunication) {
+        commandCommunication = getDefaultCommandCommunication(serverContext);
+      }
+      commandManager = new TestClientCommandManager(commandCommunication);
+    }
     FlensburgTestContext flensburgTestContext = new FlensburgTestContext(
         res,
-        testClientCommandManager,
+        commandManager,
         generalErrorCollector != null ? generalErrorCollector : new GeneralErrorCollector(),
         humanErrorCollector != null ? humanErrorCollector : new HumanErrorCollector(),
         personErrorCollector != null ? personErrorCollector : new PersonErrorCollector()
     );
-    testClientCommandManager.setClientContext(flensburgTestContext);
+    if (defaultCommandCommunication) {
+      finalizeCommandCommunication(flensburgTestContext);
+    }
     return Optional.of(flensburgTestContext);
   }
 
+  private ClientCommandCommunication getDefaultCommandCommunication(FlensburgTestContext serverContext) {
+    return new CommandDirectCommunication(serverContext);
+  }
+
+  private void finalizeCommandCommunication(FlensburgTestContext clientContext) {
+    if (commandCommunication != null) {
+      ((CommandDirectCommunication) commandCommunication).setClientContext(clientContext);
+    }
+  }
 
 }

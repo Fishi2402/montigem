@@ -1,22 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id 'application'
-  id 'org.springframework.boot' version "$spring_version"
-  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-  id 'com.google.cloud.tools.jib' version '3.2.1'
+    id 'application'
+    id 'com.google.cloud.tools.jib' version '3.2.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version "${spring_version}"
 }
 
 application {
-  mainClass = 'hardy.UMLPApplication'
+    mainClass = 'hardy.UMLPApplication'
 }
 bootBuildImage {
-  imageName = "corerequirements"
+    imageName = "corerequirements"
 }
 jib {
-  to {
-    image 'yolanv/jib-demo:gradle'
-  }
+    to {
+        image 'yolanv/jib-demo:gradle'
+    }
 }
 
 
@@ -41,11 +41,11 @@ dependencies {
         exclude module: 'spring-boot-starter-logging'
         exclude module: 'logback-classic'
     }
-    compileOnly("org.springframework.boot:spring-boot-devtools")
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', withoutSpringLogging
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', withoutSpringLogging
+    compileOnly("org.springframework.boot:spring-boot-devtools:$spring_version")
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
 //    implementation group: 'org.webjars', name: 'stomp-websocket'
-    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', withoutSpringLogging
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
 }
 
 task runServer {
@@ -53,8 +53,8 @@ task runServer {
 }
 
 task generateFlensburg(type: UMLPTask) {
-  inputDir = file("models")
-  outputDir = layout.buildDirectory.dir("gen")
+    inputDir = file("models")
+    outputDir = layout.buildDirectory.dir("gen")
 }
 
 test {

@@ -1,4 +1,4 @@
-package stanley;
+package infrastructure.command;
 
 // GEN4T: For testing
 // GEN-P: Only if this class is also automatically converted to typescript
@@ -6,6 +6,10 @@ package stanley;
 import de.se_rwth.commons.logging.Log;
 import hardy.*;
 import hardy.commands.*;
+import stanley.AddressCommandObserver;
+import stanley.CarCommandObserver;
+import stanley.HumanCommandObserver;
+import stanley.PersonCommandObserver;
 import umlp.command.*;
 import hardy.requests.GetFreeGemIdRequest;
 import hardy.requests.GetFreeGemListIdRequest;
