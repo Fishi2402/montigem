@@ -14,6 +14,3 @@ if (!buildFinished) {
   }
 }
 return Optional.empty();
-
-
-

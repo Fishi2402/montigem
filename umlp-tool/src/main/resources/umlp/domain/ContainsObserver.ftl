@@ -3,7 +3,3 @@ ${tc.signature("name")}
 ${cd4c.method("public boolean containsObserver(${name}Observer o)")}
 
 return ${name?uncap_first}Observers.contains(o);
-
-
-
-

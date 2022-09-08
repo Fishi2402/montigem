@@ -6,7 +6,3 @@ if(!${name}Present){
   ${clazz}ErrorCollector.report${name?cap_first}Invalid(this);
 }
 return ${name}Present;
-
-
-
-

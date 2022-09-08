@@ -6,8 +6,3 @@ if (instance == null) {
   throw new UnsupportedOperationException("Initialize this instance using a concrete implementation of ${name}.");
 }
 return instance;
-
-
-
-
-
