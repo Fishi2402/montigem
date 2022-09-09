@@ -4,6 +4,7 @@ package hardy;
 
 import com.google.gson.*;
 import umlp.rte.GemList;
+import umlp.rte.GemListDeserHelper;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class PersonOwnsTypeAdapter implements JsonSerializer<GemList<Car>>, Json
       }
     }
 
-    return FlensburgManager.createOwns(gemListId, carIds);
+    return new GemListDeserHelper<>(gemListId, carIds);
   }
 
   @Override

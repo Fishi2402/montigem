@@ -6,13 +6,13 @@ package infrastructure.command;
 import de.se_rwth.commons.logging.Log;
 import hardy.*;
 import hardy.commands.*;
+import hardy.requests.GetFreeGemIdRequest;
+import hardy.requests.GetFreeGemListIdRequest;
 import stanley.AddressCommandObserver;
 import stanley.CarCommandObserver;
 import stanley.HumanCommandObserver;
 import stanley.PersonCommandObserver;
 import umlp.command.*;
-import hardy.requests.GetFreeGemIdRequest;
-import hardy.requests.GetFreeGemListIdRequest;
 import umlp.rte.GemList;
 import umlp.rte.GemListBuilder;
 import umlp.rte.LoadResult;
@@ -466,7 +466,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Car> _doCreateOwns(long gemListId, List<Long> initialCarGemIds) {
+  protected GemList<Car> _doCreateOwns(Person p, long gemListId, List<Long> initialCarGemIds) {
+    // TODO AHe, FDr: use Person for list interface of owns
     // TODO: this is not very easy to read
     return new GemList<>(
         gemListId,

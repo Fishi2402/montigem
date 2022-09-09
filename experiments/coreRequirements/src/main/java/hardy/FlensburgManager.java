@@ -111,7 +111,8 @@ public abstract class FlensburgManager {
     }
 
     protected static void setInstance(FlensburgManager instance) {
-        FlensburgManager.instance = instance;
+      FlensburgManager.instance = instance;
+      FlensburgCommandObjectMapper.init();
     }
 
     /* === Methods for class Human === */
@@ -397,18 +398,18 @@ public abstract class FlensburgManager {
    *
    * @return {@link List} the class {@link Car}.
    */
-  public static GemList<Car> createOwns(long gemListId, List<Long> initialCarGemIds) {
-    return getSingleton()._doCreateOwns(gemListId, initialCarGemIds);
+  public static GemList<Car> createOwns(Person p, long gemListId, List<Long> initialCarGemIds) {
+    return getSingleton()._doCreateOwns(p, gemListId, initialCarGemIds);
   }
 
-  protected abstract GemList<Car> _doCreateOwns(long gemListId, List<Long> initialCarGemIds);
+  protected abstract GemList<Car> _doCreateOwns(Person p, long gemListId, List<Long> initialCarGemIds);
 
-  public static GemList<Car> createOwns(long gemListId) {
-    return getSingleton()._doCreateOwns(gemListId);
+  public static GemList<Car> createOwns(Person p, long gemListId) {
+    return getSingleton()._doCreateOwns(p, gemListId);
   }
 
-  protected GemList<Car> _doCreateOwns(long gemListId){
-    return _doCreateOwns(gemListId, Collections.emptyList());
+  protected GemList<Car> _doCreateOwns(Person p, long gemListId){
+    return _doCreateOwns(p, gemListId, Collections.emptyList());
   }
 
   /**

@@ -5,17 +5,34 @@ package umlp.command;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import umlp.rte.Result;
 
+import java.util.Objects;
 import java.util.Optional;
 
 // Serialisiert und deserialisiert Commands und CommandResults, mit Hilfe von Gson
 // durch die Strategien CommandJsonDeserializer und CommandResultTypeAdapter
-public class CommandObjectMapper {
+public abstract class CommandObjectMapper {
+  protected static CommandObjectMapper instance;
+
+  // Gson Instanz, welche Commands und CommandResults (de)serialisieren kann.
+  // Um Domainenklassen wie Person zu (de)serialisieren, delegiert sie zu einer weiteren Gson Instanz(getDomainGson),
+  // um eine Endlosschleife zu verhindern.
   protected static Gson gson = new GsonBuilder()
       .registerTypeHierarchyAdapter(Command.class, new CommandJsonDeserializer())
       .registerTypeHierarchyAdapter(CommandResult.class, new CommandResultTypeAdapter())
       .create();
+
+  protected static CommandObjectMapper getInstance(){
+    return Objects.requireNonNull(instance, "CommandObjectMapper is not initialized!");
+  }
+
+  // Gson Instanz welche Domainklassen wie Person (de)serialisieren kann, aber keine Commands oder CommandResults.
+  // Muss pro Model generiert werden und wird per static delegate bereitgestellt.
+  public static Gson getDomainGson(){
+    return getInstance()._getDomainGson();
+  }
+
+  protected abstract Gson _getDomainGson();
 
   public static String serializeCommand(Command<?> command){
     return gson.toJson(command);

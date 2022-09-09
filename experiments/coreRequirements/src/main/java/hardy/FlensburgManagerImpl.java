@@ -183,7 +183,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected GemList<Car> _doCreateOwns(long gemListId, List<Long> initialCarGemIds) {
+    protected GemList<Car> _doCreateOwns(Person p, long gemListId, List<Long> initialCarGemIds) {
         return null;
     }
 

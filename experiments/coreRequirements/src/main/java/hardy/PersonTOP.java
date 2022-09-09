@@ -8,6 +8,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.annotations.JsonAdapter;
 import umlp.rte.Gem;
 import umlp.rte.GemList;
+import umlp.rte.GemListDeserHelper;
 import umlp.rte.NotificationScope;
 
 import java.util.*;
@@ -77,7 +78,7 @@ public abstract class PersonTOP extends Human {
   protected void initPerson() {
     this.nickname = "";
     this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns(FlensburgManager.getFreeGemListId());
+    this.owns = FlensburgManager.createOwns((Person) this, FlensburgManager.getFreeGemListId());
   }
   
   //+ initialization is externalized to be reusable (if needed)
@@ -85,7 +86,7 @@ public abstract class PersonTOP extends Human {
   protected void init(String nickname) {
     this.nickname = nickname;
     this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns(FlensburgManager.getFreeGemListId());
+    this.owns = FlensburgManager.createOwns((Person) this, FlensburgManager.getFreeGemListId());
   }
   
   protected void init(String nickname, GemList<Car> owns) {
@@ -409,6 +410,13 @@ public abstract class PersonTOP extends Human {
   // TODO: should not be used/usable when not testing
   public GemList<Car> getOwnsGemList() {
     return owns;
+  }
+
+  public void INTERNAL_finishDeser() {
+    // properly init GemLists
+    if(owns instanceof GemListDeserHelper){
+      owns = FlensburgManager.createOwns((Person) this, owns.getGemId(), ((GemListDeserHelper<Car>) owns).getInitialIds());
+    }
   }
 
   // -----------------------------------------------------------------
