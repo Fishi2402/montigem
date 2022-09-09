@@ -18,10 +18,6 @@ public class CommandWebSocketService extends TextWebSocketHandler {
   Map<String, Long> clientIds = new HashMap<>();
   Map<WebSocketSession, Participant> participants = new HashMap<>();
 
-  public static void init(){
-    // TODO: was muss hier gemacht werden?
-  }
-
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
     Long subscriberId;
