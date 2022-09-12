@@ -193,6 +193,11 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
+    public GemList<Address> _createVisited(Person person, long gemId, List<Long> initialIds) {
+        return null;
+    }
+
+    @Override
     protected Optional<List<Car>> _doCarsOpt(long gemId) {
         return Optional.empty();
     }

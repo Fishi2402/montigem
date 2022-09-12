@@ -2,13 +2,14 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import com.google.gson.annotations.JsonAdapter;
 import org.hibernate.annotations.GenericGenerator;
 import umlp.rte.GemIdentifiable;
+import umlp.rte.GemList;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.Optional;
 
 /* Source:
@@ -31,6 +32,9 @@ public class Address implements GemIdentifiable {
 
   @Column(name = "city")
   protected String city;
+
+  @JsonAdapter(PersonGemListTypeAdapter.class)
+  protected GemList<Person> vistors;
 
   @Override
   public long getGemId() {

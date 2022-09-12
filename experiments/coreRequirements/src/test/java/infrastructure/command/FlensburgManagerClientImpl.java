@@ -511,6 +511,29 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
+  protected GemList<Address> _createVisited(Person p, long gemListId, List<Long> initialCarGemIds) {
+    // TODO AHe, FDr: use Person for list interface of owns
+    // TODO: this is not very easy to read
+    return new GemList<>(
+        gemListId,
+        () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
+        (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
+        ids -> {
+          List<LoadResult<Address>> res = new ArrayList<>();
+          for (Long id : ids) {
+            SimpleResult<Address> tmp = CommandManager.executeCommand(new Address_get(id)).asSimpleResult();
+            if(tmp.isSuccessful()) {
+              res.add(new LoadResult<>(tmp.get()));
+            }else{
+              res.add(new LoadResult<>(tmp.getLoadingState()));
+            }
+          }
+          return res;
+        }
+    );
+  }
+
+  @Override
   protected Optional<List<Car>> _doCarsOpt(long gemId) {
     return Optional.empty();
   }

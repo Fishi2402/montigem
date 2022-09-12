@@ -43,10 +43,15 @@ public abstract class PersonTOP extends Human {
   // unordered Association.
   // The implementation will be a LazyList
   // Siehe PersonOwnsTypeAdapter für Erklärung
-  @JsonAdapter(PersonOwnsTypeAdapter.class)
+  @JsonAdapter(CarGemListTypeAdapter.class)
   protected GemList<Car> owns;
   // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
-  
+
+  @JsonAdapter(AddressGemListTypeAdapter.class)
+  protected GemList<Address> visited;
+  // TODO AHe: add/remove/...
+
+
   //+ Bem: insgesamt sind es etwa 30 generierte Ftnen, von denen hier
   // nur einige dargestellt sind
   
@@ -416,6 +421,10 @@ public abstract class PersonTOP extends Human {
     // properly init GemLists
     if(owns instanceof GemListDeserHelper){
       owns = FlensburgManager.createOwns((Person) this, owns.getGemId(), ((GemListDeserHelper<Car>) owns).getInitialIds());
+    }
+
+    if(visited instanceof GemListDeserHelper){
+      visited = FlensburgManager.createVisited((Person) this, visited.getGemId(), ((GemListDeserHelper<Address>) visited).getInitialIds());
     }
   }
 

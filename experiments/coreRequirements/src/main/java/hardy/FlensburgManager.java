@@ -412,6 +412,13 @@ public abstract class FlensburgManager {
     return _doCreateOwns(p, gemListId, Collections.emptyList());
   }
 
+
+  public static GemList<Address> createVisited(Person person, long gemId, List<Long> initialIds) {
+    return getSingleton()._createVisited(person, gemId, initialIds);
+  }
+
+  protected abstract GemList<Address> _createVisited(Person person, long gemId, List<Long> initialIds);
+
   /**
    * Gives the {@link List} of {@link Car} with the given gemId.
    *
