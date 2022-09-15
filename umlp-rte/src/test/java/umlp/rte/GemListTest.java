@@ -144,6 +144,16 @@ public class GemListTest extends AbstractUMLPRTETest {
   }
 
   @Test
+  public void lazyListTestSetOutOfBoundsNegative() {
+    assertThrows(IndexOutOfBoundsException.class, () -> list1.set(-3, getElem(0)));
+  }
+
+  @Test
+  public void lazyListTestSetOutOfBoundsPositive() {
+    assertThrows(IndexOutOfBoundsException.class, () -> list1.set(list1.size(), getElem(0)));
+  }
+
+  @Test
   public void lazyListTestIsPresent() {
     assertEquals(list2.size(), 2);
     assertTrue(list2.isPresent(0));
