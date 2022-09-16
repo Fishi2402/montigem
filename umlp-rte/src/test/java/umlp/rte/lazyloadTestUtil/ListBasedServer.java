@@ -52,7 +52,7 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
   public long id = 0;
 
   public GemList<E> createLazyList() {
-    GemList<E> gemList = new MockGemList<>(id++, this::getObject, getIds());
+    GemList<E> gemList = new MockGemList<>(id++, getIds(), this::getObject);
     getLazyLists().add(gemList);
     return gemList;
   }

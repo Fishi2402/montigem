@@ -20,6 +20,7 @@ import umlp.rte.NotificationScope;
 import umlp.util.LogUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 // Frontend implementation of the FlensburgManager
 // Uses commands and requests to synchronize data with the backend
@@ -467,7 +468,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected GemList<Car> _doCreateOwns(Person p, long gemListId, List<Long> initialCarGemIds) {
-    // TODO AHe, FDr: use Person for list interface of owns
     // TODO: this is not very easy to read
     return new GemList<>(
         gemListId,
@@ -484,7 +484,13 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
             }
           }
           return res;
-        }
+        },
+        (idx, id) -> p.setOwns(idx, getCarSure(id)),
+        (idx, gemIDs) -> p.addAllOwnss(idx,
+            gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())),
+        (gemIDs) -> p.removeAllOwnss(
+            gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())
+        )
     );
   }
 
@@ -513,6 +519,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected GemList<Address> _createVisited(Person p, long gemListId, List<Long> initialCarGemIds) {
     // TODO AHe, FDr: use Person for list interface of owns
+    // when the methods have been added to PersonTOP
     // TODO: this is not very easy to read
     return new GemList<>(
         gemListId,

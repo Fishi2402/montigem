@@ -226,7 +226,8 @@ public abstract class PersonTOP extends Human {
   }
 
   public Car removeOwns(int idx, NotificationScope scope){
-    Car c = owns.remove(idx);
+    Car c = owns.get(idx);
+    owns._internal_remove(Collections.singleton(idx));
     personObservers.forEach(obs -> obs.maybeNotifyRemoveOwns((Person) this, c.getGemId(), scope));
     return c;
   }
@@ -292,7 +293,7 @@ public abstract class PersonTOP extends Human {
       throw new IllegalArgumentException("Null argument not allowed here");
     }
     if (!this.owns.contains(o)) {
-      this.owns.add(index, o);
+      this.owns._internal_add(index, Collections.singletonList(o.getGemId()));
       checkOwns();
       personObservers.forEach(obs -> obs.maybeNotifyAddOwns((Person) this, o.getGemId(), index, scope));
     }
@@ -345,6 +346,10 @@ public abstract class PersonTOP extends Human {
     return Collections.unmodifiableList(owns).subList(startIdxIncl, endIdxExcl);
   }
 
+  public void setOwns(int idx, Car c) {
+    setOwns(idx, c, NotificationScope.ALL);
+  }
+
   public void setOwns(int idx, Car c, NotificationScope scope) {
     if(idx < 0){
       throw new IllegalStateException("idx must be 0 or higher");
@@ -353,7 +358,7 @@ public abstract class PersonTOP extends Human {
       throw new IllegalStateException("idx must be at most owns.size");
     }
 
-    this.owns.set(idx, c);
+    this.owns._internal_set(idx, c.getGemId());
     personObservers.forEach(obs -> obs.maybeNotifySetOwns((Person) this, idx, c.getGemId(), scope));
   }
 
@@ -434,6 +439,5 @@ public abstract class PersonTOP extends Human {
    
    * Entkopplung der Ladestrategien durch
    **  gemID  statt direktLink (und die transparente Realisierung in den Objekten)
-   **  LazyLoadedList  (siehe dazu andere Emails/Diskussionen)
    */
 }

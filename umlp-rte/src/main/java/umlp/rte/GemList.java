@@ -4,7 +4,9 @@ package umlp.rte;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -47,18 +49,50 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
 
   protected Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction;
 
+  protected BiConsumer<Integer, Long> setIdxFunction;
+
+  protected BiConsumer<Integer, List<Long>> addIDsFunction;
+
+  protected Consumer<Set<Integer>> removeIdxsFunction;
+
+  public GemList(
+      long gemID,
+      Supplier<Integer> loadSizeFunction,
+      BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
+      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction
+  ) {
+    this(
+      gemID,
+      loadSizeFunction,
+      loadIDsFunction,
+      loadObjectsFunction,
+        null,
+        null,
+        null
+    );
+    this.setIdxFunction = this::_internal_set;
+    this.addIDsFunction = this::_internal_add;
+    this.removeIdxsFunction = this::_internal_remove;
+  }
+
   public GemList(
       long gemId,
       Supplier<Integer> loadSizeFunction,
       BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
-      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction
+      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
+      BiConsumer<Integer, Long> setIdxFunction,
+      BiConsumer<Integer, List<Long>> addIDsFunction,
+      Consumer<Set<Integer>> removeIdxsFunction
   ){
     this(
         gemId,
         Collections.emptyList(),
         loadSizeFunction,
         loadIDsFunction,
-        loadObjectsFunction
+        loadObjectsFunction,
+        setIdxFunction,
+        addIDsFunction,
+        removeIdxsFunction
     );
   }
 
@@ -67,7 +101,10 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
       List<Long> initialIds,
       Supplier<Integer> loadSizeFunction,
       BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
-      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction
+      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
+      BiConsumer<Integer, Long> setIdxFunction,
+      BiConsumer<Integer, List<Long>> addIDsFunction,
+      Consumer<Set<Integer>> removeIdxsFunction
   ) {
     this.gemID = gemId;
     if(!initialIds.isEmpty()) {
@@ -77,6 +114,9 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     this.loadSizeFunction = loadSizeFunction;
     this.loadIDsFunction = loadIDsFunction;
     this.loadObjectsFunction = loadObjectsFunction;
+    this.setIdxFunction = setIdxFunction;
+    this.addIDsFunction = addIDsFunction;
+    this.removeIdxsFunction = removeIdxsFunction;
   }
 
   public void ensureSizeLoaded(){
@@ -109,21 +149,35 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   public E set(int idx, E elem) {
     assertInclusiveIdxInBounds(idx);
     final E oldElem = get(idx);
-    setIDs(Collections.singletonMap(idx, getID(elem)));
+    setIdxFunction.accept(idx, elem.getGemId());
     return oldElem;
+  }
+
+  public void _internal_set(int idx, long gemID) {
+    assertInclusiveIdxInBounds(idx);
+    setIDs(Collections.singletonMap(idx, gemID));
   }
 
   @Override
   public void add(int idx, E elem) {
     assertExclusiveIdxInBounds(idx);
-    addIDs(idx, Collections.singletonList(getID(elem)));
+    addIDsFunction.accept(idx, Collections.singletonList(elem.getGemId()));
+  }
+
+  public void _internal_add(int idx, List<Long> gemIDs) {
+    assertExclusiveIdxInBounds(idx);
+    addIDs(idx, gemIDs);
   }
 
   @Override
   public E remove(int idx) {
     E elem = get(idx);
-    removeIdxs(Collections.singleton(idx));
+    removeIdxsFunction.accept(Collections.singleton(idx));
     return elem;
+  }
+
+  public void _internal_remove(Set<Integer> idxs) {
+    removeIdxs(idxs);
   }
 
   /**

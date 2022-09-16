@@ -7,6 +7,9 @@ package umlp.rte;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 // Eine Implementierung der GemList, welche alle IDs lokal hält.
@@ -15,8 +18,25 @@ import java.util.function.Function;
 public class MockGemList<E extends GemIdentifiable> extends GemList<E> {
   protected Function<Long, LoadResult<E>> loadSingleObjectFunction;
 
-  public MockGemList(long gemID, Function<Long, LoadResult<E>> loadSingleObjectFunction, List<Long> initialIds) {
+  public MockGemList(long gemID,  List<Long> initialIds,
+      Function<Long, LoadResult<E>> loadSingleObjectFunction
+  ) {
     super(gemID, null, null, null);
+    this.loadSingleObjectFunction = loadSingleObjectFunction;
+    idStorage.addAll(0, initialIds);
+
+    loadSizeFunction = idStorage::size;
+    loadIDsFunction = this::doLoadIds;
+    loadObjectsFunction = this::doLoadObjects;
+  }
+
+  public MockGemList(long gemID,  List<Long> initialIds,
+      Function<Long, LoadResult<E>> loadSingleObjectFunction,
+      BiConsumer<Integer, Long> setIdxFunction,
+      BiConsumer<Integer, List<Long>> addIDsFunction,
+      Consumer<Set<Integer>> removeIdxsFunction
+      ) {
+    super(gemID, null, null, null, setIdxFunction, addIDsFunction, removeIdxsFunction);
     this.loadSingleObjectFunction = loadSingleObjectFunction;
     idStorage.addAll(0, initialIds);
 
