@@ -26,8 +26,6 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
    */
   protected List<GemList<E>> gemLists = new LinkedList<>();
 
-  protected long nextGemListID = 2001;
-
   public ListBasedServer(List<E> list) {
     for (E obj : list) {
       this.getIds().add(obj.getGemId());
@@ -51,16 +49,10 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
     this.idsNotAuthorized = ids;
   }
 
+  public long id = 0;
+
   public GemList<E> createLazyList() {
-    GemList<E> gemList = new GemList<>(
-        getNextGemListID(),
-        this::size,
-        this::getIDs,
-        this::getObjects,
-        this::setIdx,
-        this::addIDs,
-        this::removeIdxs
-    );
+    GemList<E> gemList = new MockGemList<>(id++, getIds(), this::getObject);
     getLazyLists().add(gemList);
     return gemList;
   }
@@ -84,9 +76,6 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
     E oldElem = get(idx);
     getIds().set(idx, elem.getGemId());
     getObjects().put(elem.getGemId(), elem);
-    for(GemList<E> gemList : gemLists) {
-      gemList._internal_set(idx, elem.getGemId());
-    }
     return oldElem;
   }
 
@@ -94,20 +83,12 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
   public void add(int idx, E elem) {
     getIds().add(elem.getGemId());
     getObjects().put(elem.getGemId(), elem);
-    // synchronise
-    for(GemList<E> gemList : gemLists) {
-      gemList._internal_add(idx, Collections.singletonList(elem.getGemId()));
-    }
   }
 
   @Override
   public E remove(int idx) {
     E elem = get(idx);
     getIds().remove(idx);
-    // synchronize
-    for(GemList<E> gemList : gemLists) {
-      gemList._internal_remove(Collections.singleton(idx));
-    }
     return elem;
   }
 
@@ -133,18 +114,14 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
     }
   }
 
-  protected void setIdx(int idx, long gemID) {
-    getIds().set(idx, gemID);
-    for(GemList<E> gemList : gemLists) {
-      gemList._internal_set(idx, gemID);
+  protected void setIdxs(Map<Integer, Long> idxs) {
+    for (Map.Entry<Integer, Long> entry : idxs.entrySet()) {
+      getIds().set(entry.getKey(), entry.getValue());
     }
   }
 
   protected void addIDs(int idx, List<Long> ids) {
     getIds().addAll(idx, ids);
-    for(GemList<E> gemList : gemLists) {
-      gemList._internal_add(idx, ids);
-    }
   }
 
   protected void removeIdxs(Set<Integer> idxs) {
@@ -154,9 +131,6 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
       if (!idxs.contains(i)) {
         ids.add(oldIds.get(i));
       }
-    }
-    for(GemList<E> gemList : gemLists) {
-      gemList._internal_remove(idxs);
     }
   }
 
@@ -174,9 +148,5 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
 
   protected List<GemList<E>> getLazyLists() {
     return gemLists;
-  }
-
-  protected long getNextGemListID() {
-    return nextGemListID++;
   }
 }
