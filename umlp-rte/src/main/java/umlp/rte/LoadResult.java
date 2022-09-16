@@ -42,7 +42,7 @@ public class LoadResult<E> {
     return loadingState == LoadingState.LOADED && obj != null;
   }
 
-  E get() {
+  public E get() {
     if (!isPresent()) {
       Log.error("0xE2921 Object was not loaded: " + loadingState.toString());
     }
