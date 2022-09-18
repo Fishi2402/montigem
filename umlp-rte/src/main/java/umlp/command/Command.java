@@ -41,7 +41,7 @@ public abstract class Command<T> {
   // Als Stack könnten mehrere Änderungen eines Clients rückgängig gemacht werden, so lange kein anderer Client
   // einen Command ausführt der die betroffenen Objekte bearbeitet.
   public void undoRun() {
-    String res = "MAB0x9000: No undo for operation " + getClass().getName() + "available";
+    String res = "MAB0x9000: No undo for operation " + getClass().getName() + " available";
 
 // todo: ist das der Umgang den wir mit Undos vornehmen?
 // Warnung einerseits an den User ist ja schön, aber
