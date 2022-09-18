@@ -110,7 +110,8 @@ public class SimpleIdStorage implements IdStorage{
     }
 
     if(key >= 0){
-      idxToId.remove(key);
+      // Entfernt und verschiebt alle höheren IDs nach vorne
+      remove(Collections.singleton(key));
       return true;
     }else{
       return false;

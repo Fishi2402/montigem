@@ -2,11 +2,13 @@ package umlp.rte;
 
 // RTE-T
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -126,6 +128,22 @@ public class IdStorageTest {
   @MethodSource("generator")
   public void testRemoveNonExisting(IdStorage storage){
     storage.remove((Arrays.asList(0, 1, 2)));
+  }
+
+  // TODO: Test and fix ChunkedIdStorage
+  @Test
+  public void testRemoveByExistingId(){
+    IdStorage storage = new SimpleIdStorage();
+    storage.addAll(0, List.of(1001L, 1002L, 1003L));
+
+    storage.removeId(1003L);
+    assertEquals(2, storage.size());
+    assertEquals(1001L, storage.getId(0).get());
+    assertEquals(1002L, storage.getId(1).get());
+
+    storage.removeId(1001L);
+    assertEquals(1, storage.size());
+    assertEquals(1002L, storage.getId(0).get());
   }
 
 }
