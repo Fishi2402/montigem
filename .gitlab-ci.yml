@@ -28,7 +28,7 @@ build:
         - experiments/coreRequirements/stanley/package-lock.json
     paths:
       - experiments/coreRequirements/stanley/node_modules
-      - experiments/coreRequirements/stanley/gradle/nodejs
+      - experiments/coreRequirements/stanley/.gradle/nodejs
   artifacts:
     paths:
       - experiments/coreRequirements/stanley/dist/**
