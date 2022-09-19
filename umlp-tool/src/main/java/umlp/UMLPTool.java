@@ -226,7 +226,7 @@ public class UMLPTool extends UMLPToolTOP {
     return options;
   }
 
-  protected void runAfterParseTrafo(ASTUMLPCompilationUnit node){
+  public void runAfterParseTrafo(ASTUMLPCompilationUnit node){
     UMLPTraverser trav = UMLPMill.traverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);

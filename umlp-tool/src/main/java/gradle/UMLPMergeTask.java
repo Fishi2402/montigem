@@ -1,23 +1,23 @@
 package gradle;
 
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.CDMerge;
-import de.se_rwth.commons.logging.Log;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
 import umlp.UMLPFullPrettyPrinter;
+import umlp.UMLPTool;
 import umlp._ast.ASTUMLPCompilationUnit;
-import umlp._parser.UMLPParser;
 import umlp.generator.CD2UMLPTrafo;
 import umlp.generator.UMLP2CDTrafo;
 
-import java.io.*;
-import java.util.LinkedHashSet;
-import java.util.Optional;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class UMLPMergeTask extends SourceTask {
 
@@ -26,25 +26,19 @@ public abstract class UMLPMergeTask extends SourceTask {
 
   @TaskAction
   public void run() {
-    Set<ASTCDCompilationUnit> cds = new LinkedHashSet<>();
-    UMLPParser parser = umlp.UMLPMill.parser();
+    // Parse and convert to CDCompilationUnit
+    Set<ASTCDCompilationUnit> cds = getSource().getFiles().stream()
+        .map(File::getAbsolutePath)
+        .map(this::parseAndCheck)
+        .map(UMLP2CDTrafo::run)
+        .collect(Collectors.toSet());
 
-    try {
-      for (File f : getSource()) {
-        Optional<ASTUMLPCompilationUnit> astUMLP = parser.parse(f.getAbsolutePath());
-        if (astUMLP.isEmpty()) {
-          Log.error("Error Parsing UMLP Model " + f.getPath());
-        }
-        ASTCDCompilationUnit astCD = UMLP2CDTrafo.run(astUMLP.get());
-        cds.add(astCD);
-      }
-    } catch (IOException e) {
-      Log.error(e.getMessage());
-    }
-
-
+    // merge
     ASTCDCompilationUnit merged = CDMerge.merge(cds);
+
+    // Convert back to UMLPCompilationUnit
     ASTUMLPCompilationUnit umlp = CD2UMLPTrafo.run(merged);
+
     UMLPFullPrettyPrinter umlpPrettyPrinter = new UMLPFullPrettyPrinter();
     umlp.accept(umlpPrettyPrinter.getTraverser());
 
@@ -53,5 +47,17 @@ public abstract class UMLPMergeTask extends SourceTask {
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  protected ASTUMLPCompilationUnit parseAndCheck(String absolutePath) {
+    UMLPTool tool = new UMLPTool();
+
+    ASTUMLPCompilationUnit result = tool.parse(absolutePath);
+
+    tool.runAfterParseTrafo(result);
+    tool.createSymbolTable(result);
+    tool.runDefaultCoCos(result);
+
+    return result;
   }
 }
