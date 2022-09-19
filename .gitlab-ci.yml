@@ -21,8 +21,14 @@ stages:
 build:
   stage: build
   script:
-    - "gradle --version"
     - "gradle build --refresh-dependencies $GRADLE_OPTS $ARGS1"
+  cache:
+    key:
+      files:  # Cache depends on state of "package-lock"
+        - experiments/coreRequirements/stanley/package-lock.json
+    paths:
+      - experiments/coreRequirements/stanley/node_modules
+      - experiments/coreRequirements/stanley/gradle/nodejs
   artifacts:
     paths:
       - experiments/coreRequirements/stanley/dist/**
