@@ -3,6 +3,7 @@ package umlp.generator.domain.decorator;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.AbstractDecorator;
 
 public class BEDecorator extends AbstractDecorator {
 

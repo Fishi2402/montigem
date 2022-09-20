@@ -1,4 +1,4 @@
-package umlp.generator.domain.decorator;
+package umlp.generator;
 
 import de.monticore.cd.facade.*;
 import de.monticore.cd.methodtemplates.CD4C;

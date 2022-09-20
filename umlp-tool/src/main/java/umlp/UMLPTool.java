@@ -90,10 +90,7 @@ public class UMLPTool extends UMLPToolTOP {
       if (!INPUT.isSelected(cmd)) {
         Log.error("0xE0000 Indicating an input file with the option 'i' is mandatory");
       }
-      String input = INPUT.getValue(cmd);
-      //   input = input.replace("Flensburg.umlp", "EditierePerson.gui");
-      File inputFile = new File(input);
-      // File inputFile = new File(INPUT.getValue(cmd));
+      File inputFile = new File(INPUT.getValue(cmd));
 
       ///////////////////////// SETUP REPORTING  /////////////////////////////
       File outDir = new File(OUTPUT.getValue(cmd, DEFAULT_OUT));
@@ -177,16 +174,15 @@ public class UMLPTool extends UMLPToolTOP {
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
             .map(p -> p.toFile()).collect(Collectors.toList()));
 
-
         // execute generator
         CD4CodeMill.init();
         CD4CodeMill.globalScope().clear();
         BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
 
-      UMLPGenerator generator = new UMLPGenerator(genSetup);
-      CD4C.init(genSetup);
-      String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
-      generator.generate(ast, configTemplate);
+        UMLPGenerator generator = new UMLPGenerator(genSetup);
+        CD4C.init(genSetup);
+        String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
+        generator.generate(ast, configTemplate);
 
         // write reports
         Reporting.flush(ast);
@@ -208,7 +204,7 @@ public class UMLPTool extends UMLPToolTOP {
         genSetup.setHandcodedPath(hwcPath);
         // set template path
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
-            .map(p -> p.toFile()).collect(Collectors.toList()));
+            .map(p -> p.toFile()).collect(Collectors.toList()));//
 
         // execute generator
         GUIDSLMill.init();
@@ -217,7 +213,7 @@ public class UMLPTool extends UMLPToolTOP {
         generator.generate(astGui, configTemplate);
 
         // write reports
-        // Reporting.flush(astGui);
+        Reporting.flush(astGui);
       }
     }
     catch (ParseException e) {
@@ -310,10 +306,6 @@ public class UMLPTool extends UMLPToolTOP {
 
     return symTab;
 
-  }
-
-  public void prettyPrintGUI(de.monticore.guidsl._ast.ASTGUICompilationUnit ast, String file) {
-    Log.warn("0xA1052x84469 PrettyPrinting is not implemented yet.");
   }
 
   public static void main(String[] args) {

@@ -10,6 +10,7 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.check.SymTypeExpression;
 import umlp.UMLPMill;
+import umlp.generator.AbstractDecorator;
 
 import java.util.List;
 

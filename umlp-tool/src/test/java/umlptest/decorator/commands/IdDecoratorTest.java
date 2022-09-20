@@ -4,7 +4,7 @@ package umlptest.decorator.commands;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.jupiter.api.Test;
-import umlp.generator.domain.decorator.AbstractDecorator;
+import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.commands.IdDecorator;
 import umlptest.decorator.DecoratorTest;
 

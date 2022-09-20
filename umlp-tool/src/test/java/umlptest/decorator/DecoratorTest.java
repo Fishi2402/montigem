@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp.generator.domain.UMLP2CDTrafo;
-import umlp.generator.domain.decorator.AbstractDecorator;
+import umlp.generator.AbstractDecorator;
 import umlptest.AbstractUMLPTest;
 
 import java.util.Optional;

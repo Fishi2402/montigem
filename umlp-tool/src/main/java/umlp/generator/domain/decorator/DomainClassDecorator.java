@@ -18,6 +18,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
+import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
 import umlp.generator.domain.decorator.methods.AssocMutatorDecorator;
 import umlp.generator.domain.decorator.methods.SimpleMethodMutatorDecorator;

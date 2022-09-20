@@ -11,6 +11,9 @@ ${tc.signature("decoratedAST", "glex", "hwPath", "guiJavaGenerator")}
 <#assign guiDecorator = tc.instantiate("umlp.generator.gui.decorator.GUIDecorator", [glex])>
 ${guiDecorator.transform(ast, decoratedAST)}
 
+<#-- TopDecorator -->
+<#assign topDecorator = tc.instantiate("de.monticore.cd.codegen.TopDecorator", [hwPath])>
+${topDecorator.decoratePackage(decoratedAST)}
+
 <#-- Generate Java-Code -->
 ${guiJavaGenerator.generate(decoratedAST)}
-

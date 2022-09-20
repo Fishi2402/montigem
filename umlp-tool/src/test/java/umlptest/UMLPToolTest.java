@@ -15,6 +15,13 @@ public class UMLPToolTest extends AbstractUMLPTest {
   }
 
   @Test
+  public void testRunMethodGui() {
+    UMLPTool tool = new UMLPTool();
+    tool.run(new String[]{"-i", "src/test/resources/de/monticore/EditierePerson.gui"});
+    assertNoErrors();
+  }
+
+  @Test
   public void testRunMethod4Config() {
     UMLPTool tool = new UMLPTool();
     tool.run(new String[]{"-i", "src/test/resources/de/monticore/A.umlp",
