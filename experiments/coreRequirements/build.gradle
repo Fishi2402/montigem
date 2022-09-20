@@ -60,6 +60,7 @@ task generateFlensburg(type: UMLPTask) {
 task generateAll(type: UMLPTask) {
     inputDir = file("models")
     outputDir = layout.buildDirectory.dir("gen")
+    hwcDir = layout.projectDirectory.dir("src/main/java")
 }
 
 test {

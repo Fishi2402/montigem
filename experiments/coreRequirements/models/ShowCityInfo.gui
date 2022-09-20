@@ -11,6 +11,7 @@ import umlp.gui.Table;
 // hier werden importierte Typen der GUI-Komponenten gefunden
 import umlp.gui.TableTypes.Row;
 import umlp.gui.TextInput;
+import umlp.gui.Text;
 
 /**
  * This example defines a page with a table. Data in the table is read-only
@@ -30,7 +31,7 @@ page ShowCityInfo(CityInfo ci) {
   )
 
   // list of cities
-  :TextInput(value = "List of cities") // TODO: Text vs. TextInput
+  :Text(value = "List of cities") // TODO: Text vs. TextInput
   iterate(cityName : ci.cities) {
     :TextInput(value = cityName)
   }
