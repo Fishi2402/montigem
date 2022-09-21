@@ -11,6 +11,8 @@ import umlp.gui.TextInput;
 import umlp.gui.NumberInput;
 import umlp.gui.Button;
 
+import EditierePersonCars;
+
 /**
  * This example defines a 
  * Form to fill out person data
@@ -40,7 +42,7 @@ page NeuePersonAnlegen(Person p) { // "leere" Person
   // (und die Logik dafür ist generiert und verfügbar)
   // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
   // ueberschrieben werden z.B. navigate, copy, show(:ContextMenu(...)), ...
-  // :Button(text = "Ok", leftClick = navigate(:EditierePersonCars(p)) // TODO: wird nicht geparst
+  :Button(text = "Ok", leftClick = navigate(:EditierePersonCars(person=p)))
 
   // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
   // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird entweder generiert oder
@@ -49,6 +51,6 @@ page NeuePersonAnlegen(Person p) { // "leere" Person
   // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "EditierePersonGUI.java".
   // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
   // deswegen wird eine Methode explizit importiert und aufgerufen
-  // :Button(text = "Decrease", leftClick = decreaseAge(p)) // TODO: wird nicht geparst
+  :Button(text = "Decrease", leftClick = decreaseAge(p))
 }
 

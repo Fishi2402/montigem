@@ -21,9 +21,7 @@ import stanley.personstatistics.PersonStatisticsGUI;
 page PersonStatistics(List<Person> ps) {
 
   // Pie chart showing statistics (implementation in Java hwc)
- // :Pie(               // TODO: wird nicht geparst
- //   data = getData(ps);
- // )
+ :Pie(data = getData(ps))
 
 }
 
