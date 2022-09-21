@@ -40,17 +40,17 @@ public class UMLPPrettyPrinter implements UMLPVisitor2, UMLPHandler {
     @Override
     public void handle(ASTUMLPDef node) {
         int kind = node.getKind();
-        if (kind == ASTConstantsUMLP.UMLP ) {
-            getPrinter().print("umlp");
+        if (kind == ASTConstantsUMLP.ONTOLOGY ) {
+            getPrinter().print("ontology");
         } else if (kind == ASTConstantsUMLP.CLASSDIAGRAM) {
             getPrinter().print("classdiagram");
         } else {
-            getPrinter().print("ontology");
+            getPrinter().print("umlp");
         }
         getPrinter().print(" ");
         getPrinter().print(node.getName());
         getPrinter().print(" ");
-        getPrinter().print("{");
+        getPrinter().println("{");
         getPrinter().indent();
         List<ASTUMLPElement> elements = node.getUMLPElementList();
         for (ASTUMLPElement element : elements) {
