@@ -117,6 +117,7 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     this.setIdxFunction = setIdxFunction;
     this.addIDsFunction = addIDsFunction;
     this.removeIdxsFunction = removeIdxsFunction;
+    ensureSizeLoaded();
   }
 
   public void ensureSizeLoaded(){
