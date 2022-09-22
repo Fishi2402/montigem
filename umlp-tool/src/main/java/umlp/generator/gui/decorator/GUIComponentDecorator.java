@@ -1,19 +1,17 @@
 package umlp.generator.gui.decorator;
 
-import de.monticore.cd.facade.CDMethodFacade;
-import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd.facade.CDParameterFacade;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.AbstractDecorator;
 
-import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public abstract class GUIComponentDecorator extends AbstractDecorator {
 
@@ -27,27 +25,20 @@ public abstract class GUIComponentDecorator extends AbstractDecorator {
 
   protected void addComponentErrorAttribute(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
     String componentAttributeName = StringTransformations.uncapitalize(guiComponent.getName()) + "Error";
-    ASTCDAttribute compError = getCD4C().addAttribute(decoratedClass, "protected String " + componentAttributeName + " = \"\";");
-    // TODO GV: add getMethod for compError
-  }
-
-  protected void addNotifyMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String attrName) {
-    ASTCDMethod notify = CDMethodFacade.getInstance().createMethod(CDModifier.PUBLIC.build(),
-        "notify" + StringTransformations.capitalize(attrName) + "Invalid",
-        CDParameterFacade.getInstance().createParameter("String", "msg"));
-
-    glex.replaceTemplate(EMPTY_BODY, notify, new StringHookPoint(StringTransformations.uncapitalize(guiComponent.getName())
-        + "Error = msg;"));
-    decoratedClass.addCDMember(notify);
+    getCD4C().addAttribute(decoratedClass, true, false, "protected String " + componentAttributeName + " = \"\";");
   }
 
   protected void addGetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String returnExpr, String returnType) {
-    ASTCDMethod getComponent = CDMethodFacade.getInstance().createMethod(CDModifier.PUBLIC.build(), returnType, "get" + guiComponent.getName());
-    glex.replaceTemplate(EMPTY_BODY, getComponent, new StringHookPoint("return " + returnExpr + ";"));
-    decoratedClass.addCDMember(getComponent);
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.GetComponent", "get" + guiComponent.getName(),
+        returnType, returnExpr);
   }
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  }
+
+  protected static List<ASTGUINamedArg> filterArgWithPredicate(List<ASTGUINamedArg> components,
+                                                               Predicate<ASTGUINamedArg> predicate) {
+    return components.stream().filter(predicate).collect(Collectors.toList());
   }
 }

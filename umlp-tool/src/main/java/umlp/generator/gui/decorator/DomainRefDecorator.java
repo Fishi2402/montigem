@@ -7,6 +7,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIParam;
+import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import umlp.UMLPMill;
 
@@ -49,23 +50,33 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   }
 
   protected void addDomainMembers(ASTCDClass clazz, ASTGUIParam astguiParam) {
+    // --- replace this when TypeCheck can be used
+
     String domainTypeName = astguiParam.getMCType().printType(basicTypesPrinter);  // TODO GV
+    String attributeType = new GUIDSLFullPrettyPrinter().prettyprint(astguiParam.getMCType());
+
     TypeSymbol typeInfo = astguiParam.getSymbol().getType().getTypeInfo();
     //   TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
+
     // TODO when ST ist fertig: resove domainTypeName und add import declaration //MB
+    boolean isDomainType =  domainTypeName.equals(attributeType);
     String qualifiedType = "hardy." + domainTypeName; // domainTypeSymbol.getQualifiedName();
+
+    // --- end
+
     getCD4C().addImport(clazz, qualifiedType);
 
     ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-        domainTypeName, astguiParam.getName());
+        attributeType, astguiParam.getName());
     clazz.addCDMember(domainAttribute);
 
     // TODO GV
     clazz.setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(domainTypeName + ERROR_OBSERVER));
     getCD4C().addImport(clazz, qualifiedType + ERROR_OBSERVER);
 
-    getCD4C().addConstructor(clazz, "umlp.gui2java.Constructor", clazz.getName(), domainTypeName, astguiParam.getName());
+    getCD4C().addConstructor(clazz, "umlp.gui2java.Constructor", clazz.getName(), attributeType, astguiParam.getName(), isDomainType);
 
+    getCD4C().addMethod(clazz, "umlp.gui2java.Init");
   }
 
 }

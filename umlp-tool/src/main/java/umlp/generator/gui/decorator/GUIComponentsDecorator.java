@@ -14,9 +14,10 @@ import java.util.stream.Collectors;
 
 public class GUIComponentsDecorator extends GUIAbstractDecorator {
 
-  public static final Predicate<ASTGUIComponent> PREDICATE_TEXT_INPUT = c -> c.getName().equals("TextInput");
-  public static final Predicate<ASTGUIComponent> PREDICATE_NUMBER_INPUT = c -> c.getName().equals("NumberInput");
-  public static final Predicate<ASTGUIComponent> PREDICATE_BUTTON = c -> c.getName().equals("Button");
+  public static final Predicate<ASTGUIComponent> PREDICATE_TEXT_INPUT = c -> c.getQualifiedName().equals("umlp.gui.TextInput");
+  public static final Predicate<ASTGUIComponent> PREDICATE_NUMBER_INPUT = c -> c.getQualifiedName().equals("umlp.gui.NumberInput");
+  public static final Predicate<ASTGUIComponent> PREDICATE_BUTTON = c -> c.getQualifiedName().equals("umlp.gui.Button");
+  public static final Predicate<ASTGUIComponent> PREDICATE_TABLE = c -> c.getQualifiedName().equals("umlp.gui.Table");
 
   public GUIComponentsDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -34,7 +35,8 @@ public class GUIComponentsDecorator extends GUIAbstractDecorator {
     if (decoratedClass.isPresent()) {
       filterComponentsWithPredicate(allComponents, PREDICATE_TEXT_INPUT).forEach(c -> new TextInputDecorator(glex).transform(decoratedClass.get(), c));
       filterComponentsWithPredicate(allComponents, PREDICATE_NUMBER_INPUT).forEach(c -> new NumberInputDecorator(glex).transform(decoratedClass.get(), c));
-      filterComponentsWithPredicate(allComponents, PREDICATE_BUTTON).forEach(c -> new ButtonInputDecorator(glex).transform(decoratedClass.get(), c));
+      filterComponentsWithPredicate(allComponents, PREDICATE_BUTTON).forEach(c -> new ButtonDecorator(glex).transform(decoratedClass.get(), c));
+      filterComponentsWithPredicate(allComponents, PREDICATE_TABLE).forEach(c -> new TableDecorator(glex).transform(decoratedClass.get(), c));
     }
   }
 

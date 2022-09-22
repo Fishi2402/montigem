@@ -18,12 +18,12 @@ public class NumberInputDecorator extends GUIComponentDecorator {
   @Override
   public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
     if (guiComponent.getGUINamedArgs().getGUINamedArgList().size() != 1) {
-      Log.error("TextInput GUIComponent args aren't correct"); //TODO msg
+      Log.error("NumberInputDecorator GUIComponent args aren't correct"); //TODO msg
       return;
     }
     ASTGUINamedArg arg = guiComponent.getGUINamedArgs().getGUINamedArgList().get(0);
     if (!arg.getName().equals(INPUT_ARG_NAME)) {
-      Log.error("TextInput GUIComponent args aren't correct"); //TODO msg
+      Log.error("NumberInputDecorator GUIComponent args aren't correct");
       return;
     }
 
@@ -36,7 +36,7 @@ public class NumberInputDecorator extends GUIComponentDecorator {
       // resolve and check type
 
       if (!(expr.getExpression() instanceof ASTNameExpression)) {
-        Log.error("TextInput GUIComponent args aren't correct");
+        Log.error("NumberInputDecorator GUIComponent args aren't correct");
         return;
       }
 
@@ -54,7 +54,7 @@ public class NumberInputDecorator extends GUIComponentDecorator {
 
     }
     else {
-      Log.error("TextInput GUIComponent args aren't correct"); //TODO msg
+      Log.error("NumberInputDecorator GUIComponent args aren't correct"); //TODO msg
       return;
     }
 
@@ -64,6 +64,11 @@ public class NumberInputDecorator extends GUIComponentDecorator {
     addNotifyMethod(decoratedClass, guiComponent, attrName);
     addGetComponentMethod(decoratedClass, guiComponent, returnExpr, returnType);
 
+  }
+
+  protected void addNotifyMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String attrName) {
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.input.Notify",
+        "notify" + StringTransformations.capitalize(attrName) + "Invalid", StringTransformations.uncapitalize(guiComponent.getName()));
   }
 
 }

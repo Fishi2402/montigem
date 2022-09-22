@@ -3,18 +3,24 @@ package umlp.generator.gui.decorator;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
+import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import umlp.generator.AbstractDecorator;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public abstract class GUIAbstractDecorator extends AbstractDecorator {
 
   public static MCBasicTypesFullPrettyPrinter basicTypesPrinter;
+  public static GUIDSLFullPrettyPrinter guiDSLPrinter;
 
   public static final String COMPONENT_SUFFIX = "GUI";
 
