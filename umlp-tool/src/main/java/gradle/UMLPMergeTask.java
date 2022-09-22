@@ -1,5 +1,6 @@
 package gradle;
 
+import de.monticore.cd4analysis.prettyprint.CD4AnalysisFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.CDMerge;
 import org.gradle.api.file.RegularFileProperty;
@@ -36,14 +37,18 @@ public abstract class UMLPMergeTask extends SourceTask {
     // merge
     ASTCDCompilationUnit merged = CDMerge.merge(cds);
 
+    CD4AnalysisFullPrettyPrinter printer = new CD4AnalysisFullPrettyPrinter();
+    merged.accept(printer.getTraverser());
+
+/*
     // Convert back to UMLPCompilationUnit
     ASTUMLPCompilationUnit umlp = CD2UMLPTrafo.run(merged);
-
-    UMLPFullPrettyPrinter umlpPrettyPrinter = new UMLPFullPrettyPrinter();
-    umlp.accept(umlpPrettyPrinter.getTraverser());
+    UMLPFullPrettyPrinter printer = new UMLPFullPrettyPrinter();
+    umlp.accept(printer.getTraverser());
+*/
 
     try (PrintWriter out = new PrintWriter(new FileOutputStream(getOutputFile().get().getAsFile()), true)) {
-      out.println(umlpPrettyPrinter.getPrinter().getContent());
+      out.println(printer.getPrinter().getContent());
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
