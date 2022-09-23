@@ -100,18 +100,18 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
   }
 
   @Override
-  public void addIDs(int idx, List<Long> additions) {
+  public void _internal_add(int idx, List<Long> additions) {
     if(buildFinished) {
-      super.addIDs(idx, additions);
+      super._internal_add(idx, additions);
     } else {
       ids.addAll(idx, additions);
     }
   }
 
   @Override
-  public void removeIdxs(Set<Integer> idxs) {
+  public void _internal_remove(Set<Integer> idxs) {
     if(buildFinished) {
-      super.removeIdxs(idxs);
+      super._internal_remove(idxs);
     } else {
       idxs
           .stream()
