@@ -22,6 +22,7 @@ public class FlensburgCommandObjectMapper extends CommandObjectMapper {
     if(domainGson == null){
       domainGson = new GsonBuilder()
           .registerTypeAdapterFactory(new PersonTypeAdapterFactory())
+          .registerTypeAdapterFactory(new AddressTypeAdapterFactory())
           .create();
     }
     return domainGson;

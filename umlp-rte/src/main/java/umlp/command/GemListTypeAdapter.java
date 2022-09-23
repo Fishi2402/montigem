@@ -5,6 +5,7 @@ package umlp.command;
 import com.google.gson.*;
 import umlp.rte.GemIdentifiable;
 import umlp.rte.GemList;
+import umlp.rte.GemListBuilder;
 import umlp.rte.GemListDeserHelper;
 
 import java.lang.reflect.Type;
@@ -34,9 +35,20 @@ public class GemListTypeAdapter<T extends GemIdentifiable> implements JsonSerial
 
   @Override
   public JsonElement serialize(GemList<T> src, Type typeOfSrc, JsonSerializationContext context) {
-      // TODO: initially send some values?
       JsonObject res = new JsonObject();
       res.addProperty("listId", src.getGemId());
+
+    // Client needs to send ids to server
+    // TODO: is this always needed?
+    // TODO: weird code
+      if(src instanceof GemListBuilder){
+        if(CommandManager.getParticipantId() != 0){
+          JsonArray value = new JsonArray();
+          src.getIDs(0, src.size()).forEach(value::add);
+          res.add("values", value);
+        }
+      }
+
       return res;
   }
 }

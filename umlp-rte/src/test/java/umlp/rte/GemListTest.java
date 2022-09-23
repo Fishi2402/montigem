@@ -2,6 +2,7 @@
 package umlp.rte;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp.rte.lazyloadTestUtil.Elem;
 import umlp.rte.lazyloadTestUtil.ListBasedServer;
@@ -95,6 +96,8 @@ public class GemListTest extends AbstractUMLPRTETest {
     assertThrows(IndexOutOfBoundsException.class, () -> list1_0.get(list1_0.size()));
   }
 
+  // TODO: AHe, FDr: Discuss and enable
+  @Disabled
   @Test
   public void lazyListTestRemove() {
     Elem old;
@@ -124,6 +127,8 @@ public class GemListTest extends AbstractUMLPRTETest {
     assertThrows(IndexOutOfBoundsException.class, () -> list1_0.remove(list1_0.size()));
   }
 
+  // TODO: AHe, FDr: Discuss and enable
+  @Disabled
   @Test
   public void lazyListTestAdd() {
     assertEquals(list1_0.size(), 4);

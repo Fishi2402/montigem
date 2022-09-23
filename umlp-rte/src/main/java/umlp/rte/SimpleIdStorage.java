@@ -3,6 +3,7 @@ package umlp.rte;
 // Nur während der Entwicklung zu nutzten
 
 import de.se_rwth.commons.logging.Log;
+import umlp.util.LogUtil;
 
 import java.util.*;
 
@@ -22,8 +23,8 @@ public class SimpleIdStorage implements IdStorage{
 
   @Override
   public void addAll(int i, List<Long> ids) {
-    Log.trace("Adding ids " + ids + " at index " + i, "IdStorage");
-    Log.trace("Initial state: " + idxToId, "IdStorage");
+    Log.trace("Adding ids " + ids + " at index " + i, "IdStorage " + LogUtil.getLoggerName());
+    Log.trace("Initial state: " + idxToId, "IdStorage " + LogUtil.getLoggerName());
     // Shift up all existing indicies by copying
     // This is insanely simple and slow, see ChunkedIdStorage for more efficient implementation
     Map<Integer, Long> res = new HashMap<>();
@@ -43,19 +44,21 @@ public class SimpleIdStorage implements IdStorage{
 
     idxToId.clear();
     idxToId = res;
-    Log.trace("End state: " + idxToId, "IdStorage");
+    Log.trace("End state: " + idxToId, "IdStorage " + LogUtil.getLoggerName());
   }
 
   @Override
   public void set(Map<Integer, Long> changes) {
-    Log.trace("Changes " + changes ,"IdStorage");
-    Log.trace("Initial state: " + idxToId, "IdStorage");
+    Log.trace("Changes " + changes ,"IdStorage " + LogUtil.getLoggerName());
+    Log.trace("Initial state: " + idxToId, "IdStorage " + LogUtil.getLoggerName());
     idxToId.putAll(changes);
-    Log.trace("Finished state: " + idxToId, "IdStorage");
+    Log.trace("Finished state: " + idxToId, "IdStorage " + LogUtil.getLoggerName());
   }
 
   @Override
   public void remove(Collection<Integer> indicies) {
+    Log.trace("Removing indicies " + indicies, "IdStorage " + LogUtil.getLoggerName());
+    Log.trace("Initial state: " + idxToId, "IdStorage " + LogUtil.getLoggerName());
     TreeMap<Integer, Integer> offsets = new TreeMap<>();
 
     int i = 0;
@@ -82,6 +85,7 @@ public class SimpleIdStorage implements IdStorage{
 
     idxToId.clear();
     idxToId = res;
+    Log.trace("Finished state: " + idxToId, "IdStorage " + LogUtil.getLoggerName());
   }
 
   @Override
@@ -91,16 +95,19 @@ public class SimpleIdStorage implements IdStorage{
 
   @Override
   public void clear() {
+    Log.trace("Clearing, was " + idxToId, "IdStorage " + LogUtil.getLoggerName());
     idxToId.clear();
   }
 
   @Override
   public int size() {
+    Log.trace("Returning size " + idxToId.size(), "IdStorage " + LogUtil.getLoggerName());
     return idxToId.size();
   }
 
   @Override
   public boolean removeId(long gemId) {
+    Log.trace("Trying to remove gemId " + gemId, "IdStorage " + LogUtil.getLoggerName());
     int key = -1;
     for (Map.Entry<Integer, Long> e : idxToId.entrySet()) {
       if(Objects.equals(e.getValue(), gemId)){
@@ -110,10 +117,12 @@ public class SimpleIdStorage implements IdStorage{
     }
 
     if(key >= 0){
+      Log.trace("Removing gemId " + gemId + " at index " + key, "IdStorage " + LogUtil.getLoggerName());
       // Entfernt und verschiebt alle höheren IDs nach vorne
       remove(Collections.singleton(key));
       return true;
     }else{
+      Log.trace("Cant not find index of gemId " + gemId, "IdStorage " + LogUtil.getLoggerName());
       return false;
     }
   }

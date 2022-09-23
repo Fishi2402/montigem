@@ -429,8 +429,49 @@ public abstract class PersonTOP extends Human {
     }
 
     if(visited instanceof GemListDeserHelper){
-      visited = FlensburgManager.createVisited((Person) this, visited.getGemId(), ((GemListDeserHelper<Address>) visited).getInitialIds());
+      List<Long> initialIds = ((GemListDeserHelper<Address>) visited).getInitialIds();
+      visited = FlensburgManager.createVisited((Person) this, visited.getGemId(), initialIds);
+      // TODO AHe: might not work in all situations, since the index of INTERNAL_addVisitorId could be != sizeVisitors
+      for (Long initialId : initialIds) {
+        if(FlensburgManager.isLoadedAddress(initialId)){
+          Address address = FlensburgManager.getAddressSure(initialId);
+          address.INTERNAL_addVisitorId(address.sizeVisitors(), gemId, NotificationScope.MINIMAL);
+        }
+      }
     }
+  }
+
+  public int sizeVisited() {
+    return visited.size();
+  }
+
+  public Address getVisited(int i) {
+    return visited.get(i);
+  }
+
+  public void addVisited(Address address){
+    addVisited(address, NotificationScope.ALL);
+  }
+
+  public void addVisited(Address address, NotificationScope scope){
+    addVisited(visited.size(), address, scope);
+  }
+
+  public void addVisited(int indexInList, Address address){
+    addVisited(indexInList, address, NotificationScope.ALL);
+  }
+
+  public void addVisited(int indexInList, Address address, NotificationScope scope) {
+    visited.add(indexInList, address);
+    if(scope.contains(NotificationScope.LOCAL)){
+      address.addVisitor((Person) this, NotificationScope.MINIMAL);
+    }
+    personObservers.forEach(obs -> obs.maybeNotifyAddVisited((Person)this, address.getGemId(), indexInList, scope));
+  }
+
+  public void INTERNAL_addVisitedId(int indexInList, long addressGemId, NotificationScope scope) {
+    visited._internal_add(indexInList, List.of(addressGemId));
+    personObservers.forEach(obs -> obs.maybeNotifyAddVisited((Person) this, addressGemId, indexInList, scope));
   }
 
   // -----------------------------------------------------------------

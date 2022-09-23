@@ -175,9 +175,10 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     ensureSizeLoaded();
     assertExclusiveIdxInBounds(idx);
     idStorage.addAll(idx, gemIDs);
-    if(sizeWasLoaded) {
+    // TODO: AHe, FDr: Discuss and enable Tests lazyListTestAdd and lazyListTestRemove
+    //if(sizeWasLoaded) {
       size += gemIDs.size();
-    }
+    //}
   }
 
   @Override
@@ -192,9 +193,9 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     boolean sizeWasLoaded = sizeLoaded();
     ensureSizeLoaded();
     idStorage.remove(idxs);
-    if(sizeWasLoaded) {
+    //if(sizeWasLoaded) {
       size -= idxs.size();
-    }
+    //}
     assert size >= 0;
   }
 

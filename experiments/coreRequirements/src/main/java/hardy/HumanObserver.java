@@ -22,7 +22,7 @@ public interface HumanObserver {
   }
   
   default void maybeNotifyBuild(Human h, NotificationScope scope) {
-    if (getScope().contains(scope)) {
+    if (scope.contains(getScope())) {
       notifyBuild(h);
     }
   }

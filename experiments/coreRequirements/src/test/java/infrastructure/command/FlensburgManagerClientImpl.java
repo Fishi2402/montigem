@@ -176,6 +176,11 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
+  protected boolean _isLoadedPerson(long gemId) {
+    return knownPersons.containsKey(gemId);
+  }
+
+  @Override
   protected Optional<Person> _doPersonOpt(long gemId) {
     Person h = knownPersons.get(gemId);
     if (h != null) {
@@ -272,6 +277,11 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected AddressBuilder _doAddressBuilder() {
     return new AddressBuilder(_doGetFreeGemId());
+  }
+
+  @Override
+  protected boolean _isLoadedAddress(long gemId) {
+    return knownAddresses.containsKey(gemId);
   }
 
   @Override
@@ -529,6 +539,71 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
           List<LoadResult<Address>> res = new ArrayList<>();
           for (Long id : ids) {
             SimpleResult<Address> tmp = CommandManager.executeCommand(new Address_get(id)).asSimpleResult();
+            if(tmp.isSuccessful()) {
+              res.add(new LoadResult<>(tmp.get()));
+            }else{
+              res.add(new LoadResult<>(tmp.getLoadingState()));
+            }
+          }
+          return res;
+        }
+    );
+  }
+
+  @Override
+  protected GemList<Person> _createVisitors(Address address, long gemListId, List<Long> initialIds) {
+    // TODO AHe, FDr: use Person for list interface of owns
+    // TODO: this is not very easy to read
+    return new GemList<>(
+        gemListId,
+        () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
+        (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
+        ids -> {
+          List<LoadResult<Person>> res = new ArrayList<>();
+          for (Long id : ids) {
+            SimpleResult<Person> tmp = CommandManager.executeCommand(new Person_get(id)).asSimpleResult();
+            if(tmp.isSuccessful()) {
+              res.add(new LoadResult<>(tmp.get()));
+            }else{
+              res.add(new LoadResult<>(tmp.getLoadingState()));
+            }
+          }
+          return res;
+        }
+    );
+  }
+
+  @Override
+  protected GemList<Address> _createVisitedBuilder(Person person, long gemListId, List<Long> initialIds) {
+    return new GemListBuilder<>(
+        gemListId,
+        () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
+        (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
+        ids -> {
+          List<LoadResult<Address>> res = new ArrayList<>();
+          for (Long id : ids) {
+            SimpleResult<Address> tmp = CommandManager.executeCommand(new Address_get(id)).asSimpleResult();
+            if(tmp.isSuccessful()) {
+              res.add(new LoadResult<>(tmp.get()));
+            }else{
+              res.add(new LoadResult<>(tmp.getLoadingState()));
+            }
+          }
+          return res;
+        }
+    );
+  }
+
+  @Override
+  protected GemList<Person> _createVisitorsBuilder(Address address, long gemListId, List<Long> initialIds) {
+    return new GemListBuilder<>(
+        gemListId,
+        () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
+        (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
+        ids -> {
+          List<LoadResult<Person>> res = new ArrayList<>();
+          for (Long id : ids) {
+            SimpleResult<Person> tmp = CommandManager.executeCommand(new Person_get(id)).asSimpleResult();
             if(tmp.isSuccessful()) {
               res.add(new LoadResult<>(tmp.get()));
             }else{

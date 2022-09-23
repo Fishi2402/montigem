@@ -2,6 +2,7 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import java.util.Collections;
 import java.util.Optional;
 
 public class AddressBuilder extends Address {
@@ -11,6 +12,7 @@ public class AddressBuilder extends Address {
 
     public AddressBuilder(long gemId) {
        this.gemId = gemId;
+       this.visitors = FlensburgManager.createVisitors(this, FlensburgManager.getFreeGemListId(), Collections.emptyList());
        init();
     }
 
@@ -27,6 +29,7 @@ public class AddressBuilder extends Address {
     public Optional<Address> build() {
         if (!buildFinished) {
             if(isBuildable()) {
+                visitors.build();
                 FlensburgManager.addAddress(this);
                 addressObservers.forEach(obs -> obs.notifyBuild(this));
                 buildFinished = true;

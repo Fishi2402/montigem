@@ -23,6 +23,10 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
   }
 
   public Optional<GemList<E>> build(){
+    if(buildFinished){
+      return Optional.of(this);
+    }
+
     idStorage.clear();
     for (int i = 0; i < ids.size(); i++) {
       Long id = ids.get(i);

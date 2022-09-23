@@ -55,7 +55,7 @@ public interface PersonObserver
   default void notifyBuild (Person person) { }
 
   default void maybeNofityBuild (Person person,NotificationScope scope) {
-    if(getScope().contains(scope)) {
+    if(scope.contains(getScope())) {
       notifyBuild(person);
     }
   }
@@ -63,8 +63,16 @@ public interface PersonObserver
   default void notifySetOwns(Person person, int idx, long carGemId){}
 
   default void maybeNotifySetOwns(Person person, int idx, long carGemId, NotificationScope scope){
-    if(getScope().contains(scope)){
+    if(scope.contains(getScope())){
       notifySetOwns(person, idx, carGemId);
+    }
+  }
+
+  default void notifyAddVisited(Person p, long addressGemId, int indexInList){}
+
+  default void maybeNotifyAddVisited(Person p, long addressGemId, int indexInList, NotificationScope scope){
+    if(scope.contains(getScope())) {
+      notifyAddVisited(p, addressGemId, indexInList);
     }
   }
 }

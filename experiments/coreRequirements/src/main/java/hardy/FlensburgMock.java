@@ -86,6 +86,11 @@ public class FlensburgMock extends FlensburgManager {
     // todo: überlegen hier schon mal das Objekt merken??? Oder Observer setzen?
   }
 
+  @Override
+  protected boolean _isLoadedPerson(long gemId) {
+    return persons.containsKey(gemId);
+  }
+
   // todo: ggf. auslagern nachfolgender Funktionen in eine generische Storage<...> Klasse
   // analog zu Dex, die dann mehrfach instantiert wird
   // (man kann dann die Storage austauschen, um die Persistenz zu realisieren?)
@@ -228,6 +233,7 @@ public class FlensburgMock extends FlensburgManager {
           .map(LoadResult::new)
           .orElse(new LoadResult<>(LoadingState.EMPTY))
   );
+  protected AddressCommandSendingObserver theAddressCommandObserver = new AddressCommandSendingObserver();
   
   @Override
   protected AddressBuilder _doAddressBuilder() {
@@ -235,14 +241,26 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   @Override
+  protected boolean _isLoadedAddress(long gemId) {
+    return addresses.containsKey(gemId);
+  }
+
+  @Override
   protected Optional<Address> _doAddressOpt(long gemId) {
+    Address value;
     if(addresses.containsKey(gemId)) {
-      return Optional.of(addresses.get(gemId));
+      value = addresses.get(gemId);
     }else if(dummyProvider != null){
-      return Optional.of(dummyProvider.inventAddress());
+      value = dummyProvider.inventAddress();
     }else{
       return Optional.empty();
     }
+
+    if(!value.containsObserver(theAddressCommandObserver)){
+      value.addObserver(theAddressCommandObserver);
+    }
+
+    return Optional.ofNullable(value);
   }
 
   @Override
@@ -364,12 +382,46 @@ public class FlensburgMock extends FlensburgManager {
 
   @Override
   public GemList<Address> _createVisited(Person person, long gemListId, List<Long> initialIds) {
-// TODO AHr, FDr: use Person for list interface of owns
+    // TODO AHr, FDr: use Person for list interface of owns
     // when the methods have been added to PersonTOP
     MockGemList<Address> res = new MockGemList<Address>(
         gemListId,
         initialIds,
         id -> _doAddressOpt(id).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD))
+    );
+    gemLists.put(gemListId, res);
+    return res;
+  }
+
+  @Override
+  protected GemList<Person> _createVisitors(Address address, long gemListId, List<Long> initialIds) {
+    // TODO AHr, FDr: use Person for list interface of owns
+    MockGemList<Person> res = new MockGemList<>(
+        gemListId,
+        initialIds,
+        id -> _doPersonOpt(id).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD))
+    );
+    gemLists.put(gemListId, res);
+    return res;
+  }
+
+  @Override
+  protected GemList<Address> _createVisitedBuilder(Person person, long gemListId, List<Long> initialIds) {
+    MockGemListBuilder<Address> res = new MockGemListBuilder<>(
+        gemListId,
+        gemId -> _doAddressOpt(gemId).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),
+        Collections.emptyList()
+    );
+    gemLists.put(gemListId, res);
+    return res;
+  }
+
+  @Override
+  protected GemList<Person> _createVisitorsBuilder(Address address, long gemListId, List<Long> initialIds) {
+    MockGemListBuilder<Person> res = new MockGemListBuilder<>(
+        gemListId,
+        gemId -> _doPersonOpt(gemId).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),
+        Collections.emptyList()
     );
     gemLists.put(gemListId, res);
     return res;

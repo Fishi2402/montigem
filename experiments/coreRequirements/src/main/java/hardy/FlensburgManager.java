@@ -201,7 +201,13 @@ public abstract class FlensburgManager {
 
     // TODO AHe: immer ein Gem zurückgeben und ...Sure streichen?
 
-    /**
+    public static boolean isLoadedPerson(long gemId){
+      return getSingleton()._isLoadedPerson(gemId);
+    }
+
+  protected abstract boolean _isLoadedPerson(long gemId);
+
+  /**
      * Gives the {@link Person} object with the given gemId.
      *
      * @param gemId
@@ -268,7 +274,13 @@ public abstract class FlensburgManager {
 
     protected abstract AddressBuilder _doAddressBuilder();
 
-    /**
+    public static boolean isLoadedAddress(long gemId){
+     return getSingleton()._isLoadedAddress(gemId);
+    }
+
+  protected abstract boolean _isLoadedAddress(long gemId);
+
+  /**
      * Gives the {@link Address} object with the given gemId.
      *
      * @param gemId
@@ -418,6 +430,26 @@ public abstract class FlensburgManager {
   }
 
   protected abstract GemList<Address> _createVisited(Person person, long gemId, List<Long> initialIds);
+  
+  public static GemList<Address> createVisitedBuilder(Person person, long gemId, List<Long> initialIds) {
+    return getSingleton()._createVisitedBuilder(person, gemId, initialIds);
+  }
+
+  protected abstract GemList<Address> _createVisitedBuilder(Person person, long gemId, List<Long> initialIds);
+  
+  public static GemList<Person> createVisitors(Address address, long gemListId, List<Long> initialIds) {
+    return getSingleton()._createVisitors(address, gemListId, initialIds);
+  }
+
+  protected abstract GemList<Person> _createVisitors(Address address, long gemListId, List<Long> initialIds);
+
+  public static GemList<Person> createVisitorsBuilder(Address address, long gemListId, List<Long> initialIds) {
+    return getSingleton()._createVisitorsBuilder(address, gemListId, initialIds);
+  }
+
+  protected abstract GemList<Person> _createVisitorsBuilder(Address address, long gemListId, List<Long> initialIds);
+
+
 
   /**
    * Gives the {@link List} of {@link Car} with the given gemId.
