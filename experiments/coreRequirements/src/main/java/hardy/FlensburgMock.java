@@ -123,12 +123,20 @@ public class FlensburgMock extends FlensburgManager {
   //+ add an Object when Build is complete ---------------------------------
 
   protected void _doAddPerson(Person o) {
-    // TODO AHe: Do we get fresh gemId here or is it set by the user?
     persons.put(o.getGemId(), o);
     personGemList.add(o);
     if(!o.containsObserver(thePersonCommandSendingObserver)){
       o.addObserver(thePersonCommandSendingObserver);
     }
+
+    // Init bidirectional associations
+    // TODO AHe: in all other backend impls!
+    // TODO AHe: impl should be shared
+    for (Long initialId : o.visited.getIDs(0, o.sizeVisited())) {
+      Address address = FlensburgManager.getAddressSure(initialId);
+      address.INTERNAL_addVisitorId(address.sizeVisitors(), o.gemId, NotificationScope.MINIMAL);
+    }
+
     flensburgObservers.forEach(obs -> obs.notifyPersonAdded(o.getGemId()));
   }
 
@@ -272,6 +280,15 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doAddAddress(Address o) {
     addresses.put(o.getGemId(), o);
     addressGemList.add(o);
+
+    // Init bidirectional associations
+    // TODO AHe: in all other backend impls!
+    // TODO AHe: impl should be shared
+    for (Long initialId : o.visitors.getIDs(0, o.sizeVisitors())) {
+        Person person = FlensburgManager.getPersonSure(initialId);
+        person.INTERNAL_addVisitedId(person.sizeVisited(), o.gemId, NotificationScope.MINIMAL);
+    }
+
     flensburgObservers.forEach(obs -> obs.notifyAddressAdded(o.getGemId()));
   }
 

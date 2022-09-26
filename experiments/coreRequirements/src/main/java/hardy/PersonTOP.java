@@ -431,13 +431,6 @@ public abstract class PersonTOP extends Human {
     if(visited instanceof GemListDeserHelper){
       List<Long> initialIds = ((GemListDeserHelper<Address>) visited).getInitialIds();
       visited = FlensburgManager.createVisited((Person) this, visited.getGemId(), initialIds);
-      // TODO AHe: might not work in all situations, since the index of INTERNAL_addVisitorId could be != sizeVisitors
-      for (Long initialId : initialIds) {
-        if(FlensburgManager.isLoadedAddress(initialId)){
-          Address address = FlensburgManager.getAddressSure(initialId);
-          address.INTERNAL_addVisitorId(address.sizeVisitors(), gemId, NotificationScope.MINIMAL);
-        }
-      }
     }
   }
 
