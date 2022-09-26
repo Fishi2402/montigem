@@ -37,6 +37,7 @@ task generateJava(type: UMLPTask) {
   outputs.cacheIf { false } // This task is used to TEST THE CACHE! So it shouldn't be cached
 }
 
+/* TODO
 task testMerge(type: UMLPMergeTask){
   source = layout.projectDirectory.dir("models/")
   includes = ["**.umlp"]
@@ -44,6 +45,7 @@ task testMerge(type: UMLPMergeTask){
   outputFile = layout.projectDirectory.file("target/merged.cd")
 }
 assemble.dependsOn(testMerge)
+*/
 
 task copyInputDir(type: Copy) {
   dependsOn generateJava
