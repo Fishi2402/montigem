@@ -2,7 +2,6 @@ package umlp.generator.decorator.methods;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.cd.codegen.methods.mutator.MandatoryMutatorDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -40,7 +39,7 @@ public class AssocMandatoryMutatorDecorator extends SimpleMethodMutatorDecorator
     ASTCDMethod method2 = createNotificationSetter(ast, false);
     method2.getCDParameter(0).setMCType(simpleType);
     glex.replaceTemplate(EMPTY_BODY, method2, new TemplateHookPoint("umlp.methods.GemNotificationSetter",
-            domainAst.getName(), ast.getName(), new CdUtilsPrinter().printType(ast.getMCType())));
+            this.ast.getName(), ast.getName(), new CdUtilsPrinter().printType(ast.getMCType())));
     methodList.add(method2);
 
     // Generate setXGem-Methods

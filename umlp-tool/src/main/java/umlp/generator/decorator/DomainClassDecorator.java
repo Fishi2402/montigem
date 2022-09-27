@@ -167,7 +167,7 @@ public class DomainClassDecorator extends AbstractDecorator {
                                              List<ASTCDAttribute> attrList) {
     MethodDecorator methodDecorator = new MethodDecorator(glex,
             new AssocAccessorDecorator(glex),
-            new AssocMutatorDecorator(glex, domainClass));
+            new AssocMutatorDecorator(glex, clazz));
     for (ASTCDAttribute attribute : attrList) {
       clazz.addAllCDMembers(methodDecorator.decorate(attribute));
     }
