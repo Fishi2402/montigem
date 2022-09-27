@@ -205,7 +205,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected GemList<Car> _doCreateOwns(Person p, long gemListId, List<Long> initialCarGemIds) {
+    protected GemList<Car> _doCreateOwns(Person p, long gemListId, int size, List<Long> initialCarGemIds) {
         return null;
     }
 
@@ -215,12 +215,12 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    public GemList<Address> _createVisited(Person person, long gemId, List<Long> initialIds) {
+    public GemList<Address> _createVisited(Person person, long gemId, int size, List<Long> initialIds) {
         return null;
     }
 
     @Override
-    protected GemList<Person> _createVisitors(Address address, long gemListId, List<Long> initialIds) {
+    protected GemList<Person> _createVisitors(Address address, long gemListId, int size, List<Long> initialIds) {
         return null;
     }
 

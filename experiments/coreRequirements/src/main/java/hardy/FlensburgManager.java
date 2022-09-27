@@ -410,26 +410,26 @@ public abstract class FlensburgManager {
    *
    * @return {@link List} the class {@link Car}.
    */
-  public static GemList<Car> createOwns(Person p, long gemListId, List<Long> initialCarGemIds) {
-    return getSingleton()._doCreateOwns(p, gemListId, initialCarGemIds);
+  public static GemList<Car> createOwns(Person p, long gemListId, int size, List<Long> initialCarGemIds) {
+    return getSingleton()._doCreateOwns(p, gemListId, size, initialCarGemIds);
   }
 
-  protected abstract GemList<Car> _doCreateOwns(Person p, long gemListId, List<Long> initialCarGemIds);
+  protected abstract GemList<Car> _doCreateOwns(Person p, long gemListId, int size, List<Long> initialCarGemIds);
 
-  public static GemList<Car> createOwns(Person p, long gemListId) {
-    return getSingleton()._doCreateOwns(p, gemListId);
+  public static GemList<Car> createOwns(Person p, long gemListId, int size) {
+    return getSingleton()._doCreateOwns(p, gemListId, size);
   }
 
-  protected GemList<Car> _doCreateOwns(Person p, long gemListId){
-    return _doCreateOwns(p, gemListId, Collections.emptyList());
+  protected GemList<Car> _doCreateOwns(Person p, long gemListId, int size){
+    return _doCreateOwns(p, gemListId, size, Collections.emptyList());
   }
 
 
-  public static GemList<Address> createVisited(Person person, long gemId, List<Long> initialIds) {
-    return getSingleton()._createVisited(person, gemId, initialIds);
+  public static GemList<Address> createVisited(Person person, long gemId, int size, List<Long> initialIds) {
+    return getSingleton()._createVisited(person, gemId, size, initialIds);
   }
 
-  protected abstract GemList<Address> _createVisited(Person person, long gemId, List<Long> initialIds);
+  protected abstract GemList<Address> _createVisited(Person person, long gemId, int size, List<Long> initialIds);
   
   public static GemList<Address> createVisitedBuilder(Person person, long gemId, List<Long> initialIds) {
     return getSingleton()._createVisitedBuilder(person, gemId, initialIds);
@@ -437,11 +437,11 @@ public abstract class FlensburgManager {
 
   protected abstract GemList<Address> _createVisitedBuilder(Person person, long gemId, List<Long> initialIds);
   
-  public static GemList<Person> createVisitors(Address address, long gemListId, List<Long> initialIds) {
-    return getSingleton()._createVisitors(address, gemListId, initialIds);
+  public static GemList<Person> createVisitors(Address address, long gemListId, int size, List<Long> initialIds) {
+    return getSingleton()._createVisitors(address, gemListId, size, initialIds);
   }
 
-  protected abstract GemList<Person> _createVisitors(Address address, long gemListId, List<Long> initialIds);
+  protected abstract GemList<Person> _createVisitors(Address address, long gemListId, int size, List<Long> initialIds);
 
   public static GemList<Person> createVisitorsBuilder(Address address, long gemListId, List<Long> initialIds) {
     return getSingleton()._createVisitorsBuilder(address, gemListId, initialIds);

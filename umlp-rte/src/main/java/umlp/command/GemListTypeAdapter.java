@@ -23,6 +23,7 @@ public class GemListTypeAdapter<T extends GemIdentifiable> implements JsonSerial
   public GemList<T> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
     JsonObject obj = json.getAsJsonObject();
     long gemListId = obj.get("listId").getAsLong();
+    int size = obj.get("size").getAsInt();
     List<Long> carIds = new ArrayList<>();
     if (obj.has("values")) {
       for (JsonElement value : obj.get("values").getAsJsonArray()) {
@@ -30,13 +31,14 @@ public class GemListTypeAdapter<T extends GemIdentifiable> implements JsonSerial
       }
     }
 
-    return new GemListDeserHelper<>(gemListId, carIds);
+    return new GemListDeserHelper<>(gemListId, size, carIds);
   }
 
   @Override
   public JsonElement serialize(GemList<T> src, Type typeOfSrc, JsonSerializationContext context) {
       JsonObject res = new JsonObject();
       res.addProperty("listId", src.getGemId());
+      res.addProperty("size", src.size());
 
     // Client needs to send ids to server
     // TODO: is this always needed?

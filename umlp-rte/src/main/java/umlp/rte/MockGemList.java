@@ -18,10 +18,10 @@ import java.util.function.Function;
 public class MockGemList<E extends GemIdentifiable> extends GemList<E> {
   protected Function<Long, LoadResult<E>> loadSingleObjectFunction;
 
-  public MockGemList(long gemID,  List<Long> initialIds,
+  public MockGemList(long gemID, int size, List<Long> initialIds,
       Function<Long, LoadResult<E>> loadSingleObjectFunction
   ) {
-    super(gemID, null, null, null);
+    super(gemID, size, null, null, null);
     this.loadSingleObjectFunction = loadSingleObjectFunction;
     idStorage.addAll(0, initialIds);
 
@@ -30,13 +30,13 @@ public class MockGemList<E extends GemIdentifiable> extends GemList<E> {
     loadObjectsFunction = this::doLoadObjects;
   }
 
-  public MockGemList(long gemID,  List<Long> initialIds,
+  public MockGemList(long gemID, int size, List<Long> initialIds,
       Function<Long, LoadResult<E>> loadSingleObjectFunction,
       BiConsumer<Integer, Long> setIdxFunction,
       BiConsumer<Integer, List<Long>> addIDsFunction,
       Consumer<Set<Integer>> removeIdxsFunction
       ) {
-    super(gemID, null, null, null, setIdxFunction, addIDsFunction, removeIdxsFunction);
+    super(gemID, size, null, null, null, setIdxFunction, addIDsFunction, removeIdxsFunction);
     this.loadSingleObjectFunction = loadSingleObjectFunction;
     idStorage.addAll(0, initialIds);
 

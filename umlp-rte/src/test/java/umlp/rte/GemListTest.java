@@ -96,8 +96,6 @@ public class GemListTest extends AbstractUMLPRTETest {
     assertThrows(IndexOutOfBoundsException.class, () -> list1_0.get(list1_0.size()));
   }
 
-  // TODO: AHe, FDr: Discuss and enable
-  @Disabled
   @Test
   public void lazyListTestRemove() {
     Elem old;

@@ -12,7 +12,7 @@ public class AddressBuilder extends Address {
 
     public AddressBuilder(long gemId) {
        this.gemId = gemId;
-       this.visitors = FlensburgManager.createVisitors(this, FlensburgManager.getFreeGemListId(), Collections.emptyList());
+       this.visitors = FlensburgManager.createVisitorsBuilder(this, FlensburgManager.getFreeGemListId(), Collections.emptyList());
        init();
     }
 

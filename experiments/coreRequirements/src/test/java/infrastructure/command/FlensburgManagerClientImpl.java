@@ -119,8 +119,10 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     if(humanGemList == null){
       // TODO: error handling
       Long id = CommandManager.executeCommand(new Human_get_gemListId()).asSimpleResult().get();
+      Integer size = CommandManager.executeCommand(new GemList_size(id)).asSimpleResult().get();
       humanGemList = new GemList<>(
           id,
+          size,
           this::loadHumanSize,
           this::loadHumanGemIds,
           this::loadHumansByGemIds
@@ -227,8 +229,10 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     if(personGemList == null){
       // TODO: error handling
       Long id = CommandManager.executeCommand(new Person_get_gemListId()).asSimpleResult().get();
+      Integer size = CommandManager.executeCommand(new GemList_size(id)).asSimpleResult().get();
       personGemList = new GemList<>(
           id,
+          size,
           this::loadPersonSize,
           this::loadPersonGemIds,
           this::loadPersonsByGemIds
@@ -331,8 +335,10 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     if(addressGemList == null){
       // TODO: error handling
       Long id = CommandManager.executeCommand(new Address_get_gemListId()).asSimpleResult().get();
+      Integer size = CommandManager.executeCommand(new GemList_size(id)).asSimpleResult().get();
       addressGemList = new GemList<>(
           id,
+          size,
           this::loadAddressSize,
           this::loadAddressGemIds,
           this::loadAddresssByGemIds
@@ -430,8 +436,10 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     if(carGemList == null){
       // TODO: error handling
       Long id = CommandManager.executeCommand(new Car_get_gemListId()).asSimpleResult().get();
+      Integer size = CommandManager.executeCommand(new GemList_size(id)).asSimpleResult().get();
       carGemList = new GemList<>(
           id,
+          size,
           this::loadCarSize,
           this::loadCarGemIds,
           this::loadCarsByGemIds
@@ -477,10 +485,11 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Car> _doCreateOwns(Person p, long gemListId, List<Long> initialCarGemIds) {
+  protected GemList<Car> _doCreateOwns(Person p, long gemListId, int size, List<Long> initialCarGemIds) {
     // TODO: this is not very easy to read
     return new GemList<>(
         gemListId,
+        size,
         () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
         (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
         ids -> {
@@ -527,12 +536,13 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Address> _createVisited(Person p, long gemListId, List<Long> initialCarGemIds) {
+  protected GemList<Address> _createVisited(Person p, long gemListId, int size, List<Long> initialCarGemIds) {
     // TODO AHe, FDr: use Person for list interface of owns
     // when the methods have been added to PersonTOP
     // TODO: this is not very easy to read
     return new GemList<>(
         gemListId,
+        size,
         () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
         (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
         ids -> {
@@ -551,11 +561,12 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Person> _createVisitors(Address address, long gemListId, List<Long> initialIds) {
+  protected GemList<Person> _createVisitors(Address address, long gemListId, int size, List<Long> initialIds) {
     // TODO AHe, FDr: use Person for list interface of owns
     // TODO: this is not very easy to read
     return new GemList<>(
         gemListId,
+        size,
         () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
         (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
         ids -> {

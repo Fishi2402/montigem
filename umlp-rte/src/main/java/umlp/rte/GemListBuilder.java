@@ -19,7 +19,7 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
   protected Map<Integer, E> idxToBuilder = new HashMap<>();
 
   public GemListBuilder(long gemID, Supplier<Integer> loadSizeFunction, BiFunction<Integer, Integer, List<Long>> loadIDsFunction, Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction) {
-    super(gemID, loadSizeFunction, loadIDsFunction, loadObjectsFunction);
+    super(gemID, 0, loadSizeFunction, loadIDsFunction, loadObjectsFunction);
   }
 
   public Optional<GemList<E>> build(){
