@@ -60,10 +60,13 @@ public class DomainClassDecorator extends AbstractDecorator {
     // Constructors
     getCD4C().addConstructor(clazz, "umlp.domain.Constructor", domainClass.getName());
 
-    // Attribute gemId
-    ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz,"protected derived long gemId = -32;");
-    glex.replaceTemplate("cd2java.Annotations", gemAttr,
-            new TemplateHookPoint("umlp.domain.GemAnnotations"));
+    if (!domainClass.isPresentCDExtendUsage()) {
+      // Attribute gemId and getter and setter
+      ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected derived long gemId = -32;");
+      glex.replaceTemplate("cd2java.Annotations", gemAttr,
+              new TemplateHookPoint("umlp.domain.GemAnnotations"));
+      clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
+    }
 
     // Attribute observerList
     ASTCDAttribute attrObserver = getCD4C().addAttribute(clazz,
@@ -80,7 +83,6 @@ public class DomainClassDecorator extends AbstractDecorator {
     clazz.addAllCDMembers(attrList);
 
     // General methods
-    clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
     createObserverMethods(domainClass, clazz);
     getCD4C().addMethod(clazz, "umlp.domain.Build", domainClass.getName());
 
@@ -166,7 +168,7 @@ public class DomainClassDecorator extends AbstractDecorator {
   protected void createGetterSetterForAssocs(ASTCDClass domainClass, ASTCDClass clazz,
                                              List<ASTCDAttribute> attrList) {
     MethodDecorator methodDecorator = new MethodDecorator(glex,
-            new AssocAccessorDecorator(glex),
+            new AssocAccessorDecorator(glex, clazz),
             new AssocMutatorDecorator(glex, clazz));
     for (ASTCDAttribute attribute : attrList) {
       clazz.addAllCDMembers(methodDecorator.decorate(attribute));

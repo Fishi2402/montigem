@@ -32,8 +32,12 @@ public class AssocsDecoratorTest extends DecoratorTest {
             () -> existsMethod(clazz, "removeBar2"),
             () -> existsMethod(clazz, "removeBar2ByIdSure"),
             () -> existsMethod(clazz, "clearBar2s"),
-            () -> existsMethod(clazz, "retainAllBar2s")
-   );
+            () -> existsMethod(clazz, "containsBar2"),
+            () -> existsMethod(clazz, "containsAllBar2"),
+            () -> existsMethod(clazz, "iteratorBar2"),
+            () -> existsMethod(clazz, "sizeBar2"),
+            () -> existsMethod(clazz, "subListBar2")
+            );
   }
 
   @Test
