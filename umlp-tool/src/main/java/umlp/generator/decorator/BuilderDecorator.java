@@ -11,7 +11,6 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 
 import java.util.List;
@@ -80,7 +79,7 @@ public class BuilderDecorator extends AbstractDecorator {
       type.setEnclosingScope(BasicSymbolsMill.globalScope());
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
               type,  name + "Present");
-      attribute.getModifier().setDerived(true);
+      attribute.getModifier().setReadonly(true);
       attribute.setInitial(createInitialValue(type));
       attributesList.add(attribute);
     }

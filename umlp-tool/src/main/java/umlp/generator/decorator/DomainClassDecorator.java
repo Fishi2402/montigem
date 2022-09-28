@@ -62,7 +62,7 @@ public class DomainClassDecorator extends AbstractDecorator {
 
     if (!domainClass.isPresentCDExtendUsage()) {
       // Attribute gemId and getter and setter
-      ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected derived long gemId = -32;");
+      ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected readonly long gemId = -32;");
       glex.replaceTemplate("cd2java.Annotations", gemAttr,
               new TemplateHookPoint("umlp.domain.GemAnnotations"));
       clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
