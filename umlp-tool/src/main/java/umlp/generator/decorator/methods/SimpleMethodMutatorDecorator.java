@@ -30,8 +30,10 @@ public class SimpleMethodMutatorDecorator extends MandatoryMutatorDecorator {
   @Override
   public List<ASTCDMethod> decorate(ASTCDAttribute ast) {
     List<ASTCDMethod> methodList = Lists.newArrayList();
-    methodList.add(createSetter(ast));
-    methodList.add(createNotificationSetter(ast, false));
+    if (!ast.getModifier().isDerived() && !ast.getModifier().isReadonly()) {
+      methodList.add(createSetter(ast));
+      methodList.add(createNotificationSetter(ast, false));
+    }
     return methodList;
   }
 
