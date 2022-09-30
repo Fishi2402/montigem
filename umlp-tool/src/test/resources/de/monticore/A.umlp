@@ -10,4 +10,17 @@ umlp A {
   public derived class DFoo {
     String dFooAttr;
   }
+
+  class Foo2;
+  class Bar2;
+  association Foo2 -> Bar2 [*];
+
+  class Foo3;
+  class Bar3;
+  association Foo3 -> Bar3 [1];
+
+  class Foo4;
+  class Bar4;
+  association Foo4 <-> Bar4;
+
 }

@@ -3,4 +3,8 @@ umlp B {
   class Blaa;
   public class Bli;
   association Blaa <-> Bli;
+
+  class AFoo {
+    String attributfromB_UMLP;
+  }
 }

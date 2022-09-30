@@ -12,8 +12,8 @@ import java.util.List;
 public class GemListDeserHelper<E extends GemIdentifiable> extends GemList<E>{
   private List<Long> initialIds;
 
-  public GemListDeserHelper(long gemId, List<Long> ids) {
-    super(gemId, ids, null, null, null, null, null, null);
+  public GemListDeserHelper(long gemId, int size, List<Long> ids) {
+    super(gemId, size, ids, null, null, null, null, null, null);
     this.initialIds = ids;
   }
 

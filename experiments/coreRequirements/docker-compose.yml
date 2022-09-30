@@ -1,0 +1,29 @@
+#
+# Example Docker-Compose for the deployment _on the server_
+# All values inside <_> must be replaced
+#
+# Also see "deploy.md"
+#
+version: "2.1"
+services:
+  backend:
+    image: <imageNameOfBackend>
+    environment:
+      - UMLP_DEPLOYED_DOMAIN=https://<DOMAIN>  # Required for Allowed Origins
+    restart: "unless-stopped"
+    expose:
+      - 8081/tcp
+
+  frontend:  # Static Apache Server with Proxy to backend
+    image: <imageNameOfFrontend>
+    environment:
+      - UMLP_DEPLOYED_DOMAIN=<DOMAIN>   # Required for SSL certificate
+      - EMAIL=<MailOfDomainAdmin>       # Required for SSL certificate
+    restart: "unless-stopped"
+    ports:
+      - '443:443'
+      - '80:80'
+    links:
+      - backend
+    volumes:
+      - './certbot:/etc/letsencrypt/'                         # Persist certificates, otherwise a new certificate might be created for every start

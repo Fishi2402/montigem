@@ -35,11 +35,11 @@ public class CommandDirectCommunication implements ClientCommandCommunication, S
 
   @Override
   public <T> CommandResult<T> sendCommandToServerAndReceiveResult(Command<T> command) {
-    serverContext.activate();
     // Use (de)-serialization both ways to simulate Communication
     // Also effectively clones objects, allowing us to test the sync mechanisms
 
     String cmdStr = CommandObjectMapper.serializeCommand(command);
+    serverContext.activate();
     Command<?> recreatedCommand = CommandObjectMapper.deserializeCommand(cmdStr).get();
 
     CommandResult<?> res = CommandManager.executeCommand(recreatedCommand);

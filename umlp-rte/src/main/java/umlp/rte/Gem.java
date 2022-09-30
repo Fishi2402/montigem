@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 // -> this might be realized using the realthis pattern?
 //    however, this assumes that E is written accordingly...
 
-public class Gem<E> {
+public class Gem<E extends GemIdentifiable> {
 
   // todo: Beschreiben, in welchen Modi die Attribute wie besetzt (oder irrelevant sind)
 
@@ -27,6 +27,9 @@ public class Gem<E> {
    */
   protected E object = null;
   // Wird gebraucht, um das Gem zu (de-)serialisieren
+  /**
+   * Contains the gemId of the object. If the object is loaded, gemId == object.getGemId() must hold.
+   */
   protected long gemId;
 
   /**
@@ -47,11 +50,7 @@ public class Gem<E> {
    */
   public Gem(E object) {
     this.object = object;
-    // TODO: change type parameter to <T extends GemIdentifiable>?
-    if(!(object instanceof GemIdentifiable)){
-      throw new IllegalStateException("Can only pass GemIdentifiable as content of Gem");
-    }
-    this.gemId = ((GemIdentifiable)object).getGemId();
+    this.gemId = object.getGemId();
     this.loadingState = LoadingState.LOADED;
   }
 
@@ -102,6 +101,7 @@ public class Gem<E> {
   public void set(E object) {
     if (object != null) {
       this.object = object;
+      this.gemId = object.getGemId();
       this.loadingState = LoadingState.LOADED;
     }
   }

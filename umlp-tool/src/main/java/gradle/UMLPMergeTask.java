@@ -1,23 +1,22 @@
 package gradle;
 
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4analysis.prettyprint.CD4AnalysisFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.CDMerge;
-import de.se_rwth.commons.logging.Log;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
-import umlp.UMLPFullPrettyPrinter;
+import umlp.UMLPTool;
 import umlp._ast.ASTUMLPCompilationUnit;
-import umlp._parser.UMLPParser;
-import umlp.generator.CD2UMLPTrafo;
 import umlp.generator.UMLP2CDTrafo;
 
-import java.io.*;
-import java.util.LinkedHashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class UMLPMergeTask extends SourceTask {
 
@@ -26,32 +25,42 @@ public abstract class UMLPMergeTask extends SourceTask {
 
   @TaskAction
   public void run() {
-    Set<ASTCDCompilationUnit> cds = new LinkedHashSet<>();
-    UMLPParser parser = umlp.UMLPMill.parser();
+    // Parse and convert to CDCompilationUnit
+    List<ASTCDCompilationUnit> cds = getSource().getFiles().stream()
+        .map(File::getAbsolutePath)
+        .map(this::parseAndCheck)
+        .map(UMLP2CDTrafo::run)
+        .collect(Collectors.toList());
 
-    try {
-      for (File f : getSource()) {
-        Optional<ASTUMLPCompilationUnit> astUMLP = parser.parse(f.getAbsolutePath());
-        if (astUMLP.isEmpty()) {
-          Log.error("Error Parsing UMLP Model " + f.getPath());
-        }
-        ASTCDCompilationUnit astCD = UMLP2CDTrafo.run(astUMLP.get());
-        cds.add(astCD);
-      }
-    } catch (IOException e) {
-      Log.error(e.getMessage());
-    }
-
-
+    // merge
     ASTCDCompilationUnit merged = CDMerge.merge(cds);
+
+    CD4AnalysisFullPrettyPrinter printer = new CD4AnalysisFullPrettyPrinter();
+    merged.accept(printer.getTraverser());
+
+/*
+    // Convert back to UMLPCompilationUnit
     ASTUMLPCompilationUnit umlp = CD2UMLPTrafo.run(merged);
-    UMLPFullPrettyPrinter umlpPrettyPrinter = new UMLPFullPrettyPrinter();
-    umlp.accept(umlpPrettyPrinter.getTraverser());
+    UMLPFullPrettyPrinter printer = new UMLPFullPrettyPrinter();
+    umlp.accept(printer.getTraverser());
+*/
 
     try (PrintWriter out = new PrintWriter(new FileOutputStream(getOutputFile().get().getAsFile()), true)) {
-      out.println(umlpPrettyPrinter.getPrinter().getContent());
+      out.println(printer.getPrinter().getContent());
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  protected ASTUMLPCompilationUnit parseAndCheck(String absolutePath) {
+    UMLPTool tool = new UMLPTool();
+
+    ASTUMLPCompilationUnit result = tool.parse(absolutePath);
+
+    tool.runAfterParseTrafo(result);
+    tool.createSymbolTable(result);
+    tool.runDefaultCoCos(result);
+
+    return result;
   }
 }

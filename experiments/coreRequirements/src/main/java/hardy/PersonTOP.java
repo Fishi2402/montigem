@@ -83,7 +83,7 @@ public abstract class PersonTOP extends Human {
   protected void initPerson() {
     this.nickname = "";
     this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns((Person) this, FlensburgManager.getFreeGemListId());
+    this.owns = FlensburgManager.createOwns((Person) this, FlensburgManager.getFreeGemListId(), 0);
   }
   
   //+ initialization is externalized to be reusable (if needed)
@@ -91,7 +91,7 @@ public abstract class PersonTOP extends Human {
   protected void init(String nickname) {
     this.nickname = nickname;
     this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns((Person) this, FlensburgManager.getFreeGemListId());
+    this.owns = FlensburgManager.createOwns((Person) this, FlensburgManager.getFreeGemListId(), 0);
   }
   
   protected void init(String nickname, GemList<Car> owns) {
@@ -425,12 +425,46 @@ public abstract class PersonTOP extends Human {
   public void INTERNAL_finishDeser() {
     // properly init GemLists
     if(owns instanceof GemListDeserHelper){
-      owns = FlensburgManager.createOwns((Person) this, owns.getGemId(), ((GemListDeserHelper<Car>) owns).getInitialIds());
+      owns = FlensburgManager.createOwns((Person) this, owns.getGemId(), owns.size(), ((GemListDeserHelper<Car>) owns).getInitialIds());
     }
 
     if(visited instanceof GemListDeserHelper){
-      visited = FlensburgManager.createVisited((Person) this, visited.getGemId(), ((GemListDeserHelper<Address>) visited).getInitialIds());
+      List<Long> initialIds = ((GemListDeserHelper<Address>) visited).getInitialIds();
+      visited = FlensburgManager.createVisited((Person) this, visited.getGemId(), visited.size(), initialIds);
     }
+  }
+
+  public int sizeVisited() {
+    return visited.size();
+  }
+
+  public Address getVisited(int i) {
+    return visited.get(i);
+  }
+
+  public void addVisited(Address address){
+    addVisited(address, NotificationScope.ALL);
+  }
+
+  public void addVisited(Address address, NotificationScope scope){
+    addVisited(visited.size(), address, scope);
+  }
+
+  public void addVisited(int indexInList, Address address){
+    addVisited(indexInList, address, NotificationScope.ALL);
+  }
+
+  public void addVisited(int indexInList, Address address, NotificationScope scope) {
+    visited.add(indexInList, address);
+    if(scope.contains(NotificationScope.LOCAL)){
+      address.addVisitor((Person) this, NotificationScope.MINIMAL);
+    }
+    personObservers.forEach(obs -> obs.maybeNotifyAddVisited((Person)this, address.getGemId(), indexInList, scope));
+  }
+
+  public void INTERNAL_addVisitedId(int indexInList, long addressGemId, NotificationScope scope) {
+    visited._internal_add(indexInList, List.of(addressGemId));
+    personObservers.forEach(obs -> obs.maybeNotifyAddVisited((Person) this, addressGemId, indexInList, scope));
   }
 
   // -----------------------------------------------------------------

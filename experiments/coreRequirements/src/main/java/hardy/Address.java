@@ -6,6 +6,8 @@ import com.google.gson.annotations.JsonAdapter;
 import org.hibernate.annotations.GenericGenerator;
 import umlp.rte.GemIdentifiable;
 import umlp.rte.GemList;
+import umlp.rte.GemListDeserHelper;
+import umlp.rte.NotificationScope;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class Address implements GemIdentifiable {
   protected String city;
 
   @JsonAdapter(PersonGemListTypeAdapter.class)
-  protected GemList<Person> vistors;
+  protected GemList<Person> visitors;
 
   @Override
   public long getGemId() {
@@ -83,5 +85,37 @@ public class Address implements GemIdentifiable {
   //+ Pseudo build for all classes: normally nothing happens
   public Optional<Address> build() {
     return Optional.empty();
+  }
+
+  public void INTERNAL_finishDeser(){
+    // properly init GemLists
+    if(visitors instanceof GemListDeserHelper){
+      visitors = FlensburgManager.createVisitors(this, visitors.getGemId(), visitors.size(),((GemListDeserHelper<Person>) visitors).getInitialIds());
+    }
+  }
+
+  public void addVisitor(Person p, NotificationScope scope){
+    addVisitor(visitors.size(), p, scope);
+  }
+
+  public void addVisitor(int indexInList, Person p){
+    addVisitor(indexInList, p, NotificationScope.ALL);
+  }
+
+  public void addVisitor(int indexInList, Person p, NotificationScope scope){
+    visitors.add(indexInList, p);
+    if(scope.contains(NotificationScope.LOCAL)){
+      p.addVisited(this, NotificationScope.MINIMAL);
+    }
+    addressObservers.forEach(obs -> obs.maybeNotifyAddVisitor(this, p.getGemId(), indexInList, scope));
+  }
+
+  public int sizeVisitors() {
+    return visitors.size();
+  }
+
+  public void INTERNAL_addVisitorId(int indexInList, long personGemId, NotificationScope scope) {
+    visitors._internal_add(indexInList, List.of(personGemId));
+    addressObservers.forEach(obs -> obs.maybeNotifyAddVisitor(this, personGemId, indexInList, scope));
   }
 }

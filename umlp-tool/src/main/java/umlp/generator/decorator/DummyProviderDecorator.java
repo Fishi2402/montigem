@@ -87,6 +87,7 @@ public class DummyProviderDecorator extends AbstractDecorator {
     for (ASTCDClass domainClass: domainClassList) {
       // Berücksichtige erstmal nur alle (auch Super-)Attribute vom Typ String oder int
       List<ASTCDAttribute> attrList = CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+              .filter(a -> GenService.isVisibleNotDerived(a))
               .filter(a -> getTypeCheck().isInt(a.getSymbol().getType()) || getTypeCheck().isString(a.getSymbol().getType()))
               .collect(Collectors.toList());
       attrList.forEach(a -> getCD4C().addMethod(ast, "umlp.dummyprovider.InventAttribute", domainClass.getName(), a.getName(), a.printType()));

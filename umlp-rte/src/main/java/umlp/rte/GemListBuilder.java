@@ -19,10 +19,14 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
   protected Map<Integer, E> idxToBuilder = new HashMap<>();
 
   public GemListBuilder(long gemID, Supplier<Integer> loadSizeFunction, BiFunction<Integer, Integer, List<Long>> loadIDsFunction, Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction) {
-    super(gemID, loadSizeFunction, loadIDsFunction, loadObjectsFunction);
+    super(gemID, 0, loadSizeFunction, loadIDsFunction, loadObjectsFunction);
   }
 
   public Optional<GemList<E>> build(){
+    if(buildFinished){
+      return Optional.of(this);
+    }
+
     idStorage.clear();
     for (int i = 0; i < ids.size(); i++) {
       Long id = ids.get(i);
@@ -100,18 +104,18 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
   }
 
   @Override
-  public void addIDs(int idx, List<Long> additions) {
+  public void _internal_add(int idx, List<Long> additions) {
     if(buildFinished) {
-      super.addIDs(idx, additions);
+      super._internal_add(idx, additions);
     } else {
       ids.addAll(idx, additions);
     }
   }
 
   @Override
-  public void removeIdxs(Set<Integer> idxs) {
+  public void _internal_remove(Set<Integer> idxs) {
     if(buildFinished) {
-      super.removeIdxs(idxs);
+      super._internal_remove(idxs);
     } else {
       idxs
           .stream()

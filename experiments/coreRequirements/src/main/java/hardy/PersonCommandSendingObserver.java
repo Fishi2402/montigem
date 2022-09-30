@@ -3,12 +3,18 @@ package hardy;
 // GEN-P
 
 import hardy.commands.*;
+import hardy.commands.associations.Visits_add;
 import umlp.command.CommandManager;
+import umlp.rte.NotificationScope;
 
 // Ein Observer, der Änderungen von Attributen per CommandManager an die Clients schickt.
 
 // extends HumanCommandObserver geht nicht, da nicht Human_setAge sondern Person_setAge gesendet werden muss
 public class PersonCommandSendingObserver implements PersonObserver {
+  @Override
+  public NotificationScope getScope() {
+    return NotificationScope.GLOBAL;
+  }
 
   @Override
   public void notifySetAge(Human h, int age) {
@@ -33,5 +39,10 @@ public class PersonCommandSendingObserver implements PersonObserver {
   @Override
   public void notifyRemoveOwns(Person p, long carGemId) {
     CommandManager.sendCommandToSubscribers(new Person_removeOwns(p.getGemId(), carGemId));
+  }
+
+  @Override
+  public void notifyAddVisited(Person p, long addressGemId, int indexInList) {
+    CommandManager.sendCommandToSubscribers(new Visits_add(addressGemId, p.getGemId(), indexInList, -1));
   }
 }

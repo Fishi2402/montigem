@@ -3,7 +3,10 @@ package hardy;
 //+ GEN-P        : generated for the product
 
 import umlp.rte.Gem;
+import umlp.rte.NotificationScope;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,6 +33,7 @@ public class PersonBuilder extends Person {
     protected boolean nicknamePresent = false;
     protected boolean ownsPresent = false;
     protected boolean mainResidencePresent = false;
+    private boolean visitedPresent = false;
 
     // the Builder:
     //+ gemId wird bereits beim initialisieren des Builders besetzt
@@ -38,6 +42,7 @@ public class PersonBuilder extends Person {
         this.gemId = gemId;
         // während des bauens ist das eine unsychronisierte GemList!
         this.owns = FlensburgManager.createOwnsBuilder(FlensburgManager.getFreeGemListId());
+        this.visited = FlensburgManager.createVisitedBuilder(this, FlensburgManager.getFreeGemListId(), Collections.emptyList());
     }
 
     // Standard set-Function:
@@ -119,6 +124,7 @@ public class PersonBuilder extends Person {
                     }
                 }
                 owns.build();
+                visited.build();
                 FlensburgManager.addPerson(this);
                 personObservers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
                 buildFinished = true;
@@ -161,6 +167,14 @@ public class PersonBuilder extends Person {
             PersonErrorCollector.reportMainResidenceInvalid(this);
         }
         return mainResidencePresent;
+    }
+
+    public Person addVisited(List<Address> addresses) {
+        this.visited.addAll(addresses);
+        // TODO: Continue here: addVisitor needs to be synced?
+        addresses.forEach(addr -> addr.addVisitor(this, NotificationScope.MINIMAL));
+        visitedPresent = true;
+        return this;
     }
 
     /*- Das regeln wir anders:, denn dieser Sonderfall erlaubt ja nur eine
