@@ -32,7 +32,7 @@ grammar UMLP extends de.monticore.CD4Code {
         und die müssten einfach mit adressiert werden --> wenn nicht, dann läuft in MC 
         oder der CoCo Realisierung was falsch)
         
-     Also ZIel:
+     Also Ziel:
      
    UMLPCompilationUnit = MCPackageDeclaration? MCImportStatement* UMLPDefinition;
    
