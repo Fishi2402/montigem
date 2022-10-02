@@ -10,7 +10,3 @@ return ${providerName}Manager
   .${attrName}(invent${name}${attrName?cap_first}())
 </#list>
   .build().get();
-
-
-
-

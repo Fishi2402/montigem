@@ -8,8 +8,6 @@ import java.lang.reflect.Type;
 
 // Wird von Gson genutzt um Commands zu deserialisieren. Nutzt Command#commandType um die richtige Subklasse zu instanziieren
 public class CommandJsonDeserializer implements JsonDeserializer<Command<?>> {
-  protected Gson simpleDeserializer = new Gson();
-
   @Override
   public Command<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
     if (!json.isJsonObject()) {
@@ -27,7 +25,7 @@ public class CommandJsonDeserializer implements JsonDeserializer<Command<?>> {
     }
 
     try {
-      return (Command<?>) simpleDeserializer.fromJson(json, Class.forName(commandType.getAsString()));
+      return (Command<?>) CommandObjectMapper.getDomainGson().fromJson(json, Class.forName(commandType.getAsString()));
     } catch (ClassNotFoundException e) {
       throw new JsonParseException(e);
     }

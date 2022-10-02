@@ -43,8 +43,20 @@ werden oder wie auf sie zugegriffen wird.
 * Im Frontend soll ein Cache das Neuladen von Daten verhindern, welche sich nicht geändert haben.
 Hierfür ist eine Konsistenzprüfung mit dem Backend notwendig.
 
+* Der Manager erlaubt Zugriff auf die Liste je aller Elemente eines Typs (zu welchen Zugriffsrechte existieren).
+Diese Listen sind nicht direkt über die `Java.util.List`-API modifizierbar
+(z.B. können nur Elemente zugefügt werden, indem diese mit den `builder` des Managers erstellt werden,
+die entsprechende Liste wird dann entsprechend synchronisiert).
+Denn für das Hinzufügen von Elementen gibt es ohnehin nur die Option über `builder`
+und aus Gründen der API-Konsistenz soll auch das Entfernen ausschließlich über den Manager geschehen.
+Ein etwaiger Umbau um Modifizierbarkeit hinzuzufügen ist weiterhin möglich.
 
 ### Builder
+
+TODO
+
+
+### Datenbank
 
 TODO
 
@@ -60,25 +72,29 @@ TODO
   
 * Die Berechnung kann auf drei Arten stattfinden:
   1. Jedes Mal neu, wenn `getBla()` aufgerufen wird
-  1. Die Berechnung kann in einem internen Attribut gespeichert sein (und damit veralten).
+  2. Die Berechnung kann in einem internen Attribut gespeichert sein (und damit veralten).
      Das ist aber eine Option (der manuellen Implementierung)
-  1. Ändert sich der Wert von `bla`, so werden Observer informiert. 
-  1. Hängt die Berechnung von `bla` 
+  3. Ändert sich der Wert von `bla`, so werden Observer informiert. 
+  4. Hängt die Berechnung von `bla` 
      von Werten anderer Objekte ab und soll aktualisiert 
      werden, so kann sich das aktuelle Objekt `p` als Observer an die anderen Objekte
      einklinken.
      Das ist insbesondere sinnvoll, wenn `p` selbst Observierbar ist.
-  1. Lokale Berechnung möglich: Berechnungen von `bar` kann in C und S separat stattfinden,
-  1. Zentrale Berechnung: nur in Server wird gerechnet, die Ergebnisse werden 
+  5. Ist dieses Aktualisierung rechenintensiv, dann muss `bla` nicht synchronisiert werden,
+     sondern kann auf `NOT_Loaded` gestellt werden.
+  6. Lokale Berechnung möglich: Berechnungen von `bar` kann in C und S separat stattfinden,
+  7. Zentrale Berechnung: nur in Server wird gerechnet, die Ergebnisse werden 
      zum Client synchronisiert 
 
 ### Nicht-persistierte Klassen (Rechnungsobjekte)
 
-* Dies sind typischerweise Daten, die in Server existieren und
+* Dies sind typischerweise Daten, die im Server existieren und
   deren Attribute weitgehend berechnet werden.
 * zum Teil sind diese auch in den Clients relevant, und werden 
   bei der Kommunikation Server/Client wie alle anderen objekte auch behandelt
 * Rechnungsobjekte haben wohl keine gemId.
+* Diese Daten müssen immer im Kontext eines Objektes der Datenbank oder einer ganzen
+  Klasse modelliert werden. D.h. `\ class Berechnet` hängt immer bei z.B. Person.
 
 
 ## Commands
@@ -94,17 +110,17 @@ TODO
 
 * Kommandos existieren auf mehreren Ebenen:
   1. Basiskommandos (setzen eines Attributs, eines Links)
-  1. Erzeugen / Löschen eines Objekts im Server (egal ob persistiert)
-  1. Ausführen einer (komplexen) (handgeschriebenen) Operation
+  2. Erzeugen / Löschen eines Objekts im Server (egal ob persistiert)
+  3. Ausführen einer (komplexen) (handgeschriebenen) Operation
 
-* Darüberhinaus ist zu klären, ob dies auch per Kommando erfolgen soll:
-  1. Lesen eines Objekts oder eine Gruppe von Objekten
-     (das muss aber nicht unbedingt per command gemacht werden)
-  1. Anzeige einer GUI-Seite
+* Das Lesen eines Objektes oder einer Gruppe von Objekten wird
+  über Requests geregelt, welche von Commands erben
   
 * Kommandos werden vom Client zum Server gesandt. Eine 
   Aktualisierungssendung vom Client zu den Clients kann/sollte 
   anders aussehen. (TODO) 
+  * In der aktuellen Implementierung werden Kommandos vom Client an den Server gesandt,
+    dort verarbeitet und zurück an die anderen Clients gesendet
 
 * Konkretes Beispiel `Person` hat diese vollständig generierbaren Kommandos 
   * `Person_create(...)` 
@@ -114,7 +130,11 @@ TODO
   * `Person_addCar(long gemIdPerson, long gemIdCar)` ??? 
   * `Person__...__Car(long gemIdPerson ... )` etc...? 
 
-* Ein `Person_update` existiert nicht, weil dies ja alle attribute updaten müsste
+* Ein `Person_update` existiert nicht, weil dies ja alle Attribute updaten müsste
+
+* Kommandos, welche zusammen verarbeitet werden sollen 
+  (z.B. um invalide Zwischenstände zu überspringen)
+  werden in Aggregate-Kommandos gesammelt versandt. (TODO)
   
 ## Kommando-Infrastruktur
 
@@ -125,14 +145,30 @@ TODO
 ### Client-seitige Kommando-Infrastruktur
 
 TODO
-(i.W. keine Callbacks, Promises, keine Results/Responses, kein GetAllCommand) 
+(i.W. keine Callbacks, Promises, keine Results/Responses, kein GetAllCommand)
 
 AHe, bitte Diskutieren:
-* Wird im Frontend ein Attribut geändert, wie z.B. `age` einer `Person`, so wird die Änderung automatisch mit dem Command `Person_setAge` mit dem Backend synchronisiert.
-* Die entsprechende Methode `Person#setAge` muss blockieren, bis die Statusmeldung des Backends zurückkommt. Ansonsten wird im Fehlerfall im Frontend mit falschen Daten weitergerechnet.
-* Dies könnte zu einer schlechten Nutzererfahrung führen, da die GUI unresponsive wird, solange die Methode blockt
-  * Dies ist der Typescript/Javascript Verarbeitung via Event-Loop geschuldet, bei der es nur einen Thread gibt. Blockiert eine Methode diesen Thread, so kann die Website nicht mehr reagieren.
-  * Abhilfe können Promises, async/await, oder Webworker schaffen. Diese könnten aber zu einem abweichenden Interface des `FlensburgManager` im Frontend führen. 
+* Wird im Frontend ein Attribut geändert, wie z.B. `age` einer `Person`, so 
+  wird die Änderung automatisch mit dem Command `Person_setAge` mit dem Backend
+  synchronisiert.
+* Die entsprechende Methode `Person#setAge` muss blockieren, bis die 
+  Statusmeldung des Backends zurückkommt. Ansonsten wird im Fehlerfall 
+  im Frontend mit falschen Daten weitergerechnet.
+* Dies könnte zu einer schlechten Nutzererfahrung führen, da die GUI 
+  unresponsive wird, solange die Methode blockt
+  * Dies ist der Typescript/Javascript Verarbeitung via Event-Loop geschuldet, 
+    bei der es nur einen Thread gibt. Blockiert eine Methode diesen Thread, 
+    so kann die Website nicht mehr reagieren.
+  * Abhilfe können Promises, async/await, oder Webworker schaffen. Diese 
+    könnten aber zu einem abweichenden Interface des `FlensburgManager` im 
+    Frontend führen. 
+
+
+**TODO**  
+MH zu diskutieren!
+* In Javascript gibt es keine blockierenden Funktionen, niemals.
+* Der Manager muss nun auch `Promises` zurückgeben, was das Interface
+  verändert.
 
 
 ## Rechte / Rollen-Konzept
@@ -160,6 +196,12 @@ TODO
   der Generierungspipeline dazu gemischt werden.
   
 TODO
+
+## Initiale Konfiguration
+
+* Die initiale Konfiguration wird entweder zentral an einem Ort 
+  (oder in einer Datei) gespeichert oder getrennt (zentral) für Server und Client.
+* Aktuelle Konfiguration ist unter `src/main/resources` zu finden.
 
 
 ## Dummy-Daten

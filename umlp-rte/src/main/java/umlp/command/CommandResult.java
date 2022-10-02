@@ -50,4 +50,8 @@ public abstract class CommandResult<T> {
   public SimpleResult<T> asSimpleResult(){
     return (SimpleResult<T>) this;
   }
+
+  public String getTypeParameter() {
+    return typeParameter;
+  }
 }

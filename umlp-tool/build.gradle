@@ -15,6 +15,8 @@ dependencies {
     implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
     implementation group: 'de.monticore', name: 'class2mc', version: mc_version
     implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+    implementation 'de.monticore.lang:cd4analysis:' + mc_version + ':cdmerge'
+
     implementation group: 'com.google.guava', name: 'guava', version: guava_version
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
@@ -58,6 +60,11 @@ sourceSets {
         }
     }
 }
+
+java {
+    registerFeature('grammars') { usingSourceSet(sourceSets.grammars) }
+}
+
 description = 'UML/P Language and Tool'
 buildDir = file("$projectDir/target")
 

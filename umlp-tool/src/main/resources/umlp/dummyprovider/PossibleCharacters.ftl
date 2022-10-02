@@ -9,6 +9,3 @@ ${tc.signature()}
 .mapToObj(i -> (char) i)
 .collect(Collector.of(StringBuilder::new, StringBuilder::append, StringBuilder::append, StringBuilder::toString))
 .toCharArray()
-
-
-

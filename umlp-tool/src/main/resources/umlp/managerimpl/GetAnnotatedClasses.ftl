@@ -7,6 +7,3 @@ ${cd4c.method("private Set<Class> getAnnotatedClasses()")}
     annotatedClasses.add(${name}.class);
   </#list>
   return annotatedClasses;
-
-
-

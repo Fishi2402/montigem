@@ -19,7 +19,7 @@ public class CommandObjectMapperTest {
     Command<Human> getHuman = new Human_get(gemId);
     String commandStr = CommandObjectMapper.serializeCommand(getHuman);
 
-    Command<?> resultUnknown = CommandObjectMapper.deserializeCommand(commandStr);
+    Command<?> resultUnknown = CommandObjectMapper.deserializeCommand(commandStr).get();
     assertEquals(Human_get.class.getName(), resultUnknown.getCommandType());
 
     assertTrue(resultUnknown instanceof Human_get);
@@ -43,7 +43,7 @@ public class CommandObjectMapperTest {
 
     String resultStr = CommandObjectMapper.serializeResponse(result);
 
-    CommandResult<?> unknownResult = CommandObjectMapper.deserializeResponse(resultStr);
+    CommandResult<?> unknownResult = CommandObjectMapper.deserializeResponse(resultStr).get();
 
     assertEquals(commandId, unknownResult.getCommandId());
     assertTrue(unknownResult.isSimpleResult());
@@ -82,7 +82,7 @@ public class CommandObjectMapperTest {
     SimpleResult<Person> resp = new SimpleResult<>(commandId, p1002, "hardy.Person");
 
     String respStr = CommandObjectMapper.serializeResponse(resp);
-    CommandResult<?> recreatedResp = CommandObjectMapper.deserializeResponse(respStr);
+    CommandResult<?> recreatedResp = CommandObjectMapper.deserializeResponse(respStr).get();
 
     assertTrue(recreatedResp.isSimpleResult());
 

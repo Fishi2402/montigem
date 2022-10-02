@@ -7,6 +7,3 @@ for (int i = 0; i < length; i++) {
   builder.append(possibleCharacters[random.nextInt(possibleCharacters.length)]);
 }
 return builder.toString();
-
-
-

@@ -2,6 +2,7 @@
 package umlp.rte;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp.rte.lazyloadTestUtil.Elem;
 import umlp.rte.lazyloadTestUtil.ListBasedServer;
@@ -27,7 +28,7 @@ public class GemListTest extends AbstractUMLPRTETest {
   //starts with 4 elements
   ListBasedServer<Elem> listServer1;
 
-  //has elements not authorized
+  //has some elements not authorized to be accessed
   ListBasedServer<Elem> listServer2;
 
   GemList<Elem> list0;
@@ -68,6 +69,7 @@ public class GemListTest extends AbstractUMLPRTETest {
     assertTrue(list0.isEmpty());
     assertEquals(list1_0.size(), 4);
     assertEquals(list1_1.size(), 4);
+    assertFalse(list1_0.isEmpty());
     assertNoErrors();
   }
 
@@ -77,6 +79,10 @@ public class GemListTest extends AbstractUMLPRTETest {
     assertElemNr(list1_0.get(1), 1);
     assertElemNr(list1_0.get(2), 2);
     assertElemNr(list1_0.get(3), 3);
+    assertElemNr(list1_1.get(0), 0);
+    assertElemNr(list1_1.get(1), 1);
+    assertElemNr(list1_1.get(2), 2);
+    assertElemNr(list1_1.get(3), 3);
     assertNoErrors();
   }
 
@@ -93,18 +99,19 @@ public class GemListTest extends AbstractUMLPRTETest {
   @Test
   public void lazyListTestRemove() {
     Elem old;
-    old = list1_0.remove(3);
-    assertElemNr(old, 3);
-    assertEquals(list1_0.size(), 3);
-    // TODO: re-implement sublist
-    //assertEquals(list1_1.size(), 3);
-    old = list1_1.remove(2);
+    old = list1_0.remove(2);
     assertElemNr(old, 2);
-    // TODO: re-implement sublist
-    //    assertEquals(list1_0.size(), 2);
+    assertEquals(list1_0.size(), 3);
     assertEquals(list1_1.size(), 3);
+    old = list1_0.remove(2);
+    assertElemNr(old, 3);
+    assertEquals(list1_0.size(), 2);
+    assertEquals(list1_1.size(), 2);
+    assertElemNr(list1_0.get(0), 0);
+    assertElemNr(list1_0.get(1), 1);
     list1_0.removeAll(allElems);
     assertTrue(list1_0.isEmpty());
+    assertTrue(list1_1.isEmpty());
     assertNoErrors();
   }
 
@@ -118,16 +125,16 @@ public class GemListTest extends AbstractUMLPRTETest {
     assertThrows(IndexOutOfBoundsException.class, () -> list1_0.remove(list1_0.size()));
   }
 
+  // TODO: AHe, FDr: Discuss and enable
+  @Disabled
   @Test
   public void lazyListTestAdd() {
     assertEquals(list1_0.size(), 4);
     list1_0.add(getElem(2));
     assertEquals(list1_0.size(), 5);
-    // TODO: re-implement sublist
-    //assertEquals(list1_1.size(), 5);
     assertElemNr(list1_0.get(4), 2);
-    // TODO: re-implement sublist
-    //assertElemNr(list1_1.get(4), 2);
+    assertEquals(list1_1.size(), 5);
+    assertElemNr(list1_1.get(4), 2);
     Elem elem8 = getElem(8);
     list1_0.add(2, elem8);
     assertEquals(list1_0.size(), 6);
@@ -137,20 +144,41 @@ public class GemListTest extends AbstractUMLPRTETest {
     assertElemNr(list1_0.get(3), 2);
     assertElemNr(list1_0.get(4), 3);
     assertElemNr(list1_0.get(5), 2);
+    assertEquals(list1_1.size(), 6);
+    assertElemNr(list1_1.get(0), 0);
+    assertElemNr(list1_1.get(1), 1);
+    assertElemNr(list1_1.get(2), 8);
+    assertElemNr(list1_1.get(3), 2);
+    assertElemNr(list1_1.get(4), 3);
+    assertElemNr(list1_1.get(5), 2);
     assertNoErrors();
   }
 
   @Test
   public void lazyListTestSet() {
     list1_0.set(0, getElem(4));
-    list1_0.set(3, getElem(7));
-    assertEquals(list1_1.size(), 4);
-    // TODO: re-implement sublist
+    list1_1.set(3, getElem(7));
+    assertEquals(list1_0.size(), 4);
     assertElemNr(list1_0.get(0), 4);
     assertElemNr(list1_0.get(1), 1);
     assertElemNr(list1_0.get(2), 2);
     assertElemNr(list1_0.get(3), 7);
+    assertEquals(list1_1.size(), 4);
+    assertElemNr(list1_1.get(0), 4);
+    assertElemNr(list1_1.get(1), 1);
+    assertElemNr(list1_1.get(2), 2);
+    assertElemNr(list1_1.get(3), 7);
     assertNoErrors();
+  }
+
+  @Test
+  public void lazyListTestSetOutOfBoundsNegative() {
+    assertThrows(IndexOutOfBoundsException.class, () -> list1_0.set(-3, getElem(0)));
+  }
+
+  @Test
+  public void lazyListTestSetOutOfBoundsPositive() {
+    assertThrows(IndexOutOfBoundsException.class, () -> list1_0.set(list1_0.size(), getElem(0)));
   }
 
   @Test

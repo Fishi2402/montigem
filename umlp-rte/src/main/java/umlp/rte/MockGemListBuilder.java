@@ -15,7 +15,7 @@ public class MockGemListBuilder<E extends GemIdentifiable> extends MockGemList<E
   protected Map<Integer, E> idxToBuilder = new HashMap<>();
 
   public MockGemListBuilder(long gemID, Function<Long, LoadResult<E>> loadSingleObjectFunction, List<Long> initialIds) {
-    super(gemID, loadSingleObjectFunction, initialIds);
+    super(gemID, 0, initialIds, loadSingleObjectFunction);
   }
 
   @Override

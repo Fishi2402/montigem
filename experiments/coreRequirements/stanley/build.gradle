@@ -1,5 +1,56 @@
+
+buildscript {
+  repositories {
+    mavenCentral()
+    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+    // maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+    maven { url "https://repository.jsweet.org/artifactory/plugins-release-local" }
+    // maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
+    maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
+  }
+  dependencies {
+    classpath('org.jsweet:jsweet-gradle-plugin:3.1.0') {
+      transitive = true
+    }
+  }
+}
+
 plugins {
   id "com.github.node-gradle.node" version "3.4.0"
+  id "org.jsweet.jsweet-gradle-plugin" version "3.1.0"
+}
+
+repositories {
+  mavenCentral()
+  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+  // maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  maven { url "https://repository.jsweet.org/artifactory/plugins-release-local" }
+  // maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
+  maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
+}
+
+sourceSets {
+  main {
+    java { srcDirs = [ 'src' ] }
+  }
+  test {
+    java { srcDirs = [] }
+  }
+}
+
+jsweet {
+  verbose = true
+  encoding = 'UTF-8'
+  sourceMap = true
+  outDir = project.file('target/javascript')
+  candiesJsOut = project.file('target/candies')
+  targetVersion = 'ES6'
+  includes = ['**/*.java']
+  // extraSystemPath = '/my/path/to/npm'
+}
+
+compileJava {
+  enabled = false
 }
 
 node {

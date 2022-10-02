@@ -8,6 +8,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.annotations.JsonAdapter;
 import umlp.rte.Gem;
 import umlp.rte.GemList;
+import umlp.rte.GemListDeserHelper;
 import umlp.rte.NotificationScope;
 
 import java.util.*;
@@ -42,10 +43,15 @@ public abstract class PersonTOP extends Human {
   // unordered Association.
   // The implementation will be a LazyList
   // Siehe PersonOwnsTypeAdapter für Erklärung
-  @JsonAdapter(PersonOwnsTypeAdapter.class)
+  @JsonAdapter(CarGemListTypeAdapter.class)
   protected GemList<Car> owns;
   // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
-  
+
+  @JsonAdapter(AddressGemListTypeAdapter.class)
+  protected GemList<Address> visited;
+  // TODO AHe: add/remove/...
+
+
   //+ Bem: insgesamt sind es etwa 30 generierte Ftnen, von denen hier
   // nur einige dargestellt sind
   
@@ -58,7 +64,9 @@ public abstract class PersonTOP extends Human {
   // and should only be used by the builder(!)
   protected PersonTOP() {
     super();
-    initPerson();
+    // TODO MH Wird beim deserialisiern im Client ausgeführt, wodurch unerwünschte
+    //  Nebeneffekte entstehen. Ist das hier wirklich nötig?
+//    initPerson();
   }
   
   // Bemerkung: Wir verzichten auf "volle" Konstruktoren
@@ -75,7 +83,7 @@ public abstract class PersonTOP extends Human {
   protected void initPerson() {
     this.nickname = "";
     this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns(FlensburgManager.getFreeGemListId());
+    this.owns = FlensburgManager.createOwns((Person) this, FlensburgManager.getFreeGemListId(), 0);
   }
   
   //+ initialization is externalized to be reusable (if needed)
@@ -83,7 +91,7 @@ public abstract class PersonTOP extends Human {
   protected void init(String nickname) {
     this.nickname = nickname;
     this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns(FlensburgManager.getFreeGemListId());
+    this.owns = FlensburgManager.createOwns((Person) this, FlensburgManager.getFreeGemListId(), 0);
   }
   
   protected void init(String nickname, GemList<Car> owns) {
@@ -218,7 +226,8 @@ public abstract class PersonTOP extends Human {
   }
 
   public Car removeOwns(int idx, NotificationScope scope){
-    Car c = owns.remove(idx);
+    Car c = owns.get(idx);
+    owns._internal_remove(Collections.singleton(idx));
     personObservers.forEach(obs -> obs.maybeNotifyRemoveOwns((Person) this, c.getGemId(), scope));
     return c;
   }
@@ -284,7 +293,7 @@ public abstract class PersonTOP extends Human {
       throw new IllegalArgumentException("Null argument not allowed here");
     }
     if (!this.owns.contains(o)) {
-      this.owns.add(index, o);
+      this.owns._internal_add(index, Collections.singletonList(o.getGemId()));
       checkOwns();
       personObservers.forEach(obs -> obs.maybeNotifyAddOwns((Person) this, o.getGemId(), index, scope));
     }
@@ -337,6 +346,10 @@ public abstract class PersonTOP extends Human {
     return Collections.unmodifiableList(owns).subList(startIdxIncl, endIdxExcl);
   }
 
+  public void setOwns(int idx, Car c) {
+    setOwns(idx, c, NotificationScope.ALL);
+  }
+
   public void setOwns(int idx, Car c, NotificationScope scope) {
     if(idx < 0){
       throw new IllegalStateException("idx must be 0 or higher");
@@ -345,7 +358,7 @@ public abstract class PersonTOP extends Human {
       throw new IllegalStateException("idx must be at most owns.size");
     }
 
-    this.owns.set(idx, c);
+    this.owns._internal_set(idx, c.getGemId());
     personObservers.forEach(obs -> obs.maybeNotifySetOwns((Person) this, idx, c.getGemId(), scope));
   }
 
@@ -409,12 +422,56 @@ public abstract class PersonTOP extends Human {
     return owns;
   }
 
+  public void INTERNAL_finishDeser() {
+    // properly init GemLists
+    if(owns instanceof GemListDeserHelper){
+      owns = FlensburgManager.createOwns((Person) this, owns.getGemId(), owns.size(), ((GemListDeserHelper<Car>) owns).getInitialIds());
+    }
+
+    if(visited instanceof GemListDeserHelper){
+      List<Long> initialIds = ((GemListDeserHelper<Address>) visited).getInitialIds();
+      visited = FlensburgManager.createVisited((Person) this, visited.getGemId(), visited.size(), initialIds);
+    }
+  }
+
+  public int sizeVisited() {
+    return visited.size();
+  }
+
+  public Address getVisited(int i) {
+    return visited.get(i);
+  }
+
+  public void addVisited(Address address){
+    addVisited(address, NotificationScope.ALL);
+  }
+
+  public void addVisited(Address address, NotificationScope scope){
+    addVisited(visited.size(), address, scope);
+  }
+
+  public void addVisited(int indexInList, Address address){
+    addVisited(indexInList, address, NotificationScope.ALL);
+  }
+
+  public void addVisited(int indexInList, Address address, NotificationScope scope) {
+    visited.add(indexInList, address);
+    if(scope.contains(NotificationScope.LOCAL)){
+      address.addVisitor((Person) this, NotificationScope.MINIMAL);
+    }
+    personObservers.forEach(obs -> obs.maybeNotifyAddVisited((Person)this, address.getGemId(), indexInList, scope));
+  }
+
+  public void INTERNAL_addVisitedId(int indexInList, long addressGemId, NotificationScope scope) {
+    visited._internal_add(indexInList, List.of(addressGemId));
+    personObservers.forEach(obs -> obs.maybeNotifyAddVisited((Person) this, addressGemId, indexInList, scope));
+  }
+
   // -----------------------------------------------------------------
   
   /* Ausbaustufen (todo):
    
    * Entkopplung der Ladestrategien durch
    **  gemID  statt direktLink (und die transparente Realisierung in den Objekten)
-   **  LazyLoadedList  (siehe dazu andere Emails/Diskussionen)
    */
 }

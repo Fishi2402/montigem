@@ -28,6 +28,7 @@ public class ShowCityInfoGUITest extends AbstractGUITest {
         .mainResidence(a)
         .owns(Collections.singleton(cb));
     cb.owns(pb);
+    cb.build();
     pb.build();
 
     ShowCityInfoGUI ci = new ShowCityInfoGUI();
