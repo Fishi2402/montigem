@@ -9,6 +9,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGenerator;
 
@@ -18,7 +19,7 @@ public class GUIGenerator extends CDGenerator {
 
   protected static CD4CodeFullPrettyPrinter astPrinter;
 
-  public GUIGenerator(GeneratorSetup genSetup) {
+  public GUIGenerator(GeneratorSetup genSetup, IGUIDSLArtifactScope symbolTableGui) {
     super(genSetup);
     astPrinter = new CD4CodeFullPrettyPrinter();
     genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter()); // TODO GV

@@ -6,13 +6,12 @@ import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
-import de.se_rwth.commons.logging.Log;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -23,15 +22,15 @@ public class ButtonDecorator extends GUIComponentDecorator {
 
   public static final String NAVIGATE = "navigate";
 
-  public ButtonDecorator(final GlobalExtensionManagement glex) {
-    super(glex);
+  public ButtonDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
+    super(glex, guiAst);
   }
 
   @Override
   public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
-    Optional<ASTGUINamedArg> text = getTextArgument(guiComponent);
-    Optional<ASTGUINamedArg> click = getLeftClickArgument(guiComponent);
-    if (text.isEmpty() || click.isEmpty()) {
+    Optional<ASTGUINamedArg> text = getComponentArgSingle(guiComponent, PREDICATE_TEXT);
+    Optional<ASTGUINamedArg> click = getComponentArgSingle(guiComponent, PREDICATE_LEFT_CLICK);
+    if (text.isEmpty() || click.isEmpty() || !checkArgumentsSize(guiComponent, 2)) {
       return;
     }
 
@@ -69,25 +68,7 @@ public class ButtonDecorator extends GUIComponentDecorator {
   }
 
   protected void handleNavigate(ASTCallExpression expression, String buttonText) {
-  }
 
-  protected Optional<ASTGUINamedArg> getTextArgument(ASTGUIComponent guiComponent) {
-    List<ASTGUINamedArg> textArgs = filterArgWithPredicate(guiComponent.getGUINamedArgs().getGUINamedArgList(), PREDICATE_TEXT);
-    if (textArgs.size() != 1) {
-      Log.error("Button GUIComponent args aren't correct");
-      return Optional.empty();
-    }
-    return Optional.of(textArgs.get(0));
   }
-
-  protected Optional<ASTGUINamedArg> getLeftClickArgument(ASTGUIComponent guiComponent) {
-    List<ASTGUINamedArg> clickArgs = filterArgWithPredicate(guiComponent.getGUINamedArgs().getGUINamedArgList(), PREDICATE_LEFT_CLICK);
-    if (clickArgs.size() != 1) {
-      Log.error("Button GUIComponent args aren't correct");
-      return Optional.empty();
-    }
-    return Optional.of(clickArgs.get(0));
-  }
-
 
 }

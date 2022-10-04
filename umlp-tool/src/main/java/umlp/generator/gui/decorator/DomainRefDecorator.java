@@ -8,7 +8,10 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
+import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
+import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.types.check.TypeCalculator;
 import umlp.UMLPMill;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -52,15 +55,15 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   protected void addDomainMembers(ASTCDClass clazz, ASTGUIParam astguiParam) {
     // --- replace this when TypeCheck can be used
 
-    String domainTypeName = astguiParam.getMCType().printType(basicTypesPrinter);  // TODO GV
+  //  String domainTypeName = astguiParam.getMCType().printType(basicTypesPrinter);  // TODO GV
     String attributeType = new GUIDSLFullPrettyPrinter().prettyprint(astguiParam.getMCType());
 
     TypeSymbol typeInfo = astguiParam.getSymbol().getType().getTypeInfo();
-    //   TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
+    TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
 
-    // TODO when ST ist fertig: resove domainTypeName und add import declaration //MB
-    boolean isDomainType =  domainTypeName.equals(attributeType);
-    String qualifiedType = "hardy." + domainTypeName; // domainTypeSymbol.getQualifiedName();
+    boolean isDomainType = !astguiParam.getSymbol().getType().isGenericType();
+    // TODO when ST ist fertig: qualified domainTypeName und add import declaration //MB
+    String qualifiedType = "hardy." + typeInfo.getName(); // domainTypeSymbol.getQualifiedName(); //MB
 
     // --- end
 
@@ -71,8 +74,10 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     clazz.addCDMember(domainAttribute);
 
     // TODO GV
-    clazz.setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(domainTypeName + ERROR_OBSERVER));
-    getCD4C().addImport(clazz, qualifiedType + ERROR_OBSERVER);
+    if (isDomainType) {
+      clazz.setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(typeInfo.getName() + ERROR_OBSERVER));
+      getCD4C().addImport(clazz, qualifiedType + ERROR_OBSERVER);
+    }
 
     getCD4C().addConstructor(clazz, "umlp.gui2java.Constructor", clazz.getName(), attributeType, astguiParam.getName(), isDomainType);
 

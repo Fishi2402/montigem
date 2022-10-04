@@ -6,16 +6,22 @@ import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
+import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
-import de.monticore.guidsl._symboltable.GUIDSLScopesGenitorDelegator;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
+import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
 import de.monticore.io.paths.MCPath;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 import umlp._ast.ASTUMLPCompilationUnit;
@@ -108,6 +114,12 @@ public class UMLPTool extends UMLPToolTOP {
       }
 
 
+      MCPath modelPath = new MCPath();
+      if (INPUT.isSelected(cmd)) {
+        for (String v : cmd.getOptionValues(INPUT.getCMD())) {
+          modelPath.addEntry(Paths.get(v).getParent());
+        }
+      }
       MCPath hwcPath = new MCPath();
       if (HWC_PATH.isSelected(cmd)) {
         for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
@@ -195,7 +207,14 @@ public class UMLPTool extends UMLPToolTOP {
         // parse, create symbol table, check all cocos
         ASTGUICompilationUnit astGui = parseGUI(inputFile.getPath());
         //  Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on);
-        IGUIDSLArtifactScope symbolTableGui = createSymbolTableGUI(astGui);
+
+        MCPath mcPath = new MCPath();
+        if (PATH.isSelected(cmd)) {
+          for (String v : cmd.getOptionValues(PATH.getCMD())) {
+            mcPath.addEntry(Paths.get(v));
+          }
+        }
+        IGUIDSLArtifactScope symbolTableGui = createSymbolTable(astGui, mcPath);
 
         GeneratorSetup genSetup = new GeneratorSetup();
         // set output directory
@@ -208,7 +227,7 @@ public class UMLPTool extends UMLPToolTOP {
 
         // execute generator
         GUIDSLMill.init();
-        GUIGenerator generator = new GUIGenerator(genSetup);
+        GUIGenerator generator = new GUIGenerator(genSetup, symbolTableGui);
         String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI);
         generator.generate(astGui, configTemplate);
 
@@ -291,22 +310,36 @@ public class UMLPTool extends UMLPToolTOP {
     return null;
   }
 
-  public IGUIDSLArtifactScope createSymbolTableGUI(ASTGUICompilationUnit compUnit) {
+  protected IGUIDSLArtifactScope createSymbolTable(ASTGUICompilationUnit ast, MCPath modelPath) {
+    GUIDSLMill.globalScope().clear();
+    GUIDSLMill.reset();
+    GUIDSLMill.init();
+    BasicSymbolsMill.initializePrimitives();
+    IGUIDSLGlobalScope gs = GUIDSLMill.globalScope();
+    gs.addAdaptedTypeSymbolResolver(new Class2MCResolver());
+    gs.setSymbolPath(modelPath);
+    gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new TypeSymbolDeSer());
+    gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol", new VariableSymbolDeSer());
+    gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new VariableSymbolDeSer());
+    FunctionSymbol navigateFunction = GUIDSLMill.functionSymbolBuilder()
+        .setName("navigate")
+        .setEnclosingScope(gs)
+        .setSpannedScope(GUIDSLMill.scope())
+        .setType(SymTypeExpressionFactory.createTypeObject(de.monticore.guidsl._symboltable.BuiltInTypes.EVENT.getName(), gs))
+        .build();
+    navigateFunction.getSpannedScope().add(
+        GUIDSLMill.variableSymbolBuilder()
+            .setName("arg")
+            .setType(SymTypeExpressionFactory.createTypeObject(de.monticore.guidsl._symboltable.BuiltInTypes.TEMPLATE_REF.getName(), gs))
+            .setEnclosingScope(navigateFunction.getSpannedScope())
+            .build()
+    );
+    gs.add(navigateFunction);
 
-    GUIDSLScopesGenitorDelegator symbolTableCreator = GUIDSLMill.scopesGenitorDelegator();
-
-   /* symbolTableCreator.addAdaptedTypeSymbolResolver(new Class2MCResolver() {
-      @Override
-      protected Optional<URL> loadFromSymbolPath(String name) {
-        return GUIDSLMill.globalScope().getSymbolPath().find(Names.getPathFromPackage(name) + ".class");
-      }
-    });*/
-
-    IGUIDSLArtifactScope symTab = symbolTableCreator.createFromAST(compUnit);
-
-    return symTab;
-
+    IGUIDSLArtifactScope as = GUIDSLMill.scopesGenitorDelegator().createFromAST(ast);
+    return as;
   }
+
 
   public static void main(String[] args) {
     Log.ensureInitalization(); // by default, don't use SLF4J log

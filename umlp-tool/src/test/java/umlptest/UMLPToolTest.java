@@ -10,7 +10,53 @@ public class UMLPToolTest extends AbstractUMLPTest {
   @Test
   public void testRunMethod4A() {
     UMLPTool tool = new UMLPTool();
-    tool.run(new String[]{"-i", "src/test/resources/de/monticore/A.umlp"});
+    tool.run(new String[]{"-i", "src/test/resources/de/monticore/A.umlp",});
+    assertNoErrors();
+  }
+
+  @Test
+  public void testRunFlensburg() {
+    UMLPTool tool = new UMLPTool();
+    tool.run(new String[]{"-i", "src/test/resources/hardy/Flensburg.umlp", "-s", "Flensburg.umlpsym"});
+    assertNoErrors();
+  }
+
+  @Test
+  public void testRunMethodGui() {
+    UMLPTool tool = new UMLPTool();
+    tool.run(new String[]{"-i", "src/test/resources/de/monticore/ShowCityInfo.gui"});
+    assertNoErrors();
+  }
+
+  @Test
+  public void testRunMethodGui1() {
+    UMLPTool tool = new UMLPTool();
+    tool.run(new String[]{"-i", "src/test/resources/stanley/EditierePersonCars.gui",
+        "-path", "src/test/resources"});
+    assertNoErrors();
+  }
+
+  @Test
+  public void testRunMethodGui2() {
+    UMLPTool tool = new UMLPTool();
+    tool.run(new String[]{"-i", "src/test/resources/stanley/EditierePerson.gui",
+        "-path", "src/test/resources"});
+    assertNoErrors();
+  }
+
+  @Test
+  public void testRunMethodGui3() {
+    UMLPTool tool = new UMLPTool();
+    tool.run(new String[]{"-i", "src/test/resources/stanley/EditierePersonChildren.gui",
+        "-path", "src/test/resources"});
+    assertNoErrors();
+  }
+
+  @Test
+  public void testRunMethodGui4() {
+    UMLPTool tool = new UMLPTool();
+    tool.run(new String[]{"-i", "src/test/resources/stanley/PersonOverview.gui",
+        "-path", "src/test/resources"});
     assertNoErrors();
   }
 

@@ -4,39 +4,43 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Optional;
+import java.util.function.Predicate;
+
 public class TextInputDecorator extends GUIComponentDecorator {
 
-  public TextInputDecorator(final GlobalExtensionManagement glex) {
-    super(glex);
+  public static final Predicate<ASTGUINamedArg> PREDICATE_INPUT_ARG = c -> c.getName().equals(INPUT_ARG_NAME);
+
+  public TextInputDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
+    super(glex, guiAst);
   }
 
   @Override
   public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
-    if (guiComponent.getGUINamedArgs().getGUINamedArgList().size() != 1) {
-      Log.error("TextInput GUIComponent args aren't correct");
-      return;
-    }
-    ASTGUINamedArg arg = guiComponent.getGUINamedArgs().getGUINamedArgList().get(0);
-    if (!arg.getName().equals(INPUT_ARG_NAME)) {
-      Log.error("TextInput GUIComponent args aren't correct");
+    Optional<ASTGUINamedArg> arg = getComponentArgSingle(guiComponent, PREDICATE_INPUT_ARG);
+    if (arg.isEmpty() || !checkArgumentsSize(guiComponent, 1)) {
       return;
     }
 
+    ASTGUINamedArg inputArg = arg.get();
     String returnExpr = "";
     String attrName = "";
 
-    if (arg.getExpression() instanceof ASTFieldAccessExpression) {  //  :TextInput(value = p.nickname)
-      ASTFieldAccessExpression expr = (ASTFieldAccessExpression) arg.getExpression(); //p.nickname
+    if (inputArg.getExpression() instanceof ASTFieldAccessExpression) {  //  :TextInput(value = p.nickname)
+      ASTFieldAccessExpression expr = (ASTFieldAccessExpression) inputArg.getExpression(); //p.nickname
       attrName = expr.getName(); //nickname
       // resolve and check type
 
       if (!(expr.getExpression() instanceof ASTNameExpression)) {
-        Log.error("TextInput GUIComponent args aren't correct");
+        Log.error(guiComponent.getName() + "-GUIComponent args aren't correct in " + guiName + " : \n" +
+            new GUIDSLFullPrettyPrinter().prettyprint(expr.getExpression()));
         return;
       }
 
@@ -46,15 +50,16 @@ public class TextInputDecorator extends GUIComponentDecorator {
       returnExpr = domainAttrName + ".get" + StringTransformations.capitalize(attrName) + "()";
 
     }
-    else if (arg.getExpression() instanceof ASTNameExpression) { //MB Visitor? //  :TextInput(value = cityName)
-      attrName = ((ASTNameExpression) arg.getExpression()).getName(); // cityName
+    else if (inputArg.getExpression() instanceof ASTNameExpression) { //MB Visitor? //  :TextInput(value = cityName)
+      attrName = ((ASTNameExpression) inputArg.getExpression()).getName(); // cityName
       // resolve and check type
 
       returnExpr = attrName;
 
     }
     else {
-      Log.error("TextInput GUIComponent args aren't correct");
+      Log.error(guiComponent.getName() + "-GUIComponent args aren't correct in " + guiName + " : \n" +
+          new GUIDSLFullPrettyPrinter().prettyprint(inputArg.getExpression()));
       return;
     }
 
