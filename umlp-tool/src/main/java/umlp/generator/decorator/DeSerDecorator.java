@@ -109,6 +109,7 @@ public class DeSerDecorator extends DomainClassDecorator{
   }
 
   private static boolean isSimpleType(String type) {
+    type = type.replaceAll("^java[.]lang[.]", "");
     return List.of("string", "int", "integer", "boolean", "float", "double").contains(type.toLowerCase());
   }
 
