@@ -110,6 +110,23 @@ public class GenService {
     return false;
   }
 
+  public static boolean isList(ASTCDAttribute attr) {
+    if (attr.getMCType() instanceof ASTMCBasicGenericType) {
+      List<String> nameList = ((ASTMCBasicGenericType) attr.getMCType()).getNameList();
+      return "List".equals(nameList.get(nameList.size()-1));
+    }
+    return false;
+  }
+
+  public static boolean isOptional(ASTCDAttribute attr) {
+    if (attr.getMCType() instanceof ASTMCBasicGenericType) {
+      List<String> nameList = ((ASTMCBasicGenericType) attr.getMCType()).getNameList();
+      return "Optional".equals(nameList.get(nameList.size()-1));
+    }
+    return false;
+  }
+
+
   public static boolean isVisible(ASTCDAssocSide attr) {
     return !attr.getModifier().isFinal()
             && !attr.getModifier().isStatic();

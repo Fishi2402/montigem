@@ -187,6 +187,10 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     return ids.subList(startIdx, endIdx);
   }
 
+  public List<Long> getIDs(){
+    return Collections.unmodifiableList(ids);
+  }
+
   /**
    * returns the gemID of a given element
    */
