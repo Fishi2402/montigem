@@ -173,16 +173,48 @@ MH zu diskutieren!
 
 ## Rechte / Rollen-Konzept
 
-* Lesen wird auf Objektebene erlaubt (aber nicht auf einzelnen Attributen)
-* Ändern wird ggf. auf einzelnen Attributen erlaubt (?)
-* Create / Delete wird ebenfalls auf Objektebene geregelt
+### Rechte (Permissions) 
+* Permissions definieren in den Sicherheitsrichtlinen der Anwendung die Aktion die durchgeführt werden soll.
+* Die Grundlegenden Permissions sind `create`, `read`, `update` und `delete`. Je nach Anwendungsfall macht es hier Sinn 
+die Rechte zu präzisieren z.B.: `sendPersonToCity` statt einem `update` auf die Person.
+* Ein Recht hat immer einen Bezug zu einer Domäne, bzw. Kategorie von Objekten und kann ein bestimmtes Objekt 
+referenzieren: <br>
+   * `domain : permission : instance` Schema nach dem Permissions strukturiert sind. 
+   * `person : update : 32` Permission Objekte die zu Kategorie 'Person' gehören mit der id 32 zu updaten
+   * `auto : delete : *` Permission beliebige Objekte der Kategorie 'Auto' zu löschen.
+* Domänen werden verwendet damit ein Recht nicht an einen Typ gebunden ist, sondern eher an eine 
+  Gruppe von Objekten: Ein Konto mit seinen Budgets und Buchungen kann so mit `konto : update : *` bearbeitet 
+  werden, ohne dass drei Permissions vergeben werden müssen. 
+* Generierte Datenklassen implementieren hierzu eine Methode, die die Domäne für die Permission zurückgibt: 
+  `getPermissionDomain()` und welche überschrieben wird um hier Kategorien zu bilden.
 
+### Rollen (Roles)
+* Eine Rolle kann mehrere Rechte zusammen fassen: 
+  * `Roles.KONTOBEARBEITER`:
+    * `konto : read : *`
+    * `konto : update : *`
+    * `konto : create : *`
+    * `konto : delete : *`
+* Einem Nutzer werden Rollen zugewiesen
+* Beim Überprüfen der Permission wird jedoch geprüft ob der Nutzer (durch seine Rollen) das notwendige Recht hat. 
+
+### Konzept
+
+* Lesen wird auf Objektebene erlaubt (aber nicht auf einzelnen Attributen)
+* Create / Delete wird ebenfalls auf Objektebene geregelt
 * Die Persistierung der vergebenen Rechte und Rollen findet wie bei allen
   anderen Objektdaten statt. Konsequenz: Neben den Klassen aus dem 
   Applikations-CD gibt es Klassen und Assoziationen zu den Rechten, die in
-  der Generierungspipeline dazu gemischt werden.
+  der Generierungspipeline dazu gemischt werden:
+  * `Permission` einzelne Rechte (`create`,`update`....)
+  * `PermissionDomains` domänen/ kategorien innerhalb der datenklassen: (`personal`, `finanzen`...)
+  * `Roles` Rollen die den Nutzern zugeordnet werden können (`admin`, `personalBearbeiter`...)
+  * `RoleAssignments` Verknüpfung von Nutzer zu Rollen
+ 
   
 TODO
+LN zu diskutieren
+* Ändern wird ggf. auf einzelnen Attributen erlaubt (?)
 
 
 ## Konfigurationsdaten
