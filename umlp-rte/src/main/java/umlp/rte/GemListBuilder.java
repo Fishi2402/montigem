@@ -3,23 +3,26 @@ package umlp.rte;
 // RTE-P
 
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 
 // GemList, welche bei der Erstellung von Objekten benutzt werden muss, da sie in diesem Zustand
 // noch nicht mit anderen Teilnehmen synchronisiert werden kann.
 public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
   protected transient boolean buildFinished = false;
-  protected List<Long> ids = new ArrayList<>();
+  // TODO: needed?
+  protected List<Long> builderIds = new ArrayList<>();
   // Da einem in einem Builder andere Builder hinzugefügt werden können und der FlensburgManager diese
   // nicht kennt, also auch nicht per id laden kann, muss hier eine lokale Verwaltung stattfinden.
   // Nach build() wird diese geleert und nicht weiter verwendet.
   protected Map<Integer, E> idxToBuilder = new HashMap<>();
 
-  public GemListBuilder(long gemID, Supplier<Integer> loadSizeFunction, BiFunction<Integer, Integer, List<Long>> loadIDsFunction, Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction) {
-    super(gemID, 0, loadSizeFunction, loadIDsFunction, loadObjectsFunction);
+  public GemListBuilder(long gemID, Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction) {
+    this(gemID, loadObjectsFunction, Collections.emptyList());
+  }
+
+  public GemListBuilder(long gemID, Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction, List<Long> initialIds) {
+    super(gemID, initialIds, loadObjectsFunction);
   }
 
   public Optional<GemList<E>> build(){
@@ -27,12 +30,8 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
       return Optional.of(this);
     }
 
-    idStorage.clear();
-    for (int i = 0; i < ids.size(); i++) {
-      Long id = ids.get(i);
-      idStorage.set(Collections.singletonMap(i, id));
-    }
-    size = ids.size();
+    ids.clear();
+    ids.addAll(builderIds);
 
     buildFinished = true;
 
@@ -43,31 +42,11 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
   }
 
   @Override
-  public void ensureSizeLoaded() {
-    if(buildFinished) {
-      super.ensureSizeLoaded();
-    } else {
-      if(size == UNKNOWN_SIZE){
-        size = 0;
-      }
-    }
-  }
-
-  @Override
   public int size() {
     if(buildFinished){
       return super.size();
     } else {
-      return ids.size();
-    }
-  }
-
-  @Override
-  protected void ensureIdLoaded(int idx) {
-    if(buildFinished){
-      super.ensureIdLoaded(idx);
-    } else {
-      assertExclusiveIdxInBounds(idx);
+      return builderIds.size();
     }
   }
 
@@ -99,7 +78,7 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
     if(buildFinished) {
       super.setIDs(changes);
     } else {
-      changes.forEach((idx, id) -> ids.set(idx, id));
+      changes.forEach((idx, id) -> builderIds.set(idx, id));
     }
   }
 
@@ -108,7 +87,7 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
     if(buildFinished) {
       super._internal_add(idx, additions);
     } else {
-      ids.addAll(idx, additions);
+      builderIds.addAll(idx, additions);
     }
   }
 
@@ -120,25 +99,7 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
       idxs
           .stream()
           .sorted(Comparator.reverseOrder())
-          .forEach(idx -> ids.remove((int) idx));
-    }
-  }
-
-  @Override
-  protected boolean isLoadedID(int idx) {
-    if(buildFinished) {
-      return super.isLoadedID(idx);
-    } else {
-      return idx < ids.size();
-    }
-  }
-
-  @Override
-  protected void loadIDs(int startIdx, int endIdx) {
-    if(buildFinished) {
-      super.loadIDs(startIdx, endIdx);
-    } else {
-      throw new IllegalStateException("Can not load IDs in GemListBuilder!");
+          .forEach(idx -> builderIds.remove((int) idx));
     }
   }
 
@@ -147,16 +108,7 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
     if(buildFinished) {
       return super.getIDs(startIdx, endIdx);
     } else {
-      return ids.subList(startIdx, endIdx);
-    }
-  }
-
-  @Override
-  protected void loadID(int idx) {
-    if(buildFinished) {
-      super.loadID(idx);
-    } else {
-      throw new IllegalStateException("Can not load id in builder!");
+      return builderIds.subList(startIdx, endIdx);
     }
   }
 }

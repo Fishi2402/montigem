@@ -215,11 +215,8 @@ public class PersonSyncTest {
     assertNotNull(p1001Client);
     assertNotSame(p1001, p1001Client);
 
-    Log.info("Assert that GemList owns was transferred empty", "PersonSyncTest");
-    GemList<Car> owns = p1001Client.getOwnsGemList();
-    assertEquals(0, owns.sizeLocallyKnownIds());
-
     Log.info("Assert that GemList will correctly load elements on demand", "PersonSyncTest");
+    GemList<Car> owns = p1001Client.getOwnsGemList();
     assertEquals(1, owns.size());
 
     Car cClient = owns.get(0);

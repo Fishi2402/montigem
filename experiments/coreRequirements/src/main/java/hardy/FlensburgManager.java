@@ -438,10 +438,10 @@ public abstract class FlensburgManager {
   protected abstract GemList<Address> _createVisitedBuilder(Person person, long gemId, List<Long> initialIds);
   
   public static GemList<Person> createVisitors(Address address, long gemListId, int size, List<Long> initialIds) {
-    return getSingleton()._createVisitors(address, gemListId, size, initialIds);
+    return getSingleton()._createVisitors(address, gemListId, initialIds);
   }
 
-  protected abstract GemList<Person> _createVisitors(Address address, long gemListId, int size, List<Long> initialIds);
+  protected abstract GemList<Person> _createVisitors(Address address, long gemListId, List<Long> initialIds);
 
   public static GemList<Person> createVisitorsBuilder(Address address, long gemListId, List<Long> initialIds) {
     return getSingleton()._createVisitorsBuilder(address, gemListId, initialIds);

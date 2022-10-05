@@ -117,14 +117,12 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected GemList<Human> _doGetHumanList() {
     if(humanGemList == null){
-      // TODO: error handling
+      // TODO: replace with access via filter!
       Long id = CommandManager.executeCommand(new Human_get_gemListId()).asSimpleResult().get();
-      Integer size = CommandManager.executeCommand(new GemList_size(id)).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new GemList_getIds(id, 0, -1)).asSimpleResult().get();
       humanGemList = new GemList<>(
           id,
-          size,
-          this::loadHumanSize,
-          this::loadHumanGemIds,
+          gemIds,
           this::loadHumansByGemIds
       );
     }
@@ -227,14 +225,12 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected GemList<Person> _doGetPersonList() {
     if(personGemList == null){
-      // TODO: error handling
+      // TODO: replace with access via filter!
       Long id = CommandManager.executeCommand(new Person_get_gemListId()).asSimpleResult().get();
-      Integer size = CommandManager.executeCommand(new GemList_size(id)).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new GemList_getIds(id, 0, -1)).asSimpleResult().get();
       personGemList = new GemList<>(
           id,
-          size,
-          this::loadPersonSize,
-          this::loadPersonGemIds,
+          gemIds,
           this::loadPersonsByGemIds
       );
     }
@@ -333,14 +329,12 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected GemList<Address> _doGetAddressList() {
     if(addressGemList == null){
-      // TODO: error handling
+      // TODO: replace with access via filter!
       Long id = CommandManager.executeCommand(new Address_get_gemListId()).asSimpleResult().get();
-      Integer size = CommandManager.executeCommand(new GemList_size(id)).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new GemList_getIds(id, 0, -1)).asSimpleResult().get();
       addressGemList = new GemList<>(
           id,
-          size,
-          this::loadAddressSize,
-          this::loadAddressGemIds,
+          gemIds,
           this::loadAddresssByGemIds
       );
     }
@@ -436,12 +430,10 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     if(carGemList == null){
       // TODO: error handling
       Long id = CommandManager.executeCommand(new Car_get_gemListId()).asSimpleResult().get();
-      Integer size = CommandManager.executeCommand(new GemList_size(id)).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new GemList_getIds(id, 0, -1)).asSimpleResult().get();
       carGemList = new GemList<>(
           id,
-          size,
-          this::loadCarSize,
-          this::loadCarGemIds,
+          gemIds,
           this::loadCarsByGemIds
       );
     }
@@ -489,9 +481,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     // TODO: this is not very easy to read
     return new GemList<>(
         gemListId,
-        size,
-        () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
-        (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
+        initialCarGemIds,
         ids -> {
           List<LoadResult<Car>> res = new ArrayList<>();
           for (Long id : ids) {
@@ -518,8 +508,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     // TODO: duplicated code!
     return new GemListBuilder<>(
         gemListId,
-        () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
-        (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
         ids -> {
           List<LoadResult<Car>> res = new ArrayList<>();
           for (Long id : ids) {
@@ -542,9 +530,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     // TODO: this is not very easy to read
     return new GemList<>(
         gemListId,
-        size,
-        () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
-        (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
+        initialCarGemIds,
         ids -> {
           List<LoadResult<Address>> res = new ArrayList<>();
           for (Long id : ids) {
@@ -561,14 +547,12 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Person> _createVisitors(Address address, long gemListId, int size, List<Long> initialIds) {
+  protected GemList<Person> _createVisitors(Address address, long gemListId, List<Long> initialIds) {
     // TODO AHe, FDr: use Person for list interface of owns
     // TODO: this is not very easy to read
     return new GemList<>(
         gemListId,
-        size,
-        () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
-        (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
+        initialIds,
         ids -> {
           List<LoadResult<Person>> res = new ArrayList<>();
           for (Long id : ids) {
@@ -588,8 +572,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected GemList<Address> _createVisitedBuilder(Person person, long gemListId, List<Long> initialIds) {
     return new GemListBuilder<>(
         gemListId,
-        () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
-        (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
         ids -> {
           List<LoadResult<Address>> res = new ArrayList<>();
           for (Long id : ids) {
@@ -601,7 +583,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
             }
           }
           return res;
-        }
+        },
+        initialIds
     );
   }
 
@@ -609,8 +592,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected GemList<Person> _createVisitorsBuilder(Address address, long gemListId, List<Long> initialIds) {
     return new GemListBuilder<>(
         gemListId,
-        () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
-        (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
         ids -> {
           List<LoadResult<Person>> res = new ArrayList<>();
           for (Long id : ids) {
@@ -622,7 +603,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
             }
           }
           return res;
-        }
+        },
+        initialIds
     );
   }
 

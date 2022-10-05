@@ -40,16 +40,10 @@ public class GemListTypeAdapter<T extends GemIdentifiable> implements JsonSerial
       res.addProperty("listId", src.getGemId());
       res.addProperty("size", src.size());
 
-    // Client needs to send ids to server
-    // TODO: is this always needed?
     // TODO: weird code
-      if(src instanceof GemListBuilder){
-        if(CommandManager.getParticipantId() != 0){
-          JsonArray value = new JsonArray();
-          src.getIDs(0, src.size()).forEach(value::add);
-          res.add("values", value);
-        }
-      }
+      JsonArray value = new JsonArray();
+      src.getIDs(0, src.size()).forEach(value::add);
+      res.add("values", value);
 
       return res;
   }

@@ -220,7 +220,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected GemList<Person> _createVisitors(Address address, long gemListId, int size, List<Long> initialIds) {
+    protected GemList<Person> _createVisitors(Address address, long gemListId, List<Long> initialIds) {
         return null;
     }
 
