@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /* Tests GUI (or later also E2E) for creation of Person
 */
-public class NeuePersonAnlegenGUITest extends AbstractGUITest {
+public class NeuePersonAnlegenTest extends AbstractGUITest {
 
   @Test
   public void createNewPersonTest() {
@@ -18,7 +18,7 @@ public class NeuePersonAnlegenGUITest extends AbstractGUITest {
     // zusaetlich eine Fehlermeldung anzeigen (die analog angezeigt wird)
     FlensburgMock.init();
 
-    NeuePersonAnlegenGUI e = new NeuePersonAnlegenGUI();
+    NeuePersonAnlegen e = new NeuePersonAnlegen();
 
     // Check GUI initial values
     assertNull(e.pb.getAge());

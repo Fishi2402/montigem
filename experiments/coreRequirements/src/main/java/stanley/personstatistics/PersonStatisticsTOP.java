@@ -3,7 +3,6 @@ package stanley.personstatistics;
 // HWC-P
 
 import hardy.Person;
-import hardy.PersonBuilder;
 
 // PieData is a class generated from a class diagram modeled for Pie component
 /* Consider:
@@ -17,11 +16,11 @@ import umlp.rte.gui.PieData;
 import java.util.List;
 import java.util.ArrayList;
 
-public abstract class PersonStatisticsGUITOP {
+public abstract class PersonStatisticsTOP {
 
   protected List<PieData> pieData = new ArrayList();
 
-  public PersonStatisticsGUITOP(List<Person> ps) {
+  public PersonStatisticsTOP(List<Person> ps) {
     setPieData(ps);
   }
 

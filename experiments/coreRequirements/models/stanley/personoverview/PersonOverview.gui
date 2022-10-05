@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package stanley;
+package stanley.personoverview;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
@@ -9,7 +9,7 @@ import hardy.Flensburg;
 
 import umlp.gui.Table;
 // import type from a CD to describe a table column
-import umlp.gui.types.Col;
+import umlp.gui.TableTypes.TableColumn;
 
 /**
  * This example defines a
@@ -20,13 +20,13 @@ import umlp.gui.types.Col;
 page PersonOverview(List<Person> ps) {
 
   // Table of objects
-  :Table(
+  @Table(
     // rows show a list of objects (persons)
     rows = ps,
     // 2 columns: 1st shows age of a person, 2nd - nickname attribute value
     cols = List(
-      Col("age"),
-      Col("nickname")
+      TableColumn("age"),
+      TableColumn("nickname")
     )
   )
 

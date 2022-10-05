@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package stanley;
+package stanley.showcityinfo;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
@@ -7,9 +7,9 @@ package stanley;
 import hardy.Flensburg;
 
 // hier werden importierte GUI-Modelle gefunden
-import umlp.gui.Table;
+import umlp.gui.RowTable;
 // hier werden importierte Typen der GUI-Komponenten gefunden
-import umlp.gui.TableTypes.Row;
+import umlp.gui.TableTypes.TableRow;
 import umlp.gui.TextInput;
 import umlp.gui.Text;
 
@@ -20,19 +20,19 @@ import umlp.gui.Text;
  */
 page ShowCityInfo(CityInfo ci) {
   // statistic about cities
-  :Table(
+  @RowTable(
     rows = List(
-      Row("Number of cities", ci.numberOfCities),
-      Row("Total number of cars", ci.totalNumberOfCars),
-      Row("City with most cars", ci.cityWithMostCars),
-      Row("Person with most cars", ci.personWithMostCars.nickname),
-      Row("Average number of cars", ci.averageNumberOfCars)
+      TableRow("Number of cities", ci.numberOfCities),
+      TableRow("Total number of cars", ci.totalNumberOfCars),
+      TableRow("City with most cars", ci.cityWithMostCars),
+      TableRow("Person with most cars", ci.personWithMostCars.nickname),
+      TableRow("Average number of cars", ci.averageNumberOfCars)
     )
-  )
+  );
 
   // list of cities
-  :Text(value = "List of cities") // TODO: Text vs. TextInput
+  @Text(value = "List of cities"); // TODO: Text vs. TextInput
   iterate(cityName : ci.cities) {
-    :TextInput(value = cityName)
+    @TextInput(value = cityName);
   }
 }

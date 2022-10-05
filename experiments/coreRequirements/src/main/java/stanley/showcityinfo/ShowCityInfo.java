@@ -36,7 +36,7 @@ import java.util.List;
 
 /********************************************************/
 
-public class ShowCityInfoGUI {
+public class ShowCityInfo {
 
   // Person does not exist in the beginning, use builder instead
   protected CityInfo ci;
@@ -46,7 +46,7 @@ public class ShowCityInfoGUI {
    * The constructor call mimics the start of the Window: it is opened,
    * its values are set etc.
    */
-  public ShowCityInfoGUI() {
+  public ShowCityInfo() {
     this.ci = FlensburgManager.getCityInfo();
   }
 

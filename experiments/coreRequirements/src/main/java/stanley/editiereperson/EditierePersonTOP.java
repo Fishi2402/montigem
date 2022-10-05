@@ -31,12 +31,11 @@ Z5  :Button(text = "Discard", leftClick = nichts-tun,aber andere Seite anzeigen)
 import hardy.Person;
 import hardy.PersonErrorCollector;
 import hardy.PersonErrorObserver;
-import hardy.PersonObserver;
-import stanley.editierepersoncars.EditierePersonCarsGUI;
+import stanley.editierepersoncars.EditierePersonCars;
 
 /********************************************************/
 
-public class EditierePersonGUITOP implements PersonErrorObserver {
+public class EditierePersonTOP implements PersonErrorObserver {
 
   // there is internal state: 
   // Part 1: The data value(s): here only Person
@@ -57,7 +56,7 @@ public class EditierePersonGUITOP implements PersonErrorObserver {
    * The constructor call mimicks the start of the Window: it is opened,
    * its values are set etc.
    */
-  public EditierePersonGUITOP(Person p) {
+  public EditierePersonTOP(Person p) {
     this.p = p;
     // the page observes errors in person object to display to user
     PersonErrorCollector.addErrorObserver(this);
@@ -110,15 +109,15 @@ public class EditierePersonGUITOP implements PersonErrorObserver {
   // Bemerkung: hier wurde der Text des Buttons in die Methode übernommen,
   // ist das sinnvoll, oder gibt es andere Mechanismen die Unterscheidung
   // sicherzustellen? (selbes Problem ja auch bei obigen Methoden)
-  public EditierePersonCarsGUI pressButtonOk() {
+  public EditierePersonCars pressButtonOk() {
     // Wir geben die Seite, auf die navigiert wird zurück. In dem
     // Fall kann man beim testen überprüfen, ob eine neue Seite "erstellt" wurde
     // Das funktioniert in TypeScript jedoch anders (editiere-person-top.component.ts)
     return this.navigate();
   }
 
-  protected EditierePersonCarsGUI navigate() {
-    return new EditierePersonCarsGUI(p);
+  protected EditierePersonCars navigate() {
+    return new EditierePersonCars(p);
   }
   
   public void pressButtonDecrease() {

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /* Test GUI (or later also E2E) for city info
 */
-public class ShowCityInfoGUITest extends AbstractGUITest {
+public class ShowCityInfoTest extends AbstractGUITest {
 
   @Test
   public void showCityInfoTest() {
@@ -30,7 +30,7 @@ public class ShowCityInfoGUITest extends AbstractGUITest {
     cb.owns(pb);
     pb.build();
 
-    ShowCityInfoGUI ci = new ShowCityInfoGUI();
+    ShowCityInfo ci = new ShowCityInfo();
 
     // Check GUI has contains correct values
     assertEquals(1, ci.getTable().getNumberOfCities());

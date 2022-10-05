@@ -1,0 +1,9 @@
+package example.atomic.pie;
+
+import example.atomic.pie.PieTypes.PieEntry;
+
+/** Pie chart component interface definition
+*/
+component Pie(
+  List<PieEntry> entries
+)
