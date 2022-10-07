@@ -55,7 +55,7 @@ umlp Flensburg {
     * z.B. beim builden eines Objektes relevant (keine `null`-Werte erlaubt)
     * Beispiel: für `nickname` wird eine Methode `checkNickname()` generiert, welche einen boolschen Wert zurückgibt, gemäß der Information, ob der Wert der Variable adäquat gesetzt wurde. 
     * Neben dem boolschen Rückgabewert, wird bei fehlergeschlagener Überprüfung zusätzlich ein Fehler geloggt.
-* <span style="color:#FF0000">To discuss:</span> werden `init`-Methoden noch benötigt oder sind sie ein Konstrukt aus Zeiten, als die Builder noch nicht die Domänenklassen erweitert haben?
+* <p style="color:#FF0000">To discuss:</p> werden `init`-Methoden noch benötigt oder sind sie ein Konstrukt aus Zeiten, als die Builder noch nicht die Domänenklassen erweitert haben?
 
 ## Assoziationen
 
