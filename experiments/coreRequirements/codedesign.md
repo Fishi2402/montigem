@@ -38,9 +38,23 @@ umlp Flensburg {
 ## Kernklassen der Applikation
 
 * am Beispiel der Klasse `Person`.
-
-TODO 
-
+* es wird eine Java Klasse `Person` entsprechend der modellierten Domänenklasse generiert
+* hierbei wird Vererbung auf Klassenebene von Java entsprechend der Vorgaben des Modells berücksichtigt.
+  * hier `Person extends Human`: Resultiert darin, dass auch die generierte Klasse `Person` die generierte Klasse `Human` erweitert
+* Für die modellierten Attribute (für Assoziationen: siehe unten) werden Member-Variablen generiert, welche die Sichtbarkeit `protected` (nicht `private`!) erhalten, um bei Vererbung noch erweiterbar zu sein
+  * hier: Resultiert in Attributen `nickname` und `mainResidence`
+  * Die Multiplizität wird aus dem Modell übernommen
+    * unterstützt werden: default (1), optional (0..1) und many (0..*)
+  * Standardmäßig werden für alle Attribute getter und setter Methoden generiert
+    * Beispiel: `getNickname()` und `setNickname(String nickname)` für das Attribut `nickname`
+    * Bei optionalen oder listenwertigen Attributen werden entsprechend Methoden generiert, welche der API von `java.util.Optional` bzw. `java.util.List` entsprechend
+      * Beispiel:  `add` und `remove` Methoden für Collections
+  * Weitere Modifier, wie `derived` (`\\`) werden ebenfalls berücksichtigt
+    * `clubname` ist beispielsweise als `derived` markiert, wodurch **kein** setter generiert wird, sondern nur ein getter, welcher `abstract` ist (also keinen Methodenrumpf implementiert) und manuell erweitert werden muss
+  * Zur Validierung der gesetzten Variablen, werden entsprechende check-Methoden bereitgestellt 
+    * z.B. beim builden eines Objektes relevant (keine `null`-Werte erlaubt)
+    * Beispiel: für `nickname` wird eine Methode `checkNickname()` generiert, welche einen boolschen Wert zurückgibt, gemäß der Information, ob der Wert der Variable adäquat gesetzt wurde. 
+    * Neben dem boolschen Rückgabewert, wird bei fehlergeschlagener Überprüfung zusätzlich ein Fehler geloggt.
 
 ## Assoziationen
 
