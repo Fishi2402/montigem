@@ -49,7 +49,7 @@ umlp Flensburg {
     * Beispiel: `getNickname()` und `setNickname(String nickname)` für das Attribut `nickname`
     * Bei optionalen oder listenwertigen Attributen werden entsprechend Methoden generiert, welche der API von `java.util.Optional` bzw. `java.util.List` entsprechend
       * Beispiel:  `add` und `remove` Methoden für Collections
-  * Weitere Modifier, wie `derived` (`\\`) werden ebenfalls berücksichtigt
+  * Weitere Modifier, wie `derived` (`\`) werden ebenfalls berücksichtigt
     * `clubname` ist beispielsweise als `derived` markiert, wodurch **kein** setter generiert wird, sondern nur ein getter, welcher `abstract` ist (also keinen Methodenrumpf implementiert) und manuell erweitert werden muss
   * Zur Validierung der gesetzten Variablen, werden entsprechende check-Methoden bereitgestellt 
     * z.B. beim builden eines Objektes relevant (keine `null`-Werte erlaubt)
