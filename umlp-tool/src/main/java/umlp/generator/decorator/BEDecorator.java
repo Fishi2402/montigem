@@ -70,9 +70,10 @@ public class BEDecorator extends AbstractDecorator {
     errorObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorObserverDecorator", BEDecorator.class.getName());
 
-    TypeAdapterDecorator typeAdapterDecorator = new TypeAdapterDecorator(glex);
+    // TODO: remove
+    /*TypeAdapterDecorator typeAdapterDecorator = new TypeAdapterDecorator(glex);
     typeAdapterDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: TypeAdapterDecorator", BEDecorator.class.getName());
+    Log.info("After decorator: TypeAdapterDecorator", BEDecorator.class.getName());*/
   }
 
 }

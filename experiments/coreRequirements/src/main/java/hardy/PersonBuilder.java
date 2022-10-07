@@ -33,7 +33,13 @@ public class PersonBuilder extends Person {
     protected boolean nicknamePresent = false;
     protected boolean ownsPresent = false;
     protected boolean mainResidencePresent = false;
-    private boolean visitedPresent = false;
+    protected boolean visitedPresent = false;
+
+    // Bei der Deserialiserung kann davon ausgegangen werden, dass alle Objekte gebaut sind, und das
+    // FlensburgManager#addX nicht vom Builder aufgerufen werden muss. Entweder das Objekt wird von Client geladen,
+    // dann ist es bereits beim Server registiert, oder es wird am Ende der Erstellung and den Server gesendet, und
+    // der X_create Command ruft danach FlensburgManager#addX auf.
+    protected boolean INTERNAL_deser_mode = false;
 
     // the Builder:
     //+ gemId wird bereits beim initialisieren des Builders besetzt
@@ -42,7 +48,7 @@ public class PersonBuilder extends Person {
         this.gemId = gemId;
         // während des bauens ist das eine unsychronisierte GemList!
         this.owns = FlensburgManager.createOwnsBuilder(FlensburgManager.getFreeGemListId());
-        this.visited = FlensburgManager.createVisitedBuilder(this, FlensburgManager.getFreeGemListId(), Collections.emptyList());
+        this.visited = FlensburgManager.createVisitedBuilder(gemId, FlensburgManager.getFreeGemListId(), Collections.emptyList());
     }
 
     // Standard set-Function:
@@ -118,17 +124,19 @@ public class PersonBuilder extends Person {
             // todo: discuss: sollte es nicht einen else Fall geben,
             //  der präzisere Fehler wirft (siehe Log)?
             if (isBuildable()) {
+              if(!INTERNAL_deser_mode) {
                 for (Car own : owns) {
-                    if(!own.isBuildFinished()) {
-                        own.build();
-                    }
+                  if (!own.isBuildFinished()) {
+                    own.build();
+                  }
                 }
                 owns.build();
                 visited.build();
                 FlensburgManager.addPerson(this);
-                personObservers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
-                buildFinished = true;
-                return Optional.of(this);
+              }
+              personObservers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
+              buildFinished = true;
+              return Optional.of(this);
             }
         }
         return Optional.empty();
@@ -175,6 +183,10 @@ public class PersonBuilder extends Person {
         addresses.forEach(addr -> addr.addVisitor(this, NotificationScope.MINIMAL));
         visitedPresent = true;
         return this;
+    }
+
+    public void setINTERNAL_deser_mode(boolean value){
+      this.INTERNAL_deser_mode = value;
     }
 
     /*- Das regeln wir anders:, denn dieser Sonderfall erlaubt ja nur eine

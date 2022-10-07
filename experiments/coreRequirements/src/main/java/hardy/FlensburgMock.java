@@ -381,16 +381,16 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Car> _doCreateOwns(Person p, long gemListId, int size, List<Long> initialCarGemIds) {
+  protected GemList<Car> _doCreateOwns(long personGemId, long gemListId, int size, List<Long> initialCarGemIds) {
     // TODO AHr, FDr: use Person for list interface of owns
     MockGemList<Car> res = new MockGemList<>(
         gemListId,
         initialCarGemIds,
         id -> _doCarOpt(id).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),
-        (idx, id) -> p.setOwns(idx, getCarSure(id)),
-        (idx, gemIDs) -> p.addAllOwnss(idx,
+        (idx, id) -> _doGetPersonSure(personGemId).setOwns(idx, getCarSure(id)),
+        (idx, gemIDs) -> _doGetPersonSure(personGemId).addAllOwnss(idx,
             gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())),
-        (gemIDs) -> p.removeAllOwnss(
+        (gemIDs) -> _doGetPersonSure(personGemId).removeAllOwnss(
             gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())
         )
     );
@@ -410,7 +410,7 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   @Override
-  public GemList<Address> _createVisited(Person person, long gemListId, int size, List<Long> initialIds) {
+  public GemList<Address> _createVisited(long personGemId, long gemListId, int size, List<Long> initialIds) {
     // TODO AHr, FDr: use Person for list interface of owns
     // when the methods have been added to PersonTOP
     MockGemList<Address> res = new MockGemList<Address>(
@@ -423,7 +423,7 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Person> _createVisitors(Address address, long gemListId, List<Long> initialIds) {
+  protected GemList<Person> _createVisitors(long addressGemId, long gemListId, List<Long> initialIds) {
     // TODO AHr, FDr: use Person for list interface of owns
     MockGemList<Person> res = new MockGemList<>(
         gemListId,
@@ -435,7 +435,7 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Address> _createVisitedBuilder(Person person, long gemListId, List<Long> initialIds) {
+  protected GemList<Address> _createVisitedBuilder(long personGemId, long gemListId, List<Long> initialIds) {
     MockGemListBuilder<Address> res = new MockGemListBuilder<>(
         gemListId,
         gemId -> _doAddressOpt(gemId).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),
@@ -446,7 +446,7 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Person> _createVisitorsBuilder(Address address, long gemListId, List<Long> initialIds) {
+  protected GemList<Person> _createVisitorsBuilder(long addressGemId, long gemListId, List<Long> initialIds) {
     MockGemListBuilder<Person> res = new MockGemListBuilder<>(
         gemListId,
         gemId -> _doPersonOpt(gemId).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),

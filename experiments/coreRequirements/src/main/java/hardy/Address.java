@@ -90,7 +90,7 @@ public class Address implements GemIdentifiable {
   public void INTERNAL_finishDeser(){
     // properly init GemLists
     if(visitors instanceof GemListDeserHelper){
-      visitors = FlensburgManager.createVisitors(this, visitors.getGemId(), visitors.size(),((GemListDeserHelper<Person>) visitors).getInitialIds());
+      visitors = FlensburgManager.createVisitors(getGemId(), visitors.getGemId(), visitors.size(),((GemListDeserHelper<Person>) visitors).getInitialIds());
     }
   }
 

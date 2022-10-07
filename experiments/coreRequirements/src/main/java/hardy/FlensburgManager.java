@@ -410,44 +410,44 @@ public abstract class FlensburgManager {
    *
    * @return {@link List} the class {@link Car}.
    */
-  public static GemList<Car> createOwns(Person p, long gemListId, int size, List<Long> initialCarGemIds) {
-    return getSingleton()._doCreateOwns(p, gemListId, size, initialCarGemIds);
+  public static GemList<Car> createOwns(long personGemId, long gemListId, int size, List<Long> initialCarGemIds) {
+    return getSingleton()._doCreateOwns(personGemId, gemListId, size, initialCarGemIds);
   }
 
-  protected abstract GemList<Car> _doCreateOwns(Person p, long gemListId, int size, List<Long> initialCarGemIds);
+  protected abstract GemList<Car> _doCreateOwns(long personGemId, long gemListId, int size, List<Long> initialCarGemIds);
 
-  public static GemList<Car> createOwns(Person p, long gemListId, int size) {
-    return getSingleton()._doCreateOwns(p, gemListId, size);
+  public static GemList<Car> createOwns(long personGemId, long gemListId, int size) {
+    return getSingleton()._doCreateOwns(personGemId, gemListId, size);
   }
 
-  protected GemList<Car> _doCreateOwns(Person p, long gemListId, int size){
-    return _doCreateOwns(p, gemListId, size, Collections.emptyList());
+  protected GemList<Car> _doCreateOwns(long personGemId, long gemListId, int size){
+    return _doCreateOwns(personGemId, gemListId, size, Collections.emptyList());
   }
 
 
-  public static GemList<Address> createVisited(Person person, long gemId, int size, List<Long> initialIds) {
-    return getSingleton()._createVisited(person, gemId, size, initialIds);
+  public static GemList<Address> createVisited(long personGemId, long gemId, int size, List<Long> initialIds) {
+    return getSingleton()._createVisited(personGemId, gemId, size, initialIds);
   }
 
-  protected abstract GemList<Address> _createVisited(Person person, long gemId, int size, List<Long> initialIds);
+  protected abstract GemList<Address> _createVisited(long personGemId, long gemId, int size, List<Long> initialIds);
   
-  public static GemList<Address> createVisitedBuilder(Person person, long gemId, List<Long> initialIds) {
-    return getSingleton()._createVisitedBuilder(person, gemId, initialIds);
+  public static GemList<Address> createVisitedBuilder(long personGemId, long gemId, List<Long> initialIds) {
+    return getSingleton()._createVisitedBuilder(personGemId, gemId, initialIds);
   }
 
-  protected abstract GemList<Address> _createVisitedBuilder(Person person, long gemId, List<Long> initialIds);
+  protected abstract GemList<Address> _createVisitedBuilder(long personGemId, long gemId, List<Long> initialIds);
   
-  public static GemList<Person> createVisitors(Address address, long gemListId, int size, List<Long> initialIds) {
-    return getSingleton()._createVisitors(address, gemListId, initialIds);
+  public static GemList<Person> createVisitors(long addressGemId, long gemListId, int size, List<Long> initialIds) {
+    return getSingleton()._createVisitors(addressGemId, gemListId, initialIds);
   }
 
-  protected abstract GemList<Person> _createVisitors(Address address, long gemListId, List<Long> initialIds);
+  protected abstract GemList<Person> _createVisitors(long addressGemId, long gemListId, List<Long> initialIds);
 
-  public static GemList<Person> createVisitorsBuilder(Address address, long gemListId, List<Long> initialIds) {
-    return getSingleton()._createVisitorsBuilder(address, gemListId, initialIds);
+  public static GemList<Person> createVisitorsBuilder(long addressGemId, long gemListId, List<Long> initialIds) {
+    return getSingleton()._createVisitorsBuilder(addressGemId, gemListId, initialIds);
   }
 
-  protected abstract GemList<Person> _createVisitorsBuilder(Address address, long gemListId, List<Long> initialIds);
+  protected abstract GemList<Person> _createVisitorsBuilder(long addressGemId, long gemListId, List<Long> initialIds);
 
 
 

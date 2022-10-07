@@ -38,7 +38,7 @@ public class DeSerDecorator extends DomainClassDecorator{
     // Attributes resulting from class attributes and associations
     List<ASTCDAttribute> attrList = getAllAttributes(cdClass).attrList.stream()
         // TODO: Attributes of all types!
-        .filter(attr -> isSimpleType(attr.printType()) || GenService.isGemList(attr) || GenService.isGem(attr))
+        .filter(attr -> isSimpleType(attr.printType()))
         .collect(Collectors.toList());
 
     attrList
@@ -47,7 +47,7 @@ public class DeSerDecorator extends DomainClassDecorator{
         // TODO: transient modifier?
         .forEach(attr -> {
           addSerMethod(originalClassName, deSer, attr);
-          addDeserMethod(originalClassName, deSer, attr);
+          addDeserMethod(cdName, originalClassName, deSer, attr);
         });
 
     getCD4C().addMethod(deSer, "umlp.deser.serialize", originalClassName, attrList);
@@ -84,9 +84,9 @@ public class DeSerDecorator extends DomainClassDecorator{
     }
   }
 
-  protected void addDeserMethod(String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
+  protected void addDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
     if(GenService.isGemList(attr)){
-      getCD4C().addMethod(deSer, "umlp.deser.deserializeGemListField", originalClassName, attr.getName());
+      getCD4C().addMethod(deSer, "umlp.deser.deserializeGemListField", cdName, originalClassName, attr.getName(), attr.printType());
     } else if(GenService.isGem(attr)) {
       getCD4C().addMethod(deSer, "umlp.deser.deserializeGemField", originalClassName, attr.getName());
     } else if(GenService.isList(attr)) {
@@ -117,5 +117,6 @@ public class DeSerDecorator extends DomainClassDecorator{
   protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.*");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.*");
+    getCD4C().addImport(clazz, "umlp.rte.*");
   }
 }

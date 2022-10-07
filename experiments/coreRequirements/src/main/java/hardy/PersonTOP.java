@@ -83,7 +83,7 @@ public abstract class PersonTOP extends Human {
   protected void initPerson() {
     this.nickname = "";
     this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns((Person) this, FlensburgManager.getFreeGemListId(), 0);
+    this.owns = FlensburgManager.createOwns(gemId, FlensburgManager.getFreeGemListId(), 0);
   }
   
   //+ initialization is externalized to be reusable (if needed)
@@ -91,7 +91,7 @@ public abstract class PersonTOP extends Human {
   protected void init(String nickname) {
     this.nickname = nickname;
     this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns((Person) this, FlensburgManager.getFreeGemListId(), 0);
+    this.owns = FlensburgManager.createOwns(gemId, FlensburgManager.getFreeGemListId(), 0);
   }
   
   protected void init(String nickname, GemList<Car> owns) {
@@ -425,12 +425,12 @@ public abstract class PersonTOP extends Human {
   public void INTERNAL_finishDeser() {
     // properly init GemLists
     if(owns instanceof GemListDeserHelper){
-      owns = FlensburgManager.createOwns((Person) this, owns.getGemId(), owns.size(), ((GemListDeserHelper<Car>) owns).getInitialIds());
+      owns = FlensburgManager.createOwns(gemId, owns.getGemId(), owns.size(), ((GemListDeserHelper<Car>) owns).getInitialIds());
     }
 
     if(visited instanceof GemListDeserHelper){
       List<Long> initialIds = ((GemListDeserHelper<Address>) visited).getInitialIds();
-      visited = FlensburgManager.createVisited((Person) this, visited.getGemId(), visited.size(), initialIds);
+      visited = FlensburgManager.createVisited(gemId, visited.getGemId(), visited.size(), initialIds);
     }
   }
 

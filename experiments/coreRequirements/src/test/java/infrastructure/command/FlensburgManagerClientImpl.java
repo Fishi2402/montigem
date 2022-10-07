@@ -477,7 +477,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Car> _doCreateOwns(Person p, long gemListId, int size, List<Long> initialCarGemIds) {
+  protected GemList<Car> _doCreateOwns(long personGemId, long gemListId, int size, List<Long> initialCarGemIds) {
     // TODO: this is not very easy to read
     return new GemList<>(
         gemListId,
@@ -494,10 +494,10 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
           }
           return res;
         },
-        (idx, id) -> p.setOwns(idx, getCarSure(id)),
-        (idx, gemIDs) -> p.addAllOwnss(idx,
+        (idx, id) -> _doGetPersonSure(personGemId).setOwns(idx, getCarSure(id)),
+        (idx, gemIDs) -> _doGetPersonSure(personGemId).addAllOwnss(idx,
             gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())),
-        (gemIDs) -> p.removeAllOwnss(
+        (gemIDs) -> _doGetPersonSure(personGemId).removeAllOwnss(
             gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())
         )
     );
@@ -524,7 +524,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Address> _createVisited(Person p, long gemListId, int size, List<Long> initialCarGemIds) {
+  protected GemList<Address> _createVisited(long personGemId, long gemListId, int size, List<Long> initialCarGemIds) {
     // TODO AHe, FDr: use Person for list interface of owns
     // when the methods have been added to PersonTOP
     // TODO: this is not very easy to read
@@ -547,7 +547,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Person> _createVisitors(Address address, long gemListId, List<Long> initialIds) {
+  protected GemList<Person> _createVisitors(long addressGemId, long gemListId, List<Long> initialIds) {
     // TODO AHe, FDr: use Person for list interface of owns
     // TODO: this is not very easy to read
     return new GemList<>(
@@ -569,7 +569,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Address> _createVisitedBuilder(Person person, long gemListId, List<Long> initialIds) {
+  protected GemList<Address> _createVisitedBuilder(long personGemId, long gemListId, List<Long> initialIds) {
     return new GemListBuilder<>(
         gemListId,
         ids -> {
@@ -589,7 +589,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Person> _createVisitorsBuilder(Address address, long gemListId, List<Long> initialIds) {
+  protected GemList<Person> _createVisitorsBuilder(long addressGemId, long gemListId, List<Long> initialIds) {
     return new GemListBuilder<>(
         gemListId,
         ids -> {

@@ -8,6 +8,16 @@ public class CarBuilder extends Car {
 
     protected boolean buildFinished = false;
 
+    // Bei der Deserialiserung kann davon ausgegangen werden, dass alle Objekte gebaut sind, und das
+    // FlensburgManager#addX nicht vom Builder aufgerufen werden muss. Entweder das Objekt wird von Client geladen,
+    // dann ist es bereits beim Server registiert, oder es wird am Ende der Erstellung and den Server gesendet, und
+    // der X_create Command ruft danach FlensburgManager#addX auf.
+    protected boolean INTERNAL_deser_mode = false;
+
+    public void setINTERNAL_deser_mode(boolean value){
+      this.INTERNAL_deser_mode = value;
+    }
+
     // Die Assoziation owns ist im Builder bidirektional, damit sichergestellt werden kann,
     // dass jedes Car eine Person hat.
     // TODO: owns klingt als ob die Person eigentum vom Car ist.
@@ -46,7 +56,9 @@ public class CarBuilder extends Car {
     public Optional<Car> build() {
         if (!buildFinished) {
             if (isBuildable()) {
-                FlensburgManager.addCar(this);
+                if(!INTERNAL_deser_mode) {
+                  FlensburgManager.addCar(this);
+                }
                 carObservers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
                 buildFinished = true;
                 owns.addOwns(this);
