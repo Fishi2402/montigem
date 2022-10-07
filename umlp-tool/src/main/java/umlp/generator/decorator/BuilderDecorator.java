@@ -55,13 +55,11 @@ public class BuilderDecorator extends AbstractDecorator {
     attrList.addAll(createAttributes(domainClass, attrAssocs.stream().map(a -> a.getName()).collect(Collectors.toList())));
     builderClass.addAllCDMembers(attrList);
     ASTCDAttribute finishedAttr = getCD4C().addAttribute(builderClass, "protected boolean buildFinished = false");
-    ASTCDAttribute deserModeAttr = getCD4C().addAttribute(builderClass, "protected boolean INTERNAL_deser_mode = false");
 
     // Methods
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     attrList.forEach(a -> builderClass.addAllCDMembers(methodDecorator.decorate(a)));
     builderClass.addAllCDMembers(methodDecorator.decorate(finishedAttr));
-    builderClass.addAllCDMembers(methodDecorator.decorate(deserModeAttr));
     createSetAndCheckMethods(domainClass, builderClass, attrFields, attrAssocs);
     getCD4C().addMethod(builderClass, "umlp.builder.Build", domainClass.getName(), name);
     getCD4C().addMethod(builderClass, "umlp.builder.IsBuildable", attrList);

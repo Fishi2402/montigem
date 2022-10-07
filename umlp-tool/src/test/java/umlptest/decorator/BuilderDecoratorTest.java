@@ -24,22 +24,20 @@ public class BuilderDecoratorTest extends DecoratorTest {
             () -> hasSuperClass(clazz, "Foo"),
 
             // check no of methods and attributes
-            () -> assertEquals(4, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(11, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(3, clazz.getCDAttributeList().size(), "number of attributes"),
+            () -> assertEquals(9, clazz.getCDMethodList().size(), "number of methods"),
 
             // check attributes
             () -> existsAttribute(clazz, "buildFinished"),
             () -> existsAttribute(clazz, "fooAttrPresent"),
             () -> existsAttribute(clazz, "barPresent"),
-            () -> existsAttribute(clazz, "INTERNAL_deser_mode"),
 
             // check methods
             () -> existsMethod(clazz, "isFooAttrPresent"),
             () -> existsMethod(clazz, "isBarPresent"),
             () -> existsMethod(clazz, "build"),
             () -> existsMethod(clazz, "isBuildFinished"),
-            () -> existsMethod(clazz, "isBuildable"),
-            () -> existsMethod(clazz, "setINTERNAL_deser_mode")
+            () -> existsMethod(clazz, "isBuildable")
     );
   }
 

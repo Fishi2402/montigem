@@ -58,6 +58,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     String name = domainClass.getName();
 
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilder", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName);

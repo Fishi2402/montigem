@@ -2,10 +2,13 @@ package umlp.generator.decorator;
 
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.methodtemplates.CD4CTemplateHelper;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import umlp.UMLPMill;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +41,7 @@ public class DeSerDecorator extends DomainClassDecorator{
     // Attributes resulting from class attributes and associations
     List<ASTCDAttribute> attrList = getAllAttributes(cdClass).attrList.stream()
         // TODO: Attributes of all types!
-        .filter(attr -> isSimpleType(attr.printType()))
+        .filter(attr -> isSimpleType(attr.printType()) || GenService.isGem(attr))
         .collect(Collectors.toList());
 
     attrList
@@ -50,11 +53,28 @@ public class DeSerDecorator extends DomainClassDecorator{
           addDeserMethod(cdName, originalClassName, deSer, attr);
         });
 
+    // TODO: also use for other templates!
+    List<ASTCDAttribute> simpleAttributes = new ArrayList<>();
+    List<ASTCDAttribute> gemAttributes = new ArrayList<>();
+    List<ASTCDAttribute> gemListAttributes = new ArrayList<>();
+
+    for (ASTCDAttribute attr : attrList) {
+      if(isSimpleType(attr.printType())){
+        simpleAttributes.add(attr);
+      } else if(GenService.isGemList(attr)){
+        gemListAttributes.add(attr);
+      }else if(GenService.isGem(attr)){
+        gemAttributes.add(attr);
+      }
+    }
+
     getCD4C().addMethod(deSer, "umlp.deser.serialize", originalClassName, attrList);
     getCD4C().addMethod(deSer, "umlp.deser.deserialize",
       cdName,
       originalClassName,
-      attrList
+      simpleAttributes,
+      gemAttributes,
+      gemListAttributes
     );
 
     CD4CTemplateHelper th = new CD4CTemplateHelper();
@@ -85,10 +105,22 @@ public class DeSerDecorator extends DomainClassDecorator{
   }
 
   protected void addDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
+    // TODO AHe: Continue here
+    // TODO: Reuse existing gemlist in Builder, creating a new one is wasteful. Add methods like ownsIds(List<Long>)
     if(GenService.isGemList(attr)){
       getCD4C().addMethod(deSer, "umlp.deser.deserializeGemListField", cdName, originalClassName, attr.getName(), attr.printType());
     } else if(GenService.isGem(attr)) {
-      getCD4C().addMethod(deSer, "umlp.deser.deserializeGemField", originalClassName, attr.getName());
+      ASTMCBasicGenericType gemType = (ASTMCBasicGenericType) attr.getMCType();
+      String innerType = new CD4CodeFullPrettyPrinter().prettyprint(gemType.getMCTypeArgument(0).getMCTypeOpt().get());
+      getCD4C().addMethod(
+          deSer,
+          "umlp.deser.deserializeGemField",
+          cdName,
+          originalClassName,
+          attr.getName(),
+          attr.printType(),
+          innerType
+      );
     } else if(GenService.isList(attr)) {
       // TODO
     } else if(GenService.isOptional(attr)) {

@@ -27,6 +27,11 @@ public class BEDecorator extends AbstractDecorator {
     builderDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: BuilderDecorator", BEDecorator.class.getName());
 
+    // Generate DeSer builder classes
+    DeSerBuilderDecorator deSerBuilderDecorator = new DeSerBuilderDecorator(glex);
+    deSerBuilderDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: DeSerBuilderDecorator", BEDecorator.class.getName());
+
     // Generate ErrorCollector classes
     ErrorCollectorDecorator errorCollectorDecorator= new ErrorCollectorDecorator(glex);
     errorCollectorDecorator.transform(cdAST, decoratedAST);
