@@ -38,7 +38,7 @@ umlp Flensburg {
 ## Kernklassen der Applikation
 
 * am Beispiel der Klasse `Person`.
-* es wird eine Java Klasse `Person` entsprechend der modellierten Domänenklasse generiert
+* es wird je eine Java Klasse (hier: `Person`) entsprechend jeder modellierten Domänenklasse generiert
 * hierbei wird Vererbung auf Klassenebene von Java entsprechend der Vorgaben des Modells berücksichtigt.
   * hier `Person extends Human`: Resultiert darin, dass auch die generierte Klasse `Person` die generierte Klasse `Human` erweitert
 * Für die modellierten Attribute (für Assoziationen: siehe unten) werden Member-Variablen generiert, welche die Sichtbarkeit `protected` (nicht `private`!) erhalten, um bei Vererbung noch erweiterbar zu sein
