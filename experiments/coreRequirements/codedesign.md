@@ -32,6 +32,7 @@ umlp Flensburg {
 
     association visits [*] Person (visitor) <-> (visited) Address [*];
     association parent [1] Person -> (children) Person [*];
+}
 ```
 
 ## Kernklassen der Applikation
