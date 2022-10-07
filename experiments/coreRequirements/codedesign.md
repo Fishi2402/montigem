@@ -2,9 +2,37 @@
 
 Dieses Beispiel beinhaltet eine Reihe von Design Entscheidungen
 für den Appliaktionskern (Serverseitig) incl. Persistenz,
-Rechte, und Kommunikation (zB zur GUI),
+Rechte, und Kommunikation (z.B. zur GUI),
 die hier dokumentiert werden und damit das README.md ergänzen.
+Als durchgängiges Beispiel wird das 
+[Flensburg.umlp](./models/Flensburg.umlp) Modell verwendet.
 
+```
+package hardy;
+
+umlp Flensburg {
+
+    class Car;
+
+    class Human {
+        int age;
+    }
+
+    class Person extends Human {
+        String nickname;
+        / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
+    }
+
+    class Address {
+       String city;
+    }
+
+    association owns [1] Person -> Car [*];
+    association mainResidence [1] Person -> Address [1];
+
+    association visits [*] Person (visitor) <-> (visited) Address [*];
+    association parent [1] Person -> (children) Person [*];
+```
 
 ## Kernklassen der Applikation
 
