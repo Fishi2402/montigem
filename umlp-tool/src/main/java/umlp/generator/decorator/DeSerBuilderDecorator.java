@@ -50,9 +50,8 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
       if (GenService.isGemList(a)) {
         getCD4C().addMethod(
             deserBuilderClass,
-            "umlp.deser_builder.setGemList",
+            "umlp.deser_builder.setGemListIds",
             deserBuilderClass.getName(),
-            a.printType(),
             a.getName()
         );
       }else if(GenService.isGem(a)){
