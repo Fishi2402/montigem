@@ -44,10 +44,10 @@ umlp Flensburg {
 * Für die modellierten Attribute (für Assoziationen: siehe unten) werden Member-Variablen generiert, welche die Sichtbarkeit `protected` (nicht `private`!) erhalten, um bei Vererbung noch erweiterbar zu sein
   * hier: Resultiert in Attributen `nickname` und `mainResidence`
   * Die Multiplizität wird aus dem Modell übernommen
-    * unterstützt werden: default (1), optional (0..1) und many (0..*)
+    * unterstützt werden: default (1), optional (0..1) und many (*)
   * Standardmäßig werden für alle Attribute getter und setter Methoden generiert
     * Beispiel: `getNickname()` und `setNickname(String nickname)` für das Attribut `nickname`
-    * Bei optionalen oder listenwertigen Attributen werden entsprechend Methoden generiert, welche der API von `java.util.Optional` bzw. `java.util.List` entsprechend
+    * Bei optionalen oder listenwertigen Attributen werden entsprechend Methoden generiert, welche der API von `java.util.Optional` bzw. `java.util.List` entsprechen
       * Beispiel:  `add` und `remove` Methoden für Collections
   * Weitere Modifier, wie `derived` (`\`) werden ebenfalls berücksichtigt
     * `clubname` ist beispielsweise als `derived` markiert, wodurch **kein** setter generiert wird, sondern nur ein getter, welcher `abstract` ist (also keinen Methodenrumpf implementiert) und manuell erweitert werden muss
@@ -59,8 +59,25 @@ umlp Flensburg {
 
 ## Assoziationen
 
-TODO
-
+* aus Buch: Assoziation ist eine binäre Beziehung zwischen Klassen, die zur Realisierung struktureller Information verwendet wird. Eine Assoziation besitzt einen Assoziationsnamen, für jedes Ende einen Rollennamen, eine Kardinalität und eine Angabe über die Navigationsrichtungen.
+* Für die modellierten Assoziationen und Kompositionen werden Member-Variablen generiert, welche die Sichtbarkeit `protected` (nicht `private`!) erhalten, um bei Vererbung noch erweiterbar zu sein
+  * Beispiel `association owns [1] Person -> Car [*];` : Resultiert in Attribut `owns` in der Klasse `Person`
+  * Der Name des Attributs ergibt sich gemäß folgender Konvention
+    * 1. Rollenname falls vorhanden
+    * 2. Attributname falls vorhanden
+    * 3. klein geschriebener Name der Zielklasse
+  * Die Multiplizität wird aus dem Modell übernommen
+    * unterstützt werden: default (1), optional (0..1) und many (*)
+  * Standardmäßig werden für alle Assoziationen Zugriffmethoden gemäß ihrer Multiplizität generiert
+    * Beispiel: `getOwns(int i)` und `addOwns()` für das Attribut die `owns` Beziehung zwischen `Person` und `Car`
+    * Bei optionalen oder listenwertigen Attributen werden entsprechend Methoden generiert, welche der API von `java.util.Optional` bzw. `java.util.List` entsprechen
+* Für bi-direktionale Assoziationen wird entsprechend in beiden Klassen eine member-Variable angelegt
+  * Beispiel `association visits [*] Person (visitor) <-> (visited) Address [*];` 
+  * Da die bi-direktionale Verbindung einen Zusammenhang zwischen den gespeicherten Werten modelliert, müssen diese auch gemeinsam behandelt (z.B. hinzugefügt oder entfernt) werden
+  * wird im Beispiel ein Objekt vom Type `Address` der `Person` hinzugefügt, so muss umgekehrt auch das entsprechende Objekt der `Person` für `Address` bekannt gemacht werden
+  * Dafür müssen sich die Zugriffsmethoden sich gegenseitig aufrufen können (z.B. `addVisited` der Klasse `Person` muss der `visitor` Liste von `Address` die aktuelle Instanz mitteilen)
+  * Da dies in beide Richtungen gilt, werden, um unendliche Rekursion zuu vermeiden _interne_ Methoden generiert, welche nur den Zweck erfüllen, von der jeweils anderen Zugriffsmethode der bi-direktionalen Assoziation aufgerufen zu werden
+  * Somit werden beispielweise die Methoden `addVisited` und  `INTERNAL_addVisitedId` generiert
 
 ## `Gem<.>`
 
