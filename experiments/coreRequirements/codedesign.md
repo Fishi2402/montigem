@@ -231,6 +231,44 @@ MH zu diskutieren!
 * Der Manager muss nun auch `Promises` zurückgeben, was das Interface
   verändert.
 
+### Undo / Redo
+* UnDo/ Redo setzt auf dem Command Pattern auf
+* Je Seite und User wird jeweils ein Undo und ein Redo Stack angelegt.
+* Zu Jedem Kommando, git es ein `doRun()` und die inverse Funktion `undoRun()`
+* Kommandos werden als ganzes (zusamen mit denen für das undo notwendigen daten) im undo bzw. redo stack gespeichert:
+
+
+```mermaid
+sequenceDiagram
+    participant Command
+    participant UndoCommand
+    participant UndoRedo
+    participant UndoStack
+    participant RedoStack
+    activate Command  
+    Command->>+UndoRedo: insertInUndoReDo()
+    activate Command
+    activate UndoRedo
+    UndoRedo->>+UndoStack: push()
+    UndoStack->>-UndoRedo: 
+    UndoRedo->>-Command: 
+    deactivate Command
+    Command->>Command: doRun()
+    deactivate Command
+
+    UndoCommand->>+UndoRedo: undoLastCommand()
+    activate UndoCommand
+    UndoRedo->>+UndoStack: pop()
+    UndoStack-->>-UndoRedo: 
+    UndoRedo->>+Command: 
+    Command->>Command: undoRun()
+    Command->>+RedoStack: push()
+    RedoStack-->>-Command: 
+    Command-->>-UndoRedo: 
+    UndoRedo-->>-UndoCommand: 
+    deactivate UndoCommand
+```
+
 
 ## Rechte / Rollen-Konzept
 
