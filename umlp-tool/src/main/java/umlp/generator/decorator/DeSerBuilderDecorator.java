@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.decorator.GenService.createInitialValue;
 
+// TODO: collapse Builder and DeSerBuilder?
 public class DeSerBuilderDecorator extends DomainClassDecorator {
 
   public static final String DESER_BUILDER_SUFFIX = "DeSerBuilder";

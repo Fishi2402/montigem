@@ -424,6 +424,13 @@ public abstract class FlensburgManager {
     return _doCreateOwns(personGemId, gemListId, size, Collections.emptyList());
   }
 
+  public static GemList<Person> createChildren(long personGemId, long gemListId, int size, List<Long> initialIds) {
+    return getSingleton()._createChildren(personGemId, gemListId, size, initialIds);
+  }
+
+  protected abstract GemList<Person> _createChildren(long personGemId, long gemListId, int size, List<Long> initialIds);
+
+
 
   public static GemList<Address> createVisited(long personGemId, long gemId, int size, List<Long> initialIds) {
     return getSingleton()._createVisited(personGemId, gemId, size, initialIds);

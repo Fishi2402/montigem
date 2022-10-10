@@ -399,6 +399,23 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   @Override
+  protected GemList<Person> _createChildren(long personGemId, long gemListId, int size, List<Long> initialIds) {
+    MockGemList<Person> res = new MockGemList<>(
+        gemListId,
+        initialIds,
+        id -> _doPersonOpt(id).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),
+        (idx, id) -> _doGetPersonSure(personGemId).setOwns(idx, getCarSure(id)),
+        (idx, gemIDs) -> _doGetPersonSure(personGemId).addAllOwnss(idx,
+            gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())),
+        (gemIDs) -> _doGetPersonSure(personGemId).removeAllOwnss(
+            gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())
+        )
+    );
+    gemLists.put(gemListId, res);
+    return res;
+  }
+
+  @Override
   protected GemList<Car> _doCreateOwnsBuilder(long gemListId) {
     MockGemListBuilder<Car> res = new MockGemListBuilder<>(
         gemListId,

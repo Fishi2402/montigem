@@ -209,7 +209,12 @@ public class FlensburgManagerImpl extends FlensburgManager {
         return null;
     }
 
-    @Override
+  @Override
+  protected GemList<Person> _createChildren(long personGemId, long gemListId, int size, List<Long> initialIds) {
+    return null;
+  }
+
+  @Override
     protected GemList<Car> _doCreateOwnsBuilder(long gemListId) {
         return null;
     }

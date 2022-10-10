@@ -3,6 +3,7 @@ package hardy;
 //+ GEN-P        : generated for the product
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class AddressBuilder extends Address {
@@ -62,6 +63,11 @@ public class AddressBuilder extends Address {
         }
         return isPresentCity;
     }
+
+  public AddressBuilder visitorGemListIds(List<Long> ids) {
+    visitors._internal_add(visitors.size(), ids);
+    return this;
+  }
 }
 
 

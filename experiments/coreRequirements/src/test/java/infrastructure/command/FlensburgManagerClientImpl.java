@@ -504,6 +504,32 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
+  protected GemList<Person> _createChildren(long personGemId, long gemListId, int size, List<Long> initialIds) {
+    return new GemList<>(
+        gemListId,
+        initialIds,
+        ids -> {
+          List<LoadResult<Person>> res = new ArrayList<>();
+          for (Long id : ids) {
+            SimpleResult<Person> tmp = CommandManager.executeCommand(new Person_get(id)).asSimpleResult();
+            if(tmp.isSuccessful()) {
+              res.add(new LoadResult<>(tmp.get()));
+            }else{
+              res.add(new LoadResult<>(tmp.getLoadingState()));
+            }
+          }
+          return res;
+        },
+        (idx, id) -> _doGetPersonSure(personGemId).setChildren(idx, getPersonSure(id)),
+        (idx, gemIDs) -> _doGetPersonSure(personGemId).addAllChildrens(idx,
+            gemIDs.stream().map(carID -> getPersonSure(carID)).collect(Collectors.toSet())),
+        (gemIDs) -> _doGetPersonSure(personGemId).removeAllChildrens(
+            gemIDs.stream().map(carID -> getPersonSure(carID)).collect(Collectors.toSet())
+        )
+    );
+  }
+
+  @Override
   protected GemList<Car> _doCreateOwnsBuilder(long gemListId) {
     // TODO: duplicated code!
     return new GemListBuilder<>(

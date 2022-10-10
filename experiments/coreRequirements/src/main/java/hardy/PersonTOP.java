@@ -6,10 +6,7 @@ package hardy;
 
 import com.google.common.collect.Sets;
 import com.google.gson.annotations.JsonAdapter;
-import umlp.rte.Gem;
-import umlp.rte.GemList;
-import umlp.rte.GemListDeserHelper;
-import umlp.rte.NotificationScope;
+import umlp.rte.*;
 
 import java.util.*;
 
@@ -37,7 +34,7 @@ public abstract class PersonTOP extends Human {
   // Association with cardinality [1]
   @JsonAdapter(PersonMainResidenceTypeAdapter.class)
   protected Gem<Address> mainResidence;
-  
+
   // an Association: ------------------------------------------
   // The signature is a List, even though it might have been an
   // unordered Association.
@@ -46,6 +43,8 @@ public abstract class PersonTOP extends Human {
   @JsonAdapter(CarGemListTypeAdapter.class)
   protected GemList<Car> owns;
   // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
+
+  protected GemList<Person> children;
 
   @JsonAdapter(AddressGemListTypeAdapter.class)
   protected GemList<Address> visited;
@@ -64,42 +63,6 @@ public abstract class PersonTOP extends Human {
   // and should only be used by the builder(!)
   protected PersonTOP() {
     super();
-    // TODO MH Wird beim deserialisiern im Client ausgeführt, wodurch unerwünschte
-    //  Nebeneffekte entstehen. Ist das hier wirklich nötig?
-//    initPerson();
-  }
-  
-  // Bemerkung: Wir verzichten auf "volle" Konstruktoren
-  // das macht nur das Überschreiben mit der TOP-Methode besser.
-  // Also in den Factories/Buildern: initX(...) Methoden nuten
-  // also Beispiel:
-  //      new Person().initHuman(23).initPerson("theo")    statt
-  //      new Person(23,"theo")
-  
-  //+ initialization is externalized to be reusable (if needed)
-  //+ do an initialisation of optional and default parts
-  // (makes the system robust, but shadows potential errors for a while)
-  //+ initializes Person-Elements, but not of superclasses
-  protected void initPerson() {
-    this.nickname = "";
-    this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns(gemId, FlensburgManager.getFreeGemListId(), 0);
-  }
-  
-  //+ initialization is externalized to be reusable (if needed)
-  //+ do an initialisation of optional and default parts
-  protected void init(String nickname) {
-    this.nickname = nickname;
-    this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns(gemId, FlensburgManager.getFreeGemListId(), 0);
-  }
-  
-  protected void init(String nickname, GemList<Car> owns) {
-    this.nickname = nickname;
-    this.mainResidence = null;
-    this.owns = owns;
-    // todo: should we limit the init method to lazylist
-    // to assure that it is a lazy list and not any other?
   }
   
   // Muss überschrieben werden, damit die Fehler an den PersonErrorCollector gesendet werden
@@ -422,10 +385,15 @@ public abstract class PersonTOP extends Human {
     return owns;
   }
 
+  // TODO: remove when gson is replaced
   public void INTERNAL_finishDeser() {
     // properly init GemLists
     if(owns instanceof GemListDeserHelper){
       owns = FlensburgManager.createOwns(gemId, owns.getGemId(), owns.size(), ((GemListDeserHelper<Car>) owns).getInitialIds());
+    }
+
+    if(children instanceof GemListDeserHelper){
+      children = FlensburgManager.createChildren(gemId, children.getGemId(), children.size(), ((GemListDeserHelper<Person>) children).getInitialIds());
     }
 
     if(visited instanceof GemListDeserHelper){
@@ -465,6 +433,27 @@ public abstract class PersonTOP extends Human {
   public void INTERNAL_addVisitedId(int indexInList, long addressGemId, NotificationScope scope) {
     visited._internal_add(indexInList, List.of(addressGemId));
     personObservers.forEach(obs -> obs.maybeNotifyAddVisited((Person) this, addressGemId, indexInList, scope));
+  }
+
+  // TODO: mark as internal
+  public GemList<Address> getVisitedGemList() {
+    return visited;
+  }
+
+  public GemList<Person> getChildrenGemList() {
+    return children;
+  }
+
+  public void setChildren(int index, Person child) {
+    children.set(index, child);
+  }
+
+  public void addAllChildrens(int idx, Collection<Person> children) {
+    this.children.addAll(idx, children);
+  }
+
+  public void removeAllChildrens(Collection<Person> children) {
+    this.children.removeAll(children);
   }
 
   // -----------------------------------------------------------------

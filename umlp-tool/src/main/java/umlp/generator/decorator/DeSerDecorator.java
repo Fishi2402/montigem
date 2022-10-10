@@ -44,11 +44,9 @@ public class DeSerDecorator extends DomainClassDecorator{
         .filter(attr -> isSimpleType(attr.printType()) || GenService.isGem(attr))
         .collect(Collectors.toList());
 
-    attrList
-        .stream()
-        .filter(attr -> !attr.getModifier().isDerived())
-        // TODO: transient modifier?
-        .forEach(attr -> {
+    attrList = attrList.stream().filter(attr -> !attr.getModifier().isDerived()).collect(Collectors.toList());
+
+    attrList.forEach(attr -> {
           addSerMethod(originalClassName, deSer, attr);
           addDeserMethod(cdName, originalClassName, deSer, attr);
         });
@@ -105,8 +103,6 @@ public class DeSerDecorator extends DomainClassDecorator{
   }
 
   protected void addDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
-    // TODO AHe: Continue here
-    // TODO: Reuse existing gemlist in Builder, creating a new one is wasteful. Add methods like ownsIds(List<Long>)
     if(GenService.isGemList(attr)){
       getCD4C().addMethod(deSer, "umlp.deser.deserializeGemListField", cdName, originalClassName, attr.getName(), attr.printType());
     } else if(GenService.isGem(attr)) {

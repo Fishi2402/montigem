@@ -34,6 +34,7 @@ public class PersonBuilder extends Person {
     protected boolean ownsPresent = false;
     protected boolean mainResidencePresent = false;
     protected boolean visitedPresent = false;
+    protected boolean childrenPresent = false;
 
     // Bei der Deserialiserung kann davon ausgegangen werden, dass alle Objekte gebaut sind, und das
     // FlensburgManager#addX nicht vom Builder aufgerufen werden muss. Entweder das Objekt wird von Client geladen,
@@ -189,6 +190,30 @@ public class PersonBuilder extends Person {
       this.INTERNAL_deser_mode = value;
     }
 
+    public PersonBuilder mainResidenceGem(Gem<Address> mainResidence) {
+        this.mainResidencePresent = mainResidence != null;
+        this.mainResidence = mainResidence;
+        return this;
+    }
+
+    public PersonBuilder ownsGemListIds(List<Long> ids) {
+        this.ownsPresent = true;
+        this.owns._internal_add(this.owns.size(), ids);
+        return this;
+    }
+
+    public PersonBuilder visitedGemListIds(List<Long> ids) {
+        this.visitedPresent = true;
+        this.visited._internal_add(this.visited.size(), ids);
+        return this;
+    }
+  
+    public PersonBuilder childrenGemListIds(List<Long> ids) {
+        this.childrenPresent = true;
+        this.children._internal_add(this.children.size(), ids);
+        return this;
+    }
+    
     /*- Das regeln wir anders:, denn dieser Sonderfall erlaubt ja nur eine
     2Objekte-Parallel instantiieren Konstruktion:
       public Person build(boolean addToBidirectionalAssociation) {

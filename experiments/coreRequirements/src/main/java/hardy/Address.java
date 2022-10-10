@@ -118,4 +118,9 @@ public class Address implements GemIdentifiable {
     visitors._internal_add(indexInList, List.of(personGemId));
     addressObservers.forEach(obs -> obs.maybeNotifyAddVisitor(this, personGemId, indexInList, scope));
   }
+
+  // TODO: mark as internal!
+  public GemList<Person> getVisitorGemList() {
+    return visitors;
+  }
 }
