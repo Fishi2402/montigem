@@ -2,7 +2,6 @@ package umlp.generator.gui.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
@@ -13,7 +12,6 @@ import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._symboltable.GUIDSLScope;
 import de.monticore.guidsl._symboltable.GUIVariableSymbol;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
-import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
 import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
@@ -24,6 +22,7 @@ import umlp.generator.gui.GUIComponentAccessVisitor;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class CallDecorator extends GUIComponentDecorator {
 
@@ -44,28 +43,45 @@ public class CallDecorator extends GUIComponentDecorator {
     TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
 
     allCalls.forEach(call -> {
-          StringBuilder sb = new StringBuilder();
-          for (ASTExpression argument : call.getArguments().getExpressionList()) {
-            if (!(argument instanceof ASTNameExpression)) {
-              continue;
+          if (!isNavigateComponent(call)) {
+            StringBuilder sb = new StringBuilder();
+            for (ASTExpression argument : call.getArguments().getExpressionList()) {
+              if (!(argument instanceof ASTNameExpression)) {
+                continue;
+              }
+              String paramName = ((ASTNameExpression) argument).getName();
+              Optional<GUIVariableSymbol> paramSymbol = ((GUIDSLScope) argument.getEnclosingScope()).resolveGUIVariable(paramName);
+              if (paramSymbol.isEmpty()) {
+                continue;
+              }
+              TypeSymbol typeInfo = paramSymbol.get().getType().getTypeInfo();
+              if (sb.length() != 0) {
+                sb.append(", ");
+              }
+              sb.append(typeInfo.getName()).append(" ").append(paramName);
             }
-            String paramName = ((ASTNameExpression)argument).getName();
-            Optional<GUIVariableSymbol> paramSymbol = ((GUIDSLScope)argument.getEnclosingScope()).resolveGUIVariable(paramName);
-            if (paramSymbol.isEmpty()) {
-              continue;
-            }
-            TypeSymbol typeInfo = paramSymbol.get().getType().getTypeInfo();
-            if (sb.length() != 0) {
-              sb.append(", ");
-            }
-            sb.append(typeInfo.getName()).append(" ").append(paramName);
+            getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.Call",
+                getMethodName(call), sb.toString()
+                /* new GUIDSLFullPrettyPrinter().prettyprint(call))*/);
           }
-          getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.Call",
-              getMethodName(call), sb.toString(),
-              new GUIDSLFullPrettyPrinter().prettyprint(call));
+          else {
+            ASTGUIComponent arg = (ASTGUIComponent) call.getArguments().getExpressionList().get(0);
+            // GUIFunctionSymbol fS = arg.getNameSymbol();
+            List<String> args = arg.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> a.getExpression() instanceof ASTNameExpression)
+                .map(a -> ((ASTNameExpression) a.getExpression()).getName()).collect(Collectors.toList());
+            String result = String.join(",", args);
+            getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.Navigate",
+                "navigate", arg.getName(), result);
+          }
         }
     );
 
+  }
+
+  protected boolean isNavigateComponent(ASTCallExpression call) {
+    return getMethodName(call).equals("navigate") &&
+        call.getArguments().getExpressionList().size() == 1 &&
+        call.getArguments().getExpressionList().get(0) instanceof ASTGUIComponent;
   }
 
 
