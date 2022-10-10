@@ -233,7 +233,7 @@ MH zu diskutieren!
 
 ### Undo / Redo
 * UnDo/ Redo setzt auf dem Command Pattern auf
-* Je Seite und User wird jeweils ein Undo und ein Redo Stack angelegt.
+* Je Seite und User wird jeweils ein Undo und ein Redo Stack im Commandmanager im Client angelegt.
 * Zu Jedem Kommando, git es ein `doRun()` und die inverse Funktion `undoRun()`
 * Kommandos werden als ganzes (zusamen mit denen für das undo notwendigen daten) im undo bzw. redo stack gespeichert:
 
