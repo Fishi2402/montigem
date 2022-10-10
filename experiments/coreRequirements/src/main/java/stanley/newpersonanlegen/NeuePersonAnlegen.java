@@ -4,8 +4,8 @@ package stanley.newpersonanlegen;
 
 import hardy.PersonBuilder;
 
-public class NeuePersonAnlegenGUI extends NeuePersonAnlegenGUITOP {
-  public NeuePersonAnlegenGUI() {
+public class NeuePersonAnlegen extends NeuePersonAnlegenTOP {
+  public NeuePersonAnlegen() {
     super();
   }
 

@@ -30,11 +30,11 @@ Z5  :Button(text = "Decrease", leftClick = decreaseAge(p))
 
 import hardy.FlensburgManager;
 import hardy.PersonBuilder;
-import stanley.editierepersoncars.EditierePersonCarsGUI;
+import stanley.editierepersoncars.EditierePersonCars;
 
 /********************************************************/
 
-public class NeuePersonAnlegenGUITOP {
+public class NeuePersonAnlegenTOP {
 
   // Person does not exist in the beginning, use builder instead
   protected PersonBuilder pb;
@@ -44,7 +44,7 @@ public class NeuePersonAnlegenGUITOP {
    * The constructor call mimicks the start of the Window: it is opened,
    * its values are set etc.
    */
-  public NeuePersonAnlegenGUITOP() {
+  public NeuePersonAnlegenTOP() {
     this.pb = FlensburgManager.personBuilder();
     this.build();
     // subcomponents, wie TextFeld werden in der Simulation nicht extra besetzt
@@ -105,7 +105,7 @@ public class NeuePersonAnlegenGUITOP {
   /*
    * see EditierePersonGUITOP.java
    */
-  public EditierePersonCarsGUI pressButtonOk() {
+  public EditierePersonCars pressButtonOk() {
     return this.navigate();
   }
 
@@ -113,9 +113,9 @@ public class NeuePersonAnlegenGUITOP {
    * navigate the same way as in EditierePersonGUITOP.java, but if a person wasn't built (invalid
    * state or server error), prevent navigation
    */
-  protected EditierePersonCarsGUI navigate() throws IllegalStateException {
+  protected EditierePersonCars navigate() throws IllegalStateException {
     if (pb.isBuildFinished()) {
-      return new EditierePersonCarsGUI(pb);
+      return new EditierePersonCars(pb);
     }
     // TODO use better strategy both for testing and GUI implementation
     throw new IllegalStateException("0xU1234: Person cannot be built.");

@@ -7,9 +7,9 @@ import umlp.rte.gui.PieData;
 import java.util.List;
 import java.util.ArrayList;
 
-public class PersonStatisticsGUI extends PersonStatisticsGUITOP {
+public class PersonStatistics extends PersonStatisticsTOP {
 
-  public PersonStatisticsGUI(List<Person> ps) {
+  public PersonStatistics(List<Person> ps) {
     super(ps);
   }
 

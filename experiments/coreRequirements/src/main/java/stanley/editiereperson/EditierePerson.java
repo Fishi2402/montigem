@@ -4,8 +4,8 @@ package stanley.editiereperson;
 
 import hardy.Person;
 
-public class EditierePersonGUI extends EditierePersonGUITOP {
-  public EditierePersonGUI(Person p) {
+public class EditierePerson extends EditierePersonTOP {
+  public EditierePerson(Person p) {
     super(p);
   }
 

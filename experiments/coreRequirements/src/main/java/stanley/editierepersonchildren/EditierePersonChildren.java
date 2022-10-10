@@ -9,14 +9,14 @@ import java.util.ArrayList;
 
 // page enables editing of a person and their children, used to test validations of dependent fields
 // in this case, age of parent has to be older than a child
-public class EditierePersonChildrenGUI implements PersonErrorObserver {
+public class EditierePersonChildren implements PersonErrorObserver {
   protected final Person p;
 
   protected String numberInputError = "";
 
   protected List<String> numberInputErrorChildren = new ArrayList();
 
-  public EditierePersonChildrenGUI(Person p) {
+  public EditierePersonChildren(Person p) {
     this.p = p;
 
     PersonErrorCollector.addErrorObserver(this);

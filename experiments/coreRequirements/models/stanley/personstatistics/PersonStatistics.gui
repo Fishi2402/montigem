@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package stanley;
+package stanley.personstatistics;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
@@ -10,7 +10,6 @@ import hardy.Flensburg;
 import umlp.gui.Pie;
 
 // hier werden handgeschriebene Java Erweiterungen importiert
-import stanley.personstatistics.PersonStatisticsGUI;
 
 /**
  * This example defines a
@@ -21,7 +20,7 @@ import stanley.personstatistics.PersonStatisticsGUI;
 page PersonStatistics(List<Person> ps) {
 
   // Pie chart showing statistics (implementation in Java hwc)
- :Pie(data = getData(ps))
+  @Pie(data = getData(ps))
 
 }
 

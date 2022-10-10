@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package stanley;
+package stanley.editierepersonchildren;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
@@ -21,11 +21,11 @@ import umlp.gui.NumberInput;
 page EditierePersonChildren(Person p) {
 
   // show and edit the parent's age as number
-  :NumberInput(value = p.age)
+  @NumberInput(value = p.age);
 
   iterate (Person child : p.children) {
     // show and edit the child's age as number
-    :NumberInput(value = child.age)
+    @NumberInput(value = child.age);
   }
 
 }
