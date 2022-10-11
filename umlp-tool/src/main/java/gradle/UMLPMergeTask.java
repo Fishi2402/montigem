@@ -7,15 +7,17 @@ import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
+import umlp.UMLPFullPrettyPrinter;
 import umlp.UMLPTool;
 import umlp._ast.ASTUMLPCompilationUnit;
+import umlp.generator.CD2UMLPTrafo;
 import umlp.generator.UMLP2CDTrafo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class UMLPMergeTask extends SourceTask {
@@ -26,11 +28,11 @@ public abstract class UMLPMergeTask extends SourceTask {
   @TaskAction
   public void run() {
     // Parse and convert to CDCompilationUnit
-    List<ASTCDCompilationUnit> cds = getSource().getFiles().stream()
+    Set<ASTCDCompilationUnit> cds = getSource().getFiles().stream()
         .map(File::getAbsolutePath)
         .map(this::parseAndCheck)
         .map(UMLP2CDTrafo::run)
-        .collect(Collectors.toList());
+        .collect(Collectors.toSet());
 
     // merge
     ASTCDCompilationUnit merged = CDMerge.merge(cds);
