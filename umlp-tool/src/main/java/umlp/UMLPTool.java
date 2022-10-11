@@ -289,8 +289,9 @@ public class UMLPTool extends UMLPToolTOP {
     return f.getName().endsWith(".umlp");
   }
 
+  // TODO MB - einkommentieren
   protected boolean isGuiFile(File f) {
-    return f.getName().endsWith(".gui");
+    return false; //return f.getName().endsWith(".gui");
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {
@@ -310,6 +311,7 @@ public class UMLPTool extends UMLPToolTOP {
     return null;
   }
 
+  // TODO MB
   protected IGUIDSLArtifactScope createSymbolTable(ASTGUICompilationUnit ast, MCPath modelPath) {
     GUIDSLMill.globalScope().clear();
     GUIDSLMill.reset();
@@ -330,7 +332,7 @@ public class UMLPTool extends UMLPToolTOP {
     navigateFunction.getSpannedScope().add(
         GUIDSLMill.variableSymbolBuilder()
             .setName("arg")
-            .setType(SymTypeExpressionFactory.createTypeObject(de.monticore.guidsl._symboltable.BuiltInTypes.TEMPLATE_REF.getName(), gs))
+            .setType(SymTypeExpressionFactory.createTypeObject(de.monticore.guidsl._symboltable.BuiltInTypes.GUI_VIEW_ELEMENT.getName(), gs))
             .setEnclosingScope(navigateFunction.getSpannedScope())
             .build()
     );

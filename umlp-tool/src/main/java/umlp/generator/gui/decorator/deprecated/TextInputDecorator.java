@@ -1,4 +1,4 @@
-package umlp.generator.gui.decorator;
+package umlp.generator.gui.decorator.deprecated;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
@@ -10,15 +10,16 @@ import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.gui.decorator.GUIComponentDecorator;
 
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class NumberInputDecorator extends GUIComponentDecorator {
+public class TextInputDecorator extends GUIComponentDecorator {
 
   public static final Predicate<ASTGUINamedArg> PREDICATE_INPUT_ARG = c -> c.getName().equals(INPUT_ARG_NAME);
 
-  public NumberInputDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
+  public TextInputDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
     super(glex, guiAst);
   }
 
@@ -50,7 +51,7 @@ public class NumberInputDecorator extends GUIComponentDecorator {
       returnExpr = domainAttrName + ".get" + StringTransformations.capitalize(attrName) + "()";
 
     }
-    else if (inputArg.getExpression() instanceof ASTNameExpression) { //MB Visitor? //  :TextInput(value = cityName)
+    else if (inputArg.getExpression() instanceof ASTNameExpression) {
       attrName = ((ASTNameExpression) inputArg.getExpression()).getName(); // cityName
       // resolve and check type
 
@@ -63,7 +64,7 @@ public class NumberInputDecorator extends GUIComponentDecorator {
       return;
     }
 
-    String returnType = "int"; // TODO GV
+    String returnType = "String"; // TODO GV
 
     addComponentErrorAttribute(decoratedClass, guiComponent);
     addNotifyMethod(decoratedClass, guiComponent, attrName);

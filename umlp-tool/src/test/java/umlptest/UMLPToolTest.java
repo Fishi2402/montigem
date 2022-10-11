@@ -24,14 +24,14 @@ public class UMLPToolTest extends AbstractUMLPTest {
   @Test
   public void testRunMethodGui() {
     UMLPTool tool = new UMLPTool();
-    tool.run(new String[]{"-i", "src/test/resources/de/monticore/ShowCityInfo.gui"});
+    tool.run(new String[]{"-i", "src/test/resources/stanley/showcityinfo/ShowCityInfo.gui"});
     assertNoErrors();
   }
 
   @Test
   public void testRunMethodGui1() {
     UMLPTool tool = new UMLPTool();
-    tool.run(new String[]{"-i", "src/test/resources/stanley/EditierePersonCars.gui",
+    tool.run(new String[]{"-i", "src/test/resources/stanley/editierepersoncars/EditierePersonCars.gui",
         "-path", "src/test/resources"});
     assertNoErrors();
   }
@@ -39,7 +39,7 @@ public class UMLPToolTest extends AbstractUMLPTest {
   @Test
   public void testRunMethodGui2() {
     UMLPTool tool = new UMLPTool();
-    tool.run(new String[]{"-i", "src/test/resources/stanley/EditierePerson.gui",
+    tool.run(new String[]{"-i", "src/test/resources/stanley/editiereperson/EditierePerson.gui",
         "-path", "src/test/resources"});
     assertNoErrors();
   }
@@ -47,7 +47,7 @@ public class UMLPToolTest extends AbstractUMLPTest {
   @Test
   public void testRunMethodGui3() {
     UMLPTool tool = new UMLPTool();
-    tool.run(new String[]{"-i", "src/test/resources/stanley/EditierePersonChildren.gui",
+    tool.run(new String[]{"-i", "src/test/resources/stanley/editierepersonchildren/EditierePersonChildren.gui",
         "-path", "src/test/resources"});
     assertNoErrors();
   }
@@ -55,7 +55,7 @@ public class UMLPToolTest extends AbstractUMLPTest {
   @Test
   public void testRunMethodGui4() {
     UMLPTool tool = new UMLPTool();
-    tool.run(new String[]{"-i", "src/test/resources/stanley/PersonOverview.gui",
+    tool.run(new String[]{"-i", "src/test/resources/stanley/personoverview/PersonOverview.gui",
         "-path", "src/test/resources"});
     assertNoErrors();
   }

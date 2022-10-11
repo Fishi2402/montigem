@@ -1,4 +1,4 @@
-package umlp.generator.gui.decorator;
+package umlp.generator.gui.decorator.deprecated;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
@@ -11,6 +11,7 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
+import umlp.generator.gui.decorator.GUIComponentDecorator;
 
 import java.util.Optional;
 import java.util.function.Predicate;

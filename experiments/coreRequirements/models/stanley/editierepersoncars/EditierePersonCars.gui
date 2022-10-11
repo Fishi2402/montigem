@@ -11,6 +11,7 @@ import umlp.gui.TextInput;
 import umlp.gui.NumberInput;
 import umlp.gui.Text;
 import umlp.gui.Button;
+import umlp.gui.Table;
 
 /**
  * This example defines a Visualization including a number of Calculated

@@ -1,4 +1,4 @@
-package umlp.generator.gui.decorator;
+package umlp.generator.gui.decorator.deprecated;
 
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.facade.CDModifier;
@@ -10,6 +10,7 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.gui.decorator.GUIComponentDecorator;
 
 import java.util.List;
 import java.util.Optional;

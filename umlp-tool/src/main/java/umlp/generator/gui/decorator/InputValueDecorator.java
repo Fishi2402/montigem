@@ -18,6 +18,7 @@ import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIComponentAccessVisitor;
+import umlp.generator.gui.decorator.GUIComponentDecorator;
 
 import java.util.List;
 import java.util.Optional;

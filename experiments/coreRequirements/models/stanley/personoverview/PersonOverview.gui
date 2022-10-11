@@ -28,7 +28,7 @@ page PersonOverview(List<Person> ps) {
       TableColumn("age"),
       TableColumn("nickname")
     )
-  )
+  );
 
 }
 

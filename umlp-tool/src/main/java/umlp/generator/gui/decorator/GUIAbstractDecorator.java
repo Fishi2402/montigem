@@ -23,7 +23,7 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
   public static MCBasicTypesFullPrettyPrinter basicTypesPrinter;
   public static GUIDSLFullPrettyPrinter guiDSLPrinter;
 
-  public static final String COMPONENT_SUFFIX = "GUI";
+  public static final String COMPONENT_SUFFIX = "";
 
   public GUIAbstractDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -41,12 +41,11 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
   }
 
   public static String getPackageName(ASTGUICompilationUnit guiAst, String subPackage) {
-    String origPackage = Names.constructQualifiedName(guiAst.getMCPackageDeclaration().getMCQualifiedName().getPartsList(),
-        guiAst.getComponentName().toLowerCase(Locale.ROOT));
+    String origPackage = Names.constructQualifiedName(guiAst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
     return (subPackage.isEmpty() ? origPackage : Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
   }
 
-  // TODO GV,MB
+  // TODO MB
   public Optional<VariableSymbol> resolveAttribute(Optional<GUIVariableSymbol> guiVariableSymbol, String name) {
     if (guiVariableSymbol.isEmpty()) {
       return Optional.empty();

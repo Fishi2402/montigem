@@ -62,8 +62,9 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
 
     boolean isDomainType = !astguiParam.getSymbol().getType().isGenericType();
-    // TODO when ST ist fertig: qualified domainTypeName und add import declaration //MB
-    String qualifiedType = "hardy." + typeInfo.getName(); // domainTypeSymbol.getQualifiedName(); //MB
+
+    // TODO when ST ist fertig: qualified domainTypeName und add import declaration
+    String qualifiedType = "hardy." + typeInfo.getName(); // domainTypeSymbol.getQualifiedName(); //TODO MB
 
     // --- end
 
