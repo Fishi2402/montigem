@@ -6,7 +6,9 @@ import hardy.Human;
 import hardy.Person;
 import hardy.PersonObserver;
 import hardy.commands.*;
+import hardy.commands.associations.Visits_add;
 import umlp.command.CommandManager;
+import umlp.rte.NotificationScope;
 
 // TODO: Ersetzen durch FlensburgCommandManager implements PersonObserver => eine Weiterleitung weniger
 
@@ -14,6 +16,10 @@ import umlp.command.CommandManager;
 
 // extends HumanCommandObserver geht nicht, da nicht Human_setAge sondern Person_setAge gesendet werden muss
 public class PersonCommandObserver implements PersonObserver {
+  @Override
+  public NotificationScope getScope() {
+    return NotificationScope.GLOBAL;
+  }
 
   @Override
   public void notifySetAge(Human h, int age) {
@@ -38,5 +44,10 @@ public class PersonCommandObserver implements PersonObserver {
   @Override
   public void notifyRemoveOwns(Person p, long carGemId) {
     CommandManager.executeCommand(new Person_removeOwns(p.getGemId(), carGemId));
+  }
+
+  @Override
+  public void notifyAddVisited(Person p, long addressGemId, int indexInList) {
+    CommandManager.executeCommand(new Visits_add(addressGemId, p.getGemId(), indexInList, -1));
   }
 }

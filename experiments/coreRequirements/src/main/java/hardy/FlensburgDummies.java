@@ -54,7 +54,7 @@ public class FlensburgDummies {
         .age(25).nickname("Anna").owns(Collections.singleton(c1101));
     // Dies wird gebraucht, damit überprüfen kann, dass die owns assoziation korrekt ist
     // TODO: Es ist unschön, dass die Assoziation manuell in beide Richtungen gesetzt werden muss
-    c1101.owns(pb3101);
+    c1101.owns(pb3101).build();
     Person p3101 = pb3101.build().get();
 
     Person p3102 = FlensburgManager.personBuilder()
@@ -65,8 +65,8 @@ public class FlensburgDummies {
         .mainResidence(a103)
         .ownsAdd(c1102)
         .ownsAdd(c1103);
-    c1102.owns(pb3103);
-    c1103.owns(pb3103);
+    c1102.owns(pb3103).build();
+    c1103.owns(pb3103).build();
     Person p3103 = pb3103.build().get();
 
     PersonBuilder pb3104 = FlensburgManager
@@ -76,14 +76,14 @@ public class FlensburgDummies {
         .nickname("Doro")
         .ownsAdd(c1104)
         .ownsAdd(c1105);
-    c1104.owns(pb3104);
-    c1105.owns(pb3104);
+    c1104.owns(pb3104).build();
+    c1105.owns(pb3104).build();
     Person p3104 = pb3104.build().get();
 
     PersonBuilder pb3105 = FlensburgManager.personBuilder()
         .mainResidence(a105)
         .age(105).ownsAdd(c1106).nickname("Emil");
-    c1106.owns(pb3105);
+    c1106.owns(pb3105).build();
     Person p3105 = pb3105.build().get();
   }
     
@@ -101,7 +101,7 @@ public class FlensburgDummies {
           .nickname("Nick" + i)
           .owns(Collections.singleton(cb));
 
-      cb.owns(pb);
+      cb.owns(pb).build();
       Person o3 = pb.build().get();
       // todo: Ausbauoption: variable Menge von Cars
       // (das erfordert insgesamt Smartness beim generieren, um sinnvolle graphen zu bauen)

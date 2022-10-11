@@ -12,5 +12,3 @@ ${cd4c.method("public boolean isBuildable()")}
       </#list>
       ;
 </#if>
-
-

@@ -3,7 +3,3 @@ ${tc.signature("name")}
 ${cd4c.constructor("public ${name}(Random random)")}
 
 this.random = random;
-
-
-
-

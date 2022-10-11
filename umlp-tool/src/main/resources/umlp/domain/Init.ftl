@@ -3,6 +3,3 @@ ${tc.signature()}
 ${cd4c.method("public void init()")}
 
 // TODO: Attribute initialisieren
-
-
-

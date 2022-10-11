@@ -8,6 +8,16 @@ public class HumanBuilder extends Human {
     transient protected boolean buildFinished = false;
     transient protected boolean isAgePresent = false;
 
+    // Bei der Deserialiserung kann davon ausgegangen werden, dass alle Objekte gebaut sind, und das
+    // FlensburgManager#addX nicht vom Builder aufgerufen werden muss. Entweder das Objekt wird von Client geladen,
+    // dann ist es bereits beim Server registiert, oder es wird am Ende der Erstellung and den Server gesendet, und
+    // der X_create Command ruft danach FlensburgManager#addX auf.
+    protected boolean INTERNAL_deser_mode = false;
+
+    public void setINTERNAL_deser_mode(boolean value){
+      this.INTERNAL_deser_mode = value;
+    }
+
     public HumanBuilder(long gemId) {
        this.gemId = gemId;
     }
@@ -25,7 +35,9 @@ public class HumanBuilder extends Human {
     public Optional<Human> build() {
         if (!buildFinished) {
             if (isBuildable()) {
-                FlensburgManager.addHuman(this);
+                if(!INTERNAL_deser_mode) {
+                  FlensburgManager.addHuman(this);
+                }
                 humanObservers.forEach(obs -> obs.notifyBuild(this));
                 buildFinished = true;
                 return Optional.of(this);

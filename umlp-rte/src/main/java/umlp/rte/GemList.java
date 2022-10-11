@@ -4,7 +4,9 @@ package umlp.rte;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -31,64 +33,49 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
 
   protected final static int UNKNOWN_SIZE = -32;
 
-  protected final static int INITIAL_LOAD_SIZE = 10;
+  protected long gemID;
 
-  protected long gemID = -32l;
-
-  protected int size = UNKNOWN_SIZE;
-
-  // TODO: replace with efficient impl, maybe ChunkedIdStorage
-  // Lokaler speicher für die gemIds der enthaltenen Objekte. Speichert nur aktuell benötigte ids.
-  protected IdStorage idStorage = new SimpleIdStorage();
-
-  protected Supplier<Integer> loadSizeFunction;
-
-  protected BiFunction<Integer, Integer, List<Long>> loadIDsFunction;
+  // Lokaler speicher für die gemIds der enthaltenen Objekte. Enthält alle IDs der Assoziation.
+  protected List<Long> ids;
 
   protected Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction;
 
-  public GemList(
-      long gemId,
-      Supplier<Integer> loadSizeFunction,
-      BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
-      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction
-  ){
-    this(
-        gemId,
-        Collections.emptyList(),
-        loadSizeFunction,
-        loadIDsFunction,
-        loadObjectsFunction
-    );
-  }
+  protected BiConsumer<Integer, Long> setIdxFunction;
+
+  protected BiConsumer<Integer, List<Long>> addIDsFunction;
+
+  protected Consumer<Set<Integer>> removeIdxsFunction;
 
   public GemList(
-      long gemId,
-      List<Long> initialIds,
-      Supplier<Integer> loadSizeFunction,
-      BiFunction<Integer, Integer, List<Long>> loadIDsFunction,
+      long gemID,
+      List<Long> ids,
       Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction
   ) {
-    this.gemID = gemId;
-    if(!initialIds.isEmpty()) {
-      idStorage.addAll(0, initialIds);
-    }
-
-    this.loadSizeFunction = loadSizeFunction;
-    this.loadIDsFunction = loadIDsFunction;
-    this.loadObjectsFunction = loadObjectsFunction;
+    this(gemID, ids, loadObjectsFunction, null, null, null);
+    this.setIdxFunction = this::_internal_set;
+    this.addIDsFunction = this::_internal_add;
+    this.removeIdxsFunction = this::_internal_remove;
   }
 
-  public void ensureSizeLoaded(){
-    if (size == UNKNOWN_SIZE) {
-      size = loadSizeFunction.get();
-    }
+  public GemList(
+      long gemId,
+      List<Long> ids,
+      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
+      BiConsumer<Integer, Long> setIdxFunction,
+      BiConsumer<Integer, List<Long>> addIDsFunction,
+      Consumer<Set<Integer>> removeIdxsFunction
+  ) {
+    this.gemID = gemId;
+    this.ids = new ArrayList<>(ids);
+    this.loadObjectsFunction = loadObjectsFunction;
+    this.setIdxFunction = setIdxFunction;
+    this.addIDsFunction = addIDsFunction;
+    this.removeIdxsFunction = removeIdxsFunction;
   }
 
   @Override
   public int size() {
-    ensureSizeLoaded();
-    return size;
+    return ids.size();
   }
 
   @Override
@@ -109,21 +96,38 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   public E set(int idx, E elem) {
     assertInclusiveIdxInBounds(idx);
     final E oldElem = get(idx);
-    setIDs(Collections.singletonMap(idx, getID(elem)));
+    setIdxFunction.accept(idx, elem.getGemId());
     return oldElem;
+  }
+
+  public void _internal_set(int idx, long gemID) {
+    assertInclusiveIdxInBounds(idx);
+    setIDs(Collections.singletonMap(idx, gemID));
   }
 
   @Override
   public void add(int idx, E elem) {
+    addIDsFunction.accept(idx, Collections.singletonList(elem.getGemId()));
+  }
+
+  public void _internal_add(int idx, List<Long> gemIDs) {
     assertExclusiveIdxInBounds(idx);
-    addIDs(idx, Collections.singletonList(getID(elem)));
+    ids.addAll(idx, gemIDs);
   }
 
   @Override
   public E remove(int idx) {
+    // TODO: removeIdxsFunction needed?
     E elem = get(idx);
-    removeIdxs(Collections.singleton(idx));
+    removeIdxsFunction.accept(Collections.singleton(idx));
     return elem;
+  }
+
+  public void _internal_remove(Set<Integer> idxs) {
+    idxs
+        .stream()
+        .sorted(Comparator.reverseOrder())
+        .forEach(idx -> ids.remove((int)idx));
   }
 
   /**
@@ -134,31 +138,13 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   // TODO: needed?
   public boolean isPresent(int idx) {
     assertInclusiveIdxInBounds(idx);
-    ensureIdLoaded(idx);
     return loadSingleObject(getID(idx)).isPresent();
   }
 
-  protected void ensureIdLoaded(int idx) {
-    if(!idStorage.containsIdx(idx)){
-      loadID(idx);
-    }
-  }
-
   public void setIDs(Map<Integer, Long> changes) {
-    idStorage.set(changes);
-  }
-
-  public void addIDs(int idx, List<Long> additions) {
-    ensureSizeLoaded();
-    idStorage.addAll(idx, additions);
-    size += additions.size();
-  }
-
-  public void removeIdxs(Set<Integer> idxs) {
-    ensureSizeLoaded();
-    idStorage.remove(idxs);
-    size -= idxs.size();
-    assert size >= 0;
+    for (Map.Entry<Integer, Long> e : changes.entrySet()) {
+      ids.set(e.getKey(), e.getValue());
+    }
   }
 
   protected boolean isLoaded(int idx) {
@@ -177,33 +163,6 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     }
 
     return res.get(0);
-  }
-
-  protected boolean isLoadedID(int idx) {
-    return idStorage.containsIdx(idx);
-  }
-
-  protected void loadID(int idx) {
-    loadIDs(idx, idx + 1);
-  }
-
-  protected void loadIDs(int startIdx, int endIdx) {
-    assertExclusiveIdxInBounds(startIdx);
-    assertExclusiveIdxInBounds(endIdx);
-    List<Long> ids = loadIDsFunction.apply(startIdx, endIdx);
-    if(ids == null){
-      Log.error(FAILED_TO_LOAD_IDS_ERROR);
-      return;
-    }
-
-    if (ids.size() != endIdx - startIdx) {
-      Log.error(UNEXPECTED_LIST_LENGTH_ERROR);
-    }
-    Map<Integer, Long> idx2IDMap = new HashMap<>();
-    for (int idx = 0; idx < endIdx - startIdx; idx++) {
-      idx2IDMap.put(idx + startIdx, ids.get(idx));
-    }
-    idStorage.set(idx2IDMap);
   }
 
   protected void assertInclusiveIdxInBounds(int idx) {
@@ -225,42 +184,11 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   // Wird intern genutzt, um ids nachzuladen.
   // Muss public sein, damit im server die entsprechenden ids an den client zu schicken(auf Anfrage)
   public List<Long> getIDs(int startIdx, int endIdx) {
-    assertExclusiveIdxInBounds(startIdx);
-    assertExclusiveIdxInBounds(endIdx);
-    boolean allLoaded = true;
-    for (int idx = startIdx; idx < endIdx; idx++) {
-      if (!isLoadedID(idx)) {
-        allLoaded = false;
-      }
-    }
-    if (!allLoaded) {
-      loadIDs(startIdx, endIdx);
-    }
-    List<Long> ids = new LinkedList<>();
-    for (int idx = startIdx; idx < endIdx; idx++) {
-      // TODO: bulk operation
-      Optional<Long> idOpt = idStorage.getId(idx);
-      if(idOpt.isPresent()) {
-        ids.add(idOpt.get());
-      }else{
-        // TODO: Better error handling
-        throw new IllegalStateException("Can not find id for index " + idx);
-      }
-    }
-    return ids;
+    return ids.subList(startIdx, endIdx);
   }
 
-  /**
-   * to be called (by the manager) if the list has been changed
-   * on the side of the server
-   */
-  public void resetStructureCache() {
-    size = UNKNOWN_SIZE;
-    idStorage.clear();
-  }
-
-  public void resetCache() {
-    resetStructureCache();
+  public List<Long> getIDs(){
+    return Collections.unmodifiableList(ids);
   }
 
   /**
@@ -275,10 +203,6 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     return gemID;
   }
 
-  public int sizeLocallyKnownIds(){
-    return idStorage.size();
-  }
-
   // Pseudo-build that does nothing
   public Optional<GemList<E>> build(){
     return Optional.of(this);
@@ -287,11 +211,9 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   /**
    * Removes the given gemId from the idStorage.
    * Can only be called if the idStorage contains the gemId, otherwise the size will become invalid.
-   * The gemId is not required to be loaded in the idStorage, thus the result pf idStorage.removeId must not be returned
+   * The gemId is not required to be loaded in the idStorage, thus the result of idStorage.removeId must not be returned
    */
   public void removeIdSure(long gemId) {
-    size--;
-    assert size >= 0;
-    idStorage.removeId(gemId);
+    ids.removeIf(l -> Objects.equals(l, gemId));
   }
 }

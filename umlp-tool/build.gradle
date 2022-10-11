@@ -29,7 +29,6 @@ dependencies {
     grammar("de.monticore:monticore-grammar:$mc_version") {
         capabilities { requireCapability("de.monticore:monticore-grammar-grammars") }
     }
-
 }
 
 test {
@@ -65,6 +64,11 @@ sourceSets {
         }
     }
 }
+
+java {
+    registerFeature('grammars') { usingSourceSet(sourceSets.grammars) }
+}
+
 description = 'UML/P Language and Tool'
 buildDir = file("$projectDir/target")
 

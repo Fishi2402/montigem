@@ -85,6 +85,17 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
+    protected boolean _isLoadedPerson(long gemId) {
+        // For some(maybe all) modifying operations, the server needs to load all modified objects, since it is the
+        // source of truth.
+        // E.g. when adding to an bidirectional association, a client can ignore adding on one side if the corresponding
+        // object is not loaded. Later on it can lazy load this object with the correct ids in the association from the
+        // server.
+        // TODO: implement
+        throw new RuntimeException("Not implemented");
+    }
+
+    @Override
     protected Optional<Person> _doPersonOpt(long gemId) {
         return Optional.ofNullable(DatabaseAccessManager.get(Person.class, gemId));
     }
@@ -117,6 +128,17 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected AddressBuilder _doAddressBuilder() {
         return new AddressBuilder(getFreeGemId());
+    }
+
+    @Override
+    protected boolean _isLoadedAddress(long gemId) {
+        // For some(maybe all) modifying operations, the server needs to load all modified objects, since it is the
+        // source of truth.
+        // E.g. when adding to an bidirectional association, a client can ignore adding on one side if the corresponding
+        // object is not loaded. Later on it can lazy load this object with the correct ids in the association from the
+        // server.
+        // TODO: implement
+        throw new RuntimeException("Not implemented");
     }
 
     @Override
@@ -183,12 +205,37 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected GemList<Car> _doCreateOwns(long gemListId, List<Long> initialCarGemIds) {
+    protected GemList<Car> _doCreateOwns(long personGemId, long gemListId, int size, List<Long> initialCarGemIds) {
+        return null;
+    }
+
+  @Override
+  protected GemList<Person> _createChildren(long personGemId, long gemListId, int size, List<Long> initialIds) {
+    return null;
+  }
+
+  @Override
+    protected GemList<Car> _doCreateOwnsBuilder(long gemListId) {
         return null;
     }
 
     @Override
-    protected GemList<Car> _doCreateOwnsBuilder(long gemListId) {
+    public GemList<Address> _createVisited(long personGemId, long gemId, int size, List<Long> initialIds) {
+        return null;
+    }
+
+    @Override
+    protected GemList<Person> _createVisitors(long addressGemId, long gemListId, List<Long> initialIds) {
+        return null;
+    }
+
+    @Override
+    protected GemList<Address> _createVisitedBuilder(long personGemId, long gemId, List<Long> initialIds) {
+        return null;
+    }
+
+    @Override
+    protected GemList<Person> _createVisitorsBuilder(long addressGemId, long gemListId, List<Long> initialIds) {
         return null;
     }
 

@@ -6,7 +6,3 @@ ${cd4c.method("public void addObserver(${name}Observer o)")}
   super.addObserver(o);
 </#if>
   ${name?uncap_first}Observers.add(o);
-
-
-
-

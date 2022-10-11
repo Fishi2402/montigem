@@ -59,9 +59,9 @@ public class CommandResultTypeAdapter implements JsonDeserializer<CommandResult<
       } catch (ClassNotFoundException e) {
         throw new JsonParseException(e);
       }
-        return simpleSerializer.fromJson(json, TypeToken.getParameterized(SimpleResult.class, type).getType());
+        return CommandObjectMapper.getDomainGson().fromJson(json, TypeToken.getParameterized(SimpleResult.class, type).getType());
     } else {
-      return simpleSerializer.fromJson(json, StatusResult.class);
+      return CommandObjectMapper.getDomainGson().fromJson(json, StatusResult.class);
     }
   }
 }

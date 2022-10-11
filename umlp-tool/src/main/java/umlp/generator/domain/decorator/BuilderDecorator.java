@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package umlp.generator.domain.decorator;
+package umlp.generator.decorator;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
@@ -12,13 +12,13 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import umlp.UMLPMill;
-import umlp.generator.AbstractDecorator;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.domain.decorator.GenService.createInitialValue;
+import static umlp.generator.decorator.GenService.createInitialValue;
+import static umlp.generator.decorator.GenService.createType;
 
 public class BuilderDecorator extends AbstractDecorator {
 
@@ -79,8 +79,8 @@ public class BuilderDecorator extends AbstractDecorator {
       type.setEnclosingScope(BasicSymbolsMill.globalScope());
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
               type,  name + "Present");
-      attribute.getModifier().setDerived(true);
-      attribute.setInitial(GenService.createInitialValue(type));
+      attribute.getModifier().setReadonly(true);
+      attribute.setInitial(createInitialValue(type));
       attributesList.add(attribute);
     }
     return attributesList;
@@ -91,7 +91,7 @@ public class BuilderDecorator extends AbstractDecorator {
                                           List<ASTCDAssocSide> assocList) {
     for (ASTCDAttribute attribute : attrList) {
       getCD4C().addMethod(builderClass, "umlp.builder.Attr",
-              attribute.getName(), getCDPrinter().prettyprint(GenService.createType(attribute)), domainClass.getName() + BUILDER_SUFFIX);
+              attribute.getName(), getCDPrinter().prettyprint(createType(attribute)), domainClass.getName() + BUILDER_SUFFIX);
       getCD4C().addMethod(builderClass, "umlp.builder.Check",
               attribute.getName(), domainClass.getName());
     }

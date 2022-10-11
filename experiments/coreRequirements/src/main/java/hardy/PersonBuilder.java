@@ -3,7 +3,10 @@ package hardy;
 //+ GEN-P        : generated for the product
 
 import umlp.rte.Gem;
+import umlp.rte.NotificationScope;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,6 +33,14 @@ public class PersonBuilder extends Person {
     protected boolean nicknamePresent = false;
     protected boolean ownsPresent = false;
     protected boolean mainResidencePresent = false;
+    protected boolean visitedPresent = false;
+    protected boolean childrenPresent = false;
+
+    // Bei der Deserialiserung kann davon ausgegangen werden, dass alle Objekte gebaut sind, und das
+    // FlensburgManager#addX nicht vom Builder aufgerufen werden muss. Entweder das Objekt wird von Client geladen,
+    // dann ist es bereits beim Server registiert, oder es wird am Ende der Erstellung and den Server gesendet, und
+    // der X_create Command ruft danach FlensburgManager#addX auf.
+    protected boolean INTERNAL_deser_mode = false;
 
     // the Builder:
     //+ gemId wird bereits beim initialisieren des Builders besetzt
@@ -38,6 +49,7 @@ public class PersonBuilder extends Person {
         this.gemId = gemId;
         // während des bauens ist das eine unsychronisierte GemList!
         this.owns = FlensburgManager.createOwnsBuilder(FlensburgManager.getFreeGemListId());
+        this.visited = FlensburgManager.createVisitedBuilder(gemId, FlensburgManager.getFreeGemListId(), Collections.emptyList());
     }
 
     // Standard set-Function:
@@ -113,16 +125,19 @@ public class PersonBuilder extends Person {
             // todo: discuss: sollte es nicht einen else Fall geben,
             //  der präzisere Fehler wirft (siehe Log)?
             if (isBuildable()) {
+              if(!INTERNAL_deser_mode) {
                 for (Car own : owns) {
-                    if(!own.isBuildFinished()) {
-                        own.build();
-                    }
+                  if (!own.isBuildFinished()) {
+                    own.build();
+                  }
                 }
                 owns.build();
+                visited.build();
                 FlensburgManager.addPerson(this);
-                personObservers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
-                buildFinished = true;
-                return Optional.of(this);
+              }
+              personObservers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
+              buildFinished = true;
+              return Optional.of(this);
             }
         }
         return Optional.empty();
@@ -132,8 +147,9 @@ public class PersonBuilder extends Person {
         // & anstelle von && damit immer alle Fehlermeldungen reported werden
         // TODO AGe zu viele checks? Wie wird definiert, was unbedingt gesetzt werden muss
         //  (Optional, List)?
+        // TODO Warum wird hier Nickname zwei mal geprüft?
         return checkAgePresent()
-                & checkNicknamePresent()
+//                & checkNicknamePresent()
                 & checkMainResidencePresent()
                 & checkAge()
                 & checkNickname()
@@ -162,6 +178,42 @@ public class PersonBuilder extends Person {
         return mainResidencePresent;
     }
 
+    public Person addVisited(List<Address> addresses) {
+        this.visited.addAll(addresses);
+        // TODO: Continue here: addVisitor needs to be synced?
+        addresses.forEach(addr -> addr.addVisitor(this, NotificationScope.MINIMAL));
+        visitedPresent = true;
+        return this;
+    }
+
+    public void setINTERNAL_deser_mode(boolean value){
+      this.INTERNAL_deser_mode = value;
+    }
+
+    public PersonBuilder mainResidenceGem(Gem<Address> mainResidence) {
+        this.mainResidencePresent = mainResidence != null;
+        this.mainResidence = mainResidence;
+        return this;
+    }
+
+    public PersonBuilder ownsGemListIds(List<Long> ids) {
+        this.ownsPresent = true;
+        this.owns._internal_add(this.owns.size(), ids);
+        return this;
+    }
+
+    public PersonBuilder visitedGemListIds(List<Long> ids) {
+        this.visitedPresent = true;
+        this.visited._internal_add(this.visited.size(), ids);
+        return this;
+    }
+  
+    public PersonBuilder childrenGemListIds(List<Long> ids) {
+        this.childrenPresent = true;
+        this.children._internal_add(this.children.size(), ids);
+        return this;
+    }
+    
     /*- Das regeln wir anders:, denn dieser Sonderfall erlaubt ja nur eine
     2Objekte-Parallel instantiieren Konstruktion:
       public Person build(boolean addToBidirectionalAssociation) {

@@ -25,17 +25,17 @@ public class CommandManager {
   protected CommandManager(){ }
   // Speichert alle verbundenen Clients und deren Ids, wird genutzt um die Commands die relevante objekte bearbeiten
   // weiter zu verteilen.
-  protected Map<Long, CommandSubscription> subscribers = new HashMap<>();
+  protected Map<Long, Participant> particpants = new HashMap<>();
   protected long runningClientId = 1;
 
   protected static CommandManager instance;
 
-  public static long subscribe(CommandSubscription subscription){
-    return getInstance()._subscribe(subscription);
+  public static long register(Participant participant){
+    return getInstance()._register(participant);
   }
 
-  public static void unsubscribe(long subscriberId) {
-    getInstance()._unsubscribe(subscriberId);
+  public static void deregister(long participantId) {
+    getInstance()._deregister(participantId);
   }
 
   public static long getParticipantId() {
@@ -46,14 +46,14 @@ public class CommandManager {
     return participantId;
   }
 
-  public long _subscribe(CommandSubscription subscription) {
-    long subscriberId = runningClientId++;
-    subscribers.put(subscriberId, subscription);
-    return subscriberId;
+  public long _register(Participant participant) {
+    long participantId = runningClientId++;
+    particpants.put(participantId, participant);
+    return participantId;
   }
 
-  protected void _unsubscribe(long subscriberId) {
-    subscribers.remove(subscriberId);
+  protected void _deregister(long participantId) {
+    particpants.remove(participantId);
   }
 
 
@@ -80,8 +80,8 @@ public class CommandManager {
   protected  <T> CommandResult<T> _executeCommand(Command<T> command) {
     CommandResult<T> res = command.doRun();
     // update subscribed gemIds
-    if(subscribers.containsKey(command.getParticipantId())){
-      subscribers.get(command.getParticipantId()).subscribe(command.getNewlySubscribedGemIds());
+    if(particpants.containsKey(command.getParticipantId())){
+      particpants.get(command.getParticipantId()).subscribe(command.getNewlySubscribedGemIds());
     } else {
       // TODO: MH: kann das passieren?
     }
@@ -97,7 +97,7 @@ public class CommandManager {
   }
 
   protected <T> void _sendCommandToSubscribers(Command<T> command) {
-    for (Map.Entry<Long, CommandSubscription> e : subscribers.entrySet()) {
+    for (Map.Entry<Long, Participant> e : particpants.entrySet()) {
       if (!e.getKey().equals(command.getParticipantId())) {
         if(command.getEffectedGemIds().stream().anyMatch(gemId -> e.getValue().isSubscribedTo(gemId))) {
           Log.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + e.getKey(), LogUtil.getLoggerName());

@@ -6,7 +6,3 @@ if (instance == null) {
   init();
 }
 return instance;
-
-
-
-

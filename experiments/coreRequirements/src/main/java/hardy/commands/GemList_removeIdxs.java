@@ -34,7 +34,7 @@ public class GemList_removeIdxs extends Command<Void> {
     }
     GemList<?> gemList = gemListOpt.get();
 
-    gemList.removeIdxs(indices);
+    gemList._internal_remove(indices);
     // TODO: error handling!
 
     return StatusResult.ok(getId());

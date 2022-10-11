@@ -21,26 +21,34 @@ stages:
 build:
   stage: build
   script:
-    - "gradle --version"
-    - "gradle build --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle build --refresh-dependencies $GRADLE_OPTS $ARGS1"
+  cache:
+    key:
+      files:  # Cache depends on state of "package-lock"
+        - experiments/coreRequirements/stanley/package-lock.json
+    paths:
+      - experiments/coreRequirements/stanley/node_modules
+      - experiments/coreRequirements/stanley/.gradle/nodejs
   artifacts:
+    paths:
+      - experiments/coreRequirements/stanley/dist/**
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
 
-deployDockerImage:
+deployBackendDocker:
   stage: deploy
   dependencies:
     - build
   script:
-    - "gradle :experiments:coreRequirements:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \ 
+    - "gradle :experiments:coreRequirements:jib $GRADLE_OPTS $ARGS3 \ 
       -Djib.to.image=$CI_REGISTRY_IMAGE/corerequirements:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
   only:
     - dev
 
-deployUmlpTool:
+deployRTE:
   stage: deploy
   dependencies:
     - build
@@ -48,6 +56,23 @@ deployUmlpTool:
     - "gradle :umlp-tool:publish :umlp-rte:publish -P mavenPassword=$pass -P mavenUser=$user"
   only:
     - dev
+
+### TODO: Do this via Gradle. e.g. similar to backend with JIB
+deployFrontendDocker:
+  stage: deploy
+  tags:
+    - shell
+    - docker
+  dependencies:
+    - build
+  script:
+    - "cd experiments/coreRequirements/stanley"
+    - "docker build . -t $CI_REGISTRY_IMAGE/corerequirements_frontend:latest"
+    - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+    - "docker push $CI_REGISTRY_IMAGE/corerequirements_frontend:latest"
+  only:
+    - dev
+
 
 checkMDLinks:
   stage: check

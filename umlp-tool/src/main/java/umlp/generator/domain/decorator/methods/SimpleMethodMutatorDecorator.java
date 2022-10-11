@@ -3,6 +3,7 @@ package umlp.generator.domain.decorator.methods;
 import com.google.common.collect.Lists;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.codegen.methods.mutator.MandatoryMutatorDecorator;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -17,18 +18,22 @@ import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
 public class SimpleMethodMutatorDecorator extends MandatoryMutatorDecorator {
 
-  protected final ASTCDType domainAst;
+  protected final ASTCDType ast;
 
-  public SimpleMethodMutatorDecorator(GlobalExtensionManagement glex, ASTCDType domainAst) {
+  protected final CD4C cd4c = CD4C.getInstance();
+
+  public SimpleMethodMutatorDecorator(GlobalExtensionManagement glex, ASTCDType ast) {
     super(glex);
-    this.domainAst = domainAst;
+    this.ast = ast;
   }
 
   @Override
   public List<ASTCDMethod> decorate(ASTCDAttribute ast) {
     List<ASTCDMethod> methodList = Lists.newArrayList();
-    methodList.add(createSetter(ast));
-    methodList.add(createNotificationSetter(ast, false));
+    if (!ast.getModifier().isDerived() && !ast.getModifier().isReadonly()) {
+      methodList.add(createSetter(ast));
+      methodList.add(createNotificationSetter(ast, false));
+    }
     return methodList;
   }
 
@@ -44,7 +49,7 @@ public class SimpleMethodMutatorDecorator extends MandatoryMutatorDecorator {
     ASTCDMethod method = super.createSetter(ast);
     method.addCDParameter(getCDParameterFacade().createParameter("NotificationScope", "scope"));
     glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.methods.NotificationSetter",
-            domainAst.getName(), ast.getName(), new CdUtilsPrinter().printType(ast.getMCType()), isGem));
+            this.ast.getName(), ast.getName(), new CdUtilsPrinter().printType(ast.getMCType()), isGem));
     return method;
   }
 

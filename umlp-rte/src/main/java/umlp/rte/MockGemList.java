@@ -7,6 +7,9 @@ package umlp.rte;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 // Eine Implementierung der GemList, welche alle IDs lokal hält.
@@ -15,29 +18,26 @@ import java.util.function.Function;
 public class MockGemList<E extends GemIdentifiable> extends GemList<E> {
   protected Function<Long, LoadResult<E>> loadSingleObjectFunction;
 
-  public MockGemList(long gemID, Function<Long, LoadResult<E>> loadSingleObjectFunction, List<Long> initialIds) {
-    super(gemID, null, null, null);
+  public MockGemList(long gemID, List<Long> ids,
+      Function<Long, LoadResult<E>> loadSingleObjectFunction
+  ) {
+    super(gemID, ids, null);
     this.loadSingleObjectFunction = loadSingleObjectFunction;
-    idStorage.addAll(0, initialIds);
-
-    loadSizeFunction = idStorage::size;
-    loadIDsFunction = this::doLoadIds;
     loadObjectsFunction = this::doLoadObjects;
   }
 
-  protected List<Long> doLoadIds(int startIncl, int endExcl) {
-    List<Long> res = new ArrayList<>();
+  public MockGemList(
+      long gemID,
+      List<Long> ids,
+      Function<Long, LoadResult<E>> loadSingleObjectFunction,
+      BiConsumer<Integer, Long> setIdxFunction,
+      BiConsumer<Integer, List<Long>> addIDsFunction,
+      Consumer<Set<Integer>> removeIdxsFunction
+      ) {
+    super(gemID, ids, null, setIdxFunction, addIDsFunction, removeIdxsFunction);
+    this.loadSingleObjectFunction = loadSingleObjectFunction;
 
-    for(int i = startIncl; i < endExcl; i++){
-      Optional<Long> idOpt = idStorage.getId(i);
-      if(idOpt.isPresent()) {
-        res.add(idOpt.get());
-      }else{
-        throw new IllegalStateException("Can not load unknown ids in MockGemList!");
-      }
-    }
-
-    return res;
+    loadObjectsFunction = this::doLoadObjects;
   }
 
   protected List<LoadResult<E>> doLoadObjects(List<Long> idList) {

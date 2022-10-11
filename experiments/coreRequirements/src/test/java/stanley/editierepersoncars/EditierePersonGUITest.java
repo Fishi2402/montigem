@@ -7,7 +7,7 @@ import hardy.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import stanley.AbstractGUITest;
-import stanley.FlensburgManagerClientImplBuilder;
+import infrastructure.command.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
 import stanley.editiereperson.EditierePerson;
 

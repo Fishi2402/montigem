@@ -66,7 +66,7 @@ return NotificationScope.ALL;
 
 
 
-if(getScope().contains(scope)) {
+if(scope.contains(getScope())) {
     notifyBuild(car);
 }
 }

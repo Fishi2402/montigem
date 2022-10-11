@@ -2,9 +2,6 @@
 
 plugins {
     id 'java'
-    // id 'monticore' version "$mc_version"
-    // id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
-
     id 'de.rwth.se.umlp-tool' // See "umlp-tool/src/main/java/gradle"
 }
 
@@ -56,21 +53,6 @@ subprojects {
 
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
-    }
-    // configure non-standard source sets
-    sourceSets {
-        main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
-
-        grammars {
-            resources {
-                srcDirs([grammarDir])
-                include "**/*.mc4"
-            }
-        }
-    }
-
-    java {
-        registerFeature('grammars') { usingSourceSet(sourceSets.grammars) }
     }
 
     compileJava {

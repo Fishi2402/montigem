@@ -20,4 +20,3 @@ ${topDecorator.decoratePackage(decoratedAST)}
 
 <#-- Generate Java-Code -->
 ${cdGenerator.generate(decoratedAST)}
-

@@ -1,4 +1,4 @@
-package stanley;
+package infrastructure.command;
 
 // GEN4T: For testing
 // GEN-P: Only if this class is also automatically converted to typescript
@@ -6,9 +6,13 @@ package stanley;
 import de.se_rwth.commons.logging.Log;
 import hardy.*;
 import hardy.commands.*;
-import umlp.command.*;
 import hardy.requests.GetFreeGemIdRequest;
 import hardy.requests.GetFreeGemListIdRequest;
+import stanley.AddressCommandObserver;
+import stanley.CarCommandObserver;
+import stanley.HumanCommandObserver;
+import stanley.PersonCommandObserver;
+import umlp.command.*;
 import umlp.rte.GemList;
 import umlp.rte.GemListBuilder;
 import umlp.rte.LoadResult;
@@ -16,6 +20,7 @@ import umlp.rte.NotificationScope;
 import umlp.util.LogUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 // Frontend implementation of the FlensburgManager
 // Uses commands and requests to synchronize data with the backend
@@ -112,12 +117,12 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected GemList<Human> _doGetHumanList() {
     if(humanGemList == null){
-      // TODO: error handling
+      // TODO: replace with access via filter!
       Long id = CommandManager.executeCommand(new Human_get_gemListId()).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new GemList_getIds(id, 0, -1)).asSimpleResult().get();
       humanGemList = new GemList<>(
           id,
-          this::loadHumanSize,
-          this::loadHumanGemIds,
+          gemIds,
           this::loadHumansByGemIds
       );
     }
@@ -171,6 +176,11 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
+  protected boolean _isLoadedPerson(long gemId) {
+    return knownPersons.containsKey(gemId);
+  }
+
+  @Override
   protected Optional<Person> _doPersonOpt(long gemId) {
     Person h = knownPersons.get(gemId);
     if (h != null) {
@@ -215,12 +225,12 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected GemList<Person> _doGetPersonList() {
     if(personGemList == null){
-      // TODO: error handling
+      // TODO: replace with access via filter!
       Long id = CommandManager.executeCommand(new Person_get_gemListId()).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new GemList_getIds(id, 0, -1)).asSimpleResult().get();
       personGemList = new GemList<>(
           id,
-          this::loadPersonSize,
-          this::loadPersonGemIds,
+          gemIds,
           this::loadPersonsByGemIds
       );
     }
@@ -270,6 +280,11 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
+  protected boolean _isLoadedAddress(long gemId) {
+    return knownAddresses.containsKey(gemId);
+  }
+
+  @Override
   protected Optional<Address> _doAddressOpt(long gemId) {
     Address h = knownAddresses.get(gemId);
     if (h != null) {
@@ -314,12 +329,12 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected GemList<Address> _doGetAddressList() {
     if(addressGemList == null){
-      // TODO: error handling
+      // TODO: replace with access via filter!
       Long id = CommandManager.executeCommand(new Address_get_gemListId()).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new GemList_getIds(id, 0, -1)).asSimpleResult().get();
       addressGemList = new GemList<>(
           id,
-          this::loadAddressSize,
-          this::loadAddressGemIds,
+          gemIds,
           this::loadAddresssByGemIds
       );
     }
@@ -415,10 +430,10 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     if(carGemList == null){
       // TODO: error handling
       Long id = CommandManager.executeCommand(new Car_get_gemListId()).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new GemList_getIds(id, 0, -1)).asSimpleResult().get();
       carGemList = new GemList<>(
           id,
-          this::loadCarSize,
-          this::loadCarGemIds,
+          gemIds,
           this::loadCarsByGemIds
       );
     }
@@ -462,12 +477,63 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Car> _doCreateOwns(long gemListId, List<Long> initialCarGemIds) {
+  protected GemList<Car> _doCreateOwns(long personGemId, long gemListId, int size, List<Long> initialCarGemIds) {
     // TODO: this is not very easy to read
     return new GemList<>(
         gemListId,
-        () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
-        (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
+        initialCarGemIds,
+        ids -> {
+          List<LoadResult<Car>> res = new ArrayList<>();
+          for (Long id : ids) {
+            SimpleResult<Car> tmp = CommandManager.executeCommand(new Car_get(id)).asSimpleResult();
+            if(tmp.isSuccessful()) {
+              res.add(new LoadResult<>(tmp.get()));
+            }else{
+              res.add(new LoadResult<>(tmp.getLoadingState()));
+            }
+          }
+          return res;
+        },
+        (idx, id) -> _doGetPersonSure(personGemId).setOwns(idx, getCarSure(id)),
+        (idx, gemIDs) -> _doGetPersonSure(personGemId).addAllOwnss(idx,
+            gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())),
+        (gemIDs) -> _doGetPersonSure(personGemId).removeAllOwnss(
+            gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())
+        )
+    );
+  }
+
+  @Override
+  protected GemList<Person> _createChildren(long personGemId, long gemListId, int size, List<Long> initialIds) {
+    return new GemList<>(
+        gemListId,
+        initialIds,
+        ids -> {
+          List<LoadResult<Person>> res = new ArrayList<>();
+          for (Long id : ids) {
+            SimpleResult<Person> tmp = CommandManager.executeCommand(new Person_get(id)).asSimpleResult();
+            if(tmp.isSuccessful()) {
+              res.add(new LoadResult<>(tmp.get()));
+            }else{
+              res.add(new LoadResult<>(tmp.getLoadingState()));
+            }
+          }
+          return res;
+        },
+        (idx, id) -> _doGetPersonSure(personGemId).setChildren(idx, getPersonSure(id)),
+        (idx, gemIDs) -> _doGetPersonSure(personGemId).addAllChildrens(idx,
+            gemIDs.stream().map(carID -> getPersonSure(carID)).collect(Collectors.toSet())),
+        (gemIDs) -> _doGetPersonSure(personGemId).removeAllChildrens(
+            gemIDs.stream().map(carID -> getPersonSure(carID)).collect(Collectors.toSet())
+        )
+    );
+  }
+
+  @Override
+  protected GemList<Car> _doCreateOwnsBuilder(long gemListId) {
+    // TODO: duplicated code!
+    return new GemListBuilder<>(
+        gemListId,
         ids -> {
           List<LoadResult<Car>> res = new ArrayList<>();
           for (Long id : ids) {
@@ -484,16 +550,17 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Car> _doCreateOwnsBuilder(long gemListId) {
-    // TODO: duplicated code!
-    return new GemListBuilder<>(
+  protected GemList<Address> _createVisited(long personGemId, long gemListId, int size, List<Long> initialCarGemIds) {
+    // TODO AHe, FDr: use Person for list interface of owns
+    // when the methods have been added to PersonTOP
+    // TODO: this is not very easy to read
+    return new GemList<>(
         gemListId,
-        () -> CommandManager.executeCommand(new GemList_size(gemListId)).asSimpleResult().get(),
-        (start, end) -> CommandManager.executeCommand(new GemList_getIds(gemListId, start, end)).asSimpleResult().get(),
+        initialCarGemIds,
         ids -> {
-          List<LoadResult<Car>> res = new ArrayList<>();
+          List<LoadResult<Address>> res = new ArrayList<>();
           for (Long id : ids) {
-            SimpleResult<Car> tmp = CommandManager.executeCommand(new Car_get(id)).asSimpleResult();
+            SimpleResult<Address> tmp = CommandManager.executeCommand(new Address_get(id)).asSimpleResult();
             if(tmp.isSuccessful()) {
               res.add(new LoadResult<>(tmp.get()));
             }else{
@@ -502,6 +569,68 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
           }
           return res;
         }
+    );
+  }
+
+  @Override
+  protected GemList<Person> _createVisitors(long addressGemId, long gemListId, List<Long> initialIds) {
+    // TODO AHe, FDr: use Person for list interface of owns
+    // TODO: this is not very easy to read
+    return new GemList<>(
+        gemListId,
+        initialIds,
+        ids -> {
+          List<LoadResult<Person>> res = new ArrayList<>();
+          for (Long id : ids) {
+            SimpleResult<Person> tmp = CommandManager.executeCommand(new Person_get(id)).asSimpleResult();
+            if(tmp.isSuccessful()) {
+              res.add(new LoadResult<>(tmp.get()));
+            }else{
+              res.add(new LoadResult<>(tmp.getLoadingState()));
+            }
+          }
+          return res;
+        }
+    );
+  }
+
+  @Override
+  protected GemList<Address> _createVisitedBuilder(long personGemId, long gemListId, List<Long> initialIds) {
+    return new GemListBuilder<>(
+        gemListId,
+        ids -> {
+          List<LoadResult<Address>> res = new ArrayList<>();
+          for (Long id : ids) {
+            SimpleResult<Address> tmp = CommandManager.executeCommand(new Address_get(id)).asSimpleResult();
+            if(tmp.isSuccessful()) {
+              res.add(new LoadResult<>(tmp.get()));
+            }else{
+              res.add(new LoadResult<>(tmp.getLoadingState()));
+            }
+          }
+          return res;
+        },
+        initialIds
+    );
+  }
+
+  @Override
+  protected GemList<Person> _createVisitorsBuilder(long addressGemId, long gemListId, List<Long> initialIds) {
+    return new GemListBuilder<>(
+        gemListId,
+        ids -> {
+          List<LoadResult<Person>> res = new ArrayList<>();
+          for (Long id : ids) {
+            SimpleResult<Person> tmp = CommandManager.executeCommand(new Person_get(id)).asSimpleResult();
+            if(tmp.isSuccessful()) {
+              res.add(new LoadResult<>(tmp.get()));
+            }else{
+              res.add(new LoadResult<>(tmp.getLoadingState()));
+            }
+          }
+          return res;
+        },
+        initialIds
     );
   }
 

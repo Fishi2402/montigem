@@ -30,7 +30,7 @@ umlp Flensburg {
     association owns [1] Person -> Car [*];
     association mainResidence [1] Person -> Address [1];
 
-    // todo (etwas spaeter: Assoziation *<-->* mit einbauen 
+    association visits [*] Person (visitor) <-> (visited) Address [*];
     // man beachte hier die intern gekapselte bidirektionale Verwaltung
     association parent [1] Person -> (children) Person [*];
 

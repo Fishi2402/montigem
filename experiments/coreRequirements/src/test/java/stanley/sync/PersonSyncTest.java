@@ -2,11 +2,12 @@ package stanley.sync;
 
 import de.se_rwth.commons.logging.Log;
 import hardy.*;
+import infrastructure.command.CommandDirectCommunication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import stanley.FlensburgManagerClientImplBuilder;
+import infrastructure.command.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
-import hardy.commands.TestClientCommandManager;
+import infrastructure.command.TestClientCommandManager;
 import umlp.command.Command;
 import umlp.command.CommandResult;
 import hardy.requests.GetFreeGemIdRequest;
@@ -15,6 +16,8 @@ import umlp.rte.GemList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -212,11 +215,8 @@ public class PersonSyncTest {
     assertNotNull(p1001Client);
     assertNotSame(p1001, p1001Client);
 
-    Log.info("Assert that GemList owns was transferred empty", "PersonSyncTest");
-    GemList<Car> owns = p1001Client.getOwnsGemList();
-    assertEquals(0, owns.sizeLocallyKnownIds());
-
     Log.info("Assert that GemList will correctly load elements on demand", "PersonSyncTest");
+    GemList<Car> owns = p1001Client.getOwnsGemList();
     assertEquals(1, owns.size());
 
     Car cClient = owns.get(0);
@@ -230,9 +230,10 @@ public class PersonSyncTest {
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
     long startGemId = 1001L;
     FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    CommandDirectCommunication commandCommunication = new CommandDirectCommunication(serverContext);
     FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder()
         .backendContext(serverContext)
-        .commandManager(new TestClientCommandManager(serverContext){
+        .commandManager(new TestClientCommandManager(commandCommunication){
           @Override
           protected <T> CommandResult<T> _executeCommand(Command<T> command) {
             if(!(command instanceof GetFreeGemIdRequest || command instanceof GetFreeGemListIdRequest)){
@@ -243,12 +244,42 @@ public class PersonSyncTest {
         })
         .build()
         .get();
+    commandCommunication.setClientContext(clientContext);
 
     Log.info("Using PersonBuilder with CarBuilder @ client", "PersonSyncTest");
     clientContext.activate();
     PersonBuilder pb1001 = FlensburgManager.personBuilder();
     CarBuilder c = FlensburgManager.carBuilder();
     pb1001.ownsAdd(c);
+  }
+
+  @Test
+  public void testBuilderOwnsIsSyncedToServer(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Create a Person @ client", "PersonSyncTest");
+    clientContext.activate();
+
+    Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    PersonBuilder pb1001 = FlensburgManager.personBuilder();
+    pb1001.mainResidence(addr).age(20).nickname("Smith");
+
+    FlensburgMock.secretlyAdaptnextGemIds(200);
+    Log.info("Add Car from Client", "PersonSyncTest");
+    clientContext.activate();
+    Car c = FlensburgManager.carBuilder().owns(pb1001).build().get();
+
+    Person p1001 = pb1001.build().get();
+
+    Log.info("Check owns is not empty in Server", "PersonSyncTest");
+    serverContext.activate();
+    Person p1001Server = FlensburgManager.getPersonSure(startGemId);
+    assertNotSame(p1001, p1001Server);
+    assertEquals(1, p1001Server.sizeOwnss());
   }
 
   @Test
@@ -305,5 +336,91 @@ public class PersonSyncTest {
 
     clientContext.activate();
     assertEquals(0, p1001Client.sizeOwnss());
+  }
+
+  @Test
+  public void testVisitedIsSyncedToServerInBuilder(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(200);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
+    clientContext.activate();
+
+    Address a1 = FlensburgManager.addressBuilder().city("Aachen").build().get();
+    Address a2 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+
+    Log.info("Building Person", "PersonSyncTest");
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    Person p1001Client = FlensburgManager.personBuilder()
+        .age(20)
+        .nickname("Test")
+        .mainResidence(a1)
+        .addVisited(List.of(a1, a2))
+        .build().get();
+
+    Log.info("Checking it is available in the Server", "PersonSyncTest");
+    serverContext.activate();
+    Person p1001Server = FlensburgManager.getPersonSure(1001);
+    assertNotSame(p1001Server, p1001Client);
+    assertEquals(2, p1001Server.sizeVisited());
+
+    Address visited1 = p1001Server.getVisited(0);
+    Address visited2 = p1001Server.getVisited(1);
+    assertEquals(200, visited1.getGemId());
+    assertEquals(201, visited2.getGemId());
+
+    assertEquals(1, visited1.sizeVisitors());
+    assertEquals(1, visited2.sizeVisitors());
+  }
+
+  @Test
+  public void testVisitedIsSyncedToServerAfterBuilding(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(200);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
+    clientContext.activate();
+
+    Address a1 = FlensburgManager.addressBuilder().city("Aachen").build().get();
+    Address a2 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    Person p1001Client = FlensburgManager.personBuilder()
+        .age(20)
+        .nickname("Test")
+        .mainResidence(a1)
+        .build().get();
+
+    Log.info("Adding address 1", "PersonSyncTest");
+    p1001Client.addVisited(a1);
+
+    Log.info("Checking it is available in the Server", "PersonSyncTest");
+    serverContext.activate();
+    Person p1001Server = FlensburgManager.getPersonSure(1001);
+    assertNotSame(p1001Server, p1001Client);
+    System.out.println("Checking for person " + p1001Server);
+    assertEquals(1, p1001Server.sizeVisited());
+
+    Address visited1 = p1001Server.getVisited(0);
+    assertEquals(200, visited1.getGemId());
+    assertEquals(1, visited1.sizeVisitors());
+
+    Log.info("Adding address 2", "PersonSyncTest");
+    clientContext.activate();
+    p1001Client.addVisited(a2);
+
+    Log.info("Checking it is available in the Server", "PersonSyncTest");
+    serverContext.activate();
+    Address visited2 = p1001Server.getVisited(1);
+    assertEquals(201, visited2.getGemId());
+    assertEquals(1, visited2.sizeVisitors());
+
+
   }
 }

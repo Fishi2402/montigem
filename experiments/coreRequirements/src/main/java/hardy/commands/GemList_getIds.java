@@ -13,6 +13,7 @@ import umlp.rte.LoadingState;
 import java.util.Optional;
 
 // Loads the gemIds in a GemList, between two indices of the list
+// TODO AHe: Rework, since there is no situation in which a sublist of the ids is send
 public class GemList_getIds extends Request<LongList> {
   protected long gemListId;
   protected int startIdxIncl;
@@ -42,7 +43,10 @@ public class GemList_getIds extends Request<LongList> {
     }
 
     GemList<?> gemList = gemListOpt.get();
-    // TODO: return partial result?
+    if(endIdxExcl == -1){
+      endIdxExcl = gemList.size();
+    }
+
     if(gemList.size() < endIdxExcl){
       GeneralErrorCollector.reportSyncError();
       return new SimpleResult<>(getId(), LoadingState.FAILED_TO_LOAD, "umlp.command.LongList");

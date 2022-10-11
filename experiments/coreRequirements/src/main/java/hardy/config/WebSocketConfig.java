@@ -9,11 +9,16 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
+  final static String UMLP_DOMAINNAME_ENV = "UMLP_DEPLOYED_DOMAIN";
 
   @Override
   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-    registry.addHandler(new CommandWebSocketService(), "/command")
+    WebSocketHandlerRegistration handler= registry.addHandler(new CommandWebSocketService(), "/command")
         .addInterceptors(new HttpSessionHandshakeInterceptor());
-  }
 
+    if(System.getenv().containsKey(UMLP_DOMAINNAME_ENV)){
+      handler.setAllowedOrigins(System.getenv().get(UMLP_DOMAINNAME_ENV));
+          // Doesn't work otherwise in deployed configuration (behind a proxy).
+    }
+  }
 }
