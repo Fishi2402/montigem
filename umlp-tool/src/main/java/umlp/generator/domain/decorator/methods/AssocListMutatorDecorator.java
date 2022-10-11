@@ -1,4 +1,4 @@
-package umlp.generator.decorator.methods;
+package umlp.generator.domain.decorator.methods;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd.codegen.CdUtilsPrinter;

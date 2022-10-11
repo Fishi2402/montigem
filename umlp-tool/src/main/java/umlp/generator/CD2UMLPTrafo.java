@@ -1,9 +1,6 @@
 package umlp.generator;
 
-import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDDefinition;
 import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._ast.ASTUMLPDef;

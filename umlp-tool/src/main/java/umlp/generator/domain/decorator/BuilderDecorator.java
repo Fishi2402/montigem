@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package umlp.generator.decorator;
+package umlp.generator.domain.decorator;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
@@ -12,13 +12,14 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import umlp.UMLPMill;
+import umlp.generator.AbstractDecorator;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.decorator.GenService.createInitialValue;
-import static umlp.generator.decorator.GenService.createType;
+import static umlp.generator.domain.decorator.GenService.createInitialValue;
+import static umlp.generator.domain.decorator.GenService.createType;
 
 public class BuilderDecorator extends AbstractDecorator {
 

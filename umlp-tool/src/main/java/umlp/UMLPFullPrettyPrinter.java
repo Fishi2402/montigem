@@ -1,9 +1,7 @@
 package umlp;
 
 import de.monticore.cd4analysis._ast.ASTCD4AnalysisNode;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._ast.ASTCD4CodeNode;
-import de.monticore.cd4code._visitor.CD4CodeTraverser;
 import de.monticore.cd4codebasis._ast.ASTCD4CodeBasisNode;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cd4codebasis.prettyprint.CD4CodeBasisPrettyPrinter;

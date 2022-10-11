@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class SizeDecorator extends AbstractDecorator {

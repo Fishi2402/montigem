@@ -10,15 +10,12 @@ import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._symboltable.GUIDSLScope;
 import de.monticore.guidsl._symboltable.GUIVariableSymbol;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
-import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
 import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.StringTransformations;
-import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIComponentAccessVisitor;
-import umlp.generator.gui.decorator.GUIComponentDecorator;
 
 import java.util.List;
 import java.util.Optional;

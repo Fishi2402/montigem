@@ -3,14 +3,11 @@
 package umlp.generator.gui;
 
 import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd.facade.MCQualifiedNameFacade;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-
-import java.util.Locale;
 
 public class GUI2CDTrafo {
 

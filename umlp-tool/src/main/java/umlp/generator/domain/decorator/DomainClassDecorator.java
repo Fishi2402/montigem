@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package umlp.generator.decorator;
+package umlp.generator.domain.decorator;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
@@ -17,16 +17,17 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
-import umlp.generator.decorator.methods.AssocAccessorDecorator;
-import umlp.generator.decorator.methods.AssocMutatorDecorator;
-import umlp.generator.decorator.methods.SimpleMethodMutatorDecorator;
+import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
+import umlp.generator.domain.decorator.methods.AssocMutatorDecorator;
+import umlp.generator.domain.decorator.methods.SimpleMethodMutatorDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
-import static umlp.generator.decorator.GenService.createType;
+import static umlp.generator.domain.decorator.GenService.createType;
 
 public class DomainClassDecorator extends AbstractDecorator {
 

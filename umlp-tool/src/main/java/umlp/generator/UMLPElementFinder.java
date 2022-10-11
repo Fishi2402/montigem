@@ -1,15 +1,12 @@
 package umlp.generator;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.cdbasis._ast.ASTCDBasisNode;
 import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDTargetImportStatement;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import umlp.UMLPMill;
 import umlp._ast.ASTUMLPElement;
-import umlp._ast.ASTUMLPNode;
 import umlp._visitor.UMLPTraverser;
-import umlp._visitor.UMLPVisitor2;
 
 import java.util.ArrayList;
 import java.util.List;

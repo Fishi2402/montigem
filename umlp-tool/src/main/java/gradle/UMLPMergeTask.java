@@ -9,7 +9,7 @@ import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
 import umlp.UMLPTool;
 import umlp._ast.ASTUMLPCompilationUnit;
-import umlp.generator.UMLP2CDTrafo;
+import umlp.generator.domain.UMLP2CDTrafo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,7 +47,8 @@ public abstract class UMLPMergeTask extends SourceTask {
 
     try (PrintWriter out = new PrintWriter(new FileOutputStream(getOutputFile().get().getAsFile()), true)) {
       out.println(printer.getPrinter().getContent());
-    } catch (FileNotFoundException e) {
+    }
+    catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
   }

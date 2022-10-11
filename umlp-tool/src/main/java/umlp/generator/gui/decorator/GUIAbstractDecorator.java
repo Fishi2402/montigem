@@ -4,7 +4,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
-import de.monticore.guidsl._symboltable.GUIDSLScope;
 import de.monticore.guidsl._symboltable.GUIVariableSymbol;
 import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
@@ -15,7 +14,6 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import umlp.generator.AbstractDecorator;
 
-import java.util.Locale;
 import java.util.Optional;
 
 public abstract class GUIAbstractDecorator extends AbstractDecorator {

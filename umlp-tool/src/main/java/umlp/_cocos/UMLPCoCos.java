@@ -2,7 +2,6 @@
 
 package umlp._cocos;
 
-import de.monticore.cd4analysis.cocos.CD4AnalysisCoCos;
 import de.monticore.cd4analysis.cocos.CD4AnalysisCoCosDelegator;
 import umlp._ast.ASTUMLPNode;
 

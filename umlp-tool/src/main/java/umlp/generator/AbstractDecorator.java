@@ -13,7 +13,6 @@ import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 
-import java.util.Locale;
 import java.util.Optional;
 
 // TODO refactor this class

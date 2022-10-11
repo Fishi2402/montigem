@@ -9,10 +9,8 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
-import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.decorator.GUIComponentDecorator;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 

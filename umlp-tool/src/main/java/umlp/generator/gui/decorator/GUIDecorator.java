@@ -3,11 +3,7 @@ package umlp.generator.gui.decorator;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.guidsl._ast.ASTGUIComponent;
-import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.List;
 
 public class GUIDecorator extends GUIAbstractDecorator {
 
