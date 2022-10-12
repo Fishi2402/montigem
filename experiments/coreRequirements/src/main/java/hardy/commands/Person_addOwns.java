@@ -54,4 +54,16 @@ public class Person_addOwns extends Command<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Arrays.asList(personGemId, carGemId);
   }
+
+  public long getPersonGemId() {
+    return personGemId;
+  }
+
+  public long getCarGemId() {
+    return carGemId;
+  }
+
+  public int getIndexInList() {
+    return indexInList;
+  }
 }

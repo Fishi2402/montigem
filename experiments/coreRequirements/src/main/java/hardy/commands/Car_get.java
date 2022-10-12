@@ -37,4 +37,8 @@ public class Car_get extends Request<Car> {
   public Collection<Long> getNewlySubscribedGemIds() {
     return Collections.singleton(gemId);
   }
+
+  public long getGemId() {
+    return gemId;
+  }
 }

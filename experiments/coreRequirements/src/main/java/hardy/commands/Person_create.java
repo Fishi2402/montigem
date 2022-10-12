@@ -38,4 +38,8 @@ public class Person_create extends Request<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Collections.singleton(person.getGemId());
   }
+
+  public Person getPerson() {
+    return person;
+  }
 }

@@ -148,17 +148,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     return res;
   }
 
-  protected int loadHumanSize() {
-    CommandResult<Integer> res = CommandManager.executeCommand(new Human_size());
-    return res.asSimpleResult().get();
-  }
-
-  protected List<Long> loadHumanGemIds(int startIndex, int endIndex) {
-    // TODO: error handling
-    SimpleResult<LongList> res = CommandManager.executeCommand(new Human_ids(startIndex, endIndex)).asSimpleResult();
-    return res.get();
-  }
-
   @Override
   protected void _doDeleteHuman(Human o) {
     StatusResult status = CommandManager.executeCommand(new Human_delete(o)).asStatusResult();
@@ -256,16 +245,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     return res;
   }
 
-  protected int loadPersonSize() {
-    CommandResult<Integer> res = CommandManager.executeCommand(new Person_size());
-    return res.asSimpleResult().get();
-  }
-
-  protected List<Long> loadPersonGemIds(int startIndex, int endIndex) {
-    SimpleResult<LongList> res = CommandManager.executeCommand(new Person_ids(startIndex, endIndex)).asSimpleResult();
-    return res.get();
-  }
-
   @Override
   protected void _doDeletePerson(Person o) {
     StatusResult status = CommandManager.executeCommand(new Person_delete(o)).asStatusResult();
@@ -360,16 +339,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     return res;
   }
 
-  protected int loadAddressSize() {
-    CommandResult<Integer> res = CommandManager.executeCommand(new Address_size());
-    return res.asSimpleResult().get();
-  }
-
-  protected List<Long> loadAddressGemIds(int startIndex, int endIndex) {
-    SimpleResult<LongList> res = CommandManager.executeCommand(new Address_ids(startIndex, endIndex)).asSimpleResult();
-    return res.get();
-  }
-
   @Override
   protected void _doDeleteAddress(Address o) {
     StatusResult status = CommandManager.executeCommand(new Address_delete(o)).asStatusResult();
@@ -457,16 +426,6 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
       }
     }
     return res;
-  }
-
-  protected int loadCarSize() {
-    CommandResult<Integer> res = CommandManager.executeCommand(new Car_size());
-    return res.asSimpleResult().get();
-  }
-
-  protected List<Long> loadCarGemIds(int startIndex, int endIndex) {
-    SimpleResult<LongList> res = CommandManager.executeCommand(new Car_ids(startIndex, endIndex)).asSimpleResult();
-    return res.get();
   }
 
 

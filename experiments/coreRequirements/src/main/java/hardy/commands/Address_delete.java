@@ -31,4 +31,8 @@ public class Address_delete extends Command<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Collections.singleton(address.getGemId());
   }
+
+  public Address getAddress() {
+    return address;
+  }
 }

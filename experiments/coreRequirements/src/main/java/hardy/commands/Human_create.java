@@ -34,4 +34,8 @@ public class Human_create extends Request<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Collections.singleton(human.getGemId());
   }
+
+  public Human getHuman() {
+    return human;
+  }
 }

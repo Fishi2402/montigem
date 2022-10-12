@@ -55,4 +55,16 @@ public class GemList_getIds extends Request<LongList> {
     LongList res = new LongList(gemList.getIDs(startIdxIncl, endIdxExcl));
     return new SimpleResult<>(getId(), res, "umlp.command.LongList");
   }
+
+  public long getGemListId() {
+    return gemListId;
+  }
+
+  public int getStartIdxIncl() {
+    return startIdxIncl;
+  }
+
+  public int getEndIdxExcl() {
+    return endIdxExcl;
+  }
 }

@@ -37,4 +37,8 @@ public class Person_get extends Request<Person> {
   public Collection<Long> getNewlySubscribedGemIds() {
     return Collections.singleton(gemId);
   }
+
+  public long getGemId() {
+    return gemId;
+  }
 }

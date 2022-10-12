@@ -44,4 +44,8 @@ public class Address_get extends Request<Address> {
   public Collection<Long> getNewlySubscribedGemIds() {
     return Collections.singleton(gemId);
   }
+
+  public long getGemId() {
+    return gemId;
+  }
 }

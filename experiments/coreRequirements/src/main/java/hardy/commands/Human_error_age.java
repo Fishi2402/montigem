@@ -34,4 +34,8 @@ public class Human_error_age extends Command<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Collections.singleton(gemId);
   }
+
+  public long getGemId() {
+    return gemId;
+  }
 }

@@ -37,4 +37,8 @@ public class Human_get extends Request<Human> {
   public Collection<Long> getNewlySubscribedGemIds() {
     return Collections.singleton(gemId);
   }
+
+  public long getGemId() {
+    return gemId;
+  }
 }
