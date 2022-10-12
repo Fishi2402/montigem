@@ -1,4 +1,4 @@
-package example.atomic;
+package umlp.gui;
 
 /** Text component interface definition
 */

@@ -31,8 +31,8 @@ page ShowCityInfo(CityInfo ci) {
   );
 
   // list of cities
-  @Text(value = "List of cities"); // TODO: Text vs. TextInput
-  iterate(cityName : ci.cities) {
+  @Text(value = "List of cities");
+/*  iterate(cityName : ci.cities) { // TODO AG: The expression at source position ShowCityInfo.gui:<35,23> cannot be calculated.
     @TextInput(value = cityName);
-  }
+  }*/
 }

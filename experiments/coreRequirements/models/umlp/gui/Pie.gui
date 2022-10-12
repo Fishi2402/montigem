@@ -1,6 +1,6 @@
-package example.atomic.pie;
+package umlp.gui;
 
-import example.atomic.pie.PieTypes.PieEntry;
+import umlp.gui.PieTypes.PieEntry;
 
 /** Pie chart component interface definition
 */

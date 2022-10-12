@@ -33,16 +33,16 @@ import stanley.editierepersoncars.EditierePersonCars;
 // unterscheiden muss
 page NeuePersonAnlegen(Person p) { // "leere" Person
   // show and edit the nickname
-  @TextInput(value = p.nickname)
+  @TextInput(value = p.nickname);
 
   // show and edit the age as number
-  @NumberInput(value = p.age)
+  @NumberInput(value = p.age);
 
   // Button mit Text "Ok" und Navigation auf eine andere Seite
   // (und die Logik dafür ist generiert und verfügbar)
   // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
   // ueberschrieben werden z.B. navigate, copy, show(:ContextMenu(...)), ...
-  @Button(text = "Ok", leftClick = navigate(@EditierePersonCars(person=p)))
+  @Button(text = "Ok", leftClick = navigate(@EditierePersonCars(person=p)));
 
   // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
   // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird entweder generiert oder
@@ -51,6 +51,6 @@ page NeuePersonAnlegen(Person p) { // "leere" Person
   // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "EditierePersonGUI.java".
   // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
   // deswegen wird eine Methode explizit importiert und aufgerufen
-  @Button(text = "Decrease", leftClick = decreaseAge(p))
+  @Button(text = "Decrease", leftClick = decreaseAge(p));
 }
 

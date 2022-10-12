@@ -55,6 +55,12 @@ public abstract class UMLPTask extends DefaultTask {
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
   @Incremental
+  abstract DirectoryProperty getModelDir();
+
+  @InputDirectory
+  @org.gradle.api.tasks.Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @Incremental
   abstract DirectoryProperty getTmplDir();
 
   @Input
@@ -123,6 +129,11 @@ public abstract class UMLPTask extends DefaultTask {
     if(this.getHwcDir().isPresent()) {
       result.add("-hwc");
       result.add(handlePath.apply(getHwcDir().getAsFile().get().toPath()));
+    }
+
+    if(this.getModelDir().isPresent()) {
+      result.add("-path");
+      result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
     }
 
     if(this.getTmplDir().isPresent()) {
