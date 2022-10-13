@@ -14,4 +14,14 @@ public class EditierePersonGUI extends EditierePersonGUITOP {
     // TODO AHe: Error handling? Permission etc
     p.setAge(p.getAge() - 1);
   }
+
+  public void testAsynchronFunction(Person p) {
+    Person child = p.getChildren().get(0);
+    System.out.println(child.getAge());
+  }
+
+//  public async void testAsynchronFunctionJS(Person p) {
+//    Person child = await (await p.getChildren()).get(0);
+//    System.out.println(await child.getAge());
+//  }
 }
