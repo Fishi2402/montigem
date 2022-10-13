@@ -1,11 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.decorator;
 
+import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
+
+import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
@@ -34,12 +38,29 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
       .build();
     
     getCD4C().addMethod(ast, "umlp.commandobserver.GetScope");
-    
-    domainClass.getCDAttributeList().stream()
+
+    // TODO: Muss man hier Listen und einfache Attribute unterscheiden? Siehe Assoziationen
+    CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
       .filter(a -> !a.getModifier().isDerived())
       .forEach(a -> getCD4C().addMethod(ast, "umlp.commandsendingobserver.NotifySetAttribute", domainClass.getName(),
         a.getName(), a.getSymbol().getType().print()));
-    
+
+    // Assoziationen
+    List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(domainClass);
+    for (ASTCDAssocSide assoc: assocs) {
+      if (assoc.getModifier().isReadonly() || assoc.getModifier().isDerived()) {
+        continue;
+      }
+      if (GenService.isList(assoc)) {
+        getCD4C().addMethod(ast, "umlp.commandsendingobserver.NotifyAddAttribute", domainClass.getName(),
+                assoc.getName());
+        getCD4C().addMethod(ast, "umlp.commandsendingobserver.NotifyRemoveAttribute", domainClass.getName(),
+                assoc.getName());
+      } else {
+        getCD4C().addMethod(ast, "umlp.commandsendingobserver.NotifySetAttribute", domainClass.getName(),
+                assoc.getName(), "long");
+      }
+    }
     addImports(origCD, ast, domainClass);
     
     return ast;
@@ -48,12 +69,8 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz, ASTCDClass domainclass) {
     getCD4C().addImport(clazz,"umlp.rte.NotificationScope");
     getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
-    if(!domainclass.getCDAttributeList().isEmpty()) {
-      getCD4C().addImport(clazz, "umlp.command.CommandManager");
-    }
-    domainclass.getCDAttributeList().stream()
-      .filter(a -> !a.getModifier().isDerived())
-      .forEach(a -> getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE)+"."+domainclass.getName()+"_set_"+a.getName()));
+    getCD4C().addImport(clazz, "umlp.command.CommandManager");
+    getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE)+".*");
   }
   
 }

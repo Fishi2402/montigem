@@ -20,7 +20,7 @@ public class SetDecoratorTest extends DecoratorTest {
   
   @Test
   public void check() {
-    ASTCDClass clazz = getClassByName("Foo_set_fooAttr");
+    ASTCDClass clazz = getClassByName("Foo_setFooAttr");
     assertAll(
       // check no of methods and attributes
       () -> assertEquals(2, clazz.getCDAttributeList().size(), "number of attributes"),
@@ -34,7 +34,7 @@ public class SetDecoratorTest extends DecoratorTest {
   
   @Test
   public void testGeneratedCode() {
-    generateAndCheckCode(getClassByName("Foo_set_fooAttr"));
+    generateAndCheckCode(getClassByName("Foo_setFooAttr"));
   }
   
 }
