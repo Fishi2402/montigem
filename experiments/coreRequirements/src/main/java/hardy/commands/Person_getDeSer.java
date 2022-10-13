@@ -9,7 +9,7 @@ public class Person_getDeSer extends CommandDeSer<Person_get> {
         jsonPrinter.member("gemId", command.getGemId());
     }
 
-    public Optional<Person_get> fromJson(JsonObject jsonObject) {
+    protected Optional<Person_get> fromJsonObject(JsonObject jsonObject) {
         return Optional.of(new Person_get(jsonObject.getMember("gemId").getAsJsonNumber().getNumberAsLong()));
     }
 }

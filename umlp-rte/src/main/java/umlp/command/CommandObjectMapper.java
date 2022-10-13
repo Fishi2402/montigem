@@ -35,10 +35,19 @@ public abstract class CommandObjectMapper {
   protected abstract Gson _getDomainGson();
 
   public static String serializeCommand(Command<?> command){
+    return getInstance()._serializeCommand(command);
+  }
+
+  protected String _serializeCommand(Command<?> command) {
     return gson.toJson(command);
   }
 
-  public static Optional<Command<?>> deserializeCommand(String cmdStr){
+
+  public static Optional<Command<Object>> deserializeCommand(String cmdStr){
+    return getInstance()._deserializeCommand(cmdStr);
+  }
+
+  protected Optional<Command<Object>> _deserializeCommand(String cmdStr) {
     try {
       return Optional.of(gson.fromJson(cmdStr, Command.class));
     }

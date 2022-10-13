@@ -8,7 +8,7 @@ public class Car_get_gemListIdDeSer extends CommandDeSer<Car_get_gemListId> {
         super.buildJson(command, jsonPrinter);
     }
 
-    public Optional<Car_get_gemListId> fromJson(JsonObject jsonObject) {
+    protected Optional<Car_get_gemListId> fromJsonObject(JsonObject jsonObject) {
         return Optional.of(new Car_get_gemListId());
     }
 }

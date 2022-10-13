@@ -8,7 +8,7 @@ public class Person_get_gemListIdDeSer extends CommandDeSer<Person_get_gemListId
         super.buildJson(command, jsonPrinter);
     }
 
-    public Optional<Person_get_gemListId> fromJson(JsonObject jsonObject) {
+    protected Optional<Person_get_gemListId> fromJsonObject(JsonObject jsonObject) {
         return Optional.of(new Person_get_gemListId());
     }
 }

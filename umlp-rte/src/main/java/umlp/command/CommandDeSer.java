@@ -27,11 +27,21 @@ public abstract class CommandDeSer<T extends Command<?>> {
 
   public String toJson(T command){
     JsonPrinter printer = new JsonPrinter();
+    printer.beginObject();
     buildJson(command, printer);
+    printer.endObject();
     return printer.getContent();
   }
 
-  public abstract Optional<T> fromJson(JsonObject jsonObject);
+  protected abstract Optional<T> fromJsonObject(JsonObject jsonObject);
+
+  public Optional<T> fromJson(JsonObject jsonObject){
+    Optional<T> res = fromJsonObject(jsonObject);
+    if(res.isPresent()){
+      res.get().setId(jsonObject.getLongMember("id"));
+    }
+    return res;
+  }
 
   public Optional<T> fromJson(String json){
     return fromJson(JsonParser.parseJsonObject(json));

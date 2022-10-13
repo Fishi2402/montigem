@@ -9,7 +9,7 @@ public class Human_error_ageDeSer extends CommandDeSer<Human_error_age> {
         jsonPrinter.member("gemId", command.getGemId());
     }
 
-    public Optional<Human_error_age> fromJson(JsonObject jsonObject) {
+    protected Optional<Human_error_age> fromJsonObject(JsonObject jsonObject) {
         return Optional.of(new Human_error_age(jsonObject.getMember("gemId").getAsJsonNumber().getNumberAsLong()));
     }
 }

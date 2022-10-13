@@ -4,7 +4,7 @@ import de.monticore.symboltable.serialization.json.JsonObject;
 import java.util.Optional;
 import umlp.command.CommandDeSer;
 public class Person_addOwnsDeSer extends CommandDeSer<Person_addOwns> {
-    public Optional<Person_addOwns> fromJson(JsonObject jsonObject) {
+    protected Optional<Person_addOwns> fromJsonObject(JsonObject jsonObject) {
         return Optional.of(new Person_addOwns(
             jsonObject.getMember("personGemId").getAsJsonNumber().getNumberAsLong(),
             jsonObject.getMember("carGemId").getAsJsonNumber().getNumberAsLong(),

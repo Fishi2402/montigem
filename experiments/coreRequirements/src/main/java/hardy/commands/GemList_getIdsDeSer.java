@@ -4,7 +4,7 @@ import de.monticore.symboltable.serialization.json.JsonObject;
 import java.util.Optional;
 import umlp.command.CommandDeSer;
 public class GemList_getIdsDeSer extends CommandDeSer<GemList_getIds> {
-    public Optional<GemList_getIds> fromJson(JsonObject jsonObject) {
+    protected Optional<GemList_getIds> fromJsonObject(JsonObject jsonObject) {
         return Optional.of(new GemList_getIds(
             jsonObject.getMember("gemListId").getAsJsonNumber().getNumberAsLong(),
             jsonObject.getMember("startIdxIncl").getAsJsonNumber().getNumberAsInteger(),
