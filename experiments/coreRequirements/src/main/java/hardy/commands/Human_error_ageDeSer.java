@@ -3,7 +3,7 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import java.util.Optional;
 import umlp.command.CommandDeSer;
-class Human_error_ageDeSer extends CommandDeSer<Human_error_age> {
+public class Human_error_ageDeSer extends CommandDeSer<Human_error_age> {
     public void buildJson(Human_error_age command, JsonPrinter jsonPrinter) {
         super.buildJson(command, jsonPrinter);
         jsonPrinter.member("gemId", command.getGemId());

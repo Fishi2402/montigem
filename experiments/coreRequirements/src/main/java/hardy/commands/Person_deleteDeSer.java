@@ -5,7 +5,7 @@ import hardy.Person;
 import hardy.PersonDeSer;
 import java.util.Optional;
 import umlp.command.CommandDeSer;
-class Person_deleteDeSer extends CommandDeSer<Person_delete> {
+public class Person_deleteDeSer extends CommandDeSer<Person_delete> {
     public Optional<Person_delete> fromJson(JsonObject jsonObject) {
       Optional<Person> person = new PersonDeSer().deserialize(jsonObject.toString());
       if(person.isEmpty()){

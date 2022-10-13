@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import umlp.command.CommandDeSer;
 
-class Car_createDeSer extends CommandDeSer<Car_create> {
+public class Car_createDeSer extends CommandDeSer<Car_create> {
   public Optional<Car_create> fromJson(JsonObject jsonObject) {
     Optional<Car> car = new CarDeSer().deserialize(jsonObject.toString());
     if (car.isEmpty()) {

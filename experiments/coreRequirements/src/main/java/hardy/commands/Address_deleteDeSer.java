@@ -5,7 +5,7 @@ import hardy.Address;
 import hardy.AddressDeSer;
 import java.util.Optional;
 import umlp.command.CommandDeSer;
-class Address_deleteDeSer extends CommandDeSer<Address_delete> {
+public class Address_deleteDeSer extends CommandDeSer<Address_delete> {
     public Optional<Address_delete> fromJson(JsonObject jsonObject) {
       Optional<Address> address = new AddressDeSer().deserialize(jsonObject.toString());
       if(address.isEmpty()){

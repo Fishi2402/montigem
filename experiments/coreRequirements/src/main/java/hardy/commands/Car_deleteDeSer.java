@@ -5,7 +5,7 @@ import hardy.Car;
 import hardy.CarDeSer;
 import java.util.Optional;
 import umlp.command.CommandDeSer;
-class Car_deleteDeSer extends CommandDeSer<Car_delete> {
+public class Car_deleteDeSer extends CommandDeSer<Car_delete> {
     public Optional<Car_delete> fromJson(JsonObject jsonObject) {
       Optional<Car> car = new CarDeSer().deserialize(jsonObject.toString());
       if(car.isEmpty()){
