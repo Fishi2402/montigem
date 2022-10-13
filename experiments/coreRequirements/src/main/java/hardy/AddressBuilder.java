@@ -29,7 +29,7 @@ public class AddressBuilder extends Address {
     public Optional<Address> build() {
         if (!buildFinished) {
             if(isBuildable()) {
-                visitors.build();
+                getVisitorsGemList().build();
                 FlensburgManager.addAddress(this);
                 addressObservers.forEach(obs -> obs.notifyBuild(this));
                 buildFinished = true;

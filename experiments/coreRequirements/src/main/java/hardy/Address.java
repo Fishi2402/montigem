@@ -35,8 +35,9 @@ public class Address implements GemIdentifiable {
   @Column(name = "city")
   protected String city;
 
+  @OneToMany
   @JsonAdapter(PersonGemListTypeAdapter.class)
-  protected GemList<Person> visitors;
+  protected List<Person> visitors;
 
   @Override
   public long getGemId() {
@@ -90,7 +91,7 @@ public class Address implements GemIdentifiable {
   public void INTERNAL_finishDeser(){
     // properly init GemLists
     if(visitors instanceof GemListDeserHelper){
-      visitors = FlensburgManager.createVisitors(this, visitors.getGemId(), visitors.size(),((GemListDeserHelper<Person>) visitors).getInitialIds());
+      visitors = FlensburgManager.createVisitors(this, getVisitorsGemList().getGemId(), visitors.size(),((GemListDeserHelper<Person>) visitors).getInitialIds());
     }
   }
 
@@ -115,7 +116,18 @@ public class Address implements GemIdentifiable {
   }
 
   public void INTERNAL_addVisitorId(int indexInList, long personGemId, NotificationScope scope) {
-    visitors._internal_add(indexInList, List.of(personGemId));
+    getVisitorsGemList()._internal_add(indexInList, List.of(personGemId));
     addressObservers.forEach(obs -> obs.maybeNotifyAddVisitor(this, personGemId, indexInList, scope));
+  }
+
+  public List<Person> getVisitors() {
+    return this.visitors;
+  }
+
+  public GemList<Person> getVisitorsGemList() {
+    if (!(this.visitors instanceof GemList)) {
+      // TODO MH
+    }
+    return (GemList<Person>) this.visitors;
   }
 }

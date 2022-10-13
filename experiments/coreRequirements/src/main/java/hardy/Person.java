@@ -2,6 +2,9 @@ package hardy;
 
 //+ HWC-P        : adds implementation for derived attribute
 
+import javax.persistence.Entity;
+
+@Entity
 public class Person extends PersonTOP {
 
     // --------------------------------------------------------------------
