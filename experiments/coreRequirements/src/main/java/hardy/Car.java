@@ -5,10 +5,7 @@ package hardy;
 import org.hibernate.annotations.GenericGenerator;
 import umlp.rte.GemIdentifiable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +19,9 @@ import java.util.Optional;
 @Entity
 @Table(name = "car")
 public class Car implements GemIdentifiable {
+
+    // TODO Ist Transient weil Hibernate versucht die Sachen hier automatisch zu persistieren, das geht aber nicht fuer Interfaces
+    @Transient
     protected List<CarObserver> carObservers = new ArrayList<>();
 // Bem: This is an ordinary class, comments to the design 
 // decisions can be found at Human and Person

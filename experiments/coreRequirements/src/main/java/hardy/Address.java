@@ -35,6 +35,7 @@ public class Address implements GemIdentifiable {
   @Column(name = "city")
   protected String city;
 
+  @Transient // TODO Person ist kein Entity deswegen geht hier kein OneToMany -> muss spaeter nachgebessert werden
   @JsonAdapter(PersonGemListTypeAdapter.class)
   protected GemList<Person> visitors;
 

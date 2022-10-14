@@ -32,8 +32,8 @@ public class Human implements GemIdentifiable {
     //
     // -32: is an illegal value showing that an has error occurred somewhere
     @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name="increment", strategy = "increment")
+    //@GeneratedValue(generator = "increment")
+    //@GenericGenerator(name="increment", strategy = "increment")
     protected long gemId = -32;
 
     // an Attribute: ------------------------------------------
