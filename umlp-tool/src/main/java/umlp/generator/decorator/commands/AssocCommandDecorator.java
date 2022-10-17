@@ -3,7 +3,9 @@ package umlp.generator.decorator.commands;/* (c) https://github.com/MontiCore/mo
 
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -55,20 +57,26 @@ public class AssocCommandDecorator extends AbstractDecorator {
       .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
       .build();
 
-    String targetName = "gemId" + assoc.getName();
+    String sourceName = domainClass.getName();
+    String targetName = assoc.getMCQualifiedType().getDefiningSymbol().get().getName();
 
-     // attributes
-    getCD4C().addAttribute(ast, "protected long gemId");
-    getCD4C().addAttribute(ast, "protected long " + targetName);
-    getCD4C().addAttribute(ast, "protected int indexInList");
+     // attributes and getter
+    AccessorDecorator accessor = new AccessorDecorator(glex);
+    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected long gemId");
+    ast.addAllCDMembers(accessor.decorate(attr));
+    attr = getCD4C().addAttribute(ast, "protected long gemId" + targetName);
+    ast.addAllCDMembers(accessor.decorate(attr));
+    attr = getCD4C().addAttribute(ast, "protected int indexInList");
+    ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
-    getCD4C().addConstructor(ast, "umlp.commands.add.Constructor", classname, COMMAND_PACKAGE,
+    getCD4C().addConstructor(ast, "umlp.commands.assocs.Add_Constructor", classname, COMMAND_PACKAGE,
       targetName);
 
     // methods
-    getCD4C().addMethod(ast, "umlp.commands.add.DoRun", assoc.getName(), domainClass.getName(), assoc.getSymbol().getType().print(), origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.add.GetEffectedGemIds", targetName);
+    getCD4C().addMethod(ast, "umlp.commands.assocs.Add_DoRun", assoc.getName(),
+            sourceName, targetName, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, "umlp.commands.assocs.GetEffectedGemIds", targetName);
 
     // Importe
     addImports(origCD, ast);
@@ -85,19 +93,24 @@ public class AssocCommandDecorator extends AbstractDecorator {
             .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
             .build();
 
-    String targetName = "gemId" + assoc.getName();
+    String sourceName = domainClass.getName();
+    String targetName = assoc.getMCQualifiedType().getDefiningSymbol().get().getName();
 
-    // attributes
-    getCD4C().addAttribute(ast, "protected long gemId");
-    getCD4C().addAttribute(ast, "protected long " + targetName);
+    // attributes and getter
+    AccessorDecorator accessor = new AccessorDecorator(glex);
+    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected long gemId");
+    ast.addAllCDMembers(accessor.decorate(attr));
+    attr = getCD4C().addAttribute(ast, "protected long gemId" + targetName);
+    ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
-    getCD4C().addConstructor(ast, "umlp.commands.remove.Constructor", classname,
+    getCD4C().addConstructor(ast, "umlp.commands.assocs.Constructor", classname,
             COMMAND_PACKAGE, targetName);
 
     // methods
-    getCD4C().addMethod(ast, "umlp.commands.remove.DoRun", assoc.getName(), domainClass.getName(), targetName, origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.add.GetEffectedGemIds", targetName);
+    getCD4C().addMethod(ast, "umlp.commands.assocs.Remove_DoRun", assoc.getName(),
+            sourceName, targetName, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, "umlp.commands.assocs.GetEffectedGemIds", targetName);
 
     // Importe
     addImports(origCD, ast);
@@ -114,14 +127,22 @@ public class AssocCommandDecorator extends AbstractDecorator {
             .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
             .build();
 
-    getCD4C().addAttribute(ast, "protected long gemId");
-    getCD4C().addAttribute(ast, "protected long gemId" + assoc.getName());
+    String sourceName = domainClass.getName();
+    String targetName = assoc.getMCQualifiedType().getDefiningSymbol().get().getName();
 
-    getCD4C().addConstructor(ast, "umlp.commands.set.Constructor", classname, COMMAND_PACKAGE,
-            "gemId" + assoc.getName(), "long");
+    // attributes and getter
+    AccessorDecorator accessor = new AccessorDecorator(glex);
+    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected long gemId");
+    ast.addAllCDMembers(accessor.decorate(attr));
+    attr = getCD4C().addAttribute(ast, "protected long gemId" + targetName);
+    ast.addAllCDMembers(accessor.decorate(attr));
 
-    getCD4C().addMethod(ast, "umlp.commands.set.DoRunGem", assoc.getName(), domainClass.getName(), assoc.getSymbol().getType().print(), origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.add.GetEffectedGemIds", "gemId" + assoc.getName());
+    getCD4C().addConstructor(ast, "umlp.commands.assocs.Constructor", classname, COMMAND_PACKAGE,
+            targetName);
+
+    getCD4C().addMethod(ast, "umlp.commands.assocs.Set_DoRun", assoc.getName(),
+            sourceName, targetName, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, "umlp.commands.assocs.GetEffectedGemIds", targetName);
 
     addImports(origCD, ast);
 

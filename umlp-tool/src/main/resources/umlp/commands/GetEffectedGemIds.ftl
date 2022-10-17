@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("classname")}
+${tc.signature()}
 ${cd4c.method("public Collection<Long> getEffectedGemIds()")}
 
-return Collections.singleton(${classname?uncap_first}.getGemId());
+return Collections.singleton(getId());

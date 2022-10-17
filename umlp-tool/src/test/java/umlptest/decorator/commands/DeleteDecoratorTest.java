@@ -17,18 +17,19 @@ public class DeleteDecoratorTest extends DecoratorTest {
   protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
     return new DeleteDecorator(glex);
   }
-  
+
   @Test
   public void check() {
     ASTCDClass clazz = getClassByName("Foo" + DeleteDecorator.SUFFIX);
     assertAll(
-      // check no of methods and attributes
-      () -> assertEquals(1, clazz.getCDAttributeList().size(), "number of attributes"),
-      () -> assertEquals(2, clazz.getCDMethodList().size(), "number of methods"),
-      
-      // check methods
-      () -> existsMethod(clazz, "doRun"),
-      () -> existsMethod(clazz, "getEffectedGemIds")
+            // check no of methods and attributes
+            () -> assertEquals(1, clazz.getCDAttributeList().size(), "number of attributes"),
+            () -> assertEquals(3, clazz.getCDMethodList().size(), "number of methods"),
+
+            // check methods
+            () -> existsMethod(clazz, "doRun"),
+            () -> existsMethod(clazz, "getFoo"),
+            () -> existsMethod(clazz, "getEffectedGemIds")
     );
   }
   

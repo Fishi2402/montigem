@@ -25,14 +25,6 @@ public class CommandDecorator extends AbstractDecorator {
     getDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: GetDecorator", CommandDecorator.class.getName());
 
-    IdDecorator idDecorator = new IdDecorator(glex);
-    idDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: IdDecorator", CommandDecorator.class.getName());
-
-    SizeDecorator sizeDecorator = new SizeDecorator(glex);
-    sizeDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: SizeDecorator", CommandDecorator.class.getName());
-
     SetDecorator setDecorator = new SetDecorator(glex);
     setDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: SetDecorator", CommandDecorator.class.getName());

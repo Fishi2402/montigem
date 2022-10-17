@@ -46,7 +46,7 @@ public class SetDecorator extends AbstractDecorator {
     getCD4C().addConstructor(ast, "umlp.commands.set.Constructor", classname, COMMAND_PACKAGE,
       attribute.getName(), type);
     getCD4C().addMethod(ast, "umlp.commands.set.DoRun", attribute.getName(), domainClass.getName(), origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.set.GetEffectedGemIds");
+    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds");
     getCD4C().addImport(ast, "umlp.command.StatusResult");
     getCD4C().addImport(ast, "umlp.command.Command");
     getCD4C().addImport(ast, "umlp.util.LogUtil");
