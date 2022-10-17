@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+description 'StatServer'
+
+task generateStatBackend(type: UMLPTask) {
+    inputDir = file("src")
+    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
+}
+
+build.dependsOn(generateStatBackend)
