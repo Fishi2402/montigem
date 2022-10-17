@@ -3,8 +3,8 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import java.util.Optional;
 import umlp.command.CommandDeSer;
-class Person_setNicknameDeSer extends CommandDeSer<Person_setNickname> {
-    public Optional<Person_setNickname> fromJson(JsonObject jsonObject) {
+public class Person_setNicknameDeSer extends CommandDeSer<Person_setNickname> {
+    protected Optional<Person_setNickname> fromJsonObject(JsonObject jsonObject) {
         return Optional.of(new Person_setNickname(
             jsonObject.getMember("gemId").getAsJsonNumber().getNumberAsLong(),
             jsonObject.getMember("nickname").getAsJsonString().getValue()

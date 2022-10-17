@@ -39,7 +39,7 @@ public class CommandWebSocketService extends TextWebSocketHandler {
     String returnResult = "";
     try {
       // TODO: check participant id is correct
-      Optional<Command<?>> commandOptional = CommandObjectMapper.deserializeCommand(message.getPayload());
+      Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(message.getPayload());
       if (!commandOptional.isPresent()) {
         return;
       }

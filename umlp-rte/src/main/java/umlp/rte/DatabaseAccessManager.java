@@ -14,6 +14,8 @@ import java.util.Set;
 
 public class DatabaseAccessManager {
 
+    static protected long freeGemId = 1001L;
+
     public static void init(String[] args) {
 
     }
@@ -44,7 +46,7 @@ public class DatabaseAccessManager {
     }
 
     public static long getFreeGemId() {
-        return 0; // TODO implement
+        return freeGemId++; // TODO implement / discuss if we want to use generated IDs from Spring/ Hibernate
     }
 
     public static <T> T get(Class<T> domainType, long gemId) {

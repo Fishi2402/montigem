@@ -140,7 +140,7 @@ public class ClientWebSocketCommandCommunication extends TextWebSocketHandler
       clientContext.activate();
       Optional<CommandResult<?>> commandResultOptional = CommandObjectMapper.deserializeResponse(
           message.getPayload());
-      Optional<Command<?>> commandOptional = CommandObjectMapper.deserializeCommand(
+      Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(
           message.getPayload());
 
       if (commandResultOptional.isPresent()) { // TODO MH: Need to check for participantId

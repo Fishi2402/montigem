@@ -8,8 +8,8 @@ import umlp.command.CommandDeSer;
 
 
 public class Address_createDeSer extends CommandDeSer<Address_create> {
-    public Optional<Address_create> fromJson(JsonObject jsonObject) {
-      Optional<Address> a = new AddressDeSer().deserialize(jsonObject.toString());
+    protected Optional<Address_create> fromJsonObject(JsonObject jsonObject) {
+      Optional<Address> a = new AddressDeSer().deserialize(jsonObject.getObjectMember("address"));
       if(a.isEmpty()){
         return Optional.empty();
       }

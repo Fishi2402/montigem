@@ -3,8 +3,8 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import java.util.Optional;
 import umlp.command.CommandDeSer;
-class Human_set_ageDeSer extends CommandDeSer<Human_set_age> {
-    public Optional<Human_set_age> fromJson(JsonObject jsonObject) {
+public class Human_set_ageDeSer extends CommandDeSer<Human_set_age> {
+    protected Optional<Human_set_age> fromJsonObject(JsonObject jsonObject) {
         return Optional.of(new Human_set_age(
             jsonObject.getMember("gemId").getAsJsonNumber().getNumberAsLong(),
             jsonObject.getMember("age").getAsJsonNumber().getNumberAsInteger()
