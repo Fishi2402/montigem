@@ -1,13 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
+import java.time.*;
 umlp JarData {
 
-  class JarData {
+// TODO: Remove "Obj" prefix (once the generator works)
+  class ObjJarData {
     CLIParameter parameter;
     Summary summary;
-    java.time.Duration duration;  // Duration of the run
 
+// TODO: Comment in the following lines (once the generator works)
+/*
+    java.time.Duration duration;  // Duration of the run
     java.time.Instant receivedTime; // When was the request received on the server?
     java.net.InetAddress origin;    // Who sent the request? (Anonymized)
+*/
   }
 
   // Information how the JAR was started
