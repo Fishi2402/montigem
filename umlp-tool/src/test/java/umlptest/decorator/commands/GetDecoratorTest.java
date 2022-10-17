@@ -18,19 +18,20 @@ public class GetDecoratorTest extends DecoratorTest {
   protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
     return new GetDecorator(glex);
   }
-  
+
   @Test
   public void check() {
     ASTCDClass clazz = getClassByName("Foo" + GetDecorator.SUFFIX);
     assertAll(
-      // check no of methods and attributes
-      () -> assertEquals(1, clazz.getCDAttributeList().size(), "number of attributes"),
-      () -> assertEquals(3, clazz.getCDMethodList().size(), "number of methods"),
-      
-      // check methods
-      () -> existsMethod(clazz, "doRun"),
-      () -> existsMethod(clazz, "getEffectedGemIds"),
-      () -> existsMethod(clazz, "getNewlySubscribedGemIds")
+            // check no of methods and attributes
+            () -> assertEquals(1, clazz.getCDAttributeList().size(), "number of attributes"),
+            () -> assertEquals(4, clazz.getCDMethodList().size(), "number of methods"),
+
+            // check methods
+            () -> existsMethod(clazz, "doRun"),
+            () -> existsMethod(clazz, "getGemId"),
+            () -> existsMethod(clazz, "getEffectedGemIds"),
+            () -> existsMethod(clazz, "getNewlySubscribedGemIds")
     );
   }
   

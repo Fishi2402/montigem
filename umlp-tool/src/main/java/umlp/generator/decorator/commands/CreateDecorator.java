@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.decorator.commands;
 
+import de.monticore.cd.codegen.methods.AccessorDecorator;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -22,10 +24,10 @@ public class CreateDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-      .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
+      .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName())));
   }
   
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String packageName) {
     String classname = domainClass.getName();
     
     ASTCDClass ast = UMLPMill.cDClassBuilder()
@@ -36,12 +38,14 @@ public class CreateDecorator extends AbstractDecorator {
     
     String firstLetter = classname.substring(0,1).toUpperCase();
     String attributeName = classname.substring(1);
-    getCD4C().addAttribute(ast, "protected final "+firstLetter+attributeName+" "
-      +firstLetter.toLowerCase()+attributeName);
+    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected final " + firstLetter + attributeName + " "
+            + firstLetter.toLowerCase() + attributeName);
    
-    getCD4C().addConstructor(ast, "umlp.commands.Constructor",classname, COMMAND_PACKAGE, SUFFIX);
+    getCD4C().addConstructor(ast, "umlp.commands.Constructor",classname, packageName, SUFFIX);
     getCD4C().addMethod(ast, "umlp.commands.create.DoRun", classname, origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", classname);
+    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds");
+    AccessorDecorator accessor = new AccessorDecorator(glex);
+    ast.addAllCDMembers(accessor.decorate(attr));
 
     getCD4C().addImport(ast, "umlp.request.Request");
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");

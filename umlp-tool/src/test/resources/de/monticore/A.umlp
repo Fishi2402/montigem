@@ -13,7 +13,7 @@ umlp A {
 
   class Foo2;
   class Bar2;
-  association Foo2 -> Bar2 [*];
+  association owns2 Foo2 -> Bar2 [*];
 
   class Foo3;
   class Bar3;

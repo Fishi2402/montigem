@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.decorator.commands;/* (c) https://github.com/MontiCore/monticore */
 
+import de.monticore.cd.codegen.methods.AccessorDecorator;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -22,23 +24,26 @@ public class GetDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-      .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
+      .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName())));
   }
 
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String packageName) {
     String classname = domainClass.getName();
+    String domainPackage = packageName.substring(0, packageName.length()-".commands".length());
     
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
       .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Request<"+classname+">"))
       .setName(classname+SUFFIX)
       .build();
-    
-    getCD4C().addAttribute(ast, "private final long gemId");
-    getCD4C().addConstructor(ast, "umlp.commands.error.Constructor", classname,"", SUFFIX, COMMAND_PACKAGE);
-    getCD4C().addMethod(ast, "umlp.commands.get.DoRun", classname, COMMAND_PACKAGE, origCD.getCDDefinition().getName());
+    ASTCDAttribute attr = getCD4C().addAttribute(ast, "private final long gemId");
+
+    getCD4C().addConstructor(ast, "umlp.commands.get.Constructor", classname,"", SUFFIX, packageName);
+    getCD4C().addMethod(ast, "umlp.commands.get.DoRun", classname, domainPackage, origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, "umlp.commands.get.GetEffectedGemIds");
     getCD4C().addMethod(ast, "umlp.commands.get.GetNewlySubscribedGemIds");
+    AccessorDecorator accessor = new AccessorDecorator(glex);
+    ast.addAllCDMembers(accessor.decorate(attr));
 
     getCD4C().addImport(ast, "umlp.request.Request");
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");

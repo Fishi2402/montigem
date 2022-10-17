@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.decorator.commands;/* (c) https://github.com/MontiCore/monticore */
 
+import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.decorator.AbstractDecorator;
 
@@ -23,14 +25,14 @@ public class SetDecorator extends AbstractDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
       .forEach(c ->
-        c.getCDAttributeList()
+              CDSymbolTables.getAttributesInHierarchy(c)
           .stream()
           .filter(a -> !a.getModifier().isDerived())
           .forEach(a -> astcdPackage.addCDElement(createClass(origCD, a, c))));
   }
   
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDAttribute attribute, ASTCDClass domainClass) {
-    String classname = domainClass.getName()+"_set_"+attribute.getName();
+    String classname = domainClass.getName()+"_set"+ StringTransformations.capitalize(attribute.getName());
     
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
@@ -44,7 +46,7 @@ public class SetDecorator extends AbstractDecorator {
     getCD4C().addConstructor(ast, "umlp.commands.set.Constructor", classname, COMMAND_PACKAGE,
       attribute.getName(), type);
     getCD4C().addMethod(ast, "umlp.commands.set.DoRun", attribute.getName(), domainClass.getName(), origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.error.GetEffectedGemIds");
+    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds");
     getCD4C().addImport(ast, "umlp.command.StatusResult");
     getCD4C().addImport(ast, "umlp.command.Command");
     getCD4C().addImport(ast, "umlp.util.LogUtil");

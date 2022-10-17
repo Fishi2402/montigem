@@ -1,4 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+${tc.signature("targetName")}
 ${cd4c.method("public Collection<Long> getEffectedGemIds()")}
 
-return Collections.singleton(gemId);
+return Arrays.asList(gemId, gemId${targetName});
