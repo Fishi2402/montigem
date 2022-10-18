@@ -45,6 +45,7 @@ public class FlensburgCommandDeSer {
     deSerMap.put("hardy.commands.Car_get_gemListId", new hardy.commands.Car_get_gemListIdDeSer());
     deSerMap.put("hardy.commands.Person_addOwns", new hardy.commands.Person_addOwnsDeSer());
     deSerMap.put("hardy.commands.Address_create", new hardy.commands.Address_createDeSer());
+    deSerMap.put("hardy.commands.associations.Visits_add", new hardy.commands.associations.Visits_addDeSer());
   }
 
 

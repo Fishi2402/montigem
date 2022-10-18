@@ -34,14 +34,21 @@ public class FlensburgCommandObjectMapper extends CommandObjectMapper {
 
   private FlensburgCommandDeSer deSer = new FlensburgCommandDeSer();
 
-  // TODO: AHe: continue here
-  /*@Override
+  @Override
   protected String _serializeCommand(Command<?> command) {
-    return deSer.toJson(command);
+    String old = super._serializeCommand(command);
+    /*
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    String custom = deSer.toJson(command);
+    JsonElement oldJson = gson.fromJson(old, JsonElement.class);
+    JsonElement customJson = gson.fromJson(custom, JsonElement.class);
+    //assert oldJson.equals(customJson) : "Diff\n" + gson.toJson(oldJson) + "\n" + gson.toJson(customJson);
+     */
+    return old;
   }
 
   @Override
   protected Optional<Command<Object>> _deserializeCommand(String cmdStr) {
     return deSer.fromJson(JsonParser.parseJsonObject(cmdStr));
-  }*/
+  }
 }

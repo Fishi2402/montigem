@@ -49,6 +49,7 @@ public class PersonBuilder extends Person {
         this.gemId = gemId;
         // während des bauens ist das eine unsychronisierte GemList!
         this.owns = FlensburgManager.createOwnsBuilder(FlensburgManager.getFreeGemListId());
+        this.children = FlensburgManager.createChildrenBuilder(FlensburgManager.getFreeGemListId());
         this.visited = FlensburgManager.createVisitedBuilder(gemId, FlensburgManager.getFreeGemListId(), Collections.emptyList());
     }
 
@@ -132,6 +133,7 @@ public class PersonBuilder extends Person {
                   }
                 }
                 owns.build();
+                children.build();
                 visited.build();
                 FlensburgManager.addPerson(this);
               }

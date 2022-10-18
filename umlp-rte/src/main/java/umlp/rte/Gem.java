@@ -68,7 +68,9 @@ public class Gem<E extends GemIdentifiable> {
    */
   public Gem(long gemID, LoadingState loadingState) {
     this.gemId = gemID;
-    if (loadingState == LoadingState.LOADED || loadingState == LoadingState.NOT_YET_LOADED) {
+    if (loadingState == LoadingState.LOADED
+        // || loadingState == LoadingState.NOT_YET_LOADED // TODO AHe: check removed for deser, check if still needed
+    ) {
       Log.error("0xE2921 Object created with unexpected state");
     }
     this.loadingState = loadingState;

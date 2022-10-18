@@ -2,7 +2,10 @@ package hardy;
 
 // GEN-P
 
-import com.google.gson.*;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import umlp.command.GemTypeAdapter;
 import umlp.rte.Gem;
 import umlp.rte.LoadResult;
@@ -18,16 +21,9 @@ public class PersonMainResidenceTypeAdapter extends GemTypeAdapter // Serialisat
   // TODO: loading state?
   @Override
   public Gem<Address> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-    JsonObject obj = json.getAsJsonObject();
-    if(obj.has("object")){
-      Address address = context.deserialize(obj.get("object").getAsJsonObject(), Address.class);
-      return new Gem<>(address);
-    }else{
-      long gemId = obj.get("gemId").getAsLong();
+      long gemId = json.getAsLong();
       return new Gem<>(gemId, () -> FlensburgManager.addressOpt(gemId)
           .map(LoadResult::new)
-          .orElse(new LoadResult<>(LoadingState.EMPTY))
-      );
-    }
+          .orElse(new LoadResult<>(LoadingState.EMPTY)));
   }
 }

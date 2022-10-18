@@ -45,8 +45,8 @@ public class FlensburgManagerImpl extends FlensburgManager {
     /* === Methods for class Human === */
 
     @Override
-    protected HumanBuilder _doHuman() {
-        return new HumanBuilder(getFreeGemId());
+    protected HumanBuilder _doHumanBuilder(long gemId) {
+        return new HumanBuilder(gemId);
     }
 
     @Override
@@ -80,8 +80,8 @@ public class FlensburgManagerImpl extends FlensburgManager {
     /* === Methods for class Person === */
 
     @Override
-    protected PersonBuilder _doPersonBuilder() {
-        return new PersonBuilder(getFreeGemId());
+    protected PersonBuilder _doPersonBuilder(long gemId) {
+        return new PersonBuilder(gemId);
     }
 
     @Override
@@ -126,8 +126,8 @@ public class FlensburgManagerImpl extends FlensburgManager {
     /* === Methods for class Address === */
 
     @Override
-    protected AddressBuilder _doAddressBuilder() {
-        return new AddressBuilder(getFreeGemId());
+    protected AddressBuilder _doAddressBuilder(long gemId) {
+        return new AddressBuilder(gemId);
     }
 
     @Override
@@ -172,8 +172,8 @@ public class FlensburgManagerImpl extends FlensburgManager {
     /* === Methods for class Car === */
 
     @Override
-    protected CarBuilder _doCar() {
-        return new CarBuilder(getFreeGemId());
+    protected CarBuilder _doCarBuilder(long gemId) {
+        return new CarBuilder(gemId);
     }
 
     @Override
@@ -219,7 +219,12 @@ public class FlensburgManagerImpl extends FlensburgManager {
         return null;
     }
 
-    @Override
+  @Override
+  protected GemList<Person> _createChildrenBuilder(long freeGemListId) {
+    return null;
+  }
+
+  @Override
     public GemList<Address> _createVisited(long personGemId, long gemId, int size, List<Long> initialIds) {
         return null;
     }

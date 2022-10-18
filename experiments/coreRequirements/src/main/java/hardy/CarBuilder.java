@@ -18,13 +18,7 @@ public class CarBuilder extends Car {
       this.INTERNAL_deser_mode = value;
     }
 
-    // Die Assoziation owns ist im Builder bidirektional, damit sichergestellt werden kann,
-    // dass jedes Car eine Person hat.
-    // TODO: owns klingt als ob die Person eigentum vom Car ist.
-    // Besser wäre ownedBy, automatische Übersetzung klappt nicht. Ggf. postfix _inverted hinzufügen
-    transient Person owns;
-
-    // TODO AHe: für mainResidence das selbe
+    // TODO: alle Assoziationen bidirektional für Konsistenzchecks?
 
     public CarBuilder(long gemId) {
        this.gemId = gemId;
@@ -33,23 +27,6 @@ public class CarBuilder extends Car {
 
     public boolean isBuildFinished() {
         return buildFinished;
-    }
-
-    public CarBuilder owns(Person p){
-        this.owns = p;
-        return this;
-    }
-
-    // Dieser check ist nicht in Car verfügbar, da owns nur vor dem Build bidirektional ist
-    // TODO: muss auch nach build() überprüfbar sein!
-    public boolean checkOwns(){
-        boolean res = true;
-        if(owns == null){
-            res = false;
-            CarErrorCollector.reportOwnsInvalid(this);
-        }
-
-        return res;
     }
 
     @Override
@@ -61,7 +38,6 @@ public class CarBuilder extends Car {
                 }
                 carObservers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
                 buildFinished = true;
-                owns.addOwns(this);
                 return Optional.of(this);
             }
         }
@@ -69,7 +45,7 @@ public class CarBuilder extends Car {
     }
 
     public boolean isBuildable(){
-        return checkOwns();
+        return true;
     }
 }
 

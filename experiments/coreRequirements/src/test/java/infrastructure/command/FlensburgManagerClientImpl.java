@@ -12,7 +12,9 @@ import stanley.AddressCommandObserver;
 import stanley.CarCommandObserver;
 import stanley.HumanCommandObserver;
 import stanley.PersonCommandObserver;
-import umlp.command.*;
+import umlp.command.CommandManager;
+import umlp.command.SimpleResult;
+import umlp.command.StatusResult;
 import umlp.rte.GemList;
 import umlp.rte.GemListBuilder;
 import umlp.rte.LoadResult;
@@ -65,8 +67,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected Map<Long, Car> knownCars = Collections.synchronizedMap(new HashMap<>());
 
   @Override
-  protected HumanBuilder _doHuman() {
-    return new HumanBuilder(_doGetFreeGemId());
+  protected HumanBuilder _doHumanBuilder(long gemId) {
+    return new HumanBuilder(gemId);
   }
 
   // TODO: Falls ein Gem zurückgegeben wird kann deutlich detaillierter auf Fehler reagiert werden, z.B. mit
@@ -160,8 +162,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
 
   @Override
-  protected PersonBuilder _doPersonBuilder() {
-    return new PersonBuilder(_doGetFreeGemId());
+  protected PersonBuilder _doPersonBuilder(long gemId) {
+    return new PersonBuilder(gemId);
   }
 
   @Override
@@ -254,8 +256,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected AddressBuilder _doAddressBuilder() {
-    return new AddressBuilder(_doGetFreeGemId());
+  protected AddressBuilder _doAddressBuilder(long gemId) {
+    return new AddressBuilder(gemId);
   }
 
   @Override
@@ -348,8 +350,8 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   }
 
   @Override
-  protected CarBuilder _doCar() {
-    return new CarBuilder(_doGetFreeGemId());
+  protected CarBuilder _doCarBuilder(long gemId) {
+    return new CarBuilder(gemId);
   }
 
   @Override
@@ -497,6 +499,26 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
           List<LoadResult<Car>> res = new ArrayList<>();
           for (Long id : ids) {
             SimpleResult<Car> tmp = CommandManager.executeCommand(new Car_get(id)).asSimpleResult();
+            if(tmp.isSuccessful()) {
+              res.add(new LoadResult<>(tmp.get()));
+            }else{
+              res.add(new LoadResult<>(tmp.getLoadingState()));
+            }
+          }
+          return res;
+        }
+    );
+  }
+
+  @Override
+  protected GemList<Person> _createChildrenBuilder(long freeGemListId) {
+// TODO: duplicated code!
+    return new GemListBuilder<>(
+        freeGemListId,
+        ids -> {
+          List<LoadResult<Person>> res = new ArrayList<>();
+          for (Long id : ids) {
+            SimpleResult<Person> tmp = CommandManager.executeCommand(new Person_get(id)).asSimpleResult();
             if(tmp.isSuccessful()) {
               res.add(new LoadResult<>(tmp.get()));
             }else{

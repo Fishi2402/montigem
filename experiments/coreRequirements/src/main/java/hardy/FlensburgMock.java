@@ -84,8 +84,8 @@ public class FlensburgMock extends FlensburgManager {
   protected PersonCommandSendingObserver thePersonCommandSendingObserver = new PersonCommandSendingObserver();
 
   // get a Builder ---------------------------------------
-  protected PersonBuilder _doPersonBuilder() {
-    return new PersonBuilder(_doGetFreeGemId());
+  protected PersonBuilder _doPersonBuilder(long gemId) {
+    return new PersonBuilder(gemId);
     // todo: überlegen hier schon mal das Objekt merken??? Oder Observer setzen?
   }
 
@@ -181,8 +181,8 @@ public class FlensburgMock extends FlensburgManager {
   protected HumanCommandSendingObserver theHumanCommandSendingObserver = new HumanCommandSendingObserver();
 
   @Override
-  protected HumanBuilder _doHuman() {
-    return new HumanBuilder(getFreeGemId());
+  protected HumanBuilder _doHumanBuilder(long gemId) {
+    return new HumanBuilder(gemId);
   }
 
   @Override
@@ -253,8 +253,8 @@ public class FlensburgMock extends FlensburgManager {
   protected AddressCommandSendingObserver theAddressCommandObserver = new AddressCommandSendingObserver();
   
   @Override
-  protected AddressBuilder _doAddressBuilder() {
-    return new AddressBuilder(getFreeGemId());
+  protected AddressBuilder _doAddressBuilder(long gemId) {
+    return new AddressBuilder(gemId);
   }
 
   @Override
@@ -334,8 +334,8 @@ public class FlensburgMock extends FlensburgManager {
   }
   
   @Override
-  protected CarBuilder _doCar() {
-    return new CarBuilder(getFreeGemId());
+  protected CarBuilder _doCarBuilder(long gemId) {
+    return new CarBuilder(gemId);
   }
 
   @Override
@@ -423,6 +423,17 @@ public class FlensburgMock extends FlensburgManager {
         Collections.emptyList()
     );
     gemLists.put(gemListId, res);
+    return res;
+  }
+
+  @Override
+  protected GemList<Person> _createChildrenBuilder(long freeGemListId) {
+    MockGemListBuilder<Person> res = new MockGemListBuilder<>(
+        freeGemListId,
+        gemId -> _doPersonOpt(gemId).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),
+        Collections.emptyList()
+    );
+    gemLists.put(freeGemListId, res);
     return res;
   }
 

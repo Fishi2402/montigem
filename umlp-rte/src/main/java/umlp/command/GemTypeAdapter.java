@@ -3,11 +3,10 @@ package umlp.command;
 // GEN-P
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import umlp.rte.Gem;
-import umlp.rte.LoadingState;
 
 import java.lang.reflect.Type;
 
@@ -16,9 +15,6 @@ public class GemTypeAdapter implements JsonSerializer<Gem<?>> {
 
   @Override
   public JsonElement serialize(Gem<?> src, Type typeOfSrc, JsonSerializationContext context) {
-    JsonObject res = new JsonObject();
-    res.addProperty("gemId", src.getGemId());
-    res.addProperty("loadingState", LoadingState.NOT_YET_LOADED.toString());
-    return res;
+    return new JsonPrimitive(src.getGemId());
   }
 }

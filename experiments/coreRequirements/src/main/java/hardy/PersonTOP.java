@@ -6,7 +6,10 @@ package hardy;
 
 import com.google.common.collect.Sets;
 import com.google.gson.annotations.JsonAdapter;
-import umlp.rte.*;
+import umlp.rte.Gem;
+import umlp.rte.GemList;
+import umlp.rte.GemListDeserHelper;
+import umlp.rte.NotificationScope;
 
 import java.util.*;
 
@@ -44,6 +47,7 @@ public abstract class PersonTOP extends Human {
   protected GemList<Car> owns;
   // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
 
+  @JsonAdapter(PersonGemListTypeAdapter.class)
   protected GemList<Person> children;
 
   @JsonAdapter(AddressGemListTypeAdapter.class)

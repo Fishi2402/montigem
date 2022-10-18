@@ -5,10 +5,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 // TODO: Brauchen wir hier Observer, oder werden die Observer eine ebene höher genutzt?
 // Sonst kann es zu Dopplung kommen, z.B. gibt es bei Person#addOwns die Methode PersonObserver#notifyAddOwns,
@@ -215,5 +213,9 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
    */
   public void removeIdSure(long gemId) {
     ids.removeIf(l -> Objects.equals(l, gemId));
+  }
+
+  public void setGemId(long gemListId) {
+    this.gemID = gemListId;
   }
 }

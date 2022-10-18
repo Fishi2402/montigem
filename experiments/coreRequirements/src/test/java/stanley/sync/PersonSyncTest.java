@@ -2,22 +2,20 @@ package stanley.sync;
 
 import de.se_rwth.commons.logging.Log;
 import hardy.*;
-import infrastructure.command.CommandDirectCommunication;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import infrastructure.command.FlensburgManagerClientImplBuilder;
-import stanley.FlensburgTestContext;
-import infrastructure.command.TestClientCommandManager;
-import umlp.command.Command;
-import umlp.command.CommandResult;
 import hardy.requests.GetFreeGemIdRequest;
 import hardy.requests.GetFreeGemListIdRequest;
+import infrastructure.command.CommandDirectCommunication;
+import infrastructure.command.FlensburgManagerClientImplBuilder;
+import infrastructure.command.TestClientCommandManager;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import stanley.FlensburgTestContext;
+import umlp.command.Command;
+import umlp.command.CommandResult;
 import umlp.rte.GemList;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -111,7 +109,8 @@ public class PersonSyncTest {
     for(int i = 0; i < 10; i++) {
       Log.info("Add Car " + i + " from Client", "PersonSyncTest");
       clientContext.activate();
-      Car c_i = FlensburgManager.carBuilder().owns(p1001).build().get();
+      Car c_i = FlensburgManager.carBuilder().build().get();
+      p1001.addOwns(c_i);
 
       Log.info("Check it is synced to server", "PersonSyncTest");
       serverContext.activate();
@@ -146,7 +145,8 @@ public class PersonSyncTest {
     for (int i = 0; i < 10; i++) {
       Log.info("Add Car " + i + " from Server", "PersonSyncTest");
       serverContext.activate();
-      Car c_i_server = FlensburgManager.carBuilder().owns(p1001Server).build().get();
+      Car c_i_server = FlensburgManager.carBuilder().build().get();
+      p1001Server.addOwns(c_i_server);
 
       Log.info("Check it is synced to the client", "PersonSyncTest");
       clientContext.activate();
@@ -175,7 +175,8 @@ public class PersonSyncTest {
 
     for (int i = 0; i < 10; i++) {
       Log.info("Create Car " + i, "PersonSyncTest");
-      Car c = FlensburgManager.carBuilder().owns(p1001).build().get();
+      Car c = FlensburgManager.carBuilder().build().get();
+      p1001.addOwns(c);
       cars.add(c);
     }
 
@@ -204,8 +205,8 @@ public class PersonSyncTest {
     serverContext.activate();
     PersonBuilder pb1001 = FlensburgManager.personBuilder();
     Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
-    Car c = FlensburgManager.carBuilder().owns(pb1001).build().get();
-    Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
+    Car c = FlensburgManager.carBuilder().build().get();
+    Person p1001 = pb1001.ownsAdd(c).mainResidence(addr).age(20).nickname("Smith").build().get();
 
     assertTrue(c.isBuildFinished());
 
@@ -271,8 +272,8 @@ public class PersonSyncTest {
     FlensburgMock.secretlyAdaptnextGemIds(200);
     Log.info("Add Car from Client", "PersonSyncTest");
     clientContext.activate();
-    Car c = FlensburgManager.carBuilder().owns(pb1001).build().get();
-
+    Car c = FlensburgManager.carBuilder().build().get();
+    pb1001.ownsAdd(c);
     Person p1001 = pb1001.build().get();
 
     Log.info("Check owns is not empty in Server", "PersonSyncTest");
@@ -294,8 +295,8 @@ public class PersonSyncTest {
     serverContext.activate();
     PersonBuilder pb1001 = FlensburgManager.personBuilder();
     Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
-    Car c = FlensburgManager.carBuilder().owns(pb1001).build().get();
-    Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
+    Car c = FlensburgManager.carBuilder().build().get();
+    Person p1001 = pb1001.ownsAdd(c).mainResidence(addr).age(20).nickname("Smith").build().get();
 
     clientContext.activate();
     Person p1001Client = FlensburgManager.getPersonSure(startGemId);
@@ -322,8 +323,8 @@ public class PersonSyncTest {
     serverContext.activate();
     PersonBuilder pb1001 = FlensburgManager.personBuilder();
     Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
-    Car c = FlensburgManager.carBuilder().owns(pb1001).build().get();
-    Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
+    Car c = FlensburgManager.carBuilder().build().get();
+    Person p1001 = pb1001.ownsAdd(c).mainResidence(addr).age(20).nickname("Smith").build().get();
 
     clientContext.activate();
     Person p1001Client = FlensburgManager.getPersonSure(startGemId);

@@ -77,11 +77,32 @@ public abstract class FlensburgManager {
       return getSingleton()._createAddressGem(gemId);
   }
 
+  public static Gem<Person> createPersonGem(long personId) {
+    return getSingleton()._createPersonGem(personId);
+  }
+
+  protected Gem<Person> _createPersonGem(long personId){
+    return new Gem<>(personId, () -> {
+      Optional<Person> personOpt = _doPersonOpt(personId);
+      if(personOpt.isPresent()){
+        return new LoadResult<>(personOpt.get());
+      }else {
+        return new LoadResult<>(LoadingState.EMPTY);
+      }
+    });
+  }
+
   public static GemList<Car> createOwnsBuilder(long gemListId) {
     return getSingleton()._doCreateOwnsBuilder(gemListId);
   }
 
   protected abstract GemList<Car> _doCreateOwnsBuilder(long gemListId);
+
+  public static GemList<Person> createChildrenBuilder(long freeGemListId) {
+    return getSingleton()._createChildrenBuilder(freeGemListId);
+  }
+
+  protected abstract GemList<Person> _createChildrenBuilder(long freeGemListId);
 
   protected Gem<Address> _createAddressGem(long gemId){
       return new Gem<>(gemId, () -> {
@@ -125,10 +146,18 @@ public abstract class FlensburgManager {
      * @return builder object for the class {@link Human}.
      */
     public static HumanBuilder humanBuilder() {
-        return getSingleton()._doHuman();
+        return getSingleton()._doHumanBuilder();
     }
 
-    protected abstract HumanBuilder _doHuman();
+    protected HumanBuilder _doHumanBuilder(){
+        return getSingleton()._doHumanBuilder(_doGetFreeGemId());
+    }
+
+    public static HumanBuilder humanBuilder(long gemId) {
+        return getSingleton()._doHumanBuilder(gemId);
+    }
+
+    protected abstract HumanBuilder _doHumanBuilder(long gemId);
 
     /**
      * Gives the {@link Human} object with the given gemId.
@@ -197,7 +226,15 @@ public abstract class FlensburgManager {
         return getSingleton()._doPersonBuilder();
     }
 
-    protected abstract PersonBuilder _doPersonBuilder();
+    protected PersonBuilder _doPersonBuilder(){
+        return getSingleton()._doPersonBuilder(_doGetFreeGemId());
+    }
+
+    public static PersonBuilder personBuilder(long gemId) {
+      return getSingleton()._doPersonBuilder(gemId);
+    }
+
+    protected abstract PersonBuilder _doPersonBuilder(long gemId);
 
     // TODO AHe: immer ein Gem zurückgeben und ...Sure streichen?
 
@@ -272,7 +309,15 @@ public abstract class FlensburgManager {
         return getSingleton()._doAddressBuilder();
     }
 
-    protected abstract AddressBuilder _doAddressBuilder();
+    protected AddressBuilder _doAddressBuilder(){
+      return getSingleton()._doAddressBuilder(_doGetFreeGemId());
+    }
+
+    public static AddressBuilder addressBuilder(long gemId) {
+        return getSingleton()._doAddressBuilder(gemId);
+    }
+
+    protected abstract AddressBuilder _doAddressBuilder(long gemId);
 
     public static boolean isLoadedAddress(long gemId){
      return getSingleton()._isLoadedAddress(gemId);
@@ -342,10 +387,18 @@ public abstract class FlensburgManager {
      * @return builder object for the class {@link Car}.
      */
     public static CarBuilder carBuilder() {
-        return getSingleton()._doCar();
+        return getSingleton()._doCarBuilder();
     }
 
-    protected abstract CarBuilder _doCar();
+    protected CarBuilder _doCarBuilder(){
+      return getSingleton()._doCarBuilder(_doGetFreeGemId());
+    }
+
+  public static CarBuilder carBuilder(long gemId) {
+    return getSingleton()._doCarBuilder(gemId);
+  }
+
+  protected abstract CarBuilder _doCarBuilder(long gemId);
 
     /**
      * Gives the {@link Car} object with the given gemId.

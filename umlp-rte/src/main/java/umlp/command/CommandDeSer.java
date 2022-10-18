@@ -12,17 +12,6 @@ public abstract class CommandDeSer<T extends Command<?>> {
     printer.member("id", command.getId());
     printer.member("commandType", command.getCommandType());
     printer.member("participantId", command.getParticipantId());
-    printer.member("isRequest", command.isRequest());
-    printer.beginArray("effectedGemIds");
-    for (Long effectedGemId : command.getEffectedGemIds()) {
-      printer.value(effectedGemId);
-    }
-    printer.endArray();
-    printer.beginArray("newlySubscribedGemIds");
-    for (Long newlySubscribedGemId : command.getNewlySubscribedGemIds()) {
-      printer.value(newlySubscribedGemId);
-    }
-    printer.endArray();
   }
 
   public String toJson(T command){
@@ -39,6 +28,7 @@ public abstract class CommandDeSer<T extends Command<?>> {
     Optional<T> res = fromJsonObject(jsonObject);
     if(res.isPresent()){
       res.get().setId(jsonObject.getLongMember("id"));
+      res.get().setParticipantId(jsonObject.getLongMember("participantId"));
     }
     return res;
   }
