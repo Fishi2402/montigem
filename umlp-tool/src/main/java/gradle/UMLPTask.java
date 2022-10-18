@@ -34,6 +34,8 @@ import java.util.stream.StreamSupport;
 
 @CacheableTask
 public abstract class UMLPTask extends DefaultTask {
+  final String UMLP_TASK_DEBUG = "de.rwth.se.umlp.debug";
+  final String ORG_GRADLE_PARALLEL = "org.gradle.parallel";
 
   @Incremental
   @org.gradle.api.tasks.Optional
@@ -91,7 +93,17 @@ public abstract class UMLPTask extends DefaultTask {
         getProject().getLayout().getBuildDirectory().dir("umlp_reports/task_" + this.getName())
     );
 
-    getDebug().convention(false);
+    if(getProject().hasProperty(UMLP_TASK_DEBUG)){
+      boolean debug = "true" .equals(getProject().property(UMLP_TASK_DEBUG));
+      getDebug().convention(debug);
+
+      if(debug && getProject().hasProperty(ORG_GRADLE_PARALLEL) && "true".equals(getProject().property(ORG_GRADLE_PARALLEL))){
+        Log.warn("Gradle Parallel Execution should be disabled in UMLP Debug Mode. \n" +
+            "set\n\t" + ORG_GRADLE_PARALLEL + "=false\n in your <gradle.properties>" ); // TODO
+      }
+    } else {
+      getDebug().convention(false);
+    }
   }
 
 
