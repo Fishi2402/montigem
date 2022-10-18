@@ -17,6 +17,8 @@ import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
+import umlp.UMLPTool;
+import umlp.UMLPToolOptions;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -66,6 +68,10 @@ public abstract class UMLPTask extends DefaultTask {
   @org.gradle.api.tasks.Optional
   abstract ListProperty<String> getMoreArgs();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  abstract Property<Boolean> getDebug();
+
   @OutputDirectory
   abstract DirectoryProperty getOutputDir();
 
@@ -84,6 +90,8 @@ public abstract class UMLPTask extends DefaultTask {
     this.getReportDir().convention(
         getProject().getLayout().getBuildDirectory().dir("umlp_reports/task_" + this.getName())
     );
+
+    getDebug().convention(false);
   }
 
 
@@ -207,9 +215,19 @@ public abstract class UMLPTask extends DefaultTask {
         String.join(" ", createArgList(f.toPath(), p -> cwd.relativize(p).toString()))
     );
 
-    workQueue.submit(UMLPAction.class, param -> {
-      param.getArgs().set(createArgList(f.toPath(), p -> p.toAbsolutePath().toString()));
-    });
+    List<String> args = createArgList(f.toPath(), p -> p.toAbsolutePath().toString());
+    if (getDebug().get()){
+      // Set the "debug" flag in the arguments
+      args.add("-" + UMLPToolOptions.DEBUG.getCMD());
+
+      // In debug mode, run code directly. Otherwise breakpoints etc do not work
+      UMLPTool.main(args.toArray(new String[0]));
+    } else {
+      // In normal mode, run in a workQue. This ensures isolation & parallelization
+      workQueue.submit(UMLPAction.class, param -> {
+        param.getArgs().set(args);
+      });
+    }
   }
 
   private Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
