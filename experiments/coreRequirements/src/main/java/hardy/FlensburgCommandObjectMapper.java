@@ -36,15 +36,7 @@ public class FlensburgCommandObjectMapper extends CommandObjectMapper {
 
   @Override
   protected String _serializeCommand(Command<?> command) {
-    String old = super._serializeCommand(command);
-    /*
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    String custom = deSer.toJson(command);
-    JsonElement oldJson = gson.fromJson(old, JsonElement.class);
-    JsonElement customJson = gson.fromJson(custom, JsonElement.class);
-    //assert oldJson.equals(customJson) : "Diff\n" + gson.toJson(oldJson) + "\n" + gson.toJson(customJson);
-     */
-    return old;
+    return deSer.toJson(command);
   }
 
   @Override
