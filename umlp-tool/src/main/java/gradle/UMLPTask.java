@@ -93,15 +93,18 @@ public abstract class UMLPTask extends DefaultTask {
         getProject().getLayout().getBuildDirectory().dir("umlp_reports/task_" + this.getName())
     );
 
+    // Project wide setting of debug modus
     if(getProject().hasProperty(UMLP_TASK_DEBUG)){
       boolean debug = "true" .equals(getProject().property(UMLP_TASK_DEBUG));
       getDebug().convention(debug);
 
+      // The debug-mode disables isolation... hence static variables are shared and errors can occur, especially in parallel execution.
       if(debug && getProject().hasProperty(ORG_GRADLE_PARALLEL) && "true".equals(getProject().property(ORG_GRADLE_PARALLEL))){
         Log.warn("Gradle Parallel Execution should be disabled in UMLP Debug Mode. \n" +
-            "set\n\t" + ORG_GRADLE_PARALLEL + "=false\n in your <gradle.properties>" ); // TODO
+            "set\n\t" + ORG_GRADLE_PARALLEL + "=false\n in your <gradle.properties>" );
       }
     } else {
+      // Default: No Debug
       getDebug().convention(false);
     }
   }
