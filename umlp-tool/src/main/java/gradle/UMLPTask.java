@@ -271,7 +271,7 @@ public abstract class UMLPTask extends DefaultTask {
       if (ch.getChangeType() == ChangeType.REMOVED
           && isInputFile(ch.getFile())
           && ch.getFileType() == FileType.FILE) {
-        this.deletePreviousOutput(ch.getFile(), new IncGenData(getIncGenFile(ch.getFile()), Paths.get("").toFile()));
+        this.deletePreviousOutput(ch.getFile(), new IncGenData(getIncGenFile(ch.getFile()), getProject().getProjectDir().toPath().toAbsolutePath().toFile()));
       }
     });
 
