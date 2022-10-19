@@ -65,7 +65,6 @@ import java.util.Optional;
 
   // TODO: change in decorator
   printer.beginObject("owns");
-  printer.member("listId", obj.getOwnsGemList().getGemId());
   printer.member("size", obj.getOwnsGemList().size()); // TODO: no longer needed?
   printer.beginArray("values");
   for(long gemId : obj.getOwnsGemList().getIDs()){
@@ -140,7 +139,6 @@ import java.util.Optional;
 
   // TODO: change in decorator
   printer.beginObject("visited");
-  printer.member("listId", obj.getVisitedGemList().getGemId());
   printer.member("size", obj.getVisitedGemList().size()); // TODO: no longer needed?
   printer.beginArray("values");
   for(long gemId : obj.getVisitedGemList().getIDs()){
@@ -187,7 +185,6 @@ import java.util.Optional;
 
   // TODO: change in decorator
   printer.beginObject("children");
-  printer.member("listId", obj.getChildrenGemList().getGemId());
   printer.member("size", obj.getChildrenGemList().size()); // TODO: no longer needed?
   printer.beginArray("values");
   for(long gemId : obj.getChildrenGemList().getIDs()){
@@ -298,11 +295,6 @@ import java.util.Optional;
       .visitedGemListIds(deserializeVisited(json))
       .childrenGemListIds(deserializeChildren(json))
   ;
-
-  // TODO: is gemListId still needed?
-   builder.getOwnsGemList().setGemId(json.getObjectMember("owns").getLongMember("listId"));
-   builder.getVisitedGemList().setGemId(json.getObjectMember("visited").getLongMember("listId"));
-   builder.getChildrenGemList().setGemId(json.getObjectMember("children").getLongMember("listId"));
 
   deserialize_Addons(builder, json);
   return builder.build();

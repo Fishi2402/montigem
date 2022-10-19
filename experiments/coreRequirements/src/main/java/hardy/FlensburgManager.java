@@ -30,7 +30,10 @@ package hardy;
 
 import umlp.rte.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class FlensburgManager {
 
@@ -50,28 +53,10 @@ public abstract class FlensburgManager {
   // Änderungen an der Klasse.
   // Beispiel: Person p1 hat gemId 1001, p2 hat 1002; Eine Assoziation wird zu Person hinzugefügt und beim nächsten
   // Ausführen des Tests hat p1 gemId 1001 und p2 hat 1003, da die GemList der Assoziation die id 1002 benutzt.
-  public static long getFreeGemListId(){
-    return getSingleton()._doGetFreeGemListId();
-  }
 
   public static void initMe(FlensburgManager flensburgManager) {
         instance = flensburgManager;
     }
-
-  // Wird genutzt, um alle gemLists den Commandos zur synchronisierung der gemIds zur Verfügung zu stellen.
-  protected Map<Long, GemList<?>> gemLists = new HashMap<>();
-
-  public static Optional<GemList<?>> getGemListOpt(long gemListId) {
-    return getSingleton()._doGetGemListOpt(gemListId);
-  }
-
-  protected Optional<GemList<?>> _doGetGemListOpt(long gemListId) {
-    if(!gemLists.containsKey(gemListId)){
-      return Optional.empty();
-    }
-
-    return Optional.of(gemLists.get(gemListId));
-  }
 
   public static Gem<Address> createAddressGem(long gemId) {
       return getSingleton()._createAddressGem(gemId);
@@ -92,17 +77,17 @@ public abstract class FlensburgManager {
     });
   }
 
-  public static GemList<Car> createOwnsBuilder(long gemListId) {
-    return getSingleton()._doCreateOwnsBuilder(gemListId);
+  public static GemList<Car> createOwnsBuilder() {
+    return getSingleton()._doCreateOwnsBuilder();
   }
 
-  protected abstract GemList<Car> _doCreateOwnsBuilder(long gemListId);
+  protected abstract GemList<Car> _doCreateOwnsBuilder();
 
-  public static GemList<Person> createChildrenBuilder(long freeGemListId) {
-    return getSingleton()._createChildrenBuilder(freeGemListId);
+  public static GemList<Person> createChildrenBuilder() {
+    return getSingleton()._createChildrenBuilder();
   }
 
-  protected abstract GemList<Person> _createChildrenBuilder(long freeGemListId);
+  protected abstract GemList<Person> _createChildrenBuilder();
 
   protected Gem<Address> _createAddressGem(long gemId){
       return new Gem<>(gemId, () -> {
@@ -116,8 +101,6 @@ public abstract class FlensburgManager {
   }
 
   protected abstract long _doGetFreeGemId();
-
-  protected abstract long _doGetFreeGemListId();
 
   /**
      * Returns the singleton {@link FlensburgManager} instance.
@@ -463,27 +446,25 @@ public abstract class FlensburgManager {
    *
    * @return {@link List} the class {@link Car}.
    */
-  public static GemList<Car> createOwns(long personGemId, long gemListId, int size, List<Long> initialCarGemIds) {
-    return getSingleton()._doCreateOwns(personGemId, gemListId, size, initialCarGemIds);
+  public static GemList<Car> createOwns(long personGemId, int size, List<Long> initialCarGemIds) {
+    return getSingleton()._doCreateOwns(personGemId, size, initialCarGemIds);
   }
 
-  protected abstract GemList<Car> _doCreateOwns(long personGemId, long gemListId, int size, List<Long> initialCarGemIds);
+  protected abstract GemList<Car> _doCreateOwns(long personGemId, int size, List<Long> initialCarGemIds);
 
-  public static GemList<Car> createOwns(long personGemId, long gemListId, int size) {
-    return getSingleton()._doCreateOwns(personGemId, gemListId, size);
+  public static GemList<Car> createOwns(long personGemId, int size) {
+    return getSingleton()._doCreateOwns(personGemId, size);
   }
 
-  protected GemList<Car> _doCreateOwns(long personGemId, long gemListId, int size){
-    return _doCreateOwns(personGemId, gemListId, size, Collections.emptyList());
+  protected GemList<Car> _doCreateOwns(long personGemId, int size){
+    return _doCreateOwns(personGemId, size, Collections.emptyList());
   }
 
-  public static GemList<Person> createChildren(long personGemId, long gemListId, int size, List<Long> initialIds) {
-    return getSingleton()._createChildren(personGemId, gemListId, size, initialIds);
+  public static GemList<Person> createChildren(long personGemId, int size, List<Long> initialIds) {
+    return getSingleton()._createChildren(personGemId, size, initialIds);
   }
 
-  protected abstract GemList<Person> _createChildren(long personGemId, long gemListId, int size, List<Long> initialIds);
-
-
+  protected abstract GemList<Person> _createChildren(long personGemId, int size, List<Long> initialIds);
 
   public static GemList<Address> createVisited(long personGemId, long gemId, int size, List<Long> initialIds) {
     return getSingleton()._createVisited(personGemId, gemId, size, initialIds);
@@ -491,23 +472,23 @@ public abstract class FlensburgManager {
 
   protected abstract GemList<Address> _createVisited(long personGemId, long gemId, int size, List<Long> initialIds);
   
-  public static GemList<Address> createVisitedBuilder(long personGemId, long gemId, List<Long> initialIds) {
-    return getSingleton()._createVisitedBuilder(personGemId, gemId, initialIds);
+  public static GemList<Address> createVisitedBuilder(long personGemId, List<Long> initialIds) {
+    return getSingleton()._createVisitedBuilder(personGemId, initialIds);
   }
 
-  protected abstract GemList<Address> _createVisitedBuilder(long personGemId, long gemId, List<Long> initialIds);
+  protected abstract GemList<Address> _createVisitedBuilder(long personGemId, List<Long> initialIds);
   
-  public static GemList<Person> createVisitors(long addressGemId, long gemListId, int size, List<Long> initialIds) {
-    return getSingleton()._createVisitors(addressGemId, gemListId, initialIds);
+  public static GemList<Person> createVisitors(long addressGemId, int size, List<Long> initialIds) {
+    return getSingleton()._createVisitors(addressGemId, initialIds);
   }
 
-  protected abstract GemList<Person> _createVisitors(long addressGemId, long gemListId, List<Long> initialIds);
+  protected abstract GemList<Person> _createVisitors(long addressGemId, List<Long> initialIds);
 
-  public static GemList<Person> createVisitorsBuilder(long addressGemId, long gemListId, List<Long> initialIds) {
-    return getSingleton()._createVisitorsBuilder(addressGemId, gemListId, initialIds);
+  public static GemList<Person> createVisitorsBuilder(long addressGemId, List<Long> initialIds) {
+    return getSingleton()._createVisitorsBuilder(addressGemId, initialIds);
   }
 
-  protected abstract GemList<Person> _createVisitorsBuilder(long addressGemId, long gemListId, List<Long> initialIds);
+  protected abstract GemList<Person> _createVisitorsBuilder(long addressGemId, List<Long> initialIds);
 
 
 

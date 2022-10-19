@@ -3,7 +3,6 @@ package stanley.sync;
 import de.se_rwth.commons.logging.Log;
 import hardy.*;
 import hardy.requests.GetFreeGemIdRequest;
-import hardy.requests.GetFreeGemListIdRequest;
 import infrastructure.command.CommandDirectCommunication;
 import infrastructure.command.FlensburgManagerClientImplBuilder;
 import infrastructure.command.TestClientCommandManager;
@@ -237,7 +236,7 @@ public class PersonSyncTest {
         .commandManager(new TestClientCommandManager(commandCommunication){
           @Override
           protected <T> CommandResult<T> _executeCommand(Command<T> command) {
-            if(!(command instanceof GetFreeGemIdRequest || command instanceof GetFreeGemListIdRequest)){
+            if(!(command instanceof GetFreeGemIdRequest)){
               fail("Received command that is not a GetFreeGemIdRequest: " + command);
             }
             return super._executeCommand(command);

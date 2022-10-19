@@ -6,7 +6,6 @@ import hardy.requests.GetFreeGemIdRequest;
 import infrastructure.command.ClientWebSocketCommandCommunication;
 import infrastructure.command.FlensburgManagerClientImplBuilder;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -20,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
 @SpringBootTest(classes = UMLPApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CommandCommunicationTest {
 

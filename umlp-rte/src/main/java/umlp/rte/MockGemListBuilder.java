@@ -3,7 +3,10 @@ package umlp.rte;
 // GEN-T
 // GEN-P: Demos mit FlensburgMock
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 // Siehe GemListBuilder
@@ -11,8 +14,8 @@ public class MockGemListBuilder<E extends GemIdentifiable> extends MockGemList<E
   protected boolean buildFinished = false;
   protected Map<Integer, E> idxToBuilder = new HashMap<>();
 
-  public MockGemListBuilder(long gemID, Function<Long, LoadResult<E>> loadSingleObjectFunction, List<Long> initialIds) {
-    super(gemID, initialIds, loadSingleObjectFunction);
+  public MockGemListBuilder(Function<Long, LoadResult<E>> loadSingleObjectFunction, List<Long> initialIds) {
+    super(initialIds, loadSingleObjectFunction);
   }
 
   @Override

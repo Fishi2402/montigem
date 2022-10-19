@@ -22,12 +22,8 @@ public class AddressBuilder extends Address {
     }
 
     public AddressBuilder(long gemId) {
-      this(gemId, FlensburgManager.getFreeGemListId());
-    }
-
-    public AddressBuilder(long gemId, long visitorsGemListId){
       this.gemId = gemId;
-      this.visitors = FlensburgManager.createVisitorsBuilder(gemId, visitorsGemListId, Collections.emptyList());
+      this.visitors = FlensburgManager.createVisitorsBuilder(gemId, Collections.emptyList());
       init();
     }
 

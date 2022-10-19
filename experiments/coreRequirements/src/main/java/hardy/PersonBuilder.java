@@ -46,18 +46,11 @@ public class PersonBuilder extends Person {
     //+ gemId wird bereits beim initialisieren des Builders besetzt
     // und ein Validator wird auch mitgeliefert (und erstmal gespeichert)
     public PersonBuilder(long gemId) {
-      this(gemId,
-          FlensburgManager.getFreeGemListId(),
-          FlensburgManager.getFreeGemListId(),
-          FlensburgManager.getFreeGemListId());
-    }
-
-    public PersonBuilder(long gemId, long ownsGemListId, long childrenGemListId, long visitedGemListId){
       this.gemId = gemId;
       // während des bauens ist das eine unsychronisierte GemList!
-      this.owns = FlensburgManager.createOwnsBuilder(ownsGemListId);
-      this.children = FlensburgManager.createChildrenBuilder(childrenGemListId);
-      this.visited = FlensburgManager.createVisitedBuilder(gemId, visitedGemListId, Collections.emptyList());
+      this.owns = FlensburgManager.createOwnsBuilder();
+      this.children = FlensburgManager.createChildrenBuilder();
+      this.visited = FlensburgManager.createVisitedBuilder(gemId, Collections.emptyList());
     }
 
     // Standard set-Function:

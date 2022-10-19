@@ -17,8 +17,7 @@ import java.util.function.Function;
  * Elements are loaded as they are required.
  * Useful if e.g. the elements are loaded over a network.
  */
-public class GemList<E extends GemIdentifiable> extends AbstractList<E>
-    implements GemIdentifiable {
+public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
 
   protected final static String UNEXPECTED_LIST_LENGTH_ERROR =
       "0xAC724 recieved list of unexpected length";
@@ -28,10 +27,6 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
 
   protected final static String FAILED_TO_LOAD_IDS_ERROR =
       "0xAC727 failed to load ids";
-
-  protected final static int UNKNOWN_SIZE = -32;
-
-  protected long gemID;
 
   // Lokaler speicher für die gemIds der enthaltenen Objekte. Enthält alle IDs der Assoziation.
   protected List<Long> ids;
@@ -45,25 +40,22 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   protected Consumer<Set<Integer>> removeIdxsFunction;
 
   public GemList(
-      long gemID,
       List<Long> ids,
       Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction
   ) {
-    this(gemID, ids, loadObjectsFunction, null, null, null);
+    this(ids, loadObjectsFunction, null, null, null);
     this.setIdxFunction = this::_internal_set;
     this.addIDsFunction = this::_internal_add;
     this.removeIdxsFunction = this::_internal_remove;
   }
 
   public GemList(
-      long gemId,
       List<Long> ids,
       Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
       BiConsumer<Integer, Long> setIdxFunction,
       BiConsumer<Integer, List<Long>> addIDsFunction,
       Consumer<Set<Integer>> removeIdxsFunction
   ) {
-    this.gemID = gemId;
     this.ids = new ArrayList<>(ids);
     this.loadObjectsFunction = loadObjectsFunction;
     this.setIdxFunction = setIdxFunction;
@@ -196,10 +188,6 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     return elem.getGemId();
   }
 
-  @Override
-  public long getGemId() {
-    return gemID;
-  }
 
   // Pseudo-build that does nothing
   public Optional<GemList<E>> build(){
@@ -214,9 +202,5 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   public void removeIdSure(long gemId) {
     System.out.println(ids);
     ids.removeIf(l -> Objects.equals(l, gemId));
-  }
-
-  public void setGemId(long gemListId) {
-    this.gemID = gemListId;
   }
 }

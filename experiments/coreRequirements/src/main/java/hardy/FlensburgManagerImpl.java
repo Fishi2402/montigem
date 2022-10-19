@@ -32,11 +32,6 @@ public class FlensburgManagerImpl extends FlensburgManager {
         return DatabaseAccessManager.getFreeGemId();
     }
 
-    protected long _doGetFreeGemListId() {
-        // TODO: implement second id pool, see FlensburgManager#getFreeGemListId for info
-        return DatabaseAccessManager.getFreeGemId();
-    }
-
     @Override
     public NotificationScope errorNotificationScope() {
         return NotificationScope.GLOBAL;
@@ -205,22 +200,22 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected GemList<Car> _doCreateOwns(long personGemId, long gemListId, int size, List<Long> initialCarGemIds) {
+    protected GemList<Car> _doCreateOwns(long personGemId, int size, List<Long> initialCarGemIds) {
         return null;
     }
 
   @Override
-  protected GemList<Person> _createChildren(long personGemId, long gemListId, int size, List<Long> initialIds) {
+  protected GemList<Person> _createChildren(long personGemId, int size, List<Long> initialIds) {
     return null;
   }
 
   @Override
-    protected GemList<Car> _doCreateOwnsBuilder(long gemListId) {
+    protected GemList<Car> _doCreateOwnsBuilder() {
         return null;
     }
 
   @Override
-  protected GemList<Person> _createChildrenBuilder(long freeGemListId) {
+  protected GemList<Person> _createChildrenBuilder() {
     return null;
   }
 
@@ -230,17 +225,17 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    protected GemList<Person> _createVisitors(long addressGemId, long gemListId, List<Long> initialIds) {
+    protected GemList<Person> _createVisitors(long addressGemId, List<Long> initialIds) {
         return null;
     }
 
     @Override
-    protected GemList<Address> _createVisitedBuilder(long personGemId, long gemId, List<Long> initialIds) {
+    protected GemList<Address> _createVisitedBuilder(long personGemId, List<Long> initialIds) {
         return null;
     }
 
     @Override
-    protected GemList<Person> _createVisitorsBuilder(long addressGemId, long gemListId, List<Long> initialIds) {
+    protected GemList<Person> _createVisitorsBuilder(long addressGemId, List<Long> initialIds) {
         return null;
     }
 
