@@ -15,7 +15,8 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 public class GetDecorator extends AbstractDecorator {
   
   public static final String SUFFIX = "_get";
-  
+  public static final String DE_SER = "DeSer";
+
   public GetDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
@@ -24,7 +25,10 @@ public class GetDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-      .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName())));
+      .forEach(c -> {
+        astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
+        astcdPackage.addCDElement(createDeSer(origCD, c, astcdPackage.getName()));
+      });
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String packageName) {
@@ -52,5 +56,24 @@ public class GetDecorator extends AbstractDecorator {
 
     return ast;
   }
-  
+
+  protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String packageName) {
+    String cmdName = domainClass.getName() + SUFFIX;
+
+    ASTCDClass ast = UMLPMill.cDClassBuilder()
+            .setModifier(PUBLIC.build())
+            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("CommandDeSer<" + cmdName + ">"))
+            .setName(cmdName+DE_SER)
+            .build();
+
+    getCD4C().addMethod(ast, "umlp.commands.deser.Get_FromJsonObject", cmdName);
+    getCD4C().addMethod(ast, "umlp.commands.deser.Get_BuildJson",cmdName);
+
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
+    getCD4C().addImport(ast, "umlp.command.CommandDeSer");
+
+    return ast;
+  }
 }

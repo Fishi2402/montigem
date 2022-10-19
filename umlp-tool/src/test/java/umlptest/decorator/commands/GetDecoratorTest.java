@@ -5,12 +5,13 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.jupiter.api.Test;
 import umlp.generator.decorator.AbstractDecorator;
-import umlp.generator.decorator.commands.DeleteDecorator;
 import umlp.generator.decorator.commands.GetDecorator;
 import umlptest.decorator.DecoratorTest;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static umlp.generator.decorator.commands.GetDecorator.DE_SER;
+import static umlp.generator.decorator.commands.GetDecorator.SUFFIX;
 
 public class GetDecoratorTest extends DecoratorTest {
   
@@ -21,7 +22,7 @@ public class GetDecoratorTest extends DecoratorTest {
 
   @Test
   public void check() {
-    ASTCDClass clazz = getClassByName("Foo" + GetDecorator.SUFFIX);
+    ASTCDClass clazz = getClassByName("Foo" + SUFFIX);
     assertAll(
             // check no of methods and attributes
             () -> assertEquals(1, clazz.getCDAttributeList().size(), "number of attributes"),
@@ -34,10 +35,24 @@ public class GetDecoratorTest extends DecoratorTest {
             () -> existsMethod(clazz, "getNewlySubscribedGemIds")
     );
   }
-  
+  @Test
+  public void checkDeSer() {
+    ASTCDClass clazz = getClassByName("Foo" + SUFFIX + DE_SER);
+    assertAll(
+            // check no of methods and attributes
+            () -> assertEquals(0, clazz.getCDAttributeList().size(), "number of attributes"),
+            () -> assertEquals(2, clazz.getCDMethodList().size(), "number of methods"),
+
+            // check methods
+            () -> existsMethod(clazz, "buildJson"),
+            () -> existsMethod(clazz, "fromJsonObject")
+    );
+  }
+
   @Test
   public void testGeneratedCode() {
-    generateAndCheckCode(getClassByName("Foo" + GetDecorator.SUFFIX));
+    generateAndCheckCode(getClassByName("Foo" + SUFFIX));
+    generateAndCheckCode(getClassByName("Foo" + SUFFIX + DE_SER));
   }
   
 }

@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.decorator.AbstractDecorator;
 
@@ -15,6 +16,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 public class CreateDecorator extends AbstractDecorator {
 
   public static final String SUFFIX = "_create";
+  public static final String DE_SER = "DeSer";
 
   public CreateDecorator(GlobalExtensionManagement glex) {
     super(glex);
@@ -24,7 +26,10 @@ public class CreateDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-      .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName())));
+      .forEach(c -> {
+        astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
+        astcdPackage.addCDElement(createDeSer(origCD, c, astcdPackage.getName()));
+      });
   }
   
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String packageName) {
@@ -36,10 +41,7 @@ public class CreateDecorator extends AbstractDecorator {
       .setName(classname+SUFFIX)
       .build();
     
-    String firstLetter = classname.substring(0,1).toUpperCase();
-    String attributeName = classname.substring(1);
-    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected final " + firstLetter + attributeName + " "
-            + firstLetter.toLowerCase() + attributeName);
+    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected final " + classname + " " + StringTransformations.uncapitalize(classname));
    
     getCD4C().addConstructor(ast, "umlp.commands.Constructor",classname, packageName, SUFFIX);
     getCD4C().addMethod(ast, "umlp.commands.create.DoRun", classname, origCD.getCDDefinition().getName());
@@ -50,6 +52,26 @@ public class CreateDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, "umlp.request.Request");
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
     getCD4C().addImport(ast, "umlp.command.StatusResult");
+
+    return ast;
+  }
+
+  protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String packageName) {
+    String cmdName = domainClass.getName() + SUFFIX;
+
+    ASTCDClass ast = UMLPMill.cDClassBuilder()
+            .setModifier(PUBLIC.build())
+            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("CommandDeSer<" + cmdName + ">"))
+            .setName(cmdName+DE_SER)
+            .build();
+
+    getCD4C().addMethod(ast, "umlp.commands.deser.FromJsonObject", domainClass.getName(), cmdName);
+    getCD4C().addMethod(ast, "umlp.commands.deser.BuildJson", domainClass.getName(), cmdName);
+
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
+    getCD4C().addImport(ast, "umlp.command.CommandDeSer");
 
     return ast;
   }

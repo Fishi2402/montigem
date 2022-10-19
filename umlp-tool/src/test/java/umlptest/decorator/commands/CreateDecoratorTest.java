@@ -10,6 +10,8 @@ import umlptest.decorator.DecoratorTest;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static umlp.generator.decorator.commands.CreateDecorator.DE_SER;
+import static umlp.generator.decorator.commands.CreateDecorator.SUFFIX;
 
 public class CreateDecoratorTest extends DecoratorTest {
   
@@ -20,7 +22,7 @@ public class CreateDecoratorTest extends DecoratorTest {
 
   @Test
   public void check() {
-    ASTCDClass clazz = getClassByName("Foo" + CreateDecorator.SUFFIX);
+    ASTCDClass clazz = getClassByName("Foo" + SUFFIX);
     assertAll(
             // check no of methods and attributes
             () -> assertEquals(1, clazz.getCDAttributeList().size(), "number of attributes"),
@@ -32,9 +34,24 @@ public class CreateDecoratorTest extends DecoratorTest {
             () -> existsMethod(clazz, "getEffectedGemIds")
     );
   }
-  
+
+  @Test
+  public void checkDeSer() {
+    ASTCDClass clazz = getClassByName("Foo" + SUFFIX + DE_SER);
+    assertAll(
+            // check no of methods and attributes
+            () -> assertEquals(0, clazz.getCDAttributeList().size(), "number of attributes"),
+            () -> assertEquals(2, clazz.getCDMethodList().size(), "number of methods"),
+
+            // check methods
+            () -> existsMethod(clazz, "buildJson"),
+            () -> existsMethod(clazz, "fromJsonObject")
+    );
+  }
+
   @Test
   public void testGeneratedCode() {
-    generateAndCheckCode(getClassByName("Foo" + CreateDecorator.SUFFIX));
+    generateAndCheckCode(getClassByName("Foo" + SUFFIX));
+    generateAndCheckCode(getClassByName("Foo" + SUFFIX + DE_SER));
   }
 }
