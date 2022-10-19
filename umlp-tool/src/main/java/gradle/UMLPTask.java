@@ -159,6 +159,11 @@ public abstract class UMLPTask extends DefaultTask {
       result.add(getConfigTemplate().get());
     }
 
+    if(this.getDebug().get()){
+      // Set the "debug" flag in the arguments
+      result.add("-" + UMLPToolOptions.DEBUG.getCMD());
+    }
+
     if (this.getMoreArgs().isPresent()) {
       result.addAll(this.getMoreArgs().get());
     }
@@ -232,9 +237,6 @@ public abstract class UMLPTask extends DefaultTask {
 
     List<String> args = createArgList(f.toPath(), p -> p.toAbsolutePath().toString());
     if (getDebug().get()){
-      // Set the "debug" flag in the arguments
-      args.add("-" + UMLPToolOptions.DEBUG.getCMD());
-
       // In debug mode, run code directly. Otherwise breakpoints etc do not work
       UMLPTool.main(args.toArray(new String[0]));
     } else {
@@ -269,7 +271,7 @@ public abstract class UMLPTask extends DefaultTask {
       if (ch.getChangeType() == ChangeType.REMOVED
           && isInputFile(ch.getFile())
           && ch.getFileType() == FileType.FILE) {
-        this.deletePreviousOutput(ch.getFile(), new IncGenData(getIncGenFile(ch.getFile()), Paths.get("").toFile()));
+        this.deletePreviousOutput(ch.getFile(), new IncGenData(getIncGenFile(ch.getFile()), getProject().getProjectDir().toPath().toAbsolutePath().toFile()));
       }
     });
 

@@ -7,24 +7,37 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._symboltable.IUMLPArtifactScope;
-import umlp._symboltable.UMLPSymbols2Json;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// TODO: MB Die Symboltabelle wird noch nicht korrekt aufgebaut
+@Disabled
 public class UMLPSymbolTableTest extends AbstractUMLPTest {
 
-  @Disabled
   @Test
   public void testUseJavaTypes(){
     ASTUMLPCompilationUnit ast = parse("de/monticore/UseJavaTypes.umlp");
     IUMLPArtifactScope as = createSymTab(ast);
 
     Optional<OOTypeSymbol> symbol = as.getEnclosingScope().resolveOOType("java.util.List");
-    assertEquals(1, as.getCDTypeSymbols().size());
-    CDTypeSymbol cdSym = as.getCDTypeSymbols().values().get(0);
-    System.out.println(new UMLPSymbols2Json().serialize(as));
+    assertTrue(symbol.isPresent());
+
+    symbol = as.getEnclosingScope().resolveOOType("GUIButton");
+    assertTrue(symbol.isPresent());
+    assertEquals("JButton", symbol.get().getSuperClass().getTypeInfo().getName());
+  }
+
+  @Test
+  public void testFullName()  {
+    ASTUMLPCompilationUnit ast = parse("de/monticore/B.umlp");
+    IUMLPArtifactScope as = createSymTab(ast);
+
+    final Optional<CDTypeSymbol> c = as.resolveCDType("C");
+    assertTrue(c.isPresent());
+    assertEquals("mypackage.C", c.get().getFullName());
   }
 
 }
