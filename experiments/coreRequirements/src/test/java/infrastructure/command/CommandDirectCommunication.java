@@ -1,9 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package infrastructure.command;
 
+import de.se_rwth.commons.logging.Log;
 import stanley.FlensburgTestContext;
 import umlp.command.*;
 import umlp.rte.Result;
+
+import java.util.Optional;
 
 /**
  * Simulation der Kommunikation zwischen Client und Server auf direkter Ebene in einem Thread
@@ -29,6 +32,7 @@ public class CommandDirectCommunication implements ClientCommandCommunication, S
   @Override
   public <T> void sendCommandToParticipant(Command<T> command) {
     clientContext.activate();
+    // TODO: (de)ser to simulate communication
     command.doRun();
     serverContext.activate();
   }
@@ -46,7 +50,11 @@ public class CommandDirectCommunication implements ClientCommandCommunication, S
     String resStr = CommandObjectMapper.serializeResponse(res);
 
     clientContext.activate();
-    CommandResult<?> recreatedRes = CommandObjectMapper.deserializeResponse(resStr).get();
+    Optional<CommandResult<?>> cmdOpt = CommandObjectMapper.deserializeResponse(resStr);
+    if(cmdOpt.isEmpty()){
+      Log.warn("Can not deser CommandResult from\n"+ resStr);
+    }
+    CommandResult<?> recreatedRes = cmdOpt.get();
     return (CommandResult<T>) recreatedRes;
   }
 

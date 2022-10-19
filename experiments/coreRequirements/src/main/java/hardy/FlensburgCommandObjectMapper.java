@@ -2,8 +2,6 @@ package hardy;
 
 // GEN-P
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import de.monticore.symboltable.serialization.JsonParser;
 import umlp.command.Command;
 import umlp.command.CommandObjectMapper;
@@ -12,27 +10,15 @@ import umlp.command.CommandResult;
 import java.util.Optional;
 
 /**
- * Stellt dem CommandObjectMapper eine Gson Instanz bereit, welche die Domainenklassen von Flensburg.umlp
- * (de)serialisieren kann.
+ * Stellt dem CommandObjectMapper eine DeSer instanzen bereit, welche die Domainenklassen von Flensburg.umlp
+ * (de)serialisieren können.
  */
 public class FlensburgCommandObjectMapper extends CommandObjectMapper {
   protected FlensburgCommandDeSer commandDeSer = new FlensburgCommandDeSer();
   protected FlensburgCommandResultDeSer resultDeSer = new FlensburgCommandResultDeSer();
-  protected static Gson domainGson = null;
 
   public static void init(){
     instance = new FlensburgCommandObjectMapper();
-  }
-
-  @Override
-  protected Gson _getDomainGson() {
-    if(domainGson == null){
-      domainGson = new GsonBuilder()
-          .registerTypeAdapterFactory(new PersonTypeAdapterFactory())
-          .registerTypeAdapterFactory(new AddressTypeAdapterFactory())
-          .create();
-    }
-    return domainGson;
   }
 
   @Override

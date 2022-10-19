@@ -62,8 +62,10 @@ public class ClientWebSocketCommandCommunication extends TextWebSocketHandler
       String payload = CommandObjectMapper.serializeCommand(command);
       clientSession.sendMessage(new TextMessage(payload));
       synchronized (this) {
+        System.out.println("Starting to wait for a response");
         // Warte bis eine Antwort eintrifft
         this.wait(maxWaitingTime);
+        System.out.println("Stop waiting for a response");
       }
 
       if (messages.containsKey(command.getId())) {

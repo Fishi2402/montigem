@@ -36,6 +36,7 @@ public class CommandWebSocketService extends TextWebSocketHandler {
 
   @Override
   public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+    System.out.println("Server received message");
     String returnResult = "";
     try {
       // TODO: check participant id is correct

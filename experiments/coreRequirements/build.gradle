@@ -31,7 +31,6 @@ compileJava {
 }
 
 dependencies {
-    implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
     implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
     implementation group: 'org.hibernate', name: 'hibernate-vibur', version: hibernate_version
     implementation group: 'com.h2database', name: 'h2', version: h2_database
