@@ -158,7 +158,7 @@ public abstract class PersonTOP extends Human {
   public boolean checkMainResidence() {
     boolean res = true;
     
-    if (mainResidence == null || !mainResidence.isPresent()) {
+    if (mainResidence == null || mainResidence.getGemId() == -1) {
       res = false;
       PersonErrorCollector.reportMainResidenceInvalid((Person) this);
     }

@@ -46,11 +46,18 @@ public class PersonBuilder extends Person {
     //+ gemId wird bereits beim initialisieren des Builders besetzt
     // und ein Validator wird auch mitgeliefert (und erstmal gespeichert)
     public PersonBuilder(long gemId) {
-        this.gemId = gemId;
-        // während des bauens ist das eine unsychronisierte GemList!
-        this.owns = FlensburgManager.createOwnsBuilder(FlensburgManager.getFreeGemListId());
-        this.children = FlensburgManager.createChildrenBuilder(FlensburgManager.getFreeGemListId());
-        this.visited = FlensburgManager.createVisitedBuilder(gemId, FlensburgManager.getFreeGemListId(), Collections.emptyList());
+      this(gemId,
+          FlensburgManager.getFreeGemListId(),
+          FlensburgManager.getFreeGemListId(),
+          FlensburgManager.getFreeGemListId());
+    }
+
+    public PersonBuilder(long gemId, long ownsGemListId, long childrenGemListId, long visitedGemListId){
+      this.gemId = gemId;
+      // während des bauens ist das eine unsychronisierte GemList!
+      this.owns = FlensburgManager.createOwnsBuilder(ownsGemListId);
+      this.children = FlensburgManager.createChildrenBuilder(childrenGemListId);
+      this.visited = FlensburgManager.createVisitedBuilder(gemId, visitedGemListId, Collections.emptyList());
     }
 
     // Standard set-Function:
@@ -132,11 +139,11 @@ public class PersonBuilder extends Person {
                     own.build();
                   }
                 }
-                owns.build();
-                children.build();
-                visited.build();
                 FlensburgManager.addPerson(this);
               }
+              owns.build();
+              children.build();
+              visited.build();
               personObservers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
               buildFinished = true;
               return Optional.of(this);

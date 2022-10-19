@@ -15,7 +15,7 @@ public abstract class CommandDeSer<T extends Command<?>> {
   }
 
   public String toJson(T command){
-    JsonPrinter printer = new JsonPrinter();
+    JsonPrinter printer = new JsonPrinter(true);
     printer.beginObject();
     buildJson(command, printer);
     printer.endObject();

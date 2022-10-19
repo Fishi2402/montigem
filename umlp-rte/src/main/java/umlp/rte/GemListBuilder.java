@@ -111,4 +111,13 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
       return builderIds.subList(startIdx, endIdx);
     }
   }
+
+  @Override
+  public List<Long> getIDs() {
+    if(buildFinished){
+      return super.getIDs();
+    } else {
+      return Collections.unmodifiableList(builderIds);
+    }
+  }
 }

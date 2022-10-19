@@ -57,16 +57,23 @@ public abstract class CommandObjectMapper {
   }
 
   public static String serializeResponse(CommandResult<?> result){
+    return getInstance()._serializeResponse(result);
+  }
+
+  public String _serializeResponse(CommandResult<?> result){
     return gson.toJson(result);
   }
 
   public static Optional<CommandResult<?>> deserializeResponse(String responseStr){
+    return getInstance()._deserializeResponse(responseStr);
+  }
+
+  protected Optional<CommandResult<?>> _deserializeResponse(String responseStr) {
     try {
       return Optional.of(gson.fromJson(responseStr, CommandResult.class));
     }
     catch (JsonSyntaxException e) {
       return Optional.empty();
     }
-
   }
 }
