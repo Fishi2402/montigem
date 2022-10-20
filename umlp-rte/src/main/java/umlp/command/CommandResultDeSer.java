@@ -8,7 +8,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
-public class CommandResultDeSer implements DeSer<CommandResult<?>>{
+public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
   public void buildJson(CommandResult<?> result, JsonPrinter printer){
     printer.member("commandId", result.getCommandId());
     String tp = result.getTypeParameter();
@@ -64,7 +64,8 @@ public class CommandResultDeSer implements DeSer<CommandResult<?>>{
     }
   }
 
-  public String toJson(CommandResult<?> command){
+  @Override
+  public String serialize(CommandResult<?> command){
     JsonPrinter printer = new JsonPrinter(true);
     printer.beginObject();
     buildJson(command, printer);
@@ -89,7 +90,7 @@ public class CommandResultDeSer implements DeSer<CommandResult<?>>{
     return fromJson(jsonElement.getAsJsonObject());
   }
 
-  public Optional<CommandResult<?>> fromJson(String json){
+  public Optional<CommandResult<?>> deserialize(String json){
     return fromJson(JsonParser.parseJsonObject(json));
   }
 }

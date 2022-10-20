@@ -2,7 +2,6 @@ package hardy;
 
 // GEN-P
 
-import de.monticore.symboltable.serialization.JsonParser;
 import umlp.command.Command;
 import umlp.command.CommandObjectMapper;
 import umlp.command.CommandResult;
@@ -23,21 +22,21 @@ public class FlensburgCommandObjectMapper extends CommandObjectMapper {
 
   @Override
   protected String _serializeCommand(Command<?> command) {
-    return commandDeSer.toJson(command);
+    return commandDeSer.serialize(command);
   }
 
   @Override
   protected Optional<Command<Object>> _deserializeCommand(String cmdStr) {
-    return commandDeSer.fromJson(JsonParser.parseJsonObject(cmdStr));
+    return commandDeSer.deserialize(cmdStr);
   }
 
   @Override
   public String _serializeResponse(CommandResult<?> result) {
-    return resultDeSer.toJson(result);
+    return resultDeSer.serialize(result);
   }
 
   @Override
   protected Optional<CommandResult<?>> _deserializeResponse(String responseStr) {
-    return resultDeSer.fromJson(responseStr);
+    return resultDeSer.deserialize(responseStr);
   }
 }

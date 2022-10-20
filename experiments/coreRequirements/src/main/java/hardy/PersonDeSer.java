@@ -13,7 +13,7 @@ package hardy;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import umlp.command.DeSer;
+import umlp.command.JsonDeSer;
 import umlp.rte.Gem;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import java.util.Optional;
 
 /* Hookpoint: ClassContent:Annotations */
 
- public  class PersonDeSer implements DeSer<Person> {
+ public  class PersonDeSer implements JsonDeSer<Person> {
 
 /* Hookpoint: ClassContent:Elements */
 

@@ -1,5 +1,6 @@
 package hardy;
 
+import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
@@ -59,12 +60,16 @@ public class FlensburgCommandDeSer {
     }
   }
 
-  public String toJson(Command<?> command){
+  public String serialize(Command<?> command){
     JsonPrinter printer = new JsonPrinter(true);
     printer.beginObject();
     buildJson(command, printer);
     printer.endObject();
     return printer.toString();
+  }
+
+  public <T> Optional<Command<T>> deserialize(String cmdStr){
+    return fromJson(JsonParser.parseJsonObject(cmdStr));
   }
 
   public <T> Optional<Command<T>> fromJson(JsonObject jsonObject) {
