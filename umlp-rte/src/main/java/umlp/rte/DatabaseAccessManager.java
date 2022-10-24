@@ -130,10 +130,16 @@ public class DatabaseAccessManager {
     private void loadDatabaseProperties() {
         databaseProperties = new Properties();
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
         try (InputStream is = loader.getResourceAsStream(DATABASE_PROPERTIES)) {
             databaseProperties.load(is);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Load Properties from Environment Variables
+        // Can be used to select a different DB on production server
+        // Environment Properties have priority!
+        databaseProperties.putAll(System.getenv());
     }
 }
