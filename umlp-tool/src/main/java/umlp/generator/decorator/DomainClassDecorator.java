@@ -148,11 +148,6 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
       if (GenService.isList(assocSide)) {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
                 getMCTypeFacade().createBasicGenericTypeOf("GemList", type), assocSide.getName());
-        // TODO: empty, remove?
-        glex.replaceTemplate("cd2java.Annotations", attribute,
-                new TemplateHookPoint("umlp.domain.AssocAnnotations",
-                        domainClass.getName(), attribute.getName()));
-
       } else {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
                 getMCTypeFacade().createBasicGenericTypeOf("Gem", type), assocSide.getName());
