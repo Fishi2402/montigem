@@ -123,7 +123,6 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     // TODO when ST ist fertig: qualified domainTypeName und add import declaration
     String qualifiedType = "hardy." + typeInfo.getName() + BUILDER; // domainTypeSymbol.getQualifiedName(); //TODO MB
     String qualifiedTypeP = typeInfo.getFullName();
-    System.err.println(" qualifiedTypePqualifiedTypePqualifiedTypeP " + qualifiedTypeP);
     // --- end
 
     getCD4C().addImport(clazz, qualifiedType);

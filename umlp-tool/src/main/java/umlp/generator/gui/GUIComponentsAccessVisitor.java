@@ -86,8 +86,6 @@ public class GUIComponentsAccessVisitor implements GUIDSLVisitor2, CommonExpress
 
   @Override
   public void endVisit(ASTGUICompilationUnit node) {
-    System.err.println("GUIComponentAccessVisitor\n " +
-        " fieldAccess: \n" + print(fieldAccess) + "\nnameExprs: \n" + print(nameExprs));
   }
 
   public String print(List<? extends ASTExpression> nodes) {

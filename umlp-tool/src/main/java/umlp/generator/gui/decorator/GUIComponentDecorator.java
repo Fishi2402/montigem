@@ -96,12 +96,9 @@ public abstract class GUIComponentDecorator extends GUIAbstractDecorator {
       return Optional.empty();
     }
     TypeSymbol typeInfo = guiVariableSymbol.get().getType().getTypeInfo();
-    System.err.println(" TypeSymbol " + typeInfo.getName() + " name " + name);
     Optional<VariableSymbol> res = typeInfo.getSpannedScope().resolveVariable(name);
-    System.err.println(" VariableSymbol " + (res.isEmpty() ? " fehlt " : res.get().getName() + " type " + res.get().getType()));
     if (res.isEmpty() && typeInfo.isPresentSuperClass()) {
       res = typeInfo.getSuperClass().getTypeInfo().getSpannedScope().resolveVariable(name);
-      System.err.println(" VariableSymbol in Superclass " + (res.isEmpty() ? " fehlt " : res.get().getName() + " type " + res.get().getType()));
     }
     return res;
   }
