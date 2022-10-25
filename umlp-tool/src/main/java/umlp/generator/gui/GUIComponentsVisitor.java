@@ -6,18 +6,18 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GUIComponentsVisitor implements GUIDSLVisitor2 {
 
   protected GUIDSLTraverser traverser;
 
-  public List<ASTGUIComponent> getComponents() {
-    return components;
-  }
+  protected Map<ASTGUIComponent, String> namedComponents = new HashMap();
 
-  protected List<ASTGUIComponent> components = new ArrayList<>();
+  public static final String COMPONENT_NAME = "Comp";
+
+  protected int counter = 1;
 
   public GUIComponentsVisitor(ASTGUICompilationUnit node) {
     traverser = GUIDSLMill.traverser();
@@ -31,7 +31,16 @@ public class GUIComponentsVisitor implements GUIDSLVisitor2 {
 
   @Override
   public void visit(ASTGUIComponent node) {
-    components.add(node);
+    namedComponents.put(node, getComponentName(node));
   }
+
+  protected String getComponentName(ASTGUIComponent component) {
+    return COMPONENT_NAME + counter++;
+  }
+
+  public Map<ASTGUIComponent, String> getNamedComponents() {
+    return namedComponents;
+  }
+
 
 }

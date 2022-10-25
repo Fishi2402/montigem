@@ -1,0 +1,53 @@
+/* (c) https://github.com/MontiCore/monticore */
+package stanley.editiereperson;
+
+// HWC-P: eigentlich ein Modell, aber fuers Produkt
+
+// hier werden die Datenklassen gefunden
+import hardy.Flensburg;
+
+// hier werden importierte GUI-Modelle gefunden
+import umlp.gui.TextInput;
+import umlp.gui.NumberInput;
+import umlp.gui.Button;
+
+import stanley.editierepersoncars.EditierePersonCars;
+
+/**
+ * This example defines a
+ * Form to fill out Person data
+ * it has only simple default layout, which generates some
+ * interesting pieces of code
+ *
+ * Situation is that the Person p exists already and
+ * that its values can be changed
+ */
+page EditierePerson(Person p, List<Person> d, Human h, Optional<Person> op) {
+
+  // show and edit the nickname
+  @TextInput(value = p.nickname);
+
+  // show and edit the age as number
+  @NumberInput(value = p.age);
+
+  // Button mit Text "Ok" und Navigation auf eine andere Seite
+  // (und die Logik dafür ist generiert und verfügbar)
+  // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
+  // ueberschrieben werden z.B. navigate, copy, show(:ContextMenu(...)), ...
+  @Button(text = "Ok", leftClick = navigate(@EditierePersonCars(person = p)));
+
+  // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
+  // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird entweder generiert oder
+  // in einem handgeschriebenen Teil implementiert wird und importiert
+  // (siehe "import stanley.editiereperson.EditierePerson")
+  // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "EditierePersonGUI.java".
+  // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
+  // deswegen wird eine Methode explizit importiert und aufgerufen
+  @Button(text = "Decrease", leftClick = decreaseAge());
+
+  @Button(text = p.nickname, leftClick = mytest(p.age));
+
+  @Button(text = p.age, leftClick = navigate("s.b.s"));
+
+}
+

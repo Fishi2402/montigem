@@ -3,7 +3,6 @@ package umlp.generator.gui.decorator;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
@@ -14,7 +13,6 @@ import de.monticore.guidsl._symboltable.GUIVariableSymbol;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
 import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
-import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.TypeCalculator;
 import umlp.generator.gui.GUIComponentAccessVisitor;
@@ -28,6 +26,7 @@ public class CallDecorator extends GUIComponentDecorator {
 
   public static final Predicate<ASTGUINamedArg> PREDICATE_INPUT_ARG = c -> c.getName().equals(INPUT_ARG_NAME);
   private final IGUIDSLScope artifactScope;
+  private TypeCalculator tc;
 
   public CallDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
     super(glex, guiAst);
@@ -35,12 +34,12 @@ public class CallDecorator extends GUIComponentDecorator {
   }
 
   @Override
-  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
+  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
     // Get all ASTGUIComponents
     GUIComponentAccessVisitor viewComponents = new GUIComponentAccessVisitor(guiComponent);
     List<ASTCallExpression> allCalls = viewComponents.getCallExpressions();
 
-    TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
+    tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
 
     allCalls.forEach(call -> {
           if (!isNavigateComponent(call)) {
@@ -58,7 +57,7 @@ public class CallDecorator extends GUIComponentDecorator {
               if (sb.length() != 0) {
                 sb.append(", ");
               }
-              sb.append(typeInfo.getName()).append(" ").append(paramName);
+              sb.append(typeInfo.getName()).append(" ").append(paramName); //TODO MB
             }
             getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.Call",
                 getMethodName(call), sb.toString()
@@ -76,28 +75,6 @@ public class CallDecorator extends GUIComponentDecorator {
         }
     );
 
-  }
-
-  protected boolean isNavigateComponent(ASTCallExpression call) {
-    return getMethodName(call).equals("navigate") &&
-        call.getArguments().getExpressionList().size() == 1 &&
-        call.getArguments().getExpressionList().get(0) instanceof ASTGUIComponent;
-  }
-
-
-  protected String getMethodName(ASTCallExpression callExpression) {
-    if (callExpression.getExpression() instanceof ASTNameExpression) {
-      return ((ASTNameExpression) callExpression.getExpression()).getName();
-    }
-    return "";
-  }
-
-  protected String getButtonText(ASTGUINamedArg text) {
-    if (text.getExpression() instanceof ASTLiteralExpression
-        && ((ASTLiteralExpression) text.getExpression()).getLiteral() instanceof ASTStringLiteral) {  // :Button(text = "Decrease", leftClick = decreaseAge(p))
-      return ((ASTStringLiteral) ((ASTLiteralExpression) text.getExpression()).getLiteral()).getSource();
-    }
-    return "";
   }
 
 }

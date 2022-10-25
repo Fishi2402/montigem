@@ -32,7 +32,8 @@ public class InputValueDecorator extends GUIComponentDecorator {
   }
 
   @Override
-  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
+  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
+
     // Get all ASTGUIComponents
     GUIComponentAccessVisitor viewComponents = new GUIComponentAccessVisitor(guiComponent);
     List<ASTFieldAccessExpression> allZuweisungen = viewComponents.getFieldAccess();
@@ -41,7 +42,6 @@ public class InputValueDecorator extends GUIComponentDecorator {
 
     allZuweisungen.forEach(f -> {
           if (f.getExpression() instanceof ASTNameExpression) {
-
             String variableName = ((ASTNameExpression) f.getExpression()).getName();
             Optional<GUIVariableSymbol> symbol = ((GUIDSLScope) f.getEnclosingScope()).resolveGUIVariable(variableName);
 
@@ -51,12 +51,12 @@ public class InputValueDecorator extends GUIComponentDecorator {
               String returnType = attr.get().getType().getTypeInfo().getName();
               String attrName = attr.get().getName();
               String returnExpr = variableName + ".get" + StringTransformations.capitalize(attrName) + "()";
-              String setExpr = variableName+ ".set" + StringTransformations.capitalize(attrName) + "(" + attrName + ")";
+              String setExpr = variableName + ".set" + StringTransformations.capitalize(attrName) + "(" + attrName + ")";
 
-              addComponentErrorAttribute(decoratedClass, guiComponent);
-              addNotifyMethod(decoratedClass, guiComponent, attrName);
-              addGetComponentMethod(decoratedClass, guiComponent, returnExpr, returnType);
-              addSetComponentMethod(decoratedClass, guiComponent, returnType, attrName, setExpr);
+              addComponentErrorAttribute(decoratedClass, guiComponent, componentName);
+              addNotifyMethod(decoratedClass, guiComponent, componentName, attrName);
+              addGetComponentMethod(decoratedClass, guiComponent, componentName, returnExpr, returnType);
+              addSetComponentMethod(decoratedClass, guiComponent, componentName, returnType, attrName, setExpr);
             }
           }
         }
@@ -64,9 +64,24 @@ public class InputValueDecorator extends GUIComponentDecorator {
 
   }
 
-  protected void addNotifyMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String attrName) {
+  protected void addNotifyMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String attrName) {
     getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.input.Notify",
-        "notify" + StringTransformations.capitalize(attrName) + "Invalid", StringTransformations.uncapitalize(guiComponent.getName()));
+        "notify" + StringTransformations.capitalize(attrName) + "Invalid", StringTransformations.uncapitalize(guiComponent.getName() + componentName));
+  }
+
+  protected void addComponentErrorAttribute(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
+    String componentAttributeName = StringTransformations.uncapitalize(guiComponent.getName()) + componentName + "Error";
+    getCD4C().addAttribute(decoratedClass, true, false, "protected String " + componentAttributeName + " = \"\";");
+  }
+
+  protected void addGetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String returnExpr, String returnType) {
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.GetComponent", "get" + guiComponent.getName() + componentName,
+        returnType, returnExpr);
+  }
+
+  protected void addSetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String attrType, String attrName, String setExpr) {
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.SetComponent", "set" + guiComponent.getName() + componentName,
+        attrType, attrName, setExpr);
   }
 
 }

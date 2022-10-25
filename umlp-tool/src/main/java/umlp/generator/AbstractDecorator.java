@@ -18,21 +18,16 @@ import java.util.Optional;
 // TODO refactor this class
 public abstract class AbstractDecorator {
 
+  public static final String DEFAULT_PACKAGE = "";
+  public static final String COMMAND_PACKAGE = DEFAULT_PACKAGE + "commands";
+  public static final String CLIENT_PACKAGE = DEFAULT_PACKAGE + "client";
+  protected final GlobalExtensionManagement glex;
+  protected final CD4CodeFullPrettyPrinter printer = new CD4CodeFullPrettyPrinter(new IndentPrinter());
+  protected TypeCheck typeCheck;
+
   public AbstractDecorator(GlobalExtensionManagement glex) {
     this.glex = glex;
   }
-
-  public static final String DEFAULT_PACKAGE = "";
-  
-  public static final String COMMAND_PACKAGE = DEFAULT_PACKAGE+"commands";
-  
-  public static final String CLIENT_PACKAGE = DEFAULT_PACKAGE+"client";
-
-  protected final GlobalExtensionManagement glex;
-
-  protected final CD4CodeFullPrettyPrinter printer = new CD4CodeFullPrettyPrinter(new IndentPrinter());
-  
-  protected TypeCheck typeCheck;
 
   protected GlobalExtensionManagement getGlex() {
     return glex;
@@ -74,27 +69,28 @@ public abstract class AbstractDecorator {
     return CD4C.getInstance();
   }
 
-  protected CD4CodeFullPrettyPrinter getCDPrinter (){
+  protected CD4CodeFullPrettyPrinter getCDPrinter() {
     return printer;
   }
-  
+
   public TypeCheck getTypeCheck() {
     return typeCheck;
   }
-  
+
   public void setTypeCheck(TypeCheck typeCheck) {
     this.typeCheck = typeCheck;
   }
-  
+
   protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
     String completeName = getPackageName(origCD, packageName);
     Optional<ASTCDPackage> astCDPackage = decoratedCD.getCDDefinition().getCDPackagesList().stream()
-            .filter(p -> p.getName().equals(completeName)).findFirst();
+        .filter(p -> p.getName().equals(completeName)).findFirst();
     if (astCDPackage.isPresent()) {
       return astCDPackage.get();
-    } else {
+    }
+    else {
       ASTCDPackage p = CD4CodeMill.cDPackageBuilder()
-              .setMCQualifiedName(getMCTypeFacade().createQualifiedName(completeName)).build();
+          .setMCQualifiedName(getMCTypeFacade().createQualifiedName(completeName)).build();
       decoratedCD.getCDDefinition().addCDElement(p);
       return p;
     }
@@ -102,7 +98,7 @@ public abstract class AbstractDecorator {
 
   protected String getPackageName(ASTCDCompilationUnit origCD, String subPackage) {
     String origPackage = Names.constructQualifiedName(origCD.getCDPackageList(), origCD.getCDDefinition().getName());
-    return (subPackage.isEmpty()?origPackage:Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
+    return (subPackage.isEmpty() ? origPackage : Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
   }
 
   abstract public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD);

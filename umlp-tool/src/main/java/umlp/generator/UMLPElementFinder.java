@@ -13,32 +13,32 @@ import java.util.List;
 
 public class UMLPElementFinder implements CDBasisVisitor2 {
 
-    protected List<ASTUMLPElement> umlpElements;
+  protected List<ASTUMLPElement> umlpElements;
 
 
-    public UMLPElementFinder() {
-        umlpElements = new ArrayList<>();
-    }
+  public UMLPElementFinder() {
+    umlpElements = new ArrayList<>();
+  }
 
-    @Override
-    public void visit(ASTCDElement node) {
-        umlpElements.add(UMLPMill.uMLPCDElementBuilder().setCDElement(node).build());
-    }
+  @Override
+  public void visit(ASTCDElement node) {
+    umlpElements.add(UMLPMill.uMLPCDElementBuilder().setCDElement(node).build());
+  }
 
-    @Override
-    public void visit(ASTCDTargetImportStatement statement) {
-        umlpElements.add(UMLPMill.uMLPCDElementBuilder().setCDTargetImportStatement(statement).build());
-    }
+  @Override
+  public void visit(ASTCDTargetImportStatement statement) {
+    umlpElements.add(UMLPMill.uMLPCDElementBuilder().setCDTargetImportStatement(statement).build());
+  }
 
-    public List<ASTUMLPElement> getUMLPElements() {
-        return umlpElements;
-    }
+  public List<ASTUMLPElement> getUMLPElements() {
+    return umlpElements;
+  }
 
 
-    public void run(ASTCDBasisNode node) {
-        UMLPTraverser traverser = UMLPMill.inheritanceTraverser();
-        traverser.add4CDBasis(this);
-        node.accept(traverser);
-    }
+  public void run(ASTCDBasisNode node) {
+    UMLPTraverser traverser = UMLPMill.inheritanceTraverser();
+    traverser.add4CDBasis(this);
+    node.accept(traverser);
+  }
 
 }

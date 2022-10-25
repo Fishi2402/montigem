@@ -26,10 +26,15 @@ public class GUIGenerator extends CDGenerator {
 
   }
 
+  protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast) {
+    Log.info("========= CD after '" + trafo + "': =========", UMLPGenerator.class.getName());
+    Log.info(astPrinter.prettyprint(ast), UMLPGenerator.class.getName());
+  }
+
   public void generate(ASTGUICompilationUnit modelAST, String configTemplate) {
     // create an empty classdiagram
     ASTCDCompilationUnit decoratedAST = GUI2CDTrafo.createCDCompilationUnit(modelAST);
-    GUI2CDTrafo.createCD4CodeSymTab(decoratedAST);
+    //GUI2CDTrafo.createCD4CodeSymTab(decoratedAST);
     logTrafoExec("GUI2CDTrafo", decoratedAST);
 
     TemplateController tc = setup.getNewTemplateController(configTemplate);
@@ -38,11 +43,6 @@ public class GUIGenerator extends CDGenerator {
     // translate the GUI-AST into Java
     hpp.processValue(tc, modelAST,
         Arrays.asList(decoratedAST, setup.getGlex(), setup.getHandcodedPath(), this));
-  }
-
-  protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast) {
-    Log.info("========= CD after '" + trafo + "': =========", UMLPGenerator.class.getName());
-    Log.info(astPrinter.prettyprint(ast), UMLPGenerator.class.getName());
   }
 
 }

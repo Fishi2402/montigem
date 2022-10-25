@@ -2,6 +2,8 @@ package umlp.generator.gui.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
@@ -11,16 +13,17 @@ import de.monticore.guidsl._symboltable.GUIVariableSymbol;
 import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import umlp.generator.AbstractDecorator;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class GUIComponentDecorator extends AbstractDecorator {
+public abstract class GUIComponentDecorator extends GUIAbstractDecorator {
 
   protected static final String INPUT_ARG_NAME = "value";
   protected final String guiName;
@@ -32,9 +35,17 @@ public abstract class GUIComponentDecorator extends AbstractDecorator {
     this.guiAst = guiAst;
   }
 
-  public abstract void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent);
+  protected static List<ASTGUINamedArg> filterArgWithPredicate(List<ASTGUINamedArg> components,
+                                                               Predicate<ASTGUINamedArg> predicate) {
+    return components.stream().filter(predicate).collect(Collectors.toList());
+  }
 
-  protected void addComponentErrorAttribute(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
+  public abstract void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName);
+
+  public void transform(ASTGUICompilationUnit guiAst, ASTCDCompilationUnit decoratedAST) {
+  }
+
+  protected void addComponentErrorAttribute(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
     String componentAttributeName = StringTransformations.uncapitalize(guiComponent.getName()) + "Error";
     getCD4C().addAttribute(decoratedClass, true, false, "protected String " + componentAttributeName + " = \"\";");
   }
@@ -51,11 +62,6 @@ public abstract class GUIComponentDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-  }
-
-  protected static List<ASTGUINamedArg> filterArgWithPredicate(List<ASTGUINamedArg> components,
-                                                               Predicate<ASTGUINamedArg> predicate) {
-    return components.stream().filter(predicate).collect(Collectors.toList());
   }
 
   protected boolean checkArgumentsSize(ASTGUIComponent guiComponent, int size) {
@@ -92,12 +98,32 @@ public abstract class GUIComponentDecorator extends AbstractDecorator {
     TypeSymbol typeInfo = guiVariableSymbol.get().getType().getTypeInfo();
     System.err.println(" TypeSymbol " + typeInfo.getName() + " name " + name);
     Optional<VariableSymbol> res = typeInfo.getSpannedScope().resolveVariable(name);
-    System.err.println(" VariableSymbol " + (res.isEmpty()? " fehlt " : res.get().getName()+ " type " + res.get().getType()));
+    System.err.println(" VariableSymbol " + (res.isEmpty() ? " fehlt " : res.get().getName() + " type " + res.get().getType()));
     if (res.isEmpty() && typeInfo.isPresentSuperClass()) {
       res = typeInfo.getSuperClass().getTypeInfo().getSpannedScope().resolveVariable(name);
-      System.err.println(" VariableSymbol 22 " + (res.isEmpty()? " fehlt " : res.get().getName()+ " type " + res.get().getType()));
+      System.err.println(" VariableSymbol in Superclass " + (res.isEmpty() ? " fehlt " : res.get().getName() + " type " + res.get().getType()));
     }
     return res;
+  }
+
+  public boolean isNavigateComponent(ASTCallExpression call, TypeCalculator tc) {
+    SymTypeExpression res = tc.typeOf(call.getExpression());
+    return getMethodName(call).equals("navigate") &&
+        call.getArguments().getExpressionList().size() == 1 &&
+        call.getArguments().getExpressionList().get(0) instanceof ASTGUIComponent;
+  }
+
+  public boolean isNavigateComponent(ASTCallExpression call) {
+    return getMethodName(call).equals("navigate") &&
+        call.getArguments().getExpressionList().size() == 1 &&
+        call.getArguments().getExpressionList().get(0) instanceof ASTGUIComponent;
+  }
+
+  public String getMethodName(ASTCallExpression callExpression) {
+    if (callExpression.getExpression() instanceof ASTNameExpression) {
+      return ((ASTNameExpression) callExpression.getExpression()).getName();
+    }
+    return "";
   }
 
 }

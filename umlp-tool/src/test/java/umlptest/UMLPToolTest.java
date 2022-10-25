@@ -29,6 +29,14 @@ public class UMLPToolTest extends AbstractUMLPTest {
   }
 
   @Test
+  public void testRunMethodGui0() {
+    UMLPTool tool = new UMLPTool();
+    tool.run(new String[]{"-i", "src/test/resources",
+        "-path", "src/test/resources"});
+    assertNoErrors();
+  }
+
+  @Test
   public void testRunMethodGui1() {
     UMLPTool tool = new UMLPTool();
     tool.run(new String[]{"-i", "src/test/resources/stanley/editierepersoncars/EditierePersonCars.gui",
@@ -56,6 +64,14 @@ public class UMLPToolTest extends AbstractUMLPTest {
   public void testRunMethodGui4() {
     UMLPTool tool = new UMLPTool();
     tool.run(new String[]{"-i", "src/test/resources/stanley/personoverview/PersonOverview.gui",
+        "-path", "src/test/resources"});
+    assertNoErrors();
+  }
+
+  @Test
+  public void testRunMethodGui5() {
+    UMLPTool tool = new UMLPTool();
+    tool.run(new String[]{"-i", "src/test/resources/stanley/personstatistics/PersonStatistics.gui",
         "-path", "src/test/resources"});
     assertNoErrors();
   }

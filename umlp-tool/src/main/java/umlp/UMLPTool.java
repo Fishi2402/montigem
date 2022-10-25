@@ -17,16 +17,19 @@ import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
+import jdk.jshell.Diag;
 import org.apache.commons.cli.*;
 import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
+import umlp._symboltable.UMLPDefSymbolDeSer;
 import umlp._symboltable.UMLPSymbolTableCompleter;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
@@ -291,7 +294,7 @@ public class UMLPTool extends UMLPToolTOP {
 
   // TODO MB - einkommentieren
   protected boolean isGuiFile(File f) {
-    return false; //return f.getName().endsWith(".gui");
+    return f.getName().endsWith(".gui");
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {
@@ -320,6 +323,7 @@ public class UMLPTool extends UMLPToolTOP {
     IGUIDSLGlobalScope gs = GUIDSLMill.globalScope();
     gs.addAdaptedTypeSymbolResolver(new Class2MCResolver());
     gs.setSymbolPath(modelPath);
+   // gs.putSymbolDeSer("umlp._symboltable.UMLPDefSymbol", new UMLPDefSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new TypeSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol", new VariableSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new VariableSymbolDeSer());
