@@ -1,4 +1,4 @@
-package umlptest.decorator;
+package umlptest.decorator.domain;
 
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -18,7 +18,7 @@ public class ObserverDecoratorTest extends DecoratorTest {
 
   @Test
   public void check() {
-    ASTCDInterface ast = getInterfaceByName("Foo"+ObserverDecorator.SUFFIX);
+    ASTCDInterface ast = getInterfaceByName("Foo"+ ObserverDecorator.SUFFIX);
     assertAll(
             // check no of methods and attributes
             () -> assertEquals(0, ast.getCDAttributeList().size(), "number of attributes"),

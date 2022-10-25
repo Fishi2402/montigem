@@ -4,6 +4,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.decorator.commands.SetDecorator;
 
 public class CommandDecorator extends AbstractDecorator {
 

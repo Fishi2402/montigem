@@ -1,4 +1,4 @@
-package umlptest.decorator;
+package umlptest.decorator.domain;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;

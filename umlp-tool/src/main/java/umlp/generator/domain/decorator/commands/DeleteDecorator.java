@@ -12,7 +12,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.decorator.commands.CommandDecorator.DE_SER;
+import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class DeleteDecorator extends AbstractDecorator {
   

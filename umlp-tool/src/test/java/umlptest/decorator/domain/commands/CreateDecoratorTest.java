@@ -1,23 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlptest.decorator.commands;
+package umlptest.decorator.domain.commands;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.jupiter.api.Test;
 import umlp.generator.AbstractDecorator;
-import umlp.generator.domain.decorator.commands.DeleteDecorator;
-import umlptest.decorator.DecoratorTest;
+import umlp.generator.domain.decorator.commands.CreateDecorator;
+import umlptest.decorator.domain.DecoratorTest;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static umlp.generator.decorator.commands.CommandDecorator.DE_SER;
-import static umlp.generator.decorator.commands.DeleteDecorator.SUFFIX;
+import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
+import static umlp.generator.domain.decorator.commands.CreateDecorator.SUFFIX;
 
-public class DeleteDecoratorTest extends DecoratorTest {
+public class CreateDecoratorTest extends DecoratorTest {
   
   @Override
   protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
-    return new DeleteDecorator(glex);
+    return new CreateDecorator(glex);
   }
 
   @Test
@@ -54,5 +54,4 @@ public class DeleteDecoratorTest extends DecoratorTest {
     generateAndCheckCode(getClassByName("Foo" + SUFFIX));
     generateAndCheckCode(getClassByName("Foo" + SUFFIX + DE_SER));
   }
-  
 }

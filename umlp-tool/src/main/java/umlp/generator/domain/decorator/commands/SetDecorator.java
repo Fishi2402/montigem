@@ -11,11 +11,11 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
-import umlp.generator.decorator.AbstractDecorator;
-import umlp.generator.decorator.GenService;
+import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.GenService;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.decorator.commands.CommandDecorator.DE_SER;
+import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class SetDecorator extends AbstractDecorator {
 

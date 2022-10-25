@@ -1,23 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlptest.decorator.commands;
+package umlptest.decorator.domain.commands;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.jupiter.api.Test;
-import umlp.generator.decorator.AbstractDecorator;
-import umlp.generator.decorator.commands.CreateDecorator;
-import umlptest.decorator.DecoratorTest;
+import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.commands.GetDecorator;
+import umlptest.decorator.domain.DecoratorTest;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static umlp.generator.decorator.commands.CommandDecorator.DE_SER;
-import static umlp.generator.decorator.commands.CreateDecorator.SUFFIX;
+import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
+import static umlp.generator.domain.decorator.commands.GetDecorator.SUFFIX;
 
-public class CreateDecoratorTest extends DecoratorTest {
+public class GetDecoratorTest extends DecoratorTest {
   
   @Override
   protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
-    return new CreateDecorator(glex);
+    return new GetDecorator(glex);
   }
 
   @Test
@@ -26,15 +26,15 @@ public class CreateDecoratorTest extends DecoratorTest {
     assertAll(
             // check no of methods and attributes
             () -> assertEquals(1, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(3, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(4, clazz.getCDMethodList().size(), "number of methods"),
 
             // check methods
             () -> existsMethod(clazz, "doRun"),
-            () -> existsMethod(clazz, "getFoo"),
-            () -> existsMethod(clazz, "getEffectedGemIds")
+            () -> existsMethod(clazz, "getGemId"),
+            () -> existsMethod(clazz, "getEffectedGemIds"),
+            () -> existsMethod(clazz, "getNewlySubscribedGemIds")
     );
   }
-
   @Test
   public void checkDeSer() {
     ASTCDClass clazz = getClassByName("Foo" + SUFFIX + DE_SER);
@@ -54,4 +54,5 @@ public class CreateDecoratorTest extends DecoratorTest {
     generateAndCheckCode(getClassByName("Foo" + SUFFIX));
     generateAndCheckCode(getClassByName("Foo" + SUFFIX + DE_SER));
   }
+  
 }

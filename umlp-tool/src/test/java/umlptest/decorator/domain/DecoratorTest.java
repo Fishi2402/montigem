@@ -1,4 +1,4 @@
-package umlptest.decorator;
+package umlptest.decorator.domain;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
@@ -7,6 +7,9 @@ import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4analysis.trafo.CDAssociationCreateFieldsFromNavigableRoles;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -24,8 +27,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import umlp.UMLPMill;
 import umlp._ast.ASTUMLPCompilationUnit;
-import umlp.generator.domain.UMLP2CDTrafo;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.UMLP2CDTrafo;
 import umlptest.AbstractUMLPTest;
 
 import java.util.Optional;

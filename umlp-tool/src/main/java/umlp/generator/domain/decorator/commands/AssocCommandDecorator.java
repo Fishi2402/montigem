@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.decorator.commands;/* (c) https://github.com/MontiCore/monticore */
+package umlp.generator.domain.decorator.commands;/* (c) https://github.com/MontiCore/monticore */
 
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
@@ -12,13 +12,14 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
-import umlp.generator.decorator.AbstractDecorator;
-import umlp.generator.decorator.GenService;
+import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.GenService;
 
 import java.util.Collection;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.AbstractDecorator.COMMAND_PACKAGE;
 
 public class AssocCommandDecorator extends AbstractDecorator {
 

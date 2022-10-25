@@ -10,8 +10,7 @@ import org.gradle.api.tasks.TaskAction;
 import umlp.UMLPFullPrettyPrinter;
 import umlp.UMLPTool;
 import umlp._ast.ASTUMLPCompilationUnit;
-import umlp.generator.CD2UMLPTrafo;
-import umlp.generator.UMLP2CDTrafo;
+import umlp.generator.domain.UMLP2CDTrafo;
 
 import java.io.File;
 import java.io.FileNotFoundException;

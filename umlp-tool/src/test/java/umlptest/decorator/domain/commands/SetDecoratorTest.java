@@ -1,30 +1,30 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlptest.decorator.commands;
+package umlptest.decorator.domain.commands;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.jupiter.api.Test;
-import umlp.generator.decorator.AbstractDecorator;
-import umlp.generator.decorator.commands.AssocCommandDecorator;
-import umlptest.decorator.DecoratorTest;
+import umlp.generator.AbstractDecorator;
+import umlp.generator.decorator.commands.SetDecorator;
+import umlptest.decorator.domain.DecoratorTest;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AssocCommandDecoratorTest extends DecoratorTest {
+public class SetDecoratorTest extends DecoratorTest {
   
   @Override
   protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
-    return new AssocCommandDecorator(glex);
+    return new SetDecorator(glex);
   }
   
   @Test
   public void check() {
-    ASTCDClass clazz = getClassByName("Foo2_addOwns2");
+    ASTCDClass clazz = getClassByName("Foo_setFooAttr");
     assertAll(
       // check no of methods and attributes
-      () -> assertEquals(3, clazz.getCDAttributeList().size(), "number of attributes"),
-      () -> assertEquals(5, clazz.getCDMethodList().size(), "number of methods"),
+      () -> assertEquals(2, clazz.getCDAttributeList().size(), "number of attributes"),
+      () -> assertEquals(4, clazz.getCDMethodList().size(), "number of methods"),
       
       // check methods
       () -> existsMethod(clazz, "doRun"),
@@ -34,7 +34,7 @@ public class AssocCommandDecoratorTest extends DecoratorTest {
   
   @Test
   public void testGeneratedCode() {
-    generateAndCheckCode(getClassByName("Foo2_addOwns2"));
+    generateAndCheckCode(getClassByName("Foo_setFooAttr"));
   }
   
 }
