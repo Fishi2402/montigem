@@ -18,6 +18,6 @@ public class AssocMutatorDecorator extends MutatorDecorator {
     if (GenService.isGemList(ast)) {
       return listMethodDecorator;
     }
-     return mandatoryMethodDecorator;
+    return mandatoryMethodDecorator;
   }
 }

@@ -3,7 +3,9 @@ package umlp;
 import de.monticore.generating.templateengine.reporting.commons.ASTNodeIdentHelper;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
+import de.monticore.generating.templateengine.reporting.reporter.*;
 import de.monticore.io.paths.MCPath;
+import umlp._visitor.UMLPTraverser;
 
 import java.nio.file.Path;
 import java.util.function.Function;

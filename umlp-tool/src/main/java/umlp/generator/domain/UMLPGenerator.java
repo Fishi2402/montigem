@@ -21,7 +21,7 @@ import java.util.Arrays;
 /**
  * configures and employs generators of individual UML/P languages to generate
  * code. Currently, it uses only the CDGenerator.
- * <p>
+ *
  * Later do: make this customizable as Groovy script
  */
 public class UMLPGenerator {
@@ -52,11 +52,6 @@ public class UMLPGenerator {
 
   }
 
-  protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast) {
-    Log.info("========= CD after '" + trafo + "': =========", UMLPGenerator.class.getName());
-    Log.info(astPrinter.prettyprint(ast), UMLPGenerator.class.getName());
-  }
-
   public void generate(ASTUMLPCompilationUnit modelAST, String configTemplate) {
 
     // Translate AST of UMLP Model into initial CD-AST
@@ -80,5 +75,10 @@ public class UMLPGenerator {
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
     // translate the CD-AST into Java with the CD Generator
     hpp.processValue(tc, cdAST, Arrays.asList(decoratedAST, genSetup.getGlex(), genSetup.getHandcodedPath(), cdGenerator));
+  }
+
+  protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
+    Log.info("========= CD after '"+trafo+"': =========", UMLPGenerator.class.getName());
+    Log.info(astPrinter.prettyprint(ast), UMLPGenerator.class.getName());
   }
 }

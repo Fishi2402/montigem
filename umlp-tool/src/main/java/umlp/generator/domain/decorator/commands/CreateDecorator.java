@@ -12,7 +12,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.decorator.commands.CommandDecorator.DE_SER;
+import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class CreateDecorator extends AbstractDecorator {
 
@@ -42,7 +42,7 @@ public class CreateDecorator extends AbstractDecorator {
       .build();
     
     ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected final " + classname + " " + StringTransformations.uncapitalize(classname));
-   
+
     getCD4C().addConstructor(ast, "umlp.commands.Constructor",classname, packageName, SUFFIX);
     getCD4C().addMethod(ast, "umlp.commands.create.DoRun", classname, origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds");

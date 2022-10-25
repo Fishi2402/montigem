@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DeSerDecorator extends DomainClassDecorator {
+public class DeSerDecorator extends DomainClassDecorator{
   public DeSerDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
@@ -47,9 +47,9 @@ public class DeSerDecorator extends DomainClassDecorator {
     attrList = attrList.stream().filter(attr -> !attr.getModifier().isDerived()).collect(Collectors.toList());
 
     attrList.forEach(attr -> {
-      addSerMethod(originalClassName, deSer, attr);
-      addDeserMethod(cdName, originalClassName, deSer, attr);
-    });
+          addSerMethod(originalClassName, deSer, attr);
+          addDeserMethod(cdName, originalClassName, deSer, attr);
+        });
 
     // TODO: also use for other templates!
     List<ASTCDAttribute> simpleAttributes = new ArrayList<>();
@@ -57,24 +57,22 @@ public class DeSerDecorator extends DomainClassDecorator {
     List<ASTCDAttribute> gemListAttributes = new ArrayList<>();
 
     for (ASTCDAttribute attr : attrList) {
-      if (isSimpleType(attr.printType())) {
+      if(isSimpleType(attr.printType())){
         simpleAttributes.add(attr);
-      }
-      else if (GenService.isGemList(attr)) {
+      } else if(GenService.isGemList(attr)){
         gemListAttributes.add(attr);
-      }
-      else if (GenService.isGem(attr)) {
+      }else if(GenService.isGem(attr)){
         gemAttributes.add(attr);
       }
     }
 
     getCD4C().addMethod(deSer, "umlp.deser.serialize", originalClassName, attrList);
     getCD4C().addMethod(deSer, "umlp.deser.deserialize",
-        cdName,
-        originalClassName,
-        simpleAttributes,
-        gemAttributes,
-        gemListAttributes
+      cdName,
+      originalClassName,
+      simpleAttributes,
+      gemAttributes,
+      gemListAttributes
     );
 
     CD4CTemplateHelper th = new CD4CTemplateHelper();
@@ -88,31 +86,26 @@ public class DeSerDecorator extends DomainClassDecorator {
   }
 
   protected void addSerMethod(String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
-    if (GenService.isGemList(attr)) {
+    if(GenService.isGemList(attr)){
       getCD4C().addMethod(deSer, "umlp.deser.serializeGemListField", originalClassName, attr.getName());
-    }
-    else if (GenService.isGem(attr)) {
+    } else if(GenService.isGem(attr)){
       getCD4C().addMethod(deSer, "umlp.deser.serializeGemField", originalClassName, attr.getName());
-    }
-    else if (GenService.isList(attr)) {
+    } else if(GenService.isList(attr)) {
       // TODO
-    }
-    else if (GenService.isOptional(attr)) {
+    } else if(GenService.isOptional(attr)) {
       // TODO
-    }
-    else {
+    } else {
       // TODO: Other simple types!
-      if (isSimpleType(attr.printType())) {
+      if(isSimpleType(attr.printType())) {
         getCD4C().addMethod(deSer, "umlp.deser.serializeSimpleField", originalClassName, attr.getName());
       }
     }
   }
 
   protected void addDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
-    if (GenService.isGemList(attr)) {
+    if(GenService.isGemList(attr)){
       getCD4C().addMethod(deSer, "umlp.deser.deserializeGemListField", cdName, originalClassName, attr.getName(), attr.printType());
-    }
-    else if (GenService.isGem(attr)) {
+    } else if(GenService.isGem(attr)) {
       ASTMCBasicGenericType gemType = (ASTMCBasicGenericType) attr.getMCType();
       String innerType = new CD4CodeFullPrettyPrinter().prettyprint(gemType.getMCTypeArgument(0).getMCTypeOpt().get());
       getCD4C().addMethod(
@@ -124,18 +117,15 @@ public class DeSerDecorator extends DomainClassDecorator {
           attr.printType(),
           innerType
       );
-    }
-    else if (GenService.isList(attr)) {
+    } else if(GenService.isList(attr)) {
       // TODO
-    }
-    else if (GenService.isOptional(attr)) {
+    } else if(GenService.isOptional(attr)) {
       // TODO
-    }
-    else {
+    } else {
       String type = attr.printType().replaceAll("^java[.]lang[.]", "");
       // TODO: Other simple types!
       // Alternative: All other types are Gem?
-      if (isSimpleType(type)) {
+      if(isSimpleType(type)) {
         getCD4C().addMethod(deSer,
             "umlp.deser.deserializeSimpleField",
             originalClassName,

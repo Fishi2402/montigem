@@ -2,13 +2,16 @@
 
 package umlp.generator.domain.decorator;
 
+import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.UMLPMill;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
@@ -25,16 +28,16 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-        .forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
+      .forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
   }
 
   protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
     String className = domainClass.getName() + DESER_BUILDER_SUFFIX;
 
     ASTCDClass deserBuilderClass = UMLPMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
-        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(domainClass.getName() + BuilderDecorator.BUILDER_SUFFIX))
-        .setName(className).build();
+            .setModifier(PUBLIC.build())
+            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(domainClass.getName() + BuilderDecorator.BUILDER_SUFFIX))
+            .setName(className).build();
 
     // Constructors
     getCD4C().addConstructor(deserBuilderClass, "umlp.deser_builder.Constructor", domainClass.getName());
@@ -51,8 +54,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
             deserBuilderClass.getName(),
             a.getName()
         );
-      }
-      else if (GenService.isGem(a)) {
+      }else if(GenService.isGem(a)){
         getCD4C().addMethod(
             deserBuilderClass,
             "umlp.deser_builder.setGem",
@@ -60,8 +62,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
             a.printType(),
             a.getName()
         );
-      }
-      else {
+      }else{
         ASTCDMethodSignature m = getCD4C().addMethod(
             deserBuilderClass,
             "umlp.deser_builder.setSimple",

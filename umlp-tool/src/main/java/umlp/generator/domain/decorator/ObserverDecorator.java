@@ -13,24 +13,26 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.domain.decorator.GenService.createType;
 
 public class ObserverDecorator extends AbstractDecorator {
-  
+
   public static final String SUFFIX = "Observer";
-  
+
   public ObserverDecorator(final GlobalExtensionManagement glex) {
     super(glex);
   }
-  
+
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> astcdPackage.addCDElement(createInterface(c)));
   }
-  
+
   protected ASTCDInterface createInterface(ASTCDClass domainClass) {
     String className = domainClass.getName();
     ASTCDInterface ast = UMLPMill.cDInterfaceBuilder()
@@ -46,8 +48,8 @@ public class ObserverDecorator extends AbstractDecorator {
     domainClass.getCDAttributeList().stream()
       .filter(a -> !a.getModifier().isDerived())
       .forEach(a -> {
-        getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, getCDPrinter().prettyprint(GenService.createType(a)), false);
-        getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, getCDPrinter().prettyprint(GenService.createType(a)), false);
+        getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, getCDPrinter().prettyprint(createType(a)), false);
+        getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, getCDPrinter().prettyprint(createType(a)), false);
       });
 
     // Add Notify for list associations
