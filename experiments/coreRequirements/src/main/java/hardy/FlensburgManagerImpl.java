@@ -41,6 +41,9 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected HumanBuilder _doHumanBuilder(long gemId) {
+        HumanBuilder builder = new HumanBuilder(gemId);
+        // We need to set a DB Oberserver whenever a human object is built from the DB, so the DB is kept updated
+        builder.humanObservers.add(new HumanDbObserver());
         return new HumanBuilder(gemId);
     }
 
@@ -51,7 +54,10 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected Human _doGetHumanSure(long gemId) {
-        return DatabaseAccessManager.get(Human.class, gemId);
+        // We need to set a DB Oberserver whenever a human object is requested from the DB, so the DB is kept updated
+        Human h = DatabaseAccessManager.get(Human.class, gemId);
+        h.addObserver(new HumanDbObserver());
+        return h;
     }
 
     @Override

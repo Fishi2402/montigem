@@ -16,11 +16,11 @@ public class SimpleDBTest {
 
     // TODO wrong handling gem id -> generatedID
 
-    /*long gemid1 = h1.getGemId();
-    long gemid2 = h2.getGemId();*/
+    long gemid1 = h1.getGemId();
+    /*long gemid2 = h2.getGemId();*/
 
     FlensburgManagerImpl.addHuman(h1);
 
-    Assertions.assertEquals(h1.getAge(), FlensburgManagerImpl.getHumanSure(1).getAge());
+    Assertions.assertEquals(h1.getAge(), FlensburgManagerImpl.getHumanSure(gemid1).getAge());
   }
 }
