@@ -3,7 +3,6 @@ package hardy;
 import com.google.common.collect.Streams;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collector;
 import java.util.stream.IntStream;
@@ -109,7 +108,6 @@ public class FlensburgDummyProviderTOP {
     // Der Builder fügt das Objekt zum FlensburgManager hinzu
     return FlensburgManager
         .carBuilder()
-        .owns(Objects.requireNonNull(person, "Person must not be null!"))
         .build().get();
   }
 

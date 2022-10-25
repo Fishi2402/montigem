@@ -27,7 +27,6 @@ public class ShowCityInfoTest extends AbstractGUITest {
         .nickname("theo")
         .mainResidence(a)
         .owns(Collections.singleton(cb));
-    cb.owns(pb);
     cb.build();
     pb.build();
 

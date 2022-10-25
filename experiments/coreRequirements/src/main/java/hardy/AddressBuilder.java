@@ -22,9 +22,9 @@ public class AddressBuilder extends Address {
     }
 
     public AddressBuilder(long gemId) {
-       this.gemId = gemId;
-       this.visitors = FlensburgManager.createVisitorsBuilder(gemId, FlensburgManager.getFreeGemListId(), Collections.emptyList());
-       init();
+      this.gemId = gemId;
+      this.visitors = FlensburgManager.createVisitorsBuilder(gemId, Collections.emptyList());
+      init();
     }
 
     public boolean isBuildFinished() {
@@ -40,10 +40,10 @@ public class AddressBuilder extends Address {
     public Optional<Address> build() {
         if (!buildFinished) {
             if(isBuildable()) {
-                if(!INTERNAL_deser_mode) {
-                  visitors.build();
+              if(!INTERNAL_deser_mode) {
                   FlensburgManager.addAddress(this);
                 }
+                visitors.build();
                 addressObservers.forEach(obs -> obs.notifyBuild(this));
                 buildFinished = true;
                 return Optional.of(this);

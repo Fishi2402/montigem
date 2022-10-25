@@ -44,4 +44,12 @@ public class Person_setMainResidence extends Command<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Arrays.asList(personGemId, mainResidenceGemId);
   }
+
+  public long getPersonGemId() {
+    return personGemId;
+  }
+
+  public long getMainResidenceGemId() {
+    return mainResidenceGemId;
+  }
 }

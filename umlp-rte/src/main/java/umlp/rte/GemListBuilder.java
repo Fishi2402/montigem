@@ -17,12 +17,12 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
   // Nach build() wird diese geleert und nicht weiter verwendet.
   protected Map<Integer, E> idxToBuilder = new HashMap<>();
 
-  public GemListBuilder(long gemID, Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction) {
-    this(gemID, loadObjectsFunction, Collections.emptyList());
+  public GemListBuilder(Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction) {
+    this(loadObjectsFunction, Collections.emptyList());
   }
 
-  public GemListBuilder(long gemID, Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction, List<Long> initialIds) {
-    super(gemID, initialIds, loadObjectsFunction);
+  public GemListBuilder(Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction, List<Long> initialIds) {
+    super(initialIds, loadObjectsFunction);
   }
 
   public Optional<GemList<E>> build(){
@@ -109,6 +109,15 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
       return super.getIDs(startIdx, endIdx);
     } else {
       return builderIds.subList(startIdx, endIdx);
+    }
+  }
+
+  @Override
+  public List<Long> getIDs() {
+    if(buildFinished){
+      return super.getIDs();
+    } else {
+      return Collections.unmodifiableList(builderIds);
     }
   }
 }

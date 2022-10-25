@@ -53,7 +53,6 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
 
   public GemList<E> createLazyList() {
     GemList<E> gemList = new GemList<>(
-        getNextGemListID(),
         ids,
         this::getObjects,
         this::setIdxs,

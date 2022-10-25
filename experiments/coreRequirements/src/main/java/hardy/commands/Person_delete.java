@@ -9,7 +9,7 @@ import umlp.command.StatusResult;
 import java.util.Collection;
 import java.util.Collections;
 
-public class Person_delete extends Command {
+public class Person_delete extends Command<Void> {
   protected final Person person;
 
   public Person_delete(Person person) {
@@ -29,5 +29,9 @@ public class Person_delete extends Command {
   @Override
   public Collection<Long> getEffectedGemIds() {
     return Collections.singleton(person.getGemId());
+  }
+
+  public Person getPerson() {
+    return person;
   }
 }

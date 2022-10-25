@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package hardy.service.websocket;
 
-import hardy.commands.Person_ids;
+import hardy.commands.Person_setAge;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -36,10 +36,11 @@ public class CommandWebSocketService extends TextWebSocketHandler {
 
   @Override
   public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+    System.out.println("Server received message");
     String returnResult = "";
     try {
       // TODO: check participant id is correct
-      Optional<Command<?>> commandOptional = CommandObjectMapper.deserializeCommand(message.getPayload());
+      Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(message.getPayload());
       if (!commandOptional.isPresent()) {
         return;
       }
@@ -49,7 +50,7 @@ public class CommandWebSocketService extends TextWebSocketHandler {
     } catch (Exception e) {
       returnResult = "Command could not be parsed!";
       returnResult += "\n Example for a command: " +
-          CommandObjectMapper.serializeCommand(new Person_ids(0, 5));
+          CommandObjectMapper.serializeCommand(new Person_setAge(0, 5));
     }
     System.out.println(returnResult);
     session.sendMessage(new TextMessage(returnResult));

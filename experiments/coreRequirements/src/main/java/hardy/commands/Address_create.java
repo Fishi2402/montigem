@@ -35,7 +35,11 @@ public class Address_create extends Request<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Collections.singleton(address.getGemId());
   }
-  
+
+  public Address getAddress() {
+    return address;
+  }
+
   // TODO AHe: undo
   
 }

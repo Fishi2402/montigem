@@ -10,6 +10,8 @@ import umlptest.decorator.DecoratorTest;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static umlp.generator.decorator.commands.CommandDecorator.DE_SER;
+import static umlp.generator.decorator.commands.DeleteDecorator.SUFFIX;
 
 public class DeleteDecoratorTest extends DecoratorTest {
   
@@ -17,24 +19,40 @@ public class DeleteDecoratorTest extends DecoratorTest {
   protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
     return new DeleteDecorator(glex);
   }
-  
+
   @Test
   public void check() {
-    ASTCDClass clazz = getClassByName("Foo" + DeleteDecorator.SUFFIX);
+    ASTCDClass clazz = getClassByName("Foo" + SUFFIX);
     assertAll(
-      // check no of methods and attributes
-      () -> assertEquals(1, clazz.getCDAttributeList().size(), "number of attributes"),
-      () -> assertEquals(2, clazz.getCDMethodList().size(), "number of methods"),
-      
-      // check methods
-      () -> existsMethod(clazz, "doRun"),
-      () -> existsMethod(clazz, "getEffectedGemIds")
+            // check no of methods and attributes
+            () -> assertEquals(1, clazz.getCDAttributeList().size(), "number of attributes"),
+            () -> assertEquals(3, clazz.getCDMethodList().size(), "number of methods"),
+
+            // check methods
+            () -> existsMethod(clazz, "doRun"),
+            () -> existsMethod(clazz, "getFoo"),
+            () -> existsMethod(clazz, "getEffectedGemIds")
     );
   }
-  
+
+  @Test
+  public void checkDeSer() {
+    ASTCDClass clazz = getClassByName("Foo" + SUFFIX + DE_SER);
+    assertAll(
+            // check no of methods and attributes
+            () -> assertEquals(0, clazz.getCDAttributeList().size(), "number of attributes"),
+            () -> assertEquals(2, clazz.getCDMethodList().size(), "number of methods"),
+
+            // check methods
+            () -> existsMethod(clazz, "buildJson"),
+            () -> existsMethod(clazz, "fromJsonObject")
+    );
+  }
+
   @Test
   public void testGeneratedCode() {
-    generateAndCheckCode(getClassByName("Foo" + DeleteDecorator.SUFFIX));
+    generateAndCheckCode(getClassByName("Foo" + SUFFIX));
+    generateAndCheckCode(getClassByName("Foo" + SUFFIX + DE_SER));
   }
   
 }

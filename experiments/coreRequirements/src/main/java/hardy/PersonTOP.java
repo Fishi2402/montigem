@@ -5,8 +5,9 @@ package hardy;
 // todo NN: !com.google.common.: Muss das Teil dieser Imports sein, Rücksprache mit BR
 
 import com.google.common.collect.Sets;
-import com.google.gson.annotations.JsonAdapter;
-import umlp.rte.*;
+import umlp.rte.Gem;
+import umlp.rte.GemList;
+import umlp.rte.NotificationScope;
 
 import java.util.*;
 
@@ -32,7 +33,6 @@ public abstract class PersonTOP extends Human {
   protected String nickname;
   
   // Association with cardinality [1]
-  @JsonAdapter(PersonMainResidenceTypeAdapter.class)
   protected Gem<Address> mainResidence;
 
   // an Association: ------------------------------------------
@@ -40,13 +40,11 @@ public abstract class PersonTOP extends Human {
   // unordered Association.
   // The implementation will be a LazyList
   // Siehe PersonOwnsTypeAdapter für Erklärung
-  @JsonAdapter(CarGemListTypeAdapter.class)
   protected GemList<Car> owns;
   // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
 
   protected GemList<Person> children;
 
-  @JsonAdapter(AddressGemListTypeAdapter.class)
   protected GemList<Address> visited;
   // TODO AHe: add/remove/...
 
@@ -154,7 +152,7 @@ public abstract class PersonTOP extends Human {
   public boolean checkMainResidence() {
     boolean res = true;
     
-    if (mainResidence == null || !mainResidence.isPresent()) {
+    if (mainResidence == null || mainResidence.getGemId() == -1) {
       res = false;
       PersonErrorCollector.reportMainResidenceInvalid((Person) this);
     }
@@ -383,23 +381,6 @@ public abstract class PersonTOP extends Human {
   // TODO: should not be used/usable when not testing
   public GemList<Car> getOwnsGemList() {
     return owns;
-  }
-
-  // TODO: remove when gson is replaced
-  public void INTERNAL_finishDeser() {
-    // properly init GemLists
-    if(owns instanceof GemListDeserHelper){
-      owns = FlensburgManager.createOwns(gemId, owns.getGemId(), owns.size(), ((GemListDeserHelper<Car>) owns).getInitialIds());
-    }
-
-    if(children instanceof GemListDeserHelper){
-      children = FlensburgManager.createChildren(gemId, children.getGemId(), children.size(), ((GemListDeserHelper<Person>) children).getInitialIds());
-    }
-
-    if(visited instanceof GemListDeserHelper){
-      List<Long> initialIds = ((GemListDeserHelper<Address>) visited).getInitialIds();
-      visited = FlensburgManager.createVisited(gemId, visited.getGemId(), visited.size(), initialIds);
-    }
   }
 
   public int sizeVisited() {

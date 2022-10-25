@@ -1,6 +1,8 @@
 package hardy.commands;
 
 import hardy.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umlp.command.Command;
 import umlp.command.CommandObjectMapper;
@@ -12,6 +14,10 @@ import umlp.rte.LoadingState;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CommandObjectMapperTest {
+  @BeforeEach
+  public void init(){
+    FlensburgCommandObjectMapper.init();
+  }
 
   @Test
   public void testCommandRoundtrip(){

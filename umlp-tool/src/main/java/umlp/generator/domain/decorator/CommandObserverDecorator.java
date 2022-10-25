@@ -53,9 +53,6 @@ public class CommandObserverDecorator extends AbstractDecorator {
       getCD4C().addImport(clazz, "umlp.command.CommandManager");
       getCD4C().addImport(clazz, "umlp."+domainclass.getName());
     }
-    domainclass.getCDAttributeList().stream()
-      .filter(a -> !a.getModifier().isDerived())
-      .forEach(a -> getCD4C().addImport(clazz, "umlp.commands."+domainclass.getName()+"_set_"+a.getName()));
-  }
+   }
   
 }

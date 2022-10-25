@@ -13,6 +13,7 @@ import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 
@@ -57,6 +58,27 @@ public class GenService {
     return exprBuilder.build();
   }
 
+  public static String calculateJSon(ASTCDAttribute attr) {
+    String json = "";
+    SymTypeExpression type = attr.getSymbol().getType();
+    if (TypeCheck.isBoolean(type)) {
+      json = "getAsJsonBoolean().getValue()";
+    } else if (TypeCheck.isInt(type)) {
+      json = "getAsJsonNumber().getNumberAsInteger()";
+    } else if (TypeCheck.isFloat(type)) {
+      json = "getAsJsonNumber().getNumberAsFloat()";
+    } else if (TypeCheck.isLong(type)) {
+      json = "getAsJsonNumber().getNumberAsLong()";
+    } else if (TypeCheck.isDouble(type)) {
+      json = "getAsJsonNumber().getNumberAsDouble()";
+    } else if (TypeCheck.isString(type)) {
+      json = "getAsJsonString().getValue()";
+    } else {
+      // TODO
+    }
+    return json;
+  }
+
   public static ASTExpression createInitialValue(ASTMCType type) {
     FullSynthesizeFromCD4Code synthesize = new FullSynthesizeFromCD4Code();
     TypeCheckResult result = synthesize.synthesizeType(type);
@@ -98,6 +120,11 @@ public class GenService {
       return "Gem".equals(nameList.get(nameList.size()-1)) || "GemList".equals(nameList.get(nameList.size()-1));
     }
     return false;
+  }
+
+  public static String getGetterName(ASTCDAttribute attr) {
+    return (TypeCheck.isBoolean(attr.getSymbol().getType())?"is":"get")
+            + StringTransformations.capitalize(attr.getName());
   }
 
   public static boolean isGemList(ASTCDAttribute attr) {

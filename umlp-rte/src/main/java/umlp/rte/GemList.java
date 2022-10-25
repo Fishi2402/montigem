@@ -5,10 +5,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 // TODO: Brauchen wir hier Observer, oder werden die Observer eine ebene höher genutzt?
 // Sonst kann es zu Dopplung kommen, z.B. gibt es bei Person#addOwns die Methode PersonObserver#notifyAddOwns,
@@ -19,8 +17,7 @@ import java.util.function.Supplier;
  * Elements are loaded as they are required.
  * Useful if e.g. the elements are loaded over a network.
  */
-public class GemList<E extends GemIdentifiable> extends AbstractList<E>
-    implements GemIdentifiable {
+public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
 
   protected final static String UNEXPECTED_LIST_LENGTH_ERROR =
       "0xAC724 recieved list of unexpected length";
@@ -30,10 +27,6 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
 
   protected final static String FAILED_TO_LOAD_IDS_ERROR =
       "0xAC727 failed to load ids";
-
-  protected final static int UNKNOWN_SIZE = -32;
-
-  protected long gemID;
 
   // Lokaler speicher für die gemIds der enthaltenen Objekte. Enthält alle IDs der Assoziation.
   protected List<Long> ids;
@@ -47,25 +40,22 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
   protected Consumer<Set<Integer>> removeIdxsFunction;
 
   public GemList(
-      long gemID,
       List<Long> ids,
       Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction
   ) {
-    this(gemID, ids, loadObjectsFunction, null, null, null);
+    this(ids, loadObjectsFunction, null, null, null);
     this.setIdxFunction = this::_internal_set;
     this.addIDsFunction = this::_internal_add;
     this.removeIdxsFunction = this::_internal_remove;
   }
 
   public GemList(
-      long gemId,
       List<Long> ids,
       Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
       BiConsumer<Integer, Long> setIdxFunction,
       BiConsumer<Integer, List<Long>> addIDsFunction,
       Consumer<Set<Integer>> removeIdxsFunction
   ) {
-    this.gemID = gemId;
     this.ids = new ArrayList<>(ids);
     this.loadObjectsFunction = loadObjectsFunction;
     this.setIdxFunction = setIdxFunction;
@@ -198,10 +188,6 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
     return elem.getGemId();
   }
 
-  @Override
-  public long getGemId() {
-    return gemID;
-  }
 
   // Pseudo-build that does nothing
   public Optional<GemList<E>> build(){
@@ -214,6 +200,7 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E>
    * The gemId is not required to be loaded in the idStorage, thus the result of idStorage.removeId must not be returned
    */
   public void removeIdSure(long gemId) {
+    System.out.println(ids);
     ids.removeIf(l -> Objects.equals(l, gemId));
   }
 }

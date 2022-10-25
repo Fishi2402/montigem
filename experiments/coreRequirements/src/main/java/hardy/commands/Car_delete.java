@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 // GEN-P
 
-public class Car_delete extends Command {
+public class Car_delete extends Command<Void> {
   protected final Car car;
 
   public Car_delete(Car car) {
@@ -29,5 +29,9 @@ public class Car_delete extends Command {
   @Override
   public Collection<Long> getEffectedGemIds() {
     return Collections.singleton(car.getGemId());
+  }
+
+  public Car getCar() {
+    return car;
   }
 }

@@ -15,7 +15,7 @@ umlp RestaurantOrg {
     }
 
     class Employee extends Person {
-      int id;
+      int employeeID;
       String contract;
     }
   // }

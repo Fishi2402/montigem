@@ -17,12 +17,14 @@ public class HumanDbObserver implements HumanObserver{
   @Override
   public void notifySetAge(Human h, int age) {
     Session session = DatabaseAccessManager.getSession();
+    session.beginTransaction();
     CriteriaBuilder builder = session.getCriteriaBuilder();
     CriteriaUpdate<Human> update = builder.createCriteriaUpdate(Human.class);
     Root<Human> root = update.from(Human.class);
     update.set(root.get("age"), age);
     update.where(builder.equal(root.get("gemId"), h.getGemId()));
     session.createQuery(update).executeUpdate();
+    session.getTransaction().commit();
 
     // TODO: error handling
   }

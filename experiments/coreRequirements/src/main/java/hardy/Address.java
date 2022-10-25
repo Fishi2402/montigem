@@ -2,11 +2,9 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import com.google.gson.annotations.JsonAdapter;
 import org.hibernate.annotations.GenericGenerator;
 import umlp.rte.GemIdentifiable;
 import umlp.rte.GemList;
-import umlp.rte.GemListDeserHelper;
 import umlp.rte.NotificationScope;
 
 import javax.persistence.*;
@@ -35,7 +33,7 @@ public class Address implements GemIdentifiable {
   @Column(name = "city")
   protected String city;
 
-  @JsonAdapter(PersonGemListTypeAdapter.class)
+  @Transient // TODO Person ist kein Entity deswegen geht hier kein OneToMany -> muss spaeter nachgebessert werden
   protected GemList<Person> visitors;
 
   @Override
@@ -85,13 +83,6 @@ public class Address implements GemIdentifiable {
   //+ Pseudo build for all classes: normally nothing happens
   public Optional<Address> build() {
     return Optional.empty();
-  }
-
-  public void INTERNAL_finishDeser(){
-    // properly init GemLists
-    if(visitors instanceof GemListDeserHelper){
-      visitors = FlensburgManager.createVisitors(getGemId(), visitors.getGemId(), visitors.size(),((GemListDeserHelper<Person>) visitors).getInitialIds());
-    }
   }
 
   public void addVisitor(Person p, NotificationScope scope){

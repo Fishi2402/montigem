@@ -30,4 +30,8 @@ public class Human_delete extends Command<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Collections.singleton(human.getGemId());
   }
+
+  public Human getHuman() {
+    return human;
+  }
 }

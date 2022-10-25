@@ -89,4 +89,8 @@ public abstract class Command<T> {
   public Collection<Long> getNewlySubscribedGemIds(){
     return getEffectedGemIds();
   }
+
+  public void setParticipantId(long participantId) {
+    this.participantId = participantId;
+  }
 }

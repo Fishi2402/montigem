@@ -5,12 +5,7 @@ package umlp.command;
 import java.util.ArrayList;
 import java.util.Collection;
 
-// Deserialisierung von generischen Typen, wie List<Long>, ist mit Gson kompliziert, insbesondere wenn der Typ als
-// string geladen werden soll.
-// Dies ist z.B. der Fall bei der Deserialisierung eines SimpleResult<List<Long>> als Antwort auf den Request
-// Human_ids.
-// Daher wird hier eine Klasse erstellt, welche die geschachtelten Generics versteckt und eine Nutzung mit gson
-// vereinfacht.
+// TODO: ehemals für Gson gebraucht, durch ListCommandResult ersetzten
 public class LongList extends ArrayList<Long> {
 
   public LongList() {

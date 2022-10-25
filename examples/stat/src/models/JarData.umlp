@@ -1,0 +1,56 @@
+/* (c) https://github.com/MontiCore/monticore */
+import java.time.*;
+umlp JarData {
+
+// TODO: Remove "Obj" prefix (once the generator works)
+  class ObjJarData {
+    CLIParameter parameter;
+    Summary summary;
+
+// TODO: Comment in the following lines (once the generator works)
+/*
+    java.time.Duration duration;  // Duration of the run
+    java.time.Instant receivedTime; // When was the request received on the server?
+    java.net.InetAddress origin;    // Who sent the request? (Anonymized)
+*/
+  }
+
+  // Information how the JAR was started
+  class CLIParameter {
+    List<String> grammar;
+    boolean dstlGen;
+    boolean script;
+  }
+
+  // Data from the SummaryReporter
+  class Summary {
+    int errors;
+    int warnings;
+    int generated_files;
+    int instantiations;
+    int template_includes;
+    int template_writes;
+    int used_standard_templates;
+    int unused_standard_templates;
+    int used_handwritten_templates;
+    int unused_handwritten_templates;
+    int max_template_depth;
+    int max_ast_depth;
+    int ast_node_instances;
+    int ast_node_types;
+    int ast_node_visits;
+    int variables;
+    int variable_assignments;
+    int ast_hook_point_sets;
+    int ast_hook_point_calls;
+    int code_hook_point_sets;
+    int code_hook_point_calls;
+    int template_hook_point_sets;
+    int template_hook_point_calls;
+    int string_hook_point_sets;
+    int string_hook_point_calls;
+    int empty_hook_point_called;
+    int empty_hook_point_calls;
+  }
+}
+

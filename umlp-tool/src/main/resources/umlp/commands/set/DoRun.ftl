@@ -9,5 +9,5 @@ Optional<${classname}> ${classname?uncap_first}Opt = ${definition}Manager.${clas
         return StatusResult.ok(getId());
     } else {
         GeneralErrorCollector.reportSyncError();
-        return StatusResult.error(gemId);
+        return StatusResult.error(getId());
     }

@@ -33,4 +33,8 @@ public class Car_create extends Request<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Collections.singleton(car.getGemId());
   }
+
+  public Car getCar() {
+    return car;
+  }
 }

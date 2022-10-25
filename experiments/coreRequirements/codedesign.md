@@ -119,7 +119,30 @@ TODO
 
 ### Datenbank
 
-TODO
+* Als Datenbankanbindung gibt es zurzeit eine Umsetzung für relationale Datenbanken für die das object relational 
+mapping mit Hibernate umgesetzt wird. Dafür sind Datenklassen wie Car, Person etc. 
+in coreRequirements mit Hibernate Annotations annotiert.
+
+* Für Datenbankanfragen (CRUD) wird das Interface des FlensburgManagers benutzt. Die FlensburgManagerImpl stellt eine 
+konkrete Implementierung mit echtem Datenbankanschluss dar. Die FlensburgManagerImpl funktioniert so, dass 
+Datenbankrequests über den DatabaseAccessManager aus dem UMLP-RTE laufen, da dieser nicht generiert werden muss. Die
+FlensburgManagerImpl muss hingegen schon generiert werden, da z.B. fuer eine `getHuman()` Implementierung ein Request 
+abgeleitet wird, der weiss, dass es die Human Datenklasse ueberhaupt gibt.  
+
+* Die Datenbank wird ueber die `database.properties` konfiguriert, welche vom DataBaseAccessManager beim initialisieren 
+der FlensburgManagerImpl eingelesen wird. Fuer Konfigurationsmoeglichkeiten siehe 
+[hier](https://www.tutorialspoint.com/hibernate/hibernate_configuration.htm) 
+
+* Die konkrete Datenbank in `corerequirements` ist die [h2](http://h2database.com/html/main.html) 
+Datenbank. Sie hat den Vorteil vollständig im Arbeitsspeicher laufen zu koennen und ist damit gut geeignet fuer schnelle 
+Tests. Der Nachteil ist, dass der Speicher an einem JVM Prozess haengt und somit kein zweiter JVM Prozess darauf
+zugreifen kann, d.h. IntelliJs Database Connection kann nicht benutzt werden, um den Zustand der Datenbankinstanz in einem 
+anzusehen. Ein Workaround dafuer ist es die h2 Datenbank in einer Datei zu persistieren. Die beiden Modi koennen ueber
+die URL in der `database.properties` geswitcht (da sind auch Beispielpfade fuer beide Modi zu finden).
+ 
+* Um IntelliJs Database Connection nutzen zu koennen:  In `Data Sources and Drivers`  `Data Sources` Reiter auswaehlen,
+H2 hinzufuegen (notwendige Treiber dazu installieren) und Connection Type: Embedded auswaehlen. User und Password stehen 
+in der `database.properties` und die URL kann dort auch nachgelesen werden unter `hibernate.connection.url`. 
 
 
 ## Nicht-persistierte Elemente

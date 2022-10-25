@@ -42,16 +42,6 @@ public class CityInfoTest {
         .mainResidence(a2)
         .age(40);
 
-    // TODO AHe: Dieser Code für Assoziationen muss besser gehen
-
-    c1.owns(p1);
-    c2.owns(p1);
-
-    c3.owns(p2);
-    c4.owns(p2);
-    c5.owns(p2);
-    c6.owns(p2);
-
     p1.ownsAdd(c1).ownsAdd(c2).build();
     p2.ownsAdd(c3).ownsAdd(c4).ownsAdd(c5).ownsAdd(c6).build();
 
