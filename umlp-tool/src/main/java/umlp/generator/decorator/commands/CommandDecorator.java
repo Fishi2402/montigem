@@ -7,6 +7,8 @@ import umlp.generator.decorator.AbstractDecorator;
 
 public class CommandDecorator extends AbstractDecorator {
 
+  public static final String DE_SER = "DeSer";
+
   public CommandDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
@@ -28,6 +30,10 @@ public class CommandDecorator extends AbstractDecorator {
     SetDecorator setDecorator = new SetDecorator(glex);
     setDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: SetDecorator", CommandDecorator.class.getName());
+
+    GetFilteredDecorator getFilteredDecorator = new GetFilteredDecorator(glex);
+    getFilteredDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: GetFilteredDecorator", CommandDecorator.class.getName());
 
     AssocCommandDecorator addDecorator = new AssocCommandDecorator(glex);
     addDecorator.transform(cdAST, decoratedAST);

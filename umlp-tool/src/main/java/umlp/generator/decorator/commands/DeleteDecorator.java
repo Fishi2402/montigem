@@ -12,12 +12,11 @@ import umlp.UMLPMill;
 import umlp.generator.decorator.AbstractDecorator;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.decorator.commands.CommandDecorator.DE_SER;
 
 public class DeleteDecorator extends AbstractDecorator {
   
   public static final String SUFFIX = "_delete";
-
-  public static final String DE_SER = "DeSer";
 
   public DeleteDecorator(GlobalExtensionManagement glex) {
     super(glex);
@@ -29,7 +28,7 @@ public class DeleteDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
       .forEach(c -> {
         astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
-        astcdPackage.addCDElement(createDeSer(origCD, c, astcdPackage.getName()));
+        astcdPackage.addCDElement(createDeSer(origCD, c));
       });
   }
   
@@ -57,7 +56,7 @@ public class DeleteDecorator extends AbstractDecorator {
     return ast;
   }
 
-  protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String packageName) {
+  protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
     String cmdName = domainClass.getName() + SUFFIX;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
