@@ -10,7 +10,7 @@ import umlptest.decorator.DecoratorTest;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static umlp.generator.decorator.commands.CreateDecorator.DE_SER;
+import static umlp.generator.decorator.commands.CommandDecorator.DE_SER;
 import static umlp.generator.decorator.commands.CreateDecorator.SUFFIX;
 
 public class CreateDecoratorTest extends DecoratorTest {

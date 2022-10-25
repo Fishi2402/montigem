@@ -24,7 +24,7 @@ public class SetDecoratorTest extends DecoratorTest {
     assertAll(
       // check no of methods and attributes
       () -> assertEquals(2, clazz.getCDAttributeList().size(), "number of attributes"),
-      () -> assertEquals(2, clazz.getCDMethodList().size(), "number of methods"),
+      () -> assertEquals(4, clazz.getCDMethodList().size(), "number of methods"),
       
       // check methods
       () -> existsMethod(clazz, "doRun"),
