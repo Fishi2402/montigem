@@ -294,7 +294,7 @@ public class UMLPTool extends UMLPToolTOP {
 
   // TODO MB - einkommentieren
   protected boolean isGuiFile(File f) {
-    return f.getName().endsWith(".gui");
+    return false; //return f.getName().endsWith(".gui");
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {
