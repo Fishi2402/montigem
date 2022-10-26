@@ -15,8 +15,6 @@ import java.util.Optional;
 public class DBTestService {
   @GetMapping("/dbtest/createHuman/")
   public ResponseEntity<String> createHuman() {
-    FlensburgManagerImpl.init();
-
     Optional<Human> optHuman = FlensburgManagerImpl.humanBuilder()
         .age(0)
         .build();
@@ -30,8 +28,6 @@ public class DBTestService {
 
   @GetMapping("/dbtest/increaseAge/{id}")
   public ResponseEntity<String> increaseAge(@PathVariable long id) {
-    FlensburgManagerImpl.init();
-
     System.err.println("Got a Request with ID " + id);
     // FlensburgManagerImpl.init();
     Human h = FlensburgManagerImpl.getHumanSure(id);
@@ -41,8 +37,6 @@ public class DBTestService {
 
   @GetMapping("/dbtest/getAge/{id}")
   public ResponseEntity<String> getAge(@PathVariable long id) {
-    FlensburgManagerImpl.init();
-
     return ResponseEntity.ok("age:" + FlensburgManagerImpl.getHumanSure(id).getAge());
   }
 }
