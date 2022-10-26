@@ -76,7 +76,7 @@ public class UMLPGenerator {
     logTrafoExec("UMLAttrToAssocTrafo", cdAST);
 
     // rebuild symbol table
-    CD4CodeMill.globalScope().getSubScopes(artifactScope);
+    CD4CodeMill.globalScope().removeSubScope(artifactScope);
     UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
     logTrafoExec("rebuildCD4CodeSymTab", cdAST);
 
