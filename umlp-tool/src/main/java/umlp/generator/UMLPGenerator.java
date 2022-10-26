@@ -5,6 +5,7 @@ import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd4analysis.trafo.CDAssociationCreateFieldsFromNavigableRoles;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cd4code.trafo.CD4CodeDirectCompositionTrafo;
@@ -64,12 +65,20 @@ public class UMLPGenerator {
     // execute some basic CD-AST trafos (e.g., put everything in packages)
     cD4CodeAfterParseTrafo.transform(cdAST);
     logTrafoExec("CD4AnalysisAfterParseTrafo", cdAST);
-
-    UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
+    ICD4CodeArtifactScope artifactScope = UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
     logTrafoExec("createCD4CodeSymTab", cdAST);
 
     cD4CodeTrafo4Defaults.transform(cdAST);
     logTrafoExec("CD4CodeTrafo4Defaults", cdAST);
+
+    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
+    assocTrafo.transform(cdAST);
+    logTrafoExec("UMLAttrToAssocTrafo", cdAST);
+
+    // rebuild symbol table
+    CD4CodeMill.globalScope().getSubScopes(artifactScope);
+    UMLP2CDTrafo.createCD4CodeSymTab(cdAST);
+    logTrafoExec("rebuildCD4CodeSymTab", cdAST);
 
     // create an empty classdiagram
     ASTCDCompilationUnit decoratedAST = UMLP2CDTrafo.createCompilationUnit(cdAST);
