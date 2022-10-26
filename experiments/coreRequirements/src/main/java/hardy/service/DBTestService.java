@@ -15,7 +15,6 @@ import java.util.Optional;
 public class DBTestService {
   @GetMapping("/dbtest/createHuman/")
   public ResponseEntity<String> createHuman() {
-    FlensburgManagerImpl.init();
 
     Optional<Human> optHuman = FlensburgManagerImpl.humanBuilder()
         .age(0)
