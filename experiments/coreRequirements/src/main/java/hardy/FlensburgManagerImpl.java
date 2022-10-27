@@ -4,6 +4,7 @@ package hardy;
 
 import umlp.rte.DatabaseAccessManager;
 import umlp.rte.GemList;
+import umlp.rte.GemListBuilder;
 import umlp.rte.NotificationScope;
 
 import java.util.HashSet;
@@ -207,42 +208,58 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected GemList<Car> _doCreateOwns(long personGemId, int size, List<Long> initialCarGemIds) {
-        return null;
+        return new GemList<>(initialCarGemIds, ids -> {
+            throw new RuntimeException("TODO: implement");
+        });
     }
 
   @Override
   protected GemList<Person> _createChildren(long personGemId, int size, List<Long> initialIds) {
-    return null;
+      return new GemList<>(initialIds, ids -> {
+          throw new RuntimeException("TODO: implement");
+      });
   }
 
   @Override
     protected GemList<Car> _doCreateOwnsBuilder() {
-        return null;
+        return new GemListBuilder<>(ids -> {
+            throw new RuntimeException("TODO: implement");
+        });
     }
 
   @Override
   protected GemList<Person> _createChildrenBuilder() {
-    return null;
+      return new GemListBuilder<>(ids -> {
+          throw new RuntimeException("TODO: implement");
+      });
   }
 
   @Override
     public GemList<Address> _createVisited(long personGemId, long gemId, int size, List<Long> initialIds) {
-        return null;
+      return new GemList<>(initialIds, ids -> {
+          throw new RuntimeException("TODO: implement");
+      });
     }
 
     @Override
     protected GemList<Person> _createVisitors(long addressGemId, List<Long> initialIds) {
-        return null;
+        return new GemList<>(initialIds, ids -> {
+            throw new RuntimeException("TODO: implement");
+        });
     }
 
     @Override
     protected GemList<Address> _createVisitedBuilder(long personGemId, List<Long> initialIds) {
-        return null;
+        return new GemListBuilder<>(ids -> {
+            throw new RuntimeException("TODO: implement");
+        });
     }
 
     @Override
     protected GemList<Person> _createVisitorsBuilder(long addressGemId, List<Long> initialIds) {
-        return null;
+        return new GemListBuilder<>(ids -> {
+            throw new RuntimeException("TODO: implement");
+        });
     }
 
     @Override
@@ -252,7 +269,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected List<Car> _doGetCarsSure(long gemId) {
-        return null;
+        return _doCarsOpt(gemId).get();
     }
 
     @Override
@@ -265,6 +282,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
         annotatedClasses.add(Human.class);
         annotatedClasses.add(Car.class);
         annotatedClasses.add(Address.class);
+        annotatedClasses.add(Person.class);
         return annotatedClasses;
     }
 }

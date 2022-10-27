@@ -3,6 +3,7 @@ package hardy;
 //+ GEN-P        : generated for the product
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Tuplizer;
 import umlp.rte.GemIdentifiable;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ import java.util.Optional;
 // --------------------------
 @Entity
 @Table(name = "car")
+@Tuplizer(impl = FlensburgTuplizer.class)
 public class Car implements GemIdentifiable {
 
     // TODO Ist Transient weil Hibernate versucht die Sachen hier automatisch zu persistieren, das geht aber nicht fuer Interfaces

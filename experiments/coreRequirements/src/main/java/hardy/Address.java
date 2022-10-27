@@ -3,6 +3,7 @@ package hardy;
 //+ GEN-P        : generated for the product
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Tuplizer;
 import umlp.rte.GemIdentifiable;
 import umlp.rte.GemList;
 import umlp.rte.NotificationScope;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 @Entity
 @Table(name = "address")
+@Tuplizer(impl = FlensburgTuplizer.class)
 public class Address implements GemIdentifiable {
   protected transient List<AddressObserver> addressObservers = new ArrayList<>();
 
