@@ -6,10 +6,41 @@
 #
 version: "2.1"
 services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_PASSWORD=<ChangeThisPassword_PLEASE>
+      - POSTGRES_DB=umlpdb
+      - POSTGRES_USER=admin
+      - CONNECT_TIMEOUT=31536000
+      - WAIT_TIMEOUT=31536000
+    restart: "unless-stopped"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d umlpdb" ]
+      interval: 5s
+      timeout: 1s
+      retries: 10
+    expose:
+      - 5432
+    volumes:
+      - './db_data:/var/lib/postgresql/data/'     # Persist Data
+
   backend:
     image: <imageNameOfBackend>
     environment:
       - UMLP_DEPLOYED_DOMAIN=https://<DOMAIN>  # Required for Allowed Origins
+
+
+      # Hibernate, connect to DB
+      - hibernate.hbm2ddl.auto=create   ## Understand what this does! It dangerous!
+          # update = keep old data, but allowed to change db schema
+          # create = delete everything, start from fresh db
+
+      - hibernate.connection.driver_class=org.postgresql.Driver
+      - hibernate.connection.username=admin
+      - hibernate.connection.password=<ChangeThisPassword_PLEASE>
+      - hibernate.dialect=org.hibernate.dialect.PostgreSQL95Dialect
+      - hibernate.connection.url=jdbc:postgresql://db:5432/umlpdb
     restart: "unless-stopped"
     expose:
       - 8081/tcp
