@@ -6,7 +6,7 @@ umlp Log_MC_JAR {
   class LogEntry {
     CLIParameter parameter;
     Optional<Summary> summary;
-    List<Error> errors;
+    List<ErrorEntry> errors;
 
     String toolVersion;   // e.g. "7.5.0-SNAPSHOT"
 
@@ -20,10 +20,10 @@ umlp Log_MC_JAR {
 
   enum ErrorType { ERROR, WARNING; }
 
-  class Error {
+  class ErrorEntry {
     Optional<String> code;
     String message;
-    ErrorType type;
+    // ErrorType type;      // TODO: Comment in, once the generator Works
   }
 
   // Information how the JAR was started
