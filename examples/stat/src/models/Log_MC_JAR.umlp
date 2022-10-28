@@ -1,18 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
-import java.time.*;
-umlp JarData {
+package stat.mc.jar;
 
-// TODO: Remove "Obj" prefix (once the generator works)
-  class ObjJarData {
+umlp Log_MC_JAR {
+
+  class LogEntry {
     CLIParameter parameter;
-    Summary summary;
+    Optional<Summary> summary;
+    List<Error> errors;
+
+    String toolVersion;   // e.g. "7.5.0-SNAPSHOT"
 
 // TODO: Comment in the following lines (once the generator works)
 /*
     java.time.Duration duration;  // Duration of the run
-    java.time.Instant receivedTime; // When was the request received on the server?
-    java.net.InetAddress origin;    // Who sent the request? (Anonymized)
+    java.time.Instant receivedTime; // When was the request received on the server?   - Added in backend
+    java.net.InetAddress origin;    // Who sent the request? (Anonymized)             - Added in backend
 */
+  }
+
+  enum ErrorType { ERROR, WARNING; }
+
+  class Error {
+    Optional<String> code;
+    String message;
+    ErrorType type;
   }
 
   // Information how the JAR was started
