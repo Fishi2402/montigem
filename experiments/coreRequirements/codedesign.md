@@ -292,6 +292,28 @@ sequenceDiagram
     deactivate UndoCommand
 ```
 
+### (De)serialisierung
+- Zum Senden der Commands und Results zwischen dem Server und Clients müssen diese serialisiert und deserialisiert werden
+- Nutzt die Klasse `de.monticore.symboltable.serialization.json.JsonElement` aus der MontiCore-Runtime
+- Umgesetzt durch Klasse `CommandObjectMapper`
+  - Static delegate zu einer generierten Klasse, hier `FlensburgCommandObjectMapper`, da pro Modell unterschiedliche
+    Klassen unterstützt werden müssen.
+  - Die Funktionalität ist für `Commands` und `Results` getrennt in den `FlensburgCommandDeSer` und den
+    `FlensburgCommandResultDeSer`
+- Für jede Domänenklasse wird eine zusätzliche `DeSer` Klasse generiert
+  - Serialisierung: nutzt die generierten Getter der Domänenklasse und den `JsonPrinter`
+    - Sollte ein Attribut nicht von außen sichtbar sein, so muss eine zusätzlicher interner Getter hinzugefügt werden
+    - Für jedes Attribut `X` wird eine eigene Methode `serializeA(T t, JsonPrinter p)` generiert, was die Anpassbarkeit
+      per TOP-Mechanismus erhöht
+    - Es wird ein leerer Hookpoint `serialize_Addons` generiert
+  - Deserialisierung: nutzt `JsonObject` und den Builder der Domänenklasse
+    - Der Builder muss angepasst werden, damit das gebaute Element nicht direkt in die Datenquelle übergeben wird.
+    Andernfalls kann die Validierung und Rechteüberprüfung nicht rechtzeitig durchgeführt werden.
+    - Es wird ein leerer Hookpoint `deserialize_Addons` generiert
+- Für jedes Commando wird eine zusätzliche `DeSer` Klasse generiert
+  - Welche intern ggf. einen Domänenklassen-DeSer nutzt, wie z.B. `Person_createDeSer` nutzt `PersonDeSer`
+  - Da die Commando-Objekte sehr simpel sind, werden hier keine Builder genutzt.
+- TODO: AHe: (De)serialisierung von Standarddatentypen wie String, Long, ...
 
 ## Rechte / Rollen-Konzept
 
