@@ -116,6 +116,7 @@ public abstract class FlensburgManager {
 
     protected static void setInstance(FlensburgManager instance) {
       FlensburgManager.instance = instance;
+      FlensburgBaseClassObjectMapper.init();
       FlensburgCommandObjectMapper.init();
     }
 

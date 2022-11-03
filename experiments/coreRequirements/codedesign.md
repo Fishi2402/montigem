@@ -313,7 +313,12 @@ sequenceDiagram
 - Für jedes Commando wird eine zusätzliche `DeSer` Klasse generiert
   - Welche intern ggf. einen Domänenklassen-DeSer nutzt, wie z.B. `Person_createDeSer` nutzt `PersonDeSer`
   - Da die Commando-Objekte sehr simpel sind, werden hier keine Builder genutzt.
-- TODO: AHe: (De)serialisierung von Standarddatentypen wie String, Long, ...
+- Commands, CommandResult, und Domänenklassen können Felder und Assoziationen von Basisklassen haben
+  - z.B. String, Integer, Boolean, ...
+  - (De)serialisierung dieser Klassen wird vom `BaseClassObjectMapper` übernommen
+    - Static delegate durch die Klasse `FlensburgBaseClassObjectMapper`, was das Hinzufügen von Basisklassen erlaubt
+      - z.B. `java.util.Date`
+
 
 ## Rechte / Rollen-Konzept
 
