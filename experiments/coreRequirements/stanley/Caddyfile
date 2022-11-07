@@ -1,0 +1,10 @@
+# Listen for Domain "$UMLP_DEPLOYED_DOMAIN" - value is read from Environment Variable
+# By default, a SSL certificate is obtained
+# the "/data" directory must be persistet!
+
+{$UMLP_DEPLOYED_DOMAIN:http://localhost} {
+
+  reverse_proxy /umlp/api/* backend:8081 # Send Requests to Backend
+
+  file_server  # Serve Static files from "/srv/" directory
+}
