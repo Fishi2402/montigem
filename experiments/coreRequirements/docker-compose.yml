@@ -49,7 +49,6 @@ services:
     image: <imageNameOfFrontend>
     environment:
       - UMLP_DEPLOYED_DOMAIN=<DOMAIN>   # Required for SSL certificate
-      - EMAIL=<MailOfDomainAdmin>       # Required for SSL certificate
     restart: "unless-stopped"
     ports:
       - '443:443'
@@ -57,4 +56,4 @@ services:
     links:
       - backend
     volumes:
-      - './certbot:/etc/letsencrypt/'                         # Persist certificates, otherwise a new certificate might be created for every start
+      - './caddy_secret_data:/data/'                         # Persist certificates, otherwise a new certificate might be created for every start

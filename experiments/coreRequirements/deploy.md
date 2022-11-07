@@ -23,8 +23,7 @@ gradle jib \
 For more options, see the [jib](https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin) documentation.
 
 #### Frontend
-The frontend dockerimage comes with [certbot](https://certbot.eff.org/pages/about). 
-Certbot automatically handles the SSL-certificate.
+The frontend dockerimage is using [Caddy](https://caddyserver.com/) to serve static files, proxy to backend and handle SSL certificates
 
 ````
 cd <frontendLocation>
