@@ -53,10 +53,7 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
 
   public GemList<E> createLazyList() {
     GemList<E> gemList = new GemList<>(
-        getNextGemListID(),
-        size(),
-        this::size,
-        this::getIDs,
+        ids,
         this::getObjects,
         this::setIdxs,
         this::addIDs,
@@ -147,13 +144,10 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
   }
 
   protected void removeIdxs(Set<Integer> idxs) {
-    List<Long> oldIds = getIds();
-    ids = new LinkedList<>();
-    for (int i = 0; i < oldIds.size(); i++) {
-      if (!idxs.contains(i)) {
-        ids.add(oldIds.get(i));
-      }
-    }
+    idxs
+        .stream()
+        .sorted(Comparator.reverseOrder())
+        .forEach(idx -> ids.remove((int)idx));
     for(GemList<E> gemList : gemLists) {
       gemList._internal_remove(idxs);
     }

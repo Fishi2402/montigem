@@ -2,12 +2,11 @@ package hardy.service.websocket;
 
 import hardy.*;
 import hardy.commands.Person_get;
-import hardy.commands.Person_setAge;
 import hardy.requests.GetFreeGemIdRequest;
 import infrastructure.command.ClientWebSocketCommandCommunication;
+import infrastructure.command.FlensburgManagerClientImplBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import infrastructure.command.FlensburgManagerClientImplBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import stanley.FlensburgTestContext;
@@ -19,7 +18,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest(classes = UMLPApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CommandCommunicationTest {

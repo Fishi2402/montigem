@@ -94,4 +94,20 @@ public class Visits_add extends Command<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Arrays.asList(personGemId, addressGemId);
   }
+
+  public long getPersonGemId() {
+    return personGemId;
+  }
+
+  public long getAddressGemId() {
+    return addressGemId;
+  }
+
+  public int getIndexInPersonList() {
+    return indexInPersonList;
+  }
+
+  public int getIndexInAddressList() {
+    return indexInAddressList;
+  }
 }

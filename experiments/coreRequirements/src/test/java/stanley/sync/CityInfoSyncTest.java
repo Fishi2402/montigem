@@ -2,10 +2,11 @@ package stanley.sync;
 
 // RTE-T: Testet Infrastruktur für die Synchronisation
 // HWC-GT: Testet synchronisation der Klasse CityInfo
+
 import hardy.*;
+import infrastructure.command.FlensburgManagerClientImplBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import infrastructure.command.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
 
 import java.util.List;
@@ -33,11 +34,15 @@ public class CityInfoSyncTest {
 
 
     FlensburgMock.secretlyAdaptnextGemIds(3001L);
-    Car c1 = FlensburgManager.carBuilder().owns(p1).build().get();
-    Car c2 = FlensburgManager.carBuilder().owns(p1).build().get();
-    Car c3 = FlensburgManager.carBuilder().owns(p1).build().get();
+    Car c1 = FlensburgManager.carBuilder().build().get();
+    Car c2 = FlensburgManager.carBuilder().build().get();
+    Car c3 = FlensburgManager.carBuilder().build().get();
+    p1.addOwns(c1);
+    p1.addOwns(c2);
+    p1.addOwns(c3);
 
-    Car c4 = FlensburgManager.carBuilder().owns(p2).build().get();
+    Car c4 = FlensburgManager.carBuilder().build().get();
+    p2.addOwns(c4);
 
 
     CityInfo cityInfo = FlensburgManager.getCityInfo();
@@ -71,11 +76,15 @@ public class CityInfoSyncTest {
 
 
     FlensburgMock.secretlyAdaptnextGemIds(3001L);
-    Car c1 = FlensburgManager.carBuilder().owns(p1).build().get();
-    Car c2 = FlensburgManager.carBuilder().owns(p1).build().get();
-    Car c3 = FlensburgManager.carBuilder().owns(p1).build().get();
+    Car c1 = FlensburgManager.carBuilder().build().get();
+    Car c2 = FlensburgManager.carBuilder().build().get();
+    Car c3 = FlensburgManager.carBuilder().build().get();
+    p1.addOwns(c1);
+    p1.addOwns(c2);
+    p1.addOwns(c3);
 
-    Car c4 = FlensburgManager.carBuilder().owns(p2).build().get();
+    Car c4 = FlensburgManager.carBuilder().build().get();
+    p2.addOwns(c4);
 
     clientContext1.activate();
     CityInfo cityInfo = FlensburgManager.getCityInfo();

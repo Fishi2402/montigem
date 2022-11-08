@@ -45,4 +45,12 @@ public class Human_set_age extends Command<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Collections.singleton(gemId);
   }
+
+  public long getGemId() {
+    return gemId;
+  }
+
+  public int getAge() {
+    return age;
+  }
 }

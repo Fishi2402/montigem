@@ -3,4 +3,4 @@ ${tc.signature("name", "managerName")}
 ${cd4c.method("protected void _doDelete${name}(${name} o)")}
 
 DatabaseAccessManager.delete(${name}.class.getName(), o);
-${managerName?uncapFirst}Observers.forEach(obs -> obs.notify${name}Deleted(o.getGemId()));
+${managerName?uncap_first}Observers.forEach(obs -> obs.notify${name}Deleted(o.getGemId()));

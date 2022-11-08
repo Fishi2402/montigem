@@ -7,7 +7,9 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import stanley.FlensburgTestContext;
-import umlp.command.*;
+import umlp.command.Command;
+import umlp.command.CommandObjectMapper;
+import umlp.command.CommandResult;
 import umlp.rte.Result;
 
 import java.io.IOException;
@@ -16,7 +18,9 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Simuliert die Kommunikation zwischen Client und Server durch Websockets. Hier werden
@@ -58,8 +62,10 @@ public class ClientWebSocketCommandCommunication extends TextWebSocketHandler
       String payload = CommandObjectMapper.serializeCommand(command);
       clientSession.sendMessage(new TextMessage(payload));
       synchronized (this) {
+        System.out.println("Starting to wait for a response");
         // Warte bis eine Antwort eintrifft
         this.wait(maxWaitingTime);
+        System.out.println("Stop waiting for a response");
       }
 
       if (messages.containsKey(command.getId())) {
@@ -100,9 +106,11 @@ public class ClientWebSocketCommandCommunication extends TextWebSocketHandler
     }
     catch (InterruptedException e) {
       // TODO MH
+      e.printStackTrace();
     }
     catch (ExecutionException e) {
       // TODO MH
+      e.printStackTrace();
     }
 
     try {
@@ -138,9 +146,10 @@ public class ClientWebSocketCommandCommunication extends TextWebSocketHandler
       // Fall Antwort eines Requests, oder Erhalt eines weitergeleiteten Commands zur
       // Datensynchronisierung.
       clientContext.activate();
+      // TODO AHe, MH: Wasteful way of distinguishing commands and results
       Optional<CommandResult<?>> commandResultOptional = CommandObjectMapper.deserializeResponse(
           message.getPayload());
-      Optional<Command<?>> commandOptional = CommandObjectMapper.deserializeCommand(
+      Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(
           message.getPayload());
 
       if (commandResultOptional.isPresent()) { // TODO MH: Need to check for participantId

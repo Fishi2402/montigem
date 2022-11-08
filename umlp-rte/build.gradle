@@ -14,7 +14,6 @@ description = "UMLP RTE"
 dependencies {
     api group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
 
-    api group: 'com.google.code.gson', name: 'gson', version: gson_version
     api group: 'org.hibernate', name: 'hibernate-core', version: hibernate_version
     api group: 'com.google.guava', name: 'guava', version: guava_version
 }

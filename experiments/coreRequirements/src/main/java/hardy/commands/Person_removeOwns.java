@@ -53,4 +53,12 @@ public class Person_removeOwns extends Command<Void> {
   public Collection<Long> getNewlySubscribedGemIds() {
     return Collections.emptyList();
   }
+
+  public long getPersonGemId() {
+    return personGemId;
+  }
+
+  public long getCarGemId() {
+    return carGemId;
+  }
 }

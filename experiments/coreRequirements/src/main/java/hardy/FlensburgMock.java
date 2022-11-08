@@ -44,7 +44,6 @@ public class FlensburgMock extends FlensburgManager {
   // get the next free GemId -----------------------------------
   // simple solution: just counting, starting with 1001
   static protected long freeGemId = 1001L;
-  static protected long freeGemListId = 20_000L;
 
   //+ geheimes Hilfsmethode um gemId's für tests zu 
   // manipulieren (wenn notwendig)
@@ -57,11 +56,6 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   @Override
-  protected long _doGetFreeGemListId() {
-    return freeGemListId++;
-  }
-
-  @Override
   public NotificationScope errorNotificationScope() {
     return NotificationScope.ALL;
   }
@@ -71,22 +65,21 @@ public class FlensburgMock extends FlensburgManager {
   // Manages a Map<Long, Object>  for each class
 
   protected HashMapWithOrderedKeys<Long,Person> persons = new HashMapWithOrderedKeys<>();
-  protected GemList<Person> personGemList = new MockGemList<>(
-      _doGetFreeGemListId(),
-      0,
+  protected GemList<Person> personGemList = new GemList<>(
       Collections.emptyList(),
-      gemId -> Optional.ofNullable(persons.getOrDefault(gemId, null))
-          .map(LoadResult::new)
-          .orElse(new LoadResult<>(LoadingState.EMPTY))
+      gemIds -> gemIds
+          .stream()
+          .map(gemId -> _doPersonOpt(gemId)
+              .map(LoadResult::new)
+              .orElse(new LoadResult<>(LoadingState.EMPTY))
+          )
+          .collect(Collectors.toList())
   );
-  {
-    gemLists.put(personGemList.getGemId(), personGemList);
-  }
   protected PersonCommandSendingObserver thePersonCommandSendingObserver = new PersonCommandSendingObserver();
 
   // get a Builder ---------------------------------------
-  protected PersonBuilder _doPersonBuilder() {
-    return new PersonBuilder(_doGetFreeGemId());
+  protected PersonBuilder _doPersonBuilder(long gemId) {
+    return new PersonBuilder(gemId);
     // todo: überlegen hier schon mal das Objekt merken??? Oder Observer setzen?
   }
 
@@ -168,23 +161,22 @@ public class FlensburgMock extends FlensburgManager {
   // --- Class Human ---
   // TODO: random can be implemented via gemlist => use normal hashmap instead
   protected HashMapWithOrderedKeys<Long, Human> humans = new HashMapWithOrderedKeys<>();
-  protected GemList<Human> humanGemList = new MockGemList<>(
-      _doGetFreeGemListId(),
-      0,
+  protected GemList<Human> humanGemList = new GemList<>(
       Collections.emptyList(),
-      gemId -> Optional.ofNullable(humans.getOrDefault(gemId, null))
-          .map(LoadResult::new)
-          .orElse(new LoadResult<>(LoadingState.EMPTY))
+      gemIds -> gemIds
+          .stream()
+          .map(gemId -> _doHumanOpt(gemId)
+              .map(LoadResult::new)
+              .orElse(new LoadResult<>(LoadingState.EMPTY))
+          )
+          .collect(Collectors.toList())
   );
-  {
-    gemLists.put(humanGemList.getGemId(), humanGemList);
-  }
   // TODO: for all classes
   protected HumanCommandSendingObserver theHumanCommandSendingObserver = new HumanCommandSendingObserver();
 
   @Override
-  protected HumanBuilder _doHuman() {
-    return new HumanBuilder(getFreeGemId());
+  protected HumanBuilder _doHumanBuilder(long gemId) {
+    return new HumanBuilder(gemId);
   }
 
   @Override
@@ -242,22 +234,21 @@ public class FlensburgMock extends FlensburgManager {
 
   // --- Address class ---
   protected HashMapWithOrderedKeys<Long, Address> addresses = new HashMapWithOrderedKeys<>();
-  protected GemList<Address> addressGemList = new MockGemList<>(
-      _doGetFreeGemListId(),
-      0,
+  protected GemList<Address> addressGemList = new GemList<>(
       Collections.emptyList(),
-      gemId -> Optional.ofNullable(addresses.getOrDefault(gemId, null))
-          .map(LoadResult::new)
-          .orElse(new LoadResult<>(LoadingState.EMPTY))
+      gemIds -> gemIds
+          .stream()
+          .map(gemId -> _doAddressOpt(gemId)
+              .map(LoadResult::new)
+              .orElse(new LoadResult<>(LoadingState.EMPTY))
+          )
+          .collect(Collectors.toList())
   );
-  {
-    gemLists.put(addressGemList.getGemId(), addressGemList);
-  }
   protected AddressCommandSendingObserver theAddressCommandObserver = new AddressCommandSendingObserver();
   
   @Override
-  protected AddressBuilder _doAddressBuilder() {
-    return new AddressBuilder(getFreeGemId());
+  protected AddressBuilder _doAddressBuilder(long gemId) {
+    return new AddressBuilder(gemId);
   }
 
   @Override
@@ -325,21 +316,20 @@ public class FlensburgMock extends FlensburgManager {
 
   // --- Class Car ---
   protected HashMapWithOrderedKeys<Long, Car> cars = new HashMapWithOrderedKeys<>();
-  protected GemList<Car> carGemList = new MockGemList<>(
-      _doGetFreeGemListId(),
-      0,
+  protected GemList<Car> carGemList = new GemList<>(
       Collections.emptyList(),
-      gemId -> Optional.ofNullable(cars.getOrDefault(gemId, null))
-          .map(LoadResult::new)
-          .orElse(new LoadResult<>(LoadingState.EMPTY))
+      gemIds -> gemIds
+          .stream()
+          .map(gemId -> _doCarOpt(gemId)
+              .map(LoadResult::new)
+              .orElse(new LoadResult<>(LoadingState.EMPTY))
+          )
+          .collect(Collectors.toList())
   );
-  {
-    gemLists.put(carGemList.getGemId(), carGemList);
-  }
   
   @Override
-  protected CarBuilder _doCar() {
-    return new CarBuilder(getFreeGemId());
+  protected CarBuilder _doCarBuilder(long gemId) {
+    return new CarBuilder(gemId);
   }
 
   @Override
@@ -385,82 +375,135 @@ public class FlensburgMock extends FlensburgManager {
   }
 
   @Override
-  protected GemList<Car> _doCreateOwns(Person p, long gemListId, int size, List<Long> initialCarGemIds) {
+  protected GemList<Car> _doCreateOwns(long personGemId, int size, List<Long> initialCarGemIds) {
     // TODO AHr, FDr: use Person for list interface of owns
-    MockGemList<Car> res = new MockGemList<>(
-        gemListId,
-        size,
+    return new GemList<>(
         initialCarGemIds,
-        id -> _doCarOpt(id).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),
-        (idx, id) -> p.setOwns(idx, getCarSure(id)),
-        (idx, gemIDs) -> p.addAllOwnss(idx,
+        gemIds -> gemIds
+            .stream()
+            .map(gemId -> _doCarOpt(gemId)
+                .map(LoadResult::new)
+                .orElse(new LoadResult<>(LoadingState.EMPTY))
+            )
+            .collect(Collectors.toList()),
+        (idx, id) -> _doGetPersonSure(personGemId).setOwns(idx, getCarSure(id)),
+        (idx, gemIDs) -> _doGetPersonSure(personGemId).addAllOwnss(idx,
             gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())),
-        (gemIDs) -> p.removeAllOwnss(
+        (gemIDs) -> _doGetPersonSure(personGemId).removeAllOwnss(
             gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())
         )
     );
-    gemLists.put(gemListId, res);
+  }
+
+  @Override
+  protected GemList<Person> _createChildren(long personGemId, int size, List<Long> initialIds) {
+    GemList<Person> res = new GemList<>(
+        initialIds,
+        gemIds -> gemIds
+            .stream()
+            .map(gemId -> _doPersonOpt(gemId)
+                .map(LoadResult::new)
+                .orElse(new LoadResult<>(LoadingState.EMPTY))
+            )
+            .collect(Collectors.toList()),
+        (idx, id) -> _doGetPersonSure(personGemId).setOwns(idx, getCarSure(id)),
+        (idx, gemIDs) -> _doGetPersonSure(personGemId).addAllOwnss(idx,
+            gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())),
+        (gemIDs) -> _doGetPersonSure(personGemId).removeAllOwnss(
+            gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())
+        )
+    );
     return res;
   }
 
   @Override
-  protected GemList<Car> _doCreateOwnsBuilder(long gemListId) {
-    MockGemListBuilder<Car> res = new MockGemListBuilder<>(
-        gemListId,
-        gemId -> _doCarOpt(gemId).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),
+  protected GemList<Car> _doCreateOwnsBuilder() {
+    GemListBuilder<Car> res = new GemListBuilder<>(
+        gemIds -> gemIds
+            .stream()
+            .map(gemId -> _doCarOpt(gemId)
+                .map(LoadResult::new)
+                .orElse(new LoadResult<>(LoadingState.EMPTY))
+            )
+            .collect(Collectors.toList()),
         Collections.emptyList()
     );
-    gemLists.put(gemListId, res);
     return res;
   }
 
   @Override
-  public GemList<Address> _createVisited(Person person, long gemListId, int size, List<Long> initialIds) {
+  protected GemList<Person> _createChildrenBuilder() {
+    GemListBuilder<Person> res = new GemListBuilder<>(
+        gemIds -> gemIds
+            .stream()
+            .map(gemId -> _doPersonOpt(gemId)
+                .map(LoadResult::new)
+                .orElse(new LoadResult<>(LoadingState.EMPTY))
+            )
+            .collect(Collectors.toList()),
+        Collections.emptyList()
+    );
+    return res;
+  }
+
+  @Override
+  public GemList<Address> _createVisited(long personGemId, long gemListId, int size, List<Long> initialIds) {
     // TODO AHr, FDr: use Person for list interface of owns
     // when the methods have been added to PersonTOP
-    MockGemList<Address> res = new MockGemList<Address>(
-        gemListId,
-        size,
+    GemList<Address> res = new GemList<Address>(
         initialIds,
-        id -> _doAddressOpt(id).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD))
+        gemIds -> gemIds
+            .stream()
+            .map(gemId -> _doAddressOpt(gemId)
+                .map(LoadResult::new)
+                .orElse(new LoadResult<>(LoadingState.EMPTY))
+            )
+            .collect(Collectors.toList())
     );
-    gemLists.put(gemListId, res);
     return res;
   }
 
   @Override
-  protected GemList<Person> _createVisitors(Address address, long gemListId, int size, List<Long> initialIds) {
+  protected GemList<Person> _createVisitors(long addressGemId, List<Long> initialIds) {
     // TODO AHr, FDr: use Person for list interface of owns
-    MockGemList<Person> res = new MockGemList<>(
-        gemListId,
-        size,
+    return new GemList<>(
         initialIds,
-        id -> _doPersonOpt(id).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD))
+        gemIds -> gemIds
+            .stream()
+            .map(gemId -> _doPersonOpt(gemId)
+                .map(LoadResult::new)
+                .orElse(new LoadResult<>(LoadingState.EMPTY))
+            )
+            .collect(Collectors.toList())
     );
-    gemLists.put(gemListId, res);
-    return res;
   }
 
   @Override
-  protected GemList<Address> _createVisitedBuilder(Person person, long gemListId, List<Long> initialIds) {
-    MockGemListBuilder<Address> res = new MockGemListBuilder<>(
-        gemListId,
-        gemId -> _doAddressOpt(gemId).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),
+  protected GemList<Address> _createVisitedBuilder(long personGemId, List<Long> initialIds) {
+    return new GemListBuilder<>(
+        gemIds -> gemIds
+            .stream()
+            .map(gemId -> _doAddressOpt(gemId)
+                .map(LoadResult::new)
+                .orElse(new LoadResult<>(LoadingState.EMPTY))
+            )
+            .collect(Collectors.toList()),
         Collections.emptyList()
     );
-    gemLists.put(gemListId, res);
-    return res;
   }
 
   @Override
-  protected GemList<Person> _createVisitorsBuilder(Address address, long gemListId, List<Long> initialIds) {
-    MockGemListBuilder<Person> res = new MockGemListBuilder<>(
-        gemListId,
-        gemId -> _doPersonOpt(gemId).map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD)),
+  protected GemList<Person> _createVisitorsBuilder(long addressGemId, List<Long> initialIds) {
+    return new GemListBuilder<>(
+        gemIds -> gemIds
+            .stream()
+            .map(gemId -> _doPersonOpt(gemId)
+                .map(LoadResult::new)
+                .orElse(new LoadResult<>(LoadingState.EMPTY))
+            )
+            .collect(Collectors.toList()),
         Collections.emptyList()
     );
-    gemLists.put(gemListId, res);
-    return res;
   }
 
   @Override

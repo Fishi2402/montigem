@@ -31,7 +31,7 @@ umlp MediaHub {
 
   // package multimedia { TODO: Bug in cd4c: classes in this package are added twice to the AST
     class Book {
-      int id;
+      int bookID;
       java.util.Date issueDate;
       Author author;
     }

@@ -2,29 +2,41 @@ package hardy;
 
 // GEN-P
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import umlp.command.Command;
 import umlp.command.CommandObjectMapper;
+import umlp.command.CommandResult;
+
+import java.util.Optional;
 
 /**
- * Stellt dem CommandObjectMapper eine Gson Instanz bereit, welche die Domainenklassen von Flensburg.umlp
- * (de)serialisieren kann.
+ * Stellt dem CommandObjectMapper eine DeSer instanzen bereit, welche die Domainenklassen von Flensburg.umlp
+ * (de)serialisieren können.
  */
 public class FlensburgCommandObjectMapper extends CommandObjectMapper {
-  protected static Gson domainGson = null;
+  protected FlensburgCommandDeSer commandDeSer = new FlensburgCommandDeSer();
+  protected FlensburgCommandResultDeSer resultDeSer = new FlensburgCommandResultDeSer();
 
   public static void init(){
     instance = new FlensburgCommandObjectMapper();
   }
 
   @Override
-  protected Gson _getDomainGson() {
-    if(domainGson == null){
-      domainGson = new GsonBuilder()
-          .registerTypeAdapterFactory(new PersonTypeAdapterFactory())
-          .registerTypeAdapterFactory(new AddressTypeAdapterFactory())
-          .create();
-    }
-    return domainGson;
+  protected String _serializeCommand(Command<?> command) {
+    return commandDeSer.serialize(command);
+  }
+
+  @Override
+  protected Optional<Command<Object>> _deserializeCommand(String cmdStr) {
+    return commandDeSer.deserialize(cmdStr);
+  }
+
+  @Override
+  public String _serializeResponse(CommandResult<?> result) {
+    return resultDeSer.serialize(result);
+  }
+
+  @Override
+  protected Optional<CommandResult<?>> _deserializeResponse(String responseStr) {
+    return resultDeSer.deserialize(responseStr);
   }
 }

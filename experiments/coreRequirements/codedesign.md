@@ -2,21 +2,82 @@
 
 Dieses Beispiel beinhaltet eine Reihe von Design Entscheidungen
 für den Appliaktionskern (Serverseitig) incl. Persistenz,
-Rechte, und Kommunikation (zB zur GUI),
+Rechte, und Kommunikation (z.B. zur GUI),
 die hier dokumentiert werden und damit das README.md ergänzen.
+Als durchgängiges Beispiel wird das 
+[Flensburg.umlp](./models/Flensburg.umlp) Modell verwendet.
 
+```
+package hardy;
+
+umlp Flensburg {
+
+    class Car;
+
+    class Human {
+        int age;
+    }
+
+    class Person extends Human {
+        String nickname;
+        / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
+    }
+
+    class Address {
+       String city;
+    }
+
+    association owns [1] Person -> Car [*];
+    association mainResidence [1] Person -> Address [1];
+
+    association visits [*] Person (visitor) <-> (visited) Address [*];
+    association parent [1] Person -> (children) Person [*];
+}
+```
 
 ## Kernklassen der Applikation
 
 * am Beispiel der Klasse `Person`.
-
-TODO 
-
+* es wird je eine Java Klasse (hier: `Person`) entsprechend jeder modellierten Domänenklasse generiert
+* hierbei wird Vererbung auf Klassenebene von Java entsprechend der Vorgaben des Modells berücksichtigt.
+  * hier `Person extends Human`: Resultiert darin, dass auch die generierte Klasse `Person` die generierte Klasse `Human` erweitert
+* Für die modellierten Attribute (für Assoziationen: siehe unten) werden Member-Variablen generiert, welche die Sichtbarkeit `protected` (nicht `private`!) erhalten, um bei Vererbung noch erweiterbar zu sein
+  * hier: Resultiert in Attributen `nickname` und `mainResidence`
+  * Die Multiplizität wird aus dem Modell übernommen
+    * unterstützt werden: default (1), optional (0..1) und many (*)
+  * Standardmäßig werden für alle Attribute getter und setter Methoden generiert
+    * Beispiel: `getNickname()` und `setNickname(String nickname)` für das Attribut `nickname`
+    * Bei optionalen oder listenwertigen Attributen werden entsprechend Methoden generiert, welche der API von `java.util.Optional` bzw. `java.util.List` entsprechen
+      * Beispiel:  `add` und `remove` Methoden für Collections
+  * Weitere Modifier, wie `derived` (`\`) werden ebenfalls berücksichtigt
+    * `clubname` ist beispielsweise als `derived` markiert, wodurch **kein** setter generiert wird, sondern nur ein getter, welcher `abstract` ist (also keinen Methodenrumpf implementiert) und manuell erweitert werden muss
+  * Zur Validierung der gesetzten Variablen, werden entsprechende check-Methoden bereitgestellt 
+    * z.B. beim builden eines Objektes relevant (keine `null`-Werte erlaubt)
+    * Beispiel: für `nickname` wird eine Methode `checkNickname()` generiert, welche einen boolschen Wert zurückgibt, gemäß der Information, ob der Wert der Variable adäquat gesetzt wurde. 
+    * Neben dem boolschen Rückgabewert, wird bei fehlergeschlagener Überprüfung zusätzlich ein Fehler geloggt.
+* **To discuss:** werden `init`-Methoden noch benötigt oder sind sie ein Konstrukt aus Zeiten, als die Builder noch nicht die Domänenklassen erweitert haben?
 
 ## Assoziationen
 
-TODO
-
+* aus Buch: Assoziation ist eine binäre Beziehung zwischen Klassen, die zur Realisierung struktureller Information verwendet wird. Eine Assoziation besitzt einen Assoziationsnamen, für jedes Ende einen Rollennamen, eine Kardinalität und eine Angabe über die Navigationsrichtungen.
+* Für die modellierten Assoziationen und Kompositionen werden Member-Variablen generiert, welche die Sichtbarkeit `protected` (nicht `private`!) erhalten, um bei Vererbung noch erweiterbar zu sein
+  * Beispiel `association owns [1] Person -> Car [*];` : Resultiert in Attribut `owns` in der Klasse `Person`
+  * Der Name des Attributs ergibt sich gemäß folgender Konvention
+    * 1. Rollenname falls vorhanden
+    * 2. Attributname falls vorhanden
+    * 3. klein geschriebener Name der Zielklasse
+  * Die Multiplizität wird aus dem Modell übernommen
+    * unterstützt werden: default (1), optional (0..1) und many (*)
+  * Standardmäßig werden für alle Assoziationen Zugriffmethoden gemäß ihrer Multiplizität generiert
+    * Beispiel: `getOwns(int i)` und `addOwns()` für das Attribut die `owns` Beziehung zwischen `Person` und `Car`
+    * Bei optionalen oder listenwertigen Attributen werden entsprechend Methoden generiert, welche der API von `java.util.Optional` bzw. `java.util.List` entsprechen
+* Für bi-direktionale Assoziationen wird entsprechend in beiden Klassen eine member-Variable angelegt
+  * Beispiel `association visits [*] Person (visitor) <-> (visited) Address [*];` 
+  * Da die bi-direktionale Verbindung einen Zusammenhang zwischen den gespeicherten Werten modelliert, müssen diese auch gemeinsam behandelt (z.B. hinzugefügt oder entfernt) werden
+  * wird im Beispiel ein Objekt vom Type `Address` der `Person` hinzugefügt, so muss umgekehrt auch das entsprechende Objekt der `Person` für `Address` bekannt gemacht werden
+  * Dafür müssen sich die Zugriffsmethoden sich gegenseitig aufrufen können (z.B. `addVisited` der Klasse `Person` muss der `visitor` Liste von `Address` die aktuelle Instanz mitteilen)
+  * Da dies in beide Richtungen gilt, werden, um unendliche Rekursion zuu vermeiden _interne_ Methoden generiert, welche nur den Zweck erfüllen, von der jeweils anderen Zugriffsmethode der bi-direktionalen Assoziation aufgerufen zu werden
+  * Somit werden beispielweise die Methoden `addVisited` und  `INTERNAL_addVisitedId` generiert
 
 ## `Gem<.>`
 
@@ -58,7 +119,30 @@ TODO
 
 ### Datenbank
 
-TODO
+* Als Datenbankanbindung gibt es zurzeit eine Umsetzung für relationale Datenbanken für die das object relational 
+mapping mit Hibernate umgesetzt wird. Dafür sind Datenklassen wie Car, Person etc. 
+in coreRequirements mit Hibernate Annotations annotiert.
+
+* Für Datenbankanfragen (CRUD) wird das Interface des FlensburgManagers benutzt. Die FlensburgManagerImpl stellt eine 
+konkrete Implementierung mit echtem Datenbankanschluss dar. Die FlensburgManagerImpl funktioniert so, dass 
+Datenbankrequests über den DatabaseAccessManager aus dem UMLP-RTE laufen, da dieser nicht generiert werden muss. Die
+FlensburgManagerImpl muss hingegen schon generiert werden, da z.B. fuer eine `getHuman()` Implementierung ein Request 
+abgeleitet wird, der weiss, dass es die Human Datenklasse ueberhaupt gibt.  
+
+* Die Datenbank wird ueber die `database.properties` konfiguriert, welche vom DataBaseAccessManager beim initialisieren 
+der FlensburgManagerImpl eingelesen wird. Fuer Konfigurationsmoeglichkeiten siehe 
+[hier](https://www.tutorialspoint.com/hibernate/hibernate_configuration.htm) 
+
+* Die konkrete Datenbank in `corerequirements` ist die [h2](http://h2database.com/html/main.html) 
+Datenbank. Sie hat den Vorteil vollständig im Arbeitsspeicher laufen zu koennen und ist damit gut geeignet fuer schnelle 
+Tests. Der Nachteil ist, dass der Speicher an einem JVM Prozess haengt und somit kein zweiter JVM Prozess darauf
+zugreifen kann, d.h. IntelliJs Database Connection kann nicht benutzt werden, um den Zustand der Datenbankinstanz in einem 
+anzusehen. Ein Workaround dafuer ist es die h2 Datenbank in einer Datei zu persistieren. Die beiden Modi koennen ueber
+die URL in der `database.properties` geswitcht (da sind auch Beispielpfade fuer beide Modi zu finden).
+ 
+* Um IntelliJs Database Connection nutzen zu koennen:  In `Data Sources and Drivers`  `Data Sources` Reiter auswaehlen,
+H2 hinzufuegen (notwendige Treiber dazu installieren) und Connection Type: Embedded auswaehlen. User und Password stehen 
+in der `database.properties` und die URL kann dort auch nachgelesen werden unter `hibernate.connection.url`. 
 
 
 ## Nicht-persistierte Elemente
@@ -170,19 +254,116 @@ MH zu diskutieren!
 * Der Manager muss nun auch `Promises` zurückgeben, was das Interface
   verändert.
 
+### Undo / Redo
+* UnDo/ Redo setzt auf dem Command Pattern auf
+* Je Seite und User wird jeweils ein Undo und ein Redo Stack im Commandmanager im Client angelegt.
+* Zu Jedem Kommando, git es ein `doRun()` und die inverse Funktion `undoRun()`
+* Kommandos werden als ganzes (zusamen mit denen für das undo notwendigen daten) im undo bzw. redo stack gespeichert:
+
+
+```mermaid
+sequenceDiagram
+    participant Command
+    participant UndoCommand
+    participant UndoRedo
+    participant UndoStack
+    participant RedoStack
+    activate Command  
+    Command->>+UndoRedo: insertInUndoReDo()
+    activate Command
+    activate UndoRedo
+    UndoRedo->>+UndoStack: push()
+    UndoStack->>-UndoRedo: 
+    UndoRedo->>-Command: 
+    deactivate Command
+    Command->>Command: doRun()
+    deactivate Command
+
+    UndoCommand->>+UndoRedo: undoLastCommand()
+    activate UndoCommand
+    UndoRedo->>+UndoStack: pop()
+    UndoStack-->>-UndoRedo: 
+    UndoRedo->>+Command: 
+    Command->>Command: undoRun()
+    Command->>+RedoStack: push()
+    RedoStack-->>-Command: 
+    Command-->>-UndoRedo: 
+    UndoRedo-->>-UndoCommand: 
+    deactivate UndoCommand
+```
+
+### (De)serialisierung
+- Zum Senden der Commands und Results zwischen dem Server und Clients müssen diese serialisiert und deserialisiert werden
+- Nutzt die Klasse `de.monticore.symboltable.serialization.json.JsonElement` aus der MontiCore-Runtime
+- Umgesetzt durch Klasse `CommandObjectMapper`
+  - Static delegate zu einer generierten Klasse, hier `FlensburgCommandObjectMapper`, da pro Modell unterschiedliche
+    Klassen unterstützt werden müssen.
+  - Die Funktionalität ist für `Commands` und `Results` getrennt in den `FlensburgCommandDeSer` und den
+    `FlensburgCommandResultDeSer`
+- Für jede Domänenklasse wird eine zusätzliche `DeSer` Klasse generiert
+  - Serialisierung: nutzt die generierten Getter der Domänenklasse und den `JsonPrinter`
+    - Sollte ein Attribut nicht von außen sichtbar sein, so muss eine zusätzlicher interner Getter hinzugefügt werden
+    - Für jedes Attribut `X` wird eine eigene Methode `serializeA(T t, JsonPrinter p)` generiert, was die Anpassbarkeit
+      per TOP-Mechanismus erhöht
+    - Es wird ein leerer Hookpoint `serialize_Addons` generiert
+  - Deserialisierung: nutzt `JsonObject` und den Builder der Domänenklasse
+    - Der Builder muss angepasst werden, damit das gebaute Element nicht direkt in die Datenquelle übergeben wird.
+    Andernfalls kann die Validierung und Rechteüberprüfung nicht rechtzeitig durchgeführt werden.
+    - Es wird ein leerer Hookpoint `deserialize_Addons` generiert
+- Für jedes Commando wird eine zusätzliche `DeSer` Klasse generiert
+  - Welche intern ggf. einen Domänenklassen-DeSer nutzt, wie z.B. `Person_createDeSer` nutzt `PersonDeSer`
+  - Da die Commando-Objekte sehr simpel sind, werden hier keine Builder genutzt.
+- Commands, CommandResult, und Domänenklassen können Felder und Assoziationen von Basisklassen haben
+  - z.B. String, Integer, Boolean, ...
+  - (De)serialisierung dieser Klassen wird vom `BaseClassObjectMapper` übernommen
+    - Static delegate durch die Klasse `FlensburgBaseClassObjectMapper`, was das Hinzufügen von Basisklassen erlaubt
+      - z.B. `java.util.Date`
+
 
 ## Rechte / Rollen-Konzept
 
-* Lesen wird auf Objektebene erlaubt (aber nicht auf einzelnen Attributen)
-* Ändern wird ggf. auf einzelnen Attributen erlaubt (?)
-* Create / Delete wird ebenfalls auf Objektebene geregelt
+### Rechte (Permissions) 
+* Permissions definieren in den Sicherheitsrichtlinen der Anwendung die Aktion die durchgeführt werden soll.
+* Die Grundlegenden Permissions sind `create`, `read`, `update` und `delete`. Je nach Anwendungsfall macht es hier Sinn 
+die Rechte zu präzisieren z.B.: `sendPersonToCity` statt einem `update` auf die Person.
+* Ein Recht hat immer einen Bezug zu einer Domäne, bzw. Kategorie von Objekten und kann ein bestimmtes Objekt 
+referenzieren: <br>
+   * `domain : permission : instance` Schema nach dem Permissions strukturiert sind. 
+   * `person : update : 32` Permission Objekte die zu Kategorie 'Person' gehören mit der id 32 zu updaten
+   * `auto : delete : *` Permission beliebige Objekte der Kategorie 'Auto' zu löschen.
+* Domänen werden verwendet damit ein Recht nicht an einen Typ gebunden ist, sondern eher an eine 
+  Gruppe von Objekten: Ein Konto mit seinen Budgets und Buchungen kann so mit `konto : update : *` bearbeitet 
+  werden, ohne dass drei Permissions vergeben werden müssen. 
+* Generierte Datenklassen implementieren hierzu eine Methode, die die Domäne für die Permission zurückgibt: 
+  `getPermissionDomain()` und welche überschrieben wird um hier Kategorien zu bilden.
 
+### Rollen (Roles)
+* Eine Rolle kann mehrere Rechte zusammen fassen: 
+  * `Roles.KONTOBEARBEITER`:
+    * `konto : read : *`
+    * `konto : update : *`
+    * `konto : create : *`
+    * `konto : delete : *`
+* Einem Nutzer werden Rollen zugewiesen
+* Beim Überprüfen der Permission wird jedoch geprüft ob der Nutzer (durch seine Rollen) das notwendige Recht hat. 
+
+### Konzept
+
+* Lesen wird auf Objektebene erlaubt (aber nicht auf einzelnen Attributen)
+* Create / Delete wird ebenfalls auf Objektebene geregelt
 * Die Persistierung der vergebenen Rechte und Rollen findet wie bei allen
   anderen Objektdaten statt. Konsequenz: Neben den Klassen aus dem 
   Applikations-CD gibt es Klassen und Assoziationen zu den Rechten, die in
-  der Generierungspipeline dazu gemischt werden.
+  der Generierungspipeline dazu gemischt werden:
+  * `Permission` einzelne Rechte (`create`,`update`....)
+  * `PermissionDomains` domänen/ kategorien innerhalb der datenklassen: (`personal`, `finanzen`...)
+  * `Roles` Rollen die den Nutzern zugeordnet werden können (`admin`, `personalBearbeiter`...)
+  * `RoleAssignments` Verknüpfung von Nutzer zu Rollen
+ 
   
 TODO
+LN zu diskutieren
+* Ändern wird ggf. auf einzelnen Attributen erlaubt (?)
 
 
 ## Konfigurationsdaten

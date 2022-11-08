@@ -3,8 +3,8 @@ package umlp.generator.decorator;
 import com.google.common.base.Defaults;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdassociation._ast.ASTCDCardinality;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpressionBuilder;
 import de.monticore.types.MCTypeFacade;
@@ -13,8 +13,8 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 
@@ -57,6 +57,27 @@ public class GenService {
       exprBuilder.setName("\"\" ");
     }
     return exprBuilder.build();
+  }
+
+  public static String calculateJSon(ASTCDAttribute attr) {
+    String json = "";
+    SymTypeExpression type = attr.getSymbol().getType();
+    if (TypeCheck.isBoolean(type)) {
+      json = "getAsJsonBoolean().getValue()";
+    } else if (TypeCheck.isInt(type)) {
+      json = "getAsJsonNumber().getNumberAsInteger()";
+    } else if (TypeCheck.isFloat(type)) {
+      json = "getAsJsonNumber().getNumberAsFloat()";
+    } else if (TypeCheck.isLong(type)) {
+      json = "getAsJsonNumber().getNumberAsLong()";
+    } else if (TypeCheck.isDouble(type)) {
+      json = "getAsJsonNumber().getNumberAsDouble()";
+    } else if (TypeCheck.isString(type)) {
+      json = "getAsJsonString().getValue()";
+    } else {
+      // TODO
+    }
+    return json;
   }
 
   public static ASTExpression createInitialValue(ASTMCType type) {
@@ -102,6 +123,11 @@ public class GenService {
     return false;
   }
 
+  public static String getGetterName(ASTCDAttribute attr) {
+    return (TypeCheck.isBoolean(attr.getSymbol().getType())?"is":"get")
+            + StringTransformations.capitalize(attr.getName());
+  }
+
   public static boolean isGemList(ASTCDAttribute attr) {
     if (attr.getMCType() instanceof ASTMCBasicGenericType) {
       List<String> nameList = ((ASTMCBasicGenericType) attr.getMCType()).getNameList();
@@ -109,6 +135,23 @@ public class GenService {
     }
     return false;
   }
+
+  public static boolean isList(ASTCDAttribute attr) {
+    if (attr.getMCType() instanceof ASTMCBasicGenericType) {
+      List<String> nameList = ((ASTMCBasicGenericType) attr.getMCType()).getNameList();
+      return "List".equals(nameList.get(nameList.size()-1));
+    }
+    return false;
+  }
+
+  public static boolean isOptional(ASTCDAttribute attr) {
+    if (attr.getMCType() instanceof ASTMCBasicGenericType) {
+      List<String> nameList = ((ASTMCBasicGenericType) attr.getMCType()).getNameList();
+      return "Optional".equals(nameList.get(nameList.size()-1));
+    }
+    return false;
+  }
+
 
   public static boolean isVisible(ASTCDAssocSide attr) {
     return !attr.getModifier().isFinal()
@@ -152,5 +195,9 @@ public class GenService {
       return ((SymTypeOfGenerics) type).getBaseName().equals("Set");
     }
     return false;
+  }
+
+  public static boolean isCDType(SymTypeExpression type) {
+    return type.getTypeInfo() instanceof CDTypeSymbol;
   }
 }

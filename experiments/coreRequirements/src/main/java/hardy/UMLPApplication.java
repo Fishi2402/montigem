@@ -10,6 +10,7 @@ public class UMLPApplication {
   public static void main(String[] args) {
     SpringApplication.run(UMLPApplication.class, args);
     FlensburgMock.init();
+    FlensburgManagerImpl.init();
     (new FlensburgDummies()).inventDummiesGenerated(5,5,5);
   }
 }

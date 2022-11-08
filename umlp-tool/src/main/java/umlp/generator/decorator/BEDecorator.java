@@ -17,10 +17,20 @@ public class BEDecorator extends AbstractDecorator {
     domainClassDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
 
+    // Generate DeSer
+    DeSerDecorator deSerDecorator = new DeSerDecorator(glex);
+    deSerDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: DeSerDecorator", BEDecorator.class.getName());
+
     // Generate builder classes
     BuilderDecorator builderDecorator = new BuilderDecorator(glex);
     builderDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: BuilderDecorator", BEDecorator.class.getName());
+
+    // Generate DeSer builder classes
+    DeSerBuilderDecorator deSerBuilderDecorator = new DeSerBuilderDecorator(glex);
+    deSerBuilderDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: DeSerBuilderDecorator", BEDecorator.class.getName());
 
     // Generate ErrorCollector classes
     ErrorCollectorDecorator errorCollectorDecorator= new ErrorCollectorDecorator(glex);
@@ -65,9 +75,10 @@ public class BEDecorator extends AbstractDecorator {
     errorObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorObserverDecorator", BEDecorator.class.getName());
 
-    TypeAdapterDecorator typeAdapterDecorator = new TypeAdapterDecorator(glex);
+    // TODO: remove
+    /*TypeAdapterDecorator typeAdapterDecorator = new TypeAdapterDecorator(glex);
     typeAdapterDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: TypeAdapterDecorator", BEDecorator.class.getName());
+    Log.info("After decorator: TypeAdapterDecorator", BEDecorator.class.getName());*/
   }
 
 }

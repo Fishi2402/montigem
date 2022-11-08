@@ -44,4 +44,12 @@ public class Person_setAge extends Command<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Collections.singleton(gemId);
   }
+
+  public long getGemId() {
+    return gemId;
+  }
+
+  public int getAge() {
+    return age;
+  }
 }

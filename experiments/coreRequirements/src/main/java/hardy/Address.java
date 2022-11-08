@@ -2,11 +2,10 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import com.google.gson.annotations.JsonAdapter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Tuplizer;
 import umlp.rte.GemIdentifiable;
 import umlp.rte.GemList;
-import umlp.rte.GemListDeserHelper;
 import umlp.rte.NotificationScope;
 
 import javax.persistence.*;
@@ -24,6 +23,7 @@ import java.util.Optional;
 
 @Entity
 @Table(name = "address")
+@Tuplizer(impl = FlensburgTuplizer.class)
 public class Address implements GemIdentifiable {
   protected transient List<AddressObserver> addressObservers = new ArrayList<>();
 
@@ -35,9 +35,8 @@ public class Address implements GemIdentifiable {
   @Column(name = "city")
   protected String city;
 
-  @OneToMany
-  @JsonAdapter(PersonGemListTypeAdapter.class)
-  protected List<Person> visitors;
+  @Transient // TODO Person ist kein Entity deswegen geht hier kein OneToMany -> muss spaeter nachgebessert werden
+  protected GemList<Person> visitors;
 
   @Override
   public long getGemId() {
@@ -88,13 +87,6 @@ public class Address implements GemIdentifiable {
     return Optional.empty();
   }
 
-  public void INTERNAL_finishDeser(){
-    // properly init GemLists
-    if(visitors instanceof GemListDeserHelper){
-      visitors = FlensburgManager.createVisitors(this, getVisitorsGemList().getGemId(), visitors.size(),((GemListDeserHelper<Person>) visitors).getInitialIds());
-    }
-  }
-
   public void addVisitor(Person p, NotificationScope scope){
     addVisitor(visitors.size(), p, scope);
   }
@@ -116,18 +108,12 @@ public class Address implements GemIdentifiable {
   }
 
   public void INTERNAL_addVisitorId(int indexInList, long personGemId, NotificationScope scope) {
-    getVisitorsGemList()._internal_add(indexInList, List.of(personGemId));
+    visitors._internal_add(indexInList, List.of(personGemId));
     addressObservers.forEach(obs -> obs.maybeNotifyAddVisitor(this, personGemId, indexInList, scope));
   }
 
-  public List<Person> getVisitors() {
-    return this.visitors;
-  }
-
-  public GemList<Person> getVisitorsGemList() {
-    if (!(this.visitors instanceof GemList)) {
-      // TODO MH
-    }
-    return (GemList<Person>) this.visitors;
+  // TODO: mark as internal!
+  public GemList<Person> getVisitorGemList() {
+    return visitors;
   }
 }

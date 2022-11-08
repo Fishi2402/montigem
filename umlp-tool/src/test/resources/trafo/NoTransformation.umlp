@@ -1,0 +1,13 @@
+package trafo;
+
+classdiagram NoTransformation {
+  package trafo {
+    class Foo {
+      java.lang.String foo1;
+      Optional<java.lang.String> foo2;
+      List<java.lang.String> foo3;
+      int foo4;
+    }
+  }
+
+}

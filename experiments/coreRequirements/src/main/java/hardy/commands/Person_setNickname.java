@@ -43,4 +43,12 @@ public class Person_setNickname extends Command<Void> {
   public Collection<Long> getEffectedGemIds() {
     return Collections.singleton(gemId);
   }
+
+  public long getGemId() {
+    return gemId;
+  }
+
+  public String getNickname() {
+    return nickname;
+  }
 }

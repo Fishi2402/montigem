@@ -5,12 +5,14 @@ package hardy;
 // todo NN: !com.google.common.: Muss das Teil dieser Imports sein, Rücksprache mit BR
 
 import com.google.common.collect.Sets;
-import com.google.gson.annotations.JsonAdapter;
+import org.hibernate.annotations.Tuplizer;
 import umlp.rte.Gem;
 import umlp.rte.GemList;
-import umlp.rte.GemListDeserHelper;
 import umlp.rte.NotificationScope;
 
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import java.util.*;
 
 /* Source:
@@ -28,26 +30,33 @@ import java.util.*;
 // --------------------------
 
 //+ we generate the TOP class, because there is a handwritten version
+@MappedSuperclass
+@Tuplizer(impl = FlensburgTuplizer.class)
 public abstract class PersonTOP extends Human {
   protected transient List<PersonObserver> personObservers = new ArrayList<>();
   
   // an Attribute: ------------------------------------------
+
+  @Column(name = "nickname")
   protected String nickname;
   
   // Association with cardinality [1]
-  @JsonAdapter(PersonMainResidenceTypeAdapter.class)
+  @Transient
   protected Gem<Address> mainResidence;
-  
+
   // an Association: ------------------------------------------
   // The signature is a List, even though it might have been an
   // unordered Association.
   // The implementation will be a LazyList
   // Siehe PersonOwnsTypeAdapter für Erklärung
-  @JsonAdapter(CarGemListTypeAdapter.class)
+  @Transient
   protected GemList<Car> owns;
   // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
 
-  @JsonAdapter(AddressGemListTypeAdapter.class)
+  @Transient
+  protected GemList<Person> children;
+
+  @Transient
   protected GemList<Address> visited;
   // TODO AHe: add/remove/...
 
@@ -64,42 +73,6 @@ public abstract class PersonTOP extends Human {
   // and should only be used by the builder(!)
   protected PersonTOP() {
     super();
-    // TODO MH Wird beim deserialisiern im Client ausgeführt, wodurch unerwünschte
-    //  Nebeneffekte entstehen. Ist das hier wirklich nötig?
-//    initPerson();
-  }
-  
-  // Bemerkung: Wir verzichten auf "volle" Konstruktoren
-  // das macht nur das Überschreiben mit der TOP-Methode besser.
-  // Also in den Factories/Buildern: initX(...) Methoden nuten
-  // also Beispiel:
-  //      new Person().initHuman(23).initPerson("theo")    statt
-  //      new Person(23,"theo")
-  
-  //+ initialization is externalized to be reusable (if needed)
-  //+ do an initialisation of optional and default parts
-  // (makes the system robust, but shadows potential errors for a while)
-  //+ initializes Person-Elements, but not of superclasses
-  protected void initPerson() {
-    this.nickname = "";
-    this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns((Person) this, FlensburgManager.getFreeGemListId(), 0);
-  }
-  
-  //+ initialization is externalized to be reusable (if needed)
-  //+ do an initialisation of optional and default parts
-  protected void init(String nickname) {
-    this.nickname = nickname;
-    this.mainResidence = null;
-    this.owns = FlensburgManager.createOwns((Person) this, FlensburgManager.getFreeGemListId(), 0);
-  }
-  
-  protected void init(String nickname, GemList<Car> owns) {
-    this.nickname = nickname;
-    this.mainResidence = null;
-    this.owns = owns;
-    // todo: should we limit the init method to lazylist
-    // to assure that it is a lazy list and not any other?
   }
   
   // Muss überschrieben werden, damit die Fehler an den PersonErrorCollector gesendet werden
@@ -191,7 +164,7 @@ public abstract class PersonTOP extends Human {
   public boolean checkMainResidence() {
     boolean res = true;
     
-    if (mainResidence == null || !mainResidence.isPresent()) {
+    if (mainResidence == null || mainResidence.getGemId() == -1) {
       res = false;
       PersonErrorCollector.reportMainResidenceInvalid((Person) this);
     }
@@ -422,18 +395,6 @@ public abstract class PersonTOP extends Human {
     return owns;
   }
 
-  public void INTERNAL_finishDeser() {
-    // properly init GemLists
-    if(owns instanceof GemListDeserHelper){
-      owns = FlensburgManager.createOwns((Person) this, owns.getGemId(), owns.size(), ((GemListDeserHelper<Car>) owns).getInitialIds());
-    }
-
-    if(visited instanceof GemListDeserHelper){
-      List<Long> initialIds = ((GemListDeserHelper<Address>) visited).getInitialIds();
-      visited = FlensburgManager.createVisited((Person) this, visited.getGemId(), visited.size(), initialIds);
-    }
-  }
-
   public int sizeVisited() {
     return visited.size();
   }
@@ -465,6 +426,27 @@ public abstract class PersonTOP extends Human {
   public void INTERNAL_addVisitedId(int indexInList, long addressGemId, NotificationScope scope) {
     visited._internal_add(indexInList, List.of(addressGemId));
     personObservers.forEach(obs -> obs.maybeNotifyAddVisited((Person) this, addressGemId, indexInList, scope));
+  }
+
+  // TODO: mark as internal
+  public GemList<Address> getVisitedGemList() {
+    return visited;
+  }
+
+  public GemList<Person> getChildrenGemList() {
+    return children;
+  }
+
+  public void setChildren(int index, Person child) {
+    children.set(index, child);
+  }
+
+  public void addAllChildrens(int idx, Collection<Person> children) {
+    this.children.addAll(idx, children);
+  }
+
+  public void removeAllChildrens(Collection<Person> children) {
+    this.children.removeAll(children);
   }
 
   // -----------------------------------------------------------------

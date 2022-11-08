@@ -11,7 +11,7 @@ package umlp.command;
 public abstract class CommandResult<T> {
   protected long commandId;
 
-  // Wird genutzt um gson den Typ des Type Parameters T zum deserialisieren mitzuteilen
+  // Wird genutzt um den DeSer den Typ des Type Parameters T zum deserialisieren mitzuteilen
   protected final String typeParameter;
 
   protected CommandResult(long id, String typeParameter) {
