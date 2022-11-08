@@ -39,6 +39,11 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
 
   protected Consumer<Set<Integer>> removeIdxsFunction;
 
+  // TODO discuss: CBu -> wird für eine simple Spring-based DB Kommunikation benötigt
+  public GemList() {
+    this.ids = new ArrayList<>();
+  }
+
   public GemList(
       List<Long> ids,
       Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction

@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+}
+
+group 'umlp'
+version '7.4.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+description 'artifacts example'
+
+task generateArtifacts(type: UMLPTask) {
+    inputDir = file("src")
+    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
+    configTemplate = "umlp.UMLP2JavaNeo4j"
+}
+
+build.dependsOn(generateArtifacts)
+
+dependencies {
+    implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-data-neo4j', version: '2.7.4') {
+        //exclude group:  module: 'spring-boot-starter-logging',
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+    }
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
