@@ -7,15 +7,32 @@ import de.se_rwth.commons.logging.Log;
 
 public class BEDecorator extends AbstractDecorator {
 
+  boolean neo4j = false;
+
   public BEDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
 
+  public BEDecorator(GlobalExtensionManagement glex, boolean neo4j) {super((glex));
+    this.neo4j = neo4j;}
+
   @Override
   public void transform(ASTCDCompilationUnit cdAST, ASTCDCompilationUnit decoratedAST) {
-    DomainClassDecorator domainClassDecorator = new DomainClassDecorator(glex);
-    domainClassDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
+    DomainClassDecorator domainClassDecorator;
+
+    if(neo4j) {
+      domainClassDecorator = new DomainClassDecoratorForNeo4j(glex);
+      domainClassDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
+
+      RepositoryDecorator repositoryDecorator = new RepositoryDecorator(glex);
+      repositoryDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: RepositoryDecorator", BEDecorator.class.getName());
+    } else {
+      domainClassDecorator = new DomainClassDecorator(glex);
+      domainClassDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
+    }
 
     // Generate DeSer
     DeSerDecorator deSerDecorator = new DeSerDecorator(glex);

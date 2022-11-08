@@ -54,8 +54,7 @@ public class DomainClassDecorator extends AbstractDecorator {
               .createCDExtendUsage(domainClass.getCDExtendUsage().getSuperclass(0).deepClone()));
     }
     ASTCDClass clazz = builder.build();
-    glex.replaceTemplate("cd2java.Annotations", clazz,
-            new TemplateHookPoint("umlp.domain.ClassAnnotations", clazz.getName()));
+    setClassAnnotationTemplate(clazz);
 
     // Constructors
     getCD4C().addConstructor(clazz, "umlp.domain.Constructor", domainClass.getName());
@@ -63,8 +62,7 @@ public class DomainClassDecorator extends AbstractDecorator {
     if (!domainClass.isPresentCDExtendUsage()) {
       // Attribute gemId and getter and setter
       ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected readonly long gemId = -32;");
-      glex.replaceTemplate("cd2java.Annotations", gemAttr,
-              new TemplateHookPoint("umlp.domain.GemAnnotations"));
+      setGemAnnotationTemplate(gemAttr);
       clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
     }
 
@@ -94,6 +92,16 @@ public class DomainClassDecorator extends AbstractDecorator {
     addImports(clazz);
 
     return clazz;
+  }
+
+  protected void setGemAnnotationTemplate(ASTCDAttribute gemAttr) {
+    glex.replaceTemplate("cd2java.Annotations", gemAttr,
+        new TemplateHookPoint("umlp.domain.GemAnnotations"));
+  }
+
+  protected void setClassAnnotationTemplate(ASTCDClass clazz) {
+    glex.replaceTemplate("cd2java.Annotations", clazz,
+        new TemplateHookPoint("umlp.domain.ClassAnnotations", clazz.getName()));
   }
 
   protected AttributesTuple getAllAttributes(ASTCDClass domainClass) {
@@ -129,11 +137,15 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
               createType(visibleAttribute), visibleAttribute.getName());
       attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
-      glex.replaceTemplate("cd2java.Annotations", attribute,
-              new TemplateHookPoint("umlp.domain.AttributeAnnotations", attribute.getName()));
+      setAttributeAnnotationTemplate(attribute);
       attributesList.add(attribute);
     }
     return attributesList;
+  }
+
+  protected void setAttributeAnnotationTemplate(ASTCDAttribute attribute) {
+    glex.replaceTemplate("cd2java.Annotations", attribute,
+        new TemplateHookPoint("umlp.domain.AttributeAnnotations", attribute.getName()));
   }
 
   protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDClass domainClass) {
@@ -148,6 +160,8 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
       if (GenService.isList(assocSide)) {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
                 getMCTypeFacade().createBasicGenericTypeOf("GemList", type), assocSide.getName());
+        setAssocAnnotations(domainClass, attribute);
+
       } else {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
                 getMCTypeFacade().createBasicGenericTypeOf("Gem", type), assocSide.getName());
@@ -155,6 +169,13 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
       attrList.add(attribute);
     }
     return attrList;
+  }
+
+  public void setAssocAnnotations(ASTCDClass domainClass, ASTCDAttribute attribute) {
+    // TODO: hier sollen DB (JPA / Hibnernate) Annotationen fuer Assoziationen generiert werden
+    /*glex.replaceTemplate("cd2java.Annotations", attribute,
+        new TemplateHookPoint("umlp.domain.AssocAnnotations",
+            domainClass.getName(), attribute.getName()));*/
   }
 
   protected void createGetterSetterForAttrs(ASTCDClass domainClass, ASTCDClass clazz,
@@ -182,6 +203,10 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
     getCD4C().addImport(clazz, "umlp.rte.Gem");
     getCD4C().addImport(clazz, "umlp.rte.GemList");
+    addDBAnnotationInfo(clazz);
+  }
+
+  protected void addDBAnnotationInfo(ASTCDType clazz) {
     getCD4C().addImport(clazz, "org.hibernate.annotations.GenericGenerator");
     getCD4C().addImport(clazz, "javax.persistence.*");
   }

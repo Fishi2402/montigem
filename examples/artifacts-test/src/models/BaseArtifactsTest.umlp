@@ -1,0 +1,47 @@
+/* (c) https://github.com/MontiCore/monticore */
+umlp BaseArtifactsTest {
+
+  abstract class Artifact {
+    String simpleName;
+    String nameExtension;
+    String modified;
+    String name;
+    String fullName;
+  }
+
+  class FileArtifact extends Artifact {}
+
+  association refersTo [*] Artifact -> Artifact [*];
+
+  association produces [*] Artifact -> Artifact [*];
+
+  class RootArtifact {
+    boolean isExternal;
+    String fullName;
+    String name;
+  }
+
+  association root [*] Artifact -> RootArtifact [1];
+
+  association descendants [1] RootArtifact -> Artifact [*];
+
+  association artifactRepresentation [1] RootArtifact -> Artifact [1];
+
+  association contains [0..1] ArtifactContainer -> Artifact [*] ;
+
+  abstract class ArtifactContainer extends Artifact {}
+
+  class Directory extends ArtifactContainer {}
+
+  class Archive extends ArtifactContainer {}
+
+  association contains [0..1] ArtifactContainer -> Artifact [*];
+
+  abstract class ArtifactView{}
+
+  association views [1] Artifact <-> ArtifactView [*];
+
+  abstract class ArtifactInternal{}
+
+  association internals [1] ArtifactView <-> ArtifactInternal [*];
+}
