@@ -43,7 +43,7 @@ task testMerge(type: UMLPMergeTask){
 
   outputFile = layout.projectDirectory.file("target/merged.cd")
 }
-// assemble.dependsOn(testMerge)
+assemble.dependsOn(testMerge)
 
 task copyInputDir(type: Copy) {
   dependsOn generateJava
