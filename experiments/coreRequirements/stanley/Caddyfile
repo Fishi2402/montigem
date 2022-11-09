@@ -4,7 +4,13 @@
 
 {$UMLP_DEPLOYED_DOMAIN:http://localhost} {
 
-  reverse_proxy /umlp/api/* backend:8081 # Send Requests to Backend
+  handle /umlp/api/* {
+    reverse_proxy backend:8081
+  }
 
-  file_server  # Serve Static files from "/srv/" directory
+  handle {
+    root * /srv
+    try_files {path} /index.html # try to serve static files, otherwise fallback to index.html
+    file_server
+  }
 }
