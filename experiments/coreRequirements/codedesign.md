@@ -322,6 +322,7 @@ sequenceDiagram
       wie in coreRequirements für die Klassen `Instant`, `Duration`, und `InetAddress`. `Date` wäre auch möglich, wird
       aber zu Demonstrationszwecken händisch implementiert.
       Nachteil: Das entstehende Json ist nicht mehr Human-readable.
+    - TODO AHe: Funktioniert Serializable auch mit JSweet?
 
 
 ## Rechte / Rollen-Konzept
