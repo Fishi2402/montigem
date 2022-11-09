@@ -3,8 +3,8 @@
 umlp Log_MC_JAR {
 
   class MCJarLogEntry {
-    CLIParameter parameter;
-    Optional<Summary> summary;
+    MCJarCLIParameter parameter;
+    Optional<MCSummary> summary;
     List<ErrorEntry> errors;
 
     String toolVersion;   // e.g. "7.5.0-SNAPSHOT"
