@@ -2,7 +2,7 @@
 
 umlp Log_MC_JAR {
 
-  class LogEntry {
+  class MCJarLogEntry {
     CLIParameter parameter;
     Optional<Summary> summary;
     List<ErrorEntry> errors;
@@ -19,6 +19,8 @@ umlp Log_MC_JAR {
 
   enum ErrorType { ERROR, WARNING; }
 
+
+  // Not specific for MCJar, can be used by other Logs too
   class ErrorEntry {
     Optional<String> code;
     String message;
@@ -26,14 +28,16 @@ umlp Log_MC_JAR {
   }
 
   // Information how the JAR was started
-  class CLIParameter {
+  // Specific to MCJar
+  class MCJarCLIParameter {
     List<String> grammar;
     boolean dstlGen;
     boolean script;
   }
 
   // Data from the SummaryReporter
-  class Summary {
+  // Same for every Log, which is using the SummaryReporter to collect data
+  class MCSummary {
     int errors;
     int warnings;
     int generated_files;
