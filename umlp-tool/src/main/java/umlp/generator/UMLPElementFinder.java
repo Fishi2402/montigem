@@ -3,6 +3,7 @@ package umlp.generator;
 import de.monticore.ast.ASTNode;
 import de.monticore.cdbasis._ast.ASTCDBasisNode;
 import de.monticore.cdbasis._ast.ASTCDElement;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDTargetImportStatement;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import umlp.UMLPMill;
@@ -24,7 +25,7 @@ public class UMLPElementFinder implements CDBasisVisitor2 {
     }
 
     @Override
-    public void visit(ASTCDElement node) {
+    public void visit(ASTCDPackage node) {
         umlpElements.add(UMLPMill.uMLPCDElementBuilder().setCDElement(node).build());
     }
 
