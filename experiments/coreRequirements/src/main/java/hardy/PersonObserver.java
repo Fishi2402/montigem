@@ -75,4 +75,12 @@ public interface PersonObserver
       notifyAddVisited(p, addressGemId, indexInList);
     }
   }
+
+  void notifyRemoveVisited(Person p, long addressGemId, int indexInList);
+
+  default void maybeNotifyRemoveVisited(Person p, long addressGemId, int indexInList, NotificationScope scope){
+    if(scope.contains(getScope())) {
+      notifyRemoveVisited(p, addressGemId, indexInList);
+    }
+  }
 }

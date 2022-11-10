@@ -172,7 +172,7 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
     }
   }
 
-  protected Long getID(int idx) {
+  public Long getID(int idx) {
     return getIDs(idx, idx + 1).get(0);
   }
 
@@ -207,5 +207,9 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
   public void removeIdSure(long gemId) {
     System.out.println(ids);
     ids.removeIf(l -> Objects.equals(l, gemId));
+  }
+
+  public int indexOfId(long gemId) {
+    return ids.indexOf(gemId);
   }
 }

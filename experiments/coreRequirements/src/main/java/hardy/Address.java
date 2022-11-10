@@ -10,6 +10,7 @@ import umlp.rte.NotificationScope;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,5 +116,42 @@ public class Address implements GemIdentifiable {
   // TODO: mark as internal!
   public GemList<Person> getVisitorGemList() {
     return visitors;
+  }
+
+  public boolean removeVisitor(Person person){
+    return removeVisitor(person, NotificationScope.ALL);
+  }
+
+  public Person removeVisitor(int index, NotificationScope notificationScope) {
+    long id = removeVisitorGem(index, notificationScope);
+    return FlensburgManager.personOpt(id).orElse(null);
+  }
+
+  // Since no Person is returned, lazy loading is not triggered
+  public long removeVisitorGem(int index, NotificationScope notificationScope){
+    // TODO: error case?
+    long id = visitors.getID(index);
+    visitors._internal_remove(Collections.singleton(index));
+
+    // remove from other association side, but only if it is loaded.
+    if(notificationScope.contains(NotificationScope.LOCAL)){
+      if(FlensburgManager.isLoadedPerson(id)) {
+        Person removed = FlensburgManager.getPersonSure(id);
+        removed.removeVisited(this, NotificationScope.MINIMAL);
+      }
+    }
+
+    addressObservers.forEach(obs -> obs.maybeNotifyRemoveVisitor(this, id, index, notificationScope));
+    return id;
+  }
+
+  public boolean removeVisitor(Person person, NotificationScope scope) {
+    int index = visitors.indexOfId(person.getGemId());
+    if(index == -1){
+      return false;
+    } else {
+      removeVisitorGem(index, scope);
+      return true;
+    }
   }
 }

@@ -4,6 +4,7 @@ package hardy;
 
 import hardy.commands.*;
 import hardy.commands.associations.Visits_add;
+import hardy.commands.associations.Visits_remove;
 import umlp.command.CommandManager;
 import umlp.rte.NotificationScope;
 
@@ -44,5 +45,10 @@ public class PersonCommandSendingObserver implements PersonObserver {
   @Override
   public void notifyAddVisited(Person p, long addressGemId, int indexInList) {
     CommandManager.sendCommandToSubscribers(new Visits_add(addressGemId, p.getGemId(), indexInList, -1));
+  }
+
+  @Override
+  public void notifyRemoveVisited(Person p, long addressGemId, int indexInList) {
+    CommandManager.sendCommandToSubscribers(new Visits_remove(addressGemId, p.getGemId(), indexInList, -1));
   }
 }

@@ -428,6 +428,42 @@ public abstract class PersonTOP extends Human {
     personObservers.forEach(obs -> obs.maybeNotifyAddVisited((Person) this, addressGemId, indexInList, scope));
   }
 
+  public Address removeVisited(int index) {
+    return removeVisited(index, NotificationScope.ALL);
+  }
+
+  public Address removeVisited(int index, NotificationScope notificationScope) {
+    long id = removeVisitedGem(index, notificationScope);
+    return FlensburgManager.addressOpt(id).orElse(null);
+  }
+
+  // Since no Address is returned, lazy loading is not triggered
+  public long removeVisitedGem(int index, NotificationScope notificationScope){
+    // TODO: error case?
+    long id = visited.getID(index);
+    visited._internal_remove(Collections.singleton(index));
+
+    // remove from other association side, but only if it is loaded.
+    if(notificationScope.contains(NotificationScope.LOCAL)){
+      if(FlensburgManager.isLoadedAddress(id)){
+        Address removed = FlensburgManager.getAddressSure(id);
+        removed.removeVisitor((Person) this, NotificationScope.MINIMAL);
+      }
+    }
+    personObservers.forEach(obs -> obs.maybeNotifyRemoveVisited((Person) this, id, index, notificationScope));
+    return id;
+  }
+
+  public boolean removeVisited(Address address, NotificationScope scope){
+    int index = visited.indexOfId(address.gemId);
+    if(index == -1){
+      return false;
+    } else {
+      removeVisitedGem(index, scope);
+      return true;
+    }
+  }
+
   // TODO: mark as internal
   public GemList<Address> getVisitedGemList() {
     return visited;

@@ -35,4 +35,9 @@ public class PersonDbObserver implements PersonObserver{
     update.where(builder.equal(root.get("gemId"), p.getGemId()));
     session.createQuery(update).executeUpdate();
   }
+
+  @Override
+  public void notifyRemoveVisited(Person p, long addressGemId, int indexInList) {
+    // TODO: needed?
+  }
 }
