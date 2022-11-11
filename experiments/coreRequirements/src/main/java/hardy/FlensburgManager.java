@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class FlensburgManager {
+public abstract class   FlensburgManager {
 
     protected static FlensburgManager instance;
 
