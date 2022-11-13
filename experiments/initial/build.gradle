@@ -41,7 +41,7 @@ task testMerge(type: UMLPMergeTask){
   source = layout.projectDirectory.dir("models/")
   includes = ["**.umlp"]
 
-  outputFile = layout.projectDirectory.file("target/merged.umlp")
+  outputFile = layout.projectDirectory.file("target/Merge.umlp")
 }
 assemble.dependsOn(testMerge)
 
