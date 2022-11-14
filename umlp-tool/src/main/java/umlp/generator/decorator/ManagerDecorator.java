@@ -69,7 +69,9 @@ public class ManagerDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name);
     getCD4C().addMethod(managerClass, "umlp.manager.DoCreateGem", name);
     getCD4C().addMethod(managerClass, "umlp.manager.Builder", name);
+    getCD4C().addMethod(managerClass, "umlp.manager.DoBuilderParam", name);
     getCD4C().addMethod(managerClass, "umlp.manager.DoBuilder", name);
+    getCD4C().addMethod(managerClass, "umlp.manager.BuilderParam", name);
     getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name);
     getCD4C().addMethod(managerClass, "umlp.manager.DoDeSerBuilder", name);
     getCD4C().addMethod(managerClass, "umlp.manager.Opt", name);
