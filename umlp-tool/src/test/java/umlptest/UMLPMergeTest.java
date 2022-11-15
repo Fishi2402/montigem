@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import umlp.UMLPMerge;
 import umlp._ast.ASTUMLPCompilationUnit;
+import umlp._cocos.UMLPCoCos;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,11 +19,13 @@ public class UMLPMergeTest extends AbstractUMLPTest {
 
     models.forEach(this::runAfterParseTrafo);
     models.forEach(this::createSymTab);
+    models.forEach(UMLPCoCos::checkAll);
 
     ASTUMLPCompilationUnit merge = UMLPMerge.merge(models, "MergeDriveAndEmployment");
     Assertions.assertNotNull(merge);
     runAfterParseTrafo(merge);
     createSymTab(merge);
+    UMLPCoCos.checkAll(merge);
 
     /* todo: fix deepEquals; expected is literally the same model as merge!
     ASTUMLPCompilationUnit expected = parse("de/monticore/MergeDriveAndEmployment.umlp");
