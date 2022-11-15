@@ -27,8 +27,6 @@ public class UMLPMerge {
   public static ASTUMLPCompilationUnit merge(Set<ASTUMLPCompilationUnit> models, String name) {
     ASTCDCompilationUnit cd =
         CDMerge.merge(models.stream().map(UMLP2CDTrafo::run).collect(Collectors.toSet()), name, new HashSet<>());
-    UMLPMill.reset();
-    UMLPMill.init();
     return CD2UMLPTrafo.run(cd);
   }
 
@@ -44,8 +42,6 @@ public class UMLPMerge {
       Set<MergeParameter> parameters) {
     ASTCDCompilationUnit cd =
         CDMerge.merge(models.stream().map(UMLP2CDTrafo::run).collect(Collectors.toSet()), name, parameters);
-    UMLPMill.reset();
-    UMLPMill.init();
     return CD2UMLPTrafo.run(cd);
   }
 
