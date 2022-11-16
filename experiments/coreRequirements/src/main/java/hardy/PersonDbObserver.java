@@ -40,4 +40,9 @@ public class PersonDbObserver implements PersonObserver{
   public void notifyRemoveVisited(Person p, long addressGemId, int indexInList) {
     // TODO: needed?
   }
+
+  @Override
+  public void notifySetVisited(Person person, Long oldAddressGemId, long addressGemId, int index) {
+    // TODO: needed?
+  }
 }

@@ -592,6 +592,51 @@ public class PersonSyncTest {
 
     assertEquals(0, a1Client2.sizeVisitors());
     assertEquals(0, a2Client2.sizeVisitors());
-
   }
+
+
+  @Test
+  public void testVisitedSetFromServer(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(200);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
+    clientContext.activate();
+
+    Address a1 = FlensburgManager.addressBuilder().city("Aachen").build().get();
+    Address a2 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Address a3 = FlensburgManager.addressBuilder().city("Jülich").build().get();
+
+    Log.info("Building Person", "PersonSyncTest");
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    Person p1001Client = FlensburgManager.personBuilder()
+        .age(20)
+        .nickname("Test")
+        .mainResidence(a1)
+        .addVisited(List.of(a1, a2, a3))
+        .build().get();
+
+    Log.info("Check setVisited from Server", "PersonSyncTest");
+    serverContext.activate();
+    Address a4 = FlensburgManager.addressBuilder().city("Braunschweig").build().get();
+    Person p1001Server = FlensburgManager.getPersonSure(1001L);
+    p1001Server.setVisited(1, a4);
+
+    assertEquals(1, a4.sizeVisitors());
+    assertEquals(p1001Server.getGemId(), a4.getVisitorGemList().getID(0));
+
+    Address a2Server = FlensburgManager.getAddressSure(a2.getGemId());
+    assertEquals(0, a2Server.sizeVisitors());
+
+    Log.info("Check the changes are synced to the Client", "PersonSyncTest");
+    clientContext.activate();
+    Address a4Client = FlensburgManager.getAddressSure(a4.getGemId());
+    assertEquals(1, a4Client.sizeVisitors());
+    assertEquals(p1001Server.getGemId(), a4Client.getVisitorGemList().getID(0));
+  }
+
+  // TODO AHe: Continue here by testing more cases for Person#setVisited and Address#setVisitor
 }

@@ -45,6 +45,7 @@ public class FlensburgCommandDeSer {
     deSerMap.put("hardy.commands.Address_create", new hardy.commands.Address_createDeSer());
     deSerMap.put("hardy.commands.associations.Visits_add", new hardy.commands.associations.Visits_addDeSer());
     deSerMap.put("hardy.commands.associations.Visits_remove", new hardy.commands.associations.Visits_removeDeSer());
+    deSerMap.put("hardy.commands.associations.Visits_set", new hardy.commands.associations.Visits_setDeSer());
     deSerMap.put("hardy.commands.Address_get_filtered", new Address_get_filteredDeSer());
     deSerMap.put("hardy.commands.Car_get_filtered", new Car_get_filteredDeSer());
     deSerMap.put("hardy.commands.Human_get_filtered", new Human_get_filteredDeSer());

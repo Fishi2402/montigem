@@ -97,17 +97,30 @@ public class Address implements GemIdentifiable {
   }
 
   public void addVisitor(int indexInList, Person p, NotificationScope scope){
-    visitors.add(indexInList, p);
-    if(scope.contains(NotificationScope.LOCAL)){
-      p.addVisited(this, NotificationScope.MINIMAL);
+    if(p == null){
+      return;
     }
-    addressObservers.forEach(obs -> obs.maybeNotifyAddVisitor(this, p.getGemId(), indexInList, scope));
+
+    addVisitorId(indexInList, p.getGemId(), scope);
+  }
+
+
+  public void addVisitorId(int indexInList, long personGemId, NotificationScope scope) {
+    visitors._internal_add(indexInList, Collections.singletonList(personGemId));
+    if(scope.contains(NotificationScope.LOCAL)){
+      if(FlensburgManager.isLoadedPerson(personGemId)) {
+        Person p = FlensburgManager.getPersonSure(personGemId);
+        p.addVisited(this, NotificationScope.MINIMAL);
+      }
+    }
+    addressObservers.forEach(obs -> obs.maybeNotifyAddVisitor(this, personGemId, indexInList, scope));
   }
 
   public int sizeVisitors() {
     return visitors.size();
   }
 
+  // TODO: Ähnliche funktion wie addVisitorId?
   public void INTERNAL_addVisitorId(int indexInList, long personGemId, NotificationScope scope) {
     visitors._internal_add(indexInList, List.of(personGemId));
     addressObservers.forEach(obs -> obs.maybeNotifyAddVisitor(this, personGemId, indexInList, scope));

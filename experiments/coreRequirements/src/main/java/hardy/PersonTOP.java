@@ -485,6 +485,46 @@ public abstract class PersonTOP extends Human {
     this.children.removeAll(children);
   }
 
+  public void setVisited(int index, Address address) {
+   setVisited(index, address, NotificationScope.ALL);
+  }
+
+  public void setVisited(int index, Address address, NotificationScope scope){
+    if(address == null){
+      return;
+    }
+    setVisitedId(index, address.getGemId(), scope);
+  }
+
+  public void setVisitedId(int index, long addressGemId, NotificationScope scope) {
+    if( index < 0 && index > sizeVisited()){
+      return;
+    }
+
+    Long oldAddressId = visited.getID(index);
+    if(addressGemId == oldAddressId){
+      return;
+    }
+
+    visited.setIDs(Map.of(index, addressGemId));
+
+    if(scope.contains(NotificationScope.LOCAL)) {
+      if (FlensburgManager.isLoadedAddress(oldAddressId)) {
+        Address oldAddress = FlensburgManager.getAddressSure(oldAddressId);
+        // Stop ping pong with MINIMAL
+        oldAddress.removeVisitor((Person) this, NotificationScope.MINIMAL);
+      }
+
+      // Stop ping pong with MINIMAL
+      if (FlensburgManager.isLoadedAddress(addressGemId)) {
+        Address address = FlensburgManager.getAddressSure(addressGemId);
+        address.addVisitor((Person) this, NotificationScope.MINIMAL);
+      }
+    }
+
+    personObservers.forEach(obs -> obs.maybeNotifySetVisited((Person) this, oldAddressId, addressGemId, index, scope));
+  }
+
   // -----------------------------------------------------------------
   
   /* Ausbaustufen (todo):
