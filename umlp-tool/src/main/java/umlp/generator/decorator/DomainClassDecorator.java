@@ -11,6 +11,8 @@ import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnumBuilder;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -40,6 +42,10 @@ public class DomainClassDecorator extends AbstractDecorator {
     String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
       .forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
+
+    origCD.getCDDefinition().getCDEnumsList().stream().filter(c -> !c.getSymbol().isIsDerived())
+            .forEach(c -> astcdPackage.addCDElement(c.deepClone()));
+
   }
 
   protected ASTCDClass createClass(ASTCDClass domainClass, String name) {

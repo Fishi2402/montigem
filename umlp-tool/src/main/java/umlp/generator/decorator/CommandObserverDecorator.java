@@ -38,7 +38,7 @@ public class CommandObserverDecorator extends AbstractDecorator {
     domainClass.getCDAttributeList().stream()
       .filter(a -> !a.getModifier().isDerived())
       .forEach(a -> getCD4C().addMethod(ast, "umlp.commandobserver.NotifySetAttribute", domainClass.getName(),
-        a.getName(), a.getSymbol().getType().print()));
+        a.getName(), GenService.getType(a.getSymbol().getType())));
     
     addImports(ast, domainClass);
     
