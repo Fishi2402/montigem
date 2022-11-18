@@ -49,7 +49,8 @@ public class DomainClassDecorator extends AbstractDecorator {
   }
 
   protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
-    ASTCDInterfaceUsage implementsUsage = getInterfaceUsageFacade().createCDInterfaceUsage("GemIdentifiable");
+    ASTCDInterfaceUsage implementsUsage = getInterfaceUsageFacade()
+        .createCDInterfaceUsage("GemIdentifiable", "GemBuildable");
     ASTModifier modifier = domainClass.getModifier().isAbstract() ? PUBLIC_ABSTRACT.build() : PUBLIC.build();
     ASTCDClassBuilder builder = UMLPMill.cDClassBuilder()
             .setModifier(modifier)
@@ -209,6 +210,7 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
     getCD4C().addImport(clazz, "umlp.rte.Gem");
     getCD4C().addImport(clazz, "umlp.rte.GemList");
+    getCD4C().addImport(clazz, "umlp.rte.GemBuildable");
     addDBAnnotationInfo(clazz);
   }
 

@@ -2,9 +2,8 @@
 ${tc.signature("name", "targetName", "sourceName")}
 
 ${cd4c.method("public boolean remove${name?cap_first}(${targetName} o, NotificationScope scope)")}
-if (this.${name}.remove(o)) {
-  check${name?cap_first}();
-  ${sourceName?uncap_first}Observers.forEach(obs -> obs.maybeNotifyRemove${name?cap_first}((${sourceName}) this, o.getGemId(), scope));
+if (this.${name}.contains(o)) {
+  this._internal_remove${name?cap_first}(java.util.Collections.singleton(this.${name}.indexOf(o)), scope);
   return true;
 }
 

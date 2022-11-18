@@ -77,17 +77,17 @@ public abstract class   FlensburgManager {
     });
   }
 
-  public static GemList<Car> createOwnsBuilder() {
-    return getSingleton()._doCreateOwnsBuilder();
+  public static GemList<Car> createOwnsBuilder(long gemID) {
+    return getSingleton()._doCreateOwnsBuilder(gemID);
   }
 
-  protected abstract GemList<Car> _doCreateOwnsBuilder();
+  protected abstract GemList<Car> _doCreateOwnsBuilder(long gemID);
 
-  public static GemList<Person> createChildrenBuilder() {
-    return getSingleton()._createChildrenBuilder();
+  public static GemList<Person> createChildrenBuilder(long gemID) {
+    return getSingleton()._createChildrenBuilder(gemID);
   }
 
-  protected abstract GemList<Person> _createChildrenBuilder();
+  protected abstract GemList<Person> _createChildrenBuilder(long gemID);
 
   protected Gem<Address> _createAddressGem(long gemId){
       return new Gem<>(gemId, () -> {

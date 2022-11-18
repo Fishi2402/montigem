@@ -6,6 +6,7 @@ package infrastructure.command;
 import de.se_rwth.commons.logging.Log;
 import hardy.*;
 import hardy.commands.*;
+import hardy.gemlists.*;
 import hardy.requests.GetFreeGemIdRequest;
 import stanley.AddressCommandObserver;
 import stanley.CarCommandObserver;
@@ -15,13 +16,11 @@ import umlp.command.CommandManager;
 import umlp.command.SimpleResult;
 import umlp.command.StatusResult;
 import umlp.rte.GemList;
-import umlp.rte.GemListBuilder;
 import umlp.rte.LoadResult;
 import umlp.rte.NotificationScope;
 import umlp.util.LogUtil;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 // Frontend implementation of the FlensburgManager
 // Uses commands and requests to synchronize data with the backend
@@ -113,10 +112,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     if(humanGemList == null){
       // TODO: replace with access via filter!
       List<Long> gemIds = CommandManager.executeCommand(new Human_get_filtered()).asSimpleResult().get();
-      humanGemList = new GemList<>(
-          gemIds,
-          this::loadHumansByGemIds
-      );
+      humanGemList = new HumanGemList(gemIds);
     }
 
     return humanGemList;
@@ -208,10 +204,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     if(personGemList == null){
       // TODO: replace with access via filter!
       List<Long> gemIds = CommandManager.executeCommand(new Person_get_filtered()).asSimpleResult().get();
-      personGemList = new GemList<>(
-          gemIds,
-          this::loadPersonsByGemIds
-      );
+      personGemList = new PersonGemList(gemIds);
     }
 
     return personGemList;
@@ -300,10 +293,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     if(addressGemList == null){
       // TODO: replace with access via filter!
       List<Long> gemIds = CommandManager.executeCommand(new Address_get_filtered()).asSimpleResult().get();
-      addressGemList = new GemList<>(
-          gemIds,
-          this::loadAddresssByGemIds
-      );
+      addressGemList = new AddressGemList(gemIds);
     }
 
     return addressGemList;
@@ -387,10 +377,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     if(carGemList == null){
       // TODO: error handling
       List<Long> gemIds = CommandManager.executeCommand(new Car_get_filtered()).asSimpleResult().get();
-      carGemList = new GemList<>(
-          gemIds,
-          this::loadCarsByGemIds
-      );
+      carGemList = new CarGemList(gemIds);
     }
 
     return carGemList;
@@ -423,172 +410,46 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected GemList<Car> _doCreateOwns(long personGemId, int size, List<Long> initialCarGemIds) {
-    // TODO: this is not very easy to read
-    return new GemList<>(
-        initialCarGemIds,
-        ids -> {
-          List<LoadResult<Car>> res = new ArrayList<>();
-          for (Long id : ids) {
-            SimpleResult<Car> tmp = CommandManager.executeCommand(new Car_get(id)).asSimpleResult();
-            if(tmp.isSuccessful()) {
-              res.add(new LoadResult<>(tmp.get()));
-            }else{
-              res.add(new LoadResult<>(tmp.getLoadingState()));
-            }
-          }
-          return res;
-        },
-        (idx, id) -> _doGetPersonSure(personGemId).setOwns(idx, getCarSure(id)),
-        (idx, gemIDs) -> _doGetPersonSure(personGemId).addAllOwnss(idx,
-            gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())),
-        (gemIDs) -> _doGetPersonSure(personGemId).removeAllOwnss(
-            gemIDs.stream().map(carID -> getCarSure(carID)).collect(Collectors.toSet())
-        )
-    );
+    Person_OwnsGemList gemList = new Person_OwnsGemList(personGemId, initialCarGemIds);
+    return gemList.build().get();
   }
 
   @Override
   protected GemList<Person> _createChildren(long personGemId, int size, List<Long> initialIds) {
-    return new GemList<>(
-        initialIds,
-        ids -> {
-          List<LoadResult<Person>> res = new ArrayList<>();
-          for (Long id : ids) {
-            SimpleResult<Person> tmp = CommandManager.executeCommand(new Person_get(id)).asSimpleResult();
-            if(tmp.isSuccessful()) {
-              res.add(new LoadResult<>(tmp.get()));
-            }else{
-              res.add(new LoadResult<>(tmp.getLoadingState()));
-            }
-          }
-          return res;
-        },
-        (idx, id) -> _doGetPersonSure(personGemId).setChildren(idx, getPersonSure(id)),
-        (idx, gemIDs) -> _doGetPersonSure(personGemId).addAllChildrens(idx,
-            gemIDs.stream().map(carID -> getPersonSure(carID)).collect(Collectors.toSet())),
-        (gemIDs) -> _doGetPersonSure(personGemId).removeAllChildrens(
-            gemIDs.stream().map(carID -> getPersonSure(carID)).collect(Collectors.toSet())
-        )
-    );
+    return new Person_ChildrenGemList(personGemId, initialIds).build().get();
+
   }
 
   @Override
-  protected GemList<Car> _doCreateOwnsBuilder() {
-    // TODO: duplicated code!
-    return new GemListBuilder<>(
-        ids -> {
-          List<LoadResult<Car>> res = new ArrayList<>();
-          for (Long id : ids) {
-            SimpleResult<Car> tmp = CommandManager.executeCommand(new Car_get(id)).asSimpleResult();
-            if(tmp.isSuccessful()) {
-              res.add(new LoadResult<>(tmp.get()));
-            }else{
-              res.add(new LoadResult<>(tmp.getLoadingState()));
-            }
-          }
-          return res;
-        }
-    );
+  protected GemList<Car> _doCreateOwnsBuilder(long gemID) {
+    return new Person_OwnsGemList(gemID);
   }
 
   @Override
-  protected GemList<Person> _createChildrenBuilder() {
-// TODO: duplicated code!
-    return new GemListBuilder<>(
-        ids -> {
-          List<LoadResult<Person>> res = new ArrayList<>();
-          for (Long id : ids) {
-            SimpleResult<Person> tmp = CommandManager.executeCommand(new Person_get(id)).asSimpleResult();
-            if(tmp.isSuccessful()) {
-              res.add(new LoadResult<>(tmp.get()));
-            }else{
-              res.add(new LoadResult<>(tmp.getLoadingState()));
-            }
-          }
-          return res;
-        }
-    );
+  protected GemList<Person> _createChildrenBuilder(long gemID) {
+     return new Person_ChildrenGemList(gemID);
   }
 
   @Override
-  protected GemList<Address> _createVisited(long personGemId, long gemListId, int size, List<Long> initialCarGemIds) {
-    // TODO AHe, FDr: use Person for list interface of owns
-    // when the methods have been added to PersonTOP
-    // TODO: this is not very easy to read
-    return new GemList<>(
-        initialCarGemIds,
-        ids -> {
-          List<LoadResult<Address>> res = new ArrayList<>();
-          for (Long id : ids) {
-            SimpleResult<Address> tmp = CommandManager.executeCommand(new Address_get(id)).asSimpleResult();
-            if(tmp.isSuccessful()) {
-              res.add(new LoadResult<>(tmp.get()));
-            }else{
-              res.add(new LoadResult<>(tmp.getLoadingState()));
-            }
-          }
-          return res;
-        }
-    );
+  protected GemList<Address> _createVisited(long personGemId, long gemListId, int size, List<Long> initialGemIds) {
+    AddressGemList gemList = new AddressGemList(initialGemIds);
+    return gemList.build().get();
   }
 
   @Override
   protected GemList<Person> _createVisitors(long addressGemId, List<Long> initialIds) {
-    // TODO AHe, FDr: use Person for list interface of owns
-    // TODO: this is not very easy to read
-    return new GemList<>(
-        initialIds,
-        ids -> {
-          List<LoadResult<Person>> res = new ArrayList<>();
-          for (Long id : ids) {
-            SimpleResult<Person> tmp = CommandManager.executeCommand(new Person_get(id)).asSimpleResult();
-            if(tmp.isSuccessful()) {
-              res.add(new LoadResult<>(tmp.get()));
-            }else{
-              res.add(new LoadResult<>(tmp.getLoadingState()));
-            }
-          }
-          return res;
-        }
-    );
+    PersonGemList gemList = new PersonGemList(initialIds);
+    return gemList.build().get();
   }
 
   @Override
   protected GemList<Address> _createVisitedBuilder(long personGemId, List<Long> initialIds) {
-    return new GemListBuilder<>(
-        ids -> {
-          List<LoadResult<Address>> res = new ArrayList<>();
-          for (Long id : ids) {
-            SimpleResult<Address> tmp = CommandManager.executeCommand(new Address_get(id)).asSimpleResult();
-            if(tmp.isSuccessful()) {
-              res.add(new LoadResult<>(tmp.get()));
-            }else{
-              res.add(new LoadResult<>(tmp.getLoadingState()));
-            }
-          }
-          return res;
-        },
-        initialIds
-    );
+    return new AddressGemList();
   }
 
   @Override
   protected GemList<Person> _createVisitorsBuilder(long addressGemId, List<Long> initialIds) {
-    return new GemListBuilder<>(
-        ids -> {
-          List<LoadResult<Person>> res = new ArrayList<>();
-          for (Long id : ids) {
-            SimpleResult<Person> tmp = CommandManager.executeCommand(new Person_get(id)).asSimpleResult();
-            if(tmp.isSuccessful()) {
-              res.add(new LoadResult<>(tmp.get()));
-            }else{
-              res.add(new LoadResult<>(tmp.getLoadingState()));
-            }
-          }
-          return res;
-        },
-        initialIds
-    );
+    return new PersonGemList();
   }
 
   @Override

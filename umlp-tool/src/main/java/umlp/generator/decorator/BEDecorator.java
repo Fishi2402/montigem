@@ -2,7 +2,6 @@ package umlp.generator.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
 
 public class BEDecorator extends AbstractDecorator {
@@ -96,6 +95,15 @@ public class BEDecorator extends AbstractDecorator {
     /*TypeAdapterDecorator typeAdapterDecorator = new TypeAdapterDecorator(glex);
     typeAdapterDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TypeAdapterDecorator", BEDecorator.class.getName());*/
+
+    GemListAssocDecorator gemListAssocDecorator = new GemListAssocDecorator(glex);
+    gemListAssocDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: GemListAssocDecorator", BEDecorator.class.getName());
+
+    GemListDomainDecorator gemListDomainDecorator = new GemListDomainDecorator(glex);
+    gemListDomainDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: GemListDomainDecorator", BEDecorator.class.getName());
+
   }
 
 }

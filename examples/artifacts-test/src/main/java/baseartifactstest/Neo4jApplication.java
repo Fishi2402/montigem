@@ -53,10 +53,12 @@ public class Neo4jApplication {
       f.setName("File");
 
       // Link all objects
-      d1.views =  new GemList<ArtifactView>(new ArrayList<>(), l -> l.stream().map(viewRepository::findById)
-          .map(opt -> opt.map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD))).collect(Collectors.toList()));
-      d1.contains = new GemList<Artifact>(new ArrayList<>(), l -> l.stream().map(artifactRepository::findById)
-          .map(opt -> opt.map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD))).collect(Collectors.toList()));
+      // todo not possible in new version of GemList, requires using Top-mechanism?
+      // todo discuss: should setting a new list even be allowed?
+      //d1.views =  new GemList<ArtifactView>(new ArrayList<>(), l -> l.stream().map(viewRepository::findById)
+      //    .map(opt -> opt.map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD))).collect(Collectors.toList()));
+      //d1.contains = new GemList<Artifact>(new ArrayList<>(), l -> l.stream().map(artifactRepository::findById)
+      //    .map(opt -> opt.map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD))).collect(Collectors.toList()));
 
 
       d1.addContains(0, f);
