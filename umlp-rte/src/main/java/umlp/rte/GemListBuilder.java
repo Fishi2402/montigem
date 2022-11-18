@@ -3,42 +3,46 @@ package umlp.rte;
 // RTE-P
 
 import java.util.*;
-import java.util.function.Function;
-
+import java.util.stream.Collectors;
 
 // GemList, welche bei der Erstellung von Objekten benutzt werden muss, da sie in diesem Zustand
 // noch nicht mit anderen Teilnehmen synchronisiert werden kann.
-public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
+public abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> extends GemList<E> {
   protected transient boolean buildFinished = false;
-  // TODO: needed?
-  protected List<Long> builderIds = new ArrayList<>();
+
   // Da einem in einem Builder andere Builder hinzugefügt werden können und der FlensburgManager diese
   // nicht kennt, also auch nicht per id laden kann, muss hier eine lokale Verwaltung stattfinden.
   // Nach build() wird diese geleert und nicht weiter verwendet.
-  protected Map<Integer, E> idxToBuilder = new HashMap<>();
+  protected List<IDOrBuilder<E>> builderElemStorage = new ArrayList<>();
 
-  public GemListBuilder(Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction) {
-    this(loadObjectsFunction, Collections.emptyList());
+  public GemListBuilder(List<Long> initialIds) {
+    for(long gemID : initialIds) {
+      this.builderElemStorage.add(new IDOrBuilder(gemID));
+    }
   }
 
-  public GemListBuilder(Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction, List<Long> initialIds) {
-    super(initialIds, loadObjectsFunction);
-  }
-
+  @Override
   public Optional<GemList<E>> build(){
     if(buildFinished){
       return Optional.of(this);
     }
 
     ids.clear();
-    ids.addAll(builderIds);
+    for(IDOrBuilder<E> element : builderElemStorage) {
+      ids.add(element.getIDAndMaybeBuild());
+    }
 
     buildFinished = true;
 
     // Von hier an werden alle Element vom FlensburgManager geladen
-    idxToBuilder.clear();
+    builderElemStorage.clear();
 
     return Optional.of(this);
+  }
+
+  @Override
+  public boolean isBuildFinished() {
+    return buildFinished;
   }
 
   @Override
@@ -46,7 +50,7 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
     if(buildFinished){
       return super.size();
     } else {
-      return builderIds.size();
+      return builderElemStorage.size();
     }
   }
 
@@ -57,8 +61,8 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
     } else {
       // List might contain builders, which a normal GemList will not
       // Thus, a local data storage is needed
-      if(idxToBuilder.containsKey(idx)){
-        return idxToBuilder.get(idx);
+      if(builderElemStorage.get(idx).isPresentBuilder()){
+        return builderElemStorage.get(idx).getBuilder();
       } else {
         return super.get(idx);
       }
@@ -67,18 +71,19 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
 
   @Override
   public void add(int idx, E elem) {
-    if(!buildFinished) {
-      idxToBuilder.put(idx, elem);
+    if(buildFinished) {
+      super.add(idx, elem);
+    } else {
+      builderElemStorage.add(idx, new IDOrBuilder<>(elem));
     }
-    super.add(idx, elem);
   }
 
   @Override
-  public void setIDs(Map<Integer, Long> changes) {
+  public void _internal_set(int idx, long gemID) {
     if(buildFinished) {
-      super.setIDs(changes);
+      super._internal_set(idx, gemID);
     } else {
-      changes.forEach((idx, id) -> builderIds.set(idx, id));
+      builderElemStorage.set(idx, new IDOrBuilder<>(gemID));
     }
   }
 
@@ -87,7 +92,8 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
     if(buildFinished) {
       super._internal_add(idx, additions);
     } else {
-      builderIds.addAll(idx, additions);
+      List<IDOrBuilder<E>> newElems = additions.stream().map(e -> new IDOrBuilder<E>(e)).collect(Collectors.toList());
+      builderElemStorage.addAll(idx, newElems);
     }
   }
 
@@ -96,10 +102,12 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
     if(buildFinished) {
       super._internal_remove(idxs);
     } else {
-      idxs
-          .stream()
+      List<Integer> idxsReversed = idxs.stream()
           .sorted(Comparator.reverseOrder())
-          .forEach(idx -> builderIds.remove((int) idx));
+          .collect(Collectors.toList());
+      for(int idx : idxsReversed) {
+        builderElemStorage.remove(idx);
+      }
     }
   }
 
@@ -108,7 +116,16 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
     if(buildFinished) {
       return super.getIDs(startIdx, endIdx);
     } else {
-      return builderIds.subList(startIdx, endIdx);
+      List<Long> ids = new ArrayList<>();
+      for(int idx = startIdx; idx < endIdx; idx++) {
+        if(builderElemStorage.get(idx).isPresentID()) {
+          ids.add(builderElemStorage.get(idx).getID());
+        } else {
+          //todo decide on error handling
+          ids.add(-1l);
+        }
+      }
+      return ids;
     }
   }
 
@@ -117,7 +134,7 @@ public class GemListBuilder<E extends GemIdentifiable> extends GemList<E> {
     if(buildFinished){
       return super.getIDs();
     } else {
-      return Collections.unmodifiableList(builderIds);
+      return getIDs(0, builderElemStorage.size() - 1);
     }
   }
 }

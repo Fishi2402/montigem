@@ -10,38 +10,36 @@ import java.util.stream.Collectors;
  * for testing purposes we use a List to be
  * object source instead of a manager
  */
-public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> {
+public class ListBasedServer extends AbstractList<Elem> {
 
   /**
    * keeps the data, acting as a server
    */
   protected List<Long> ids = new LinkedList<>();
 
-  protected Map<Long, E> objects = new HashMap<>();
+  protected Map<Long, Elem> objects = new HashMap<>();
 
   protected Set<Long> idsNotAuthorized = new HashSet<>();
 
   /**
    * stored to report updates
    */
-  protected List<GemList<E>> gemLists = new LinkedList<>();
+  protected List<GemList<Elem>> gemLists = new LinkedList<>();
 
-  protected long nextGemListID = 2001;
-
-  public ListBasedServer(List<E> list) {
-    for (E obj : list) {
+  public ListBasedServer(List<Elem> list) {
+    for (Elem obj : list) {
       this.getIds().add(obj.getGemId());
       this.getObjects().put(obj.getGemId(), obj);
     }
   }
 
-  public void addKnownObjects(Collection<E> objects) {
-    for (E obj : objects) {
+  public void addKnownObjects(Collection<Elem> objects) {
+    for (Elem obj : objects) {
       getObjects().put(obj.getGemId(), obj);
     }
   }
 
-  public List<E> getList() {
+  public List<Elem> getList() {
     return getIds().stream()
         .map(getObjects()::get)
         .collect(Collectors.toList());
@@ -51,19 +49,13 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
     this.idsNotAuthorized = ids;
   }
 
-  public GemList<E> createLazyList() {
-    GemList<E> gemList = new GemList<>(
-        ids,
-        this::getObjects,
-        this::setIdxs,
-        this::addIDs,
-        this::removeIdxs
-    );
+  public GemList<Elem> createLazyList() {
+    GemList<Elem> gemList = new ElemGemList(ids, this);
     getLazyLists().add(gemList);
     return gemList;
   }
 
-  public Gem<E> createGem(Long id) {
+  public Gem<Elem> createGem(Long id) {
     return new Gem(id, () -> this.getObject(id));
   }
 
@@ -73,35 +65,35 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
   }
 
   @Override
-  public E get(int idx) {
+  public Elem get(int idx) {
     return getObjects().get(getIds().get(idx));
   }
 
   @Override
-  public E set(int idx, E elem) {
-    E oldElem = get(idx);
+  public Elem set(int idx, Elem elem) {
+    Elem oldElem = get(idx);
     getIds().set(idx, elem.getGemId());
     getObjects().put(elem.getGemId(), elem);
-    for(GemList<E> gemList : gemLists) {
+    for (GemList<Elem> gemList : gemLists) {
       gemList._internal_set(idx, elem.getGemId());
     }
     return oldElem;
   }
 
   @Override
-  public void add(int idx, E elem) {
+  public void add(int idx, Elem elem) {
     getIds().add(elem.getGemId());
     getObjects().put(elem.getGemId(), elem);
-    for(GemList<E> gemList : gemLists) {
+    for (GemList<Elem> gemList : gemLists) {
       gemList._internal_add(idx, Collections.singletonList(elem.getGemId()));
     }
   }
 
   @Override
-  public E remove(int idx) {
-    E elem = get(idx);
+  public Elem remove(int idx) {
+    Elem elem = get(idx);
     getIds().remove(idx);
-    for(GemList<E> gemList : gemLists) {
+    for (GemList<Elem> gemList : gemLists) {
       gemList._internal_remove(Collections.singleton(idx));
     }
     return elem;
@@ -111,34 +103,34 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
     return getIds().subList(startIdx, endIdx);
   }
 
-  protected List<LoadResult<E>> getObjects(List<Long> ids) {
+  protected List<LoadResult<Elem>> getObjects(List<Long> ids) {
     return ids.stream()
         .map(this::getObject)
         .collect(Collectors.toList());
   }
 
-  protected LoadResult<E> getObject(Long id) {
+  protected LoadResult<Elem> getObject(Long id) {
     if (getIdsNotAuthorized().contains(id)) {
-      return new LoadResult<E>(LoadingState.NOT_AUTHORIZED);
+      return new LoadResult<Elem>(LoadingState.NOT_AUTHORIZED);
     }
     else if (getObjects().containsKey(id)) {
       return new LoadResult<>(getObjects().get(id));
     }
     else {
-      return new LoadResult<E>(LoadingState.FAILED_TO_LOAD);
+      return new LoadResult<Elem>(LoadingState.FAILED_TO_LOAD);
     }
   }
 
-  protected void setIdxs(int idx, long gemID) {
+  protected void setIdx(int idx, long gemID) {
     getIds().set(idx, gemID);
-    for(GemList<E> gemList : gemLists) {
+    for (GemList<Elem> gemList : gemLists) {
       gemList._internal_set(idx, gemID);
     }
   }
 
   protected void addIDs(int idx, List<Long> ids) {
     getIds().addAll(idx, ids);
-    for(GemList<E> gemList : gemLists) {
+    for (GemList<Elem> gemList : gemLists) {
       gemList._internal_add(idx, ids);
     }
   }
@@ -147,8 +139,8 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
     idxs
         .stream()
         .sorted(Comparator.reverseOrder())
-        .forEach(idx -> ids.remove((int)idx));
-    for(GemList<E> gemList : gemLists) {
+        .forEach(idx -> ids.remove((int) idx));
+    for (GemList<Elem> gemList : gemLists) {
       gemList._internal_remove(idxs);
     }
   }
@@ -157,7 +149,7 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
     return ids;
   }
 
-  protected Map<Long, E> getObjects() {
+  protected Map<Long, Elem> getObjects() {
     return objects;
   }
 
@@ -165,11 +157,8 @@ public class ListBasedServer<E extends GemIdentifiable> extends AbstractList<E> 
     return idsNotAuthorized;
   }
 
-  protected List<GemList<E>> getLazyLists() {
+  protected List<GemList<Elem>> getLazyLists() {
     return gemLists;
   }
 
-  protected long getNextGemListID() {
-    return nextGemListID++;
-  }
 }

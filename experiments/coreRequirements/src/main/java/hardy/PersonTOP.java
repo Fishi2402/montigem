@@ -7,6 +7,7 @@ package hardy;
 import com.google.common.collect.Sets;
 import org.hibernate.annotations.Tuplizer;
 import umlp.rte.Gem;
+import umlp.rte.GemIdentifiable;
 import umlp.rte.GemList;
 import umlp.rte.NotificationScope;
 
@@ -14,6 +15,7 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /* Source:
 
@@ -200,9 +202,18 @@ public abstract class PersonTOP extends Human {
 
   public Car removeOwns(int idx, NotificationScope scope){
     Car c = owns.get(idx);
-    owns._internal_remove(Collections.singleton(idx));
-    personObservers.forEach(obs -> obs.maybeNotifyRemoveOwns((Person) this, c.getGemId(), scope));
+    _internal_removeOwns(Collections.singleton(idx), scope);
     return c;
+  }
+
+  public void _internal_removeOwns(Set<Integer> idxs, NotificationScope scope) {
+    Set<Long> ids = idxs.stream()
+            .map(owns::getID)
+            .collect(Collectors.toSet());
+    owns._internal_remove(idxs);
+    for(long gemID : ids) {
+      personObservers.forEach(obs -> obs.maybeNotifyRemoveOwns((Person) this, gemID, scope));
+    }
   }
 
   public void removeOwnsByIdSure(long carGemId) {
@@ -265,10 +276,21 @@ public abstract class PersonTOP extends Human {
     if (o == null) {
       throw new IllegalArgumentException("Null argument not allowed here");
     }
-    if (!this.owns.contains(o)) {
-      this.owns._internal_add(index, Collections.singletonList(o.getGemId()));
-      checkOwns();
-      personObservers.forEach(obs -> obs.maybeNotifyAddOwns((Person) this, o.getGemId(), index, scope));
+    _internal_addOwns(index, Collections.singletonList(o.getGemId()), scope);
+  }
+
+  public void _internal_addOwns(int index, List<Long> gemIDs, NotificationScope scope) {
+    List<Long> gemIDsToBeAdded = gemIDs.stream()
+        .filter(gemID -> !this.owns.contains(gemID))
+        .collect(Collectors.toList());
+    this.owns._internal_add(index, gemIDsToBeAdded);
+    checkOwns();
+    Integer currentIdx = index;
+    for (Long gemID: gemIDsToBeAdded) {
+      for (PersonObserver obs: personObservers) {
+        obs.maybeNotifyAddOwns((Person) this, gemID, currentIdx, scope);
+      }
+      currentIdx++;
     }
   }
   
@@ -324,15 +346,18 @@ public abstract class PersonTOP extends Human {
   }
 
   public void setOwns(int idx, Car c, NotificationScope scope) {
+    _internal_setOwns(idx, c.getGemId(), scope);
+  }
+
+  public void _internal_setOwns(int idx, long gemID, NotificationScope scope) {
     if(idx < 0){
       throw new IllegalStateException("idx must be 0 or higher");
     }
     if(idx > owns.size()){
       throw new IllegalStateException("idx must be at most owns.size");
     }
-
-    this.owns._internal_set(idx, c.getGemId());
-    personObservers.forEach(obs -> obs.maybeNotifySetOwns((Person) this, idx, c.getGemId(), scope));
+    this.owns._internal_set(idx, gemID);
+    personObservers.forEach(obs -> obs.maybeNotifySetOwns((Person) this, idx, gemID, scope));
   }
 
   public boolean isEmptyOwnss() {
@@ -371,18 +396,18 @@ public abstract class PersonTOP extends Human {
   // protected List<Person> childs;
   // later do + die üblichen generierten Ftnen (siehe Dex)
   // incl. Sicherung der Assoziationskorrektheit (wg. Navigierbarkeit in beide Richtungen)
-  
+
   // please observe the added "s" for *-Associations  (see Dex conventions)
   // protected List<Person> parents;
   //- todo dito
-  
+
   // -----------------------------------------------------------------
 
   // TODO add children
   public List<Person> getChildren() {
     return new ArrayList();
   }
-  
+
   /**
    * Derived attribute becomes an abstract Method for calculation
    * / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
@@ -416,11 +441,21 @@ public abstract class PersonTOP extends Human {
   }
 
   public void addVisited(int indexInList, Address address, NotificationScope scope) {
-    visited.add(indexInList, address);
-    if(scope.contains(NotificationScope.LOCAL)){
-      address.addVisitor((Person) this, NotificationScope.MINIMAL);
+    _internal_addVisited(indexInList, List.of(address.getGemId()), scope);
+  }
+
+  public void _internal_addVisited(int idx, List<Long> gemIDs, NotificationScope scope) {
+    visited._internal_add(idx, gemIDs);
+    Integer currentIDx = idx;
+    for(long gemID : gemIDs) {
+      if (scope.contains(NotificationScope.LOCAL)) {
+        FlensburgManager.getAddressSure(gemID).addVisitor((Person) this, NotificationScope.MINIMAL);
+      }
+      for(PersonObserver obs: personObservers) {
+        obs.maybeNotifyAddVisited((Person) this, gemID,  currentIDx, scope);
+      }
+      currentIDx++;
     }
-    personObservers.forEach(obs -> obs.maybeNotifyAddVisited((Person)this, address.getGemId(), indexInList, scope));
   }
 
   public void INTERNAL_addVisitedId(int indexInList, long addressGemId, NotificationScope scope) {
@@ -526,9 +561,9 @@ public abstract class PersonTOP extends Human {
   }
 
   // -----------------------------------------------------------------
-  
+
   /* Ausbaustufen (todo):
-   
+
    * Entkopplung der Ladestrategien durch
    **  gemID  statt direktLink (und die transparente Realisierung in den Objekten)
    */

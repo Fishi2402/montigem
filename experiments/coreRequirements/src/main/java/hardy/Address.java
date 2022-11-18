@@ -4,6 +4,7 @@ package hardy;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Tuplizer;
+import umlp.rte.GemBuildable;
 import umlp.rte.GemIdentifiable;
 import umlp.rte.GemList;
 import umlp.rte.NotificationScope;
@@ -25,7 +26,7 @@ import java.util.Optional;
 @Entity
 @Table(name = "address")
 @Tuplizer(impl = FlensburgTuplizer.class)
-public class Address implements GemIdentifiable {
+public class Address implements GemIdentifiable, GemBuildable {
   protected transient List<AddressObserver> addressObservers = new ArrayList<>();
 
   @Id
@@ -106,14 +107,24 @@ public class Address implements GemIdentifiable {
 
 
   public void addVisitorId(int indexInList, long personGemId, NotificationScope scope) {
-    visitors._internal_add(indexInList, Collections.singletonList(personGemId));
-    if(scope.contains(NotificationScope.LOCAL)){
-      if(FlensburgManager.isLoadedPerson(personGemId)) {
-        Person p = FlensburgManager.getPersonSure(personGemId);
-        p.addVisited(this, NotificationScope.MINIMAL);
+    _internal_addVisitors(indexInList, List.of(personGemId), scope);
+  }
+
+  public void _internal_addVisitors(int idx, List<Long> gemIDs, NotificationScope scope) {
+    visitors._internal_add(idx, gemIDs);
+    int currentIdx = idx;
+    for(long gemID : gemIDs) {
+      if (scope.contains(NotificationScope.LOCAL)) {
+        if(FlensburgManager.isLoadedPerson(gemID)) {
+          Person p = FlensburgManager.getPersonSure(gemID);
+          p.addVisited(this, NotificationScope.MINIMAL);
+        }
       }
+      for(AddressObserver obs : addressObservers){
+        obs.maybeNotifyAddVisitor(this, gemID, currentIdx, scope);
+      }
+      currentIdx++;
     }
-    addressObservers.forEach(obs -> obs.maybeNotifyAddVisitor(this, personGemId, indexInList, scope));
   }
 
   public int sizeVisitors() {

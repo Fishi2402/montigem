@@ -6,7 +6,5 @@ if (o == null) {
   throw new IllegalArgumentException("Null argument not allowed here");
 }
 if (!this.${name}.contains(o)) {
-  this.${name}._internal_add(index, Collections.singletonList(o.getGemId()));
-  check${name?cap_first}();
-  ${sourceName?uncap_first}Observers.forEach(obs -> obs.maybeNotifyAdd${name?cap_first}((${sourceName}) this, o.getGemId(), index, scope));
+  this._internal_add${name?cap_first}(index, java.util.Collections.singletonList(o.getGemId()));
 }
