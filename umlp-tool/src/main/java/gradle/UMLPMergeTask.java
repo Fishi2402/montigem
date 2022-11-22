@@ -1,13 +1,14 @@
 package gradle;
 
+import com.google.common.collect.Sets;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdmerge.CDMerge;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
 import umlp.UMLPFullPrettyPrinter;
-import umlp.UMLPMerge;
 import umlp.UMLPTool;
-import umlp._ast.ASTUMLPCompilationUnit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,12 +25,12 @@ public abstract class UMLPMergeTask extends SourceTask {
   @TaskAction
   public void run() {
     // Parse and convert to CDCompilationUnit
-    Set<ASTUMLPCompilationUnit> models = getSource().getFiles().stream()
+    Set<ASTCDCompilationUnit> models = getSource().getFiles().stream()
         .map(File::getAbsolutePath)
         .map(this::parseAndCheck)
         .collect(Collectors.toSet());
 
-    ASTUMLPCompilationUnit merge = UMLPMerge.merge(models,"Merge");
+    ASTCDCompilationUnit merge = CDMerge.merge(models, "Merge", Sets.newHashSet());
     UMLPFullPrettyPrinter printer = new UMLPFullPrettyPrinter();
     merge.accept(printer.getTraverser());
 
@@ -41,10 +42,10 @@ public abstract class UMLPMergeTask extends SourceTask {
     }
   }
 
-  protected ASTUMLPCompilationUnit parseAndCheck(String absolutePath) {
+  protected ASTCDCompilationUnit parseAndCheck(String absolutePath) {
     UMLPTool tool = new UMLPTool();
 
-    ASTUMLPCompilationUnit result = tool.parse(absolutePath);
+    ASTCDCompilationUnit result = tool.parse(absolutePath);
 
     tool.runAfterParseTrafo(result);
     tool.createSymbolTable(result);

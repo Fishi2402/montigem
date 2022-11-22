@@ -1,9 +1,11 @@
 package umlptest;
 
+import com.google.common.collect.Sets;
+import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdmerge.CDMerge;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import umlp.UMLPMerge;
-import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._cocos.UMLPCoCos;
 
 import java.util.HashSet;
@@ -13,15 +15,18 @@ public class UMLPMergeTest extends AbstractUMLPTest {
 
   @Test
   public void testMerge() {
-    Set<ASTUMLPCompilationUnit> models = new HashSet<>();
+    Set<ASTCDCompilationUnit> models = new HashSet<>();
     models.add(parse("de/monticore/Driver.umlp"));
     models.add(parse("de/monticore/Employment.umlp"));
+    CD4CodeTrafo4Defaults trafo = new CD4CodeTrafo4Defaults();
 
     models.forEach(this::runAfterParseTrafo);
     models.forEach(this::createSymTab);
+    models.forEach(a -> trafo.transform(a));
+
     models.forEach(UMLPCoCos::checkAll);
 
-    ASTUMLPCompilationUnit merge = UMLPMerge.merge(models, "MergeDriveAndEmployment");
+    ASTCDCompilationUnit merge = CDMerge.merge(models, "MergeDriveAndEmployment", Sets.newHashSet());
     Assertions.assertNotNull(merge);
     runAfterParseTrafo(merge);
     createSymTab(merge);

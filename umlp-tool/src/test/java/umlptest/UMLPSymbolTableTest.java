@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlptest;
 
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._symboltable.IUMLPArtifactScope;
 
 import java.util.Optional;
@@ -19,7 +19,7 @@ public class UMLPSymbolTableTest extends AbstractUMLPTest {
 
   @Test
   public void testUseJavaTypes(){
-    ASTUMLPCompilationUnit ast = parse("de/monticore/UseJavaTypes.umlp");
+    ASTCDCompilationUnit ast = parse("de/monticore/UseJavaTypes.umlp");
     IUMLPArtifactScope as = createSymTab(ast);
 
     Optional<OOTypeSymbol> symbol = as.getEnclosingScope().resolveOOType("java.util.List");
@@ -32,7 +32,7 @@ public class UMLPSymbolTableTest extends AbstractUMLPTest {
 
   @Test
   public void testFullName()  {
-    ASTUMLPCompilationUnit ast = parse("de/monticore/B.umlp");
+    ASTCDCompilationUnit ast = parse("de/monticore/B.umlp");
     IUMLPArtifactScope as = createSymTab(ast);
 
     final Optional<CDTypeSymbol> c = as.resolveCDType("C");
