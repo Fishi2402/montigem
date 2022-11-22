@@ -5,20 +5,19 @@ import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
+import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.TemplateController;
-import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
-import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
-import umlp._symboltable.UMLPSymbolTableCompleter;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.UMLPGenerator;
@@ -26,8 +25,6 @@ import umlp.generator.UMLPGenerator;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -129,11 +126,15 @@ public class UMLPTool extends UMLPToolTOP {
 
         ///////////////////////// LANGUAGE FRONTEND  /////////////////////////////
 
+      UMLPMill.init();
+      BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+
       // parse, create symbol table, check all cocos
-      ASTUMLPCompilationUnit ast = parse(inputFile.getPath());
+      ASTCDCompilationUnit ast = parse(inputFile.getPath());
       Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
       runAfterParseTrafo(ast);
       IUMLPArtifactScope symbolTable = createSymbolTable(ast);
+      runDefaultTrafo(ast);
       runDefaultCoCos(ast);
 
 
@@ -172,10 +173,6 @@ public class UMLPTool extends UMLPToolTOP {
               .map(p -> p.toFile()).collect(Collectors.toList()));
 
       // execute generator
-      CD4CodeMill.init();
-      CD4CodeMill.globalScope().clear();
-      BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
-
       UMLPGenerator generator = new UMLPGenerator(genSetup);
       CD4C.init(genSetup);
       String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
@@ -208,13 +205,13 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   @Override
-  public void runDefaultCoCos(ASTUMLPCompilationUnit ast) {
+  public void runDefaultCoCos(ASTCDCompilationUnit ast) {
     UMLPCoCos.checkAll(ast);
   }
 
-  @Override public IUMLPArtifactScope createSymbolTable(ASTUMLPCompilationUnit node) {
+  @Override public IUMLPArtifactScope createSymbolTable(ASTCDCompilationUnit node) {
     IUMLPArtifactScope as = super.createSymbolTable(node);
-    node.accept(new UMLPSymbolTableCompleter(node).getTraverser()); // run symbol table completer
+    node.accept(new CD4CodeSymbolTableCompleter(node).getTraverser()); // run symbol table completer
     return as;
   }
 
@@ -226,10 +223,16 @@ public class UMLPTool extends UMLPToolTOP {
     return options;
   }
 
-  public void runAfterParseTrafo(ASTUMLPCompilationUnit node){
+  public void runAfterParseTrafo(ASTCDCompilationUnit node){
     UMLPTraverser trav = UMLPMill.traverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
+  }
+
+  public void runDefaultTrafo(ASTCDCompilationUnit node){
+    UMLPTraverser trav = UMLPMill.traverser();
+    CD4CodeTrafo4Defaults trafo = new CD4CodeTrafo4Defaults();
+    trafo.transform(node);
   }
 
   public static void main(String[] args) {

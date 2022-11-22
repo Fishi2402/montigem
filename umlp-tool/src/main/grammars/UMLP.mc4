@@ -10,55 +10,16 @@
  */
 grammar UMLP extends de.monticore.CD4Code {
 
-  UMLPCompilationUnit = MCPackageDeclaration? MCImportStatement* UMLPDef;
+  start CDCompilationUnit;
 
   /**
-   * This nonterminal replaces CDDefinition
+   * This rule allows additional keywords for classdiagram
    */
-  symbol UMLPDef = (kind:["umlp"|"ontology"|"classdiagram"]) Name "{" UMLPElement* "}";
+  replacekeyword "classdiagram": "umlp", "ontology", "classdiagram";
 
-  interface UMLPElement;
+  /**
+   * This rule allows additional keywords for class
+   */
+  replacekeyword "class": "entity", "class";
 
-  UMLPCDElement implements UMLPElement = CDElement | CDTargetImportStatement;
-
-  /** TODO: MB, NJ
-      Wir wollen ja noch ein paar keywords ersetzen:
-      Der nach den bisherigen Diskussionen favorisierte Ansatz ist wohl folgender:
-    
-    wir kopieren die zu überschreibenden Produktionen und tauschen einfach nur die Keywords aus.
-    Hintergrund: idealerweise sollte das zu keinen Änderungen bei der Nutzung
-    der Sprache führen:
-        Für den internen Aufbau im Parser-Backend sind die neuen Produktionen irrelevant
-        (das heisst die alten aus CD4A verfügbaren Builder sind einsetzbar,
-        die CoCos sollten weiter funktionieren: Es werden ja Subklassen behandelt
-        und die müssten einfach mit adressiert werden --> wenn nicht, dann läuft in MC 
-        oder der CoCo Realisierung was falsch)
-        
-     Also Ziel:
-     
-   UMLPCompilationUnit = MCPackageDeclaration? MCImportStatement* UMLPDefinition;
-   
-   // replaces CDDefinition
-   UMLPDefinition extends CDDefinition =
-    Modifier ("umlp"|"ontology"|"classdigramm") Name "{" CDElement* "}";     
-   
-   // replaces CDClass
-   scope UMLPClass extends CDClass =
-    Modifier ("class"|"entity") Name
-    CDExtendUsage?
-    CDInterfaceUsage?
-    ( "{"
-        CDMember*
-      "}"
-    | ";" );
-
-
-   // replaces CDAssocTypeAssoc 
-   UMLPAssocTypeAssoc extends CDAssocTypeAssoc = ("association"|"relation");
-
-       
-    
-      Prüft das mal, ob und wie gut das geht.  
-      Mich interessiert auch, wo das hakt
-  */
 }
