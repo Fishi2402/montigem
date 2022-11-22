@@ -29,9 +29,13 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
     dummyUMLPTask.getOutputDir().set(this.getOutputDir());
 
     Set<File> reportedGenFiles = getInputDir().getAsFileTree().getFiles().stream()
+        .filter(dummyUMLPTask::isInputFile)
+        .peek(f -> Log.info("IncGenFile is in: " + dummyUMLPTask.getIncGenFile(f), this.getClass().getName()))
         .map(f ->
-            new IncGenData(dummyUMLPTask.getIncGenFile(f), getProject().getProjectDir().toPath().toAbsolutePath().toFile()).generatedFiles
+            new IncGenData(dummyUMLPTask.getIncGenFile(f), dummyUMLPTask.getProject().getProjectDir().toPath().toAbsolutePath().toFile())
         )
+        .peek(incGen -> {if (!incGen.reportExists){Log.error("Didn't find report from previous run! This leads to errors in incremental build");}} )
+        .map(incGen -> incGen.generatedFiles)
         .flatMap(Set::stream)
         .collect(Collectors.toSet());
     Set<File> realGenFiles = getOutputDir().getAsFileTree().getFiles();

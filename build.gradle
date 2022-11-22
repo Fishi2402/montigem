@@ -72,3 +72,17 @@ task buildUMLP {
     )
 }
 
+//After every UMLPTask, run basic checks on the generated report
+// e.g. "every generated file is also reported"
+subprojects {
+  tasks.withType(UMLPTask).all {
+    String taskname = it.name + "__check_report"
+    gradle.UMLPTask umlTask = it
+    Task t = task "$taskname"(type: gradle.UMLPOutputReportCheck) {
+      inputDir.set(umlTask.inputDir)
+      outputDir.set(umlTask.outputDir)
+      reportDir.set(umlTask.reportDir)
+    }
+    build.dependsOn(t)
+  }
+}
