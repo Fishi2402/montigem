@@ -7,6 +7,10 @@ plugins {
     id 'org.springframework.boot' version "${spring_version}"
 }
 
+configurations {
+    symbol
+}
+
 application {
     mainClass = 'hardy.UMLPApplication'
 }
@@ -46,6 +50,8 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
 //    implementation group: 'org.webjars', name: 'stomp-websocket'
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+
+    symbol "de.monticore:frontend-rte:$mc_version"
 }
 
 task runServer {
@@ -57,11 +63,20 @@ task generateFlensburg(type: UMLPTask) {
     outputDir = layout.buildDirectory.dir("gen")
 }
 
+task copySymbols(type: Copy) {
+    copy {
+        from zipTree(configurations.symbol.asPath)
+        into "$projectDir/target/symbols"
+    }
+}
+
 task generateAll(type: UMLPTask) {
+    dependsOn(copySymbols)
     inputDir = file("models")
     outputDir = layout.buildDirectory.dir("gen")
     hwcDir = layout.projectDirectory.dir("src/main/java")
     modelDir = layout.projectDirectory.dir("models")
+    symbolPath = file("$projectDir/target/symbols")
 }
 
 test {

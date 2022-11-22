@@ -4,10 +4,7 @@ import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Incubating;
-import org.gradle.api.file.Directory;
-import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.FileType;
-import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.file.*;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.*;
@@ -60,6 +57,12 @@ public abstract class UMLPTask extends DefaultTask {
   @PathSensitive(PathSensitivity.RELATIVE)
   @Incremental
   abstract DirectoryProperty getModelDir();
+
+  @InputDirectory
+  @org.gradle.api.tasks.Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @Incremental
+  abstract DirectoryProperty getSymbolPath();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
@@ -157,6 +160,9 @@ public abstract class UMLPTask extends DefaultTask {
     if(this.getModelDir().isPresent()) {
       result.add("-path");
       result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
+      if (this.getSymbolPath().isPresent()) {
+        result.add(handlePath.apply(getSymbolPath().getAsFile().get().toPath()));
+      }
     }
 
     if(this.getTmplDir().isPresent()) {
