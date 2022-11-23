@@ -31,7 +31,7 @@ public class CommandCommunicationTest {
     FlensburgTestContext.clear();
   }
 
-  @Test
+  //@Test
   public void testInit() {
     ClientWebSocketCommandCommunication connection = new ClientWebSocketCommandCommunication(uri, port);
     long participantId = 0l;
@@ -44,7 +44,7 @@ public class CommandCommunicationTest {
     assertEquals(1l, participantId, "Websocket connection was not established first");
   }
 
-  @Test
+  //@Test
   public void testCommandIsSendFromClientToServer(){
     // connect to server using StandardWebSocketClient?
 
@@ -74,7 +74,7 @@ public class CommandCommunicationTest {
     assertTrue(res.asSimpleResult().isSuccessful());
   }
 
-  @Test
+  //@Test
   public void testCommandIsSendFromServerToClient(){
     // Start server with websocket service
     FlensburgMock.init();
@@ -98,7 +98,7 @@ public class CommandCommunicationTest {
     assertNotNull(personCommandResult.asSimpleResult().get());
   }
 
-  @Test
+  //@Test
   void testPersonSyncOverWebsocket() {
     FlensburgMock.init();
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
@@ -132,7 +132,7 @@ public class CommandCommunicationTest {
     assertEquals(age1 + 10, person1.getAge());
   }
 
-  @Test
+  //@Test
   void testPersonSyncOverWebsocketAndDirectCommunication() {
     FlensburgMock.init();
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();

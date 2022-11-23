@@ -89,6 +89,6 @@ subprojects {
       outputDir.set(umlTask.outputDir)
       reportDir.set(umlTask.reportDir)
     }
-    build.dependsOn(t)
+    //build.dependsOn(t)
   }
 }
