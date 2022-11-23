@@ -35,7 +35,7 @@ public class AssocsDecoratorTest extends DecoratorTest {
             () -> existsMethod(clazz, "containsOwns2"),
             () -> existsMethod(clazz, "containsAllOwns2"),
             () -> existsMethod(clazz, "iteratorOwns2"),
-            () -> existsMethod(clazz, "sizeOwns2"),
+            () -> existsMethod(clazz, "sizeOwns2s"),
             () -> existsMethod(clazz, "subListOwns2")
             );
   }

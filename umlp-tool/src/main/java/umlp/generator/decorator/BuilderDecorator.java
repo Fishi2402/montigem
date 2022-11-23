@@ -103,19 +103,41 @@ public class BuilderDecorator extends AbstractDecorator {
                                           List<ASTCDAssocSide> assocList) {
     for (ASTCDAttribute attribute : attrList) {
       getCD4C().addMethod(builderClass, "umlp.builder.Attr",
-              attribute.getName(), getCDPrinter().prettyprint(createType(attribute)), domainClass.getName() + BUILDER_SUFFIX);
+              attribute.getName(), getCDPrinter().prettyprint(createType(attribute)),
+              domainClass.getName() + BUILDER_SUFFIX);
       getCD4C().addMethod(builderClass, "umlp.builder.Check",
               attribute.getName(), domainClass.getName());
     }
     for (ASTCDAssocSide assoc : assocList) {
       getCD4C().addMethod(builderClass, "umlp.builder.Check",
               assoc.getName(), domainClass.getName());
-    } }
+      if (GenService.isList(assoc)) {
+        getCD4C().addMethod(builderClass, "umlp.builder.AssocList",
+                assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
+                domainClass.getName() + BUILDER_SUFFIX);
+        getCD4C().addMethod(builderClass, "umlp.builder.AssocAdd",
+                assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
+                domainClass.getName() + BUILDER_SUFFIX);
+        getCD4C().addMethod(builderClass, "umlp.builder.AssocGemList",
+                assoc.getName(),
+                domainClass.getName() + BUILDER_SUFFIX);
+
+      } else {
+        getCD4C().addMethod(builderClass, "umlp.builder.AssocOne",
+                assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
+                domainClass.getName() + BUILDER_SUFFIX);
+        getCD4C().addMethod(builderClass, "umlp.builder.AssocOneGem",
+                assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
+                domainClass.getName() + BUILDER_SUFFIX);
+      }
+    }
+  }
 
   protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, "java.util.List");
     getCD4C().addImport(clazz, "java.util.Optional");
     getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
+    getCD4C().addImport(clazz, "umlp.rte.Gem");
   }
 
 }

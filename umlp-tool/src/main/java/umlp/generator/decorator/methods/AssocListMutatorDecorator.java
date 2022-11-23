@@ -27,8 +27,10 @@ public class AssocListMutatorDecorator extends SimpleMethodMutatorDecorator {
     List<ASTCDMethod> methodList = Lists.newArrayList();
     String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
     String sourceName = this.ast.getName();
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Add", ast.getName(), targetName, sourceName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.AddAll", ast.getName(), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Add", ast.getName(), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.AddId", ast.getName(), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.AddAll", ast.getName(), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.AddAllId", ast.getName(), targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.InternalAdd", ast.getName(), targetName, sourceName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.InternalSet", ast.getName(), targetName, sourceName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Remove", ast.getName(), targetName, sourceName).get());
