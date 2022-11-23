@@ -13,7 +13,6 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.GenService.createType;

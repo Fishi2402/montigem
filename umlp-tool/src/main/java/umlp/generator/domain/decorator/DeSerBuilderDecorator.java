@@ -2,9 +2,7 @@
 
 package umlp.generator.domain.decorator;
 
-import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
-import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;

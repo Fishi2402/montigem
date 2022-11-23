@@ -1,4 +1,4 @@
-package umlptest.decorator;
+package umlptest.decorator.domain;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
@@ -27,7 +27,7 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import umlp.UMLPMill;
-import umlp.generator.decorator.AbstractDecorator;
+import umlp.generator.AbstractDecorator;
 import umlptest.AbstractUMLPTest;
 
 import java.util.Optional;

@@ -1,11 +1,15 @@
-package umlp.generator.decorator;
+package umlp.generator.domain.decorator;
 
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDExtendUsage;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterfaceBuilder;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import umlp.UMLPMill;
+import umlp.generator.AbstractDecorator;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 

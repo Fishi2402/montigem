@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain.decorator.commands;/* (c) https://github.com/MontiCore/monticore */
 
-import de.monticore.cd.codegen.methods.AccessorDecorator;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;

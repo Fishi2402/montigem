@@ -9,11 +9,22 @@ import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
+import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._parser.GUIDSLParser;
+import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
+import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
 import de.monticore.io.paths.MCPath;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 import umlp._cocos.UMLPCoCos;
@@ -188,6 +199,42 @@ public class UMLPTool extends UMLPToolTOP {
 
       // write reports
       Reporting.flush(ast);
+
+        ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
+      }
+      else if (isGuiFile(inputFile)) {
+
+        GUIDSLMill.init();
+        // parse, create symbol table, check all cocos
+        ASTGUICompilationUnit astGui = parseGUI(inputFile.getPath());
+        //  Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on);
+
+        MCPath mcPath = new MCPath();
+        if (PATH.isSelected(cmd)) {
+          for (String v : cmd.getOptionValues(PATH.getCMD())) {
+            mcPath.addEntry(Paths.get(v));
+          }
+        }
+        IGUIDSLArtifactScope symbolTableGui = createSymbolTable(astGui, mcPath);
+
+        GeneratorSetup genSetup = new GeneratorSetup();
+        // set output directory
+        genSetup.setOutputDirectory(outDir);
+        // set hwc directories
+        genSetup.setHandcodedPath(hwcPath);
+        // set template path
+        genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
+            .map(p -> p.toFile()).collect(Collectors.toList()));//
+
+        // execute generator
+        GUIDSLMill.init();
+        GUIGenerator generator = new GUIGenerator(genSetup, symbolTableGui);
+        String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI);
+        generator.generate(astGui, configTemplate);
+
+        // write reports
+        Reporting.flush(astGui);
+      }
     }
     catch (ParseException e) {
       printHelp(options);

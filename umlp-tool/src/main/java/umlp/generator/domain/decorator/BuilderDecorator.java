@@ -19,7 +19,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.domain.decorator.GenService.createInitialValue;
 import static umlp.generator.domain.decorator.GenService.createType;
 
 public class BuilderDecorator extends AbstractDecorator {

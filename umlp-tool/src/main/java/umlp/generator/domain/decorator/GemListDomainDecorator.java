@@ -1,17 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.decorator;/* (c) https://github.com/MontiCore/monticore */
+package umlp.generator.domain.decorator;/* (c) https://github.com/MontiCore/monticore */
 
 import com.google.common.collect.Lists;
-import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cd.codegen.methods.AccessorDecorator;
-import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
+import umlp.generator.AbstractDecorator;
 
 import java.util.Collection;
 import java.util.List;

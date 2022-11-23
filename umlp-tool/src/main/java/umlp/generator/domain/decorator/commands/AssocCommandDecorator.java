@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.AbstractDecorator.COMMAND_PACKAGE;
 
 public class AssocCommandDecorator extends AbstractDecorator {
 

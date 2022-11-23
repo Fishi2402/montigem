@@ -1,4 +1,4 @@
-package umlp.generator;
+package umlp.generator.domain;
 
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._visitor.CD4CodeTraverser;
@@ -13,7 +13,7 @@ import de.monticore.cdinterfaceandenum._visitor.CDInterfaceAndEnumVisitor2;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
-import umlp.generator.decorator.GenService;
+import umlp.generator.domain.decorator.GenService;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package umlp.generator.decorator;
+package umlp.generator.domain.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;

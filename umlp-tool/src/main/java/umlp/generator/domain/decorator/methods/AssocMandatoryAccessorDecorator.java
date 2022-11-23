@@ -1,14 +1,10 @@
 package umlp.generator.domain.decorator.methods;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.codegen.methods.accessor.MandatoryAccessorDecorator;
-import de.monticore.cd.codegen.methods.mutator.MandatoryMutatorDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
