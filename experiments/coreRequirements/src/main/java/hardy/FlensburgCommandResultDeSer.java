@@ -1,13 +1,13 @@
 package hardy;
 
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 import umlp.command.CommandResult;
 import umlp.command.CommandResultDeSer;
 import umlp.command.LongList;
 import umlp.command.SimpleResult;
+import umlp.rte.BaseClassObjectMapper;
 
 import java.util.Optional;
 
@@ -69,48 +69,8 @@ public class FlensburgCommandResultDeSer extends CommandResultDeSer {
     if(jsonObject.getBooleanMemberOpt("simpleResult").orElse(false)){
       String tp = jsonObject.getStringMember("typeParameter");
       Object res = null;
-      if(tp.startsWith("java.lang.")){
-        // TODO: extract to runtime
-        switch (tp) {
-          case "java.lang.Byte":
-          case "java.lang.Character":
-          case "java.lang.Integer":
-          case "java.lang.Short": {
-            res = jsonObject.getIntegerMember("value");
-            break;
-          }
-          case "java.lang.Long": {
-            res = jsonObject.getLongMember("value");
-            break;
-          }
-          case "java.lang.Float": {
-            res = jsonObject.getFloatMember("value");
-            break;
-          }
-          case "java.lang.Double": {
-            res = jsonObject.getDoubleMember("value");
-            break;
-          }
-          case "java.lang.Boolean": {
-            res = jsonObject.getBooleanMember("value");
-            break;
-          }
-          case "java.lang.String": {
-            res = jsonObject.getStringMember("value");
-            break;
-          }
-          default:{
-            Log.error("Can not deserialize value of java.lang.X type " + tp);
-          }
-
-
-        }
-      } else if("umlp.command.LongList".equals(tp)){
-        LongList l = new LongList();
-        for (JsonElement value : jsonObject.getArrayMember("value")) {
-          l.add(value.getAsJsonNumber().getNumberAsLong());
-        }
-        res = l;
+      if(BaseClassObjectMapper.canDeSer(tp)){
+        res = BaseClassObjectMapper.deserialize(jsonObject.getMember("value").toString(), tp).orElse(null);
       }else {
         switch (tp) {
           case "hardy.Address": {

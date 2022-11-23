@@ -44,7 +44,7 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
       .filter(a -> !a.getModifier().isDerived())
       .forEach(a -> getCD4C().addMethod(ast, "umlp.commandsendingobserver.NotifySetAttribute", domainClass.getName(),
-        a.getName(), a.getSymbol().getType().print()));
+        a.getName(), GenService.getType(a.getSymbol().getType())));
 
     // Assoziationen
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(domainClass);

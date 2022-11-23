@@ -3,6 +3,8 @@ package hardy;
 //+ GEN-P        : generated for the product
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Tuplizer;
+import umlp.rte.GemBuildable;
 import umlp.rte.GemIdentifiable;
 
 import javax.persistence.*;
@@ -18,7 +20,8 @@ import java.util.Optional;
 // --------------------------
 @Entity
 @Table(name = "car")
-public class Car implements GemIdentifiable {
+@Tuplizer(impl = FlensburgTuplizer.class)
+public class Car implements GemIdentifiable, GemBuildable {
 
     // TODO Ist Transient weil Hibernate versucht die Sachen hier automatisch zu persistieren, das geht aber nicht fuer Interfaces
     @Transient
@@ -43,18 +46,6 @@ public class Car implements GemIdentifiable {
     protected void init() {
     }
 
-    //+ Pseudo build for all classes: normally nothing happens
-    // TODO: Question from AHe: Why does a normal Car need a build method?
-    public Optional<Car> build() {
-        return Optional.of(this);
-    }
-
-    // Falls build tatsächlich im Car gebraucht wird, wird auch isBuildFinished benötigt.
-    // Ansonsten kann es dazu kommen, dass 2 mal build auf einem Builder aufgerufen wird, was zu einer Exception führt.
-    public boolean isBuildFinished() {
-        return true;
-    }
-
     public void addObserver(CarObserver observer){
         carObservers.add(observer);
     }
@@ -66,4 +57,8 @@ public class Car implements GemIdentifiable {
     public boolean containsObserver(CarObserver observer){
         return carObservers.contains(observer);
     }
+
+  @Override public Optional<? extends Car> build() {
+    return Optional.of(this);
+  }
 }

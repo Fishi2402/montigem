@@ -17,7 +17,7 @@ public class Human_error_age extends Command<Void> {
   private long gemId;
 
   public Human_error_age(long gemId){
-    super("Human_error_age");
+    super("hardy.commands.Human_error_age");
     this.gemId = gemId;
   }
 

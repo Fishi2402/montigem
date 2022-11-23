@@ -21,4 +21,12 @@ public interface AddressObserver {
       notifyAddVisitor(address, personGemId, indexInList);
     }
   }
+
+  void notifyRemoveVisitor(Address address, long gemId, int indexInList);
+
+  default void maybeNotifyRemoveVisitor(Address address, long gemId, int indexInList, NotificationScope scope){
+    if(scope.contains(getScope())){
+      notifyRemoveVisitor(address, gemId, indexInList);
+    }
+  }
 }

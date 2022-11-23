@@ -48,8 +48,8 @@ public class PersonBuilder extends Person {
     public PersonBuilder(long gemId) {
       this.gemId = gemId;
       // während des bauens ist das eine unsychronisierte GemList!
-      this.owns = FlensburgManager.createOwnsBuilder();
-      this.children = FlensburgManager.createChildrenBuilder();
+      this.owns = FlensburgManager.createOwnsBuilder(gemId);
+      this.children = FlensburgManager.createChildrenBuilder(gemId);
       this.visited = FlensburgManager.createVisitedBuilder(gemId, Collections.emptyList());
     }
 
@@ -126,17 +126,12 @@ public class PersonBuilder extends Person {
             // todo: discuss: sollte es nicht einen else Fall geben,
             //  der präzisere Fehler wirft (siehe Log)?
             if (isBuildable()) {
-              if(!INTERNAL_deser_mode) {
-                for (Car own : owns) {
-                  if (!own.isBuildFinished()) {
-                    own.build();
-                  }
-                }
-                FlensburgManager.addPerson(this);
-              }
               owns.build();
               children.build();
               visited.build();
+              if(!INTERNAL_deser_mode) {
+               FlensburgManager.addPerson(this);
+              }
               personObservers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
               buildFinished = true;
               return Optional.of(this);

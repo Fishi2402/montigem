@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlptest;
 
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import org.junit.jupiter.api.Test;
-import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._cocos.UMLPCoCos;
 
 public class UMLPCocoTest extends AbstractUMLPTest {
   
   @Test
   public void testClassNameUpperCaseCoco() {
-    ASTUMLPCompilationUnit ast = parse("cocoinvalid/CDClassLowerName.umlp");
+    ASTCDCompilationUnit ast = parse("cocoinvalid/CDClassLowerName.umlp");
     createSymTab(ast);
     UMLPCoCos.checkAll(ast);
     assertErrors("0xCDC0A");
@@ -18,7 +18,7 @@ public class UMLPCocoTest extends AbstractUMLPTest {
   
   @Test
   public void testAssociationNameLowerCaseCoco() {
-    ASTUMLPCompilationUnit ast = parse("cocoinvalid/CDAssociationNameUpperCase.umlp");
+    ASTCDCompilationUnit ast = parse("cocoinvalid/CDAssociationNameUpperCase.umlp");
     createSymTab(ast);
     UMLPCoCos.checkAll(ast);
     assertErrors("0xCDC61");
@@ -26,7 +26,7 @@ public class UMLPCocoTest extends AbstractUMLPTest {
   
   @Test
   public void testInterfaceExtendsNotCyclicCoco() {
-    ASTUMLPCompilationUnit ast = parse("cocoinvalid/CDInterfaceExtendsCyclic.umlp");
+    ASTCDCompilationUnit ast = parse("cocoinvalid/CDInterfaceExtendsCyclic.umlp");
     createSymTab(ast);
     UMLPCoCos.checkAll(ast);
     assertErrors("0xCDC32","0xCDC32");

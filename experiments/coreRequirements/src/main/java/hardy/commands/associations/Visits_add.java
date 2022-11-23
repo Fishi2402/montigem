@@ -76,9 +76,15 @@ public class Visits_add extends Command<Void> {
       // Do not trigger load of Person. If the Address is loaded, we can change it instead and avoid a load operation
       if(loadedAddress){
         Address a = FlensburgManager.getAddressSure(addressGemId);
+        if(indexInAddressList == -1){
+          indexInAddressList = a.sizeVisitors();
+        }
         a.INTERNAL_addVisitorId(indexInAddressList, personGemId, NotificationScope.MINIMAL);
       } else if(loadedPerson) {
         Person p = FlensburgManager.getPersonSure(personGemId);
+        if(indexInPersonList == -1){
+          indexInPersonList = p.sizeVisited();
+        }
         p.INTERNAL_addVisitedId(indexInPersonList, addressGemId, NotificationScope.MINIMAL);
       } else {
         // Why did the client receive this command, if it does not contain a or p?

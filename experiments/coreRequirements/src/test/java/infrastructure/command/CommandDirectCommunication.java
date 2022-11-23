@@ -5,6 +5,7 @@ import de.se_rwth.commons.logging.Log;
 import stanley.FlensburgTestContext;
 import umlp.command.*;
 import umlp.rte.Result;
+import umlp.util.LogUtil;
 
 import java.util.Optional;
 
@@ -32,8 +33,13 @@ public class CommandDirectCommunication implements ClientCommandCommunication, S
   @Override
   public <T> void sendCommandToParticipant(Command<T> command) {
     clientContext.activate();
-    // TODO: (de)ser to simulate communication
-    command.doRun();
+
+    // ser and deser to simulate communication and clone objects
+    String ser = CommandObjectMapper.serializeCommand(command);
+    Command<Object> deser = CommandObjectMapper.deserializeCommand(ser).get();
+
+    Log.trace(ser, LogUtil.getLoggerName());
+    deser.doRun();
     serverContext.activate();
   }
 

@@ -1,0 +1,12 @@
+package trafo;
+
+classdiagram CardMult {
+  package trafo {
+    class Foo {
+      List<Bar> fooAttr;
+    }
+
+    public class Bar;
+  }
+
+}

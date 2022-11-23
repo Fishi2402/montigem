@@ -2,7 +2,8 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Tuplizer;
+import umlp.rte.GemBuildable;
 import umlp.rte.GemIdentifiable;
 import umlp.rte.NotificationScope;
 
@@ -20,7 +21,9 @@ import java.util.Optional;
 // --------------------------
 @Entity
 @Table(name = "human")
-public class Human implements GemIdentifiable {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Tuplizer(impl = FlensburgTuplizer.class)
+public class Human implements GemIdentifiable, GemBuildable {
     protected transient List<HumanObserver> humanObservers = new ArrayList<>();
 
     // gemId: ------------------------------------------

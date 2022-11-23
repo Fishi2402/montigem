@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
 /**
  * Grammar for the UMLP Language 
  *
@@ -8,16 +10,16 @@
  */
 grammar UMLP extends de.monticore.CD4Code {
 
-  UMLPCompilationUnit = MCPackageDeclaration? MCImportStatement* UMLPDef;
+  start CDCompilationUnit;
 
   /**
-   * This nonterminal replaces CDDefinition
+   * This rule allows additional keywords for classdiagram
    */
-  symbol UMLPDef = (kind:["umlp"|"ontology"|"classdiagram"]) Name "{" UMLPElement* "}";
+  replacekeyword "classdiagram": "umlp", "ontology", "classdiagram";
 
-  interface UMLPElement;
-
-  UMLPCDElement implements UMLPElement = CDElement | CDTargetImportStatement;
-
+  /**
+   * This rule allows additional keywords for class
+   */
+  replacekeyword "class": "entity", "class";
 
 }

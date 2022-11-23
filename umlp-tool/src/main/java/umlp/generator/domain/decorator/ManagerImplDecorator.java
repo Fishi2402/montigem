@@ -45,12 +45,14 @@ public class ManagerImplDecorator extends AbstractDecorator {
                     .map(c -> c.getName()).collect(Collectors.toList());
     getCD4C().addMethod(managerClass, "umlp.managerimpl.GetAnnotatedClasses", classList);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFreeGemId");
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.ErrorNotificationScope");
 
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> addClassElements(c, managerClass, name));
 
     // Imports
     getCD4C().addImport(managerClass, "umlp.rte.*");
+    getCD4C().addImport(managerClass, getPackageName(origCD, GEMLIST_PACKAGE) + ".*");
 
     return managerClass;
   }
@@ -59,6 +61,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     String name = domainClass.getName();
 
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilder", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
@@ -70,7 +73,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
       String type = a.getSymbol().getType().print();
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), type);
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", a.getName(), type);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", domainClass.getName(), a.getName(), type);
     });
   }
 

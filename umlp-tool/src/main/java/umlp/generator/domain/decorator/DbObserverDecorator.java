@@ -37,7 +37,8 @@ public class DbObserverDecorator extends AbstractDecorator {
 
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
       .filter(a -> !a.getModifier().isDerived())
-      .forEach(a -> getCD4C().addMethod(ast, "umlp.dbobserver.Notify", a.getName(), className,a.getSymbol().getType().print()));
+      .forEach(a -> getCD4C().addMethod(ast, "umlp.dbobserver.Notify",
+              a.getName(), className, GenService.getType(a.getSymbol().getType())));
 
     addImports(ast);
 

@@ -1,5 +1,5 @@
-umlp AAsOntology {
-  class Foo;
-  public class Bar;
+ontology AAsOntology {
+  entity Foo;
+  public entity Bar;
   association Foo -> Bar;
 }

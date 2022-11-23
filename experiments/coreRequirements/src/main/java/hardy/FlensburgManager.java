@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class FlensburgManager {
+public abstract class   FlensburgManager {
 
     protected static FlensburgManager instance;
 
@@ -77,17 +77,17 @@ public abstract class FlensburgManager {
     });
   }
 
-  public static GemList<Car> createOwnsBuilder() {
-    return getSingleton()._doCreateOwnsBuilder();
+  public static GemList<Car> createOwnsBuilder(long gemID) {
+    return getSingleton()._doCreateOwnsBuilder(gemID);
   }
 
-  protected abstract GemList<Car> _doCreateOwnsBuilder();
+  protected abstract GemList<Car> _doCreateOwnsBuilder(long gemID);
 
-  public static GemList<Person> createChildrenBuilder() {
-    return getSingleton()._createChildrenBuilder();
+  public static GemList<Person> createChildrenBuilder(long gemID) {
+    return getSingleton()._createChildrenBuilder(gemID);
   }
 
-  protected abstract GemList<Person> _createChildrenBuilder();
+  protected abstract GemList<Person> _createChildrenBuilder(long gemID);
 
   protected Gem<Address> _createAddressGem(long gemId){
       return new Gem<>(gemId, () -> {
@@ -116,6 +116,7 @@ public abstract class FlensburgManager {
 
     protected static void setInstance(FlensburgManager instance) {
       FlensburgManager.instance = instance;
+      FlensburgBaseClassObjectMapper.init();
       FlensburgCommandObjectMapper.init();
     }
 

@@ -7,15 +7,32 @@ import umlp.generator.AbstractDecorator;
 
 public class BEDecorator extends AbstractDecorator {
 
+  boolean neo4j = false;
+
   public BEDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
 
+  public BEDecorator(GlobalExtensionManagement glex, boolean neo4j) {super((glex));
+    this.neo4j = neo4j;}
+
   @Override
   public void transform(ASTCDCompilationUnit cdAST, ASTCDCompilationUnit decoratedAST) {
-    DomainClassDecorator domainClassDecorator = new DomainClassDecorator(glex);
-    domainClassDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
+    DomainClassDecorator domainClassDecorator;
+
+    if(neo4j) {
+      domainClassDecorator = new DomainClassDecoratorForNeo4j(glex);
+      domainClassDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
+
+      RepositoryDecorator repositoryDecorator = new RepositoryDecorator(glex);
+      repositoryDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: RepositoryDecorator", BEDecorator.class.getName());
+    } else {
+      domainClassDecorator = new DomainClassDecorator(glex);
+      domainClassDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
+    }
 
     // Generate DeSer
     DeSerDecorator deSerDecorator = new DeSerDecorator(glex);
@@ -79,6 +96,15 @@ public class BEDecorator extends AbstractDecorator {
     /*TypeAdapterDecorator typeAdapterDecorator = new TypeAdapterDecorator(glex);
     typeAdapterDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TypeAdapterDecorator", BEDecorator.class.getName());*/
+
+    GemListAssocDecorator gemListAssocDecorator = new GemListAssocDecorator(glex);
+    gemListAssocDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: GemListAssocDecorator", BEDecorator.class.getName());
+
+    GemListDomainDecorator gemListDomainDecorator = new GemListDomainDecorator(glex);
+    gemListDomainDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: GemListDomainDecorator", BEDecorator.class.getName());
+
   }
 
 }

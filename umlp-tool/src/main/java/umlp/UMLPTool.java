@@ -5,32 +5,19 @@ import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
-import de.monticore.class2mc.Class2MCResolver;
+import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
-import de.monticore.guidsl.GUIDSLMill;
-import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.guidsl._parser.GUIDSLParser;
-import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
-import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
 import de.monticore.io.paths.MCPath;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbolDeSer;
-import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
-import jdk.jshell.Diag;
 import org.apache.commons.cli.*;
-import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
-import umlp._symboltable.UMLPDefSymbolDeSer;
-import umlp._symboltable.UMLPSymbolTableCompleter;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.domain.UMLPGenerator;
@@ -51,7 +38,7 @@ import static umlp.UMLPToolOptions.*;
  */
 public class UMLPTool extends UMLPToolTOP {
 
-  //  protected static final String SYM_IO = "target/symbols/";
+//  protected static final String SYM_IO = "target/symbols/";
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
   protected static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   protected static final String DEFAULT_CONFIGTEMPLATE = "umlp.UMLP2Java";
@@ -101,7 +88,8 @@ public class UMLPTool extends UMLPToolTOP {
       }
       File inputFile = new File(INPUT.getValue(cmd));
 
-      ///////////////////////// SETUP REPORTING  /////////////////////////////
+
+        ///////////////////////// SETUP REPORTING  /////////////////////////////
       File outDir = new File(OUTPUT.getValue(cmd, DEFAULT_OUT));
 
       File reportDir = new File(REPORTS.getValue(cmd, DEFAULT_REPORT_OUT));
@@ -124,7 +112,7 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
       MCPath hwcPath = new MCPath();
-      if (HWC_PATH.isSelected(cmd)) {
+      if(HWC_PATH.isSelected(cmd)){
         for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
           hwcPath.addEntry(Paths.get(v));
         }
@@ -146,97 +134,60 @@ public class UMLPTool extends UMLPToolTOP {
       Reporting.on(report_on);
 
       if (isUmlpFile(inputFile)) {
+        UMLPMill.init();
+        BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+
         // parse, create symbol table, check all cocos
-        ASTUMLPCompilationUnit ast = parse(inputFile.getPath());
+        ASTCDCompilationUnit ast = parse(inputFile.getPath());
         Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
         runAfterParseTrafo(ast);
         IUMLPArtifactScope symbolTable = createSymbolTable(ast);
+        runDefaultTrafo(ast);
         runDefaultCoCos(ast);
 
 
         // print or store symbol table
-        if (SYMTAB.isSelected(cmd)) {
-          String s = SYMTAB.getValue(cmd);
-          if (null != s) {
-            // store symbol table to passed file
-            JsonPrinter.disableIndentation();
-            storeSymbols(symbolTable, s);
-          }
-          else {
-            //print (formatted!) symboltable to console
-            UMLPSymbols2Json s2j = new UMLPSymbols2Json();
-            JsonPrinter.enableIndentation();
-            System.out.println(s2j.serialize(symbolTable));
-          }
+      if (SYMTAB.isSelected(cmd)) {
+        String s = SYMTAB.getValue(cmd);
+        if (null != s) {
+          // store symbol table to passed file
+          JsonPrinter.disableIndentation();
+          storeSymbols(symbolTable, s);
         }
-
-        // pretty print model and either output on stdout or store to file
-        if (PRETTYPRINT.isSelected(cmd)) {
-          prettyPrint(ast, PRETTYPRINT.getValue(cmd));
+        else {
+          //print (formatted!) symboltable to console
+          UMLPSymbols2Json s2j = new UMLPSymbols2Json();
+          JsonPrinter.enableIndentation();
+          System.out.println(s2j.serialize(symbolTable));
         }
-
-
-        ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
-        GeneratorSetup genSetup = new GeneratorSetup();
-
-        // set output directory
-        genSetup.setOutputDirectory(outDir);
-
-        // set hwc directories
-        genSetup.setHandcodedPath(hwcPath);
-
-        // set template path
-        genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
-            .map(p -> p.toFile()).collect(Collectors.toList()));
-
-        // execute generator
-        CD4CodeMill.init();
-        CD4CodeMill.globalScope().clear();
-        BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
-
-        UMLPGenerator generator = new UMLPGenerator(genSetup);
-        CD4C.init(genSetup);
-        String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
-        generator.generate(ast, configTemplate);
-
-        // write reports
-        Reporting.flush(ast);
-
-        ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
       }
-      else if (isGuiFile(inputFile)) {
 
-        GUIDSLMill.init();
-        // parse, create symbol table, check all cocos
-        ASTGUICompilationUnit astGui = parseGUI(inputFile.getPath());
-        //  Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on);
-
-        MCPath mcPath = new MCPath();
-        if (PATH.isSelected(cmd)) {
-          for (String v : cmd.getOptionValues(PATH.getCMD())) {
-            mcPath.addEntry(Paths.get(v));
-          }
-        }
-        IGUIDSLArtifactScope symbolTableGui = createSymbolTable(astGui, mcPath);
-
-        GeneratorSetup genSetup = new GeneratorSetup();
-        // set output directory
-        genSetup.setOutputDirectory(outDir);
-        // set hwc directories
-        genSetup.setHandcodedPath(hwcPath);
-        // set template path
-        genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
-            .map(p -> p.toFile()).collect(Collectors.toList()));//
-
-        // execute generator
-        GUIDSLMill.init();
-        GUIGenerator generator = new GUIGenerator(genSetup, symbolTableGui);
-        String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI);
-        generator.generate(astGui, configTemplate);
-
-        // write reports
-        Reporting.flush(astGui);
+      // pretty print model and either output on stdout or store to file
+      if (PRETTYPRINT.isSelected(cmd)) {
+        prettyPrint(ast, PRETTYPRINT.getValue(cmd));
       }
+
+      ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
+      GeneratorSetup genSetup = new GeneratorSetup();
+
+      // set output directory
+      genSetup.setOutputDirectory(outDir);
+
+      // set hwc directories
+      genSetup.setHandcodedPath(hwcPath);
+
+      // set template path
+      genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
+              .map(p -> p.toFile()).collect(Collectors.toList()));
+
+      // execute generator
+      UMLPGenerator generator = new UMLPGenerator(genSetup);
+      CD4C.init(genSetup);
+      String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
+      generator.generate(ast, configTemplate);
+
+      // write reports
+      Reporting.flush(ast);
     }
     catch (ParseException e) {
       printHelp(options);
@@ -263,14 +214,13 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   @Override
-  public void runDefaultCoCos(ASTUMLPCompilationUnit ast) {
+  public void runDefaultCoCos(ASTCDCompilationUnit ast) {
     UMLPCoCos.checkAll(ast);
   }
 
-  @Override
-  public IUMLPArtifactScope createSymbolTable(ASTUMLPCompilationUnit node) {
+  @Override public IUMLPArtifactScope createSymbolTable(ASTCDCompilationUnit node) {
     IUMLPArtifactScope as = super.createSymbolTable(node);
-    node.accept(new UMLPSymbolTableCompleter(node).getTraverser()); // run symbol table completer
+    node.accept(new CD4CodeSymbolTableCompleter(node).getTraverser()); // run symbol table completer
     return as;
   }
 
@@ -282,10 +232,16 @@ public class UMLPTool extends UMLPToolTOP {
     return options;
   }
 
-  public void runAfterParseTrafo(ASTUMLPCompilationUnit node) {
+  public void runAfterParseTrafo(ASTCDCompilationUnit node){
     UMLPTraverser trav = UMLPMill.traverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
+  }
+
+  public void runDefaultTrafo(ASTCDCompilationUnit node){
+    UMLPTraverser trav = UMLPMill.traverser();
+    CD4CodeTrafo4Defaults trafo = new CD4CodeTrafo4Defaults();
+    trafo.transform(node);
   }
 
   protected boolean isUmlpFile(File f) {

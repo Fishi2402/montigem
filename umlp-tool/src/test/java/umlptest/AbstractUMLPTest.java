@@ -4,7 +4,9 @@ package umlptest;
 
 import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd._symboltable.BuiltInTypes;
+import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
@@ -14,10 +16,8 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import umlp.UMLPMill;
-import umlp._ast.ASTUMLPCompilationUnit;
 import umlp._parser.UMLPParser;
 import umlp._symboltable.IUMLPArtifactScope;
-import umlp._symboltable.UMLPSymbolTableCompleter;
 import umlp._visitor.UMLPTraverser;
 
 import java.io.File;
@@ -41,15 +41,15 @@ public abstract class AbstractUMLPTest {
     BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
   }
 
-  public ASTUMLPCompilationUnit parse(String model) {
+  public ASTCDCompilationUnit parse(String model) {
     return parse("src/test/resources", model);
   }
 
-  public ASTUMLPCompilationUnit parse(String testPath, String model) {
+  public ASTCDCompilationUnit parse(String testPath, String model) {
     Path m = Paths.get(testPath, model);
     assertTrue(m.toFile().exists());
     try {
-      Optional<ASTUMLPCompilationUnit> ast = parser.parse(m.toString());
+      Optional<ASTCDCompilationUnit> ast = parser.parse(m.toString());
       assertTrue(ast.isPresent());
       return ast.get();
     }
@@ -60,17 +60,17 @@ public abstract class AbstractUMLPTest {
     return null;
   }
 
-  public IUMLPArtifactScope createSymTab(ASTUMLPCompilationUnit ast) {
+  public IUMLPArtifactScope createSymTab(ASTCDCompilationUnit ast) {
     ASTMCQualifiedName pck = ast.isPresentMCPackageDeclaration()
         ? ast.getMCPackageDeclaration().getMCQualifiedName()
         : MCBasicTypesMill.mCQualifiedNameBuilder().build();
     IUMLPArtifactScope as = UMLPMill.scopesGenitorDelegator().createFromAST(ast);
-    UMLPSymbolTableCompleter c = new UMLPSymbolTableCompleter(ast);
+    CD4CodeSymbolTableCompleter c = new CD4CodeSymbolTableCompleter(ast);
     ast.accept(c.getTraverser());
     return as;
   }
 
-  protected void runAfterParseTrafo(ASTUMLPCompilationUnit node){
+  protected void runAfterParseTrafo(ASTCDCompilationUnit node){
     UMLPTraverser trav = UMLPMill.traverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);

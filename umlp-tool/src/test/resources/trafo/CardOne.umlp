@@ -1,0 +1,12 @@
+package trafo;
+
+classdiagram CardOne {
+  package trafo {
+    class Foo {
+      Bar fooAttr;
+    }
+
+    public class Bar;
+  }
+
+}

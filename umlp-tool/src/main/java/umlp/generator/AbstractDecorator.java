@@ -1,4 +1,4 @@
-package umlp.generator;
+package umlp.generator.decorator;
 
 import de.monticore.cd.facade.*;
 import de.monticore.cd.methodtemplates.CD4C;
@@ -24,15 +24,17 @@ public abstract class AbstractDecorator {
   }
 
   public static final String DEFAULT_PACKAGE = "";
-
+  
   public static final String COMMAND_PACKAGE = DEFAULT_PACKAGE+"commands";
+
+  public static final String GEMLIST_PACKAGE = DEFAULT_PACKAGE+"gemlists";
 
   public static final String CLIENT_PACKAGE = DEFAULT_PACKAGE+"client";
 
   protected final GlobalExtensionManagement glex;
 
   protected final CD4CodeFullPrettyPrinter printer = new CD4CodeFullPrettyPrinter(new IndentPrinter());
-
+  
   protected TypeCheck typeCheck;
 
   protected GlobalExtensionManagement getGlex() {
@@ -78,15 +80,15 @@ public abstract class AbstractDecorator {
   protected CD4CodeFullPrettyPrinter getCDPrinter (){
     return printer;
   }
-
+  
   public TypeCheck getTypeCheck() {
     return typeCheck;
   }
-
+  
   public void setTypeCheck(TypeCheck typeCheck) {
     this.typeCheck = typeCheck;
   }
-
+  
   protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
     String completeName = getPackageName(origCD, packageName);
     Optional<ASTCDPackage> astCDPackage = decoratedCD.getCDDefinition().getCDPackagesList().stream()

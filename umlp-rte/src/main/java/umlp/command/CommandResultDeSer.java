@@ -5,6 +5,7 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
+import umlp.rte.BaseClassObjectMapper;
 
 import java.util.Optional;
 
@@ -18,47 +19,12 @@ public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
     if(result.isStatusResult()){
       printer.member("successful", result.asStatusResult().wasSuccessful());
     }else{
-      switch (tp){
-        case "java.lang.Byte": {
-          printer.member("value", (Byte) result.asSimpleResult().get());
-          break;
-        }
-        case "java.lang.Short": {
-          printer.member("value", (Short) result.asSimpleResult().get());
-          break;
-        }
-        case "java.lang.Integer": {
-          printer.member("value", (Integer) result.asSimpleResult().get());
-          break;
-        }
-        case "java.lang.Long": {
-          printer.member("value", (Long) result.asSimpleResult().get());
-          break;
-        }
-        case "java.lang.Float": {
-          printer.member("value", (Float) result.asSimpleResult().get());
-          break;
-        }
-        case "java.lang.Double": {
-          printer.member("value", (Double) result.asSimpleResult().get());
-          break;
-        }
-        case "java.lang.Character": {
-          printer.member("value", (Character) result.asSimpleResult().get());
-          break;
-        }
-        case "java.lang.Boolean": {
-          printer.member("value", (Boolean) result.asSimpleResult().get());
-          break;
-        }
-        case "java.lang.String": {
-          printer.member("value", (String) result.asSimpleResult().get());
-          break;
-        }
-        default:{
-          if(tp.startsWith("java.lang.")){
-            Log.error("Can not serialize value of type " + tp);
-          }
+      if(BaseClassObjectMapper.canDeSer(tp)){
+        Optional<String> v = BaseClassObjectMapper.serialize(result.asSimpleResult().get(), tp);
+        if(v.isPresent()) {
+          printer.memberJson("value", v.get());
+        }else {
+          Log.warn("Error while serializing type " + tp);
         }
       }
     }

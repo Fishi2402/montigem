@@ -4,6 +4,7 @@ import com.google.common.base.Defaults;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpressionBuilder;
 import de.monticore.types.MCTypeFacade;
@@ -95,8 +96,18 @@ public class GenService {
               map(a -> box(a.print())).collect(Collectors.toList());
       return MCTypeFacade.getInstance().createBasicGenericTypeOf(genericType.getBaseName(), arguments.toArray(new String[0]));
     } else {
-      return MCTypeFacade.getInstance().createQualifiedType(box(attr.getSymbol().getType().print()));
+      return MCTypeFacade.getInstance().createQualifiedType(box(getType(attr.getSymbol().getType())));
     }
+  }
+
+  public static String getType(SymTypeExpression symType) {
+    if (symType.isGenericType()) {
+      return ((SymTypeOfGenerics) symType).getBaseName();
+    }
+    if (isCDType(symType)) {
+      return symType.print();
+    }
+    return symType.getTypeInfo().getFullName();
   }
 
   public static boolean isVisible(ASTCDAttribute attr) {
@@ -194,5 +205,9 @@ public class GenService {
       return ((SymTypeOfGenerics) type).getBaseName().equals("Set");
     }
     return false;
+  }
+
+  public static boolean isCDType(SymTypeExpression type) {
+    return type.getTypeInfo() instanceof CDTypeSymbol;
   }
 }

@@ -2,6 +2,10 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
+import hardy.gemlists.Address_VisitorsGemList;
+import hardy.gemlists.Person_ChildrenGemList;
+import hardy.gemlists.Person_OwnsGemList;
+import hardy.gemlists.Person_VisitedGemList;
 import umlp.rte.DatabaseAccessManager;
 import umlp.rte.GemList;
 import umlp.rte.NotificationScope;
@@ -207,42 +211,47 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected GemList<Car> _doCreateOwns(long personGemId, int size, List<Long> initialCarGemIds) {
-        return null;
+      GemList<Car> list = _doCreateOwnsBuilder(personGemId);
+      list._internal_add(0, initialCarGemIds);
+      return list.build().get();
     }
 
   @Override
   protected GemList<Person> _createChildren(long personGemId, int size, List<Long> initialIds) {
-    return null;
+    GemList<Person> list = _createChildrenBuilder(personGemId);
+    list._internal_add(0, initialIds);
+    return list.build().get();
   }
 
   @Override
-    protected GemList<Car> _doCreateOwnsBuilder() {
-        return null;
+    protected GemList<Car> _doCreateOwnsBuilder(long gemID) {
+        return new Person_OwnsGemList(gemID);
     }
 
   @Override
-  protected GemList<Person> _createChildrenBuilder() {
-    return null;
+  protected GemList<Person> _createChildrenBuilder(long gemID) {
+      return new Person_ChildrenGemList(gemID);
   }
 
   @Override
-    public GemList<Address> _createVisited(long personGemId, long gemId, int size, List<Long> initialIds) {
-        return null;
-    }
+  public GemList<Address> _createVisited(long personGemId, long gemId, int size, List<Long> initialIds) {
+    GemList<Address> list = _createVisitedBuilder(personGemId, initialIds);
+    return list.build().get();
+  }
 
     @Override
     protected GemList<Person> _createVisitors(long addressGemId, List<Long> initialIds) {
-        return null;
+      return new Address_VisitorsGemList(addressGemId, initialIds).build().get();
     }
 
     @Override
     protected GemList<Address> _createVisitedBuilder(long personGemId, List<Long> initialIds) {
-        return null;
+      return new Person_VisitedGemList(personGemId);
     }
 
     @Override
     protected GemList<Person> _createVisitorsBuilder(long addressGemId, List<Long> initialIds) {
-        return null;
+        return new Address_VisitorsGemList(addressGemId);
     }
 
     @Override
@@ -252,7 +261,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected List<Car> _doGetCarsSure(long gemId) {
-        return null;
+        return _doCarsOpt(gemId).get();
     }
 
     @Override
@@ -265,6 +274,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
         annotatedClasses.add(Human.class);
         annotatedClasses.add(Car.class);
         annotatedClasses.add(Address.class);
+        annotatedClasses.add(Person.class);
         return annotatedClasses;
     }
 }
