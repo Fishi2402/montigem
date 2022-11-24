@@ -259,7 +259,7 @@ public class FlensburgMock extends FlensburgManager {
     // Init bidirectional associations
     // TODO AHe: in all other backend impls!
     // TODO AHe: impl should be shared
-    for (Long initialId : o.getVisitorsGemList().getIDs(0, o.sizeVisitors())) {
+    for (Long initialId : o.getVisitorGemList().getIDs(0, o.sizeVisitors())) {
         Person person = FlensburgManager.getPersonSure(initialId);
         person.INTERNAL_addVisitedId(person.sizeVisited(), o.gemId, NotificationScope.MINIMAL);
     }
