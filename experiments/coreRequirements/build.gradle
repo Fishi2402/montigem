@@ -59,8 +59,8 @@ task runServer {
 }
 
 task generateFlensburg(type: UMLPTask) {
-    inputFile = file("models/hardy/Flensburg.umlp")
-    outputDir = layout.buildDirectory.dir("gen")
+    inputDir = file("models/hardy/")
+    outputDir = layout.buildDirectory.dir("gen/hardy")
 }
 
 task copySymbols(type: Copy) {

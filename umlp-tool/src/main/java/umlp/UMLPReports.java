@@ -56,7 +56,7 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
 
             ReportManager reports = new ReportManager(this.reportDirectory);
 
-          /*  UMLPTraverser traverserSummary = UMLPMill.inheritanceTraverser();
+            UMLPTraverser traverserSummary = UMLPMill.inheritanceTraverser();
             reports.addReportEventHandler(new SummaryReporter(this.reportDirectory, lowerCaseName, repository, traverserSummary));
             reports.addReportEventHandler(new GeneratedFilesReporter(this.reportDirectory, lowerCaseName,repository));
             reports.addReportEventHandler(new HandWrittenCodeReporter(this.reportDirectory,lowerCaseName, repository));
@@ -82,7 +82,7 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
             //reports.addReportEventHandler(new ODReporter(this.reportDirectory, lowerCaseName, repository));
             reports.addReportEventHandler(new SuccessfulReporter(this.reportDirectory, lowerCaseName));
 
-            reports.addReportEventHandler(new IncGenGradleReporter(this.reportDirectory, reportPathOutput, lowerCaseName));*/
+            reports.addReportEventHandler(new IncGenGradleReporter(this.reportDirectory, reportPathOutput, lowerCaseName));
 
 
             return reports;
