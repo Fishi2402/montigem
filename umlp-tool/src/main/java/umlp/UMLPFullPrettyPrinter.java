@@ -1,9 +1,7 @@
 package umlp;
 
 import de.monticore.cd4analysis._ast.ASTCD4AnalysisNode;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._ast.ASTCD4CodeNode;
-import de.monticore.cd4code._visitor.CD4CodeTraverser;
 import de.monticore.cd4codebasis._ast.ASTCD4CodeBasisNode;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cd4codebasis.prettyprint.CD4CodeBasisPrettyPrinter;
@@ -11,7 +9,6 @@ import de.monticore.cdassociation._ast.ASTCDAssociationNode;
 import de.monticore.cdassociation.prettyprint.CDAssociationPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDBasisNode;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis.prettyprint.CDBasisPrettyPrinter;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterfaceAndEnumNode;
 import de.monticore.cdinterfaceandenum.prettyprint.CDInterfaceAndEnumPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -44,11 +41,7 @@ public class UMLPFullPrettyPrinter {
         this.printer = printer;
         this.traverser = UMLPMill.traverser();
 
-        UMLPPrettyPrinter umlp = new UMLPPrettyPrinter(printer);
-        traverser.add4UMLP(umlp);
-        traverser.setUMLPHandler(umlp);
-
-        CDBasisPrettyPrinter cdBasis = new CDBasisPrettyPrinter(printer);
+        UMLPPrettyPrinter cdBasis = new UMLPPrettyPrinter(printer);
         traverser.add4CDBasis(cdBasis);
         traverser.setCDBasisHandler(cdBasis);
 

@@ -420,7 +420,223 @@ public class PersonSyncTest {
     Address visited2 = p1001Server.getVisited(1);
     assertEquals(201, visited2.getGemId());
     assertEquals(1, visited2.sizeVisitors());
-
-
   }
+
+  @Test
+  public void testVisitedRemovalFromServer(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(200);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
+    clientContext.activate();
+
+    Address a1 = FlensburgManager.addressBuilder().city("Aachen").build().get();
+    Address a2 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+
+    Log.info("Building Person", "PersonSyncTest");
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    Person p1001Client = FlensburgManager.personBuilder()
+        .age(20)
+        .nickname("Test")
+        .mainResidence(a1)
+        .addVisited(List.of(a1, a2))
+        .build().get();
+
+    Log.info("Checking it is removable in the Server", "PersonSyncTest");
+    serverContext.activate();
+    Person p1001Server = FlensburgManager.getPersonSure(1001);
+    assertNotSame(p1001Server, p1001Client);
+    assertEquals(2, p1001Server.sizeVisited());
+
+    Address a1Removed = p1001Server.removeVisited(0);
+    assertEquals(1, p1001Server.sizeVisited());
+    assertEquals(a1.getGemId(), a1Removed.getGemId());
+    assertEquals(0, a1.sizeVisitors());
+
+    Log.info("Checking that the removal is synced to the client", "PersonSyncTest");
+    clientContext.activate();
+    assertEquals(1, p1001Client.sizeVisited());
+    assertNotEquals(a1Removed.getGemId(), p1001Client.getVisited(0).getGemId());
+
+    Log.info("Checking the second element is removable in the Server", "PersonSyncTest");
+    serverContext.activate();
+    Address a2Removed = p1001Server.removeVisited(0);
+    assertEquals(0, p1001Server.sizeVisited());
+    assertEquals(a2.getGemId(), a2Removed.getGemId());
+    assertEquals(0, a2.sizeVisitors());
+
+    Log.info("Checking that the removal is synced to the client", "PersonSyncTest");
+    clientContext.activate();
+    assertEquals(0, p1001Client.sizeVisited());
+  }
+
+  @Test
+  public void testVisitedRemovalFromClient(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(200);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
+    clientContext.activate();
+
+    Address a1Client = FlensburgManager.addressBuilder().city("Aachen").build().get();
+    Address a2Client = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+
+    Log.info("Building Person", "PersonSyncTest");
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    Person p1001Client = FlensburgManager.personBuilder()
+        .age(20)
+        .nickname("Test")
+        .mainResidence(a1Client)
+        .addVisited(List.of(a1Client, a2Client))
+        .build().get();
+
+    Log.info("Checking it is removable in the Client", "PersonSyncTest");
+    Address a1Removed = p1001Client.removeVisited(0);
+    assertEquals(1, p1001Client.sizeVisited());
+    assertEquals(a1Client.getGemId(), a1Removed.getGemId());
+    assertEquals(0, a1Client.sizeVisitors());
+
+    Log.info("Checking that the removal is synced to the server", "PersonSyncTest");
+    serverContext.activate();
+    Person p1001Server = FlensburgManager.getPersonSure(1001L);
+    assertEquals(1, p1001Server.sizeVisited());
+    assertNotEquals(a1Removed.getGemId(), p1001Server.getVisited(0).getGemId());
+
+    Log.info("Checking the second element is removable in the Client", "PersonSyncTest");
+    clientContext.activate();
+    Address a2Removed = p1001Client.removeVisited(0);
+    assertEquals(0, p1001Client.sizeVisited());
+    assertEquals(a2Client.getGemId(), a2Removed.getGemId());
+    assertEquals(0, a2Client.sizeVisitors());
+
+    Log.info("Checking that the removal is synced to the Server", "PersonSyncTest");
+    serverContext.activate();
+    assertEquals(0, p1001Server.sizeVisited());
+
+    Address a1Server = FlensburgManager.getAddressSure(a1Client.getGemId());
+    Address a2Server = FlensburgManager.getAddressSure(a2Client.getGemId());
+    assertEquals(0, a1Server.sizeVisitors());
+    assertEquals(0, a2Server.sizeVisitors());
+  }
+
+  @Test
+  public void testVisitedRemovalCrossClients(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(200);
+    FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+    FlensburgTestContext clientContext2 = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Building Person with visited Addresses in Client 1", "PersonSyncTest");
+    clientContext1.activate();
+
+    Address a1Client1 = FlensburgManager.addressBuilder().city("Aachen").build().get();
+    Address a2Client1 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+
+    Log.info("Building Person", "PersonSyncTest");
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    Person p1001Client1 = FlensburgManager.personBuilder()
+        .age(20)
+        .nickname("Test")
+        .mainResidence(a1Client1)
+        .addVisited(List.of(a1Client1, a2Client1))
+        .build().get();
+
+    Log.info("Checking it is removable in Client 2", "PersonSyncTest");
+    clientContext2.activate();
+    Person p1001Client2 = FlensburgManager.getPersonSure(1001L);
+    Address a1Client2 = FlensburgManager.getAddressSure(a1Client1.getGemId());
+    Address a2Client2 = FlensburgManager.getAddressSure(a2Client1.getGemId());
+
+    Address a1Removed = p1001Client2.removeVisited(0);
+    assertEquals(1, p1001Client2.sizeVisited());
+    assertEquals(a1Client2.getGemId(), a1Removed.getGemId());
+    assertEquals(0, a1Client2.sizeVisitors());
+
+    Log.info("Checking that the removal is synced to the server", "PersonSyncTest");
+    serverContext.activate();
+    Person p1001Server = FlensburgManager.getPersonSure(1001L);
+    assertEquals(1, p1001Server.sizeVisited());
+    assertNotEquals(a1Removed.getGemId(), p1001Server.getVisited(0).getGemId());
+
+    Log.info("Checking that the removal is synced to Client 1", "PersonSyncTest");
+    clientContext1.activate();
+    assertEquals(1, p1001Client1.sizeVisited());
+    assertNotEquals(a1Removed.getGemId(), p1001Client1.getVisited(0).getGemId());
+
+    Log.info("Checking the second element is removable in Client 1", "PersonSyncTest");
+    clientContext1.activate();
+    Address a2Removed = p1001Client1.removeVisited(0);
+    assertEquals(0, p1001Client1.sizeVisited());
+    assertEquals(a2Client1.getGemId(), a2Removed.getGemId());
+    assertEquals(0, a2Client1.sizeVisitors());
+
+    Log.info("Checking that the removal is synced to the Server", "PersonSyncTest");
+    serverContext.activate();
+    assertEquals(0, p1001Server.sizeVisited());
+    Address a1Server = FlensburgManager.getAddressSure(a1Client1.getGemId());
+    Address a2Server = FlensburgManager.getAddressSure(a2Client1.getGemId());
+    assertEquals(0, a1Server.sizeVisitors());
+    assertEquals(0, a2Server.sizeVisitors());
+
+    Log.info("Checking that the removal is synced to Client 2", "PersonSyncTest");
+    clientContext2.activate();
+    assertEquals(0, p1001Client2.sizeVisited());
+
+    assertEquals(0, a1Client2.sizeVisitors());
+    assertEquals(0, a2Client2.sizeVisitors());
+  }
+
+
+  @Test
+  public void testVisitedSetFromServer(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(200);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
+    clientContext.activate();
+
+    Address a1 = FlensburgManager.addressBuilder().city("Aachen").build().get();
+    Address a2 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Address a3 = FlensburgManager.addressBuilder().city("Jülich").build().get();
+
+    Log.info("Building Person", "PersonSyncTest");
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    Person p1001Client = FlensburgManager.personBuilder()
+        .age(20)
+        .nickname("Test")
+        .mainResidence(a1)
+        .addVisited(List.of(a1, a2, a3))
+        .build().get();
+
+    Log.info("Check setVisited from Server", "PersonSyncTest");
+    serverContext.activate();
+    Address a4 = FlensburgManager.addressBuilder().city("Braunschweig").build().get();
+    Person p1001Server = FlensburgManager.getPersonSure(1001L);
+    p1001Server.setVisited(1, a4);
+
+    assertEquals(1, a4.sizeVisitors());
+    assertEquals(p1001Server.getGemId(), a4.getVisitorGemList().getID(0));
+
+    Address a2Server = FlensburgManager.getAddressSure(a2.getGemId());
+    assertEquals(0, a2Server.sizeVisitors());
+
+    Log.info("Check the changes are synced to the Client", "PersonSyncTest");
+    clientContext.activate();
+    Address a4Client = FlensburgManager.getAddressSure(a4.getGemId());
+    assertEquals(1, a4Client.sizeVisitors());
+    assertEquals(p1001Server.getGemId(), a4Client.getVisitorGemList().getID(0));
+  }
+
+  // TODO AHe: Continue here by testing more cases for Person#setVisited and Address#setVisitor
 }

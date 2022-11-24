@@ -1,25 +1,24 @@
 /* (c) https://github.com/MontiCore/monticore */
-package stat.mc.jar;
 
 umlp Log_MC_JAR {
 
-  class LogEntry {
-    CLIParameter parameter;
-    Optional<Summary> summary;
+  class MCJarLogEntry {
+    MCJarCLIParameter parameter;
+    Optional<MCSummary> summary;
     List<ErrorEntry> errors;
 
     String toolVersion;   // e.g. "7.5.0-SNAPSHOT"
 
-// TODO: Comment in the following lines (once the generator works)
-/*
     java.time.Duration duration;  // Duration of the run
     java.time.Instant receivedTime; // When was the request received on the server?   - Added in backend
     java.net.InetAddress origin;    // Who sent the request? (Anonymized)             - Added in backend
-*/
+
   }
 
   enum ErrorType { ERROR, WARNING; }
 
+
+  // Not specific for MCJar, can be used by other Logs too
   class ErrorEntry {
     Optional<String> code;
     String message;
@@ -27,14 +26,16 @@ umlp Log_MC_JAR {
   }
 
   // Information how the JAR was started
-  class CLIParameter {
+  // Specific to MCJar
+  class MCJarCLIParameter {
     List<String> grammar;
     boolean dstlGen;
     boolean script;
   }
 
   // Data from the SummaryReporter
-  class Summary {
+  // Same for every Log, which is using the SummaryReporter to collect data
+  class MCSummary {
     int errors;
     int warnings;
     int generated_files;

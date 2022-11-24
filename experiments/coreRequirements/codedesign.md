@@ -318,6 +318,11 @@ sequenceDiagram
   - (De)serialisierung dieser Klassen wird vom `BaseClassObjectMapper` übernommen
     - Static delegate durch die Klasse `FlensburgBaseClassObjectMapper`, was das Hinzufügen von Basisklassen erlaubt
       - z.B. `java.util.Date`
+    - Falls die Basisklasse das Interface `Serializable` implementiert, so kann der `SerializableDeSer` genutzt werden,
+      wie in coreRequirements für die Klassen `Instant`, `Duration`, und `InetAddress`. `Date` wäre auch möglich, wird
+      aber zu Demonstrationszwecken händisch implementiert.
+      Nachteil: Das entstehende Json ist nicht mehr Human-readable.
+    - TODO AHe: Funktioniert Serializable auch mit JSweet?
 
 
 ## Rechte / Rollen-Konzept

@@ -59,3 +59,5 @@ include ':examples:mediahub'
 include ':examples:restaurant'
 include ':examples:university'
 include ':examples:stat'
+include 'examples:artifacts-test'
+

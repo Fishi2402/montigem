@@ -41,8 +41,14 @@ public class DerivedClassDecorator extends AbstractDecorator {
     
     CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
       .filter(a -> !a.getModifier().isDerived())
-      .forEach(a -> getCD4C().addMethod(ast, "umlp.derivedclass.Get", a.getName(),
-              (new CdUtilsPrinter()).printType(a.getMCQualifiedType())));
+      .forEach(a -> {
+        String type = a.getSymbol().getType().print();
+        if (GenService.isList(a)) {
+          getCD4C().addMethod(ast, "umlp.derivedclass.Size", a.getName());
+          type = "List<" + type + ">";
+        }
+        getCD4C().addMethod(ast, "umlp.derivedclass.Get", a.getName(), type);
+      });
     
     return ast;
   }

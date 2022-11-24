@@ -1,0 +1,7 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
+${tc.signature("name", "type", "builder")}
+${cd4c.method("public ${builder} ${name}(${type} ${name})")}
+
+this.${name} = new Gem<${type}>(${name});
+${name}Present = true;
+return this;

@@ -23,13 +23,13 @@ public class GemListTest extends AbstractUMLPRTETest {
   List<Elem> allElems;
 
   //starts empty
-  ListBasedServer<Elem> listServer0;
+  ListBasedServer listServer0;
 
   //starts with 4 elements
-  ListBasedServer<Elem> listServer1;
+  ListBasedServer listServer1;
 
   //has some elements not authorized to be accessed
-  ListBasedServer<Elem> listServer2;
+  ListBasedServer listServer2;
 
   GemList<Elem> list0;
 
@@ -48,16 +48,16 @@ public class GemListTest extends AbstractUMLPRTETest {
     }
     allElems = Collections.unmodifiableList(allElems);
 
-    listServer0 = new ListBasedServer<>(new LinkedList<>());
+    listServer0 = new ListBasedServer(new LinkedList<>());
     listServer0.addKnownObjects(allElems);
     list0 = listServer0.createLazyList();
 
-    listServer1 = new ListBasedServer<>(allElems.subList(0, 4));
+    listServer1 = new ListBasedServer(allElems.subList(0, 4));
     listServer1.addKnownObjects(allElems);
     list1_0 = listServer1.createLazyList();
     list1_1 = listServer1.createLazyList();
 
-    listServer2 = new ListBasedServer<>(allElems.subList(0, 2));
+    listServer2 = new ListBasedServer(allElems.subList(0, 2));
     listServer2.addKnownObjects(allElems);
     listServer2.setIdsNotAuthorized(Collections.singleton(getElem(1).getGemId()));
     list2 = listServer2.createLazyList();

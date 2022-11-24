@@ -49,7 +49,7 @@ public class IncGenData {
       } catch (Exception e) {
         Log.warn("Error parsing report from previous run. Incremental check not working. \n" +
             e.getMessage());
-        Log.error("Aborintg", e);
+        Log.error("Aborting", e);
         reportExists = false;
       }
     } else {

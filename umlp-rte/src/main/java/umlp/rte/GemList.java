@@ -3,10 +3,15 @@ package umlp.rte;
 
 import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 // TODO: Brauchen wir hier Observer, oder werden die Observer eine ebene höher genutzt?
 // Sonst kann es zu Dopplung kommen, z.B. gibt es bei Person#addOwns die Methode PersonObserver#notifyAddOwns,
@@ -17,7 +22,9 @@ import java.util.function.Function;
  * Elements are loaded as they are required.
  * Useful if e.g. the elements are loaded over a network.
  */
-public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
+public abstract class GemList<E extends GemIdentifiable>
+    extends AbstractList<E>
+    implements GemBuildable {
 
   protected final static String UNEXPECTED_LIST_LENGTH_ERROR =
       "0xAC724 recieved list of unexpected length";
@@ -31,36 +38,20 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
   // Lokaler speicher für die gemIds der enthaltenen Objekte. Enthält alle IDs der Assoziation.
   protected List<Long> ids;
 
-  protected Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction;
-
-  protected BiConsumer<Integer, Long> setIdxFunction;
-
-  protected BiConsumer<Integer, List<Long>> addIDsFunction;
-
-  protected Consumer<Set<Integer>> removeIdxsFunction;
-
+  // TODO discuss: CBu -> wird für eine simple Spring-based DB Kommunikation benötigt
   public GemList(
-      List<Long> ids,
-      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction
-  ) {
-    this(ids, loadObjectsFunction, null, null, null);
-    this.setIdxFunction = this::_internal_set;
-    this.addIDsFunction = this::_internal_add;
-    this.removeIdxsFunction = this::_internal_remove;
-  }
-
-  public GemList(
-      List<Long> ids,
-      Function<List<Long>, List<LoadResult<E>>> loadObjectsFunction,
-      BiConsumer<Integer, Long> setIdxFunction,
-      BiConsumer<Integer, List<Long>> addIDsFunction,
-      Consumer<Set<Integer>> removeIdxsFunction
+      List<Long> ids
   ) {
     this.ids = new ArrayList<>(ids);
-    this.loadObjectsFunction = loadObjectsFunction;
-    this.setIdxFunction = setIdxFunction;
-    this.addIDsFunction = addIDsFunction;
-    this.removeIdxsFunction = removeIdxsFunction;
+  }
+
+  public GemList() {
+    this(Collections.emptyList());
+  }
+
+  @Override
+  public Optional<? extends GemList<E>> build() {
+    return Optional.of((GemList<E>) this);
   }
 
   @Override
@@ -70,7 +61,9 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
 
   @Override
   public E get(int idx) {
-    assertInclusiveIdxInBounds(idx);
+    if (isNotIdxInInclusiveBounds(idx)) {
+      logIndexError("0xAC729", "get", idx);
+    }
     Long id = getID(idx);
     LoadResult<E> lr = loadSingleObject(id);
     if(lr.isPresent()){
@@ -82,26 +75,64 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
     }
   }
 
+  /**
+   * identical to {@link java.util.List#contains(Object)} but taking a gemID
+   *
+   * @param gemID the id of the object that may be contained in this list
+   * @return whether the object corresponding to gemID is contained in this list
+   */
+  public boolean contains(Long gemID) {
+    return ids.contains(gemID);
+  }
+
+  /**
+   * provides the objects referenced by the gemIDs if possible
+   *
+   * @param gemIDs reference the objects to get
+   * @return the results of trying to load the objects
+   */
+  protected abstract List<LoadResult<E>> loadObjects(List<Long> gemIDs);
+
   @Override
   public E set(int idx, E elem) {
-    assertInclusiveIdxInBounds(idx);
+    if (isNotIdxInInclusiveBounds(idx)) {
+      logIndexError("0xAC725", "set", idx);
+    }
     final E oldElem = get(idx);
-    setIdxFunction.accept(idx, elem.getGemId());
+    _internal_setAndSync(idx, elem.getGemId());
     return oldElem;
   }
 
+  /**
+   * to be overridden by a subclass to add synchronization
+   */
+  protected void _internal_setAndSync(int idx, long gemID) {
+    _internal_set(idx, gemID);
+  }
+
   public void _internal_set(int idx, long gemID) {
-    assertInclusiveIdxInBounds(idx);
-    setIDs(Collections.singletonMap(idx, gemID));
+    if (isNotIdxInInclusiveBounds(idx)) {
+      logIndexError("0xAC726", "_internal_set", idx);
+    }
+    ids.set(idx, gemID);
   }
 
   @Override
   public void add(int idx, E elem) {
-    addIDsFunction.accept(idx, Collections.singletonList(elem.getGemId()));
+    _internal_addAndSync(idx, Collections.singletonList(elem.getGemId()));
+  }
+
+  /**
+   * to be overridden by a subclass to add synchronization
+   */
+  protected void _internal_addAndSync(int idx, List<Long> gemIDs) {
+    _internal_add(idx, gemIDs);
   }
 
   public void _internal_add(int idx, List<Long> gemIDs) {
-    assertExclusiveIdxInBounds(idx);
+    if (isNotIdxInExclusiveBounds(idx)) {
+      logIndexError("0xAC727", "_internal_add", idx);
+    }
     ids.addAll(idx, gemIDs);
   }
 
@@ -109,8 +140,15 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
   public E remove(int idx) {
     // TODO: removeIdxsFunction needed?
     E elem = get(idx);
-    removeIdxsFunction.accept(Collections.singleton(idx));
+    _internal_removeAndSync(Collections.singleton(idx));
     return elem;
+  }
+
+  /**
+   * to be overridden by a subclass to add synchronization
+   */
+  protected void _internal_removeAndSync(Set<Integer> idxs) {
+    _internal_remove(idxs);
   }
 
   public void _internal_remove(Set<Integer> idxs) {
@@ -127,7 +165,9 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
    */
   // TODO: needed?
   public boolean isPresent(int idx) {
-    assertInclusiveIdxInBounds(idx);
+    if (isNotIdxInInclusiveBounds(idx)) {
+      logIndexError("oxAC728", "isPresent", idx);
+    }
     return loadSingleObject(getID(idx)).isPresent();
   }
 
@@ -137,28 +177,31 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
     }
   }
 
-  protected boolean isLoaded(int idx) {
-    return isLoaded(getID(idx));
-  }
-
-  // TODO: why is this needed?
-  protected boolean isLoaded(long id) {
-    return loadSingleObject(id).isPresent();
-  }
-
   protected LoadResult<E> loadSingleObject(long id) {
-    List<LoadResult<E>> res = loadObjectsFunction.apply(Collections.singletonList(id));
-    if(res.isEmpty()){
+    List<LoadResult<E>> res = loadObjects(Collections.singletonList(id));
+    if (res.isEmpty()) {
       return new LoadResult<>(LoadingState.FAILED_TO_LOAD);
     }
 
     return res.get(0);
   }
 
-  protected void assertInclusiveIdxInBounds(int idx) {
-    if (idx < 0 || idx >= size()) {
-      throw new IndexOutOfBoundsException();
-    }
+  protected boolean isNotIdxInInclusiveBounds(int idx) {
+    return idx < 0 || idx >= size();
+  }
+
+  protected boolean isNotIdxInExclusiveBounds(int idx) {
+    return idx < 0 || idx > size();
+  }
+
+  protected void logIndexError(String errorCode, String methodName, int idx) {
+    Log.error(
+        errorCode +
+            " GemList::" + methodName + " index out of bounds" +
+            ", size: " + size() +
+            ", idx: " + idx
+    );
+    throw new IndexOutOfBoundsException();
   }
 
   protected void assertExclusiveIdxInBounds(int idx) {
@@ -167,7 +210,7 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
     }
   }
 
-  protected Long getID(int idx) {
+  public Long getID(int idx) {
     return getIDs(idx, idx + 1).get(0);
   }
 
@@ -177,8 +220,8 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
     return ids.subList(startIdx, endIdx);
   }
 
-  public List<Long> getIDs(){
-    return Collections.unmodifiableList(ids);
+  public List<Long> getIDs() {
+    return ids;
   }
 
   /**
@@ -186,12 +229,6 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
    */
   protected Long getID(E elem) {
     return elem.getGemId();
-  }
-
-
-  // Pseudo-build that does nothing
-  public Optional<GemList<E>> build(){
-    return Optional.of(this);
   }
 
   /**
@@ -202,5 +239,9 @@ public class GemList<E extends GemIdentifiable> extends AbstractList<E> {
   public void removeIdSure(long gemId) {
     System.out.println(ids);
     ids.removeIf(l -> Objects.equals(l, gemId));
+  }
+
+  public int indexOfId(long gemId) {
+    return ids.indexOf(gemId);
   }
 }

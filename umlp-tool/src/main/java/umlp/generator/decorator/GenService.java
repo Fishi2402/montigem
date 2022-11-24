@@ -96,8 +96,18 @@ public class GenService {
               map(a -> box(a.print())).collect(Collectors.toList());
       return MCTypeFacade.getInstance().createBasicGenericTypeOf(genericType.getBaseName(), arguments.toArray(new String[0]));
     } else {
-      return MCTypeFacade.getInstance().createQualifiedType(box(attr.getSymbol().getType().print()));
+      return MCTypeFacade.getInstance().createQualifiedType(box(getType(attr.getSymbol().getType())));
     }
+  }
+
+  public static String getType(SymTypeExpression symType) {
+    if (symType.isGenericType()) {
+      return ((SymTypeOfGenerics) symType).getBaseName();
+    }
+    if (isCDType(symType)) {
+      return symType.print();
+    }
+    return symType.getTypeInfo().getFullName();
   }
 
   public static boolean isVisible(ASTCDAttribute attr) {

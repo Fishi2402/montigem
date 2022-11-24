@@ -74,6 +74,7 @@ public class CommandManager {
 
   public static <T> CommandResult<T> executeCommand(Command<T> command) {
     Log.trace("Exec command " + command.getId() + " " + command.getCommandType() + " from " + command.getParticipantId(), LogUtil.getLoggerName());
+    Log.trace(CommandObjectMapper.serializeCommand(command), LogUtil.getLoggerName());
     return getInstance()._executeCommand(command);
   }
 

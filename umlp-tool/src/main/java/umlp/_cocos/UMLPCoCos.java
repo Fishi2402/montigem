@@ -2,16 +2,15 @@
 
 package umlp._cocos;
 
-import de.monticore.cd4analysis.cocos.CD4AnalysisCoCos;
 import de.monticore.cd4analysis.cocos.CD4AnalysisCoCosDelegator;
-import umlp._ast.ASTUMLPNode;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 
 /**
  * Collection of all CoCos of the UMLP language
  */
 public class UMLPCoCos {
 
-  public static void checkAll(ASTUMLPNode ast) {
+  public static void checkAll(ASTCDCompilationUnit ast) {
     UMLPCoCoChecker checker = new UMLPCoCoChecker();
     addAllUMLPCoCos(checker);
     addAllCDCoCos(checker);

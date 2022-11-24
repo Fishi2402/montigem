@@ -1,7 +1,6 @@
 package gradle;
 
-import de.monticore.cd4analysis.prettyprint.CD4AnalysisFullPrettyPrinter;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import com.google.common.collect.Sets;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.CDMerge;
 import org.gradle.api.file.RegularFileProperty;
@@ -10,9 +9,6 @@ import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
 import umlp.UMLPFullPrettyPrinter;
 import umlp.UMLPTool;
-import umlp._ast.ASTUMLPCompilationUnit;
-import umlp.generator.CD2UMLPTrafo;
-import umlp.generator.UMLP2CDTrafo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,23 +25,14 @@ public abstract class UMLPMergeTask extends SourceTask {
   @TaskAction
   public void run() {
     // Parse and convert to CDCompilationUnit
-    Set<ASTCDCompilationUnit> cds = getSource().getFiles().stream()
+    Set<ASTCDCompilationUnit> models = getSource().getFiles().stream()
         .map(File::getAbsolutePath)
         .map(this::parseAndCheck)
-        .map(UMLP2CDTrafo::run)
         .collect(Collectors.toSet());
 
-    // merge
-    ASTCDCompilationUnit merged = CDMerge.merge(cds);
-
-    //CD4CodeFullPrettyPrinter printer = new CD4CodeFullPrettyPrinter();
-    //merged.accept(printer.getTraverser());
-
-
-    // Convert back to UMLPCompilationUnit
-    ASTUMLPCompilationUnit umlp = CD2UMLPTrafo.run(merged);
+    ASTCDCompilationUnit merge = CDMerge.merge(models, "Merge", Sets.newHashSet());
     UMLPFullPrettyPrinter printer = new UMLPFullPrettyPrinter();
-    umlp.accept(printer.getTraverser());
+    merge.accept(printer.getTraverser());
 
 
     try (PrintWriter out = new PrintWriter(new FileOutputStream(getOutputFile().get().getAsFile()), true)) {
@@ -55,10 +42,10 @@ public abstract class UMLPMergeTask extends SourceTask {
     }
   }
 
-  protected ASTUMLPCompilationUnit parseAndCheck(String absolutePath) {
+  protected ASTCDCompilationUnit parseAndCheck(String absolutePath) {
     UMLPTool tool = new UMLPTool();
 
-    ASTUMLPCompilationUnit result = tool.parse(absolutePath);
+    ASTCDCompilationUnit result = tool.parse(absolutePath);
 
     tool.runAfterParseTrafo(result);
     tool.createSymbolTable(result);

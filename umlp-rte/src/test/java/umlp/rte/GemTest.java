@@ -17,7 +17,7 @@ public class GemTest extends AbstractUMLPRTETest {
 
   List<Elem> allElems;
 
-  ListBasedServer<Elem> listServer0;
+  ListBasedServer listServer0;
 
   Gem<Elem> gemLoadable0;
 
@@ -34,7 +34,7 @@ public class GemTest extends AbstractUMLPRTETest {
       allElems.add(new Elem());
     }
 
-    listServer0 = new ListBasedServer<>(allElems);
+    listServer0 = new ListBasedServer(allElems);
     listServer0.setIdsNotAuthorized(Collections.singleton(getElem(2).getGemId()));
 
     gemLoadable0 = listServer0.createGem(getElem(0).getGemId());
