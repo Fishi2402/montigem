@@ -107,6 +107,8 @@ public abstract class UMLPTask extends DefaultTask {
       // Default: No Debug
       getDebug().convention(false);
     }
+    this.getOutputs().doNotCacheIf("Do not cache when debugging is enabled",
+        (task) ->  ((UMLPTask)task).getDebug().get());
   }
 
 
