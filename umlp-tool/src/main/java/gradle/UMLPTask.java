@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -231,18 +232,16 @@ public abstract class UMLPTask extends DefaultTask {
   }
 
   @Internal
-  protected ConfigurableFileCollection getAllInputLocations(){
-    ConfigurableFileCollection result = this.getProject().getObjects().fileCollection();
-
-    result.from(getInput());
-    if(getHwcDir().isPresent()) {
-      result.from(getHwcDir());
-    }
-
-    return result;
+  protected Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
+    return Set.of(getHwcDir());
   }
   private Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
-    return StreamSupport.stream(inputChanges.getFileChanges(getAllInputLocations()).spliterator(), false);
+    Stream<FileChange> result = StreamSupport.stream(inputChanges.getFileChanges(getInput()).spliterator(), false);
+
+    for(Provider<? extends FileSystemLocation> inputLocation: getOtherInputDirectories()){
+      result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(inputLocation).spliterator(), false));
+    }
+    return result;
   }
 
   protected boolean isInputFile(File f) {

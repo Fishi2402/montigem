@@ -7,6 +7,8 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.FileSystemLocation;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.TaskAction;
@@ -141,10 +143,15 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
           .map(incGen -> Sets.union(incGen.existenceCheckedFiles, incGen.readFiles))
           .flatMap(Set::stream)
           .collect(Collectors.toSet());
-      Set<File> gradleInput = dummyUMLPTask.getAllInputLocations().getFiles();
+      Set<File> gradleInput = dummyUMLPTask.getOtherInputDirectories().stream()
+          .filter(Provider::isPresent)
+          .map(Provider::get)
+          .map(FileSystemLocation::getAsFile)
+          .collect(Collectors.toSet());
       Set<File> gradleInputFiles = gradleInput.stream()
           .flatMap(f -> FileUtils.listFiles(f, null, true).stream())
           .collect(Collectors.toSet());
+      gradleInputFiles.addAll(getInput().getAsFileTree().getFiles());
 
       for(File reportedInputFile: reportedInputFiles){
         if(reportedInputFile.exists() && !gradleInputFiles.contains(reportedInputFile)){
