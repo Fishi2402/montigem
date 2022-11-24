@@ -35,6 +35,11 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
 
   @TaskAction
   public void run() {
+    // Make sure the log is enabled and fail-quick activated
+    //     (Maybe previous tests disabled it?)
+    Log.init();
+    Log.enableFailQuick(true);
+
     UMLPTask dummyUMLPTask = this.getProject().getTasks().create("dummyTestTask_usedForOutputReportFrom" + this.getName(), UMLPTask.class);
     dummyUMLPTask.getReportDir().set(this.getReportDir());
     dummyUMLPTask.getInput().from(this.getInput());
