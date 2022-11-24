@@ -3,7 +3,7 @@
 description 'restaurant example'
 
 task generateRestaurantOrg(type: UMLPTask) {
-    inputDir = file("src/models")
+    input.from(file("src/models"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
 }
 

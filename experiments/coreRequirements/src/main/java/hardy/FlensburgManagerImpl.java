@@ -2,18 +2,18 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import hardy.gemlists.Address_VisitorsGemList;
-import hardy.gemlists.Person_ChildrenGemList;
-import hardy.gemlists.Person_OwnsGemList;
-import hardy.gemlists.Person_VisitedGemList;
+import hardy.gemlists.*;
 import umlp.rte.DatabaseAccessManager;
+import umlp.rte.GemIdentifiable;
 import umlp.rte.GemList;
+import umlp.rte.GemListBuilder;
 import umlp.rte.NotificationScope;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class FlensburgManagerImpl extends FlensburgManager {
 
@@ -72,8 +72,11 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected GemList<Human> _doGetHumanList() {
-        // TODO: implement
-        throw new IllegalStateException("Not implemented");
+      List<Long> ids = DatabaseAccessManager.getAll(Human.class).stream()
+          .map(GemIdentifiable::getGemId)
+          .collect(Collectors.toList());
+      GemListBuilder<Human> list = new HumanGemList(ids);
+      return list.build().get();
     }
 
     @Override
@@ -118,8 +121,11 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected GemList<Person> _doGetPersonList() {
-        // TODO: impl
-        throw new IllegalStateException("Not implemented");
+      List<Long> ids = DatabaseAccessManager.getAll(Person.class).stream()
+          .map(GemIdentifiable::getGemId)
+          .collect(Collectors.toList());
+      GemListBuilder<Person> list = new PersonGemList(ids);
+      return list.build().get();
     }
 
     @Override
@@ -164,8 +170,11 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected GemList<Address> _doGetAddressList() {
-        // TODO: impl
-        throw new IllegalStateException("Not implemented");
+      List<Long> ids = DatabaseAccessManager.getAll(Address.class).stream()
+          .map(GemIdentifiable::getGemId)
+          .collect(Collectors.toList());
+      GemListBuilder<Address> list = new AddressGemList(ids);
+      return list.build().get();
     }
 
     @Override
@@ -199,8 +208,11 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected GemList<Car> _doGetCarList() {
-        // TODO: impl
-        throw new IllegalStateException("Not implemented");
+      List<Long> ids = DatabaseAccessManager.getAll(Car.class).stream()
+          .map(GemIdentifiable::getGemId)
+          .collect(Collectors.toList());
+      GemListBuilder<Car> list = new CarGemList(ids);
+      return list.build().get();
     }
 
     @Override

@@ -29,20 +29,13 @@ compileJava.onlyIf { project.hasProperty('testCompile') }
 
 task generateJava(type: UMLPTask) {
   group = "umlP"
-  inputDir = layout.projectDirectory.dir("models")
+  input.from(layout.projectDirectory.dir("models"))
   tmplDir = layout.projectDirectory.dir("src/main/resources")
   hwcDir = layout.projectDirectory.dir("hwc/")
   configTemplate = "MyConfig.ftl"
   outputDir = layout.buildDirectory.dir("generated-sources/")
   outputs.cacheIf { false } // This task is used to TEST THE CACHE! So it shouldn't be cached
 }
-
-task checkOutputReport(type: gradle.UMLPOutputReportCheck){
-  inputDir = generateJava.inputDir
-  outputDir = generateJava.outputDir
-  reportDir = generateJava.reportDir
-}
-build.dependsOn(checkOutputReport)
 
 task testMerge(type: UMLPMergeTask){
   source = layout.projectDirectory.dir("models/")
@@ -55,7 +48,7 @@ assemble.dependsOn(testMerge)
 task copyInputDir(type: Copy) {
   dependsOn generateJava
 
-  from generateJava.inputDir
+  from generateJava.input
   into layout.buildDirectory.dir("repro_test/inputDir/")
 }
 task copyHWCDir(type: Copy) {
@@ -70,7 +63,7 @@ task generateJava_second_run(type: UMLPTask) {
   dependsOn copyInputDir
   dependsOn copyHWCDir
 
-  inputDir = copyInputDir.getDestinationDir()
+  input.from(copyInputDir.getDestinationDir())
   hwcDir = copyHWCDir.getDestinationDir()
 
   outputDir = layout.buildDirectory.dir("repro_test/output")

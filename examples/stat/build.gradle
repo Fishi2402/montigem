@@ -2,7 +2,7 @@
 description 'StatServer'
 
 task generateStatBackend(type: UMLPTask) {
-    inputDir = file("src")
+    input.from(file("src"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
 }
 
