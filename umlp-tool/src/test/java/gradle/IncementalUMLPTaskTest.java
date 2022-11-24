@@ -37,7 +37,7 @@ public class IncementalUMLPTaskTest {
     Project project = ProjectBuilder.builder().build();
     umlpTask = project.getTasks().create("TEST" + UUID.randomUUID(), gradle.UMLPTask.class);
     umlpTask.getHwcDir().set(hwcDir);
-    umlpTask.getInputDir().set(inputDir);
+    umlpTask.getInput().from(inputDir);
     umlpTask.getOutputDir().set(outputDir);
     umlpTask.getReportDir().set(reportDir);
 

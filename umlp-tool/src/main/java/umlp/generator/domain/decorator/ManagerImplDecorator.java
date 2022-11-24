@@ -67,6 +67,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete", name, managerName);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);
 
     // Associations
     CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {

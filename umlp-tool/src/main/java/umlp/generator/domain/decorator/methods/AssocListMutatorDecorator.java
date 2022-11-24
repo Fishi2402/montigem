@@ -32,6 +32,7 @@ public class AssocListMutatorDecorator extends SimpleMethodMutatorDecorator {
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.AddAll", ast.getName(), targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.AddAllId", ast.getName(), targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.InternalAdd", ast.getName(), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.InternalAddId", ast.getName(), targetName, sourceName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.InternalSet", ast.getName(), targetName, sourceName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Remove", ast.getName(), targetName, sourceName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Remove_Id", ast.getName(), targetName, sourceName).get());

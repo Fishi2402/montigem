@@ -60,44 +60,44 @@ public class ManagerDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.manager.GetSingleton", name);
     getCD4C().addMethod(managerClass, "umlp.manager.SetInstance", name);
 
-    getCD4C().addMethod(managerClass, "umlp.manager.GetFreeGemId");
-    getCD4C().addMethod(managerClass, "umlp.manager.DoGetFreeGemId");
+    getCD4C().addMethod(managerClass, "umlp.manager.GetFreeGemId", true);
+    getCD4C().addMethod(managerClass, "umlp.manager.GetFreeGemId", false);
   }
 
   protected void addClassElements(ASTCDClass domainClass, ASTCDClass managerClass) {
     String name = domainClass.getName();
 
     if (domainClass.getModifier().isDerived()) {
-      getCD4C().addMethod(managerClass, "umlp.manager.DoGetDerived", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, false);
     } else {
-      getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.DoCreateGem", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.Builder", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.DoBuilderParam", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.DoBuilder", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.BuilderParam", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.DoDeSerBuilder", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.Opt", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.DoOpt", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.DoGetSure", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.Add", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.DoAdd", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.GetList", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.DoGetList", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.Delete", name);
-      getCD4C().addMethod(managerClass, "umlp.manager.DoDelete", name);
+      getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.Builder", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.Builder", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.BuilderParam", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.BuilderParam", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.Opt", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.Opt", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.Add", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.Add", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetList", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetList", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, false);
       // Associations
       CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
         String type = a.getSymbol().getType().print();
         getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc", a.getName(), type, true);
-        getCD4C().addMethod(managerClass, "umlp.manager.DoCreateAssoc", a.getName(), type, true);
         getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc", a.getName(), type, false);
-        getCD4C().addMethod(managerClass, "umlp.manager.DoCreateAssoc", a.getName(), type, false);
-        getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", a.getName(), type);
-        getCD4C().addMethod(managerClass, "umlp.manager.DoBuilderAssoc", a.getName(), type);
+        getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", a.getName(), type, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", a.getName(), type, false);
       });
     }
 
