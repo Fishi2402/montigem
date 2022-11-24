@@ -1,10 +1,12 @@
 package gradle;
 
+import com.google.common.collect.Sets;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Incubating;
 import org.gradle.api.file.*;
+import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
@@ -22,12 +24,10 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -37,17 +37,9 @@ public abstract class UMLPTask extends DefaultTask {
   final String ORG_GRADLE_PARALLEL = "org.gradle.parallel";
 
   @Incremental
-  @org.gradle.api.tasks.Optional
-  @InputDirectory
+  @InputFiles
   @PathSensitive(PathSensitivity.RELATIVE)
-  abstract DirectoryProperty getInputDir();
-
-  @org.gradle.api.tasks.Optional
-  @InputFile
-  @Incremental
-  @PathSensitive(PathSensitivity.RELATIVE)
-  @Incubating // Use `inputDir` instead!
-  abstract RegularFileProperty getInputFile();
+  abstract ConfigurableFileCollection getInput();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
@@ -58,7 +50,6 @@ public abstract class UMLPTask extends DefaultTask {
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental
   abstract DirectoryProperty getTmplDir();
 
   @Input
@@ -118,10 +109,6 @@ public abstract class UMLPTask extends DefaultTask {
         throw new IllegalArgumentException("'moreArgs' must not contain '-i' / '-o' or '-hwc' flag. Use UMLPTask parameter instead");
       }
     }
-
-    if (getInputFile().isPresent() && !isInputFile(this.getInputFile().getAsFile().get())) {
-      throw new IllegalArgumentException("<inputFile> must be an umlp-file");
-    }
   }
 
   /**
@@ -179,11 +166,6 @@ public abstract class UMLPTask extends DefaultTask {
    */
   protected Directory getReportDirOfFile(File f) {
     String pathName = f.getName();
-    if (getInputDir().isPresent()) {
-      Path dirPath = getInputDir().get().getAsFile().toPath();
-      Path filePath = f.toPath();
-      pathName = dirPath.relativize(filePath).toString();
-    }
     return getReportDir().dir(pathName.replace(".", "__")).get();
   }
 
@@ -249,15 +231,18 @@ public abstract class UMLPTask extends DefaultTask {
   }
 
   @Internal
-  protected Set<Provider<? extends FileSystemLocation>> getAllInputLocations(){
-    return Set.of(getInputDir(), getHwcDir(), getInputFile());
+  protected ConfigurableFileCollection getAllInputLocations(){
+    ConfigurableFileCollection result = this.getProject().getObjects().fileCollection();
+
+    result.from(getInput());
+    if(getHwcDir().isPresent()) {
+      result.from(getHwcDir());
+    }
+
+    return result;
   }
   private Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
-    Stream<FileChange> result = Stream.empty();
-    for(Provider<? extends FileSystemLocation> inputLocation: getAllInputLocations()){
-      result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(inputLocation).spliterator(), false));
-    }
-    return result;
+    return StreamSupport.stream(inputChanges.getFileChanges(getAllInputLocations()).spliterator(), false);
   }
 
   protected boolean isInputFile(File f) {
@@ -265,14 +250,14 @@ public abstract class UMLPTask extends DefaultTask {
   }
 
   @TaskAction
-  public void run(InputChanges inputChanges) throws IOException {
+  public void run(InputChanges inputChanges) {
     Log.info("Start UMLPTask", this.getName());
 
     checkParameters();
     workQueue = getWorkerExecutor().processIsolation();
 
     // Remove Artifacts from deleted inputs
-    inputChanges.getFileChanges(this.getInputDir()).forEach(ch -> {
+    inputChanges.getFileChanges(this.getInput()).forEach(ch -> {
       if (ch.getChangeType() == ChangeType.REMOVED
           && isInputFile(ch.getFile())
           && ch.getFileType() == FileType.FILE) {
@@ -280,18 +265,9 @@ public abstract class UMLPTask extends DefaultTask {
       }
     });
 
-
-    // Generate from InputDir
-    if (getInputDir().isPresent()) {
-      assert (getInputDir().getAsFile().get().isDirectory());
-      getInputDir().getAsFileTree().getFiles().stream()
-          .filter(this::isInputFile)
-          .forEach(x -> runOnSingleInputFile(x, inputChanges));
-    }
-
-    // Generate from InputFile
-    if (this.getInputFile().isPresent()) {
-      runOnSingleInputFile(this.getInputFile().get().getAsFile(), inputChanges);
-    }
+    // Generate from input
+    getInput().getAsFileTree().getFiles().stream()
+        .filter(this::isInputFile)    // TODO: match directly on "getInput()"
+        .forEach(x -> runOnSingleInputFile(x, inputChanges));
   }
 }

@@ -4,10 +4,11 @@ import com.google.common.collect.Sets;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.FileSystemLocation;
-import org.gradle.api.provider.Provider;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -17,8 +18,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class UMLPOutputReportCheck extends DefaultTask {
-  @InputDirectory
-  abstract DirectoryProperty getInputDir();
+  @InputFiles
+  abstract ConfigurableFileCollection getInput();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
@@ -34,11 +35,11 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
   public void run() {
     UMLPTask dummyUMLPTask = this.getProject().getTasks().create("dummyTestTask_usedForOutputReportFrom" + this.getName(), UMLPTask.class);
     dummyUMLPTask.getReportDir().set(this.getReportDir());
-    dummyUMLPTask.getInputDir().set(this.getInputDir());
+    dummyUMLPTask.getInput().from(this.getInput());
     dummyUMLPTask.getOutputDir().set(this.getOutputDir());
     dummyUMLPTask.getHwcDir().set(this.getHwcDir());
 
-    Map<File, IncGenData> incGenReports = getInputDir().getAsFileTree().getFiles().stream()
+    Map<File, IncGenData> incGenReports = getInput().getAsFileTree().getFiles().stream()
         .filter(dummyUMLPTask::isInputFile)
         .peek(f -> Log.info("IncGenFile is in: " + dummyUMLPTask.getIncGenFile(f), this.getClass().getName()))
         .collect(Collectors.toUnmodifiableMap(f -> f,
@@ -140,11 +141,7 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
           .map(incGen -> Sets.union(incGen.existenceCheckedFiles, incGen.readFiles))
           .flatMap(Set::stream)
           .collect(Collectors.toSet());
-      Set<File> gradleInput = dummyUMLPTask.getAllInputLocations().stream()
-          .filter(Provider::isPresent)
-          .map(Provider::get)
-          .map(FileSystemLocation::getAsFile)
-          .collect(Collectors.toSet());
+      Set<File> gradleInput = dummyUMLPTask.getAllInputLocations().getFiles();
       Set<File> gradleInputFiles = gradleInput.stream()
           .flatMap(f -> FileUtils.listFiles(f, null, true).stream())
           .collect(Collectors.toSet());
