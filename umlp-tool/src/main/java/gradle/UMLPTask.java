@@ -4,12 +4,10 @@ import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Incubating;
-import org.gradle.api.file.Directory;
-import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.FileType;
-import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.file.*;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.*;
 import org.gradle.work.ChangeType;
 import org.gradle.work.FileChange;
@@ -27,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -249,11 +248,15 @@ public abstract class UMLPTask extends DefaultTask {
     }
   }
 
+  @Internal
+  protected Set<Provider<? extends FileSystemLocation>> getAllInputLocations(){
+    return Set.of(getInputDir(), getHwcDir(), getInputFile());
+  }
   private Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
-    Stream<FileChange> result = StreamSupport.stream(inputChanges.getFileChanges(getInputDir()).spliterator(), false);
-    result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(getHwcDir()).spliterator(), false));
-    result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(getInputFile()).spliterator(), false));
-
+    Stream<FileChange> result = Stream.empty();
+    for(Provider<? extends FileSystemLocation> inputLocation: getAllInputLocations()){
+      result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(inputLocation).spliterator(), false));
+    }
     return result;
   }
 

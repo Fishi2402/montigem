@@ -2,12 +2,16 @@ package gradle;
 
 import com.google.common.collect.Sets;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileSystemLocation;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,6 +36,7 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
     dummyUMLPTask.getReportDir().set(this.getReportDir());
     dummyUMLPTask.getInputDir().set(this.getInputDir());
     dummyUMLPTask.getOutputDir().set(this.getOutputDir());
+    dummyUMLPTask.getHwcDir().set(this.getHwcDir());
 
     Map<File, IncGenData> incGenReports = getInputDir().getAsFileTree().getFiles().stream()
         .filter(dummyUMLPTask::isInputFile)
@@ -111,7 +116,58 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
           .collect(Collectors.toSet());
       if(reportedHwcChecks.isEmpty()){
         Log.error("No file is reported as <Reporting.reportHWCExistenceCheck(...)>, even though a HWC directory exists.\n" +
-            "Missing Reports lead to errors in incremental build");
+            "Missing Reports lead to errors in incremental build.");
+      }
+    }
+
+    // All read files must exist
+    {
+      Set<File> readFilesThatDoNotExists = incGenReports.values().stream()
+          .map(incGen -> incGen.readFiles)
+          .flatMap(Set::stream)
+          .filter(f -> !f.exists())
+          .collect(Collectors.toSet());
+      if(!readFilesThatDoNotExists.isEmpty()){
+        Log.error("Files are reported as read, which do not exist \n" +
+            readFilesThatDoNotExists);
+      }
+    }
+
+    // All read / checked files _must_ be declared as input in UMLPTask
+    // Otherwise the incremental build is not working!
+    {
+      Set<File> reportedInputFiles = incGenReports.values().stream()
+          .map(incGen -> Sets.union(incGen.existenceCheckedFiles, incGen.readFiles))
+          .flatMap(Set::stream)
+          .collect(Collectors.toSet());
+      Set<File> gradleInput = dummyUMLPTask.getAllInputLocations().stream()
+          .filter(Provider::isPresent)
+          .map(Provider::get)
+          .map(FileSystemLocation::getAsFile)
+          .collect(Collectors.toSet());
+      Set<File> gradleInputFiles = gradleInput.stream()
+          .flatMap(f -> FileUtils.listFiles(f, null, true).stream())
+          .collect(Collectors.toSet());
+
+      for(File reportedInputFile: reportedInputFiles){
+        if(reportedInputFile.exists() && !gradleInputFiles.contains(reportedInputFile)){
+          Log.error("Input File is not declared as input in Gradle UMLPTask. Incremental build is not working!\n"
+              + reportedInputFile);
+        }
+        if(!reportedInputFile.exists()){
+          Path inputPath = reportedInputFile.toPath().toAbsolutePath().normalize();
+          boolean foundDir = gradleInput.stream()
+              .filter(File::isDirectory)
+              .map(File::toPath)
+              .map(Path::toAbsolutePath)
+              .map(Path::normalize)
+              .anyMatch(inputPath::startsWith);
+          if(!foundDir){
+            Log.error("Directory of reported input file is not part of declared input of UMLPTask.\n"
+            + "This leads to errors in incremental build, since gradle doesn't track changes of file.\n"
+            + "Undeclared input file: " + reportedInputFile);
+          }
+        }
       }
     }
   }
