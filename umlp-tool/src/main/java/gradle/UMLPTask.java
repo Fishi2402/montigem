@@ -253,7 +253,7 @@ public abstract class UMLPTask extends DefaultTask {
     Log.info("Start UMLPTask", this.getName());
 
     checkParameters();
-    workQueue = getWorkerExecutor().processIsolation();
+    workQueue = getWorkerExecutor().classLoaderIsolation();
 
     // Remove Artifacts from deleted inputs
     inputChanges.getFileChanges(this.getInput()).forEach(ch -> {
