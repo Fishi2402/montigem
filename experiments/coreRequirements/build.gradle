@@ -75,7 +75,7 @@ task copySymbols(type: Copy) {
 
 task generateAll(type: UMLPTask) {
     dependsOn(copySymbols)
-    inputDir = file("models")
+    input.from(file("models"))
     outputDir = layout.buildDirectory.dir("gen")
     hwcDir = layout.projectDirectory.dir("src/main/java")
     modelDir = layout.projectDirectory.dir("models")
