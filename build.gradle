@@ -82,6 +82,7 @@ subprojects {
       inputDir.set(umlTask.inputDir)
       outputDir.set(umlTask.outputDir)
       reportDir.set(umlTask.reportDir)
+      hwcDir.set(umlTask.hwcDir)
     }
     build.dependsOn(t)
   }
