@@ -1,10 +1,5 @@
 
 buildscript {
-  ext {
-    jsweet_version = "3.2.0-SNAPSHOT"
-  }
-
-
   repositories {
     mavenCentral()
     maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
@@ -14,7 +9,7 @@ buildscript {
     maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
   }
   dependencies {
-    classpath('org.jsweet:jsweet-gradle-plugin:' + jsweet_version) {
+    classpath('org.jsweet:jsweet-gradle-plugin:3.1.0') {
       transitive = true
     }
   }
@@ -47,12 +42,11 @@ jsweet {
   verbose = true
   encoding = 'UTF-8'
   sourceMap = true
+  outDir = project.file('target/javascript')
+  candiesJsOut = project.file('target/candies')
   targetVersion = 'ES6'
   includes = ['**/*.java']
   // extraSystemPath = '/my/path/to/npm'
-  tsOnly = true
-  autoPropagateAsyncAwaits = true
-  tsOut = project.file('target/typescript')
 }
 
 compileJava {
