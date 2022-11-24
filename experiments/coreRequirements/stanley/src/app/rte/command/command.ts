@@ -3,8 +3,8 @@
 // Bei Human_get wäre T = Human, sodass der Entwickler den Human aus dem CommandResult auslesen kann, oder am Status
 // erkennt, das ein Fehler aufgetreten ist.
 import {CommandManager} from "./command.manager";
-import {NotImplementedException} from "../exception/NotImplementedException";
-import {CommandResult} from "./CommandResult";
+import {NotImplementedException} from "./error/NotImplementedException";
+import {CommandResult} from "./command.result";
 
 export abstract class Command<T> {
   // Der Ersteller des Commands vergibt diese id und nutzt sie nachher um die Response des Backends, welche dieselbe id enthält, diesem Command zuzuordnen.

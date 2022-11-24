@@ -1,6 +1,6 @@
 // Repräsentiert das Ergebnis eines ausgeführten Commands ohne zusätzliche Rückgabe, z.B. eines set Commands für ein
 // Attribut. Der Sender des Commands muss trotzdem wissen, ob dieser erfolgreich ausgeführt wurde.
-import {CommandResult} from "./CommandResult";
+import {CommandResult} from "./command.result";
 
 export class StatusResult extends CommandResult<void> {
   protected successful: boolean;
