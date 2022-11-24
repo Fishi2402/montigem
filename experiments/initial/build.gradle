@@ -82,10 +82,10 @@ build.dependsOn(checkEquality)
 
 
 abstract class CheckDirEquality extends DefaultTask {
-  @Input
+  @InputDirectory
   abstract DirectoryProperty getDir1()
 
-  @Input
+  @InputDirectory
   abstract DirectoryProperty getDir2()
 
   @TaskAction
