@@ -102,8 +102,7 @@ public class IncGenData {
           .filter(this::isRelevantChange)
           .findAny();
       if(change.isPresent()){
-        Log.warn("Not UP-TO-DATE! Changed: " + change.get().getChangeType() + " on " + change.get().getFile().getAbsolutePath()
-        , this.getClass().getName());;
+        Log.warn("Not UP-TO-DATE! Changed: " + change.get().getChangeType() + " on " + change.get().getFile().getAbsolutePath());;
       }
       return change.isEmpty();
     }
