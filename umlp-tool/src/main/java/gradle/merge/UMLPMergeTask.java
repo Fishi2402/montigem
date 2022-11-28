@@ -1,4 +1,4 @@
-package gradle;
+package gradle.merge;
 
 import com.google.common.collect.Sets;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
