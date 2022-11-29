@@ -11,7 +11,6 @@ import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -63,6 +62,7 @@ public class UMLPTool extends UMLPToolTOP {
   public void run(String[] args) {
     //init CLI options
     Options options = initOptions();
+    UMLPReports reportManagerFactory = null;
 
     try {
       CommandLineParser parser = new DefaultParser();
@@ -114,10 +114,7 @@ public class UMLPTool extends UMLPToolTOP {
           fpPath.addEntry(Paths.get(v));
         }
       }
-
-
-      ReportManager.ReportManagerFactory reportManagerFactory = new UMLPReports(outDir.getPath(),
-              reportDir.getPath(), reportPathOutput, hwcPath);
+      reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
 
       Reporting.init(outDir.getPath(), reportDir.getPath(), reportManagerFactory);
       String report_on = inputFile.getName().replace(".","__");   // TODO: Is this name unique? Should it be unique?
@@ -187,6 +184,9 @@ public class UMLPTool extends UMLPToolTOP {
     } finally {
       UMLPMill.globalScope().clear();
       Reporting.off();
+      if(reportManagerFactory != null){
+        reportManagerFactory.close();
+      }
     }
   }
 
