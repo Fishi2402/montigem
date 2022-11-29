@@ -47,7 +47,7 @@ public class IncGenData {
             // TODO: Better
         });
       } catch (Exception e) {
-        Log.error("Error parsing report from previous run. Incremental check not working. \n" +
+        Log.error("0xdf60e Error parsing report from previous run. Incremental check not working. \n" +
             e.getMessage());
         reportExists = false;
       }
