@@ -23,10 +23,10 @@ page EditierePersonChildren(Person p) {
   // show and edit the parent's age as number
   @NumberInput(value = p.age);
 
-  iterate (Person child : p.children) {
+ /* @iterate (Person child : p.children) {
     // show and edit the child's age as number
     @NumberInput(value = child.age);
-  }
+  }*/
 
 }
 
