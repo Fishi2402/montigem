@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 // -> this might be realized using the realthis pattern?
 //    however, this assumes that E is written accordingly...
 
-public class Gem<E extends GemIdentifiable> {
+public class Gem<E extends GemIdentifiable> implements GemIdentifiable {
 
   // todo: Beschreiben, in welchen Modi die Attribute wie besetzt (oder irrelevant sind)
 
@@ -89,7 +89,6 @@ public class Gem<E extends GemIdentifiable> {
     loadIfRequired();
     return loadingState == LoadingState.LOADED && object != null;
   }
-
   public E get() {
     loadIfRequired();
     if (!isPresent()) {
@@ -126,6 +125,7 @@ public class Gem<E extends GemIdentifiable> {
     }
   }
 
+  @Override
   public long getGemId() {
     return gemId;
   }

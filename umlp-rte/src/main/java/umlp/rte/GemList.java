@@ -26,15 +26,6 @@ public abstract class GemList<E extends GemIdentifiable>
     extends AbstractList<E>
     implements GemBuildable {
 
-  protected final static String UNEXPECTED_LIST_LENGTH_ERROR =
-      "0xAC724 recieved list of unexpected length";
-
-  protected final static String ELEMENT_NOT_AVAILABLE_ERROR =
-      "0xAC726 reqested element has not been loaded";
-
-  protected final static String FAILED_TO_LOAD_IDS_ERROR =
-      "0xAC727 failed to load ids";
-
   // Lokaler speicher für die gemIds der enthaltenen Objekte. Enthält alle IDs der Assoziation.
   protected List<Long> ids;
 
