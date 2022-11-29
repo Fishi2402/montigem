@@ -1,23 +1,13 @@
 package hardy;
 
-import de.monticore.symboltable.serialization.JsonParser;
-import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.symboltable.serialization.json.JsonObject;
-import de.se_rwth.commons.logging.Log;
 import hardy.commands.Address_get_filteredDeSer;
 import hardy.commands.Car_get_filteredDeSer;
 import hardy.commands.Human_get_filteredDeSer;
 import hardy.commands.Person_get_filteredDeSer;
 import hardy.requests.GetFreeGemIdRequestDeSer;
-import umlp.command.Command;
-import umlp.command.CommandDeSer;
+import umlp.rte.AggregatedCommandDeSer;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-public class FlensburgCommandDeSer {
-  protected Map<String, CommandDeSer> deSerMap = new HashMap<>();
+public class FlensburgCommandDeSer extends AggregatedCommandDeSer {
 
   public FlensburgCommandDeSer(){
     // Standard
@@ -50,41 +40,5 @@ public class FlensburgCommandDeSer {
     deSerMap.put("hardy.commands.Car_get_filtered", new Car_get_filteredDeSer());
     deSerMap.put("hardy.commands.Human_get_filtered", new Human_get_filteredDeSer());
     deSerMap.put("hardy.commands.Person_get_filtered", new Person_get_filteredDeSer());
-  }
-
-
-  public void buildJson(Command<?> command, JsonPrinter printer) {
-    String commandType = command.getCommandType();
-    if(deSerMap.containsKey(commandType)) {
-      deSerMap.get(commandType).buildJson(command, printer);
-    } else {
-      Log.error("Can not find deSer for commandType " + commandType);
-    }
-  }
-
-  public String serialize(Command<?> command){
-    JsonPrinter printer = new JsonPrinter(true);
-    printer.beginObject();
-    buildJson(command, printer);
-    printer.endObject();
-    return printer.toString();
-  }
-
-  public <T> Optional<Command<T>> deserialize(String cmdStr){
-    return fromJson(JsonParser.parseJsonObject(cmdStr));
-  }
-
-  public <T> Optional<Command<T>> fromJson(JsonObject jsonObject) {
-    if (!jsonObject.hasStringMember("commandType")) {
-      return Optional.empty();
-    }
-
-    String commandType = jsonObject.getStringMember("commandType");
-    if(!deSerMap.containsKey(commandType)){
-      Log.error("Can not find deSer for commandType " + commandType);
-      return Optional.empty();
-    }
-
-    return deSerMap.get(commandType).fromJson(jsonObject);
   }
 }
