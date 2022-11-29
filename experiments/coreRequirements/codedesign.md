@@ -79,15 +79,40 @@ umlp Flensburg {
   * Da dies in beide Richtungen gilt, werden, um unendliche Rekursion zuu vermeiden _interne_ Methoden generiert, welche nur den Zweck erfüllen, von der jeweils anderen Zugriffsmethode der bi-direktionalen Assoziation aufgerufen zu werden
   * Somit werden beispielweise die Methoden `addVisited` und  `INTERNAL_addVisitedId` generiert
 
+## `GemIdentifiable`
+
+* Domänklassen wie beispielsweise `Person` implementieren das `GemIdentifiable` Interface.
+* `GemIdentifiable` sind alle Klassen mit einer `gemId`, diese kann über `long GemIdentifiable::getGemId()` abgefragt werden.
+  * Das Interface wird für manche generische Implementierungen (wie z.B. `Gem<.>`) benötigt.
+
 ## `Gem<.>`
 
-TODO, Zweck, Realisierung
+* Für modellierte Assoziationen der Kardinalitäten (1) und (0..1) werden `Gem<.>` Attribute erstellt und diese dienen dazu, die entsprechend assoziierten Objekte lazy nachzuladen.
+* Die `Gem<Person>` Klasse besitzt unter anderem die Attribute `Person object` und `long gemId` um ein Objekt von Klassen zu referenzieren, welche eine `gemID` besitzen (und somit das `GemIdentifiable` Interface implementieren).
+  * Die `gemId` ist immer vorhanden.
+  * Das `object` ist `null` genau dann, wenn das zur `gemId` gehörende Objekt noch nicht geladen wurde.
+  * Das Attribut `loadingState` beschreibt, ob das `object` geladen wurde, und, falls nicht, gibt es weiterreichende Informationen zur Begründung des Nichtladens.
+* Die Methoden der `Gem`-Klasse ähneln `java.util.Optional`.
+  * `get()` gibt das assoziierte Objekt zurück, wenn es geladen werden kann. Falls noch nicht versucht worden ist, es zu laden, so wird beim Aufruf ein Versuch gestartet.
+  * `isPresent()` gibt an, ob das assoziierte Objekt geladen werden konnte. Falls noch nicht versucht worden ist, es zu laden, so wird beim Aufruf ein Versuch gestartet.
+  * `set(Person object)` setzt das `object`, `gemId` und `loadingState` werden entsprechend gesetzt, sodass das als geladen gilt.
 
+## `GemList<.>`
 
-## Listen: Lazy loading
-
-TODO, Zweck, Realisierung
-
+* Für modellierte Assoziationen der Kardinalitäten (0..*) werden `GemList<.>` Attribute erstellt und diese dienen dazu, die entsprechend assoziierten Objekte lazy nachzuladen.
+* Die `GemList<.>` Klasse implementiert das `java.util.List<.>` interface.
+* Die Liste ist als `java.util.List<.>` per Methode der Domainklasse verfügbar, im Beispiel mit `Person::getOwns()`
+(TODO: FDr, zurzeit wird `getOwnsGemList` verwendet, aber der Rückgabewert ist nicht richtig `GemList<.>` statt nur `java.util.List<.>`)
+  * Die `java.util.AbstractList<.>` wird extended, wodurch in der `GemList<.>` Klasse nur die Methoden `size`, `get`, `set`, `add`, und `remove` implementiert werden.
+* Die `GemList<.>` Klasse besitzt das Attribut `List<Long> ids`, welches die `gemId`s des assoziierten Objekte beinhaltet.
+  * Die `gemId`s werden nicht lazy nachgeladen. Wir gehen davon aus, das eine Assoziation nicht übermäßig viele Objekte besitzt.
+  * Die `gemId`s' korrespondierenden Objekte werden nicht in der GemList gespeichert, sondern bei Bedarf aus dem Manager geladen.
+* Änderungen werden durch Commands synchronisiert.
+  * Änderungen treten bei den Methoden `set`, `add`, und `remove` auf.
+  * Die `GemList<.>` Klasse selbst besitzt keine Form von Synchronization, die internen Methoden `_internal_addAndSync`, etc. werden von Subklassen der `GemList<.>` Klasse implementiert. Diese nutzen die Synchronization vorhanden in den Domain Klassen wie `Person::_internal_addOwns`, damit es bei einer einzigen Implementierung zur Synchronization bleibt. Das tatsächlich Ändern der Liste wird dann in e.g. `Person::_internal_addOwns` durch Verwendung von `GemList<.>::_internal_add` getätigt, wodurch die interne Logik des Änderns einer Liste bei Verwendung des `java.util.List<.>` Interface der `GemList<.>` und der Domainklassenmethoden (z.B. `Person::addOwns`) dieselbe ist.
+Die Subklassenhierachy der `GemList<.>` ist im Beispiel `Person_OwnsGemList` erbt von `GemListBuilder<Car>`, welche von `GemList<Car>` erbt. Entsprechend sind alle assoziationsspezifischen `GemList<.>` Subklassen Builder.
+  * `GemListBuilder<.>` ist identisch zu einer GemList mit der Ausnahme, dass nicht synchronisiert wird, bis `build()` aufgerufen wird. Bei Aufruf von `build` werden alle Elemente der Liste synchronisiert und ab dann verhält sich das `GemListBuilder<.>` Objekt identisch zu einem korrespondierenden `GemList<.>` Objekt.
+  * Die assoziationsspezifischen `GemList<.>` Klassen wie `Person_OwnsGemList` verhalten sich wie `GemListBuilder<.>`, sie haben intern die Logik zur Synchronization und zum Laden der assoziierten Objekte anhand von GemIds. Da sie jeweils zu einem Domain-Objekt gehören, wird deren Konstuktor die GemID des entsprechenden assoziierenden Objekts übergeben.
 
 ## Datenmanagement
 
