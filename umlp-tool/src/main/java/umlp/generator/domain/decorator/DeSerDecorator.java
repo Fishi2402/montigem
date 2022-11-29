@@ -5,6 +5,7 @@ import de.monticore.cd.methodtemplates.CD4CTemplateHelper;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import umlp.UMLPMill;
 
@@ -13,8 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DeSerDecorator extends DomainClassDecorator{
-  public DeSerDecorator(GlobalExtensionManagement glex) {
-    super(glex);
+  public DeSerDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
+    super(glex, hwPath);
   }
 
   @Override

@@ -3,11 +3,9 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDPackage;
-import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
@@ -39,8 +37,10 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
 
     // Attributes
     getCD4C().addAttribute(collectorClass, "protected static " + domainClass.getName() + "ErrorCollector instance;");
-    // TODO:  CD4Code kann das nicht parsen "= new ArrayList<>()". Ist das erlaubt?
-    getCD4C().addAttribute(collectorClass, "protected List<" + domainClass.getName() + "ErrorObserver> observers;");
+    // TODO:  CD4Code kann das nicht parsen "= new ArrayList<>()". Ursache ist die fehlende Super-Grammatik
+    // JavaClassExpression
+    ASTCDAttribute attr = getCD4C().addAttribute(collectorClass, "protected List<" + domainClass.getName() + "ErrorObserver> observers;");
+    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new ArrayList<>()"));
 
     // Methods
     getCD4C().addMethod(collectorClass, "umlp.errorcollector.Init", domainClass.getName());

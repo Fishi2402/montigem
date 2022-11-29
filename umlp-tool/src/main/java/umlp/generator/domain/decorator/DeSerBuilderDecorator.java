@@ -6,6 +6,7 @@ import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.io.paths.MCPath;
 import umlp.UMLPMill;
 
 import java.util.List;
@@ -18,8 +19,8 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
 
   public static final String DESER_BUILDER_SUFFIX = "DeSerBuilder";
 
-  public DeSerBuilderDecorator(final GlobalExtensionManagement glex) {
-    super(glex);
+  public DeSerBuilderDecorator(final GlobalExtensionManagement glex, MCPath hwPath) {
+    super(glex, hwPath);
   }
 
   public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {

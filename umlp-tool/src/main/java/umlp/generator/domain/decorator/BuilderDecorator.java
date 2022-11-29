@@ -73,7 +73,7 @@ public class BuilderDecorator extends AbstractDecorator {
     builderClass.addAllCDMembers(methodDecorator.decorate(finishedAttr));
     builderClass.addAllCDMembers(methodDecorator.decorate(internalAttr));
     createSetAndCheckMethods(domainClass, builderClass, attrFields, attrAssocs);
-    getCD4C().addMethod(builderClass, "umlp.builder.Build", domainClass.getName(), attrAssocLists);
+    getCD4C().addMethod(builderClass, "umlp.builder.Build", domainClass.getName(), managerName, attrAssocLists);
     getCD4C().addMethod(builderClass, "umlp.builder.IsBuildable", attrList);
 
     // Imports

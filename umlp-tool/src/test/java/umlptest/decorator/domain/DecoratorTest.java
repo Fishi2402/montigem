@@ -20,6 +20,7 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.MCPath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -40,6 +41,8 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
   protected ASTCDCompilationUnit decoratedAST;
 
   protected GeneratorSetup genSetup = getGenSetup();
+
+  protected MCPath hwPath = new MCPath();
 
   @BeforeAll
   public static void initLog() {

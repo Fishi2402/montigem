@@ -39,15 +39,17 @@ public abstract class UMLPTask extends DefaultTask {
   final String UMLP_TASK_DEBUG = "de.rwth.se.umlp.debug";
   final String ORG_GRADLE_PARALLEL = "org.gradle.parallel";
 
-  @Incremental
+  @SkipWhenEmpty    // Implies @Incremental. Do nothing if no input model exists
   @InputFiles
   @PathSensitive(PathSensitivity.RELATIVE)
+  @IgnoreEmptyDirectories
   abstract ConfigurableFileCollection getInput();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental
+  @Incremental    // No full rebuild, when only HWC-Directory is changed. Requires logic in Task Execution!
+  @IgnoreEmptyDirectories
   abstract DirectoryProperty getHwcDir();
 
   @InputDirectory
@@ -65,6 +67,8 @@ public abstract class UMLPTask extends DefaultTask {
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
+  @IgnoreEmptyDirectories
+  // Do not add "@Incremental" (unless you really know what you are doing)
   abstract DirectoryProperty getTmplDir();
 
   @Input

@@ -47,13 +47,12 @@ public class IncGenData {
             // TODO: Better
         });
       } catch (Exception e) {
-        Log.warn("Error parsing report from previous run. Incremental check not working. \n" +
+        Log.error("0xdf60e Error parsing report from previous run. Incremental check not working. \n" +
             e.getMessage());
-        Log.error("Aborting", e);
         reportExists = false;
       }
     } else {
-      Log.warn("Report from previous run not found. No incremental check");
+      Log.warn("Report from previous run not found. No incremental build.");
       reportExists = false;
     }
   }
@@ -62,9 +61,6 @@ public class IncGenData {
     if (line.startsWith(prefix)) {
       String path = line.substring(prefix.length(), line.length() - deleteSuffix);
       try {
-        Log.info(this.basePath.getAbsolutePath(), "ASD");
-        Log.info("Found path in old Run file: " + Paths.get(this.basePath.getAbsolutePath(), path).toFile().getCanonicalFile().toPath().toString(),
-            this.getClass().getName());
         store.add(Paths.get(this.basePath.getAbsolutePath(), path).toFile().getCanonicalFile());
       } catch (IOException e) {
         throw new RuntimeException(e);
@@ -74,7 +70,7 @@ public class IncGenData {
 
   public void deleteGeneratedFiles() {
     generatedFiles.forEach(toDelete -> {
-      Log.warn("\t Delete " + toDelete.getPath());
+      Log.info("\t Delete " + toDelete.getPath(), this.getClass().getName());
       toDelete.delete();
     });
   }
@@ -106,10 +102,9 @@ public class IncGenData {
           .filter(this::isRelevantChange)
           .findAny();
       if(change.isPresent()){
-        Log.info("Not UP-TO-DATE! Changed: " + change.get().getChangeType() + " on " + change.get().getFile().getAbsolutePath()
-        , this.getClass().getName());;
+        Log.warn("Not UP-TO-DATE! Changed: " + change.get().getChangeType() + " on " + change.get().getFile().getAbsolutePath());;
       }
-      return !change.isPresent();
+      return change.isEmpty();
     }
   }
 }
