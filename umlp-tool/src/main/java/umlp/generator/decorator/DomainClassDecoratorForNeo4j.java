@@ -5,15 +5,17 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.MCPath;
 
 public class DomainClassDecoratorForNeo4j extends DomainClassDecorator {
 
-  public DomainClassDecoratorForNeo4j(final GlobalExtensionManagement glex) {
-    super(glex);
+  public DomainClassDecoratorForNeo4j(final GlobalExtensionManagement glex, MCPath hwPath) {
+    super(glex, hwPath);
   }
 
   @Override
-  protected void setClassAnnotationTemplate(ASTCDClass clazz) {
+  protected void setClassAnnotationTemplate(ASTCDClass clazz, String mangerName,
+                                            boolean hasSuperClass, boolean hasTop) {
     glex.replaceTemplate("cd2java.Annotations", clazz,
         new TemplateHookPoint("umlp.neo4jannotations.Neo4jClassAnnotation", clazz.getName()));
   }

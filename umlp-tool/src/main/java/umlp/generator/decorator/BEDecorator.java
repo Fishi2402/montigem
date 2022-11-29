@@ -2,25 +2,31 @@ package umlp.generator.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 
 public class BEDecorator extends AbstractDecorator {
 
   boolean neo4j = false;
 
-  public BEDecorator(GlobalExtensionManagement glex) {
+  protected MCPath hwPath;
+
+  public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
     super(glex);
+    this.hwPath = hwPath;
   }
 
-  public BEDecorator(GlobalExtensionManagement glex, boolean neo4j) {super((glex));
-    this.neo4j = neo4j;}
+  public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath, boolean neo4j) {super((glex));
+    this.neo4j = neo4j;
+    this.hwPath = hwPath;
+  }
 
   @Override
   public void transform(ASTCDCompilationUnit cdAST, ASTCDCompilationUnit decoratedAST) {
     DomainClassDecorator domainClassDecorator;
 
     if(neo4j) {
-      domainClassDecorator = new DomainClassDecoratorForNeo4j(glex);
+      domainClassDecorator = new DomainClassDecoratorForNeo4j(glex, hwPath);
       domainClassDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
 
@@ -28,13 +34,13 @@ public class BEDecorator extends AbstractDecorator {
       repositoryDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: RepositoryDecorator", BEDecorator.class.getName());
     } else {
-      domainClassDecorator = new DomainClassDecorator(glex);
+      domainClassDecorator = new DomainClassDecorator(glex, hwPath);
       domainClassDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
     }
 
     // Generate DeSer
-    DeSerDecorator deSerDecorator = new DeSerDecorator(glex);
+    DeSerDecorator deSerDecorator = new DeSerDecorator(glex, hwPath);
     deSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DeSerDecorator", BEDecorator.class.getName());
 
@@ -44,7 +50,7 @@ public class BEDecorator extends AbstractDecorator {
     Log.info("After decorator: BuilderDecorator", BEDecorator.class.getName());
 
     // Generate DeSer builder classes
-    DeSerBuilderDecorator deSerBuilderDecorator = new DeSerBuilderDecorator(glex);
+    DeSerBuilderDecorator deSerBuilderDecorator = new DeSerBuilderDecorator(glex, hwPath);
     deSerBuilderDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DeSerBuilderDecorator", BEDecorator.class.getName());
 
@@ -104,6 +110,9 @@ public class BEDecorator extends AbstractDecorator {
     gemListDomainDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: GemListDomainDecorator", BEDecorator.class.getName());
 
+    TuplizerDecorator tuplitzerDecorator = new TuplizerDecorator(glex);
+    tuplitzerDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: TuplizerDecorator", BEDecorator.class.getName());
   }
 
 }

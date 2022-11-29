@@ -11,11 +11,11 @@ import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
-import de.monticore.cdinterfaceandenum._ast.ASTCDEnumBuilder;
+import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.MCPath;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
@@ -32,9 +32,12 @@ import static umlp.generator.decorator.GenService.createType;
 
 public class DomainClassDecorator extends AbstractDecorator {
 
+  protected final MCPath hwPath;
 
-  public DomainClassDecorator(final GlobalExtensionManagement glex) {
+  public DomainClassDecorator(final GlobalExtensionManagement glex,
+                              MCPath hwPath) {
     super(glex);
+    this.hwPath = hwPath;
   }
 
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
@@ -61,7 +64,9 @@ public class DomainClassDecorator extends AbstractDecorator {
               .createCDExtendUsage(domainClass.getCDExtendUsage().getSuperclass(0).deepClone()));
     }
     ASTCDClass clazz = builder.build();
-    setClassAnnotationTemplate(clazz);
+
+    setClassAnnotationTemplate(clazz, name, domainClass.isPresentCDExtendUsage(),
+            GeneratorEngine.existsHandwrittenClass(hwPath, domainClass.getName()));
 
     // Constructors
     getCD4C().addConstructor(clazz, "umlp.domain.Constructor", domainClass.getName());
@@ -106,9 +111,11 @@ public class DomainClassDecorator extends AbstractDecorator {
         new TemplateHookPoint("umlp.domain.GemAnnotations"));
   }
 
-  protected void setClassAnnotationTemplate(ASTCDClass clazz) {
+  protected void setClassAnnotationTemplate(ASTCDClass clazz, String mangerName,
+                                            boolean hasSuperClass, boolean hasTop) {
     glex.replaceTemplate("cd2java.Annotations", clazz,
-        new TemplateHookPoint("umlp.domain.ClassAnnotations", clazz.getName()));
+        new TemplateHookPoint("umlp.domain.ClassAnnotations",
+                clazz.getName(), mangerName, hasSuperClass, hasTop));
   }
 
   protected AttributesTuple getAllAttributes(ASTCDClass domainClass) {
@@ -215,6 +222,7 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
   }
 
   protected void addDBAnnotationInfo(ASTCDType clazz) {
+    getCD4C().addImport(clazz, "org.hibernate.annotations.Tuplizer");
     getCD4C().addImport(clazz, "org.hibernate.annotations.GenericGenerator");
     getCD4C().addImport(clazz, "javax.persistence.*");
   }

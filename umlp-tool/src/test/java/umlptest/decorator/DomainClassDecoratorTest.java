@@ -12,7 +12,7 @@ public class DomainClassDecoratorTest extends DecoratorTest {
 
   @Override
   protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
-    return new DomainClassDecorator(glex);
+    return new DomainClassDecorator(glex, hwPath);
   }
 
   @Test
