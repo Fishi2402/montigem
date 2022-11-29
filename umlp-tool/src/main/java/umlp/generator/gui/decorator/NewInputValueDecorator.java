@@ -13,7 +13,7 @@ public class NewInputValueDecorator extends InputValueDecorator {
   }
 
   protected void addNotifyMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String attrName) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.input.Notify",
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.input.Notify",
         "notify" + StringTransformations.capitalize(attrName) + "Invalid", StringTransformations.uncapitalize(guiComponent.getName()));
   }
 
@@ -23,12 +23,12 @@ public class NewInputValueDecorator extends InputValueDecorator {
   }
 
   protected void addGetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String returnExpr, String returnType) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.GetComponent", "get" + guiComponent.getName() + componentName,
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.GetComponent", "get" + guiComponent.getName() + componentName,
         returnType, returnExpr);
   }
 
   protected void addSetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String attrType, String attrName, String setExpr) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.SetComponent", "set" + guiComponent.getName() + componentName,
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.SetComponent", "set" + guiComponent.getName() + componentName,
         attrType, attrName, setExpr);
   }
 

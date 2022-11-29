@@ -24,13 +24,8 @@ import java.util.stream.Collectors;
 
 public class CallDecorator extends GUIComponentDecorator {
 
-  public static final Predicate<ASTGUINamedArg> PREDICATE_INPUT_ARG = c -> c.getName().equals(INPUT_ARG_NAME);
-  private final IGUIDSLScope artifactScope;
-  private TypeCalculator tc;
-
   public CallDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
     super(glex, guiAst);
-    this.artifactScope = guiAst.getEnclosingScope();
   }
 
   @Override
@@ -38,8 +33,6 @@ public class CallDecorator extends GUIComponentDecorator {
     // Get all ASTGUIComponents
     GUIComponentAccessVisitor viewComponents = new GUIComponentAccessVisitor(guiComponent);
     List<ASTCallExpression> allCalls = viewComponents.getCallExpressions();
-
-    tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
 
     allCalls.forEach(call -> {
           if (!isNavigateComponent(call)) {
@@ -59,7 +52,7 @@ public class CallDecorator extends GUIComponentDecorator {
               }
               sb.append(typeInfo.getName()).append(" ").append(paramName); //TODO MB
             }
-            getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.Call",
+            getCD4C().addMethod(decoratedClass, "umlp.gui2java.Call",
                 getMethodName(call), sb.toString()
                 /* new GUIDSLFullPrettyPrinter().prettyprint(call))*/);
           }
@@ -69,7 +62,7 @@ public class CallDecorator extends GUIComponentDecorator {
             List<String> args = arg.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> a.getExpression() instanceof ASTNameExpression)
                 .map(a -> ((ASTNameExpression) a.getExpression()).getName()).collect(Collectors.toList());
             String result = String.join(",", args);
-            getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.Navigate",
+            getCD4C().addMethod(decoratedClass, "umlp.gui2java.Navigate",
                 "navigate", arg.getName(), result);
           }
         }

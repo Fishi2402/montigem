@@ -51,12 +51,12 @@ public abstract class GUIComponentDecorator extends GUIAbstractDecorator {
   }
 
   protected void addGetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String returnExpr, String returnType) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.GetComponent", "get" + guiComponent.getName(),
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.GetComponent", "get" + guiComponent.getName(),
         returnType, returnExpr);
   }
 
   protected void addSetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String attrType, String attrName, String setExpr) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.SetComponent", "set" + guiComponent.getName(),
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.SetComponent", "set" + guiComponent.getName(),
         attrType, attrName, setExpr);
   }
 

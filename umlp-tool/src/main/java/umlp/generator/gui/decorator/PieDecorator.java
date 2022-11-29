@@ -48,14 +48,11 @@ public class PieDecorator extends GUIComponentDecorator {
       decoratedClass.addAllCDMembers(decorator.decorate(entriesAttribute));
 
       if (pie.get().getExpression() instanceof ASTCallExpression) {
-        pieEntriesArgs.addAll(((ASTCallExpression) pie.get().getExpression()).getArguments().getExpressionList().stream().map(e -> guiDSLPrinter.prettyprint(e)).collect(Collectors.toList()));
+        pieEntriesArgs.addAll(((ASTCallExpression) pie.get().getExpression()).getArguments().getExpressionList().stream().map(e
+            -> guiDSLPrinter.prettyprint(e)).collect(Collectors.toList()));
       }
 
     }
-
-    //  getCD4C().addAttribute(decoratedClass, true, true, "protected List<? extends Object> rows = new ArrayList<>()"); // Funktioniert nicht wegen der Zuweisung
-    //  getCD4C().addAttribute(decoratedClass, true, true, "protected List<Col> tableColumns = new ArrayList<>()");
-
   }
 
   @Override

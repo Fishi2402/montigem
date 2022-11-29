@@ -33,7 +33,7 @@ page ShowCityInfo(CityInfo ci) {
 
   // list of cities
   @Text(value = "List of cities"); //0xA0241 The expression at source position ShowCityInfo.gui:<36,23> cannot be calculated.
-  iterate(cityName : ci.cities) {
+  @iterate(cityName : ci.cities) {
     @TextInput(value = cityName);
   }
 }

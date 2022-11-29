@@ -37,6 +37,14 @@ public class UMLPToolTest extends AbstractUMLPTest {
   }
 
   @Test
+  public void testRunMethodGuiDef() {
+    UMLPTool tool = new UMLPTool();
+    tool.run(new String[]{"-i", "src/test/resources/umlp/gui/NumberInput.gui",
+        "-path", "src/test/resources", "-s", "src/test/resources/umlp/gui/NumberInput.guisym"});
+    assertNoErrors();
+  }
+
+  @Test
   public void testRunMethodGui1() {
     UMLPTool tool = new UMLPTool();
     tool.run(new String[]{"-i", "src/test/resources/stanley/editierepersoncars/EditierePersonCars.gui",

@@ -8,6 +8,7 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._symboltable.GUIDSLScope;
+import de.monticore.guidsl._symboltable.GUIFunctionSymbol;
 import de.monticore.guidsl._symboltable.GUIVariableSymbol;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
@@ -33,7 +34,6 @@ public class InputValueDecorator extends GUIComponentDecorator {
 
   @Override
   public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
-
     // Get all ASTGUIComponents
     GUIComponentAccessVisitor viewComponents = new GUIComponentAccessVisitor(guiComponent);
     List<ASTFieldAccessExpression> allZuweisungen = viewComponents.getFieldAccess();
@@ -65,7 +65,7 @@ public class InputValueDecorator extends GUIComponentDecorator {
   }
 
   protected void addNotifyMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String attrName) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.input.Notify",
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.input.Notify",
         "notify" + StringTransformations.capitalize(attrName) + "Invalid", StringTransformations.uncapitalize(guiComponent.getName() + componentName));
   }
 
@@ -75,12 +75,12 @@ public class InputValueDecorator extends GUIComponentDecorator {
   }
 
   protected void addGetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String returnExpr, String returnType) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.GetComponent", "get" + guiComponent.getName() + componentName,
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.GetComponent", "get" + guiComponent.getName() + componentName,
         returnType, returnExpr);
   }
 
   protected void addSetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String attrType, String attrName, String setExpr) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.components.SetComponent", "set" + guiComponent.getName() + componentName,
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.SetComponent", "set" + guiComponent.getName() + componentName,
         attrType, attrName, setExpr);
   }
 

@@ -6,9 +6,13 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIComponentsAccessVisitor;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static umlp.generator.gui.GUIGeneratorUtil.isInputGui;
 
 public class GUIDecorator extends GUIAbstractDecorator {
 
@@ -22,16 +26,14 @@ public class GUIDecorator extends GUIAbstractDecorator {
 
     // Get all ASTGUIComponents
     GUIComponentsAccessVisitor viewComponents = new GUIComponentsAccessVisitor(guiAst);
-    List<ASTGUIComponent> allComponents = viewComponents.getComponents();
 
-    filterComponentsWithPredicate(allComponents, PREDICATE_TEXT_INPUT).forEach(inputComponents::add);
-    filterComponentsWithPredicate(allComponents, PREDICATE_NUMBER_INPUT).forEach(inputComponents::add);
+    boolean isInputGui = isInputGui(guiAst, viewComponents.getComponents().stream().filter(GUIGeneratorUtil::isInputComponent).collect(Collectors.toList()));
 
-    DomainRefDecorator domainRefDecorator = new DomainRefDecorator(glex, inputComponents);
+    DomainRefDecorator domainRefDecorator = new DomainRefDecorator(glex, isInputGui);
     domainRefDecorator.transform(guiAst, decoratedAST);
     Log.info("After decorator: DomainRefDecorator", DomainRefDecorator.class.getName());
 
-    GUIComponentsDecorator componentsDecorator = new GUIComponentsDecorator(glex, viewComponents, inputComponents);
+    GUIComponentsDecorator componentsDecorator = new GUIComponentsDecorator(glex, viewComponents);
     componentsDecorator.transform(guiAst, domainRefDecorator.getDecoratedClass());
     domainRefDecorator.getCreateInputValueClass().ifPresent(createClass -> componentsDecorator.transform(guiAst, createClass));
     Log.info("After decorator: GUIComponentsDecorator", GUIComponentsDecorator.class.getName());

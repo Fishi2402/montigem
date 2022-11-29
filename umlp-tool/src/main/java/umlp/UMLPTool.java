@@ -16,15 +16,15 @@ import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
-import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
-import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
+import de.monticore.guidsl._symboltable.*;
+import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
+import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
+import de.monticore.symbols.basicsymbols._symboltable.*;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 import umlp._cocos.UMLPCoCos;
@@ -207,7 +207,7 @@ public class UMLPTool extends UMLPToolTOP {
         GUIDSLMill.init();
         // parse, create symbol table, check all cocos
         ASTGUICompilationUnit astGui = parseGUI(inputFile.getPath());
-        //  Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on);
+        Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on);
 
         MCPath mcPath = new MCPath();
         if (PATH.isSelected(cmd)) {
@@ -216,6 +216,14 @@ public class UMLPTool extends UMLPToolTOP {
           }
         }
         IGUIDSLArtifactScope symbolTableGui = createSymbolTable(astGui, mcPath);
+      /*  Optional<TypeSymbol> t1 = symbolTableGui.resolveType("Person");
+        Optional<TypeSymbol> t2 = symbolTableGui.resolveType("String");*/
+
+        Optional<GUIFunctionSymbol> d1 = symbolTableGui.resolveGUIFunction("TextInput");
+        if (d1.isPresent()) {
+          Optional<VariableSymbol> v1 = d1.get().getEnclosingScope().resolveVariable("value");
+        }
+
 
         GeneratorSetup genSetup = new GeneratorSetup();
         // set output directory
@@ -233,7 +241,7 @@ public class UMLPTool extends UMLPToolTOP {
         generator.generate(astGui, configTemplate);
 
         // write reports
-        Reporting.flush(astGui);
+//        Reporting.flush(astGui);
       }
     }
     catch (ParseException e) {
@@ -297,7 +305,7 @@ public class UMLPTool extends UMLPToolTOP {
 
   // TODO MB - einkommentieren
   protected boolean isGuiFile(File f) {
-    return false; //return f.getName().endsWith(".gui");
+    return f.getName().endsWith(".gui");
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {
@@ -348,7 +356,6 @@ public class UMLPTool extends UMLPToolTOP {
     IGUIDSLArtifactScope as = GUIDSLMill.scopesGenitorDelegator().createFromAST(ast);
     return as;
   }
-
 
   public static void main(String[] args) {
     Log.ensureInitalization(); // by default, don't use SLF4J log

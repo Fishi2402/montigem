@@ -2,7 +2,6 @@ package umlp.generator.gui.decorator;
 
 import com.google.common.collect.Lists;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
@@ -27,17 +26,11 @@ import java.util.stream.Collectors;
 
 public abstract class GUIAbstractDecorator extends AbstractDecorator {
 
-  public static final String LEFT_CLICK = "leftClick";
-
-  public static final Predicate<ASTGUIComponent> PREDICATE_TEXT_INPUT = c -> c.getQualifiedName().equals("umlp.gui.TextInput");
-  public static final Predicate<ASTGUIComponent> PREDICATE_NUMBER_INPUT = c -> c.getQualifiedName().equals("umlp.gui.NumberInput");
-  public static final Predicate<ASTGUIComponent> PREDICATE_BUTTON = c -> c.getQualifiedName().equals("umlp.gui.Button");
+  //public static final Predicate<ASTGUIComponent> PREDICATE_BUTTON = c -> c.getQualifiedName().equals("umlp.gui.Button");
   public static final Predicate<ASTGUIComponent> PREDICATE_TABLE = c -> c.getQualifiedName().equals("umlp.gui.Table");
   public static final Predicate<ASTGUIComponent> PREDICATE_PIE = c -> c.getQualifiedName().equals("umlp.gui.Pie");
   public static final Predicate<ASTGUIComponent> PREDICATE_NOT_TABLE = c -> !c.getQualifiedName().equals("umlp.gui.Table");
-  public static final Predicate<ASTGUIComponent> PREDICATE_NOT_BUTTON = c -> !c.getQualifiedName().equals("umlp.gui.Button");
-
-  public static final Predicate<ASTGUINamedArg> PREDICATE_LEFTCLICK = c -> c.getName().equals(LEFT_CLICK);
+  //public static final Predicate<ASTGUIComponent> PREDICATE_NOT_BUTTON = c -> !c.getQualifiedName().equals("umlp.gui.Button");
 
   public static final String COMPONENT_SUFFIX = "";
   public static final String CREATE_INPUT_VALUE_SUFFIX = "Create";
@@ -80,7 +73,7 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
   }
 
   protected static List<ASTGUINamedArg> filterArgumentsWithPredicate(List<ASTGUINamedArg> components,
-                                                                              Predicate<ASTGUINamedArg> predicate) {
+                                                                     Predicate<ASTGUINamedArg> predicate) {
     return components.stream().filter(predicate).collect(Collectors.toList());
   }
 
