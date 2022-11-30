@@ -137,6 +137,10 @@ public class Address implements GemIdentifiable, GemBuildable {
     addressObservers.forEach(obs -> obs.maybeNotifyAddVisitor(this, personGemId, indexInList, scope));
   }
 
+  public List<Person> getVisitor() {
+    return visitors;
+  }
+
   // TODO: mark as internal!
   public GemList<Person> getVisitorGemList() {
     return visitors;

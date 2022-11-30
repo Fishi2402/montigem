@@ -62,6 +62,18 @@ public abstract class PersonTOP extends Human {
   protected GemList<Address> visited;
   // TODO AHe: add/remove/...
 
+  public List<Car> getOwns() {
+    return owns;
+  }
+
+  public List<Person> getChildren() {
+    return children;
+  }
+
+  public List<Address> getVisited() {
+    return visited;
+  }
+
 
   //+ Bem: insgesamt sind es etwa 30 generierte Ftnen, von denen hier
   // nur einige dargestellt sind
@@ -402,11 +414,6 @@ public abstract class PersonTOP extends Human {
   //- todo dito
 
   // -----------------------------------------------------------------
-
-  // TODO add children
-  public List<Person> getChildren() {
-    return new ArrayList();
-  }
 
   /**
    * Derived attribute becomes an abstract Method for calculation
