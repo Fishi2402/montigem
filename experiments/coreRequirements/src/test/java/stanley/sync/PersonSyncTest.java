@@ -197,6 +197,44 @@ public class PersonSyncTest {
   }
 
   @Test
+  public void testAddOwnsIsSyncedToClientWithListInterface(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Create a Person @ client", "PersonSyncTest");
+    clientContext.activate();
+    PersonBuilder pb1001 = FlensburgManager.personBuilder();
+    Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
+    List<Car> p1001Owns = p1001.getOwns();
+
+    Log.info("Check owns is empty in Server", "PersonSyncTest");
+    serverContext.activate();
+    Person p1001Server = FlensburgManager.getPersonSure(startGemId);
+    List<Car> p1001ServerOwns = p1001Server.getOwns();
+    assertNotSame(p1001, p1001Server);
+    assertTrue(p1001ServerOwns.isEmpty());
+
+    for (int i = 0; i < 10; i++) {
+      Log.info("Add Car " + i + " from Server", "PersonSyncTest");
+      serverContext.activate();
+      Car c_i_server = FlensburgManager.carBuilder().build().get();
+      p1001ServerOwns.add(c_i_server);
+
+      Log.info("Check it is synced to the client", "PersonSyncTest");
+      clientContext.activate();
+      assertEquals(i + 1, p1001Owns.size());
+      Car c_i_client = p1001Owns.get(i);
+      assertNotNull(c_i_client);
+      assertNotSame(c_i_server, c_i_client);
+      assertEquals(c_i_server.getGemId(), c_i_client.getGemId());
+    }
+  }
+
+  @Test
   public void testExistingOwsIsLoadedOnClient(){
     FlensburgMock.init();
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
