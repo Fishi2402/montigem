@@ -26,7 +26,7 @@ public class AssocsDecoratorTest extends DecoratorTest {
             () -> existsMethod(clazz, "checkOwns2"),
             () -> existsMethod(clazz, "clearOwns2s"),
             () -> existsMethod(clazz, "getOwns2"),
-            () -> existsMethod(clazz, "getOwns2GemList"),
+            () -> existsMethod(clazz, "_internal_getOwns2GemList"),
             () -> existsMethod(clazz, "addOwns2"),
             () -> existsMethod(clazz, "addAllOwns2s"),
             () -> existsMethod(clazz, "removeOwns2"),
