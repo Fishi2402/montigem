@@ -399,7 +399,8 @@ public class PersonSyncTest {
     PersonBuilder pb1001 = FlensburgManager.personBuilder();
     Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
     Car c = FlensburgManager.carBuilder().build().get();
-    Person p1001 = pb1001.ownsAdd(c).mainResidence(addr).age(20).nickname("Smith").build().get();
+    pb1001.getOwns().add(c);
+    Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
     List<Car> p1001Owns = p1001.getOwns();
 
     clientContext.activate();
@@ -441,6 +442,37 @@ public class PersonSyncTest {
 
     clientContext.activate();
     assertEquals(0, p1001Client.sizeOwnss());
+  }
+
+  @Test
+  public void testRemoveFromGemListInServerWithListInterface(){
+    FlensburgMock.init();
+    FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
+    long startGemId = 1001L;
+    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
+
+    Log.info("Create a Person with car @ server", "PersonSyncTest");
+    serverContext.activate();
+    PersonBuilder pb1001 = FlensburgManager.personBuilder();
+    Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Car c = FlensburgManager.carBuilder().build().get();
+    pb1001.getOwns().add(c);
+    Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
+    List<Car> p1001Owns = p1001.getOwns();
+
+    clientContext.activate();
+    Person p1001Client = FlensburgManager.getPersonSure(startGemId);
+    List<Car> p1001ClientOwns = p1001Client.getOwns();
+    assertNotSame(p1001Owns, p1001ClientOwns);
+    assertEquals(1, p1001ClientOwns.size());
+
+    serverContext.activate();
+    p1001Owns.remove(c);
+    assertEquals(0, p1001Owns.size());
+
+    clientContext.activate();
+    assertEquals(0, p1001ClientOwns.size());
   }
 
   @Test
