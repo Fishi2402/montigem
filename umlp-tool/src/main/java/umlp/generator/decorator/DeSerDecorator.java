@@ -75,6 +75,9 @@ public class DeSerDecorator extends DomainClassDecorator{
       gemAttributes,
       gemListAttributes
     );
+    getCD4C().addMethod(deSer, "umlp.deser.BuildJson", originalClassName, attrList);
+    getCD4C().addMethod(deSer, "umlp.deser.FromJson", originalClassName);
+
 
     CD4CTemplateHelper th = new CD4CTemplateHelper();
     th.method("protected void serialize_Addons(" + cdClass.getName() + " obj, JsonPrinter jsonPrinter)");
