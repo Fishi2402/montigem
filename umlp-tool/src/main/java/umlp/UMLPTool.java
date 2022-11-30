@@ -12,19 +12,20 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
-import de.monticore.guidsl._symboltable.*;
-import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
-import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
+import de.monticore.guidsl._symboltable.GUIFunctionSymbol;
+import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
+import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.*;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 import umlp._cocos.UMLPCoCos;
@@ -77,7 +78,8 @@ public class UMLPTool extends UMLPToolTOP {
   public void run(String[] args) {
     //init CLI options
     Options options = initOptions();
-    UMLPReports reportManagerFactory = null;
+    UMLPReports umlp_reportManagerFactory = null;
+    GUIDSLReports guidsl_reportManagerFactory = null;
 
     try {
       CommandLineParser parser = new DefaultParser();
@@ -116,7 +118,6 @@ public class UMLPTool extends UMLPToolTOP {
         reportPathOutput = Path::toAbsolutePath;
       }
 
-
       MCPath modelPath = new MCPath();
       if (INPUT.isSelected(cmd)) {
         for (String v : cmd.getOptionValues(INPUT.getCMD())) {
@@ -136,13 +137,14 @@ public class UMLPTool extends UMLPToolTOP {
           fpPath.addEntry(Paths.get(v));
         }
       }
-      reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
-
-      Reporting.init(outDir.getPath(), reportDir.getPath(), reportManagerFactory);
-      String report_on = inputFile.getName().replace(".","__");   // TODO: Is this name unique? Should it be unique?
-      Reporting.on(report_on);
 
       if (isUmlpFile(inputFile)) {
+        umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
+
+        Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
+        String report_on = inputFile.getName().replace(".","__");   // TODO: Is this name unique? Should it be unique?
+        Reporting.on(report_on);
+
         UMLPMill.init();
         BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
 
@@ -201,6 +203,11 @@ public class UMLPTool extends UMLPToolTOP {
         ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
       }
       else if (isGuiFile(inputFile)) {
+        guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
+
+        Reporting.init(outDir.getPath(), reportDir.getPath(), guidsl_reportManagerFactory);
+        String report_on = inputFile.getName().replace(".","__");   // TODO: Is this name unique? Should it be unique?
+        Reporting.on(report_on);
 
         GUIDSLMill.init();
         // parse, create symbol table, check all cocos
@@ -239,7 +246,7 @@ public class UMLPTool extends UMLPToolTOP {
         generator.generate(astGui, configTemplate);
 
         // write reports
-//        Reporting.flush(astGui);
+        Reporting.flush(astGui);
       }
     }
     catch (ParseException e) {
@@ -249,8 +256,11 @@ public class UMLPTool extends UMLPToolTOP {
     finally {
       UMLPMill.globalScope().clear();
       Reporting.off();
-      if(reportManagerFactory != null){
-        reportManagerFactory.close();
+      if(umlp_reportManagerFactory != null){
+        umlp_reportManagerFactory.close();
+      }
+      if(guidsl_reportManagerFactory != null){
+        guidsl_reportManagerFactory.close();
       }
     }
   }
