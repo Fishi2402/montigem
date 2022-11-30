@@ -51,6 +51,6 @@ page NeuePersonAnlegen(Person p) { // "leere" Person
   // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "EditierePersonGUI.java".
   // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
   // deswegen wird eine Methode explizit importiert und aufgerufen
-  @Button(text = "Decrease", leftClick = decreaseAge(p));
+  @Button(text = "Decrease", leftClick = decreaseAge());
 }
 

@@ -1,7 +1,6 @@
 package stanley.editiereperson;
 
 /* HWC-P extends generated java-gui EditierePersonEditTOP, which was generated from this gui-model:
-
 package stanley.editiereperson;
 
 import hardy.Flensburg.Person;

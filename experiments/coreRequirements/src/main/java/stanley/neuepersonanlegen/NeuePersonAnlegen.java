@@ -1,4 +1,4 @@
-package stanley.newpersonanlegen;
+package stanley.neuepersonanlegen;
 
 // HWC-P
 
