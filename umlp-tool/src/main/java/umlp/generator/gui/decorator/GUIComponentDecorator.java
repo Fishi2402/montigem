@@ -103,6 +103,10 @@ public abstract class GUIComponentDecorator extends GUIAbstractDecorator {
     return res;
   }
 
+  protected boolean isCreateClass(ASTCDClass decoratedClass) {
+    return decoratedClass.getName().endsWith(CREATE_INPUT_VALUE_SUFFIX);
+  }
+
   public boolean isNavigateComponent(ASTCallExpression call, TypeCalculator tc) {
     SymTypeExpression res = tc.typeOf(call.getExpression());
     return getMethodName(call).equals("navigate") &&

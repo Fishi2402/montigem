@@ -33,7 +33,10 @@ import static umlp.generator.gui.GUIGeneratorUtil.isDomainType;
 public class DomainRefDecorator extends GUIAbstractDecorator {
 
   public static final String ERROR_OBSERVER = "ErrorObserver";
+  public static final String ERROR_COLLECTOR = "ErrorCollector";
   public static final String BUILDER = "Builder";
+
+  public static final String DOMAIN_PACKAGE = "hardy."; //TODO: remove it when packaging in umlp-symtab does properly
 
   private boolean isInputGui;
 
@@ -87,14 +90,14 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
       createBuildMethod(clazz, domainParams);
 
       // Add constructor
-      getCD4C().addConstructor(clazz, "umlp.gui2java.ConstructorWithBuilder", "Flensburg", className, // TODO MB: Diagramm name UMLPDefSymbol
+      getCD4C().addConstructor(clazz, "umlp.gui2java.ConstructorWithBuilder", "hardy.Flensburg", className, // TODO MB: Diagramm name UMLPDefSymbol
           domainAttributes, guiDSLPrinter);
     }
     else {
       getCD4C().addConstructor(clazz, "umlp.domain.Constructor", className);
     }
 
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), "init");
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(),  "init");
     glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2java.Init"));
     clazz.addCDMember(method);
 
@@ -114,7 +117,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     TypeSymbol typeInfo = astguiParam.getSymbol().getType().getTypeInfo();
 
     // TODO when ST ist fertig: qualified domainTypeName und add import declaration
-    String qualifiedType = "hardy." + typeInfo.getName() + BUILDER; // domainTypeSymbol.getQualifiedName(); //TODO MB
+    String qualifiedType = DOMAIN_PACKAGE + typeInfo.getName() + BUILDER; // domainTypeSymbol.getQualifiedName(); //TODO MB
     String qualifiedTypeP = typeInfo.getFullName();
     // --- end
 
@@ -154,9 +157,10 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         clazz.getCDInterfaceUsage().addAllInterface(observers);
       }
 
-      domainAttributes.forEach(a -> getCD4C().addImport(clazz, guiDSLPrinter.prettyprint(a.getMCType()) + ERROR_OBSERVER));
+      domainAttributes.forEach(a -> getCD4C().addImport(clazz, DOMAIN_PACKAGE + guiDSLPrinter.prettyprint(a.getMCType()) + ERROR_OBSERVER));
+      domainAttributes.forEach(a -> getCD4C().addImport(clazz, DOMAIN_PACKAGE + guiDSLPrinter.prettyprint(a.getMCType()) + ERROR_COLLECTOR));
 
-      ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), "init");
+      ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), "init");
       glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2java.Init"));
       clazz.addCDMember(method);
 
@@ -189,13 +193,13 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
   public String getImport(SymTypeExpression type) { //TODO GV: return List<String> for HashMap usw.
     if (!type.isGenericType()) {
-      return "hardy." + type.getTypeInfo().getName();  //TODO NJ: muss funktionieren  "return typeInfo.getFullName();"
+      return DOMAIN_PACKAGE + type.getTypeInfo().getName();  //TODO NJ: muss funktionieren  "return typeInfo.getFullName();"
     }
     List<SymTypeExpression> arguments = ((SymTypeOfGenerics) type).getArgumentList();
     if (arguments.isEmpty()) {
       return "";
     }
-    return "hardy." + arguments.get(0).getTypeInfo().getName();   //TODO NJ: muss funktionieren  "return typeInfo.getFullName();"
+    return DOMAIN_PACKAGE + arguments.get(0).getTypeInfo().getName();   //TODO NJ: muss funktionieren  "return typeInfo.getFullName();"
   }
 
   protected boolean isModelImport(ASTMCImportStatement i) {
@@ -207,7 +211,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   }
 
   protected boolean isCD(ASTMCImportStatement i) { // TODO MB umlpsym UMLPDefSymbol
-    return "hardy.Flensburg".equals(i.getQName());
+    return i.getQName().startsWith("hardy.Flensburg");
   }
 
   public Optional<ASTCDClass> getCreateInputValueClass() {

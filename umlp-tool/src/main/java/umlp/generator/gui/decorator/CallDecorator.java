@@ -22,6 +22,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static umlp.generator.gui.decorator.DomainRefDecorator.BUILDER;
+
 public class CallDecorator extends GUIComponentDecorator {
 
   public CallDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
@@ -33,6 +35,7 @@ public class CallDecorator extends GUIComponentDecorator {
     // Get all ASTGUIComponents
     GUIComponentAccessVisitor viewComponents = new GUIComponentAccessVisitor(guiComponent);
     List<ASTCallExpression> allCalls = viewComponents.getCallExpressions();
+    boolean isCreate = isCreateClass(decoratedClass);
 
     allCalls.forEach(call -> {
           if (!isNavigateComponent(call)) {
@@ -60,7 +63,7 @@ public class CallDecorator extends GUIComponentDecorator {
             ASTGUIComponent arg = (ASTGUIComponent) call.getArguments().getExpressionList().get(0);
             // GUIFunctionSymbol fS = arg.getNameSymbol();
             List<String> args = arg.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> a.getExpression() instanceof ASTNameExpression)
-                .map(a -> ((ASTNameExpression) a.getExpression()).getName()).collect(Collectors.toList());
+                .map(a -> ((ASTNameExpression) a.getExpression()).getName() + (isCreate? BUILDER: "")).collect(Collectors.toList()); //TODO GV, AGe
             String result = String.join(",", args);
             getCD4C().addMethod(decoratedClass, "umlp.gui2java.Navigate",
                 "navigate", arg.getName(), result);

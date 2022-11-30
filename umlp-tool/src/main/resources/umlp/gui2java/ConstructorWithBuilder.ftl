@@ -2,8 +2,8 @@
 ${tc.signature("diagrammName", "name", "attributes", "guiDSLPrinter")}
 ${cd4c.constructor("protected ${name}()")}
 <#list attributes as attribute>
-    this.${attribute.getName()} = ${diagrammName}Manager.${guiDSLPrinter.prettyprint(attribute.getMCType())};
+    this.${attribute.getName()} = ${diagrammName}Manager.${guiDSLPrinter.prettyprint(attribute.getMCType())?uncap_first}();
 </#list>
-    this.build();
-
     init();
+
+    this.build();
