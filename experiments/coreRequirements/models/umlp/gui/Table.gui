@@ -7,9 +7,9 @@ import umlp.gui.TableTypes.TableColumn;
 */
 component Table(
   List<Object> rows,
-  boolean canDelete = false,
-  boolean canEdit = false,
-  boolean canAdd = false,
-  GUIViewElement contextMenu,
+  //boolean canDelete = false,
+  //boolean canEdit = false,
+  //boolean canAdd = false,
+  //GUIViewElement contextMenu,
   List<TableColumn> columns
 )

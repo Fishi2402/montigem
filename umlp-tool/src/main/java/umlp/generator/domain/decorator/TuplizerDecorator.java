@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.decorator;/* (c) https://github.com/MontiCore/monticore */
+package umlp.generator.domain.decorator;/* (c) https://github.com/MontiCore/monticore */
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
+import umlp.generator.AbstractDecorator;
 
 import java.util.List;
 import java.util.stream.Collectors;

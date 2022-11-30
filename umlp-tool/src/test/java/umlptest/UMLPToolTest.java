@@ -24,7 +24,8 @@ public class UMLPToolTest extends AbstractUMLPTest {
   @Test
   public void testRunMethodGui() {
     UMLPTool tool = new UMLPTool();
-    tool.run(new String[]{"-i", "src/test/resources/stanley/showcityinfo/ShowCityInfo.gui"});
+    tool.run(new String[]{"-i", "src/test/resources/stanley/showcityinfo/ShowCityInfo.gui",
+        "-path", "src/test/resources"});
     assertNoErrors();
   }
 

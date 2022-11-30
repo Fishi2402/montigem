@@ -61,10 +61,10 @@ task runServer {
     dependsOn(bootRun)
 }
 
-task generateFlensburg(type: UMLPTask) {
-    input.from(file("models"))
-    outputDir = layout.buildDirectory.dir("gen/hardy")
-}
+/*task generateFlensburg(type: UMLPTask) {
+    input.from(file("models/hardy"))
+    outputDir = layout.buildDirectory.dir("gen")
+}*/
 
 task copySymbols(type: Copy) {
     copy {
@@ -79,7 +79,8 @@ task generateAll(type: UMLPTask) {
     outputDir = layout.buildDirectory.dir("gen")
     hwcDir = layout.projectDirectory.dir("src/main/java")
     modelDir = layout.projectDirectory.dir("models")
-    symbolPath = file("$projectDir/target/symbols")
+    symbolPath = file("models")
+    //symbolPath = file("$projectDir/target/symbols")
 }
 
 test {

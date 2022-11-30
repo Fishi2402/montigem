@@ -4,7 +4,7 @@ package stanley.showcityinfo;
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
 // hier werden die Datenklassen gefunden
-import hardy.Flensburg;
+import hardy.Flensburg.CityInfo;
 
 // hier werden importierte GUI-Modelle gefunden
 import umlp.gui.RowTable;

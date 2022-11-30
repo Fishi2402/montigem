@@ -5,7 +5,7 @@ package stanley.personoverview;
 
 // siehe: EditierePerson.gui
 
-import hardy.Flensburg;
+import hardy.Flensburg.Person;
 
 import umlp.gui.Table;
 // import type from a CD to describe a table column
