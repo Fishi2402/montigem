@@ -496,6 +496,12 @@ public abstract class PersonTOP extends Human {
     return id;
   }
 
+  public void _internal_removeVisited(Set<Integer> idxs, NotificationScope scope) {
+    for(int idx : idxs) {
+      removeVisitedGem(idx, scope);
+    }
+  }
+
   public boolean removeVisited(Address address, NotificationScope scope){
     int index = visited.indexOfId(address.gemId);
     if(index == -1){
