@@ -22,7 +22,7 @@ import stanley.editierepersoncars.EditierePersonCars;
  * Situation is that the Person p exists already and
  * that its values can be changed
  */
-page EditierePerson(Person p, List<Person> d, Human h, Optional<Person> op) {
+page EditierePerson(Person p, List<Person> d, Human h, Optional<Person> op, Car c) {
 
   // show and edit the nickname
   @TextInput(value = p.nickname);
@@ -34,7 +34,7 @@ page EditierePerson(Person p, List<Person> d, Human h, Optional<Person> op) {
   // (und die Logik dafür ist generiert und verfügbar)
   // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
   // ueberschrieben werden z.B. navigate, copy, show(:ContextMenu(...)), ...
-  @Button(text = "Ok", leftClick = navigate(@EditierePersonCars(person = p)));
+  @Button(text = "Ok", leftClick = navigate(@EditierePersonCars(person = p, d = d, op = op, s = h, l = c)));
 
   // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
   // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird entweder generiert oder

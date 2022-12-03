@@ -14,7 +14,7 @@ page NeuePersonAnlegen(Person p) { // "leere" Person
   @TextInput(value = p.nickname);
   @NumberInput(value = p.age);
   @Button(text = "Ok", leftClick = navigate(@EditierePersonCars(person=p)));
-  @Button(text = "Decrease", leftClick = decreaseAge(p));
+  @Button(text = "Decrease", leftClick = decreaseAge());
 }
  */
 

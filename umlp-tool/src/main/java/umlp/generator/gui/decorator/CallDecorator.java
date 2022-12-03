@@ -7,19 +7,13 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
-import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._symboltable.GUIDSLScope;
 import de.monticore.guidsl._symboltable.GUIVariableSymbol;
-import de.monticore.guidsl._symboltable.IGUIDSLScope;
-import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
-import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.types.check.TypeCalculator;
 import umlp.generator.gui.GUIComponentAccessVisitor;
+import umlp.generator.gui.GUIGeneratorUtil;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static umlp.generator.gui.decorator.DomainRefDecorator.BUILDER;
@@ -61,12 +55,27 @@ public class CallDecorator extends GUIComponentDecorator {
           }
           else {
             ASTGUIComponent arg = (ASTGUIComponent) call.getArguments().getExpressionList().get(0);
-            // GUIFunctionSymbol fS = arg.getNameSymbol();
             List<String> args = arg.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> a.getExpression() instanceof ASTNameExpression)
-                .map(a -> ((ASTNameExpression) a.getExpression()).getName() + (isCreate? BUILDER: "")).collect(Collectors.toList()); //TODO GV, AGe
-            String result = String.join(",", args);
-            getCD4C().addMethod(decoratedClass, "umlp.gui2java.Navigate",
-                "navigate", arg.getName(), result);
+                .map(a -> ((ASTNameExpression) a.getExpression()).getName()).collect(Collectors.toList()); //TODO GV
+
+            Map<String, String> parameters = new HashMap<>();
+            List<String> arguments = new ArrayList<>();
+            args.forEach(a -> {
+              Optional<GUIVariableSymbol> argSymbol = guiComponent.getEnclosingScope().resolveGUIVariable(a);
+              argSymbol.ifPresent((s) -> {
+                if (GUIGeneratorUtil.isDomainType(s.getType())) {
+                  parameters.put((isCreate ? a + BUILDER : a), s.getType().getTypeInfo().getName());
+                  arguments.add(isCreate ? a + BUILDER : a);
+                }
+                else {
+                  arguments.add(a);
+                }
+              });
+            });
+            String result = String.join(",", arguments);
+
+            getCD4C().addMethod(decoratedClass, (isCreate ? "umlp.gui2java.NavigateBuilder" : "umlp.gui2java.Navigate"),
+                "navigate", arg.getName(), result, parameters);
           }
         }
     );

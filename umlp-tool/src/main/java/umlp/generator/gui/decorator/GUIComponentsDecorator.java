@@ -5,12 +5,16 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.se_rwth.commons.Joiners;
 import umlp.generator.gui.GUIComponentsAccessVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static umlp.generator.gui.GUIGeneratorUtil.isCreateClass;
 
 public class GUIComponentsDecorator extends GUIAbstractDecorator {
 
@@ -24,7 +28,13 @@ public class GUIComponentsDecorator extends GUIAbstractDecorator {
   public void transform(ASTGUICompilationUnit guiAst, ASTCDClass decoratedClass) {
 
     viewComponent.getComponents().stream().filter(GUIGeneratorUtil::isInputComponent)
-        .forEach(c -> new InputValueDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c)));
+      .forEach(c ->  {
+      if (isCreateClass(decoratedClass)) {
+        new InputValueCreateDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c));
+      } else {
+        new InputValueEditDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c));
+      }
+    });
 
     viewComponent.getComponents().stream().filter(GUIGeneratorUtil::isEventComponent)
         .forEach(c -> new EventDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c)));

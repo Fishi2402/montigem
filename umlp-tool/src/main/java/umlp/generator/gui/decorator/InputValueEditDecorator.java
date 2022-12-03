@@ -15,11 +15,9 @@ import umlp.generator.gui.GUIComponentAccessVisitor;
 import java.util.List;
 import java.util.Optional;
 
-import static umlp.generator.gui.decorator.DomainRefDecorator.BUILDER;
+public class InputValueEditDecorator extends GUIComponentDecorator {
 
-public class InputValueDecorator extends GUIComponentDecorator {
-
-  public InputValueDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
+  public InputValueEditDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
     super(glex, guiAst);
   }
 
@@ -28,7 +26,6 @@ public class InputValueDecorator extends GUIComponentDecorator {
     // Get all ASTGUIComponents
     GUIComponentAccessVisitor viewComponents = new GUIComponentAccessVisitor(guiComponent);
     List<ASTFieldAccessExpression> allZuweisungen = viewComponents.getFieldAccess();
-    boolean isCreate = isCreateClass(decoratedClass);
 
     allZuweisungen.forEach(f -> {
           if (f.getExpression() instanceof ASTNameExpression) {
@@ -38,17 +35,13 @@ public class InputValueDecorator extends GUIComponentDecorator {
             Optional<VariableSymbol> attr = resolveAttribute(symbol, f.getName());
 
             if (attr.isPresent()) {
-              variableName += (isCreate? BUILDER: "");
               String returnType = attr.get().getType().getTypeInfo().getName();
               String attrName = attr.get().getName();
-              String returnExpr = variableName + ".get" + StringTransformations.capitalize(attrName) + "()";
-              String setExpr = isCreate? (variableName + "." + attrName + "(" + attrName + ")") //TODO GV: build()?
-                  : (variableName + ".set" + StringTransformations.capitalize(attrName) + "(" + attrName + ")");
 
               addComponentErrorAttribute(decoratedClass, guiComponent, componentName);
               addNotifyMethod(decoratedClass, guiComponent, componentName, attrName);
-              addGetComponentMethod(decoratedClass, guiComponent, componentName, returnExpr, returnType);
-              addSetComponentMethod(decoratedClass, guiComponent, componentName, returnType, attrName, setExpr);
+              addGetComponentMethod(decoratedClass, guiComponent, componentName, returnType, variableName, attrName);
+              addSetComponentMethod(decoratedClass, guiComponent, componentName, returnType, variableName, attrName);
             }
           }
         }
@@ -66,14 +59,16 @@ public class InputValueDecorator extends GUIComponentDecorator {
     getCD4C().addAttribute(decoratedClass, true, false, "protected String " + componentAttributeName + " = \"\";");
   }
 
-  protected void addGetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String returnExpr, String returnType) {
+  protected void addGetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
+                                       String returnType, String variableName, String attrName) {
     getCD4C().addMethod(decoratedClass, "umlp.gui2java.GetComponent", "get" + guiComponent.getName() + componentName,
-        returnType, returnExpr);
+        returnType, variableName, attrName);
   }
 
-  protected void addSetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String attrType, String attrName, String setExpr) {
+  protected void addSetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
+                                       String attrType, String variableName, String attrName) {
     getCD4C().addMethod(decoratedClass, "umlp.gui2java.SetComponent", "set" + guiComponent.getName() + componentName,
-        attrType, attrName, setExpr);
+        attrType, variableName, attrName);
   }
 
 }

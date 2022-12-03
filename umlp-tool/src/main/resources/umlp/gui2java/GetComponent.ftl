@@ -1,4 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("methodName", "returnType", "returnExpr")}
+${tc.signature("methodName", "returnType", "variableName", "attrName")}
 ${cd4c.method("public ${returnType} ${methodName}()")}
-    return ${returnExpr};
+    return ${variableName}.get${attrName?cap_first}();

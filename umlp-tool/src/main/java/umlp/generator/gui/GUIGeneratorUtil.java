@@ -2,6 +2,7 @@
 package umlp.generator.gui;
 
 import com.google.common.collect.Lists;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static umlp.generator.gui.decorator.GUIAbstractDecorator.CREATE_INPUT_VALUE_SUFFIX;
 
 public class GUIGeneratorUtil {
 
@@ -33,9 +36,12 @@ public class GUIGeneratorUtil {
   }
 
   public static final boolean isDomainType(ASTGUIParam astguiParam) {
-    SymTypeExpression type = astguiParam.getSymbol().getType();
+    return isDomainType(astguiParam.getSymbol().getType());
+  }
+
+  public static final boolean isDomainType(SymTypeExpression type) {
     String typeName = type.getTypeInfo().getName();
-    return !astguiParam.getSymbol().getType().isGenericType()
+    return !type.isGenericType()
         && !BasicSymbolsMill.PRIMITIVE_LIST.contains(typeName)
         && !UMLP_TYPES.contains(typeName);
   }
@@ -50,6 +56,10 @@ public class GUIGeneratorUtil {
     Optional<GUIFunctionSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIFunction(guiComponent.getQualifiedName());
     return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a
         -> isEventArgument(guiComponentSymbol.get(), a)).findAny().isPresent();
+  }
+
+  public static boolean isCreateClass(ASTCDClass decoratedClass) {
+    return decoratedClass.getName().endsWith(CREATE_INPUT_VALUE_SUFFIX);
   }
 
   public static boolean isInputArgument(GUIFunctionSymbol guiComponent, ASTGUINamedArg arg) {
