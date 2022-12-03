@@ -61,10 +61,10 @@ task runServer {
     dependsOn(bootRun)
 }
 
-/*task generateFlensburg(type: UMLPTask) {
+task generateFlensburg(type: UMLPTask) {
     input.from(file("models/hardy"))
-    outputDir = layout.buildDirectory.dir("gen")
-}*/
+    outputDir = layout.buildDirectory.dir("genumlp")
+}
 
 task copySymbols(type: Copy) {
     copy {

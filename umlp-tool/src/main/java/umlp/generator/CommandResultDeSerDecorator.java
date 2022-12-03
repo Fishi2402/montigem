@@ -1,12 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package umlp.generator.decorator;
+package umlp.generator.domain.decorator;
 
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
+import umlp.generator.AbstractDecorator;
 
 import java.util.List;
 import java.util.stream.Collectors;

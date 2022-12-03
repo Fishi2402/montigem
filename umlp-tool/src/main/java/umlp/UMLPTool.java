@@ -50,7 +50,7 @@ import static umlp.UMLPToolOptions.*;
  */
 public class UMLPTool extends UMLPToolTOP {
 
-//  protected static final String SYM_IO = "target/symbols/";
+  //  protected static final String SYM_IO = "target/symbols/";
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
   protected static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   protected static final String DEFAULT_CONFIGTEMPLATE = "umlp.UMLP2Java";
@@ -103,7 +103,7 @@ public class UMLPTool extends UMLPToolTOP {
       File inputFile = new File(INPUT.getValue(cmd));
 
 
-        ///////////////////////// SETUP REPORTING  /////////////////////////////
+      ///////////////////////// SETUP REPORTING  /////////////////////////////
       File outDir = new File(OUTPUT.getValue(cmd, DEFAULT_OUT));
 
       File reportDir = new File(REPORTS.getValue(cmd, DEFAULT_REPORT_OUT));
@@ -125,7 +125,7 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
       MCPath hwcPath = new MCPath();
-      if(HWC_PATH.isSelected(cmd)){
+      if (HWC_PATH.isSelected(cmd)) {
         for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
           hwcPath.addEntry(Paths.get(v));
         }
@@ -142,7 +142,7 @@ public class UMLPTool extends UMLPToolTOP {
         umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
 
         Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
-        String report_on = inputFile.getName().replace(".","__");   // TODO: Is this name unique? Should it be unique?
+        String report_on = inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
         Reporting.on(report_on);
 
         UMLPMill.init();
@@ -158,47 +158,47 @@ public class UMLPTool extends UMLPToolTOP {
 
 
         // print or store symbol table
-      if (SYMTAB.isSelected(cmd)) {
-        String s = SYMTAB.getValue(cmd);
-        if (null != s) {
-          // store symbol table to passed file
-          JsonPrinter.disableIndentation();
-          storeSymbols(symbolTable, s);
+        if (SYMTAB.isSelected(cmd)) {
+          String s = SYMTAB.getValue(cmd);
+          if (null != s) {
+            // store symbol table to passed file
+            JsonPrinter.disableIndentation();
+            storeSymbols(symbolTable, s);
+          }
+          else {
+            //print (formatted!) symboltable to console
+            UMLPSymbols2Json s2j = new UMLPSymbols2Json();
+            JsonPrinter.enableIndentation();
+            System.out.println(s2j.serialize(symbolTable));
+          }
         }
-        else {
-          //print (formatted!) symboltable to console
-          UMLPSymbols2Json s2j = new UMLPSymbols2Json();
-          JsonPrinter.enableIndentation();
-          System.out.println(s2j.serialize(symbolTable));
+
+        // pretty print model and either output on stdout or store to file
+        if (PRETTYPRINT.isSelected(cmd)) {
+          prettyPrint(ast, PRETTYPRINT.getValue(cmd));
         }
-      }
 
-      // pretty print model and either output on stdout or store to file
-      if (PRETTYPRINT.isSelected(cmd)) {
-        prettyPrint(ast, PRETTYPRINT.getValue(cmd));
-      }
+        ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
+        GeneratorSetup genSetup = new GeneratorSetup();
 
-      ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
-      GeneratorSetup genSetup = new GeneratorSetup();
+        // set output directory
+        genSetup.setOutputDirectory(outDir);
 
-      // set output directory
-      genSetup.setOutputDirectory(outDir);
+        // set hwc directories
+        genSetup.setHandcodedPath(hwcPath);
 
-      // set hwc directories
-      genSetup.setHandcodedPath(hwcPath);
+        // set template path
+        genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
+            .map(p -> p.toFile()).collect(Collectors.toList()));
 
-      // set template path
-      genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
-              .map(p -> p.toFile()).collect(Collectors.toList()));
+        // execute generator
+        UMLPGenerator generator = new UMLPGenerator(genSetup);
+        CD4C.init(genSetup);
+        String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
+        generator.generate(ast, configTemplate);
 
-      // execute generator
-      UMLPGenerator generator = new UMLPGenerator(genSetup);
-      CD4C.init(genSetup);
-      String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
-      generator.generate(ast, configTemplate);
-
-      // write reports
-      Reporting.flush(ast);
+        // write reports
+        Reporting.flush(ast);
 
         ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
       }
@@ -206,7 +206,7 @@ public class UMLPTool extends UMLPToolTOP {
         guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
 
         Reporting.init(outDir.getPath(), reportDir.getPath(), guidsl_reportManagerFactory);
-        String report_on = inputFile.getName().replace(".","__");   // TODO: Is this name unique? Should it be unique?
+        String report_on = inputFile.getName().replace(".", "__");
         Reporting.on(report_on);
 
         GUIDSLMill.init();
@@ -220,15 +220,8 @@ public class UMLPTool extends UMLPToolTOP {
             mcPath.addEntry(Paths.get(v));
           }
         }
+
         IGUIDSLArtifactScope symbolTableGui = createSymbolTable(astGui, mcPath);
-      /*  Optional<TypeSymbol> t1 = symbolTableGui.resolveType("Person");
-        Optional<TypeSymbol> t2 = symbolTableGui.resolveType("String");*/
-
-        Optional<GUIFunctionSymbol> d1 = symbolTableGui.resolveGUIFunction("TextInput");
-        if (d1.isPresent()) {
-          Optional<VariableSymbol> v1 = d1.get().getEnclosingScope().resolveVariable("value");
-        }
-
 
         GeneratorSetup genSetup = new GeneratorSetup();
         // set output directory
@@ -256,10 +249,10 @@ public class UMLPTool extends UMLPToolTOP {
     finally {
       UMLPMill.globalScope().clear();
       Reporting.off();
-      if(umlp_reportManagerFactory != null){
+      if (umlp_reportManagerFactory != null) {
         umlp_reportManagerFactory.close();
       }
-      if(guidsl_reportManagerFactory != null){
+      if (guidsl_reportManagerFactory != null) {
         guidsl_reportManagerFactory.close();
       }
     }
@@ -284,7 +277,8 @@ public class UMLPTool extends UMLPToolTOP {
     UMLPCoCos.checkAll(ast);
   }
 
-  @Override public IUMLPArtifactScope createSymbolTable(ASTCDCompilationUnit node) {
+  @Override
+  public IUMLPArtifactScope createSymbolTable(ASTCDCompilationUnit node) {
     IUMLPArtifactScope as = super.createSymbolTable(node);
     node.accept(new CD4CodeSymbolTableCompleter(node).getTraverser()); // run symbol table completer
     return as;
@@ -298,13 +292,13 @@ public class UMLPTool extends UMLPToolTOP {
     return options;
   }
 
-  public void runAfterParseTrafo(ASTCDCompilationUnit node){
+  public void runAfterParseTrafo(ASTCDCompilationUnit node) {
     UMLPTraverser trav = UMLPMill.traverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
   }
 
-  public void runDefaultTrafo(ASTCDCompilationUnit node){
+  public void runDefaultTrafo(ASTCDCompilationUnit node) {
     UMLPTraverser trav = UMLPMill.traverser();
     CD4CodeTrafo4Defaults trafo = new CD4CodeTrafo4Defaults();
     trafo.transform(node);
@@ -314,7 +308,6 @@ public class UMLPTool extends UMLPToolTOP {
     return f.getName().endsWith(".umlp");
   }
 
-  // TODO MB - einkommentieren
   protected boolean isGuiFile(File f) {
     return f.getName().endsWith(".gui");
   }
@@ -345,7 +338,7 @@ public class UMLPTool extends UMLPToolTOP {
     IGUIDSLGlobalScope gs = GUIDSLMill.globalScope();
     gs.addAdaptedTypeSymbolResolver(new Class2MCResolver());
     gs.setSymbolPath(modelPath);
-   // gs.putSymbolDeSer("umlp._symboltable.UMLPDefSymbol", new UMLPDefSymbolDeSer());
+    // gs.putSymbolDeSer("umlp._symboltable.UMLPDefSymbol", new UMLPDefSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new TypeSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol", new VariableSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new VariableSymbolDeSer());

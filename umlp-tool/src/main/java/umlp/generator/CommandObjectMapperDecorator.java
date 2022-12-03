@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package umlp.generator.decorator;
+package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.*;
@@ -8,6 +8,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
+import umlp.generator.AbstractDecorator;
 
 import static de.monticore.cd.facade.CDModifier.*;
 
