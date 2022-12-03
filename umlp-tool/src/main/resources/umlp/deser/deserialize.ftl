@@ -1,9 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("cdName", "className", "simpleAttributes", "gemAttributes", "gemListAttributes")}
-${cd4c.method("public Optional<${className}> deserialize(String jsonString)")}
-  JsonElement elem = JsonParser.parse(jsonString);
-  JsonObject json = elem.getAsJsonObject();
+${cd4c.method("public Optional<${className}> deserialize(JsonObject json)")}
   ${className}DeSerBuilder builder = ${cdName}Manager.${className?uncap_first}DeSerBuilder();
+  builder.setINTERNAL_deser_mode(true);
   <#if simpleAttributes?has_content || gemAttributes?has_content || gemListAttributes?has_content>
   builder
     <#list simpleAttributes as attr>

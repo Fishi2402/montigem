@@ -59,7 +59,7 @@ public class Person_VisitedGemList extends GemListBuilder<Address> {
   @Override
   protected void _internal_addAndSync(int idx, List<Long> gemIDs) {
     if (buildFinished) {
-      getOwner()._internal_addOwns(idx, gemIDs, NotificationScope.ALL);
+      getOwner()._internal_addVisited(idx, gemIDs, NotificationScope.ALL);
     }
     else {
       _internal_add(idx, gemIDs);
@@ -69,7 +69,7 @@ public class Person_VisitedGemList extends GemListBuilder<Address> {
   @Override
   protected void _internal_setAndSync(int idx, long gemID) {
     if (buildFinished) {
-      getOwner()._internal_setOwns(idx, gemID, NotificationScope.ALL);
+      getOwner().setVisitedId(idx, gemID, NotificationScope.ALL);
     }
     else {
       _internal_set(idx, gemID);
@@ -79,7 +79,7 @@ public class Person_VisitedGemList extends GemListBuilder<Address> {
   @Override
   protected void _internal_removeAndSync(Set<Integer> idxs) {
     if (buildFinished) {
-      getOwner()._internal_removeOwns(idxs, NotificationScope.ALL);
+      getOwner()._internal_removeVisited(idxs, NotificationScope.ALL);
     }
     else {
       _internal_remove(idxs);

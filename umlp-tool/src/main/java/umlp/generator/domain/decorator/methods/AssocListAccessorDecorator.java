@@ -39,6 +39,7 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.ContainsAll", ast.getName(), targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Iterator", ast.getName(), targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Size", ast.getName()).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.GetList", ast.getName(), targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.SubList", ast.getName(), targetName).get());
 
     // generate getX-Method
@@ -61,7 +62,7 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
 
   protected ASTCDMethod createGetGemList(ASTCDAttribute ast) {
     ASTCDMethod method = createGetter(ast);
-    method.setName(method.getName() + "GemList");
+    method.setName("_internal_" + method.getName() + "GemList");
     return method;
   }
 

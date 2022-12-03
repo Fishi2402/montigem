@@ -62,6 +62,18 @@ public abstract class PersonTOP extends Human {
   protected GemList<Address> visited;
   // TODO AHe: add/remove/...
 
+  public List<Car> getOwns() {
+    return owns;
+  }
+
+  public List<Person> getChildren() {
+    return children;
+  }
+
+  public List<Address> getVisited() {
+    return visited;
+  }
+
 
   //+ Bem: insgesamt sind es etwa 30 generierte Ftnen, von denen hier
   // nur einige dargestellt sind
@@ -403,11 +415,6 @@ public abstract class PersonTOP extends Human {
 
   // -----------------------------------------------------------------
 
-  // TODO add children
-  public List<Person> getChildren() {
-    return new ArrayList();
-  }
-
   /**
    * Derived attribute becomes an abstract Method for calculation
    * / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
@@ -487,6 +494,12 @@ public abstract class PersonTOP extends Human {
     }
     personObservers.forEach(obs -> obs.maybeNotifyRemoveVisited((Person) this, id, index, notificationScope));
     return id;
+  }
+
+  public void _internal_removeVisited(Set<Integer> idxs, NotificationScope scope) {
+    for(int idx : idxs) {
+      removeVisitedGem(idx, scope);
+    }
   }
 
   public boolean removeVisited(Address address, NotificationScope scope){

@@ -444,12 +444,12 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected GemList<Address> _createVisitedBuilder(long personGemId, List<Long> initialIds) {
-    return new AddressGemList();
+    return new Person_VisitedGemList(personGemId);
   }
 
   @Override
   protected GemList<Person> _createVisitorsBuilder(long addressGemId, List<Long> initialIds) {
-    return new PersonGemList();
+    return new Address_VisitorsGemList(addressGemId);
   }
 
   @Override

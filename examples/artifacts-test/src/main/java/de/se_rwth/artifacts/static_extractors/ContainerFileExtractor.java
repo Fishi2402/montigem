@@ -93,7 +93,7 @@ public class ContainerFileExtractor extends BaseExtractor {
     Directory directory = directoryToSubSystemArtifacts.getKey();
 
     directoryToSubSystemArtifacts.getValue().forEach(f ->
-        directory.addContains(directory.getContainsGemList().size(),
+        directory.addContains(directory.getContains().size(),
           absolutePathToArtifact.get(ExtractorUtils.transformWindowsPathToLinuxStyle(f.getAbsolutePath()))));
     return directory;
   }
@@ -186,7 +186,7 @@ public class ContainerFileExtractor extends BaseExtractor {
     if (systemRepresentation.isRoot()) { // if current dir is root we set the Directory Object as artifact representation
       root.setArtifactRepresentation(artifactRepresentation);
     } else { // set Directory object as descendent of root
-      root.addDescendants(root.getDescendantsGemList().size(), artifactRepresentation);
+      root.addDescendants(root.getDescendants().size(), artifactRepresentation);
     }
   }
 
