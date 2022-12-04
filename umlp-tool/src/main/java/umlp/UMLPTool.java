@@ -163,7 +163,7 @@ public class UMLPTool extends UMLPToolTOP {
           if (null != s) {
             // store symbol table to passed file
             JsonPrinter.disableIndentation();
-            storeSymbols(symbolTable, s);
+         //   storeSymbols(symbolTable, s);
           }
           else {
             //print (formatted!) symboltable to console

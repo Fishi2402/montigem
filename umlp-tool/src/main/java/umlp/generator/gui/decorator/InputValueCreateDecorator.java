@@ -11,15 +11,11 @@ public class InputValueCreateDecorator extends InputValueEditDecorator {
     super(glex, guiAst);
   }
 
-/*  protected void addNotifyMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String attrName) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.input.Notify",
-        "notify" + StringTransformations.capitalize(attrName) + "Invalid", StringTransformations.uncapitalize(guiComponent.getName()));
+  protected void generateMethodsForInputValueComponent(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
+                                                       String returnType, String variableName, String variableType, String attrName) {
+    addGetComponentMethod(decoratedClass, guiComponent, componentName, returnType, variableName, attrName);
+    addSetComponentMethod(decoratedClass, guiComponent, componentName, returnType, variableName, attrName);
   }
-
-  protected void addComponentErrorAttribute(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
-    String componentAttributeName = StringTransformations.uncapitalize(guiComponent.getName()) + componentName + "Error";
-    getCD4C().addAttribute(decoratedClass, true, false, "protected String " + componentAttributeName + " = \"\";");
-  }*/
 
   protected void addGetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
                                        String returnType, String variableName, String attrName) {

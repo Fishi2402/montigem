@@ -37,11 +37,9 @@ public class InputValueEditDecorator extends GUIComponentDecorator {
             if (attr.isPresent()) {
               String returnType = attr.get().getType().getTypeInfo().getName();
               String attrName = attr.get().getName();
+              String variableType = symbol.get().getType().getTypeInfo().getName();
 
-              addComponentErrorAttribute(decoratedClass, guiComponent, componentName);
-              addNotifyMethod(decoratedClass, guiComponent, componentName, attrName);
-              addGetComponentMethod(decoratedClass, guiComponent, componentName, returnType, variableName, attrName);
-              addSetComponentMethod(decoratedClass, guiComponent, componentName, returnType, variableName, attrName);
+              generateMethodsForInputValueComponent(decoratedClass, guiComponent, componentName, returnType, variableName, variableType, attrName);
             }
           }
         }
@@ -49,9 +47,19 @@ public class InputValueEditDecorator extends GUIComponentDecorator {
 
   }
 
-  protected void addNotifyMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String attrName) {
+  protected void generateMethodsForInputValueComponent(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
+                                                       String returnType, String variableName, String variableType, String attrName) {
+    addComponentErrorAttribute(decoratedClass, guiComponent, componentName);
+    addNotifyMethod(decoratedClass, guiComponent, componentName, attrName, variableType, variableName);
+    addGetComponentMethod(decoratedClass, guiComponent, componentName, returnType, variableName, attrName);
+    addSetComponentMethod(decoratedClass, guiComponent, componentName, returnType, variableName, attrName);
+  }
+
+  protected void addNotifyMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, String attrName,
+                                 String variableType, String variableName) {
     getCD4C().addMethod(decoratedClass, "umlp.gui2java.input.Notify",
-        "notify" + StringTransformations.capitalize(attrName) + "Invalid", StringTransformations.uncapitalize(guiComponent.getName() + componentName));
+        "notify" + StringTransformations.capitalize(attrName) + "Invalid",
+        StringTransformations.uncapitalize(guiComponent.getName() + componentName),variableType, variableName);
   }
 
   protected void addComponentErrorAttribute(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {

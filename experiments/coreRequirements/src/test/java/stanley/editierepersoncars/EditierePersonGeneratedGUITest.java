@@ -133,7 +133,7 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
    * Error (invalid state) triggered on server will be shown in the client
    * May happen when client requires calculation on the server
    */
-  //@Test  // TODO
+  @Test
   public void observeServerToClientErrorTest() {
     Log.initDEBUG();
 
@@ -179,7 +179,7 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
   /**
    * Error (invalid state) triggered on client will be not be propagated to server
    */
-  //@Test  // TODO
+  @Test
   public void observeClientToServerErrorTest() {
     Log.initDEBUG();
 
