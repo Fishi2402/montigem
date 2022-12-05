@@ -1,12 +1,16 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "assoc","sourcename","targetname","definition")}
+${tc.signature( "sourcename","targetname")}
 ${cd4c.method("public StatusResult doRun()")}
 
-Optional<${sourcename}> sourceOpt = ${definition}Manager.${sourcename?uncap_first}Opt(gemId);
-    if(sourceOpt.isPresent()){
-        sourceOpt.get().set${assoc?cap_first}Gem(${definition}Manager.create${targetname}Gem(gemId${targetname}), NotificationScope.LOCAL);
-        return StatusResult.ok(getId());
-    } else {
-        GeneralErrorCollector.reportSyncError();
-        return StatusResult.error(getId());
-    }
+boolean ${targetname?uncap_first}Changed = old${targetname}GemId != ${targetname?uncap_first}GemId;
+boolean ${sourcename?uncap_first}Changed = old${sourcename}GemId != ${sourcename?uncap_first}GemId;
+
+if(${targetname?uncap_first}Changed){
+  return exchange${targetname}();
+}
+
+if(${sourcename?uncap_first}Changed){
+  return exchange${sourcename}();
+}
+
+return StatusResult.error(getId());

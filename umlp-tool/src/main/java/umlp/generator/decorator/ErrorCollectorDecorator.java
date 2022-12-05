@@ -43,6 +43,7 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
 
     // Methods
     getCD4C().addMethod(collectorClass, "umlp.errorcollector.Init", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.errorcollector.InitMe", domainClass.getName());
     getCD4C().addMethod(collectorClass, "umlp.errorcollector.GetInstance", domainClass.getName());
     getCD4C().addMethod(collectorClass, "umlp.errorcollector.AddErrorObserver", domainClass.getName());
     getCD4C().addMethod(collectorClass, "umlp.errorcollector._AddErrorObserver", domainClass.getName());

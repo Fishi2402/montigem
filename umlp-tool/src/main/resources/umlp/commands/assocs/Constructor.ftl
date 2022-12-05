@@ -1,7 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("classname", "packageName", "targetName")}
-${cd4c.constructor("public ${classname}(long gemId, long gemId${targetName})")}
+${tc.signature("classname", "packageName", "sourceName", "targetName")}
+${cd4c.constructor("public ${classname}(long ${sourceName?uncap_first}GemId, long ${targetName?uncap_first}GemId,
+                                        int indexIn${sourceName}List, int indexIn${targetName}List)")}
 
 super("${packageName}.${classname}");
-this.gemId = gemId;
-this.gemId${targetName} = gemId${targetName};
+this.${sourceName?uncap_first}GemId = ${sourceName?uncap_first}GemId;
+this.${targetName?uncap_first}GemId = ${targetName?uncap_first}GemId;
+this.indexIn${sourceName}List = indexIn${sourceName}List;
+this.indexIn${targetName}List = indexIn${targetName}List;
