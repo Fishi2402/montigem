@@ -1,0 +1,50 @@
+/* (c) https://github.com/MontiCore/monticore */
+package stanley.editierepersoncars;
+
+// HWC-P: eigentlich ein Modell, aber fuers Produkt
+
+// hier werden die Datenklassen gefunden
+import hardy.Flensburg;
+
+// hier werden importierte GUI-Modelle gefunden
+import umlp.gui.TextInput;
+import umlp.gui.NumberInput;
+import umlp.gui.Text;
+import umlp.gui.Button;
+import umlp.gui.Table;
+
+/**
+ * This example defines a Visualization including a number of Calculated
+ * values (that may change externally over time)
+ *
+ * Situation is that the Person p exists already
+ */
+page EditierePersonCars(Person p) {
+
+  // show and edit the nickname
+  @TextInput(value = p.nickname);
+
+  // show and edit the age as number
+  @NumberInput(value = p.age);
+
+  // show the number of cars as number
+  // this attribute is calculated (which makes from the GUI point of view
+  // not a difference)
+  @Text(value = p.age);
+
+  // show the list of person's cars in a table, row by row
+  // the table should be able to work with lazy lists
+  @Table(
+    rows = p.Car, // OCL-like navigation for unnamed associations
+    canDelete = true,
+    canEdit = true,
+    canAdd = true,
+    cols = List() // car attributes, if no attributes then no columns
+  );
+
+  // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
+  // ueberschrieben werden z.B. navigate, copy, show(@ContextMenu(...)), ...
+  @Button(text = "Ok", leftClick = navigate);
+
+}
+

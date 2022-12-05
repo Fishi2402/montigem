@@ -24,11 +24,13 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -49,6 +51,18 @@ public abstract class UMLPTask extends DefaultTask {
   @Incremental    // No full rebuild, when only HWC-Directory is changed. Requires logic in Task Execution!
   @IgnoreEmptyDirectories
   abstract DirectoryProperty getHwcDir();
+
+  @InputDirectory
+  @org.gradle.api.tasks.Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @Incremental
+  abstract DirectoryProperty getModelDir();
+
+  @InputDirectory
+  @org.gradle.api.tasks.Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @Incremental
+  abstract DirectoryProperty getSymbolPath();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
@@ -140,6 +154,14 @@ public abstract class UMLPTask extends DefaultTask {
     if(this.getHwcDir().isPresent()) {
       result.add("-hwc");
       result.add(handlePath.apply(getHwcDir().getAsFile().get().toPath()));
+    }
+
+    if(this.getModelDir().isPresent()) {
+      result.add("-path");
+      result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
+      if (this.getSymbolPath().isPresent()) {
+        result.add(handlePath.apply(getSymbolPath().getAsFile().get().toPath()));
+      }
     }
 
     if(this.getTmplDir().isPresent()) {
@@ -249,7 +271,7 @@ public abstract class UMLPTask extends DefaultTask {
   }
 
   protected boolean isInputFile(File f) {
-    return f.getName().endsWith(".umlp");
+    return f.getName().endsWith(".umlp") || f.getName().endsWith(".gui");
   }
 
   @TaskAction

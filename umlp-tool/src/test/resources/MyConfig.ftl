@@ -6,7 +6,7 @@
 ${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator")}
 
 <#-- Generate only commands -->
-<#assign commandDecorator = tc.instantiate("umlp.generator.decorator.commands.CommandDecorator", [glex])>
+<#assign commandDecorator = tc.instantiate("umlp.generator.domain.decorator.commands.CommandDecorator", [glex])>
 ${commandDecorator.transform(ast, decoratedAST)}
 
 <#-- TopDecorator -->

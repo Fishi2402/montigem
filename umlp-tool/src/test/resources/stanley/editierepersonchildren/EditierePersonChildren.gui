@@ -1,0 +1,32 @@
+/* (c) https://github.com/MontiCore/monticore */
+package stanley.editierepersonchildren;
+
+// HWC-P: eigentlich ein Modell, aber fuers Produkt
+
+// siehe: EditierePerson.gui
+
+import hardy.Flensburg;
+
+import umlp.gui.NumberInput;
+
+/**
+ * This example defines a
+ * Form to fill out data of a Person and his child.
+ * It has only simple default layout, which generates some
+ * interesting pieces of code
+ *
+ * Assumption: the Person p exists, the values can be changed, but the child cannot
+ * be older than parent
+ */
+page EditierePersonChildren(Person p) {
+
+  // show and edit the parent's age as number
+  @NumberInput(value = p.age);
+
+  @iterate (Person child : p.children) {
+    // show and edit the child's age as number
+    @NumberInput(value = child.age);
+  }
+
+}
+

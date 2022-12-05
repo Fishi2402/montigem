@@ -1,0 +1,56 @@
+/* (c) https://github.com/MontiCore/monticore */
+package stanley.neuepersonanlegen;
+
+// HWC-P: eigentlich ein Modell, aber fuers Produkt
+
+// hier werden die Datenklassen gefunden
+import hardy.Flensburg;
+
+// hier werden importierte GUI-Modelle gefunden
+import umlp.gui.TextInput;
+import umlp.gui.NumberInput;
+import umlp.gui.Button;
+
+import stanley.editierepersoncars.EditierePersonCars;
+
+/**
+ * This example defines a 
+ * Form to fill out person data
+ * it has only simple default layout, which generates some 
+ * interesting pieces of code
+ *
+ * Situation is that the Person will be newly created
+ */
+// AGe: Es gibt keinen Unterschied zu dem EditierePerson.gui Fall, wenn keine Person beim Navigieren
+// auf die Seite im Modell eingegeben wird, wird eine leere Person automatisch erstellt und
+// "aktualisiert".
+// Argumentation:
+//   Die Logik ist größtenteils dieselbe und die GUI ist auch.
+//   Das funktioniert gut in MaCoCo und dadurch wird sichergestellt, dass mehrere unterschiedlichen
+// Anzeigen zum sehr ähnlichen Zweck nicht existieren.
+//   Wir wollen auch die Details wie Mill.personBuilder()... verstecken.
+// Ich lasse erst die Seite hier, falls das Generat im Kontext einer neuen Struktur sich sehr
+// unterscheiden muss
+page NeuePersonAnlegen(Person p) { // "leere" Person
+  // show and edit the nickname
+  @TextInput(value = p.nickname);
+
+  // show and edit the age as number
+  @NumberInput(value = p.age);
+
+  // Button mit Text "Ok" und Navigation auf eine andere Seite
+  // (und die Logik dafür ist generiert und verfügbar)
+  // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
+  // ueberschrieben werden z.B. navigate, copy, show(:ContextMenu(...)), ...
+  @Button(text = "Ok", leftClick = navigate(@EditierePersonCars(person=p)));
+
+  // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
+  // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird entweder generiert oder
+  // in einem handgeschriebenen Teil implementiert wird und importiert
+  // (siehe "import stanley.editiereperson.EditierePerson")
+  // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "EditierePersonGUI.java".
+  // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
+  // deswegen wird eine Methode explizit importiert und aufgerufen
+  @Button(text = "Decrease", leftClick = decreaseAge(p));
+}
+

@@ -3,7 +3,7 @@ package umlptest;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import org.junit.jupiter.api.Test;
-import umlp.generator.UMLPGenerator;
+import umlp.generator.domain.UMLPGenerator;
 
 import java.io.File;
 

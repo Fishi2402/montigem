@@ -1,0 +1,10 @@
+package umlp.gui;
+
+/** Text input field component interface definition. Parameter "value" expects
+    a variable, whose value is displayed to and can be changed by a GUI user.
+*/
+component TextInput(
+  ?String value,
+  String label = "",
+  String placeholder = ""
+)
