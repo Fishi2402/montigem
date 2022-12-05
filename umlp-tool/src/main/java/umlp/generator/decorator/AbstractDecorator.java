@@ -28,7 +28,9 @@ public abstract class AbstractDecorator {
   public static final String COMMAND_PACKAGE = DEFAULT_PACKAGE+"commands";
 
   public static final String GEMLIST_PACKAGE = DEFAULT_PACKAGE+"gemlists";
-  
+
+  public static final String REQUESTS_PACKAGE = DEFAULT_PACKAGE+"requests";
+
   public static final String CLIENT_PACKAGE = DEFAULT_PACKAGE+"client";
 
   protected final GlobalExtensionManagement glex;
