@@ -48,7 +48,7 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
 
     Map<File, IncGenData> incGenReports = getInput().getAsFileTree().getFiles().stream()
         .filter(dummyUMLPTask::isInputFile)
-        .peek(f -> Log.info("IncGenFile is in: " + dummyUMLPTask.getIncGenFile(f), this.getClass().getName()))
+        .peek(f -> Log.debug("IncGenFile is in: " + dummyUMLPTask.getIncGenFile(f), this.getClass().getName()))
         .collect(Collectors.toUnmodifiableMap(f -> f,
             f -> new IncGenData(dummyUMLPTask.getIncGenFile(f),
                 dummyUMLPTask.getProject().getProjectDir().toPath().toAbsolutePath().toFile())));

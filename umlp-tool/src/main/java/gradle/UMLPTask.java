@@ -1,12 +1,9 @@
 package gradle;
 
-import com.google.common.collect.Sets;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.Incubating;
 import org.gradle.api.file.*;
-import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
@@ -24,13 +21,10 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -43,54 +37,54 @@ public abstract class UMLPTask extends DefaultTask {
   @InputFiles
   @PathSensitive(PathSensitivity.RELATIVE)
   @IgnoreEmptyDirectories
-  abstract ConfigurableFileCollection getInput();
+  public abstract ConfigurableFileCollection getInput();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
   @Incremental    // No full rebuild, when only HWC-Directory is changed. Requires logic in Task Execution!
   @IgnoreEmptyDirectories
-  abstract DirectoryProperty getHwcDir();
+  public abstract DirectoryProperty getHwcDir();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
   @Incremental
-  abstract DirectoryProperty getModelDir();
+  public abstract DirectoryProperty getModelDir();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
   @Incremental
-  abstract DirectoryProperty getSymbolPath();
+  public abstract DirectoryProperty getSymbolDir();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
   @IgnoreEmptyDirectories
   // Do not add "@Incremental" (unless you really know what you are doing)
-  abstract DirectoryProperty getTmplDir();
+  public abstract DirectoryProperty getTmplDir();
 
   @Input
   @org.gradle.api.tasks.Optional
-  abstract Property<String> getConfigTemplate();
+  public abstract Property<String> getConfigTemplate();
 
   @Input
   @org.gradle.api.tasks.Optional
-  abstract ListProperty<String> getMoreArgs();
+  public abstract ListProperty<String> getMoreArgs();
 
   @Input
   @org.gradle.api.tasks.Optional
-  abstract Property<Boolean> getDebug();
+  public abstract Property<Boolean> getDebug();
 
   @OutputDirectory
-  abstract DirectoryProperty getOutputDir();
+  public abstract DirectoryProperty getOutputDir();
 
   @OutputDirectory
-  abstract DirectoryProperty getReportDir();
+  public abstract DirectoryProperty getReportDir();
 
   @Inject
-  abstract public WorkerExecutor getWorkerExecutor();
+  protected abstract WorkerExecutor getWorkerExecutor();
 
   private WorkQueue workQueue;
 
@@ -159,8 +153,8 @@ public abstract class UMLPTask extends DefaultTask {
     if(this.getModelDir().isPresent()) {
       result.add("-path");
       result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
-      if (this.getSymbolPath().isPresent()) {
-        result.add(handlePath.apply(getSymbolPath().getAsFile().get().toPath()));
+      if (this.getSymbolDir().isPresent()) {
+        result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
       }
     }
 
@@ -259,7 +253,7 @@ public abstract class UMLPTask extends DefaultTask {
 
   @Internal
   protected Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
-    return Set.of(getHwcDir());
+    return Set.of(getHwcDir(), getModelDir(), getSymbolDir());
   }
   private Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
     Stream<FileChange> result = StreamSupport.stream(inputChanges.getFileChanges(getInput()).spliterator(), false);
