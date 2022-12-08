@@ -41,6 +41,10 @@ public class UMLPGenerator {
   }
 
   public void generate(ASTCDCompilationUnit cdAST, String configTemplate) {
+    StandardImportTrafo standardImportTrafo = new StandardImportTrafo(CD4CodeMill.traverser());
+    standardImportTrafo.transform(cdAST);
+    logTrafoExec("StandardImportTrafo", cdAST);
+
     UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
     assocTrafo.transform(cdAST);
     logTrafoExec("UMLAttrToAssocTrafo", cdAST);
