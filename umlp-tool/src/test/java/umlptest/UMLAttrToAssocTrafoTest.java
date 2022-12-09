@@ -5,7 +5,7 @@ import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import org.junit.jupiter.api.Test;
-import umlp.generator.UMLAttrToAssocTrafo;
+import umlp.generator.domain.UMLAttrToAssocTrafo;
 
 import java.io.IOException;
 import java.nio.file.Path;

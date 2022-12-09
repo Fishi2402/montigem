@@ -1,0 +1,13 @@
+package umlp.gui;
+
+/** Classes representing types for Pie chart interface definition
+*/
+classdiagram PieTypes {
+
+  interface PieEntry {
+    String title;
+    int value;
+    String color;
+  }
+
+}

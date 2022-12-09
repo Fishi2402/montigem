@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package stanley.showcityinfo;
+
+// HWC-P: eigentlich ein Modell, aber fuers Produkt
+
+// hier werden die Datenklassen gefunden
+import hardy.Flensburg;
+
+// hier werden importierte GUI-Modelle gefunden
+import umlp.gui.RowTable;
+// hier werden importierte Typen der GUI-Komponenten gefunden
+import umlp.gui.TableTypes.TableRow;
+import umlp.gui.TextInput;
+import umlp.gui.Text;
+
+/**
+ * This example defines a page with a table. Data in the table is read-only
+ * and is not persisted in the database as is, it is calculated (derived) from
+ * the persisted data (domain data structure).
+ */
+page ShowCityInfo(CityInfo ci) {
+
+  // statistic about cities
+  @RowTable(
+    rows = List(
+      TableRow("Number of cities", ci.numberOfCities),
+      TableRow("Total number of cars", ci.totalNumberOfCars),
+      TableRow("City with most cars", ci.cityWithMostCars),
+      TableRow("Person with most cars", ci.personWithMostCars.nickname),
+      TableRow("Average number of cars", ci.averageNumberOfCars)
+    )
+  );
+
+  // list of cities
+  @Text(value = "List of cities"); //0xA0241 The expression at source position ShowCityInfo.gui:<36,23> cannot be calculated.
+  /*@iterate(cityName : ci.cities) {
+    @TextInput(value = cityName);
+  } */
+}

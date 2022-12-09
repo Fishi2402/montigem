@@ -1,0 +1,56 @@
+/* (c) https://github.com/MontiCore/monticore */
+package hardy;
+
+// HWC-P: eigentlich ein Modell, aber fuers Produkt
+
+/*
+ * Simple class diagram with 3 classes, some assocs, and inheritance
+ */
+
+umlp Flensburg {
+
+    class Car;
+
+    class Human {
+        int age;
+    }
+
+    class Person extends Human {
+        String nickname;
+        
+        // calculated attribute: wird nicht persistiert, 
+        // deshalb gibt es nur einen getter, der dies berechnet
+        / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
+    }
+
+    class Address {
+       String city;
+    }
+
+    association owns [1] Person -> Car [*];
+    association mainResidence [1] Person -> Address [1];
+
+    association visits [*] Person (visitor) <-> (visited) Address [*];
+    // man beachte hier die intern gekapselte bidirektionale Verwaltung
+    association parent [1] Person -> (children) Person [*];
+
+    // ---------------------------------------------------------------------------
+    
+    // folgende Klasse ist nicht(!) zu persistieren und kann zu Berechnungen im
+    // Server oder auch zur Anzeige von Daten dienen:
+    
+    // todo: Entscheidung zu: Markierung für nicht-speicherung bei Klassen 
+    // und Assoziaionen?
+    // Optionen: Ablage in extra Modell? Oder Stereotyp? Oder Tagging --
+    // Wir nehmen hier jetzt erstmal die einfachste Lösung: 
+    // Stereotyp <calculated> oder geht auch "/"?
+    / class CityInfo {
+        int numberOfCities;
+        int totalNumberOfCars;
+        String cityWithMostCars;
+        Person personWithMostCars;
+        int averageNumberOfCars;
+    }
+
+    / association cities CityInfo -> java.lang.String [*];
+}

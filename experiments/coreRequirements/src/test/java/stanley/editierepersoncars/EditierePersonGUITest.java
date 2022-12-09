@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import stanley.AbstractGUITest;
 import infrastructure.command.FlensburgManagerClientImplBuilder;
 import stanley.FlensburgTestContext;
-import stanley.editiereperson.EditierePersonGUI;
+import stanley.editiereperson.EditierePerson;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +41,7 @@ public class EditierePersonGUITest extends AbstractGUITest {
         .nickname("theo")
         .mainResidence(a)
         .build().get();
-    EditierePersonGUI e = new EditierePersonGUI(p1);
+    EditierePerson e = new EditierePerson(p1);
 
     // Check GUI contains correct values
     assertEquals("theo", e.getTextInput());
@@ -89,7 +89,7 @@ public class EditierePersonGUITest extends AbstractGUITest {
         .owns(Collections.emptySet())
         .build().get();
     // page opened by a user on client 1
-    EditierePersonGUI e1 = new EditierePersonGUI(p1);
+    EditierePerson e1 = new EditierePerson(p1);
 
     // working with client 2
     clientContext2.activate();
@@ -98,7 +98,7 @@ public class EditierePersonGUITest extends AbstractGUITest {
     assertTrue(pClient2Opt.isPresent());
     Person p2 = pClient2Opt.get();
     // page opened by a user on client 2
-    EditierePersonGUI e2 = new EditierePersonGUI(p2);
+    EditierePerson e2 = new EditierePerson(p2);
     // TODO AGe: strategy on input fields update, check current object/attribute status
 
     clientContext1.activate();
@@ -145,7 +145,7 @@ public class EditierePersonGUITest extends AbstractGUITest {
     // work on client
     clientContext1.activate();
     Person p1001C1 = FlensburgManager.getPersonSure(gemId);
-    EditierePersonGUI e1 = new EditierePersonGUI(p1001C1);
+    EditierePerson e1 = new EditierePerson(p1001C1);
 
     // no error initially in the GUI of client
     assertEquals("", e1.getNumberInputError());
@@ -200,7 +200,7 @@ public class EditierePersonGUITest extends AbstractGUITest {
     // work on client
     clientContext1.activate();
     Person p1001C1 = FlensburgManager.getPersonSure(gemId);
-    EditierePersonGUI e1 = new EditierePersonGUI(p1001C1);
+    EditierePerson e1 = new EditierePerson(p1001C1);
     // put invalid value into input field
     e1.setNumberInput(15);
 

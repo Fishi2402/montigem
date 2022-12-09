@@ -1,0 +1,9 @@
+package umlp.gui;
+
+import umlp.gui.PieTypes.PieEntry;
+
+/** Pie chart component interface definition
+*/
+component Pie(
+  List<PieEntry> entries
+)

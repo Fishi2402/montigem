@@ -1,0 +1,10 @@
+package umlp.gui;
+
+import umlp.gui.TableTypes.TableRow;
+
+/** Table component interface definition. Uses built-in Object type, as the type
+    of rows is not preset
+*/
+component RowTable(
+  List<TableRow> rows
+)
