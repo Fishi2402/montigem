@@ -14,6 +14,9 @@ ${beDecorator.transform(ast, decoratedAST)}
 <#assign commandDecorator = tc.instantiate("umlp.generator.domain.decorator.commands.CommandDecorator", [glex])>
 ${commandDecorator.transform(ast, decoratedAST)}
 
+<#assign requestDecorator = tc.instantiate("umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator", [glex])>
+${requestDecorator.transform(ast, decoratedAST)}
+
 <#-- TopDecorator -->
 <#assign topDecorator = tc.instantiate("de.monticore.cd.codegen.TopDecorator", [hwPath])>
 ${topDecorator.decoratePackage(decoratedAST)}
