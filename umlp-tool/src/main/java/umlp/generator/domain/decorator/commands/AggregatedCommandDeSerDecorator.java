@@ -1,12 +1,13 @@
-package umlp.generator.decorator.commands;
+package umlp.generator.domain.decorator.commands;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
-import umlp.generator.decorator.AbstractDecorator;
-import umlp.generator.decorator.GenService;
+import umlp.generator.AbstractDecorator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.decorator.commands.CommandDecorator.DE_SER;
+import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
     public AggregatedCommandDeSerDecorator(GlobalExtensionManagement glex) {

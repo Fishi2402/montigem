@@ -1,17 +1,14 @@
-package umlp.generator.decorator.requests;
+package umlp.generator.domain.decorator.requests;
 
-import de.monticore.cd.codegen.methods.AccessorDecorator;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
-import umlp.generator.decorator.AbstractDecorator;
+import umlp.generator.AbstractDecorator;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.decorator.commands.CommandDecorator.DE_SER;
+import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
 
