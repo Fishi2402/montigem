@@ -59,9 +59,8 @@ public class GenService {
     return exprBuilder.build();
   }
 
-  public static String calculateJSon(ASTCDAttribute attr) {
+  public static String calculateJSon(SymTypeExpression type) {
     String json = "";
-    SymTypeExpression type = attr.getSymbol().getType();
     if (TypeCheck.isBoolean(type)) {
       json = "getAsJsonBoolean().getValue()";
     } else if (TypeCheck.isInt(type)) {
@@ -133,9 +132,9 @@ public class GenService {
     return false;
   }
 
-  public static String getGetterName(ASTCDAttribute attr) {
-    return (TypeCheck.isBoolean(attr.getSymbol().getType())?"is":"get")
-            + StringTransformations.capitalize(attr.getName());
+  public static String getGetterName(String name, SymTypeExpression type) {
+    return (TypeCheck.isBoolean(type)?"is":"get")
+            + StringTransformations.capitalize(name);
   }
 
   public static boolean isGemList(ASTCDAttribute attr) {
@@ -180,6 +179,10 @@ public class GenService {
 
   public static boolean isList(ASTCDAssocSide assoc) {
     return assoc.isPresentCDCardinality()?assoc.getCDCardinality().isMult():false;
+  }
+
+  public static boolean isBidirectional(ASTCDAssocSide assoc) {
+    return assoc.getSymbol().isIsDefinitiveNavigable() && assoc.getSymbol().getOtherSide().isIsDefinitiveNavigable();
   }
 
   /***************************************************************************/

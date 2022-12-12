@@ -2,15 +2,15 @@
 ${tc.signature( "sourcename","targetname")}
 ${cd4c.method("public StatusResult doRun()")}
 
-boolean ${targetname?uncap_first}Changed = old${targetname}GemId != ${targetname?uncap_first}GemId;
-boolean ${sourcename?uncap_first}Changed = old${sourcename}GemId != ${sourcename?uncap_first}GemId;
+boolean ${targetname}Changed = old${targetname?cap_first}GemId != ${targetname}GemId;
+boolean ${sourcename}Changed = old${sourcename?cap_first}GemId != ${sourcename}GemId;
 
-if(${targetname?uncap_first}Changed){
-  return exchange${targetname}();
+if(${targetname}Changed){
+  return exchange${targetname?cap_first}();
 }
 
-if(${sourcename?uncap_first}Changed){
-  return exchange${sourcename}();
+if(${sourcename}Changed){
+  return exchange${sourcename?cap_first}();
 }
 
 return StatusResult.error(getId());

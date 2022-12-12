@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("classname","attributename","type")}
-${cd4c.method("public void notifySet${attributename?cap_first}(${classname} ${classname?uncap_first}, ${type} o)")}
+${tc.signature("classname","name","type","isBirectional")}
+${cd4c.method("public void notifySet${name?cap_first}(${classname} p, ${type} o)")}
 
-CommandManager.sendCommandToSubscribers(new ${classname}_set${attributename?cap_first}(${classname?uncap_first}.getGemId(), o));
+CommandManager.sendCommandToSubscribers(new ${classname}_set${name?cap_first}(p.getGemId(), o));

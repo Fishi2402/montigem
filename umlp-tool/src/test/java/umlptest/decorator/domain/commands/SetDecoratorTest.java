@@ -5,7 +5,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.jupiter.api.Test;
 import umlp.generator.AbstractDecorator;
-import umlp.generator.decorator.commands.SetDecorator;
+import umlp.generator.domain.decorator.commands.SetDecorator;
 import umlptest.decorator.domain.DecoratorTest;
 
 import static org.junit.jupiter.api.Assertions.assertAll;

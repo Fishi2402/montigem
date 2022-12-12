@@ -1,42 +1,44 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "assoc","sourcename","targetname","definition")}
+${tc.signature( "assoc","sourceName","targetName","sourceType","targetType","definition")}
 ${cd4c.method("public StatusResult doRun()")}
 
-boolean loaded${targetname} = ${definition}Manager.isLoaded${targetname}(${targetname}GemId);
-boolean loaded${sourcename} = ${definition}Manager.isLoaded${sourcename}(${sourcename}GemId);
+<#assign csourceName=sourceName?cap_first>
+<#assign ctargetName=targetName?cap_first>
+boolean loaded${ctargetName} = ${definition}Manager.isLoaded${targetType}(${targetName}GemId);
+boolean loaded${csourceName} = ${definition}Manager.isLoaded${sourceType}(${sourceName}GemId);
 
 // TODO: With DB: server must have loaded both
-assert CommandManager.getParticipantId() != 0 || (loaded${targetname} && loaded${sourcename});
+assert CommandManager.getParticipantId() != 0 || (loaded${ctargetName} && loaded${csourceName});
 
-if(loaded${targetname} && loaded${sourcename}){
-  ${sourcename} p = ${definition}Manager.get${sourcename}Sure(${sourcename}GemId);
-  ${targetname} a = ${definition}Manager.get${targetname}Sure(${targetname}GemId);
+if(loaded${ctargetName} && loaded${csourceName}){
+  ${sourceType} p = ${definition}Manager.get${sourceType}Sure(${sourceName}GemId);
+  ${targetType} a = ${definition}Manager.get${targetType}Sure(${targetName}GemId);
 
   // TODO: only in server?
-  if(indexIn${sourcename}List == -1){
-    indexIn${sourcename}List = p.sizeVisited();
+  if(${sourceName}Index == -1){
+    ${sourceName}Index = p.size${ctargetName}s();
   }
 
-  if(indexIn${targetname}List == -1){
-    indexIn${targetname}List = a.sizeVisitors();
+  if(${targetName}Index == -1){
+    ${targetName}Index = a.size${csourceName}s();
   }
 
-  a.addVisitor(indexIn${targetname}List, p, NotificationScope.MINIMAL);
-  p.addVisited(indexIn${sourcename}List, a, NotificationScope.MINIMAL);
+  a.add${csourceName}(${targetName}Index, p, NotificationScope.MINIMAL);
+  p.add${ctargetName}(${sourceName}Index, a, NotificationScope.MINIMAL);
 }else{
-  // Do not trigger load of ${sourcename}. If the ${targetname} is loaded, we can change it instead and avoid a load operation
-  if(loaded${targetname}){
-    ${targetname} a = ${definition}Manager.get${targetname}Sure(${targetname}GemId);
-    if(indexIn${targetname}List == -1){
-      indexIn${targetname}List = a.sizeVisitors();
+  // Do not trigger load of ${csourceName}. If the ${ctargetName} is loaded, we can change it instead and avoid a load operation
+  if(loaded${ctargetName}){
+    ${targetType} a = ${definition}Manager.get${targetType}Sure(${targetName}GemId);
+    if(${targetName}Index == -1){
+      ${targetName}Index = a.size${csourceName}s();
     }
-    a.INTERNAL_addVisitorId(indexIn${targetname}List, ${sourcename}GemId, NotificationScope.MINIMAL);
-  } else if(loaded${sourcename}) {
-    ${sourcename} p = ${definition}Manager.get${sourcename}Sure(${sourcename}GemId);
-    if(indexIn${sourcename}List == -1){
-      indexIn${sourcename}List = p.sizeVisited();
+    a.INTERNAL_add${csourceName}Id(${targetName}Index, ${sourceName}GemId, NotificationScope.MINIMAL);
+  } else if(loaded${csourceName}) {
+    ${sourceType} p = ${definition}Manager.get${sourceType}Sure(${sourceName}GemId);
+    if(${sourceName}Index == -1){
+      ${sourceName}Index = p.size${ctargetName}s();
     }
-    p.INTERNAL_addVisitedId(indexIn${sourcename}List, ${targetname}GemId, NotificationScope.MINIMAL);
+    p.INTERNAL_add${ctargetName}Id(${sourceName}Index, ${targetName}GemId, NotificationScope.MINIMAL);
   } else {
     // Why did the client receive this command, if it does not contain a or p?
     GeneralErrorCollector.reportSyncError();

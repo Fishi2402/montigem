@@ -1,27 +1,29 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "assoc","sourcename","targetname","definition")}
+${tc.signature( "assoc","sourceName","targetName", "sourceType", "targetType", "definition")}
+<#assign csourceName=sourceName?cap_first>
+<#assign ctargetName=targetName?cap_first>
 
-${cd4c.method("protected StatusResult exchange${targetname}()")}
+${cd4c.method("protected StatusResult exchange${ctargetName}()")}
 
-boolean ${sourcename}Loaded = ${definition}Manager.isLoaded${sourcename}(${sourcename}GemId);
-boolean old${targetname}Loaded = ${definition}Manager.isLoaded${targetname}(old${targetname}GemId);
-boolean new${targetname}Loaded = ${definition}Manager.isLoaded${targetname}(${targetname}GemId);
+boolean ${sourceName}Loaded = ${definition}Manager.isLoaded${sourceType}(${sourceName}GemId);
+boolean old${ctargetName}Loaded = ${definition}Manager.isLoaded${targetType}(old${ctargetName}GemId);
+boolean new${ctargetName}Loaded = ${definition}Manager.isLoaded${targetType}(${targetName}GemId);
 
-if(${sourcename}Loaded){
-  ${sourcename} ${sourcename} = ${definition}Manager.get${sourcename}Sure(${sourcename}GemId);
+if(${sourceName}Loaded){
+  ${sourceType} p = ${definition}Manager.get${sourceType}Sure(${sourceName}GemId);
   // Will automatically change other side of the association
-  ${sourcename}.setVisitedId(indexIn${sourcename}List, ${targetname}GemId, NotificationScope.LOCAL);
-} else if(old${targetname}Loaded){
-  ${targetname} old${targetname} = ${definition}Manager.get${targetname}Sure(old${targetname}GemId);
+  p._internal_set${ctargetName}(${sourceName}Index, ${targetName}GemId, NotificationScope.LOCAL);
+} else if(old${ctargetName}Loaded){
+  ${targetType} old${ctargetName} = ${definition}Manager.get${targetType}Sure(old${ctargetName}GemId);
   // Does not change other side
-  old${targetname}.removeVisitor(indexIn${targetname}List, NotificationScope.MINIMAL);
+  old${ctargetName}.remove${csourceName}(${targetName}Index, NotificationScope.MINIMAL);
 } else {
   return StatusResult.error(getId());
 }
 
-if(new${targetname}Loaded){
-  ${targetname} new${targetname} = ${definition}Manager.get${targetname}Sure(${targetname}GemId);
-  new${targetname}.addVisitorId(new${targetname}.sizeVisitors(), ${sourcename}GemId, NotificationScope.MINIMAL);
+if(new${ctargetName}Loaded){
+  ${targetType} newLoaded = ${definition}Manager.get${targetType}Sure(${targetName}GemId);
+  newLoaded._internal_add${csourceName}(newLoaded.size${csourceName}s(), Lists.newArrayList(${sourceName}GemId), NotificationScope.MINIMAL);
 }
 
 return StatusResult.ok(getId());

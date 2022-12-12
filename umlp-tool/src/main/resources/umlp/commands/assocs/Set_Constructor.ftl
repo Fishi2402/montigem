@@ -1,13 +1,13 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("classname", "packageName", "sourceName", "targetName")}
-${cd4c.constructor("public ${classname}(long old${sourceName}GemId, long old${targetName}GemId,
+${cd4c.constructor("public ${classname}(long old${sourceName?cap_first}GemId, long old${targetName?cap_first}GemId,
                                         long ${sourceName?uncap_first}GemId, long ${targetName?uncap_first}GemId,
-                                        int indexIn${sourceName}List, int indexIn${targetName}List)")}
+                                        int ${sourceName}Index, int ${targetName}Index)")}
 
 super("${packageName}.${classname}");
-this.old${sourceName}GemId = old${sourceName}GemId;
-this.old${targetName}GemId = old${targetName}GemId;
-this.${sourceName?uncap_first}GemId = ${sourceName?uncap_first}GemId;
-this.${targetName?uncap_first}GemId = ${targetName?uncap_first}GemId;
-this.indexIn${sourceName}List = indexIn${sourceName}List;
-this.indexIn${targetName}List = indexIn${targetName}List;
+this.old${sourceName?cap_first}GemId = old${sourceName?cap_first}GemId;
+this.old${targetName?cap_first}GemId = old${targetName?cap_first}GemId;
+this.${sourceName}GemId = ${sourceName}GemId;
+this.${targetName}GemId = ${targetName}GemId;
+this.${sourceName}Index = ${sourceName}Index;
+this.${targetName}Index = ${targetName}Index;

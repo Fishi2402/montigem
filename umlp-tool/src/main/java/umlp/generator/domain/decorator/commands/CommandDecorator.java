@@ -4,7 +4,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.AbstractDecorator;
-import umlp.generator.decorator.commands.SetDecorator;
 
 public class CommandDecorator extends AbstractDecorator {
 
@@ -32,12 +31,20 @@ public class CommandDecorator extends AbstractDecorator {
     setDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: SetDecorator", CommandDecorator.class.getName());
 
+    AddDecorator addDecorator = new AddDecorator(glex);
+    addDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: AddDecorator", CommandDecorator.class.getName());
+
+    RemoveDecorator removeDecorator = new RemoveDecorator(glex);
+    removeDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: RemoveDecorator", CommandDecorator.class.getName());
+
     GetFilteredDecorator getFilteredDecorator = new GetFilteredDecorator(glex);
     getFilteredDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: GetFilteredDecorator", CommandDecorator.class.getName());
 
-    AssocCommandDecorator addDecorator = new AssocCommandDecorator(glex);
-    addDecorator.transform(cdAST, decoratedAST);
+    AssocCommandDecorator assocCommandDecorator = new AssocCommandDecorator(glex);
+    assocCommandDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: AssocCommandDecorator", CommandDecorator.class.getName());
 
     AggregatedCommandDeSerDecorator aggregatedCommandDeSerDecorator = new AggregatedCommandDeSerDecorator(glex);

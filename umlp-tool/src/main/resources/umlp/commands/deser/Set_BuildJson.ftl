@@ -4,6 +4,4 @@ ${cd4c.method("public void buildJson(${command} command, JsonPrinter jsonPrinter
 
 super.buildJson(command, jsonPrinter);
 jsonPrinter.member("gemId", command.getGemId());
-
-// TODO
-//jsonPrinter.member("${attrName}", command.${getterName}());
+jsonPrinter.member("${attrName}", command.${getterName}());

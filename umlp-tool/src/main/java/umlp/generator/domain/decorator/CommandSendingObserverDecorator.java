@@ -13,6 +13,7 @@ import umlp.generator.AbstractDecorator;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.domain.decorator.commands.AssocCommandDecorator.COMMAND_ASSOC_PACKAGE;
 
 public class CommandSendingObserverDecorator extends AbstractDecorator {
 
@@ -44,7 +45,7 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
       .filter(a -> !a.getModifier().isDerived())
       .forEach(a -> getCD4C().addMethod(ast, "umlp.commandsendingobserver.NotifySetAttribute", domainClass.getName(),
-        a.getName(), GenService.getType(a.getSymbol().getType())));
+        a.getName(), GenService.getType(a.getSymbol().getType()), false));
 
     // Assoziationen
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(domainClass);
@@ -52,14 +53,19 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
       if (assoc.getModifier().isReadonly() || assoc.getModifier().isDerived()) {
         continue;
       }
+      boolean isBirectional = GenService.isBidirectional(assoc);
+      String name = isBirectional?assoc.getSymbol().getAssoc().getAssociation().getName():assoc.getName();
+      if (isBirectional) {
+        getCD4C().addImport(ast, getPackageName(origCD, COMMAND_ASSOC_PACKAGE)+".*");
+      }
       if (GenService.isList(assoc)) {
         getCD4C().addMethod(ast, "umlp.commandsendingobserver.NotifyAddAttribute", domainClass.getName(),
-                assoc.getName());
+               name, isBirectional);
         getCD4C().addMethod(ast, "umlp.commandsendingobserver.NotifyRemoveAttribute", domainClass.getName(),
-                assoc.getName());
+                name, isBirectional);
       } else {
         getCD4C().addMethod(ast, "umlp.commandsendingobserver.NotifySetAttribute", domainClass.getName(),
-                assoc.getName(), "long");
+                name, "long", isBirectional);
       }
     }
     addImports(origCD, ast, domainClass);

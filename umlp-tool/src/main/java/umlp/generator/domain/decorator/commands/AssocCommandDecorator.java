@@ -27,7 +27,7 @@ public class AssocCommandDecorator extends AbstractDecorator {
   public AssocCommandDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
-  
+
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_ASSOC_PACKAGE);
@@ -47,39 +47,41 @@ public class AssocCommandDecorator extends AbstractDecorator {
 
   protected ASTCDClass createAddClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {
     String classname = StringTransformations.capitalize(assoc.getName()) + "_add";
-    
+
     ASTCDClass ast = UMLPMill.cDClassBuilder()
-      .setModifier(PUBLIC.build())
-      .setName(classname)
-      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
-      .build();
+            .setModifier(PUBLIC.build())
+            .setName(classname)
+            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
+            .build();
 
-    String sourceName = assoc.getLeft().getSymbol().getType().print();
-    String targetName = assoc.getRight().getSymbol().getType().print();
+    String sourceName = assoc.getLeft().getName();
+    String targetName = assoc.getRight().getName();
+    String sourceType = assoc.getLeft().getSymbol().getType().print();
+    String targetType = assoc.getRight().getSymbol().getType().print();
 
-     // attributes and getter
+    // attributes and getter
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected long " + StringTransformations.uncapitalize(sourceName) + "GemId");
     ast.addAllCDMembers(accessor.decorate(attr));
     attr = getCD4C().addAttribute(ast, "protected long " + StringTransformations.uncapitalize(targetName) + "GemId");
     ast.addAllCDMembers(accessor.decorate(attr));
-    attr = getCD4C().addAttribute(ast, "protected int indexIn"+sourceName+"List");
+    attr = getCD4C().addAttribute(ast, "protected int "+sourceName+"Index");
     ast.addAllCDMembers(accessor.decorate(attr));
-    attr = getCD4C().addAttribute(ast, "protected int indexIn"+targetName+"List");
+    attr = getCD4C().addAttribute(ast, "protected int "+targetName+"Index");
     ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
     getCD4C().addConstructor(ast, "umlp.commands.assocs.Constructor", classname, COMMAND_ASSOC_PACKAGE,
-      sourceName, targetName);
+            sourceName, targetName);
 
     // methods
     getCD4C().addMethod(ast, "umlp.commands.assocs.Add_DoRun", assoc.getName(),
-            sourceName, targetName, origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.assocs.GetEffectedGemIds", targetName);
+            sourceName, targetName, sourceType, targetType, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, "umlp.commands.assocs.GetEffectedGemIds", sourceName, targetName);
 
     // Importe
     addImports(origCD, ast);
-    
+
     return ast;
   }
 
@@ -92,8 +94,10 @@ public class AssocCommandDecorator extends AbstractDecorator {
             .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
             .build();
 
-    String sourceName = assoc.getLeft().getSymbol().getType().print();
-    String targetName = assoc.getRight().getSymbol().getType().print();
+    String sourceName = assoc.getLeft().getName();
+    String targetName = assoc.getRight().getName();
+    String sourceType = assoc.getLeft().getSymbol().getType().print();
+    String targetType = assoc.getRight().getSymbol().getType().print();
 
     // attributes and getter
     AccessorDecorator accessor = new AccessorDecorator(glex);
@@ -101,9 +105,9 @@ public class AssocCommandDecorator extends AbstractDecorator {
     ast.addAllCDMembers(accessor.decorate(attr));
     attr = getCD4C().addAttribute(ast, "protected long " + StringTransformations.uncapitalize(targetName) + "GemId");
     ast.addAllCDMembers(accessor.decorate(attr));
-    attr = getCD4C().addAttribute(ast, "protected int indexIn"+sourceName+"List");
+    attr = getCD4C().addAttribute(ast, "protected int "+sourceName+"Index");
     ast.addAllCDMembers(accessor.decorate(attr));
-    attr = getCD4C().addAttribute(ast, "protected int indexIn"+targetName+"List");
+    attr = getCD4C().addAttribute(ast, "protected int "+targetName+"Index");
     ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
@@ -112,8 +116,8 @@ public class AssocCommandDecorator extends AbstractDecorator {
 
     // methods
     getCD4C().addMethod(ast, "umlp.commands.assocs.Remove_DoRun", assoc.getName(),
-            sourceName, targetName, origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.assocs.GetEffectedGemIds", targetName);
+            sourceName, targetName, sourceType, targetType, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, "umlp.commands.assocs.GetEffectedGemIds", sourceName, targetName);
 
     // Importe
     addImports(origCD, ast);
@@ -130,22 +134,24 @@ public class AssocCommandDecorator extends AbstractDecorator {
             .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
             .build();
 
-    String sourceName = assoc.getLeft().getSymbol().getType().print();
-    String targetName = assoc.getRight().getSymbol().getType().print();
+    String sourceName = assoc.getLeft().getName();
+    String targetName = assoc.getRight().getName();
+    String sourceType = assoc.getLeft().getSymbol().getType().print();
+    String targetType = assoc.getRight().getSymbol().getType().print();
 
     // attributes and getter
     AccessorDecorator accessor = new AccessorDecorator(glex);
-    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected long old" + sourceName + "GemId");
+    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected long old" + StringTransformations.capitalize(sourceName) + "GemId");
     ast.addAllCDMembers(accessor.decorate(attr));
-    attr = getCD4C().addAttribute(ast, "protected long " + StringTransformations.uncapitalize(sourceName) + "GemId");
+    attr = getCD4C().addAttribute(ast, "protected long " + sourceName + "GemId");
     ast.addAllCDMembers(accessor.decorate(attr));
-    attr = getCD4C().addAttribute(ast, "protected long old" + targetName + "GemId");
+    attr = getCD4C().addAttribute(ast, "protected long old" + StringTransformations.capitalize(targetName) + "GemId");
     ast.addAllCDMembers(accessor.decorate(attr));
-    attr = getCD4C().addAttribute(ast, "protected long " + StringTransformations.uncapitalize(targetName) + "GemId");
+    attr = getCD4C().addAttribute(ast, "protected long " + targetName + "GemId");
     ast.addAllCDMembers(accessor.decorate(attr));
-    attr = getCD4C().addAttribute(ast, "protected int indexIn"+sourceName+"List");
+    attr = getCD4C().addAttribute(ast, "protected int " + sourceName +"Index");
     ast.addAllCDMembers(accessor.decorate(attr));
-    attr = getCD4C().addAttribute(ast, "protected int indexIn"+targetName+"List");
+    attr = getCD4C().addAttribute(ast, "protected int " + targetName+"Index");
     ast.addAllCDMembers(accessor.decorate(attr));
 
     getCD4C().addConstructor(ast, "umlp.commands.assocs.Set_Constructor", classname, COMMAND_ASSOC_PACKAGE,
@@ -154,10 +160,10 @@ public class AssocCommandDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.commands.assocs.Set_DoRun",
             sourceName, targetName);
     getCD4C().addMethod(ast, "umlp.commands.assocs.Set_Target_Exchange", assoc.getName(),
-            sourceName, targetName, origCD.getCDDefinition().getName());
+            sourceName, targetName, sourceType, targetType, origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, "umlp.commands.assocs.Set_Source_Exchange", assoc.getName(),
-            sourceName, targetName, origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.assocs.GetEffectedGemIds", targetName);
+            sourceName, targetName, sourceType, targetType, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, "umlp.commands.assocs.Set_GetEffectedGemIds", sourceName, targetName);
 
     addImports(origCD, ast);
 
@@ -166,6 +172,7 @@ public class AssocCommandDecorator extends AbstractDecorator {
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass ast) {
     // Importe
+    getCD4C().addImport(ast, "com.google.common.collect.Lists");
     getCD4C().addImport(ast, "umlp.command.StatusResult");
     getCD4C().addImport(ast, "umlp.command.Command");
     getCD4C().addImport(ast, "umlp.command.CommandManager");

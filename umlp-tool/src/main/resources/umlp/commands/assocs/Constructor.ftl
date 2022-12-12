@@ -6,5 +6,5 @@ ${cd4c.constructor("public ${classname}(long ${sourceName?uncap_first}GemId, lon
 super("${packageName}.${classname}");
 this.${sourceName?uncap_first}GemId = ${sourceName?uncap_first}GemId;
 this.${targetName?uncap_first}GemId = ${targetName?uncap_first}GemId;
-this.indexIn${sourceName}List = indexIn${sourceName}List;
-this.indexIn${targetName}List = indexIn${targetName}List;
+this.${sourceName}Index = ${sourceName}Index;
+this.${targetName}Index = ${targetName}Index;
