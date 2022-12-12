@@ -40,6 +40,9 @@ public class CommandDecorator extends AbstractDecorator {
     addDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: AssocCommandDecorator", CommandDecorator.class.getName());
 
+    AggregatedCommandDeSerDecorator aggregatedCommandDeSerDecorator = new AggregatedCommandDeSerDecorator(glex);
+    aggregatedCommandDeSerDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: XCommandDeserDecorator", CommandDecorator.class.getName());
   }
 
 }

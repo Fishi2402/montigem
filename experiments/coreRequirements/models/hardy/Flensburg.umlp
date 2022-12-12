@@ -52,5 +52,5 @@ umlp Flensburg {
         int averageNumberOfCars;
     }
 
-    / association cities CityInfo -> String [*];
+    / association cities CityInfo -> java.lang.String [*];
 }
