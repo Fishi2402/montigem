@@ -32,18 +32,14 @@ import java.util.stream.Collectors;
 // --------------------------
 
 //+ we generate the TOP class, because there is a handwritten version
-@MappedSuperclass
-@Tuplizer(impl = FlensburgTuplizer.class)
 public abstract class PersonTOP extends Human {
   protected transient List<PersonObserver> personObservers = new ArrayList<>();
   
   // an Attribute: ------------------------------------------
 
-  @Column(name = "nickname")
   protected String nickname;
   
   // Association with cardinality [1]
-  @Transient
   protected Gem<Address> mainResidence;
 
   // an Association: ------------------------------------------
@@ -51,14 +47,11 @@ public abstract class PersonTOP extends Human {
   // unordered Association.
   // The implementation will be a LazyList
   // Siehe PersonOwnsTypeAdapter für Erklärung
-  @Transient
   protected GemList<Car> owns;
   // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
 
-  @Transient
   protected GemList<Person> children;
 
-  @Transient
   protected GemList<Address> visited;
   // TODO AHe: add/remove/...
 

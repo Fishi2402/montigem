@@ -23,21 +23,13 @@ import java.util.Optional;
 
 // --------------------------
 
-@Entity
-@Table(name = "address")
-@Tuplizer(impl = FlensburgTuplizer.class)
 public class Address implements GemIdentifiable, GemBuildable {
   protected transient List<AddressObserver> addressObservers = new ArrayList<>();
 
-  @Id
-  @GeneratedValue(generator = "increment")
-  @GenericGenerator(name = "increment", strategy = "increment")
   protected long gemId = -32;
 
-  @Column(name = "city")
   protected String city;
 
-  @Transient // TODO Person ist kein Entity deswegen geht hier kein OneToMany -> muss spaeter nachgebessert werden
   protected GemList<Person> visitors;
 
   @Override

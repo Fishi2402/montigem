@@ -18,20 +18,13 @@ import java.util.Optional;
 */
 
 // --------------------------
-@Entity
-@Table(name = "car")
-@Tuplizer(impl = FlensburgTuplizer.class)
 public class Car implements GemIdentifiable, GemBuildable {
 
     // TODO Ist Transient weil Hibernate versucht die Sachen hier automatisch zu persistieren, das geht aber nicht fuer Interfaces
-    @Transient
     protected List<CarObserver> carObservers = new ArrayList<>();
 // Bem: This is an ordinary class, comments to the design 
 // decisions can be found at Human and Person
 
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name="increment", strategy = "increment")
     protected long gemId = -34;
 
     protected Car() {
