@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain;
 
 import de.monticore.cd4code.CD4CodeMill;

@@ -42,6 +42,10 @@ public class UMLPGenerator {
   }
 
   public void generate(ASTCDCompilationUnit cdAST, String configTemplate) {
+    UMLAssocNameTrafo assocNameTrafo = new UMLAssocNameTrafo(CD4CodeMill.traverser());
+    assocNameTrafo.transform(cdAST);
+    logTrafoExec("UMLAssocNameTrafo", cdAST);
+
     UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
     assocTrafo.transform(cdAST);
     logTrafoExec("UMLAttrToAssocTrafo", cdAST);
