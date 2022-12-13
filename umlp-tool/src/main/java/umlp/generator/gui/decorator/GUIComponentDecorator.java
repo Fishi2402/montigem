@@ -9,7 +9,7 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIDSLNode;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
-import de.monticore.guidsl._symboltable.GUIVariableSymbol;
+import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -91,7 +91,7 @@ public abstract class GUIComponentDecorator extends GUIAbstractDecorator {
     return args.size() == 1 ? Optional.of(args.get(0)) : Optional.empty();
   }
 
-  public Optional<VariableSymbol> resolveAttribute(Optional<GUIVariableSymbol> guiVariableSymbol, String name) {
+  public Optional<VariableSymbol> resolveAttribute(Optional<GUIParamSymbol> guiVariableSymbol, String name) {
     if (guiVariableSymbol.isEmpty()) {
       return Optional.empty();
     }

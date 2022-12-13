@@ -8,7 +8,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._symboltable.GUIDSLScope;
-import de.monticore.guidsl._symboltable.GUIVariableSymbol;
+import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import umlp.generator.gui.GUIComponentAccessVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
@@ -39,7 +39,7 @@ public class CallDecorator extends GUIComponentDecorator {
                 continue;
               }
               String paramName = ((ASTNameExpression) argument).getName();
-              Optional<GUIVariableSymbol> paramSymbol = ((GUIDSLScope) argument.getEnclosingScope()).resolveGUIVariable(paramName);
+              Optional<GUIParamSymbol> paramSymbol = ((GUIDSLScope) argument.getEnclosingScope()).resolveGUIParam(paramName);
               if (paramSymbol.isEmpty()) {
                 continue;
               }
@@ -61,7 +61,7 @@ public class CallDecorator extends GUIComponentDecorator {
             Map<String, String> parameters = new HashMap<>();
             List<String> arguments = new ArrayList<>();
             args.forEach(a -> {
-              Optional<GUIVariableSymbol> argSymbol = guiComponent.getEnclosingScope().resolveGUIVariable(a);
+              Optional<GUIParamSymbol> argSymbol = guiComponent.getEnclosingScope().resolveGUIParam(a);
               argSymbol.ifPresent((s) -> {
                 if (GUIGeneratorUtil.isDomainType(s.getType())) {
                   parameters.put((isCreate ? a + BUILDER : a), s.getType().getTypeInfo().getName());

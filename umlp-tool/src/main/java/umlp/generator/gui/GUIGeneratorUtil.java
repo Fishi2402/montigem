@@ -7,8 +7,8 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
-import de.monticore.guidsl._symboltable.GUIFunctionSymbol;
-import de.monticore.guidsl._symboltable.GUIVariableSymbol;
+import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
+import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 
@@ -47,13 +47,13 @@ public class GUIGeneratorUtil {
   }
 
   public static boolean isInputComponent(ASTGUIComponent guiComponent) {
-    Optional<GUIFunctionSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIFunction(guiComponent.getQualifiedName());
+    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
     return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a
         -> isInputArgument(guiComponentSymbol.get(), a)).findAny().isPresent();
   }
 
   public static boolean isEventComponent(ASTGUIComponent guiComponent) {
-    Optional<GUIFunctionSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIFunction(guiComponent.getQualifiedName());
+    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
     return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a
         -> isEventArgument(guiComponentSymbol.get(), a)).findAny().isPresent();
   }
@@ -62,18 +62,18 @@ public class GUIGeneratorUtil {
     return decoratedClass.getName().endsWith(CREATE_INPUT_VALUE_SUFFIX);
   }
 
-  public static boolean isInputArgument(GUIFunctionSymbol guiComponent, ASTGUINamedArg arg) {
-    Optional<GUIVariableSymbol> argSymbol = guiComponent.getSpannedScope().resolveGUIVariable(arg.getName());
+  public static boolean isInputArgument(GUIComponentDeclarationSymbol guiComponent, ASTGUINamedArg arg) {
+    Optional<GUIParamSymbol> argSymbol = guiComponent.getSpannedScope().resolveGUIParam(arg.getName());
     return argSymbol.isPresent() && argSymbol.get().isIsReference();
   }
 
-  public static boolean isEventArgument(GUIFunctionSymbol guiComponent, ASTGUINamedArg arg) {
-    Optional<GUIVariableSymbol> argSymbol = guiComponent.getSpannedScope().resolveGUIVariable(arg.getName());
+  public static boolean isEventArgument(GUIComponentDeclarationSymbol guiComponent, ASTGUINamedArg arg) {
+    Optional<GUIParamSymbol> argSymbol = guiComponent.getSpannedScope().resolveGUIParam(arg.getName());
     return argSymbol.isPresent() && argSymbol.get().getType().getTypeInfo().getName().equals("Event");
   }
 
   public static List<ASTGUINamedArg> getInputArguments(ASTGUIComponent guiComponent) {
-    Optional<GUIFunctionSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIFunction(guiComponent.getQualifiedName());
+    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
     if (!guiComponentSymbol.isPresent()) {
       return new ArrayList<>();
     }
@@ -81,7 +81,7 @@ public class GUIGeneratorUtil {
   }
 
   public static List<ASTGUINamedArg> getEventArguments(ASTGUIComponent guiComponent) {
-    Optional<GUIFunctionSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIFunction(guiComponent.getQualifiedName());
+    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
     if (!guiComponentSymbol.isPresent()) {
       return new ArrayList<>();
     }
