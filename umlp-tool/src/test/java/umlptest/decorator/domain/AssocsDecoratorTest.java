@@ -20,23 +20,23 @@ public class AssocsDecoratorTest extends DecoratorTest {
     ASTCDClass clazz = getClassByName("Foo2");
     assertAll(
             // check assoc attribute
-            () -> existsAttribute(clazz, "owns2"),
+            () -> existsAttribute(clazz, "bar2"),
 
             // check assoc methods
-            () -> existsMethod(clazz, "checkOwns2"),
-            () -> existsMethod(clazz, "clearOwns2s"),
-            () -> existsMethod(clazz, "getOwns2"),
-            () -> existsMethod(clazz, "_internal_getOwns2GemList"),
-            () -> existsMethod(clazz, "addOwns2"),
-            () -> existsMethod(clazz, "addAllOwns2s"),
-            () -> existsMethod(clazz, "removeOwns2"),
-            () -> existsMethod(clazz, "removeOwns2ByIdSure"),
-            () -> existsMethod(clazz, "clearOwns2s"),
-            () -> existsMethod(clazz, "containsOwns2"),
-            () -> existsMethod(clazz, "containsAllOwns2"),
-            () -> existsMethod(clazz, "iteratorOwns2"),
-            () -> existsMethod(clazz, "sizeOwns2s"),
-            () -> existsMethod(clazz, "subListOwns2")
+            () -> existsMethod(clazz, "checkBar2"),
+            () -> existsMethod(clazz, "clearBar2s"),
+            () -> existsMethod(clazz, "getBar2"),
+            () -> existsMethod(clazz, "_internal_getBar2GemList"),
+            () -> existsMethod(clazz, "addBar2"),
+            () -> existsMethod(clazz, "addAllBar2s"),
+            () -> existsMethod(clazz, "removeBar2"),
+            () -> existsMethod(clazz, "removeBar2ByIdSure"),
+            () -> existsMethod(clazz, "clearBar2s"),
+            () -> existsMethod(clazz, "containsBar2"),
+            () -> existsMethod(clazz, "containsAllBar2"),
+            () -> existsMethod(clazz, "iteratorBar2"),
+            () -> existsMethod(clazz, "sizeBar2s"),
+            () -> existsMethod(clazz, "subListBar2")
             );
   }
 

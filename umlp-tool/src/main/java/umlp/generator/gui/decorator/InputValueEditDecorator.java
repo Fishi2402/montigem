@@ -7,7 +7,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._symboltable.GUIDSLScope;
-import de.monticore.guidsl._symboltable.GUIVariableSymbol;
+import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.gui.GUIComponentAccessVisitor;
@@ -30,7 +30,7 @@ public class InputValueEditDecorator extends GUIComponentDecorator {
     allZuweisungen.forEach(f -> {
           if (f.getExpression() instanceof ASTNameExpression) {
             String variableName = ((ASTNameExpression) f.getExpression()).getName();
-            Optional<GUIVariableSymbol> symbol = ((GUIDSLScope) f.getEnclosingScope()).resolveGUIVariable(variableName);
+            Optional<GUIParamSymbol> symbol = ((GUIDSLScope) f.getEnclosingScope()).resolveGUIParam(variableName);
 
             Optional<VariableSymbol> attr = resolveAttribute(symbol, f.getName());
 
