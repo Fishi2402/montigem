@@ -2,7 +2,7 @@ umlp D {
   class Foo {
     -> Bar;
     int i;
-    java.util.List s;
+    java.util.List<java.lang.Integer> s;
     double d;
     List<boolean> t;
     V v;

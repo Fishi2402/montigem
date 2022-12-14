@@ -12,10 +12,14 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import umlp.UMLPFullPrettyPrinter;
 import umlp.UMLPMill;
 
 import java.util.List;
@@ -147,17 +151,38 @@ public class GenService {
   }
 
   public static boolean isList(ASTCDAttribute attr) {
-    if (attr.getMCType() instanceof ASTMCBasicGenericType) {
-      List<String> nameList = ((ASTMCBasicGenericType) attr.getMCType()).getNameList();
-      return "List".equals(nameList.get(nameList.size()-1));
+    ASTMCType mcType = attr.getMCType();
+    return isList(mcType);
+  }
+
+  public static boolean isList(ASTMCType mcType) {
+    if(mcType instanceof ASTMCListType){
+      return true;
+    }
+    if (mcType instanceof ASTMCBasicGenericType) {
+      List<String> nameList = ((ASTMCBasicGenericType) mcType).getNameList();
+      return "List".equals(nameList.get(nameList.size() - 1));
+    }
+    if(mcType instanceof ASTMCQualifiedType){
+      List<String> nameList = ((ASTMCQualifiedType) mcType).getNameList();
+      return "List".equals(nameList.get(nameList.size() - 1));
     }
     return false;
   }
 
   public static boolean isOptional(ASTCDAttribute attr) {
-    if (attr.getMCType() instanceof ASTMCBasicGenericType) {
-      List<String> nameList = ((ASTMCBasicGenericType) attr.getMCType()).getNameList();
-      return "Optional".equals(nameList.get(nameList.size()-1));
+    ASTMCType mcType = attr.getMCType();
+    return isOptional(mcType);
+  }
+
+  private static boolean isOptional(ASTMCType mcType) {
+    if(mcType instanceof ASTMCOptionalType){
+      return true;
+    }
+
+    if (mcType instanceof ASTMCBasicGenericType) {
+      List<String> nameList = ((ASTMCBasicGenericType) mcType).getNameList();
+      return "Optional".equals(nameList.get(nameList.size() - 1));
     }
     return false;
   }
@@ -180,6 +205,35 @@ public class GenService {
 
   public static boolean isList(ASTCDAssocSide assoc) {
     return assoc.isPresentCDCardinality()?assoc.getCDCardinality().isMult():false;
+  }
+
+  public static String getInnerType(ASTMCType mcType){
+    UMLPFullPrettyPrinter prettyPrinter = new UMLPFullPrettyPrinter();
+    if(!isList(mcType) && !isOptional(mcType)) {
+      Log.error("Not a list or optional type: " + prettyPrinter.prettyprint(mcType));
+      return null;
+    }
+
+    if (mcType instanceof ASTMCBasicGenericType) {
+      ASTMCBasicGenericType genType = (ASTMCBasicGenericType) mcType;
+      return prettyPrinter.prettyprint(genType.getMCTypeArgument(0).getMCTypeOpt().get());
+    }
+
+    if(mcType instanceof ASTMCListType){
+      ASTMCListType lt = (ASTMCListType) mcType;
+      if(!lt.getMCTypeArgumentList().isEmpty()) {
+        return prettyPrinter.prettyprint(lt.getMCTypeArgumentList().get(0).getMCTypeOpt().get());
+      }
+    }
+
+    if(mcType instanceof ASTMCOptionalType){
+      ASTMCOptionalType ot = (ASTMCOptionalType) mcType;
+      if(!ot.getMCTypeArgumentList().isEmpty()){
+        return prettyPrinter.prettyprint(ot.getMCTypeArgumentList().get(0).getMCTypeOpt().get());
+      }
+    }
+
+    return "java.lang.Object";
   }
 
   /***************************************************************************/

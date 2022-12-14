@@ -55,5 +55,5 @@ umlp MediaHub {
   composition Library -> Book [*] ;
   composition Library -> Video [*] ;
 //  association resolution Video (quality) -> VideoQuality ; //TODO: Fix Enum Bug in cd4c
-  association accountbook User [Account] -> Account ;
+  association accountbook User [Account] -> (a2) Account ;
 }
