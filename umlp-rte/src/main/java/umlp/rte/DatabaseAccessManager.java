@@ -12,25 +12,22 @@ import java.util.Properties;
 public class DatabaseAccessManager {
 
   // TODO: replace with database access?
-  private static int gemId = 0;
+  protected static int gemId = 0;
 
   public static void init(String[] args) {
   }
 
-  private static String DB_URL;
+  protected static String DB_URL;
 
-  private static final String DATABASE_PROPERTIES = "database.properties";
+  protected static final String DATABASE_PROPERTIES = "database.properties";
 
-  private static DatabaseAccessManager instance;
+  protected static DatabaseAccessManager instance;
 
-  private static Properties databaseProperties;
+  protected static Properties databaseProperties;
 
-  private static Connection connection;
+  protected static Connection connection;
 
-  /**
-   * Don't let anyone else instantiate this class.
-   */
-  private DatabaseAccessManager() {
+  protected DatabaseAccessManager() {
   }
 
   public static DatabaseAccessManager getSingleton() {
@@ -44,7 +41,7 @@ public class DatabaseAccessManager {
     getSingleton()._setup();
   }
 
-  private void _setup() {
+  protected void _setup() {
     loadDBPropertiesFromStandardFileLocation();
     try {
       DriverManager.registerDriver(new org.postgresql.Driver());
@@ -78,7 +75,20 @@ public class DatabaseAccessManager {
     DB_URL = databaseProperties.getProperty("database_url");
   }
 
-  private void loadDBPropertiesFromStandardFileLocation() {
+  public static PreparedStatement prepareStatement(String statement){
+    return getSingleton()._prepareStatement(statement);
+  }
+
+  public PreparedStatement _prepareStatement(String statement){
+    try {
+      return connection.prepareStatement(statement);
+    } catch (SQLException e) {
+      Log.error("Error while preparing statement\n" + statement, e);
+      return null;
+    }
+  }
+
+  protected void loadDBPropertiesFromStandardFileLocation() {
     databaseProperties = new Properties();
     ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
@@ -94,7 +104,7 @@ public class DatabaseAccessManager {
     DB_URL = databaseProperties.getProperty("database_url");
   }
 
-  private void loadDBPropertiesFromPropertiesFile(String path) {
+  protected void loadDBPropertiesFromPropertiesFile(String path) {
     databaseProperties = new Properties();
     ClassLoader loader = Thread.currentThread().getContextClassLoader();
 

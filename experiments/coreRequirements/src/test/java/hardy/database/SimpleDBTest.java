@@ -1,17 +1,27 @@
 package hardy.database;
 
-import org.junit.jupiter.api.Disabled;
+import hardy.FlensburgManagerImpl;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import umlp.rte.DatabaseAccessManager;
 
 public class SimpleDBTest {
 
+  @BeforeEach
+  public void init(){
+    TestDatabaseAccessManager.init();
+    FlensburgManagerImpl.init();
+  }
+
+  @AfterEach
+  public void cleanup(){
+    TestDatabaseAccessManager.close();
+  }
+
   // TODO think of a good way for testing DBs -> use h2 Database
-  @Disabled
   @Test
   public void testSaveAndLoadDB() {
-
-    DatabaseAccessManager.setup();
-    DatabaseAccessManager.executeSQLUpdate("CREATE SCHEMA meinSchema");
+    // TODO AHe: continue here
+    // TODO: impl get/create human/person to test
   }
 }
