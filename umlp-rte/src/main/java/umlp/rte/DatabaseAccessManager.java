@@ -1,9 +1,7 @@
 package umlp.rte;
 
-import de.monticore.cd.codegen.methods.accessor.OptionalAccessorDecorator;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
@@ -12,6 +10,9 @@ import java.util.Properties;
 
 
 public class DatabaseAccessManager {
+
+  // TODO: replace with database access?
+  private static int gemId = 0;
 
   public static void init(String[] args) {
   }
@@ -103,5 +104,9 @@ public class DatabaseAccessManager {
       e.printStackTrace();
     }
     DB_URL = databaseProperties.getProperty("database_url");
+  }
+
+  public static long getFreeGemId(){
+    return gemId++;
   }
 }

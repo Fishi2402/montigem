@@ -42,7 +42,6 @@ public class ManagerImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managerimpl.Init", name+ManagerDecorator.SUFFIX);
     List<String> classList = origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
                     .map(c -> c.getName()).collect(Collectors.toList());
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.GetAnnotatedClasses", classList);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFreeGemId");
     getCD4C().addMethod(managerClass, "umlp.managerimpl.ErrorNotificationScope");
 

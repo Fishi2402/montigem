@@ -1,13 +1,8 @@
 package hardy.database;
 
-import hardy.*;
-import org.hibernate.Session;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp.rte.DatabaseAccessManager;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 public class SimpleDBTest {
 

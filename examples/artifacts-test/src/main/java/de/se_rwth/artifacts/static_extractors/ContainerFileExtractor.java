@@ -54,7 +54,7 @@ public class ContainerFileExtractor extends BaseExtractor {
   }
 
   private void fillAbsolutePathToArtifactMap(Map<String, Artifact> stringArtifactMap, List<Artifact> artifacts) {
-    artifacts.forEach(a -> stringArtifactMap.put(a.getRootArtifact().getFullName()+"/"+a.getFullName(), a));
+    artifacts.forEach(a -> stringArtifactMap.put(a.getRoot().getFullName()+"/"+a.getFullName(), a));
   }
 
   private List<FileArtifact> getAllFullyBuiltFileArtifacts(List<Artifact> artifacts) {

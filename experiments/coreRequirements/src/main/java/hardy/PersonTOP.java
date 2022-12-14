@@ -5,15 +5,10 @@ package hardy;
 // todo NN: !com.google.common.: Muss das Teil dieser Imports sein, Rücksprache mit BR
 
 import com.google.common.collect.Sets;
-import org.hibernate.annotations.Tuplizer;
 import umlp.rte.Gem;
-import umlp.rte.GemIdentifiable;
 import umlp.rte.GemList;
 import umlp.rte.NotificationScope;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
 import java.util.*;
 import java.util.stream.Collectors;
 

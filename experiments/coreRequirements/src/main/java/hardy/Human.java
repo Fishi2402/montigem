@@ -2,12 +2,10 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import org.hibernate.annotations.Tuplizer;
 import umlp.rte.GemBuildable;
 import umlp.rte.GemIdentifiable;
 import umlp.rte.NotificationScope;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
