@@ -52,7 +52,7 @@ public class Neo4jApplication {
       //    .map(opt -> opt.map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD))).collect(Collectors.toList()));
 
 
-      d1.addArtifact(0, f);
+      //d1.addArtifact(0, f);
 
 
 

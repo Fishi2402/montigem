@@ -2,12 +2,10 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import org.hibernate.annotations.Tuplizer;
 import umlp.rte.GemBuildable;
 import umlp.rte.GemIdentifiable;
 import umlp.rte.NotificationScope;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +17,6 @@ import java.util.Optional;
 */
 
 // --------------------------
-@Entity
-@Table(name = "human")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@Tuplizer(impl = FlensburgTuplizer.class)
 public class Human implements GemIdentifiable, GemBuildable {
     protected transient List<HumanObserver> humanObservers = new ArrayList<>();
 
@@ -34,13 +28,11 @@ public class Human implements GemIdentifiable, GemBuildable {
     // real object is not (yet) loaded, e.g. in the client
     //
     // -32: is an illegal value showing that an has error occurred somewhere
-    @Id
     protected long gemId = -32;
 
     // an Attribute: ------------------------------------------
     // Attribute has non-primitive type to allow null values for objects, which are not yet
     // completely built, but require some value (required field in GUI)
-    @Column(name = "age")
     protected Integer age;
 
     // --------------------------------------------------------------------

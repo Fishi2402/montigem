@@ -9,10 +9,7 @@ import umlp.rte.GemList;
 import umlp.rte.GemListBuilder;
 import umlp.rte.NotificationScope;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FlensburgManagerImpl extends FlensburgManager {
@@ -21,7 +18,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
      * Don't let anyone else instantiate this class.
      */
     private FlensburgManagerImpl() {
-        DatabaseAccessManager.setup(getAnnotatedClasses());
+        DatabaseAccessManager.setup();
     }
 
     /**
@@ -31,9 +28,10 @@ public class FlensburgManagerImpl extends FlensburgManager {
         FlensburgManager.setInstance(new FlensburgManagerImpl());
     }
 
+    // TODO kepp gemid with DB in sync
     @Override
     protected long _doGetFreeGemId() {
-        return DatabaseAccessManager.getFreeGemId();
+        return 0;
     }
 
     @Override
@@ -51,37 +49,34 @@ public class FlensburgManagerImpl extends FlensburgManager {
         return new HumanBuilder(gemId);
     }
 
+    // TODO replace hibernate commands with DAOs / generated SQL
     @Override
     protected Optional<Human> _doHumanOpt(long gemId) {
-        return Optional.ofNullable(DatabaseAccessManager.get(Human.class, gemId));
+        return Optional.ofNullable(null);
     }
 
     @Override
     protected Human _doGetHumanSure(long gemId) {
         // We need to set a DB Oberserver whenever a human object is requested from the DB, so the DB is kept updated
-        Human h = DatabaseAccessManager.get(Human.class, gemId);
+        Human h = null;
         h.addObserver(new HumanDbObserver());
         return h;
     }
 
     @Override
     protected void _doAddHuman(Human human) {
-        DatabaseAccessManager.add(Human.class.getName(), human);
         flensburgObservers.forEach(obs -> obs.notifyHumanAdded(human.getGemId()));
     }
 
     @Override
     protected GemList<Human> _doGetHumanList() {
-      List<Long> ids = DatabaseAccessManager.getAll(Human.class).stream()
-          .map(GemIdentifiable::getGemId)
-          .collect(Collectors.toList());
+      List<Long> ids = new ArrayList<>();
       GemListBuilder<Human> list = new HumanGemList(ids);
       return list.build().get();
     }
 
     @Override
     protected void _doDeleteHuman(Human human) {
-        DatabaseAccessManager.delete(Human.class.getName(), human);
         flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(human.getGemId()));
     }
 
@@ -105,32 +100,28 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected Optional<Person> _doPersonOpt(long gemId) {
-        return Optional.ofNullable(DatabaseAccessManager.get(Person.class, gemId));
+        return Optional.ofNullable(null);
     }
 
     @Override
     protected Person _doGetPersonSure(long gemId) {
-        return DatabaseAccessManager.get(Person.class, gemId);
+        return null;
     }
 
     @Override
     protected void _doAddPerson(Person person) {
-        DatabaseAccessManager.add(Person.class.getName(), person);
         flensburgObservers.forEach(obs -> obs.notifyPersonAdded(person.getGemId()));
     }
 
     @Override
     protected GemList<Person> _doGetPersonList() {
-      List<Long> ids = DatabaseAccessManager.getAll(Person.class).stream()
-          .map(GemIdentifiable::getGemId)
-          .collect(Collectors.toList());
+      List<Long> ids = new ArrayList<>();
       GemListBuilder<Person> list = new PersonGemList(ids);
       return list.build().get();
     }
 
     @Override
     protected void _doDeletePerson(Person person) {
-        DatabaseAccessManager.delete(Person.class.getName(), person);
         flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(person.getGemId()));
     }
 
@@ -154,32 +145,28 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected Optional<Address> _doAddressOpt(long gemId) {
-        return Optional.ofNullable(DatabaseAccessManager.get(Address.class, gemId));
+        return Optional.ofNullable(null);
     }
 
     @Override
     protected Address _doGetAddressSure(long gemId) {
-        return DatabaseAccessManager.get(Address.class, gemId);
+        return null;
     }
 
     @Override
     protected void _doAddAddress(Address address) {
-        DatabaseAccessManager.add(Address.class.getName(), address);
         flensburgObservers.forEach(obs -> obs.notifyAddressAdded(address.getGemId()));
     }
 
     @Override
     protected GemList<Address> _doGetAddressList() {
-      List<Long> ids = DatabaseAccessManager.getAll(Address.class).stream()
-          .map(GemIdentifiable::getGemId)
-          .collect(Collectors.toList());
+      List<Long> ids = new ArrayList<>();
       GemListBuilder<Address> list = new AddressGemList(ids);
       return list.build().get();
     }
 
     @Override
     protected void _doDeleteAddress(Address address) {
-        DatabaseAccessManager.delete(Address.class.getName(), address);
         flensburgObservers.forEach(obs -> obs.notifyAddressDeleted(address.getGemId()));
     }
 
@@ -192,32 +179,28 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected Optional<Car> _doCarOpt(long gemId) {
-        return Optional.ofNullable(DatabaseAccessManager.get(Car.class, gemId));
+        return Optional.ofNullable(null);
     }
 
     @Override
     protected Car _doGetCarSure(long gemId) {
-        return DatabaseAccessManager.get(Car.class, gemId);
+        return null;
     }
 
     @Override
     protected void _doAddCar(Car car) {
-        DatabaseAccessManager.add(Car.class.getName(), car);
         flensburgObservers.forEach(obs -> obs.notifyCarAdded(car.getGemId()));
     }
 
     @Override
     protected GemList<Car> _doGetCarList() {
-      List<Long> ids = DatabaseAccessManager.getAll(Car.class).stream()
-          .map(GemIdentifiable::getGemId)
-          .collect(Collectors.toList());
+      List<Long> ids = new ArrayList<>();
       GemListBuilder<Car> list = new CarGemList(ids);
       return list.build().get();
     }
 
     @Override
     protected void _doDeleteCar(Car car) {
-        DatabaseAccessManager.delete(Car.class.getName(), car);
         flensburgObservers.forEach(obs -> obs.notifyCarDeleted(car.getGemId()));
     }
 

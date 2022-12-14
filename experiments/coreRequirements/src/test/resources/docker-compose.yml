@@ -1,0 +1,15 @@
+version: "2.1"
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_PASSWORD=ChangeThisPassword_PLEASE
+      - POSTGRES_DB=umlpdb
+      - POSTGRES_USER=admin
+      - CONNECT_TIMEOUT=31536000
+      - WAIT_TIMEOUT=31536000
+    restart: "unless-stopped"
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
