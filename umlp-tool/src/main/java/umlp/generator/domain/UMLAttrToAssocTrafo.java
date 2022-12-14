@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._visitor.CD4CodeTraverser;
 import de.monticore.cdassociation._ast.ASTCDAssocLeftSide;
@@ -16,6 +18,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import umlp.generator.domain.decorator.GenService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +35,7 @@ public class UMLAttrToAssocTrafo implements CDBasisVisitor2, CDInterfaceAndEnumV
 
   protected ASTCDType astcdType;
 
-  protected Map<ASTCDType, ASTCDAttribute> attrMap = new HashMap<>();
+  protected Multimap<ASTCDType, ASTCDAttribute> attrMap = Multimaps.newMultimap(new HashMap<>(), ArrayList::new);
 
   protected Map<ASTCDPackage, ASTCDAssociation> assocMap = new HashMap<>();
 
@@ -88,7 +91,7 @@ public class UMLAttrToAssocTrafo implements CDBasisVisitor2, CDInterfaceAndEnumV
 
   @Override
   public void endVisit(ASTCDDefinition node) {
-   attrMap.entrySet().forEach(e -> e.getKey().removeCDMember(e.getValue()));
+   attrMap.entries().forEach(e -> e.getKey().removeCDMember(e.getValue()));
    assocMap.entrySet().forEach(e -> e.getKey().addCDElement(e.getValue()));
   }
 

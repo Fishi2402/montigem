@@ -28,8 +28,8 @@ public class UMLAssocNameTrafo implements CDAssociationVisitor2 {
     }
     CD4CodeFullPrettyPrinter pp = new CD4CodeFullPrettyPrinter(new IndentPrinter());
     String name = pp.prettyprint(ast.getLeft().getMCQualifiedType()) +
-            "_" + ast.getLeft().getName() +
-            "_" + ast.getRight().getName() +
+            "_" + ast.getLeft().getName().replace(".", "_") +
+            "_" + ast.getRight().getName().replace(".", "_") +
             pp.prettyprint(ast.getRight().getMCQualifiedType());
     ast.setName(name);
   }

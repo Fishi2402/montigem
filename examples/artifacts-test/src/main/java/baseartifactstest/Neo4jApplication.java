@@ -1,21 +1,12 @@
 package baseartifactstest;
 
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
-import umlp.rte.GemList;
-import umlp.rte.LoadResult;
-import umlp.rte.LoadingState;
 
 @SpringBootApplication
 @EnableNeo4jRepositories
@@ -61,7 +52,7 @@ public class Neo4jApplication {
       //    .map(opt -> opt.map(LoadResult::new).orElse(new LoadResult<>(LoadingState.FAILED_TO_LOAD))).collect(Collectors.toList()));
 
 
-      //d1.addContains(0, f);
+      //d1.addArtifact(0, f);
 
 
 

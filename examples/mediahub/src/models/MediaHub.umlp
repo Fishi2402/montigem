@@ -13,7 +13,6 @@ umlp MediaHub {
     class User {
       String name;
       int userID;
-      Account account;
     }
   // }
 
@@ -51,10 +50,10 @@ umlp MediaHub {
 
   // association borrow [0..1] people.User -> multimedia.Book [*] ; TODO: Bug in cd4c: classes in this package are added twice to the AST
   // association writtenBy [1] people.Author (book) <-  (author) Book [*] ; TODO: Bug in cd4c: classes in this package are added twice to the AST
-  association borrow [0..1] User -> Book [*] ;
+  association borrow [0..1] User -> (borrows) Book [*] ;
   association writtenBy [1] Author (book) <-  (author) Book [*] ;
   composition Library -> Book [*] ;
   composition Library -> Video [*] ;
 //  association resolution Video (quality) -> VideoQuality ; //TODO: Fix Enum Bug in cd4c
-  association accountbook User [Account] -> Account ;
+  association accountbook User [Account] -> (a2) Account ;
 }
