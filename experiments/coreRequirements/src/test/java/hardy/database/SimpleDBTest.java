@@ -151,6 +151,26 @@ public class SimpleDBTest {
     assertEquals(age, h1001.getAge());
   }
 
+  @Test
+  public void testMainResidence(){
+    Address a1 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Person p1 = FlensburgManager.personBuilder().age(20).nickname("John").mainResidence(a1).build().get();
+
+    PersonDAO personDAO = new PersonDAO();
+
+    Optional<Person> p1CopyOpt = personDAO.selectPerson(p1.getGemId());
+    assertTrue(p1CopyOpt.isPresent());
+    Person p1Copy = p1CopyOpt.get();
+
+    assertNotSame(p1, p1Copy);
+    assertEquals(p1.getGemId(), p1Copy.getGemId());
+    assertEquals(p1.getAge(), p1Copy.getAge());
+    assertEquals(p1.getNickname(), p1Copy.getNickname());
+    assertEquals(p1.getMainResidenceGem().getGemId(), p1Copy.getMainResidenceGem().getGemId());
+
+    assertSame(a1, p1Copy.getMainResidence());
+  }
+
   // TODO: Delete
 
 

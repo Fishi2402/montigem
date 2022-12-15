@@ -8,7 +8,10 @@ import umlp.rte.GemList;
 import umlp.rte.GemListBuilder;
 import umlp.rte.NotificationScope;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 public class FlensburgManagerImpl extends FlensburgManager {
   HumanDbObserver theHumanDbObserver = new HumanDbObserver();
@@ -20,9 +23,12 @@ public class FlensburgManagerImpl extends FlensburgManager {
   // TODO: inject daos into dbobservers?
   HumanDAO humanDAO = new HumanDAO();
   PersonDAO personDAO = new PersonDAO();
+  AddressDAO addressDAO = new AddressDAO();
   // TODO: other DAOs
 
   HashMap<Long, Human> knownHumans = new HashMap<>();
+  HashMap<Long, Person> knownPersons = new HashMap<>();
+  HashMap<Long, Address> knownAddresses = new HashMap<>();
   // TODO: other cashes
 
     /**
@@ -65,7 +71,6 @@ public class FlensburgManagerImpl extends FlensburgManager {
       if(knownHumans.containsKey(gemId)){
         return Optional.ofNullable(knownHumans.get(gemId));
       }
-      // TODO: add to known humans
       Optional<Human> res = humanDAO.selectHuman(gemId);
       if(res.isPresent()){
         Human h = res.get();
@@ -124,17 +129,33 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected Optional<Person> _doPersonOpt(long gemId) {
-        return Optional.ofNullable(null);
+      if(knownPersons.containsKey(gemId)){
+        return Optional.ofNullable(knownPersons.get(gemId));
+      }
+      Optional<Person> res = personDAO.selectPerson(gemId);
+      if(res.isPresent()){
+        Person h = res.get();
+        if(!h.containsObserver(thePersonDbObserver)){
+          h.addObserver(thePersonDbObserver);
+        }
+        knownPersons.put(h.getGemId(), h);
+      }
+
+      return res;
     }
 
     @Override
     protected Person _doGetPersonSure(long gemId) {
-        return null;
+        return _doPersonOpt(gemId).get();
     }
 
     @Override
     protected void _doAddPerson(Person person) {
-        flensburgObservers.forEach(obs -> obs.notifyPersonAdded(person.getGemId()));
+      knownPersons.put(person.getGemId(), person);
+      if(!person.containsObserver(thePersonDbObserver)){
+        person.addObserver(thePersonDbObserver);
+      }
+      flensburgObservers.forEach(obs -> obs.notifyPersonAdded(person.getGemId()));
     }
 
     @Override
@@ -169,17 +190,33 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected Optional<Address> _doAddressOpt(long gemId) {
-        return Optional.ofNullable(null);
+      if(knownAddresses.containsKey(gemId)){
+        return Optional.ofNullable(knownAddresses.get(gemId));
+      }
+      Optional<Address> res = addressDAO.selectAddress(gemId);
+      if(res.isPresent()){
+        Address h = res.get();
+        if(!h.containsObserver(theAddressDbObserver)){
+          h.addObserver(theAddressDbObserver);
+        }
+        knownAddresses.put(h.getGemId(), h);
+      }
+
+      return res;
     }
 
     @Override
     protected Address _doGetAddressSure(long gemId) {
-        return null;
+        return _doAddressOpt(gemId).get();
     }
 
     @Override
     protected void _doAddAddress(Address address) {
-        flensburgObservers.forEach(obs -> obs.notifyAddressAdded(address.getGemId()));
+      knownAddresses.put(address.getGemId(), address);
+      if(!address.containsObserver(theAddressDbObserver)){
+        address.addObserver(theAddressDbObserver);
+      }
+      flensburgObservers.forEach(obs -> obs.notifyAddressAdded(address.getGemId()));
     }
 
     @Override
@@ -191,6 +228,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected void _doDeleteAddress(Address address) {
+      // TODO
         flensburgObservers.forEach(obs -> obs.notifyAddressDeleted(address.getGemId()));
     }
 
@@ -286,14 +324,5 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected void _doDeleteCars(List<Car> o) {
 
-    }
-
-    private Set<Class> getAnnotatedClasses() {
-        Set<Class> annotatedClasses = new HashSet<>();
-        annotatedClasses.add(Human.class);
-        annotatedClasses.add(Car.class);
-        annotatedClasses.add(Address.class);
-        annotatedClasses.add(Person.class);
-        return annotatedClasses;
     }
 }
