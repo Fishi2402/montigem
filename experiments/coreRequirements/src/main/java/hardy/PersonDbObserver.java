@@ -6,6 +6,8 @@ package hardy;
 public class PersonDbObserver implements PersonObserver{
   protected static PersonDAO dao = new PersonDAO();
 
+  // Insert and delete are implemented in FlensburgDbObserver
+
   @Override
   public void notifySetAge(Human h, int age) {
     dao.updateAge(h.getGemId(), age);

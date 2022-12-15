@@ -4,15 +4,26 @@ package hardy;
 
 import hardy.gemlists.*;
 import umlp.rte.DatabaseAccessManager;
-import umlp.rte.GemIdentifiable;
 import umlp.rte.GemList;
 import umlp.rte.GemListBuilder;
 import umlp.rte.NotificationScope;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class FlensburgManagerImpl extends FlensburgManager {
+  HumanDbObserver theHumanDbObserver = new HumanDbObserver();
+  // TODO: add for other classes
+  PersonDbObserver thePersonDbObserver = new PersonDbObserver();
+  AddressDbObserver theAddressDbObserver = new AddressDbObserver();
+  CarDbObserver theCarDbObserver = new CarDbObserver();
+
+  // TODO: inject daos into dbobservers?
+  HumanDAO humanDAO = new HumanDAO();
+  PersonDAO personDAO = new PersonDAO();
+  // TODO: other DAOs
+
+  HashMap<Long, Human> knownHumans = new HashMap<>();
+  // TODO: other cashes
 
     /**
      * Don't let anyone else instantiate this class.
@@ -25,13 +36,16 @@ public class FlensburgManagerImpl extends FlensburgManager {
      * {@inheritDoc}
      */
     public static void init() {
-        FlensburgManager.setInstance(new FlensburgManagerImpl());
+      FlensburgManagerImpl impl = new FlensburgManagerImpl();
+      impl.flensburgObservers.add(new FlensburgDbObserver());
+      FlensburgManager.setInstance(impl);
     }
 
     // TODO kepp gemid with DB in sync
+    protected long gemId = 0;
     @Override
     protected long _doGetFreeGemId() {
-        return 0;
+        return gemId++;
     }
 
     @Override
@@ -43,29 +57,39 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected HumanBuilder _doHumanBuilder(long gemId) {
-        HumanBuilder builder = new HumanBuilder(gemId);
-        // We need to set a DB Oberserver whenever a human object is built from the DB, so the DB is kept updated
-        builder.humanObservers.add(new HumanDbObserver());
         return new HumanBuilder(gemId);
     }
 
-    // TODO replace hibernate commands with DAOs / generated SQL
     @Override
     protected Optional<Human> _doHumanOpt(long gemId) {
-        return Optional.ofNullable(null);
+      if(knownHumans.containsKey(gemId)){
+        return Optional.ofNullable(knownHumans.get(gemId));
+      }
+      // TODO: add to known humans
+      Optional<Human> res = humanDAO.selectHuman(gemId);
+      if(res.isPresent()){
+        Human h = res.get();
+        if(!h.containsObserver(theHumanDbObserver)){
+          h.addObserver(theHumanDbObserver);
+        }
+        knownHumans.put(h.getGemId(), h);
+      }
+
+      return res;
     }
 
     @Override
     protected Human _doGetHumanSure(long gemId) {
-        // We need to set a DB Oberserver whenever a human object is requested from the DB, so the DB is kept updated
-        Human h = null;
-        h.addObserver(new HumanDbObserver());
-        return h;
+        return _doHumanOpt(gemId).get();
     }
 
     @Override
     protected void _doAddHuman(Human human) {
-        flensburgObservers.forEach(obs -> obs.notifyHumanAdded(human.getGemId()));
+      knownHumans.put(human.getGemId(), human);
+      if(!human.containsObserver(theHumanDbObserver)){
+        human.addObserver(theHumanDbObserver);
+      }
+      flensburgObservers.forEach(obs -> obs.notifyHumanAdded(human.getGemId()));
     }
 
     @Override
@@ -77,7 +101,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected void _doDeleteHuman(Human human) {
-        flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(human.getGemId()));
+      flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(human.getGemId()));
     }
 
     /* === Methods for class Person === */

@@ -11,11 +11,28 @@ import java.sql.SQLException;
 // Provides methods to change database entries related to the Person class
 // There should be a small amount of instances that is not related to the number of Person instances
 public class PersonDAO {
+  protected PreparedStatement insertPerson = null;
   protected PreparedStatement setAgeStatement = null;
   protected PreparedStatement setNickname = null;
   protected PreparedStatement addVisited = null;
   protected PreparedStatement removeVisited = null;
   protected PreparedStatement setVisited = null;
+
+  public void insertPerson(Person p){
+    if(insertPerson == null){
+      insertPerson = DatabaseAccessManager.prepareStatement("INSERT INTO person (id, age, nickname) VALUES (?, ?, ?)");
+    }
+
+    try{
+      insertPerson.clearParameters();
+      insertPerson.setLong(1, p.getGemId());
+      insertPerson.setInt(2, p.getAge());
+      insertPerson.setString(3, p.getNickname());
+      insertPerson.execute();
+    }catch (SQLException e){
+      throw new RuntimeException(e);
+    }
+  }
 
   public void updateAge(long gemId, int age) {
     if(setAgeStatement == null){

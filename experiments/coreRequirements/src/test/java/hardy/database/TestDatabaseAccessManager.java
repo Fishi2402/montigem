@@ -4,6 +4,7 @@ package hardy.database;
 
 import com.google.common.io.Resources;
 import de.se_rwth.commons.logging.Log;
+import org.h2.tools.Server;
 import umlp.rte.DatabaseAccessManager;
 
 import java.io.IOException;
@@ -42,4 +43,16 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager {
     }
   }
 
+  /*
+   * Will open the H2 web console that can be used to inspect the current DB state
+   * and BLOCK THE THREAD.
+   * To continue program execution press disconnect in the web console.
+   */
+  protected static void openWebServer() {
+    try {
+      Server.startWebServer(connection);
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }
