@@ -1,48 +1,27 @@
 package hardy.database;
 
-import hardy.*;
-import org.hibernate.Session;
+import hardy.FlensburgManagerImpl;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import umlp.rte.DatabaseAccessManager;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 public class SimpleDBTest {
 
-  @Test
-  public void testSaveAndLoadDB() {
-
+  @BeforeEach
+  public void init(){
+    TestDatabaseAccessManager.init();
     FlensburgManagerImpl.init();
-
-    Human h1 = FlensburgManagerImpl.humanBuilder().age(15).build().get();
-
-    Session s = DatabaseAccessManager.getSession();
-    Human h2 = s.get(Human.class, h1.getGemId());
-    assertNotSame(h1, h2);
-    assertEquals(h1.getAge(), h2.getAge());
-    assertEquals(h1.getGemId(), h2.getGemId());
   }
 
+  @AfterEach
+  public void cleanup(){
+    TestDatabaseAccessManager.close();
+  }
+
+  // TODO think of a good way for testing DBs -> use h2 Database
   @Test
-  public void testSaveAndLoadDBPerson() {
-    FlensburgManagerImpl.init();
-
-    Address a1 = FlensburgManager.addressBuilder().city("Aachen").build().get();
-
-    Person p1 = FlensburgManager
-        .personBuilder()
-        .age(20)
-        .nickname("John")
-        .mainResidence(a1)
-        .build()
-        .get();
-
-    Session s = DatabaseAccessManager.getSession();
-    Person p2 = s.get(Person.class, p1.getGemId());
-    assertNotSame(p1, p2);
-    assertEquals(p1.getAge(), p2.getAge());
-    assertEquals(p1.getGemId(), p2.getGemId());
-    assertEquals(p1.getNickname(), p2.getNickname());
+  public void testSaveAndLoadDB() {
+    // TODO AHe: continue here
+    // TODO: impl get/create human/person to test
   }
 }

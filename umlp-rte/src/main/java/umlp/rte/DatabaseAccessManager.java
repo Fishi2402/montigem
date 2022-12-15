@@ -1,145 +1,122 @@
 package umlp.rte;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import de.se_rwth.commons.logging.Log;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
+import java.sql.*;
+import java.util.Optional;
 import java.util.Properties;
-import java.util.Set;
+
 
 public class DatabaseAccessManager {
 
-    static protected long freeGemId = 1001L;
+  // TODO: replace with database access?
+  protected static int gemId = 0;
 
-    public static void init(String[] args) {
+  public static void init(String[] args) {
+  }
 
+  protected static String DB_URL;
+
+  protected static final String DATABASE_PROPERTIES = "database.properties";
+
+  protected static DatabaseAccessManager instance;
+
+  protected static Properties databaseProperties;
+
+  protected static Connection connection;
+
+  protected DatabaseAccessManager() {
+  }
+
+  public static DatabaseAccessManager getSingleton() {
+    if (instance == null) {
+      instance = new DatabaseAccessManager();
     }
+    return instance;
+  }
 
-    private static final String DATABASE_PROPERTIES = "database.properties";
+  public static void setup() {
+    getSingleton()._setup();
+  }
 
-    private static DatabaseAccessManager instance;
-
-    private Properties databaseProperties;
-
-    private SessionFactory sessionFactory;
-
-    /**
-     * Don't let anyone else instantiate this class.
-     */
-    private DatabaseAccessManager() {
+  protected void _setup() {
+    loadDBPropertiesFromStandardFileLocation();
+    try {
+      DriverManager.registerDriver(new org.postgresql.Driver());
+      connection = DriverManager.getConnection(DB_URL, databaseProperties);
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
     }
+  }
 
-    public static DatabaseAccessManager getSingleton() {
-        if (instance == null) {
-            instance = new DatabaseAccessManager();
-        }
-        return instance;
+  public static void executeSQLUpdate(String sql) {
+    try {
+      Statement stmt = connection.createStatement();
+      stmt.executeUpdate(sql);
+    } catch (SQLException e) {
+      Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
     }
+  }
 
-    public static void setup(Set<Class> annotatedClasses) {
-        getSingleton()._setup(annotatedClasses);
+  public static Optional<ResultSet> executeSQLQuery(String sql) {
+    try {
+      Statement stmt = connection.createStatement();
+      return Optional.ofNullable(stmt.executeQuery(sql));
+    } catch (SQLException e) {
+      Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
     }
+    return Optional.empty();
+  }
 
-    public static long getFreeGemId() {
-        return freeGemId++; // TODO implement / discuss if we want to use generated IDs from Spring/ Hibernate
+  public static void setUpWithProperties(Properties properties) {
+    databaseProperties = properties;
+    DB_URL = databaseProperties.getProperty("database_url");
+  }
+
+  public static PreparedStatement prepareStatement(String statement){
+    return getSingleton()._prepareStatement(statement);
+  }
+
+  public PreparedStatement _prepareStatement(String statement){
+    try {
+      return connection.prepareStatement(statement);
+    } catch (SQLException e) {
+      Log.error("Error while preparing statement\n" + statement, e);
+      return null;
     }
+  }
 
-    public static <T> T get(Class<T> domainType, long gemId) {
-        return getSingleton()._get(domainType, gemId);
+  protected void loadDBPropertiesFromStandardFileLocation() {
+    databaseProperties = new Properties();
+    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+    try (InputStream is = loader.getResourceAsStream(DATABASE_PROPERTIES)) {
+      databaseProperties.load(is);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    // Load Properties from Environment Variables
+    // Can be used to select a different DB on production server
+    // Environment Properties have priority!
+    databaseProperties.putAll(System.getenv());
+    DB_URL = databaseProperties.getProperty("database_url");
+  }
 
-    public static void add(String domainType, Object domainObject) {
-        getSingleton()._add(domainType, domainObject);
+  protected void loadDBPropertiesFromPropertiesFile(String path) {
+    databaseProperties = new Properties();
+    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+    try (InputStream is = loader.getResourceAsStream(DATABASE_PROPERTIES)) {
+      databaseProperties.load(is);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    DB_URL = databaseProperties.getProperty("database_url");
+  }
 
-    public static void delete(String domainType, Object domainObject) {
-        getSingleton()._delete(domainType, domainObject);
-    }
-
-    public static <T> Collection<T> getAll(Class<T> domainType) {
-        return getSingleton()._getAll(domainType);
-    }
-
-    public static Session getSession(){
-        return getSingleton()._getSession();
-    }
-
-    protected Session _getSession() {
-        return sessionFactory.openSession();
-    }
-
-    private <T> T _get(Class<T> domainType, long gemId) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        T object = session.get(domainType, gemId);
-//        CriteriaBuilder builder = session.getCriteriaBuilder();
-//        CriteriaQuery<T> query = builder.createQuery(domainType);
-//        Root<T> root = query.from(domainType);
-//        query.where(builder.equal(root.get("gemId"), gemId));
-//        T result = session.createQuery(query).getSingleResult();
-        session.getTransaction().commit();
-        session.close();
-        return object;
-    }
-
-    private void _add(String domainType, Object domainObject) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.save(domainType, domainObject);
-        session.getTransaction().commit();
-        session.close();
-    }
-
-    private void _delete(String domainType, Object domainObject) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.delete(domainType, domainObject);
-        session.getTransaction().commit();
-        session.close();
-    }
-
-    private <T> Collection<T> _getAll(Class<T> domainType) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<T> query = builder.createQuery(domainType);
-        query.from(domainType);
-        Collection<T> result = session.createQuery(query).list();
-        session.getTransaction().commit();
-        session.close();
-        return result;
-    }
-
-    private void _setup(Set<Class> annotatedClasses) {
-        loadDatabaseProperties();
-        createSessionFactory(annotatedClasses);
-    }
-
-    private void createSessionFactory(Set<Class> annotatedClasses) {
-        Configuration configuration = new Configuration();
-        configuration.addProperties(databaseProperties);
-        annotatedClasses.forEach(aClass -> configuration.addAnnotatedClass(aClass));
-        sessionFactory = configuration.buildSessionFactory();
-    }
-
-    private void loadDatabaseProperties() {
-        databaseProperties = new Properties();
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
-        try (InputStream is = loader.getResourceAsStream(DATABASE_PROPERTIES)) {
-            databaseProperties.load(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Load Properties from Environment Variables
-        // Can be used to select a different DB on production server
-        // Environment Properties have priority!
-        databaseProperties.putAll(System.getenv());
-    }
+  public static long getFreeGemId(){
+    return gemId++;
+  }
 }

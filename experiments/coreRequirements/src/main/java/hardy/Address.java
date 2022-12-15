@@ -2,14 +2,11 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Tuplizer;
 import umlp.rte.GemBuildable;
 import umlp.rte.GemIdentifiable;
 import umlp.rte.GemList;
 import umlp.rte.NotificationScope;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,21 +20,13 @@ import java.util.Optional;
 
 // --------------------------
 
-@Entity
-@Table(name = "address")
-@Tuplizer(impl = FlensburgTuplizer.class)
 public class Address implements GemIdentifiable, GemBuildable {
   protected transient List<AddressObserver> addressObservers = new ArrayList<>();
 
-  @Id
-  @GeneratedValue(generator = "increment")
-  @GenericGenerator(name = "increment", strategy = "increment")
   protected long gemId = -32;
 
-  @Column(name = "city")
   protected String city;
 
-  @Transient // TODO Person ist kein Entity deswegen geht hier kein OneToMany -> muss spaeter nachgebessert werden
   protected GemList<Person> visitors;
 
   @Override

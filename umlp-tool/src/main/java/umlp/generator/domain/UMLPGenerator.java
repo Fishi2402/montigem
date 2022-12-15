@@ -15,8 +15,10 @@ import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
+import umlp.generator.db.sql.SQLSchemaGenerator;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -42,14 +44,14 @@ public class UMLPGenerator {
   }
 
   public void generate(ASTCDCompilationUnit cdAST, String configTemplate) {
-    UMLAssocNameTrafo assocNameTrafo = new UMLAssocNameTrafo(CD4CodeMill.traverser());
-    assocNameTrafo.transform(cdAST);
-    logTrafoExec("UMLAssocNameTrafo", cdAST);
-
     UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
     assocTrafo.transform(cdAST);
     logTrafoExec("UMLAttrToAssocTrafo", cdAST);
     (new CD4CodeTrafo4Defaults()).transform(cdAST);
+
+    UMLAssocNameTrafo assocNameTrafo = new UMLAssocNameTrafo(CD4CodeMill.traverser());
+    assocNameTrafo.transform(cdAST);
+    logTrafoExec("UMLAssocNameTrafo", cdAST);
 
     // rebuild symbol table
     CD4CodeMill.globalScope().removeSubScope(cdAST.getEnclosingScope());
@@ -64,6 +66,8 @@ public class UMLPGenerator {
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
     // translate the CD-AST into Java with the CD Generator
     hpp.processValue(tc, cdAST, Arrays.asList(decoratedAST, genSetup.getGlex(), genSetup.getHandcodedPath(), cdGenerator));
+    SQLSchemaGenerator schemaGenerator = new SQLSchemaGenerator();
+    tc.writeArgs("umlp.sql.Schema", cdAST.getCDDefinition().getName(), "sql", cdAST, Collections.singletonList(schemaGenerator.generateContent(cdAST)));
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
