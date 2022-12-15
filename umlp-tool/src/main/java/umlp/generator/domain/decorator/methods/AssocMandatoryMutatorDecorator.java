@@ -2,6 +2,8 @@ package umlp.generator.domain.decorator.methods;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -52,6 +54,10 @@ public class AssocMandatoryMutatorDecorator extends SimpleMethodMutatorDecorator
     ASTCDMethod method4 = createNotificationSetter(ast, true);
     method4.setName(method4.getName()+"Gem");
     methodList.add(method4);
+
+    ASTCDMethod method5 = (ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.InternalSetOne",
+            ast.getName(), new CD4CodeFullPrettyPrinter().prettyprint(simpleType), ast.getName()).get();
+    methodList.add(method5);
 
     return methodList;
   }

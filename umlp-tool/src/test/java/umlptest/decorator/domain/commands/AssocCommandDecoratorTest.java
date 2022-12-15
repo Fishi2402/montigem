@@ -20,7 +20,7 @@ public class AssocCommandDecoratorTest extends DecoratorTest {
   
   @Test
   public void check() {
-    ASTCDClass clazz = getClassByName("Foo2_addBar2");
+    ASTCDClass clazz = getClassByName("Owns4_add");
     assertAll(
       // check no of methods and attributes
       () -> assertEquals(4, clazz.getCDAttributeList().size(), "number of attributes"),
@@ -34,7 +34,7 @@ public class AssocCommandDecoratorTest extends DecoratorTest {
   
   @Test
   public void testGeneratedCode() {
-    generateAndCheckCode(getClassByName("Foo2_addBar2"));
+    generateAndCheckCode(getClassByName("Owns4_add"));
   }
   
 }

@@ -40,7 +40,7 @@ public class RemoveDecorator extends AbstractDecorator {
                       .filter(a -> !a.getModifier().isDerived())
                       .filter(a -> GenService.isList(a))
                       .forEach(a -> {
-                        astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType().print(), c, false));
+                        astcdPackage.addCDElement(createClass(origCD, a.getName(), GenService.getInnerType(a.getMCType()), c, false));
                         astcdPackage.addCDElement(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false));
                       });
               CDSymbolTables.getAssociationsInHierarchy(c)

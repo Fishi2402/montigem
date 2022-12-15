@@ -76,7 +76,9 @@ public class AssocCommandDecorator extends AbstractDecorator {
 
     // methods
     getCD4C().addMethod(ast, "umlp.commands.assocs.Add_DoRun", assoc.getName(),
-            sourceName, targetName, sourceType, targetType, origCD.getCDDefinition().getName());
+            sourceName, targetName, sourceType, targetType,
+            GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
+            origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, "umlp.commands.assocs.GetEffectedGemIds", sourceName, targetName);
 
     // Importe
@@ -116,7 +118,9 @@ public class AssocCommandDecorator extends AbstractDecorator {
 
     // methods
     getCD4C().addMethod(ast, "umlp.commands.assocs.Remove_DoRun", assoc.getName(),
-            sourceName, targetName, sourceType, targetType, origCD.getCDDefinition().getName());
+            sourceName, targetName, sourceType, targetType,
+            GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
+            origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, "umlp.commands.assocs.GetEffectedGemIds", sourceName, targetName);
 
     // Importe
@@ -162,7 +166,9 @@ public class AssocCommandDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.commands.assocs.Set_Target_Exchange", assoc.getName(),
             sourceName, targetName, sourceType, targetType, origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, "umlp.commands.assocs.Set_Source_Exchange", assoc.getName(),
-            sourceName, targetName, sourceType, targetType, origCD.getCDDefinition().getName());
+            sourceName, targetName, sourceType, targetType,
+            GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
+            origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, "umlp.commands.assocs.Set_GetEffectedGemIds", sourceName, targetName);
 
     addImports(origCD, ast);

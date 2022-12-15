@@ -24,7 +24,7 @@ public class DomainClassDecoratorTest extends DecoratorTest {
 
             // check no of methods and attributes
             () -> assertEquals(4, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(16, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(17, clazz.getCDMethodList().size(), "number of methods"),
 
             // check attributes
             () -> existsAttribute(clazz, "gemId"),

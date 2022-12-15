@@ -1,3 +1,4 @@
+import java.lang.*;
 umlp A {
   class Foo {
     int fooAttr;
@@ -21,6 +22,6 @@ umlp A {
 
   class Foo4;
   class Bar4;
-  association Foo4 <-> Bar4;
+  association owns4 Foo4 <-> Bar4;
 
 }

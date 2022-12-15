@@ -40,7 +40,7 @@ public class SetDecorator extends AbstractDecorator {
                       .filter(a -> !a.getModifier().isDerived())
                       .filter(a -> !GenService.isList(a))
                       .forEach(a -> {
-                        astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType().print(), c, false));
+                        astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType(), c, false));
                         astcdPackage.addCDElement(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false));
                       });
               CDSymbolTables.getAssociationsInHierarchy(c)
@@ -49,13 +49,13 @@ public class SetDecorator extends AbstractDecorator {
                       .filter(a -> !GenService.isBidirectional(a))
                       .filter(a -> !GenService.isList(a))
                       .forEach(a -> {
-                        astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType().print(), c, true));
+                        astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true));
                         astcdPackage.addCDElement(createDeSer(origCD, a.getName(), getSymType("long"), c, true));
                       });            });
   }
 
 
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String name, String type, ASTCDClass domainClass, boolean isGem) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDClass domainClass, boolean isGem) {
     String classname = domainClass.getName()+SUFFIX
             + StringTransformations.capitalize(name);
     String completeName = isGem?name+"GemId":name;
@@ -69,12 +69,12 @@ public class SetDecorator extends AbstractDecorator {
     ASTCDAttribute gemAttr = getCD4C().addAttribute(ast, "protected long gemId");
 
     ASTCDAttribute attr = isGem?getCD4C().addAttribute(ast, "protected long " + completeName)
-            :getCD4C().addAttribute(ast, "protected " + type + " " + completeName);
+            :getCD4C().addAttribute(ast, "protected " + type.print() + " " + completeName);
 
     getCD4C().addConstructor(ast, "umlp.commands.set.Constructor", classname, COMMAND_PACKAGE,
-            completeName, isGem?"long":type);
+            completeName, isGem?"long":type.print());
 
-    getCD4C().addMethod(ast, "umlp.commands.set.DoRun", name, domainClass.getName(), origCD.getCDDefinition().getName(), isGem, type);
+    getCD4C().addMethod(ast, "umlp.commands.set.DoRun", name, domainClass.getName(), origCD.getCDDefinition().getName(), isGem, type.print());
     if (isGem) {
       getCD4C().addMethod(ast, "umlp.commands.Get2EffectedGemIds", name);
     } else {
@@ -90,6 +90,9 @@ public class SetDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
     getCD4C().addImport(ast, "umlp.rte.NotificationScope");
     getCD4C().addImport(ast, "umlp.rte.GeneralErrorCollector");
+    if (GenService.isJavaType(type)) {
+      getCD4C().addImport(ast, type.printFullName());
+    }
 
     return ast;
   }

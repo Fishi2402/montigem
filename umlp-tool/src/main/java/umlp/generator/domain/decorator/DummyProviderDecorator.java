@@ -11,6 +11,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.se_rwth.commons.Names;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
@@ -90,7 +91,7 @@ public class DummyProviderDecorator extends AbstractDecorator {
               .filter(a -> GenService.isVisibleNotDerived(a))
               .filter(a -> getTypeCheck().isInt(a.getSymbol().getType()) || getTypeCheck().isString(a.getSymbol().getType()))
               .collect(Collectors.toList());
-      attrList.forEach(a -> getCD4C().addMethod(ast, "umlp.dummyprovider.InventAttribute", domainClass.getName(), a.getName(), a.printType()));
+      attrList.forEach(a -> getCD4C().addMethod(ast, "umlp.dummyprovider.InventAttribute", domainClass.getName(), a.getName(), Names.getSimpleName(a.printType())));
       getCD4C().addMethod(ast, "umlp.dummyprovider.InventClass",
               domainClass.getName(), providerName, attrList.stream().map(a -> a.getName()).collect(Collectors.toList()));
     }

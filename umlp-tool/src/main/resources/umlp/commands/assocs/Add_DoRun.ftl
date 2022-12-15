@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "assoc","sourceName","targetName","sourceType","targetType","definition")}
+${tc.signature("assoc","sourceName","targetName","sourceType","targetType",
+               "isSourceList","isTargetList","definition")}
 ${cd4c.method("public StatusResult doRun()")}
 
 <#assign csourceName=sourceName?cap_first>
@@ -11,34 +12,56 @@ boolean loaded${csourceName} = ${definition}Manager.isLoaded${sourceType}(${sour
 assert CommandManager.getParticipantId() != 0 || (loaded${ctargetName} && loaded${csourceName});
 
 if(loaded${ctargetName} && loaded${csourceName}){
-  ${sourceType} p = ${definition}Manager.get${sourceType}Sure(${sourceName}GemId);
-  ${targetType} a = ${definition}Manager.get${targetType}Sure(${targetName}GemId);
+  ${sourceType} source = ${definition}Manager.get${sourceType}Sure(${sourceName}GemId);
+  ${targetType} target = ${definition}Manager.get${targetType}Sure(${targetName}GemId);
 
   // TODO: only in server?
+<#if isSourceList>
   if(${sourceName}Index == -1){
-    ${sourceName}Index = p.size${ctargetName}s();
+    ${sourceName}Index = target.size${csourceName}s();
   }
+</#if>
 
+<#if isTargetList>
   if(${targetName}Index == -1){
-    ${targetName}Index = a.size${csourceName}s();
+    ${targetName}Index = source.size${ctargetName}s();
   }
+</#if>
 
-  a.add${csourceName}(${targetName}Index, p, NotificationScope.MINIMAL);
-  p.add${ctargetName}(${sourceName}Index, a, NotificationScope.MINIMAL);
+<#if isSourceList>
+  target.add${csourceName}(${targetName}Index, source, NotificationScope.MINIMAL);
+<#else>
+  target.set${csourceName}(source, NotificationScope.MINIMAL);
+</#if>
+
+<#if isTargetList>
+  source.add${ctargetName}(${sourceName}Index, target, NotificationScope.MINIMAL);
+<#else>
+  source.set${ctargetName}(target, NotificationScope.MINIMAL);
+</#if>
+
 }else{
   // Do not trigger load of ${csourceName}. If the ${ctargetName} is loaded, we can change it instead and avoid a load operation
   if(loaded${ctargetName}){
-    ${targetType} a = ${definition}Manager.get${targetType}Sure(${targetName}GemId);
+    ${targetType} target = ${definition}Manager.get${targetType}Sure(${targetName}GemId);
+<#if isSourceList>
     if(${targetName}Index == -1){
-      ${targetName}Index = a.size${csourceName}s();
+      ${targetName}Index = target.size${csourceName}s();
     }
-    a.INTERNAL_add${csourceName}Id(${targetName}Index, ${sourceName}GemId, NotificationScope.MINIMAL);
-  } else if(loaded${csourceName}) {
-    ${sourceType} p = ${definition}Manager.get${sourceType}Sure(${sourceName}GemId);
+    target.INTERNAL_add${csourceName}Id(${targetName}Index, ${sourceName}GemId, NotificationScope.MINIMAL);
+<#else>
+   target._internal_set${csourceName}(${sourceName}GemId, NotificationScope.MINIMAL);
+</#if>
+} else if(loaded${csourceName}) {
+    ${sourceType} source = ${definition}Manager.get${sourceType}Sure(${sourceName}GemId);
+<#if isTargetList>
     if(${sourceName}Index == -1){
-      ${sourceName}Index = p.size${ctargetName}s();
+      ${sourceName}Index = source.size${ctargetName}s();
     }
-    p.INTERNAL_add${ctargetName}Id(${sourceName}Index, ${targetName}GemId, NotificationScope.MINIMAL);
+    source.INTERNAL_add${ctargetName}Id(${sourceName}Index, ${targetName}GemId, NotificationScope.MINIMAL);
+<#else>
+    source.INTERNAL_set${ctargetName}Id(${targetName}GemId, NotificationScope.MINIMAL);
+</#if>
   } else {
     // Why did the client receive this command, if it does not contain a or p?
     GeneralErrorCollector.reportSyncError();

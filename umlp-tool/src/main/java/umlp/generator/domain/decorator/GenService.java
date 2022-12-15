@@ -5,6 +5,7 @@ import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.class2mc.adapters.JClass2OOTypeSymbolAdapter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpressionBuilder;
 import de.monticore.types.MCTypeFacade;
@@ -265,6 +266,12 @@ public class GenService {
   }
 
   public static boolean isCDType(SymTypeExpression type) {
+    // TODO: Bessere Lösung?
     return type.getTypeInfo() instanceof CDTypeSymbol;
+  }
+
+  public static boolean isJavaType(SymTypeExpression type) {
+    // TODO: Bessere Lösung?
+    return type.getTypeInfo() instanceof JClass2OOTypeSymbolAdapter;
   }
 }
