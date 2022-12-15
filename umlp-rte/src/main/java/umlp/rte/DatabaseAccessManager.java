@@ -4,6 +4,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.Optional;
 import java.util.Properties;
@@ -11,6 +12,7 @@ import java.util.Properties;
 
 public class DatabaseAccessManager {
 
+  public static final String JDBC_DRIVER = "jdbc_driver";
   // TODO: replace with database access?
   protected static int gemId = 0;
 
@@ -44,10 +46,14 @@ public class DatabaseAccessManager {
   protected void _setup() {
     loadDBPropertiesFromStandardFileLocation();
     try {
-      DriverManager.registerDriver(new org.postgresql.Driver());
+      if(databaseProperties.getProperty(JDBC_DRIVER) != null){
+        Class<?> c = Class.forName(databaseProperties.getProperty(JDBC_DRIVER));
+        DriverManager.registerDriver((Driver) c.getDeclaredConstructor().newInstance());
+      }
       connection = DriverManager.getConnection(DB_URL, databaseProperties);
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
+    } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException |
+             InvocationTargetException | NoSuchMethodException e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -57,6 +63,47 @@ public class DatabaseAccessManager {
       stmt.executeUpdate(sql);
     } catch (SQLException e) {
       Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
+    }
+  }
+
+  public static void executeStatement(String sql){
+    try{
+      Statement stmt = connection.createStatement();
+      stmt.execute(sql);
+    }catch (SQLException e){
+      Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
+    }
+  }
+
+  // TODO: versioning?
+
+  /**
+   * @return true if the schema was initialized during this call, false if it was already initialized before
+   */
+  public static boolean initSchema(String schema){
+    boolean initialized = false;
+    executeStatement("CREATE TABLE IF NOT EXISTS __internal_key_value__ (key varchar, value varchar);");
+    Optional<ResultSet> res = executeSQLQuery("SELECT key, value from __internal_key_value__ WHERE key = 'initialized';");
+    if(res.isPresent()){
+      ResultSet resultSet = res.get();
+      try {
+        if(resultSet.next()){
+          if(resultSet.getString(2).equals("true")){
+            initialized = true;
+          }
+        }
+      } catch (SQLException e) {
+        Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
+      }
+    }
+
+    if(initialized){
+      return false;
+    }else{
+      executeStatement(schema);
+      executeStatement("DELETE FROM __internal_key_value__ WHERE key = 'initialized';");
+      executeStatement("INSERT INTO  __internal_key_value__ (key, value) VALUES ('initialized', 'true');");
+      return true;
     }
   }
 

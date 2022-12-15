@@ -29,7 +29,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
   HashMap<Long, Human> knownHumans = new HashMap<>();
   HashMap<Long, Person> knownPersons = new HashMap<>();
   HashMap<Long, Address> knownAddresses = new HashMap<>();
-  // TODO: other cashes
+  // TODO: other caches
 
     /**
      * Don't let anyone else instantiate this class.
@@ -99,7 +99,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected GemList<Human> _doGetHumanList() {
-      List<Long> ids = new ArrayList<>();
+      List<Long> ids = humanDAO.selectAllHumanIds();
       GemListBuilder<Human> list = new HumanGemList(ids);
       return list.build().get();
     }

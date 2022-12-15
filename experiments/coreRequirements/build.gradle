@@ -48,7 +48,6 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
 //    implementation group: 'org.webjars', name: 'stomp-websocket'
 
-    implementation group:'org.springframework.boot', name:'spring-boot-starter-jdbc', version: spring_version, withoutSpringLogging
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
     testImplementation 'com.h2database:h2:2.1.214'

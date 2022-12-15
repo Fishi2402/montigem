@@ -7,6 +7,8 @@ import umlp.rte.DatabaseAccessManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 // Provides methods to change database entries related to the Person class
@@ -18,6 +20,8 @@ public class HumanDAO {
   protected PreparedStatement selectHuman = null;
   protected PreparedStatement deleteHuman = null;
   protected PreparedStatement setAgeStatement = null;
+
+  protected PreparedStatement selectAllHumanIds = null;
 
   public void insertHuman(Human human){
     try{
@@ -82,6 +86,23 @@ public class HumanDAO {
       setAgeStatement.execute();
     }catch (SQLException e){
       // TODO: how do we handle sql errors
+      throw new RuntimeException(e);
+    }
+  }
+
+  public List<Long> selectAllHumanIds() {
+    if(selectAllHumanIds == null){
+      selectAllHumanIds = DatabaseAccessManager.prepareStatement("SELECT id FROM human;");
+    }
+
+    try {
+      List<Long> res = new ArrayList<>();
+      ResultSet rs = selectAllHumanIds.executeQuery();
+      while (rs.next()){
+        res.add(rs.getLong(1));
+      }
+      return res;
+    } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
