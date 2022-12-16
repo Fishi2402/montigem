@@ -82,8 +82,9 @@ public class DatabaseAccessManager {
    */
   public static boolean initSchema(String schema){
     boolean initialized = false;
-    executeStatement("CREATE TABLE IF NOT EXISTS __internal_key_value__ (key varchar, value varchar);");
-    Optional<ResultSet> res = executeSQLQuery("SELECT key, value from __internal_key_value__ WHERE key = 'initialized';");
+
+    executeStatement("CREATE TABLE IF NOT EXISTS __internal_key_value__ (k VARCHAR, value_bigint BIGINT, value_varchar VARCHAR);");
+    Optional<ResultSet> res = executeSQLQuery("SELECT k, value_varchar from __internal_key_value__ WHERE k = 'initialized';");
     if(res.isPresent()){
       ResultSet resultSet = res.get();
       try {
@@ -101,8 +102,9 @@ public class DatabaseAccessManager {
       return false;
     }else{
       executeStatement(schema);
-      executeStatement("DELETE FROM __internal_key_value__ WHERE key = 'initialized';");
-      executeStatement("INSERT INTO  __internal_key_value__ (key, value) VALUES ('initialized', 'true');");
+      executeStatement("DELETE FROM __internal_key_value__ WHERE k = 'initialized';");
+      executeStatement("INSERT INTO  __internal_key_value__ (k, value_varchar) VALUES ('initialized', 'true');");
+      executeStatement("INSERT INTO  __internal_key_value__ (k, value_bigint) VALUES ('gemid', 0);");
       return true;
     }
   }
@@ -164,6 +166,26 @@ public class DatabaseAccessManager {
   }
 
   public static long getFreeGemId(){
-    return gemId++;
+    // TODO: Bottelneck: one db call per gemid is slow
+    // Idea: "reserve" 1000 gemids in one call
+    // If the server dies, some ids are "wasted"
+    // could be done asynchronously at 90% ids used to remove wait
+    executeStatement("UPDATE __internal_key_value__ SET value_bigint = value_bigint + 1 WHERE k = 'gemid';");
+    Optional<ResultSet> rsOpt = executeSQLQuery("SELECT value_bigint FROM __internal_key_value__ WHERE k = 'gemid';");
+    if(rsOpt.isEmpty()){
+      throw new RuntimeException("Can not find gemid in database");
+    }
+
+    ResultSet rs = rsOpt.get();
+
+    try {
+      if(!rs.next()){
+        throw new RuntimeException("Can not find gemid in database");
+      }else{
+        return rs.getLong(1);
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

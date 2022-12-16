@@ -27,7 +27,7 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager {
       // DB_CLOSE_DELAY=0 -> In memory db is deleted after connection is closed
       connection = DriverManager.getConnection("jdbc:h2:mem:test_flensburg;DB_CLOSE_DELAY=0");
       String schema = Resources.toString(Objects.requireNonNull(getClass().getResource("/Flensburg.sql")), StandardCharsets.UTF_8);
-      connection.createStatement().execute(schema);
+      initSchema(schema);
     } catch (SQLException | IOException e) {
       Log.error("Error while initializing db", e);
     }

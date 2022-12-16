@@ -47,11 +47,9 @@ public class FlensburgManagerImpl extends FlensburgManager {
       FlensburgManager.setInstance(impl);
     }
 
-    // TODO kepp gemid with DB in sync
-    protected long gemId = 0;
     @Override
     protected long _doGetFreeGemId() {
-        return gemId++;
+        return DatabaseAccessManager.getFreeGemId();
     }
 
     @Override
