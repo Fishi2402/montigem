@@ -5,6 +5,7 @@ import umlp.rte.DatabaseAccessManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 public class AddressDAO {
@@ -13,48 +14,64 @@ public class AddressDAO {
   protected PreparedStatement deleteAddress = null;
   protected PreparedStatement setCityStatement = null;
 
+  AssocVisitsDAO assocVisitsDAO = new AssocVisitsDAO();
+
   public void insertAddress(Address address){
     try{
-      if(insertAddress == null || insertAddress.isClosed()){
-        insertAddress = DatabaseAccessManager.prepareStatement("INSERT INTO address (id, city) VALUES (?, ?)");
-      }
+      ensureInsertAddressCreated();
 
       insertAddress.clearParameters();
       insertAddress.setLong(1, address.getGemId());
       insertAddress.setString(2, address.getCity());
       insertAddress.execute();
+
+      List<Long> iDs = address.getVisitorGemList().getIDs();
+      for (int i = 0; i < iDs.size(); i++) {
+        Long visitorId = iDs.get(i);
+        assocVisitsDAO.addVisits(visitorId, address.getGemId(), i);
+      }
     }catch (SQLException e){
       throw new RuntimeException(e);
+    }
+  }
+
+  private void ensureInsertAddressCreated() {
+    if(insertAddress == null){
+      insertAddress = DatabaseAccessManager.prepareStatement("INSERT INTO address (id, city) VALUES (?, ?)");
     }
   }
 
   public Optional<Address> selectAddress(long gemId){
     try{
-      if(selectAddress == null || selectAddress.isClosed()){
-        selectAddress = DatabaseAccessManager.prepareStatement("SELECT id, city FROM address WHERE id = ?");
-      }
+      ensureSelectAddressCreated();
 
       selectAddress.clearParameters();
       selectAddress.setLong(1, gemId);
       ResultSet res = selectAddress.executeQuery();
+      AddressBuilder builder = FlensburgManager.addressBuilder(gemId);
       if(res.next()){
-        AddressBuilder builder = FlensburgManager.addressBuilder(gemId);
         builder.setINTERNAL_deser_mode(true);
         builder.city(res.getString("city"));
-        return builder.build();
       }else {
         return Optional.empty();
       }
+
+      builder.visitorGemListIds(assocVisitsDAO.selectVisitorIdsForVisited(gemId));
+      return builder.build();
     }catch (SQLException e){
       throw new RuntimeException(e);
     }
   }
 
+  private void ensureSelectAddressCreated() throws SQLException {
+    if(selectAddress == null){
+      selectAddress = DatabaseAccessManager.prepareStatement("SELECT id, city FROM address WHERE id = ?");
+    }
+  }
+
   public void deleteAddress(long gemId){
     try{
-      if(deleteAddress == null || deleteAddress.isClosed()){
-        deleteAddress = DatabaseAccessManager.prepareStatement("DELETE FROM address WHERE id = ?");
-      }
+      ensureDeleteAddressCreated();
 
       deleteAddress.clearParameters();
       deleteAddress.setLong(1, gemId);
@@ -64,11 +81,15 @@ public class AddressDAO {
     }
   }
 
+  private void ensureDeleteAddressCreated() {
+    if(deleteAddress == null ){
+      deleteAddress = DatabaseAccessManager.prepareStatement("DELETE FROM address WHERE id = ?");
+    }
+  }
+
   public void updateCity(long gemId, String city) {
     try {
-      if(setCityStatement == null || setCityStatement.isClosed()){
-        setCityStatement = DatabaseAccessManager.prepareStatement("UPDATE address SET city = ? WHERE id = ?");
-      }
+      ensureUpdateCityCreated();
 
       setCityStatement.clearParameters();
       setCityStatement.setString(1, city);
@@ -76,6 +97,12 @@ public class AddressDAO {
       setCityStatement.execute();
     }catch (SQLException e){
       throw new RuntimeException(e);
+    }
+  }
+
+  private void ensureUpdateCityCreated() {
+    if(setCityStatement == null){
+      setCityStatement = DatabaseAccessManager.prepareStatement("UPDATE address SET city = ? WHERE id = ?");
     }
   }
 }

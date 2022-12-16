@@ -106,6 +106,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected void _doDeleteHuman(Human human) {
+      knownHumans.remove(human.getGemId());
       flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(human.getGemId()));
     }
 
@@ -118,13 +119,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected boolean _isLoadedPerson(long gemId) {
-        // For some(maybe all) modifying operations, the server needs to load all modified objects, since it is the
-        // source of truth.
-        // E.g. when adding to an bidirectional association, a client can ignore adding on one side if the corresponding
-        // object is not loaded. Later on it can lazy load this object with the correct ids in the association from the
-        // server.
-        // TODO: implement
-        throw new RuntimeException("Not implemented");
+      return knownPersons.containsKey(gemId);
     }
 
     @Override
@@ -179,13 +174,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected boolean _isLoadedAddress(long gemId) {
-        // For some(maybe all) modifying operations, the server needs to load all modified objects, since it is the
-        // source of truth.
-        // E.g. when adding to an bidirectional association, a client can ignore adding on one side if the corresponding
-        // object is not loaded. Later on it can lazy load this object with the correct ids in the association from the
-        // server.
-        // TODO: implement
-        throw new RuntimeException("Not implemented");
+      return knownAddresses.containsKey(gemId);
     }
 
     @Override

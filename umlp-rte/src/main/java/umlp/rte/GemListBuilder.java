@@ -134,7 +134,7 @@ public abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     if(buildFinished){
       return super.getIDs();
     } else {
-      return getIDs(0, builderElemStorage.size() - 1);
+      return getIDs(0, builderElemStorage.size());
     }
   }
 }

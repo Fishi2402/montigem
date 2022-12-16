@@ -16,6 +16,8 @@ import java.util.Optional;
 public class HumanDAO {
   // TODO: Optimization: bulk operations
   // TODO: return values for methods?
+  // TODO: type safety is low since some methods get input long gemId instead of Human,
+  // which allows them to be used without having the object loaded(e.g. in context of a GemList)
   protected PreparedStatement insertHuman = null;
   protected PreparedStatement selectHuman = null;
   protected PreparedStatement deleteHuman = null;

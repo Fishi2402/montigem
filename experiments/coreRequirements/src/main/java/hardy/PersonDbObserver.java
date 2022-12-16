@@ -5,6 +5,7 @@ package hardy;
 // vgl. HumanDbObserver für Erklärung
 public class PersonDbObserver implements PersonObserver{
   protected static PersonDAO dao = new PersonDAO();
+  protected static AssocVisitsDAO assocVisitsDAO = new AssocVisitsDAO();
 
   // Insert and delete are implemented in FlensburgDbObserver
 
@@ -20,16 +21,16 @@ public class PersonDbObserver implements PersonObserver{
 
   @Override
   public void notifyAddVisited(Person p, long addressGemId, int indexInList) {
-    dao.addVisited(p.getGemId(), addressGemId, indexInList);
+    assocVisitsDAO.addVisits(p.getGemId(), addressGemId, indexInList);
   }
 
   @Override
   public void notifyRemoveVisited(Person p, long addressGemId, int indexInList) {
-    dao.removeVisited(p.getGemId(), addressGemId, indexInList);
+    assocVisitsDAO.removeVisits(p.getGemId(), addressGemId, indexInList);
   }
 
   @Override
   public void notifySetVisited(Person person, Long oldAddressGemId, long addressGemId, int index) {
-    dao.updateVisited(person.getGemId(), oldAddressGemId, addressGemId, index);
+    assocVisitsDAO.updateVisits(person.getGemId(), oldAddressGemId, addressGemId, index);
   }
 }

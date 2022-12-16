@@ -78,6 +78,10 @@ public class Address implements GemIdentifiable, GemBuildable {
     return Optional.empty();
   }
 
+  public void addVisitor(Person p){
+    addVisitor(p, NotificationScope.ALL);
+  }
+
   public void addVisitor(Person p, NotificationScope scope){
     addVisitor(visitors.size(), p, scope);
   }
