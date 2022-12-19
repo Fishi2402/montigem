@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain.decorator.commands;/* (c) https://github.com/MontiCore/monticore */
 
+import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -74,9 +75,9 @@ public class RemoveDecorator extends AbstractDecorator {
 
     getCD4C().addMethod(ast, "umlp.commands.remove.DoRun", name, domainClass.getName(), origCD.getCDDefinition().getName(), isGem, name);
     if (isGem) {
-      getCD4C().addMethod(ast, "umlp.commands.Get2EffectedGemIds", name);
+      getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getId()", name+"GemId"));
     } else {
-      getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds");
+      getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getId()"));
     }
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(gemAttr));

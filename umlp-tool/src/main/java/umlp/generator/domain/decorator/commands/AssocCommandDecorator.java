@@ -91,7 +91,8 @@ public class AssocCommandDecorator extends AbstractDecorator {
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
             origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.assocs.GetEffectedGemIds", sourceName, targetName);
+    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds",
+            Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
 
     // Importe
     addImports(origCD, ast);
@@ -133,7 +134,8 @@ public class AssocCommandDecorator extends AbstractDecorator {
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
             origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.assocs.GetEffectedGemIds", sourceName, targetName);
+    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds",
+            Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
 
     // Importe
     addImports(origCD, ast);
@@ -181,7 +183,8 @@ public class AssocCommandDecorator extends AbstractDecorator {
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
             origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.assocs.Set_GetEffectedGemIds", sourceName, targetName);
+    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds",
+            Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
 
     addImports(origCD, ast);
 

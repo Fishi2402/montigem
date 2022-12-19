@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature()}
+${tc.signature("gemIds")}
 ${cd4c.method("public Collection<Long> getEffectedGemIds()")}
 
-return Collections.singleton(getId());
+return Arrays.asList(<#list gemIds as gemId>${gemId}<#if gemId?has_next>, </#if></#list>);
+
