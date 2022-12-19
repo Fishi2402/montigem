@@ -111,15 +111,10 @@ public class BEDecorator extends AbstractDecorator {
     gemListDomainDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: GemListDomainDecorator", BEDecorator.class.getName());
 
-    TuplizerDecorator tuplitzerDecorator = new TuplizerDecorator(glex);
-    tuplitzerDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: TuplizerDecorator", BEDecorator.class.getName());
-
-    /* TODO: Hinzufügen, wenn CommandDeSer generiert werden
     CommandObjectMapperDecorator commandObjectMapperDecorator = new CommandObjectMapperDecorator(glex);
     commandObjectMapperDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandObjectMapperDecorator", BEDecorator.class.getName());
-    */
+
     CommandResultDeSerDecorator commandResultDeSerDecorator = new CommandResultDeSerDecorator(glex);
     commandResultDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandResultDeSerDecorator", BEDecorator.class.getName());

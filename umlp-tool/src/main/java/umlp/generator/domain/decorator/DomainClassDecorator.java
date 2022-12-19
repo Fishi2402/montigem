@@ -51,7 +51,6 @@ public class DomainClassDecorator extends AbstractDecorator {
 
     origCD.getCDDefinition().getCDEnumsList().stream().filter(c -> !c.getSymbol().isIsDerived())
             .forEach(c -> astcdPackage.addCDElement(c.deepClone()));
-
   }
 
   protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
@@ -110,15 +109,12 @@ public class DomainClassDecorator extends AbstractDecorator {
   }
 
   protected void setGemAnnotationTemplate(ASTCDAttribute gemAttr) {
-    glex.replaceTemplate("cd2java.Annotations", gemAttr,
-        new TemplateHookPoint("umlp.domain.GemAnnotations"));
+    // empty
   }
 
   protected void setClassAnnotationTemplate(ASTCDClass clazz, String mangerName,
                                             boolean hasSuperClass, boolean hasTop) {
-    glex.replaceTemplate("cd2java.Annotations", clazz,
-        new TemplateHookPoint("umlp.domain.ClassAnnotations",
-                clazz.getName(), mangerName, hasSuperClass, hasTop));
+    // empty
   }
 
   protected AttributesTuple getAllAttributes(ASTCDClass domainClass) {
@@ -161,8 +157,7 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
   }
 
   protected void setAttributeAnnotationTemplate(ASTCDAttribute attribute) {
-    glex.replaceTemplate("cd2java.Annotations", attribute,
-        new TemplateHookPoint("umlp.domain.AttributeAnnotations", attribute.getName()));
+    // empty
   }
 
   protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDClass domainClass) {
@@ -188,7 +183,7 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     return attrList;
   }
 
-  public void setAssocAnnotations(ASTCDClass domainClass, ASTCDAttribute attribute) {
+  protected void setAssocAnnotations(ASTCDClass domainClass, ASTCDAttribute attribute) {
     // TODO: hier sollen DB (JPA / Hibnernate) Annotationen fuer Assoziationen generiert werden
     /*glex.replaceTemplate("cd2java.Annotations", attribute,
         new TemplateHookPoint("umlp.domain.AssocAnnotations",
@@ -225,9 +220,7 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
   }
 
   protected void addDBAnnotationInfo(ASTCDType clazz) {
-    getCD4C().addImport(clazz, "org.hibernate.annotations.Tuplizer");
-    getCD4C().addImport(clazz, "org.hibernate.annotations.GenericGenerator");
-    getCD4C().addImport(clazz, "javax.persistence.*");
+    // empty
   }
 
   protected static class AttributesTuple{
