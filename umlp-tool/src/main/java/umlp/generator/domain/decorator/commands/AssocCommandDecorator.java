@@ -17,12 +17,18 @@ import umlp.generator.domain.decorator.GenService;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class AssocCommandDecorator extends AbstractDecorator {
 
   public static final String COMMAND_ASSOC_PACKAGE = COMMAND_PACKAGE + ".associations";
+  public static final String ADD_SUFFIX = "_add";
+  public static final String REMOVE_SUFFIX = "_remove";
+  public static final String SET_SUFFIX = "_set";
+
 
   public AssocCommandDecorator(GlobalExtensionManagement glex) {
     super(glex);
@@ -39,14 +45,20 @@ public class AssocCommandDecorator extends AbstractDecorator {
 
   protected Collection<ASTCDClass> createClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {
     List<ASTCDClass> retList = Lists.newArrayList();
-    retList.add(createAddClass(origCD, assoc));
-    retList.add(createRemoveClass(origCD, assoc));
-    retList.add(createSetClass(origCD, assoc));
+    ASTCDClass clazz = createAddClass(origCD, assoc);
+    retList.add(createDeSer(origCD, clazz));
+    retList.add(clazz);
+    clazz = createRemoveClass(origCD, assoc);
+    retList.add(createDeSer(origCD, clazz));
+    retList.add(clazz);
+    clazz = createSetClass(origCD, assoc);
+    retList.add(createDeSer(origCD, clazz));
+    retList.add(clazz);
     return retList;
   }
 
   protected ASTCDClass createAddClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {
-    String classname = StringTransformations.capitalize(assoc.getName()) + "_add";
+    String classname = StringTransformations.capitalize(assoc.getName()) + ADD_SUFFIX;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
@@ -88,7 +100,7 @@ public class AssocCommandDecorator extends AbstractDecorator {
   }
 
   protected ASTCDClass createRemoveClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {
-    String classname = StringTransformations.capitalize(assoc.getSymbol().getName()) + "_remove";
+    String classname = StringTransformations.capitalize(assoc.getSymbol().getName()) + REMOVE_SUFFIX;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
@@ -130,7 +142,7 @@ public class AssocCommandDecorator extends AbstractDecorator {
   }
 
   protected ASTCDClass createSetClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {
-    String classname = StringTransformations.capitalize(assoc.getName() + "_set");
+    String classname = StringTransformations.capitalize(assoc.getName() + SET_SUFFIX);
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
@@ -172,6 +184,28 @@ public class AssocCommandDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.commands.assocs.Set_GetEffectedGemIds", sourceName, targetName);
 
     addImports(origCD, ast);
+
+    return ast;
+  }
+
+  protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDClass cmdClass) {
+    String cmdName = cmdClass.getName();
+
+    ASTCDClass ast = UMLPMill.cDClassBuilder()
+            .setModifier(PUBLIC.build())
+            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("CommandDeSer<" + cmdName + ">"))
+            .setName(cmdName+DE_SER)
+            .build();
+
+    getCD4C().addMethod(ast, "umlp.commands.assocs.FromJsonObject", cmdName,
+            cmdClass.getCDAttributeList().stream().map(a -> a.getName()).collect(Collectors.toList()));
+    getCD4C().addMethod(ast, "umlp.commands.assocs.BuildJson", cmdName,
+            cmdClass.getCDAttributeList().stream().map(a -> a.getName()).collect(Collectors.toList()));
+
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
+    getCD4C().addImport(ast, "umlp.command.CommandDeSer");
 
     return ast;
   }
