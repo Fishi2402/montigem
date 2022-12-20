@@ -4,16 +4,16 @@ package hardy;
 
 public class Person extends PersonTOP {
 
-    // --------------------------------------------------------------------
-    // Constructor (gibt es nur ohne Argumente, weil
-    // Rest in init-Methoden ausgelagert ist 
+  // --------------------------------------------------------------------
+  // Constructor (gibt es nur ohne Argumente, weil
+  // Rest in init-Methoden ausgelagert ist
     
-    protected Person() {
-        super();
-        // this includes initHuman(); initPerson();
-    }
+  protected Person() {
+    super();
+    // this includes initHuman(); initPerson();
+  }
 
-    // -----------------------------------------------------------------
+  // -----------------------------------------------------------------
 
 
   @Override
@@ -33,13 +33,13 @@ public class Person extends PersonTOP {
   /**
      * Derived attribute becomes a handcoded Method for calculation
      *  / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
-     */
-    public String getClubname() {
-      // Bem: we demonstrate how to deal with missing data (which is actually not necessary here)
-      if(availableMainResidence()) {
-        return nickname + "@" + mainResidence.get().getCity();
-      } else {
-        return nickname +"@"+ "obdachlos"; // should not happen
-      }
+  */
+  public String getClubname() {
+    // Bem: we demonstrate how to deal with missing data (which is actually not necessary here)
+    if(availableMainResidence()) {
+      return nickname + "@" + mainResidence.get().getCity();
+    } else {
+      return nickname +"@"+ "obdachlos"; // should not happen
     }
+  }
 }
