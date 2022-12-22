@@ -1,10 +1,12 @@
 package hardy;
 
+import umlp.rte.AssociationDBEntry;
 import umlp.rte.DatabaseAccessManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +28,14 @@ public class AddressDAO {
       insertAddress.execute();
 
       List<Long> iDs = address.getVisitorGemList().getIDs();
+
+      // Bulk operation => only one call to db
+      List<AssociationDBEntry> entries = new ArrayList<>();
       for (int i = 0; i < iDs.size(); i++) {
         Long visitorId = iDs.get(i);
-        assocVisitsDAO.addVisits(visitorId, address.getGemId(), i);
+        entries.add(new AssociationDBEntry(visitorId, address.getGemId(), i));
       }
+      assocVisitsDAO.addAllVisits(entries);
     }catch (SQLException e){
       throw new RuntimeException(e);
     }

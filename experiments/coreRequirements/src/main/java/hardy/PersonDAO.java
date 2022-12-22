@@ -3,14 +3,12 @@ package hardy;
 // GEN-P
 
 
-import umlp.rte.DatabaseAccessManager;
-import umlp.rte.Gem;
-import umlp.rte.LoadResult;
-import umlp.rte.LoadingState;
+import umlp.rte.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,12 +79,13 @@ public class PersonDAO {
 
       assocMainResidenceDAO.insertMainResidence(p.getGemId(), p.getMainResidenceGem().getGemId(), 0);
 
-      // TODO: bulk operation
-      List<Long> iDs = p.getVisitedGemList().getIDs();
-      for (int i = 0; i < iDs.size(); i++) {
-        Long addressIds = iDs.get(i);
-        assocVisitsDAO.addVisits(p.getGemId(), addressIds, i);
+      int i = 0;
+      List<AssociationDBEntry> entries = new ArrayList<>();
+      for (Long visitedId : p.getVisitedGemList().getIDs()) {
+        entries.add(new AssociationDBEntry(p.getGemId(), visitedId, i++));
       }
+      // Bulk operation => only one call to db
+      assocVisitsDAO.addAllVisits(entries);
     }catch (SQLException e){
       throw new RuntimeException(e);
     }

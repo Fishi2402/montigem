@@ -1,5 +1,6 @@
 package hardy;
 
+import umlp.rte.AssociationDBEntry;
 import umlp.rte.DatabaseAccessManager;
 
 import java.sql.PreparedStatement;
@@ -30,6 +31,26 @@ public class AssocVisitsDAO {
       addVisits.setLong(1, visitorGemId);
       addVisits.setLong(2, visitedGemId);
       addVisits.execute();
+    }catch (SQLException e){
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void addAllVisits(List<AssociationDBEntry>  entries){
+    if(entries.isEmpty()){
+      return;
+    }
+    ensureAddVisitsCreated();
+
+    try {
+      // TODO: use position
+      for (AssociationDBEntry entry : entries) {
+        addVisits.clearParameters();
+        addVisits.setLong(1, entry.getLhsGemId());
+        addVisits.setLong(2, entry.getRhsGemId());
+        addVisits.addBatch();
+      }
+      addVisits.executeBatch();
     }catch (SQLException e){
       throw new RuntimeException(e);
     }
