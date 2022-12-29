@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 // todo: erläutern
 
 import {StatusResult} from "./status.result";

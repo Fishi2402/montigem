@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # **Core Requirements** definiert durch dieses Experiment
 
 Dieses Verzeichnis dient als Referenz dafür, welche Funktionalitäten 

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp;
 
 import de.monticore.cd4analysis._ast.ASTCD4AnalysisNode;

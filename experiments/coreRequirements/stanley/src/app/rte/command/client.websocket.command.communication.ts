@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {ClientCommandCommunication, CommandCallback} from "./command.manager";
 import {Command} from "./command";
 import {CommandResult} from "./command.result";

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDClass;

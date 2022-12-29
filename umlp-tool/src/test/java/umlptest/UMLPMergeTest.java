@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlptest;
 
 import com.google.common.collect.Sets;

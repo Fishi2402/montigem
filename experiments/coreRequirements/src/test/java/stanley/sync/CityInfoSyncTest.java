@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package stanley.sync;
 
 // RTE-T: Testet Infrastruktur für die Synchronisation

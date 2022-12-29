@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.rte;
 
 // Nur während der Entwicklung zu nutzten

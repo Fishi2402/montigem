@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.db.sql;
 
 import com.google.common.base.CaseFormat;

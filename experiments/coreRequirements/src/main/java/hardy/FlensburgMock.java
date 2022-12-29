@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package hardy;
 
 //+ GEN-P        : generated for the product  (Demonstrator)

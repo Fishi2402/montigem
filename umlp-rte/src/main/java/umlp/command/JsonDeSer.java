@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.command;
 
 import de.monticore.symboltable.serialization.JsonParser;

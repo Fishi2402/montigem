@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.rte.gui;
 
 // PieData is a class generated from a class diagram modeled for Pie component

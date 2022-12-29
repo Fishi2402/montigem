@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
 import com.google.common.collect.Lists;

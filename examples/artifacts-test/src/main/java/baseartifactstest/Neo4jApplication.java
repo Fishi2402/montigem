@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package baseartifactstest;
 
 import org.slf4j.Logger;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 // GEN-P (generated from EditierePersonCars.gui or
 // translated from EditierePrsonCarsGUI.java)
 

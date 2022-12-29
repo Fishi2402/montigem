@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 export class NotImplementedException extends Error {
   constructor(message?: string) {
     super(message);

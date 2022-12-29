@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {CommandResult} from "./command.result";
 import {LoadingState} from "./loading.state";
 

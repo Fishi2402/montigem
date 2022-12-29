@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("componentName", "expressions", "guiDSLPrinter")}
     List<TableColumn> initialTableColumns${componentName} = new ArrayList();
   <#list expressions as expression>

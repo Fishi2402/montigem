@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package hardy.service;
 
 public abstract class CommunicationService {

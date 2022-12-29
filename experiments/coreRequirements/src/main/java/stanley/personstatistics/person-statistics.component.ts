@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 // GEN-P (generated from PersonStatistics.gui or
 // translated from PersonStatisticsGUI.java)
 

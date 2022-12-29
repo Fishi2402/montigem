@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package hardy;
 
 //+ GEN4T        : generated for test infrastuktur

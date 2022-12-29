@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.rte;
 
 import umlp.command.DeSer;

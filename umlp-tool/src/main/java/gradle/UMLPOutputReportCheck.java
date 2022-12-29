@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
 import com.google.common.collect.Sets;

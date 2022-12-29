@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain.decorator.methods;
 
 import com.google.common.collect.Lists;

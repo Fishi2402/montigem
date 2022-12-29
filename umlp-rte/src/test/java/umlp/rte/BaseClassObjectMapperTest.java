@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.rte;
 
 import org.junit.jupiter.api.Test;

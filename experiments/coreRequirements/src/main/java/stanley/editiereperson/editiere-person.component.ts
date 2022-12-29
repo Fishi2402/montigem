@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 // GEN-P (translated from EditierePersonGUI.java)
 
 /* This is the code that is generated from hand-written Java file.

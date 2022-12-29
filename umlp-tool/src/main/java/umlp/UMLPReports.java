@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp;
 
 import de.monticore.generating.templateengine.reporting.commons.AReporter;

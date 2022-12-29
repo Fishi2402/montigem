@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain.decorator.methods;
 
 import de.monticore.cd.codegen.methods.AbstractMethodDecorator;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;

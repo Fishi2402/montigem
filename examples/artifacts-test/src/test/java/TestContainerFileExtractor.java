@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import baseartifactstest.BaseArtifactsTestManager;
 import baseartifactstest.BaseArtifactsTestManagerImpl;
 import de.se_rwth.artifacts.static_extractors.ContainerFileExtractor;

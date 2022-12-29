@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # **Core Requirements** Design Entscheidungen GUI 
 
 Dieses Beispiel beinhaltet eine Reihe von Design Entscheidungen

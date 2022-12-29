@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {Command} from "../command/command";
 
 export abstract class Request<T> extends Command<T> {

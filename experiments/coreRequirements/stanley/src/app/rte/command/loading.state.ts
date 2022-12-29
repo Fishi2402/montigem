@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 //alpha, this class is not fully developed,
 //only to try it out and might change (change name?)
 

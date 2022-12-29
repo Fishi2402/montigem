@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Generation Strategy Shown By **Core Requirements**  
 
 Anhand des Flensburg-Beispiels diskutieren wir hier die Generierungsstrategie, denn

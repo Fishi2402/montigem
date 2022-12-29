@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain.decorator.commands;
 
 import de.monticore.cd._symboltable.CDSymbolTables;

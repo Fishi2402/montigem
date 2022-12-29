@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package hardy;
 
 import hardy.commands.Address_get_filteredDeSer;

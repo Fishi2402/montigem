@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlptest;
 
 import de.monticore.cd4code.CD4CodeMill;

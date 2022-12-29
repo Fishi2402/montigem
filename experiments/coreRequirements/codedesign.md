@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # **Core Requirements** Design Entscheidungen Applikationskern 
 
 Dieses Beispiel beinhaltet eine Reihe von Design Entscheidungen

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package hardy;
 
 import com.google.common.collect.Streams;
