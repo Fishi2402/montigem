@@ -208,6 +208,10 @@ public class GenService {
     return assoc.isPresentCDCardinality()?assoc.getCDCardinality().isMult():false;
   }
 
+  public static boolean isOptional(ASTCDAssocSide assoc) {
+    return assoc.isPresentCDCardinality()?assoc.getCDCardinality().isOpt():false;
+  }
+
   public static boolean isBidirectional(ASTCDAssocSide assoc) {
     return assoc.getSymbol().isIsDefinitiveNavigable() && assoc.getSymbol().getOtherSide().isIsDefinitiveNavigable();
   }

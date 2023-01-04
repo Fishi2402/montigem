@@ -1,11 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("className", "attributes")}
+${tc.signature("className")}
 ${cd4c.method("public String serialize(" + className + " obj)")}
   JsonPrinter jsonPrinter = new JsonPrinter(true);
   jsonPrinter.beginObject();
-  <#list attributes as attr>
-  serialize${attr.getName()?cap_first}(obj, jsonPrinter);
-  </#list>
-  serialize_Addons(obj, jsonPrinter);
+  buildJson(obj, jsonPrinter);
   jsonPrinter.endObject();
   return jsonPrinter.toString();

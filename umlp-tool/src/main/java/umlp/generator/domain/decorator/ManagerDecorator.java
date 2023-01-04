@@ -39,7 +39,7 @@ public class ManagerDecorator extends AbstractDecorator {
     glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint("= new ArrayList<>()"));
     managerClass.addCDMember(attrObserver);
 
-    addSingletonElements(managerClass);
+    addSingletonElements(name, managerClass);
     getCD4C().addMethod(managerClass, "umlp.manager.ErrorNotificationScope");
 
     origCD.getCDDefinition().getCDClassesList()
@@ -50,7 +50,7 @@ public class ManagerDecorator extends AbstractDecorator {
     return managerClass;
   }
 
-  protected void addSingletonElements(ASTCDClass managerClass) {
+  protected void addSingletonElements(String simpleName, ASTCDClass managerClass) {
     String name = managerClass.getName();
     // add attribute
     getCD4C().addAttribute(managerClass, "protected static " + name + " instance");
@@ -58,7 +58,7 @@ public class ManagerDecorator extends AbstractDecorator {
     // add methods
     getCD4C().addMethod(managerClass, "umlp.manager.InitMe", name);
     getCD4C().addMethod(managerClass, "umlp.manager.GetSingleton", name);
-    getCD4C().addMethod(managerClass, "umlp.manager.SetInstance", name);
+    getCD4C().addMethod(managerClass, "umlp.manager.SetInstance", simpleName);
 
     getCD4C().addMethod(managerClass, "umlp.manager.GetFreeGemId", true);
     getCD4C().addMethod(managerClass, "umlp.manager.GetFreeGemId", false);

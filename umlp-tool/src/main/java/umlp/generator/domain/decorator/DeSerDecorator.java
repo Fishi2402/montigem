@@ -1,16 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain.decorator;
 
+import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.methodtemplates.CD4CTemplateHelper;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import org.checkerframework.checker.units.qual.K;
 import umlp.UMLPMill;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,10 +26,10 @@ public class DeSerDecorator extends DomainClassDecorator{
     origCD.getCDDefinition().getCDClassesList()
         .stream()
         .filter(cdclass -> !cdclass.getModifier().isDerived())
-        .forEach(cdClass -> astcdPackage.addCDElement(createDeSer(cdName, cdClass)));
+        .forEach(cdClass -> astcdPackage.addCDElement(createDeSer(origCD, cdName, cdClass)));
   }
 
-  protected ASTCDElement createDeSer(String cdName, ASTCDClass cdClass) {
+  protected ASTCDElement createDeSer(ASTCDCompilationUnit origCD, String cdName, ASTCDClass cdClass) {
     String originalClassName = cdClass.getName();
 
     // TODO: ser and deser gemid!
@@ -38,45 +38,37 @@ public class DeSerDecorator extends DomainClassDecorator{
         .setModifier(CDModifier.PUBLIC.build())
         .build();
 
-    addImports(deSer);
-
-    // Attributes resulting from class attributes and associations
-    List<ASTCDAttribute> attrList = getAllAttributes(cdClass).attrList.stream()
-        // TODO: Attributes of all types!
-        .filter(attr -> isSimpleType(attr.printType()) || GenService.isGem(attr))
-        .collect(Collectors.toList());
-
-    attrList = attrList.stream().filter(attr -> !attr.getModifier().isDerived()).collect(Collectors.toList());
-
-    attrList.forEach(attr -> {
-          addSerMethod(originalClassName, deSer, attr);
-          addDeserMethod(cdName, originalClassName, deSer, attr);
-        });
+    addImports(origCD, deSer);
 
     // TODO: also use for other templates!
-    List<ASTCDAttribute> simpleAttributes = new ArrayList<>();
-    List<ASTCDAttribute> gemAttributes = new ArrayList<>();
-    List<ASTCDAttribute> gemListAttributes = new ArrayList<>();
+    List<ASTCDAttribute> attributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
+            .filter(attr -> !attr.getModifier().isDerived())
+            .collect(Collectors.toList());
+    attributes.forEach(a -> {
+      addSerAndDeserMethod(originalClassName, deSer, a);
+    });
+    List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(cdClass).stream()
+            .filter(a -> !a.getModifier().isDerived())
+            .collect(Collectors.toList());
+    assocs.forEach(a -> {
+      addSerAndDeserMethod(cdName, originalClassName, deSer, a);
+    });
 
-    for (ASTCDAttribute attr : attrList) {
-      if(isSimpleType(attr.printType())){
-        simpleAttributes.add(attr);
-      } else if(GenService.isGemList(attr)){
-        gemListAttributes.add(attr);
-      }else if(GenService.isGem(attr)){
-        gemAttributes.add(attr);
-      }
-    }
 
-    getCD4C().addMethod(deSer, "umlp.deser.serialize", originalClassName, attrList);
+    getCD4C().addMethod(deSer, "umlp.deser.serialize", originalClassName);
     getCD4C().addMethod(deSer, "umlp.deser.deserialize",
-      cdName,
-      originalClassName,
-      simpleAttributes,
-      gemAttributes,
-      gemListAttributes
+            cdName,
+            originalClassName,
+            attributes.stream().map(a -> a.getName()).collect(Collectors.toList()),
+            assocs.stream().filter(a -> !GenService.isList(a)).map(a -> a.getName()).collect(Collectors.toList()),
+            assocs.stream().filter(a -> GenService.isList(a)).map(a -> a.getName()).collect(Collectors.toList())
+            );
+    getCD4C().addMethod(deSer, "umlp.deser.BuildJson",
+            originalClassName,
+            attributes.stream().map(a -> a.getName()).collect(Collectors.toList()),
+            assocs.stream().map(a -> a.getName()).collect(Collectors.toList())
     );
-    getCD4C().addMethod(deSer, "umlp.deser.BuildJson", originalClassName, attrList);
+
     getCD4C().addMethod(deSer, "umlp.deser.FromJson", originalClassName);
 
 
@@ -90,64 +82,48 @@ public class DeSerDecorator extends DomainClassDecorator{
     return deSer;
   }
 
-  protected void addSerMethod(String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
-    if(GenService.isGemList(attr)){
-      getCD4C().addMethod(deSer, "umlp.deser.serializeGemListField", originalClassName, attr.getName());
-    } else if(GenService.isGem(attr)){
-      getCD4C().addMethod(deSer, "umlp.deser.serializeGemField", originalClassName, attr.getName());
-    } else if(GenService.isList(attr)) {
-      // TODO
+  protected void addSerAndDeserMethod(String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
+    boolean isList = false;
+    boolean isOptional = false;
+    String type = "";
+    if(GenService.isList(attr)) {
+      isList = true;
+      type = attr.getSymbol().getType().print();
     } else if(GenService.isOptional(attr)) {
-      // TODO
+      isOptional = true;
+      type = attr.getSymbol().getType().print();
     } else {
-      // TODO: Other simple types!
-      if(isSimpleType(attr.printType())) {
-        getCD4C().addMethod(deSer, "umlp.deser.serializeSimpleField", originalClassName, attr.getName());
-      }
+      type = attr.getSymbol().getType().getTypeInfo().getFullName();
     }
+    getCD4C().addMethod(deSer, "umlp.deser.serializeSimpleField",
+            originalClassName, attr.getName(), isSimpleType(type), isList, isOptional);
+    getCD4C().addMethod(deSer, "umlp.deser.deserializeSimpleField",
+            originalClassName, attr.getName(), type, isList, isOptional);
+
   }
 
-  protected void addDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
-    if(GenService.isGemList(attr)){
-      getCD4C().addMethod(deSer, "umlp.deser.deserializeGemListField", cdName, originalClassName, attr.getName(), attr.printType());
-    } else if(GenService.isGem(attr)) {
-      ASTMCBasicGenericType gemType = (ASTMCBasicGenericType) attr.getMCType();
-      String innerType = new CD4CodeFullPrettyPrinter().prettyprint(gemType.getMCTypeArgument(0).getMCTypeOpt().get());
-      getCD4C().addMethod(
-          deSer,
-          "umlp.deser.deserializeGemField",
-          cdName,
-          originalClassName,
-          attr.getName(),
-          attr.printType(),
-          innerType
-      );
-    } else if(GenService.isList(attr)) {
-      // TODO
-    } else if(GenService.isOptional(attr)) {
-      // TODO
+  protected void addSerAndDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAssocSide attr) {
+    if(GenService.isList(attr)){
+      getCD4C().addMethod(deSer, "umlp.deser.serializeGemListField", originalClassName, attr.getName());
+      getCD4C().addMethod(deSer, "umlp.deser.deserializeGemListField", cdName, originalClassName, attr.getName());
     } else {
-      String type = attr.printType().replaceAll("^java[.]lang[.]", "");
-      // TODO: Other simple types!
-      // Alternative: All other types are Gem?
-      if(isSimpleType(type)) {
-        getCD4C().addMethod(deSer,
-            "umlp.deser.deserializeSimpleField",
-            originalClassName,
-            attr.getName(),
-            type
-        );
-      }
+      getCD4C().addMethod(deSer, "umlp.deser.serializeGemField", originalClassName, attr.getName());
+      getCD4C().addMethod(
+              deSer,
+              "umlp.deser.deserializeGemField",
+              cdName,
+              originalClassName,
+              attr.getName(),
+              attr.getSymbol().getType().print());
     }
   }
 
   private static boolean isSimpleType(String type) {
-    type = type.replaceAll("^java[.]lang[.]", "");
     return List.of("string", "int", "integer", "boolean", "float", "double").contains(type.toLowerCase());
   }
 
   @Override
-  protected void addImports(ASTCDType clazz) {
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDType clazz) {
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.*");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.*");
     getCD4C().addImport(clazz, "umlp.rte.*");

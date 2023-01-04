@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("cdName", "className", "fieldName", "fieldType")}
+${tc.signature("cdName", "className", "fieldName")}
 ${cd4c.method("protected List<Long> deserialize${fieldName?cap_first} (JsonObject json)")}
   <#-- TODO: default values -->
   List<Long> res = new ArrayList<>();

@@ -11,12 +11,9 @@ import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
-import de.monticore.cdinterfaceandenum._ast.ASTCDEnumBuilder;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
@@ -47,13 +44,13 @@ public class DomainClassDecorator extends AbstractDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-      .forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
+      .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c, name)));
 
     origCD.getCDDefinition().getCDEnumsList().stream().filter(c -> !c.getSymbol().isIsDerived())
             .forEach(c -> astcdPackage.addCDElement(c.deepClone()));
   }
 
-  protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String name) {
     ASTCDInterfaceUsage implementsUsage = getInterfaceUsageFacade()
         .createCDInterfaceUsage("GemIdentifiable", "GemBuildable");
     ASTModifier modifier = domainClass.getModifier().isAbstract() ? PUBLIC_ABSTRACT.build() : PUBLIC.build();
@@ -103,7 +100,7 @@ public class DomainClassDecorator extends AbstractDecorator {
     createGetterSetterForAssocs(domainClass, clazz, attributes.attrAssocs);
 
      // Imports
-    addImports(clazz);
+    addImports(origCD, clazz);
 
     return clazz;
   }
@@ -128,11 +125,13 @@ public class DomainClassDecorator extends AbstractDecorator {
     for (ASTCDAttribute attr: CDSymbolTables.getAttributesInHierarchy(domainClass)
             .stream().filter(a -> GenService.isVisibleNotDerived(a)).collect(Collectors.toList())) {
       getCD4C().addMethod(clazz, "umlp.domain.Check",
-              domainClass.getName(), attr.getName());
+              domainClass.getName(), attr.getName(),
+              !GenService.isList(attr) && !GenService.isOptional(attr));
     }
     for (ASTCDAssocSide assoc: CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
       getCD4C().addMethod(clazz, "umlp.domain.Check",
-              domainClass.getName(), assoc.getName());
+              domainClass.getName(), assoc.getName(),
+              !GenService.isOptional(assoc));
     }
   }
 
@@ -209,7 +208,8 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     }
   }
 
-  protected void addImports(ASTCDType clazz) {
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDType clazz) {
+    getCD4C().addImport(clazz, getPackageName(origCD, GEMLIST_PACKAGE) + ".*");
     getCD4C().addImport(clazz, "java.util.Observable");
     getCD4C().addImport(clazz, "umlp.rte.GemIdentifiable");
     getCD4C().addImport(clazz, "umlp.rte.NotificationScope");

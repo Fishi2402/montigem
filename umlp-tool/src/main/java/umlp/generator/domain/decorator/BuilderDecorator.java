@@ -106,11 +106,13 @@ public class BuilderDecorator extends AbstractDecorator {
               attribute.getName(), getCDPrinter().prettyprint(createType(attribute)),
               domainClass.getName() + BUILDER_SUFFIX);
       getCD4C().addMethod(builderClass, "umlp.builder.Check",
-              attribute.getName(), domainClass.getName());
+              attribute.getName(), domainClass.getName(),
+              !GenService.isList(attribute)&& !GenService.isOptional(attribute));
     }
     for (ASTCDAssocSide assoc : assocList) {
       getCD4C().addMethod(builderClass, "umlp.builder.Check",
-              assoc.getName(), domainClass.getName());
+              assoc.getName(), domainClass.getName(),
+              !GenService.isOptional(assoc));
       if (GenService.isList(assoc)) {
         getCD4C().addMethod(builderClass, "umlp.builder.AssocList",
                 assoc.getName(), GenService.getType(assoc.getSymbol().getType()),

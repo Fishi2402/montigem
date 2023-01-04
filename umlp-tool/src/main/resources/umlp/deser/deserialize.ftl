@@ -1,18 +1,18 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("cdName", "className", "simpleAttributes", "gemAttributes", "gemListAttributes")}
 ${cd4c.method("public Optional<${className}> deserialize(JsonObject json)")}
-  ${className}DeSerBuilder builder = ${cdName}Manager.${className?uncap_first}DeSerBuilder();
+  ${className}Builder builder = ${cdName}Manager.${className?uncap_first}Builder(json.getLongMember("gemId"));
   builder.setINTERNAL_deser_mode(true);
   <#if simpleAttributes?has_content || gemAttributes?has_content || gemListAttributes?has_content>
   builder
     <#list simpleAttributes as attr>
-      .${attr.name}(deserialize${attr.name?cap_first}(json))
+      .${attr}(deserialize${attr?cap_first}(json))
     </#list>
     <#list gemAttributes as attr>
-      .${attr.name}Gem(deserialize${attr.name?cap_first}(json))
+      .${attr}Gem(deserialize${attr?cap_first}(json))
     </#list>
     <#list gemListAttributes as attr>
-      .${attr.name}GemListIds(deserialize${attr.name?cap_first}(json))
+      .${attr}GemListIds(deserialize${attr?cap_first}(json))
     </#list>
   ;
   </#if>

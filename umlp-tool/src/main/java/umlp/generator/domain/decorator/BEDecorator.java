@@ -116,6 +116,10 @@ public class BEDecorator extends AbstractDecorator {
     commandObjectMapperDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandObjectMapperDecorator", BEDecorator.class.getName());
 
+    BaseClassObjectMapperDecorator baseClassObjectMapperDecorator = new BaseClassObjectMapperDecorator(glex);
+    baseClassObjectMapperDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: BaseClassObjectMapperDecorator", BEDecorator.class.getName());
+
     CommandResultDeSerDecorator commandResultDeSerDecorator = new CommandResultDeSerDecorator(glex);
     commandResultDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandResultDeSerDecorator", BEDecorator.class.getName());
