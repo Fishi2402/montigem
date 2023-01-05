@@ -5,6 +5,7 @@ description 'mediahub example'
 task generateMediaHub(type: UMLPTask) {
     input.from(file("src/models"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
+    hwcDir = layout.projectDirectory.dir("src/main/java/")
 }
 
 build.dependsOn(generateMediaHub)
