@@ -47,6 +47,5 @@ public class DbObserverDecorator extends AbstractDecorator {
 
   protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, "umlp.rte.DatabaseAccessManager");
-    getCD4C().addImport(clazz, "javax.persistence.criteria.*");
   }
 }

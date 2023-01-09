@@ -17,7 +17,7 @@ public class UMLPToolTest extends AbstractUMLPTest {
   @Test
   public void testRunFlensburg() {
     UMLPTool tool = new UMLPTool();
-    tool.run(new String[]{"-i", "src/test/resources/hardy/Flensburg.umlp", "-s", "Flensburg.umlpsym"});
+    tool.run(new String[]{"-i", "src/test/resources/hardy/Flensburg.umlp", "-s", "target/Flensburg.umlpsym"});
     assertNoErrors();
   }
 
