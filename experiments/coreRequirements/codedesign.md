@@ -145,31 +145,39 @@ TODO
 
 ### Datenbank
 
-* Als Datenbankanbindung gibt es zurzeit eine Umsetzung für relationale Datenbanken für die das object relational 
-mapping mit Hibernate umgesetzt wird. Dafür sind Datenklassen wie Car, Person etc. 
-in coreRequirements mit Hibernate Annotations annotiert.
+* Als Datenbankanbindung gibt es zurzeit eine Umsetzung für relationale Datenbanken, umgesetzt mit JDBC. 
 
-* Für Datenbankanfragen (CRUD) wird das Interface des FlensburgManagers benutzt. Die FlensburgManagerImpl stellt eine 
-konkrete Implementierung mit echtem Datenbankanschluss dar. Die FlensburgManagerImpl funktioniert so, dass 
-Datenbankrequests über den DatabaseAccessManager aus dem UMLP-RTE laufen, da dieser nicht generiert werden muss. Die
-FlensburgManagerImpl muss hingegen schon generiert werden, da z.B. fuer eine `getHuman()` Implementierung ein Request 
-abgeleitet wird, der weiss, dass es die Human Datenklasse ueberhaupt gibt.  
 
-* Die Datenbank wird ueber die `database.properties` konfiguriert, welche vom DataBaseAccessManager beim initialisieren 
-der FlensburgManagerImpl eingelesen wird. Fuer Konfigurationsmoeglichkeiten siehe 
-[hier](https://www.tutorialspoint.com/hibernate/hibernate_configuration.htm) 
+* Die Datenbank wird ueber die `database.properties` konfiguriert, welche vom DatabaseAccessManager beim Initialisieren 
+  der FlensburgManagerImpl eingelesen wird.
 
-* Die konkrete Datenbank in `corerequirements` ist die [h2](http://h2database.com/html/main.html) 
-Datenbank. Sie hat den Vorteil vollständig im Arbeitsspeicher laufen zu koennen und ist damit gut geeignet fuer schnelle 
-Tests. Der Nachteil ist, dass der Speicher an einem JVM Prozess haengt und somit kein zweiter JVM Prozess darauf
-zugreifen kann, d.h. IntelliJs Database Connection kann nicht benutzt werden, um den Zustand der Datenbankinstanz in einem 
-anzusehen. Ein Workaround dafuer ist es die h2 Datenbank in einer Datei zu persistieren. Die beiden Modi koennen ueber
-die URL in der `database.properties` geswitcht (da sind auch Beispielpfade fuer beide Modi zu finden).
+* Die konkrete Datenbank in `corerequirements` ist die Postgres Datenbank.
+
+* Für Tests wird die [h2](http://h2database.com/html/main.html) Datenbank genutzt.
+  Diese wird im TestDatabaseAccessManager initialisiert.
+  Sie hat den Vorteil vollständig im Arbeitsspeicher laufen zu koennen und ist damit gut geeignet fuer schnelle
+  Tests. Der Nachteil ist, dass der Speicher an einem JVM Prozess haengt und somit kein zweiter JVM Prozess darauf
+  zugreifen kann, d.h. IntelliJs Database Connection kann nicht benutzt werden, um den Zustand der Datenbankinstanz in einem
+  anzusehen. Ein Workaround dafuer ist es die h2 Datenbank in einer Datei zu persistieren. Die beiden Modi koennen ueber
+  die URL in der `database.properties` geswitcht (da sind auch Beispielpfade fuer beide Modi zu finden).
  
 * Um IntelliJs Database Connection nutzen zu koennen:  In `Data Sources and Drivers`  `Data Sources` Reiter auswaehlen,
-H2 hinzufuegen (notwendige Treiber dazu installieren) und Connection Type: Embedded auswaehlen. User und Password stehen 
-in der `database.properties` und die URL kann dort auch nachgelesen werden unter `hibernate.connection.url`. 
+  H2 hinzufuegen (notwendige Treiber dazu installieren) und Connection Type: Embedded auswaehlen. User und Password stehen 
+  in der `database.properties` und die URL kann dort auch nachgelesen werden unter `hibernate.connection.url`. 
 
+#### SQL Schema
+* Für jede Domainenklasse gibt es eine Tabelle.
+* Jedes Attribut mit einem simplen Typ(Primitive Typen und String) wird zu einer Spalte
+  * TODO: Erweiterungspunkt im Generator für weitere simple Typen
+* Jede Liste von simplen Typen wird zu einer weiteren Tabelle mit zwei Spalten: `id` des Parent-Objekts und Wert `value`.
+  * TODO: Dritte Spalte für Sortierung? 
+  * TODO: Optionals mit simplem Typen
+* Assoziationen einer Domainenklasse mit simplen Typen werden wie Listen von simplen Typen behandelt
+* Jede Assoziation mit zwei Domainenklassen wird zu einer weiteren Tabelle, welche zwei Spalten enthält: Eine pro `id`
+  der beteiligten Klassen
+  * TODO: Weitere Spalte für die Sortierung bei «ordered»
+  * TODO: Assoziation mit Vererbung, e.g. eine Assoziation mit Teilnehmern `Car` und `Human`, wobei die Subklasse
+    `Person` von `Human` existiert
 
 ## Nicht-persistierte Elemente
 
