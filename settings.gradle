@@ -60,4 +60,5 @@ include ':examples:restaurant'
 include ':examples:university'
 include ':examples:stat'
 include 'examples:artifacts-test'
+include ':examples:flensburg-test'
 
