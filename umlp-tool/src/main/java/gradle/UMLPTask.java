@@ -237,7 +237,7 @@ public abstract class UMLPTask extends DefaultTask {
     Path cwd = getProject().getProjectDir().toPath().toAbsolutePath();
     Log.warn("Starting UMLPTool: \n" +
         "\t  java -jar UMLPTool.jar " +
-        String.join(" ", createArgList(f.toPath(), p -> cwd.relativize(p).toString()))
+        String.join(" ", createArgList(f.toPath(), p -> "." + File.separator + cwd.relativize(p)))
     );
 
     List<String> args = createArgList(f.toPath(), p -> p.toAbsolutePath().toString());
