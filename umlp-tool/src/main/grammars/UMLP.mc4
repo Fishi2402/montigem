@@ -22,4 +22,6 @@ grammar UMLP extends de.monticore.CD4Code {
    */
   replacekeyword "class": "entity", "class";
 
+  nokeyword "umlp";
+
 }
