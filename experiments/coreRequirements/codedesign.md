@@ -158,12 +158,8 @@ TODO
   Sie hat den Vorteil vollständig im Arbeitsspeicher laufen zu koennen und ist damit gut geeignet fuer schnelle
   Tests. Der Nachteil ist, dass der Speicher an einem JVM Prozess haengt und somit kein zweiter JVM Prozess darauf
   zugreifen kann, d.h. IntelliJs Database Connection kann nicht benutzt werden, um den Zustand der Datenbankinstanz in einem
-  anzusehen. Ein Workaround dafuer ist es die h2 Datenbank in einer Datei zu persistieren. Die beiden Modi koennen ueber
-  die URL in der `database.properties` geswitcht (da sind auch Beispielpfade fuer beide Modi zu finden).
- 
-* Um IntelliJs Database Connection nutzen zu koennen:  In `Data Sources and Drivers`  `Data Sources` Reiter auswaehlen,
-  H2 hinzufuegen (notwendige Treiber dazu installieren) und Connection Type: Embedded auswaehlen. User und Password stehen 
-  in der `database.properties` und die URL kann dort auch nachgelesen werden unter `hibernate.connection.url`. 
+  anzusehen. Ein Workaround dafuer ist die Methode `TestDatabaseAccessManager#openWebServer`, welche eine Webapp
+  zum inspizieren der Datenbank öffnet und den aktuellen Thread blockt bis diese geschlossen wird.
 
 #### SQL Schema
 * Für jede Domainenklasse gibt es eine Tabelle.
