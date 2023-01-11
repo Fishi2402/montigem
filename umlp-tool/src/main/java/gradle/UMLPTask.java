@@ -34,11 +34,23 @@ public abstract class UMLPTask extends DefaultTask {
   final String UMLP_TASK_DEBUG = "de.rwth.se.umlp.debug";
   final String ORG_GRADLE_PARALLEL = "org.gradle.parallel";
 
+  private final ConfigurableFileCollection input = getProject().getObjects().fileCollection();
+
   @SkipWhenEmpty    // Implies @Incremental. Do nothing if no input model exists
   @InputFiles
   @PathSensitive(PathSensitivity.RELATIVE)
   @IgnoreEmptyDirectories
-  public abstract ConfigurableFileCollection getInput();
+  public ConfigurableFileCollection getInput(){
+    return input; // TODO: FileTree & Matching?
+  }
+
+  public void setInput(File f){
+    input.from(f);
+  }
+
+  public void setInput(Iterable<File> f){
+    input.from(f);
+  }
 
   @InputDirectory
   @org.gradle.api.tasks.Optional

@@ -29,7 +29,8 @@ compileJava.onlyIf { project.hasProperty('testCompile') }
 
 task generateJava(type: UMLPTask) {
   group = "umlP"
-  input.from(layout.projectDirectory.dir("models"))
+  input = files("models/B.umlp", "models/A.umlp")
+
   tmplDir = layout.projectDirectory.dir("src/main/resources")
   hwcDir = layout.projectDirectory.dir("hwc/")
   configTemplate = "MyConfig.ftl"
