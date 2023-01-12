@@ -54,7 +54,7 @@ task myFirstUMLPTask(type: UMLPTask) {
 5. Add generated Code to Java-Input in ``build.gradle``
 ````
 sourceSets {
-  main.java.srcDirs += [generateStuff.outputDir]
+  main.java.srcDirs += [myFirstUMLPTask.outputDir]
 }
 ````
 
