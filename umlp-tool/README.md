@@ -78,6 +78,19 @@ sourceSets {
 By default, each run of an ``UMLPTask`` is isolated from its environment and debugging tools / breakpoints do not work.
 
 When passing ``debug=true`` to an `UMLPTask` this isolation is disabled. Hence debugging is not compatible with executing multiple `UMLPTasks` in parallel.
+To disable incremental build during debugging, add the argument ``outputs.upToDateWhen { false }``. Then the task is executed during every build, even when the inputs have not changed.
+
+An example for debug configuration:
+````
+task exampleForDebugging(type: UMLPTask) {
+  input = file("models/")
+
+  debug = true  // Disable isolation and set LogLevel to DEBUG. Allows to use debugging tools and breakpoints.
+  outputs.upToDateWhen { false } // Disable incremental build for debugging
+  
+  outputDir = layout.buildDirectory.dir("generated-sources/")
+}
+````
 
 To globally enable debugging for every ``UMLPTask``, set in `gradle.properties`:
 ````
