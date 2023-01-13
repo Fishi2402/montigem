@@ -3,7 +3,7 @@ package mediahub;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class AuthorDeSer extends AuthorDeSerTOP {
 
@@ -13,7 +13,7 @@ public class AuthorDeSer extends AuthorDeSerTOP {
   }
 
   @Override
-  protected Date deserializeBirth(JsonObject json) {
+  protected LocalDate deserializeBirth(JsonObject json) {
     return null;
   }
 }

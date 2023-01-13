@@ -25,52 +25,40 @@ import java.util.stream.Collectors;
 
 // TODO: cardinality constraints?
 public class SQLSchemaGenerator {
-  protected Map<String, String> fqnClassNameToType = new HashMap<>();
-
-  public SQLSchemaGenerator() {
-    fqnClassNameToType.put("java.lang.String", "VARCHAR");
-    fqnClassNameToType.put("String", "VARCHAR");
-
-    fqnClassNameToType.put("java.lang.Byte", "TINYINT");
-    fqnClassNameToType.put("Byte", "TINYINT");
-    fqnClassNameToType.put("byte", "TINYINT");
-
-    fqnClassNameToType.put("java.lang.Short", "SMALLINT");
-    fqnClassNameToType.put("Short", "SMALLINT");
-    fqnClassNameToType.put("short", "SMALLINT");
-
-
-    fqnClassNameToType.put("java.lang.Integer", "INTEGER");
-    fqnClassNameToType.put("Integer", "INTEGER");
-    fqnClassNameToType.put("int", "INTEGER");
-
-    fqnClassNameToType.put("java.lang.Long", "BIGINT");
-    fqnClassNameToType.put("Long", "INTEGER");
-    fqnClassNameToType.put("long", "INTEGER");
-
-    fqnClassNameToType.put("java.lang.Float", "FLOAT");
-    fqnClassNameToType.put("Float", "FLOAT");
-    fqnClassNameToType.put("float", "FLOAT");
-
-    fqnClassNameToType.put("java.lang.Double", "DOUBLE");
-    fqnClassNameToType.put("Double", "DOUBLE");
-    fqnClassNameToType.put("double", "DOUBLE");
-
-    fqnClassNameToType.put("java.lang.Boolean", "BIT");
-    fqnClassNameToType.put("Boolean", "BIT");
-    fqnClassNameToType.put("boolean", "BIT");
-
-    fqnClassNameToType.put("java.lang.Char", "CHAR");
-    fqnClassNameToType.put("Char", "CHAR");
-    fqnClassNameToType.put("char", "CHAR");
-
-    // TODO: Erweiterungspunkt im Template anbieten?
-    fqnClassNameToType.put("java.util.Date", "DATE");
-    // TODO: as millis or nanos?
-    fqnClassNameToType.put("java.time.Duration", "BIGINT");
-    fqnClassNameToType.put("java.time.Instant", "TIMESTAMP");
-    fqnClassNameToType.put("java.net.InetAddress", "VARCHAR");
-  }
+  public static Map<String, String> fqnClassNameToType = Map.ofEntries(
+      Map.entry("java.lang.String", "VARCHAR"),
+      Map.entry("String", "VARCHAR"),
+      Map.entry("java.lang.Byte", "TINYINT"),
+      Map.entry("Byte", "TINYINT"),
+      Map.entry("byte", "TINYINT"),
+      Map.entry("java.lang.Short", "SMALLINT"),
+      Map.entry("Short", "SMALLINT"),
+      Map.entry("short", "SMALLINT"),
+      Map.entry("java.lang.Integer", "INTEGER"),
+      Map.entry("Integer", "INTEGER"),
+      Map.entry("int", "INTEGER"),
+      Map.entry("java.lang.Long", "BIGINT"),
+      Map.entry("Long", "INTEGER"),
+      Map.entry("long", "INTEGER"),
+      Map.entry("java.lang.Float", "FLOAT"),
+      Map.entry("Float", "FLOAT"),
+      Map.entry("float", "FLOAT"),
+      Map.entry("java.lang.Double", "DOUBLE"),
+      Map.entry("Double", "DOUBLE"),
+      Map.entry("double", "DOUBLE"),
+      Map.entry("java.lang.Boolean", "BIT"),
+      Map.entry("Boolean", "BIT"),
+      Map.entry("boolean", "BIT"),
+      Map.entry("java.lang.Char", "CHAR"),
+      Map.entry("Char", "CHAR"),
+      Map.entry("char", "CHAR"),
+      Map.entry("java.time.LocalDate", "DATE"),
+      // TODO: Erweiterungspunkt im Template anbieten?
+      // Not supporting this type anymore Map.entry("java.util.Date", "DATE"),
+      // TODO: as millis or nanos?
+      Map.entry("java.time.Duration", "BIGINT"),
+      Map.entry("java.time.Instant", "TIMESTAMP"),
+      Map.entry("java.net.InetAddress", "VARCHAR"));
 
   public static String convertAttributeName(String name) {
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);

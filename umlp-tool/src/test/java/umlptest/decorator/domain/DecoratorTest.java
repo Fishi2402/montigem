@@ -9,6 +9,7 @@ import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.UMLAssocNameTrafo;
 import umlptest.AbstractUMLPTest;
 
 import java.util.Optional;
@@ -65,6 +67,9 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
     // Create scopes and symbols
     umlp._symboltable.IUMLPArtifactScope symTab = UMLPMill.scopesGenitorDelegator().createFromAST(cdAST);
     cdAST.accept(new CD4CodeSymbolTableCompleter(cdAST).getTraverser()); // run symbol table completer
+
+    // Give default name to anonymous associations
+    new UMLAssocNameTrafo(CD4CodeMill.traverser()).transform(cdAST);
 
     (new CD4CodeTrafo4Defaults()).transform(cdAST);
 

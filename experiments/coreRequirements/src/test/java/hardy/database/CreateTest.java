@@ -61,15 +61,15 @@ public class CreateTest extends AbstractDBTest {
 
     Optional<Person> p1CopyOpt = personDAO.selectPerson(p1.getGemId());
     assertTrue(p1CopyOpt.isPresent());
-    Person p1Copy = p1CopyOpt.get();
+    Person p1FromDB = p1CopyOpt.get();
 
-    assertNotSame(p1, p1Copy);
-    assertEquals(p1.getGemId(), p1Copy.getGemId());
-    assertEquals(p1.getAge(), p1Copy.getAge());
-    assertEquals(p1.getNickname(), p1Copy.getNickname());
-    assertEquals(p1.getMainResidenceGem().getGemId(), p1Copy.getMainResidenceGem().getGemId());
+    assertNotSame(p1, p1FromDB);
+    assertEquals(p1.getGemId(), p1FromDB.getGemId());
+    assertEquals(p1.getAge(), p1FromDB.getAge());
+    assertEquals(p1.getNickname(), p1FromDB.getNickname());
+    assertEquals(p1.getMainResidenceGem().getGemId(), p1FromDB.getMainResidenceGem().getGemId());
 
-    assertSame(a1, p1Copy.getMainResidence());
+    assertSame(a1, p1FromDB.getMainResidence());
   }
 
   // Same tests but with HumanDbObserver

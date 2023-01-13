@@ -105,15 +105,6 @@ public class DomainClassDecorator extends AbstractDecorator {
     return clazz;
   }
 
-  protected void setGemAnnotationTemplate(ASTCDAttribute gemAttr) {
-    // empty
-  }
-
-  protected void setClassAnnotationTemplate(ASTCDClass clazz, String mangerName,
-                                            boolean hasSuperClass, boolean hasTop) {
-    // empty
-  }
-
   protected AttributesTuple getAllAttributes(ASTCDClass domainClass) {
     return new AttributesTuple(
         getAttributesForFields(domainClass),
@@ -155,10 +146,6 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     return attributesList;
   }
 
-  protected void setAttributeAnnotationTemplate(ASTCDAttribute attribute) {
-    // empty
-  }
-
   protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDClass domainClass) {
     List<ASTCDAttribute> attrList = Lists.newLinkedList();
     List<ASTCDAssocSide> associations = CDSymbolTables.getAssociations(domainClass).stream()
@@ -172,7 +159,6 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
                 getMCTypeFacade().createBasicGenericTypeOf("GemList", type), assocSide.getName());
         setAssocAnnotations(domainClass, attribute);
-
       } else {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
                 getMCTypeFacade().createBasicGenericTypeOf("Gem", type), assocSide.getName());
@@ -182,14 +168,7 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     return attrList;
   }
 
-  protected void setAssocAnnotations(ASTCDClass domainClass, ASTCDAttribute attribute) {
-    // TODO: hier sollen DB (JPA / Hibnernate) Annotationen fuer Assoziationen generiert werden
-    /*glex.replaceTemplate("cd2java.Annotations", attribute,
-        new TemplateHookPoint("umlp.domain.AssocAnnotations",
-            domainClass.getName(), attribute.getName()));*/
-  }
-
-  protected void createGetterSetterForAttrs(ASTCDClass domainClass, ASTCDClass clazz,
+   protected void createGetterSetterForAttrs(ASTCDClass domainClass, ASTCDClass clazz,
                                             List<ASTCDAttribute> attrList) {
     MethodDecorator methodDecorator = new MethodDecorator(glex, new AccessorDecorator(glex),
             new MutatorDecorator(glex, new SimpleMethodMutatorDecorator(glex, domainClass), new OptionalMutatorDecorator(glex), new ListMutatorDecorator(glex)));
@@ -234,6 +213,21 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
       attrList = new ArrayList<>(attrAssocs);
       attrList.addAll(attrFields);
     }
+  }
+
+  // TODO remove when neo4jgeneration gets adapted
+  protected void setGemAnnotationTemplate(ASTCDAttribute gemAttr) { }
+
+  protected void setClassAnnotationTemplate(ASTCDClass clazz, String mangerName,
+                                            boolean hasSuperClass, boolean hasTop) {  }
+
+  protected void setAttributeAnnotationTemplate(ASTCDAttribute attribute) {  }
+
+  public void setAssocAnnotations(ASTCDClass domainClass, ASTCDAttribute attribute) {
+    // TODO: hier sollen DB (JPA / Hibnernate) Annotationen fuer Assoziationen generiert werden
+    /*glex.replaceTemplate("cd2java.Annotations", attribute,
+        new TemplateHookPoint("umlp.domain.AssocAnnotations",
+            domainClass.getName(), attribute.getName()));*/
   }
 
 }

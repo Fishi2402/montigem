@@ -1,9 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
 package hardy;
 
 // GEN-P
-
-
 import umlp.rte.*;
 
 import java.sql.PreparedStatement;
@@ -17,13 +14,13 @@ import java.util.Optional;
 // There should be a small amount of instances that is not related to the number of Person instances
 public class PersonDAO {
   // TODO: extract main residence into AssocMainResidenceDAO
-  protected PreparedStatement selectPerson = null;
-  protected PreparedStatement insertPerson = null;
-  protected PreparedStatement setAgeStatement = null;
-  protected PreparedStatement setNickname = null;
+  private PreparedStatement selectPerson = null;
+  private PreparedStatement insertPerson = null;
+  private PreparedStatement setAgeStatement = null;
+  private PreparedStatement setNickname = null;
 
-  AssocVisitsDAO assocVisitsDAO = new AssocVisitsDAO();
-  AssocMainResidenceDAO assocMainResidenceDAO = new AssocMainResidenceDAO();
+  private AssocVisitsDAO assocVisitsDAO = new AssocVisitsDAO();
+  private AssocMainResidenceDAO assocMainResidenceDAO = new AssocMainResidenceDAO();
 
   public Optional<Person> selectPerson(long gemId){
     ensureSelectPersonCreated();
