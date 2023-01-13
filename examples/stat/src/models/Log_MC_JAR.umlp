@@ -8,10 +8,10 @@ umlp Log_MC_JAR {
     Optional<ErrorEntry> error;   // If execution was aborted: which error was thrown?
 
     String toolVersion;           // e.g. "7.5.0-SNAPSHOT"
-    java.time.Duration duration;  // Duration of the run
+    //java.time.Duration duration;  // Duration of the run // TODO generation for Java Types does not work yet
 
-    java.time.Instant receivedTime; // When was the request received on the server?   - Added in backend
-    java.net.InetAddress origin;    // Who sent the request? (Anonymized)             - Added in backend
+    //java.time.Instant receivedTime; // When was the request received on the server?   - Added in backend  // TODO generation for Java Types does not work yet
+    //java.net.InetAddress origin;    // Who sent the request? (Anonymized)             - Added in backend  // TODO generation for Java Types does not work yet
   }
 
   // Not specific for MCJar, can be used by other Logs too

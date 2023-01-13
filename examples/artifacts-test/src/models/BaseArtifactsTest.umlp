@@ -27,15 +27,13 @@ umlp BaseArtifactsTest {
 
   association artifactRepresentation [1] RootArtifact -> (artifactRepresentation) Artifact [1];
 
-  association contains [0..1] ArtifactContainer -> (contains) Artifact [*] ;
-
   abstract class ArtifactContainer extends Artifact {}
 
   class Directory extends ArtifactContainer {}
 
   class Archive extends ArtifactContainer {}
 
-  association contains [0..1] ArtifactContainer -> Artifact [*];
+  association contains [0..1] ArtifactContainer -> (contains) Artifact [*];
 
   abstract class ArtifactView{}
 

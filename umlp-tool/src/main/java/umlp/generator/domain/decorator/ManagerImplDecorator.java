@@ -3,16 +3,20 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class ManagerImplDecorator extends AbstractDecorator {
@@ -39,7 +43,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
     // methods
     getCD4C().addMethod(managerClass, "umlp.managerimpl.Constructor", name+SUFFIX);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.Init", name+ManagerDecorator.SUFFIX);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.Init", name, name+ManagerDecorator.SUFFIX);
     List<String> classList = origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
                     .map(c -> c.getName()).collect(Collectors.toList());
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFreeGemId");
@@ -58,6 +62,10 @@ public class ManagerImplDecorator extends AbstractDecorator {
   protected void addClassElements(ASTCDClass domainClass, ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
 
+    managerClass.addCDMember(getDaoAttribute(domainClass));
+    managerClass.addCDMember(getCacheAttribute(domainClass));
+    managerClass.addCDMember(getDBObserverAttribute(domainClass));
+
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilder", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
@@ -74,6 +82,31 @@ public class ManagerImplDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), type);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", domainClass.getName(), a.getName(), type);
     });
+  }
+
+  private ASTCDAttribute getDaoAttribute(ASTCDClass domainClass) {
+    String type = domainClass.getName()+"DAO";
+    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
+        getMCTypeFacade().createQualifiedType(type),
+        StringTransformations.uncapitalize(type));
+    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new "+type+"()"));
+    return domainClassDaoAttr;
+  }
+
+  private ASTCDAttribute getCacheAttribute(ASTCDClass domainClass) {
+    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
+        getMCTypeFacade().createBasicGenericTypeOf("Map", "Long", domainClass.getName()),
+        StringTransformations.uncapitalize("known"+domainClass.getName()+"s"));
+    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new HashMap<>()"));
+    return domainClassDaoAttr;
+  }
+
+  private ASTCDAttribute getDBObserverAttribute(ASTCDClass domainClass) {
+    String type = domainClass.getName()+"DbObserver";
+    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
+        getMCTypeFacade().createQualifiedType(type), "the"+type);
+    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new "+type+"()"));
+    return domainClassDaoAttr;
   }
 
 }

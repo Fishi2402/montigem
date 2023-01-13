@@ -6,12 +6,12 @@ umlp RestaurantOrg {
     class Person {
       String name;
       String lastName;
-      java.util.Date birthday;
+      java.time.LocalDate birthday;
       String address;
     }
 
     class Customer extends Person {
-      java.util.Date reservationDate;
+      java.time.LocalDate reservationDate;
     }
 
     class Employee extends Person {

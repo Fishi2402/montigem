@@ -41,6 +41,11 @@ public class BEDecorator extends AbstractDecorator {
       Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
     }
 
+    // Generate DAOs
+    DAODecorator daoDecorator = new DAODecorator(glex);
+    daoDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: DAODecorator", BEDecorator.class.getName());
+
     // Generate DeSer
     DeSerDecorator deSerDecorator = new DeSerDecorator(glex, hwPath);
     deSerDecorator.transform(cdAST, decoratedAST);
@@ -64,6 +69,10 @@ public class BEDecorator extends AbstractDecorator {
     ObserverDecorator observerDecorator = new ObserverDecorator(glex);
     observerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ObserverDecorator", BEDecorator.class.getName());
+
+    ManagerDbObserverDecorator managerDbObserverDecorator = new ManagerDbObserverDecorator(glex);
+    managerDbObserverDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: ManagerDbObserverDecorator", BEDecorator.class.getName());
 
     DbObserverDecorator dbObserverDecorator= new DbObserverDecorator(glex);
     dbObserverDecorator.transform(cdAST, decoratedAST);
