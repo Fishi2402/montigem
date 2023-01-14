@@ -10,6 +10,8 @@ public enum UMLPToolOptions {
   VERSION("v", "version", "Prints version information"),
   DEBUG("d", "debug", "Produces more detailed log"),
 
+  CD2GUI("cd2", "cd2gui", "runs cd2gui to generate gui files from the input"),
+
   // with one arg
   INPUT("i", "input", "Reads the source file (mandatory) and parses the contents", "file"),
   SYMTAB("s", "symboltable", "Serializes the symbol table of the given artifact.", "file", true),

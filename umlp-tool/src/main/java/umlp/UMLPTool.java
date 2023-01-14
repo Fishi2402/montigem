@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp;
 
+import cd2gui.CD2GUITool;
 import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.methodtemplates.CD4C;
@@ -136,7 +137,12 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
 
-      if (isUmlpFile(inputFile)) {
+      if(CD2GUI.isSelected(cmd)){
+        CD2GUITool guiTool = new CD2GUITool(inputFile, outDir, hwcPath);
+        guiTool.generateGUI();
+      }
+
+      else if (isUmlpFile(inputFile)) {
         umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
 
         Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
