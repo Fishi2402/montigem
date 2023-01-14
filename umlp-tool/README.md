@@ -99,3 +99,20 @@ org.gradle.parallel=false  // parallel execution not compatible with debugging
 ````
 
 Only enable the debug modus for debugging, and disable if afterwards. It must not be active for production builds.
+
+
+### Notes for Developers of UMLP-Tool
+The gradle-``UMLPTask`` supports incremental builds. 
+It only runs when a _relevant_ input has changed.
+For example, when a new file ``hwc/A.java`` is added and it corresponds to a generated `A.java` in the output, the generator runs again.
+But when a new file ``hwc/B.java`` is added which does *not* correspond to a generated `B.java`, the generator does not run again. 
+
+To ensure the correctness of this check, ``UMLPTask`` needs information of the input/outputs.
+
+The ``IncGenGradleReporter`` must be enabled and configured with the correct parameters. This is already handled in `UMLPReports.java`.
+At the end of the generation process, the reports must be written with ``Reporting.flush(..)``
+
+The reporter must be notified for the following events:
+* File Read: ``Reporting.reportOpenInputFile(...)``
+* Existence Checks of File: ``Reporting.reportHWCExistenceCheck(...)``
+* Output File created: ``Reporting.reportFileCreation(...)``
