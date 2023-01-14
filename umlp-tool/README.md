@@ -116,3 +116,13 @@ The reporter must be notified for the following events:
 * File Read: ``Reporting.reportOpenInputFile(...)``
 * Existence Checks of File: ``Reporting.reportHWCExistenceCheck(...)``
 * Output File created: ``Reporting.reportFileCreation(...)``
+
+###### Inspect Report
+By default, the `UMLPTask` write the report to ``target/umlp_reports/task_<taskName>/<FileName>_<FileEnding>/<FileName>_<FileEnding>/IncGenGradleCheck.txt``
+
+Meaning of the prefixes:
+* mc4: Input File
+* gen: Existence Checked File
+* out: Output File
+
+All paths are relative to the project-root.
