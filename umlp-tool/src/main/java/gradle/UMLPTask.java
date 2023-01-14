@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
-import cd2gui.CD2GUITool;
-import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
@@ -30,7 +28,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import java.util.Optional;
 
 @CacheableTask
 public abstract class UMLPTask extends DefaultTask {
@@ -299,16 +296,7 @@ public abstract class UMLPTask extends DefaultTask {
         this.deletePreviousOutput(ch.getFile(), new IncGenData(getIncGenFile(ch.getFile()), getProject().getProjectDir().toPath().toAbsolutePath().toFile()));
       }
     });
-    //cd2gui
-    //first umpl file is assumed to be class diagram file TODO: identify correct umlp file
-    Optional<File> classDiagram = getModelDir().getAsFileTree().getFiles().stream().filter(f -> f.getName().endsWith(".umlp")).findFirst();
-    if(classDiagram.isEmpty()){
-      Log.error("Class diagram File is missing");
-    }
-    else {
-      CD2GUITool tool = new CD2GUITool(classDiagram.get(), getOutputDir().getAsFile().get(), new MCPath(getHwcDir().getAsFile().get().toPath()));
-      tool.generateGUI();
-    }
+
     // Generate from input
     getInput().getAsFileTree().getFiles().stream()
         .filter(this::isInputFile)    // TODO: match directly on "getInput()"
