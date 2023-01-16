@@ -40,7 +40,7 @@ public class CommandObjectMapperTest {
 
     int commandId = 1;
     int gemId = 1001;
-    FlensburgMock.secretlyAdaptnextGemIds(gemId);
+    FlensburgMock.secretlyAdaptNextGemId(gemId);
     int age = 20;
     Human h1001 = FlensburgManager.humanBuilder().age(age).build().get();
 
@@ -72,7 +72,7 @@ public class CommandObjectMapperTest {
 
     int commandId = 1;
     int gemId = 1001;
-    FlensburgMock.secretlyAdaptnextGemIds(gemId);
+    FlensburgMock.secretlyAdaptNextGemId(gemId);
     int age = 20;
 
     Address a1001 = FlensburgManager.addressBuilder().city("Flensburg").build().get();

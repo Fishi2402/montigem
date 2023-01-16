@@ -10,10 +10,7 @@ import de.monticore.class2mc.adapters.JClass2OOTypeSymbolAdapter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpressionBuilder;
 import de.monticore.types.MCTypeFacade;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.check.TypeCheck;
-import de.monticore.types.check.TypeCheckResult;
+import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -33,7 +30,7 @@ public class GenService {
 
   public static final String UMLP_ID_NAME = "umlpId";
   
-  public static TypeCheck typeCheck = new TypeCheck();
+  public static TypeRelations typeCheck = new TypeRelations();
 
   public static ASTExpression createInitialValue(SymTypeExpression type) {
     ASTNameExpressionBuilder exprBuilder = UMLPMill.nameExpressionBuilder();
@@ -67,17 +64,17 @@ public class GenService {
 
   public static String calculateJSon(SymTypeExpression type) {
     String json = "";
-    if (TypeCheck.isBoolean(type)) {
+    if (typeCheck.isBoolean(type)) {
       json = "getAsJsonBoolean().getValue()";
-    } else if (TypeCheck.isInt(type)) {
+    } else if (typeCheck.isInt(type)) {
       json = "getAsJsonNumber().getNumberAsInteger()";
-    } else if (TypeCheck.isFloat(type)) {
+    } else if (typeCheck.isFloat(type)) {
       json = "getAsJsonNumber().getNumberAsFloat()";
-    } else if (TypeCheck.isLong(type)) {
+    } else if (typeCheck.isLong(type)) {
       json = "getAsJsonNumber().getNumberAsLong()";
-    } else if (TypeCheck.isDouble(type)) {
+    } else if (typeCheck.isDouble(type)) {
       json = "getAsJsonNumber().getNumberAsDouble()";
-    } else if (TypeCheck.isString(type)) {
+    } else if (typeCheck.isString(type)) {
       json = "getAsJsonString().getValue()";
     } else {
       // TODO
@@ -139,7 +136,7 @@ public class GenService {
   }
 
   public static String getGetterName(String name, SymTypeExpression type) {
-    return (TypeCheck.isBoolean(type)?"is":"get")
+    return (typeCheck.isBoolean(type)?"is":"get")
             + StringTransformations.capitalize(name);
   }
 

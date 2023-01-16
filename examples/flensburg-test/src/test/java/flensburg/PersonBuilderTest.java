@@ -51,7 +51,7 @@ public class PersonBuilderTest {
     @Test
     public void testBuildValidPerson(){
         int id = 1001;
-        FlensburgMock.secretlyAdaptnextGemIds(id);
+        FlensburgMock.secretlyAdaptNextGemId(id);
 
         Address mainResidence = FlensburgManager.addressBuilder().city("Flensburg").build().get();
 
@@ -78,7 +78,7 @@ public class PersonBuilderTest {
     @Test
     public void testBuildInvalidPersonNoNickname(){
         int id = 1001;
-        FlensburgMock.secretlyAdaptnextGemIds(id);
+        FlensburgMock.secretlyAdaptNextGemId(id);
 
         Address mainResidence = FlensburgManager.addressBuilder().city("Flensburg").build().get();
 

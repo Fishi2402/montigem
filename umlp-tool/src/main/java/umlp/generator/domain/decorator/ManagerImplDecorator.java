@@ -66,7 +66,6 @@ public class ManagerImplDecorator extends AbstractDecorator {
     managerClass.addCDMember(getCacheAttribute(domainClass));
     managerClass.addCDMember(getDBObserverAttribute(domainClass));
 
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilder", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name);
