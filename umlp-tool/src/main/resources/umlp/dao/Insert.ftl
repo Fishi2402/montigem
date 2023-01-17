@@ -6,13 +6,10 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
     insert${typeName}.clearParameters();
     insert${typeName}.setLong(1, o.getGemId());
     <#list attributes as attr><#assign index = attr?index+2>
-    <#if attr.printType() == "java.time.LocalDate">
-    insert${typeName}.setObject(${index}, o.get${attr.getName()?cap_first}());
-    <#else>
-    insert${typeName}.set${attr.printType()?cap_first}(${index}, o.get${attr.getName()?cap_first}());
-    </#if>
+    ${includeArgs("umlp.dao.insert." + attr.printType()?replace(".", "_"), typeName, index, attr)}
     </#list>
     <#list optionalAttributes as attr, innerType><#assign index = index+1>
+    <#-- TODO AHe: also with extenable templates! -->
     insert${typeName}.set${innerType?cap_first}(${index}, o.get${attr.getName()?cap_first}().orElse(null));
     </#list>
     insert${typeName}.execute();

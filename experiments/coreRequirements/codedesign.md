@@ -164,7 +164,10 @@ TODO
 #### SQL Schema
 * Für jede Domainenklasse gibt es eine Tabelle.
 * Jedes Attribut mit einem simplen Typ(Primitive Typen und String) wird zu einer Spalte
-  * TODO: Erweiterungspunkt im Generator für weitere simple Typen
+* Um neue simple Typen hinzuzufügen muss der Template-Pfad (CLI: `--templatePath`) Templates mit dem Namen `umlp.dao.select.<x>` und `umlp.dao.insert.<x>` enthalten
+  * Wobei `x` der qualifizierte Name der Klasse mit `.` durch `_` ersetzt ist.
+  * `java.time.Date` benötigt also `umlp/dao/select/java_time_Date.ftl` und `umlp/dao/insert/java_time_Date.ftl`
+  * TODO: Inhalt der Templates beschreiben
 * Jede Liste von simplen Typen wird zu einer weiteren Tabelle mit zwei Spalten: `id` des Parent-Objekts und Wert `value`.
   * TODO: Dritte Spalte für Sortierung? 
   * TODO: Optionals mit simplem Typen
