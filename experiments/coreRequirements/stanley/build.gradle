@@ -30,15 +30,6 @@ repositories {
   maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
 }
 
-sourceSets {
-  main {
-    java { srcDirs = [ 'src' ] }
-  }
-  test {
-    java { srcDirs = [] }
-  }
-}
-
 jsweet {
   verbose = true
   encoding = 'UTF-8'
@@ -127,3 +118,14 @@ tasks.test {
   dependsOn(testApp)
 }
 /**/
+
+task printSourceSetInformation(){
+  doLast{
+    sourceSets.each { srcSet ->
+      println "["+srcSet.name+"]"
+      print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
+      print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
+      println ""
+    }
+  }
+}
