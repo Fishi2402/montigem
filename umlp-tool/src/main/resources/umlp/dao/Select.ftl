@@ -14,17 +14,13 @@ ${cd4c.method("public Optional<${typeName}> select${typeName}(long gemId)")}
       builder
     </#if>
     <#list attributes as attr>
-    <#if attr.printType() == "java.time.LocalDate">
-        .${attr.getName()}(res.getObject("${attr.getName()}", java.time.LocalDate.class))
-    <#else>
-        .${attr.getName()}(res.get${attr.printType()?cap_first}("${attr.getName()}"))<#sep>${'\n'}</#sep><#rt>
-    </#if>
+        .${attr.getName()}(${includeArgs("umlp.dao.select." + attr.printType()?replace(".", "_"), attr)})<#sep>${'\n'}</#sep><#rt>
     </#list><#lt><#if attributes?has_content>;</#if>
     <#if optionalAttributes?has_content>
       builder
     </#if>
     <#list optionalAttributes as attr, innerType>
-      .${attr.getName()}(Optional.ofNullable(res.get${innerType?cap_first}("${attr.getName()}")))<#sep>${'\n'}</#sep><#rt>
+      .${attr.getName()}(Optional.ofNullable(${includeArgs("umlp.dao.select." + innerType?replace(".", "_"), attr)}))<#sep>${'\n'}</#sep><#rt>
     </#list><#lt><#if optionalAttributes?has_content>;</#if><#rt>
     <#if listAttributes?has_content>
       builder
