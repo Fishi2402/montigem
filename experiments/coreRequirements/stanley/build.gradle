@@ -4,13 +4,13 @@ buildscript {
   repositories {
     mavenCentral()
     maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-    // maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-    maven { url "https://repository.jsweet.org/artifactory/plugins-release-local" }
-    // maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
+    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+//    maven { url "https://repository.jsweet.org/artifactory/plugins-release-local" }
+//    maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
     maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
   }
   dependencies {
-    classpath('org.jsweet:jsweet-gradle-plugin:3.1.0') {
+    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-SNAPSHOT') {
       transitive = true
     }
   }
@@ -18,27 +18,24 @@ buildscript {
 
 plugins {
   id "com.github.node-gradle.node" version "3.4.0"
-  id "org.jsweet.jsweet-gradle-plugin" version "3.1.0"
-}
-
-repositories {
-  mavenCentral()
-  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-  // maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-  maven { url "https://repository.jsweet.org/artifactory/plugins-release-local" }
-  // maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
-  maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
+  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-SNAPSHOT"
 }
 
 jsweet {
   verbose = true
   encoding = 'UTF-8'
   sourceMap = true
-  outDir = project.file('target/javascript')
+  tsOnly = true
+//  outDir = project.file('target/javascript')
+  tsOut = project.file('target/generated-Sources')
   candiesJsOut = project.file('target/candies')
   targetVersion = 'ES6'
-  includes = ['**/*.java']
+  includes = ['**/hardy/**/*.java']
+  excludes = ['**/WebSocketConfig.java', '**/DBAccessRestService.java', '**/DBTestService.java',
+              '**/GreetingService.java', '**/CommandWebSocketService.java',
+              '**/UMLPApplication.java', '**/WebSocketCommandCommunication.java']
   // extraSystemPath = '/my/path/to/npm'
+  includeTranspilation = ['**/CarBuilder.java']
 }
 
 compileJava {
