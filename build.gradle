@@ -12,20 +12,15 @@ test {
 allprojects {
     group = 'umlp'
     repositories {
-      mavenCentral()
+      if(("true").equals(getProperty('useLocalRepo'))) {
+        mavenLocal()
+      }
       maven {
             credentials.username mavenUser
             credentials.password mavenPassword
             url repo
-        }
-      maven {
-        credentials.username mavenUser
-        credentials.password mavenPassword
-        url prrepo
       }
-      if(("true").equals(getProperty('useLocalRepo'))) {
-            mavenLocal()
-        }
+      mavenCentral()
     }
 
     tasks.withType(JavaCompile) {

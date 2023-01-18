@@ -47,11 +47,6 @@ repositories {
         credentials.password mavenPassword
         url repo
     }
-    maven {
-        credentials.username mavenUser
-        credentials.password mavenPassword
-        url prrepo
-    }
     mavenCentral()
 }
 
