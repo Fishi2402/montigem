@@ -16,7 +16,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import umlp.UMLPMill;
-import umlp._parser.UMLPParser;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
 
@@ -29,8 +28,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractUMLPTest {
-
-  protected UMLPParser parser = new UMLPParser();
 
   @BeforeEach
   public void setup() {
@@ -49,7 +46,7 @@ public abstract class AbstractUMLPTest {
     Path m = Paths.get(testPath, model);
     assertTrue(m.toFile().exists());
     try {
-      Optional<ASTCDCompilationUnit> ast = parser.parse(m.toString());
+      Optional<ASTCDCompilationUnit> ast = UMLPMill.parser().parse(m.toString());
       assertTrue(ast.isPresent());
       return ast.get();
     }
