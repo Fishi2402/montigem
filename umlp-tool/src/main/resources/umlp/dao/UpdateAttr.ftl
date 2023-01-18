@@ -6,11 +6,7 @@ ${cd4c.method("public void update${attributeName?cap_first}(long gemId, ${attrib
   }
   try{
     update${attributeName?cap_first}Statement.clearParameters();
-    <#if attributeType == "java.time.LocalDate">
-    update${attributeName?cap_first}Statement.setObject(1, ${attributeName});
-    <#else>
-    update${attributeName?cap_first}Statement.set${attributeType?cap_first}(1, ${attributeName});
-    </#if>
+    ${includeArgs("umlp.dao.set." + attributeType?replace(".", "_"), "update${attributeName?cap_first}Statement", attributeType, attributeName, 1, false)}
     update${attributeName?cap_first}Statement.setLong(2, gemId);
     update${attributeName?cap_first}Statement.execute();
   } catch (SQLException e){

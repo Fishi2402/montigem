@@ -6,7 +6,7 @@ ${cd4c.method("public void update${attributeName?cap_first}(long gemId, ${attrib
   }
   try{
     update${attributeName?cap_first}Statement.clearParameters();
-    update${attributeName?cap_first}Statement.set${innerType?cap_first}(1, ${attributeName}.orElse(null));
+    ${includeArgs("umlp.dao.set." + innerType?replace(".", "_"), "update${attributeName?cap_first}Statement", innerType?cap_first, attributeName, 1, true)}
     update${attributeName?cap_first}Statement.setLong(2, gemId);
     update${attributeName?cap_first}Statement.execute();
   } catch (SQLException e){

@@ -6,11 +6,10 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
     insert${typeName}.clearParameters();
     insert${typeName}.setLong(1, o.getGemId());
     <#list attributes as attr><#assign index = attr?index+2>
-    ${includeArgs("umlp.dao.insert." + attr.printType()?replace(".", "_"), typeName, index, attr)}
+    ${includeArgs("umlp.dao.set." + attr.printType()?replace(".", "_"), "insert${typeName}", typeName, "o.get${attr.getName()?cap_first}()", index, false)}
     </#list>
     <#list optionalAttributes as attr, innerType><#assign index = index+1>
-    <#-- TODO AHe: also with extenable templates! -->
-    insert${typeName}.set${innerType?cap_first}(${index}, o.get${attr.getName()?cap_first}().orElse(null));
+    ${includeArgs("umlp.dao.set." + innerType?replace(".", "_"), "insert${typeName}", typeName, "o.get${attr.getName()?cap_first}()", index, true)}
     </#list>
     insert${typeName}.execute();
     <#list listAttributes as attr>

@@ -16,7 +16,7 @@ ${cd4c.method("public void update${attrName?cap_first}(long gemId, List<${innerT
     for(${innerType} element : ${attrName}) {
       update${attrName?cap_first}Statement.clearParameters();
       update${attrName?cap_first}Statement.setLong(1, gemId);
-      update${attrName?cap_first}Statement.set${innerType?cap_first}(2, element);
+      ${includeArgs("umlp.dao.set." + innerType?replace(".", "_"), "update${attrName?cap_first}Statement" ,innerType, "element", 2, false)}
       update${attrName?cap_first}Statement.execute();
     }
 
