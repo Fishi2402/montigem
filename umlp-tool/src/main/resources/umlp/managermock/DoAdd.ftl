@@ -8,16 +8,29 @@ if (!o.containsObserver(the${name}CommandObserver)) {
   o.addObserver(the${name}CommandObserver);
 }
 
+// TODO: Das muss noch ueberarbeitet werden
 <#list assocs as assoc>
   <#assign type = assoc.getSymbol().getType().print()>
-  <#assign otherSide = assoc.getSymbol().getOtherSide().getAstNode().getName()?cap_first>
-  /* TODO
+  <#assign otherSide = assoc.getSymbol().getOtherSide().getAssocSide()>
+  <#if assoc.getCDCardinality().isMult()>
   for (Long initialId : o._internal_get${assoc.getName()?cap_first}GemList().getIDs(0, o.size${assoc.getName()?cap_first}s())) {
-    ${type} ${type?uncap_first} = ${managerName}Manager.get${type}Sure(initialId);
-    ${type?uncap_first}._internal_add${otherSide}(${type?uncap_first}.size${otherSide}s(), Collections.singletonList(o.gemId), NotificationScope.MINIMAL);
-  }
-  */
-
+    ${type} other = ${managerName}Manager.get${type}Sure(initialId);
+    <#if otherSide.getCDCardinality().isMult()>
+      other._internal_add${otherSide.getName()?cap_first}(other.size${otherSide.getName()?cap_first}s(), Collections.singletonList(o.gemId), NotificationScope.MINIMAL);
+    <#else>
+      other._internal_set${otherSide.getName()?cap_first}(o.getGemId(), NotificationScope.MINIMAL);
+    </#if>
+    }
+  <#else>
+    { ${type} other  = o.get${assoc.getName()?cap_first}();
+    //${type} other = ${managerName}Manager.get${type}Sure(initialId);
+    <#if otherSide.getCDCardinality().isMult()>
+      other._internal_add${otherSide.getName()?cap_first}(other.size${otherSide.getName()?cap_first}s(), Collections.singletonList(o.gemId), NotificationScope.MINIMAL);
+    <#else>
+      other._internal_set${otherSide.getName()?cap_first}(o.getGemId(), NotificationScope.MINIMAL);
+    </#if>
+    }
+  </#if>
 </#list>
 
 ${managerName?uncap_first}Observers.forEach(obs -> obs.notify${name}Added(o.getGemId()));

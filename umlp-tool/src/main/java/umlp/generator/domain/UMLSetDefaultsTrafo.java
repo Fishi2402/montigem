@@ -1,8 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4code._visitor.CD4CodeTraverser;
+import de.monticore.cdassociation._ast.ASTCDAssocLeftSide;
+import de.monticore.cdassociation._ast.ASTCDAssocRightSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdassociation._visitor.CDAssociationVisitor2;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -10,14 +13,14 @@ import de.monticore.prettyprint.IndentPrinter;
 import umlp.UMLPFullPrettyPrinter;
 
 /*
- * This transformation sets the association name if it is not present.
+ * This transformation sets default values if an optional node is not defined.
  *
  **/
-public class UMLAssocNameTrafo implements CDAssociationVisitor2 {
+public class UMLSetDefaultsTrafo implements CDAssociationVisitor2 {
 
   protected CD4CodeTraverser traverser;
 
-  public UMLAssocNameTrafo(CD4CodeTraverser traverser) {
+  public UMLSetDefaultsTrafo(CD4CodeTraverser traverser) {
     this.traverser = traverser;
     this.traverser.add4CDAssociation(this);
   }
@@ -33,6 +36,20 @@ public class UMLAssocNameTrafo implements CDAssociationVisitor2 {
             "_" + ast.getRight().getName().replace(".", "_") +
             "_" + pp.prettyprint(ast.getRight().getMCQualifiedType());
     ast.setName(name);
+  }
+
+  @Override
+  public void visit(ASTCDAssocRightSide ast) {
+    if (!ast.isPresentCDCardinality()) {
+      ast.setCDCardinality(CD4CodeMill.cDCardOneBuilder().build());
+    }
+  }
+
+  @Override
+  public void visit(ASTCDAssocLeftSide ast) {
+    if (!ast.isPresentCDCardinality()) {
+      ast.setCDCardinality(CD4CodeMill.cDCardOneBuilder().build());
+    }
   }
 
   public void transform(ASTCDCompilationUnit ast) {
