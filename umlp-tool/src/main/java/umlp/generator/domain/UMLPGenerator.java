@@ -49,9 +49,9 @@ public class UMLPGenerator {
     logTrafoExec("UMLAttrToAssocTrafo", cdAST);
     (new CD4CodeTrafo4Defaults()).transform(cdAST);
 
-    UMLAssocNameTrafo assocNameTrafo = new UMLAssocNameTrafo(CD4CodeMill.traverser());
+    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
     assocNameTrafo.transform(cdAST);
-    logTrafoExec("UMLAssocNameTrafo", cdAST);
+    logTrafoExec("UMLSetDefaultsTrafo", cdAST);
 
     // rebuild symbol table
     CD4CodeMill.globalScope().removeSubScope(cdAST.getEnclosingScope());
