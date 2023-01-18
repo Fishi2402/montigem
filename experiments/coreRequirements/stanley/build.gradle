@@ -26,16 +26,16 @@ jsweet {
   encoding = 'UTF-8'
   sourceMap = true
   tsOnly = true
-//  outDir = project.file('target/javascript')
-  tsOut = project.file('target/generated-Sources')
+  tsOut = project.file('target/generated-sources/ts')
   candiesJsOut = project.file('target/candies')
   targetVersion = 'ES6'
   includes = ['**/hardy/**/*.java']
   excludes = ['**/WebSocketConfig.java', '**/DBAccessRestService.java', '**/DBTestService.java',
               '**/GreetingService.java', '**/CommandWebSocketService.java',
               '**/UMLPApplication.java', '**/WebSocketCommandCommunication.java']
-  // extraSystemPath = '/my/path/to/npm'
-  includeTranspilation = ['**/CarBuilder.java']
+//  includeTranspilation = ['**/Car*.java']
+//  excludeTranspilation = ['**/*Observer*.java', '**/*DeSer.java', '**/*Collector*.java']
+  module = 'commonjs'
 }
 
 compileJava {
