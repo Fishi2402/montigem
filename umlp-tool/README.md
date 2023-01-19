@@ -10,6 +10,8 @@ in ``settings.gradle``:
 pluginManagement {
   repositories {
     maven { // For UMLP Plugin
+      credentials.username mavenUser
+      credentials.password mavenPassword
       url = "https://nexus.se.rwth-aachen.de/content/groups/umlp"
     }
     gradlePluginPortal()
