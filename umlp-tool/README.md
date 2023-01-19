@@ -36,7 +36,9 @@ plugins {
 ````
 repositories {
   maven {
-    url "https://nexus.se.rwth-aachen.de/content/groups/public"
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url "https://nexus.se.rwth-aachen.de/content/groups/umlp"
   }
 }
 dependencies {
