@@ -55,6 +55,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     // Imports
     getCD4C().addImport(managerClass, "umlp.rte.*");
     getCD4C().addImport(managerClass, getPackageName(origCD, GEMLIST_PACKAGE) + ".*");
+    getCD4C().addImport(managerClass, "java.util.*");
 
     return managerClass;
   }

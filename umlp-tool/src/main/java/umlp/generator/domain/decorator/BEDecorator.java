@@ -3,6 +3,7 @@ package umlp.generator.domain.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.AbstractDecorator;
@@ -136,6 +137,8 @@ public class BEDecorator extends AbstractDecorator {
     CommandResultDeSerDecorator commandResultDeSerDecorator = new CommandResultDeSerDecorator(glex);
     commandResultDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandResultDeSerDecorator", BEDecorator.class.getName());
+
+    glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
   }
 
 }

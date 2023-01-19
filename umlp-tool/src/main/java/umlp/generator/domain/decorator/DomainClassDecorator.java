@@ -195,8 +195,6 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDType clazz) {
-    getCD4C().addImport(clazz, getPackageName(origCD, GEMLIST_PACKAGE) + ".*");
-    getCD4C().addImport(clazz, "java.util.Observable");
     getCD4C().addImport(clazz, "umlp.rte.GemIdentifiable");
     getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
     getCD4C().addImport(clazz, "umlp.rte.Gem");

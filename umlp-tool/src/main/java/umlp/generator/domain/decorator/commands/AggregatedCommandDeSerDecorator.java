@@ -53,8 +53,6 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
 
         getCD4C().addConstructor(ast, "umlp.commands.aggregatedcommanddeser.Constructor", commandList, className, getPackageName(origCD, DEFAULT_PACKAGE));
         getCD4C().addImport(ast, "umlp.rte.AggregatedCommandDeSer");
-        getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE)+".*");
-
 
         return ast;
     }

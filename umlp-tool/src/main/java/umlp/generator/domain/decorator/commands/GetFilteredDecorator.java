@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.ManagerDecorator;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
@@ -42,9 +43,9 @@ public class GetFilteredDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.commands.get_filtered.DoRun", classname, origCD.getCDDefinition().getName());
 
     getCD4C().addImport(ast, "umlp.request.Request");
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
     getCD4C().addImport(ast, "umlp.command.SimpleResult");
     getCD4C().addImport(ast, "umlp.command.LongList");
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
 
     return ast;
   }

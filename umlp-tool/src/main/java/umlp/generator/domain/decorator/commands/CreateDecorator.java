@@ -11,6 +11,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.ManagerDecorator;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
@@ -51,7 +52,8 @@ public class CreateDecorator extends AbstractDecorator {
     ast.addAllCDMembers(accessor.decorate(attr));
 
     getCD4C().addImport(ast, "umlp.request.Request");
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+classname);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
     getCD4C().addImport(ast, "umlp.command.StatusResult");
 
     return ast;

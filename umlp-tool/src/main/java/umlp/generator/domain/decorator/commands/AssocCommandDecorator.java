@@ -14,6 +14,7 @@ import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.domain.decorator.ManagerDecorator;
 
 import java.util.Collection;
 import java.util.List;
@@ -95,7 +96,7 @@ public class AssocCommandDecorator extends AbstractDecorator {
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
 
     // Importe
-    addImports(origCD, ast);
+    addImports(origCD, ast, sourceType, targetType);
 
     return ast;
   }
@@ -138,7 +139,7 @@ public class AssocCommandDecorator extends AbstractDecorator {
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
 
     // Importe
-    addImports(origCD, ast);
+    addImports(origCD, ast, sourceType, targetType);
 
     return ast;
   }
@@ -186,7 +187,7 @@ public class AssocCommandDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds",
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
 
-    addImports(origCD, ast);
+    addImports(origCD, ast, sourceType, targetType);
 
     return ast;
   }
@@ -207,21 +208,22 @@ public class AssocCommandDecorator extends AbstractDecorator {
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
     getCD4C().addImport(ast, "umlp.command.CommandDeSer");
 
     return ast;
   }
 
-  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass ast) {
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass ast, String sourceType, String targetType) {
     // Importe
     getCD4C().addImport(ast, "com.google.common.collect.Lists");
     getCD4C().addImport(ast, "umlp.command.StatusResult");
     getCD4C().addImport(ast, "umlp.command.Command");
     getCD4C().addImport(ast, "umlp.command.CommandManager");
     getCD4C().addImport(ast, "umlp.util.LogUtil");
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
     getCD4C().addImport(ast, "umlp.rte.NotificationScope");
     getCD4C().addImport(ast, "umlp.rte.GeneralErrorCollector");
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+sourceType);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+targetType);
   }
 }
