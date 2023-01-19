@@ -2,6 +2,6 @@
 ${tc.signature("name", "type", "builder")}
 ${cd4c.method("public ${builder} ${name}(${type} ${name})")}
 
-this.${name} = ${name};
+this._${name} = ${name};
 ${name}Present = true;
 return this;

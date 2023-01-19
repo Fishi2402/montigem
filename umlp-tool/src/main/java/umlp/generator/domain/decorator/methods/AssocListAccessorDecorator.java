@@ -2,6 +2,7 @@
 package umlp.generator.domain.decorator.methods;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.codegen.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.cd.methodtemplates.CD4C;
@@ -25,8 +26,9 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
 
   protected final CD4C cd4c = CD4C.getInstance();
 
-  public AssocListAccessorDecorator(GlobalExtensionManagement glex, ASTCDType ast) {
-    super(glex);
+  public AssocListAccessorDecorator(GlobalExtensionManagement glex, CDGenService service,
+                                    ASTCDType ast) {
+    super(glex, service);
     this.ast = ast;
   }
 
@@ -36,12 +38,12 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
 
     String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
 
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Contains", ast.getName(), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.ContainsAll", ast.getName(), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Iterator", ast.getName(), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Size", ast.getName()).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.GetList", ast.getName(), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.SubList", ast.getName(), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Contains", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.ContainsAll", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Iterator", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Size", service.getNativeAttributeName(ast.getName())).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.GetList", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.SubList", service.getNativeAttributeName(ast.getName()), targetName).get());
 
     // generate getX-Method
     methodList.add(createGetMethod(ast));

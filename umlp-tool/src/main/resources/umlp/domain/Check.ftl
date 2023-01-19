@@ -5,7 +5,7 @@ ${cd4c.method("protected boolean check${name?cap_first}()")}
 boolean res = true;
 
 <#if reportError>
-if(${name} == null){
+if(_${name} == null){
   res = false;
   ${domain}ErrorCollector.report${name?cap_first}Invalid((${domain}) this);
 }

@@ -8,7 +8,7 @@ ${cd4c.method("public Optional<${name}> build()")}
 if (!buildFinished) {
   if (isBuildable()) {
 <#list assocList as assoc>
-    this.${assoc.getName()}.build();
+    this._${assoc.getName()}.build();
 </#list>
     if(!INTERNAL_deser_mode) {
       ${managerName}.add${name}(this);

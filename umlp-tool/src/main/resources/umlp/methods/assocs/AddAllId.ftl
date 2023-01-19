@@ -6,7 +6,7 @@ if(idx < 0){
   throw new IllegalStateException("idx must be 0 or higher");
 }
 
-if(idx > ${name}.size()){
+if(idx > _${name}.size()){
   throw new IllegalStateException("idx must be at most owns.size");
 }
 

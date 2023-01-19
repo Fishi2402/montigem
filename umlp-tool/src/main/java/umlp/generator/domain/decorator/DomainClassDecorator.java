@@ -4,6 +4,7 @@ package umlp.generator.domain.decorator;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.codegen.methods.MutatorDecorator;
@@ -21,6 +22,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
 import umlp.generator.domain.decorator.methods.AssocMutatorDecorator;
+import umlp.generator.domain.decorator.methods.MethodGenService;
 import umlp.generator.domain.decorator.methods.SimpleMethodMutatorDecorator;
 
 import java.util.ArrayList;
@@ -138,7 +140,7 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
             .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
     for (ASTCDAttribute visibleAttribute : visibleAttributes) {
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-              createType(visibleAttribute), visibleAttribute.getName());
+              createType(visibleAttribute), GenService.createName(visibleAttribute.getName()));
       attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
       setAttributeAnnotationTemplate(attribute);
       attributesList.add(attribute);
@@ -157,21 +159,25 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
       ASTCDAttribute attribute;
       if (GenService.isList(assocSide)) {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-                getMCTypeFacade().createBasicGenericTypeOf("GemList", type), assocSide.getName());
+                getMCTypeFacade().createBasicGenericTypeOf("GemList", type), GenService.createName(assocSide.getName()));
         setAssocAnnotations(domainClass, attribute);
       } else {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-                getMCTypeFacade().createBasicGenericTypeOf("Gem", type), assocSide.getName());
+                getMCTypeFacade().createBasicGenericTypeOf("Gem", type), GenService.createName(assocSide.getName()));
       }
       attrList.add(attribute);
     }
     return attrList;
   }
 
-   protected void createGetterSetterForAttrs(ASTCDClass domainClass, ASTCDClass clazz,
+  protected void createGetterSetterForAttrs(ASTCDClass domainClass, ASTCDClass clazz,
                                             List<ASTCDAttribute> attrList) {
-    MethodDecorator methodDecorator = new MethodDecorator(glex, new AccessorDecorator(glex),
-            new MutatorDecorator(glex, new SimpleMethodMutatorDecorator(glex, domainClass), new OptionalMutatorDecorator(glex), new ListMutatorDecorator(glex)));
+    CDGenService service = new MethodGenService();
+    MethodDecorator methodDecorator = new MethodDecorator(glex,
+            new AccessorDecorator(glex, service),
+            new MutatorDecorator(glex, new SimpleMethodMutatorDecorator(glex, service, domainClass),
+                    new OptionalMutatorDecorator(glex, service),
+                    new ListMutatorDecorator(glex, service)), service);
     for (ASTCDAttribute attribute : attrList) {
       clazz.addAllCDMembers(methodDecorator.decorate(attribute));
     }
@@ -179,9 +185,10 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
 
   protected void createGetterSetterForAssocs(ASTCDClass domainClass, ASTCDClass clazz,
                                              List<ASTCDAttribute> attrList) {
+    CDGenService service = new MethodGenService();
     MethodDecorator methodDecorator = new MethodDecorator(glex,
-            new AssocAccessorDecorator(glex, clazz),
-            new AssocMutatorDecorator(glex, clazz));
+            new AssocAccessorDecorator(glex, service, clazz),
+            new AssocMutatorDecorator(glex, service, clazz), service);
     for (ASTCDAttribute attribute : attrList) {
       clazz.addAllCDMembers(methodDecorator.decorate(attribute));
     }

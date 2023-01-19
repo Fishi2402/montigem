@@ -21,7 +21,7 @@ public class AssocsDecoratorTest extends DecoratorTest {
     ASTCDClass clazz = getClassByName("Foo2");
     assertAll(
             // check assoc attribute
-            () -> existsAttribute(clazz, "bar2"),
+            () -> existsAttribute(clazz, "_bar2"),
 
             // check assoc methods
             () -> existsMethod(clazz, "checkBar2"),

@@ -5,11 +5,11 @@ ${cd4c.method("public void _internal_add${name?cap_first}(int idx, List<Long> ge
 if(idx < 0){
   throw new IllegalStateException("idx must be 0 or higher");
 }
-if(idx > ${name}.size()){
+if(idx > _${name}.size()){
   throw new IllegalStateException("idx must be at most ${name}.size");
 }
 //Discuss: does this need to be checked after each added object?
-this.${name}._internal_add(idx, gemIDs);
+this._${name}._internal_add(idx, gemIDs);
 int currentIdx = idx;
 for(long gemID : gemIDs) {
   check${name?cap_first}();

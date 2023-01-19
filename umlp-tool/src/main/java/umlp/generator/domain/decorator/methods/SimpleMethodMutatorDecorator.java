@@ -2,6 +2,7 @@
 package umlp.generator.domain.decorator.methods;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.codegen.methods.mutator.MandatoryMutatorDecorator;
 import de.monticore.cd.methodtemplates.CD4C;
@@ -23,8 +24,9 @@ public class SimpleMethodMutatorDecorator extends MandatoryMutatorDecorator {
 
   protected final CD4C cd4c = CD4C.getInstance();
 
-  public SimpleMethodMutatorDecorator(GlobalExtensionManagement glex, ASTCDType ast) {
-    super(glex);
+  public SimpleMethodMutatorDecorator(GlobalExtensionManagement glex, CDGenService service,
+                                      ASTCDType ast) {
+    super(glex, service);
     this.ast = ast;
   }
 
@@ -50,7 +52,7 @@ public class SimpleMethodMutatorDecorator extends MandatoryMutatorDecorator {
     ASTCDMethod method = super.createSetter(ast);
     method.addCDParameter(getCDParameterFacade().createParameter("NotificationScope", "scope"));
     glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.methods.NotificationSetter",
-            this.ast.getName(), ast.getName(), new CdUtilsPrinter().printType(ast.getMCType()), isGem));
+            this.ast.getName(), service.getNativeAttributeName(ast.getName()), new CdUtilsPrinter().printType(ast.getMCType()), isGem));
     return method;
   }
 

@@ -52,7 +52,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
             deserBuilderClass,
             "umlp.deser_builder.setGemListIds",
             deserBuilderClass.getName(),
-            a.getName()
+            GenService.getNativeName(a.getName())
         );
       }else if(GenService.isGem(a)){
         getCD4C().addMethod(
@@ -60,7 +60,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
             "umlp.deser_builder.setGem",
             deserBuilderClass.getName(),
             a.printType(),
-            a.getName()
+                GenService.getNativeName(a.getName())
         );
       }else{
         ASTCDMethodSignature m = getCD4C().addMethod(
@@ -68,7 +68,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
             "umlp.deser_builder.setSimple",
             deserBuilderClass.getName(),
             a.printType(),
-            a.getName()
+                GenService.getNativeName(a.getName())
         );
         glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint("@Override"));
       }

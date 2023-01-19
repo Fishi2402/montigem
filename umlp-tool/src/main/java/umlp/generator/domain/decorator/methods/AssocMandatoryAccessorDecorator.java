@@ -2,6 +2,7 @@
 package umlp.generator.domain.decorator.methods;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -18,8 +19,9 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class AssocMandatoryAccessorDecorator extends MandatoryAccessorDecorator {
 
-  public AssocMandatoryAccessorDecorator(GlobalExtensionManagement glex) {
-    super(glex);
+  public AssocMandatoryAccessorDecorator(GlobalExtensionManagement glex,
+                                         CDGenService service) {
+    super(glex, service);
   }
 
   @Override

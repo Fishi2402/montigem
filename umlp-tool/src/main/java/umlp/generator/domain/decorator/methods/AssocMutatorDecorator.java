@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain.decorator.methods;
 
+import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.methods.AbstractMethodDecorator;
 import de.monticore.cd.codegen.methods.MutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
@@ -10,8 +11,9 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.generator.domain.decorator.GenService;
 
 public class AssocMutatorDecorator extends MutatorDecorator {
-  public AssocMutatorDecorator(GlobalExtensionManagement glex, ASTCDType ast) {
-    super(glex, new AssocMandatoryMutatorDecorator(glex, ast), new OptionalMutatorDecorator(glex), new AssocListMutatorDecorator(glex, ast));
+  public AssocMutatorDecorator(GlobalExtensionManagement glex, CDGenService service,
+                               ASTCDType ast) {
+    super(glex, new AssocMandatoryMutatorDecorator(glex, service, ast), new OptionalMutatorDecorator(glex, service), new AssocListMutatorDecorator(glex, service, ast));
   }
 
   @Override

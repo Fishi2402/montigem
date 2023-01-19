@@ -102,6 +102,10 @@ public class GenService {
     }
   }
 
+  public static String createName(String attrName) {
+    return "_" + attrName;
+  }
+
   public static String getType(SymTypeExpression symType) {
     if (symType.isGenericType()) {
       return ((SymTypeOfGenerics) symType).getBaseName();
@@ -276,4 +280,12 @@ public class GenService {
     // TODO: Bessere Lösung?
     return type.getTypeInfo() instanceof JClass2OOTypeSymbolAdapter;
   }
+
+  public static String getNativeName(String name) {
+    if (name.startsWith("_")) {
+      return name.substring(1);
+    }
+    return name;
+  }
+
 }

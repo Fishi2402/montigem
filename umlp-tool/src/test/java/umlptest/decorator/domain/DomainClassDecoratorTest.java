@@ -30,7 +30,7 @@ public class DomainClassDecoratorTest extends DecoratorTest {
             // check attributes
             () -> existsAttribute(clazz, "gemId"),
             () -> existsAttribute(clazz, "fooObservers"),
-            () -> existsAttribute(clazz, "fooAttr"),
+            () -> existsAttribute(clazz, "_fooAttr"),
 
             // check methods
             () -> existsMethod(clazz, "build"),

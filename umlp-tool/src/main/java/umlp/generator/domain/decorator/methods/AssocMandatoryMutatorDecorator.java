@@ -2,6 +2,7 @@
 package umlp.generator.domain.decorator.methods;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
@@ -14,6 +15,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.se_rwth.commons.StringTransformations;
+import umlp.generator.domain.decorator.GenService;
 
 import java.util.List;
 
@@ -22,8 +24,9 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class AssocMandatoryMutatorDecorator extends SimpleMethodMutatorDecorator {
 
-  public AssocMandatoryMutatorDecorator(GlobalExtensionManagement glex, ASTCDType domainAst) {
-    super(glex, domainAst);
+  public AssocMandatoryMutatorDecorator(GlobalExtensionManagement glex, CDGenService service,
+                                        ASTCDType domainAst) {
+    super(glex, service, domainAst);
   }
 
   @Override
@@ -42,7 +45,7 @@ public class AssocMandatoryMutatorDecorator extends SimpleMethodMutatorDecorator
     ASTCDMethod method2 = createNotificationSetter(ast, false);
     method2.getCDParameter(0).setMCType(simpleType);
     glex.replaceTemplate(EMPTY_BODY, method2, new TemplateHookPoint("umlp.methods.GemNotificationSetter",
-            this.ast.getName(), ast.getName(), new CdUtilsPrinter().printType(ast.getMCType())));
+            this.ast.getName(), GenService.getNativeName(ast.getName()), new CdUtilsPrinter().printType(ast.getMCType())));
     methodList.add(method2);
 
     // Generate setXGem-Methods
@@ -57,7 +60,7 @@ public class AssocMandatoryMutatorDecorator extends SimpleMethodMutatorDecorator
     methodList.add(method4);
 
     ASTCDMethod method5 = (ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.InternalSetOne",
-            ast.getName(), new CD4CodeFullPrettyPrinter().prettyprint(simpleType), ast.getName()).get();
+            service.getNativeAttributeName(ast.getName()), new CD4CodeFullPrettyPrinter().prettyprint(simpleType), ast.getName()).get();
     methodList.add(method5);
 
     return methodList;
