@@ -76,10 +76,7 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
 
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDType clazz) {
-    getCD4C().addImport(clazz, "java.util.List");
-    getCD4C().addImport(clazz, "java.util.ArrayList");
     getCD4C().addImport(clazz, "umlp.command.CommandManager");
-    getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE)+".*");
   }
 
 }

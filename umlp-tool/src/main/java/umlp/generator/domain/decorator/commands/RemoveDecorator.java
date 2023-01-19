@@ -17,6 +17,7 @@ import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.domain.decorator.ManagerDecorator;
 
 import java.util.Optional;
 
@@ -86,9 +87,10 @@ public class RemoveDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, "umlp.command.StatusResult");
     getCD4C().addImport(ast, "umlp.command.Command");
     getCD4C().addImport(ast, "umlp.util.LogUtil");
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
     getCD4C().addImport(ast, "umlp.rte.NotificationScope");
     getCD4C().addImport(ast, "umlp.rte.GeneralErrorCollector");
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
 
     return ast;
   }

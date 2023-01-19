@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class DeSerDecorator extends DomainClassDecorator{
 
-  protected HashMap<String, String> jsonMap;
+  public static final String SUFFIX = "DeSer";
 
   public DeSerDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
     super(glex, hwPath);
@@ -37,7 +37,7 @@ public class DeSerDecorator extends DomainClassDecorator{
     String originalClassName = cdClass.getName();
 
     ASTCDClass deSer = UMLPMill.cDClassBuilder()
-        .setName(cdClass.getName() + "DeSer")
+        .setName(cdClass.getName() + SUFFIX)
         .setModifier(CDModifier.PUBLIC.build())
         .build();
 
@@ -123,9 +123,10 @@ public class DeSerDecorator extends DomainClassDecorator{
 
   @Override
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDType clazz) {
-    getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.*");
-    getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.*");
-    getCD4C().addImport(clazz, "umlp.rte.*");
+    getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.JsonPrinter");
+    getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonObject");
+    getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonElement");
+    getCD4C().addImport(clazz, "umlp.rte.Gem");
   }
 
 }
