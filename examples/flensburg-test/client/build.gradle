@@ -1,0 +1,52 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+        maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+//    maven { url "https://repository.jsweet.org/artifactory/plugins-release-local" }
+//    maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
+        maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
+    }
+    dependencies {
+        classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-SNAPSHOT') {
+            transitive = true
+        }
+    }
+}
+
+plugins {
+    id "com.github.node-gradle.node" version "3.4.0"
+    id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-SNAPSHOT"
+}
+
+jsweet {
+    verbose = true
+    encoding = 'UTF-8'
+    sourceMap = true
+    tsOnly = true
+    tsOut = project.file('target/generated-sources/ts')
+    candiesJsOut = project.file('target/candies')
+    targetVersion = 'ES6'
+    includes = ['**/flensburg/**/*.java']
+    excludeTranspilation = ['**/*List*', '**/*DeSer*', '**/*Collector*', '**/*Manager*',
+                            '**/*Observer*', '**/*remove*', '**/*Mapper*', '**/*Mock*',
+                            '**/*GetFreeGemIdRequest.java']
+    module = 'commonjs'
+}
+
+compileJava {
+    enabled = false
+}
+
+task printSourceSetInformation(){
+    doLast{
+        sourceSets.each { srcSet ->
+            println "["+srcSet.name+"]"
+            print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
+            print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
+            println ""
+        }
+    }
+}

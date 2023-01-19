@@ -9,3 +9,7 @@ task generateFlensburg(type: UMLPTask) {
 }
 
 build.dependsOn(generateFlensburg)
+
+project('client'){
+    sourceSets.main.java.srcDirs = ['../src/main/java', "../target/generated-sources/monticore/sourcecode"]
+}
