@@ -39,7 +39,7 @@ page EditierePersonCars(Person p) {
     canDelete = true,
     canEdit = true,
     canAdd = true,
-    columns = List() // car attributes, if no attributes then no columns
+    columns = [] // car attributes, if no attributes then no columns
   );
 
   // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
