@@ -11,7 +11,8 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIDSLNode;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
-import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
+import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
@@ -84,7 +85,7 @@ public abstract class GUIComponentDecorator extends GUIAbstractDecorator {
 
   protected String getErrorMessage(String guiComponentName, ASTGUIDSLNode astNode) {
     return guiComponentName + "-GUIComponent args aren't correct in " + guiName + " : \n" +
-        new GUIDSLFullPrettyPrinter().prettyprint(astNode);
+        new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astNode);
   }
 
   protected Optional<ASTGUINamedArg> getComponentArgOptional(ASTGUIComponent guiComponent, Predicate<ASTGUINamedArg> predicate) {

@@ -8,8 +8,8 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
-import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -43,7 +43,7 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
   public GUIAbstractDecorator(final GlobalExtensionManagement glex) {
     super(glex);
     basicTypesPrinter = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
-    guiDSLPrinter = new GUIDSLFullPrettyPrinter();
+    guiDSLPrinter = new GUIDSLFullPrettyPrinter(new IndentPrinter());
   }
 
   public static String getComponentClassName(ASTGUIComponentDeclaration guiAst, boolean isInputGui) {

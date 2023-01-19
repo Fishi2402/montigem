@@ -52,7 +52,7 @@ public class TableDecorator extends GUIComponentDecorator {
 
       decoratedClass.addCDMember(rowsAttribute);
       decoratedClass.addAllCDMembers(decorator.decorate(rowsAttribute));
-      rowsArg = guiDSLPrinter.prettyprint(row.get().getExpression());
+      rowsArg = guiDSLPrinter.prettyprint(row.get().getGUIArgValue().getExpression());
     }
 
     if (col.isPresent()) {
@@ -65,8 +65,9 @@ public class TableDecorator extends GUIComponentDecorator {
       decoratedClass.addCDMember(columnsAttribute);
       decoratedClass.addAllCDMembers(decorator.decorate(columnsAttribute));
 
-      if (col.get().getExpression() instanceof ASTCallExpression) {
-        List<ASTExpression> var = ((ASTCallExpression) col.get().getExpression()).getArguments().getExpressionList().stream().filter(e -> e instanceof ASTCallExpression)
+      if (col.get().getGUIArgValue().getExpression() instanceof ASTCallExpression) {
+        List<ASTExpression> var = ((ASTCallExpression) col.get().getGUIArgValue().getExpression())
+            .getArguments().getExpressionList().stream().filter(e -> e instanceof ASTCallExpression)
             .flatMap(e -> ((ASTCallExpression) e).getArguments().getExpressionList().stream()).collect(Collectors.toList());
         tableColumnsArgs.addAll(var);
       }

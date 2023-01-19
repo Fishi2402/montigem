@@ -14,7 +14,8 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIParam;
-import de.monticore.guidsl.prettyprint.GUIDSLFullPrettyPrinter;
+import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -113,7 +114,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     // --- replace this when TypeCheck can be used
 
     //  String domainTypeName = astguiParam.getMCType().printType(basicTypesPrinter);  // TODO GV
-    String attributeType = new GUIDSLFullPrettyPrinter().prettyprint(astguiParam.getMCType());
+    String attributeType = new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astguiParam.getMCType());
 
     TypeSymbol typeInfo = astguiParam.getSymbol().getType().getTypeInfo();
 
@@ -178,7 +179,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     // --- replace this when TypeCheck can be used
 
     //  String domainTypeName = astguiParam.getMCType().printType(basicTypesPrinter);  // TODO GV
-    String attributeType = new GUIDSLFullPrettyPrinter().prettyprint(astguiParam.getMCType());
+    String attributeType = new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astguiParam.getMCType());
     SymTypeExpression type = astguiParam.getSymbol().getType();
 
     // --- end

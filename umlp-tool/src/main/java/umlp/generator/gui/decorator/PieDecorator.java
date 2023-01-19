@@ -48,8 +48,8 @@ public class PieDecorator extends GUIComponentDecorator {
       decoratedClass.addCDMember(entriesAttribute);
       decoratedClass.addAllCDMembers(decorator.decorate(entriesAttribute));
 
-      if (pie.get().getExpression() instanceof ASTCallExpression) {
-        pieEntriesArgs.addAll(((ASTCallExpression) pie.get().getExpression()).getArguments().getExpressionList().stream().map(e
+      if (pie.get().getGUIArgValue().getExpression() instanceof ASTCallExpression) {
+        pieEntriesArgs.addAll(((ASTCallExpression) pie.get().getGUIArgValue().getExpression()).getArguments().getExpressionList().stream().map(e
             -> guiDSLPrinter.prettyprint(e)).collect(Collectors.toList()));
       }
 

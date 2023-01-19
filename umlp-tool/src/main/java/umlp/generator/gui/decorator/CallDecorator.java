@@ -56,8 +56,9 @@ public class CallDecorator extends GUIComponentDecorator {
           }
           else {
             ASTGUIComponent arg = (ASTGUIComponent) call.getArguments().getExpressionList().get(0);
-            List<String> args = arg.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> a.getExpression() instanceof ASTNameExpression)
-                .map(a -> ((ASTNameExpression) a.getExpression()).getName()).collect(Collectors.toList()); //TODO GV
+            List<String> args = arg.getGUINamedArgs().getGUINamedArgList().stream()
+                .filter(a -> a.getGUIArgValue().isPresentExpression() && a.getGUIArgValue().getExpression() instanceof ASTNameExpression)
+                .map(a -> ((ASTNameExpression) a.getGUIArgValue().getExpression()).getName()).collect(Collectors.toList()); //TODO GV
 
             Map<String, String> parameters = new HashMap<>();
             List<String> arguments = new ArrayList<>();
