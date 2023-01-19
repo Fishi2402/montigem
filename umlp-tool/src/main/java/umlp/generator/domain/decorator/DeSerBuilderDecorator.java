@@ -82,9 +82,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
   }
 
   protected void addImports(ASTCDType clazz) {
-    getCD4C().addImport(clazz, "java.util.List");
-    getCD4C().addImport(clazz, "java.util.Optional");
-    getCD4C().addImport(clazz, "umlp.rte.*");
+    getCD4C().addImport(clazz, "umlp.rte.Gem");
   }
 
 }
