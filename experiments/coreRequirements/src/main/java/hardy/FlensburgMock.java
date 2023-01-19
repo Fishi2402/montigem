@@ -18,8 +18,18 @@ package hardy;
   
 */
 
-import umlp.rte.*;
-import hardy.gemlists.*;
+
+import hardy.gemlists.AddressGemList;
+import hardy.gemlists.Address_VisitorsGemList;
+import hardy.gemlists.CarGemList;
+import hardy.gemlists.HumanGemList;
+import hardy.gemlists.PersonGemList;
+import hardy.gemlists.Person_ChildrenGemList;
+import hardy.gemlists.Person_OwnsGemList;
+import hardy.gemlists.Person_VisitedGemList;
+import umlp.rte.GemList;
+import umlp.rte.HashMapWithOrderedKeys;
+import umlp.rte.NotificationScope;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,7 +132,7 @@ public class FlensburgMock extends FlensburgManager {
     // TODO AHe: impl should be shared
     for (Long initialId : o.visited.getIDs(0, o.sizeVisited())) {
       Address address = FlensburgManager.getAddressSure(initialId);
-      address.INTERNAL_addVisitorId(address.sizeVisitors(), o.gemId, NotificationScope.MINIMAL);
+      address.INTERNAL_addVisitorId(address.sizeVisitors(), o.getGemId(), NotificationScope.MINIMAL);
     }
 
     flensburgObservers.forEach(obs -> obs.notifyPersonAdded(o.getGemId()));
@@ -262,7 +272,7 @@ public class FlensburgMock extends FlensburgManager {
     // TODO AHe: impl should be shared
     for (Long initialId : o.getVisitorGemList().getIDs(0, o.sizeVisitors())) {
         Person person = FlensburgManager.getPersonSure(initialId);
-        person.INTERNAL_addVisitedId(person.sizeVisited(), o.gemId, NotificationScope.MINIMAL);
+        person.INTERNAL_addVisitedId(person.sizeVisited(), o.getGemId(), NotificationScope.MINIMAL);
     }
 
     flensburgObservers.forEach(obs -> obs.notifyAddressAdded(o.getGemId()));

@@ -3,7 +3,16 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import hardy.gemlists.*;
+
+
+import hardy.gemlists.AddressGemList;
+import hardy.gemlists.Address_VisitorsGemList;
+import hardy.gemlists.CarGemList;
+import hardy.gemlists.HumanGemList;
+import hardy.gemlists.PersonGemList;
+import hardy.gemlists.Person_ChildrenGemList;
+import hardy.gemlists.Person_OwnsGemList;
+import hardy.gemlists.Person_VisitedGemList;
 import umlp.rte.DatabaseAccessManager;
 import umlp.rte.GemList;
 import umlp.rte.GemListBuilder;

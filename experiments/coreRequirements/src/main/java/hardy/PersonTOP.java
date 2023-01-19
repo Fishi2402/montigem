@@ -10,7 +10,16 @@ import umlp.rte.Gem;
 import umlp.rte.GemList;
 import umlp.rte.NotificationScope;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /* Source:
@@ -33,17 +42,17 @@ public abstract class PersonTOP extends Human {
   
   // an Attribute: ------------------------------------------
 
-  protected String nickname;
+  protected String _nickname;
   
   // Association with cardinality [1]
-  protected Gem<Address> mainResidence;
+  protected Gem<Address> _mainResidence;
 
   // an Association: ------------------------------------------
   // The signature is a List, even though it might have been an
   // unordered Association.
   // The implementation will be a LazyList
   // Siehe PersonOwnsTypeAdapter für Erklärung
-  protected GemList<Car> owns;
+  protected GemList<Car> _owns;
   // todo + einige der 30 generierte Ftnen (siehe Dex & MC)
 
   protected GemList<Person> children;
@@ -52,7 +61,7 @@ public abstract class PersonTOP extends Human {
   // TODO AHe: add/remove/...
 
   public List<Car> getOwns() {
-    return owns;
+    return _owns;
   }
 
   public List<Person> getChildren() {
@@ -85,7 +94,7 @@ public abstract class PersonTOP extends Human {
   public boolean checkAge() {
     boolean res = true;
     
-    if (age == null) {
+    if (_age == null) {
       res = false;
       PersonErrorCollector.reportAgeInvalid((Person) this);
     }
@@ -94,7 +103,7 @@ public abstract class PersonTOP extends Human {
   }
   
   public String getNickname() {
-    return this.nickname;
+    return this._nickname;
   }
 
   public void setNickname(String o){
@@ -105,7 +114,7 @@ public abstract class PersonTOP extends Human {
     if (o == null) {
       throw new IllegalArgumentException("Null argument not allowed here");
     }
-    this.nickname = o;
+    this._nickname = o;
     checkNickname();
     personObservers.forEach(obs -> obs.maybeNotifySetNickname((Person) this, o, scope));
   }
@@ -113,7 +122,7 @@ public abstract class PersonTOP extends Human {
   public boolean checkNickname() {
     boolean res = true;
     
-    if (nickname == null) {
+    if (_nickname == null) {
       res = false;
       PersonErrorCollector.reportNicknameInvalid((Person) this);
     }
@@ -131,12 +140,12 @@ public abstract class PersonTOP extends Human {
   //   void setMainResidence(Gem<Address> mainResidence), ggf. weitere Gem-Methoden
   
   public Address getMainResidence() {
-    return mainResidence.get();
+    return _mainResidence.get();
   }
 
   // Wird zum testen genutzt
   public Gem<Address> getMainResidenceGem(){
-    return mainResidence;
+    return _mainResidence;
   }
 
   public void setMainResidence(Address mainResidence){
@@ -144,10 +153,10 @@ public abstract class PersonTOP extends Human {
   }
 
   public void setMainResidence(Address mainResidence, NotificationScope scope) {
-    if (this.mainResidence == null) {
-      this.mainResidence = new Gem<Address>(mainResidence);
+    if (this._mainResidence == null) {
+      this._mainResidence = new Gem<Address>(mainResidence);
     } else {
-      this.mainResidence.set(mainResidence);
+      this._mainResidence.set(mainResidence);
     }
     checkMainResidence();
     personObservers.forEach(obs -> obs.maybeNotifySetMainResidence((Person) this, mainResidence.getGemId(), scope));
@@ -159,7 +168,7 @@ public abstract class PersonTOP extends Human {
   }
 
   public void setMainResidenceGem(Gem<Address> mainResidenceGem, NotificationScope scope) {
-    this.mainResidence = Objects.requireNonNull(mainResidenceGem);
+    this._mainResidence = Objects.requireNonNull(mainResidenceGem);
     checkMainResidence();
     personObservers.forEach(obs -> obs.maybeNotifySetMainResidence((Person) this, mainResidenceGem.getGemId(), scope));
   }
@@ -167,7 +176,7 @@ public abstract class PersonTOP extends Human {
   public boolean checkMainResidence() {
     boolean res = true;
     
-    if (mainResidence == null || mainResidence.getGemId() == -1) {
+    if (_mainResidence == null || _mainResidence.getGemId() == -1) {
       res = false;
       PersonErrorCollector.reportMainResidenceInvalid((Person) this);
     }
@@ -176,10 +185,10 @@ public abstract class PersonTOP extends Human {
   }
   
   public boolean availableMainResidence() {
-    if (mainResidence == null) {
+    if (_mainResidence == null) {
       return false;
     } else {
-      return mainResidence.isPresent();
+      return _mainResidence.isPresent();
     }
   }
 
@@ -188,7 +197,7 @@ public abstract class PersonTOP extends Human {
   }
 
   public boolean removeOwns(Car o, NotificationScope scope) {
-    if (this.owns.remove(o)) {
+    if (this._owns.remove(o)) {
       checkOwns();
       personObservers.forEach(obs -> obs.maybeNotifyRemoveOwns((Person) this, o.getGemId(), scope));
       return true;
@@ -202,29 +211,29 @@ public abstract class PersonTOP extends Human {
   }
 
   public Car removeOwns(int idx, NotificationScope scope){
-    Car c = owns.get(idx);
+    Car c = _owns.get(idx);
     _internal_removeOwns(Collections.singleton(idx), scope);
     return c;
   }
 
   public void _internal_removeOwns(Set<Integer> idxs, NotificationScope scope) {
     Set<Long> ids = idxs.stream()
-            .map(owns::getID)
+            .map(_owns::getID)
             .collect(Collectors.toSet());
-    owns._internal_remove(idxs);
+    _owns._internal_remove(idxs);
     for(long gemID : ids) {
       personObservers.forEach(obs -> obs.maybeNotifyRemoveOwns((Person) this, gemID, scope));
     }
   }
 
   public void removeOwnsByIdSure(long carGemId) {
-    owns.removeIdSure(carGemId);
+    _owns.removeIdSure(carGemId);
   }
   
   public boolean checkOwns() {
     boolean res = true;
     
-    if (owns == null) {
+    if (_owns == null) {
       res = false;
       PersonErrorCollector.reportOwnsInvalid((Person) this);
     }
@@ -237,7 +246,7 @@ public abstract class PersonTOP extends Human {
       throw new IllegalArgumentException("Null argument not allowed here");
     }
     
-    Sets.difference(new HashSet<>(this.owns), new HashSet<>(o)).forEach((s) -> {
+    Sets.difference(new HashSet<>(this._owns), new HashSet<>(o)).forEach((s) -> {
       this.removeOwns(s);
     });
   }
@@ -253,7 +262,7 @@ public abstract class PersonTOP extends Human {
   }
   
   public void clearOwnss() {
-    Iterator var1 = new ArrayList<>(this.owns).iterator();
+    Iterator var1 = new ArrayList<>(this._owns).iterator();
     while (var1.hasNext()) {
       Car element = (Car) var1.next();
       this.removeOwns(element);
@@ -266,7 +275,7 @@ public abstract class PersonTOP extends Human {
   }
 
   public void addOwns(Car o, NotificationScope scope) {
-    addOwns(owns.size(), o, scope);
+    addOwns(_owns.size(), o, scope);
   }
 
   public void addOwns(int index, Car o){
@@ -282,9 +291,9 @@ public abstract class PersonTOP extends Human {
 
   public void _internal_addOwns(int index, List<Long> gemIDs, NotificationScope scope) {
     List<Long> gemIDsToBeAdded = gemIDs.stream()
-        .filter(gemID -> !this.owns.contains(gemID))
+        .filter(gemID -> !this._owns.contains(gemID))
         .collect(Collectors.toList());
-    this.owns._internal_add(index, gemIDsToBeAdded);
+    this._owns._internal_add(index, gemIDsToBeAdded);
     checkOwns();
     Integer currentIdx = index;
     for (Long gemID: gemIDsToBeAdded) {
@@ -313,7 +322,7 @@ public abstract class PersonTOP extends Human {
       throw new IllegalStateException("idx must be 0 or higher");
     }
 
-    if(idx > owns.size()){
+    if(idx > _owns.size()){
       throw new IllegalStateException("idx must be at most owns.size");
     }
 
@@ -323,23 +332,23 @@ public abstract class PersonTOP extends Human {
   }
   
   public boolean containsOwns(Car o) {
-    return this.owns.contains(o);
+    return this._owns.contains(o);
   }
   
   public boolean containsAllOwnss(Collection<Car> o) {
-    return this.owns.containsAll(o);
+    return this._owns.containsAll(o);
   }
   
   public int sizeOwnss() {
-    return this.owns.size();
+    return this._owns.size();
   }
   
   public Iterator<Car> iteratorOwnss() {
-    return Collections.unmodifiableList(owns).listIterator();
+    return Collections.unmodifiableList(_owns).listIterator();
   }
 
   public List<Car> subListOwns(int startIdxIncl, int endIdxExcl) {
-    return Collections.unmodifiableList(owns).subList(startIdxIncl, endIdxExcl);
+    return Collections.unmodifiableList(_owns).subList(startIdxIncl, endIdxExcl);
   }
 
   public void setOwns(int idx, Car c) {
@@ -354,19 +363,19 @@ public abstract class PersonTOP extends Human {
     if(idx < 0){
       throw new IllegalStateException("idx must be 0 or higher");
     }
-    if(idx > owns.size()){
+    if(idx > _owns.size()){
       throw new IllegalStateException("idx must be at most owns.size");
     }
-    this.owns._internal_set(idx, gemID);
+    this._owns._internal_set(idx, gemID);
     personObservers.forEach(obs -> obs.maybeNotifySetOwns((Person) this, idx, gemID, scope));
   }
 
   public boolean isEmptyOwnss() {
-    return this.owns.isEmpty();
+    return this._owns.isEmpty();
   }
 
   public Car getOwns(int index){
-    return owns.get(index);
+    return _owns.get(index);
   }
 
   //+ Pseudo build for all classes: normally nothing happens
@@ -413,7 +422,7 @@ public abstract class PersonTOP extends Human {
   // Used for testing
   // TODO: should not be used/usable when not testing
   public GemList<Car> getOwnsGemList() {
-    return owns;
+    return _owns;
   }
 
   public int sizeVisited() {
@@ -492,7 +501,7 @@ public abstract class PersonTOP extends Human {
   }
 
   public boolean removeVisited(Address address, NotificationScope scope){
-    int index = visited.indexOfId(address.gemId);
+    int index = visited.indexOfId(address._gemId);
     if(index == -1){
       return false;
     } else {

@@ -24,7 +24,7 @@ public class Person extends PersonTOP {
   }
 
   public boolean checkAgeOver18() {
-    if(age == null || age < 18){
+    if(_age == null || _age < 18){
       PersonErrorCollector.reportAgeInvalid(this);
       return false;
     }
@@ -33,14 +33,14 @@ public class Person extends PersonTOP {
 
   /**
      * Derived attribute becomes a handcoded Method for calculation
-     *  / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
+     *  / String clubname;  // wird als _nickname +"@"+ mainResidence.city  realisiert
   */
   public String getClubname() {
     // Bem: we demonstrate how to deal with missing data (which is actually not necessary here)
     if(availableMainResidence()) {
-      return nickname + "@" + mainResidence.get().getCity();
+      return _nickname + "@" + _mainResidence.get().getCity();
     } else {
-      return nickname +"@"+ "obdachlos"; // should not happen
+      return _nickname +"@"+ "obdachlos"; // should not happen
     }
   }
 }

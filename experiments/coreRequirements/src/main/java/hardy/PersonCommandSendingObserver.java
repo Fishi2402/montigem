@@ -3,7 +3,12 @@ package hardy;
 
 // GEN-P
 
-import hardy.commands.*;
+
+import hardy.commands.Person_addOwns;
+import hardy.commands.Person_removeOwns;
+import hardy.commands.Person_setAge;
+import hardy.commands.Person_setMainResidence;
+import hardy.commands.Person_setNickname;
 import hardy.commands.associations.Visits_add;
 import hardy.commands.associations.Visits_remove;
 import hardy.commands.associations.Visits_set;

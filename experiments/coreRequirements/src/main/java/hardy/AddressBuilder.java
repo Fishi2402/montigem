@@ -23,8 +23,8 @@ public class AddressBuilder extends Address {
     }
 
     public AddressBuilder(long gemId) {
-      this.gemId = gemId;
-      this.visitors = FlensburgManager.createVisitorsBuilder(gemId, Collections.emptyList());
+      this._gemId = gemId;
+      this._visitors = FlensburgManager.createVisitorsBuilder(gemId, Collections.emptyList());
       init();
     }
 
@@ -33,7 +33,7 @@ public class AddressBuilder extends Address {
     }
 
     public AddressBuilder city(String city){
-        this.city = city;
+        this._city = city;
         isPresentCity = true;
         return this;
     }
@@ -44,7 +44,7 @@ public class AddressBuilder extends Address {
               if(!INTERNAL_deser_mode) {
                   FlensburgManager.addAddress(this);
                 }
-                visitors.build();
+                _visitors.build();
                 addressObservers.forEach(obs -> obs.notifyBuild(this));
                 buildFinished = true;
                 return Optional.of(this);
@@ -66,7 +66,7 @@ public class AddressBuilder extends Address {
     }
 
   public AddressBuilder visitorGemListIds(List<Long> ids) {
-    visitors._internal_add(visitors.size(), ids);
+    _visitors._internal_add(_visitors.size(), ids);
     return this;
   }
 }

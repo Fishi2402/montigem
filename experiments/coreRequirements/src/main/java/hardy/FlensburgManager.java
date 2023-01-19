@@ -29,7 +29,11 @@ package hardy;
   Wir nutzen den static Singleton Ansatz für alle zu realisierenden Funktionen
 */
 
-import umlp.rte.*;
+import umlp.rte.Gem;
+import umlp.rte.GemList;
+import umlp.rte.LoadResult;
+import umlp.rte.LoadingState;
+import umlp.rte.NotificationScope;
 
 import java.util.ArrayList;
 import java.util.Collections;

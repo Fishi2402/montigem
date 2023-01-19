@@ -47,9 +47,9 @@ public class PersonBuilder extends Person {
     //+ gemId wird bereits beim initialisieren des Builders besetzt
     // und ein Validator wird auch mitgeliefert (und erstmal gespeichert)
     public PersonBuilder(long gemId) {
-      this.gemId = gemId;
+      this._gemId = gemId;
       // während des bauens ist das eine unsychronisierte GemList!
-      this.owns = FlensburgManager.createOwnsBuilder(gemId);
+      this._owns = FlensburgManager.createOwnsBuilder(gemId);
       this.children = FlensburgManager.createChildrenBuilder(gemId);
       this.visited = FlensburgManager.createVisitedBuilder(gemId, Collections.emptyList());
     }
@@ -59,19 +59,19 @@ public class PersonBuilder extends Person {
     //      and may be assuming the object is already complete)
     // it does mark the attribute as being set
     public PersonBuilder nickname(String nickname) {
-        this.nickname = nickname;
+        this._nickname = nickname;
         this.nicknamePresent = true;
         return this;
     }
 
     public PersonBuilder age(int age) {
-        this.age = age;
+        this._age = age;
         this.agePresent = true;
         return this;
     }
 
     public PersonBuilder mainResidence(Address mainResidence) {
-        this.mainResidence = new Gem<Address>(mainResidence);
+        this._mainResidence = new Gem<Address>(mainResidence);
         this.mainResidencePresent = true;
         return this;
     }
@@ -87,7 +87,7 @@ public class PersonBuilder extends Person {
 
     // todo: because 'addOwns' clashes with addOwns:Person in super class: find systematic new name
     public PersonBuilder ownsAdd(Car o) {
-        this.owns.add(o);
+        this._owns.add(o);
         return this;
     }
 
@@ -127,7 +127,7 @@ public class PersonBuilder extends Person {
             // todo: discuss: sollte es nicht einen else Fall geben,
             //  der präzisere Fehler wirft (siehe Log)?
             if (isBuildable()) {
-              owns.build();
+              _owns.build();
               children.build();
               visited.build();
               if(!INTERNAL_deser_mode) {
@@ -190,13 +190,13 @@ public class PersonBuilder extends Person {
 
     public PersonBuilder mainResidenceGem(Gem<Address> mainResidence) {
         this.mainResidencePresent = mainResidence != null;
-        this.mainResidence = mainResidence;
+        this._mainResidence = mainResidence;
         return this;
     }
 
     public PersonBuilder ownsGemListIds(List<Long> ids) {
         this.ownsPresent = true;
-        this.owns._internal_add(this.owns.size(), ids);
+        this._owns._internal_add(this._owns.size(), ids);
         return this;
     }
 

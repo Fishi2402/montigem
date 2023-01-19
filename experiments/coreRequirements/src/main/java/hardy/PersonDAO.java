@@ -1,7 +1,12 @@
 package hardy;
 
 // GEN-P
-import umlp.rte.*;
+
+import umlp.rte.AssociationDBEntry;
+import umlp.rte.DatabaseAccessManager;
+import umlp.rte.Gem;
+import umlp.rte.LoadResult;
+import umlp.rte.LoadingState;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

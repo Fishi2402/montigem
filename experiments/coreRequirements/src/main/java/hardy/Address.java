@@ -24,29 +24,29 @@ import java.util.Optional;
 public class Address implements GemIdentifiable, GemBuildable {
   protected transient List<AddressObserver> addressObservers = new ArrayList<>();
 
-  protected long gemId = -32;
+  protected long _gemId = -32;
 
-  protected String city;
+  protected String _city;
 
-  protected GemList<Person> visitors;
+  protected GemList<Person> _visitors;
 
   @Override
   public long getGemId() {
-    return gemId;
+    return _gemId;
   }
 
   public String getCity() {
-    return city;
+    return _city;
   }
 
   public void setCity(String city) {
-    this.city = city;
+    this._city = city;
     checkCity();
   }
 
   public boolean checkCity() {
     boolean res = true;
-    if (city == null) {
+    if (_city == null) {
       res = false;
       AddressErrorCollector.reportCityInvalid(this);
     }
@@ -84,7 +84,7 @@ public class Address implements GemIdentifiable, GemBuildable {
   }
 
   public void addVisitor(Person p, NotificationScope scope){
-    addVisitor(visitors.size(), p, scope);
+    addVisitor(_visitors.size(), p, scope);
   }
 
   public void addVisitor(int indexInList, Person p){
@@ -105,7 +105,7 @@ public class Address implements GemIdentifiable, GemBuildable {
   }
 
   public void _internal_addVisitors(int idx, List<Long> gemIDs, NotificationScope scope) {
-    visitors._internal_add(idx, gemIDs);
+    _visitors._internal_add(idx, gemIDs);
     int currentIdx = idx;
     for(long gemID : gemIDs) {
       if (scope.contains(NotificationScope.LOCAL)) {
@@ -122,22 +122,22 @@ public class Address implements GemIdentifiable, GemBuildable {
   }
 
   public int sizeVisitors() {
-    return visitors.size();
+    return _visitors.size();
   }
 
   // TODO: Ähnliche funktion wie addVisitorId?
   public void INTERNAL_addVisitorId(int indexInList, long personGemId, NotificationScope scope) {
-    visitors._internal_add(indexInList, List.of(personGemId));
+    _visitors._internal_add(indexInList, List.of(personGemId));
     addressObservers.forEach(obs -> obs.maybeNotifyAddVisitor(this, personGemId, indexInList, scope));
   }
 
   public List<Person> getVisitor() {
-    return visitors;
+    return _visitors;
   }
 
   // TODO: mark as internal!
   public GemList<Person> getVisitorGemList() {
-    return visitors;
+    return _visitors;
   }
 
   public boolean removeVisitor(Person person){
@@ -152,8 +152,8 @@ public class Address implements GemIdentifiable, GemBuildable {
   // Since no Person is returned, lazy loading is not triggered
   public long removeVisitorGem(int index, NotificationScope notificationScope){
     // TODO: error case?
-    long id = visitors.getID(index);
-    visitors._internal_remove(Collections.singleton(index));
+    long id = _visitors.getID(index);
+    _visitors._internal_remove(Collections.singleton(index));
 
     // remove from other association side, but only if it is loaded.
     if(notificationScope.contains(NotificationScope.LOCAL)){
@@ -168,7 +168,7 @@ public class Address implements GemIdentifiable, GemBuildable {
   }
 
   public boolean removeVisitor(Person person, NotificationScope scope) {
-    int index = visitors.indexOfId(person.getGemId());
+    int index = _visitors.indexOfId(person.getGemId());
     if(index == -1){
       return false;
     } else {

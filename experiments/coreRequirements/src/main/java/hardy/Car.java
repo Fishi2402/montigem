@@ -23,14 +23,14 @@ public class Car implements GemIdentifiable, GemBuildable {
 // Bem: This is an ordinary class, comments to the design 
 // decisions can be found at Human and Person
 
-    protected long gemId = -34;
+    protected long _gemId = -34;
 
     protected Car() {
     }
 
     @Override
     public long getGemId() {
-        return this.gemId;
+        return this._gemId;
     }
 
 

@@ -22,7 +22,7 @@ public class CarBuilder extends Car {
     // TODO: alle Assoziationen bidirektional für Konsistenzchecks?
 
     public CarBuilder(long gemId) {
-       this.gemId = gemId;
+       this._gemId = gemId;
        init();
     }
 

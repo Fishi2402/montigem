@@ -29,12 +29,12 @@ public class Human implements GemIdentifiable, GemBuildable {
     // real object is not (yet) loaded, e.g. in the client
     //
     // -32: is an illegal value showing that an has error occurred somewhere
-    protected long gemId = -32;
+    protected long _gemId = -32;
 
     // an Attribute: ------------------------------------------
     // Attribute has non-primitive type to allow null values for objects, which are not yet
     // completely built, but require some value (required field in GUI)
-    protected Integer age;
+    protected Integer _age;
 
     // --------------------------------------------------------------------
     //+ Constructors are protected: only to be used by the Builder and Mill
@@ -47,29 +47,29 @@ public class Human implements GemIdentifiable, GemBuildable {
     //+ This constructor is better, but still may construct invalid
     // objects in principle
     protected Human(Integer age) {
-        this.age = age;
+        this._age = age;
     }
 
     //+ initialization is externalized to be reusable (if needed)
     //+ do an initialisation of optional and default parts if required
     // (makes the system robust, but shadows potential errors for a while)
     protected void init() {
-        age = 0;
+        _age = 0;
     }
 
     @Override
     public long getGemId() {
-        return gemId;
+        return _gemId;
     }
 
     public Integer getAge() {
-        return this.age;
+        return this._age;
     }
 
     public boolean checkAge(){
         boolean res = true;
 
-        if(age == null){
+        if(_age == null){
             res = false;
             HumanErrorCollector.reportAgeInvalid(this);
         }
@@ -79,7 +79,7 @@ public class Human implements GemIdentifiable, GemBuildable {
 
     // TODO semi-duplicated implementation
     public void setAge(Integer o){
-        this.age = o;
+        this._age = o;
         NotificationScope scope = checkAge()
             ? NotificationScope.ALL
             : FlensburgManager.getSingleton().errorNotificationScope();
@@ -87,7 +87,7 @@ public class Human implements GemIdentifiable, GemBuildable {
     }
 
     public void setAge(Integer o, NotificationScope scope) {
-        this.age = o;
+        this._age = o;
         checkAge();
         humanObservers.forEach(obs -> obs.maybeNotifySetAge(this, o, scope));
     }

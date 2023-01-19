@@ -20,11 +20,11 @@ public class HumanBuilder extends Human {
     }
 
     public HumanBuilder(long gemId) {
-       this.gemId = gemId;
+       this._gemId = gemId;
     }
 
     public HumanBuilder age(int age) {
-        this.age = age;
+        this._age = age;
         isAgePresent = true;
         return this;
     }
