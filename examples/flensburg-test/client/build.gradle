@@ -17,7 +17,6 @@ buildscript {
 }
 
 plugins {
-    id "com.github.node-gradle.node" version "3.4.0"
     id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-SNAPSHOT"
 }
 

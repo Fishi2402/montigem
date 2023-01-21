@@ -3,7 +3,11 @@ package umlp.rte;
 
 // RTE-P
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 // GemList, welche bei der Erstellung von Objekten benutzt werden muss, da sie in diesem Zustand
