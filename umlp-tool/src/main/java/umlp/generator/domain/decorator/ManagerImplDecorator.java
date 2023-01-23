@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.domain.decorator.GemListAssocDecorator.getName;
 
 public class ManagerImplDecorator extends AbstractDecorator {
 
@@ -50,17 +52,15 @@ public class ManagerImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managerimpl.ErrorNotificationScope");
 
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-            .forEach(c -> addClassElements(c, managerClass, name));
+            .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
     // Imports
-    getCD4C().addImport(managerClass, "umlp.rte.*");
-    getCD4C().addImport(managerClass, getPackageName(origCD, GEMLIST_PACKAGE) + ".*");
-    getCD4C().addImport(managerClass, "java.util.*");
-
+    addImports(managerClass);
     return managerClass;
   }
 
-  protected void addClassElements(ASTCDClass domainClass, ASTCDClass managerClass, String managerName) {
+  protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
+                                  ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
 
     managerClass.addCDMember(getDaoAttribute(domainClass));
@@ -76,15 +76,18 @@ public class ManagerImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete", name, managerName);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);
 
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName()+"GemList"));
+
     // Associations
     CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
       String type = a.getSymbol().getType().print();
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), type);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", domainClass.getName(), a.getName(), type);
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
     });
   }
 
-  private ASTCDAttribute getDaoAttribute(ASTCDClass domainClass) {
+  protected ASTCDAttribute getDaoAttribute(ASTCDClass domainClass) {
     String type = domainClass.getName()+"DAO";
     ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
         getMCTypeFacade().createQualifiedType(type),
@@ -93,7 +96,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     return domainClassDaoAttr;
   }
 
-  private ASTCDAttribute getCacheAttribute(ASTCDClass domainClass) {
+  protected ASTCDAttribute getCacheAttribute(ASTCDClass domainClass) {
     ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
         getMCTypeFacade().createBasicGenericTypeOf("Map", "Long", domainClass.getName()),
         StringTransformations.uncapitalize("known"+domainClass.getName()+"s"));
@@ -101,12 +104,22 @@ public class ManagerImplDecorator extends AbstractDecorator {
     return domainClassDaoAttr;
   }
 
-  private ASTCDAttribute getDBObserverAttribute(ASTCDClass domainClass) {
+  protected ASTCDAttribute getDBObserverAttribute(ASTCDClass domainClass) {
     String type = domainClass.getName()+"DbObserver";
     ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
         getMCTypeFacade().createQualifiedType(type), "the"+type);
     getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new "+type+"()"));
     return domainClassDaoAttr;
+  }
+
+  protected void addImports(ASTCDClass clazz) {
+    getCD4C().addImport(clazz, "umlp.rte.DatabaseAccessManager");
+    getCD4C().addImport(clazz, "umlp.rte.Gem");
+    getCD4C().addImport(clazz, "umlp.rte.GemList");
+    getCD4C().addImport(clazz, "umlp.rte.GemListBuilder");
+    getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
+    getCD4C().addImport(clazz, "java.util.HashMap");
+    getCD4C().addImport(clazz, "java.util.Map");
   }
 
 }

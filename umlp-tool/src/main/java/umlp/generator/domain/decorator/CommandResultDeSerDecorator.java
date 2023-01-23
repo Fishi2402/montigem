@@ -50,11 +50,13 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
   }
 
   protected void addImports(ASTCDType clazz) {
-    getCD4C().addImport(clazz, "umlp.command.*");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(clazz, "umlp.rte.BaseClassObjectMapper");
-    getCD4C().addImport(clazz, "java.util.Optional");
+    getCD4C().addImport(clazz, "umlp.command.CommandResultDeSer");
+    getCD4C().addImport(clazz, "umlp.command.CommandResult");
+    getCD4C().addImport(clazz, "umlp.command.LongList");
+    getCD4C().addImport(clazz, "umlp.command.SimpleResult");
   }
 
 

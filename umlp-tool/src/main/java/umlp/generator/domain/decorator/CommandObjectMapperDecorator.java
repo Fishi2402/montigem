@@ -53,8 +53,10 @@ public class CommandObjectMapperDecorator extends AbstractDecorator {
   }
 
   protected void addImports(ASTCDType clazz) {
-    getCD4C().addImport(clazz, "umlp.command.*");
-    getCD4C().addImport(clazz, "java.util.Optional");
+    getCD4C().addImport(clazz, "umlp.command.CommandObjectMapper");
+    getCD4C().addImport(clazz, "umlp.command.Command");
+    getCD4C().addImport(clazz, "umlp.command.CommandResult");
+
   }
 
 

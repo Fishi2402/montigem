@@ -29,9 +29,6 @@ jsweet {
     candiesJsOut = project.file('target/candies')
     targetVersion = 'ES6'
     includes = ['**/flensburg/**/*.java']
-    excludeTranspilation = ['**/*List*', '**/*DeSer*', '**/*Collector*', '**/*Manager*',
-                            '**/*Observer*', '**/*remove*', '**/*Mapper*', '**/*Mock*',
-                            '**/*GetFreeGemIdRequest.java']
     module = 'commonjs'
 }
 

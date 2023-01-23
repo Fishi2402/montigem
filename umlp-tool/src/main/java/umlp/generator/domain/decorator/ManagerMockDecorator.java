@@ -10,6 +10,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.domain.decorator.GemListAssocDecorator.getName;
 
 public class ManagerMockDecorator extends AbstractDecorator {
 
@@ -52,17 +54,16 @@ public class ManagerMockDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managermock.SecretlyAdaptNextGemId");
 
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-            .forEach(c -> addClassElements(c, managerClass, name));
+            .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
     // Imports
-    getCD4C().addImport(managerClass, "umlp.rte.*");
-    getCD4C().addImport(managerClass, getPackageName(origCD, GEMLIST_PACKAGE) + ".*");
-    getCD4C().addImport(managerClass, getPackageName(origCD, CLIENT_PACKAGE) + ".*");
+    addImports(managerClass);
 
     return managerClass;
   }
 
-  protected void addClassElements(ASTCDClass domainClass, ASTCDClass managerClass, String managerName) {
+  protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
+                                  ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
     String lName = StringTransformations.uncapitalize(name);
 
@@ -84,12 +85,22 @@ public class ManagerMockDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managermock.DoDelete", name, managerName);
     getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name);
 
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName()+CommandSendingObserverDecorator.SUFFIX));
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName()+"GemList"));
+
     // Associations
     assocs.stream().filter(a -> GenService.isList(a)).forEach(a -> {
       String type = a.getSymbol().getType().print();
       getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", a.getName(), domainClass.getName(), type);
       getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", a.getName(), domainClass.getName(), type);
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
     });
   }
 
+  protected void addImports(ASTCDClass clazz) {
+    getCD4C().addImport(clazz, "umlp.rte.Gem");
+    getCD4C().addImport(clazz, "umlp.rte.GemList");
+    getCD4C().addImport(clazz, "umlp.rte.HashMapWithOrderedKeys");
+    getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
+  }
 }

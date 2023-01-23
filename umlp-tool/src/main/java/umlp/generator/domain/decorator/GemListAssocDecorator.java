@@ -9,7 +9,9 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -18,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.domain.decorator.ManagerDecorator.SUFFIX;
 
 public class GemListAssocDecorator extends AbstractDecorator {
 
@@ -49,21 +52,18 @@ public class GemListAssocDecorator extends AbstractDecorator {
   protected ASTCDClass createGemListClass(ASTCDCompilationUnit origCD, ASTCDAssocSide assoc, ASTCDClass domainClass) {
     String sourceName = domainClass.getName();
     String assocName = assoc.getName();
-    String classname = sourceName
-        + "_"
-        + StringTransformations.capitalize(assocName)
-        + "GemList";
+    String className = getName(domainClass, assoc);
     String targetName = assoc.getMCQualifiedType().getDefiningSymbol().get().getName();
     String managerName = origCD.getCDDefinition().getName() + ManagerDecorator.SUFFIX;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
-      .setName(classname)
+      .setName(className)
       .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("GemListBuilder<" + targetName + ">"))
       .build();
 
     // Imports
-    addImports(origCD, ast);
+    addImports(origCD, sourceName, targetName, ast);
 
     // attributes and getter
     AccessorDecorator accessor = new AccessorDecorator(glex);
@@ -71,8 +71,8 @@ public class GemListAssocDecorator extends AbstractDecorator {
     ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
-    getCD4C().addConstructor(ast, "umlp.gemlist.assocs.Constructor", classname);
-    getCD4C().addConstructor(ast, "umlp.gemlist.assocs.ConstructorEmpty", classname);
+    getCD4C().addConstructor(ast, "umlp.gemlist.assocs.Constructor", className);
+    getCD4C().addConstructor(ast, "umlp.gemlist.assocs.ConstructorEmpty", className);
 
     // methods
     getCD4C().addMethod(ast, "umlp.gemlist.LoadObjects", targetName, managerName);
@@ -84,14 +84,20 @@ public class GemListAssocDecorator extends AbstractDecorator {
     return ast;
   }
 
-  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass ast) {
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
-    getCD4C().addImport(ast, "umlp.util.LogUtil");
-    getCD4C().addImport(ast, "umlp.rte.GeneralErrorCollector");
-    getCD4C().addImport(ast, "umlp.rte.GemIdentifiable");
-    getCD4C().addImport(ast, "umlp.rte.GemList");
+  protected void addImports(ASTCDCompilationUnit origCD, String domainName,
+                            String targetName, ASTCDClass ast) {
+    getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), domainName));
+    getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), targetName));
+    getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), origCD.getCDDefinition().getName()+SUFFIX));
     getCD4C().addImport(ast, "umlp.rte.GemListBuilder");
     getCD4C().addImport(ast, "umlp.rte.NotificationScope");
+  }
+
+  public static String getName(ASTCDType type, ASTCDAssocSide assoc) {
+    return type.getName()
+            + "_"
+            + StringTransformations.capitalize(assoc.getName())
+            + "GemList";
   }
 
 }
