@@ -168,6 +168,9 @@ TODO
   * Wobei `x` der qualifizierte Name der Klasse mit `.` durch `_` ersetzt ist.
   * `java.time.LocalDate` benötigt also `umlp/dao/get/java_time_LocalDate.ftl` und `umlp/dao/set/java_time_LocalDate.ftl`
   * Beispiel unter `examples/mediahub/src/templates`
+* Zusätzlich muss der neue Typ beim SQL-Schema Generator angemeldet werden
+  * Dies kann im Hooktemplate `umlp.generator.hook.BeforeTransform` mit `${schemaGenerator.addClassToSQLTypeMapping("java.time.LocalDate", "DATE")}` getan werden
+  * Beispiel auch unter `examples/mediahub/src/templates`
 * Jede Liste von simplen Typen wird zu einer weiteren Tabelle mit zwei Spalten: `id` des Parent-Objekts und Wert `value`.
   * TODO: Dritte Spalte für Sortierung? 
   * TODO: Optionals mit simplem Typen

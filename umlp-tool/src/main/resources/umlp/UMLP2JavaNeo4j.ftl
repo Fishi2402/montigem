@@ -5,21 +5,22 @@
   Call it using the CLI: .. -ct umlp.UMLP2Java
 
 -->
-${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator")}
+${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator")}
 
 <#-- Call all decorators -->
 <#assign beDecorator = tc.instantiate("umlp.generator.domain.decorator.BEDecorator", [glex, hwPath, true])>
-${beDecorator.transform(ast, decoratedAST)}
-
 <#assign commandDecorator = tc.instantiate("umlp.generator.domain.decorator.commands.CommandDecorator", [glex])>
-${commandDecorator.transform(ast, decoratedAST)}
-
 <#assign requestDecorator = tc.instantiate("umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator", [glex])>
-${requestDecorator.transform(ast, decoratedAST)}
-
-<#-- TopDecorator -->
 <#assign topDecorator = tc.instantiate("de.monticore.cd.codegen.TopDecorator", [hwPath])>
+
+${includeArgs("umlp.generator.hook.BeforeTransform", decoratedAST, glex, hwPath, cdGenerator, schemaGenerator, beDecorator, commandDecorator, requestDecorator, topDecorator)}
+
+${beDecorator.transform(ast, decoratedAST)}
+${commandDecorator.transform(ast, decoratedAST)}
+${requestDecorator.transform(ast, decoratedAST)}
 ${topDecorator.decoratePackage(decoratedAST)}
+
+${includeArgs("umlp.generator.hook.AfterTransform", decoratedAST, glex, hwPath, cdGenerator, schemaGenerator, beDecorator, commandDecorator, requestDecorator, topDecorator)}
 
 <#-- Generate Java-Code -->
 ${cdGenerator.generate(decoratedAST)}

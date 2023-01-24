@@ -10,6 +10,8 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.logging.Log;
@@ -17,6 +19,7 @@ import umlp.UMLPFullPrettyPrinter;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.GenService;
 
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,40 +28,49 @@ import java.util.stream.Collectors;
 
 // TODO: cardinality constraints?
 public class SQLSchemaGenerator {
-  public static Map<String, String> fqnClassNameToType = Map.ofEntries(
-      Map.entry("java.lang.String", "VARCHAR"),
-      Map.entry("String", "VARCHAR"),
-      Map.entry("java.lang.Byte", "TINYINT"),
-      Map.entry("Byte", "TINYINT"),
-      Map.entry("byte", "TINYINT"),
-      Map.entry("java.lang.Short", "SMALLINT"),
-      Map.entry("Short", "SMALLINT"),
-      Map.entry("short", "SMALLINT"),
-      Map.entry("java.lang.Integer", "INTEGER"),
-      Map.entry("Integer", "INTEGER"),
-      Map.entry("int", "INTEGER"),
-      Map.entry("java.lang.Long", "BIGINT"),
-      Map.entry("Long", "INTEGER"),
-      Map.entry("long", "INTEGER"),
-      Map.entry("java.lang.Float", "FLOAT"),
-      Map.entry("Float", "FLOAT"),
-      Map.entry("float", "FLOAT"),
-      Map.entry("java.lang.Double", "DOUBLE"),
-      Map.entry("Double", "DOUBLE"),
-      Map.entry("double", "DOUBLE"),
-      Map.entry("java.lang.Boolean", "BIT"),
-      Map.entry("Boolean", "BIT"),
-      Map.entry("boolean", "BIT"),
-      Map.entry("java.lang.Char", "CHAR"),
-      Map.entry("Char", "CHAR"),
-      Map.entry("char", "CHAR"),
-      Map.entry("java.time.LocalDate", "DATE"),
-      // TODO: Erweiterungspunkt im Template anbieten?
-      // Not supporting this type anymore Map.entry("java.util.Date", "DATE"),
-      // TODO: as millis or nanos?
-      Map.entry("java.time.Duration", "BIGINT"),
-      Map.entry("java.time.Instant", "TIMESTAMP"),
-      Map.entry("java.net.InetAddress", "VARCHAR"));
+  protected GeneratorSetup generatorSetup;
+  protected GeneratorEngine generatorEngine;
+  protected Map<String, String> fqnClassNameToType;
+
+  public SQLSchemaGenerator(GeneratorSetup generatorSetup) {
+    this.generatorSetup = generatorSetup;
+    this.generatorEngine = new GeneratorEngine(generatorSetup);
+    initClassNameToType();
+  }
+
+  protected void initClassNameToType() {
+    fqnClassNameToType = new HashMap<>();
+    fqnClassNameToType.put("java.lang.String", "VARCHAR");
+    fqnClassNameToType.put("String", "VARCHAR");
+    fqnClassNameToType.put("java.lang.Byte", "TINYINT");
+    fqnClassNameToType.put("Byte", "TINYINT");
+    fqnClassNameToType.put("byte", "TINYINT");
+    fqnClassNameToType.put("java.lang.Short", "SMALLINT");
+    fqnClassNameToType.put("Short", "SMALLINT");
+    fqnClassNameToType.put("short", "SMALLINT");
+    fqnClassNameToType.put("java.lang.Integer", "INTEGER");
+    fqnClassNameToType.put("Integer", "INTEGER");
+    fqnClassNameToType.put("int", "INTEGER");
+    fqnClassNameToType.put("java.lang.Long", "BIGINT");
+    fqnClassNameToType.put("Long", "INTEGER");
+    fqnClassNameToType.put("long", "INTEGER");
+    fqnClassNameToType.put("java.lang.Float", "FLOAT");
+    fqnClassNameToType.put("Float", "FLOAT");
+    fqnClassNameToType.put("float", "FLOAT");
+    fqnClassNameToType.put("java.lang.Double", "DOUBLE");
+    fqnClassNameToType.put("Double", "DOUBLE");
+    fqnClassNameToType.put("double", "DOUBLE");
+    fqnClassNameToType.put("java.lang.Boolean", "BIT");
+    fqnClassNameToType.put("Boolean", "BIT");
+    fqnClassNameToType.put("boolean", "BIT");
+    fqnClassNameToType.put("java.lang.Char", "CHAR");
+    fqnClassNameToType.put("Char", "CHAR");
+    fqnClassNameToType.put("char", "CHAR");
+  }
+
+  public void addClassToSQLTypeMapping(String fqnClassName, String sqlType){
+    fqnClassNameToType.put(fqnClassName, sqlType);
+  }
 
   public static String convertAttributeName(String name) {
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
@@ -80,7 +92,12 @@ public class SQLSchemaGenerator {
     return "assoc_" + res;
   }
 
-  public String generateContent(ASTCDCompilationUnit cd) {
+  public void generate(ASTCDCompilationUnit cdAST){
+    String templateName = "umlp.sql.Schema";
+    generatorEngine.generate(templateName, Paths.get(cdAST.getCDDefinition().getName() + ".sql"), cdAST, generateContent(cdAST));
+  }
+
+  protected String generateContent(ASTCDCompilationUnit cd) {
     IndentPrinter p = new IndentPrinter();
 
     generateTypeSchemas(cd, p);

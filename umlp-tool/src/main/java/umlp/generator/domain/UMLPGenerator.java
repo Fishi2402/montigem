@@ -18,7 +18,6 @@ import umlp.UMLPMill;
 import umlp.generator.db.sql.SQLSchemaGenerator;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -31,9 +30,9 @@ public class UMLPGenerator {
   protected GeneratorSetup genSetup;
 
   protected CDGenerator cdGenerator;
+  protected SQLSchemaGenerator schemaGenerator;
 
   protected static CD4CodeFullPrettyPrinter astPrinter;
-
 
   public UMLPGenerator(GeneratorSetup genSetup) {
     this.genSetup = genSetup;
@@ -41,6 +40,7 @@ public class UMLPGenerator {
     genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     cdGenerator = new CDGenerator(genSetup);
+    schemaGenerator = new SQLSchemaGenerator(genSetup);
   }
 
   public void generate(ASTCDCompilationUnit cdAST, String configTemplate) {
@@ -62,12 +62,12 @@ public class UMLPGenerator {
     // create an empty classdiagram
     ASTCDCompilationUnit decoratedAST = createCompilationUnit(cdAST);
 
+
+
     TemplateController tc = genSetup.getNewTemplateController(configTemplate);
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
     // translate the CD-AST into Java with the CD Generator
-    hpp.processValue(tc, cdAST, Arrays.asList(decoratedAST, genSetup.getGlex(), genSetup.getHandcodedPath(), cdGenerator));
-    SQLSchemaGenerator schemaGenerator = new SQLSchemaGenerator();
-    tc.writeArgs("umlp.sql.Schema", cdAST.getCDDefinition().getName(), "sql", cdAST, Collections.singletonList(schemaGenerator.generateContent(cdAST)));
+    hpp.processValue(tc, cdAST, Arrays.asList(decoratedAST, genSetup.getGlex(), genSetup.getHandcodedPath(), cdGenerator, schemaGenerator));
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
