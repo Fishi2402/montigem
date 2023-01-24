@@ -15,7 +15,9 @@ import de.monticore.types.check.SymTypeExpression;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Collections;
 import java.util.stream.Collectors;
+
 
 import static umlp.generator.gui.decorator.GUIAbstractDecorator.CREATE_INPUT_VALUE_SUFFIX;
 
@@ -25,7 +27,7 @@ public class GUIGeneratorUtil {
 
   public static final String LONG = "Long";
 
-  public static final List<String> UMLP_TYPES = Lists.newArrayList(STRING, LONG);
+  public static final List<String> UMLP_TYPES = Collections.unmodifiableList(Lists.newArrayList(STRING, LONG));
 
   private GUIGeneratorUtil() {}
 
