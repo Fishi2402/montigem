@@ -60,7 +60,9 @@ task runServer {
 }
 
 task generateFlensburg(type: UMLPTask) {
-    input.from(file("models/hardy"))
+    input = file("models/hardy")
+    cdToGui = true
+
     outputDir = layout.buildDirectory.dir("genumlp")
 }
 
