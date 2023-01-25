@@ -1,6 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 description 'cars example'
 
+repositories {
+    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+}
+
 task generateFlensburg(type: UMLPTask) {
     input.from(file("src"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
