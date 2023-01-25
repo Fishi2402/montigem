@@ -5,4 +5,4 @@ ${cd4c.method("protected void _doAdd${name}(${name} o)")}
   if(!o.containsObserver(the${name}DbObserver)){
     o.addObserver(the${name}DbObserver);
   }
-  ${managerName?uncap_first}Observers.forEach(obs -> obs.notify${name}Added(o.getGemId()));
+  ${managerName?uncap_first}Observers.forEach(obs -> obs.notify${name}Added(o));

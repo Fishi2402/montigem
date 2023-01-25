@@ -8,17 +8,17 @@ package hardy;
 public interface FlensburgObserver {
   // Leere default implementierungen => nur genutzte Methoden müssen implementiert werden
   // Alternative: Domainenobjekt an Stelle von gemId übergeben
-  default void notifyCarAdded(long gemId) { }
-  default void notifyCarDeleted(long gemId) { }
+  default void notifyCarAdded(Car car) { }
+  default void notifyCarDeleted(Car car) { }
 
-  default void notifyHumanAdded(long gemId){}
-  default void notifyHumanDeleted(long gemId){}
+  default void notifyHumanAdded(Human human){}
+  default void notifyHumanDeleted(Human human){}
 
-  default void notifyPersonAdded(long gemId){ }
-  default void notifyPersonDeleted(long gemId){ }
+  default void notifyPersonAdded(Person person){ }
+  default void notifyPersonDeleted(Person person){ }
 
-  default void notifyAddressAdded(long gemId){ }
-  default void notifyAddressDeleted(long gemId){ }
+  default void notifyAddressAdded(Address address){ }
+  default void notifyAddressDeleted(Address address){ }
 
   // Berechnete Klassen wie CityInfo werden nicht hinzugefügt oder gelöscht
 }

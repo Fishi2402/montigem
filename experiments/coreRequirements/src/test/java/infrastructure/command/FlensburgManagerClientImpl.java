@@ -102,7 +102,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     }
     Log.trace("Adding known human " + o.getGemId(), LogUtil.getLoggerName());
     knownHumans.put(o.getGemId(), o);
-    flensburgObservers.forEach(obs -> obs.notifyHumanAdded(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyHumanAdded(o));
   }
 
   protected GemList<Human> humanGemList = null;
@@ -142,7 +142,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     StatusResult status = CommandManager.executeCommand(new Human_delete(o)).asStatusResult();
     // TODO: error handling
     // ...
-    flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(o));
   }
 
   // TODO: Implement for all other classes and associations
@@ -195,7 +195,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     }
     Log.trace("Adding known person " + o.getGemId(), LogUtil.getLoggerName());
     knownPersons.put(o.getGemId(), o);
-    flensburgObservers.forEach(obs -> obs.notifyPersonAdded(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyPersonAdded(o));
   }
 
   protected GemList<Person> personGemList = null;
@@ -234,7 +234,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     StatusResult status = CommandManager.executeCommand(new Person_delete(o)).asStatusResult();
     // TODO: error handling
     // ...
-    flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(o));
   }
 
   @Override
@@ -284,7 +284,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     }
     Log.trace("Adding known address " + o.getGemId(), LogUtil.getLoggerName());
     knownAddresses.put(o.getGemId(), o);
-    flensburgObservers.forEach(obs -> obs.notifyAddressAdded(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyAddressAdded(o));
   }
 
   protected GemList<Address> addressGemList = null;
@@ -323,7 +323,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     StatusResult status = CommandManager.executeCommand(new Address_delete(o)).asStatusResult();
     // TODO: error handling
     // ...
-    flensburgObservers.forEach(obs -> obs.notifyAddressDeleted(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyAddressDeleted(o));
   }
 
   @Override
@@ -368,7 +368,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
     }
     Log.trace("Adding known car " + o.getGemId(), LogUtil.getLoggerName());
     knownCars.put(o.getGemId(), o);
-    flensburgObservers.forEach(obs -> obs.notifyCarAdded(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyCarAdded(o));
   }
 
   protected GemList<Car> carGemList = null;
@@ -406,7 +406,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   @Override
   protected void _doDeleteCar(Car o) {
     // ...
-    flensburgObservers.forEach(obs -> obs.notifyCarDeleted(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyCarDeleted(o));
   }
 
   @Override
