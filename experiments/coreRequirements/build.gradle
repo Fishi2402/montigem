@@ -59,11 +59,16 @@ task runServer {
     dependsOn(bootRun)
 }
 
-task generateFlensburg(type: UMLPTask) {
+task generateCDTOGUI(type: UMLPTask) {
     input = file("models/hardy")
     cdToGui = true
+    outputDir = layout.buildDirectory.dir("genumlp/cd2gui")
+}
 
-    outputDir = layout.buildDirectory.dir("genumlp")
+task generateFlensburg(type: UMLPTask) {
+    dependsOn(generateCDTOGUI)
+    input.from(file("models/hardy"))
+    outputDir = layout.buildDirectory.dir("genumlp/hardy")
 }
 
 task copySymbols(type: Copy) {

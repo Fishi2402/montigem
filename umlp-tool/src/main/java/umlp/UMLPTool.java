@@ -138,7 +138,19 @@ public class UMLPTool extends UMLPToolTOP {
       }
 
       if(CD2GUI.isSelected(cmd)){
-        CD2GUITool guiTool = new CD2GUITool(inputFile, outDir, hwcPath);
+        umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);   //TODO: Maybe refactor
+
+        Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
+        String report_on = inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
+        Reporting.on(report_on);
+
+        UMLPMill.init();
+        BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+
+        // parse, create symbol table, check all cocos
+        ASTCDCompilationUnit ast = parse(inputFile.getPath());
+        Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
+        CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath);
         guiTool.generateGUI();
       }
 
