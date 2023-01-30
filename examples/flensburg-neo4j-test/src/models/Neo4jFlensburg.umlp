@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+// HWC-P: eigentlich ein Modell, aber fuers Produkt
+
+/*
+ * Simple class diagram with 3 classes, some assocs, and inheritance
+ */
+
+umlp Neo4jFlensburg {
+
+    class Neo4jCar;
+
+    class Neo4jHuman {
+      int age;
+    }
+
+    class Neo4jPerson extends Neo4jHuman {
+        String nickname;
+
+        // calculated attribute: wird nicht persistiert,
+        // deshalb gibt es nur einen getter, der dies berechnet
+        / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
+    }
+
+    class Neo4jAddress {
+      String city;
+    }
+
+    association [1] Neo4jPerson -> (owns) Neo4jCar [*];
+    association [1] Neo4jPerson -> (mainResidence) Neo4jAddress [1];
+
+    association neo4jVisits [*] Neo4jPerson (visitor) <-> (visited) Neo4jAddress [*];
+    // man beachte hier die intern gekapselte bidirektionale Verwaltung
+    association neo4jParent [1] Neo4jPerson -> (children) Neo4jPerson [*];
+
+}

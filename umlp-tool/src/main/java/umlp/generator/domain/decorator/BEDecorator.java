@@ -28,24 +28,20 @@ public class BEDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit cdAST, ASTCDCompilationUnit decoratedAST) {
     DomainClassDecorator domainClassDecorator;
 
-    if(neo4j) {
-      domainClassDecorator = new DomainClassDecoratorForNeo4j(glex, hwPath);
-      domainClassDecorator.transform(cdAST, decoratedAST);
-      Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
-
-      RepositoryDecorator repositoryDecorator = new RepositoryDecorator(glex);
-      repositoryDecorator.transform(cdAST, decoratedAST);
-      Log.info("After decorator: RepositoryDecorator", BEDecorator.class.getName());
-    } else {
-      domainClassDecorator = new DomainClassDecorator(glex, hwPath);
-      domainClassDecorator.transform(cdAST, decoratedAST);
-      Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
-    }
+    domainClassDecorator = new DomainClassDecorator(glex, hwPath);
+    domainClassDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
 
     // Generate DAOs
-    DAODecorator daoDecorator = new DAODecorator(glex);
-    daoDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: DAODecorator", BEDecorator.class.getName());
+    if(!neo4j) {
+      DAODecorator daoDecorator = new DAODecorator(glex);
+      daoDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: DAODecorator", BEDecorator.class.getName());
+    } else {
+      DAODecorator daoDecorator = new DAONeo4jDecorator(glex);
+      daoDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: DAODecorator", BEDecorator.class.getName());
+    }
 
     // Generate DeSer
     DeSerDecorator deSerDecorator = new DeSerDecorator(glex, hwPath);

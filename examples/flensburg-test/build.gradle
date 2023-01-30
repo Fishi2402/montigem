@@ -5,7 +5,6 @@ task generateFlensburg(type: UMLPTask) {
     input.from(file("src"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
     hwcDir = layout.projectDirectory.dir("src/main/java/")
-    debug=true
 }
 
 build.dependsOn(generateFlensburg)
