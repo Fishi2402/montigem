@@ -37,6 +37,7 @@ dependencies {
 
     // Enable for implementing a new Adapter
 //    implementation group: 'org.jsweet', name: 'jsweet-transpiler', version: "3.2.0-SNAPSHOT"
+    api group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
 }
 
 test {

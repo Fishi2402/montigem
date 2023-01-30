@@ -66,16 +66,12 @@ public class DomainClassDecorator extends AbstractDecorator {
     }
     ASTCDClass clazz = builder.build();
 
-    setClassAnnotationTemplate(clazz, name, domainClass.isPresentCDExtendUsage(),
-            GeneratorEngine.existsHandwrittenClass(hwPath, domainClass.getName()));
-
     // Constructors
     getCD4C().addConstructor(clazz, "umlp.domain.Constructor", domainClass.getName());
 
     if (!domainClass.isPresentCDExtendUsage()) {
       // Attribute gemId and getter and setter
       ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected readonly long gemId = -32;");
-      setGemAnnotationTemplate(gemAttr);
       clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
     }
 
@@ -142,7 +138,6 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
               createType(visibleAttribute), GenService.createName(visibleAttribute.getName()));
       attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
-      setAttributeAnnotationTemplate(attribute);
       attributesList.add(attribute);
     }
     return attributesList;
@@ -160,7 +155,6 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
       if (GenService.isList(assocSide)) {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
                 getMCTypeFacade().createBasicGenericTypeOf("GemList", type), GenService.createName(assocSide.getName()));
-        setAssocAnnotations(domainClass, attribute);
       } else {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
                 getMCTypeFacade().createBasicGenericTypeOf("Gem", type), GenService.createName(assocSide.getName()));
@@ -219,20 +213,4 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
       attrList.addAll(attrFields);
     }
   }
-
-  // TODO remove when neo4jgeneration gets adapted
-  protected void setGemAnnotationTemplate(ASTCDAttribute gemAttr) { }
-
-  protected void setClassAnnotationTemplate(ASTCDClass clazz, String mangerName,
-                                            boolean hasSuperClass, boolean hasTop) {  }
-
-  protected void setAttributeAnnotationTemplate(ASTCDAttribute attribute) {  }
-
-  public void setAssocAnnotations(ASTCDClass domainClass, ASTCDAttribute attribute) {
-    // TODO: hier sollen DB (JPA / Hibnernate) Annotationen fuer Assoziationen generiert werden
-    /*glex.replaceTemplate("cd2java.Annotations", attribute,
-        new TemplateHookPoint("umlp.domain.AssocAnnotations",
-            domainClass.getName(), attribute.getName()));*/
-  }
-
 }
