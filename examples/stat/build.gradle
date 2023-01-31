@@ -1,10 +1,52 @@
 /* (c) https://github.com/MontiCore/monticore */
+plugins {
+    id 'application'
+    id 'com.google.cloud.tools.jib' version '3.2.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version "${spring_version}"
+}
+
 description 'StatServer'
 
 task generateStatBackend(type: UMLPTask) {
     input.from(file("src"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
     hwcDir = layout.projectDirectory.dir("src/main/java/")
+}
+
+application {
+    mainClass = 'log_mc_jar.StatServerApplication'
+}
+
+bootBuildImage {
+    imageName = "statserver"
+}
+
+jib {
+    to {
+        image 'yolanv/jib-demo:gradle'
+    }
+}
+
+dependencies {
+    implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
+
+    // Spring Boot Dependencies
+    def withoutSpringLogging = {
+        exclude module: 'spring-boot-starter-logging'
+        exclude module: 'logback-classic'
+    }
+    compileOnly("org.springframework.boot:spring-boot-devtools:$spring_version")
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
+
+
+    //symbol "de.monticore:frontend-rte:$mc_version"
+}
+
+task runServer {
+    dependsOn(bootRun)
 }
 
 build.dependsOn(generateStatBackend)

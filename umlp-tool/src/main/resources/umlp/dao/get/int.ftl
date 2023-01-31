@@ -1,2 +1,2 @@
-${signature("attr")}
-res.getInt("${attr.getName()}")
+${signature("attr", "columnName")}
+res.getInt("${columnName}")

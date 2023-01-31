@@ -8,7 +8,10 @@
 
 umlp Flensburg {
 
-    class Car;
+    class Car {
+      boolean wheelLeft; // Test Boolean values
+      List<String> namesOfAllParts;
+    }
 
     class Human {
         int age;
