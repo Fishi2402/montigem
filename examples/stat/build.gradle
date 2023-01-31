@@ -12,6 +12,7 @@ task generateStatBackend(type: UMLPTask) {
     input.from(file("src"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
     hwcDir = layout.projectDirectory.dir("src/main/java/")
+    tmplDir = layout.projectDirectory.dir("src/templates/")
 }
 
 application {
