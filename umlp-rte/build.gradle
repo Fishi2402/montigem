@@ -33,11 +33,9 @@ description = "UMLP RTE"
 dependencies {
     api group: 'de.monticore', name: 'monticore-runtime', version: mc_version
 
-    api group: 'org.postgresql', name: 'postgresql', version: '42.2.27'
 
     // Enable for implementing a new Adapter
 //    implementation group: 'org.jsweet', name: 'jsweet-transpiler', version: "3.2.0-SNAPSHOT"
-    api group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
 }
 
 test {

@@ -1,6 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 description 'flensburg neo4j example'
 
+dependencies {
+  implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
+}
+
 task generateNeo4jFlensburg(type: UMLPTask) {
     input.from(file("src/models"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
