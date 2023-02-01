@@ -40,6 +40,8 @@ public class UMLP_RTE_Adapter extends org.jsweet.transpiler.extension.PrinterAda
     staticLibrary.put("umlp.command.CommandObjectMapper", "command/CommandObjectMapper");
     staticLibrary.put("java.util.concurrent.atomic.AtomicReference", "javautil/AtomicReference");
     staticLibrary.put("java.util.Random", "javautil/Random");
+    staticLibrary.put("java.util.Random", "javautil/Random");
+    staticLibrary.put("umlp.util.jsweetUtils.JavaUtilUtils", "javautil/JavaUtilUtils");
   }
 
   @Override

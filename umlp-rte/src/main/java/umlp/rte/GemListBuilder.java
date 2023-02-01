@@ -3,7 +3,10 @@ package umlp.rte;
 
 // RTE-P
 
+import jsweet.lang.Replace;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +54,12 @@ public abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
   }
 
   @Override
+  @Replace(
+                "if (this.buildFinished) {\n"
+          + "      return super.size();\n"
+          + "    } else {\n"
+          + "      return this.builderElemStorage.length;\n"
+          + "    }")
   public int size() {
     if(buildFinished){
       return super.size();
@@ -60,6 +69,16 @@ public abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
   }
 
   @Override
+  @Replace(
+                "if (this.buildFinished) {\n"
+          + "      return super.get(idx);\n"
+          + "    } else {\n"
+          + "      if (/* get */this.builderElemStorage[idx].isPresentBuilder()) {\n"
+          + "        return /* get */this.builderElemStorage[idx].getBuilder();\n"
+          + "      } else {\n"
+          + "        return super.get(idx);\n"
+          + "      }\n"
+          + "    }")
   public E get(int idx) {
     if(buildFinished) {
       return super.get(idx);
@@ -75,6 +94,14 @@ public abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
   }
 
   @Override
+  @Replace(
+                "if (this.buildFinished) {\n"
+          + "      super.add(idx, elem);\n"
+          + "    } else {\n"
+          + "      /* add */\n"
+          + "      this.builderElemStorage.splice(idx, 0, new IDOrBuilder<any>(elem));\n"
+          + "    }"
+  )
   public void add(int idx, E elem) {
     if(buildFinished) {
       super.add(idx, elem);
@@ -97,7 +124,11 @@ public abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     if(buildFinished) {
       super._internal_add(idx, additions);
     } else {
-      List<IDOrBuilder<E>> newElems = additions.stream().map(e -> new IDOrBuilder<E>(e)).collect(Collectors.toList());
+      List<IDOrBuilder<E>> newElems = new ArrayList<>();
+      for (Long e : additions) {
+        IDOrBuilder<E> eidOrBuilder = new IDOrBuilder<>(e);
+        newElems.add(eidOrBuilder);
+      }
       builderElemStorage.addAll(idx, newElems);
     }
   }
@@ -107,9 +138,11 @@ public abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     if(buildFinished) {
       super._internal_remove(idxs);
     } else {
-      List<Integer> idxsReversed = idxs.stream()
-          .sorted(Comparator.reverseOrder())
-          .collect(Collectors.toList());
+      List<Integer> idxsReversed = new ArrayList<>();
+      for (Integer integer : idxs) {
+        idxsReversed.add(integer);
+      }
+      Collections.reverse(idxsReversed);
       for(int idx : idxsReversed) {
         builderElemStorage.remove(idx);
       }

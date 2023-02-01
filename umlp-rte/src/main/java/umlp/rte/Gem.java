@@ -4,8 +4,8 @@ package umlp.rte;
 // RTE
 
 import de.se_rwth.commons.logging.Log;
+import umlp.util.jsweetUtils.JavaUtilUtils;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
 //alpha, this class is not fully developed,
@@ -59,7 +59,7 @@ public class Gem<E extends GemIdentifiable> implements GemIdentifiable {
    */
   public Gem(long gemId, Supplier<LoadResult<E>> supplier) {
     this.gemId = gemId;
-    this.loadFunction = Objects.requireNonNull(supplier);
+    this.loadFunction = JavaUtilUtils.requireNonNull(supplier);
     this.loadingState = LoadingState.NOT_YET_LOADED;
   }
 

@@ -3,7 +3,8 @@ package umlp.command;
 
 // RTE-P
 
-import java.util.Objects;
+import umlp.util.jsweetUtils.JavaUtilUtils;
+
 import java.util.Optional;
 
 // Serialisiert und deserialisiert Commands und CommandResults
@@ -11,7 +12,7 @@ public abstract class CommandObjectMapper {
   protected static CommandObjectMapper instance;
 
   protected static CommandObjectMapper getInstance(){
-    return Objects.requireNonNull(instance, "CommandObjectMapper is not initialized!");
+    return JavaUtilUtils.requireNonNull(instance, "CommandObjectMapper is not initialized!");
   }
 
   public static String serializeCommand(Command<?> command){

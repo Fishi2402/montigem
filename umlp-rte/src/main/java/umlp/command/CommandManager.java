@@ -74,7 +74,7 @@ public class CommandManager {
 
   public static <T> CommandResult<T> executeCommand(Command<T> command) {
     Log.trace("Exec command " + command.getId() + " " + command.getCommandType() + " from " + command.getParticipantId(), LogUtil.getLoggerName());
-    Log.trace(CommandObjectMapper.serializeCommand(command), LogUtil.getLoggerName());
+    Log.trace(umlp.command.CommandObjectMapper.serializeCommand(command), LogUtil.getLoggerName());
     return getInstance()._executeCommand(command);
   }
 
@@ -98,13 +98,21 @@ public class CommandManager {
   }
 
   protected <T> void _sendCommandToSubscribers(Command<T> command) {
-    for (Map.Entry<Long, Participant> e : particpants.entrySet()) {
-      if (!e.getKey().equals(command.getParticipantId())) {
-        if(command.getEffectedGemIds().stream().anyMatch(gemId -> e.getValue().isSubscribedTo(gemId))) {
-          Log.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + e.getKey(), LogUtil.getLoggerName());
-          e.getValue().sendCommand(command);
+    for (Long participantId : particpants.keySet()) {
+      Participant participant = particpants.get(participantId);
+      if (!participantId.equals(command.getParticipantId())) {
+        boolean match = false;
+        for (Long gemId : command.getEffectedGemIds()) {
+          if (participant.isSubscribedTo(gemId)) {
+            match = true;
+            break;
+          }
+        }
+        if(match) {
+          Log.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + participantId, LogUtil.getLoggerName());
+          participant.sendCommand(command);
         }else{
-          Log.trace("Skip sending command " + command.getCommandType() + " to " + e.getKey(), LogUtil.getLoggerName());
+          Log.trace("Skip sending command " + command.getCommandType() + " to " + participantId, LogUtil.getLoggerName());
         }
       }
     }
