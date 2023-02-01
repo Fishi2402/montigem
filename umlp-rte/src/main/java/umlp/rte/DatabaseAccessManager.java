@@ -173,11 +173,12 @@ public class DatabaseAccessManager {
   }
 
   public static long getFreeGemId(){
+    return gemId++;
     // TODO: Bottelneck: one db call per gemid is slow
     // Idea: "reserve" 1000 gemids in one call
     // If the server dies, some ids are "wasted"
     // could be done asynchronously at 90% ids used to remove wait
-    executeStatement("UPDATE __internal_key_value__ SET value_bigint = value_bigint + 1 WHERE k = 'gemid';");
+    /*executeStatement("UPDATE __internal_key_value__ SET value_bigint = value_bigint + 1 WHERE k = 'gemid';");
     Optional<ResultSet> rsOpt = executeSQLQuery("SELECT value_bigint FROM __internal_key_value__ WHERE k = 'gemid';");
     if(rsOpt.isEmpty()){
       throw new RuntimeException("Can not find gemid in database");
@@ -193,6 +194,6 @@ public class DatabaseAccessManager {
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
-    }
+    }*/
   }
 }

@@ -1,0 +1,28 @@
+<gem-text-input
+  [value]="getTextInputComp1()"
+>
+</gem-text-input>
+
+<gem-number-input
+  [value]="getNumberInputComp2()"
+>
+</gem-number-input>
+
+<gem-button
+  text="Ok"
+>
+</gem-button>
+
+<gem-button
+  text="Decrease"
+  (leftClick)="leftClickButtonComp5.bind(this)()"
+>
+</gem-button>
+
+<div class="extra">
+  Person
+  <br>
+  Nickname: {{p.getNickname()}}
+  <br>
+  Age: {{p.getAge()}}
+</div>

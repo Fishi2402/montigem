@@ -1,2 +1,2 @@
-${signature("attr")}
-res.getBoolean("${attr.getName()}")
+${signature("attr", "columnName")}
+res.getBoolean("${columnName}")

@@ -1,2 +1,2 @@
-${signature("attr")}
-res.getFloat("${attr.getName()}")
+${signature("attr", "columnName")}
+res.getFloat("${columnName}")
