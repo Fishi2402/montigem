@@ -29,6 +29,13 @@ package hardy;
   Wir nutzen den static Singleton Ansatz für alle zu realisierenden Funktionen
 */
 
+import de.se_rwth.commons.logging.Log;
+import def.js.Promise;
+import hardy.jsweetUtil.AwaitUtil;
+import hardy.jsweetUtil.UMLPPromise;
+import jsweet.lang.Async;
+import jsweet.util.Lang;
+import umlp.command.error.NotImplementedException;
 import umlp.rte.Gem;
 import umlp.rte.GemList;
 import umlp.rte.LoadResult;
@@ -39,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public abstract class   FlensburgManager {
 
@@ -257,7 +265,12 @@ public abstract class   FlensburgManager {
         return getSingleton()._doGetPersonSure(gemId);
     }
 
-    protected abstract Person _doGetPersonSure(long gemId);
+    @Async
+    protected Person _doGetPersonSure(long gemId) {
+      String res = "MAB0x9001: No Getter for class " + "Person" + " available in Manager implementation";
+      Log.warn(res);
+      throw new NotImplementedException(res);
+    };
 
     /**
      * Adds a {@link Person} object when build is complete to be maintained by this manager.

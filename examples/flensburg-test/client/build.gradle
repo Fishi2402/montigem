@@ -20,6 +20,11 @@ plugins {
     id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-SNAPSHOT"
 }
 
+repositories {
+    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+}
+
 jsweet {
     verbose = true
     encoding = 'UTF-8'

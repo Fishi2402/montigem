@@ -1,41 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
-buildscript {
-    repositories {
-        if(("true").equals(getProperty('useLocalRepo'))) { mavenLocal() }
-        mavenCentral()
-        maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-        maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-    }
-    dependencies {
-        classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-SNAPSHOT') {
-            transitive = true
-        }
-    }
-}
-
 plugins {
     id 'application'
     id 'maven-publish'
     id 'java-library'
-    id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-SNAPSHOT"
 }
 
 
 group = "umlp"
 description = "UMLP RTE"
 
-// Enable for implementing a new Adapter
-//repositories {
-//    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-//    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-//}
+repositories {
+    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+}
 
 dependencies {
     api group: 'de.monticore', name: 'monticore-runtime', version: mc_version
 
-
-    // Enable for implementing a new Adapter
-//    implementation group: 'org.jsweet', name: 'jsweet-transpiler', version: "3.2.0-SNAPSHOT"
+    implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
 }
 
 test {
@@ -46,22 +28,10 @@ test {
 }
 
 /////////////////////////   JSweet //////////////////////////////
-// Enable for implementing a new Adapter
-//sourceSets {
-//    main.java.srcDirs += ["$projectDir/jsweet_extension"]
-//}
-
-jsweet {
-    verbose = true
-    encoding = 'UTF-8'
-    sourceMap = true
-    tsOnly = true
-    tsOut = project.file('target/generated-sources/ts')
-    targetVersion = 'ES6'
-    includes = ['**/*.java']
-    module = 'commonjs'
-//    excludes = ['**/umlp/jsweet/extension/**/*.java']    // Enable for implementing a new Adapter
-    workingDir = project.file('target/.jsweet')
+project('umlp-frontend-rte'){
+    sourceSets.main.java {
+        srcDirs = ['../src/main/java']
+    }
 }
 
 /////////////////////////   Deployment  //////////////////////////////////

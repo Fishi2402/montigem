@@ -2,6 +2,7 @@
 package umlp.rte;
 
 import de.se_rwth.commons.logging.Log;
+import jsweet.lang.Replace;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -143,10 +144,14 @@ public abstract class GemList<E extends GemIdentifiable>
   }
 
   public void _internal_remove(Set<Integer> idxs) {
-    idxs
-        .stream()
-        .sorted(Comparator.reverseOrder())
-        .forEach(idx -> ids.remove((int)idx));
+    List<Integer> toSort = new ArrayList<>();
+    for (Integer idx : idxs) {
+      toSort.add(idx);
+    }
+    Collections.reverse(toSort);
+    for (Integer idx : toSort) {
+      ids.remove((int) idx);
+    }
   }
 
   /**
@@ -227,6 +232,17 @@ public abstract class GemList<E extends GemIdentifiable>
    * Can only be called if the idStorage contains the gemId, otherwise the size will become invalid.
    * The gemId is not required to be loaded in the idStorage, thus the result of idStorage.removeId must not be returned
    */
+  @Replace("console.info(this.ids);\n"
+      + "      /* remove */\n"
+      + "      (a => {\n"
+      + "        let index = a.indexOf(<number>gemId);\n"
+      + "        if (index >= 0) {\n"
+      + "          a.splice(index, 1);\n"
+      + "          return true;\n"
+      + "        } else {\n"
+      + "          return false;\n"
+      + "        }\n"
+      + "      })(this.ids);")
   public void removeIdSure(long gemId) {
     System.out.println(ids);
     ids.removeIf(l -> Objects.equals(l, gemId));
