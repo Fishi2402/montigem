@@ -138,6 +138,11 @@ public class UMLPTool extends UMLPToolTOP {
       }
 
       if(CD2GUI.isSelected(cmd)){
+        if(!isUmlpFile(inputFile)){
+          Log.warn("option -cd2gui used without a classdiagram umlp file as input");
+          return;
+        }
+
         umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);   //TODO: Maybe refactor
 
         Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
@@ -150,7 +155,7 @@ public class UMLPTool extends UMLPToolTOP {
         // parse, create symbol table, check all cocos
         ASTCDCompilationUnit ast = parse(inputFile.getPath());
         Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
-        CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath);
+        CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, false);
         guiTool.generateGUI();
       }
 
