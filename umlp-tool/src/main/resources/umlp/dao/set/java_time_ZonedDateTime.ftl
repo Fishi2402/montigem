@@ -1,2 +1,2 @@
-${signature("attr")}
-res.getObject("${attr.getName()}", java.time.ZonedDateTime.class)
+${signature("typeName", "index", "attr")}
+insert${typeName}.setObject(${index}, o.get${attr.getName()?cap_first}());

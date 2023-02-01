@@ -1,2 +1,2 @@
-${signature("attr")}
-res.getObject("${attr.getName()}", java.time.LocalDate.class)
+${signature("attr","columnName")}
+res.getObject("${columnName}", java.time.LocalDate.class)

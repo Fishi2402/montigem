@@ -4,12 +4,30 @@ package flensburg.database;
 import flensburg.*;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GenCreateTest extends GenAbstractDBTest {
+
+  @Test
+  public void testCarDAO() {
+    Optional<Car> carOpt = FlensburgManager.carBuilder()
+        .wheelLeft(true)
+        .namesOfAllParts(Arrays.asList("Mercedes Stern", "Bluetooth Radio", "17 Zoll Fernseher")).build();
+    assertTrue(carOpt.isPresent());
+
+    long gemId = carOpt.get().getGemId();
+    CarDAO carDAO = new CarDAO();
+    Optional<Car> carFromDBOpt = carDAO.selectCar(gemId);
+
+    assertTrue(carFromDBOpt.isPresent());
+
+    assertTrue(carFromDBOpt.get().getWheelLeft());
+    assertTrue(carFromDBOpt.get().getNamesOfAllParts().containsAll(carOpt.get().getNamesOfAllParts()));
+  }
 
   @Test
   public void testHumanDaoInsertAndSelect() {

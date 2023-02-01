@@ -3,6 +3,7 @@ import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { routes } from "./editiere-person-edit.routing";
 import { EditierePersonEdit } from "./editiere-person-edit.component";
+import { IoModule } from "../tmp/io/io.module";
 
 @NgModule({
   declarations: [
@@ -10,7 +11,8 @@ import { EditierePersonEdit } from "./editiere-person-edit.component";
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    IoModule
   ],
   exports: [
     EditierePersonEdit

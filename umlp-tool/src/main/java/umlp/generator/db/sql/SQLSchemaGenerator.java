@@ -60,9 +60,9 @@ public class SQLSchemaGenerator {
     fqnClassNameToType.put("java.lang.Double", "DOUBLE");
     fqnClassNameToType.put("Double", "DOUBLE");
     fqnClassNameToType.put("double", "DOUBLE");
-    fqnClassNameToType.put("java.lang.Boolean", "BIT");
-    fqnClassNameToType.put("Boolean", "BIT");
-    fqnClassNameToType.put("boolean", "BIT");
+    fqnClassNameToType.put("java.lang.Boolean", "BOOLEAN");
+    fqnClassNameToType.put("Boolean", "BOOLEAN");
+    fqnClassNameToType.put("boolean", "BOOLEAN");
     fqnClassNameToType.put("java.lang.Char", "CHAR");
     fqnClassNameToType.put("Char", "CHAR");
     fqnClassNameToType.put("char", "CHAR");
@@ -179,7 +179,7 @@ public class SQLSchemaGenerator {
     p.indent();
 
     String r1 = "id";
-    String r2 = "value";
+    String r2 = "_value";
 
     p.print(r1);
     p.println(" BIGINT NOT NULL,");

@@ -3,6 +3,8 @@ package flensburg;//+ HWC-PT
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -17,13 +19,13 @@ public class CityInfoTest {
   public void testCityInfo(){
     FlensburgMock.init();
 
-    CarBuilder c1 = FlensburgManager.carBuilder();
-    CarBuilder c2 = FlensburgManager.carBuilder();
+    CarBuilder c1 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>());
+    CarBuilder c2 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>());
 
-    CarBuilder c3 = FlensburgManager.carBuilder();
-    CarBuilder c4 = FlensburgManager.carBuilder();
-    CarBuilder c5 = FlensburgManager.carBuilder();
-    CarBuilder c6 = FlensburgManager.carBuilder();
+    CarBuilder c3 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>());
+    CarBuilder c4 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>());
+    CarBuilder c5 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>());
+    CarBuilder c6 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>());
 
     Address a1 = FlensburgManager.addressBuilder().city("Aachen").build().get();
     Address a2 = FlensburgManager.addressBuilder().city("Flensburg").build().get();

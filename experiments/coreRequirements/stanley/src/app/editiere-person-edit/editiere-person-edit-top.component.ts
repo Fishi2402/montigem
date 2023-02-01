@@ -1,11 +1,12 @@
 import { Directive } from "@angular/core";
+import { dummy } from "../hardy/mock/person-dummy";
 import { Person } from "../hardy/person";
 import { PersonErrorObserver } from "../hardy/person-error-observer";
 
 @Directive()
 export class EditierePersonEditTOP implements PersonErrorObserver {
 
-  protected p: Person;
+  public p: Person;
 
   protected textInputComp1Error: string = '';
 
@@ -13,7 +14,7 @@ export class EditierePersonEditTOP implements PersonErrorObserver {
 
   constructor() {
     // TODO: person loading
-    this.p = new Person();
+    this.p = dummy;
   }
 
   public ngOnInit(): void {

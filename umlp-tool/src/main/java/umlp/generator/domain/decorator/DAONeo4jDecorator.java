@@ -8,8 +8,10 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
+import umlp.generator.db.sql.SQLSchemaGenerator;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DAONeo4jDecorator extends DAODecorator {
@@ -55,7 +57,10 @@ public class DAONeo4jDecorator extends DAODecorator {
     Map<ASTCDAttribute, String> optAttrToInnerType = getOptionalAttrsToInnerTypeMap(domainClass);
 
     getCD4C().addMethod(daoClass, "umlp.dao.SelectInitNeo4j", domainClass.getName(), attributes);
-    getCD4C().addMethod(daoClass, "umlp.dao.Select", domainClass.getName(), cdName, attributes,
+
+    Map<ASTCDAttribute, String> attributeTableName = attributes.stream().collect(Collectors.toMap(Function.identity(),
+        ASTCDAttributeTOP::getName));
+    getCD4C().addMethod(daoClass, "umlp.dao.Select", domainClass.getName(), cdName, attributeTableName,
         optAttrToInnerType, listAttributes, listAssociationMap, gemAssociationMap);
   }
 

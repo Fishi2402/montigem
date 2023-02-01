@@ -1,12 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("className","attrName", "innerType")}
+${tc.signature("tableName", "className","attrName", "innerType")}
 ${cd4c.method("public void update${attrName?cap_first}(long gemId, List<${innerType}> ${attrName})")}
 
   if(remove${attrName?cap_first}Statement == null) {
-    remove${attrName?cap_first}Statement = DatabaseAccessManager.prepareStatement("DELETE FROM ${className}t$${attrName} WHERE id = ?");
+    remove${attrName?cap_first}Statement = DatabaseAccessManager.prepareStatement("DELETE FROM ${tableName} WHERE id = ?");
   }
   if(update${attrName?cap_first}Statement == null) {
-    update${attrName?cap_first}Statement = DatabaseAccessManager.prepareStatement("INSERT INTO ${className}t$${attrName} (id, value) VALUES (?, ?)");
+    update${attrName?cap_first}Statement = DatabaseAccessManager.prepareStatement("INSERT INTO ${tableName} (id, _value) VALUES (?, ?)");
   }
   try{
     remove${attrName?cap_first}Statement.clearParameters();
