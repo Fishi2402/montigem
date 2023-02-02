@@ -41,7 +41,8 @@ docker build .  -t <imageNameOfFrontend>
 
 ### Deploy on Server
 * copy the `docker-compose.yml` file on the server
-    * Modify the file according to comments
+  * e.g. ``scp ./docker-compose.yml user@domain.de:~/`` 
+  * Modify the file according to comments
 * In gitlab create login token with read access to package registry
 * On the server:
     * `docker login -u <name> -p <token> registry.git.rwth-aachen.de`
