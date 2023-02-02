@@ -42,10 +42,17 @@ deployBackendDocker:
   dependencies:
     - build
   script:
+      # Core Requirements
     - "gradle :experiments:coreRequirements:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.to.image=$CI_REGISTRY_IMAGE/corerequirements:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+    # Stat-Server
+    - "gradle :examples:stat:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
+      -Djib.to.image=$CI_REGISTRY_IMAGE/stat_backend:latest \
+      -Djib.to.auth.username=$CI_REGISTRY_USER  \
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+
   only:
     - dev
 
