@@ -109,8 +109,12 @@ gradlePlugin {
     plugins {
         umlpplugin  {
             id = "de.rwth.se.umlp-tool"
-            implementationClass = "gradle.UMLPPlugin"
+            implementationClass = "gradle.UMLPPluginBase"
         }
+      umlpplugin_backend  {
+        id = "de.rwth.se.umlp-tool-backend"
+        implementationClass = "gradle.UMLPPluginBackend"
+      }
     }
 }
 
