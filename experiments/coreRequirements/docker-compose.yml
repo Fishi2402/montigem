@@ -1,7 +1,7 @@
 # (c) https://github.com/MontiCore/monticore  
 #
 # Example Docker-Compose for the deployment _on the server_
-# All values inside <_> must be replaced
+# Look for the comment "CHANGE ME" to see what needs to be modified on other deployments
 #
 # Also see "deploy.md"
 #
@@ -10,7 +10,7 @@ services:
   db:
     image: postgres:15-alpine
     environment:
-      - POSTGRES_PASSWORD=<ChangeThisPassword_PLEASE>
+      - POSTGRES_PASSWORD=<ChangeThisPassword_PLEASE> # CHANGE ME: !!!!
       - POSTGRES_DB=umlpdb
       - POSTGRES_USER=admin
       - CONNECT_TIMEOUT=31536000
@@ -23,38 +23,42 @@ services:
       retries: 10
     expose:
       - 5432
-    volumes:
-      - './db_data:/var/lib/postgresql/data/'     # Persist Data
+# CHANGE ME: Comment in!
+#    volumes:
+#      - './db_data:/var/lib/postgresql/data/'     # Persist Data
 
   backend:
-    image: <imageNameOfBackend>
+    image: registry.git.rwth-aachen.de/monticore/umlp/corerequirements # CHANGE ME: use your own backend-image
     environment:
-      - UMLP_DEPLOYED_DOMAIN=https://<DOMAIN>  # Required for Allowed Origins
+      # CHANGE ME: your own domain, where the website should be available from
+      # - UMLP_DEPLOYED_DOMAIN=https://<DOMAIN>  # Required for Allowed Origins
 
-
-      # Hibernate, connect to DB
-      - hibernate.hbm2ddl.auto=create   ## Understand what this does! It dangerous!
-          # update = keep old data, but allowed to change db schema
-          # create = delete everything, start from fresh db
-
-      - hibernate.connection.driver_class=org.postgresql.Driver
-      - hibernate.connection.username=admin
-      - hibernate.connection.password=<ChangeThisPassword_PLEASE>
-      - hibernate.dialect=org.hibernate.dialect.PostgreSQL95Dialect
-      - hibernate.connection.url=jdbc:postgresql://db:5432/umlpdb
+      - jdbc_driver=org.postgresql.Driver
+      - database_url=jdbc:postgresql://db:5432/umlpdb
+      - user=admin
+      - password=<ChangeThisPassword_PLEASE>    # CHANGE ME: !!!!
     restart: "unless-stopped"
+    links:
+      - db
+    depends_on:
+      db:
+        condition: service_healthy
     expose:
       - 8081/tcp
 
   frontend:  # Static Apache Server with Proxy to backend
-    image: <imageNameOfFrontend>
-    environment:
-      - UMLP_DEPLOYED_DOMAIN=<DOMAIN>   # Required for SSL certificate
+    image: registry.git.rwth-aachen.de/monticore/umlp/corerequirements_frontend        # CHANGE ME: use your own frontend-image
+# CHANGE ME: Comment in!
+#    environment:
+      # CHANGE ME: your own domain, where the website should be available from
+    # - UMLP_DEPLOYED_DOMAIN=<DOMAIN>   # Required for SSL certificate
     restart: "unless-stopped"
-    ports:
-      - '443:443'
-      - '80:80'
+# CHANGE ME: Comment in!
+#    ports:
+#      - '443:443'
+#      - '80:80'
     links:
       - backend
-    volumes:
-      - './caddy_secret_data:/data/'                         # Persist certificates, otherwise a new certificate might be created for every start
+# CHANGE ME: Comment in!
+#    volumes:
+#      - './caddy_secret_data:/data/'                         # Persist certificates, otherwise a new certificate might be created for every start

@@ -45,9 +45,9 @@ docker build .  -t <imageNameOfFrontend>
   * Modify the file according to comments
 * In gitlab create login token with read access to package registry
 * On the server:
-    * `docker login -u <name> -p <token> registry.git.rwth-aachen.de`
-    * `docker-compose pull`
-    * `docker-compose -p <nameOfApplication> up --detach`
+    * `docker login -u user -p <token> registry.git.rwth-aachen.de`
+    * `docker compose pull`
+    * `docker compose up --detach`
 
 #### Deploy without Certbot / SSL
 Look at `Dockerfile-no-certbot` in the frontend.
