@@ -108,6 +108,5 @@ testDeployed:
     - docker compose down
   after_script:
     - docker-compose down
-  allow_failure: true # TODO: Remove later
   only:
     - dev
