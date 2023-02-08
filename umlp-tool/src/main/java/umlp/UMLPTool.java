@@ -155,6 +155,10 @@ public class UMLPTool extends UMLPToolTOP {
         // parse, create symbol table, check all cocos
         ASTCDCompilationUnit ast = parse(inputFile.getPath());
         Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
+        runAfterParseTrafo(ast);
+        createSymbolTable(ast);
+        runDefaultTrafo(ast);
+        runDefaultCoCos(ast);
         CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, false);
         guiTool.generateGUI();
 
