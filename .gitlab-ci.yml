@@ -17,6 +17,7 @@ stages:
 #  - it_tests
   - check
   - deploy
+  - testDeployed
 
 build:
   stage: build
@@ -92,3 +93,20 @@ checkMDLinks:
     - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
   only:
     - master
+
+# Test that the docker-compose file in <experiments/coreRequirements> is working & that the docker-containers start
+testDeployed:
+  stage: testDeployed
+  tags:
+    - shell
+    - docker
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - cd experiments/coreRequirements/
+    - docker compose up -d
+    ## TODO: Test a bit more
+    - docker compose down
+  after_script:
+    - docker-compose down
+  only:
+    - dev
