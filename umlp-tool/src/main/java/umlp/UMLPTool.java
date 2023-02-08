@@ -157,6 +157,8 @@ public class UMLPTool extends UMLPToolTOP {
         Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
         CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, false);
         guiTool.generateGUI();
+
+        Reporting.flush(ast);
       }
 
       else if (isUmlpFile(inputFile)) {
