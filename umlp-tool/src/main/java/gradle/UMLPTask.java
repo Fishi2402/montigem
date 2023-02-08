@@ -294,6 +294,10 @@ public abstract class UMLPTask extends DefaultTask {
   @TaskAction
   public void run(InputChanges inputChanges) {
     Log.info("Start UMLPTask", this.getName());
+    if(getDebug().get()){
+      Log.warn("Task is running in debug modus and isolation is disabled. This can lead to errors, especially when two UMLPTasks are running parallel. \n" +
+          "Deactivate debug modus once debugging is finished!");
+    }
 
     checkParameters();
     workQueue = getWorkerExecutor().classLoaderIsolation();

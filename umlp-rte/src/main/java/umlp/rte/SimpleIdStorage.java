@@ -5,8 +5,17 @@ package umlp.rte;
 
 import de.se_rwth.commons.logging.Log;
 import umlp.util.LogUtil;
+import umlp.util.jsweetUtils.JavaUtilUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.TreeMap;
 
 // Sehr simple aber langsame implementierung des IdStorage.
 // Verwaltet alle IDs in einer Map und kopiert diese immer wenn IDs verschoben werden müssen.
@@ -31,11 +40,12 @@ public class SimpleIdStorage implements IdStorage{
     Map<Integer, Long> res = new HashMap<>();
     int s = ids.size();
 
-    for (Map.Entry<Integer, Long> e : idxToId.entrySet()) {
-      if(e.getKey() >= i){
-        res.put(e.getKey() + s, e.getValue());
+    for (Integer key : idxToId.keySet()) {
+      Long value = idxToId.get(key);
+      if(key >= i){
+        res.put(key + s, value);
       }else{
-        res.put(e.getKey(), e.getValue());
+        res.put(key, value);
       }
     }
 
@@ -71,16 +81,18 @@ public class SimpleIdStorage implements IdStorage{
     }
 
     Map<Integer, Long> res = new HashMap<>();
-    for (Map.Entry<Integer, Long> e : idxToId.entrySet()) {
-      if(indicies.contains(e.getKey())){
+    for (Integer key : idxToId.keySet()) {
+      Long value = idxToId.get(key);
+      if(indicies.contains(key)){
         continue;
       }
 
-      Map.Entry<Integer, Integer> floorEntry = offsets.floorEntry(e.getKey());
-      if(floorEntry != null) {
-        res.put(e.getKey() - floorEntry.getValue(), e.getValue());
+      Integer floorKey = offsets.floorKey(key);
+      if(floorKey != null) {
+        Integer floorValue = offsets.get(floorKey);
+        res.put(key - floorValue, value);
       }else{
-        res.put(e.getKey(), e.getValue());
+        res.put(key, value);
       }
     }
 
@@ -110,9 +122,10 @@ public class SimpleIdStorage implements IdStorage{
   public boolean removeId(long gemId) {
     Log.trace("Trying to remove gemId " + gemId, "IdStorage " + LogUtil.getLoggerName());
     int key = -1;
-    for (Map.Entry<Integer, Long> e : idxToId.entrySet()) {
-      if(Objects.equals(e.getValue(), gemId)){
-        key = e.getKey();
+    for (Integer i : idxToId.keySet()) {
+      Long value = idxToId.get(i);
+      if(JavaUtilUtils.equals(value, gemId)){
+        key = i;
         break;
       }
     }

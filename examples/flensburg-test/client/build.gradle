@@ -17,8 +17,12 @@ buildscript {
 }
 
 plugins {
-    id "com.github.node-gradle.node" version "3.4.0"
     id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-SNAPSHOT"
+}
+
+repositories {
+    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
 }
 
 jsweet {
@@ -30,9 +34,6 @@ jsweet {
     candiesJsOut = project.file('target/candies')
     targetVersion = 'ES6'
     includes = ['**/flensburg/**/*.java']
-    excludeTranspilation = ['**/*List*', '**/*DeSer*', '**/*Collector*', '**/*Manager*',
-                            '**/*Observer*', '**/*remove*', '**/*Mapper*', '**/*Mock*',
-                            '**/*GetFreeGemIdRequest.java']
     module = 'commonjs'
 }
 

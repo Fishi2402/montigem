@@ -15,8 +15,8 @@ dependencies {
     implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
     implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
     implementation group: 'de.monticore', name: 'class2mc', version: mc_version
-    implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
-    implementation 'de.monticore.lang:cd4analysis:' + mc_version + ':cdmerge'
+    implementation group: 'de.monticore.lang', name: 'cd4analysis', version: '7.4.2'
+    implementation 'de.monticore.lang:cd4analysis:' + '7.4.2' + ':cdmerge'
     implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version
     implementation group: 'de.monticore.lang', name: 'cd2gui', version: mc_version
     implementation group: 'com.google.guava', name: 'guava', version: guava_version
@@ -26,7 +26,7 @@ dependencies {
 
     implementation "org.apache.groovy:groovy:$groovy_version"
     implementation "de.se_rwth.commons:se-commons-groovy:$mc_version"
-    grammar("de.monticore.lang:cd4analysis:$mc_version") {
+    grammar("de.monticore.lang:cd4analysis:7.4.2") {
         capabilities { requireCapability("de.monticore.lang:cd4analysis-grammars") }
     }
     grammar("de.monticore:monticore-grammar:$mc_version") {
@@ -110,8 +110,12 @@ gradlePlugin {
     plugins {
         umlpplugin  {
             id = "de.rwth.se.umlp-tool"
-            implementationClass = "gradle.UMLPPlugin"
+            implementationClass = "gradle.UMLPPluginBase"
         }
+      umlpplugin_backend  {
+        id = "de.rwth.se.umlp-tool-backend"
+        implementationClass = "gradle.UMLPPluginBackend"
+      }
     }
 }
 

@@ -3,7 +3,13 @@ package umlp.rte;
 
 // RTE-P
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 // Implementierung des IdStorage, welche ids in Chunks verwaltet und Verschiebungen von ids
@@ -96,7 +102,14 @@ public class ChunkedIdStorage implements IdStorage {
       }
     }
 
-    toRemove.stream().sorted(Comparator.reverseOrder()).forEach(r -> chunks.remove((int) r));
+    List<Integer> toSort = new ArrayList<>();
+    for (Integer r : toRemove) {
+      toSort.add(r);
+    }
+    Collections.reverse(toSort);
+    for (Integer r : toSort) {
+      chunks.remove((int) r);
+    }
   }
 
   protected int getFloorChunkIdx(int idx) {
@@ -152,30 +165,33 @@ public class ChunkedIdStorage implements IdStorage {
   @Override
   public void remove(Collection<Integer> indicies) {
     final AtomicReference<Integer> lastChunk = new AtomicReference<>(-1);
-    indicies
-        .stream()
-        .sorted(Comparator.reverseOrder())
-        .forEach(idx -> {
-          if(lastChunk.get() < 0 || !chunks.get(lastChunk.get()).contains(idx)){
-            int fc = getFloorChunkIdx(idx);
-            if(fc >= 0){
-              lastChunk.set(fc);
-            }else{
-              lastChunk.set(-1);
-            }
-          }
+    List<Integer> toSort = new ArrayList<>();
+    for (Integer idx : indicies) {
+      toSort.add(idx);
+    }
+    Collections.reverse(toSort);
+    for (Integer idx : toSort) {
+      if (lastChunk.get() < 0 || !chunks.get(lastChunk.get()).contains(idx)) {
+        int fc = getFloorChunkIdx(idx);
+        if (fc >= 0) {
+          lastChunk.set(fc);
+        }
+        else {
+          lastChunk.set(-1);
+        }
+      }
 
-          int ci = lastChunk.get();
-          if (ci >= 0) {
-            Chunk chunk = chunks.get(ci);
-            if (chunk.contains(idx)) {
-              chunk.ids.remove(chunk.getPositionInChunk(idx));
-              correctUntil = Math.min(correctUntil, idx);
-              lastHealedChunkIndex = Math.min(lastHealedChunkIndex, ci);
-              addSizeChange(chunk, -1);
-            }
-          }
-        });
+      int ci = lastChunk.get();
+      if (ci >= 0) {
+        Chunk chunk = chunks.get(ci);
+        if (chunk.contains(idx)) {
+          chunk.ids.remove(chunk.getPositionInChunk(idx));
+          correctUntil = Math.min(correctUntil, idx);
+          lastHealedChunkIndex = Math.min(lastHealedChunkIndex, ci);
+          addSizeChange(chunk, -1);
+        }
+      }
+    }
   }
 
   private void addSizeChange(Chunk chunk, int change) {

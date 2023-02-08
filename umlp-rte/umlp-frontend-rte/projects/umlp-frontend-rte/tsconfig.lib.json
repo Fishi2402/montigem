@@ -1,0 +1,28 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../out-tsc/lib",
+    "target": "es2017",
+    "module": "es2020",
+    "declaration": false,
+    "declarationMap": true,
+    "inlineSources": true,
+    "strict": false,
+    "noImplicitReturns": true,
+    "types": [],
+    "lib": [
+      "dom",
+      "es2018"
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "@umlp-rte/target/*": ["src/lib/target/umlp/*"],
+      "@umlp-rte/hwc/*":    ["src/lib/hwc/umlp/*"]
+    }
+  },
+  "exclude": [
+    "src/test.ts",
+    "**/*.spec.ts"
+  ]
+}

@@ -33,4 +33,4 @@ if (!o.containsObserver(the${name}CommandObserver)) {
   </#if>
 </#list>
 
-${managerName?uncap_first}Observers.forEach(obs -> obs.notify${name}Added(o.getGemId()));
+${managerName?uncap_first}Observers.forEach(obs -> obs.notify${name}Added(o));

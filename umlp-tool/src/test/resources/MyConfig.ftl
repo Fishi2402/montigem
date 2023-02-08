@@ -3,7 +3,7 @@
   This config template is just for testing
 -->
 
-${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator")}
+${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator")}
 
 <#-- Generate only commands -->
 <#assign commandDecorator = tc.instantiate("umlp.generator.domain.decorator.commands.CommandDecorator", [glex])>

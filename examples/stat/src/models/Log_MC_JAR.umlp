@@ -3,16 +3,15 @@
 umlp Log_MC_JAR {
 
   class MCJarLogEntry {
-    MCJarCLIParameter parameter;  // How was the .jar started?
-    Optional<MCSummary> summary;  // Information about input & execution. e.g. size of AST
-    Optional<ErrorEntry> error;   // If execution was aborted: which error was thrown?
-
     String toolVersion;           // e.g. "7.5.0-SNAPSHOT"
-    //java.time.Duration duration;  // Duration of the run // TODO generation for Java Types does not work yet
-
-    //java.time.Instant receivedTime; // When was the request received on the server?   - Added in backend  // TODO generation for Java Types does not work yet
-    //java.net.InetAddress origin;    // Who sent the request? (Anonymized)             - Added in backend  // TODO generation for Java Types does not work yet
+    java.time.Duration duration;  // Duration of the run
+    java.time.Instant receivedTime; // When was the request received on the server? - Added in backend
+    java.net.InetAddress origin; // Who sent the request? (Anonymized) - Added in backend 
   }
+
+  association paramater [1] MCJarLogEntry -> MCJarCLIParameter [1]; // How was the .jar started?
+  association summary [1] MCJarLogEntry -> MCSummary [0..1] ; // Information about input & execution. e.g. size of AST
+  association error [1] MCJarLogEntry -> ErrorEntry [0..1] ; // If execution was aborted: which error was thrown?
 
   // Not specific for MCJar, can be used by other Logs too
   class ErrorEntry {

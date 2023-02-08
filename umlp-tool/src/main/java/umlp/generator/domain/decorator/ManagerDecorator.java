@@ -104,7 +104,11 @@ public class ManagerDecorator extends AbstractDecorator {
   }
 
   protected void addImports(ASTCDType clazz) {
-    getCD4C().addImport(clazz, "umlp.rte.*");
+    getCD4C().addImport(clazz, "umlp.rte.Gem");
+    getCD4C().addImport(clazz, "umlp.rte.LoadResult");
+    getCD4C().addImport(clazz, "umlp.rte.LoadingState");
+    getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
+    getCD4C().addImport(clazz, "umlp.rte.GemList");
   }
 
 

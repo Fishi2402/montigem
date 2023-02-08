@@ -5,10 +5,12 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.domain.decorator.ManagerDecorator.SUFFIX;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
@@ -34,7 +36,8 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
                 .setName(CLASS_NAME)
                 .build();
         getCD4C().addImport(ast, "umlp.command.SimpleResult");
-        getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
+        getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE),
+                origCD.getCDDefinition().getName()+SUFFIX));
         getCD4C().addImport(ast, "umlp.request.Request");
 
         getCD4C().addConstructor(ast, "umlp.requests.getfreegemid.Constructor", CLASS_NAME, getPackageName(origCD, DEFAULT_PACKAGE));
@@ -52,8 +55,6 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
         getCD4C().addMethod(ast, "umlp.requests.getfreegemid.FromJsonObject");
 
         getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-        getCD4C().addImport(ast, "java.util.Optional");
-        getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
         getCD4C().addImport(ast, "umlp.command.CommandDeSer");
 
         return ast;

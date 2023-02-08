@@ -1,9 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("typeName", "associations")}
+${tc.signature("tableName", "typeName", "associations")}
 ${cd4c.method("public void delete${typeName}(long gemId)")}
 try{
   if(delete${typeName} == null || delete${typeName}.isClosed()){
-    delete${typeName} = DatabaseAccessManager.prepareStatement("DELETE FROM ${typeName?uncap_first} WHERE id = ?");
+    delete${typeName} = DatabaseAccessManager.prepareStatement("DELETE FROM ${tableName} WHERE id = ?");
   }
   <#list associations as assocSide, assoc>
       <#if assocSide.isLeft()>

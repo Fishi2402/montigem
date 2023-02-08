@@ -7,12 +7,14 @@ For a UMLP instance the server should have at least:
 * (?) 4 GB RAM
 
 ### Software Requirements
-Any linux OS with (current!) [docker-compose installation](https://docs.docker.com/compose/install/).
-
-Windows Server might be possible, but it is VERY hard to run linux-docker-container on windows server.
-
+* Any linux OS with (current!) [docker-compose installation](https://docs.docker.com/compose/install/).
+  * Windows Server might be possible, but it is VERY hard to run linux-docker-container on windows server.
+* Open Port 80 and 443 on TCP
+* Domain
+  * Let's Encrypt must be allowed to issue certificates for the domain. Might require DNS configuration. 
 ### Build Dockerimage
 #### Backend
+The usage of [jib](https://github.com/GoogleContainerTools/jib/) as gradle-plugin is recommended. 
 You can build and publish the dockerimage with one command. No docker installation is required.
 ````
 cd <backendLocation>
@@ -26,6 +28,11 @@ For more options, see the [jib](https://github.com/GoogleContainerTools/jib/tree
 #### Frontend
 The frontend dockerimage is using [Caddy](https://caddyserver.com/) to serve static files, proxy to backend and handle SSL certificates
 
+Following files are required in the frontend Directory:
+* `Dockerfile`
+  * the ``dist/<frontendName>`` directory-name might be modified 
+* `Caddyfile`
+
 ````
 cd <frontendLocation>
 gradle assemble
@@ -34,7 +41,8 @@ docker build .  -t <imageNameOfFrontend>
 
 ### Deploy on Server
 * copy the `docker-compose.yml` file on the server
-    * Modify the file
+  * e.g. ``scp ./docker-compose.yml user@domain.de:~/`` 
+  * Modify the file according to comments
 * In gitlab create login token with read access to package registry
 * On the server:
     * `docker login -u <name> -p <token> registry.git.rwth-aachen.de`

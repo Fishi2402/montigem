@@ -40,6 +40,7 @@ rootProject.name = 'umlp'
 includeBuild "umlp-tool"
 
 include ":umlp-rte"
+include ":umlp-rte:umlp-frontend-rte"
 
 include ":experiments"
 include ":experiments:initial"
@@ -54,7 +55,8 @@ include ':examples:mediahub'
 include ':examples:restaurant'
 include ':examples:university'
 include ':examples:stat'
-include 'examples:artifacts-test'
+include ':examples:artifacts-test'
+include ':examples:flensburg-neo4j-test'
 include ':examples:flensburg-test'
 include ':examples:flensburg-test:client'
 

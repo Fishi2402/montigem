@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 plugins {
     id 'application'
     id 'maven-publish'
@@ -10,11 +9,15 @@ plugins {
 group = "umlp"
 description = "UMLP RTE"
 
+repositories {
+    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+}
 
 dependencies {
-    api group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
-    api group: 'org.postgresql', name: 'postgresql', version: '42.2.19'
-    api group: 'com.google.guava', name: 'guava', version: guava_version
+    api group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+
+    implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
 }
 
 test {
@@ -22,6 +25,13 @@ test {
         events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
     }
     useJUnitPlatform()
+}
+
+/////////////////////////   JSweet //////////////////////////////
+project('umlp-frontend-rte'){
+    sourceSets.main.java {
+        srcDirs = ['../src/main/java']
+    }
 }
 
 /////////////////////////   Deployment  //////////////////////////////////

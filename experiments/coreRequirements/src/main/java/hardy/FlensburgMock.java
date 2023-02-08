@@ -19,6 +19,7 @@ package hardy;
 */
 
 
+import def.js.Promise;
 import hardy.gemlists.AddressGemList;
 import hardy.gemlists.Address_VisitorsGemList;
 import hardy.gemlists.CarGemList;
@@ -27,6 +28,7 @@ import hardy.gemlists.PersonGemList;
 import hardy.gemlists.Person_ChildrenGemList;
 import hardy.gemlists.Person_OwnsGemList;
 import hardy.gemlists.Person_VisitedGemList;
+import hardy.jsweetUtil.UMLPPromise;
 import umlp.rte.GemList;
 import umlp.rte.HashMapWithOrderedKeys;
 import umlp.rte.NotificationScope;
@@ -34,6 +36,7 @@ import umlp.rte.NotificationScope;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class FlensburgMock extends FlensburgManager {
 
@@ -135,7 +138,7 @@ public class FlensburgMock extends FlensburgManager {
       address.INTERNAL_addVisitorId(address.sizeVisitors(), o.getGemId(), NotificationScope.MINIMAL);
     }
 
-    flensburgObservers.forEach(obs -> obs.notifyPersonAdded(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyPersonAdded(o));
   }
 
   @Override
@@ -156,7 +159,7 @@ public class FlensburgMock extends FlensburgManager {
     assert persons.containsKey(o.getGemId());
     persons.remove(o.getGemId());
     personGemList.remove(o);
-    flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(o));
   }
 
   // --- Class Human ---
@@ -201,7 +204,7 @@ public class FlensburgMock extends FlensburgManager {
     if(!o.containsObserver(theHumanCommandSendingObserver)){
       o.addObserver(theHumanCommandSendingObserver);
     }
-    flensburgObservers.forEach(obs -> obs.notifyHumanAdded(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyHumanAdded(o));
   }
 
   @Override
@@ -221,7 +224,7 @@ public class FlensburgMock extends FlensburgManager {
     assert humans.containsKey(o.getGemId());
     humans.remove(o.getGemId());
     humanGemList.remove(o);
-    flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(o));
   }
 
   // --- Address class ---
@@ -275,7 +278,7 @@ public class FlensburgMock extends FlensburgManager {
         person.INTERNAL_addVisitedId(person.sizeVisited(), o.getGemId(), NotificationScope.MINIMAL);
     }
 
-    flensburgObservers.forEach(obs -> obs.notifyAddressAdded(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyAddressAdded(o));
   }
 
   @Override
@@ -294,7 +297,7 @@ public class FlensburgMock extends FlensburgManager {
     assert addresses.containsKey(o.getGemId());
     addresses.remove(o.getGemId());
     addressGemList.remove(o);
-    flensburgObservers.forEach(obs -> obs.notifyAddressDeleted(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyAddressDeleted(o));
   }
 
   // --- Class Car ---
@@ -326,7 +329,7 @@ public class FlensburgMock extends FlensburgManager {
   protected void _doAddCar(Car o) {
     cars.put(o.getGemId(), o);
     carGemList.add(o);
-    flensburgObservers.forEach(obs -> obs.notifyCarAdded(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyCarAdded(o));
   }
 
   @Override
@@ -345,7 +348,7 @@ public class FlensburgMock extends FlensburgManager {
     assert cars.containsKey(o.getGemId());
     cars.remove(o.getGemId(), o);
     carGemList.remove(o);
-    flensburgObservers.forEach(obs -> obs.notifyCarDeleted(o.getGemId()));
+    flensburgObservers.forEach(obs -> obs.notifyCarDeleted(o));
   }
 
   @Override

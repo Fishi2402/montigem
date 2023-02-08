@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
@@ -13,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.domain.decorator.ManagerDecorator.SUFFIX;
 
 public class GemListDomainDecorator extends AbstractDecorator {
 
@@ -38,7 +40,7 @@ public class GemListDomainDecorator extends AbstractDecorator {
     String sourceName = domainClass.getName();
     String classname = sourceName
         + "GemList";
-    String managerName = origCD.getCDDefinition().getName() + ManagerDecorator.SUFFIX;
+    String managerName = origCD.getCDDefinition().getName() + SUFFIX;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
@@ -47,7 +49,7 @@ public class GemListDomainDecorator extends AbstractDecorator {
       .build();
 
     // Imports
-    addImports(origCD, ast);
+    addImports(origCD, domainClass.getName(), ast);
 
     // constructor
     getCD4C().addConstructor(ast, "umlp.gemlist.Constructor", classname);
@@ -59,14 +61,10 @@ public class GemListDomainDecorator extends AbstractDecorator {
     return ast;
   }
 
-  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass ast) {
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+".*");
-    getCD4C().addImport(ast, "umlp.util.LogUtil");
-    getCD4C().addImport(ast, "umlp.rte.GeneralErrorCollector");
-    getCD4C().addImport(ast, "umlp.rte.GemIdentifiable");
-    getCD4C().addImport(ast, "umlp.rte.GemList");
+  protected void addImports(ASTCDCompilationUnit origCD, String domainName, ASTCDClass ast) {
+    getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), domainName));
+    getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), origCD.getCDDefinition().getName()+SUFFIX));
     getCD4C().addImport(ast, "umlp.rte.GemListBuilder");
-    getCD4C().addImport(ast, "umlp.rte.NotificationScope");
   }
 
 }

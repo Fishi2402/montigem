@@ -14,6 +14,7 @@ import umlp.generator.AbstractDecorator;
 import umlp.generator.db.sql.SQLSchemaGenerator;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PRIVATE;
@@ -21,7 +22,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class DAODecorator extends AbstractDecorator {
 
-  String cdName = "";
+  protected String cdName = "";
 
   public DAODecorator(GlobalExtensionManagement glex) {
     super(glex);
@@ -199,10 +200,10 @@ public class DAODecorator extends AbstractDecorator {
     updateAndSelectListAttrMethods(daoClass, domainClass);
   }
 
-  private void assocDAOMethods(ASTCDClass daoClass, ASTCDAssociation association) {
+  protected void assocDAOMethods(ASTCDClass daoClass, ASTCDAssociation association) {
     addMethodForAssociationDAO(daoClass, association);
 
-    addRemoveMethodForAssociationDAO(daoClass, association);
+    removeMethodForAssociationDAO(daoClass, association);
     if(association.getCDAssocDir().isDefinitiveNavigableRight()) {
       selectMethodForAssocDAO(daoClass, association.getName(), association.getLeft(), association.getRight());
       removeAllMethodForAssocDAO(daoClass, association.getName(), association.getLeft().getName());
@@ -218,49 +219,54 @@ public class DAODecorator extends AbstractDecorator {
 
   // All Methods for Association DAOs
 
-  private void removeAllMethodForAssocDAO(ASTCDClass daoClass, String assocName, String startName) {
+  protected void removeAllMethodForAssocDAO(ASTCDClass daoClass, String assocName, String startName) {
     getCD4C().addMethod(daoClass, "umlp.dao.associations.RemoveAllInitForAssocDAO", startName,
         SQLSchemaGenerator.convertAssociationRollName(startName), SQLSchemaGenerator.convertAssocName(assocName));
     getCD4C().addMethod(daoClass, "umlp.dao.associations.RemoveAllForAssocDAO", startName);
   }
 
-  private void selectMethodForAssocDAO(ASTCDClass daoClass, String assocName, ASTCDAssocSide assocStart, ASTCDAssocSide assocEnd) {
+  protected void selectMethodForAssocDAO(ASTCDClass daoClass, String assocName, ASTCDAssocSide assocStart, ASTCDAssocSide assocEnd) {
+
     if(GenService.isList(assocEnd)) {
-      selectMethodForListAssocDAO(daoClass, assocName, assocStart.getName(), assocEnd.getName());
+      selectInitMethodForListAssocDAO(daoClass, assocName, assocStart, assocEnd, "s");
+      selectMethodForListAssocDAO(daoClass, assocName, assocStart, assocEnd);
     } else {
-      selectMethodForGemAssocDAO(daoClass, assocName, assocStart.getName(), assocEnd.getName());
+      selectInitMethodForListAssocDAO(daoClass, assocName, assocStart, assocEnd, "");
+      selectMethodForGemAssocDAO(daoClass, assocName, assocStart, assocEnd);
     }
   }
 
-  private void selectMethodForListAssocDAO(ASTCDClass daoClass, String assocName, String startName, String endName) {
+  protected void selectInitMethodForListAssocDAO(ASTCDClass daoClass, String assocName, ASTCDAssocSide start, ASTCDAssocSide end, String numerus) {
+    String startName = start.getName();
+    String endName = end.getName();
     getCD4C().addMethod(daoClass, "umlp.dao.associations.SelectInitForAssocDAO", startName, endName,
         SQLSchemaGenerator.convertAssociationRollName(startName), SQLSchemaGenerator.convertAssociationRollName(endName),
-        SQLSchemaGenerator.convertAssocName(assocName), "s");
-    getCD4C().addMethod(daoClass, "umlp.dao.associations.SelectForAssocDAO", startName, endName);
+        SQLSchemaGenerator.convertAssocName(assocName), numerus);
   }
 
-  private void selectMethodForGemAssocDAO(ASTCDClass daoClass, String assocName, String startName, String endName) {
-    getCD4C().addMethod(daoClass, "umlp.dao.associations.SelectInitForAssocDAO",startName, endName,
-        SQLSchemaGenerator.convertAssociationRollName(startName), SQLSchemaGenerator.convertAssociationRollName(endName),
-        SQLSchemaGenerator.convertAssocName(assocName), "");
-    getCD4C().addMethod(daoClass, "umlp.dao.associations.SelectForGemAssocDAO", startName, endName);
+  private void selectMethodForListAssocDAO(ASTCDClass daoClass, String assocName, ASTCDAssocSide start, ASTCDAssocSide end) {
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.SelectForAssocDAO", start.getName(), end.getName());
   }
 
-  private void addMethodForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
+  private void selectMethodForGemAssocDAO(ASTCDClass daoClass, String assocName, ASTCDAssocSide start, ASTCDAssocSide end) {
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.SelectForGemAssocDAO", start.getName(), end.getName());
+  }
+
+  protected void addMethodForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddInitForAssocDAO", assoc.getName(),
         SQLSchemaGenerator.convertAssociationRollName(assoc.getLeft().getName()), SQLSchemaGenerator.convertAssociationRollName(assoc.getRight().getName()),
         SQLSchemaGenerator.convertAssocName(assoc.getName()));
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddForAssocDAO", assoc);
   }
 
-  private void updateMethodForAssocDAO(ASTCDClass daoClass, String assocName, String startName, String endName) {
+  protected void updateMethodForAssocDAO(ASTCDClass daoClass, String assocName, String startName, String endName) {
     getCD4C().addMethod(daoClass, "umlp.dao.associations.UpdateInitForAssocDAO", endName,
         SQLSchemaGenerator.convertAssociationRollName(startName), SQLSchemaGenerator.convertAssociationRollName(endName),
         SQLSchemaGenerator.convertAssocName(assocName));
     getCD4C().addMethod(daoClass, "umlp.dao.associations.UpdateForAssocDAO", startName, endName);
   }
 
-  private void addRemoveMethodForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
+  protected void removeMethodForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
     getCD4C().addMethod(daoClass, "umlp.dao.associations.RemoveInitForAssocDAO",  assoc.getName(),
         SQLSchemaGenerator.convertAssociationRollName(assoc.getLeft().getName()), SQLSchemaGenerator.convertAssociationRollName(assoc.getRight().getName()),
         SQLSchemaGenerator.convertAssocName(assoc.getName()));
@@ -274,13 +280,15 @@ public class DAODecorator extends AbstractDecorator {
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).forEach(attr -> {
               String innerType = GenService.getInnerType(attr.getMCType());
-              getCD4C().addMethod(doaClass, "umlp.dao.UpdateListAttr", domainClass.getName(), attr.getName(), innerType);
-              getCD4C().addMethod(doaClass, "umlp.dao.SelectListAttr", domainClass.getName(), attr.getName(), innerType);
+              String tableName = SQLSchemaGenerator.convertClassName(domainClass.getName())+
+                  "$"+SQLSchemaGenerator.convertAttributeName(attr.getName());
+              getCD4C().addMethod(doaClass, "umlp.dao.UpdateListAttr", tableName, domainClass.getName(), attr.getName(), innerType);
+              getCD4C().addMethod(doaClass, "umlp.dao.SelectListAttr", tableName, domainClass.getName(), attr.getName(), innerType);
             }
         );
   }
 
-  private void updateAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
+  protected void updateAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && !GenService.isList(a) && !GenService.isOptional(a)).forEach(attr ->
       getCD4C().addMethod(doaClass, "umlp.dao.UpdateAttr", domainClass.getName(), attr.getName(), attr.printType()));
@@ -293,35 +301,44 @@ public class DAODecorator extends AbstractDecorator {
                 GenService.getInnerType(attr.getMCType())));
   }
 
-  private void deleteMethod(ASTCDClass daoClass, ASTCDClass domainClass, Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssoc) {
-    getCD4C().addMethod(daoClass, "umlp.dao.Delete", domainClass.getName(), assocSideToAssoc);
+  protected void deleteMethod(ASTCDClass daoClass, ASTCDClass domainClass, Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssoc) {
+    getCD4C().addMethod(daoClass, "umlp.dao.Delete", SQLSchemaGenerator.convertClassName(domainClass.getName()),
+        domainClass.getName(), assocSideToAssoc);
   }
 
-  private void selectMethod(ASTCDClass daoClass, ASTCDClass domainClass,
+  protected void selectMethod(ASTCDClass daoClass, ASTCDClass domainClass,
                             Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
                             Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
     List<ASTCDAttribute> listAttributes = getListAttributes(domainClass);
     List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
-    Map<ASTCDAttribute, String> optAttrToInnerType = getOptionalAttrsToInnerTypeMap(domainClass);
+    Map<ASTCDAttribute, String[]> optAttrToInnerType = getOptionalAttrsToInnerTypeMap(domainClass).entrySet().stream()
+        .collect(Collectors.toMap(e -> e.getKey(), e -> new String[] {e.getValue(),
+        SQLSchemaGenerator.convertAttributeName(e.getKey().getName())}));
 
-    getCD4C().addMethod(daoClass, "umlp.dao.SelectInit", domainClass.getName(), attributes);
-    getCD4C().addMethod(daoClass, "umlp.dao.Select", domainClass.getName(), cdName, attributes,
+    getCD4C().addMethod(daoClass, "umlp.dao.SelectInit",
+        SQLSchemaGenerator.convertClassName(domainClass.getName()), domainClass.getName(),
+        attributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName())).collect(Collectors.toList()));
+
+    Map<ASTCDAttribute, String> attributeTableName = attributes.stream().collect(Collectors.toMap(Function.identity(),
+        a->SQLSchemaGenerator.convertAttributeName(a.getName())));
+    getCD4C().addMethod(daoClass, "umlp.dao.Select", domainClass.getName(), cdName, attributeTableName,
         optAttrToInnerType, listAttributes, listAssociationMap, gemAssociationMap);
   }
 
-  private void insertMethod(ASTCDClass daoClass, ASTCDClass domainClass,
+  protected void insertMethod(ASTCDClass daoClass, ASTCDClass domainClass,
                             Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
                             Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
     List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
     List<ASTCDAttribute> listAttributes = getListAttributes(domainClass);
     Map<ASTCDAttribute, String> optAttrToInnerType = getOptionalAttrsToInnerTypeMap(domainClass);
 
-    getCD4C().addMethod(daoClass, "umlp.dao.InsertInit", domainClass.getName(), attributes);
+    getCD4C().addMethod(daoClass, "umlp.dao.InsertInit",SQLSchemaGenerator.convertClassName(domainClass.getName())
+        ,domainClass.getName(), attributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName())).collect(Collectors.toList()));
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
         optAttrToInnerType , listAttributes, listAssociationMap, gemAssociationMap);
   }
 
-  private Map<ASTCDAttribute, String> getOptionalAttrsToInnerTypeMap(ASTCDClass domainClass) {
+  protected Map<ASTCDAttribute, String> getOptionalAttrsToInnerTypeMap(ASTCDClass domainClass) {
     Map<ASTCDAttribute, String> optionalAttributes = new HashMap<>();
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).forEach(a -> {
@@ -331,12 +348,12 @@ public class DAODecorator extends AbstractDecorator {
     return optionalAttributes;
   }
 
-  private List<ASTCDAttribute> getListAttributes(ASTCDClass domainClass) {
+  protected List<ASTCDAttribute> getListAttributes(ASTCDClass domainClass) {
     return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).collect(Collectors.toList());
   }
 
-  private List<ASTCDAttribute> getNormalAttributes(ASTCDClass domainClass) {
+  protected List<ASTCDAttribute> getNormalAttributes(ASTCDClass domainClass) {
      return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && !GenService.isList(a) && !GenService.isOptional(a)).collect(Collectors.toList());
   }

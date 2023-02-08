@@ -5,6 +5,7 @@ package hardy;
 
 
 
+import def.js.Promise;
 import hardy.gemlists.AddressGemList;
 import hardy.gemlists.Address_VisitorsGemList;
 import hardy.gemlists.CarGemList;
@@ -13,6 +14,8 @@ import hardy.gemlists.PersonGemList;
 import hardy.gemlists.Person_ChildrenGemList;
 import hardy.gemlists.Person_OwnsGemList;
 import hardy.gemlists.Person_VisitedGemList;
+import hardy.jsweetUtil.UMLPPromise;
+import jsweet.lang.Async;
 import umlp.rte.DatabaseAccessManager;
 import umlp.rte.GemList;
 import umlp.rte.GemListBuilder;
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class FlensburgManagerImpl extends FlensburgManager {
   HumanDbObserver theHumanDbObserver = new HumanDbObserver();
@@ -102,7 +106,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
       if(!human.containsObserver(theHumanDbObserver)){
         human.addObserver(theHumanDbObserver);
       }
-      flensburgObservers.forEach(obs -> obs.notifyHumanAdded(human.getGemId()));
+      flensburgObservers.forEach(obs -> obs.notifyHumanAdded(human));
     }
 
     @Override
@@ -115,7 +119,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected void _doDeleteHuman(Human human) {
       knownHumans.remove(human.getGemId());
-      flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(human.getGemId()));
+      flensburgObservers.forEach(obs -> obs.notifyHumanDeleted(human));
     }
 
     /* === Methods for class Person === */
@@ -148,8 +152,9 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
+    @Async
     protected Person _doGetPersonSure(long gemId) {
-        return _doPersonOpt(gemId).get();
+      return _doPersonOpt(gemId).get();
     }
 
     @Override
@@ -158,7 +163,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
       if(!person.containsObserver(thePersonDbObserver)){
         person.addObserver(thePersonDbObserver);
       }
-      flensburgObservers.forEach(obs -> obs.notifyPersonAdded(person.getGemId()));
+      flensburgObservers.forEach(obs -> obs.notifyPersonAdded(person));
     }
 
     @Override
@@ -170,7 +175,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected void _doDeletePerson(Person person) {
-        flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(person.getGemId()));
+        flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(person));
     }
 
     /* === Methods for class Address === */
@@ -213,7 +218,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
       if(!address.containsObserver(theAddressDbObserver)){
         address.addObserver(theAddressDbObserver);
       }
-      flensburgObservers.forEach(obs -> obs.notifyAddressAdded(address.getGemId()));
+      flensburgObservers.forEach(obs -> obs.notifyAddressAdded(address));
     }
 
     @Override
@@ -226,7 +231,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
     @Override
     protected void _doDeleteAddress(Address address) {
       // TODO
-        flensburgObservers.forEach(obs -> obs.notifyAddressDeleted(address.getGemId()));
+        flensburgObservers.forEach(obs -> obs.notifyAddressDeleted(address));
     }
 
     /* === Methods for class Car === */
@@ -248,7 +253,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected void _doAddCar(Car car) {
-        flensburgObservers.forEach(obs -> obs.notifyCarAdded(car.getGemId()));
+        flensburgObservers.forEach(obs -> obs.notifyCarAdded(car));
     }
 
     @Override
@@ -260,7 +265,7 @@ public class FlensburgManagerImpl extends FlensburgManager {
 
     @Override
     protected void _doDeleteCar(Car car) {
-        flensburgObservers.forEach(obs -> obs.notifyCarDeleted(car.getGemId()));
+        flensburgObservers.forEach(obs -> obs.notifyCarDeleted(car));
     }
 
     @Override
