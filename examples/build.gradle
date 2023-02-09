@@ -33,6 +33,7 @@ subprojects {
 
     sourceSets {
         main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
+        main.resources.srcDirs += ["$projectDir/target/generated-sources/monticore/schemata"]
     }
     buildDir = file("$projectDir/target")
     sourceCompatibility = '11'
