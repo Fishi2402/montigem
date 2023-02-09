@@ -95,7 +95,7 @@ public class SQLSchemaGenerator {
 
   public void generate(ASTCDCompilationUnit cdAST){
     String templateName = "umlp.sql.Schema";
-    Path path = Paths.get("..","schemata", cdAST.getCDDefinition().getName() + ".sql");
+    Path path = Paths.get(generatorSetup.getOutputDirectory().getAbsolutePath(), "..", "schemata", cdAST.getCDDefinition().getName() + ".sql");
     path.toFile().mkdirs();
     generatorEngine.generate(templateName, path, cdAST, generateContent(cdAST));
   }
