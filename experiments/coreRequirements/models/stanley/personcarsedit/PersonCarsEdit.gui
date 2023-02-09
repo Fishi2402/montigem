@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package stanley.editierepersoncars;
+package stanley.personcarsedit;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
@@ -19,32 +19,23 @@ import umlp.gui.Table;
  *
  * Situation is that the Person p exists already
  */
-page EditierePersonCars(Person p) {
-
-  // show and edit the nickname
-  @TextInput(value = p.nickname);
-
-  // show and edit the age as number
-  @NumberInput(value = p.age);
+page PersonCarsEdit(Person p) {
 
   // show the number of cars as number
-  // this attribute is calculated (which makes from the GUI point of view
-  // not a difference)
-  @Text(value = p.age);
+  // this attribute is calculated (which doesn't make a difference from the GUI
+  // point of view)
+  carNum@Text(value = p.owns.size());
 
   // show the list of person's cars in a table, row by row
   // the table should be able to work with lazy lists
-  @Table(
-    rows = p.Car, // OCL-like navigation for unnamed associations
-    canDelete = true,
-    canEdit = true,
-    canAdd = true,
+  t@Table(
+    rows = p.owns, // OCL-like navigation for associations
     columns = [] // car attributes, if no attributes then no columns
   );
 
   // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
   // ueberschrieben werden z.B. navigate, copy, show(@ContextMenu(...)), ...
-  @Button(text = "Ok", leftClick = navigate());
+  nav@Button(text = "Ok", leftClick = navigate);
 
 }
 

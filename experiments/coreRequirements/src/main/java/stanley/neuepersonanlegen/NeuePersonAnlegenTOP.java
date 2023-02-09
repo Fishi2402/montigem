@@ -31,7 +31,7 @@ Z5  :Button(text = "Decrease", leftClick = decreaseAge(p))
 
 import hardy.FlensburgManager;
 import hardy.PersonBuilder;
-import stanley.editierepersoncars.EditierePersonCars;
+import stanley.personcarsedit.PersonCarsEdit;
 
 /********************************************************/
 
@@ -106,7 +106,7 @@ public class NeuePersonAnlegenTOP {
   /*
    * see EditierePersonGUITOP.java
    */
-  public EditierePersonCars pressButtonOk() {
+  public PersonCarsEdit pressButtonOk() {
     return this.navigate();
   }
 
@@ -114,9 +114,9 @@ public class NeuePersonAnlegenTOP {
    * navigate the same way as in EditierePersonGUITOP.java, but if a person wasn't built (invalid
    * state or server error), prevent navigation
    */
-  protected EditierePersonCars navigate() throws IllegalStateException {
+  protected PersonCarsEdit navigate() throws IllegalStateException {
     if (pb.isBuildFinished()) {
-      return new EditierePersonCars(pb);
+      return new PersonCarsEdit(pb);
     }
     // TODO use better strategy both for testing and GUI implementation
     throw new IllegalStateException("0xU1234: Person cannot be built.");

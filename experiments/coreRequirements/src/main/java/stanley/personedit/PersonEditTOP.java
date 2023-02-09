@@ -4,15 +4,14 @@ package stanley.personedit;
 import hardy.Person;
 import hardy.PersonErrorCollector;
 import hardy.PersonErrorObserver;
-import stanley.editierepersoncars.EditierePersonCars;
 
 abstract public class PersonEditTOP implements PersonErrorObserver {
 
-  protected Person p;
+  protected final Person p;
 
-  protected String numberInputComp2Error = "";
+  protected String numberInputComp2ValueError = "";
 
-  protected String textInputComp1Error = "";
+  protected String textInputComp1ValueError = "";
 
   protected PersonEditTOP(Person p) {
     this.p = p;
@@ -23,43 +22,46 @@ abstract public class PersonEditTOP implements PersonErrorObserver {
   public void init() {
   }
 
-  public String getNumberInputComp2Error() {
-    return this.numberInputComp2Error;
+  // method + GUI component name + auto-assigned component id + parameter name + Error
+  // get + NumberInput + Comp2 + Value + Error
+  // GUI component name is optional, but helps to find the correct one
+  public String getNumberInputComp2ValueError() {
+    return this.numberInputComp2ValueError;
   }
 
   public void notifyAgeInvalid(Person p, String msg) {
-    numberInputComp2Error = msg;
+    numberInputComp2ValueError = msg;
   }
 
-  public int getNumberInputComp2() {
+  public int getNumberInputComp2Value() {
     return p.getAge();
   }
 
-  public void setNumberInputComp2(int age) {
+  public void setNumberInputComp2Value(int age) {
     p.setAge(age);
   }
 
-  public String getTextInputComp1Error() {
-    return this.textInputComp1Error;
+  public String getTextInputComp1ValueError() {
+    return this.textInputComp1ValueError;
   }
 
   public void notifyNicknameInvalid(Person p, String msg) {
-    textInputComp1Error = msg;
+    textInputComp1ValueError = msg;
   }
 
-  public String getTextInputComp1() {
+  public String getTextInputComp1Value() {
     return p.getNickname();
   }
 
-  public void setTextInputComp1(String nickname) {
+  public void setTextInputComp1Value(String nickname) {
     p.setNickname(nickname);
   }
 
-  public void leftClickButtonComp3() {
+  public void buttonComp3LeftClick() {
     this.navigate();
   }
 
-  public void leftClickButtonComp4() {
+  public void buttonComp4LeftClick() {
     decreaseAge();
   }
 

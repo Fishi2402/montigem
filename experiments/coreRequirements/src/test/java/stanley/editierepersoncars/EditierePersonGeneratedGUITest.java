@@ -61,17 +61,17 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
     PersonEdit e = new PersonEdit(p1);
 
     // Check GUI contains correct values
-    assertEquals("theo", e.getTextInputComp1());
-    assertEquals(24, e.getNumberInputComp2());
+    assertEquals("theo", e.getTextInputComp1Value());
+    assertEquals(24, e.getNumberInputComp2Value());
 
     // Check setting the age in the gui changes the age of the person
-    e.setNumberInputComp2(33);
+    e.setNumberInputComp2Value(33);
     assertEquals(33, p1.getAge().intValue());
 
     // Check decrease button decreases age in GUI and Object
-    e.leftClickButtonComp4();
-    e.leftClickButtonComp4();
-    assertEquals(31, e.getNumberInputComp2());
+    e.buttonComp4LeftClick();
+    e.buttonComp4LeftClick();
+    assertEquals(31, e.getNumberInputComp2Value());
     assertEquals(31, p1.getAge().intValue());
   }
 
@@ -120,14 +120,14 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
 
     clientContext1.activate();
     // check setting the age in GUI of client 1 changes the input value for GUI of client 2
-    e1.setNumberInputComp2(33);
-    assertEquals(33, e2.getNumberInputComp2());
+    e1.setNumberInputComp2Value(33);
+    assertEquals(33, e2.getNumberInputComp2Value());
 
     clientContext2.activate();
     // check decrease button click in GUI of client 2 decreases age in GUI of client 1
-    e2.leftClickButtonComp4();
-    e2.leftClickButtonComp4();
-    assertEquals(31, e1.getNumberInputComp2());
+    e2.buttonComp4LeftClick();
+    e2.buttonComp4LeftClick();
+    assertEquals(31, e1.getNumberInputComp2Value());
   }
 
   /**
@@ -165,7 +165,7 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
     PersonEdit e1 = new PersonEdit(p1001C1);
 
     // no error initially in the GUI of client
-    assertEquals("", e1.getNumberInputComp2Error());
+    assertEquals("", e1.getNumberInputComp2ValueError());
     // work on server
     backendContext.activate();
     Person p1001S = FlensburgManager.getPersonSure(gemId);
@@ -174,7 +174,7 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
 
     // error is shown in GUI of client
     assertEquals("Age 15 of Person with gemId 1001 is invalid!",
-        e1.getNumberInputComp2Error());
+        e1.getNumberInputComp2ValueError());
   }
 
   /**
@@ -219,11 +219,11 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
     Person p1001C1 = FlensburgManager.getPersonSure(gemId);
     PersonEdit e1 = new PersonEdit(p1001C1);
     // put invalid value into input field
-    e1.setNumberInputComp2(15);
+    e1.setNumberInputComp2Value(15);
 
     // error check happens in client and shows error
     assertEquals("Age 15 of Person with gemId 1001 is invalid!",
-        e1.getNumberInputComp2Error());
+        e1.getNumberInputComp2ValueError());
 
     // work on server
     backendContext.activate();

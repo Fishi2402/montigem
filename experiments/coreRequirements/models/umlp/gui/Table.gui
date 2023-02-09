@@ -6,7 +6,7 @@ import umlp.gui.TableTypes.TableColumn;
     of rows is not preset
 */
 component Table(
-  List<Object> rows,
+  List rows,
   //boolean canDelete = false,
   //boolean canEdit = false,
   //boolean canAdd = false,
