@@ -28,7 +28,7 @@ public class StatServerApplication {
     Log_MC_JARManagerImpl.init();
     Optional<URL> optionalURL = FileReaderWriter.getResource(StatServerApplication.class.getClassLoader(), "Log_MC_JAR.sql");
     if(optionalURL.isEmpty()) {
-      Log.error("0xAAAAAA Could not found schema for database.");
+      Log.error("0xAAAAAA Could not find schema for database.");
     }
     String schema = FileReaderWriter.readFromFile(optionalURL.get());
     DatabaseAccessManager.initSchema(schema);
