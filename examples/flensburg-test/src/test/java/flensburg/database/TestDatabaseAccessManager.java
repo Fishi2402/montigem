@@ -31,9 +31,10 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager {
       // In memory db
       // DB_CLOSE_DELAY=0 -> In memory db is deleted after connection is closed
       connection = DriverManager.getConnection("jdbc:h2:mem:test_flensburg;DB_CLOSE_DELAY=0");
-      Optional<URL> optionalURL = FileReaderWriter.getResource(this.getClass().getClassLoader(), "Flensburg.sql");
+      String schemaFileName = "Flensburg.sql";
+      Optional<URL> optionalURL = FileReaderWriter.getResource(this.getClass().getClassLoader(), schemaFileName);
       if(optionalURL.isEmpty()) {
-        Log.error("0xAAAAAA Could not find schema for database.");
+        Log.error("0xAAAAAA: Could not find schema "+schemaFileName+" for database.");
       }
       String schema = FileReaderWriter.readFromFile(optionalURL.get());
       initSchema(schema);
