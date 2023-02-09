@@ -1,5 +1,5 @@
 import { Routes } from "@angular/router";
-import { EditierePersonEdit } from "./editiere-person-edit.component";
+import { PersonEdit } from "./person-edit.component";
 
 export const routes: Routes = [
   {
@@ -9,6 +9,6 @@ export const routes: Routes = [
   },
   {
     path: "editiere-person-edit",
-    component: EditierePersonEdit
+    component: PersonEdit
   }
 ]

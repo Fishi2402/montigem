@@ -4,7 +4,7 @@ import { Person } from "../hardy/person";
 import { PersonErrorObserver } from "../hardy/person-error-observer";
 
 @Directive()
-export class EditierePersonEditTOP implements PersonErrorObserver {
+export class PersonEditTOP implements PersonErrorObserver {
 
   public p: Person;
 

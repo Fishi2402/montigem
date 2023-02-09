@@ -8,6 +8,6 @@ export const routes: Routes = [
   },
   {
     path: "stanley",
-    loadChildren: () => import("./editiere-person-edit/editiere-person-edit.module").then(m => m.EditierePersonEditModule)
+    loadChildren: () => import("./person-edit/person-edit.module").then(m => m.EditierePersonEditModule)
   }
 ]

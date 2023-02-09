@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package stanley.editiereperson;
+package stanley.personedit;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
@@ -11,8 +11,6 @@ import umlp.gui.TextInput;
 import umlp.gui.NumberInput;
 import umlp.gui.Button;
 
-import stanley.editierepersoncars.EditierePersonCars;
-
 /**
  * This example defines a
  * Form to fill out Person data
@@ -22,7 +20,7 @@ import stanley.editierepersoncars.EditierePersonCars;
  * Situation is that the Person p exists already and
  * that its values can be changed
  */
-page EditierePerson(Person p) {
+page PersonEdit(Person p) {
 
   // show and edit the nickname
   @TextInput(value = p.nickname);
@@ -33,17 +31,16 @@ page EditierePerson(Person p) {
   // Button mit Text "Ok" und Navigation auf eine andere Seite
   // (und die Logik dafür ist generiert und verfügbar)
   // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
-  // ueberschrieben werden z.B. navigate, copy, show(:ContextMenu(...)), ...
-  @Button(text = "Ok", leftClick = navigate());
+  // ueberschrieben werden z.B. navigate, copy, ...
+  @Button(text = "Ok", leftClick = navigate);
 
   // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
-  // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird entweder generiert oder
-  // in einem handgeschriebenen Teil implementiert wird und importiert
-  // (siehe "import stanley.editiereperson.EditierePerson")
-  // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "EditierePersonGUI.java".
+  // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird
+  // in einem handgeschriebenen Teil implementiert und importiert
+  // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "PersonEditGUI.java".
   // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
   // deswegen wird eine Methode explizit importiert und aufgerufen
-  @Button(text = "Decrease", leftClick = decreaseAge());
+  @Button(text = "Decrease", leftClick = decreaseAge);
 
 }
 

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import stanley.AbstractGUITest;
 import stanley.FlensburgTestContext;
-import stanley.editiereperson.EditierePersonEdit;
+import stanley.personedit.PersonEdit;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +58,7 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
         .nickname("theo")
         .mainResidence(a)
         .build().get();
-    EditierePersonEdit e = new EditierePersonEdit(p1);
+    PersonEdit e = new PersonEdit(p1);
 
     // Check GUI contains correct values
     assertEquals("theo", e.getTextInputComp1());
@@ -69,8 +69,8 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
     assertEquals(33, p1.getAge().intValue());
 
     // Check decrease button decreases age in GUI and Object
-    e.leftClickButtonComp5();
-    e.leftClickButtonComp5();
+    e.leftClickButtonComp4();
+    e.leftClickButtonComp4();
     assertEquals(31, e.getNumberInputComp2());
     assertEquals(31, p1.getAge().intValue());
   }
@@ -106,7 +106,7 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
         .owns(Collections.emptySet())
         .build().get();
     // page opened by a user on client 1
-    EditierePersonEdit e1 = new EditierePersonEdit(p1);
+    PersonEdit e1 = new PersonEdit(p1);
 
     // working with client 2
     clientContext2.activate();
@@ -115,7 +115,7 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
     assertTrue(pClient2Opt.isPresent());
     Person p2 = pClient2Opt.get();
     // page opened by a user on client 2
-    EditierePersonEdit e2 = new EditierePersonEdit(p2);
+    PersonEdit e2 = new PersonEdit(p2);
     // TODO AGe: strategy on input fields update, check current object/attribute status
 
     clientContext1.activate();
@@ -125,8 +125,8 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
 
     clientContext2.activate();
     // check decrease button click in GUI of client 2 decreases age in GUI of client 1
-    e2.leftClickButtonComp5();
-    e2.leftClickButtonComp5();
+    e2.leftClickButtonComp4();
+    e2.leftClickButtonComp4();
     assertEquals(31, e1.getNumberInputComp2());
   }
 
@@ -162,7 +162,7 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
     // work on client
     clientContext1.activate();
     Person p1001C1 = FlensburgManager.getPersonSure(gemId);
-    EditierePersonEdit e1 = new EditierePersonEdit(p1001C1);
+    PersonEdit e1 = new PersonEdit(p1001C1);
 
     // no error initially in the GUI of client
     assertEquals("", e1.getNumberInputComp2Error());
@@ -217,7 +217,7 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
     // work on client
     clientContext1.activate();
     Person p1001C1 = FlensburgManager.getPersonSure(gemId);
-    EditierePersonEdit e1 = new EditierePersonEdit(p1001C1);
+    PersonEdit e1 = new PersonEdit(p1001C1);
     // put invalid value into input field
     e1.setNumberInputComp2(15);
 

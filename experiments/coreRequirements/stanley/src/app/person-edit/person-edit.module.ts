@@ -1,13 +1,13 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
-import { routes } from "./editiere-person-edit.routing";
-import { EditierePersonEdit } from "./editiere-person-edit.component";
+import { routes } from "./person-edit.routing";
+import { PersonEdit } from "./person-edit.component";
 import { IoModule } from "../tmp/io/io.module";
 
 @NgModule({
   declarations: [
-    EditierePersonEdit
+    PersonEdit
   ],
   imports: [
     CommonModule,
@@ -15,7 +15,7 @@ import { IoModule } from "../tmp/io/io.module";
     IoModule
   ],
   exports: [
-    EditierePersonEdit
+    PersonEdit
   ]
 })
 export class EditierePersonEditModule { }
