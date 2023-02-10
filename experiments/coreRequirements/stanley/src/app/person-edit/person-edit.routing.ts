@@ -5,10 +5,10 @@ export const routes: Routes = [
   {
     path: "",
     pathMatch: "full",
-    redirectTo: "editiere-person-edit"
+    redirectTo: "person-edit"
   },
   {
-    path: "editiere-person-edit",
+    path: "person-edit",
     component: PersonEdit
   }
 ]

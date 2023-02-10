@@ -2,10 +2,12 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { GemButton } from "./gem-button/gem-button.component";
 import { InputModule } from "./gem-input/input.module";
+import { GemText } from "./gem-text/gem-text.component";
 
 @NgModule({
   declarations: [
-    GemButton
+    GemButton,
+    GemText
   ],
   imports: [
     CommonModule,
@@ -13,6 +15,7 @@ import { InputModule } from "./gem-input/input.module";
   ],
   exports: [
     GemButton,
+    GemText,
     InputModule
   ]
 })

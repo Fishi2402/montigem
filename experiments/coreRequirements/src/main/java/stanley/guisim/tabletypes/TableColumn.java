@@ -32,4 +32,20 @@ public class TableColumn {
     this.colName = colName;
   }
 
+  public void setAttrName(String attrName) {
+    this.attrName = attrName;
+  }
+
+  public String getAttrName() {
+    return attrName;
+  }
+
+  public void setColName(String colName) {
+    this.colName = colName;
+  }
+
+  public String getColName() {
+    return colName;
+  }
+
 }

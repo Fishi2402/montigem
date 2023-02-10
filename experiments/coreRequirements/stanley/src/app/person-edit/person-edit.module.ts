@@ -18,4 +18,4 @@ import { IoModule } from "../tmp/io/io.module";
     PersonEdit
   ]
 })
-export class EditierePersonEditModule { }
+export class PersonEditModule { }

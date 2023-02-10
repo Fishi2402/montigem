@@ -12,14 +12,8 @@ public class PersonCarsEdit {
 
   protected final Person p;
 
-  protected String carNumValueError = "";
-
   public PersonCarsEdit(Person p) {
     this.p = p;
-  }
-
-  public String getCarNumValueError() {
-    return carNumValueError;
   }
 
   // only getter, because value in @Text(value = ...) is not ?String, but simply String
