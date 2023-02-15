@@ -1,10 +1,10 @@
-package umlp.gui;
+package stanley.tmp.table;
 
-import umlp.gui.TableTypes.TableRow;
+import stanley.tmp.table.TableTypes.TableRow;
 
 /** Table component interface definition. Uses built-in Object type, as the type
     of rows is not preset
 */
-component RowTable(
+component GemRowTable(
   List<TableRow> rows
 )

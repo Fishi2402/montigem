@@ -5,13 +5,14 @@ import hardy.Person;
 import hardy.PersonErrorCollector;
 import hardy.PersonErrorObserver;
 
+// normal TOP rules apply
 abstract public class PersonEditTOP implements PersonErrorObserver {
 
   protected final Person p;
 
-  protected String numberInputComp2ValueError = "";
+  protected String gemNumberInputComp2ValueError = "";
 
-  protected String textInputComp1ValueError = "";
+  protected String gemTextInputComp1ValueError = "";
 
   protected PersonEditTOP(Person p) {
     this.p = p;
@@ -25,43 +26,46 @@ abstract public class PersonEditTOP implements PersonErrorObserver {
   // method + GUI component name + auto-assigned component id + parameter name + Error
   // get + NumberInput + Comp2 + Value + Error
   // GUI component name is optional, but helps to find the correct one
-  public String getNumberInputComp2ValueError() {
-    return this.numberInputComp2ValueError;
+  public String getGemNumberInputComp2ValueError() {
+    return this.gemNumberInputComp2ValueError;
   }
 
   public void notifyAgeInvalid(Person p, String msg) {
-    numberInputComp2ValueError = msg;
+    gemNumberInputComp2ValueError = msg;
   }
 
-  public int getNumberInputComp2Value() {
+  public int getGemNumberInputComp2Value() {
     return p.getAge();
   }
 
-  public void setNumberInputComp2Value(int age) {
+  public void setGemNumberInputComp2Value(int age) {
     p.setAge(age);
   }
 
-  public String getTextInputComp1ValueError() {
-    return this.textInputComp1ValueError;
+  public String getGemTextInputComp1ValueError() {
+    return this.gemTextInputComp1ValueError;
   }
 
   public void notifyNicknameInvalid(Person p, String msg) {
-    textInputComp1ValueError = msg;
+    gemTextInputComp1ValueError = msg;
   }
 
-  public String getTextInputComp1Value() {
+  public String getGemTextInputComp1Value() {
     return p.getNickname();
   }
 
-  public void setTextInputComp1Value(String nickname) {
+  public void setGemTextInputComp1Value(String nickname) {
     p.setNickname(nickname);
   }
 
-  public void buttonComp3LeftClick() {
+  // GUI component name + auto-assigned component id + parameter name
+  // NumberInput + Comp2 + Value
+  // GUI component name is optional, but helps to find the correct one
+  public void gemButtonComp3LeftClick() {
     this.navigate();
   }
 
-  public void buttonComp4LeftClick() {
+  public void gemButtonComp4LeftClick() {
     decreaseAge();
   }
 

@@ -7,11 +7,11 @@ package stanley.showcityinfo;
 import hardy.Flensburg.CityInfo;
 
 // hier werden importierte GUI-Modelle gefunden
-import umlp.gui.RowTable;
+import stanley.tmp.table.GemRowTable;
 // hier werden importierte Typen der GUI-Komponenten gefunden
-import umlp.gui.TableTypes.TableRow;
-import umlp.gui.TextInput;
-import umlp.gui.Text;
+import stanley.tmp.table.TableTypes.TableRow;
+import stanley.tmp.io.input.GemTextInput;
+import stanley.tmp.io.GemText;
 
 /**
  * This example defines a page with a table. Data in the table is read-only
@@ -20,19 +20,19 @@ import umlp.gui.Text;
  */
 page ShowCityInfo(CityInfo ci) {
   // statistic about cities
-  @RowTable(
-    rows = List(
+  @GemRowTable(
+    rows = [
       TableRow("Number of cities", ci.numberOfCities),
       TableRow("Total number of cars", ci.totalNumberOfCars),
       TableRow("City with most cars", ci.cityWithMostCars),
       TableRow("Person with most cars", ci.personWithMostCars.nickname),
       TableRow("Average number of cars", ci.averageNumberOfCars)
-    )
+    ]
   );
 
   // list of cities
-  @Text(value = "List of cities");
+  @GemText(value = "List of cities");
 /*  @iterate(cityName : ci.cities) { // TODO AG: The expression at source position ShowCityInfo.gui:<35,23> cannot be calculated.
-    @TextInput(value = cityName);
+    @GemTextInput(value = cityName);
   }*/
 }

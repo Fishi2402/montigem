@@ -1,6 +1,7 @@
 import { Routes } from "@angular/router";
 import { PersonCarsEdit } from "./person-cars-edit.component";
 
+// this file exists to explain TOP mechanism rule for routing
 export const routesTOP: Routes = [
   {
     path: "",

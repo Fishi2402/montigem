@@ -1,5 +1,5 @@
 /*
-Does not have to be generated, translated from Java file
+Not generated, translated from Java file
 
 This file would be in frontend RTE, because the model is defined in frontend RTE,
 meaning that this file has a wrong location here, and is used only to make code compilable,

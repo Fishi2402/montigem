@@ -6,10 +6,12 @@ package stanley.personedit;
 // hier werden die Datenklassen gefunden
 import hardy.Flensburg.Person;
 
+// every library GUI component has Gem prefix to avoid name clashing with HTML elements from native
+// library and from other libraries
 // hier werden importierte GUI-Modelle gefunden
-import umlp.gui.TextInput;
-import umlp.gui.NumberInput;
-import umlp.gui.Button;
+import stanley.tmp.io.input.GemTextInput;
+import stanley.tmp.io.input.GemNumberInput;
+import stanley.tmp.io.GemButton;
 
 /**
  * This example defines a
@@ -23,16 +25,16 @@ import umlp.gui.Button;
 page PersonEdit(Person p) {
 
   // show and edit the nickname
-  @TextInput(value = p.nickname);
+  @GemTextInput(value = p.nickname);
 
   // show and edit the age as number
-  @NumberInput(value = p.age);
+  @GemNumberInput(value = p.age);
 
   // Button mit Text "Ok" und Navigation auf eine andere Seite
   // (und die Logik dafür ist generiert und verfügbar)
   // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
   // ueberschrieben werden z.B. navigate, copy, ...
-  @Button(text = "Ok", leftClick = navigate);
+  @GemButton(text = "Ok", leftClick = navigate);
 
   // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
   // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird
@@ -40,7 +42,7 @@ page PersonEdit(Person p) {
   // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "PersonEditGUI.java".
   // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
   // deswegen wird eine Methode explizit importiert und aufgerufen
-  @Button(text = "Decrease", leftClick = decreaseAge);
+  @GemButton(text = "Decrease", leftClick = decreaseAge);
 
 }
 

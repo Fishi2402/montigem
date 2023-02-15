@@ -3,11 +3,13 @@ package stanley.personcarsedit;
 
 import hardy.Car;
 import hardy.Person;
-import stanley.guisim.tabletypes.TableColumn;
+import stanley.tmp.table.tabletypes.TableColumn;
 
 import java.util.ArrayList;
 import java.util.List;
 
+// no implementation of error observer, since no component with ?Type parameters present
+// i.e. no input fields exist on the page
 public class PersonCarsEdit {
 
   protected final Person p;
@@ -16,8 +18,13 @@ public class PersonCarsEdit {
     this.p = p;
   }
 
-  // only getter, because value in @Text(value = ...) is not ?String, but simply String
+  // if the id of the component is specified:
+  // method + id + parameter name
+  // get + CarNum + Value
+  // only getter, because value in @GemText(value = ...) is not ?String, but simply String
   public String getCarNumValue() {
+    // the @GemText.value expects String, but we try to assign p.owns.size() which is int (Number)
+    // Number -> String conversion is trivial, allow it
     // recognize, that size returns int and add String.valueOf to return String
     return String.valueOf(p.getOwns().size());
   }

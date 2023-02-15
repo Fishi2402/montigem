@@ -18,7 +18,7 @@ public class B {}
 ```
 */
 
-package stanley.guisim.tabletypes;
+package stanley.tmp.table.tabletypes;
 
 public class TableColumn {
   protected String attrName;

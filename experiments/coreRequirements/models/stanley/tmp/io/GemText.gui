@@ -1,8 +1,8 @@
-package umlp.gui;
+package stanley.io;
 
 /** Text component interface definition
 */
-component Text(
-  Object value = "",
+component GemText(
+  String value = "",
   String color = "black"
 )

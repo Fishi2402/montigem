@@ -1,9 +1,0 @@
-package umlp.gui;
-
-/** Button component interface definition. Uses built-in Event type to define an
-    event, which can be bound to a function call
-*/
-component Button(   // COCO w: groß geschrieben, e: == Dateiname
-  String text = "", // e: COCO initilaer Wert Typ korrekt, (compatibility of type)
-  Event leftClick
-)

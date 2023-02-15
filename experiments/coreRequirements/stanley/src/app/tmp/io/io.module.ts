@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { GemButton } from "./gem-button/gem-button.component";
-import { InputModule } from "./gem-input/input.module";
+import { InputModule } from "./input/input.module";
 import { GemText } from "./gem-text/gem-text.component";
 
 @NgModule({

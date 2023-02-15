@@ -1,9 +1,9 @@
-package umlp.gui;
+package stanley.io.input;
 
 /** Text input field component interface definition. Parameter "value" expects
     a variable, whose value is displayed to and can be changed by a GUI user.
 */
-component TextInput(
+component GemTextInput(
   ?String value,
   String label = "",
   String placeholder = ""

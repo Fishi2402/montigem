@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.gui;
+package stanley.tmp.charts;
 
 /** Classes representing types for Pie chart interface definition
 */
