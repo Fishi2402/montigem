@@ -43,4 +43,10 @@ public class Person extends PersonTOP {
       return _nickname +"@"+ "obdachlos"; // should not happen
     }
   }
+
+  // method used by PersonEdit page
+  public void decreaseAge() {
+    setAge(getAge() - 1);
+  }
+
 }

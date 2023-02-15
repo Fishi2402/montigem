@@ -3,11 +3,11 @@ package stanley.editierepersonchildren;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
-// siehe: EditierePerson.gui
+// siehe: PersonEdit.gui
 
 import hardy.Flensburg.Person;
 
-import umlp.gui.NumberInput;
+import stanley.tmp.io.input.GemNumberInput;
 
 /**
  * This example defines a
@@ -21,11 +21,11 @@ import umlp.gui.NumberInput;
 page EditierePersonChildren(Person p) {
 
   // show and edit the parent's age as number
-  @NumberInput(value = p.age);
+  @GemNumberInput(value = p.age);
 
  /* @iterate (Person child : p.children) {
     // show and edit the child's age as number
-    @NumberInput(value = child.age);
+    @GemNumberInput(value = child.age);
   }*/
 
 }

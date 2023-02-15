@@ -126,7 +126,7 @@ public abstract class GUIComponentDecorator extends GUIAbstractDecorator {
     if (callExpression.getExpression() instanceof ASTNameExpression) {
       return ((ASTNameExpression) callExpression.getExpression()).getName();
     }
-    return "";
+    return "NotACallFIXME";
   }
 
 }

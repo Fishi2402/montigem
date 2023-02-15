@@ -3,11 +3,11 @@ package stanley.personstatistics;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
-// siehe: EditierePerson.gui
+// siehe: PersonEdit.gui
 
 import hardy.Flensburg;
 
-import umlp.gui.Pie;
+import stanley.tmp.charts.GemPie;
 
 // hier werden handgeschriebene Java Erweiterungen importiert
 
@@ -20,7 +20,7 @@ import umlp.gui.Pie;
 page PersonStatistics(List<Person> ps) {
 
   // Pie chart showing statistics (implementation in Java hwc)
-  @Pie(data = getData(ps));
+  @GemPie(data = getData(ps));
 
 }
 

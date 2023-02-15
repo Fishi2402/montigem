@@ -1,10 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+// HWC-P
+
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { routes } from './app.routing';
+// one of the few lines which always have to be hand-written
+// TODO: find a solution to remove
+import { routes } from './stanley/stanley.routing';
 
 @NgModule({
   declarations: [
@@ -12,6 +17,8 @@ import { routes } from './app.routing';
   ],
   imports: [
     BrowserModule,
+    // one of the few lines which always have to be hand-written
+    // TODO: find a solution to remove
     RouterModule.forRoot(routes)
   ],
   providers: [],
