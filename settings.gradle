@@ -59,4 +59,5 @@ include ':examples:artifacts-test'
 include ':examples:flensburg-neo4j-test'
 include ':examples:flensburg-test'
 include ':examples:flensburg-test:client'
+include ':examples:assistenzsystem'
 
