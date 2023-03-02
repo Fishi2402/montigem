@@ -53,6 +53,7 @@ include ':examples:cars'
 include ':examples:filesystem'
 include ':examples:mediahub'
 include ':examples:restaurant'
+include ':examples:selib'
 include ':examples:university'
 include ':examples:stat'
 include ':examples:artifacts-test'
@@ -61,4 +62,5 @@ include ':examples:flensburg-test'
 include ':examples:flensburg-test:client'
 include ':examples:it-test'
 
+include ':examples:assistenzsystem'
 
