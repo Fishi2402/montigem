@@ -13,14 +13,18 @@ boolean new${ctargetName}Loaded = ${definition}Manager.isLoaded${targetType}(${t
 if(${sourceName}Loaded){
   ${sourceType} p = ${definition}Manager.get${sourceType}Sure(${sourceName}GemId);
   // Will automatically change other side of the association
-  p._internal_set${ctargetName}(${sourceName}Index, ${targetName}GemId, NotificationScope.LOCAL);
+  <#if isTargetList>
+    p._internal_set${ctargetName}(${targetName}Index, ${targetName}GemId, NotificationScope.LOCAL);
+  <#else>
+    p._internal_set${ctargetName}(${targetName}GemId, NotificationScope.LOCAL);
+  </#if>
 } else if(old${ctargetName}Loaded){
   ${targetType} old${ctargetName} = ${definition}Manager.get${targetType}Sure(old${ctargetName}GemId);
   // Does not change other side
 <#if isSourceList>
   old${ctargetName}.remove${csourceName}(${targetName}Index, NotificationScope.MINIMAL);
 <#else>
-  // TODO: old${ctargetName}.remove${csourceName}(${targetName}Index, NotificationScope.MINIMAL);
+  // Do nothing?
 </#if>
 } else {
   return StatusResult.error(getId());
@@ -31,7 +35,7 @@ if(new${ctargetName}Loaded){
 <#if isSourceList>
   newLoaded._internal_add${csourceName}(newLoaded.size${csourceName}s(), Lists.newArrayList(${sourceName}GemId), NotificationScope.MINIMAL);
 <#else>
-  // TODO: newLoaded._internal_add${csourceName}(newLoaded.size${csourceName}s(), Lists.newArrayList(${sourceName}GemId), NotificationScope.MINIMAL);
+  newLoaded._internal_set${csourceName}(${sourceName}GemId, NotificationScope.MINIMAL);
 </#if>}
 
 return StatusResult.ok(getId());
