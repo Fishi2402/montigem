@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+umlp SELib {
+
+  class Person {
+    String name;
+	String email;
+	String password;
+	boolean isManager;
+  }
+
+  class Book {
+    String title;
+    String description;
+    String image;
+  }
+
+  association Person -> (rentedBooks) Book [*];
+
+}
+

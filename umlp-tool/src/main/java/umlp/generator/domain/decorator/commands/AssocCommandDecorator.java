@@ -178,8 +178,10 @@ public class AssocCommandDecorator extends AbstractDecorator {
 
     getCD4C().addMethod(ast, "umlp.commands.assocs.Set_DoRun",
             sourceName, targetName);
-    getCD4C().addMethod(ast, "umlp.commands.assocs.Set_Target_Exchange", assoc.getName(),
-            sourceName, targetName, sourceType, targetType, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, "umlp.commands.assocs.Set_Source_Exchange", assoc.getName(),
+            targetName, sourceName, targetType, sourceType,
+            GenService.isList(assoc.getRight()), GenService.isList(assoc.getLeft()),
+            origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, "umlp.commands.assocs.Set_Source_Exchange", assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),

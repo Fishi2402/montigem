@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+description 'SE Bib example'
+
+task generateSELib(type: UMLPTask) {
+    input.from(file("src"))
+    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
+}
+
+build.dependsOn(generateSELib)

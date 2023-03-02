@@ -1,5 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
 umlp Domain {
-  class Test {
-    String message;
-  }
+
+  class FillMe;
+
 }
+
