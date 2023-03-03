@@ -1,15 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-import baseartifactstest.BaseArtifactsTestManager;
 import baseartifactstest.BaseArtifactsTestManagerImpl;
 import de.se_rwth.artifacts.static_extractors.ContainerFileExtractor;
-import de.se_rwth.artifacts.static_extractors.commons.BaseExtractor;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import umlp.rte.GemIdentifiable;
+import umlp.backendrte.common.GemIdentifiable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 

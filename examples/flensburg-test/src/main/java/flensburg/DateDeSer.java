@@ -2,6 +2,7 @@
 package flensburg;
 
 import de.se_rwth.commons.logging.Log;
+import umlp.backendrte.command.DeSer;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -10,7 +11,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.Optional;
 
-public class DateDeSer implements umlp.command.DeSer<Date> {
+public class DateDeSer implements DeSer<Date> {
   @Override
   public String serialize(Date obj) {
     TemporalAccessor ta = obj.toInstant();

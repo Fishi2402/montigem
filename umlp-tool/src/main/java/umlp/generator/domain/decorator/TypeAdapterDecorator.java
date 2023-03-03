@@ -11,6 +11,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +48,7 @@ public class TypeAdapterDecorator extends AbstractDecorator {
               assoc.getSymbol().getType().print());
 
       getCD4C().addImport(ast,"com.google.gson.*");
-      getCD4C().addImport(ast, "umlp.rte.*");
+      getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("*"));
       getCD4C().addImport(ast, "java.lang.reflect.Type");
 
     }

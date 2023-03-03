@@ -4,8 +4,8 @@ package hardy.commands;
 
 import hardy.FlensburgManager;
 import hardy.Person;
-import umlp.command.Command;
-import umlp.command.StatusResult;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.StatusResult;
 
 import java.util.Collection;
 import java.util.Collections;

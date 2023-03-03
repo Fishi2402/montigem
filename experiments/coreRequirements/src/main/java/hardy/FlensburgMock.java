@@ -29,9 +29,9 @@ import hardy.gemlists.Person_ChildrenGemList;
 import hardy.gemlists.Person_OwnsGemList;
 import hardy.gemlists.Person_VisitedGemList;
 import hardy.jsweetUtil.UMLPPromise;
-import umlp.rte.GemList;
-import umlp.rte.HashMapWithOrderedKeys;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.common.GemList;
+import umlp.backendrte.common.HashMapWithOrderedKeys;
+import umlp.backendrte.common.NotificationScope;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,12 +5,12 @@ import hardy.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import umlp.command.Command;
-import umlp.command.CommandObjectMapper;
-import umlp.command.CommandResult;
-import umlp.command.SimpleResult;
-import umlp.rte.Gem;
-import umlp.rte.LoadingState;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.CommandObjectMapper;
+import umlp.backendrte.command.CommandResult;
+import umlp.backendrte.command.SimpleResult;
+import umlp.backendrte.common.Gem;
+import umlp.backendrte.common.LoadingState;
 
 import static org.junit.jupiter.api.Assertions.*;
 

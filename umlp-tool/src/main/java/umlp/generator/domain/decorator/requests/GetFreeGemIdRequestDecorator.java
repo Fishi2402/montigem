@@ -8,6 +8,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.ManagerDecorator.SUFFIX;
@@ -35,10 +36,10 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
                 .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Request<Long>"))
                 .setName(CLASS_NAME)
                 .build();
-        getCD4C().addImport(ast, "umlp.command.SimpleResult");
+        getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
         getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE),
                 origCD.getCDDefinition().getName()+SUFFIX));
-        getCD4C().addImport(ast, "umlp.request.Request");
+        getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
 
         getCD4C().addConstructor(ast, "umlp.requests.getfreegemid.Constructor", CLASS_NAME, getPackageName(origCD, DEFAULT_PACKAGE));
         getCD4C().addMethod(ast, "umlp.requests.getfreegemid.DoRun", origCD.getCDDefinition().getName());
@@ -55,7 +56,7 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
         getCD4C().addMethod(ast, "umlp.requests.getfreegemid.FromJsonObject");
 
         getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-        getCD4C().addImport(ast, "umlp.command.CommandDeSer");
+        getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
 
         return ast;
     }

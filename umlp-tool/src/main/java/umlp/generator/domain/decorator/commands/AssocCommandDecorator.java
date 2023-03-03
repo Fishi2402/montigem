@@ -15,6 +15,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.util.PathUtil;
 
 import java.util.Collection;
 import java.util.List;
@@ -210,7 +211,7 @@ public class AssocCommandDecorator extends AbstractDecorator {
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-    getCD4C().addImport(ast, "umlp.command.CommandDeSer");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
 
     return ast;
   }
@@ -218,12 +219,12 @@ public class AssocCommandDecorator extends AbstractDecorator {
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass ast, String sourceType, String targetType) {
     // Importe
     getCD4C().addImport(ast, "com.google.common.collect.Lists");
-    getCD4C().addImport(ast, "umlp.command.StatusResult");
-    getCD4C().addImport(ast, "umlp.command.Command");
-    getCD4C().addImport(ast, "umlp.command.CommandManager");
-    getCD4C().addImport(ast, "umlp.util.LogUtil");
-    getCD4C().addImport(ast, "umlp.rte.NotificationScope");
-    getCD4C().addImport(ast, "umlp.rte.GeneralErrorCollector");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandManager"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+sourceType);
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+targetType);

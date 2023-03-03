@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
@@ -47,10 +48,10 @@ public class CommandObserverDecorator extends AbstractDecorator {
   }
   
   protected void addImports(ASTCDClass clazz, ASTCDClass domainclass) {
-    getCD4C().addImport(clazz,"umlp.rte.NotificationScope");
+    getCD4C().addImport(clazz,PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(clazz,"umlp."+domainclass.getName()+"Observer");
     if(!domainclass.getCDAttributeList().isEmpty()) {
-      getCD4C().addImport(clazz, "umlp.command.CommandManager");
+      getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
       getCD4C().addImport(clazz, "umlp."+domainclass.getName());
     }
    }

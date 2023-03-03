@@ -6,7 +6,11 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-import umlp.command.*;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.command.CommandObjectMapper;
+import umlp.backendrte.command.CommandResult;
+import umlp.backendrte.command.Participant;
 
 import java.io.IOException;
 import java.util.HashMap;

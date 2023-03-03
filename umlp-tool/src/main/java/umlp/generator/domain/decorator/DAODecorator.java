@@ -12,6 +12,7 @@ import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.db.sql.SQLSchemaGenerator;
+import umlp.generator.util.PathUtil;
 
 import java.util.*;
 import java.util.function.Function;
@@ -360,10 +361,10 @@ public class DAODecorator extends AbstractDecorator {
 
   private void addStaticImports(ASTCDType clazz) {
     // UMLP RTE
-    getCD4C().addImport(clazz, "umlp.rte.DatabaseAccessManager");
-    getCD4C().addImport(clazz, "umlp.rte.Gem");
-    getCD4C().addImport(clazz, "umlp.rte.LoadResult");
-    getCD4C().addImport(clazz, "umlp.rte.LoadingState");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("DatabaseAccessManager"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));
 
     // SQL
     getCD4C().addImport(clazz, "java.sql.PreparedStatement");

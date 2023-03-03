@@ -3,8 +3,8 @@ package hardy.requests;
 
 // RTE-P
 import hardy.FlensburgManager;
-import umlp.command.SimpleResult;
-import umlp.request.Request;
+import umlp.backendrte.command.SimpleResult;
+import umlp.backendrte.request.Request;
 
 // Da dies nicht rückgängig gemacht werden kann, heißt es Request anstatt command.
 // Zur vereinfachten technischen Umsetzung ist es trotzdem eine Subklasse von Command.

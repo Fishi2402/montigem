@@ -3,9 +3,14 @@ package infrastructure.command;
 
 import de.se_rwth.commons.logging.Log;
 import stanley.FlensburgTestContext;
-import umlp.command.*;
-import umlp.rte.Result;
-import umlp.util.LogUtil;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.command.CommandObjectMapper;
+import umlp.backendrte.command.CommandResult;
+import umlp.backendrte.command.Participant;
+import umlp.backendrte.command.ServerCommandCommunication;
+import umlp.backendrte.common.Result;
+import umlp.backendrte.util.LogUtil;
 
 import java.util.Optional;
 

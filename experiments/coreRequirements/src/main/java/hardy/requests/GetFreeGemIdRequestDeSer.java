@@ -2,12 +2,8 @@
 package hardy.requests;
 
 // RTE-P
-import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import hardy.FlensburgManager;
-import umlp.command.CommandDeSer;
-import umlp.command.SimpleResult;
-import umlp.request.Request;
+import umlp.backendrte.command.CommandDeSer;
 
 import java.util.Optional;
 

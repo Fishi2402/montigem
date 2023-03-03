@@ -12,7 +12,7 @@ import hardy.Person;
  *   int value; // number of entries conforming to some condition
  * }
  */
-import umlp.rte.gui.PieData;
+import umlp.backendrte.gui.PieData;
 
 import java.util.List;
 import java.util.ArrayList;

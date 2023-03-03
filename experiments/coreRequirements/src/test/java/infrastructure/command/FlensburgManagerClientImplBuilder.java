@@ -7,7 +7,7 @@ import de.se_rwth.commons.logging.Log;
 import hardy.HumanErrorCollector;
 import hardy.PersonErrorCollector;
 import stanley.FlensburgTestContext;
-import umlp.rte.GeneralErrorCollector;
+import umlp.backendrte.common.GeneralErrorCollector;
 
 import java.util.Optional;
 

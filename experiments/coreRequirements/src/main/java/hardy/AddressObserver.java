@@ -3,7 +3,7 @@ package hardy;
 
 // GEN-P
 
-import umlp.rte.NotificationScope;
+import umlp.backendrte.common.NotificationScope;
 
 // Erweiterte Form des Observer Pattern, bei der für jedes Attribut und jede Assoziatio
 // entsprechende Methoden angeboten werden.

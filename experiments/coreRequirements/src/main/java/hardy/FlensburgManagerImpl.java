@@ -16,10 +16,10 @@ import hardy.gemlists.Person_OwnsGemList;
 import hardy.gemlists.Person_VisitedGemList;
 import hardy.jsweetUtil.UMLPPromise;
 import jsweet.lang.Async;
-import umlp.rte.DatabaseAccessManager;
-import umlp.rte.GemList;
-import umlp.rte.GemListBuilder;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.GemList;
+import umlp.backendrte.common.GemListBuilder;
+import umlp.backendrte.common.NotificationScope;
 
 import java.util.ArrayList;
 import java.util.HashMap;

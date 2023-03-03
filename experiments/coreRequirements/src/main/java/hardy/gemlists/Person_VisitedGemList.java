@@ -12,8 +12,10 @@ package hardy.gemlists;
 import hardy.Address;
 import hardy.FlensburgManager;
 import hardy.Person;
-import umlp.rte.GemListBuilder;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.common.GemListBuilder;
+import umlp.backendrte.common.NotificationScope;
+import umlp.backendrte.common.LoadResult;
+import umlp.backendrte.common.LoadingState;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,19 +40,19 @@ public class Person_VisitedGemList extends GemListBuilder<Address> {
     return FlensburgManager.getPersonSure(personID);
   }
 
-  protected List<umlp.rte.LoadResult<Address>> loadObjects(List<Long> gemIDs) {
+  protected List<LoadResult<Address>> loadObjects(List<Long> gemIDs) {
 
     // load the elements with gemID from input list using manager and return the result as list
-    List<umlp.rte.LoadResult<Address>> loadResults = new ArrayList<>();
+    List<LoadResult<Address>> loadResults = new ArrayList<>();
     for (long gemID : gemIDs) {
       // todo load in a way that keeps the information, why in could not be loaded
       // does the manager have such an access point
       Optional<Address> objOpt = FlensburgManager.addressOpt(gemID);
       if (objOpt.isEmpty()) {
-        loadResults.add(new umlp.rte.LoadResult(umlp.rte.LoadingState.FAILED_TO_LOAD));
+        loadResults.add(new LoadResult(LoadingState.FAILED_TO_LOAD));
       }
       else {
-        loadResults.add(new umlp.rte.LoadResult(objOpt.get()));
+        loadResults.add(new LoadResult(objOpt.get()));
       }
     }
     return loadResults;

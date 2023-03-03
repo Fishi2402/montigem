@@ -3,7 +3,7 @@ package stanley.personstatistics;
 
 import hardy.Person;
 
-import umlp.rte.gui.PieData;
+import umlp.backendrte.gui.PieData;
 
 import java.util.List;
 import java.util.ArrayList;

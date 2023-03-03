@@ -4,11 +4,11 @@ package hardy;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
-import umlp.command.CommandResult;
-import umlp.command.CommandResultDeSer;
-import umlp.command.LongList;
-import umlp.command.SimpleResult;
-import umlp.rte.BaseClassObjectMapper;
+import umlp.backendrte.command.CommandResult;
+import umlp.backendrte.command.CommandResultDeSer;
+import umlp.backendrte.command.LongList;
+import umlp.backendrte.command.SimpleResult;
+import umlp.backendrte.common.BaseClassObjectMapper;
 
 import java.util.Optional;
 

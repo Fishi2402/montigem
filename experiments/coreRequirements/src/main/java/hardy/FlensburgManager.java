@@ -30,23 +30,17 @@ package hardy;
 */
 
 import de.se_rwth.commons.logging.Log;
-import def.js.Promise;
-import hardy.jsweetUtil.AwaitUtil;
-import hardy.jsweetUtil.UMLPPromise;
-import jsweet.lang.Async;
-import jsweet.util.Lang;
-import umlp.command.error.NotImplementedException;
-import umlp.rte.Gem;
-import umlp.rte.GemList;
-import umlp.rte.LoadResult;
-import umlp.rte.LoadingState;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.command.error.NotImplementedException;
+import umlp.backendrte.common.Gem;
+import umlp.backendrte.common.GemList;
+import umlp.backendrte.common.LoadResult;
+import umlp.backendrte.common.LoadingState;
+import umlp.backendrte.common.NotificationScope;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public abstract class   FlensburgManager {
 

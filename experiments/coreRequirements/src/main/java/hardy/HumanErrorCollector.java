@@ -5,7 +5,7 @@ package hardy;
 
 import de.se_rwth.commons.logging.Log;
 import hardy.commands.Human_error_age;
-import umlp.command.CommandManager;
+import umlp.backendrte.command.CommandManager;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,7 +3,7 @@ package stanley.personoverview;
 
 import hardy.Person;
 // Col is a frontend (client) RTE class representing table column configuration
-import umlp.rte.gui.Col;
+import umlp.backendrte.gui.Col;
 
 import java.util.List;
 import java.util.ArrayList;

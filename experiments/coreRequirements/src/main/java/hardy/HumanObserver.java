@@ -3,7 +3,7 @@ package hardy;
 
 // GEN-P
 
-import umlp.rte.NotificationScope;
+import umlp.backendrte.common.NotificationScope;
 
 // Siehe PersonObserver für Erklärung
 public interface HumanObserver {
