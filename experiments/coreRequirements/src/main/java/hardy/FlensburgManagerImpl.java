@@ -152,7 +152,6 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    @Async
     protected Person _doGetPersonSure(long gemId) {
       return _doPersonOpt(gemId).get();
     }

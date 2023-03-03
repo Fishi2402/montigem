@@ -259,12 +259,7 @@ public abstract class   FlensburgManager {
         return getSingleton()._doGetPersonSure(gemId);
     }
 
-    @Async
-    protected Person _doGetPersonSure(long gemId) {
-      String res = "MAB0x9001: No Getter for class " + "Person" + " available in Manager implementation";
-      Log.warn(res);
-      throw new NotImplementedException(res);
-    };
+    protected abstract Person _doGetPersonSure(long gemId);
 
     /**
      * Adds a {@link Person} object when build is complete to be maintained by this manager.
