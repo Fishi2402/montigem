@@ -1,0 +1,13 @@
+{
+  "adapters": [
+    "Adapter3"
+  ],
+  "@Async": {
+    "include": [
+      "hardy.FlensburgManager.getPersonSure*",
+      "hardy.FlensburgManagerImpl.getPersonSure*",
+      "hardy.FlensburgManager._doPersonOpt*",
+      "hardy.FlensburgManagerImpl._doPersonOpt*"
+    ]
+  }
+}

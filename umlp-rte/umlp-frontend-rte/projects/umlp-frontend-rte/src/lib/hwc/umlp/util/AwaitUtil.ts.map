@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"AwaitUtil.ts",
+"lineCount":34,
+"mappings":"A;;;;AAWC,C;IAGE,C,sBAA0B,C,oBAAY,C,IAApB,C;AAAgC,C,OAChD,C,EAAG,CAAC,C,IAAM,C;YACR,C,wBAAgB,C,UAAO,C,GAAI,C;YAC3B,C,kDAA6B,C;oCAAW,C;oBACtC,C,KAAM,C;iBACP,C;mBAAE,C;mCAAU,C;oBACX,C,KAAM,C;iBACP,C;;;;;;;;;;YACD,C,MAAO,C;SACR,C,KAAM,C;YAEJ,C,YAAO,C,0BAAY,C;SACrB,C;AACF,C;;IAED,C,uCACiC,C,gBAAQ,C,YAAtB,C;AAAkC,C,OACnD,C,YAAO,C,KAAW,C;AACnB;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\util\\jsweetUtils\\AwaitUtil.java"],
+"names":[]
+}

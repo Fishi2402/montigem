@@ -22,7 +22,8 @@ import java.util.Optional;
  * Die (de)-serialisierung sorgt dafür, dass unterschiedliche Instanzen der verschickten Objekte erstellt werden,
  * wodurch sich die Datensynchronisierung testen lässt.
  */
-public class CommandDirectCommunication implements ClientCommandCommunication, ServerCommandCommunication {
+public class CommandDirectCommunication implements ClientCommandCommunication,
+    ServerCommandCommunication {
   protected FlensburgTestContext serverContext;
   // Wegen beidseitiger navigation muss dieser per setter gesetzt werden
   protected FlensburgTestContext clientContext;

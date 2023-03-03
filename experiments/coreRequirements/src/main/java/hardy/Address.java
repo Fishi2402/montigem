@@ -101,7 +101,7 @@ public class Address implements GemIdentifiable, GemBuildable {
 
 
   public void addVisitorId(int indexInList, long personGemId, NotificationScope scope) {
-    _internal_addVisitors(indexInList, List.of(personGemId), scope);
+    _internal_addVisitors(indexInList, Collections.singletonList(personGemId), scope);
   }
 
   public void _internal_addVisitors(int idx, List<Long> gemIDs, NotificationScope scope) {
@@ -127,11 +127,11 @@ public class Address implements GemIdentifiable, GemBuildable {
 
   // TODO: Ähnliche funktion wie addVisitorId?
   public void INTERNAL_addVisitorId(int indexInList, long personGemId, NotificationScope scope) {
-    _visitors._internal_add(indexInList, List.of(personGemId));
+    _visitors._internal_add(indexInList, Collections.singletonList(personGemId));
     addressObservers.forEach(obs -> obs.maybeNotifyAddVisitor(this, personGemId, indexInList, scope));
   }
 
-  public List<Person> getVisitor() {
+  public GemList<Person> getVisitor() {
     return _visitors;
   }
 

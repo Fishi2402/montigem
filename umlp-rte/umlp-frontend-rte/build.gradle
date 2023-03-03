@@ -40,7 +40,7 @@ dependencies {
 /////////////////////////   JSweet   //////////////////////////////
 // Enable for implementing a new Adapter
 sourceSets {
-  sourceSets.main.java {
+  main.java {
     srcDirs += ["$projectDir/jsweet_extension"]
   }
 }
@@ -62,7 +62,8 @@ jsweet {
     '**/DatabaseAccessManager.java',
     '**/*DeSer*',
     '**/BaseClassObjectMapper.java',
-    '**/HashMapWithOrderedKeys.java'
+    '**/HashMapWithOrderedKeys.java',
+    '**/AwaitUtil.java'
   ]
 }
 
@@ -81,6 +82,14 @@ task buildLib(type: NpxTask) {
   inputs.dir("node_modules")
   inputs.files("tsconfig.json")
   outputs.dir("${project.buildDir}/dist")
+}
+
+project.getTasksByName("jsweet", true).forEach {
+  t-> {
+    print(t.name)
+    t.finalizedBy(buildLib)
+    buildLib.dependsOn(t)
+  }
 }
 
 //task packLib(type: NpxTask) {

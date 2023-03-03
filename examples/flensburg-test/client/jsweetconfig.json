@@ -1,0 +1,8 @@
+{
+  "@Async": {
+    "include": [
+      "flensburg.FlensburgManager.getPersonSure(*)",
+      "flensburg.FlensburgManagerImpl._doGetPersonSure(*)"
+    ]
+  }
+}

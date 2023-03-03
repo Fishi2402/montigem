@@ -1,23 +1,18 @@
-package umlp.jsweet.extension;/* (c) https://github.com/MontiCore/monticore */
+package umlp.jsweet.extension.internal;/* (c) https://github.com/MontiCore/monticore */
 
-import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ImportElement;
+import org.jsweet.transpiler.model.MethodInvocationElement;
 
-import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-public class UMLP_RTE_Adapter extends org.jsweet.transpiler.extension.PrinterAdapter {
+public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.PrinterAdapter {
 
   public static void main(String[] args) {
 
@@ -29,19 +24,18 @@ public class UMLP_RTE_Adapter extends org.jsweet.transpiler.extension.PrinterAda
 
   private Map<String, String> staticLibrary = new HashMap<>();
 
-  public UMLP_RTE_Adapter(PrinterAdapter parentAdapter) {
+  public UMLPInternalAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     initStaticLibary();
     initTypeMappings();
   }
 
   private void initStaticLibary() {
-    staticLibrary.put("de.se_rwth.commons.logging.Log", "logging/Log");
+    staticLibrary.put("de.se_rwth.commons.logging.Log",  "logging/Log");
     staticLibrary.put("umlp.command.CommandObjectMapper", "command/CommandObjectMapper");
     staticLibrary.put("java.util.concurrent.atomic.AtomicReference", "javautil/AtomicReference");
     staticLibrary.put("java.util.Random", "javautil/Random");
     staticLibrary.put("java.util.Random", "javautil/Random");
-    staticLibrary.put("umlp.util.jsweetUtils.JavaUtilUtils", "javautil/JavaUtilUtils");
   }
 
   @Override
@@ -81,5 +75,27 @@ public class UMLP_RTE_Adapter extends org.jsweet.transpiler.extension.PrinterAda
       }
       return null;
     });
+  }
+
+  @Override
+  public boolean substituteMethodInvocation(MethodInvocationElement invocation) {
+    if (invocation.getTargetType() != null && invocation.getTargetType().toString().equals("java.util.Objects")) {
+      if (invocation.getMethodName().equals("requireNonNull")) {
+        String msg = invocation.getArgumentCount() > 1 ? invocation.getArgument(1).toString() : "";
+        print("/* requireNonNull */")
+          .print(String.format(
+            "(obj => {if (obj == undefined || obj == null) { throw Object.defineProperty(new Error(%s), '__classes', { configurable: true, value: ['java.lang.Throwable','java.lang.Object','java.lang.RuntimeException','java.lang.NullPointerException','java.lang.Exception'] }) } else { return obj}}) (%s)",
+            msg, invocation.getArgument(0).toString()));
+        return true;
+      }
+      if (invocation.getMethodName().equals("equals")) {
+        print("/* equals */")
+          .print(
+            String.format("((a, b) => { return a === b; }) (%s, %s)",
+              invocation.getArgument(0), invocation.getArgument(1)));
+        return true;
+      }
+    }
+    return super.substituteMethodInvocation(invocation);
   }
 }

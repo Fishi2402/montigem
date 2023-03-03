@@ -10,22 +10,24 @@ buildscript {
         maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
     }
     dependencies {
-        classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-SNAPSHOT') {
+        classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
             transitive = true
         }
     }
 }
 
 plugins {
-    id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-SNAPSHOT"
+    id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
 }
 
 repositories {
+//    mavenLocal()
     maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
     maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
 }
 
 jsweet {
+    autoPropagateAsyncAwaits = true
     verbose = true
     encoding = 'UTF-8'
     sourceMap = true
@@ -35,6 +37,7 @@ jsweet {
     targetVersion = 'ES6'
     includes = ['**/flensburg/**/*.java']
     module = 'commonjs'
+
 }
 
 compileJava {

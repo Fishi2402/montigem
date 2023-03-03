@@ -19,7 +19,6 @@ package hardy;
 */
 
 
-import def.js.Promise;
 import hardy.gemlists.AddressGemList;
 import hardy.gemlists.Address_VisitorsGemList;
 import hardy.gemlists.CarGemList;
@@ -36,7 +35,6 @@ import umlp.backendrte.common.NotificationScope;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public class FlensburgMock extends FlensburgManager {
 

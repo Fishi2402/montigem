@@ -246,7 +246,11 @@ public abstract class   FlensburgManager {
         return getSingleton()._doPersonOpt(gemId);
     }
 
-    protected abstract Optional<Person> _doPersonOpt(long gemId);
+    protected Optional<Person> _doPersonOpt(long gemId) {
+      String res = "MAB0x9001: No Getter for class " + "Person" + " available in Manager implementation";
+      Log.warn(res);
+      throw new NotImplementedException(res);
+    }
 
     /**
      * Gives the {@link Person} object with the given gemId. Use {{@link #personOpt(long)}} instead, if unsure
@@ -259,12 +263,11 @@ public abstract class   FlensburgManager {
         return getSingleton()._doGetPersonSure(gemId);
     }
 
-    @Async
     protected Person _doGetPersonSure(long gemId) {
       String res = "MAB0x9001: No Getter for class " + "Person" + " available in Manager implementation";
       Log.warn(res);
       throw new NotImplementedException(res);
-    };
+    }
 
     /**
      * Adds a {@link Person} object when build is complete to be maintained by this manager.

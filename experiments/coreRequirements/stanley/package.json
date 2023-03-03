@@ -20,8 +20,9 @@
     "@angular/router": "~12.2.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4",
-    "websocket-ts": "1.1.1"
+    "umlp-frontend-rte": "file:../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.5.0-SNAPSHOT.tgz",
+    "websocket-ts": "1.1.1",
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.2.0",

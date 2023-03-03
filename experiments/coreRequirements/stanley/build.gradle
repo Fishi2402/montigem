@@ -10,7 +10,7 @@ buildscript {
     maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
   }
   dependencies {
-    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-SNAPSHOT') {
+    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
       transitive = true
     }
   }
@@ -18,7 +18,7 @@ buildscript {
 
 plugins {
   id "com.github.node-gradle.node" version "3.4.0"
-  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-SNAPSHOT"
+  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
 }
 
 repositories {
@@ -28,6 +28,8 @@ repositories {
 
 dependencies {
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
+  implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
+  implementation project(':umlp-rte:umlp-frontend-rte')
 }
 
 jsweet {
@@ -43,7 +45,7 @@ jsweet {
   excludes = ['**/WebSocketConfig.java', '**/DBAccessRestService.java', '**/DBTestService.java',
               '**/GreetingService.java', '**/CommandWebSocketService.java',
               '**/UMLPApplication.java', '**/WebSocketCommandCommunication.java']
-//  includeTranspilation = ['**/Car*.java']
+//  includeTranspilation = ['**/FlensburgManager.java']
 //  excludeTranspilation = ['**/*Observer*.java', '**/*DeSer.java', '**/*Collector*.java']
   module = 'commonjs'
 }
@@ -110,6 +112,10 @@ task runApp(type: NpxTask) {
 }
 
 sourceSets {
+  main.java {
+    srcDirs += ["$projectDir/jsweet_extension"]
+  }
+  // java -> main instead of main -> java?
   java {
     main {
       resources {

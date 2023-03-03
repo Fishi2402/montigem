@@ -5,7 +5,6 @@ package hardy;
 
 
 
-import def.js.Promise;
 import hardy.gemlists.AddressGemList;
 import hardy.gemlists.Address_VisitorsGemList;
 import hardy.gemlists.CarGemList;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public class FlensburgManagerImpl extends FlensburgManager {
   HumanDbObserver theHumanDbObserver = new HumanDbObserver();
@@ -152,7 +150,6 @@ public class FlensburgManagerImpl extends FlensburgManager {
     }
 
     @Override
-    @Async
     protected Person _doGetPersonSure(long gemId) {
       return _doPersonOpt(gemId).get();
     }
