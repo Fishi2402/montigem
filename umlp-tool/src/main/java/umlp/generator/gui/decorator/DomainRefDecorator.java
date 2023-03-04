@@ -9,7 +9,6 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static org.gradle.internal.classloader.FilteringClassLoader.DEFAULT_PACKAGE;
 import static umlp.generator.gui.GUIGeneratorUtil.isDomainType;
 
 public class DomainRefDecorator extends GUIAbstractDecorator {
@@ -40,7 +40,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
   public static final String DOMAIN_PACKAGE = "hardy."; //TODO: remove it when packaging in umlp-symtab does properly
 
-  private boolean isInputGui;
+  private final boolean isInputGui;
 
   private Optional<ASTCDClass> createInputValueClass = Optional.empty();
 
@@ -99,7 +99,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
       getCD4C().addConstructor(clazz, "umlp.domain.Constructor", className);
     }
 
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(),  "init");
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), "init");
     glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2java.Init"));
     clazz.addCDMember(method);
 
@@ -166,7 +166,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
       glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2java.Init"));
       clazz.addCDMember(method);
 
-   }
+    }
     else {
       getCD4C().addConstructor(clazz, "umlp.domain.Constructor", decoratedClassName);
     }

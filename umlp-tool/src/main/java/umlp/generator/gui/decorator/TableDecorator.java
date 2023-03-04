@@ -5,31 +5,33 @@ import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.StringTransformations;
+import umlp.generator.gui.GUINamedArgAccessVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class TableDecorator extends GUIComponentDecorator {
 
   public static final Predicate<ASTGUINamedArg> PREDICATE_ROWS = c -> c.getName().equals("rows");
-  public static final Predicate<ASTGUINamedArg> PREDICATE_COLS = c -> c.getName().equals("cols");
+  public static final Predicate<ASTGUINamedArg> PREDICATE_COLS = c -> c.getName().equals("columns");
 
   protected final ASTGUIComponent guiComponent;
   protected final String componentName;
 
-  protected List<ASTExpression> tableColumnsArgs = new ArrayList<>();
-  protected String rowsArg = "";
+  protected List<String> tableColumnsArgs = new ArrayList<>();
+  protected String rowsArg;
 
   public TableDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst, ASTGUIComponent guiComponent, String componentName) {
     super(glex, guiAst);
@@ -45,38 +47,53 @@ public class TableDecorator extends GUIComponentDecorator {
 
     if (row.isPresent()) {
       ASTCDAttribute rowsAttribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-          "List<? extends Object>", "rows" + componentName);
+          "List<? extends Object>", StringTransformations.uncapitalize(componentName) + "Rows");
       glex.replaceTemplate("cd2java.Value", rowsAttribute, new StringHookPoint(" = new ArrayList<>()"));
       getCD4C().addImport(decoratedClass, "java.util.List");
       getCD4C().addImport(decoratedClass, "java.util.ArrayList");
-
       decoratedClass.addCDMember(rowsAttribute);
+
       decoratedClass.addAllCDMembers(decorator.decorate(rowsAttribute));
-      rowsArg = guiDSLPrinter.prettyprint(row.get().getGUIArgValue().getExpression());
+
+      if (row.get().getGUIArgValue().isPresentExpression() && row.get().getGUIArgValue().getExpression() instanceof ASTFieldAccessExpression) {
+        rowsArg = handleZuweisung((ASTFieldAccessExpression) row.get().getGUIArgValue().getExpression(), decoratedClass,
+            guiComponent, componentName, false).orElse(guiDSLPrinter.prettyprint(row.get().getGUIArgValue()));
+      }
+      else {
+        rowsArg = guiDSLPrinter.prettyprint(row.get().getGUIArgValue());
+      }
     }
 
     if (col.isPresent()) {
+      getCD4C().addImport(decoratedClass, "stanley.tmp.table.tabletypes.TableColumn"); // TODO TODO GV, Age
+
       ASTCDAttribute columnsAttribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-          "List<TableColumn>", "tableColumns" + componentName);
+          "List<TableColumn>", StringTransformations.uncapitalize(componentName) + "Columns");
       glex.replaceTemplate("cd2java.Value", columnsAttribute, new StringHookPoint(" = new ArrayList<>()"));
       getCD4C().addImport(decoratedClass, "java.util.List");
       getCD4C().addImport(decoratedClass, "java.util.ArrayList");
-
       decoratedClass.addCDMember(columnsAttribute);
+
       decoratedClass.addAllCDMembers(decorator.decorate(columnsAttribute));
 
-      if (col.get().getGUIArgValue().getExpression() instanceof ASTCallExpression) {
-        List<ASTExpression> var = ((ASTCallExpression) col.get().getGUIArgValue().getExpression())
-            .getArguments().getExpressionList().stream().filter(e -> e instanceof ASTCallExpression)
-            .flatMap(e -> ((ASTCallExpression) e).getArguments().getExpressionList().stream()).collect(Collectors.toList());
-        tableColumnsArgs.addAll(var);
-      }
+      GUINamedArgAccessVisitor viewComponents = new GUINamedArgAccessVisitor(col.get());
+      viewComponents.getCallExpressions().stream().filter(c -> (c.getExpression() instanceof ASTNameExpression) &&
+          (((ASTNameExpression) c.getExpression()).getName().equals("TableColumn") ||
+              ((ASTNameExpression) c.getExpression()).getName().equals("List"))).forEach(e -> {
+        List<String> args = new ArrayList<>();
+        e.getArguments().getExpressionList().stream().filter(ex -> ex instanceof ASTLiteralExpression).forEach(a ->
+            args.add(guiDSLPrinter.prettyprint(a)));
+        e.getArguments().getExpressionList().stream().filter(ex -> ex instanceof ASTFieldAccessExpression).forEach(a -> {
+          handleZuweisung((ASTFieldAccessExpression) a, decoratedClass, guiComponent, componentName, true)
+              .ifPresent(args::add);
+        });
+        tableColumnsArgs.add(Joiners.COMMA.join(args));
+      });
 
     }
 
     //  getCD4C().addAttribute(decoratedClass, true, true, "protected List<? extends Object> rows = new ArrayList<>()"); // Funktioniert nicht wegen der Zuweisung
     //  getCD4C().addAttribute(decoratedClass, true, true, "protected List<Col> tableColumns = new ArrayList<>()");
-
   }
 
   @Override
@@ -84,7 +101,12 @@ public class TableDecorator extends GUIComponentDecorator {
     transform(decoratedClass);
   }
 
-  public List<ASTExpression> getInitTableColumnsArguments() {
+  @Override
+  protected void generateMethodsForInputValueComponent(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
+      String returnType, String variableName, String variableType, String attrName) {
+  }
+
+  public List<String> getInitTableColumnsArguments() {
     return tableColumnsArgs;
   }
 

@@ -64,6 +64,9 @@ public class GUIComponentsAccessVisitor implements GUIDSLVisitor2, CommonExpress
   }
 
   protected String buildComponentName(ASTGUIComponent component) {
+    if (component.isPresentId()) {
+      return component.getId().getName();
+    }
     return COMPONENT_NAME + counter++;
   }
 

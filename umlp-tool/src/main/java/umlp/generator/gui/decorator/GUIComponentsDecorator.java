@@ -6,16 +6,15 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.se_rwth.commons.Joiners;
 import umlp.generator.gui.GUIComponentsAccessVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static umlp.generator.gui.GUIGeneratorUtil.isCreateClass;
+import static umlp.generator.gui.GUIGeneratorUtil.isInputComponent;
 
 public class GUIComponentsDecorator extends GUIAbstractDecorator {
 
@@ -28,21 +27,21 @@ public class GUIComponentsDecorator extends GUIAbstractDecorator {
 
   public void transform(ASTGUICompilationUnit guiAst, ASTCDClass decoratedClass) {
 
+    filterComponentsWithPredicate(viewComponent.getComponents(), PREDICATE_NOT_TABLE).stream().filter(c -> !isInputComponent(c))
+        .forEach(c -> new GUIComponentDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c)));
+
     viewComponent.getComponents().stream().filter(GUIGeneratorUtil::isInputComponent)
-      .forEach(c ->  {
-      if (isCreateClass(decoratedClass)) {
-        new InputValueCreateDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c));
-      } else {
-        new InputValueEditDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c));
-      }
-    });
+        .forEach(c -> {
+          if (isCreateClass(decoratedClass)) {
+            new InputValueCreateDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c));
+          }
+          else {
+            new InputValueEditDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c));
+          }
+        });
 
     viewComponent.getComponents().stream().filter(GUIGeneratorUtil::isEventComponent)
         .forEach(c -> new EventDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c)));
-
-    filterComponentsWithPredicate(viewComponent.getComponents(), PREDICATE_NOT_TABLE).forEach(c
-        -> new CallDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c)));
-
 
     //------------------ TABLES ----------------------------------------------
 
@@ -56,7 +55,7 @@ public class GUIComponentsDecorator extends GUIAbstractDecorator {
 
     tableDecorators.forEach(td -> {
       td.transform(decoratedClass);
-      columnTemplates.add(new TemplateHookPoint("umlp.gui2java.InitTableColumns", td.getComponentName(), td.getInitTableColumnsArguments(), guiDSLPrinter));
+      columnTemplates.add(new TemplateHookPoint("umlp.gui2java.InitTableColumns", td.getComponentName(), td.getInitTableColumnsArguments()));
       rowsTemplates.add(new TemplateHookPoint("umlp.gui2java.InitRows", td.getComponentName(), td.getInitRowsArgument()));
     });
 

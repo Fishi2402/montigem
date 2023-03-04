@@ -28,14 +28,13 @@ import java.util.stream.Collectors;
 public abstract class GUIAbstractDecorator extends AbstractDecorator {
 
   //public static final Predicate<ASTGUIComponent> PREDICATE_BUTTON = c -> c.getQualifiedName().equals("umlp.gui.Button");
-  public static final Predicate<ASTGUIComponent> PREDICATE_TABLE = c -> c.getQualifiedName().equals("umlp.gui.Table");
+  public static final Predicate<ASTGUIComponent> PREDICATE_TABLE = c -> c.getQualifiedName().endsWith("table.GemTable");
   public static final Predicate<ASTGUIComponent> PREDICATE_PIE = c -> c.getQualifiedName().equals("umlp.gui.Pie");
-  public static final Predicate<ASTGUIComponent> PREDICATE_NOT_TABLE = c -> !c.getQualifiedName().equals("umlp.gui.Table");
-  //public static final Predicate<ASTGUIComponent> PREDICATE_NOT_BUTTON = c -> !c.getQualifiedName().equals("umlp.gui.Button");
+  public static final Predicate<ASTGUIComponent> PREDICATE_NOT_TABLE = c -> !c.getQualifiedName().endsWith("table.GemTable");
+  public static final Predicate<ASTGUIComponent> PREDICATE_NOT_BUTTON = c -> !c.getQualifiedName().equals("io.GemButton");
 
-  public static final String COMPONENT_SUFFIX = "";
   public static final String CREATE_INPUT_VALUE_SUFFIX = "Create";
-  public static final String EDIT_INPUT_VALUE_SUFFIX = "Edit";
+  public static final String EDIT_INPUT_VALUE_SUFFIX = "";
 
   public static MCBasicTypesFullPrettyPrinter basicTypesPrinter;
   public static GUIDSLFullPrettyPrinter guiDSLPrinter;
@@ -43,7 +42,7 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
   public GUIAbstractDecorator(final GlobalExtensionManagement glex) {
     super(glex);
     basicTypesPrinter = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
-    guiDSLPrinter = new GUIDSLFullPrettyPrinter(new IndentPrinter());
+    guiDSLPrinter = new GUIDSLFullPrettyPrinter(new IndentPrinter(), false);
   }
 
   public static String getComponentClassName(ASTGUIComponentDeclaration guiAst, boolean isInputGui) {
@@ -56,12 +55,12 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
   }
 
   protected static List<ASTGUIComponent> filterComponentsWithPredicate(Collection<ASTGUIComponent> components,
-                                                                       Predicate<ASTGUIComponent> predicate) {
+      Predicate<ASTGUIComponent> predicate) {
     return components.stream().filter(predicate).collect(Collectors.toList());
   }
 
   protected static List<ASTGUIComponent> filterComponentsWithAllPredicates(Collection<ASTGUIComponent> components,
-                                                                           Collection<Predicate<ASTGUIComponent>> predicate) {
+      Collection<Predicate<ASTGUIComponent>> predicate) {
     List<ASTGUIComponent> toFilter = Lists.newArrayList(components);
     List<ASTGUIComponent> filtered = new ArrayList<>();
     predicate.forEach(p -> {
@@ -74,15 +73,11 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
   }
 
   protected static List<ASTGUINamedArg> filterArgumentsWithPredicate(List<ASTGUINamedArg> components,
-                                                                     Predicate<ASTGUINamedArg> predicate) {
+      Predicate<ASTGUINamedArg> predicate) {
     return components.stream().filter(predicate).collect(Collectors.toList());
   }
 
-  @Override
-  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-  }
-
-  // TODO MB
+  // TODO MB: super class
   public Optional<VariableSymbol> resolveAttribute(Optional<GUIParamSymbol> guiVariableSymbol, String name) {
     if (guiVariableSymbol.isEmpty()) {
       return Optional.empty();
@@ -93,5 +88,9 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
       res = typeInfo.getSuperClass().getTypeInfo().getSpannedScope().resolveVariable(name);
     }
     return res;
+  }
+
+  @Override
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
   }
 }
