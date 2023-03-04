@@ -8,6 +8,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
@@ -76,7 +77,7 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
 
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDType clazz) {
-    getCD4C().addImport(clazz, "umlp.command.CommandManager");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
   }
 
 }

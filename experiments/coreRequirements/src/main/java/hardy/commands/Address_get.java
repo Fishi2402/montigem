@@ -3,9 +3,9 @@ package hardy.commands;
 
 import hardy.Address;
 import hardy.FlensburgManager;
-import umlp.command.SimpleResult;
-import umlp.request.Request;
-import umlp.rte.LoadingState;
+import umlp.backendrte.command.SimpleResult;
+import umlp.backendrte.request.Request;
+import umlp.backendrte.common.LoadingState;
 
 import java.util.Collection;
 import java.util.Collections;

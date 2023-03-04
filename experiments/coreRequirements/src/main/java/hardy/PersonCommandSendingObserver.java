@@ -12,8 +12,8 @@ import hardy.commands.Person_setNickname;
 import hardy.commands.associations.Visits_add;
 import hardy.commands.associations.Visits_remove;
 import hardy.commands.associations.Visits_set;
-import umlp.command.CommandManager;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.common.NotificationScope;
 
 // Ein Observer, der Änderungen von Attributen per CommandManager an die Clients schickt.
 

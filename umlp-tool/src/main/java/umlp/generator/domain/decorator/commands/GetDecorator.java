@@ -11,6 +11,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
@@ -51,9 +52,9 @@ public class GetDecorator extends AbstractDecorator {
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));
 
-    getCD4C().addImport(ast, "umlp.request.Request");
-    getCD4C().addImport(ast, "umlp.command.SimpleResult");
-    getCD4C().addImport(ast, "umlp.rte.LoadingState");
+    getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("LoadingState"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+classname);
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
 
@@ -74,7 +75,7 @@ public class GetDecorator extends AbstractDecorator {
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-    getCD4C().addImport(ast, "umlp.command.CommandDeSer");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
 
     return ast;
   }

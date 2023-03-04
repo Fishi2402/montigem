@@ -4,11 +4,11 @@ package hardy.commands;
 import de.se_rwth.commons.logging.Log;
 import hardy.FlensburgManager;
 import hardy.Human;
-import umlp.command.Command;
-import umlp.command.StatusResult;
-import umlp.rte.GeneralErrorCollector;
-import umlp.rte.NotificationScope;
-import umlp.util.LogUtil;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.StatusResult;
+import umlp.backendrte.common.GeneralErrorCollector;
+import umlp.backendrte.common.NotificationScope;
+import umlp.backendrte.util.LogUtil;
 
 import java.util.Collection;
 import java.util.Collections;

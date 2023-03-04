@@ -2,7 +2,7 @@
 package de.se_rwth.artifacts.static_extractors.commons;
 
 
-import umlp.rte.GemIdentifiable;
+import umlp.backendrte.common.GemIdentifiable;
 
 import java.io.File;
 import java.util.*;

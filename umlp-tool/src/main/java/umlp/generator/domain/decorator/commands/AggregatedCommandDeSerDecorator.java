@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,7 +53,7 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
 
 
         getCD4C().addConstructor(ast, "umlp.commands.aggregatedcommanddeser.Constructor", commandList, className, getPackageName(origCD, DEFAULT_PACKAGE));
-        getCD4C().addImport(ast, "umlp.rte.AggregatedCommandDeSer");
+        getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("AggregatedCommandDeSer"));
 
         return ast;
     }

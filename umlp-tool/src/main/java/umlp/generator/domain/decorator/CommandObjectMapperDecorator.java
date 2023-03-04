@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.*;
 
@@ -53,9 +54,9 @@ public class CommandObjectMapperDecorator extends AbstractDecorator {
   }
 
   protected void addImports(ASTCDType clazz) {
-    getCD4C().addImport(clazz, "umlp.command.CommandObjectMapper");
-    getCD4C().addImport(clazz, "umlp.command.Command");
-    getCD4C().addImport(clazz, "umlp.command.CommandResult");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandObjectMapper"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("Command"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
 
   }
 

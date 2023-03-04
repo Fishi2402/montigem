@@ -6,9 +6,9 @@ package hardy;
 // todo NN: !com.google.common.: Muss das Teil dieser Imports sein, Rücksprache mit BR
 
 import com.google.common.collect.Sets;
-import umlp.rte.Gem;
-import umlp.rte.GemList;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.common.Gem;
+import umlp.backendrte.common.GemList;
+import umlp.backendrte.common.NotificationScope;
 
 import java.util.ArrayList;
 import java.util.Collection;

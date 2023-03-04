@@ -7,6 +7,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
@@ -41,7 +42,7 @@ public class BaseClassObjectMapperDecorator extends AbstractDecorator {
   }
 
   protected void addImports(ASTCDType clazz) {
-    getCD4C().addImport(clazz, "umlp.rte.BaseClassObjectMapper");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
   }
 
 

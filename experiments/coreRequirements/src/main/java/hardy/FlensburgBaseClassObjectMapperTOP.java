@@ -3,7 +3,7 @@ package hardy;
 
 // GEN-P
 
-import umlp.rte.BaseClassObjectMapper;
+import umlp.backendrte.common.BaseClassObjectMapper;
 
 // Wird nur generiert, damit per TOP-Mechanismus neue Basisklassen hinzugefügt werden können.
 // Hier: java.util.Date in FlensburgBaseClassObjectMapper

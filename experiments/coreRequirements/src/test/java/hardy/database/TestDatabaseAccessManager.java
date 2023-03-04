@@ -6,7 +6,7 @@ package hardy.database;
 import com.google.common.io.Resources;
 import de.se_rwth.commons.logging.Log;
 import org.h2.tools.Server;
-import umlp.rte.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

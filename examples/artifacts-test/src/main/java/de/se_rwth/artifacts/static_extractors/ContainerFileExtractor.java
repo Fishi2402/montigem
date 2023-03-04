@@ -7,7 +7,7 @@ import de.se_rwth.artifacts.static_extractors.commons.ExtractorUtils;
 import de.se_rwth.artifacts.static_extractors.commons.RootAwareFile;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FilenameUtils;
-import umlp.rte.GemIdentifiable;
+import umlp.backendrte.common.GemIdentifiable;
 
 import java.io.File;
 import java.util.*;

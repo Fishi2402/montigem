@@ -4,9 +4,9 @@ package hardy.commands;
 // GEN-P
 
 import hardy.FlensburgManager;
-import umlp.command.LongList;
-import umlp.command.SimpleResult;
-import umlp.request.Request;
+import umlp.backendrte.command.LongList;
+import umlp.backendrte.command.SimpleResult;
+import umlp.backendrte.request.Request;
 
 // Request to get a filtered subset of Addresss
 // TODO: implement filter!

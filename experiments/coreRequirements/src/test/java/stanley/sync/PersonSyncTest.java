@@ -10,9 +10,9 @@ import infrastructure.command.TestClientCommandManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import stanley.FlensburgTestContext;
-import umlp.command.Command;
-import umlp.command.CommandResult;
-import umlp.rte.GemList;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.CommandResult;
+import umlp.backendrte.common.GemList;
 
 import java.util.ArrayList;
 import java.util.List;

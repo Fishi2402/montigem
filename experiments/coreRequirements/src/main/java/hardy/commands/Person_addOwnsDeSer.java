@@ -3,7 +3,7 @@ package hardy.commands;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import java.util.Optional;
-import umlp.command.CommandDeSer;
+import umlp.backendrte.command.CommandDeSer;
 public class Person_addOwnsDeSer extends CommandDeSer<Person_addOwns> {
     protected Optional<Person_addOwns> fromJsonObject(JsonObject jsonObject) {
         return Optional.of(new Person_addOwns(

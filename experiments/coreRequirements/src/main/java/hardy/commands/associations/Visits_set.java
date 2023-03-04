@@ -4,9 +4,9 @@ package hardy.commands.associations;
 import hardy.Address;
 import hardy.FlensburgManager;
 import hardy.Person;
-import umlp.command.Command;
-import umlp.command.StatusResult;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.StatusResult;
+import umlp.backendrte.common.NotificationScope;
 
 import java.util.Arrays;
 import java.util.Collection;

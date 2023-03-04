@@ -4,8 +4,8 @@ package hardy;
 // GEN-P
 
 import hardy.commands.Human_set_age;
-import umlp.command.CommandManager;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.common.NotificationScope;
 
 // Ein Observer, der Änderungen von Attributen per CommandManager an die Clients schickt.
 public class HumanCommandSendingObserver implements HumanObserver {

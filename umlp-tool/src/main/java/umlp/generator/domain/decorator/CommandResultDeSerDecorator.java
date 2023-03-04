@@ -8,6 +8,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,11 +53,11 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
   protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonObject");
-    getCD4C().addImport(clazz, "umlp.rte.BaseClassObjectMapper");
-    getCD4C().addImport(clazz, "umlp.command.CommandResultDeSer");
-    getCD4C().addImport(clazz, "umlp.command.CommandResult");
-    getCD4C().addImport(clazz, "umlp.command.LongList");
-    getCD4C().addImport(clazz, "umlp.command.SimpleResult");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResultDeSer"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("LongList"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
   }
 
 

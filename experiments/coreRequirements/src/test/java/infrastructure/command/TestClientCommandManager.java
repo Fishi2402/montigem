@@ -3,8 +3,10 @@ package infrastructure.command;
 
 // RTE4T
 
-import umlp.command.*;
-import umlp.rte.Result;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.command.CommandResult;
+import umlp.backendrte.common.Result;
 
 // Simulation des CommandManagers im Client.
 // Es muss immer eine ClientCommandCommunication mit übergeben werden. Diese sorgt dann für den Transport
