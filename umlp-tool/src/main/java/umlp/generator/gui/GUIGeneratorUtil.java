@@ -47,16 +47,18 @@ public class GUIGeneratorUtil {
   }
 
   public static boolean isInputComponent(ASTGUIComponent guiComponent) {
-    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
-    return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a
-        -> isInputArgument(guiComponentSymbol.get(), a)).findAny().isPresent();
+    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
+        .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
+    return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream()
+        .filter(a -> isInputArgument(guiComponentSymbol.get(), a)).findAny().isPresent();
   }
 
   public static boolean isEventComponent(ASTGUIComponent guiComponent) {
-    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
+    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
+        .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
     //Optional<FunctionSymbol> guiComponentSymbol = GUIDSLMill.globalScope().resolveFunction(guiComponent.getQualifiedName());
-    return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a
-        -> isEventArgument(guiComponentSymbol.get(), a)).findAny().isPresent();
+    return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream()
+        .filter(a -> isEventArgument(guiComponentSymbol.get(), a)).findAny().isPresent();
   }
 
   public static boolean isCreateClass(ASTCDClass decoratedClass) {

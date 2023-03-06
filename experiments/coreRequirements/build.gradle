@@ -89,17 +89,6 @@ task generateAll(type: UMLPTask) {
     //symbolDir = file("$projectDir/target/symbols")
 }
 
-task generateAllTmp(type: UMLPTask) {
-    dependsOn(copySymbols)
-    input.from(file("modelstmp"))
-    outputDir = layout.buildDirectory.dir("gen")
-    hwcDir = layout.projectDirectory.dir("src/main/java")
-    modelDir = layout.projectDirectory.dir("modelstmp")
-    symbolDir = file("modelstmp")
-    debug = true
-    //symbolDir = file("$projectDir/target/symbols")
-}
-
 test {
     testLogging {
         events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"

@@ -150,17 +150,19 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
       domainClass.forEachGUIParams(p -> params.add(p.getSymbol().getType().getTypeInfo().getName() + " " + p.getName()));
 
       Optional<ASTCDMethodSignature> constr = getCD4C().createConstructor(clazz, "umlp.gui2java.Constructor", decoratedClassName,
-          Joiner.on(",").join(params), domainAttributes, otherAttributes, guiDSLPrinter);
+          Joiner.on(",").join(params), domainAttributes, otherAttributes, guiDSLPrinter, isInputGui);
       clazz.addCDMember(constr.get());
 
-      List<ASTMCQualifiedType> observers = domainAttributes.stream().map(a -> getMCTypeFacade().createQualifiedType(guiDSLPrinter.prettyprint(a.getMCType()) + ERROR_OBSERVER)).collect(Collectors.toList());
-      if (!observers.isEmpty()) {
-        clazz.setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(Lists.newArrayList()));
-        clazz.getCDInterfaceUsage().addAllInterface(observers);
-      }
+      if (isInputGui) {
+        List<ASTMCQualifiedType> observers = domainAttributes.stream().map(a -> getMCTypeFacade().createQualifiedType(guiDSLPrinter.prettyprint(a.getMCType()) + ERROR_OBSERVER)).collect(Collectors.toList());
+        if (!observers.isEmpty()) {
+          clazz.setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(Lists.newArrayList()));
+          clazz.getCDInterfaceUsage().addAllInterface(observers);
+        }
 
-      domainAttributes.forEach(a -> getCD4C().addImport(clazz, DOMAIN_PACKAGE + guiDSLPrinter.prettyprint(a.getMCType()) + ERROR_OBSERVER));
-      domainAttributes.forEach(a -> getCD4C().addImport(clazz, DOMAIN_PACKAGE + guiDSLPrinter.prettyprint(a.getMCType()) + ERROR_COLLECTOR));
+        domainAttributes.forEach(a -> getCD4C().addImport(clazz, DOMAIN_PACKAGE + guiDSLPrinter.prettyprint(a.getMCType()) + ERROR_OBSERVER));
+        domainAttributes.forEach(a -> getCD4C().addImport(clazz, DOMAIN_PACKAGE + guiDSLPrinter.prettyprint(a.getMCType()) + ERROR_COLLECTOR));
+      }
 
       ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), "init");
       glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2java.Init"));
