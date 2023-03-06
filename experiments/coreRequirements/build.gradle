@@ -85,7 +85,6 @@ task generateAll(type: UMLPTask) {
     hwcDir = layout.projectDirectory.dir("src/main/java")
     modelDir = layout.projectDirectory.dir("models")
     symbolDir = file("models")
-    debug = true
     //symbolDir = file("$projectDir/target/symbols")
 }
 
