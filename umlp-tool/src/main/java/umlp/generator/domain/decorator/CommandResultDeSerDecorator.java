@@ -2,9 +2,11 @@
 
 package umlp.generator.domain.decorator;
 
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -42,6 +44,7 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
     List<String> classNames = origCD.getCDDefinition().getCDClassesList().stream()
             .filter(c -> !c.getModifier().isDerived())
             .map(c -> Joiners.DOT.join(packageName, c.getName())).collect(Collectors.toList());
+    // TODO AHe: DeSer load state, error checks for empty etc
     getCD4C().addMethod(cmdResultDeSerClass, "umlp.commandresultdeser.BuildJson", classNames);
     getCD4C().addMethod(cmdResultDeSerClass, "umlp.commandresultdeser.FromJson", classNames);
 
