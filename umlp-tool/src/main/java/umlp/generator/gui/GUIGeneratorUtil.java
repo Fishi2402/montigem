@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static umlp.generator.gui.decorator.GUIAbstractDecorator.CREATE_INPUT_VALUE_SUFFIX;
+import static umlp.generator.gui.GUIAbstractDecorator.CREATE_INPUT_VALUE_SUFFIX;
 
 public class GUIGeneratorUtil {
 
@@ -41,6 +41,7 @@ public class GUIGeneratorUtil {
 
   public static final boolean isDomainType(SymTypeExpression type) {
     String typeName = type.getTypeInfo().getName();
+    String fullName = type.getTypeInfo().getFullName();
     return !type.isGenericType()
         && !BasicSymbolsMill.PRIMITIVE_LIST.contains(typeName)
         && !UMLP_TYPES.contains(typeName);

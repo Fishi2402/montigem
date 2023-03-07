@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui.decorator;
+package umlp.generator.gui.genjava.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsAccessVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 
@@ -12,9 +13,9 @@ import java.util.stream.Collectors;
 
 import static umlp.generator.gui.GUIGeneratorUtil.isInputGui;
 
-public class GUIDecorator extends GUIAbstractDecorator {
+public class GUI2JavaDecorator extends GUIAbstractDecorator {
 
-  public GUIDecorator(final GlobalExtensionManagement glex) {
+  public GUI2JavaDecorator(final GlobalExtensionManagement glex) {
     super(glex);
   }
 
@@ -29,10 +30,10 @@ public class GUIDecorator extends GUIAbstractDecorator {
     domainRefDecorator.transform(guiAst, decoratedAST);
     Log.info("After decorator: DomainRefDecorator", DomainRefDecorator.class.getName());
 
-    GUIComponentsDecorator componentsDecorator = new GUIComponentsDecorator(glex, viewComponents);
+    GUI2JavaComponentsDecorator componentsDecorator = new GUI2JavaComponentsDecorator(glex, viewComponents);
     componentsDecorator.transform(guiAst, domainRefDecorator.getDecoratedClass());
     domainRefDecorator.getCreateInputValueClass().ifPresent(createClass -> componentsDecorator.transform(guiAst, createClass));
-    Log.info("After decorator: GUIComponentsDecorator", GUIComponentsDecorator.class.getName());
+    Log.info("After decorator: GUI2JavaComponentsDecorator", GUI2JavaComponentsDecorator.class.getName());
 
   }
 

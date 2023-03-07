@@ -1,11 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui.decorator;
+package umlp.generator.gui.genjava.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
@@ -19,10 +17,9 @@ import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentAccessVisitor;
 
 import java.util.*;
@@ -32,13 +29,13 @@ import java.util.stream.Collectors;
 import static umlp.generator.gui.GUIGeneratorUtil.isEventArgument;
 import static umlp.generator.gui.GUIGeneratorUtil.isStringLiteral;
 
-public class GUIComponentDecorator extends GUIAbstractDecorator {
+public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   public final static String VALUE = "Value";
   protected final String guiName;
   private final ASTGUICompilationUnit guiAst;
 
-  public GUIComponentDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
+  public GUI2JavaComponentDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
     super(glex);
     this.guiName = guiAst.getGUIComponentDeclaration().getName();
     this.guiAst = guiAst;

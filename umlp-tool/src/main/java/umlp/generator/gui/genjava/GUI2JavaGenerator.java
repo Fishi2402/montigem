@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui;
+package umlp.generator.gui.genjava;
 
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
@@ -12,14 +12,15 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGenerator;
+import umlp.generator.gui.genjava.GUI2CDTrafo;
 
 import java.util.Arrays;
 
-public class GUIGenerator extends CDGenerator {
+public class GUI2JavaGenerator extends CDGenerator {
 
   protected static CD4CodeFullPrettyPrinter astPrinter;
 
-  public GUIGenerator(GeneratorSetup genSetup, IGUIDSLArtifactScope symbolTableGui) {
+  public GUI2JavaGenerator(GeneratorSetup genSetup, IGUIDSLArtifactScope symbolTableGui) {
     super(genSetup);
     astPrinter = new CD4CodeFullPrettyPrinter();
     genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter()); // TODO GV
@@ -27,8 +28,8 @@ public class GUIGenerator extends CDGenerator {
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast) {
-    Log.info("========= CD after '" + trafo + "': =========", UMLPGenerator.class.getName());
-    Log.info(astPrinter.prettyprint(ast), UMLPGenerator.class.getName());
+    Log.info("========= CD after '" + trafo + "': =========", GUI2JavaGenerator.class.getName());
+    Log.info(astPrinter.prettyprint(ast), GUI2JavaGenerator.class.getName());
   }
 
   public void generate(ASTGUICompilationUnit modelAST, String configTemplate) {
@@ -44,5 +45,6 @@ public class GUIGenerator extends CDGenerator {
     hpp.processValue(tc, modelAST,
         Arrays.asList(decoratedAST, setup.getGlex(), setup.getHandcodedPath(), this));
   }
+
 
 }

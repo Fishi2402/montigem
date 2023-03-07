@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui.decorator;
+package umlp.generator.gui.genjava.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;

@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package umlp.generator.gui;
+package umlp.generator.gui.genjava;
 
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;

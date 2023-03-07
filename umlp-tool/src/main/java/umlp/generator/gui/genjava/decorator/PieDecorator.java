@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui.decorator;
+package umlp.generator.gui.genjava.decorator;
 
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.facade.CDModifier;
@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class PieDecorator extends GUIComponentDecorator {
+public class PieDecorator extends GUI2JavaComponentDecorator {
 
   public static final Predicate<ASTGUINamedArg> PREDICATE_ENTRIES = c -> c.getName().equals("entries");
 

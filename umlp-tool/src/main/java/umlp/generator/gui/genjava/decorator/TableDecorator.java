@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui.decorator;
+package umlp.generator.gui.genjava.decorator;
 
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.facade.CDModifier;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class TableDecorator extends GUIComponentDecorator {
+public class TableDecorator extends GUI2JavaComponentDecorator {
 
   public static final Predicate<ASTGUINamedArg> PREDICATE_ROWS = c -> c.getName().equals("rows");
   public static final Predicate<ASTGUINamedArg> PREDICATE_COLS = c -> c.getName().equals("columns");

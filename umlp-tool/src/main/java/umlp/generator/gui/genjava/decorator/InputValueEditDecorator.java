@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui.decorator;
+package umlp.generator.gui.genjava.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
@@ -11,7 +11,7 @@ import umlp.generator.gui.GUIComponentAccessVisitor;
 
 import java.util.List;
 
-public class InputValueEditDecorator extends GUIComponentDecorator {
+public class InputValueEditDecorator extends GUI2JavaComponentDecorator {
 
   public InputValueEditDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
     super(glex, guiAst);

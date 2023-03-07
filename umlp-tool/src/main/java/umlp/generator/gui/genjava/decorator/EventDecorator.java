@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui.decorator;
+package umlp.generator.gui.genjava.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
@@ -11,7 +11,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.gui.GUIGeneratorUtil;
 
-public class EventDecorator extends GUIComponentDecorator {
+public class EventDecorator extends GUI2JavaComponentDecorator {
 
   public EventDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
     super(glex, guiAst);

@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui.decorator;
+package umlp.generator.gui.genjava.decorator;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -20,7 +20,9 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import org.gradle.internal.classloader.FilteringClassLoader;
 import umlp.UMLPMill;
+import umlp.generator.gui.GUIAbstractDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,6 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static org.gradle.internal.classloader.FilteringClassLoader.DEFAULT_PACKAGE;
 import static umlp.generator.gui.GUIGeneratorUtil.isDomainType;
 
 public class DomainRefDecorator extends GUIAbstractDecorator {
@@ -52,7 +53,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   }
 
   public void transform(ASTGUICompilationUnit guiAst, ASTCDCompilationUnit decoratedAST) {
-    String packageName = getPackageName(guiAst, DEFAULT_PACKAGE);
+    String packageName = getPackageName(guiAst, FilteringClassLoader.DEFAULT_PACKAGE);
     ASTCDPackage astcdPackage = CD4CodeMill.cDPackageBuilder()
         .setMCQualifiedName(getMCTypeFacade().createQualifiedName(packageName)).build();
     decoratedAST.getCDDefinition().addCDElement(astcdPackage);
