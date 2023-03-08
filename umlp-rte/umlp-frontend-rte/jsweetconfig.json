@@ -1,5 +1,11 @@
 {
   "adapters": [
     "umlp.jsweet.extension.internal.UMLPInternalAdapter"
-  ]
+  ],
+  "@Async": {
+    "include": [
+      "**.doRun*",
+      "**.GemList*.loadObjects*"
+    ]
+  }
 }

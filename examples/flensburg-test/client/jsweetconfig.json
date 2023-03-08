@@ -1,8 +1,15 @@
 {
+  "adapters": [
+    "umlp.jsweet.extension.UMLPJavaUtilAdapter",
+    "umlp.jsweet.extension.UMLPRTEImportAdapter"
+  ],
   "@Async": {
     "include": [
-      "flensburg.FlensburgManager.getPersonSure(*)",
-      "flensburg.FlensburgManagerImpl._doGetPersonSure(*)"
+      "flensburg.commands.**.doRun*",
+      "flensburg.FlensburgManager.get*Sure*",
+      "flensburg.FlensburgManagerImpl.get*Sure*",
+      "flensburg.FlensburgManager._do*Opt*",
+      "flensburg.FlensburgManagerImpl._do*Opt*"
     ]
   }
 }

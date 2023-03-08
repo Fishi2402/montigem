@@ -7,14 +7,14 @@ buildscript {
     maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
   }
   dependencies {
-    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-SNAPSHOT') {
+    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
       transitive = true
     }
   }
 }
 
 plugins {
-  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-SNAPSHOT"
+  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
   id "com.github.node-gradle.node" version "3.4.0"
 }
 
@@ -27,6 +27,11 @@ description = "UMLP FRONTEND RTE"
 
 // Enable for implementing a new Adapter
 repositories {
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
   maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
   maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
 }
@@ -34,7 +39,7 @@ repositories {
 dependencies {
   // Enable for implementing a new Adapter
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
-  implementation group: 'org.jsweet', name: 'jsweet-transpiler', version: "3.2.0-SNAPSHOT"
+  implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
 }
 
 /////////////////////////   JSweet   //////////////////////////////
@@ -54,14 +59,15 @@ jsweet {
   targetVersion = 'ES6'
   includes = ['**/*.java']
   module = 'commonjs'
+  autoPropagateAsyncAwaits = true
 //  excludes = ['**/umlp/jsweet/extension/**/*.java']    // Enable for implementing a new Adapter
   workingDir = project.file('target/.jsweet')
   excludeTranspilation = [
     '**/umlp/jsweet/extension/**/*.java',
     '**/CommandObjectMapper.java',
     '**/DatabaseAccessManager.java',
-    '**/*DeSer*',
-    '**/BaseClassObjectMapper.java',
+//    '**/*DeSer*',
+//    '**/BaseClassObjectMapper.java',
     '**/HashMapWithOrderedKeys.java',
     '**/AwaitUtil.java'
   ]

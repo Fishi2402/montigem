@@ -4,6 +4,8 @@ package umlp.backendrte.common;
 // RTE
 
 import de.se_rwth.commons.logging.Log;
+import jsweet.lang.Async;
+import jsweet.lang.Replace;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -85,10 +87,20 @@ public class Gem<E extends GemIdentifiable> implements GemIdentifiable {
     return loadingState;
   }
 
+  @Async
+  @Replace("await this.loadIfRequired();\n"
+      + "        return this.loadingState === LoadingState.LOADED && this.object != null;")
   public boolean isPresent() {
     loadIfRequired();
     return loadingState == LoadingState.LOADED && object != null;
   }
+
+  @Async
+  @Replace("await this.loadIfRequired();\n"
+      + "        if (!this.isPresent()){\n"
+      + "            Log.error(\"0xE2921 Object was not loaded: \" + LoadingState[\"_$wrappers\"][this.loadingState].toString());\n"
+      + "        }\n"
+      + "        return this.object;")
   public E get() {
     loadIfRequired();
     if (!isPresent()) {
@@ -113,6 +125,15 @@ public class Gem<E extends GemIdentifiable> implements GemIdentifiable {
    *  (If the load is unsuccesful a lower mechanism checks all the
    *   communicative aspects)
    */
+  @Async
+  @Replace("if (this.loadingState === LoadingState.NOT_YET_LOADED) {\n"
+      + "        const result: LoadResult<E> = await (target => (typeof target === 'function') ? target() : (<any>target).get())(this.loadFunction);\n"
+      + "        if (result.isPresent()) {\n"
+      + "          this.set(result.get());\n"
+      + "        } else {\n"
+      + "          this.loadingState = result.loadingState;\n"
+      + "        }\n"
+      + "      }")
   protected void loadIfRequired() {
     if (loadingState == LoadingState.NOT_YET_LOADED) {
       LoadResult<E> result = loadFunction.get();

@@ -1,6 +1,7 @@
 {
   "adapters": [
-    "Adapter3"
+    "umlp.jsweet.extension.UMLPJavaUtilAdapter",
+    "umlp.jsweet.extension.UMLPRTEImportAdapter"
   ],
   "@Async": {
     "include": [

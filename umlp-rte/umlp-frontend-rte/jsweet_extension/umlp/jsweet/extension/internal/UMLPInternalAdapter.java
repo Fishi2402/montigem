@@ -18,7 +18,7 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
 
   }
 
-  public static final String UMLP_RTE_PACKAGE = "umlp";
+  public static final String UMLP_RTE_PACKAGE = "umlp.backendrte";
 
   public static final String UMLP_RTE_HWC_POINTER = "@umlp-rte/hwc";
 
@@ -32,10 +32,14 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
 
   private void initStaticLibary() {
     staticLibrary.put("de.se_rwth.commons.logging.Log",  "logging/Log");
-    staticLibrary.put("umlp.command.CommandObjectMapper", "command/CommandObjectMapper");
+    staticLibrary.put(backendRTE("command.CommandObjectMapper"), "command/CommandObjectMapper");
     staticLibrary.put("java.util.concurrent.atomic.AtomicReference", "javautil/AtomicReference");
     staticLibrary.put("java.util.Random", "javautil/Random");
     staticLibrary.put("java.util.Random", "javautil/Random");
+  }
+
+  private static String backendRTE(String furtherPath) {
+    return String.join(".", UMLP_RTE_PACKAGE, furtherPath);
   }
 
   @Override
@@ -70,7 +74,7 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
 
   private void initTypeMappings() {
     getTypeMirrorMappings().add(0, (TypeMirror type) -> {
-      if(type.toString().equals("java.util.Optional<umlp.rte.GemList<E>>")) {
+      if(type.toString().equals(String.format("java.util.Optional<%s>", backendRTE("common.GemList<E>")))) {
         return "GemList<E>";
       }
       return null;

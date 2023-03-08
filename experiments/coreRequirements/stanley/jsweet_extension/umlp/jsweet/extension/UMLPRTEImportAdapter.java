@@ -18,7 +18,7 @@ import javax.lang.model.type.TypeMirror;
  */
 public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
 
-  private static final String UMLP_RTE_PACKAGE = "umlp";
+  private static final String UMLP_RTE_PACKAGE = "umlp.backendrte";
   private static final String UMLP_RTE_LIBRARY_POINTER = "umlp-frontend-rte";
 
   public UMLPRTEImportAdapter(PrinterAdapter parentAdapter) {
@@ -61,7 +61,7 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
   public void afterTypeBody(TypeElement type) {
     // Add default method implementation for interfaces defined in the RTE (JSweet does not find those)
     for (TypeMirror anInterface : type.getInterfaces()) {
-      if (anInterface.toString().equals("umlp.rte.GemBuildable")) {
+      if (anInterface.toString().equals("umlp.backendrte.common.GemBuildable")) {
         addIsBuildFinished(type);
       }
     }
