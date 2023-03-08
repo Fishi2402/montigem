@@ -13,7 +13,7 @@ repositories {
 description 'artifacts example'
 
 task generateArtifacts(type: UMLPTask) {
-    input.from(file("src"))
+    input = (file("src"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
     configTemplate = "umlp.UMLP2JavaNeo4j"
 }
