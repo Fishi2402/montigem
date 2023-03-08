@@ -30,7 +30,7 @@ public class DeleteDecoratorTest extends DecoratorTest {
 
             // check methods
             () -> existsMethod(clazz, "doRun"),
-            () -> existsMethod(clazz, "getFoo"),
+            () -> existsMethod(clazz, "getGemId"),
             () -> existsMethod(clazz, "getEffectedGemIds")
     );
   }
