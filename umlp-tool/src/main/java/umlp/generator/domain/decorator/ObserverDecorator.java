@@ -11,6 +11,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.check.SymTypeExpression;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class ObserverDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.observer.NotifyBuild", className);
     getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyBuild", className);
 
-    getCD4C().addImport(ast, "umlp.rte.NotificationScope");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
 
     return ast;
   }

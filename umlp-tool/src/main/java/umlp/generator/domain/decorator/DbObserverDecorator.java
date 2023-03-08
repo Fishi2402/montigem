@@ -10,6 +10,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -86,6 +87,6 @@ public class DbObserverDecorator extends AbstractDecorator {
   }
 
   protected void addImports(ASTCDType observerClass) {
-    getCD4C().addImport(observerClass, "umlp.rte.DatabaseAccessManager");
+    getCD4C().addImport(observerClass, PathUtil.getBackendRTECommonPath("DatabaseAccessManager"));
   }
 }

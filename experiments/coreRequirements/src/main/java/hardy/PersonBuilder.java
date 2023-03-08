@@ -3,8 +3,8 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import umlp.rte.Gem;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.common.Gem;
+import umlp.backendrte.common.NotificationScope;
 
 import java.util.Collections;
 import java.util.List;

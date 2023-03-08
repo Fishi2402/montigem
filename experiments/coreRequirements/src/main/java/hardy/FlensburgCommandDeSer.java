@@ -6,7 +6,7 @@ import hardy.commands.Car_get_filteredDeSer;
 import hardy.commands.Human_get_filteredDeSer;
 import hardy.commands.Person_get_filteredDeSer;
 import hardy.requests.GetFreeGemIdRequestDeSer;
-import umlp.rte.AggregatedCommandDeSer;
+import umlp.backendrte.common.AggregatedCommandDeSer;
 
 public class FlensburgCommandDeSer extends AggregatedCommandDeSer {
 

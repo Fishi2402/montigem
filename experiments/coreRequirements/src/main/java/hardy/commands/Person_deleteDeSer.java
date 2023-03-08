@@ -5,7 +5,7 @@ import de.monticore.symboltable.serialization.json.JsonObject;
 import hardy.Person;
 import hardy.PersonDeSer;
 import java.util.Optional;
-import umlp.command.CommandDeSer;
+import umlp.backendrte.command.CommandDeSer;
 public class Person_deleteDeSer extends CommandDeSer<Person_delete> {
     protected Optional<Person_delete> fromJsonObject(JsonObject jsonObject) {
       Optional<Person> person = new PersonDeSer().deserialize(jsonObject.getObjectMember("person"));

@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package infrastructure.command;
 
-import umlp.command.Command;
-import umlp.command.CommandResult;
-import umlp.command.error.NotImplementedException;
-import umlp.rte.Result;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.CommandResult;
+import umlp.backendrte.common.Result;
 
 /**
  * Simuliert die Kommunikation zwischen Client und Server

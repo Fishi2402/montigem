@@ -8,6 +8,7 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
+import de.monticore.cdassociation._symboltable.CDRoleSymbolDeSer;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.generating.GeneratorSetup;
@@ -31,7 +32,9 @@ import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.domain.UMLPGenerator;
-import umlp.generator.gui.GUIGenerator;
+import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
+import umlp.generator.gui.genjava.GUI2JavaGenerator;
+import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -52,7 +55,9 @@ public class UMLPTool extends UMLPToolTOP {
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
   protected static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   protected static final String DEFAULT_CONFIGTEMPLATE = "umlp.UMLP2Java";
-  protected static final String DEFAULT_CONFIGTEMPLATE_GUI = "umlp.GUI2Java";
+  protected static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA = "umlp.GUI2Java";
+  protected static final String DEFAULT_CONFIGTEMPLATE_GUI2HTML = "umlp.GUI2Html";
+  protected static final String DEFAULT_CONFIGTEMPLATE_GUI2TS = "umlp.GUI2TypeScript";
 
   public UMLPTool() {
     UMLPMill.init();
@@ -232,9 +237,18 @@ public class UMLPTool extends UMLPToolTOP {
 
         // execute generator
         GUIDSLMill.init();
-        GUIGenerator generator = new GUIGenerator(genSetup, symbolTableGui);
-        String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI);
-        generator.generate(astGui, configTemplate);
+
+        GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, symbolTableGui);
+        String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
+        javaGenerator.generate(astGui, javaConfigTemplate);
+
+        GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, symbolTableGui);
+        String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
+        htmlGenerator.generate(astGui, htmlConfigTemplate);
+
+        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, symbolTableGui);
+        String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
+        typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
 
         // write reports
         Reporting.flush(astGui);
@@ -339,7 +353,7 @@ public class UMLPTool extends UMLPToolTOP {
     // gs.putSymbolDeSer("umlp._symboltable.UMLPDefSymbol", new UMLPDefSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new TypeSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol", new VariableSymbolDeSer());
-    gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new VariableSymbolDeSer());
+    gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new CDRoleSymbolDeSer());
     FunctionSymbol navigateFunction = GUIDSLMill.functionSymbolBuilder()
         .setName("navigate")
         .setEnclosingScope(gs)

@@ -7,8 +7,8 @@ import hardy.Address;
 import hardy.AddressObserver;
 import hardy.commands.associations.Visits_add;
 import hardy.commands.associations.Visits_remove;
-import umlp.command.CommandManager;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.common.NotificationScope;
 
 // Ein Observer, der Änderungen von Attributen per CommandManager an das Backend schickt.
 public class AddressCommandObserver implements AddressObserver {

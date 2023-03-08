@@ -7,10 +7,10 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import stanley.FlensburgTestContext;
-import umlp.command.Command;
-import umlp.command.CommandObjectMapper;
-import umlp.command.CommandResult;
-import umlp.rte.Result;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.CommandObjectMapper;
+import umlp.backendrte.command.CommandResult;
+import umlp.backendrte.common.Result;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;

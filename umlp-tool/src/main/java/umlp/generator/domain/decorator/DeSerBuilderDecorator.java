@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
 import umlp.UMLPMill;
+import umlp.generator.util.PathUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,7 +85,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
   }
 
   protected void addImports(ASTCDType clazz) {
-    getCD4C().addImport(clazz, "umlp.rte.Gem");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
   }
 
 }

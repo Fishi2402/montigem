@@ -1,3 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("componentName", "rows")}
-     setRows${componentName}(${rows});
+${tc.signature("componentName", "expressions")}
+     set${componentName?cap_first}Rows(${expressions});
+

@@ -10,8 +10,8 @@ import hardy.commands.*;
 import hardy.commands.associations.Visits_add;
 import hardy.commands.associations.Visits_remove;
 import hardy.commands.associations.Visits_set;
-import umlp.command.CommandManager;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.common.NotificationScope;
 
 // TODO: Ersetzen durch FlensburgCommandManager implements PersonObserver => eine Weiterleitung weniger
 

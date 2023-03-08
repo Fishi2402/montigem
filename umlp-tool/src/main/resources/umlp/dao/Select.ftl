@@ -27,7 +27,7 @@ ${cd4c.method("public Optional<${typeName}> select${typeName}(long gemId)")}
     </#if>
     <#list listAttributes as attr>
       .${attr.getName()}(this.select${attr.getName()?cap_first}(gemId))<#sep>${'\n'}</#sep><#rt>
-    </#list><#lt><#if attributes?has_content>;</#if><#rt>
+    </#list><#lt><#if listAttributes?has_content>;</#if><#rt>
 
     <#lt>
     <#list listAssocs as assocSide, assoc><#assign assocType = assocSide.getSymbol().getType().print()>

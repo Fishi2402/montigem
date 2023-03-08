@@ -1,8 +1,0 @@
-package umlp.gui;
-
-/** Text component interface definition
-*/
-component Text(
-  Object value = "",
-  String color = "black"
-)

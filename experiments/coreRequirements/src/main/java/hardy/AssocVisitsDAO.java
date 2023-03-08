@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package hardy;
 
-import umlp.rte.AssociationDBEntry;
-import umlp.rte.DatabaseAccessManager;
+import umlp.backendrte.common.AssociationDBEntry;
+import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

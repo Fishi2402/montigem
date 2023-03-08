@@ -3,7 +3,7 @@ package hardy;
 
 // GEN-P
 
-import umlp.rte.NotificationScope;
+import umlp.backendrte.common.NotificationScope;
 
 // TODO AHe: java.util.Observable auch für alle anderen Klassen ersetzten
 

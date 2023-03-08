@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("componentName", "expressions", "guiDSLPrinter")}
-    List<TableColumn> initialTableColumns${componentName} = new ArrayList();
+${tc.signature("componentName", "expressions")}
+    List<TableColumn> initial${componentName?cap_first}Columns = new ArrayList();
   <#list expressions as expression>
-       initialTableColumns${componentName}.add(new TableColumn(${guiDSLPrinter.prettyprint(expression)});
+       initial${componentName?cap_first}Columns.add(new TableColumn(${expression}));
   </#list>
-    setTableColumns${componentName}(initialTableColumns${componentName});
+    set${componentName?cap_first}Columns(initial${componentName?cap_first}Columns);

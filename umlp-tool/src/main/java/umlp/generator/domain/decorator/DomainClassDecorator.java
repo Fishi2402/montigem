@@ -24,6 +24,7 @@ import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
 import umlp.generator.domain.decorator.methods.AssocMutatorDecorator;
 import umlp.generator.domain.decorator.methods.MethodGenService;
 import umlp.generator.domain.decorator.methods.SimpleMethodMutatorDecorator;
+import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -189,11 +190,11 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDType clazz) {
-    getCD4C().addImport(clazz, "umlp.rte.GemIdentifiable");
-    getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
-    getCD4C().addImport(clazz, "umlp.rte.Gem");
-    getCD4C().addImport(clazz, "umlp.rte.GemList");
-    getCD4C().addImport(clazz, "umlp.rte.GemBuildable");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemIdentifiable"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemBuildable"));
     addDBAnnotationInfo(clazz);
   }
 

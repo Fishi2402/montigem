@@ -5,7 +5,7 @@ package hardy.commands.associations;
 
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import umlp.command.CommandDeSer;
+import umlp.backendrte.command.CommandDeSer;
 
 import java.util.Optional;
 
