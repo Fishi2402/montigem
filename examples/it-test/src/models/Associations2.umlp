@@ -1,0 +1,102 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp Associations2 {
+
+  /* Unidir -> */
+
+  class AleftToRight;
+  class BleftToRight;
+  association AleftToRight -> BleftToRight;
+
+  class CleftToRight;
+  class DleftToRight;
+  association CleftToRight -> DleftToRight [*];
+
+  class EleftToRight;
+  class FleftToRight;
+  association EleftToRight -> FleftToRight [0..1];
+
+  class GleftToRight;
+  class HleftToRight;
+  association [*] GleftToRight -> HleftToRight [*];
+
+  /* Unidir <- */
+
+  class ArightToLeft;
+  class BrightToLeft;
+  association ArightToLeft <- BrightToLeft;
+
+  class CrightToLeft;
+  class DrightToLeft;
+  association [*] CrightToLeft <- DrightToLeft;
+
+  class ErightToLeft;
+  class FrightToLeft;
+  association [0..1] ErightToLeft <- FrightToLeft;
+
+  class GrightToLeft;
+  class HrightToLeft;
+  association [*] GrightToLeft <- HrightToLeft [*];
+
+  /* Bidir left owner */
+
+  class AleftOwner;
+  class BleftOwner;
+  association  AleftOwner  <-> BleftOwner;
+
+  class CleftOwner;
+  class DleftOwner;
+  association  CleftOwner  <-> DleftOwner [*];
+
+  class EleftOwner;
+  class FleftOwner;
+  association  [*]  EleftOwner  <-> FleftOwner;
+
+  class GleftOwner;
+  class HleftOwner;
+  association  [*]  GleftOwner  <-> HleftOwner [*];
+
+  /* Bidir Right owner */
+
+  class ArightOwner;
+  class BrightOwner;
+  association ArightOwner  <-> BrightOwner ;
+
+  class CrightOwner;
+  class DrightOwner;
+  association [*] CrightOwner  <-> DrightOwner  ;
+
+  class ErightOwner;
+  class FrightOwner;
+  association   ErightOwner  <-> FrightOwner [*]  ;
+
+  class GrightOwner;
+  class HrightOwner;
+  association  [*]  GrightOwner  <-> HrightOwner [*] ;
+
+  /* Bidir no owner */
+
+  class AnoOwner;
+  class BnoOwner;
+  association AnoOwner  <-> BnoOwner;
+
+  class CnoOwner;
+  class DnoOwner;
+  association  CnoOwner  <-> DnoOwner [*];
+
+  class EnoOwner;
+  class FnoOwner;
+  association  [*]  EnoOwner  <-> FnoOwner;
+
+  class GnoOwner;
+  class HnoOwner;
+  association  [*]  GnoOwner  <-> HnoOwner [*];
+
+  /* Compositions */
+
+  class A;
+  class B;
+
+  composition [*] A <-> B ;
+
+}
