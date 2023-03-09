@@ -12,10 +12,14 @@ import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
@@ -47,21 +51,20 @@ public class DomainClassDecorator extends AbstractDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-      .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c, name)));
+            .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c, name)));
 
     origCD.getCDDefinition().getCDEnumsList().stream().filter(c -> !c.getSymbol().isIsDerived())
             .forEach(c -> astcdPackage.addCDElement(c.deepClone()));
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String name) {
-    ASTCDInterfaceUsage implementsUsage = getInterfaceUsageFacade()
-        .createCDInterfaceUsage("GemIdentifiable", "GemBuildable");
+    ASTCDInterfaceUsage implementsUsage = getInterfaceUsage(domainClass);
     ASTModifier modifier = domainClass.getModifier().isAbstract() ? PUBLIC_ABSTRACT.build() : PUBLIC.build();
     ASTCDClassBuilder builder = UMLPMill.cDClassBuilder()
             .setModifier(modifier)
             .setCDInterfaceUsage(implementsUsage)
             .setName(domainClass.getName());
-    if (domainClass.isPresentCDExtendUsage()) {
+    if(domainClass.isPresentCDExtendUsage()) {
       builder.setCDExtendUsage(getExtendUsageFacade()
               .createCDExtendUsage(domainClass.getCDExtendUsage().getSuperclass(0).deepClone()));
     }
@@ -70,7 +73,7 @@ public class DomainClassDecorator extends AbstractDecorator {
     // Constructors
     getCD4C().addConstructor(clazz, "umlp.domain.Constructor", domainClass.getName());
 
-    if (!domainClass.isPresentCDExtendUsage()) {
+    if(!domainClass.isPresentCDExtendUsage()) {
       // Attribute gemId and getter and setter
       ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected readonly long gemId = -32;");
       clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
@@ -78,13 +81,13 @@ public class DomainClassDecorator extends AbstractDecorator {
 
     // Attribute observerList
     ASTCDAttribute attrObserver = getCD4C().addAttribute(clazz,
-            " protected List<"+domainClass.getName()+"Observer> " + StringTransformations.uncapitalize(domainClass.getName()) +"Observers");
+            " protected List<" + domainClass.getName() + "Observer> " + StringTransformations.uncapitalize(domainClass.getName()) + "Observers");
     glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint("= new ArrayList<>()"));
     glex.replaceTemplate("cd2java.Annotations", attrObserver,
             new StringHookPoint("transient"));
 
     // Attributes
-    AttributesTuple attributes = getAllAttributes(domainClass);
+    AttributesTuple attributes = getAllAttributes(domainClass, origCD);
     clazz.addAllCDMembers(attributes.attrList);
 
     // General methods
@@ -98,44 +101,65 @@ public class DomainClassDecorator extends AbstractDecorator {
     // Methods for class assocs
     createGetterSetterForAssocs(domainClass, clazz, attributes.attrAssocs);
 
-     // Imports
+    // Imports
     addImports(origCD, clazz);
 
     return clazz;
   }
 
-  protected AttributesTuple getAllAttributes(ASTCDClass domainClass) {
+  protected ASTCDInterfaceUsage getInterfaceUsage(ASTCDClass domainClass) {
+    ASTCDInterfaceUsage interfaceUsage = getInterfaceUsageFacade()
+            .createCDInterfaceUsage("GemIdentifiable", "GemBuildable");
+    for(ASTMCObjectType superInterface: domainClass.getInterfaceList()) {
+      interfaceUsage.addInterface(superInterface);
+    }
+    return interfaceUsage;
+  }
+
+  protected AttributesTuple getAllAttributes(ASTCDClass domainClass, ASTCDCompilationUnit origCD) {
     return new AttributesTuple(
-        getAttributesForFields(domainClass),
-        getAttributesForAssociations(domainClass)
+            getAttributesForFields(domainClass, origCD),
+            getAttributesForAssociations(domainClass, origCD)
     );
   }
 
   protected void createCheckMethods(ASTCDClass domainClass, ASTCDClass clazz) {
-    for (ASTCDAttribute attr: CDSymbolTables.getAttributesInHierarchy(domainClass)
-            .stream().filter(a -> GenService.isVisibleNotDerived(a)).collect(Collectors.toList())) {
+    for(ASTCDAttribute attr: CDSymbolTables.getAttributesInHierarchy(domainClass)
+            .stream().filter(GenService::isVisibleNotDerived).collect(Collectors.toList())) {
       getCD4C().addMethod(clazz, "umlp.domain.Check",
               domainClass.getName(), attr.getName(),
               !GenService.isList(attr) && !GenService.isOptional(attr));
     }
-    for (ASTCDAssocSide assoc: CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
+    for(ASTCDAssocSide assoc: CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
       getCD4C().addMethod(clazz, "umlp.domain.Check",
               domainClass.getName(), assoc.getName(),
               !GenService.isOptional(assoc));
     }
   }
 
-protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
+  protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     getCD4C().addMethod(clazz, "umlp.domain.AddObserver", domainClass.getName(), clazz.isPresentCDExtendUsage());
     getCD4C().addMethod(clazz, "umlp.domain.RemoveObserver", domainClass.getName());
     getCD4C().addMethod(clazz, "umlp.domain.ContainsObserver", domainClass.getName());
   }
 
-  protected List<ASTCDAttribute> getAttributesForFields(ASTCDClass domainClass) {
+  protected List<ASTCDAttribute> getAttributesForFields(ASTCDClass domainClass, ASTCDCompilationUnit origCD) {
     List<ASTCDAttribute> attributesList = Lists.newLinkedList();
     List<ASTCDAttribute> visibleAttributes = domainClass.getCDAttributeList().stream()
-            .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
-    for (ASTCDAttribute visibleAttribute : visibleAttributes) {
+            .filter(GenService::isVisible).collect(Collectors.toList());
+
+    List<String> interfaces = domainClass.getInterfaceList().stream().map(ASTMCType::printType).collect(Collectors.toList());
+    List<ASTCDInterface> superInterfaces = origCD.getCDDefinition().getCDInterfacesList()
+            .stream()
+            .filter(i -> interfaces.contains(i.getName()))
+            .collect(Collectors.toList());
+
+    superInterfaces.forEach(i -> i.getCDAttributeList()
+            .stream()
+            .filter(GenService::isVisible)
+            .forEach(visibleAttributes::add));
+
+    for(ASTCDAttribute visibleAttribute: visibleAttributes) {
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
               createType(visibleAttribute), GenService.createName(visibleAttribute.getName()));
       attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
@@ -144,16 +168,27 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     return attributesList;
   }
 
-  protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDClass domainClass) {
+  protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDClass domainClass, ASTCDCompilationUnit origCD) {
     List<ASTCDAttribute> attrList = Lists.newLinkedList();
     List<ASTCDAssocSide> associations = CDSymbolTables.getAssociations(domainClass).stream()
-            .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
+            .filter(GenService::isVisible).collect(Collectors.toList());
+
+    List<String> interfaces = domainClass.getInterfaceList().stream().map(ASTMCType::printType).collect(Collectors.toList());
+    List<ASTCDInterface> superInterfaces = origCD.getCDDefinition().getCDInterfacesList()
+            .stream()
+            .filter(i -> interfaces.contains(i.getName()))
+            .collect(Collectors.toList());
+
+    superInterfaces.forEach(i -> associations.addAll(CDSymbolTables.getAssociations(i)
+            .stream()
+            .filter(GenService::isVisible)
+            .collect(Collectors.toList())));
 
     // handle associations
-    for (ASTCDAssocSide assocSide : associations) {
+    for(ASTCDAssocSide assocSide: associations) {
       String type = assocSide.getSymbol().getType().print();
       ASTCDAttribute attribute;
-      if (GenService.isList(assocSide)) {
+      if(GenService.isList(assocSide)) {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
                 getMCTypeFacade().createBasicGenericTypeOf("GemList", type), GenService.createName(assocSide.getName()));
       } else {
@@ -173,7 +208,7 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
             new MutatorDecorator(glex, new SimpleMethodMutatorDecorator(glex, service, domainClass),
                     new OptionalMutatorDecorator(glex, service),
                     new ListMutatorDecorator(glex, service)), service);
-    for (ASTCDAttribute attribute : attrList) {
+    for(ASTCDAttribute attribute: attrList) {
       clazz.addAllCDMembers(methodDecorator.decorate(attribute));
     }
   }
@@ -184,7 +219,7 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     MethodDecorator methodDecorator = new MethodDecorator(glex,
             new AssocAccessorDecorator(glex, service, clazz),
             new AssocMutatorDecorator(glex, service, clazz), service);
-    for (ASTCDAttribute attribute : attrList) {
+    for(ASTCDAttribute attribute: attrList) {
       clazz.addAllCDMembers(methodDecorator.decorate(attribute));
     }
   }
@@ -202,7 +237,7 @@ protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     // empty
   }
 
-  protected static class AttributesTuple{
+  protected static class AttributesTuple {
     final List<ASTCDAttribute> attrFields;
     final List<ASTCDAttribute> attrAssocs;
     final List<ASTCDAttribute> attrList;

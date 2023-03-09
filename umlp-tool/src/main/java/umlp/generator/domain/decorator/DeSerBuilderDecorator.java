@@ -29,10 +29,10 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-      .forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
+      .forEach(c -> astcdPackage.addCDElement(createClass(c, name, origCD)));
   }
 
-  protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
+  protected ASTCDClass createClass(ASTCDClass domainClass, String name, ASTCDCompilationUnit origCD) {
     String className = domainClass.getName() + DESER_BUILDER_SUFFIX;
     CD4CodeFullPrettyPrinter pp = new CD4CodeFullPrettyPrinter();
 
@@ -45,7 +45,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
     getCD4C().addConstructor(deserBuilderClass, "umlp.deser_builder.Constructor", domainClass.getName());
 
     // Attributes
-    List<ASTCDAttribute> attributes = getAllAttributes(domainClass).attrList.stream()
+    List<ASTCDAttribute> attributes = getAllAttributes(domainClass, origCD).attrList.stream()
             .filter(a -> !GenService.isDerived(a)).collect(Collectors.toList());;
 
     // Methods
