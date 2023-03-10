@@ -1,31 +1,27 @@
-<!-- GEN-P -->
 
-<gem-text-input
-  [value]="getTextInputComp1()"
+
+<gem-button
+        [text] = "getGemButtonComp3Text()"
+        (leftClick) = "gemButtonComp3LeftClick.bind(this)()"
 >
-</gem-text-input>
+</gem-button>
+
 
 <gem-number-input
-  [value]="getNumberInputComp2()"
+        [value] = "getGemNumberInputComp2Value()"
 >
 </gem-number-input>
 
+
 <gem-button
-  text="Ok"
+        [text] = "getGemButtonComp4Text()"
+        (leftClick) = "gemButtonComp4LeftClick.bind(this)()"
 >
 </gem-button>
 
-<gem-button
-  text="Decrease"
-  (leftClick)="leftClickButtonComp5.bind(this)()"
->
-</gem-button>
 
-<!-- this should be not generated, only for looking -->
-<div class="extra">
-  Person
-  <br>
-  Nickname: {{p.getNickname()}}
-  <br>
-  Age: {{p.getAge()}}
-</div>
+<gem-text-input
+        [value] = "getGemTextInputComp1Value()"
+>
+</gem-text-input>
+

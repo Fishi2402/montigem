@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
@@ -104,11 +105,11 @@ public class ManagerDecorator extends AbstractDecorator {
   }
 
   protected void addImports(ASTCDType clazz) {
-    getCD4C().addImport(clazz, "umlp.rte.Gem");
-    getCD4C().addImport(clazz, "umlp.rte.LoadResult");
-    getCD4C().addImport(clazz, "umlp.rte.LoadingState");
-    getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
-    getCD4C().addImport(clazz, "umlp.rte.GemList");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
   }
 
 

@@ -6,7 +6,7 @@ package hardy.commands;
 import hardy.FlensburgMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import umlp.rte.BaseClassObjectMapper;
+import umlp.backendrte.common.BaseClassObjectMapper;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

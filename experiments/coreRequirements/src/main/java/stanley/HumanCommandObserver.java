@@ -6,8 +6,8 @@ package stanley;
 import hardy.Human;
 import hardy.HumanObserver;
 import hardy.commands.Human_set_age;
-import umlp.command.CommandManager;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.common.NotificationScope;
 
 // TODO: Ersetzen durch FlensburgCommandManager implements HumanObserver => eine Weiterleitung weniger
 

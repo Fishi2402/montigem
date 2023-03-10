@@ -84,6 +84,10 @@ public abstract class UMLPTask extends DefaultTask {
 
   @Input
   @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getShellApi();
+
+  @Input
+  @org.gradle.api.tasks.Optional
   public abstract ListProperty<String> getMoreArgs();
 
   @Input
@@ -185,6 +189,10 @@ public abstract class UMLPTask extends DefaultTask {
     if(this.getConfigTemplate().isPresent()){
       result.add("-ct");
       result.add(getConfigTemplate().get());
+    }
+
+    if(this.getShellApi().isPresent() && this.getShellApi().get()) {
+      result.add("-sa");
     }
 
     if(this.getDebug().get()){

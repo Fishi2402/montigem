@@ -3,9 +3,9 @@ package hardy;
 
 // GEN-P
 
-import umlp.command.Command;
-import umlp.command.CommandObjectMapper;
-import umlp.command.CommandResult;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.CommandObjectMapper;
+import umlp.backendrte.command.CommandResult;
 
 import java.util.Optional;
 

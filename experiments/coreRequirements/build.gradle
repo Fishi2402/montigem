@@ -73,7 +73,7 @@ task generateCDTOGUI(type: UMLPTask) {
 }
 
 task generateFlensburg(type: UMLPTask) {
-    input.from(file("models/hardy"))
+    input = (file("models/hardy"))
     outputDir = layout.buildDirectory.dir("genumlp/hardy")
 }
 
@@ -86,7 +86,7 @@ task copySymbols(type: Copy) {
 
 task generateAll(type: UMLPTask) {
     dependsOn(copySymbols)
-    input.from(file("models"))
+    input = (file("models"))
     outputDir = layout.buildDirectory.dir("gen")
     hwcDir = layout.projectDirectory.dir("src/main/java")
     modelDir = layout.projectDirectory.dir("models")

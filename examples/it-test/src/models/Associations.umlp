@@ -1,0 +1,129 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp Associations {
+
+
+  class Photo {
+    double height;
+    double width;
+  }
+
+  class Tag {
+    boolean confirmed;
+  }
+
+  association one [0..1] Tag (t1) <-> (p1) Photo [0..1];
+  association two [1] Tag (t2) <-> (p2)Photo [1];
+  association three [1] Tag (t3)<-> (p3)Photo [0..1];
+  association four [*] Tag (t4)<-> (p4)Photo [0..1];
+  association five [*] Tag (t5)<-> (p5)Photo [1];
+  association six [1..*] Tag (t6)<-> (p6)Photo [1];
+  association seven [*] Tag (t7)<-> (p7)Photo [*];
+  association eight [1..*] Tag (t8)<-> (p8)Photo [*];
+  association nine [1..*] Tag (t9)<-> (p9)Photo [1..*];
+
+/*
+  / association eleven [0..1] Tag (t11) <-> (p11) Photo [0..1];
+  / association twelve [1] Tag (t12) <-> (p12) Photo [1];
+  / association thirteen [1] Tag (t13) <-> (p13) Photo [0..1];
+  / association fourteen [*] Tag (t14) <-> (p14) Photo [0..1];
+  / association fifteen [*] Tag (t15) <-> (p15) Photo [1];
+  / association sixteen [1..*] Tag (t16) <-> (p16) Photo [1];
+  / association seventeen [*] Tag (t17) <-> (p17) Photo [*];
+  / association eighteen [1..*] Tag (t18) <-> (p18) Photo [*];
+  / association nineteen [1..*] Tag (t18) <-> (p19) Photo [1..*];
+*/
+
+/* TODO
+  association twenty [0..1] Tag [String] <-> Photo [0..1];
+  association twentyone [1] Tag [String] <-> Photo [0..1];
+  association twentytwo [1] Tag [String] <-> Photo [1];
+  association twentythree [*] Tag [String] <-> Photo [0..1];
+  association twentyfour [*] Tag [String] <-> Photo [1];
+  association twentyfive [1..*] Tag [String] <-> Photo [1];
+  association twentysix [*] Tag [String] <-> Photo [*];
+  association twentyseven [1..*] Tag [String] <-> Photo [*];
+  association twentyeight [1..*] Tag [String] <-> Photo [1..*];
+*/
+  // FORBIDDEN association twentynine [0..1] Tag <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association thirty [1] Tag <-> Photo [1] <<ordered>>;
+  // FORBIDDEN association thirtyone [1] Tag <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association thirtytwo [*] Tag <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association thirtythree [*] Tag <-> Photo [1] <<ordered>>;
+  // FORBIDDEN association thirtyfour [1..*] Tag <-> Photo [1] <<ordered>>;
+
+  association thirtyfive [*] Tag (t35) <-> (p35) Photo [*] <<ordered>>;
+  association thirtysix [1..*] Tag (t36) <-> (p36) Photo [*] <<ordered>>;
+  association thirtyseven [1..*] Tag (t37) <-> (p37) Photo [1..*] <<ordered>>;
+
+  // FORBIDDEN association thirtyeight <<ordered>> [0..1] Tag <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association thirtynine <<ordered>> [1] Tag <-> Photo [1] <<ordered>>;
+  // FORBIDDEN association fourty <<ordered>> [1] Tag <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association fourtyone <<ordered>> [*] Tag <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association fourtytwo <<ordered>> [*] Tag <-> Photo [1] <<ordered>>;
+  // FORBIDDEN association fourtythree <<ordered>> [1..*] Tag <-> Photo [1] <<ordered>>;
+/* Test
+  association fourtyfour <<ordered>> [*] Tag <-> Photo [*] <<ordered>>;
+  association fourtyfive <<ordered>> [1..*] Tag <-> Photo [*] <<ordered>>;
+  association fourtysix <<ordered>> [1..*] Tag <-> Photo [1..*] <<ordered>>;
+*/
+  // FORBIDDEN association fourtyseven [0..1] Tag [String] <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association fourtyeight [1] Tag [String] <-> Photo [1] <<ordered>>;
+  // FORBIDDEN association fourtynine [1] Tag [String] <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association fifty [*] Tag [String] <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association fiftyone [*] Tag [String] <-> Photo [1] <<ordered>>;
+  // FORBIDDEN association fiftytwo [1..*] Tag [String] <-> Photo [1] <<ordered>>;
+  /*
+  association fiftythree [*] Tag [String] <-> Photo [*] <<ordered>>;
+  association fiftyfour [1..*] Tag [String] <-> Photo [*] <<ordered>>;
+  association fiftyfive [1..*] Tag [String] <-> Photo [1..*] <<ordered>>;
+  */
+
+  // FORBIDDEN association fiftysix <<ordered>> [0..1] Tag [String] <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association fiftyseven <<ordered>> [1] Tag [String] <-> Photo [1] <<ordered>>;
+  // FORBIDDEN association fiftyeight <<ordered>> [1] Tag [String] <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association fiftynine <<ordered>> [*] Tag [String] <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association sixty <<ordered>> [*] Tag [String] <-> Photo [1] <<ordered>>;
+  // FORBIDDEN association sixtyone <<ordered>> [1..*] Tag [String] <-> Photo [1] <<ordered>>;
+  /*
+  association sixtytwo <<ordered>> [*] Tag [String] <-> Photo [*] <<ordered>>;
+  association sixtythree <<ordered>> [1..*] Tag [String] <-> Photo [*] <<ordered>>;
+  association sixtyfour <<ordered>> [1..*] Tag [String] <-> Photo [1..*] <<ordered>>;
+  */
+
+  // FORBIDDEN association / sixtyfive [0..1] Tag [String] <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association / sixtysix [1] Tag [String] <-> Photo [1] <<ordered>>;
+  // FORBIDDEN association / sixtyseven [1] Tag [String] <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association / sixtyeight [*] Tag [String] <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association / sixtynine [*] Tag [String] <-> Photo [1] <<ordered>>;
+  // FORBIDDEN association / seventy [1..*] Tag [String] <-> Photo [1] <<ordered>>;
+  /*
+  / association seventyone [*] Tag [String] <-> Photo [*] <<ordered>>;
+  / association seventytwo [1..*] Tag [String] <-> Photo [*] <<ordered>>;
+  / association seventythree [1..*] Tag [String] <-> Photo [1..*] <<ordered>>;
+  */
+
+  // FORBIDDEN association / seventyfour [0..1] Tag <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association / seventyfive [1] Tag <-> Photo [1] <<ordered>>;
+  // FORBIDDEN association / seventysix [1] Tag <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association / seventyseven [*] Tag <-> Photo [0..1] <<ordered>>;
+  // FORBIDDEN association / seventyeight [*] Tag <-> Photo [1] <<ordered>>;
+  // FORBIDDEN association / seventynine [1..*] Tag <-> Photo [1] <<ordered>>;
+/*
+  / association eighty [*] Tag <-> Photo [*] <<ordered>>;
+  / association eightyone [1..*] Tag <-> Photo [*] <<ordered>>;
+  / association eightytwo [1..*] Tag <-> Photo [1..*] <<ordered>>;
+
+
+  / association eightythree [0..1] Tag [String] <-> Photo [0..1];
+  / association eightyfour [1] Tag [String] <-> Photo [1];
+  / association eightyfive [1] Tag [String] <-> Photo [0..1];
+  / association eightysix [*] Tag [String] <-> Photo [0..1];
+  / association eightyseven [*] Tag [String] <-> Photo [1];
+  / association eightyeight [1..*] Tag [String] <-> Photo [1];
+  / association eightynine [*] Tag [String] <-> Photo [*];
+  / association ninety [1..*] Tag [String] <-> Photo [*];
+  / association ninetyone [1..*] Tag [String] <-> Photo [1..*];
+  */
+
+}

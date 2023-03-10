@@ -39,16 +39,16 @@ public class NeuePersonAnlegenGeneratedGUITest extends AbstractGUITest {
     assertNull(e.pBuilder.getAge());
 
     // Check setting the age in the gui changes the age of the person
-    e.setNumberInputComp2(33);
+    e.setGemNumberInputComp2Value(33);
     assertTrue(e.pBuilder.isAgePresent());
     assertEquals(33, e.pBuilder.getAge().intValue());
 
     // Check decrease button decreases age in GUI and Object
-    e.leftClickButtonComp5();
-    e.leftClickButtonComp5();
+    e.gemButtonComp4LeftClick();
+    e.gemButtonComp4LeftClick();
     assertTrue(e.pBuilder.isAgePresent());
     assertEquals(31, e.pBuilder.getAge().intValue());
-    assertEquals(31, e.getNumberInputComp2());
+    assertEquals(31, e.getGemNumberInputComp2Value());
 
     // und später kombinieren wir das mit Server/Client kommunikation und prüefen dann
     // nicht nur am lokalen Objekt, sondern simuliert im Gesamten System die Konsistente Änderung

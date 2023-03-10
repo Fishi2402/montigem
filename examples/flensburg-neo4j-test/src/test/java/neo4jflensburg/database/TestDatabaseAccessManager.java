@@ -4,11 +4,9 @@ package neo4jflensburg.database;
 // GEN-T
 
 import de.se_rwth.commons.logging.Log;
-import org.h2.tools.Server;
-import umlp.rte.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class TestDatabaseAccessManager extends DatabaseAccessManager {

@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import java.util.Collection;
 import java.util.List;
@@ -64,7 +65,8 @@ public class GemListDomainDecorator extends AbstractDecorator {
   protected void addImports(ASTCDCompilationUnit origCD, String domainName, ASTCDClass ast) {
     getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), domainName));
     getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), origCD.getCDDefinition().getName()+SUFFIX));
-    getCD4C().addImport(ast, "umlp.rte.GemListBuilder");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GemListBuilder"));
+    getCD4C().addImport(ast, "umlp.backendrte.common.LoadResult");
   }
 
 }

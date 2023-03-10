@@ -10,6 +10,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.check.SymTypeOfGenerics;
 import umlp.UMLPMill;
+import umlp.generator.util.PathUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -126,7 +127,7 @@ public class DeSerDecorator extends DomainClassDecorator{
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonElement");
-    getCD4C().addImport(clazz, "umlp.rte.Gem");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
   }
 
 }

@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import umlp.rte.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

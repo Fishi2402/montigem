@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import stanley.FlensburgTestContext;
-import umlp.command.CommandManager;
-import umlp.command.CommandResult;
-import umlp.rte.Result;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.command.CommandResult;
+import umlp.backendrte.common.Result;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;

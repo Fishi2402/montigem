@@ -14,8 +14,7 @@ import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class GUIComponentAccessVisitor implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2, MCCommonLiteralsVisitor2 {
@@ -26,6 +25,10 @@ public class GUIComponentAccessVisitor implements GUIDSLVisitor2, CommonExpressi
   protected List<ASTNameExpression> nameExprs = new ArrayList<>();
   protected List<ASTCallExpression> callExprs = new ArrayList<>();
   protected List<ASTGUINamedArg> namedArgs = new ArrayList<>();
+
+  protected Map<ASTGUINamedArg, Set<ASTFieldAccessExpression>> namedArgsFieldAccess = new HashMap<>();
+
+  protected ASTGUINamedArg actualNamedArg = null;
 
   public GUIComponentAccessVisitor(ASTGUIComponent node) {
     astPrinter = new CD4CodeFullPrettyPrinter();
@@ -57,9 +60,16 @@ public class GUIComponentAccessVisitor implements GUIDSLVisitor2, CommonExpressi
     return traverser;
   }
 
+  public Map<ASTGUINamedArg, Set<ASTFieldAccessExpression>> getNamedArgsFieldAccess() {
+    return namedArgsFieldAccess;
+  }
+
   @Override
   public void visit(ASTFieldAccessExpression node) {
     fieldAccess.add(node);
+    if (namedArgsFieldAccess.containsKey(actualNamedArg)) {
+      namedArgsFieldAccess.get(actualNamedArg).add(node);
+    }
   }
 
   @Override
@@ -73,6 +83,15 @@ public class GUIComponentAccessVisitor implements GUIDSLVisitor2, CommonExpressi
   }
 
   @Override
-  public void visit(ASTGUINamedArg node) { namedArgs.add(node); }
+  public void visit(ASTGUINamedArg node) {
+    namedArgs.add(node);
+    namedArgsFieldAccess.put(node, new HashSet<>());
+    actualNamedArg = node;
+  }
+
+  @Override
+  public void endVisit(ASTGUINamedArg node) {
+    actualNamedArg = null;
+  }
 
 }

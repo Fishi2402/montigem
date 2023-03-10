@@ -14,6 +14,7 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -98,9 +99,9 @@ public class ManagerMockDecorator extends AbstractDecorator {
   }
 
   protected void addImports(ASTCDClass clazz) {
-    getCD4C().addImport(clazz, "umlp.rte.Gem");
-    getCD4C().addImport(clazz, "umlp.rte.GemList");
-    getCD4C().addImport(clazz, "umlp.rte.HashMapWithOrderedKeys");
-    getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("HashMapWithOrderedKeys"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
   }
 }

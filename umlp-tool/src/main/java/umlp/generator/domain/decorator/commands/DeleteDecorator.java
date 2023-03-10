@@ -13,6 +13,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
@@ -44,16 +45,16 @@ public class DeleteDecorator extends AbstractDecorator {
       .setName(classname+SUFFIX)
       .build();
 
-    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected final " + classname + " " + StringTransformations.uncapitalize(classname));
-    
-    getCD4C().addConstructor(ast, "umlp.commands.Constructor", classname, packageName, SUFFIX);
+    ASTCDAttribute attr = getCD4C().addAttribute(ast, "private final long gemId");
+
+    getCD4C().addConstructor(ast, "umlp.commands.get.Constructor", classname,"", SUFFIX, packageName);
     getCD4C().addMethod(ast, "umlp.commands.delete.DoRun", classname, origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getId()"));
+    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("gemId"));
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));
 
-    getCD4C().addImport(ast, "umlp.command.Command");
-    getCD4C().addImport(ast, "umlp.command.StatusResult");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+classname);
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
 
@@ -69,12 +70,12 @@ public class DeleteDecorator extends AbstractDecorator {
             .setName(cmdName+DE_SER)
             .build();
 
-    getCD4C().addMethod(ast, "umlp.commands.deser.FromJsonObject", domainClass.getName(), cmdName);
-    getCD4C().addMethod(ast, "umlp.commands.deser.BuildJson", domainClass.getName(), cmdName);
+    getCD4C().addMethod(ast, "umlp.commands.deser.Get_FromJsonObject", cmdName);
+    getCD4C().addMethod(ast, "umlp.commands.deser.Get_BuildJson", cmdName);
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-    getCD4C().addImport(ast, "umlp.command.CommandDeSer");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName()+ DeSerDecorator.SUFFIX);
 

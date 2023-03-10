@@ -16,13 +16,13 @@ import stanley.AddressCommandObserver;
 import stanley.CarCommandObserver;
 import stanley.HumanCommandObserver;
 import stanley.PersonCommandObserver;
-import umlp.command.CommandManager;
-import umlp.command.SimpleResult;
-import umlp.command.StatusResult;
-import umlp.rte.GemList;
-import umlp.rte.LoadResult;
-import umlp.rte.NotificationScope;
-import umlp.util.LogUtil;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.command.SimpleResult;
+import umlp.backendrte.command.StatusResult;
+import umlp.backendrte.common.GemList;
+import umlp.backendrte.common.LoadResult;
+import umlp.backendrte.common.NotificationScope;
+import umlp.backendrte.util.LogUtil;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -235,7 +235,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected void _doDeletePerson(Person o) {
-    StatusResult status = CommandManager.executeCommand(new Person_delete(o)).asStatusResult();
+    StatusResult status = CommandManager.executeCommand(new Person_delete(o.getGemId())).asStatusResult();
     // TODO: error handling
     // ...
     flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(o));

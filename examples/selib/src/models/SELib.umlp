@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+umlp SELib {
+  class Person {
+    String name;
+	String email;
+	String password;
+	boolean isManager;
+  }
+
+  class BookDescription {
+    String title;
+    String description;
+    String imageUrl;
+    String isbn;
+  }
+
+  class Book{
+    // unique number -> should probably be incremented per new book
+    int bookNumber;
+    / String inventoryNumber;
+  }
+
+  association [1] Person -> (rentedBooks) Book [*];
+
+  association [*] Book -> (description) BookDescription [1];
+
+}

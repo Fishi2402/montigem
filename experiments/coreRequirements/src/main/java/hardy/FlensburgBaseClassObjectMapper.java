@@ -3,7 +3,7 @@ package hardy;
 
 // HWC-P
 
-import umlp.rte.SerializableDeSer;
+import umlp.backendrte.common.SerializableDeSer;
 
 // Fügt die Basisklasse java.util.Date zum BaseClassObjectMapper hinzu
 public class FlensburgBaseClassObjectMapper extends FlensburgBaseClassObjectMapperTOP {

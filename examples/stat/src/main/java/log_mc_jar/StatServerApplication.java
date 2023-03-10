@@ -1,20 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package log_mc_jar;
 
-import com.google.common.io.Resources;
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import umlp.rte.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.Optional;
 
 

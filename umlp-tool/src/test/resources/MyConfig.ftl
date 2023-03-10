@@ -14,7 +14,7 @@ ${requestDecorator.transform(ast, decoratedAST)}
 
 <#-- TopDecorator -->
 <#assign topDecorator = tc.instantiate("de.monticore.cd.codegen.TopDecorator", [hwPath])>
-${topDecorator.decoratePackage(decoratedAST)}
+${topDecorator.decorate(decoratedAST)}
 
 <#-- Generate Java-Code -->
 ${cdGenerator.generate(decoratedAST)}

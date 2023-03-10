@@ -9,6 +9,7 @@ public enum UMLPToolOptions {
   HELP("h", "help", "Prints this help dialog"),
   VERSION("v", "version", "Prints version information"),
   DEBUG("d", "debug", "Produces more detailed log"),
+  SHELL_API("sa", "shellApi", "Generate a Shell API"),
 
   CD2GUI("cdt", "cdtogui", "runs cd2gui to generate gui files from the input"),
 

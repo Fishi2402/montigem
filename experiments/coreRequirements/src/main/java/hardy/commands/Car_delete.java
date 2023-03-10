@@ -3,8 +3,8 @@ package hardy.commands;
 
 import hardy.Car;
 import hardy.FlensburgManager;
-import umlp.command.Command;
-import umlp.command.StatusResult;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.StatusResult;
 
 import java.util.Collection;
 import java.util.Collections;

@@ -24,13 +24,21 @@ page PersonCarsEdit(Person p) {
   // show the number of cars as number
   // this attribute is calculated (which doesn't make a difference from the GUI
   // point of view)
-  carNum@GemText(value = p.owns.size());
+  carNum@GemText(value = p.children.size(), color = "Blue");
 
   // show the list of person's cars in a table, row by row
   // the table should be able to work with lazy lists
   t@GemTable(
-    rows = p.owns, // OCL-like navigation for associations
+    rows = p.children, // OCL-like navigation for associations
     columns = [] // car attributes, if no attributes then no columns
+  );
+
+  t1@GemTable(
+    rows = p.children,
+    columns = [
+      TableColumn("age", "Age"),
+      TableColumn("nickname", "Name")
+    ]
   );
 
   // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber

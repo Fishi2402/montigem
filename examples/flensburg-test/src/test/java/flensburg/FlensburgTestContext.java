@@ -1,7 +1,7 @@
 package flensburg;// RTE-T
 
-import umlp.command.CommandManager;
-import umlp.rte.GeneralErrorCollector;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.common.GeneralErrorCollector;
 
 // Speichert die Instanzen zu allen genutzten static delegate pattern, wie den Managern.
 // Durch die activate Methode werden alle diese Instanzen in den entsprechenden Klassen eingesetzt,

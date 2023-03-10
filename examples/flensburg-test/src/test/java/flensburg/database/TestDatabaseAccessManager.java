@@ -3,19 +3,14 @@ package flensburg.database;
 
 // GEN-T
 
-import com.google.common.io.Resources;
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import org.h2.tools.Server;
-import umlp.rte.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager;
 
-import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.Optional;
 
 public class TestDatabaseAccessManager extends DatabaseAccessManager {

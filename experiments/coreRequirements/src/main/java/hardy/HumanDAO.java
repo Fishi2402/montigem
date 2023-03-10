@@ -3,7 +3,7 @@ package hardy;
 
 // GEN-P
 
-import umlp.rte.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

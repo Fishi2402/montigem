@@ -13,8 +13,8 @@ package hardy;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import umlp.command.JsonDeSer;
-import umlp.rte.Gem;
+import umlp.backendrte.command.JsonDeSer;
+import umlp.backendrte.common.Gem;
 
 import java.util.ArrayList;
 import java.util.List;

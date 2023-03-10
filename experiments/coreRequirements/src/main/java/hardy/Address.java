@@ -3,10 +3,10 @@ package hardy;
 
 //+ GEN-P        : generated for the product
 
-import umlp.rte.GemBuildable;
-import umlp.rte.GemIdentifiable;
-import umlp.rte.GemList;
-import umlp.rte.NotificationScope;
+import umlp.backendrte.common.GemBuildable;
+import umlp.backendrte.common.GemIdentifiable;
+import umlp.backendrte.common.GemList;
+import umlp.backendrte.common.NotificationScope;
 
 import java.util.ArrayList;
 import java.util.Collections;

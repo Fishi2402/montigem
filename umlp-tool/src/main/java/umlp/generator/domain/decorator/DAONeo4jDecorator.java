@@ -3,14 +3,16 @@ package umlp.generator.domain.decorator;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDAttributeTOP;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDTypeTOP;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
-import umlp.generator.db.sql.SQLSchemaGenerator;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -40,10 +42,10 @@ public class DAONeo4jDecorator extends DAODecorator {
   @Override
   protected void addMethodForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddInitNeo4jForAssocDAO", assoc.getName(),
-        assoc.getLeft().getMCQualifiedType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())),
-        assoc.getRight().getMCQualifiedType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())),
-        assoc.getLeft().getName(), assoc.getRight().getName(), assoc.getCDAssocDir().isDefinitiveNavigableLeft(),
-        assoc.getCDAssocDir().isDefinitiveNavigableRight());
+            assoc.getLeft().getSymbol().getType().print(),
+            assoc.getRight().getSymbol().getType().print(),
+            assoc.getLeft().getName(), assoc.getRight().getName(), assoc.getCDAssocDir().isDefinitiveNavigableLeft(),
+            assoc.getCDAssocDir().isDefinitiveNavigableRight());
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddForAssocDAO", assoc);
 
   }

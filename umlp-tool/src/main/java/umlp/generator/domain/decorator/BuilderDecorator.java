@@ -13,6 +13,7 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -138,8 +139,8 @@ public class BuilderDecorator extends AbstractDecorator {
   protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, "java.util.List");
     getCD4C().addImport(clazz, "java.util.Optional");
-    getCD4C().addImport(clazz, "umlp.rte.NotificationScope");
-    getCD4C().addImport(clazz, "umlp.rte.Gem");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
   }
 
 }

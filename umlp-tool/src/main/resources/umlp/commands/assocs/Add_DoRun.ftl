@@ -60,7 +60,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
     }
     source.INTERNAL_add${ctargetName}Id(${sourceName}Index, ${targetName}GemId, NotificationScope.MINIMAL);
 <#else>
-    source.INTERNAL_set${ctargetName}Id(${targetName}GemId, NotificationScope.MINIMAL);
+    source._internal_set${ctargetName}(${targetName}GemId, NotificationScope.MINIMAL);
 </#if>
   } else {
     // Why did the client receive this command, if it does not contain a or p?

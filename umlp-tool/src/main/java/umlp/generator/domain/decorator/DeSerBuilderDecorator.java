@@ -2,12 +2,14 @@
 
 package umlp.generator.domain.decorator;
 
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
 import umlp.UMLPMill;
+import umlp.generator.util.PathUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +34,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
 
   protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
     String className = domainClass.getName() + DESER_BUILDER_SUFFIX;
+    CD4CodeFullPrettyPrinter pp = new CD4CodeFullPrettyPrinter();
 
     ASTCDClass deserBuilderClass = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
@@ -59,7 +62,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
             deserBuilderClass,
             "umlp.deser_builder.setGem",
             deserBuilderClass.getName(),
-            a.printType(),
+            pp.prettyprint(a.getMCType()),
                 GenService.getNativeName(a.getName())
         );
       }else{
@@ -82,7 +85,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
   }
 
   protected void addImports(ASTCDType clazz) {
-    getCD4C().addImport(clazz, "umlp.rte.Gem");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
   }
 
 }

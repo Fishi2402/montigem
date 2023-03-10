@@ -11,6 +11,7 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -22,8 +23,6 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeAll;
@@ -118,20 +117,23 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
   }
 
   protected void hasSuperClass(ASTCDClass ast, String superClassName) {
+    CD4CodeFullPrettyPrinter pp = new CD4CodeFullPrettyPrinter();
     assertTrue(ast.isPresentCDExtendUsage() && ast.getCDExtendUsage().getSuperclassList().stream()
-            .filter(m -> superClassName.equals(m.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())))).count()>0,
+            .filter(m -> superClassName.equals(pp.prettyprint(m))).count()>0,
             "superclass " + superClassName + " exists");
   }
 
   protected void hasSuperInterface(ASTCDClass ast, String superInterfaceName) {
+    CD4CodeFullPrettyPrinter pp = new CD4CodeFullPrettyPrinter();
     assertTrue(ast.isPresentCDInterfaceUsage() && ast.getCDInterfaceUsage().getInterfaceList().stream()
-                    .filter(m -> superInterfaceName.equals(m.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())))).count()>0,
+                    .filter(m -> superInterfaceName.equals(pp.prettyprint(m))).count()>0,
             "superinterface " + superInterfaceName + " exists");
   }
 
   protected void hasSuperInterface(ASTCDInterface ast, String superInterfaceName) {
+    CD4CodeFullPrettyPrinter pp = new CD4CodeFullPrettyPrinter();
     assertTrue(ast.isPresentCDExtendUsage() && ast.getCDExtendUsage().getSuperclassList().stream()
-                    .filter(m -> superInterfaceName.equals(m.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())))).count()>0,
+                    .filter(m -> superInterfaceName.equals(pp.prettyprint(m))).count()>0,
             "superinterface " + superInterfaceName + " exists");
   }
 

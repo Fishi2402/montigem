@@ -3,9 +3,9 @@ package hardy.service.websocket;
 
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import umlp.command.Command;
-import umlp.command.CommandObjectMapper;
-import umlp.command.ServerCommandCommunication;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.CommandObjectMapper;
+import umlp.backendrte.command.ServerCommandCommunication;
 
 import java.io.IOException;
 

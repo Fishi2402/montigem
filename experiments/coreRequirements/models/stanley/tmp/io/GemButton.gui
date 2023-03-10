@@ -1,4 +1,4 @@
-package stanley.io;
+package stanley.tmp.io;
 
 /** Button component interface definition. Uses built-in Event type to define an
     event, which can be bound to a function call

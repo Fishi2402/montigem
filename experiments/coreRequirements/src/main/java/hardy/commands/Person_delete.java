@@ -4,35 +4,41 @@ package hardy.commands;
 
 import hardy.FlensburgManager;
 import hardy.Person;
-import umlp.command.Command;
-import umlp.command.StatusResult;
+import umlp.backendrte.command.Command;
+import umlp.backendrte.command.StatusResult;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 public class Person_delete extends Command<Void> {
-  protected final Person person;
+  protected final long gemId;
 
-  public Person_delete(Person person) {
+  public Person_delete(long gemId) {
     super(
         // Der commandType wird gebraucht um bei der Deserialisierung von Commands eine Instanz der richtigen Klasse zu erzeugen
         "hardy.commands.Person_delete"
     );
-    this.person = person;
+    this.gemId = gemId;
   }
 
   @Override
   public StatusResult doRun() {
-    FlensburgManager.deletePerson(person);
-    return StatusResult.ok(getId());
+    Optional<Person> person = FlensburgManager.personOpt(gemId);
+    if (person.isPresent()) {
+      FlensburgManager.deletePerson(person.get());
+      return StatusResult.ok(getId());
+    } else {
+      return StatusResult.error(getId());
+    }
   }
 
   @Override
   public Collection<Long> getEffectedGemIds() {
-    return Collections.singleton(person.getGemId());
+    return Collections.singleton(gemId);
   }
 
-  public Person getPerson() {
-    return person;
+  public long getGemId() {
+    return gemId;
   }
 }

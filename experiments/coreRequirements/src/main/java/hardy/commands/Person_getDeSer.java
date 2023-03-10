@@ -3,7 +3,7 @@ package hardy.commands;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import java.util.Optional;
-import umlp.command.CommandDeSer;
+import umlp.backendrte.command.CommandDeSer;
 public class Person_getDeSer extends CommandDeSer<Person_get> {
     public void buildJson(Person_get command, JsonPrinter jsonPrinter) {
         super.buildJson(command, jsonPrinter);
