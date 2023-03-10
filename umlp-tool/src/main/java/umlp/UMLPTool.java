@@ -150,7 +150,7 @@ public class UMLPTool extends UMLPToolTOP {
           return;
         }
 
-        umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);   //TODO: Maybe refactor
+        umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);   //TODO: Maybe refactor into a method to remove duplicate
 
         Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
         String report_on = inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?

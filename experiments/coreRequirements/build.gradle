@@ -73,6 +73,7 @@ task generateCDTOGUI(type: UMLPTask) {
 }
 
 task generateFlensburg(type: UMLPTask) {
+    dependsOn(generateCDTOGUI)
     input = (file("models/hardy"))
     outputDir = layout.buildDirectory.dir("genumlp/hardy")
 }
