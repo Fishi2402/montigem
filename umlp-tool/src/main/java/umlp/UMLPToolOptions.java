@@ -9,6 +9,7 @@ public enum UMLPToolOptions {
   HELP("h", "help", "Prints this help dialog"),
   VERSION("v", "version", "Prints version information"),
   DEBUG("d", "debug", "Produces more detailed log"),
+  SHELL_API("sa", "shellApi", "Generate a Shell API"),
 
   // with one arg
   INPUT("i", "input", "Reads the source file (mandatory) and parses the contents", "file"),
