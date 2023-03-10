@@ -53,7 +53,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   }
 
   public void transform(ASTGUICompilationUnit guiAst, ASTCDCompilationUnit decoratedAST) {
-    String packageName = getPackageName(guiAst, FilteringClassLoader.DEFAULT_PACKAGE);
+    String packageName = getPackageName(guiAst, DEFAULT_PACKAGE);
     ASTCDPackage astcdPackage = CD4CodeMill.cDPackageBuilder()
         .setMCQualifiedName(getMCTypeFacade().createQualifiedName(packageName)).build();
     decoratedAST.getCDDefinition().addCDElement(astcdPackage);

@@ -1,18 +1,29 @@
-<!-- GEN-P -->
+
+
 <gem-text
-  [value]="getCarNumValue()"
->
+  [value] = "getGemTextCarNumValue()">
+<!--  [color] = "getGemTextCarNumColor()"-->
+
 </gem-text>
 
+
 <gem-table
-  [rows]="getTRows()"
-  [columns]="getTColumns()"
+  [rows] = "getGemTableTRows()"
+  [columns] = "getGemTableTColumns()"
 >
 </gem-table>
 
-<!-- Event paramater assignment requires additional .bind(this) -->
+
+<gem-table
+  [rows] = "getGemTableT1Rows()"
+  [columns] = "getGemTableT1Columns()"
+>
+</gem-table>
+
+
 <gem-button
-  text="Ok"
-  (leftClick)="navLeftClick.bind(this)()"
+  [text] = "getGemButtonNavText()"
+  (leftClick) = "gemButtonNavLeftClick.bind(this)()"
 >
 </gem-button>
+

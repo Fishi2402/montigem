@@ -35,7 +35,10 @@ page PersonCarsEdit(Person p) {
 
   t1@GemTable(
     rows = p.children,
-    columns = List(p.age, p.nickname)
+    columns = [
+      TableColumn("age", "Age"),
+      TableColumn("nickname", "Name")
+    ]
   );
 
   // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber

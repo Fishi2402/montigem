@@ -12,6 +12,7 @@ import de.monticore.cdassociation._symboltable.CDRoleSymbolDeSer;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
@@ -32,6 +33,7 @@ import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.domain.UMLPGenerator;
+import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
@@ -234,19 +236,23 @@ public class UMLPTool extends UMLPToolTOP {
         // set template path
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
             .map(p -> p.toFile()).collect(Collectors.toList()));//
+        genSetup.setGlex( new GlobalExtensionManagement());
 
         // execute generator
         GUIDSLMill.init();
+        // Get all ASTGUIComponents
+        GlobalExtensionManagement glex = new GlobalExtensionManagement();
+        GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
 
-        GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, symbolTableGui);
+        GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, symbolTableGui, viewComponents);
         String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
         javaGenerator.generate(astGui, javaConfigTemplate);
 
-        GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, symbolTableGui);
+        GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, symbolTableGui, viewComponents);
         String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
         htmlGenerator.generate(astGui, htmlConfigTemplate);
 
-        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, symbolTableGui);
+        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, symbolTableGui, viewComponents);
         String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
         typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
 
@@ -353,7 +359,7 @@ public class UMLPTool extends UMLPToolTOP {
     // gs.putSymbolDeSer("umlp._symboltable.UMLPDefSymbol", new UMLPDefSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new TypeSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol", new VariableSymbolDeSer());
-    gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new CDRoleSymbolDeSer());
+    gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new VariableSymbolDeSer());
     FunctionSymbol navigateFunction = GUIDSLMill.functionSymbolBuilder()
         .setName("navigate")
         .setEnclosingScope(gs)

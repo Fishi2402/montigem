@@ -5,7 +5,7 @@
   Call it using the CLI: .. -ct umlp.GUI2Java
 
 -->
-${tc.signature("decoratedAST", "glex", "hwPath", "guiTypeScriptGenerator")}
+${tc.signature("decoratedAST", "glex", "hwPath", "guiTypeScriptGenerator", "viewComponents")}
 
 <#-- Generate Typescript-Code -->
 ${guiTypeScriptGenerator.generate(decoratedAST)}
