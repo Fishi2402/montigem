@@ -12,6 +12,8 @@ public class BEDecorator extends AbstractDecorator {
 
   boolean neo4j = false;
 
+  boolean shellAPI = false;
+
   protected MCPath hwPath;
 
   public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
@@ -19,8 +21,10 @@ public class BEDecorator extends AbstractDecorator {
     this.hwPath = hwPath;
   }
 
-  public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath, boolean neo4j) {super((glex));
+  public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath, boolean neo4j, boolean shellAPI) {
+    super((glex));
     this.neo4j = neo4j;
+    this.shellAPI = shellAPI;
     this.hwPath = hwPath;
   }
 
@@ -133,6 +137,16 @@ public class BEDecorator extends AbstractDecorator {
     CommandResultDeSerDecorator commandResultDeSerDecorator = new CommandResultDeSerDecorator(glex);
     commandResultDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandResultDeSerDecorator", BEDecorator.class.getName());
+
+    if (shellAPI) {
+      ShellAPIDecorator shellAPIDecorator = new ShellAPIDecorator(glex);
+      shellAPIDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ShellAPIDecorator", ShellAPIDecorator.class.getName());
+
+      ShellAPIClassDecorator shellApiClassDecorator = new ShellAPIClassDecorator(glex, hwPath);
+      shellApiClassDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ShellAPIClassDecorator", ShellAPIClassDecorator.class.getName());
+    }
 
     glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
   }

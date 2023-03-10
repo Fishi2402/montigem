@@ -186,6 +186,11 @@ public class UMLPTool extends UMLPToolTOP {
         ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
         GeneratorSetup genSetup = new GeneratorSetup();
 
+        // shell api
+        if (SHELL_API.isSelected(cmd)) {
+          // TODO MH
+        }
+
         // set output directory
         genSetup.setOutputDirectory(outDir);
 

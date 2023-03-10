@@ -2,7 +2,7 @@
 description 'cars example'
 
 task generateCars(type: UMLPTask) {
-    input.from(file("src"))
+    input = (file("src"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
 }
 

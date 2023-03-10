@@ -2,8 +2,9 @@
 description 'SE Bib example'
 
 task generateSELib(type: UMLPTask) {
-    input.from(file("src"))
+    input = (file("src/models"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
+    hwcDir = layout.projectDirectory.dir("src/main/java/")
 }
 
 build.dependsOn(generateSELib)
