@@ -7,8 +7,10 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.GenService;
 import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
@@ -40,17 +42,25 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
                 .build();
 
         List<ASTCDClass> domainClasses = origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived()).collect(Collectors.toList());
-        List<String> domainClassesString = domainClasses.stream().map(ASTCDClass::getName).collect(Collectors.toList());
         List<String> commandList = new ArrayList<>();
         String packageName = getPackageName(origCD , COMMAND_PACKAGE)+ ".";
-        for (String domainClass : domainClassesString) {
-            commandList.add(packageName + domainClass + CreateDecorator.SUFFIX);
-            commandList.add(packageName + domainClass + DeleteDecorator.SUFFIX);
-            commandList.add(packageName + domainClass + GetDecorator.SUFFIX);
-            commandList.add(packageName + domainClass + GetFilteredDecorator.SUFFIX);
+        for (ASTCDClass domainClass : domainClasses) {
+            String domainClassName = domainClass.getName();
+            commandList.add(packageName + domainClassName + CreateDecorator.SUFFIX);
+            commandList.add(packageName + domainClassName + DeleteDecorator.SUFFIX);
+            commandList.add(packageName + domainClassName + GetDecorator.SUFFIX);
+            commandList.add(packageName + domainClassName + GetFilteredDecorator.SUFFIX);
+            CDSymbolTables.getAttributesInHierarchy(domainClass).forEach(domainAttribute -> {
+                    String domainAttributeName = StringTransformations.capitalize(
+                        domainAttribute.getName());
+                    if (GenService.isList(domainAttribute)) {
+                        commandList.add(packageName + domainClassName + AddDecorator.SUFFIX + domainAttributeName);
+                        commandList.add(packageName + domainClassName + RemoveDecorator.SUFFIX + domainAttributeName);
+                    } else if (!GenService.isDerived(domainAttribute)){
+                        commandList.add(packageName + domainClassName + SetDecorator.SUFFIX + domainAttributeName);
+                    }
+                });
         }
-        List<ASTCDAttribute> domainAttributes = domainClasses.stream().map(CDSymbolTables :: getAttributesInHierarchy).flatMap(Collection::stream).collect(Collectors.toList());
-
 
         getCD4C().addConstructor(ast, "umlp.commands.aggregatedcommanddeser.Constructor", commandList, className, getPackageName(origCD, DEFAULT_PACKAGE));
         getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("AggregatedCommandDeSer"));
