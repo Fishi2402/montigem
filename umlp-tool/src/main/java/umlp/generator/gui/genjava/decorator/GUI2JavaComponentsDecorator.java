@@ -8,7 +8,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.se_rwth.commons.Joiners;
 import umlp.generator.gui.GUIAbstractDecorator;
-import umlp.generator.gui.GUIComponentsAccessVisitor;
+import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayList;
@@ -19,9 +19,9 @@ import static umlp.generator.gui.GUIGeneratorUtil.isInputComponent;
 
 public class GUI2JavaComponentsDecorator extends GUIAbstractDecorator {
 
-  private final GUIComponentsAccessVisitor viewComponent;
+  private final GUIComponentsVisitor viewComponent;
 
-  public GUI2JavaComponentsDecorator(final GlobalExtensionManagement glex, GUIComponentsAccessVisitor viewComponent) {
+  public GUI2JavaComponentsDecorator(final GlobalExtensionManagement glex, GUIComponentsVisitor viewComponent) {
     super(glex);
     this.viewComponent = viewComponent;
   }

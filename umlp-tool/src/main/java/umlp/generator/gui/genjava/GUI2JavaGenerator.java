@@ -11,8 +11,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.se_rwth.commons.logging.Log;
-import umlp.generator.domain.UMLPGenerator;
-import umlp.generator.gui.genjava.GUI2CDTrafo;
+import umlp.generator.gui.GUIComponentsVisitor;
 
 import java.util.Arrays;
 
@@ -20,9 +19,12 @@ public class GUI2JavaGenerator extends CDGenerator {
 
   protected static CD4CodeFullPrettyPrinter astPrinter;
 
-  public GUI2JavaGenerator(GeneratorSetup genSetup, IGUIDSLArtifactScope symbolTableGui) {
+  protected GUIComponentsVisitor viewComponents;
+
+  public GUI2JavaGenerator(GeneratorSetup genSetup, IGUIDSLArtifactScope symbolTableGui, GUIComponentsVisitor viewComponents) {
     super(genSetup);
     astPrinter = new CD4CodeFullPrettyPrinter();
+    this.viewComponents = viewComponents;
     genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter()); // TODO GV
 
   }
@@ -43,7 +45,7 @@ public class GUI2JavaGenerator extends CDGenerator {
 
     // translate the GUI-AST into Java
     hpp.processValue(tc, modelAST,
-        Arrays.asList(decoratedAST, setup.getGlex(), setup.getHandcodedPath(), this));
+        Arrays.asList(decoratedAST, setup.getGlex(), setup.getHandcodedPath(), this, viewComponents));
   }
 
 

@@ -47,7 +47,8 @@ public class TableDecorator extends GUI2JavaComponentDecorator {
 
     if (row.isPresent()) {
       ASTCDAttribute rowsAttribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-          "List<? extends Object>", StringTransformations.uncapitalize(componentName) + "Rows");
+          "List<? extends Object>", StringTransformations.uncapitalize(guiComponent.getName()) +
+              StringTransformations.capitalize(componentName) + "Rows");
       glex.replaceTemplate("cd2java.Value", rowsAttribute, new StringHookPoint(" = new ArrayList<>()"));
       getCD4C().addImport(decoratedClass, "java.util.List");
       getCD4C().addImport(decoratedClass, "java.util.ArrayList");
@@ -68,7 +69,8 @@ public class TableDecorator extends GUI2JavaComponentDecorator {
       getCD4C().addImport(decoratedClass, "stanley.tmp.table.tabletypes.TableColumn"); // TODO TODO GV, Age
 
       ASTCDAttribute columnsAttribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-          "List<TableColumn>", StringTransformations.uncapitalize(componentName) + "Columns");
+          "List<TableColumn>", StringTransformations.uncapitalize(guiComponent.getName()) +
+              StringTransformations.capitalize(componentName) + "Columns");
       glex.replaceTemplate("cd2java.Value", columnsAttribute, new StringHookPoint(" = new ArrayList<>()"));
       getCD4C().addImport(decoratedClass, "java.util.List");
       getCD4C().addImport(decoratedClass, "java.util.ArrayList");

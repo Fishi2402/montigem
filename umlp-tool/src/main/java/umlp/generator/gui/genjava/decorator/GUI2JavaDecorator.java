@@ -6,7 +6,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
-import umlp.generator.gui.GUIComponentsAccessVisitor;
+import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.stream.Collectors;
@@ -19,10 +19,7 @@ public class GUI2JavaDecorator extends GUIAbstractDecorator {
     super(glex);
   }
 
-  public void transform(ASTGUICompilationUnit guiAst, ASTCDCompilationUnit decoratedAST) {
-
-    // Get all ASTGUIComponents
-    GUIComponentsAccessVisitor viewComponents = new GUIComponentsAccessVisitor(guiAst);
+  public void transform(ASTGUICompilationUnit guiAst, ASTCDCompilationUnit decoratedAST, GUIComponentsVisitor viewComponents) {
 
     boolean isInputGui = isInputGui(guiAst, viewComponents.getComponents().stream().filter(GUIGeneratorUtil::isInputComponent).collect(Collectors.toList()));
 

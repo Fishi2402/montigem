@@ -10,6 +10,7 @@ import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
+import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,6 +55,12 @@ public class GUIGeneratorUtil {
         .filter(a -> isInputArgument(guiComponentSymbol.get(), a)).findAny().isPresent();
   }
 
+  public static boolean isInputArgument(ASTGUIComponent guiComponent, ASTGUINamedArg arg) {
+   Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
+        .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
+    return !guiComponentSymbol.isPresent() || isInputArgument(guiComponentSymbol.get(), arg);
+  }
+
   public static boolean isEventComponent(ASTGUIComponent guiComponent) {
     Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
         .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
@@ -69,6 +76,12 @@ public class GUIGeneratorUtil {
   public static boolean isInputArgument(GUIComponentDeclarationSymbol guiComponent, ASTGUINamedArg arg) {
     Optional<GUIParamSymbol> argSymbol = guiComponent.getSpannedScope().resolveGUIParam(arg.getName());
     return argSymbol.isPresent() && argSymbol.get().isIsReference();
+  }
+
+  public static boolean isEventArgument(ASTGUIComponent guiComponent, ASTGUINamedArg arg) {
+    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
+        .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
+    return !guiComponentSymbol.isPresent() || isEventArgument(guiComponentSymbol.get(), arg);
   }
 
   public static boolean isEventArgument(GUIComponentDeclarationSymbol guiComponent, ASTGUINamedArg arg) {
@@ -95,6 +108,44 @@ public class GUIGeneratorUtil {
       return new ArrayList<>();
     }
     return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> isEventArgument(guiComponentSymbol.get(), a)).collect(Collectors.toList());
+  }
+
+  public static String getComponentNameFromCamelCaseName(String camelCaseName) {
+    return String.join("-", splitCamelCase(camelCaseName)).toLowerCase();
+  }
+
+  public static String[] splitCamelCase(String str) {
+    if (str == null) {
+      return null;
+    } else if (str.length() == 0) {
+      return ArrayUtils.EMPTY_STRING_ARRAY;
+    } else {
+      char[] c = str.toCharArray();
+      List list = new ArrayList();
+      int tokenStart = 0;
+      int currentType = Character.getType(c[tokenStart]);
+
+      for(int pos = tokenStart + 1; pos < c.length; ++pos) {
+        int type = Character.getType(c[pos]);
+        if (type != currentType) {
+          if (type == 2 && currentType == 1) {
+            int newTokenStart = pos - 1;
+            if (newTokenStart != tokenStart) {
+              list.add(new String(c, tokenStart, newTokenStart - tokenStart));
+              tokenStart = newTokenStart;
+            }
+          } else {
+            list.add(new String(c, tokenStart, pos - tokenStart));
+            tokenStart = pos;
+          }
+
+          currentType = type;
+        }
+      }
+
+      list.add(new String(c, tokenStart, c.length - tokenStart));
+      return (String[])((String[])list.toArray(new String[list.size()]));
+    }
   }
 
 }
