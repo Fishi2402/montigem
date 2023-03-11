@@ -73,7 +73,7 @@ public class AddDecorator extends AbstractDecorator {
     ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected " +  (isGem?"long":type) + " " + attrName);
     ASTCDAttribute indexAttr = getCD4C().addAttribute(ast, "protected int indexInList");
 
-    getCD4C().addConstructor(ast, "umlp.commands.add.Constructor", classname, COMMAND_PACKAGE,
+    getCD4C().addConstructor(ast, "umlp.commands.add.Constructor", classname, getPackageName(origCD, COMMAND_PACKAGE),
             attrName, isGem?"long":type);
 
     getCD4C().addMethod(ast, "umlp.commands.add.DoRun", name, domainClass.getName(), origCD.getCDDefinition().getName(), isGem, name, type);

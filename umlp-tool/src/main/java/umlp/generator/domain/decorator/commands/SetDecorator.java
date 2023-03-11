@@ -74,7 +74,7 @@ public class SetDecorator extends AbstractDecorator {
     ASTCDAttribute attr = isGem?getCD4C().addAttribute(ast, "protected long " + completeName)
             :getCD4C().addAttribute(ast, "protected " + type.print() + " " + completeName);
 
-    getCD4C().addConstructor(ast, "umlp.commands.set.Constructor", classname, COMMAND_PACKAGE,
+    getCD4C().addConstructor(ast, "umlp.commands.set.Constructor", classname, getPackageName(origCD, COMMAND_PACKAGE),
             completeName, isGem?"long":type.print());
 
     getCD4C().addMethod(ast, "umlp.commands.set.DoRun", name, domainClass.getName(), origCD.getCDDefinition().getName(), isGem, type.print());

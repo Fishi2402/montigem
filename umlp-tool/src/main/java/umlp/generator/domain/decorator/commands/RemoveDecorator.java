@@ -72,7 +72,7 @@ public class RemoveDecorator extends AbstractDecorator {
     ASTCDAttribute gemAttr = getCD4C().addAttribute(ast, "protected long gemId");
     ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected " +  (isGem?"long":type) + " " + attrName);
 
-    getCD4C().addConstructor(ast, "umlp.commands.remove.Constructor", classname, COMMAND_PACKAGE,
+    getCD4C().addConstructor(ast, "umlp.commands.remove.Constructor", classname, getPackageName(origCD, COMMAND_PACKAGE),
             attrName, isGem?"long":type);
 
     getCD4C().addMethod(ast, "umlp.commands.remove.DoRun", name, domainClass.getName(), origCD.getCDDefinition().getName(), isGem, name);
