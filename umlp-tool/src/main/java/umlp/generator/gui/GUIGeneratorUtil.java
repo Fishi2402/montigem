@@ -148,4 +148,21 @@ public class GUIGeneratorUtil {
     }
   }
 
+  public static String getModuleName(String qualifiedModulName) {
+    String moduleName = qualifiedModulName;
+    if (!qualifiedModulName.isEmpty() && qualifiedModulName.lastIndexOf(".") > 0) {
+      moduleName = qualifiedModulName.substring(qualifiedModulName.lastIndexOf(".") + 1);
+    }
+    return moduleName;
+  }
+
+  public static String getQualifiedNameForModule(ASTGUIComponent node) {
+    String qualifiedModulName = node.getName();
+    Optional<GUIComponentDeclarationSymbol> symbol = node.getEnclosingScope().resolveGUIComponentDeclaration(node.getName());
+    if (symbol.isPresent() && symbol.get().getFullName().lastIndexOf(".") > 0) {
+      String fullName = symbol.get().getFullName();
+      qualifiedModulName = symbol.get().getFullName().substring(0, symbol.get().getFullName().lastIndexOf("."));
+    }
+    return qualifiedModulName;
+  }
 }

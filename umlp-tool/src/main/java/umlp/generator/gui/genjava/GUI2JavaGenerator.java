@@ -35,6 +35,7 @@ public class GUI2JavaGenerator extends CDGenerator {
   }
 
   public void generate(ASTGUICompilationUnit modelAST, String configTemplate) {
+    this.setup.setTracing(true);
     // create an empty classdiagram
     ASTCDCompilationUnit decoratedAST = GUI2CDTrafo.createCDCompilationUnit(modelAST);
     //GUI2CDTrafo.createCD4CodeSymTab(decoratedAST);

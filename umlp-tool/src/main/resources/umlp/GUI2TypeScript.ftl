@@ -7,5 +7,8 @@
 -->
 ${tc.signature("decoratedAST", "glex", "hwPath", "guiTypeScriptGenerator", "viewComponents")}
 
+<#-- TopDecorator -->
+<#assign topDecorator = tc.instantiate("de.monticore.cd.codegen.TopDecorator", [hwPath])>
+
 <#-- Generate Typescript-Code -->
 ${guiTypeScriptGenerator.generate(decoratedAST)}

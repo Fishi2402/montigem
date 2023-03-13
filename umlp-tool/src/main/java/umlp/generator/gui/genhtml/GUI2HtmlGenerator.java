@@ -22,7 +22,6 @@ public class GUI2HtmlGenerator {
   protected final GeneratorEngine generatorEngine;
   protected GeneratorSetup setup;
   IGUIDSLArtifactScope symbolTableGui;
-  protected static GUIDSLFullPrettyPrinter astPrinter;
   protected GUIComponentsVisitor viewComponents;
 
   public GUI2HtmlGenerator(GeneratorSetup generatorSetup, IGUIDSLArtifactScope symbolTableGui, GUIComponentsVisitor viewComponents) {
@@ -30,23 +29,19 @@ public class GUI2HtmlGenerator {
     this.setup = generatorSetup;
     this.symbolTableGui = symbolTableGui;
     this.viewComponents = viewComponents;
-    astPrinter = new GUIDSLFullPrettyPrinter(new IndentPrinter(), false);
-    setup.getGlex().setGlobalValue("astPrinter", astPrinter);
   }
 
   public void generate(ASTGUICompilationUnit modelAST, String configTemplate) {
     TemplateController tc = setup.getNewTemplateController(configTemplate);
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
 
-    // translate the GUI-AST into Java
+    // translate the GUI-AST into HTML
     hpp.processValue(tc, modelAST,
         Arrays.asList(modelAST, setup.getGlex(), setup.getHandcodedPath(), this));
   }
 
   public void generate(ASTGUICompilationUnit decoratedAst) {
     this.setup.setTracing(false);
-    this.setup.getGlex().setGlobalValue("genHelper", new GUITemplateHelper());
-    this.setup.getGlex().setGlobalValue("viewComponents", viewComponents);
 
     String componentName = GUIGeneratorUtil.getComponentNameFromCamelCaseName(decoratedAst.getComponentName());
     String pathName = String.join("/", decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());

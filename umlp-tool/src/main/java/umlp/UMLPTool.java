@@ -34,6 +34,7 @@ import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.gui.GUIComponentsVisitor;
+import umlp.generator.gui.GUITemplateHelper;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
@@ -248,6 +249,8 @@ public class UMLPTool extends UMLPToolTOP {
         // Get all ASTGUIComponents
         GlobalExtensionManagement glex = new GlobalExtensionManagement();
         GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
+        genSetup.getGlex().setGlobalValue("genHelper", new GUITemplateHelper());
+        genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
 
         GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, symbolTableGui, viewComponents);
         String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
@@ -257,7 +260,7 @@ public class UMLPTool extends UMLPToolTOP {
         String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
         htmlGenerator.generate(astGui, htmlConfigTemplate);
 
-        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, symbolTableGui, viewComponents);
+        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, symbolTableGui, hwcPath, viewComponents);
         String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
         typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
 
