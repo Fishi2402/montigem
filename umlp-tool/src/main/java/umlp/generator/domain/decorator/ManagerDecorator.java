@@ -4,6 +4,7 @@ package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.StringTransformations;
@@ -32,11 +33,11 @@ public class ManagerDecorator extends AbstractDecorator {
 
     ASTCDClass managerClass = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC_ABSTRACT.build())
-            .setName(name+SUFFIX).build();
+            .setName(name + SUFFIX).build();
 
     // Attribute observerList
     ASTCDAttribute attrObserver = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-            "List<"+name+"Observer>", StringTransformations.uncapitalize(name) +"Observers");
+            "List<" + name + "Observer>", StringTransformations.uncapitalize(name) + "Observers");
     glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint("= new ArrayList<>()"));
     managerClass.addCDMember(attrObserver);
 
@@ -45,6 +46,9 @@ public class ManagerDecorator extends AbstractDecorator {
 
     origCD.getCDDefinition().getCDClassesList()
             .forEach(c -> addClassElements(c, managerClass));
+
+    origCD.getCDDefinition().getCDInterfacesList()
+            .forEach(i -> addClassElements(i, managerClass));
 
     addImports(managerClass);
 
@@ -68,7 +72,7 @@ public class ManagerDecorator extends AbstractDecorator {
   protected void addClassElements(ASTCDClass domainClass, ASTCDClass managerClass) {
     String name = domainClass.getName();
 
-    if (domainClass.getModifier().isDerived()) {
+    if(domainClass.getModifier().isDerived()) {
       getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, false);
     } else {
@@ -104,7 +108,36 @@ public class ManagerDecorator extends AbstractDecorator {
 
   }
 
-  protected void addImports(ASTCDType clazz) {
+  protected void addClassElements(ASTCDInterface domainInterface, ASTCDClass managerClass) {
+    String name = domainInterface.getName();
+
+    if(domainInterface.getModifier().isDerived()) {
+      getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, false);
+    } else {
+      getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.Opt", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.Opt", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetList", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetList", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, false);
+
+      // Associations
+      CDSymbolTables.getAssociations(domainInterface).stream().filter(GenService::isList).forEach(a -> {
+        String type = a.getSymbol().getType().print();
+        getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc", a.getName(), type, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc", a.getName(), type, false);
+        getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", a.getName(), type, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", a.getName(), type, false);
+      });
+    }
+  }
+
+    protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));

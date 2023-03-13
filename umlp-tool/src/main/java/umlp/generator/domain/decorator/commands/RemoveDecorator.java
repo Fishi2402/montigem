@@ -4,10 +4,7 @@ package umlp.generator.domain.decorator.commands;/* (c) https://github.com/Monti
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -46,7 +43,7 @@ public class RemoveDecorator extends AbstractDecorator {
                         astcdPackage.addCDElement(createClass(origCD, a.getName(), GenService.getInnerType(a.getMCType()), c, false));
                         astcdPackage.addCDElement(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false));
                       });
-              CDSymbolTables.getAssociationsInHierarchy(c)
+              CDSymbolTables.getAssociations(c)
                       .stream()
                       .filter(a -> !a.getModifier().isDerived())
                       .filter(a -> !GenService.isBidirectional(a))
@@ -54,14 +51,35 @@ public class RemoveDecorator extends AbstractDecorator {
                       .forEach(a -> {
                         astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType().print(), c, true));
                         astcdPackage.addCDElement(createDeSer(origCD, a.getName(), getSymType("long"), c, true));
-                      });            });
+                      });
+            });
+    origCD.getCDDefinition().getCDInterfacesList().stream().filter(c -> !c.getSymbol().isIsDerived())
+            .forEach(c -> {
+              CDSymbolTables.getAttributesInHierarchy(c)
+                      .stream()
+                      .filter(a -> !a.getModifier().isDerived())
+                      .filter(GenService::isList)
+                      .forEach(a -> {
+                        astcdPackage.addCDElement(createClass(origCD, a.getName(), GenService.getInnerType(a.getMCType()), c, false));
+                        astcdPackage.addCDElement(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false));
+                      });
+              CDSymbolTables.getAssociations(c)
+                      .stream()
+                      .filter(a -> !a.getModifier().isDerived())
+                      .filter(a -> !GenService.isBidirectional(a))
+                      .filter(GenService::isList)
+                      .forEach(a -> {
+                        astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType().print(), c, true));
+                        astcdPackage.addCDElement(createDeSer(origCD, a.getName(), getSymType("long"), c, true));
+                      });
+            });
   }
 
 
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String name, String type, ASTCDClass domainClass, boolean isGem) {
-    String classname = domainClass.getName()+SUFFIX
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String name, String type, ASTCDType domainClass, boolean isGem) {
+    String classname = domainClass.getName() + SUFFIX
             + StringTransformations.capitalize(name);
-    String attrName = isGem?name+"GemId":name;
+    String attrName = isGem ? name + "GemId" : name;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
@@ -70,14 +88,14 @@ public class RemoveDecorator extends AbstractDecorator {
             .build();
 
     ASTCDAttribute gemAttr = getCD4C().addAttribute(ast, "protected long gemId");
-    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected " +  (isGem?"long":type) + " " + attrName);
+    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected " + (isGem ? "long" : type) + " " + attrName);
 
     getCD4C().addConstructor(ast, "umlp.commands.remove.Constructor", classname, COMMAND_PACKAGE,
-            attrName, isGem?"long":type);
+            attrName, isGem ? "long" : type);
 
     getCD4C().addMethod(ast, "umlp.commands.remove.DoRun", name, domainClass.getName(), origCD.getCDDefinition().getName(), isGem, name);
     if (isGem) {
-      getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getId()", name+"GemId"));
+      getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getId()", name + "GemId"));
     } else {
       getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getId()"));
     }
@@ -90,20 +108,20 @@ public class RemoveDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + origCD.getCDDefinition().getName() + ManagerDecorator.SUFFIX);
 
     return ast;
   }
 
-  protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDClass domainClass, boolean isGem) {
-    String cmdName = domainClass.getName()+SUFFIX
+  protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDType domainClass, boolean isGem) {
+    String cmdName = domainClass.getName() + SUFFIX
             + StringTransformations.capitalize(name);
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
             .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("CommandDeSer<" + cmdName + ">"))
-            .setName(cmdName+DE_SER)
+            .setName(cmdName + DE_SER)
             .build();
 
     if (isGem) {
@@ -123,9 +141,9 @@ public class RemoveDecorator extends AbstractDecorator {
   // TODO (MB): Bessere Lösung?
   protected SymTypeExpression getSymType(String type) {
     Optional<TypeSymbol> primitive = BasicSymbolsMill.globalScope().resolveType(type);
-    if(primitive.isPresent()){
+    if (primitive.isPresent()) {
       return SymTypeExpressionFactory.createPrimitive(primitive.get());
-    }else{
+    } else {
       return SymTypeExpressionFactory.createObscureType();
     }
   }

@@ -63,6 +63,7 @@ public class DomainInterfaceDecorator extends AbstractDecorator {
 
     List<ASTMCObjectType> superInterfaces = new ArrayList<>();
     superInterfaces.add(getMCTypeFacade().createQualifiedType("GemIdentifiable"));
+    superInterfaces.add(getMCTypeFacade().createQualifiedType("GemBuildable"));
     if(domainInterface.isPresentCDExtendUsage()) {
       superInterfaces.addAll(domainInterface.getSuperclassList());
     }
