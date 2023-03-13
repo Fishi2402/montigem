@@ -1,6 +1,8 @@
-// GEN-P
 
+
+// always imported
 import { Routes } from "@angular/router";
+// imports of pages in the package
 import { PersonEdit } from "./person-edit/person-edit.component";
 
 export const routes: Routes = [
