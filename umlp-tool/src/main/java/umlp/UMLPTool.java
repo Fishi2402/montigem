@@ -246,11 +246,11 @@ public class UMLPTool extends UMLPToolTOP {
 
         // execute generator
         GUIDSLMill.init();
+
         // Get all ASTGUIComponents
-        GlobalExtensionManagement glex = new GlobalExtensionManagement();
         GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
-        genSetup.getGlex().setGlobalValue("genHelper", new GUITemplateHelper());
         genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
+        genSetup.getGlex().setGlobalValue("genHelper", new GUITemplateHelper());
 
         GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, symbolTableGui, viewComponents);
         String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
