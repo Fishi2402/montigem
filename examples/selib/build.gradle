@@ -5,6 +5,7 @@ task generateSELib(type: UMLPTask) {
     input = (file("src/models"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
     hwcDir = layout.projectDirectory.dir("src/main/java/")
+    configTemplate = "umlp/UMLPConfig4teaching.ftl"
 }
 
 build.dependsOn(generateSELib)
