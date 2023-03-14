@@ -45,7 +45,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
     getCD4C().addConstructor(deserBuilderClass, "umlp.deser_builder.Constructor", domainClass.getName());
 
     // Attributes
-    List<ASTCDAttribute> attributes = getAllAttributes(domainClass, origCD).attrList.stream()
+    List<ASTCDAttribute> attributes = getAllAttributes(domainClass).attrList.stream()
             .filter(a -> !GenService.isDerived(a)).collect(Collectors.toList());;
 
     // Methods

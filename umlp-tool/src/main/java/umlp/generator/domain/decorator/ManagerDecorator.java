@@ -48,7 +48,7 @@ public class ManagerDecorator extends AbstractDecorator {
             .forEach(c -> addClassElements(c, managerClass));
 
     origCD.getCDDefinition().getCDInterfacesList()
-            .forEach(i -> addClassElements(i, managerClass));
+            .forEach(i -> addInterfaceElements(i, managerClass));
 
     addImports(managerClass);
 
@@ -108,7 +108,7 @@ public class ManagerDecorator extends AbstractDecorator {
 
   }
 
-  protected void addClassElements(ASTCDInterface domainInterface, ASTCDClass managerClass) {
+  protected void addInterfaceElements(ASTCDInterface domainInterface, ASTCDClass managerClass) {
     String name = domainInterface.getName();
 
     if(domainInterface.getModifier().isDerived()) {

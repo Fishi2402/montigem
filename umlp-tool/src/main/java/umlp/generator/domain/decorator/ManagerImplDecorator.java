@@ -54,7 +54,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
             .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
     origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getModifier().isDerived())
-            .forEach(i -> addClassElements(origCD, i, managerClass));
+            .forEach(i -> addInterfaceElements(origCD, i, managerClass));
 
     // Imports
     addImports(managerClass);
@@ -89,8 +89,8 @@ public class ManagerImplDecorator extends AbstractDecorator {
     });
   }
 
-  protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDInterface domainInterface,
-                                  ASTCDClass managerClass) {
+  protected void addInterfaceElements(ASTCDCompilationUnit origCD, ASTCDInterface domainInterface,
+                                      ASTCDClass managerClass) {
     String name = domainInterface.getName();
 
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOptInterface", name);

@@ -59,7 +59,7 @@ public class ManagerMockDecorator extends AbstractDecorator {
             .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
     origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getModifier().isDerived())
-            .forEach(i -> addClassElements(origCD, i, managerClass));
+            .forEach(i -> addInterfaceElements(origCD, i, managerClass));
 
     // Imports
     addImports(managerClass);
@@ -102,8 +102,8 @@ public class ManagerMockDecorator extends AbstractDecorator {
     });
   }
 
-  protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDInterface domainClass,
-                                  ASTCDClass managerClass) {
+  protected void addInterfaceElements(ASTCDCompilationUnit origCD, ASTCDInterface domainClass,
+                                      ASTCDClass managerClass) {
     String name = domainClass.getName();
     String lName = StringTransformations.uncapitalize(name);
 
