@@ -13,6 +13,8 @@ import stanley.tmp.io.GemText;
 import stanley.tmp.io.GemButton;
 import stanley.tmp.table.GemTable;
 
+import stanley.tmp.table.TableTypes.TableColumn;
+
 /**
  * This example defines a Visualization including a number of Calculated
  * values (that may change externally over time)

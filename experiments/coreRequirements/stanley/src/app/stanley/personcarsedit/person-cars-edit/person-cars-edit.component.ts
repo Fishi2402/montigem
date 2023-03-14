@@ -2,7 +2,7 @@
 
 import { Component } from "@angular/core";
 import { Car } from "../../../hardy/car";
-import { dummy } from "../../../hardy/mock/person-dummy";
+import { dummy1 } from "../../../hardy/mock/person-dummy";
 import { Person } from "../../../hardy/person";
 import { TableColumn } from "../../tmp/table/table-types";
 
@@ -17,7 +17,7 @@ export class PersonCarsEdit {
 
   constructor() {
     // TODO: person loading
-    this.p = dummy;
+    this.p = dummy1;
   }
 
   public ngOnInit(): void {

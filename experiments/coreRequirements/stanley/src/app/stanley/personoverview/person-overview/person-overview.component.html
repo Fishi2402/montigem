@@ -1,0 +1,10 @@
+<gem-card [title]="'Overview'" [content]="comp1Tpl">
+</gem-card>
+
+<ng-template #comp1Tpl>
+  <gem-table
+    [rows]="getGemTableComp1Rows()"
+    [columns]="getGemTableComp1Columns()"
+  >
+  </gem-table>
+</ng-template>

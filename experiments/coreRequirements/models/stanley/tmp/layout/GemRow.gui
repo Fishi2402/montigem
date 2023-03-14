@@ -1,0 +1,10 @@
+package stanley.tmp.layout;
+
+component GemRow(
+  String height,
+  String width,
+  String hAlign,
+  String vAlign,
+  String design,
+  List<GUIViewElement> contents
+)

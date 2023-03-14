@@ -1,7 +1,7 @@
 // GEN-P: translated from Java
 
 import { Directive } from "@angular/core";
-import { dummy } from "../../../hardy/mock/person-dummy";
+import { dummy1 } from "../../../hardy/mock/person-dummy";
 import { Person } from "../../../hardy/person";
 import { PersonErrorObserver } from "../../../hardy/person-error-observer";
 
@@ -18,7 +18,7 @@ export class PersonEditTOP implements PersonErrorObserver {
 
   constructor() {
     // TODO: person loading
-    this.p = dummy;
+    this.p = dummy1;
   }
 
   public ngOnInit(): void {
