@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp;
 
+import cd2gui.CD2GUITool;
 import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.methodtemplates.CD4C;
@@ -156,7 +157,35 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
 
-      if (isUmlpFile(inputFile)) {
+      if(CD2GUI.isSelected(cmd)){
+        if(!isUmlpFile(inputFile)){
+          Log.warn("option -cd2gui used without a classdiagram umlp file as input");
+          return;
+        }
+
+        umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);   //TODO: Maybe refactor into a method to remove duplicate
+
+        Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
+        String report_on = inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
+        Reporting.on(report_on);
+
+        UMLPMill.init();
+        BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+
+        // parse, create symbol table, check all cocos
+        ASTCDCompilationUnit ast = parse(inputFile.getPath());
+        Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
+        runAfterParseTrafo(ast);
+        createSymbolTable(ast);
+        runDefaultTrafo(ast);
+        runDefaultCoCos(ast);
+        CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, false);
+        guiTool.generateGUI();
+
+        Reporting.flush(ast);
+      }
+
+      else if (isUmlpFile(inputFile)) {
         umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
 
         Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
