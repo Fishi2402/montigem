@@ -49,17 +49,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static umlp.UMLPToolOptions.DEBUG;
-import static umlp.UMLPToolOptions.HELP;
-import static umlp.UMLPToolOptions.HWC_PATH;
-import static umlp.UMLPToolOptions.INPUT;
-import static umlp.UMLPToolOptions.OUTPUT;
-import static umlp.UMLPToolOptions.PATH;
-import static umlp.UMLPToolOptions.PRETTYPRINT;
-import static umlp.UMLPToolOptions.REPORTS;
-import static umlp.UMLPToolOptions.REPORT_BASE;
-import static umlp.UMLPToolOptions.SYMTAB;
-import static umlp.UMLPToolOptions.TMPL_PATH;
+import static umlp.UMLPToolOptions.*;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
