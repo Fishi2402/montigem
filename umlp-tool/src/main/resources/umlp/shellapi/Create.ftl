@@ -7,4 +7,4 @@ ${cd4c.method("public void ${className?uncap_first}Create (${parameters})")}
     .${domainAttribute}(${domainAttribute})
   </#list>
   ;
-  sendCommand(new ${className?cap_first}_create(${className?uncap_first}));
+  sendCommandToServerAndReceiveResult(new ${className?cap_first}_create(${className?uncap_first}));

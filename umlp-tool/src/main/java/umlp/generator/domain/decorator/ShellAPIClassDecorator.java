@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class ShellAPIClassDecorator extends DomainClassDecorator {
 
-  public static final String SUFFIX = "SHELLAPI";
+  public static final String SUFFIX = "ShellAPI";
   public ShellAPIClassDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
     super(glex, hwPath);
   }
@@ -95,7 +95,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
         .collect(Collectors.toList());
     ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Create",
         originalClassName, parameters.stream().collect(Collectors.joining(", ")), domainAttributNames);
-    String annotation = String.format("@ShellMethod(key = \"%s-create\", value = \"Create %s\")",
+    String annotation = String.format("@ShellMethod(key = \"%s-create\", value = \"Create %s\") @ShellMethodAvailability(\"isConnected\")",
         StringTransformations.uncapitalize(originalClassName), originalClassName);
     glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint(annotation));
     ArrayList<String> annotations = new ArrayList<>();
@@ -108,7 +108,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
   private void addGetMethod(String originalClassName, ASTCDClass api) {
     ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Get",
         originalClassName);
-    String annotation = String.format("@ShellMethod(key = \"%s-get\", value = \"Get %s\")",
+    String annotation = String.format("@ShellMethod(key = \"%s-get\", value = \"Get %s\") @ShellMethodAvailability(\"isConnected\")",
         StringTransformations.uncapitalize(originalClassName), originalClassName);
     glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint(annotation));
     addAnnotationToParameters(m, "@ShellOption(value = \"--id\")");
@@ -117,7 +117,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
   private void addDeleteMethod(String originalClassName, ASTCDClass api) {
     ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Delete",
         originalClassName);
-    String annotation = String.format("@ShellMethod(key = \"%s-delete\", value = \"Delete %s\")",
+    String annotation = String.format("@ShellMethod(key = \"%s-delete\", value = \"Delete %s\") @ShellMethodAvailability(\"isConnected\")",
         StringTransformations.uncapitalize(originalClassName), originalClassName);
     glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint(annotation));
     addAnnotationToParameters(m, "@ShellOption(value = \"--id\")");
@@ -125,13 +125,13 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
 
   protected void addAttributeSetMethod(String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
     addAttributeMethod(attr, api, "umlp.shellapi.Attribute_Set", originalClassName,
-        "@ShellMethod(key = \"%s-set-%s\", value = \"Set %s of %s\")");
+        "@ShellMethod(key = \"%s-set-%s\", value = \"Set %s of %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
   protected void addAttributeGetMethod(String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
     ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Attribute_Get",
         originalClassName, attr.getName());
-    String annotation = String.format("@ShellMethod(key = \"%s-get-%s\", value = \"Get %s of %s\")",
+    String annotation = String.format("@ShellMethod(key = \"%s-get-%s\", value = \"Get %s of %s\") @ShellMethodAvailability(\"isConnected\")",
         StringTransformations.uncapitalize(originalClassName), attr.getName(), attr.getName(), originalClassName);
     glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint(annotation));
     addAnnotationToParameters(m, "@ShellOption(value = \"--id\")");
@@ -139,12 +139,12 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
 
   private void addAttributeAddMethod(String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
     addAttributeMethod(attr, api, "umlp.shellapi.Attribute_Add", originalClassName,
-        "@ShellMethod(key = \"%s-add-%s\", value = \"Add %s to %s\")");
+        "@ShellMethod(key = \"%s-add-%s\", value = \"Add %s to %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
   private void addAttributeRemoveMethod(String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
     addAttributeMethod(attr, api, "umlp.shellapi.Attribute_Remove", originalClassName,
-        "@ShellMethod(key = \"%s-remove-%s\", value = \"Remove %s from %s\")");
+        "@ShellMethod(key = \"%s-remove-%s\", value = \"Remove %s from %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
   private void addAttributeMethod(ASTCDAttribute attr, ASTCDClass api, String template,
@@ -169,17 +169,17 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
 
   protected void addAssociationSetMethod(String originalClassName, ASTCDClass api, ASTCDAssocSide assoc) {
     addAssociationMethod(assoc, api, "umlp.shellapi.Attribute_Set", originalClassName,
-        "@ShellMethod(key = \"%s-set-%s\", value = \"Set %s of %s\")");
+        "@ShellMethod(key = \"%s-set-%s\", value = \"Set %s of %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
   private void addAssociationAddMethod(String originalClassName, ASTCDClass api, ASTCDAssocSide assoc) {
     addAssociationMethod(assoc, api, "umlp.shellapi.Attribute_Add", originalClassName,
-        "@ShellMethod(key = \"%s-add-%s\", value = \"Add %s to %s\")");
+        "@ShellMethod(key = \"%s-add-%s\", value = \"Add %s to %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
   private void addAssociationRemoveMethod(String originalClassName, ASTCDClass api, ASTCDAssocSide assoc) {
     addAssociationMethod(assoc, api, "umlp.shellapi.Attribute_Remove", originalClassName,
-        "@ShellMethod(key = \"%s-remove-%s\", value = \"Remove %s from %s\")");
+        "@ShellMethod(key = \"%s-remove-%s\", value = \"Remove %s from %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
   private void addAssociationMethod(ASTCDAssocSide assoc, ASTCDClass api, String template,
@@ -203,6 +203,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellComponent");
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellMethod");
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellOption");
+    getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellMethodAvailability");
     getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassName);
     getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassName + "Builder");
     getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE) + "." + baseClassName + "_create");

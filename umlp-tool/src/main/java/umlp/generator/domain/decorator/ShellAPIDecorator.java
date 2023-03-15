@@ -21,7 +21,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC_STATIC;
 
 public class ShellAPIDecorator extends AbstractDecorator {
 
-  public static final String SUFFIX = "SHELLAPI";
+  public static final String SUFFIX = "ShellAPI";
 
   public ShellAPIDecorator(GlobalExtensionManagement glex) {
     super(glex);
@@ -37,59 +37,39 @@ public class ShellAPIDecorator extends AbstractDecorator {
     String name = origCD.getCDDefinition().getName();
 
     ASTCDClass shellapi = UMLPMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
         .setName(name+SUFFIX)
+        .setModifier(PUBLIC.build())
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(PathUtil.getBackendRTEShellApiPath("UMLPShellAPI")))
         .build();
     glex.replaceTemplate("cd2java.Annotations", shellapi, new StringHookPoint("@ShellComponent"));
 
     addImports(origCD, shellapi);
 
-    // Attributes
-    addAttribute("url", "http://localhost", shellapi);
-    addAttribute("port", "8081", shellapi);
-    addAttribute("applicationName", name, shellapi);
-    addAttribute("apiName", "api", shellapi);
-
     // Methods
-    getCD4C().addMethod(shellapi, "umlp.shellapi.SendCommand");
+    ASTCDMethodSignature init = getCD4C().addMethod(shellapi, "umlp.shellapi.Init");
+    String annotation = "@ShellMethod(key = \"init\", value = \"Initialize the connection to the server\")";
+    glex.replaceTemplate("cd2java.Annotations", init, new StringHookPoint(annotation));
+    addAnnotationToParameters(init, Arrays.asList(
+        "@ShellOption(value = \"--url\", defaultValue = \"localhost\")",
+        "@ShellOption(value = \"--port\", defaultValue = \"8081\")",
+        String.format("@ShellOption(value = \"--appName\", defaultValue = \"%s\")", name.toLowerCase()),
+        "@ShellOption(value = \"--api\", defaultValue = \"wsapi\")"
+    ));
+
     getCD4C().addMethod(shellapi, "umlp.shellapi.GetFreeGemId");
-    addSetMethod(shellapi, name, "url");
-    addSetMethod(shellapi, name, "port");
-    addSetMethod(shellapi, name, "applicationName");
-    addSetMethod(shellapi, name, "apiName");
 
     return shellapi;
-  }
-
-  private void addAttribute(String name, String value, ASTCDClass shellapiClass) {
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC.build(),
-        "String", name);
-    glex.replaceTemplate("cd2java.Value", attribute, new StringHookPoint(String.format("= \"%s\"", value)));
-    shellapiClass.addCDMember(attribute);
-  }
-
-  private void addSetMethod(ASTCDClass shellapiClass, String name, String attributeName) {
-    ASTCDMethodSignature m = getCD4C().addMethod(shellapiClass,
-        "umlp.shellapi.SetProperty",
-        name + SUFFIX, name, attributeName);
-    String annotation = String.format("@ShellMethod(key = \"set-%s\", value = \"Set %s\")",
-        attributeName, attributeName);
-    glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint(annotation));
-    addAnnotationToParameters(m, Arrays.asList("@ShellOption"));
   }
 
   private void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellComponent");
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellMethod");
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellOption");
-    getCD4C().addImport(clazz, "org.springframework.http.HttpHeaders");
-    getCD4C().addImport(clazz, "org.springframework.http.MediaType");
-    getCD4C().addImport(clazz, "org.springframework.web.reactive.function.client.WebClient");
     getCD4C().addImport(clazz, getPackageName(origCD, REQUESTS_PACKAGE) + ".GetFreeGemIdRequest");
-    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("Command"));
-    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandObjectMapper"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTEShellApiPath("UMLPShellAPI"));
   }
 
   private void addAnnotationToParameters(ASTCDMethodSignature m, List<String> annotations) {

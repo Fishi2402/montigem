@@ -57,7 +57,6 @@ import static umlp.UMLPToolOptions.PATH;
 import static umlp.UMLPToolOptions.PRETTYPRINT;
 import static umlp.UMLPToolOptions.REPORTS;
 import static umlp.UMLPToolOptions.REPORT_BASE;
-import static umlp.UMLPToolOptions.SHELL_API;
 import static umlp.UMLPToolOptions.SYMTAB;
 import static umlp.UMLPToolOptions.TMPL_PATH;
 
@@ -199,12 +198,6 @@ public class UMLPTool extends UMLPToolTOP {
 
         ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
         GeneratorSetup genSetup = new GeneratorSetup();
-
-        // shell api
-        if (SHELL_API.isSelected(cmd)) {
-          // TODO MH
-        }
-
         // set output directory
         genSetup.setOutputDirectory(outDir);
 

@@ -1,0 +1,40 @@
+/* (c) https://github.com/MontiCore/monticore */
+plugins {
+    id 'application'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version "${spring_version}"
+}
+
+description 'SE Bib Shell example'
+
+application {
+    mainClass = 'de.rwth.se.se_lib.SeLibServerApplication'
+}
+
+dependencies {
+    implementation 'com.h2database:h2:2.1.214'
+
+    compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version
+    implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
+}
+
+task generateSELibShellApi(type: UMLPTask) {
+    input = (file("src/models"))
+    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
+    hwcDir = layout.projectDirectory.dir("src/main/java/")
+    tmplDir = layout.projectDirectory.dir("src/templates/")
+}
+
+task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    mainClass = 'de.rwth.se.se_lib.SELibShellAPIApplication'
+}
+
+task runServer {
+    dependsOn(bootRun {
+        mainClass = 'de.rwth.se.se_lib.SeLibServerApplication'
+    })
+}
+
+build.dependsOn(generateSELibShellApi)

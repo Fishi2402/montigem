@@ -62,7 +62,9 @@ jsweet {
     '**/DatabaseAccessManager.java',
     '**/*DeSer*',
     '**/BaseClassObjectMapper.java',
-    '**/HashMapWithOrderedKeys.java'
+    '**/HashMapWithOrderedKeys.java',
+    '**/service/websocket/**',
+    '**/shellapi/UMLPShellApi.java'
   ]
 }
 
