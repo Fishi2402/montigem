@@ -114,7 +114,7 @@
     import data loading functions: file can be directly inserted into next <script>
     tag instead
   -->
-  <script type='text/javascript' src='./gen.js'></script>
+  <script type='text/javascript' src='./index.js'></script>
   <script>
     // Update of CRUD
     async function updateObj(cell, className, attr, gemId) {
@@ -215,7 +215,7 @@
     function loadPage() {
       // Read of CRUD
       // load data, then create page. Assuming that we request from server,
-      // hence we use async function. loadData is in gen.js
+      // hence we use async function. loadData is in index.js
       loadData().then(cd => {
         // received data from server
         const dataSet = cd.data;
