@@ -2,7 +2,6 @@
 package umlp.generator.domain.decorator.commands;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -14,7 +13,6 @@ import umlp.generator.domain.decorator.GenService;
 import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +58,7 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
                         commandList.add(packageName + domainClassName + SetDecorator.SUFFIX + domainAttributeName);
                     }
                 });
-            CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+            CDSymbolTables.getAssociations(domainClass).stream()
                 .filter(a -> !GenService.isDerived(a))
                 .filter(a -> !GenService.isBidirectional(a)).forEach(association -> {
                 String roleName = StringTransformations.capitalize(association.getName());

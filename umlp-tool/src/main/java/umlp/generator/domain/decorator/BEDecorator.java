@@ -41,6 +41,10 @@ public class BEDecorator extends AbstractDecorator {
     domainClassDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
 
+    DomainInterfaceDecorator domainInterfaceDecorator = new DomainInterfaceDecorator(glex);
+    domainInterfaceDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
+
     // Generate DAOs
     if(!neo4j) {
       DAODecorator daoDecorator = new DAODecorator(glex);

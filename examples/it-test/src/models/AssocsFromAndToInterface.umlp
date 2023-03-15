@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp AssocsFromAndToInterface {
+
+  interface A;
+
+  class B implements A;
+  
+  interface D;
+  
+  abstract class E implements D;
+  
+  class F extends E;
+  
+  association F -> D [*];
+  
+  association D -> E[*];
+  
+  association A (leftA) <-> (rightA) A [*];
+  
+
+}

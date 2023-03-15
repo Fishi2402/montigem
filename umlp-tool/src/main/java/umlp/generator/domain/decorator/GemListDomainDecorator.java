@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
@@ -29,15 +30,19 @@ public class GemListDomainDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> astcdPackage.addAllCDElements(createClasses(origCD, c)));
+
+    origCD.getCDDefinition().getCDInterfacesList().stream()
+            .filter(i -> !i.getSymbol().isIsDerived())
+            .forEach(i -> astcdPackage.addAllCDElements(createClasses(origCD, i)));
   }
 
-  protected Collection<ASTCDClass> createClasses(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
+  protected Collection<ASTCDClass> createClasses(ASTCDCompilationUnit origCD, ASTCDType clazz) {
     List<ASTCDClass> retList = Lists.newArrayList();
     retList.add(createGemListClass(origCD, clazz));
     return retList;
   }
 
-  protected ASTCDClass createGemListClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
+  protected ASTCDClass createGemListClass(ASTCDCompilationUnit origCD, ASTCDType domainClass) {
     String sourceName = domainClass.getName();
     String classname = sourceName
         + "GemList";
