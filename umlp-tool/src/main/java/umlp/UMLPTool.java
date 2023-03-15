@@ -153,6 +153,20 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
 
+      MCPath mcPath = new MCPath();
+      if (PATH.isSelected(cmd)) {
+        for (String v : cmd.getOptionValues(PATH.getCMD())) {
+          mcPath.addEntry(Paths.get(v));
+        }
+      }
+
+      MCPath gpPath = new MCPath();
+      if(GUI_PATH.isSelected(cmd)){
+        for (String v : cmd.getOptionValues(GUI_PATH.getCMD())) {
+          gpPath.addEntry(Paths.get(v));
+        }
+      }
+
       if(CD2GUI.isSelected(cmd)){
         if(!isUmlpFile(inputFile)){
           Log.warn("option -cd2gui used without a classdiagram umlp file as input");
@@ -179,13 +193,6 @@ public class UMLPTool extends UMLPToolTOP {
         guiTool.generateGUI();
 
         Reporting.flush(ast);
-      }
-
-      MCPath gpPath = new MCPath();
-      if(GUI_PATH.isSelected(cmd)){
-        for (String v : cmd.getOptionValues(GUI_PATH.getCMD())) {
-          gpPath.addEntry(Paths.get(v));
-        }
       }
 
       else if(GUIDelta.isSelected(cmd)){
@@ -236,6 +243,9 @@ public class UMLPTool extends UMLPToolTOP {
                   guiModel.getMCPackageDeclaration().getMCQualifiedName().toString().replace(".","/")
                           .concat("/" + guiModel.getComponentName()) //file structure needs to reflect package declarations
           ),pp.prettyprint(guiModel));
+          Reporting.reportFileCreation(guiModel.getMCPackageDeclaration().getMCQualifiedName().toString().replace(".","/")
+                  .concat("/" + guiModel.getComponentName()));
+          Reporting.flush(guiModel);
         }
       }
 
@@ -313,13 +323,6 @@ public class UMLPTool extends UMLPToolTOP {
         // parse, create symbol table, check all cocos
         ASTGUICompilationUnit astGui = parseGUI(inputFile.getPath());
         Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on);
-
-        MCPath mcPath = new MCPath();
-        if (PATH.isSelected(cmd)) {
-          for (String v : cmd.getOptionValues(PATH.getCMD())) {
-            mcPath.addEntry(Paths.get(v));
-          }
-        }
 
         IGUIDSLArtifactScope symbolTableGui = createSymbolTable(astGui, mcPath);
 

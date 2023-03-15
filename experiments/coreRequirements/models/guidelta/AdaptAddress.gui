@@ -1,0 +1,5 @@
+package guidelta;
+
+page AdaptAddress() adapts AddressDetails{
+    remove AddressToOverwiew;
+}

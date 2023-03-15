@@ -86,6 +86,10 @@ public class GUIDeltaHandler implements GUIDSLHandler {
 
         componentNameToChange = node.getName();
 
+//        if(adaptedAST.getEnclosingScope().resolveVariable(componentNameToChange).isEmpty()){ //ToDO when symboltable works
+//            Log.error("GUIComponent " + componentNameToChange " was not found in the scope");
+//        };
+
         switch (node.getPosition()){
             case 2:
                 adaptionOptions = AdaptionOptions.BEFORE;
@@ -117,6 +121,10 @@ public class GUIDeltaHandler implements GUIDSLHandler {
         //Needed method to differentiate referenceParam
 
         componentNameToChange = node.getName();
+
+//        if(adaptedAST.getEnclosingScope().resolveVariable(componentNameToChange).isEmpty()){ //ToDO when symboltable works
+//            Log.error("GUIComponent " + componentNameToChange " was not found in the scope");
+//        };
 
         adaptionOptions = AdaptionOptions.REMOVE;
         argValueToAdd = null;
