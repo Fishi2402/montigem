@@ -29,7 +29,7 @@ async function sendCommand(command) {
 // load all objects of a class
 async function loadClassData(className) {
   return sendCommand({
-    "type": className + "_geAll"
+    "type": className + "_getAll"
   });
 }
 
@@ -37,24 +37,6 @@ async function loadClassData(className) {
 
 // load all data
 async function loadData() {
-  const cd = {};
-  cd.title = await loadTitle();
-
-  const data = [];
-  data.push({
-    "class": "Person",
-    "data": await loadPerson()
-  });
-  data.push({
-    "class": "Book",
-    "data": await loadBook()
-  });
-
-  cd.data = data;
-  return cd;
-}
-
-async function loadDataGen() {
   const cd = {};
   cd.title = await loadTitle();
 
@@ -89,9 +71,7 @@ async function load${c.getName()}() {
     { "gemId" : 2, "name": "Bob", "email": "b@se.de", "password": "ewv43", "isManager": false, "rented": ["LotR"] },
     { "gemId" : 3, "name": "Charlie", "email": "c@se.de", "password": "d3", "isManager": true, "rented": [] }
   ];
-</#if>
-
-<#if c.getName() == "Book">
+<#elseif c.getName() == "Book">
   // dummy data
   // actual code would send an async request, which will return a bit later
   // written with a timeout to see if it works
@@ -103,6 +83,10 @@ async function load${c.getName()}() {
     ]),
     500
   ));
+<#else>
+  return [
+    {  }
+  ];
 </#if>
 }
 
