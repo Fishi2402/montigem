@@ -61,6 +61,48 @@ public class GUIGeneratorUtil {
     return !guiComponentSymbol.isPresent() || isInputArgument(guiComponentSymbol.get(), arg);
   }
 
+  public static boolean isComponentArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
+    return arg.isPresentGUIComponent();
+  }
+
+  public static List<ASTGUIComponent> getComponentAsArguments(ASTGUIComponent guiComponent) {
+    return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getGUIArgValue()).filter(a -> isComponentArgument(guiComponent, a))
+        .map(a -> a.getGUIComponent()).collect(Collectors.toList());
+  }
+
+/*  public static List<ASTGUINamedArg> getComponentArguments(ASTGUIComponent guiComponent) {
+    return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> isComponentArgument(guiComponent, a))
+       .collect(Collectors.toList());
+  }*/
+
+  public static List<ASTGUIArgValue> getComponentArguments(ASTGUIComponent guiComponent) {
+    List<ASTGUIArgValue> values = new ArrayList<>();
+    values.addAll(guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getGUIArgValue())
+        .filter(a -> isComponentArgument(guiComponent, a)).collect(Collectors.toList()));
+    values.addAll(guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getGUIArgValue())
+        .filter(a -> a.isPresentGUIList()).flatMap(a -> a.getGUIList().getGUIArgValueList().stream())
+        .filter(v -> isComponentArgument(guiComponent, v)).collect(Collectors.toList()));
+    return values;
+  }
+
+  public static List<ASTGUIArgValue> getComponentListArguments(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
+    List<ASTGUIArgValue> values = new ArrayList<>();
+    if (!arg.isPresentGUIList()) {
+      return values;
+    }
+    values.addAll(arg.getGUIList().getGUIArgValueList().stream().filter(v -> isComponentArgument(guiComponent, v)).collect(Collectors.toList()));
+    return values;
+  }
+
+  public static ASTGUIComponent getNestedComponent(ASTGUIArgValue arg) {
+    return arg.getGUIComponent();
+  }
+
+  public static boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
+    return arg.isPresentGUIList() && arg.getGUIList().getGUIArgValueList()
+        .stream().filter(a -> a.isPresentGUIComponent()).findAny().isPresent();
+  }
+
   public static boolean isEventComponent(ASTGUIComponent guiComponent) {
     Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
         .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());

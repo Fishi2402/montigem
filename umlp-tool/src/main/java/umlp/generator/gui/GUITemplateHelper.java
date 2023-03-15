@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
+import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 
@@ -26,6 +27,26 @@ public class GUITemplateHelper {
 
   public String getComponentNameFromCamelCaseName(String camelCaseName) {
     return GUIGeneratorUtil.getComponentNameFromCamelCaseName(camelCaseName);
+  }
+
+  public boolean isComponentArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
+    return GUIGeneratorUtil.isComponentArgument(guiComponent, arg);
+  }
+
+  public List<ASTGUIArgValue> getComponentArguments(ASTGUIComponent guiComponent) {
+    return GUIGeneratorUtil.getComponentArguments(guiComponent);
+  }
+
+  public static ASTGUIComponent getNestedComponent(ASTGUIArgValue arg) {
+    return GUIGeneratorUtil.getNestedComponent(arg);
+  }
+
+  public static boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
+    return GUIGeneratorUtil.isComponentListArgument(guiComponent, arg);
+  }
+
+  public static List<ASTGUIArgValue> getComponentListArguments(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
+    return GUIGeneratorUtil.getComponentListArguments(guiComponent, arg);
   }
 
 }
