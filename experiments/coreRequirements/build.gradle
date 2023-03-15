@@ -66,6 +66,12 @@ task runServer {
     dependsOn(bootRun)
 }
 
+task guidelta(type: UMLPTask) {
+    input.from(file("models"))
+    GUIDelta=true
+    outputDir = layout.buildDirectory.dir("genumlp/guidelta")
+}
+
 task generateCDTOGUI(type: UMLPTask) {
     input = file("models/hardy")
     cdToGui = true

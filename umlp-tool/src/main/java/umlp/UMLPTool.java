@@ -16,9 +16,12 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
+import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
@@ -41,10 +44,13 @@ import umlp.generator.gui.GUITemplateHelper;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
+import umlp.generator.gui.guidelta.GUIDeltaHandler;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -173,6 +179,64 @@ public class UMLPTool extends UMLPToolTOP {
         guiTool.generateGUI();
 
         Reporting.flush(ast);
+      }
+
+      MCPath gpPath = new MCPath();
+      if(GUI_PATH.isSelected(cmd)){
+        for (String v : cmd.getOptionValues(GUI_PATH.getCMD())) {
+          gpPath.addEntry(Paths.get(v));
+        }
+      }
+
+      else if(GUIDelta.isSelected(cmd)){
+        guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
+
+        Reporting.init(outDir.getPath(), reportDir.getPath(), guidsl_reportManagerFactory);
+        List<ASTGUICompilationUnit> guiModels = new LinkedList<>();
+        List<ASTGUICompilationUnit> guiDeltaModels = new LinkedList<>();
+
+        GUIDSLMill.init();
+
+        //parse all gui files and separate guiDelta from non-guiDelta
+        for(Path p : gpPath.getEntries()){
+          String report_on = p.toFile().getName().replace(".", "__");
+          Reporting.on(report_on);
+
+          ASTGUICompilationUnit compilationUnit = parseGUI(p.toString());
+          Reporting.reportParseInputFile(p.toAbsolutePath(), report_on);
+
+          if(isGUIDelta(compilationUnit)){
+            guiDeltaModels.add(compilationUnit);
+          }
+          else {
+            guiModels.add(compilationUnit);
+          }
+        }
+
+        //adapt guiModels
+        for(ASTGUICompilationUnit deltaModel : guiDeltaModels){
+          Reporting.on(deltaModel.getComponentName());
+
+          List<ASTGUICompilationUnit> adaptedModel = guiModels.stream().filter(m -> m.getComponentName().equals(
+                  deltaModel.getGUIComponentDeclaration().getGUIComponentAdaptation().getTarget()
+          )).collect(Collectors.toList());
+          if(adaptedModel.size() != 1){
+            Log.error("expected exactly one matching file to adapt with GUIDelta, but found multiple or none");
+          }
+
+          GUIDeltaHandler deltaHandler = new GUIDeltaHandler(adaptedModel.get(0));
+          deltaModel.accept(deltaHandler.getTraverser());
+        }
+
+        //output non guiDelta files, adapted if applicable
+        for(ASTGUICompilationUnit guiModel : guiModels){
+          Reporting.on(guiModel.getComponentName());
+          GUIDSLFullPrettyPrinter pp = new GUIDSLFullPrettyPrinter(new IndentPrinter(), true);
+          FileReaderWriter.storeInFile(outDir.toPath().resolve(
+                  guiModel.getMCPackageDeclaration().getMCQualifiedName().toString().replace(".","/")
+                          .concat("/" + guiModel.getComponentName()) //file structure needs to reflect package declarations
+          ),pp.prettyprint(guiModel));
+        }
       }
 
       else if (isUmlpFile(inputFile)) {
@@ -359,6 +423,10 @@ public class UMLPTool extends UMLPToolTOP {
 
   protected boolean isGuiFile(File f) {
     return f.getName().endsWith(".gui");
+  }
+
+  protected boolean isGUIDelta(ASTGUICompilationUnit compilationUnit){
+    return compilationUnit.getGUIComponentDeclaration().isPresentGUIComponentAdaptation();
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {

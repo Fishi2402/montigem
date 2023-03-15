@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -95,6 +96,10 @@ public abstract class UMLPTask extends DefaultTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getCdToGui();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getGUIDelta();
+
   @OutputDirectory
   public abstract DirectoryProperty getOutputDir();
 
@@ -132,6 +137,7 @@ public abstract class UMLPTask extends DefaultTask {
         (task) ->  ((UMLPTask)task).getDebug().get());
 
     getCdToGui().convention(false);
+    getGUIDelta().convention(false);
   }
 
 
@@ -195,6 +201,17 @@ public abstract class UMLPTask extends DefaultTask {
 
     if(this.getCdToGui().get()){
       result.add("-" + UMLPToolOptions.CD2GUI.getCMD());
+    }
+
+    if(this.getGUIDelta().get()){
+      result.add("-" + UMLPToolOptions.GUIDelta.getCMD());
+      List<Path> guiFiles = getInput().getAsFileTree().getFiles().stream().filter(p -> p.getPath().endsWith(".gui")).map(File::toPath).collect(Collectors.toList());
+      if(!guiFiles.isEmpty()){
+        result.add("-gp");
+        for(Path p : guiFiles){
+          result.add(handlePath.apply(p));
+        }
+      }
     }
 
     if (this.getMoreArgs().isPresent()) {
