@@ -3,6 +3,7 @@ package umlp.backendrte.common;
 
 // RTE-P
 
+import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.command.DeSer;
 
 import java.util.HashMap;
@@ -56,8 +57,13 @@ public class BaseClassObjectMapper {
     if(!baseDeSers.containsKey(className)){
       return Optional.empty();
     }
-
-    return (Optional<T>) baseDeSers.get(className).deserialize(s);
+    // TODO prüfen
+    try {
+      return (Optional<T>) baseDeSers.get(className).deserialize(s);
+    } catch (ClassCastException ex) {
+      Log.error("Wrong return type of base class deser: '" + className + "'");
+      return Optional.empty();
+    }
   }
 
   public static boolean canDeSer(String className){

@@ -49,7 +49,7 @@ public class CreateDecorator extends AbstractDecorator {
 
     getCD4C().addConstructor(ast, "umlp.commands.Constructor",classname, packageName, SUFFIX);
     getCD4C().addMethod(ast, "umlp.commands.create.DoRun", classname, origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getId()"));
+    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList(StringTransformations.uncapitalize(classname) + ".getGemId()"));
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));
 

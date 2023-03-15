@@ -12,16 +12,23 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import umlp.UMLPMill;
 import umlp.generator.util.PathUtil;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
 public class DeSerDecorator extends DomainClassDecorator{
 
   public static final String SUFFIX = "DeSer";
 
-  public DeSerDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
+  private Set<String> supportedDesers;
+
+  public DeSerDecorator(GlobalExtensionManagement glex, MCPath hwPath,
+      Set<String> supportedDesers) {
     super(glex, hwPath);
+    this.supportedDesers = supportedDesers;
   }
 
   @Override
@@ -49,7 +56,7 @@ public class DeSerDecorator extends DomainClassDecorator{
             .filter(attr -> !attr.getModifier().isDerived())
             .collect(Collectors.toList());
     attributes.forEach(a -> {
-      addSerAndDeserMethod(originalClassName, deSer, a);
+      addSerAndDeserMethod(origCD.getCDDefinition().getName(), originalClassName, deSer, a);
     });
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(cdClass).stream()
             .filter(a -> !a.getModifier().isDerived())
@@ -86,24 +93,36 @@ public class DeSerDecorator extends DomainClassDecorator{
     return deSer;
   }
 
-  protected void addSerAndDeserMethod(String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
+  protected void addSerAndDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
     boolean isList = false;
     boolean isOptional = false;
     String type = attr.getSymbol().getType().printFullName();
+    String innerType = "";
     String jsonStr = "";
     if(GenService.isList(attr)) {
       isList = true;
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics)attr.getSymbol().getType()).getArgument(0));
+      innerType = ((SymTypeOfGenerics)attr.getSymbol().getType()).getArgument(0).printFullName();
     } else if(GenService.isOptional(attr)) {
       isOptional = true;
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics)attr.getSymbol().getType()).getArgument(0));
+      innerType = ((SymTypeOfGenerics)attr.getSymbol().getType()).getArgument(0).printFullName();
     } else {
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
     }
+    boolean useDeSer = supportedDesers.contains(type);
+    boolean makeAbstract = jsonStr.equals("") && !useDeSer;
+
     getCD4C().addMethod(deSer, "umlp.deser.serializeSimpleField",
-            originalClassName, attr.getName(), jsonStr, isList, isOptional);
+            originalClassName, attr.getName(), type, jsonStr, isList, innerType, isOptional,
+        useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
     getCD4C().addMethod(deSer, "umlp.deser.deserializeSimpleField",
-            originalClassName, attr.getName(), type, jsonStr, isList, isOptional);
+            originalClassName, attr.getName(), type, jsonStr, isList, innerType, isOptional,
+        useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
+
+    if (makeAbstract) {
+      deSer.setModifier(PUBLIC_ABSTRACT.build());
+    }
   }
 
   protected void addSerAndDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAssocSide attr) {

@@ -50,16 +50,27 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
             commandList.add(packageName + domainClassName + DeleteDecorator.SUFFIX);
             commandList.add(packageName + domainClassName + GetDecorator.SUFFIX);
             commandList.add(packageName + domainClassName + GetFilteredDecorator.SUFFIX);
-            CDSymbolTables.getAttributesInHierarchy(domainClass).forEach(domainAttribute -> {
-                    String domainAttributeName = StringTransformations.capitalize(
-                        domainAttribute.getName());
+            CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+                .filter(a -> !GenService.isDerived(a)).forEach(domainAttribute -> {
+                    String domainAttributeName = StringTransformations.capitalize(domainAttribute.getName());
                     if (GenService.isList(domainAttribute)) {
                         commandList.add(packageName + domainClassName + AddDecorator.SUFFIX + domainAttributeName);
                         commandList.add(packageName + domainClassName + RemoveDecorator.SUFFIX + domainAttributeName);
-                    } else if (!GenService.isDerived(domainAttribute)){
+                    } else {
                         commandList.add(packageName + domainClassName + SetDecorator.SUFFIX + domainAttributeName);
                     }
                 });
+            CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+                .filter(a -> !GenService.isDerived(a))
+                .filter(a -> !GenService.isBidirectional(a)).forEach(association -> {
+                String roleName = StringTransformations.capitalize(association.getName());
+                if (GenService.isList(association)) {
+                    commandList.add(packageName + domainClassName + AddDecorator.SUFFIX + roleName);
+                    commandList.add(packageName + domainClassName + RemoveDecorator.SUFFIX + roleName);
+                } else {
+                    commandList.add(packageName + domainClassName + SetDecorator.SUFFIX + roleName);
+                }
+            });
         }
 
         getCD4C().addConstructor(ast, "umlp.commands.aggregatedcommanddeser.Constructor", commandList, className, getPackageName(origCD, DEFAULT_PACKAGE));

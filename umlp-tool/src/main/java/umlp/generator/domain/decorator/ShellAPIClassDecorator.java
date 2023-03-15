@@ -72,7 +72,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
         .filter(a -> !a.getModifier().isDerived())
         .collect(Collectors.toList());
     assocs.stream().filter(a -> !GenService.isList(a) && !GenService.isBidirectional(a)).forEach(a -> {
-      addAttributeImport(origCD, shellapiClass, a.getCDRole().getName(), originalClassName, "set");
+      addAttributeImport(origCD, shellapiClass, a.getName(), originalClassName, "set");
       addAssociationSetMethod(originalClassName, shellapiClass, a);
     });
     assocs.stream().filter(a -> GenService.isList(a) && !GenService.isBidirectional(a)).forEach(a -> {
