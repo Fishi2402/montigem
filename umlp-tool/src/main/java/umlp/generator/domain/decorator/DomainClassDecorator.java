@@ -69,7 +69,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
             new StringHookPoint("transient"));
 
     // Attributes
-    AttributesTuple attributes = getAllAttributes(domainClass);
+    AttributesTuple attributes = getAllAttributes(domainClass, false);
     clazz.addAllCDMembers(attributes.attrList);
 
     // General methods

@@ -42,7 +42,7 @@ public class DeSerDecorator extends DomainClassDecorator {
             .setModifier(CDModifier.PUBLIC.build())
             .build();
 
-    addImports(origCD, deSer);
+    addImports(deSer);
 
     // TODO: also use for other templates!
     List<ASTCDAttribute> attributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
@@ -123,7 +123,7 @@ public class DeSerDecorator extends DomainClassDecorator {
   }
 
   @Override
-  protected void addImports(ASTCDCompilationUnit origCD, ASTCDType clazz) {
+  protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonElement");

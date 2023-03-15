@@ -12,8 +12,6 @@ import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.generator.AbstractDecorator;
@@ -43,10 +41,9 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemBuildable"));
     addDBAnnotationInfo(cdType);
-
   }
 
-  protected void addDBAnnotationInfo(ASTCDType clazz) {
+  protected void addDBAnnotationInfo(ASTCDType cdType) {
     // empty
   }
 
@@ -92,9 +89,12 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     return attributesList;
   }
 
-  protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDType domainType) {
+  protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDType domainType, boolean isInterface) {
     List<ASTCDAttribute> attrList = Lists.newLinkedList();
-    List<ASTCDAssocSide> associations = CDSymbolTables.getAssociationsInHierarchy(domainType).stream()
+    List<ASTCDAssocSide> associations = (isInterface)
+            ? CDSymbolTables.getAssociations(domainType).stream()
+            .filter(GenService::isVisible).collect(Collectors.toList())
+            : CDSymbolTables.getAssociationsInHierarchy(domainType).stream()
             .filter(GenService::isVisible).collect(Collectors.toList());
 
     // handle associations
@@ -113,10 +113,10 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     return attrList;
   }
 
-  protected AttributesTuple getAllAttributes(ASTCDType domainType) {
+  protected AttributesTuple getAllAttributes(ASTCDType domainType, boolean isInterface) {
     return new AttributesTuple(
             getAttributesForFields(domainType),
-            getAttributesForAssociations(domainType)
+            getAttributesForAssociations(domainType, isInterface)
     );
   }
 

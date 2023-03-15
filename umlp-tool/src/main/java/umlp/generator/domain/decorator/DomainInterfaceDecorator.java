@@ -48,7 +48,7 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
             .createCDExtendUsage(superInterfaces));
 
     ASTCDInterface cdInterface = builder.build();
-    AttributesTuple attributes = getAllAttributes(domainInterface);
+    AttributesTuple attributes = getAllAttributes(domainInterface, true);
 
     // Add method signatures for Getters and Setter to be implemented by Subclasses
     createGetterSetterForAttrs(cdInterface, domainInterface, attributes.attrFields, true);
