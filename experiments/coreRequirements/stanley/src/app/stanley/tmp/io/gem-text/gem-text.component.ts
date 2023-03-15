@@ -12,4 +12,7 @@ export class GemText {
   @Input()
   value: string = "";
 
+  @Input()
+  color: string = "";
+
 }

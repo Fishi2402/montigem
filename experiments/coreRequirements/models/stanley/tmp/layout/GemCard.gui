@@ -1,0 +1,12 @@
+package stanley.tmp.layout;
+
+import stanley.tmp.io.GemText;
+import stanley.tmp.layout.GemRow;
+import stanley.tmp.layout.GemColumn;
+
+component GemCard(String title = "", GUIViewElement content) {
+  @GemColumn(design = "gem-card", height = "100%", contents = [
+    @GemRow(design = "gem-card-header", contents = [ @GemText(value = title) ]),
+    @GemColumn(design = "gem-card-body", contents = [ content ])
+  ]);
+}

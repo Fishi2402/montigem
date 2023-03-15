@@ -1,9 +1,40 @@
 /* (c) https://github.com/MontiCore/monticore */
+plugins {
+    id 'application'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version "${spring_version}"
+}
+
 description 'SE Bib example'
 
+application {
+    mainClass = 'selib.SeLibServerApplication'
+}
+
+dependencies {
+    implementation 'com.h2database:h2:2.1.214'
+
+    compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version
+    implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
+}
+
 task generateSELib(type: UMLPTask) {
-    input.from(file("src"))
+    input = (file("src/models"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
+    hwcDir = layout.projectDirectory.dir("src/main/java/")
+    configTemplate = "umlp/UMLPConfig4teaching.ftl"
+}
+
+task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    mainClass = 'selib.SELibShellAPIApplication'
+}
+
+task runServer {
+    dependsOn(bootRun {
+        mainClass = 'selib.SeLibServerApplication'
+    })
 }
 
 build.dependsOn(generateSELib)

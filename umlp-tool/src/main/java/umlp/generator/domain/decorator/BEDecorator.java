@@ -8,18 +8,27 @@ import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.AbstractDecorator;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class BEDecorator extends AbstractDecorator {
 
   boolean neo4j = false;
 
+  boolean shellAPI = false;
+
   protected MCPath hwPath;
+
+  protected Set<String> supportedDesers = new HashSet<>();
 
   public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
     super(glex);
     this.hwPath = hwPath;
   }
 
-  public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath, boolean neo4j) {super((glex));
+  public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath, boolean neo4j) {
+    super((glex));
     this.neo4j = neo4j;
     this.hwPath = hwPath;
   }
@@ -48,7 +57,7 @@ public class BEDecorator extends AbstractDecorator {
     }
 
     // Generate DeSer
-    DeSerDecorator deSerDecorator = new DeSerDecorator(glex, hwPath);
+    DeSerDecorator deSerDecorator = new DeSerDecorator(glex, hwPath, supportedDesers);
     deSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DeSerDecorator", BEDecorator.class.getName());
 
@@ -138,7 +147,28 @@ public class BEDecorator extends AbstractDecorator {
     commandResultDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandResultDeSerDecorator", BEDecorator.class.getName());
 
+    if (shellAPI) {
+      ShellAPIDecorator shellAPIDecorator = new ShellAPIDecorator(glex);
+      shellAPIDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ShellAPIDecorator", ShellAPIDecorator.class.getName());
+
+      ShellAPIClassDecorator shellApiClassDecorator = new ShellAPIClassDecorator(glex, hwPath);
+      shellApiClassDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ShellAPIClassDecorator", ShellAPIClassDecorator.class.getName());
+    }
+
     glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
   }
 
+  public void addSupportedDeSer(String... deSers) {
+    this.supportedDesers.addAll(Arrays.asList(deSers));
+  }
+
+  public void setNeo4j(boolean neo4j) {
+    this.neo4j = neo4j;
+  }
+
+  public void setShellApi(boolean shellAPI) {
+    this.shellAPI = shellAPI;
+  }
 }

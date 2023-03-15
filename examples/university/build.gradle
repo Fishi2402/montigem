@@ -3,7 +3,7 @@
 description 'university example'
 
 task generateUniversity(type: UMLPTask) {
-    input.from(file("src/models"))
+    input = (file("src/models"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
 }
 

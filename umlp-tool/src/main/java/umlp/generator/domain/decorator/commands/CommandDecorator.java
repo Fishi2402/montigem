@@ -6,9 +6,16 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.AbstractDecorator;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class CommandDecorator extends AbstractDecorator {
 
   public static final String DE_SER = "DeSer";
+
+  protected Set<String> supportedDeSers = new HashSet<>();
 
   public CommandDecorator(GlobalExtensionManagement glex) {
     super(glex);
@@ -28,15 +35,15 @@ public class CommandDecorator extends AbstractDecorator {
     getDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: GetDecorator", CommandDecorator.class.getName());
 
-    SetDecorator setDecorator = new SetDecorator(glex);
+    SetDecorator setDecorator = new SetDecorator(glex, supportedDeSers);
     setDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: SetDecorator", CommandDecorator.class.getName());
 
-    AddDecorator addDecorator = new AddDecorator(glex);
+    AddDecorator addDecorator = new AddDecorator(glex, supportedDeSers);
     addDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: AddDecorator", CommandDecorator.class.getName());
 
-    RemoveDecorator removeDecorator = new RemoveDecorator(glex);
+    RemoveDecorator removeDecorator = new RemoveDecorator(glex, supportedDeSers);
     removeDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: RemoveDecorator", CommandDecorator.class.getName());
 
@@ -53,4 +60,7 @@ public class CommandDecorator extends AbstractDecorator {
     Log.info("After decorator: XCommandDeserDecorator", CommandDecorator.class.getName());
   }
 
+  public void addSupportedDeSer(String... supportedDeSers) {
+    this.supportedDeSers.addAll(Arrays.asList(supportedDeSers));
+  }
 }

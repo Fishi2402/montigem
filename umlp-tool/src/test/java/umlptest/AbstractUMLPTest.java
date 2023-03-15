@@ -7,6 +7,7 @@ import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdmerge.util.CDMergeAfterParseTrafo;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
@@ -25,7 +26,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractUMLPTest {
 
@@ -70,6 +73,12 @@ public abstract class AbstractUMLPTest {
   protected void runAfterParseTrafo(ASTCDCompilationUnit node){
     UMLPTraverser trav = UMLPMill.traverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
+    node.accept(trav);
+  }
+
+  protected void runAfterParseTrafoForMerge(ASTCDCompilationUnit node){
+    UMLPTraverser trav = UMLPMill.traverser();
+    CDMergeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
   }
 

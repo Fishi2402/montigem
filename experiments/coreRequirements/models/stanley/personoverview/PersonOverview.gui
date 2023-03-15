@@ -3,12 +3,13 @@ package stanley.personoverview;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
-// siehe: PersonEdit.gui
-
 import hardy.Flensburg.Person;
 
 import stanley.tmp.table.GemTable;
+import stanley.tmp.layout.GemCard;
 // import type from a CD to describe a table column
+
+import stanley.tmp.table.TableTypes.TableColumn;
 
 /**
  * This example defines a
@@ -18,15 +19,21 @@ import stanley.tmp.table.GemTable;
  */
 page PersonOverview(List<Person> ps) {
 
-  // Table of objects
-  @GemTable(
-    // rows show a list of objects (persons)
-    rows = ps,
-    // 2 columns: 1st shows age of a person, 2nd - nickname attribute value
-    columns = [
-      TableColumn("age", "Age"),
-      TableColumn("nickname", "Name")
-    ]
+  @GemCard(
+    title = "Overview",
+    content =
+      // Table of objects
+      @GemTable(
+        // rows show a list of objects (persons)
+        rows = ps,
+        // 2 columns: 1st shows age of a person, 2nd - nickname attribute value
+        columns = [
+          /*
+          TableColumn("age", "Age"),
+          TableColumn("nickname", "Name")
+          /**/
+        ]
+      )
   );
 
 }

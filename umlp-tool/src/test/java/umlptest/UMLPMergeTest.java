@@ -2,7 +2,6 @@
 package umlptest;
 
 import com.google.common.collect.Sets;
-import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.CDMerge;
 import org.junit.jupiter.api.Assertions;
@@ -19,17 +18,15 @@ public class UMLPMergeTest extends AbstractUMLPTest {
     Set<ASTCDCompilationUnit> models = new HashSet<>();
     models.add(parse("de/monticore/Driver.umlp"));
     models.add(parse("de/monticore/Employment.umlp"));
-    CD4CodeTrafo4Defaults trafo = new CD4CodeTrafo4Defaults();
 
     models.forEach(this::runAfterParseTrafo);
     models.forEach(this::createSymTab);
-    models.forEach(a -> trafo.transform(a));
 
     models.forEach(UMLPCoCos::checkAll);
 
     ASTCDCompilationUnit merge = CDMerge.merge(models, "MergeDriveAndEmployment", Sets.newHashSet());
     Assertions.assertNotNull(merge);
-    runAfterParseTrafo(merge);
+    runAfterParseTrafoForMerge(merge);
     createSymTab(merge);
     UMLPCoCos.checkAll(merge);
 

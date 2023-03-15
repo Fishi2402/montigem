@@ -13,21 +13,27 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class RemoveDecorator extends AbstractDecorator {
 
   public static final String SUFFIX = "_remove";
 
-  public RemoveDecorator(GlobalExtensionManagement glex) {
+  private final Set<String> supportedDeSers;
+
+  public RemoveDecorator(GlobalExtensionManagement glex, Set<String> supportedDeSers) {
     super(glex);
+    this.supportedDeSers = supportedDeSers;
   }
 
   @Override
@@ -90,14 +96,14 @@ public class RemoveDecorator extends AbstractDecorator {
     ASTCDAttribute gemAttr = getCD4C().addAttribute(ast, "protected long gemId");
     ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected " + (isGem ? "long" : type) + " " + attrName);
 
-    getCD4C().addConstructor(ast, "umlp.commands.remove.Constructor", classname, COMMAND_PACKAGE,
+    getCD4C().addConstructor(ast, "umlp.commands.remove.Constructor", classname, getPackageName(origCD, COMMAND_PACKAGE),
             attrName, isGem ? "long" : type);
 
     getCD4C().addMethod(ast, "umlp.commands.remove.DoRun", name, domainClass.getName(), origCD.getCDDefinition().getName(), isGem, name);
     if (isGem) {
-      getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getId()", name + "GemId"));
+      getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList(name + "GemId"));
     } else {
-      getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getId()"));
+      getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getGemId()"));
     }
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(gemAttr));
@@ -128,13 +134,23 @@ public class RemoveDecorator extends AbstractDecorator {
       type = getSymType("long");
       name += "GemId";
     }
-    getCD4C().addMethod(ast, "umlp.commands.deser.Set_FromJsonObject", cmdName, name, GenService.calculateJSon(type));
-    getCD4C().addMethod(ast, "umlp.commands.deser.Set_BuildJson", cmdName, name, GenService.getGetterName(name, type));
+    String typeName = type.printFullName();
+    String jsonString = GenService.calculateJSon(type);
+    String baseClassDecorator = origCD.getCDDefinition().getName() + BaseClassObjectMapperDecorator.SUFFIX;
+    boolean useDeSer = supportedDeSers.contains(typeName);
+    boolean makeAbstract = jsonString.equals("") && !useDeSer;
+    getCD4C().addMethod(ast, "umlp.commands.deser.Set_FromJsonObject", cmdName, name, typeName, false, jsonString, useDeSer, baseClassDecorator, makeAbstract);
+    getCD4C().addMethod(ast, "umlp.commands.deser.Set_BuildJson", cmdName, name, typeName, GenService.getGetterName(name, type), useDeSer, baseClassDecorator, makeAbstract);
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
-
+    if (useDeSer) {
+      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator);
+    }
+    if (makeAbstract) {
+      ast.setModifier(PUBLIC_ABSTRACT.build());
+    }
     return ast;
   }
 

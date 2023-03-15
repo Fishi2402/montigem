@@ -8,6 +8,8 @@ import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.commands.SetDecorator;
 import umlptest.decorator.domain.DecoratorTest;
 
+import java.util.HashSet;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,7 +17,7 @@ public class SetDecoratorTest extends DecoratorTest {
   
   @Override
   protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
-    return new SetDecorator(glex);
+    return new SetDecorator(glex, new HashSet<>());
   }
   
   @Test

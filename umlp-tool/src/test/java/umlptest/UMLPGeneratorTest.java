@@ -14,6 +14,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
   @Test
   public void testGenerateMethod() {
     ASTCDCompilationUnit ast = parse("de/monticore/A.umlp");
+    runAfterParseTrafo(ast);
     createSymTab(ast);
 
     UMLPGenerator gen = new UMLPGenerator(getGenSetup());
@@ -25,6 +26,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
   @Test
   public void testTOPMechamismMethod() {
     ASTCDCompilationUnit ast = parse("de/monticore/A.umlp");
+    runAfterParseTrafo(ast);
     createSymTab(ast);
 
     UMLPGenerator gen = new UMLPGenerator(getGenSetup());

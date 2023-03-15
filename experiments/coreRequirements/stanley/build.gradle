@@ -61,7 +61,7 @@ node {
 
   // Version of node to download and install (only used if download is true)
   // It will be unpacked in the workDir
-  version = "12.18.2"
+  version = "18.10.0"
 
   // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
   // according the proxy configuration defined for Gradle
@@ -74,14 +74,14 @@ node {
 // It was run once in the parent folder to instantiate initial project.
 /*
 task generateAngularApp(type: NpxTask) {
-  command = '@angular/cli@12.2.0'
+  command = '@angular/cli@15.1.3'
   args = ['new', 'stanley', '--style=scss']
 }
 /**/
 
 task buildApp(type: NpxTask) {
   command = "ng"
-  args = ["build", "--prod"]
+  args = ["build"]
   dependsOn(tasks.npmInstall)
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")

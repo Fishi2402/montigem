@@ -11,6 +11,7 @@ public class PathUtil {
   private static final String GUI_POSTFIX = "gui";
   private static final String REQUEST_POSTFIX = "request";
   private static final String UTIL_POSTFIX = "util";
+  private static final String SHELLAPI_POSTFIX = "shellapi";
   public static String getBackendRTEPath() {
     return RTE_PACKAGE_PATH;
   }
@@ -57,5 +58,13 @@ public class PathUtil {
 
   public static String getBackendRTEUtilPath(String... furtherPaths) {
     return Joiners.DOT.join(getBackendRTEUtilPath(), String.join(".", furtherPaths));
+  }
+
+  public static String getBackendRTEShellApiPath() {
+    return getBackendRTEPath(SHELLAPI_POSTFIX);
+  }
+
+  public static String getBackendRTEShellApiPath(String... furtherPaths) {
+    return Joiners.DOT.join(getBackendRTEShellApiPath(), String.join(".", furtherPaths));
   }
 }

@@ -22,6 +22,7 @@ import umlp.UMLPFullPrettyPrinter;
 import umlp.UMLPMill;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypePrimitive.box;
@@ -76,10 +77,47 @@ public class GenService {
       json = "getAsJsonNumber().getNumberAsDouble()";
     } else if (typeCheck.isString(type)) {
       json = "getAsJsonString().getValue()";
-    } else {
-      // TODO
+    } else if (type.isGenericType() && (
+        ((SymTypeOfGenerics) type).printTypeWithoutTypeArgument().equals("List")
+            || ((SymTypeOfGenerics) type).printTypeWithoutTypeArgument().equals("java.util.List"))) {
+      return calculateJSon(((SymTypeOfGenerics) type).getArgument(0));
     }
+    // else make abstract or use template
     return json;
+  }
+
+  public static Optional<String> getBuildJsonHelperMethod(SymTypeExpression type) {
+    Optional<String> jsonHelperMethod = Optional.empty();
+    if (type.isObjectType() && type.printFullName().equals("java.time.LocalDate")) {
+      jsonHelperMethod = Optional.of("DateTimeFormatter.ISO_DATE_TIME.format");
+    }
+    return jsonHelperMethod;
+  }
+
+  public static Optional<String> getBuildJsonHelperMethodImport(SymTypeExpression type) {
+    Optional<String> jsonHelperMethod = Optional.empty();
+    if (type.isObjectType() && type.printFullName().equals("java.time.LocalDate")) {
+      jsonHelperMethod = Optional.of("java.time.format.DateTimeFormatter");
+    }
+    return jsonHelperMethod;
+  }
+
+  public static Optional<String> getFromJsonHelperMethod(SymTypeExpression type) {
+    Optional<String> jsonHelperMethod = Optional.empty();
+    if (type.isObjectType() && type.printFullName().equals("java.time.LocalDate")) {
+      jsonHelperMethod = Optional.of("LocalDate.parse");
+    } else if (isOptional(type)) {
+      jsonHelperMethod = Optional.of("Optional.ofNullable");
+    }
+    return jsonHelperMethod;
+  }
+
+  public static Optional<String> getFromJsonHelperMethodImport(SymTypeExpression type) {
+    Optional<String> jsonHelperMethod = Optional.empty();
+    if (type.isObjectType() && type.printFullName().equals("java.time.LocalDate")) {
+      jsonHelperMethod = Optional.of("java.time.LocalDate");
+    }
+    return jsonHelperMethod;
   }
 
   public static ASTExpression createInitialValue(ASTMCType type) {

@@ -1,4 +1,5 @@
 import { Car } from "./car";
+import {Person} from "./person";
 
 // TODO translate from Java
 export class PersonTOP {
@@ -6,6 +7,7 @@ export class PersonTOP {
   protected nickname: string;
   protected age: number;
   protected owns: Car[];
+  protected children: Person[];
 
   getNickname(): string {
     return this.nickname;
@@ -31,5 +33,9 @@ export class PersonTOP {
     this.owns = v;
   }
   // other list operations
+
+  getChildren(): Person[] {
+    return this.children;
+  }
 
 }

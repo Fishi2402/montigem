@@ -7,7 +7,6 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
-import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.generating.GeneratorSetup;
@@ -47,7 +46,6 @@ public class UMLPGenerator {
     UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
     assocTrafo.transform(cdAST);
     logTrafoExec("UMLAttrToAssocTrafo", cdAST);
-    (new CD4CodeTrafo4Defaults()).transform(cdAST);
 
     UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
     assocNameTrafo.transform(cdAST);

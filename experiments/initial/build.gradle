@@ -64,7 +64,7 @@ task generateJava_second_run(type: UMLPTask) {
   dependsOn copyInputDir
   dependsOn copyHWCDir
 
-  input.from(copyInputDir.getDestinationDir())
+  input = (copyInputDir.getDestinationDir())
   hwcDir = copyHWCDir.getDestinationDir()
 
   outputDir = layout.buildDirectory.dir("repro_test/output")
