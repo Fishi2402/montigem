@@ -11,6 +11,8 @@ public enum UMLPToolOptions {
   DEBUG("d", "debug", "Produces more detailed log"),
   SHELL_API("sa", "shellApi", "Generate a Shell API"),
 
+  CD2GUI("cdt", "cdtogui", "runs cd2gui to generate gui files from the input"),
+
   // with one arg
   INPUT("i", "input", "Reads the source file (mandatory) and parses the contents", "file"),
   SYMTAB("s", "symboltable", "Serializes the symbol table of the given artifact.", "file", true),
