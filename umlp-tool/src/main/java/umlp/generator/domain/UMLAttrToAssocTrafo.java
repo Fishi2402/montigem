@@ -20,7 +20,6 @@ import umlp.generator.domain.decorator.GenService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -38,7 +37,7 @@ public class UMLAttrToAssocTrafo implements CDBasisVisitor2, CDInterfaceAndEnumV
 
   protected Multimap<ASTCDType, ASTCDAttribute> attrMap = Multimaps.newMultimap(new HashMap<>(), ArrayList::new);
 
-  protected Map<Optional<ASTCDPackage>, ASTCDAssociation> assocMap = new HashMap<>();
+  protected Multimap<Optional<ASTCDPackage>, ASTCDAssociation> assocMap = Multimaps.newMultimap(new HashMap<>(), ArrayList::new);
 
   protected CD4CodeTraverser traverser;
 
@@ -98,7 +97,7 @@ public class UMLAttrToAssocTrafo implements CDBasisVisitor2, CDInterfaceAndEnumV
   @Override
   public void endVisit(ASTCDDefinition node) {
     attrMap.entries().forEach(e -> e.getKey().removeCDMember(e.getValue()));
-    assocMap.entrySet().forEach(e -> {
+    assocMap.entries().forEach(e -> {
       Optional<ASTCDPackage> key = e.getKey();
       if (key.isPresent()) {
         e.getKey().get().addCDElement(e.getValue());
