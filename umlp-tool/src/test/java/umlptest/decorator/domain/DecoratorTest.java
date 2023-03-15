@@ -13,7 +13,6 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
-import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
@@ -68,8 +67,6 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
 
     // Give default name to anonymous associations
     new UMLSetDefaultsTrafo(CD4CodeMill.traverser()).transform(cdAST);
-
-    (new CD4CodeTrafo4Defaults()).transform(cdAST);
 
     // Create new output CompilationUnit
     decoratedAST = createCompilationUnit(cdAST);

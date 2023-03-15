@@ -112,6 +112,7 @@ public class UMLAttrToAssocTrafo implements CDBasisVisitor2, CDInterfaceAndEnumV
     ASTCDAssocLeftSide leftSide = CD4CodeMill.cDAssocLeftSideBuilder()
             .setModifier(PUBLIC.build())
             .setMCQualifiedType(MCTypeFacade.getInstance().createQualifiedType(sourceName))
+            .setCDRole(CD4CodeMill.cDRoleBuilder().setName(attrName+sourceName).build())
             .build();
     ASTCDAssocRightSide rightSide = CD4CodeMill.cDAssocRightSideBuilder()
             .setModifier(PUBLIC.build())

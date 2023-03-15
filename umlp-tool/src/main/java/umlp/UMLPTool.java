@@ -7,8 +7,6 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
-import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
-import de.monticore.cdassociation._symboltable.CDRoleSymbolDeSer;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.generating.GeneratorSetup;
@@ -27,7 +25,11 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
@@ -46,7 +48,18 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static umlp.UMLPToolOptions.*;
+import static umlp.UMLPToolOptions.DEBUG;
+import static umlp.UMLPToolOptions.HELP;
+import static umlp.UMLPToolOptions.HWC_PATH;
+import static umlp.UMLPToolOptions.INPUT;
+import static umlp.UMLPToolOptions.OUTPUT;
+import static umlp.UMLPToolOptions.PATH;
+import static umlp.UMLPToolOptions.PRETTYPRINT;
+import static umlp.UMLPToolOptions.REPORTS;
+import static umlp.UMLPToolOptions.REPORT_BASE;
+import static umlp.UMLPToolOptions.SHELL_API;
+import static umlp.UMLPToolOptions.SYMTAB;
+import static umlp.UMLPToolOptions.TMPL_PATH;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -325,9 +338,7 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   public void runDefaultTrafo(ASTCDCompilationUnit node) {
-    UMLPTraverser trav = UMLPMill.traverser();
-    CD4CodeTrafo4Defaults trafo = new CD4CodeTrafo4Defaults();
-    trafo.transform(node);
+    // empty
   }
 
   protected boolean isUmlpFile(File f) {
