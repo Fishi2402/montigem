@@ -33,7 +33,7 @@ task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
 
 task runServer {
     dependsOn(bootRun {
-        mainClass = 'selib.SeLibServerApplication'
+        systemProperty "spring.shell.interactive.enabled", "false"
     })
 }
 
