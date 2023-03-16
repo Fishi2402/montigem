@@ -11,6 +11,7 @@ import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
+import umlp.generator.domain.decorator.GenService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -150,6 +151,14 @@ public class GUIGeneratorUtil {
       return new ArrayList<>();
     }
     return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> isEventArgument(guiComponentSymbol.get(), a)).collect(Collectors.toList());
+  }
+
+  public static List<ASTGUIParam> getGUIViewElementParameters(ASTGUICompilationUnit gui) {
+    return gui.getGUIComponentDeclaration().getGUIParamList().stream().filter(p -> isViewElementsCollection(p)).collect(Collectors.toList());
+  }
+
+  public static boolean isViewElementsCollection(ASTGUIParam param) {
+    return GenService.isList(param.getMCType()) && GenService.getInnerType(param.getMCType()).equals("GUIViewElement");
   }
 
   public static String getComponentNameFromCamelCaseName(String camelCaseName) {

@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
-import de.monticore.guidsl._ast.ASTGUIArgValue;
-import de.monticore.guidsl._ast.ASTGUIComponent;
-import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._ast.*;
 
 import java.util.List;
 
@@ -47,6 +45,10 @@ public class GUITemplateHelper {
 
   public static List<ASTGUIArgValue> getComponentListArguments(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
     return GUIGeneratorUtil.getComponentListArguments(guiComponent, arg);
+  }
+
+  public static List<ASTGUIParam> getGUIViewElementParameters(ASTGUICompilationUnit gui) {
+    return GUIGeneratorUtil.getGUIViewElementParameters(gui);
   }
 
 }
