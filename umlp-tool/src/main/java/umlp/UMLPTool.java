@@ -47,9 +47,10 @@ import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 import umlp.generator.gui.guidelta.GUIDeltaHandler;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -199,54 +200,59 @@ public class UMLPTool extends UMLPToolTOP {
         guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
 
         Reporting.init(outDir.getPath(), reportDir.getPath(), guidsl_reportManagerFactory);
-        List<ASTGUICompilationUnit> guiModels = new LinkedList<>();
-        List<ASTGUICompilationUnit> guiDeltaModels = new LinkedList<>();
-
         GUIDSLMill.init();
 
-        //parse all gui files and separate guiDelta from non-guiDelta
-        for(Path p : gpPath.getEntries()){
-          String report_on = p.toFile().getName().replace(".", "__");
-          Reporting.on(report_on);
+        //parse input file
+        String report_on = inputFile.getName().replace(".", "__");
+        Reporting.on(report_on);
+        ASTGUICompilationUnit astGUI = parseGUI(inputFile.getPath());
+        Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on);
 
-          ASTGUICompilationUnit compilationUnit = parseGUI(p.toString());
-          Reporting.reportParseInputFile(p.toAbsolutePath(), report_on);
-
-          if(isGUIDelta(compilationUnit)){
-            guiDeltaModels.add(compilationUnit);
-          }
-          else {
-            guiModels.add(compilationUnit);
-          }
-        }
-
-        //adapt guiModels
-        for(ASTGUICompilationUnit deltaModel : guiDeltaModels){
-          Reporting.on(deltaModel.getComponentName());
-
-          List<ASTGUICompilationUnit> adaptedModel = guiModels.stream().filter(m -> m.getComponentName().equals(
-                  deltaModel.getGUIComponentDeclaration().getGUIComponentAdaptation().getTarget()
+        if(isGUIDelta(astGUI)){
+          List<Path> adaptedPath = gpPath.getEntries().stream().filter(p -> p.toFile().getName().equals(
+                  astGUI.getGUIComponentDeclaration().getGUIComponentAdaptation().getTarget() + ".gui"
           )).collect(Collectors.toList());
-          if(adaptedModel.size() != 1){
+          if(!(adaptedPath.size() == 1)){
             Log.error("expected exactly one matching file to adapt with GUIDelta, but found multiple or none");
           }
+          File adaptedModel = adaptedPath.get(0).toFile();
 
-          GUIDeltaHandler deltaHandler = new GUIDeltaHandler(adaptedModel.get(0));
-          deltaModel.accept(deltaHandler.getTraverser());
-        }
+          //parse adapted File file
+          ASTGUICompilationUnit adaptedAST = parseGUI(adaptedModel.getPath());
+          Reporting.reportParseInputFile(adaptedModel.toPath().toAbsolutePath(), report_on);
+          Path outputPath = outDir.toPath().resolve(        //file structure needs to reflect package declarations
+                  adaptedAST.getMCPackageDeclaration().getMCQualifiedName().toString()
+                          .replace(".","/")
+                          .concat("/" + adaptedAST.getComponentName() + ".gui")
+          );
 
-        //output non guiDelta files, adapted if applicable
-        for(ASTGUICompilationUnit guiModel : guiModels){
-          Reporting.on(guiModel.getComponentName());
+          GUIDeltaHandler deltaHandler = new GUIDeltaHandler(adaptedAST);
+          astGUI.accept(deltaHandler.getTraverser());
+
           GUIDSLFullPrettyPrinter pp = new GUIDSLFullPrettyPrinter(new IndentPrinter(), true);
-          FileReaderWriter.storeInFile(outDir.toPath().resolve(
-                  guiModel.getMCPackageDeclaration().getMCQualifiedName().toString().replace(".","/")
-                          .concat("/" + guiModel.getComponentName()) //file structure needs to reflect package declarations
-          ),pp.prettyprint(guiModel));
-          Reporting.reportFileCreation(guiModel.getMCPackageDeclaration().getMCQualifiedName().toString().replace(".","/")
-                  .concat("/" + guiModel.getComponentName()));
-          Reporting.flush(guiModel);
+          FileReaderWriter.storeInFile(outputPath, pp.prettyprint(adaptedAST));
+          Reporting.reportFileCreation(adaptedAST.getMCPackageDeclaration().getMCQualifiedName().toString().replace(".","/")
+                  .concat("/" + adaptedAST.getComponentName()));
         }
+        else{
+          //Copy file only if it doesn't exist, otherwise the altered file would be overwritten
+          outDir = outDir.toPath().resolve(        //file structure needs to reflect package declarations
+                  astGUI.getMCPackageDeclaration().getMCQualifiedName().toString()
+                          .replace(".","/")
+          ).toFile();
+
+          outDir.mkdirs();
+
+          if(!outDir.toPath().resolve(astGUI.getComponentName() + ".gui").toFile().exists()){
+            try {
+              Files.copy(inputFile.toPath(), outDir.toPath().resolve(astGUI.getComponentName() + ".gui"));
+            }
+            catch (IOException e){
+              Log.error("Error while trying to write file to " + outDir.toPath().resolve(astGUI.getComponentName() + ".gui"));
+            }
+          }
+        }
+        Reporting.flush(astGUI);
       }
 
       else if (isUmlpFile(inputFile)) {
