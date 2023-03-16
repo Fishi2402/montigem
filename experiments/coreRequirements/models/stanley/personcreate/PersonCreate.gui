@@ -1,0 +1,46 @@
+/* (c) https://github.com/MontiCore/monticore */
+package stanley.personcreate;
+
+// HWC-P: eigentlich ein Modell, aber fuers Produkt
+
+// hier werden die Datenklassen gefunden
+import hardy.Flensburg.Person;
+
+// hier werden importierte GUI-Modelle gefunden
+import stanley.tmp.io.input.GemTextInput;
+import stanley.tmp.io.input.GemNumberInput;
+import stanley.tmp.io.GemButton;
+
+/**
+ * This example defines a 
+ * Form to fill out person data
+ * it has only simple default layout, which generates some 
+ * interesting pieces of code
+ *
+ * Situation is that the Person will be newly created
+ */
+// AGe: Es gibt keinen Unterschied zu dem Person.gui Modell, wenn keine Person beim Navigieren
+// auf die Seite im Modell eingegeben wird, wird PersonBuilder automatisch erstellt und
+// "aktualisiert".
+page PersonCreate(Person p) { // "leere" Person
+  // show and edit the nickname
+  @GemTextInput(value = p.nickname);
+
+  // show and edit the age as number
+  @GemNumberInput(value = p.age);
+
+  // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
+  // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird
+  // in einem handgeschriebenen Teil implementiert wird und importiert
+  // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "EditierePersonGUI.java".
+  // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
+  // deswegen wird eine Methode explizit importiert und aufgerufen
+  @GemButton(text = "Decrease", leftClick = decreaseAge);
+
+  // Button mit Text "Ok" und Navigation auf eine andere Seite
+  // (und die Logik dafür ist generiert und verfügbar)
+  // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
+  // ueberschrieben werden z.B. navigate, copy, show(:ContextMenu(...)), ...
+  @GemButton(text = "Ok", leftClick = createAndNavigate);
+}
+
