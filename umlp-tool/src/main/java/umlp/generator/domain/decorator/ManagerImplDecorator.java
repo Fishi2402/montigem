@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PRIVATE;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.GemListAssocDecorator.getName;
 
@@ -111,7 +112,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
   protected ASTCDAttribute getDaoAttribute(ASTCDType domainClass) {
     String type = domainClass.getName() + "DAO";
-    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
+    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
             getMCTypeFacade().createQualifiedType(type),
             StringTransformations.uncapitalize(type));
     getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new " + type + "()"));
@@ -119,7 +120,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute getCacheAttribute(ASTCDType domainClass) {
-    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
+    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
             getMCTypeFacade().createBasicGenericTypeOf("Map", "Long", domainClass.getName()),
             StringTransformations.uncapitalize("known" + domainClass.getName() + "s"));
     getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new HashMap<>()"));
@@ -128,7 +129,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
   protected ASTCDAttribute getDBObserverAttribute(ASTCDClass domainClass) {
     String type = domainClass.getName() + "DbObserver";
-    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
+    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
             getMCTypeFacade().createQualifiedType(type), "the" + type);
     getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new " + type + "()"));
     return domainClassDaoAttr;
