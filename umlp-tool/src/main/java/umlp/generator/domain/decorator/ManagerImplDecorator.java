@@ -74,7 +74,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, false);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete", name, managerName);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);
 
@@ -95,7 +95,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOptInterface", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, true);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));
