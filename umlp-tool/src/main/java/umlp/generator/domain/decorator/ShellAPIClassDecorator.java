@@ -54,7 +54,11 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     List<ASTCDAttribute> domainAttributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
         .filter(attr -> !attr.getModifier().isDerived())
         .collect(Collectors.toList());
-    addCreateMethod(originalClassName, shellapiClass, domainAttributes);
+    List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(cdClass).stream()
+        .filter(a -> !a.getModifier().isDerived())
+        .collect(Collectors.toList());
+
+    addCreateMethod(originalClassName, shellapiClass, domainAttributes, assocs);
     addGetMethod(originalClassName, shellapiClass);
     addDeleteMethod(originalClassName, shellapiClass);
     domainAttributes.stream().filter(a -> !GenService.isList(a)).forEach(a -> {
@@ -67,10 +71,6 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
       addAttributeAddMethod(originalClassName, shellapiClass, a);
       addAttributeRemoveMethod(originalClassName, shellapiClass, a);
     });
-
-    List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(cdClass).stream()
-        .filter(a -> !a.getModifier().isDerived())
-        .collect(Collectors.toList());
     assocs.stream().filter(a -> !GenService.isList(a) && !GenService.isBidirectional(a)).forEach(a -> {
       addAttributeImport(origCD, shellapiClass, a.getName(), originalClassName, "set");
       addAssociationSetMethod(originalClassName, shellapiClass, a);
@@ -86,22 +86,27 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
   }
 
   private void addCreateMethod(String originalClassName, ASTCDClass api,
-      List<ASTCDAttribute> domainAttributes) {
+      List<ASTCDAttribute> domainAttributes, List<ASTCDAssocSide> assocs) {
     List<String> parameters = new ArrayList<>();
+    ArrayList<String> annotations = new ArrayList<>();
     for (ASTCDAttribute attribute : domainAttributes) {
       parameters.add(attribute.getMCType().printType() + " " + attribute.getName());
+      annotations.add(String.format("@ShellOption(value = \"--%s\")", attribute.getName()));
+    }
+    for (ASTCDAssocSide association : assocs) {
+      if (!GenService.isList(association) && !GenService.isOptional(association)) {
+        parameters.add("Long " + association.getName());
+        annotations.add(String.format("@ShellOption(value = \"--%s\")", association.getName()));
+      }
     }
     List<String> domainAttributNames = domainAttributes.stream().map(a -> a.getName())
         .collect(Collectors.toList());
+    List<String> assocNames = assocs.stream().filter(a -> !GenService.isList(a) && !GenService.isOptional(a)).map(a -> a.getName()).collect(Collectors.toList());
     ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Create",
-        originalClassName, parameters.stream().collect(Collectors.joining(", ")), domainAttributNames);
+        originalClassName, parameters.stream().collect(Collectors.joining(", ")), domainAttributNames, assocNames);
     String annotation = String.format("@ShellMethod(key = \"%s-create\", value = \"Create %s\") @ShellMethodAvailability(\"isConnected\")",
         StringTransformations.uncapitalize(originalClassName), originalClassName);
     glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint(annotation));
-    ArrayList<String> annotations = new ArrayList<>();
-    for (ASTCDAttribute attribute : domainAttributes) {
-      annotations.add(String.format("@ShellOption(value = \"--%s\")", attribute.getName()));
-    }
     addAnnotationToParameters(m, annotations);
   }
 

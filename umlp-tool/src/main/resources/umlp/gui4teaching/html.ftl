@@ -119,7 +119,7 @@
     // Update of CRUD
     async function updateObj(cell, className, attr, gemId) {
       // Get the input value from the table cell
-      let value = cell.textContent.trim();
+      let value = convert(cell.textContent.trim());
 
       // TODO: form proper command, maybe delete next comment and log line
       // example:
@@ -129,11 +129,11 @@
       //   data: Bob
       // }
       const command = {
-        "type": className + "_set" + capitalizeFirstLetter(attr),
-        "gemId": gemId,
-        "data": value
+        "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_set" + capitalizeFirstLetter(attr),
+        "gemId": gemId
       };
-      console.log(command);
+      command[attr] = value;
+      // console.log(command);
 
       // send request to the server;
       // don't have to wait for result, the cell is already modified
@@ -148,10 +148,14 @@
       //   type: Person_create
       //   data: { name: Bob, age: 12 }
       // }
+      const freeGemId = {
+          "commandType": "${ast.getCDDefinition().getName()?lower_case}.requests.GetFreeGemIdRequest"
+      }
+      obj["gemId"] = convert((await sendCommand(freeGemId))["value"]);
       const command = {
-        "type": className + "_create",
-        "data": obj
+        "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_create"
       };
+      command[uncapitalize(className)] = obj;
       console.log(command);
 
       // send request to the server
@@ -169,7 +173,7 @@
       //   gemId: 4
       // }
       const command = {
-        "type": className + "_delete",
+        "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_delete" + capitalizeFirstLetter(attr),
         "gemId": gemId
       };
       console.log(command);
@@ -276,7 +280,8 @@
 
             // use attributes of the first dataset entry as the column headers
             // except gemId
-            const classAttrs = Object.keys(data[0]).filter(a => a !== "gemId");
+            const classAttrs = Object.keys(data[0]);
+                // .filter(a => a !== "gemId");
             for (const attr of classAttrs) {
               const th = document.createElement("th");
               th.innerText = attr;
@@ -308,7 +313,7 @@
                 const td = addRowCells.get(key);
                 if (td) {
                   cells.push(td);
-                  const value = td.textContent.trim();
+                  const value = convert(td.textContent.trim());
                   obj[key] = value;
                   // TODO: delete if empty objects are allowed;
                   // object is valid if at least one property is a non-empty value;
@@ -335,24 +340,25 @@
             // add row for each object
             for (const entry of data) {
               const gemId = entry.gemId;
+              if (!!gemId) {
+                const tableBodyClone = tableRowTpl.content.cloneNode(true);
+                let tableBodyRow = tableBodyClone.querySelector("tr");
 
-              const tableBodyClone = tableRowTpl.content.cloneNode(true);
-              let tableBodyRow = tableBodyClone.querySelector("tr");
+                // add first cell with a symbol for deleting rows
+                const tdDel = cellDeleteTpl.content.cloneNode(true).querySelector("td");
+                tdDel.addEventListener("click", () => {
+                  deleteObj(className, gemId);
+                })
+                tableBodyRow.appendChild(tdDel);
 
-              // add first cell with a symbol for deleting rows
-              const tdDel = cellDeleteTpl.content.cloneNode(true).querySelector("td");
-              tdDel.addEventListener("click", () => {
-                deleteObj(className, gemId);
-              })
-              tableBodyRow.appendChild(tdDel);
-
-              for (const attr of classAttrs) {
-                const td = addBodyCell(tableBodyRow, () => {
-                  handleInput(td, className, attr, gemId);
-                });
-                td.innerText = entry[attr];
+                for (const attr of classAttrs) {
+                  const td = addBodyCell(tableBodyRow, () => {
+                    handleInput(td, className, attr, gemId);
+                  });
+                  td.innerText = entry[attr];
+                }
+                tbody.appendChild(tableBodyRow);
               }
-              tbody.appendChild(tableBodyRow);
             }
 
             // add card

@@ -159,4 +159,8 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
       }
     }
   }
+
+  public boolean isOpen() {
+    return clientSession.isOpen();
+  }
 }

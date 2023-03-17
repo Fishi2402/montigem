@@ -16,6 +16,7 @@ dependencies {
 
     compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version
     implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
 }
 
 task generateSELib(type: UMLPTask) {

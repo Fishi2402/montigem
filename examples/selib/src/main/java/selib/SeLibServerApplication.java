@@ -17,11 +17,12 @@ import java.util.Optional;
 @SpringBootApplication(
     // We have our own data management
     exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
-    scanBasePackages={"umlp.backendrte.service.websocket"}
+    scanBasePackages={"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "selib.service"}
 )
 //@AutoConfiguration
 public class SeLibServerApplication {
   public static void main(String[] args) throws IOException {
+    Log.enableFailQuick(false);
     Log.warn("I AM ALIVE!");
     SELibManagerImpl.init();
 

@@ -53,6 +53,6 @@ public class UMLPShellAPI {
   }
 
   public Availability isConnected() {
-    return connected ? Availability.available() : Availability.unavailable("Connection must be initialized before. Use 'init'");
+    return connected && clientWebsocketCommunication.isOpen() ? Availability.available() : Availability.unavailable("Connection must be initialized before. Use 'init'");
   }
 }
