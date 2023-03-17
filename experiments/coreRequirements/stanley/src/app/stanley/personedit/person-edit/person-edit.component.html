@@ -1,27 +1,63 @@
 
 
-<gem-button
-        [text] = "getGemButtonComp3Text()"
-        (leftClick) = "gemButtonComp3LeftClick.bind(this)()"
+
+  
+<gem-card
+    [title] = "getGemCardComp1Title()"
+    [content] = "Comp1Tpl1"
 >
-</gem-button>
+</gem-card>
+
+<ng-template #Comp1Tpl1>
+  
+<gem-column
+    [contents] = "[
+    Comp2Tpl3,
+    Comp2Tpl5,
+    Comp2Tpl7,
+    Comp2Tpl10,
+    ]"
+>
+</gem-column>
+
+<ng-template #Comp2Tpl3>
+  
+<gem-text-input
+    [value] = "getGemTextInputComp3Value()"
+>
+</gem-text-input>
 
 
+</ng-template>
+<ng-template #Comp2Tpl5>
+  
 <gem-number-input
-        [value] = "getGemNumberInputComp2Value()"
+    [value] = "getGemNumberInputComp4Value()"
 >
 </gem-number-input>
 
 
+</ng-template>
+<ng-template #Comp2Tpl7>
+  
 <gem-button
-        [text] = "getGemButtonComp4Text()"
-        (leftClick) = "gemButtonComp4LeftClick.bind(this)()"
+    [text] = "getGemButtonComp5Text()"
+    (leftClick) = "gemButtonComp5LeftClick.bind(this)()"
 >
 </gem-button>
 
 
-<gem-text-input
-        [value] = "getGemTextInputComp1Value()"
+</ng-template>
+<ng-template #Comp2Tpl10>
+  
+<gem-button
+    [text] = "getGemButtonComp6Text()"
+    (leftClick) = "gemButtonComp6LeftClick.bind(this)()"
 >
-</gem-text-input>
+</gem-button>
+
+
+</ng-template>
+
+</ng-template>
 

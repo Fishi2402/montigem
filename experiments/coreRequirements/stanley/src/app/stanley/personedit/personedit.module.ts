@@ -5,7 +5,8 @@ import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { routes } from "./personedit.routing";
 import { PersonEdit } from "./person-edit/person-edit.component";
-import { IoModule } from "src/app/stanley/tmp/io/io.module";
+import { LayoutModule } from "src/app/stanley/tmp/layout/layout.module";  
+import { IoModule } from "src/app/stanley/tmp/io/io.module";  
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { IoModule } from "src/app/stanley/tmp/io/io.module";
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    IoModule,
+    LayoutModule, 
+    IoModule, 
   ],
   exports: [
     PersonEdit

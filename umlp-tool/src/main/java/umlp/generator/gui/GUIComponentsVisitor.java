@@ -67,6 +67,7 @@ public class GUIComponentsVisitor implements GUIDSLVisitor2, CommonExpressionsVi
     }
   }
 
+  /*
   @Override
   public void visit(ASTGUINamedArgs node) {
     counterTemplates = 1;
@@ -76,6 +77,8 @@ public class GUIComponentsVisitor implements GUIDSLVisitor2, CommonExpressionsVi
   public void endVisit(ASTGUINamedArgs node) {
     counterTemplates = 0;
   }
+
+   */
 
   @Override
   public void visit(ASTGUIArgValue node) {
