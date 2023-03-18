@@ -14,7 +14,7 @@
       padding: 20px;
       background-color: #fff;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 8px #c7ddf2;
     }
 
     .info-card h2 {
@@ -31,12 +31,13 @@
       margin: 20px;
       display: flex;
       justify-content: center;
+      color: #00549f;
     }
 
     .card {
       background-color: #fff;
       border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 4px #c7ddf2;
       margin: 20px;
       padding: 20px;
     }
@@ -51,7 +52,7 @@
     .card-button {
       background-color: inherit;
       border: none;
-      color: #333;
+      color: #00549f;
       cursor: pointer;
       padding: 10px;
       margin-right: 10px;
@@ -62,7 +63,7 @@
       height: 0;
       border-top: 9px solid transparent;
       border-bottom: 9px solid transparent;
-      border-left: 9px solid black;
+      border-left: 9px solid #00549f;
     }
 
     .arrow-down {
@@ -70,7 +71,7 @@
       height: 0;
       border-left: 9px solid transparent;
       border-right: 9px solid transparent;
-      border-top: 9px solid black;
+      border-top: 9px solid #407fb7;
       padding-top: 4px
     }
 
@@ -84,11 +85,12 @@
     td {
       padding: 8px;
       text-align: left;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #407fb7;
     }
 
     th {
-      background-color: #f2f2f2;
+      background-color: #00549f;
+      color: white;
     }
 
     .first-col {
