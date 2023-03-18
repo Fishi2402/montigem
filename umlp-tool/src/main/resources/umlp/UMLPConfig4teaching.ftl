@@ -21,6 +21,10 @@ ${commandDecorator.transform(ast, decoratedAST)}
 ${requestDecorator.transform(ast, decoratedAST)}
 ${topDecorator.decorate(decoratedAST)}
 
+<#-- Generate GetAll Rest Service for teaching -->
+<#assign restGetAllGenerator = tc.instantiate("umlp.generator.service.RestGetAllDecorator", [glex])>
+${restGetAllGenerator.transform(ast, decoratedAST)}
+
 ${includeArgs("umlp.generator.hook.AfterTransform", decoratedAST, glex, hwPath, cdGenerator, schemaGenerator, beDecorator, commandDecorator, requestDecorator, topDecorator)}
 
 <#-- Generate Java-Code -->

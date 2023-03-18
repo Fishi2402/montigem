@@ -173,7 +173,7 @@
       //   gemId: 4
       // }
       const command = {
-        "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_delete" + capitalizeFirstLetter(attr),
+        "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_delete",
         "gemId": gemId
       };
       console.log(command);
@@ -340,7 +340,7 @@
             // add row for each object
             for (const entry of data) {
               const gemId = entry.gemId;
-              if (!!gemId) {
+              if (gemId != undefined) {
                 const tableBodyClone = tableRowTpl.content.cloneNode(true);
                 let tableBodyRow = tableBodyClone.querySelector("tr");
 
