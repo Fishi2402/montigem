@@ -320,7 +320,7 @@
                   // TODO: delete if empty objects are allowed;
                   // object is valid if at least one property is a non-empty value;
                   // prevents creating a bunch of empty objects
-                  if (value.length > 0) {
+                  if (value.length > 0 || !isNaN(value)) {
                     valid = true;
                   }
                 }
