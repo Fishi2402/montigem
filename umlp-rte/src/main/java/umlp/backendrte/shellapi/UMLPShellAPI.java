@@ -4,13 +4,9 @@ package umlp.backendrte.shellapi;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.MCFatalError;
 import org.springframework.shell.Availability;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
 import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandObjectMapper;
 import umlp.backendrte.command.CommandResult;
-import umlp.backendrte.command.SimpleResult;
-import umlp.backendrte.common.LoadingState;
 import umlp.backendrte.common.Result;
 import umlp.backendrte.service.websocket.ClientWebsocketCommunication;
 
@@ -18,8 +14,7 @@ public class UMLPShellAPI {
 
   private static final String UMLP_SHELL_API = "UMLP Shell API";
   protected static ClientWebsocketCommunication clientWebsocketCommunication;
-  protected static long participantId = 0;
-  protected static boolean connected = false;
+  protected static long participantId = 0l;
 
   protected final static CommandResult sendCommandToServerAndReceiveResult(Command command) {
     command.setParticipantId(participantId);
@@ -38,21 +33,31 @@ public class UMLPShellAPI {
   }
 
   protected void doInit(String url, String port, String applicationName, String apiName) {
-    clientWebsocketCommunication = new ClientWebsocketCommunication(url, port, applicationName, apiName);
-    Result<Long> init = clientWebsocketCommunication.init();
+    String uri = buildUri(url, port, applicationName, apiName);
+    clientWebsocketCommunication = new ClientWebsocketCommunication().onCommand(cmd -> {
+      String msg = String.format("Received sync command '%s' from server: %s", cmd.getCommandType(), CommandObjectMapper.serializeCommand(cmd));
+      Log.info(msg, UMLP_SHELL_API);
+        });
+    Result<Long> init = clientWebsocketCommunication.init(uri);
     if (init.wasSuccessful()) {
       participantId = init.getValue();
-      connected = true;
-      Log.info("Websocket connection was successfull. Participant ID: " + participantId,
-          UMLP_SHELL_API);
+      Log.info(String.format("Websocket connection to '%s' was successfull. Participant ID: %s",
+              uri, participantId), UMLP_SHELL_API);
     } else {
-      connected = false;
-      Log.info("Websocket connection was not successfull, please check your parameters",
-          UMLP_SHELL_API);
+      Log.info(String.format("Could not establish a websocket connection to '%s', please check your parameters",
+              uri), UMLP_SHELL_API);
     }
   }
 
+  private static String buildUri(String url, String port, String applicationName, String apiName) {
+    String wsPrefix = url.contains("ws://") || url.startsWith("wss://") ? "" : "wss://";
+    String portString = port.isEmpty() ? "" : ":" + port;
+    String uri = String.format("%s%s%s/%s/%s", wsPrefix, url, portString, applicationName, apiName);
+    return uri;
+  }
+
   public Availability isConnected() {
-    return connected && clientWebsocketCommunication.isOpen() ? Availability.available() : Availability.unavailable("Connection must be initialized before. Use 'init'");
+    return clientWebsocketCommunication != null && clientWebsocketCommunication.isOpen() ? Availability.available() :
+        Availability.unavailable("The Websocket connection must be initialized before. Use 'help init'");
   }
 }

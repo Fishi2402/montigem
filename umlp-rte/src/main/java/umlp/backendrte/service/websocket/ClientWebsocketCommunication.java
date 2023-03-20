@@ -12,35 +12,38 @@ import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandObjectMapper;
 import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.command.SimpleResult;
+import umlp.backendrte.common.GemList;
 import umlp.backendrte.common.LoadingState;
 import umlp.backendrte.common.Result;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class ClientWebsocketCommunication extends TextWebSocketHandler {
   private long maxWaitingTime = 6000; // 6 seconds
-  private long participantId = 0;
-  private String uri;
+  private Optional<Long> participantId = Optional.empty();
   private WebSocketSession clientSession;
   private CountDownLatch initLatch;
   private Map<Long, CommandResult<?>> messages = new HashMap<>();
 
-  public ClientWebsocketCommunication(String url, String port, String applicationName,
-      String apiName) {
-    this.uri = String.format("ws://%s:%s/%s/%s", url, port, applicationName, apiName);
+  private List<Consumer<Command<Object>>> consumers = new ArrayList<>();
+
+  public ClientWebsocketCommunication() {
   }
 
   public synchronized <T> CommandResult<T> sendCommandToServerAndReceiveResult(Command<T> command) {
-    command.setParticipantId(participantId);
-    CommandResult<T> result = null;
+    command.setParticipantId(participantId.get());
+    CommandResult<T> result;
     try {
       String payload = CommandObjectMapper.serializeCommand(command);
       clientSession.sendMessage(new TextMessage(payload));
@@ -51,10 +54,10 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
       if (messages.containsKey(command.getId())) {
         CommandResult<?> response = messages.get(command.getId());
         messages.remove(command.getId());
+        // Stelle sicher, dass der Typ auch nach dem Deserialisieren gesichert ist
         if (((ParameterizedType) command.getClass()
             .getGenericSuperclass()).getActualTypeArguments()[0].getTypeName()
             .equals(response.getTypeParameter())) {
-          // Stelle sicher, dass der Typ auch nach dem Deserialisieren gesichert ist
           result = (CommandResult<T>) response;
         }
         else {
@@ -75,8 +78,7 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
     return result;
   }
 
-  public Result<Long> init() {
-    Result<Long> result = Result.error();
+  public Result<Long> init(String uri) {
     initLatch = new CountDownLatch(2);
     StandardWebSocketClient webSocketClient = new StandardWebSocketClient();
     try {
@@ -94,9 +96,9 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
 
     try {
       // Warte bis die Verbindung aufgebaut ist und eine Antwort eintrifft
-      boolean await = initLatch.await(5, TimeUnit.SECONDS);
-      if (await) {
-        result = Result.ok(this.participantId);
+      boolean await = initLatch.await(2, TimeUnit.SECONDS);
+      if (await && this.participantId.isPresent()) {
+        return Result.ok(this.participantId.get());
       }
       else {
         return Result.error();
@@ -106,8 +108,6 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
       e.printStackTrace();
       return Result.error();
     }
-
-    return result;
   }
 
   @Override
@@ -119,7 +119,12 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
   protected synchronized void handleTextMessage(WebSocketSession session, TextMessage message) {
     if (initLatch.getCount() > 0) {
       // Fall initialisierung der Verbindung
-      this.participantId = Integer.parseInt(message.getPayload());
+      try {
+        this.participantId = Optional.of(Long.parseLong(message.getPayload()));
+      }
+      catch (NumberFormatException e) {
+        this.participantId = Optional.empty();
+      }
       initLatch.countDown();
     }
     else {
@@ -149,8 +154,9 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
       }
       else if (commandOptional.isPresent()) {
         //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
-        Log.info("Received sync command from server: " + CommandObjectMapper.serializeCommand(commandOptional.get()), "UMLP ClientWebsocket");
-//        commandOptional.get().doRun();
+        for (Consumer<Command<Object>> consumer : consumers) {
+          consumer.accept(commandOptional.get());
+        }
       }
       else {
         synchronized (this) {
@@ -158,6 +164,11 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
         }
       }
     }
+  }
+
+  public ClientWebsocketCommunication onCommand(Consumer<Command<Object>> consumer) {
+    this.consumers.add(consumer);
+    return this;
   }
 
   public boolean isOpen() {
