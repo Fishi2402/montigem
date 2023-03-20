@@ -96,7 +96,7 @@ public class DeSerDecorator extends DomainClassDecorator {
   protected void addSerAndDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
     boolean isList = false;
     boolean isOptional = false;
-    String type = attr.getSymbol().getType().printFullName();
+    String type = GenService.createType(attr.getSymbol().getType()).printType();
     String innerType = "";
     String jsonStr = "";
     if (GenService.isList(attr)) {

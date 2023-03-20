@@ -99,7 +99,7 @@ public class DummyProviderDecorator extends AbstractDecorator {
               .filter(a -> GenService.isVisibleNotDerived(a))
               .filter(a -> getTypeCheck().isInt(a.getSymbol().getType()) || getTypeCheck().isString(a.getSymbol().getType()))
               .collect(Collectors.toList());
-      attrList.forEach(a -> getCD4C().addMethod(ast, "umlp.dummyprovider.InventAttribute", domainClass.getName(), a.getName(), Names.getSimpleName(a.printType())));
+      attrList.forEach(a -> getCD4C().addMethod(ast, "umlp.dummyprovider.InventAttribute", domainClass.getName(), a.getName(), getTypeCheck().isInt(a.getSymbol().getType())?"int":"String"));
       getCD4C().addMethod(ast, "umlp.dummyprovider.InventClass",
               domainClass.getName(), providerName, attrList.stream().map(a -> a.getName()).collect(Collectors.toList()));
     }
