@@ -1,0 +1,9 @@
+classdiagram MultipleUsesOfDomainClass {
+
+  class A{
+    B start;
+    B end;
+  }
+
+  class B;
+}

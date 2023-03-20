@@ -5,6 +5,7 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
@@ -27,9 +28,12 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, CLIENT_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
+
+    origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getModifier().isDerived())
+            .forEach(i -> astcdPackage.addCDElement(createClass(origCD, i)));
   }
 
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDType domainClass) {
     String classname = domainClass.getName() + SUFFIX;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
@@ -65,7 +69,7 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
             });
 
     // Assoziationen
-    CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+    CDSymbolTables.getAssociations(domainClass).stream()
             .filter(a -> !(a.getModifier().isDerived() || a.getModifier().isReadonly()))
             .forEach(a -> {
               boolean isBidirectional = GenService.isBidirectional(a);
@@ -104,7 +108,7 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     return ast;
   }
 
-  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz, ASTCDClass domainClass) {
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz, ASTCDType domainClass) {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
     getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());

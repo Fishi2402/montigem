@@ -1,0 +1,28 @@
+// HWC-P
+
+$card-color: white;
+$padding: 0.5rem;
+$shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+$header-font-size: 1.6rem;
+$header-font-weight: bold;
+
+.gem-card {
+  padding: $padding;
+  box-shadow: $shadow;
+
+  &-header, &-body {
+    background-color: $card-color;
+    padding: $padding;
+  }
+}
+
+.gem-card-header {
+  font-size: $header-font-size;
+  font-weight: $header-font-weight;
+}
+
+.gem-card-body {
+  flex-grow: 1;
+  width: 100%;
+}

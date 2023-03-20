@@ -66,9 +66,11 @@ jsweet {
     '**/umlp/jsweet/extension/**/*.java',
     '**/CommandObjectMapper.java',
     '**/DatabaseAccessManager.java',
-//    '**/*DeSer*',
-//    '**/BaseClassObjectMapper.java',
+    '**/*DeSer*',
+    '**/BaseClassObjectMapper.java',
     '**/HashMapWithOrderedKeys.java',
+    '**/service/websocket/**',
+    '**/shellapi/UMLPShellApi.java',
     '**/AwaitUtil.java'
   ]
 }

@@ -23,7 +23,7 @@ public abstract class CommandDeSer<T extends Command<?>> {
     return printer.getContent();
   }
 
-  protected abstract Optional<T> fromJsonObject(JsonObject jsonObject);
+    protected abstract Optional<T> fromJsonObject(JsonObject jsonObject);
 
   public Optional<T> fromJson(JsonObject jsonObject){
     Optional<T> res = fromJsonObject(jsonObject);

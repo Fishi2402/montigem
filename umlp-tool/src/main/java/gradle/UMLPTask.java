@@ -82,6 +82,7 @@ public abstract class UMLPTask extends DefaultTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<String> getConfigTemplate();
 
+
   @Input
   @org.gradle.api.tasks.Optional
   public abstract ListProperty<String> getMoreArgs();
@@ -89,6 +90,10 @@ public abstract class UMLPTask extends DefaultTask {
   @Input
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getDebug();
+
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getCdToGui();
 
   @OutputDirectory
   public abstract DirectoryProperty getOutputDir();
@@ -125,6 +130,8 @@ public abstract class UMLPTask extends DefaultTask {
     }
     this.getOutputs().doNotCacheIf("Do not cache when debugging is enabled",
         (task) ->  ((UMLPTask)task).getDebug().get());
+
+    getCdToGui().convention(false);
   }
 
 
@@ -184,6 +191,10 @@ public abstract class UMLPTask extends DefaultTask {
     if(this.getDebug().get()){
       // Set the "debug" flag in the arguments
       result.add("-" + UMLPToolOptions.DEBUG.getCMD());
+    }
+
+    if(this.getCdToGui().get()){
+      result.add("-" + UMLPToolOptions.CD2GUI.getCMD());
     }
 
     if (this.getMoreArgs().isPresent()) {

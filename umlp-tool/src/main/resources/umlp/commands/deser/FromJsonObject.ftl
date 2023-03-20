@@ -2,8 +2,7 @@
 ${tc.signature("className", "command")}
 ${cd4c.method("protected Optional<${command}> fromJsonObject(JsonObject jsonObject)")}
 
-// TODO MB: Optional<${className}> o = new ${className}DeSer().deserialize(jsonObject.getObjectMember("${className?uncap_first}"));
-Optional<${className}> o = Optional.empty();
+Optional<${className}> o = new ${className}DeSer().deserialize(jsonObject.getObjectMember("${className?uncap_first}"));
 if(o.isEmpty()){
   return Optional.empty();
 }

@@ -280,11 +280,13 @@ public class DAODecorator extends AbstractDecorator {
   private void updateAndSelectListAttrMethods(ASTCDClass doaClass, ASTCDClass domainClass) {
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).forEach(attr -> {
-              String innerType = GenService.getInnerType(attr.getMCType());
+              GenService.createType(attr);
+              String innerType = GenService.getInnerType(GenService.createType(attr));
               String tableName = SQLSchemaGenerator.convertClassName(domainClass.getName())+
                   "$"+SQLSchemaGenerator.convertAttributeName(attr.getName());
-              getCD4C().addMethod(doaClass, "umlp.dao.UpdateListAttr", tableName, domainClass.getName(), attr.getName(), innerType);
-              getCD4C().addMethod(doaClass, "umlp.dao.SelectListAttr", tableName, domainClass.getName(), attr.getName(), innerType);
+              String dbType = GenService.getDBType(attr.getSymbol().getType());
+              getCD4C().addMethod(doaClass, "umlp.dao.UpdateListAttr", tableName, domainClass.getName(), attr.getName(), innerType, dbType);
+              getCD4C().addMethod(doaClass, "umlp.dao.SelectListAttr", tableName, domainClass.getName(), attr.getName(), innerType, dbType);
             }
         );
   }
@@ -298,8 +300,8 @@ public class DAODecorator extends AbstractDecorator {
   private void updateOptionalAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).forEach(attr ->
-            getCD4C().addMethod(doaClass, "umlp.dao.UpdateOptionalAttr", domainClass.getName(), attr.getName(), attr.printType(),
-                GenService.getInnerType(attr.getMCType())));
+            getCD4C().addMethod(doaClass, "umlp.dao.UpdateOptionalAttr", domainClass.getName(), attr.getName(),
+                    GenService.createType(attr).printType(), GenService.getInnerType(attr.getMCType())));
   }
 
   protected void deleteMethod(ASTCDClass daoClass, ASTCDClass domainClass, Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssoc) {

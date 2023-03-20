@@ -23,5 +23,9 @@ export const routes: Routes = [
   {
     path: "personcarsedit",
     loadChildren: () => import("./personcarsedit/personcarsedit.module").then(m => m.PersonCarsEditModule)
+  },
+  {
+    path: "personoverview",
+    loadChildren: () => import("./personoverview/personoverview.module").then(m => m.PersonOverviewModule)
   }
 ]

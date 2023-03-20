@@ -45,11 +45,11 @@ public class DeleteDecorator extends AbstractDecorator {
       .setName(classname+SUFFIX)
       .build();
 
-    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected final " + classname + " " + StringTransformations.uncapitalize(classname));
-    
-    getCD4C().addConstructor(ast, "umlp.commands.Constructor", classname, packageName, SUFFIX);
+    ASTCDAttribute attr = getCD4C().addAttribute(ast, "private final long gemId");
+
+    getCD4C().addConstructor(ast, "umlp.commands.get.Constructor", classname,"", SUFFIX, packageName);
     getCD4C().addMethod(ast, "umlp.commands.delete.DoRun", classname, origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getId()"));
+    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("gemId"));
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));
 
@@ -70,8 +70,8 @@ public class DeleteDecorator extends AbstractDecorator {
             .setName(cmdName+DE_SER)
             .build();
 
-    getCD4C().addMethod(ast, "umlp.commands.deser.FromJsonObject", domainClass.getName(), cmdName);
-    getCD4C().addMethod(ast, "umlp.commands.deser.BuildJson", domainClass.getName(), cmdName);
+    getCD4C().addMethod(ast, "umlp.commands.deser.Get_FromJsonObject", cmdName);
+    getCD4C().addMethod(ast, "umlp.commands.deser.Get_BuildJson", cmdName);
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");

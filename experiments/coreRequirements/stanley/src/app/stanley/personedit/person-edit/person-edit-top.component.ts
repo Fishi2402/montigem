@@ -1,7 +1,7 @@
 // GEN-P: translated from Java
 
 import { Directive } from "@angular/core";
-import { dummy } from "../../../hardy/mock/person-dummy";
+import { dummy1 } from "../../../hardy/mock/person-dummy";
 import { Person } from "../../../hardy/person";
 import { PersonErrorObserver } from "../../../hardy/person-error-observer";
 
@@ -12,56 +12,68 @@ export class PersonEditTOP implements PersonErrorObserver {
 
   public p: Person;
 
-  protected textInputComp1Error: string = '';
+  protected gemTextInputComp1ValueError: string = '';
 
-  protected numberInputComp2Error: string = '';
+  protected gemNumberInputComp2ValueError: string = '';
 
   constructor() {
     // TODO: person loading
-    this.p = dummy;
+    this.p = dummy1;
   }
 
   public ngOnInit(): void {
   }
 
-  public getTextInputComp1Error(): string {
-    return this.textInputComp1Error;
+  public getGemCardComp1Title(): string {
+    return "Edit Person";
+  }
+
+  public getGemTextInputComp3ValueError(): string {
+    return this.gemTextInputComp1ValueError;
   }
 
   public notifyNicknameInvalid(p: Person, msg: string): void {
-    this.textInputComp1Error = msg;
+    this.gemTextInputComp1ValueError = msg;
   }
 
-  public getTextInputComp1(): string {
+  public getGemTextInputComp3Value(): string {
     return this.p.getNickname();
   }
 
-  public setTextInputComp1(nickname: string): void {
+  public setGemTextInputComp3Value(nickname: string): void {
     this.p.setNickname(nickname);
   }
 
-  public getNumberInputComp2Error(): string {
-    return this.numberInputComp2Error;
+  public getGemNumberInputComp4ValueError(): string {
+    return this.gemNumberInputComp2ValueError;
   }
 
   public notifyAgeInvalid(p: Person, msg: string): void {
-    this.numberInputComp2Error = msg;
+    this.gemNumberInputComp2ValueError = msg;
   }
 
-  public getNumberInputComp2(): number {
+  public getGemNumberInputComp4Value(): number {
     return this.p.getAge();
   }
 
-  public setNumberInputComp2(age: number): void {
+  public setGemNumberInputComp4Value(age: number): void {
     this.p.setAge(age);
   }
 
-  public leftClickButtonComp3(): void {
+  public gemButtonComp5LeftClick(): void {
     // return this.navigate();
   }
 
-  public leftClickButtonComp5(): void {
+  public getGemButtonComp5Text(): string {
+    return "Ok";
+  }
+
+  public gemButtonComp6LeftClick(): void {
     this.p.decreaseAge();
+  }
+
+  public getGemButtonComp6Text(): string {
+    return "Decrease";
   }
 
   /*

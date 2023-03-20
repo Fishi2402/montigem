@@ -22,6 +22,7 @@ import umlp.UMLPFullPrettyPrinter;
 import umlp.UMLPMill;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypePrimitive.box;
@@ -76,10 +77,47 @@ public class GenService {
       json = "getAsJsonNumber().getNumberAsDouble()";
     } else if (typeCheck.isString(type)) {
       json = "getAsJsonString().getValue()";
-    } else {
-      // TODO
+    } else if (type.isGenericType() && (
+        ((SymTypeOfGenerics) type).printTypeWithoutTypeArgument().equals("List")
+            || ((SymTypeOfGenerics) type).printTypeWithoutTypeArgument().equals("java.util.List"))) {
+      return calculateJSon(((SymTypeOfGenerics) type).getArgument(0));
     }
+    // else make abstract or use template
     return json;
+  }
+
+  public static Optional<String> getBuildJsonHelperMethod(SymTypeExpression type) {
+    Optional<String> jsonHelperMethod = Optional.empty();
+    if (type.isObjectType() && type.printFullName().equals("java.time.LocalDate")) {
+      jsonHelperMethod = Optional.of("DateTimeFormatter.ISO_DATE_TIME.format");
+    }
+    return jsonHelperMethod;
+  }
+
+  public static Optional<String> getBuildJsonHelperMethodImport(SymTypeExpression type) {
+    Optional<String> jsonHelperMethod = Optional.empty();
+    if (type.isObjectType() && type.printFullName().equals("java.time.LocalDate")) {
+      jsonHelperMethod = Optional.of("java.time.format.DateTimeFormatter");
+    }
+    return jsonHelperMethod;
+  }
+
+  public static Optional<String> getFromJsonHelperMethod(SymTypeExpression type) {
+    Optional<String> jsonHelperMethod = Optional.empty();
+    if (type.isObjectType() && type.printFullName().equals("java.time.LocalDate")) {
+      jsonHelperMethod = Optional.of("LocalDate.parse");
+    } else if (isOptional(type)) {
+      jsonHelperMethod = Optional.of("Optional.ofNullable");
+    }
+    return jsonHelperMethod;
+  }
+
+  public static Optional<String> getFromJsonHelperMethodImport(SymTypeExpression type) {
+    Optional<String> jsonHelperMethod = Optional.empty();
+    if (type.isObjectType() && type.printFullName().equals("java.time.LocalDate")) {
+      jsonHelperMethod = Optional.of("java.time.LocalDate");
+    }
+    return jsonHelperMethod;
   }
 
   public static ASTExpression createInitialValue(ASTMCType type) {
@@ -288,4 +326,36 @@ public class GenService {
     return name;
   }
 
+  public static ASTMCType createType(SymTypeExpression type) {
+    if (type.isGenericType()) {
+      SymTypeOfGenerics genericType = (SymTypeOfGenerics) type;
+      List<String> arguments = genericType.getArgumentList().stream().
+              map(a -> box(a.print())).collect(Collectors.toList());
+      return MCTypeFacade.getInstance().createBasicGenericTypeOf(genericType.getBaseName(), arguments.toArray(new String[0]));
+    } else {
+      return MCTypeFacade.getInstance().createQualifiedType(getType(type));
+    }
+  }
+
+  public static String getDBType(SymTypeExpression type) {
+    if (type.isGenericType()) {
+      return getDBType(((SymTypeOfGenerics)type).getArgument(0));
+    }
+    if (TypeCheck.isShort(type)) {
+      return "Short";
+    } else if (TypeCheck.isInt(type)) {
+      return "Int";
+    } else if (TypeCheck.isLong(type)) {
+      return "Long";
+    } else if (TypeCheck.isFloat(type)) {
+      return "Float";
+    } else if (TypeCheck.isDouble(type)) {
+      return "Double";
+    } else if (TypeCheck.isBoolean(type)) {
+      return "Boolean";
+    } else if (TypeCheck.isString(type)) {
+      return "String";
+    }
+    return "Object";
+  }
 }

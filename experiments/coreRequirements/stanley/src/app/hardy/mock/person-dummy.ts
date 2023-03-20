@@ -1,7 +1,17 @@
 import { Car } from "../car";
 import { Person } from "../person";
 
-export const dummy = new Person();
-dummy.setAge(32);
-dummy.setNickname("Stanley Hardy");
-dummy.setOwns([new Car(), new Car()]);
+export const dummy1 = new Person();
+dummy1.setAge(32);
+dummy1.setNickname("Stanley Hardy");
+dummy1.setOwns([new Car(), new Car()]);
+
+export const dummy2 = new Person();
+dummy2.setAge(16);
+dummy2.setNickname("Napoleon Dynamite");
+dummy2.setOwns([new Car()]);
+
+export const dummyPersons = [
+  dummy1,
+  dummy2
+];

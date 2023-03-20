@@ -103,8 +103,7 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
       String outputDirPath = this.getOutputDir().get().getAsFile().getCanonicalPath();
       for (File f : reportedGenFiles) {
         if (!f.getCanonicalPath().startsWith(outputDirPath)) {
-          // TODO: make a "Log.error" out of the warning
-          Log.warn("0xahfh3a Reported Generated File is _not_ in the outputDirectory. \n" +
+          Log.error("0xahfh3a Reported Generated File is _not_ in the outputDirectory. \n" +
               "All generated files must be in the declared outputDirectory of the gradle task, otherwise gradle cannot track the state correctly.\n" +
               "File: " + f.getPath()
           );

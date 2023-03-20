@@ -2,7 +2,7 @@
 
 import { Component } from "@angular/core";
 import { Car } from "../../../hardy/car";
-import { dummy } from "../../../hardy/mock/person-dummy";
+import { dummy1 } from "../../../hardy/mock/person-dummy";
 import { Person } from "../../../hardy/person";
 import { TableColumn } from "../../tmp/table/table-types";
 
@@ -17,27 +17,44 @@ export class PersonCarsEdit {
 
   constructor() {
     // TODO: person loading
-    this.p = dummy;
+    this.p = dummy1;
   }
 
   public ngOnInit(): void {
   }
 
-  public getCarNumValue(): string {
+  public getGemTextCarNumValue(): string {
     return this.p.getOwns().length.toString();
   }
 
-  public getTRows(): Car[] {
+  public getGemTextCarNumColor(): string {
+    return "Blue";
+  }
+
+  public getGemTableTRows(): Car[] {
     return this.p.getOwns();
   }
 
-  public getTColumns(): TableColumn[] {
+  public getGemTableTColumns(): TableColumn[] {
     const res = [];
     return res;
   }
 
-  public navLeftClick(): void {
+  public getGemTableT1Rows(): Car[] {
+    return this.p.getChildren();
+  }
+
+  public getGemTableT1Columns(): TableColumn[] {
+    const res = [new TableColumn("age", "Age"), new TableColumn("nickname", "Name")];
+    return res;
+  }
+
+  public gemButtonNavLeftClick(): void {
     this.navigate();
+  }
+
+  public getGemButtonNavText(): string {
+    return "Ok";
   }
 
   protected navigate(): void {

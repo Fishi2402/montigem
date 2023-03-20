@@ -1,16 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp;
 
+import cd2gui.CD2GUITool;
 import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
-import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
@@ -25,13 +26,21 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.domain.UMLPGenerator;
-import umlp.generator.gui.GUIGenerator;
+import umlp.generator.gui.GUIComponentsVisitor;
+import umlp.generator.gui.GUITemplateHelper;
+import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
+import umlp.generator.gui.genjava.GUI2JavaGenerator;
+import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -52,7 +61,9 @@ public class UMLPTool extends UMLPToolTOP {
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
   protected static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   protected static final String DEFAULT_CONFIGTEMPLATE = "umlp.UMLP2Java";
-  protected static final String DEFAULT_CONFIGTEMPLATE_GUI = "umlp.GUI2Java";
+  protected static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA = "umlp.GUI2Java";
+  protected static final String DEFAULT_CONFIGTEMPLATE_GUI2HTML = "umlp.GUI2Html";
+  protected static final String DEFAULT_CONFIGTEMPLATE_GUI2TS = "umlp.GUI2TypeScript";
 
   public UMLPTool() {
     UMLPMill.init();
@@ -136,7 +147,35 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
 
-      if (isUmlpFile(inputFile)) {
+      if(CD2GUI.isSelected(cmd)){
+        if(!isUmlpFile(inputFile)){
+          Log.warn("option -cd2gui used without a classdiagram umlp file as input");
+          return;
+        }
+
+        umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);   //TODO: Maybe refactor into a method to remove duplicate
+
+        Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
+        String report_on = inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
+        Reporting.on(report_on);
+
+        UMLPMill.init();
+        BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+
+        // parse, create symbol table, check all cocos
+        ASTCDCompilationUnit ast = parse(inputFile.getPath());
+        Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
+        runAfterParseTrafo(ast);
+        createSymbolTable(ast);
+        runDefaultTrafo(ast);
+        runDefaultCoCos(ast);
+        CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, false);
+        guiTool.generateGUI();
+
+        Reporting.flush(ast);
+      }
+
+      else if (isUmlpFile(inputFile)) {
         umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
 
         Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
@@ -178,7 +217,6 @@ public class UMLPTool extends UMLPToolTOP {
 
         ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
         GeneratorSetup genSetup = new GeneratorSetup();
-
         // set output directory
         genSetup.setOutputDirectory(outDir);
 
@@ -229,12 +267,27 @@ public class UMLPTool extends UMLPToolTOP {
         // set template path
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
             .map(p -> p.toFile()).collect(Collectors.toList()));//
+        genSetup.setGlex( new GlobalExtensionManagement());
 
         // execute generator
         GUIDSLMill.init();
-        GUIGenerator generator = new GUIGenerator(genSetup, symbolTableGui);
-        String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI);
-        generator.generate(astGui, configTemplate);
+
+        // Get all ASTGUIComponents
+        GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
+        genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
+        genSetup.getGlex().setGlobalValue("genHelper", new GUITemplateHelper());
+
+        GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, symbolTableGui, viewComponents);
+        String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
+        javaGenerator.generate(astGui, javaConfigTemplate);
+
+        GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, symbolTableGui, viewComponents);
+        String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
+        htmlGenerator.generate(astGui, htmlConfigTemplate);
+
+        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, symbolTableGui, hwcPath, viewComponents);
+        String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
+        typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
 
         // write reports
         Reporting.flush(astGui);
@@ -297,9 +350,7 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   public void runDefaultTrafo(ASTCDCompilationUnit node) {
-    UMLPTraverser trav = UMLPMill.traverser();
-    CD4CodeTrafo4Defaults trafo = new CD4CodeTrafo4Defaults();
-    trafo.transform(node);
+    // empty
   }
 
   protected boolean isUmlpFile(File f) {

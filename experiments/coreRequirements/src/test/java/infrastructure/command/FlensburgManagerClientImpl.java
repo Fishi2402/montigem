@@ -231,7 +231,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
 
   @Override
   protected void _doDeletePerson(Person o) {
-    StatusResult status = CommandManager.executeCommand(new Person_delete(o)).asStatusResult();
+    StatusResult status = CommandManager.executeCommand(new Person_delete(o.getGemId())).asStatusResult();
     // TODO: error handling
     // ...
     flensburgObservers.forEach(obs -> obs.notifyPersonDeleted(o));

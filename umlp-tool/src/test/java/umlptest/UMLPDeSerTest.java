@@ -2,7 +2,6 @@
 package umlptest;
 
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
-import de.monticore.cd4code.trafo.CD4CodeTrafo4Defaults;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.symboltable.serialization.JsonParser;
 import org.junit.jupiter.api.Test;
@@ -44,10 +43,9 @@ public class UMLPDeSerTest extends AbstractUMLPTest {
 
     IUMLPArtifactScope actual = s2j.deserialize(serialized);
 
-    //TODO MB:  ST mit Paketen muss korrekt funktionieren
-    // assertEquals(expected.getSymbolsSize(), actual.getSymbolsSize());
+    assertEquals(expected.getSymbolsSize(), actual.getSymbolsSize());
     assertUMLPSymEquals(expected, actual);
-    // assertCDTypeSymEquals(expected, actual);
+    assertCDTypeSymEquals(expected, actual);
   }
 
   @Test
@@ -76,7 +74,6 @@ public class UMLPDeSerTest extends AbstractUMLPTest {
     runAfterParseTrafo(ast);
     IUMLPArtifactScope as = UMLPMill.scopesGenitorDelegator().createFromAST(ast);
     ast.accept(new CD4CodeSymbolTableCompleter(ast).getTraverser());
-    new CD4CodeTrafo4Defaults().transform(ast);
     return as;
   }
 

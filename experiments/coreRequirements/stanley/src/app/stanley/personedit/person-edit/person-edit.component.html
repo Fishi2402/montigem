@@ -1,31 +1,63 @@
-<!-- GEN-P -->
 
+
+
+  
+<gem-card
+    [title] = "getGemCardComp1Title()"
+    [content] = "Comp1Tpl1"
+>
+</gem-card>
+
+<ng-template #Comp1Tpl1>
+  
+<gem-column
+    [contents] = "[
+    Comp2Tpl3,
+    Comp2Tpl5,
+    Comp2Tpl7,
+    Comp2Tpl10,
+    ]"
+>
+</gem-column>
+
+<ng-template #Comp2Tpl3>
+  
 <gem-text-input
-  [value]="getTextInputComp1()"
+    [value] = "getGemTextInputComp3Value()"
 >
 </gem-text-input>
 
+
+</ng-template>
+<ng-template #Comp2Tpl5>
+  
 <gem-number-input
-  [value]="getNumberInputComp2()"
+    [value] = "getGemNumberInputComp4Value()"
 >
 </gem-number-input>
 
+
+</ng-template>
+<ng-template #Comp2Tpl7>
+  
 <gem-button
-  text="Ok"
+    [text] = "getGemButtonComp5Text()"
+    (leftClick) = "gemButtonComp5LeftClick.bind(this)()"
 >
 </gem-button>
 
+
+</ng-template>
+<ng-template #Comp2Tpl10>
+  
 <gem-button
-  text="Decrease"
-  (leftClick)="leftClickButtonComp5.bind(this)()"
+    [text] = "getGemButtonComp6Text()"
+    (leftClick) = "gemButtonComp6LeftClick.bind(this)()"
 >
 </gem-button>
 
-<!-- this should be not generated, only for looking -->
-<div class="extra">
-  Person
-  <br>
-  Nickname: {{p.getNickname()}}
-  <br>
-  Age: {{p.getAge()}}
-</div>
+
+</ng-template>
+
+</ng-template>
+
