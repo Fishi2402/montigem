@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp Attributes {
+
+  class Foo  {
+    int bar_int;
+    java.lang.Integer bar_int2;
+    Integer bar_int3;
+
+    List<int> bar_list_int;
+    List<java.lang.Integer> bar_list_int2;
+    Optional<int> bar_opt_int;
+    Optional<java.lang.Integer> bar_opt_int2;
+
+    float bar_float;
+    java.lang.Float bar_float2;
+
+    double bar_double;
+    java.lang.Double bar_double2;
+
+    String bar_String;
+
+    boolean bar_boolean;
+    // TODO: In MC muss der richtige getter generiert werden
+    // java.lang.Boolean bar_boolean2;
+  }
+
+}

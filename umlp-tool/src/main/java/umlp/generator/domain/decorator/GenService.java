@@ -326,4 +326,36 @@ public class GenService {
     return name;
   }
 
+  public static ASTMCType createType(SymTypeExpression type) {
+    if (type.isGenericType()) {
+      SymTypeOfGenerics genericType = (SymTypeOfGenerics) type;
+      List<String> arguments = genericType.getArgumentList().stream().
+              map(a -> box(a.print())).collect(Collectors.toList());
+      return MCTypeFacade.getInstance().createBasicGenericTypeOf(genericType.getBaseName(), arguments.toArray(new String[0]));
+    } else {
+      return MCTypeFacade.getInstance().createQualifiedType(getType(type));
+    }
+  }
+
+  public static String getDBType(SymTypeExpression type) {
+    if (type.isGenericType()) {
+      return getDBType(((SymTypeOfGenerics)type).getArgument(0));
+    }
+    if (TypeCheck.isShort(type)) {
+      return "Short";
+    } else if (TypeCheck.isInt(type)) {
+      return "Int";
+    } else if (TypeCheck.isLong(type)) {
+      return "Long";
+    } else if (TypeCheck.isFloat(type)) {
+      return "Float";
+    } else if (TypeCheck.isDouble(type)) {
+      return "Double";
+    } else if (TypeCheck.isBoolean(type)) {
+      return "Boolean";
+    } else if (TypeCheck.isString(type)) {
+      return "String";
+    }
+    return "Object";
+  }
 }
