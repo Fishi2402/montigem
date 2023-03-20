@@ -6,4 +6,4 @@
   - Get ALL Rest Controller
 ### Run
 - `gradle runServer`
-- `gradle runShellApi "-Dorg.gradle.console=plain"`
+- `gradle --console plain runShellApi`
