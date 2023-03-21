@@ -72,8 +72,11 @@ public class SQLSchemaGenerator {
         fqnClassNameToType.put(fqnClassName, sqlType);
     }
 
-    public static String convertAttributeName(String name) {
-        return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+
+
+    public static String convertAttributeName(String name, AttributeType type) {
+        String attrName = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+        return type.format(attrName);
     }
 
     public static String convertClassName(String name) {
@@ -173,7 +176,7 @@ public class SQLSchemaGenerator {
 
     protected void generateListFieldTable(ASTCDCompilationUnit cd, ASTCDClass classNode, ASTCDAttribute attribute, IndentPrinter p) {
         p.print("CREATE TABLE ");
-        String tableName = convertClassName(classNode.getName()) + "$" + convertAttributeName(attribute.getName());
+        String tableName = convertClassName(classNode.getName()) + "$" + convertAttributeName(attribute.getName(), AttributeType.PLAIN);
         p.print(tableName);
         p.println("(");
         p.indent();
@@ -207,9 +210,7 @@ public class SQLSchemaGenerator {
     }
 
     protected void generateSimpleField(ASTCDCompilationUnit cd, ASTCDClass classNode, ASTCDAttribute attribute, IndentPrinter p) {
-        p.print("\"");
-        p.print(convertAttributeName(attribute.getName()));
-        p.print("\"");
+        p.print(convertAttributeName(attribute.getName(), AttributeType.QUOTED));
         p.print(" ");
         Optional<? extends ISymbol> typeSymbolOpt = attribute.getMCType().getDefiningSymbol();
         if (typeSymbolOpt.isEmpty()) {
@@ -273,26 +274,39 @@ public class SQLSchemaGenerator {
         String r1 = convertAssociationRollName(association.getLeft().getName());
         String r2 = convertAssociationRollName(association.getRight().getName());
 
-        p.print("\"");
         p.print(r1 + "_id");
-        p.print("\"");
         p.println(" BIGINT NOT NULL,");
         // TODO: different foreign key for each non-abstract, non-derived subclass
         // TODO: Convert fqn?
 
-        p.println("CONSTRAINT fk_" + r1 + "_" + tableName + " FOREIGN KEY (\"" + r1 + "_id\") REFERENCES " + convertClassName(lSymbolOpt.get().getName()) + ",");
+        p.println("CONSTRAINT fk_" + r1 + "_" + tableName + " FOREIGN KEY (" + r1 + "_id) REFERENCES " + convertClassName(lSymbolOpt.get().getName()) + ",");
 
-        p.print("\"");
         p.print(r2 + "_id");
-        p.print("\"");
         p.println(" BIGINT NOT NULL,");
 
-        p.println("CONSTRAINT fk_" + r2 + "_" + tableName + " FOREIGN KEY (\"" + r2 + "_id\") REFERENCES " + convertClassName(rSymbolOpt.get().getName()) + ",");
+        p.println("CONSTRAINT fk_" + r2 + "_" + tableName + " FOREIGN KEY (" + r2 + "_id) REFERENCES " + convertClassName(rSymbolOpt.get().getName()) + ",");
 
-        p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (\"" + r1 + "_id\", \"" + r2 + "_id\")");
+        p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (" + r1 + "_id, " + r2 + "_id)");
 
         p.unindent();
         p.println(");");
+    }
+
+    public enum AttributeType {
+        PLAIN(""),
+        QUOTED("\""),
+        ESCAPED_QUOTED("\\\"");
+
+        private final String modifier;
+
+        AttributeType(String modifier) {
+            this.modifier = modifier;
+        }
+
+
+        String format(String s) {
+            return modifier + s + modifier;
+        }
     }
 
 }

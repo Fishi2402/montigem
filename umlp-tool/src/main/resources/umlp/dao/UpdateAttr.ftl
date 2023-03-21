@@ -2,7 +2,7 @@
 ${tc.signature("tableName", "attributeName", "attributeType")}
 ${cd4c.method("public void update${attributeName?cap_first}(long gemId, ${attributeType} ${attributeName})")}
   if(update${attributeName?cap_first}Statement == null) {
-    update${attributeName?cap_first}Statement = DatabaseAccessManager.prepareStatement("UPDATE ${tableName} SET ${attributeName} = ? WHERE id = ?");
+    update${attributeName?cap_first}Statement = DatabaseAccessManager.prepareStatement("UPDATE ${tableName} SET \"${attributeName}\" = ? WHERE id = ?");
   }
   try{
     update${attributeName?cap_first}Statement.clearParameters();
