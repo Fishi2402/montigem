@@ -79,8 +79,9 @@ public class SQLSchemaGenerator {
         return type.format(attrName);
     }
 
-    public static String convertClassName(String name) {
-        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+    public static String convertClassName(String name, AttributeType type) {
+        String clsName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+        return type.format(clsName);
     }
 
     public static String convertAssociationRollName(String name) {
@@ -130,7 +131,7 @@ public class SQLSchemaGenerator {
     public void generateClassSchema(ASTCDCompilationUnit cd, ASTCDClass node, IndentPrinter p) {
         p.print("CREATE TABLE ");
         // TODO: is this mapping always unique and possible?
-        String tableName = convertClassName(node.getName());
+        String tableName = convertClassName(node.getName(), AttributeType.QUOTED);
         p.print(tableName);
         p.println("(");
         p.indent();
@@ -141,7 +142,7 @@ public class SQLSchemaGenerator {
                 .filter(a -> !a.getModifier().isDerived())
                 .collect(Collectors.toList());
 
-        generateIdField(tableName, p);
+        generateIdField(convertClassName(node.getName(), AttributeType.PLAIN), p);
         for (ASTCDAttribute attribute : relevantAttributes) {
             Optional<? extends ISymbol> typeSym = attribute.getMCType().getDefiningSymbol();
             if (
@@ -176,7 +177,7 @@ public class SQLSchemaGenerator {
 
     protected void generateListFieldTable(ASTCDCompilationUnit cd, ASTCDClass classNode, ASTCDAttribute attribute, IndentPrinter p) {
         p.print("CREATE TABLE ");
-        String tableName = convertClassName(classNode.getName()) + "$" + convertAttributeName(attribute.getName(), AttributeType.PLAIN);
+        String tableName = convertClassName(classNode.getName(), AttributeType.PLAIN) + "$" + convertAttributeName(attribute.getName(), AttributeType.PLAIN);
         p.print(tableName);
         p.println("(");
         p.indent();
@@ -198,7 +199,7 @@ public class SQLSchemaGenerator {
         p.println(" NOT NULL,");
 
         p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (" + r1 + "," + r2 + "),");
-        p.println("CONSTRAINT fk_" + tableName + " FOREIGN KEY (" + r1 + ") REFERENCES " + convertClassName(classNode.getName()));
+        p.println("CONSTRAINT fk_" + tableName + " FOREIGN KEY (" + r1 + ") REFERENCES " + convertClassName(classNode.getName(), AttributeType.QUOTED));
 
         p.unindent();
         p.println(");");
@@ -279,12 +280,12 @@ public class SQLSchemaGenerator {
         // TODO: different foreign key for each non-abstract, non-derived subclass
         // TODO: Convert fqn?
 
-        p.println("CONSTRAINT fk_" + r1 + "_" + tableName + " FOREIGN KEY (" + r1 + "_id) REFERENCES " + convertClassName(lSymbolOpt.get().getName()) + ",");
+        p.println("CONSTRAINT fk_" + r1 + "_" + tableName + " FOREIGN KEY (" + r1 + "_id) REFERENCES " + convertClassName(lSymbolOpt.get().getName(), AttributeType.QUOTED) + ",");
 
         p.print(r2 + "_id");
         p.println(" BIGINT NOT NULL,");
 
-        p.println("CONSTRAINT fk_" + r2 + "_" + tableName + " FOREIGN KEY (" + r2 + "_id) REFERENCES " + convertClassName(rSymbolOpt.get().getName()) + ",");
+        p.println("CONSTRAINT fk_" + r2 + "_" + tableName + " FOREIGN KEY (" + r2 + "_id) REFERENCES " + convertClassName(rSymbolOpt.get().getName(), AttributeType.QUOTED) + ",");
 
         p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (" + r1 + "_id, " + r2 + "_id)");
 
