@@ -2,9 +2,13 @@
 // --------------- always the same (start) --------------- //
 ${signature("cdClasses")}
 
-// TODO: replace with the end-point
-const COMMAND_URL = new URL('http://localhost:8081/${ast.getCDDefinition().getName()?lower_case}/api/');
-const GETALL_URL = new URL('http://localhost:8081/${ast.getCDDefinition().getName()?lower_case}/getall/');
+// Calc endpoints
+let href = window.location.href;
+if(!href.endsWith("/")){
+  href = href + "/";
+}
+const COMMAND_URL = new URL(href + 'api/');
+const GETALL_URL = new URL(href + 'getall/');
 
 async function sendCommand(command) {
   console.log("Send command: " + command);
