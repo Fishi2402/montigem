@@ -280,14 +280,16 @@ public class SQLSchemaGenerator {
         // TODO: different foreign key for each non-abstract, non-derived subclass
         // TODO: Convert fqn?
 
-        p.println("CONSTRAINT fk_" + r1 + "_" + tableName + " FOREIGN KEY (" + r1 + "_id) REFERENCES " + convertClassName(lSymbolOpt.get().getName()) + ",");
+        p.println("CONSTRAINT fk_" + r1 + "_" + tableName + " FOREIGN KEY (\"" + r1 + "_id\") REFERENCES " + convertClassName(lSymbolOpt.get().getName()) + ",");
 
+        p.print("\"");
         p.print(r2 + "_id");
+        p.print("\"");
         p.println(" BIGINT NOT NULL,");
 
-        p.println("CONSTRAINT fk_" + r2 + "_" + tableName + " FOREIGN KEY (" + r2 + "_id) REFERENCES " + convertClassName(rSymbolOpt.get().getName()) + ",");
+        p.println("CONSTRAINT fk_" + r2 + "_" + tableName + " FOREIGN KEY (\"" + r2 + "_id\") REFERENCES " + convertClassName(rSymbolOpt.get().getName()) + ",");
 
-        p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (" + r1 + "_id, " + r2 + "_id)");
+        p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (\"" + r1 + "_id\", \"" + r2 + "_id\")");
 
         p.unindent();
         p.println(");");
