@@ -27,5 +27,9 @@ export const routes: Routes = [
   {
     path: "personoverview",
     loadChildren: () => import("./personoverview/personoverview.module").then(m => m.PersonOverviewModule)
+  },
+  {
+    path: "personcreate",
+    loadChildren: () => import("./personcreate/personcreate.module").then(m => m.PersonCreateModule)
   }
 ]
