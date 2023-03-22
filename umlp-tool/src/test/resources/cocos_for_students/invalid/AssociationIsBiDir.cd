@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+classdiagram AssociationIsBiDir {
+
+  class A;
+  class B;
+
+  association A <-> B;
+
+}
