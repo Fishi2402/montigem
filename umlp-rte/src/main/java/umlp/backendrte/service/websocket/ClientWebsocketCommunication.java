@@ -30,12 +30,14 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
   private long participantId = 0;
   private String uri;
   private WebSocketSession clientSession;
+  private WebSocketHttpHeaders headers;
   private CountDownLatch initLatch;
   private Map<Long, CommandResult<?>> messages = new HashMap<>();
 
   public ClientWebsocketCommunication(String url, String port, String applicationName,
-      String apiName) {
+      String apiName, WebSocketHttpHeaders headers) {
     this.uri = String.format("ws://%s:%s/%s/%s", url, port, applicationName, apiName);
+    this.headers = headers;
   }
 
   public synchronized <T> CommandResult<T> sendCommandToServerAndReceiveResult(Command<T> command) {
@@ -80,7 +82,7 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
     initLatch = new CountDownLatch(2);
     StandardWebSocketClient webSocketClient = new StandardWebSocketClient();
     try {
-      this.clientSession = webSocketClient.doHandshake(this, new WebSocketHttpHeaders(),
+      this.clientSession = webSocketClient.doHandshake(this, headers,
           URI.create(uri)).get();
     }
     catch (InterruptedException e) {

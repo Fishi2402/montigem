@@ -2,7 +2,6 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.cd.facade.CDModifier.PUBLIC_STATIC;
 
 public class ShellAPIDecorator extends AbstractDecorator {
 
@@ -53,7 +51,9 @@ public class ShellAPIDecorator extends AbstractDecorator {
         "@ShellOption(value = \"--url\", defaultValue = \"localhost\")",
         "@ShellOption(value = \"--port\", defaultValue = \"8081\")",
         String.format("@ShellOption(value = \"--appName\", defaultValue = \"%s\")", name.toLowerCase()),
-        "@ShellOption(value = \"--api\", defaultValue = \"wsapi\")"
+        "@ShellOption(value = \"--api\", defaultValue = \"wsapi\")",
+        "@ShellOption(value = \"--user\", defaultValue = \"\")",
+        "@ShellOption(value = \"--password\", defaultValue = \"\")"
     ));
 
     getCD4C().addMethod(shellapi, "umlp.shellapi.GetFreeGemId");
