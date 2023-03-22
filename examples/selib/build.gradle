@@ -41,4 +41,4 @@ task runServer {
 
 build.dependsOn(generateSELib)
 
-sourceSets.main.resources.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
+sourceSets.main.resources.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode/frontend4teaching"]

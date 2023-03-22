@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
-import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -21,8 +20,8 @@ public class UI4TeachingGenerator {
   }
 
   public void generate(ASTCDCompilationUnit cdAST){
-    generatorEngine.generate("umlp.gui4teaching.html", Paths.get("static","index.html"), cdAST);
-    generatorEngine.generate("umlp.gui4teaching.js", Paths.get("static","index.js"), cdAST, cdAST.getCDDefinition().getCDClassesList());
+    generatorEngine.generate("umlp.gui4teaching.html", Paths.get("frontend4teaching","static","index.html"), cdAST);
+    generatorEngine.generate("umlp.gui4teaching.js", Paths.get("frontend4teaching", "static","index.js"), cdAST, cdAST.getCDDefinition().getCDClassesList());
 
   }
 
