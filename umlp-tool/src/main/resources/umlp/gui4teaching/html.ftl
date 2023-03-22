@@ -212,6 +212,13 @@
       return td;
     }
 
+    function addReadOnlyBodyCell(row){
+        const td = document.createElement("td");
+        td.contentEditable = 'false';
+        row.appendChild(td);
+        return td;
+    }
+
     function capitalizeFirstLetter(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
@@ -281,9 +288,7 @@
             tableHeaderRow.appendChild(thAddDelete);
 
             // use attributes of the first dataset entry as the column headers
-            // except gemId
             const classAttrs = Object.keys(data[0]);
-                // .filter(a => a !== "gemId");
             for (const attr of classAttrs) {
               const th = document.createElement("th");
               th.innerText = attr;
@@ -301,8 +306,13 @@
             // add empty cells for creation
             const addRowCells = new Map();
             for (const attr of classAttrs) {
-              const td = addBodyCell(tableAddRow);
-              addRowCells.set(attr, td);
+              if(attr === "gemId"){
+                  const td = addReadOnlyBodyCell(tableAddRow);
+                  addRowCells.set(attr, td);
+              }else{
+                  const td = addBodyCell(tableAddRow);
+                  addRowCells.set(attr, td);
+              }
             }
             // event listener for object creation
             tdAdd.addEventListener("click", () => {
@@ -354,10 +364,15 @@
                 tableBodyRow.appendChild(tdDel);
 
                 for (const attr of classAttrs) {
-                  const td = addBodyCell(tableBodyRow, () => {
-                    handleInput(td, className, attr, gemId);
-                  });
-                  td.innerText = entry[attr];
+                    if(attr === "gemId"){
+                        const td = addReadOnlyBodyCell(tableBodyRow);
+                        td.innerText = entry[attr];
+                    }else{
+                        const td = addBodyCell(tableBodyRow, () => {
+                            handleInput(td, className, attr, gemId);
+                        });
+                        td.innerText = entry[attr];
+                    }
                 }
                 tbody.appendChild(tableBodyRow);
               }
