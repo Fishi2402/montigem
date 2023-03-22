@@ -92,6 +92,7 @@ async function load${c.getName()}() {
   data = await response.json();
   if (data.length == 0) {
     data.push({
+          "gemId": undefined,
       <#list c.getCDAttributeList() as attr>
           "${attr.getName()}": undefined,
       </#list>
