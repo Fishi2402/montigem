@@ -5,5 +5,6 @@ ${cd4c.method("public void init(String url,
                                 String applicationName,
                                 String apiName,
                                 String user,
-                                String password)")}
-  doInit(url, port, applicationName, apiName, user, password);
+                                String password,
+                                String scheme)")}
+  doInit(scheme, url, port, applicationName, apiName, user, password);

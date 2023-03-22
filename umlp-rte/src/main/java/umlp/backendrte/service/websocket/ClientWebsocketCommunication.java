@@ -34,9 +34,9 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
   private CountDownLatch initLatch;
   private Map<Long, CommandResult<?>> messages = new HashMap<>();
 
-  public ClientWebsocketCommunication(String url, String port, String applicationName,
+  public ClientWebsocketCommunication(String scheme, String url, String port, String applicationName,
       String apiName, WebSocketHttpHeaders headers) {
-    this.uri = String.format("ws://%s:%s/%s/%s", url, port, applicationName, apiName);
+    this.uri = String.format("%s://%s:%s/%s/%s", scheme, url, port, applicationName, apiName);
     this.headers = headers;
   }
 

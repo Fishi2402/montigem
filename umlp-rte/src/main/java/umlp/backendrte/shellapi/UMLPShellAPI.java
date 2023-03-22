@@ -37,13 +37,13 @@ public class UMLPShellAPI {
     return commandResult;
   }
 
-  protected void doInit(String url, String port, String applicationName, String apiName, String user, String password) {
+  protected void doInit(String scheme, String url, String port, String applicationName, String apiName, String user, String password) {
     WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
     if (user != null && password != null && !user.isEmpty() && !password.isEmpty()) {
       headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((user + ":" + password).getBytes(StandardCharsets.UTF_8)));
     }
 
-    clientWebsocketCommunication = new ClientWebsocketCommunication(url, port, applicationName, apiName, headers);
+    clientWebsocketCommunication = new ClientWebsocketCommunication(scheme, url, port, applicationName, apiName, headers);
     Result<Long> init = clientWebsocketCommunication.init();
     if (init.wasSuccessful()) {
       participantId = init.getValue();

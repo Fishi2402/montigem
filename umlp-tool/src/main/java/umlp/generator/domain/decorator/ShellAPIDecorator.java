@@ -53,7 +53,8 @@ public class ShellAPIDecorator extends AbstractDecorator {
         String.format("@ShellOption(value = \"--appName\", defaultValue = \"%s\")", name.toLowerCase()),
         "@ShellOption(value = \"--api\", defaultValue = \"wsapi\")",
         "@ShellOption(value = \"--user\", defaultValue = \"\")",
-        "@ShellOption(value = \"--password\", defaultValue = \"\")"
+        "@ShellOption(value = \"--password\", defaultValue = \"\")",
+        "@ShellOption(value = \"scheme\", defaultValue = \"ws\")"
     ));
 
     getCD4C().addMethod(shellapi, "umlp.shellapi.GetFreeGemId");
