@@ -121,25 +121,29 @@
     // Update of CRUD
     async function updateObj(cell, className, attr, gemId) {
       // Get the input value from the table cell
-      let value = convert(cell.textContent.trim());
+      try {
+        let value = convert(cell.textContent.trim(), getType(className, attr));
 
-      // TODO: form proper command, maybe delete next comment and log line
-      // example:
-      // {
-      //   type: Person_setName,
-      //   gemId: 4,
-      //   data: Bob
-      // }
-      const command = {
-        "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_set" + capitalizeFirstLetter(attr),
-        "gemId": gemId
-      };
-      command[attr] = value;
-      // console.log(command);
+        // TODO: form proper command, maybe delete next comment and log line
+        // example:
+        // {
+        //   type: Person_setName,
+        //   gemId: 4,
+        //   data: Bob
+        // }
+        const command = {
+          "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_set" + capitalizeFirstLetter(attr),
+          "gemId": gemId
+        };
+        command[attr] = value;
+        // console.log(command);
 
-      // send request to the server;
-      // don't have to wait for result, the cell is already modified
-      sendCommand(command);
+        // send request to the server;
+        // don't have to wait for result, the cell is already modified
+        sendCommand(command);
+      } catch (err) {
+        showError(err);
+      }
     }
 
     // Create of CRUD
@@ -151,9 +155,9 @@
       //   data: { name: Bob, age: 12 }
       // }
       const freeGemId = {
-          "commandType": "${ast.getCDDefinition().getName()?lower_case}.requests.GetFreeGemIdRequest"
+        "commandType": "${ast.getCDDefinition().getName()?lower_case}.requests.GetFreeGemIdRequest"
       }
-      obj["gemId"] = convert((await sendCommand(freeGemId))["value"]);
+      obj["gemId"] = convert((await sendCommand(freeGemId))["value"], "Number");
       const command = {
         "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_create"
       };
@@ -208,6 +212,13 @@
       if (onInput) {
         td.addEventListener("input", onInput);
       }
+      row.appendChild(td);
+      return td;
+    }
+
+    function addReadOnlyBodyCell(row){
+      const td = document.createElement("td");
+      td.contentEditable = 'false';
       row.appendChild(td);
       return td;
     }
@@ -281,9 +292,7 @@
             tableHeaderRow.appendChild(thAddDelete);
 
             // use attributes of the first dataset entry as the column headers
-            // except gemId
             const classAttrs = Object.keys(data[0]);
-                // .filter(a => a !== "gemId");
             for (const attr of classAttrs) {
               const th = document.createElement("th");
               th.innerText = attr;
@@ -301,8 +310,13 @@
             // add empty cells for creation
             const addRowCells = new Map();
             for (const attr of classAttrs) {
-              const td = addBodyCell(tableAddRow);
-              addRowCells.set(attr, td);
+              if (isReadonly(className, attr)) {
+                const td = addReadOnlyBodyCell(tableAddRow);
+                addRowCells.set(attr, td);
+              } else {
+                const td = addBodyCell(tableAddRow);
+                addRowCells.set(attr, td);
+              }
             }
             // event listener for object creation
             tdAdd.addEventListener("click", () => {
@@ -310,31 +324,39 @@
               const obj = {};
               let valid = false;
               const cells = [];
-              for (const key of addRowCells.keys()) {
-                // table cell corresponding to the column
-                const td = addRowCells.get(key);
-                if (td) {
-                  cells.push(td);
-                  const value = convert(td.textContent.trim());
-                  obj[key] = value;
-                  // TODO: delete if empty objects are allowed;
-                  // object is valid if at least one property is a non-empty value;
-                  // prevents creating a bunch of empty objects
-                  if (value.length > 0 || !isNaN(value)) {
-                    valid = true;
+              try {
+                for (const key of addRowCells.keys()) {
+                  // table cell corresponding to the column
+                  const td = addRowCells.get(key);
+                  if (td) {
+                    cells.push(td);
+                    const value = td.textContent.trim();
+                    // TODO: delete if empty objects are allowed;
+                    // object is valid if at least one property is a non-empty value;
+                    // prevents creating a bunch of empty objects
+                    if (value.length > 0) {
+                      valid = true;
+                    }
+                    obj[key] = convert(value, getType(className, key));
                   }
                 }
-              }
-              if (valid) {
-                // create object and empty the row;
-                // if error happens, the row will not be emptied (for possible recovery?)
-                createObj(obj, className).then(_ => {
-                  for (const cell of cells) {
-                    cell.innerText = "";
-                  }
-                });
-              } else {
-                window.alert("Please set at least on field to create a " + className);
+                if (valid) {
+                  // create object and empty the row;
+                  // if error happens, the row will not be emptied (for possible recovery?)
+                  createObj(obj, className).then(_ => {
+                    for (const cell of cells) {
+                      cell.innerText = "";
+                    }
+                  });
+                } else {
+                  window.alert(
+                    "Please set at least one field to create a " + className
+                  );
+                }
+              } catch (err) {
+                window.alert(
+                  err + " Please make sure the entered data is of a valid type"
+                );
               }
             });
             tbody.appendChild(tableAddRow);
@@ -354,10 +376,15 @@
                 tableBodyRow.appendChild(tdDel);
 
                 for (const attr of classAttrs) {
-                  const td = addBodyCell(tableBodyRow, () => {
-                    handleInput(td, className, attr, gemId);
-                  });
-                  td.innerText = entry[attr];
+                  if (isReadonly(className, attr)) {
+                    const td = addReadOnlyBodyCell(tableBodyRow);
+                    td.innerText = entry[attr];
+                  } else {
+                    const td = addBodyCell(tableBodyRow, () => {
+                      handleInput(td, className, attr, gemId);
+                    });
+                    td.innerText = entry[attr];
+                  }
                 }
                 tbody.appendChild(tableBodyRow);
               }

@@ -2,9 +2,40 @@
 // --------------- always the same (start) --------------- //
 ${signature("cdClasses")}
 
-// TODO: replace with the end-point
-const COMMAND_URL = new URL('http://localhost:8081/${ast.getCDDefinition().getName()?lower_case}/api/');
-const GETALL_URL = new URL('http://localhost:8081/${ast.getCDDefinition().getName()?lower_case}/getall/');
+<#function java2TS type>
+  <#if type == "Float"
+    || type == "float"
+    || type == "Double"
+    || type == "double"
+    || type == "Integer"
+    || type == "int"
+    || type == "Long"
+    || type == "long"
+  >
+    <#return "Number">
+  <#elseif type == "String">
+    <#return "String">
+  <#elseif type == "Boolean"
+    || type == "boolean"
+  >
+    <#return "Boolean">
+  <#elseif type?contains("List")
+    || type?contains("Set")
+    || type?contains("Array")
+  >
+    <#return "Array">
+  <#else>
+    <#return type>
+  </#if>
+</#function>
+
+// Calc endpoints
+let href = window.location.href;
+if(!href.endsWith("/")){
+  href = href + "/";
+}
+const COMMAND_URL = new URL(href + 'api/');
+const GETALL_URL = new URL(href + 'getall/');
 
 async function sendCommand(command) {
   console.log("Send command: " + command);
@@ -22,26 +53,69 @@ async function sendCommand(command) {
   } catch (err) {
     console.error('Error:', err);
     // TODO: remove if you don't want that
-    window.alert("There was an error. Tell you supervisor and take a look in the browser console");
+    showError(err);
     return Promise.reject(err);
   };
 }
 
-function convert(attr) {
-  attrAsNumber = Number(attr);
-  if (!isNaN(attrAsNumber)) {
-    return attrAsNumber;
+function showError(err) {
+  window.alert(err
+   + " Take a look in the browser console."
+   + " Tell you supervisor if you can't figure out what that means.");
+}
+
+const TYPE_INFO = {
+<#list cdClasses as c>
+  "${c.getName()}": {
+  <#list c.getCDAttributeList() as attr>
+    <#assign attrType = attr.getMCType().printType()>
+    "${attr.getName()}": {
+      type: "${java2TS(attrType)}",
+      editable: ${(java2TS(attrType) != "Array" && !attr.getModifier().isDerived())?c},
+    },
+  </#list>
+  },
+</#list>
+}
+
+function convert(value, type) {
+  if (type === "Number") {
+    if (isNaN(Number(value))) {
+      throw typeError(value, type);
+    }
+    return Number(value);
   }
-  if (attr === 'true') {
-    return true;
+  if (type === "Boolean") {
+    if (value === "true") {
+      return true;
+    } else if (value === "false" || value === "") {
+      return false;
+    } else {
+      throw typeError(value, type);
+    }
   }
-  if (attr === 'false') {
-    return false;
+  if (type === "Array") {
+    if (value) {
+      return JSON.parse(value);
+    }
   }
-  if (attr.indexOf("[") == 0) {
-    return JSON.parse(attr);
+  return value;
+}
+
+function typeError(value, type) {
+  return new Error("Expected value of type " + type + ", but got " + value + ".");
+}
+
+function getType(className, attr) {
+  if (TYPE_INFO[className][attr] != null) {
+    return TYPE_INFO[className][attr].type;
+  } else {
+    return "String";
   }
-  return attr;
+}
+
+function isReadonly(className, attr) {
+  return attr === "gemId" || !TYPE_INFO[className][attr] || !TYPE_INFO[className][attr].editable;
 }
 
 function uncapitalize(str1){
@@ -88,6 +162,7 @@ async function load${c.getName()}() {
   data = await response.json();
   if (data.length == 0) {
     data.push({
+          "gemId": undefined,
       <#list c.getCDAttributeList() as attr>
           "${attr.getName()}": undefined,
       </#list>

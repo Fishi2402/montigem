@@ -66,6 +66,15 @@ public class Gem<E extends GemIdentifiable> implements GemIdentifiable {
   }
 
   /*
+   * Constructor for: Object is not present.
+   */
+  public Gem(){
+    this.gemId = -1;
+    this.loadFunction = () -> { throw new IllegalStateException("Can not load empty Gem!"); };
+    this.loadingState = LoadingState.EMPTY;
+  }
+
+  /*
    * Constructor for: Object is not yet loaded
    */
   public Gem(long gemID, LoadingState loadingState) {

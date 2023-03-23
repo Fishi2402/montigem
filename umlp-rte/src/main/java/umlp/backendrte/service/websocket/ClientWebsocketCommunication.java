@@ -78,11 +78,11 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
     return result;
   }
 
-  public Result<Long> init(String uri) {
+  public Result<Long> init(String uri, WebSocketHttpHeaders headers) {
     initLatch = new CountDownLatch(2);
     StandardWebSocketClient webSocketClient = new StandardWebSocketClient();
     try {
-      this.clientSession = webSocketClient.doHandshake(this, new WebSocketHttpHeaders(),
+      this.clientSession = webSocketClient.doHandshake(this, headers,
           URI.create(uri)).get();
     }
     catch (InterruptedException e) {

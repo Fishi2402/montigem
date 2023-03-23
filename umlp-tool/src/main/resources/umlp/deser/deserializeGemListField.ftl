@@ -3,6 +3,9 @@ ${tc.signature("cdName", "className", "fieldName")}
 ${cd4c.method("protected List<Long> deserialize${fieldName?cap_first} (JsonObject json)")}
   <#-- TODO: default values -->
   List<Long> res = new ArrayList<>();
+  if(!json.hasMember("${fieldName}")){
+    return res;
+  }
   for(JsonElement e : json.getMember("${fieldName}").getAsJsonArray().getValues()){
     res.add(e.getAsJsonNumber().getNumberAsLong());
   }

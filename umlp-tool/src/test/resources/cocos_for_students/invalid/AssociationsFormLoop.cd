@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+classdiagram AssociationsFormLoop {
+
+  class A;
+  class B;
+  class C;
+
+  package One {
+    association A -> B [1];
+    association B -> A [1..*];
+  }
+
+  package Two {
+    association [1] A -> B [1];
+    association [1] B -> A [1];
+  }
+
+  package Three {
+    association A -> B [1];
+    association B -> C [1];
+    association C -> A [1];
+  }
+}

@@ -12,12 +12,7 @@ public class PersonCreate extends PersonCreateTOP {
   }
 
   @Override
-  protected void decreaseAge() {
-    pb.decreaseAge();
-  }
-
-  @Override
-  public void createAndNavigate() {
+  public void create() {
     try {
       if (!this.pb.isBuildFinished() && this.pb.isBuildable()) {
         this.pb.build();

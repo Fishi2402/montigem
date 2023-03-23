@@ -14,6 +14,8 @@ import hardy.Person;
 import hardy.PersonBuilder;
 import hardy.PersonErrorObserver;
 
+import java.util.function.Consumer;
+
 /********************************************************/
 
 public class PersonCreateTOP implements PersonErrorObserver {
@@ -78,16 +80,10 @@ public class PersonCreateTOP implements PersonErrorObserver {
   }
 
   public void gemButtonComp4LeftClick() {
-    createAndNavigate();
+    create();
   }
 
-  public void createAndNavigate() { }
-
-  public void gemButtonComp3LeftClick() {
-    decreaseAge();
-  }
-
-  protected void decreaseAge() {
+  public void create() {
   }
 
 }

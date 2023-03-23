@@ -4,11 +4,15 @@ package umlp.backendrte.shellapi;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.MCFatalError;
 import org.springframework.shell.Availability;
+import org.springframework.web.socket.WebSocketHttpHeaders;
 import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandObjectMapper;
 import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.common.Result;
 import umlp.backendrte.service.websocket.ClientWebsocketCommunication;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class UMLPShellAPI {
 
@@ -32,13 +36,18 @@ public class UMLPShellAPI {
     return commandResult;
   }
 
-  protected void doInit(String url, String port, String applicationName, String apiName) {
-    String uri = buildUri(url, port, applicationName, apiName);
+  protected void doInit(String scheme, String url, String port, String applicationName, String apiName, String user, String password) {
+    WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
+    if (user != null && password != null && !user.isEmpty() && !password.isEmpty()) {
+      headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((user + ":" + password).getBytes(StandardCharsets.UTF_8)));
+    }
+
+    String uri = buildUri(scheme, url, port, applicationName, apiName);
     clientWebsocketCommunication = new ClientWebsocketCommunication().onCommand(cmd -> {
       String msg = String.format("Received sync command '%s' from server: %s", cmd.getCommandType(), CommandObjectMapper.serializeCommand(cmd));
       Log.info(msg, UMLP_SHELL_API);
         });
-    Result<Long> init = clientWebsocketCommunication.init(uri);
+    Result<Long> init = clientWebsocketCommunication.init(uri, headers);
     if (init.wasSuccessful()) {
       participantId = init.getValue();
       Log.info(String.format("Websocket connection to '%s' was successfull. Participant ID: %s",
@@ -49,10 +58,9 @@ public class UMLPShellAPI {
     }
   }
 
-  private static String buildUri(String url, String port, String applicationName, String apiName) {
-    String wsPrefix = url.contains("ws://") || url.startsWith("wss://") ? "" : "wss://";
+  private static String buildUri(String scheme, String url, String port, String applicationName, String apiName) {
     String portString = port.isEmpty() ? "" : ":" + port;
-    String uri = String.format("%s%s%s/%s/%s", wsPrefix, url, portString, applicationName, apiName);
+    String uri = String.format("%s://%s%s/%s/%s", scheme, url, portString, applicationName, apiName);
     return uri;
   }
 

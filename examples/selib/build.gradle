@@ -24,6 +24,7 @@ task generateSELib(type: UMLPTask) {
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
     hwcDir = layout.projectDirectory.dir("src/main/java/")
     configTemplate = "umlp/UMLPConfig4teaching.ftl"
+    tmplDir = layout.projectDirectory.dir("src/templates/")
 }
 
 task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
@@ -39,3 +40,5 @@ task runServer {
 }
 
 build.dependsOn(generateSELib)
+
+sourceSets.main.resources.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode/frontend4teaching"]

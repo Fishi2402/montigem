@@ -11,6 +11,9 @@ import stanley.tmp.io.input.GemTextInput;
 import stanley.tmp.io.input.GemNumberInput;
 import stanley.tmp.io.GemButton;
 
+import stanley.tmp.layout.GemCard;
+import stanley.tmp.layout.GemColumn;
+
 /**
  * This example defines a 
  * Form to fill out person data
@@ -23,24 +26,37 @@ import stanley.tmp.io.GemButton;
 // auf die Seite im Modell eingegeben wird, wird PersonBuilder automatisch erstellt und
 // "aktualisiert".
 page PersonCreate(Person p) { // "leere" Person
+  @GemCard(
+    title = "Edit Person",
+    content = @GemColumn(contents = [
+      @GemTextInput(value = p.nickname),
+      @GemNumberInput(value = p.age),
+      saveButton@GemButton(text = "Ok", leftClick = create)
+    ])
+  );
+}
+/**/
+
+/*
+page PersonCreate(Person p) { // "leere" Person
+  @GemColumn(contents = [
+    @GemTextInput(value = p.nickname),
+    @GemNumberInput(value = p.age),
+    @GemButton(text = "Ok", leftClick = create)
+  ]);
+}
+/**/
+
+/*
+page PersonCreate(Person p) { // "leere" Person
   // show and edit the nickname
   @GemTextInput(value = p.nickname);
 
   // show and edit the age as number
   @GemNumberInput(value = p.age);
 
-  // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
-  // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird
-  // in einem handgeschriebenen Teil implementiert wird und importiert
-  // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "EditierePersonGUI.java".
-  // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
-  // deswegen wird eine Methode explizit importiert und aufgerufen
-  @GemButton(text = "Decrease", leftClick = decreaseAge);
-
   // Button mit Text "Ok" und Navigation auf eine andere Seite
   // (und die Logik dafür ist generiert und verfügbar)
-  // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
-  // ueberschrieben werden z.B. navigate, copy, show(:ContextMenu(...)), ...
-  @GemButton(text = "Ok", leftClick = createAndNavigate);
+  @GemButton(text = "Ok", leftClick = create);
 }
-
+/**/
