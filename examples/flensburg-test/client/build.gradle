@@ -1,34 +1,25 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 buildscript {
     repositories {
         mavenCentral()
         maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
         maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-//    maven { url "https://repository.jsweet.org/artifactory/plugins-release-local" }
-//    maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
-        maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
     }
     dependencies {
         classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
             transitive = true
         }
+        classpath project(":umlp-rte:umlp-frontend-rte-java")
     }
 }
 
 plugins {
-    id "com.github.node-gradle.node" version "3.4.0"
     id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
+    id "com.github.node-gradle.node" version "3.4.0"
 }
 
-repositories {
-    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-}
-
-dependencies {
-    implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
-    implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
+compileJava {
+    enabled = false
 }
 
 jsweet {
@@ -42,6 +33,7 @@ jsweet {
     targetVersion = 'ES6'
     includes = ['**/flensburg/**/*.java']
     module = 'commonjs'
+    workingDir = project.file('target/.jsweet')
     excludeTranspilation = [
 //            '**/*DeSer*.java',
             'flensburg/*DAO.java',
@@ -50,21 +42,8 @@ jsweet {
 }
 
 node {
-    // Whether to download and install a specific Node.js version or not
-    // If false, it will use the globally installed Node.js
-    // If true, it will download node using above parameters
-    // Note that npm is bundled with Node.js
     download = true
-
-    // Version of node to download and install (only used if download is true)
-    // It will be unpacked in the workDir
     version = "12.18.2"
-
-    // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
-    // according the proxy configuration defined for Gradle
-    // Disable this option if you want to configure the proxy for npm or yarn on your own
-    // (in the .npmrc file for instance)
-    // nodeProxySettings = ProxySettings.SMART
 }
 
 task buildApp(type: NpxTask) {
@@ -81,19 +60,4 @@ compileJava {
     enabled = false
 }
 
-task printSourceSetInformation(){
-    doLast{
-        sourceSets.each { srcSet ->
-            println "["+srcSet.name+"]"
-            print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
-            print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
-            println ""
-        }
-    }
-}
-
-sourceSets {
-    main.java {
-        srcDirs += ["$projectDir/jsweet_extension"]
-    }
-}
+clean.dependsOn(jsweetClean)

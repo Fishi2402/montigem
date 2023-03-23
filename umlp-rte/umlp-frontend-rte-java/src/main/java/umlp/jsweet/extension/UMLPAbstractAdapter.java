@@ -8,10 +8,12 @@ import org.jsweet.transpiler.model.ImportElement;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public abstract class UMLPAbstractAdapter extends PrinterAdapter {
-  protected HashSet<String> staticLibrary = new HashSet<>();
+  public static final String UMLP_RTE_PACKAGE = "umlp.backendrte";
+  private HashMap<String, String> staticLibrary = new HashMap<>();
 
   public UMLPAbstractAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
@@ -25,7 +27,7 @@ public abstract class UMLPAbstractAdapter extends PrinterAdapter {
   @Override
   public String needsImport(ImportElement importElement, String qualifiedName) {
     if (importElement.getImportedType() != null) {
-      for (String staticClass : staticLibrary) {
+      for (String staticClass : staticLibrary.keySet()) {
         if (qualifiedName.equals(staticClass)) {
           return getRootRelativeName(importElement.getImportedType());
         }
@@ -38,13 +40,24 @@ public abstract class UMLPAbstractAdapter extends PrinterAdapter {
   public ModuleImportDescriptor getModuleImportDescriptor(
     CompilationUnitElement currentCompilationUnit, String importedName, TypeElement importedClass) {
     String fqn = importedClass.getQualifiedName().toString();
-    for (String staticClass : staticLibrary) {
+    for (String staticClass : staticLibrary.keySet()) {
       if (fqn.equals(staticClass)) {
         return new ModuleImportDescriptor(false,
-          (PackageElement) importedClass.getEnclosingElement(), importedName,
+          (PackageElement) importedClass.getEnclosingElement(), staticLibrary.get(staticClass),
           getLibraryLocation(), importedClass);
       }
     }
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
+  }
+
+  protected static String backendRTE(String furtherPath) {
+    return String.join(".", UMLP_RTE_PACKAGE, furtherPath);
+  }
+
+  protected void addToStaticLibrary(String staticClass) {
+    staticLibrary.put(staticClass, staticClass);
+  }
+  protected void putToStaticLibrary(String staticClass, String replaceClass) {
+    staticLibrary.put(staticClass, replaceClass);
   }
 }

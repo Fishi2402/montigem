@@ -4,6 +4,7 @@ import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ImportElement;
+import org.jsweet.transpiler.model.MethodInvocationElement;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
@@ -49,13 +50,42 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
 
   private void initTypeMappings() {
     getTypeMirrorMappings().add(0, (TypeMirror type) -> {
-      if(type.toString().equals("java.util.Optional<umlp.rte.GemList<E>>")) {
+      if(type.toString().equals(String.format("java.util.Optional<%s>", backendRTE("common.GemList<E>")))) {
         return "GemList<E>";
+      }
+      if(type.toString().equals(String.format("java.util.Optional<%s>", backendRTE("command.Command<T>")))) {
+        return "Command<T>";
+      }
+      if(type.toString().equals("de.monticore.symboltable.serialization.json.JsonObject")) {
+        return "any";
+      }
+      if(type.toString().equals("de.monticore.symboltable.serialization.json.JsonElement")) {
+        return "any";
       }
       return null;
     });
   }
 
+  @Override
+  public boolean substituteMethodInvocation(MethodInvocationElement invocation) {
+    if (invocation.getTargetType() == null) {
+      return super.substituteMethodInvocation(invocation);
+    }
+    if (substituteMethodInvocation_MCJson(invocation)) {
+      return true;
+    }
+    return super.substituteMethodInvocation(invocation);
+  }
+
+  private boolean substituteMethodInvocation_MCJson(MethodInvocationElement invocation) {
+    if (invocation.getTargetType().toString().equals("de.monticore.symboltable.serialization.JsonParser")) {
+      if (invocation.getMethodName().equals("parseJsonObject") || invocation.getMethodName().equals("parse")) {
+        print(String.format("JSON.parse(%s)", invocation.getArgument(0).toString()));
+        return true;
+      }
+    }
+    return false;
+  }
 
   @Override
   public void afterTypeBody(TypeElement type) {
@@ -81,7 +111,8 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
 
   @Override
   protected void initStaticLibary() {
-    staticLibrary.add("de.se_rwth.commons.logging.Log");
+    addToStaticLibrary("de.se_rwth.commons.logging.Log");
+    addToStaticLibrary("de.monticore.symboltable.serialization.JsonPrinter");
   }
 
   @Override

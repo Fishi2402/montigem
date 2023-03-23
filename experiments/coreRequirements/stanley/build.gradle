@@ -5,8 +5,6 @@ buildscript {
     mavenCentral()
     maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
     maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-//    maven { url "https://repository.jsweet.org/artifactory/plugins-release-local" }
-//    maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
     maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
   }
   dependencies {
@@ -112,9 +110,6 @@ task runApp(type: NpxTask) {
 }
 
 sourceSets {
-  main.java {
-    srcDirs += ["$projectDir/jsweet_extension"]
-  }
   // java -> main instead of main -> java?
   java {
     main {

@@ -3,7 +3,6 @@ package umlp.jsweet.extension;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.MethodInvocationElement;
-import umlp.jsweet.extension.UMLPAbstractAdapter;
 
 /**
  * This adapter is responsible to use some additional {@link java.util} classes.
@@ -49,8 +48,9 @@ public class UMLPJavaUtilAdapter extends UMLPAbstractAdapter {
 
   @Override
   protected void initStaticLibary() {
-    staticLibrary.add("java.util.concurrent.atomic.AtomicReference");
-    staticLibrary.add("java.util.Random");
+    addToStaticLibrary("java.util.concurrent.atomic.AtomicReference");
+    addToStaticLibrary("java.util.Random");
+    putToStaticLibrary("java.lang.String", "StringHelper");
   }
 
   @Override

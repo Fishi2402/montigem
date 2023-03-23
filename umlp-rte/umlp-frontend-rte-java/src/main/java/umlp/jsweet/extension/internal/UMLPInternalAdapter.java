@@ -5,18 +5,19 @@ import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ImportElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import org.jsweet.transpiler.model.NewClassElement;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.PrinterAdapter {
-
-  public static void main(String[] args) {
-
-  }
 
   public static final String UMLP_RTE_PACKAGE = "umlp.backendrte";
 
@@ -32,10 +33,11 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
 
   private void initStaticLibary() {
     staticLibrary.put("de.se_rwth.commons.logging.Log",  "logging/Log");
-    staticLibrary.put(backendRTE("command.CommandObjectMapper"), "command/CommandObjectMapper");
     staticLibrary.put("java.util.concurrent.atomic.AtomicReference", "javautil/AtomicReference");
     staticLibrary.put("java.util.Random", "javautil/Random");
-    staticLibrary.put("java.util.Random", "javautil/Random");
+    staticLibrary.put("de.monticore.symboltable.serialization.JsonPrinter", "mcjson/JsonPrinter");
+    staticLibrary.put("java.lang.String", "javautil/StringHelper");
+    staticLibrary.put(backendRTE("command.CommandResultDeSer"), "command/CommandResultDeSer");
   }
 
   private static String backendRTE(String furtherPath) {
@@ -64,7 +66,7 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
     String fqn = importedClass.getQualifiedName().toString();
     for (String staticClass : staticLibrary.keySet()) {
       if (fqn.equals(staticClass)) {
-        return new ModuleImportDescriptor(false, (PackageElement) importedClass.getEnclosingElement(), importedName,
+        return new ModuleImportDescriptor(false, (PackageElement) importedClass.getEnclosingElement(), getName(staticLibrary.get(staticClass)),
           UMLP_RTE_HWC_POINTER + "/" + staticLibrary.get(staticClass), importedClass);
       }
     }
@@ -72,10 +74,43 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
   }
 
+  private String getName(String importedName) {
+    int index = 0;
+    if (importedName.lastIndexOf("/") > 0) {
+      index = importedName.lastIndexOf("/");
+    }
+    if (importedName.lastIndexOf("\\") > 0) {
+      index = importedName.lastIndexOf("\\");
+    }
+    if (importedName.lastIndexOf(".") > 0) {
+      index = importedName.lastIndexOf(".");
+    }
+    if (index > 0) {
+      return importedName.substring(index + 1);
+    }
+    return importedName;
+  }
+
   private void initTypeMappings() {
     getTypeMirrorMappings().add(0, (TypeMirror type) -> {
       if(type.toString().equals(String.format("java.util.Optional<%s>", backendRTE("common.GemList<E>")))) {
         return "GemList<E>";
+      }
+      if (types().isSubtype(types().erasure(type), types().erasure(util().getType(Optional.class)))
+          && type instanceof DeclaredType) {
+        List<? extends TypeMirror> typeArgs = ((DeclaredType) type).getTypeArguments();
+        if (typeArgs.size() > 0) {
+          TypeMirror backingType = typeArgs.get(0);
+          if (backingType.getKind() == TypeKind.DECLARED) {
+            return getMappedType(backingType);
+          }
+        }
+      }
+      if(type.toString().equals("de.monticore.symboltable.serialization.json.JsonObject")) {
+        return "any";
+      }
+      if(type.toString().equals("de.monticore.symboltable.serialization.json.JsonElement")) {
+        return "any";
       }
       return null;
     });
@@ -83,7 +118,41 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
 
   @Override
   public boolean substituteMethodInvocation(MethodInvocationElement invocation) {
-    if (invocation.getTargetType() != null && invocation.getTargetType().toString().equals("java.util.Objects")) {
+    if (invocation.getTargetType() == null) {
+      return super.substituteMethodInvocation(invocation);
+    }
+    if (substituteMethodInvocation_JavaUtilObjects(invocation)) {
+      return true;
+    } else if (substituteMethodInvocation_JavaLangString(invocation)) {
+      return true;
+    } else if (substituteMethodInvocation_MCJson(invocation)) {
+      return true;
+    }
+    return super.substituteMethodInvocation(invocation);
+  }
+
+  private boolean substituteMethodInvocation_MCJson(MethodInvocationElement invocation) {
+    if (invocation.getTargetType().toString().equals("de.monticore.symboltable.serialization.JsonParser")) {
+      if (invocation.getMethodName().equals("parseJsonObject") || invocation.getMethodName().equals("parse")) {
+        print("JSON.parse(").printArgList(invocation.getArguments()).print(")");
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean substituteMethodInvocation_JavaLangString(MethodInvocationElement invocation) {
+    if (invocation.getTargetType().toString().equals("java.lang.String")) {
+      if (invocation.getMethodName().equals("format")) {
+        print("StringHelper.format(").printArgList(invocation.getArguments()).print(")");
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean substituteMethodInvocation_JavaUtilObjects(MethodInvocationElement invocation) {
+    if (invocation.getTargetType().toString().equals("java.util.Objects")) {
       if (invocation.getMethodName().equals("requireNonNull")) {
         String msg = invocation.getArgumentCount() > 1 ? invocation.getArgument(1).toString() : "";
         print("/* requireNonNull */")
@@ -100,6 +169,11 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
         return true;
       }
     }
-    return super.substituteMethodInvocation(invocation);
+    return false;
+  }
+
+  @Override
+  public boolean substituteNewClass(NewClassElement newClass) {
+    return super.substituteNewClass(newClass);
   }
 }
