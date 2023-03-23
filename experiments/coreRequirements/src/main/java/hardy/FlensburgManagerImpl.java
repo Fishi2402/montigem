@@ -13,8 +13,6 @@ import hardy.gemlists.PersonGemList;
 import hardy.gemlists.Person_ChildrenGemList;
 import hardy.gemlists.Person_OwnsGemList;
 import hardy.gemlists.Person_VisitedGemList;
-import hardy.jsweetUtil.UMLPPromise;
-import jsweet.lang.Async;
 import umlp.backendrte.common.DatabaseAccessManager;
 import umlp.backendrte.common.GemList;
 import umlp.backendrte.common.GemListBuilder;
