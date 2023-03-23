@@ -14,7 +14,7 @@ createIndexTS() {
       FILE="$(basename $f .ts)"
       if [ "$FILE" != "index" ] && [ "$FILE" != "public-api" ]
       then
-        echo "Processing file $FILE"
+#        echo "Processing file $FILE"
         echo "export * from './$FILE';" >> $INDEXTS
       fi
     fi
@@ -26,7 +26,7 @@ createIndexTS() {
     if [ -d "$d" ]
     then
       DIRNAME="$(basename $d)"
-      echo "Processing subdirectory $DIRNAME"
+#      echo "Processing subdirectory $DIRNAME"
       echo "export * from './$DIRNAME';" >> $INDEXTS
     fi
   done
@@ -36,7 +36,7 @@ createIndexTS() {
     if [ -d "$d" ]
     then
       DIRNAME="$(basename $d)"
-      echo "Proceeding with subdirectory $DIRNAME"
+#      echo "Proceeding with subdirectory $DIRNAME"
       createIndexTS $d
     fi
   done

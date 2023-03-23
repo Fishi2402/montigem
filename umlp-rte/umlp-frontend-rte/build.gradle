@@ -71,7 +71,17 @@ node {
   version = "12.18.2"
 }
 
+task generateIndexTS(type: Exec) {
+  workingDir "$projectDir"
+//  if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+//    commandLine 'cmd', '/c', 'mycommand'
+//  } else {
+    commandLine 'sh', '-c', './scripts/generateIndexTS.sh projects/umlp-frontend-rte/src/lib/'
+//  }
+}
+
 task buildLib(type: NpxTask) {
+  dependsOn(generateIndexTS)
   command = "ng"
   args = ["build", "--prod"]
   dependsOn(tasks.npmInstall)
@@ -84,47 +94,12 @@ task buildLib(type: NpxTask) {
 
 project.getTasksByName("jsweet", true).forEach {
   t-> {
-    print(t.name)
     t.finalizedBy(buildLib)
     buildLib.dependsOn(t)
+    generateIndexTS.dependsOn(t)
   }
 }
 
-//task packLib(type: NpxTask) {
-//  dependsOn(buildLib)
-//  command = "npm"
-//  args = ["pack", "--workspace dist/umlp-frontend-rte"]
-////  inputs.dir("dist/umlp-frontend-rte")
-//  inputs.dir(project.fileTree("dist/umlp-frontend-rte"))
-////  inputs.dir("node_modules")
-////  inputs.files("tsconfig.json")
-//  outputs.dir("${project.buildDir}/dist")
-//}
+clean.dependsOn(jsweetClean)
 
-//sourceSets {
-//  java {
-//    main {
-//      resources {
-//        // This makes the processResources task automatically depend on the buildApp one
-//        srcDir(buildLib)
-//      }
-//    }
-//  }
-//}
-
-/*
-tasks.test {
-  dependsOn(testApp)
-}
-/**/
-
-task printSourceSetInformation(){
-  doLast{
-    sourceSets.each { srcSet ->
-      println "["+srcSet.name+"]"
-      print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
-      print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
-      println ""
-    }
-  }
-}
+//build.dependsOn(buildLib)
