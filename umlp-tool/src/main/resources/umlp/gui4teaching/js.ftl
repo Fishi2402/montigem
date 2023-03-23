@@ -95,7 +95,9 @@ function convert(value, type) {
     }
   }
   if (type === "Array") {
-    return JSON.parse(value);
+    if (value) {
+      return JSON.parse(value);
+    }
   }
   return value;
 }
