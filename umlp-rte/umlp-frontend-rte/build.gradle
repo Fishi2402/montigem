@@ -52,18 +52,16 @@ jsweet {
   includes = ['**/*.java']
   module = 'commonjs'
   autoPropagateAsyncAwaits = true
-//  excludes = ['**/umlp/jsweet/extension/**/*.java']    // Enable for implementing a new Adapter
   workingDir = project.file('target/.jsweet')
+  excludes = [
+    '**/service/**',
+    '**/shellapi/**',
+    '**/service/**',
+  ]
   excludeTranspilation = [
-    '**/umlp/jsweet/extension/**/*.java',
-    '**/CommandObjectMapper.java',
     '**/DatabaseAccessManager.java',
-    '**/*DeSer*',
-    '**/BaseClassObjectMapper.java',
     '**/HashMapWithOrderedKeys.java',
-    '**/service/websocket/**',
-    '**/shellapi/UMLPShellApi.java',
-    '**/AwaitUtil.java'
+    '**/CommandResultDeSer.java',
   ]
 }
 

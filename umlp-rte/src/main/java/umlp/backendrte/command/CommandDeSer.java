@@ -34,7 +34,7 @@ public abstract class CommandDeSer<T extends Command<?>> {
     return res;
   }
 
-  public Optional<T> fromJson(String json){
+  public Optional<T> fromJsonString(String json){
     return fromJson(JsonParser.parseJsonObject(json));
   }
 }

@@ -4,12 +4,14 @@ package umlp.backendrte.common;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonNumber;
+import jsweet.lang.Replace;
 import umlp.backendrte.command.DeSer;
 
 import java.util.Optional;
 
 public class IntegerDeSer implements DeSer<Integer> {
   @Override
+  @Replace("return \"\" + obj;")
   public String serialize(Integer obj) {
     return new JsonNumber(Integer.toString(obj)).toString();
   }

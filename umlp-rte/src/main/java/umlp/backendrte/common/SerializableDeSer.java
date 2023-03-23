@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.backendrte.common;
 
+import jsweet.lang.Erased;
 import umlp.backendrte.command.DeSer;
 
 import java.io.ByteArrayInputStream;
@@ -11,7 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Base64;
 import java.util.Optional;
-
+@Erased
 public class SerializableDeSer implements DeSer<Serializable> {
 
   @Override

@@ -13,7 +13,7 @@ public abstract class CommandObjectMapper {
   protected static CommandObjectMapper instance;
 
   protected static CommandObjectMapper getInstance(){
-    return Objects.requireNonNull(instance, "CommandObjectMapper is not initialized!");
+    return Objects.requireNonNull(CommandObjectMapper.instance, "CommandObjectMapper is not initialized!");
   }
 
   public static String serializeCommand(Command<?> command){
