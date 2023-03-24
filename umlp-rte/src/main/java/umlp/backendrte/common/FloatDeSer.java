@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public class FloatDeSer implements DeSer<Float> {
   @Override
-  @Replace("return \"\" + obj;")
   public String serialize(Float obj) {
     return new JsonNumber(Float.toString(obj)).toString();
   }

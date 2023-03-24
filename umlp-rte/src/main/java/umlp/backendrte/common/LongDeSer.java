@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public class LongDeSer implements DeSer<Long> {
   @Override
-  @Replace("return \"\" + obj;")
   public String serialize(Long obj) {
     return new JsonNumber(Long.toString(obj)).toString();
   }

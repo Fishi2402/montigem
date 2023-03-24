@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public class IntegerDeSer implements DeSer<Integer> {
   @Override
-  @Replace("return \"\" + obj;")
   public String serialize(Integer obj) {
     return new JsonNumber(Integer.toString(obj)).toString();
   }

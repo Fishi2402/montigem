@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public class ByteDeSer implements DeSer<Byte> {
   @Override
-  @Replace("return \"\" + obj;")
   public String serialize(Byte obj) {
     return new JsonNumber(Byte.toString(obj)).toString();
   }

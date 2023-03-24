@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicReference;
 // Damit diese teuren operationen nicht unnötig ausgeführt werden, werden sie erst ausgeführt, wenn
 // auf den entsprechenden Chunk zugegriffen wird.
 // Alternativ könnte bei geringer Systemlast diese Operation auch nebenläufig erfolgen.
-@Erased
 public class ChunkedIdStorage implements IdStorage {
   protected List<Chunk> chunks = new ArrayList<>();
   protected int correctUntil = 0;

@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public class DoubleDeSer implements DeSer<Double> {
   @Override
-  @Replace("return \"\" + obj;")
   public String serialize(Double obj) {
     return new JsonNumber(Double.toString(obj)).toString();
   }

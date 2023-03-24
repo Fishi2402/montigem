@@ -38,6 +38,9 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
     staticLibrary.put("de.monticore.symboltable.serialization.JsonPrinter", "mcjson/JsonPrinter");
     staticLibrary.put("java.lang.String", "javautil/StringHelper");
     staticLibrary.put(backendRTE("command.CommandResultDeSer"), "command/CommandResultDeSer");
+    staticLibrary.put(backendRTE("common.Gem"), "common/Gem");
+    staticLibrary.put(backendRTE("common.GemList"), "common/GemList");
+    staticLibrary.put(backendRTE("common.GemListBuilder"), "common/GemListBuilder");
   }
 
   private static String backendRTE(String furtherPath) {

@@ -238,17 +238,6 @@ public abstract class GemList<E extends GemIdentifiable>
    * Can only be called if the idStorage contains the gemId, otherwise the size will become invalid.
    * The gemId is not required to be loaded in the idStorage, thus the result of idStorage.removeId must not be returned
    */
-  @Replace("console.info(this.ids);\n"
-      + "      /* remove */\n"
-      + "      (a => {\n"
-      + "        let index = a.indexOf(<number>gemId);\n"
-      + "        if (index >= 0) {\n"
-      + "          a.splice(index, 1);\n"
-      + "          return true;\n"
-      + "        } else {\n"
-      + "          return false;\n"
-      + "        }\n"
-      + "      })(this.ids);")
   public void removeIdSure(long gemId) {
     System.out.println(ids);
     ids.removeIf(l -> Objects.equals(l, gemId));

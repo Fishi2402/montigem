@@ -52,12 +52,6 @@ public abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
   }
 
   @Override
-  @Replace(
-                "if (this.buildFinished) {\n"
-          + "      return super.size();\n"
-          + "    } else {\n"
-          + "      return this.builderElemStorage.length;\n"
-          + "    }")
   public int size() {
     if(buildFinished){
       return super.size();
@@ -67,16 +61,6 @@ public abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
   }
 
   @Override
-  @Replace(
-                "if (this.buildFinished) {\n"
-          + "      return super.get(idx);\n"
-          + "    } else {\n"
-          + "      if (/* get */this.builderElemStorage[idx].isPresentBuilder()) {\n"
-          + "        return /* get */this.builderElemStorage[idx].getBuilder();\n"
-          + "      } else {\n"
-          + "        return super.get(idx);\n"
-          + "      }\n"
-          + "    }")
   public E get(int idx) {
     if(buildFinished) {
       return super.get(idx);
@@ -92,14 +76,6 @@ public abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
   }
 
   @Override
-  @Replace(
-                "if (this.buildFinished) {\n"
-          + "      super.add(idx, elem);\n"
-          + "    } else {\n"
-          + "      /* add */\n"
-          + "      this.builderElemStorage.splice(idx, 0, new IDOrBuilder<any>(elem));\n"
-          + "    }"
-  )
   public void add(int idx, E elem) {
     if(buildFinished) {
       super.add(idx, elem);

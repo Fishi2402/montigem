@@ -14,7 +14,6 @@ import java.util.Optional;
 
 public class LongListDeSer implements DeSer<LongList> {
   @Override
-  @Replace("return \"\";") // TODO
   public String serialize(LongList obj) {
     JsonArray array = new JsonArray();
     for (Long l : obj) {

@@ -2,7 +2,7 @@
 
 createIndexTS() {
   DIR="$1"
-  echo "Processing directory $DIR"
+#  echo "Processing directory $DIR"
   INDEXTS="$DIR/index.ts"
   echo "" > $INDEXTS
 

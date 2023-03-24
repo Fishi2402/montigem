@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public class ShortDeSer implements DeSer<Short> {
   @Override
-  @Replace("return \"\" + obj;") // TODO
   public String serialize(Short obj) {
     return new JsonNumber(Short.toString(obj)).toString();
   }

@@ -41,7 +41,6 @@ public abstract class CommandResult<T> {
     return false;
   }
 
-  @Replace("return this as unknown as StatusResult;")
   public StatusResult asStatusResult(){
     return (StatusResult) this;
   }
@@ -50,7 +49,6 @@ public abstract class CommandResult<T> {
     return false;
   }
 
-  @Replace("return this as unknown as SimpleResult<T>;")
   public SimpleResult<T> asSimpleResult(){
     return (SimpleResult<T>) this;
   }

@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public class CharacterDeSer implements DeSer<Character> {
   @Override
-  @Replace("return obj;")
   public String serialize(Character obj) {
     return new JsonNumber(Character.toString(obj)).toString();
   }

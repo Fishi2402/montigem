@@ -11,9 +11,8 @@ import java.util.Optional;
 
 class BooleanDeSer implements DeSer<Boolean> {
   @Override
-  @Replace("return \"\" + b;")
-  public String serialize(Boolean b) {
-    return new JsonBoolean(b).toString();
+  public String serialize(Boolean obj) {
+    return new JsonBoolean(obj).toString();
   }
 
   @Override
