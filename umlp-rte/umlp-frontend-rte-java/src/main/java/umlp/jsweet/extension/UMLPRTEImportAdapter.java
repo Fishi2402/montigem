@@ -4,7 +4,6 @@ import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ImportElement;
-import org.jsweet.transpiler.model.MethodInvocationElement;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
@@ -19,17 +18,14 @@ import javax.lang.model.type.TypeMirror;
  */
 public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
 
-  private static final String UMLP_RTE_PACKAGE = "umlp.backendrte";
-  private static final String UMLP_RTE_LIBRARY_POINTER = "umlp-frontend-rte";
-
   public UMLPRTEImportAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
-    initTypeMappings();
   }
 
   @Override
   public String needsImport(ImportElement importElement, String qualifiedName) {
-    if (importElement.getImportedType() != null && qualifiedName.startsWith(UMLP_RTE_PACKAGE)) {
+    if (importElement.getImportedType() != null && qualifiedName.startsWith(
+        UMLPAdapterUtils.UMLP_RTE_PACKAGE)) {
       return getRootRelativeName(importElement.getImportedType());
     }
     return super.needsImport(importElement, qualifiedName);
@@ -40,51 +36,12 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
       CompilationUnitElement currentCompilationUnit, String importedName,
       TypeElement importedClass) {
     String fqn = importedClass.getQualifiedName().toString();
-    if (fqn != null && fqn.startsWith(UMLP_RTE_PACKAGE)) {
-      return new ModuleImportDescriptor(false, (PackageElement) importedClass.getEnclosingElement(), importedName,
+    if (fqn != null && fqn.startsWith(UMLPAdapterUtils.UMLP_RTE_PACKAGE)) {
+      return new ModuleImportDescriptor(false,
+          (PackageElement) importedClass.getEnclosingElement(), importedName,
         getLibraryLocation(), importedClass);
     }
-
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
-  }
-
-  private void initTypeMappings() {
-    getTypeMirrorMappings().add(0, (TypeMirror type) -> {
-      if(type.toString().equals(String.format("java.util.Optional<%s>", backendRTE("common.GemList<E>")))) {
-        return "GemList<E>";
-      }
-      if(type.toString().equals(String.format("java.util.Optional<%s>", backendRTE("command.Command<T>")))) {
-        return "Command<T>";
-      }
-      if(type.toString().equals("de.monticore.symboltable.serialization.json.JsonObject")) {
-        return "any";
-      }
-      if(type.toString().equals("de.monticore.symboltable.serialization.json.JsonElement")) {
-        return "any";
-      }
-      return null;
-    });
-  }
-
-  @Override
-  public boolean substituteMethodInvocation(MethodInvocationElement invocation) {
-    if (invocation.getTargetType() == null) {
-      return super.substituteMethodInvocation(invocation);
-    }
-    if (substituteMethodInvocation_MCJson(invocation)) {
-      return true;
-    }
-    return super.substituteMethodInvocation(invocation);
-  }
-
-  private boolean substituteMethodInvocation_MCJson(MethodInvocationElement invocation) {
-    if (invocation.getTargetType().toString().equals("de.monticore.symboltable.serialization.JsonParser")) {
-      if (invocation.getMethodName().equals("parseJsonObject") || invocation.getMethodName().equals("parse")) {
-        print(String.format("JSON.parse(%s)", invocation.getArgument(0).toString()));
-        return true;
-      }
-    }
-    return false;
   }
 
   @Override
@@ -110,13 +67,11 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
   }
 
   @Override
-  protected void initStaticLibary() {
-    addToStaticLibrary("de.se_rwth.commons.logging.Log");
-    addToStaticLibrary("de.monticore.symboltable.serialization.JsonPrinter");
+  protected void initStaticLibrary() {
   }
 
   @Override
   protected String getLibraryLocation() {
-    return UMLP_RTE_LIBRARY_POINTER;
+    return UMLPAdapterUtils.UMLP_RTE_LIBRARY_POINTER;
   }
 }

@@ -56,7 +56,6 @@ jsweet {
   excludes = [
     '**/service/**',
     '**/shellapi/**',
-    '**/service/**',
   ]
   excludeTranspilation = [
     '**/DatabaseAccessManager.java',
