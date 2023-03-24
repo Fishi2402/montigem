@@ -7,6 +7,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { ConfigModule } from './stanley/config.module';
+import { MyModule } from './stanley/my/my.module';
 // one of the few lines which always have to be hand-written
 // TODO: find a solution to remove
 import { routes } from './stanley/stanley.routing';
@@ -17,6 +19,8 @@ import { routes } from './stanley/stanley.routing';
   ],
   imports: [
     BrowserModule,
+    ConfigModule,
+    MyModule,
     // one of the few lines which always have to be hand-written
     // TODO: find a solution to remove
     RouterModule.forRoot(routes)

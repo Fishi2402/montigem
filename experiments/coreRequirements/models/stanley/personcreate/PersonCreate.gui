@@ -25,24 +25,24 @@ import stanley.tmp.layout.GemColumn;
 // AGe: Es gibt keinen Unterschied zu dem Person.gui Modell, wenn keine Person beim Navigieren
 // auf die Seite im Modell eingegeben wird, wird PersonBuilder automatisch erstellt und
 // "aktualisiert".
-page PersonCreate(Person p) { // "leere" Person
-  @GemCard(
-    title = "Edit Person",
-    content = @GemColumn(contents = [
-      @GemTextInput(value = p.nickname),
-      @GemNumberInput(value = p.age),
-      saveButton@GemButton(text = "Ok", leftClick = create)
+page PersonCreate(Person p) {
+  card@GemCard(
+    title = "Create Person",
+    content = col@GemColumn(contents = [
+      name@GemTextInput(value = p.nickname),
+      age@GemNumberInput(value = p.age),
+      save@GemButton(text = "Save", leftClick = create)
     ])
   );
 }
 /**/
 
 /*
-page PersonCreate(Person p) { // "leere" Person
-  @GemColumn(contents = [
-    @GemTextInput(value = p.nickname),
-    @GemNumberInput(value = p.age),
-    @GemButton(text = "Ok", leftClick = create)
+page PersonCreate(Person p) {
+  card@GemColumn(contents = [
+    name@GemTextInput(value = p.nickname),
+    age@GemNumberInput(value = p.age),
+    save@GemButton(text = "Save", leftClick = create)
   ]);
 }
 /**/
@@ -50,13 +50,13 @@ page PersonCreate(Person p) { // "leere" Person
 /*
 page PersonCreate(Person p) { // "leere" Person
   // show and edit the nickname
-  @GemTextInput(value = p.nickname);
+  name@GemTextInput(value = p.nickname);
 
   // show and edit the age as number
-  @GemNumberInput(value = p.age);
+  age@GemNumberInput(value = p.age);
 
-  // Button mit Text "Ok" und Navigation auf eine andere Seite
+  // Button mit Text "Save" und Navigation auf eine andere Seite
   // (und die Logik dafür ist generiert und verfügbar)
-  @GemButton(text = "Ok", leftClick = create);
+  save@GemButton(text = "Save", leftClick = create);
 }
 /**/

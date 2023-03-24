@@ -1,28 +1,35 @@
 // HWC-P
 
-$card-color: white;
-$padding: 0.5rem;
-$shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+@mixin gem-card(
+  $header-bgr-color: white,
+  $header-text-color: black
+) {
+  $card-color: white;
+  $padding: 0.5rem;
+  $shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 
-$header-font-size: 1.6rem;
-$header-font-weight: bold;
+  $header-font-size: 1.6rem;
+  $header-font-weight: bold;
 
-.gem-card {
-  padding: $padding;
-  box-shadow: $shadow;
-
-  &-header, &-body {
-    background-color: $card-color;
+  .gem-card {
     padding: $padding;
+    box-shadow: $shadow;
+
+    &-header, &-body {
+      padding: $padding;
+    }
   }
-}
 
-.gem-card-header {
-  font-size: $header-font-size;
-  font-weight: $header-font-weight;
-}
+  .gem-card-header {
+    font-size: $header-font-size;
+    font-weight: $header-font-weight;
+    border-bottom: 1px solid #0008;
+    background-color: $header-bgr-color;
+    color: $header-text-color;
+  }
 
-.gem-card-body {
-  flex-grow: 1;
-  width: 100%;
+  .gem-card-body {
+    flex-grow: 1;
+    width: 100%;
+  }
 }

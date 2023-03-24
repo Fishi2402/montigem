@@ -1,10 +1,25 @@
-<gem-card [title]="'Overview'" [content]="comp1Tpl">
+
+<info-box
+    [text] = "getInfoBoxBoxText()"
+    [color] = "getInfoBoxBoxColor()"
+>
+</info-box>
+
+<gem-card
+    [title] = "getGemCardComp1Title()"
+    [content] = "Comp1Tpl1"
+>
 </gem-card>
 
-<ng-template #comp1Tpl>
-  <gem-table
-    [rows]="getGemTableComp1Rows()"
-    [columns]="getGemTableComp1Columns()"
-  >
-  </gem-table>
+<ng-template #Comp1Tpl1>
+  
+<gem-table
+    [rows] = "getGemTableTRows()"
+    [columns] = "getGemTableTColumns()"
+    (deleteRow) = "deletePerson($event)"
+>
+</gem-table>
+
+
 </ng-template>
+

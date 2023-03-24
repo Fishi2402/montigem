@@ -8,5 +8,6 @@ import stanley.tmp.table.TableTypes.TableColumn;
 component GemTable(
   // allow underspecified generic types
   List rows,
-  List<TableColumn> columns
+  List<TableColumn> columns,
+  Event deleteRow
 )
