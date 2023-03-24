@@ -111,6 +111,14 @@
       display: block;
       margin-top: 20px;
     }
+
+    .not-editable {
+      background-color: #f2f2f2;
+    }
+
+    .not-editable:hover {
+      cursor: not-allowed;
+    }
   </style>
   <!--
     import data loading functions: file can be directly inserted into next <script>
@@ -220,6 +228,7 @@
       const td = document.createElement("td");
       td.contentEditable = 'false';
       row.appendChild(td);
+      td.classList.add("not-editable");
       return td;
     }
 
