@@ -5,6 +5,7 @@ import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ImportElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import umlp.jsweet.extension.RTEPathUtil;
 import umlp.jsweet.extension.UMLPAdapterUtils;
 
 import javax.lang.model.element.PackageElement;
@@ -26,14 +27,14 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
 
   private void initStaticLibary() {
     staticLibrary.put("de.se_rwth.commons.logging.Log",  "logging/Log");
+    staticLibrary.put("de.monticore.symboltable.serialization.JsonPrinter", "mcjson/JsonPrinter");
     staticLibrary.put("java.util.concurrent.atomic.AtomicReference", "javautil/AtomicReference");
     staticLibrary.put("java.util.Random", "javautil/Random");
-    staticLibrary.put("de.monticore.symboltable.serialization.JsonPrinter", "mcjson/JsonPrinter");
     staticLibrary.put("java.lang.String", "javautil/StringHelper");
-    staticLibrary.put(UMLPAdapterUtils.backendRTE("command.CommandResultDeSer"), "command/CommandResultDeSer");
-    staticLibrary.put(UMLPAdapterUtils.backendRTE("common.Gem"), "common/Gem");
-    staticLibrary.put(UMLPAdapterUtils.backendRTE("common.GemList"), "common/GemList");
-    staticLibrary.put(UMLPAdapterUtils.backendRTE("common.GemListBuilder"), "common/GemListBuilder");
+    staticLibrary.put(RTEPathUtil.getBackendRTECommandPath("CommandResultDeSer"), "command/CommandResultDeSer");
+    staticLibrary.put(RTEPathUtil.getBackendRTECommonPath("Gem"), "common/Gem");
+    staticLibrary.put(RTEPathUtil.getBackendRTECommonPath("GemList"), "common/GemList");
+    staticLibrary.put(RTEPathUtil.getBackendRTECommonPath("GemListBuilder"), "common/GemListBuilder");
   }
 
   @Override
@@ -42,7 +43,7 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
       return getRootRelativeName(importElement.getImportedType());
     }
     if (importElement.getImportedType() != null && qualifiedName.startsWith(
-        UMLPAdapterUtils.UMLP_RTE_PACKAGE)) {
+        RTEPathUtil.getBackendRTEPath())) {
       return getRootRelativeName(importElement.getImportedType());
     }
     return super.needsImport(importElement, qualifiedName);

@@ -13,9 +13,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class UMLPAdapterUtils {
-  public static final String UMLP_RTE_PACKAGE = "umlp.backendrte";
-
-  public static final String UMLP_RTE_LIBRARY_POINTER = "umlp-frontend-rte";
 
   public static Function<TypeMirror, String> computeOptionalTypeMapping(PrinterAdapter adapter, Types types) {
     return (TypeMirror type) -> {
@@ -90,10 +87,6 @@ public class UMLPAdapterUtils {
       }
     }
     return false;
-  }
-
-  public static String backendRTE(String furtherPath) {
-    return String.join(".", UMLP_RTE_PACKAGE, furtherPath);
   }
 
   public static String getSimpleName(String importedName) {

@@ -25,7 +25,7 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
   @Override
   public String needsImport(ImportElement importElement, String qualifiedName) {
     if (importElement.getImportedType() != null && qualifiedName.startsWith(
-        UMLPAdapterUtils.UMLP_RTE_PACKAGE)) {
+        RTEPathUtil.getBackendRTEPath())) {
       return getRootRelativeName(importElement.getImportedType());
     }
     return super.needsImport(importElement, qualifiedName);
@@ -36,7 +36,7 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
       CompilationUnitElement currentCompilationUnit, String importedName,
       TypeElement importedClass) {
     String fqn = importedClass.getQualifiedName().toString();
-    if (fqn != null && fqn.startsWith(UMLPAdapterUtils.UMLP_RTE_PACKAGE)) {
+    if (fqn != null && fqn.startsWith(RTEPathUtil.getBackendRTEPath())) {
       return new ModuleImportDescriptor(false,
           (PackageElement) importedClass.getEnclosingElement(), importedName,
         getLibraryLocation(), importedClass);
@@ -48,7 +48,7 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
   public void afterTypeBody(TypeElement type) {
     // Add default method implementation for interfaces defined in the RTE (JSweet does not find those)
     for (TypeMirror anInterface : type.getInterfaces()) {
-      if (anInterface.toString().equals("umlp.backendrte.common.GemBuildable")) {
+      if (anInterface.toString().equals(RTEPathUtil.getBackendRTECommonPath("GemBuildable"))) {
         addIsBuildFinished(type);
       }
     }
@@ -64,14 +64,5 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
     println().printIndent().print("public isBuildFinished(): boolean {").println().
       printIndent().printIndent().print("return true;").println().
       printIndent().print("}").println().println();
-  }
-
-  @Override
-  protected void initStaticLibrary() {
-  }
-
-  @Override
-  protected String getLibraryLocation() {
-    return UMLPAdapterUtils.UMLP_RTE_LIBRARY_POINTER;
   }
 }

@@ -9,8 +9,6 @@ import org.jsweet.transpiler.model.MethodInvocationElement;
  */
 public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
 
-  private static final String UMLP_RTE_LIBRARY_POINTER = "umlp-frontend-rte";
-
   public UMLPJavaBasicsAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     initTypeMappings();
@@ -41,10 +39,5 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
     addToStaticLibrary("java.util.concurrent.atomic.AtomicReference");
     addToStaticLibrary("java.util.Random");
     putToStaticLibrary("java.lang.String", "StringHelper");
-  }
-
-  @Override
-  String getLibraryLocation() {
-    return UMLP_RTE_LIBRARY_POINTER;
   }
 }

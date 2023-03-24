@@ -11,6 +11,8 @@ import javax.lang.model.element.TypeElement;
 import java.util.HashMap;
 
 public abstract class UMLPAbstractAdapter extends PrinterAdapter {
+  private static final String UMLP_RTE_LIBRARY_POINTER = "umlp-frontend-rte";
+
   private HashMap<String, String> staticLibrary = new HashMap<>();
 
   public UMLPAbstractAdapter(PrinterAdapter parentAdapter) {
@@ -18,9 +20,7 @@ public abstract class UMLPAbstractAdapter extends PrinterAdapter {
     initStaticLibrary();
   }
 
-  abstract String getLibraryLocation();
-
-  abstract void initStaticLibrary();
+  protected void initStaticLibrary() {}
 
   @Override
   public String needsImport(ImportElement importElement, String qualifiedName) {
@@ -50,5 +50,9 @@ public abstract class UMLPAbstractAdapter extends PrinterAdapter {
   }
   protected void putToStaticLibrary(String staticClass, String replaceClass) {
     staticLibrary.put(staticClass, replaceClass);
+  }
+
+  protected String getLibraryLocation() {
+    return UMLP_RTE_LIBRARY_POINTER;
   }
 }

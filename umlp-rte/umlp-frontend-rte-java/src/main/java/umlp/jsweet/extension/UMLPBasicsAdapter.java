@@ -15,11 +15,6 @@ import org.jsweet.transpiler.model.MethodInvocationElement;
     getTypeMirrorMappings().add(0, UMLPAdapterUtils.computeMCJSonTypeMapping(this, types()));
   }
 
-  @Override
-  String getLibraryLocation() {
-    return UMLPAdapterUtils.UMLP_RTE_LIBRARY_POINTER;
-  }
-
 
   @Override
   protected void initStaticLibrary() {

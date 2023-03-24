@@ -37,10 +37,5 @@
     "include": [
       "**.CommandResult.asSimpleResult()"
     ]
-  },
-  "@Erased": {
-    "include": [
-      "**.ChunkedIdStorage"
-    ]
   }
 }
