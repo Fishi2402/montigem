@@ -7,6 +7,10 @@
 -->
 ${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator")}
 
+<#-- Call teaching CoCos -->
+<#assign cocoChecker = tc.instantiate("umlp._cocos.teaching.UMLPTeachingCoCos")>
+${cocoChecker.check(ast)}
+
 <#-- Call all decorators -->
 <#assign beDecorator = tc.instantiate("umlp.generator.domain.decorator.BEDecorator", [glex, hwPath])>
 ${beDecorator.setShellApi(true)}

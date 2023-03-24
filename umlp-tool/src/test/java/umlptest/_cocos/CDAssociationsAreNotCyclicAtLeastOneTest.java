@@ -5,7 +5,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 import umlp._cocos.UMLPCoCoChecker;
-import umlp._cocos.cocos_for_students.CDAssociationsAreNotCyclicAtLeastOne;
+import umlp._cocos.teaching.CDAssociationsAreNotCyclicAtLeastOne;
 import umlptest.AbstractUMLPTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

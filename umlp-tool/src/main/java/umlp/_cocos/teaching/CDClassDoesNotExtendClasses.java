@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp._cocos.cocos_for_students;
+package umlp._cocos.teaching;
 
 import de.monticore.cdbasis._ast.ASTCDExtendUsage;
 import de.monticore.cdbasis._cocos.CDBasisASTCDExtendUsageCoCo;
