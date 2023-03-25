@@ -3,3 +3,13 @@
 :host {
   display: flex;
 }
+
+.gem-button {
+  background-color: #00549F;
+  color: white;
+  border: none;
+  touch-action: manipulation;
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 5px;
+}

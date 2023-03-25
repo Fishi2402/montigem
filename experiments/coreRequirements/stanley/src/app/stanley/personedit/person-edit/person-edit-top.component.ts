@@ -65,7 +65,7 @@ export class PersonEditTOP implements PersonErrorObserver {
   }
 
   public getGemButtonComp5Text(): string {
-    return "Ok";
+    return "Save";
   }
 
   public gemButtonComp6LeftClick(): void {

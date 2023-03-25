@@ -1,7 +1,6 @@
 // GEN-P: translated from Java
 
 import { Directive } from "@angular/core";
-import { dummy1 } from "../../../hardy/mock/person-dummy";
 import { Person } from "../../../hardy/person";
 import { PersonErrorObserver } from "../../../hardy/person-error-observer";
 
@@ -9,6 +8,9 @@ import { PersonErrorObserver } from "../../../hardy/person-error-observer";
 // Instead of @Component annotation @Directive is used if translated HWC-P file exists
 @Directive()
 export class PersonCreateTOP implements PersonErrorObserver {
+
+  static readonly url: string = "personcreate/person-create";
+  static readonly title: string = "Create Person";
 
   public p: Person;
 
@@ -24,7 +26,7 @@ export class PersonCreateTOP implements PersonErrorObserver {
   public ngOnInit(): void {
   }
 
-  public getGemCardComp1Title(): string {
+  public getGemCardCardTitle(): string {
     return "Create Person";
   }
 
@@ -36,7 +38,7 @@ export class PersonCreateTOP implements PersonErrorObserver {
     this.gemTextInputComp1ValueError = msg;
   }
 
-  public getGemTextInputComp3Value(): string {
+  public getGemTextInputNameValue(): string {
     return this.p.getNickname();
   }
 
@@ -52,7 +54,7 @@ export class PersonCreateTOP implements PersonErrorObserver {
     this.gemNumberInputComp2ValueError = msg;
   }
 
-  public getGemNumberInputComp4Value(): number {
+  public getGemNumberInputAgeValue(): number {
     return this.p.getAge();
   }
 
@@ -60,12 +62,12 @@ export class PersonCreateTOP implements PersonErrorObserver {
     this.p.setAge(age);
   }
 
-  public gemButtonSaveButtonLeftClick(): void {
+  public gemButtonSaveLeftClick(): void {
     // return this.navigate();
   }
 
-  public getGemButtonSaveButtonText(): string {
-    return "Ok";
+  public getGemButtonSaveText(): string {
+    return "Save";
   }
 
   /*

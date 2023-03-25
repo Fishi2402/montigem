@@ -3,45 +3,45 @@
 
   
 <gem-card
-    [title] = "getGemCardComp1Title()"
-    [content] = "Comp1Tpl1"
+    [title] = "getGemCardCardTitle()"
+    [content] = "cardTpl1"
 >
 </gem-card>
 
-<ng-template #Comp1Tpl1>
+<ng-template #cardTpl1>
   
 <gem-column
     [contents] = "[
-    Comp2Tpl3,
-    Comp2Tpl5,
-    Comp2Tpl7,
+    colTpl3,
+    colTpl5,
+    colTpl7,
     ]"
 >
 </gem-column>
 
-<ng-template #Comp2Tpl3>
+<ng-template #colTpl3>
   
 <gem-text-input
-    [value] = "getGemTextInputComp3Value()"
+    [value] = "getGemTextInputNameValue()"
 >
 </gem-text-input>
 
 
 </ng-template>
-<ng-template #Comp2Tpl5>
+<ng-template #colTpl5>
   
 <gem-number-input
-    [value] = "getGemNumberInputComp4Value()"
+    [value] = "getGemNumberInputAgeValue()"
 >
 </gem-number-input>
 
 
 </ng-template>
-<ng-template #Comp2Tpl7>
+<ng-template #colTpl7>
   
 <gem-button
-    [text] = "getGemButtonSaveButtonText()"
-    (leftClick) = "gemButtonSaveButtonLeftClick.bind(this)()"
+    [text] = "getGemButtonSaveText()"
+    (leftClick) = "gemButtonSaveLeftClick.bind(this)()"
 >
 </gem-button>
 

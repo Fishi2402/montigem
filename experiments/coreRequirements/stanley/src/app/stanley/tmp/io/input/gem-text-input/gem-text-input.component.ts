@@ -9,7 +9,7 @@ import { Component, Input } from "@angular/core";
 export class GemTextInput {
 
   @Input()
-  label: string = "";
+  label: string = "Name";
 
   @Input()
   value: string = "";
