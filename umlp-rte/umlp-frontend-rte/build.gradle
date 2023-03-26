@@ -103,7 +103,7 @@ project.getTasksByName("jsweet", true).forEach {
     generateIndexTS.dependsOn(t)
 }
 
-build.dependsOn(buildLib)
+//build.dependsOn(buildLib)
 
 //////////////////////////////   CLEAN   //////////////////////////////
 
