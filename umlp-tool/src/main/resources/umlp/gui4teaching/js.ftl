@@ -97,6 +97,8 @@ function convert(value, type) {
   if (type === "Array") {
     if (value) {
       return JSON.parse(value);
+    } else {
+      return [];
     }
   }
   return value;
@@ -110,7 +112,7 @@ function getType(className, attr) {
   if (TYPE_INFO[className][attr] != null) {
     return TYPE_INFO[className][attr].type;
   } else {
-    return "String";
+    return "Unknown";
   }
 }
 

@@ -130,7 +130,14 @@
     async function updateObj(cell, className, attr, gemId) {
       // Get the input value from the table cell
       try {
-        let value = convert(cell.textContent.trim(), getType(className, attr));
+        const attrType = getType(className, attr);
+        if (attrType === "Unknown" || attrType === "Array") {
+          console.warn("Ignoring update for attribute '" + attr
+            + "': Trying to send update for an association, "
+            + "non-existing attribute, array, or an attribute of unknown type");
+          return;
+        }
+        let value = convert(cell.textContent.trim(), attrType);
 
         // TODO: form proper command, maybe delete next comment and log line
         // example:
@@ -346,7 +353,14 @@
                     if (value.length > 0) {
                       valid = true;
                     }
-                    obj[key] = convert(value, getType(className, key));
+                    const attrType = getType(className, key);
+                    if (attrType !== "Unknown" && attrType !== "Array") {
+                      obj[key] = convert(value, attrType);
+                    } else {
+                      console.warn("Ignoring attribute '" + key + "': Trying to"
+                        + " create an object with an association, "
+                        + "non-existing attribute, array, or an attribute of unknown type");
+                    }
                   }
                 }
                 if (valid) {
