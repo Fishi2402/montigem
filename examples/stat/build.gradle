@@ -10,13 +10,6 @@ plugins {
 
 description 'StatServer'
 
-task generateStatBackend(type: UMLPTask) {
-    input = (file("src"))
-    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
-    hwcDir = layout.projectDirectory.dir("src/main/java/")
-    tmplDir = layout.projectDirectory.dir("src/templates/")
-}
-
 application {
     mainClass = 'log_mc_jar.StatServerApplication'
 }
@@ -51,5 +44,3 @@ dependencies {
 task runServer {
     dependsOn(bootRun)
 }
-
-build.dependsOn(generateStatBackend)
