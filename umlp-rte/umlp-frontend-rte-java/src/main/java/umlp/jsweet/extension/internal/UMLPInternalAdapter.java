@@ -39,9 +39,12 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
 
   @Override
   public String needsImport(ImportElement importElement, String qualifiedName) {
-    if (importElement.getImportedType() != null && staticLibrary.keySet().contains(qualifiedName)) {
+    if (importElement.getImportedType() != null && staticLibrary.containsKey(qualifiedName)) {
       return getRootRelativeName(importElement.getImportedType());
     }
+//    if (UMLPAdapterUtils.isJ4TSSupported(qualifiedName)) {
+    //      return qualifiedName;
+    //    }
     if (importElement.getImportedType() != null && qualifiedName.startsWith(
         RTEPathUtil.getBackendRTEPath())) {
       return getRootRelativeName(importElement.getImportedType());
@@ -54,14 +57,19 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
       CompilationUnitElement currentCompilationUnit, String importedName,
       TypeElement importedClass) {
     String fqn = importedClass.getQualifiedName().toString();
-    for (String staticClass : staticLibrary.keySet()) {
-      if (fqn.equals(staticClass)) {
-        return new ModuleImportDescriptor(false,
-            (PackageElement) importedClass.getEnclosingElement(),
-            UMLPAdapterUtils.getSimpleName(staticLibrary.get(staticClass)),
-            UMLP_RTE_HWC_POINTER + "/" + staticLibrary.get(staticClass), importedClass);
-      }
+    if (staticLibrary.containsKey(fqn)) {
+      String staticClass = staticLibrary.get(fqn);
+      return new ModuleImportDescriptor(false,
+          (PackageElement) importedClass.getEnclosingElement(),
+          UMLPAdapterUtils.getSimpleName(staticClass),
+          UMLP_RTE_HWC_POINTER + "/" + staticClass, importedClass);
     }
+
+    //    if (UMLPAdapterUtils.isJ4TSSupported(fqn)) {
+    //      return new ModuleImportDescriptor(true,
+    //          (PackageElement) importedClass.getEnclosingElement(),
+    //          importedName, fqn);
+    //    }
 
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
   }

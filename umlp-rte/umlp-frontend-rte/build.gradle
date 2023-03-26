@@ -9,6 +9,7 @@ buildscript {
     classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
       transitive = true
     }
+    classpath group: 'umlp', name: 'umlp-frontend-rte-java', version: version
 //    classpath project(":umlp-rte:umlp-frontend-rte-java")
   }
 }
@@ -38,6 +39,7 @@ repositories {
 
 dependencies {
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
+//  implementation group: 'org.jsweet', name: 'j4ts', version: '2.1.0-SNAPSHOT'
 }
 
 /////////////////////////   JSweet   //////////////////////////////
@@ -47,12 +49,12 @@ jsweet {
   encoding = 'UTF-8'
   sourceMap = true
   tsOnly = true
-  tsOut = project.file('projects/umlp-frontend-rte/src/lib/target')
   targetVersion = 'ES6'
-  includes = ['**/*.java']
   module = 'commonjs'
   autoPropagateAsyncAwaits = true
+  tsOut = project.file('projects/umlp-frontend-rte/src/lib/target')
   workingDir = project.file('target/.jsweet')
+  includes = ['**/*.java']
   excludes = [
     '**/service/**',
     '**/shellapi/**',
@@ -89,7 +91,6 @@ task buildLib(type: NpxTask) {
   args = ["build", "--prod"]
   dependsOn(tasks.npmInstall)
   inputs.dir(project.fileTree("projects/umlp-frontend-rte/src").exclude("**/*.spec.ts"))
-//  inputs.dir(project.fileTree("target/generated-sources/ts"))
   inputs.dir("node_modules")
   inputs.files("tsconfig.json")
   outputs.dir("${project.buildDir}/dist")
@@ -102,6 +103,12 @@ project.getTasksByName("jsweet", true).forEach {
     generateIndexTS.dependsOn(t)
 }
 
-clean.dependsOn(jsweetClean)
+build.dependsOn(buildLib)
 
-//build.dependsOn(buildLib)
+//////////////////////////////   CLEAN   //////////////////////////////
+
+clean.doFirst {
+  delete project.file("dist")
+}
+
+clean.dependsOn(jsweetClean)

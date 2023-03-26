@@ -8,6 +8,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -104,5 +105,40 @@ public class UMLPAdapterUtils {
       return importedName.substring(index + 1);
     }
     return importedName;
+  }
+
+  public static boolean isJ4TSSupported(String qualifiedName) {
+    return !isJ4TSExcluded(qualifiedName) && isJ4TSPackage(qualifiedName);
+  }
+
+  private static List<String> j4tsExcluded = Arrays.asList(
+      "java.lang.Boolean",
+      "java.lang.Byte",
+      "java.lang.Character",
+      "java.lang.Double",
+      "java.lang.Float",
+      "java.lang.Integer",
+      "java.lang.Long",
+      "java.lang.Short",
+      "java.lang.String",
+      "java.lang.Override"
+      );
+  private static boolean isJ4TSExcluded(String qualifiedName) {
+    return j4tsExcluded.stream().anyMatch(e -> e.equals(qualifiedName));
+  }
+
+  private static List<String> j4tsPackages = Arrays.asList(
+      "java.beans",
+      "java.io",
+      "java.lang",
+      "java.net",
+      "java.nio",
+      "java.security",
+      "java.sql",
+      "java.text",
+      "java.util"
+  );
+  private static boolean isJ4TSPackage(String qualifiedName) {
+    return j4tsPackages.stream().anyMatch(p -> qualifiedName.startsWith(p + "."));
   }
 }

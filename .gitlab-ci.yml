@@ -62,7 +62,7 @@ deployRTE:
   dependencies:
     - build
   script:
-    - "gradle :umlp-tool:publish :umlp-rte:publish -P mavenPassword=$pass -P mavenUser=$user"
+    - "gradle :umlp-tool:publish :umlp-rte:publish :umlp-rte:umlp-frontend-rte-java:publish -P mavenPassword=$pass -P mavenUser=$user"
   only:
     - dev
 

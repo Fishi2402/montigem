@@ -24,7 +24,7 @@ public abstract class UMLPAbstractAdapter extends PrinterAdapter {
 
   @Override
   public String needsImport(ImportElement importElement, String qualifiedName) {
-    if (importElement.getImportedType() != null && staticLibrary.keySet().contains(qualifiedName)) {
+    if (importElement.getImportedType() != null && staticLibrary.containsKey(qualifiedName)) {
       return getRootRelativeName(importElement.getImportedType());
     }
     return super.needsImport(importElement, qualifiedName);
@@ -35,12 +35,11 @@ public abstract class UMLPAbstractAdapter extends PrinterAdapter {
       CompilationUnitElement currentCompilationUnit, String importedName,
       TypeElement importedClass) {
     String fqn = importedClass.getQualifiedName().toString();
-    for (String staticClass : staticLibrary.keySet()) {
-      if (fqn.equals(staticClass)) {
-        return new ModuleImportDescriptor(false,
-            (PackageElement) importedClass.getEnclosingElement(), staticLibrary.get(staticClass),
-            getLibraryLocation(), importedClass);
-      }
+    if (staticLibrary.containsKey(fqn)) {
+      String staticClass = staticLibrary.get(fqn);
+      return new ModuleImportDescriptor(false,
+          (PackageElement) importedClass.getEnclosingElement(), staticClass,
+          getLibraryLocation(), importedClass);
     }
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
   }

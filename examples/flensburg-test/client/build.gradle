@@ -9,6 +9,7 @@ buildscript {
         classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
             transitive = true
         }
+        classpath group: 'umlp', name: 'umlp-frontend-rte-java', version: version
 //        classpath project(":umlp-rte:umlp-frontend-rte-java")
     }
 }
