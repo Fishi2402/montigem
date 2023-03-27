@@ -9,7 +9,9 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.compile.AbstractCompile;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
+import java.io.File;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 /***
  * A opinionated plugin which handles backend generation.
@@ -21,22 +23,22 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
   final String UMLP_BACKEND_TASK_NAME = "generateUmlpBackend";
   final String UMLP_GROUP_NAME = "umlp";
 
-    @Override
-    public void apply(Project project) {
-      project.getPluginManager().apply(UMLPPluginBase.class);
-      project.getPluginManager().apply("java");
+  @Override
+  public void apply(Project project) {
+    project.getPluginManager().apply(UMLPPluginBase.class);
+    project.getPluginManager().apply("java");
 
-      TaskProvider<UMLPTask> umlpTask = createUMLPBackendTask(project);
-      project.getTasks().withType(AbstractCompile.class).configureEach(compile -> {
-        compile.dependsOn(umlpTask);
-      });
-      project.getTasks().withType(ProcessResources.class).configureEach(compile -> {
-        compile.dependsOn(umlpTask);
-      });
-      addToSourceSet(project, umlpTask.get());
-    }
+    TaskProvider<UMLPTask> umlpTask = createUMLPBackendTask(project);
+    project.getTasks().withType(AbstractCompile.class).configureEach(compile -> {
+      compile.dependsOn(umlpTask);
+    });
+    project.getTasks().withType(ProcessResources.class).configureEach(compile -> {
+      compile.dependsOn(umlpTask);
+    });
+    addToSourceSet(project, umlpTask.get());
+  }
 
-    // Add generated files to SourceSets
+  // Add generated files to SourceSets
   private void addToSourceSet(Project project, UMLPTask umlpTask) {
     JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
     SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
@@ -45,21 +47,27 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
   }
 
   protected TaskProvider<UMLPTask> createUMLPBackendTask(final Project project) {
-      final TaskProvider<UMLPTask> result = project.getTasks().register(UMLP_BACKEND_TASK_NAME, UMLPTask.class, umlpTask -> {
-        umlpTask.setGroup(UMLP_GROUP_NAME);
-        umlpTask.setInput(Path.of(
-            project.getProjectDir().getAbsolutePath(), "src", "models").toFile()
-        );
-        umlpTask.getOutputDir().set(Path.of(
-            project.getBuildDir().getAbsolutePath(), "umlp", "backend").toFile()
-        );
-        umlpTask.getHwcDir().set(Path.of(
-            project.getProjectDir().getAbsolutePath(), "src", "main", "java").toFile()
-        );
-        umlpTask.getTmplDir().set(Path.of(
-            project.getProjectDir().getAbsolutePath(), "src", "templates").toFile()
-        );
-      });
-      return result;
+    final TaskProvider<UMLPTask> result = project.getTasks().register(UMLP_BACKEND_TASK_NAME, UMLPTask.class, umlpTask -> {
+      umlpTask.setGroup(UMLP_GROUP_NAME);
+
+      setIfPathExists(umlpTask::setInput, Path.of(
+          project.getProjectDir().getAbsolutePath(), "src", "models"));
+      setIfPathExists(x -> umlpTask.getHwcDir().set(x), Path.of(
+          project.getProjectDir().getAbsolutePath(), "src", "main", "java"));
+      setIfPathExists(x -> umlpTask.getTmplDir().set(x), Path.of(
+          project.getProjectDir().getAbsolutePath(), "src", "templates"));
+
+      // Always set Output dir (Gradle creates it, if not already exists)
+      umlpTask.getOutputDir().set(Path.of(
+          project.getBuildDir().getAbsolutePath(), "umlp", "backend").toFile());
+    });
+    return result;
+  }
+
+  private void setIfPathExists(Consumer<File> add, Path path) {
+    File f = path.toFile();
+    if (f.exists()) {
+      add.accept(f);
     }
+  }
 }
