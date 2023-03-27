@@ -112,7 +112,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected GemList<Human> _doGetHumanList() {
     if(humanGemList == null){
       // TODO: replace with access via filter!
-      List<Long> gemIds = CommandManager.executeCommand(new Human_get_filtered()).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new Human_get_filtered()).asListResult().get();
       humanGemList = new HumanGemList(gemIds);
     }
 
@@ -204,7 +204,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected GemList<Person> _doGetPersonList() {
     if(personGemList == null){
       // TODO: replace with access via filter!
-      List<Long> gemIds = CommandManager.executeCommand(new Person_get_filtered()).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new Person_get_filtered()).asListResult().get();
       personGemList = new PersonGemList(gemIds);
     }
 
@@ -293,7 +293,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected GemList<Address> _doGetAddressList() {
     if(addressGemList == null){
       // TODO: replace with access via filter!
-      List<Long> gemIds = CommandManager.executeCommand(new Address_get_filtered()).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new Address_get_filtered()).asListResult().get();
       addressGemList = new AddressGemList(gemIds);
     }
 
@@ -377,7 +377,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected GemList<Car> _doGetCarList() {
     if(carGemList == null){
       // TODO: error handling
-      List<Long> gemIds = CommandManager.executeCommand(new Car_get_filtered()).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new Car_get_filtered()).asListResult().get();
       carGemList = new CarGemList(gemIds);
     }
 

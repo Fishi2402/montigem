@@ -69,6 +69,19 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
                     commandList.add(packageName + domainClassName + SetDecorator.SUFFIX + roleName);
                 }
             });
+
+            // Derived
+            CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+                .filter(GenService::isDerived).forEach(domainAttribute -> {
+                    String domainAttributeName = StringTransformations.capitalize(domainAttribute.getName());
+                    commandList.add(packageName + domainClassName + CalculateDecorator.SUFFIX + domainAttributeName);
+                });
+            CDSymbolTables.getAssociations(domainClass).stream()
+                .filter(GenService::isDerived)
+                .filter(a -> !GenService.isBidirectional(a)).forEach(association -> {
+                    String roleName = StringTransformations.capitalize(association.getName());
+                    commandList.add(packageName + domainClassName + CalculateDecorator.SUFFIX + roleName);
+                });
         }
 
         getCD4C().addConstructor(ast, "umlp.commands.aggregatedcommanddeser.Constructor", commandList, className, getPackageName(origCD, DEFAULT_PACKAGE));

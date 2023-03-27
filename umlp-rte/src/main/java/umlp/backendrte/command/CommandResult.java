@@ -5,7 +5,7 @@ package umlp.backendrte.command;
 
 // todo: erläutern
 
-import jsweet.lang.Replace;
+import java.util.List;
 
 /**
  * single result of an executed command
@@ -55,5 +55,13 @@ public abstract class CommandResult<T> {
 
   public String getTypeParameter() {
     return typeParameter;
+  }
+
+  public boolean isListResult() {
+    return false;
+  }
+
+  public ListResult<T, List<T>> asListResult() {
+    return (ListResult<T, List<T>>) this;
   }
 }

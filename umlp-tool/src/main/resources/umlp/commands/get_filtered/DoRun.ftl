@@ -1,6 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("classname", "definition")}
-${cd4c.method("public SimpleResult<LongList> doRun()")}
+${cd4c.method("public ListResult<Long, List<Long>> doRun()")}
 
-LongList res = new LongList(${definition}Manager.get${classname}List().getIDs());
-return new SimpleResult<>(getId(), res, "umlp.command.LongList");
+return ListResult.of(getId(), ${definition}Manager.get${classname}List().getIDs(), "java.lang.Long");

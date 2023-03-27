@@ -36,7 +36,7 @@ public class GetFilteredDecorator extends AbstractDecorator {
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
-      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Request<LongList>"))
+      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Request<Long>"))
       .setName(classname+SUFFIX)
       .build();
 
@@ -44,8 +44,7 @@ public class GetFilteredDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.commands.get_filtered.DoRun", classname, origCD.getCDDefinition().getName());
 
     getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("LongList"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
 
     return ast;

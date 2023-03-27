@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * (De)serializer for base classes from java.lang + LongList.
+ * (De)serializer for base classes from java.lang
  * Since this uses the static delegate pattern, additional base classes can be added via subclassing.
  * (See FlensburgBaseClassObjectMapper)
  */
@@ -34,7 +34,6 @@ public class BaseClassObjectMapper {
     baseDeSers.put("java.lang.Float", new FloatDeSer());
     baseDeSers.put("java.lang.Double", new DoubleDeSer());
     baseDeSers.put("java.lang.String", new StringDeSer());
-    baseDeSers.put("umlp.command.LongList", new LongListDeSer());
   }
 
   public static Optional<String> serialize(Object o, String className) {
