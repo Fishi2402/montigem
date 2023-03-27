@@ -51,7 +51,7 @@ async function sendCommand(command) {
     console.log(response);
     return await response.json();
   } catch (err) {
-    console.error('Error:', err);
+    console.error(err);
     // TODO: remove if you don't want that
     showError(err);
     return Promise.reject(err);
@@ -105,7 +105,7 @@ function convert(value, type) {
 }
 
 function typeError(value, type) {
-  return new Error("Expected value of type " + type + ", but got " + value + ".");
+  return new Error("0x00002 Expected value of type " + type + ", but got " + value + ".");
 }
 
 function getType(className, attr) {

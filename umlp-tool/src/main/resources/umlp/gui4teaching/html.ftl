@@ -132,9 +132,7 @@
       try {
         const attrType = getType(className, attr);
         if (attrType === "Unknown" || attrType === "Array") {
-          console.warn("Ignoring update for attribute '" + attr
-            + "': Trying to send update for an association, "
-            + "non-existing attribute, array, or an attribute of unknown type");
+          warnChangeUneditable(attr);
           return;
         }
         let value = convert(cell.textContent.trim(), attrType);
@@ -203,6 +201,12 @@
       await sendCommand(command);
       // TODO: remove if you don't want to automatically reload the page
       window.location.reload();
+    }
+
+    function warnChangeUneditable(attr) {
+      console.warn("0x00001", "Ignoring attribute '" + attr + "': Trying to"
+        + " set a value for an association, "
+        + "non-existing attribute, array, or an attribute of unknown type");
     }
 
     // update object when user enters something in a @cell of type @className;
@@ -357,9 +361,7 @@
                     if (attrType !== "Unknown" && attrType !== "Array") {
                       obj[key] = convert(value, attrType);
                     } else {
-                      console.warn("Ignoring attribute '" + key + "': Trying to"
-                        + " create an object with an association, "
-                        + "non-existing attribute, array, or an attribute of unknown type");
+                      warnChangeUneditable(key);
                     }
                   }
                 }
@@ -417,7 +419,7 @@
             body.appendChild(cardClone);
           }
         } else {
-          console.error("Please report this error to the supervisor, error code: AGe");
+          console.error("0x00000", "Please report this error to the supervisor");
           // ask AGe to add code, because someone probably uses some weird browser
           // or add code yourself
         }
