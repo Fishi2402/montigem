@@ -23,11 +23,6 @@
       "**.ShortDeSer.serialize(*)"
     ]
   },
-  "@Replace('return \"\";')": {
-    "include": [
-      "**.LongListDeSer.serialize(*)"
-    ]
-  },
   "@Replace('return this as unknown as StatusResult;')": {
     "include": [
       "**.CommandResult.asStatusResult()"

@@ -1,0 +1,11 @@
+umlp DerivedAttributesAndAssocs{
+
+  class Foo {
+    / int a;
+    / String b;
+    / List<java.lang.String> c;
+    // / Optional<java.lang.String> d;
+  }
+
+  // TODO: Derived assocs
+}
