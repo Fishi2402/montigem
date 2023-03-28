@@ -110,6 +110,10 @@ public class BEDecorator extends AbstractDecorator {
     managerImplDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerImplDecorator", BEDecorator.class.getName());
 
+    ManagerClientImplDecorator managerClientImplDecorator = new ManagerClientImplDecorator(glex);
+    managerClientImplDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: ManagerClientImplDecorator", BEDecorator.class.getName());
+
     ManagerMockDecorator managerMockDecorator = new ManagerMockDecorator(glex);
     managerMockDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerMockDecorator", BEDecorator.class.getName());
