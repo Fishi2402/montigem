@@ -3,6 +3,7 @@ package infrastructure.command;
 
 import de.se_rwth.commons.logging.Log;
 import stanley.FlensburgTestContext;
+import umlp.backendrte.command.ClientCommandCommunication;
 import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandObjectMapper;

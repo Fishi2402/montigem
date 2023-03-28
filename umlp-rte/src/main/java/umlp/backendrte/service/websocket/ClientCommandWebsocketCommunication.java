@@ -8,11 +8,13 @@ import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import umlp.backendrte.command.ClientCommandCommunication;
 import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandObjectMapper;
+import umlp.backendrte.command.CommandReceiveObserver;
 import umlp.backendrte.command.CommandResult;
+import umlp.backendrte.command.CommandResultReceiveObserver;
 import umlp.backendrte.command.SimpleResult;
-import umlp.backendrte.common.GemList;
 import umlp.backendrte.common.LoadingState;
 import umlp.backendrte.common.Result;
 
@@ -29,16 +31,29 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-public class ClientWebsocketCommunication extends TextWebSocketHandler {
+public class ClientCommandWebsocketCommunication extends TextWebSocketHandler implements
+    ClientCommandCommunication {
   private long maxWaitingTime = 6000; // 6 seconds
   private Optional<Long> participantId = Optional.empty();
-  private WebSocketSession clientSession;
+  private WebSocketSession session;
   private CountDownLatch initLatch;
   private Map<Long, CommandResult<?>> messages = new HashMap<>();
 
-  private List<Consumer<Command<Object>>> consumers = new ArrayList<>();
+  private List<CommandReceiveObserver> commandObserver = new ArrayList<>();
+  private List<CommandResultReceiveObserver> commandResultObserver = new ArrayList<>();
 
-  public ClientWebsocketCommunication() {
+  private final String uri;
+
+  private final WebSocketHttpHeaders headers;
+
+  public ClientCommandWebsocketCommunication(String uri) {
+    this.uri = uri;
+    this.headers = new WebSocketHttpHeaders();
+  }
+
+  public ClientCommandWebsocketCommunication(String uri, WebSocketHttpHeaders headers) {
+    this.uri = uri;
+    this.headers = headers;
   }
 
   public synchronized <T> CommandResult<T> sendCommandToServerAndReceiveResult(Command<T> command) {
@@ -46,7 +61,7 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
     CommandResult<T> result;
     try {
       String payload = CommandObjectMapper.serializeCommand(command);
-      clientSession.sendMessage(new TextMessage(payload));
+      session.sendMessage(new TextMessage(payload));
       synchronized (this) {
         this.wait(maxWaitingTime);
       }
@@ -78,11 +93,11 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
     return result;
   }
 
-  public Result<Long> init(String uri, WebSocketHttpHeaders headers) {
+  public Result<Long> init() {
     initLatch = new CountDownLatch(2);
     StandardWebSocketClient webSocketClient = new StandardWebSocketClient();
     try {
-      this.clientSession = webSocketClient.doHandshake(this, headers,
+      this.session = webSocketClient.doHandshake(this, headers,
           URI.create(uri)).get();
     }
     catch (InterruptedException e) {
@@ -117,7 +132,7 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
 
   @Override
   protected synchronized void handleTextMessage(WebSocketSession session, TextMessage message) {
-    if (initLatch.getCount() > 0) {
+    if (expectInitMessage()) {
       // Fall initialisierung der Verbindung
       try {
         this.participantId = Optional.of(Long.parseLong(message.getPayload()));
@@ -148,13 +163,16 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
         // Fall Antwort eines Requests
         CommandResult<?> commandResult = commandResultOptional.get();
         messages.put(commandResult.getCommandId(), commandResult);
+        for (CommandResultReceiveObserver observer : commandResultObserver) {
+          observer.accept(commandResult);
+        }
         synchronized (this) {
           notify();
         }
       }
       else if (commandOptional.isPresent()) {
         //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
-        for (Consumer<Command<Object>> consumer : consumers) {
+        for (Consumer<Command<Object>> consumer : commandObserver) {
           consumer.accept(commandOptional.get());
         }
       }
@@ -166,12 +184,21 @@ public class ClientWebsocketCommunication extends TextWebSocketHandler {
     }
   }
 
-  public ClientWebsocketCommunication onCommand(Consumer<Command<Object>> consumer) {
-    this.consumers.add(consumer);
+  protected boolean expectInitMessage() {
+    return initLatch.getCount() > 0;
+  }
+
+  public ClientCommandWebsocketCommunication onCommandReceived(CommandReceiveObserver observer) {
+    this.commandObserver.add(observer);
+    return this;
+  }
+
+  public ClientCommandWebsocketCommunication onCommandResultReceived(CommandResultReceiveObserver observer) {
+    this.commandResultObserver.add(observer);
     return this;
   }
 
   public boolean isOpen() {
-    return clientSession.isOpen();
+    return session.isOpen();
   }
 }

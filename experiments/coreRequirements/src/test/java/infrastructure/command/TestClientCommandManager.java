@@ -3,6 +3,7 @@ package infrastructure.command;
 
 // RTE4T
 
+import umlp.backendrte.command.ClientCommandCommunication;
 import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandResult;

@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-package infrastructure.command;
+package umlp.backendrte.command;
 
-import umlp.backendrte.command.Command;
-import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.common.Result;
 
 /**
@@ -19,4 +17,12 @@ public interface ClientCommandCommunication {
    * Initiiert die Verbindung und liefert die vom Server verteilte Participant Id
    */
   Result<Long> init();
+
+  public default ClientCommandCommunication onCommandReceived(CommandReceiveObserver observer) {
+    return this;
+  }
+
+  public default ClientCommandCommunication onCommandResultReceived(CommandResultReceiveObserver observer) {
+    return this;
+  }
 }

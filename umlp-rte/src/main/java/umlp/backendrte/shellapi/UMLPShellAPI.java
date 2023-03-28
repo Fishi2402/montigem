@@ -9,7 +9,7 @@ import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandObjectMapper;
 import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.common.Result;
-import umlp.backendrte.service.websocket.ClientWebsocketCommunication;
+import umlp.backendrte.service.websocket.ClientCommandWebsocketCommunication;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -17,7 +17,7 @@ import java.util.Base64;
 public class UMLPShellAPI {
 
   private static final String UMLP_SHELL_API = "UMLP Shell API";
-  protected static ClientWebsocketCommunication clientWebsocketCommunication;
+  protected static ClientCommandWebsocketCommunication clientCommandWebsocketCommunication;
   protected static long participantId = 0l;
 
   protected final static CommandResult sendCommandToServerAndReceiveResult(Command command) {
@@ -25,7 +25,7 @@ public class UMLPShellAPI {
     Log.info("Send command to server: " + CommandObjectMapper.serializeCommand(command),
         UMLP_SHELL_API);
     CommandResult commandResult =
-        clientWebsocketCommunication.sendCommandToServerAndReceiveResult(command);
+        clientCommandWebsocketCommunication.sendCommandToServerAndReceiveResult(command);
     try {
       Log.info(
           "Received response from server: " + CommandObjectMapper.serializeResponse(commandResult),
@@ -43,11 +43,11 @@ public class UMLPShellAPI {
     }
 
     String uri = buildUri(scheme, url, port, applicationName, apiName);
-    clientWebsocketCommunication = new ClientWebsocketCommunication().onCommand(cmd -> {
+    clientCommandWebsocketCommunication = new ClientCommandWebsocketCommunication(uri, headers).onCommandReceived(cmd -> {
       String msg = String.format("Received sync command '%s' from server: %s", cmd.getCommandType(), CommandObjectMapper.serializeCommand(cmd));
       Log.info(msg, UMLP_SHELL_API);
         });
-    Result<Long> init = clientWebsocketCommunication.init(uri, headers);
+    Result<Long> init = clientCommandWebsocketCommunication.init();
     if (init.wasSuccessful()) {
       participantId = init.getValue();
       Log.info(String.format("Websocket connection to '%s' was successfull. Participant ID: %s",
@@ -65,7 +65,7 @@ public class UMLPShellAPI {
   }
 
   public Availability isConnected() {
-    return clientWebsocketCommunication != null && clientWebsocketCommunication.isOpen() ? Availability.available() :
+    return clientCommandWebsocketCommunication != null && clientCommandWebsocketCommunication.isOpen() ? Availability.available() :
         Availability.unavailable("The Websocket connection must be initialized before. Use 'help init'");
   }
 }
