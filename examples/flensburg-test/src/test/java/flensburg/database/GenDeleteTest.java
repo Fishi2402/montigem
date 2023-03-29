@@ -52,7 +52,7 @@ public class GenDeleteTest extends GenAbstractDBTest {
     builder.age(age);
     Human h1001 = builder.build().get();
 
-    FlensburgManager.deleteHuman(h1001);
+    FlensburgManager.deleteHuman(h1001.getGemId());
     assertTrue(FlensburgManager.humanOpt(h1001.getGemId()).isEmpty());
 
     HumanDAO dao = new HumanDAO();

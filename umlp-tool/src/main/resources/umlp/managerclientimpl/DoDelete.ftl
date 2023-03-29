@@ -1,7 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("name", "managerName")}
-${cd4c.method("protected void _doDelete${name}(${name} o)")}
-  StatusResult status = CommandManager.executeCommand(new ${name}_delete(o.getGemId())).asStatusResult();
+${cd4c.method("protected boolean _doDelete${name}(Long gemId)")}
+  StatusResult status = CommandManager.executeCommand(new ${name}_delete(gemId)).asStatusResult();
+  if (!status.wasSuccessful()) {
+    return false;
+  }
   // TODO: error handling
-  known${name}s.remove(o.getGemId());
-  ${managerName?uncap_first}Observers.forEach(obs -> obs.notify${name}Deleted(o));
+  known${name}s.remove(gemId);
+  ${managerName?uncap_first}Observers.forEach(obs -> obs.notify${name}Deleted(gemId));
+  return true;

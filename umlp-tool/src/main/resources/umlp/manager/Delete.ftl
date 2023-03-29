@@ -1,9 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("name", "delegateFlag")}
 <#if delegateFlag>
-  ${cd4c.method("public static void delete${name}(${name} o)")}
+  ${cd4c.method("public static boolean delete${name}(Long gemId)")}
 
-  getSingleton()._doDelete${name}(o);
+  return getSingleton()._doDelete${name}(gemId);
 <#else>
-  ${cd4c.method("protected abstract void _doDelete${name}(${name} o)")}
+  ${cd4c.method("protected abstract boolean _doDelete${name}(Long gemId)")}
 </#if>
