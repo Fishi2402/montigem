@@ -13,14 +13,14 @@ ${cd4c.method("public Optional<${typeName}> select${typeName}(long gemId)")}
     <#if attributes?has_content>
       builder
     </#if>
-    <#list attributes as attr, columnName>
-        .${attr.getName()}(${includeArgs("umlp.dao.get." + attr.printType()?replace(".", "_"), attr, columnName)})<#sep>${'\n'}</#sep><#rt>
+    <#list attributes as attr, dbInfos>
+        .${attr.getName()}(${includeArgs("umlp.dao.Get", "res", dbInfos[0], dbInfos[1])})<#sep>${'\n'}</#sep><#rt>
     </#list><#lt><#if attributes?has_content>;</#if>
     <#if optionalAttributes?has_content>
       builder
     </#if>
-    <#list optionalAttributes as attr, innerTypeAndColumnName>
-      .${attr.getName()}(Optional.ofNullable(${includeArgs("umlp.dao.get." + innerTypeAndColumnName[0]?replace(".", "_"), attr, innerTypeAndColumnName[1])}))<#sep>${'\n'}</#sep><#rt>
+    <#list optionalAttributes as attr, dbInfos>
+      .${attr.getName()}(Optional.ofNullable(${includeArgs("umlp.dao.Get", "res", dbInfos[0], dbInfos[1])}))<#sep>${'\n'}</#sep><#rt>
     </#list><#lt><#if optionalAttributes?has_content>;</#if><#rt>
     <#if listAttributes?has_content>
       builder

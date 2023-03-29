@@ -1,2 +1,2 @@
-${signature("statementName", "typeName", "attributeName", "index", "isOptional")}
-${statementName}.setObject(${index}, ${attributeName}<#if isOptional>.orElse(null)</#if>);
+${signature("statement","attributeName", "index", "isOptional")}
+${statement}.setObject(${index}, ${attributeName}<#if isOptional>.orElse(null)</#if>);
