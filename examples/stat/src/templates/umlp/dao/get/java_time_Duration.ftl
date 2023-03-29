@@ -1,2 +1,2 @@
-${signature("attr","columnName")}
-java.time.Duration.of(res.getLong("${columnName}"), java.time.temporal.ChronoUnit.NANOS)
+${signature("statement", "columnName")}
+java.time.Duration.of(${statement}.getLong("${columnName}"), java.time.temporal.ChronoUnit.NANOS)

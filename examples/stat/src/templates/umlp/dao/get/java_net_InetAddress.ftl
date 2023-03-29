@@ -1,2 +1,2 @@
-${signature("attr","columnName")}
-log_mc_jar.db.LoadingFromDBHelper.readIPFromStringWithoutException(res.getString("${columnName}"))
+${signature("statement", "columnName")}
+log_mc_jar.db.LoadingFromDBHelper.readIPFromStringWithoutException(${statement}.getString("${columnName}"))

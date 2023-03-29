@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
+import java.time.Duration;
 
 umlp Attributes {
 
-  class Foo  {
+  class Foo {
+
     int bar_int;
     java.lang.Integer bar_int2;
     Integer bar_int3;
@@ -14,15 +16,33 @@ umlp Attributes {
 
     float bar_float;
     java.lang.Float bar_float2;
+    List<float> bar_list_float;
+    List<Float> bar_list_float2;
+    Optional<float> bar_opt_float;
+    Optional<Float> bar_opt_float2;
 
     double bar_double;
     java.lang.Double bar_double2;
+    List<double> bar_list_double;
+    List<Double> bar_list_double2;
+    Optional<double> bar_opt_double;
+    Optional<Double> bar_opt_double2;
+
+    long bar_long;
+    java.lang.Long bar_long2;
+    List<long> bar_list_long;
+    List<Long> bar_list_long2;
+    Optional<long> bar_opt_long;
+    Optional<Long> bar_opt_long2;
 
     String bar_String;
+    List<String> bar_list_string;
+    Optional<String> bar_opt_string;
 
     boolean bar_boolean;
     // TODO: In MC muss der richtige getter generiert werden
     // java.lang.Boolean bar_boolean2;
+
   }
 
 }

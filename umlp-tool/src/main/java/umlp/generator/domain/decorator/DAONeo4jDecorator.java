@@ -1,19 +1,19 @@
 package umlp.generator.domain.decorator;
 
+import com.google.common.collect.Maps;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDAttributeTOP;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDTypeTOP;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
+import umlp.generator.db.sql.SQLSchemaGenerator;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DAONeo4jDecorator extends DAODecorator {
@@ -56,12 +56,16 @@ public class DAONeo4jDecorator extends DAODecorator {
                             Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
     List<ASTCDAttribute> listAttributes = getListAttributes(domainClass);
     List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
-    Map<ASTCDAttribute, String> optAttrToInnerType = getOptionalAttrsToInnerTypeMap(domainClass);
+    Map<ASTCDAttribute, String[]> optAttrToInnerType = Maps.newLinkedHashMap();
+    getOptionalAttrsToInnerTypeMap(domainClass).entrySet().forEach(e -> optAttrToInnerType.put(e.getKey(),
+            new String[] {e.getValue(),
+                    SQLSchemaGenerator.convertAttributeName(e.getKey().getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)}));
 
     getCD4C().addMethod(daoClass, "umlp.dao.SelectInitNeo4j", domainClass.getName(), attributes);
 
-    Map<ASTCDAttribute, String> attributeTableName = attributes.stream().collect(Collectors.toMap(Function.identity(),
-        ASTCDAttributeTOP::getName));
+    Map<ASTCDAttribute, String[]> attributeTableName = Maps.newLinkedHashMap();
+    attributes.forEach(e -> attributeTableName.put(e, new String[] {GenService.getDBType(e.getSymbol().getType()),
+            e.getName()}));
     getCD4C().addMethod(daoClass, "umlp.dao.Select", domainClass.getName(), cdName, attributeTableName,
         optAttrToInnerType, listAttributes, listAssociationMap, gemAssociationMap);
   }
@@ -73,10 +77,12 @@ public class DAONeo4jDecorator extends DAODecorator {
     List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
     List<ASTCDAttribute> listAttributes = getListAttributes(domainClass);
     Map<ASTCDAttribute, String> optAttrToInnerType = getOptionalAttrsToInnerTypeMap(domainClass);
+    Map<ASTCDAttribute, String> attributeTableName = Maps.newLinkedHashMap();
+    attributes.forEach(a -> attributeTableName.put(a, GenService.getDBType(a.getSymbol().getType())));
 
     getCD4C().addMethod(daoClass, "umlp.dao.InsertInitNeo4j",
         CDSymbolTables.getTransitiveSuperTypes(domainClass).stream().map(ASTCDTypeTOP::getName).collect(Collectors.toList()), attributes);
-    getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
+    getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributeTableName,
         optAttrToInnerType , listAttributes, listAssociationMap, gemAssociationMap);
   }
 
@@ -95,6 +101,7 @@ public class DAONeo4jDecorator extends DAODecorator {
   protected void updateAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && !GenService.isList(a) && !GenService.isOptional(a)).forEach(attr ->
-            getCD4C().addMethod(doaClass, "umlp.dao.UpdateAttrNeo4j", domainClass.getName(), attr.getName(), attr.printType()));
+            getCD4C().addMethod(doaClass, "umlp.dao.UpdateAttrNeo4j", domainClass.getName(), attr.getName(),
+                    attr.printType(), GenService.getDBType(attr.getSymbol().getType())));;
   }
 }

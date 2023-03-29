@@ -356,6 +356,6 @@ public class GenService {
     } else if (TypeCheck.isString(type)) {
       return "String";
     }
-    return "Object";
+    return type.printFullName();
   }
 }
