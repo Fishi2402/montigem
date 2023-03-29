@@ -11,6 +11,7 @@ import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -44,7 +45,7 @@ public class BaseClassObjectMapperDecorator extends AbstractDecorator {
 
     // constructor
     getCD4C().addConstructor(mapperClass, "umlp.baseclassobjectmapper.Constructor",
-        classesList, name+SUFFIX);
+        new ArrayList(), name+SUFFIX);
 
     // add methods
     getCD4C().addMethod(mapperClass, "umlp.baseclassobjectmapper.Init", name);
