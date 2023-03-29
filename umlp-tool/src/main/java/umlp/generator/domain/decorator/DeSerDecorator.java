@@ -45,9 +45,10 @@ public class DeSerDecorator extends DomainClassDecorator {
     String originalClassName = cdClass.getName();
 
     ASTCDClass deSer = UMLPMill.cDClassBuilder()
-            .setName(cdClass.getName() + SUFFIX)
-            .setModifier(CDModifier.PUBLIC.build())
-            .build();
+        .setName(cdClass.getName() + SUFFIX)
+        .setModifier(CDModifier.PUBLIC.build())
+        .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("JsonDeSer<" + cdClass.getName() + ">"))
+        .build();
 
     addImports(deSer);
 
@@ -147,6 +148,7 @@ public class DeSerDecorator extends DomainClassDecorator {
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonElement");
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("JsonDeSer"));
   }
 
 }
