@@ -30,13 +30,11 @@ public class UMLPMergeTest extends AbstractUMLPTest {
     createSymTab(merge);
     UMLPCoCos.checkAll(merge);
 
-    /* todo: fix deepEquals; expected is literally the same model as merge!
-    ASTUMLPCompilationUnit expected = parse("de/monticore/MergeDriveAndEmployment.umlp");
+    ASTCDCompilationUnit expected = parse("de/monticore/MergeDriveAndEmployment.umlp");
     runAfterParseTrafo(expected);
-    createSymTab(expected);
-    Assertions.assertTrue(merge.deepEquals(expected,false));
-     */
-
+    createSymTab(merge);
+    // TODO MS: In dem Merge-Ergebnis gibt es eine Assoziation mehr als in dem erwarteten Ergebnis
+    //Assertions.assertTrue(merge.deepEquals(expected,false));
   }
 
 }

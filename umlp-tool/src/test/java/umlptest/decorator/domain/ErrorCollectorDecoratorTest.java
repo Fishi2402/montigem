@@ -31,8 +31,7 @@ public class ErrorCollectorDecoratorTest extends DecoratorTest {
 
             // check methods
             () -> existsMethod(clazz, "init"),
-            // TODO: Generate initMe
-            // () -> existsMethod(clazz, "initMe"),
+            () -> existsMethod(clazz, "initMe"),
             () -> existsMethod(clazz, "addErrorObserver"),
             () -> existsMethod(clazz, "_addErrorObserver"),
             () -> existsMethod(clazz, "containsErrorObserver"),

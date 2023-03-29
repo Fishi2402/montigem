@@ -62,10 +62,9 @@ public class UMLPDeSerTest extends AbstractUMLPTest {
     IUMLPArtifactScope actual = s2j.load(symFile);
     assertNoErrors();
 
-    //TODO MB:  ST mit Paketen muss korrekt funktionieren
-    // assertEquals(expected.getSymbolsSize(), actual.getSymbolsSize());
+    assertEquals(expected.getSymbolsSize(), actual.getSymbolsSize());
     assertUMLPSymEquals(expected, actual);
-    // assertCDTypeSymEquals(expected, actual);
+    assertCDTypeSymEquals(expected, actual);
 
   }
 

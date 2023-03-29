@@ -3,7 +3,7 @@ umlp Driver{
   abstract class Entity;
 
   class Person extends Entity {
-    Date birthday;
+    java.util.Date birthday;
     String address;
   }
 
