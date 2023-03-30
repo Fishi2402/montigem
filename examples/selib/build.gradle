@@ -3,6 +3,8 @@ plugins {
     id 'application'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version "${spring_version}"
+
+    id 'de.rwth.se.umlp-tool-backend'
 }
 
 description 'SE Bib example'
@@ -19,13 +21,11 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
 }
 
-task generateSELib(type: UMLPTask) {
-    input = (file("src/models"))
-    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
-    hwcDir = layout.projectDirectory.dir("src/main/java/")
-    configTemplate = "umlp/UMLPConfig4teaching.ftl"
-    tmplDir = layout.projectDirectory.dir("src/templates/")
+// Task is created by umlp-backend plugin (with very sensible default values)
+generateUmlpBackend{
+  configTemplate = "umlp/UMLPConfig4teaching.ftl"
 }
+
 
 task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
     classpath = sourceSets.main.runtimeClasspath
@@ -39,6 +39,3 @@ task runServer {
     })
 }
 
-build.dependsOn(generateSELib)
-
-sourceSets.main.resources.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode/frontend4teaching"]
