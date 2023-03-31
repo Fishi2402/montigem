@@ -43,7 +43,9 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
     SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
     main.getJava().srcDir(umlpTask.getOutputDir());
-    main.getResources().srcDir(umlpTask.getOutputDir());
+
+    // Add generated resources. e.g. SQL-Schemata
+    main.getResources().srcDir(umlpTask.getOutputDir().dir("resources"));
   }
 
   protected TaskProvider<UMLPTask> createUMLPBackendTask(final Project project) {

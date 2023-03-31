@@ -20,8 +20,8 @@ public class UI4TeachingGenerator {
   }
 
   public void generate(ASTCDCompilationUnit cdAST){
-    generatorEngine.generate("umlp.gui4teaching.html", Paths.get("frontend4teaching","static","index.html"), cdAST);
-    generatorEngine.generate("umlp.gui4teaching.js", Paths.get("frontend4teaching", "static","index.js"), cdAST, cdAST.getCDDefinition().getCDClassesList());
+    generatorEngine.generate("umlp.gui4teaching.html", Paths.get("resources", "frontend4teaching","static","index.html"), cdAST);
+    generatorEngine.generate("umlp.gui4teaching.js", Paths.get("resources","frontend4teaching", "static","index.js"), cdAST, cdAST.getCDDefinition().getCDClassesList());
 
   }
 
