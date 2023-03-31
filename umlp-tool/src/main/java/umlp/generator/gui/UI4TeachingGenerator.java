@@ -20,9 +20,9 @@ public class UI4TeachingGenerator {
   }
 
   public void generate(ASTCDCompilationUnit cdAST){
-    generatorEngine.generate("umlp.gui4teaching.html", Paths.get("resources", "frontend4teaching","static","index.html"), cdAST);
-    generatorEngine.generate("umlp.gui4teaching.js", Paths.get("resources","frontend4teaching", "static","index.js"), cdAST, cdAST.getCDDefinition().getCDClassesList());
-
+    // into /static so that Spring will automatically host these
+    generatorEngine.generate("umlp.gui4teaching.html", Paths.get("resources", "static","index.html"), cdAST);
+    generatorEngine.generate("umlp.gui4teaching.js", Paths.get("resources", "static","index.js"), cdAST, cdAST.getCDDefinition().getCDClassesList());
   }
 
 
