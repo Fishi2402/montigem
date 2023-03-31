@@ -1,20 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
-description 'cars example'
 
+plugins {
+  id 'de.rwth.se.umlp-tool-backend'
+}
 repositories {
     maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
     maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
 }
 
-task generateFlensburg(type: UMLPTask) {
-    input = file("src")
-    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
-    hwcDir = layout.projectDirectory.dir("src/main/java/")
-}
-
-build.dependsOn(generateFlensburg)
-processResources.dependsOn(generateFlensburg)
+description 'cars example'
 
 project('client'){
-    sourceSets.main.java.srcDirs = ['../src/main/java', "../target/generated-sources/monticore/sourcecode"]
+    sourceSets.main.java.srcDirs = ['../src/main/java', generateUmlpBackend.getOutputDir()]
 }
