@@ -27,11 +27,6 @@
       line-height: 1.5;
     }
 
-    .graph {
-      display: flex;
-      justify-content: center;
-    }
-
     .title {
       margin: 20px;
       display: flex;
@@ -130,8 +125,6 @@
     tag instead
   -->
   <script type='text/javascript' src='./index.js'></script>
-  <!-- Load d3.js -->
-  <script src="https://d3js.org/d3.v6.js"></script>
   <script>
     // Update of CRUD
     async function updateObj(cell, className, attr, gemId) {
@@ -264,8 +257,6 @@
         // received data from server
         const dataSet = cd.data;
         const pageTitle = cd.title;
-
-        renderGraph(cd.graph);
 
         // always true, unless old or unconventional browser is used
         if ("content" in document.createElement("template")) {
@@ -434,80 +425,6 @@
         }
       });
     };
-
-    async function renderGraph(data) {
-      // set the dimensions of the graph
-      const width = 1000;
-      const height = 400;
-
-      const simulation = d3.forceSimulation(data.nodes)
-        .force("link", d3.forceLink(data.links).id(d => d.id))
-        .force("charge", d3.forceManyBody().strength(-100))
-        .force("x", d3.forceX())
-        .force("y", d3.forceY())
-        .force('collide', d3.forceCollide(d => 65))
-
-      // append the svg object to the body of the page
-      const svg = d3.select("#graph")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("viewBox", [-width / 2, -height / 2, width * 1.5, height * 1.5]);
-
-      svg.append("defs")
-        .append("marker")
-        .attr("id", "arrow")
-        .attr("viewBox", "0 -5 10 10")
-        .attr("refX", 38)
-        .attr("refY", 0)
-        .attr("markerWidth", 6)
-        .attr("markerHeight", 6)
-        .attr("orient", "auto")
-        .append("path")
-        .attr("fill", "black")
-        .attr("d", 'M0,-5L10,0L0,5');
-
-      // Initialize the links
-      const link = svg
-        .append("g")
-        .attr("fill", "none")
-        .attr("stroke-width", 1.5)
-        .selectAll("path")
-        .data(data.links)
-        .join("path")
-        .attr("stroke", "black")
-        .attr("marker-end", "url(#arrow)");
-
-      // Initialize the nodes
-      const node = svg.append("g")
-        .attr("fill", "currentColor")
-        .attr("stroke-linecap", "round")
-        .attr("stroke-linejoin", "round")
-        .selectAll("g")
-        .data(data.nodes)
-        .join("g");
-        // .call(drag(simulation));
-
-      node.append("circle")
-        .attr("stroke", "black")
-        .attr("stroke-width", 1.5)
-        .attr("r", 25)
-        .attr("fill", "white");
-
-      node.append("text")
-        .attr("x", 30 + 4)
-        .attr("y", "0.31em")
-        .text(d => d.type)
-        .clone(true).lower()
-        .attr("fill", "none")
-        .attr("stroke", "white")
-        .attr("stroke-width", 3);
-
-      simulation.on("tick", () => {
-        link.attr("d", d => "M" + d.source.x + "," + d.source.y + "A0,0 0 0,1 " + d.target.x + "," + d.target.y);
-        node.attr("transform", d => "translate(" + d.x + "," + d.y + ")");
-      });
-    };
   </script>
 </head>
 
@@ -523,8 +440,6 @@
       Delete: Click &#128465; in a corresponding row.<br>
     </p>
   </div>
-  <!-- Create a div where the graph will be shown -->
-  <div id="graph" class="graph"></div>
 </body>
 
 <!-- page title template ( SELib )-->

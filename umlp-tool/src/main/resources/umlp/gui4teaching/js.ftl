@@ -137,7 +137,6 @@ async function loadClassData(className) {
 async function loadData() {
   const cd = {};
   cd.title = await loadTitle();
-  cd.graph = await loadGraph();
 
   const data = [];
 <#list cdClasses as c>
@@ -155,68 +154,6 @@ async function loadData() {
 async function loadTitle() {
   // do not really need a command as this title never changes
   return "${ast.getCDDefinition().getName()}";
-}
-
-async function loadGraph() {
-  /*
-  let response = await fetch(GETGRAPH_URL);
-  data = await response.json();
-  return data;
-  /**/
-  return {
-    "nodes": [
-      {
-        "id": 1,
-        "type": "A"
-      },
-      {
-        "id": 2,
-        "type": "B"
-      },
-      {
-        "id": 3,
-        "type": "C"
-      },
-      {
-        "id": 4,
-        "type": "D"
-      },
-      {
-        "id": 5,
-        "type": "E"
-      },
-      {
-        "id": 6,
-        "type": "F"
-      }
-    ],
-    "links": [
-      {
-        "source": 1,
-        "target": 2
-      },
-      {
-        "source": 2,
-        "target": 1
-      },
-      {
-        "source": 3,
-        "target": 1
-      },
-      {
-        "source": 2,
-        "target": 6
-      },
-      {
-        "source": 5,
-        "target": 1
-      },
-      {
-        "source": 4,
-        "target": 5
-      }
-    ]
-  };
 }
 
 <#list cdClasses as c>
