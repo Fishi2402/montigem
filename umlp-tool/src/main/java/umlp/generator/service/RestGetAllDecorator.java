@@ -2,18 +2,20 @@
 package umlp.generator.service;
 
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.types.check.SymTypeExpression;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
@@ -41,12 +43,39 @@ public class RestGetAllDecorator extends AbstractDecorator {
     addImports(origCD, clazz);
 
     // Methods
+    addGetAll(origCD, clazz);
+    addGraph(origCD, clazz);
+
+    return clazz;
+  }
+
+  private void addGraph(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
+    ASTCDMethodSignature graph = getCD4C().addMethod(clazz, "umlp.service4teaching.graph",
+        origCD.getCDDefinition().getName(),
+        origCD.getCDDefinition().getCDClassesList(),
+        origCD.getCDDefinition().getCDAssociationsList().stream().flatMap(a -> {
+          List<Map.Entry<SymTypeExpression, ASTCDAssocSide>> sides = new ArrayList<>();
+          if(a.getLeft().getSymbol().isIsDefinitiveNavigable()){
+            sides.add(Map.entry(a.getRight().getSymbol().getType(), a.getLeft()));
+          }
+          if(a.getRight().getSymbol().isIsDefinitiveNavigable()){
+            sides.add(Map.entry(a.getLeft().getSymbol().getType(), a.getRight()));
+          }
+          return sides.stream();
+        }).collect(Collectors.groupingBy(e -> e.getKey().print()))
+    );
+
+    String annotation = "@GetMapping(value = \"/graph\") @CrossOrigin";
+    glex.replaceTemplate("cd2java.Annotations", graph, new StringHookPoint(annotation));
+    addAnnotationToParameters(graph, Arrays.asList("@PathVariable"));
+  }
+
+  private void addGetAll(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
     ASTCDMethodSignature getAll = getCD4C().addMethod(clazz, "umlp.service4teaching.getAll",
         origCD.getCDDefinition().getName(), origCD.getCDDefinition().getCDClassesList());
     String annotation = "@GetMapping(value = \"/getall/{type}\") @CrossOrigin";
     glex.replaceTemplate("cd2java.Annotations", getAll, new StringHookPoint(annotation));
     addAnnotationToParameters(getAll, Arrays.asList("@PathVariable"));
-    return clazz;
   }
 
   private void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz) {

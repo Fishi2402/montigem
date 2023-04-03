@@ -244,11 +244,11 @@ public class GenService {
   }
 
   public static boolean isList(ASTCDAssocSide assoc) {
-    return assoc.isPresentCDCardinality()?assoc.getCDCardinality().isMult():false;
+    return assoc.isPresentCDCardinality() && assoc.getCDCardinality().isMult();
   }
 
   public static boolean isOptional(ASTCDAssocSide assoc) {
-    return assoc.isPresentCDCardinality()?assoc.getCDCardinality().isOpt():false;
+    return assoc.isPresentCDCardinality() && assoc.getCDCardinality().isOpt();
   }
 
   public static boolean isBidirectional(ASTCDAssocSide assoc) {

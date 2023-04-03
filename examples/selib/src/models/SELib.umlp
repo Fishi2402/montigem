@@ -24,4 +24,6 @@ umlp SELib {
 
   association [*] Book -> (description) BookDescription [1];
 
+  association [*] Person -> (favorite) Book [0..1];
+
 }
