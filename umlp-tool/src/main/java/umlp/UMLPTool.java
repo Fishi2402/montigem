@@ -24,10 +24,7 @@ import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.symboltable.serialization.json.JsonBoolean;
-import de.monticore.symboltable.serialization.json.JsonElement;
-import de.monticore.symboltable.serialization.json.JsonObject;
-import de.monticore.symboltable.serialization.json.JsonString;
+import de.monticore.symboltable.serialization.json.*;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -315,7 +312,7 @@ public class UMLPTool extends UMLPToolTOP {
 
   private JsonElement buildJsonData(CommandLine cmd) {
     JsonObject result = new JsonObject();
-    result.putMember("input", new JsonString(Path.of(INPUT.getValue(cmd)).getFileName().toString()));
+    result.putMember("input", new UserJsonString(Path.of(INPUT.getValue(cmd)).getFileName().toString()));
     result.putMember("debug", new JsonBoolean(DEBUG.isSelected(cmd)));
     result.putMember("hwc", new JsonBoolean(HWC_PATH.isSelected(cmd)));
     return result;
