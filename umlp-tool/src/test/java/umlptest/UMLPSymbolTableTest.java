@@ -3,6 +3,7 @@ package umlptest;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,15 @@ public class UMLPSymbolTableTest extends AbstractUMLPTest {
 
     final Optional<FieldSymbol> i2 = c2.get().getSpannedScope().resolveField("i");
     assertTrue(i2.isPresent());
+
+    final Optional<CDTypeSymbol> d = as.resolveCDType("D");
+    assertTrue(d.isPresent());
+
+    final Optional<VariableSymbol> i3 = d.get().getSpannedScope().resolveVariable("i");
+    assertTrue(i3.isPresent());
+
+    final Optional<FieldSymbol> i4 = d.get().getSpannedScope().resolveField("i");
+    assertTrue(i4.isPresent());
   }
 
   @Test
