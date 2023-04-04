@@ -265,14 +265,13 @@
         const dataSet = cd.data;
         const pageTitle = cd.title;
 
-        renderGraph(cd.graph);
-
         // always true, unless old or unconventional browser is used
         if ("content" in document.createElement("template")) {
 
           const body = document.querySelector("body");
           // use templates to create cards, tables, etc. at runtime, when data is loaded
           const titleTpl = document.querySelector("#titletpl");
+          const graphTpl = document.querySelector("#graphtpl");
           const cardTpl = document.querySelector("#cardtpl");
           const tableRowTpl = document.querySelector("#tablerowtpl");
           const cellAddTpl = document.querySelector("#celladdtpl");
@@ -285,6 +284,16 @@
           h1.appendChild(titleText);
 
           body.appendChild(titleClone);
+
+          // create graph
+          if (cd.graph
+            && ((cd.graph.links && cd.graph.links.length)
+              || (cd.graph.objects && cd.graph.objects.length))
+          ) {
+            const graphClone = graphTpl.content.cloneNode(true);
+            body.appendChild(graphClone);
+            renderGraph(cd.graph);
+          }
 
           // create a card for each class
           for (const entry of dataSet) {
@@ -439,20 +448,22 @@
       // set the dimensions of the graph
       const width = 1000;
       const height = 400;
+      const radius = 25;
 
       const simulation = d3.forceSimulation(data.objects)
         .force("link", d3.forceLink(data.links).id(d => d.id))
-        .force("charge", d3.forceManyBody().strength(-100))
+        .force("charge", d3.forceManyBody().strength(-80))
+        .force("center", d3.forceCenter(width / 2, height / 2))
         .force("x", d3.forceX())
         .force("y", d3.forceY())
-        .force('collide', d3.forceCollide(d => 65))
+        .force("collide", d3.forceCollide(d => 65))
 
       // append the svg object to the body of the page
       const svg = d3.select("#graph")
         .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("viewBox", [-width / 2, -height / 2, width * 1.5, height * 1.5]);
+        .attr("width", "100%")
+        .attr("height", "400px")
+        .attr("viewBox", [0, 0, width, height]);
 
       svg.append("defs")
         .append("marker")
@@ -485,29 +496,57 @@
         .attr("stroke-linejoin", "round")
         .selectAll("g")
         .data(data.objects)
-        .join("g");
-        // .call(drag(simulation));
+        .join("g")
+        .call(drag(simulation));
 
       node.append("circle")
         .attr("stroke", "black")
         .attr("stroke-width", 1.5)
-        .attr("r", 25)
+        .attr("r", radius)
         .attr("fill", "white");
 
       node.append("text")
         .attr("x", 30 + 4)
         .attr("y", "0.31em")
         .attr("text-decoration", "underline")
-        .text(d => d.type[0].toLowerCase() + d.id + ":" + d.type)
+        .text(d => d.type.replace(/[a-z]/g, '').toLowerCase() + d.id + ":" + d.type)
         .clone(true).lower()
         .attr("fill", "none")
         .attr("stroke", "white")
         .attr("stroke-width", 3);
 
       simulation.on("tick", () => {
-        link.attr("d", d => "M" + d.source.x + "," + d.source.y + "A0,0 0 0,1 " + d.target.x + "," + d.target.y);
-        node.attr("transform", d => "translate(" + d.x + "," + d.y + ")");
+        link.attr("d", d => "M" + d.source.x + "," + d.source.y + "A0,0 0 0,1 " + d.target.x + "," + d.target.y)
+          .attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; });
+        node
+          .attr("transform", d => "translate(" + d.x + "," + d.y + ")")
+          .attr("cx", d => { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
+          .attr("cy", d => { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
       });
+    };
+
+    function drag(simulation) {
+      function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+      }
+      function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+      }
+      function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+      }
+      return d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended);
     };
   </script>
 </head>
@@ -524,14 +563,17 @@
       Delete: Click &#128465; in a corresponding row.<br>
     </p>
   </div>
-  <!-- Create a div where the graph will be shown -->
-  <div id="graph" class="graph"></div>
 </body>
 
 <!-- page title template ( SELib )-->
 <template id="titletpl">
   <h1 class="title"></h1>
   <hr />
+</template>
+<!-- graph template -->
+<template id="graphtpl">
+  <!-- Create a div where the graph will be shown -->
+  <div id="graph" class="graph"></div>
 </template>
 <!-- card template -->
 <template id="cardtpl">
