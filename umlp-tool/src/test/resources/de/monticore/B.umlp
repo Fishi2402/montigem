@@ -10,4 +10,6 @@ umlp B {
   class C {
     I i;
   }
+
+  class D extends C;
 }
