@@ -126,11 +126,6 @@ public class BEDecorator extends AbstractDecorator {
     errorObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorObserverDecorator", BEDecorator.class.getName());
 
-    // TODO: remove
-    /*TypeAdapterDecorator typeAdapterDecorator = new TypeAdapterDecorator(glex);
-    typeAdapterDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: TypeAdapterDecorator", BEDecorator.class.getName());*/
-
     GemListAssocDecorator gemListAssocDecorator = new GemListAssocDecorator(glex);
     gemListAssocDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: GemListAssocDecorator", BEDecorator.class.getName());
