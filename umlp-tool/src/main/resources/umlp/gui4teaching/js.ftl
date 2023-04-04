@@ -39,7 +39,7 @@ const GETALL_URL = new URL(href + 'getall/');
 const GETGRAPH_URL = new URL(href + 'graph/');
 
 async function sendCommand(command) {
-  console.log("Send command: " + command);
+  console.log("Send command: ", command);
   try {
     const response = await fetch(COMMAND_URL, {
       method: 'POST',
@@ -50,7 +50,9 @@ async function sendCommand(command) {
     })
     // TODO: delete if you don't care what the result is
     console.log(response);
-    return await response.json();
+    const json = await response.json();
+    console.log(json);
+    return json;
   } catch (err) {
     console.error(err);
     // TODO: remove if you don't want that
@@ -166,8 +168,6 @@ async function loadGraph() {
 
 <#list cdClasses as c>
 async function load${c.getName()}() {
-  // TODO: something like that
-  // return loadClassData("${c.getName()}");
   let response = await fetch(GETALL_URL + "${c.getName()}");
   data = await response.json();
   if (data.length == 0) {
@@ -177,34 +177,25 @@ async function load${c.getName()}() {
           "${attr.getName()}": undefined,
       </#list>
     });
+  }else{
+    for(const d of data){
+    <#list c.getCDAttributeList() as attr>
+      <#if attr.modifier.isDerived()>
+        try{
+        const res = await sendCommand(
+        {"commandType": "${ast.getCDDefinition().getName()?lower_case}.commands.${c.getName()}_calculate${attr.name?cap_first}",
+        "gemId": d.gemId}
+        );
+        d.${attr.getName()} = res.value;
+        }catch(error){
+          d.${attr.getName()} = undefined;
+          console.log("Can not load ${attr.name}", error);
+        }
+     </#if>
+    </#list>
+    }
   }
   return data;
-
-  <#-- dummy data for Person and Book -->
-<#--<#if c.getName() == "Person">-->
-<#--  // dummy data-->
-<#--  return [-->
-<#--    { "gemId" : 1, "name": "Alice", "email": "a@se.de", "password": "asd", "isManager": true, "rented": ["Harry", "Potter", "LotR"] },-->
-<#--    { "gemId" : 2, "name": "Bob", "email": "b@se.de", "password": "ewv43", "isManager": false, "rented": ["LotR"] },-->
-<#--    { "gemId" : 3, "name": "Charlie", "email": "c@se.de", "password": "d3", "isManager": true, "rented": [] }-->
-<#--  ];-->
-<#--<#elseif c.getName() == "Book">-->
-<#--  // dummy data-->
-<#--  // actual code would send an async request, which will return a bit later-->
-<#--  // written with a timeout to see if it works-->
-<#--  return new Promise(resolve => setTimeout(-->
-<#--    () => resolve([-->
-<#--      { "gemId" : 4, "title": "Harry", "description": "lorem", "image": "x.png" },-->
-<#--      { "gemId" : 5, "title": "Potter", "description": "ipsum", "image": "y.png" },-->
-<#--      { "gemId" : 6, "title": "LotR", "description": "foo", "image": "z.png" }-->
-<#--    ]),-->
-<#--    500-->
-<#--  ));-->
-<#--<#else>-->
-<#--  return [-->
-<#--    {  }-->
-<#--  ];-->
-<#--</#if>-->
 }
 
 </#list>
