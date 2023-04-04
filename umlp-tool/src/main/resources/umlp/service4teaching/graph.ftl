@@ -5,7 +5,7 @@ List<String> links = new ArrayList<>();
 <#list cdClasses as c>
 ${cdName}Manager.get${c.getName()}List()
       .stream()
-      .map(obj -> "{\"type\": \"${c.getName()}\"," + "\"gemId\": " + obj.getGemId() + "}")
+      .map(obj -> "{\"type\": \"${c.getName()}\"," + "\"id\": " + obj.getGemId() + "}")
       .forEach(objs::add);
 </#list>
 
@@ -16,12 +16,16 @@ ${cdName}Manager.get${c.getName()}List()
         <#if side.isPresentCDCardinality() && side.getCDCardinality().isMult()>
         <#-- List -->
         for(var other : obj.get${side.name?cap_first}()){
-          links.add("{\"source\":" + obj.getGemId() + ",\"target\":"+other.getGemId());
+          if(obj.getGemId() >= 0 && other.getGemId() >= 0){
+            links.add("{\"source\":" + obj.getGemId() + ",\"target\":"+other.getGemId() + "}");
+          }
         }
         <#else>
         <#-- Req or Opt-->
         var other = obj.get${side.name?cap_first}Gem();
-        links.add("{\"source\":" + obj.getGemId() + ",\"target\":"+other.getGemId());
+        if(obj.getGemId() >= 0 && other.getGemId() >= 0){
+          links.add("{\"source\":" + obj.getGemId() + ",\"target\":"+other.getGemId() + "}");
+        }
         </#if>
       </#list>
 }

@@ -36,6 +36,7 @@ if(!href.endsWith("/")){
 }
 const COMMAND_URL = new URL(href + 'api/');
 const GETALL_URL = new URL(href + 'getall/');
+const GETGRAPH_URL = new URL(href + 'graph/');
 
 async function sendCommand(command) {
   console.log("Send command: " + command);
@@ -137,7 +138,8 @@ async function loadClassData(className) {
 async function loadData() {
   const cd = {};
   cd.title = await loadTitle();
-
+  cd.graph = await loadGraph();
+  console.log(cd.graph);
   const data = [];
 <#list cdClasses as c>
   data.push({
@@ -154,6 +156,12 @@ async function loadData() {
 async function loadTitle() {
   // do not really need a command as this title never changes
   return "${ast.getCDDefinition().getName()}";
+}
+
+async function loadGraph() {
+  let response = await fetch(GETGRAPH_URL);
+  data = await response.json();
+  return data;
 }
 
 <#list cdClasses as c>
