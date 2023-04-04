@@ -7,6 +7,7 @@ import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.generating.templateengine.reporting.reporter.*;
 import de.monticore.io.paths.MCPath;
+import de.monticore.symboltable.serialization.json.JsonElement;
 import umlp._visitor.UMLPTraverser;
 
 import java.nio.file.Path;
@@ -22,6 +23,7 @@ import java.util.function.Function;
 public class UMLPReports implements ReportManager.ReportManagerFactory {
 
 
+  protected final JsonElement jsonElement;
   protected String outputDirectory;
 
   protected String reportDirectory;
@@ -39,11 +41,12 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
       String outputDirectory,
       String reportDirectory,
       Function<Path, Path> reportPathOutput,
-      MCPath handwrittenPath) {
+      MCPath handwrittenPath, JsonElement jsonElement) {
     this.outputDirectory = outputDirectory;
     this.reportDirectory = reportDirectory;
     this.handwrittenPath = handwrittenPath;
     this.reportPathOutput = reportPathOutput;
+    this.jsonElement = jsonElement;
     // this.templatePath = templatePath;
   }
 
@@ -89,6 +92,7 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
     SuccessfulReporter successfulReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
     IncGenGradleReporter incGenGradleReporter = new IncGenGradleReporter(this.reportDirectory, reportPathOutput,
         lowerCaseName);
+    StatisticsReporter statisticsReporter = new StatisticsReporter(jsonElement, "UMLP_JAR_JSON", this.reportDirectory, modelName, repository, traverserNodeTree);
 
     reports.addReportEventHandler(summaryReporter);
     reports.addReportEventHandler(generatedFilesReporter);
@@ -109,6 +113,7 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
     //reports.addReportEventHandler(new ODReporter(this.reportDirectory, lowerCaseName, repository));
     reports.addReportEventHandler(successfulReporter);
     reports.addReportEventHandler(incGenGradleReporter);
+    reports.addReportEventHandler(statisticsReporter);
 
     reporters.add(summaryReporter);
     reporters.add(generatedFilesReporter);
@@ -129,6 +134,7 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
     //reporters.add(new ODReporter(this.reportDirectory, lowerCaseName, repository));
     reporters.add(successfulReporter);
     reporters.add(incGenGradleReporter);
+    reporters.add(statisticsReporter);
 
     return reports;
   }

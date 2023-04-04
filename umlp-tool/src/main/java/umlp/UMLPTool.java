@@ -24,6 +24,10 @@ import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.symboltable.serialization.json.JsonBoolean;
+import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.symboltable.serialization.json.JsonString;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -153,7 +157,7 @@ public class UMLPTool extends UMLPToolTOP {
           return;
         }
 
-        umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);   //TODO: Maybe refactor into a method to remove duplicate
+        umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath, buildJsonData(cmd));   //TODO: Maybe refactor into a method to remove duplicate
 
         Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
         String report_on = inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
@@ -176,7 +180,7 @@ public class UMLPTool extends UMLPToolTOP {
       }
 
       else if (isUmlpFile(inputFile)) {
-        umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
+        umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath, buildJsonData(cmd));
 
         Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
         String report_on = inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
@@ -307,6 +311,14 @@ public class UMLPTool extends UMLPToolTOP {
         guidsl_reportManagerFactory.close();
       }
     }
+  }
+
+  private JsonElement buildJsonData(CommandLine cmd) {
+    JsonObject result = new JsonObject();
+    result.putMember("input", new JsonString(Path.of(INPUT.getValue(cmd)).getFileName().toString()));
+    result.putMember("debug", new JsonBoolean(DEBUG.isSelected(cmd)));
+    result.putMember("hwc", new JsonBoolean(HWC_PATH.isSelected(cmd)));
+    return result;
   }
 
   /**
