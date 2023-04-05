@@ -5,7 +5,7 @@ ${cd4c.method("public void buildJson(CommandResult<?> result, JsonPrinter printe
 super.buildJson(result, printer);
 if(result.isSimpleResult()){
   String tp = result.getTypeParameter();
-  if(tp.startsWith("java.lang")){
+  if(BaseClassObjectMapper.canDeSer(tp)){
     return;
   }
 
@@ -16,7 +16,7 @@ if(result.isSimpleResult()){
 
 if(result.isListResult()){
   String tp = result.getTypeParameter();
-  if(tp.startsWith("java.lang")){
+  if(BaseClassObjectMapper.canDeSer(tp)){
     return;
   }
 

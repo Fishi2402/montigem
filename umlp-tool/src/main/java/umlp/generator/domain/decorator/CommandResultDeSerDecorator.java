@@ -64,6 +64,8 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ListResult"));
+
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
   }
 
 
