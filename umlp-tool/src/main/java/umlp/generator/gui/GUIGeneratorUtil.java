@@ -27,6 +27,8 @@ public class GUIGeneratorUtil {
 
   public static final String LONG = "Long";
 
+  public static final String VIEW_ELEMENT = "GUIViewElement";
+
   public static final List<String> UMLP_TYPES = Collections.unmodifiableList(Lists.newArrayList(STRING, LONG));
 
   private GUIGeneratorUtil() {}
@@ -158,7 +160,11 @@ public class GUIGeneratorUtil {
   }
 
   public static boolean isViewElementsCollection(ASTGUIParam param) {
-    return GenService.isList(param.getMCType()) && GenService.getInnerType(param.getMCType()).equals("GUIViewElement");
+    return GenService.isList(param.getMCType()) && GenService.getInnerType(param.getMCType()).equals(VIEW_ELEMENT);
+  }
+
+  public static boolean isViewElement(GUIParamSymbol param) {
+    return param.getType().getTypeInfo().getName().equals(VIEW_ELEMENT);
   }
 
   public static String getComponentNameFromCamelCaseName(String camelCaseName) {

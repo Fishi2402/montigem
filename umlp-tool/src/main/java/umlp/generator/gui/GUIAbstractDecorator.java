@@ -77,17 +77,11 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
     return components.stream().filter(predicate).collect(Collectors.toList());
   }
 
-  // TODO MB: super class
   public Optional<VariableSymbol> resolveAttribute(Optional<GUIParamSymbol> guiVariableSymbol, String name) {
     if (guiVariableSymbol.isEmpty()) {
       return Optional.empty();
     }
-    TypeSymbol typeInfo = guiVariableSymbol.get().getType().getTypeInfo();
-    Optional<VariableSymbol> res = typeInfo.getSpannedScope().resolveVariable(name);
-    if (res.isEmpty() && typeInfo.isPresentSuperClass()) {
-      res = typeInfo.getSuperClass().getTypeInfo().getSpannedScope().resolveVariable(name);
-    }
-    return res;
+    return guiVariableSymbol.get().getType().getTypeInfo().getSpannedScope().resolveVariable(name);
   }
 
   @Override

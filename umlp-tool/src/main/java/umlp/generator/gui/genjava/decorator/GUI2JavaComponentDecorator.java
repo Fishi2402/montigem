@@ -21,6 +21,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentAccessVisitor;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -69,8 +70,10 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     if (guiComponentSymbol.isPresent() && !isEventArgument(guiComponentSymbol.get(), namedArg)) {
       Optional<GUIParamSymbol> argSymbol = guiComponentSymbol.get().getSpannedScope().resolveGUIParam(namedArg.getName());
       if (argSymbol.isPresent()) {
+        if (GUIGeneratorUtil.isViewElement(argSymbol.get())) {
+          return;
+        }
         String returnType = argSymbol.get().getType().getTypeInfo().getName();
-
         boolean convertToString = mustBeConvertedToString(returnType, namedArg);
         if (convertToString) {
           argValue = "String.valueOf(" + argValue + ")";
