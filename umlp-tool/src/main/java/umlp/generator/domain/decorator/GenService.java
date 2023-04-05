@@ -30,6 +30,9 @@ import static de.monticore.types.check.SymTypePrimitive.box;
 public class GenService {
 
   public static final String UMLP_ID_NAME = "umlpId";
+
+  public GenService(){
+  }
   
   public static TypeRelations typeCheck = new TypeRelations();
 

@@ -15,6 +15,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.db.sql.SQLSchemaGenerator;
+import umlp.generator.domain.decorator.GenService;
 
 import java.util.Arrays;
 
@@ -37,7 +38,7 @@ public class UMLPGenerator {
     this.genSetup = genSetup;
 
     genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter());
-
+    genSetup.getGlex().setGlobalValue("genService", new GenService());
     cdGenerator = new CDGenerator(genSetup);
     schemaGenerator = new SQLSchemaGenerator(genSetup);
   }
