@@ -7,7 +7,8 @@ ${cd4c.method("protected Optional<${command}> fromJsonObject(JsonObject jsonObje
   return Optional.of(new ${command}(
     jsonObject.getMember("gemId").getAsJsonNumber().getNumberAsLong(),
 <#if useDeSer>
-    ${objectMapperName}.<${type}>deserialize(jsonObject.getMember("${attrName}").getAsJsonString().getValue(), "${type}").orElse(null),
+    JsonElement value = jsonObject.getMember("${attrName}");
+    ${objectMapperName}.<${type}>deserialize(value.isJsonString() ? '"' + value.getAsJsonString().getValue() + '"' : value.toString(), "${type}").orElse(null),
 <#else>
     jsonObject.getMember("${attrName}").${json},
 </#if>

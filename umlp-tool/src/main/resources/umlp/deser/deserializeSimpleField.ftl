@@ -11,7 +11,7 @@ ${tc.signature("className", "fieldName", "fieldType", "jsonStr", "isList", "inne
       }
       for(de.monticore.symboltable.serialization.json.JsonElement e : json.getArrayMember("${fieldName}")) {
       <#if useDeSer>
-      result.add(${objectMapperName}.<${innerType}>deserialize(e.getAsJsonString().getValue(), "${innerType}").orElse(null));
+      result.add(${objectMapperName}.<${innerType}>deserialize(e.isJsonString() ? '"' + e.getAsJsonString().getValue() + '"' : e.toString(), "${innerType}").orElse(null));
       <#else>
       result.add(e.${jsonStr});
       </#if>
@@ -20,7 +20,8 @@ ${tc.signature("className", "fieldName", "fieldType", "jsonStr", "isList", "inne
     <#elseif isOptional>
       if(json.hasMember("${fieldName}")){
       <#if useDeSer>
-      return java.util.Optional.of(${objectMapperName}.<${innerType}>deserialize(json.getMember("${fieldName}").getAsJsonString().getValue(), "${innerType}")).orElse(null);
+      JsonElement value = json.getMember("${fieldName}");
+      return java.util.Optional.of(${objectMapperName}.<${innerType}>deserialize(value.isJsonString() ? '"' + value.getAsJsonString().getValue() + '"' : value.toString(), "${innerType}")).orElse(null);
       <#else>
       return java.util.Optional.of(json.getMember("${fieldName}").${jsonStr});
       </#if>
@@ -30,7 +31,8 @@ ${tc.signature("className", "fieldName", "fieldType", "jsonStr", "isList", "inne
     <#else>
     <#-- TODO: default values -->
       <#if useDeSer>
-      return  ${objectMapperName}.<${fieldType}>deserialize(json.getMember("${fieldName}").getAsJsonString().getValue(), "${fieldType}").orElse(null);
+      JsonElement value = json.getMember("${fieldName}");
+      return  ${objectMapperName}.<${fieldType}>deserialize(value.isJsonString() ? '"' + value.getAsJsonString().getValue() + '"' : value.toString(), "${fieldType}").orElse(null);
       <#else>
       return json.getMember("${fieldName}").${jsonStr};
       </#if>
