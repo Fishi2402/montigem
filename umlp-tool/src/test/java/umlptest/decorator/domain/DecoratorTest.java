@@ -29,6 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
+import umlp.generator.domain.decorator.GenService;
 import umlptest.AbstractUMLPTest;
 
 import java.util.Optional;
@@ -77,6 +78,7 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
     CD4C.init(genSetup);
     CD4C.getInstance().setEmptyBodyTemplate("cd2java.EmptyBody");
     glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
+    genSetup.getGlex().setGlobalValue("genService", new GenService());
     AbstractDecorator decorator = getDecorator(glex);
     decorator.transform(cdAST, decoratedAST);
   }
