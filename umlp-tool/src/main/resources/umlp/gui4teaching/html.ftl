@@ -10,19 +10,26 @@
       box-sizing: border-box;
     }
 
+    .page-header {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
     .info-card {
       padding: 20px;
       background-color: #fff;
       border-radius: 10px;
       box-shadow: 0 4px 8px #c7ddf2;
+      width: 40%;
+      flex-grow: 1;
     }
 
-    .info-card h2 {
+    .info-text-header {
       font-size: 24px;
       margin-top: 0;
     }
 
-    .info-card p {
+    .info-text-body {
       font-size: 18px;
       line-height: 1.5;
     }
@@ -30,6 +37,8 @@
     .graph {
       display: flex;
       justify-content: center;
+      width: 60%;
+      min-width: 800px;
     }
 
     .title {
@@ -269,6 +278,7 @@
         if ("content" in document.createElement("template")) {
 
           const body = document.querySelector("body");
+          const pageHeader = document.querySelector("#pageheader");
           // use templates to create cards, tables, etc. at runtime, when data is loaded
           const titleTpl = document.querySelector("#titletpl");
           const graphTpl = document.querySelector("#graphtpl");
@@ -291,7 +301,7 @@
               || (cd.graph.objects && cd.graph.objects.length))
           ) {
             const graphClone = graphTpl.content.cloneNode(true);
-            body.appendChild(graphClone);
+            pageHeader.appendChild(graphClone);
             renderGraph(cd.graph);
           }
 
@@ -462,7 +472,7 @@
       const svg = d3.select("#graph")
         .append("svg")
         .attr("width", "100%")
-        .attr("height", "400px")
+        .attr("height", "350px")
         .attr("viewBox", [0, 0, width, height]);
 
       svg.append("defs")
@@ -555,13 +565,16 @@
 
 <body>
   <!-- TODO: remove if you don't want info -->
-  <div class="info-card">
-    <h2>Tips:</h2>
-    <p>
-      Update: click into a cell and type a value in. The value will be sent to the server a bit after you stop typing.<br>
-      Create: type value into the first (empty) row of a table. Click &#8853; to send data to the server.<br>
-      Delete: Click &#128465; in a corresponding row.<br>
-    </p>
+  <div class="page-header" id="pageheader">
+    <div class="info-card">
+      <h2 class="info-text-header">Tips:</h2>
+      <p class="info-text-body">
+        Update: click into a cell and type a value in. The value will be sent to the server a bit after you stop typing.<br>
+        Create: type value into the first (empty) row of a table. Click &#8853; to send data to the server.<br>
+        Delete: click &#128465; in a corresponding row.<br>
+        Drag: you can drag nodes of a graph (graph is visible as soon as at least one object is created).<br>
+      </p>
+    </div>
   </div>
 </body>
 
