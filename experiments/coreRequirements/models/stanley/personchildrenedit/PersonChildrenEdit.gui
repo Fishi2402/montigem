@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-package stanley.editierepersonchildren;
+package stanley.personchildrenedit;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
-
-// siehe: PersonEdit.gui
 
 import hardy.Flensburg.Person;
 
@@ -18,15 +16,11 @@ import stanley.tmp.io.input.GemNumberInput;
  * Assumption: the Person p exists, the values can be changed, but the child cannot
  * be older than parent
  */
-page EditierePersonChildren(Person p) {
+page PersonChildrenEdit(Person p) {
 
-  // show and edit the parent's age as number
-  @GemNumberInput(value = p.age);
-
- /* @iterate (Person child : p.children) {
+  @iterate(child : p.children) {
     // show and edit the child's age as number
     @GemNumberInput(value = child.age);
-  }*/
+  }
 
 }
-

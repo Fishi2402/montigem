@@ -31,5 +31,9 @@ export const routes: Routes = [
   {
     path: "personcreate",
     loadChildren: () => import("./personcreate/personcreate.module").then(m => m.PersonCreateModule)
-  }
+  },
+  {
+    path: "personchildrenedit",
+    loadChildren: () => import("./personchildrenedit/personchildrenedit.module").then(m => m.PersonChildrenEditModule)
+  },
 ]
