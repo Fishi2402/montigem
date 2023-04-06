@@ -151,7 +151,7 @@ public class BEDecorator extends AbstractDecorator {
       shellAPIDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ShellAPIDecorator", ShellAPIDecorator.class.getName());
 
-      ShellAPIClassDecorator shellApiClassDecorator = new ShellAPIClassDecorator(glex, hwPath);
+      ShellAPIClassDecorator shellApiClassDecorator = new ShellAPIClassDecorator(glex, hwPath, supportedDesers);
       shellApiClassDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ShellAPIClassDecorator", ShellAPIClassDecorator.class.getName());
     }
