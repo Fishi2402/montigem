@@ -15,8 +15,8 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.logging.Log;
-import umlp.UMLPFullPrettyPrinter;
 import umlp.UMLPMill;
+import umlp._prettyprint.UMLPFullPrettyPrinter;
 import umlp.generator.domain.decorator.GenService;
 
 import java.nio.file.Paths;

@@ -2,14 +2,13 @@ package umlp.generator.domain.decorator;
 
 import com.google.common.collect.Maps;
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDTypeTOP;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
 import umlp.generator.db.sql.SQLSchemaGenerator;
 
 import java.util.List;
@@ -89,7 +88,7 @@ public class DAONeo4jDecorator extends DAODecorator {
   @Override
   protected void selectInitMethodForListAssocDAO(ASTCDClass daoClass, String assocName, ASTCDAssocSide start, ASTCDAssocSide end, String numerus) {
     getCD4C().addMethod(daoClass, "umlp.dao.associations.SelectInitNeo4jForAssocDAO", start.getName(),
-        end.getName(), new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter()).prettyprint(start.getMCQualifiedType()), assocName, numerus);
+        end.getName(), CD4CodeMill.prettyPrint(start.getMCQualifiedType(), false), assocName, numerus);
   }
 
   @Override

@@ -1,10 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator;
 
-import de.monticore.cd.facade.*;
+import de.monticore.cd.facade.CDAttributeFacade;
+import de.monticore.cd.facade.CDConstructorFacade;
+import de.monticore.cd.facade.CDExtendUsageFacade;
+import de.monticore.cd.facade.CDInterfaceUsageFacade;
+import de.monticore.cd.facade.CDMethodFacade;
+import de.monticore.cd.facade.CDParameterFacade;
+import de.monticore.cd.facade.CDStereotypeFacade;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -24,7 +30,7 @@ public abstract class AbstractDecorator {
   }
 
   public static final String DEFAULT_PACKAGE = "";
-  
+
   public static final String COMMAND_PACKAGE = DEFAULT_PACKAGE+"commands";
 
   public static final String GEMLIST_PACKAGE = DEFAULT_PACKAGE+"gemlists";
@@ -37,8 +43,8 @@ public abstract class AbstractDecorator {
 
   protected final GlobalExtensionManagement glex;
 
-  protected final CD4CodeFullPrettyPrinter printer = new CD4CodeFullPrettyPrinter(new IndentPrinter());
-  
+  protected final CD4CodeFullPrettyPrinter printer = new CD4CodeFullPrettyPrinter(new IndentPrinter(), false);
+
   protected TypeCheck typeCheck;
 
   protected GlobalExtensionManagement getGlex() {
@@ -84,15 +90,15 @@ public abstract class AbstractDecorator {
   protected CD4CodeFullPrettyPrinter getCDPrinter (){
     return printer;
   }
-  
+
   public TypeCheck getTypeCheck() {
     return typeCheck;
   }
-  
+
   public void setTypeCheck(TypeCheck typeCheck) {
     this.typeCheck = typeCheck;
   }
-  
+
   protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
     String completeName = getPackageName(origCD, packageName);
     Optional<ASTCDPackage> astCDPackage = decoratedCD.getCDDefinition().getCDPackagesList().stream()

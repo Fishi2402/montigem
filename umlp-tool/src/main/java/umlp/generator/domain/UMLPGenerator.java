@@ -6,7 +6,6 @@ import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.generating.GeneratorSetup;
@@ -31,8 +30,6 @@ public class UMLPGenerator {
 
   protected CDGenerator cdGenerator;
   protected SQLSchemaGenerator schemaGenerator;
-
-  protected static CD4CodeFullPrettyPrinter astPrinter;
 
   public UMLPGenerator(GeneratorSetup genSetup) {
     this.genSetup = genSetup;

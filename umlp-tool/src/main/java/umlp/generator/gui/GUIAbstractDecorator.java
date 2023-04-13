@@ -13,7 +13,7 @@ import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
+import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import umlp.generator.AbstractDecorator;

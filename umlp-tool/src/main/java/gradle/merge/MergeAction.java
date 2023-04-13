@@ -5,8 +5,8 @@ import com.google.common.collect.Sets;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.CDMerge;
 import org.gradle.workers.WorkAction;
-import umlp.UMLPFullPrettyPrinter;
 import umlp.UMLPTool;
+import umlp._prettyprint.UMLPFullPrettyPrinter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
