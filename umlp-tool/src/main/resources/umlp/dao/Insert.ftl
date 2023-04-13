@@ -30,7 +30,11 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
     }
     </#list>
     <#list gemAssocs as assocSide, assoc>
-    assoc${assoc.getName()?cap_first}DAO.add${assoc.getName()?cap_first}(o.getGemId(), o.get${assocSide.getName()?cap_first}Gem().getGemId(),0);
+    <#if assocSide.isLeft()>
+      assoc${assoc.getName()?cap_first}DAO.add${assoc.getName()?cap_first}(o.get${assocSide.getName()?cap_first}Gem().getGemId(), o.getGemId(),0);
+    <#else>
+      assoc${assoc.getName()?cap_first}DAO.add${assoc.getName()?cap_first}(o.getGemId(), o.get${assocSide.getName()?cap_first}Gem().getGemId(),0);
+    </#if>
     </#list>
   } catch (SQLException e){
     throw new RuntimeException(e);
