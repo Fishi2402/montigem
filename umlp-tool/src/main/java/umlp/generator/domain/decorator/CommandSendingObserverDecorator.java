@@ -66,6 +66,10 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
                 getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE)+"."+
                         domainClass.getName() + "_set" + StringTransformations.capitalize(a.getName()));
               }
+              if (GenService.isCDEnum(a.getSymbol().getType())) {
+                getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+
+                        a.getSymbol().getType().print());
+              }
             });
 
     // Assoziationen

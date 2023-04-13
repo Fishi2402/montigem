@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("command", "attrName", "type", "getterName", "useDeSer", "objectMapperName", "makeAbstract")}
+${tc.signature("command", "attrName", "type", "isCDEnum" "getterName", "useDeSer", "objectMapperName", "makeAbstract")}
 <#if makeAbstract>
 ${cd4c.method("public abstract void buildJson(${command} command, JsonPrinter jsonPrinter)")}
 <#else>
@@ -9,7 +9,7 @@ ${cd4c.method("public void buildJson(${command} command, JsonPrinter jsonPrinter
 <#if useDeSer>
   jsonPrinter.memberJson("${attrName}", ${objectMapperName}.serialize(command.${getterName}(), "${type}").orElseThrow());
 <#else>
-  jsonPrinter.member("${attrName}", command.${getterName}());
+  jsonPrinter.member("${attrName}", command.${getterName}()<#if isCDEnum>.name()</#if>);
 </#if>
   jsonPrinter.member("indexInList", command.getIndexInList());
 </#if>

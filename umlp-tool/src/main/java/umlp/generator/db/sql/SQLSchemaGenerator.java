@@ -14,6 +14,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ISymbol;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPFullPrettyPrinter;
 import umlp.UMLPMill;
@@ -145,6 +146,7 @@ public class SQLSchemaGenerator {
         generateIdField(convertClassName(node.getName(), AttributeType.PLAIN), p);
         for (ASTCDAttribute attribute : relevantAttributes) {
             Optional<? extends ISymbol> typeSym = attribute.getMCType().getDefiningSymbol();
+            // TODO: Enums werden hier gefiltert, müssen bearbeitet werden
             if (
                     !GenService.isList(attribute)
                             && !GenService.isOptional(attribute)
@@ -176,6 +178,11 @@ public class SQLSchemaGenerator {
     }
 
     protected void generateListFieldTable(ASTCDCompilationUnit cd, ASTCDClass classNode, ASTCDAttribute attribute, IndentPrinter p) {
+        // TODO: Enums behandeln
+        if (attribute.getSymbol().getType().isGenericType() &&
+            GenService.isCDEnum(((SymTypeOfGenerics) attribute.getSymbol().getType()).getArgument(0))) {
+          return;
+        }
         p.print("CREATE TABLE ");
         String tableName = convertClassName(classNode.getName(), AttributeType.PLAIN) + "$" + convertAttributeName(attribute.getName(), AttributeType.PLAIN);
         p.print(tableName);

@@ -115,10 +115,10 @@ public class DeSerDecorator extends DomainClassDecorator {
     boolean makeAbstract = jsonStr.equals("") && !useDeSer;
 
     getCD4C().addMethod(deSer, "umlp.deser.serializeSimpleField",
-            originalClassName, attr.getName(), type, jsonStr, isList, innerType, isOptional,
+            originalClassName, attr, type, jsonStr, isList, innerType, isOptional,
         useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
     getCD4C().addMethod(deSer, "umlp.deser.deserializeSimpleField",
-            originalClassName, attr.getName(), type, jsonStr, isList, innerType, isOptional,
+            originalClassName, attr, type, jsonStr, isList, innerType, isOptional,
         useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
 
     if (makeAbstract) {

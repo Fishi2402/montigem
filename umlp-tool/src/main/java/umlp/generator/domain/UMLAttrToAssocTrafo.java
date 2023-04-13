@@ -10,6 +10,7 @@ import de.monticore.cdassociation._ast.ASTCDAssocRightSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdassociation._ast.ASTCDCardinality;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cdinterfaceandenum._visitor.CDInterfaceAndEnumVisitor2;
@@ -70,7 +71,7 @@ public class UMLAttrToAssocTrafo implements CDBasisVisitor2, CDInterfaceAndEnumV
   @Override
   public void visit(ASTCDAttribute attr) {
     SymTypeExpression attrType = attr.getSymbol().getType();
-    if (GenService.isCDType(attrType)) {
+    if (GenService.isCDType(attrType) && !GenService.isCDEnum(attrType)) {
       assocMap.put(astcdPackage,
               createAssoc(attr.getName(), astcdType.getSymbol().getName(),
                       CD4CodeMill.cDCardOneBuilder().build(),
@@ -78,7 +79,7 @@ public class UMLAttrToAssocTrafo implements CDBasisVisitor2, CDInterfaceAndEnumV
       attrMap.put(astcdType, attr);
     } else if (attrType.isGenericType()) {
       SymTypeExpression argType = ((SymTypeOfGenerics) attrType).getArgument(0);
-      if (GenService.isCDType(argType)) {
+      if (GenService.isCDType(argType) && !GenService.isCDEnum(argType)) {
         if (GenService.isOptional(attrType)) {
           assocMap.put(astcdPackage, createAssoc(attr.getName(), astcdType.getSymbol().getName(),
                   CD4CodeMill.cDCardOptBuilder().build(),
