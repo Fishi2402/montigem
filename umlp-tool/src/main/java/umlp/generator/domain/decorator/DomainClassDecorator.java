@@ -13,6 +13,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotype;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 
@@ -87,9 +88,24 @@ public class DomainClassDecorator extends DomainTypeDecorator {
 
     // Stereotype
     if (derivedAttribFields.size() > 0) {
-      String derivedAttribs = derivedAttribFields.stream().map(ASTCDAttributeTOP::getName).collect(Collectors.joining(", "));
-      ASTStereoValue stereoValue = UMLPMill.stereoValueBuilder().setName("needsTOP").setContent(derivedAttribs).build();
-      ASTStereotype stereotype = UMLPMill.stereotypeBuilder().addValues(stereoValue).build();
+      String derivedAttribs = derivedAttribFields.stream()
+          .map(attr -> {
+            SourcePosition sourcePosition = attr.get_SourcePositionStart();
+            return String.format(
+                "%s in %s:%s:%s",
+                attr.getName(),
+                sourcePosition.getFileName(),
+                sourcePosition.getLine(),
+                sourcePosition.getColumn()
+            );
+          }).collect(Collectors.joining(", "));
+      ASTStereoValue stereoValue = UMLPMill.stereoValueBuilder()
+          .setName("needsTOP")
+          .setContent(String.format("Custom implementation for class: %s required. Contains derived attribute(s): %s", clazz.getName(), derivedAttribs))
+          .build();
+      ASTStereotype stereotype = UMLPMill.stereotypeBuilder()
+          .addValues(stereoValue)
+          .build();
       modifier.setStereotype(stereotype);
     }
 
