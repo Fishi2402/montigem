@@ -2,7 +2,8 @@
   "adapters": [
     "umlp.jsweet.extension.UMLPJavaBasicsAdapter",
     "umlp.jsweet.extension.UMLPRTEImportAdapter",
-    "umlp.jsweet.extension.UMLPBasicsAdapter"
+    "umlp.jsweet.extension.UMLPBasicsAdapter",
+    "umlp.jsweet.extension.GUIComponentAdapter"
   ],
   "@Async": {
     "include": [
