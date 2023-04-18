@@ -3,11 +3,14 @@ package umlp.jsweet.extension;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 
 public class GUIComponentAdapter extends PrinterAdapter {
 
   public static final String COMPONENT_ANNOTATION = "umlp.jsweet.extension.annotation.Component";
   public static final String DIRECTIVE_ANNOTATION = "umlp.jsweet.extension.annotation.Directive";
+  public static final String INPUT_ANNOTATION = "umlp.jsweet.extension.annotation.Input";
+  public static final String OUTPUT_ANNOTATION = "umlp.jsweet.extension.annotation.Output";
 
   public GUIComponentAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
@@ -25,6 +28,17 @@ public class GUIComponentAdapter extends PrinterAdapter {
       print("@Directive()");
     }
     return super.substituteType(type);
+  }
+
+  @Override
+  public boolean substituteVariable(VariableElement variable) {
+    if (context.hasAnnotationType(variable, INPUT_ANNOTATION)) {
+      print("@Input()");
+    }
+    if (context.hasAnnotationType(variable, OUTPUT_ANNOTATION)) {
+      print("@Output()");
+    }
+    return super.substituteVariable(variable);
   }
 
   protected String pascalToKebab(String input) {
