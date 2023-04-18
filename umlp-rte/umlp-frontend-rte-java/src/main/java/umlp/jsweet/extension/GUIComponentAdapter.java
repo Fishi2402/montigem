@@ -6,8 +6,8 @@ import javax.lang.model.element.TypeElement;
 
 public class GUIComponentAdapter extends PrinterAdapter {
 
-  public static final String COMPONENT_ANNOTATION = "umlp.backendrte.gui.Component";
-  public static final String DIRECTIVE_ANNOTATION = "umlp.backendrte.gui.Directive";
+  public static final String COMPONENT_ANNOTATION = "umlp.jsweet.extension.annotation.Component";
+  public static final String DIRECTIVE_ANNOTATION = "umlp.jsweet.extension.annotation.Directive";
 
   public GUIComponentAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
@@ -29,7 +29,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
 
   protected String pascalToKebab(String input) {
     String regex = "([a-z])([A-Z]+)";
-    String replacement = "$1_$2";
+    String replacement = "$1-$2";
     return input.replaceAll(regex, replacement).toLowerCase();
   }
 

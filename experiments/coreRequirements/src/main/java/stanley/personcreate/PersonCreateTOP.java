@@ -13,11 +13,11 @@ import hardy.FlensburgManager;
 import hardy.Person;
 import hardy.PersonBuilder;
 import hardy.PersonErrorObserver;
-
-import java.util.function.Consumer;
+import umlp.jsweet.extension.annotation.Directive;
 
 /********************************************************/
 
+@Directive
 public class PersonCreateTOP implements PersonErrorObserver {
 
   // Person does not exist in the beginning, use builder instead

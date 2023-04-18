@@ -12,7 +12,7 @@ package stanley.personcarsedit;
 
 import hardy.Person;
 import stanley.tmp.table.tabletypes.TableColumn;
-import umlp.backendrte.gui.Directive;
+import umlp.jsweet.extension.annotation.Directive;
 
 import java.util.ArrayList;
 import java.util.List;
