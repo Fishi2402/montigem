@@ -217,22 +217,7 @@ public class UMLPTool extends UMLPToolTOP {
           }
           File adaptedModel = adaptedPath.get(0).toFile();
 
-          //parse adapted File file
-          ASTGUICompilationUnit adaptedAST = parseGUI(adaptedModel.getPath());
-          Reporting.reportParseInputFile(adaptedModel.toPath().toAbsolutePath(), report_on);
-          Path outputPath = outDir.toPath().resolve(        //file structure needs to reflect package declarations
-                  adaptedAST.getMCPackageDeclaration().getMCQualifiedName().toString()
-                          .replace(".","/")
-                          .concat("/" + adaptedAST.getComponentName() + ".gui")
-          );
-
-          GUIDeltaHandler deltaHandler = new GUIDeltaHandler(adaptedAST);
-          astGUI.accept(deltaHandler.getTraverser());
-
-          GUIDSLFullPrettyPrinter pp = new GUIDSLFullPrettyPrinter(new IndentPrinter(), true);
-          FileReaderWriter.storeInFile(outputPath, pp.prettyprint(adaptedAST));
-          Reporting.reportFileCreation(adaptedAST.getMCPackageDeclaration().getMCQualifiedName().toString().replace(".","/")
-                  .concat("/" + adaptedAST.getComponentName()));
+          adaptGUIModel(astGUI, adaptedModel, outDir, report_on);
         }
         else{
           //Copy file only if it doesn't exist, otherwise the altered file would be overwritten
@@ -436,6 +421,29 @@ public class UMLPTool extends UMLPToolTOP {
 
   protected boolean isGUIDelta(ASTGUICompilationUnit compilationUnit){
     return compilationUnit.getGUIComponentDeclaration().isPresentGUIComponentAdaptation();
+  }
+
+  public static void adaptGUIModel(ASTGUICompilationUnit deltaAST, File adaptedFile, File outDir, String report_on){
+
+    //parse adapted File file
+    ASTGUICompilationUnit adaptedAST = parseGUI(adaptedFile.getPath());
+    Reporting.reportParseInputFile(adaptedFile.toPath().toAbsolutePath(), report_on);
+
+    //adapt AST
+    GUIDeltaHandler deltaHandler = new GUIDeltaHandler(adaptedAST);
+    deltaAST.accept(deltaHandler.getTraverser());
+
+    //output adapted Model
+    Path outputPath = outDir.toPath().resolve(        //file structure needs to reflect package declarations
+            adaptedAST.getMCPackageDeclaration().getMCQualifiedName().toString()
+                    .replace(".","/")
+                    .concat("/" + adaptedAST.getComponentName() + ".gui")
+    );
+
+    GUIDSLFullPrettyPrinter pp = new GUIDSLFullPrettyPrinter(new IndentPrinter(), true);
+    FileReaderWriter.storeInFile(outputPath, pp.prettyprint(adaptedAST));
+    Reporting.reportFileCreation(adaptedAST.getMCPackageDeclaration().getMCQualifiedName().toString().replace(".","/")
+            .concat("/" + adaptedAST.getComponentName()));
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {
