@@ -10,3 +10,6 @@ task generateRestaurantOrg(type: UMLPTask) {
 }
 
 build.dependsOn(generateRestaurantOrg)
+
+def path = buildDir.toPath().resolve("generated-sources").resolve("monticore").resolve("sourcecode").resolve("resources").toString()
+sourceSets.main.resources.srcDirs += path

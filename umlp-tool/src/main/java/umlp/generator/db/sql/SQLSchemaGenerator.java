@@ -66,6 +66,8 @@ public class SQLSchemaGenerator {
         fqnClassNameToType.put("java.lang.Char", "CHAR");
         fqnClassNameToType.put("Char", "CHAR");
         fqnClassNameToType.put("char", "CHAR");
+
+        fqnClassNameToType.put("java.time.LocalDate", "DATE");
     }
 
     public void addClassToSQLTypeMapping(String fqnClassName, String sqlType) {

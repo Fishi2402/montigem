@@ -18,6 +18,9 @@ public class CommandDecorator extends AbstractDecorator {
 
   public CommandDecorator(GlobalExtensionManagement glex) {
     super(glex);
+
+    // TODO: Why is there another set in BEDecorator?
+    supportedDeSers.add("java.time.LocalDate");
   }
 
   @Override

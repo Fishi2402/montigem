@@ -1,5 +1,4 @@
-/* (c) https://github.com/MontiCore/monticore */
-package restaurantorg;
+package umlp.backendrte.common;
 
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.command.DeSer;
@@ -8,10 +7,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class LocalDateDeser implements DeSer<LocalDate> {
+public class LocalDateDeSer implements DeSer<LocalDate> {
+
   @Override
   public String serialize(LocalDate obj) {
-    return '"' + DateTimeFormatter.ISO_LOCAL_TIME.format(obj) + '"';
+    return '"' + DateTimeFormatter.ISO_LOCAL_DATE.format(obj) + '"';
   }
 
   @Override
@@ -21,6 +21,6 @@ public class LocalDateDeser implements DeSer<LocalDate> {
       return Optional.empty();
     }
 
-    return Optional.of(LocalDate.parse(str.substring(1, str.length() - 1), DateTimeFormatter.ISO_LOCAL_TIME));
+    return Optional.of(LocalDate.parse(str.substring(1, str.length() - 1), DateTimeFormatter.ISO_LOCAL_DATE));
   }
 }
