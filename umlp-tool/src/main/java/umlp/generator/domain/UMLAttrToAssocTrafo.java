@@ -26,8 +26,8 @@ import java.util.Optional;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 /*
- * This transformation converts attributes with "CDType" into a suitable association.
- * It is assumed that at least one package exists and that the symbol table is constructed
+ * This transformation converts attributes with "CDType" (except enums) into a suitable association.
+ * It is assumed that the symbol table is constructed
  *
  **/
 public class UMLAttrToAssocTrafo implements CDBasisVisitor2, CDInterfaceAndEnumVisitor2 {
