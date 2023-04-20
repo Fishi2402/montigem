@@ -1,5 +1,7 @@
 package guidelta;
 
+import cd2gui.models.AddressDetails;
+
 page AdaptAddress() adapts AddressDetails{
     remove AddressToOverwiew;
 }
