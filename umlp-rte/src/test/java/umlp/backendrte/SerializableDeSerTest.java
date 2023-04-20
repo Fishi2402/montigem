@@ -42,7 +42,7 @@ public class SerializableDeSerTest {
 
   @Test
   public void testInetAddressDeSerRoundtrip() throws UnknownHostException {
-    InetAddress address = InetAddress.getLocalHost();
+    InetAddress address = InetAddress.getByName("www.se-rwth.de");
     String ser = sut.serialize(address);
     Object deser = sut.deserialize(ser).get();
 
