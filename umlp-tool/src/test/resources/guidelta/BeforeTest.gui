@@ -1,0 +1,14 @@
+package guidelta;
+
+page BeforeTest() adapts BaseModel{
+
+    before exampleText: @guard(true){
+       @Text(value = "before Text")
+    };
+
+    before exampleGuard: @iterate(j from 0 to 5){
+       @Text(value = "before Guard" + j)
+    };
+
+    before exampleIterate: [@Text(value = "before Iterate 1"), @Text(value = "before Iterate 2")];
+}

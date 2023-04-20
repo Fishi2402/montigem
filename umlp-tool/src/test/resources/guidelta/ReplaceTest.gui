@@ -1,0 +1,14 @@
+package guidelta;
+
+page ReplaceTest() adapts BaseModel{
+
+    replace exampleText: @guard(true){
+       @Text(value = "replace Text")
+    };
+
+    before exampleGuard: @iterate(j from 0 to 5){
+       @Text(value = "replace Guard" + j)
+    };
+
+    before exampleIterate: [@Text(value = "replace Iterate 1"), @Text(value = "replace Iterate 2")];
+}

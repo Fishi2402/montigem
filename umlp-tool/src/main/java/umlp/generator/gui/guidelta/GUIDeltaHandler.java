@@ -68,8 +68,14 @@ public class GUIDeltaHandler implements GUIDSLHandler {
         }
         else{ //AST to adapt, imports need to be added if not already existing
             for(ASTMCImportStatement importStatement : imports){
-                if(node.getMCImportStatementList().stream().noneMatch(i -> i.getQName().equals(importStatement.getQName()))) //import statement has no equals defined so contains doesnt work
+                if(node.getMCImportStatementList().stream().noneMatch(
+                        i -> i.getQName().equals(importStatement.getQName()))) { //import statement has no equals defined so contains doesnt work
                     node.addMCImportStatement(importStatement);
+                }
+                else if (node.getMCImportStatementList().stream().anyMatch(
+                        i -> i.getMCQualifiedName().getBaseName().equals(importStatement.getMCQualifiedName().getBaseName()))) {
+                    Log.warn("0x45c0100 Conflicting import " + importStatement.getMCQualifiedName().getBaseName() + ". Import is already present in Base model with different package");
+                }
             }
         }
         GUIDSLHandler.super.handle(node); //Maybe not the best
@@ -171,7 +177,7 @@ public class GUIDeltaHandler implements GUIDSLHandler {
                             node.addAllGUIArgValues(index, flatMapGUIArgValue(argValueToAdd));
                             return;
                         case NONE:
-                            Log.warn("Error when selecting delta Options, this is probably the result of a grammar alteration");
+                            Log.error("0x45c0000 Error when selecting delta Options, this is probably the result of a grammar alteration");
                     }
                 }
             }
@@ -194,7 +200,7 @@ public class GUIDeltaHandler implements GUIDSLHandler {
             //adapts and removes shouldn't be here as GUIDelta should not be adapted itself
             for (ASTGUIBlockContent blockContent : blockContents) { //Error checking first
                 if (blockContent.isPresentGUIRemove() || blockContent.isPresentGUIAdapt())
-                    Log.error("Attempting to adapt GUIDelta, this is not allowed");
+                    Log.error("0x45c0001 Attempting to adapt GUIDelta, this is not allowed");
             }
 
             for (ASTGUIBlockContent blockContent : blockContents) {
@@ -224,7 +230,7 @@ public class GUIDeltaHandler implements GUIDSLHandler {
                             node.addAllGUIBlockContents(index, mapToBlockContent(flatMapGUIArgValue(argValueToAdd)));
                             return;
                         case NONE:
-                            Log.warn("Error when selecting delta Options, this is probably the result of a grammar alteration");
+                            Log.error("0x45c0000 Error when selecting delta Options, this is probably the result of a grammar alteration");
                     }
                 }
 
@@ -273,10 +279,10 @@ public class GUIDeltaHandler implements GUIDSLHandler {
                     .build();
         }
         if(argValue.isPresentGUIList()){
-            Log.error("cannot build guiBlockContext from GuiList");
+            Log.error("0x45c0002 cannot build guiBlockContext from GuiList");
         }
         else{
-            Log.error("encountered unknown type of guiArgValue, this is likely due to grammar changes");
+            Log.error("0x45c0003 encountered unknown type of guiArgValue, this is likely due to grammar changes");
         }
         return null;
     }
@@ -290,7 +296,7 @@ public class GUIDeltaHandler implements GUIDSLHandler {
     private List<ASTGUIArgValue> flatMapGUIArgValue(ASTGUIArgValue argValue){
         LinkedList<ASTGUIArgValue> result = new LinkedList<>();
         if(argValue.isPresentExpression()){
-            Log.warn("Trying to add Expression with GUIDelta. This is most likely not wanted.");
+            Log.warn("0x45c0101 Trying to add Expression with GUIDelta. This is most likely not wanted.");
         }
         if(argValue.isPresentGUIList()) { //Lists need to be mapped to a single list
             for(ASTGUIArgValue argValueFromList : argValue.getGUIList().getGUIArgValueList()){
