@@ -11,6 +11,7 @@ import de.monticore.cdbasis._ast.ASTCDTypeTOP;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.generator.db.sql.SQLSchemaGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -79,8 +80,10 @@ public class DAONeo4jDecorator extends DAODecorator {
     Map<ASTCDAttribute, String> attributeTableName = Maps.newLinkedHashMap();
     attributes.forEach(a -> attributeTableName.put(a, GenService.getDBType(a.getSymbol().getType())));
 
-    getCD4C().addMethod(daoClass, "umlp.dao.InsertInitNeo4j",
-        CDSymbolTables.getTransitiveSuperTypes(domainClass).stream().map(ASTCDTypeTOP::getName).collect(Collectors.toList()), attributes);
+    List<String> superTypeNamesInclSelf = new ArrayList<>(CDSymbolTables.getTransitiveSuperTypes(domainClass).stream().map(ASTCDTypeTOP::getName).collect(Collectors.toList()));
+    superTypeNamesInclSelf.add(domainClass.getName());
+
+    getCD4C().addMethod(daoClass, "umlp.dao.InsertInitNeo4j", superTypeNamesInclSelf, attributes);
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributeTableName,
         optAttrToInnerType , listAttributes, listAssociationMap, gemAssociationMap);
   }
