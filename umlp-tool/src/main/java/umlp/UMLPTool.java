@@ -225,15 +225,16 @@ public class UMLPTool extends UMLPToolTOP {
                   astGUI.getMCPackageDeclaration().getMCQualifiedName().toString()
                           .replace(".","/")
           ).toFile();
-
+          Path outFilePath = outDir.toPath().resolve(astGUI.getComponentName() + ".gui");
           outDir.mkdirs();
 
-          if(!outDir.toPath().resolve(astGUI.getComponentName() + ".gui").toFile().exists()){
+          if(!outFilePath.toFile().exists()){
             try {
-              Files.copy(inputFile.toPath(), outDir.toPath().resolve(astGUI.getComponentName() + ".gui"));
+              Files.copy(inputFile.toPath(), outFilePath);
+              Reporting.reportFileCreation(outFilePath.toString());
             }
             catch (IOException e){
-              Log.error("Error while trying to write file to " + outDir.toPath().resolve(astGUI.getComponentName() + ".gui"));
+              Log.error("Error while trying to write file to " + outFilePath);
             }
           }
         }
@@ -442,8 +443,7 @@ public class UMLPTool extends UMLPToolTOP {
 
     GUIDSLFullPrettyPrinter pp = new GUIDSLFullPrettyPrinter(new IndentPrinter(), true);
     FileReaderWriter.storeInFile(outputPath, pp.prettyprint(adaptedAST));
-    Reporting.reportFileCreation(adaptedAST.getMCPackageDeclaration().getMCQualifiedName().toString().replace(".","/")
-            .concat("/" + adaptedAST.getComponentName()));
+    Reporting.reportFileCreation(outputPath.toString());
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {
