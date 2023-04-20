@@ -6,7 +6,8 @@ task generateRestaurantOrg(type: UMLPTask) {
     input = (file("src/models"))
     outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
     hwcDir = layout.projectDirectory.dir("src/main/java/")
-    tmplDir = layout.projectDirectory.dir("src/templates/")
 }
 
 build.dependsOn(generateRestaurantOrg)
+
+sourceSets.main.resources.srcDirs += generateRestaurantOrg.outputDir.dir("resources")

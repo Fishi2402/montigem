@@ -18,6 +18,8 @@ import javax.lang.model.type.TypeMirror;
  */
 public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
 
+  private static final String ANGULAR_CORE_PATH = "@angular/core";
+
   public UMLPRTEImportAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
   }
@@ -36,10 +38,21 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
       CompilationUnitElement currentCompilationUnit, String importedName,
       TypeElement importedClass) {
     String fqn = importedClass.getQualifiedName().toString();
-    if (fqn != null && fqn.startsWith(RTEPathUtil.getBackendRTEPath())) {
-      return new ModuleImportDescriptor(false,
-          (PackageElement) importedClass.getEnclosingElement(), importedName,
-        getLibraryLocation(), importedClass);
+    if (fqn != null) {
+      if (fqn.equals(GUIComponentAdapter.COMPONENT_ANNOTATION)
+          || fqn.equals(GUIComponentAdapter.DIRECTIVE_ANNOTATION)
+          || fqn.equals(GUIComponentAdapter.INPUT_ANNOTATION)
+          || fqn.equals(GUIComponentAdapter.OUTPUT_ANNOTATION)
+      ) {
+        return new ModuleImportDescriptor(false,
+            (PackageElement) importedClass.getEnclosingElement(), importedName,
+            ANGULAR_CORE_PATH, importedClass);
+      }
+      else if (fqn.startsWith(RTEPathUtil.getBackendRTEPath())) {
+        return new ModuleImportDescriptor(false,
+            (PackageElement) importedClass.getEnclosingElement(), importedName,
+            getLibraryLocation(), importedClass);
+      }
     }
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
   }

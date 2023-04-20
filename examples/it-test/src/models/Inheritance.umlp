@@ -1,0 +1,21 @@
+umlp Inheritance{
+
+  class A;
+
+  class B extends A; // direct subclass => instances exist
+  abstract class C extends A; // abstract subclass => no direct instances
+  class D extends C; // => indirect instances of C
+
+  // Same but with I
+  interface I;
+
+  class E implements I; // instances exist
+  abstract class F implements I; // no direct instances
+  class G extends F; // indirect instances
+
+  // subinterface
+  interface J extends I;
+  class H implements J;
+  abstract class K implements J;
+  class L extends K;
+}

@@ -16,8 +16,8 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.logging.Log;
-import umlp.UMLPFullPrettyPrinter;
 import umlp.UMLPMill;
+import umlp._prettyprint.UMLPFullPrettyPrinter;
 import umlp.generator.domain.decorator.GenService;
 
 import java.nio.file.Paths;
@@ -69,6 +69,8 @@ public class SQLSchemaGenerator {
         fqnClassNameToType.put("java.lang.Char", "CHAR");
         fqnClassNameToType.put("Char", "CHAR");
         fqnClassNameToType.put("char", "CHAR");
+
+        fqnClassNameToType.put("java.time.LocalDate", "DATE");
     }
 
     public void addClassToSQLTypeMapping(String fqnClassName, String sqlType) {

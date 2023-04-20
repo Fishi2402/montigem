@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
@@ -13,8 +13,14 @@ import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
+import de.monticore.prettyprint.IndentPrinter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class GUIComponentAccessVisitor implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2, MCCommonLiteralsVisitor2 {
@@ -31,7 +37,7 @@ public class GUIComponentAccessVisitor implements GUIDSLVisitor2, CommonExpressi
   protected ASTGUINamedArg actualNamedArg = null;
 
   public GUIComponentAccessVisitor(ASTGUIComponent node) {
-    astPrinter = new CD4CodeFullPrettyPrinter();
+    astPrinter = new CD4CodeFullPrettyPrinter(new IndentPrinter());
     traverser = GUIDSLMill.traverser();
     traverser.add4GUIDSL(this);
     traverser.add4CommonExpressions(this);

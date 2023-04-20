@@ -25,12 +25,21 @@ public class BEDecorator extends AbstractDecorator {
   public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
     super(glex);
     this.hwPath = hwPath;
+
+    initExtraDeSers();
   }
 
   public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath, boolean neo4j) {
     super((glex));
     this.neo4j = neo4j;
     this.hwPath = hwPath;
+
+    initExtraDeSers();
+  }
+
+  private void initExtraDeSers() {
+    // TODO: Why is there another set in CommandDecorator?
+    supportedDesers.add("java.time.LocalDate");
   }
 
   @Override

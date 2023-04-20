@@ -2,7 +2,6 @@
 package umlp.generator.domain;
 
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4code._visitor.CD4CodeTraverser;
 import de.monticore.cdassociation._ast.ASTCDAssocLeftSide;
 import de.monticore.cdassociation._ast.ASTCDAssocRightSide;
@@ -10,7 +9,7 @@ import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdassociation._visitor.CDAssociationVisitor2;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.prettyprint.IndentPrinter;
-import umlp.UMLPFullPrettyPrinter;
+import umlp._prettyprint.UMLPFullPrettyPrinter;
 
 /*
  * This transformation sets default values if an optional node is not defined.
