@@ -55,6 +55,10 @@ public class UMLAssocToAttrTrafo implements CDBasisVisitor2, CDAssociationVisito
 
   @Override
   public void visit(ASTCDAssociation assoc) {
+    if (!assoc.getLeft().isPresentSymbol() || !assoc.getRight().isPresentSymbol()) {
+      // new created association (see UMLAttrToAssocTrafo)
+      return;
+    }
     ASTCDAssocSide assocSide;
     SymTypeExpression classType;
     if (GenService.isCDEnum(assoc.getLeft().getSymbol().getType())) {
@@ -79,7 +83,7 @@ public class UMLAssocToAttrTrafo implements CDBasisVisitor2, CDAssociationVisito
         setModifier(assocSide.getModifier().deepClone()).
         setName(assocSide.getCDRole().getName()).
         setMCType(attrType).build();
-    Optional<CDTypeSymbol> cdType = assoc.getSpannedScope().resolveCDType(classType.printFullName());
+    Optional<CDTypeSymbol> cdType = assoc.getEnclosingScope().resolveCDType(classType.printFullName());
     if (cdType.isPresent() && cdType.get().isPresentAstNode()) {
       ASTCDType astCDType = cdType.get().getAstNode();
       astCDType.addCDMember(attr);
