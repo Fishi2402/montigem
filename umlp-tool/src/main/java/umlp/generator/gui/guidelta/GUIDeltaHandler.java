@@ -289,6 +289,9 @@ public class GUIDeltaHandler implements GUIDSLHandler {
      */
     private List<ASTGUIArgValue> flatMapGUIArgValue(ASTGUIArgValue argValue){
         LinkedList<ASTGUIArgValue> result = new LinkedList<>();
+        if(argValue.isPresentExpression()){
+            Log.warn("Trying to add Expression with GUIDelta. This is most likely not wanted.");
+        }
         if(argValue.isPresentGUIList()) { //Lists need to be mapped to a single list
             for(ASTGUIArgValue argValueFromList : argValue.getGUIList().getGUIArgValueList()){
                 result.addAll(flatMapGUIArgValue(argValueFromList));
