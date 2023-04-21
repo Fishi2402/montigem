@@ -62,8 +62,13 @@ subprojects {
         dependsOn project.collect { it.tasks.withType(UMLPTask) }
     }
     buildDir = file("$projectDir/target")
-    sourceCompatibility = '11'
+    java {
+      toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+      }
+    }
 }
+
 
 build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
 

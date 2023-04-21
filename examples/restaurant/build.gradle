@@ -1,13 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-description 'restaurant example'
-
-task generateRestaurantOrg(type: UMLPTask) {
-    input = (file("src/models"))
-    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
-    hwcDir = layout.projectDirectory.dir("src/main/java/")
+plugins {
+  id 'de.rwth.se.umlp-tool-backend'
 }
-
-build.dependsOn(generateRestaurantOrg)
-
-sourceSets.main.resources.srcDirs += generateRestaurantOrg.outputDir.dir("resources")
+description 'restaurant example'

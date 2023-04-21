@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
-    id 'java'
+  id 'de.rwth.se.umlp-tool-backend'
 }
 
 group 'umlp'
@@ -12,13 +12,9 @@ repositories {
 
 description 'artifacts example'
 
-task generateArtifacts(type: UMLPTask) {
-    input = (file("src"))
-    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
-    configTemplate = "umlp.UMLP2JavaNeo4j"
+generateUmlpBackend {
+  configTemplate = "umlp.UMLP2JavaNeo4j"
 }
-
-build.dependsOn(generateArtifacts)
 
 dependencies {
     implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-data-neo4j', version: '2.7.4') {
