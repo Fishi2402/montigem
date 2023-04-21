@@ -1,27 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 subprojects {
-  tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-  }
-  java {
-      toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-      }
-    }
-
     dependencies {
       implementation project(':umlp-rte')
-
-      testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
       testImplementation 'com.h2database:h2:2.1.214'
-    }
-
-    test {
-      testLogging {
-        events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-      }
-      useJUnitPlatform()
     }
 }
 
