@@ -10,15 +10,6 @@ subprojects {
     apply plugin: 'maven-publish'
 
     dependencies {
-        implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
-        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
-        implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
-        implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
-        implementation group: 'de.monticore', name: 'class2mc', version: mc_version
-        implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
-        implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version
-        implementation group: 'com.google.guava', name: 'guava', version: guava_version
-
         testRuntimeOnly  group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
