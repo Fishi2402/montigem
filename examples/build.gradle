@@ -3,7 +3,7 @@
 subprojects {
     dependencies {
       implementation project(':umlp-rte')
-      testImplementation 'com.h2database:h2:2.1.214'
+      testImplementation "com.h2database:h2:${h2_database}"
     }
 }
 

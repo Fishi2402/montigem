@@ -16,8 +16,6 @@ sourceSets {
 
 dependencies {
   implementation project(':experiments:coreRequirements')
-  implementation group: 'org.hibernate', name: 'hibernate-vibur', version: hibernate_version
-  implementation group: 'org.hibernate', name: 'hibernate-core', version: hibernate_version
 
 }
 
