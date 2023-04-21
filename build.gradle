@@ -1,28 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-    id 'base'
-    id 'de.rwth.se.umlp-tool' // See "umlp-tool/src/main/java/gradle"
+  id 'base'
+  id 'de.rwth.se.umlp-tool' // See "umlp-tool/src/main/java/gradle"
 }
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven-publish'
+  apply plugin: 'java'
 
-    dependencies {
-        testRuntimeOnly  group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
+  dependencies {
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
+  }
+  java {
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(11)
     }
-
-    compileJava {
-        dependsOn project.collect { it.tasks.withType(UMLPTask) }
-    }
-    java {
-      toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-      }
-    }
+  }
 
   test {
     useJUnitPlatform()
@@ -31,7 +26,7 @@ subprojects {
     }
   }
   repositories {
-    if(("true").equals(getProperty('useLocalRepo'))) {
+    if (("true").equals(getProperty('useLocalRepo'))) {
       mavenLocal()
     }
     maven {

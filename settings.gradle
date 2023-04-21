@@ -1,38 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 pluginManagement {
-    repositories {
-        if(("true").equals(getProperty('useLocalRepo'))){
-            mavenLocal()
-        }
-        maven {
-            credentials.username mavenUser
-            credentials.password mavenPassword
-            url repo
-        }
-        gradlePluginPortal()
-        mavenCentral()
+  repositories {
+    if (("true").equals(getProperty('useLocalRepo'))) {
+      mavenLocal()
     }
-}
-
-boolean isCi = System.getenv().containsKey("CI")
-
-String myGetProperty(String key){
-  return getProperties().get(key)
-}
-
-buildCache {
-  local {
-    enabled = !isCi // CI has no (persistent) local storage
-  }
-  remote(HttpBuildCache) {
-    enabled = myGetProperty("buildCacheURL") != null
-    url = ""+myGetProperty("buildCacheURL")
-    allowInsecureProtocol = false
-    push = isCi   // Only CI is allowed to push
-    credentials {
-      username = myGetProperty("buildCacheUser")
-      password = myGetProperty("buildCachePassword")
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url repo
     }
+    gradlePluginPortal()
+    mavenCentral()
   }
 }
 
@@ -62,6 +40,4 @@ include ':examples:flensburg-neo4j-test'
 include ':examples:flensburg-test'
 include ':examples:flensburg-test:client'
 include ':examples:it-test'
-
 include ':examples:assistenzsystem'
-
