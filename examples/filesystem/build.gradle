@@ -1,10 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-description 'filesystem example'
-
-task generateFileSystem(type: UMLPTask) {
-    input = (file("src/models"))
-    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
+plugins {
+  id 'de.rwth.se.umlp-tool-backend'
 }
 
-build.dependsOn(generateFileSystem)
+description 'filesystem example'

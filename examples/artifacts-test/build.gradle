@@ -3,13 +3,6 @@ plugins {
   id 'de.rwth.se.umlp-tool-backend'
 }
 
-group 'umlp'
-version '7.5.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
-
 description 'artifacts example'
 
 generateUmlpBackend {
@@ -24,8 +17,4 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-}
-
-test {
-    useJUnitPlatform()
 }
