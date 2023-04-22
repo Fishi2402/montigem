@@ -53,38 +53,10 @@ public class DomainClassDecorator extends DomainTypeDecorator {
       builder.setCDExtendUsage(getExtendUsageFacade()
           .createCDExtendUsage(domainClass.getCDExtendUsage().getSuperclass(0).deepClone()));
     }
-    ASTCDClass clazz = builder.build();
-    // Constructors
-    getCD4C().addConstructor(clazz, "umlp.domain.Constructor", domainClass.getName());
-
-    if (!domainClass.isPresentCDExtendUsage()) {
-      // Attribute gemId and getter and setter
-      ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected readonly long gemId = -32;");
-      clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
-    }
-
-    // Attribute observerList
-    ASTCDAttribute attrObserver = getCD4C().addAttribute(clazz,
-        " protected List<" + domainClass.getName() + "Observer> " + StringTransformations.uncapitalize(domainClass.getName()) + "Observers");
-    glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint("= new ArrayList<>()"));
-    glex.replaceTemplate("cd2java.Annotations", attrObserver,
-        new StringHookPoint("transient"));
 
     // Attributes
     AttributesTuple attributes = getAllAttributes(domainClass, false);
     List<ASTCDAttribute> derivedAttribFields = filterDerivedAttributes(attributes.attrFields, true);
-
-    // Add attributes to class
-    clazz.addAllCDMembers(filterDerivedAttributes(attributes.attrList, false));
-
-    // General methods
-    createObserverMethods(domainClass, clazz);
-    getCD4C().addMethod(clazz, "umlp.domain.Build", domainClass.getName());
-
-    // Methods for class attributes
-    createGetterSetterForAttrs(domainClass, clazz, filterDerivedAttributes(attributes.attrFields, false), false);
-    createGetterSetterForAttrs(domainClass, clazz, derivedAttribFields, true);
-    createCheckMethods(domainClass, clazz);
 
     // Stereotype
     if (derivedAttribFields.size() > 0) {
@@ -101,13 +73,44 @@ public class DomainClassDecorator extends DomainTypeDecorator {
           }).collect(Collectors.joining(", "));
       ASTStereoValue stereoValue = UMLPMill.stereoValueBuilder()
           .setName("needsTOP")
-          .setContent(String.format("Custom implementation for class: %s required. Contains derived attribute(s): %s", clazz.getName(), derivedAttribs))
+          .setContent(String.format("Custom implementation for class: %s required. Contains derived attribute(s): %s", domainClass.getName(), derivedAttribs))
           .build();
       ASTStereotype stereotype = UMLPMill.stereotypeBuilder()
           .addValues(stereoValue)
           .build();
       modifier.setStereotype(stereotype);
     }
+
+    //Build class
+    ASTCDClass clazz = builder.build();
+
+    // Constructors
+    getCD4C().addConstructor(clazz, "umlp.domain.Constructor", domainClass.getName());
+
+    if (!domainClass.isPresentCDExtendUsage()) {
+      // Attribute gemId and getter and setter
+      ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected readonly long gemId = -32;");
+      clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
+    }
+
+    // Attribute observerList
+    ASTCDAttribute attrObserver = getCD4C().addAttribute(clazz,
+        " protected List<" + domainClass.getName() + "Observer> " + StringTransformations.uncapitalize(domainClass.getName()) + "Observers");
+    glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint("= new ArrayList<>()"));
+    glex.replaceTemplate("cd2java.Annotations", attrObserver,
+        new StringHookPoint("transient"));
+
+    // Add attributes to class
+    clazz.addAllCDMembers(filterDerivedAttributes(attributes.attrList, false));
+
+    // General methods
+    createObserverMethods(domainClass, clazz);
+    getCD4C().addMethod(clazz, "umlp.domain.Build", domainClass.getName());
+
+    // Methods for class attributes
+    createGetterSetterForAttrs(domainClass, clazz, filterDerivedAttributes(attributes.attrFields, false), false);
+    createGetterSetterForAttrs(domainClass, clazz, derivedAttribFields, true);
+    createCheckMethods(domainClass, clazz);
 
     // Methods for class assocs
     createGetterSetterForAssocs(clazz, attributes.attrAssocs, false);
