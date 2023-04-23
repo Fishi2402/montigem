@@ -4,7 +4,7 @@ package stanley.personchildrenedit;
 
 import hardy.Person;
 
-public class PersonChildrenEdit extends PersonChildrenEditTOP1 {
+public class PersonChildrenEdit extends PersonChildrenEditTOP {
 
   protected PersonChildrenEdit(Person p) {
     super(p);
