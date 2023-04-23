@@ -10,6 +10,7 @@ import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
+import de.se_rwth.commons.StringTransformations;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.domain.decorator.GenService;
 
@@ -213,6 +214,14 @@ public class GUIGeneratorUtil {
     return moduleName;
   }
 
+  public static String getIterateName(String iterateCompName) {
+    return "getIterate" + StringTransformations.capitalize(iterateCompName) + "It()" + ".get(idx)";
+  }
+
+  public static String getIterateIndex() {
+    return "int idx";
+  }
+
   public static String getQualifiedNameForModule(ASTGUIComponent node) {
     String qualifiedModulName = node.getName();
     Optional<GUIComponentDeclarationSymbol> symbol = node.getEnclosingScope().resolveGUIComponentDeclaration(node.getName());
@@ -221,5 +230,19 @@ public class GUIGeneratorUtil {
       qualifiedModulName = symbol.get().getFullName().substring(0, symbol.get().getFullName().lastIndexOf("."));
     }
     return qualifiedModulName;
+  }
+
+  // TODO: remove this method after package names fixed!!
+  public static String removeDiagramName(String name) {
+    int index1 = name.lastIndexOf(".");
+    if (index1 == -1) {
+      return name;
+    }
+    String res = name.substring(0, index1);
+    int index2 = res.lastIndexOf(".");
+    if (index2 == -1) {
+      return name;
+    }
+    return name.substring(0, index2) + name.substring(index1, name.length());
   }
 }

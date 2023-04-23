@@ -29,20 +29,23 @@ public class GUI2JavaComponentsDecorator extends GUIAbstractDecorator {
   public void transform(ASTGUICompilationUnit guiAst, ASTCDClass decoratedClass) {
 
     filterComponentsWithPredicate(viewComponent.getComponents(), PREDICATE_NOT_TABLE).stream().filter(c -> !isInputComponent(c))
-        .forEach(c -> new GUI2JavaComponentDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c)));
+        .forEach(c -> new GUI2JavaComponentDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c));
 
     viewComponent.getComponents().stream().filter(GUIGeneratorUtil::isInputComponent)
         .forEach(c -> {
           if (isCreateClass(decoratedClass)) {
-            new InputValueCreateDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c));
+            new InputValueCreateDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c);
           }
           else {
-            new InputValueEditDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c));
+            new InputValueEditDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c);
           }
         });
 
     viewComponent.getComponents().stream().filter(GUIGeneratorUtil::isEventComponent)
-        .forEach(c -> new EventDecorator(glex, guiAst).transform(decoratedClass, c, viewComponent.getComponentName(c)));
+        .forEach(c -> new EventDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c));
+
+    viewComponent.getIterates().stream()
+        .forEach(c -> new IterateDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c));
 
     //------------------ TABLES ----------------------------------------------
 
@@ -52,7 +55,7 @@ public class GUI2JavaComponentsDecorator extends GUIAbstractDecorator {
     List<TableDecorator> tableDecorators = new ArrayList<>();
 
     filterComponentsWithPredicate(viewComponent.getComponents(), PREDICATE_TABLE).forEach(c ->
-        tableDecorators.add(new TableDecorator(glex, guiAst, c, viewComponent.getComponentName(c))));
+        tableDecorators.add(new TableDecorator(glex, guiAst, viewComponent, c, viewComponent.getComponentName(c))));
 
     tableDecorators.forEach(td -> {
       td.transform(decoratedClass);
@@ -71,7 +74,7 @@ public class GUI2JavaComponentsDecorator extends GUIAbstractDecorator {
     List<PieDecorator> pieDecorators = new ArrayList<>();
 
     filterComponentsWithPredicate(viewComponent.getComponents(), PREDICATE_PIE).forEach(c ->
-        pieDecorators.add(new PieDecorator(glex, guiAst, c, viewComponent.getComponentName(c))));
+        pieDecorators.add(new PieDecorator(glex, guiAst, viewComponent, c, viewComponent.getComponentName(c))));
 
     pieDecorators.forEach(td -> {
       td.transform(decoratedClass);

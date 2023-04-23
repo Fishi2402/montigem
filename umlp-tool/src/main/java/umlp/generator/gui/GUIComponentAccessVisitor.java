@@ -10,6 +10,7 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
@@ -31,10 +32,17 @@ public class GUIComponentAccessVisitor implements GUIDSLVisitor2, CommonExpressi
   protected List<ASTNameExpression> nameExprs = new ArrayList<>();
   protected List<ASTCallExpression> callExprs = new ArrayList<>();
   protected List<ASTGUINamedArg> namedArgs = new ArrayList<>();
+  protected List<ASTGUIShortIterateControl> iterates = new ArrayList<>();
 
   protected Map<ASTGUINamedArg, Set<ASTFieldAccessExpression>> namedArgsFieldAccess = new HashMap<>();
 
   protected ASTGUINamedArg actualNamedArg = null;
+
+  public ASTGUIShortIterateControl getActualIterateControl() {
+    return actualIterateControl;
+  }
+
+  protected ASTGUIShortIterateControl actualIterateControl = null;
 
   public GUIComponentAccessVisitor(ASTGUIComponent node) {
     astPrinter = new CD4CodeFullPrettyPrinter(new IndentPrinter());
@@ -60,6 +68,10 @@ public class GUIComponentAccessVisitor implements GUIDSLVisitor2, CommonExpressi
 
   public List<ASTGUINamedArg> getNamedArguments() {
     return namedArgs;
+  }
+
+  public List<ASTGUIShortIterateControl> getIterates() {
+    return iterates;
   }
 
   public GUIDSLTraverser getTraverser() {
@@ -89,6 +101,12 @@ public class GUIComponentAccessVisitor implements GUIDSLVisitor2, CommonExpressi
   }
 
   @Override
+  public void visit(ASTGUIShortIterateControl node) {
+    iterates.add(node);
+    actualIterateControl = node;
+  }
+
+  @Override
   public void visit(ASTGUINamedArg node) {
     namedArgs.add(node);
     namedArgsFieldAccess.put(node, new HashSet<>());
@@ -98,6 +116,11 @@ public class GUIComponentAccessVisitor implements GUIDSLVisitor2, CommonExpressi
   @Override
   public void endVisit(ASTGUINamedArg node) {
     actualNamedArg = null;
+  }
+
+  @Override
+  public void endVisit(ASTGUIShortIterateControl node) {
+    actualIterateControl = null;
   }
 
 }

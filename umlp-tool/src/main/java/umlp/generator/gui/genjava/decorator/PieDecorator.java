@@ -10,7 +10,9 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import umlp.generator.gui.GUIComponentsVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +29,9 @@ public class PieDecorator extends GUI2JavaComponentDecorator {
 
   protected List<String> pieEntriesArgs = new ArrayList<>();
 
-  public PieDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst, ASTGUIComponent guiComponent, String componentName) {
-    super(glex, guiAst);
+  public PieDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst,
+      GUIComponentsVisitor viewComponent, ASTGUIComponent guiComponent, String componentName) {
+    super(glex, guiAst, viewComponent);
     this.guiComponent = guiComponent;
     this.componentName = componentName;
   }
@@ -57,7 +60,7 @@ public class PieDecorator extends GUI2JavaComponentDecorator {
   }
 
   @Override
-  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
+  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
     transform(decoratedClass);
   }
 

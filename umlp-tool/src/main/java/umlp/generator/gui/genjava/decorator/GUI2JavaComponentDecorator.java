@@ -9,7 +9,9 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIDSLNode;
+import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIDSLScope;
@@ -17,13 +19,21 @@ import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentAccessVisitor;
+import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -35,11 +45,13 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   public final static String VALUE = "Value";
   protected final String guiName;
   private final ASTGUICompilationUnit guiAst;
+  protected final GUIComponentsVisitor viewComponent;
 
-  public GUI2JavaComponentDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
+  public GUI2JavaComponentDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst, GUIComponentsVisitor viewComponent) {
     super(glex);
     this.guiName = guiAst.getGUIComponentDeclaration().getName();
     this.guiAst = guiAst;
+    this.viewComponent = viewComponent;
   }
 
   protected static List<ASTGUINamedArg> filterArgWithPredicate(List<ASTGUINamedArg> components,
@@ -47,20 +59,23 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return components.stream().filter(predicate).collect(Collectors.toList());
   }
 
-  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
-    generateGetMethodsForComponentArguments(decoratedClass, guiComponent, componentName);
+  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
+    String componentName = viewComponent.getComponentName(guiComponent);
+    Optional<ASTGUIIterate> iterate = viewComponent.getIterateForComponent(guiComponent);
+    generateGetMethodsForComponentArguments(decoratedClass, guiComponent, componentName, iterate);
   }
 
-  protected void generateGetMethodsForComponentArguments(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
+  protected void generateGetMethodsForComponentArguments(ASTCDClass decoratedClass, ASTGUIComponent guiComponent,
+      String componentName, Optional<ASTGUIIterate> iterate) {
     GUIComponentAccessVisitor viewComponents = new GUIComponentAccessVisitor(guiComponent);
 
     viewComponents.getNamedArgsFieldAccess().entrySet().forEach(e -> {
-      generateGetMethodForComponentArgument(decoratedClass, guiComponent, componentName, e.getKey(), e.getValue());
+      generateGetMethodForComponentArgument(decoratedClass, guiComponent, componentName, iterate, e.getKey(), e.getValue());
     });
   }
 
   protected void generateGetMethodForComponentArgument(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
-      ASTGUINamedArg namedArg, Set<ASTFieldAccessExpression> zuweisungen) {
+      Optional<ASTGUIIterate> iterate, ASTGUINamedArg namedArg, Set<ASTFieldAccessExpression> zuweisungen) {
 
     String argValue = replaceZuweisungen(namedArg, zuweisungen);
 
@@ -69,6 +84,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
     if (guiComponentSymbol.isPresent() && !isEventArgument(guiComponentSymbol.get(), namedArg)) {
       Optional<GUIParamSymbol> argSymbol = guiComponentSymbol.get().getSpannedScope().resolveGUIParam(namedArg.getName());
+      if (!argSymbol.isPresent() && iterate.isPresent()) {
+        argSymbol = iterate.get().getSpannedScope().resolveGUIParam(namedArg.getName());
+      }
       if (argSymbol.isPresent()) {
         if (GUIGeneratorUtil.isViewElement(argSymbol.get())) {
           return;
@@ -93,7 +111,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   public void transform(ASTGUICompilationUnit guiAst, ASTCDCompilationUnit decoratedAST) {
   }
 
-  protected void addComponentErrorAttribute(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
+  protected void addComponentErrorAttribute(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, Optional<ASTGUIIterate> iterate) {
     String componentAttributeName = StringTransformations.uncapitalize(guiComponent.getName()) + "ValueError";
     getCD4C().addAttribute(decoratedClass, true, false, "protected String " + componentAttributeName + " = \"\";");
   }
@@ -140,6 +158,19 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return args.size() == 1 ? Optional.of(args.get(0)) : Optional.empty();
   }
 
+
+  public Optional<VariableSymbol> resolveAttribute(SymTypeExpression type, String name) {
+    TypeSymbol typeInfo = type.getTypeInfo();
+    Optional<VariableSymbol> res = typeInfo.getSpannedScope().resolveVariable(name);
+    if (res.isEmpty() && typeInfo.isPresentSuperClass()) {
+      res = typeInfo.getSuperClass().getTypeInfo().getSpannedScope().resolveVariable(name);
+    }
+    if (res.isEmpty()) { // TODO: remove, debugonly
+      res = typeInfo.getEnclosingScope().resolveVariable(name);
+    }
+    return res;
+  }
+
   public Optional<VariableSymbol> resolveAttribute(Optional<GUIParamSymbol> guiVariableSymbol, String name) {
     if (guiVariableSymbol.isEmpty()) {
       return Optional.empty();
@@ -156,30 +187,89 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   public Optional<String> handleZuweisung(ASTFieldAccessExpression zuweisung, ASTCDClass decoratedClass, ASTGUIComponent guiComponent,
-      String componentName, boolean mustBeString) {
+      String componentName, boolean mustBeString, Optional<ASTGUIIterate> iterate) {
+
     if (zuweisung.getExpression() instanceof ASTNameExpression) {
       String variableName = ((ASTNameExpression) zuweisung.getExpression()).getName();
       Optional<GUIParamSymbol> symbol = ((GUIDSLScope) zuweisung.getEnclosingScope()).resolveGUIParam(variableName);
 
-      Optional<VariableSymbol> attr = resolveAttribute(symbol, zuweisung.getName());
+      Optional<VariableSymbol> attr = Optional.empty();
+      String variableType = null;
+      if (symbol.isPresent()) {
+        attr = resolveAttribute(symbol, zuweisung.getName());
+      }
+      else if (iterate.isPresent()) {
+        symbol = getVariableSymbol(iterate.get(), zuweisung, variableName);
+        if (symbol.isEmpty()) {
+          return Optional.empty();
+        }
+        Optional<SymTypeExpression> iterateType = resolveAttributeFromIterate(iterate.get(), zuweisung, symbol, variableName);
+        if (iterateType.isEmpty()) {
+          return Optional.empty();
+        }
+        attr = resolveAttribute(iterateType.get(), zuweisung.getName());
+        variableType = GUIGeneratorUtil.removeDiagramName(iterateType.get().getTypeInfo().getName());
+      }
 
       if (attr.isPresent()) {
         String returnType = attr.get().getType().getTypeInfo().getName();
         String attrName = attr.get().getName();
-        String variableType = symbol.get().getType().getTypeInfo().getName();
+        if (variableType == null) {
+          variableType = symbol.get().getType().getTypeInfo().getName();
+        }
         boolean isCollection = attr.get().getType().isGenericType() || attr.get().getType().isArrayType();
 
         generateMethodsForInputValueComponent(decoratedClass, guiComponent, componentName, returnType, variableName,
-            variableType, attrName);
+            variableType, attrName, iterate);
 
         return Optional.of(getFieldAccess(variableName, attrName, returnType, (mustBeString && !isCollection)));
+      }
+    }
+
+    return Optional.empty();
+  }
+
+  protected Optional<SymTypeExpression> resolveAttributeFromIterate(ASTGUIIterate iterate, ASTFieldAccessExpression zuweisung, Optional<GUIParamSymbol> symbol, String variableName) {
+    Optional<VariableSymbol> iterateVariable = iterate.getSpannedScope().resolveVariable(variableName);
+    if (iterateVariable.isPresent() && iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
+      ASTGUIShortIterateControl it = (ASTGUIShortIterateControl) iterate.getIterateControl();
+      if (it.getIterable() instanceof ASTFieldAccessExpression) {
+        String listName = ((ASTFieldAccessExpression) it.getIterable()).getName();
+        Optional<VariableSymbol> iterateAttribute = resolveAttribute(symbol, listName);
+        return iterateAttribute.isPresent()? Optional.of(iterateAttribute.get().getType()): Optional.empty();
+        //return resolveAttribute(iterateAttribute.get().getType(), zuweisung.getName());
+      }
+      else if (it.getIterable() instanceof ASTNameExpression) {
+        if (symbol.isEmpty() || !GenService.isList(symbol.get().getType())) {
+          return Optional.empty();
+        }
+        SymTypeExpression listType = ((SymTypeOfGenerics) symbol.get().getType()).getArgument(0);
+        //  GenService.getInnerType(symbol.get().getAstNode().getMCType());
+        return Optional.of(listType);
+        //return resolveAttribute(listType, zuweisung.getName());
+      }
+    }
+    return Optional.empty();
+  }
+
+  protected Optional<GUIParamSymbol> getVariableSymbol(ASTGUIIterate iterate, ASTFieldAccessExpression zuweisung, String variableName) {
+    Optional<VariableSymbol> iterateVariable = iterate.getSpannedScope().resolveVariable(variableName);
+    if (iterateVariable.isPresent() && iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
+      ASTGUIShortIterateControl it = (ASTGUIShortIterateControl) iterate.getIterateControl();
+      if (it.getIterable() instanceof ASTFieldAccessExpression) {
+        String p = ((ASTNameExpression) ((ASTFieldAccessExpression) it.getIterable()).getExpression()).getName();
+        return ((GUIDSLScope) zuweisung.getEnclosingScope()).resolveGUIParam(p);
+      }
+      else if (it.getIterable() instanceof ASTNameExpression) {
+        String listName = ((ASTNameExpression) it.getIterable()).getName();
+        return ((GUIDSLScope) zuweisung.getEnclosingScope()).resolveGUIParam(listName);
       }
     }
     return Optional.empty();
   }
 
   protected void generateMethodsForInputValueComponent(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
-      String returnType, String variableName, String variableType, String attrName) {
+      String returnType, String variableName, String variableType, String attrName, Optional<ASTGUIIterate> iterate) {
   }
 
   public String getFieldAccess(String variableName, String attrName, String variableType, boolean mustBeString) {

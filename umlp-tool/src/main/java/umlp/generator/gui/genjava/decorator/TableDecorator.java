@@ -12,9 +12,11 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
+import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUINamedArgAccessVisitor;
 
 import java.util.ArrayList;
@@ -33,8 +35,9 @@ public class TableDecorator extends GUI2JavaComponentDecorator {
   protected List<String> tableColumnsArgs = new ArrayList<>();
   protected String rowsArg;
 
-  public TableDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst, ASTGUIComponent guiComponent, String componentName) {
-    super(glex, guiAst);
+  public TableDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst, GUIComponentsVisitor viewComponent,
+      ASTGUIComponent guiComponent, String componentName) {
+    super(glex, guiAst, viewComponent);
     this.guiComponent = guiComponent;
     this.componentName = componentName;
   }
@@ -58,7 +61,7 @@ public class TableDecorator extends GUI2JavaComponentDecorator {
 
       if (row.get().getGUIArgValue().isPresentExpression() && row.get().getGUIArgValue().getExpression() instanceof ASTFieldAccessExpression) {
         rowsArg = handleZuweisung((ASTFieldAccessExpression) row.get().getGUIArgValue().getExpression(), decoratedClass,
-            guiComponent, componentName, false).orElse(guiDSLPrinter.prettyprint(row.get().getGUIArgValue()));
+            guiComponent, componentName, false, Optional.empty()).orElse(guiDSLPrinter.prettyprint(row.get().getGUIArgValue()));
       }
       else {
         rowsArg = guiDSLPrinter.prettyprint(row.get().getGUIArgValue());
@@ -86,7 +89,7 @@ public class TableDecorator extends GUI2JavaComponentDecorator {
         e.getArguments().getExpressionList().stream().filter(ex -> ex instanceof ASTLiteralExpression).forEach(a ->
             args.add(guiDSLPrinter.prettyprint(a)));
         e.getArguments().getExpressionList().stream().filter(ex -> ex instanceof ASTFieldAccessExpression).forEach(a -> {
-          handleZuweisung((ASTFieldAccessExpression) a, decoratedClass, guiComponent, componentName, true)
+          handleZuweisung((ASTFieldAccessExpression) a, decoratedClass, guiComponent, componentName, true, Optional.empty())
               .ifPresent(args::add);
         });
         tableColumnsArgs.add(Joiners.COMMA.join(args));
@@ -99,13 +102,13 @@ public class TableDecorator extends GUI2JavaComponentDecorator {
   }
 
   @Override
-  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
+  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
     transform(decoratedClass);
   }
 
   @Override
   protected void generateMethodsForInputValueComponent(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
-      String returnType, String variableName, String variableType, String attrName) {
+      String returnType, String variableName, String variableType, String attrName, Optional<ASTGUIIterate> iterate) {
   }
 
   public List<String> getInitTableColumnsArguments() {
