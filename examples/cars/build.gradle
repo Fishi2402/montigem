@@ -1,9 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-description 'cars example'
-
-task generateCars(type: UMLPTask) {
-    input = (file("src"))
-    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
+plugins {
+  id 'de.rwth.se.umlp-tool-backend'
 }
 
-build.dependsOn(generateCars)
+description 'cars example'

@@ -1,24 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
+plugins {
+  id 'de.rwth.se.umlp-tool-backend'
+}
 description 'flensburg neo4j example'
 
 dependencies {
   implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
+  testImplementation "org.neo4j:neo4j:4.4.10"
+  implementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
 }
 
-task generateNeo4jFlensburg(type: UMLPTask) {
-    input = (file("src/models"))
-    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
-    hwcDir = layout.projectDirectory.dir("src/main/java/")
-    configTemplate = "umlp.UMLP2JavaNeo4j"
-}
-
-dependencies {
-    testImplementation "org.neo4j:neo4j:4.4.10"
-    implementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
+generateUmlpBackend {
+  configTemplate = "umlp.UMLP2JavaNeo4j"
 }
 
 tasks.withType(Test) {
     maxParallelForks = 1
 }
-
-build.dependsOn(generateNeo4jFlensburg)
