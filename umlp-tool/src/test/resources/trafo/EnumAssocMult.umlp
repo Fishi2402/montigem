@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package trafo;
+
+umlp EnumAssocOne {
+  class Foo;
+
+  enum Colour {
+    Red, BLUE;
+  }
+
+  association bla Foo (f) -> (cc) Colour [*] ;
+
+}

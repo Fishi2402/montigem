@@ -14,6 +14,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -104,6 +105,10 @@ public class SetDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
     if (GenService.isJavaType(type)) {
       getCD4C().addImport(ast, type.printFullName());
+    } else if (GenService.isCDEnum(type)) {
+      getCD4C().addImport(ast,getPackageName(origCD, DEFAULT_PACKAGE)+"."+ type.print());
+    } else if (GenService.isInnerCDEnum(type)) {
+      getCD4C().addImport(ast,getPackageName(origCD, DEFAULT_PACKAGE)+"."+ GenService.getInnerType(attr.getMCType()));
     } else if (isGem) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+type.print());
     }
@@ -128,23 +133,29 @@ public class SetDecorator extends AbstractDecorator {
     String jsonStr;
     String typeName;
     boolean isOptional = false;
+    boolean isCDEnum;
     if (GenService.isOptional(type)) {
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics)type).getArgument(0));
       typeName = ((SymTypeOfGenerics)type).getArgument(0).printFullName();
       isOptional = true;
+      isCDEnum = GenService.isInnerCDEnum(type);
     } else {
       jsonStr = GenService.calculateJSon(type);
       typeName = type.printFullName();
+      isCDEnum = GenService.isCDEnum(type);
     }
     String baseClassDecorator = origCD.getCDDefinition().getName() + BaseClassObjectMapperDecorator.SUFFIX;
     boolean useDeSer = supportedDeSers.contains(typeName);
     boolean makeAbstract = jsonStr.equals("") && !useDeSer;
-    getCD4C().addMethod(ast, "umlp.commands.deser.Set_FromJsonObject", cmdName, name, typeName, isOptional, jsonStr, useDeSer, baseClassDecorator, makeAbstract);
-    getCD4C().addMethod(ast, "umlp.commands.deser.Set_BuildJson", cmdName, name, typeName, GenService.getGetterName(name, type), useDeSer, baseClassDecorator, makeAbstract);
+    getCD4C().addMethod(ast, "umlp.commands.deser.Set_FromJsonObject", cmdName, name, typeName, isOptional, isCDEnum, jsonStr, useDeSer, baseClassDecorator, makeAbstract);
+    getCD4C().addMethod(ast, "umlp.commands.deser.Set_BuildJson", cmdName, name, typeName, isCDEnum, GenService.getGetterName(name, type), useDeSer, baseClassDecorator, makeAbstract);
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
+    if (isCDEnum) {
+      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + Names.getSimpleName(typeName));
+    }
     if (useDeSer) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator);
     }

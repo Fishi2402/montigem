@@ -84,6 +84,8 @@ public class GenService {
       json = "getAsJsonNumber().getNumberAsDouble()";
     } else if (typeCheck.isString(type)) {
       json = "getAsJsonString().getValue()";
+    } else if (isCDEnum(type)) {
+      json = "getAsJsonString().getValue()";
     } else if (type.isGenericType() && (
         ((SymTypeOfGenerics) type).printTypeWithoutTypeArgument().equals("List")
             || ((SymTypeOfGenerics) type).printTypeWithoutTypeArgument().equals("java.util.List"))) {
@@ -321,6 +323,17 @@ public class GenService {
     return type.getTypeInfo() instanceof CDTypeSymbol;
   }
 
+  public static boolean isCDEnum(SymTypeExpression type) {
+    return isCDType(type) && ((CDTypeSymbol) type.getTypeInfo()).isIsEnum();
+  }
+
+  public static boolean isInnerCDEnum(SymTypeExpression type) {
+   if (type.isGenericType()) {
+     return isCDEnum(((SymTypeOfGenerics) type).getArgument(0));
+   }
+   return false;
+  }
+
   public static boolean isJavaType(SymTypeExpression type) {
     // TODO: Bessere Lösung?
     return type.getTypeInfo() instanceof JClass2OOTypeSymbolAdapter;
@@ -362,6 +375,8 @@ public class GenService {
       return "Boolean";
     } else if (TypeCheck.isString(type)) {
       return "String";
+    } else if (isCDEnum(type)) {
+      return "java.lang.Enum";
     }
     return type.printFullName();
   }

@@ -19,7 +19,7 @@ umlp University {
     class Student extends Person {
       int semester;
       List<Course> courses;
-//      StudentStatus status;  //TODO: Fix Enum Bug in cd4c
+      StudentStatus status;
     }
 
     class Course {
@@ -31,7 +31,7 @@ umlp University {
 
     class SportHall ;
 
-//   enum StudentStatus { ENROLLED, EXMATRICULATED, GRADUATED; }  //TODO: Fix Enum Bug in cd4c
+    enum StudentStatus { ENROLLED, EXMATRICULATED, GRADUATED; }
 // }
 
   composition Student -> Course [*];

@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp Enums {
+  class Foo {
+    Colour cc;
+    List<Colour> ccList;
+    Optional<Colour> ccOpt;
+  }
+
+  enum Colour {
+    RED, GREEN;
+  }
+}
+

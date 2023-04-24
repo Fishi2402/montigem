@@ -1,2 +1,2 @@
 ${signature("statement","columnName")}
-${statement}.getObject("${columnName}", java.time.LocalDate.class)
+${statement}.getObject(${columnName}, java.time.LocalDate.class)

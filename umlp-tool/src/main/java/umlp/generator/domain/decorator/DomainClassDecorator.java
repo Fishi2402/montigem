@@ -4,8 +4,10 @@ package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.MethodDecorator;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
@@ -36,7 +38,11 @@ public class DomainClassDecorator extends DomainTypeDecorator {
             .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
 
     origCD.getCDDefinition().getCDEnumsList().stream().filter(c -> !c.getSymbol().isIsDerived())
-            .forEach(c -> astcdPackage.addCDElement(c.deepClone()));
+            .forEach(c -> {
+              ASTCDEnum enumCopy = c.deepClone();
+              enumCopy.setModifier(PUBLIC.build());
+              astcdPackage.addCDElement(enumCopy);
+            });
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
