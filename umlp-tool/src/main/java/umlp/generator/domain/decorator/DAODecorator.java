@@ -42,7 +42,9 @@ public class DAODecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     cdName = origCD.getCDDefinition().getName();
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
+    origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getSymbol().isIsDerived())
+        .filter(c -> !c.getSymbol().isIsAbstract())
         .forEach(c -> astcdPackage.addCDElement(createDAOClassForDomainClass(c, origCD.getCDDefinition().getCDAssociationsList())));
 
     origCD.getCDDefinition().getCDAssociationsList().stream().filter(a -> !a.getModifier().isDerived()).forEach

@@ -4,7 +4,11 @@ package umlp.generator.domain.decorator.commands;
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -19,7 +23,6 @@ import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,7 +43,9 @@ public class AddDecorator extends AbstractDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
+    origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getSymbol().isIsDerived())
+        .filter(c -> !c.getSymbol().isIsAbstract())
             .forEach(c -> {
               CDSymbolTables.getAttributesInHierarchy(c)
                       .stream()
@@ -60,7 +65,8 @@ public class AddDecorator extends AbstractDecorator {
                         astcdPackage.addCDElement(createDeSer(origCD, a.getName(), getSymType("long"), c, true));
                       });
             });
-    origCD.getCDDefinition().getCDInterfacesList().stream().filter(c -> !c.getSymbol().isIsDerived())
+    origCD.getCDDefinition().getCDInterfacesList().stream()
+        .filter(c -> !c.getSymbol().isIsDerived())
             .forEach(c -> {
               CDSymbolTables.getAttributesInHierarchy(c)
                       .stream()

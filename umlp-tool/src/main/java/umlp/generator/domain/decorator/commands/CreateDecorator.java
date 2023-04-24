@@ -25,26 +25,28 @@ public class CreateDecorator extends AbstractDecorator {
   public CreateDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
-  
+
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
+    origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getSymbol().isIsDerived())
+        .filter(c -> !c.getSymbol().isIsAbstract())
       .forEach(c -> {
         astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
         astcdPackage.addCDElement(createDeSer(origCD, c));
       });
   }
-  
+
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String packageName) {
     String classname = domainClass.getName();
-    
+
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
       .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Request<Void>"))
       .setName(classname+SUFFIX)
       .build();
-    
+
     ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected final " + classname + " " + StringTransformations.uncapitalize(classname));
 
     getCD4C().addConstructor(ast, "umlp.commands.Constructor",classname, packageName, SUFFIX);

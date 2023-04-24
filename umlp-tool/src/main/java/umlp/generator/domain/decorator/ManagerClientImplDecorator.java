@@ -68,23 +68,33 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
 
-    managerClass.addCDMember(getCacheAttribute(domainClass));
-    managerClass.addCDMember(getCommandObserverAttribute(domainClass));
+    if(!domainClass.getModifier().isAbstract()) {
+      managerClass.addCDMember(getCacheAttribute(domainClass));
+      managerClass.addCDMember(getCommandObserverAttribute(domainClass));
+      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name);
+    }else{
+      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOptAbstract", name);
+    }
 
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoAdd", name, managerName);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, false);
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoDelete", name, managerName);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);
 
-    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + "CommandSendingObserver"));
+    if(!domainClass.getModifier().isAbstract()) {
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
+      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoAdd", name, managerName);
+      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoDelete", name, managerName);
+    }
+
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_get"));
-    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_create"));
-    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_delete"));
+
+    if(!domainClass.getModifier().isAbstract()) {
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + "CommandSendingObserver"));
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_create"));
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_delete"));
+    }
 
     // Associations
     CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {

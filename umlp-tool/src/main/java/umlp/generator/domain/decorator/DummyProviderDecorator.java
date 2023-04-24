@@ -46,7 +46,9 @@ public class DummyProviderDecorator extends AbstractDecorator {
     getCD4C().addConstructor(ast, "umlp.dummyprovider.Constructor2", ast.getName());
 
     List<ASTCDClass> classList = origCD.getCDDefinition().getCDClassesList().stream()
-            .filter(c -> !c.getModifier().isDerived()).collect(Collectors.toList());
+        .filter(c -> !c.getModifier().isDerived())
+        .filter(c -> !c.getModifier().isAbstract())
+        .collect(Collectors.toList());
 
     List<ASTCDInterface> interfaceList = origCD.getCDDefinition().getCDInterfacesList().stream()
             .filter(i -> !i.getModifier().isDerived()).collect(Collectors.toList());

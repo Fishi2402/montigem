@@ -2,7 +2,7 @@
 ${tc.signature("name", "concreteSubclassesInclSelf")}
 ${cd4c.method("protected Optional<${name}> _do${name}Opt(long gemId)")}
 
-${name} value;
+${name} value = null;
 <#list concreteSubclassesInclSelf as subclass>
 <#if subclass?index != 0>else </#if>if (${subclass.name?uncap_first}s.containsKey(gemId)) {
   ${subclass.name} tmp =  ${subclass.name?uncap_first}s.get(gemId);
@@ -14,10 +14,14 @@ ${name} value;
   value = tmp;
 }
 </#list>
+<#list concreteSubclassesInclSelf as subclass>
+<#if subclass.name == name>
 <#if concreteSubclassesInclSelf?size != 0>else </#if> if (dummyProvider != null) {
   value = dummyProvider.invent${name}();
 } else {
   return Optional.empty();
 }
+</#if>
+</#list>
 
 return Optional.ofNullable(value);

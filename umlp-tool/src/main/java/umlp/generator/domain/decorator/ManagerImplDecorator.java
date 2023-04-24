@@ -3,7 +3,11 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -12,11 +16,11 @@ import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.GemListAssocDecorator.getName;
@@ -66,17 +70,19 @@ public class ManagerImplDecorator extends AbstractDecorator {
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
 
-    managerClass.addCDMember(getDaoAttribute(domainClass));
-    managerClass.addCDMember(getCacheAttribute(domainClass));
-    managerClass.addCDMember(getDBObserverAttribute(domainClass));
+    if(!domainClass.getModifier().isAbstract()) {
+      managerClass.addCDMember(getDaoAttribute(domainClass));
+      managerClass.addCDMember(getCacheAttribute(domainClass));
+      managerClass.addCDMember(getDBObserverAttribute(domainClass));
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete", name, managerName);
+    }
 
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name, UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass));
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, false);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete", name, managerName);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
@@ -94,7 +100,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
                                       ASTCDClass managerClass) {
     String name = domainInterface.getName();
 
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOptInterface", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name, UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainInterface));
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, true);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);

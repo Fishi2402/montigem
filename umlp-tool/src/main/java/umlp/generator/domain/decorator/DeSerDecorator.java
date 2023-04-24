@@ -5,7 +5,12 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.methodtemplates.CD4CTemplateHelper;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDElement;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -13,7 +18,6 @@ import umlp.UMLPMill;
 import umlp.generator.util.PathUtil;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,6 +42,7 @@ public class DeSerDecorator extends DomainClassDecorator {
     origCD.getCDDefinition().getCDClassesList()
             .stream()
             .filter(cdclass -> !cdclass.getModifier().isDerived())
+            .filter(cdclass -> !cdclass.getModifier().isAbstract())
             .forEach(cdClass -> astcdPackage.addCDElement(createDeSer(origCD, cdName, cdClass)));
   }
 

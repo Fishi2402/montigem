@@ -12,41 +12,43 @@ import umlp.generator.util.PathUtil;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class CommandObserverDecorator extends AbstractDecorator {
-  
+
   public static final String SUFFIX = "CommandObserver";
-  
+
   public CommandObserverDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
-  
+
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, CLIENT_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+    origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getModifier().isDerived())
+        .filter(c -> !c.getModifier().isAbstract())
       .forEach(c -> astcdPackage.addCDElement(createClass(c)));
   }
-  
+
   protected ASTCDClass createClass(ASTCDClass domainClass) {
     String classname = domainClass.getName() + SUFFIX;
-    
+
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
       .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(domainClass.getName()+"Observer"))
       .setName(classname)
       .build();
-    
+
     getCD4C().addMethod(ast, "umlp.commandobserver.GetScope");
-    
+
     domainClass.getCDAttributeList().stream()
       .filter(a -> !a.getModifier().isDerived())
       .forEach(a -> getCD4C().addMethod(ast, "umlp.commandobserver.NotifySetAttribute", domainClass.getName(),
         a.getName(), GenService.getType(a.getSymbol().getType())));
-    
+
     addImports(ast, domainClass);
-    
+
     return ast;
   }
-  
+
   protected void addImports(ASTCDClass clazz, ASTCDClass domainclass) {
     getCD4C().addImport(clazz,PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(clazz,"umlp."+domainclass.getName()+"Observer");
@@ -55,5 +57,5 @@ public class CommandObserverDecorator extends AbstractDecorator {
       getCD4C().addImport(clazz, "umlp."+domainclass.getName());
     }
    }
-  
+
 }
