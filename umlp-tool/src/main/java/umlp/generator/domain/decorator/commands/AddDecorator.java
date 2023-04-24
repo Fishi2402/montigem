@@ -142,25 +142,24 @@ public class AddDecorator extends AbstractDecorator {
       type = getSymType("long");
       name += "GemId";
     }
-    String jsonStr;
-    String typeName;
+
+    SymTypeExpression innerType = type;
     if (GenService.isList(type)) {
-      jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) type).getArgument(0));
-      typeName = ((SymTypeOfGenerics)type).getArgument(0).printFullName();
+      innerType = ((SymTypeOfGenerics) type).getArgument(0);
     } else if (GenService.isOptional(type)) {
-      jsonStr = GenService.calculateJSon(((SymTypeOfGenerics)type).getArgument(0));
-      typeName = ((SymTypeOfGenerics)type).getArgument(0).printFullName();
-    } else {
-      jsonStr = GenService.calculateJSon(type);
-      typeName = type.printFullName();
+      innerType = ((SymTypeOfGenerics) type).getArgument(0);
     }
+    String jsonStr = GenService.calculateJSon(innerType);
+    String typeName = innerType.printFullName();
+    String getter = GenService.getGetterName(name, innerType);
+
     String baseClassDecorator = origCD.getCDDefinition().getName() + BaseClassObjectMapperDecorator.SUFFIX;
     boolean useDeSer = supportedDeSers.contains(typeName);
     boolean makeAbstract = jsonStr.equals("") && !useDeSer;
     getCD4C().addMethod(ast, "umlp.commands.deser.Add_FromJsonObject", cmdName, name, typeName,
         GenService.isInnerCDEnum(type), jsonStr, useDeSer, baseClassDecorator, makeAbstract);
     getCD4C().addMethod(ast, "umlp.commands.deser.Add_BuildJson", cmdName, name, typeName,
-        GenService.isInnerCDEnum(type), GenService.getGetterName(name, type), useDeSer,
+        GenService.isInnerCDEnum(type), getter, useDeSer,
         baseClassDecorator, makeAbstract);
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");

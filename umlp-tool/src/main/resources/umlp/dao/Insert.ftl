@@ -7,10 +7,10 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
     ${statement}.clearParameters();
     ${statement}.setLong(1, o.getGemId());
     <#list attributes as attr><#assign index = attr?index+2>
-      ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o.get"+attr.getName()?cap_first+"()", false)};
+      ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", false)};
     </#list>
     <#list optionalAttributes as attr><#assign index = index+1>
-      ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o.get"+attr.getName()?cap_first+"()", true)};
+      ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", true)};
     </#list>
     ${statement}.execute();
     <#list listAttributes as attr>

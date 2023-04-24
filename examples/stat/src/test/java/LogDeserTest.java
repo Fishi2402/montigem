@@ -29,8 +29,8 @@ public class LogDeserTest {
     Optional<MCJarCLIParameter> parameterOpt = new MCJarCLIParameterDeSer().deserialize((JsonObject) jsonElement);
     assertTrue(parameterOpt.isPresent());
 
-    assertTrue(parameterOpt.get().getScript());
-    assertTrue(parameterOpt.get().getDstlGen());
+    assertTrue(parameterOpt.get().isScript());
+    assertTrue(parameterOpt.get().isDstlGen());
     assertTrue(parameterOpt.get().getGrammar().contains("GrammarFamily.mc4"));
   }
 

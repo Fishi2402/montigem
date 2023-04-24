@@ -31,9 +31,9 @@
       }
     <#else>
       <#if useDeSer>
-      printer.memberJson("${fieldName}", ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${fieldType}").orElseThrow());
+      printer.memberJson("${fieldName}", ${objectMapperName}.serialize(obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}(), "${fieldType}").orElseThrow());
       <#else>
-      printer.member("${fieldName}", obj.get${fieldName?cap_first}()<#if genService.isCDEnum(attr.getSymbol().getType())>.name()</#if>);
+      printer.member("${fieldName}", obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}()<#if genService.isCDEnum(attr.getSymbol().getType())>.name()</#if>);
       </#if>
     </#if>
 </#if>

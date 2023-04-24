@@ -58,7 +58,7 @@ public class DAONeo4jDecorator extends DAODecorator {
     List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
     Map<ASTCDAttribute, String> optMap = Maps.newLinkedHashMap();
     getOptionalAttributes(domainClass).forEach(e -> optMap.put(e,
-                    SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)));
+                    SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
 
     getCD4C().addMethod(daoClass, "umlp.dao.SelectInitNeo4j", domainClass.getName(), attributes);
 

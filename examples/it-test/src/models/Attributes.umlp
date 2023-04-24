@@ -40,8 +40,11 @@ umlp Attributes {
     Optional<String> bar_opt_string;
 
     boolean bar_boolean;
-    // TODO: In MC muss der richtige getter generiert werden
-    // java.lang.Boolean bar_boolean2;
+    java.lang.Boolean bar_boolean2;
+    List<boolean> bar_list_boolean;
+    List<Boolean> bar_list_boolean2;
+    Optional<boolean> bar_opt_boolean;
+    Optional<Boolean> bar_opt_boolean2;
 
   }
 
