@@ -1,22 +1,45 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 umlp AssocsFromAndToInterface {
+  // class to interface
+  interface I1;
+  class I1Impl implements I1;
+  class C1;
+  association C1 -> I1 [*];
 
-  interface A;
+  // interface to class
+  interface I2;
+  class I2Impl implements I2;
+  class C2;
+  association I2 -> C2 [*];
 
-  class B implements A;
-  
-  interface D;
-  
-  abstract class E implements D;
-  
-  class F extends E;
-  
-  association F -> D [*];
-  
-  association D -> E[*];
-  
-  association A (leftA) <-> (rightA) A [*];
-  
+  // interface to interface
+  interface I3;
+  class I3Impl implements I3;
+  interface I4;
+  class I4Impl implements I4;
+  association I3 -> I4 [*];
 
+
+  // class to abstract class
+  abstract class AC1;
+  class AC1Impl extends AC1;
+  class C3;
+  association C3 -> AC1 [*];
+
+  // abstract class to class
+  abstract class AC2;
+  class AC2Impl extends AC2;
+  class C4;
+  association AC2 -> C4 [*];
+
+  // abstract class to abstract class
+  abstract class AC3;
+  class AC3Impl extends AC3;
+  abstract class AC4;
+  class AC4Impl extends AC4;
+  association AC3 -> AC4 [*];
+
+
+  // TODO: Same for gem?
 }
