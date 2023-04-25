@@ -2,7 +2,9 @@ package GUIDelta;
 
 import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.testng.Assert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -11,6 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeltaHandlerTest extends AbstractGUIDeltaTest{
+
+    @BeforeEach
+    public void resetLog(){
+        Log.clearFindings();
+    }
 
     public void checkGUIBlock(List<AbstractMap.SimpleEntry<ContentType, String>> expectedContent, List<ASTGUIBlockContent> actualContent){
         Assert.assertEquals(expectedContent.size(), actualContent.size());
@@ -38,8 +45,8 @@ public class DeltaHandlerTest extends AbstractGUIDeltaTest{
 
     @Test
     public void importTest(){
-        ASTGUICompilationUnit baseAST = parseGUI(new File("../resources/guidelta/BaseModel.gui"));
-        ASTGUICompilationUnit variationAST = parseGUI(new File("../resources/guidelta/ImportTest.gui"));
+        ASTGUICompilationUnit baseAST = parseGUI(new File("src/test/resources/guidelta/BaseModel.gui"));
+        ASTGUICompilationUnit variationAST = parseGUI(new File("src/test/resources/guidelta/ImportTest.gui"));
 
         ASTGUICompilationUnit productAST = handleGUIDelta(variationAST, baseAST);
 
@@ -50,14 +57,14 @@ public class DeltaHandlerTest extends AbstractGUIDeltaTest{
         Assert.assertEquals(productAST.getComponentName(),"BaseModel");
         Assert.assertEquals(productAST.getMCImportStatementList().size(), 2);
         Assert.assertEquals(productAST.getMCImportStatementList().stream().filter(
-                i -> i.getQName().equals("guidelta.Text") || i.getQName().equals("guidelta.Button;")
+                i -> i.getQName().equals("guidelta.Text") || i.getQName().equals("guidelta.Button")
         ).count(), 2);
     }
 
     @Test
     public void removeTest(){
-        ASTGUICompilationUnit baseAST = parseGUI(new File("../resources/guidelta/BaseModel.gui"));
-        ASTGUICompilationUnit variationAST = parseGUI(new File("../resources/guidelta/RemoveTest.gui"));
+        ASTGUICompilationUnit baseAST = parseGUI(new File("src/test/resources/guidelta/BaseModel.gui"));
+        ASTGUICompilationUnit variationAST = parseGUI(new File("src/test/resources/guidelta/RemoveTest.gui"));
 
         ASTGUICompilationUnit productAST = handleGUIDelta(variationAST, baseAST);
 
@@ -77,8 +84,8 @@ public class DeltaHandlerTest extends AbstractGUIDeltaTest{
         expectedValues.add(new AbstractMap.SimpleEntry<>(ContentType.COMPONENT, "newComponent1"));
         expectedValues.add(new AbstractMap.SimpleEntry<>(ContentType.COMPONENT, "newComponent2"));
 
-        ASTGUICompilationUnit baseAST = parseGUI(new File("../resources/guidelta/BaseModel.gui"));
-        ASTGUICompilationUnit variationAST = parseGUI(new File("../resources/guidelta/ReplaceTest.gui"));
+        ASTGUICompilationUnit baseAST = parseGUI(new File("src/test/resources/guidelta/BaseModel.gui"));
+        ASTGUICompilationUnit variationAST = parseGUI(new File("src/test/resources/guidelta/ReplaceTest.gui"));
 
         ASTGUICompilationUnit productAST = handleGUIDelta(variationAST, baseAST);
 
@@ -102,8 +109,8 @@ public class DeltaHandlerTest extends AbstractGUIDeltaTest{
         expectedValues.add(new AbstractMap.SimpleEntry<>(ContentType.COMPONENT, "newComponent1"));
         expectedValues.add(new AbstractMap.SimpleEntry<>(ContentType.COMPONENT, "newComponent2"));
 
-        ASTGUICompilationUnit baseAST = parseGUI(new File("../resources/guidelta/BaseModel.gui"));
-        ASTGUICompilationUnit variationAST = parseGUI(new File("../resources/guidelta/AfterTest.gui"));
+        ASTGUICompilationUnit baseAST = parseGUI(new File("src/test/resources/guidelta/BaseModel.gui"));
+        ASTGUICompilationUnit variationAST = parseGUI(new File("src/test/resources/guidelta/AfterTest.gui"));
 
         ASTGUICompilationUnit productAST = handleGUIDelta(variationAST, baseAST);
 
@@ -127,8 +134,8 @@ public class DeltaHandlerTest extends AbstractGUIDeltaTest{
         expectedValues.add(new AbstractMap.SimpleEntry<>(ContentType.COMPONENT, "newComponent2"));
         expectedValues.add(new AbstractMap.SimpleEntry<>(ContentType.ITERATE, "exampleIterate"));
 
-        ASTGUICompilationUnit baseAST = parseGUI(new File("../resources/guidelta/BaseModel.gui"));
-        ASTGUICompilationUnit variationAST = parseGUI(new File("../resources/guidelta/AfterTest.gui"));
+        ASTGUICompilationUnit baseAST = parseGUI(new File("src/test/resources/guidelta/BaseModel.gui"));
+        ASTGUICompilationUnit variationAST = parseGUI(new File("src/test/resources/guidelta/BeforeTest.gui"));
 
         ASTGUICompilationUnit productAST = handleGUIDelta(variationAST, baseAST);
 

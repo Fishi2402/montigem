@@ -2,13 +2,13 @@ package guidelta;
 
 page BeforeTest() adapts BaseModel{
 
-    before exampleText: @guard(true){
-       @Text(value = "before Text")
+    before exampleText: newGuard@guard(true){
+       @Text(value = "Guard before Text");
     };
 
-    before exampleGuard: @iterate(j from 0 to 5){
-       @Text(value = "before Guard" + j)
+    before exampleGuard: newIterate@iterate(j from 0 to 5){
+       @Text(value = "Iterate before Guard");
     };
 
-    before exampleIterate: [@Text(value = "before Iterate 1"), @Text(value = "before Iterate 2")];
+    before exampleIterate: [newComponent1@Text(value = "Text before Iterate 1"), newComponent2@Text(value = "Text before Iterate 2")];
 }

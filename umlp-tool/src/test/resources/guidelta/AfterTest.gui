@@ -2,12 +2,12 @@ package guidelta;
 
 page AfterTest() adapts BaseModel{
 
-    after exampleText: @guard(true){
-       newGuard@Text(value = "Guard after Text")
+    after exampleText: newGuard@guard(true){
+       @Text(value = "Guard after Text");
     };
 
-    after exampleGuard: @iterate(j from 0 to 5){
-       newIterate@Text(value = "Iterate after Guard")
+    after exampleGuard: newIterate@iterate(j from 0 to 5){
+       @Text(value = "Iterate after Guard");
     };
 
     after exampleIterate: [newComponent1@Text(value = "Text after Iterate 1"), newComponent2@Text(value = "Text after Iterate 2")];

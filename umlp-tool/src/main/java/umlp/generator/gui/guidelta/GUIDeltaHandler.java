@@ -69,11 +69,11 @@ public class GUIDeltaHandler implements GUIDSLHandler {
         else{ //AST to adapt, imports need to be added if not already existing
             for(ASTMCImportStatement importStatement : imports){
                 if(node.getMCImportStatementList().stream().noneMatch(
-                        i -> i.getQName().equals(importStatement.getQName()))) { //import statement has no equals defined so contains doesnt work
+                        i -> i.getMCQualifiedName().getBaseName().equals(importStatement.getMCQualifiedName().getBaseName()))) { //import statement has no equals defined so contains doesnt work
                     node.addMCImportStatement(importStatement);
                 }
-                else if (node.getMCImportStatementList().stream().anyMatch(
-                        i -> i.getMCQualifiedName().getBaseName().equals(importStatement.getMCQualifiedName().getBaseName()))) {
+                else if (node.getMCImportStatementList().stream().noneMatch(
+                        i -> i.getQName().equals(importStatement.getQName()))) {
                     Log.warn("0x45c0100 Conflicting import " + importStatement.getMCQualifiedName().getBaseName() + ". Import is already present in Base model with different package");
                 }
             }

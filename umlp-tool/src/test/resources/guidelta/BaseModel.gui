@@ -11,6 +11,6 @@ page BaseModel(){
    }
 
    exampleIterate@iterate(i from 0 to 5){
-      @Text(value = "Iterate " + i)
+      @Text(value = "Iterate " + i);
    }
 }
