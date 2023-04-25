@@ -5,7 +5,7 @@ import umlp.backendrte.common.Result;
 
 public class ClientCommandManager extends CommandManager {
 
-  private Long participantId = 0L;
+  private boolean initSuccessFul = false;
 
   protected ClientCommandCommunication commandCommunication;
 
@@ -14,6 +14,7 @@ public class ClientCommandManager extends CommandManager {
     Result<Long> initResult = commandCommunication.init();
     if (initResult.wasSuccessful()) {
       participantId = initResult.getValue();
+      initSuccessFul = true;
     } else {
       // TODO MH
     }
@@ -21,6 +22,16 @@ public class ClientCommandManager extends CommandManager {
 
   @Override
   protected <T> CommandResult<T> _executeCommand(Command<T> command) {
+    command.setParticipantId(participantId);
     return commandCommunication.sendCommandToServerAndReceiveResult(command);
+  }
+
+  @Override
+  protected <T> void _sendCommandToSubscribers(Command<T> command) {
+    _executeCommand(command);
+  }
+
+  public boolean isInitSuccessFul() {
+    return initSuccessFul;
   }
 }
