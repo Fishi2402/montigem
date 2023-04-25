@@ -105,14 +105,20 @@ public class SetDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
-    if (GenService.isJavaType(type)) {
-      getCD4C().addImport(ast, type.printFullName());
-    } else if (GenService.isCDEnum(type)) {
-      getCD4C().addImport(ast,getPackageName(origCD, DEFAULT_PACKAGE)+"."+ type.print());
-    } else if (GenService.isInnerCDEnum(type)) {
-      getCD4C().addImport(ast,getPackageName(origCD, DEFAULT_PACKAGE)+"."+ GenService.getInnerType(attr.getMCType()));
-    } else if (isGem) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+type.print());
+    if (GenService.isOptional(type)) {
+      if (GenService.isInnerCDEnum(type)) {
+        getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + GenService.getInnerType(attr.getMCType()));
+      } else if (GenService.isJavaType(((SymTypeOfGenerics) type).getArgument(0))) {
+        getCD4C().addImport(ast, ((SymTypeOfGenerics) type).getArgument(0).printFullName());
+      }
+    } else {
+      if (GenService.isCDEnum(type)) {
+        getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + type.print());
+      } else if (GenService.isJavaType(type)) {
+        getCD4C().addImport(ast, type.printFullName());
+      } else if (isGem) {
+        getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + type.print());
+      }
     }
 
     return ast;
@@ -145,6 +151,9 @@ public class SetDecorator extends AbstractDecorator {
       jsonStr = GenService.calculateJSon(type);
       typeName = type.printFullName();
       isCDEnum = GenService.isCDEnum(type);
+      if (GenService.isJavaType(type)) {
+        getCD4C().addImport(ast, typeName);
+      }
     }
     String baseClassDecorator = origCD.getCDDefinition().getName() + BaseClassObjectMapperDecorator.SUFFIX;
     boolean useDeSer = supportedDeSers.contains(typeName);

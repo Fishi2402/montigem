@@ -46,6 +46,13 @@ umlp Attributes {
     Optional<boolean> bar_opt_boolean;
     Optional<Boolean> bar_opt_boolean2;
 
+    java.time.Duration bar_duration;
+    Duration bar_duration2;
+    List<java.time.Duration> bar_list_duration;
+    List<Duration> bar_list_duration2;
+    Optional<java.time.Duration> bar_opt_duration;
+    Optional<Duration> bar_opt_duration2;
+
   }
 
 }

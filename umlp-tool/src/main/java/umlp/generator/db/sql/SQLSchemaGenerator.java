@@ -190,7 +190,7 @@ public class SQLSchemaGenerator {
         p.print(r2);
         p.print(" ");
         String type = GenService.isInnerCDEnum(attribute.getSymbol().getType())?
-            "java.lang.Enum":GenService.getInnerType(attribute.getMCType());
+            "java.lang.Enum":((SymTypeOfGenerics) attribute.getSymbol().getType()).getArgument(0).printFullName();
         if (!fqnClassNameToType.containsKey(type)) {
             Log.error("0xdf10c Can not convert type to SQL: " + type + " used in " + cd.getCDDefinition().getName() + "." + classNode.getName() + "." + attribute.getName());
         }

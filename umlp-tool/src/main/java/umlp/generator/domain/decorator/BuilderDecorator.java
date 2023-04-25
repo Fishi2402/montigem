@@ -84,7 +84,7 @@ public class BuilderDecorator extends AbstractDecorator {
     getCD4C().addMethod(builderClass, "umlp.builder.IsBuildable", attrList);
 
     // Imports
-    addImports(builderClass);
+    addImports(domainClass, builderClass);
 
     return builderClass;
   }
@@ -142,7 +142,8 @@ public class BuilderDecorator extends AbstractDecorator {
     }
   }
 
-  protected void addImports(ASTCDType clazz) {
+  protected void addImports(ASTCDType domainType, ASTCDType clazz) {
+    super.addImports(domainType, clazz);
     getCD4C().addImport(clazz, "java.util.List");
     getCD4C().addImport(clazz, "java.util.Optional");
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));

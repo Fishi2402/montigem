@@ -84,12 +84,13 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
 
 
     // Imports
-    addImports(deserBuilderClass);
+    addImports(domainClass, deserBuilderClass);
 
     return deserBuilderClass;
   }
 
-  protected void addImports(ASTCDType clazz) {
+  protected void addImports(ASTCDType domainType, ASTCDType clazz) {
+    super.addImports(domainType, clazz);
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
   }
 

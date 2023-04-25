@@ -128,6 +128,8 @@ public class RemoveDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + origCD.getCDDefinition().getName() + ManagerDecorator.SUFFIX);
     if (GenService.isCDEnum(type)) {
       getCD4C().addImport(ast,getPackageName(origCD, DEFAULT_PACKAGE)+"."+ type.print());
+    } else if (GenService.isJavaType(type)) {
+      getCD4C().addImport(ast, type.printFullName());
     }
     return ast;
   }
@@ -169,8 +171,10 @@ public class RemoveDecorator extends AbstractDecorator {
     if (useDeSer) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator);
     }
-    if (GenService.isInnerCDEnum(type)) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics) type).getArgument(0).print());
+    if (GenService.isCDEnum(innerType)) {
+      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics)type).getArgument(0).print());
+    } else if (GenService.isJavaType(innerType)) {
+      getCD4C().addImport(ast, innerType.printFullName());
     }
     if (makeAbstract) {
       ast.setModifier(PUBLIC_ABSTRACT.build());

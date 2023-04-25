@@ -83,6 +83,7 @@ public class ObserverDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyBuild", className);
 
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    super.addImports(domainClass, ast);
 
     return ast;
   }
