@@ -13,6 +13,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 abstract public class AbstractGUIDeltaTest {
 
+    enum ContentType{
+        GUARD,
+        ITERATE,
+        COMPONENT
+    }
+
     public static ASTGUICompilationUnit parseGUI(File model){
         return UMLPTool.parseGUI(model.getPath());
     }
@@ -28,6 +34,18 @@ abstract public class AbstractGUIDeltaTest {
             System.err.println("Expected no errors, but got: ");
             for (Finding f : Log.getFindings()) {
                 if (f.isError()) {
+                    System.err.println(f);
+                }
+            }
+            fail();
+        }
+    }
+
+    public static void assertNoWarnings() {
+        if (Log.getFindings().stream().anyMatch(Finding::isWarning)) {
+            System.err.println("Expected no warnings, but got: ");
+            for (Finding f : Log.getFindings()) {
+                if (f.isWarning()) {
                     System.err.println(f);
                 }
             }

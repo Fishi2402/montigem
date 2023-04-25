@@ -3,12 +3,12 @@ package guidelta;
 page ReplaceTest() adapts BaseModel{
 
     replace exampleText: @guard(true){
-       @Text(value = "replace Text")
+       newGuard@Text(value = "Guard replaces Text")
     };
 
-    before exampleGuard: @iterate(j from 0 to 5){
-       @Text(value = "replace Guard" + j)
+    replace exampleGuard: @iterate(j from 0 to 5){
+       newIterate@Text(value = "Iterate replaces Guard")
     };
 
-    before exampleIterate: [@Text(value = "replace Iterate 1"), @Text(value = "replace Iterate 2")];
+    replace exampleIterate: [newComponent1@Text(value = "Text replaces Iterate 1"), newComponent2@Text(value = "Text replaces Iterate 2")];
 }

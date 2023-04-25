@@ -440,10 +440,13 @@ public class UMLPTool extends UMLPToolTOP {
                     .replace(".","/")
                     .concat("/" + adaptedAST.getComponentName() + ".gui")
     );
+    boolean overwriteFile = outputPath.toFile().exists();
 
     GUIDSLFullPrettyPrinter pp = new GUIDSLFullPrettyPrinter(new IndentPrinter(), true);
     FileReaderWriter.storeInFile(outputPath, pp.prettyprint(adaptedAST));
-    Reporting.reportFileCreation(outputPath.toString());
+    if(!overwriteFile) { //ToDo fix double generation Error
+      Reporting.reportFileCreation(outputPath.toString());
+    }
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {

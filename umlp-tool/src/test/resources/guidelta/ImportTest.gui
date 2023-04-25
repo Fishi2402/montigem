@@ -1,4 +1,4 @@
-package guidelta;
+package guidelta.Test;
 
 import guidelta.Text;
 import another.Text;
