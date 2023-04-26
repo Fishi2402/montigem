@@ -50,6 +50,12 @@ public class DatabaseAccessManager {
     getSingleton()._setup();
   }
 
+  public static void closeConnection() throws SQLException {
+    if(!connection.isClosed()) {
+      connection.close();
+    }
+  }
+
   protected void _setup() {
     loadDBPropertiesFromStandardFileLocation();
     try {
@@ -76,7 +82,9 @@ public class DatabaseAccessManager {
   public static void executeStatement(String sql){
     try{
       Statement stmt = connection.createStatement();
-      stmt.execute(sql);
+      if(!stmt.execute(sql)){
+        Log.warn("Did not correctly execute " + sql);
+      };
     }catch (SQLException e){
       Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
     }
@@ -106,6 +114,7 @@ public class DatabaseAccessManager {
     }
 
     if(initialized){
+      Log.warn("Skipping initSchema since the database is already initialized");
       return false;
     }else{
       executeStatement(schema);

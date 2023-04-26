@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlptest.decorator.domain;
 
-import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,7 @@ public class DBObserverDecoratorTest extends DecoratorTest {
 
             // check no of methods and attributes
             () -> assertEquals(2, ast.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(4, ast.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(2, ast.getCDMethodList().size(), "number of methods"),
 
             // check methods
             () -> existsMethod(ast, "notifySetFooAttr")
