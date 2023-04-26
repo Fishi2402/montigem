@@ -1,0 +1,63 @@
+/* (c) https://github.com/MontiCore/monticore */
+package umlp.generator.gui.gentypescript;
+
+import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.codegen.CDGenerator;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.prettyprint.IndentPrinter;
+import umlp.generator.gui.GUIComponentsVisitor;
+import umlp.generator.gui.genjava.GUI2CDTrafo;
+import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
+import umlp.generator.gui.gentypescript.printer.TypeScriptTypesFullPrettyPrinter;
+import umlp.generator.gui.gentypescript.util.GUI2ComponentTemplates;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+
+public class GUI2ComponentGenerator extends CDGenerator {
+
+  protected GUIComponentsVisitor viewComponents;
+
+  public GUI2ComponentGenerator(GeneratorSetup genSetup, GUIComponentsVisitor viewComponents) {
+    super(genSetup);
+    this.viewComponents = viewComponents;
+    // genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter()); // TODO GV
+    genSetup.getGlex().setGlobalValue("cdPrinter", new TSUtilsPrinter());
+
+    genSetup.getGlex().replaceTemplate(
+        CD2JavaTemplates.CLASS, new TemplateHookPoint(GUI2ComponentTemplates.CLASS)
+    );
+    genSetup.getGlex().replaceTemplate(
+        CD2JavaTemplates.ATTRIBUTE, new TemplateHookPoint(GUI2ComponentTemplates.ATTRIBUTE)
+    );
+  }
+
+  protected Path getAsPath(String packageAsPath, String name) {
+    return Paths.get(packageAsPath, name + ".ts");
+  }
+
+  public void generate(ASTGUICompilationUnit modelAST, String configTemplate) {
+    this.setup.setTracing(true);
+    // create an empty classdiagram
+    ASTCDCompilationUnit decoratedAST = GUI2CDTrafo.createCDCompilationUnit(modelAST);
+    //GUI2CDTrafo.createCD4CodeSymTab(decoratedAST);
+    // logTrafoExec("GUI2CDTrafo", decoratedAST);
+
+    TemplateController tc = setup.getNewTemplateController(configTemplate);
+    TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
+
+    // translate the GUI-AST into Java
+    hpp.processValue(tc, modelAST,
+        Arrays.asList(decoratedAST, setup.getGlex(), setup.getHandcodedPath(), this, viewComponents));
+  }
+  /**/
+
+
+}

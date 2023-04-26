@@ -41,6 +41,7 @@ import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUITemplateHelper;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
+import umlp.generator.gui.gentypescript.GUI2ComponentGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 
 import java.io.File;
@@ -289,6 +290,9 @@ public class UMLPTool extends UMLPToolTOP {
         GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, symbolTableGui, hwcPath, viewComponents);
         String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
         typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
+
+        GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
+        componentGenerator.generate(astGui, "umlp.GUI2Component");
 
         // write reports
         Reporting.flush(astGui);
