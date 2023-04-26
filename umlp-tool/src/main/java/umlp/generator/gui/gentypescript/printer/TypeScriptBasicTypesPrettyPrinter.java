@@ -15,7 +15,7 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
     }
     // print only last
     if (node.getPartsList().size() > 0) {
-      getPrinter().print(node.getBaseName());
+      getPrinter().print(TypeScriptTypes.toTSType(node.getBaseName()));
     }
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPostComments(node, getPrinter());

@@ -15,7 +15,7 @@ public class TypeScriptTypesFullPrettyPrinter extends MCFullGenericTypesFullPret
     getTraverser().setMCFullGenericTypesHandler(mCFullGenericTypes);
     getTraverser().add4MCFullGenericTypes(mCFullGenericTypes);
     de.monticore.types.mcsimplegenerictypes._prettyprint.MCSimpleGenericTypesPrettyPrinter mCSimpleGenericTypes =
-        new de.monticore.types.mcsimplegenerictypes._prettyprint.MCSimpleGenericTypesPrettyPrinter(getPrinter(), printComments);
+        new TypeScriptSimpleGenericTypesPrettyPrinter(getPrinter());
     getTraverser().setMCSimpleGenericTypesHandler(mCSimpleGenericTypes);
     getTraverser().add4MCSimpleGenericTypes(mCSimpleGenericTypes);
     de.monticore.types.mccollectiontypes._prettyprint.MCCollectionTypesPrettyPrinter mCCollectionTypes =

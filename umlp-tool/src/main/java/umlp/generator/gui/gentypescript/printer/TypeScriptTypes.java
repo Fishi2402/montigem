@@ -1,9 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui.gentypescript.util;
+package umlp.generator.gui.gentypescript.printer;
+
+import java.util.List;
 
 public enum TypeScriptTypes {
   STRING("String", "string"),
-  EVENT("Event", "EventEmitter<any>"),
+  EVENT("Event", "EventEmitter"),
   TEMPLATE_REF("GUIViewElement", "TemplateRef<any>"),
   LIST("List", "Array"),
   INT("int", "number"),
@@ -25,6 +27,18 @@ public enum TypeScriptTypes {
   TypeScriptTypes(String mcType, String tsType) {
     this.mcType = mcType;
     this.tsType = tsType;
+  }
+
+  public static String toTSType(String mcType) {
+    String res = mcType;
+
+    for (TypeScriptTypes type : TypeScriptTypes.values()) {
+      if (type.mcType.equals(res)) {
+        res = type.tsType;
+      }
+    }
+
+    return res;
   }
 
   public static boolean isList(String tsType) {
