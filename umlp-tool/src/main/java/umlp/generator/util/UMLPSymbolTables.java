@@ -45,9 +45,6 @@ public class UMLPSymbolTables {
     traverser.add4CDBasis(visitor);
     origCD.accept(traverser);
 
-    System.out.println("Result for type " + domainType.getName());
-    concreteSubclasses.forEach((t, d) -> System.out.println(t.getName() + "\t\t" + d));
-
     return concreteSubclasses;
   }
 
