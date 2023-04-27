@@ -8,6 +8,8 @@ import hardy.HumanErrorCollector;
 import hardy.PersonErrorCollector;
 import stanley.FlensburgTestContext;
 import umlp.backendrte.command.ClientCommandCommunication;
+import umlp.backendrte.command.CommandDirectCommunication;
+import umlp.backendrte.command.TestClientCommandManager;
 import umlp.backendrte.common.GeneralErrorCollector;
 
 import java.util.Optional;
