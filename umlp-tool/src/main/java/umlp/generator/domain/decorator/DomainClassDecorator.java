@@ -92,7 +92,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     createGetterSetterForAssocs(clazz, attributes.attrAssocs, false);
 
     // Imports
-    addImports(clazz);
+    addImports(domainClass, clazz);
     return clazz;
   }
 

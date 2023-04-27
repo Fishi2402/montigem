@@ -60,7 +60,7 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
     addMethodSignatures(domainInterface, cdInterface);
 
     // Imports
-    addImports(cdInterface);
+    addImports(domainInterface, cdInterface);
 
     return cdInterface;
   }

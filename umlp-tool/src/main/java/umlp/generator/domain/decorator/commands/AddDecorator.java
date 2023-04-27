@@ -129,6 +129,8 @@ public class AddDecorator extends AbstractDecorator {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + type.print());
     } else if (GenService.isCDEnum(type)) {
       getCD4C().addImport(ast,getPackageName(origCD, DEFAULT_PACKAGE)+"."+ type.print());
+    } else if (GenService.isJavaType(type)) {
+      getCD4C().addImport(ast, type.printFullName());
     }
 
     return ast;
@@ -159,7 +161,7 @@ public class AddDecorator extends AbstractDecorator {
     String typeName = innerType.printFullName();
     String getter = GenService.getGetterName(name, innerType);
 
-    String baseClassDecorator = origCD.getCDDefinition().getName() + BaseClassObjectMapperDecorator.SUFFIX;
+    String baseClassDecorator = getPackageName(origCD, DEFAULT_PACKAGE) + "." + origCD.getCDDefinition().getName() + BaseClassObjectMapperDecorator.SUFFIX;
     boolean useDeSer = supportedDeSers.contains(typeName);
     boolean makeAbstract = jsonStr.equals("") && !useDeSer;
     getCD4C().addMethod(ast, "umlp.commands.deser.Add_FromJsonObject", cmdName, name, typeName,
@@ -172,8 +174,10 @@ public class AddDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
-    if (GenService.isInnerCDEnum(type)) {
+    if (GenService.isCDEnum(innerType)) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics)type).getArgument(0).print());
+    } else if (GenService.isJavaType(innerType)) {
+      getCD4C().addImport(ast, innerType.printFullName());
     }
     if (makeAbstract) {
       ast.setModifier(PUBLIC_ABSTRACT.build());

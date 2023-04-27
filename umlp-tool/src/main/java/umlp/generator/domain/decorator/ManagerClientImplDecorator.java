@@ -16,8 +16,10 @@ import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
@@ -71,14 +73,13 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     if(!domainClass.getModifier().isAbstract()) {
       managerClass.addCDMember(getCacheAttribute(domainClass));
       managerClass.addCDMember(getCommandObserverAttribute(domainClass));
-      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name);
-    }else{
-      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOptAbstract", name);
     }
 
+    List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainClass);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, false);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
 
     if(!domainClass.getModifier().isAbstract()) {
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
@@ -105,14 +106,24 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     });
   }
 
+  private static List<ASTCDType> concreteSubclassesOrderedByDistance(ASTCDCompilationUnit origCD, ASTCDType domainType) {
+    return UMLPSymbolTables.collectConcreteSubclassesInclSelfWithDist(origCD, domainType)
+        .entrySet().stream()
+        .sorted((o1, o2) -> o2.getValue() - o1.getValue())
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toList());
+  }
+
   protected void addInterfaceElements(ASTCDCompilationUnit origCD, ASTCDInterface domainInterface,
                                       ASTCDClass managerClass) {
     String name = domainInterface.getName();
 
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOptInterface", name);
+    List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainInterface);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, true);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get"));
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));
 

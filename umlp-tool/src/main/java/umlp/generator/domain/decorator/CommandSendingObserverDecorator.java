@@ -106,12 +106,13 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
                 }
               }
             });
-    addImports(origCD, ast, domainClass);
+    addImports(origCD, domainClass, ast);
 
     return ast;
   }
 
-  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz, ASTCDType domainClass) {
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDType domainClass, ASTCDType clazz) {
+    super.addImports(domainClass, clazz);
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
     getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());

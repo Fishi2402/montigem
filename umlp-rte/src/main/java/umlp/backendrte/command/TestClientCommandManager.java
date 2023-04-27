@@ -1,12 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
-package infrastructure.command;
+package umlp.backendrte.command;
 
 // RTE4T
 
-import umlp.backendrte.command.ClientCommandCommunication;
-import umlp.backendrte.command.Command;
-import umlp.backendrte.command.CommandManager;
-import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.common.Result;
 
 // Simulation des CommandManagers im Client.

@@ -2,8 +2,10 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
+import de.monticore.cdassociation._symboltable.CDRoleSymbol;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -11,6 +13,8 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -56,12 +60,30 @@ public class DbObserverDecorator extends AbstractDecorator {
               a.getName(), className, GenService.getType(a.getSymbol().getType())));
 
     for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e: DAODecorator.getOppositeSideToAssociationMap(domainClass, associations).entrySet()) {
-      getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.AddNotify",
-          className,  e.getValue().getName(), e.getKey());
-      getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.RemoveNotify",
-          className,  e.getValue().getName(), e.getKey());
-      getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.SetNotify",
-          className,  e.getValue().getName(), e.getKey().getName());
+      CDRoleSymbol cdRollSymbol = e.getKey().getSymbol();
+      SymTypeExpression otherType = cdRollSymbol.getOtherSide().getType();
+      String otherTypeName = otherType.print();
+
+      ASTCDMethodSignature add = null;
+      ASTCDMethodSignature remove = null;
+      if(e.getKey().getCDCardinality().isMult()) {
+        add = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.AddNotify",
+            className, e.getValue().getName(), e.getKey(), otherTypeName);
+        remove = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.RemoveNotify",
+            className, e.getValue().getName(), e.getKey(), otherTypeName);
+      }
+      ASTCDMethodSignature set = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.SetNotify",
+          className, e.getValue().getName(), e.getKey(), otherTypeName);
+
+      // From supertype
+      SymTypeExpression t2 = SymTypeExpressionFactory.createTypeExpression(domainClass.getSymbol());
+      if(!otherType.deepEquals(t2)) {
+        if(add != null && remove != null) {
+          glex.replaceTemplate("cd2java.Annotations", add, new StringHookPoint("@Override"));
+          glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
+        }
+        glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
+      }
     }
 
     addImports(observerClass);

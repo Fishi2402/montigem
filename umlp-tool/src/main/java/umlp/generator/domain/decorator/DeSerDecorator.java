@@ -55,7 +55,7 @@ public class DeSerDecorator extends DomainClassDecorator {
         .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("JsonDeSer<" + cdClass.getName() + ">"))
         .build();
 
-    addImports(deSer);
+    addImports(cdClass, deSer);
 
     // TODO: also use for other templates!
     List<ASTCDAttribute> attributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
@@ -102,6 +102,7 @@ public class DeSerDecorator extends DomainClassDecorator {
   protected void addSerAndDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
     boolean isList = false;
     boolean isOptional = false;
+    boolean useDeSer = false;
     String type = GenService.createType(attr.getSymbol().getType()).printType();
     String innerType = "";
     String jsonStr = "";
@@ -109,14 +110,16 @@ public class DeSerDecorator extends DomainClassDecorator {
       isList = true;
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0));
       innerType = ((SymTypeOfGenerics)attr.getSymbol().getType()).getArgument(0).printFullName();
+      useDeSer = supportedDesers.contains(innerType);
     } else if (GenService.isOptional(attr)) {
       isOptional = true;
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0));
       innerType = ((SymTypeOfGenerics)attr.getSymbol().getType()).getArgument(0).printFullName();
+      useDeSer = supportedDesers.contains(innerType);
     } else {
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
+      useDeSer = supportedDesers.contains(type);
     }
-    boolean useDeSer = supportedDesers.contains(type);
     boolean makeAbstract = jsonStr.equals("") && !useDeSer;
 
     getCD4C().addMethod(deSer, "umlp.deser.serializeSimpleField",
@@ -148,7 +151,8 @@ public class DeSerDecorator extends DomainClassDecorator {
   }
 
   @Override
-  protected void addImports(ASTCDType clazz) {
+  protected void addImports(ASTCDType domainType, ASTCDType clazz) {
+    super.addImports(domainType, clazz);
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonElement");

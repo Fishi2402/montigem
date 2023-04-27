@@ -1,12 +1,14 @@
 package inheritance;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -31,7 +33,12 @@ public class InheritanceManagerImplTest {
   public void init() throws IOException {
     InheritanceManagerImpl.init();
     String schema = IOUtils.resourceToString("/Inheritance.sql", StandardCharsets.UTF_8);
-    DatabaseAccessManager.initSchema(schema);
+    assertTrue(DatabaseAccessManager.initSchema(schema));
+  }
+
+  @AfterEach
+  public void cleanup() throws SQLException {
+    DatabaseAccessManager.closeConnection();
   }
 
   @Test
@@ -51,8 +58,6 @@ public class InheritanceManagerImplTest {
 
   @Test
   public void testSubclassesOfInterface(){
-    InheritanceManagerImpl.init();
-
     E e = InheritanceManager.eBuilder().iField(I_FIELD).eField(E_FIELD).build().get();
     G g = InheritanceManager.gBuilder().iField(I_FIELD).fField(F_FIELD).gField(G_FIELD).build().get();
 
@@ -66,8 +71,6 @@ public class InheritanceManagerImplTest {
 
   @Test
   public void testSubclassesOfSubinterface(){
-    InheritanceManagerImpl.init();
-
     H h = InheritanceManager.hBuilder().iField(I_FIELD).jField(J_FIELD).hField(H_FIELD).build().get();
     L l = InheritanceManager.lBuilder().iField(I_FIELD).jField(J_FIELD).kField(K_FIELD).lField(L_FIELD).build().get();
 
@@ -138,8 +141,6 @@ public class InheritanceManagerImplTest {
 
   @Test
   public void testSubclassesOfInterfaceDB(){
-    InheritanceManagerImpl.init();
-
     EBuilder eBuilder = InheritanceManager.eBuilder().iField(I_FIELD).eField(E_FIELD);
     GBuilder gBuilder = InheritanceManager.gBuilder().iField(I_FIELD).fField(F_FIELD).gField(G_FIELD);
 
@@ -186,8 +187,6 @@ public class InheritanceManagerImplTest {
 
   @Test
   public void testSubclassesOfSubinterfaceDB(){
-    InheritanceManagerImpl.init();
-
     HBuilder hBuilder = InheritanceManager.hBuilder().iField(I_FIELD).jField(J_FIELD).hField(H_FIELD);
     LBuilder lBuilder = InheritanceManager.lBuilder().iField(I_FIELD).jField(J_FIELD).kField(K_FIELD).lField(L_FIELD);
 

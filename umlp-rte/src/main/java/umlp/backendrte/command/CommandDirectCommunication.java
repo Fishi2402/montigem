@@ -1,17 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
-package infrastructure.command;
+package umlp.backendrte.command;
 
 import de.se_rwth.commons.logging.Log;
-import stanley.FlensburgTestContext;
-import umlp.backendrte.command.ClientCommandCommunication;
-import umlp.backendrte.command.Command;
-import umlp.backendrte.command.CommandManager;
-import umlp.backendrte.command.CommandObjectMapper;
-import umlp.backendrte.command.CommandResult;
-import umlp.backendrte.command.Participant;
-import umlp.backendrte.command.ServerCommandCommunication;
 import umlp.backendrte.common.Result;
 import umlp.backendrte.util.LogUtil;
+import umlp.backendrte.util.TestContext;
 
 import java.util.Optional;
 
@@ -25,15 +18,15 @@ import java.util.Optional;
  */
 public class CommandDirectCommunication implements ClientCommandCommunication,
     ServerCommandCommunication {
-  protected FlensburgTestContext serverContext;
+  protected TestContext serverContext;
   // Wegen beidseitiger navigation muss dieser per setter gesetzt werden
-  protected FlensburgTestContext clientContext;
+  protected TestContext clientContext;
 
-  public CommandDirectCommunication(FlensburgTestContext backendContext) {
+  public CommandDirectCommunication(TestContext backendContext) {
     this.serverContext = backendContext;
   }
 
-  public void setClientContext(FlensburgTestContext clientContext) {
+  public void setClientContext(TestContext clientContext) {
     this.clientContext = clientContext;
   }
 

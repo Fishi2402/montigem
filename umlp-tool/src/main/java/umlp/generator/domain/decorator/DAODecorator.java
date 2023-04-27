@@ -68,6 +68,7 @@ public class DAODecorator extends AbstractDecorator {
 
     ASTCDClass clazz = builder.build();
     addStaticImports(clazz);
+    super.addImports(domainClass, clazz);
     domainClassDAOMethods(clazz, domainClass, assocSideToAssociation);
     return clazz;
   }
@@ -388,7 +389,7 @@ public class DAODecorator extends AbstractDecorator {
   }
 
   static Map<ASTCDAssocSide, ASTCDAssociation> getOppositeSideToAssociationMap(ASTCDClass domainClass, List<ASTCDAssociation> associations) {
-    List<ASTCDAssocSide> assocSides = CDSymbolTables.getAssociations(domainClass).stream()
+    List<ASTCDAssocSide> assocSides = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
         .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
     Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = new HashMap<>();
     for (ASTCDAssocSide assocSide : assocSides) {

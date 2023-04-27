@@ -8,12 +8,13 @@ import hardy.HumanErrorCollector;
 import hardy.PersonErrorCollector;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.common.GeneralErrorCollector;
+import umlp.backendrte.util.TestContext;
 
 // Speichert die Instanzen zu allen genutzten static delegate pattern, wie den Managern.
 // Durch die activate Methode werden alle diese Instanzen in den entsprechenden Klassen eingesetzt,
 // wodurch sich der Ausführungskontext des Codes, z.B. von Commands, ändern lässt.
 // Typischerweise gibt es einen Kontext für den Server und einen für jeden Client.
-public class FlensburgTestContext {
+public class FlensburgTestContext implements TestContext {
   private FlensburgManager flensburgManager;
   private CommandManager commandManager;
   private GeneralErrorCollector generalErrorCollector;

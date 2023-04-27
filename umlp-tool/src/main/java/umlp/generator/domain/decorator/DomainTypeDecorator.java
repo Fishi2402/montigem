@@ -14,6 +14,7 @@ import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
@@ -35,7 +36,8 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  protected void addImports(ASTCDType cdType) {
+  protected void addImports(ASTCDType domainType, ASTCDType cdType) {
+    super.addImports(domainType, cdType);
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemIdentifiable"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("Gem"));

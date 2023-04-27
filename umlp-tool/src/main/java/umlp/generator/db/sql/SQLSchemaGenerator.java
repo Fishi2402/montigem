@@ -190,7 +190,7 @@ public class SQLSchemaGenerator {
         p.print(r2);
         p.print(" ");
         String type = GenService.isInnerCDEnum(attribute.getSymbol().getType())?
-            "java.lang.Enum":GenService.getInnerType(attribute.getMCType());
+            "java.lang.Enum":((SymTypeOfGenerics) attribute.getSymbol().getType()).getArgument(0).printFullName();
         if (!fqnClassNameToType.containsKey(type)) {
             Log.error("0xdf10c Can not convert type to SQL: " + type + " used in " + cd.getCDDefinition().getName() + "." + classNode.getName() + "." + attribute.getName());
         }
@@ -198,8 +198,8 @@ public class SQLSchemaGenerator {
         p.print(fqnClassNameToType.get(type));
         p.println(" NOT NULL,");
 
-        p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (" + r1 + "," + r2 + "),");
-        p.println("CONSTRAINT fk_" + tableName + " FOREIGN KEY (" + r1 + ") REFERENCES " + convertClassName(classNode.getName(), AttributeType.QUOTED));
+        p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (" + r1 + "," + r2 + ")");
+        //p.println(",CONSTRAINT fk_" + tableName + " FOREIGN KEY (" + r1 + ") REFERENCES " + convertClassName(classNode.getName(), AttributeType.QUOTED));
 
         p.unindent();
         p.println(");");
@@ -281,12 +281,12 @@ public class SQLSchemaGenerator {
         // TODO: different foreign key for each non-abstract, non-derived subclass
         // TODO: Convert fqn?
 
-        p.println("CONSTRAINT fk_" + r1 + "_" + tableName + " FOREIGN KEY (" + r1 + "_id) REFERENCES " + convertClassName(lSymbolOpt.get().getName(), AttributeType.QUOTED) + ",");
+        //p.println("CONSTRAINT fk_" + r1 + "_" + tableName + " FOREIGN KEY (" + r1 + "_id) REFERENCES " + convertClassName(lSymbolOpt.get().getName(), AttributeType.QUOTED) + ",");
 
         p.print(r2 + "_id");
         p.println(" BIGINT NOT NULL,");
 
-        p.println("CONSTRAINT fk_" + r2 + "_" + tableName + " FOREIGN KEY (" + r2 + "_id) REFERENCES " + convertClassName(rSymbolOpt.get().getName(), AttributeType.QUOTED) + ",");
+        //p.println("CONSTRAINT fk_" + r2 + "_" + tableName + " FOREIGN KEY (" + r2 + "_id) REFERENCES " + convertClassName(rSymbolOpt.get().getName(), AttributeType.QUOTED) + ",");
 
         p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (" + r1 + "_id, " + r2 + "_id)");
 

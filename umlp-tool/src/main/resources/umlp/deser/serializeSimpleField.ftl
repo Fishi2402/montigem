@@ -10,7 +10,7 @@
     <#if isList>
       printer.beginArray("${fieldName}");
       <#if useDeSer>
-      obj.get${fieldName?cap_first}().stream().forEach(e -> ${objectMapperName}.serialize(printer.value(e), "${innerType}));
+      obj.get${fieldName?cap_first}().stream().forEach(e -> ${objectMapperName}.serialize(e, "${innerType}"));
       <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
       obj.get${fieldName?cap_first}().stream().forEach(e -> printer.value(e.name()));
       <#else>
@@ -20,7 +20,7 @@
     <#elseif isOptional>
       if (obj.get${fieldName?cap_first}().isPresent()) {
         <#if useDeSer>
-        printer.memberJson("${fieldName}", ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${innerType}).get());
+        printer.memberJson("${fieldName}", ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${innerType}").get());
         <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
         printer.member("${fieldName}", obj.get${fieldName?cap_first}().get().name());
         obj.get${fieldName?cap_first}().stream().forEach(e -> printer.value(e.name()));
