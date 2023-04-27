@@ -14,6 +14,7 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.gui.GUIComponentsVisitor;
@@ -50,7 +51,8 @@ public class TableDecorator extends GUI2JavaComponentDecorator {
 
     if (row.isPresent()) {
       ASTCDAttribute rowsAttribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-          "List<? extends Object>", StringTransformations.uncapitalize(guiComponent.getName()) +
+          MCTypeFacade.getInstance().createListTypeOf("Object"),
+          StringTransformations.uncapitalize(guiComponent.getName()) +
               StringTransformations.capitalize(componentName) + "Rows");
       glex.replaceTemplate("cd2java.Value", rowsAttribute, new StringHookPoint(" = new ArrayList<>()"));
       getCD4C().addImport(decoratedClass, "java.util.List");
@@ -72,7 +74,8 @@ public class TableDecorator extends GUI2JavaComponentDecorator {
       getCD4C().addImport(decoratedClass, "stanley.tmp.table.tabletypes.TableColumn"); // TODO TODO GV, Age
 
       ASTCDAttribute columnsAttribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-          "List<TableColumn>", StringTransformations.uncapitalize(guiComponent.getName()) +
+          MCTypeFacade.getInstance().createListTypeOf("TableColumn"),
+          StringTransformations.uncapitalize(guiComponent.getName()) +
               StringTransformations.capitalize(componentName) + "Columns");
       glex.replaceTemplate("cd2java.Value", columnsAttribute, new StringHookPoint(" = new ArrayList<>()"));
       getCD4C().addImport(decoratedClass, "java.util.List");

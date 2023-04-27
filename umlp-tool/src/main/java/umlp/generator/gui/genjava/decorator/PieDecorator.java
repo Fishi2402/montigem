@@ -12,6 +12,7 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.types.MCTypeFacade;
 import umlp.generator.gui.GUIComponentsVisitor;
 
 import java.util.ArrayList;
@@ -43,7 +44,8 @@ public class PieDecorator extends GUI2JavaComponentDecorator {
 
     if (pie.isPresent()) {
       ASTCDAttribute entriesAttribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-          "List<PieEntry>", "pieEntries" + componentName);
+          MCTypeFacade.getInstance().createListTypeOf("PieEntry"),
+          "pieEntries" + componentName);
       glex.replaceTemplate("cd2java.Value", entriesAttribute, new StringHookPoint(" = new ArrayList<>()"));
       getCD4C().addImport(decoratedClass, "java.util.List");
       getCD4C().addImport(decoratedClass, "java.util.ArrayList");

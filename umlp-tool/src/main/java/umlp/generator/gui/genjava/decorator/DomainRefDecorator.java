@@ -181,7 +181,6 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     // --- replace this when TypeCheck can be used
 
     //  String domainTypeName = astguiParam.getMCType().printType(basicTypesPrinter);  // TODO GV
-    String attributeType = new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astguiParam.getMCType());
     SymTypeExpression type = astguiParam.getSymbol().getType();
 
     // --- end
@@ -189,7 +188,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     getCD4C().addImport(clazz, getImport(type));
 
     ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-        attributeType, astguiParam.getName());
+        astguiParam.getMCType(), astguiParam.getName());
     clazz.addCDMember(domainAttribute);
 
     return domainAttribute;
