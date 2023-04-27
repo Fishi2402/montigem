@@ -5,6 +5,7 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
@@ -61,17 +62,7 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
                 commandList.add(packageName + domainClassName + SetDecorator.SUFFIX + domainAttributeName);
               }
             });
-        CDSymbolTables.getAssociations(domainClass).stream()
-            .filter(a -> !GenService.isDerived(a))
-            .filter(a -> !GenService.isBidirectional(a)).forEach(association -> {
-              String roleName = StringTransformations.capitalize(association.getName());
-              if (GenService.isList(association)) {
-                commandList.add(packageName + domainClassName + AddDecorator.SUFFIX + roleName);
-                commandList.add(packageName + domainClassName + RemoveDecorator.SUFFIX + roleName);
-              } else {
-                commandList.add(packageName + domainClassName + SetDecorator.SUFFIX + roleName);
-              }
-            });
+        commandList.addAll(calcAssocDeSers(packageName, domainClass));
       }
 
       // Derived
@@ -88,10 +79,35 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
           });
     }
 
+    origCD.getCDDefinition().getCDInterfacesList().stream()
+        .filter(c -> !c.getSymbol().isIsDerived())
+        .forEach(i -> {
+          commandList.add(packageName + i.getName() + GetDecorator.SUFFIX);
+          commandList.addAll(calcAssocDeSers(packageName, i));
+        });
+
     getCD4C().addConstructor(ast, "umlp.commands.aggregatedcommanddeser.Constructor", commandList, className, getPackageName(origCD, DEFAULT_PACKAGE));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("AggregatedCommandDeSer"));
 
     return ast;
+  }
+
+  private static List<String> calcAssocDeSers(String packageName, ASTCDType domainType) {
+    String name = domainType.getName();
+    List<String> commandList = new ArrayList<>();
+    CDSymbolTables.getAssociations(domainType).stream()
+        .filter(a -> !GenService.isDerived(a))
+        .filter(a -> !GenService.isBidirectional(a)).forEach(association -> {
+          String roleName = StringTransformations.capitalize(association.getName());
+          if (GenService.isList(association)) {
+            commandList.add(packageName + name + AddDecorator.SUFFIX + roleName);
+            commandList.add(packageName + name + RemoveDecorator.SUFFIX + roleName);
+          } else {
+            commandList.add(packageName + name + SetDecorator.SUFFIX + roleName);
+          }
+        });
+
+    return commandList;
   }
 
 }

@@ -3,6 +3,9 @@ package assocsfromandtointerface;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import umlp.backendrte.command.CommandDirectCommunication;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.command.TestClientCommandManager;
 import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.nio.charset.StandardCharsets;
@@ -76,7 +79,50 @@ public class AssociationsFromAndToInterfacesTest {
     }
   }
 
+  static class ClientTestSetup extends TestSetup{
+    AssocsFromAndToInterfaceTestContext server;
+    AssocsFromAndToInterfaceTestContext client;
+    @Override
+    public void initialize() {
+      // Server
+      AssocsFromAndToInterfaceMock.init();
+      server = AssocsFromAndToInterfaceTestContext.fromCurrentContext();
+
+      // Client
+      AssocsFromAndToInterfaceManager.initMe(new AssocsFromAndToInterfaceManagerClientImpl4Test());
+      CommandDirectCommunication communication = new CommandDirectCommunication(server);
+      TestClientCommandManager clientCommandManager = new TestClientCommandManager(communication);
+      CommandManager.initMe(clientCommandManager);
+      client = AssocsFromAndToInterfaceTestContext.fromCurrentContext();
+      communication.setClientContext(client);
+
+      client.activate();
+    }
+
+    @Override
+    public void clearCacheOfRemote() {
+      ((AssocsFromAndToInterfaceManagerClientImpl4Test)client.getManager()).clearCache();
+    }
+  }
+
   static class AssocsFromAndToInterfaceManagerImpl4Test extends AssocsFromAndToInterfaceManagerImpl{
+    public void clearCache(){
+      knownI1Impls.clear();
+      knownC1s.clear();
+      knownI2Impls.clear();
+      knownC2s.clear();
+      knownI3Impls.clear();
+      knownI4Impls.clear();
+      knownAC1Impls.clear();
+      knownC3s.clear();
+      knownAC2Impls.clear();
+      knownC4s.clear();
+      knownAC3Impls.clear();
+      knownAC4Impls.clear();
+    }
+  }
+
+  static class AssocsFromAndToInterfaceManagerClientImpl4Test extends AssocsFromAndToInterfaceManagerClientImpl {
     public void clearCache(){
       knownI1Impls.clear();
       knownC1s.clear();
@@ -97,6 +143,9 @@ public class AssociationsFromAndToInterfacesTest {
     return List.of(
         new MockTestSetup(),
         new DBTestSetup()
+        // ,new ClientTestSetup()
+        // TODO: DeSer of interfaces
+        // TODO: DeSer of all types must respect concrete subclasses!
     );
   }
 

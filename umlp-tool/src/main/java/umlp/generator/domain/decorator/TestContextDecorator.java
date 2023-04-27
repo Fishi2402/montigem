@@ -33,6 +33,7 @@ public class TestContextDecorator extends AbstractDecorator {
 
     ASTCDClass testContextClass = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
+        .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("TestContext"))
         .setName(name + SUFFIX).build();
 
 
@@ -59,6 +60,7 @@ public class TestContextDecorator extends AbstractDecorator {
     // Imports
     getCD4C().addImport(testContextClass, PathUtil.getBackendRTECommandPath("CommandManager"));
     getCD4C().addImport(testContextClass, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
+    getCD4C().addImport(testContextClass, PathUtil.getBackendRTEUtilPath("TestContext"));
 
     return testContextClass;
   }

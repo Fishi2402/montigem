@@ -165,6 +165,10 @@ public class BEDecorator extends AbstractDecorator {
       Log.info("After decorator: ShellAPIClassDecorator", ShellAPIClassDecorator.class.getName());
     }
 
+    TestContextDecorator testContextDecorator = new TestContextDecorator(glex);
+    testContextDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: TestContextDecorator", ShellAPIDecorator.class.getName());
+
     glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
   }
 
