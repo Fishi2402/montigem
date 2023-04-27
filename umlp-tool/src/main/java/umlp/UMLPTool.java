@@ -38,6 +38,7 @@ import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.gui.GUIComponentsVisitor;
+import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.GUITemplateHelper;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
@@ -47,6 +48,8 @@ import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -273,6 +276,14 @@ public class UMLPTool extends UMLPToolTOP {
 
         // execute generator
         GUIDSLMill.init();
+
+        List<String> domainModels = new ArrayList<>();
+        if (DOMAIN.isSelected(cmd)) {
+          for (String v : cmd.getOptionValues(DOMAIN.getCMD())) {
+            domainModels.add(v);
+          }
+        }
+        GUIGeneratorUtil.init(domainModels);
 
         // Get all ASTGUIComponents
         GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());

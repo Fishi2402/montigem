@@ -7,8 +7,10 @@ import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.guidsl._ast.*;
 import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
+import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.StringTransformations;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
@@ -32,7 +34,13 @@ public class GUIGeneratorUtil {
 
   public static final List<String> UMLP_TYPES = Collections.unmodifiableList(Lists.newArrayList(STRING, LONG));
 
+  private static List<String> DOMAIN_MODELS;
+
   private GUIGeneratorUtil() {}
+
+  public static void init(List<String> domainModels) {
+    DOMAIN_MODELS = domainModels;
+  }
 
   public static final boolean isInputGui(ASTGUICompilationUnit guiAst, List<ASTGUIComponent> inputComponents) {
     return !inputComponents.isEmpty() &&
@@ -45,11 +53,15 @@ public class GUIGeneratorUtil {
   }
 
   public static final boolean isDomainType(SymTypeExpression type) {
-    String typeName = type.getTypeInfo().getName();
-    String fullName = type.getTypeInfo().getFullName();
-    return !type.isGenericType()
-        && !BasicSymbolsMill.PRIMITIVE_LIST.contains(typeName)
-        && !UMLP_TYPES.contains(typeName);
+    if (!type.hasTypeInfo()) {
+      return false;
+    }
+    TypeSymbol ts = type.getTypeInfo();
+    if (!(ts.getEnclosingScope() instanceof IGUIDSLArtifactScope)) {
+      return false;
+    }
+    IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
+    return DOMAIN_MODELS.contains(as.getFullName());
   }
 
   public static boolean isInputComponent(ASTGUIComponent guiComponent) {

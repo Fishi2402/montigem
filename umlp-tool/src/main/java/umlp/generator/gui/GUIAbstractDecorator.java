@@ -34,7 +34,6 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
   public static final Predicate<ASTGUIComponent> PREDICATE_NOT_BUTTON = c -> !c.getQualifiedName().equals("io.GemButton");
 
   public static final String CREATE_INPUT_VALUE_SUFFIX = "Create";
-  public static final String EDIT_INPUT_VALUE_SUFFIX = "";
 
   public static MCBasicTypesFullPrettyPrinter basicTypesPrinter;
   public static GUIDSLFullPrettyPrinter guiDSLPrinter;
@@ -43,10 +42,6 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
     super(glex);
     basicTypesPrinter = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     guiDSLPrinter = new GUIDSLFullPrettyPrinter(new IndentPrinter(), false);
-  }
-
-  public static String getComponentClassName(ASTGUIComponentDeclaration guiAst, boolean isInputGui) {
-    return guiAst.getName() + (isInputGui ? EDIT_INPUT_VALUE_SUFFIX : "");
   }
 
   public static String getPackageName(ASTGUICompilationUnit guiAst, String subPackage) {

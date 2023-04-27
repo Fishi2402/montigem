@@ -15,6 +15,7 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIComponentsVisitor;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class GUI2JavaGenerator extends CDGenerator {
 
@@ -27,7 +28,6 @@ public class GUI2JavaGenerator extends CDGenerator {
     astPrinter = new CD4CodeFullPrettyPrinter(new IndentPrinter());
     this.viewComponents = viewComponents;
     genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter()); // TODO GV
-
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast) {

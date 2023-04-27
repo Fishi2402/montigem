@@ -29,6 +29,9 @@ public enum UMLPToolOptions {
       .desc("Sets the artifact paths for handwritten code, space separated.").build()),
   TMPL_PATH(Option.builder("fp").longOpt("templatePath").hasArgs()
       .desc("Directories and jars for handwritten templates, space separated.").build()),
+
+  DOMAIN(Option.builder("dm").longOpt("domainModels").hasArgs()
+      .desc("Fully qualified names of the domain models, space separated").build())
   ;
 
   UMLPToolOptions(Option option) {
