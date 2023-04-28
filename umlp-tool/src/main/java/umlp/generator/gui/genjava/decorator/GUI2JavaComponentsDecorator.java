@@ -33,7 +33,7 @@ public class GUI2JavaComponentsDecorator extends GUIAbstractDecorator {
 
     viewComponent.getComponents().stream().filter(GUIGeneratorUtil::isInputComponent)
         .forEach(c -> {
-          if (isCreateClass(decoratedClass)) {
+          if (isCreateClass(guiAst)) {
             new InputValueCreateDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c);
           }
           else {

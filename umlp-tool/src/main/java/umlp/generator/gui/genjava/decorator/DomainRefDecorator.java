@@ -7,9 +7,14 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDClassBuilder;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIParam;
@@ -24,6 +29,7 @@ import umlp.UMLPMill;
 import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.ErrorObserverDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -57,53 +63,12 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         .setMCQualifiedName(getMCTypeFacade().createQualifiedName(packageName)).build();
     decoratedAST.getCDDefinition().addCDElement(astcdPackage);
 
-    String decoratedClassName = guiAst.getComponentName();
-
-    decoratedClass = createClass(guiAst.getGUIComponentDeclaration(), decoratedClassName);
+    decoratedClass = createClass(guiAst);
     astcdPackage.addCDElement(decoratedClass);
 
-    guiAst.getMCImportStatementList().stream().filter(i -> !isModelImport(i)).forEach(i -> getCD4C().addImport(decoratedClass, i.getQName()));
-
-    if (isInputGui) {
-      createInputValueClass = createNewInputClass(guiAst.getGUIComponentDeclaration());
-      astcdPackage.addCDElement(createInputValueClass.get());
-
-      guiAst.getMCImportStatementList().stream().filter(i -> !isModelImport(i)).forEach(i -> getCD4C()
-          .addImport(createInputValueClass.get(), i.getQName()));
-    }
-  }
-
-  protected Optional<ASTCDClass> createNewInputClass(ASTGUIComponentDeclaration domainClass) {
-    String className = domainClass.getName() + CREATE_INPUT_VALUE_SUFFIX;
-
-    ASTCDClassBuilder builder = UMLPMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
-        .setName(className);
-    ASTCDClass clazz = builder.build();
-
-    if (!domainClass.getGUIParamList().isEmpty()) {
-      List<ASTGUIParam> domainParams = domainClass.getGUIParamList().stream().filter(p -> isDomainType(p)).collect(Collectors.toList());
-
-      // Add Builder attributes for domain type parameters
-      List<ASTCDAttribute> domainAttributes = new ArrayList<>();
-      domainParams.forEach(p -> domainAttributes.add(addBuilderForDomainMembers(clazz, p, className)));
-
-      // Add build method
-      createBuildMethod(clazz, domainParams);
-
-      // Add constructor
-      getCD4C().addConstructor(clazz, "umlp.gui2java.ConstructorWithBuilder", "hardy.Flensburg", className, // TODO MB: Diagramm name UMLPDefSymbol
-          domainAttributes, guiDSLPrinter);
-    }
-    else {
-      getCD4C().addConstructor(clazz, "umlp.domain.Constructor", className);
-    }
-
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), "init");
-    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2java.Init"));
-    clazz.addCDMember(method);
-
-    return Optional.of(clazz);
+    guiAst.getMCImportStatementList().stream()
+        .filter(i -> !isModelImportInGUI(i))
+        .forEach(i -> getCD4C().addImport(decoratedClass, i.getQName()));
   }
 
   protected void createBuildMethod(ASTCDClass clazz, List<ASTGUIParam> collect) {
@@ -133,26 +98,47 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     return domainAttribute;
   }
 
-  protected ASTCDClass createClass(ASTGUIComponentDeclaration domainClass, String decoratedClassName) {
+  protected ASTCDClass createClass(ASTGUICompilationUnit ast) {
+    ASTGUIComponentDeclaration domainClass = ast.getGUIComponentDeclaration();
+    String className = domainClass.getName();
+    domainClass.getName();
     ASTCDClass clazz = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
-        .setName(decoratedClassName)
+        .setName(className)
         .build();
 
     if (!domainClass.getGUIParamList().isEmpty()) {
-
       List<ASTGUIParam> domainParams = domainClass.getGUIParamList().stream().filter(p -> isDomainType(p)).collect(Collectors.toList());
-      List<ASTGUIParam> otherParams = domainClass.getGUIParamList().stream().filter(p -> !isDomainType(p)).collect(Collectors.toList());
+      List<ASTCDAttribute> domainAttributes;
+      if (GUIGeneratorUtil.isCreateModel(ast.getComponentQName())) {
+        // Add Builder attributes for domain type parameters
+        domainAttributes = domainParams.stream()
+            .map(p -> addBuilderForDomainMembers(clazz, p, className))
+            .collect(Collectors.toList());
 
-      // Add attributes
-      List<ASTCDAttribute> domainAttributes = domainParams.stream().map(p -> addAttributForGUIParameter(clazz, p)).collect(Collectors.toList());
-      List<ASTCDAttribute> otherAttributes = otherParams.stream().map(p -> addAttributForGUIParameter(clazz, p)).collect(Collectors.toList());
-      List<String> params = new ArrayList<>();
-      domainClass.forEachGUIParams(p -> params.add(p.getSymbol().getType().getTypeInfo().getName() + " " + p.getName()));
+        // Add build method
+        createBuildMethod(clazz, domainParams);
 
-      Optional<ASTCDMethodSignature> constr = getCD4C().createConstructor(clazz, "umlp.gui2java.Constructor", decoratedClassName,
-          Joiner.on(",").join(params), domainAttributes, otherAttributes, guiDSLPrinter, isInputGui);
-      clazz.addCDMember(constr.get());
+        // Add constructor
+        getCD4C().addConstructor(clazz, "umlp.gui2java.ConstructorWithBuilder",
+            "hardy.Flensburg", className, // TODO MB: Diagramm name UMLPDefSymbol
+            domainAttributes, guiDSLPrinter);
+      }
+      else {
+        // Add attributes
+        domainAttributes = domainParams.stream()
+            .map(p -> addAttributForGUIParameter(clazz, p))
+            .collect(Collectors.toList());
+
+        List<ASTGUIParam> otherParams = domainClass.getGUIParamList().stream().filter(p -> !isDomainType(p)).collect(Collectors.toList());
+        List<ASTCDAttribute> otherAttributes = otherParams.stream().map(p -> addAttributForGUIParameter(clazz, p)).collect(Collectors.toList());
+        List<String> params = new ArrayList<>();
+        domainClass.forEachGUIParams(p -> params.add(p.getSymbol().getType().getTypeInfo().getName() + " " + p.getName()));
+
+        getCD4C().addConstructor(clazz, "umlp.gui2java.Constructor", className,
+            Joiner.on(",").join(params), domainAttributes, otherAttributes,
+            guiDSLPrinter, isInputGui);
+      }
 
       if (isInputGui) {
         List<ASTMCQualifiedType> observers = domainAttributes.stream()
@@ -175,7 +161,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
       clazz.addCDMember(method);
     }
     else {
-      getCD4C().addConstructor(clazz, "umlp.domain.Constructor", decoratedClassName);
+      getCD4C().addConstructor(clazz, "umlp.domain.Constructor", className);
     }
 
 
@@ -199,7 +185,8 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     Set<String> qNames = new HashSet<>();
     if (!type.isGenericType()) {
       qNames.add(type.getTypeInfo().getFullName());
-    } else {
+    }
+    else {
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics) type).getArgumentList();
       for (SymTypeExpression arg : arguments) {
         qNames.addAll(getImport(arg));
@@ -208,16 +195,18 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     return qNames;
   }
 
-  protected boolean isModelImport(ASTMCImportStatement i) {
-    return isCD(i) || isStandardGUIComponent(i);
+  protected boolean isModelImportInGUI(ASTMCImportStatement i) {
+    return isCDModelImportInGUI(i) || isGUIModelImportInGUI(i);
   }
 
-  protected boolean isStandardGUIComponent(ASTMCImportStatement i) { // TODO MB  guisym
-    return i.getQName().startsWith("umlp.gui");
+  protected boolean isGUIModelImportInGUI(ASTMCImportStatement i) { // TODO MB  guisym
+    return GUIDSLMill.globalScope()
+        .resolveGUIComponentDeclaration(i.getQName()).isPresent();
   }
 
-  protected boolean isCD(ASTMCImportStatement i) { // TODO MB umlpsym UMLPDefSymbol
-    return i.getQName().startsWith("hardy.Flensburg");
+  protected boolean isCDModelImportInGUI(ASTMCImportStatement i) { // TODO MB umlpsym UMLPDefSymbol
+    // TODO AGe: not only domain imports are cd imports
+    return GUIGeneratorUtil.isDomainImport(i);
   }
 
   public Optional<ASTCDClass> getCreateInputValueClass() {

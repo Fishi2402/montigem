@@ -12,6 +12,7 @@ import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.StringTransformations;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.domain.decorator.GenService;
@@ -21,8 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static umlp.generator.gui.GUIAbstractDecorator.CREATE_INPUT_VALUE_SUFFIX;
 
 public class GUIGeneratorUtil {
 
@@ -34,12 +33,15 @@ public class GUIGeneratorUtil {
 
   public static final List<String> UMLP_TYPES = Collections.unmodifiableList(Lists.newArrayList(STRING, LONG));
 
+  // Fully qualified Name of the classdiagram, e.g. "hardy.Flensburg"
   private static List<String> DOMAIN_MODELS;
+  private static List<String> CREATE_MODELS;
 
   private GUIGeneratorUtil() {}
 
-  public static void init(List<String> domainModels) {
+  public static void init(List<String> domainModels, List<String> createModels) {
     DOMAIN_MODELS = domainModels;
+    CREATE_MODELS = createModels;
   }
 
   public static final boolean isInputGui(ASTGUICompilationUnit guiAst, List<ASTGUIComponent> inputComponents) {
@@ -62,6 +64,19 @@ public class GUIGeneratorUtil {
     }
     IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
     return DOMAIN_MODELS.contains(as.getFullName());
+  }
+
+  public static final boolean isDomainImport(ASTMCImportStatement i) {
+    for (String cd : DOMAIN_MODELS) {
+      if (i.getQName().startsWith(cd)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static final boolean isCreateModel(String componentQName) {
+    return CREATE_MODELS.contains(componentQName);
   }
 
   public static boolean isInputComponent(ASTGUIComponent guiComponent) {
@@ -127,8 +142,8 @@ public class GUIGeneratorUtil {
         .filter(a -> isEventArgument(guiComponentSymbol.get(), a)).findAny().isPresent();
   }
 
-  public static boolean isCreateClass(ASTCDClass decoratedClass) {
-    return decoratedClass.getName().endsWith(CREATE_INPUT_VALUE_SUFFIX);
+  public static boolean isCreateClass(ASTGUICompilationUnit ast) {
+    return CREATE_MODELS.contains(ast.getComponentQName());
   }
 
   public static boolean isInputArgument(GUIComponentDeclarationSymbol guiComponent, ASTGUINamedArg arg) {

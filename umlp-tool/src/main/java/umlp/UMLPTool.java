@@ -176,6 +176,8 @@ public class UMLPTool extends UMLPToolTOP {
         runDefaultCoCos(ast);
         CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, false);
         guiTool.generateGUI();
+        // TODO AGe: cd2gui is supposed to specify which models are for object creation,
+        //  see GUI_CREATE
 
         Reporting.flush(ast);
       }
@@ -283,7 +285,14 @@ public class UMLPTool extends UMLPToolTOP {
             domainModels.add(v);
           }
         }
-        GUIGeneratorUtil.init(domainModels);
+
+        List<String> createModels = new ArrayList<>();
+        if (GUI_CREATE.isSelected(cmd)) {
+          for (String v : cmd.getOptionValues(GUI_CREATE.getCMD())) {
+            createModels.add(v);
+          }
+        }
+        GUIGeneratorUtil.init(domainModels, createModels);
 
         // Get all ASTGUIComponents
         GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
