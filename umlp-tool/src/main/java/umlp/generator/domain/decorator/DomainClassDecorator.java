@@ -83,7 +83,13 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     AttributesTuple attributes = getAllAttributes(domainClass, false);
 
     // Add attributes to class
-    clazz.addAllCDMembers(filterDerivedAttributes(attributes.attrList, false));
+    List<ASTCDAttribute> nonDerivedAttrs = filterDerivedAttributes(attributes.attrList, false);
+    clazz.addAllCDMembers(nonDerivedAttrs);
+    for (ASTCDAttribute attr : nonDerivedAttrs) {
+      if(GenService.isGem(attr) && !GenService.isGemList(attr)) {
+        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new Gem<>()"));
+      }
+    }
 
     // General methods
     createObserverMethods(domainClass, clazz);
