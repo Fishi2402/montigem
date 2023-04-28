@@ -6,10 +6,8 @@ import com.google.common.collect.Lists;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDClassBuilder;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -18,14 +16,14 @@ import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIParam;
-import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
+import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.ErrorObserverDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
@@ -43,8 +41,6 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.gui.GUIGeneratorUtil.isDomainType;
 
 public class DomainRefDecorator extends GUIAbstractDecorator {
-
-  public static final String BUILDER = "Builder";
 
   private final boolean isInputGui;
 
@@ -72,27 +68,24 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   }
 
   protected void createBuildMethod(ASTCDClass clazz, List<ASTGUIParam> collect) {
-    getCD4C().addMethod(clazz, "umlp.gui2java.Build", collect.stream().map(p -> p.getName() + BUILDER).collect(Collectors.toList()));
+    getCD4C().addMethod(clazz, "umlp.gui2java.Build", collect.stream()
+        .map(p -> BuilderDecorator.getClassName(p.getName()))
+        .collect(Collectors.toList()));
   }
 
-  protected ASTCDAttribute addBuilderForDomainMembers(ASTCDClass clazz, ASTGUIParam astguiParam, String className) {
+  protected ASTCDAttribute addBuilderForDomainMembers(ASTCDClass clazz, ASTGUIParam astguiParam) {
     // --- replace this when TypeCheck can be used
-
-    //  String domainTypeName = astguiParam.getMCType().printType(basicTypesPrinter);  // TODO GV
-    String attributeType = new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astguiParam.getMCType());
-
     TypeSymbol typeInfo = astguiParam.getSymbol().getType().getTypeInfo();
 
-    // TODO when ST ist fertig: qualified domainTypeName und add import declaration
-    String qualifiedType = typeInfo.getFullName() + BUILDER; // domainTypeSymbol.getQualifiedName(); //TODO MB
-    String qualifiedTypeP = typeInfo.getFullName();
-    String packname = typeInfo.getPackageName();
+    String qualifiedType = BuilderDecorator.getClassName(typeInfo.getFullName()); // domainTypeSymbol.getQualifiedName(); //TODO MB
+    String attributeType = BuilderDecorator.getClassName(typeInfo.getName());
+    String attributeName = astguiParam.getName() + "Builder";
     // --- end
 
     getCD4C().addImport(clazz, qualifiedType);
 
-    ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
-        attributeType + BUILDER, astguiParam.getName() + BUILDER);
+    ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(
+        CDModifier.PROTECTED.build(), attributeType, attributeName);
 
     clazz.addCDMember(domainAttribute);
     return domainAttribute;
@@ -113,16 +106,24 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
       if (GUIGeneratorUtil.isCreateModel(ast.getComponentQName())) {
         // Add Builder attributes for domain type parameters
         domainAttributes = domainParams.stream()
-            .map(p -> addBuilderForDomainMembers(clazz, p, className))
+            .map(p -> addBuilderForDomainMembers(clazz, p))
             .collect(Collectors.toList());
 
         // Add build method
         createBuildMethod(clazz, domainParams);
 
         // Add constructor
-        getCD4C().addConstructor(clazz, "umlp.gui2java.ConstructorWithBuilder",
-            "hardy.Flensburg", className, // TODO MB: Diagramm name UMLPDefSymbol
-            domainAttributes, guiDSLPrinter);
+        Optional<String> domainQName = GUIGeneratorUtil.getMainDomainModelQName();
+        if (domainQName.isPresent()) {
+          getCD4C().addConstructor(clazz, "umlp.gui2java.ConstructorWithBuilder",
+              domainQName.get(), className, // TODO MB: Diagramm name UMLPDefSymbol
+              domainAttributes, guiDSLPrinter);
+        }
+        else {
+          Log.error("0x00000 GUI Model " + ast.getComponentQName()
+              + " is missing a connection to the domain model."
+              + " Please specify the domain model using '-dm' flag.");
+        }
       }
       else {
         // Add attributes
@@ -181,6 +182,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     return domainAttribute;
   }
 
+  // TODO AGe: rewrite using ISymTypeVisitor?
   public Set<String> getImport(SymTypeExpression type) { //TODO GV: return List<String> for HashMap usw.
     Set<String> qNames = new HashSet<>();
     if (!type.isGenericType()) {

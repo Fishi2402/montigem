@@ -75,6 +75,14 @@ public class GUIGeneratorUtil {
     return false;
   }
 
+  // TODO AGe: indicator of "main" model after cdmerge is built in
+  public static final Optional<String> getMainDomainModelQName() {
+    if (!DOMAIN_MODELS.isEmpty()) {
+      return Optional.of(DOMAIN_MODELS.get(0));
+    }
+    return Optional.empty();
+  }
+
   public static final boolean isCreateModel(String componentQName) {
     return CREATE_MODELS.contains(componentQName);
   }
