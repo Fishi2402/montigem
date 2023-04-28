@@ -6,23 +6,23 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
-import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
-public class GetFilteredDecorator extends AbstractDecorator {
+public class GetFilteredDecorator extends AbstractDeSerDecorator {
 
   public static final String SUFFIX = "_get_filtered";
 
   public GetFilteredDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
-  
+
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    addedDeSers.clear();
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
       .forEach(c -> {
@@ -66,6 +66,7 @@ public class GetFilteredDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
 
+    addedDeSers.add(ast);
     return ast;
   }
 }

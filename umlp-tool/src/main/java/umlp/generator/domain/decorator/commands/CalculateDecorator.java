@@ -17,7 +17,6 @@ import de.monticore.types.check.SymTypePrimitive;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
-import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
@@ -33,7 +32,7 @@ import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 // Setzt eine der Möglichkeiten um, derived attributes berechnen zu lassen:
 // Der Client sendet einen calculate Command zum Server und erhält nur das aktuelle Ergebnis.
-public class CalculateDecorator extends AbstractDecorator {
+public class CalculateDecorator extends AbstractDeSerDecorator {
 
   public static final String SUFFIX = "_calculate";
   private final Set<String> supportedDeSers;
@@ -46,6 +45,7 @@ public class CalculateDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    addedDeSers.clear();
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> {
@@ -165,6 +165,7 @@ public class CalculateDecorator extends AbstractDecorator {
     if (makeAbstract) {
       ast.setModifier(PUBLIC_ABSTRACT.build());
     }
+    addedDeSers.add(ast);
     return ast;
   }
 

@@ -1,13 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain.decorator.commands;
 
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.AbstractDecorator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class CommandDecorator extends AbstractDecorator {
@@ -25,43 +28,53 @@ public class CommandDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit cdAST, ASTCDCompilationUnit decoratedAST) {
+    List<ASTCDClass> addedDeSers = new ArrayList<>();
     CreateDecorator createDecorator = new CreateDecorator(glex);
     createDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(createDecorator.getAddedDeSers());
     Log.info("After decorator: CreateDecorator", CommandDecorator.class.getName());
 
     DeleteDecorator deleteDecorator = new DeleteDecorator(glex);
     deleteDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(deleteDecorator.getAddedDeSers());
     Log.info("After decorator: DeleteDecorator", CommandDecorator.class.getName());
 
     GetDecorator getDecorator = new GetDecorator(glex);
     getDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(getDecorator.getAddedDeSers());
     Log.info("After decorator: GetDecorator", CommandDecorator.class.getName());
 
     SetDecorator setDecorator = new SetDecorator(glex, supportedDeSers);
     setDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(setDecorator.getAddedDeSers());
     Log.info("After decorator: SetDecorator", CommandDecorator.class.getName());
 
     CalculateDecorator calculateDecorator = new CalculateDecorator(glex, supportedDeSers);
     calculateDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(calculateDecorator.getAddedDeSers());
     Log.info("After decorator: CalculateDecorator", CommandDecorator.class.getName());
 
     AddDecorator addDecorator = new AddDecorator(glex, supportedDeSers);
     addDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(addDecorator.getAddedDeSers());
     Log.info("After decorator: AddDecorator", CommandDecorator.class.getName());
 
     RemoveDecorator removeDecorator = new RemoveDecorator(glex, supportedDeSers);
     removeDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(removeDecorator.getAddedDeSers());
     Log.info("After decorator: RemoveDecorator", CommandDecorator.class.getName());
 
     GetFilteredDecorator getFilteredDecorator = new GetFilteredDecorator(glex);
     getFilteredDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(getFilteredDecorator.getAddedDeSers());
     Log.info("After decorator: GetFilteredDecorator", CommandDecorator.class.getName());
 
     AssocCommandDecorator assocCommandDecorator = new AssocCommandDecorator(glex);
     assocCommandDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(assocCommandDecorator.getAddedDeSers());
     Log.info("After decorator: AssocCommandDecorator", CommandDecorator.class.getName());
 
-    AggregatedCommandDeSerDecorator aggregatedCommandDeSerDecorator = new AggregatedCommandDeSerDecorator(glex);
+    AggregatedCommandDeSerDecorator aggregatedCommandDeSerDecorator = new AggregatedCommandDeSerDecorator(glex, addedDeSers);
     aggregatedCommandDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: XCommandDeserDecorator", CommandDecorator.class.getName());
   }

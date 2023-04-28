@@ -12,7 +12,6 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
-import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
-public class AssocCommandDecorator extends AbstractDecorator {
+public class AssocCommandDecorator extends AbstractDeSerDecorator {
 
   public static final String COMMAND_ASSOC_PACKAGE = COMMAND_PACKAGE + ".associations";
   public static final String ADD_SUFFIX = "_add";
@@ -38,6 +37,7 @@ public class AssocCommandDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    addedDeSers.clear();
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_ASSOC_PACKAGE);
     origCD.getCDDefinition().getCDAssociationsList().stream()
             .filter(a -> !a.getModifier().isDerived())
@@ -213,6 +213,7 @@ public class AssocCommandDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
 
+    addedDeSers.add(ast);
     return ast;
   }
 

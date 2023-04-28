@@ -1,5 +1,6 @@
 package umlp.generator.util;
 
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -11,7 +12,7 @@ import de.monticore.types.check.SymTypeExpression;
 import umlp.UMLPMill;
 import umlp._visitor.UMLPTraverser;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class UMLPSymbolTables {
 
   public static Map<ASTCDType, Integer> collectConcreteSubclassesInclSelfWithDist(ASTCDCompilationUnit origCD, ASTCDType domainType) {
     CDTypeSymbol symbol = domainType.getSymbol();
-    Map<ASTCDType, Integer> concreteSubclasses = new HashMap<>();
+    Map<ASTCDType, Integer> concreteSubclasses = new LinkedHashMap<>();
     if(symbol.isIsClass() && !symbol.isIsAbstract()) {
       concreteSubclasses.put(domainType, 0);
     }
@@ -49,7 +50,7 @@ public class UMLPSymbolTables {
   }
 
   public static Map<ASTCDInterface, Integer> getTransitiveSuperInterfacesWithDistance(ASTCDType ast, int curDist) {
-    Map<ASTCDInterface, Integer> interfaces = new HashMap<>();
+    Map<ASTCDInterface, Integer> interfaces = new LinkedHashMap<>();
     for (SymTypeExpression s : ast.getSymbol().getInterfaceList()) {
       ASTType node = s.getTypeInfo().getAstNode();
       if (node instanceof ASTCDInterface) {
@@ -66,7 +67,7 @@ public class UMLPSymbolTables {
   }
 
   public static Map<ASTCDType, Integer> getTransitiveSuperTypesWithDist(ASTCDType ast, int curDist) {
-    Map<ASTCDType, Integer> types = new HashMap<>();
+    Map<ASTCDType, Integer> types = new LinkedHashMap<>();
     if (ast instanceof ASTCDClass) {
       if (ast.getSymbol().isPresentSuperClass()) {
         ASTType superClass = ast.getSymbol().getSuperClass().getTypeInfo().getAstNode();
@@ -86,4 +87,21 @@ public class UMLPSymbolTables {
     });
     return types;
   }
+
+  public static Map<ASTCDAttribute, ASTCDType> getAttributesInHierarchyWithDefiningType(ASTCDType type){
+    Map<ASTCDAttribute, ASTCDType> res = new LinkedHashMap<>();
+    for (ASTCDAttribute a : type.getCDAttributeList()) {
+      res.put(a, type);
+    }
+
+    for (Map.Entry<ASTCDType, Integer> e : getTransitiveSuperTypesWithDist(type, 1).entrySet()) {
+      for(ASTCDAttribute a : e.getKey().getCDAttributeList()){
+        res.put(a, e.getKey());
+      }
+    }
+
+    return res;
+  }
+
+
 }

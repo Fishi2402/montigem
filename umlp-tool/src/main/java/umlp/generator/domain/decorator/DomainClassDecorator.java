@@ -4,9 +4,13 @@ package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.MethodDecorator;
-import de.monticore.cd.facade.CDModifier;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDClassBuilder;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDInterfaceUsage;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -23,6 +27,8 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
 public class DomainClassDecorator extends DomainTypeDecorator {
+
+  // TODO: add/remove methods for lists of basic types, e.g. List<String>
 
   protected final MCPath hwPath;
 

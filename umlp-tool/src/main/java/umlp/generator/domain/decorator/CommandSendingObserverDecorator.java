@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain.decorator;
 
-import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -11,11 +11,11 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.AssocCommandDecorator.COMMAND_ASSOC_PACKAGE;
@@ -53,26 +53,35 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, scopeTmplt());
 
     // Attribute
-    CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-            .filter(a -> !a.getModifier().isDerived())
-            .forEach(a -> {
+    UMLPSymbolTables.getAttributesInHierarchyWithDefiningType(domainClass).entrySet().stream()
+            .filter(e -> !e.getKey().getModifier().isDerived())
+            .forEach(e -> {
+              ASTCDAttribute a = e.getKey();
+              ASTCDType t = e.getValue();
               if (GenService.isList(a)) {
-                getCD4C().addMethod(ast, addAttributeTmplt(),
-                        domainClass.getName(), a.getName(), GenService.getInnerType(a.getMCType()),
-                        a.getName(), false, domainClass.getName());
-                getCD4C().addMethod(ast, removeAttributeTmplt(),
-                        domainClass.getName(), a.getName(), GenService.getInnerType(a.getMCType()),
-                        a.getName(), false, domainClass.getName());
+                ASTCDMethodSignature add = getCD4C().addMethod(ast, addAttributeTmplt(),
+                    t.getName(), a.getName(), GenService.getInnerType(a.getMCType()),
+                    a.getName(), false, t.getName());
+                ASTCDMethodSignature remove = getCD4C().addMethod(ast, removeAttributeTmplt(),
+                    t.getName(), a.getName(), GenService.getInnerType(a.getMCType()),
+                    a.getName(), false, t.getName());
+
+                glex.replaceTemplate("cd2java.Annotations", add, new StringHookPoint("@Override"));
+                glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
+
                 getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE)+"."+
-                        domainClass.getName() + "_add" + StringTransformations.capitalize(a.getName()));
+                    t.getName() + "_add" + StringTransformations.capitalize(a.getName()));
                 getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE)+"."+
-                        domainClass.getName() + "_remove" + StringTransformations.capitalize(a.getName()));
+                    t.getName() + "_remove" + StringTransformations.capitalize(a.getName()));
               } else {
-                getCD4C().addMethod(ast, setAttributeTmplt(),
-                        domainClass.getName(), a.getName(), GenService.getType(a.getSymbol().getType()),
-                        a.getName(), false, domainClass.getName());
+                ASTCDMethodSignature set = getCD4C().addMethod(ast, setAttributeTmplt(),
+                    t.getName(), a.getName(), GenService.createType(a).printType(),
+                    a.getName(), false, domainClass.getName());
+
+                glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
+
                 getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE)+"."+
-                        domainClass.getName() + "_set" + StringTransformations.capitalize(a.getName()));
+                    domainClass.getName() + "_set" + StringTransformations.capitalize(a.getName()));
               }
               if (GenService.isCDEnum(a.getSymbol().getType())) {
                 getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+
@@ -87,19 +96,16 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
           ASTCDAssocSide a = e.getKey();
           boolean isBidirectional = GenService.isBidirectional(a);
           String assocName = a.getSymbol().getAssoc().getAssociation().getName();
+          SymTypeExpression oneType = e.getKey().getSymbol().getType();
           SymTypeExpression otherType = e.getKey().getSymbol().getOtherSide().getType();
           if (GenService.isList(a)) {
-            ASTCDMethodSignature add = getCD4C().addMethod(ast, addAttributeTmplt(), domainClass.getName(),
+            ASTCDMethodSignature add = getCD4C().addMethod(ast, addAttributeTmplt(), oneType.print(),
                 a.getName(), "long", assocName, isBidirectional, otherType.print());
-            ASTCDMethodSignature remove = getCD4C().addMethod(ast, removeAttributeTmplt(), domainClass.getName(),
+            ASTCDMethodSignature remove = getCD4C().addMethod(ast, removeAttributeTmplt(), oneType.print(),
                 a.getName(), "long", assocName, isBidirectional, otherType.print());
 
-            // From supertype
-            SymTypeExpression t2 = SymTypeExpressionFactory.createTypeExpression(domainClass.getSymbol());
-            if(!otherType.deepEquals(t2)) {
-              glex.replaceTemplate("cd2java.Annotations", add, new StringHookPoint("@Override"));
-              glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
-            }
+            glex.replaceTemplate("cd2java.Annotations", add, new StringHookPoint("@Override"));
+            glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
 
             if (isBidirectional) {
               getCD4C().addImport(ast, getPackageName(origCD, COMMAND_ASSOC_PACKAGE) + "." +
@@ -113,14 +119,9 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
                   otherType.print() + "_remove" + StringTransformations.capitalize(a.getName()));
             }
           } else {
-            ASTCDMethodSignature set = getCD4C().addMethod(ast, setAttributeTmplt(), domainClass.getName(),
-                a.getName(), "long", assocName, isBidirectional, otherType.print());
-
-            // From supertype
-            SymTypeExpression t2 = SymTypeExpressionFactory.createTypeExpression(domainClass.getSymbol());
-            if(!otherType.deepEquals(t2)) {
-              glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
-            }
+            ASTCDMethodSignature set = getCD4C().addMethod(ast, setAttributeTmplt(), otherType.print(),
+                a.getName(), "long", assocName, isBidirectional, domainClass.getName());
+            glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
 
             if (isBidirectional) {
               getCD4C().addImport(ast, getPackageName(origCD, COMMAND_ASSOC_PACKAGE) + "." +
@@ -128,11 +129,11 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
             } else {
               getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE) + "." +
                   domainClass.getName() + "_set" + StringTransformations.capitalize(a.getName()));
-
             }
           }
 
           getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + otherType.print());
+          getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + oneType.print());
         });
     addImports(origCD, domainClass, ast);
 
@@ -159,9 +160,11 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     super.addImports(domainClass, clazz);
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
-    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());
-    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName()+ObserverDecorator.SUFFIX);
 
+    UMLPSymbolTables.getAttributesInHierarchyWithDefiningType(domainClass).values().stream()
+        .map(ASTCDType::getName).distinct()
+        .forEach(t -> getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ t));
+    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName()+ObserverDecorator.SUFFIX);
   }
 
 }

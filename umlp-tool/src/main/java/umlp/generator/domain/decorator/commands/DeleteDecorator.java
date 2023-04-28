@@ -9,7 +9,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
-import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
@@ -17,7 +16,7 @@ import umlp.generator.util.PathUtil;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
-public class DeleteDecorator extends AbstractDecorator {
+public class DeleteDecorator extends AbstractDeSerDecorator {
 
   public static final String SUFFIX = "_delete";
 
@@ -27,6 +26,7 @@ public class DeleteDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    addedDeSers.clear();
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
@@ -80,6 +80,7 @@ public class DeleteDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName()+ DeSerDecorator.SUFFIX);
 
+    addedDeSers.add(ast);
     return ast;
   }
 }
