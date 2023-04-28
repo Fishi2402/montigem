@@ -15,6 +15,8 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
+import de.monticore.types.check.TypeCalculator;
+import de.monticore.types.check.TypeCheck;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
@@ -93,6 +95,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
 
     // General methods
     createObserverMethods(domainClass, clazz);
+    createEqualsMethod(domainClass, clazz);
     getCD4C().addMethod(clazz, "umlp.domain.Build", domainClass.getName());
 
     // Methods for class attributes
@@ -135,6 +138,20 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     getCD4C().addMethod(clazz, "umlp.domain.AddObserver", domainClass.getName(), clazz.isPresentCDExtendUsage());
     getCD4C().addMethod(clazz, "umlp.domain.RemoveObserver", domainClass.getName());
     getCD4C().addMethod(clazz, "umlp.domain.ContainsObserver", domainClass.getName());
+  }
+
+  protected void createEqualsMethod(ASTCDClass domainClass, ASTCDClass clazz) {
+    List<String> attributes = domainClass.getCDAttributeList().stream()
+        .filter(a -> !(a.getModifier().isAbstract() || a.getModifier().isDerived()|| TypeCheck.isBoolean(a.getSymbol().getType())))
+        .map(ASTCDAttribute::getName)
+        .collect(Collectors.toList());
+
+    List<String> booleans = domainClass.getCDAttributeList().stream()
+        .filter(a -> !(a.getModifier().isAbstract() || a.getModifier().isDerived()) && TypeCheck.isBoolean(a.getSymbol().getType()))
+        .map(ASTCDAttribute::getName)
+        .collect(Collectors.toList());
+
+    getCD4C().addMethod(clazz, "umlp.domain.Equals", attributes, booleans, domainClass.getName());
   }
 
   /**
