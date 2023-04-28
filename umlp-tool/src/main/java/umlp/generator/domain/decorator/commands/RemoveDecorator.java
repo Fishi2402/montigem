@@ -46,7 +46,6 @@ public class RemoveDecorator extends AbstractDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
-        .filter(c -> !c.getSymbol().isIsAbstract())
             .forEach(c -> {
               CDSymbolTables.getAttributesInHierarchy(c)
                       .stream()

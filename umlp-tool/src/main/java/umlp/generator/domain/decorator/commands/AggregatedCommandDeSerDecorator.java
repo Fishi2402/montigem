@@ -47,6 +47,8 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
       String domainClassName = domainClass.getName();
       commandList.add(packageName + domainClassName + GetDecorator.SUFFIX);
       commandList.add(packageName + domainClassName + GetFilteredDecorator.SUFFIX);
+      commandList.addAll(calcAssocDeSers(packageName, domainClass));
+
       if (!domainClass.getModifier().isAbstract()) {
         commandList.add(packageName + domainClassName + CreateDecorator.SUFFIX);
         commandList.add(packageName + domainClassName + DeleteDecorator.SUFFIX);
@@ -62,7 +64,6 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
                 commandList.add(packageName + domainClassName + SetDecorator.SUFFIX + domainAttributeName);
               }
             });
-        commandList.addAll(calcAssocDeSers(packageName, domainClass));
       }
 
       // Derived

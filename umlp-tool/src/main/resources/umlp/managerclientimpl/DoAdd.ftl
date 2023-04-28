@@ -5,7 +5,7 @@ ${cd4c.method("protected void _doAdd${name}(${name} o)")}
   // TODO: Error handling
   Log.trace("Adding known ${name?uncap_first} " + o.getGemId(), LogUtil.getLoggerName());
   known${name}s.put(o.getGemId(), o);
-  if (!o.containsObserver(the${name}CommandSendingObserver)) {
-    o.addObserver(the${name}CommandSendingObserver);
+  if (!o.containsObserver(the${name}CommandObserver)) {
+    o.addObserver(the${name}CommandObserver);
   }
   ${managerName?uncap_first}Observers.forEach(obs -> obs.notify${name}Added(o));

@@ -6,26 +6,19 @@ if(known${subclass.name?cap_first}s.containsKey(gemId)){
   return Optional.ofNullable(known${subclass.name?cap_first}s.get(gemId));
 }
 </#list>
-
-SimpleResult<${name}> res = CommandManager.executeCommand(new ${name}_get(gemId)).asSimpleResult();
-if (res.isSuccessful()) {
-  ${name} ${name?uncap_first} = res.get();
+// TODO: Optimize, multiple roundtrips are possible for multiple subclasses
 <#list concreteSubclassesInclSelf as subclass>
-  // TODO: how can we avoid instanceof here?
-  // Ordered by distance between the classes, such that only the observer of the correct class is added
-  <#if !subclass?is_last>
-  if(${name?uncap_first} instanceof ${subclass.name}){
-  <#else>
-  {
-  </#if>
-    if (!((${subclass.name})${name?uncap_first}).containsObserver(the${subclass.name}CommandSendingObserver)) {
-      ((${subclass.name})${name?uncap_first}).addObserver(the${subclass.name}CommandSendingObserver);
+{
+  SimpleResult<${subclass.name}> res = CommandManager.executeCommand(new ${subclass.name}_get(gemId)).asSimpleResult();
+  if (res.isSuccessful()) {
+    ${subclass.name} ${subclass.name?uncap_first} = res.get();
+    if (!(${subclass.name?uncap_first}).containsObserver(the${subclass.name}CommandObserver)) {
+      (${subclass.name?uncap_first}).addObserver(the${subclass.name}CommandObserver);
     }
     Log.trace("Adding known ${subclass.name?uncap_first} " + gemId, LogUtil.getLoggerName());
-    known${subclass.name}s.put(${name?uncap_first}.getGemId(), (${subclass.name})${name?uncap_first});
-    return Optional.of(${name?uncap_first});
+    known${subclass.name}s.put(${subclass.name?uncap_first}.getGemId(), ${subclass.name?uncap_first});
+    return Optional.of(${subclass.name?uncap_first});
   }
-  <#if !subclass?is_last>else</#if>
-</#list>
 }
+</#list>
 return Optional.empty();

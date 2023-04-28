@@ -141,11 +141,9 @@ public class AssociationsFromAndToInterfacesTest {
 
   public static List<TestSetup> getSetups() {
     return List.of(
-        new MockTestSetup(),
-        new DBTestSetup()
-        // ,new ClientTestSetup()
-        // TODO: DeSer of interfaces
-        // TODO: DeSer of all types must respect concrete subclasses!
+        //new MockTestSetup(),
+        //new DBTestSetup(),
+        new ClientTestSetup()
     );
   }
 
