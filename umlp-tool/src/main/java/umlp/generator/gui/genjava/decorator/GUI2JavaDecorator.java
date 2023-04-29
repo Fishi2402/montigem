@@ -29,6 +29,7 @@ public class GUI2JavaDecorator extends GUIAbstractDecorator {
 
     GUI2JavaComponentsDecorator componentsDecorator = new GUI2JavaComponentsDecorator(glex, viewComponents);
     componentsDecorator.transform(guiAst, domainRefDecorator.getDecoratedClass());
+
     domainRefDecorator.getCreateInputValueClass().ifPresent(createClass -> componentsDecorator.transform(guiAst, createClass));
     Log.info("After decorator: GUI2JavaComponentsDecorator", GUI2JavaComponentsDecorator.class.getName());
 

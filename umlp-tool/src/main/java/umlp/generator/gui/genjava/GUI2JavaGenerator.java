@@ -23,7 +23,7 @@ public class GUI2JavaGenerator extends CDGenerator {
 
   protected GUIComponentsVisitor viewComponents;
 
-  public GUI2JavaGenerator(GeneratorSetup genSetup, IGUIDSLArtifactScope symbolTableGui, GUIComponentsVisitor viewComponents) {
+  public GUI2JavaGenerator(GeneratorSetup genSetup, GUIComponentsVisitor viewComponents) {
     super(genSetup);
     astPrinter = new CD4CodeFullPrettyPrinter(new IndentPrinter());
     this.viewComponents = viewComponents;

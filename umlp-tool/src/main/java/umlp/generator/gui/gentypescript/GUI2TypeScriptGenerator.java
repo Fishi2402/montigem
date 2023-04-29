@@ -26,18 +26,16 @@ public class GUI2TypeScriptGenerator {
 
   protected final GeneratorEngine generatorEngine;
   protected GeneratorSetup setup;
-  protected IGUIDSLArtifactScope symbolTableGui;
   protected GUIComponentsVisitor viewComponents;
   protected MCPath hwcPath;
   public final static String ROUTES_FILE = ".routing.ts";
   public final static String MODULES_FILE = ".module.ts";
   public final static String TS_FILE_EXTENSION = "ts";
 
-  public GUI2TypeScriptGenerator(GeneratorSetup generatorSetup, IGUIDSLArtifactScope symbolTableGui, MCPath hwcPath,
+  public GUI2TypeScriptGenerator(GeneratorSetup generatorSetup, MCPath hwcPath,
       GUIComponentsVisitor viewComponents) {
     this.generatorEngine = new GeneratorEngine(generatorSetup);
     this.setup = generatorSetup;
-    this.symbolTableGui = symbolTableGui;
     this.hwcPath = hwcPath;
     this.viewComponents = viewComponents;
   }

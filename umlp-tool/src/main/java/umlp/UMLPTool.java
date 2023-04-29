@@ -39,6 +39,8 @@ import umlp._visitor.UMLPTraverser;
 import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.GUINodeIdTrafo;
+import umlp.generator.gui.GUIShortIterateTrafo;
 import umlp.generator.gui.GUITemplateHelper;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
@@ -294,20 +296,28 @@ public class UMLPTool extends UMLPToolTOP {
         }
         GUIGeneratorUtil.init(domainModels, createModels);
 
+        GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
+        nodeIdTrafo.transform(astGui);
+        // logTrafoExec("GUINodeIdTrafo", astGui);
+
+        GUIShortIterateTrafo shortIterateTrafo = new GUIShortIterateTrafo();
+        shortIterateTrafo.transform(astGui);
+        // logTrafoExec("GUIShortIterateTrafo", astGui);
+
         // Get all ASTGUIComponents
         GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
         genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
         genSetup.getGlex().setGlobalValue("genHelper", new GUITemplateHelper());
 
-        GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, symbolTableGui, viewComponents);
+        GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, viewComponents);
         String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
         javaGenerator.generate(astGui, javaConfigTemplate);
 
-        GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, symbolTableGui, viewComponents);
+        GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, viewComponents);
         String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
         htmlGenerator.generate(astGui, htmlConfigTemplate);
 
-        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, symbolTableGui, hwcPath, viewComponents);
+        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, viewComponents);
         String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
         typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
 
