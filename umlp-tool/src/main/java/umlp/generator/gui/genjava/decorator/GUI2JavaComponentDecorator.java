@@ -19,6 +19,7 @@ import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolTOP;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.StringTransformations;
@@ -65,8 +66,10 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     generateGetMethodsForComponentArguments(decoratedClass, guiComponent, componentName, iterate);
   }
 
-  protected void generateGetMethodsForComponentArguments(ASTCDClass decoratedClass, ASTGUIComponent guiComponent,
-      String componentName, Optional<ASTGUIIterate> iterate) {
+  protected void generateGetMethodsForComponentArguments(
+      ASTCDClass decoratedClass, ASTGUIComponent guiComponent,
+      String componentName, Optional<ASTGUIIterate> iterate
+  ) {
     GUIComponentAccessVisitor viewComponents = new GUIComponentAccessVisitor(guiComponent);
 
     viewComponents.getNamedArgsFieldAccess().entrySet().forEach(e -> {
@@ -74,32 +77,39 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     });
   }
 
-  protected void generateGetMethodForComponentArgument(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
-      Optional<ASTGUIIterate> iterate, ASTGUINamedArg namedArg, Set<ASTFieldAccessExpression> zuweisungen) {
-
+  protected void generateGetMethodForComponentArgument(
+      ASTCDClass decoratedClass, ASTGUIComponent guiComponent,
+      String componentName, Optional<ASTGUIIterate> iterate,
+      ASTGUINamedArg namedArg, Set<ASTFieldAccessExpression> zuweisungen
+  ) {
     String argValue = replaceZuweisungen(namedArg, zuweisungen);
 
     Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
         .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
 
     if (guiComponentSymbol.isPresent() && !isEventArgument(guiComponentSymbol.get(), namedArg)) {
-      Optional<GUIParamSymbol> argSymbol = guiComponentSymbol.get().getSpannedScope().resolveGUIParam(namedArg.getName());
-      if (!argSymbol.isPresent() && iterate.isPresent()) {
-        argSymbol = iterate.get().getSpannedScope().resolveGUIParam(namedArg.getName());
+      Optional<GUIParamSymbol> paramSym = guiComponentSymbol.get().getSpannedScope().resolveGUIParam(namedArg.getName());
+      /*
+      if (!paramSym.isPresent() && iterate.isPresent()) {
+        paramSym = iterate.get().getSpannedScope().resolveGUIParam(namedArg.getName());
       }
-      if (argSymbol.isPresent()) {
-        if (GUIGeneratorUtil.isViewElement(argSymbol.get())) {
+      /**/
+      if (paramSym.isPresent()) {
+        if (GUIGeneratorUtil.isViewElement(paramSym.get().getType())
+            || GUIGeneratorUtil.isViewElementsCollection(paramSym.get().getType())) {
           return;
         }
-        String returnType = argSymbol.get().getType().getTypeInfo().getName();
-        boolean convertToString = mustBeConvertedToString(returnType, namedArg);
+        String paramType = paramSym.get().getType().getTypeInfo().getName();
+        boolean convertToString = mustBeConvertedToString(paramType, namedArg);
         if (convertToString) {
           argValue = "String.valueOf(" + argValue + ")";
         }
 
-        String methodName = "get" + guiComponent.getName() + StringTransformations.capitalize(componentName)
+        String methodName = "get"
+            + guiComponent.getName()
+            + StringTransformations.capitalize(componentName)
             + StringTransformations.capitalize(namedArg.getName());
-        addGetComponentMethod(decoratedClass, methodName, returnType, argValue);
+        addGetComponentMethod(decoratedClass, methodName, paramType, argValue);
       }
     }
   }
@@ -171,11 +181,11 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return res;
   }
 
-  public Optional<VariableSymbol> resolveAttribute(Optional<GUIParamSymbol> guiVariableSymbol, String name) {
-    if (guiVariableSymbol.isEmpty()) {
+  public Optional<VariableSymbol> resolveAttribute(Optional<GUIParamSymbol> guiParamSym, String name) {
+    if (guiParamSym.isEmpty()) {
       return Optional.empty();
     }
-    TypeSymbol typeInfo = guiVariableSymbol.get().getType().getTypeInfo();
+    TypeSymbol typeInfo = guiParamSym.get().getType().getTypeInfo();
     Optional<VariableSymbol> res = typeInfo.getSpannedScope().resolveVariable(name);
     if (res.isEmpty() && typeInfo.isPresentSuperClass()) {
       res = typeInfo.getSuperClass().getTypeInfo().getSpannedScope().resolveVariable(name);
@@ -208,7 +218,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           return Optional.empty();
         }
         attr = resolveAttribute(iterateType.get(), zuweisung.getName());
-        variableType = GUIGeneratorUtil.removeDiagramName(iterateType.get().getTypeInfo().getName());
+        // variableType = GUIGeneratorUtil.removeDiagramName(iterateType.get().getTypeInfo().getName());
+        variableType = iterateType.get().getTypeInfo().getName();
       }
 
       if (attr.isPresent()) {
@@ -229,22 +240,26 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return Optional.empty();
   }
 
-  protected Optional<SymTypeExpression> resolveAttributeFromIterate(ASTGUIIterate iterate, ASTFieldAccessExpression zuweisung, Optional<GUIParamSymbol> symbol, String variableName) {
+  // TODO AGe: limited conversion
+  protected Optional<SymTypeExpression> resolveAttributeFromIterate(
+      ASTGUIIterate iterate, ASTFieldAccessExpression zuweisung,
+      Optional<GUIParamSymbol> paramSym, String variableName
+  ) {
     Optional<VariableSymbol> iterateVariable = iterate.getSpannedScope().resolveVariable(variableName);
     if (iterateVariable.isPresent() && iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
       ASTGUIShortIterateControl it = (ASTGUIShortIterateControl) iterate.getIterateControl();
       if (it.getIterable() instanceof ASTFieldAccessExpression) {
         String listName = ((ASTFieldAccessExpression) it.getIterable()).getName();
-        Optional<VariableSymbol> iterateAttribute = resolveAttribute(symbol, listName);
-        return iterateAttribute.isPresent()? Optional.of(iterateAttribute.get().getType()): Optional.empty();
+        Optional<VariableSymbol> iterateAttribute = resolveAttribute(paramSym, listName);
+        return iterateAttribute.map(VariableSymbolTOP::getType);
         //return resolveAttribute(iterateAttribute.get().getType(), zuweisung.getName());
       }
       else if (it.getIterable() instanceof ASTNameExpression) {
-        if (symbol.isEmpty() || !GenService.isList(symbol.get().getType())) {
+        if (paramSym.isEmpty() || !GenService.isList(paramSym.get().getType())) {
           return Optional.empty();
         }
-        SymTypeExpression listType = ((SymTypeOfGenerics) symbol.get().getType()).getArgument(0);
-        //  GenService.getInnerType(symbol.get().getAstNode().getMCType());
+        SymTypeExpression listType = ((SymTypeOfGenerics) paramSym.get().getType()).getArgument(0);
+        //  GenService.getInnerType(paramSym.get().getAstNode().getMCType());
         return Optional.of(listType);
         //return resolveAttribute(listType, zuweisung.getName());
       }
@@ -252,6 +267,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return Optional.empty();
   }
 
+  // TODO AGe: limited conversion
   protected Optional<GUIParamSymbol> getVariableSymbol(ASTGUIIterate iterate, ASTFieldAccessExpression zuweisung, String variableName) {
     Optional<VariableSymbol> iterateVariable = iterate.getSpannedScope().resolveVariable(variableName);
     if (iterateVariable.isPresent() && iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
@@ -303,6 +319,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return replacement;
   }
 
+  // TODO AGe: limited conversion
   protected Optional<String> handleZuweisung(ASTFieldAccessExpression zuweisung) {
     if (zuweisung.getExpression() instanceof ASTNameExpression) {
       String variableName = ((ASTNameExpression) zuweisung.getExpression()).getName();
@@ -330,6 +347,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return Optional.empty();
   }
 
+  // TODO AGe: not nice
   protected boolean mustBeConvertedToString(String returnType, ASTGUINamedArg namedArg) {
     boolean convertToString = returnType.endsWith("String") && !isStringLiteral(namedArg.getGUIArgValue());
     if (convertToString && namedArg.getGUIArgValue().getExpression() instanceof ASTFieldAccessExpression) {

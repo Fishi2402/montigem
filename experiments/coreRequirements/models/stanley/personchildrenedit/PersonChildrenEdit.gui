@@ -23,4 +23,11 @@ page PersonChildrenEdit(Person p) {
     @GemNumberInput(value = child.age);
   }
 
+  /*
+  @iterate(i from 0 to p.children.size() - 1) {
+    // show and edit the child's age as number
+    @GemNumberInput(value = p.children.get(i).age);
+  }
+  /**/
+
 }

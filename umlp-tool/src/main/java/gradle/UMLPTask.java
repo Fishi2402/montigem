@@ -101,7 +101,7 @@ public abstract class UMLPTask extends DefaultTask {
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract ListProperty<String> getGUICreateModels();
+  public abstract ListProperty<String> getGuiCreateModels();
 
   @OutputDirectory
   public abstract DirectoryProperty getOutputDir();
@@ -210,9 +210,9 @@ public abstract class UMLPTask extends DefaultTask {
       result.addAll(this.getDomainModels().get());
     }
 
-    if (this.getGUICreateModels().isPresent() && !this.getGUICreateModels().get().isEmpty()) {
+    if (this.getGuiCreateModels().isPresent() && !this.getGuiCreateModels().get().isEmpty()) {
       result.add("-" + UMLPToolOptions.GUI_CREATE.getCMD());
-      result.addAll(this.getGUICreateModels().get());
+      result.addAll(this.getGuiCreateModels().get());
     }
 
     if (this.getMoreArgs().isPresent()) {
