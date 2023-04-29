@@ -1,11 +1,27 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
-import de.monticore.guidsl._ast.*;
+import de.monticore.guidsl._ast.ASTGUIArgValue;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._ast.ASTGUIParam;
 
 import java.util.List;
 
 public class GUITemplateHelper {
+
+  protected static GUITemplateHelper instance;
+
+  private GUITemplateHelper() {
+  }
+
+  public static GUITemplateHelper getInstance() {
+    if (instance == null) {
+      instance = new GUITemplateHelper();
+    }
+    return instance;
+  }
 
   public boolean isInputArgument(ASTGUIComponent guiComponent, ASTGUINamedArg arg) {
     return GUIGeneratorUtil.isInputArgument(guiComponent, arg);
@@ -35,19 +51,19 @@ public class GUITemplateHelper {
     return GUIGeneratorUtil.getComponentArguments(guiComponent);
   }
 
-  public static ASTGUIComponent getNestedComponent(ASTGUIArgValue arg) {
+  public ASTGUIComponent getNestedComponent(ASTGUIArgValue arg) {
     return GUIGeneratorUtil.getNestedComponent(arg);
   }
 
-  public static boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
+  public boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
     return GUIGeneratorUtil.isComponentListArgument(guiComponent, arg);
   }
 
-  public static List<ASTGUIArgValue> getComponentListArguments(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
+  public List<ASTGUIArgValue> getComponentListArguments(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
     return GUIGeneratorUtil.getComponentListArguments(guiComponent, arg);
   }
 
-  public static List<ASTGUIParam> getGUIViewElementParameters(ASTGUICompilationUnit gui) {
+  public List<ASTGUIParam> getGUIViewElementParameters(ASTGUICompilationUnit gui) {
     return GUIGeneratorUtil.getGUIViewElementParameters(gui);
   }
 

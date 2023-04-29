@@ -136,6 +136,10 @@ public class GUIGeneratorUtil {
     return arg.getGUIComponent();
   }
 
+  public static String getGetterName(ASTGUIParam node) {
+    return "get" + StringTransformations.capitalize(node.getName());
+  }
+
   public static boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
     return arg.isPresentGUIList() && arg.getGUIList().getGUIArgValueList()
         .stream().filter(a -> a.isPresentGUIComponent()).findAny().isPresent();

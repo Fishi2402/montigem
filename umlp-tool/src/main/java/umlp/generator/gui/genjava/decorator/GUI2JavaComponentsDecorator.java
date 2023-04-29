@@ -6,6 +6,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.se_rwth.commons.Joiners;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
@@ -28,8 +29,9 @@ public class GUI2JavaComponentsDecorator extends GUIAbstractDecorator {
 
   public void transform(ASTGUICompilationUnit guiAst, ASTCDClass decoratedClass) {
 
-    filterComponentsWithPredicate(viewComponent.getComponents(), PREDICATE_NOT_TABLE).stream().filter(c -> !isInputComponent(c))
-        .forEach(c -> new GUI2JavaComponentDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c));
+    for (ASTGUIComponent c : viewComponent.getComponents()) {
+      new GUI2JavaComponentDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c);
+    }
 
     viewComponent.getComponents().stream().filter(GUIGeneratorUtil::isInputComponent)
         .forEach(c -> {

@@ -7,6 +7,7 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+import de.se_rwth.commons.StringTransformations;
 
 public class GUINodeIdTrafo implements GUIDSLVisitor2 {
 
@@ -31,7 +32,7 @@ public class GUINodeIdTrafo implements GUIDSLVisitor2 {
     if (!node.isPresentId()) {
       node.setId(
           GUIDSLMill.gUIVariableDeclarationBuilder()
-              .setName(node.getName() + counter++)
+              .setName(StringTransformations.uncapitalize(node.getName()) + counter++)
               .build()
       );
     }

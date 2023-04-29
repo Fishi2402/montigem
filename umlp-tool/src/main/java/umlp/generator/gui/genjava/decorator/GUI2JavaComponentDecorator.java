@@ -45,13 +45,12 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   public final static String VALUE = "Value";
   protected final String guiName;
-  private final ASTGUICompilationUnit guiAst;
   protected final GUIComponentsVisitor viewComponent;
 
-  public GUI2JavaComponentDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst, GUIComponentsVisitor viewComponent) {
+  public GUI2JavaComponentDecorator(final GlobalExtensionManagement glex,
+      ASTGUICompilationUnit guiAst, GUIComponentsVisitor viewComponent) {
     super(glex);
     this.guiName = guiAst.getGUIComponentDeclaration().getName();
-    this.guiAst = guiAst;
     this.viewComponent = viewComponent;
   }
 
@@ -61,26 +60,25 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
-    String componentName = viewComponent.getComponentName(guiComponent);
-    Optional<ASTGUIIterate> iterate = viewComponent.getIterateForComponent(guiComponent);
-    generateGetMethodsForComponentArguments(decoratedClass, guiComponent, componentName, iterate);
+    String componentName = guiComponent.getId().getName();
+    // Optional<ASTGUIIterate> iterate = viewComponent.getIterateForComponent(guiComponent);
+    generateGetMethodsForComponentArguments(decoratedClass, guiComponent, componentName);
   }
 
   protected void generateGetMethodsForComponentArguments(
-      ASTCDClass decoratedClass, ASTGUIComponent guiComponent,
-      String componentName, Optional<ASTGUIIterate> iterate
+      ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName
   ) {
     GUIComponentAccessVisitor viewComponents = new GUIComponentAccessVisitor(guiComponent);
 
-    viewComponents.getNamedArgsFieldAccess().entrySet().forEach(e -> {
-      generateGetMethodForComponentArgument(decoratedClass, guiComponent, componentName, iterate, e.getKey(), e.getValue());
-    });
+    viewComponents.getNamedArgsFieldAccess().entrySet().forEach(e ->
+        generateGetMethodForComponentArgument(
+            decoratedClass, guiComponent, componentName, e.getKey(), e.getValue()
+        ));
   }
 
   protected void generateGetMethodForComponentArgument(
       ASTCDClass decoratedClass, ASTGUIComponent guiComponent,
-      String componentName, Optional<ASTGUIIterate> iterate,
-      ASTGUINamedArg namedArg, Set<ASTFieldAccessExpression> zuweisungen
+      String componentName, ASTGUINamedArg namedArg, Set<ASTFieldAccessExpression> zuweisungen
   ) {
     String argValue = replaceZuweisungen(namedArg, zuweisungen);
 

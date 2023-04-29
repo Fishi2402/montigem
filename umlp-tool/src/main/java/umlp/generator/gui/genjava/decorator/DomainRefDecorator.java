@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.gui.GUIGeneratorUtil.getGetterName;
 import static umlp.generator.gui.GUIGeneratorUtil.isDomainType;
 
 public class DomainRefDecorator extends GUIAbstractDecorator {
@@ -54,14 +55,17 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   }
 
   public void transform(ASTGUICompilationUnit guiAst, ASTCDCompilationUnit decoratedAST) {
+    // package
     String packageName = getPackageName(guiAst, DEFAULT_PACKAGE);
     ASTCDPackage astcdPackage = CD4CodeMill.cDPackageBuilder()
         .setMCQualifiedName(getMCTypeFacade().createQualifiedName(packageName)).build();
     decoratedAST.getCDDefinition().addCDElement(astcdPackage);
 
+    // class
     decoratedClass = createClass(guiAst);
     astcdPackage.addCDElement(decoratedClass);
 
+    // imports
     guiAst.getMCImportStatementList().stream()
         .filter(i -> !isModelImportInGUI(i))
         .forEach(i -> getCD4C().addImport(decoratedClass, i.getQName()));
@@ -74,6 +78,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   }
 
   protected ASTCDAttribute addBuilderForDomainMembers(ASTCDClass clazz, ASTGUIParam astguiParam) {
+    // attr
     // --- replace this when TypeCheck can be used
     TypeSymbol typeInfo = astguiParam.getSymbol().getType().getTypeInfo();
 
@@ -88,11 +93,17 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         CDModifier.PROTECTED.build(), attributeType, attributeName);
 
     clazz.addCDMember(domainAttribute);
+
+    // gettter
+    String builderGetter = GUIGeneratorUtil.getGetterName(astguiParam);
+    getCD4C().addMethod(clazz, "umlp.gui2java.GetParam", builderGetter, attributeType, attributeName);
+
     return domainAttribute;
   }
 
   protected ASTCDClass createClass(ASTGUICompilationUnit ast) {
     ASTGUIComponentDeclaration domainClass = ast.getGUIComponentDeclaration();
+    // empty class
     String className = domainClass.getName();
     domainClass.getName();
     ASTCDClass clazz = UMLPMill.cDClassBuilder()
@@ -100,11 +111,15 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         .setName(className)
         .build();
 
+    // constructor, attrs, getters
     if (!domainClass.getGUIParamList().isEmpty()) {
-      List<ASTGUIParam> domainParams = domainClass.getGUIParamList().stream().filter(p -> isDomainType(p)).collect(Collectors.toList());
+      List<ASTGUIParam> domainParams = domainClass.getGUIParamList().stream()
+          .filter(p -> isDomainType(p))
+          .collect(Collectors.toList());
       List<ASTCDAttribute> domainAttributes;
+      // attrs, getters
       if (GUIGeneratorUtil.isCreateModel(ast.getComponentQName())) {
-        // Add Builder attributes for domain type parameters
+        // Add Builder attributes and getter for domain type parameters
         domainAttributes = domainParams.stream()
             .map(p -> addBuilderForDomainMembers(clazz, p))
             .collect(Collectors.toList());
@@ -165,7 +180,6 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
       getCD4C().addConstructor(clazz, "umlp.domain.Constructor", className);
     }
 
-
     return clazz;
   }
 
@@ -175,10 +189,15 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
       getCD4C().addImport(clazz, qName);
     }
 
+    // attr
     ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(
         CDModifier.PROTECTED.build(), astguiParam.getMCType(), astguiParam.getName());
     clazz.addCDMember(domainAttribute);
 
+    // getter
+    String builderGetter = GUIGeneratorUtil.getGetterName(astguiParam);
+    getCD4C().addMethod(clazz, "umlp.gui2java.GetParam",
+        builderGetter, astguiParam.getMCType().printType(), astguiParam.getName());
     return domainAttribute;
   }
 
