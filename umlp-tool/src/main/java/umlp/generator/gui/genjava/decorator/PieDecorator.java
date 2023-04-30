@@ -36,6 +36,7 @@ public class PieDecorator extends GUI2JavaComponentDecorator {
     this.guiComponent = guiComponent;
     this.componentName = componentName;
   }
+  /*
 
   public void transform(ASTCDClass decoratedClass) {
     Optional<ASTGUINamedArg> pie = getComponentArgOptional(guiComponent, PREDICATE_ENTRIES);
@@ -73,5 +74,6 @@ public class PieDecorator extends GUI2JavaComponentDecorator {
   public String getComponentName() {
     return componentName;
   }
+  /**/
 }
 

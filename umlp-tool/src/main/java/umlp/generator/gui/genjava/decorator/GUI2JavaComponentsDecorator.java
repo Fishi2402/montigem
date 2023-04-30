@@ -49,6 +49,7 @@ public class GUI2JavaComponentsDecorator extends GUIAbstractDecorator {
     viewComponent.getIterates().stream()
         .forEach(c -> new IterateDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c));
 
+    /*
     //------------------ TABLES ----------------------------------------------
 
     List<HookPoint> res = new ArrayList<>(); // List of HookPoints for table components to use in the init() method
@@ -85,6 +86,7 @@ public class GUI2JavaComponentsDecorator extends GUIAbstractDecorator {
 
     pieEntriesTemplates.forEach(res::add);
     glex.replaceTemplate("umlp.gui2java.InitPieCharts", res);
+    /**/
   }
 
 }

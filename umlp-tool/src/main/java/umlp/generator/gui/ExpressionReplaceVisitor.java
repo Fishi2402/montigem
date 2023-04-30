@@ -33,14 +33,14 @@ import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 
-public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, CommonExpressionsVisitor2 {
+public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressionsVisitor2 {
 
   protected ASTNode holder;
   protected ASTNode oldValue;
   protected ASTExpression newValue;
   protected GUIDSLTraverser traverser;
 
-  public GUIShortIterateItemReplaceVisitor() {
+  public ExpressionReplaceVisitor() {
     traverser = GUIDSLMill.traverser();
     traverser.add4GUIDSL(this);
     traverser.add4CommonExpressions(this);
@@ -50,43 +50,43 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
     return traverser;
   }
 
-  public void transform(ASTNode holder, ASTExpression newValue, ASTNode oldValue) {
+  public void transform(ASTNode holder, ASTNode oldValue, ASTExpression newValue) {
     holder.accept(getTraverser());
     this.holder = holder;
-    this.newValue = newValue;
     this.oldValue = oldValue;
+    this.newValue = newValue;
   }
 
   @Override
-  public void visit(ASTGUIArgValue node) {
+  public void endVisit(ASTGUIArgValue node) {
     if (node.equals(holder)) {
       node.setExpression(newValue);
     }
   }
 
   @Override
-  public void visit(ASTGUIBlockContent node) {
+  public void endVisit(ASTGUIBlockContent node) {
     if (node.equals(holder)) {
       node.setExpression(newValue);
     }
   }
 
   @Override
-  public void visit(ASTGUIGuard node) {
+  public void endVisit(ASTGUIGuard node) {
     if (node.equals(holder)) {
       node.setCondition(newValue);
     }
   }
 
   @Override
-  public void visit(ASTGUIShortIterateControl node) {
+  public void endVisit(ASTGUIShortIterateControl node) {
     if (node.equals(holder)) {
       node.setIterable(newValue);
     }
   }
 
   @Override
-  public void visit(ASTGUIRangeIterateControl node) {
+  public void endVisit(ASTGUIRangeIterateControl node) {
     if (node.equals(holder)) {
       if (node.getStart().equals(oldValue)) {
         node.setStart(newValue);
@@ -98,42 +98,42 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTFieldAccessExpression node) {
+  public void endVisit(ASTFieldAccessExpression node) {
     if (node.equals(holder)) {
       node.setExpression(newValue);
     }
   }
 
   @Override
-  public void visit(ASTPlusPrefixExpression node) {
+  public void endVisit(ASTPlusPrefixExpression node) {
     if (node.equals(holder)) {
       node.setExpression(newValue);
     }
   }
 
   @Override
-  public void visit(ASTMinusPrefixExpression node) {
+  public void endVisit(ASTMinusPrefixExpression node) {
     if (node.equals(holder)) {
       node.setExpression(newValue);
     }
   }
 
   @Override
-  public void visit(ASTBooleanNotExpression node) {
+  public void endVisit(ASTBooleanNotExpression node) {
     if (node.equals(holder)) {
       node.setExpression(newValue);
     }
   }
 
   @Override
-  public void visit(ASTLogicalNotExpression node) {
+  public void endVisit(ASTLogicalNotExpression node) {
     if (node.equals(holder)) {
       node.setExpression(newValue);
     }
   }
 
   @Override
-  public void visit(ASTMinusExpression node) {
+  public void endVisit(ASTMinusExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -145,7 +145,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTMultExpression node) {
+  public void endVisit(ASTMultExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -157,7 +157,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTDivideExpression node) {
+  public void endVisit(ASTDivideExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -169,7 +169,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTModuloExpression node) {
+  public void endVisit(ASTModuloExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -181,7 +181,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTPlusExpression node) {
+  public void endVisit(ASTPlusExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -193,7 +193,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTLessEqualExpression node) {
+  public void endVisit(ASTLessEqualExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -205,7 +205,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTGreaterEqualExpression node) {
+  public void endVisit(ASTGreaterEqualExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -217,7 +217,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTLessThanExpression node) {
+  public void endVisit(ASTLessThanExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -229,7 +229,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTGreaterThanExpression node) {
+  public void endVisit(ASTGreaterThanExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -241,7 +241,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTEqualsExpression node) {
+  public void endVisit(ASTEqualsExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -253,7 +253,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTNotEqualsExpression node) {
+  public void endVisit(ASTNotEqualsExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -265,7 +265,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTBooleanAndOpExpression node) {
+  public void endVisit(ASTBooleanAndOpExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -277,7 +277,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTBooleanOrOpExpression node) {
+  public void endVisit(ASTBooleanOrOpExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
         node.setLeft(newValue);
@@ -289,8 +289,11 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTConditionalExpression node) {
+  public void endVisit(ASTConditionalExpression node) {
     if (node.equals(holder)) {
+      if (node.getCondition().equals(oldValue)) {
+        node.setCondition(newValue);
+      }
       if (node.getTrueExpression().equals(oldValue)) {
         node.setTrueExpression(newValue);
       }
@@ -301,7 +304,7 @@ public class GUIShortIterateItemReplaceVisitor implements GUIDSLVisitor2, Common
   }
 
   @Override
-  public void visit(ASTBracketExpression node) {
+  public void endVisit(ASTBracketExpression node) {
     if (node.equals(holder)) {
       node.setExpression(newValue);
     }

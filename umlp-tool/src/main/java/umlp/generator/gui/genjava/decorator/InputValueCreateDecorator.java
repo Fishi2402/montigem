@@ -16,6 +16,7 @@ public class InputValueCreateDecorator extends InputValueEditDecorator {
     super(glex, guiAst, viewComponent);
   }
 
+  /*
   @Override
   protected void generateMethodsForInputValueComponent(ASTCDClass decoratedClass, ASTGUIComponent guiComponent,
       String componentName, String returnType, String variableName, String variableType, String attrName, Optional<ASTGUIIterate> iterate) {
@@ -34,5 +35,6 @@ public class InputValueCreateDecorator extends InputValueEditDecorator {
     getCD4C().addMethod(decoratedClass, "umlp.gui2java.SetComponentBuilder", "set" + guiComponent.getName() + componentName + VALUE,
         attrType, variableName, attrName);
   }
+  /**/
 
 }

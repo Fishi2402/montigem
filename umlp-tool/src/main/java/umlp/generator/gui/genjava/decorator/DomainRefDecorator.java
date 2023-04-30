@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.gui.GUIGeneratorUtil.getGetterName;
 import static umlp.generator.gui.GUIGeneratorUtil.isDomainType;
 
 public class DomainRefDecorator extends GUIAbstractDecorator {
@@ -90,12 +89,12 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     getCD4C().addImport(clazz, qualifiedType);
 
     ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(
-        CDModifier.PROTECTED.build(), attributeType, attributeName);
+        CDModifier.PROTECTED.build(), attributeType, GUIGeneratorUtil.gui2cdAttrName(attributeName));
 
     clazz.addCDMember(domainAttribute);
 
     // gettter
-    String builderGetter = GUIGeneratorUtil.getGetterName(astguiParam);
+    String builderGetter = GUIGeneratorUtil.gui2cdAttrGetterName(astguiParam.getName());
     getCD4C().addMethod(clazz, "umlp.gui2java.GetParam", builderGetter, attributeType, attributeName);
 
     return domainAttribute;
@@ -191,11 +190,13 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
     // attr
     ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(
-        CDModifier.PROTECTED.build(), astguiParam.getMCType(), astguiParam.getName());
+        CDModifier.PROTECTED.build(), astguiParam.getMCType(),
+        GUIGeneratorUtil.gui2cdAttrName(astguiParam.getName())
+    );
     clazz.addCDMember(domainAttribute);
 
     // getter
-    String builderGetter = GUIGeneratorUtil.getGetterName(astguiParam);
+    String builderGetter = GUIGeneratorUtil.gui2cdAttrGetterName(astguiParam.getName());
     getCD4C().addMethod(clazz, "umlp.gui2java.GetParam",
         builderGetter, astguiParam.getMCType().printType(), astguiParam.getName());
     return domainAttribute;

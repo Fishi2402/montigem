@@ -1,43 +1,44 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.genjava.decorator;
 
+import de.monticore.cd.facade.CDModifier;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
-import de.monticore.guidsl._ast.ASTGUIDSLNode;
-import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
-import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
-import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
-import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
+import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._symboltable.GUIDSLScope;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolTOP;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
-import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import umlp.generator.domain.decorator.GenService;
+import org.gradle.internal.impldep.org.apache.commons.compress.archivers.ar.ArArchiveEntry;
 import umlp.generator.gui.GUIAbstractDecorator;
-import umlp.generator.gui.GUIComponentAccessVisitor;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static umlp.generator.gui.GUIGeneratorUtil.getNestedComponent;
+import static umlp.generator.gui.GUIGeneratorUtil.gui2cdAttrName;
+import static umlp.generator.gui.GUIGeneratorUtil.init;
 import static umlp.generator.gui.GUIGeneratorUtil.isEventArgument;
 import static umlp.generator.gui.GUIGeneratorUtil.isStringLiteral;
 
@@ -60,55 +61,101 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
-    String componentName = guiComponent.getId().getName();
+    // String componentName = guiComponent.getId().getName();
     // Optional<ASTGUIIterate> iterate = viewComponent.getIterateForComponent(guiComponent);
-    generateGetMethodsForComponentArguments(decoratedClass, guiComponent, componentName);
+    generatePropsAndGetters(decoratedClass, guiComponent/*, componentName*/);
   }
 
-  protected void generateGetMethodsForComponentArguments(
-      ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName
+  protected void generatePropsAndGetters(
+      ASTCDClass decoratedClass, ASTGUIComponent guiComponent
   ) {
-    GUIComponentAccessVisitor viewComponents = new GUIComponentAccessVisitor(guiComponent);
+    // GUIComponentAccessVisitor viewComponents = new GUIComponentAccessVisitor(guiComponent);
 
+    for (ASTGUINamedArg arg : guiComponent.getGUINamedArgs().getGUINamedArgList()) {
+      generatePropAndGetterForArg(decoratedClass, guiComponent, arg);
+    }
+    /*
     viewComponents.getNamedArgsFieldAccess().entrySet().forEach(e ->
         generateGetMethodForComponentArgument(
             decoratedClass, guiComponent, componentName, e.getKey(), e.getValue()
         ));
+    /**/
   }
 
-  protected void generateGetMethodForComponentArgument(
+  protected void generatePropAndGetterForArg(
       ASTCDClass decoratedClass, ASTGUIComponent guiComponent,
-      String componentName, ASTGUINamedArg namedArg, Set<ASTFieldAccessExpression> zuweisungen
+      ASTGUINamedArg namedArg//, Set<ASTFieldAccessExpression> zuweisungen
   ) {
-    String argValue = replaceZuweisungen(namedArg, zuweisungen);
+    // String argValue = replaceZuweisungen(namedArg, zuweisungen);
+    Optional<GUIParamSymbol> paramSym = GUIGeneratorUtil.resolveGUIParamSym(
+        namedArg.getEnclosingScope(), guiComponent.getQualifiedName(), namedArg.getName());
+    if (paramSym.isEmpty()) {
+      Log.error("0x00001 Argument " + namedArg.getName()
+          + " of component " + guiComponent.getQualifiedName()
+          + " cannot be resolved");
+    }
 
-    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
-        .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
+    GUIArgValueReplaceVisitor visitor = new GUIArgValueReplaceVisitor();
+    SymTypeExpression paramSTE = paramSym.get().getType();
+    visitor.transform(paramSTE, namedArg);
+    if (!visitor.argNeedsGetter()) {
+      return;
+    }
 
-    if (guiComponentSymbol.isPresent() && !isEventArgument(guiComponentSymbol.get(), namedArg)) {
-      Optional<GUIParamSymbol> paramSym = guiComponentSymbol.get().getSpannedScope().resolveGUIParam(namedArg.getName());
-      /*
-      if (!paramSym.isPresent() && iterate.isPresent()) {
-        paramSym = iterate.get().getSpannedScope().resolveGUIParam(namedArg.getName());
-      }
-      /**/
-      if (paramSym.isPresent()) {
-        if (GUIGeneratorUtil.isViewElement(paramSym.get().getType())
-            || GUIGeneratorUtil.isViewElementsCollection(paramSym.get().getType())) {
-          return;
+    String paramType = paramSym.get().getType().print();
+    if (visitor.argNeedsOwnParamWithInit()) {
+      // TODO AGe: how to do that better?
+      // if List
+      if (namedArg.getGUIArgValue().isPresentGUIList()) {
+        List<ASTGUIArgValue> valueList = namedArg.getGUIArgValue().getGUIList().getGUIArgValueList();
+
+        String typeArg = "? extends Object";
+        boolean isPrimitive = false;
+        if (!valueList.isEmpty()) {
+          if (valueList.get(0).isPresentExpression()) {
+            if (valueList.get(0).getExpression() instanceof ASTLiteralExpression) {
+              isPrimitive = true;
+            }
+          } else {
+            Log.error("0x00002 Cannot handle " + namedArg.getName()
+                + " of component " + guiComponent.getQualifiedName()
+                + " yet: nested objects initialization");
+          }
         }
-        String paramType = paramSym.get().getType().getTypeInfo().getName();
-        boolean convertToString = mustBeConvertedToString(paramType, namedArg);
-        if (convertToString) {
-          argValue = "String.valueOf(" + argValue + ")";
-        }
+        ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
+            CDModifier.PROTECTED.build(),
+            MCTypeFacade.getInstance().createListTypeOf(typeArg),
+            gui2cdAttrName(guiComponent.getId().getName(), namedArg.getName()));
+        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(" = new ArrayList<>()"));
+        decoratedClass.addCDMember(attr);
 
-        String methodName = "get"
-            + guiComponent.getName()
-            + StringTransformations.capitalize(componentName)
-            + StringTransformations.capitalize(namedArg.getName());
-        addGetComponentMethod(decoratedClass, methodName, paramType, argValue);
+        String getterName = GUIGeneratorUtil.gui2cdAttrGetterName(
+            guiComponent.getId().getName(), namedArg.getName());
+        addGetComponentMethod(decoratedClass, getterName, paramType, attr.getName());
+
+        String setterName = GUIGeneratorUtil.gui2cdAttrSetterName(
+            guiComponent.getId().getName(), namedArg.getName());
+        addSetComponentMethod(decoratedClass, setterName, paramType, attr.getName());
+
+        List<String> initValues = new ArrayList<>();
+        for (ASTGUIArgValue av : valueList) {
+          initValues.add(guiDSLPrinter.prettyprint(av.getExpression()));
+        }
+        TemplateHookPoint hp = new TemplateHookPoint(
+            "umlp.gui2java.InitLists", attr.getName(), setterName, isPrimitive, initValues
+        );
+        glex.setAfterTemplate("umlp.gui2java.InitBody", hp);
       }
+    } else {
+      String argValue = guiDSLPrinter.prettyprint(visitor.getResult());
+      boolean convertToString = mustBeConvertedToString(paramType, namedArg);
+      if (convertToString) {
+        argValue = "String.valueOf(" + argValue + ")";
+      }
+
+      String methodName = GUIGeneratorUtil.gui2cdAttrGetterName(
+          guiComponent.getId().getName(), namedArg.getName());
+      addGetComponentMethod(decoratedClass, methodName, paramType, argValue);
     }
   }
 
@@ -119,26 +166,31 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   public void transform(ASTGUICompilationUnit guiAst, ASTCDCompilationUnit decoratedAST) {
   }
 
+  // TODO AGe: error concept is not ready, leave that out for now
+  /*
   protected void addComponentErrorAttribute(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, Optional<ASTGUIIterate> iterate) {
     String componentAttributeName = StringTransformations.uncapitalize(guiComponent.getName()) + "ValueError";
     getCD4C().addAttribute(decoratedClass, true, false, "protected String " + componentAttributeName + " = \"\";");
   }
+  /**/
 
+  /*
   protected void addGetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
       String returnType, String variableName, String attrName) {
     getCD4C().addMethod(decoratedClass, "umlp.gui2java.GetComponent",
         "get" + guiComponent.getName() + StringTransformations.capitalize(componentName) + VALUE, returnType, variableName, attrName);
   }
+  /**/
 
-  protected void addGetComponentMethod(ASTCDClass decoratedClass, String methodName, String returnType, String replaced) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.GetComponentReplaced", methodName, returnType, replaced);
+  protected void addGetComponentMethod(ASTCDClass decoratedClass, String methodName, String attrType, String returnValue) {
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.GetComponentReplaced", methodName, attrType, returnValue);
   }
 
-  protected void addSetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String attrType, String attrName, String setExpr) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.SetComponent", "set" + guiComponent.getName(),
-        attrType, attrName, setExpr);
+  protected void addSetComponentMethod(ASTCDClass decoratedClass, String methodName, String attrType, String attrName) {
+    getCD4C().addMethod(decoratedClass, "umlp.gui2java.SetComponent", methodName, attrType, attrName);
   }
 
+  /*
   protected boolean checkArgumentsSize(ASTGUIComponent guiComponent, int size) {
     if (guiComponent.getGUINamedArgs().getGUINamedArgList().size() != size) {
       Log.error("Anzahl der Argumente der GUI-Komponente muss gleich " + size + " sein in " + guiName);
@@ -146,7 +198,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     }
     return true;
   }
+  /**/
 
+  /*
   protected Optional<ASTGUINamedArg> getComponentArgSingle(ASTGUIComponent guiComponent, Predicate<ASTGUINamedArg> predicate) {
     List<ASTGUINamedArg> args = filterArgWithPredicate(guiComponent.getGUINamedArgs().getGUINamedArgList(), predicate);
     if (args.size() != 1) {
@@ -155,11 +209,14 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     }
     return Optional.of(args.get(0));
   }
+  /**/
 
+  /*
   protected String getErrorMessage(String guiComponentName, ASTGUIDSLNode astNode) {
     return guiComponentName + "-GUIComponent args aren't correct in " + guiName + " : \n" +
         new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astNode);
   }
+  /**/
 
   protected Optional<ASTGUINamedArg> getComponentArgOptional(ASTGUIComponent guiComponent, Predicate<ASTGUINamedArg> predicate) {
     List<ASTGUINamedArg> args = filterArgWithPredicate(guiComponent.getGUINamedArgs().getGUINamedArgList(), predicate);
@@ -194,6 +251,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return res;
   }
 
+  /*
   public Optional<String> handleZuweisung(ASTFieldAccessExpression zuweisung, ASTCDClass decoratedClass, ASTGUIComponent guiComponent,
       String componentName, boolean mustBeString, Optional<ASTGUIIterate> iterate) {
 
@@ -330,6 +388,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     }
     return Optional.empty();
   }
+  /**/
 
   protected Optional<String> getTypeOf(ASTFieldAccessExpression zuweisung) {
     if (zuweisung.getExpression() instanceof ASTNameExpression) {

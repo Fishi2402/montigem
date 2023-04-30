@@ -22,6 +22,7 @@ public class InputValueEditDecorator extends GUI2JavaComponentDecorator {
     super(glex, guiAst, viewComponent);
   }
 
+  /*
   @Override
   public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
     // Get all ASTGUIComponents
@@ -84,5 +85,6 @@ public class InputValueEditDecorator extends GUI2JavaComponentDecorator {
     }
 
   }
+  /**/
 
 }

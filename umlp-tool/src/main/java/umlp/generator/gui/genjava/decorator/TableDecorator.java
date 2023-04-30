@@ -43,6 +43,7 @@ public class TableDecorator extends GUI2JavaComponentDecorator {
     this.componentName = componentName;
   }
 
+  /*
   public void transform(ASTCDClass decoratedClass) {
     Optional<ASTGUINamedArg> col = getComponentArgOptional(guiComponent, PREDICATE_COLS);
     Optional<ASTGUINamedArg> row = getComponentArgOptional(guiComponent, PREDICATE_ROWS);
@@ -125,5 +126,5 @@ public class TableDecorator extends GUI2JavaComponentDecorator {
   public String getComponentName() {
     return componentName;
   }
+  /**/
 }
-

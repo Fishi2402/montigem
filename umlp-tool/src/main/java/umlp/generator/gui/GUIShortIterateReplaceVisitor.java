@@ -18,8 +18,10 @@ import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class GUIShortIterateReplaceVisitor implements GUIDSLVisitor2, ExpressionsBasisVisitor2 {
@@ -28,6 +30,8 @@ public class GUIShortIterateReplaceVisitor implements GUIDSLVisitor2, Expression
   protected ASTIterateControl iterateControl;
 
   protected Map.Entry<ASTNode, ASTExpression> potentialItOldHolder;
+  protected List<ExpressionReplacement> replacements = new ArrayList<>();
+
   protected boolean active = false;
   protected String itOld;
   protected ASTExpression itNew;
@@ -54,6 +58,10 @@ public class GUIShortIterateReplaceVisitor implements GUIDSLVisitor2, Expression
     if (node.equals(iterate)) {
       active = true;
       iterateControl = node.getIterateControl();
+      for (ExpressionReplacement nr : replacements) {
+        ExpressionReplaceVisitor visitor = new ExpressionReplaceVisitor();
+        visitor.transform(nr.getHolder(), nr.getOldValue(), nr.getNewValue());
+      }
     }
   }
 
@@ -139,8 +147,8 @@ public class GUIShortIterateReplaceVisitor implements GUIDSLVisitor2, Expression
       return;
     }
     if (potentialItOldHolder.getValue().equals(node)) {
-      GUIShortIterateItemReplaceVisitor visitor = new GUIShortIterateItemReplaceVisitor();
-      visitor.transform(potentialItOldHolder.getKey(), itNew, node);
+      replacements.add(new ExpressionReplacement(
+          potentialItOldHolder.getKey(), potentialItOldHolder.getValue(), itNew));
     }
   }
 
