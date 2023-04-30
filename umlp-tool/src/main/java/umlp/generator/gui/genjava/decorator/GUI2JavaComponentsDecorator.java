@@ -21,13 +21,16 @@ public class GUI2JavaComponentsDecorator extends GUIAbstractDecorator {
   public void transform(ASTGUICompilationUnit guiAst, ASTCDClass decoratedClass) {
     for (ASTGUIComponent c : viewComponent.getComponents()) {
       new GUI2JavaComponentDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c);
+      if (GUIGeneratorUtil.isEventComponent(c)) {
+        new EventDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c);
+      }
     }
 
-    viewComponent.getComponents().stream().filter(GUIGeneratorUtil::isEventComponent)
-        .forEach(c -> new EventDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c));
-
+    // TODO AGe: rework iterate, not critical
+    /*
     viewComponent.getIterates().stream()
         .forEach(c -> new IterateDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c));
+    /**/
   }
 
 }

@@ -168,6 +168,11 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(argName);
   }
 
+  public static String gui2cdEventCallName(ASTGUIComponent guiComponent, String eventName) {
+    return StringTransformations.uncapitalize(guiComponent.getId().getName())
+        + StringTransformations.capitalize(eventName);
+  }
+
   public static boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
     return arg.isPresentGUIList() && arg.getGUIList().getGUIArgValueList()
         .stream().anyMatch(a -> a.isPresentGUIComponent());
@@ -176,7 +181,6 @@ public class GUIGeneratorUtil {
   public static boolean isEventComponent(ASTGUIComponent guiComponent) {
     Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
         .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
-    //Optional<FunctionSymbol> guiComponentSymbol = GUIDSLMill.globalScope().resolveFunction(guiComponent.getQualifiedName());
     return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream()
         .anyMatch(a -> isEventArgument(guiComponentSymbol.get(), a));
   }

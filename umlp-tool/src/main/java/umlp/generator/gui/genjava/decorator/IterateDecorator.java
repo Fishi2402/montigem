@@ -20,13 +20,11 @@ import java.util.Optional;
 public class IterateDecorator extends GUIAbstractDecorator {
 
   protected final String guiName;
-  private final ASTGUICompilationUnit guiAst;
   protected final GUIComponentsVisitor viewComponent;
 
   public IterateDecorator(GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst, GUIComponentsVisitor viewComponent) {
     super(glex);
     this.guiName = guiAst.getGUIComponentDeclaration().getName();
-    this.guiAst = guiAst;
     this.viewComponent = viewComponent;
   }
 
