@@ -31,10 +31,4 @@ public class GUI2CDTrafo {
     return cdAst;
   }
 
-  public static void createCD4CodeSymTab(ASTCDCompilationUnit cdAST) {
-    // create symtab
-    CD4CodeMill.scopesGenitorDelegator().createFromAST(cdAST);
-    cdAST.accept(new CD4CodeSymbolTableCompleter(cdAST).getTraverser());
-  }
-
 }

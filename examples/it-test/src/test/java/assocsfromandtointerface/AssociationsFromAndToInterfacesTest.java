@@ -1,14 +1,8 @@
 package assocsfromandtointerface;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import umlp.backendrte.command.CommandDirectCommunication;
-import umlp.backendrte.command.CommandManager;
-import umlp.backendrte.command.TestClientCommandManager;
-import umlp.backendrte.common.DatabaseAccessManager;
 
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -37,115 +31,14 @@ import static assocsfromandtointerface.AssocsFromAndToInterfaceManager.i2ImplBui
 import static assocsfromandtointerface.AssocsFromAndToInterfaceManager.i3ImplBuilder;
 import static assocsfromandtointerface.AssocsFromAndToInterfaceManager.i4ImplBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AssociationsFromAndToInterfacesTest {
-
-  static abstract class TestSetup{
-    public abstract void initialize();
-    public void clearCacheOfRemote() {}
-    public void cleanup() throws SQLException{ }
-  }
-
-  static class MockTestSetup extends TestSetup{
-    @Override
-    public void initialize() {
-      AssocsFromAndToInterfaceMock.init();
-    }
-  }
-
-  static class DBTestSetup extends TestSetup{
-    @Override
-    public void initialize() {
-      try {
-        AssocsFromAndToInterfaceManagerImpl4Test instance = new AssocsFromAndToInterfaceManagerImpl4Test();
-        instance.assocsFromAndToInterfaceObservers.add(new AssocsFromAndToInterfaceDbObserver());
-        AssocsFromAndToInterfaceManager.initMe(instance);
-        String schema = IOUtils.resourceToString("/AssocsFromAndToInterface.sql", StandardCharsets.UTF_8);
-        assertTrue(DatabaseAccessManager.initSchema(schema));
-      }catch (Exception e){
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
-    public void clearCacheOfRemote() {
-      ((AssocsFromAndToInterfaceManagerImpl4Test)AssocsFromAndToInterfaceManager.getSingleton()).clearCache();
-    }
-
-    @Override
-    public void cleanup() throws SQLException {
-      DatabaseAccessManager.closeConnection();
-    }
-  }
-
-  static class ClientTestSetup extends TestSetup{
-    AssocsFromAndToInterfaceTestContext server;
-    AssocsFromAndToInterfaceTestContext client;
-    @Override
-    public void initialize() {
-      // Server
-      AssocsFromAndToInterfaceMock.init();
-      server = AssocsFromAndToInterfaceTestContext.fromCurrentContext();
-
-      // Client
-      AssocsFromAndToInterfaceManager.initMe(new AssocsFromAndToInterfaceManagerClientImpl4Test());
-      CommandDirectCommunication communication = new CommandDirectCommunication(server);
-      TestClientCommandManager clientCommandManager = new TestClientCommandManager(communication);
-      CommandManager.initMe(clientCommandManager);
-      client = AssocsFromAndToInterfaceTestContext.fromCurrentContext();
-      communication.setClientContext(client);
-
-      client.activate();
-    }
-
-    @Override
-    public void clearCacheOfRemote() {
-      ((AssocsFromAndToInterfaceManagerClientImpl4Test)client.getManager()).clearCache();
-    }
-  }
-
-  static class AssocsFromAndToInterfaceManagerImpl4Test extends AssocsFromAndToInterfaceManagerImpl{
-    public void clearCache(){
-      knownI1Impls.clear();
-      knownC1s.clear();
-      knownI2Impls.clear();
-      knownC2s.clear();
-      knownI3Impls.clear();
-      knownI4Impls.clear();
-      knownAC1Impls.clear();
-      knownC3s.clear();
-      knownAC2Impls.clear();
-      knownC4s.clear();
-      knownAC3Impls.clear();
-      knownAC4Impls.clear();
-    }
-  }
-
-  static class AssocsFromAndToInterfaceManagerClientImpl4Test extends AssocsFromAndToInterfaceManagerClientImpl {
-    public void clearCache(){
-      knownI1Impls.clear();
-      knownC1s.clear();
-      knownI2Impls.clear();
-      knownC2s.clear();
-      knownI3Impls.clear();
-      knownI4Impls.clear();
-      knownAC1Impls.clear();
-      knownC3s.clear();
-      knownAC2Impls.clear();
-      knownC4s.clear();
-      knownAC3Impls.clear();
-      knownAC4Impls.clear();
-    }
-  }
 
   public static List<TestSetup> getSetups() {
     return List.of(
         new MockTestSetup(),
-        new DBTestSetup()
-        // ,new ClientTestSetup()
-        // TODO: DeSer of interfaces
-        // TODO: DeSer of all types must respect concrete subclasses!
+        new DBTestSetup(),
+        new ClientTestSetup()
     );
   }
 

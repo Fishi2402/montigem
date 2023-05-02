@@ -40,9 +40,11 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
 
   }
 
+  /*
   @Override
   protected void generateMethodsForInputValueComponent(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
       String returnType, String variableName, String variableType, String attrName, Optional<ASTGUIIterate> iterate) {
   }
+  /**/
 
 }

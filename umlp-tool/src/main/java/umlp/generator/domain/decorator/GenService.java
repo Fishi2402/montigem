@@ -155,12 +155,13 @@ public class GenService {
 
   public static String getType(SymTypeExpression symType) {
     if (symType.isGenericType()) {
-      return ((SymTypeOfGenerics) symType).getBaseName();
+      String res = ((SymTypeOfGenerics) symType).getBaseName();
+      return box(res);
     }
     if (isCDType(symType)) {
       return symType.print();
     }
-    return symType.getTypeInfo().getFullName();
+    return box(symType.getTypeInfo().getFullName());
   }
 
   public static boolean isVisible(ASTCDAttribute attr) {

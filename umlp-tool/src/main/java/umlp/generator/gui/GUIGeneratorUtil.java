@@ -1,38 +1,45 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
-import com.google.common.collect.Lists;
-import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
-import de.monticore.guidsl._ast.*;
+import de.monticore.guidsl._ast.ASTGUIArgValue;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._ast.ASTGUIParam;
+import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
+import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
+import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.StringTransformations;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.domain.decorator.GenService;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static umlp.generator.gui.GUIAbstractDecorator.CREATE_INPUT_VALUE_SUFFIX;
-
 public class GUIGeneratorUtil {
 
-  public static final String STRING = "String";
+  // Fully qualified Name of the classdiagram, e.g. "hardy.Flensburg"
+  private static List<String> DOMAIN_MODELS;
+  // Fully qualified Name of a gui model, e.g. "stanley.PersonCreate"
+  private static List<String> CREATE_MODELS;
 
-  public static final String LONG = "Long";
+  private GUIGeneratorUtil() {
+  }
 
-  public static final String VIEW_ELEMENT = "GUIViewElement";
-
-  public static final List<String> UMLP_TYPES = Collections.unmodifiableList(Lists.newArrayList(STRING, LONG));
-
-  private GUIGeneratorUtil() {}
+  public static void init(List<String> domainModels, List<String> createModels) {
+    DOMAIN_MODELS = domainModels;
+    CREATE_MODELS = createModels;
+  }
 
   public static final boolean isInputGui(ASTGUICompilationUnit guiAst, List<ASTGUIComponent> inputComponents) {
     return !inputComponents.isEmpty() &&
@@ -45,22 +52,47 @@ public class GUIGeneratorUtil {
   }
 
   public static final boolean isDomainType(SymTypeExpression type) {
-    String typeName = type.getTypeInfo().getName();
-    String fullName = type.getTypeInfo().getFullName();
-    return !type.isGenericType()
-        && !BasicSymbolsMill.PRIMITIVE_LIST.contains(typeName)
-        && !UMLP_TYPES.contains(typeName);
+    if (!type.hasTypeInfo()) {
+      return false;
+    }
+    TypeSymbol ts = type.getTypeInfo();
+    if (!(ts.getEnclosingScope() instanceof IGUIDSLArtifactScope)) {
+      return false;
+    }
+    IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
+    return DOMAIN_MODELS.contains(as.getFullName());
+  }
+
+  public static final boolean isDomainImport(ASTMCImportStatement i) {
+    for (String cd : DOMAIN_MODELS) {
+      if (i.getQName().startsWith(cd)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // TODO AGe: indicator of "main" model after cdmerge is built in
+  public static final Optional<String> getMainDomainModelQName() {
+    if (!DOMAIN_MODELS.isEmpty()) {
+      return Optional.of(DOMAIN_MODELS.get(0));
+    }
+    return Optional.empty();
+  }
+
+  public static final boolean isCreateModel(String componentQName) {
+    return CREATE_MODELS.contains(componentQName);
   }
 
   public static boolean isInputComponent(ASTGUIComponent guiComponent) {
     Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
         .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
     return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream()
-        .filter(a -> isInputArgument(guiComponentSymbol.get(), a)).findAny().isPresent();
+        .anyMatch(a -> isInputArgument(guiComponentSymbol.get(), a));
   }
 
   public static boolean isInputArgument(ASTGUIComponent guiComponent, ASTGUINamedArg arg) {
-   Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
+    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
         .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
     return !guiComponentSymbol.isPresent() || isInputArgument(guiComponentSymbol.get(), arg);
   }
@@ -102,9 +134,43 @@ public class GUIGeneratorUtil {
     return arg.getGUIComponent();
   }
 
+  public static Optional<GUIParamSymbol> resolveGUIParamSym(
+      IGUIDSLScope scope, String compName, String argName
+      ) {
+    Optional<GUIComponentDeclarationSymbol> declSym = scope.resolveGUIComponentDeclaration(compName);
+    if (declSym.isPresent()) {
+      return declSym.get().getSpannedScope().resolveGUIParam(argName);
+    }
+    return Optional.empty();
+  }
+
+  public static String gui2cdAttrName(String domainParamName) {
+    return domainParamName;
+  }
+
+  public static String gui2cdAttrName(String componentId, String argName) {
+    return componentId + StringTransformations.capitalize(argName);
+  }
+
+  public static String gui2cdAttrGetterName(String domainParamName) {
+    return "get" + StringTransformations.capitalize(domainParamName);
+  }
+
+  public static String gui2cdAttrGetterName(String componentId, String argName) {
+    return "get"
+        + StringTransformations.capitalize(componentId)
+        + StringTransformations.capitalize(argName);
+  }
+
+  public static String gui2cdAttrSetterName(String componentId, String argName) {
+    return "set"
+        + StringTransformations.capitalize(componentId)
+        + StringTransformations.capitalize(argName);
+  }
+
   public static boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
     return arg.isPresentGUIList() && arg.getGUIList().getGUIArgValueList()
-        .stream().filter(a -> a.isPresentGUIComponent()).findAny().isPresent();
+        .stream().anyMatch(a -> a.isPresentGUIComponent());
   }
 
   public static boolean isEventComponent(ASTGUIComponent guiComponent) {
@@ -112,11 +178,11 @@ public class GUIGeneratorUtil {
         .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
     //Optional<FunctionSymbol> guiComponentSymbol = GUIDSLMill.globalScope().resolveFunction(guiComponent.getQualifiedName());
     return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream()
-        .filter(a -> isEventArgument(guiComponentSymbol.get(), a)).findAny().isPresent();
+        .anyMatch(a -> isEventArgument(guiComponentSymbol.get(), a));
   }
 
-  public static boolean isCreateClass(ASTCDClass decoratedClass) {
-    return decoratedClass.getName().endsWith(CREATE_INPUT_VALUE_SUFFIX);
+  public static boolean isCreateClass(ASTGUICompilationUnit ast) {
+    return CREATE_MODELS.contains(ast.getComponentQName());
   }
 
   public static boolean isInputArgument(GUIComponentDeclarationSymbol guiComponent, ASTGUINamedArg arg) {
@@ -132,7 +198,8 @@ public class GUIGeneratorUtil {
 
   public static boolean isEventArgument(GUIComponentDeclarationSymbol guiComponent, ASTGUINamedArg arg) {
     Optional<GUIParamSymbol> argSymbol = guiComponent.getSpannedScope().resolveGUIParam(arg.getName());
-    return argSymbol.isPresent() && argSymbol.get().getType().getTypeInfo().getName().equals("Event");
+    return argSymbol.isPresent() && argSymbol.get().getType().getTypeInfo().getName().equals(
+        BuiltInTypes.EVENT.getName());
   }
 
   public static boolean isStringLiteral(ASTGUIArgValue argValue) {
@@ -142,7 +209,7 @@ public class GUIGeneratorUtil {
 
   public static List<ASTGUINamedArg> getInputArguments(ASTGUIComponent guiComponent) {
     Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
-    if (!guiComponentSymbol.isPresent()) {
+    if (guiComponentSymbol.isEmpty()) {
       return new ArrayList<>();
     }
     return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> isInputArgument(guiComponentSymbol.get(), a)).collect(Collectors.toList());
@@ -150,7 +217,7 @@ public class GUIGeneratorUtil {
 
   public static List<ASTGUINamedArg> getEventArguments(ASTGUIComponent guiComponent) {
     Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
-    if (!guiComponentSymbol.isPresent()) {
+    if (guiComponentSymbol.isEmpty()) {
       return new ArrayList<>();
     }
     return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> isEventArgument(guiComponentSymbol.get(), a)).collect(Collectors.toList());
@@ -161,11 +228,25 @@ public class GUIGeneratorUtil {
   }
 
   public static boolean isViewElementsCollection(ASTGUIParam param) {
-    return GenService.isList(param.getMCType()) && GenService.getInnerType(param.getMCType()).equals(VIEW_ELEMENT);
+    return GenService.isList(param.getMCType())
+        && BuiltInTypes.GUI_VIEW_ELEMENT.getName().equals(GenService.getInnerType(param.getMCType()));
   }
 
-  public static boolean isViewElement(GUIParamSymbol param) {
-    return param.getType().getTypeInfo().getName().equals(VIEW_ELEMENT);
+  public static boolean isViewElementsCollection(SymTypeExpression ste) {
+    boolean res = false;
+    if (ste.isGenericType()) {
+      List<SymTypeExpression> arguments = ((SymTypeOfGenerics) ste).getArgumentList();
+      for (SymTypeExpression arg : arguments) {
+        res = res
+            || isViewElement(arg)
+            || isViewElementsCollection(arg);
+      }
+    }
+    return res;
+  }
+
+  public static boolean isViewElement(SymTypeExpression ste) {
+    return ste.getTypeInfo().getName().equals(BuiltInTypes.GUI_VIEW_ELEMENT.getName());
   }
 
   public static String getComponentNameFromCamelCaseName(String camelCaseName) {
@@ -175,15 +256,17 @@ public class GUIGeneratorUtil {
   public static String[] splitCamelCase(String str) {
     if (str == null) {
       return null;
-    } else if (str.length() == 0) {
+    }
+    else if (str.length() == 0) {
       return ArrayUtils.EMPTY_STRING_ARRAY;
-    } else {
+    }
+    else {
       char[] c = str.toCharArray();
       List list = new ArrayList();
       int tokenStart = 0;
       int currentType = Character.getType(c[tokenStart]);
 
-      for(int pos = tokenStart + 1; pos < c.length; ++pos) {
+      for (int pos = tokenStart + 1; pos < c.length; ++pos) {
         int type = Character.getType(c[pos]);
         if (type != currentType) {
           if (type == 2 && currentType == 1) {
@@ -192,7 +275,8 @@ public class GUIGeneratorUtil {
               list.add(new String(c, tokenStart, newTokenStart - tokenStart));
               tokenStart = newTokenStart;
             }
-          } else {
+          }
+          else {
             list.add(new String(c, tokenStart, pos - tokenStart));
             tokenStart = pos;
           }
@@ -202,7 +286,7 @@ public class GUIGeneratorUtil {
       }
 
       list.add(new String(c, tokenStart, c.length - tokenStart));
-      return (String[])((String[])list.toArray(new String[list.size()]));
+      return (String[]) ((String[]) list.toArray(new String[list.size()]));
     }
   }
 

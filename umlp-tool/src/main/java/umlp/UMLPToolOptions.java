@@ -29,6 +29,19 @@ public enum UMLPToolOptions {
       .desc("Sets the artifact paths for handwritten code, space separated.").build()),
   TMPL_PATH(Option.builder("fp").longOpt("templatePath").hasArgs()
       .desc("Directories and jars for handwritten templates, space separated.").build()),
+
+  DOMAIN(Option.builder("dm").longOpt("domainModels").hasArgs()
+      .desc("Fully qualified names of the domain models, space separated").build()),
+
+  /**
+   * RQ: GUI has no strategy to differentiate create and update pages, but we should only generate
+   * one component per model. Adding a flag allows to explicitly state which models are for object
+   * creation, otherwise pages for update are generated. Normally the flag is set by the CD2GUI,
+   * but in the presence of hw models the flag is necessary.
+   * Example: -guic stanley.PersonForm
+   */
+  GUI_CREATE(Option.builder("guic").longOpt("guiCreateModels").hasArgs()
+      .desc("Fully qualified names of the gui models for object creation, space separated").build())
   ;
 
   UMLPToolOptions(Option option) {

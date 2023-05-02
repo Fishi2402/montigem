@@ -22,7 +22,6 @@ import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import umlp.generator.domain.decorator.GenService;
-import umlp.generator.util.PathUtil;
 
 import java.util.Optional;
 

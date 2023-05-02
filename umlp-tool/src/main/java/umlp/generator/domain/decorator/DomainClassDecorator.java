@@ -5,17 +5,28 @@ package umlp.generator.domain.decorator;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDClassBuilder;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDInterfaceUsage;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.TypeCalculator;
+import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +34,8 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
 public class DomainClassDecorator extends DomainTypeDecorator {
+
+  // TODO: add/remove methods for lists of basic types, e.g. List<String>
 
   protected final MCPath hwPath;
 
@@ -77,10 +90,17 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     AttributesTuple attributes = getAllAttributes(domainClass, false);
 
     // Add attributes to class
-    clazz.addAllCDMembers(filterDerivedAttributes(attributes.attrList, false));
+    List<ASTCDAttribute> nonDerivedAttrs = filterDerivedAttributes(attributes.attrList, false);
+    clazz.addAllCDMembers(nonDerivedAttrs);
+    for (ASTCDAttribute attr : nonDerivedAttrs) {
+      if(GenService.isGem(attr) && !GenService.isGemList(attr)) {
+        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new Gem<>()"));
+      }
+    }
 
     // General methods
     createObserverMethods(domainClass, clazz);
+    createEqualsMethod(domainClass, clazz);
     getCD4C().addMethod(clazz, "umlp.domain.Build", domainClass.getName());
 
     // Methods for class attributes
@@ -123,6 +143,41 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     getCD4C().addMethod(clazz, "umlp.domain.AddObserver", domainClass.getName(), clazz.isPresentCDExtendUsage());
     getCD4C().addMethod(clazz, "umlp.domain.RemoveObserver", domainClass.getName());
     getCD4C().addMethod(clazz, "umlp.domain.ContainsObserver", domainClass.getName());
+  }
+
+  protected void createEqualsMethod(ASTCDClass domainClass, ASTCDClass clazz) {
+
+    List<String> primitives = new ArrayList<>();
+    List<String> primitiveBooleans = new ArrayList<>();
+    List<String> wrappedBooleans = new ArrayList<>();
+    List<String> objects = new ArrayList<>();
+    FullSynthesizeFromCD4Code synthesize = new FullSynthesizeFromCD4Code();
+
+    for (ASTCDAttribute attribute: domainClass.getCDAttributeList()) {
+      if (attribute.getModifier().isDerived() || attribute.getModifier().isAbstract()) {
+        continue;
+      }
+      TypeCheckResult result = synthesize.synthesizeType(attribute.getMCType());
+      if (result.isPresentResult()) {
+        SymTypeExpression expression = result.getResult();
+        boolean isBool = TypeCheck.isBoolean(expression);
+        if (expression.isPrimitive()) {
+          if (isBool) {
+            primitiveBooleans.add(attribute.getName());
+          } else {
+            primitives.add(attribute.getName());
+          }
+        } else {
+          if (isBool) {
+            wrappedBooleans.add(attribute.getName());
+          } else {
+            objects.add(attribute.getName());
+          }
+        }
+      }
+    }
+
+    getCD4C().addMethod(clazz, "umlp.domain.Equals", primitives, objects, primitiveBooleans, wrappedBooleans, domainClass.getName());
   }
 
   /**

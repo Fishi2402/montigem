@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain.decorator;
 
-import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
@@ -14,11 +13,11 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,10 +53,14 @@ public class DbObserverDecorator extends AbstractDecorator {
       .addCDMember(getDAOAttribute(domainClass))
       .addAllCDMembers(getAssocDaoAttributes(domainClass, associations)).build();
 
-    CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-      .filter(a -> !a.getModifier().isDerived())
-      .forEach(a -> getCD4C().addMethod(observerClass, "umlp.dbobserver.Notify",
-              a.getName(), className, GenService.getType(a.getSymbol().getType())));
+    UMLPSymbolTables.getAttributesInHierarchyWithDefiningType(domainClass).entrySet().stream()
+      .filter(e -> !e.getKey().getModifier().isDerived())
+      .forEach(e -> {
+        ASTCDAttribute a = e.getKey();
+        ASTCDMethodSignature set = getCD4C().addMethod(observerClass, "umlp.dbobserver.Notify",
+            a.getName(), e.getValue().getName(), GenService.getType(a.getSymbol().getType()));
+        glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
+      });
 
     for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e: DAODecorator.getOppositeSideToAssociationMap(domainClass, associations).entrySet()) {
       CDRoleSymbol cdRollSymbol = e.getKey().getSymbol();
@@ -75,15 +78,11 @@ public class DbObserverDecorator extends AbstractDecorator {
       ASTCDMethodSignature set = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.SetNotify",
           className, e.getValue().getName(), e.getKey(), otherTypeName);
 
-      // From supertype
-      SymTypeExpression t2 = SymTypeExpressionFactory.createTypeExpression(domainClass.getSymbol());
-      if(!otherType.deepEquals(t2)) {
-        if(add != null && remove != null) {
-          glex.replaceTemplate("cd2java.Annotations", add, new StringHookPoint("@Override"));
-          glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
-        }
-        glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
+      if(add != null && remove != null) {
+        glex.replaceTemplate("cd2java.Annotations", add, new StringHookPoint("@Override"));
+        glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
       }
+      glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
     }
 
     addImports(observerClass);

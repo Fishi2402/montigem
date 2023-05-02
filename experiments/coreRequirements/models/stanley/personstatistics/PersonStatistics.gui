@@ -20,7 +20,7 @@ import stanley.tmp.charts.GemPie;
 page PersonStatistics(List<Person> ps) {
 
   // Pie chart showing statistics (implementation in Java hwc)
-  @GemPie(data = getData(ps));
+  @GemPie(entries = getData(ps));
 
 }
 

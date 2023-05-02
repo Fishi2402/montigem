@@ -1,5 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("classname","attributename","type")}
-${cd4c.method("public void notifySet${attributename?cap_first}(${classname} ${classname?uncap_first}, ${type} o)")}
+${tc.signature("classname","name","type","assocName","isBidirectional", "originalType")}
+${cd4c.method("public void notifySet${name?cap_first}(${classname} p, ${type} o)")}
 
-CommandManager.executeSingleCommand(new ${classname}_set${attributename?cap_first}(${classname?uncap_first}.getGemId(), o));
+<#if isBidirectional>
+// TODO: CommandManager.executeCommand(new ${assocName?cap_first}_set(gemId, o.getGemId()));
+<#else>
+CommandManager.executeCommand(new ${originalType}_set${name?cap_first}(p.getGemId(), o));
+</#if>

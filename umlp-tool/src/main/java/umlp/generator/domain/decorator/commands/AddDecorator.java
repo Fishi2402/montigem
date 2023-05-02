@@ -17,7 +17,6 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
-import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
@@ -30,7 +29,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
-public class AddDecorator extends AbstractDecorator {
+public class AddDecorator extends AbstractDeSerDecorator {
 
   public static final String SUFFIX = "_add";
   protected Set<String> supportedDeSers;
@@ -42,10 +41,10 @@ public class AddDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    addedDeSers.clear();
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
-        .filter(c -> !c.getSymbol().isIsAbstract())
             .forEach(c -> {
               CDSymbolTables.getAttributesInHierarchy(c)
                       .stream()
@@ -182,6 +181,7 @@ public class AddDecorator extends AbstractDecorator {
     if (makeAbstract) {
       ast.setModifier(PUBLIC_ABSTRACT.build());
     }
+    addedDeSers.add(ast);
     return ast;
   }
 

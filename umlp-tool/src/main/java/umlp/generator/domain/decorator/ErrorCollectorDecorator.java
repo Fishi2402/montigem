@@ -27,8 +27,12 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
             .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c, name)));
   }
 
+  public static String getClassName(String domainClassName) {
+    return domainClassName + SUFFIX;
+  }
+
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String name) {
-    String className = domainClass.getName() + SUFFIX;
+    String className = getClassName(domainClass.getName());
 
     ASTCDClass collectorClass = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())

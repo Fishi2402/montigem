@@ -43,8 +43,12 @@ public class BuilderDecorator extends AbstractDecorator {
       .forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
   }
 
+  public static String getClassName(String domainClassName) {
+    return domainClassName + BUILDER_SUFFIX;
+  }
+
   protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
-    String className = domainClass.getName() + BUILDER_SUFFIX;
+    String className = getClassName(domainClass.getName());
     String managerName = name + ManagerDecorator.SUFFIX;
 
     ASTCDClass builderClass = UMLPMill.cDClassBuilder()
@@ -111,7 +115,7 @@ public class BuilderDecorator extends AbstractDecorator {
     for (ASTCDAttribute attribute : attrList) {
       getCD4C().addMethod(builderClass, "umlp.builder.Attr",
               attribute.getName(), getCDPrinter().prettyprint(createType(attribute)),
-              domainClass.getName() + BUILDER_SUFFIX);
+              getClassName(domainClass.getName()));
       getCD4C().addMethod(builderClass, "umlp.builder.Check",
               attribute.getName(), domainClass.getName(),
               !GenService.isList(attribute)&& !GenService.isOptional(attribute));
@@ -123,21 +127,21 @@ public class BuilderDecorator extends AbstractDecorator {
       if (GenService.isList(assoc)) {
         getCD4C().addMethod(builderClass, "umlp.builder.AssocList",
                 assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
-                domainClass.getName() + BUILDER_SUFFIX);
+                getClassName(domainClass.getName()));
         getCD4C().addMethod(builderClass, "umlp.builder.AssocAdd",
                 assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
-                domainClass.getName() + BUILDER_SUFFIX);
+                getClassName(domainClass.getName()));
         getCD4C().addMethod(builderClass, "umlp.builder.AssocGemList",
                 assoc.getName(),
-                domainClass.getName() + BUILDER_SUFFIX);
+                getClassName(domainClass.getName()));
 
       } else {
         getCD4C().addMethod(builderClass, "umlp.builder.AssocOne",
                 assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
-                domainClass.getName() + BUILDER_SUFFIX);
+                getClassName(domainClass.getName()));
         getCD4C().addMethod(builderClass, "umlp.builder.AssocOneGem",
                 assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
-                domainClass.getName() + BUILDER_SUFFIX);
+                getClassName(domainClass.getName()));
       }
     }
   }

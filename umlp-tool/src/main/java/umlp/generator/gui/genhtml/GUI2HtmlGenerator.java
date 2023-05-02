@@ -21,13 +21,11 @@ public class GUI2HtmlGenerator {
 
   protected final GeneratorEngine generatorEngine;
   protected GeneratorSetup setup;
-  IGUIDSLArtifactScope symbolTableGui;
   protected GUIComponentsVisitor viewComponents;
 
-  public GUI2HtmlGenerator(GeneratorSetup generatorSetup, IGUIDSLArtifactScope symbolTableGui, GUIComponentsVisitor viewComponents) {
+  public GUI2HtmlGenerator(GeneratorSetup generatorSetup, GUIComponentsVisitor viewComponents) {
     this.generatorEngine = new GeneratorEngine(generatorSetup);
     this.setup = generatorSetup;
-    this.symbolTableGui = symbolTableGui;
     this.viewComponents = viewComponents;
   }
 

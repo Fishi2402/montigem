@@ -1,0 +1,22 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
+<#--
+  This config template does the default GUI2Component generation.
+-->
+${tc.signature("decoratedAST", "glex", "hwPath", "componentGenerator", "viewComponents")}
+
+<#-- Call all decorators -->
+<#assign guiDecorator = tc.instantiate("umlp.generator.gui.genjava.decorator.GUI2JavaDecorator", [glex])>
+
+<#-- TopDecorator -->
+<#assign topDecorator = tc.instantiate("de.monticore.cd.codegen.TopDecorator", [hwPath])>
+
+<#--${includeArgs("umlp.generator.hook.BeforeTransform", decoratedAST, glex, hwPath, componentGenerator, guiDecorator, topDecorator)}-->
+
+${guiDecorator.transform(ast, decoratedAST, viewComponents)}
+
+${topDecorator.decorate(decoratedAST)}
+
+<#--${includeArgs("umlp.generator.hook.AfterTransform", decoratedAST, glex, hwPath, componentGenerator, guiDecorator, topDecorator)}-->
+
+<#-- Generate Java-Code -->
+${componentGenerator.generate(decoratedAST)}

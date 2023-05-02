@@ -95,6 +95,14 @@ public abstract class UMLPTask extends DefaultTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getCdToGui();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract ListProperty<String> getDomainModels();
+
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract ListProperty<String> getGuiCreateModels();
+
   @OutputDirectory
   public abstract DirectoryProperty getOutputDir();
 
@@ -195,6 +203,16 @@ public abstract class UMLPTask extends DefaultTask {
 
     if(this.getCdToGui().get()){
       result.add("-" + UMLPToolOptions.CD2GUI.getCMD());
+    }
+
+    if (this.getDomainModels().isPresent() && !this.getDomainModels().get().isEmpty()) {
+      result.add("-" + UMLPToolOptions.DOMAIN.getCMD());
+      result.addAll(this.getDomainModels().get());
+    }
+
+    if (this.getGuiCreateModels().isPresent() && !this.getGuiCreateModels().get().isEmpty()) {
+      result.add("-" + UMLPToolOptions.GUI_CREATE.getCMD());
+      result.addAll(this.getGuiCreateModels().get());
     }
 
     if (this.getMoreArgs().isPresent()) {
