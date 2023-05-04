@@ -24,6 +24,7 @@ import java.util.Optional;
 public class GUIComponentsVisitor implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2, MCCommonLiteralsVisitor2 {
 
   protected GUIDSLTraverser traverser;
+  protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
   protected Map<ASTGUIComponent, String> namedComponents = new HashMap<>();
   protected Map<ASTGUIIterate, String> namedIterates = new HashMap<>();
@@ -70,8 +71,8 @@ public class GUIComponentsVisitor implements GUIDSLVisitor2, CommonExpressionsVi
     }
 
     // Build modules
-    String qualifiedModuleName = GUIGeneratorUtil.getQualifiedNameForModule(node);
-    String moduleName = GUIGeneratorUtil.getModuleName(qualifiedModuleName);
+    String qualifiedModuleName = util.getQualifiedNameForModule(node);
+    String moduleName = util.getModuleName(qualifiedModuleName);
     modules.put(node.getName(), moduleName);
     if (!modulesQualified.containsKey(moduleName)) {
       modulesQualified.put(moduleName, qualifiedModuleName);

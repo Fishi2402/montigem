@@ -1,14 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a html file from the given model -->
-${tc.signature("notNestedComponents")}
+<#assign genHelper = glex.getGlobalVar("genHelper")>
+<#if ast.getGUIComponentDeclaration().isPresentGUIBlock()>
+  <#assign contentList = ast.getGUIComponentDeclaration().getGUIBlock().getGUIBlockContentList()>
 
-<#list genHelper.getGUIViewElementParameters(ast) as param>
-  <ng-container *ngFor="let c of ${param.getName()}">
-    <ng-template [ngTemplateOutlet]="c">
-    </ng-template>
-  </ng-container>
-</#list>
-
-<#list notNestedComponents as component>
-  ${tc.include("umlp.gui2html.Component", component)}
-</#list>
+  <#list contentList as content>
+    ${tc.include("umlp.gui2html.BlockContentOrArgValue", content)}
+  </#list>
+</#if>

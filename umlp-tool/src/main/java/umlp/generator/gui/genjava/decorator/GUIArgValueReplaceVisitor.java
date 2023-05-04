@@ -38,6 +38,7 @@ import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.types.check.SymTypeExpression;
+import umlp.generator.gui.ExpressionReplaceSearchVisitor;
 import umlp.generator.gui.ExpressionReplaceVisitor;
 import umlp.generator.gui.ExpressionReplacement;
 import umlp.generator.gui.GUIGeneratorUtil;
@@ -45,15 +46,15 @@ import umlp.generator.gui.GUIGeneratorUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Supplier;
 
-public class GUIArgValueReplaceVisitor implements GUIDSLVisitor2, ExpressionsBasisVisitor2, CommonExpressionsVisitor2, CommonExpressionsHandler {
+public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
 
   protected GUIDSLTraverser traverser;
+  protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
   protected ASTGUIArgValue result;
 
-  protected Map.Entry<ASTNode, ASTExpression> potentialHolder;
   protected List<ExpressionReplacement> replacements = new ArrayList<>();
 
   protected boolean needsGetter = false;
@@ -95,8 +96,8 @@ public class GUIArgValueReplaceVisitor implements GUIDSLVisitor2, ExpressionsBas
   public void transform(SymTypeExpression ste, ASTGUINamedArg arg) {
     String type = ste.getTypeInfo().getName();
 
-    if (GUIGeneratorUtil.isViewElement(ste)
-        || GUIGeneratorUtil.isViewElementsCollection(ste)
+    if (util.isViewElement(ste)
+        || util.isViewElementsCollection(ste)
         || type.equals(BuiltInTypes.EVENT.getName())) {
       return;
     }
@@ -123,10 +124,10 @@ public class GUIArgValueReplaceVisitor implements GUIDSLVisitor2, ExpressionsBas
   public void visit(ASTNameExpression node) {
     if (potentialHolder != null) {
       if (potentialHolder.getValue().equals(node)) {
-        ASTCallExpression newValue = CommonExpressionsMill.callExpressionBuilder()
+        Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.callExpressionBuilder()
             .setExpression(
                 ExpressionsBasisMill.nameExpressionBuilder()
-                    .setName(GUIGeneratorUtil.gui2cdAttrGetterName(node.getName()))
+                    .setName(util.gui2cdAttrGetterName(node.getName()))
                     .build()
             )
             .setArguments(
@@ -139,21 +140,16 @@ public class GUIArgValueReplaceVisitor implements GUIDSLVisitor2, ExpressionsBas
             potentialHolder.getKey(), potentialHolder.getValue(), newValue));
       }
     }
-  }
-
-  @Override
-  public void visit(ASTGUIArgValue node) {
-    potentialHolder = Map.entry(node, node.getExpression());
   }
 
   @Override
   public void visit(ASTFieldAccessExpression node) {
     if (potentialHolder != null) {
       if (potentialHolder.getValue().equals(node)) {
-        ASTCallExpression newValue = CommonExpressionsMill.callExpressionBuilder()
+        Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.callExpressionBuilder()
             .setExpression(
                 ExpressionsBasisMill.nameExpressionBuilder()
-                    .setName(GUIGeneratorUtil.gui2cdAttrGetterName(node.getName()))
+                    .setName(util.gui2cdAttrGetterName(node.getName()))
                     .build()
             )
             .setArguments(
@@ -166,204 +162,7 @@ public class GUIArgValueReplaceVisitor implements GUIDSLVisitor2, ExpressionsBas
             potentialHolder.getKey(), potentialHolder.getValue(), newValue));
       }
     }
-    potentialHolder = Map.entry(node, node.getExpression());
-  }
-
-  @Override
-  public void visit(ASTPlusPrefixExpression node) {
-    potentialHolder = Map.entry(node, node.getExpression());
-  }
-
-  @Override
-  public void visit(ASTMinusPrefixExpression node) {
-    potentialHolder = Map.entry(node, node.getExpression());
-  }
-
-  @Override
-  public void visit(ASTBooleanNotExpression node) {
-    potentialHolder = Map.entry(node, node.getExpression());
-  }
-
-  @Override
-  public void visit(ASTLogicalNotExpression node) {
-    potentialHolder = Map.entry(node, node.getExpression());
-  }
-
-  @Override
-  public void traverse(ASTMinusExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTMultExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTDivideExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTModuloExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTPlusExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTLessEqualExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTGreaterEqualExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTLessThanExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTGreaterThanExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTEqualsExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTNotEqualsExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTBooleanAndOpExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTBooleanOrOpExpression node) {
-    if (null != node.getLeft()) {
-      potentialHolder = Map.entry(node, node.getLeft());
-      node.getLeft().accept(getTraverser());
-    }
-    if (null != node.getRight()) {
-      potentialHolder = Map.entry(node, node.getRight());
-      node.getRight().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void traverse(ASTConditionalExpression node) {
-    if (null != node.getCondition()) {
-      potentialHolder = Map.entry(node, node.getCondition());
-      node.getCondition().accept(getTraverser());
-    }
-    if (null != node.getTrueExpression()) {
-      potentialHolder = Map.entry(node, node.getTrueExpression());
-      node.getTrueExpression().accept(getTraverser());
-    }
-    if (null != node.getFalseExpression()) {
-      potentialHolder = Map.entry(node, node.getFalseExpression());
-      node.getFalseExpression().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void visit(ASTBracketExpression node) {
-    potentialHolder = Map.entry(node, node.getExpression());
+    super.visit(node);
   }
 
 }

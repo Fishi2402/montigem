@@ -24,14 +24,10 @@ import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
-import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static umlp.generator.gui.GUIGeneratorUtil.gui2cdAttrName;
-import static umlp.generator.gui.GUIGeneratorUtil.isStringLiteral;
 
 public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
@@ -54,11 +50,11 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   protected void generatePropAndGetterForArg(
       ASTCDClass decoratedClass, ASTGUIComponent guiComponent, ASTGUINamedArg namedArg
   ) {
-    Optional<GUIParamSymbol> paramSym = GUIGeneratorUtil.resolveGUIParamSym(
-        namedArg.getEnclosingScope(), guiComponent.getQualifiedName(), namedArg.getName());
+    Optional<GUIParamSymbol> paramSym = util.resolveGUIParamSym(
+        namedArg.getEnclosingScope(), guiComponent.getName(), namedArg.getName());
     if (paramSym.isEmpty()) {
       Log.error("0x00001 Argument " + namedArg.getName()
-          + " of component " + guiComponent.getQualifiedName()
+          + " of component " + guiComponent.getName()
           + " cannot be resolved");
     }
 
@@ -70,6 +66,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     }
 
     String paramType = paramSym.get().getType().print();
+    String getterName = util.gui2cdAttrGetterName(
+        guiComponent.getId().getName(), namedArg.getName());
     if (visitor.argNeedsOwnParamWithInit()) {
       // TODO AGe: how to do that better?
       // if List
@@ -93,15 +91,13 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
             CDModifier.PROTECTED.build(),
             MCTypeFacade.getInstance().createListTypeOf(typeArg),
-            gui2cdAttrName(guiComponent.getId().getName(), namedArg.getName()));
+            util.gui2cdAttrName(guiComponent.getId().getName(), namedArg.getName()));
         glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(" = new ArrayList<>()"));
         decoratedClass.addCDMember(attr);
 
-        String getterName = GUIGeneratorUtil.gui2cdAttrGetterName(
-            guiComponent.getId().getName(), namedArg.getName());
         addGetComponentMethod(decoratedClass, getterName, paramType, attr.getName());
 
-        String setterName = GUIGeneratorUtil.gui2cdAttrSetterName(
+        String setterName = util.gui2cdAttrSetterName(
             guiComponent.getId().getName(), namedArg.getName());
         addSetComponentMethod(decoratedClass, setterName, paramType, attr.getName());
 
@@ -122,9 +118,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         argValue = "String.valueOf(" + argValue + ")";
       }
 
-      String methodName = GUIGeneratorUtil.gui2cdAttrGetterName(
-          guiComponent.getId().getName(), namedArg.getName());
-      addGetComponentMethod(decoratedClass, methodName, paramType, argValue);
+      addGetComponentMethod(decoratedClass, getterName, paramType, argValue);
     }
   }
 
@@ -179,7 +173,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   // TODO AGe: not nice
   protected boolean mustBeConvertedToString(String returnType, ASTGUINamedArg namedArg) {
-    boolean convertToString = returnType.endsWith("String") && !isStringLiteral(namedArg.getGUIArgValue());
+    boolean convertToString = returnType.endsWith("String") && !util.isStringLiteral(namedArg.getGUIArgValue());
     if (convertToString && namedArg.getGUIArgValue().getExpression() instanceof ASTFieldAccessExpression) {
       Optional<String> zuweisungType = getTypeOf((ASTFieldAccessExpression) namedArg.getGUIArgValue().getExpression());
       convertToString = !zuweisungType.isPresent() || !zuweisungType.get().endsWith("String");

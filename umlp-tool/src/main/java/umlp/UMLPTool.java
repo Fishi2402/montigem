@@ -16,9 +16,11 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
+import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
 import de.monticore.io.paths.MCPath;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
@@ -41,8 +43,8 @@ import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.GUIShortIterateTrafo;
-import umlp.generator.gui.GUITemplateHelper;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
+import umlp.generator.gui.genhtml.GUI2HtmlTrafo;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2ComponentGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
@@ -51,6 +53,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -266,7 +269,7 @@ public class UMLPTool extends UMLPToolTOP {
           }
         }
 
-        IGUIDSLArtifactScope symbolTableGui = createSymbolTable(astGui, mcPath);
+        createSymbolTable(astGui, mcPath);
 
         GeneratorSetup genSetup = new GeneratorSetup();
         // set output directory
@@ -283,39 +286,35 @@ public class UMLPTool extends UMLPToolTOP {
 
         List<String> domainModels = new ArrayList<>();
         if (DOMAIN.isSelected(cmd)) {
-          for (String v : cmd.getOptionValues(DOMAIN.getCMD())) {
-            domainModels.add(v);
-          }
+          domainModels.addAll(Arrays.asList(cmd.getOptionValues(DOMAIN.getCMD())));
         }
 
         List<String> createModels = new ArrayList<>();
         if (GUI_CREATE.isSelected(cmd)) {
-          for (String v : cmd.getOptionValues(GUI_CREATE.getCMD())) {
-            createModels.add(v);
-          }
+          createModels.addAll(Arrays.asList(cmd.getOptionValues(GUI_CREATE.getCMD())));
         }
-        GUIGeneratorUtil.init(domainModels, createModels);
+        GUIGeneratorUtil.getInstance().init(domainModels, createModels);
 
         GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
         nodeIdTrafo.transform(astGui);
         // logTrafoExec("GUINodeIdTrafo", astGui);
 
+        // TODO AGe: range iterate requires class2mc of gen domain classes
+        /*
         GUIShortIterateTrafo shortIterateTrafo = new GUIShortIterateTrafo();
         shortIterateTrafo.transform(astGui);
+        createSymbolTable(astGui, mcPath);
+        /**/
         // logTrafoExec("GUIShortIterateTrafo", astGui);
 
         // Get all ASTGUIComponents
         GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
         genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
-        genSetup.getGlex().setGlobalValue("genHelper", GUITemplateHelper.getInstance());
+        genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
 
         GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, viewComponents);
         String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
         javaGenerator.generate(astGui, javaConfigTemplate);
-
-        GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, viewComponents);
-        String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
-        htmlGenerator.generate(astGui, htmlConfigTemplate);
 
         GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, viewComponents);
         String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
@@ -323,6 +322,16 @@ public class UMLPTool extends UMLPToolTOP {
 
         GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
         componentGenerator.generate(astGui, "umlp.GUI2Component");
+
+        GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();
+        gui2HtmlTrafo.transform(astGui);
+        ASTGUICompilationUnit astGui4Html = gui2HtmlTrafo.getOut();
+        createSymbolTable(astGui4Html, mcPath);
+
+        // System.out.println(new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astGui4Html));
+        GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, viewComponents);
+        String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
+        htmlGenerator.generate(astGui4Html, htmlConfigTemplate);
 
         // write reports
         Reporting.flush(astGui);

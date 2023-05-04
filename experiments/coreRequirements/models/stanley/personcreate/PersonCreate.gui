@@ -28,11 +28,11 @@ import stanley.tmp.layout.GemColumn;
 page PersonCreate(Person p) {
   card@GemCard(
     title = "Create Person",
-    content = col@GemColumn(contents = [
+    content = col@GemColumn(/*contents = [
       name@GemTextInput(value = p.nickname),
       age@GemNumberInput(value = p.age),
       save@GemButton(text = "Save", leftClick = create)
-    ])
+    ]/**/)
   );
 }
 /**/

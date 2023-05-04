@@ -33,6 +33,7 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
   public static final Predicate<ASTGUIComponent> PREDICATE_NOT_TABLE = c -> !c.getQualifiedName().endsWith("table.GemTable");
   public static final Predicate<ASTGUIComponent> PREDICATE_NOT_BUTTON = c -> !c.getQualifiedName().equals("io.GemButton");
 
+  protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
   public static MCBasicTypesFullPrettyPrinter basicTypesPrinter;
   public static GUIDSLFullPrettyPrinter guiDSLPrinter;
 

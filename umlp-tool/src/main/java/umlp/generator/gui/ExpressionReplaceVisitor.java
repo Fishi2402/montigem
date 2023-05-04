@@ -33,11 +33,13 @@ import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 
+import java.util.function.Supplier;
+
 public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressionsVisitor2 {
 
   protected ASTNode holder;
   protected ASTNode oldValue;
-  protected ASTExpression newValue;
+  protected Supplier<ASTExpression> newValue;
   protected GUIDSLTraverser traverser;
 
   public ExpressionReplaceVisitor() {
@@ -50,7 +52,7 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
     return traverser;
   }
 
-  public void transform(ASTNode holder, ASTNode oldValue, ASTExpression newValue) {
+  public void transform(ASTNode holder, ASTNode oldValue, Supplier<ASTExpression> newValue) {
     holder.accept(getTraverser());
     this.holder = holder;
     this.oldValue = oldValue;
@@ -60,28 +62,28 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   @Override
   public void endVisit(ASTGUIArgValue node) {
     if (node.equals(holder)) {
-      node.setExpression(newValue);
+      node.setExpression(newValue.get());
     }
   }
 
   @Override
   public void endVisit(ASTGUIBlockContent node) {
     if (node.equals(holder)) {
-      node.setExpression(newValue);
+      node.setExpression(newValue.get());
     }
   }
 
   @Override
   public void endVisit(ASTGUIGuard node) {
     if (node.equals(holder)) {
-      node.setCondition(newValue);
+      node.setCondition(newValue.get());
     }
   }
 
   @Override
   public void endVisit(ASTGUIShortIterateControl node) {
     if (node.equals(holder)) {
-      node.setIterable(newValue);
+      node.setIterable(newValue.get());
     }
   }
 
@@ -89,10 +91,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTGUIRangeIterateControl node) {
     if (node.equals(holder)) {
       if (node.getStart().equals(oldValue)) {
-        node.setStart(newValue);
+        node.setStart(newValue.get());
       }
       if (node.getEnd().equals(oldValue)) {
-        node.setEnd(newValue);
+        node.setEnd(newValue.get());
       }
     }
   }
@@ -100,35 +102,35 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   @Override
   public void endVisit(ASTFieldAccessExpression node) {
     if (node.equals(holder)) {
-      node.setExpression(newValue);
+      node.setExpression(newValue.get());
     }
   }
 
   @Override
   public void endVisit(ASTPlusPrefixExpression node) {
     if (node.equals(holder)) {
-      node.setExpression(newValue);
+      node.setExpression(newValue.get());
     }
   }
 
   @Override
   public void endVisit(ASTMinusPrefixExpression node) {
     if (node.equals(holder)) {
-      node.setExpression(newValue);
+      node.setExpression(newValue.get());
     }
   }
 
   @Override
   public void endVisit(ASTBooleanNotExpression node) {
     if (node.equals(holder)) {
-      node.setExpression(newValue);
+      node.setExpression(newValue.get());
     }
   }
 
   @Override
   public void endVisit(ASTLogicalNotExpression node) {
     if (node.equals(holder)) {
-      node.setExpression(newValue);
+      node.setExpression(newValue.get());
     }
   }
 
@@ -136,10 +138,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTMinusExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -148,10 +150,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTMultExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -160,10 +162,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTDivideExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -172,10 +174,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTModuloExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -184,10 +186,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTPlusExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -196,10 +198,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTLessEqualExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -208,10 +210,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTGreaterEqualExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -220,10 +222,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTLessThanExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -232,10 +234,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTGreaterThanExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -244,10 +246,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTEqualsExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -256,10 +258,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTNotEqualsExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -268,10 +270,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTBooleanAndOpExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -280,10 +282,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTBooleanOrOpExpression node) {
     if (node.equals(holder)) {
       if (node.getLeft().equals(oldValue)) {
-        node.setLeft(newValue);
+        node.setLeft(newValue.get());
       }
       if (node.getRight().equals(oldValue)) {
-        node.setRight(newValue);
+        node.setRight(newValue.get());
       }
     }
   }
@@ -292,13 +294,13 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   public void endVisit(ASTConditionalExpression node) {
     if (node.equals(holder)) {
       if (node.getCondition().equals(oldValue)) {
-        node.setCondition(newValue);
+        node.setCondition(newValue.get());
       }
       if (node.getTrueExpression().equals(oldValue)) {
-        node.setTrueExpression(newValue);
+        node.setTrueExpression(newValue.get());
       }
       if (node.getFalseExpression().equals(oldValue)) {
-        node.setFalseExpression(newValue);
+        node.setFalseExpression(newValue.get());
       }
     }
   }
@@ -306,7 +308,7 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   @Override
   public void endVisit(ASTBracketExpression node) {
     if (node.equals(holder)) {
-      node.setExpression(newValue);
+      node.setExpression(newValue.get());
     }
   }
 }
