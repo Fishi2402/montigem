@@ -42,8 +42,6 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
   private final boolean isInputGui;
 
-  private Optional<ASTCDClass> createInputValueClass = Optional.empty();
-
   private ASTCDClass decoratedClass;
 
   public DomainRefDecorator(final GlobalExtensionManagement glex, boolean isInputGui) {
@@ -229,10 +227,6 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   protected boolean isCDModelImportInGUI(ASTMCImportStatement i) { // TODO MB umlpsym UMLPDefSymbol
     // TODO AGe: not only domain imports are cd imports
     return util.isDomainImport(i);
-  }
-
-  public Optional<ASTCDClass> getCreateInputValueClass() {
-    return createInputValueClass;
   }
 
   public ASTCDClass getDecoratedClass() {

@@ -278,7 +278,7 @@ public class UMLPTool extends UMLPToolTOP {
         genSetup.setHandcodedPath(hwcPath);
         // set template path
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
-            .map(p -> p.toFile()).collect(Collectors.toList()));//
+            .map(p -> p.toFile()).collect(Collectors.toList()));
         genSetup.setGlex( new GlobalExtensionManagement());
 
         // execute generator
@@ -299,7 +299,7 @@ public class UMLPTool extends UMLPToolTOP {
         nodeIdTrafo.transform(astGui);
         // logTrafoExec("GUINodeIdTrafo", astGui);
 
-        // TODO AGe: range iterate requires class2mc of gen domain classes
+        // TODO AGe: range iterate results in type check issue
         /*
         GUIShortIterateTrafo shortIterateTrafo = new GUIShortIterateTrafo();
         shortIterateTrafo.transform(astGui);

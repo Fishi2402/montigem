@@ -68,6 +68,7 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
     }
     else {
       String templateId = util.getNgTemplateName(node.getId().getName());
+      // TODO AGe: better solution, setting the name here makes derivation of method names incorrect
       node.getId().setName(util.getNgTemplateActualName(templateId));
       ASTGUIComponent clone = node.deepClone();
       clone.getId().setName(templateId);
@@ -75,7 +76,6 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
           .setGUIComponent(clone)
           .build();
       templates.add(content);
-      // TODO AGe: better solution, setting the name here makes derivation of method names incorrect
     }
   }
 
