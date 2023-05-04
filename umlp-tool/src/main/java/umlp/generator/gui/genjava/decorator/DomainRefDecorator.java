@@ -153,6 +153,8 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
             guiDSLPrinter, isInputGui);
       }
 
+      // TODO AGe: readd error observers when error concept is realized
+      /*
       if (isInputGui) {
         List<ASTMCQualifiedType> observers = domainAttributes.stream()
             .map(a -> getMCTypeFacade().createQualifiedType(ErrorObserverDecorator.getClassName(
@@ -168,6 +170,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         domainParams.forEach(a -> getCD4C().addImport(clazz, ErrorCollectorDecorator.getClassName(
             a.getSymbol().getType().getTypeInfo().getFullName())));
       }
+      /**/
 
       ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), "init");
       glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2java.Init"));
