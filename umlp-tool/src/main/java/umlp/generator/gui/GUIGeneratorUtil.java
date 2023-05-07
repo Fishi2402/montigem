@@ -156,10 +156,6 @@ public class GUIGeneratorUtil {
     return values;
   }
 
-  public ASTGUIComponent getNestedComponent(ASTGUIArgValue arg) {
-    return arg.getGUIComponent();
-  }
-
   public Optional<GUIParamSymbol> resolveGUIParamSym(
       IGUIDSLScope scope, String compName, String argName
   ) {
@@ -171,45 +167,46 @@ public class GUIGeneratorUtil {
   }
 
   public String gui2cdAttrName(String domainParamName) {
-    return domainParamName;
+    return getHTMLName(domainParamName);
   }
 
   public String gui2cdAttrName(String componentId, String argName) {
-    return componentId + StringTransformations.capitalize(argName);
+    return getHTMLName(componentId + StringTransformations.capitalize(argName));
   }
 
   public String gui2cdAttrGetterName(String domainParamName) {
-    return "get" + StringTransformations.capitalize(domainParamName);
+    return getHTMLName("get" + StringTransformations.capitalize(domainParamName));
   }
 
   public String gui2cdAttrGetterName(String componentId, String argName) {
-    return "get"
+    return getHTMLName("get"
         + StringTransformations.capitalize(componentId)
-        + StringTransformations.capitalize(argName);
+        + StringTransformations.capitalize(argName));
   }
 
   public String gui2cdAttrSetterName(String componentId, String argName) {
-    return "set"
+    return getHTMLName("set"
         + StringTransformations.capitalize(componentId)
-        + StringTransformations.capitalize(argName);
+        + StringTransformations.capitalize(argName));
   }
 
   public String gui2cdEventCallName(ASTGUIComponent guiComponent, String eventName) {
     // TODO AGe: connected to GUI2HtmlTrafo problem
     //  setting the name in trafo makes derivation of method names incorrect
-    return StringTransformations.uncapitalize(
+    return getHTMLName(StringTransformations.uncapitalize(
         getComponentActualName(guiComponent.getId().getName())
-    ) + StringTransformations.capitalize(eventName);
+    ) + StringTransformations.capitalize(eventName));
   }
 
   public String getIteratorItemName(ASTGUIIterate iterate) {
-    return "i" + iterate.getId().getName();
+    return getHTMLName("i" + iterate.getId().getName());
   }
 
   // TODO AGe: remove when problem with RangeControl is resolved
   public String getShortIteratorItemName(ASTGUIIterate iterate) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
-      return ((ASTGUIShortIterateControl) iterate.getIterateControl()).getItem().getName();
+      return getHTMLName(
+          ((ASTGUIShortIterateControl) iterate.getIterateControl()).getItem().getName());
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
         + " was not processed: range iterate control not supported yet");
@@ -217,13 +214,14 @@ public class GUIGeneratorUtil {
   }
 
   public String getIteratorCounterName(ASTGUIIterate iterate) {
-    return "c" + iterate.getId().getName();
+    return getHTMLName("c" + iterate.getId().getName());
   }
 
   // TODO AGe: remove when problem with RangeControl is resolved
   public String getShortIteratorIterable(ASTGUIIterate iterate) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
-      return print(((ASTGUIShortIterateControl) iterate.getIterateControl()).getIterable());
+      return getHTMLName(
+          print(((ASTGUIShortIterateControl) iterate.getIterateControl()).getIterable()));
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
         + " was not processed: range iterate control not supported yet");
@@ -237,12 +235,16 @@ public class GUIGeneratorUtil {
       control.getEnd().accept(visitor.getTraverser());
       Optional<ASTExpression> res = visitor.getOut();
       if (res.isPresent()) {
-        return print(res.get());
+        return getHTMLName(print(res.get()));
       }
     }
     Log.error("0x00003 iterate construct " + iterate.getId().getName()
         + " was not processed: no range iterate control found");
     return "";
+  }
+
+  public String getHTMLName(String name) {
+    return name.replaceAll(TEMPLATE_NODE_SUFFIX, "");
   }
 
   public boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
