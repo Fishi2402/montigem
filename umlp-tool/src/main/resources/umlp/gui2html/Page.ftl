@@ -5,6 +5,6 @@
   <#assign contentList = ast.getGUIComponentDeclaration().getGUIBlock().getGUIBlockContentList()>
 
   <#list contentList as content>
-    ${tc.include("umlp.gui2html.BlockContentOrArgValue", content)}
+    ${tc.includeArgs("umlp.gui2html.BlockContentOrArgValue", content, [[]])}
   </#list>
 </#if>

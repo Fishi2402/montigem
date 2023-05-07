@@ -18,7 +18,7 @@ import stanley.tmp.io.input.GemNumberInput;
  */
 page PersonChildrenEdit(Person p) {
 
-  @iterate(child : p.children) {
+  @iterate(Person child : p.children) {
     // show and edit the child's age as number
     @GemNumberInput(value = child.age);
   }

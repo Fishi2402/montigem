@@ -94,11 +94,7 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
   }
 
   public void transform(SymTypeExpression ste, ASTGUINamedArg arg) {
-    String type = ste.getTypeInfo().getName();
-
-    if (util.isViewElement(ste)
-        || util.isViewElementsCollection(ste)
-        || type.equals(BuiltInTypes.EVENT.getName())) {
+    if (!util.hasGetter(ste)) {
       return;
     }
 

@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a html file from the given model -->
+${tc.signature("args")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign isTpl = genHelper.isNgTemplate(ast.getId().getName())>
 <#assign tag = genHelper.getComponentNameFromCamelCaseName(ast.getName())>
@@ -13,10 +14,14 @@
       (${namedArg.getName()}) = '${genHelper.gui2cdEventCallName(ast, namedArg.getName())}.bind(this)()'
     <#elseif genHelper.isViewElement(ast, namedArg) || genHelper.isViewElementsCollection(ast, namedArg)>
       [${namedArg.getName()}] = '${genHelper.gui2htmlArgValue(namedArg.getGUIArgValue())}'
+    <#elseif genHelper.hasGetter(ast, namedArg)>
+      [${namedArg.getName()}] = '${genHelper.gui2cdAttrGetterName(ast.getId().getName(), namedArg.getName())}(
+        <#list args as arg>${arg}<#if !arg?is_last>,</#if></#list>)'
     <#else>
       <#-- TODO AGe: iterator index -->
       <#-- [${namedArg.getName()}] = '${genHelper.gui2cdAttrGetterName(ast, namedArg.getName())}()' -->
-      [${namedArg.getName()}] = '${genHelper.print(namedArg.getGUIArgValue())}'
+      [${namedArg.getName()}] = '${genHelper.print(namedArg.getGUIArgValue())}(
+        <#list args as arg>${arg}<#if !arg?is_last>,</#if></#list>)'
     </#if>
   </#list>
 >

@@ -63,6 +63,7 @@ public class GUIGeneratorUtil {
   }
 
   public final String print(ASTNode node) {
+    printer.setPrintComments(false);
     return printer.prettyprint(node);
   }
 
@@ -298,6 +299,19 @@ public class GUIGeneratorUtil {
 
   public boolean isViewElementsCollection(ASTGUIParam param) {
     return param.isPresentSymbol() && isViewElementsCollection(param.getSymbol().getType());
+  }
+
+  public boolean hasGetter(ASTGUIComponent comp, ASTGUINamedArg arg) {
+    Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
+        arg.getEnclosingScope(), comp.getQualifiedName(), arg.getName());
+    return paramSym.isPresent() && hasGetter(paramSym.get().getType());
+  }
+
+  public boolean hasGetter(SymTypeExpression ste) {
+    String type = ste.getTypeInfo().getName();
+    return !isViewElement(ste)
+        && !isViewElementsCollection(ste)
+        && !type.equals(BuiltInTypes.EVENT.getName());
   }
 
   public boolean isViewElementsCollection(ASTGUIComponent comp, ASTGUINamedArg arg) {
