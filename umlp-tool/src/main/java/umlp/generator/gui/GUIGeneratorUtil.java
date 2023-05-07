@@ -40,7 +40,8 @@ public class GUIGeneratorUtil {
   // Fully qualified Name of a gui model, e.g. "stanley.PersonCreate"
   private List<String> CREATE_MODELS;
 
-  protected final String TEMPLATE_NODE_SUFFIX = "TPL_INTERN";
+  protected final String TPL_INTERN = "TPL_INTERN";
+  protected final String TPL_SUFFIX = "TPL";
 
   protected static GUIGeneratorUtil instance;
 
@@ -244,7 +245,7 @@ public class GUIGeneratorUtil {
   }
 
   public String getHTMLName(String name) {
-    return name.replaceAll(TEMPLATE_NODE_SUFFIX, "");
+    return name.replaceAll(TPL_INTERN, "").replaceAll(TPL_SUFFIX, "");
   }
 
   public boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
@@ -346,19 +347,19 @@ public class GUIGeneratorUtil {
   }
 
   public boolean isNgTemplate(String compName) {
-    return compName.endsWith(TEMPLATE_NODE_SUFFIX);
+    return compName.endsWith(TPL_INTERN);
   }
 
   public String getNgTemplateName(String name) {
-    return name + TEMPLATE_NODE_SUFFIX;
+    return name + TPL_INTERN;
   }
 
   public String getNgTemplateActualName(String internName) {
-    return getComponentActualName(internName) + "Tpl";
+    return getComponentActualName(internName) + TPL_SUFFIX;
   }
 
   public String getComponentActualName(String internName) {
-    return internName.replace(TEMPLATE_NODE_SUFFIX, "");
+    return internName.replace(TPL_INTERN, "");
   }
 
   public String getComponentNameFromCamelCaseName(String camelCaseName) {
@@ -439,7 +440,7 @@ public class GUIGeneratorUtil {
       return node.getGUIIterate().getId().getName();
     }
     if (node.isPresentExpression()) {
-      return print(node) + "Tpl";
+      return print(node) + TPL_SUFFIX;
     }
     if (node.isPresentGUIList()) {
       String res = "[";

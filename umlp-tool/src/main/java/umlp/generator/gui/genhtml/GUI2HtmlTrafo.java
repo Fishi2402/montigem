@@ -5,6 +5,8 @@ import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIGuard;
+import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import umlp.generator.gui.GUIGeneratorUtil;
@@ -50,9 +52,6 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
 
   @Override
   public void visit(ASTGUIComponent node) {
-    if (util.isNgTemplate(node.getName())) {
-      return;
-    }
     if (current.isEmpty()) {
       current = Optional.of(node);
     }
@@ -60,9 +59,6 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
 
   @Override
   public void endVisit(ASTGUIComponent node) {
-    if (util.isNgTemplate(node.getName())) {
-      return;
-    }
     if (current.isPresent() && current.get().equals(node)) {
       current = Optional.empty();
     }
@@ -74,6 +70,34 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
       clone.getId().setName(templateId);
       ASTGUIBlockContent content = GUIDSLMill.gUIBlockContentBuilder()
           .setGUIComponent(clone)
+          .build();
+      templates.add(content);
+    }
+  }
+
+  @Override
+  public void endVisit(ASTGUIGuard node) {
+    if (current.isPresent()) {
+      String templateId = util.getNgTemplateName(node.getId().getName());
+      node.getId().setName(util.getNgTemplateActualName(templateId));
+      ASTGUIGuard clone = node.deepClone();
+      clone.getId().setName(templateId);
+      ASTGUIBlockContent content = GUIDSLMill.gUIBlockContentBuilder()
+          .setGUIGuard(clone)
+          .build();
+      templates.add(content);
+    }
+  }
+
+  @Override
+  public void endVisit(ASTGUIIterate node) {
+    if (current.isPresent()) {
+      String templateId = util.getNgTemplateName(node.getId().getName());
+      node.getId().setName(util.getNgTemplateActualName(templateId));
+      ASTGUIIterate clone = node.deepClone();
+      clone.getId().setName(templateId);
+      ASTGUIBlockContent content = GUIDSLMill.gUIBlockContentBuilder()
+          .setGUIIterate(clone)
           .build();
       templates.add(content);
     }

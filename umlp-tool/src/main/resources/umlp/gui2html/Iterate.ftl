@@ -10,12 +10,15 @@ ${tc.signature("args")}
 <#assign iterable = genHelper.getShortIteratorIterable(ast)>
 <#assign counterName = genHelper.getIteratorCounterName(ast)>
 <#assign contentList = ast.getGUIBlock().getGUIBlockContentList()>
+<#assign isTpl = genHelper.isNgTemplate(ast.getId().getName())>
 
 <#-- TODO AGe: uncomment when problem with RangeControl is resolved
 <ng-container *ngFor='let ${itemName} of ${iterable}; index as ${counterName}'>
 -->
 <#assign args = args + [itemName]>
-<ng-container *ngFor='let ${itemName} of ${iterable}; index as ${counterName}'>
+<ng-container *ngFor='let ${itemName} of ${iterable}; index as ${counterName}'
+  <#if isTpl>#${genHelper.getNgTemplateActualName(ast.getId().getName())}</#if>
+>
   <#list contentList as content>
     ${tc.includeArgs("umlp.gui2html.BlockContentOrArgValue", content, [args])}
   </#list>
