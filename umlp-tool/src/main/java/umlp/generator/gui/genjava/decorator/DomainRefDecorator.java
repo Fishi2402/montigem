@@ -39,8 +39,6 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   public static final String ERROR_COLLECTOR = "ErrorCollector";
   public static final String BUILDER = "Builder";
 
-  public static final String DOMAIN_PACKAGE = "hardy."; //TODO: remove it when packaging in umlp-symtab does properly
-
   private final boolean isInputGui;
 
   private Optional<ASTCDClass> createInputValueClass = Optional.empty();
@@ -120,8 +118,9 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     TypeSymbol typeInfo = astguiParam.getSymbol().getType().getTypeInfo();
 
     // TODO when ST ist fertig: qualified domainTypeName und add import declaration
-    String qualifiedType = DOMAIN_PACKAGE + typeInfo.getName() + BUILDER; // domainTypeSymbol.getQualifiedName(); //TODO MB
+    String qualifiedType = typeInfo.getFullName() + BUILDER; // domainTypeSymbol.getQualifiedName(); //TODO MB
     String qualifiedTypeP = typeInfo.getFullName();
+    String packname = typeInfo.getPackageName();
     // --- end
 
     getCD4C().addImport(clazz, qualifiedType);
@@ -161,8 +160,8 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
           clazz.getCDInterfaceUsage().addAllInterface(observers);
         }
 
-        domainAttributes.forEach(a -> getCD4C().addImport(clazz, DOMAIN_PACKAGE + guiDSLPrinter.prettyprint(a.getMCType()) + ERROR_OBSERVER));
-        domainAttributes.forEach(a -> getCD4C().addImport(clazz, DOMAIN_PACKAGE + guiDSLPrinter.prettyprint(a.getMCType()) + ERROR_COLLECTOR));
+        domainParams.forEach(a -> getCD4C().addImport(clazz, a.getSymbol().getType().getTypeInfo().getFullName() + ERROR_OBSERVER));
+        domainParams.forEach(a -> getCD4C().addImport(clazz, a.getSymbol().getType().getTypeInfo().getFullName() + ERROR_COLLECTOR));
       }
 
       ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), "init");
@@ -198,13 +197,13 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
   public String getImport(SymTypeExpression type) { //TODO GV: return List<String> for HashMap usw.
     if (!type.isGenericType()) {
-      return DOMAIN_PACKAGE + type.getTypeInfo().getName();  //TODO NJ: muss funktionieren  "return typeInfo.getFullName();"
+      return type.getTypeInfo().getFullName();  //TODO NJ: muss funktionieren  "return typeInfo.getFullName();"
     }
     List<SymTypeExpression> arguments = ((SymTypeOfGenerics) type).getArgumentList();
     if (arguments.isEmpty()) {
       return "";
     }
-    return DOMAIN_PACKAGE + arguments.get(0).getTypeInfo().getName();   //TODO NJ: muss funktionieren  "return typeInfo.getFullName();"
+    return arguments.get(0).getTypeInfo().getFullName();   //TODO NJ: muss funktionieren  "return typeInfo.getFullName();"
   }
 
   protected boolean isModelImport(ASTMCImportStatement i) {

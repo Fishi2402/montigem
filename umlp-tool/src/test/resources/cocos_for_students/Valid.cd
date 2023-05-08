@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+classdiagram Valid {
+
+  class A {
+    int a;
+  }
+
+  class B {
+    boolean isTrue;
+  }
+
+  association [*] A -> B [0..1];
+  association [1] B -> A;
+
+}

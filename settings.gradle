@@ -41,6 +41,7 @@ includeBuild "umlp-tool"
 
 include ":umlp-rte"
 include ":umlp-rte:umlp-frontend-rte"
+include ":umlp-rte:umlp-frontend-rte-java"
 
 include ":experiments"
 include ":experiments:initial"

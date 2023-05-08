@@ -2,6 +2,7 @@
 package gradle;
 
 import gradle.merge.UMLPMergeTask;
+import gradle.stat.StatisticListener;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
@@ -10,5 +11,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
     public void apply(Project project) {
       project.getExtensions().getExtraProperties().set("UMLPTask", gradle.UMLPTask.class);
       project.getExtensions().getExtraProperties().set("UMLPMergeTask", UMLPMergeTask.class);
+
+      StatisticListener.registerOnce(project);
     }
 }

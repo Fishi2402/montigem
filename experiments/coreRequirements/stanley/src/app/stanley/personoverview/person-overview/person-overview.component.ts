@@ -12,7 +12,12 @@ import { TableColumn } from "../../tmp/table/table-types";
 })
 export class PersonOverview {
 
+  static readonly url: string = "personoverview/person-overview";
+  static readonly title: string = "Person List Overview";
+
   public ps: Person[];
+
+  protected _gemTableTColumns: TableColumn[] = [];
 
   constructor() {
     // TODO: person loading
@@ -20,15 +25,33 @@ export class PersonOverview {
   }
 
   public ngOnInit(): void {
+    const gemTableTColumns: TableColumn[] = [];
+    gemTableTColumns.push(new TableColumn("nickname"));
+    this._gemTableTColumns = gemTableTColumns;
   }
 
-  public getGemTableComp1Rows(): Person[] { 
+  getInfoBoxBoxText() {
+    return "This is some important information that you should know.";
+  }
+
+  getInfoBoxBoxColor() {
+    return "#c7ddf2";
+  }
+
+  public getGemCardComp1Title(): string {
+    return "Overview";
+  }
+
+  public getGemTableTRows(): Person[] {
     return this.ps;
   }
 
-  public getGemTableComp1Columns(): TableColumn[] {
-    let result: TableColumn[] = [];
-    return result;
+  public getGemTableTColumns(): TableColumn[] {
+    return this._gemTableTColumns;
+  }
+
+  public deletePerson(p: Person): void {
+    // deletion here
   }
 
 }

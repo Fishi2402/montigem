@@ -1,0 +1,52 @@
+
+
+
+  
+<gem-card
+    [title] = "getGemCardCardTitle()"
+    [content] = "cardTpl1"
+>
+</gem-card>
+
+<ng-template #cardTpl1>
+  
+<gem-column
+    [contents] = "[
+    colTpl3,
+    colTpl5,
+    colTpl7,
+    ]"
+>
+</gem-column>
+
+<ng-template #colTpl3>
+  
+<gem-text-input
+    [value] = "getGemTextInputNameValue()"
+>
+</gem-text-input>
+
+
+</ng-template>
+<ng-template #colTpl5>
+  
+<gem-number-input
+    [value] = "getGemNumberInputAgeValue()"
+>
+</gem-number-input>
+
+
+</ng-template>
+<ng-template #colTpl7>
+  
+<gem-button
+    [text] = "getGemButtonSaveText()"
+    (leftClick) = "gemButtonSaveLeftClick.bind(this)()"
+>
+</gem-button>
+
+
+</ng-template>
+
+</ng-template>
+

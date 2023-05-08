@@ -7,7 +7,6 @@ import jsweet.lang.Replace;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -17,6 +16,12 @@ import java.util.Set;
 // TODO: Brauchen wir hier Observer, oder werden die Observer eine ebene höher genutzt?
 // Sonst kann es zu Dopplung kommen, z.B. gibt es bei Person#addOwns die Methode PersonObserver#notifyAddOwns,
 // welche Überschnitt mit GemListObserver#notifyAddIDs hätte.
+
+// TODO JSweet: Sollte vielleicht besser den Arrayprototypen überschreiben
+// Array.prototype.remove = function (o) {
+//    // code to remove "o"
+//    return this;
+//}
 
 /*
  * A lazy list
@@ -58,9 +63,10 @@ public abstract class GemList<E extends GemIdentifiable>
     }
     Long id = getID(idx);
     LoadResult<E> lr = loadSingleObject(id);
-    if(lr.isPresent()){
+    if (lr.isPresent()) {
       return lr.get();
-    }else{
+    }
+    else {
       // TODO: rework error handling?
       Log.error("Can not load Object with id " + id);
       return null;
@@ -232,17 +238,6 @@ public abstract class GemList<E extends GemIdentifiable>
    * Can only be called if the idStorage contains the gemId, otherwise the size will become invalid.
    * The gemId is not required to be loaded in the idStorage, thus the result of idStorage.removeId must not be returned
    */
-  @Replace("console.info(this.ids);\n"
-      + "      /* remove */\n"
-      + "      (a => {\n"
-      + "        let index = a.indexOf(<number>gemId);\n"
-      + "        if (index >= 0) {\n"
-      + "          a.splice(index, 1);\n"
-      + "          return true;\n"
-      + "        } else {\n"
-      + "          return false;\n"
-      + "        }\n"
-      + "      })(this.ids);")
   public void removeIdSure(long gemId) {
     System.out.println(ids);
     ids.removeIf(l -> Objects.equals(l, gemId));

@@ -1,3 +1,36 @@
 {
-  "adapters": [ "umlp.jsweet.extension.UMLP_RTE_Adapter" ]
+  "adapters": [
+    "umlp.jsweet.extension.internal.UMLPInternalAdapter"
+  ],
+  "@Async": {
+    "include": [
+      "**.doRun*",
+      "**.GemList*.loadObjects*",
+      "**.Gem.isPresent()",
+      "**.Gem.get()",
+      "**.Gem.loadIfRequired()"
+    ]
+  },
+  "@Replace('return \"\" + obj;')": {
+    "include": [
+      "**.BooleanDeSer.serialize(*)",
+      "**.ByteDeSer.serialize(*)",
+      "**.CharacterDeSer.serialize(*)",
+      "**.DoubleDeSer.serialize(*)",
+      "**.FloatDeSer.serialize(*)",
+      "**.IntegerDeSer.serialize(*)",
+      "**.LongDeSer.serialize(*)",
+      "**.ShortDeSer.serialize(*)"
+    ]
+  },
+  "@Replace('return this as unknown as StatusResult;')": {
+    "include": [
+      "**.CommandResult.asStatusResult()"
+    ]
+  },
+  "@Replace('return this as unknown as SimpleResult<T>;')": {
+    "include": [
+      "**.CommandResult.asSimpleResult()"
+    ]
+  }
 }

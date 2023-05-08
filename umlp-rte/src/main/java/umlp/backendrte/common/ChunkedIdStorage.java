@@ -3,6 +3,8 @@ package umlp.backendrte.common;
 
 // RTE-P
 
+import jsweet.lang.Erased;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

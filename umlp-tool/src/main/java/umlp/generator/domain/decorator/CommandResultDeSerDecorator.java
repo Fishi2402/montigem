@@ -46,7 +46,9 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
             .map(c -> Joiners.DOT.join(packageName, c.getName())).collect(Collectors.toList());
     // TODO AHe: DeSer load state, error checks for empty etc
     getCD4C().addMethod(cmdResultDeSerClass, "umlp.commandresultdeser.BuildJson", classNames);
-    getCD4C().addMethod(cmdResultDeSerClass, "umlp.commandresultdeser.FromJson", classNames);
+    getCD4C().addMethod(cmdResultDeSerClass, "umlp.commandresultdeser.FromJson");
+    getCD4C().addMethod(cmdResultDeSerClass, "umlp.commandresultdeser.DeserSingleValue", classNames);
+    getCD4C().addMethod(cmdResultDeSerClass, "umlp.commandresultdeser.SerSingleValue", classNames);
 
     addImports(cmdResultDeSerClass);
 
@@ -56,11 +58,14 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
   protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonObject");
+    getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonElement");
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResultDeSer"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
-    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("LongList"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ListResult"));
+
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
   }
 
 

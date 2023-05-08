@@ -8,6 +8,9 @@ import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.common.BaseClassObjectMapper;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
@@ -17,15 +20,36 @@ public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
     printer.member("typeParameter", tp);
     printer.member("statusResult", result.isStatusResult());
     printer.member("simpleResult", result.isSimpleResult());
+    printer.member("listResult", result.isListResult());
     if(result.isStatusResult()){
       printer.member("successful", result.asStatusResult().wasSuccessful());
-    }else{
+    }else if(result.isSimpleResult()){
       if(BaseClassObjectMapper.canDeSer(tp)){
         Optional<String> v = BaseClassObjectMapper.serialize(result.asSimpleResult().get(), tp);
         if(v.isPresent()) {
           printer.memberJson("value", v.get());
         }else {
           Log.warn("Error while serializing type " + tp);
+        }
+      }
+    }else if(result.isListResult()) {
+      if(BaseClassObjectMapper.canDeSer(tp)){
+        var lr = result.asListResult();
+        printer.member("successful", lr.isSuccessful());
+        if(lr.isSuccessful()){
+          List<String> objects = new ArrayList<>();
+          for (Object o : lr.get()) {
+            Optional<String> v = BaseClassObjectMapper.serialize(o, tp);
+            if(v.isPresent()) {
+              objects.add(v.get());
+            }else{
+              Log.warn("Error while serializing type " + tp);
+            }
+          }
+          String res = "[" + String.join(",", objects) + "]";
+          printer.memberJson("list", res);
+        }else{
+          printer.member("list", Collections.emptyList());
         }
       }
     }

@@ -4,14 +4,15 @@ package umlp.backendrte.common;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonBoolean;
 import de.monticore.symboltable.serialization.json.JsonElement;
+import jsweet.lang.Replace;
 import umlp.backendrte.command.DeSer;
 
 import java.util.Optional;
 
 class BooleanDeSer implements DeSer<Boolean> {
   @Override
-  public String serialize(Boolean b) {
-    return new JsonBoolean(b).toString();
+  public String serialize(Boolean obj) {
+    return new JsonBoolean(obj).toString();
   }
 
   @Override

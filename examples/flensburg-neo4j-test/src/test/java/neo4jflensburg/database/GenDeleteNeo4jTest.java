@@ -52,7 +52,7 @@ public class GenDeleteNeo4jTest extends GenAbstractNeo4jDBTest {
     builder.age(age);
     Neo4jHuman h1001 = builder.build().get();
 
-    Neo4jFlensburgManager.deleteNeo4jHuman(h1001);
+    Neo4jFlensburgManager.deleteNeo4jHuman(h1001.getGemId());
     assertTrue(Neo4jFlensburgManager.neo4jHumanOpt(h1001.getGemId()).isEmpty());
 
     Neo4jHumanDAO dao = new Neo4jHumanDAO();

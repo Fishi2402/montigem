@@ -1,20 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 buildscript {
   repositories {
-    if(("true").equals(getProperty('useLocalRepo'))) { mavenLocal() }
     mavenCentral()
     maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
     maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
   }
   dependencies {
-    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-SNAPSHOT') {
+    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
       transitive = true
     }
+    classpath group: 'umlp', name: 'umlp-frontend-rte-java', version: version
+//    classpath project(":umlp-rte:umlp-frontend-rte-java")
   }
 }
 
 plugins {
-  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-SNAPSHOT"
+  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
   id "com.github.node-gradle.node" version "3.4.0"
 }
 
@@ -27,44 +28,45 @@ description = "UMLP FRONTEND RTE"
 
 // Enable for implementing a new Adapter
 repositories {
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
   maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
   maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
 }
 
 dependencies {
-  // Enable for implementing a new Adapter
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
-  implementation group: 'org.jsweet', name: 'jsweet-transpiler', version: "3.2.0-SNAPSHOT"
+//  implementation group: 'org.jsweet', name: 'j4ts', version: '2.1.0-SNAPSHOT'
 }
 
 /////////////////////////   JSweet   //////////////////////////////
-// Enable for implementing a new Adapter
-sourceSets {
-  sourceSets.main.java {
-    srcDirs += ["$projectDir/jsweet_extension"]
-  }
-}
 
 jsweet {
   verbose = true
   encoding = 'UTF-8'
   sourceMap = true
   tsOnly = true
-  tsOut = project.file('projects/umlp-frontend-rte/src/lib/target')
   targetVersion = 'ES6'
-  includes = ['**/*.java']
   module = 'commonjs'
-//  excludes = ['**/umlp/jsweet/extension/**/*.java']    // Enable for implementing a new Adapter
+  autoPropagateAsyncAwaits = true
+  tsOut = project.file('projects/umlp-frontend-rte/src/lib/target')
   workingDir = project.file('target/.jsweet')
+  includes = ['**/*.java']
+  excludes = [
+    '**/service/**',
+    '**/shellapi/**',
+    '**/ChunkedIdStorage.java'
+  ]
   excludeTranspilation = [
-    '**/umlp/jsweet/extension/**/*.java',
-    '**/CommandObjectMapper.java',
     '**/DatabaseAccessManager.java',
-    '**/*DeSer*',
-    '**/BaseClassObjectMapper.java',
     '**/HashMapWithOrderedKeys.java',
-    '**/service/websocket/**',
-    '**/shellapi/UMLPShellApi.java'
+    '**/CommandResultDeSer.java',
+    '**/Gem.java',
+    '**/GemList.java',
+    '**/GemListBuilder.java'
   ]
 }
 
@@ -74,52 +76,41 @@ node {
   version = "12.18.2"
 }
 
+/*
+task generateIndexTS(type: Exec) {
+  workingDir "$projectDir"
+//  if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+//    commandLine 'cmd', '/c', 'mycommand'
+//  } else {
+    commandLine 'sh', '-c', './scripts/generateIndexTS.sh projects/umlp-frontend-rte/src/lib/'
+//  }
+}
+/**/
+
 task buildLib(type: NpxTask) {
+  // dependsOn(generateIndexTS)
   command = "ng"
   args = ["build", "--prod"]
   dependsOn(tasks.npmInstall)
   inputs.dir(project.fileTree("projects/umlp-frontend-rte/src").exclude("**/*.spec.ts"))
-//  inputs.dir(project.fileTree("target/generated-sources/ts"))
   inputs.dir("node_modules")
   inputs.files("tsconfig.json")
   outputs.dir("${project.buildDir}/dist")
 }
 
-//task packLib(type: NpxTask) {
-//  dependsOn(buildLib)
-//  command = "npm"
-//  args = ["pack", "--workspace dist/umlp-frontend-rte"]
-////  inputs.dir("dist/umlp-frontend-rte")
-//  inputs.dir(project.fileTree("dist/umlp-frontend-rte"))
-////  inputs.dir("node_modules")
-////  inputs.files("tsconfig.json")
-//  outputs.dir("${project.buildDir}/dist")
-//}
-
-//sourceSets {
-//  java {
-//    main {
-//      resources {
-//        // This makes the processResources task automatically depend on the buildApp one
-//        srcDir(buildLib)
-//      }
-//    }
-//  }
-//}
-
-/*
-tasks.test {
-  dependsOn(testApp)
+project.getTasksByName("jsweet", true).forEach {
+  t ->
+    t.finalizedBy(buildLib)
+    buildLib.dependsOn(t)
+    // generateIndexTS.dependsOn(t)
 }
-/**/
 
-task printSourceSetInformation(){
-  doLast{
-    sourceSets.each { srcSet ->
-      println "["+srcSet.name+"]"
-      print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
-      print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
-      println ""
-    }
-  }
+//build.dependsOn(buildLib)
+
+//////////////////////////////   CLEAN   //////////////////////////////
+
+clean.doFirst {
+  delete project.file("dist")
 }
+
+clean.dependsOn(jsweetClean)

@@ -1,0 +1,34 @@
+// GEN-P
+
+nav {
+  background-color: #00549f;
+  color: #fff;
+  padding: 10px;
+	display: flex;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  display: inline-block;
+  margin-right: 20px;
+	&:not(:last-of-type) {
+		border-right: 1px solid white;
+	}
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 20px;
+  display: block;
+}
+
+nav a:hover {
+  background-color: #407fb7;
+}

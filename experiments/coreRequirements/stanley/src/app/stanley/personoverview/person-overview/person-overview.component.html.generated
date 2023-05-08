@@ -1,0 +1,19 @@
+
+  
+<gem-card
+    [title] = "getGemCardComp1Title()"
+    [content] = "Comp1Tpl2"
+>
+</gem-card>
+
+<ng-template #Comp1Tpl2>
+  
+<gem-table
+    [rows] = "getGemTableComp2Rows()"
+    [columns] = "getGemTableComp2Columns()"
+>
+</gem-table>
+
+
+</ng-template>
+

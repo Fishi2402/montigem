@@ -7,6 +7,10 @@
 -->
 ${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator")}
 
+<#-- Call teaching CoCos -->
+<#assign cocoChecker = tc.instantiate("umlp._cocos.teaching.UMLPTeachingCoCos")>
+${cocoChecker.check(ast)}
+
 <#-- Call all decorators -->
 <#assign beDecorator = tc.instantiate("umlp.generator.domain.decorator.BEDecorator", [glex, hwPath])>
 ${beDecorator.setShellApi(true)}
@@ -20,6 +24,10 @@ ${beDecorator.transform(ast, decoratedAST)}
 ${commandDecorator.transform(ast, decoratedAST)}
 ${requestDecorator.transform(ast, decoratedAST)}
 ${topDecorator.decorate(decoratedAST)}
+
+<#-- Generate GetAll Rest Service for teaching -->
+<#assign restGetAllGenerator = tc.instantiate("umlp.generator.service.RestGetAllDecorator", [glex])>
+${restGetAllGenerator.transform(ast, decoratedAST)}
 
 ${includeArgs("umlp.generator.hook.AfterTransform", decoratedAST, glex, hwPath, cdGenerator, schemaGenerator, beDecorator, commandDecorator, requestDecorator, topDecorator)}
 

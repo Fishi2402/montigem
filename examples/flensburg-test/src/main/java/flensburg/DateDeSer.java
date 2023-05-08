@@ -15,16 +15,21 @@ public class DateDeSer implements DeSer<Date> {
   @Override
   public String serialize(Date obj) {
     TemporalAccessor ta = obj.toInstant();
-    return DateTimeFormatter.ISO_INSTANT.format(ta);
+    return '"' + DateTimeFormatter.ISO_INSTANT.format(ta) + '"';
   }
 
   @Override
   public Optional<Date> deserialize(String str) {
     try {
-      TemporalAccessor ta = DateTimeFormatter.ISO_INSTANT.parse(str);
+      if(!str.matches("\".*\"")){
+        Log.warn("Date must be deserialized from json string");
+        return Optional.empty();
+      }
+
+      TemporalAccessor ta = DateTimeFormatter.ISO_INSTANT.parse(str.substring(1, str.length() - 1));
       return Optional.of(Date.from(Instant.from(ta)));
     }catch (DateTimeParseException e){
-      Log.warn("Can not parse instant!");
+      Log.warn("Can not parse date!");
       return Optional.empty();
     }
   }

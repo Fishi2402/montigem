@@ -1,0 +1,148 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package umlp.generator.domain.decorator;
+
+import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.StringTransformations;
+import umlp.UMLPMill;
+import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static umlp.generator.domain.decorator.GemListAssocDecorator.getName;
+
+public class ManagerClientImplDecorator extends AbstractDecorator {
+
+  public static final String SUFFIX = ManagerDecorator.SUFFIX + "ClientImpl";
+
+  public ManagerClientImplDecorator(GlobalExtensionManagement glex) {
+    super(glex);
+  }
+
+  public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
+    astcdPackage.addCDElement(createClass(origCD));
+  }
+
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
+    String name = origCD.getCDDefinition().getName();
+
+    ASTCDClass managerClass = UMLPMill.cDClassBuilder()
+            .setModifier(PUBLIC.build())
+            .setName(name + SUFFIX)
+            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(name + ManagerDecorator.SUFFIX))
+            .build();
+
+    // methods
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.Constructor", name + SUFFIX);
+    List<String> classList = origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+            .map(c -> c.getName()).collect(Collectors.toList());
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetFreeGemId");
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.ErrorNotificationScope");
+
+    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+            .forEach(c -> addClassElements(origCD, c, managerClass, name));
+
+    origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getModifier().isDerived())
+            .forEach(i -> addInterfaceElements(origCD, i, managerClass));
+
+    // Imports
+    addImports(origCD, managerClass);
+    return managerClass;
+  }
+
+  protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
+                                  ASTCDClass managerClass, String managerName) {
+    String name = domainClass.getName();
+
+    managerClass.addCDMember(getCacheAttribute(domainClass));
+    managerClass.addCDMember(getCommandObserverAttribute(domainClass));
+
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoAdd", name, managerName);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, false);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoDelete", name, managerName);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);
+
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + "CommandSendingObserver"));
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_get"));
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_create"));
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_delete"));
+
+    // Associations
+    CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
+      String type = a.getSymbol().getType().print();
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), type);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", domainClass.getName(), a.getName(), type);
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
+    });
+  }
+
+  protected void addInterfaceElements(ASTCDCompilationUnit origCD, ASTCDInterface domainInterface,
+                                      ASTCDClass managerClass) {
+    String name = domainInterface.getName();
+
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOptInterface", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, true);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);
+
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));
+
+    // Associations
+    CDSymbolTables.getAssociations(domainInterface).stream().filter(GenService::isList).forEach(a -> {
+      String type = a.getSymbol().getType().print();
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), type);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", name, a.getName(), type);
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainInterface, a)));
+    });
+  }
+
+  protected ASTCDAttribute getCacheAttribute(ASTCDType domainClass) {
+    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+            getMCTypeFacade().createBasicGenericTypeOf("Map", "Long", domainClass.getName()),
+            StringTransformations.uncapitalize("known" + domainClass.getName() + "s"));
+    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new HashMap<>()"));
+    return domainClassDaoAttr;
+  }
+
+  protected ASTCDAttribute getCommandObserverAttribute(ASTCDClass domainClass) {
+    String type = domainClass.getName() + "CommandSendingObserver";
+    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+            getMCTypeFacade().createQualifiedType(type), "the" + type);
+    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new " + type + "()"));
+    return domainClassDaoAttr;
+  }
+
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("StatusResult"));
+    getCD4C().addImport(clazz, Joiners.DOT.join(getPackageName(origCD, REQUESTS_PACKAGE), "GetFreeGemIdRequest"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemListBuilder"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTEUtilPath("LogUtil"));
+    getCD4C().addImport(clazz, "java.util.HashMap");
+    getCD4C().addImport(clazz, "java.util.Map");
+  }
+
+}

@@ -8,7 +8,6 @@ import umlp.generator.AbstractDecorator;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class CommandDecorator extends AbstractDecorator {
@@ -38,6 +37,10 @@ public class CommandDecorator extends AbstractDecorator {
     SetDecorator setDecorator = new SetDecorator(glex, supportedDeSers);
     setDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: SetDecorator", CommandDecorator.class.getName());
+
+    CalculateDecorator calculateDecorator = new CalculateDecorator(glex, supportedDeSers);
+    calculateDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: CalculateDecorator", CommandDecorator.class.getName());
 
     AddDecorator addDecorator = new AddDecorator(glex, supportedDeSers);
     addDecorator.transform(cdAST, decoratedAST);

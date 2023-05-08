@@ -5,13 +5,10 @@ package infrastructure.command;
 // GEN-P: Only if this class is also automatically converted to typescript
 
 import de.se_rwth.commons.logging.Log;
-import def.js.Promise;
 import hardy.*;
 import hardy.commands.*;
 import hardy.gemlists.*;
-import hardy.jsweetUtil.UMLPPromise;
 import hardy.requests.GetFreeGemIdRequest;
-import jsweet.lang.Async;
 import stanley.AddressCommandObserver;
 import stanley.CarCommandObserver;
 import stanley.HumanCommandObserver;
@@ -25,7 +22,6 @@ import umlp.backendrte.common.NotificationScope;
 import umlp.backendrte.util.LogUtil;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 // Frontend implementation of the FlensburgManager
 // Uses commands and requests to synchronize data with the backend
@@ -116,7 +112,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected GemList<Human> _doGetHumanList() {
     if(humanGemList == null){
       // TODO: replace with access via filter!
-      List<Long> gemIds = CommandManager.executeCommand(new Human_get_filtered()).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new Human_get_filtered()).asListResult().get();
       humanGemList = new HumanGemList(gemIds);
     }
 
@@ -208,7 +204,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected GemList<Person> _doGetPersonList() {
     if(personGemList == null){
       // TODO: replace with access via filter!
-      List<Long> gemIds = CommandManager.executeCommand(new Person_get_filtered()).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new Person_get_filtered()).asListResult().get();
       personGemList = new PersonGemList(gemIds);
     }
 
@@ -297,7 +293,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected GemList<Address> _doGetAddressList() {
     if(addressGemList == null){
       // TODO: replace with access via filter!
-      List<Long> gemIds = CommandManager.executeCommand(new Address_get_filtered()).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new Address_get_filtered()).asListResult().get();
       addressGemList = new AddressGemList(gemIds);
     }
 
@@ -381,7 +377,7 @@ public class FlensburgManagerClientImpl extends FlensburgManager {
   protected GemList<Car> _doGetCarList() {
     if(carGemList == null){
       // TODO: error handling
-      List<Long> gemIds = CommandManager.executeCommand(new Car_get_filtered()).asSimpleResult().get();
+      List<Long> gemIds = CommandManager.executeCommand(new Car_get_filtered()).asListResult().get();
       carGemList = new CarGemList(gemIds);
     }
 

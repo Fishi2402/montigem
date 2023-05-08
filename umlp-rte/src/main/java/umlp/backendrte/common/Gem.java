@@ -4,6 +4,8 @@ package umlp.backendrte.common;
 // RTE
 
 import de.se_rwth.commons.logging.Log;
+import jsweet.lang.Async;
+import jsweet.lang.Replace;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -64,6 +66,15 @@ public class Gem<E extends GemIdentifiable> implements GemIdentifiable {
   }
 
   /*
+   * Constructor for: Object is not present.
+   */
+  public Gem(){
+    this.gemId = -1;
+    this.loadFunction = () -> { throw new IllegalStateException("Can not load empty Gem!"); };
+    this.loadingState = LoadingState.EMPTY;
+  }
+
+  /*
    * Constructor for: Object is not yet loaded
    */
   public Gem(long gemID, LoadingState loadingState) {
@@ -89,6 +100,7 @@ public class Gem<E extends GemIdentifiable> implements GemIdentifiable {
     loadIfRequired();
     return loadingState == LoadingState.LOADED && object != null;
   }
+
   public E get() {
     loadIfRequired();
     if (!isPresent()) {

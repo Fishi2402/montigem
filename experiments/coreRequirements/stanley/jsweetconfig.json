@@ -1,0 +1,16 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.UMLPJavaBasicsAdapter",
+    "umlp.jsweet.extension.UMLPRTEImportAdapter",
+    "umlp.jsweet.extension.UMLPBasicsAdapter",
+    "umlp.jsweet.extension.GUIComponentAdapter"
+  ],
+  "@Async": {
+    "include": [
+      "hardy.FlensburgManager.getPersonSure*",
+      "hardy.FlensburgManagerImpl.getPersonSure*",
+      "hardy.FlensburgManager._doPersonOpt*",
+      "hardy.FlensburgManagerImpl._doPersonOpt*"
+    ]
+  }
+}

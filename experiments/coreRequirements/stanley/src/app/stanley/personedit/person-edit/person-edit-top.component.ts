@@ -24,7 +24,11 @@ export class PersonEditTOP implements PersonErrorObserver {
   public ngOnInit(): void {
   }
 
-  public getGemTextInputComp1ValueError(): string {
+  public getGemCardComp1Title(): string {
+    return "Edit Person";
+  }
+
+  public getGemTextInputComp3ValueError(): string {
     return this.gemTextInputComp1ValueError;
   }
 
@@ -32,15 +36,15 @@ export class PersonEditTOP implements PersonErrorObserver {
     this.gemTextInputComp1ValueError = msg;
   }
 
-  public getGemTextInputComp1Value(): string {
+  public getGemTextInputComp3Value(): string {
     return this.p.getNickname();
   }
 
-  public setGemTextInputComp1Value(nickname: string): void {
+  public setGemTextInputComp3Value(nickname: string): void {
     this.p.setNickname(nickname);
   }
 
-  public getGemNumberInputComp2ValueError(): string {
+  public getGemNumberInputComp4ValueError(): string {
     return this.gemNumberInputComp2ValueError;
   }
 
@@ -48,27 +52,27 @@ export class PersonEditTOP implements PersonErrorObserver {
     this.gemNumberInputComp2ValueError = msg;
   }
 
-  public getGemNumberInputComp2Value(): number {
+  public getGemNumberInputComp4Value(): number {
     return this.p.getAge();
   }
 
-  public setGemNumberInputComp2Value(age: number): void {
+  public setGemNumberInputComp4Value(age: number): void {
     this.p.setAge(age);
   }
 
-  public gemButtonComp3LeftClick(): void {
+  public gemButtonComp5LeftClick(): void {
     // return this.navigate();
   }
 
-  public getGemButtonComp3Text(): string {
-    return "Ok";
+  public getGemButtonComp5Text(): string {
+    return "Save";
   }
 
-  public gemButtonComp4LeftClick(): void {
+  public gemButtonComp6LeftClick(): void {
     this.p.decreaseAge();
   }
 
-  public getGemButtonComp4Text(): string {
+  public getGemButtonComp6Text(): string {
     return "Decrease";
   }
 

@@ -1,31 +1,30 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 buildscript {
     repositories {
         mavenCentral()
         maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
         maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-//    maven { url "https://repository.jsweet.org/artifactory/plugins-release-local" }
-//    maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
-        maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
     }
     dependencies {
-        classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-SNAPSHOT') {
+        classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
             transitive = true
         }
+        classpath group: 'umlp', name: 'umlp-frontend-rte-java', version: version
+//        classpath project(":umlp-rte:umlp-frontend-rte-java")
     }
 }
 
 plugins {
-    id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-SNAPSHOT"
+    id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
+    id "com.github.node-gradle.node" version "3.4.0"
 }
 
-repositories {
-    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+compileJava {
+    enabled = false
 }
 
 jsweet {
+    autoPropagateAsyncAwaits = true
     verbose = true
     encoding = 'UTF-8'
     sourceMap = true
@@ -35,19 +34,31 @@ jsweet {
     targetVersion = 'ES6'
     includes = ['**/flensburg/**/*.java']
     module = 'commonjs'
+    workingDir = project.file('target/.jsweet')
+    excludeTranspilation = [
+//            '**/*DeSer*.java',
+            'flensburg/*DAO.java',
+            'flensburg/*DbObserver.java'
+    ]
+}
+
+node {
+    download = true
+    version = "12.18.2"
+}
+
+task buildApp(type: NpxTask) {
+    command = "ng"
+    args = ["build", "--prod"]
+    dependsOn(tasks.npmInstall)
+    inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
+    inputs.dir("node_modules")
+    inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.app.json")
+    outputs.dir("${project.buildDir}/webapp")
 }
 
 compileJava {
     enabled = false
 }
 
-task printSourceSetInformation(){
-    doLast{
-        sourceSets.each { srcSet ->
-            println "["+srcSet.name+"]"
-            print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
-            print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
-            println ""
-        }
-    }
-}
+clean.dependsOn(jsweetClean)

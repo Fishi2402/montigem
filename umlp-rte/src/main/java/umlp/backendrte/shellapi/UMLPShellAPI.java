@@ -4,29 +4,28 @@ package umlp.backendrte.shellapi;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.MCFatalError;
 import org.springframework.shell.Availability;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
+import org.springframework.web.socket.WebSocketHttpHeaders;
 import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandObjectMapper;
 import umlp.backendrte.command.CommandResult;
-import umlp.backendrte.command.SimpleResult;
-import umlp.backendrte.common.LoadingState;
 import umlp.backendrte.common.Result;
-import umlp.backendrte.service.websocket.ClientWebsocketCommunication;
+import umlp.backendrte.service.websocket.ClientCommandWebsocketCommunication;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class UMLPShellAPI {
 
   private static final String UMLP_SHELL_API = "UMLP Shell API";
-  protected static ClientWebsocketCommunication clientWebsocketCommunication;
-  protected static long participantId = 0;
-  protected static boolean connected = false;
+  protected static ClientCommandWebsocketCommunication clientCommandWebsocketCommunication;
+  protected static long participantId = 0l;
 
   protected final static CommandResult sendCommandToServerAndReceiveResult(Command command) {
     command.setParticipantId(participantId);
     Log.info("Send command to server: " + CommandObjectMapper.serializeCommand(command),
         UMLP_SHELL_API);
     CommandResult commandResult =
-        clientWebsocketCommunication.sendCommandToServerAndReceiveResult(command);
+        clientCommandWebsocketCommunication.sendCommandToServerAndReceiveResult(command);
     try {
       Log.info(
           "Received response from server: " + CommandObjectMapper.serializeResponse(commandResult),
@@ -37,22 +36,36 @@ public class UMLPShellAPI {
     return commandResult;
   }
 
-  protected void doInit(String url, String port, String applicationName, String apiName) {
-    clientWebsocketCommunication = new ClientWebsocketCommunication(url, port, applicationName, apiName);
-    Result<Long> init = clientWebsocketCommunication.init();
+  protected void doInit(String scheme, String url, String port, String applicationName, String apiName, String user, String password) {
+    WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
+    if (user != null && password != null && !user.isEmpty() && !password.isEmpty()) {
+      headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((user + ":" + password).getBytes(StandardCharsets.UTF_8)));
+    }
+
+    String uri = buildUri(scheme, url, port, applicationName, apiName);
+    clientCommandWebsocketCommunication = new ClientCommandWebsocketCommunication(uri, headers).onCommandReceived(cmd -> {
+      String msg = String.format("Received sync command '%s' from server: %s", cmd.getCommandType(), CommandObjectMapper.serializeCommand(cmd));
+      Log.info(msg, UMLP_SHELL_API);
+        });
+    Result<Long> init = clientCommandWebsocketCommunication.init();
     if (init.wasSuccessful()) {
       participantId = init.getValue();
-      connected = true;
-      Log.info("Websocket connection was successfull. Participant ID: " + participantId,
-          UMLP_SHELL_API);
+      Log.info(String.format("Websocket connection to '%s' was successfull. Participant ID: %s",
+              uri, participantId), UMLP_SHELL_API);
     } else {
-      connected = false;
-      Log.info("Websocket connection was not successfull, please check your parameters",
-          UMLP_SHELL_API);
+      Log.info(String.format("Could not establish a websocket connection to '%s', please check your parameters",
+              uri), UMLP_SHELL_API);
     }
   }
 
+  private static String buildUri(String scheme, String url, String port, String applicationName, String apiName) {
+    String portString = port.isEmpty() ? "" : ":" + port;
+    String uri = String.format("%s://%s%s/%s/%s", scheme, url, portString, applicationName, apiName);
+    return uri;
+  }
+
   public Availability isConnected() {
-    return connected ? Availability.available() : Availability.unavailable("Connection must be initialized before. Use 'init'");
+    return clientCommandWebsocketCommunication != null && clientCommandWebsocketCommunication.isOpen() ? Availability.available() :
+        Availability.unavailable("The Websocket connection must be initialized before. Use 'help init'");
   }
 }

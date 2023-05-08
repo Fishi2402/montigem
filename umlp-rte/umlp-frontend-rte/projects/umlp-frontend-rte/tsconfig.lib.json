@@ -17,8 +17,8 @@
     ],
     "baseUrl": "./",
     "paths": {
-      "@umlp-rte/target/*": ["src/lib/target/umlp/*"],
-      "@umlp-rte/hwc/*":    ["src/lib/hwc/umlp/*"]
+      "@umlp-rte/target/*": ["src/lib/target/umlp/backendrte/*"],
+      "@umlp-rte/hwc/*":    ["src/lib/hwc/umlp/frontendrte/*"]
     }
   },
   "exclude": [

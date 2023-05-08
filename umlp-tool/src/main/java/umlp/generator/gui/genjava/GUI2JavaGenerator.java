@@ -3,13 +3,14 @@ package umlp.generator.gui.genjava;
 
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
+import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIComponentsVisitor;
 
@@ -23,7 +24,7 @@ public class GUI2JavaGenerator extends CDGenerator {
 
   public GUI2JavaGenerator(GeneratorSetup genSetup, IGUIDSLArtifactScope symbolTableGui, GUIComponentsVisitor viewComponents) {
     super(genSetup);
-    astPrinter = new CD4CodeFullPrettyPrinter();
+    astPrinter = new CD4CodeFullPrettyPrinter(new IndentPrinter());
     this.viewComponents = viewComponents;
     genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter()); // TODO GV
 

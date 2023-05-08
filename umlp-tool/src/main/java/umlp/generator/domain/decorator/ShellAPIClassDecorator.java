@@ -20,14 +20,18 @@ import umlp.UMLPMill;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ShellAPIClassDecorator extends DomainClassDecorator {
+  protected Set<String> supportedDesers;
 
   public static final String SUFFIX = "ShellAPI";
-  public ShellAPIClassDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
+  public ShellAPIClassDecorator(GlobalExtensionManagement glex, MCPath hwPath, Set<String> supportedDesers) {
     super(glex, hwPath);
+    this.supportedDesers = supportedDesers;
   }
 
   @Override
@@ -54,7 +58,11 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     List<ASTCDAttribute> domainAttributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
         .filter(attr -> !attr.getModifier().isDerived())
         .collect(Collectors.toList());
-    addCreateMethod(originalClassName, shellapiClass, domainAttributes);
+    List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(cdClass).stream()
+        .filter(a -> !a.getModifier().isDerived())
+        .collect(Collectors.toList());
+
+    addCreateMethod(originalClassName, shellapiClass, domainAttributes, assocs);
     addGetMethod(originalClassName, shellapiClass);
     addDeleteMethod(originalClassName, shellapiClass);
     domainAttributes.stream().filter(a -> !GenService.isList(a)).forEach(a -> {
@@ -67,10 +75,6 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
       addAttributeAddMethod(originalClassName, shellapiClass, a);
       addAttributeRemoveMethod(originalClassName, shellapiClass, a);
     });
-
-    List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(cdClass).stream()
-        .filter(a -> !a.getModifier().isDerived())
-        .collect(Collectors.toList());
     assocs.stream().filter(a -> !GenService.isList(a) && !GenService.isBidirectional(a)).forEach(a -> {
       addAttributeImport(origCD, shellapiClass, a.getName(), originalClassName, "set");
       addAssociationSetMethod(originalClassName, shellapiClass, a);
@@ -86,23 +90,51 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
   }
 
   private void addCreateMethod(String originalClassName, ASTCDClass api,
-      List<ASTCDAttribute> domainAttributes) {
+      List<ASTCDAttribute> domainAttributes, List<ASTCDAssocSide> assocs) {
     List<String> parameters = new ArrayList<>();
+    ArrayList<String> annotations = new ArrayList<>();
     for (ASTCDAttribute attribute : domainAttributes) {
-      parameters.add(attribute.getMCType().printType() + " " + attribute.getName());
+      String type = attribute.getMCType().printType();
+      if(supportedDesers.contains(type)) {
+        parameters.add("String " +  attribute.getName());
+      }else{
+        parameters.add(type + " " + attribute.getName());
+      }
+      annotations.add(String.format("@ShellOption(value = \"--%s\")", attribute.getName()));
     }
-    List<String> domainAttributNames = domainAttributes.stream().map(a -> a.getName())
+    for (ASTCDAssocSide association : assocs) {
+      if (!GenService.isList(association) && !GenService.isOptional(association)) {
+        parameters.add("Long " + association.getName());
+        annotations.add(String.format("@ShellOption(value = \"--%s\")", association.getName()));
+      }
+    }
+    List<String> domainAttributNames = domainAttributes.stream()
+        .filter(a -> !mustBeDeserialized(a))
+        .map(a -> a.getName())
         .collect(Collectors.toList());
+
+    Map<String, String> deserAttributeNamesAndDeSer = domainAttributes.stream()
+        .filter(a -> mustBeDeserialized(a))
+        .collect(Collectors.toMap(a -> a.getName(), a -> a.getMCType().printType().replaceAll(".*[.]([^.]*)", "$1") + "DeSer"));
+
+    List<String> assocNames = assocs.stream().filter(a -> !GenService.isList(a) && !GenService.isOptional(a)).map(a -> a.getName()).collect(Collectors.toList());
     ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Create",
-        originalClassName, parameters.stream().collect(Collectors.joining(", ")), domainAttributNames);
+        originalClassName, parameters.stream().collect(Collectors.joining(", ")), domainAttributNames, deserAttributeNamesAndDeSer ,assocNames);
     String annotation = String.format("@ShellMethod(key = \"%s-create\", value = \"Create %s\") @ShellMethodAvailability(\"isConnected\")",
         StringTransformations.uncapitalize(originalClassName), originalClassName);
     glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint(annotation));
-    ArrayList<String> annotations = new ArrayList<>();
-    for (ASTCDAttribute attribute : domainAttributes) {
-      annotations.add(String.format("@ShellOption(value = \"--%s\")", attribute.getName()));
-    }
     addAnnotationToParameters(m, annotations);
+  }
+
+  private boolean mustBeDeserialized(ASTCDAttribute a) {
+    String type;
+    if (GenService.isList(a)) {
+      type = a.getSymbol().getType().printFullName().replace("List<","").replace(">","");
+    } else {
+      type = a.getSymbol().getType().printFullName();
+    }
+
+    return supportedDesers.contains(type);
   }
 
   private void addGetMethod(String originalClassName, ASTCDClass api) {
@@ -147,7 +179,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
         "@ShellMethod(key = \"%s-remove-%s\", value = \"Remove %s from %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
-  private void addAttributeMethod(ASTCDAttribute attr, ASTCDClass api, String template,
+  private void addAttributeMethod(ASTCDAttribute attr, ASTCDClass api, String originalTemplate,
       String originalClassName, String methodAnnotation) {
     String type;
     if (GenService.isList(attr)) {
@@ -155,6 +187,14 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     } else {
       type = attr.getSymbol().getType().printFullName();
     }
+
+    String template;
+    if(mustBeDeserialized(attr)){
+      template = originalTemplate + "_Deser";
+    }else{
+      template = originalTemplate;
+    }
+
     ASTCDMethodSignature m = getCD4C().addMethod(api, template,
         originalClassName, attr.getName(), type);
     String annotation = String.format(methodAnnotation,
@@ -209,6 +249,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE) + "." + baseClassName + "_create");
     getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE) + "." + baseClassName + "_delete");
     getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE) + "." + baseClassName + "_get");
+    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + ".*");
   }
 
   private void addAttributeImport(ASTCDCompilationUnit origCD, ASTCDType clazz,

@@ -1,17 +1,18 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs")}
 ${cd4c.method("public void insert${typeName}(${typeName} o)")}
+  <#assign statement="insert"+typeName>
   ensureInsert${typeName}Created();
   try{
-    insert${typeName}.clearParameters();
-    insert${typeName}.setLong(1, o.getGemId());
-    <#list attributes as attr><#assign index = attr?index+2>
-    ${includeArgs("umlp.dao.set." + attr.printType()?replace(".", "_"), "insert${typeName}", typeName, "o.get${attr.getName()?cap_first}()", index, false)}
+    ${statement}.clearParameters();
+    ${statement}.setLong(1, o.getGemId());
+    <#list attributes as attr, dbInfo><#assign index = attr?index+2>
+      ${includeArgs("umlp.dao.Set", statement, index, dbInfo, "o.get"+attr.getName()?cap_first+"()", false)};
     </#list>
-    <#list optionalAttributes as attr, innerType><#assign index = index+1>
-    ${includeArgs("umlp.dao.set." + innerType?replace(".", "_"), "insert${typeName}", typeName, "o.get${attr.getName()?cap_first}()", index, true)}
+    <#list optionalAttributes as attr, dbInfo><#assign index = index+1>
+      ${includeArgs("umlp.dao.Set", statement, index, dbInfo, "o.get"+attr.getName()?cap_first+"()", true)};
     </#list>
-    insert${typeName}.execute();
+    ${statement}.execute();
     <#list listAttributes as attr>
     update${attr.getName()?cap_first}(o.getGemId(), o.get${attr.getName()?cap_first}());
     </#list>
@@ -29,7 +30,11 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
     }
     </#list>
     <#list gemAssocs as assocSide, assoc>
-    assoc${assoc.getName()?cap_first}DAO.add${assoc.getName()?cap_first}(o.getGemId(), o.get${assocSide.getName()?cap_first}Gem().getGemId(),0);
+    <#if assocSide.isLeft()>
+      assoc${assoc.getName()?cap_first}DAO.add${assoc.getName()?cap_first}(o.get${assocSide.getName()?cap_first}Gem().getGemId(), o.getGemId(),0);
+    <#else>
+      assoc${assoc.getName()?cap_first}DAO.add${assoc.getName()?cap_first}(o.getGemId(), o.get${assocSide.getName()?cap_first}Gem().getGemId(),0);
+    </#if>
     </#list>
   } catch (SQLException e){
     throw new RuntimeException(e);

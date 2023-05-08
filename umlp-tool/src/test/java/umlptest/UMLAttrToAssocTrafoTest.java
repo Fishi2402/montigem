@@ -73,6 +73,19 @@ public class UMLAttrToAssocTrafoTest extends AbstractUMLPTest {
             c -> assertEquals(4, c.getCDAttributeList().size()));
   }
 
+  @Test
+  public void testMultipleUsesOfDomainClass() {
+    ASTCDCompilationUnit ast = parseCD("src/test/resources", "trafo/MultipleUsesOfDomainClass.umlp");
+    CD4CodeMill.scopesGenitorDelegator().createFromAST(ast);
+    ast.accept(new CD4CodeSymbolTableCompleter(ast).getTraverser());
+
+    UMLAttrToAssocTrafo trafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
+    trafo.transform(ast);
+
+    assertEquals(2, ast.getCDDefinition().getCDAssociationsList().size());
+  }
+
+
   protected ASTCDCompilationUnit parseCD(String testPath, String model) {
     Path m = Paths.get(testPath, model);
     assertTrue(m.toFile().exists());

@@ -3,6 +3,8 @@ plugins {
     id 'application'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version "${spring_version}"
+
+    id 'de.rwth.se.umlp-tool-backend'
 }
 
 description 'SE Bib example'
@@ -16,14 +18,14 @@ dependencies {
 
     compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version
     implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
 }
 
-task generateSELib(type: UMLPTask) {
-    input = (file("src/models"))
-    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
-    hwcDir = layout.projectDirectory.dir("src/main/java/")
-    configTemplate = "umlp/UMLPConfig4teaching.ftl"
+// Task is created by umlp-backend plugin (with very sensible default values)
+generateUmlpBackend{
+  configTemplate = "umlp/UMLPConfig4teaching.ftl"
 }
+
 
 task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
     classpath = sourceSets.main.runtimeClasspath
@@ -33,8 +35,7 @@ task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
 
 task runServer {
     dependsOn(bootRun {
-        mainClass = 'selib.SeLibServerApplication'
+        systemProperty "spring.shell.interactive.enabled", "false"
     })
 }
 
-build.dependsOn(generateSELib)

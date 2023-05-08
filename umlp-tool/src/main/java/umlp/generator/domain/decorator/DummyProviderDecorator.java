@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.Names;
@@ -47,6 +48,9 @@ public class DummyProviderDecorator extends AbstractDecorator {
     List<ASTCDClass> classList = origCD.getCDDefinition().getCDClassesList().stream()
             .filter(c -> !c.getModifier().isDerived()).collect(Collectors.toList());
 
+    List<ASTCDInterface> interfaceList = origCD.getCDDefinition().getCDInterfacesList().stream()
+            .filter(i -> !i.getModifier().isDerived()).collect(Collectors.toList());
+
     // attributes
     List<ASTCDAttribute> attrList = Lists.newArrayList();
     attrList.add(getCD4C().addAttribute(ast, "protected int minInt = 0;"));
@@ -58,8 +62,11 @@ public class DummyProviderDecorator extends AbstractDecorator {
     getGlex().replaceTemplate("cd2java.Value", possChars,
             new TemplateHookPoint("umlp.dummyprovider.PossibleCharacters"));
     attrList.add(possChars);
-    classList.stream().forEach(c -> attrList.add(getCD4C().addAttribute(ast,
+    classList.forEach(c -> attrList.add(getCD4C().addAttribute(ast,
             "protected int max" + c.getName() + " = 100;")));
+
+    interfaceList.forEach(i -> attrList.add(getCD4C().addAttribute(ast,
+            "protected int max" + i.getName() + " = 100;")));
 
     // getter and setter
     MethodDecorator methodDecorator = new MethodDecorator(getGlex());
@@ -73,6 +80,7 @@ public class DummyProviderDecorator extends AbstractDecorator {
 
     // methods
     addInventMethods(classList, ast, origCD.getCDDefinition().getName());
+    addIInventMethods(interfaceList, ast, origCD.getCDDefinition().getName());
 
     // Imports
     getCD4C().addImport(ast, "java.util.Random");
@@ -91,8 +99,21 @@ public class DummyProviderDecorator extends AbstractDecorator {
               .filter(a -> GenService.isVisibleNotDerived(a))
               .filter(a -> getTypeCheck().isInt(a.getSymbol().getType()) || getTypeCheck().isString(a.getSymbol().getType()))
               .collect(Collectors.toList());
-      attrList.forEach(a -> getCD4C().addMethod(ast, "umlp.dummyprovider.InventAttribute", domainClass.getName(), a.getName(), Names.getSimpleName(a.printType())));
+      attrList.forEach(a -> getCD4C().addMethod(ast, "umlp.dummyprovider.InventAttribute", domainClass.getName(), a.getName(), getTypeCheck().isInt(a.getSymbol().getType())?"int":"String"));
       getCD4C().addMethod(ast, "umlp.dummyprovider.InventClass",
+              domainClass.getName(), providerName, attrList.stream().map(a -> a.getName()).collect(Collectors.toList()));
+    }
+  }
+
+  protected void addIInventMethods(List<ASTCDInterface> domainClassList, ASTCDClass ast, String providerName) {
+    for (ASTCDInterface domainClass: domainClassList) {
+      // Berücksichtige erstmal nur alle (auch Super-)Attribute vom Typ String oder int
+      List<ASTCDAttribute> attrList = CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+              .filter(GenService::isVisibleNotDerived)
+              .filter(a -> getTypeCheck().isInt(a.getSymbol().getType()) || getTypeCheck().isString(a.getSymbol().getType()))
+              .collect(Collectors.toList());
+      attrList.forEach(a -> getCD4C().addMethod(ast, "umlp.dummyprovider.InventAttribute", domainClass.getName(), a.getName(), Names.getSimpleName(a.printType())));
+      getCD4C().addMethod(ast, "umlp.dummyprovider.InventInterface",
               domainClass.getName(), providerName, attrList.stream().map(a -> a.getName()).collect(Collectors.toList()));
     }
   }

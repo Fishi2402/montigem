@@ -1,0 +1,10 @@
+// HWC-P
+
+// Info for translation:
+// if HWC-P file exists, both top and HWC are imported in the GEN or HWC-P .component.ts file
+// order of import: GEN then HWC-P, see .component.ts file
+.extra {
+  display: flex;
+  flex-direction: column;
+  margin-left: 100px;
+}

@@ -6,6 +6,7 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.check.SymTypeExpression;
@@ -31,9 +32,12 @@ public class ObserverDecorator extends AbstractDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> astcdPackage.addCDElement(createInterface(c)));
+
+    origCD.getCDDefinition().getCDInterfacesList().stream().filter(c -> !c.getModifier().isDerived())
+            .forEach(c -> astcdPackage.addCDElement(createInterface(c)));
   }
 
-  protected ASTCDInterface createInterface(ASTCDClass domainClass) {
+  protected ASTCDInterface createInterface(ASTCDType domainClass) {
     String className = domainClass.getName();
     ASTCDInterface ast = UMLPMill.cDInterfaceBuilder()
       .setModifier(PUBLIC.build())

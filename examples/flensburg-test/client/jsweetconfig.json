@@ -1,0 +1,16 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.UMLPJavaBasicsAdapter",
+    "umlp.jsweet.extension.UMLPRTEImportAdapter",
+    "umlp.jsweet.extension.UMLPBasicsAdapter"
+  ],
+  "@Async": {
+    "include": [
+      "flensburg.commands.**.doRun*",
+      "flensburg.FlensburgManager.get*Sure*",
+      "flensburg.FlensburgManagerImpl.get*Sure*",
+      "flensburg.FlensburgManager._do*Opt*",
+      "flensburg.FlensburgManagerImpl._do*Opt*"
+    ]
+  }
+}

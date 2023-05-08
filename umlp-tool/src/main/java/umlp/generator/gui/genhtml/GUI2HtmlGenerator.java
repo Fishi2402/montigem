@@ -48,7 +48,7 @@ public class GUI2HtmlGenerator {
     Path generatedFiles = Paths.get(pathName, componentName, componentName + ".component.html");
 
     GeneratorEngine e = new GeneratorEngine(setup);
-    e.generate("umlp.gui2html.Page", generatedFiles, decoratedAst, viewComponents.getComponents());
+    e.generate("umlp.gui2html.Page", generatedFiles, decoratedAst, viewComponents.getNotNestedComponents());
   }
 
 }

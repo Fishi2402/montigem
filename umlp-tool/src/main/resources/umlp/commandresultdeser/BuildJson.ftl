@@ -5,32 +5,27 @@ ${cd4c.method("public void buildJson(CommandResult<?> result, JsonPrinter printe
 super.buildJson(result, printer);
 if(result.isSimpleResult()){
   String tp = result.getTypeParameter();
-  if(tp.startsWith("java.lang")){
-    return;
-  }
-
-  // TODO: create ListCommandResult and extract
-  if("umlp.command.LongList".equals(tp)){
-    printer.beginArray("value");
-    for (Long l : ((LongList) result.asSimpleResult().get())) {
-      printer.value(l);
-    }
-    printer.endArray();
+  if(BaseClassObjectMapper.canDeSer(tp)){
     return;
   }
 
   printer.beginObject("value");
-  // Java type system restrictions force us to use casts here
-  switch (tp){
-    <#list classList as className>
-      case "${className}": {
-        new ${className}DeSer().buildJson((${className})result.asSimpleResult().get(), printer);
-        break;
-      }
-    </#list>
-    default:{
-      Log.error("Can not serialize value of type " + tp);
-    }
-  }
+  serSingleValue(result.asSimpleResult().get(), printer, tp);
   printer.endObject();
+}
+
+if(result.isListResult()){
+  String tp = result.getTypeParameter();
+  if(BaseClassObjectMapper.canDeSer(tp)){
+    return;
+  }
+
+  printer.beginArray("list");
+
+  for(var o : result.asListResult().get()){
+    serSingleValue(result.asSimpleResult().get(), printer, tp);
+  }
+  printer.endArray();
+  printer.endObject();
+
 }

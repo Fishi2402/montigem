@@ -41,6 +41,10 @@ public class BEDecorator extends AbstractDecorator {
     domainClassDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
 
+    DomainInterfaceDecorator domainInterfaceDecorator = new DomainInterfaceDecorator(glex);
+    domainInterfaceDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: CreateDecorator", BEDecorator.class.getName());
+
     // Generate DAOs
     if(!neo4j) {
       DAODecorator daoDecorator = new DAODecorator(glex);
@@ -106,6 +110,10 @@ public class BEDecorator extends AbstractDecorator {
     managerImplDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerImplDecorator", BEDecorator.class.getName());
 
+    ManagerClientImplDecorator managerClientImplDecorator = new ManagerClientImplDecorator(glex);
+    managerClientImplDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: ManagerClientImplDecorator", BEDecorator.class.getName());
+
     ManagerMockDecorator managerMockDecorator = new ManagerMockDecorator(glex);
     managerMockDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerMockDecorator", BEDecorator.class.getName());
@@ -117,11 +125,6 @@ public class BEDecorator extends AbstractDecorator {
     ErrorObserverDecorator errorObserverDecorator = new ErrorObserverDecorator(glex);
     errorObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorObserverDecorator", BEDecorator.class.getName());
-
-    // TODO: remove
-    /*TypeAdapterDecorator typeAdapterDecorator = new TypeAdapterDecorator(glex);
-    typeAdapterDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: TypeAdapterDecorator", BEDecorator.class.getName());*/
 
     GemListAssocDecorator gemListAssocDecorator = new GemListAssocDecorator(glex);
     gemListAssocDecorator.transform(cdAST, decoratedAST);
@@ -148,7 +151,7 @@ public class BEDecorator extends AbstractDecorator {
       shellAPIDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ShellAPIDecorator", ShellAPIDecorator.class.getName());
 
-      ShellAPIClassDecorator shellApiClassDecorator = new ShellAPIClassDecorator(glex, hwPath);
+      ShellAPIClassDecorator shellApiClassDecorator = new ShellAPIClassDecorator(glex, hwPath, supportedDesers);
       shellApiClassDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ShellAPIClassDecorator", ShellAPIClassDecorator.class.getName());
     }

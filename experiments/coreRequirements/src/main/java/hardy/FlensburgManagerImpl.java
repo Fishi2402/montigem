@@ -5,7 +5,6 @@ package hardy;
 
 
 
-import def.js.Promise;
 import hardy.gemlists.AddressGemList;
 import hardy.gemlists.Address_VisitorsGemList;
 import hardy.gemlists.CarGemList;
@@ -14,8 +13,6 @@ import hardy.gemlists.PersonGemList;
 import hardy.gemlists.Person_ChildrenGemList;
 import hardy.gemlists.Person_OwnsGemList;
 import hardy.gemlists.Person_VisitedGemList;
-import hardy.jsweetUtil.UMLPPromise;
-import jsweet.lang.Async;
 import umlp.backendrte.common.DatabaseAccessManager;
 import umlp.backendrte.common.GemList;
 import umlp.backendrte.common.GemListBuilder;
@@ -25,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public class FlensburgManagerImpl extends FlensburgManager {
   HumanDbObserver theHumanDbObserver = new HumanDbObserver();

@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("tableName", "className","attrName", "innerType")}
+${tc.signature("tableName", "className","attrName", "innerType", "dbName")}
 ${cd4c.method("public void update${attrName?cap_first}(long gemId, List<${innerType}> ${attrName})")}
 
   if(remove${attrName?cap_first}Statement == null) {
@@ -16,7 +16,7 @@ ${cd4c.method("public void update${attrName?cap_first}(long gemId, List<${innerT
     for(${innerType} element : ${attrName}) {
       update${attrName?cap_first}Statement.clearParameters();
       update${attrName?cap_first}Statement.setLong(1, gemId);
-      ${includeArgs("umlp.dao.set." + innerType?replace(".", "_"), "update${attrName?cap_first}Statement" ,innerType, "element", 2, false)}
+      ${includeArgs("umlp.dao.Set", "update"+attrName?cap_first+"Statement", 2, dbName, "element", false)};
       update${attrName?cap_first}Statement.execute();
     }
 

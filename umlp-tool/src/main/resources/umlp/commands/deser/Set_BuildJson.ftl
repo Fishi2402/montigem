@@ -7,7 +7,7 @@ ${cd4c.method("public void buildJson(${command} command, JsonPrinter jsonPrinter
   super.buildJson(command, jsonPrinter);
   jsonPrinter.member("gemId", command.getGemId());
 <#if useDeSer>
-  jsonPrinter.member("${attrName}", ${objectMapperName}.serialize(command.${getterName}(), "${type}"));
+  jsonPrinter.memberJson("${attrName}", ${objectMapperName}.serialize(command.${getterName}(), "${type}").orElseThrow());
 <#else>
   jsonPrinter.member("${attrName}", command.${getterName}());
 </#if>

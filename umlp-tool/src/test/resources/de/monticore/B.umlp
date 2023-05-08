@@ -1,4 +1,4 @@
-package mypackage;
+package de.monticore;
 
 umlp B {
   interface I;
@@ -10,4 +10,6 @@ umlp B {
   class C {
     I i;
   }
+
+  class D extends C;
 }

@@ -9,7 +9,7 @@ umlp Employment {
   }
 
   class Task {
-    Date deadline;
+    java.util.Date deadline;
   }
 
   class Manager extends Employee;

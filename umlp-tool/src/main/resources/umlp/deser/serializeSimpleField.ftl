@@ -17,7 +17,7 @@
     <#elseif isOptional>
       if (obj.get${fieldName?cap_first}().isPresent()) {
         <#if useDeSer>
-        printer.member("${fieldName}", ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${innerType}).get());
+        printer.memberJson("${fieldName}", ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${innerType}).get());
         <#else>
         printer.member("${fieldName}", obj.get${fieldName?cap_first}().get());
         obj.get${fieldName?cap_first}().stream().forEach(e -> printer.value(e));
@@ -25,7 +25,7 @@
       }
     <#else>
       <#if useDeSer>
-      printer.member("${fieldName}", ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${fieldType}"));
+      printer.memberJson("${fieldName}", ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${fieldType}").orElseThrow());
       <#else>
       printer.member("${fieldName}", obj.get${fieldName?cap_first}());
       </#if>

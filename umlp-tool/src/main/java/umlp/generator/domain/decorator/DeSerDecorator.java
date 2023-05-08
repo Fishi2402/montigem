@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
-public class DeSerDecorator extends DomainClassDecorator{
+public class DeSerDecorator extends DomainClassDecorator {
 
   public static final String SUFFIX = "DeSer";
 
@@ -36,9 +36,9 @@ public class DeSerDecorator extends DomainClassDecorator{
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String cdName = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList()
-        .stream()
-        .filter(cdclass -> !cdclass.getModifier().isDerived())
-        .forEach(cdClass -> astcdPackage.addCDElement(createDeSer(origCD, cdName, cdClass)));
+            .stream()
+            .filter(cdclass -> !cdclass.getModifier().isDerived())
+            .forEach(cdClass -> astcdPackage.addCDElement(createDeSer(origCD, cdName, cdClass)));
   }
 
   protected ASTCDElement createDeSer(ASTCDCompilationUnit origCD, String cdName, ASTCDClass cdClass) {
@@ -47,9 +47,10 @@ public class DeSerDecorator extends DomainClassDecorator{
     ASTCDClass deSer = UMLPMill.cDClassBuilder()
         .setName(cdClass.getName() + SUFFIX)
         .setModifier(CDModifier.PUBLIC.build())
+        .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("JsonDeSer<" + cdClass.getName() + ">"))
         .build();
 
-    addImports(origCD, deSer);
+    addImports(deSer);
 
     // TODO: also use for other templates!
     List<ASTCDAttribute> attributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
@@ -73,12 +74,12 @@ public class DeSerDecorator extends DomainClassDecorator{
             attributes.stream().map(a -> a.getName()).collect(Collectors.toList()),
             assocs.stream().filter(a -> !GenService.isList(a)).map(a -> a.getName()).collect(Collectors.toList()),
             assocs.stream().filter(a -> GenService.isList(a)).map(a -> a.getName()).collect(Collectors.toList())
-            );
+                       );
     getCD4C().addMethod(deSer, "umlp.deser.BuildJson",
             originalClassName,
             attributes.stream().map(a -> a.getName()).collect(Collectors.toList()),
             assocs.stream().map(a -> a.getName()).collect(Collectors.toList())
-    );
+                       );
 
     getCD4C().addMethod(deSer, "umlp.deser.FromJson", originalClassName);
 
@@ -96,16 +97,16 @@ public class DeSerDecorator extends DomainClassDecorator{
   protected void addSerAndDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
     boolean isList = false;
     boolean isOptional = false;
-    String type = attr.getSymbol().getType().printFullName();
+    String type = GenService.createType(attr.getSymbol().getType()).printType();
     String innerType = "";
     String jsonStr = "";
-    if(GenService.isList(attr)) {
+    if (GenService.isList(attr)) {
       isList = true;
-      jsonStr = GenService.calculateJSon(((SymTypeOfGenerics)attr.getSymbol().getType()).getArgument(0));
+      jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0));
       innerType = ((SymTypeOfGenerics)attr.getSymbol().getType()).getArgument(0).printFullName();
-    } else if(GenService.isOptional(attr)) {
+    } else if (GenService.isOptional(attr)) {
       isOptional = true;
-      jsonStr = GenService.calculateJSon(((SymTypeOfGenerics)attr.getSymbol().getType()).getArgument(0));
+      jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0));
       innerType = ((SymTypeOfGenerics)attr.getSymbol().getType()).getArgument(0).printFullName();
     } else {
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
@@ -126,7 +127,7 @@ public class DeSerDecorator extends DomainClassDecorator{
   }
 
   protected void addSerAndDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAssocSide attr) {
-    if(GenService.isList(attr)){
+    if (GenService.isList(attr)) {
       getCD4C().addMethod(deSer, "umlp.deser.serializeGemListField", originalClassName, attr.getName());
       getCD4C().addMethod(deSer, "umlp.deser.deserializeGemListField", cdName, originalClassName, attr.getName());
     } else {
@@ -142,11 +143,12 @@ public class DeSerDecorator extends DomainClassDecorator{
   }
 
   @Override
-  protected void addImports(ASTCDCompilationUnit origCD, ASTCDType clazz) {
+  protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonElement");
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("JsonDeSer"));
   }
 
 }

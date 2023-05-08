@@ -12,6 +12,7 @@ package stanley.personcarsedit;
 
 import hardy.Person;
 import stanley.tmp.table.tabletypes.TableColumn;
+import umlp.backendrte.gui.Directive;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 
 /* Hookpoint: ClassContent:Annotations */
 
+@Directive
 abstract public class PersonCarsEditTOP {
 
   /* Hookpoint: ClassContent:Elements */

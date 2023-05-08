@@ -4,10 +4,9 @@ package hardy.service.websocket;
 import hardy.*;
 import hardy.commands.Person_get;
 import hardy.requests.GetFreeGemIdRequest;
-import infrastructure.command.ClientWebSocketCommandCommunication;
+import infrastructure.command.TestClientWebSocketCommandCommunication;
 import infrastructure.command.FlensburgManagerClientImplBuilder;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import stanley.FlensburgTestContext;
@@ -34,7 +33,7 @@ public class CommandCommunicationTest {
 
   //@Test
   public void testInit() {
-    ClientWebSocketCommandCommunication connection = new ClientWebSocketCommandCommunication(uri, port);
+    TestClientWebSocketCommandCommunication connection = new TestClientWebSocketCommandCommunication(String.format(uri, port));
     long participantId = 0l;
     Result<Long> init = connection.init();
     if (init.wasSuccessful()) {
@@ -56,7 +55,7 @@ public class CommandCommunicationTest {
     FlensburgMock.secretlyAdaptnextGemIds(startGemId);
 
     // Start client and connect to websocket
-    ClientWebSocketCommandCommunication connection = new ClientWebSocketCommandCommunication(uri, port);
+    TestClientWebSocketCommandCommunication connection = new TestClientWebSocketCommandCommunication(String.format(uri, port));
     FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
         .backendContext(serverContext)
         .commandCommunication(connection)
@@ -85,7 +84,7 @@ public class CommandCommunicationTest {
     (new FlensburgDummies()).inventDummiesGenerated(5,5,5);
 
     // Start client and connect to websocket
-    ClientWebSocketCommandCommunication connection = new ClientWebSocketCommandCommunication(uri, port);
+    TestClientWebSocketCommandCommunication connection = new TestClientWebSocketCommandCommunication(String.format(uri, port));
     FlensburgTestContext clientContext = new FlensburgManagerClientImplBuilder()
         .backendContext(serverContext)
         .commandCommunication(connection).build().get();
@@ -107,13 +106,13 @@ public class CommandCommunicationTest {
     FlensburgMock.secretlyAdaptnextGemIds(startGemId);
     (new FlensburgDummies()).inventDummiesGenerated(5,5,5);
 
-    ClientWebSocketCommandCommunication connection1 = new ClientWebSocketCommandCommunication(uri, port);
+    TestClientWebSocketCommandCommunication connection1 = new TestClientWebSocketCommandCommunication(String.format(uri, port));
     FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
         .backendContext(serverContext)
         .commandCommunication(connection1).build().get();
     connection1.setContext(serverContext, clientContext1);
 
-    ClientWebSocketCommandCommunication connection2 = new ClientWebSocketCommandCommunication(uri, port);
+    TestClientWebSocketCommandCommunication connection2 = new TestClientWebSocketCommandCommunication(String.format(uri, port));
     FlensburgTestContext clientContext2 = new FlensburgManagerClientImplBuilder()
         .backendContext(serverContext)
         .commandCommunication(connection2).build().get();
@@ -141,7 +140,7 @@ public class CommandCommunicationTest {
     FlensburgMock.secretlyAdaptnextGemIds(startGemId);
     (new FlensburgDummies()).inventDummiesGenerated(5,5,5);
 
-    ClientWebSocketCommandCommunication connection1 = new ClientWebSocketCommandCommunication(uri, port);
+    TestClientWebSocketCommandCommunication connection1 = new TestClientWebSocketCommandCommunication(String.format(uri, port));
     FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
         .backendContext(serverContext)
         .commandCommunication(connection1).build().get();

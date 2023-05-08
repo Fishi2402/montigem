@@ -30,13 +30,23 @@ public class FlensburgBaseClassObjectMapperTest {
   @Test
   public void testDateSer(){
     Date d = getDate();
-    assertEquals("2022-11-03T12:00:00Z", BaseClassObjectMapper.serialize(d, "java.util.Date").get());
+    assertEquals("\"2022-11-03T12:00:00Z\"", BaseClassObjectMapper.serialize(d, "java.util.Date").get());
   }
 
   @Test
   public void testDateDeSer(){
     Date d = getDate();
-    assertEquals(d, BaseClassObjectMapper.deserialize("2022-11-03T12:00:00Z", "java.util.Date").get());
+    assertEquals(d, BaseClassObjectMapper.deserialize("\"2022-11-03T12:00:00Z\"", "java.util.Date").get());
+  }
+
+  @Test
+  public void testDateDeSerRoundtrip(){
+    Date d = getDate();
+    String ser = BaseClassObjectMapper.serialize(d, "java.util.Date").get();
+    Object deser = BaseClassObjectMapper.deserialize(ser, "java.util.Date").get();
+
+    assertTrue(deser instanceof Date);
+    assertEquals(d, deser);
   }
 
   @Test

@@ -2,23 +2,26 @@
 
 buildscript {
   repositories {
+    if (("true").equals(getProperty('useLocalRepo'))) {
+      mavenLocal()
+    }
     mavenCentral()
     maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
     maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-//    maven { url "https://repository.jsweet.org/artifactory/plugins-release-local" }
-//    maven { url "https://repository.jsweet.org/artifactory/plugins-snapshot-local" }
     maven { url "https://google-diff-match-patch.googlecode.com/svn/trunk/maven" }
   }
   dependencies {
-    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-SNAPSHOT') {
+    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
       transitive = true
     }
+    classpath group: 'umlp', name: 'umlp-frontend-rte-java', version: version
+//    classpath project(":umlp-rte:umlp-frontend-rte-java")
   }
 }
 
 plugins {
   id "com.github.node-gradle.node" version "3.4.0"
-  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-SNAPSHOT"
+  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
 }
 
 repositories {
@@ -28,6 +31,8 @@ repositories {
 
 dependencies {
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
+  implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
+  implementation project(':umlp-rte:umlp-frontend-rte')
 }
 
 jsweet {
@@ -39,11 +44,11 @@ jsweet {
   tsOut = project.file('target/generated-sources/ts')
   candiesJsOut = project.file('target/candies')
   targetVersion = 'ES6'
-  includes = ['**/hardy/**/*.java']
+  includes = ['**/hardy/**/*.java', '**/stanley/**/*.java']
   excludes = ['**/WebSocketConfig.java', '**/DBAccessRestService.java', '**/DBTestService.java',
               '**/GreetingService.java', '**/CommandWebSocketService.java',
               '**/UMLPApplication.java', '**/WebSocketCommandCommunication.java']
-//  includeTranspilation = ['**/Car*.java']
+//  includeTranspilation = ['**/FlensburgManager.java']
 //  excludeTranspilation = ['**/*Observer*.java', '**/*DeSer.java', '**/*Collector*.java']
   module = 'commonjs'
 }
@@ -110,6 +115,7 @@ task runApp(type: NpxTask) {
 }
 
 sourceSets {
+  // java -> main instead of main -> java?
   java {
     main {
       resources {
@@ -126,12 +132,12 @@ tasks.test {
 }
 /**/
 
-task printSourceSetInformation(){
-  doLast{
+task printSourceSetInformation() {
+  doLast {
     sourceSets.each { srcSet ->
-      println "["+srcSet.name+"]"
-      print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
-      print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
+      println "[" + srcSet.name + "]"
+      print "-->Source directories: " + srcSet.allJava.srcDirs + "\n"
+      print "-->Output directories: " + srcSet.output.classesDirs.files + "\n"
       println ""
     }
   }
