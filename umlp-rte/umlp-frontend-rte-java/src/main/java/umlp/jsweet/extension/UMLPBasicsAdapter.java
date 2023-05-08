@@ -4,7 +4,7 @@ package umlp.jsweet.extension;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 
-  public class UMLPBasicsAdapter extends UMLPAbstractAdapter{
+  public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
 
   public UMLPBasicsAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);

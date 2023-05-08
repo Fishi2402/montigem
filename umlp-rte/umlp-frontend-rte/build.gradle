@@ -38,6 +38,7 @@ repositories {
 }
 
 dependencies {
+  implementation project(':umlp-rte')
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
 //  implementation group: 'org.jsweet', name: 'j4ts', version: '2.1.0-SNAPSHOT'
 }
@@ -67,7 +68,9 @@ jsweet {
     '**/CommandResultDeSer.java',
     '**/Gem.java',
     '**/GemList.java',
-    '**/GemListBuilder.java'
+    '**/GemListBuilder.java',
+    '**/LocalDateDeSer.java',
+    '**/BaseClassObjectMapper.java'
   ]
 }
 

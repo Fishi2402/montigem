@@ -10,8 +10,11 @@ import umlp.jsweet.extension.UMLPAdapterUtils;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.PrinterAdapter {
 
@@ -35,6 +38,8 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
     staticLibrary.put(RTEPathUtil.getBackendRTECommonPath("Gem"), "common/Gem");
     staticLibrary.put(RTEPathUtil.getBackendRTECommonPath("GemList"), "common/GemList");
     staticLibrary.put(RTEPathUtil.getBackendRTECommonPath("GemListBuilder"), "common/GemListBuilder");
+    staticLibrary.put(RTEPathUtil.getBackendRTECommonPath("LocalDateDeSer"), "deser/LocalDateDeSer");
+    staticLibrary.put(RTEPathUtil.getBackendRTECommonPath("BaseClassObjectMapper"), "common/BaseClassObjectMapper");
   }
 
   @Override
@@ -77,6 +82,7 @@ public class UMLPInternalAdapter extends org.jsweet.transpiler.extension.Printer
   private void initTypeMappings() {
     getTypeMirrorMappings().add(0, UMLPAdapterUtils.computeOptionalTypeMapping(this, types()));
     getTypeMirrorMappings().add(0, UMLPAdapterUtils.computeMCJSonTypeMapping(this, types()));
+    getTypeMirrorMappings().add(0, UMLPAdapterUtils.computeDateTypeMapping(this, types()));
   }
 
   @Override

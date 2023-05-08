@@ -66,7 +66,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    * @return {boolean} whether the object corresponding to gemID is contained in this list
    */
   public contains(gemID: number): boolean {
-    return /* contains */(this.ids.indexOf(<any>(gemID)) >= 0);
+    return (this.ids.indexOf(<any>(gemID)) >= 0);
   }
 
   public containsAll(gemIDs: Array<number>): boolean {
@@ -112,22 +112,12 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     /* set */(this.ids[idx] = gemID);
   }
 
-  /**
-   *
-   * @param {number} idx
-   * @param {*} elem
-   */
-  public add(idx: number, elem: E) {
-    this._internal_addAndSync(idx, /* singletonList */[elem.getGemId()]);
-  }
-
-  /**
-   *
-   * @param {*} elem
-   */
-  public add(elem: E) : boolean{
-    this.add(this.size(), elem);
-    return true;
+  public add(idxOrElem: any, elem?: E): void {
+    if (elem === undefined || elem === null) {
+      this._internal_addAndSync(this.size(), [elem.getGemId()]);
+    } else {
+      this._internal_addAndSync(idxOrElem, [elem.getGemId()]);
+    }
   }
 
   public addAll(idx: number, gemIDs: Array<number>) : boolean{
@@ -305,7 +295,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    */
   public removeIdSure(gemId: number) {
     console.info(this.ids);
-    this.ids.removeIf((l) => /* equals */((a, b) => { return a === b; }) (l, gemId));
+    this.ids = this.ids.filter(l => l !== gemId);
   }
 
   public indexOfId(gemId: number): number {

@@ -6,7 +6,7 @@ if (o == null) {
   throw new IllegalArgumentException("Null argument not allowed here");
 }
 
-Sets.difference(new HashSet<>(this._${name}), new HashSet<>(o)).forEach((s) -> {
+for (${targetName} s: o) {
   this.remove${name?cap_first}(s);
-});
+}
 
