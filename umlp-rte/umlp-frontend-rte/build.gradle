@@ -61,6 +61,7 @@ jsweet {
     '**/ChunkedIdStorage.java'
   ]
   excludeTranspilation = [
+    '**/ClientCommandManager.java',
     '**/DatabaseAccessManager.java',
     '**/HashMapWithOrderedKeys.java',
     '**/CommandResultDeSer.java',
