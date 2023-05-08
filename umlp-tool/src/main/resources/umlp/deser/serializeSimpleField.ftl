@@ -14,8 +14,8 @@
         ${objectMapperName}.serialize(e, "${innerType}");
       }
       <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
-      for (${innerType} e: obj.get${fieldName?cap_first}()) {
-        printer.value(e.name()));
+      for (${innerType?keep_after_last(".")} e: obj.get${fieldName?cap_first}()) {
+        printer.value(e.name());
       }
       <#else>
       for (${innerType} e: obj.get${fieldName?cap_first}()) {
@@ -29,14 +29,10 @@
         printer.memberJson("${fieldName}", ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${innerType}").get());
         <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
         printer.member("${fieldName}", obj.get${fieldName?cap_first}().get().name());
-        for (${innerType} e: obj.get${fieldName?cap_first}()) {
-          printer.value(e.name());
-        }
+        printer.value(obj.get${fieldName?cap_first}().get().name());
         <#else>
         printer.member("${fieldName}", obj.get${fieldName?cap_first}().get());
-        for (${innerType} e: obj.get${fieldName?cap_first}()) {
-          printer.value(e);
-        }
+        printer.value(obj.get${fieldName?cap_first}().get());
         </#if>
       }
     <#else>

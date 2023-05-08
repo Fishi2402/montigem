@@ -14,6 +14,7 @@ ${tc.signature("className", "attr", "fieldType", "jsonStr", "isList", "innerType
       <#if useDeSer>
       result.add(${objectMapperName}.<${innerType}>deserialize(e.isJsonString() ? '"' + e.getAsJsonString().getValue() + '"' : e.toString(), "${innerType}").orElse(null));
       <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
+<#--        TODO MB: ist das hier so richtig, oder sollte lieber innerType richtig berechnet werden? -->
       result.add(${innerType?keep_after_last(".")}.valueOf(json.getMember("${fieldName}").${jsonStr}));
       <#else>
       result.add(e.${jsonStr});
