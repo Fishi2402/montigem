@@ -1,21 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui.gentypescript;
+package umlp.generator.gui.gentypescript.java2ts;
 
 import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd.codegen.CDGenerator;
-import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.prettyprint.IndentPrinter;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.genjava.GUI2CDTrafo;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
-import umlp.generator.gui.gentypescript.printer.TypeScriptTypesFullPrettyPrinter;
-import umlp.generator.gui.gentypescript.util.GUI2ComponentTemplates;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

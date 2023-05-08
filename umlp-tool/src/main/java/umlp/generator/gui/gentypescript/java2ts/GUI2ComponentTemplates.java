@@ -1,4 +1,4 @@
-package umlp.generator.gui.gentypescript.util;
+package umlp.generator.gui.gentypescript.java2ts;
 
 public final class GUI2ComponentTemplates {
 
@@ -21,6 +21,8 @@ public final class GUI2ComponentTemplates {
   public static final String ENUM = "cd2java.Enum";
 
   public static final String ANNOTATIONS = "cd2java.Annotations";
+
+  public static final String GET_COMPONENT_REPLACED = "umlp.gui2java.GetComponentReplaced";
 
   private GUI2ComponentTemplates() {}
 

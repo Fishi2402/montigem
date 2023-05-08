@@ -12,9 +12,9 @@ import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GUIIterate2ArgsVisitor implements GUIDSLVisitor2 {
 
@@ -23,7 +23,7 @@ public class GUIIterate2ArgsVisitor implements GUIDSLVisitor2 {
 
   protected boolean active = false;
 
-  protected List<String> args = new ArrayList<>();
+  protected Map<String, String> args = new HashMap();
   Deque<ASTGUIIterate> iterateStack = new ArrayDeque<>();
 
   public GUIIterate2ArgsVisitor() {
@@ -35,7 +35,7 @@ public class GUIIterate2ArgsVisitor implements GUIDSLVisitor2 {
     return traverser;
   }
 
-  public List<String> getArgs() {
+  public Map<String, String> getArgs() {
     return args;
   }
 
@@ -48,14 +48,14 @@ public class GUIIterate2ArgsVisitor implements GUIDSLVisitor2 {
       ASTIterateControl ic = it.getIterateControl();
       if (ic instanceof ASTGUIShortIterateControl) {
         ASTGUIShortIterateControl control = (ASTGUIShortIterateControl) ic;
-        String arg = "";
+        String type = "";
         // TODO AGe: type checker must set type properly
         if (control.getItem().isPresentSymbol()
             && control.getItem().getSymbol().getType() != null) {
-          arg += control.getItem().getSymbol().getType().print();
+          type = control.getItem().getSymbol().getType().print();
         } else {
           if (control.isPresentMCType()) {
-            arg += control.getMCType().printType();
+            type = control.getMCType().printType();
           }
           else {
             Log.error("0x00006 type of " + control.getItem().getName()
@@ -68,8 +68,7 @@ public class GUIIterate2ArgsVisitor implements GUIDSLVisitor2 {
               + " is missing symbol");
               /**/
         }
-        arg += " " + control.getItem().getName();
-        args.add(arg);
+        args.put(control.getItem().getName(), type);
       }
       else {
         Log.error("0x00004 iterate construct " + node.getId().getName()

@@ -26,8 +26,8 @@ import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
@@ -75,7 +75,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       if (namedArg.getGUIArgValue().isPresentGUIList()) {
         List<ASTGUIArgValue> valueList = namedArg.getGUIArgValue().getGUIList().getGUIArgValueList();
 
-        String typeArg = "? extends Object";
+        String typeArg = unknownCollectionType();
         boolean isPrimitive = false;
         if (!valueList.isEmpty()) {
           if (valueList.get(0).isPresentExpression()) {
@@ -93,12 +93,13 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
             CDModifier.PROTECTED.build(),
             MCTypeFacade.getInstance().createListTypeOf(typeArg),
             util.gui2cdAttrName(guiComponent.getId().getName(), namedArg.getName()));
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(" = new ArrayList<>()"));
+        setDefaultListValue(attr);
         decoratedClass.addCDMember(attr);
 
         GUIIterate2ArgsVisitor it2Arg = new GUIIterate2ArgsVisitor();
         it2Arg.transform(guiAst, guiComponent);
-        addGetComponentMethod(decoratedClass, getterName, paramType, attr.getName(), it2Arg.getArgs());
+        addGetComponentMethod(decoratedClass, getterName, paramType,
+            attr.getName(), getArgs(it2Arg.getArgs()));
 
         String setterName = util.gui2cdAttrSetterName(
             guiComponent.getId().getName(), namedArg.getName());
@@ -123,8 +124,18 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
       GUIIterate2ArgsVisitor it2Arg = new GUIIterate2ArgsVisitor();
       it2Arg.transform(guiAst, guiComponent);
-      addGetComponentMethod(decoratedClass, getterName, paramType, argValue, it2Arg.getArgs());
+      addGetComponentMethod(decoratedClass, getterName, paramType,
+          argValue, getArgs(it2Arg.getArgs()));
     }
+  }
+
+  protected String unknownCollectionType() {
+    return "? extends Object";
+  }
+
+  protected void setDefaultListValue(ASTCDAttribute attr) {
+    glex.replaceTemplate("cd2java.Value", attr,
+        new StringHookPoint(" = new ArrayList<>()"));
   }
 
   @Override
@@ -139,24 +150,35 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
   /**/
 
+  public List<String> getArgs(Map<String, String> args) {
+    List<String> res = new ArrayList<>();
+    for (Map.Entry arg : args.entrySet()) {
+      res.add(arg.getValue() + " " + arg.getKey());
+    }
+    return res;
+  }
+
+
   protected void addGetComponentMethod(
       ASTCDClass decoratedClass, String methodName, String attrType, String returnValue,
       List<String> arguments
   ) {
     getCD4C().addMethod(
-        decoratedClass, "umlp.gui2java.GetComponentReplaced", methodName, attrType,
+        decoratedClass, getGetterTemplate(), methodName, attrType,
         returnValue, String.join(", ", arguments)
     );
   }
 
-  protected void addGetComponentMethod(
-      ASTCDClass decoratedClass, String methodName, String attrType, String returnValue) {
-    addGetComponentMethod(
-        decoratedClass, methodName, attrType, returnValue, Collections.emptyList());
+  protected String getGetterTemplate() {
+    return "umlp.gui2java.GetComponentReplaced";
   }
 
   protected void addSetComponentMethod(ASTCDClass decoratedClass, String methodName, String attrType, String attrName) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.SetComponent", methodName, attrType, attrName);
+    getCD4C().addMethod(decoratedClass, getSetterTemplate(), methodName, attrType, attrName);
+  }
+
+  protected String getSetterTemplate() {
+    return "umlp.gui2java.SetComponent";
   }
 
   public Optional<VariableSymbol> resolveAttribute(Optional<GUIParamSymbol> guiParamSym, String name) {

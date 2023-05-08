@@ -10,7 +10,7 @@ import umlp.generator.gui.GUIComponentsVisitor;
 
 public class GUI2JavaComponentsDecorator extends GUIAbstractDecorator {
 
-  private final GUIComponentsVisitor viewComponent;
+  protected final GUIComponentsVisitor viewComponent;
 
   public GUI2JavaComponentsDecorator(final GlobalExtensionManagement glex, GUIComponentsVisitor viewComponent) {
     super(glex);
