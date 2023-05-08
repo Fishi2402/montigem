@@ -47,17 +47,13 @@ public class GUI2ComponentGenerator extends CDGenerator {
     this.setup.setTracing(true);
     // create an empty classdiagram
     ASTCDCompilationUnit decoratedAST = GUI2CDTrafo.createCDCompilationUnit(modelAST);
-    //GUI2CDTrafo.createCD4CodeSymTab(decoratedAST);
-    // logTrafoExec("GUI2CDTrafo", decoratedAST);
 
     TemplateController tc = setup.getNewTemplateController(configTemplate);
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
 
-    // translate the GUI-AST into Java
+    // translate the GUI-AST into TypeScript
     hpp.processValue(tc, modelAST,
         Arrays.asList(decoratedAST, setup.getGlex(), setup.getHandcodedPath(), this, viewComponents));
   }
-  /**/
-
 
 }

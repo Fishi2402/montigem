@@ -1,25 +1,32 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
+import de.monticore.guidsl._ast.ASTGUIRangeIterateControl;
+import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
+import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
-import umlp.generator.domain.decorator.GenService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,29 +36,49 @@ import java.util.stream.Collectors;
 public class GUIGeneratorUtil {
 
   // Fully qualified Name of the classdiagram, e.g. "hardy.Flensburg"
-  private static List<String> DOMAIN_MODELS;
+  private List<String> DOMAIN_MODELS;
   // Fully qualified Name of a gui model, e.g. "stanley.PersonCreate"
-  private static List<String> CREATE_MODELS;
+  private List<String> CREATE_MODELS;
+
+  protected final String TPL_INTERN = "TPL_INTERN";
+  protected final String TPL_SUFFIX = "TPL";
+
+  protected static GUIGeneratorUtil instance;
+
+  protected GUIDSLFullPrettyPrinter printer;
 
   private GUIGeneratorUtil() {
+    printer = new GUIDSLFullPrettyPrinter(new IndentPrinter());
   }
 
-  public static void init(List<String> domainModels, List<String> createModels) {
+  public static GUIGeneratorUtil getInstance() {
+    if (instance == null) {
+      instance = new GUIGeneratorUtil();
+    }
+    return instance;
+  }
+
+  public void init(List<String> domainModels, List<String> createModels) {
     DOMAIN_MODELS = domainModels;
     CREATE_MODELS = createModels;
   }
 
-  public static final boolean isInputGui(ASTGUICompilationUnit guiAst, List<ASTGUIComponent> inputComponents) {
+  public final String print(ASTNode node) {
+    printer.setPrintComments(false);
+    return printer.prettyprint(node);
+  }
+
+  public final boolean isInputGui(ASTGUICompilationUnit guiAst, List<ASTGUIComponent> inputComponents) {
     return !inputComponents.isEmpty() &&
         guiAst.getGUIComponentDeclaration().getGUIParamList().stream()
             .filter(p -> isDomainType(p)).findAny().isPresent();
   }
 
-  public static final boolean isDomainType(ASTGUIParam astguiParam) {
+  public final boolean isDomainType(ASTGUIParam astguiParam) {
     return isDomainType(astguiParam.getSymbol().getType());
   }
 
-  public static final boolean isDomainType(SymTypeExpression type) {
+  public final boolean isDomainType(SymTypeExpression type) {
     if (!type.hasTypeInfo()) {
       return false;
     }
@@ -63,7 +90,7 @@ public class GUIGeneratorUtil {
     return DOMAIN_MODELS.contains(as.getFullName());
   }
 
-  public static final boolean isDomainImport(ASTMCImportStatement i) {
+  public final boolean isDomainImport(ASTMCImportStatement i) {
     for (String cd : DOMAIN_MODELS) {
       if (i.getQName().startsWith(cd)) {
         return true;
@@ -73,45 +100,45 @@ public class GUIGeneratorUtil {
   }
 
   // TODO AGe: indicator of "main" model after cdmerge is built in
-  public static final Optional<String> getMainDomainModelQName() {
+  public final Optional<String> getMainDomainModelQName() {
     if (!DOMAIN_MODELS.isEmpty()) {
       return Optional.of(DOMAIN_MODELS.get(0));
     }
     return Optional.empty();
   }
 
-  public static final boolean isCreateModel(String componentQName) {
+  public final boolean isCreateModel(String componentQName) {
     return CREATE_MODELS.contains(componentQName);
   }
 
-  public static boolean isInputComponent(ASTGUIComponent guiComponent) {
+  public boolean isInputComponent(ASTGUIComponent guiComponent) {
     Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
         .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
     return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream()
         .anyMatch(a -> isInputArgument(guiComponentSymbol.get(), a));
   }
 
-  public static boolean isInputArgument(ASTGUIComponent guiComponent, ASTGUINamedArg arg) {
+  public boolean isInputArgument(ASTGUIComponent guiComponent, ASTGUINamedArg arg) {
     Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
         .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
     return !guiComponentSymbol.isPresent() || isInputArgument(guiComponentSymbol.get(), arg);
   }
 
-  public static boolean isComponentArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
+  public boolean isComponentArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
     return arg.isPresentGUIComponent();
   }
 
-  public static List<ASTGUIComponent> getComponentAsArguments(ASTGUIComponent guiComponent) {
+  public List<ASTGUIComponent> getComponentAsArguments(ASTGUIComponent guiComponent) {
     return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getGUIArgValue()).filter(a -> isComponentArgument(guiComponent, a))
         .map(a -> a.getGUIComponent()).collect(Collectors.toList());
   }
 
-/*  public static List<ASTGUINamedArg> getComponentArguments(ASTGUIComponent guiComponent) {
+/*  public  List<ASTGUINamedArg> getComponentArguments(ASTGUIComponent guiComponent) {
     return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> isComponentArgument(guiComponent, a))
        .collect(Collectors.toList());
   }*/
 
-  public static List<ASTGUIArgValue> getComponentArguments(ASTGUIComponent guiComponent) {
+  public List<ASTGUIArgValue> getComponentArguments(ASTGUIComponent guiComponent) {
     List<ASTGUIArgValue> values = new ArrayList<>();
     values.addAll(guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getGUIArgValue())
         .filter(a -> isComponentArgument(guiComponent, a)).collect(Collectors.toList()));
@@ -121,7 +148,7 @@ public class GUIGeneratorUtil {
     return values;
   }
 
-  public static List<ASTGUIArgValue> getComponentListArguments(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
+  public List<ASTGUIArgValue> getComponentListArguments(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
     List<ASTGUIArgValue> values = new ArrayList<>();
     if (!arg.isPresentGUIList()) {
       return values;
@@ -130,13 +157,9 @@ public class GUIGeneratorUtil {
     return values;
   }
 
-  public static ASTGUIComponent getNestedComponent(ASTGUIArgValue arg) {
-    return arg.getGUIComponent();
-  }
-
-  public static Optional<GUIParamSymbol> resolveGUIParamSym(
+  public Optional<GUIParamSymbol> resolveGUIParamSym(
       IGUIDSLScope scope, String compName, String argName
-      ) {
+  ) {
     Optional<GUIComponentDeclarationSymbol> declSym = scope.resolveGUIComponentDeclaration(compName);
     if (declSym.isPresent()) {
       return declSym.get().getSpannedScope().resolveGUIParam(argName);
@@ -144,70 +167,122 @@ public class GUIGeneratorUtil {
     return Optional.empty();
   }
 
-  public static String gui2cdAttrName(String domainParamName) {
-    return domainParamName;
+  public String gui2cdAttrName(String domainParamName) {
+    return getHTMLName(domainParamName);
   }
 
-  public static String gui2cdAttrName(String componentId, String argName) {
-    return componentId + StringTransformations.capitalize(argName);
+  public String gui2cdAttrName(String componentId, String argName) {
+    return getHTMLName(componentId + StringTransformations.capitalize(argName));
   }
 
-  public static String gui2cdAttrGetterName(String domainParamName) {
-    return "get" + StringTransformations.capitalize(domainParamName);
+  public String gui2cdAttrGetterName(String domainParamName) {
+    return getHTMLName("get" + StringTransformations.capitalize(domainParamName));
   }
 
-  public static String gui2cdAttrGetterName(String componentId, String argName) {
-    return "get"
+  public String gui2cdAttrGetterName(String componentId, String argName) {
+    return getHTMLName("get"
         + StringTransformations.capitalize(componentId)
-        + StringTransformations.capitalize(argName);
+        + StringTransformations.capitalize(argName));
   }
 
-  public static String gui2cdAttrSetterName(String componentId, String argName) {
-    return "set"
+  public String gui2cdAttrSetterName(String componentId, String argName) {
+    return getHTMLName("set"
         + StringTransformations.capitalize(componentId)
-        + StringTransformations.capitalize(argName);
+        + StringTransformations.capitalize(argName));
   }
 
-  public static boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
+  public String gui2cdEventCallName(ASTGUIComponent guiComponent, String eventName) {
+    // TODO AGe: connected to GUI2HtmlTrafo problem
+    //  setting the name in trafo makes derivation of method names incorrect
+    return getHTMLName(StringTransformations.uncapitalize(
+        getComponentActualName(guiComponent.getId().getName())
+    ) + StringTransformations.capitalize(eventName));
+  }
+
+  public String getIteratorItemName(ASTGUIIterate iterate) {
+    return getHTMLName("i" + iterate.getId().getName());
+  }
+
+  // TODO AGe: remove when problem with RangeControl is resolved
+  public String getShortIteratorItemName(ASTGUIIterate iterate) {
+    if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
+      return getHTMLName(
+          ((ASTGUIShortIterateControl) iterate.getIterateControl()).getItem().getName());
+    }
+    Log.error("0x00004 iterate construct " + iterate.getId().getName()
+        + " was not processed: range iterate control not supported yet");
+    return "";
+  }
+
+  public String getIteratorCounterName(ASTGUIIterate iterate) {
+    return getHTMLName("c" + iterate.getId().getName());
+  }
+
+  // TODO AGe: remove when problem with RangeControl is resolved
+  public String getShortIteratorIterable(ASTGUIIterate iterate) {
+    if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
+      return getHTMLName(
+          print(((ASTGUIShortIterateControl) iterate.getIterateControl()).getIterable()));
+    }
+    Log.error("0x00004 iterate construct " + iterate.getId().getName()
+        + " was not processed: range iterate control not supported yet");
+    return "";
+  }
+
+  public String getIteratorIterable(ASTGUIIterate iterate) {
+    if (iterate.getIterateControl() instanceof ASTGUIRangeIterateControl) {
+      ASTGUIRangeIterateControl control = (ASTGUIRangeIterateControl) iterate.getIterateControl();
+      IterableExtractVisitor visitor = IterableExtractVisitor.getInstance();
+      control.getEnd().accept(visitor.getTraverser());
+      Optional<ASTExpression> res = visitor.getOut();
+      if (res.isPresent()) {
+        return getHTMLName(print(res.get()));
+      }
+    }
+    Log.error("0x00003 iterate construct " + iterate.getId().getName()
+        + " was not processed: no range iterate control found");
+    return "";
+  }
+
+  public String getHTMLName(String name) {
+    return name.replaceAll(TPL_INTERN, "").replaceAll(TPL_SUFFIX, "");
+  }
+
+  public boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
     return arg.isPresentGUIList() && arg.getGUIList().getGUIArgValueList()
         .stream().anyMatch(a -> a.isPresentGUIComponent());
   }
 
-  public static boolean isEventComponent(ASTGUIComponent guiComponent) {
-    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
-        .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
-    //Optional<FunctionSymbol> guiComponentSymbol = GUIDSLMill.globalScope().resolveFunction(guiComponent.getQualifiedName());
-    return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream()
-        .anyMatch(a -> isEventArgument(guiComponentSymbol.get(), a));
+  public boolean isEventComponent(ASTGUIComponent guiComponent) {
+    return guiComponent.getGUINamedArgs().getGUINamedArgList().stream()
+        .anyMatch(a -> isEventArgument(guiComponent, a));
   }
 
-  public static boolean isCreateClass(ASTGUICompilationUnit ast) {
+  public boolean isCreateClass(ASTGUICompilationUnit ast) {
     return CREATE_MODELS.contains(ast.getComponentQName());
   }
 
-  public static boolean isInputArgument(GUIComponentDeclarationSymbol guiComponent, ASTGUINamedArg arg) {
+  public boolean isInputArgument(GUIComponentDeclarationSymbol guiComponent, ASTGUINamedArg arg) {
     Optional<GUIParamSymbol> argSymbol = guiComponent.getSpannedScope().resolveGUIParam(arg.getName());
     return argSymbol.isPresent() && argSymbol.get().isIsReference();
   }
 
-  public static boolean isEventArgument(ASTGUIComponent guiComponent, ASTGUINamedArg arg) {
-    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
-        .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
-    return !guiComponentSymbol.isPresent() || isEventArgument(guiComponentSymbol.get(), arg);
+  public boolean isEventArgument(ASTGUIComponent guiComponent, ASTGUINamedArg arg) {
+    Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
+        arg.getEnclosingScope(), guiComponent.getQualifiedName(), arg.getName());
+    return paramSym.isPresent() && isEventArgument(paramSym.get());
   }
 
-  public static boolean isEventArgument(GUIComponentDeclarationSymbol guiComponent, ASTGUINamedArg arg) {
-    Optional<GUIParamSymbol> argSymbol = guiComponent.getSpannedScope().resolveGUIParam(arg.getName());
-    return argSymbol.isPresent() && argSymbol.get().getType().getTypeInfo().getName().equals(
-        BuiltInTypes.EVENT.getName());
+  public boolean isEventArgument(GUIParamSymbol paramSym) {
+    return paramSym.getType().getTypeInfo().getName().equals(BuiltInTypes.EVENT.getName());
   }
 
-  public static boolean isStringLiteral(ASTGUIArgValue argValue) {
+  public boolean isStringLiteral(ASTGUIArgValue argValue) {
     return argValue.getExpression() instanceof ASTLiteralExpression
         && ((ASTLiteralExpression) argValue.getExpression()).getLiteral() instanceof ASTStringLiteral;
   }
 
-  public static List<ASTGUINamedArg> getInputArguments(ASTGUIComponent guiComponent) {
+  public List<ASTGUINamedArg> getInputArguments(ASTGUIComponent guiComponent) {
     Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
     if (guiComponentSymbol.isEmpty()) {
       return new ArrayList<>();
@@ -215,24 +290,46 @@ public class GUIGeneratorUtil {
     return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> isInputArgument(guiComponentSymbol.get(), a)).collect(Collectors.toList());
   }
 
-  public static List<ASTGUINamedArg> getEventArguments(ASTGUIComponent guiComponent) {
-    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
-    if (guiComponentSymbol.isEmpty()) {
-      return new ArrayList<>();
-    }
-    return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> isEventArgument(guiComponentSymbol.get(), a)).collect(Collectors.toList());
+  public List<ASTGUINamedArg> getEventArguments(ASTGUIComponent guiComponent) {
+    return guiComponent.getGUINamedArgs().getGUINamedArgList().stream()
+        .filter(a -> isEventArgument(guiComponent, a)).collect(Collectors.toList());
   }
 
-  public static List<ASTGUIParam> getGUIViewElementParameters(ASTGUICompilationUnit gui) {
-    return gui.getGUIComponentDeclaration().getGUIParamList().stream().filter(p -> isViewElementsCollection(p)).collect(Collectors.toList());
+  public List<ASTGUIParam> getGUIViewElementParameters(ASTGUICompilationUnit gui) {
+    return gui.getGUIComponentDeclaration().getGUIParamList().stream()
+        .filter(p -> isViewElementsCollection(p)).collect(Collectors.toList());
   }
 
-  public static boolean isViewElementsCollection(ASTGUIParam param) {
-    return GenService.isList(param.getMCType())
-        && BuiltInTypes.GUI_VIEW_ELEMENT.getName().equals(GenService.getInnerType(param.getMCType()));
+  public boolean isViewElementsCollection(ASTGUIParam param) {
+    return param.isPresentSymbol() && isViewElementsCollection(param.getSymbol().getType());
   }
 
-  public static boolean isViewElementsCollection(SymTypeExpression ste) {
+  public boolean hasGetter(ASTGUIComponent comp, ASTGUINamedArg arg) {
+    Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
+        arg.getEnclosingScope(), comp.getQualifiedName(), arg.getName());
+    return paramSym.isPresent() && hasGetter(paramSym.get().getType());
+  }
+
+  public boolean hasGetter(SymTypeExpression ste) {
+    String type = ste.getTypeInfo().getName();
+    return !isViewElement(ste)
+        && !isViewElementsCollection(ste)
+        && !type.equals(BuiltInTypes.EVENT.getName());
+  }
+
+  public boolean isViewElementsCollection(ASTGUIComponent comp, ASTGUINamedArg arg) {
+    Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
+        arg.getEnclosingScope(), comp.getQualifiedName(), arg.getName());
+    return paramSym.isPresent() && isViewElementsCollection(paramSym.get().getType());
+  }
+
+  public boolean isViewElement(ASTGUIComponent comp, ASTGUINamedArg arg) {
+    Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
+        arg.getEnclosingScope(), comp.getQualifiedName(), arg.getName());
+    return paramSym.isPresent() && isViewElement(paramSym.get().getType());
+  }
+
+  public boolean isViewElementsCollection(SymTypeExpression ste) {
     boolean res = false;
     if (ste.isGenericType()) {
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics) ste).getArgumentList();
@@ -245,15 +342,31 @@ public class GUIGeneratorUtil {
     return res;
   }
 
-  public static boolean isViewElement(SymTypeExpression ste) {
+  public boolean isViewElement(SymTypeExpression ste) {
     return ste.getTypeInfo().getName().equals(BuiltInTypes.GUI_VIEW_ELEMENT.getName());
   }
 
-  public static String getComponentNameFromCamelCaseName(String camelCaseName) {
+  public boolean isNgTemplate(String compName) {
+    return compName.endsWith(TPL_INTERN);
+  }
+
+  public String getNgTemplateName(String name) {
+    return name + TPL_INTERN;
+  }
+
+  public String getNgTemplateActualName(String internName) {
+    return getComponentActualName(internName) + TPL_SUFFIX;
+  }
+
+  public String getComponentActualName(String internName) {
+    return internName.replace(TPL_INTERN, "");
+  }
+
+  public String getComponentNameFromCamelCaseName(String camelCaseName) {
     return String.join("-", splitCamelCase(camelCaseName)).toLowerCase();
   }
 
-  public static String[] splitCamelCase(String str) {
+  public String[] splitCamelCase(String str) {
     if (str == null) {
       return null;
     }
@@ -262,7 +375,7 @@ public class GUIGeneratorUtil {
     }
     else {
       char[] c = str.toCharArray();
-      List list = new ArrayList();
+      List<String> list = new ArrayList();
       int tokenStart = 0;
       int currentType = Character.getType(c[tokenStart]);
 
@@ -286,11 +399,11 @@ public class GUIGeneratorUtil {
       }
 
       list.add(new String(c, tokenStart, c.length - tokenStart));
-      return (String[]) ((String[]) list.toArray(new String[list.size()]));
+      return list.toArray(new String[list.size()]);
     }
   }
 
-  public static String getModuleName(String qualifiedModulName) {
+  public String getModuleName(String qualifiedModulName) {
     String moduleName = qualifiedModulName;
     if (!qualifiedModulName.isEmpty() && qualifiedModulName.lastIndexOf(".") > 0) {
       moduleName = qualifiedModulName.substring(qualifiedModulName.lastIndexOf(".") + 1);
@@ -298,15 +411,15 @@ public class GUIGeneratorUtil {
     return moduleName;
   }
 
-  public static String getIterateName(String iterateCompName) {
+  public String getIterateName(String iterateCompName) {
     return "getIterate" + StringTransformations.capitalize(iterateCompName) + "It()" + ".get(idx)";
   }
 
-  public static String getIterateIndex() {
+  public String getIterateIndex() {
     return "int idx";
   }
 
-  public static String getQualifiedNameForModule(ASTGUIComponent node) {
+  public String getQualifiedNameForModule(ASTGUIComponent node) {
     String qualifiedModulName = node.getName();
     Optional<GUIComponentDeclarationSymbol> symbol = node.getEnclosingScope().resolveGUIComponentDeclaration(node.getName());
     if (symbol.isPresent() && symbol.get().getFullName().lastIndexOf(".") > 0) {
@@ -316,8 +429,34 @@ public class GUIGeneratorUtil {
     return qualifiedModulName;
   }
 
+  public String gui2htmlArgValue(ASTGUIArgValue node) {
+    if (node.isPresentGUIComponent()) {
+      return node.getGUIComponent().getId().getName();
+    }
+    if (node.isPresentGUIGuard()) {
+      return node.getGUIGuard().getId().getName();
+    }
+    if (node.isPresentGUIIterate()) {
+      return node.getGUIIterate().getId().getName();
+    }
+    if (node.isPresentExpression()) {
+      return print(node) + TPL_SUFFIX;
+    }
+    if (node.isPresentGUIList()) {
+      String res = "[";
+      for (ASTGUIArgValue v : node.getGUIList().getGUIArgValueList()) {
+        res += gui2htmlArgValue(v) + ", ";
+      }
+      res += "]";
+      return res;
+    }
+    Log.error("0x00005 corrupt ASTGUIArgValue node " + node
+        + ": missing actual value");
+    return "";
+  }
+
   // TODO: remove this method after package names fixed!!
-  public static String removeDiagramName(String name) {
+  public String removeDiagramName(String name) {
     int index1 = name.lastIndexOf(".");
     if (index1 == -1) {
       return name;

@@ -7,15 +7,16 @@ import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._ast.ASTGUIBlockContent;
+import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUIRangeIterateControl;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._ast.ASTGUIVariableDeclaration;
 import de.monticore.guidsl._ast.ASTIterateControl;
+import de.monticore.guidsl._visitor.GUIDSLHandler;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
-import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 
 import java.util.ArrayList;
@@ -23,18 +24,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
-public class GUIShortIterateReplaceVisitor implements GUIDSLVisitor2, ExpressionsBasisVisitor2 {
+public class GUIShortIterateReplaceVisitor extends ExpressionReplaceSearchVisitor implements GUIDSLHandler {
+
+  protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
   protected ASTGUIIterate iterate;
-  protected ASTIterateControl iterateControl;
+  protected ASTIterateControl controlOld;
 
-  protected Map.Entry<ASTNode, ASTExpression> potentialItOldHolder;
+  protected Map.Entry<ASTNode, String> iterableOldHolder;
   protected List<ExpressionReplacement> replacements = new ArrayList<>();
 
   protected boolean active = false;
-  protected String itOld;
-  protected ASTExpression itNew;
+  protected Supplier<ASTExpression> itNew;
+  protected ASTGUIRangeIterateControl controlNew;
 
   protected GUIDSLTraverser traverser;
 
@@ -42,6 +46,9 @@ public class GUIShortIterateReplaceVisitor implements GUIDSLVisitor2, Expression
     traverser = GUIDSLMill.traverser();
     traverser.add4GUIDSL(this);
     traverser.add4ExpressionsBasis(this);
+    traverser.add4CommonExpressions(this);
+    traverser.setCommonExpressionsHandler(this);
+    traverser.setGUIDSLHandler(this);
   }
 
   public GUIDSLTraverser getTraverser() {
@@ -49,41 +56,61 @@ public class GUIShortIterateReplaceVisitor implements GUIDSLVisitor2, Expression
   }
 
   public void transform(ASTGUIIterate node) {
-    node.accept(getTraverser());
     iterate = node;
+    node.accept(getTraverser());
   }
 
   @Override
   public void visit(ASTGUIIterate node) {
     if (node.equals(iterate)) {
-      active = true;
-      iterateControl = node.getIterateControl();
-      for (ExpressionReplacement nr : replacements) {
-        ExpressionReplaceVisitor visitor = new ExpressionReplaceVisitor();
-        visitor.transform(nr.getHolder(), nr.getOldValue(), nr.getNewValue());
-      }
+      controlOld = node.getIterateControl();
     }
   }
 
   @Override
+  public void visit(ASTGUIBlockContent node) {
+    if (node.isPresentExpression()) {
+      potentialHolder = Map.entry(node, node.getExpression());
+    }
+  }
+
+  @Override
+  public void traverse(ASTGUIRangeIterateControl node) {
+    if (null != node.getIndex()) {
+      node.getIndex().accept(getTraverser());
+    }
+    if (null != node.getStart()) {
+      potentialHolder = Map.entry(node, node.getStart());
+      node.getStart().accept(getTraverser());
+    }
+    if (null != node.getEnd()) {
+      potentialHolder = Map.entry(node, node.getEnd());
+      node.getEnd().accept(getTraverser());
+    }
+  }
+
+  @Override
+  public void visit(ASTGUIGuard node) {
+    potentialHolder = Map.entry(node, node.getCondition());
+  }
+
+  @Override
   public void visit(ASTGUIShortIterateControl node) {
-    if (!node.equals(iterateControl)) {
-      if (active) {
-        potentialItOldHolder = Map.entry(node, node.getIterable());
-      }
+    if (!node.equals(controlOld)) {
+      potentialHolder = Map.entry(node, node.getIterable());
       return;
     }
-    itOld = node.getItem().getName();
+    iterableOldHolder = Map.entry(node, node.getItem().getName());
 
     ASTGUIVariableDeclaration iVar = GUIDSLMill.gUIVariableDeclarationBuilder()
-        .setName("i" + iterate.getId())
+        .setName(util.getIteratorCounterName(iterate))
         .build();
 
     ASTExpression itCounter = ExpressionsBasisMill.nameExpressionBuilder()
         .setName(iVar.getName())
         .build();
 
-    itNew = CommonExpressionsMill.callExpressionBuilder()
+    itNew = () -> CommonExpressionsMill.callExpressionBuilder()
         .setExpression(
             CommonExpressionsMill.fieldAccessExpressionBuilder()
                 .setExpression(node.getIterable())
@@ -111,7 +138,7 @@ public class GUIShortIterateReplaceVisitor implements GUIDSLVisitor2, Expression
         )
         .build();
 
-    ASTGUIRangeIterateControl control = GUIDSLMill.gUIRangeIterateControlBuilder()
+    controlNew = GUIDSLMill.gUIRangeIterateControlBuilder()
         .setIndex(iVar)
         .setStart(
             CommonExpressionsMill.literalExpressionBuilder()
@@ -124,6 +151,7 @@ public class GUIShortIterateReplaceVisitor implements GUIDSLVisitor2, Expression
         )
         .setEnd(
             CommonExpressionsMill.minusExpressionBuilder()
+                .setOperator("-")
                 .setLeft(collectionSize)
                 .setRight(
                     CommonExpressionsMill.literalExpressionBuilder()
@@ -137,8 +165,15 @@ public class GUIShortIterateReplaceVisitor implements GUIDSLVisitor2, Expression
                 .build()
         )
         .build();
+  }
 
-    iterate.setIterateControl(control);
+  @Override
+  public void endVisit(ASTGUIShortIterateControl node) {
+    if (!node.equals(controlOld)) {
+      return;
+    }
+    active = true;
+    iterate.setIterateControl(controlNew);
   }
 
   @Override
@@ -146,9 +181,9 @@ public class GUIShortIterateReplaceVisitor implements GUIDSLVisitor2, Expression
     if (!active) {
       return;
     }
-    if (potentialItOldHolder.getValue().equals(node)) {
+    if (iterableOldHolder.getValue().equals(node.getName()) && potentialHolder.getValue().equals(node)) {
       replacements.add(new ExpressionReplacement(
-          potentialItOldHolder.getKey(), potentialItOldHolder.getValue(), itNew));
+          potentialHolder.getKey(), node, itNew));
     }
   }
 
@@ -156,6 +191,11 @@ public class GUIShortIterateReplaceVisitor implements GUIDSLVisitor2, Expression
   public void endVisit(ASTGUIIterate node) {
     if (node.equals(iterate)) {
       active = false;
+      controlOld = node.getIterateControl();
+      for (ExpressionReplacement nr : replacements) {
+        ExpressionReplaceVisitor visitor = new ExpressionReplaceVisitor();
+        visitor.transform(nr.getHolder(), nr.getOldValue(), nr.getNewValue());
+      }
     }
   }
 

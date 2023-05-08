@@ -7,26 +7,22 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
-import de.monticore.guidsl._symboltable.GUIDSLScope;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
-import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Optional;
 
 public class IterateDecorator extends GUIAbstractDecorator {
 
   protected final String guiName;
-  private final ASTGUICompilationUnit guiAst;
   protected final GUIComponentsVisitor viewComponent;
 
   public IterateDecorator(GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst, GUIComponentsVisitor viewComponent) {
     super(glex);
     this.guiName = guiAst.getGUIComponentDeclaration().getName();
-    this.guiAst = guiAst;
     this.viewComponent = viewComponent;
   }
 
@@ -53,7 +49,7 @@ public class IterateDecorator extends GUIAbstractDecorator {
         if (iterateAttribute.isEmpty()) {
           return;
         }
-        returnType = GUIGeneratorUtil.removeDiagramName(iterateAttribute.get().getType().getTypeInfo().getName());
+        returnType = util.removeDiagramName(iterateAttribute.get().getType().getTypeInfo().getName());
       }
       else if (it.getIterable() instanceof ASTNameExpression) {
         attrName = ((ASTNameExpression) it.getIterable()).getName();
@@ -66,7 +62,7 @@ public class IterateDecorator extends GUIAbstractDecorator {
         if (iterateAttribute.isEmpty()) {
           return;
         }
-        returnType = GUIGeneratorUtil.removeDiagramName(iterateAttribute.get().getType().getTypeInfo().getName());
+        returnType = util.removeDiagramName(iterateAttribute.get().getType().getTypeInfo().getName());
       }
     }
 

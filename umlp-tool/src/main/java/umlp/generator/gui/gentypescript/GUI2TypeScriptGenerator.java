@@ -7,14 +7,9 @@ import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
-import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.io.paths.MCPath;
-import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.Names;
 import umlp.generator.gui.GUIComponentsVisitor;
-import umlp.generator.gui.GUIGeneratorUtil;
-import umlp.generator.gui.GUITemplateHelper;
 
 import java.net.URL;
 import java.nio.file.Path;
