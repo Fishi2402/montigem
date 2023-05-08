@@ -2,8 +2,12 @@ package umlp.generator.gui.gentypescript.printer;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesPrettyPrinter;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter {
+
+  protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
+
   public TypeScriptBasicTypesPrettyPrinter(IndentPrinter printer) {
     super(printer, false);
   }
@@ -32,9 +36,9 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
     getPrinter().print("}");
     // TODO: star import?
     getPrinter().stripTrailing();
-    getPrinter().print(" from ");
-    // TODO: where?
-    getPrinter().println(";");
+    getPrinter().print(" from '");
+    getPrinter().print(util.java2tsPackage(node.getQName()));
+    getPrinter().println("';");
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPostComments(node, getPrinter());
     }

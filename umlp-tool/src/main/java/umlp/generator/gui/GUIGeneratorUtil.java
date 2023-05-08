@@ -4,6 +4,7 @@ package umlp.generator.gui;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
@@ -27,6 +28,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
+import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +99,10 @@ public class GUIGeneratorUtil {
       }
     }
     return false;
+  }
+
+  public final boolean isGuiImport(ASTMCImportStatement i) {
+    return GUIDSLMill.globalScope().resolveGUIComponentDeclaration(i.getQName()).isPresent();
   }
 
   // TODO AGe: indicator of "main" model after cdmerge is built in
@@ -405,7 +411,7 @@ public class GUIGeneratorUtil {
 
   public String getModuleName(String qualifiedModulName) {
     String moduleName = qualifiedModulName;
-    if (!qualifiedModulName.isEmpty() && qualifiedModulName.lastIndexOf(".") > 0) {
+    if (qualifiedModulName.lastIndexOf(".") > 0) {
       moduleName = qualifiedModulName.substring(qualifiedModulName.lastIndexOf(".") + 1);
     }
     return moduleName;
@@ -420,13 +426,13 @@ public class GUIGeneratorUtil {
   }
 
   public String getQualifiedNameForModule(ASTGUIComponent node) {
-    String qualifiedModulName = node.getName();
+    String qualifiedModuleName = node.getName();
     Optional<GUIComponentDeclarationSymbol> symbol = node.getEnclosingScope().resolveGUIComponentDeclaration(node.getName());
     if (symbol.isPresent() && symbol.get().getFullName().lastIndexOf(".") > 0) {
       String fullName = symbol.get().getFullName();
-      qualifiedModulName = symbol.get().getFullName().substring(0, symbol.get().getFullName().lastIndexOf("."));
+      qualifiedModuleName = fullName.substring(0, fullName.lastIndexOf("."));
     }
-    return qualifiedModulName;
+    return qualifiedModuleName;
   }
 
   public String gui2htmlArgValue(ASTGUIArgValue node) {
@@ -453,6 +459,34 @@ public class GUIGeneratorUtil {
     Log.error("0x00005 corrupt ASTGUIArgValue node " + node
         + ": missing actual value");
     return "";
+  }
+
+  public String java2tsModule(String javaPackage) {
+    String res = "@src/" + package2path(javaPackage) + "Module";
+
+    for (TSImportMap type : TSImportMap.values()) {
+      if (javaPackage.startsWith(type.getJavaPackage())) {
+        res = type.getTSPackage();
+      }
+    }
+
+    return res;
+  }
+
+  public String java2tsPackage(String javaPackage) {
+    String res = "@src/" + package2path(javaPackage);
+
+    for (TSImportMap type : TSImportMap.values()) {
+      if (javaPackage.startsWith(type.getJavaPackage())) {
+        res = type.getTSPackage();
+      }
+    }
+
+    return res;
+  }
+
+  public String package2path(String packageName) {
+    return packageName.replaceAll("\\.", "/");
   }
 
   // TODO: remove this method after package names fixed!!

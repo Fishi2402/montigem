@@ -34,6 +34,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   protected final GUIComponentsVisitor viewComponent;
   protected final ASTGUICompilationUnit guiAst;
+  protected List<TemplateHookPoint> initHPs = new ArrayList<>();
 
   public GUI2JavaComponentDecorator(final GlobalExtensionManagement glex,
       ASTGUICompilationUnit guiAst, GUIComponentsVisitor viewComponent) {
@@ -46,6 +47,10 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     for (ASTGUINamedArg arg : guiComponent.getGUINamedArgs().getGUINamedArgList()) {
       generatePropAndGetterForArg(decoratedClass, guiComponent, arg);
     }
+  }
+
+  public List<TemplateHookPoint> getInitHPs() {
+    return initHPs;
   }
 
   protected void generatePropAndGetterForArg(
@@ -99,7 +104,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         GUIIterate2ArgsVisitor it2Arg = new GUIIterate2ArgsVisitor();
         it2Arg.transform(guiAst, guiComponent);
         addGetComponentMethod(decoratedClass, getterName, paramType,
-            attr.getName(), getArgs(it2Arg.getArgs()));
+            attr.getName(), getArgs(it2Arg.getArgs()), false);
 
         String setterName = util.gui2cdAttrSetterName(
             guiComponent.getId().getName(), namedArg.getName());
@@ -110,23 +115,32 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           initValues.add(guiDSLPrinter.prettyprint(av.getExpression()));
         }
         TemplateHookPoint hp = new TemplateHookPoint(
-            "umlp.gui2java.InitLists", attr.getName(), setterName, isPrimitive, initValues
+            getInitListsTemplate(), attr.getName(), setterName, isPrimitive, initValues
         );
-        glex.setAfterTemplate("umlp.gui2java.InitBody", hp);
+        initHPs.add(hp);
       }
     }
     else {
       String argValue = guiDSLPrinter.prettyprint(visitor.getResult());
+      boolean isLiteral = visitor.getResult() instanceof ASTLiteralExpression;
       boolean convertToString = mustBeConvertedToString(paramType, namedArg);
       if (convertToString) {
-        argValue = "String.valueOf(" + argValue + ")";
+        argValue = numberToStringCall(argValue);
       }
 
       GUIIterate2ArgsVisitor it2Arg = new GUIIterate2ArgsVisitor();
       it2Arg.transform(guiAst, guiComponent);
       addGetComponentMethod(decoratedClass, getterName, paramType,
-          argValue, getArgs(it2Arg.getArgs()));
+          argValue, getArgs(it2Arg.getArgs()), isLiteral);
     }
+  }
+
+  protected String getInitListsTemplate() {
+    return "umlp.gui2java.InitLists";
+  }
+
+  protected String numberToStringCall(String value) {
+    return "String.valueOf(" + value + ")";
   }
 
   protected String unknownCollectionType() {
@@ -158,14 +172,13 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return res;
   }
 
-
   protected void addGetComponentMethod(
       ASTCDClass decoratedClass, String methodName, String attrType, String returnValue,
-      List<String> arguments
+      List<String> arguments, boolean isLiteral
   ) {
     getCD4C().addMethod(
         decoratedClass, getGetterTemplate(), methodName, attrType,
-        returnValue, String.join(", ", arguments)
+        returnValue, String.join(", ", arguments), isLiteral
     );
   }
 

@@ -2,7 +2,3 @@
 ${tc.signature()}
 ${cd4c.method("protected void init()")}
 ${tc.include("umlp.gui2java.InitBody")}
-<#--
-${tc.include("umlp.gui2java.InitTables")}
-${tc.include("umlp.gui2java.InitPieCharts")}
--->

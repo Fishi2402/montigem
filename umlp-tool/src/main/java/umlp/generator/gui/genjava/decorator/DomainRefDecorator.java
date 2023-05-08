@@ -178,15 +178,19 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
       }
       /**/
 
-      ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), "init");
-      glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2java.Init"));
-      clazz.addCDMember(method);
+      clazz.addCDMember(addInitMethod());
     }
     else {
       getCD4C().addConstructor(clazz, "umlp.domain.Constructor", className);
     }
 
     return clazz;
+  }
+
+  protected ASTCDMethod addInitMethod() {
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), "init");
+    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2java.Init"));
+    return method;
   }
 
   protected String getConstructorWithBuilderTemplate() {

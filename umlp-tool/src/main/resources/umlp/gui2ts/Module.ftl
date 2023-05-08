@@ -3,31 +3,35 @@
 ${tc.signature("modules")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign viewComponents = glex.getGlobalVar("viewComponents")>
-<#assign component = genHelper.getComponentNameFromCamelCaseName(ast.getName())>
+<#assign compDecl = ast.getGUIComponentDeclaration()>
 
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
-import { routes } from "./${ast.getName()?lower_case}.routing";
-import { ${ast.getName()} } from "./${component}/${component}.component";
-<#list modules as module>
-import { ${module?cap_first}Module } from "src/app/${viewComponents.getPackageNameForModule(module)}/${module}.module";  <#--../tmp/io/io.module-->
+import { routes } from "./${compDecl.getName()}Routing";
+import { ${compDecl.getName()} } from "./${compDecl.getName()}";
+<#list ast.getMCImportStatementList() as imp>
+  <#if genHelper.isGuiImport(imp)>
+    import { ${imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1)}Module } from "${genHelper.java2tsModule(imp.getQName())}";
+  </#if>
 </#list>
 
 @NgModule({
   declarations: [
-    ${ast.getName()}
+    ${compDecl.getName()}
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-<#list modules as module>
-    ${module?cap_first}Module, <#--IoModule-->
+<#list ast.getMCImportStatementList() as imp>
+  <#if genHelper.isGuiImport(imp)>
+    ${imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1)}Module },
+  </#if>
 </#list>
   ],
   exports: [
-    ${ast.getName()}
+    ${compDecl.getName()}
   ]
 })
 
-export class ${ast.getName()}Module { }
+export class ${compDecl.getName()}Module { }

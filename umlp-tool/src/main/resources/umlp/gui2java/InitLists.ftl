@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("uniqueVarName", "setterName", "isItemPrimitive", "values")}
-    List<TableColumn> ${uniqueVarName} = new ArrayList();
+<#-- TODO AGe: Type -->
+    List ${uniqueVarName} = new ArrayList();
   <#if isItemPrimitive>
   <#list values as v>
       ${uniqueVarName}.add(${v});
