@@ -213,17 +213,21 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     }
 
     // attr
-    ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
         CDModifier.PROTECTED.build(), astguiParam.getMCType(),
         util.gui2cdAttrName(astguiParam.getName())
     );
-    clazz.addCDMember(domainAttribute);
+    addInitialValue(attr);
+    clazz.addCDMember(attr);
 
     // getter
     String builderGetter = util.gui2cdAttrGetterName(astguiParam.getName());
     getCD4C().addMethod(clazz, getGetterParamTemplate(),
         builderGetter, astguiParam.getMCType().printType(), astguiParam.getName());
-    return domainAttribute;
+    return attr;
+  }
+
+  protected void addInitialValue(ASTCDAttribute attr) {
   }
 
   protected void addImportForGUIParameter(ASTCDClass clazz, String qName) {

@@ -264,90 +264,93 @@ public class UMLPTool extends UMLPToolTOP {
         ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
       }
       else if (isGuiFile(inputFile)) {
-        guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
+        for (String guiPathString : cmd.getOptionValues(INPUT.getCMD())) {
+          Path guiModel = Paths.get(guiPathString);
+          guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
 
-        Reporting.init(outDir.getPath(), reportDir.getPath(), guidsl_reportManagerFactory);
-        String report_on = inputFile.getName().replace(".", "__");
-        Reporting.on(report_on);
+          Reporting.init(outDir.getPath(), reportDir.getPath(), guidsl_reportManagerFactory);
+          String report_on = guiModel.getFileName().toString().replace(".", "__");
+          Reporting.on(report_on);
 
-        GUIDSLMill.init();
-        // parse, create symbol table, check all cocos
-        ASTGUICompilationUnit astGui = parseGUI(inputFile.getPath());
-        Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on);
+          GUIDSLMill.init();
+          // parse, create symbol table, check all cocos
+          ASTGUICompilationUnit astGui = parseGUI(guiModel.toString());
+          Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
 
-        MCPath mcPath = new MCPath();
-        if (PATH.isSelected(cmd)) {
-          for (String v : cmd.getOptionValues(PATH.getCMD())) {
-            mcPath.addEntry(Paths.get(v));
+          MCPath mcPath = new MCPath();
+          if (PATH.isSelected(cmd)) {
+            for (String v : cmd.getOptionValues(PATH.getCMD())) {
+              mcPath.addEntry(Paths.get(v));
+            }
           }
+
+          createSymbolTable(astGui, mcPath);
+
+          GeneratorSetup genSetup = new GeneratorSetup();
+          // set output directory
+          genSetup.setOutputDirectory(outDir);
+          // set hwc directories
+          genSetup.setHandcodedPath(hwcPath);
+          // set template path
+          genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
+              .map(p -> p.toFile()).collect(Collectors.toList()));
+          genSetup.setGlex( new GlobalExtensionManagement());
+
+          // execute generator
+          GUIDSLMill.init();
+
+          List<String> domainModels = new ArrayList<>();
+          if (DOMAIN.isSelected(cmd)) {
+            domainModels.addAll(Arrays.asList(cmd.getOptionValues(DOMAIN.getCMD())));
+          }
+
+          List<String> createModels = new ArrayList<>();
+          if (GUI_CREATE.isSelected(cmd)) {
+            createModels.addAll(Arrays.asList(cmd.getOptionValues(GUI_CREATE.getCMD())));
+          }
+          GUIGeneratorUtil.getInstance().init(domainModels, createModels);
+
+          GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
+          nodeIdTrafo.transform(astGui);
+          // logTrafoExec("GUINodeIdTrafo", astGui);
+
+          // TODO AGe: range iterate results in type check issue
+          /*
+          GUIShortIterateTrafo shortIterateTrafo = new GUIShortIterateTrafo();
+          shortIterateTrafo.transform(astGui);
+          createSymbolTable(astGui, mcPath);
+          /**/
+          // logTrafoExec("GUIShortIterateTrafo", astGui);
+
+          // Get all ASTGUIComponents
+          GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
+          genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
+          genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
+
+          GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, viewComponents);
+          String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
+          javaGenerator.generate(astGui, javaConfigTemplate);
+
+          GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, viewComponents);
+          String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
+          typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
+
+          GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
+          componentGenerator.generate(astGui, "umlp.GUI2Component");
+
+          GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();
+          gui2HtmlTrafo.transform(astGui);
+          ASTGUICompilationUnit astGui4Html = gui2HtmlTrafo.getOut();
+          createSymbolTable(astGui4Html, mcPath);
+
+          // System.out.println(new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astGui4Html));
+          GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, viewComponents);
+          String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
+          htmlGenerator.generate(astGui4Html, htmlConfigTemplate);
+
+          // write reports
+          Reporting.flush(astGui);
         }
-
-        createSymbolTable(astGui, mcPath);
-
-        GeneratorSetup genSetup = new GeneratorSetup();
-        // set output directory
-        genSetup.setOutputDirectory(outDir);
-        // set hwc directories
-        genSetup.setHandcodedPath(hwcPath);
-        // set template path
-        genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
-            .map(p -> p.toFile()).collect(Collectors.toList()));
-        genSetup.setGlex( new GlobalExtensionManagement());
-
-        // execute generator
-        GUIDSLMill.init();
-
-        List<String> domainModels = new ArrayList<>();
-        if (DOMAIN.isSelected(cmd)) {
-          domainModels.addAll(Arrays.asList(cmd.getOptionValues(DOMAIN.getCMD())));
-        }
-
-        List<String> createModels = new ArrayList<>();
-        if (GUI_CREATE.isSelected(cmd)) {
-          createModels.addAll(Arrays.asList(cmd.getOptionValues(GUI_CREATE.getCMD())));
-        }
-        GUIGeneratorUtil.getInstance().init(domainModels, createModels);
-
-        GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
-        nodeIdTrafo.transform(astGui);
-        // logTrafoExec("GUINodeIdTrafo", astGui);
-
-        // TODO AGe: range iterate results in type check issue
-        /*
-        GUIShortIterateTrafo shortIterateTrafo = new GUIShortIterateTrafo();
-        shortIterateTrafo.transform(astGui);
-        createSymbolTable(astGui, mcPath);
-        /**/
-        // logTrafoExec("GUIShortIterateTrafo", astGui);
-
-        // Get all ASTGUIComponents
-        GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
-        genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
-        genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
-
-        GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, viewComponents);
-        String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
-        javaGenerator.generate(astGui, javaConfigTemplate);
-
-        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, viewComponents);
-        String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
-        typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
-
-        GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
-        componentGenerator.generate(astGui, "umlp.GUI2Component");
-
-        GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();
-        gui2HtmlTrafo.transform(astGui);
-        ASTGUICompilationUnit astGui4Html = gui2HtmlTrafo.getOut();
-        createSymbolTable(astGui4Html, mcPath);
-
-        // System.out.println(new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astGui4Html));
-        GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, viewComponents);
-        String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
-        htmlGenerator.generate(astGui4Html, htmlConfigTemplate);
-
-        // write reports
-        Reporting.flush(astGui);
       }
     }
     catch (ParseException e) {

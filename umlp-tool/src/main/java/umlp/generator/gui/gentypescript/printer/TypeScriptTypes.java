@@ -3,7 +3,7 @@ package umlp.generator.gui.gentypescript.printer;
 
 public enum TypeScriptTypes {
   STRING("String", "string"),
-  EVENT("Event", "EventEmitter"),
+  EVENT("Event", "EventEmitter<any>"),
   TEMPLATE_REF("GUIViewElement", "TemplateRef<any>"),
   LIST("List", "Array"),
   INT("int", "number"),

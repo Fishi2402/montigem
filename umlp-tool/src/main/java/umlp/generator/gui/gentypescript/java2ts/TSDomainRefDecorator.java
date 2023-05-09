@@ -2,12 +2,13 @@
 package umlp.generator.gui.gentypescript.java2ts;
 
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import umlp.generator.gui.genjava.decorator.DomainRefDecorator;
-import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -43,6 +44,15 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
   @Override
   protected String getConstructorTemplate() {
     return "umlp.gui2ts.ConstructorTS";
+  }
+
+  // TODO AGe: own event decorator
+  @Override
+  protected void addInitialValue(ASTCDAttribute attr) {
+    if (attr.getMCType().printType().equals(BuiltInTypes.EVENT.getName())) {
+      glex.replaceTemplate("cd2java.Value", attr,
+          new StringHookPoint(" = new EventEmitter<any>()"));
+    }
   }
 
   @Override
