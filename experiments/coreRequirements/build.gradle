@@ -88,7 +88,7 @@ task copySymbols(type: Copy) {
     }
 }
 
-task generateAll(type: UMLPTask) {
+task generateAll(type: UMLPGuiGenTask) {
     dependsOn(copySymbols)
     input = (file("models"))
     outputDir = layout.buildDirectory.dir("gen")
@@ -96,6 +96,8 @@ task generateAll(type: UMLPTask) {
     modelDir = layout.projectDirectory.dir("models")
     symbolDir = file("models")
     //symbolDir = file("$projectDir/target/symbols")
+
+    // moreArgs = ['-s', 'someArg']  // mehr CLI Argumente (nur zum debugging / testing!)
 }
 
 test {

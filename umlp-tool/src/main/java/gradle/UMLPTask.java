@@ -30,34 +30,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @CacheableTask
-public abstract class UMLPTask extends DefaultTask {
-  final String UMLP_TASK_DEBUG = "de.rwth.se.umlp.debug";
-  final String ORG_GRADLE_PARALLEL = "org.gradle.parallel";
-
-  private final ConfigurableFileCollection input = getProject().getObjects().fileCollection();
-
-  @SkipWhenEmpty    // Implies @Incremental. Do nothing if no input model exists
-  @InputFiles
-  @PathSensitive(PathSensitivity.RELATIVE)
-  @IgnoreEmptyDirectories
-  public ConfigurableFileCollection getInput(){
-    return input; // TODO: FileTree & Matching?
-  }
-
-  public void setInput(File f){
-    input.from(f);
-  }
-
-  public void setInput(Iterable<File> f){
-    input.from(f);
-  }
-
-  @InputDirectory
-  @org.gradle.api.tasks.Optional
-  @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental    // No full rebuild, when only HWC-Directory is changed. Requires logic in Task Execution!
-  @IgnoreEmptyDirectories
-  public abstract DirectoryProperty getHwcDir();
+public abstract class UMLPTask extends CommonUMLPTask {
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
@@ -85,14 +58,6 @@ public abstract class UMLPTask extends DefaultTask {
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract ListProperty<String> getMoreArgs();
-
-  @Input
-  @org.gradle.api.tasks.Optional
-  public abstract Property<Boolean> getDebug();
-
-  @Input
-  @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getCdToGui();
 
   @Input
@@ -103,41 +68,11 @@ public abstract class UMLPTask extends DefaultTask {
   @org.gradle.api.tasks.Optional
   public abstract ListProperty<String> getGuiCreateModels();
 
-  @OutputDirectory
-  public abstract DirectoryProperty getOutputDir();
 
-  @OutputDirectory
-  public abstract DirectoryProperty getReportDir();
 
-  @Inject
-  protected abstract WorkerExecutor getWorkerExecutor();
-
-  private WorkQueue workQueue;
 
   public UMLPTask() {
     super();
-
-    // Report directory is required for incremental check
-    this.getReportDir().convention(
-        getProject().getLayout().getBuildDirectory().dir("umlp_reports/task_" + this.getName())
-    );
-
-    // Project wide setting of debug modus
-    if(getProject().hasProperty(UMLP_TASK_DEBUG)){
-      boolean debug = "true" .equals(getProject().property(UMLP_TASK_DEBUG));
-      getDebug().convention(debug);
-
-      // The debug-mode disables isolation... hence static variables are shared and errors can occur, especially in parallel execution.
-      if(debug && getProject().hasProperty(ORG_GRADLE_PARALLEL) && "true".equals(getProject().property(ORG_GRADLE_PARALLEL))){
-        Log.warn("Gradle Parallel Execution should be disabled in UMLP Debug Mode. \n" +
-            "set\n\t" + ORG_GRADLE_PARALLEL + "=false\n in your <gradle.properties>" );
-      }
-    } else {
-      // Default: No Debug
-      getDebug().convention(false);
-    }
-    this.getOutputs().doNotCacheIf("Do not cache when debugging is enabled",
-        (task) ->  ((UMLPTask)task).getDebug().get());
 
     getCdToGui().convention(false);
   }
@@ -160,23 +95,12 @@ public abstract class UMLPTask extends DefaultTask {
     assert (filePath.toFile().isFile());
     assert (isInputFile(filePath.toFile()));
 
-    List<String> result = new ArrayList<>();
+    List<String> result = super.createArgList(handlePath);
     result.add("-i");
     result.add(handlePath.apply(filePath));
 
-    result.add("-o");
-    result.add(handlePath.apply(getOutputDir().getAsFile().get().toPath()));
-
     result.add("-r");
     result.add(handlePath.apply(getReportDirOfFile(filePath.toFile()).getAsFile().toPath()));
-
-    result.add("-rb");
-    result.add(handlePath.apply(getProject().getProjectDir().toPath()));
-
-    if(this.getHwcDir().isPresent()) {
-      result.add("-hwc");
-      result.add(handlePath.apply(getHwcDir().getAsFile().get().toPath()));
-    }
 
     if(this.getModelDir().isPresent()) {
       result.add("-path");
@@ -196,11 +120,6 @@ public abstract class UMLPTask extends DefaultTask {
       result.add(getConfigTemplate().get());
     }
 
-    if(this.getDebug().get()){
-      // Set the "debug" flag in the arguments
-      result.add("-" + UMLPToolOptions.DEBUG.getCMD());
-    }
-
     if(this.getCdToGui().get()){
       result.add("-" + UMLPToolOptions.CD2GUI.getCMD());
     }
@@ -213,10 +132,6 @@ public abstract class UMLPTask extends DefaultTask {
     if (this.getGuiCreateModels().isPresent() && !this.getGuiCreateModels().get().isEmpty()) {
       result.add("-" + UMLPToolOptions.GUI_CREATE.getCMD());
       result.addAll(this.getGuiCreateModels().get());
-    }
-
-    if (this.getMoreArgs().isPresent()) {
-      result.addAll(this.getMoreArgs().get());
     }
 
     return result;
