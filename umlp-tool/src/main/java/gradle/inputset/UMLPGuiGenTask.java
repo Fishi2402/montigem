@@ -46,7 +46,9 @@ public abstract class UMLPGuiGenTask extends CommonUMLPTask {
     result.add("-r");
     result.add(handlePath.apply(getReportDir().getAsFile().get().toPath()));
 
-    this.getInput().getAsFileTree().getFiles()
+    this.getInput().getAsFileTree().getFiles().stream()
+        .filter(File::isFile)
+        .filter(f -> f.getName().endsWith(".gui"))
         .forEach(f -> {
           result.add("-i");
           result.add(handlePath.apply(f.toPath()));

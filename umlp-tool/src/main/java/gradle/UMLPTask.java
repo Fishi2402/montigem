@@ -58,11 +58,6 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract ListProperty<String> getMoreArgs();
-
-
-  @Input
-  @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getCdToGui();
 
   @Input
@@ -137,10 +132,6 @@ public abstract class UMLPTask extends CommonUMLPTask {
     if (this.getGuiCreateModels().isPresent() && !this.getGuiCreateModels().get().isEmpty()) {
       result.add("-" + UMLPToolOptions.GUI_CREATE.getCMD());
       result.addAll(this.getGuiCreateModels().get());
-    }
-
-    if (this.getMoreArgs().isPresent()) {
-      result.addAll(this.getMoreArgs().get());
     }
 
     return result;

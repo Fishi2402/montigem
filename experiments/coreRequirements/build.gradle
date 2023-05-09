@@ -96,6 +96,8 @@ task generateAll(type: UMLPGuiGenTask) {
     modelDir = layout.projectDirectory.dir("models")
     symbolDir = file("models")
     //symbolDir = file("$projectDir/target/symbols")
+
+    // moreArgs = ['-s', 'someArg']  // mehr CLI Argumente (nur zum debugging / testing!)
 }
 
 test {

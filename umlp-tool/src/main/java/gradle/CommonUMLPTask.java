@@ -4,6 +4,7 @@ import de.se_rwth.commons.logging.Log;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.IgnoreEmptyDirectories;
 import org.gradle.api.tasks.Input;
@@ -57,6 +58,11 @@ public abstract class CommonUMLPTask extends DefaultTask {
   // No full rebuild, when only HWC-Directory is changed. Requires logic in Task Execution!
   @IgnoreEmptyDirectories
   public abstract DirectoryProperty getHwcDir();
+
+
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract ListProperty<String> getMoreArgs();
 
 
   @Input
@@ -118,6 +124,10 @@ public abstract class CommonUMLPTask extends DefaultTask {
     if(this.getDebug().get()){
       // Set the "debug" flag in the arguments
       result.add("-" + UMLPToolOptions.DEBUG.getCMD());
+    }
+
+    if (this.getMoreArgs().isPresent()) {
+      result.addAll(this.getMoreArgs().get());
     }
 
     return result;
