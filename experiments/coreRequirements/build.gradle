@@ -95,6 +95,9 @@ task generateAll(type: UMLPGuiGenTask) {
     hwcDir = layout.projectDirectory.dir("src/main/java")
     modelDir = layout.projectDirectory.dir("models")
     symbolDir = file("models")
+    domainModels = ["hardy.Flensburg"]
+    guiCreateModels = ["stanley.personcreate.PersonCreate"]
+
     //symbolDir = file("$projectDir/target/symbols")
 
     // moreArgs = ['-s', 'someArg']  // mehr CLI Argumente (nur zum debugging / testing!)
