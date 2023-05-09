@@ -32,6 +32,9 @@ public class GUI2ComponentGenerator extends CDGenerator {
     genSetup.getGlex().replaceTemplate(
         CD2JavaTemplates.ATTRIBUTE, new TemplateHookPoint(GUI2ComponentTemplates.ATTRIBUTE)
     );
+    genSetup.getGlex().replaceTemplate(
+        CD2JavaTemplates.ANNOTATIONS, new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATIONS)
+    );
   }
 
   protected Path getAsPath(String packageAsPath, String name) {
@@ -48,7 +51,9 @@ public class GUI2ComponentGenerator extends CDGenerator {
 
     // translate the GUI-AST into TypeScript
     hpp.processValue(tc, modelAST,
-        Arrays.asList(decoratedAST, setup.getGlex(), setup.getHandcodedPath(), this, viewComponents));
+        Arrays.asList(decoratedAST, setup.getGlex(),
+            setup.getHandcodedPath(), setup.getOutputDirectory().toPath(),
+            this, viewComponents));
   }
 
 }

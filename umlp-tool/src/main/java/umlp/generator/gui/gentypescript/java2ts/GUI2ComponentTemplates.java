@@ -20,7 +20,9 @@ public final class GUI2ComponentTemplates {
 
   public static final String ENUM = "cd2java.Enum";
 
-  public static final String ANNOTATIONS = "cd2java.Annotations";
+  public static final String ANNOTATIONS = "umlp.gui2ts.Annotations";
+  public static final String ANNOTATION_COMPONENT = "umlp.gui2ts.AnnotationComponent";
+  public static final String ANNOTATION_DIRECTIVE = "umlp.gui2ts.AnnotationDirective";
 
   public static final String GET_COMPONENT_REPLACED = "umlp.gui2java.GetComponentReplaced";
 

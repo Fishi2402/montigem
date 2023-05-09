@@ -1,5 +1,6 @@
 package umlp.generator.gui.gentypescript.printer;
 
+import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesPrettyPrinter;
 import umlp.generator.gui.GUIGeneratorUtil;
@@ -31,14 +32,27 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
-    getPrinter().print("import {");
-    node.getMCQualifiedName().accept(getTraverser());
-    getPrinter().print("}");
-    // TODO: star import?
-    getPrinter().stripTrailing();
-    getPrinter().print(" from '");
-    getPrinter().print(util.java2tsPackage(node.getQName()));
-    getPrinter().println("';");
+    if (node.getQName().equals(BuiltInTypes.EVENT.getName())) {
+      getPrinter().print("import { " + TypeScriptTypes.EVENT.getTSType()
+          + " } from '@angular/core';");
+    } else {
+      getPrinter().print("import { ");
+      node.getMCQualifiedName().accept(getTraverser());
+      getPrinter().print(" }");
+      // TODO: star import?
+      getPrinter().stripTrailing();
+      getPrinter().print(" from '");
+
+      String from = "@src/" + util.package2path(node.getQName());
+      for (TSImportMap type : TSImportMap.values()) {
+        if (node.getQName().startsWith(type.getJavaPackage())) {
+          from = type.getTSPackage();
+        }
+      }
+      getPrinter().print(from);
+
+      getPrinter().println("';");
+    }
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPostComments(node, getPrinter());
     }

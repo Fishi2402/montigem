@@ -15,6 +15,7 @@ import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIParam;
+import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -208,7 +209,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   protected ASTCDAttribute addAttributForGUIParameter(ASTCDClass clazz, ASTGUIParam astguiParam) {
     SymTypeExpression type = astguiParam.getSymbol().getType();
     for (String qName : getImport(type)) {
-      getCD4C().addImport(clazz, qName);
+      addImportForGUIParameter(clazz, qName);
     }
 
     // attr
@@ -223,6 +224,15 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     getCD4C().addMethod(clazz, getGetterParamTemplate(),
         builderGetter, astguiParam.getMCType().printType(), astguiParam.getName());
     return domainAttribute;
+  }
+
+  protected void addImportForGUIParameter(ASTCDClass clazz, String qName) {
+    for (BuiltInTypes type : BuiltInTypes.values()) {
+      if (type.getName().equals(qName)) {
+        return;
+      }
+    }
+    getCD4C().addImport(clazz, qName);
   }
 
   // TODO AGe: rewrite using ISymTypeVisitor?

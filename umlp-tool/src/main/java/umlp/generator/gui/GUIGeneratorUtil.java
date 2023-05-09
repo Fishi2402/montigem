@@ -2,6 +2,7 @@
 package umlp.generator.gui;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.guidsl.GUIDSLMill;
@@ -29,6 +30,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
+import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +70,11 @@ public class GUIGeneratorUtil {
   public final String print(ASTNode node) {
     printer.setPrintComments(false);
     return printer.prettyprint(node);
+  }
+
+  // TODO AGe: unreliable
+  public final boolean isTop(String name) {
+    return name.endsWith(TopDecorator.TOP_SUFFIX);
   }
 
   public final boolean isInputGui(ASTGUICompilationUnit guiAst, List<ASTGUIComponent> inputComponents) {
@@ -463,18 +470,6 @@ public class GUIGeneratorUtil {
 
   public String java2tsModule(String javaPackage) {
     String res = "@src/" + package2path(javaPackage) + "Module";
-
-    for (TSImportMap type : TSImportMap.values()) {
-      if (javaPackage.startsWith(type.getJavaPackage())) {
-        res = type.getTSPackage();
-      }
-    }
-
-    return res;
-  }
-
-  public String java2tsPackage(String javaPackage) {
-    String res = "@src/" + package2path(javaPackage);
 
     for (TSImportMap type : TSImportMap.values()) {
       if (javaPackage.startsWith(type.getJavaPackage())) {

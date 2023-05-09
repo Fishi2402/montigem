@@ -16,17 +16,18 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
-import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
 import de.monticore.io.paths.MCPath;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.symboltable.serialization.json.*;
+import de.monticore.symboltable.serialization.json.JsonBoolean;
+import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -45,8 +46,8 @@ import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genhtml.GUI2HtmlTrafo;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
-import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
+import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -58,7 +59,20 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static umlp.UMLPToolOptions.*;
+import static umlp.UMLPToolOptions.CD2GUI;
+import static umlp.UMLPToolOptions.DEBUG;
+import static umlp.UMLPToolOptions.DOMAIN;
+import static umlp.UMLPToolOptions.GUI_CREATE;
+import static umlp.UMLPToolOptions.HELP;
+import static umlp.UMLPToolOptions.HWC_PATH;
+import static umlp.UMLPToolOptions.INPUT;
+import static umlp.UMLPToolOptions.OUTPUT;
+import static umlp.UMLPToolOptions.PATH;
+import static umlp.UMLPToolOptions.PRETTYPRINT;
+import static umlp.UMLPToolOptions.REPORTS;
+import static umlp.UMLPToolOptions.REPORT_BASE;
+import static umlp.UMLPToolOptions.SYMTAB;
+import static umlp.UMLPToolOptions.TMPL_PATH;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
