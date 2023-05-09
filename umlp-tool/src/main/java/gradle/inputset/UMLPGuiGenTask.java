@@ -6,7 +6,9 @@ import gradle.UMLPAction;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.tasks.IgnoreEmptyDirectories;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
@@ -39,6 +41,14 @@ public abstract class UMLPGuiGenTask extends CommonUMLPTask {
   @Incremental
   public abstract DirectoryProperty getSymbolDir();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract ListProperty<String> getDomainModels();
+
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract ListProperty<String> getGuiCreateModels();
+
 
   protected List<String> createArgList(Function<Path, String> handlePath) {
     List<String> result = super.createArgList(handlePath);
@@ -60,6 +70,16 @@ public abstract class UMLPGuiGenTask extends CommonUMLPTask {
       if (this.getSymbolDir().isPresent()) {
         result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
       }
+    }
+
+    if (this.getDomainModels().isPresent() && !this.getDomainModels().get().isEmpty()) {
+      result.add("-" + UMLPToolOptions.DOMAIN.getCMD());
+      result.addAll(this.getDomainModels().get());
+    }
+
+    if (this.getGuiCreateModels().isPresent() && !this.getGuiCreateModels().get().isEmpty()) {
+      result.add("-" + UMLPToolOptions.GUI_CREATE.getCMD());
+      result.addAll(this.getGuiCreateModels().get());
     }
 
     return result;
