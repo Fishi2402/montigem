@@ -2,7 +2,7 @@
 import { Log } from '@umlp-rte/hwc/logging/Log';
 import { StringHelper } from '@umlp-rte/hwc/javautil/StringHelper';
 
-export abstract class GemList<E extends GemIdentifiable> implements GemBuildable {
+export abstract class GemList<E extends GemIdentifiable> extends Array<E> implements GemBuildable {
   /* Default method injected from umlp.backendrte.common.GemBuildable */
   isBuildFinished(): boolean {
     return true;
@@ -10,6 +10,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   ids: Array<number>;
 
   public constructor(ids?: any) {
+    super(ids);
     if (((ids != null && (ids instanceof Array)) || ids === null)) {
       let __args = arguments;
       if (this.ids === undefined) { this.ids = null; }
@@ -69,8 +70,17 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return (this.ids.indexOf(<any>(gemID)) >= 0);
   }
 
-  public containsAll(gemIDs: Array<number>): boolean {
-    return gemIDs.every(gemID => this.contains(gemID));
+  public containsAll(o: Array<any>): boolean {
+    if (o.length === 0) {
+      return true;
+    }
+    if (typeof o[0] == "number") {
+      o.every(gemID => this.contains(gemID))
+    }
+    if ('getGemId' in o[0]) {
+      o.every(gemID => this.contains(gemID.getGemId()))
+    }
+    throw new Error("Invalid Overload");
   }
 
   /**

@@ -66,7 +66,6 @@ jsweet {
     '**/DatabaseAccessManager.java',
     '**/HashMapWithOrderedKeys.java',
     '**/CommandResultDeSer.java',
-    '**/Gem.java',
     '**/GemList.java',
     '**/GemListBuilder.java',
     '**/LocalDateDeSer.java',
