@@ -107,9 +107,6 @@ public abstract class CommonUMLPTask extends DefaultTask {
     result.add("-o");
     result.add(handlePath.apply(getOutputDir().getAsFile().get().toPath()));
 
-    result.add("-r");
-    result.add(handlePath.apply(getReportDir().getAsFile().get().toPath()));
-
     result.add("-rb");
     result.add(handlePath.apply(getProject().getProjectDir().toPath()));
 

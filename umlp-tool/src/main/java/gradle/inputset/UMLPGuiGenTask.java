@@ -43,6 +43,9 @@ public abstract class UMLPGuiGenTask extends CommonUMLPTask {
   protected List<String> createArgList(Function<Path, String> handlePath) {
     List<String> result = super.createArgList(handlePath);
 
+    result.add("-r");
+    result.add(handlePath.apply(getReportDir().getAsFile().get().toPath()));
+
     this.getInput().getAsFileTree().getFiles()
         .forEach(f -> {
           result.add("-i");

@@ -104,6 +104,9 @@ public abstract class UMLPTask extends CommonUMLPTask {
     result.add("-i");
     result.add(handlePath.apply(filePath));
 
+    result.add("-r");
+    result.add(handlePath.apply(getReportDirOfFile(filePath.toFile()).getAsFile().toPath()));
+
     if(this.getModelDir().isPresent()) {
       result.add("-path");
       result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
