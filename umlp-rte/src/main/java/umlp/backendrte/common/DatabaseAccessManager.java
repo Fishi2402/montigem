@@ -82,9 +82,7 @@ public class DatabaseAccessManager {
   public static void executeStatement(String sql){
     try{
       Statement stmt = connection.createStatement();
-      if(!stmt.execute(sql)){
-        Log.warn("Did not correctly execute " + sql);
-      };
+      stmt.execute(sql);
     }catch (SQLException e){
       Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
     }
