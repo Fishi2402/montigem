@@ -22,6 +22,8 @@ public enum UMLPToolOptions {
   CFGTMPL("ct", "configTemplate", "Executes this template at the beginning of code generation to customize it. (template path may have to be set)", "file"),
   PRETTYPRINT("pp", "prettyprint", "Prints the AST to stdout or the specified file (optional)", "file", true),
 
+  FOR_CLIENT("4c", "forclient", "forces UMLP generator to produce TypeScript code for client"),
+
   //with multiple args
   PATH(Option.builder("path").hasArgs()
       .desc("Sets the artifact path for imported symbols, space separated.").build()),

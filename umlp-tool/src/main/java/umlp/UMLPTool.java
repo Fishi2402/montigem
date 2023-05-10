@@ -46,6 +46,7 @@ import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genhtml.GUI2HtmlTrafo;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
+import umlp.generator.gui.gentypescript.domain.UMLPTSGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 
@@ -62,6 +63,7 @@ import java.util.stream.Collectors;
 import static umlp.UMLPToolOptions.CD2GUI;
 import static umlp.UMLPToolOptions.DEBUG;
 import static umlp.UMLPToolOptions.DOMAIN;
+import static umlp.UMLPToolOptions.FOR_CLIENT;
 import static umlp.UMLPToolOptions.GUI_CREATE;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
@@ -84,6 +86,8 @@ public class UMLPTool extends UMLPToolTOP {
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
   protected static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   protected static final String DEFAULT_CONFIGTEMPLATE = "umlp.UMLP2Java";
+
+  protected static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS = "umlp.UMLP2Java2TS";
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA = "umlp.GUI2Java";
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2HTML = "umlp.GUI2Html";
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2TS = "umlp.GUI2TypeScript";
@@ -170,8 +174,8 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
 
-      if(CD2GUI.isSelected(cmd)){
-        if(!isUmlpFile(inputFile)){
+      if (CD2GUI.isSelected(cmd)) {
+        if (!isUmlpFile(inputFile)) {
           Log.warn("option -cd2gui used without a classdiagram umlp file as input");
           return;
         }
@@ -252,11 +256,19 @@ public class UMLPTool extends UMLPToolTOP {
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
             .map(p -> p.toFile()).collect(Collectors.toList()));
 
-        // execute generator
-        UMLPGenerator generator = new UMLPGenerator(genSetup);
         CD4C.init(genSetup);
-        String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
-        generator.generate(ast, configTemplate);
+        if (FOR_CLIENT.isSelected(cmd)) {
+          UMLPTSGenerator generator = new UMLPTSGenerator(genSetup);
+          String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
+          generator.generate(ast, configTemplate);
+        }
+        else {
+          // execute generator
+          UMLPGenerator generator = new UMLPGenerator(genSetup);
+          String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
+          generator.generate(ast, configTemplate);
+        }
+
 
         // write reports
         Reporting.flush(ast);
@@ -294,7 +306,7 @@ public class UMLPTool extends UMLPToolTOP {
           // set template path
           genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
               .map(p -> p.toFile()).collect(Collectors.toList()));
-          genSetup.setGlex( new GlobalExtensionManagement());
+          genSetup.setGlex(new GlobalExtensionManagement());
 
           // execute generator
           GUIDSLMill.init();
@@ -352,12 +364,10 @@ public class UMLPTool extends UMLPToolTOP {
           Reporting.flush(astGui);
         }
       }
-    }
-    catch (ParseException e) {
+    } catch (ParseException e) {
       printHelp(options);
       Log.error("0xB005 An exception occurred while processing the CLI input!", e);
-    }
-    finally {
+    } finally {
       UMLPMill.globalScope().clear();
       Reporting.off();
       if (umlp_reportManagerFactory != null) {
@@ -438,8 +448,7 @@ public class UMLPTool extends UMLPToolTOP {
         return optAst.get();
       }
       Log.error("0xA1050x72114 Model could not be parsed.");
-    }
-    catch (NullPointerException | java.io.IOException e) {
+    } catch (NullPointerException | java.io.IOException e) {
       Log.error("0xA1051x37376 Failed to parse " + model, e);
     }
     // should never be reached (unless failquick is off)
