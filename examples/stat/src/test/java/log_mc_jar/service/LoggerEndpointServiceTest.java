@@ -33,7 +33,7 @@ class LoggerEndpointServiceTest {
 
   @Test
   void umlp_jar_log() throws IOException {
-    String logBody = Files.readString(Path.of("build/umlp_reports/task_generateUmlpBackend/Log_MC_JAR__umlp/log_mc_jar__umlp/20_Statistics.txt"));
+    String logBody = Files.readString(Path.of("build", "umlp_reports", "task_generateUmlpBackend", "Log_MC_JAR__umlp", "log_mc_jar__umlp", "20_Statistics.txt"));
     String shash = getSHASH(logBody);
     sut.log(logBody, shash, "UMLP_JAR_JSON");
   }
