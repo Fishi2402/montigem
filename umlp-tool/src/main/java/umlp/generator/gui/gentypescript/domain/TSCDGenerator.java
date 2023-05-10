@@ -7,11 +7,11 @@ import de.monticore.generating.GeneratorSetup;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class CDTSGenerator extends CDGenerator {
+public class TSCDGenerator extends CDGenerator {
 
   protected static final String TS_EXTENSION = ".ts";
 
-  public CDTSGenerator(GeneratorSetup generatorSetup) {
+  public TSCDGenerator(GeneratorSetup generatorSetup) {
     super(generatorSetup);
   }
 

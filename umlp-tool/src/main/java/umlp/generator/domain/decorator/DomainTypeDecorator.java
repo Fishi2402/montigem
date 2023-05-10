@@ -137,6 +137,18 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
       attrList = new ArrayList<>(attrAssocs);
       attrList.addAll(attrFields);
     }
+
+    public List<ASTCDAttribute> getAttrList() {
+      return attrList;
+    }
+
+    public List<ASTCDAttribute> getAttrAssocs() {
+      return attrAssocs;
+    }
+
+    public List<ASTCDAttribute> getAttrFields() {
+      return attrFields;
+    }
   }
 
 }

@@ -71,20 +71,18 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     }
     ASTCDClass clazz = builder.build();
     // Constructors
-    getCD4C().addConstructor(clazz, "umlp.domain.Constructor", domainClass.getName());
+    getCD4C().addConstructor(clazz, getConstructorTemplate(), domainClass.getName());
 
     if (!domainClass.isPresentCDExtendUsage()) {
       // Attribute gemId and getter and setter
-      ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected readonly long gemId = -32;");
-      clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
+      addGemAttr(clazz);
     }
 
     // Attribute observerList
     ASTCDAttribute attrObserver = getCD4C().addAttribute(clazz,
             " protected List<" + domainClass.getName() + "Observer> " + StringTransformations.uncapitalize(domainClass.getName()) + "Observers");
-    glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint("= new ArrayList<>()"));
-    glex.replaceTemplate("cd2java.Annotations", attrObserver,
-            new StringHookPoint("transient"));
+    glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint(defaultListValue()));
+    addTransientModifier(attrObserver);
 
     // Attributes
     AttributesTuple attributes = getAllAttributes(domainClass, false);
@@ -101,7 +99,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     // General methods
     createObserverMethods(domainClass, clazz);
     createEqualsMethod(domainClass, clazz);
-    getCD4C().addMethod(clazz, "umlp.domain.Build", domainClass.getName());
+    getCD4C().addMethod(clazz, getBuildTemplate(), domainClass.getName());
 
     // Methods for class attributes
     createGetterSetterForAttrs(domainClass, clazz, filterDerivedAttributes(attributes.attrFields, false), false);
@@ -114,6 +112,28 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     // Imports
     addImports(domainClass, clazz);
     return clazz;
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.domain.Constructor";
+  }
+
+  protected String getBuildTemplate() {
+    return "umlp.domain.Build";
+  }
+
+  protected void addGemAttr(ASTCDClass clazz) {
+    ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected readonly long gemId = -32;");
+    clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
+  }
+
+  protected void addTransientModifier(ASTCDAttribute attrObserver) {
+    glex.replaceTemplate("cd2java.Annotations", attrObserver,
+        new StringHookPoint("transient"));
+  }
+
+  protected String defaultListValue() {
+    return "= new ArrayList<>()";
   }
 
   protected ASTCDInterfaceUsage getInterfaceUsage(ASTCDClass domainClass) {
@@ -177,7 +197,11 @@ public class DomainClassDecorator extends DomainTypeDecorator {
       }
     }
 
-    getCD4C().addMethod(clazz, "umlp.domain.Equals", primitives, objects, primitiveBooleans, wrappedBooleans, domainClass.getName());
+    getCD4C().addMethod(clazz, getEqualsTemplate(), primitives, objects, primitiveBooleans, wrappedBooleans, domainClass.getName());
+  }
+
+  protected String getEqualsTemplate() {
+    return "umlp.domain.Equals";
   }
 
   /**

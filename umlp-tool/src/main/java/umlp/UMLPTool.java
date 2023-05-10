@@ -46,7 +46,7 @@ import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genhtml.GUI2HtmlTrafo;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
-import umlp.generator.gui.gentypescript.domain.UMLPTSGenerator;
+import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 
@@ -258,7 +258,7 @@ public class UMLPTool extends UMLPToolTOP {
 
         CD4C.init(genSetup);
         if (FOR_CLIENT.isSelected(cmd)) {
-          UMLPTSGenerator generator = new UMLPTSGenerator(genSetup);
+          TSUMLPGenerator generator = new TSUMLPGenerator(genSetup);
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
           generator.generate(ast, configTemplate);
         }

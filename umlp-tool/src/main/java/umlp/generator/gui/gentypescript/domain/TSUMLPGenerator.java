@@ -2,7 +2,6 @@
 package umlp.generator.gui.gentypescript.domain;
 
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
@@ -23,14 +22,14 @@ import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 
 import java.util.Arrays;
 
-public class UMLPTSGenerator extends UMLPGenerator {
+public class TSUMLPGenerator extends UMLPGenerator {
 
-  public UMLPTSGenerator(GeneratorSetup genSetup) {
+  public TSUMLPGenerator(GeneratorSetup genSetup) {
     super(genSetup);
 
     genSetup.getGlex().setGlobalValue("cdPrinter", new TSUtilsPrinter());
     genSetup.getGlex().setGlobalValue("genService", new GenService());
-    cdGenerator = new CDTSGenerator(genSetup);
+    cdGenerator = new TSCDGenerator(genSetup);
 
     genSetup.getGlex().replaceTemplate(
         CD2JavaTemplates.CLASS, new TemplateHookPoint(GUI2ComponentTemplates.CLASS)
@@ -38,6 +37,7 @@ public class UMLPTSGenerator extends UMLPGenerator {
     genSetup.getGlex().replaceTemplate(
         CD2JavaTemplates.ATTRIBUTE, new TemplateHookPoint(GUI2ComponentTemplates.ATTRIBUTE)
     );
+
     /*
     genSetup.getGlex().replaceTemplate(
         CD2JavaTemplates.ANNOTATIONS, new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATIONS)
@@ -76,7 +76,7 @@ public class UMLPTSGenerator extends UMLPGenerator {
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
-    Log.info("========= CD after '"+trafo+"': =========", UMLPTSGenerator.class.getName());
+    Log.info("========= CD after '"+trafo+"': =========", TSUMLPGenerator.class.getName());
   }
 
   public ASTCDCompilationUnit createCompilationUnit(ASTCDCompilationUnit cd) {

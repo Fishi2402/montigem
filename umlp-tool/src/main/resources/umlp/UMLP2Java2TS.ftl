@@ -8,7 +8,7 @@
 ${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator")}
 
 <#-- Call all decorators -->
-<#assign beDecorator = tc.instantiate("umlp.generator.domain.decorator.BEDecorator", [glex, hwPath])>
+<#assign beDecorator = tc.instantiate("umlp.generator.gui.gentypescript.domain.FEDecorator", [glex, hwPath])>
 <#assign commandDecorator = tc.instantiate("umlp.generator.domain.decorator.commands.CommandDecorator", [glex])>
 <#assign requestDecorator = tc.instantiate("umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator", [glex])>
 <#assign topDecorator = tc.instantiate("de.monticore.cd.codegen.TopDecorator", [hwPath])>
