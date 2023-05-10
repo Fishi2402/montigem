@@ -33,7 +33,8 @@ class LoggerEndpointServiceTest {
 
   @Test
   void umlp_jar_log() throws IOException {
-    String logBody = Files.readString(Path.of("build", "umlp_reports", "task_generateUmlpBackend", "Log_MC_JAR__umlp", "log_mc_jar__umlp", "20_Statistics.txt"));
+    String logBody = "{\"uuid\":\"c72e7459-f075-44c4-b007-cdd8eadef755\",\"version\":\"7.5.0-SNAPSHOT\",\"parameter\":{\"input\":\"Log_MC_JAR.umlp\",\"debug\":false,\"hwc\":true},\"summary\":{\"errors\":0,\"warnings\":0,\"generated files\":178,\"instantiations\":4,\"template includes\":0,\"template writes\":0,\"used standard templates\":210,\"unused standard templates\":203,\"used handwritten templates\":0,\"unused handwritten templates\":0,\"max template depth\":4,\"max AST depth\":8,\"AST node instances\":178,\"AST node types\":19,\"AST node visits\":8029,\"variables\":3,\"variable assignments\":4,\"AST hook point sets\":1974,\"AST hook point calls\":1855,\"code hook point sets\":0,\"code hook point calls\":0,\"template hook point sets\":1,\"template hook point calls\":177,\"string hook point sets\":0,\"string hook point calls\":0,\"empty hook point called\":10,\"empty hook point calls\":2632},\"duration\":4930}";
+        // Files.readString(Path.of("build", "umlp_reports", "task_generateUmlpBackend", "Log_MC_JAR__umlp", "log_mc_jar__umlp", "20_Statistics.txt"));
     String shash = getSHASH(logBody);
     sut.log(logBody, shash, "UMLP_JAR_JSON");
   }
