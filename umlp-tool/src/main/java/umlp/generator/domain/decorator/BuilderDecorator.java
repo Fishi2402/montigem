@@ -65,7 +65,7 @@ public class BuilderDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
 
     // Constructors
-    getCD4C().addConstructor(builderClass, "umlp.builder.Constructor", domainClass.getName(), managerName, attrAssocLists);
+    getCD4C().addConstructor(builderClass, getConstructorTemplate(), domainClass.getName(), managerName, attrAssocLists);
 
     // Attributes
     List<ASTCDAttribute> attrList = createAttributes(domainClass, attrFields.stream().map(a -> a.getName()).collect(Collectors.toList()), false);
@@ -84,13 +84,25 @@ public class BuilderDecorator extends AbstractDecorator {
     builderClass.addAllCDMembers(methodDecorator.decorate(finishedAttr));
     builderClass.addAllCDMembers(methodDecorator.decorate(internalAttr));
     createSetAndCheckMethods(domainClass, builderClass, attrFields, attrAssocs);
-    getCD4C().addMethod(builderClass, "umlp.builder.Build", domainClass.getName(), managerName, attrAssocLists);
-    getCD4C().addMethod(builderClass, "umlp.builder.IsBuildable", attrList);
+    getCD4C().addMethod(builderClass, getBuildTemplate(), domainClass.getName(), managerName, attrAssocLists);
+    getCD4C().addMethod(builderClass, getIsBuildableTemplate(), attrList);
 
     // Imports
     addImports(domainClass, builderClass);
 
     return builderClass;
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.builder.Constructor";
+  }
+
+  protected String getBuildTemplate() {
+    return "umlp.builder.Build";
+  }
+
+  protected String getIsBuildableTemplate() {
+    return "umlp.builder.IsBuildable";
   }
 
   protected List<ASTCDAttribute> createAttributes(ASTCDClass domainClass, List<String> attrNames, boolean initialValue) {

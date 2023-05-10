@@ -82,7 +82,7 @@ public class FEDecorator extends BEDecorator {
     Log.info("After decorator: DeSerDecorator", FEDecorator.class.getName());
 
     // Generate builder classes
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex);
+    BuilderDecorator builderDecorator = new TSBuilderDecorator(glex);
     builderDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: BuilderDecorator", FEDecorator.class.getName());
 

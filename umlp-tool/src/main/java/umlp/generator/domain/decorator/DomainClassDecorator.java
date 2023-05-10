@@ -75,7 +75,8 @@ public class DomainClassDecorator extends DomainTypeDecorator {
 
     if (!domainClass.isPresentCDExtendUsage()) {
       // Attribute gemId and getter and setter
-      addGemAttr(clazz);
+      ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected readonly long gemId = -32;");
+      clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
     }
 
     // Attribute observerList
@@ -120,11 +121,6 @@ public class DomainClassDecorator extends DomainTypeDecorator {
 
   protected String getBuildTemplate() {
     return "umlp.domain.Build";
-  }
-
-  protected void addGemAttr(ASTCDClass clazz) {
-    ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected readonly long gemId = -32;");
-    clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
   }
 
   protected void addTransientModifier(ASTCDAttribute attrObserver) {

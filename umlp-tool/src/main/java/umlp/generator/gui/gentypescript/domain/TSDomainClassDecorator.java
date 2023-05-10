@@ -15,7 +15,6 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.DomainClassDecorator;
 import umlp.generator.domain.decorator.GenService;
@@ -81,13 +80,6 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
   @Override
   protected String getBuildTemplate() {
     return "umlp.gui2ts.domain.Build";
-  }
-
-  @Override
-  protected void addGemAttr(ASTCDClass clazz) {
-    ASTCDAttribute gemAttr = getCD4C().addAttribute(clazz, "protected readonly long gemId;");
-    clazz.addAllCDMembers(new MethodDecorator(glex).decorate(gemAttr));
-    glex.replaceTemplate("cd2java.Value", gemAttr, new StringHookPoint("= -32"));
   }
 
   @Override
