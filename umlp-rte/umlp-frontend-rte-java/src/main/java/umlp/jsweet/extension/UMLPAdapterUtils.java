@@ -43,6 +43,15 @@ public class UMLPAdapterUtils {
     };
   }
 
+  public static Function<TypeMirror, String> computeDateTypeMapping(PrinterAdapter adapter, Types types) {
+    return (TypeMirror type) -> {
+      if (type.toString().equals("java.time.LocalDate")) {
+        return "Date";
+      }
+      return null;
+    };
+  }
+
   public static boolean substituteMethodInvocation_MCJson(PrinterAdapter adapter,
       MethodInvocationElement invocation) {
     if (invocation.getTargetType().toString().equals("de.monticore.symboltable.serialization.JsonParser")) {

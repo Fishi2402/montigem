@@ -40,7 +40,10 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
     String fqn = importedClass.getQualifiedName().toString();
     if (fqn != null) {
       if (fqn.equals(GUIComponentAdapter.COMPONENT_ANNOTATION)
-          || fqn.equals(GUIComponentAdapter.DIRECTIVE_ANNOTATION)) {
+          || fqn.equals(GUIComponentAdapter.DIRECTIVE_ANNOTATION)
+          || fqn.equals(GUIComponentAdapter.INPUT_ANNOTATION)
+          || fqn.equals(GUIComponentAdapter.OUTPUT_ANNOTATION)
+      ) {
         return new ModuleImportDescriptor(false,
             (PackageElement) importedClass.getEnclosingElement(), importedName,
             ANGULAR_CORE_PATH, importedClass);

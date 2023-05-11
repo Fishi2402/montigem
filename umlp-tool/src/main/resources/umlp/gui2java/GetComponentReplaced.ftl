@@ -1,4 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("methodName", "returnType", "replaced")}
-${cd4c.method("public ${returnType} ${methodName}()")}
+${tc.signature("methodName", "returnType", "replaced", "args", "isLiteral")}
+${cd4c.method("public ${returnType} ${methodName}(${args})")}
     return ${replaced};

@@ -1,5 +1,26 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("className", "fieldName", "fieldType")}
-<#--${cd4c.method("public void ${className?uncap_first}Set${fieldName?cap_first} (@ShellOption(value = \"--id\") long id, @ShellOption(value = \"--value\") ${fieldType} value)")}-->
+${tc.signature("cdName", "className", "fieldName", "fieldType", "isAssoc")}
+<#if isAssoc>
+${cd4c.method("public void ${className?uncap_first}Set${fieldName?cap_first} (long id, long value)")}
+<#else>
 ${cd4c.method("public void ${className?uncap_first}Set${fieldName?cap_first} (long id, ${fieldType} value)")}
-  sendCommandToServerAndReceiveResult(new ${className?cap_first}_set${fieldName?cap_first}(id, value));
+</#if>
+  Optional<${className}> ${className?uncap_first} = ${cdName}Manager.${className?uncap_first}Opt(id);
+<#if isAssoc>
+  Optional<${fieldType}> ${fieldName?uncap_first} = ${cdName}Manager.${fieldType?uncap_first}Opt(value);
+  if (!${className?uncap_first}.isPresent()) {
+    Log.warn("Could not receive ${className?uncap_first} with id " + id + " from server");
+  } else if (!${fieldName?uncap_first}.isPresent()) {
+    Log.warn("Could not receive ${fieldType?uncap_first} with id " + value + " from server");
+  } else {
+    ${className?uncap_first}.get().set${fieldName?cap_first}(${fieldName?uncap_first}.get());
+    Log.info("Successful set of attribute", UMLP_SHELL_API);
+  }
+<#else>
+  if (!${className?uncap_first}.isPresent()) {
+    Log.warn("Could not receive ${className?uncap_first} with id " + id + " from server");
+  } else {
+    ${className?uncap_first}.get().set${fieldName?cap_first}(value);
+    Log.info("Successful set of attribute", UMLP_SHELL_API);
+  }
+</#if>

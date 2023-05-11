@@ -16,9 +16,6 @@ sourceSets {
 
 dependencies {
   implementation project(':experiments:coreRequirements')
-  implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
-  implementation group: 'org.hibernate', name: 'hibernate-vibur', version: hibernate_version
-  implementation group: 'org.hibernate', name: 'hibernate-core', version: hibernate_version
 
 }
 

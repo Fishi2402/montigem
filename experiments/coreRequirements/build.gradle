@@ -40,6 +40,8 @@ repositories {
 }
 
 dependencies {
+    implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version
+
     implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
 
@@ -54,6 +56,7 @@ dependencies {
 //    implementation group: 'org.webjars', name: 'stomp-websocket'
     // JSweet
     implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
+    compileOnly project(':umlp-rte:umlp-frontend-rte-java')
 
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
@@ -86,6 +89,17 @@ task generateFlensburg(type: UMLPTask) {
     outputDir = layout.buildDirectory.dir("genumlp/hardy")
 }
 
+task genTS(type: UMLPTask) {
+    input = (file("models/hardy"))
+    outputDir = layout.buildDirectory.dir("domainTS")
+    forClient = true
+
+    /*
+    debug = true
+    outputs.upToDateWhen { false }
+    /**/
+}
+
 task copySymbols(type: Copy) {
     copy {
         from zipTree(configurations.symbol.asPath)
@@ -93,14 +107,23 @@ task copySymbols(type: Copy) {
     }
 }
 
-task generateAll(type: UMLPTask) {
+task generateAll(type: UMLPGuiGenTask) {
     dependsOn(copySymbols)
     input = (file("models"))
     outputDir = layout.buildDirectory.dir("gen")
     hwcDir = layout.projectDirectory.dir("src/main/java")
     modelDir = layout.projectDirectory.dir("models")
     symbolDir = file("models")
+    domainModels = ["hardy.Flensburg"]
+    guiCreateModels = ["stanley.personcreate.PersonCreate"]
+
     //symbolDir = file("$projectDir/target/symbols")
+
+    // moreArgs = ['-s', 'someArg']  // mehr CLI Argumente (nur zum debugging / testing!)
+    /*
+    debug = true
+    outputs.upToDateWhen { false }
+    /**/
 }
 
 test {

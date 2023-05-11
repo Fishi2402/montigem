@@ -1,22 +1,84 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 umlp AssocsFromAndToInterface {
+  // class to interface
+  interface I1;
+  class I1Impl implements I1;
+  class C1;
+  association C1 -> I1 [*];
 
-  interface A;
+  // interface to class
+  interface I2;
+  class I2Impl implements I2;
+  class C2;
+  association I2 -> C2 [*];
 
-  class B implements A;
-  
-  interface D;
-  
-  abstract class E implements D;
-  
-  class F extends E;
-  
-  association F -> D [*];
-  
-  association D -> E[*];
-  
-  association A (leftA) <-> (rightA) A [*];
-  
+  // interface to interface
+  interface I3;
+  class I3Impl implements I3;
+  interface I4;
+  class I4Impl implements I4;
+  association I3 -> I4 [*];
 
+
+  // class to abstract class
+  abstract class AC1;
+  class AC1Impl extends AC1;
+  class C3;
+  association C3 -> AC1 [*];
+
+  // abstract class to class
+  abstract class AC2;
+  class AC2Impl extends AC2;
+  class C4;
+  association AC2 -> C4 [*];
+
+  // abstract class to abstract class
+  abstract class AC3;
+  class AC3Impl extends AC3;
+  abstract class AC4;
+  class AC4Impl extends AC4;
+  association AC3 -> AC4 [*];
+
+  // ########################
+  // Same for Gem
+
+  // class to interface
+  interface I5;
+  class I5Impl implements I5;
+  class C5;
+  association C5 -> I5 [0..1];
+
+  // interface to class
+  interface I6;
+  class I6Impl implements I6;
+  class C6;
+  association I6 -> C6 [0..1];
+
+  // interface to interface
+  interface I7;
+  class I7Impl implements I7;
+  interface I8;
+  class I8Impl implements I8;
+  association I7 -> I8 [0..1];
+
+
+  // class to abstract class
+  abstract class AC5;
+  class AC5Impl extends AC5;
+  class C7;
+  association C7 -> AC5 [0..1];
+
+  // abstract class to class
+  abstract class AC6;
+  class AC6Impl extends AC6;
+  class C8;
+  association AC6 -> C8 [0..1];
+
+  // abstract class to abstract class
+  abstract class AC7;
+  class AC7Impl extends AC7;
+  abstract class AC8;
+  class AC8Impl extends AC8;
+  association AC7 -> AC8 [0..1];
 }

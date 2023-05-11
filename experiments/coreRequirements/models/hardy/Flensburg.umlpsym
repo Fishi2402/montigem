@@ -1,31 +1,32 @@
 {
   "generated-using": "www.MontiCore.de technology",
   "name": "Flensburg",
+  "package": "hardy",
   "symbols": [
     {
       "kind": "de.monticore.cdassociation._symboltable.CDAssociationSymbol",
       "name": "owns",
-      "association": 1618838298
+      "association": 1384729867
     },
     {
       "kind": "de.monticore.cdassociation._symboltable.CDAssociationSymbol",
       "name": "mainResidence",
-      "association": 46806919
+      "association": 1655034394
     },
     {
       "kind": "de.monticore.cdassociation._symboltable.CDAssociationSymbol",
       "name": "visits",
-      "association": 1193995752
+      "association": 904070416
     },
     {
       "kind": "de.monticore.cdassociation._symboltable.CDAssociationSymbol",
       "name": "parent",
-      "association": 585918060
+      "association": 1137095422
     },
     {
       "kind": "de.monticore.cdassociation._symboltable.CDAssociationSymbol",
       "name": "cities",
-      "association": 1219097217
+      "association": 587938549
     },
     {
       "kind": "de.monticore.cdbasis._symboltable.CDTypeSymbol",
@@ -37,11 +38,11 @@
             "kind": "de.monticore.cdassociation._symboltable.CDRoleSymbol",
             "name": "person",
             "cardinality": "[1]",
-            "association": 1618838298,
+            "association": 1384729867,
             "isLeft": true,
             "type": {
               "kind": "de.monticore.types.check.SymTypeOfObject",
-              "objName": "Flensburg.Person"
+              "objName": "hardy.Flensburg.Person"
             }
           }
         ]
@@ -70,7 +71,7 @@
       "superTypes": [
         {
           "kind": "de.monticore.types.check.SymTypeOfObject",
-          "objName": "Flensburg.Human"
+          "objName": "hardy.Flensburg.Human"
         }
       ],
       "isClass": true,
@@ -81,10 +82,10 @@
             "name": "car",
             "isDefinitiveNavigable": true,
             "cardinality": "[*]",
-            "association": 1618838298,
+            "association": 1384729867,
             "type": {
               "kind": "de.monticore.types.check.SymTypeOfObject",
-              "objName": "Flensburg.Car"
+              "objName": "hardy.Flensburg.Car"
             }
           },
           {
@@ -92,10 +93,10 @@
             "name": "address",
             "isDefinitiveNavigable": true,
             "cardinality": "[1]",
-            "association": 46806919,
+            "association": 1655034394,
             "type": {
               "kind": "de.monticore.types.check.SymTypeOfObject",
-              "objName": "Flensburg.Address"
+              "objName": "hardy.Flensburg.Address"
             }
           },
           {
@@ -103,21 +104,21 @@
             "name": "visited",
             "isDefinitiveNavigable": true,
             "cardinality": "[*]",
-            "association": 1193995752,
+            "association": 904070416,
             "type": {
               "kind": "de.monticore.types.check.SymTypeOfObject",
-              "objName": "Flensburg.Address"
+              "objName": "hardy.Flensburg.Address"
             }
           },
           {
             "kind": "de.monticore.cdassociation._symboltable.CDRoleSymbol",
             "name": "person",
             "cardinality": "[1]",
-            "association": 585918060,
+            "association": 1137095422,
             "isLeft": true,
             "type": {
               "kind": "de.monticore.types.check.SymTypeOfObject",
-              "objName": "Flensburg.Person"
+              "objName": "hardy.Flensburg.Person"
             }
           },
           {
@@ -125,10 +126,10 @@
             "name": "children",
             "isDefinitiveNavigable": true,
             "cardinality": "[*]",
-            "association": 585918060,
+            "association": 1137095422,
             "type": {
               "kind": "de.monticore.types.check.SymTypeOfObject",
-              "objName": "Flensburg.Person"
+              "objName": "hardy.Flensburg.Person"
             }
           },
           {
@@ -161,11 +162,11 @@
             "kind": "de.monticore.cdassociation._symboltable.CDRoleSymbol",
             "name": "person",
             "cardinality": "[1]",
-            "association": 46806919,
+            "association": 1655034394,
             "isLeft": true,
             "type": {
               "kind": "de.monticore.types.check.SymTypeOfObject",
-              "objName": "Flensburg.Person"
+              "objName": "hardy.Flensburg.Person"
             }
           },
           {
@@ -173,11 +174,11 @@
             "name": "visitor",
             "isDefinitiveNavigable": true,
             "cardinality": "[*]",
-            "association": 1193995752,
+            "association": 904070416,
             "isLeft": true,
             "type": {
               "kind": "de.monticore.types.check.SymTypeOfObject",
-              "objName": "Flensburg.Person"
+              "objName": "hardy.Flensburg.Person"
             }
           },
           {
@@ -203,7 +204,7 @@
             "name": "string",
             "isDefinitiveNavigable": true,
             "cardinality": "[*]",
-            "association": 1219097217,
+            "association": 587938549,
             "type": {
               "kind": "de.monticore.types.check.SymTypeOfObject",
               "objName": "java.lang.String"
@@ -238,7 +239,7 @@
             "name": "personWithMostCars",
             "type": {
               "kind": "de.monticore.types.check.SymTypeOfObject",
-              "objName": "Flensburg.Person"
+              "objName": "hardy.Flensburg.Person"
             }
           },
           {

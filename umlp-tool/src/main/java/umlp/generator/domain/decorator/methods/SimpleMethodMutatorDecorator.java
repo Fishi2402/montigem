@@ -51,9 +51,13 @@ public class SimpleMethodMutatorDecorator extends MandatoryMutatorDecorator {
   protected ASTCDMethod createNotificationSetter(ASTCDAttribute ast, boolean isGem) {
     ASTCDMethod method = super.createSetter(ast);
     method.addCDParameter(getCDParameterFacade().createParameter("NotificationScope", "scope"));
-    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.methods.NotificationSetter",
+    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getNotificationSetterTemplate(),
             this.ast.getName(), service.getNativeAttributeName(ast.getName()), new CdUtilsPrinter().printType(ast.getMCType()), isGem));
     return method;
+  }
+
+  protected String getNotificationSetterTemplate() {
+    return "umlp.methods.NotificationSetter";
   }
 
 }

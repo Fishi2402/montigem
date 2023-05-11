@@ -1,150 +1,204 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.genjava.decorator;
 
+import de.monticore.cd.facade.CDModifier;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
-import de.monticore.guidsl._ast.ASTGUIDSLNode;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
-import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
-import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIDSLScope;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.se_rwth.commons.StringTransformations;
+import de.monticore.types.MCTypeFacade;
+import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
-import umlp.generator.gui.GUIComponentAccessVisitor;
-import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.GUIComponentsVisitor;
 
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import static umlp.generator.gui.GUIGeneratorUtil.isEventArgument;
-import static umlp.generator.gui.GUIGeneratorUtil.isStringLiteral;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
-  public final static String VALUE = "Value";
-  protected final String guiName;
-  private final ASTGUICompilationUnit guiAst;
+  protected final GUIComponentsVisitor viewComponent;
+  protected final ASTGUICompilationUnit guiAst;
+  protected List<TemplateHookPoint> initHPs = new ArrayList<>();
 
-  public GUI2JavaComponentDecorator(final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst) {
+  public GUI2JavaComponentDecorator(final GlobalExtensionManagement glex,
+      ASTGUICompilationUnit guiAst, GUIComponentsVisitor viewComponent) {
     super(glex);
-    this.guiName = guiAst.getGUIComponentDeclaration().getName();
     this.guiAst = guiAst;
+    this.viewComponent = viewComponent;
   }
 
-  protected static List<ASTGUINamedArg> filterArgWithPredicate(List<ASTGUINamedArg> components,
-      Predicate<ASTGUINamedArg> predicate) {
-    return components.stream().filter(predicate).collect(Collectors.toList());
+  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
+    for (ASTGUINamedArg arg : guiComponent.getGUINamedArgs().getGUINamedArgList()) {
+      generatePropAndGetterForArg(decoratedClass, guiComponent, arg);
+    }
   }
 
-  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
-    generateGetMethodsForComponentArguments(decoratedClass, guiComponent, componentName);
+  public List<TemplateHookPoint> getInitHPs() {
+    return initHPs;
   }
 
-  protected void generateGetMethodsForComponentArguments(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
-    GUIComponentAccessVisitor viewComponents = new GUIComponentAccessVisitor(guiComponent);
+  protected void generatePropAndGetterForArg(
+      ASTCDClass decoratedClass, ASTGUIComponent guiComponent, ASTGUINamedArg namedArg
+  ) {
+    Optional<GUIParamSymbol> paramSym = util.resolveGUIParamSym(
+        namedArg.getEnclosingScope(), guiComponent.getName(), namedArg.getName());
+    if (paramSym.isEmpty()) {
+      Log.error("0x00001 Argument " + namedArg.getName()
+          + " of component " + guiComponent.getName()
+          + " cannot be resolved");
+    }
 
-    viewComponents.getNamedArgsFieldAccess().entrySet().forEach(e -> {
-      generateGetMethodForComponentArgument(decoratedClass, guiComponent, componentName, e.getKey(), e.getValue());
-    });
-  }
+    GUIArgValueReplaceVisitor visitor = new GUIArgValueReplaceVisitor();
+    SymTypeExpression paramSTE = paramSym.get().getType();
+    visitor.transform(paramSTE, namedArg);
+    if (!visitor.argNeedsGetter()) {
+      return;
+    }
 
-  protected void generateGetMethodForComponentArgument(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
-      ASTGUINamedArg namedArg, Set<ASTFieldAccessExpression> zuweisungen) {
+    String paramType = paramSym.get().getType().print();
+    String getterName = util.gui2cdAttrGetterName(
+        guiComponent.getId().getName(), namedArg.getName());
+    if (visitor.argNeedsOwnParamWithInit()) {
+      // TODO AGe: how to do that better?
+      // if List
+      if (namedArg.getGUIArgValue().isPresentGUIList()) {
+        List<ASTGUIArgValue> valueList = namedArg.getGUIArgValue().getGUIList().getGUIArgValueList();
 
-    String argValue = replaceZuweisungen(namedArg, zuweisungen);
-
-    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
-        .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
-
-    if (guiComponentSymbol.isPresent() && !isEventArgument(guiComponentSymbol.get(), namedArg)) {
-      Optional<GUIParamSymbol> argSymbol = guiComponentSymbol.get().getSpannedScope().resolveGUIParam(namedArg.getName());
-      if (argSymbol.isPresent()) {
-        if (GUIGeneratorUtil.isViewElement(argSymbol.get())) {
-          return;
+        String typeArg = unknownCollectionType();
+        boolean isPrimitive = false;
+        if (!valueList.isEmpty()) {
+          if (valueList.get(0).isPresentExpression()) {
+            if (valueList.get(0).getExpression() instanceof ASTLiteralExpression) {
+              isPrimitive = true;
+            }
+          }
+          else {
+            Log.error("0x00002 Cannot handle " + namedArg.getName()
+                + " of component " + guiComponent.getQualifiedName()
+                + " yet: nested objects initialization");
+          }
         }
-        String returnType = argSymbol.get().getType().getTypeInfo().getName();
-        boolean convertToString = mustBeConvertedToString(returnType, namedArg);
-        if (convertToString) {
-          argValue = "String.valueOf(" + argValue + ")";
-        }
+        ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
+            CDModifier.PROTECTED.build(),
+            MCTypeFacade.getInstance().createListTypeOf(typeArg),
+            util.gui2cdAttrName(guiComponent.getId().getName(), namedArg.getName()));
+        setDefaultListValue(attr);
+        decoratedClass.addCDMember(attr);
 
-        String methodName = "get" + guiComponent.getName() + StringTransformations.capitalize(componentName)
-            + StringTransformations.capitalize(namedArg.getName());
-        addGetComponentMethod(decoratedClass, methodName, returnType, argValue);
+        GUIIterate2ArgsVisitor it2Arg = new GUIIterate2ArgsVisitor();
+        it2Arg.transform(guiAst, guiComponent);
+        addGetComponentMethod(decoratedClass, getterName, paramType,
+            attr.getName(), getArgs(it2Arg.getArgs()), false);
+
+        String setterName = util.gui2cdAttrSetterName(
+            guiComponent.getId().getName(), namedArg.getName());
+        addSetComponentMethod(decoratedClass, setterName, paramType, attr.getName());
+
+        List<String> initValues = new ArrayList<>();
+        for (ASTGUIArgValue av : valueList) {
+          initValues.add(guiDSLPrinter.prettyprint(av.getExpression()));
+        }
+        TemplateHookPoint hp = new TemplateHookPoint(
+            getInitListsTemplate(), attr.getName(), setterName, isPrimitive, initValues
+        );
+        initHPs.add(hp);
       }
     }
+    else {
+      String argValue = guiDSLPrinter.prettyprint(visitor.getResult());
+      boolean isLiteral = visitor.getResult() instanceof ASTLiteralExpression;
+      boolean convertToString = mustBeConvertedToString(paramType, namedArg);
+      if (convertToString) {
+        argValue = numberToStringCall(argValue);
+      }
+
+      GUIIterate2ArgsVisitor it2Arg = new GUIIterate2ArgsVisitor();
+      it2Arg.transform(guiAst, guiComponent);
+      addGetComponentMethod(decoratedClass, getterName, paramType,
+          argValue, getArgs(it2Arg.getArgs()), isLiteral);
+    }
+  }
+
+  protected String getInitListsTemplate() {
+    return "umlp.gui2java.InitLists";
+  }
+
+  protected String numberToStringCall(String value) {
+    return "String.valueOf(" + value + ")";
+  }
+
+  protected String unknownCollectionType() {
+    return "? extends Object";
+  }
+
+  protected void setDefaultListValue(ASTCDAttribute attr) {
+    glex.replaceTemplate("cd2java.Value", attr,
+        new StringHookPoint(" = new ArrayList<>()"));
   }
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
   }
 
-  public void transform(ASTGUICompilationUnit guiAst, ASTCDCompilationUnit decoratedAST) {
-  }
-
-  protected void addComponentErrorAttribute(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName) {
+  // TODO AGe: error concept is not ready, leave that out for now
+  /*
+  protected void addComponentErrorAttribute(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName, Optional<ASTGUIIterate> iterate) {
     String componentAttributeName = StringTransformations.uncapitalize(guiComponent.getName()) + "ValueError";
     getCD4C().addAttribute(decoratedClass, true, false, "protected String " + componentAttributeName + " = \"\";");
   }
+  /**/
 
-  protected void addGetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
-      String returnType, String variableName, String attrName) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.GetComponent",
-        "get" + guiComponent.getName() + StringTransformations.capitalize(componentName) + VALUE, returnType, variableName, attrName);
-  }
-
-  protected void addGetComponentMethod(ASTCDClass decoratedClass, String methodName, String returnType, String replaced) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.GetComponentReplaced", methodName, returnType, replaced);
-  }
-
-  protected void addSetComponentMethod(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String attrType, String attrName, String setExpr) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2java.SetComponent", "set" + guiComponent.getName(),
-        attrType, attrName, setExpr);
-  }
-
-  protected boolean checkArgumentsSize(ASTGUIComponent guiComponent, int size) {
-    if (guiComponent.getGUINamedArgs().getGUINamedArgList().size() != size) {
-      Log.error("Anzahl der Argumente der GUI-Komponente muss gleich " + size + " sein in " + guiName);
-      return false;
+  public List<String> getArgs(Map<String, String> args) {
+    List<String> res = new ArrayList<>();
+    for (Map.Entry arg : args.entrySet()) {
+      res.add(arg.getValue() + " " + arg.getKey());
     }
-    return true;
+    return res;
   }
 
-  protected Optional<ASTGUINamedArg> getComponentArgSingle(ASTGUIComponent guiComponent, Predicate<ASTGUINamedArg> predicate) {
-    List<ASTGUINamedArg> args = filterArgWithPredicate(guiComponent.getGUINamedArgs().getGUINamedArgList(), predicate);
-    if (args.size() != 1) {
-      //Log.error(getErrorMessage(guiComponent.getName(), guiComponent.getGUINamedArgs()));
+  protected void addGetComponentMethod(
+      ASTCDClass decoratedClass, String methodName, String attrType, String returnValue,
+      List<String> arguments, boolean isLiteral
+  ) {
+    getCD4C().addMethod(
+        decoratedClass, getGetterTemplate(), methodName, attrType,
+        returnValue, String.join(", ", arguments), isLiteral
+    );
+  }
+
+  protected String getGetterTemplate() {
+    return "umlp.gui2java.GetComponentReplaced";
+  }
+
+  protected void addSetComponentMethod(ASTCDClass decoratedClass, String methodName, String attrType, String attrName) {
+    getCD4C().addMethod(decoratedClass, getSetterTemplate(), methodName, attrType, attrName);
+  }
+
+  protected String getSetterTemplate() {
+    return "umlp.gui2java.SetComponent";
+  }
+
+  public Optional<VariableSymbol> resolveAttribute(Optional<GUIParamSymbol> guiParamSym, String name) {
+    if (guiParamSym.isEmpty()) {
       return Optional.empty();
     }
-    return Optional.of(args.get(0));
-  }
-
-  protected String getErrorMessage(String guiComponentName, ASTGUIDSLNode astNode) {
-    return guiComponentName + "-GUIComponent args aren't correct in " + guiName + " : \n" +
-        new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astNode);
-  }
-
-  protected Optional<ASTGUINamedArg> getComponentArgOptional(ASTGUIComponent guiComponent, Predicate<ASTGUINamedArg> predicate) {
-    List<ASTGUINamedArg> args = filterArgWithPredicate(guiComponent.getGUINamedArgs().getGUINamedArgList(), predicate);
-    return args.size() == 1 ? Optional.of(args.get(0)) : Optional.empty();
-  }
-
-  public Optional<VariableSymbol> resolveAttribute(Optional<GUIParamSymbol> guiVariableSymbol, String name) {
-    if (guiVariableSymbol.isEmpty()) {
-      return Optional.empty();
-    }
-    TypeSymbol typeInfo = guiVariableSymbol.get().getType().getTypeInfo();
+    TypeSymbol typeInfo = guiParamSym.get().getType().getTypeInfo();
     Optional<VariableSymbol> res = typeInfo.getSpannedScope().resolveVariable(name);
     if (res.isEmpty() && typeInfo.isPresentSuperClass()) {
       res = typeInfo.getSuperClass().getTypeInfo().getSpannedScope().resolveVariable(name);
@@ -153,77 +207,6 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       res = typeInfo.getEnclosingScope().resolveVariable(name);
     }
     return res;
-  }
-
-  public Optional<String> handleZuweisung(ASTFieldAccessExpression zuweisung, ASTCDClass decoratedClass, ASTGUIComponent guiComponent,
-      String componentName, boolean mustBeString) {
-    if (zuweisung.getExpression() instanceof ASTNameExpression) {
-      String variableName = ((ASTNameExpression) zuweisung.getExpression()).getName();
-      Optional<GUIParamSymbol> symbol = ((GUIDSLScope) zuweisung.getEnclosingScope()).resolveGUIParam(variableName);
-
-      Optional<VariableSymbol> attr = resolveAttribute(symbol, zuweisung.getName());
-
-      if (attr.isPresent()) {
-        String returnType = attr.get().getType().getTypeInfo().getName();
-        String attrName = attr.get().getName();
-        String variableType = symbol.get().getType().getTypeInfo().getName();
-        boolean isCollection = attr.get().getType().isGenericType() || attr.get().getType().isArrayType();
-
-        generateMethodsForInputValueComponent(decoratedClass, guiComponent, componentName, returnType, variableName,
-            variableType, attrName);
-
-        return Optional.of(getFieldAccess(variableName, attrName, returnType, (mustBeString && !isCollection)));
-      }
-    }
-    return Optional.empty();
-  }
-
-  protected void generateMethodsForInputValueComponent(ASTCDClass decoratedClass, ASTGUIComponent guiComponent, String componentName,
-      String returnType, String variableName, String variableType, String attrName) {
-  }
-
-  public String getFieldAccess(String variableName, String attrName, String variableType, boolean mustBeString) {
-    String fieldAccess = variableName + ".get" + StringTransformations.capitalize(attrName) + "()";
-    return (!mustBeString || variableType.endsWith("String")) ? fieldAccess : "String.valueOf(" + fieldAccess + ")";
-  }
-
-  public String getFieldAccessReplacement(String attrName, String variableType, boolean mustBeString) {
-    String fieldAccess = "get" + StringTransformations.capitalize(attrName) + "()";
-    return (!mustBeString || variableType.endsWith("String")) ? fieldAccess : "String.valueOf(" + fieldAccess + ")";
-  }
-
-  public String getFieldAccessReplacement(String variableName, String attrName) {
-    return variableName + ".get" + StringTransformations.capitalize(attrName) + "()";
-  }
-
-  protected String replaceZuweisungen(ASTGUINamedArg namedArg, Set<ASTFieldAccessExpression> zuweisungen) {
-    Map<ASTFieldAccessExpression, String> replacements = getAllReplacementsForZuwesungen(zuweisungen);
-
-    String argValue = guiDSLPrinter.prettyprint(namedArg.getGUIArgValue());
-    for (Map.Entry<ASTFieldAccessExpression, String> entry : replacements.entrySet()) {
-      String fieldAccess = guiDSLPrinter.prettyprint(entry.getKey());
-      argValue = argValue.replace(fieldAccess, entry.getValue());
-    }
-    return argValue;
-  }
-
-  protected Map<ASTFieldAccessExpression, String> getAllReplacementsForZuwesungen(Set<ASTFieldAccessExpression> value) {
-    Map<ASTFieldAccessExpression, String> replacement = new HashMap<>();
-    value.forEach(f -> handleZuweisung(f).ifPresent(r -> replacement.put(f, r)));
-    return replacement;
-  }
-
-  protected Optional<String> handleZuweisung(ASTFieldAccessExpression zuweisung) {
-    if (zuweisung.getExpression() instanceof ASTNameExpression) {
-      String variableName = ((ASTNameExpression) zuweisung.getExpression()).getName();
-      Optional<GUIParamSymbol> symbol = ((GUIDSLScope) zuweisung.getEnclosingScope()).resolveGUIParam(variableName);
-
-      Optional<VariableSymbol> attr = resolveAttribute(symbol, zuweisung.getName());
-      if (attr.isPresent()) {
-        return Optional.of(getFieldAccessReplacement(variableName, attr.get().getName()));
-      }
-    }
-    return Optional.empty();
   }
 
   protected Optional<String> getTypeOf(ASTFieldAccessExpression zuweisung) {
@@ -240,14 +223,14 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return Optional.empty();
   }
 
+  // TODO AGe: not nice
   protected boolean mustBeConvertedToString(String returnType, ASTGUINamedArg namedArg) {
-    boolean convertToString = returnType.endsWith("String") && !isStringLiteral(namedArg.getGUIArgValue());
+    boolean convertToString = returnType.endsWith("String") && !util.isStringLiteral(namedArg.getGUIArgValue());
     if (convertToString && namedArg.getGUIArgValue().getExpression() instanceof ASTFieldAccessExpression) {
       Optional<String> zuweisungType = getTypeOf((ASTFieldAccessExpression) namedArg.getGUIArgValue().getExpression());
       convertToString = !zuweisungType.isPresent() || !zuweisungType.get().endsWith("String");
     }
     return convertToString;
   }
-
 
 }

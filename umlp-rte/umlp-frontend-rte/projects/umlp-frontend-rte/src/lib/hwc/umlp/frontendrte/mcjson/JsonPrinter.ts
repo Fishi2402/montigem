@@ -19,7 +19,24 @@ export class JsonPrinter {
     this.currElements.push(obj);
   }
 
+  beginArray(kind?: string): void {
+    let obj = [];
+    if (!!kind) {
+      if (this.currElements.length > 0) {
+        (this.getCurrentElement())[kind] = obj;
+      } else {
+        Log.error("0xA0613 JsonPrinter detected an invalid nesting of Json. "
+          + "Cannot add a member as the first element of a Json String!");
+      }
+    }
+    this.currElements.push(obj);
+  }
+
   endObject(): void {
+    this.currElements.pop();
+  }
+
+  endArray(): void {
     this.currElements.pop();
   }
 
@@ -36,6 +53,10 @@ export class JsonPrinter {
   }
 
   memberJson(value: string, s: string) {
+    // TODO
+  }
+
+  value(value: any) {
     // TODO
   }
 }

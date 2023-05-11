@@ -12,6 +12,7 @@ import hardy.Flensburg.Person;
 import stanley.tmp.io.input.GemTextInput;
 import stanley.tmp.io.input.GemNumberInput;
 import stanley.tmp.io.GemButton;
+import stanley.tmp.io.GemText;
 
 import stanley.tmp.layout.GemCard;
 import stanley.tmp.layout.GemColumn;
@@ -27,30 +28,37 @@ import stanley.tmp.layout.GemColumn;
  */
 page PersonEdit(Person p) {
 
-  @GemCard(
-    title = "Edit Person",
-    content = @GemColumn(contents = [
-      // show and edit the nickname
-      @GemTextInput(value = p.nickname),
+  @GemColumn(contents = [
+    @guard(p.nickname != "") {
+      @GemCard(
+        title = "Edit Person",
+        content = @GemColumn(contents = [
+          // show and edit the nickname
+          @GemTextInput(value = p.nickname),
 
-      // show and edit the age as number
-      @GemNumberInput(value = p.age),
+          // show and edit the age as number
+          @GemNumberInput(value = p.age),
 
-      // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
-      // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird
-      // in einem handgeschriebenen Teil implementiert und importiert
-      // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "PersonEditGUI.java".
-      // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
-      // deswegen wird eine Methode explizit importiert und aufgerufen
-      @GemButton(text = "Decrease", leftClick = decreaseAge),
+          // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
+          // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird
+          // in einem handgeschriebenen Teil implementiert und importiert
+          // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "PersonEditGUI.java".
+          // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
+          // deswegen wird eine Methode explizit importiert und aufgerufen
+          @GemButton(text = "Decrease", leftClick = decreaseAge),
 
-      // Button mit Text "Ok" und Navigation auf eine andere Seite
-      // (und die Logik dafür ist generiert und verfügbar)
-      // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
-      // ueberschrieben werden z.B. navigate, copy, ...
-      @GemButton(text = "Ok", leftClick = navigate)
-    ])
-  );
+          // Button mit Text "Ok" und Navigation auf eine andere Seite
+          // (und die Logik dafür ist generiert und verfügbar)
+          // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
+          // ueberschrieben werden z.B. navigate, copy, ...
+          @GemButton(text = "Ok", leftClick = navigate)
+        ])
+      );
+    }
+    else {
+      @GemText(value = "Invalid name");
+    }
+  ]);
 
 }
 

@@ -5,6 +5,10 @@ package stanley.personcreate;
    generated from gui-model PersonEdit.gui
 */
 
+
+import umlp.jsweet.extension.annotation.Component;
+
+@Component
 public class PersonCreate extends PersonCreateTOP {
 
   public PersonCreate() {

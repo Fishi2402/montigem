@@ -1,0 +1,62 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package stanley.personchildrenedit;
+
+import hardy.Person;
+import hardy.PersonErrorCollector;
+import hardy.PersonErrorObserver;
+import umlp.backendrte.common.GemList;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class PersonChildrenEditN implements PersonErrorObserver {
+
+  protected Person p;
+
+  // map from person gemId to error message
+  protected Map<Long, String> gemNumberInputComp1ValueOfComp0Error = new HashMap<>();
+
+  protected PersonChildrenEditN(Person p) {
+    this.p = p;
+    PersonErrorCollector.addErrorObserver(this);
+    init();
+  }
+
+  public void init() {
+  }
+
+  // returns GemList because p.children - domain assoc
+  // treat @iterate(child: p.children) { ... } like @Iterate(iterable = p.children);
+  // name: get + comp_name + id + attr_name
+  // i.e.: get + Iterate + Comp0 + It
+  public GemList<Person> getIterateComp0It() {
+    return p.getChildrenGemList();
+  }
+
+  // name: get + comp_name + id + attr_name + "Of" + id_iterate
+  // i.e.: get + GemNumberInput + Comp1 + Value + Of + Comp0
+  public int getGemNumberInputComp1ValueOfComp0(int idx) {
+    // should be try catch eventually?
+    return getIterateComp0It().get(idx).getAge();
+  }
+
+  public void setGemNumberInputComp1ValueOfComp0(int value, int idx) {
+    // should be try catch eventually?
+    getIterateComp0It().get(idx).setAge(value);
+  }
+
+  public void notifyAgeInvalid(Person p, String msg) {
+    gemNumberInputComp1ValueOfComp0Error.put(p.getGemId(), msg);
+  }
+
+  public String getGemNumberInputComp1ValueOfComp0Error(long gemId) {
+    if (this.gemNumberInputComp1ValueOfComp0Error.containsKey(gemId)) {
+      return this.gemNumberInputComp1ValueOfComp0Error.get(gemId);
+    }
+    return "";
+  }
+
+}

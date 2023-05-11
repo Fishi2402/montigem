@@ -32,5 +32,10 @@
     "include": [
       "**.CommandResult.asSimpleResult()"
     ]
+  },
+  "@Replace('return <ListResult<T, Array<T>>><unknown>this;')": {
+    "include": [
+      "**.CommandResult.asListResult()"
+    ]
   }
 }

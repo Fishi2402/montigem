@@ -1,11 +1,11 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# **Core Requirements** Design Entscheidungen Applikationskern 
+# **Core Requirements** Design Entscheidungen Applikationskern
 
 Dieses Beispiel beinhaltet eine Reihe von Design Entscheidungen
 für den Appliaktionskern (Serverseitig) incl. Persistenz,
 Rechte, und Kommunikation (z.B. zur GUI),
 die hier dokumentiert werden und damit das README.md ergänzen.
-Als durchgängiges Beispiel wird das 
+Als durchgängiges Beispiel wird das
 [Flensburg.umlp](./models/Flensburg.umlp) Modell verwendet.
 
 ```
@@ -52,9 +52,9 @@ umlp Flensburg {
       * Beispiel:  `add` und `remove` Methoden für Collections
   * Weitere Modifier, wie `derived` (`\`) werden ebenfalls berücksichtigt
     * `clubname` ist beispielsweise als `derived` markiert, wodurch **kein** setter generiert wird, sondern nur ein getter, welcher `abstract` ist (also keinen Methodenrumpf implementiert) und manuell erweitert werden muss
-  * Zur Validierung der gesetzten Variablen, werden entsprechende check-Methoden bereitgestellt 
+  * Zur Validierung der gesetzten Variablen, werden entsprechende check-Methoden bereitgestellt
     * z.B. beim builden eines Objektes relevant (keine `null`-Werte erlaubt)
-    * Beispiel: für `nickname` wird eine Methode `checkNickname()` generiert, welche einen boolschen Wert zurückgibt, gemäß der Information, ob der Wert der Variable adäquat gesetzt wurde. 
+    * Beispiel: für `nickname` wird eine Methode `checkNickname()` generiert, welche einen boolschen Wert zurückgibt, gemäß der Information, ob der Wert der Variable adäquat gesetzt wurde.
     * Neben dem boolschen Rückgabewert, wird bei fehlergeschlagener Überprüfung zusätzlich ein Fehler geloggt.
 * Beschluss: `init`-Methoden werden nicht mehr benötigt da Konstrukt aus Zeiten, als die Builder noch nicht die Domänenklassen erweitert haben
 
@@ -73,7 +73,7 @@ umlp Flensburg {
     * Beispiel: `getOwns(int i)` und `addOwns()` für das Attribut die `owns` Beziehung zwischen `Person` und `Car`
     * Bei optionalen oder listenwertigen Attributen werden entsprechend Methoden generiert, welche der API von `java.util.Optional` bzw. `java.util.List` entsprechen
 * Für bi-direktionale Assoziationen wird entsprechend in beiden Klassen eine member-Variable angelegt
-  * Beispiel `association visits [*] Person (visitor) <-> (visited) Address [*];` 
+  * Beispiel `association visits [*] Person (visitor) <-> (visited) Address [*];`
   * Da die bi-direktionale Verbindung einen Zusammenhang zwischen den gespeicherten Werten modelliert, müssen diese auch gemeinsam behandelt (z.B. hinzugefügt oder entfernt) werden
   * wird im Beispiel ein Objekt vom Type `Address` der `Person` hinzugefügt, so muss umgekehrt auch das entsprechende Objekt der `Person` für `Address` bekannt gemacht werden
   * Dafür müssen sich die Zugriffsmethoden sich gegenseitig aufrufen können (z.B. `addVisited` der Klasse `Person` muss der `visitor` Liste von `Address` die aktuelle Instanz mitteilen)
@@ -145,10 +145,10 @@ TODO
 
 ### Datenbank
 
-* Als Datenbankanbindung gibt es zurzeit eine Umsetzung für relationale Datenbanken, umgesetzt mit JDBC. 
+* Als Datenbankanbindung gibt es zurzeit eine Umsetzung für relationale Datenbanken, umgesetzt mit JDBC.
 
 
-* Die Datenbank wird ueber die `database.properties` konfiguriert, welche vom DatabaseAccessManager beim Initialisieren 
+* Die Datenbank wird ueber die `database.properties` konfiguriert, welche vom DatabaseAccessManager beim Initialisieren
   der FlensburgManagerImpl eingelesen wird.
 
 * Die konkrete Datenbank in `corerequirements` ist die Postgres Datenbank.
@@ -164,6 +164,8 @@ TODO
 #### SQL Schema
 * Für jede Domainenklasse gibt es eine Tabelle.
 * Jedes Attribut mit einem simplen Typ(Primitive Typen und String) wird zu einer Spalte
+* Jede Tabelle enthält alle Attribute in der Vererbungshierarchie.
+  * Das normale Zugriffsmuster lädt alle Attribute eines Objekts, daher verhindert dieses Design häufig auftretende und aufwändige Joins
 * Um neue simple Typen hinzuzufügen muss der Template-Pfad (CLI: `--templatePath`, Gradle: `tmplDir`) Templates mit dem Namen `umlp.dao.get.<x>` und `umlp.dao.set.<x>` enthalten
   * Wobei `x` der qualifizierte Name der Klasse mit `.` durch `_` ersetzt ist.
   * `java.time.LocalDate` benötigt also `umlp/dao/get/java_time_LocalDate.ftl` und `umlp/dao/set/java_time_LocalDate.ftl`
@@ -172,7 +174,7 @@ TODO
   * Dies kann im Hooktemplate `umlp.generator.hook.BeforeTransform` mit `${schemaGenerator.addClassToSQLTypeMapping("java.time.LocalDate", "DATE")}` getan werden
   * Beispiel auch unter `examples/mediahub/src/templates`
 * Jede Liste von simplen Typen wird zu einer weiteren Tabelle mit zwei Spalten: `id` des Parent-Objekts und Wert `value`.
-  * TODO: Dritte Spalte für Sortierung? 
+  * TODO: Dritte Spalte für Sortierung?
   * TODO: Optionals mit simplem Typen
 * Assoziationen einer Domainenklasse mit simplen Typen werden wie Listen von simplen Typen behandelt
 * Jede Assoziation mit zwei Domainenklassen wird zu einer weiteren Tabelle, welche zwei Spalten enthält: Eine pro `id`
@@ -185,32 +187,32 @@ TODO
 
 ### Nicht-persistierte Attribute
 
-* Annahme: Wir sprechen über Objekt `Person p` mit Attribut `/ String bla` 
+* Annahme: Wir sprechen über Objekt `Person p` mit Attribut `/ String bla`
 * `bla` wird nicht in der DB gespeichert
 * Es wird nur eine get-Funktion(signatur) `getBla()` generiert und erwartet,
   dass Klasse `Person` mit TOP realisiert wird.
-  
+
 * Die Berechnung kann auf drei Arten stattfinden:
   1. Jedes Mal neu, wenn `getBla()` aufgerufen wird
   2. Die Berechnung kann in einem internen Attribut gespeichert sein (und damit veralten).
      Das ist aber eine Option (der manuellen Implementierung)
-  3. Ändert sich der Wert von `bla`, so werden Observer informiert. 
-  4. Hängt die Berechnung von `bla` 
-     von Werten anderer Objekte ab und soll aktualisiert 
+  3. Ändert sich der Wert von `bla`, so werden Observer informiert.
+  4. Hängt die Berechnung von `bla`
+     von Werten anderer Objekte ab und soll aktualisiert
      werden, so kann sich das aktuelle Objekt `p` als Observer an die anderen Objekte
      einklinken.
      Das ist insbesondere sinnvoll, wenn `p` selbst Observierbar ist.
   5. Ist dieses Aktualisierung rechenintensiv, dann muss `bla` nicht synchronisiert werden,
      sondern kann auf `NOT_Loaded` gestellt werden.
   6. Lokale Berechnung möglich: Berechnungen von `bar` kann in C und S separat stattfinden,
-  7. Zentrale Berechnung: nur in Server wird gerechnet, die Ergebnisse werden 
-     zum Client synchronisiert 
+  7. Zentrale Berechnung: nur in Server wird gerechnet, die Ergebnisse werden
+     zum Client synchronisiert
 
 ### Nicht-persistierte Klassen (Rechnungsobjekte)
 
 * Dies sind typischerweise Daten, die im Server existieren und
   deren Attribute weitgehend berechnet werden.
-* zum Teil sind diese auch in den Clients relevant, und werden 
+* zum Teil sind diese auch in den Clients relevant, und werden
   bei der Kommunikation Server/Client wie alle anderen objekte auch behandelt
 * Rechnungsobjekte haben wohl keine gemId.
 * Diese Daten müssen immer im Kontext eines Objektes der Datenbank oder einer ganzen
@@ -219,13 +221,13 @@ TODO
 
 ## Commands
 
-* Commands haben die Aufgabe Änderungen an Datenobjekten (auch nicht 
+* Commands haben die Aufgabe Änderungen an Datenobjekten (auch nicht
   persistierten) zwischen C/S zu transportieren
 * Wir nutzen Commands, weil in kollaborativen Arbeitsumgebungen es sich gezeigt
   hat, dass parallele ausgeführte Änderungen dann zu wesenlich weniger Konflikten
   führen (Case: Google)
 * Rechte zum Ändern werden ebenfalls per Commands geklärt
-* Kommandos regeln das interaktive do/undo/redo einzelner Nutzer im Bereich der 
+* Kommandos regeln das interaktive do/undo/redo einzelner Nutzer im Bereich der
   GUI-Clients (mit Impact zum Server)
 
 * Kommandos existieren auf mehreren Ebenen:
@@ -235,27 +237,27 @@ TODO
 
 * Das Lesen eines Objektes oder einer Gruppe von Objekten wird
   über Requests geregelt, welche von Commands erben
-  
-* Kommandos werden vom Client zum Server gesandt. Eine 
-  Aktualisierungssendung vom Client zu den Clients kann/sollte 
-  anders aussehen. (TODO) 
+
+* Kommandos werden vom Client zum Server gesandt. Eine
+  Aktualisierungssendung vom Client zu den Clients kann/sollte
+  anders aussehen. (TODO)
   * In der aktuellen Implementierung werden Kommandos vom Client an den Server gesandt,
     dort verarbeitet und zurück an die anderen Clients gesendet
 
-* Konkretes Beispiel `Person` hat diese vollständig generierbaren Kommandos 
-  * `Person_create(...)` 
+* Konkretes Beispiel `Person` hat diese vollständig generierbaren Kommandos
+  * `Person_create(...)`
   * `Person_delete(long gemId)`
   * `Person_setAge(long gemId, int age)`
   * `Person_setNickname(long gemId, String nickname)`
-  * `Person_addCar(long gemIdPerson, long gemIdCar)` ??? 
-  * `Person__...__Car(long gemIdPerson ... )` etc...? 
+  * `Person_addCar(long gemIdPerson, long gemIdCar)` ???
+  * `Person__...__Car(long gemIdPerson ... )` etc...?
 
 * Ein `Person_update` existiert nicht, weil dies ja alle Attribute updaten müsste
 
-* Kommandos, welche zusammen verarbeitet werden sollen 
+* Kommandos, welche zusammen verarbeitet werden sollen
   (z.B. um invalide Zwischenstände zu überspringen)
   werden in Aggregate-Kommandos gesammelt versandt. (TODO)
-  
+
 ## Kommando-Infrastruktur
 
 ### Server-seitige Kommando-Infrastruktur
@@ -268,23 +270,23 @@ TODO
 (i.W. keine Callbacks, Promises, keine Results/Responses, kein GetAllCommand)
 
 AHe, bitte Diskutieren:
-* Wird im Frontend ein Attribut geändert, wie z.B. `age` einer `Person`, so 
+* Wird im Frontend ein Attribut geändert, wie z.B. `age` einer `Person`, so
   wird die Änderung automatisch mit dem Command `Person_setAge` mit dem Backend
   synchronisiert.
-* Die entsprechende Methode `Person#setAge` muss blockieren, bis die 
-  Statusmeldung des Backends zurückkommt. Ansonsten wird im Fehlerfall 
+* Die entsprechende Methode `Person#setAge` muss blockieren, bis die
+  Statusmeldung des Backends zurückkommt. Ansonsten wird im Fehlerfall
   im Frontend mit falschen Daten weitergerechnet.
-* Dies könnte zu einer schlechten Nutzererfahrung führen, da die GUI 
+* Dies könnte zu einer schlechten Nutzererfahrung führen, da die GUI
   unresponsive wird, solange die Methode blockt
-  * Dies ist der Typescript/Javascript Verarbeitung via Event-Loop geschuldet, 
-    bei der es nur einen Thread gibt. Blockiert eine Methode diesen Thread, 
+  * Dies ist der Typescript/Javascript Verarbeitung via Event-Loop geschuldet,
+    bei der es nur einen Thread gibt. Blockiert eine Methode diesen Thread,
     so kann die Website nicht mehr reagieren.
-  * Abhilfe können Promises, async/await, oder Webworker schaffen. Diese 
-    könnten aber zu einem abweichenden Interface des `FlensburgManager` im 
-    Frontend führen. 
+  * Abhilfe können Promises, async/await, oder Webworker schaffen. Diese
+    könnten aber zu einem abweichenden Interface des `FlensburgManager` im
+    Frontend führen.
 
 
-**TODO**  
+**TODO**
 MH zu diskutieren!
 * In Javascript gibt es keine blockierenden Funktionen, niemals.
 * Der Manager muss nun auch `Promises` zurückgeben, was das Interface
@@ -304,13 +306,13 @@ sequenceDiagram
     participant UndoRedo
     participant UndoStack
     participant RedoStack
-    activate Command  
+    activate Command
     Command->>+UndoRedo: insertInUndoReDo()
     activate Command
     activate UndoRedo
     UndoRedo->>+UndoStack: push()
-    UndoStack->>-UndoRedo: 
-    UndoRedo->>-Command: 
+    UndoStack->>-UndoRedo:
+    UndoRedo->>-Command:
     deactivate Command
     Command->>Command: doRun()
     deactivate Command
@@ -318,13 +320,13 @@ sequenceDiagram
     UndoCommand->>+UndoRedo: undoLastCommand()
     activate UndoCommand
     UndoRedo->>+UndoStack: pop()
-    UndoStack-->>-UndoRedo: 
-    UndoRedo->>+Command: 
+    UndoStack-->>-UndoRedo:
+    UndoRedo->>+Command:
     Command->>Command: undoRun()
     Command->>+RedoStack: push()
-    RedoStack-->>-Command: 
-    Command-->>-UndoRedo: 
-    UndoRedo-->>-UndoCommand: 
+    RedoStack-->>-Command:
+    Command-->>-UndoRedo:
+    UndoRedo-->>-UndoCommand:
     deactivate UndoCommand
 ```
 
@@ -363,45 +365,45 @@ sequenceDiagram
 
 ## Rechte / Rollen-Konzept
 
-### Rechte (Permissions) 
+### Rechte (Permissions)
 * Permissions definieren in den Sicherheitsrichtlinen der Anwendung die Aktion die durchgeführt werden soll.
-* Die Grundlegenden Permissions sind `create`, `read`, `update` und `delete`. Je nach Anwendungsfall macht es hier Sinn 
+* Die Grundlegenden Permissions sind `create`, `read`, `update` und `delete`. Je nach Anwendungsfall macht es hier Sinn
 die Rechte zu präzisieren z.B.: `sendPersonToCity` statt einem `update` auf die Person.
-* Ein Recht hat immer einen Bezug zu einer Domäne, bzw. Kategorie von Objekten und kann ein bestimmtes Objekt 
+* Ein Recht hat immer einen Bezug zu einer Domäne, bzw. Kategorie von Objekten und kann ein bestimmtes Objekt
 referenzieren: <br>
-   * `domain : permission : instance` Schema nach dem Permissions strukturiert sind. 
+   * `domain : permission : instance` Schema nach dem Permissions strukturiert sind.
    * `person : update : 32` Permission Objekte die zu Kategorie 'Person' gehören mit der id 32 zu updaten
    * `auto : delete : *` Permission beliebige Objekte der Kategorie 'Auto' zu löschen.
-* Domänen werden verwendet damit ein Recht nicht an einen Typ gebunden ist, sondern eher an eine 
-  Gruppe von Objekten: Ein Konto mit seinen Budgets und Buchungen kann so mit `konto : update : *` bearbeitet 
-  werden, ohne dass drei Permissions vergeben werden müssen. 
-* Generierte Datenklassen implementieren hierzu eine Methode, die die Domäne für die Permission zurückgibt: 
+* Domänen werden verwendet damit ein Recht nicht an einen Typ gebunden ist, sondern eher an eine
+  Gruppe von Objekten: Ein Konto mit seinen Budgets und Buchungen kann so mit `konto : update : *` bearbeitet
+  werden, ohne dass drei Permissions vergeben werden müssen.
+* Generierte Datenklassen implementieren hierzu eine Methode, die die Domäne für die Permission zurückgibt:
   `getPermissionDomain()` und welche überschrieben wird um hier Kategorien zu bilden.
 
 ### Rollen (Roles)
-* Eine Rolle kann mehrere Rechte zusammen fassen: 
+* Eine Rolle kann mehrere Rechte zusammen fassen:
   * `Roles.KONTOBEARBEITER`:
     * `konto : read : *`
     * `konto : update : *`
     * `konto : create : *`
     * `konto : delete : *`
 * Einem Nutzer werden Rollen zugewiesen
-* Beim Überprüfen der Permission wird jedoch geprüft ob der Nutzer (durch seine Rollen) das notwendige Recht hat. 
+* Beim Überprüfen der Permission wird jedoch geprüft ob der Nutzer (durch seine Rollen) das notwendige Recht hat.
 
 ### Konzept
 
 * Lesen wird auf Objektebene erlaubt (aber nicht auf einzelnen Attributen)
 * Create / Delete wird ebenfalls auf Objektebene geregelt
 * Die Persistierung der vergebenen Rechte und Rollen findet wie bei allen
-  anderen Objektdaten statt. Konsequenz: Neben den Klassen aus dem 
+  anderen Objektdaten statt. Konsequenz: Neben den Klassen aus dem
   Applikations-CD gibt es Klassen und Assoziationen zu den Rechten, die in
   der Generierungspipeline dazu gemischt werden:
   * `Permission` einzelne Rechte (`create`,`update`....)
   * `PermissionDomains` domänen/ kategorien innerhalb der datenklassen: (`personal`, `finanzen`...)
   * `Roles` Rollen die den Nutzern zugeordnet werden können (`admin`, `personalBearbeiter`...)
   * `RoleAssignments` Verknüpfung von Nutzer zu Rollen
- 
-  
+
+
 TODO
 LN zu diskutieren
 * Ändern wird ggf. auf einzelnen Attributen erlaubt (?)
@@ -416,12 +418,12 @@ LN zu diskutieren
 * Konfigurationsklassen werden vom Server wie normale Klassen behandelt.
   Konsequenz: Es gibt Klassen und Assoziationen zur Konfiguration, die in
   der Generierungspipeline dazu gemischt werden.
-  
+
 TODO
 
 ## Initiale Konfiguration
 
-* Die initiale Konfiguration wird entweder zentral an einem Ort 
+* Die initiale Konfiguration wird entweder zentral an einem Ort
   (oder in einer Datei) gespeichert oder getrennt (zentral) für Server und Client.
 * Aktuelle Konfiguration ist unter `src/main/resources` zu finden.
 
@@ -433,15 +435,15 @@ TODO
   * Der generierte `FlensburgDummyProvider` enthält `invent` methoden für jede Klasse des CD. Jede dieser Methoden ruft eine `invent` Methode für jedes Feld auf.
     * Erweiterung: Assoziationen mit korrekten Kardinalitäten erfinden
   * Standardmäßig Felder mit zufälligen(aber reproduzierbaren Daten gefüllt).
-    * int: 0 - 1000, Änderbar über die Attribute `minInt` und `maxInt`.  
-    * String: Länge 10 bis 100, Zeichen aus `a-zA-Z0-9' '`, Änderbar über die Attribute `stringMinLength`, `stringMaxLength`, und `possibleCharacters` 
+    * int: 0 - 1000, Änderbar über die Attribute `minInt` und `maxInt`.
+    * String: Länge 10 bis 100, Zeichen aus `a-zA-Z0-9' '`, Änderbar über die Attribute `stringMinLength`, `stringMaxLength`, und `possibleCharacters`
 * HWC-Ergänzungen zu den Dummies sind vorgesehen.
   * Alle `invent` Methoden können via TOP überschrieben werden. Damit ist es z.B. möglich eine Liste an vorgegebenen Namen für Person#nickname zu benutzten, indem `inventPersonNickname` überschrieben wird.
 
 
 ## Fehlerbehandlung Strategie
 
-TODO: wie gehen wir mit unerwarteten Systemfehlern (= Programmierfehler 
+TODO: wie gehen wir mit unerwarteten Systemfehlern (= Programmierfehler
 oder Technikfehler) um vs. Nutzerfehler?
 
 vgl auch Log.error, Exceptions, Warnungen, ...

@@ -3,7 +3,11 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -78,24 +82,28 @@ public class ManagerDecorator extends AbstractDecorator {
     } else {
       getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, false);
-      getCD4C().addMethod(managerClass, "umlp.manager.Builder", name, true);
-      getCD4C().addMethod(managerClass, "umlp.manager.Builder", name, false);
-      getCD4C().addMethod(managerClass, "umlp.manager.BuilderParam", name, true);
-      getCD4C().addMethod(managerClass, "umlp.manager.BuilderParam", name, false);
-      getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name, true);
-      getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name, false);
       getCD4C().addMethod(managerClass, "umlp.manager.Opt", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.Opt", name, false);
       getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name, false);
-      getCD4C().addMethod(managerClass, "umlp.manager.Add", name, true);
-      getCD4C().addMethod(managerClass, "umlp.manager.Add", name, false);
       getCD4C().addMethod(managerClass, "umlp.manager.GetList", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.GetList", name, false);
-      getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, true);
-      getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, false);
       getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, false);
+
+      if(!domainClass.getModifier().isAbstract()) {
+        getCD4C().addMethod(managerClass, "umlp.manager.Builder", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.Builder", name, false);
+        getCD4C().addMethod(managerClass, "umlp.manager.BuilderParam", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.BuilderParam", name, false);
+        getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name, false);
+        getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, false);
+        getCD4C().addMethod(managerClass, "umlp.manager.Add", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.Add", name, false);
+      }
+
       // Associations
       CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
         String type = a.getSymbol().getType().print();

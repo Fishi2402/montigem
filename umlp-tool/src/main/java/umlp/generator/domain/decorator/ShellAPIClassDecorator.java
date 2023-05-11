@@ -54,7 +54,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
         .build();
     glex.replaceTemplate("cd2java.Annotations", shellapiClass, new StringHookPoint("@ShellComponent"));
 
-    addBasicImports(origCD, shellapiClass, originalClassName);
+    addBasicImports(cdName, origCD, shellapiClass, originalClassName);
     List<ASTCDAttribute> domainAttributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
         .filter(attr -> !attr.getModifier().isDerived())
         .collect(Collectors.toList());
@@ -62,34 +62,34 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
         .filter(a -> !a.getModifier().isDerived())
         .collect(Collectors.toList());
 
-    addCreateMethod(originalClassName, shellapiClass, domainAttributes, assocs);
-    addGetMethod(originalClassName, shellapiClass);
-    addDeleteMethod(originalClassName, shellapiClass);
+    addCreateMethod(cdName, originalClassName, shellapiClass, domainAttributes, assocs);
+    addGetMethod(cdName, originalClassName, shellapiClass);
+    addDeleteMethod(cdName, originalClassName, shellapiClass);
     domainAttributes.stream().filter(a -> !GenService.isList(a)).forEach(a -> {
-      addAttributeImport(origCD, shellapiClass, a.getName(), originalClassName, "set");
-      addAttributeSetMethod(originalClassName, shellapiClass, a);
+      addAttributeSetMethod(cdName, originalClassName, shellapiClass, a);
     });
     domainAttributes.stream().filter(a -> GenService.isList(a)).forEach(a -> {
-      addAttributeImport(origCD, shellapiClass, a.getName(), originalClassName, "add");
-      addAttributeImport(origCD, shellapiClass, a.getName(), originalClassName, "remove");
-      addAttributeAddMethod(originalClassName, shellapiClass, a);
-      addAttributeRemoveMethod(originalClassName, shellapiClass, a);
+      // TODO Not yet supported
+//      addAttributeAddMethod(cdName, originalClassName, shellapiClass, a);
+//      addAttributeRemoveMethod(cdName, originalClassName, shellapiClass, a);
     });
     assocs.stream().filter(a -> !GenService.isList(a) && !GenService.isBidirectional(a)).forEach(a -> {
-      addAttributeImport(origCD, shellapiClass, a.getName(), originalClassName, "set");
-      addAssociationSetMethod(originalClassName, shellapiClass, a);
+      addAssocImport(origCD, shellapiClass, a);
+      addAssociationSetMethod(cdName, originalClassName, shellapiClass, a);
     });
     assocs.stream().filter(a -> GenService.isList(a) && !GenService.isBidirectional(a)).forEach(a -> {
-      addAttributeImport(origCD, shellapiClass, a.getName(), originalClassName, "add");
-      addAttributeImport(origCD, shellapiClass, a.getName(), originalClassName, "remove");
-      addAssociationAddMethod(originalClassName, shellapiClass, a);
-      addAssociationRemoveMethod(originalClassName, shellapiClass, a);
+      addAssocImport(origCD, shellapiClass, a);
+      addAssociationAddMethod(cdName, originalClassName, shellapiClass, a);
+      addAssociationRemoveMethod(cdName, originalClassName, shellapiClass, a);
+    });
+    CDSymbolTables.getAttributesInHierarchy(cdClass).stream().forEach(attribute -> {
+      addAttributeGetMethod(cdName, originalClassName, shellapiClass, attribute);
     });
 
     return shellapiClass;
   }
 
-  private void addCreateMethod(String originalClassName, ASTCDClass api,
+  private void addCreateMethod(String cdName, String originalClassName, ASTCDClass api,
       List<ASTCDAttribute> domainAttributes, List<ASTCDAssocSide> assocs) {
     List<String> parameters = new ArrayList<>();
     ArrayList<String> annotations = new ArrayList<>();
@@ -118,7 +118,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
         .collect(Collectors.toMap(a -> a.getName(), a -> a.getMCType().printType().replaceAll(".*[.]([^.]*)", "$1") + "DeSer"));
 
     List<String> assocNames = assocs.stream().filter(a -> !GenService.isList(a) && !GenService.isOptional(a)).map(a -> a.getName()).collect(Collectors.toList());
-    ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Create",
+    ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Create", cdName,
         originalClassName, parameters.stream().collect(Collectors.joining(", ")), domainAttributNames, deserAttributeNamesAndDeSer ,assocNames);
     String annotation = String.format("@ShellMethod(key = \"%s-create\", value = \"Create %s\") @ShellMethodAvailability(\"isConnected\")",
         StringTransformations.uncapitalize(originalClassName), originalClassName);
@@ -137,17 +137,16 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     return supportedDesers.contains(type);
   }
 
-  private void addGetMethod(String originalClassName, ASTCDClass api) {
-    ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Get",
-        originalClassName);
+  private void addGetMethod(String cdName, String originalClassName, ASTCDClass api) {
+    ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Get", cdName, originalClassName);
     String annotation = String.format("@ShellMethod(key = \"%s-get\", value = \"Get %s\") @ShellMethodAvailability(\"isConnected\")",
         StringTransformations.uncapitalize(originalClassName), originalClassName);
     glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint(annotation));
     addAnnotationToParameters(m, "@ShellOption(value = \"--id\")");
   }
 
-  private void addDeleteMethod(String originalClassName, ASTCDClass api) {
-    ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Delete",
+  private void addDeleteMethod(String cdName, String originalClassName, ASTCDClass api) {
+    ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Delete", cdName,
         originalClassName);
     String annotation = String.format("@ShellMethod(key = \"%s-delete\", value = \"Delete %s\") @ShellMethodAvailability(\"isConnected\")",
         StringTransformations.uncapitalize(originalClassName), originalClassName);
@@ -155,35 +154,36 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     addAnnotationToParameters(m, "@ShellOption(value = \"--id\")");
   }
 
-  protected void addAttributeSetMethod(String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
-    addAttributeMethod(attr, api, "umlp.shellapi.Attribute_Set", originalClassName,
+  protected void addAttributeSetMethod(String cdName, String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
+    addAttributeMethod(attr, api, "umlp.shellapi.Attribute_Set", cdName, originalClassName,
         "@ShellMethod(key = \"%s-set-%s\", value = \"Set %s of %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
-  protected void addAttributeGetMethod(String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
-    ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Attribute_Get",
-        originalClassName, attr.getName());
+  protected void addAttributeGetMethod(String cdName, String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
+    String getterName = GenService.getGetterName(attr.getName(), attr.getSymbol().getType());
+    ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Attribute_Get", cdName,
+        originalClassName, attr.getName(), attr.getMCType().printType(), GenService.createType(attr).printType(), getterName);
     String annotation = String.format("@ShellMethod(key = \"%s-get-%s\", value = \"Get %s of %s\") @ShellMethodAvailability(\"isConnected\")",
         StringTransformations.uncapitalize(originalClassName), attr.getName(), attr.getName(), originalClassName);
     glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint(annotation));
     addAnnotationToParameters(m, "@ShellOption(value = \"--id\")");
   }
 
-  private void addAttributeAddMethod(String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
-    addAttributeMethod(attr, api, "umlp.shellapi.Attribute_Add", originalClassName,
+  private void addAttributeAddMethod(String cdName, String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
+    addAttributeMethod(attr, api, "umlp.shellapi.Attribute_Add", cdName, originalClassName,
         "@ShellMethod(key = \"%s-add-%s\", value = \"Add %s to %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
-  private void addAttributeRemoveMethod(String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
-    addAttributeMethod(attr, api, "umlp.shellapi.Attribute_Remove", originalClassName,
+  private void addAttributeRemoveMethod(String cdName, String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
+    addAttributeMethod(attr, api, "umlp.shellapi.Attribute_Remove", cdName, originalClassName,
         "@ShellMethod(key = \"%s-remove-%s\", value = \"Remove %s from %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
   private void addAttributeMethod(ASTCDAttribute attr, ASTCDClass api, String originalTemplate,
-      String originalClassName, String methodAnnotation) {
+      String cdName, String originalClassName, String methodAnnotation) {
     String type;
     if (GenService.isList(attr)) {
-      type = attr.getSymbol().getType().printFullName().replace("List<","").replace(">","");
+      type = attr.getMCType().printType();
     } else {
       type = attr.getSymbol().getType().printFullName();
     }
@@ -195,8 +195,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
       template = originalTemplate;
     }
 
-    ASTCDMethodSignature m = getCD4C().addMethod(api, template,
-        originalClassName, attr.getName(), type);
+    ASTCDMethodSignature m = getCD4C().addMethod(api, template, cdName, originalClassName, attr.getName(), type, false);
     String annotation = String.format(methodAnnotation,
         StringTransformations.uncapitalize(originalClassName), attr.getName(), attr.getName(),
         originalClassName);
@@ -207,30 +206,35 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
 
 
 
-  protected void addAssociationSetMethod(String originalClassName, ASTCDClass api, ASTCDAssocSide assoc) {
-    addAssociationMethod(assoc, api, "umlp.shellapi.Attribute_Set", originalClassName,
+  protected void addAssociationSetMethod(String cdName, String originalClassName, ASTCDClass api, ASTCDAssocSide assoc) {
+    addAssociationMethod(assoc, api, "umlp.shellapi.Attribute_Set", cdName, originalClassName,
         "@ShellMethod(key = \"%s-set-%s\", value = \"Set %s of %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
-  private void addAssociationAddMethod(String originalClassName, ASTCDClass api, ASTCDAssocSide assoc) {
-    addAssociationMethod(assoc, api, "umlp.shellapi.Attribute_Add", originalClassName,
+  private void addAssociationAddMethod(String cdName, String originalClassName, ASTCDClass api, ASTCDAssocSide assoc) {
+    addAssociationMethod(assoc, api, "umlp.shellapi.Attribute_Add", cdName, originalClassName,
         "@ShellMethod(key = \"%s-add-%s\", value = \"Add %s to %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
-  private void addAssociationRemoveMethod(String originalClassName, ASTCDClass api, ASTCDAssocSide assoc) {
-    addAssociationMethod(assoc, api, "umlp.shellapi.Attribute_Remove", originalClassName,
+  private void addAssociationRemoveMethod(String cdName, String originalClassName, ASTCDClass api, ASTCDAssocSide assoc) {
+    addAssociationMethod(assoc, api, "umlp.shellapi.Attribute_Remove", cdName, originalClassName,
         "@ShellMethod(key = \"%s-remove-%s\", value = \"Remove %s from %s\") @ShellMethodAvailability(\"isConnected\")");
   }
 
-  private void addAssociationMethod(ASTCDAssocSide assoc, ASTCDClass api, String template,
+  private void addAssociationMethod(ASTCDAssocSide assoc, ASTCDClass api, String template, String cdName,
       String originalClassName, String methodAnnotation) {
     if (GenService.isBidirectional(assoc)) {
       // TODO MH not supported yet
       return;
     }
-    String type = "long";
-    ASTCDMethodSignature m = getCD4C().addMethod(api, template,
-        originalClassName, assoc.getName(), type);
+    String type;
+    if (GenService.isList(assoc)) {
+      type = assoc.getMCQualifiedType().printType();
+    } else {
+      type = assoc.getSymbol().getType().print();
+    }
+    ASTCDMethodSignature m = getCD4C().addMethod(api, template, cdName,
+        originalClassName, assoc.getName(), type, true);
     String annotation = String.format(methodAnnotation,
         StringTransformations.uncapitalize(originalClassName), assoc.getName(), assoc.getName(),
         originalClassName);
@@ -239,23 +243,23 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
         "@ShellOption(value = \"--value\")");
   }
 
-  protected void addBasicImports(ASTCDCompilationUnit origCD, ASTCDType clazz, String baseClassName) {
+  protected void addBasicImports(String cdName, ASTCDCompilationUnit origCD, ASTCDType clazz, String baseClassName) {
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellComponent");
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellMethod");
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellOption");
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellMethodAvailability");
     getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassName);
-    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassName + "Builder");
-    getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE) + "." + baseClassName + "_create");
-    getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE) + "." + baseClassName + "_delete");
-    getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE) + "." + baseClassName + "_get");
+    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + cdName + ManagerDecorator.SUFFIX);
+    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + cdName + BaseClassObjectMapperDecorator.SUFFIX);
+    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassName + DeSerDecorator.SUFFIX);
+    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassName + BuilderDecorator.BUILDER_SUFFIX);
     getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + ".*");
   }
 
-  private void addAttributeImport(ASTCDCompilationUnit origCD, ASTCDType clazz,
-      String attributeName, String baseClassName, String getSet) {
-    getCD4C().addImport(clazz, getPackageName(origCD, COMMAND_PACKAGE) + "." +
-        baseClassName + "_" + getSet + StringTransformations.capitalize(attributeName));
+  private void addAssocImport(ASTCDCompilationUnit origCD, ASTCDClass clazz,
+      ASTCDAssocSide assoc) {
+    String rightType = assoc.getMCQualifiedType().printType();
+    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + rightType);
   }
 
   private void addAnnotationToParameters(ASTCDMethodSignature m, String... annotations) {

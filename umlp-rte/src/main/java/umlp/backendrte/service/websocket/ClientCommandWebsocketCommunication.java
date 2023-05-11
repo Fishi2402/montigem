@@ -3,6 +3,7 @@ package umlp.backendrte.service.websocket;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.MCFatalError;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.WebSocketSession;
@@ -18,7 +19,6 @@ import umlp.backendrte.command.SimpleResult;
 import umlp.backendrte.common.LoadingState;
 import umlp.backendrte.common.Result;
 
-import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.util.ArrayList;
@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -36,24 +38,24 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
   private long maxWaitingTime = 6000; // 6 seconds
   private Optional<Long> participantId = Optional.empty();
   private WebSocketSession session;
-  private CountDownLatch initLatch;
+  private final String uri;
+  private final WebSocketHttpHeaders headers;
   private Map<Long, CommandResult<?>> messages = new HashMap<>();
 
   private List<CommandReceiveObserver> commandObserver = new ArrayList<>();
   private List<CommandResultReceiveObserver> commandResultObserver = new ArrayList<>();
 
-  private final String uri;
-
-  private final WebSocketHttpHeaders headers;
+  ExecutorService executor;
+  private CountDownLatch initLatch;
 
   public ClientCommandWebsocketCommunication(String uri) {
-    this.uri = uri;
-    this.headers = new WebSocketHttpHeaders();
+    this(uri, new WebSocketHttpHeaders());
   }
 
   public ClientCommandWebsocketCommunication(String uri, WebSocketHttpHeaders headers) {
     this.uri = uri;
     this.headers = headers;
+    executor = Executors.newFixedThreadPool(1);
   }
 
   public synchronized <T> CommandResult<T> sendCommandToServerAndReceiveResult(Command<T> command) {
@@ -61,7 +63,12 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
     CommandResult<T> result;
     try {
       String payload = CommandObjectMapper.serializeCommand(command);
-      session.sendMessage(new TextMessage(payload));
+      Log.info(String.format("Sending message to server: %s", payload), this.getClass().getName());
+      boolean sendingSuccessful = WebSocketSessionManager.sendMessage(session, payload);
+      if (!sendingSuccessful) {
+        warnCouldNotReceive(command);
+        return new SimpleResult<>(command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType());
+      }
       synchronized (this) {
         this.wait(maxWaitingTime);
       }
@@ -74,38 +81,42 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
             .getGenericSuperclass()).getActualTypeArguments()[0].getTypeName()
             .equals(response.getTypeParameter())) {
           result = (CommandResult<T>) response;
+          Log.info(String.format("Received answer from server for command with id %s: %s", command.getId(), CommandObjectMapper.serializeResponse(result)), this.getClass().getName());
         }
         else {
+          warnCouldNotReceive(command);
           return new SimpleResult<>(command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType());
         }
       } else {
+        warnCouldNotReceive(command);
         return new SimpleResult<>(command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType());
       }
     }
-    catch (IOException e) {
-      e.printStackTrace();
-      return new SimpleResult<>(command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType());
-    }
     catch (InterruptedException e) {
+      warnCouldNotReceive(command);
       e.printStackTrace();
       return new SimpleResult<>(command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType());
     }
     return result;
   }
 
+  private static <T> void warnCouldNotReceive(Command<T> command) {
+    Log.warn("Could not receive response from server for command id: " + command.getId());
+  }
+
   public Result<Long> init() {
     initLatch = new CountDownLatch(2);
     StandardWebSocketClient webSocketClient = new StandardWebSocketClient();
     try {
-      this.session = webSocketClient.doHandshake(this, headers,
-          URI.create(uri)).get();
+      this.session = WebSocketSessionManager.register(
+          webSocketClient.doHandshake(this, headers, URI.create(uri)).get());
     }
     catch (InterruptedException e) {
-      Log.warn(String.format("Could not establish connection to URI '%s'", uri));
+      Log.warn(String.format("Could not establish a websocket connection to URI '%s'", uri));
       return Result.error();
     }
     catch (ExecutionException e) {
-      Log.warn(String.format("Could not establish connection to URI '%s'", uri));
+      Log.warn(String.format("Could not establish a websocket connection to URI '%s'", uri));
       return Result.error();
     }
 
@@ -172,9 +183,12 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
       }
       else if (commandOptional.isPresent()) {
         //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
-        for (Consumer<Command<Object>> consumer : commandObserver) {
-          consumer.accept(commandOptional.get());
-        }
+        Optional<Command<Object>> finalCommandOptional = commandOptional;
+        executor.submit(() -> {
+          for (Consumer<Command<Object>> consumer : commandObserver) {
+            consumer.accept(finalCommandOptional.get());
+          }
+        });
       }
       else {
         synchronized (this) {
@@ -200,5 +214,18 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
 
   public boolean isOpen() {
     return session.isOpen();
+  }
+
+  @Override
+  public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+    Log.warn(String.format("Websocket connection %s closed with status %s", session.getId(), status.toString()));
+    WebSocketSessionManager.deregister(session);
+    super.afterConnectionClosed(session, status);
+  }
+
+  @Override
+  public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+    Log.warn(String.format("Websocket %s transportation error", session.getId()));
+    super.handleTransportError(session, exception);
   }
 }

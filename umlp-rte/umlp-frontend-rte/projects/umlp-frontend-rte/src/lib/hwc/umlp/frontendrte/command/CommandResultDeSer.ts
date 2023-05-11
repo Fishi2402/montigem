@@ -77,6 +77,6 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
 CommandResultDeSer["__class"] = "umlp.backendrte.command.CommandResultDeSer";
 CommandResultDeSer["__interfaces"] = ["umlp.backendrte.command.JsonDeSer","umlp.backendrte.command.DeSer"];
 
-import {BaseClassObjectMapper} from "@umlp-rte/target/common";
 import {CommandResult, JsonDeSer, StatusResult} from "@umlp-rte/target/command";
+import {BaseClassObjectMapper} from "@umlp-rte/hwc/common";
 

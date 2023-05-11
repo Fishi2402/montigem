@@ -7,11 +7,8 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
-import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.stream.Collectors;
-
-import static umlp.generator.gui.GUIGeneratorUtil.isInputGui;
 
 public class GUI2JavaDecorator extends GUIAbstractDecorator {
 
@@ -20,8 +17,8 @@ public class GUI2JavaDecorator extends GUIAbstractDecorator {
   }
 
   public void transform(ASTGUICompilationUnit guiAst, ASTCDCompilationUnit decoratedAST, GUIComponentsVisitor viewComponents) {
-
-    boolean isInputGui = isInputGui(guiAst, viewComponents.getComponents().stream().filter(GUIGeneratorUtil::isInputComponent).collect(Collectors.toList()));
+    boolean isInputGui = util.isInputGui(guiAst, viewComponents.getComponents().stream()
+        .filter(c -> util.isInputComponent(c)).collect(Collectors.toList()));
 
     DomainRefDecorator domainRefDecorator = new DomainRefDecorator(glex, isInputGui);
     domainRefDecorator.transform(guiAst, decoratedAST);
@@ -29,9 +26,7 @@ public class GUI2JavaDecorator extends GUIAbstractDecorator {
 
     GUI2JavaComponentsDecorator componentsDecorator = new GUI2JavaComponentsDecorator(glex, viewComponents);
     componentsDecorator.transform(guiAst, domainRefDecorator.getDecoratedClass());
-    domainRefDecorator.getCreateInputValueClass().ifPresent(createClass -> componentsDecorator.transform(guiAst, createClass));
     Log.info("After decorator: GUI2JavaComponentsDecorator", GUI2JavaComponentsDecorator.class.getName());
-
   }
 
 }

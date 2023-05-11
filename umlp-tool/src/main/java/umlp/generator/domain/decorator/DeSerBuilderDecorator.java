@@ -32,7 +32,9 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
   public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+    origCD.getCDDefinition().getCDClassesList().stream()
+      .filter(c -> !c.getModifier().isDerived())
+      .filter(c -> !c.getModifier().isAbstract())
       .forEach(c -> astcdPackage.addCDElement(createClass(c, name, origCD)));
   }
 
@@ -82,12 +84,13 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
 
 
     // Imports
-    addImports(deserBuilderClass);
+    addImports(domainClass, deserBuilderClass);
 
     return deserBuilderClass;
   }
 
-  protected void addImports(ASTCDType clazz) {
+  protected void addImports(ASTCDType domainType, ASTCDType clazz) {
+    super.addImports(domainType, clazz);
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
   }
 

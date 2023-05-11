@@ -17,8 +17,8 @@ umlp Flensburg {
 
     class Person extends Human {
         String nickname;
-        
-        // calculated attribute: wird nicht persistiert, 
+
+        // calculated attribute: wird nicht persistiert,
         // deshalb gibt es nur einen getter, der dies berechnet
         / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
     }
@@ -35,14 +35,14 @@ umlp Flensburg {
     association parent [1] Person -> (children) Person [*];
 
     // ---------------------------------------------------------------------------
-    
+
     // folgende Klasse ist nicht(!) zu persistieren und kann zu Berechnungen im
     // Server oder auch zur Anzeige von Daten dienen:
-    
-    // todo: Entscheidung zu: Markierung für nicht-speicherung bei Klassen 
+
+    // todo: Entscheidung zu: Markierung für nicht-speicherung bei Klassen
     // und Assoziaionen?
     // Optionen: Ablage in extra Modell? Oder Stereotyp? Oder Tagging --
-    // Wir nehmen hier jetzt erstmal die einfachste Lösung: 
+    // Wir nehmen hier jetzt erstmal die einfachste Lösung:
     // Stereotyp <calculated> oder geht auch "/"?
     / class CityInfo {
         int numberOfCities;

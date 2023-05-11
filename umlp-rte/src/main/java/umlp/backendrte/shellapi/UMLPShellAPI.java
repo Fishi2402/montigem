@@ -5,10 +5,14 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.MCFatalError;
 import org.springframework.shell.Availability;
 import org.springframework.web.socket.WebSocketHttpHeaders;
+import umlp.backendrte.command.ClientCommandManager;
 import umlp.backendrte.command.Command;
+import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandObjectMapper;
 import umlp.backendrte.command.CommandResult;
-import umlp.backendrte.common.Result;
+import umlp.backendrte.common.BaseClassObjectMapper;
+import umlp.backendrte.common.GemBuildable;
+import umlp.backendrte.common.GemIdentifiable;
 import umlp.backendrte.service.websocket.ClientCommandWebsocketCommunication;
 
 import java.nio.charset.StandardCharsets;
@@ -16,25 +20,8 @@ import java.util.Base64;
 
 public class UMLPShellAPI {
 
-  private static final String UMLP_SHELL_API = "UMLP Shell API";
+  public static final String UMLP_SHELL_API = "UMLP Shell API";
   protected static ClientCommandWebsocketCommunication clientCommandWebsocketCommunication;
-  protected static long participantId = 0l;
-
-  protected final static CommandResult sendCommandToServerAndReceiveResult(Command command) {
-    command.setParticipantId(participantId);
-    Log.info("Send command to server: " + CommandObjectMapper.serializeCommand(command),
-        UMLP_SHELL_API);
-    CommandResult commandResult =
-        clientCommandWebsocketCommunication.sendCommandToServerAndReceiveResult(command);
-    try {
-      Log.info(
-          "Received response from server: " + CommandObjectMapper.serializeResponse(commandResult),
-          UMLP_SHELL_API);
-    } catch (MCFatalError ex) {
-      Log.info("Error while executing the command: " + ex.getMessage(), UMLP_SHELL_API);
-    }
-    return commandResult;
-  }
 
   protected void doInit(String scheme, String url, String port, String applicationName, String apiName, String user, String password) {
     WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
@@ -43,18 +30,19 @@ public class UMLPShellAPI {
     }
 
     String uri = buildUri(scheme, url, port, applicationName, apiName);
-    clientCommandWebsocketCommunication = new ClientCommandWebsocketCommunication(uri, headers).onCommandReceived(cmd -> {
+    clientCommandWebsocketCommunication = new ClientCommandWebsocketCommunication(uri, headers)
+        .onCommandReceived(cmd -> {
       String msg = String.format("Received sync command '%s' from server: %s", cmd.getCommandType(), CommandObjectMapper.serializeCommand(cmd));
       Log.info(msg, UMLP_SHELL_API);
-        });
-    Result<Long> init = clientCommandWebsocketCommunication.init();
-    if (init.wasSuccessful()) {
-      participantId = init.getValue();
-      Log.info(String.format("Websocket connection to '%s' was successfull. Participant ID: %s",
-              uri, participantId), UMLP_SHELL_API);
+    });
+    ClientCommandManager commandManager = new ClientCommandManager(clientCommandWebsocketCommunication);
+    if (commandManager.isInitSuccessFul()) {
+      ClientCommandManager.initMe(commandManager);
+      Log.info(String.format("Websocket connection to server with uri '%s' was successfull. Participant ID: %s",
+          uri, CommandManager.getParticipantId()), UMLP_SHELL_API);
     } else {
-      Log.info(String.format("Could not establish a websocket connection to '%s', please check your parameters",
-              uri), UMLP_SHELL_API);
+      Log.info(String.format("Could not establish a websocket connection to server with uri '%s', please check your parameters",
+          uri), UMLP_SHELL_API);
     }
   }
 

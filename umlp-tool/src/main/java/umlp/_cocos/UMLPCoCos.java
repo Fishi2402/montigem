@@ -3,6 +3,7 @@
 package umlp._cocos;
 
 import de.monticore.cd4analysis.cocos.CD4AnalysisCoCosDelegator;
+import de.monticore.cd4analysis.cocos.ebnf.CDAssociationSourceNotEnum;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 
 /**
@@ -23,5 +24,7 @@ public class UMLPCoCos {
 
   public static void addAllCDCoCos(UMLPCoCoChecker checker){
     checker.addChecker(new CD4AnalysisCoCosDelegator().getCheckerForAllCoCos());
+    // CoCos for generation
+    checker.addCoCo(new CDAssociationSourceNotEnum());
   }
 }

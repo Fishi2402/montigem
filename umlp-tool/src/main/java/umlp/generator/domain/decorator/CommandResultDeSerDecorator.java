@@ -43,6 +43,7 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
     String packageName = getPackageName(origCD, DEFAULT_PACKAGE);
     List<String> classNames = origCD.getCDDefinition().getCDClassesList().stream()
             .filter(c -> !c.getModifier().isDerived())
+            .filter(c -> !c.getModifier().isAbstract())
             .map(c -> Joiners.DOT.join(packageName, c.getName())).collect(Collectors.toList());
     // TODO AHe: DeSer load state, error checks for empty etc
     getCD4C().addMethod(cmdResultDeSerClass, "umlp.commandresultdeser.BuildJson", classNames);

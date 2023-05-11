@@ -128,10 +128,10 @@ public class ContainerFileExtractor extends BaseExtractor {
   }
 
   private FileArtifact createFullyConnnectedFileArtifact(RootAwareFile file) {
-    FileArtifact fileArtifactObject = createFileArtifactObject(file,
+    FileArtifactBuilder fileArtifactBuilderObject = createFileArtifactObject(file,
         ExtractorUtils.removeRootPathFromAbsolutePath(file.getAbsolutePath(), getRootOfPath(file.getAbsolutePath())));
-    linkArtifactWithItsRoot(file, fileArtifactObject);
-    return fileArtifactObject;
+    linkArtifactWithItsRoot(file, fileArtifactBuilderObject);
+    return fileArtifactBuilderObject.build().orElse(null);
   }
 
   private List<RootArtifact> createRoots(Map<String, Collection<RootAwareFile>> filetype2Files) {
@@ -151,10 +151,15 @@ public class ContainerFileExtractor extends BaseExtractor {
   private RootArtifact createRoot(RootAwareFile f) {
     RootArtifactBuilder rootBuilder = BaseArtifactsTestManager.rootArtifactBuilder();
 
-    return rootBuilder.isExternal(f.isExternal())
+    RootArtifact rootArtifact =  rootBuilder.isExternal(f.isExternal())
         .fullName(ExtractorUtils.transformWindowsPathToLinuxStyle(f.getAbsolutePath()))
         .name(FilenameUtils.getBaseName(f.getAbsolutePath()))
         .build().orElse(null);
+    if(rootArtifact == null) {
+      Log.error("Building root failed.");
+    }
+
+    return rootArtifact;
   }
 
   /**
@@ -172,16 +177,22 @@ public class ContainerFileExtractor extends BaseExtractor {
   }
 
   private Directory createDirectoryAndLinkWithRoot(RootAwareFile dir) {
-    Directory directoryObject =
+    DirectoryBuilder directoryBuilderObject =
         createDirectoryObject(dir, ExtractorUtils.removeRootPathFromAbsolutePath(dir.getAbsolutePath(), getRootOfPath(dir.getAbsolutePath())));
-    linkArtifactWithItsRoot(dir, directoryObject);
-    return directoryObject;
+    linkArtifactWithItsRoot(dir, directoryBuilderObject);
+    return directoryBuilderObject.build().orElse(null);
   }
 
   private void linkArtifactWithItsRoot(RootAwareFile systemRepresentation, Artifact artifactRepresentation) {
     RootArtifact root = getRootOfPath(systemRepresentation.getAbsolutePath());
 
-    artifactRepresentation.setRoot(root);
+    if(artifactRepresentation instanceof DirectoryBuilder) {
+      ((DirectoryBuilder) artifactRepresentation).root(root);
+    } if(artifactRepresentation instanceof FileArtifactBuilder) {
+      ((FileArtifactBuilder) artifactRepresentation).root(root);
+    } else {
+      artifactRepresentation.setRoot(root);
+    }
 
     if (systemRepresentation.isRoot()) { // if current dir is root we set the Directory Object as artifact representation
       root.addArtifactRepresentation(artifactRepresentation);
@@ -190,21 +201,21 @@ public class ContainerFileExtractor extends BaseExtractor {
     }
   }
 
-  private FileArtifact createFileArtifactObject(RootAwareFile file, String nameStartingFromRoot) {
+  private FileArtifactBuilder createFileArtifactObject(RootAwareFile file, String nameStartingFromRoot) {
     FileArtifactBuilder fileArtifactBuilder = BaseArtifactsTestManager.fileArtifactBuilder();
 
     String[] simpleNameAndExtension = ExtractorUtils.splitSimpleNameAndExtension(file.getName());
 
     return fileArtifactBuilder.fullName(nameStartingFromRoot)
+        .name(simpleNameAndExtension[SIMPLE_NAME_POS]+"."+simpleNameAndExtension[NAME_EXTENSION_POS])
         .nameExtension(simpleNameAndExtension[NAME_EXTENSION_POS])
         .simpleName(simpleNameAndExtension[SIMPLE_NAME_POS])
-        .modified(ExtractorUtils.ARTIFACTS_DATE_FORMAT.format(file.lastModified()))
-        .build().orElse(null);
+        .modified(ExtractorUtils.ARTIFACTS_DATE_FORMAT.format(file.lastModified()));
   }
 
   private RootArtifact getRootOfPath(String absolutePathOfArtifact) {
     Optional<RootArtifact> rootOpt = roots.stream().filter(r ->
-        r.getFullName().equals(ExtractorUtils.transformWindowsPathToLinuxStyle(absolutePathOfArtifact))).findFirst();
+        ExtractorUtils.transformWindowsPathToLinuxStyle(absolutePathOfArtifact).startsWith(r.getFullName())).findFirst();
     if(rootOpt.isEmpty()) {
       Log.error("No root object with path "+ExtractorUtils.transformWindowsPathToLinuxStyle(absolutePathOfArtifact)
           + " was created.");
@@ -220,15 +231,14 @@ public class ContainerFileExtractor extends BaseExtractor {
         .collect(Collectors.toList());
   }
 
-  private Directory createDirectoryObject(RootAwareFile dir, String nameStartingFromRoot) {
+  private DirectoryBuilder createDirectoryObject(RootAwareFile dir, String nameStartingFromRoot) {
     DirectoryBuilder directoryBuilder = BaseArtifactsTestManager.directoryBuilder();
 
     return directoryBuilder.simpleName(dir.getName())
         .nameExtension("Folder")
         .modified(ExtractorUtils.ARTIFACTS_DATE_FORMAT.format(dir.lastModified()))
         .name(dir.getName())
-        .fullName(nameStartingFromRoot)
-        .build().orElse(null);
+        .fullName(nameStartingFromRoot);
   }
 
   private RootArtifact getDefaultRoot() {

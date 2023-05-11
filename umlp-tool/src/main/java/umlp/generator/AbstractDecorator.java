@@ -13,12 +13,15 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.MCTypeFacade;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
+import umlp.generator.domain.decorator.GenService;
 
 import java.util.Optional;
 
@@ -116,6 +119,19 @@ public abstract class AbstractDecorator {
   protected String getPackageName(ASTCDCompilationUnit origCD, String subPackage) {
     String origPackage = Names.constructQualifiedName(origCD.getCDPackageList(), origCD.getCDDefinition().getName());
     return (subPackage.isEmpty()?origPackage:Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
+  }
+
+  protected void addImports(ASTCDType domainType, ASTCDType cdType) {
+    domainType.getCDAttributeList().forEach(a -> {
+      if (GenService.isJavaType(a.getSymbol().getType())) {
+        getCD4C().addImport(cdType, a.getSymbol().getType().printFullName());
+      } else if (a.getSymbol().getType().isGenericType()) {
+        if (GenService.isJavaType(((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0))) {
+          String imp = ((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0).printFullName();
+          getCD4C().addImport(cdType, imp);
+        }
+      }
+    });
   }
 
   abstract public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD);

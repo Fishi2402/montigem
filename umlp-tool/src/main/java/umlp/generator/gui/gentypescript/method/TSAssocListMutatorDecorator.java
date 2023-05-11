@@ -1,0 +1,69 @@
+/* (c) https://github.com/MontiCore/monticore */
+package umlp.generator.gui.gentypescript.method;
+
+import com.google.common.collect.Lists;
+import de.monticore.cd.codegen.CDGenService;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.se_rwth.commons.Joiners;
+import umlp.generator.domain.decorator.methods.SimpleMethodMutatorDecorator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+
+public class TSAssocListMutatorDecorator extends SimpleMethodMutatorDecorator {
+
+  public TSAssocListMutatorDecorator(GlobalExtensionManagement glex, CDGenService service,
+                                   ASTCDType ast) {
+    super(glex, service, ast);
+  }
+
+  @Override
+  public List<ASTCDMethod> decorate(ASTCDAttribute ast) {
+    List<ASTCDMethod> methodList = Lists.newArrayList();
+    String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
+    String sourceName = this.ast.getName();
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.Add", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.AddId", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.AddAll", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.AddAllId", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.InternalAdd", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.InternalAddId", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.InternalSet", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.Remove", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.Remove_Id", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.InternalRemove", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    List<ASTCDMethod> notifyMethods = createNotifyMethods(methodList);
+
+    methodList.addAll(notifyMethods);
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.RemoveByIdSure", service.getNativeAttributeName(ast.getName())).get());
+
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.Clear", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.RetainAll", service.getNativeAttributeName(ast.getName()), targetName).get());
+
+    return methodList;
+  }
+
+  protected List<ASTCDMethod> createNotifyMethods(List<ASTCDMethod> methodList) {
+    ArrayList<ASTCDMethod> retList = Lists.newArrayList();
+    for (ASTCDMethod method : methodList) {
+      ASTCDMethod newMethod = method.deepClone();
+      newMethod.removeCDParameter(newMethod.sizeCDParameters() - 1);
+      String body = (newMethod.getMCReturnType().isPresentMCVoidType()) ? "" : "return ";
+      body += "this." + method.getName() + "(" +
+              Joiners.COMMA.join(newMethod.streamCDParameters().map(s -> s.getName()).collect(Collectors.toList())) +
+              ", NotificationScope.ALL);";
+      glex.replaceTemplate(EMPTY_BODY, newMethod, new StringHookPoint(body));
+      retList.add(newMethod);
+    }
+    return retList;
+  }
+}

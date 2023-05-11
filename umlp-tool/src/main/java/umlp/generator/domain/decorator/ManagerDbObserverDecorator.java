@@ -37,6 +37,7 @@ public class ManagerDbObserverDecorator extends AbstractDecorator {
     // Methods
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isDerived())
+        .filter(c -> !c.getModifier().isAbstract())
         .forEach(c -> {
           getCD4C().addMethod(ast, "umlp.dbobserver.manager.NotifyAdd", cDName, c.getName());
           getCD4C().addMethod(ast, "umlp.dbobserver.manager.NotifyDelete", c.getName());
@@ -45,6 +46,7 @@ public class ManagerDbObserverDecorator extends AbstractDecorator {
     // Attributes
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isDerived())
+        .filter(c -> !c.getModifier().isAbstract())
         .forEach(c -> {
           ast.addCDMember(getDAOAttribute(c));
         });

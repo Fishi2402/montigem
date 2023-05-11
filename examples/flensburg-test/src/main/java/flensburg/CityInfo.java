@@ -2,35 +2,42 @@ package flensburg;
 
 // HWC-P
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CityInfo extends CityInfoTOP {
-  
+
   @Override
   public int getNumberOfCities() {
-    return (int) FlensburgManager
-      .getAddressList()
-      .stream()
-      .map(Address::getCity)
-      .distinct()
-      .count();
+    long count = 0L;
+    Set<String> uniqueValues = new HashSet<>();
+    for (Address address : FlensburgManager
+        .getAddressList()) {
+      String city = address.getCity();
+      if (uniqueValues.add(city)) {
+        count++;
+      }
+    }
+    return (int) count;
   }
-  
+
   @Override
   public int getTotalNumberOfCars() {
     return FlensburgManager.getCarList().size();
   }
-  
+
   @Override
   public String getCityWithMostCars() {
     Map<String, Integer> cityToCars = new HashMap<>();
     Collection<Person> persons = FlensburgManager.getPersonList();
-    
+
     for (Person person : persons) {
       int curOwns = person.sizeOwnss();
       if (person.checkMainResidence()) {
@@ -40,10 +47,10 @@ public class CityInfo extends CityInfoTOP {
         // TODO: error handling
       }
     }
-    
+
     String cityWithMostCars = null;
     int cityWithMostCarsValue = Integer.MIN_VALUE;
-    
+
     for (Map.Entry<String, Integer> entry : cityToCars.entrySet()) {
       String city = entry.getKey();
       Integer cars = entry.getValue();
@@ -52,35 +59,41 @@ public class CityInfo extends CityInfoTOP {
         cityWithMostCars = city;
       }
     }
-    
+
     return cityWithMostCars;
   }
-  
+
   @Override
   public Person getPersonWithMostCars() {
-    return FlensburgManager
-      .getPersonList()
-      .stream()
-      .max(Comparator.comparingInt(Person::sizeOwnss))
-      .get();
+    Person result = null;
+    int max = 0;
+    for (Person person : FlensburgManager.getPersonList()) {
+      if (person.sizeOwnss() > max) {
+        max = person.sizeOwnss();
+        result = person;
+      }
+    }
+    return result;
   }
-  
+
   @Override
   public int getAverageNumberOfCars() {
     return FlensburgManager.getCarList().size() / FlensburgManager.getPersonList().size();
   }
-  
+
   @Override
   public  int sizeCities() {
     return getNumberOfCities();
   }
-  
+
   @Override
   public List<String> getCities() {
-    return FlensburgManager
-      .getAddressList()
-      .stream()
-      .map(Address::getCity)
-      .collect(Collectors.toList());
+    List<String> list = new ArrayList<>();
+    for (Address address : FlensburgManager
+        .getAddressList()) {
+      String city = address.getCity();
+      list.add(city);
+    }
+    return list;
   }
 }

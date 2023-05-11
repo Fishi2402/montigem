@@ -3,7 +3,6 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -52,8 +51,17 @@ public class ObserverDecorator extends AbstractDecorator {
     domainClass.getCDAttributeList().stream()
       .filter(a -> !a.getModifier().isDerived())
       .forEach(a -> {
-        getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, getCDPrinter().prettyprint(createType(a)), false);
-        getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, getCDPrinter().prettyprint(createType(a)), false);
+        if(GenService.isList(a)) {
+          String innerType = GenService.getInnerType(a.getMCType());
+          getCD4C().addMethod(ast, "umlp.observer.NotifyAdd", a.getName(), className, innerType);
+          getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyAdd", a.getName(), className, innerType);
+          getCD4C().addMethod(ast, "umlp.observer.NotifyRemove", a.getName(), className, innerType);
+          getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyRemove", a.getName(), className, innerType);
+        }
+
+        String fullType = getCDPrinter().prettyprint(createType(a));
+        getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, fullType, false);
+        getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, fullType, false);
       });
 
     // Add Notify for list associations
@@ -61,10 +69,10 @@ public class ObserverDecorator extends AbstractDecorator {
             .filter(a -> !a.getModifier().isDerived())
             .filter(a -> GenService.isList(a))
             .forEach(a -> {
-              getCD4C().addMethod(ast, "umlp.observer.NotifyAdd", a.getName(), className);
-              getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyAdd", a.getName(), className);
-              getCD4C().addMethod(ast, "umlp.observer.NotifyRemove", a.getName(), className);
-              getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyRemove", a.getName(), className);
+              getCD4C().addMethod(ast, "umlp.observer.NotifyAdd", a.getName(), className, "long");
+              getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyAdd", a.getName(), className, "long");
+              getCD4C().addMethod(ast, "umlp.observer.NotifyRemove", a.getName(), className, "long");
+              getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyRemove", a.getName(), className, "long");
               getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, "long", true);
               getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, "long", true);
             });
@@ -83,6 +91,7 @@ public class ObserverDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyBuild", className);
 
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    super.addImports(domainClass, ast);
 
     return ast;
   }

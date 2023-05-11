@@ -16,6 +16,7 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
 
   private void initTypeMappings() {
     getTypeMirrorMappings().add(0, UMLPAdapterUtils.computeOptionalTypeMapping(this, types()));
+    getTypeMirrorMappings().add(0, UMLPAdapterUtils.computeDateTypeMapping(this, types()));
   }
 
   /**

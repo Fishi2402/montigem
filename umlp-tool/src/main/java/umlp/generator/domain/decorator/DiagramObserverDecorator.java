@@ -33,6 +33,7 @@ public class DiagramObserverDecorator extends AbstractDecorator {
     // Methods
     origCD.getCDDefinition().getCDClassesList().stream()
             .filter(c -> !c.getModifier().isDerived())
+            .filter(c -> !c.getModifier().isAbstract())
             .forEach(c -> {
               getCD4C().addMethod(ast, "umlp.diagram.NotifyAdd", c.getName());
               getCD4C().addMethod(ast, "umlp.diagram.NotifyDelete", c.getName());

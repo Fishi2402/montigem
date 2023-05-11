@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${signature("statement","index","type","columnName", "isOptional")}
 <#if type?contains(".")>
   <#assign tmplName=type?replace(".", "_") >

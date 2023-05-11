@@ -9,10 +9,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-public class TestContainerFileExtractor {
+public class TestContainerFileExtractor extends GenAbstractNeo4jDBTest {
 
   // TODO neo4j Test Infrastruktur muss aufgebaut werden
-  @Disabled
   @Test
   public void testContainerFileExtractor() {
 

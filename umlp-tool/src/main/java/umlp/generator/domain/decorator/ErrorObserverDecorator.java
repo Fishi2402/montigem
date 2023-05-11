@@ -26,13 +26,17 @@ public class ErrorObserverDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> astcdPackage.addCDElement(createInterface(c)));
   }
-  
+
+  public static String getClassName(String domainClassName) {
+    return domainClassName + SUFFIX;
+  }
+
   protected ASTCDInterface createInterface(ASTCDClass domainClass) {
     String className = domainClass.getName();
     
     ASTCDInterface ast = UMLPMill.cDInterfaceBuilder()
       .setModifier(PUBLIC.build())
-      .setName(className + SUFFIX).build();
+      .setName(getClassName(className)).build();
     
     // Add Notify for attributes
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()

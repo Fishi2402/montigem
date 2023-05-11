@@ -16,6 +16,7 @@ import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,26 +73,31 @@ public class ManagerMockDecorator extends AbstractDecorator {
     String name = domainClass.getName();
     String lName = StringTransformations.uncapitalize(name);
 
-    ASTCDAttribute attr = getCD4C().addAttribute(managerClass, "protected HashMapWithOrderedKeys<Long, " + name + "> " + lName + "s");
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new HashMapWithOrderedKeys<>()"));
-    attr = getCD4C().addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList");
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList().build().get()"));
-    attr = getCD4C().addAttribute(managerClass, "protected " + name + "CommandSendingObserver the" + name + "CommandObserver");
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "CommandSendingObserver()"));
-
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainClass);
-    getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderParam", name);
-    getCD4C().addMethod(managerClass, "umlp.managermock.DoDeSerBuilder", name);
-    getCD4C().addMethod(managerClass, "umlp.managermock.DoOpt", name);
+    getCD4C().addMethod(managerClass, "umlp.managermock.DoOpt", name, UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass));
     getCD4C().addMethod(managerClass, "umlp.managermock.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managermock.DoAdd", name, managerName,
-            assocs.stream().filter(a -> GenService.isBidirectional(a)).collect(Collectors.toList()));
-    getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name);
-    getCD4C().addMethod(managerClass, "umlp.managermock.DoDelete", name, managerName);
-    getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name);
-
-    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + CommandSendingObserverDecorator.SUFFIX));
+    getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name, UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass));
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
+
+    if(!domainClass.getModifier().isAbstract()) {
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name);
+
+      ASTCDAttribute attr = getCD4C().addAttribute(managerClass, "protected HashMapWithOrderedKeys<Long, " + name + "> " + lName + "s");
+      glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new HashMapWithOrderedKeys<>()"));
+      attr = getCD4C().addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList");
+      glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList().build().get()"));
+      attr = getCD4C().addAttribute(managerClass, "protected " + name + "CommandSendingObserver the" + name + "CommandObserver");
+      glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "CommandSendingObserver()"));
+
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderParam", name);
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoDeSerBuilder", name);
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoAdd", name, managerName,
+          assocs.stream().filter(a -> GenService.isBidirectional(a)).collect(Collectors.toList()));
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoDelete", name, managerName);
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + CommandSendingObserverDecorator.SUFFIX));
+    }else{
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoGetListAbstract", name);
+    }
 
     // Associations
     assocs.stream().filter(a -> GenService.isList(a)).forEach(a -> {
@@ -111,17 +117,14 @@ public class ManagerMockDecorator extends AbstractDecorator {
     glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new HashMapWithOrderedKeys<>()"));
     attr = getCD4C().addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList");
     glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList().build().get()"));
-    attr = getCD4C().addAttribute(managerClass, "protected " + name + "CommandSendingObserver the" + name + "CommandObserver");
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "CommandSendingObserver()"));
 
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainClass);
-    getCD4C().addMethod(managerClass, "umlp.managermock.DoOptInterface", name);
+    getCD4C().addMethod(managerClass, "umlp.managermock.DoOpt", name, UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass));
     getCD4C().addMethod(managerClass, "umlp.managermock.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name);
-    getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name);
+    getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name, UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass));
 
     // Imports
-    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + CommandSendingObserverDecorator.SUFFIX));
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
 
     // Associations
