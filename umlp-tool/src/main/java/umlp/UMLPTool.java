@@ -16,9 +16,12 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
+import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
@@ -49,8 +52,11 @@ import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
+import umlp.generator.gui.guidelta.GUIDeltaHandler;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -60,21 +66,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static umlp.UMLPToolOptions.CD2GUI;
-import static umlp.UMLPToolOptions.DEBUG;
-import static umlp.UMLPToolOptions.DOMAIN;
-import static umlp.UMLPToolOptions.FOR_CLIENT;
-import static umlp.UMLPToolOptions.GUI_CREATE;
-import static umlp.UMLPToolOptions.HELP;
-import static umlp.UMLPToolOptions.HWC_PATH;
-import static umlp.UMLPToolOptions.INPUT;
-import static umlp.UMLPToolOptions.OUTPUT;
-import static umlp.UMLPToolOptions.PATH;
-import static umlp.UMLPToolOptions.PRETTYPRINT;
-import static umlp.UMLPToolOptions.REPORTS;
-import static umlp.UMLPToolOptions.REPORT_BASE;
-import static umlp.UMLPToolOptions.SYMTAB;
-import static umlp.UMLPToolOptions.TMPL_PATH;
+import static umlp.UMLPToolOptions.*;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -174,8 +166,15 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
 
-      if (CD2GUI.isSelected(cmd)) {
-        if (!isUmlpFile(inputFile)) {
+      MCPath gpPath = new MCPath();
+      if(GUI_PATH.isSelected(cmd)){
+        for (String v : cmd.getOptionValues(GUI_PATH.getCMD())) {
+          gpPath.addEntry(Paths.get(v));
+        }
+      }
+
+      if(CD2GUI.isSelected(cmd)){
+        if(!isUmlpFile(inputFile)){
           Log.warn("option -cd2gui used without a classdiagram umlp file as input");
           return;
         }
@@ -202,6 +201,51 @@ public class UMLPTool extends UMLPToolTOP {
         //  see GUI_CREATE
 
         Reporting.flush(ast);
+      }
+
+      else if(GUIDelta.isSelected(cmd)){
+        guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
+
+        Reporting.init(outDir.getPath(), reportDir.getPath(), guidsl_reportManagerFactory);
+        GUIDSLMill.init();
+
+        //parse input file
+        String report_on = inputFile.getName().replace(".", "__");
+        Reporting.on(report_on);
+        ASTGUICompilationUnit astGUI = parseGUI(inputFile.getPath());
+        Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on);
+
+        if(isGUIDelta(astGUI)){
+          List<Path> adaptedPath = gpPath.getEntries().stream().filter(p -> p.toFile().getName().equals(
+                  astGUI.getGUIComponentDeclaration().getGUIComponentAdaptation().getTarget() + ".gui"
+          )).collect(Collectors.toList());
+          if(adaptedPath.size() != 1){
+            Log.error("expected exactly one matching file to adapt with GUIDelta, but found multiple or none");
+          }
+          File adaptedModel = adaptedPath.get(0).toFile();
+
+          adaptGUIModel(astGUI, adaptedModel, outDir, report_on);
+        }
+        else{
+          //Copy file only if it doesn't exist, otherwise the altered file would be overwritten
+          outDir = outDir.toPath().resolve(        //file structure needs to reflect package declarations
+                  astGUI.getMCPackageDeclaration().getMCQualifiedName().toString()
+                          .replace(".","/")
+          ).toFile();
+          Path outFilePath = outDir.toPath().resolve(astGUI.getComponentName() + ".gui");
+          outDir.mkdirs();
+
+          if(!outFilePath.toFile().exists()){
+            try {
+              Files.copy(inputFile.toPath(), outFilePath);
+              Reporting.reportFileCreation(outFilePath.toString());
+            }
+            catch (IOException e){
+              Log.error("Error while trying to write file to " + outFilePath);
+            }
+          }
+        }
+        Reporting.flush(astGUI);
       }
 
       else if (isUmlpFile(inputFile)) {
@@ -437,6 +481,35 @@ public class UMLPTool extends UMLPToolTOP {
 
   protected boolean isGuiFile(File f) {
     return f.getName().endsWith(".gui");
+  }
+
+  protected boolean isGUIDelta(ASTGUICompilationUnit compilationUnit){
+    return compilationUnit.getGUIComponentDeclaration().isPresentGUIComponentAdaptation();
+  }
+
+  public static void adaptGUIModel(ASTGUICompilationUnit deltaAST, File adaptedFile, File outDir, String report_on){
+
+    //parse adapted File file
+    ASTGUICompilationUnit adaptedAST = parseGUI(adaptedFile.getPath());
+    Reporting.reportParseInputFile(adaptedFile.toPath().toAbsolutePath(), report_on);
+
+    //adapt AST
+    GUIDeltaHandler deltaHandler = new GUIDeltaHandler(adaptedAST);
+    deltaAST.accept(deltaHandler.getTraverser());
+
+    //output adapted Model
+    Path outputPath = outDir.toPath().resolve(        //file structure needs to reflect package declarations
+            adaptedAST.getMCPackageDeclaration().getMCQualifiedName().toString()
+                    .replace(".","/")
+                    .concat("/" + adaptedAST.getComponentName() + ".gui")
+    );
+    boolean overwriteFile = outputPath.toFile().exists();
+
+    GUIDSLFullPrettyPrinter pp = new GUIDSLFullPrettyPrinter(new IndentPrinter(), true);
+    FileReaderWriter.storeInFile(outputPath, pp.prettyprint(adaptedAST));
+    if(!overwriteFile) { //ToDo fix double generation Error
+      Reporting.reportFileCreation(outputPath.toString());
+    }
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {
