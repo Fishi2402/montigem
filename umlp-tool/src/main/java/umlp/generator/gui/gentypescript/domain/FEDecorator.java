@@ -146,21 +146,21 @@ public class FEDecorator extends BEDecorator {
     ManagerMockDecorator managerMockDecorator = new ManagerMockDecorator(glex);
     managerMockDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerMockDecorator", FEDecorator.class.getName());
-    /**/
 
     DummyProviderDecorator dummyProviderDecorator = new DummyProviderDecorator(glex);
     dummyProviderDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DummyProviderDecorator", FEDecorator.class.getName());
+    /**/
 
     ErrorObserverDecorator errorObserverDecorator = new ErrorObserverDecorator(glex);
     errorObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorObserverDecorator", FEDecorator.class.getName());
 
-    GemListAssocDecorator gemListAssocDecorator = new GemListAssocDecorator(glex);
+    GemListAssocDecorator gemListAssocDecorator = new TSGemListAssocDecorator(glex);
     gemListAssocDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: GemListAssocDecorator", FEDecorator.class.getName());
 
-    GemListDomainDecorator gemListDomainDecorator = new GemListDomainDecorator(glex);
+    GemListDomainDecorator gemListDomainDecorator = new TSGemListDomainDecorator(glex);
     gemListDomainDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: GemListDomainDecorator", FEDecorator.class.getName());
 
