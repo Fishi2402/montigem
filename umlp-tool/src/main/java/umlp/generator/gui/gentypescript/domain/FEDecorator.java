@@ -168,17 +168,19 @@ public class FEDecorator extends BEDecorator {
     commandObjectMapperDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandObjectMapperDecorator", FEDecorator.class.getName());
 
-    BaseClassObjectMapperDecorator baseClassObjectMapperDecorator = new BaseClassObjectMapperDecorator(glex);
+    BaseClassObjectMapperDecorator baseClassObjectMapperDecorator = new TSBaseClassObjectMapperDecorator(glex);
     baseClassObjectMapperDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: BaseClassObjectMapperDecorator", FEDecorator.class.getName());
 
-    CommandResultDeSerDecorator commandResultDeSerDecorator = new CommandResultDeSerDecorator(glex);
+    CommandResultDeSerDecorator commandResultDeSerDecorator = new TSCommandResultDeSerDecorator(glex);
     commandResultDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandResultDeSerDecorator", FEDecorator.class.getName());
 
+    /*
     TestContextDecorator testContextDecorator = new TestContextDecorator(glex);
     testContextDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: TestContextDecorator", ShellAPIDecorator.class.getName());
+    Log.info("After decorator: TestContextDecorator", FEDecorator.class.getName());
+    /**/
 
     glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
   }
