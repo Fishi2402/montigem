@@ -32,7 +32,7 @@ public abstract class GenAbstractNeo4jDBTest {
     managementService =
         new DatabaseManagementServiceBuilder(Paths.get("target", "temporaryNeo4jDB"))
             .setConfig(BoltConnector.enabled, true )
-            .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", 7687 )).build();
+            .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", 7688 )).build();
     registerShutdownHook(managementService);
     managementService.database(DEFAULT_DATABASE_NAME);
   }
