@@ -49,11 +49,11 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
             .build();
 
     // methods
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.Constructor", name + SUFFIX);
+    getCD4C().addMethod(managerClass, getConstructorTemplate(), name + SUFFIX);
     List<String> classList = origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .map(c -> c.getName()).collect(Collectors.toList());
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetFreeGemId");
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.ErrorNotificationScope");
+    getCD4C().addMethod(managerClass, getDoGetFreeGemIdTemplate());
+    getCD4C().addMethod(managerClass, getErrorNotificationScopeTemplate());
 
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> addClassElements(origCD, c, managerClass, name));
@@ -65,6 +65,19 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     addImports(origCD, managerClass);
     return managerClass;
   }
+
+  protected String getErrorNotificationScopeTemplate() {
+    return "umlp.managerclientimpl.ErrorNotificationScope";
+  }
+
+  protected String getDoGetFreeGemIdTemplate() {
+    return "umlp.managerclientimpl.DoGetFreeGemId";
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.managerclientimpl.Constructor";
+  }
+
 
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
                                   ASTCDClass managerClass, String managerName) {
@@ -106,7 +119,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     });
   }
 
-  private static List<ASTCDType> concreteSubclassesOrderedByDistance(ASTCDCompilationUnit origCD, ASTCDType domainType) {
+  protected static List<ASTCDType> concreteSubclassesOrderedByDistance(ASTCDCompilationUnit origCD, ASTCDType domainType) {
     return UMLPSymbolTables.collectConcreteSubclassesInclSelfWithDist(origCD, domainType)
         .entrySet().stream()
         .sorted((o1, o2) -> o2.getValue() - o1.getValue())
@@ -140,8 +153,12 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
             getMCTypeFacade().createBasicGenericTypeOf("Map", "Long", domainClass.getName()),
             StringTransformations.uncapitalize("known" + domainClass.getName() + "s"));
-    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new HashMap<>()"));
+    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(defaultMapValue()));
     return domainClassDaoAttr;
+  }
+
+  protected String defaultMapValue() {
+    return " = new HashMap<>()";
   }
 
   protected ASTCDAttribute getCommandObserverAttribute(ASTCDClass domainClass) {

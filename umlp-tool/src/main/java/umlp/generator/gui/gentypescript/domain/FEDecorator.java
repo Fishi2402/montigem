@@ -128,21 +128,25 @@ public class FEDecorator extends BEDecorator {
     Log.info("After decorator: DiagramObserverDecorator", FEDecorator.class.getName());
 
     // Generate manager classes
-    ManagerDecorator managerDecorator = new ManagerDecorator(glex);
+    ManagerDecorator managerDecorator = new TSManagerDecorator(glex);
     managerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerDecorator", FEDecorator.class.getName());
 
+    /*
     ManagerImplDecorator managerImplDecorator = new ManagerImplDecorator(glex);
     managerImplDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerImplDecorator", FEDecorator.class.getName());
+    /**/
 
-    ManagerClientImplDecorator managerClientImplDecorator = new ManagerClientImplDecorator(glex);
+    ManagerClientImplDecorator managerClientImplDecorator = new TSManagerClientImplDecorator(glex);
     managerClientImplDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerClientImplDecorator", FEDecorator.class.getName());
 
+    /*
     ManagerMockDecorator managerMockDecorator = new ManagerMockDecorator(glex);
     managerMockDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerMockDecorator", FEDecorator.class.getName());
+    /**/
 
     DummyProviderDecorator dummyProviderDecorator = new DummyProviderDecorator(glex);
     dummyProviderDecorator.transform(cdAST, decoratedAST);
