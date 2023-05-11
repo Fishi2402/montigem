@@ -10,11 +10,7 @@ generateUmlpBackend {
 }
 
 dependencies {
-    implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-data-neo4j', version: '2.7.4') {
-        //exclude group:  module: 'spring-boot-starter-logging',
-        exclude group: 'ch.qos.logback', module: 'logback-classic'
-    }
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+  implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
+  testImplementation "org.neo4j:neo4j:4.4.10"
+  implementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
 }
