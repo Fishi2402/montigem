@@ -1,0 +1,74 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package umlp.generator.gui.gentypescript.domain;
+
+import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
+import umlp.UMLPMill;
+import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.ErrorCollectorDecorator;
+import umlp.generator.util.PathUtil;
+
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+
+public class TSErrorCollectorDecorator extends ErrorCollectorDecorator {
+
+  public TSErrorCollectorDecorator(final GlobalExtensionManagement glex) {
+    super(glex);
+  }
+
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String name) {
+    String className = getClassName(domainClass.getName());
+
+    ASTCDClass collectorClass = UMLPMill.cDClassBuilder()
+            .setModifier(PUBLIC.build())
+            .setName(className).build();
+
+    // Constructors
+
+    // Attributes
+    getCD4C().addAttribute(collectorClass, "protected static " + domainClass.getName() + "ErrorCollector instance;");
+    // TODO:  CD4Code kann das nicht parsen "= new ArrayList<>()". Ursache ist die fehlende Super-Grammatik
+    // JavaClassExpression
+    ASTCDAttribute attr = getCD4C().addAttribute(collectorClass, "protected List<" + domainClass.getName() + "ErrorObserver> observers;");
+    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new ArrayList<>()"));
+
+    // Methods
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.Init", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.InitMe", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.GetInstance", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.AddErrorObserver", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._AddErrorObserver", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.ContainsErrorObserver", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._ContainsErrorObserver", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.RemoveErrorObserver", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._RemoveErrorObserver", domainClass.getName());
+
+    // Add methods for domain attributes
+    CDSymbolTables.getAttributesInHierarchy(domainClass).stream().filter(a -> !a.getModifier().isDerived())
+            .forEach(a -> {
+              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.ReportInvalid", a.getName(), domainClass.getName());
+              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._ReportInvalid", a.getName(), domainClass.getName());
+              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName());
+            });
+
+    // Add methods for domain associations
+    CDSymbolTables.getAssociationsInHierarchy(domainClass).stream().filter(a -> !a.getModifier().isDerived())
+            .forEach(a -> {
+              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.ReportInvalid", a.getName(), domainClass.getName());
+              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._ReportInvalid", a.getName(), domainClass.getName());
+              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName());
+            });
+    // Imports
+    addImports(origCD, collectorClass);
+
+    return collectorClass;
+  }
+
+}

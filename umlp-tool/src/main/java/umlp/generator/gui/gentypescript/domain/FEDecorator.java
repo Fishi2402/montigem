@@ -77,7 +77,7 @@ public class FEDecorator extends BEDecorator {
     /**/
 
     // Generate DeSer
-    DeSerDecorator deSerDecorator = new DeSerDecorator(glex, hwPath, supportedDesers);
+    DeSerDecorator deSerDecorator = new TSDeSerDecorator(glex, hwPath, supportedDesers);
     deSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DeSerDecorator", FEDecorator.class.getName());
 
@@ -87,12 +87,12 @@ public class FEDecorator extends BEDecorator {
     Log.info("After decorator: BuilderDecorator", FEDecorator.class.getName());
 
     // Generate DeSer builder classes
-    DeSerBuilderDecorator deSerBuilderDecorator = new DeSerBuilderDecorator(glex, hwPath);
+    DeSerBuilderDecorator deSerBuilderDecorator = new TSDeSerBuilderDecorator(glex, hwPath);
     deSerBuilderDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DeSerBuilderDecorator", FEDecorator.class.getName());
 
     // Generate ErrorCollector classes
-    ErrorCollectorDecorator errorCollectorDecorator= new ErrorCollectorDecorator(glex);
+    ErrorCollectorDecorator errorCollectorDecorator= new TSErrorCollectorDecorator(glex);
     errorCollectorDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorCollectorDecorator", FEDecorator.class.getName());
 
@@ -100,6 +100,7 @@ public class FEDecorator extends BEDecorator {
     observerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ObserverDecorator", FEDecorator.class.getName());
 
+    /*
     ManagerDbObserverDecorator managerDbObserverDecorator = new ManagerDbObserverDecorator(glex);
     managerDbObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerDbObserverDecorator", FEDecorator.class.getName());
@@ -107,6 +108,7 @@ public class FEDecorator extends BEDecorator {
     DbObserverDecorator dbObserverDecorator= new DbObserverDecorator(glex);
     dbObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DbObserverDecorator", FEDecorator.class.getName());
+    /**/
 
     CommandSendingObserverDecorator cmdSendingDecorator = new CommandSendingObserverDecorator(glex);
     cmdSendingDecorator.transform(cdAST, decoratedAST);

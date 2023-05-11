@@ -12,11 +12,13 @@ import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.check.SymTypeOfGenerics;
 import umlp.UMLPMill;
 import umlp.generator.util.PathUtil;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,10 +42,10 @@ public class DeSerDecorator extends DomainClassDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String cdName = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList()
-            .stream()
-            .filter(cdclass -> !cdclass.getModifier().isDerived())
-            .filter(cdclass -> !cdclass.getModifier().isAbstract())
-            .forEach(cdClass -> astcdPackage.addCDElement(createDeSer(origCD, cdName, cdClass)));
+        .stream()
+        .filter(cdclass -> !cdclass.getModifier().isDerived())
+        .filter(cdclass -> !cdclass.getModifier().isAbstract())
+        .forEach(cdClass -> astcdPackage.addCDElement(createDeSer(origCD, cdName, cdClass)));
   }
 
   protected ASTCDElement createDeSer(ASTCDCompilationUnit origCD, String cdName, ASTCDClass cdClass) {
@@ -59,34 +61,34 @@ public class DeSerDecorator extends DomainClassDecorator {
 
     // TODO: also use for other templates!
     List<ASTCDAttribute> attributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
-            .filter(attr -> !attr.getModifier().isDerived())
-            .collect(Collectors.toList());
+        .filter(attr -> !attr.getModifier().isDerived())
+        .collect(Collectors.toList());
     attributes.forEach(a -> {
       addSerAndDeserMethod(origCD.getCDDefinition().getName(), originalClassName, deSer, a);
     });
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(cdClass).stream()
-            .filter(a -> !a.getModifier().isDerived())
-            .collect(Collectors.toList());
+        .filter(a -> !a.getModifier().isDerived())
+        .collect(Collectors.toList());
     assocs.forEach(a -> {
       addSerAndDeserMethod(cdName, originalClassName, deSer, a);
     });
 
 
-    getCD4C().addMethod(deSer, "umlp.deser.serialize", originalClassName);
-    getCD4C().addMethod(deSer, "umlp.deser.deserialize",
-            cdName,
-            originalClassName,
-            attributes.stream().map(a -> a.getName()).collect(Collectors.toList()),
-            assocs.stream().filter(a -> !GenService.isList(a)).map(a -> a.getName()).collect(Collectors.toList()),
-            assocs.stream().filter(a -> GenService.isList(a)).map(a -> a.getName()).collect(Collectors.toList())
-                       );
-    getCD4C().addMethod(deSer, "umlp.deser.BuildJson",
-            originalClassName,
-            attributes.stream().map(a -> a.getName()).collect(Collectors.toList()),
-            assocs.stream().map(a -> a.getName()).collect(Collectors.toList())
-                       );
+    getCD4C().addMethod(deSer, getSerializeTemplate(), originalClassName);
+    getCD4C().addMethod(deSer, getDeserializeTemplate(),
+        cdName,
+        originalClassName,
+        attributes.stream().map(a -> a.getName()).collect(Collectors.toList()),
+        assocs.stream().filter(a -> !GenService.isList(a)).map(a -> a.getName()).collect(Collectors.toList()),
+        assocs.stream().filter(a -> GenService.isList(a)).map(a -> a.getName()).collect(Collectors.toList())
+    );
+    getCD4C().addMethod(deSer, getBuildJsonTemplate(),
+        originalClassName,
+        attributes.stream().map(a -> a.getName()).collect(Collectors.toList()),
+        assocs.stream().map(a -> a.getName()).collect(Collectors.toList())
+    );
 
-    getCD4C().addMethod(deSer, "umlp.deser.FromJson", originalClassName);
+    getCD4C().addMethod(deSer, getFromJsonTemplate(), originalClassName);
 
 
     CD4CTemplateHelper th = new CD4CTemplateHelper();
@@ -99,6 +101,22 @@ public class DeSerDecorator extends DomainClassDecorator {
     return deSer;
   }
 
+  protected String getSerializeTemplate() {
+    return "umlp.deser.serialize";
+  }
+
+  protected String getDeserializeTemplate() {
+    return "umlp.deser.deserialize";
+  }
+
+  protected String getBuildJsonTemplate() {
+    return "umlp.deser.BuildJson";
+  }
+
+  protected String getFromJsonTemplate() {
+    return "umlp.deser.FromJson";
+  }
+
   protected void addSerAndDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {
     boolean isList = false;
     boolean isOptional = false;
@@ -109,24 +127,26 @@ public class DeSerDecorator extends DomainClassDecorator {
     if (GenService.isList(attr)) {
       isList = true;
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0));
-      innerType = ((SymTypeOfGenerics)attr.getSymbol().getType()).getArgument(0).printFullName();
+      innerType = ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName();
       useDeSer = supportedDesers.contains(innerType);
-    } else if (GenService.isOptional(attr)) {
+    }
+    else if (GenService.isOptional(attr)) {
       isOptional = true;
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0));
-      innerType = ((SymTypeOfGenerics)attr.getSymbol().getType()).getArgument(0).printFullName();
+      innerType = ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName();
       useDeSer = supportedDesers.contains(innerType);
-    } else {
+    }
+    else {
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
       useDeSer = supportedDesers.contains(type);
     }
     boolean makeAbstract = jsonStr.equals("") && !useDeSer;
 
-    getCD4C().addMethod(deSer, "umlp.deser.serializeSimpleField",
-            originalClassName, attr, type, jsonStr, isList, innerType, isOptional,
+    getCD4C().addMethod(deSer, getSerializeSimpleFieldTemplate(),
+        originalClassName, attr, type, jsonStr, isList, innerType, isOptional,
         useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
-    getCD4C().addMethod(deSer, "umlp.deser.deserializeSimpleField",
-            originalClassName, attr, type, jsonStr, isList, innerType, isOptional,
+    getCD4C().addMethod(deSer, getDeserializeSimpleFieldTemplate(),
+        originalClassName, attr, type, jsonStr, isList, innerType, isOptional,
         useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
 
     if (makeAbstract) {
@@ -136,18 +156,43 @@ public class DeSerDecorator extends DomainClassDecorator {
 
   protected void addSerAndDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAssocSide attr) {
     if (GenService.isList(attr)) {
-      getCD4C().addMethod(deSer, "umlp.deser.serializeGemListField", originalClassName, attr.getName());
-      getCD4C().addMethod(deSer, "umlp.deser.deserializeGemListField", cdName, originalClassName, attr.getName());
-    } else {
-      getCD4C().addMethod(deSer, "umlp.deser.serializeGemField", originalClassName, attr.getName());
-      getCD4C().addMethod(
-              deSer,
-              "umlp.deser.deserializeGemField",
-              cdName,
-              originalClassName,
-              attr.getName(),
-              attr.getSymbol().getType().print());
+      getCD4C().addMethod(deSer, getSerializeGemListFieldTemplate(), originalClassName, attr.getName());
+      getCD4C().addMethod(deSer, getDeserializeGemListFieldTemplate(), cdName, originalClassName, attr.getName());
     }
+    else {
+      getCD4C().addMethod(deSer, getSerializeGemFieldTemplate(), originalClassName, attr.getName());
+      getCD4C().addMethod(
+          deSer,
+          getDeserializeGemFieldTemplate(),
+          cdName,
+          originalClassName,
+          attr.getName(),
+          attr.getSymbol().getType().print());
+    }
+  }
+
+  protected String getSerializeSimpleFieldTemplate() {
+    return "umlp.deser.serializeSimpleField";
+  }
+
+  protected String getDeserializeSimpleFieldTemplate() {
+    return "umlp.deser.deserializeSimpleField";
+  }
+
+  protected String getSerializeGemListFieldTemplate() {
+    return "umlp.deser.serializeGemListField";
+  }
+
+  protected String getDeserializeGemListFieldTemplate() {
+    return "umlp.deser.deserializeGemListField";
+  }
+
+  protected String getSerializeGemFieldTemplate() {
+    return "umlp.deser.serializeGemField";
+  }
+
+  protected String getDeserializeGemFieldTemplate() {
+    return "umlp.deser.deserializeGemField";
   }
 
   @Override
