@@ -96,7 +96,7 @@ public class FEDecorator extends BEDecorator {
     errorCollectorDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorCollectorDecorator", FEDecorator.class.getName());
 
-    ObserverDecorator observerDecorator = new ObserverDecorator(glex);
+    ObserverDecorator observerDecorator = new TSObserverDecorator(glex);
     observerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ObserverDecorator", FEDecorator.class.getName());
 
@@ -110,11 +110,11 @@ public class FEDecorator extends BEDecorator {
     Log.info("After decorator: DbObserverDecorator", FEDecorator.class.getName());
     /**/
 
-    CommandSendingObserverDecorator cmdSendingDecorator = new CommandSendingObserverDecorator(glex);
+    CommandSendingObserverDecorator cmdSendingDecorator = new TSCommandSendingObserverDecorator(glex);
     cmdSendingDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandSendingObserverDecorator", FEDecorator.class.getName());
 
-    CommandObserverDecorator cmdDecorator = new CommandObserverDecorator(glex);
+    CommandObserverDecorator cmdDecorator = new TSCommandObserverDecorator(glex);
     cmdDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandObserverDecorator", FEDecorator.class.getName());
 
