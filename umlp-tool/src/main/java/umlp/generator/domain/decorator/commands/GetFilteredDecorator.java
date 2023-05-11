@@ -40,14 +40,22 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
       .setName(classname+SUFFIX)
       .build();
 
-    getCD4C().addConstructor(ast, "umlp.commands.get_filtered.Constructor", classname,"", SUFFIX, packageName);
-    getCD4C().addMethod(ast, "umlp.commands.get_filtered.DoRun", classname, origCD.getCDDefinition().getName());
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname,"", SUFFIX, packageName);
+    getCD4C().addMethod(ast, getDoRunTemplate(), classname, origCD.getCDDefinition().getName());
 
     getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
 
     return ast;
+  }
+
+  protected String getDoRunTemplate() {
+    return "umlp.commands.get_filtered.DoRun";
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.commands.get_filtered.Constructor";
   }
 
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
@@ -59,8 +67,8 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
             .setName(cmdName+DE_SER)
             .build();
 
-    getCD4C().addMethod(ast, "umlp.commands.deser.GetFiltered_FromJsonObject", cmdName);
-    getCD4C().addMethod(ast, "umlp.commands.deser.GetFiltered_BuildJson",cmdName);
+    getCD4C().addMethod(ast, getGetFiltered_FromJsonObjectTemplate(), cmdName);
+    getCD4C().addMethod(ast, getGetFiltered_BuildJsonTemplate(),cmdName);
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
@@ -68,5 +76,13 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
 
     addedDeSers.add(ast);
     return ast;
+  }
+
+  protected String getGetFiltered_BuildJsonTemplate() {
+    return "umlp.commands.deser.GetFiltered_BuildJson";
+  }
+
+  protected String getGetFiltered_FromJsonObjectTemplate() {
+    return "umlp.commands.deser.GetFiltered_FromJsonObject";
   }
 }

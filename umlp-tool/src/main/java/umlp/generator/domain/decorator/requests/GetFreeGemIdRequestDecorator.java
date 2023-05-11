@@ -41,9 +41,17 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
                 origCD.getCDDefinition().getName()+SUFFIX));
         getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
 
-        getCD4C().addConstructor(ast, "umlp.requests.getfreegemid.Constructor", CLASS_NAME, getPackageName(origCD, DEFAULT_PACKAGE));
-        getCD4C().addMethod(ast, "umlp.requests.getfreegemid.DoRun", origCD.getCDDefinition().getName());
+        getCD4C().addConstructor(ast, getConstructorTemplate(), CLASS_NAME, getPackageName(origCD, DEFAULT_PACKAGE));
+        getCD4C().addMethod(ast, getDoRunTemplate(), origCD.getCDDefinition().getName());
         return ast;
+    }
+
+    protected String getDoRunTemplate() {
+        return "umlp.requests.getfreegemid.DoRun";
+    }
+
+    protected String getConstructorTemplate() {
+        return "umlp.requests.getfreegemid.Constructor";
     }
 
     protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, String packageName) {
@@ -53,11 +61,15 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
                 .setName(CLASS_NAME + DE_SER)
                 .build();
 
-        getCD4C().addMethod(ast, "umlp.requests.getfreegemid.FromJsonObject");
+        getCD4C().addMethod(ast, getFromJsonObjectTemplate());
 
         getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
         getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
 
         return ast;
+    }
+
+    protected String getFromJsonObjectTemplate() {
+        return "umlp.requests.getfreegemid.FromJsonObject";
     }
 }

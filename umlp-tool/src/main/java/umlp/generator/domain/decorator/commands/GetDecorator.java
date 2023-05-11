@@ -52,10 +52,10 @@ public class GetDecorator extends AbstractDeSerDecorator {
       .build();
     ASTCDAttribute attr = getCD4C().addAttribute(ast, "private final long gemId");
 
-    getCD4C().addConstructor(ast, "umlp.commands.get.Constructor", classname,"", SUFFIX, packageName);
-    getCD4C().addMethod(ast, "umlp.commands.get.DoRun", classname, domainPackage, origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList());
-    getCD4C().addMethod(ast, "umlp.commands.get.GetNewlySubscribedGemIds");
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname,"", SUFFIX, packageName);
+    getCD4C().addMethod(ast, getDoRunTemplate(), classname, domainPackage, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
+    getCD4C().addMethod(ast, getGetNewlySubscribedGemIdsTemplate());
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));
 
@@ -68,6 +68,22 @@ public class GetDecorator extends AbstractDeSerDecorator {
     return ast;
   }
 
+  protected String getGetNewlySubscribedGemIdsTemplate() {
+    return "umlp.commands.get.GetNewlySubscribedGemIds";
+  }
+
+  protected String getGetEffectedGemIdsTemplate() {
+    return "umlp.commands.GetEffectedGemIds";
+  }
+
+  protected String getDoRunTemplate() {
+    return "umlp.commands.get.DoRun";
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.commands.get.Constructor";
+  }
+
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDType domainType) {
     String cmdName = domainType.getName() + SUFFIX;
 
@@ -77,8 +93,8 @@ public class GetDecorator extends AbstractDeSerDecorator {
             .setName(cmdName+DE_SER)
             .build();
 
-    getCD4C().addMethod(ast, "umlp.commands.deser.Get_FromJsonObject", cmdName);
-    getCD4C().addMethod(ast, "umlp.commands.deser.Get_BuildJson",cmdName);
+    getCD4C().addMethod(ast, getGet_FromJsonObjectTemplate(), cmdName);
+    getCD4C().addMethod(ast, getGet_BuildJsonTemplate(),cmdName);
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
@@ -86,5 +102,13 @@ public class GetDecorator extends AbstractDeSerDecorator {
 
     addedDeSers.add(ast);
     return ast;
+  }
+
+  protected String getGet_BuildJsonTemplate() {
+    return "umlp.commands.deser.Get_BuildJson";
+  }
+
+  protected String getGet_FromJsonObjectTemplate() {
+    return "umlp.commands.deser.Get_FromJsonObject";
   }
 }

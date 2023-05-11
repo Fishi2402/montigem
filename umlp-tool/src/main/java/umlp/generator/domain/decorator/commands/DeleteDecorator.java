@@ -48,9 +48,9 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
 
     ASTCDAttribute attr = getCD4C().addAttribute(ast, "private final long gemId");
 
-    getCD4C().addConstructor(ast, "umlp.commands.get.Constructor", classname,"", SUFFIX, packageName);
-    getCD4C().addMethod(ast, "umlp.commands.delete.DoRun", classname, origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("gemId"));
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname,"", SUFFIX, packageName);
+    getCD4C().addMethod(ast, getDoRunTemplate(), classname, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("gemId"));
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));
 
@@ -62,6 +62,18 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
     return ast;
   }
 
+  protected String getGetEffectedGemIdsTemplate() {
+    return "umlp.commands.GetEffectedGemIds";
+  }
+
+  protected String getDoRunTemplate() {
+    return "umlp.commands.delete.DoRun";
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.commands.get.Constructor";
+  }
+
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
     String cmdName = domainClass.getName() + SUFFIX;
 
@@ -71,8 +83,8 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
             .setName(cmdName+DE_SER)
             .build();
 
-    getCD4C().addMethod(ast, "umlp.commands.deser.Get_FromJsonObject", cmdName);
-    getCD4C().addMethod(ast, "umlp.commands.deser.Get_BuildJson", cmdName);
+    getCD4C().addMethod(ast, getGet_FromJsonObjectTemplate(), cmdName);
+    getCD4C().addMethod(ast, getGet_BuildJsonTemplate(), cmdName);
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
@@ -82,5 +94,13 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
 
     addedDeSers.add(ast);
     return ast;
+  }
+
+  protected String getGet_BuildJsonTemplate() {
+    return "umlp.commands.deser.Get_BuildJson";
+  }
+
+  protected String getGet_FromJsonObjectTemplate() {
+    return "umlp.commands.deser.Get_FromJsonObject";
   }
 }
