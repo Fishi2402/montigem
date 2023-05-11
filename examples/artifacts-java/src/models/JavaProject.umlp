@@ -1,3 +1,5 @@
+import BaseArtifactsTest.*;
+
 umlp JavaProject{
 
     // ______________________________________________________
@@ -27,15 +29,15 @@ umlp JavaProject{
 
 
     // JavaSourceFile
-    class JavaView extends BaseArtifactsTest.ArtifactView{
+    class JavaView extends ArtifactView{
     }
 
 
-    class ExternalJavaSource extends BaseArtifactsTest.Artifact{
+    class ExternalJavaSource extends Artifact{
     }
 
-    association imports [*] JavaView -> BaseArtifactsTest.Artifact [*] ;
-    association compiledTo [1] JavaView -> BaseArtifactsTest.Artifact [*] ;
+    association imports [*] JavaView -> Artifact [*] ;
+    association compiledTo [1] JavaView -> Artifact [*] ;
 
 
 
@@ -45,7 +47,7 @@ umlp JavaProject{
     // ______________________________________________________
 
     // JavaType
-    abstract class JavaType extends BaseArtifactsTest.ArtifactInternal{
+    abstract class JavaType extends ArtifactInternal{
 
         String name;
         String fullName;
@@ -67,7 +69,7 @@ umlp JavaProject{
 
     association methods [1] JavaType <-> JavaMethod [*];
 
-    association visibility [1] JavaType -> JavaVisibility [1];
+    association typeVisibility [1] JavaType -> JavaVisibility [1];
 
     association innerClasses [*] JavaType -> JavaClass [*];
 
@@ -94,7 +96,7 @@ umlp JavaProject{
 
 
     // Java Variable
-    class JavaVariable extends BaseArtifactsTest.ArtifactInternal {
+    class JavaVariable extends ArtifactInternal {
         String name;
         boolean isFinal;
         boolean isStatic;
@@ -102,11 +104,11 @@ umlp JavaProject{
         String defaultValue;
     }
 
-    association visibility [1] JavaVariable -> JavaVisibility [1];
+    association variableVisibility [1] JavaVariable -> JavaVisibility [1];
 
 
     // JavaMethod
-    class JavaMethod extends BaseArtifactsTest.ArtifactInternal {
+    class JavaMethod extends ArtifactInternal {
         String name;
         boolean isFinal;
         boolean isStatic;
@@ -116,7 +118,7 @@ umlp JavaProject{
         String returnType;
     }
 
-    association visibility [1] JavaMethod -> JavaVisibility [1];
+    association methodVisibility [1] JavaMethod -> JavaVisibility [1];
 
 
     // JavaParameter

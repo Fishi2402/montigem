@@ -209,6 +209,13 @@ public class UMLPTool extends UMLPToolTOP {
 
         UMLPMill.init();
         BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+        MCPath mcPath = new MCPath();
+        if (PATH.isSelected(cmd)) {
+          for (String v : cmd.getOptionValues(PATH.getCMD())) {
+            mcPath.addEntry(Paths.get(v));
+          }
+        }
+        UMLPMill.globalScope().setSymbolPath(mcPath);
 
         // parse, create symbol table, check all cocos
         ASTCDCompilationUnit ast = parse(inputFile.getPath());
