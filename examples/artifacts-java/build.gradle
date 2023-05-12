@@ -8,6 +8,7 @@ description 'artifacts example'
 generateUmlpBackend {
   configTemplate = "umlp.UMLP2JavaNeo4j"
   modelDir.set(project(":examples:artifacts-test").projectDir.toPath().resolve("src").resolve("models").toFile())
+  debug = true
 }
 
 dependencies {

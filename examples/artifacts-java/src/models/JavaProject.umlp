@@ -8,7 +8,7 @@ umlp JavaProject{
 
 
     //TODO nessesary?
-    association reliesOnJavaArtifact [*] JavaView -> JavaView [*] ;
+    association reliesOnJavaArtifact [*] JavaView -> (reliedOn) JavaView [*] ;
 
 
     // JavaPackage
@@ -65,7 +65,7 @@ umlp JavaProject{
     //TODO was composition
     //association [0..1] JavaType(containingType) -> (innerType)JavaType [*] ;
 
-    association reliesOnJavaType [*] JavaType -> JavaType [*] ;
+    association reliesOnJavaType [*] JavaType -> (reliedOn) JavaType [*] ;
 
     association methods [1] JavaType <-> JavaMethod [*];
 
@@ -82,7 +82,7 @@ umlp JavaProject{
         //TODO generics ?
     }
 
-    association subclass [*] JavaClass -> JavaClass [0..1] ;
+    association subclass [*] JavaClass -> (parentClass) JavaClass [0..1] ;
 
     association interfaceImplementations [*] JavaClass -> JavaInterface [*] ;
 
@@ -92,7 +92,7 @@ umlp JavaProject{
     class JavaInterface extends JavaType {
     }
 
-    association interfaces [*] JavaInterface -> JavaInterface [*] ; // Interface extensions
+    association interfaceExtension [*] JavaInterface (extender) -> (extendedInterface) JavaInterface [*] ; // Interface extensions
 
 
     // Java Variable

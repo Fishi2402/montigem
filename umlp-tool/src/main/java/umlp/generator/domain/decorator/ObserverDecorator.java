@@ -3,12 +3,14 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.check.SymTypeExpression;
+import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
@@ -91,8 +93,16 @@ public class ObserverDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyBuild", className);
 
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    addImportForImportedObservers(domainClass, ast);
     super.addImports(domainClass, ast);
 
     return ast;
+  }
+
+  private void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType){
+    domainClass.getSuperclassList().forEach(cdExtension ->
+        cdExtension.getDefiningSymbol().ifPresent(definingSymbol ->
+            getCD4C().addImport(observerType, Joiners.DOT.join(definingSymbol.getPackageName().toLowerCase(),
+                definingSymbol.getName()))));
   }
 }
