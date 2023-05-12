@@ -8,7 +8,7 @@ ${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "componentGenerator"
 <#assign guiDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUI2TypeScriptDecorator", [glex])>
 
 <#-- TopDecorator -->
-<#assign topDecorator = tc.instantiate("de.monticore.cd.codegen.TopDecorator", [hwPath])>
+<#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [hwPath])>
 
 <#-- TopDecorator -->
 <#assign annotationDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUIComponentAnnotationDecorator", [glex, hwPath, outPath])>

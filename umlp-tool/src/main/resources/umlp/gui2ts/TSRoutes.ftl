@@ -1,13 +1,13 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("routes", "existHWCRoutes")}
+${tc.signature("routes", "existHWCRoutes", "componentPath")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
-<#assign component = genHelper.getComponentNameFromCamelCaseName(ast.getName())>
+<#assign component = ast.getName()>
 
 // always imported
 import { Routes } from "@angular/router";
 // imports of pages in the package
-import { ${ast.getName()} } from "./${component}/${component}.component";
+import { ${component} } from "${componentPath}";
 
 export const ${routes}<#if existHWCRoutes>TOP</#if>: Routes = [
   {

@@ -20,19 +20,25 @@ import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
+import de.monticore.io.paths.MCPath;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
-import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -424,6 +430,10 @@ public class GUIGeneratorUtil {
     return moduleName;
   }
 
+  public String getGenFileFolder(ASTMCPackageDeclaration pDecl) {
+    return String.join("/", pDecl.getMCQualifiedName().getPartsList());
+  }
+
   public String getIterateName(String iterateCompName) {
     return "getIterate" + StringTransformations.capitalize(iterateCompName) + "It()" + ".get(idx)";
   }
@@ -478,6 +488,52 @@ public class GUIGeneratorUtil {
     }
 
     return res;
+  }
+
+  public Optional<String> getRelativeHandwrittenPath(
+      MCPath hwPath, Path outPath, ASTMCPackageDeclaration packageDecl, String fileName) {
+    Collection<Path> hwFilePaths = new ArrayList<>();
+    for (Path p : hwPath.getEntries()) {
+      hwFilePaths.add(getFilePath(p, packageDecl));
+    }
+    String localOutPath = getGenFileFolder(packageDecl);
+    Path outFolder = outPath.resolve(localOutPath);
+    return getRelativeHandwrittenPath(hwFilePaths, outFolder, fileName);
+  }
+
+  public Path getFilePath(Path input, ASTMCPackageDeclaration packageDecl) {
+    String localPath = String.join("/", packageDecl.getMCQualifiedName().getPartsList());
+    return Paths.get(input.toString(), localPath);
+  }
+
+  public Optional<String> getRelativeHandwrittenPath(
+      Collection<Path> hwPath,
+      Path outputFolder,
+      String fileName
+  ) {
+    Iterator<Path> targetPathIt = hwPath.iterator();
+    while (targetPathIt.hasNext()) {
+      Path it = targetPathIt.next();
+      Path hwFile = it.resolve(fileName);
+      if (Files.exists(hwFile)) {
+        String path = outputFolder
+            .toAbsolutePath()
+            .normalize()
+            .relativize(hwFile.toAbsolutePath())
+            .toString();
+        path = path.replace("\\", "/");
+        return Optional.of(path);
+      }
+    }
+    return Optional.empty();
+  }
+
+  public String removeExtension(String filePath) {
+    int index = filePath.lastIndexOf(".");
+    if (index > 0) {
+      return filePath.substring(0, index);
+    }
+    return filePath;
   }
 
   public String package2path(String packageName) {

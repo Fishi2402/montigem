@@ -36,4 +36,8 @@ export const routes: Routes = [
     path: "personchildrenedit",
     loadChildren: () => import("./personchildrenedit/personchildrenedit.module").then(m => m.PersonChildrenEditModule)
   },
+  {
+    path: "test",
+    loadChildren: () => import("../../build/stanley/my/InfoBoxModule").then(m => m.InfoBoxModule)
+  },
 ]

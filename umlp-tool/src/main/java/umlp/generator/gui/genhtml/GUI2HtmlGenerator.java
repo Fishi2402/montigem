@@ -7,12 +7,15 @@ import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import umlp.generator.gui.GUIComponentsVisitor;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class GUI2HtmlGenerator {
+
+  protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
   protected final GeneratorEngine generatorEngine;
   protected GeneratorSetup setup;
@@ -37,7 +40,7 @@ public class GUI2HtmlGenerator {
     this.setup.setTracing(false);
 
     String componentName = decoratedAst.getComponentName();
-    String pathName = String.join("/", decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
+    String pathName = util.getGenFileFolder(decoratedAst.getMCPackageDeclaration());
     Path filePath = Paths.get(pathName, componentName + ".html");
 
     GeneratorEngine e = new GeneratorEngine(setup);
