@@ -9,18 +9,6 @@ generateUmlpBackend {
   configTemplate = "umlp.UMLP2JavaNeo4j"
 }
 
-task saveSymtab(type: UMLPTask){
-  def oDir = "$buildDir/symtab"
-  doFirst{
-    new File(oDir).mkdirs()
-  }
-  input = file "./src/models/BaseArtifactsTest.umlp"
-  outputDir = file oDir
-  moreArgs.add("--symboltable")
-  moreArgs.add(oDir + "/BaseArtifactsTest.umlpsym")
-}
-tasks.build.dependsOn saveSymtab
-
 dependencies {
   implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
   testImplementation "org.neo4j:neo4j:4.4.10"

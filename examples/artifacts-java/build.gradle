@@ -7,10 +7,8 @@ description 'artifacts example'
 
 generateUmlpBackend {
   configTemplate = "umlp.UMLP2JavaNeo4j"
-  modelDir.set(project(":examples:artifacts-test").buildDir.toPath().resolve("symtab").toFile())
+  modelDir.set(project(":examples:artifacts-test").projectDir.toPath().resolve("src").resolve("models").toFile())
 }
-
-tasks.generateUmlpBackend.dependsOn(project(":examples:artifacts-test").tasks.build);
 
 dependencies {
   implementation project(":examples:artifacts-test")
