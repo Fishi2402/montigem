@@ -12,26 +12,26 @@ public class TSCreateDecorator extends CreateDecorator {
 
   @Override
   protected String getGetEffectedGemIdsTemplate() {
-    return "umlp.gui2ts.commands.GetEffectedGemIds";
+    return "umlp.gui2ts.commands.TSGetEffectedGemIds";
   }
 
   @Override
   protected String getDoRunTemplate() {
-    return "umlp.gui2ts.commands.create.DoRun";
+    return "umlp.gui2ts.commands.create.TSDoRun";
   }
 
   @Override
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.commands.Constructor";
+    return "umlp.gui2ts.commands.TSConstructor";
   }
 
   @Override
   protected String getBuildJsonTemplate() {
-    return "umlp.gui2ts.commands.deser.BuildJson";
+    return "umlp.gui2ts.commands.deser.TSBuildJson";
   }
 
   @Override
   protected String getFromJsonObjectTemplate() {
-    return "umlp.gui2ts.commands.deser.FromJsonObject";
+    return "umlp.gui2ts.commands.deser.TSFromJsonObject";
   }
 }

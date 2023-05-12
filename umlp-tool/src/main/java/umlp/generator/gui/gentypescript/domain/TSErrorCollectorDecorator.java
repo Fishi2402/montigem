@@ -40,30 +40,30 @@ public class TSErrorCollectorDecorator extends ErrorCollectorDecorator {
     glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new ArrayList<>()"));
 
     // Methods
-    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.Init", domainClass.getName());
-    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.InitMe", domainClass.getName());
-    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.GetInstance", domainClass.getName());
-    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.AddErrorObserver", domainClass.getName());
-    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._AddErrorObserver", domainClass.getName());
-    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.ContainsErrorObserver", domainClass.getName());
-    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._ContainsErrorObserver", domainClass.getName());
-    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.RemoveErrorObserver", domainClass.getName());
-    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._RemoveErrorObserver", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSInit", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSInitMe", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSGetInstance", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSAddErrorObserver", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_AddErrorObserver", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSContainsErrorObserver", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_ContainsErrorObserver", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSRemoveErrorObserver", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_RemoveErrorObserver", domainClass.getName());
 
     // Add methods for domain attributes
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream().filter(a -> !a.getModifier().isDerived())
             .forEach(a -> {
-              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.ReportInvalid", a.getName(), domainClass.getName());
-              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._ReportInvalid", a.getName(), domainClass.getName());
-              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName());
+              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSReportInvalid", a.getName(), domainClass.getName());
+              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_ReportInvalid", a.getName(), domainClass.getName());
+              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_BuildInvalidMsg", a.getName(), domainClass.getName());
             });
 
     // Add methods for domain associations
     CDSymbolTables.getAssociationsInHierarchy(domainClass).stream().filter(a -> !a.getModifier().isDerived())
             .forEach(a -> {
-              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.ReportInvalid", a.getName(), domainClass.getName());
-              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._ReportInvalid", a.getName(), domainClass.getName());
-              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName());
+              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSReportInvalid", a.getName(), domainClass.getName());
+              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_ReportInvalid", a.getName(), domainClass.getName());
+              getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_BuildInvalidMsg", a.getName(), domainClass.getName());
             });
     // Imports
     addImports(origCD, collectorClass);

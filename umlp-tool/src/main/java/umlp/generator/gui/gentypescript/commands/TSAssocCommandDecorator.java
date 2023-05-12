@@ -12,47 +12,47 @@ public class TSAssocCommandDecorator extends AssocCommandDecorator {
 
   @Override
   protected String getAdd_DoRunTemplate() {
-    return "umlp.gui2ts.commands.assocs.Add_DoRun";
+    return "umlp.gui2ts.commands.assocs.TSAdd_DoRun";
   }
 
   @Override
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.commands.assocs.Constructor";
+    return "umlp.gui2ts.commands.assocs.TSConstructor";
   }
 
   @Override
   protected String getRemove_DoRunTemplate() {
-    return "umlp.gui2ts.commands.assocs.Remove_DoRun";
+    return "umlp.gui2ts.commands.assocs.TSRemove_DoRun";
   }
 
   @Override
   protected String getSet_ConstructorTemplate() {
-    return "umlp.gui2ts.commands.assocs.Set_Constructor";
+    return "umlp.gui2ts.commands.assocs.TSSet_Constructor";
   }
 
   @Override
   protected String getGetEffectedGemIdsTemplate() {
-    return "umlp.gui2ts.commands.GetEffectedGemIds";
+    return "umlp.gui2ts.commands.TSGetEffectedGemIds";
   }
 
   @Override
   protected String getSet_Source_ExchangeTemplate() {
-    return "umlp.gui2ts.commands.assocs.Set_Source_Exchange";
+    return "umlp.gui2ts.commands.assocs.TSSet_Source_Exchange";
   }
 
   @Override
   protected String getSet_DoRunTemplate() {
-    return "umlp.gui2ts.commands.assocs.Set_DoRun";
+    return "umlp.gui2ts.commands.assocs.TSSet_DoRun";
   }
 
   @Override
   protected String getBuildJsonTemplate() {
-    return "umlp.gui2ts.commands.assocs.BuildJson";
+    return "umlp.gui2ts.commands.assocs.TSBuildJson";
   }
 
   @Override
   protected String getFromJsonObjectTemplate() {
-    return "umlp.gui2ts.commands.assocs.FromJsonObject";
+    return "umlp.gui2ts.commands.assocs.TSFromJsonObject";
   }
 
 }

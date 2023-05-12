@@ -13,32 +13,32 @@ public class TSCalculateDecorator extends CalculateDecorator {
 
   @Override
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.commands.get.Constructor";
+    return "umlp.gui2ts.commands.get.TSConstructor";
   }
 
   @Override
   protected String getGetEffectedGemIdsTemplate() {
-    return "umlp.gui2ts.commands.GetEffectedGemIds";
+    return "umlp.gui2ts.commands.TSGetEffectedGemIds";
   }
 
   @Override
   protected String getDoRunSimpleTemplate() {
-    return "umlp.gui2ts.commands.calculate.DoRunSimple";
+    return "umlp.gui2ts.commands.calculate.TSDoRunSimple";
   }
 
   @Override
   protected String getDoRunListTemplate() {
-    return "umlp.gui2ts.commands.calculate.DoRunList";
+    return "umlp.gui2ts.commands.calculate.TSDoRunList";
   }
 
   @Override
   protected String getGet_BuildJsonTemplate() {
-    return "umlp.gui2ts.commands.deser.Get_BuildJson";
+    return "umlp.gui2ts.commands.deser.TSGet_BuildJson";
   }
 
   @Override
   protected String getGet_FromJsonObjectTemplate() {
-    return "umlp.gui2ts.commands.deser.Get_FromJsonObject";
+    return "umlp.gui2ts.commands.deser.TSGet_FromJsonObject";
   }
 
 }

@@ -12,16 +12,16 @@ public class TSGetFreeGemIdRequestDecorator extends GetFreeGemIdRequestDecorator
 
   @Override
   protected String getDoRunTemplate() {
-    return "umlp.gui2ts.requests.getfreegemid.DoRun";
+    return "umlp.gui2ts.requests.getfreegemid.TSDoRun";
   }
 
   @Override
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.requests.getfreegemid.Constructor";
+    return "umlp.gui2ts.requests.getfreegemid.TSConstructor";
   }
 
   @Override
   protected String getFromJsonObjectTemplate() {
-    return "umlp.gui2ts.requests.getfreegemid.FromJsonObject";
+    return "umlp.gui2ts.requests.getfreegemid.TSFromJsonObject";
   }
 }

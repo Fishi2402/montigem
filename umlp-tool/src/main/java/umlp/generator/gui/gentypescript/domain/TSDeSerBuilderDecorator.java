@@ -31,19 +31,19 @@ public class TSDeSerBuilderDecorator extends DeSerBuilderDecorator {
   }
 
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.deser_builder.Constructor";
+    return "umlp.gui2ts.deser_builder.TSConstructor";
   }
 
   protected String getsetSimpleTemplate() {
-    return "umlp.gui2ts.deser_builder.setSimple";
+    return "umlp.gui2ts.deser_builder.TSsetSimple";
   }
 
   protected String getsetGemTemplate() {
-    return "umlp.gui2ts.deser_builder.setGem";
+    return "umlp.gui2ts.deser_builder.TSsetGem";
   }
 
   protected String getsetGemListIdsTemplate() {
-    return "umlp.gui2ts.deser_builder.setGemListIds";
+    return "umlp.gui2ts.deser_builder.TSsetGemListIds";
   }
 
 }

@@ -75,12 +75,12 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
 
   @Override
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.domain.Constructor";
+    return "umlp.gui2ts.domain.TSConstructor";
   }
 
   @Override
   protected String getBuildTemplate() {
-    return "umlp.gui2ts.domain.Build";
+    return "umlp.gui2ts.domain.TSBuild";
   }
 
   @Override
@@ -97,12 +97,12 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
   protected void createCheckMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     for (ASTCDAttribute attr : CDSymbolTables.getAttributesInHierarchy(domainClass)
         .stream().filter(GenService::isVisibleNotDerived).collect(Collectors.toList())) {
-      getCD4C().addMethod(clazz, "umlp.gui2ts.domain.Check",
+      getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSCheck",
           domainClass.getName(), attr.getName(),
           !GenService.isList(attr) && !GenService.isOptional(attr));
     }
     for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
-      getCD4C().addMethod(clazz, "umlp.gui2ts.domain.Check",
+      getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSCheck",
           domainClass.getName(), assoc.getName(),
           !GenService.isOptional(assoc));
     }
@@ -110,14 +110,14 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
 
   @Override
   protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
-    getCD4C().addMethod(clazz, "umlp.gui2ts.domain.AddObserver", domainClass.getName(), clazz.isPresentCDExtendUsage());
-    getCD4C().addMethod(clazz, "umlp.gui2ts.domain.RemoveObserver", domainClass.getName());
-    getCD4C().addMethod(clazz, "umlp.gui2ts.domain.ContainsObserver", domainClass.getName());
+    getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSAddObserver", domainClass.getName(), clazz.isPresentCDExtendUsage());
+    getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSRemoveObserver", domainClass.getName());
+    getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSContainsObserver", domainClass.getName());
   }
 
   @Override
   protected String getEqualsTemplate() {
-    return "umlp.gui2ts.domain.Equals";
+    return "umlp.gui2ts.domain.TSEquals";
   }
 
 }

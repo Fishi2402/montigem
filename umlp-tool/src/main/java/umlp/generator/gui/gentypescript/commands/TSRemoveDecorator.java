@@ -14,27 +14,27 @@ public class TSRemoveDecorator extends RemoveDecorator {
 
   @Override
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.commands.remove.Constructor";
+    return "umlp.gui2ts.commands.remove.TSConstructor";
   }
 
   @Override
   protected String getGetEffectedGemIdsTemplate() {
-    return "umlp.gui2ts.commands.GetEffectedGemIds";
+    return "umlp.gui2ts.commands.TSGetEffectedGemIds";
   }
 
   @Override
   protected String getDoRunTemplate() {
-    return "umlp.gui2ts.commands.remove.DoRun";
+    return "umlp.gui2ts.commands.remove.TSDoRun";
   }
 
   @Override
   protected String getSet_BuildJsonTemplate() {
-    return "umlp.gui2ts.commands.deser.Set_BuildJson";
+    return "umlp.gui2ts.commands.deser.TSSet_BuildJson";
   }
 
   @Override
   protected String getSet_FromJsonObjectTemplate() {
-    return "umlp.gui2ts.commands.deser.Set_FromJsonObject";
+    return "umlp.gui2ts.commands.deser.TSSet_FromJsonObject";
   }
 
 }

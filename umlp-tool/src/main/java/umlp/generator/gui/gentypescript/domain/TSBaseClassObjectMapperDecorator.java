@@ -27,12 +27,12 @@ public class TSBaseClassObjectMapperDecorator extends BaseClassObjectMapperDecor
 
   @Override
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.baseclassobjectmapper.Constructor";
+    return "umlp.gui2ts.baseclassobjectmapper.TSConstructor";
   }
 
   @Override
   protected String getInitTemplate() {
-    return "umlp.gui2ts.baseclassobjectmapper.Init";
+    return "umlp.gui2ts.baseclassobjectmapper.TSInit";
   }
 
 }

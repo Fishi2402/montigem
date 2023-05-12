@@ -13,22 +13,22 @@ public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
 
   @Override
   protected String getSerSingleValueTemplate() {
-    return "umlp.gui2ts.commandresultdeser.SerSingleValue";
+    return "umlp.gui2ts.commandresultdeser.TSSerSingleValue";
   }
 
   @Override
   protected String getDeserSingleValueTemplate() {
-    return "umlp.gui2ts.commandresultdeser.DeserSingleValue";
+    return "umlp.gui2ts.commandresultdeser.TSDeserSingleValue";
   }
 
   @Override
   protected String getFromJsonTemplate() {
-    return "umlp.gui2ts.commandresultdeser.FromJson";
+    return "umlp.gui2ts.commandresultdeser.TSFromJson";
   }
 
   @Override
   protected String getBuildJsonTemplate() {
-    return "umlp.gui2ts.commandresultdeser.BuildJson";
+    return "umlp.gui2ts.commandresultdeser.TSBuildJson";
   }
 
 }

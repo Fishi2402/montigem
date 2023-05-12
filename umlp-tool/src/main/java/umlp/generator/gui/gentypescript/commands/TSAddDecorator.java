@@ -14,27 +14,27 @@ public class TSAddDecorator extends AddDecorator {
 
   @Override
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.commands.add.Constructor";
+    return "umlp.gui2ts.commands.add.TSConstructor";
   }
 
   @Override
   protected String getGetEffectedGemIdsTemplate() {
-    return "umlp.gui2ts.commands.GetEffectedGemIds";
+    return "umlp.gui2ts.commands.TSGetEffectedGemIds";
   }
 
   @Override
   protected String getDoRunTemplate() {
-    return "umlp.gui2ts.commands.add.DoRun";
+    return "umlp.gui2ts.commands.add.TSDoRun";
   }
 
   @Override
   protected String getAdd_BuildJsonTemplate() {
-    return "umlp.gui2ts.commands.deser.Add_BuildJson";
+    return "umlp.gui2ts.commands.deser.TSAdd_BuildJson";
   }
 
   @Override
   protected String getAdd_FromJsonObjectTemplate() {
-    return "umlp.gui2ts.commands.deser.Add_FromJsonObject";
+    return "umlp.gui2ts.commands.deser.TSAdd_FromJsonObject";
   }
 
 }

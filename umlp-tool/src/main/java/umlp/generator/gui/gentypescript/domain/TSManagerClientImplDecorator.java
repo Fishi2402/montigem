@@ -37,17 +37,17 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
 
   @Override
   protected String getErrorNotificationScopeTemplate() {
-    return "umlp.gui2ts.managerclientimpl.ErrorNotificationScope";
+    return "umlp.gui2ts.managerclientimpl.TSErrorNotificationScope";
   }
 
   @Override
   protected String getDoGetFreeGemIdTemplate() {
-    return "umlp.gui2ts.managerclientimpl.DoGetFreeGemId";
+    return "umlp.gui2ts.managerclientimpl.TSDoGetFreeGemId";
   }
 
   @Override
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.managerclientimpl.Constructor";
+    return "umlp.gui2ts.managerclientimpl.TSConstructor";
   }
 
 
@@ -62,16 +62,16 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     }
 
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainClass);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.DoGetList", name, false);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoOpt", name, concreteSubclassesOrderedByDistance);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoGetSure", name);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoGetList", name, false);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSIsLoaded", name, concreteSubclassesOrderedByDistance);
 
     if(!domainClass.getModifier().isAbstract()) {
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.DoBuilderParam", name);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.DoDeSerBuilder", name);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.DoAdd", name, managerName);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.DoDelete", name, managerName);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderParam", name);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoDeSerBuilder", name);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoAdd", name, managerName);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoDelete", name, managerName);
     }
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
@@ -86,8 +86,8 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     // Associations
     CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
       String type = a.getSymbol().getType().print();
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.DoCreateAssoc", a.getName(), type);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.DoBuilderAssoc", domainClass.getName(), a.getName(), type);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", a.getName(), type);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", domainClass.getName(), a.getName(), type);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
     });
   }
@@ -98,10 +98,10 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     String name = domainInterface.getName();
 
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainInterface);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.DoGetList", name, true);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoOpt", name, concreteSubclassesOrderedByDistance);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoGetSure", name);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoGetList", name, true);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSIsLoaded", name, concreteSubclassesOrderedByDistance);
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get"));
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));
@@ -109,8 +109,8 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     // Associations
     CDSymbolTables.getAssociations(domainInterface).stream().filter(GenService::isList).forEach(a -> {
       String type = a.getSymbol().getType().print();
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.DoCreateAssoc", a.getName(), type);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.DoBuilderAssoc", name, a.getName(), type);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", a.getName(), type);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", name, a.getName(), type);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainInterface, a)));
     });
   }

@@ -12,31 +12,31 @@ public class TSGetDecorator extends GetDecorator {
 
   @Override
   protected String getGetNewlySubscribedGemIdsTemplate() {
-    return "umlp.gui2ts.commands.get.GetNewlySubscribedGemIds";
+    return "umlp.gui2ts.commands.get.TSGetNewlySubscribedGemIds";
   }
 
   @Override
   protected String getGetEffectedGemIdsTemplate() {
-    return "umlp.gui2ts.commands.GetEffectedGemIds";
+    return "umlp.gui2ts.commands.TSGetEffectedGemIds";
   }
 
   @Override
   protected String getDoRunTemplate() {
-    return "umlp.gui2ts.commands.get.DoRun";
+    return "umlp.gui2ts.commands.get.TSDoRun";
   }
 
   @Override
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.commands.get.Constructor";
+    return "umlp.gui2ts.commands.get.TSConstructor";
   }
 
   @Override
   protected String getGet_BuildJsonTemplate() {
-    return "umlp.gui2ts.commands.deser.Get_BuildJson";
+    return "umlp.gui2ts.commands.deser.TSGet_BuildJson";
   }
 
   @Override
   protected String getGet_FromJsonObjectTemplate() {
-    return "umlp.gui2ts.commands.deser.Get_FromJsonObject";
+    return "umlp.gui2ts.commands.deser.TSGet_FromJsonObject";
   }
 }

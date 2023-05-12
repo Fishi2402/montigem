@@ -25,6 +25,6 @@ public class TSAggregatedCommandDeSerDecorator extends AggregatedCommandDeSerDec
   }
 
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.commands.aggregatedcommanddeser.Constructor";
+    return "umlp.gui2ts.commands.aggregatedcommanddeser.TSConstructor";
   }
 }

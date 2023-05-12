@@ -11,31 +11,31 @@ public class TSGemListAssocDecorator extends GemListAssocDecorator {
   }
 
   protected String getConstructorEmptyTemplate() {
-    return "umlp.gui2ts.gemlist.assocs.ConstructorEmpty";
+    return "umlp.gui2ts.gemlist.assocs.TSConstructorEmpty";
   }
 
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.gemlist.assocs.Constructor";
+    return "umlp.gui2ts.gemlist.assocs.TSConstructor";
   }
 
   protected String getInternalRemoveTemplate() {
-    return "umlp.gui2ts.gemlist.assocs.InternalRemove";
+    return "umlp.gui2ts.gemlist.assocs.TSInternalRemove";
   }
 
   protected String getInternalSetTemplate() {
-    return "umlp.gui2ts.gemlist.assocs.InternalSet";
+    return "umlp.gui2ts.gemlist.assocs.TSInternalSet";
   }
 
   protected String getInternalAddTemplate() {
-    return "umlp.gui2ts.gemlist.assocs.InternalAdd";
+    return "umlp.gui2ts.gemlist.assocs.TSInternalAdd";
   }
 
   protected String getGetOwnerTemplate() {
-    return "umlp.gui2ts.gemlist.assocs.GetOwner";
+    return "umlp.gui2ts.gemlist.assocs.TSGetOwner";
   }
 
   protected String getLoadObjectsTemplate() {
-    return "umlp.gui2ts.gemlist.LoadObjects";
+    return "umlp.gui2ts.gemlist.TSLoadObjects";
   }
 
 }

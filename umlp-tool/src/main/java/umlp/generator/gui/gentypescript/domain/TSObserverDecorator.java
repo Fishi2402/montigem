@@ -42,15 +42,15 @@ public class TSObserverDecorator extends ObserverDecorator {
       .forEach(a -> {
         if(GenService.isList(a)) {
           String innerType = GenService.getInnerType(a.getMCType());
-          getCD4C().addMethod(ast, "umlp.gui2ts.observer.NotifyAdd", a.getName(), className, innerType);
-          getCD4C().addMethod(ast, "umlp.gui2ts.observer.MaybeNotifyAdd", a.getName(), className, innerType);
-          getCD4C().addMethod(ast, "umlp.gui2ts.observer.NotifyRemove", a.getName(), className, innerType);
-          getCD4C().addMethod(ast, "umlp.gui2ts.observer.MaybeNotifyRemove", a.getName(), className, innerType);
+          getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotifyAdd", a.getName(), className, innerType);
+          getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyAdd", a.getName(), className, innerType);
+          getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotifyRemove", a.getName(), className, innerType);
+          getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyRemove", a.getName(), className, innerType);
         }
 
         String fullType = getCDPrinter().prettyprint(createType(a));
-        getCD4C().addMethod(ast, "umlp.gui2ts.observer.Notify", a.getName(), className, fullType, false);
-        getCD4C().addMethod(ast, "umlp.gui2ts.observer.MaybeNotify", a.getName(), className, fullType, false);
+        getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotify", a.getName(), className, fullType, false);
+        getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotify", a.getName(), className, fullType, false);
       });
 
     // Add Notify for list associations
@@ -58,12 +58,12 @@ public class TSObserverDecorator extends ObserverDecorator {
             .filter(a -> !a.getModifier().isDerived())
             .filter(a -> GenService.isList(a))
             .forEach(a -> {
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.NotifyAdd", a.getName(), className, "long");
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.MaybeNotifyAdd", a.getName(), className, "long");
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.NotifyRemove", a.getName(), className, "long");
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.MaybeNotifyRemove", a.getName(), className, "long");
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.Notify", a.getName(), className, "long", true);
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.MaybeNotify", a.getName(), className, "long", true);
+              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotifyAdd", a.getName(), className, "long");
+              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyAdd", a.getName(), className, "long");
+              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotifyRemove", a.getName(), className, "long");
+              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyRemove", a.getName(), className, "long");
+              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotify", a.getName(), className, "long", true);
+              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotify", a.getName(), className, "long", true);
             });
 
     // Add Notify for associations
@@ -71,13 +71,13 @@ public class TSObserverDecorator extends ObserverDecorator {
             .filter(a -> !a.getModifier().isDerived())
             .filter(a -> !GenService.isList(a))
             .forEach(a -> {
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.Notify", a.getName(), className, "long", false);
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.MaybeNotify", a.getName(), className, "long", false);
+              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotify", a.getName(), className, "long", false);
+              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotify", a.getName(), className, "long", false);
             });
 
-    getCD4C().addMethod(ast, "umlp.gui2ts.observer.GetScope");
-    getCD4C().addMethod(ast, "umlp.gui2ts.observer.NotifyBuild", className);
-    getCD4C().addMethod(ast, "umlp.gui2ts.observer.MaybeNotifyBuild", className);
+    getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSGetScope");
+    getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotifyBuild", className);
+    getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyBuild", className);
 
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     super.addImports(domainClass, ast);

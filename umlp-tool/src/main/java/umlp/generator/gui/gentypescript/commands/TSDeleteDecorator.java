@@ -26,26 +26,26 @@ public class TSDeleteDecorator extends DeleteDecorator {
 
   @Override
   protected String getGetEffectedGemIdsTemplate() {
-    return "umlp.gui2ts.commands.GetEffectedGemIds";
+    return "umlp.gui2ts.commands.TSGetEffectedGemIds";
   }
 
   @Override
   protected String getDoRunTemplate() {
-    return "umlp.gui2ts.commands.delete.DoRun";
+    return "umlp.gui2ts.commands.delete.TSDoRun";
   }
 
   @Override
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.commands.get.Constructor";
+    return "umlp.gui2ts.commands.get.TSConstructor";
   }
 
   @Override
   protected String getGet_BuildJsonTemplate() {
-    return "umlp.gui2ts.commands.deser.Get_BuildJson";
+    return "umlp.gui2ts.commands.deser.TSGet_BuildJson";
   }
 
   @Override
   protected String getGet_FromJsonObjectTemplate() {
-    return "umlp.gui2ts.commands.deser.Get_FromJsonObject";
+    return "umlp.gui2ts.commands.deser.TSGet_FromJsonObject";
   }
 }

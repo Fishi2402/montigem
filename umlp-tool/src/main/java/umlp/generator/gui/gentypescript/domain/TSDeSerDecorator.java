@@ -16,52 +16,52 @@ public class TSDeSerDecorator extends DeSerDecorator {
 
   @Override
   protected String getSerializeTemplate() {
-    return "umlp.gui2ts.deser.serialize";
+    return "umlp.gui2ts.deser.TSserialize";
   }
 
   @Override
   protected String getDeserializeTemplate() {
-    return "umlp.gui2ts.deser.deserialize";
+    return "umlp.gui2ts.deser.TSdeserialize";
   }
 
   @Override
   protected String getBuildJsonTemplate() {
-    return "umlp.gui2ts.deser.BuildJson";
+    return "umlp.gui2ts.deser.TSBuildJson";
   }
 
   @Override
   protected String getFromJsonTemplate() {
-    return "umlp.gui2ts.deser.FromJson";
+    return "umlp.gui2ts.deser.TSFromJson";
   }
 
   @Override
   protected String getSerializeSimpleFieldTemplate() {
-    return "umlp.gui2ts.deser.serializeSimpleField";
+    return "umlp.gui2ts.deser.TSserializeSimpleField";
   }
 
   @Override
   protected String getDeserializeSimpleFieldTemplate() {
-    return "umlp.gui2ts.deser.deserializeSimpleField";
+    return "umlp.gui2ts.deser.TSdeserializeSimpleField";
   }
 
   @Override
   protected String getSerializeGemListFieldTemplate() {
-    return "umlp.gui2ts.deser.serializeGemListField";
+    return "umlp.gui2ts.deser.TSserializeGemListField";
   }
 
   @Override
   protected String getDeserializeGemListFieldTemplate() {
-    return "umlp.gui2ts.deser.deserializeGemListField";
+    return "umlp.gui2ts.deser.TSdeserializeGemListField";
   }
 
   @Override
   protected String getSerializeGemFieldTemplate() {
-    return "umlp.gui2ts.deser.serializeGemField";
+    return "umlp.gui2ts.deser.TSserializeGemField";
   }
 
   @Override
   protected String getDeserializeGemFieldTemplate() {
-    return "umlp.gui2ts.deser.deserializeGemField";
+    return "umlp.gui2ts.deser.TSdeserializeGemField";
   }
 
 }

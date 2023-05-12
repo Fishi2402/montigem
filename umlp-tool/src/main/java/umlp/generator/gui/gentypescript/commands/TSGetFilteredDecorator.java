@@ -11,18 +11,18 @@ public class TSGetFilteredDecorator extends GetFilteredDecorator {
   }
 
   protected String getDoRunTemplate() {
-    return "umlp.gui2ts.commands.get_filtered.DoRun";
+    return "umlp.gui2ts.commands.get_filtered.TSDoRun";
   }
 
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.commands.get_filtered.Constructor";
+    return "umlp.gui2ts.commands.get_filtered.TSConstructor";
   }
 
   protected String getGetFiltered_BuildJsonTemplate() {
-    return "umlp.gui2ts.commands.deser.GetFiltered_BuildJson";
+    return "umlp.gui2ts.commands.deser.TSGetFiltered_BuildJson";
   }
 
   protected String getGetFiltered_FromJsonObjectTemplate() {
-    return "umlp.gui2ts.commands.deser.GetFiltered_FromJsonObject";
+    return "umlp.gui2ts.commands.deser.TSGetFiltered_FromJsonObject";
   }
 }

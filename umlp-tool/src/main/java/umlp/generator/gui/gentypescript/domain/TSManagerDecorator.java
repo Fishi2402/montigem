@@ -22,7 +22,7 @@ public class TSManagerDecorator extends ManagerDecorator {
 
   @Override
   protected String getErrorNotificationScopeTemplate() {
-    return "umlp.gui2ts.manager.ErrorNotificationScope";
+    return "umlp.gui2ts.manager.TSErrorNotificationScope";
   }
 
   @Override
@@ -32,12 +32,12 @@ public class TSManagerDecorator extends ManagerDecorator {
     getCD4C().addAttribute(managerClass, "protected static " + name + " instance");
 
     // add methods
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.InitMe", name);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetSingleton", name);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.SetInstance", simpleName);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSInitMe", name);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetSingleton", name);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSSetInstance", simpleName);
 
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetFreeGemId", true);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetFreeGemId", false);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetFreeGemId", true);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetFreeGemId", false);
   }
 
   @Override
@@ -45,41 +45,41 @@ public class TSManagerDecorator extends ManagerDecorator {
     String name = domainClass.getName();
 
     if (domainClass.getModifier().isDerived()) {
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetDerived", name, true);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetDerived", name, false);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetDerived", name, true);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetDerived", name, false);
     }
     else {
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.CreateGem", name, true);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.CreateGem", name, false);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.Opt", name, true);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.Opt", name, false);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetSure", name, true);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetSure", name, false);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetList", name, true);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetList", name, false);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.IsLoaded", name, true);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.IsLoaded", name, false);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSCreateGem", name, true);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSCreateGem", name, false);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSOpt", name, true);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSOpt", name, false);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetSure", name, true);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetSure", name, false);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetList", name, true);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetList", name, false);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSIsLoaded", name, true);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSIsLoaded", name, false);
 
       if (!domainClass.getModifier().isAbstract()) {
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.Builder", name, true);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.Builder", name, false);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.BuilderParam", name, true);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.BuilderParam", name, false);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.DeSerBuilder", name, true);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.DeSerBuilder", name, false);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.Delete", name, true);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.Delete", name, false);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.Add", name, true);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.Add", name, false);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilder", name, true);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilder", name, false);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilderParam", name, true);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilderParam", name, false);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDeSerBuilder", name, true);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDeSerBuilder", name, false);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDelete", name, true);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDelete", name, false);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSAdd", name, true);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSAdd", name, false);
       }
 
       // Associations
       CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
         String type = a.getSymbol().getType().print();
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.CreateAssoc", a.getName(), type, true);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.CreateAssoc", a.getName(), type, false);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.BuilderAssoc", a.getName(), type, true);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.BuilderAssoc", a.getName(), type, false);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSCreateAssoc", a.getName(), type, true);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSCreateAssoc", a.getName(), type, false);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilderAssoc", a.getName(), type, true);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilderAssoc", a.getName(), type, false);
       });
     }
 
@@ -90,28 +90,28 @@ public class TSManagerDecorator extends ManagerDecorator {
     String name = domainInterface.getName();
 
     if (domainInterface.getModifier().isDerived()) {
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetDerived", name, true);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetDerived", name, false);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetDerived", name, true);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetDerived", name, false);
     }
     else {
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.CreateGem", name, true);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.CreateGem", name, false);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.Opt", name, true);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.Opt", name, false);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetSure", name, true);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetSure", name, false);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetList", name, true);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.GetList", name, false);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.IsLoaded", name, true);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.IsLoaded", name, false);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSCreateGem", name, true);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSCreateGem", name, false);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSOpt", name, true);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSOpt", name, false);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetSure", name, true);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetSure", name, false);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetList", name, true);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetList", name, false);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSIsLoaded", name, true);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSIsLoaded", name, false);
 
       // Associations
       CDSymbolTables.getAssociations(domainInterface).stream().filter(GenService::isList).forEach(a -> {
         String type = a.getSymbol().getType().print();
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.CreateAssoc", a.getName(), type, true);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.CreateAssoc", a.getName(), type, false);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.BuilderAssoc", a.getName(), type, true);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.BuilderAssoc", a.getName(), type, false);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSCreateAssoc", a.getName(), type, true);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSCreateAssoc", a.getName(), type, false);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilderAssoc", a.getName(), type, true);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilderAssoc", a.getName(), type, false);
       });
     }
   }

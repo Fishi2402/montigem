@@ -28,49 +28,49 @@ public class TSBuilderDecorator extends BuilderDecorator {
   }
 
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.builder.Constructor";
+    return "umlp.gui2ts.builder.TSConstructor";
   }
 
   protected String getBuildTemplate() {
-    return "umlp.gui2ts.builder.Build";
+    return "umlp.gui2ts.builder.TSBuild";
   }
 
   protected String getIsBuildableTemplate() {
-    return "umlp.gui2ts.builder.IsBuildable";
+    return "umlp.gui2ts.builder.TSIsBuildable";
   }
 
   protected void createSetAndCheckMethods(ASTCDClass domainClass, ASTCDClass builderClass,
       List<ASTCDAttribute> attrList,
       List<ASTCDAssocSide> assocList) {
     for (ASTCDAttribute attribute : attrList) {
-      getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.Attr",
+      getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.TSAttr",
           attribute.getName(), getCDPrinter().prettyprint(createType(attribute)),
           getClassName(domainClass.getName()));
-      getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.Check",
+      getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.TSCheck",
           attribute.getName(), domainClass.getName(),
           !GenService.isList(attribute) && !GenService.isOptional(attribute));
     }
     for (ASTCDAssocSide assoc : assocList) {
-      getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.Check",
+      getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.TSCheck",
           assoc.getName(), domainClass.getName(),
           !GenService.isOptional(assoc));
       if (GenService.isList(assoc)) {
-        getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.AssocList",
+        getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.TSAssocList",
             assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
             getClassName(domainClass.getName()));
-        getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.AssocAdd",
+        getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.TSAssocAdd",
             assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
             getClassName(domainClass.getName()));
-        getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.AssocGemList",
+        getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.TSAssocGemList",
             assoc.getName(),
             getClassName(domainClass.getName()));
 
       }
       else {
-        getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.AssocOne",
+        getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.TSAssocOne",
             assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
             getClassName(domainClass.getName()));
-        getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.AssocOneGem",
+        getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.TSAssocOneGem",
             assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
             getClassName(domainClass.getName()));
       }
