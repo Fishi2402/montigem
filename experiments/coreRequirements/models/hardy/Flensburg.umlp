@@ -15,6 +15,7 @@ umlp Flensburg {
         int age;
     }
 
+/*
     class Person extends Human {
         String nickname;
 
@@ -53,4 +54,5 @@ umlp Flensburg {
     }
 
     / association cities CityInfo -> java.lang.String [*];
+/**/
 }

@@ -83,7 +83,7 @@ task generateFlensburg(type: UMLPTask) {
 
 task genTS(type: UMLPTask) {
     input = (file("models/hardy"))
-    outputDir = layout.buildDirectory.dir("domainTS")
+    outputDir = file("$projectDir/stanley/src/build")
     forClient = true
 
     /*
@@ -102,7 +102,7 @@ task copySymbols(type: Copy) {
 task generateAll(type: UMLPGuiGenTask) {
     dependsOn(copySymbols)
     input = (file("models"))
-    outputDir = layout.buildDirectory.dir("gen")
+    outputDir = file("$projectDir/stanley/src/build")
     hwcDir = layout.projectDirectory.dir("src/main/java")
     modelDir = layout.projectDirectory.dir("models")
     symbolDir = file("models")
