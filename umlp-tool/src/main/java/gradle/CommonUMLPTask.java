@@ -17,6 +17,7 @@ import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.work.Incremental;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
+import umlp.UMLPTool;
 import umlp.UMLPToolOptions;
 
 import javax.inject.Inject;
@@ -132,5 +133,18 @@ public abstract class CommonUMLPTask extends DefaultTask {
 
     return result;
   }
+
+  protected  void startGeneration( List<String> args) {
+    if (getDebug().get()){
+      // In debug mode, run code directly. Otherwise breakpoints etc do not work
+      UMLPTool.main(args.toArray(new String[0]));
+    } else {
+      // In normal mode, run in a workQue. This ensures isolation & parallelization
+      workQueue.submit(UMLPAction.class, param -> {
+        param.getArgs().set(args);
+      });
+    }
+  }
+
 
 }
