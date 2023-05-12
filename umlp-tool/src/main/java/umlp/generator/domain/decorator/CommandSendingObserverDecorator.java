@@ -66,8 +66,8 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
                     t.getName(), a.getName(), GenService.getInnerType(a.getMCType()),
                     a.getName(), false, t.getName());
 
-                glex.replaceTemplate("cd2java.Annotations", add, new StringHookPoint("@Override"));
-                glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
+                setOverrideAnnotation(add);
+                setOverrideAnnotation(remove);
 
                 getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE)+"."+
                     t.getName() + "_add" + StringTransformations.capitalize(a.getName()));
@@ -78,7 +78,7 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
                     t.getName(), a.getName(), GenService.createType(a).printType(),
                     a.getName(), false, domainClass.getName());
 
-                glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
+                setOverrideAnnotation(set);
 
                 getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE)+"."+
                     domainClass.getName() + "_set" + StringTransformations.capitalize(a.getName()));
@@ -104,8 +104,8 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
             ASTCDMethodSignature remove = getCD4C().addMethod(ast, removeAttributeTmplt(), oneType.print(),
                 a.getName(), "long", assocName, isBidirectional, otherType.print());
 
-            glex.replaceTemplate("cd2java.Annotations", add, new StringHookPoint("@Override"));
-            glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
+            setOverrideAnnotation(add);
+            setOverrideAnnotation(remove);
 
             if (isBidirectional) {
               getCD4C().addImport(ast, getPackageName(origCD, COMMAND_ASSOC_PACKAGE) + "." +
@@ -121,7 +121,7 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
           } else {
             ASTCDMethodSignature set = getCD4C().addMethod(ast, setAttributeTmplt(), otherType.print(),
                 a.getName(), "long", assocName, isBidirectional, domainClass.getName());
-            glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
+            setOverrideAnnotation(set);
 
             if (isBidirectional) {
               getCD4C().addImport(ast, getPackageName(origCD, COMMAND_ASSOC_PACKAGE) + "." +
@@ -138,6 +138,10 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     addImports(origCD, domainClass, ast);
 
     return ast;
+  }
+
+  protected void setOverrideAnnotation(ASTCDMethodSignature m) {
+    glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint("@Override"));
   }
 
   protected String setAttributeTmplt() {

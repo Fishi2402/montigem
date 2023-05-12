@@ -108,14 +108,14 @@ public class SetDecorator extends AbstractDeSerDecorator {
     ASTCDAttribute attr = isGem?getCD4C().addAttribute(ast, "protected long " + completeName)
             :getCD4C().addAttribute(ast, "protected " + GenService.createType(type).printType() + " " + completeName);
 
-    getCD4C().addConstructor(ast, "umlp.commands.set.Constructor", classname, getPackageName(origCD, COMMAND_PACKAGE),
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname, getPackageName(origCD, COMMAND_PACKAGE),
             completeName, isGem?"long":GenService.createType(type).printType());
 
-    getCD4C().addMethod(ast, "umlp.commands.set.DoRun", name, domainType.getName(), origCD.getCDDefinition().getName(), isGem, type.print());
+    getCD4C().addMethod(ast, getDoRunTemplate(), name, domainType.getName(), origCD.getCDDefinition().getName(), isGem, type.print());
     if (isGem) {
-      getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("gemId" , name+"GemId"));
+      getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("gemId" , name+"GemId"));
     } else {
-      getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getGemId()"));
+      getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("getGemId()"));
     }
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(gemAttr));
@@ -145,6 +145,18 @@ public class SetDecorator extends AbstractDeSerDecorator {
     }
 
     return ast;
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.commands.set.Constructor";
+  }
+
+  protected String getGetEffectedGemIdsTemplate() {
+    return "umlp.commands.GetEffectedGemIds";
+  }
+
+  protected String getDoRunTemplate() {
+    return "umlp.commands.set.DoRun";
   }
 
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDType domainType, boolean isGem) {
@@ -181,8 +193,8 @@ public class SetDecorator extends AbstractDeSerDecorator {
     String baseClassDecorator = origCD.getCDDefinition().getName() + BaseClassObjectMapperDecorator.SUFFIX;
     boolean useDeSer = supportedDeSers.contains(typeName);
     boolean makeAbstract = jsonStr.equals("") && !useDeSer;
-    getCD4C().addMethod(ast, "umlp.commands.deser.Set_FromJsonObject", cmdName, name, typeName, isOptional, isCDEnum, jsonStr, useDeSer, baseClassDecorator, makeAbstract);
-    getCD4C().addMethod(ast, "umlp.commands.deser.Set_BuildJson", cmdName, name, typeName, isCDEnum, GenService.getGetterName(name, type), useDeSer, baseClassDecorator, makeAbstract);
+    getCD4C().addMethod(ast, getSet_FromJsonObjectTemplate(), cmdName, name, typeName, isOptional, isCDEnum, jsonStr, useDeSer, baseClassDecorator, makeAbstract);
+    getCD4C().addMethod(ast, getSet_BuildJsonTemplate(), cmdName, name, typeName, isCDEnum, GenService.getGetterName(name, type), useDeSer, baseClassDecorator, makeAbstract);
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
@@ -199,6 +211,14 @@ public class SetDecorator extends AbstractDeSerDecorator {
 
     addedDeSers.add(ast);
     return ast;
+  }
+
+  protected String getSet_BuildJsonTemplate() {
+    return "umlp.commands.deser.Set_BuildJson";
+  }
+
+  protected String getSet_FromJsonObjectTemplate() {
+    return "umlp.commands.deser.Set_FromJsonObject";
   }
 
   // TODO (MB): Bessere Lösung?

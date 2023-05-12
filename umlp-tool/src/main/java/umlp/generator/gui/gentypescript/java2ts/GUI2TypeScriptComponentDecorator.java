@@ -55,22 +55,22 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
 
   @Override
   protected String getInitListsTemplate() {
-    return "umlp.gui2ts.InitLists";
+    return "umlp.gui2ts.TSInitLists";
   }
 
   @Override
   protected String getGetterTemplate() {
-    return "umlp.gui2ts.GetComponentReplaced";
+    return "umlp.gui2ts.TSGetComponentReplaced";
   }
 
   @Override
   protected String getSetterTemplate() {
-    return "umlp.gui2ts.SetComponent";
+    return "umlp.gui2ts.TSSetComponent";
   }
 
   @Override
   protected void addSetComponentMethod(ASTCDClass decoratedClass, String methodName, String attrType, String attrName) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2ts.SetComponent", methodName, attrType, attrName);
+    getCD4C().addMethod(decoratedClass, "umlp.gui2ts.TSSetComponent", methodName, attrType, attrName);
   }
 
   @Override

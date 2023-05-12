@@ -1,0 +1,18 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
+${tc.signature( "attributename","classname","definition", "isGem", "targettype")}
+${cd4c.method("public StatusResult doRun()")}
+
+console.debug("Executing set_${attributename} to " + ${attributename}<#if isGem>GemId</#if> + " on ${classname?uncap_first} " + gemId);
+console.trace();
+let ${classname?uncap_first}Opt: ${classname} = ${definition}Manager.${classname?uncap_first}Opt(gemId);
+    if(${classname?uncap_first}Opt != null){
+<#if isGem>
+      ${classname?uncap_first}Opt.set${attributename?cap_first}Gem(${definition}Manager.create${targettype}Gem(this.${attributename}GemId), NotificationScope.LOCAL);
+<#else>
+      ${classname?uncap_first}Opt.set${attributename?cap_first}(this.${attributename}, NotificationScope.LOCAL);
+</#if>
+        return StatusResult.ok(this.getId());
+    } else {
+        GeneralErrorCollector.reportSyncError();
+        return StatusResult.error(this.getId());
+    }

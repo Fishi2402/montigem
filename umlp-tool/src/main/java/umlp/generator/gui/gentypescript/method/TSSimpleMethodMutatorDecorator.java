@@ -15,7 +15,7 @@ public class TSSimpleMethodMutatorDecorator extends SimpleMethodMutatorDecorator
 
   @Override
   protected String getNotificationSetterTemplate() {
-    return "umlp.gui2ts.methods.NotificationSetter";
+    return "umlp.gui2ts.methods.TSNotificationSetter";
   }
 
 }

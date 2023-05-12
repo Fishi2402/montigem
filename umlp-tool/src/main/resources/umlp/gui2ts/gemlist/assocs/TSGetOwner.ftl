@@ -1,0 +1,4 @@
+<#--(c) https://github.com/MontiCore/monticore-->
+${tc.signature("type", "manager")}
+${cd4c.method("protected ${type} getOwner()")}
+return ${manager}.get${type}Sure(ownerGemID);

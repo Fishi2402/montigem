@@ -58,13 +58,21 @@ public class GemListDomainDecorator extends AbstractDecorator {
     addImports(origCD, domainClass.getName(), ast);
 
     // constructor
-    getCD4C().addConstructor(ast, "umlp.gemlist.Constructor", classname);
-    getCD4C().addConstructor(ast, "umlp.gemlist.ConstructorDefault", classname);
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname);
+    getCD4C().addConstructor(ast, getConstructorDefaultTemplate(), classname);
 
     // methods
     getCD4C().addMethod(ast, "umlp.gemlist.LoadObjects", sourceName, managerName);
 
     return ast;
+  }
+
+  protected String getConstructorDefaultTemplate() {
+    return "umlp.gemlist.ConstructorDefault";
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.gemlist.Constructor";
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, String domainName, ASTCDClass ast) {
