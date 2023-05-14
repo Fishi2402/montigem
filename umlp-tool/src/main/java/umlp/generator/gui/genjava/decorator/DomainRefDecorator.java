@@ -20,6 +20,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BuilderDecorator;
@@ -58,9 +59,11 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     astcdPackage.addCDElement(decoratedClass);
 
     // imports
-    guiAst.getMCImportStatementList().stream()
-        .filter(i -> !isModelImportInGUI(i))
-        .forEach(i -> getCD4C().addImport(decoratedClass, i.getQName()));
+    for (ASTMCImportStatement i : guiAst.getMCImportStatementList()) {
+      if (isModelImportInGUI(i)) {
+        getCD4C().addImport(decoratedClass, i.getQName());
+      }
+    }
   }
 
   protected void createBuildMethod(ASTCDClass clazz, List<ASTGUIParam> collect) {
@@ -207,11 +210,6 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   }
 
   protected ASTCDAttribute addAttributForGUIParameter(ASTCDClass clazz, ASTGUIParam astguiParam) {
-    SymTypeExpression type = astguiParam.getSymbol().getType();
-    for (String qName : getImport(type)) {
-      addImportForGUIParameter(clazz, qName);
-    }
-
     // attr
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
         CDModifier.PROTECTED.build(), astguiParam.getMCType(),

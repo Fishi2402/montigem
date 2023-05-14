@@ -3,14 +3,14 @@ package stanley.personoverview;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
-import hardy.Flensburg.Person;
+import hardy.Flensburg.Human;
 
-import stanley.tmp.table.GemTable;
-import stanley.tmp.layout.GemCard;
-import stanley.my.InfoBox;
+// import stanley.tmp.table.GemTable;
+import basic.src.lib.gemtext.GemText;
+// import stanley.my.InfoBox;
 // import type from a CD to describe a table column
 
-import stanley.tmp.table.TableTypes.TableColumn;
+// import stanley.tmp.table.TableTypes.TableColumn;
 
 /**
  * This example defines a
@@ -18,12 +18,16 @@ import stanley.tmp.table.TableTypes.TableColumn;
  *
  * Assumption: several Persons ps exist, values are shown in a table
  */
-/*
-page PersonOverview(List<Person> ps) {
+page PersonOverview(List<Human> ps) {
+  @iterate(Human p : ps) {
+    @GemText(value = p.age);
+  }
+  /*
   @GemCard(
     title = "Overview",
     content = t@GemTable(rows = ps)
   );
+  /**/
 }
 /**/
 /*
@@ -47,6 +51,7 @@ page PersonOverview(List<Person> ps) {
     ));
 }
 /**/
+/*
 page PersonOverview(List<Person> ps) {
   box@InfoBox(
     text = "This is some important information that you should know.",
@@ -60,6 +65,7 @@ page PersonOverview(List<Person> ps) {
       deleteRow = deletePerson
     ));
 }
+/**/
 /*
 page PersonOverview(List<Person> ps) {
   @GemCard(

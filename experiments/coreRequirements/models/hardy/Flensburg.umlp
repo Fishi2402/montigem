@@ -7,7 +7,7 @@ package hardy;
  * Simple class diagram with 3 classes, some assocs, and inheritance
  */
 
-umlp Flensburg {
+classdiagram Flensburg {
 
     class Car;
 

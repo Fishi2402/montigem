@@ -59,13 +59,14 @@ public class GUI2TypeScriptGenerator {
     String pathName = String.join("/", decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
     String pathToSearch = decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getQName();
     boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathToSearch + "."
-        + decoratedAst.getComponentName() + ROUTES_FILE + "." + TS_FILE_EXTENSION, TS_FILE_EXTENSION);
+        + decoratedAst.getComponentName() + ROUTES_FILE, TS_FILE_EXTENSION);
 
     String componentPath = "./" + decoratedAst.getComponentName();
 
     Optional<String> filePath = util.getRelativeHandwrittenPath(
         hwcPath, setup.getOutputDirectory().toPath(),
-        decoratedAst.getMCPackageDeclaration(), decoratedAst.getComponentName() + ".ts");
+        decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getQName()
+            + "." + decoratedAst.getComponentName(), "ts");
     if (filePath.isPresent()) {
       componentPath = util.removeExtension(filePath.get());
     }

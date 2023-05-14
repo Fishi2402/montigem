@@ -25,7 +25,7 @@ import { ${compDecl.getName()} } from "${componentPath}";
     RouterModule.forChild(routes),
 <#list ast.getMCImportStatementList() as imp>
   <#if genHelper.isGuiImport(imp)>
-    ${imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1)}Module },
+    ${imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1)}Module,
   </#if>
 </#list>
   ],

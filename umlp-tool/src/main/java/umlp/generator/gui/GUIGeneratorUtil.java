@@ -5,6 +5,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
@@ -28,11 +29,13 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -479,7 +482,7 @@ public class GUIGeneratorUtil {
   }
 
   public String java2tsModule(String javaPackage) {
-    String res = "@src/" + package2path(javaPackage) + "Module";
+    String res = "@src/" + qName2path(javaPackage) + "Module";
 
     for (TSImportMap type : TSImportMap.values()) {
       if (javaPackage.startsWith(type.getJavaPackage())) {
@@ -491,6 +494,28 @@ public class GUIGeneratorUtil {
   }
 
   public Optional<String> getRelativeHandwrittenPath(
+      MCPath targetPath, Path outPath, String qualifiedName, String fileExtension) {
+    String hwFile = Names.getPathFromPackage(qualifiedName) + "." + fileExtension;
+    Optional<URL> hwFilePath = targetPath.find(hwFile);
+    Optional<String> res = Optional.empty();
+    if (hwFilePath.isPresent()) {
+      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
+      res = Optional.of(outPath.resolve(hwFile).getParent()
+          .toAbsolutePath()
+          .normalize()
+          .relativize(hwPath.get().toAbsolutePath())
+          .toString()
+          .replaceAll("\\\\", "/"));
+
+      hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path,
+          Paths.get(hwFile)));
+    }
+    Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
+    return res;
+  }
+
+  /*
+  public Optional<String> getRelativeHandwrittenPath(
       MCPath hwPath, Path outPath, ASTMCPackageDeclaration packageDecl, String fileName) {
     Collection<Path> hwFilePaths = new ArrayList<>();
     for (Path p : hwPath.getEntries()) {
@@ -498,7 +523,7 @@ public class GUIGeneratorUtil {
     }
     String localOutPath = getGenFileFolder(packageDecl);
     Path outFolder = outPath.resolve(localOutPath);
-    return getRelativeHandwrittenPath(hwFilePaths, outFolder, fileName);
+    return getRelativeHandwrittenPath(hwPath, hwFilePaths, outFolder, fileName);
   }
 
   public Path getFilePath(Path input, ASTMCPackageDeclaration packageDecl) {
@@ -507,6 +532,7 @@ public class GUIGeneratorUtil {
   }
 
   public Optional<String> getRelativeHandwrittenPath(
+      MCPath hwMCPath,
       Collection<Path> hwPath,
       Path outputFolder,
       String fileName
@@ -516,6 +542,7 @@ public class GUIGeneratorUtil {
       Path it = targetPathIt.next();
       Path hwFile = it.resolve(fileName);
       if (Files.exists(hwFile)) {
+        Reporting.reportHWCExistenceCheck(hwMCPath, Paths.get(hwHtmlPath.get()).toAbsolutePath(), hwFilePath);
         String path = outputFolder
             .toAbsolutePath()
             .normalize()
@@ -527,6 +554,7 @@ public class GUIGeneratorUtil {
     }
     return Optional.empty();
   }
+  /**/
 
   public String removeExtension(String filePath) {
     int index = filePath.lastIndexOf(".");
@@ -536,8 +564,8 @@ public class GUIGeneratorUtil {
     return filePath;
   }
 
-  public String package2path(String packageName) {
-    return packageName.replaceAll("\\.", "/");
+  public String qName2path(String parts) {
+    return parts.replaceAll("\\.", "/");
   }
 
   // TODO: remove this method after package names fixed!!
