@@ -433,6 +433,10 @@ public class GUIGeneratorUtil {
     return moduleName;
   }
 
+  public String getModuleClassName(String compName) {
+    return StringTransformations.capitalize(compName.toLowerCase()) + "Module";
+  }
+
   public String getGenFileFolder(ASTMCPackageDeclaration pDecl) {
     return String.join("/", pDecl.getMCQualifiedName().getPartsList());
   }

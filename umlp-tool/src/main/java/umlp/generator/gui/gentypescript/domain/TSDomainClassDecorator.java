@@ -109,6 +109,11 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
   }
 
   @Override
+  protected void createIsBuildFinishedMethod(ASTCDClass clazz) {
+    getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSIsBuildFinishedI");
+  }
+
+  @Override
   protected void createObserverMethods(ASTCDClass domainClass, ASTCDClass clazz) {
     getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSAddObserver", domainClass.getName(), clazz.isPresentCDExtendUsage());
     getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSRemoveObserver", domainClass.getName());

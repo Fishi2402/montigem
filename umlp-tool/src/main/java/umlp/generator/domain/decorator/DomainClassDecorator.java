@@ -101,6 +101,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     createObserverMethods(domainClass, clazz);
     createEqualsMethod(domainClass, clazz);
     getCD4C().addMethod(clazz, getBuildTemplate(), domainClass.getName());
+    createIsBuildFinishedMethod(clazz);
 
     // Methods for class attributes
     createGetterSetterForAttrs(domainClass, clazz, filterDerivedAttributes(attributes.attrFields, false), false);
@@ -113,6 +114,9 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     // Imports
     addImports(domainClass, clazz);
     return clazz;
+  }
+
+  protected void createIsBuildFinishedMethod(ASTCDClass clazz) {
   }
 
   protected String getConstructorTemplate() {

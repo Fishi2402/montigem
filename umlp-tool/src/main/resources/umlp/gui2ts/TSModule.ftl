@@ -12,7 +12,7 @@ import { routes } from "./${compDecl.getName()}Routing";
 import { ${compDecl.getName()} } from "${componentPath}";
 <#list ast.getMCImportStatementList() as imp>
   <#if genHelper.isGuiImport(imp)>
-    import { ${imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1)}Module } from "${genHelper.java2tsModule(imp.getQName())}";
+    import { ${genHelper.getModuleClassName(imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1))} } from "${genHelper.java2tsModule(imp.getQName())}";
   </#if>
 </#list>
 
@@ -25,7 +25,7 @@ import { ${compDecl.getName()} } from "${componentPath}";
     RouterModule.forChild(routes),
 <#list ast.getMCImportStatementList() as imp>
   <#if genHelper.isGuiImport(imp)>
-    ${imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1)}Module,
+    ${genHelper.getModuleClassName(imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1))},
   </#if>
 </#list>
   ],
@@ -34,4 +34,4 @@ import { ${compDecl.getName()} } from "${componentPath}";
   ]
 })
 
-export class ${compDecl.getName()}Module { }
+export class ${genHelper.getModuleClassName(compDecl.getName())} { }
