@@ -13,12 +13,17 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.DomainClassDecorator;
+import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.domain.decorator.methods.MethodGenService;
 import umlp.generator.gui.gentypescript.method.TSAssocAccessorDecorator;
 import umlp.generator.gui.gentypescript.method.TSAssocMutatorDecorator;
@@ -30,8 +35,16 @@ import java.util.stream.Collectors;
 
 public class TSDomainClassDecorator extends DomainClassDecorator {
 
+  protected String astcdPackage;
+
   public TSDomainClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath) {
     super(glex, hwPath);
+  }
+
+  @Override
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    this.astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE).getName();
+    super.transform(origCD, decoratedCD);
   }
 
   @Override
@@ -41,6 +54,8 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemBuildable"));
+    getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ObserverDecorator.SUFFIX);
+    getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ErrorCollectorDecorator.SUFFIX);
   }
 
   @Override

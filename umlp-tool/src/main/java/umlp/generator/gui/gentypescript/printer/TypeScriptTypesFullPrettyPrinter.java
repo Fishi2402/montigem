@@ -21,9 +21,6 @@ public class TypeScriptTypesFullPrettyPrinter extends CD4CodeFullPrettyPrinter {
     de.monticore.cd4codebasis._prettyprint.CD4CodeBasisPrettyPrinter cD4CodeBasis = new de.monticore.cd4codebasis._prettyprint.CD4CodeBasisPrettyPrinter(getPrinter(), printComments);
     getTraverser().setCD4CodeBasisHandler(cD4CodeBasis);
     getTraverser().add4CD4CodeBasis(cD4CodeBasis);
-    de.monticore.types.mcfullgenerictypes._prettyprint.MCFullGenericTypesPrettyPrinter mCFullGenericTypes = new de.monticore.types.mcfullgenerictypes._prettyprint.MCFullGenericTypesPrettyPrinter(getPrinter(), printComments);
-    getTraverser().setMCFullGenericTypesHandler(mCFullGenericTypes);
-    getTraverser().add4MCFullGenericTypes(mCFullGenericTypes);
     de.monticore.cdinterfaceandenum._prettyprint.CDInterfaceAndEnumPrettyPrinter cDInterfaceAndEnum = new de.monticore.cdinterfaceandenum._prettyprint.CDInterfaceAndEnumPrettyPrinter(getPrinter(), printComments);
     getTraverser().setCDInterfaceAndEnumHandler(cDInterfaceAndEnum);
     getTraverser().add4CDInterfaceAndEnum(cDInterfaceAndEnum);
@@ -67,6 +64,10 @@ public class TypeScriptTypesFullPrettyPrinter extends CD4CodeFullPrettyPrinter {
     getTraverser().setBasicSymbolsHandler(basicSymbols);
     getTraverser().add4BasicSymbols(basicSymbols);
 
+    de.monticore.types.mcfullgenerictypes._prettyprint.MCFullGenericTypesPrettyPrinter mCFullGenericTypes =
+        new TypeScriptFullGenericTypesPrettyPrinter(getPrinter());
+    getTraverser().setMCFullGenericTypesHandler(mCFullGenericTypes);
+    getTraverser().add4MCFullGenericTypes(mCFullGenericTypes);
     de.monticore.types.mcsimplegenerictypes._prettyprint.MCSimpleGenericTypesPrettyPrinter mCSimpleGenericTypes =
         new TypeScriptSimpleGenericTypesPrettyPrinter(getPrinter());
     getTraverser().setMCSimpleGenericTypesHandler(mCSimpleGenericTypes);

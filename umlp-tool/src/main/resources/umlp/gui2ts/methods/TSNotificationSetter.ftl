@@ -1,6 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("domain", "name", "type", "isGem")}
-${cd4c.method("public void set${name?cap_first}(${type}  ${name}, NotificationScope scope)")}
+${cd4c.method("public void set${name?cap_first}(${type}  ${name}, Optional<NotificationScope> scope)")}
+
+if (!scope) {
+  scope = NotificationScope.ALL;
+}
 
 if (_${name} == null) {
   <#-- TODO AGe: should that fail fast? -->

@@ -3,6 +3,7 @@
 package umlp.generator.gui.gentypescript.domain;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -25,9 +26,19 @@ public class TSObserverDecorator extends ObserverDecorator {
     super(glex);
   }
 
-  protected ASTCDInterface createInterface(ASTCDType domainClass) {
+  @Override
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
+    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+        .forEach(c -> astcdPackage.addCDElement(createClass(c)));
+
+    origCD.getCDDefinition().getCDInterfacesList().stream().filter(c -> !c.getModifier().isDerived())
+        .forEach(c -> astcdPackage.addCDElement(createClass(c)));
+  }
+
+  protected ASTCDClass createClass(ASTCDType domainClass) {
     String className = domainClass.getName();
-    ASTCDInterface ast = UMLPMill.cDInterfaceBuilder()
+    ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
       .setName(className + SUFFIX).build();
     List<SymTypeExpression> superTypes = domainClass.getSymbol().getSuperTypesList();
