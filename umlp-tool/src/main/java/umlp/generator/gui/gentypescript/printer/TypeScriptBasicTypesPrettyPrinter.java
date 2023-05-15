@@ -22,7 +22,12 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
     }
     // print only last
     if (node.getPartsList().size() > 0) {
-      getPrinter().print(TypeScriptTypes.toTSType(node.getBaseName()));
+      // TODO AGe: underspecified List lands here
+      if (node.getBaseName().equals(TypeScriptTypes.LIST.getMCType())) {
+        getPrinter().print("Array<any>");
+      } else {
+        getPrinter().print(TypeScriptTypes.toTSType(node.getBaseName()));
+      }
     }
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPostComments(node, getPrinter());

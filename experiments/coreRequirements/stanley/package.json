@@ -20,6 +20,8 @@
     "@angular/platform-browser-dynamic": "^15.1.0",
     "@angular/router": "^15.1.0",
     "@monticore/montigem-basic": "file:../../../../frontend-rte/dist/libs/basic/monticore-montigem-basic-7.5.0-SNAPSHOT.tgz",
+    "@monticore/montigem-arrange": "file:../../../../frontend-rte/dist/libs/arrange/monticore-montigem-arrange-7.5.0-SNAPSHOT.tgz",
+    "@monticore/montigem-table": "file:../../../../frontend-rte/dist/libs/table/monticore-montigem-table-7.5.0-SNAPSHOT.tgz",
     "@umlp/common": "file:../../../umlp-rte/client/dist/umlp/common/umlp-common-0.0.1.tgz",
     "font-awesome": "4.7.0",
     "rxjs": "7.8.0",
