@@ -6,13 +6,14 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.check.SymTypeExpression;
-import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
 
@@ -99,9 +100,11 @@ public class ObserverDecorator extends AbstractDecorator {
   }
 
   private void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType){
-    domainClass.getSuperclassList().forEach(cdExtension ->
-        cdExtension.getDefiningSymbol().ifPresent(definingSymbol ->
-            getCD4C().addImport(observerType, Joiners.DOT.join(definingSymbol.getPackageName().toLowerCase(),
-                definingSymbol.getName()))));
+    CDTypeSymbol symbol = domainClass.getSymbol();
+    if(symbol.isPresentSuperClass()){
+      SymTypeExpression superclass = symbol.getSuperClass();
+      ASTCDCompilationUnit scCD = UMLPSymbolTables.getDiagramFor((ASTCDType) superclass.getTypeInfo().getAstNode());
+      getCD4C().addImport(observerType, getPackageName(scCD, DEFAULT_PACKAGE) + "." + superclass.print() + "Observer");
+    }
   }
 }
