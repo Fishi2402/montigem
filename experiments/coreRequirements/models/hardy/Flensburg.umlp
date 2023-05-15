@@ -15,7 +15,6 @@ classdiagram Flensburg {
         int age;
     }
 
-/*
     class Person extends Human {
         String nickname;
 
@@ -24,6 +23,7 @@ classdiagram Flensburg {
         / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
     }
 
+/*
     class Address {
        String city;
     }

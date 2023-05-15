@@ -95,7 +95,9 @@ public class TSObserverDecorator extends ObserverDecorator {
 
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, this.astcdPackage + "." + domainClass.getName());
-    super.addImports(domainClass, ast);
+    if (!domainClass.getSuperclassList().isEmpty()) {
+      getCD4C().addImport(ast, this.astcdPackage + "." + domainClass.getSuperclassList().get(0).printType() + ObserverDecorator.SUFFIX);
+    }
 
     return ast;
   }

@@ -13,7 +13,7 @@ if (o instanceof ${className?cap_first}) {
   <#list objects as object>
     (this._${object?uncap_first} === ${className?uncap_first}.get${object?cap_first}()
      || this._${object?uncap_first} != null
-     && this._${object?uncap_first}.equals(${className?uncap_first}.get${object?cap_first}())) &&
+     && this._${object?uncap_first} === ${className?uncap_first}.get${object?cap_first}()) &&
   </#list>
   <#list primitiveBooleans as bool>
     this._${bool?uncap_first} === ${className?uncap_first}.is${bool?cap_first}() &&

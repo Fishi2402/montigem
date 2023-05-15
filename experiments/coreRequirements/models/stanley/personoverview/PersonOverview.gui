@@ -3,7 +3,7 @@ package stanley.personoverview;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
-import hardy.Flensburg.Human;
+import hardy.Flensburg.Person;
 
 // import stanley.tmp.table.GemTable;
 import basic.src.lib.gemtext.GemText;
@@ -12,7 +12,7 @@ import table.src.lib.gemtable.GemTable;
 // import stanley.my.InfoBox;
 // import type from a CD to describe a table column
 
-// import stanley.tmp.table.TableTypes.TableColumn;
+import table.src.lib.gemtable.TableTypes.TableColumn;
 
 /**
  * This example defines a
@@ -20,6 +20,7 @@ import table.src.lib.gemtable.GemTable;
  *
  * Assumption: several Persons ps exist, values are shown in a table
  */
+/*
 page PersonOverview(List<Human> ps) {
   @iterate(Human p : ps) {
     @GemText(value = p.age);
@@ -29,13 +30,14 @@ page PersonOverview(List<Human> ps) {
   );
 }
 /**/
-/*
 page PersonOverview(List<Person> ps) {
+  @iterate(Person p : ps) {
+    @GemText(value = p.age);
+  }
   @GemCard(
-    title = "Overview",
-    content = t@GemTable(
+    component = t@GemTable(
       rows = ps,
-      columns = [ TableColumn("nickname") ]
+      columns = [ TableColumn("nickname", "Name") ]
     ));
 }
 /**/

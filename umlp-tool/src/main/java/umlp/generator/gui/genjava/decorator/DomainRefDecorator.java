@@ -60,7 +60,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
     // imports
     for (ASTMCImportStatement i : guiAst.getMCImportStatementList()) {
-      if (isModelImportInGUI(i)) {
+      if (!isGUIModelImportInGUI(i)) {
         getCD4C().addImport(decoratedClass, i.getQName());
       }
     }
@@ -262,8 +262,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   }
 
   protected boolean isCDModelImportInGUI(ASTMCImportStatement i) { // TODO MB umlpsym UMLPDefSymbol
-    // TODO AGe: not only domain imports are cd imports
-    return util.isDomainImport(i);
+    return util.isDomainImport(i) || !isGUIModelImportInGUI(i);
   }
 
   public ASTCDClass getDecoratedClass() {

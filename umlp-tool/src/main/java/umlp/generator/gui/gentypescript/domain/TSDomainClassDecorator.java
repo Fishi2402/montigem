@@ -20,6 +20,7 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import umlp.generator.domain.decorator.DomainClassDecorator;
 import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.GenService;
@@ -56,6 +57,9 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemBuildable"));
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ObserverDecorator.SUFFIX);
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ErrorCollectorDecorator.SUFFIX);
+    if (!domainType.getSuperclassList().isEmpty()) {
+      getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
+    }
   }
 
   @Override
@@ -69,7 +73,10 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
             new ListMutatorDecorator(glex, service)), service);
     for (ASTCDAttribute attribute : attrList) {
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
-      methods.forEach(m -> m.getModifier().setAbstract(isInterface));
+      // methods.forEach(m -> m.getModifier().setAbstract(isInterface));
+      methods.forEach(m -> m.getModifier().setDerived(isInterface));
+      // TODO AGe: why is it getting set to abstract?
+      methods.forEach(m -> m.getModifier().setAbstract(false));
       cdType.addAllCDMembers(methods);
     }
   }
@@ -83,7 +90,10 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
         new TSAssocMutatorDecorator(glex, service, cdType), service);
     for (ASTCDAttribute attribute : attrList) {
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
-      methods.forEach(m -> m.getModifier().setAbstract(isInterface));
+      // methods.forEach(m -> m.getModifier().setAbstract(isInterface));
+      methods.forEach(m -> m.getModifier().setDerived(isInterface));
+      // TODO AGe: why is it getting set to abstract?
+      methods.forEach(m -> m.getModifier().setAbstract(false));
       cdType.addAllCDMembers(methods);
     }
   }
