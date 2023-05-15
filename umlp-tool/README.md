@@ -51,7 +51,7 @@ dependencies {
 task myFirstUMLPTask(type: UMLPTask) {
   input = file("models/")
   hwcDir = layout.projectDirectory.dir("hwc/")
-  
+
   outputDir = layout.buildDirectory.dir("generated-sources/")
 }
 ````
@@ -67,16 +67,16 @@ sourceSets {
 ### Configuration Options for ``UMLPTask``
 | Option         | Type                   | Description                                                                                                           |
 |----------------|------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| input          | File, Files, Directory | Collection of input models. Each file is a seperate generation process. Only `.umlp` and `.gui` models are processed. | 
-| modelDir       | Directory              | Used to resolve import statements.                                                                                    | 
-| hwcDir         | Directory              | Directory with Handwritten Code. Used for TOP-Mechanism.                                                              | 
-| symbolDir      | Directory              |                                                                                                                       | 
-| tmplDir        | Directory              | Location of custom template-files. Can be used to customize generation process.                                       | 
-| configTemplate | String                 | Filename of `.ftl` file in `tmplDir`                                                                                  | 
-| moreArgs       | String Array           | Not recommended! Can break incremental build! Allows to pass custom arguments to command line interface of UMLP.      | 
-| debug          | Boolean                | Enable Debug output and disable Isolation (see below). Default: `false`                                               | 
-| outputDir      | Directory              | Output for generated Files                                                                                            | 
-| reportDir      | Directory              | Output for reports. Is used for Incremental Build. Default: `<buildDir>/umlp_reports/task_<taskname>`                 | 
+| input          | File, Files, Directory | Collection of input models. Each file is a seperate generation process. Only `.umlp` and `.gui` models are processed. |
+| modelDir       | Directory              | Used to resolve import statements.                                                                                    |
+| hwcDir         | Directory              | Directory with Handwritten Code. Used for TOP-Mechanism.                                                              |
+| symbolDir      | Directory              |                                                                                                                       |
+| tmplDir        | Directory              | Location of custom template-files. Can be used to customize generation process.                                       |
+| configTemplate | String                 | Filename of `.ftl` file in `tmplDir`                                                                                  |
+| moreArgs       | String Array           | Not recommended! Can break incremental build! Allows to pass custom arguments to command line interface of UMLP.      |
+| debug          | Boolean                | Enable Debug output and disable Isolation (see below). Default: `false`                                               |
+| outputDir      | Directory              | Output for generated Files                                                                                            |
+| reportDir      | Directory              | Output for reports. Is used for Incremental Build. Default: `<buildDir>/umlp_reports/task_<taskname>`                 |
 
 
 ### Debug ``UMLPTask``
@@ -92,7 +92,7 @@ task exampleForDebugging(type: UMLPTask) {
 
   debug = true  // Disable isolation and set LogLevel to DEBUG. Allows to use debugging tools and breakpoints.
   outputs.upToDateWhen { false } // Disable incremental build for debugging
-  
+
   outputDir = layout.buildDirectory.dir("generated-sources/")
 }
 ````
@@ -106,11 +106,30 @@ org.gradle.parallel=false  // parallel execution not compatible with debugging
 Only enable the debug modus for debugging, and disable if afterwards. It must not be active for production builds.
 
 
+### Hot Reload of UMLP Backend
+The build can be configured to automatically compile & re-start the backend on each save-operation.
+For example, the developer is changing the UMLP class diagram and saves the file with CTRL+S.
+Then the build system will automatically start the ``UMLPTask`` to generate java files, compile these java files and run them.
+
+Initial configuration for Hot Reload of Backend:
+* Add the spring-boot gradle plugin to the ``build.gradle``
+  * [Documentation](https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/)
+* Add ``spring-boot-devtools`` as a developmentOnly dependencie in `build.gradle`
+  * e.g. `dependencies {   developmentOnly("org.springframework.boot:spring-boot-devtools:$spring_version") } `
+
+Start Hot Reload:
+* Start ``gradle <backend_subproject>:run``
+  * Command should keep running, do not terminate
+* Start ``gradle <backend_subproject>:classes --continuous`` in new terminal
+  * Command should keep running, do not terminate
+* Edit files. On each "Save" the new state should be started automatically. Look at the output of the previous commands for information.
+
+
 ### Notes for Developers of UMLP-Tool
-The gradle-``UMLPTask`` supports incremental builds. 
+The gradle-``UMLPTask`` supports incremental builds.
 It only runs when a _relevant_ input has changed.
 For example, when a new file ``hwc/A.java`` is added and it corresponds to a generated `A.java` in the output, the generator runs again.
-But when a new file ``hwc/B.java`` is added which does *not* correspond to a generated `B.java`, the generator does not run again. 
+But when a new file ``hwc/B.java`` is added which does *not* correspond to a generated `B.java`, the generator does not run again.
 
 To ensure the correctness of this check, ``UMLPTask`` needs information of the input/outputs.
 
