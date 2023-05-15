@@ -31,23 +31,23 @@ public class TSAssocListMutatorDecorator extends SimpleMethodMutatorDecorator {
     List<ASTCDMethod> methodList = Lists.newArrayList();
     String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
     String sourceName = this.ast.getName();
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.Add", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.AddId", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.AddAll", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.AddAllId", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.InternalAdd", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.InternalAddId", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.InternalSet", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.Remove", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.Remove_Id", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.InternalRemove", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSAdd", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSAddId", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSAddAll", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSAddAllId", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSInternalAdd", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSInternalAddId", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSInternalSet", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSRemove", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSRemove_Id", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSInternalRemove", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
     List<ASTCDMethod> notifyMethods = createNotifyMethods(methodList);
 
     methodList.addAll(notifyMethods);
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.RemoveByIdSure", service.getNativeAttributeName(ast.getName())).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSRemoveByIdSure", service.getNativeAttributeName(ast.getName())).get());
 
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.Clear", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.RetainAll", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSClear", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSRetainAll", service.getNativeAttributeName(ast.getName()), targetName).get());
 
     return methodList;
   }

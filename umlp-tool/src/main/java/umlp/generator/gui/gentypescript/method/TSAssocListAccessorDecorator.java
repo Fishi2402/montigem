@@ -34,12 +34,12 @@ public class TSAssocListAccessorDecorator extends AssocListAccessorDecorator {
 
     String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
 
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.Contains", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.ContainsAll", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.Iterator", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.Size", service.getNativeAttributeName(ast.getName())).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.GetList", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.SubList", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSContains", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSContainsAll", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSIterator", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSSize", service.getNativeAttributeName(ast.getName())).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSGetList", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.gui2ts.methods.assocs.TSSubList", service.getNativeAttributeName(ast.getName()), targetName).get());
 
     // generate getX-Method
     methodList.add(createGetMethod(ast));
@@ -52,7 +52,7 @@ public class TSAssocListAccessorDecorator extends AssocListAccessorDecorator {
 
   @Override
   protected String getAssocGetTemplate() {
-    return "umlp.gui2ts.methods.AssocGet";
+    return "umlp.gui2ts.methods.TSAssocGet";
   }
 
 }

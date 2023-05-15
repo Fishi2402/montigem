@@ -55,12 +55,12 @@ public class GUI2TypeScriptGenerator {
 
     Path generatedFiles = Paths.get(pathName, decoratedAst.getComponentName()
         + (existHWCRoutes ? "TOP" : "") + ROUTES_FILE + "." + TS_FILE_EXTENSION);
-    genEngine.generate("umlp.gui2ts.Routes", generatedFiles,
+    genEngine.generate("umlp.gui2ts.TSRoutes", generatedFiles,
         decoratedAst.getGUIComponentDeclaration(), "routes", existHWCRoutes);
 
     generatedFiles = Paths.get(pathName,
         decoratedAst.getComponentName() + MODULES_FILE + "." + TS_FILE_EXTENSION);
-    genEngine.generate("umlp.gui2ts.Module", generatedFiles, decoratedAst,
+    genEngine.generate("umlp.gui2ts.TSModule", generatedFiles, decoratedAst,
         viewComponents.getModules());
     /*
     for (ASTMCImportStatement is : decoratedAst.getMCImportStatementList()) {

@@ -77,17 +77,44 @@ public class GemListAssocDecorator extends AbstractDecorator {
     ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
-    getCD4C().addConstructor(ast, "umlp.gemlist.assocs.Constructor", className);
-    getCD4C().addConstructor(ast, "umlp.gemlist.assocs.ConstructorEmpty", className);
-
+    getCD4C().addConstructor(ast, getConstructorTemplate(), className);
+    getCD4C().addConstructor(ast, getConstructorEmptyTemplate(), className);
     // methods
-    getCD4C().addMethod(ast, "umlp.gemlist.LoadObjects", targetName, managerName);
-    getCD4C().addMethod(ast, "umlp.gemlist.assocs.GetOwner", sourceName, managerName);
-    getCD4C().addMethod(ast, "umlp.gemlist.assocs.InternalAdd", assocName);
-    getCD4C().addMethod(ast, "umlp.gemlist.assocs.InternalSet", assocName);
-    getCD4C().addMethod(ast, "umlp.gemlist.assocs.InternalRemove", assocName);
+    getCD4C().addMethod(ast, getLoadObjectsTemplate(), targetName, managerName);
+    getCD4C().addMethod(ast, getGetOwnerTemplate(), sourceName, managerName);
+    getCD4C().addMethod(ast, getInternalAddTemplate(), assocName);
+    getCD4C().addMethod(ast, getInternalSetTemplate(), assocName);
+    getCD4C().addMethod(ast, getInternalRemoveTemplate(), assocName);
 
     return ast;
+  }
+
+  protected String getConstructorEmptyTemplate() {
+    return "umlp.gemlist.assocs.ConstructorEmpty";
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.gemlist.assocs.Constructor";
+  }
+
+  protected String getInternalRemoveTemplate() {
+    return "umlp.gemlist.assocs.InternalRemove";
+  }
+
+  protected String getInternalSetTemplate() {
+    return "umlp.gemlist.assocs.InternalSet";
+  }
+
+  protected String getInternalAddTemplate() {
+    return "umlp.gemlist.assocs.InternalAdd";
+  }
+
+  protected String getGetOwnerTemplate() {
+    return "umlp.gemlist.assocs.GetOwner";
+  }
+
+  protected String getLoadObjectsTemplate() {
+    return "umlp.gemlist.LoadObjects";
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, String domainName,

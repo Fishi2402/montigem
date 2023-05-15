@@ -101,16 +101,16 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
 
     ASTCDAttribute gemAttr = getCD4C().addAttribute(ast, "protected long gemId");
 
-    getCD4C().addConstructor(ast, "umlp.commands.get.Constructor", classname, "", "" ,getPackageName(origCD, COMMAND_PACKAGE));
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname, "", "" ,getPackageName(origCD, COMMAND_PACKAGE));
 
     String originalClassname = domainClass.getName();
 
     if(GenService.isList(type)) {
-      getCD4C().addMethod(ast, "umlp.commands.calculate.DoRunList", classname, originalClassname, t, origCD.getCDDefinition().getName(), name);
+      getCD4C().addMethod(ast, getDoRunListTemplate(), classname, originalClassname, t, origCD.getCDDefinition().getName(), name);
     }else{
-      getCD4C().addMethod(ast, "umlp.commands.calculate.DoRunSimple", classname, originalClassname, t, origCD.getCDDefinition().getName(), name);
+      getCD4C().addMethod(ast, getDoRunSimpleTemplate(), classname, originalClassname, t, origCD.getCDDefinition().getName(), name);
     }
-    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("getGemId()"));
+    getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("getGemId()"));
 
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(gemAttr));
@@ -128,6 +128,22 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     }
 
     return ast;
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.commands.get.Constructor";
+  }
+
+  protected String getGetEffectedGemIdsTemplate() {
+    return "umlp.commands.GetEffectedGemIds";
+  }
+
+  protected String getDoRunSimpleTemplate() {
+    return "umlp.commands.calculate.DoRunSimple";
+  }
+
+  protected String getDoRunListTemplate() {
+    return "umlp.commands.calculate.DoRunList";
   }
 
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDClass domainClass) {
@@ -153,8 +169,8 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     boolean useDeSer = supportedDeSers.contains(typeName);
     boolean makeAbstract = jsonStr.equals("") && !useDeSer;
 
-    getCD4C().addMethod(ast, "umlp.commands.deser.Get_FromJsonObject", cmdName);
-    getCD4C().addMethod(ast, "umlp.commands.deser.Get_BuildJson", cmdName);
+    getCD4C().addMethod(ast, getGet_FromJsonObjectTemplate(), cmdName);
+    getCD4C().addMethod(ast, getGet_BuildJsonTemplate(), cmdName);
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
@@ -167,6 +183,14 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     }
     addedDeSers.add(ast);
     return ast;
+  }
+
+  protected String getGet_BuildJsonTemplate() {
+    return "umlp.commands.deser.Get_BuildJson";
+  }
+
+  protected String getGet_FromJsonObjectTemplate() {
+    return "umlp.commands.deser.Get_FromJsonObject";
   }
 
   // TODO (MB): Bessere Lösung?

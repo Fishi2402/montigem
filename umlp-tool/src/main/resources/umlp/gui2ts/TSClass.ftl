@@ -9,7 +9,7 @@ ${cdPrinter.printImportList(cd4c.getImportList(ast))}
 <#-- Imports hook -->
 ${defineHookPoint("ClassContent:Imports")}
 
-${tc.include("umlp.gui2ts.Annotations")}
+${tc.include("umlp.gui2ts.TSAnnotations")}
 
 <#-- Annotations hook -->
 ${defineHookPoint("ClassContent:Annotations")}
@@ -22,15 +22,15 @@ export class ${ast.getName()} <#rt><#lt>
 ${defineHookPoint("ClassContent:Elements")}
 
 <#list ast.getCDAttributeList() as attribute>
-    ${tc.include("umlp.gui2ts.Attribute", attribute)}
+    ${tc.include("umlp.gui2ts.TSAttribute", attribute)}
 </#list>
 
 <#list ast.getCDConstructorList() as constructor>
-    ${tc.include("umlp.gui2ts.Constructor", constructor)}
+    ${tc.include("umlp.gui2ts.TSConstructor", constructor)}
 </#list>
 
 <#list ast.getCDMethodList() as method>
-    ${tc.include("umlp.gui2ts.Method", method)}
+    ${tc.include("umlp.gui2ts.TSMethod", method)}
 </#list>
 
 }

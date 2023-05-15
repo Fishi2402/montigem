@@ -15,17 +15,17 @@ public class TSAssocMandatoryMutatorDecorator extends AssocMandatoryMutatorDecor
 
   @Override
   protected String getGemNotificationSetterTemplate() {
-    return "umlp.gui2ts.methods.GemNotificationSetter";
+    return "umlp.gui2ts.methods.TSGemNotificationSetter";
   }
 
   @Override
   protected String getInternalSetOneTemplate() {
-    return "umlp.gui2ts.methods.assocs.InternalSetOne";
+    return "umlp.gui2ts.methods.assocs.TSInternalSetOne";
   }
 
   @Override
   protected String getNotificationSetterTemplate() {
-    return "umlp.gui2ts.methods.NotificationSetter";
+    return "umlp.gui2ts.methods.TSNotificationSetter";
   }
 
 }
