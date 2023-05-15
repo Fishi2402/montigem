@@ -18,7 +18,9 @@ import umlp.generator.gui.ExpressionReplacement;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -33,6 +35,8 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
 
   protected boolean needsGetter = false;
   protected boolean needsOwnParam = false;
+
+  protected Collection<String> ignore = new HashSet<>();
 
   public GUIArgValueReplaceVisitor() {
     traverser = GUIDSLMill.traverser();
@@ -67,6 +71,10 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
     return needsOwnParam;
   }
 
+  public void setIgnore(Collection<String> ignore) {
+    this.ignore = ignore;
+  }
+
   public void transform(SymTypeExpression ste, ASTGUINamedArg arg) {
     if (!util.hasGetter(ste)) {
       return;
@@ -83,6 +91,7 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
     if (arg.getGUIArgValue().isPresentExpression()) {
       result = arg.getGUIArgValue().deepClone();
       arg.accept(getTraverser());
+      Collections.reverse(replacements);
       for (ExpressionReplacement nr : replacements) {
         ExpressionReplaceVisitor visitor = new ExpressionReplaceVisitor();
         visitor.transform(nr.getHolder(), nr.getOldValue(), nr.getNewValue());
@@ -93,7 +102,7 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
   @Override
   public void visit(ASTNameExpression node) {
     if (potentialHolder != null) {
-      if (potentialHolder.getValue().equals(node)) {
+      if (potentialHolder.getValue().equals(node) && !ignore.contains(node.getName())) {
         Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.callExpressionBuilder()
             .setExpression(
                 ExpressionsBasisMill.nameExpressionBuilder()
@@ -118,7 +127,8 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
       if (potentialHolder.getValue().equals(node)) {
         Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.callExpressionBuilder()
             .setExpression(
-                ExpressionsBasisMill.nameExpressionBuilder()
+                CommonExpressionsMill.fieldAccessExpressionBuilder()
+                    .setExpression(node.getExpression())
                     .setName(util.gui2cdAttrGetterName(node.getName()))
                     .build()
             )

@@ -13,14 +13,30 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.ErrorCollectorDecorator;
+import umlp.generator.domain.decorator.ErrorObserverDecorator;
+import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class TSErrorCollectorDecorator extends ErrorCollectorDecorator {
 
+  protected String astcdPackage;
+
   public TSErrorCollectorDecorator(final GlobalExtensionManagement glex) {
     super(glex);
+  }
+
+  @Override
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    this.astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE).getName();
+    super.transform(origCD, decoratedCD);
+  }
+
+  protected void addImports(ASTCDClass domainClass, ASTCDType clazz) {
+    // getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
+    getCD4C().addImport(clazz, this.astcdPackage + "." + domainClass.getName());
+    getCD4C().addImport(clazz, this.astcdPackage + "." + domainClass.getName() + ErrorObserverDecorator.SUFFIX);
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String name) {
@@ -37,7 +53,7 @@ public class TSErrorCollectorDecorator extends ErrorCollectorDecorator {
     // TODO:  CD4Code kann das nicht parsen "= new ArrayList<>()". Ursache ist die fehlende Super-Grammatik
     // JavaClassExpression
     ASTCDAttribute attr = getCD4C().addAttribute(collectorClass, "protected List<" + domainClass.getName() + "ErrorObserver> observers;");
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new ArrayList<>()"));
+    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= []"));
 
     // Methods
     getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSInit", domainClass.getName());
@@ -66,7 +82,7 @@ public class TSErrorCollectorDecorator extends ErrorCollectorDecorator {
               getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_BuildInvalidMsg", a.getName(), domainClass.getName());
             });
     // Imports
-    addImports(origCD, collectorClass);
+    addImports(domainClass, collectorClass);
 
     return collectorClass;
   }

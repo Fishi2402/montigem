@@ -30,6 +30,9 @@ public class GUI2ComponentGenerator extends CDGenerator {
         CD2JavaTemplates.CLASS, new TemplateHookPoint(GUI2ComponentTemplates.CLASS)
     );
     genSetup.getGlex().replaceTemplate(
+        CD2JavaTemplates.INTERFACE, new TemplateHookPoint(GUI2ComponentTemplates.INTERFACE)
+    );
+    genSetup.getGlex().replaceTemplate(
         CD2JavaTemplates.ATTRIBUTE, new TemplateHookPoint(GUI2ComponentTemplates.ATTRIBUTE)
     );
     genSetup.getGlex().replaceTemplate(

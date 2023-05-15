@@ -4,7 +4,7 @@ public final class GUI2ComponentTemplates {
 
   public static final String CLASS = "umlp.gui2ts.TSClass";
 
-  public static final String INTERFACE = "cd2java.Interface";
+  public static final String INTERFACE = "umlp.gui2ts.TSInterface";
 
   public static final String ATTRIBUTE = "umlp.gui2ts.TSAttribute";
 

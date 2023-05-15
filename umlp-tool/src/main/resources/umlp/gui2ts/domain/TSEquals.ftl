@@ -6,8 +6,7 @@ if (o instanceof ${className?cap_first}) {
 
   let ${className?uncap_first}: ${className?cap_first} = <${className?cap_first}>o;
 
-  return
-    this.getGemId() === ${className?uncap_first}.getGemId() &&
+  return this.getGemId() === ${className?uncap_first}.getGemId() &&
   <#list primitives as primitive>
     this._${primitive?uncap_first} === ${className?uncap_first}.get${primitive?cap_first}() &&
   </#list>

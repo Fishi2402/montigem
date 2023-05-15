@@ -22,6 +22,8 @@ import static umlp.generator.domain.decorator.GenService.createType;
 
 public class TSObserverDecorator extends ObserverDecorator {
 
+  protected String astcdPackage;
+
   public TSObserverDecorator(final GlobalExtensionManagement glex) {
     super(glex);
   }
@@ -29,6 +31,7 @@ public class TSObserverDecorator extends ObserverDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
+    this.astcdPackage = astcdPackage.getName();
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
         .forEach(c -> astcdPackage.addCDElement(createClass(c)));
 
@@ -91,6 +94,7 @@ public class TSObserverDecorator extends ObserverDecorator {
     getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyBuild", className);
 
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(ast, this.astcdPackage + "." + domainClass.getName());
     super.addImports(domainClass, ast);
 
     return ast;

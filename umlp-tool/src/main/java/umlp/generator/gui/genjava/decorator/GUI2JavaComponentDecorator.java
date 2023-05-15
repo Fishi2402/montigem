@@ -64,7 +64,13 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           + " cannot be resolved");
     }
 
+    // collect args from iterate statement
+    GUIIterate2ArgsVisitor it2Arg = new GUIIterate2ArgsVisitor();
+    it2Arg.transform(guiAst, guiComponent);
+
+    // replace field access with getters, except iterator args
     GUIArgValueReplaceVisitor visitor = new GUIArgValueReplaceVisitor();
+    visitor.setIgnore(it2Arg.getArgs().keySet());
     SymTypeExpression paramSTE = paramSym.get().getType();
     visitor.transform(paramSTE, namedArg);
     if (!visitor.argNeedsGetter()) {
@@ -101,8 +107,6 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         setDefaultListValue(attr);
         decoratedClass.addCDMember(attr);
 
-        GUIIterate2ArgsVisitor it2Arg = new GUIIterate2ArgsVisitor();
-        it2Arg.transform(guiAst, guiComponent);
         addGetComponentMethod(decoratedClass, getterName, paramType,
             attr.getName(), getArgs(it2Arg.getArgs()), false);
 
@@ -128,8 +132,6 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         argValue = numberToStringCall(argValue);
       }
 
-      GUIIterate2ArgsVisitor it2Arg = new GUIIterate2ArgsVisitor();
-      it2Arg.transform(guiAst, guiComponent);
       addGetComponentMethod(decoratedClass, getterName, paramType,
           argValue, getArgs(it2Arg.getArgs()), isLiteral);
     }

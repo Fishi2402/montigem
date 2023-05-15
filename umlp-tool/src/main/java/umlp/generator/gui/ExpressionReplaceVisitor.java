@@ -53,10 +53,10 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
   }
 
   public void transform(ASTNode holder, ASTNode oldValue, Supplier<ASTExpression> newValue) {
-    holder.accept(getTraverser());
     this.holder = holder;
     this.oldValue = oldValue;
     this.newValue = newValue;
+    holder.accept(getTraverser());
   }
 
   @Override
