@@ -94,6 +94,8 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
         .filter(e -> !(e.getValue().getModifier().isDerived() || e.getValue().getModifier().isReadonly()))
         .forEach(e -> {
           ASTCDAssocSide a = e.getKey();
+          ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor(a);
+
           boolean isBidirectional = GenService.isBidirectional(a);
           String assocName = a.getSymbol().getAssoc().getAssociation().getName();
           SymTypeExpression oneType = e.getKey().getSymbol().getType();
@@ -108,14 +110,14 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
             glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
 
             if (isBidirectional) {
-              getCD4C().addImport(ast, getPackageName(origCD, COMMAND_ASSOC_PACKAGE) + "." +
+              getCD4C().addImport(ast, getPackageName(cd, COMMAND_ASSOC_PACKAGE) + "." +
                   StringTransformations.capitalize(assocName) + "_add");
-              getCD4C().addImport(ast, getPackageName(origCD, COMMAND_ASSOC_PACKAGE) + "." +
+              getCD4C().addImport(ast, getPackageName(cd, COMMAND_ASSOC_PACKAGE) + "." +
                   StringTransformations.capitalize(assocName) + "_remove");
             } else {
-              getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE) + "." +
+              getCD4C().addImport(ast, getPackageName(cd, COMMAND_PACKAGE) + "." +
                   otherType.print() + "_add" + StringTransformations.capitalize(a.getName()));
-              getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE) + "." +
+              getCD4C().addImport(ast, getPackageName(cd, COMMAND_PACKAGE) + "." +
                   otherType.print() + "_remove" + StringTransformations.capitalize(a.getName()));
             }
           } else {
@@ -124,18 +126,20 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
             glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
 
             if (isBidirectional) {
-              getCD4C().addImport(ast, getPackageName(origCD, COMMAND_ASSOC_PACKAGE) + "." +
+              getCD4C().addImport(ast, getPackageName(cd, COMMAND_ASSOC_PACKAGE) + "." +
                   StringTransformations.capitalize(assocName) + "_set");
             } else {
-              getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE) + "." +
+              getCD4C().addImport(ast, getPackageName(cd, COMMAND_PACKAGE) + "." +
                   domainClass.getName() + "_set" + StringTransformations.capitalize(a.getName()));
             }
           }
 
-          getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + otherType.print());
-          getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + oneType.print());
+          ASTCDCompilationUnit cdOne = UMLPSymbolTables.getDiagramFor((ASTCDType) oneType.getTypeInfo().getAstNode());
+          ASTCDCompilationUnit cdOther = UMLPSymbolTables.getDiagramFor((ASTCDType) otherType.getTypeInfo().getAstNode());
+          getCD4C().addImport(ast, getPackageName(cdOne, DEFAULT_PACKAGE) + "." + oneType.print());
+          getCD4C().addImport(ast, getPackageName(cdOther, DEFAULT_PACKAGE) + "." + otherType.print());
         });
-    addImports(origCD, domainClass, ast);
+    addImports(UMLPSymbolTables.getDiagramFor(domainClass), domainClass, ast);
 
     return ast;
   }
@@ -161,9 +165,12 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
 
-    UMLPSymbolTables.getAttributesInHierarchyWithDefiningType(domainClass).values().stream()
-        .map(ASTCDType::getName).distinct()
-        .forEach(t -> getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ t));
+    UMLPSymbolTables.getAttributesInHierarchyWithDefiningType(domainClass).values()
+        .forEach(t -> {
+          ASTCDCompilationUnit def = UMLPSymbolTables.getDiagramFor(t);
+          getCD4C().addImport(clazz, getPackageName(def, DEFAULT_PACKAGE)+"."+ t.getName());
+        });
+
     getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName()+ObserverDecorator.SUFFIX);
   }
 

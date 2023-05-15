@@ -10,12 +10,14 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.Collection;
 import java.util.List;
@@ -59,7 +61,8 @@ public class GemListAssocDecorator extends AbstractDecorator {
     String sourceName = domainClass.getName();
     String assocName = assoc.getName();
     String className = getName(domainClass, assoc);
-    String targetName = assoc.getMCQualifiedType().getDefiningSymbol().get().getName();
+    CDTypeSymbol targetSymbol = (CDTypeSymbol) assoc.getMCQualifiedType().getDefiningSymbol().get();
+    String targetName = targetSymbol.getName();
     String managerName = origCD.getCDDefinition().getName() + ManagerDecorator.SUFFIX;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
@@ -69,7 +72,9 @@ public class GemListAssocDecorator extends AbstractDecorator {
             .build();
 
     // Imports
-    addImports(origCD, sourceName, targetName, ast);
+    ASTCDType targetType = targetSymbol.getAstNode();
+    ASTCDCompilationUnit targetCD = UMLPSymbolTables.getDiagramFor(targetType);
+    addImports(origCD, sourceName, targetCD, targetName, ast);
 
     // attributes and getter
     AccessorDecorator accessor = new AccessorDecorator(glex);
@@ -91,9 +96,9 @@ public class GemListAssocDecorator extends AbstractDecorator {
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, String domainName,
-                            String targetName, ASTCDClass ast) {
+                            ASTCDCompilationUnit targetCD, String targetName, ASTCDClass ast) {
     getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), domainName));
-    getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), targetName));
+    getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(targetCD, DEFAULT_PACKAGE), targetName));
     getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), origCD.getCDDefinition().getName() + SUFFIX));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GemListBuilder"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
