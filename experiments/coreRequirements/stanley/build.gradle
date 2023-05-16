@@ -83,7 +83,7 @@ node {
   // according the proxy configuration defined for Gradle
   // Disable this option if you want to configure the proxy for npm or yarn on your own
   // (in the .npmrc file for instance)
-  // nodeProxySettings = ProxySettings.SMART
+  nodeProxySettings = ProxySettings.OFF
 }
 
 // Task to generate an empty Angular application.
@@ -97,7 +97,7 @@ task generateAngularApp(type: NpxTask) {
 
 task genTS(type: UMLPTask) {
   input = file("../models/hardy")
-  outputDir = file("$project.buildDir")
+  outputDir = file("$project.buildDir/app")
   forClient = true
 
   /*
