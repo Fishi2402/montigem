@@ -45,7 +45,7 @@ public class AssocMandatoryMutatorDecorator extends SimpleMethodMutatorDecorator
 
     ASTCDMethod method2 = createNotificationSetter(ast, false);
     method2.getCDParameter(0).setMCType(simpleType);
-    glex.replaceTemplate(EMPTY_BODY, method2, new TemplateHookPoint("umlp.methods.GemNotificationSetter",
+    glex.replaceTemplate(EMPTY_BODY, method2, new TemplateHookPoint(getGemNotificationSetterTemplate(),
             this.ast.getName(), GenService.getNativeName(ast.getName()), new CdUtilsPrinter().printType(ast.getMCType())));
     methodList.add(method2);
 
@@ -60,11 +60,19 @@ public class AssocMandatoryMutatorDecorator extends SimpleMethodMutatorDecorator
     method4.setName(method4.getName()+"Gem");
     methodList.add(method4);
 
-    ASTCDMethod method5 = (ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.InternalSetOne",
+    ASTCDMethod method5 = (ASTCDMethod) cd4c.createMethod(this.ast, getInternalSetOneTemplate(),
             service.getNativeAttributeName(ast.getName()), CD4CodeMill.prettyPrint(simpleType, false), ast.getName()).get();
     methodList.add(method5);
 
     return methodList;
+  }
+
+  protected String getGemNotificationSetterTemplate() {
+    return "umlp.methods.GemNotificationSetter";
+  }
+
+  protected String getInternalSetOneTemplate() {
+    return "umlp.methods.assocs.InternalSetOne";
   }
 
 }

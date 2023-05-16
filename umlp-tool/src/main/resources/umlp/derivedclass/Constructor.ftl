@@ -2,4 +2,4 @@
 ${tc.signature("classname")}
 ${cd4c.constructor("public ${classname}()")}
 
-init();
+this.init();

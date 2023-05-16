@@ -46,14 +46,30 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
             .filter(c -> !c.getModifier().isAbstract())
             .map(c -> Joiners.DOT.join(packageName, c.getName())).collect(Collectors.toList());
     // TODO AHe: DeSer load state, error checks for empty etc
-    getCD4C().addMethod(cmdResultDeSerClass, "umlp.commandresultdeser.BuildJson", classNames);
-    getCD4C().addMethod(cmdResultDeSerClass, "umlp.commandresultdeser.FromJson");
-    getCD4C().addMethod(cmdResultDeSerClass, "umlp.commandresultdeser.DeserSingleValue", classNames);
-    getCD4C().addMethod(cmdResultDeSerClass, "umlp.commandresultdeser.SerSingleValue", classNames);
+    getCD4C().addMethod(cmdResultDeSerClass, getBuildJsonTemplate(), classNames);
+    getCD4C().addMethod(cmdResultDeSerClass, getFromJsonTemplate());
+    getCD4C().addMethod(cmdResultDeSerClass, getDeserSingleValueTemplate(), classNames);
+    getCD4C().addMethod(cmdResultDeSerClass, getSerSingleValueTemplate(), classNames);
 
     addImports(cmdResultDeSerClass);
 
     return cmdResultDeSerClass;
+  }
+
+  protected String getSerSingleValueTemplate() {
+    return "umlp.commandresultdeser.SerSingleValue";
+  }
+
+  protected String getDeserSingleValueTemplate() {
+    return "umlp.commandresultdeser.DeserSingleValue";
+  }
+
+  protected String getFromJsonTemplate() {
+    return "umlp.commandresultdeser.FromJson";
+  }
+
+  protected String getBuildJsonTemplate() {
+    return "umlp.commandresultdeser.BuildJson";
   }
 
   protected void addImports(ASTCDType clazz) {

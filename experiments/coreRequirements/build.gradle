@@ -81,6 +81,17 @@ task generateFlensburg(type: UMLPTask) {
     outputDir = layout.buildDirectory.dir("genumlp/hardy")
 }
 
+task genTS(type: UMLPTask) {
+    input = (file("models/hardy"))
+    outputDir = layout.buildDirectory.dir("domainTS")
+    forClient = true
+
+    /*
+    debug = true
+    outputs.upToDateWhen { false }
+    /**/
+}
+
 task copySymbols(type: Copy) {
     copy {
         from zipTree(configurations.symbol.asPath)
@@ -101,6 +112,10 @@ task generateAll(type: UMLPGuiGenTask) {
     //symbolDir = file("$projectDir/target/symbols")
 
     // moreArgs = ['-s', 'someArg']  // mehr CLI Argumente (nur zum debugging / testing!)
+    /*
+    debug = true
+    outputs.upToDateWhen { false }
+    /**/
 }
 
 test {

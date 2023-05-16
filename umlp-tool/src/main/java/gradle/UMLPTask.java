@@ -3,9 +3,7 @@ package gradle;
 
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.file.*;
-import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.*;
@@ -13,16 +11,12 @@ import org.gradle.work.ChangeType;
 import org.gradle.work.FileChange;
 import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
-import org.gradle.workers.WorkQueue;
-import org.gradle.workers.WorkerExecutor;
 import umlp.UMLPTool;
 import umlp.UMLPToolOptions;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -60,13 +54,16 @@ public abstract class UMLPTask extends CommonUMLPTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getCdToGui();
 
-
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getForClient();
 
 
   public UMLPTask() {
     super();
 
     getCdToGui().convention(false);
+    getForClient().convention(false);
   }
 
 
@@ -114,6 +111,10 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
     if(this.getCdToGui().get()){
       result.add("-" + UMLPToolOptions.CD2GUI.getCMD());
+    }
+
+    if(this.getForClient().get()){
+      result.add("-" + UMLPToolOptions.FOR_CLIENT.getCMD());
     }
 
     return result;
@@ -179,15 +180,7 @@ public abstract class UMLPTask extends CommonUMLPTask {
     );
 
     List<String> args = createArgList(f.toPath(), p -> p.toAbsolutePath().toString());
-    if (getDebug().get()){
-      // In debug mode, run code directly. Otherwise breakpoints etc do not work
-      UMLPTool.main(args.toArray(new String[0]));
-    } else {
-      // In normal mode, run in a workQue. This ensures isolation & parallelization
-      workQueue.submit(UMLPAction.class, param -> {
-        param.getArgs().set(args);
-      });
-    }
+    super.startGeneration(args);
   }
 
   @Internal

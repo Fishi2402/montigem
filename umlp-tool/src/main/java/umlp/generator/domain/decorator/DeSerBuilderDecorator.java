@@ -47,7 +47,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
             .setName(className).build();
 
     // Constructors
-    getCD4C().addConstructor(deserBuilderClass, "umlp.deser_builder.Constructor", domainClass.getName());
+    getCD4C().addConstructor(deserBuilderClass, getConstructorTemplate(), domainClass.getName());
 
     // Attributes
     List<ASTCDAttribute> attributes = getAllAttributes(domainClass, false).attrList.stream()
@@ -58,14 +58,14 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
       if (GenService.isGemList(a)) {
         getCD4C().addMethod(
             deserBuilderClass,
-            "umlp.deser_builder.setGemListIds",
+            getsetGemListIdsTemplate(),
             deserBuilderClass.getName(),
             GenService.getNativeName(a.getName())
         );
       }else if(GenService.isGem(a)){
         getCD4C().addMethod(
             deserBuilderClass,
-            "umlp.deser_builder.setGem",
+            getsetGemTemplate(),
             deserBuilderClass.getName(),
             CD4CodeMill.prettyPrint(a.getMCType(), false),
                 GenService.getNativeName(a.getName())
@@ -73,7 +73,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
       }else{
         ASTCDMethodSignature m = getCD4C().addMethod(
             deserBuilderClass,
-            "umlp.deser_builder.setSimple",
+            getsetSimpleTemplate(),
             deserBuilderClass.getName(),
             a.printType(),
                 GenService.getNativeName(a.getName())
@@ -87,6 +87,22 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
     addImports(domainClass, deserBuilderClass);
 
     return deserBuilderClass;
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.deser_builder.Constructor";
+  }
+
+  protected String getsetSimpleTemplate() {
+    return "umlp.deser_builder.setSimple";
+  }
+
+  protected String getsetGemTemplate() {
+    return "umlp.deser_builder.setGem";
+  }
+
+  protected String getsetGemListIdsTemplate() {
+    return "umlp.deser_builder.setGemListIds";
   }
 
   protected void addImports(ASTCDType domainType, ASTCDType clazz) {

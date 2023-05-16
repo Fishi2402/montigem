@@ -44,11 +44,11 @@ public class ManagerDecorator extends AbstractDecorator {
     // Attribute observerList
     ASTCDAttribute attrObserver = getCDAttributeFacade().createAttribute(PROTECTED.build(),
             "List<" + name + "Observer>", StringTransformations.uncapitalize(name) + "Observers");
-    glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint("= new ArrayList<>()"));
+    glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint(defaultListValue()));
     managerClass.addCDMember(attrObserver);
 
     addSingletonElements(name, managerClass);
-    getCD4C().addMethod(managerClass, "umlp.manager.ErrorNotificationScope");
+    getCD4C().addMethod(managerClass, getErrorNotificationScopeTemplate());
 
     origCD.getCDDefinition().getCDClassesList()
             .forEach(c -> addClassElements(c, managerClass));
@@ -59,6 +59,14 @@ public class ManagerDecorator extends AbstractDecorator {
     addImports(managerClass);
 
     return managerClass;
+  }
+
+  protected String defaultListValue() {
+    return "= new ArrayList<>()";
+  }
+
+  protected String getErrorNotificationScopeTemplate() {
+    return "umlp.manager.ErrorNotificationScope";
   }
 
   protected void addSingletonElements(String simpleName, ASTCDClass managerClass) {

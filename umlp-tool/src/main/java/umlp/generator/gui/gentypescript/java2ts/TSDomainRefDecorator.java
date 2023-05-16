@@ -22,28 +22,28 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
   @Override
   protected ASTCDMethod addInitMethod() {
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), "ngOnInit");
-    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2ts.Init"));
+    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2ts.TSInit"));
     return method;
   }
 
   @Override
   protected String getBuildTemplate() {
-    return "umlp.gui2ts.Build";
+    return "umlp.gui2ts.TSBuild";
   }
 
   @Override
   protected String getGetterParamTemplate() {
-    return "umlp.gui2ts.GetParam";
+    return "umlp.gui2ts.TSGetParam";
   }
 
   @Override
   protected String getConstructorWithBuilderTemplate() {
-    return "umlp.gui2ts.ConstructorWithBuilder";
+    return "umlp.gui2ts.TSConstructorWithBuilder";
   }
 
   @Override
   protected String getConstructorTemplate() {
-    return "umlp.gui2ts.ConstructorTS";
+    return "umlp.gui2ts.TSConstructorTS";
   }
 
   // TODO AGe: own event decorator
