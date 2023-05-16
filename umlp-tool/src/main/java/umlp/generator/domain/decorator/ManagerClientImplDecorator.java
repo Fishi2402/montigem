@@ -11,6 +11,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
@@ -112,9 +113,14 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
 
     // Associations
     CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
-      String type = a.getSymbol().getType().print();
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), type);
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", domainClass.getName(), a.getName(), type);
+      SymTypeExpression type = a.getSymbol().getType();
+      String printedType = type.print();
+      ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+
+      getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", domainClass.getName(), a.getName(), printedType);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
     });
   }
@@ -142,9 +148,14 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
 
     // Associations
     CDSymbolTables.getAssociations(domainInterface).stream().filter(GenService::isList).forEach(a -> {
-      String type = a.getSymbol().getType().print();
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), type);
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", name, a.getName(), type);
+      SymTypeExpression type = a.getSymbol().getType();
+      String printedType = type.print();
+      ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+
+      getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", name, a.getName(), printedType);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainInterface, a)));
     });
   }

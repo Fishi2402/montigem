@@ -1,5 +1,7 @@
 package umlp.generator.util;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -8,8 +10,10 @@ import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.symbols.basicsymbols._ast.ASTType;
+import de.monticore.symboltable.IScope;
 import de.monticore.types.check.SymTypeExpression;
 import umlp.UMLPMill;
+import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
 
 import java.util.LinkedHashMap;
@@ -103,5 +107,21 @@ public class UMLPSymbolTables {
     return res;
   }
 
+  public static ASTCDCompilationUnit getDiagramFor(ASTCDType type){
+    return getDiagramFor((ASTNode) type);
+  }
 
+
+  public static ASTCDCompilationUnit getDiagramFor(ASTCDAssocSide a) {
+    return getDiagramFor((ASTNode) a);
+  }
+
+  private static ASTCDCompilationUnit getDiagramFor(ASTNode node){
+    IScope cur = node.getEnclosingScope();
+    while(!(cur instanceof IUMLPArtifactScope)){
+      cur = cur.getEnclosingScope();
+    }
+    IUMLPArtifactScope asArtifactScope = (IUMLPArtifactScope) cur;
+    return (ASTCDCompilationUnit) asArtifactScope.getAstNode();
+  }
 }

@@ -8,9 +8,11 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
@@ -101,9 +103,14 @@ public class ManagerMockDecorator extends AbstractDecorator {
 
     // Associations
     assocs.stream().filter(a -> GenService.isList(a)).forEach(a -> {
-      String type = a.getSymbol().getType().print();
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", a.getName(), domainClass.getName(), type);
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", a.getName(), domainClass.getName(), type);
+      SymTypeExpression type = a.getSymbol().getType();
+      String printedType = type.print();
+      ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+
+      getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", a.getName(), domainClass.getName(), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", a.getName(), domainClass.getName(), printedType);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
     });
   }
@@ -129,9 +136,14 @@ public class ManagerMockDecorator extends AbstractDecorator {
 
     // Associations
     assocs.stream().filter(GenService::isList).forEach(a -> {
-      String type = a.getSymbol().getType().print();
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", a.getName(), domainClass.getName(), type);
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", a.getName(), domainClass.getName(), type);
+      SymTypeExpression type = a.getSymbol().getType();
+      String printedType = type.print();
+      ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+
+      getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", a.getName(), domainClass.getName(), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", a.getName(), domainClass.getName(), printedType);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
     });
   }

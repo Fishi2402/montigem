@@ -42,4 +42,7 @@ umlp BaseArtifactsTest {
   abstract class ArtifactInternal{}
 
   association internals [1] ArtifactView <-> ArtifactInternal [*];
+
+  // TODO: fill/convert to interface
+  abstract class Metric{}
 }
