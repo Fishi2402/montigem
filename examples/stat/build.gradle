@@ -33,7 +33,7 @@ dependencies {
         exclude module: 'spring-boot-starter-logging'
         exclude module: 'logback-classic'
     }
-    compileOnly("org.springframework.boot:spring-boot-devtools:$spring_version")
+    developmentOnly("org.springframework.boot:spring-boot-devtools:$spring_version")
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
     implementation "com.h2database:h2:${h2_database}"
