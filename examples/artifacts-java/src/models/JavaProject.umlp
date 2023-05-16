@@ -6,7 +6,10 @@ umlp JavaProject{
     // Artifacts
     // ______________________________________________________
 
+    // cd can not be emtpy
+    class Empty{}
 
+    /* TODO: Composition of Managers, similar to MC Mill
     //TODO nessesary?
     association reliesOnJavaArtifact [*] JavaView -> (reliedOnViews) JavaView [*] ;
 
@@ -148,4 +151,5 @@ umlp JavaProject{
         int loc;
     }
 
+  */
 }
