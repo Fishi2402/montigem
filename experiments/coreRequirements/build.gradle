@@ -75,11 +75,10 @@ task generateCDTOGUI(type: UMLPTask) {
     outputDir = layout.buildDirectory.dir("genumlp/cd2gui")
 }
 
-task guidelta(type: UMLPTask) {
+task guidelta(type: GuiVariabilityHandlerTask) {
     dependsOn(generateCDTOGUI)
-    input.from(file("target/genumlp/cd2gui"))
+    input.from(file("build/genumlp/cd2gui"))
     input.from(file("models/guidelta"))
-    GUIDelta=true
     outputDir = layout.buildDirectory.dir("genumlp/guidelta")
 }
 
