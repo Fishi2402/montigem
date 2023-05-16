@@ -8,7 +8,7 @@ umlp JavaProject{
 
 
     //TODO nessesary?
-    association reliesOnJavaArtifact [*] JavaView -> (reliedOn) JavaView [*] ;
+    association reliesOnJavaArtifact [*] JavaView -> (reliedOnViews) JavaView [*] ;
 
 
     // JavaPackage
@@ -36,8 +36,8 @@ umlp JavaProject{
     class ExternalJavaSource extends Artifact{
     }
 
-    association imports [*] JavaView -> Artifact [*] ;
-    association compiledTo [1] JavaView -> Artifact [*] ;
+    association imports [*] JavaView -> (importedArtifacts) Artifact [*] ;
+    association compiledTo [1] JavaView -> (compiledArtifacts) Artifact [*] ;
 
 
 

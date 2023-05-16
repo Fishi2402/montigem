@@ -13,7 +13,6 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.check.SymTypeExpression;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -61,12 +60,23 @@ public class DbObserverDecorator extends AbstractDecorator {
         ASTCDMethodSignature set = getCD4C().addMethod(observerClass, "umlp.dbobserver.Notify",
             a.getName(), e.getValue().getName(), GenService.getType(a.getSymbol().getType()));
         glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
+
+        ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor(e.getValue());
+        getCD4C().addImport(observerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + e.getValue().getName());
       });
 
     for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e: DAODecorator.getOppositeSideToAssociationMap(domainClass, associations).entrySet()) {
       CDRoleSymbol cdRollSymbol = e.getKey().getSymbol();
+
+      SymTypeExpression type = cdRollSymbol.getType();
+
       SymTypeExpression otherType = cdRollSymbol.getOtherSide().getType();
       String otherTypeName = otherType.print();
+
+      ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+      ASTCDCompilationUnit otherTypeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) otherType.getTypeInfo().getAstNode());
+      getCD4C().addImport(observerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+      getCD4C().addImport(observerClass, getPackageName(otherTypeCD, DEFAULT_PACKAGE) + "." + otherType.print());
 
       ASTCDMethodSignature add = null;
       ASTCDMethodSignature remove = null;

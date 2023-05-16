@@ -16,7 +16,7 @@ if (!o.containsObserver(the${name}CommandObserver)) {
   for (Long initialId : o._internal_get${assoc.getName()?cap_first}GemList().getIDs(0, o.size${assoc.getName()?cap_first}s())) {
     ${type} other = ${managerName}Manager.get${type}Sure(initialId);
     <#if otherSide.getCDCardinality().isMult()>
-      other._internal_add${otherSide.getName()?cap_first}(other.size${otherSide.getName()?cap_first}s(), Collections.singletonList(o.gemId), NotificationScope.MINIMAL);
+      other._internal_add${otherSide.getName()?cap_first}(other.size${otherSide.getName()?cap_first}s(), Collections.singletonList(o.getGemId()), NotificationScope.MINIMAL);
     <#else>
       other._internal_set${otherSide.getName()?cap_first}(o.getGemId(), NotificationScope.MINIMAL);
     </#if>
@@ -25,7 +25,7 @@ if (!o.containsObserver(the${name}CommandObserver)) {
     { ${type} other  = o.get${assoc.getName()?cap_first}();
     //${type} other = ${managerName}Manager.get${type}Sure(initialId);
     <#if otherSide.getCDCardinality().isMult()>
-      other._internal_add${otherSide.getName()?cap_first}(other.size${otherSide.getName()?cap_first}s(), Collections.singletonList(o.gemId), NotificationScope.MINIMAL);
+      other._internal_add${otherSide.getName()?cap_first}(other.size${otherSide.getName()?cap_first}s(), Collections.singletonList(o.getGemId()), NotificationScope.MINIMAL);
     <#else>
       other._internal_set${otherSide.getName()?cap_first}(o.getGemId(), NotificationScope.MINIMAL);
     </#if>
