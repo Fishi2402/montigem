@@ -185,6 +185,7 @@ task runApp(type: NpxTask) {
   outputs.upToDateWhen { true }
 }
 
+/*
 sourceSets {
   // java -> main instead of main -> java?
   java {
