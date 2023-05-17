@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GUIDeltaHandler implements GUIDSLHandler {
+public class GUIVariationHandler implements GUIDSLHandler {
 
     private GUIDSLTraverser traverser;
 
@@ -49,7 +49,7 @@ public class GUIDeltaHandler implements GUIDSLHandler {
      * @param adaptedAST the AST that should be adapted when traversing a guiDelta, correct function is only guaranteed
      *                   when the GUIDeltaHandler is traversing a DeltaAST that does adapt specifically the adaptedAST.
      */
-    public GUIDeltaHandler(ASTGUICompilationUnit adaptedAST) {
+    public GUIVariationHandler(ASTGUICompilationUnit adaptedAST) {
         traverser = GUIDSLMill.traverser();
         traverser.setGUIDSLHandler(this);
         this.adaptedAST = adaptedAST;

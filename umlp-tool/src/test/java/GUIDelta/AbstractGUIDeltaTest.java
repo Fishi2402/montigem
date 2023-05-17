@@ -4,7 +4,7 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPTool;
-import umlp.generator.gui.guidelta.GUIDeltaHandler;
+import umlp.generator.gui.guidelta.GUIVariationHandler;
 
 import java.io.File;
 
@@ -24,7 +24,7 @@ abstract public class AbstractGUIDeltaTest {
     }
 
     public static ASTGUICompilationUnit handleGUIDelta(ASTGUICompilationUnit deltaAST, ASTGUICompilationUnit adaptedAST){
-        GUIDeltaHandler handler = new GUIDeltaHandler(adaptedAST);
+        GUIVariationHandler handler = new GUIVariationHandler(adaptedAST);
         deltaAST.accept(handler.getTraverser());
         return adaptedAST;
     }

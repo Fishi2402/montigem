@@ -18,15 +18,16 @@ abstract public class GuiVariabilityHandlerTask extends CommonUMLPTask {
     result.add("-r");
     result.add(handlePath.apply(getReportDir().getAsFile().get().toPath()));
 
+    result.add("-i");
+    result.add(".\\."); //placeholder, never used
+
     result.add("-guidelta");
 
+    result.add("-gp");
     this.getInput().getAsFileTree().getFiles().stream()
         .filter(File::isFile)
         .filter(f -> f.getName().endsWith(".gui"))
-        .forEach(f -> {
-          result.add("-i");
-          result.add(handlePath.apply(f.toPath()));
-        });
+        .forEach(f -> result.add(handlePath.apply(f.toPath())));
 
     return result;
   }
