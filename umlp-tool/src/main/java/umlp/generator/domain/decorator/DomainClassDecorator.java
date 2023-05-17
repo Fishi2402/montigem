@@ -54,11 +54,8 @@ public class DomainClassDecorator extends DomainTypeDecorator {
           .createCDExtendUsage(domainClass.getCDExtendUsage().getSuperclass(0).deepClone()));
     }
 
-    // Attributes
-    AttributesTuple attributes = getAllAttributes(domainClass, false);
-    List<ASTCDAttribute> derivedAttribFields = filterDerivedAttributes(attributes.attrFields, true);
-
     // Stereotype
+    List<ASTCDAttribute> derivedAttribFields = filterDerivedAttributes(domainClass.getCDAttributeList(), true);
     if (derivedAttribFields.size() > 0) {
       String derivedAttribs = derivedAttribFields.stream()
           .map(attr -> {
@@ -67,7 +64,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
             return String.format(
                 "%s in %s:%s:%s",
                 attr.getName(),
-                sourcePosition.getFileName(),
+                sourcePosition.getFileName().orElse("unknown"),
                 sourcePosition.getLine(),
                 sourcePosition.getColumn()
             );
@@ -86,6 +83,9 @@ public class DomainClassDecorator extends DomainTypeDecorator {
 
     // Constructors
     getCD4C().addConstructor(clazz, "umlp.domain.Constructor", domainClass.getName());
+
+    // Attributes
+    AttributesTuple attributes = getAllAttributes(domainClass, false);
 
     if (!domainClass.isPresentCDExtendUsage()) {
       // Attribute gemId and getter and setter
