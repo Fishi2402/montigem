@@ -30,6 +30,7 @@ page PersonOverview(List<Human> ps) {
   );
 }
 /**/
+/*
 page PersonOverview(List<Person> ps) {
   @iterate(Person p : ps) {
     @GemText(value = p.age);
@@ -41,14 +42,15 @@ page PersonOverview(List<Person> ps) {
     ));
 }
 /**/
-/*
 page PersonOverview(List<Person> ps) {
+  @iterate(Person p : ps) {
+    @GemText(value = p.age);
+  }
   @GemCard(
-    title = "Overview",
-    content = t@GemTable(
+    component = t@GemTable(
       rows = ps,
-      columns = [ TableColumn("nickname") ],
-      deleteRow = deletePerson
+      columns = [ TableColumn("nickname", "Name") ],
+      delete = deletePerson
     ));
 }
 /**/
