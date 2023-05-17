@@ -54,4 +54,11 @@ public class DBTestService {
     }
     return ResponseEntity.ok("Script:" + Log_MC_JARManager.getMCJarCLIParameterSure(id).isScript());
   }
+
+
+  @GetMapping("/echo/{input}")
+  public ResponseEntity<String> echo(@PathVariable String input) {
+    return ResponseEntity.ok("Hallo: " + input);
+  }
+
 }

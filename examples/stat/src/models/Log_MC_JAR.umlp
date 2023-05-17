@@ -59,6 +59,8 @@ umlp Log_MC_JAR {
     int empty_hook_point_calls;
   }
 
-  class HI{}
+  class HI{
+  String hal;
+  }
 }
 
