@@ -4,16 +4,11 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
-import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 import umlp.generator.gui.GUIGeneratorUtil;
 
-import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,9 +32,9 @@ public class GUIComponentAnnotationDecorator {
       if (util.isTop(clazz.getName())) {
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
+            clazz,
             new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_DIRECTIVE)
         );
-        glex.bindStringHookPoint("ClassContent:Imports", getDirectiveImport());
       }
       else {
         String htmlFileName = clazz.getName() + ".html";
@@ -63,19 +58,11 @@ public class GUIComponentAnnotationDecorator {
 
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, clazz, htmlPath, scssPaths)
+            clazz,
+            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, htmlPath, scssPaths)
         );
-        glex.bindStringHookPoint("ClassContent:Imports", getComponentImport());
       }
     }
-  }
-
-  protected String getDirectiveImport() {
-    return "import { Directive } from '@angular/core';";
-  }
-
-  protected String getComponentImport() {
-    return "import { Component } from '@angular/core';";
   }
 
 }

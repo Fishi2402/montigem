@@ -20,7 +20,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
-import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BuilderDecorator;
@@ -34,7 +34,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class DomainRefDecorator extends GUIAbstractDecorator {
 
@@ -110,7 +109,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     String className = domainClass.getName();
     domainClass.getName();
     ASTCDClass clazz = UMLPMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
+        .setModifier(CDModifier.PUBLIC.build())
         .setName(className)
         .build();
 
@@ -151,8 +150,12 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
         List<ASTGUIParam> otherParams = domainClass.getGUIParamList().stream()
             .filter(p -> !util.isDomainType(p)).collect(Collectors.toList());
-        List<ASTCDAttribute> otherAttributes = otherParams.stream()
-            .map(p -> addAttributForGUIParameter(clazz, p)).collect(Collectors.toList());
+        List<ASTCDAttribute> otherAttributes = new ArrayList<>();
+        for (ASTGUIParam p : otherParams) {
+          ASTCDAttribute cdAttr = addAttributForGUIParameter(clazz, p, CDModifier.PUBLIC.build());
+          addAnnotation(cdAttr);
+          otherAttributes.add(cdAttr);
+        }
         List<String> params = new ArrayList<>();
         domainClass.forEachGUIParams(p -> params.add(
             getParam(p.getSymbol().getType().getTypeInfo().getName(), p.getName())
@@ -191,8 +194,11 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     return clazz;
   }
 
+  protected void addAnnotation(ASTCDAttribute attr) {
+  }
+
   protected ASTCDMethod addInitMethod() {
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), "init");
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(CDModifier.PUBLIC.build(), "init");
     glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2java.Init"));
     return method;
   }
@@ -210,9 +216,13 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   }
 
   protected ASTCDAttribute addAttributForGUIParameter(ASTCDClass clazz, ASTGUIParam astguiParam) {
+    return addAttributForGUIParameter(clazz, astguiParam, CDModifier.PROTECTED.build());
+  }
+
+  protected ASTCDAttribute addAttributForGUIParameter(ASTCDClass clazz, ASTGUIParam astguiParam, ASTModifier modifier) {
     // attr
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
-        CDModifier.PROTECTED.build(), astguiParam.getMCType(),
+        modifier, astguiParam.getMCType(),
         util.gui2cdAttrName(astguiParam.getName())
     );
     addInitialValue(attr);

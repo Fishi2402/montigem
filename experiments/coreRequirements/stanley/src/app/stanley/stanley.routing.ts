@@ -38,10 +38,10 @@ export const routes: Routes = [
   },
   {
     path: "test",
-    loadChildren: () => import("../../../build/stanley/my/InfoBoxModule").then(m => m.InfoboxModule)
+    loadChildren: () => import("../../../build/app/stanley/my/InfoBoxModule").then(m => m.InfoboxModule)
   },
   {
     path: "test2",
-    loadChildren: () => import("../../../build/stanley/personoverview/PersonOverviewModule").then(m => m.PersonoverviewModule)
+    loadChildren: () => import("../../../build/app/stanley/personoverview/PersonOverviewModule").then(m => m.PersonoverviewModule)
   },
 ]

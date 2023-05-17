@@ -27,6 +27,15 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
   }
 
   @Override
+  protected void addAnnotation(ASTCDAttribute attr) {
+    glex.replaceTemplate(
+        GUI2ComponentTemplates.ANNOTATIONS,
+        attr,
+        new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_INPUT)
+    );
+  }
+
+  @Override
   protected String getBuildTemplate() {
     return "umlp.gui2ts.TSBuild";
   }

@@ -119,7 +119,7 @@ task serializeUMLP {
         mainClass = 'de.monticore.CD4CodeTool'
         classpath = configurations.cdTool
         args "-i", path,
-            "-s", "${project.buildDir}/symbols/${relativeModelPathStr}sym"
+            "-s", "${project.buildDir}/app/symbols/${relativeModelPathStr}sym"
       }
     }
   }
@@ -128,7 +128,7 @@ task serializeUMLP {
 task copyGUISymbols(type: Copy) {
   copy {
     from zipTree(configurations.symbol.asPath)
-    into "$project.buildDir/symbols"
+    into "$project.buildDir/app/symbols"
   }
 }
 
@@ -136,10 +136,10 @@ task generateAll(type: UMLPGuiGenTask) {
   dependsOn(serializeUMLP)
   dependsOn(copyGUISymbols)
   input = file("../models")
-  outputDir = file("$project.buildDir")
+  outputDir = file("$project.buildDir/app")
   hwcDir = file("$projectDir/src/app")
   modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = layout.buildDirectory.dir("symbols")
+  symbolDir = layout.buildDirectory.dir("app/symbols")
   domainModels = ["hardy.Flensburg"]
   guiCreateModels = ["stanley.personcreate.PersonCreate"]
 

@@ -4,6 +4,7 @@
 
 ${defineHookPoint("ClassContent:addComment")}
 
+${tc.include("umlp.gui2ts.TSImports")}
 ${cdPrinter.printImportList(cd4c.getImportList(ast))}
 
 <#-- Imports hook -->

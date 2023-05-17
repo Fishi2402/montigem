@@ -24,6 +24,10 @@ public final class GUI2ComponentTemplates {
   public static final String ANNOTATION_COMPONENT = "umlp.gui2ts.TSAnnotationComponent";
   public static final String ANNOTATION_DIRECTIVE = "umlp.gui2ts.TSAnnotationDirective";
 
+  public static final String ANNOTATION_INPUT = "umlp.gui2ts.TSAnnotationInput";
+
+  public static final String ANNOTATION_OUTPUT = "umlp.gui2ts.TSAnnotationOutput";
+
   public static final String GET_COMPONENT_REPLACED = "umlp.gui2java.GetComponentReplaced";
 
   private GUI2ComponentTemplates() {}

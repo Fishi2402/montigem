@@ -9,7 +9,7 @@ import hardy.Flensburg.Person;
 import basic.src.lib.gemtext.GemText;
 import arrange.src.lib.gemcard.GemCard;
 import table.src.lib.gemtable.GemTable;
-// import stanley.my.InfoBox;
+import stanley.my.InfoBox;
 // import type from a CD to describe a table column
 
 import table.src.lib.gemtable.TableTypes.TableColumn;
@@ -42,6 +42,7 @@ page PersonOverview(List<Person> ps) {
     ));
 }
 /**/
+/*
 page PersonOverview(List<Person> ps) {
   @iterate(Person p : ps) {
     @GemText(value = p.age);
@@ -54,38 +55,19 @@ page PersonOverview(List<Person> ps) {
     ));
 }
 /**/
-/*
 page PersonOverview(List<Person> ps) {
+  @iterate(Person p : ps) {
+    @GemText(value = p.age);
+  }
   box@InfoBox(
     text = "This is some important information that you should know.",
     color = "#8ebae5"
   );
   @GemCard(
-    title = "Overview",
-    content = t@GemTable(
+    component = t@GemTable(
       rows = ps,
-      columns = [ TableColumn("nickname") ],
-      deleteRow = deletePerson
+      columns = [ TableColumn("nickname", "Name") ],
+      delete = deletePerson
     ));
 }
 /**/
-/*
-page PersonOverview(List<Person> ps) {
-  @GemCard(
-    title = "Overview",
-    content =
-      // Table of objects
-      @GemTable(
-        // rows show a list of objects (persons)
-        rows = ps,
-        // 2 columns: 1st shows age of a person, 2nd - nickname attribute value
-        columns = [
-          TableColumn("age", "Age"),
-          TableColumn("nickname", "Name")
-        ]
-      )
-  );
-
-}
-/**/
-
