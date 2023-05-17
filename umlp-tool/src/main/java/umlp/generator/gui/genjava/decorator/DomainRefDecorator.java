@@ -60,7 +60,11 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     // imports
     for (ASTMCImportStatement i : guiAst.getMCImportStatementList()) {
       if (!isGUIModelImportInGUI(i)) {
-        getCD4C().addImport(decoratedClass, i.getQName());
+        if (util.isCreateModel(guiAst.getComponentQName())) {
+          getCD4C().addImport(decoratedClass, i.getQName() + BuilderDecorator.BUILDER_SUFFIX);
+        } else {
+          getCD4C().addImport(decoratedClass, i.getQName());
+        }
       }
     }
   }
@@ -80,12 +84,9 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     // --- replace this when TypeCheck can be used
     TypeSymbol typeInfo = astguiParam.getSymbol().getType().getTypeInfo();
 
-    String qualifiedType = BuilderDecorator.getClassName(typeInfo.getFullName()); // domainTypeSymbol.getQualifiedName(); //TODO MB
     String attributeType = BuilderDecorator.getClassName(typeInfo.getName());
     String attributeName = astguiParam.getName() + "Builder";
     // --- end
-
-    getCD4C().addImport(clazz, qualifiedType);
 
     ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(
         CDModifier.PROTECTED.build(), attributeType, util.gui2cdAttrName(attributeName));
