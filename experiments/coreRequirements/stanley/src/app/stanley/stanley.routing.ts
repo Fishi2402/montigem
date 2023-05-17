@@ -44,4 +44,8 @@ export const routes: Routes = [
     path: "test2",
     loadChildren: () => import("../../../build/app/stanley/personoverview/PersonOverviewModule").then(m => m.PersonoverviewModule)
   },
+  {
+    path: "test3",
+    loadChildren: () => import("../../../build/app/stanley/personcreate/PersonCreateModule").then(m => m.PersoncreateModule)
+  },
 ]

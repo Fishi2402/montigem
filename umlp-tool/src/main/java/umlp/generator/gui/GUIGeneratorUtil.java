@@ -201,6 +201,10 @@ public class GUIGeneratorUtil {
     return getHTMLName("get" + StringTransformations.capitalize(domainParamName));
   }
 
+  public String gui2cdAttrSetterName(String domainParamName) {
+    return getHTMLName("set" + StringTransformations.capitalize(domainParamName));
+  }
+
   public String gui2cdAttrGetterName(String componentId, String argName) {
     return getHTMLName("get"
         + StringTransformations.capitalize(componentId)

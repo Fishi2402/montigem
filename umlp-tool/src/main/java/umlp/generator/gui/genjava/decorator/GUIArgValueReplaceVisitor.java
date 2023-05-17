@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
@@ -29,9 +30,11 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
   protected GUIDSLTraverser traverser;
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
-  protected ASTGUIArgValue result;
+  protected ASTGUIArgValue getterExpression;
+  protected Optional<ASTGUIArgValue> setterExpression = Optional.empty();
 
   protected List<ExpressionReplacement> replacements = new ArrayList<>();
+  protected Optional<ExpressionReplacement> setterReplacement = Optional.empty();
 
   protected boolean needsGetter = false;
   protected boolean needsOwnParam = false;
@@ -59,8 +62,12 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
     // do not throw error
   }
 
-  public ASTExpression getResult() {
-    return result.getExpression();
+  public ASTExpression getGetterExpression() {
+    return getterExpression.getExpression();
+  }
+
+  public Optional<ASTExpression> getSetterExpression() {
+    return setterExpression.map(ASTGUIArgValue::getExpression);
   }
 
   public boolean argNeedsGetter() {
@@ -89,10 +96,24 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
     }
 
     if (arg.getGUIArgValue().isPresentExpression()) {
-      result = arg.getGUIArgValue().deepClone();
-      arg.accept(getTraverser());
+      getterExpression = arg.getGUIArgValue().deepClone();
+      getterExpression.accept(getTraverser());
       Collections.reverse(replacements);
       for (ExpressionReplacement nr : replacements) {
+        ExpressionReplaceVisitor visitor = new ExpressionReplaceVisitor();
+        visitor.transform(nr.getHolder(), nr.getOldValue(), nr.getNewValue());
+      }
+
+      replacements = new ArrayList<>();
+
+      setterExpression = Optional.of(arg.getGUIArgValue().deepClone());
+      setterExpression.get().accept(getTraverser());
+      Collections.reverse(replacements);
+      for (int i = 0; i < replacements.size(); ++i) {
+        ExpressionReplacement nr = replacements.get(i);
+        if (i == replacements.size() - 1 && setterReplacement.isPresent()) {
+          nr = setterReplacement.get();
+        }
         ExpressionReplaceVisitor visitor = new ExpressionReplaceVisitor();
         visitor.transform(nr.getHolder(), nr.getOldValue(), nr.getNewValue());
       }
@@ -103,6 +124,13 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
   public void visit(ASTNameExpression node) {
     if (potentialHolder != null) {
       if (potentialHolder.getValue().equals(node) && !ignore.contains(node.getName())) {
+        if (potentialHolder.getKey() instanceof ASTGUIArgValue) {
+          Supplier<ASTExpression> newValue = () -> ExpressionsBasisMill.nameExpressionBuilder()
+              .setName(util.gui2cdAttrSetterName(node.getName()))
+              .build();
+          setterReplacement = Optional.of(new ExpressionReplacement(
+              potentialHolder.getKey(), potentialHolder.getValue(), newValue));
+        }
         Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.callExpressionBuilder()
             .setExpression(
                 ExpressionsBasisMill.nameExpressionBuilder()
@@ -125,6 +153,14 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
   public void visit(ASTFieldAccessExpression node) {
     if (potentialHolder != null) {
       if (potentialHolder.getValue().equals(node)) {
+        if (potentialHolder.getKey() instanceof ASTGUIArgValue) {
+          Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.fieldAccessExpressionBuilder()
+              .setExpression(node.getExpression())
+              .setName(util.gui2cdAttrSetterName(node.getName()))
+              .build();
+          setterReplacement = Optional.of(new ExpressionReplacement(
+              potentialHolder.getKey(), potentialHolder.getValue(), newValue));
+        }
         Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.callExpressionBuilder()
             .setExpression(
                 CommonExpressionsMill.fieldAccessExpressionBuilder()

@@ -5,10 +5,13 @@ package umlp.generator.gui.gentypescript.domain;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.generator.domain.decorator.BuilderDecorator;
+import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.util.PathUtil;
 
 import java.util.List;
@@ -17,14 +20,24 @@ import static umlp.generator.domain.decorator.GenService.createType;
 
 public class TSBuilderDecorator extends BuilderDecorator {
 
+  protected String astcdPackage;
+
   public TSBuilderDecorator(final GlobalExtensionManagement glex) {
     super(glex);
   }
 
-  protected void addImports(ASTCDType domainType, ASTCDType clazz) {
-    super.addImports(domainType, clazz);
-    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
-    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
+  @Override
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    this.astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE).getName();
+    super.transform(origCD, decoratedCD);
+  }
+
+  protected void addImports(ASTCDType domainType, ASTCDType cdType) {
+    getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName());
+    getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ErrorCollectorDecorator.SUFFIX);
+    if (!domainType.getSuperclassList().isEmpty()) {
+      getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
+    }
   }
 
   protected String getConstructorTemplate() {

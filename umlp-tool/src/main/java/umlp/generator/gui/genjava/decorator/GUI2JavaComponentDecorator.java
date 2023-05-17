@@ -80,6 +80,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     String paramType = paramSym.get().getType().print();
     String getterName = util.gui2cdAttrGetterName(
         guiComponent.getId().getName(), namedArg.getName());
+    String setterName = util.gui2cdAttrSetterName(
+        guiComponent.getId().getName(), namedArg.getName());
     if (visitor.argNeedsOwnParamWithInit()) {
       // TODO AGe: how to do that better?
       // if List
@@ -109,10 +111,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
         addGetComponentMethod(decoratedClass, getterName, paramType,
             attr.getName(), getArgs(it2Arg.getArgs()), false);
-
-        String setterName = util.gui2cdAttrSetterName(
-            guiComponent.getId().getName(), namedArg.getName());
-        addSetComponentMethod(decoratedClass, setterName, paramType, attr.getName());
+        addSetComponentMethod(getSetterTemplate(), decoratedClass, setterName, paramType,
+            attr.getName(), getArgs(it2Arg.getArgs()), false);
 
         List<String> initValues = new ArrayList<>();
         for (ASTGUIArgValue av : valueList) {
@@ -125,15 +125,26 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       }
     }
     else {
-      String argValue = guiDSLPrinter.prettyprint(visitor.getResult());
-      boolean isLiteral = visitor.getResult() instanceof ASTLiteralExpression;
+      String getterValue = guiDSLPrinter.prettyprint(visitor.getGetterExpression());
+      boolean isLiteral = visitor.getGetterExpression() instanceof ASTLiteralExpression;
       boolean convertToString = mustBeConvertedToString(paramType, namedArg);
       if (convertToString) {
-        argValue = numberToStringCall(argValue);
+        getterValue = numberToStringCall(getterValue);
       }
 
       addGetComponentMethod(decoratedClass, getterName, paramType,
-          argValue, getArgs(it2Arg.getArgs()), isLiteral);
+          getterValue, getArgs(it2Arg.getArgs()), isLiteral);
+      if (paramSym.get().isIsReference() && visitor.getSetterExpression().isPresent()) {
+        String setterValue = guiDSLPrinter.prettyprint(visitor.getSetterExpression().get());
+        // TODO AGe: result of not nice below
+        if (convertToString) {
+          setterValue += "(+";
+        } else {
+          setterValue += "(";
+        }
+        addSetComponentMethod(getSetterReplacedTemplate(), decoratedClass, setterName, paramType,
+            setterValue, getArgs(it2Arg.getArgs()), isLiteral);
+      }
     }
   }
 
@@ -188,11 +199,18 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return "umlp.gui2java.GetComponentReplaced";
   }
 
-  protected void addSetComponentMethod(ASTCDClass decoratedClass, String methodName, String attrType, String attrName) {
-    getCD4C().addMethod(decoratedClass, getSetterTemplate(), methodName, attrType, attrName);
+  protected void addSetComponentMethod(
+      String template, ASTCDClass decoratedClass, String methodName, String attrType, String attrName,
+      List<String> arguments, boolean isLiteral
+  ) {
+    getCD4C().addMethod(decoratedClass, template, methodName, attrType, attrName);
   }
 
   protected String getSetterTemplate() {
+    return "umlp.gui2java.SetComponent";
+  }
+
+  protected String getSetterReplacedTemplate() {
     return "umlp.gui2java.SetComponent";
   }
 

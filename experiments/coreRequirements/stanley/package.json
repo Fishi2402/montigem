@@ -22,6 +22,7 @@
     "@monticore/montigem-basic": "7.5.0",
     "@monticore/montigem-arrange": "7.5.0",
     "@monticore/montigem-table": "7.5.0",
+    "@monticore/montigem-input": "7.5.0",
     "@umlp/common": "7.5.0",
     "font-awesome": "4.7.0",
     "rxjs": "7.8.0",
