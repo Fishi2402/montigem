@@ -78,4 +78,15 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
     return value + "+ ''";
   }
 
+  @Override
+  protected String convertSetter(String setterValue, boolean convertToString) {
+    String res = setterValue;
+    if (convertToString) {
+      res += "(+";
+    } else {
+      res += "(";
+    }
+    return res;
+  }
+
 }

@@ -22,8 +22,10 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
+import groovy.text.Template;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BuilderDecorator;
+import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 
 import java.util.ArrayList;
@@ -70,9 +72,15 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   }
 
   protected void createBuildMethod(ASTCDClass clazz, List<ASTGUIParam> collect) {
-    getCD4C().addMethod(clazz, getBuildTemplate(), collect.stream()
-        .map(p -> BuilderDecorator.getClassName(p.getName()))
-        .collect(Collectors.toList()));
+    getCD4C().addMethod(clazz, getBuildTemplate(), getBuilders(collect));
+  }
+
+  protected List<String> getBuilders(List<ASTGUIParam> params) {
+    List<String> builders = new ArrayList<>();
+    for (ASTGUIParam p : params) {
+      builders.add(BuilderDecorator.getClassName(p.getName()));
+    }
+    return builders;
   }
 
   protected String getBuildTemplate() {
@@ -116,6 +124,9 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
     // constructor, attrs, getters
     if (!domainClass.getGUIParamList().isEmpty()) {
+      ASTCDMethod init = addInitMethod();
+      clazz.addCDMember(init);
+
       List<ASTGUIParam> domainParams = domainClass.getGUIParamList().stream()
           .filter(p -> util.isDomainType(p))
           .collect(Collectors.toList());
@@ -129,6 +140,18 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
         // Add build method
         createBuildMethod(clazz, domainParams);
+
+        // fill init
+        if (util.getMainDomainModelSimpleName().isPresent()) {
+          // TODO AGe: body of init method currently uses different hooks, improve
+          glex.setBeforeTemplate("umlp.gui2java.InitBody", new TemplateHookPoint(
+              getInitBuilderTemplate(),
+              getBuilders(domainParams),
+              util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+        }
+        else {
+          Log.warn("0x00007 Could not identify the manager name: domain classdiagram is missing");
+        }
 
         // Add constructor
         Optional<String> domainQName = util.getMainDomainModelQName();
@@ -185,8 +208,6 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
             a.getSymbol().getType().getTypeInfo().getFullName())));
       }
       /**/
-
-      clazz.addCDMember(addInitMethod());
     }
     else {
       getCD4C().addConstructor(clazz, "umlp.domain.Constructor", className);
@@ -200,8 +221,16 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
   protected ASTCDMethod addInitMethod() {
     ASTCDMethod method = this.getCDMethodFacade().createMethod(CDModifier.PUBLIC.build(), "init");
-    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2java.Init"));
+    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getInitTemplate()));
     return method;
+  }
+
+  protected String getInitTemplate() {
+    return "umlp.gui2java.Init";
+  }
+
+  protected String getInitBuilderTemplate() {
+    return "umlp.gui2java.InitBuilder";
   }
 
   protected String getConstructorWithBuilderTemplate() {

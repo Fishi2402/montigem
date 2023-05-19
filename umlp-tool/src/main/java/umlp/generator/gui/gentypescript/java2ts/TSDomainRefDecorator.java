@@ -22,8 +22,13 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
   @Override
   protected ASTCDMethod addInitMethod() {
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), "ngOnInit");
-    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2ts.TSInit"));
+    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getInitTemplate()));
     return method;
+  }
+
+  @Override
+  protected String getInitTemplate() {
+    return "umlp.gui2ts.TSInit";
   }
 
   @Override

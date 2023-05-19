@@ -33,6 +33,7 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
   protected ASTGUIArgValue getterExpression;
   protected Optional<ASTGUIArgValue> setterExpression = Optional.empty();
 
+  protected Optional<ASTExpression> nullCheckExpression = Optional.empty();
   protected List<ExpressionReplacement> replacements = new ArrayList<>();
   protected Optional<ExpressionReplacement> setterReplacement = Optional.empty();
 
@@ -64,6 +65,10 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
 
   public ASTExpression getGetterExpression() {
     return getterExpression.getExpression();
+  }
+
+  public Optional<ASTExpression> getNullCheckExpression() {
+    return nullCheckExpression;
   }
 
   public Optional<ASTExpression> getSetterExpression() {
@@ -143,6 +148,7 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
                     .build()
             )
             .build();
+        nullCheckExpression = Optional.of(newValue.get());
         replacements.add(new ExpressionReplacement(
             potentialHolder.getKey(), potentialHolder.getValue(), newValue));
       }

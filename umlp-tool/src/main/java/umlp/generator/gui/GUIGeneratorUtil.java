@@ -36,12 +36,9 @@ import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -125,6 +122,15 @@ public class GUIGeneratorUtil {
   public final Optional<String> getMainDomainModelQName() {
     if (!DOMAIN_MODELS.isEmpty()) {
       return Optional.of(DOMAIN_MODELS.get(0));
+    }
+    return Optional.empty();
+  }
+
+  public final Optional<String> getMainDomainModelSimpleName() {
+    Optional<String> qName = getMainDomainModelQName();
+    if (qName.isPresent()) {
+      String[] parts = qName.get().split("\\.");
+      return Optional.of(parts[parts.length - 1]);
     }
     return Optional.empty();
   }
