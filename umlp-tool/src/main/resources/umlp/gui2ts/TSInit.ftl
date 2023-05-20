@@ -1,4 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature()}
-${cd4c.method("protected void init()")}
+${cd4c.method("public void ngOnInit()")}
 ${tc.include("umlp.gui2java.InitBody")}

@@ -10,6 +10,7 @@ import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
@@ -33,6 +34,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
+import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
 import java.net.URL;
@@ -445,6 +447,25 @@ public class GUIGeneratorUtil {
 
   public String getModuleClassName(String compName) {
     return StringTransformations.capitalize(compName.toLowerCase()) + "Module";
+  }
+
+  public List<String> getRoutingIds(ASTGUICompilationUnit decoratedAst) {
+    List<String> ids = new ArrayList<>();
+    if (!isCreateModel(decoratedAst.getComponentQName())) {
+      for (ASTGUIParam p : decoratedAst.getGUIComponentDeclaration().getGUIParamList()) {
+        if (p.isPresentSymbol()) {
+          if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p)) {
+            ids.add(p.getName() + "RoutingId");
+          }
+        }
+        else {
+          Log.warn("0x00008 parameter " + p.getName()
+              + " of component " + decoratedAst.getComponentName()
+              + " was not found. Routing information may be incomplete.");
+        }
+      }
+    }
+    return ids;
   }
 
   public String getGenFileFolder(ASTMCPackageDeclaration pDecl) {

@@ -48,4 +48,8 @@ export const routes: Routes = [
     path: "test3",
     loadChildren: () => import("../../../build/app/stanley/personcreate/PersonCreateModule").then(m => m.PersoncreateModule)
   },
+  {
+    path: "test4",
+    loadChildren: () => import("../../../build/app/stanley/personedit/PersonEditModule").then(m => m.PersoneditModule)
+  },
 ]

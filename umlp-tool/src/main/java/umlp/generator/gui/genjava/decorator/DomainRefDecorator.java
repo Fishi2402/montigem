@@ -106,7 +106,6 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     ASTGUIComponentDeclaration domainClass = ast.getGUIComponentDeclaration();
     // empty class
     String className = domainClass.getName();
-    domainClass.getName();
     ASTCDClass clazz = UMLPMill.cDClassBuilder()
         .setModifier(CDModifier.PUBLIC.build())
         .setName(className)
@@ -149,17 +148,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         getCD4C().addMethod(clazz, getBuildTemplate(), builders);
 
         // Add constructor
-        Optional<String> domainQName = util.getMainDomainModelQName();
-        if (domainQName.isPresent()) {
-          getCD4C().addConstructor(clazz, getConstructorWithBuilderTemplate(),
-              domainQName.get(), className, // TODO MB: Diagramm name UMLPDefSymbol
-              domainAttributes, guiDSLPrinter);
-        }
-        else {
-          Log.error("0x00000 GUI Model " + ast.getComponentQName()
-              + " is missing a connection to the domain model."
-              + " Please specify the domain model using '-dm' flag.");
-        }
+        addBuilderConstructor(clazz, domainAttributes, ast.getComponentQName());
       }
       else {
         // Add attributes
@@ -195,9 +184,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
             getParam(p.getSymbol().getType().getTypeInfo().getName(), p.getName())
         ));
 
-        getCD4C().addConstructor(clazz, getConstructorTemplate(), className,
-            Joiner.on(",").join(params), domainAttributes, otherAttributes,
-            guiDSLPrinter, isInputGui);
+        addEditConstructor(clazz, params, domainAttributes, otherAttributes);
       }
 
       // TODO AGe: readd error observers when error concept is realized
@@ -220,10 +207,40 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
       /**/
     }
     else {
-      getCD4C().addConstructor(clazz, "umlp.domain.Constructor", className);
+      addDefaultConstructor(clazz);
     }
 
     return clazz;
+  }
+
+  protected void addDefaultConstructor(ASTCDClass clazz) {
+    String className = clazz.getName();
+    getCD4C().addConstructor(clazz, "umlp.domain.Constructor", className);
+  }
+
+  protected void addBuilderConstructor(
+      ASTCDClass clazz, List<ASTCDAttribute> domainAttributes, String componentName
+  ) {
+    Optional<String> domainQName = util.getMainDomainModelQName();
+    if (domainQName.isPresent()) {
+      String className = clazz.getName();
+      getCD4C().addConstructor(clazz, getConstructorWithBuilderTemplate(),
+          domainQName.get(), className, // TODO MB: Diagramm name UMLPDefSymbol
+          domainAttributes, guiDSLPrinter);
+    }
+    else {
+      Log.error("0x00000 GUI Model " + componentName
+          + " is missing a connection to the domain model."
+          + " Please specify the domain model using '-dm' flag.");
+    }
+  }
+
+  protected void addEditConstructor(ASTCDClass clazz, List<String> params,
+      List<ASTCDAttribute> domainAttributes, List<ASTCDAttribute> otherAttributes) {
+    String className = clazz.getName();
+    getCD4C().addConstructor(clazz, getConstructorTemplate(), className,
+        Joiner.on(",").join(params), domainAttributes, otherAttributes,
+        guiDSLPrinter, isInputGui);
   }
 
   protected String getInitDomainTemplate() {

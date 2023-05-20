@@ -5,4 +5,6 @@ import {
   Component,
   Input,
   Output,
-} from "@angular/core";
+} from '@angular/core';
+
+import { ActivatedRoute } from '@angular/router';
