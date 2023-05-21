@@ -6,9 +6,11 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIGuard;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.genjava.decorator.EventDecorator;
 import umlp.generator.gui.genjava.decorator.GUI2JavaComponentsDecorator;
+import umlp.generator.gui.genjava.decorator.GUI2JavaGuardDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,10 @@ public class GUI2TypeScriptComponentsDecorator extends GUI2JavaComponentsDecorat
       }
     }
     glex.replaceTemplate("umlp.gui2java.InitBody", init);
+    for (ASTGUIGuard g : viewComponent.getGuards()) {
+      GUI2TypeScriptGuardDecorator decorator = new GUI2TypeScriptGuardDecorator(glex, guiAst);
+      decorator.transform(decoratedClass, g);
+    }
 
     // TODO AGe: rework iterate, not critical
     /*
