@@ -139,7 +139,7 @@ task generateAll(type: UMLPGuiGenTask) {
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = layout.buildDirectory.dir("symbols")
   domainModels = ["hardy.Flensburg"]
-  guiCreateModels = ["stanley.personcreate.PersonCreate"]
+  guiCreateModels = ["stanley.personcreate.PersonCreate", "stanley.gui.AccountCreate"]
 
   // moreArgs = ['-s', 'someArg']  // mehr CLI Argumente (nur zum debugging / testing!)
   /*
