@@ -4,7 +4,6 @@ package umlp.generator.gui.gentypescript.method;
 import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.methods.AbstractMethodDecorator;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
-import de.monticore.cd.codegen.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -16,7 +15,7 @@ public class TSAssocAccessorDecorator extends AccessorDecorator {
       GlobalExtensionManagement glex, CDGenService service, ASTCDType ast) {
     super(glex,
         new AssocMandatoryAccessorDecorator(glex, service),
-        new OptionalAccessorDecorator(glex, service),
+        new TSOptionalAccessorDecorator(glex, service),
         new TSAssocListAccessorDecorator(glex, service, ast));
   }
 

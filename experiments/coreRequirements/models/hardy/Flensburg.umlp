@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package hardy;
 
+import java.time.LocalDate;
+
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
 /*
@@ -53,4 +55,39 @@ classdiagram Flensburg {
     }
 
     / association cities CityInfo -> java.lang.String [*];
+
+  class Account {
+    String name;
+    Optional<String> tag;
+    Optional<String> category;
+  }
+
+  association [1] Account -> (budget) Budget [*];
+
+  class Budget {
+    String name;
+    long balance;
+    Optional<String> tag;
+    Optional<String> category;
+  }
+
+  association [1] Budget -> (transaction) Transaction [*];
+
+  class Transaction {
+    LocalDate date;
+    long amount;
+  }
+
+  class Invoice {
+    / long sum;
+  }
+
+  association [1] Invoice -> (expense) Transaction [*];
+
+  / class MonthlyReport {
+    int month;
+    long balanceChange;
+  }
+
+  / association [1] MonthlyReport -> (monthlyTransaction) Transaction [*];
 }

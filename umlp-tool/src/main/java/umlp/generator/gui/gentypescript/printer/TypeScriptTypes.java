@@ -7,6 +7,7 @@ public enum TypeScriptTypes {
   TEMPLATE_REF("GUIViewElement", "TemplateRef<any>"),
   LIST("List", "Array"),
   COLLECTION("Collection", "Array"),
+  LOCAL_DATE("LocalDate", "Date"),
   ITERATOR("Iterator", "IterableIterator"),
   INT("int", "number"),
   INT_BOXED("Integer", "number"),

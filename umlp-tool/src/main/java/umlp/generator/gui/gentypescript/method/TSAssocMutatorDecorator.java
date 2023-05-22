@@ -4,7 +4,6 @@ package umlp.generator.gui.gentypescript.method;
 import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.methods.AbstractMethodDecorator;
 import de.monticore.cd.codegen.methods.MutatorDecorator;
-import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -15,7 +14,7 @@ public class TSAssocMutatorDecorator extends MutatorDecorator {
       GlobalExtensionManagement glex, CDGenService service, ASTCDType ast) {
     super(glex,
         new TSAssocMandatoryMutatorDecorator(glex, service, ast),
-        new OptionalMutatorDecorator(glex, service),
+        new TSOptionalMutatorDecorator(glex, service),
         new TSAssocListMutatorDecorator(glex, service, ast));
   }
 

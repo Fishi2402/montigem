@@ -52,4 +52,8 @@ export const routes: Routes = [
     path: "test4",
     loadChildren: () => import("../../../build/app/stanley/personedit/PersonEditModule").then(m => m.PersoneditModule)
   },
+  {
+    path: "test5",
+    loadChildren: () => import("../../../build/app/stanley/gui/AccountCreateModule").then(m => m.AccountcreateModule)
+  },
 ]

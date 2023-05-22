@@ -7,15 +7,16 @@ import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.codegen.methods.MutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
-import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.generator.domain.decorator.DomainInterfaceDecorator;
 import umlp.generator.domain.decorator.methods.MethodGenService;
+import umlp.generator.gui.gentypescript.method.TSAccessorDecorator;
 import umlp.generator.gui.gentypescript.method.TSAssocAccessorDecorator;
 import umlp.generator.gui.gentypescript.method.TSAssocMutatorDecorator;
+import umlp.generator.gui.gentypescript.method.TSOptionalMutatorDecorator;
 import umlp.generator.gui.gentypescript.method.TSSimpleMethodMutatorDecorator;
 import umlp.generator.util.PathUtil;
 
@@ -41,9 +42,9 @@ public class TSDomainInterfaceDecorator extends DomainInterfaceDecorator {
       List<ASTCDAttribute> attrList, boolean isInterface) {
     CDGenService service = new MethodGenService();
     MethodDecorator methodDecorator = new MethodDecorator(glex,
-        new AccessorDecorator(glex, service),
+        new TSAccessorDecorator(glex, service),
         new MutatorDecorator(glex, new TSSimpleMethodMutatorDecorator(glex, service, domainType),
-            new OptionalMutatorDecorator(glex, service),
+            new TSOptionalMutatorDecorator(glex, service),
             new ListMutatorDecorator(glex, service)), service);
     for (ASTCDAttribute attribute : attrList) {
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
