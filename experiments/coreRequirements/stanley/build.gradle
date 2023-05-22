@@ -39,8 +39,6 @@ configurations {
 dependencies {
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
   implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
-  implementation project(':umlp-rte:umlp-frontend-rte')
-  compileOnly project(':umlp-rte:umlp-frontend-rte-java')
 
   symbol "de.monticore:frontend-rte:$mc_version"
   cdTool "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
