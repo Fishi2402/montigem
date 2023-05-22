@@ -135,6 +135,7 @@ public void onExit() {
   try { DatabaseAccessManager.closeConnection();} catch (SQLException ignored) {}
 }
 ```
+* changes in the gradle build setup (e.g., `build.gradle`) do not lead to an automatic reload
 
 ### Notes for Developers of UMLP-Tool
 The gradle-``UMLPTask`` supports incremental builds.
