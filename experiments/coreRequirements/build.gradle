@@ -1,3 +1,5 @@
+import java.nio.file.Paths
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -5,10 +7,6 @@ plugins {
     id 'com.google.cloud.tools.jib' version '3.2.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version "${spring_version}"
-}
-
-configurations {
-    symbol
 }
 
 application {
@@ -62,7 +60,6 @@ dependencies {
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
     testImplementation 'com.h2database:h2:2.1.214'
 
-    symbol "de.monticore:frontend-rte:$mc_version"
 }
 
 task runServer {
@@ -86,43 +83,6 @@ task generateFlensburg(type: UMLPTask) {
     dependsOn(generateCDTOGUI)
     input = (file("models/hardy"))
     outputDir = layout.buildDirectory.dir("genumlp/hardy")
-}
-
-task genTS(type: UMLPTask) {
-    input = (file("models/hardy"))
-    outputDir = layout.buildDirectory.dir("domainTS")
-    forClient = true
-
-    /*
-    debug = true
-    outputs.upToDateWhen { false }
-    /**/
-}
-
-task copySymbols(type: Copy) {
-    copy {
-        from zipTree(configurations.symbol.asPath)
-        into "$projectDir/target/symbols"
-    }
-}
-
-task generateAll(type: UMLPGuiGenTask) {
-    dependsOn(copySymbols)
-    input = (file("models"))
-    outputDir = layout.buildDirectory.dir("gen")
-    hwcDir = layout.projectDirectory.dir("src/main/java")
-    modelDir = layout.projectDirectory.dir("models")
-    symbolDir = file("models")
-    domainModels = ["hardy.Flensburg"]
-    guiCreateModels = ["stanley.personcreate.PersonCreate"]
-
-    //symbolDir = file("$projectDir/target/symbols")
-
-    // moreArgs = ['-s', 'someArg']  // mehr CLI Argumente (nur zum debugging / testing!)
-    /*
-    debug = true
-    outputs.upToDateWhen { false }
-    /**/
 }
 
 test {

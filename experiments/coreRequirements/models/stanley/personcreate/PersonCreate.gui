@@ -7,12 +7,10 @@ package stanley.personcreate;
 import hardy.Flensburg.Person;
 
 // hier werden importierte GUI-Modelle gefunden
-import stanley.tmp.io.input.GemTextInput;
-import stanley.tmp.io.input.GemNumberInput;
-import stanley.tmp.io.GemButton;
-
-import stanley.tmp.layout.GemCard;
-import stanley.tmp.layout.GemColumn;
+import input.src.lib.gemtextinput.GemTextInput;
+import basic.src.lib.gembutton.GemButton;
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemcolumn.GemColumn;
 
 /**
  * This example defines a 
@@ -27,11 +25,10 @@ import stanley.tmp.layout.GemColumn;
 // "aktualisiert".
 page PersonCreate(Person p) {
   card@GemCard(
-    title = "Create Person",
-    content = col@GemColumn(contents = [
-      name@GemTextInput(value = p.nickname),
-      age@GemNumberInput(value = p.age),
-      save@GemButton(text = "Save", leftClick = create)
+    component = col@GemColumn(components = [
+      name@GemTextInput(entry = p.nickname),
+      age@GemTextInput(entry = p.age, inputType = "number"),
+      save@GemButton(label = "Save"/*, leftClick = create*/)
     ])
   );
 }

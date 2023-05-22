@@ -69,13 +69,24 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
   }
 
   @Override
-  protected void addSetComponentMethod(ASTCDClass decoratedClass, String methodName, String attrType, String attrName) {
-    getCD4C().addMethod(decoratedClass, "umlp.gui2ts.TSSetComponent", methodName, attrType, attrName);
+  protected String getSetterReplacedTemplate() {
+    return "umlp.gui2ts.TSSetComponentReplaced";
   }
 
   @Override
   protected String numberToStringCall(String value) {
     return value + "+ ''";
+  }
+
+  @Override
+  protected String convertSetter(String setterValue, boolean convertToString) {
+    String res = setterValue;
+    if (convertToString) {
+      res += "(+";
+    } else {
+      res += "(";
+    }
+    return res;
   }
 
 }

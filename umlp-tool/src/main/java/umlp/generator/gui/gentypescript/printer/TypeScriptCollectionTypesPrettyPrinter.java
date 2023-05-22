@@ -29,7 +29,11 @@ public class TypeScriptCollectionTypesPrettyPrinter extends MCCollectionTypesPre
     }
     node.getMCTypeArgument().accept(getTraverser());
     getPrinter().stripTrailing();
-    getPrinter().print("?");
+    /*
+    if (!node.getMCTypeArgument().printType().startsWith("? extends")) {
+      getPrinter().print("?");
+    }
+    /**/
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPostComments(node, getPrinter());
     }
@@ -39,7 +43,7 @@ public class TypeScriptCollectionTypesPrettyPrinter extends MCCollectionTypesPre
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
-    getPrinter().print("Array ");
+    getPrinter().print("Set ");
     getPrinter().stripTrailing();
     getPrinter().print("<");
     node.getMCTypeArgument().accept(getTraverser());

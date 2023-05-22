@@ -5,6 +5,8 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesPrettyPrinter;
 import umlp.generator.gui.GUIGeneratorUtil;
 
+import java.util.List;
+
 public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter {
 
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
@@ -20,7 +22,12 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
     }
     // print only last
     if (node.getPartsList().size() > 0) {
-      getPrinter().print(TypeScriptTypes.toTSType(node.getBaseName()));
+      // TODO AGe: underspecified List lands here
+      if (node.getBaseName().equals(TypeScriptTypes.LIST.getMCType())) {
+        getPrinter().print("Array<any>");
+      } else {
+        getPrinter().print(TypeScriptTypes.toTSType(node.getBaseName()));
+      }
     }
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPostComments(node, getPrinter());
@@ -43,13 +50,22 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
       getPrinter().stripTrailing();
       getPrinter().print(" from '");
 
-      String from = "@src/" + util.package2path(node.getQName());
+      // --- path calculation (start)
+      // TODO AGe: generated path doesn't match package for CDs
+      //  hardy.Flensburg.Human -> hardy/flensburg/Human
+      List<String> parts = node.getMCQualifiedName().getPartsList();
+      int index = parts.size() - 2;
+      if (index >= 0) {
+        parts.set(index, parts.get(index).toLowerCase());
+      }
+      String from = "@src/" + util.qName2path(String.join(".", parts));
       for (TSImportMap type : TSImportMap.values()) {
         if (node.getQName().startsWith(type.getJavaPackage())) {
           from = type.getTSPackage();
         }
       }
       getPrinter().print(from);
+      // --- path calculation (end)
 
       getPrinter().println("';");
     }

@@ -120,14 +120,22 @@ Initial configuration for Hot Reload of Backend:
 Start Hot Reload:
 * Start ``gradle <backend_subproject>:run``
   * Command should keep running, do not terminate
-* Start ``gradle <backend_subproject>:classes --continuous`` in new terminal
+* Start ``gradle <backend_subproject>:assemble --continuous`` in new terminal
   * Command should keep running, do not terminate
 * Edit files. On each "Save" the new state should be started automatically. Look at the output of the previous commands for information.
 * (Optional) Install LiveReload Plugin in the Browser. It will automatically refresh the page after each update.
   * [Firefox Addon](https://addons.mozilla.org/de/firefox/addon/live-reload/) or [Chrome Addon](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei)
 
 Currently Known Limitations:
-* Changes in the database-schemata (e.g. changes of .umlp file) require a full restart
+* Changes in the database-schemata (e.g. changes of .umlp file) could lead to problems and might require a full restart
+  * Closing the database-connection on exit _might_ fix it:
+```java
+@PreDestroy
+public void onExit() {
+  try { DatabaseAccessManager.closeConnection();} catch (SQLException ignored) {}
+}
+```
+* changes in the gradle build setup (e.g., `build.gradle`) do not lead to an automatic reload
 
 ### Notes for Developers of UMLP-Tool
 The gradle-``UMLPTask`` supports incremental builds.

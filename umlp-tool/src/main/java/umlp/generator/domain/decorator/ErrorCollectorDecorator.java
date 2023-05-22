@@ -20,7 +20,7 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())

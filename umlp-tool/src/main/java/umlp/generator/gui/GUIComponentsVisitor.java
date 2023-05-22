@@ -9,6 +9,7 @@ import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
@@ -33,6 +34,8 @@ public class GUIComponentsVisitor implements GUIDSLVisitor2, CommonExpressionsVi
   protected Map<String, String> modulesQualified = new HashMap<>();
   protected List<ASTGUIComponent> notNestedComponents = new ArrayList<>();
   protected Map<ASTGUIComponent, ASTGUIIterate> componentIterate = new HashMap<>();
+
+  protected List<ASTGUIGuard> guards = new ArrayList<>();
 
   public static final String COMPONENT_NAME = "Comp";
   protected int counterComponents = 1;
@@ -77,6 +80,11 @@ public class GUIComponentsVisitor implements GUIDSLVisitor2, CommonExpressionsVi
     if (!modulesQualified.containsKey(moduleName)) {
       modulesQualified.put(moduleName, qualifiedModuleName);
     }
+  }
+
+  @Override
+  public void visit(ASTGUIGuard node) {
+    guards.add(node);
   }
 
   @Override
@@ -210,6 +218,10 @@ public class GUIComponentsVisitor implements GUIDSLVisitor2, CommonExpressionsVi
 
   public String getPackageNameForModule(String module) {
     return modulesQualified.get(module).replaceAll("\\.", "/");
+  }
+
+  public List<ASTGUIGuard> getGuards() {
+    return guards;
   }
 
 }

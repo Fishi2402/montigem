@@ -152,7 +152,7 @@ public class FEDecorator extends BEDecorator {
     Log.info("After decorator: DummyProviderDecorator", FEDecorator.class.getName());
     /**/
 
-    ErrorObserverDecorator errorObserverDecorator = new ErrorObserverDecorator(glex);
+    ErrorObserverDecorator errorObserverDecorator = new TSErrorObserverDecorator(glex);
     errorObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorObserverDecorator", FEDecorator.class.getName());
 

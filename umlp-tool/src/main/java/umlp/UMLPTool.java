@@ -55,6 +55,10 @@ import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guidelta.GUIVariationHandler;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -252,6 +256,27 @@ public class UMLPTool extends UMLPToolTOP {
 
         UMLPMill.init();
         BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+        MCPath mcPath = new MCPath();
+        if (PATH.isSelected(cmd)) {
+          for (String v : cmd.getOptionValues(PATH.getCMD())) {
+            mcPath.addEntry(Paths.get(v));
+          }
+        }
+        UMLPMill.globalScope().setSymbolPath(mcPath);
+
+        List<URL> models = MCPathUtil.getAllModels(mcPath, ".*[.]umlp");
+        for (URL modelUrl : models) {
+          try (Reader reader = new InputStreamReader(modelUrl.openStream())){
+            ASTCDCompilationUnit ast = UMLPMill.parser().parse(reader).orElseThrow();
+            Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
+            runAfterParseTrafo(ast);
+            IUMLPArtifactScope symbolTable = createSymbolTable(ast);
+            runDefaultTrafo(ast);
+            runDefaultCoCos(ast);
+          } catch (IOException e) {
+            Log.error("Can not load model for url " + modelUrl);
+          }
+        }
 
         // parse, create symbol table, check all cocos
         ASTCDCompilationUnit ast = parse(inputFile.getPath());

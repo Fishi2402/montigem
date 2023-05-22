@@ -1,3 +1,5 @@
+import java.nio.file.Paths
+
 /* (c) https://github.com/MontiCore/monticore */
 
 buildscript {
@@ -29,11 +31,17 @@ repositories {
   maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
 }
 
+configurations {
+  symbol
+  cdTool
+}
+
 dependencies {
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
   implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
-  implementation project(':umlp-rte:umlp-frontend-rte')
-  compileOnly project(':umlp-rte:umlp-frontend-rte-java')
+
+  symbol "de.monticore:frontend-rte:$mc_version"
+  cdTool "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
 }
 
 jsweet {
@@ -73,7 +81,7 @@ node {
   // according the proxy configuration defined for Gradle
   // Disable this option if you want to configure the proxy for npm or yarn on your own
   // (in the .npmrc file for instance)
-  // nodeProxySettings = ProxySettings.SMART
+  nodeProxySettings = ProxySettings.OFF
 }
 
 // Task to generate an empty Angular application.
@@ -84,6 +92,66 @@ task generateAngularApp(type: NpxTask) {
   args = ['new', 'stanley', '--style=scss']
 }
 /**/
+
+task genTS(type: UMLPTask) {
+  input = file("../models/hardy")
+  outputDir = file("$project.buildDir/app")
+  forClient = true
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
+}
+
+task serializeUMLP {
+  doLast {
+    def modelPathStr = "${project.projectDir}/../models"
+    def modelPath = Paths.get(modelPathStr)
+    fileTree(modelPathStr).matching {
+      include "**/*.umlp"
+    }.each {
+      def path = it.path
+      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
+      javaexec {
+        mainClass = 'de.monticore.CD4CodeTool'
+        classpath = configurations.cdTool
+        args "-i", path,
+            "-s", "${project.buildDir}/symbols/${relativeModelPathStr}sym"
+      }
+    }
+  }
+}
+
+task copyGUISymbols(type: Copy) {
+  copy {
+    from zipTree(configurations.symbol.asPath)
+    into "$project.buildDir/symbols"
+  }
+}
+
+task generateAll(type: UMLPGuiGenTask) {
+  dependsOn(serializeUMLP)
+  dependsOn(copyGUISymbols)
+  input = file("../models")
+  outputDir = file("$project.buildDir/app")
+  hwcDir = file("$projectDir/src/app")
+  modelDir = layout.projectDirectory.dir("../models")
+  symbolDir = layout.buildDirectory.dir("symbols")
+  domainModels = ["hardy.Flensburg"]
+  guiCreateModels = ["stanley.personcreate.PersonCreate"]
+
+  // moreArgs = ['-s', 'someArg']  // mehr CLI Argumente (nur zum debugging / testing!)
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
+}
+
+task iVerbose(type: NpmTask) {
+  // install the express package only
+  args = ['install', '--verbose']
+}
 
 task buildApp(type: NpxTask) {
   command = "ng"
@@ -115,6 +183,7 @@ task runApp(type: NpxTask) {
   outputs.upToDateWhen { true }
 }
 
+/*
 sourceSets {
   // java -> main instead of main -> java?
   java {

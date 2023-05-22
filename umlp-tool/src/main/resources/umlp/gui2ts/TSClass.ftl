@@ -25,9 +25,7 @@ ${defineHookPoint("ClassContent:Elements")}
     ${tc.include("umlp.gui2ts.TSAttribute", attribute)}
 </#list>
 
-<#list ast.getCDConstructorList() as constructor>
-    ${tc.include("umlp.gui2ts.TSConstructor", constructor)}
-</#list>
+${tc.include("umlp.gui2ts.TSConstructor")}
 
 <#list ast.getCDMethodList() as method>
     ${tc.include("umlp.gui2ts.TSMethod", method)}

@@ -7,7 +7,7 @@ package hardy;
  * Simple class diagram with 3 classes, some assocs, and inheritance
  */
 
-umlp Flensburg {
+classdiagram Flensburg {
 
     class Car;
 
@@ -23,6 +23,7 @@ umlp Flensburg {
         / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
     }
 
+/*
     class Address {
        String city;
     }
@@ -53,4 +54,5 @@ umlp Flensburg {
     }
 
     / association cities CityInfo -> java.lang.String [*];
+/**/
 }

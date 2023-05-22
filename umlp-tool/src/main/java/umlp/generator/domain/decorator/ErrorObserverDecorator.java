@@ -5,6 +5,7 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
@@ -38,17 +39,25 @@ public class ErrorObserverDecorator extends AbstractDecorator {
       .setModifier(PUBLIC.build())
       .setName(getClassName(className)).build();
     
-    // Add Notify for attributes
+    // Add Notify for attribute
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
       .filter(c -> !c.getModifier().isDerived())
       .forEach(c ->
-        getCD4C().addMethod(ast, "umlp.errorobserver.NotifyInvalid", c.getName(), className));
+        getCD4C().addMethod(ast, getNotifyInvalidTemplate(), c.getName(), className));
     
     // Add Notify for associations
     CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
       .filter(c -> !c.getModifier().isDerived())
       .forEach(c ->
-        getCD4C().addMethod(ast, "umlp.errorobserver.NotifyInvalid", c.getName(), className));
+        getCD4C().addMethod(ast, getNotifyInvalidTemplate(), c.getName(), className));
+    addImports(domainClass, ast);
     return ast;
+  }
+
+  protected String getNotifyInvalidTemplate() {
+    return "umlp.errorobserver.NotifyInvalid";
+  }
+
+  protected void addImports(ASTCDType domainType, ASTCDType cdType) {
   }
 }

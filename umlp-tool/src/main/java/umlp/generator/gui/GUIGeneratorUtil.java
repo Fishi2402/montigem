@@ -5,10 +5,12 @@ import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
@@ -20,18 +22,24 @@ import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
+import de.monticore.io.paths.MCPath;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
+import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
-import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -120,6 +128,15 @@ public class GUIGeneratorUtil {
     return Optional.empty();
   }
 
+  public final Optional<String> getMainDomainModelSimpleName() {
+    Optional<String> qName = getMainDomainModelQName();
+    if (qName.isPresent()) {
+      String[] parts = qName.get().split("\\.");
+      return Optional.of(parts[parts.length - 1]);
+    }
+    return Optional.empty();
+  }
+
   public final boolean isCreateModel(String componentQName) {
     return CREATE_MODELS.contains(componentQName);
   }
@@ -190,6 +207,10 @@ public class GUIGeneratorUtil {
 
   public String gui2cdAttrGetterName(String domainParamName) {
     return getHTMLName("get" + StringTransformations.capitalize(domainParamName));
+  }
+
+  public String gui2cdAttrSetterName(String domainParamName) {
+    return getHTMLName("set" + StringTransformations.capitalize(domainParamName));
   }
 
   public String gui2cdAttrGetterName(String componentId, String argName) {
@@ -424,6 +445,33 @@ public class GUIGeneratorUtil {
     return moduleName;
   }
 
+  public String getModuleClassName(String compName) {
+    return StringTransformations.capitalize(compName.toLowerCase()) + "Module";
+  }
+
+  public List<String> getRoutingIds(ASTGUICompilationUnit decoratedAst) {
+    List<String> ids = new ArrayList<>();
+    if (!isCreateModel(decoratedAst.getComponentQName())) {
+      for (ASTGUIParam p : decoratedAst.getGUIComponentDeclaration().getGUIParamList()) {
+        if (p.isPresentSymbol()) {
+          if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p)) {
+            ids.add(p.getName() + "RoutingId");
+          }
+        }
+        else {
+          Log.warn("0x00008 parameter " + p.getName()
+              + " of component " + decoratedAst.getComponentName()
+              + " was not found. Routing information may be incomplete.");
+        }
+      }
+    }
+    return ids;
+  }
+
+  public String getGenFileFolder(ASTMCPackageDeclaration pDecl) {
+    return String.join("/", pDecl.getMCQualifiedName().getPartsList());
+  }
+
   public String getIterateName(String iterateCompName) {
     return "getIterate" + StringTransformations.capitalize(iterateCompName) + "It()" + ".get(idx)";
   }
@@ -469,7 +517,7 @@ public class GUIGeneratorUtil {
   }
 
   public String java2tsModule(String javaPackage) {
-    String res = "@src/" + package2path(javaPackage) + "Module";
+    String res = "@src/" + qName2path(javaPackage) + "Module";
 
     for (TSImportMap type : TSImportMap.values()) {
       if (javaPackage.startsWith(type.getJavaPackage())) {
@@ -480,8 +528,79 @@ public class GUIGeneratorUtil {
     return res;
   }
 
-  public String package2path(String packageName) {
-    return packageName.replaceAll("\\.", "/");
+  public Optional<String> getRelativeHandwrittenPath(
+      MCPath targetPath, Path outPath, String qualifiedName, String fileExtension) {
+    String hwFile = Names.getPathFromPackage(qualifiedName) + "." + fileExtension;
+    Optional<URL> hwFilePath = targetPath.find(hwFile);
+    Optional<String> res = Optional.empty();
+    if (hwFilePath.isPresent()) {
+      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
+      res = Optional.of(outPath.resolve(hwFile).getParent()
+          .toAbsolutePath()
+          .normalize()
+          .relativize(hwPath.get().toAbsolutePath())
+          .toString()
+          .replaceAll("\\\\", "/"));
+
+      hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path,
+          Paths.get(hwFile)));
+    }
+    Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
+    return res;
+  }
+
+  /*
+  public Optional<String> getRelativeHandwrittenPath(
+      MCPath hwPath, Path outPath, ASTMCPackageDeclaration packageDecl, String fileName) {
+    Collection<Path> hwFilePaths = new ArrayList<>();
+    for (Path p : hwPath.getEntries()) {
+      hwFilePaths.add(getFilePath(p, packageDecl));
+    }
+    String localOutPath = getGenFileFolder(packageDecl);
+    Path outFolder = outPath.resolve(localOutPath);
+    return getRelativeHandwrittenPath(hwPath, hwFilePaths, outFolder, fileName);
+  }
+
+  public Path getFilePath(Path input, ASTMCPackageDeclaration packageDecl) {
+    String localPath = String.join("/", packageDecl.getMCQualifiedName().getPartsList());
+    return Paths.get(input.toString(), localPath);
+  }
+
+  public Optional<String> getRelativeHandwrittenPath(
+      MCPath hwMCPath,
+      Collection<Path> hwPath,
+      Path outputFolder,
+      String fileName
+  ) {
+    Iterator<Path> targetPathIt = hwPath.iterator();
+    while (targetPathIt.hasNext()) {
+      Path it = targetPathIt.next();
+      Path hwFile = it.resolve(fileName);
+      if (Files.exists(hwFile)) {
+        Reporting.reportHWCExistenceCheck(hwMCPath, Paths.get(hwHtmlPath.get()).toAbsolutePath(), hwFilePath);
+        String path = outputFolder
+            .toAbsolutePath()
+            .normalize()
+            .relativize(hwFile.toAbsolutePath())
+            .toString();
+        path = path.replace("\\", "/");
+        return Optional.of(path);
+      }
+    }
+    return Optional.empty();
+  }
+  /**/
+
+  public String removeExtension(String filePath) {
+    int index = filePath.lastIndexOf(".");
+    if (index > 0) {
+      return filePath.substring(0, index);
+    }
+    return filePath;
+  }
+
+  public String qName2path(String parts) {
+    return parts.replaceAll("\\.", "/");
   }
 
   // TODO: remove this method after package names fixed!!

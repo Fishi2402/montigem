@@ -96,6 +96,9 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
             + "This breaks the incremental build of the UMLPTask\n"
             + "Report generated files using <Reporting.reportFileCreation(...)> \n"
             + "\n"
+            + "The gradle task must have exclusive control over the output directory."
+            + "No other gradle tasks are allowed to write to it. \n"
+            + "\n"
             + "The following files are not reported:\n\t" +
             notReportedGenFiles.stream().map(File::getPath).collect(Collectors.joining("\n\t")));
       }

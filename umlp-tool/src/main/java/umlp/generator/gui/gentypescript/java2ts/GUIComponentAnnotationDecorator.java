@@ -5,15 +5,10 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
-import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 import umlp.generator.gui.GUIGeneratorUtil;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,79 +28,41 @@ public class GUIComponentAnnotationDecorator {
   }
 
   public void transform(ASTCDCompilationUnit ast) {
-    Collection<Path> hwFilePaths = new ArrayList<>();
-    for (Path p : hwPath.getEntries()) {
-      hwFilePaths.add(getFilePath(p, ast.getMCPackageDeclaration()));
-    }
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
       if (util.isTop(clazz.getName())) {
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
+            clazz,
             new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_DIRECTIVE)
         );
-        glex.bindStringHookPoint("ClassContent:Imports", getDirectiveImport());
       }
       else {
         String htmlFileName = clazz.getName() + ".html";
         String htmlPath = "./" + htmlFileName;
+        String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName()
+            + "." + clazz.getName();
 
-        Optional<String> hwHtmlPath = getRelativeHandwrittenPath(
-            hwFilePaths, outPath, htmlFileName);
+        Optional<String> hwHtmlPath = util.getRelativeHandwrittenPath(
+            hwPath, outPath, qName, "html");
         if (hwHtmlPath.isPresent()) {
           htmlPath = hwHtmlPath.get();
         }
 
-        String scssFileName = clazz.getName() + ".scss";
         List<String> scssPaths = new ArrayList<>();
-        Optional<String> hwScssPath = getRelativeHandwrittenPath(
-            hwFilePaths, outPath, scssFileName);
+
+        Optional<String> hwScssPath = util.getRelativeHandwrittenPath(
+            hwPath, outPath, qName, "scss");
         if (hwScssPath.isPresent()) {
           scssPaths.add(hwScssPath.get());
         }
 
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, clazz, htmlPath, scssPaths)
+            clazz,
+            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, htmlPath, scssPaths)
         );
-        glex.bindStringHookPoint("ClassContent:Imports", getComponentImport());
       }
     }
-  }
-
-  protected String getDirectiveImport() {
-    return "import { Directive } from '@angular/core';";
-  }
-
-  protected String getComponentImport() {
-    return "import { Component } from '@angular/core';";
-  }
-
-  public Optional<String> getRelativeHandwrittenPath(
-      Collection<Path> handcodedPath,
-      Path outputPath,
-      String fileName
-  ) {
-    Iterator<Path> targetPathIt = handcodedPath.iterator();
-    while (targetPathIt.hasNext()) {
-      Path it = targetPathIt.next();
-      Path hwFile = it.resolve(fileName);
-      if (Files.exists(hwFile)) {
-        String path = outputPath
-            .getParent()
-            .toAbsolutePath()
-            .normalize()
-            .relativize(hwFile.toAbsolutePath())
-            .toString();
-        path = path.replace("\\", "/");
-        return Optional.of(path);
-      }
-    }
-    return Optional.empty();
-  }
-
-  public Path getFilePath(Path input, ASTMCPackageDeclaration packageDecl) {
-    String localPath = String.join("/", packageDecl.getMCQualifiedName().getPartsList());
-    return Paths.get(input.toString(), localPath);
   }
 
 }

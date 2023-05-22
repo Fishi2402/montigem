@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.include("cd2java.Annotations")}
+${tc.include("umlp.gui2ts.TSAnnotations")}
 <#-- Annotations hook -->
 ${defineHookPoint("AttributeContent:Annotations")}
 ${cdPrinter.printSimpleModifier(ast.getModifier())} ${ast.getName()}: ${cdPrinter.printType(ast.getMCType())}

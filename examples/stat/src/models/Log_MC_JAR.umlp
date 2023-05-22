@@ -6,7 +6,7 @@ umlp Log_MC_JAR {
     String toolVersion;           // e.g. "7.5.0-SNAPSHOT"
     java.time.Duration duration;  // Duration of the run
     java.time.Instant receivedTime; // When was the request received on the server? - Added in backend
-    java.net.InetAddress origin; // Who sent the request? (Anonymized) - Added in backend 
+    java.net.InetAddress origin; // Who sent the request? (Anonymized) - Added in backend
   }
 
   association paramater [1] MCJarLogEntry -> MCJarCLIParameter [1]; // How was the .jar started?
@@ -57,6 +57,10 @@ umlp Log_MC_JAR {
     int string_hook_point_calls;
     int empty_hook_point_called;
     int empty_hook_point_calls;
+  }
+
+  class HI{
+  String hal;
   }
 }
 

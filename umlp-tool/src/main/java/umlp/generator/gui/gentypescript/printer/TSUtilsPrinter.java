@@ -72,6 +72,11 @@ public class TSUtilsPrinter extends CdUtilsPrinter {
     return printer.prettyprint(type);
   }
 
+  // TODO AGe
+  public boolean isWildCardGeneric(ASTMCReturnType type) {
+    return type.printType().contains("? extends");
+  }
+
   public String printExpression(ASTExpression expr) {
     return printer.prettyprint(expr);
   }
