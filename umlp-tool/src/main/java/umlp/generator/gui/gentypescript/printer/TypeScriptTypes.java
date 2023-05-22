@@ -6,6 +6,8 @@ public enum TypeScriptTypes {
   EVENT("Event", "EventEmitter<any>"),
   TEMPLATE_REF("GUIViewElement", "TemplateRef<any>"),
   LIST("List", "Array"),
+  COLLECTION("Collection", "Array"),
+  ITERATOR("Iterator", "IterableIterator"),
   INT("int", "number"),
   INT_BOXED("Integer", "number"),
   DOUBLE("double", "number"),

@@ -13,8 +13,8 @@ this._${name}._internal_add(idx, gemIDs);
 let currentIdx: number = idx;
 for(const gemID of gemIDs) {
   this.check${name?cap_first}();
-  for(const obs of ${sourceName?uncap_first}Observers) {
-    obs.maybeNotifyAdd${name?cap_first}((${sourceName}) this, gemID, currentIdx, scope);
+  for(const obs of this.${sourceName?uncap_first}Observers) {
+    obs.maybeNotifyAdd${name?cap_first}(<${sourceName}> this, gemID, currentIdx, scope);
   }
   currentIdx++;
 }

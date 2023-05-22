@@ -98,7 +98,6 @@ task genTS(type: UMLPTask) {
   outputDir = file("$project.buildDir/app")
   forClient = true
 
-  /*
   debug = true
   outputs.upToDateWhen { false }
   /**/
@@ -142,7 +141,6 @@ task generateAll(type: UMLPGuiGenTask) {
   guiCreateModels = ["stanley.personcreate.PersonCreate"]
 
   // moreArgs = ['-s', 'someArg']  // mehr CLI Argumente (nur zum debugging / testing!)
-  /*
   debug = true
   outputs.upToDateWhen { false }
   /**/

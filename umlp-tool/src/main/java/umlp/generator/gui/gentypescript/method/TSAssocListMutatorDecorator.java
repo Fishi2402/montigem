@@ -56,6 +56,7 @@ public class TSAssocListMutatorDecorator extends SimpleMethodMutatorDecorator {
     ArrayList<ASTCDMethod> retList = Lists.newArrayList();
     for (ASTCDMethod method : methodList) {
       ASTCDMethod newMethod = method.deepClone();
+      newMethod.setName(newMethod.getName() + "2");
       newMethod.removeCDParameter(newMethod.sizeCDParameters() - 1);
       String body = (newMethod.getMCReturnType().isPresentMCVoidType()) ? "" : "return ";
       body += "this." + method.getName() + "(" +

@@ -93,7 +93,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     clazz.addAllCDMembers(nonDerivedAttrs);
     for (ASTCDAttribute attr : nonDerivedAttrs) {
       if(GenService.isGem(attr) && !GenService.isGemList(attr)) {
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new Gem<>()"));
+        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(getInitialGemValue()));
       }
     }
 
@@ -114,6 +114,10 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     // Imports
     addImports(domainClass, clazz);
     return clazz;
+  }
+
+  protected String getInitialGemValue() {
+    return "= new Gem<>()";
   }
 
   protected void createIsBuildFinishedMethod(ASTCDClass clazz) {

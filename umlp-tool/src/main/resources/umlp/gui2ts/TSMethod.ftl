@@ -6,9 +6,9 @@ ${defineHookPoint("MethodContent:Annotations")}
 <#assign isDerived = ast.getModifier().isDerived()>
 <#-- TODO AGe: wildcard generics -->
 <#if cdPrinter.isWildCardGeneric(ast.getMCReturnType())>
-<#if !isDerived>${cdPrinter.printSimpleModifier(ast.getModifier())}</#if> ${ast.getName()}<${cdPrinter.printType(ast.getMCReturnType())}>(${cdPrinter.printCDParametersDecl(ast.getCDParameterList())}): T
+<#if !isDerived><#if isAbstract>abstract<#else>${cdPrinter.printSimpleModifier(ast.getModifier())}</#if></#if> ${ast.getName()}<${cdPrinter.printType(ast.getMCReturnType())}>(${cdPrinter.printCDParametersDecl(ast.getCDParameterList())}): T
 <#else>
-<#if !isDerived>${cdPrinter.printSimpleModifier(ast.getModifier())}</#if> ${ast.getName()} (${cdPrinter.printCDParametersDecl(ast.getCDParameterList())}): ${cdPrinter.printType(ast.getMCReturnType())}
+<#if !isDerived><#if isAbstract>abstract<#else>${cdPrinter.printSimpleModifier(ast.getModifier())}</#if></#if> ${ast.getName()} (${cdPrinter.printCDParametersDecl(ast.getCDParameterList())}): ${cdPrinter.printType(ast.getMCReturnType())}
 </#if>
 <#if ast.isPresentCDThrowsDeclaration()> ${cdPrinter.printThrowsDecl(ast.getCDThrowsDeclaration())}</#if>
 <#-- TODO AGe: what actually happens on get derived? -->

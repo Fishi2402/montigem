@@ -3,7 +3,9 @@ package umlp.generator.gui.gentypescript.printer;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnumConstant;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.IndentPrinter;
@@ -75,6 +77,15 @@ public class TSUtilsPrinter extends CdUtilsPrinter {
   // TODO AGe
   public boolean isWildCardGeneric(ASTMCReturnType type) {
     return type.printType().contains("? extends");
+  }
+
+  // TODO AGe
+  public boolean isAbstract(ASTCDClass type) {
+    boolean res = false;
+    for (ASTCDMethod m : type.getCDMethodList()) {
+      res |= m.getModifier().isAbstract();
+    }
+    return res;
   }
 
   public String printExpression(ASTExpression expr) {

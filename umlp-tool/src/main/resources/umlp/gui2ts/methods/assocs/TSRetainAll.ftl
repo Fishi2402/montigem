@@ -7,6 +7,6 @@ if (o == null) {
 }
 
 for (const s of o) {
-  this.remove${name?cap_first}(s);
+  this.remove${name?cap_first}2(s);
 }
 

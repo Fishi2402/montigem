@@ -2,4 +2,4 @@
 ${tc.signature("name", "targetName")}
 
 ${cd4c.method("public boolean contains${name?cap_first}(${targetName} o)")}
-return this._${name}.includes(o.getGemId());
+return this._${name}.contains(o.getGemId());

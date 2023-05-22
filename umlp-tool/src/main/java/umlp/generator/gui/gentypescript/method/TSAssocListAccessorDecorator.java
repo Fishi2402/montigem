@@ -50,6 +50,15 @@ public class TSAssocListAccessorDecorator extends AssocListAccessorDecorator {
     return methodList;
   }
 
+  protected ASTCDMethod createGetMethod(ASTCDAttribute ast) {
+    String name = String.format(GET, StringTransformations.capitalize(service.getNativeAttributeName(ast.getName())) + "1");
+    String type = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
+    ASTCDParameter param = getCDParameterFacade().createParameter("int", "index");
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name, param);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getAssocGetTemplate(), ast));
+    return method;
+  }
+
   @Override
   protected String getAssocGetTemplate() {
     return "umlp.gui2ts.methods.TSAssocGet";

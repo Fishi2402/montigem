@@ -37,6 +37,7 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
     this.object = object;
     this.gemId = object.getGemId();
     this.loadingState = LoadingState.LOADED;
+    return this;
   }
 
   /*
@@ -46,6 +47,7 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
     this.gemId = gemId;
     this.loadFunction = supplier;
     this.loadingState = LoadingState.NOT_YET_LOADED;
+    return this;
   }
 
   /*
@@ -55,6 +57,7 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
     this.gemId = -1;
     this.loadFunction = () => { throw new Error("Can not load empty Gem!"); };
     this.loadingState = LoadingState.EMPTY;
+    return this;
   }
 
   /*
@@ -68,6 +71,7 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
       console.error("0xE2921 Object created with unexpected state");
     }
     this.loadingState = loadingState;
+    return this;
   }
 
   /**********************************************************/

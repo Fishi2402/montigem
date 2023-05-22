@@ -23,7 +23,6 @@ classdiagram Flensburg {
         / String clubname;  // wird als nickname +"@"+ mainResidence.city  realisiert
     }
 
-/*
     class Address {
        String city;
     }
@@ -54,5 +53,4 @@ classdiagram Flensburg {
     }
 
     / association cities CityInfo -> java.lang.String [*];
-/**/
 }

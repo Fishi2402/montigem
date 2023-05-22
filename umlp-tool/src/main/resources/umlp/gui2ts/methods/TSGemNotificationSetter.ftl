@@ -3,7 +3,7 @@ ${tc.signature("domain", "name", "type")}
 ${cd4c.method("public void set${name?cap_first}(${type}  ${name}, NotificationScope scope)")}
 
 if (this._${name} == null) {
-  this._${name} = new ${type}(_${name});
+  this._${name} = new ${type}().Gem2(_${name});
 } else {
   this._${name}.set(_${name});
 }

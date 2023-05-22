@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 /* (c) https://github.com/MontiCore/monticore */
+<#assign isAbstract = cdPrinter.isAbstract(ast)>
 
 ${defineHookPoint("ClassContent:addComment")}
 
@@ -14,7 +15,7 @@ ${tc.include("umlp.gui2ts.TSAnnotations")}
 <#-- Annotations hook -->
 ${defineHookPoint("ClassContent:Annotations")}
 
-export class ${ast.getName()} <#rt><#lt>
+export <#if isAbstract>abstract</#if> class ${ast.getName()} <#rt><#lt>
 <#if ast.isPresentCDExtendUsage()>extends ${cdPrinter.printType(ast.getCDExtendUsage().getSuperclass(0))} </#if> <#rt><#lt>
 <#if ast.isPresentCDInterfaceUsage()>implements ${cdPrinter.printObjectTypeList(ast.getCDInterfaceUsage().getInterfaceList())} </#if>{
 

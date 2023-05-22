@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -50,10 +49,7 @@ public class AssocMandatoryMutatorDecorator extends SimpleMethodMutatorDecorator
     methodList.add(method2);
 
     // Generate setXGem-Methods
-    String name = String.format(SET, StringTransformations.capitalize(service.getNativeAttributeName(ast.getName())+"Gem"));
-    ASTCDMethod method3 = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, this.getCDParameterFacade().createParameters(ast));
-    glex.replaceTemplate(EMPTY_BODY, method3, new StringHookPoint("this." + method3.getName() + "("
-            + StringTransformations.uncapitalize(ast.getName()) + ", NotificationScope.ALL);"));
+    ASTCDMethod method3 = createGemSetter(ast);
     methodList.add(method3);
 
     ASTCDMethod method4 = createNotificationSetter(ast, true);
