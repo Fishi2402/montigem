@@ -1,0 +1,26 @@
+package charts.src.lib.gemnetworkgraph;
+
+classdiagram GemNetworkGraphTypes {
+
+  class GemNetworkData {
+    List<GemNetworkNode> nodes;
+    List<GemNetworkEdge> edges;
+  }
+
+  class GemNetworkNode {
+    String id;
+    Integer value;
+    String label;
+    Integer mass;
+    String color;
+    String group;
+    String year;
+  }
+
+  class GemNetworkEdge {
+    String from;
+    String to;
+    Integer length;
+  }
+
+}

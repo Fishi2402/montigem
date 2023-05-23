@@ -1,0 +1,20 @@
+@import "../variables";
+
+@mixin loadingbar-theme($loadingbar-color) {
+  .gem-loading-bar {
+    height: 3px;
+
+    .mat-progress-bar-fill::after {
+      background-color: $loadingbar-color !important;
+    }
+
+    .mat-progress-bar-buffer {
+      background: $rwth-black-4;
+    }
+  }
+}
+
+.gem-spacer {
+  height: 3px;
+  background: #cfd1d2;
+}

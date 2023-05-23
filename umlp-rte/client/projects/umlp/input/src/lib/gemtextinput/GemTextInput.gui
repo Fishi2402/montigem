@@ -1,0 +1,12 @@
+package input.src.lib.gemtextinput;
+
+import input.src.lib.gemtextinput.GemTextInputTypes.GemTextInputValidity;
+
+
+component GemTextInput(
+    String id,
+    String labelText,
+    String inputType,
+    ?String entry,
+    GemTextInputValidity validity
+)

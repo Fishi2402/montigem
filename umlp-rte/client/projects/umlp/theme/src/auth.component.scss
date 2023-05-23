@@ -1,0 +1,70 @@
+@import "../variables";
+
+@mixin auth-component-theme($background-color, $title-color) {
+  main {
+    -webkit-background-size: cover !important;
+    -moz-background-size: cover !important;
+    -o-background-size: cover !important;
+    background-size: cover !important;
+
+    .gem-container {
+      min-height: 100vh;
+      padding-top: 50px;
+      flex-direction: column;
+      box-sizing: border-box;
+      display: flex;
+      place-content: center space-evenly;
+      align-items: center;
+
+      .gem-auth-header {
+        padding: 0 25px;
+        flex: 1 1 100%;
+        box-sizing: border-box;
+        flex-direction: row;
+        display: flex;
+        place-content: center;
+        align-items: center;
+        max-height: 100%;
+        .gem-title-style {
+          flex: 1 1 auto;
+          box-sizing: border-box;
+
+          .gem-title {
+            color: $title-color;
+            font-size: 60px;
+            font-weight: bold;
+            line-height: 72px;
+            text-align: center;
+            margin-bottom: 0;
+          }
+
+          .gem-sub-title {
+            color: $title-color;
+            font-size: 20px;
+            font-weight: 300;
+            line-height: 24px;
+            text-align: center;
+            margin-top: 0;
+          }
+        }
+        .gem-div-style {
+          flex: 1 1 100%;
+          box-sizing: border-box;
+          max-height: 100%;
+        }
+      }
+
+      .gem-pre-form-box {
+        border-radius: $top-round;
+        background-color: $gray-light;
+        height: 25px;
+      }
+
+      .gem-form-box {
+        border-radius: $bottom-round;
+        background-color: $background-color;
+        padding: 50px 100px;
+      }
+    }
+  }
+}

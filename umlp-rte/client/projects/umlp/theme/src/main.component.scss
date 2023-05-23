@@ -1,0 +1,21 @@
+@import "../variables";
+
+@mixin gem-main($direction: row) {
+  .gem-main-layout {
+    display: flex;
+    flex-direction: $direction;
+    height: 100vh;
+  }
+
+  header .gem-main {
+    flex: 0 0 120px;
+    z-index: 100;
+    left: 0;
+    right: 0;
+    top: 0;
+  }
+
+  main .gem-main {
+    padding: 0 0 0 0;
+  }
+}

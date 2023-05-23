@@ -1,0 +1,11 @@
+package charts.src.lib.gemlinechart;
+
+import charts.src.lib.gemlinechart.GemLineChartTypes.GemLineChartData;
+
+component GemLineChart(
+  GemLineChartData data,
+  Object displayValue,
+  Boolean enableBackgroundColor,
+  Integer maxValue,
+  Integer minValue
+)

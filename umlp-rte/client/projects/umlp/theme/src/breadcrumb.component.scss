@@ -1,0 +1,57 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+@import "../variables";
+
+@mixin breadcrumb-theme($font-color) {
+  .gem-breadcrumb-container {
+    color: $font-color;
+    font-size: $font-size-h5;
+    font-weight: bold;
+    white-space: nowrap;
+    place-content: center flex-start;
+    align-items: center;
+    flex-direction: row;
+    box-sizing: border-box;
+    display: flex;
+    flex: 1 1 100%;
+    max-width: 100%;
+    .gem-div-style {
+      flex-direction: row;
+      box-sizing: border-box;
+      display: flex;
+      place-content: center;
+      align-items: center;
+      a {
+        color: $font-color;
+      }
+    }
+  }
+}
+
+.breadcrumb-container {
+  a,
+  span,
+  i {
+    margin: 0;
+    padding: 0 2px 2px 5px;
+  }
+
+  a:first-child {
+    padding-left: 0;
+  }
+
+  span {
+    cursor: help;
+  }
+
+  .noPadding {
+    padding-left: 0;
+  }
+
+  .breadcrumb-arrow {
+    margin-left: 8px;
+    font-size: medium;
+    margin-right: -2px;
+    margin-bottom: -4px;
+  }
+}

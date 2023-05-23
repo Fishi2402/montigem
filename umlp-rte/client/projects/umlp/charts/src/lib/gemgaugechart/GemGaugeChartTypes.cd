@@ -1,0 +1,15 @@
+package charts.src.lib.gemgaugechart;
+
+classdiagram GemGaugeChartTypes {
+  class GemGaugeChartData {
+    List<GemGaugeChartEntry> entries;
+  }
+    
+  class GemGaugeChartEntry {
+    String type;
+    String name;
+    Integer value;
+    String backgroundColor;
+  }
+
+}

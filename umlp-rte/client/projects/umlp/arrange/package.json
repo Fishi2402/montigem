@@ -1,0 +1,15 @@
+{
+  "name": "@umlp/arrange",
+  "version": "7.5.0",
+  "peerDependencies": {
+    "@angular/common": "^15.1.0",
+    "@angular/core": "^15.1.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "@monticore:registry": "https://nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/"
+  }
+}
