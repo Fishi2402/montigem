@@ -1,12 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
-
+plugins {
+  id 'de.rwth.se.umlp-tool-backend'
+}
 repositories {
   maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
   maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-}
-
-sourceSets {
-  main.java.srcDirs += ["$buildDir/genumlp"]
 }
 
 // TODO AGe: don't know if that is needed
@@ -15,15 +13,12 @@ task generateCDTOGUI(type: UMLPTask) {
   cdToGui = true
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
-
+/*
 task generateFlensburg(type: UMLPTask) {
   dependsOn(generateCDTOGUI)
   input = file("src/models/hardy")
   outputDir = layout.buildDirectory.dir("genumlp")
-}
-
-description 'cars example'
-
-tasks.named('compileJava').configure {
-  dependsOn('generateFlensburg')
+}*/
+generateUmlpBackend{
+  input = file("src/models/hardy")
 }

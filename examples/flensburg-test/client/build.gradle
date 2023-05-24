@@ -142,14 +142,14 @@ task unpackGUILibSymbols(type: Copy) {
 
 task genDomain(type: UMLPTask) {
   input = file("../src/models/hardy/Flensburg.umlp")
-  outputDir = file("$project.buildDir/app")
+  outputDir = file("$project.buildDir/appdomain")
   forClient = true
 }
 
 task genGUI(type: UMLPGuiGenTask) {
   dependsOn('serializeGUI')
   input = file("../src/models")
-  outputDir = file("$project.buildDir/app")
+  outputDir = file("$project.buildDir/appgui")
   hwcDir = file("$projectDir/src/app")
   modelDir = layout.projectDirectory.dir("../src/models")
   symbolDir = layout.buildDirectory.dir("symbols")
