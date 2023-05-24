@@ -29,6 +29,7 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -253,8 +254,14 @@ public class UMLPTool extends UMLPToolTOP {
           String s = SYMTAB.getValue(cmd);
           if (null != s) {
             // store symbol table to passed file
+            Path symbolPath = Paths.get(
+                s + File.separator
+                    + Names.getPathFromPackage(symbolTable.getPackageName())
+                    + File.separator
+                    + symbolTable.getName()
+                    + ".cdsym");
             JsonPrinter.disableIndentation();
-            storeSymbols(symbolTable, s);
+            storeSymbols(symbolTable, symbolPath.toString());
           }
           else {
             //print (formatted!) symboltable to console
@@ -320,6 +327,11 @@ public class UMLPTool extends UMLPToolTOP {
               mcPath.addEntry(Paths.get(v));
             }
           }
+          if (SYMTAB.isSelected(cmd)) {
+            for (String v : cmd.getOptionValues(SYMTAB.getCMD())) {
+              mcPath.addEntry(Paths.get(v));
+            }
+          }
 
           createSymbolTable(astGui, mcPath);
 
@@ -334,7 +346,6 @@ public class UMLPTool extends UMLPToolTOP {
           genSetup.setGlex(new GlobalExtensionManagement());
 
           // execute generator
-          GUIDSLMill.init();
 
           List<String> domainModels = new ArrayList<>();
           if (DOMAIN.isSelected(cmd)) {

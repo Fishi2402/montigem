@@ -32,10 +32,8 @@ public abstract class UMLPTask extends CommonUMLPTask {
   @Incremental
   public abstract DirectoryProperty getModelDir();
 
-  @InputDirectory
+  @OutputDirectory
   @org.gradle.api.tasks.Optional
-  @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental
   public abstract DirectoryProperty getSymbolDir();
 
   @InputDirectory
@@ -97,6 +95,11 @@ public abstract class UMLPTask extends CommonUMLPTask {
       if (this.getSymbolDir().isPresent()) {
         result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
       }
+    }
+
+    if(this.getSymbolDir().isPresent()) {
+      result.add("-s");
+      result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
     }
 
     if(this.getTmplDir().isPresent()) {
