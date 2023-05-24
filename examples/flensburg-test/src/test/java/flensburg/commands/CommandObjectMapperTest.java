@@ -1,6 +1,6 @@
 package flensburg.commands;
 
-import flensburg.*;
+import hardy.flensburg.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.Command;

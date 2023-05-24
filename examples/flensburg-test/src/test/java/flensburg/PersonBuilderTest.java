@@ -3,6 +3,7 @@ package flensburg;//+ GEN-T        : handwritten, testet generiertes product
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 import de.se_rwth.commons.logging.Log;
+import hardy.flensburg.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

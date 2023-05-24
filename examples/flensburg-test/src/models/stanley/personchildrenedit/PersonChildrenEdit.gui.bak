@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package stanley.personchildrenedit;
+
+// HWC-P: eigentlich ein Modell, aber fuers Produkt
+
+import hardy.Flensburg.Person;
+
+import stanley.tmp.layout.GemCard;
+import stanley.tmp.io.input.GemNumberInput;
+
+/**
+ * This example defines a
+ * Form to fill out data of a Person and his child.
+ * It has only simple default layout, which generates some
+ * interesting pieces of code
+ *
+ * Assumption: the Person p exists, the values can be changed, but the child cannot
+ * be older than parent
+ */
+page PersonChildrenEdit(Person p) {
+
+  @GemCard(content =
+    @iterate(Person child : p.children) {
+      // show and edit the child's age as number
+      @GemNumberInput(value = child.age);
+    }
+  );
+
+  /*
+  @iterate(i from 0 to p.children.size() - 1) {
+    // show and edit the child's age as number
+    @GemNumberInput(value = p.children.get(i).age);
+  }
+  /**/
+
+}

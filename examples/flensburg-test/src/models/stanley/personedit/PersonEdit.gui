@@ -9,13 +9,11 @@ import Flensburg.Person;
 // every library GUI component has Gem prefix to avoid name clashing with HTML elements from native
 // library and from other libraries
 // hier werden importierte GUI-Modelle gefunden
-import stanley.tmp.io.input.GemTextInput;
-import stanley.tmp.io.input.GemNumberInput;
-import stanley.tmp.io.GemButton;
-import stanley.tmp.io.GemText;
-
-import stanley.tmp.layout.GemCard;
-import stanley.tmp.layout.GemColumn;
+import input.src.lib.gemtextinput.GemTextInput;
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gembutton.GemButton;
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemcolumn.GemColumn;
 
 /**
  * This example defines a
@@ -28,16 +26,15 @@ import stanley.tmp.layout.GemColumn;
  */
 page PersonEdit(Person p) {
 
-  @GemColumn(contents = [
+  @GemColumn(components = [
     @guard(p.nickname != "") {
       @GemCard(
-        title = "Edit Person",
-        content = @GemColumn(contents = [
+        component = @GemColumn(components = [
           // show and edit the nickname
-          @GemTextInput(value = p.nickname),
+          @GemTextInput(entry = p.nickname),
 
           // show and edit the age as number
-          @GemNumberInput(value = p.age),
+          @GemTextInput(entry = p.age),
 
           // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
           // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird
@@ -45,13 +42,13 @@ page PersonEdit(Person p) {
           // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "PersonEditGUI.java".
           // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
           // deswegen wird eine Methode explizit importiert und aufgerufen
-          @GemButton(text = "Decrease", leftClick = decreaseAge),
+          @GemButton(label = "Decrease"/*, leftClick = decreaseAge*/),
 
           // Button mit Text "Ok" und Navigation auf eine andere Seite
           // (und die Logik dafür ist generiert und verfügbar)
           // Wir generieren Methoden, die häufigst benutzte Aktionen darstellen, sie können aber
           // ueberschrieben werden z.B. navigate, copy, ...
-          @GemButton(text = "Ok", leftClick = navigate)
+          @GemButton(label = "Ok"/*, leftClick = navigate*/)
         ])
       );
     }

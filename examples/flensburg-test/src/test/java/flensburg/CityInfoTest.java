@@ -1,5 +1,6 @@
 package flensburg;//+ HWC-PT
 
+import hardy.flensburg.CityInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

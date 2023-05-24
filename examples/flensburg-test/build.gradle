@@ -1,22 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-plugins {
-  id 'de.rwth.se.umlp-tool-backend'
-}
 repositories {
-    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
 }
 
-// Task is created by umlp-backend plugin (with very sensible default values)
-generateUmlpBackend{
-  modelDir = file("$projectDir/src/models")
-  symbolDir = file("$projectDir/build/umlp/symbols")
+sourceSets {
+  main.java.srcDirs += ["$buildDir/genumlp"]
+}
+
+// TODO AGe: don't know if that is needed
+task generateCDTOGUI(type: UMLPTask) {
+  input = file("src/models/hardy")
+  cdToGui = true
+  outputDir = layout.buildDirectory.dir("cd2gui")
+}
+
+task generateFlensburg(type: UMLPTask) {
+  dependsOn(generateCDTOGUI)
+  input = file("src/models/hardy")
+  outputDir = layout.buildDirectory.dir("genumlp")
 }
 
 description 'cars example'
 
-project('client'){
-    sourceSets.main.java.srcDirs = ['../src/main/java', generateUmlpBackend.getOutputDir()]
+tasks.named('compileJava').configure {
+  dependsOn('generateFlensburg')
 }
-

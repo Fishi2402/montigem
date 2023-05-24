@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package flensburg.database;
 
-import flensburg.*;
+import hardy.flensburg.Person;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
