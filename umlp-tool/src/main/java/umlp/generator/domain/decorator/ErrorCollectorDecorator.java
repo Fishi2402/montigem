@@ -20,15 +20,19 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c, name)));
   }
 
+  public static String getClassName(String domainClassName) {
+    return domainClassName + SUFFIX;
+  }
+
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String name) {
-    String className = domainClass.getName() + SUFFIX;
+    String className = getClassName(domainClass.getName());
 
     ASTCDClass collectorClass = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())

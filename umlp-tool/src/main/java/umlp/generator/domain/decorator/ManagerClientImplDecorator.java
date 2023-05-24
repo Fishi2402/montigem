@@ -11,13 +11,16 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
@@ -47,11 +50,11 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
             .build();
 
     // methods
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.Constructor", name + SUFFIX);
+    getCD4C().addMethod(managerClass, getConstructorTemplate(), name + SUFFIX);
     List<String> classList = origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .map(c -> c.getName()).collect(Collectors.toList());
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetFreeGemId");
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.ErrorNotificationScope");
+    getCD4C().addMethod(managerClass, getDoGetFreeGemIdTemplate());
+    getCD4C().addMethod(managerClass, getErrorNotificationScopeTemplate());
 
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> addClassElements(origCD, c, managerClass, name));
@@ -64,53 +67,95 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     return managerClass;
   }
 
+  protected String getErrorNotificationScopeTemplate() {
+    return "umlp.managerclientimpl.ErrorNotificationScope";
+  }
+
+  protected String getDoGetFreeGemIdTemplate() {
+    return "umlp.managerclientimpl.DoGetFreeGemId";
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.managerclientimpl.Constructor";
+  }
+
+
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
 
-    managerClass.addCDMember(getCacheAttribute(domainClass));
-    managerClass.addCDMember(getCommandObserverAttribute(domainClass));
+    if(!domainClass.getModifier().isAbstract()) {
+      managerClass.addCDMember(getCacheAttribute(domainClass));
+      managerClass.addCDMember(getCommandObserverAttribute(domainClass));
+    }
 
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name);
+    List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainClass);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoAdd", name, managerName);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, false);
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoDelete", name, managerName);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
 
-    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + "CommandSendingObserver"));
+    if(!domainClass.getModifier().isAbstract()) {
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
+      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoAdd", name, managerName);
+      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoDelete", name, managerName);
+    }
+
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_get"));
-    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_create"));
-    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_delete"));
+
+    if(!domainClass.getModifier().isAbstract()) {
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + "CommandObserver"));
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_create"));
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_delete"));
+    }
 
     // Associations
     CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
-      String type = a.getSymbol().getType().print();
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), type);
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", domainClass.getName(), a.getName(), type);
+      SymTypeExpression type = a.getSymbol().getType();
+      String printedType = type.print();
+      ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+
+      getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", domainClass.getName(), a.getName(), printedType);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
     });
+  }
+
+  protected static List<ASTCDType> concreteSubclassesOrderedByDistance(ASTCDCompilationUnit origCD, ASTCDType domainType) {
+    return UMLPSymbolTables.collectConcreteSubclassesInclSelfWithDist(origCD, domainType)
+        .entrySet().stream()
+        .sorted((o1, o2) -> o2.getValue() - o1.getValue())
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toList());
   }
 
   protected void addInterfaceElements(ASTCDCompilationUnit origCD, ASTCDInterface domainInterface,
                                       ASTCDClass managerClass) {
     String name = domainInterface.getName();
 
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOptInterface", name);
+    List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainInterface);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, true);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get"));
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));
 
     // Associations
     CDSymbolTables.getAssociations(domainInterface).stream().filter(GenService::isList).forEach(a -> {
-      String type = a.getSymbol().getType().print();
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), type);
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", name, a.getName(), type);
+      SymTypeExpression type = a.getSymbol().getType();
+      String printedType = type.print();
+      ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+
+      getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", name, a.getName(), printedType);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainInterface, a)));
     });
   }
@@ -119,12 +164,16 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
             getMCTypeFacade().createBasicGenericTypeOf("Map", "Long", domainClass.getName()),
             StringTransformations.uncapitalize("known" + domainClass.getName() + "s"));
-    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new HashMap<>()"));
+    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(defaultMapValue()));
     return domainClassDaoAttr;
   }
 
+  protected String defaultMapValue() {
+    return " = new HashMap<>()";
+  }
+
   protected ASTCDAttribute getCommandObserverAttribute(ASTCDClass domainClass) {
-    String type = domainClass.getName() + "CommandSendingObserver";
+    String type = domainClass.getName() + "CommandObserver";
     ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
             getMCTypeFacade().createQualifiedType(type), "the" + type);
     getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new " + type + "()"));

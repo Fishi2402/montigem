@@ -44,6 +44,8 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
     if(domainInterface.isPresentCDExtendUsage()) {
       superInterfaces.addAll(domainInterface.getSuperclassList());
     }
+    superInterfaces.addAll(domainInterface.getInterfaceList());
+
     builder.setCDExtendUsage(getExtendUsageFacade()
             .createCDExtendUsage(superInterfaces));
 
@@ -58,7 +60,7 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
     addMethodSignatures(domainInterface, cdInterface);
 
     // Imports
-    addImports(cdInterface);
+    addImports(domainInterface, cdInterface);
 
     return cdInterface;
   }

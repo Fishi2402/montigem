@@ -3,16 +3,17 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.check.SymTypeExpression;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
 
@@ -52,8 +53,17 @@ public class ObserverDecorator extends AbstractDecorator {
     domainClass.getCDAttributeList().stream()
       .filter(a -> !a.getModifier().isDerived())
       .forEach(a -> {
-        getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, getCDPrinter().prettyprint(createType(a)), false);
-        getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, getCDPrinter().prettyprint(createType(a)), false);
+        if(GenService.isList(a)) {
+          String innerType = GenService.getInnerType(a.getMCType());
+          getCD4C().addMethod(ast, "umlp.observer.NotifyAdd", a.getName(), className, innerType);
+          getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyAdd", a.getName(), className, innerType);
+          getCD4C().addMethod(ast, "umlp.observer.NotifyRemove", a.getName(), className, innerType);
+          getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyRemove", a.getName(), className, innerType);
+        }
+
+        String fullType = getCDPrinter().prettyprint(createType(a));
+        getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, fullType, false);
+        getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, fullType, false);
       });
 
     // Add Notify for list associations
@@ -61,10 +71,10 @@ public class ObserverDecorator extends AbstractDecorator {
             .filter(a -> !a.getModifier().isDerived())
             .filter(a -> GenService.isList(a))
             .forEach(a -> {
-              getCD4C().addMethod(ast, "umlp.observer.NotifyAdd", a.getName(), className);
-              getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyAdd", a.getName(), className);
-              getCD4C().addMethod(ast, "umlp.observer.NotifyRemove", a.getName(), className);
-              getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyRemove", a.getName(), className);
+              getCD4C().addMethod(ast, "umlp.observer.NotifyAdd", a.getName(), className, "long");
+              getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyAdd", a.getName(), className, "long");
+              getCD4C().addMethod(ast, "umlp.observer.NotifyRemove", a.getName(), className, "long");
+              getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyRemove", a.getName(), className, "long");
               getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, "long", true);
               getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, "long", true);
             });
@@ -83,7 +93,18 @@ public class ObserverDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyBuild", className);
 
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    addImportForImportedObservers(domainClass, ast);
+    super.addImports(domainClass, ast);
 
     return ast;
+  }
+
+  private void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType){
+    CDTypeSymbol symbol = domainClass.getSymbol();
+    if(symbol.isPresentSuperClass()){
+      SymTypeExpression superclass = symbol.getSuperClass();
+      ASTCDCompilationUnit scCD = UMLPSymbolTables.getDiagramFor((ASTCDType) superclass.getTypeInfo().getAstNode());
+      getCD4C().addImport(observerType, getPackageName(scCD, DEFAULT_PACKAGE) + "." + superclass.print() + "Observer");
+    }
   }
 }

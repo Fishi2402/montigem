@@ -1,23 +1,24 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("tableName", "className","attrName", "innerType", "dbName")}
-${cd4c.method("public void update${attrName?cap_first}(long gemId, List<${innerType}> ${attrName})")}
+${tc.signature("tableName","attr", "innerType", "dbName")}
+<#assign attrName=attr.getName()?cap_first>
+${cd4c.method("public void update${attrName}(long gemId, List<${innerType}> ${attrName?uncap_first})")}
 
-  if(remove${attrName?cap_first}Statement == null) {
-    remove${attrName?cap_first}Statement = DatabaseAccessManager.prepareStatement("DELETE FROM ${tableName} WHERE id = ?");
+  if(remove${attrName}Statement == null) {
+    remove${attrName}Statement = DatabaseAccessManager.prepareStatement("DELETE FROM ${tableName} WHERE id = ?");
   }
-  if(update${attrName?cap_first}Statement == null) {
-    update${attrName?cap_first}Statement = DatabaseAccessManager.prepareStatement("INSERT INTO ${tableName} (id, _value) VALUES (?, ?)");
+  if(update${attrName}Statement == null) {
+    update${attrName}Statement = DatabaseAccessManager.prepareStatement("INSERT INTO ${tableName} (id, _value) VALUES (?, ?)");
   }
   try{
-    remove${attrName?cap_first}Statement.clearParameters();
-    remove${attrName?cap_first}Statement.setLong(1, gemId);
-    remove${attrName?cap_first}Statement.execute();
+    remove${attrName}Statement.clearParameters();
+    remove${attrName}Statement.setLong(1, gemId);
+    remove${attrName}Statement.execute();
 
-    for(${innerType} element : ${attrName}) {
-      update${attrName?cap_first}Statement.clearParameters();
-      update${attrName?cap_first}Statement.setLong(1, gemId);
-      ${includeArgs("umlp.dao.Set", "update"+attrName?cap_first+"Statement", 2, dbName, "element", false)};
-      update${attrName?cap_first}Statement.execute();
+    for(${innerType} element : ${attrName?uncap_first}) {
+      update${attrName}Statement.clearParameters();
+      update${attrName}Statement.setLong(1, gemId);
+      ${includeArgs("umlp.dao.Set", "update"+attrName+"Statement", 2, dbName, "element", false)};
+      update${attrName}Statement.execute();
     }
 
   } catch (SQLException e){

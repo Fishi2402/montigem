@@ -32,7 +32,9 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
   public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+    origCD.getCDDefinition().getCDClassesList().stream()
+      .filter(c -> !c.getModifier().isDerived())
+      .filter(c -> !c.getModifier().isAbstract())
       .forEach(c -> astcdPackage.addCDElement(createClass(c, name, origCD)));
   }
 
@@ -45,7 +47,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
             .setName(className).build();
 
     // Constructors
-    getCD4C().addConstructor(deserBuilderClass, "umlp.deser_builder.Constructor", domainClass.getName());
+    getCD4C().addConstructor(deserBuilderClass, getConstructorTemplate(), domainClass.getName());
 
     // Attributes
     List<ASTCDAttribute> attributes = getAllAttributes(domainClass, false).attrList.stream()
@@ -56,14 +58,14 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
       if (GenService.isGemList(a)) {
         getCD4C().addMethod(
             deserBuilderClass,
-            "umlp.deser_builder.setGemListIds",
+            getsetGemListIdsTemplate(),
             deserBuilderClass.getName(),
             GenService.getNativeName(a.getName())
         );
       }else if(GenService.isGem(a)){
         getCD4C().addMethod(
             deserBuilderClass,
-            "umlp.deser_builder.setGem",
+            getsetGemTemplate(),
             deserBuilderClass.getName(),
             CD4CodeMill.prettyPrint(a.getMCType(), false),
                 GenService.getNativeName(a.getName())
@@ -71,7 +73,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
       }else{
         ASTCDMethodSignature m = getCD4C().addMethod(
             deserBuilderClass,
-            "umlp.deser_builder.setSimple",
+            getsetSimpleTemplate(),
             deserBuilderClass.getName(),
             a.printType(),
                 GenService.getNativeName(a.getName())
@@ -82,12 +84,29 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
 
 
     // Imports
-    addImports(deserBuilderClass);
+    addImports(domainClass, deserBuilderClass);
 
     return deserBuilderClass;
   }
 
-  protected void addImports(ASTCDType clazz) {
+  protected String getConstructorTemplate() {
+    return "umlp.deser_builder.Constructor";
+  }
+
+  protected String getsetSimpleTemplate() {
+    return "umlp.deser_builder.setSimple";
+  }
+
+  protected String getsetGemTemplate() {
+    return "umlp.deser_builder.setGem";
+  }
+
+  protected String getsetGemListIdsTemplate() {
+    return "umlp.deser_builder.setGemListIds";
+  }
+
+  protected void addImports(ASTCDType domainType, ASTCDType clazz) {
+    super.addImports(domainType, clazz);
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
   }
 

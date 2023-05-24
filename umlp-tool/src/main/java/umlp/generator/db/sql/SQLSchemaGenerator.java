@@ -14,6 +14,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ISymbol;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp._prettyprint.UMLPFullPrettyPrinter;
@@ -40,6 +41,8 @@ public class SQLSchemaGenerator {
 
     protected void initClassNameToType() {
         fqnClassNameToType = new HashMap<>();
+        fqnClassNameToType.put("java.lang.Enum", "VARCHAR");
+        fqnClassNameToType.put("Enum", "VARCHAR");
         fqnClassNameToType.put("java.lang.String", "VARCHAR");
         fqnClassNameToType.put("String", "VARCHAR");
         fqnClassNameToType.put("java.lang.Byte", "TINYINT");
@@ -66,6 +69,8 @@ public class SQLSchemaGenerator {
         fqnClassNameToType.put("java.lang.Char", "CHAR");
         fqnClassNameToType.put("Char", "CHAR");
         fqnClassNameToType.put("char", "CHAR");
+
+        fqnClassNameToType.put("java.time.LocalDate", "DATE");
     }
 
     public void addClassToSQLTypeMapping(String fqnClassName, String sqlType) {
@@ -145,17 +150,11 @@ public class SQLSchemaGenerator {
         generateIdField(convertClassName(node.getName(), AttributeType.PLAIN), p);
         for (ASTCDAttribute attribute : relevantAttributes) {
             Optional<? extends ISymbol> typeSym = attribute.getMCType().getDefiningSymbol();
-            if (
-                    !GenService.isList(attribute)
-                            && !GenService.isOptional(attribute)
-                            && (
-                            typeSym.isEmpty()
-                                    || !(typeSym.get() instanceof CDTypeSymbol)
-                    )
-            ) {
-                p.print(",");
-                generateSimpleField(cd, node, attribute, p);
-            }
+          if (!GenService.isList(attribute)
+                  && !GenService.isOptional(attribute)) {
+            p.print(",");
+            generateSimpleField(cd, node, attribute, p);
+          }
         }
 
         p.unindent();
@@ -190,16 +189,17 @@ public class SQLSchemaGenerator {
 
         p.print(r2);
         p.print(" ");
-        String type = GenService.getInnerType(attribute.getMCType());
+        String type = GenService.isInnerCDEnum(attribute.getSymbol().getType())?
+            "java.lang.Enum":((SymTypeOfGenerics) attribute.getSymbol().getType()).getArgument(0).printFullName();
         if (!fqnClassNameToType.containsKey(type)) {
-            Log.error("Can not convert type to SQL: " + type + " used in " + cd.getCDDefinition().getName() + "." + classNode.getName() + "." + attribute.getName());
+            Log.error("0xdf10c Can not convert type to SQL: " + type + " used in " + cd.getCDDefinition().getName() + "." + classNode.getName() + "." + attribute.getName());
         }
 
         p.print(fqnClassNameToType.get(type));
         p.println(" NOT NULL,");
 
-        p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (" + r1 + "," + r2 + "),");
-        p.println("CONSTRAINT fk_" + tableName + " FOREIGN KEY (" + r1 + ") REFERENCES " + convertClassName(classNode.getName(), AttributeType.QUOTED));
+        p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (" + r1 + "," + r2 + ")");
+        //p.println(",CONSTRAINT fk_" + tableName + " FOREIGN KEY (" + r1 + ") REFERENCES " + convertClassName(classNode.getName(), AttributeType.QUOTED));
 
         p.unindent();
         p.println(");");
@@ -215,13 +215,14 @@ public class SQLSchemaGenerator {
         p.print(" ");
         Optional<? extends ISymbol> typeSymbolOpt = attribute.getMCType().getDefiningSymbol();
         if (typeSymbolOpt.isEmpty()) {
-            Log.error("Can not find symbol for type of attribute " + cd.getCDDefinition().getName() + "." + classNode.getName() + "." + attribute.getName());
+            Log.error("0xdf10d Can not find symbol for type of attribute " + cd.getCDDefinition().getName() + "." + classNode.getName() + "." + attribute.getName());
             return;
         }
 
-        String fullName = typeSymbolOpt.get().getFullName();
+        String fullName = GenService.isCDEnum(attribute.getSymbol().getType())?
+            "java.lang.Enum":typeSymbolOpt.get().getFullName();
         if (!fqnClassNameToType.containsKey(fullName)) {
-            Log.error("Can not transform type to SQL: " + fullName + " used in " + cd.getCDDefinition().getName() + "." + classNode.getName() + "." + attribute.getName());
+            Log.error("0xdf10e Can not transform type to SQL: " + fullName + " used in " + cd.getCDDefinition().getName() + "." + classNode.getName() + "." + attribute.getName());
         }
         p.print(fqnClassNameToType.get(fullName));
 
@@ -233,7 +234,7 @@ public class SQLSchemaGenerator {
         Optional<CDTypeSymbol> rSymbolOpt = cd.getCDDefinition().getEnclosingScope().resolveCDType(association.getRight().getMCQualifiedType().getMCQualifiedName().getQName());
         if (lSymbolOpt.isEmpty()) {
             UMLPFullPrettyPrinter prettyPrinter = new UMLPFullPrettyPrinter();
-            Log.error("Can not find type " +
+            Log.error("0xdf10a Can not find type " +
                     prettyPrinter.prettyprint(association.getLeft().getMCQualifiedType())
                     + " for association "
                     + prettyPrinter.prettyprint((ASTCDBasisNode) association)
@@ -243,7 +244,7 @@ public class SQLSchemaGenerator {
 
         if (rSymbolOpt.isEmpty()) {
             UMLPFullPrettyPrinter prettyPrinter = new UMLPFullPrettyPrinter();
-            Log.error("Can not find type " +
+            Log.error("0xdf10b Can not find type " +
                     prettyPrinter.prettyprint(association.getRight().getMCQualifiedType())
                     + " for association "
                     + prettyPrinter.prettyprint((ASTCDBasisNode) association)
@@ -280,12 +281,12 @@ public class SQLSchemaGenerator {
         // TODO: different foreign key for each non-abstract, non-derived subclass
         // TODO: Convert fqn?
 
-        p.println("CONSTRAINT fk_" + r1 + "_" + tableName + " FOREIGN KEY (" + r1 + "_id) REFERENCES " + convertClassName(lSymbolOpt.get().getName(), AttributeType.QUOTED) + ",");
+        //p.println("CONSTRAINT fk_" + r1 + "_" + tableName + " FOREIGN KEY (" + r1 + "_id) REFERENCES " + convertClassName(lSymbolOpt.get().getName(), AttributeType.QUOTED) + ",");
 
         p.print(r2 + "_id");
         p.println(" BIGINT NOT NULL,");
 
-        p.println("CONSTRAINT fk_" + r2 + "_" + tableName + " FOREIGN KEY (" + r2 + "_id) REFERENCES " + convertClassName(rSymbolOpt.get().getName(), AttributeType.QUOTED) + ",");
+        //p.println("CONSTRAINT fk_" + r2 + "_" + tableName + " FOREIGN KEY (" + r2 + "_id) REFERENCES " + convertClassName(rSymbolOpt.get().getName(), AttributeType.QUOTED) + ",");
 
         p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (" + r1 + "_id, " + r2 + "_id)");
 

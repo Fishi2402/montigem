@@ -1,53 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-plugins {
-    id 'java'
-}
-
 subprojects {
-    apply plugin: 'java'
-
-    repositories {
-        maven {
-            credentials.username mavenUser
-            credentials.password mavenPassword
-            url repo
-        }
-        if(("true").equals(getProperty('useLocalRepo'))) {
-            mavenLocal()
-        }
-        mavenCentral()
-    }
-
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
-
     dependencies {
       implementation project(':umlp-rte')
-      implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
-
-      testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
-      testImplementation 'com.h2database:h2:2.1.214'
-    }
-
-    sourceSets {
-        main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
-        main.resources.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode/schemata"]
-    }
-    buildDir = file("$projectDir/target")
-    sourceCompatibility = '11'
-
-    test {
-      testLogging {
-        events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-      }
-      useJUnitPlatform()
+      testImplementation "com.h2database:h2:${h2_database}"
     }
 }
 
 clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
 
 build.dependsOn(subprojects.collect{ it.getTasksByName("build", false)})
-
-jar.enabled = false

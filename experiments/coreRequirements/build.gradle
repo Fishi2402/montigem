@@ -1,3 +1,5 @@
+import java.nio.file.Paths
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -5,10 +7,6 @@ plugins {
     id 'com.google.cloud.tools.jib' version '3.2.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version "${spring_version}"
-}
-
-configurations {
-    symbol
 }
 
 application {
@@ -40,6 +38,8 @@ repositories {
 }
 
 dependencies {
+    implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version
+
     implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
 
@@ -54,12 +54,12 @@ dependencies {
 //    implementation group: 'org.webjars', name: 'stomp-websocket'
     // JSweet
     implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
+    compileOnly project(':umlp-rte:umlp-frontend-rte-java')
 
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
     testImplementation 'com.h2database:h2:2.1.214'
 
-    symbol "de.monticore:frontend-rte:$mc_version"
 }
 
 task runServer {
@@ -76,23 +76,6 @@ task generateFlensburg(type: UMLPTask) {
     dependsOn(generateCDTOGUI)
     input = (file("models/hardy"))
     outputDir = layout.buildDirectory.dir("genumlp/hardy")
-}
-
-task copySymbols(type: Copy) {
-    copy {
-        from zipTree(configurations.symbol.asPath)
-        into "$projectDir/target/symbols"
-    }
-}
-
-task generateAll(type: UMLPTask) {
-    dependsOn(copySymbols)
-    input = (file("models"))
-    outputDir = layout.buildDirectory.dir("gen")
-    hwcDir = layout.projectDirectory.dir("src/main/java")
-    modelDir = layout.projectDirectory.dir("models")
-    symbolDir = file("models")
-    //symbolDir = file("$projectDir/target/symbols")
 }
 
 test {

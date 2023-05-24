@@ -25,7 +25,7 @@ public class GenCreateTest extends GenAbstractDBTest {
 
     assertTrue(carFromDBOpt.isPresent());
 
-    assertTrue(carFromDBOpt.get().getWheelLeft());
+    assertTrue(carFromDBOpt.get().isWheelLeft());
     assertTrue(carFromDBOpt.get().getNamesOfAllParts().containsAll(carOpt.get().getNamesOfAllParts()));
   }
 

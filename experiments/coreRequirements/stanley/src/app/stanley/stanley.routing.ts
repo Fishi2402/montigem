@@ -36,4 +36,24 @@ export const routes: Routes = [
     path: "personchildrenedit",
     loadChildren: () => import("./personchildrenedit/personchildrenedit.module").then(m => m.PersonChildrenEditModule)
   },
+  {
+    path: "test",
+    loadChildren: () => import("../../../build/app/stanley/my/InfoBoxModule").then(m => m.InfoboxModule)
+  },
+  {
+    path: "test2",
+    loadChildren: () => import("../../../build/app/stanley/personoverview/PersonOverviewModule").then(m => m.PersonoverviewModule)
+  },
+  {
+    path: "test3",
+    loadChildren: () => import("../../../build/app/stanley/personcreate/PersonCreateModule").then(m => m.PersoncreateModule)
+  },
+  {
+    path: "test4",
+    loadChildren: () => import("../../../build/app/stanley/personedit/PersonEditModule").then(m => m.PersoneditModule)
+  },
+  {
+    path: "test5",
+    loadChildren: () => import("../../../build/app/stanley/gui/AccountCreateModule").then(m => m.AccountcreateModule)
+  },
 ]

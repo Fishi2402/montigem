@@ -49,6 +49,8 @@ public class AssocListMutatorDecorator extends SimpleMethodMutatorDecorator {
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.RetainAll", service.getNativeAttributeName(ast.getName()), targetName).get());
 
     cd4c.addImport(this.ast, "com.google.common.collect.Sets");
+    cd4c.addImport(this.ast, "java.util.Map");
+    cd4c.addImport(this.ast, "java.util.HashMap");
 
     return methodList;
   }

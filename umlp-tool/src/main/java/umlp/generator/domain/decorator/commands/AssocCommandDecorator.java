@@ -12,7 +12,6 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
-import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
-public class AssocCommandDecorator extends AbstractDecorator {
+public class AssocCommandDecorator extends AbstractDeSerDecorator {
 
   public static final String COMMAND_ASSOC_PACKAGE = COMMAND_PACKAGE + ".associations";
   public static final String ADD_SUFFIX = "_add";
@@ -38,6 +37,7 @@ public class AssocCommandDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    addedDeSers.clear();
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_ASSOC_PACKAGE);
     origCD.getCDDefinition().getCDAssociationsList().stream()
             .filter(a -> !a.getModifier().isDerived())
@@ -85,21 +85,25 @@ public class AssocCommandDecorator extends AbstractDecorator {
     ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
-    getCD4C().addConstructor(ast, "umlp.commands.assocs.Constructor", classname, COMMAND_ASSOC_PACKAGE,
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname, COMMAND_ASSOC_PACKAGE,
             sourceName, targetName);
 
     // methods
-    getCD4C().addMethod(ast, "umlp.commands.assocs.Add_DoRun", assoc.getName(),
+    getCD4C().addMethod(ast, getAdd_DoRunTemplate(), assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
             origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds",
+    getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
 
     // Importe
     addImports(origCD, ast, sourceType, targetType);
 
     return ast;
+  }
+
+  protected String getAdd_DoRunTemplate() {
+    return "umlp.commands.assocs.Add_DoRun";
   }
 
   protected ASTCDClass createRemoveClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {
@@ -128,21 +132,29 @@ public class AssocCommandDecorator extends AbstractDecorator {
     ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
-    getCD4C().addConstructor(ast, "umlp.commands.assocs.Constructor", classname,
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname,
             COMMAND_ASSOC_PACKAGE, sourceName, targetName);
 
     // methods
-    getCD4C().addMethod(ast, "umlp.commands.assocs.Remove_DoRun", assoc.getName(),
+    getCD4C().addMethod(ast, getRemove_DoRunTemplate(), assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
             origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds",
+    getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
 
     // Importe
     addImports(origCD, ast, sourceType, targetType);
 
     return ast;
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.commands.assocs.Constructor";
+  }
+
+  protected String getRemove_DoRunTemplate() {
+    return "umlp.commands.assocs.Remove_DoRun";
   }
 
   protected ASTCDClass createSetClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {
@@ -174,25 +186,41 @@ public class AssocCommandDecorator extends AbstractDecorator {
     attr = getCD4C().addAttribute(ast, "protected int " + targetName+"Index");
     ast.addAllCDMembers(accessor.decorate(attr));
 
-    getCD4C().addConstructor(ast, "umlp.commands.assocs.Set_Constructor", classname, COMMAND_ASSOC_PACKAGE,
+    getCD4C().addConstructor(ast, getSet_ConstructorTemplate(), classname, COMMAND_ASSOC_PACKAGE,
             sourceName, targetName);
 
-    getCD4C().addMethod(ast, "umlp.commands.assocs.Set_DoRun",
+    getCD4C().addMethod(ast, getSet_DoRunTemplate(),
             sourceName, targetName);
-    getCD4C().addMethod(ast, "umlp.commands.assocs.Set_Source_Exchange", assoc.getName(),
+    getCD4C().addMethod(ast, getSet_Source_ExchangeTemplate(), assoc.getName(),
             targetName, sourceName, targetType, sourceType,
             GenService.isList(assoc.getRight()), GenService.isList(assoc.getLeft()),
             origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.assocs.Set_Source_Exchange", assoc.getName(),
+    getCD4C().addMethod(ast, getSet_Source_ExchangeTemplate(), assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
             origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds",
+    getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
 
     addImports(origCD, ast, sourceType, targetType);
 
     return ast;
+  }
+
+  protected String getSet_ConstructorTemplate() {
+    return "umlp.commands.assocs.Set_Constructor";
+  }
+
+  protected String getGetEffectedGemIdsTemplate() {
+    return "umlp.commands.GetEffectedGemIds";
+  }
+
+  protected String getSet_Source_ExchangeTemplate() {
+    return "umlp.commands.assocs.Set_Source_Exchange";
+  }
+
+  protected String getSet_DoRunTemplate() {
+    return "umlp.commands.assocs.Set_DoRun";
   }
 
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDClass cmdClass) {
@@ -204,16 +232,25 @@ public class AssocCommandDecorator extends AbstractDecorator {
             .setName(cmdName+DE_SER)
             .build();
 
-    getCD4C().addMethod(ast, "umlp.commands.assocs.FromJsonObject", cmdName,
+    getCD4C().addMethod(ast, getFromJsonObjectTemplate(), cmdName,
             cmdClass.getCDAttributeList().stream().map(a -> a.getName()).collect(Collectors.toList()));
-    getCD4C().addMethod(ast, "umlp.commands.assocs.BuildJson", cmdName,
+    getCD4C().addMethod(ast, getBuildJsonTemplate(), cmdName,
             cmdClass.getCDAttributeList().stream().map(a -> a.getName()).collect(Collectors.toList()));
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
 
+    addedDeSers.add(ast);
     return ast;
+  }
+
+  protected String getBuildJsonTemplate() {
+    return "umlp.commands.assocs.BuildJson";
+  }
+
+  protected String getFromJsonObjectTemplate() {
+    return "umlp.commands.assocs.FromJsonObject";
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass ast, String sourceType, String targetType) {

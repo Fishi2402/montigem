@@ -2,22 +2,33 @@
 package stanley.sync;
 
 import de.se_rwth.commons.logging.Log;
-import hardy.*;
+import hardy.Address;
+import hardy.Car;
+import hardy.CarBuilder;
+import hardy.FlensburgManager;
+import hardy.FlensburgMock;
+import hardy.Person;
+import hardy.PersonBuilder;
 import hardy.requests.GetFreeGemIdRequest;
-import infrastructure.command.CommandDirectCommunication;
 import infrastructure.command.FlensburgManagerClientImplBuilder;
-import infrastructure.command.TestClientCommandManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import stanley.FlensburgTestContext;
 import umlp.backendrte.command.Command;
+import umlp.backendrte.command.CommandDirectCommunication;
 import umlp.backendrte.command.CommandResult;
+import umlp.backendrte.command.TestClientCommandManager;
 import umlp.backendrte.common.GemList;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class PersonSyncTest {

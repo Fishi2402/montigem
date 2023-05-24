@@ -50,6 +50,12 @@ public class DatabaseAccessManager {
     getSingleton()._setup();
   }
 
+  public static void closeConnection() throws SQLException {
+    if(!connection.isClosed()) {
+      connection.close();
+    }
+  }
+
   protected void _setup() {
     loadDBPropertiesFromStandardFileLocation();
     try {
@@ -106,6 +112,7 @@ public class DatabaseAccessManager {
     }
 
     if(initialized){
+      Log.warn("Skipping initSchema since the database is already initialized");
       return false;
     }else{
       executeStatement(schema);

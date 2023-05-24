@@ -59,8 +59,12 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     String type = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
     ASTCDParameter param = getCDParameterFacade().createParameter("int", "index");
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name, param);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.methods.AssocGet", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getAssocGetTemplate(), ast));
     return method;
+  }
+
+  protected String getAssocGetTemplate() {
+    return "umlp.methods.AssocGet";
   }
 
   protected ASTCDMethod createGetGemList(ASTCDAttribute ast) {

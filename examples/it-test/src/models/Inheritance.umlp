@@ -1,0 +1,45 @@
+umlp Inheritance{
+
+  class A{
+    int aField;
+  }
+
+  class B extends A{ // direct subclass => instances exist
+    int bField;
+  }
+  abstract class C extends A{ // abstract subclass => no direct instances
+    int cField;
+  }
+  class D extends C{ // => indirect instances of C
+    int dField;
+  }
+
+  // Same but with I
+  interface I{
+    int iField;
+  }
+
+  class E implements I{ // instances exist
+    int eField;
+  }
+  abstract class F implements I{ // no direct instances
+    int fField;
+  }
+  class G extends F{ // indirect instances
+    int gField;
+  }
+
+  // subinterface
+  interface J extends I{
+    int jField;
+  }
+  class H implements J{
+    int hField;
+  }
+  abstract class K implements J{
+    int kField;
+  }
+  class L extends K{
+    int lField;
+  }
+}

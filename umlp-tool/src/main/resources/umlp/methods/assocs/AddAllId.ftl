@@ -10,4 +10,9 @@ if(idx > _${name}.size()){
   throw new IllegalStateException("idx must be at most owns.size");
 }
 
-this._internal_add${name?cap_first}(idx, l.stream().map(GemIdentifiable::getGemId).collect(java.util.stream.Collectors.toList()), scope);
+List<Long> list = new ArrayList<>();
+  for (${targetName} s : l) {
+  Long id = s.getGemId();
+  list.add(id);
+}
+this._internal_add${name?cap_first}(idx, list, scope);

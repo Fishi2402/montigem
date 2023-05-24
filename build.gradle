@@ -1,89 +1,65 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-    id 'java'
-    id 'de.rwth.se.umlp-tool' // See "umlp-tool/src/main/java/gradle"
-}
-
-test {
-    useJUnitPlatform()
-}
-
-allprojects {
-    group = 'umlp'
-    repositories {
-      if(("true").equals(getProperty('useLocalRepo'))) {
-        mavenLocal()
-      }
-      maven {
-            credentials.username mavenUser
-            credentials.password mavenPassword
-            url repo
-      }
-      mavenCentral()
-    }
-
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
-
-    jar {
-        onlyIf { !sourceSets.main.allSource.files.isEmpty() }
-    }
-
-    configurations {
-        all {
-            exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-            exclude group: 'ch.qos.logback', module: 'logback-classic'
-            exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
-        }
-    }
+  id 'base'
+  id 'de.rwth.se.umlp-tool' // See "umlp-tool/src/main/java/gradle"
 }
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven-publish'
+  apply plugin: 'java'
 
-    dependencies {
-        implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
-        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
-        implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
-        implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
-        implementation group: 'de.monticore', name: 'class2mc', version: mc_version
-        implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
-        implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version
-        implementation group: 'com.google.guava', name: 'guava', version: guava_version
-
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
+  dependencies {
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
+  }
+  java {
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(11)
     }
+  }
 
-    compileJava {
-        dependsOn project.collect { it.tasks.withType(UMLPTask) }
+  test {
+    useJUnitPlatform()
+    testLogging {
+      events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
     }
-    buildDir = file("$projectDir/target")
-    sourceCompatibility = '11'
+  }
+  repositories {
+    if (("true").equals(getProperty('useLocalRepo'))) {
+      mavenLocal()
+    }
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url repo
+    }
+    mavenCentral()
+  }
+
+  tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+  }
+
+  jar {
+    onlyIf { !sourceSets.main.allSource.files.isEmpty() }
+  }
+
+  configurations {
+    all {
+      exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+      exclude group: 'ch.qos.logback', module: 'logback-classic'
+      exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
+  }
 }
+
 
 build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
 
-/**
- *  Builds the core projects, i.e. the umlp-tool and the examples.
- *  Executes JUnit tests and assembles the jars.
- */
-task buildUMLP {
-    group("build")
-    description('Builds the core projects, i.e. the umlp-tool, experiments, and examples.')
-    dependsOn(
-            ":umlp-tool:build",
-            ":experiments:build",
-            ":examples:build"
-    )
-}
-
-//After every UMLPTask, run basic checks on the generated report
-// e.g. "every generated file is also reported"
 subprojects {
+  // After every UMLPTask, run basic checks on the generated report
+  // e.g. "every generated file is also reported"
   tasks.withType(UMLPTask).all {
     String taskname = it.name + "__check_report"
     gradle.UMLPTask umlTask = it

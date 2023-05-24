@@ -14,6 +14,8 @@ import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
 import umlp.generator.domain.decorator.methods.AssocMutatorDecorator;
@@ -34,7 +36,8 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  protected void addImports(ASTCDType cdType) {
+  protected void addImports(ASTCDType domainType, ASTCDType cdType) {
+    super.addImports(domainType, cdType);
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemIdentifiable"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("Gem"));
@@ -85,6 +88,9 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
               createType(visibleAttribute), GenService.createName(visibleAttribute.getName()));
       attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
       attributesList.add(attribute);
+      if (GenService.isOptional(visibleAttribute)) {
+        glex.replaceTemplate("cd2java.Value", attribute, new StringHookPoint(" = Optional.empty()"));
+      }
     }
     return attributesList;
   }
@@ -130,6 +136,18 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
       this.attrAssocs = attrAssocs;
       attrList = new ArrayList<>(attrAssocs);
       attrList.addAll(attrFields);
+    }
+
+    public List<ASTCDAttribute> getAttrList() {
+      return attrList;
+    }
+
+    public List<ASTCDAttribute> getAttrAssocs() {
+      return attrAssocs;
+    }
+
+    public List<ASTCDAttribute> getAttrFields() {
+      return attrFields;
     }
   }
 

@@ -44,15 +44,23 @@ public class BaseClassObjectMapperDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
 
     // constructor
-    getCD4C().addConstructor(mapperClass, "umlp.baseclassobjectmapper.Constructor",
+    getCD4C().addConstructor(mapperClass, getConstructorTemplate(),
         new ArrayList(), name+SUFFIX);
 
     // add methods
-    getCD4C().addMethod(mapperClass, "umlp.baseclassobjectmapper.Init", name);
+    getCD4C().addMethod(mapperClass, getInitTemplate(), name);
 
     addImports(mapperClass);
 
     return mapperClass;
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.baseclassobjectmapper.Constructor";
+  }
+
+  protected String getInitTemplate() {
+    return "umlp.baseclassobjectmapper.Init";
   }
 
   protected void addImports(ASTCDType clazz) {

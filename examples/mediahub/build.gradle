@@ -1,12 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-description 'mediahub example'
-
-task generateMediaHub(type: UMLPTask) {
-    input = (file("src/models"))
-    outputDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode")
-    hwcDir = layout.projectDirectory.dir("src/main/java/")
-    tmplDir = layout.projectDirectory.dir("src/templates/")
+plugins {
+  id 'de.rwth.se.umlp-tool-backend'
 }
-
-build.dependsOn(generateMediaHub)
+description 'mediahub example'

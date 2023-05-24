@@ -52,6 +52,13 @@ public class DBTestService {
     if(!initalized) {
       Log_MC_JARManagerImpl.init();
     }
-    return ResponseEntity.ok("Script:" + Log_MC_JARManager.getMCJarCLIParameterSure(id).getScript());
+    return ResponseEntity.ok("Script:" + Log_MC_JARManager.getMCJarCLIParameterSure(id).isScript());
   }
+
+
+  @GetMapping("/echo/{input}")
+  public ResponseEntity<String> echo(@PathVariable String input) {
+    return ResponseEntity.ok("Hallo: " + input);
+  }
+
 }

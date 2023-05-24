@@ -24,7 +24,10 @@ import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.symboltable.serialization.json.*;
+import de.monticore.symboltable.serialization.json.JsonBoolean;
+import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -38,19 +41,44 @@ import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.gui.GUIComponentsVisitor;
-import umlp.generator.gui.GUITemplateHelper;
+import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
+import umlp.generator.gui.genhtml.GUI2HtmlTrafo;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
+import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
+import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static umlp.UMLPToolOptions.*;
+import static umlp.UMLPToolOptions.CD2GUI;
+import static umlp.UMLPToolOptions.DEBUG;
+import static umlp.UMLPToolOptions.DOMAIN;
+import static umlp.UMLPToolOptions.FOR_CLIENT;
+import static umlp.UMLPToolOptions.GUI_CREATE;
+import static umlp.UMLPToolOptions.HELP;
+import static umlp.UMLPToolOptions.HWC_PATH;
+import static umlp.UMLPToolOptions.INPUT;
+import static umlp.UMLPToolOptions.OUTPUT;
+import static umlp.UMLPToolOptions.PATH;
+import static umlp.UMLPToolOptions.PRETTYPRINT;
+import static umlp.UMLPToolOptions.REPORTS;
+import static umlp.UMLPToolOptions.REPORT_BASE;
+import static umlp.UMLPToolOptions.SYMTAB;
+import static umlp.UMLPToolOptions.TMPL_PATH;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -62,6 +90,8 @@ public class UMLPTool extends UMLPToolTOP {
   protected static final String DEFAULT_OUT = "target/generated-sources/umlp";
   protected static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   protected static final String DEFAULT_CONFIGTEMPLATE = "umlp.UMLP2Java";
+
+  protected static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS = "umlp.UMLP2Java2TS";
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA = "umlp.GUI2Java";
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2HTML = "umlp.GUI2Html";
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2TS = "umlp.GUI2TypeScript";
@@ -148,8 +178,8 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
 
-      if(CD2GUI.isSelected(cmd)){
-        if(!isUmlpFile(inputFile)){
+      if (CD2GUI.isSelected(cmd)) {
+        if (!isUmlpFile(inputFile)) {
           Log.warn("option -cd2gui used without a classdiagram umlp file as input");
           return;
         }
@@ -172,6 +202,8 @@ public class UMLPTool extends UMLPToolTOP {
         runDefaultCoCos(ast);
         CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, false);
         guiTool.generateGUI();
+        // TODO AGe: cd2gui is supposed to specify which models are for object creation,
+        //  see GUI_CREATE
 
         Reporting.flush(ast);
       }
@@ -185,6 +217,27 @@ public class UMLPTool extends UMLPToolTOP {
 
         UMLPMill.init();
         BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+        MCPath mcPath = new MCPath();
+        if (PATH.isSelected(cmd)) {
+          for (String v : cmd.getOptionValues(PATH.getCMD())) {
+            mcPath.addEntry(Paths.get(v));
+          }
+        }
+        UMLPMill.globalScope().setSymbolPath(mcPath);
+
+        List<URL> models = MCPathUtil.getAllModels(mcPath, ".*[.]umlp");
+        for (URL modelUrl : models) {
+          try (Reader reader = new InputStreamReader(modelUrl.openStream())){
+            ASTCDCompilationUnit ast = UMLPMill.parser().parse(reader).orElseThrow();
+            Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
+            runAfterParseTrafo(ast);
+            IUMLPArtifactScope symbolTable = createSymbolTable(ast);
+            runDefaultTrafo(ast);
+            runDefaultCoCos(ast);
+          } catch (IOException e) {
+            Log.error("Can not load model for url " + modelUrl);
+          }
+        }
 
         // parse, create symbol table, check all cocos
         ASTCDCompilationUnit ast = parse(inputFile.getPath());
@@ -228,11 +281,19 @@ public class UMLPTool extends UMLPToolTOP {
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
             .map(p -> p.toFile()).collect(Collectors.toList()));
 
-        // execute generator
-        UMLPGenerator generator = new UMLPGenerator(genSetup);
         CD4C.init(genSetup);
-        String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
-        generator.generate(ast, configTemplate);
+        if (FOR_CLIENT.isSelected(cmd)) {
+          TSUMLPGenerator generator = new TSUMLPGenerator(genSetup);
+          String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
+          generator.generate(ast, configTemplate);
+        }
+        else {
+          // execute generator
+          UMLPGenerator generator = new UMLPGenerator(genSetup);
+          String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
+          generator.generate(ast, configTemplate);
+        }
+
 
         // write reports
         Reporting.flush(ast);
@@ -240,65 +301,98 @@ public class UMLPTool extends UMLPToolTOP {
         ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
       }
       else if (isGuiFile(inputFile)) {
-        guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
+        for (String guiPathString : cmd.getOptionValues(INPUT.getCMD())) {
+          Path guiModel = Paths.get(guiPathString);
+          guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
 
-        Reporting.init(outDir.getPath(), reportDir.getPath(), guidsl_reportManagerFactory);
-        String report_on = inputFile.getName().replace(".", "__");
-        Reporting.on(report_on);
+          Reporting.init(outDir.getPath(), reportDir.getPath(), guidsl_reportManagerFactory);
+          String report_on = guiModel.getFileName().toString().replace(".", "__");
+          Reporting.on(report_on);
 
-        GUIDSLMill.init();
-        // parse, create symbol table, check all cocos
-        ASTGUICompilationUnit astGui = parseGUI(inputFile.getPath());
-        Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on);
+          GUIDSLMill.init();
+          // parse, create symbol table, check all cocos
+          ASTGUICompilationUnit astGui = parseGUI(guiModel.toString());
+          Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
 
-        MCPath mcPath = new MCPath();
-        if (PATH.isSelected(cmd)) {
-          for (String v : cmd.getOptionValues(PATH.getCMD())) {
-            mcPath.addEntry(Paths.get(v));
+          MCPath mcPath = new MCPath();
+          if (PATH.isSelected(cmd)) {
+            for (String v : cmd.getOptionValues(PATH.getCMD())) {
+              mcPath.addEntry(Paths.get(v));
+            }
           }
+
+          createSymbolTable(astGui, mcPath);
+
+          GeneratorSetup genSetup = new GeneratorSetup();
+          // set output directory
+          genSetup.setOutputDirectory(outDir);
+          // set hwc directories
+          genSetup.setHandcodedPath(hwcPath);
+          // set template path
+          genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
+              .map(p -> p.toFile()).collect(Collectors.toList()));
+          genSetup.setGlex(new GlobalExtensionManagement());
+
+          // execute generator
+          GUIDSLMill.init();
+
+          List<String> domainModels = new ArrayList<>();
+          if (DOMAIN.isSelected(cmd)) {
+            domainModels.addAll(Arrays.asList(cmd.getOptionValues(DOMAIN.getCMD())));
+          }
+
+          List<String> createModels = new ArrayList<>();
+          if (GUI_CREATE.isSelected(cmd)) {
+            createModels.addAll(Arrays.asList(cmd.getOptionValues(GUI_CREATE.getCMD())));
+          }
+          GUIGeneratorUtil.getInstance().init(domainModels, createModels);
+
+          GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
+          nodeIdTrafo.transform(astGui);
+          // logTrafoExec("GUINodeIdTrafo", astGui);
+
+          // TODO AGe: range iterate results in type check issue
+          /*
+          GUIShortIterateTrafo shortIterateTrafo = new GUIShortIterateTrafo();
+          shortIterateTrafo.transform(astGui);
+          createSymbolTable(astGui, mcPath);
+          /**/
+          // logTrafoExec("GUIShortIterateTrafo", astGui);
+
+          // Get all ASTGUIComponents
+          GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
+          genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
+          genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
+
+          GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, viewComponents);
+          String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
+          javaGenerator.generate(astGui, javaConfigTemplate);
+
+          GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, viewComponents);
+          String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
+          typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
+
+          GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
+          componentGenerator.generate(astGui, "umlp.GUI2Component");
+
+          GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();
+          gui2HtmlTrafo.transform(astGui);
+          ASTGUICompilationUnit astGui4Html = gui2HtmlTrafo.getOut();
+          createSymbolTable(astGui4Html, mcPath);
+
+          // System.out.println(new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astGui4Html));
+          GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, viewComponents);
+          String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
+          htmlGenerator.generate(astGui4Html, htmlConfigTemplate);
+
+          // write reports
+          Reporting.flush(astGui);
         }
-
-        IGUIDSLArtifactScope symbolTableGui = createSymbolTable(astGui, mcPath);
-
-        GeneratorSetup genSetup = new GeneratorSetup();
-        // set output directory
-        genSetup.setOutputDirectory(outDir);
-        // set hwc directories
-        genSetup.setHandcodedPath(hwcPath);
-        // set template path
-        genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
-            .map(p -> p.toFile()).collect(Collectors.toList()));//
-        genSetup.setGlex( new GlobalExtensionManagement());
-
-        // execute generator
-        GUIDSLMill.init();
-
-        // Get all ASTGUIComponents
-        GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
-        genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
-        genSetup.getGlex().setGlobalValue("genHelper", new GUITemplateHelper());
-
-        GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, symbolTableGui, viewComponents);
-        String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
-        javaGenerator.generate(astGui, javaConfigTemplate);
-
-        GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, symbolTableGui, viewComponents);
-        String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
-        htmlGenerator.generate(astGui, htmlConfigTemplate);
-
-        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, symbolTableGui, hwcPath, viewComponents);
-        String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
-        typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
-
-        // write reports
-        Reporting.flush(astGui);
       }
-    }
-    catch (ParseException e) {
+    } catch (ParseException e) {
       printHelp(options);
       Log.error("0xB005 An exception occurred while processing the CLI input!", e);
-    }
-    finally {
+    } finally {
       UMLPMill.globalScope().clear();
       Reporting.off();
       if (umlp_reportManagerFactory != null) {
@@ -379,8 +473,7 @@ public class UMLPTool extends UMLPToolTOP {
         return optAst.get();
       }
       Log.error("0xA1050x72114 Model could not be parsed.");
-    }
-    catch (NullPointerException | java.io.IOException e) {
+    } catch (NullPointerException | java.io.IOException e) {
       Log.error("0xA1051x37376 Failed to parse " + model, e);
     }
     // should never be reached (unless failquick is off)

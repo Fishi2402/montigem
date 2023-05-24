@@ -23,5 +23,7 @@ public class UMLPCoCos {
 
   public static void addAllCDCoCos(UMLPCoCoChecker checker){
     checker.addChecker(new CD4AnalysisCoCosDelegator().getCheckerForAllCoCos());
+    // CoCos for generation
+    checker.addCoCo(new UMLPCheckDiagramName());
   }
 }

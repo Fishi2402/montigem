@@ -57,8 +57,6 @@ public class ShellAPIDecorator extends AbstractDecorator {
         "@ShellOption(value = \"scheme\", defaultValue = \"ws\")"
     ));
 
-    getCD4C().addMethod(shellapi, "umlp.shellapi.GetFreeGemId");
-
     return shellapi;
   }
 
@@ -66,7 +64,6 @@ public class ShellAPIDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellComponent");
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellMethod");
     getCD4C().addImport(clazz, "org.springframework.shell.standard.ShellOption");
-    getCD4C().addImport(clazz, getPackageName(origCD, REQUESTS_PACKAGE) + ".GetFreeGemIdRequest");
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));

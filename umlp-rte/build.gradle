@@ -24,12 +24,6 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
 }
 
-test {
-    testLogging {
-        events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-    }
-    useJUnitPlatform()
-}
 
 /////////////////////////   JSweet //////////////////////////////
 project('umlp-frontend-rte'){

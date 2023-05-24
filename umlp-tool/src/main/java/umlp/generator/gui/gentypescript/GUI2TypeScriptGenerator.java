@@ -7,37 +7,43 @@ import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
-import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
+import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.io.paths.MCPath;
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
-import umlp.generator.gui.GUITemplateHelper;
+import umlp.generator.gui.gentypescript.java2ts.TSTopDecorator;
 
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+
+import static de.se_rwth.commons.Names.constructQualifiedName;
 
 public class GUI2TypeScriptGenerator {
 
+  protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
+
   protected final GeneratorEngine generatorEngine;
   protected GeneratorSetup setup;
-  protected IGUIDSLArtifactScope symbolTableGui;
   protected GUIComponentsVisitor viewComponents;
   protected MCPath hwcPath;
-  public final static String ROUTES_FILE = ".routing.ts";
-  public final static String MODULES_FILE = ".module.ts";
+  public final static String ROUTES_FILE = "Routing";
+  public final static String MODULES_FILE = "Module";
   public final static String TS_FILE_EXTENSION = "ts";
 
-  public GUI2TypeScriptGenerator(GeneratorSetup generatorSetup, IGUIDSLArtifactScope symbolTableGui, MCPath hwcPath,
+  public GUI2TypeScriptGenerator(GeneratorSetup generatorSetup, MCPath hwcPath,
       GUIComponentsVisitor viewComponents) {
     this.generatorEngine = new GeneratorEngine(generatorSetup);
     this.setup = generatorSetup;
-    this.symbolTableGui = symbolTableGui;
     this.hwcPath = hwcPath;
     this.viewComponents = viewComponents;
   }
@@ -55,18 +61,37 @@ public class GUI2TypeScriptGenerator {
     GeneratorEngine genEngine = new GeneratorEngine(setup);
 
     String pathName = String.join("/", decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
-    String pathToSearch = String.join(".", decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
+    String pathToSearch = decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getQName();
     boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathToSearch + "."
-        + decoratedAst.getComponentName().toLowerCase()+ ROUTES_FILE, TS_FILE_EXTENSION);
+        + decoratedAst.getComponentName() + ROUTES_FILE, TS_FILE_EXTENSION);
 
-    Path generatedFiles = Paths.get(pathName, decoratedAst.getComponentName().toLowerCase()
-        + (existHWCRoutes? "-top":"") + ROUTES_FILE);
-    genEngine.generate("umlp.gui2ts.Routes", generatedFiles, decoratedAst.getGUIComponentDeclaration(),
-        "routes", existHWCRoutes);
+    String componentPath = "./" + decoratedAst.getComponentName();
 
-    generatedFiles = Paths.get(pathName, decoratedAst.getComponentName().toLowerCase() + MODULES_FILE);
-    genEngine.generate("umlp.gui2ts.Module", generatedFiles, decoratedAst.getGUIComponentDeclaration(),
-        viewComponents.getModules());
+    Optional<String> filePath = util.getRelativeHandwrittenPath(
+        hwcPath, setup.getOutputDirectory().toPath(),
+        decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getQName()
+            + "." + decoratedAst.getComponentName(), "ts");
+    if (filePath.isPresent()) {
+      componentPath = util.removeExtension(filePath.get());
+    }
+
+    Path generatedFiles = Paths.get(pathName, decoratedAst.getComponentName()
+        + (existHWCRoutes ? "TOP" : "") + ROUTES_FILE + "." + TS_FILE_EXTENSION);
+    genEngine.generate("umlp.gui2ts.TSRoutes", generatedFiles,
+        decoratedAst.getGUIComponentDeclaration(), "routes", existHWCRoutes,
+        componentPath, util.getRoutingIds(decoratedAst));
+
+    generatedFiles = Paths.get(pathName,
+        decoratedAst.getComponentName() + MODULES_FILE + "." + TS_FILE_EXTENSION);
+    genEngine.generate("umlp.gui2ts.TSModule", generatedFiles, decoratedAst,
+        viewComponents.getModules(), componentPath);
+    /*
+    for (ASTMCImportStatement is : decoratedAst.getMCImportStatementList()) {
+      is.getMCQualifiedName().getParts(is.getMCQualifiedName().sizeParts() - 1)
+      is.getQName();
+    }
+
+     */
   }
 
 

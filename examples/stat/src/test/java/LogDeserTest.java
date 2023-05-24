@@ -29,8 +29,8 @@ public class LogDeserTest {
     Optional<MCJarCLIParameter> parameterOpt = new MCJarCLIParameterDeSer().deserialize((JsonObject) jsonElement);
     assertTrue(parameterOpt.isPresent());
 
-    assertTrue(parameterOpt.get().getScript());
-    assertTrue(parameterOpt.get().getDstlGen());
+    assertTrue(parameterOpt.get().isScript());
+    assertTrue(parameterOpt.get().isDstlGen());
     assertTrue(parameterOpt.get().getGrammar().contains("GrammarFamily.mc4"));
   }
 
@@ -54,7 +54,7 @@ public class LogDeserTest {
     Log_MC_JARMock.init();
     MCJarLogEntryBuilder builder = Log_MC_JARManager.mCJarLogEntryBuilder();
     builder.duration(Duration.ZERO)
-        .toolVersion("7.5.0-SNAPSHOT")
+        .toolVersion("7.5.0")
         .origin(InetAddress.getLoopbackAddress())
         .receivedTime(Instant.now());
 

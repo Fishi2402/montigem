@@ -17,6 +17,7 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.List;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class SimpleMethodMutatorDecorator extends MandatoryMutatorDecorator {
 
@@ -51,9 +52,21 @@ public class SimpleMethodMutatorDecorator extends MandatoryMutatorDecorator {
   protected ASTCDMethod createNotificationSetter(ASTCDAttribute ast, boolean isGem) {
     ASTCDMethod method = super.createSetter(ast);
     method.addCDParameter(getCDParameterFacade().createParameter("NotificationScope", "scope"));
-    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.methods.NotificationSetter",
+    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getNotificationSetterTemplate(),
             this.ast.getName(), service.getNativeAttributeName(ast.getName()), new CdUtilsPrinter().printType(ast.getMCType()), isGem));
     return method;
+  }
+
+  protected ASTCDMethod createGemSetter(ASTCDAttribute ast) {
+    String name = String.format(SET, StringTransformations.capitalize(service.getNativeAttributeName(ast.getName())+"Gem"));
+    ASTCDMethod method3 = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, this.getCDParameterFacade().createParameters(ast));
+    glex.replaceTemplate(EMPTY_BODY, method3, new StringHookPoint("this." + method3.getName() + "("
+        + StringTransformations.uncapitalize(ast.getName()) + ", NotificationScope.ALL);"));
+    return method3;
+  }
+
+  protected String getNotificationSetterTemplate() {
+    return "umlp.methods.NotificationSetter";
   }
 
 }

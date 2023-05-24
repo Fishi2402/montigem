@@ -72,7 +72,7 @@ public class FlensburgBaseClassObjectMapperTest {
 
   @Test
   public void testInetAddressDeSerRoundtrip() throws UnknownHostException {
-    InetAddress address = InetAddress.getLocalHost();
+    InetAddress address = InetAddress.getByName("www.se-rwth.de");
     String ser = BaseClassObjectMapper.serialize(address, "java.net.InetAddress").get();
     Object deser = BaseClassObjectMapper.deserialize(ser, "java.net.InetAddress").get();
 

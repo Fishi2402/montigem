@@ -33,9 +33,10 @@ dependencies {
         exclude module: 'spring-boot-starter-logging'
         exclude module: 'logback-classic'
     }
-    compileOnly("org.springframework.boot:spring-boot-devtools:$spring_version")
+    developmentOnly("org.springframework.boot:spring-boot-devtools:$spring_version")
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
+    implementation "com.h2database:h2:${h2_database}"
 
 
     //symbol "de.monticore:frontend-rte:$mc_version"
@@ -43,4 +44,19 @@ dependencies {
 
 task runServer {
     dependsOn(bootRun)
+}
+
+
+String diff_location="diff_store"
+task copyGeneratedFiles(type: Sync) {
+  group = "diff"
+  from generateUmlpBackend.getOutputDir()
+  into layout.buildDirectory.dir(diff_location)
+}
+
+task diff(type: Exec){
+  group = "diff"
+  dependsOn(generateUmlpBackend)
+  commandLine 'cmd', '/c', 'git', 'diff', '--no-index', layout.buildDirectory.dir(diff_location).get().getAsFile().toPath(), generateUmlpBackend.getOutputDir().get().getAsFile().toPath()
+  ignoreExitValue true
 }

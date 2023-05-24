@@ -8,9 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
-import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
@@ -18,27 +16,30 @@ import umlp.generator.util.PathUtil;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
-public class DeleteDecorator extends AbstractDecorator {
-  
+public class DeleteDecorator extends AbstractDeSerDecorator {
+
   public static final String SUFFIX = "_delete";
 
   public DeleteDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
-  
+
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    addedDeSers.clear();
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
+    origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getSymbol().isIsDerived())
+        .filter(c -> !c.getSymbol().isIsAbstract())
       .forEach(c -> {
         astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
         astcdPackage.addCDElement(createDeSer(origCD, c));
       });
   }
-  
+
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String packageName) {
     String classname = domainClass.getName();
-    
+
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
       .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
@@ -47,9 +48,9 @@ public class DeleteDecorator extends AbstractDecorator {
 
     ASTCDAttribute attr = getCD4C().addAttribute(ast, "private final long gemId");
 
-    getCD4C().addConstructor(ast, "umlp.commands.get.Constructor", classname,"", SUFFIX, packageName);
-    getCD4C().addMethod(ast, "umlp.commands.delete.DoRun", classname, origCD.getCDDefinition().getName());
-    getCD4C().addMethod(ast, "umlp.commands.GetEffectedGemIds", Lists.newArrayList("gemId"));
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname,"", SUFFIX, packageName);
+    getCD4C().addMethod(ast, getDoRunTemplate(), classname, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("gemId"));
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));
 
@@ -61,6 +62,18 @@ public class DeleteDecorator extends AbstractDecorator {
     return ast;
   }
 
+  protected String getGetEffectedGemIdsTemplate() {
+    return "umlp.commands.GetEffectedGemIds";
+  }
+
+  protected String getDoRunTemplate() {
+    return "umlp.commands.delete.DoRun";
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.commands.get.Constructor";
+  }
+
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
     String cmdName = domainClass.getName() + SUFFIX;
 
@@ -70,8 +83,8 @@ public class DeleteDecorator extends AbstractDecorator {
             .setName(cmdName+DE_SER)
             .build();
 
-    getCD4C().addMethod(ast, "umlp.commands.deser.Get_FromJsonObject", cmdName);
-    getCD4C().addMethod(ast, "umlp.commands.deser.Get_BuildJson", cmdName);
+    getCD4C().addMethod(ast, getGet_FromJsonObjectTemplate(), cmdName);
+    getCD4C().addMethod(ast, getGet_BuildJsonTemplate(), cmdName);
 
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
@@ -79,6 +92,15 @@ public class DeleteDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName()+ DeSerDecorator.SUFFIX);
 
+    addedDeSers.add(ast);
     return ast;
+  }
+
+  protected String getGet_BuildJsonTemplate() {
+    return "umlp.commands.deser.Get_BuildJson";
+  }
+
+  protected String getGet_FromJsonObjectTemplate() {
+    return "umlp.commands.deser.Get_FromJsonObject";
   }
 }

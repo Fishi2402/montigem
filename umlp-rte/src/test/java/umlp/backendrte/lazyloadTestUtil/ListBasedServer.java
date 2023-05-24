@@ -59,7 +59,7 @@ public class ListBasedServer extends AbstractList<Elem> {
   }
 
   public Gem<Elem> createGem(Long id) {
-    return new Gem(id, () -> this.getObject(id));
+    return new Gem<>(id, () -> this.getObject(id));
   }
 
   @Override

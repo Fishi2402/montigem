@@ -7,7 +7,11 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -30,15 +34,21 @@ public class BuilderDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+    origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getModifier().isDerived())
+        .filter(c -> !c.getModifier().isAbstract())
       .forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
   }
 
+  public static String getClassName(String domainClassName) {
+    return domainClassName + BUILDER_SUFFIX;
+  }
+
   protected ASTCDClass createClass(ASTCDClass domainClass, String name) {
-    String className = domainClass.getName() + BUILDER_SUFFIX;
+    String className = getClassName(domainClass.getName());
     String managerName = name + ManagerDecorator.SUFFIX;
 
     ASTCDClass builderClass = UMLPMill.cDClassBuilder()
@@ -55,7 +65,7 @@ public class BuilderDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
 
     // Constructors
-    getCD4C().addConstructor(builderClass, "umlp.builder.Constructor", domainClass.getName(), managerName, attrAssocLists);
+    getCD4C().addConstructor(builderClass, getConstructorTemplate(), domainClass.getName(), managerName, attrAssocLists);
 
     // Attributes
     List<ASTCDAttribute> attrList = createAttributes(domainClass, attrFields.stream().map(a -> a.getName()).collect(Collectors.toList()), false);
@@ -74,13 +84,25 @@ public class BuilderDecorator extends AbstractDecorator {
     builderClass.addAllCDMembers(methodDecorator.decorate(finishedAttr));
     builderClass.addAllCDMembers(methodDecorator.decorate(internalAttr));
     createSetAndCheckMethods(domainClass, builderClass, attrFields, attrAssocs);
-    getCD4C().addMethod(builderClass, "umlp.builder.Build", domainClass.getName(), managerName, attrAssocLists);
-    getCD4C().addMethod(builderClass, "umlp.builder.IsBuildable", attrList);
+    getCD4C().addMethod(builderClass, getBuildTemplate(), domainClass.getName(), managerName, attrAssocLists);
+    getCD4C().addMethod(builderClass, getIsBuildableTemplate(), attrList);
 
     // Imports
-    addImports(builderClass);
+    addImports(domainClass, builderClass);
 
     return builderClass;
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.builder.Constructor";
+  }
+
+  protected String getBuildTemplate() {
+    return "umlp.builder.Build";
+  }
+
+  protected String getIsBuildableTemplate() {
+    return "umlp.builder.IsBuildable";
   }
 
   protected List<ASTCDAttribute> createAttributes(ASTCDClass domainClass, List<String> attrNames, boolean initialValue) {
@@ -105,7 +127,7 @@ public class BuilderDecorator extends AbstractDecorator {
     for (ASTCDAttribute attribute : attrList) {
       getCD4C().addMethod(builderClass, "umlp.builder.Attr",
               attribute.getName(), getCDPrinter().prettyprint(createType(attribute)),
-              domainClass.getName() + BUILDER_SUFFIX);
+              getClassName(domainClass.getName()));
       getCD4C().addMethod(builderClass, "umlp.builder.Check",
               attribute.getName(), domainClass.getName(),
               !GenService.isList(attribute)&& !GenService.isOptional(attribute));
@@ -117,26 +139,27 @@ public class BuilderDecorator extends AbstractDecorator {
       if (GenService.isList(assoc)) {
         getCD4C().addMethod(builderClass, "umlp.builder.AssocList",
                 assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
-                domainClass.getName() + BUILDER_SUFFIX);
+                getClassName(domainClass.getName()));
         getCD4C().addMethod(builderClass, "umlp.builder.AssocAdd",
                 assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
-                domainClass.getName() + BUILDER_SUFFIX);
+                getClassName(domainClass.getName()));
         getCD4C().addMethod(builderClass, "umlp.builder.AssocGemList",
                 assoc.getName(),
-                domainClass.getName() + BUILDER_SUFFIX);
+                getClassName(domainClass.getName()));
 
       } else {
         getCD4C().addMethod(builderClass, "umlp.builder.AssocOne",
                 assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
-                domainClass.getName() + BUILDER_SUFFIX);
+                getClassName(domainClass.getName()));
         getCD4C().addMethod(builderClass, "umlp.builder.AssocOneGem",
                 assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
-                domainClass.getName() + BUILDER_SUFFIX);
+                getClassName(domainClass.getName()));
       }
     }
   }
 
-  protected void addImports(ASTCDType clazz) {
+  protected void addImports(ASTCDType domainType, ASTCDType clazz) {
+    super.addImports(domainType, clazz);
     getCD4C().addImport(clazz, "java.util.List");
     getCD4C().addImport(clazz, "java.util.Optional");
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
