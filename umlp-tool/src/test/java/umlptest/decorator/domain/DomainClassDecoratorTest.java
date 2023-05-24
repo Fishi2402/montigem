@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlptest.decorator.domain;
 
+import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.jupiter.api.Test;
@@ -20,24 +21,29 @@ public class DomainClassDecoratorTest extends DecoratorTest {
   public void check() {
     ASTCDClass clazz = getClassByName("Foo");
     assertAll(
-            // check superclasses or superinterfaces
-            () -> hasSuperInterface(clazz, "GemIdentifiable"),
+        // check superclasses or superinterfaces
+        () -> hasSuperInterface(clazz, "GemIdentifiable"),
 
-            // check no of methods and attributes
-            () -> assertEquals(4, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(17, clazz.getCDMethodList().size(), "number of methods"),
+        // check no of methods and attributes
+        () -> assertEquals(4, clazz.getCDAttributeList().size(), "number of attributes"),
+        () -> assertEquals(18, clazz.getCDMethodList().size(), "number of methods"),
 
-            // check attributes
-            () -> existsAttribute(clazz, "gemId"),
-            () -> existsAttribute(clazz, "fooObservers"),
-            () -> existsAttribute(clazz, "_fooAttr"),
+        // check attributes
+        () -> existsAttribute(clazz, "gemId"),
+        () -> existsAttribute(clazz, "fooObservers"),
+        () -> existsAttribute(clazz, "_fooAttr"),
 
-            // check methods
-            () -> existsMethod(clazz, "build"),
-            () -> existsMethod(clazz, "getGemId"),
-            () -> existsMethod(clazz, "addObserver"),
-            () -> existsMethod(clazz, "containsObserver"),
-            () -> existsMethod(clazz, "removeObserver")
+        // check methods
+        () -> existsMethod(clazz, "build"),
+        () -> existsMethod(clazz, "getGemId"),
+        () -> existsMethod(clazz, "addObserver"),
+        () -> existsMethod(clazz, "containsObserver"),
+        () -> existsMethod(clazz, "removeObserver"),
+
+        // check needsTop
+        () -> assertTrue(clazz.getModifier().isPresentStereotype(), "stereotype"),
+        () -> assertTrue(clazz.getModifier().getStereotype().getValuesList().size() > 0, "stereo values"),
+        () -> assertTrue(clazz.getModifier().getStereotype().contains(TopDecorator.NEEDS_TOP_IDENTIFIER), "needsTop value")
     );
   }
 
