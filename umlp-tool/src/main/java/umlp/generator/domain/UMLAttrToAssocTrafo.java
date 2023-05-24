@@ -118,6 +118,7 @@ public class UMLAttrToAssocTrafo implements CDBasisVisitor2, CDInterfaceAndEnumV
             .setModifier(PUBLIC.build())
             .setMCQualifiedType(MCTypeFacade.getInstance().createQualifiedType(targetName))
             .setCDRole(CD4CodeMill.cDRoleBuilder().setName(attrName).build())
+            .setCDCardinality(card)
             .build();
     return CD4CodeMill.cDAssociationBuilder()
             .setModifier(PUBLIC.build())
