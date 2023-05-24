@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package stanley.tmp.charts;
+
+/** Classes representing types for Pie chart interface definition
+*/
+classdiagram PieTypes {
+
+  interface PieEntry {
+    String title;
+    int value;
+    String color;
+  }
+
+}

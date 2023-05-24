@@ -1,0 +1,38 @@
+/* (c) https://github.com/MontiCore/monticore */
+package stanley.showcityinfo;
+
+// HWC-P: eigentlich ein Modell, aber fuers Produkt
+
+// hier werden die Datenklassen gefunden
+import Flensburg.CityInfo;
+
+// hier werden importierte GUI-Modelle gefunden
+import stanley.tmp.table.GemRowTable;
+// hier werden importierte Typen der GUI-Komponenten gefunden
+import stanley.tmp.table.TableTypes.TableRow;
+import stanley.tmp.io.input.GemTextInput;
+import stanley.tmp.io.GemText;
+
+/**
+ * This example defines a page with a table. Data in the table is read-only
+ * and is not persisted in the database as is, it is calculated (derived) from
+ * the persisted data (domain data structure).
+ */
+page ShowCityInfo(CityInfo ci) {
+  // statistic about cities
+  @GemRowTable(
+    rows = [
+      TableRow("Number of cities", ci.numberOfCities),
+      TableRow("Total number of cars", ci.totalNumberOfCars),
+      TableRow("City with most cars", ci.cityWithMostCars),
+      TableRow("Person with most cars", ci.personWithMostCars.nickname),
+      TableRow("Average number of cars", ci.averageNumberOfCars)
+    ]
+  );
+
+  // list of cities
+  @GemText(value = "List of cities");
+/*  @iterate(cityName : ci.cities) { // TODO AG: The expression at source position ShowCityInfo.gui:<35,23> cannot be calculated.
+    @GemTextInput(value = cityName);
+  }*/
+}

@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package stanley.tmp.table;
+
+/** Interfaces representing types for Table interface definition
+*/
+classdiagram TableTypes {
+
+  class TableColumn {
+    String attrName;
+    String colName;
+  }
+
+  class TableRow {
+    String title;
+    String value;
+  }
+
+}

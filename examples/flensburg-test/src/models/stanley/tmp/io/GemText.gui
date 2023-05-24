@@ -1,0 +1,8 @@
+package stanley.tmp.io;
+
+/** Text component interface definition
+*/
+component GemText(
+  String value = "",
+  String color = "black"
+)

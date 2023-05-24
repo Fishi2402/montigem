@@ -8,8 +8,15 @@ repositories {
     maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
 }
 
+// Task is created by umlp-backend plugin (with very sensible default values)
+generateUmlpBackend{
+  modelDir = file("$projectDir/src/models")
+  symbolDir = file("$projectDir/build/umlp/symbols")
+}
+
 description 'cars example'
 
 project('client'){
     sourceSets.main.java.srcDirs = ['../src/main/java', generateUmlpBackend.getOutputDir()]
 }
+
