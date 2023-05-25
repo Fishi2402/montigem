@@ -20,7 +20,14 @@ task generateFlensburg(type: UMLPTask) {
   outputDir = layout.buildDirectory.dir("genumlp")
 }*/
 generateUmlpBackend{
-  input = file("src/models")
-  //modelDir = ?
+  input = file("src/models/hardy")
   symbolDir = file("$projectDir/build/umlp/symbols")
 }
+
+task generateUmlpFrontend(type: UMLPGuiGenTask) {
+  dependsOn(generateUmlpBackend, generateCDTOGUI)
+  input = file("src/models/stanley")
+  modelDir = file("$projectDir/build/umlp/symbols")
+  outputDir = layout.buildDirectory.dir("frontend")
+}
+compileJava.dependsOn(generateUmlpFrontend)
