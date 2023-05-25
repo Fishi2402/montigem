@@ -4,12 +4,13 @@ package flensburg.gui.editierepersoncars;
 // HW-T
 
 import de.se_rwth.commons.logging.Log;
-import infrastructure.command.FlensburgManagerClientImplBuilder;
+import flensburg.gui.AbstractGUITest;
+import hardy.flensburg.Address;
+import hardy.flensburg.FlensburgMock;
+import hardy.flensburg.FlensburgTestContext;
+import hardy.flensburg.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import stanley.AbstractGUITest;
-import stanley.FlensburgTestContext;
-import stanley.personedit.PersonEdit;
 
 import java.util.ArrayList;
 import java.util.Collections;

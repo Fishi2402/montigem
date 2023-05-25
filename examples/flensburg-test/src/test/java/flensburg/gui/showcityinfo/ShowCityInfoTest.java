@@ -3,8 +3,13 @@ package flensburg.gui.showcityinfo;
 
 // HW-T
 
+import flensburg.gui.AbstractGUITest;
+import hardy.flensburg.Address;
+import hardy.flensburg.CarBuilder;
+import hardy.flensburg.FlensburgManager;
+import hardy.flensburg.FlensburgMock;
+import hardy.flensburg.PersonBuilder;
 import org.junit.jupiter.api.Test;
-import stanley.AbstractGUITest;
 
 import java.util.Collections;
 

@@ -1,6 +1,12 @@
 package flensburg.commands;
 
+import hardy.flensburg.Address;
+import hardy.flensburg.FlensburgCommandObjectMapper;
+import hardy.flensburg.FlensburgManager;
+import hardy.flensburg.FlensburgMock;
+import hardy.flensburg.Human;
 import hardy.flensburg.Person;
+import hardy.flensburg.commands.Human_get;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.Command;
@@ -10,7 +16,9 @@ import umlp.backendrte.command.SimpleResult;
 import umlp.backendrte.common.Gem;
 import umlp.backendrte.common.LoadingState;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommandObjectMapperTest {
   @BeforeEach
