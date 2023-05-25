@@ -29,8 +29,8 @@ classdiagram Flensburg {
    String city;
   }
 
-  association owns [1] Person -> Car [*];
-  association mainResidence [1] Person -> Address [1];
+  association [1] Person -> (owns) Car [*];
+  association [1] Person -> (mainResidence) Address [1];
 
   association visits [*] Person (visitor) <-> (visited) Address [*];
   // man beachte hier die intern gekapselte bidirektionale Verwaltung
@@ -54,7 +54,7 @@ classdiagram Flensburg {
     int averageNumberOfCars;
   }
 
-  / association cities CityInfo -> java.lang.String [*];
+  / association CityInfo -> (cities) java.lang.String [*];
 
   class Account {
     String name;
