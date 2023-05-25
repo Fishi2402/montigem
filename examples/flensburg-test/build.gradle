@@ -20,5 +20,7 @@ task generateFlensburg(type: UMLPTask) {
   outputDir = layout.buildDirectory.dir("genumlp")
 }*/
 generateUmlpBackend{
-  input = file("src/models/hardy")
+  input = file("src/models")
+  //modelDir = ?
+  symbolDir = file("$projectDir/build/umlp/symbols")
 }
