@@ -3,7 +3,7 @@ package stanley.personoverview;
 
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
-import Flensburg.Person;
+import hardy.Flensburg.Person;
 
 // import stanley.tmp.table.GemTable;
 import basic.src.lib.gemtext.GemText;

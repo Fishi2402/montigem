@@ -4,7 +4,7 @@ package stanley.personedit;
 // HWC-P: eigentlich ein Modell, aber fuers Produkt
 
 // hier werden die Datenklassen gefunden //
-import Flensburg.Person;
+import hardy.Flensburg.Person;
 
 // every library GUI component has Gem prefix to avoid name clashing with HTML elements from native
 // library and from other libraries

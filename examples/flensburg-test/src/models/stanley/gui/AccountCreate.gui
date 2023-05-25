@@ -1,6 +1,6 @@
 package stanley.gui;
 
-import Flensburg.Account;
+import hardy.Flensburg.Account;
 
 import basic.src.lib.gemtext.GemText;
 import basic.src.lib.gembutton.GemButton;
