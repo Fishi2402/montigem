@@ -35,6 +35,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
 import java.net.URL;
@@ -280,6 +281,25 @@ public class GUIGeneratorUtil {
 
   public String getHTMLName(String name) {
     return name.replaceAll(TPL_INTERN, "").replaceAll(TPL_SUFFIX, "");
+  }
+
+  public String gui2tsManagerImport(String forComponent) {
+    Optional<String> domainQName = getMainDomainModelQName();
+    if (domainQName.isPresent()) {
+      String name = domainQName.get();
+      if (name.lastIndexOf(".") > 0) {
+        String part1 = name.substring(0, name.lastIndexOf("."));
+        String part2 = name.substring(name.lastIndexOf(".") + 1);
+        return part1 + "." + StringTransformations.uncapitalize(part2) + "." + part2 + ManagerDecorator.SUFFIX;
+      }
+      return StringTransformations.uncapitalize(name) + "." + name + ManagerDecorator.SUFFIX;
+    }
+    else {
+      Log.error("0x00000 GUI Model " + forComponent
+          + " is missing a connection to the domain model."
+          + " Please specify the domain model using '-dm' flag.");
+      return "";
+    }
   }
 
   public boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
