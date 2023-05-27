@@ -87,7 +87,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     // --- end
 
     ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(
-        CDModifier.PROTECTED.build(), attributeType, util.gui2cdAttrName(attributeName));
+        CDModifier.PUBLIC.build(), attributeType, util.gui2cdAttrName(attributeName));
 
     clazz.addCDMember(domainAttribute);
 
@@ -126,7 +126,9 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         List<String> builders = new ArrayList<>();
         List<HookPoint> hps = new ArrayList<>();
         for (ASTGUIParam p : domainParams) {
-          domainAttributes.add(addBuilderForDomainMembers(clazz, p));
+          ASTCDAttribute cdAttr = addBuilderForDomainMembers(clazz, p);
+          addAnnotation(cdAttr);
+          domainAttributes.add(cdAttr);
 
           String builder = BuilderDecorator.getClassName(p.getName());
           builders.add(builder);
@@ -154,7 +156,9 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         // Add attributes
         List<HookPoint> hps = new ArrayList<>();
         for (ASTGUIParam p : domainParams) {
-          domainAttributes.add(addAttributForGUIParameter(clazz, p));
+          ASTCDAttribute cdAttr = addAttributForGUIParameter(clazz, p, CDModifier.PUBLIC.build());
+          addAnnotation(cdAttr);
+          domainAttributes.add(cdAttr);
 
           if (util.getMainDomainModelSimpleName().isPresent()) {
             // TODO AGe: body of init method currently uses different hooks, improve
