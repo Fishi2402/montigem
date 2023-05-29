@@ -2,15 +2,10 @@
 package umlp.generator.gui.gentypescript.java2ts;
 
 import de.monticore.cd.codegen.TopDecorator;
-import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4code._visitor.CD4CodeTraverser;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDPackage;
-import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.cdinterfaceandenum._visitor.CDInterfaceAndEnumVisitor2;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
@@ -27,26 +22,24 @@ public class TSTopDecorator extends TopDecorator {
   }
 
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compUnit) {
-    CD4CodeTraverser traverser = CD4CodeMill.traverser();
-    DetermineNameVisitor nameVisitor = new DetermineNameVisitor();
-    traverser.add4CDBasis(nameVisitor);
-    traverser.add4CDInterfaceAndEnum(nameVisitor);
-    compUnit.accept(traverser);
+    super.decorate(compUnit);
+    for (ASTCDClass cdClass : compUnit.getCDDefinition().getCDClassesList()) {
+      if (existsHandwrittenClass(hwPath, determineQualifiedName(cdClass, compUnit))) {
+        applyTopMechanism(cdClass);
+      }
+    }
 
-    compUnit.getCDDefinition().getCDClassesList().stream()
-        .filter(
-            cdClass -> existsHandwrittenClass(hwPath, determineQualifiedName(cdClass, compUnit)))
-        .forEach(this::applyTopMechanism);
+    for (ASTCDInterface cdInterface : compUnit.getCDDefinition().getCDInterfacesList()) {
+      if (existsHandwrittenClass(hwPath, determineQualifiedName(cdInterface, compUnit))) {
+        applyTopMechanism(cdInterface);
+      }
+    }
 
-    compUnit.getCDDefinition().getCDInterfacesList().stream()
-        .filter(
-            cdInterface ->
-                existsHandwrittenClass(hwPath, determineQualifiedName(cdInterface, compUnit)))
-        .forEach(this::applyTopMechanism);
-
-    compUnit.getCDDefinition().getCDEnumsList().stream()
-        .filter(cdEnum -> existsHandwrittenClass(hwPath, determineQualifiedName(cdEnum, compUnit)))
-        .forEach(this::applyTopMechanism);
+    for (ASTCDEnum cdEnum : compUnit.getCDDefinition().getCDEnumsList()) {
+      if (existsHandwrittenClass(hwPath, determineQualifiedName(cdEnum, compUnit))) {
+        applyTopMechanism(cdEnum);
+      }
+    }
 
     return compUnit;
   }
@@ -62,36 +55,6 @@ public class TSTopDecorator extends TopDecorator {
     }
     Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
     return result;
-  }
-
-  protected class DetermineNameVisitor implements CDBasisVisitor2, CDInterfaceAndEnumVisitor2 {
-
-    protected String packageName = "";
-
-    @Override
-    public void visit(ASTCDPackage node) {
-      packageName = node.getName();
-    }
-
-    @Override
-    public void endVisit(ASTCDPackage node) {
-      packageName = "";
-    }
-
-    @Override
-    public void visit(ASTCDClass node) {
-      nameMap.put(node, packageName);
-    }
-
-    @Override
-    public void visit(ASTCDInterface node) {
-      nameMap.put(node, packageName);
-    }
-
-    @Override
-    public void visit(ASTCDEnum node) {
-      nameMap.put(node, packageName);
-    }
   }
 
 }

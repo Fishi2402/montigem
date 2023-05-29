@@ -23,6 +23,8 @@
       "dom"
     ],
     "paths": {
+      "@src/hardy/flensburg/CityInfo" : ["src/app/hardy/flensburg/CityInfo"],
+      "@src/hardy/flensburg/MonthlyReport" : ["src/app/hardy/flensburg/MonthlyReport"],
       "@src/*": ["build/app/*"]
     }
   },

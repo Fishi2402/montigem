@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -15,9 +16,14 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
+import umlp.generator.domain.decorator.BuilderDecorator;
+import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
+import umlp.generator.domain.decorator.DeSerBuilderDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerClientImplDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
@@ -31,8 +37,52 @@ import static umlp.generator.domain.decorator.GemListAssocDecorator.getName;
 
 public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
 
+  protected String astcdPackage;
+
+  protected ASTCDCompilationUnit origCD;
+
   public TSManagerClientImplDecorator(GlobalExtensionManagement glex) {
     super(glex);
+  }
+
+  @Override
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    this.astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE).getName();
+    this.origCD = origCD;
+    super.transform(origCD, decoratedCD);
+  }
+
+  @Override
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
+    ASTCDClass clazz = super.createClass(origCD);
+
+    String name = origCD.getCDDefinition().getName();
+    getCD4C().addImport(clazz, this.astcdPackage + "."
+        + name + BaseClassObjectMapperDecorator.SUFFIX);
+    getCD4C().addImport(clazz, this.astcdPackage + "."
+        + name + CommandObjectMapperDecorator.SUFFIX);
+    getCD4C().addImport(clazz, this.astcdPackage + "."
+        + name + ObserverDecorator.SUFFIX);
+
+    for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
+      getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
+      if (!c.getModifier().isDerived()) {
+        getCD4C().addImport(clazz, this.astcdPackage + "."
+            + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+        getCD4C().addImport(clazz, this.astcdPackage + "."
+            + c.getName() + DeSerBuilderDecorator.DESER_BUILDER_SUFFIX);
+      }
+    }
+    for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
+      getCD4C().addImport(clazz, this.astcdPackage + "."
+          + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+    }
+    for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
+      getCD4C().addImport(clazz, this.astcdPackage + "."
+          + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+    }
+
+    return clazz;
   }
 
   @Override
@@ -118,6 +168,19 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
   @Override
   protected String defaultMapValue() {
     return " = new Map()";
+  }
+
+  @Override
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("StatusResult"));
+    getCD4C().addImport(clazz, Joiners.DOT.join(getPackageName(origCD, REQUESTS_PACKAGE), "GetFreeGemIdRequest"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemListBuilder"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTEUtilPath("LogUtil"));
   }
 
 }

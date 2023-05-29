@@ -35,7 +35,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     astcdPackage.addCDElement(createClass(origCD));
   }

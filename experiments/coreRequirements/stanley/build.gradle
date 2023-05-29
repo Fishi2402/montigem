@@ -96,6 +96,7 @@ task generateAngularApp(type: NpxTask) {
 task genTS(type: UMLPTask) {
   input = file("../models/hardy")
   outputDir = file("$project.buildDir/app")
+  hwcDir = file("$projectDir/src/app")
   forClient = true
 
   /*

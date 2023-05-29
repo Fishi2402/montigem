@@ -29,7 +29,7 @@ public class ManagerDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     astcdPackage.addCDElement(createClass(origCD));
   }
@@ -43,7 +43,7 @@ public class ManagerDecorator extends AbstractDecorator {
 
     // Attribute observerList
     ASTCDAttribute attrObserver = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-            "List<" + name + "Observer>", StringTransformations.uncapitalize(name) + "Observers");
+            getObserversType(name), StringTransformations.uncapitalize(name) + "Observers");
     glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint(defaultListValue()));
     managerClass.addCDMember(attrObserver);
 
@@ -59,6 +59,10 @@ public class ManagerDecorator extends AbstractDecorator {
     addImports(managerClass);
 
     return managerClass;
+  }
+
+  protected String getObserversType(String name) {
+    return "List<" + name + "Observer>";
   }
 
   protected String defaultListValue() {
@@ -170,7 +174,7 @@ public class ManagerDecorator extends AbstractDecorator {
     }
   }
 
-    protected void addImports(ASTCDType clazz) {
+  protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));
