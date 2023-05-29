@@ -8,7 +8,7 @@ import { CommandResult } from "./CommandResult";
 // Attribut. Der Sender des Commands muss trotzdem wissen, ob dieser erfolgreich ausgeführt wurde.
 export class StatusResult extends CommandResult<void> {
   protected successful: boolean;
-  protected StatusResult(id: number, successful: boolean): StatusResult {
+  public StatusResult(id: number, successful: boolean): StatusResult {
     // TODO AGe: what?
     super.CommandResult(id, "java.lang.Void");
     this.successful = successful;

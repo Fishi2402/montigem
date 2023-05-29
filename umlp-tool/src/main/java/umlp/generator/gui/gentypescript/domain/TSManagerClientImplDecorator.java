@@ -58,6 +58,8 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
 
     String name = origCD.getCDDefinition().getName();
     getCD4C().addImport(clazz, this.astcdPackage + "."
+        + name + ManagerDecorator.SUFFIX);
+    getCD4C().addImport(clazz, this.astcdPackage + "."
         + name + BaseClassObjectMapperDecorator.SUFFIX);
     getCD4C().addImport(clazz, this.astcdPackage + "."
         + name + CommandObjectMapperDecorator.SUFFIX);

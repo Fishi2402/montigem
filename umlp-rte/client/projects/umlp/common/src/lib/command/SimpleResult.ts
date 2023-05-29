@@ -7,15 +7,17 @@ export class SimpleResult<T> extends CommandResult<T> {
   protected obj: T;
   protected loadingState: LoadingState;
 
-  public SimpleResult1(id: number, obj: T, typeParameter: string) {
+  public SimpleResult1(id: number, obj: T, typeParameter: string): SimpleResult<T> {
     super.CommandResult(id, typeParameter);
     this.obj = obj;
     this.loadingState = LoadingState.LOADED;
+    return this;
   }
 
-  public SimpleResult2(id: number, loadingState: LoadingState, typeParameter: string){
+  public SimpleResult2(id: number, loadingState: LoadingState, typeParameter: string): SimpleResult<T> {
     super.CommandResult(id, typeParameter);
     this.loadingState = loadingState;
+    return this;
   }
 
   public get(): T {
@@ -30,7 +32,7 @@ export class SimpleResult<T> extends CommandResult<T> {
     return this.loadingState;
   }
 
-  public override isSimpleResult(): boolean  {
+  public override isSimpleResult(): boolean {
     return true;
   }
 }

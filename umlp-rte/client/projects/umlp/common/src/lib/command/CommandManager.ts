@@ -11,7 +11,7 @@ export class CommandManager {
   // Server ist immer 0
   protected participantId: number = 0;
 
-  protected CommandManager() { }
+  protected CommandManager(){ }
   // Speichert alle verbundenen Clients und deren Ids, wird genutzt um die Commands die relevante objekte bearbeiten
   // weiter zu verteilen.
   protected particpants: Map<number, Participant> = new Map();
@@ -23,11 +23,11 @@ export class CommandManager {
     return CommandManager.getInstance()._register(participant);
   }
 
-  public static deregister(participantId: number): void {
+  public static deregister(participantId: number): void  {
     CommandManager.getInstance()._deregister(participantId);
   }
 
-  public static getParticipantId(): number {
+  public static getParticipantId(): number  {
     return CommandManager.getInstance()._getParticipantId();
   }
 
@@ -35,13 +35,13 @@ export class CommandManager {
     return this.participantId;
   }
 
-  public _register(participant: Participant): number {
+  public _register(participant: Participant): number  {
     let participantId: number = this.runningClientId++;
     this.particpants.set(participantId, participant);
     return participantId;
   }
 
-  protected _deregister(participantId: number): void {
+  protected _deregister(participantId: number): void  {
     this.particpants.delete(participantId);
   }
 
@@ -54,53 +54,53 @@ export class CommandManager {
     this.instance = commandManager;
   }
 
-  public static getInstance(): CommandManager {
-    if (this.instance == null) {
+  public static getInstance(): CommandManager  {
+    if(this.instance == null){
       this.instance = new CommandManager();
     }
     return this.instance;
   }
 
-  public static executeCommand<T>(command: Command<T>): CommandResult<T> {
+  public static executeCommand<T>(command: Command<T>): CommandResult<T>  {
     console.trace("Exec command " + command.getId() + " " + command.getCommandType() + " from " + command.getParticipantId(), LogUtil.getLoggerName());
     console.trace(CommandObjectMapper.serializeCommand(command), LogUtil.getLoggerName());
     return CommandManager.getInstance()._executeCommand(command);
   }
 
-  protected _executeCommand<T>(command: Command<T>): CommandResult<T> {
+  protected  _executeCommand<T> (command: Command<T>): CommandResult<T>  {
     let res: CommandResult<T> = command.doRun();
     // update subscribed gemIds
-    if (this.particpants.has(command.getParticipantId())) {
+    if(this.particpants.has(command.getParticipantId())){
       this.particpants.get(command.getParticipantId()).subscribe(command.getNewlySubscribedGemIds());
     } else {
       // TODO: MH: kann das passieren?
     }
     // TODO: error handling if doRun fails
-    if (!command.isRequest()) {
+    if(!command.isRequest()) {
       this._sendCommandToSubscribers(command);
     }
     return res;
   }
 
-  public static sendCommandToSubscribers<T>(command: Command<T>): void {
+  public static sendCommandToSubscribers<T> (command: Command<T>): void {
     CommandManager.getInstance()._sendCommandToSubscribers(command);
   }
 
-  protected _sendCommandToSubscribers<T>(command: Command<T>): void {
+  protected _sendCommandToSubscribers<T>(command: Command<T>): void  {
     for (const participantId of this.particpants.keys()) {
-      let participant: Participant = this.particpants.get(participantId);
+      let participant:Participant = this.particpants.get(participantId);
       if (!(participantId === command.getParticipantId())) {
-        let match: boolean = false;
+        let match:boolean = false;
         for (const gemId of command.getEffectedGemIds()) {
           if (participant.isSubscribedTo(gemId)) {
             match = true;
             break;
           }
         }
-        if (match) {
+        if(match) {
           console.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + participantId, LogUtil.getLoggerName());
           participant.sendCommand(command);
-        } else {
+        }else{
           console.trace("Skip sending command " + command.getCommandType() + " to " + participantId, LogUtil.getLoggerName());
         }
       }
@@ -112,7 +112,7 @@ export class CommandManager {
     return CommandManager.getInstance()._getFreeCommandId();
   }
 
-  protected _getFreeCommandId(): number {
+  protected _getFreeCommandId(): number  {
     return this.freeCommandId++;
   }
 }
