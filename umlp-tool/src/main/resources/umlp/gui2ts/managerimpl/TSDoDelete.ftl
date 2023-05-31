@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("name", "managerName")}
-${cd4c.method("protected boolean _doDelete${name}(Long gemId)")}
+${cd4c.method("public boolean _doDelete${name}(Long gemId)")}
   if(!(this.known${name}s.containsKey(gemId)) {
     return false;
   }

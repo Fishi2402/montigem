@@ -1,11 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("classList")}
-${cd4c.method("protected Object deserSingleValue(JsonElement val, String tp)")}
+${cd4c.method("protected Object deserSingleValue(any val, String tp)")}
 
 let res: any = null;
 if(BaseClassObjectMapper.canDeSer(tp)){
   let value: any = val;
-  res = BaseClassObjectMapper.deserialize(value.isJsonString() ? '"' + value.getAsJsonString().getValue() + '"' : value.toString(), tp);
+  res = BaseClassObjectMapper.deserialize(typeof value === 'string' ? '"' + value + '"' : String(value), tp);
 }else {
   switch (tp) {
 <#list classList as className>

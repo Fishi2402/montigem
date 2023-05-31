@@ -12,6 +12,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,7 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     astcdPackage.addCDElement(createClass(origCD));
   }
@@ -40,11 +41,7 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
             .build();
 
     // add methods
-    String packageName = getPackageName(origCD, DEFAULT_PACKAGE);
-    List<String> classNames = origCD.getCDDefinition().getCDClassesList().stream()
-            .filter(c -> !c.getModifier().isDerived())
-            .filter(c -> !c.getModifier().isAbstract())
-            .map(c -> Joiners.DOT.join(packageName, c.getName())).collect(Collectors.toList());
+    List<String> classNames = getClassNames(origCD);
     // TODO AHe: DeSer load state, error checks for empty etc
     getCD4C().addMethod(cmdResultDeSerClass, getBuildJsonTemplate(), classNames);
     getCD4C().addMethod(cmdResultDeSerClass, getFromJsonTemplate());
@@ -54,6 +51,21 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
     addImports(cmdResultDeSerClass);
 
     return cmdResultDeSerClass;
+  }
+
+  protected List<String> getClassNames(ASTCDCompilationUnit origCD) {
+    String packageName = getPackageName(origCD, DEFAULT_PACKAGE);
+    List<String> classNames = new ArrayList<>();
+    for (ASTCDClass c :  origCD.getCDDefinition().getCDClassesList()) {
+      if (canSerialize(c)) {
+        classNames.add(Joiners.DOT.join(packageName, c.getName()));
+      }
+    }
+    return classNames;
+  }
+
+  protected boolean canSerialize(ASTCDClass c) {
+    return !c.getModifier().isDerived() && !c.getModifier().isAbstract();
   }
 
   protected String getSerSingleValueTemplate() {

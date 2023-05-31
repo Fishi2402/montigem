@@ -8,8 +8,8 @@ import { StatusResult } from "./StatusResult";
 
 // Command der an Clients gesendet wird um ein GeneralErrorCollector#reportSyncError zu synchronisieren
 export class SyncError extends Command<void> {
-  public SyncError(): SyncError {
-    super.Command("umlp.command.SyncError");
+  public constructor() {
+    super("umlp.command.SyncError");
     return this;
   }
 

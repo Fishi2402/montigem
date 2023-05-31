@@ -138,7 +138,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     // Associations
     CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
       String type = a.getSymbol().getType().print();
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", a.getName(), type);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", a.getName(), type, managerClass.getName());
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", domainClass.getName(), a.getName(), type);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
     });
@@ -161,7 +161,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     // Associations
     CDSymbolTables.getAssociations(domainInterface).stream().filter(GenService::isList).forEach(a -> {
       String type = a.getSymbol().getType().print();
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", a.getName(), type);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", a.getName(), type, managerClass.getName());
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", name, a.getName(), type);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainInterface, a)));
     });

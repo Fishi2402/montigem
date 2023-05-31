@@ -2,9 +2,9 @@
 ${tc.signature( "attributename","classname","definition", "isGem", "targettype")}
 ${cd4c.method("public StatusResult doRun()")}
 
-console.debug("Executing set_${attributename} to " + ${attributename}<#if isGem>GemId</#if> + " on ${classname?uncap_first} " + gemId);
+console.debug("Executing set_${attributename} to " + this.${attributename}<#if isGem>GemId</#if> + " on ${classname?uncap_first} " + this.gemId);
 console.trace();
-let ${classname?uncap_first}Opt: ${classname} = ${definition}Manager.${classname?uncap_first}Opt(gemId);
+let ${classname?uncap_first}Opt: ${classname} = ${definition}Manager.${classname?uncap_first}Opt(this.gemId);
     if(${classname?uncap_first}Opt != null){
 <#if isGem>
       ${classname?uncap_first}Opt.set${attributename?cap_first}Gem(${definition}Manager.create${targettype}Gem(this.${attributename}GemId), NotificationScope.LOCAL);

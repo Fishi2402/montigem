@@ -22,7 +22,7 @@ if(${sourceName}Loaded){
   let old${ctargetName}: ${targetType} = ${definition}Manager.get${targetType}Sure(this.old${ctargetName}GemId);
   // Does not change other side
 <#if isSourceList>
-  old${ctargetName}.remove${csourceName}(this.${targetName}Index, NotificationScope.MINIMAL);
+  old${ctargetName}.remove${csourceName}1(this.${targetName}Index, NotificationScope.MINIMAL);
 <#else>
   // Do nothing?
 </#if>
@@ -31,9 +31,9 @@ if(${sourceName}Loaded){
 }
 
 if(new${ctargetName}Loaded){
-  let newLoaded: ${targetType} = ${definition}Manager.get${targetType}Sure(${targetName}GemId);
+  let newLoaded: ${targetType} = ${definition}Manager.get${targetType}Sure(this.${targetName}GemId);
 <#if isSourceList>
-  newLoaded._internal_add${csourceName}(newLoaded.size${csourceName}s(), Lists.newArrayList(this.${sourceName}GemId), NotificationScope.MINIMAL);
+  newLoaded._internal_add${csourceName}(newLoaded.size${csourceName}s(), [this.${sourceName}GemId], NotificationScope.MINIMAL);
 <#else>
   newLoaded._internal_set${csourceName}(this.${sourceName}GemId, NotificationScope.MINIMAL);
 </#if>}

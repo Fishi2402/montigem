@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
@@ -42,13 +43,13 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
-      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
+      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
       .setName(classname+SUFFIX)
       .build();
 
-    ASTCDAttribute attr = getCD4C().addAttribute(ast, "private final long gemId");
+    ASTCDAttribute attr = addDomainAttr(ast);
 
-    getCD4C().addConstructor(ast, getConstructorTemplate(), classname,"", SUFFIX, packageName);
+    addConstructor(ast, classname, packageName);
     getCD4C().addMethod(ast, getDoRunTemplate(), classname, origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("gemId"));
     AccessorDecorator accessor = new AccessorDecorator(glex);
@@ -60,6 +61,18 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
 
     return ast;
+  }
+
+  protected ASTCDAttribute addDomainAttr(ASTCDClass ast) {
+    return getCD4C().addAttribute(ast, "private final long gemId");
+  }
+
+  protected String extendedClass() {
+    return "Command<Void>";
+  }
+
+  protected void addConstructor(ASTCDClass ast, String classname, String packageName) {
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname, "", SUFFIX, packageName);
   }
 
   protected String getGetEffectedGemIdsTemplate() {
@@ -86,14 +99,18 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getGet_FromJsonObjectTemplate(), cmdName);
     getCD4C().addMethod(ast, getGet_BuildJsonTemplate(), cmdName);
 
+    addDeSerImport(ast, origCD, domainClass, cmdName);
+
+    addedDeSers.add(ast);
+    return ast;
+  }
+
+  protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, ASTCDClass domainClass, String cmdName) {
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName()+ DeSerDecorator.SUFFIX);
-
-    addedDeSers.add(ast);
-    return ast;
   }
 
   protected String getGet_BuildJsonTemplate() {

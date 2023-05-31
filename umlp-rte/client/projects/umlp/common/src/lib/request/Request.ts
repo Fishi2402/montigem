@@ -8,8 +8,8 @@ import { Command } from "../command/Command";
 // Hat keinen Effekt auf die Daten.
 // Nutzt zur einfacheren Umsetzung dieselbe Infrastruktur wie Commands
 export abstract class Request<T> extends Command<T> {
-  protected Request(commandType: string): Request<T> {
-    super.Command(commandType);
+  public constructor(commandType: string) {
+    super(commandType);
     return this;
   }
 

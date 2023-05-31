@@ -11,10 +11,9 @@ export class ServerError extends Command<void> {
   // AGe: Throwable
   protected t: any;
 
-  public ServerError(t: any): ServerError {
-    super.Command("umlp.command.ServerError");
+  public constructor(t: any) {
+    super("umlp.command.ServerError");
     this.t = t;
-    return this;
   }
 
   public override doRun(): StatusResult  {

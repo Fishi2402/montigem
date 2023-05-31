@@ -1,8 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("className")}
 ${cd4c.method("public String serialize(" + className + " obj)")}
-  let jsonPrinter: JsonPrinter = new JsonPrinter(true);
-  jsonPrinter.beginObject();
+  let jsonPrinter: any = {};
   this.buildJson(obj, jsonPrinter);
-  jsonPrinter.endObject();
-  return jsonPrinter.toString();
+  return JSON.stringify(jsonPrinter);

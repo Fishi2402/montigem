@@ -129,6 +129,12 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
         .filter(GenService::isVisible).collect(Collectors.toList());
 
     for (ASTCDAttribute visibleAttribute: visibleAttributes) {
+      ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+          createType(visibleAttribute), GenService.createName(visibleAttribute.getName()));
+      attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
+      attributesList.add(attribute);
+      /**/
+      /*
       ASTMCType type = createType(visibleAttribute);
       if (GenService.isOptional(visibleAttribute)) {
         String innerType = visibleAttribute.getMCType().printType().replace("Optional<", "");
@@ -141,6 +147,7 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
           type , GenService.createName(visibleAttribute.getName()));
       attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
       attributesList.add(attribute);
+      /**/
       if (GenService.isOptional(visibleAttribute)) {
         glex.replaceTemplate("cd2java.Value", attribute, new StringHookPoint(" = null"));
       }

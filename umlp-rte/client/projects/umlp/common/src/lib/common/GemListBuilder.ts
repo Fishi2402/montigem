@@ -17,7 +17,9 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
   // Nach build() wird diese geleert und nicht weiter verwendet.
   protected builderElemStorage: Array<IDOrBuilder<E>> = [];
 
-  public GemListBuilder(initialIds: Array<number>) {
+  public constructor(initialIds: Array<number>) {
+    super();
+    super.GemList2(initialIds);
     for (const gemID of initialIds) {
       this.builderElemStorage.push(new IDOrBuilder<E>().IDOrBuilder1(gemID));
     }

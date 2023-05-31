@@ -105,7 +105,7 @@ public class FEDecorator extends BEDecorator {
     Log.info("After decorator: DerivedClassDecorator", FEDecorator.class.getName());
 
     // Generate DiagramObserver classes
-    DiagramObserverDecorator diagramObserverDecorator = new DiagramObserverDecorator(glex);
+    DiagramObserverDecorator diagramObserverDecorator = new TSDiagramObserverDecorator(glex);
     diagramObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DiagramObserverDecorator", FEDecorator.class.getName());
 
@@ -146,7 +146,7 @@ public class FEDecorator extends BEDecorator {
     gemListDomainDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: GemListDomainDecorator", FEDecorator.class.getName());
 
-    CommandObjectMapperDecorator commandObjectMapperDecorator = new CommandObjectMapperDecorator(glex);
+    CommandObjectMapperDecorator commandObjectMapperDecorator = new TSCommandObjectMapperDecorator(glex);
     commandObjectMapperDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandObjectMapperDecorator", FEDecorator.class.getName());
 

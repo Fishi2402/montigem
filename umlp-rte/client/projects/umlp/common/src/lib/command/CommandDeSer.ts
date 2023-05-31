@@ -4,15 +4,16 @@ import { Command } from "./Command";
 
 export abstract class CommandDeSer<T extends Command<any>> {
 
-  public buildJson(command: T): void {
-    command["id"] = command.getId();
-    command["commandType"] = command.getCommandType();
-    command["participantId"] = command.getParticipantId();
+  public buildJson(command: T, printer: any): void {
+    printer["id"] = command.getId();
+    printer["commandType"] = command.getCommandType();
+    printer["participantId"] = command.getParticipantId();
   }
 
   public toJson(command: T): string {
-    this.buildJson(command);
-    return JSON.stringify(command);
+    let printer: any = {};
+    this.buildJson(command, printer);
+    return JSON.stringify(printer);
   }
 
   protected abstract fromJsonObject(jsonObject: any): T;

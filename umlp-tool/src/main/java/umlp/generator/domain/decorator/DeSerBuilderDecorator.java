@@ -29,7 +29,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
     super(glex, hwPath);
   }
 
-  public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream()
@@ -78,7 +78,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
             a.printType(),
                 GenService.getNativeName(a.getName())
         );
-        glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint("@Override"));
+        addOverride(m);
       }
     }
 
@@ -87,6 +87,10 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
     addImports(domainClass, deserBuilderClass);
 
     return deserBuilderClass;
+  }
+
+  protected void addOverride(ASTCDMethodSignature m) {
+    glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint("@Override"));
   }
 
   protected String getConstructorTemplate() {

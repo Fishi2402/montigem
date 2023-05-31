@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("name", "managerName")}
-${cd4c.method("protected void _doAdd${name}(${name} o)")}
+${cd4c.method("public void _doAdd${name}(${name} o)")}
   let res: StatusResult = CommandManager.executeCommand(new ${name}_create(o)).asStatusResult();
   // TODO: Error handling
   console.debug("Adding known ${name?uncap_first} " + o.getGemId());

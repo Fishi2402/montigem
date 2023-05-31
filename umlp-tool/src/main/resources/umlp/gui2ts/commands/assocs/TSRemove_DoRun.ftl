@@ -13,15 +13,15 @@ let loaded${csourceName}: boolean = ${definition}Manager.isLoaded${sourceType}(t
 console.assert(CommandManager.getParticipantId() != 0 || (loaded${ctargetName} && loaded${csourceName}), "0x50008 Remove. source: ${sourceName}, target: ${targetName}");
 
 if(loaded${ctargetName} && loaded${csourceName}){
-  let p: ${sourceType} = ${definition}Manager.get${sourceType}Sure(${sourceName}GemId);
-  let a: ${targetType} = ${definition}Manager.get${targetType}Sure(${targetName}GemId);
+  let p: ${sourceType} = ${definition}Manager.get${sourceType}Sure(this.${sourceName}GemId);
+  let a: ${targetType} = ${definition}Manager.get${targetType}Sure(this.${targetName}GemId);
 
   // TODO: only in server?
 <#if isTargetList>
   if(this.${sourceName}Index == -1){
-    this.${sourceName}Index = p._internal_get${ctargetName}GemList().indexOfId(${targetName}GemId);
+    this.${sourceName}Index = p._internal_get${ctargetName}GemList().indexOfId(this.${targetName}GemId);
   }
-  p.remove${ctargetName}(this.${sourceName}Index, NotificationScope.MINIMAL);
+  p.remove${ctargetName}1(this.${sourceName}Index, NotificationScope.MINIMAL);
 <#else>
   // TODO
 </#if>
@@ -30,7 +30,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
   if(this.${targetName}Index == -1){
     this.${targetName}Index = a._internal_get${csourceName}GemList().indexOfId(this.${sourceName}GemId);
   }
-  a.remove${csourceName}(this.${targetName}Index, NotificationScope.MINIMAL);
+  a.remove${csourceName}1(this.${targetName}Index, NotificationScope.MINIMAL);
 <#else>
   // TODO
 </#if>
@@ -43,7 +43,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
     if(this.${targetName}Index == -1){
       this.${targetName}Index = a._internal_get${csourceName}GemList().indexOfId(this.${sourceName}GemId);
     }
-    a.remove${csourceName}(this.${targetName}Index, NotificationScope.MINIMAL);
+    a.remove${csourceName}1(this.${targetName}Index, NotificationScope.MINIMAL);
 <#else>
     // TODO
 </#if>
@@ -53,7 +53,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
     if(this.${sourceName}Index == -1){
       this.${sourceName}Index = p._internal_get${ctargetName}GemList().indexOfId(this.${targetName}GemId);
     }
-    p.remove${ctargetName}(this.${sourceName}Index, NotificationScope.MINIMAL);
+    p.remove${ctargetName}1(this.${sourceName}Index, NotificationScope.MINIMAL);
 <#else>
   // TODO
 </#if>

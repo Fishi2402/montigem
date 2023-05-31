@@ -20,7 +20,7 @@ export abstract class Command<T> {
   // Wird bei der Deserialisierung benötigt um die korrekte Subklasse von Command zu instanziieren
   private commandType: string;
 
-  protected Command(commandType: string) {
+  protected constructor(commandType: string) {
     this.id = CommandManager.getFreeCommandId();
     this.participantId = CommandManager.getParticipantId();
     this.commandType = commandType;

@@ -82,8 +82,7 @@ public class GemListAssocDecorator extends AbstractDecorator {
     ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
-    getCD4C().addConstructor(ast, getConstructorTemplate(), className);
-    getCD4C().addConstructor(ast, getConstructorEmptyTemplate(), className);
+    addConstructors(ast, className);
     // methods
     getCD4C().addMethod(ast, getLoadObjectsTemplate(), targetName, managerName);
     getCD4C().addMethod(ast, getGetOwnerTemplate(), sourceName, managerName);
@@ -92,6 +91,11 @@ public class GemListAssocDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, getInternalRemoveTemplate(), assocName);
 
     return ast;
+  }
+
+  protected void addConstructors(ASTCDClass ast, String className) {
+    getCD4C().addConstructor(ast, getConstructorTemplate(), className);
+    getCD4C().addConstructor(ast, getConstructorEmptyTemplate(), className);
   }
 
   protected String getConstructorEmptyTemplate() {
@@ -130,6 +134,7 @@ public class GemListAssocDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GemListBuilder"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, "umlp.backendrte.common.LoadResult");
+    getCD4C().addImport(ast, "umlp.backendrte.common.LoadingState");
   }
 
   public static String getName(ASTCDType type, ASTCDAssocSide assoc) {

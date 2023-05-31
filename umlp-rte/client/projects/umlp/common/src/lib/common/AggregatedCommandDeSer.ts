@@ -11,18 +11,19 @@ import { CommandDeSer } from "../command/CommandDeSer";
 export abstract class AggregatedCommandDeSer {
   protected deSerMap: Map<String, CommandDeSer<any>> = new Map();
 
-  public buildJson(command: Command<any>): void {
+  public buildJson(command: Command<any>, printer: any): void {
     let commandType: string = command.getCommandType();
     if (this.deSerMap.has(commandType)) {
-      this.deSerMap.get(commandType).buildJson(command);
+      this.deSerMap.get(commandType).buildJson(command, printer);
     } else {
       console.error("Can not find deSer for commandType " + commandType);
     }
   }
 
   public serialize(command: Command<any>): string {
-    this.buildJson(command);
-    return JSON.stringify(command);
+    let printer: any = {};
+    this.buildJson(command, printer);
+    return JSON.stringify(printer);
   }
 
   public deserialize<T>(cmdStr: string): Command<T> {

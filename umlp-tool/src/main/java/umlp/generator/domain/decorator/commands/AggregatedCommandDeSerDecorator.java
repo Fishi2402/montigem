@@ -18,6 +18,8 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
+
+  public static final String SUFFIX = "CommandDeSer";
   private final List<ASTCDClass> deSers;
 
   public AggregatedCommandDeSerDecorator(GlobalExtensionManagement glex, List<ASTCDClass> deSers) {
@@ -32,7 +34,7 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
   }
 
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-    String className = origCD.getCDDefinition().getName() + "Command" + DE_SER;
+    String className = origCD.getCDDefinition().getName() + SUFFIX;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())

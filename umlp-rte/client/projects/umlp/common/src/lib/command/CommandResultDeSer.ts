@@ -6,20 +6,20 @@ import { JsonDeSer } from "./JsonDeSer";
 import { StatusResult } from "./StatusResult";
 
 export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
-  buildJson(result: CommandResult<any>): void {
-    result["commandId"] = result.getCommandId();
+  buildJson(result: CommandResult<any>, printer: any): void {
+    printer["commandId"] = result.getCommandId();
     let tp: string = result.getTypeParameter();
-    result["typeParameter"] = tp;
-    result["statusResult"] = result.isStatusResult();
-    result["simpleResult"] = result.isSimpleResult();
-    result["listResult"] = result.isListResult();
+    printer["typeParameter"] = tp;
+    printer["statusResult"] = result.isStatusResult();
+    printer["simpleResult"] = result.isSimpleResult();
+    printer["listResult"] = result.isListResult();
     if (result.isStatusResult()) {
-      result["successful"] = result.asStatusResult().wasSuccessful();
+      printer["successful"] = result.asStatusResult().wasSuccessful();
     } else if (result.isSimpleResult()) {
       if (BaseClassObjectMapper.canDeSer(tp)) {
         let v: string = BaseClassObjectMapper.serialize(result.asSimpleResult().get(), tp);
         if (v != null) {
-          result["value"] = v;
+          printer["value"] = v;
         } else {
           console.warn("Error while serializing type " + tp);
         }
@@ -27,7 +27,7 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
     } else if (result.isListResult()) {
       if (BaseClassObjectMapper.canDeSer(tp)) {
         let lr = result.asListResult();
-        result["successful"] = lr.isSuccessful();
+        printer["successful"] = lr.isSuccessful();
         if (lr.isSuccessful()) {
           let objects: Array<string> = [];
           for (const o of lr.get()) {
@@ -39,17 +39,18 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
             }
           }
           let res: string = "[" + objects.join(",") + "]";
-          result["list"] = res;
+          printer["list"] = res;
         } else {
-          result["list"] = [];
+          printer["list"] = [];
         }
       }
     }
   }
 
   public serialize(command: CommandResult<any>): string {
-    this.buildJson(command);
-    return JSON.stringify(command);
+    let printer: any = {};
+    this.buildJson(command, printer);
+    return JSON.stringify(printer);
   }
 
   public fromJson(jsonObject: any): CommandResult<any> {

@@ -4,7 +4,7 @@ import { DeSer } from "./DeSer";
 
 export interface JsonDeSer<T> extends DeSer<T> {
   fromJson(jsonElement: any): T;
-  buildJson(obj: T): void ;
+  buildJson(obj: T, printer: any): void ;
   /*
   default Optional<T> deserialize(String json){
     return fromJson(JsonParser.parse(json));

@@ -8,10 +8,10 @@ for(let gemID of gemIDs) {
   // does the manager have such an access point
   let objOpt: ${type} = ${manager}.${type?uncap_first}Opt(gemID);
   if(objOpt == null) {
-    loadResults.add(new LoadResult(LoadingState.FAILED_TO_LOAD));
+    loadResults.push(new LoadResult<${type}>().LoadResult2(LoadingState.FAILED_TO_LOAD));
   }
   else {
-    loadResults.add(new LoadResult(objOpt));
+    loadResults.push(new LoadResult<${type}>().LoadResult1(objOpt));
   }
 }
 return loadResults;
