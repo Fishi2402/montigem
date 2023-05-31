@@ -84,7 +84,7 @@ task generateFlensburg(type: UMLPTask) {
     input = (file("models/hardy"))
     outputDir = layout.buildDirectory.dir("genumlp/hardy")
 }
-*/
+
 
 test {
     testLogging {
