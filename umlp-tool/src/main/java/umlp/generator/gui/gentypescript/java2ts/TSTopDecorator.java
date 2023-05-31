@@ -2,7 +2,15 @@
 package umlp.generator.gui.gentypescript.java2ts;
 
 import de.monticore.cd.codegen.TopDecorator;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._visitor.CD4CodeTraverser;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._visitor.CDBasisVisitor2;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cdinterfaceandenum._visitor.CDInterfaceAndEnumVisitor2;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
@@ -19,7 +27,12 @@ public class TSTopDecorator extends TopDecorator {
   }
 
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compUnit) {
-    super.decorate(compUnit);
+    CD4CodeTraverser traverser = CD4CodeMill.traverser();
+    DetermineNameVisitor nameVisitor = new DetermineNameVisitor();
+    traverser.add4CDBasis(nameVisitor);
+    traverser.add4CDInterfaceAndEnum(nameVisitor);
+    compUnit.accept(traverser);
+
     compUnit.getCDDefinition().getCDClassesList().stream()
         .filter(
             cdClass -> existsHandwrittenClass(hwPath, determineQualifiedName(cdClass, compUnit)))
@@ -49,6 +62,36 @@ public class TSTopDecorator extends TopDecorator {
     }
     Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
     return result;
+  }
+
+  protected class DetermineNameVisitor implements CDBasisVisitor2, CDInterfaceAndEnumVisitor2 {
+
+    protected String packageName = "";
+
+    @Override
+    public void visit(ASTCDPackage node) {
+      packageName = node.getName();
+    }
+
+    @Override
+    public void endVisit(ASTCDPackage node) {
+      packageName = "";
+    }
+
+    @Override
+    public void visit(ASTCDClass node) {
+      nameMap.put(node, packageName);
+    }
+
+    @Override
+    public void visit(ASTCDInterface node) {
+      nameMap.put(node, packageName);
+    }
+
+    @Override
+    public void visit(ASTCDEnum node) {
+      nameMap.put(node, packageName);
+    }
   }
 
 }
