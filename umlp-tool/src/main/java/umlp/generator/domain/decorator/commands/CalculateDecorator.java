@@ -14,6 +14,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypePrimitive;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
@@ -72,26 +73,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     String classname = domainClass.getName()+SUFFIX
         + StringTransformations.capitalize(name);
 
-    String t = null;
-    if(type.isPrimitive()){
-      t = SymTypePrimitive.box(type.print());
-    }else if(type.isGenericType()){
-      var genType = (SymTypeOfGenerics)type;
-
-      if(GenService.isList(type)){
-        SymTypeExpression inner = genType.getArgument(0);
-        if(inner.isPrimitive()){
-          t = SymTypePrimitive.box(inner.print());
-        }else{
-          t = inner.printFullName();
-        }
-      }else{
-        Log.error("0x3F9F77 Can not generate DeSer for generic type " + type.print());
-      }
-
-    }else{
-      t = type.printFullName();
-    }
+    String t = getType(type);
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
@@ -101,7 +83,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
 
     ASTCDAttribute gemAttr = getCD4C().addAttribute(ast, "protected long gemId");
 
-    getCD4C().addConstructor(ast, getConstructorTemplate(), classname, "", "" ,getPackageName(origCD, COMMAND_PACKAGE));
+    addConstructor(ast, classname, getPackageName(origCD, COMMAND_PACKAGE));
 
     String originalClassname = domainClass.getName();
 
@@ -122,12 +104,45 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
     if (GenService.isJavaType(type)) {
-      getCD4C().addImport(ast, type.printFullName());
+      addJavaImport(ast, type);
     } else if (isGem) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ t);
     }
 
     return ast;
+  }
+
+  protected void addConstructor(ASTCDClass ast, String classname, String packageName) {
+    getCD4C().addConstructor(ast, getConstructorTemplate(),
+        classname, "", "" , packageName);
+  }
+
+  protected String getType(SymTypeExpression type) {
+    String t = null;
+    if(type.isPrimitive()){
+      t = SymTypePrimitive.box(type.print());
+    }else if(type.isGenericType()){
+      var genType = (SymTypeOfGenerics)type;
+
+      if(GenService.isList(type)){
+        SymTypeExpression inner = genType.getArgument(0);
+        if(inner.isPrimitive()){
+          t = SymTypePrimitive.box(inner.print());
+        }else{
+          t = inner.printFullName();
+        }
+      }else{
+        Log.error("0x3F9F77 Can not generate DeSer for generic type " + type.print());
+      }
+
+    }else{
+      t = type.printFullName();
+    }
+    return t;
+  }
+
+  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
+    getCD4C().addImport(ast, type.printFullName());
   }
 
   protected String getConstructorTemplate() {
@@ -172,17 +187,22 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getGet_FromJsonObjectTemplate(), cmdName);
     getCD4C().addMethod(ast, getGet_BuildJsonTemplate(), cmdName);
 
+    addDeSerImport(ast, origCD, useDeSer, false, baseClassDecorator, "", cmdName);
+    if (makeAbstract) {
+      ast.setModifier(PUBLIC_ABSTRACT.build());
+    }
+    addedDeSers.add(ast);
+    return ast;
+  }
+
+  protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, boolean useDeSer,
+      boolean isCDEnum, String baseClassDecorator, String typeName, String cmdName) {
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
     if (useDeSer) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator);
     }
-    if (makeAbstract) {
-      ast.setModifier(PUBLIC_ABSTRACT.build());
-    }
-    addedDeSers.add(ast);
-    return ast;
   }
 
   protected String getGet_BuildJsonTemplate() {

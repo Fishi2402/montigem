@@ -106,4 +106,9 @@ public class TSSetDecorator extends SetDecorator {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator);
     }
   }
+
+  @Override
+  protected void addDeSerJavaImport(ASTCDClass ast, String typeName) {
+    // don't
+  }
 }

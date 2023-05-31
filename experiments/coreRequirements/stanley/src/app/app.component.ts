@@ -19,10 +19,22 @@ export class AppComponent {
   ];
 
   constructor() {
-    FlensburgManagerClientImpl.initMe(new FlensburgManagerClientImpl());
+    /*
+    let socket = webSocket('ws://localhost:4200/umlp/api/command');
+    socket.subscribe(    
+      msg => console.log('message received: ' + msg), 
+      // Called whenever there is a message from the server    
+      err => console.log(err), 
+      // Called if WebSocket API signals some kind of error    
+      () => console.log('complete') 
+      // Called when connection is closed (for whatever reason)  
+    );
+    /**/
+    FlensburgManagerClientImpl.init();
     const cmdManager = new ClientCommandManager();
     cmdManager.ClientCommandManager(new ClientCommandWebsocketCommunication()
-      .ClientCommandWebsocketCommunication1('ws://localhost:8081/umlp/api/command'));
+      .ClientCommandWebsocketCommunication1('ws://localhost:4200/umlp/api/command'));
     CommandManager.initMe(cmdManager);
+    /**/
   }
 }

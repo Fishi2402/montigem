@@ -40,6 +40,15 @@ public enum TypeScriptTypes {
     return res;
   }
 
+  public static boolean isDefault(String mcType) {
+    for (TypeScriptTypes type : TypeScriptTypes.values()) {
+      if (type.mcType.equals(mcType)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public String getMCType() {
     return mcType;
   }

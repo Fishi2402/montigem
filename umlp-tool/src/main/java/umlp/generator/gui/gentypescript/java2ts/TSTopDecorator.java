@@ -21,6 +21,11 @@ public class TSTopDecorator extends TopDecorator {
     super(hwPath);
   }
 
+  // TODO AGe: do not check yet
+  @Override
+  protected void checkNeedsHandwrittenClass(boolean existsHw, ASTCDClass cdClass) {
+  }
+
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compUnit) {
     super.decorate(compUnit);
     for (ASTCDClass cdClass : compUnit.getCDDefinition().getCDClassesList()) {

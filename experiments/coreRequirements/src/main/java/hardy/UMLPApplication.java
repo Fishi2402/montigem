@@ -23,8 +23,8 @@ public class UMLPApplication {
     FlensburgMock.init();
     FlensburgManagerImpl.init();
     String schema = Resources.toString(Objects.requireNonNull(UMLPApplication.class.getResource("/Flensburg.sql")), StandardCharsets.UTF_8);
-    if(DatabaseAccessManager.initSchema(schema)) {
-      (new FlensburgDummies()).inventDummiesGenerated(5, 5, 5);
+    if (DatabaseAccessManager.initSchema(schema)) {
+      (new FlensburgDummies()).inventDummiesOne();
     }
   }
 }

@@ -63,10 +63,15 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
     });
     decoratedCD.accept(t);
 
-    getCD4C().addConstructor(ast, getConstructorTemplate(), commandList, className, getPackageName(origCD, DEFAULT_PACKAGE));
+    addConstructor(ast, className, getPackageName(origCD, DEFAULT_PACKAGE), commandList);
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("AggregatedCommandDeSer"));
 
     return ast;
+  }
+
+  protected void addConstructor(ASTCDClass ast, String classname, String packageName,
+      List<String> commandList) {
+    getCD4C().addConstructor(ast, getConstructorTemplate(), commandList, classname, packageName);
   }
 
   protected String getConstructorTemplate() {

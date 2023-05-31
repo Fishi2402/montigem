@@ -2,4 +2,4 @@
 ${tc.signature("name")}
 ${cd4c.method("public static void init()")}
 
-this.instance = new ${name}CommandObjectMapper();
+CommandObjectMapper.setInstance(new ${name}CommandObjectMapper());

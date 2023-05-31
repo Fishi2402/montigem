@@ -210,7 +210,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
       typeName = type.printFullName();
       isCDEnum = GenService.isCDEnum(type);
       if (GenService.isJavaType(type)) {
-        getCD4C().addImport(ast, typeName);
+        addDeSerJavaImport(ast, typeName);
       }
     }
     String baseClassDecorator = origCD.getCDDefinition().getName() + BaseClassObjectMapperDecorator.SUFFIX;
@@ -240,6 +240,10 @@ public class SetDecorator extends AbstractDeSerDecorator {
     if (useDeSer) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator);
     }
+  }
+
+  protected void addDeSerJavaImport(ASTCDClass ast, String typeName) {
+    getCD4C().addImport(ast, typeName);
   }
 
   protected String getSet_BuildJsonTemplate() {
