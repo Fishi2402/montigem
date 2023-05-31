@@ -16,9 +16,12 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
+import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
@@ -49,6 +52,7 @@ import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
+import umlp.generator.gui.guidelta.GUIVariationHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,26 +63,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static umlp.UMLPToolOptions.CD2GUI;
-import static umlp.UMLPToolOptions.DEBUG;
-import static umlp.UMLPToolOptions.DOMAIN;
-import static umlp.UMLPToolOptions.FOR_CLIENT;
-import static umlp.UMLPToolOptions.GUI_CREATE;
-import static umlp.UMLPToolOptions.HELP;
-import static umlp.UMLPToolOptions.HWC_PATH;
-import static umlp.UMLPToolOptions.INPUT;
-import static umlp.UMLPToolOptions.OUTPUT;
-import static umlp.UMLPToolOptions.PATH;
-import static umlp.UMLPToolOptions.PRETTYPRINT;
-import static umlp.UMLPToolOptions.REPORTS;
-import static umlp.UMLPToolOptions.REPORT_BASE;
-import static umlp.UMLPToolOptions.SYMTAB;
-import static umlp.UMLPToolOptions.TMPL_PATH;
+import static umlp.UMLPToolOptions.*;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -178,8 +169,8 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
 
-      if (CD2GUI.isSelected(cmd)) {
-        if (!isUmlpFile(inputFile)) {
+      if(CD2GUI.isSelected(cmd)){
+        if(!isUmlpFile(inputFile)){
           Log.warn("option -cd2gui used without a classdiagram umlp file as input");
           return;
         }
@@ -206,6 +197,54 @@ public class UMLPTool extends UMLPToolTOP {
         //  see GUI_CREATE
 
         Reporting.flush(ast);
+      }
+
+      else if(GUIDelta.isSelected(cmd)){
+        if(!GUI_PATH.isSelected(cmd))
+          Log.error("0x45c0003 Missing GUI Models with option -gp");
+
+        LinkedList<Path> gpPath = new LinkedList<>();
+        for (String v : cmd.getOptionValues(GUI_PATH.getCMD())) {
+          gpPath.add(Paths.get(v));
+        }
+
+        guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
+        Reporting.init(outDir.getPath(), reportDir.getPath(), guidsl_reportManagerFactory);
+        GUIDSLMill.init();
+        LinkedList<ASTGUICompilationUnit> baseASTs = new LinkedList<>();
+        LinkedList<ASTGUICompilationUnit> variationASTs = new LinkedList<>();
+
+        for(Path model : gpPath){
+          ASTGUICompilationUnit parsedModel = parseGUI(model.toString());
+
+          if(isGUIDelta(parsedModel)) variationASTs.add(parsedModel);
+          else baseASTs.add(parsedModel);
+        }
+
+        for(ASTGUICompilationUnit variationAST : variationASTs){
+          List<ASTGUICompilationUnit> adaptedAST = baseASTs.stream()
+              .filter(ast -> ast.getComponentName().equals(variationAST.getGUIComponentDeclaration().getGUIComponentAdaptation().getTarget()))
+              .collect(Collectors.toList());
+          if(adaptedAST.size() != 1){
+            Log.error("expected exactly one matching file to adapt with GUIDelta, but found multiple or none");
+          }
+          GUIVariationHandler deltaHandler = new GUIVariationHandler(adaptedAST.get(0));
+          variationAST.accept(deltaHandler.getTraverser());
+        }
+
+        for(ASTGUICompilationUnit productAST : baseASTs){
+          Reporting.on(productAST.getComponentName());
+          Path outputPath = outDir.toPath().resolve(        //file structure needs to reflect package declarations
+              productAST.getMCPackageDeclaration().getMCQualifiedName().toString()
+                  .replace(".","/")
+                  .concat("/" + productAST.getComponentName() + ".gui")
+          );
+          GUIDSLFullPrettyPrinter pp = new GUIDSLFullPrettyPrinter(new IndentPrinter(), true);
+          FileReaderWriter.storeInFile(outputPath, pp.prettyprint(productAST));
+
+          Reporting.reportFileCreation(outputPath.toString());
+          Reporting.flush(productAST);
+        }
       }
 
       else if (isUmlpFile(inputFile)) {
@@ -462,6 +501,10 @@ public class UMLPTool extends UMLPToolTOP {
 
   protected boolean isGuiFile(File f) {
     return f.getName().endsWith(".gui");
+  }
+
+  protected boolean isGUIDelta(ASTGUICompilationUnit compilationUnit){
+    return compilationUnit.getGUIComponentDeclaration().isPresentGUIComponentAdaptation();
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {

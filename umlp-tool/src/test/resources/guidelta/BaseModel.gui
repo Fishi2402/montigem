@@ -1,0 +1,16 @@
+package guidelta;
+
+import guidelta.Text;
+
+page BaseModel(){
+
+   exampleText@Text(value = "Text");
+
+   exampleGuard@guard(true){
+      @Text(value = "Guard");
+   }
+
+   exampleIterate@iterate(i from 0 to 5){
+      @Text(value = "Iterate " + i);
+   }
+}

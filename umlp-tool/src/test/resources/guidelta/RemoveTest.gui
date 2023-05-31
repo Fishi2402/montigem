@@ -1,0 +1,10 @@
+package guidelta;
+
+page RemoveTest() adapts BaseModel{
+
+    remove exampleText;
+
+    remove exampleGuard;
+
+    remove exampleIterate;
+}

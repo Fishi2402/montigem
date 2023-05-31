@@ -1,0 +1,9 @@
+package guidelta.Test;
+
+import guidelta.Text;
+import another.Text;
+import guidelta.Button;
+
+page ImportTest() adapts BaseModel{
+    remove exampleText;
+}

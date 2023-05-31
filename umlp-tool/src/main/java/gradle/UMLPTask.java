@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -56,6 +57,10 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
   @Input
   @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getGUIDelta();
+
+  @Input
+  @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getForClient();
 
 
@@ -64,6 +69,7 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
     getCdToGui().convention(false);
     getForClient().convention(false);
+    getGUIDelta().convention(false);
   }
 
 
@@ -115,6 +121,17 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
     if(this.getForClient().get()){
       result.add("-" + UMLPToolOptions.FOR_CLIENT.getCMD());
+    }
+
+    if(this.getGUIDelta().get()){
+      result.add("-" + UMLPToolOptions.GUIDelta.getCMD());
+      List<Path> guiFiles = getInput().getAsFileTree().getFiles().stream().filter(p -> p.getPath().endsWith(".gui")).map(File::toPath).collect(Collectors.toList());
+      if(!guiFiles.isEmpty()){
+        result.add("-gp");
+        for(Path p : guiFiles){
+          result.add(handlePath.apply(p));
+        }
+      }
     }
 
     return result;
