@@ -5,6 +5,7 @@
 /*
  * Simple class diagram with 3 classes, some assocs, and inheritance
  */
+import java.time.LocalDate;
 
 umlp Flensburg {
 
@@ -55,4 +56,10 @@ umlp Flensburg {
     }
 
     / association CityInfo -> (cities) java.lang.String [*];
+    class Transaction {
+      Optional<LocalDate> date;
+      }
+
+    class SubTrans extends Transaction {
+    }
 }

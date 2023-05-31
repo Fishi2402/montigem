@@ -16,6 +16,7 @@ pluginManagement {
 
 rootProject.name = 'umlp'
 includeBuild "umlp-tool"
+includeBuild "umlp-rte/umlp-frontend-rte-java"
 
 include ":umlp-rte"
 include ":umlp-rte:umlp-frontend-rte"
