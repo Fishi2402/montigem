@@ -79,12 +79,13 @@ task guidelta(type: GuiVariabilityHandlerTask) {
     outputDir = layout.buildDirectory.dir("genumlp/guidelta")
 }
 
+/*
 task generateFlensburg(type: UMLPTask) {
     dependsOn(generateCDTOGUI)
     input = (file("models/hardy"))
     outputDir = layout.buildDirectory.dir("genumlp/hardy")
 }
-
+*/
 
 test {
     testLogging {
