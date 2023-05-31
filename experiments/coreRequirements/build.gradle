@@ -1,5 +1,3 @@
-import java.nio.file.Paths
-
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -72,13 +70,7 @@ task generateCDTOGUI(type: UMLPTask) {
     outputDir = layout.buildDirectory.dir("genumlp/cd2gui")
 }
 
-task guidelta(type: GuiVariabilityHandlerTask) {
-    dependsOn(generateCDTOGUI)
-    input.from(file("build/genumlp/cd2gui"))
-    input.from(file("models/guidelta"))
-    outputDir = layout.buildDirectory.dir("genumlp/guidelta")
-}
-
+/*
 task generateFlensburg(type: UMLPTask) {
     dependsOn(generateCDTOGUI)
     input = (file("models/hardy"))
