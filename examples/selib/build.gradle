@@ -21,6 +21,7 @@ dependencies {
     compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version
     implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 }
 
 // Task is created by umlp-backend plugin (with very sensible default values)
