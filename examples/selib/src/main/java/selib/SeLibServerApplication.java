@@ -3,6 +3,7 @@ package selib;
 
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
+import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -11,6 +12,7 @@ import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Optional;
 
 // TODO: can we generate this?
