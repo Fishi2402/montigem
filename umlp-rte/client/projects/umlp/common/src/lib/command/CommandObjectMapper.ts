@@ -9,6 +9,10 @@ import { CommandResult } from "./CommandResult";
 export abstract class CommandObjectMapper {
   protected static instance: CommandObjectMapper;
 
+  protected static setInstance(instance: CommandObjectMapper): void {
+    CommandObjectMapper.instance = instance;
+  }
+
   protected static getInstance(): CommandObjectMapper {
     if (CommandObjectMapper.instance == null) {
       console.error("CommandObjectMapper is not initialized!");

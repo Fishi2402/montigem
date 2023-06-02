@@ -12,7 +12,7 @@ ${tc.signature("className", "attr", "fieldType", "jsonStr", "isList", "innerType
       }
       for(let e of json["${fieldName}"]) {
       <#if useDeSer>
-      result.push(${objectMapperName}.deserialize(typeof e === 'string' ? '"' + e + '"' : String(e), "${innerType}"));
+      result.push(${objectMapperName}.deserialize(e, "${innerType}"));
       <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
 <#--        TODO MB: ist das hier so richtig, oder sollte lieber innerType richtig berechnet werden? -->
       <#-- TODO AGe: find out if that's ok -->
@@ -26,7 +26,7 @@ ${tc.signature("className", "attr", "fieldType", "jsonStr", "isList", "innerType
       if(json["${fieldName}"]){
       <#if useDeSer>
       let value: any = json["${fieldName}"];
-      return ${objectMapperName}.deserialize(typeof value === 'string' ? '"' + value + '"' : String(value), "${innerType}");
+      return ${objectMapperName}.deserialize(value, "${innerType}");
       <#else>
         <#if genService.isInnerCDEnum(attr.getSymbol().getType())>
           return ${innerType?keep_after_last(".")}.valueOf(json["${fieldName}"]);
@@ -41,7 +41,7 @@ ${tc.signature("className", "attr", "fieldType", "jsonStr", "isList", "innerType
     <#-- TODO: default values -->
       <#if useDeSer>
       let value: any = json["${fieldName}"];
-      return ${objectMapperName}.deserialize(typeof value === 'string' ? '"' + value + '"' : String(value), "${fieldType}");
+      return ${objectMapperName}.deserialize(value, "${fieldType}");
       <#else>
         <#if genService.isCDEnum(attr.getSymbol().getType())>
       return ${fieldType}.valueOf(json["${fieldName}"]);

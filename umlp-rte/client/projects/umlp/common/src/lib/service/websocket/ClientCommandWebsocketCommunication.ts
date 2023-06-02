@@ -10,11 +10,12 @@ import { SimpleResult } from "../../command/SimpleResult";
 import { LoadingState } from "../../common/LoadingState";
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Result } from "../../common/Result";
+import { first, firstValueFrom, from, Subject, take } from "rxjs";
 
 export class ClientCommandWebsocketCommunication implements ClientCommandCommunication {
   public static MAX_TRIES: number = 10;
   private maxWaitingTime: number = 6000; // 6 seconds
-  private participantId: number = null;
+  private participantId: number = -1;
   // TODO AGe: any
   private session: WebSocketSubject<any>;
   // TODO AGe: URI
@@ -23,7 +24,7 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   // not necessary?
   // private headers: WebSocketHttpHeaders;
 
-  private messages: Map<number, CommandResult<any>> = new Map();
+  private messages: Map<number, Subject<CommandResult<any>>> = new Map();
 
   private commandObserver: Array<CommandReceiveObserver> = [];
   private commandResultObserver: Array<CommandResultReceiveObserver> = [];
@@ -36,62 +37,59 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   private initLatch: number;
   /**/
 
-  public ClientCommandWebsocketCommunication1(uri: string): ClientCommandWebsocketCommunication {
-    new ClientCommandWebsocketCommunication().ClientCommandWebsocketCommunication2(uri/*, new WebSocketHttpHeaders()/**/);
-    return this;
-  }
-
-  public ClientCommandWebsocketCommunication2(uri: string/*, headers: WebSocketHttpHeaders/**/) {
+  public constructor(uri: string) {
     this.uri = uri;
-    // this.headers = headers;
-    // this.executor = Executors.newFixedThreadPool(1);
   }
 
-  public sendCommandToServerAndReceiveResult<T>(command: Command<T>): CommandResult<T> {
+  public sendCommandToServerAndReceiveResult<T>(command: Command<T>): Promise<CommandResult<T>> {
     command.setParticipantId(this.participantId);
-    let result: CommandResult<T>;
-    try {
+    // let result: CommandResult<T>;
+    // try {
       let payload: string = CommandObjectMapper.serializeCommand(command);
       console.info(`Sending message to server: ${payload}`, this.constructor.name);
       let sendingSuccessful: boolean = this.sendMessage(payload);
       if (!sendingSuccessful) {
         ClientCommandWebsocketCommunication.warnCouldNotReceive(command);
-        return new SimpleResult<T>().SimpleResult2(
+        return Promise.resolve(new SimpleResult<T>().SimpleResult2(
           command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType()
-        );
+        ));
       }
+      const resultSubject = new Subject<CommandResult<T>>();
+      this.messages.set(command.getId(), resultSubject);
+      const result = new Promise<CommandResult<T>>((resolve, reject) => {
+        from(resultSubject).pipe(first(), take(1)).subscribe(v => {
+          resolve(v);
+          /*
+          resolve(new SimpleResult<T>().SimpleResult1(
+              command.getId(), v, command.getCommandType()
+          ));
+          /**/
+        });
+        // TODO AGe when reject?
+      });
+      result.then(() => this.messages.delete(command.getId()));
+
+      return result;
+
       /*
-      synchronized (this) {
-        this.wait(maxWaitingTime);
-      }
-      /**/
 
       if (this.messages.has(command.getId())) {
-        let response: CommandResult<any> = this.messages.get(command.getId());
-        this.messages.delete(command.getId());
-        // Stelle sicher, dass der Typ auch nach dem Deserialisieren gesichert ist
-        // TODO AGe: what?
-        /*
-        if ((<ParameterizedType> command.getClass()
-          .getGenericSuperclass()).getActualTypeArguments()[0].getTypeName()
-          .equals(response.getTypeParameter())) { /**/
-          result = <CommandResult<T>>response;
+        let response: Promise<CommandResult<any>> = this.messages.get(command.getId());
+        response
+        .then(value => {
+          this.messages.delete(command.getId());
+          result = <CommandResult<T>>value;
           console.info(`
             Received answer from server for command with id
             ${command.getId()}: ${CommandObjectMapper.serializeResponse(result)}
           `, this.constructor.name);
-          /*
-        }
-        else {
+        })
+        .catch(() => {
           ClientCommandWebsocketCommunication.warnCouldNotReceive(command);
-          return new SimpleResult<T>().SimpleResult2(command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType());
-        }
-        /**/
-      } else {
-        ClientCommandWebsocketCommunication.warnCouldNotReceive(command);
-        return new SimpleResult<T>().SimpleResult2(
-          command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType()
-        );
+          return new SimpleResult<T>().SimpleResult2(
+            command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType()
+          );
+        });
       }
     }
     catch (e: any) {
@@ -102,55 +100,30 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
       );
     }
     return result;
+    /**/
   }
 
   private static warnCouldNotReceive<T>(command: Command<T>): void {
     console.warn("Could not receive response from server for command id: " + command.getId());
   }
 
-  public init(): Result<number> {
-    /*
-    this.initLatch = new CountDownLatch(2);
-    let webSocketClient: StandardWebSocketClient = new StandardWebSocketClient();
-    try {
-      this.session = WebSocketSessionManager.register(
-        webSocketClient.doHandshake(this, this.headers, URI.create(uri)).get());
-    }
-    catch (e: InterruptedException) {
-      console.warn(String.format("Could not establish a websocket connection to URI '%s'", uri));
-      return Result.error();
-    }
-
-    try {
-      // Warte bis die Verbindung aufgebaut ist und eine Antwort eintrifft
-      let await: boolean = this.initLatch.await(2, TimeUnit.SECONDS);
-      if (await && this.participantId != null) {
-        return Result.ok(this.participantId);
-      }
-      else {
-        return Result.error();
-      }
-    }
-    catch (e: InterruptedException) {
-      // e.printStackTrace();
-      return Result.error();
-    }
-    /**/
+  public init(): Promise<number> {
     this.socket = webSocket(this.uri);
     this.socket.subscribe({
       next: msg => this.handleTextMessage(msg), 
       error: err => console.log(err), 
       complete: () => this.afterConnectionClosed() 
     })
-    // TODO AGe: not 1
-    return Result.ok(1);
+
+    return firstValueFrom(this.socket);
   }
 
   // TODO AGe: any message
   protected handleTextMessage(message: any): void {
     if (this.expectInitMessage()) {
+      this.established = true;
       // Fall initialisierung der Verbindung
-      this.participantId = JSON.parse(message.getPayload());
+      this.participantId = JSON.parse(message);
       if (Number.isNaN(this.participantId)) {
         this.participantId = null;
       }
@@ -159,23 +132,25 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
       // Fall Antwort eines Requests, oder Erhalt eines weitergeleiteten Commands zur
       // Datensynchronisierung.
       // TODO AHe, MH: Wasteful way of distinguishing commands and results
+      // TODO AGe: what?
+      const payload = JSON.stringify(message);
       let commandResultOptional: CommandResult<any> = null;
-      commandResultOptional = CommandObjectMapper.deserializeResponse(message.getPayload());
+      commandResultOptional = CommandObjectMapper.deserializeResponse(payload);
       let commandOptional: Command<Object> = null;
-      commandOptional = CommandObjectMapper.deserializeCommand(message.getPayload());
+      commandOptional = CommandObjectMapper.deserializeCommand(payload);
 
       if (commandResultOptional != null) { // TODO MH: Need to check for participantId
         // Fall Antwort eines Requests
         let commandResult: CommandResult<any> = commandResultOptional;
-        this.messages.set(commandResult.getCommandId(), commandResult);
+        if (this.messages.has(commandResult.getCommandId())) {
+          this.messages.get(commandResult.getCommandId()).next(commandResult);
+        } else {
+          // TODO AGe: received some rogue command?
+        }
+        // this.messages.set(commandResult.getCommandId(), commandResult);
         for (const observer of this.commandResultObserver) {
           observer(commandResult);
         }
-        /*
-        synchronized(this) {
-          notify();
-        }
-        /**/
       }
       else if (commandOptional != null) {
         //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
@@ -185,13 +160,6 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
             consumer(finalCommandOptional);
           }
         // });
-      }
-      else {
-        /*
-      synchronized(this) {
-        notify();
-      }
-      /**/
       }
     }
   }
@@ -229,10 +197,16 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
     let tries: number = 0;
 
     // while (tries < ClientCommandWebsocketCommunication.MAX_TRIES) {
-    this.socket.next({message: message});
+    // TODO AGe: what?
+    let payload = JSON.parse(message);
+    this.socket.next(payload);
     // }
 
+    return true;
+    // TODO: identify unsuccessful
+    /*
     console.error("0xWS001 An error occured on sending a websocket message", lastException);
     return false;
+    /**/
   }
 }

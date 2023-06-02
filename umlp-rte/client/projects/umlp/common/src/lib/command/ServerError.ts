@@ -16,8 +16,8 @@ export class ServerError extends Command<void> {
     this.t = t;
   }
 
-  public override doRun(): StatusResult  {
+  public override doRun(): Promise<StatusResult>  {
     GeneralErrorCollector.reportServerError(this.t);
-    return StatusResult.ok(this.getId());
+    return Promise.resolve(StatusResult.ok(this.getId()));
   }
 }

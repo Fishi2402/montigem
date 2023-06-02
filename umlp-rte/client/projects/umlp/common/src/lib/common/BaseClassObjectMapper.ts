@@ -22,13 +22,17 @@ import { StringDeSer } from "./StringDeSer";
 export class BaseClassObjectMapper {
   protected static instance: BaseClassObjectMapper = new BaseClassObjectMapper();
 
+  protected static setInstance(instance: BaseClassObjectMapper): void {
+    BaseClassObjectMapper.instance = instance;
+  }
+
   public static getInstance(): BaseClassObjectMapper {
     return this.instance;
   }
 
   protected baseDeSers: Map<string, DeSer<any>> = new Map();
 
-  public BaseClassObjectMapper() {
+  public constructor() {
     this.baseDeSers.set("java.lang.Boolean", new BooleanDeSer());
     this.baseDeSers.set("java.lang.Short", new ShortDeSer());
     this.baseDeSers.set("java.lang.Character", new CharacterDeSer());
@@ -68,8 +72,7 @@ export class BaseClassObjectMapper {
   }
 
   public static canDeSer(className: string): boolean {
-    return true;
-    // return this.getInstance()._canDeSer(className);
+    return this.getInstance()._canDeSer(className);
   }
 
   public _canDeSer(className: string): boolean {

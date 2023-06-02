@@ -26,7 +26,7 @@ export abstract class Command<T> {
     this.commandType = commandType;
   }
 
-  public abstract doRun(): CommandResult<T>;
+  public abstract doRun(): Promise<CommandResult<T>>;
 
 
   // TODO: undo kann nicht immer ausgeführt werden.

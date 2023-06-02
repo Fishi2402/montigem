@@ -64,7 +64,7 @@ public class TSDeSerBuilderDecorator extends DeSerBuilderDecorator {
       getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
     }
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
-      if (c.getName() != domainType.getName()) {
+      if (!c.getName().equals(domainType.getName())) {
         getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
         if (!c.getModifier().isDerived()) {
           getCD4C().addImport(cdType, this.astcdPackage + "."
@@ -75,12 +75,12 @@ public class TSDeSerBuilderDecorator extends DeSerBuilderDecorator {
       }
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
-      if (c.getName() != domainType.getName()) {
+      if (!c.getName().equals(domainType.getName())) {
         getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
       }
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
-      if (c.getName() != domainType.getName()) {
+      if (!c.getName().equals(domainType.getName())) {
         getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
       }
     }

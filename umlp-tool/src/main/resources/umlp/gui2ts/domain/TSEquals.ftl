@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("primitives", "objects", "primitiveBooleans", "wrappedBooleans", "className")}
-${cd4c.method("public boolean equals(Object o)")}
+${cd4c.method("public boolean equals(any o)")}
 
 if (o instanceof ${className?cap_first}) {
 

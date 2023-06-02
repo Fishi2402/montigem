@@ -79,7 +79,7 @@ export class GeneralErrorCollector {
   // TODO: Scoping, aktuell wird der ServerError an alle clients gesendet!
   // TODO AGe: Throwable
   protected _reportServerError(t: any): void {
-    CommandManager.sendCommandToSubscribers(new ServerError(t));
+    // CommandManager.sendCommandToSubscribers(new ServerError(t));
     let msg: string = this._buildServerErrorMsg(t);
     this.observers.forEach(obs => obs.notifyServerError(msg));
   }
@@ -95,7 +95,7 @@ export class GeneralErrorCollector {
   }
 
   protected _reportSyncError(): void {
-    CommandManager.sendCommandToSubscribers(new SyncError());
+    // CommandManager.sendCommandToSubscribers(new SyncError());
     let msg: String = this._buildSyncErrorMsg();
     this.observers.forEach(obs => obs.notifySyncError(msg));
   }

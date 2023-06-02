@@ -12,27 +12,26 @@ export class ClientCommandManager extends CommandManager {
 
   protected commandCommunication: ClientCommandCommunication;
 
-  public ClientCommandManager(commandCommunication: ClientCommandCommunication){
+  public constructor(commandCommunication: ClientCommandCommunication) {
+    super();
     this.commandCommunication = commandCommunication.onCommandReceived(cmd => cmd.doRun());
-    let initResult: Result<number> = commandCommunication.init();
-    if (initResult.wasSuccessful()) {
-      this.participantId = initResult.getValue();
-      this.initSuccessFul = true;
-    } else {
-      // TODO MH
-    }
+    commandCommunication.init().then(res => {
+      let initResult: number = res;
+      if (!Number.isNaN(initResult)) {
+        this.participantId = initResult;
+        this.initSuccessFul = true;
+      } else {
+        // TODO MH
+      }
+    })
   }
 
-  protected override _executeCommand<T>(command: Command<T>): CommandResult<T>  {
+  protected override _executeCommand<T>(command: Command<T>): Promise<CommandResult<T>> {
     command.setParticipantId(this.participantId);
     return this.commandCommunication.sendCommandToServerAndReceiveResult(command);
   }
 
-  protected override _sendCommandToSubscribers<T> (command: Command<T>): void  {
-    this._executeCommand(command);
-  }
-
-  public isInitSuccessFul(): boolean  {
+  public isInitSuccessFul(): boolean {
     return this.initSuccessFul;
   }
 }

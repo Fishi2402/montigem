@@ -90,11 +90,11 @@ public class FEDecorator extends BEDecorator {
     DbObserverDecorator dbObserverDecorator= new DbObserverDecorator(glex);
     dbObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DbObserverDecorator", FEDecorator.class.getName());
-    /**/
 
     CommandSendingObserverDecorator cmdSendingDecorator = new TSCommandSendingObserverDecorator(glex);
     cmdSendingDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandSendingObserverDecorator", FEDecorator.class.getName());
+    /**/
 
     CommandObserverDecorator cmdDecorator = new TSCommandObserverDecorator(glex);
     cmdDecorator.transform(cdAST, decoratedAST);

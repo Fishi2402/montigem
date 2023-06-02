@@ -34,4 +34,17 @@ public class TSCommandSendingObserverDecorator extends CommandSendingObserverDec
     // don't
   }
 
+  @Override
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDType domainClass, ASTCDType clazz) {
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
+
+    for (ASTCDType t : UMLPSymbolTables.getAttributesInHierarchyWithDefiningType(domainClass).values()) {
+      ASTCDCompilationUnit def = UMLPSymbolTables.getDiagramFor(t);
+      getCD4C().addImport(clazz, getPackageName(def, DEFAULT_PACKAGE) + "." + t.getName());
+    }
+
+    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName() + ObserverDecorator.SUFFIX);
+  }
+
 }

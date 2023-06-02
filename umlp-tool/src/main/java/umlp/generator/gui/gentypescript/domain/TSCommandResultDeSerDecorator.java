@@ -32,6 +32,7 @@ public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
     super.transform(origCD, decoratedCD);
   }
 
+  /*
   @Override
   protected List<String> getClassNames(ASTCDCompilationUnit origCD) {
     List<String> classNames = new ArrayList<>();
@@ -42,6 +43,7 @@ public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
     }
     return classNames;
   }
+  /**/
 
   @Override
   protected String getSerSingleValueTemplate() {

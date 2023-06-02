@@ -13,8 +13,8 @@ export class SyncError extends Command<void> {
     return this;
   }
 
-  public override doRun(): StatusResult {
+  public override doRun(): Promise<StatusResult> {
     GeneralErrorCollector.reportSyncError();
-    return StatusResult.ok(this.getId());
+    return Promise.resolve(StatusResult.ok(this.getId()));
   }
 }

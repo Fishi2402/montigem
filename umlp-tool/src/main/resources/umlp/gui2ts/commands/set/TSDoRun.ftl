@@ -1,18 +1,20 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature( "attributename","classname","definition", "isGem", "targettype")}
-${cd4c.method("public StatusResult doRun()")}
+${cd4c.method("public Promise<StatusResult> doRun()")}
 
 console.debug("Executing set_${attributename} to " + this.${attributename}<#if isGem>GemId</#if> + " on ${classname?uncap_first} " + this.gemId);
 console.trace();
-let ${classname?uncap_first}Opt: ${classname} = ${definition}Manager.${classname?uncap_first}Opt(this.gemId);
-    if(${classname?uncap_first}Opt != null){
+return ${definition}Manager.${classname?uncap_first}Opt(this.gemId).then(v => {
+  let ${classname?uncap_first}Opt = v
+  if(${classname?uncap_first}Opt != null) {
 <#if isGem>
-      ${classname?uncap_first}Opt.set${attributename?cap_first}Gem(${definition}Manager.create${targettype}Gem(this.${attributename}GemId), NotificationScope.LOCAL);
+    ${classname?uncap_first}Opt.set${attributename?cap_first}Gem(${definition}Manager.create${targettype}Gem(this.${attributename}GemId), NotificationScope.LOCAL);
 <#else>
-      ${classname?uncap_first}Opt.set${attributename?cap_first}(this.${attributename}, NotificationScope.LOCAL);
+    ${classname?uncap_first}Opt.set${attributename?cap_first}(this.${attributename}, NotificationScope.LOCAL);
 </#if>
-        return StatusResult.ok(this.getId());
+      return StatusResult.ok(this.getId());
     } else {
-        GeneralErrorCollector.reportSyncError();
-        return StatusResult.error(this.getId());
+      GeneralErrorCollector.reportSyncError();
+      return StatusResult.error(this.getId());
     }
+  });

@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature()}
-${cd4c.method("public long _doGetFreeGemId()")}
-  let res: SimpleResult<number> = CommandManager.executeCommand<number>(new GetFreeGemIdRequest()).asSimpleResult();
-  return res.get();
+${cd4c.method("public Promise<Long> _doGetFreeGemId()")}
   // TODO: error handling
+  return CommandManager.executeCommand<number>(new GetFreeGemIdRequest()).then(v => {
+    return v.asSimpleResult().get()
+  });

@@ -5,7 +5,7 @@ switch (tp){
 // Java type system restrictions force us to use casts here
 <#list classList as className>
   case "${className}":
-    new ${className}DeSer().buildJson(<${className}>o, printer);
+    new ${className?keep_after_last(".")}DeSer().buildJson(<${className?keep_after_last(".")}>o, printer);
     break;
 </#list>
   default:

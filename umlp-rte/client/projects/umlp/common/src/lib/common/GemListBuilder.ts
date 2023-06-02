@@ -28,7 +28,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
   // TODO AGe: unclean
   public override build(): any {
     if (this.buildFinished) {
-      return <any>this;
+      return this;
     }
 
     this.ids = [];
@@ -41,7 +41,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     // Von hier an werden alle Element vom FlensburgManager geladen
     this.builderElemStorage = [];
 
-    return <any>this;
+    return this;
   }
 
   public override isBuildFinished(): boolean {
@@ -56,14 +56,14 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     }
   }
 
-  public override get(idx: number): E {
+  public override get(idx: number): Promise<E> {
     if (this.buildFinished) {
       return super.get(idx);
     } else {
       // List might contain builders, which a normal GemList will not
       // Thus, a local data storage is needed
       if (this.builderElemStorage[idx].isPresentBuilder()) {
-        return this.builderElemStorage[idx].getBuilder();
+        return Promise.resolve(this.builderElemStorage[idx].getBuilder());
       } else {
         return super.get(idx);
       }

@@ -14,7 +14,7 @@ if(jsonObject["simpleResult"]){
     return null;
   }
 
-  return new SimpleResult<any>().SimpleResult2(jsonObject["commandId"], res, tp);
+  return new SimpleResult<any>().SimpleResult1(jsonObject["commandId"], res, tp);
 }
 
 if(jsonObject["listResult"]){
