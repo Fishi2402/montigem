@@ -133,10 +133,14 @@ public class AddDecorator extends AbstractDeSerDecorator {
       ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
       getCD4C().addImport(ast,getPackageName(typeCD, DEFAULT_PACKAGE)+"."+ type.print());
     } else if (GenService.isJavaType(type)) {
-      getCD4C().addImport(ast, type.printFullName());
+      addJavaImport(ast, type);
     }
 
     return ast;
+  }
+
+  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
+    getCD4C().addImport(ast, type.printFullName());
   }
 
   protected void addConstructor(ASTCDClass ast, String classname, String packageName,

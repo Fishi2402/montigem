@@ -33,6 +33,11 @@ public class TSRemoveDecorator extends RemoveDecorator {
   }
 
   @Override
+  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
+    // don't
+  }
+
+  @Override
   protected String getConstructorTemplate() {
     return "umlp.gui2ts.commands.remove.TSConstructor";
   }
@@ -67,8 +72,6 @@ public class TSRemoveDecorator extends RemoveDecorator {
     }
     if (GenService.isCDEnum(innerType)) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics)type).getArgument(0).print());
-    } else if (GenService.isJavaType(innerType)) {
-      getCD4C().addImport(ast, innerType.printFullName());
     }
   }
 }

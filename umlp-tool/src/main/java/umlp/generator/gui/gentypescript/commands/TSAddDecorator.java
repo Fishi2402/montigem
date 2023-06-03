@@ -21,10 +21,16 @@ public class TSAddDecorator extends AddDecorator {
     super(glex, supportedDeSers);
   }
 
+  @Override
   protected void addConstructor(ASTCDClass ast, String classname, String packageName,
       String attrName, String type) {
     glex.replaceTemplate(GUI2ComponentTemplates.CONSTRUCTOR, ast,
         new TemplateHookPoint(getConstructorTemplate(), classname, packageName, attrName, type));
+  }
+
+  @Override
+  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
+    // don't
   }
 
   @Override
@@ -65,8 +71,6 @@ public class TSAddDecorator extends AddDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE) + "." + cmdName);
     if (GenService.isCDEnum(innerType)) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics)type).getArgument(0).print());
-    } else if (GenService.isJavaType(innerType)) {
-      getCD4C().addImport(ast, innerType.printFullName());
     }
   }
 }
