@@ -371,6 +371,12 @@ public class GUIGeneratorUtil {
         && !type.equals(BuiltInTypes.EVENT.getName());
   }
 
+  public boolean hasSetter(ASTGUIComponent comp, ASTGUINamedArg arg) {
+    Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
+        arg.getEnclosingScope(), comp.getQualifiedName(), arg.getName());
+    return paramSym.isPresent() && hasGetter(paramSym.get().getType()) && paramSym.get().isIsReference();
+  }
+
   public boolean isViewElementsCollection(ASTGUIComponent comp, ASTGUINamedArg arg) {
     Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
         arg.getEnclosingScope(), comp.getQualifiedName(), arg.getName());
