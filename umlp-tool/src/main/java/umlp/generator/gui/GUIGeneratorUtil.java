@@ -10,7 +10,6 @@ import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
-import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
@@ -212,6 +211,10 @@ public class GUIGeneratorUtil {
 
   public String gui2cdAttrSetterName(String domainParamName) {
     return getHTMLName("set" + StringTransformations.capitalize(domainParamName));
+  }
+
+  public String gui2cdAttrBuilderSetterName(String domainParamName) {
+    return getHTMLName(domainParamName);
   }
 
   public String gui2cdAttrGetterName(String componentId, String argName) {
@@ -554,14 +557,14 @@ public class GUIGeneratorUtil {
     return res;
   }
 
-  public Optional<String> getRelativeHandwrittenPath(
-      MCPath targetPath, Path outPath, String qualifiedName, String fileExtension) {
+  public Optional<String> getRelativeImportPath(
+      MCPath imported, Path importer, String qualifiedName, String fileExtension) {
     String hwFile = Names.getPathFromPackage(qualifiedName) + "." + fileExtension;
-    Optional<URL> hwFilePath = targetPath.find(hwFile);
+    Optional<URL> hwFilePath = imported.find(hwFile);
     Optional<String> res = Optional.empty();
     if (hwFilePath.isPresent()) {
       Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
-      res = Optional.of(outPath.resolve(hwFile).getParent()
+      res = Optional.of(importer.resolve(hwFile).getParent()
           .toAbsolutePath()
           .normalize()
           .relativize(hwPath.get().toAbsolutePath())
@@ -571,7 +574,7 @@ public class GUIGeneratorUtil {
       hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path,
           Paths.get(hwFile)));
     }
-    Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
+    Reporting.reportHWCExistenceCheck(imported, Paths.get(hwFile), hwFilePath);
     return res;
   }
 

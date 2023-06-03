@@ -36,6 +36,7 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
   protected Optional<ASTExpression> nullCheckExpression = Optional.empty();
   protected List<ExpressionReplacement> replacements = new ArrayList<>();
   protected Optional<ExpressionReplacement> setterReplacement = Optional.empty();
+  protected boolean usesBuilder = false;
 
   protected boolean needsGetter = false;
   protected boolean needsOwnParam = false;
@@ -85,6 +86,10 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
 
   public void setIgnore(Collection<String> ignore) {
     this.ignore = ignore;
+  }
+
+  public void setUsesBuilder(boolean usesBuilder) {
+    this.usesBuilder = usesBuilder;
   }
 
   public void transform(SymTypeExpression ste, ASTGUINamedArg arg) {
@@ -162,7 +167,9 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
         if (potentialHolder.getKey() instanceof ASTGUIArgValue) {
           Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.fieldAccessExpressionBuilder()
               .setExpression(node.getExpression())
-              .setName(util.gui2cdAttrSetterName(node.getName()))
+              .setName(usesBuilder
+                  ? util.gui2cdAttrBuilderSetterName(node.getName())
+                  : util.gui2cdAttrSetterName(node.getName()))
               .build();
           setterReplacement = Optional.of(new ExpressionReplacement(
               potentialHolder.getKey(), potentialHolder.getValue(), newValue));

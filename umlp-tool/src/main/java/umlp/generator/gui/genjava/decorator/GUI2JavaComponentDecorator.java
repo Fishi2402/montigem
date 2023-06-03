@@ -71,6 +71,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     // replace field access with getters, except iterator args
     GUIArgValueReplaceVisitor visitor = new GUIArgValueReplaceVisitor();
     visitor.setIgnore(it2Arg.getArgs().keySet());
+    if (util.isCreateClass(guiAst)) {
+      visitor.setUsesBuilder(true);
+    }
     SymTypeExpression paramSTE = paramSym.get().getType();
     visitor.transform(paramSTE, namedArg);
     if (!visitor.argNeedsGetter()) {
