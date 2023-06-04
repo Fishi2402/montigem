@@ -95,15 +95,17 @@ public class TSDeSerDecorator extends DeSerDecorator {
   protected void addImports(ASTCDType domainType, ASTCDType clazz) {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("JsonDeSer"));
-    getCD4C().addImport(clazz, this.astcdPackage + "." + domainType.getName());
-    getCD4C().addImport(clazz, this.astcdPackage + "."
-        + domainType.getName() + BuilderDecorator.BUILDER_SUFFIX);
+    if (!domainType.getModifier().isAbstract()) {
+      getCD4C().addImport(clazz, this.astcdPackage + "." + domainType.getName());
+      getCD4C().addImport(clazz, this.astcdPackage + "."
+          + domainType.getName() + BuilderDecorator.BUILDER_SUFFIX);
+    }
     String name = origCD.getCDDefinition().getName();
     getCD4C().addImport(clazz, this.astcdPackage + "." + name + ManagerDecorator.SUFFIX);
     getCD4C().addImport(clazz, this.astcdPackage + "." + name + BaseClassObjectMapperDecorator.SUFFIX);
 
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
-      if (!c.getModifier().isDerived()) {
+      if (!c.getModifier().isDerived() && !c.getModifier().isAbstract()) {
         getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
         if (!(c.getName() + DeSerDecorator.SUFFIX).equals(clazz.getName())) {
           getCD4C().addImport(clazz, this.astcdPackage + "."

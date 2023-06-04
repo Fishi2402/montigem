@@ -3,8 +3,8 @@ ${tc.signature("methodName", "attrType", "attr", "condition")}
 <#assign attrName="value">
 ${cd4c.method("public void ${methodName}(${attrType} ${attrName})")}
 <#if condition?has_content>
-  if (!this.${condition}) {
+  if (!${condition}) {
     return null;
   }
 </#if>
-    this.${attr}${attrName});
+    ${attr}${attrName});

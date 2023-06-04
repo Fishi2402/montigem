@@ -59,14 +59,16 @@ public class TSDeSerBuilderDecorator extends DeSerBuilderDecorator {
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemBuildable"));
-    getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + BuilderDecorator.BUILDER_SUFFIX);
-    if (!domainType.getSuperclassList().isEmpty()) {
-      getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
+    if (!domainType.getModifier().isAbstract()) {
+      getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + BuilderDecorator.BUILDER_SUFFIX);
+      if (!domainType.getSuperclassList().isEmpty()) {
+        getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
+      }
     }
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
       if (!c.getName().equals(domainType.getName())) {
         getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
-        if (!c.getModifier().isDerived()) {
+        if (!c.getModifier().isDerived() && !c.getModifier().isAbstract()) {
           getCD4C().addImport(cdType, this.astcdPackage + "."
               + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
           getCD4C().addImport(cdType, this.astcdPackage + "."

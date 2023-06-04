@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature( "sourcename","targetname")}
-${cd4c.method("public StatusResult doRun()")}
+${cd4c.method("public Promise<StatusResult> doRun()")}
 
 let ${targetname}Changed: boolean = this.old${targetname?cap_first}GemId != this.${targetname}GemId;
 let ${sourcename}Changed: boolean = this.old${sourcename?cap_first}GemId != this.${sourcename}GemId;
@@ -13,4 +13,4 @@ if(${sourcename}Changed){
   return this.exchange${sourcename?cap_first}();
 }
 
-return StatusResult.error(this.getId());
+return Promise.resolve(StatusResult.error(this.getId()));

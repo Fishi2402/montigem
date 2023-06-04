@@ -47,7 +47,7 @@ public class TSManagerDecorator extends ManagerDecorator {
 
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
       getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
-      if (!c.getModifier().isDerived()) {
+      if (!c.getModifier().isDerived() && !c.getModifier().isAbstract()) {
         getCD4C().addImport(clazz, this.astcdPackage + "."
             + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
         getCD4C().addImport(clazz, this.astcdPackage + "."
