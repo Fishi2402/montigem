@@ -31,24 +31,34 @@ public class TSTopDecorator extends TopDecorator {
   }
 
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compUnit) {
+    return this.decorate(compUnit, false);
+  }
+
+  public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compUnit, boolean importHW) {
     super.decorate(compUnit);
     for (ASTCDClass cdClass : compUnit.getCDDefinition().getCDClassesList()) {
       if (existsHandwrittenClass(hwPath, determineQualifiedName(cdClass, compUnit))) {
-        CD4C.getInstance().addImport(cdClass, getPackageName(compUnit) + "." + cdClass.getName());
+        if (importHW) {
+          CD4C.getInstance().addImport(cdClass, getPackageName(compUnit) + "." + cdClass.getName());
+        }
         applyTopMechanism(cdClass);
       }
     }
 
     for (ASTCDInterface cdInterface : compUnit.getCDDefinition().getCDInterfacesList()) {
       if (existsHandwrittenClass(hwPath, determineQualifiedName(cdInterface, compUnit))) {
-        CD4C.getInstance().addImport(cdInterface, getPackageName(compUnit) + "." + cdInterface.getName());
+        if (importHW) {
+          CD4C.getInstance().addImport(cdInterface, getPackageName(compUnit) + "." + cdInterface.getName());
+        }
         applyTopMechanism(cdInterface);
       }
     }
 
     for (ASTCDEnum cdEnum : compUnit.getCDDefinition().getCDEnumsList()) {
       if (existsHandwrittenClass(hwPath, determineQualifiedName(cdEnum, compUnit))) {
-        CD4C.getInstance().addImport(cdEnum, getPackageName(compUnit) + "." + cdEnum.getName());
+        if (importHW) {
+          CD4C.getInstance().addImport(cdEnum, getPackageName(compUnit) + "." + cdEnum.getName());
+        }
         applyTopMechanism(cdEnum);
       }
     }

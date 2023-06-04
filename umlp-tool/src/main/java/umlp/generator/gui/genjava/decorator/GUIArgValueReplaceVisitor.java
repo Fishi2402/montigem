@@ -135,17 +135,26 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
     if (potentialHolder != null) {
       if (potentialHolder.getValue().equals(node) && !ignore.contains(node.getName())) {
         if (potentialHolder.getKey() instanceof ASTGUIArgValue) {
-          Supplier<ASTExpression> newValue = () -> ExpressionsBasisMill.nameExpressionBuilder()
+          Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.fieldAccessExpressionBuilder()
               .setName(util.gui2cdAttrSetterName(node.getName()))
+              .setExpression(
+                  ExpressionsBasisMill.nameExpressionBuilder()
+                      // TODO AGe: technically java "this" expression
+                      .setName("this")
+                      .build())
               .build();
           setterReplacement = Optional.of(new ExpressionReplacement(
               potentialHolder.getKey(), potentialHolder.getValue(), newValue));
         }
         Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.callExpressionBuilder()
-            .setExpression(
-                ExpressionsBasisMill.nameExpressionBuilder()
-                    .setName(util.gui2cdAttrGetterName(node.getName()))
-                    .build()
+            .setExpression(CommonExpressionsMill.fieldAccessExpressionBuilder()
+                .setName(util.gui2cdAttrGetterName(node.getName()))
+                .setExpression(
+                    ExpressionsBasisMill.nameExpressionBuilder()
+                        // TODO AGe: technically java "this" expression
+                        .setName("this")
+                        .build())
+                .build()
             )
             .setArguments(
                 ExpressionsBasisMill.argumentsBuilder()
