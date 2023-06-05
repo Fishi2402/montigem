@@ -51,20 +51,22 @@ export abstract class GemList<E extends GemIdentifiable>
   }
 
 
-  public get(idx: number): E {
+  public get(idx: number): Promise<E> {
     if (this.isNotIdxInInclusiveBounds(idx)) {
       this.logIndexError("0xAC729", "get", idx);
     }
     let id: number = this.getID1(idx);
-    let lr: LoadResult<E> = this.loadSingleObject(id);
-    if (lr.isPresent()) {
-      return lr.get();
-    }
-    else {
-      // TODO: rework error handling?
-      console.error("Can not load Object with id " + id);
-      return null;
-    }
+    return this.loadSingleObject(id).then(v => {
+      let lr = v;
+      if (lr.isPresent()) {
+        return lr.get();
+      }
+      else {
+        // TODO: rework error handling?
+        console.error("Can not load Object with id " + id);
+        return null;
+      }
+    });
   }
 
   /**
@@ -83,13 +85,13 @@ export abstract class GemList<E extends GemIdentifiable>
    * @param gemIDs reference the objects to get
    * @return the results of trying to load the objects
    */
-  protected abstract loadObjects(gemIDs: Array<number>): Array<LoadResult<E>>;
+  protected abstract loadObjects(gemIDs: Array<number>): Array<Promise<LoadResult<E>>>;
 
-  public set(idx: number, elem: E): E {
+  public set(idx: number, elem: E): Promise<E> {
     if (this.isNotIdxInInclusiveBounds(idx)) {
       this.logIndexError("0xAC725", "set", idx);
     }
-    const oldElem: E = this.get(idx);
+    const oldElem: Promise<E> = this.get(idx);
     this._internal_setAndSync(idx, elem.getGemId());
     return oldElem;
   }
@@ -128,9 +130,9 @@ export abstract class GemList<E extends GemIdentifiable>
   }
 
 
-  public remove(idx: number): E {
+  public remove(idx: number): Promise<E> {
     // TODO: removeIdxsFunction needed?
-    let elem: E = this.get(idx);
+    let elem: Promise<E> = this.get(idx);
     this._internal_removeAndSync(new Set([idx]));
     return elem;
   }
@@ -176,10 +178,10 @@ export abstract class GemList<E extends GemIdentifiable>
     }
   }
 
-  protected loadSingleObject(id: number): LoadResult<E> {
-    let res: Array<LoadResult<E>> = this.loadObjects([id]);
+  protected loadSingleObject(id: number): Promise<LoadResult<E>> {
+    let res: Array<Promise<LoadResult<E>>> = this.loadObjects([id]);
     if (res.length === 0) {
-      return new LoadResult<E>().LoadResult2(LoadingState.FAILED_TO_LOAD);
+      return Promise.resolve(new LoadResult<E>().LoadResult2(LoadingState.FAILED_TO_LOAD));
     }
 
     return res[0];

@@ -16,12 +16,12 @@ ${tc.signature("args")}
 <ng-container *ngFor='let ${itemName} of ${iterable}; index as ${counterName}'>
 -->
 <#assign args = args + [itemName]>
-<ng-container *ngFor='let ${itemName} of ${iterable}; index as ${counterName}'
-  <#if isTpl>#${genHelper.getNgTemplateActualName(ast.getId().getName())}</#if>
->
+<#if isTpl><ng-template #${genHelper.getNgTemplateActualName(ast.getId().getName())}></#if>
+<ng-container *ngFor='let ${itemName} of ${iterable}; index as ${counterName}'>
   <#list contentList as content>
     ${tc.includeArgs("umlp.gui2html.BlockContentOrArgValue", content, [args])}
   </#list>
 </ng-container>
+<#if isTpl></ng-template></#if>
 <#assign index = args?size - 2>
 <#if index gt 0><#assign args = args[0..index]></#if>

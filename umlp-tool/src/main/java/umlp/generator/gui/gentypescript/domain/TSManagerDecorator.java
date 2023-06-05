@@ -4,15 +4,66 @@ package umlp.generator.gui.gentypescript.domain;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
+import umlp.generator.domain.decorator.BuilderDecorator;
+import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
+import umlp.generator.domain.decorator.DeSerBuilderDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.domain.decorator.ObserverDecorator;
 
 public class TSManagerDecorator extends ManagerDecorator {
 
+  protected String astcdPackage;
+
+  protected ASTCDCompilationUnit origCD;
+
   public TSManagerDecorator(GlobalExtensionManagement glex) {
     super(glex);
+  }
+
+  @Override
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    this.astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE).getName();
+    this.origCD = origCD;
+    super.transform(origCD, decoratedCD);
+  }
+
+  @Override
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
+    ASTCDClass clazz = super.createClass(origCD);
+
+    String name = origCD.getCDDefinition().getName();
+    getCD4C().addImport(clazz, this.astcdPackage + "."
+        + name + BaseClassObjectMapperDecorator.SUFFIX);
+    getCD4C().addImport(clazz, this.astcdPackage + "."
+        + name + CommandObjectMapperDecorator.SUFFIX);
+    getCD4C().addImport(clazz, this.astcdPackage + "."
+        + name + ObserverDecorator.SUFFIX);
+
+    for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
+      getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
+      if (!c.getModifier().isDerived() && !c.getModifier().isAbstract()) {
+        getCD4C().addImport(clazz, this.astcdPackage + "."
+            + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+        getCD4C().addImport(clazz, this.astcdPackage + "."
+            + c.getName() + DeSerBuilderDecorator.DESER_BUILDER_SUFFIX);
+      }
+    }
+    for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
+      getCD4C().addImport(clazz, this.astcdPackage + "."
+          + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+    }
+    for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
+      getCD4C().addImport(clazz, this.astcdPackage + "."
+          + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+    }
+
+    return clazz;
   }
 
   @Override
@@ -23,6 +74,11 @@ public class TSManagerDecorator extends ManagerDecorator {
   @Override
   protected String getErrorNotificationScopeTemplate() {
     return "umlp.gui2ts.manager.TSErrorNotificationScope";
+  }
+
+  @Override
+  protected String getObserversType(String name) {
+    return name + "Observer" + "[]";
   }
 
   @Override
@@ -61,10 +117,10 @@ public class TSManagerDecorator extends ManagerDecorator {
       getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSIsLoaded", name, false);
 
       if (!domainClass.getModifier().isAbstract()) {
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilder", name, true);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilder", name, false);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilderParam", name, true);
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilderParam", name, false);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilder", name, true, managerClass.getName());
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilder", name, false, managerClass.getName());
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilderParam", name, true, managerClass.getName());
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilderParam", name, false, managerClass.getName());
         getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDeSerBuilder", name, true);
         getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDeSerBuilder", name, false);
         getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDelete", name, true);

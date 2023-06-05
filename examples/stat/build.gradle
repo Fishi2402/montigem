@@ -38,6 +38,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
     implementation "com.h2database:h2:${h2_database}"
 
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
 
     //symbol "de.monticore:frontend-rte:$mc_version"
 }

@@ -59,6 +59,33 @@ umlp Log_MC_JAR {
     int empty_hook_point_calls;
   }
 
+
+
+/* *********************************
+*      UMLP Log
+* **********************************
+*/
+
+    // Information how the JAR was started
+    // Specific to UMLP
+    class UMLPJarCLIParameter {
+      List<String> input; // Filenames of input files
+      boolean debug;      // Debug Flag set?
+      boolean hwc;       // HWC Directory set?
+    }
+
+    class UMLPJarLogEntry {
+      String uuid;
+      String toolVersion;           // e.g. "7.5.0-SNAPSHOT"
+      java.time.Duration duration;  // Duration of the run
+      java.time.Instant receivedTime; // When was the request received on the server? - Added in backend
+      // java.net.InetAddress origin; // Who sent the request? (Anonymized) - Added in backend
+
+      UMLPJarCLIParameter parameter;
+      MCSummary summary;
+    }
+
+
   class HI{
   String hal;
   }

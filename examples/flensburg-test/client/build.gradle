@@ -1,16 +1,16 @@
 import java.nio.file.Paths
 
 buildscript {
-  repositories {
-    mavenCentral()
-    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-  }
-  dependencies {
-    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
-      transitive = true
+    repositories {
+        mavenCentral()
+        maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+        maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
     }
-    classpath group: 'umlp', name: 'umlp-frontend-rte-java', version: version
+    dependencies {
+        classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
+            transitive = true
+        }
+    classpath group: 'umlp', name: 'umlp-frontend-rte-java'
 //        classpath project(":umlp-rte:umlp-frontend-rte-java")
   }
 }
@@ -196,3 +196,5 @@ tasks.named('build') {
   dependsOn(tasks.buildApp)
 }
 /**/
+
+clean.dependsOn(jsweetClean)

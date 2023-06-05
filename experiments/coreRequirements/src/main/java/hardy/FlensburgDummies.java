@@ -47,9 +47,6 @@ public class FlensburgDummies {
     
     FlensburgMock.secretlyAdaptnextGemIds(3101);
 
-
-
-
     PersonBuilder pb3101 = FlensburgManager.personBuilder()
         .mainResidence(a101)
         .age(25).nickname("Anna").owns(Collections.singleton(c1101));

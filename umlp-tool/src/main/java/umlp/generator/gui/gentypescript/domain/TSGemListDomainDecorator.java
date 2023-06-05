@@ -11,13 +11,13 @@ public class TSGemListDomainDecorator extends GemListDomainDecorator {
   }
 
   @Override
-  protected String getConstructorDefaultTemplate() {
-    return "umlp.gemlist.ConstructorDefault";
+  protected String getConstructorTemplate() {
+    return "umlp.gui2ts.gemlist.assocs.TSConstructor";
   }
 
   @Override
-  protected String getConstructorTemplate() {
-    return "umlp.gemlist.Constructor";
+  protected String getLoadObjectsTemplate() {
+    return "umlp.gui2ts.gemlist.TSLoadObjects";
   }
 
 }

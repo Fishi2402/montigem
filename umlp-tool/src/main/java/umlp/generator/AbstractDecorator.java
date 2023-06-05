@@ -139,7 +139,7 @@ public abstract class AbstractDecorator {
   }
 
   protected void addImports(ASTCDType domainType, ASTCDType cdType) {
-    domainType.getCDAttributeList().forEach(a -> {
+    CDSymbolTables.getAttributesInHierarchy(domainType).forEach(a -> {
       if (GenService.isJavaType(a.getSymbol().getType())) {
         getCD4C().addImport(cdType, a.getSymbol().getType().printFullName());
       } else if (a.getSymbol().getType().isGenericType()) {

@@ -10,6 +10,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.types.check.SymTypeExpression;
 import umlp.generator.gui.ExpressionReplaceSearchVisitor;
@@ -36,6 +37,7 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
   protected Optional<ASTExpression> nullCheckExpression = Optional.empty();
   protected List<ExpressionReplacement> replacements = new ArrayList<>();
   protected Optional<ExpressionReplacement> setterReplacement = Optional.empty();
+  protected boolean usesBuilder = false;
 
   protected boolean needsGetter = false;
   protected boolean needsOwnParam = false;
@@ -87,6 +89,10 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
     this.ignore = ignore;
   }
 
+  public void setUsesBuilder(boolean usesBuilder) {
+    this.usesBuilder = usesBuilder;
+  }
+
   public void transform(SymTypeExpression ste, ASTGUINamedArg arg) {
     if (!util.hasGetter(ste)) {
       return;
@@ -130,17 +136,26 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
     if (potentialHolder != null) {
       if (potentialHolder.getValue().equals(node) && !ignore.contains(node.getName())) {
         if (potentialHolder.getKey() instanceof ASTGUIArgValue) {
-          Supplier<ASTExpression> newValue = () -> ExpressionsBasisMill.nameExpressionBuilder()
+          Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.fieldAccessExpressionBuilder()
               .setName(util.gui2cdAttrSetterName(node.getName()))
+              .setExpression(
+                  ExpressionsBasisMill.nameExpressionBuilder()
+                      // TODO AGe: technically java "this" expression
+                      .setName("this")
+                      .build())
               .build();
           setterReplacement = Optional.of(new ExpressionReplacement(
               potentialHolder.getKey(), potentialHolder.getValue(), newValue));
         }
         Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.callExpressionBuilder()
-            .setExpression(
-                ExpressionsBasisMill.nameExpressionBuilder()
-                    .setName(util.gui2cdAttrGetterName(node.getName()))
-                    .build()
+            .setExpression(CommonExpressionsMill.fieldAccessExpressionBuilder()
+                .setName(util.gui2cdAttrGetterName(node.getName()))
+                .setExpression(
+                    ExpressionsBasisMill.nameExpressionBuilder()
+                        // TODO AGe: technically java "this" expression
+                        .setName("this")
+                        .build())
+                .build()
             )
             .setArguments(
                 ExpressionsBasisMill.argumentsBuilder()
@@ -162,7 +177,9 @@ public class GUIArgValueReplaceVisitor extends ExpressionReplaceSearchVisitor {
         if (potentialHolder.getKey() instanceof ASTGUIArgValue) {
           Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.fieldAccessExpressionBuilder()
               .setExpression(node.getExpression())
-              .setName(util.gui2cdAttrSetterName(node.getName()))
+              .setName(usesBuilder
+                  ? util.gui2cdAttrBuilderSetterName(node.getName())
+                  : util.gui2cdAttrSetterName(node.getName()))
               .build();
           setterReplacement = Optional.of(new ExpressionReplacement(
               potentialHolder.getKey(), potentialHolder.getValue(), newValue));

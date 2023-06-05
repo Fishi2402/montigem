@@ -345,8 +345,6 @@ public class UMLPTool extends UMLPToolTOP {
               .map(p -> p.toFile()).collect(Collectors.toList()));
           genSetup.setGlex(new GlobalExtensionManagement());
 
-          // execute generator
-
           List<String> domainModels = new ArrayList<>();
           if (DOMAIN.isSelected(cmd)) {
             domainModels.addAll(Arrays.asList(cmd.getOptionValues(DOMAIN.getCMD())));

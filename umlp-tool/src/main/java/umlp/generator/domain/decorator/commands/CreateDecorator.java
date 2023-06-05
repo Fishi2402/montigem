@@ -43,13 +43,13 @@ public class CreateDecorator extends AbstractDeSerDecorator {
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
-      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Request<Void>"))
+      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
       .setName(classname+SUFFIX)
       .build();
 
-    ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected final " + classname + " " + StringTransformations.uncapitalize(classname));
+    ASTCDAttribute attr = addDomainAttr(ast, classname);
 
-    getCD4C().addConstructor(ast, getConstructorTemplate(),classname, packageName, SUFFIX);
+    addConstructor(ast, classname, packageName);
     getCD4C().addMethod(ast, getDoRunTemplate(), classname, origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList(StringTransformations.uncapitalize(classname) + ".getGemId()"));
     AccessorDecorator accessor = new AccessorDecorator(glex);
@@ -61,6 +61,19 @@ public class CreateDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
 
     return ast;
+  }
+
+  protected String extendedClass() {
+    return "Request<Void>";
+  }
+
+  protected ASTCDAttribute addDomainAttr(ASTCDClass ast, String classname) {
+    return getCD4C().addAttribute(ast, "protected final "
+        + classname + " " + StringTransformations.uncapitalize(classname));
+  }
+
+  protected void addConstructor(ASTCDClass ast, String classname, String packageName) {
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname, packageName, SUFFIX);
   }
 
   protected String getGetEffectedGemIdsTemplate() {
@@ -87,13 +100,17 @@ public class CreateDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getFromJsonObjectTemplate(), domainClass.getName(), cmdName);
     getCD4C().addMethod(ast, getBuildJsonTemplate(), domainClass.getName(), cmdName);
 
+    addDeSerImport(ast, origCD, domainClass, cmdName);
+    addedDeSers.add(ast);
+    return ast;
+  }
+
+  protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, ASTCDClass domainClass, String cmdName) {
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName()+ DeSerDecorator.SUFFIX);
-    addedDeSers.add(ast);
-    return ast;
   }
 
   protected String getBuildJsonTemplate() {

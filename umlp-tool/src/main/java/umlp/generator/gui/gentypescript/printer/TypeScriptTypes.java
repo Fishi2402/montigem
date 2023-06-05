@@ -9,6 +9,8 @@ public enum TypeScriptTypes {
   COLLECTION("Collection", "Array"),
   LOCAL_DATE("LocalDate", "Date"),
   ITERATOR("Iterator", "IterableIterator"),
+  VOID_BOXED("Void", "void"),
+  BOOLEAN_BOXED("Boolean", "boolean"),
   INT("int", "number"),
   INT_BOXED("Integer", "number"),
   DOUBLE("double", "number"),
@@ -31,6 +33,17 @@ public enum TypeScriptTypes {
   public static String toTSType(String mcType) {
     String res = mcType;
 
+    /*
+    int start = res.indexOf("<");
+    int end = res.lastIndexOf(">");
+
+    if (start >= 0 && end >= 0) {
+      String main = res.substring(0, start);
+      String generic = res.substring(start + 1, end);
+      res = toTSType(main) + toTSType(generic);
+    }
+    /**/
+
     for (TypeScriptTypes type : TypeScriptTypes.values()) {
       if (type.mcType.equals(res)) {
         res = type.tsType;
@@ -38,6 +51,15 @@ public enum TypeScriptTypes {
     }
 
     return res;
+  }
+
+  public static boolean isDefault(String mcType) {
+    for (TypeScriptTypes type : TypeScriptTypes.values()) {
+      if (type.mcType.equals(mcType)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public String getMCType() {

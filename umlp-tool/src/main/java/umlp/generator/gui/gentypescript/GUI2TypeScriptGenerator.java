@@ -7,23 +7,15 @@ import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.io.paths.MCPath;
-import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Names;
-import de.se_rwth.commons.logging.Log;
-import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
-import umlp.generator.gui.gentypescript.java2ts.TSTopDecorator;
 
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import static de.se_rwth.commons.Names.constructQualifiedName;
@@ -67,7 +59,7 @@ public class GUI2TypeScriptGenerator {
 
     String componentPath = "./" + decoratedAst.getComponentName();
 
-    Optional<String> filePath = util.getRelativeHandwrittenPath(
+    Optional<String> filePath = util.getRelativeImportPath(
         hwcPath, setup.getOutputDirectory().toPath(),
         decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getQName()
             + "." + decoratedAst.getComponentName(), "ts");

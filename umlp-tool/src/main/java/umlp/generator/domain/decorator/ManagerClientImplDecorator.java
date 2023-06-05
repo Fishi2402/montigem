@@ -16,6 +16,7 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
@@ -35,7 +36,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     astcdPackage.addCDElement(createClass(origCD));
   }
@@ -50,6 +51,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
             .build();
 
     // methods
+    getCD4C().addMethod(managerClass, getInitTemplate(), name, name + ManagerDecorator.SUFFIX);
     getCD4C().addMethod(managerClass, getConstructorTemplate(), name + SUFFIX);
     List<String> classList = origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .map(c -> c.getName()).collect(Collectors.toList());
@@ -65,6 +67,10 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     // Imports
     addImports(origCD, managerClass);
     return managerClass;
+  }
+
+  protected String getInitTemplate() {
+    return "umlp.managerclientimpl.Init";
   }
 
   protected String getErrorNotificationScopeTemplate() {
@@ -184,7 +190,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("StatusResult"));
-    getCD4C().addImport(clazz, Joiners.DOT.join(getPackageName(origCD, REQUESTS_PACKAGE), "GetFreeGemIdRequest"));
+    getCD4C().addImport(clazz, Joiners.DOT.join(getPackageName(origCD, REQUESTS_PACKAGE), GetFreeGemIdRequestDecorator.CLASS_NAME));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemListBuilder"));

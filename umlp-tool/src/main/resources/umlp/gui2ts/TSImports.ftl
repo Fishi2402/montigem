@@ -5,6 +5,7 @@ import {
   Component,
   Input,
   Output,
+  TemplateRef,
 } from '@angular/core';
 
 import { ActivatedRoute } from '@angular/router';

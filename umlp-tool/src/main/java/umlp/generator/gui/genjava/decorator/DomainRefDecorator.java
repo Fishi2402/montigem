@@ -65,11 +65,19 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     astcdPackage.addCDElement(decoratedClass);
 
     // imports
+    boolean addedManager = false;
     for (ASTMCImportStatement i : guiAst.getMCImportStatementList()) {
       if (!isGUIModelImportInGUI(i)) {
+        // add manager import once
+        if (!addedManager) {
+          getCD4C().addImport(decoratedClass, util.gui2tsManagerImport(guiAst.getComponentName()));
+          addedManager = true;
+        }
+        // add builder import
         if (util.isCreateModel(guiAst.getComponentQName())) {
           getCD4C().addImport(decoratedClass, i.getQName() + BuilderDecorator.BUILDER_SUFFIX);
         }
+        // add domain class import
         else {
           String qName = i.getQName();
           getCD4C().addImport(decoratedClass,
@@ -93,7 +101,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     // --- end
 
     ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(
-        CDModifier.PROTECTED.build(), attributeType, util.gui2cdAttrName(attributeName));
+        CDModifier.PUBLIC.build(), attributeType, util.gui2cdAttrName(attributeName));
 
     clazz.addCDMember(domainAttribute);
 
@@ -132,7 +140,9 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         List<String> builders = new ArrayList<>();
         List<HookPoint> hps = new ArrayList<>();
         for (ASTGUIParam p : domainParams) {
-          domainAttributes.add(addBuilderForDomainMembers(clazz, p));
+          ASTCDAttribute cdAttr = addBuilderForDomainMembers(clazz, p);
+          addAnnotation(cdAttr);
+          domainAttributes.add(cdAttr);
 
           String builder = BuilderDecorator.getClassName(p.getName());
           builders.add(builder);
@@ -160,7 +170,9 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         // Add attributes
         List<HookPoint> hps = new ArrayList<>();
         for (ASTGUIParam p : domainParams) {
-          domainAttributes.add(addAttributForGUIParameter(clazz, p));
+          ASTCDAttribute cdAttr = addAttributForGUIParameter(clazz, p, CDModifier.PUBLIC.build());
+          addAnnotation(cdAttr);
+          domainAttributes.add(cdAttr);
 
           if (util.getMainDomainModelSimpleName().isPresent()) {
             // TODO AGe: body of init method currently uses different hooks, improve

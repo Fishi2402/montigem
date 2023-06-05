@@ -1,10 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("methodName", "attrType", "attr", "condition")}
+${tc.signature("methodName", "attrType", "attr", "args", "condition")}
 <#assign attrName="value">
-${cd4c.method("public void ${methodName}(${attrType} ${attrName})")}
+${cd4c.method("public void ${methodName}(${args})")}
 <#if condition?has_content>
-  if (!this.${condition}) {
+  if (!${condition}) {
     return null;
   }
 </#if>
-    this.${attr}${attrName});
+    ${attr}${attrName});
