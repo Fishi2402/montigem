@@ -35,6 +35,8 @@ import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.gui.genjava.decorator.GUIArgValueReplaceVisitor;
+import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
 import java.net.URL;
@@ -259,8 +261,10 @@ public class GUIGeneratorUtil {
   // TODO AGe: remove when problem with RangeControl is resolved
   public String getShortIteratorIterable(ASTGUIIterate iterate) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
-      return getHTMLName(
-          print(((ASTGUIShortIterateControl) iterate.getIterateControl()).getIterable()));
+      ASTGUIShortIterateControl ic = ((ASTGUIShortIterateControl) iterate.getIterateControl());
+      GUIIterableReplaceVisitor visitor = new GUIIterableReplaceVisitor();
+      visitor.transform(ic);
+      return getHTMLName(print(visitor.getGetterExpression()));
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
         + " was not processed: range iterate control not supported yet");

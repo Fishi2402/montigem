@@ -2,6 +2,7 @@
 package umlp.generator.gui.genhtml;
 
 import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._ast.ASTGUIBlock;
 import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
@@ -11,7 +12,11 @@ import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import umlp.generator.gui.GUIGeneratorUtil;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,7 +29,8 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
   protected ASTGUICompilationUnit out;
   protected ASTGUICompilationUnit in;
 
-  protected Set<ASTGUIBlockContent> templates = new HashSet<>();
+  protected Map<ASTGUIBlock, Set<ASTGUIBlockContent>> templates = new HashMap();
+  protected Deque<ASTGUIBlock> holderStack = new ArrayDeque<>();
 
   protected Optional<ASTGUIComponent> current = Optional.empty();
 
@@ -44,9 +50,14 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
   public void transform(ASTGUICompilationUnit ast) {
     in = ast;
     out = ast.deepClone();
+    if (out.getGUIComponentDeclaration().isPresentGUIBlock()) {
+      holderStack.push(out.getGUIComponentDeclaration().getGUIBlock());
+    }
     out.accept(getTraverser());
     if (out.getGUIComponentDeclaration().isPresentGUIBlock()) {
-      out.getGUIComponentDeclaration().getGUIBlock().addAllGUIBlockContents(templates);
+      for (ASTGUIBlock block : templates.keySet()) {
+        block.addAllGUIBlockContents(templates.get(block));
+      }
     }
   }
 
@@ -71,7 +82,7 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
       ASTGUIBlockContent content = GUIDSLMill.gUIBlockContentBuilder()
           .setGUIComponent(clone)
           .build();
-      templates.add(content);
+      addTemplate(content);
     }
   }
 
@@ -85,22 +96,38 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
       ASTGUIBlockContent content = GUIDSLMill.gUIBlockContentBuilder()
           .setGUIGuard(clone)
           .build();
-      templates.add(content);
+      addTemplate(content);
     }
   }
 
   @Override
+  public void visit(ASTGUIIterate node) {
+    holderStack.push(node.getGUIBlock());
+  }
+
+  @Override
   public void endVisit(ASTGUIIterate node) {
+    holderStack.pop();
     if (current.isPresent()) {
       String templateId = util.getNgTemplateName(node.getId().getName());
       node.getId().setName(util.getNgTemplateActualName(templateId));
       ASTGUIIterate clone = node.deepClone();
+      if (templates.containsKey(node.getGUIBlock())) {
+        templates.put(clone.getGUIBlock(), templates.get(node.getGUIBlock()));
+      }
       clone.getId().setName(templateId);
       ASTGUIBlockContent content = GUIDSLMill.gUIBlockContentBuilder()
           .setGUIIterate(clone)
           .build();
-      templates.add(content);
+      addTemplate(content);
     }
+  }
+
+  protected void addTemplate(ASTGUIBlockContent content) {
+    if (!templates.containsKey(holderStack.peek())) {
+      templates.put(holderStack.peek(), new HashSet<>());
+    }
+    templates.get(holderStack.peek()).add(content);
   }
 
 }

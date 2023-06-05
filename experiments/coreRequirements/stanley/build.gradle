@@ -143,7 +143,6 @@ task generateAll(type: UMLPGuiGenTask) {
   guiCreateModels = ["stanley.personcreate.PersonCreate", "stanley.gui.AccountCreate"]
 
   // moreArgs = ['-s', 'someArg']  // mehr CLI Argumente (nur zum debugging / testing!)
-  /*
   debug = true
   outputs.upToDateWhen { false }
   /**/

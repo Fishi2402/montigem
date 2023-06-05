@@ -18,7 +18,8 @@ ${tc.signature("args")}
       [${namedArg.getName()}] = '${genHelper.gui2cdAttrGetterName(ast.getId().getName(), namedArg.getName())}(
         <#list args as arg>${arg}<#if !arg?is_last>,</#if></#list>)'
       <#if genHelper.hasSetter(ast, namedArg)>
-        (${namedArg.getName()}Change) = '${genHelper.gui2cdAttrSetterName(ast.getId().getName(), namedArg.getName())}($event)'
+        (${namedArg.getName()}Change) = '${genHelper.gui2cdAttrSetterName(ast.getId().getName(), namedArg.getName())}(
+          $event<#list args as arg>,${arg}</#list>)'
       </#if>
     <#else>
       <#-- TODO AGe: iterator index -->

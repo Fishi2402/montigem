@@ -115,8 +115,11 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
         addGetComponentMethod(decoratedClass, getterName, paramType,
             attr.getName(), getArgs(it2Arg.getArgs()), false, "");
+        List<String> setterArgs = new ArrayList<>();
+        setterArgs.add(paramType + " value");
+        setterArgs.addAll(getArgs(it2Arg.getArgs()));
         addSetComponentMethod(getSetterTemplate(), decoratedClass, setterName, paramType,
-            attr.getName(), getArgs(it2Arg.getArgs()), false, "");
+            attr.getName(), setterArgs, false, "");
 
         List<String> initValues = new ArrayList<>();
         for (ASTGUIArgValue av : valueList) {
@@ -145,8 +148,12 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       if (paramSym.get().isIsReference() && visitor.getSetterExpression().isPresent()) {
         String setterValue = guiDSLPrinter.prettyprint(visitor.getSetterExpression().get());
         setterValue = convertSetter(setterValue, convertToString);
+        List<String> setterArgs = new ArrayList<>();
+        // TODO AGe: clean up
+        setterArgs.add(paramType + " value");
+        setterArgs.addAll(getArgs(it2Arg.getArgs()));
         addSetComponentMethod(getSetterReplacedTemplate(), decoratedClass, setterName, paramType,
-            setterValue, getArgs(it2Arg.getArgs()), isLiteral, nullCheck);
+            setterValue, setterArgs, isLiteral, nullCheck);
       }
     }
   }
@@ -206,7 +213,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       String template, ASTCDClass decoratedClass, String methodName, String attrType, String attrName,
       List<String> arguments, boolean isLiteral, String condition
   ) {
-    getCD4C().addMethod(decoratedClass, template, methodName, attrType, attrName, condition);
+    getCD4C().addMethod(decoratedClass, template, methodName, attrType, attrName,
+        String.join(", ", arguments), condition);
   }
 
   protected String getSetterTemplate() {
