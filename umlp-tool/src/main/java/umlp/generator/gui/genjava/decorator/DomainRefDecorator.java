@@ -73,10 +73,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         if (util.isCreateModel(guiAst.getComponentQName())) {
           getCD4C().addImport(decoratedClass, i.getQName() + BuilderDecorator.BUILDER_SUFFIX);
         }
-        // add domain class import
-        else {
-          getCD4C().addImport(decoratedClass, i.getQName());
-        }
+        getCD4C().addImport(decoratedClass, i.getQName());
       }
     }
   }

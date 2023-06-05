@@ -534,6 +534,10 @@ public class GUIGeneratorUtil {
       return node.getGUIIterate().getId().getName();
     }
     if (node.isPresentExpression()) {
+      String value = print(node);
+      if (node.getEnclosingScope().resolveGUIParam(value).isPresent()) {
+        return print(node);
+      }
       return print(node) + TPL_SUFFIX;
     }
     if (node.isPresentGUIList()) {
