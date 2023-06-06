@@ -7,6 +7,15 @@ repositories {
   maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
 }
 
+
+configurations {
+  symbol
+}
+
+dependencies {
+  symbol "umlp:frontend-rte:$mc_version"
+}
+
 // TODO AGe: don't know if that is needed
 task generateCDTOGUI(type: UMLPTask) {
   input = file("src/models/hardy")
@@ -24,10 +33,18 @@ generateUmlpBackend{
   symbolDir = file("$projectDir/build/umlp/symbols")
 }
 
+task copyGUISymbols(type: Copy) {
+  copy {
+    from zipTree(configurations.symbol.asPath)
+    into "$project.buildDir/symbols"
+  }
+}
+
 task generateUmlpFrontend(type: UMLPGuiGenTask) {
-  dependsOn(generateUmlpBackend, generateCDTOGUI)
+  dependsOn(generateUmlpBackend, generateCDTOGUI, copyGUISymbols)
   input = file("src/models/stanley")
   modelDir = file("$projectDir/build/umlp/symbols")
+  symbolDir = layout.buildDirectory.dir("symbols")
   outputDir = layout.buildDirectory.dir("frontend")
 }
 compileJava.dependsOn(generateUmlpFrontend)

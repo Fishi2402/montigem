@@ -327,6 +327,11 @@ public class UMLPTool extends UMLPToolTOP {
               mcPath.addEntry(Paths.get(v));
             }
           }
+          if (INPUT.isSelected(cmd)) {
+            for (String v : cmd.getOptionValues(INPUT.getCMD())) {
+              mcPath.addEntry(Paths.get(v).getParent());
+            }
+          }
           if (SYMTAB.isSelected(cmd)) {
             for (String v : cmd.getOptionValues(SYMTAB.getCMD())) {
               mcPath.addEntry(Paths.get(v));
