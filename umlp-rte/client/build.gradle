@@ -1,0 +1,194 @@
+import org.gradle.work.Incremental
+import org.gradle.work.InputChanges
+
+plugins {
+  id "com.github.node-gradle.node" version "5.0.0"
+}
+node {
+  version = '18.10.0'
+  npmVersion = '8.19.2'
+  download = true
+  dependencies {
+  }
+}
+
+def libs = [
+  "basic",
+  "charts",
+  "common",
+  "table",
+  "input",
+  "arrange",
+  "theme",
+  "utils"]
+
+/*
+libs.forEach(lib->{
+  tasks.register("build${lib}",NpxTask) {
+    command = 'ng'
+    args = ['build', "@umlp/${lib}"]
+  }
+
+  tasks.register("pack${lib}",Exec){
+    dependsOn "build${lib}"
+    commandLine "npm.cmd","pack",".\\projects\\dist\\${lib}\\","--pack-destination",".\\projects\\dist\\${lib}\\"
+  }
+})
+
+tasks.register("buildtable",NpxTask)
+  {
+    dependsOn {"addLoalLibToTable"}
+    dependsOn {"installTableNpm"}
+    command='ng'
+    args=['build',"@umlp/table"]
+  }
+
+tasks.register("packtable",Exec)
+  {
+    dependsOn { "buildtable"}
+    commandLine "npm.cmd","pack",".\\projects\\dist\\table\\","--pack-destination",".\\projects\\dist\\table\\"
+  }
+
+tasks.register("installTableNpm",Exec)
+  {
+    commandLine "npm.cmd","--prefix",".\\projects\\umlp\\table\\", "install","--no-package-lock"
+  }
+
+
+tasks.register("buildutils",NpxTask)
+  {
+    dependsOn {"addLocalLibToUtils"}
+    dependsOn {"installUtilsNpm"}
+    command='ng'
+    args=['build',"@umlp/utils"]
+  }
+
+tasks.register("packutils",Exec)
+  {
+    dependsOn { "buildutils"}
+    commandLine "npm.cmd","pack",".\\projects\\dist\\utils\\","--pack-destination",".\\projects\\dist\\utils\\"
+  }
+
+tasks.register("installUtilsNpm",Exec)
+  {
+    commandLine "npm.cmd","--prefix",".\\projects\\umlp\\utils\\", "install","--no-package-lock"
+  }
+
+
+
+
+import groovy.json.JsonGenerator
+import groovy.json.JsonSlurper
+import org.gradle.work.Incremental
+import org.gradle.work.InputChanges
+
+tasks.register("addLoalLibToTable")
+  {
+    dependsOn{ "packtyped-json" }
+    dependsOn {"packutils"}
+    def jsonSlurper = new JsonSlurper()
+    def data = jsonSlurper.parse(new File("projects\\umlp\\table\\package.json"))
+    def directory=System.getProperty("user.dir");
+    directory=directory+"\\projects\\dist\\utils\\umlp-utils-1.0.0-SNAPSHOT.tgz"
+    data["dependencies"]["@umlp/utils"]=directory
+
+    directory=System.getProperty("user.dir");
+    directory=directory+"\\projects\\dist\\pipes\\umlp-pipes-1.0.0-SNAPSHOT.tgz"
+    data["dependencies"]["@umlp/pipes"]=directory
+
+    def generator = new JsonGenerator.Options()
+      .build()
+    def json=generator.toJson(data)
+
+    File file=new File("projects\\umlp\\table\\package.json")
+
+    file.write(json)
+  }
+
+
+tasks.register("addLocalLibToUtils")
+  {
+    dependsOn{ "packtyped-json" }
+    def jsonSlurper = new JsonSlurper()
+    def data = jsonSlurper.parse(new File("projects\\umlp\\utils\\package.json"))
+    def directory=System.getProperty("user.dir");
+    directory=directory+"\\projects\\dist\\typed-json\\umlp-typed-json-1.0.0-SNAPSHOT.tgz"
+    data["dependencies"]["@umlp/typed-json"]=directory
+
+    def generator = new JsonGenerator.Options()
+      .build()
+    def json=generator.toJson(data)
+
+    File file=new File("projects\\umlp\\utils\\package.json")
+    file.write(json)
+  }
+
+
+tasks.register("packAll")
+  {
+     libs.forEach(lib->dependsOn{"pack${lib}"})
+     dependsOn{"packutils"}
+    dependsOn{"packtable"}
+  }
+*/
+
+
+abstract class IncrementalReverseTask extends DefaultTask {
+  @Incremental
+  @PathSensitive(PathSensitivity.NAME_ONLY)
+  @InputDirectory
+  abstract DirectoryProperty getInputDir()
+
+  @OutputDirectory
+  abstract DirectoryProperty getOutputDir()
+
+  @Input
+  abstract Property<String> getInputProperty()
+
+  @TaskAction
+  void execute(InputChanges inputChanges) {
+    println(inputChanges.incremental
+      ? 'Executing incrementally'
+      : 'Executing non-incrementally'
+    )
+
+    inputChanges.getFileChanges(inputDir).each { change ->
+      if (change.fileType == FileType.DIRECTORY) return
+
+      println "${change.changeType}: ${change.normalizedPath}"
+      def targetFile = outputDir.file(change.normalizedPath).get().asFile
+      if (change.changeType == ChangeType.REMOVED) {
+        targetFile.delete()
+      } else {
+        targetFile.text = change.file.text.reverse()
+      }
+    }
+  }
+}
+
+
+
+tasks.register('incrementalReverse', IncrementalReverseTask) {
+  inputDir = file('projects')
+  outputDir = file("$buildDir/outputs")
+  inputProperty = project.properties['taskInputProperty'] ?: 'original'
+}
+
+
+
+  libs.forEach { lib ->
+    {
+      tasks.register("incrementalReverse${lib}", IncrementalReverseTask)
+        {
+          inputDir = file("projects/umlp/${lib}")
+          outputDir = file("$buildDir/outputs")
+          inputProperty = project.properties['taskInputProperty'] ?: 'original'
+        }
+    }
+  }
+
+tasks.register("runAll")
+  {
+    libs.forEach(lib->dependsOn{"incrementalReverse${lib}"})
+
+  }
