@@ -109,8 +109,8 @@ public class ManagerMockDecorator extends AbstractDecorator {
 
       getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
 
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", a.getName(), domainClass.getName(), printedType);
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", a.getName(), domainClass.getName(), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", getAssocName(domainClass, a), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", getAssocName(domainClass,a), printedType);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
     });
   }
@@ -142,8 +142,8 @@ public class ManagerMockDecorator extends AbstractDecorator {
 
       getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
 
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", a.getName(), domainClass.getName(), printedType);
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", a.getName(), domainClass.getName(), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", getAssocName(domainClass, a), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", getAssocName(domainClass, a), printedType);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
     });
   }
