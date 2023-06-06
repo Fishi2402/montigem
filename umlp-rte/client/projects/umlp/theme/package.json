@@ -1,14 +1,1 @@
-{
-  "name": "@umlp/theme",
-  "version": "1.0.0-SNAPSHOT.0",
-  "peerDependencies": {
-    "@angular/common": "^15.1.0",
-    "@angular/core": "^15.1.0"
-  },
-  "dependencies": {
-    "tslib": "2.5.0"
-  },
-  "publishConfig": {
-    "@monticore:registry": "https://git.rwth-aachen.de/api/v4/projects/43796/packages/npm/"
-  }
-}
+{"name":"@umlp/theme","version":"7.5.0","peerDependencies":{"@angular/common":"^15.1.0","@angular/core":"^15.1.0"},"dependencies":{"tslib":"2.5.0"},"publishConfig":{"@monticore:registry":"https://git.rwth-aachen.de/api/v4/projects/43796/packages/npm/"}}

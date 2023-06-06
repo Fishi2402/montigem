@@ -1,17 +1,27 @@
 import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
+import groovy.json.JsonGenerator
+import groovy.json.JsonSlurper
+
+
+
 
 plugins {
   id "com.github.node-gradle.node" version "5.0.0"
 }
+
+repositories {
+  mavenCentral()
+}
+
 node {
   version = '18.10.0'
   npmVersion = '8.19.2'
   download = true
-  dependencies {
-  }
-}
 
+}
+dependencies {
+}
 def libs = [
   "basic",
   "charts",
@@ -132,6 +142,41 @@ tasks.register("packAll")
   }
 */
 
+class StaticMethods {
+  static void updateVersion(String lib)
+  {
+    def jsonSlurper = new JsonSlurper()
+    def data = jsonSlurper.parse(new File("projects/umlp/"+lib+"/package.json"))
+    String oldVersion=data["version"]
+    int startIndex=oldVersion.length()-1;
+    while(startIndex>-1 && oldVersion.charAt(startIndex)!=".".charAt(0))
+    {
+      startIndex--;
+    }
+    String newVersion;
+    if(startIndex<0)
+    {
+      println("false version format")
+      return;
+    }
+    else
+    {
+      int versionNumber=oldVersion.substring(startIndex+1).toInteger();
+      versionNumber++;
+      newVersion=oldVersion.substring(0,startIndex+1)+versionNumber as String;
+      data["version"]=newVersion
+    }
+
+    def generator = new JsonGenerator.Options()
+      .build()
+    def json=generator.toJson(data)
+
+    File file=new File("projects/umlp/"+lib+"/package.json")
+    file.write(json)
+  }
+}
+
+
 
 abstract class IncrementalReverseTask extends DefaultTask {
   @Incremental
@@ -147,48 +192,38 @@ abstract class IncrementalReverseTask extends DefaultTask {
 
   @TaskAction
   void execute(InputChanges inputChanges) {
-    println(inputChanges.incremental
-      ? 'Executing incrementally'
-      : 'Executing non-incrementally'
-    )
-
-    inputChanges.getFileChanges(inputDir).each { change ->
-      if (change.fileType == FileType.DIRECTORY) return
-
-      println "${change.changeType}: ${change.normalizedPath}"
-      def targetFile = outputDir.file(change.normalizedPath).get().asFile
-      if (change.changeType == ChangeType.REMOVED) {
-        targetFile.delete()
-      } else {
-        targetFile.text = change.file.text.reverse()
-      }
+    if(!inputChanges.isIncremental())
+    {
+      println("First run, all libraries history is saved");
+      return
     }
+
+    def libs = [
+      "basic",
+      "charts",
+      "common",
+      "table",
+      "input",
+      "arrange",
+      "theme",
+      "utils"]
+    libs.forEach(lib->{
+      def pattern=".*"+"projects"+".+"+"umlp"+".+"+lib+".*";
+      if(inputChanges.getFileChanges(inputDir).toString().matches(pattern))
+      {
+        StaticMethods.updateVersion(lib);
+        println(lib+" library verstion updated")
+      }
+    })
   }
 }
+
+
 
 
 
 tasks.register('incrementalReverse', IncrementalReverseTask) {
-  inputDir = file('projects')
-  outputDir = file("$buildDir/outputs")
+  inputDir = file('projects/umlp')
+  outputDir = file("projects/dist")
   inputProperty = project.properties['taskInputProperty'] ?: 'original'
 }
-
-
-
-  libs.forEach { lib ->
-    {
-      tasks.register("incrementalReverse${lib}", IncrementalReverseTask)
-        {
-          inputDir = file("projects/umlp/${lib}")
-          outputDir = file("$buildDir/outputs")
-          inputProperty = project.properties['taskInputProperty'] ?: 'original'
-        }
-    }
-  }
-
-tasks.register("runAll")
-  {
-    libs.forEach(lib->dependsOn{"incrementalReverse${lib}"})
-
-  }

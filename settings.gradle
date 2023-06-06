@@ -18,6 +18,7 @@ rootProject.name = 'umlp'
 includeBuild "umlp-tool"
 
 include ":umlp-rte"
+include ":umlp-rte:client"
 include ":umlp-rte:umlp-frontend-rte"
 include ":umlp-rte:umlp-frontend-rte-java"
 
