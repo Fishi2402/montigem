@@ -7,6 +7,12 @@ repositories {
   maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
 }
 
+sourceSets {
+  main {
+    java.srcDirs += [layout.buildDirectory.dir("umlp/cd2gui")]
+    java.srcDirs += [layout.buildDirectory.dir("umlp/frontend")]
+  }
+}
 
 configurations {
   symbol
@@ -20,7 +26,7 @@ dependencies {
 task generateCDTOGUI(type: UMLPTask) {
   input = file("src/models/hardy")
   cdToGui = true
-  outputDir = layout.buildDirectory.dir("cd2gui")
+  outputDir = layout.buildDirectory.dir("umlp/cd2gui")
 }
 /*
 task generateFlensburg(type: UMLPTask) {
@@ -45,6 +51,6 @@ task generateUmlpFrontend(type: UMLPGuiGenTask) {
   input = file("src/models/stanley")
   modelDir = file("$projectDir/build/umlp/symbols")
   symbolDir = layout.buildDirectory.dir("symbols")
-  outputDir = layout.buildDirectory.dir("frontend")
+  outputDir = layout.buildDirectory.dir("umlp/frontend")
 }
 compileJava.dependsOn(generateUmlpFrontend)

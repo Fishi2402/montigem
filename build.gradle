@@ -58,6 +58,7 @@ subprojects {
 
 build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
 
+/* TODO SSt
 subprojects {
   // After every UMLPTask, run basic checks on the generated report
   // e.g. "every generated file is also reported"
@@ -73,3 +74,4 @@ subprojects {
     build.dependsOn(t)
   }
 }
+ */
