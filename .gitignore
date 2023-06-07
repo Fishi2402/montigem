@@ -11,7 +11,6 @@ build/
 /gradle/
 gradlew
 gradlew.bat
-.npmrc
 
 node_modules/
 .jsweet/
