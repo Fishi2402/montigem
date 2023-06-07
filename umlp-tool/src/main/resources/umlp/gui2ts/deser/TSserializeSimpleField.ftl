@@ -28,10 +28,8 @@
         printer["${fieldName}"] = ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${innerType}");
         <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
         printer["${fieldName}"] = obj.get${fieldName?cap_first}().name();
-        printer.value(obj.get${fieldName?cap_first}().name());
         <#else>
         printer["${fieldName}"] = obj.get${fieldName?cap_first}();
-        printer.value(obj.get${fieldName?cap_first}());
         </#if>
       }
     <#else>
