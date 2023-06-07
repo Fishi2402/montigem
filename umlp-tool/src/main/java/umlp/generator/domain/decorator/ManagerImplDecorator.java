@@ -98,8 +98,8 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
       getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
 
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), printedType);
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", domainClass.getName(), a.getName(), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", getAssocName(domainClass, a), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", getAssocName(domainClass, a), printedType);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
     });
   }
@@ -124,8 +124,8 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
       getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
 
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", a.getName(), printedType);
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", name, a.getName(), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoCreateAssoc", getAssocName(domainInterface, a), printedType);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", getAssocName(domainInterface, a), printedType);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainInterface, a)));
     });
   }

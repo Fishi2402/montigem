@@ -82,6 +82,13 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     }
 
     String paramType = TypeScriptTypes.toTSType(paramSym.get().getType().print());
+    if (!TypeScriptTypes.isDefault(paramSym.get().getType().printFullName())) {
+      getCD4C().addImport(decoratedClass, paramSym.get().getType().printFullName());
+    }
+    // TODO AGe: detect underspecified types
+    if (paramType.equals("Array")) {
+      paramType = "Array<any>";
+    }
     String getterName = util.gui2cdAttrGetterName(
         guiComponent.getId().getName(), namedArg.getName());
     String setterName = util.gui2cdAttrSetterName(
@@ -113,8 +120,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         setDefaultListValue(attr);
         decoratedClass.addCDMember(attr);
 
+        // TODO AGe: add this automatically
         addGetComponentMethod(decoratedClass, getterName, paramType,
-            attr.getName(), getArgs(it2Arg.getArgs()), false, "");
+            "this." + attr.getName(), getArgs(it2Arg.getArgs()), false, "");
         List<String> setterArgs = new ArrayList<>();
         setterArgs.add(paramType + " value");
         setterArgs.addAll(getArgs(it2Arg.getArgs()));

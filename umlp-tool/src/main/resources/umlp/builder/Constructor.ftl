@@ -4,6 +4,6 @@ ${cd4c.constructor("public ${name}Builder(long gemId)")}
 
 this.gemId = gemId;
 <#list assocList as assoc>
-<#assign name=assoc.getName()?remove_ending("Present")?cap_first>
-    this._${name?uncap_first} = ${manager}.create${name}Builder(gemId, new ArrayList<>());
+<#assign assocName=assoc.getSymbol().getOtherSide().getType().print()+"_"+assoc.getName()?cap_first>
+    this._${assoc.getName()} = ${manager}.create${assocName}Builder(gemId, new ArrayList<>());
 </#list>

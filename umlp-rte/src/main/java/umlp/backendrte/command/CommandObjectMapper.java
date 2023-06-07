@@ -20,7 +20,7 @@ public abstract class CommandObjectMapper {
     try {
       return getInstance()._serializeCommand(command);
     } catch (Exception e) {
-      String msg = String.format("%s Could not deserialize command: %s\n%s", "0xS0002", command.getCommandType(), e.getMessage());
+      String msg = String.format("%s Could not serialize command: %s\n%s", "0xS0004", command.getCommandType(), e.getMessage());
       Log.error(msg);
       return getInstance()._serializeCommand(new ServerError(e));
     }
@@ -33,7 +33,7 @@ public abstract class CommandObjectMapper {
     try {
       return getInstance()._deserializeCommand(cmdStr);
     } catch (Exception e) {
-      String msg = String.format("%s Could not deserialize command: %s\n%s", "0xS0002", cmdStr, e.getMessage());
+      String msg = String.format("%s Could not deserialize command: %s\n%s", "0xS0003", cmdStr, e.getMessage());
       Log.error(msg);
       return Optional.empty();
     }
