@@ -4,7 +4,7 @@ package hardy.flensburg;
 public class Invoice extends InvoiceTOP {
 
   @Override
-  public Long getSum() {
+  public long getSum() {
     return 0L;
   }
 }
