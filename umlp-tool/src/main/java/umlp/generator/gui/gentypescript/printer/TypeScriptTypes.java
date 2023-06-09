@@ -8,7 +8,7 @@ public enum TypeScriptTypes {
   LIST("List", "Array"),
   COLLECTION("Collection", "Array"),
   LOCAL_DATE("LocalDate", "Date"),
-  ITERATOR("Iterator", "IterableIterator"),
+  ITERATOR("Iterator", "Iterator"),
   VOID_BOXED("Void", "void"),
   BOOLEAN_BOXED("Boolean", "boolean"),
   INT("int", "number"),
