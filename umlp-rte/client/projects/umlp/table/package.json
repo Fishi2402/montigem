@@ -1,18 +1,16 @@
 {
-  "name": "@umlp/table",
-  "version": "7.5.0",
-  "peerDependencies": {
-    "@angular/common": "^15.1.0",
-    "@angular/core": "^15.1.0",
-    "@angular/material": "^15.1.0"
-  },
-  "dependencies": {
-    "tslib": "^2.3.0",
-    "moment": "2.29.4",
-    "@perfectmemory/ngx-contextmenu": "15.1.1"
-  },
-  "sideEffects": false,
-  "publishConfig": {
-    "@monticore:registry": "https://nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/"
-  }
+    "publishConfig": {"@monticore:registry": "https://nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/"},
+    "peerDependencies": {
+        "@angular/material": "^15.1.0",
+        "@angular/common": "^15.1.0",
+        "@angular/core": "^15.1.0"
+    },
+    "name": "@umlp/table",
+    "version": "7.5.0",
+    "sideEffects": false,
+    "dependencies": {
+        "@perfectmemory/ngx-contextmenu": "15.1.1",
+        "tslib": "^2.3.0",
+        "moment": "2.29.4"
+    }
 }

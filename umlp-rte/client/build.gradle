@@ -4,21 +4,12 @@ import groovy.json.JsonGenerator
 import groovy.json.JsonSlurper
 
 
-
-
 plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
+  id 'java'
+  id 'com.diffplug.spotless' version '6.19.0'
 }
-
 repositories {
   mavenCentral()
-}
-
-node {
-  version = '18.10.0'
-  npmVersion = '8.19.2'
-  download = true
-
 }
 dependencies {
 }
@@ -31,151 +22,35 @@ def libs = [
   "arrange",
   "theme",
   "utils"]
-
-/*
-libs.forEach(lib->{
-  tasks.register("build${lib}",NpxTask) {
-    command = 'ng'
-    args = ['build', "@umlp/${lib}"]
-  }
-
-  tasks.register("pack${lib}",Exec){
-    dependsOn "build${lib}"
-    commandLine "npm.cmd","pack",".\\projects\\dist\\${lib}\\","--pack-destination",".\\projects\\dist\\${lib}\\"
-  }
-})
-
-tasks.register("buildtable",NpxTask)
-  {
-    dependsOn {"addLoalLibToTable"}
-    dependsOn {"installTableNpm"}
-    command='ng'
-    args=['build',"@umlp/table"]
-  }
-
-tasks.register("packtable",Exec)
-  {
-    dependsOn { "buildtable"}
-    commandLine "npm.cmd","pack",".\\projects\\dist\\table\\","--pack-destination",".\\projects\\dist\\table\\"
-  }
-
-tasks.register("installTableNpm",Exec)
-  {
-    commandLine "npm.cmd","--prefix",".\\projects\\umlp\\table\\", "install","--no-package-lock"
-  }
-
-
-tasks.register("buildutils",NpxTask)
-  {
-    dependsOn {"addLocalLibToUtils"}
-    dependsOn {"installUtilsNpm"}
-    command='ng'
-    args=['build',"@umlp/utils"]
-  }
-
-tasks.register("packutils",Exec)
-  {
-    dependsOn { "buildutils"}
-    commandLine "npm.cmd","pack",".\\projects\\dist\\utils\\","--pack-destination",".\\projects\\dist\\utils\\"
-  }
-
-tasks.register("installUtilsNpm",Exec)
-  {
-    commandLine "npm.cmd","--prefix",".\\projects\\umlp\\utils\\", "install","--no-package-lock"
-  }
-
-
-
-
-import groovy.json.JsonGenerator
-import groovy.json.JsonSlurper
-import org.gradle.work.Incremental
-import org.gradle.work.InputChanges
-
-tasks.register("addLoalLibToTable")
-  {
-    dependsOn{ "packtyped-json" }
-    dependsOn {"packutils"}
-    def jsonSlurper = new JsonSlurper()
-    def data = jsonSlurper.parse(new File("projects\\umlp\\table\\package.json"))
-    def directory=System.getProperty("user.dir");
-    directory=directory+"\\projects\\dist\\utils\\umlp-utils-1.0.0-SNAPSHOT.tgz"
-    data["dependencies"]["@umlp/utils"]=directory
-
-    directory=System.getProperty("user.dir");
-    directory=directory+"\\projects\\dist\\pipes\\umlp-pipes-1.0.0-SNAPSHOT.tgz"
-    data["dependencies"]["@umlp/pipes"]=directory
-
-    def generator = new JsonGenerator.Options()
-      .build()
-    def json=generator.toJson(data)
-
-    File file=new File("projects\\umlp\\table\\package.json")
-
-    file.write(json)
-  }
-
-
-tasks.register("addLocalLibToUtils")
-  {
-    dependsOn{ "packtyped-json" }
-    def jsonSlurper = new JsonSlurper()
-    def data = jsonSlurper.parse(new File("projects\\umlp\\utils\\package.json"))
-    def directory=System.getProperty("user.dir");
-    directory=directory+"\\projects\\dist\\typed-json\\umlp-typed-json-1.0.0-SNAPSHOT.tgz"
-    data["dependencies"]["@umlp/typed-json"]=directory
-
-    def generator = new JsonGenerator.Options()
-      .build()
-    def json=generator.toJson(data)
-
-    File file=new File("projects\\umlp\\utils\\package.json")
-    file.write(json)
-  }
-
-
-tasks.register("packAll")
-  {
-     libs.forEach(lib->dependsOn{"pack${lib}"})
-     dependsOn{"packutils"}
-    dependsOn{"packtable"}
-  }
-*/
-
 class StaticMethods {
-  static void updateVersion(String lib)
-  {
+  static void updateVersion(String lib) {
     def jsonSlurper = new JsonSlurper()
-    def data = jsonSlurper.parse(new File("projects/umlp/"+lib+"/package.json"))
-    String oldVersion=data["version"]
-    int startIndex=oldVersion.length()-1;
-    while(startIndex>-1 && oldVersion.charAt(startIndex)!=".".charAt(0))
-    {
+    def data = jsonSlurper.parse(new File("projects/umlp/" + lib + "/package.json"))
+    String oldVersion = data["version"]
+    int startIndex = oldVersion.length() - 1;
+    while (startIndex > -1 && oldVersion.charAt(startIndex) != ".".charAt(0)) {
       startIndex--;
     }
     String newVersion;
-    if(startIndex<0)
-    {
+    if (startIndex < 0) {
       println("false version format")
       return;
-    }
-    else
-    {
-      int versionNumber=oldVersion.substring(startIndex+1).toInteger();
+    } else {
+      int versionNumber = oldVersion.substring(startIndex + 1).toInteger();
       versionNumber++;
-      newVersion=oldVersion.substring(0,startIndex+1)+versionNumber as String;
-      data["version"]=newVersion
+      newVersion = oldVersion.substring(0, startIndex + 1) + versionNumber as String;
+      data["version"] = newVersion
     }
 
     def generator = new JsonGenerator.Options()
       .build()
-    def json=generator.toJson(data)
+    def json = generator.toJson(data)
 
-    File file=new File("projects/umlp/"+lib+"/package.json")
+    File file = new File("projects/umlp/" + lib + "/package.json")
     file.write(json)
+
   }
 }
-
 
 
 abstract class IncrementalReverseTask extends DefaultTask {
@@ -192,8 +67,7 @@ abstract class IncrementalReverseTask extends DefaultTask {
 
   @TaskAction
   void execute(InputChanges inputChanges) {
-    if(!inputChanges.isIncremental())
-    {
+    if (!inputChanges.isIncremental()) {
       println("First run, all libraries history is saved");
       return
     }
@@ -207,19 +81,15 @@ abstract class IncrementalReverseTask extends DefaultTask {
       "arrange",
       "theme",
       "utils"]
-    libs.forEach(lib->{
-      def pattern=".*"+"projects"+".+"+"umlp"+".+"+lib+".*";
-      if(inputChanges.getFileChanges(inputDir).toString().matches(pattern))
-      {
+    libs.forEach(lib -> {
+      def pattern = ".*" + "projects" + ".+" + "umlp" + ".+" + lib + ".*";
+      if (inputChanges.getFileChanges(inputDir).toString().matches(pattern)) {
         StaticMethods.updateVersion(lib);
-        println(lib+" library verstion updated")
+        println(lib + " library verstion updated")
       }
     })
   }
 }
-
-
-
 
 
 tasks.register('incrementalReverse', IncrementalReverseTask) {
@@ -227,3 +97,23 @@ tasks.register('incrementalReverse', IncrementalReverseTask) {
   outputDir = file("projects/dist")
   inputProperty = project.properties['taskInputProperty'] ?: 'original'
 }
+
+spotless {
+  json {
+    target 'projects/umlp/**/package.json'
+    simple()
+  }
+}
+
+tasks.register("updateVersion")
+  {
+    dependsOn("incrementalReverse")
+    dependsOn("spotlessApply")
+  }
+
+
+tasks.register("start")
+  {
+    dependsOn("incrementalReverse")
+    dependsOn("spotlessApply")
+  }
