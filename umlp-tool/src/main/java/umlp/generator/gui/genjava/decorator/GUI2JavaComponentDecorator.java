@@ -81,9 +81,22 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       return;
     }
 
-    String paramType = TypeScriptTypes.toTSType(paramSym.get().getType().print());
-    if (!TypeScriptTypes.isDefault(paramSym.get().getType().printFullName())) {
-      getCD4C().addImport(decoratedClass, paramSym.get().getType().printFullName());
+    String paramType = TypeScriptTypes.toTSType(paramSTE.print());
+    if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
+      if (!util.isDomainType(paramSTE)) {
+        getCD4C().addImport(decoratedClass, paramSTE.printFullName());
+      }
+      else {
+        Optional<String> domainQName = util.getMainDomainModelQName();
+        if (domainQName.isPresent()) {
+          getCD4C().addImport(decoratedClass, domainQName.get() + "." + paramSTE.print());
+        }
+        else {
+          Log.error("0x00000 GUI Model " + this.guiAst.getComponentName()
+              + " is missing a connection to the domain model."
+              + " Please specify the domain model using '-dm' flag.");
+        }
+      }
     }
     // TODO AGe: detect underspecified types
     if (paramType.equals("Array")) {
