@@ -81,7 +81,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       return;
     }
 
-    String paramType = TypeScriptTypes.toTSType(paramSTE.print());
+    String paramType = convertType(paramSTE.print());
     if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
       if (!util.isDomainType(paramSTE)) {
         getCD4C().addImport(decoratedClass, paramSTE.printFullName());
@@ -97,10 +97,6 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
               + " Please specify the domain model using '-dm' flag.");
         }
       }
-    }
-    // TODO AGe: detect underspecified types
-    if (paramType.equals("Array")) {
-      paramType = "Array<any>";
     }
     String getterName = util.gui2cdAttrGetterName(
         guiComponent.getId().getName(), namedArg.getName());
@@ -177,6 +173,10 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
             setterValue, setterArgs, isLiteral, nullCheck);
       }
     }
+  }
+
+  protected String convertType(String mcType) {
+    return mcType;
   }
 
   protected String getInitListsTemplate() {

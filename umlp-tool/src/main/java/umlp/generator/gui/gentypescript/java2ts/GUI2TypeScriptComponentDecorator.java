@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.genjava.decorator.GUI2JavaComponentDecorator;
+import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,16 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
     getCD4C().addAttribute(decoratedClass, true, false, "protected String " + componentAttributeName + " = \"\";");
   }
   /**/
+
+  @Override
+  protected String convertType(String mcType) {
+    String paramType = TypeScriptTypes.toTSType(mcType);
+    // TODO AGe: detect underspecified types
+    if (paramType.equals("Array")) {
+      paramType = "Array<any>";
+    }
+    return paramType;
+  }
 
   @Override
   protected String unknownCollectionType() {

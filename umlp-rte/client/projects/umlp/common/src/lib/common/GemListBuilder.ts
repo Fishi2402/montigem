@@ -37,6 +37,8 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     }
 
     this.buildFinished = true;
+    // TODO AGe: when to load?
+    this.loadAll();
 
     // Von hier an werden alle Element vom FlensburgManager geladen
     this.builderElemStorage = [];
@@ -78,45 +80,41 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     }
   }
 
-  /*
-  public override _numberernal_set(idx: number, gemID: number): void  {
-    if(this.buildFinished) {
-      super._numberernal_set(idx, gemID);
+  public override _internal_set(idx: number, gemID: number): void {
+    if (this.buildFinished) {
+      super._internal_set(idx, gemID);
     } else {
       this.builderElemStorage[idx] = new IDOrBuilder<E>().IDOrBuilder1(gemID);
     }
   }
 
-  @Override
-  public void _numberernal_add(number idx, List<number> additions) {
-    if(buildFinished) {
-      super._numberernal_add(idx, additions);
+  public override _internal_add(idx: number, additions: Array<number>): void {
+    if (this.buildFinished) {
+      super._internal_add(idx, additions);
     } else {
-      List<IDOrBuilder<E>> newElems = new ArrayList<>();
-      for (number e : additions) {
-        IDOrBuilder<E> eidOrBuilder = new IDOrBuilder<>(e);
-        newElems.add(eidOrBuilder);
+      const newElems: Array<IDOrBuilder<E>> = [];
+      for (let e of additions) {
+        let eidOrBuilder: IDOrBuilder<E> = new IDOrBuilder<E>().IDOrBuilder1(e);
+        newElems.push(eidOrBuilder);
       }
-      builderElemStorage.addAll(idx, newElems);
+      this.builderElemStorage.splice(idx, 0, ...newElems);
     }
   }
 
-  @Override
-  public void _numberernal_remove(Set<numbereger> idxs) {
-    if(buildFinished) {
-      super._numberernal_remove(idxs);
+  public override _internal_remove(idxs: Set<number>): void {
+    if (this.buildFinished) {
+      super._internal_remove(idxs);
     } else {
-      List<numbereger> idxsReversed = new ArrayList<>();
-      for (numbereger numbereger : idxs) {
-        idxsReversed.add(numbereger);
+      let idxsReversed: Array<number> = [];
+      for (let integer of idxs) {
+        idxsReversed.push(integer);
       }
-      Collections.reverse(idxsReversed);
-      for(number idx : idxsReversed) {
-        builderElemStorage.remove(idx);
+      idxsReversed.reverse();
+      for (let idx of idxsReversed) {
+        this.builderElemStorage.splice(idx, 1);
       }
     }
   }
-  /**/
 
   public override getIDs(startIdx?: number, endIdx?: number): Array<number> {
     if (startIdx != null && endIdx != null) {
