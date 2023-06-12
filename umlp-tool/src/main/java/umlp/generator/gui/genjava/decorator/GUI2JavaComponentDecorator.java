@@ -24,6 +24,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
+import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,13 +72,32 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     // replace field access with getters, except iterator args
     GUIArgValueReplaceVisitor visitor = new GUIArgValueReplaceVisitor();
     visitor.setIgnore(it2Arg.getArgs().keySet());
+    if (util.isCreateClass(guiAst)) {
+      visitor.setUsesBuilder(true);
+    }
     SymTypeExpression paramSTE = paramSym.get().getType();
     visitor.transform(paramSTE, namedArg);
     if (!visitor.argNeedsGetter()) {
       return;
     }
 
-    String paramType = paramSym.get().getType().print();
+    String paramType = convertType(paramSTE.print());
+    if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
+      if (!util.isDomainType(paramSTE)) {
+        getCD4C().addImport(decoratedClass, paramSTE.printFullName());
+      }
+      else {
+        Optional<String> domainQName = util.getMainDomainModelQName();
+        if (domainQName.isPresent()) {
+          getCD4C().addImport(decoratedClass, domainQName.get() + "." + paramSTE.print());
+        }
+        else {
+          Log.error("0x00000 GUI Model " + this.guiAst.getComponentName()
+              + " is missing a connection to the domain model."
+              + " Please specify the domain model using '-dm' flag.");
+        }
+      }
+    }
     String getterName = util.gui2cdAttrGetterName(
         guiComponent.getId().getName(), namedArg.getName());
     String setterName = util.gui2cdAttrSetterName(
@@ -109,10 +129,14 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         setDefaultListValue(attr);
         decoratedClass.addCDMember(attr);
 
+        // TODO AGe: add this automatically
         addGetComponentMethod(decoratedClass, getterName, paramType,
-            attr.getName(), getArgs(it2Arg.getArgs()), false, "");
+            "this." + attr.getName(), getArgs(it2Arg.getArgs()), false, "");
+        List<String> setterArgs = new ArrayList<>();
+        setterArgs.add(paramType + " value");
+        setterArgs.addAll(getArgs(it2Arg.getArgs()));
         addSetComponentMethod(getSetterTemplate(), decoratedClass, setterName, paramType,
-            attr.getName(), getArgs(it2Arg.getArgs()), false, "");
+            attr.getName(), setterArgs, false, "");
 
         List<String> initValues = new ArrayList<>();
         for (ASTGUIArgValue av : valueList) {
@@ -141,10 +165,18 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       if (paramSym.get().isIsReference() && visitor.getSetterExpression().isPresent()) {
         String setterValue = guiDSLPrinter.prettyprint(visitor.getSetterExpression().get());
         setterValue = convertSetter(setterValue, convertToString);
+        List<String> setterArgs = new ArrayList<>();
+        // TODO AGe: clean up
+        setterArgs.add(paramType + " value");
+        setterArgs.addAll(getArgs(it2Arg.getArgs()));
         addSetComponentMethod(getSetterReplacedTemplate(), decoratedClass, setterName, paramType,
-            setterValue, getArgs(it2Arg.getArgs()), isLiteral, nullCheck);
+            setterValue, setterArgs, isLiteral, nullCheck);
       }
     }
+  }
+
+  protected String convertType(String mcType) {
+    return mcType;
   }
 
   protected String getInitListsTemplate() {
@@ -202,7 +234,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       String template, ASTCDClass decoratedClass, String methodName, String attrType, String attrName,
       List<String> arguments, boolean isLiteral, String condition
   ) {
-    getCD4C().addMethod(decoratedClass, template, methodName, attrType, attrName, condition);
+    getCD4C().addMethod(decoratedClass, template, methodName, attrType, attrName,
+        String.join(", ", arguments), condition);
   }
 
   protected String getSetterTemplate() {

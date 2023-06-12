@@ -2,6 +2,7 @@
 
 import { GemBuildable } from "./GemBuildable";
 import { GemIdentifiable } from "./GemIdentifiable";
+import { GemListIterator } from "./GemListIterator";
 import { LoadingState } from "./LoadingState";
 import { LoadResult } from "./LoadResult";
 
@@ -20,20 +21,44 @@ import { LoadResult } from "./LoadResult";
  * Elements are loaded as they are required.
  * Useful if e.g. the elements are loaded over a network.
  */
-export abstract class GemList<E extends GemIdentifiable>
-  extends Array<E>
-  implements GemBuildable {
+export abstract class GemList<E extends GemIdentifiable> implements GemBuildable, Iterable<E> {
 
   // Lokaler speicher für die gemIds der enthaltenen Objekte. Enthält alle IDs der Assoziation.
-  protected ids: Array<number>;
+  public ids: Array<number>;
+
+  private values: Array<E> = [];
 
   // TODO discuss: CBu -> wird für eine simple Spring-based DB Kommunikation benötigt
   public GemList2(ids: Array<number>) {
     this.ids = [...ids];
+    // TODO AGe: load at a later point and explicitely
+    this.loadAll();
   }
 
   public GemList1() {
     this.GemList2([]);
+  }
+
+  [Symbol.iterator](): GemListIterator<E> {
+    return new GemListIterator(this.values);
+  }
+
+  public toArray(): E[] {
+    return this.values;
+  }
+
+  public loadAll(): Promise<Array<E>> {
+    return Promise.all(this.loadObjects(this.ids)).then(v => {
+      let res = [];
+      this.values = [];
+      for (let val of v) {
+        if (val.getLoadingState() === LoadingState.LOADED) {
+          res.push(val.get());
+          this.values.push(val.get());
+        }
+      }
+      return res;
+    })
   }
 
   isBuildFinished(): boolean {
@@ -45,26 +70,33 @@ export abstract class GemList<E extends GemIdentifiable>
     return <any>this;
   }
 
-
   public size(): number {
     return this.ids.length;
   }
 
-
-  public get(idx: number): E {
+  public get(idx: number): Promise<E> {
     if (this.isNotIdxInInclusiveBounds(idx)) {
       this.logIndexError("0xAC729", "get", idx);
     }
     let id: number = this.getID1(idx);
-    let lr: LoadResult<E> = this.loadSingleObject(id);
-    if (lr.isPresent()) {
-      return lr.get();
+    return this.loadSingleObject(id).then(v => {
+      let lr = v;
+      if (lr.isPresent()) {
+        return lr.get();
+      }
+      else {
+        // TODO: rework error handling?
+        console.error("Can not load Object with id " + id);
+        return null;
+      }
+    });
+  }
+
+  public getSync(idx: number): E {
+    if (this.values.length > idx) {
+      return this.values[idx];
     }
-    else {
-      // TODO: rework error handling?
-      console.error("Can not load Object with id " + id);
-      return null;
-    }
+    return null;
   }
 
   /**
@@ -83,13 +115,13 @@ export abstract class GemList<E extends GemIdentifiable>
    * @param gemIDs reference the objects to get
    * @return the results of trying to load the objects
    */
-  protected abstract loadObjects(gemIDs: Array<number>): Array<LoadResult<E>>;
+  protected abstract loadObjects(gemIDs: Array<number>): Array<Promise<LoadResult<E>>>;
 
-  public set(idx: number, elem: E): E {
+  public set(idx: number, elem: E): Promise<E> {
     if (this.isNotIdxInInclusiveBounds(idx)) {
       this.logIndexError("0xAC725", "set", idx);
     }
-    const oldElem: E = this.get(idx);
+    const oldElem: Promise<E> = this.get(idx);
     this._internal_setAndSync(idx, elem.getGemId());
     return oldElem;
   }
@@ -113,6 +145,10 @@ export abstract class GemList<E extends GemIdentifiable>
     this._internal_addAndSync(idx, [elem.getGemId()]);
   }
 
+  public push(elem: E): void {
+    this._internal_addAndSync(this.size(), [elem.getGemId()]);
+  }
+
   /**
    * to be overridden by a subclass to add synchronization
    */
@@ -128,9 +164,9 @@ export abstract class GemList<E extends GemIdentifiable>
   }
 
 
-  public remove(idx: number): E {
+  public remove(idx: number): Promise<E> {
     // TODO: removeIdxsFunction needed?
-    let elem: E = this.get(idx);
+    let elem: Promise<E> = this.get(idx);
     this._internal_removeAndSync(new Set([idx]));
     return elem;
   }
@@ -176,10 +212,10 @@ export abstract class GemList<E extends GemIdentifiable>
     }
   }
 
-  protected loadSingleObject(id: number): LoadResult<E> {
-    let res: Array<LoadResult<E>> = this.loadObjects([id]);
+  protected loadSingleObject(id: number): Promise<LoadResult<E>> {
+    let res: Array<Promise<LoadResult<E>>> = this.loadObjects([id]);
     if (res.length === 0) {
-      return new LoadResult<E>().LoadResult2(LoadingState.FAILED_TO_LOAD);
+      return Promise.resolve(new LoadResult<E>().LoadResult2(LoadingState.FAILED_TO_LOAD));
     }
 
     return res[0];
@@ -235,7 +271,6 @@ export abstract class GemList<E extends GemIdentifiable>
    * The gemId is not required to be loaded in the idStorage, thus the result of idStorage.removeId must not be returned
    */
   public removeIdSure(gemId: number): void {
-    console.log(this.ids);
     let index = this.ids.findIndex(l => l === gemId);
     if (index >= 0) {
       this.ids.splice(index, 1);
@@ -244,5 +279,9 @@ export abstract class GemList<E extends GemIdentifiable>
 
   public indexOfId(gemId: number): number {
     return this.ids.indexOf(gemId);
+  }
+
+  public containsAll(gemList: GemList<E>): boolean {
+    return this.ids.every(id => gemList.getIDs().includes(id));
   }
 }

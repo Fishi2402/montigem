@@ -61,14 +61,19 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     astcdPackage.addCDElement(decoratedClass);
 
     // imports
+    boolean addedManager = false;
     for (ASTMCImportStatement i : guiAst.getMCImportStatementList()) {
       if (!isGUIModelImportInGUI(i)) {
+        // add manager import once
+        if (!addedManager) {
+          getCD4C().addImport(decoratedClass, util.gui2tsManagerImport(guiAst.getComponentName()));
+          addedManager = true;
+        }
+        // add builder import
         if (util.isCreateModel(guiAst.getComponentQName())) {
           getCD4C().addImport(decoratedClass, i.getQName() + BuilderDecorator.BUILDER_SUFFIX);
         }
-        else {
-          getCD4C().addImport(decoratedClass, i.getQName());
-        }
+        getCD4C().addImport(decoratedClass, i.getQName());
       }
     }
   }

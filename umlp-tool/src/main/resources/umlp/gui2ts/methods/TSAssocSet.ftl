@@ -3,7 +3,7 @@ ${tc.signature("name", "className")}
 if(idx < 0){
   console.error("0x50002 idx must be 0 or higher");
 }
-if(idx > this.${name}.length){
+if(idx > this.${name}.size()){
   console.error("0x50003 idx must be at most owns.size");
 }
 

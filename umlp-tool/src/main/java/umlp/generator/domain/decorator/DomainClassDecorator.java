@@ -83,7 +83,6 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     if (derivedAttribFields.size() > 0) {
       String derivedAttribs = derivedAttribFields.stream()
           .map(attr -> {
-            //TODO: SourcePosition is always SourcePosition.defaultPosition?
             SourcePosition sourcePosition = attr.get_SourcePositionStart();
             return String.format(
                 "%s in %s:%s:%s",

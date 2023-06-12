@@ -10,7 +10,6 @@ ${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "componentGenerator"
 <#-- TopDecorator -->
 <#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [hwPath])>
 
-<#-- TopDecorator -->
 <#assign annotationDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUIComponentAnnotationDecorator", [glex, hwPath, outPath])>
 
 <#--${includeArgs("umlp.generator.hook.BeforeTransform", decoratedAST, glex, hwPath, componentGenerator, guiDecorator, topDecorator)}-->

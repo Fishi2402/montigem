@@ -2,8 +2,8 @@
 ${tc.signature("methodName", "returnType", "replaced", "args", "isLiteral", "condition")}
 ${cd4c.method("public ${returnType} ${methodName}(${args})")}
 <#if condition?has_content>
-  if (!this.${condition}) {
+  if (!${condition}) {
     return null;
   }
 </#if>
-    return <#if !args?has_content && !isLiteral>this.</#if>${replaced};
+    return ${replaced};

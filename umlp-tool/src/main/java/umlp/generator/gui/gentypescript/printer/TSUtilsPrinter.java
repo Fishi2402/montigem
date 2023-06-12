@@ -85,7 +85,7 @@ public class TSUtilsPrinter extends CdUtilsPrinter {
     for (ASTCDMethod m : type.getCDMethodList()) {
       res |= m.getModifier().isAbstract();
     }
-    return res;
+    return res || type.getModifier().isAbstract();
   }
 
   public String printExpression(ASTExpression expr) {

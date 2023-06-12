@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.domain.decorator.methods.AssocMandatoryMutatorDecorator;
 

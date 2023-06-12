@@ -74,7 +74,11 @@ public class TSUMLPGenerator extends UMLPGenerator {
     TemplateController tc = genSetup.getNewTemplateController(configTemplate);
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
     // translate the CD-AST into Java with the CD Generator
-    hpp.processValue(tc, cdAST, Arrays.asList(decoratedAST, genSetup.getGlex(), genSetup.getHandcodedPath(), cdGenerator, schemaGenerator));
+    hpp.processValue(tc, cdAST, Arrays.asList(
+        decoratedAST, genSetup.getGlex(),
+        genSetup.getHandcodedPath(),
+        cdGenerator, schemaGenerator
+    ));
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){

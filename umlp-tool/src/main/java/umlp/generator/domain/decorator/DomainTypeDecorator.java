@@ -84,6 +84,7 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
             .filter(GenService::isVisible).collect(Collectors.toList());
 
     for (ASTCDAttribute visibleAttribute: visibleAttributes) {
+      // TODO AGe: wrong optionals
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
               createType(visibleAttribute), GenService.createName(visibleAttribute.getName()));
       attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());

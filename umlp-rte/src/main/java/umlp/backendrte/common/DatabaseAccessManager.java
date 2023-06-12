@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -163,7 +164,13 @@ public class DatabaseAccessManager {
     // Load Properties from Environment Variables
     // Can be used to select a different DB on production server
     // Environment Properties have priority!
-    databaseProperties.putAll(System.getenv());
+    // TODO: Workaround for #3358
+    for (Map.Entry<String, String> envVar : System.getenv().entrySet()) {
+      if(!envVar.getKey().equalsIgnoreCase("user")) {
+        databaseProperties.put(envVar.getKey(), envVar.getValue());
+      }
+    }
+
     DB_URL = databaseProperties.getProperty("database_url");
   }
 

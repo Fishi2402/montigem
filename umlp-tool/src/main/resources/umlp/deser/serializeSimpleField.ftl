@@ -29,10 +29,8 @@
         printer.memberJson("${fieldName}", ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${innerType}").get());
         <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
         printer.member("${fieldName}", obj.get${fieldName?cap_first}().get().name());
-        printer.value(obj.get${fieldName?cap_first}().get().name());
         <#else>
         printer.member("${fieldName}", obj.get${fieldName?cap_first}().get());
-        printer.value(obj.get${fieldName?cap_first}().get());
         </#if>
       }
     <#else>

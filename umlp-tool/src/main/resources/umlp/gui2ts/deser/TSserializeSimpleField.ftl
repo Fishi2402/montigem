@@ -3,43 +3,40 @@
 <#assign fieldName=attr.getName()>
 <#if !jsonStr?has_content && !useDeSer>
 <#--    TODO Kommentar einfuegen, wie das zu fixen waere-->
-    ${cd4c.method("abstract protected void serialize" + fieldName?cap_first + "(" + className + " obj, JsonPrinter printer)")}
+    ${cd4c.method("abstract protected void serialize" + fieldName?cap_first + "(" + className + " obj, any printer)")}
 <#else>
-    ${cd4c.method("protected void serialize" + fieldName?cap_first + "(" + className + " obj, JsonPrinter printer)")}
+    ${cd4c.method("protected void serialize" + fieldName?cap_first + "(" + className + " obj, any printer)")}
 
     <#if isList>
-      printer.beginArray("${fieldName}");
+      printer["${fieldName}"] = [];
       <#if useDeSer>
       for (const e of obj.get${fieldName?cap_first}()) {
-        ${objectMapperName}.serialize(e, "${innerType}");
+        printer["${fieldName}"].push(${objectMapperName}.serialize(e, "${innerType}"));
       }
       <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
       for (let e of obj.get${fieldName?cap_first}()) {
-        printer.value(e.name());
+        printer["${fieldName}"].push(e.name());
       }
       <#else>
       for (let e of obj.get${fieldName?cap_first}()) {
-        printer.value(e);
+        printer["${fieldName}"].push(e);
       }
       </#if>
-      printer.endArray();
     <#elseif isOptional>
       if (obj.get${fieldName?cap_first}() != null) {
         <#if useDeSer>
-        printer.memberJson("${fieldName}", ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${innerType}"));
+        printer["${fieldName}"] = ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${innerType}");
         <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
-        printer.member("${fieldName}", obj.get${fieldName?cap_first}().name());
-        printer.value(obj.get${fieldName?cap_first}().name());
+        printer["${fieldName}"] = obj.get${fieldName?cap_first}().name();
         <#else>
-        printer.member("${fieldName}", obj.get${fieldName?cap_first}());
-        printer.value(obj.get${fieldName?cap_first}());
+        printer["${fieldName}"] = obj.get${fieldName?cap_first}();
         </#if>
       }
     <#else>
       <#if useDeSer>
-      printer.memberJson("${fieldName}", ${objectMapperName}.serialize(obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}(), "${fieldType}"));
+      printer["${fieldName}"] = ${objectMapperName}.serialize(obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}(), "${fieldType}");
       <#else>
-      printer.member("${fieldName}", obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}()<#if genService.isCDEnum(attr.getSymbol().getType())>.name()</#if>);
+      printer["${fieldName}"] = obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}()<#if genService.isCDEnum(attr.getSymbol().getType())>.name()</#if>;
       </#if>
     </#if>
 </#if>

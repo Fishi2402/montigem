@@ -45,9 +45,6 @@ public class TypeScriptTypesFullPrettyPrinter extends CD4CodeFullPrettyPrinter {
     de.monticore.literals.mcliteralsbasis._prettyprint.MCLiteralsBasisPrettyPrinter mCLiteralsBasis = new de.monticore.literals.mcliteralsbasis._prettyprint.MCLiteralsBasisPrettyPrinter(getPrinter(), printComments);
     getTraverser().setMCLiteralsBasisHandler(mCLiteralsBasis);
     getTraverser().add4MCLiteralsBasis(mCLiteralsBasis);
-    de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPrettyPrinter expressionsBasis = new de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPrettyPrinter(getPrinter(), printComments);
-    getTraverser().setExpressionsBasisHandler(expressionsBasis);
-    getTraverser().add4ExpressionsBasis(expressionsBasis);
     de.monticore.symbols.oosymbols._prettyprint.OOSymbolsPrettyPrinter oOSymbols = new de.monticore.symbols.oosymbols._prettyprint.OOSymbolsPrettyPrinter(getPrinter(), printComments);
     getTraverser().setOOSymbolsHandler(oOSymbols);
     getTraverser().add4OOSymbols(oOSymbols);
@@ -80,6 +77,11 @@ public class TypeScriptTypesFullPrettyPrinter extends CD4CodeFullPrettyPrinter {
         new TypeScriptBasicTypesPrettyPrinter(getPrinter());
     getTraverser().setMCBasicTypesHandler(mCBasicTypes);
     getTraverser().add4MCBasicTypes(mCBasicTypes);
+
+    de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPrettyPrinter expressionsBasis =
+        new TypeScriptExpressionsBasisPrettyPrinter(getPrinter());
+    getTraverser().setExpressionsBasisHandler(expressionsBasis);
+    getTraverser().add4ExpressionsBasis(expressionsBasis);
   }
 
 }
