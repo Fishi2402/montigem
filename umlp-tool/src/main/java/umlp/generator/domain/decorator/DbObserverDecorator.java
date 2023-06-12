@@ -22,6 +22,7 @@ import umlp.generator.util.UMLPSymbolTables;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -40,7 +41,7 @@ public class DbObserverDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isDerived())
         .filter(c -> !c.getModifier().isAbstract())
-      .forEach(c -> astcdPackage.addCDElement(createClass(c, origCD.getCDDefinition().getCDAssociationsList())));
+      .forEach(c -> astcdPackage.addCDElement(createClass(c, origCD.getCDDefinition().getCDAssociationsList().stream().filter(a -> !a.getModifier().isDerived()).collect(Collectors.toList()))));
   }
 
   protected ASTCDClass createClass(ASTCDClass domainClass, List<ASTCDAssociation> associations) {

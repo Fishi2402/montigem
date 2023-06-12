@@ -5,21 +5,15 @@ package umlp.generator.domain.decorator;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
-import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDClassBuilder;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDInterfaceUsage;
-import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdassociation._ast.ASTCDAssociation;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
@@ -53,12 +47,23 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
 
+    origCD.getCDDefinition().getCDAssociationsList().stream().filter(c -> c.getModifier().isDerived())
+        .forEach(c -> createAssociation(origCD, c));
+
     origCD.getCDDefinition().getCDEnumsList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> {
-              ASTCDEnum enumCopy = c.deepClone();
-              enumCopy.setModifier(PUBLIC.build());
-              astcdPackage.addCDElement(enumCopy);
-            });
+          ASTCDEnum enumCopy = c.deepClone();
+          enumCopy.setModifier(PUBLIC.build());
+          astcdPackage.addCDElement(enumCopy);
+        });
+  }
+
+  private void createAssociation(ASTCDCompilationUnit origCD, ASTCDAssociation c) {
+    try {
+      System.out.println("Association: " + c.getName() + " l: " + c.getLeft().getName() + " r: " + c.getRight().getName());
+    } catch (Error e) {
+      e.printStackTrace();
+    }
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
@@ -122,7 +127,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     List<ASTCDAttribute> nonDerivedAttrs = filterDerivedAttributes(attributes.attrList, false);
     clazz.addAllCDMembers(nonDerivedAttrs);
     for (ASTCDAttribute attr : nonDerivedAttrs) {
-      if(GenService.isGem(attr) && !GenService.isGemList(attr)) {
+      if (GenService.isGem(attr) && !GenService.isGemList(attr)) {
         glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(getInitialGemValue()));
       }
     }
@@ -207,7 +212,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     List<String> objects = new ArrayList<>();
     FullSynthesizeFromCD4Code synthesize = new FullSynthesizeFromCD4Code();
 
-    for (ASTCDAttribute attribute: domainClass.getCDAttributeList()) {
+    for (ASTCDAttribute attribute : domainClass.getCDAttributeList()) {
       if (attribute.getModifier().isDerived() || attribute.getModifier().isAbstract()) {
         continue;
       }
