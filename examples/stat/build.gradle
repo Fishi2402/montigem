@@ -63,4 +63,6 @@ task diff(type: Exec){
 }
 
 
-task generateNPMAuth(type: NPMAuthCreate)
+task generateNPMAuth(type: NPMAuthCreate){
+  gitignore = project.getRootProject().file(".gitignore") // Task reads gitignore to ensure <.npmrc> is not committed
+}
