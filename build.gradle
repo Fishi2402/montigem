@@ -69,6 +69,7 @@ subprojects {
     gradle.UMLPTask umlTask = it
     Task t = task "$taskname"(type: gradle.UMLPOutputReportCheck) {
       input.from(umlTask.input)
+      symbolOutDir.set(umlTask.symbolOutDir)
       outputDir.set(umlTask.outputDir)
       reportDir.set(umlTask.reportDir)
       hwcDir.set(umlTask.hwcDir)

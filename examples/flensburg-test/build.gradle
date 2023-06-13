@@ -20,7 +20,8 @@ task generateFlensburg(type: UMLPTask) {
   dependsOn(generateCDTOGUI)
   input = file("src/models/hardy")
   hwcDir = file("src/main/java")
-  symbolDir = file("$projectDir/build/umlp/symbols")
+
+  symbolOutDir = file("$projectDir/build/umlp/symbols")
   outputDir = layout.buildDirectory.dir("genumlp")
 }
 

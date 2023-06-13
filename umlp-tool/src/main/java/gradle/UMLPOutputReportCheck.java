@@ -29,8 +29,12 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
   @org.gradle.api.tasks.Optional
   abstract DirectoryProperty getHwcDir();
 
-    @InputDirectory // Nothing is written, only read!
+  @InputDirectory // Nothing is written, only read!
   abstract DirectoryProperty getOutputDir();
+
+  @InputDirectory // Nothing is written, only read!
+  @org.gradle.api.tasks.Optional
+  abstract DirectoryProperty getSymbolOutDir();
 
   @InputDirectory // Nothing is written, only read!
   abstract DirectoryProperty getReportDir();

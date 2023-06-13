@@ -11,7 +11,6 @@ import org.gradle.work.ChangeType;
 import org.gradle.work.FileChange;
 import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
-import umlp.UMLPTool;
 import umlp.UMLPToolOptions;
 
 import java.io.File;
@@ -34,7 +33,7 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
   @OutputDirectory
   @org.gradle.api.tasks.Optional
-  public abstract DirectoryProperty getSymbolDir();
+  public abstract DirectoryProperty getSymbolOutDir();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
@@ -94,9 +93,9 @@ public abstract class UMLPTask extends CommonUMLPTask {
       result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
     }
 
-    if(this.getSymbolDir().isPresent()) {
+    if(this.getSymbolOutDir().isPresent()) {
       result.add("-s");
-      result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
+      result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
     }
 
     if(this.getTmplDir().isPresent()) {
@@ -185,7 +184,7 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
   @Internal
   protected Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
-    return Set.of(getHwcDir(), getModelDir(), getSymbolDir());
+    return Set.of(getHwcDir(), getModelDir(), getSymbolOutDir());
   }
   private Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
     Stream<FileChange> result = StreamSupport.stream(inputChanges.getFileChanges(getInput()).spliterator(), false);
