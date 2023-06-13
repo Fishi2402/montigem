@@ -1,56 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
-plugins {
-  id 'de.rwth.se.umlp-tool-backend'
-}
+
 repositories {
   maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
   maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
 }
 
 sourceSets {
-  main {
-    java.srcDirs += [layout.buildDirectory.dir("umlp/cd2gui")]
-    java.srcDirs += [layout.buildDirectory.dir("umlp/frontend")]
-  }
-}
-
-configurations {
-  symbol
-}
-
-dependencies {
-  symbol "umlp:frontend-rte:$mc_version"
+  main.java.srcDirs += ["$buildDir/genumlp"]
 }
 
 // TODO AGe: don't know if that is needed
 task generateCDTOGUI(type: UMLPTask) {
   input = file("src/models/hardy")
   cdToGui = true
-  outputDir = layout.buildDirectory.dir("umlp/cd2gui")
+  outputDir = layout.buildDirectory.dir("cd2gui")
 }
-/*
+
 task generateFlensburg(type: UMLPTask) {
   dependsOn(generateCDTOGUI)
   input = file("src/models/hardy")
   outputDir = layout.buildDirectory.dir("genumlp")
-}*/
-generateUmlpBackend{
-  input = file("src/models/hardy")
-  symbolDir = file("$projectDir/build/umlp/symbols")
 }
 
-task copyGUISymbols(type: Copy) {
-  copy {
-    from zipTree(configurations.symbol.asPath)
-    into "$project.buildDir/symbols"
-  }
-}
+description 'cars example'
 
-task generateUmlpFrontend(type: UMLPGuiGenTask) {
-  dependsOn(generateUmlpBackend, generateCDTOGUI, copyGUISymbols)
-  input = file("src/models/stanley")
-  modelDir = file("$projectDir/build/umlp/symbols")
-  symbolDir = layout.buildDirectory.dir("symbols")
-  outputDir = layout.buildDirectory.dir("umlp/frontend")
+tasks.named('compileJava').configure {
+  dependsOn('generateFlensburg')
 }
-compileJava.dependsOn(generateUmlpFrontend)

@@ -31,7 +31,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
   final String UMLP_TASK_DEBUG = "de.rwth.se.umlp.debug";
   final String ORG_GRADLE_PARALLEL = "org.gradle.parallel";
 
-  private ConfigurableFileCollection input = getProject().getObjects().fileCollection();
+  private final ConfigurableFileCollection input = getProject().getObjects().fileCollection();
 
   @SkipWhenEmpty    // Implies @Incremental. Do nothing if no input model exists
   @InputFiles
@@ -42,11 +42,11 @@ public abstract class CommonUMLPTask extends DefaultTask {
   }
 
   public void setInput(File f){
-    input = getProject().getObjects().fileCollection().from(f);
+    input.from(f);
   }
 
   public void setInput(Iterable<File> f){
-    input = getProject().getObjects().fileCollection().from(f);
+    input.from(f);
   }
 
 
