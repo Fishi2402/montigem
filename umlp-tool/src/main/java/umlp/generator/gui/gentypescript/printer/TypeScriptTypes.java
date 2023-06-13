@@ -1,6 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript.printer;
 
+import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
+import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.TypeCalculator;
+
 public enum TypeScriptTypes {
   STRING("String", "string"),
   EVENT("Event", "EventEmitter<any>"),
@@ -60,6 +65,33 @@ public enum TypeScriptTypes {
       }
     }
     return false;
+  }
+
+  // TODO AGe: deprecated, unclean
+  public static boolean isString(SymTypeExpression type) {
+    if (toTSType(type.print()).equals(STRING.getTSType())) {
+      return true;
+    }
+    TypeCalculator tc = new TypeCalculator(
+        new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL()
+    );
+    return tc.isString(type)
+        || tc.isChar(type);
+  }
+
+  // TODO AGe: deprecated, unclean
+  public static boolean isNumber(SymTypeExpression type) {
+    if (toTSType(type.print()).equals(INT.getTSType())) {
+      return true;
+    }
+    TypeCalculator tc = new TypeCalculator(
+        new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL()
+    );
+    return tc.isDouble(type)
+        || tc.isInt(type)
+        || tc.isFloat(type)
+        || tc.isLong(type)
+        || tc.isShort(type);
   }
 
   public String getMCType() {

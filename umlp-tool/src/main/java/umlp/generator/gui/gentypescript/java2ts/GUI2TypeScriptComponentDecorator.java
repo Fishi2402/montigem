@@ -2,7 +2,6 @@
 package umlp.generator.gui.gentypescript.java2ts;
 
 import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -14,6 +13,7 @@ import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator {
 
@@ -85,19 +85,23 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
   }
 
   @Override
-  protected String numberToStringCall(String value) {
-    return value + "+ ''";
+  protected Function<String, String> dateToStringConversion() {
+    return s -> "+" + s;
   }
 
   @Override
-  protected String convertSetter(String setterValue, boolean convertToString) {
-    String res = setterValue;
-    if (convertToString) {
-      res += "(+";
-    } else {
-      res += "(";
-    }
-    return res;
+  protected Function<String, String> stringToDateConversion() {
+    return s -> "Date.parse(" + s + ")";
+  }
+
+  @Override
+  protected Function<String, String> numberToStringConversion() {
+    return s -> s + "+ ''";
+  }
+
+  @Override
+  protected Function<String, String> stringToNumberConversion(String type) {
+    return s -> "+" + s;
   }
 
 }

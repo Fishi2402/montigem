@@ -5,9 +5,8 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -15,12 +14,14 @@ import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
-import de.monticore.guidsl._symboltable.GUIDSLScope;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
+import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
+import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
@@ -133,10 +135,11 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         addGetComponentMethod(decoratedClass, getterName, paramType,
             "this." + attr.getName(), getArgs(it2Arg.getArgs()), false, "");
         List<String> setterArgs = new ArrayList<>();
-        setterArgs.add(paramType + " value");
+        String argValueHolder = "value";
+        setterArgs.add(paramType + " " + argValueHolder);
         setterArgs.addAll(getArgs(it2Arg.getArgs()));
         addSetComponentMethod(getSetterTemplate(), decoratedClass, setterName, paramType,
-            attr.getName(), setterArgs, false, "");
+            attr.getName(), setterArgs, argValueHolder, false, "");
 
         List<String> initValues = new ArrayList<>();
         for (ASTGUIArgValue av : valueList) {
@@ -155,22 +158,27 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       }
       String getterValue = guiDSLPrinter.prettyprint(visitor.getGetterExpression());
       boolean isLiteral = visitor.getGetterExpression() instanceof ASTLiteralExpression;
-      boolean convertToString = mustBeConvertedToString(paramType, namedArg);
-      if (convertToString) {
-        getterValue = numberToStringCall(getterValue);
-      }
+
+      Function<String, String> conversion = getConversion(
+          paramSTE, namedArg.getGUIArgValue().getExpression(), true
+      );
+      getterValue = conversion.apply(getterValue);
 
       addGetComponentMethod(decoratedClass, getterName, paramType,
           getterValue, getArgs(it2Arg.getArgs()), isLiteral, nullCheck);
       if (paramSym.get().isIsReference() && visitor.getSetterExpression().isPresent()) {
         String setterValue = guiDSLPrinter.prettyprint(visitor.getSetterExpression().get());
-        setterValue = convertSetter(setterValue, convertToString);
         List<String> setterArgs = new ArrayList<>();
         // TODO AGe: clean up
-        setterArgs.add(paramType + " value");
+        String argValueHolder = "value";
+        setterArgs.add(paramType + " " + argValueHolder);
         setterArgs.addAll(getArgs(it2Arg.getArgs()));
+        conversion = getConversion(
+            paramSTE, namedArg.getGUIArgValue().getExpression(), false
+        );
+        argValueHolder = conversion.apply(argValueHolder);
         addSetComponentMethod(getSetterReplacedTemplate(), decoratedClass, setterName, paramType,
-            setterValue, setterArgs, isLiteral, nullCheck);
+            setterValue, setterArgs, argValueHolder, isLiteral, nullCheck);
       }
     }
   }
@@ -181,10 +189,6 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   protected String getInitListsTemplate() {
     return "umlp.gui2java.InitLists";
-  }
-
-  protected String numberToStringCall(String value) {
-    return "String.valueOf(" + value + ")";
   }
 
   protected String unknownCollectionType() {
@@ -232,10 +236,10 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   protected void addSetComponentMethod(
       String template, ASTCDClass decoratedClass, String methodName, String attrType, String attrName,
-      List<String> arguments, boolean isLiteral, String condition
+      List<String> arguments, String argValueHolder, boolean isLiteral, String condition
   ) {
     getCD4C().addMethod(decoratedClass, template, methodName, attrType, attrName,
-        String.join(", ", arguments), condition);
+        String.join(", ", arguments), argValueHolder, condition);
   }
 
   protected String getSetterTemplate() {
@@ -261,33 +265,60 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return res;
   }
 
-  protected Optional<String> getTypeOf(ASTFieldAccessExpression zuweisung) {
-    if (zuweisung.getExpression() instanceof ASTNameExpression) {
-      String variableName = ((ASTNameExpression) zuweisung.getExpression()).getName();
-      Optional<GUIParamSymbol> symbol = ((GUIDSLScope) zuweisung.getEnclosingScope()).resolveGUIParam(variableName);
+  // TODO AGe: replace with RTE functions and specific components
+  public Function<String, String> getConversion(SymTypeExpression leftType, ASTExpression rightExp, boolean forGetter) {
+    TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
+    SymTypeExpression rightType = tc.typeOf(rightExp);
+    // TODO AGe: still not nice
+    boolean leftIsString = TypeScriptTypes.isString(leftType);
 
-      Optional<VariableSymbol> attr = resolveAttribute(symbol, zuweisung.getName());
-      if (attr.isPresent()) {
-        String returnType = attr.get().getType().getTypeInfo().getName();
-        return Optional.of(returnType);
+    boolean rightIsNumber = TypeScriptTypes.isNumber(rightType);
+    boolean rightIsDate = rightType.print().equals("LocalDate");
+
+    if (leftIsString && rightIsDate) {
+      if (forGetter) {
+        return dateToStringConversion();
+      } else {
+        return stringToDateConversion();
       }
     }
-    return Optional.empty();
-  }
-
-  // TODO AGe: not nice
-  protected boolean mustBeConvertedToString(String returnType, ASTGUINamedArg namedArg) {
-    boolean convertToString = returnType.endsWith("String") && !util.isStringLiteral(namedArg.getGUIArgValue());
-    if (convertToString && namedArg.getGUIArgValue().getExpression() instanceof ASTFieldAccessExpression) {
-      Optional<String> zuweisungType = getTypeOf((ASTFieldAccessExpression) namedArg.getGUIArgValue().getExpression());
-      convertToString = !zuweisungType.isPresent() || !zuweisungType.get().endsWith("String");
+    if (leftIsString && rightIsNumber) {
+      if (forGetter) {
+        return numberToStringConversion();
+      } else {
+        return stringToNumberConversion(rightType.print());
+      }
     }
-    return convertToString;
+    return s -> s;
   }
 
-  // TODO AGe: result of not nice above
-  protected String convertSetter(String setterValue, boolean convertToString) {
-    return setterValue;
+  protected Function<String, String> dateToStringConversion() {
+    return s -> s + ".toString()";
+  }
+
+  protected Function<String, String> stringToDateConversion() {
+    return s -> "LocalDate.parse(" + s + ")";
+  }
+
+  protected Function<String, String> numberToStringConversion() {
+    return s -> "String.valueOf(" + s + ")";
+  }
+
+  protected Function<String, String> stringToNumberConversion(String type) {
+    if (TypeScriptTypes.INT.getMCType().equals(type)) {
+      type = TypeScriptTypes.INT_BOXED.getMCType();
+    }
+    if (TypeScriptTypes.LONG.getMCType().equals(type)) {
+      type = TypeScriptTypes.LONG_BOXED.getMCType();
+    }
+    if (TypeScriptTypes.DOUBLE.getMCType().equals(type)) {
+      type = TypeScriptTypes.DOUBLE_BOXED.getMCType();
+    }
+    if (TypeScriptTypes.FLOAT.getMCType().equals(type)) {
+      type = TypeScriptTypes.FLOAT_BOXED.getMCType();
+    }
+    String finalType = type;
+    return s -> finalType + ".valueOf(" + s + ")";
   }
 
 }
