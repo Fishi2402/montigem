@@ -92,9 +92,6 @@ public abstract class UMLPTask extends CommonUMLPTask {
     if(this.getModelDir().isPresent()) {
       result.add("-path");
       result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
-      if (this.getSymbolDir().isPresent()) {
-        result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
-      }
     }
 
     if(this.getSymbolDir().isPresent()) {
