@@ -1,0 +1,165 @@
+//__<<ngThemingMigrationEscapedComment0>>__
+
+@import "../variables";
+
+@mixin header-theme($font-color) {
+  .gem-header {
+    background-color: $rwth-black-4;
+    color: $font-color;
+    padding-left: 36px;
+    padding-right: 36px;
+    padding-bottom: 3px;
+    min-height: 65px;
+    flex-direction: row;
+    box-sizing: border-box;
+    display: flex;
+    place-content: stretch space-between;
+    align-items: stretch;
+    max-height: 100%;
+
+    .gem-action-separator {
+      width: 2px;
+      background-color: $font-color;
+      height: 50%;
+      margin-left: 8px;
+      margin-right: 5px;
+    }
+
+    .mat-badge-content {
+      background-color: $rwth-blue;
+    }
+  }
+  .gem-div-style {
+    flex-direction: column;
+    box-sizing: border-box;
+    display: flex;
+    place-content: flex-start center;
+    align-items: flex-start;
+  }
+  .gem-right-style {
+    flex-direction: row;
+    box-sizing: border-box;
+    display: flex;
+    place-content: stretch flex-start;
+    align-items: stretch;
+    max-height: 100%;
+  }
+  .gem-notPrinted {
+    flex-direction: column;
+    box-sizing: border-box;
+    display: flex;
+    place-content: center;
+    align-items: center;
+  }
+}
+
+.gem-header {
+  @media print {
+    .gem-notPrinted {
+      display: none !important;
+    }
+  }
+
+  .header-icon {
+    font-size: $font-size-h3;
+    padding-top: 5px; // TODO MF: better solution necessary
+  }
+
+  .token-tooltip {
+    white-space: pre-line;
+  }
+
+  .bell-icon {
+    padding-top: 0;
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  .gem-action-separator {
+    width: 2px;
+    background-color: $rwth-blue;
+    height: 50%;
+    margin-left: 8px;
+    margin-right: 5px;
+  }
+
+  .gem-header-button {
+    //background-color: rgba(0,0,0,.1);
+    background-color: transparent;
+    border-radius: 3px;
+    border: 0;
+    margin-top: 6px;
+    margin-bottom: 6px;
+  }
+
+  .gem-header-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .gem-header-button:focus {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  @media print {
+    .gem-title-container {
+      flex-direction: column !important;
+    }
+  }
+
+  .gem-title-container {
+    flex-direction: row;
+    box-sizing: border-box;
+    display: flex;
+
+    .title {
+      place-content: flex-end flex-start;
+      align-items: flex-end;
+      flex-direction: row;
+      box-sizing: border-box;
+      display: flex;
+      font-size: $font-size-h2;
+      font-weight: bold;
+      margin-right: 10px;
+      text-transform: uppercase;
+    }
+
+    .pspElement {
+      line-height: 28px;
+      font-weight: bold;
+    }
+  }
+}
+
+.overlay-panel {
+  margin-top: 6px;
+  background-color: white;
+  width: 40vw;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+@keyframes bell {
+  0% {
+    transform: rotate(15deg);
+  }
+  12.5% {
+    transform: rotate(-10deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  37.5% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+  62.5% {
+    transform: rotate(-2deg);
+  }
+  75% {
+    transform: rotate(2deg);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}

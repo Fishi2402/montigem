@@ -1,0 +1,13 @@
+<ul class="system-main" *ngFor="let item of items">
+  <li class="system-main__apps" (click)="onexpand(item)">
+    <span class="system-main__icon">
+      <i class="fa fa-plus-square" *ngIf="!item.expanded && item.children"> </i>
+      <i class="fa fa-minus-square" *ngIf="item.expanded"> </i>
+      {{ item.name }}
+    </span>
+  </li>
+
+  <div *ngIf="item.expanded">
+    <gem-treeview [items]="item.children"></gem-treeview>
+  </div>
+</ul>

@@ -1,0 +1,10 @@
+package input.src.lib.gemtextinput;
+
+classdiagram GemTextInputTypes {
+
+  class GemTextInputValidity {
+    String status;
+    String message;
+  }
+
+}

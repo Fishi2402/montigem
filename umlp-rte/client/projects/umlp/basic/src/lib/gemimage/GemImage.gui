@@ -1,0 +1,7 @@
+package basic.src.lib.gemimage;
+
+component GemImage(
+  String source,
+  String alt,
+  String style
+)

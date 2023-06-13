@@ -1,0 +1,12 @@
+<label [for]="id" class="gem-label-radio">
+  <input
+    class="gem-radio"
+    type="radio"
+    [id]="id"
+    [value]="value"
+    [ngModel]="selectedValue"
+    [checked]="isChecked"
+    (ngModelChange)="onSelectedValueChange($event)"
+  />
+  {{ labelText }}
+</label>
