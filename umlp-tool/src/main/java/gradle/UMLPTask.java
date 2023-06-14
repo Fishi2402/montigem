@@ -34,7 +34,6 @@ public abstract class UMLPTask extends CommonUMLPTask {
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental
   public abstract DirectoryProperty getSymbolDir();
 
   @OutputDirectory
