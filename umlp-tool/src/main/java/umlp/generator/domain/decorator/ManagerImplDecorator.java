@@ -85,7 +85,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     Set<ASTCDType> collectConcreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name, collectConcreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, false);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, collectConcreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, collectConcreteSubclassesInclSelf);
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
@@ -111,7 +111,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     Set<ASTCDType> concreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainInterface);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, true);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesInclSelf);
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));

@@ -4,3 +4,11 @@ plugins {
   id 'de.rwth.se.umlp-tool-backend'
 }
 description 'it tests'
+
+dependencies {
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+}
+
+test {
+  testLogging.showStandardStreams = true
+}
