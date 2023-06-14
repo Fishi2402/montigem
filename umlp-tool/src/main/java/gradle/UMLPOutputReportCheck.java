@@ -17,6 +17,8 @@ import org.gradle.api.tasks.TaskAction;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -107,11 +109,16 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
             notReportedGenFiles.stream().map(File::getPath).collect(Collectors.joining("\n\t")));
       }
 
-      String outputDirPath = this.getOutputDir().get().getAsFile().getCanonicalPath();
+      List<String> allowedOutputPaths = new ArrayList<>();
+      allowedOutputPaths.add(this.getOutputDir().get().getAsFile().getCanonicalPath());
+      if(this.getSymbolOutDir().isPresent()) {
+        allowedOutputPaths.add(this.getSymbolOutDir().get().getAsFile().getCanonicalPath());
+      }
       for (File f : reportedGenFiles) {
-        if (!f.getCanonicalPath().startsWith(outputDirPath)) {
-          Log.error("0xahfh3a Reported Generated File is _not_ in the outputDirectory. \n" +
-              "All generated files must be in the declared outputDirectory of the gradle task, otherwise gradle cannot track the state correctly.\n" +
+        String fcanon = f.getCanonicalPath();
+        if (allowedOutputPaths.stream().noneMatch(fcanon::startsWith)) {
+          Log.error("0xahfh3a Reported Generated File is _not_ in the outputDirectory or the symbolOutDir. \n" +
+              "All generated files must be in the declared output directories of the gradle task, otherwise gradle cannot track the state correctly.\n" +
               "File: " + f.getPath()
           );
         }
