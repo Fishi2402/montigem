@@ -1,12 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package flensburg.database;
 
+import hardy.flensburg.Address;
+import hardy.flensburg.AddressDAO;
+import hardy.flensburg.FlensburgManager;
+import hardy.flensburg.Human;
+import hardy.flensburg.HumanBuilder;
+import hardy.flensburg.HumanDAO;
 import hardy.flensburg.Person;
+import hardy.flensburg.PersonBuilder;
+import hardy.flensburg.PersonDAO;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GenUpdateTest extends GenAbstractDBTest {
 

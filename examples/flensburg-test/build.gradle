@@ -1,12 +1,40 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+description 'cars example'
+
 repositories {
   maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
   maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
 }
 
 sourceSets {
-  main.java.srcDirs += ["$buildDir/genumlp"]
+  main {
+    java.srcDirs += [layout.buildDirectory.dir("umlp/be")]
+    // TODO MB
+    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe1")]
+    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
+    resources.srcDirs += [layout.buildDirectory.dir("umlp/be/resources")]
+  }
+  test {
+    java {
+      exclude '**/gui/**'
+    }
+  }
+}
+
+configurations {
+  symbol
+}
+
+dependencies {
+  symbol "umlp:frontend-rte:$mc_version"
+}
+
+task copyGUISymbols(type: Copy) {
+  copy {
+    from zipTree(configurations.symbol.asPath)
+    into "$project.buildDir/umlp/symbols"
+  }
 }
 
 // TODO AGe: don't know if that is needed
@@ -16,17 +44,28 @@ task generateCDTOGUI(type: UMLPTask) {
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
 
-task generateFlensburg(type: UMLPTask) {
-  dependsOn(generateCDTOGUI)
+task generateFlensburg_BE(type: UMLPTask) {
   input = file("src/models/hardy")
   hwcDir = file("src/main/java")
-
   symbolOutDir = file("$projectDir/build/umlp/symbols")
-  outputDir = layout.buildDirectory.dir("genumlp")
+  outputDir = layout.buildDirectory.dir("umlp/be")
 }
 
-description 'cars example'
-
-tasks.named('compileJava').configure {
-  dependsOn('generateFlensburg')
+task generateFlensburg_FE1(type: UMLPGuiGenTask) {
+  dependsOn(generateFlensburg_BE, copyGUISymbols)
+  input = file("src/models/stanley")
+  modelDir = file("src/models")
+  symbolDir = layout.buildDirectory.dir("umlp/symbols")
+  symbolOutDir = layout.buildDirectory.dir("umlp/fe1/symbols")
+  outputDir = layout.buildDirectory.dir("umlp/fe1")
 }
+
+task generateFlensburg_FE2(type: UMLPGuiGenTask) {
+  dependsOn(generateFlensburg_FE1, generateCDTOGUI)
+  input = file(layout.buildDirectory.dir("cd2gui/models"))
+  symbolDir = file("$projectDir/build/umlp/symbols")
+  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
+  outputDir = layout.buildDirectory.dir("umlp/fe2")
+}
+
+compileJava.dependsOn(generateFlensburg_BE, generateFlensburg_FE2)

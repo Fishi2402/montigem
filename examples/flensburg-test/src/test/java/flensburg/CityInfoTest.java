@@ -1,6 +1,12 @@
 package flensburg;//+ HWC-PT
 
+import hardy.flensburg.Address;
+import hardy.flensburg.CarBuilder;
 import hardy.flensburg.CityInfo;
+import hardy.flensburg.FlensburgManager;
+import hardy.flensburg.FlensburgMock;
+import hardy.flensburg.FlensburgTestContext;
+import hardy.flensburg.PersonBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

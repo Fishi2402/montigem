@@ -3,7 +3,13 @@ package flensburg;//+ GEN-T        : handwritten, testet generiertes product
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 import de.se_rwth.commons.logging.Log;
+import hardy.flensburg.Address;
+import hardy.flensburg.FlensburgManager;
+import hardy.flensburg.FlensburgMock;
 import hardy.flensburg.Person;
+import hardy.flensburg.PersonBuilder;
+import hardy.flensburg.PersonErrorCollector;
+import hardy.flensburg.PersonErrorObserver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PersonBuilderTest {
 

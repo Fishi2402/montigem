@@ -41,6 +41,10 @@ public abstract class UMLPGuiGenTask extends CommonUMLPTask {
   @Incremental
   public abstract DirectoryProperty getSymbolDir();
 
+  @OutputDirectory
+  @org.gradle.api.tasks.Optional
+  public abstract DirectoryProperty getSymbolOutDir();
+
   @Input
   @org.gradle.api.tasks.Optional
   public abstract ListProperty<String> getDomainModels();
@@ -65,11 +69,13 @@ public abstract class UMLPGuiGenTask extends CommonUMLPTask {
         });
 
     if(this.getModelDir().isPresent()) {
-      result.add("-path");
+      result.add("-mp");
       result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
-      if (this.getSymbolDir().isPresent()) {
-        result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
-      }
+    }
+
+    if(this.getSymbolDir().isPresent()) {
+      result.add("-path");
+      result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
     }
 
     if (this.getDomainModels().isPresent() && !this.getDomainModels().get().isEmpty()) {

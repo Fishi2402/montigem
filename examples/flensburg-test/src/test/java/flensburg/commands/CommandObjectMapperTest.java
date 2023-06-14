@@ -52,7 +52,7 @@ public class CommandObjectMapperTest {
     int age = 20;
     Human h1001 = FlensburgManager.humanBuilder().age(age).build().get();
 
-    SimpleResult<Human> result = new SimpleResult<>(commandId, h1001, "flensburg.Human");
+    SimpleResult<Human> result = new SimpleResult<>(commandId, h1001, "hardy.flensburg.Human");
 
     String resultStr = CommandObjectMapper.serializeResponse(result);
 
@@ -92,7 +92,7 @@ public class CommandObjectMapperTest {
         .build()
         .get();
 
-    SimpleResult<Person> resp = new SimpleResult<>(commandId, p1002, "flensburg.Person");
+    SimpleResult<Person> resp = new SimpleResult<>(commandId, p1002, "hardy.flensburg.Person");
 
     String respStr = CommandObjectMapper.serializeResponse(resp);
     CommandResult<?> recreatedResp = CommandObjectMapper.deserializeResponse(respStr).get();

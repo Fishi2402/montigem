@@ -31,6 +31,12 @@ public abstract class UMLPTask extends CommonUMLPTask {
   @Incremental
   public abstract DirectoryProperty getModelDir();
 
+  @InputDirectory
+  @org.gradle.api.tasks.Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @Incremental
+  public abstract DirectoryProperty getSymbolDir();
+
   @OutputDirectory
   @org.gradle.api.tasks.Optional
   public abstract DirectoryProperty getSymbolOutDir();
@@ -88,8 +94,13 @@ public abstract class UMLPTask extends CommonUMLPTask {
     result.add("-r");
     result.add(handlePath.apply(getReportDirOfFile(filePath.toFile()).getAsFile().toPath()));
 
-    if(this.getModelDir().isPresent()) {
+    if(this.getSymbolDir().isPresent()) {
       result.add("-path");
+      result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
+    }
+
+    if(this.getModelDir().isPresent()) {
+      result.add("-modelPath");
       result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
     }
 

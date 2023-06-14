@@ -24,7 +24,6 @@ import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
-import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,14 +80,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       return;
     }
 
-    String paramType = TypeScriptTypes.toTSType(paramSym.get().getType().print());
-    if (!TypeScriptTypes.isDefault(paramSym.get().getType().printFullName())) {
-      getCD4C().addImport(decoratedClass, paramSym.get().getType().printFullName());
-    }
-    // TODO AGe: detect underspecified types
-    if (paramType.equals("Array")) {
-      paramType = "Array<any>";
-    }
+    String paramType = paramSym.get().getType().print();
     String getterName = util.gui2cdAttrGetterName(
         guiComponent.getId().getName(), namedArg.getName());
     String setterName = util.gui2cdAttrSetterName(
