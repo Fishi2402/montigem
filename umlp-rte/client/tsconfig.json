@@ -4,8 +4,26 @@
   "compilerOptions": {
     "paths": {
       "@umlp/common": [
-        "dist/umlp/common"
-      ]
+        "dist/common"
+      ],
+      "@umlp/arrange": [
+        "dist/arrange"
+      ],
+      "@umlp/basic": [
+        "dist/basic"
+      ],
+      "@umlp/charts": [
+        "dist/charts"
+      ],
+      "@umlp/input": [
+        "dist/input"
+      ],
+      "@umlp/table": [
+        "dist/table"
+      ],
+      "@umlp/theme": [
+        "dist/theme"
+      ],
     },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",

@@ -1,0 +1,7 @@
+package charts.src.lib.gemvenndiagram;
+
+import charts.src.lib.gemvenndiagram.GemVennDiagramTypes.GemVennDiagramData;
+
+component GemVennDiagram(
+    GemVennDiagramData data
+)

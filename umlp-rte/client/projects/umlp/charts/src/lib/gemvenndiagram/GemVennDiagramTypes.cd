@@ -1,0 +1,15 @@
+package charts.src.lib.gemvenndiagram;
+
+classdiagram GemVennDiagramTypes {
+
+  class GemVennDiagramData {
+    List<GemVennDiagramEntry> entries;
+  }
+
+  class GemVennDiagramEntry {
+    List<String> sets;
+    String label;
+    Integer size;
+  }
+
+}

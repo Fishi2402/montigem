@@ -2,6 +2,7 @@
 
 import { GemBuildable } from "./GemBuildable";
 import { GemIdentifiable } from "./GemIdentifiable";
+import { GemListIterator } from "./GemListIterator";
 import { LoadingState } from "./LoadingState";
 import { LoadResult } from "./LoadResult";
 
@@ -20,20 +21,44 @@ import { LoadResult } from "./LoadResult";
  * Elements are loaded as they are required.
  * Useful if e.g. the elements are loaded over a network.
  */
-export abstract class GemList<E extends GemIdentifiable>
-  extends Array<E>
-  implements GemBuildable {
+export abstract class GemList<E extends GemIdentifiable> implements GemBuildable, Iterable<E> {
 
   // Lokaler speicher für die gemIds der enthaltenen Objekte. Enthält alle IDs der Assoziation.
-  protected ids: Array<number>;
+  public ids: Array<number>;
+
+  private values: Array<E> = [];
 
   // TODO discuss: CBu -> wird für eine simple Spring-based DB Kommunikation benötigt
   public GemList2(ids: Array<number>) {
     this.ids = [...ids];
+    // TODO AGe: load at a later point and explicitely
+    this.loadAll();
   }
 
   public GemList1() {
     this.GemList2([]);
+  }
+
+  [Symbol.iterator](): GemListIterator<E> {
+    return new GemListIterator(this.values);
+  }
+
+  public toArray(): E[] {
+    return this.values;
+  }
+
+  public loadAll(): Promise<Array<E>> {
+    return Promise.all(this.loadObjects(this.ids)).then(v => {
+      let res = [];
+      this.values = [];
+      for (let val of v) {
+        if (val.getLoadingState() === LoadingState.LOADED) {
+          res.push(val.get());
+          this.values.push(val.get());
+        }
+      }
+      return res;
+    })
   }
 
   isBuildFinished(): boolean {
@@ -45,11 +70,9 @@ export abstract class GemList<E extends GemIdentifiable>
     return <any>this;
   }
 
-
   public size(): number {
     return this.ids.length;
   }
-
 
   public get(idx: number): Promise<E> {
     if (this.isNotIdxInInclusiveBounds(idx)) {
@@ -67,6 +90,13 @@ export abstract class GemList<E extends GemIdentifiable>
         return null;
       }
     });
+  }
+
+  public getSync(idx: number): E {
+    if (this.values.length > idx) {
+      return this.values[idx];
+    }
+    return null;
   }
 
   /**
@@ -113,6 +143,10 @@ export abstract class GemList<E extends GemIdentifiable>
 
   public add(idx: number, elem: E): void {
     this._internal_addAndSync(idx, [elem.getGemId()]);
+  }
+
+  public push(elem: E): void {
+    this._internal_addAndSync(this.size(), [elem.getGemId()]);
   }
 
   /**
@@ -237,7 +271,6 @@ export abstract class GemList<E extends GemIdentifiable>
    * The gemId is not required to be loaded in the idStorage, thus the result of idStorage.removeId must not be returned
    */
   public removeIdSure(gemId: number): void {
-    console.log(this.ids);
     let index = this.ids.findIndex(l => l === gemId);
     if (index >= 0) {
       this.ids.splice(index, 1);
@@ -246,5 +279,9 @@ export abstract class GemList<E extends GemIdentifiable>
 
   public indexOfId(gemId: number): number {
     return this.ids.indexOf(gemId);
+  }
+
+  public containsAll(gemList: GemList<E>): boolean {
+    return this.ids.every(id => gemList.getIDs().includes(id));
   }
 }

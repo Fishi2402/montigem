@@ -1,27 +1,23 @@
-# Client
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.0.
-
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Version Control
+​
+# Must Be Done
+​
+If you make any changes to a library, please run `gradle build` to update the library version before publishing it.
+​
+# Creating a New Library
+​
+To create a new library, use the gradle script and run `gradle create library name`.
+This script will assign the library a default version.
+​
+# Update a Library
+​
+Whenever changes are made to a library, use the gradle script to
+update its version. For example, if a table has version 7.5.4
+and you make changes to the table library, running `gradle build`
+will upgrade the version from 7.5.4 to 7.5.5, as defined in the
+gradle script.
+​
+# Usage of the Library
+​
+To use the library, add the following line to your package.json file:
+"library name": "^7.5.0". The "^" symbol ensures that the latest version of the library is used.

@@ -1,0 +1,11 @@
+<label [for]="id" class="gem-label-checkbox">
+  <input
+    type="checkbox"
+    class="gem-checkbox"
+    [id]="id"
+    [value]="value"
+    [ngModel]="checked"
+    (ngModelChange)="onCheckedChange($event)"
+  />
+  {{ labelText }}
+</label>

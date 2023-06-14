@@ -19,6 +19,7 @@ includeBuild "umlp-tool"
 includeBuild "umlp-rte/umlp-frontend-rte-java"
 
 include ":umlp-rte"
+include ":umlp-rte:client"
 include ":umlp-rte:umlp-frontend-rte"
 include ":umlp-rte:umlp-frontend-rte-java"
 

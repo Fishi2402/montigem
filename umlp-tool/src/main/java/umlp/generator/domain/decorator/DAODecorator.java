@@ -111,6 +111,7 @@ public class DAODecorator extends AbstractDecorator {
 
     // Select / Insert PreparedStatements
     attributesList.add(createPreparedStatementAttrForMethod(domainClass.getName(), "select"));
+    attributesList.add(createPreparedStatementAttrForMethod(domainClass.getName(), "selectAll"));
     attributesList.add(createPreparedStatementAttrForMethod(domainClass.getName(), "insert"));
     attributesList.add(createPreparedStatementAttrForMethod(domainClass.getName(), "delete"));
 
@@ -206,6 +207,8 @@ public class DAODecorator extends AbstractDecorator {
         assocSideToAssoc.entrySet().stream().filter(e -> GenService.isList(e.getKey()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     selectMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
+    selectAllMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
+    unpackMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
     insertMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
     deleteMethod(daoClass, domainClass, assocSideToAssoc);
     updateAttrMethod(daoClass, domainClass);
@@ -339,6 +342,42 @@ public class DAODecorator extends AbstractDecorator {
     attributes.forEach(e -> attributeMap.put(e,
             SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
     getCD4C().addMethod(daoClass, "umlp.dao.Select", domainClass.getName(), cdName, attributeMap,
+        optMap, listAttributes, listAssociationMap, gemAssociationMap);
+  }
+
+  protected void selectAllMethod(ASTCDClass daoClass, ASTCDClass domainClass,
+                                 Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
+                                 Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap){
+    List<ASTCDAttribute> listAttributes = getListAttributes(domainClass);
+    List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
+    Map<ASTCDAttribute, String> optMap = Maps.newLinkedHashMap();
+    getOptionalAttributes(domainClass).forEach(e -> optMap.put(e,
+        SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
+
+    getCD4C().addMethod(daoClass, "umlp.dao.SelectAllInit",
+        SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED), domainClass.getName(),
+        attributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)).collect(Collectors.toList()));
+
+    Map<ASTCDAttribute, String> attributeMap = Maps.newLinkedHashMap();
+    attributes.forEach(e -> attributeMap.put(e,
+        SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
+    getCD4C().addMethod(daoClass, "umlp.dao.SelectAll", domainClass.getName(), cdName, attributeMap,
+        optMap, listAttributes, listAssociationMap, gemAssociationMap);
+  }
+
+  protected void unpackMethod(ASTCDClass daoClass, ASTCDClass domainClass,
+                                 Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
+                                 Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap){
+    List<ASTCDAttribute> listAttributes = getListAttributes(domainClass);
+    List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
+    Map<ASTCDAttribute, String> optMap = Maps.newLinkedHashMap();
+    getOptionalAttributes(domainClass).forEach(e -> optMap.put(e,
+        SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
+
+    Map<ASTCDAttribute, String> attributeMap = Maps.newLinkedHashMap();
+    attributes.forEach(e -> attributeMap.put(e,
+        SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
+    getCD4C().addMethod(daoClass, "umlp.dao.Unpack", domainClass.getName(), cdName, attributeMap,
         optMap, listAttributes, listAssociationMap, gemAssociationMap);
   }
 

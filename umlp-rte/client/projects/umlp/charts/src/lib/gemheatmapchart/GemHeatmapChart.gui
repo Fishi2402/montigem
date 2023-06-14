@@ -1,0 +1,10 @@
+package charts.src.lib.gemheatmapchart;
+
+import charts.src.lib.gemheatmapchart.GemHeatmapChartTypes.GemHeatmapChartData;
+
+component GemHeatmapChart (
+  GemHeatmapChartData data,
+  String xLabel,
+  String yLabel,
+  Boolean timestampdata
+)
