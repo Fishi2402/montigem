@@ -70,7 +70,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
           addedManager = true;
         }
         // add builder import
-        if (util.isCreateModel(guiAst.getComponentQName())) {
+        if (util.isCreateModel(guiAst.getComponentQName()) && util.isDomainImport(i)) {
           getCD4C().addImport(decoratedClass, i.getQName() + BuilderDecorator.BUILDER_SUFFIX);
         }
         getCD4C().addImport(decoratedClass, i.getQName());
