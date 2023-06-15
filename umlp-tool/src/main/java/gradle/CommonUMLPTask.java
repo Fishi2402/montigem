@@ -48,6 +48,9 @@ public abstract class CommonUMLPTask extends DefaultTask {
   public void setInput(Iterable<File> f){
     input.from(f);
   }
+  public void setInput(Object... paths){
+    input.from(paths);
+  }
 
 
 
