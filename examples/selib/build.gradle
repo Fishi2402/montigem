@@ -6,7 +6,7 @@
 // important tasks / commands are:
 // * start UMLP generator and compile java files:
 //   * gradle :examples:selib:assemble
-// * start server:
+// * start UMLP Backend Server:
 //   * gradle :examples:selib:bootRun
 //   * command does not terminate. Stopping the command is also stopping the server
 //   * url: http://localhost:8081
