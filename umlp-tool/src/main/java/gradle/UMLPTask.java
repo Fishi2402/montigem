@@ -194,7 +194,7 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
   @Internal
   protected Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
-    return Set.of(getHwcDir(), getModelDir(), getSymbolOutDir());
+    return Set.of(getHwcDir(), getModelDir());
   }
   private Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
     Stream<FileChange> result = StreamSupport.stream(inputChanges.getFileChanges(getInput()).spliterator(), false);
