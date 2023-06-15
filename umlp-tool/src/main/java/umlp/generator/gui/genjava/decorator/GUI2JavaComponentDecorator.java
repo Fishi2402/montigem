@@ -267,26 +267,32 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   // TODO AGe: replace with RTE functions and specific components
   public Function<String, String> getConversion(SymTypeExpression leftType, ASTExpression rightExp, boolean forGetter) {
-    TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
-    SymTypeExpression rightType = tc.typeOf(rightExp);
-    // TODO AGe: still not nice
-    boolean leftIsString = TypeScriptTypes.isString(leftType);
+    // TODO AGe: cannot resolve type when @iterate is present
+    // TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
+    // SymTypeExpression rightType = tc.typeOf(rightExp);
+    GUIExpressionTypeVisitor visitor = new GUIExpressionTypeVisitor();
+    Optional<SymTypeExpression> rightTypeOpt = visitor.getType(rightExp);;
+    if (rightTypeOpt.isPresent()) {
+      SymTypeExpression rightType = rightTypeOpt.get();
+      // TODO AGe: still not nice
+      boolean leftIsString = TypeScriptTypes.isString(leftType);
 
-    boolean rightIsNumber = TypeScriptTypes.isNumber(rightType);
-    boolean rightIsDate = rightType.print().equals("LocalDate");
+      boolean rightIsNumber = TypeScriptTypes.isNumber(rightType);
+      boolean rightIsDate = rightType.print().equals("LocalDate");
 
-    if (leftIsString && rightIsDate) {
-      if (forGetter) {
-        return dateToStringConversion();
-      } else {
-        return stringToDateConversion();
+      if (leftIsString && rightIsDate) {
+        if (forGetter) {
+          return dateToStringConversion();
+        } else {
+          return stringToDateConversion();
+        }
       }
-    }
-    if (leftIsString && rightIsNumber) {
-      if (forGetter) {
-        return numberToStringConversion();
-      } else {
-        return stringToNumberConversion(rightType.print());
+      if (leftIsString && rightIsNumber) {
+        if (forGetter) {
+          return numberToStringConversion();
+        } else {
+          return stringToNumberConversion(rightType.print());
+        }
       }
     }
     return s -> s;
