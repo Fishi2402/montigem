@@ -1,4 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+// run tasks in this project with command:
+// gradle :examples:selib:<taskName>
+//
+// important tasks / commands are:
+// * start UMLP generator and compile java files:
+//   * gradle :examples:selib:assemble
+// * start server:
+//   * gradle :examples:selib:bootRun
+//   * command does not terminate. Stopping the command is also stopping the server
+//   * url: http://localhost:8081
+//   * there can only be a single running server. A second server cannot start.
+//
 plugins {
     id 'java' // Setup Java Compiler
     id 'application'  // ensures that the JAR can be executed
