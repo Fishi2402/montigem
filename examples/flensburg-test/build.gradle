@@ -7,20 +7,6 @@ repositories {
   maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
 }
 
-sourceSets {
-  main {
-    java.srcDirs += [layout.buildDirectory.dir("umlp/be")]
-    // TODO MB
-    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe1")]
-    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
-    resources.srcDirs += [layout.buildDirectory.dir("umlp/be/resources")]
-  }
-  test {
-    java {
-      exclude '**/gui/**'
-    }
-  }
-}
 
 configurations {
   symbol
@@ -66,6 +52,21 @@ task generateFlensburg_FE2(type: UMLPGuiGenTask) {
   symbolDir = file("$projectDir/build/umlp/symbols")
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe2")
+}
+
+sourceSets {
+  main {
+    java.srcDirs += [layout.buildDirectory.dir("umlp/be")]
+    // TODO MB
+    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe1")]
+    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
+    main.resources.srcDirs += generateFlensburg_BE.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
+  }
+  test {
+    java {
+      exclude '**/gui/**'
+    }
+  }
 }
 
 compileJava.dependsOn(generateFlensburg_BE, generateFlensburg_FE1, generateFlensburg_FE2)
