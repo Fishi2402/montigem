@@ -74,7 +74,13 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
         new AssocMutatorDecorator(glex, service, cdType), service);
     for (ASTCDAttribute attribute : attrList) {
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
-      methods.forEach(m -> m.getModifier().setAbstract(isInterface));
+      if (isInterface) {
+        methods.forEach(m -> m.getModifier().setAbstract(true));
+      } else if (methods.stream().anyMatch(m -> m.getModifier().isAbstract())) {
+        cdType.getModifier().setAbstract(true);
+      } else {
+        methods.forEach(m -> m.getModifier().setAbstract(false));
+      }
       cdType.addAllCDMembers(methods);
     }
   }
@@ -127,10 +133,6 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
       attrList.add(attribute);
     }
     return attrList;
-  }
-
-  protected AttributesTuple getAllAttributes(ASTCDType domainType, boolean isInterface) {
-    return getAllAttributes(domainType, isInterface, null);
   }
 
   protected AttributesTuple getAllAttributes(ASTCDType domainType, boolean isInterface, ASTCDCompilationUnit cd) {

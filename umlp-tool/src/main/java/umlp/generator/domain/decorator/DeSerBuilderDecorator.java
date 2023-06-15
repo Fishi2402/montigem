@@ -50,7 +50,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
     getCD4C().addConstructor(deserBuilderClass, getConstructorTemplate(), domainClass.getName());
 
     // Attributes
-    List<ASTCDAttribute> attributes = getAllAttributes(domainClass, false).attrList.stream()
+    List<ASTCDAttribute> attributes = getAllAttributes(domainClass, false, origCD).attrList.stream()
             .filter(a -> !GenService.isDerived(a)).collect(Collectors.toList());;
 
     // Methods

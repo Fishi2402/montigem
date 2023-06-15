@@ -38,6 +38,12 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
 
     String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
 
+    if (ast.getModifier().isDerived()) {
+      ASTCDMethod getMethod = createGetGemList(ast);
+      methodList.add(getMethod);
+      return methodList;
+    }
+
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Contains", service.getNativeAttributeName(ast.getName()), targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.ContainsAll", service.getNativeAttributeName(ast.getName()), targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Iterator", service.getNativeAttributeName(ast.getName()), targetName).get());
@@ -72,5 +78,4 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     method.setName("_internal_" + method.getName() + "GemList");
     return method;
   }
-
 }

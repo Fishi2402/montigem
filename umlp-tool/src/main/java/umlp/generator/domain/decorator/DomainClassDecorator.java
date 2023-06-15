@@ -140,7 +140,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     createCheckMethods(domainClass, clazz);
 
     // Methods for class assocs
-    createGetterSetterForAssocs(clazz, filterDerivedAttributes(attributes.attrAssocs, false), false);
+    createGetterSetterForAssocs(clazz, attributes.attrAssocs, false);
 
     // Imports
     addImports(domainClass, clazz);

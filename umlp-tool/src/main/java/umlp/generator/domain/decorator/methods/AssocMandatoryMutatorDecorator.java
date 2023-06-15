@@ -36,6 +36,9 @@ public class AssocMandatoryMutatorDecorator extends SimpleMethodMutatorDecorator
       simpleType = ((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get().deepClone();
     }
     List<ASTCDMethod> methodList = Lists.newArrayList();
+    if(ast.getModifier().isDerived()){
+      return methodList;
+    }
 
     // Generate setX-Methods
     ASTCDMethod method = createSetter(ast);
