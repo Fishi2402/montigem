@@ -11,10 +11,11 @@ import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
@@ -54,11 +55,11 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
                                             List<ASTCDAttribute> attrList, boolean isInterface) {
     CDGenService service = new MethodGenService();
     MethodDecorator methodDecorator = new MethodDecorator(glex,
-            new AccessorDecorator(glex, service),
-            new MutatorDecorator(glex, new SimpleMethodMutatorDecorator(glex, service, domainType),
-                    new OptionalMutatorDecorator(glex, service),
-                    new ListMutatorDecorator(glex, service)), service);
-    for (ASTCDAttribute attribute: attrList) {
+        new AccessorDecorator(glex, service),
+        new MutatorDecorator(glex, new SimpleMethodMutatorDecorator(glex, service, domainType),
+            new OptionalMutatorDecorator(glex, service),
+            new ListMutatorDecorator(glex, service)), service);
+    for (ASTCDAttribute attribute : attrList) {
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
       methods.forEach(m -> m.getModifier().setAbstract(isInterface));
       cdType.addAllCDMembers(methods);
@@ -69,9 +70,9 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
                                              List<ASTCDAttribute> attrList, boolean isInterface) {
     CDGenService service = new MethodGenService();
     MethodDecorator methodDecorator = new MethodDecorator(glex,
-            new AssocAccessorDecorator(glex, service, cdType),
-            new AssocMutatorDecorator(glex, service, cdType), service);
-    for (ASTCDAttribute attribute: attrList) {
+        new AssocAccessorDecorator(glex, service, cdType),
+        new AssocMutatorDecorator(glex, service, cdType), service);
+    for (ASTCDAttribute attribute : attrList) {
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
       methods.forEach(m -> m.getModifier().setAbstract(isInterface));
       cdType.addAllCDMembers(methods);
@@ -81,12 +82,12 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
   protected List<ASTCDAttribute> getAttributesForFields(ASTCDType domainType) {
     List<ASTCDAttribute> attributesList = Lists.newLinkedList();
     List<ASTCDAttribute> visibleAttributes = CDSymbolTables.getAttributesInHierarchy(domainType).stream()
-            .filter(GenService::isVisible).collect(Collectors.toList());
+        .filter(GenService::isVisible).collect(Collectors.toList());
 
-    for (ASTCDAttribute visibleAttribute: visibleAttributes) {
+    for (ASTCDAttribute visibleAttribute : visibleAttributes) {
       // TODO AGe: wrong optionals
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-              createType(visibleAttribute), GenService.createName(visibleAttribute.getName()));
+          createType(visibleAttribute), GenService.createName(visibleAttribute.getName()));
       attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
       attributesList.add(attribute);
       if (GenService.isOptional(visibleAttribute)) {
@@ -96,24 +97,32 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     return attributesList;
   }
 
-  protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDType domainType, boolean isInterface) {
+  protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDType domainType, boolean isInterface, ASTCDCompilationUnit cd) {
     List<ASTCDAttribute> attrList = Lists.newLinkedList();
     List<ASTCDAssocSide> associations = (isInterface)
-            ? CDSymbolTables.getAssociations(domainType).stream()
-            .filter(GenService::isVisible).collect(Collectors.toList())
-            : CDSymbolTables.getAssociationsInHierarchy(domainType).stream()
-            .filter(GenService::isVisible).collect(Collectors.toList());
+        ? CDSymbolTables.getAssociations(domainType).stream()
+        .filter(GenService::isVisible).collect(Collectors.toList())
+        : CDSymbolTables.getAssociationsInHierarchy(domainType).stream()
+        .filter(GenService::isVisible).collect(Collectors.toList());
+
+    List<ASTCDAssociation> derivedAssocs = cd != null ?
+        cd.getCDDefinition().getCDAssociationsList().stream().filter(assoc -> assoc.getModifier().isDerived()).collect(Collectors.toList()) :
+        List.of();
+
 
     // handle associations
-    for (ASTCDAssocSide assocSide: associations) {
+    for (ASTCDAssocSide assocSide : associations) {
       String type = assocSide.getSymbol().getType().print();
       ASTCDAttribute attribute;
       if (GenService.isList(assocSide)) {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-                getMCTypeFacade().createBasicGenericTypeOf("GemList", type), GenService.createName(assocSide.getName()));
+            getMCTypeFacade().createBasicGenericTypeOf("GemList", type), GenService.createName(assocSide.getName()));
       } else {
         attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-                getMCTypeFacade().createBasicGenericTypeOf("Gem", type), GenService.createName(assocSide.getName()));
+            getMCTypeFacade().createBasicGenericTypeOf("Gem", type), GenService.createName(assocSide.getName()));
+      }
+      if (derivedAssocs.stream().anyMatch(c -> c.getLeft().equals(assocSide) || c.getRight().equals(assocSide))) {
+        attribute.getModifier().setDerived(true);
       }
       attrList.add(attribute);
     }
@@ -121,9 +130,13 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
   }
 
   protected AttributesTuple getAllAttributes(ASTCDType domainType, boolean isInterface) {
+    return getAllAttributes(domainType, isInterface, null);
+  }
+
+  protected AttributesTuple getAllAttributes(ASTCDType domainType, boolean isInterface, ASTCDCompilationUnit cd) {
     return new AttributesTuple(
-            getAttributesForFields(domainType),
-            getAttributesForAssociations(domainType, isInterface)
+        getAttributesForFields(domainType),
+        getAttributesForAssociations(domainType, isInterface, cd)
     );
   }
 

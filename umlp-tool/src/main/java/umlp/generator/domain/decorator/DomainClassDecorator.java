@@ -47,9 +47,6 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
 
-    origCD.getCDDefinition().getCDAssociationsList().stream().filter(c -> c.getModifier().isDerived())
-        .forEach(c -> createAssociation(origCD, c));
-
     origCD.getCDDefinition().getCDEnumsList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> {
           ASTCDEnum enumCopy = c.deepClone();
@@ -108,7 +105,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     getCD4C().addConstructor(clazz, getConstructorTemplate(), domainClass.getName());
 
     // Attributes
-    AttributesTuple attributes = getAllAttributes(domainClass, false);
+    AttributesTuple attributes = getAllAttributes(domainClass, false, origCD);
 
     if (!domainClass.isPresentCDExtendUsage()) {
       // Attribute gemId and getter and setter
@@ -143,7 +140,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     createCheckMethods(domainClass, clazz);
 
     // Methods for class assocs
-    createGetterSetterForAssocs(clazz, attributes.attrAssocs, false);
+    createGetterSetterForAssocs(clazz, filterDerivedAttributes(attributes.attrAssocs, false), false);
 
     // Imports
     addImports(domainClass, clazz);
