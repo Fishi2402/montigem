@@ -57,12 +57,12 @@ public class SQLSchemaGenerator {
         fqnClassNameToType.put("java.lang.Long", "BIGINT");
         fqnClassNameToType.put("Long", "INTEGER");
         fqnClassNameToType.put("long", "INTEGER");
-        fqnClassNameToType.put("java.lang.Float", "FLOAT");
-        fqnClassNameToType.put("Float", "FLOAT");
-        fqnClassNameToType.put("float", "FLOAT");
-        fqnClassNameToType.put("java.lang.Double", "DOUBLE");
-        fqnClassNameToType.put("Double", "DOUBLE");
-        fqnClassNameToType.put("double", "DOUBLE");
+        fqnClassNameToType.put("java.lang.Float", "REAL");
+        fqnClassNameToType.put("Float", "REAL");
+        fqnClassNameToType.put("float", "REAL");
+        fqnClassNameToType.put("java.lang.Double", "DOUBLE PRECISION");
+        fqnClassNameToType.put("Double", "DOUBLE PRECISION");
+        fqnClassNameToType.put("double", "DOUBLE PRECISION");
         fqnClassNameToType.put("java.lang.Boolean", "BOOLEAN");
         fqnClassNameToType.put("Boolean", "BOOLEAN");
         fqnClassNameToType.put("boolean", "BOOLEAN");

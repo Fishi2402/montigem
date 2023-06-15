@@ -1,0 +1,8 @@
+umlp Types {
+  class FloatingPoints{
+    float f1;
+    Float f2;
+    double d1;
+    Double d2;
+  }
+}
