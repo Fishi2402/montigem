@@ -66,7 +66,7 @@ application {
 
 task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
     classpath = sourceSets.main.runtimeClasspath
-    mainClass = application.mainClass
+    mainClass = 'selib.SELibShellAPIApplication'
     standardInput = System.in
 }
 
