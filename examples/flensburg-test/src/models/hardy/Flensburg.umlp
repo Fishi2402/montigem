@@ -20,8 +20,10 @@ classdiagram Flensburg {
     int age;
   }
 
-  class Person extends Human {
+  // TODO: #3413: Remove age and add superclass Human
+  class  Person  {
     String nickname;
+    int age;
 
     // calculated attribute: wird nicht persistiert,
     // deshalb gibt es nur einen getter, der dies berechnet

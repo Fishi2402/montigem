@@ -68,4 +68,4 @@ task generateFlensburg_FE2(type: UMLPGuiGenTask) {
   outputDir = layout.buildDirectory.dir("umlp/fe2")
 }
 
-compileJava.dependsOn(generateFlensburg_BE, generateFlensburg_FE2)
+compileJava.dependsOn(generateFlensburg_BE, generateFlensburg_FE1, generateFlensburg_FE2)
