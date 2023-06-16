@@ -109,6 +109,38 @@ public class GUIGeneratorUtil {
     return DOMAIN_MODELS.contains(as.getFullName());
   }
 
+  public final boolean isDomainListType(ASTGUIParam astguiParam) {
+    SymTypeExpression type = astguiParam.getSymbol().getType();
+    if (type.hasTypeInfo() && GenService.isList(type)) {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+        SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+        TypeSymbol ts = inner.getTypeInfo();
+        if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {
+          IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
+          return DOMAIN_MODELS.contains(as.getFullName());
+        }
+      }
+    }
+    return false;
+  }
+
+  public final String getDomainListInnerType(ASTGUIParam astguiParam) {
+    SymTypeExpression type = astguiParam.getSymbol().getType();
+    if (type.hasTypeInfo() && GenService.isList(type)) {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+        SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+        TypeSymbol ts = inner.getTypeInfo();
+        if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {
+          return ts.getName();
+        }
+      }
+    }
+    String res = astguiParam.getMCType().printType();
+    res = res.replaceAll("List<", "");
+    res = res.replaceAll("", ">");
+    return res;
+  }
+
   public final boolean isDomainImport(ASTMCImportStatement i) {
     for (String cd : DOMAIN_MODELS) {
       if (i.getQName().startsWith(cd)) {
