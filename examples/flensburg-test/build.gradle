@@ -33,7 +33,7 @@ task generateCDTOGUI(type: UMLPTask) {
 task generateFlensburg_BE(type: UMLPTask) {
   input = file("src/models/hardy")
   hwcDir = file("src/main/java")
-  symbolOutDir = file("$projectDir/build/umlp/symbols")
+  symbolOutDir = file("$project.buildDir/umlp/symbols")
   outputDir = layout.buildDirectory.dir("umlp/be")
 }
 
