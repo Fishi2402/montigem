@@ -40,6 +40,11 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
   }
 
   @Override
+  protected void addManagerImport(ASTCDClass clazz, String manager) {
+    getCD4C().addImport(decoratedClass, util.gui2tsManagerImport(guiAst.getComponentName()));
+  }
+
+  @Override
   protected void addDefaultConstructor(ASTCDClass clazz) {
   }
 
