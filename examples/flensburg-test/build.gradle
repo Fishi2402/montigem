@@ -16,12 +16,6 @@ dependencies {
   symbol "umlp:frontend-rte:$mc_version"
 }
 
-task copyGUISymbols(type: Copy) {
-  copy {
-    from zipTree(configurations.symbol.asPath)
-    into "$project.buildDir/umlp/symbols"
-  }
-}
 
 // TODO AGe: don't know if that is needed
 task generateCDTOGUI(type: UMLPTask) {
@@ -31,15 +25,20 @@ task generateCDTOGUI(type: UMLPTask) {
 }
 
 task generateFlensburg_BE(type: UMLPTask) {
-  dependsOn(copyGUISymbols)
   input = file("src/models/hardy")
   hwcDir = file("src/main/java")
   symbolOutDir = file("$project.buildDir/umlp/symbols")
   outputDir = layout.buildDirectory.dir("umlp/be")
 }
 
+task copyGUISymbols(type: Copy) {
+  dependsOn(generateFlensburg_BE) // For a determnistic buildorder and debugging. TODO: Remove!
+  from zipTree(configurations.symbol.asPath)
+  into "$project.buildDir/umlp/symbols"
+}
+
 task generateFlensburg_FE1(type: UMLPGuiGenTask) {
-  dependsOn(generateFlensburg_BE)
+  dependsOn(generateFlensburg_BE, copyGUISymbols)
   input = file("src/models/stanley")
   modelDir = file("src/models")
   symbolDir = generateFlensburg_BE.symbolOutDir
