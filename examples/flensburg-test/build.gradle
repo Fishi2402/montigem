@@ -31,6 +31,7 @@ task generateCDTOGUI(type: UMLPTask) {
 }
 
 task generateFlensburg_BE(type: UMLPTask) {
+  dependsOn(copyGUISymbols)
   input = file("src/models/hardy")
   hwcDir = file("src/main/java")
   symbolOutDir = file("$project.buildDir/umlp/symbols")
@@ -38,7 +39,7 @@ task generateFlensburg_BE(type: UMLPTask) {
 }
 
 task generateFlensburg_FE1(type: UMLPGuiGenTask) {
-  dependsOn(generateFlensburg_BE, copyGUISymbols)
+  dependsOn(generateFlensburg_BE)
   input = file("src/models/stanley")
   modelDir = file("src/models")
   symbolDir = layout.buildDirectory.dir("umlp/symbols")
