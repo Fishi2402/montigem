@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package flensburg;
+package hardy.flensburg;
 
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.command.DeSer;

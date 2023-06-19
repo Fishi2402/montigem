@@ -2,7 +2,7 @@ package flensburg.commands;
 
 // HWC-T
 
-import flensburg.FlensburgMock;
+import hardy.flensburg.FlensburgMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.common.BaseClassObjectMapper;

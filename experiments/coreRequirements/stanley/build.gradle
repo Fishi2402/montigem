@@ -138,7 +138,7 @@ task generateAll(type: UMLPGuiGenTask) {
   outputDir = file("$project.buildDir/app")
   hwcDir = file("$projectDir/src/app")
   modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = layout.buildDirectory.dir("symbols")
+  symbolOutDir = layout.buildDirectory.dir("symbols")
   domainModels = ["hardy.Flensburg"]
   guiCreateModels = ["stanley.personcreate.PersonCreate", "stanley.gui.AccountCreate"]
 

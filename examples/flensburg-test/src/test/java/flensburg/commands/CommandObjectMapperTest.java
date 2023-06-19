@@ -1,6 +1,12 @@
 package flensburg.commands;
 
-import flensburg.*;
+import hardy.flensburg.Address;
+import hardy.flensburg.FlensburgCommandObjectMapper;
+import hardy.flensburg.FlensburgManager;
+import hardy.flensburg.FlensburgMock;
+import hardy.flensburg.Human;
+import hardy.flensburg.Person;
+import hardy.flensburg.commands.Human_get;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.Command;
@@ -10,7 +16,9 @@ import umlp.backendrte.command.SimpleResult;
 import umlp.backendrte.common.Gem;
 import umlp.backendrte.common.LoadingState;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommandObjectMapperTest {
   @BeforeEach
@@ -44,7 +52,7 @@ public class CommandObjectMapperTest {
     int age = 20;
     Human h1001 = FlensburgManager.humanBuilder().age(age).build().get();
 
-    SimpleResult<Human> result = new SimpleResult<>(commandId, h1001, "flensburg.Human");
+    SimpleResult<Human> result = new SimpleResult<>(commandId, h1001, "hardy.flensburg.Human");
 
     String resultStr = CommandObjectMapper.serializeResponse(result);
 
@@ -84,7 +92,7 @@ public class CommandObjectMapperTest {
         .build()
         .get();
 
-    SimpleResult<Person> resp = new SimpleResult<>(commandId, p1002, "flensburg.Person");
+    SimpleResult<Person> resp = new SimpleResult<>(commandId, p1002, "hardy.flensburg.Person");
 
     String respStr = CommandObjectMapper.serializeResponse(resp);
     CommandResult<?> recreatedResp = CommandObjectMapper.deserializeResponse(respStr).get();

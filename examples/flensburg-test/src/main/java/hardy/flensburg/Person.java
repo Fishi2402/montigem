@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package flensburg;
+package hardy.flensburg;
 
 
 public  class Person extends PersonTOP {
