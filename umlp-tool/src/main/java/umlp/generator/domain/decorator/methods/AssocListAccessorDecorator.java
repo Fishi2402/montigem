@@ -37,19 +37,18 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     List<ASTCDMethod> methodList = Lists.newArrayList();
 
     String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
+    String paramName = service.getNativeAttributeName(ast.getName());
 
     if (ast.getModifier().isDerived()) {
-      ASTCDMethod getMethod = createGetGemList(ast);
-      methodList.add(getMethod);
-      return methodList;
+      paramName = createGetGemList(ast).getName().replaceFirst("_", "")+"()";
     }
 
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Contains", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.ContainsAll", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Iterator", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Size", service.getNativeAttributeName(ast.getName())).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.GetList", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.SubList", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Contains",paramName, targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.ContainsAll",paramName, targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Iterator",paramName, targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Size",paramName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.GetList",paramName, targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.SubList",paramName, targetName).get());
 
     // generate getX-Method
     methodList.add(createGetMethod(ast));
