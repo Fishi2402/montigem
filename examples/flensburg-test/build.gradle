@@ -42,7 +42,7 @@ task generateFlensburg_FE1(type: UMLPGuiGenTask) {
   dependsOn(generateFlensburg_BE)
   input = file("src/models/stanley")
   modelDir = file("src/models")
-  symbolDir = layout.buildDirectory.dir("umlp/symbols")
+  symbolDir = generateFlensburg_BE.symbolOutDir
   symbolOutDir = layout.buildDirectory.dir("umlp/fe1/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe1")
 }
@@ -50,7 +50,7 @@ task generateFlensburg_FE1(type: UMLPGuiGenTask) {
 task generateFlensburg_FE2(type: UMLPGuiGenTask) {
   dependsOn(generateFlensburg_FE1, generateCDTOGUI)
   input = file(layout.buildDirectory.dir("cd2gui/models"))
-  symbolDir = file("$projectDir/build/umlp/symbols")
+  symbolDir = generateFlensburg_BE.symbolOutDir
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe2")
 }
