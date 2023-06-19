@@ -354,7 +354,7 @@ public class UMLPTool extends UMLPToolTOP {
 
           List<String> domainModels = new ArrayList<>();
           if (DOMAIN.isSelected(cmd)) {
-            domainModels.addAll(Arrays.asList(cmd.getOptionValues(MODEl_PATH.getCMD())));
+            domainModels.addAll(Arrays.asList(cmd.getOptionValues(DOMAIN.getCMD())));
           }
 
           List<String> createModels = new ArrayList<>();

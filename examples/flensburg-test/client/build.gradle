@@ -152,9 +152,10 @@ task genGUI(type: UMLPGuiGenTask) {
   outputDir = file("$project.buildDir/appgui")
   hwcDir = file("$projectDir/src/app")
   modelDir = layout.projectDirectory.dir("../src/models")
+  symbolDir = layout.buildDirectory.dir("symbols")
   symbolOutDir = layout.buildDirectory.dir("symbols")
   domainModels = ["hardy.Flensburg"]
-  guiCreateModels = ["gui.AccountCreate"]
+  guiCreateModels = ["stanley.gui.AccountCreate"]
 }
 
 task buildApp(type: NpxTask) {
