@@ -146,7 +146,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           initValues.add(guiDSLPrinter.prettyprint(av.getExpression()));
         }
         TemplateHookPoint hp = new TemplateHookPoint(
-            getInitListsTemplate(), attr.getName(), setterName, isPrimitive, initValues
+            getInitListsTemplate(), attr.getName(), setterName, isPrimitive, initValues, getArgs(it2Arg.getArgs())
         );
         initHPs.add(hp);
       }
