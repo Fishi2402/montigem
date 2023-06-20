@@ -16,6 +16,7 @@ import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -76,7 +77,7 @@ public class TSUtilsPrinter extends CdUtilsPrinter {
 
   // TODO AGe
   public boolean isWildCardGeneric(ASTMCReturnType type) {
-    return type.printType().contains("? extends");
+    return printer.prettyprint(type).contains("?");
   }
 
   // TODO AGe
