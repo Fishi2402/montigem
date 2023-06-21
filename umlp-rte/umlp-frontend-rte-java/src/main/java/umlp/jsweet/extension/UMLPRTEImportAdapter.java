@@ -78,4 +78,11 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
       printIndent().printIndent().print("return true;").println().
       printIndent().print("}").println().println();
   }
+
+  @Override
+  public void onTranspilationStarted() {
+    new UMLPAsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
+
+    super.onTranspilationStarted();
+  }
 }
