@@ -36,9 +36,13 @@ jsweet {
     module = 'commonjs'
     workingDir = project.file('target/.jsweet')
     excludeTranspilation = [
-//            '**/*DeSer*.java',
-            'flensburg/*DAO.java',
-            'flensburg/*DbObserver.java'
+//        '**/*DeSer*.java',
+        'flensburg/*DAO.java',
+        'flensburg/*DbObserver.java',
+        'flensburg/FlensburgManagerImpl.java',
+        'flensburg/FlensburgMock.java',
+        'flensburg/FlensburgDummyProvider.java',
+        'flensburg/FlensburgTestContext.java'
     ]
 }
 

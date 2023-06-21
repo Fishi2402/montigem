@@ -7,6 +7,7 @@
   "@Async": {
     "include": [
       "flensburg.commands.**.doRun*",
+      "flensburg.requests.**.doRun*",
       "flensburg.FlensburgManager._doGet*Sure*",
       "flensburg.FlensburgManagerImpl._doGet*Sure*",
       "flensburg.FlensburgManagerClientImpl._doGet*Sure*",
