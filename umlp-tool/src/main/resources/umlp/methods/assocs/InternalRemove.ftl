@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("name", "targetName", "sourceName")}
 
-${cd4c.method("public void _internal_remove${name?cap_first}(java.util.Set<Integer> idxs, NotificationScope scope)")}
+${cd4c.method("public void _internal_remove${name?cap_first}(Set<Integer> idxs, NotificationScope scope)")}
 Map<Integer, Long> idxToId = new HashMap<>();
 for(int idx : idxs){
   idxToId.put(idx, _${name}.getID(idx));
