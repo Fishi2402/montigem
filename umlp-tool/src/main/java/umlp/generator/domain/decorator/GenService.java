@@ -4,17 +4,15 @@ package umlp.generator.domain.decorator;
 import com.google.common.base.Defaults;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.class2mc.adapters.JClass2OOTypeSymbolAdapter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpressionBuilder;
 import de.monticore.types.MCTypeFacade;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.check.TypeCheck;
-import de.monticore.types.check.TypeCheckResult;
-import de.monticore.types.check.TypeRelations;
+import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -35,7 +33,7 @@ public class GenService {
 
   public static final String UMLP_ID_NAME = "umlpId";
 
-  public GenService(){
+  public GenService() {
   }
 
   public static TypeRelations typeCheck = new TypeRelations();
@@ -138,11 +136,12 @@ public class GenService {
     Log.error("");
     return null;
   }
+
   public static ASTMCType createType(ASTCDAttribute attr) {
     if (attr.getSymbol().getType().isGenericType()) {
       SymTypeOfGenerics genericType = (SymTypeOfGenerics) attr.getSymbol().getType();
       List<String> arguments = genericType.getArgumentList().stream().
-              map(a -> box(a.print())).collect(Collectors.toList());
+          map(a -> box(a.print())).collect(Collectors.toList());
       return MCTypeFacade.getInstance().createBasicGenericTypeOf(genericType.getBaseName(), arguments.toArray(new String[0]));
     } else {
       return MCTypeFacade.getInstance().createQualifiedType(box(getType(attr.getSymbol().getType())));
@@ -166,13 +165,13 @@ public class GenService {
 
   public static boolean isVisible(ASTCDAttribute attr) {
     return !attr.getModifier().isFinal()
-            && !attr.getModifier().isStatic();
+        && !attr.getModifier().isStatic();
   }
 
   public static boolean isVisibleNotDerived(ASTCDAttribute attr) {
     return !attr.getModifier().isDerived()
-            && !attr.getModifier().isFinal()
-            && !attr.getModifier().isStatic();
+        && !attr.getModifier().isFinal()
+        && !attr.getModifier().isStatic();
   }
 
   public static boolean isDerived(ASTCDAttribute attr) {
@@ -182,20 +181,20 @@ public class GenService {
   public static boolean isGem(ASTCDAttribute attr) {
     if (attr.getMCType() instanceof ASTMCBasicGenericType) {
       List<String> nameList = ((ASTMCBasicGenericType) attr.getMCType()).getNameList();
-      return "Gem".equals(nameList.get(nameList.size()-1)) || "GemList".equals(nameList.get(nameList.size()-1));
+      return "Gem".equals(nameList.get(nameList.size() - 1)) || "GemList".equals(nameList.get(nameList.size() - 1));
     }
     return false;
   }
 
   public static String getGetterName(String name, SymTypeExpression type) {
-    return (typeCheck.isBoolean(type)?"is":"get")
-            + StringTransformations.capitalize(name);
+    return (typeCheck.isBoolean(type) ? "is" : "get")
+        + StringTransformations.capitalize(name);
   }
 
   public static boolean isGemList(ASTCDAttribute attr) {
     if (attr.getMCType() instanceof ASTMCBasicGenericType) {
       List<String> nameList = ((ASTMCBasicGenericType) attr.getMCType()).getNameList();
-      return "GemList".equals(nameList.get(nameList.size()-1));
+      return "GemList".equals(nameList.get(nameList.size() - 1));
     }
     return false;
   }
@@ -206,14 +205,14 @@ public class GenService {
   }
 
   public static boolean isList(ASTMCType mcType) {
-    if(mcType instanceof ASTMCListType){
+    if (mcType instanceof ASTMCListType) {
       return true;
     }
     if (mcType instanceof ASTMCBasicGenericType) {
       List<String> nameList = ((ASTMCBasicGenericType) mcType).getNameList();
       return "List".equals(nameList.get(nameList.size() - 1));
     }
-    if(mcType instanceof ASTMCQualifiedType){
+    if (mcType instanceof ASTMCQualifiedType) {
       List<String> nameList = ((ASTMCQualifiedType) mcType).getNameList();
       return "List".equals(nameList.get(nameList.size() - 1));
     }
@@ -226,7 +225,7 @@ public class GenService {
   }
 
   private static boolean isOptional(ASTMCType mcType) {
-    if(mcType instanceof ASTMCOptionalType){
+    if (mcType instanceof ASTMCOptionalType) {
       return true;
     }
 
@@ -240,13 +239,13 @@ public class GenService {
 
   public static boolean isVisible(ASTCDAssocSide attr) {
     return !attr.getModifier().isFinal()
-            && !attr.getModifier().isStatic();
+        && !attr.getModifier().isStatic();
   }
 
   public static boolean isVisibleNotDerived(ASTCDAssocSide attr) {
     return !attr.getModifier().isDerived()
-            && !attr.getModifier().isFinal()
-            && !attr.getModifier().isStatic();
+        && !attr.getModifier().isFinal()
+        && !attr.getModifier().isStatic();
   }
 
   public static boolean isDerived(ASTCDAssocSide attr) {
@@ -265,9 +264,19 @@ public class GenService {
     return assoc.getSymbol().isIsDefinitiveNavigable() && assoc.getSymbol().getOtherSide().isIsDefinitiveNavigable();
   }
 
-  public static String getInnerType(ASTMCType mcType){
+  public static boolean isDerived(ASTCDAssocSide side, List<ASTCDAssociation> derivedAssocs) {
+    return derivedAssocs.stream().anyMatch(c -> c.getLeft().equals(side) || c.getRight().equals(side));
+  }
+
+  public static List<ASTCDAssociation> getDerivedAssocs(ASTCDCompilationUnit cd) {
+    return cd != null ?
+        cd.getCDDefinition().getCDAssociationsList().stream().filter(assoc -> assoc.getModifier().isDerived()).collect(Collectors.toList()) :
+        List.of();
+  }
+
+  public static String getInnerType(ASTMCType mcType) {
     UMLPFullPrettyPrinter prettyPrinter = new UMLPFullPrettyPrinter();
-    if(!isList(mcType) && !isOptional(mcType)) {
+    if (!isList(mcType) && !isOptional(mcType)) {
       Log.error("Not a list or optional type: " + prettyPrinter.prettyprint(mcType));
       return null;
     }
@@ -277,16 +286,16 @@ public class GenService {
       return prettyPrinter.prettyprint(genType.getMCTypeArgument(0).getMCTypeOpt().get());
     }
 
-    if(mcType instanceof ASTMCListType){
+    if (mcType instanceof ASTMCListType) {
       ASTMCListType lt = (ASTMCListType) mcType;
-      if(!lt.getMCTypeArgumentList().isEmpty()) {
+      if (!lt.getMCTypeArgumentList().isEmpty()) {
         return prettyPrinter.prettyprint(lt.getMCTypeArgumentList().get(0).getMCTypeOpt().get());
       }
     }
 
-    if(mcType instanceof ASTMCOptionalType){
+    if (mcType instanceof ASTMCOptionalType) {
       ASTMCOptionalType ot = (ASTMCOptionalType) mcType;
-      if(!ot.getMCTypeArgumentList().isEmpty()){
+      if (!ot.getMCTypeArgumentList().isEmpty()) {
         return prettyPrinter.prettyprint(ot.getMCTypeArgumentList().get(0).getMCTypeOpt().get());
       }
     }
@@ -296,6 +305,7 @@ public class GenService {
 
   /***************************************************************************/
   /* TODO: Nach TypeCheck verschieben?                                       */
+
   /***************************************************************************/
 
   public static boolean isOptional(SymTypeExpression type) {
@@ -329,10 +339,10 @@ public class GenService {
   }
 
   public static boolean isInnerCDEnum(SymTypeExpression type) {
-   if (type.isGenericType()) {
-     return isCDEnum(((SymTypeOfGenerics) type).getArgument(0));
-   }
-   return false;
+    if (type.isGenericType()) {
+      return isCDEnum(((SymTypeOfGenerics) type).getArgument(0));
+    }
+    return false;
   }
 
   public static boolean isJavaType(SymTypeExpression type) {
@@ -351,7 +361,7 @@ public class GenService {
     if (type.isGenericType()) {
       SymTypeOfGenerics genericType = (SymTypeOfGenerics) type;
       List<String> arguments = genericType.getArgumentList().stream().
-              map(a -> box(a.print())).collect(Collectors.toList());
+          map(a -> box(a.print())).collect(Collectors.toList());
       return MCTypeFacade.getInstance().createBasicGenericTypeOf(genericType.getBaseName(), arguments.toArray(new String[0]));
     } else {
       return MCTypeFacade.getInstance().createQualifiedType(getType(type));
@@ -360,7 +370,7 @@ public class GenService {
 
   public static String getDBType(SymTypeExpression type) {
     if (type.isGenericType()) {
-      return getDBType(((SymTypeOfGenerics)type).getArgument(0));
+      return getDBType(((SymTypeOfGenerics) type).getArgument(0));
     }
     if (TypeCheck.isShort(type)) {
       return "Short";
