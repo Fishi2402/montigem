@@ -11,7 +11,7 @@ ${tc.signature("args")}
 <${tag}
   <#list ast.getGUINamedArgs().getGUINamedArgList() as namedArg>
     <#if genHelper.isEventArgument(ast, namedArg)>
-      (${namedArg.getName()}) = '${genHelper.gui2cdEventCallName(ast, namedArg.getName())}.bind(this)()'
+      (${namedArg.getName()}) = '${genHelper.gui2cdEventCallName(ast, namedArg.getName())}.bind(this)($event<#list args as arg>, ${arg}</#list>)'
     <#elseif genHelper.isViewElement(ast, namedArg) || genHelper.isViewElementsCollection(ast, namedArg)>
       [${namedArg.getName()}] = '${genHelper.gui2htmlArgValue(namedArg.getGUIArgValue())}'
     <#elseif genHelper.hasGetter(ast, namedArg)>

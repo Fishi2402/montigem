@@ -16,6 +16,7 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
+import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
 import de.monticore.io.paths.MCPath;
@@ -29,6 +30,7 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -46,8 +48,8 @@ import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genhtml.GUI2HtmlTrafo;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
-import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
+import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 
 import java.io.File;
@@ -72,6 +74,7 @@ import static umlp.UMLPToolOptions.GUI_CREATE;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
+import static umlp.UMLPToolOptions.MODEl_PATH;
 import static umlp.UMLPToolOptions.OUTPUT;
 import static umlp.UMLPToolOptions.PATH;
 import static umlp.UMLPToolOptions.PRETTYPRINT;
@@ -100,14 +103,6 @@ public class UMLPTool extends UMLPToolTOP {
     UMLPMill.init();
     BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
   }
-
-//  protected CD4CodeAfterParseTrafo apTrafo;
-
-//  public UMLPTool(){
-//    apTrafo = new CD4CodeAfterParseTrafo();
-//    apTrafo.in
-//    apTrafo.setTraverser(UMLPMill.traverser());
-//  }
 
   /**
    * This method realizes a tool for processing FC models. See the project's Readme for a
@@ -158,12 +153,21 @@ public class UMLPTool extends UMLPToolTOP {
         reportPathOutput = Path::toAbsolutePath;
       }
 
-      MCPath modelPath = new MCPath();
-      if (INPUT.isSelected(cmd)) {
-        for (String v : cmd.getOptionValues(INPUT.getCMD())) {
-          modelPath.addEntry(Paths.get(v).getParent());
+      MCPath importedSymbolPath = new MCPath();
+      if (PATH.isSelected(cmd)) {
+        for (String v : cmd.getOptionValues(PATH.getCMD())) {
+          importedSymbolPath.addEntry(Paths.get(v));
         }
       }
+
+      MCPath modelPath = new MCPath();
+      if (MODEl_PATH.isSelected(cmd)) {
+        for (String v : cmd.getOptionValues(MODEl_PATH.getCMD())) {
+          modelPath.addEntry(Paths.get(v));
+          importedSymbolPath.addEntry(Paths.get(v));
+        }
+      }
+
       MCPath hwcPath = new MCPath();
       if (HWC_PATH.isSelected(cmd)) {
         for (String v : cmd.getOptionValues(HWC_PATH.getCMD())) {
@@ -217,15 +221,9 @@ public class UMLPTool extends UMLPToolTOP {
 
         UMLPMill.init();
         BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
-        MCPath mcPath = new MCPath();
-        if (PATH.isSelected(cmd)) {
-          for (String v : cmd.getOptionValues(PATH.getCMD())) {
-            mcPath.addEntry(Paths.get(v));
-          }
-        }
-        UMLPMill.globalScope().setSymbolPath(mcPath);
+        UMLPMill.globalScope().setSymbolPath(importedSymbolPath);
 
-        List<URL> models = MCPathUtil.getAllModels(mcPath, ".*[.]umlp");
+        List<URL> models = MCPathUtil.getAllModels(modelPath, ".*[.]umlp");
         for (URL modelUrl : models) {
           try (Reader reader = new InputStreamReader(modelUrl.openStream())){
             ASTCDCompilationUnit ast = UMLPMill.parser().parse(reader).orElseThrow();
@@ -253,8 +251,14 @@ public class UMLPTool extends UMLPToolTOP {
           String s = SYMTAB.getValue(cmd);
           if (null != s) {
             // store symbol table to passed file
+            Path symbolPath = Paths.get(
+                s + File.separator
+                    + Names.getPathFromPackage(symbolTable.getPackageName())
+                    + File.separator
+                    + symbolTable.getName()
+                    + ".cdsym");
             JsonPrinter.disableIndentation();
-            storeSymbols(symbolTable, s);
+            storeSymbols(symbolTable, symbolPath.toString());
           }
           else {
             //print (formatted!) symboltable to console
@@ -314,14 +318,29 @@ public class UMLPTool extends UMLPToolTOP {
           ASTGUICompilationUnit astGui = parseGUI(guiModel.toString());
           Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
 
-          MCPath mcPath = new MCPath();
-          if (PATH.isSelected(cmd)) {
-            for (String v : cmd.getOptionValues(PATH.getCMD())) {
-              mcPath.addEntry(Paths.get(v));
+          IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, importedSymbolPath);
+
+          // print or store symbol table
+          if (SYMTAB.isSelected(cmd)) {
+            String s = SYMTAB.getValue(cmd);
+            if (null != s) {
+              // store symbol table to passed file
+              Path symbolPath = Paths.get(
+                  s + File.separator
+                      + Names.getPathFromPackage(symbolTable.getPackageName())
+                      + File.separator
+                      + symbolTable.getName()
+                      + ".guisym");
+              JsonPrinter.disableIndentation();
+              storeSymbols(symbolTable, symbolPath.toString());
+            }
+            else {
+              //print (formatted!) symboltable to console
+              GUIDSLSymbols2Json s2j = new GUIDSLSymbols2Json();
+              JsonPrinter.enableIndentation();
+              System.out.println(s2j.serialize(symbolTable));
             }
           }
-
-          createSymbolTable(astGui, mcPath);
 
           GeneratorSetup genSetup = new GeneratorSetup();
           // set output directory
@@ -352,7 +371,7 @@ public class UMLPTool extends UMLPToolTOP {
           /*
           GUIShortIterateTrafo shortIterateTrafo = new GUIShortIterateTrafo();
           shortIterateTrafo.transform(astGui);
-          createSymbolTable(astGui, mcPath);
+          createSymbolTable(astGui, importedSymbolPath);
           /**/
           // logTrafoExec("GUIShortIterateTrafo", astGui);
 
@@ -375,7 +394,7 @@ public class UMLPTool extends UMLPToolTOP {
           GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();
           gui2HtmlTrafo.transform(astGui);
           ASTGUICompilationUnit astGui4Html = gui2HtmlTrafo.getOut();
-          createSymbolTable(astGui4Html, mcPath);
+          createSymbolTable(astGui4Html, importedSymbolPath);
 
           // System.out.println(new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astGui4Html));
           GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, viewComponents);
@@ -399,6 +418,13 @@ public class UMLPTool extends UMLPToolTOP {
         guidsl_reportManagerFactory.close();
       }
     }
+  }
+
+  protected  void storeSymbols (IGUIDSLArtifactScope scope,String path)
+
+  {
+    GUIDSLSymbols2Json symbols2Json = new GUIDSLSymbols2Json();
+    symbols2Json.store(scope, path);
   }
 
   private JsonElement buildJsonData(CommandLine cmd) {

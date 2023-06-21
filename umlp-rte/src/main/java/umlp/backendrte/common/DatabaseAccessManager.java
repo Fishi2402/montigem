@@ -52,8 +52,14 @@ public class DatabaseAccessManager {
   }
 
   public static void closeConnection() throws SQLException {
-    if(!connection.isClosed()) {
+    if (connection == null) {
+      Log.warn("Can not close DB connection, since it is null");
+      return;
+    }
+
+    if (!connection.isClosed()) {
       connection.close();
+      Log.warn("Closed DB Connection");
     }
   }
 
@@ -65,6 +71,7 @@ public class DatabaseAccessManager {
         DriverManager.registerDriver((Driver) c.getDeclaredConstructor().newInstance());
       }
       connection = DriverManager.getConnection(DB_URL, databaseProperties);
+      Log.warn("New DB Connection created");
     } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException |
              InvocationTargetException | NoSuchMethodException e) {
       throw new RuntimeException(e);

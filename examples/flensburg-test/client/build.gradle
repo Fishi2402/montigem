@@ -1,4 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+import java.nio.file.Paths
+
 buildscript {
     repositories {
         mavenCentral()
@@ -15,12 +18,59 @@ buildscript {
 }
 
 plugins {
-    id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
-    id "com.github.node-gradle.node" version "3.4.0"
+  id 'java'
+  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
+  id "com.github.node-gradle.node" version "3.4.0"
+  id 'de.rwth.se.umlp-tool' version "$mc_version"
 }
 
+repositories {
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+  mavenCentral()
+}
+
+configurations {
+  cdParser
+  guiParser
+  guiLib
+}
+
+dependencies {
+  cdParser "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
+  guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
+  guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
+}
+
+node {
+  // Whether to download and install a specific Node.js version or not
+  // If false, it will use the globally installed Node.js
+  // If true, it will download node using above parameters
+  // Note that npm is bundled with Node.js
+  download = true
+
+  // Version of node to download and install (only used if download is true)
+  // It will be unpacked in the workDir
+  version = "18.10.0"
+
+  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
+  // according the proxy configuration defined for Gradle
+  // Disable this option if you want to configure the proxy for npm or yarn on your own
+  // (in the .npmrc file for instance)
+  nodeProxySettings = ProxySettings.OFF
+}
+
+// ------------------------ jsweet start ------------------------
+// also uses buildscript and one plugin
+
 compileJava {
-    enabled = false
+  enabled = false
 }
 
 jsweet {
@@ -46,23 +96,112 @@ jsweet {
     ]
 }
 
-node {
-    download = true
-    version = "12.18.2"
+// ------------------------ jsweet end ------------------------
+
+def symPath = "${project.buildDir}/symbols";
+
+task serializeCD {
+  dependsOn('unpackGUILibSymbols')
+  doLast {
+    def modelPathStr = "${project.projectDir.parent}/src/models"
+    def modelPath = Paths.get(modelPathStr)
+    fileTree(modelPathStr).matching {
+      include "**/*.umlp"
+    }.each {
+      def path = it.path
+      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
+      javaexec {
+        mainClass = 'de.monticore.CD4CodeTool'
+        classpath = configurations.cdParser
+        args "-i", path,
+            "-s", "${symPath}/${relativeModelPathStr}sym"
+      }
+    }
+  }
+}
+
+task serializeGUI {
+  dependsOn('serializeCD')
+  doLast {
+    def modelPathStr = "${project.projectDir.parent}/src/models"
+    def modelPath = Paths.get(modelPathStr)
+    fileTree(modelPathStr).matching {
+      include "**/*.gui"
+    }.each {
+      def path = it.path
+      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
+      javaexec {
+        mainClass = 'de.monticore.guidsl.GUIDSLTool'
+        classpath = configurations.guiParser
+        args "-i", path,
+            "-s", "${symPath}/${relativeModelPathStr}sym",
+            "-path", "${symPath}"
+      }
+    }
+  }
+}
+
+task unpackGUILibSymbols(type: Copy) {
+  from zipTree(configurations.guiLib.asPath)
+  into "${symPath}"
+}
+
+task genDomain(type: UMLPTask) {
+  input = file("../src/models/hardy/Flensburg.umlp")
+  outputDir = file("$project.buildDir/appdomain")
+  forClient = true
+}
+
+task genGUI(type: UMLPGuiGenTask) {
+  dependsOn('serializeGUI')
+  input = file("../src/models")
+  outputDir = file("$project.buildDir/appgui")
+  hwcDir = file("$projectDir/src/app")
+  modelDir = layout.projectDirectory.dir("../src/models")
+  symbolDir = layout.buildDirectory.dir("symbols")
+  symbolOutDir = layout.buildDirectory.dir("symbols")
+  domainModels = ["hardy.Flensburg"]
+  guiCreateModels = ["stanley.gui.AccountCreate"]
 }
 
 task buildApp(type: NpxTask) {
-    command = "ng"
-    args = ["build", "--prod"]
-    dependsOn(tasks.npmInstall)
-    inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
-    inputs.dir("node_modules")
-    inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.app.json")
-    outputs.dir("${project.buildDir}/webapp")
+  dependsOn('genDomain', 'genGUI')
+  command = "ng"
+  args = ["build"]
+  dependsOn(tasks.npmInstall)
+  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
+  inputs.dir("node_modules")
+  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.app.json")
+  outputs.dir("${project.buildDir}/webapp")
 }
 
-compileJava {
-    enabled = false
+task testApp(type: NpxTask) {
+  dependsOn('genDomain', 'genGUI')
+  command = "ng"
+  args = ["test"]
+  dependsOn(tasks.npmInstall)
+  inputs.dir("src")
+  inputs.dir("node_modules")
+  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json", "karma.conf.js")
+  outputs.upToDateWhen { true }
 }
+
+task runApp(type: NpxTask) {
+  dependsOn('genDomain', 'genGUI')
+  command = "ng"
+  args = ["serve"]
+  dependsOn(tasks.npmInstall)
+  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
+  inputs.dir("node_modules")
+  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json")
+  outputs.upToDateWhen { true }
+}
+
+// TODO AGe: enable when npmrc config is set up for everyone
+/*
+tasks.named('build') {
+  dependsOn(tasks.buildApp)
+}
+/**/
 
 clean.dependsOn(jsweetClean)

@@ -23,7 +23,8 @@ public enum TypeScriptTypes {
   LONG("long", "number"),
   LONG_BOXED("Long", "number"),
   FLOAT("float", "number"),
-  FLOAT_BOXED("Float", "number");
+  FLOAT_BOXED("Float", "number"),
+  RUNNABLE("Runnable", "() => void");
 
   public final static String ANY = "any";
 

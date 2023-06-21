@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package flensburg.database;
 
-import flensburg.FlensburgManagerImpl;
-import flensburg.HumanBuilder;
+import hardy.flensburg.FlensburgManagerImpl;
+import hardy.flensburg.HumanBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 

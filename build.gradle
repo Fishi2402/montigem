@@ -58,6 +58,9 @@ subprojects {
 
 build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
 
+task umlp_check_report
+build.dependsOn(umlp_check_report)
+
 subprojects {
   // After every UMLPTask, run basic checks on the generated report
   // e.g. "every generated file is also reported"
@@ -66,10 +69,12 @@ subprojects {
     gradle.UMLPTask umlTask = it
     Task t = task "$taskname"(type: gradle.UMLPOutputReportCheck) {
       input.from(umlTask.input)
+      symbolOutDir.set(umlTask.symbolOutDir)
       outputDir.set(umlTask.outputDir)
       reportDir.set(umlTask.reportDir)
       hwcDir.set(umlTask.hwcDir)
     }
-    build.dependsOn(t)
+    umlp_check_report.dependsOn(t)
   }
 }
+

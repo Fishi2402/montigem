@@ -1,44 +1,88 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+// run tasks in this project with command:
+// gradle :examples:selib:<taskName>
+//
+// important tasks / commands are:
+// * start UMLP generator and compile java files:
+//   * gradle :examples:selib:assemble
+// * start UMLP Backend Server:
+//   * gradle :examples:selib:bootRun
+//   * command does not terminate. Stopping the command is also stopping the server
+//   * url: http://localhost:8081
+//   * there can only be a single running server. A second server cannot start.
+//
 plugins {
-    id 'application'
+    id 'java' // Setup Java Compiler
+    id 'application'  // ensures that the JAR can be executed
+
+    // Spring Plugins
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version "${spring_version}"
 
-    id 'de.rwth.se.umlp-tool-backend'
+    id 'de.rwth.se.umlp-tool' // Makes the task-types `UMLPTask` and `UMLPMergeTask` available
 }
 
-description 'SE Bib example'
+description 'SE Bib Example'
 
-application {
-    mainClass = 'selib.SeLibServerApplication'
+
+task mergeUMLPModels(type: UMLPMergeTask){
+  // One way to define input: List files manually
+  source = files("src/models/AMergeTest.umlp", "src/models/SELib.umlp")
+
+  /* // Other way to define input: add whole directory, and use regex to include/exclude files
+    source = layout.projectDirectory.dir("src/models/")
+    includes = ["**.umlp"]
+    excludes = ["buggyFile.umlp", "**.gui"]
+   */
+
+  // Where should the merged result be stored?
+  outputFile = layout.buildDirectory.file("SELib.umlp")  // buildDirectory = "build/"
+}
+
+task generateJavaCode(type: UMLPTask) {
+  input = mergeUMLPModels.outputFile  // when the input is defined like this, gradle automatically runs the task "mergeUMLPModels" before this task
+
+  // Other way to define inputs:
+  // input = file("src/models/")  // All files in directory are used as input
+  // input = files("src/models/AMergeTest.umlp", "src/models/SELib.umlp")  // Listed files are used as input
+
+  hwcDir = file("src/main/java")
+
+  // tmplDir = file("src/templates")    // location for user-defined templates
+  configTemplate = "umlp/UMLPConfig4teaching.ftl"
+
+  outputDir = layout.buildDirectory.dir("umlp_backend")
+}
+
+sourceSets {
+  main.java.srcDirs += generateJavaCode.getOutputDir()  // Add generated files to the input of java compiler
+  main.resources.srcDirs += generateJavaCode.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
 }
 
 dependencies {
-    implementation 'com.h2database:h2:2.1.214'
+  implementation project(':umlp-rte')
+  implementation 'com.h2database:h2:2.1.214'  // In-Memory database written in java
 
-    implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version  // WHY is this required?
-
-    compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version
-    implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version  // Required for Hot-Reload
+  implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 }
 
-// Task is created by umlp-backend plugin (with very sensible default values)
-generateUmlpBackend{
-  configTemplate = "umlp/UMLPConfig4teaching.ftl"
+
+application {
+  // Set Entrypoint of Application
+    mainClass = 'selib.SeLibServerApplication'
 }
 
 
 task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
     classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
     mainClass = 'selib.SELibShellAPIApplication'
+    standardInput = System.in
 }
 
-task runServer {
-    dependsOn(bootRun {
-        systemProperty "spring.shell.interactive.enabled", "false"
-    })
+tasks.named("bootRun") {
+  systemProperty "spring.shell.interactive.enabled", "false"
 }
-

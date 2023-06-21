@@ -4,9 +4,9 @@ package umlp.generator.domain.decorator.commands;/* (c) https://github.com/Monti
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
-import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
 
@@ -30,10 +30,16 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
         astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
         astcdPackage.addCDElement(createDeSer(origCD, c));
       });
+
+    origCD.getCDDefinition().getCDInterfacesList().stream().filter(c -> !c.getSymbol().isIsDerived())
+        .forEach(c -> {
+          astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
+          astcdPackage.addCDElement(createDeSer(origCD, c));
+        });
   }
 
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String packageName) {
-    String classname = domainClass.getName();
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDType domainType, String packageName) {
+    String classname = domainType.getName();
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
@@ -67,8 +73,8 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
     return "umlp.commands.get_filtered.Constructor";
   }
 
-  protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
-    String cmdName = domainClass.getName() + SUFFIX;
+  protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDType domainType) {
+    String cmdName = domainType.getName() + SUFFIX;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
