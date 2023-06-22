@@ -66,6 +66,10 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
     Optional<String> domainQName = util.getMainDomainModelQName();
     if (domainQName.isPresent()) {
       String className = clazz.getName();
+      glex.replaceTemplate(getConstructorTemplate(), clazz,
+          new TemplateHookPoint(getConstructorWithBuilderTemplate(), domainQName.get(),
+              className, domainAttributes, guiDSLPrinter)
+      );
       /*
       getCD4C().addConstructor(clazz, getConstructorWithBuilderTemplate(),
           domainQName.get(), className, // TODO MB: Diagramm name UMLPDefSymbol
