@@ -47,3 +47,5 @@ include ':examples:flensburg-test-jsweet'
 include ':examples:flensburg-test-jsweet:client'
 include ':examples:it-test'
 include ':examples:assistenzsystem'
+
+include ':products:syse_functions'
