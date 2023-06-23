@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 import java.nio.file.Paths
 
 buildscript {
@@ -12,7 +14,7 @@ buildscript {
         }
     classpath group: 'umlp', name: 'umlp-frontend-rte-java'
 //        classpath project(":umlp-rte:umlp-frontend-rte-java")
-  }
+    }
 }
 
 plugins {
