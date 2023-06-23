@@ -79,7 +79,7 @@ node {
   version = "12.18.2"
 }
 
-/*
+
 task generateIndexTS(type: Exec) {
   workingDir "$projectDir"
 //  if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
@@ -91,7 +91,7 @@ task generateIndexTS(type: Exec) {
 /**/
 
 task buildLib(type: NpxTask) {
-  // dependsOn(generateIndexTS)
+   dependsOn(generateIndexTS)
   command = "ng"
   args = ["build", "--prod"]
   dependsOn(tasks.npmInstall)
@@ -105,10 +105,10 @@ project.getTasksByName("jsweet", true).forEach {
   t ->
     t.finalizedBy(buildLib)
     buildLib.dependsOn(t)
-    // generateIndexTS.dependsOn(t)
+     generateIndexTS.dependsOn(t)
 }
 
-//build.dependsOn(buildLib)
+build.dependsOn(buildLib)
 
 //////////////////////////////   CLEAN   //////////////////////////////
 
