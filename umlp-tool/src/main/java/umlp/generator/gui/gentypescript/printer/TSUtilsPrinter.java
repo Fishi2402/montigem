@@ -15,7 +15,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -46,7 +48,13 @@ public class TSUtilsPrinter extends CdUtilsPrinter {
    */
   public String printImportList(Collection<ASTMCImportStatement> importStatements) {
     StringBuilder sb = new StringBuilder();
-    importStatements.forEach(i -> sb.append(printer.prettyprint(i)).append("\n"));
+    Set<String> s = new HashSet<>();
+    for (ASTMCImportStatement i : importStatements) {
+      s.add(printer.prettyprint(i));
+    }
+    for (String is : s) {
+      sb.append(is).append("\n");
+    }
     return sb.toString();
   }
 

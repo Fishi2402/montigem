@@ -45,6 +45,11 @@ task generateFlensburg_FE1(type: UMLPGuiGenTask) {
   symbolOutDir = layout.buildDirectory.dir("umlp/fe1/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe1")
   domainModels = ["hardy.Flensburg"]
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
 }
 
 task generateFlensburg_FE2(type: UMLPGuiGenTask) {
