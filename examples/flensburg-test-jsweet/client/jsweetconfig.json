@@ -6,14 +6,14 @@
   ],
   "@Async": {
     "include": [
-      "flensburg.commands.**.doRun*",
-      "flensburg.requests.**.doRun*",
-      "flensburg.FlensburgManager._doGet*Sure*",
-      "flensburg.FlensburgManagerImpl._doGet*Sure*",
-      "flensburg.FlensburgManagerClientImpl._doGet*Sure*",
-      "flensburg.FlensburgManager._do*Opt*",
-      "flensburg.FlensburgManagerImpl._do*Opt*",
-      "flensburg.FlensburgManagerClientImpl._do*Opt*"
+      "hardy.flensburg.commands.**.doRun*",
+      "hardy.flensburg.requests.**.doRun*",
+      "hardy.flensburg.FlensburgManager._doGet*Sure*",
+      "hardy.flensburg.FlensburgManagerImpl._doGet*Sure*",
+      "hardy.flensburg.FlensburgManagerClientImpl._doGet*Sure*",
+      "hardy.flensburg.FlensburgManager._do*Opt*",
+      "hardy.flensburg.FlensburgManagerImpl._do*Opt*",
+      "hardy.flensburg.FlensburgManagerClientImpl._do*Opt*"
     ]
   }
 }
