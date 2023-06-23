@@ -9,7 +9,7 @@
 // * start UMLP Backend Server:
 //   * gradle :products:syse_functions:bootRun
 //   * command does not terminate. Stopping the command is also stopping the server
-//   * url: http://localhost:8081
+//   * url: http://localhost:8081 (there is no frontend)
 //   * there can only be a single running server. A second server cannot start.
 //
 plugins {
@@ -37,7 +37,7 @@ task mergeUMLPModels(type: UMLPMergeTask){
     excludes = ["**.gui"]
 
   // Where should the merged result be stored?
-  outputFile = layout.buildDirectory.file("SyseFunctions.umlp")  // buildDirectory = "build/"
+  outputFile = layout.buildDirectory.file("FunctionsStructure.umlp")  // buildDirectory = "build/"
 }
 
 task generateJavaCode(type: UMLPTask) {
@@ -47,7 +47,7 @@ task generateJavaCode(type: UMLPTask) {
   // input = file("src/models/")  // All files in directory are used as input
   // input = files("src/models/AMergeTest.umlp", "src/models/SELib.umlp")  // Listed files are used as input
 
-//  hwcDir = file("src/main/java")
+  hwcDir = file("src/main/java")
 
   // tmplDir = file("src/templates")    // location for user-defined templates
   // configTemplate = "umlp/UMLPConfig4teaching.ftl"
@@ -73,15 +73,9 @@ dependencies {
 
 application {
   // Set Entrypoint of Application
-  mainClass = 'selib.SeLibServerApplication'
+  mainClass = 'se.Application'
 }
 
-
-task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
-  classpath = sourceSets.main.runtimeClasspath
-  mainClass = 'selib.SELibShellAPIApplication'
-  standardInput = System.in
-}
 
 tasks.named("bootRun") {
   systemProperty "spring.shell.interactive.enabled", "false"
