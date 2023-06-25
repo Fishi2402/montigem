@@ -7,7 +7,7 @@ let res: boolean = true;
 <#if reportError>
 if(this._${name} == null){
   res = false;
-  ${domain}ErrorCollector.report${name?cap_first}Invalid(<${domain}> this);
+  ${domain}ErrorCollector.report${name?cap_first}Invalid(<${domain}> <any> this);
 }
 </#if>
 

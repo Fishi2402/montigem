@@ -11,5 +11,5 @@ if(idx > this._${name}.size()){
 this._${name}._internal_set(idx, gemID);
 this.check${name?cap_first}();
 this.${sourceName?uncap_first}Observers.forEach(obs =>
-  obs.maybeNotifySet${name?cap_first}(<${sourceName}> this, idx, gemID, scope)
+  obs.maybeNotifySet${name?cap_first}(<${sourceName}> <any> this, idx, gemID, scope)
 );
