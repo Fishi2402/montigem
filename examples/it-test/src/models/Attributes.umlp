@@ -1,5 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 umlp Attributes {
 
@@ -53,6 +56,31 @@ umlp Attributes {
     Optional<java.time.Duration> bar_opt_duration;
     Optional<Duration> bar_opt_duration2;
 
+    java.time.LocalDate bar_local_date;
+    LocalDate bar_local_date2;
+    List<java.time.LocalDate> bar_list_local_date;
+    List<LocalDate> bar_list_local_date2;
+    Optional<java.time.LocalDate> bar_opt_local_date;
+    Optional<LocalDate> bar_opt_local_date2;
+
+    java.time.LocalDateTime bar_local_date_time;
+    LocalDateTime bar_local_date_time2;
+    List<java.time.LocalDateTime> bar_list_local_date_time;
+    List<LocalDateTime> bar_list_local_date_time2;
+    Optional<java.time.LocalDateTime> bar_opt_local_date_time;
+    Optional<LocalDateTime> bar_opt_local_date_time2;
+
+    java.time.LocalTime bar_local_time;
+    LocalTime bar_local_time2;
+    List<java.time.LocalTime> bar_list_local_time;
+    List<LocalTime> bar_list_local_time2;
+    Optional<java.time.LocalTime> bar_opt_local_time;
+    Optional<LocalTime> bar_opt_local_time2;
   }
 
+  class MinimalJavaTime{
+      LocalDate bar_local_date;
+      LocalDateTime bar_local_date_time;
+      LocalTime bar_local_time;
+  }
 }
