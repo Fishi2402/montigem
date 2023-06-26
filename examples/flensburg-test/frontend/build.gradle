@@ -45,6 +45,8 @@ dependencies {
   cdParser "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
   guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
   guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
+
+  implementation "umlp:frontend-rte:$mc_version:cd2java"
 }
 
 node {

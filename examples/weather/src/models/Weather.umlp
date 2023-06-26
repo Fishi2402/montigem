@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+umlp Weather {
+
+  class Forecast {
+    java.time.LocalDateTime date;
+
+    Double longitude;
+    Double latitude;
+
+    Double temperature;
+    Double windspeed;
+    int realtiveHumidity;
+  }
+
+  class HvacConfig {
+    Double temperature;
+    boolean humidifyAir;
+    HvacMode mode;
+
+    java.time.LocalTime timeOn;
+    java.time.LocalTime timeOff;
+  }
+
+  enum HvacMode {
+    AUTO,
+    HUMIDIFY,
+    VENTILATE,
+    HEAT,
+    COOL;
+  }
+
+}
+
