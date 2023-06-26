@@ -61,7 +61,12 @@ public class TypesTest {
 
     MinimalJavaTimeDeSer deSer = new MinimalJavaTimeDeSer();
     String s = deSer.serialize(minimalJavaTime);
-    System.out.println(s);
+    MinimalJavaTime minimalJavaTime2 = deSer.deserialize(s).get();
+    assertNotSame(minimalJavaTime, minimalJavaTime2);
+
+    assertEquals(minimalJavaTime.getBar_local_time().truncatedTo(ChronoUnit.MILLIS), minimalJavaTime2.getBar_local_time().truncatedTo(ChronoUnit.MILLIS));
+    assertEquals(minimalJavaTime.getBar_local_date_time().truncatedTo(ChronoUnit.MILLIS), minimalJavaTime2.getBar_local_date_time().truncatedTo(ChronoUnit.MILLIS));
+    assertEquals(minimalJavaTime.getBar_local_date(), minimalJavaTime2.getBar_local_date());
   }
 
 }
