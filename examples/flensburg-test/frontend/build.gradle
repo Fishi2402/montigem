@@ -3,22 +3,21 @@
 import java.nio.file.Paths
 
 buildscript {
-    repositories {
-        mavenCentral()
-        maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-        maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  repositories {
+    mavenCentral()
+    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  }
+  dependencies {
+    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
+      transitive = true
     }
-    dependencies {
-        classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
-            transitive = true
-        }
     classpath group: 'umlp', name: 'umlp-frontend-rte-java'
-//        classpath project(":umlp-rte:umlp-frontend-rte-java")
-    }
+    // classpath project(":umlp-rte:umlp-frontend-rte-java")
+  }
 }
 
 plugins {
-  id 'java'
   id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
   id "com.github.node-gradle.node" version "3.4.0"
   id 'de.rwth.se.umlp-tool' version "$mc_version"
@@ -69,10 +68,6 @@ node {
 // ------------------------ jsweet start ------------------------
 // also uses buildscript and one plugin
 
-compileJava {
-  enabled = false
-}
-
 jsweet {
   autoPropagateAsyncAwaits = true
   verbose = true
@@ -86,20 +81,27 @@ jsweet {
   module = 'commonjs'
   workingDir = project.file('target/.jsweet')
   excludeTranspilation = [
-//            '**/*DeSer*.java',
-'flensburg/*DAO.java',
-'flensburg/*DbObserver.java'
+    // '**/*DeSer*.java',
+    'flensburg/*DAO.java',
+    'flensburg/*DbObserver.java'
   ]
 }
 
 // ------------------------ jsweet end ------------------------
+
+// TODO AGe: don't know if that is needed
+task generateCDTOGUI(type: UMLPTask) {
+  input = file("../models/hardy")
+  cdToGui = true
+  outputDir = layout.buildDirectory.dir("cd2gui")
+}
 
 def symPath = "${project.buildDir}/symbols";
 
 task serializeCD {
   dependsOn('unpackGUILibSymbols')
   doLast {
-    def modelPathStr = "${project.projectDir.parent}/src/models"
+    def modelPathStr = "${project.projectDir.parent}/models"
     def modelPath = Paths.get(modelPathStr)
     fileTree(modelPathStr).matching {
       include "**/*.umlp"
@@ -119,7 +121,7 @@ task serializeCD {
 task serializeGUI {
   dependsOn('serializeCD')
   doLast {
-    def modelPathStr = "${project.projectDir.parent}/src/models"
+    def modelPathStr = "${project.projectDir.parent}/models"
     def modelPath = Paths.get(modelPathStr)
     fileTree(modelPathStr).matching {
       include "**/*.gui"
@@ -143,61 +145,61 @@ task unpackGUILibSymbols(type: Copy) {
 }
 
 task genDomain(type: UMLPTask) {
-  input = file("../src/models/hardy/Flensburg.umlp")
+  input = file("../models/hardy/Flensburg.umlp")
   outputDir = file("$project.buildDir/appdomain")
   forClient = true
 }
 
 task genGUI(type: UMLPGuiGenTask) {
   dependsOn('serializeGUI')
-  input = file("../src/models")
+  input = file("../models")
   outputDir = file("$project.buildDir/appgui")
   hwcDir = file("$projectDir/src/app")
-  modelDir = layout.projectDirectory.dir("../src/models")
-  symbolDir = layout.buildDirectory.dir("symbols")
-  symbolOutDir = layout.buildDirectory.dir("symbols")
+  modelDir = layout.projectDirectory.dir("../models")
+  symbolDir = file(symPath)
   domainModels = ["hardy.Flensburg"]
   guiCreateModels = ["stanley.gui.AccountCreate"]
 }
 
-task buildApp(type: NpxTask) {
-  dependsOn('genDomain', 'genGUI')
-  command = "ng"
+task genGUI2(type: UMLPGuiGenTask) {
+  dependsOn(genGUI, generateCDTOGUI)
+  input = file(layout.buildDirectory.dir("cd2gui/models"))
+  symbolDir = file(symPath)
+  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
+  outputDir = layout.buildDirectory.dir("umlp/fe2")
+  domainModels = ["hardy.Flensburg"]
+}
+
+task generateNPMAuth(type: NPMAuthCreate)
+
+yarn_install.dependsOn(generateNPMAuth, genGUI)
+yarn_upgrade.dependsOn(yarn_install)
+
+task buildApp(type: YarnTask) {
+  dependsOn('genDomain', yarn_upgrade)
   args = ["build"]
-  dependsOn(tasks.npmInstall)
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")
   inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.app.json")
-  outputs.dir("${project.buildDir}/webapp")
+  outputs.dir("${project.buildDir}/dist")
 }
 
-task testApp(type: NpxTask) {
-  dependsOn('genDomain', 'genGUI')
-  command = "ng"
+task testApp(type: YarnTask) {
+  dependsOn('genDomain', yarn_upgrade)
   args = ["test"]
-  dependsOn(tasks.npmInstall)
   inputs.dir("src")
   inputs.dir("node_modules")
   inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json", "karma.conf.js")
   outputs.upToDateWhen { true }
 }
 
-task runApp(type: NpxTask) {
-  dependsOn('genDomain', 'genGUI')
-  command = "ng"
-  args = ["serve"]
-  dependsOn(tasks.npmInstall)
+task runApp(type: YarnTask) {
+  dependsOn('genDomain', yarn_upgrade)
+  args = ["start"]
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")
   inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json")
   outputs.upToDateWhen { true }
 }
-
-// TODO AGe: enable when npmrc config is set up for everyone
-/*
-tasks.named('build') {
-  dependsOn(tasks.buildApp)
-}
-/**/
 
 clean.dependsOn(jsweetClean)

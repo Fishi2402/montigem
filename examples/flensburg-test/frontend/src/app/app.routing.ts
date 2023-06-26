@@ -16,22 +16,22 @@ export const routes: Routes = [
   },
   {
     path: "test",
-    loadChildren: () => import("../../../build/app/stanley/my/InfoBoxModule").then(m => m.InfoboxModule)
+    loadChildren: () => import("../../build/appgui/stanley/my/InfoBoxModule").then(m => m.InfoboxModule)
   },
   {
     path: "test2",
-    loadChildren: () => import("../../../build/app/stanley/personoverview/PersonOverviewModule").then(m => m.PersonoverviewModule)
+    loadChildren: () => import("../../build/appgui/stanley/personoverview/PersonOverviewModule").then(m => m.PersonoverviewModule)
   },
   {
     path: "test3",
-    loadChildren: () => import("../../../build/app/stanley/personcreate/PersonCreateModule").then(m => m.PersoncreateModule)
+    loadChildren: () => import("../../build/appgui/stanley/personcreate/PersonCreateModule").then(m => m.PersoncreateModule)
   },
   {
     path: "test4",
-    loadChildren: () => import("../../../build/app/stanley/personedit/PersonEditModule").then(m => m.PersoneditModule)
+    loadChildren: () => import("../../build/appgui/stanley/personedit/PersonEditModule").then(m => m.PersoneditModule)
   },
   {
     path: "test5",
-    loadChildren: () => import("../../../build/app/stanley/gui/AccountCreateModule").then(m => m.AccountcreateModule)
+    loadChildren: () => import("../../build/appgui/stanley/gui/AccountCreateModule").then(m => m.AccountcreateModule)
   },
 ]
