@@ -111,6 +111,10 @@ public class GUIGeneratorUtil {
 
   public final boolean isDomainListType(ASTGUIParam astguiParam) {
     SymTypeExpression type = astguiParam.getSymbol().getType();
+    return isDomainListType(type);
+  }
+
+  public final boolean isDomainListType(SymTypeExpression type) {
     if (type.hasTypeInfo() && GenService.isList(type)) {
       if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
         SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
@@ -139,6 +143,15 @@ public class GUIGeneratorUtil {
     res = res.replaceAll("List<", "");
     res = res.replaceAll("", ">");
     return res;
+  }
+
+  public final Optional<SymTypeExpression> getDomainListInnerType(SymTypeExpression type) {
+    if (type.hasTypeInfo() && GenService.isList(type)) {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+        return Optional.of(((SymTypeOfGenerics) type).getArgument(0));
+      }
+    }
+    return Optional.empty();
   }
 
   public final boolean isDomainImport(ASTMCImportStatement i) {

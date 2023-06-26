@@ -161,6 +161,9 @@ task genGUI(type: UMLPGuiGenTask) {
   symbolDir = file(symPath)
   domainModels = ["hardy.Flensburg"]
   guiCreateModels = ["stanley.gui.AccountCreate"]
+
+  debug = true
+  outputs.upToDateWhen { false }
 }
 
 task genGUI2(type: UMLPGuiGenTask) {

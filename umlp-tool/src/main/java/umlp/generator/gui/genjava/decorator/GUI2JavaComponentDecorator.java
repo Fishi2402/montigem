@@ -15,13 +15,10 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
-import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
-import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
@@ -85,13 +82,24 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
     String paramType = convertType(paramSTE.print());
     if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
-      if (!util.isDomainType(paramSTE)) {
+      // TODO AGe: all possible types
+      if (!util.isDomainType(paramSTE) && !util.isDomainListType(paramSTE)) {
         getCD4C().addImport(decoratedClass, paramSTE.printFullName());
       }
       else {
         Optional<String> domainQName = util.getMainDomainModelQName();
         if (domainQName.isPresent()) {
-          getCD4C().addImport(decoratedClass, domainQName.get() + "." + paramSTE.print());
+          if (util.isDomainType(paramSTE)) {
+            getCD4C().addImport(decoratedClass, domainQName.get() + "." + paramSTE.print());
+          }
+          if (util.isDomainListType(paramSTE) && util.getDomainListInnerType(paramSTE).isPresent()) {
+            getCD4C().addImport(decoratedClass, domainQName.get() + "."
+                + util.getDomainListInnerType(paramSTE).get().print());
+          }
+          else {
+            Log.warn("0x0000A GUI Model " + this.guiAst.getComponentName()
+                + " uses type '" + paramSTE.print() + "' that could not be resolved.");
+          }
         }
         else {
           Log.error("0x00000 GUI Model " + this.guiAst.getComponentName()
@@ -271,7 +279,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     // TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
     // SymTypeExpression rightType = tc.typeOf(rightExp);
     GUIExpressionTypeVisitor visitor = new GUIExpressionTypeVisitor();
-    Optional<SymTypeExpression> rightTypeOpt = visitor.getType(rightExp);;
+    Optional<SymTypeExpression> rightTypeOpt = visitor.getType(rightExp);
+    ;
     if (rightTypeOpt.isPresent()) {
       SymTypeExpression rightType = rightTypeOpt.get();
       // TODO AGe: still not nice
@@ -283,14 +292,16 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       if (leftIsString && rightIsDate) {
         if (forGetter) {
           return dateToStringConversion();
-        } else {
+        }
+        else {
           return stringToDateConversion();
         }
       }
       if (leftIsString && rightIsNumber) {
         if (forGetter) {
           return numberToStringConversion();
-        } else {
+        }
+        else {
           return stringToNumberConversion(rightType.print());
         }
       }
