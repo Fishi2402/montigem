@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -25,7 +24,7 @@ public class WeatherReport {
       WeatherManager.forecastBuilder()
           .longitude(data.getDoubleMember("longitude"))
           .latitude(data.getDoubleMember("latitude"))
-          .date(LocalDate.now())
+          .date(LocalDateTime.now())
           .temperature(data.getObjectMember("hourly").getArrayMember("temperature_2m").get(i).getAsJsonNumber()
               .getNumberAsDouble())
           .realtiveHumidity(data.getObjectMember("hourly").getArrayMember("relativehumidity_2m").get(i).getAsJsonNumber()
