@@ -66,34 +66,36 @@ public class DbObserverDecorator extends AbstractDecorator {
       });
 
     for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e: DAODecorator.getOppositeSideToAssociationMap(domainClass, associations).entrySet()) {
-      CDRoleSymbol cdRollSymbol = e.getKey().getSymbol();
+      if (!e.getValue().getModifier().isDerived()) {
+        CDRoleSymbol cdRollSymbol = e.getKey().getSymbol();
 
-      SymTypeExpression type = cdRollSymbol.getType();
+        SymTypeExpression type = cdRollSymbol.getType();
 
-      SymTypeExpression otherType = cdRollSymbol.getOtherSide().getType();
-      String otherTypeName = otherType.print();
+        SymTypeExpression otherType = cdRollSymbol.getOtherSide().getType();
+        String otherTypeName = otherType.print();
 
-      ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-      ASTCDCompilationUnit otherTypeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) otherType.getTypeInfo().getAstNode());
-      getCD4C().addImport(observerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
-      getCD4C().addImport(observerClass, getPackageName(otherTypeCD, DEFAULT_PACKAGE) + "." + otherType.print());
+        ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+        ASTCDCompilationUnit otherTypeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) otherType.getTypeInfo().getAstNode());
+        getCD4C().addImport(observerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+        getCD4C().addImport(observerClass, getPackageName(otherTypeCD, DEFAULT_PACKAGE) + "." + otherType.print());
 
-      ASTCDMethodSignature add = null;
-      ASTCDMethodSignature remove = null;
-      if(e.getKey().getCDCardinality().isMult()) {
-        add = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.AddNotify",
+        ASTCDMethodSignature add = null;
+        ASTCDMethodSignature remove = null;
+        if (e.getKey().getCDCardinality().isMult()) {
+          add = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.AddNotify",
+              className, e.getValue().getName(), e.getKey(), otherTypeName);
+          remove = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.RemoveNotify",
+              className, e.getValue().getName(), e.getKey(), otherTypeName);
+        }
+        ASTCDMethodSignature set = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.SetNotify",
             className, e.getValue().getName(), e.getKey(), otherTypeName);
-        remove = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.RemoveNotify",
-            className, e.getValue().getName(), e.getKey(), otherTypeName);
-      }
-      ASTCDMethodSignature set = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.SetNotify",
-          className, e.getValue().getName(), e.getKey(), otherTypeName);
 
-      if(add != null && remove != null) {
-        glex.replaceTemplate("cd2java.Annotations", add, new StringHookPoint("@Override"));
-        glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
+        if (add != null && remove != null) {
+          glex.replaceTemplate("cd2java.Annotations", add, new StringHookPoint("@Override"));
+          glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
+        }
+        glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
       }
-      glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
     }
 
     addImports(observerClass);
@@ -113,13 +115,15 @@ public class DbObserverDecorator extends AbstractDecorator {
     Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociationMap = DAODecorator.getOppositeSideToAssociationMap(domainClass, associations);
     List<ASTCDAttribute> attributes = new ArrayList<>();
     for (ASTCDAssociation association : assocSideToAssociationMap.values()) {
-      String type = "Assoc"+StringTransformations.capitalize(association.getName())+"DAO";
-      String attrName = StringTransformations.uncapitalize(type);
-      if(attributes.stream().noneMatch(attribute -> attribute.getName().equals(attrName))) {
-        ASTCDAttribute assocDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
-            getMCTypeFacade().createQualifiedType(type), attrName);
-        getGlex().replaceTemplate("cd2java.Value", assocDaoAttr, new StringHookPoint(" = new " + type + "()"));
-        attributes.add(assocDaoAttr);
+      if (!association.getModifier().isDerived()) {
+        String type = "Assoc" + StringTransformations.capitalize(association.getName()) + "DAO";
+        String attrName = StringTransformations.uncapitalize(type);
+        if (attributes.stream().noneMatch(attribute -> attribute.getName().equals(attrName))) {
+          ASTCDAttribute assocDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
+              getMCTypeFacade().createQualifiedType(type), attrName);
+          getGlex().replaceTemplate("cd2java.Value", assocDaoAttr, new StringHookPoint(" = new " + type + "()"));
+          attributes.add(assocDaoAttr);
+        }
       }
     }
     return attributes;

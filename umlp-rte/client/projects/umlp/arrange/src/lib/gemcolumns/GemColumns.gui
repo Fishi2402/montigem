@@ -1,0 +1,24 @@
+package arrange.src.lib.gemcolumns;
+
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+component GemColumns(List<GUIViewElement> column1, List<GUIViewElement> column2, List<GUIViewElement> column3) {
+  @GemRow(hAlign = "spaceEvenly", components = [
+    @GemColumn(width = "30%", component =
+      @iterate (GUIViewElement c : column1) {
+        @GemColumn(style="gem-column-item", component = c);
+      }
+    ),
+    @GemColumn(width = "30%", component =
+      @iterate (GUIViewElement c : column2) {
+        @GemColumn(style="gem-column-item", component = c);
+      }
+    ),
+    @GemColumn(width = "30%", component =
+      @iterate (GUIViewElement c : column3) {
+        @GemColumn(style="gem-column-item", component = c);
+      }
+    )
+  ]);
+}

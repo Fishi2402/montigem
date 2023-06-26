@@ -19,6 +19,7 @@ includeBuild "umlp-tool"
 includeBuild "umlp-rte/umlp-frontend-rte-java"
 
 include ":umlp-rte"
+include ":umlp-rte:client"
 include ":umlp-rte:umlp-frontend-rte"
 include ":umlp-rte:umlp-frontend-rte-java"
 
@@ -43,5 +44,9 @@ include ':examples:artifacts-java'
 include ':examples:flensburg-neo4j-test'
 include ':examples:flensburg-test'
 include ':examples:flensburg-test:client'
+include ':examples:flensburg-test-jsweet'
+include ':examples:flensburg-test-jsweet:client'
 include ':examples:it-test'
 include ':examples:assistenzsystem'
+
+include ':products:syse_functions'

@@ -2,11 +2,9 @@
 
 package umlp.generator.domain.decorator;
 
-import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
-import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
@@ -21,7 +19,7 @@ public class CommandObjectMapperDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     astcdPackage.addCDElement(createClass(origCD));
   }
@@ -42,15 +40,35 @@ public class CommandObjectMapperDecorator extends AbstractDecorator {
     glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "CommandResultDeSer()"));
 
     // add methods
-    getCD4C().addMethod(mapperClass, "umlp.commandobjectmapper.Init", name);
-    getCD4C().addMethod(mapperClass, "umlp.commandobjectmapper.SerializeCommand");
-    getCD4C().addMethod(mapperClass, "umlp.commandobjectmapper.DeserializeCommand");
-    getCD4C().addMethod(mapperClass, "umlp.commandobjectmapper.SerializeResponse");
-    getCD4C().addMethod(mapperClass, "umlp.commandobjectmapper.DeserializeResponse");
+    getCD4C().addMethod(mapperClass, getInitTemplate(), name);
+    getCD4C().addMethod(mapperClass, getSerializeCommandTemplate());
+    getCD4C().addMethod(mapperClass, getDeserializeCommandTemplate());
+    getCD4C().addMethod(mapperClass, getSerializeResponseTemplate());
+    getCD4C().addMethod(mapperClass, getDeserializeResponseTemplate());
 
     addImports(mapperClass);
 
     return mapperClass;
+  }
+
+  protected String getInitTemplate() {
+    return "umlp.commandobjectmapper.Init";
+  }
+
+  protected String getSerializeCommandTemplate() {
+    return "umlp.commandobjectmapper.SerializeCommand";
+  }
+
+  protected String getDeserializeCommandTemplate() {
+    return "umlp.commandobjectmapper.DeserializeCommand";
+  }
+
+  protected String getSerializeResponseTemplate() {
+    return "umlp.commandobjectmapper.SerializeResponse";
+  }
+
+  protected String getDeserializeResponseTemplate() {
+    return "umlp.commandobjectmapper.DeserializeResponse";
   }
 
   protected void addImports(ASTCDType clazz) {

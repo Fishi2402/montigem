@@ -10,10 +10,13 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.util.PathUtil;
 
 import java.util.List;
@@ -40,24 +43,37 @@ public class TSBuilderDecorator extends BuilderDecorator {
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName());
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ErrorCollectorDecorator.SUFFIX);
+
+    String name = origCD.getCDDefinition().getName();
+    getCD4C().addImport(cdType, this.astcdPackage + "."
+        + name + ManagerDecorator.SUFFIX);
     if (!domainType.getSuperclassList().isEmpty()) {
       getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
     }
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
-      if (c.getName() != domainType.getName()) {
+      if (!c.getName().equals(domainType.getName())) {
         getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
       }
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
-      if (c.getName() != domainType.getName()) {
+      if (!c.getName().equals(domainType.getName())) {
         getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
       }
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
-      if (c.getName() != domainType.getName()) {
+      if (!c.getName().equals(domainType.getName())) {
         getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
       }
     }
+  }
+
+  @Override
+  protected void addConstructor(
+      ASTCDClass builderClass, ASTCDClass domainClass,
+      String managerName, List<ASTCDAssocSide> attrAssocLists
+  ) {
+    glex.replaceTemplate(GUI2ComponentTemplates.CONSTRUCTOR, builderClass,
+        new TemplateHookPoint(getConstructorTemplate(), domainClass.getName(), managerName, attrAssocLists));
   }
 
   protected String getConstructorTemplate() {

@@ -1,0 +1,23 @@
+.gem-columns-items {
+    display: contents;
+    /*flex-basis: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;*/
+
+    background-color: aqua;
+}
+.gem-column-item {
+    width: 30%;
+    margin: 5px 0;
+}
+.gem-columns-item1 {
+    height: 100%;
+}
+.gem-columns-item2 {
+    height: 100%;
+}
+.gem-columns-item3 {
+    height: 100%;
+    width: 100%;
+}

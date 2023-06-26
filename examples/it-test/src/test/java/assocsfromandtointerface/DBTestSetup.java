@@ -15,6 +15,7 @@ class DBTestSetup extends TestSetup {
       AssocsFromAndToInterfaceManagerImpl4Test instance = new AssocsFromAndToInterfaceManagerImpl4Test();
       instance.assocsFromAndToInterfaceObservers.add(new AssocsFromAndToInterfaceDbObserver());
       AssocsFromAndToInterfaceManager.initMe(instance);
+      DatabaseAccessManager.executeStatement("DROP ALL OBJECTS");
       String schema = IOUtils.resourceToString("/AssocsFromAndToInterface.sql", StandardCharsets.UTF_8);
       assertTrue(DatabaseAccessManager.initSchema(schema));
     } catch (Exception e) {

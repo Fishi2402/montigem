@@ -1,0 +1,11 @@
+package arrange.src.lib.gemcard;
+
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+component GemCard(GUIViewElement component) {
+  @GemColumn(style = "mat-elevation-z8", height = "100%", components = [
+    @GemRow(style = "gem-card-header"),
+    @GemColumn(style = "gem-card-body", component = component)
+  ]);
+}

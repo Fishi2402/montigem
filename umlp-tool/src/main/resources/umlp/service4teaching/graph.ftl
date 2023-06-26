@@ -22,9 +22,11 @@ ${cdName}Manager.get${c.getName()}List()
         }
         <#else>
         <#-- Req or Opt-->
-        var other = obj.get${side.name?cap_first}Gem();
-        if(obj.getGemId() >= 0 && other.getGemId() >= 0){
-          links.add("{\"source\":" + obj.getGemId() + ",\"target\":"+other.getGemId() + "}");
+        {
+          var other = obj.get${side.name?cap_first}Gem();
+          if(obj.getGemId() >= 0 && other.getGemId() >= 0){
+            links.add("{\"source\":" + obj.getGemId() + ",\"target\":"+other.getGemId() + "}");
+          }
         }
         </#if>
       </#list>

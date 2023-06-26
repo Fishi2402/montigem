@@ -1,0 +1,48 @@
+@import "../variables";
+
+@mixin auth-theme($link-color, $link-hover-color) {
+  form {
+    a {
+      color: $link-color;
+      font-size: 15px;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    a:hover {
+      color: $link-hover-color;
+    }
+  }
+}
+
+.dropdown-login {
+  background: $montigem-white;
+  border-radius: 4px;
+  font-size: 12px;
+  padding: 8px;
+  border: none;
+}
+
+::ng-deep .mat-icon {
+  font-size: 16px;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+form {
+  color: $montigem-white;
+
+  .hint {
+    font-size: 12px;
+    line-height: 15px;
+    padding-left: 10px;
+    border-left: 3px solid $montigem-white;
+  }
+
+  label {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 25px;
+    text-align: center;
+  }
+}

@@ -5,7 +5,7 @@ import java.util.List;
 public class Foo extends FooTOP{
 
   @Override
-  public Integer getA() {
+  public int getA() {
     return 42;
   }
 
@@ -15,7 +15,7 @@ public class Foo extends FooTOP{
   }
 
   @Override
-  public List<String> getC() {
+  public List<String> getCList() {
     return List.of("eins", "zwei");
   }
 

@@ -11,7 +11,6 @@ import org.gradle.work.ChangeType;
 import org.gradle.work.FileChange;
 import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
-import umlp.UMLPTool;
 import umlp.UMLPToolOptions;
 
 import java.io.File;
@@ -35,8 +34,11 @@ public abstract class UMLPTask extends CommonUMLPTask {
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental
   public abstract DirectoryProperty getSymbolDir();
+
+  @OutputDirectory
+  @org.gradle.api.tasks.Optional
+  public abstract DirectoryProperty getSymbolOutDir();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
@@ -91,12 +93,19 @@ public abstract class UMLPTask extends CommonUMLPTask {
     result.add("-r");
     result.add(handlePath.apply(getReportDirOfFile(filePath.toFile()).getAsFile().toPath()));
 
-    if(this.getModelDir().isPresent()) {
+    if(this.getSymbolDir().isPresent()) {
       result.add("-path");
+      result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
+    }
+
+    if(this.getModelDir().isPresent()) {
+      result.add("-modelPath");
       result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
-      if (this.getSymbolDir().isPresent()) {
-        result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
-      }
+    }
+
+    if(this.getSymbolOutDir().isPresent()) {
+      result.add("-s");
+      result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
     }
 
     if(this.getTmplDir().isPresent()) {
@@ -185,7 +194,7 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
   @Internal
   protected Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
-    return Set.of(getHwcDir(), getModelDir(), getSymbolDir());
+    return Set.of(getHwcDir(), getModelDir());
   }
   private Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
     Stream<FileChange> result = StreamSupport.stream(inputChanges.getFileChanges(getInput()).spliterator(), false);

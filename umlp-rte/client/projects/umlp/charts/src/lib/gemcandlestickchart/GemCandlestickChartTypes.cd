@@ -1,0 +1,10 @@
+package charts.src.lib.gemcandlestickchart;
+
+classdiagram GemCandlestickChartTypes {
+
+  class GemData2CandlestickChart {
+    String label;
+    List<Integer> value;
+  }
+
+}

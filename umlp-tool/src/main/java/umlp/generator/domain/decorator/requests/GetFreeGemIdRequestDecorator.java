@@ -33,7 +33,7 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
     protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String packageName) {
         ASTCDClass ast = UMLPMill.cDClassBuilder()
                 .setModifier(PUBLIC.build())
-                .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Request<Long>"))
+                .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
                 .setName(CLASS_NAME)
                 .build();
         getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
@@ -41,9 +41,18 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
                 origCD.getCDDefinition().getName()+SUFFIX));
         getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
 
-        getCD4C().addConstructor(ast, getConstructorTemplate(), CLASS_NAME, getPackageName(origCD, DEFAULT_PACKAGE));
+        addConstructor(ast, origCD);
         getCD4C().addMethod(ast, getDoRunTemplate(), origCD.getCDDefinition().getName());
         return ast;
+    }
+
+    protected String extendedClass() {
+       return "Request<Long>";
+    }
+
+    protected void addConstructor(ASTCDClass ast, ASTCDCompilationUnit origCD) {
+        getCD4C().addConstructor(ast, getConstructorTemplate(),
+            CLASS_NAME, getPackageName(origCD, DEFAULT_PACKAGE));
     }
 
     protected String getDoRunTemplate() {
@@ -63,10 +72,14 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
 
         getCD4C().addMethod(ast, getFromJsonObjectTemplate());
 
-        getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-        getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
+        addDeSerImport(ast, origCD);
 
         return ast;
+    }
+
+    protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD) {
+        getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
+        getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
     }
 
     protected String getFromJsonObjectTemplate() {

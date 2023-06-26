@@ -12,7 +12,10 @@ public class SELibShellAPIApplication {
     Log.initSlf4j();
     Log.initDEBUG();
     Log.info("Status: RUNNING", "UMLP API");
-    SELibManagerImpl.init();
+
+    SELibManager.initMe(new SELibManagerClientImpl());
+    SELibCommandObjectMapper.init();
+
     new SpringApplicationBuilder(SELibShellAPIApplication.class)
         .web(WebApplicationType.NONE)
         .run(args);

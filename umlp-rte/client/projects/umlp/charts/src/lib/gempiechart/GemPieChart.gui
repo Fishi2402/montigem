@@ -1,0 +1,8 @@
+package charts.src.lib.gempiechart;
+
+import charts.src.lib.gempiechart.GemPieChartTypes.GemPieChartData;
+
+component GemPieChart(
+    GemPieChartData data,
+    Integer innerRadius
+)

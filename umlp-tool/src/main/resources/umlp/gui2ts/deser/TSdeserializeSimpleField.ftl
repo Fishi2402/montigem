@@ -3,35 +3,35 @@ ${tc.signature("className", "attr", "fieldType", "jsonStr", "isList", "innerType
 <#assign fieldName=attr.getName()>
 <#if !jsonStr?has_content && !useDeSer>
 <#--    TODO Kommentar einfuegen, wie das zu fixen waere-->
-    ${cd4c.method("abstract protected ${fieldType} deserialize${fieldName?cap_first} (JsonObject json)")}
+    ${cd4c.method("abstract protected ${fieldType} deserialize${fieldName?cap_first} (any json)")}
 <#else>
-    ${cd4c.method("protected ${fieldType} deserialize${fieldName?cap_first} (JsonObject json)")}
+    ${cd4c.method("protected ${fieldType} deserialize${fieldName?cap_first} (any json)")}
     <#if isList>let result: any[] = [];
-      if(!json.hasMember("${fieldName}")) {
+      if(!json["${fieldName}"]) {
       return result;
       }
-      for(let e of json.getArrayMember("${fieldName}")) {
+      for(let e of json["${fieldName}"]) {
       <#if useDeSer>
-      result.push(${objectMapperName}.<${innerType}>deserialize(e.isJsonString() ? '"' + e.getAsJsonString().getValue() + '"' : String(e), "${innerType}"));
+      result.push(${objectMapperName}.deserialize(e, "${innerType}"));
       <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
 <#--        TODO MB: ist das hier so richtig, oder sollte lieber innerType richtig berechnet werden? -->
       <#-- TODO AGe: find out if that's ok -->
-      result.push(${innerType?keep_after_last(".")}.valueOf(json.getMember("${fieldName}").${jsonStr}));
+      result.push(${innerType?keep_after_last(".")}.valueOf(json["${fieldName}"]));
       <#else>
-      result.push(e.${jsonStr});
+      result.push(e);
       </#if>
       }
       return result;
     <#elseif isOptional>
-      if(json.hasMember("${fieldName}")){
+      if(json["${fieldName}"]){
       <#if useDeSer>
-      let value: JsonElement = json.getMember("${fieldName}");
-      return ${objectMapperName}.<${innerType}>deserialize(value.isJsonString() ? '"' + value.getAsJsonString().getValue() + '"' : value.toString(), "${innerType}");
+      let value: any = json["${fieldName}"];
+      return ${objectMapperName}.deserialize(value, "${innerType}");
       <#else>
         <#if genService.isInnerCDEnum(attr.getSymbol().getType())>
-          return ${innerType?keep_after_last(".")}.valueOf(json.getMember("${fieldName}").${jsonStr});
+          return ${innerType?keep_after_last(".")}.valueOf(json["${fieldName}"]);
         <#else>
-          return json.getMember("${fieldName}").${jsonStr};
+          return json["${fieldName}"];
         </#if>
       </#if>
       } else {
@@ -40,13 +40,13 @@ ${tc.signature("className", "attr", "fieldType", "jsonStr", "isList", "innerType
     <#else>
     <#-- TODO: default values -->
       <#if useDeSer>
-      JsonElement value = json.getMember("${fieldName}");
-      return ${objectMapperName}.<${fieldType}>deserialize(value.isJsonString() ? '"' + value.getAsJsonString().getValue() + '"' : value.toString(), "${fieldType}");
+      let value: any = json["${fieldName}"];
+      return ${objectMapperName}.deserialize(value, "${fieldType}");
       <#else>
         <#if genService.isCDEnum(attr.getSymbol().getType())>
-      return ${fieldType}.valueOf(json.getMember("${fieldName}").${jsonStr});
+      return ${fieldType}.valueOf(json["${fieldName}"]);
         <#else>
-      return json.getMember("${fieldName}").${jsonStr};
+      return json["${fieldName}"];
           </#if>
       </#if>
     </#if>

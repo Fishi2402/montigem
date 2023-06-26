@@ -62,7 +62,7 @@ public class GemListDomainDecorator extends AbstractDecorator {
     getCD4C().addConstructor(ast, getConstructorDefaultTemplate(), classname);
 
     // methods
-    getCD4C().addMethod(ast, "umlp.gemlist.LoadObjects", sourceName, managerName);
+    getCD4C().addMethod(ast, getLoadObjectsTemplate(), sourceName, managerName);
 
     return ast;
   }
@@ -75,11 +75,16 @@ public class GemListDomainDecorator extends AbstractDecorator {
     return "umlp.gemlist.Constructor";
   }
 
+  protected String getLoadObjectsTemplate() {
+    return "umlp.gemlist.LoadObjects";
+  }
+
   protected void addImports(ASTCDCompilationUnit origCD, String domainName, ASTCDClass ast) {
     getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), domainName));
     getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), origCD.getCDDefinition().getName()+SUFFIX));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GemListBuilder"));
     getCD4C().addImport(ast, "umlp.backendrte.common.LoadResult");
+    getCD4C().addImport(ast, "umlp.backendrte.common.LoadingState");
   }
 
 }

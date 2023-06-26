@@ -1,15 +1,79 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-plugins {
-  id 'de.rwth.se.umlp-tool-backend'
-}
-repositories {
-    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-}
-
 description 'cars example'
 
-project('client'){
-    sourceSets.main.java.srcDirs = ['../src/main/java', generateUmlpBackend.getOutputDir()]
+repositories {
+  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
 }
+
+
+configurations {
+  symbol
+}
+
+dependencies {
+  symbol "umlp:frontend-rte:$mc_version"
+}
+
+
+// TODO AGe: don't know if that is needed
+task generateCDTOGUI(type: UMLPTask) {
+  input = file("src/models/hardy")
+  cdToGui = true
+  outputDir = layout.buildDirectory.dir("cd2gui")
+}
+
+task generateFlensburg_BE(type: UMLPTask) {
+  input = file("src/models/hardy")
+  hwcDir = file("src/main/java")
+  symbolOutDir = file("$project.buildDir/umlp/symbols")
+  outputDir = layout.buildDirectory.dir("umlp/be")
+}
+
+task copyGUISymbols(type: Copy) {
+  dependsOn(generateFlensburg_BE) // For a determnistic buildorder and debugging. TODO: Remove!
+  from zipTree(configurations.symbol.asPath)
+  into "$project.buildDir/umlp/symbols"
+}
+
+task generateFlensburg_FE1(type: UMLPGuiGenTask) {
+  dependsOn(generateFlensburg_BE, copyGUISymbols)
+  input = file("src/models/stanley")
+  modelDir = file("src/models")
+  symbolDir = generateFlensburg_BE.symbolOutDir
+  symbolOutDir = layout.buildDirectory.dir("umlp/fe1/symbols")
+  outputDir = layout.buildDirectory.dir("umlp/fe1")
+  domainModels = ["hardy.Flensburg"]
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
+}
+
+task generateFlensburg_FE2(type: UMLPGuiGenTask) {
+  dependsOn(generateFlensburg_FE1, generateCDTOGUI)
+  input = file(layout.buildDirectory.dir("cd2gui/models"))
+  symbolDir = generateFlensburg_BE.symbolOutDir
+  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
+  outputDir = layout.buildDirectory.dir("umlp/fe2")
+  domainModels = ["hardy.Flensburg"]
+}
+
+sourceSets {
+  main {
+    java.srcDirs += [layout.buildDirectory.dir("umlp/be")]
+    // TODO MB
+    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe1")]
+    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
+    main.resources.srcDirs += generateFlensburg_BE.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
+  }
+  test {
+    java {
+      exclude '**/gui/**'
+    }
+  }
+}
+
+compileJava.dependsOn(generateFlensburg_BE, generateFlensburg_FE1, generateFlensburg_FE2)

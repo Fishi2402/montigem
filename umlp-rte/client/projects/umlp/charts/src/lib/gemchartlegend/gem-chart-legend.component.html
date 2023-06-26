@@ -1,0 +1,8 @@
+<div class="gem-center" *ngIf="_displayLegend">
+  <div class="gem-legend">
+    <div class="gem-entries" *ngFor="let input of _entries">
+      <div class="gem-color" [ngStyle]="{ 'background-color': input.color }"></div>
+      <div class="gem-label">{{ input.label }}</div>
+    </div>
+  </div>
+</div>

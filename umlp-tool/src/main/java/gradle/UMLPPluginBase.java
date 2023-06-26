@@ -13,6 +13,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       project.getExtensions().getExtraProperties().set("UMLPTask", gradle.UMLPTask.class);
       project.getExtensions().getExtraProperties().set("UMLPMergeTask", UMLPMergeTask.class);
       project.getExtensions().getExtraProperties().set("UMLPGuiGenTask", UMLPGuiGenTask.class);
+      project.getExtensions().getExtraProperties().set("NPMAuthCreate", gradle.NPMAuthCreate.class);
 
       StatisticListener.registerOnce(project);
     }

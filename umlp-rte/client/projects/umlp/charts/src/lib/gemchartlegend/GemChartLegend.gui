@@ -1,0 +1,7 @@
+package charts.src.lib.gemchartlegend;
+
+component GemChartLegend(
+  List<String> labels,
+  List<String> colors,
+  Boolean displayLegend
+)

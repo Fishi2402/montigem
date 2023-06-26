@@ -1,0 +1,7 @@
+package charts.src.lib.gemnetworkgraph;
+
+import charts.src.lib.gemnetworkgraph.GemNetworkGraphTypes.GemNetworkData;
+
+component GemNetworkGraph(
+  GemNetworkData data
+)

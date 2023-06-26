@@ -61,3 +61,8 @@ task diff(type: Exec){
   commandLine 'cmd', '/c', 'git', 'diff', '--no-index', layout.buildDirectory.dir(diff_location).get().getAsFile().toPath(), generateUmlpBackend.getOutputDir().get().getAsFile().toPath()
   ignoreExitValue true
 }
+
+
+task generateNPMAuth(type: NPMAuthCreate){
+  gitignore = project.getRootProject().file(".gitignore") // Task reads gitignore to ensure <.npmrc> is not committed
+}

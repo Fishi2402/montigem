@@ -1,0 +1,7 @@
+package input.src.lib.gemtextareainput;
+
+component GemTextareaInput(
+  String labelText,
+  ?String textArea,
+  String id
+)
