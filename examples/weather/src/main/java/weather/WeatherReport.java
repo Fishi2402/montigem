@@ -24,7 +24,7 @@ public class WeatherReport {
       WeatherManager.forecastBuilder()
           .longitude(data.getDoubleMember("longitude"))
           .latitude(data.getDoubleMember("latitude"))
-          .date(LocalDateTime.now())
+          .date(date)
           .temperature(data.getObjectMember("hourly").getArrayMember("temperature_2m").get(i).getAsJsonNumber()
               .getNumberAsDouble())
           .realtiveHumidity(data.getObjectMember("hourly").getArrayMember("relativehumidity_2m").get(i).getAsJsonNumber()
