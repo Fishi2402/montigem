@@ -86,7 +86,8 @@ public class BuilderDecorator extends AbstractDecorator {
     createSetAndCheckMethods(domainClass, builderClass, attrFields, attrAssocs);
     getCD4C().addMethod(builderClass, getBuildTemplate(), domainClass.getName(), managerName, attrAssocLists);
 
-    List<ASTCDAttribute> mandatoryAttrList = attrList.stream().filter(a -> !GenService.isList(a) && GenService.isOptional(a)).collect(Collectors.toList());
+    // TODO: filter by mandatory
+    List<ASTCDAttribute> mandatoryAttrList = attrList;
     getCD4C().addMethod(builderClass, getIsBuildableTemplate(), mandatoryAttrList);
 
     // Imports

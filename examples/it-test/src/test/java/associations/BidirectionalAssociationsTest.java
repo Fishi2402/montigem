@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class BidirectionalAssociationsTest {
 
   // TODO: Impl setting the other side
+  // TODO: Filter attributes for "umlp.builder.IsBuildable"
   @Disabled
   @Test
   public void testOptToOptSync(){
