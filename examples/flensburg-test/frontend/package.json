@@ -11,6 +11,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^15.1.0",
+    "@angular/cdk": "^15.1.0",
     "@angular/common": "^15.1.0",
     "@angular/compiler": "^15.1.0",
     "@angular/core": "^15.1.0",
@@ -19,7 +20,6 @@
     "@angular/platform-browser": "^15.1.0",
     "@angular/platform-browser-dynamic": "^15.1.0",
     "@angular/router": "^15.1.0",
-    "@angular/cdk": "^15.1.0",
     "@monticore/montigem-arrange": "^7.5.0",
     "@monticore/montigem-basic": "^7.5.0",
     "@monticore/montigem-charts": "^7.5.0",
