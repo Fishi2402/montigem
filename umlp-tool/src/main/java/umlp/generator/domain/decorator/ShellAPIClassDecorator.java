@@ -115,7 +115,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
 
     Map<String, String> deserAttributeNamesAndDeSer = domainAttributes.stream()
         .filter(a -> mustBeDeserialized(a))
-        .collect(Collectors.toMap(a -> a.getName(), a -> a.getMCType().printType().replaceAll(".*[.]([^.]*)", "$1") + "DeSer"));
+        .collect(Collectors.toMap(a -> a.getName(), a -> "umlp.backendrte.common." + a.getMCType().printType().replaceAll(".*[.]([^.]*)", "$1") + "DeSer"));
 
     List<String> assocNames = assocs.stream().filter(a -> !GenService.isList(a) && !GenService.isOptional(a)).map(a -> a.getName()).collect(Collectors.toList());
     ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Create", cdName,

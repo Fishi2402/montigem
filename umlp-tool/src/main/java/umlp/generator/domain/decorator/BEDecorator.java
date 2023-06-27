@@ -7,6 +7,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.UMLPGeneratorConfig;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -27,14 +28,16 @@ public class BEDecorator extends AbstractDecorator {
     this.hwPath = hwPath;
 
     initExtraDeSers();
+
+    if(glex.hasGlobalVar("UMLPGeneratorConfig")){
+      UMLPGeneratorConfig config = (UMLPGeneratorConfig) glex.getGlobalVar("UMLPGeneratorConfig");
+      shellAPI = config.isUseSpring();
+    }
   }
 
   public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath, boolean neo4j) {
-    super((glex));
+    this(glex, hwPath);
     this.neo4j = neo4j;
-    this.hwPath = hwPath;
-
-    initExtraDeSers();
   }
 
   private void initExtraDeSers() {

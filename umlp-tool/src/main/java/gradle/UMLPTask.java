@@ -3,10 +3,21 @@ package gradle;
 
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
-import org.gradle.api.file.*;
+import org.gradle.api.file.Directory;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileSystemLocation;
+import org.gradle.api.file.FileType;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.*;
+import org.gradle.api.tasks.CacheableTask;
+import org.gradle.api.tasks.IgnoreEmptyDirectories;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
+import org.gradle.api.tasks.TaskAction;
 import org.gradle.work.ChangeType;
 import org.gradle.work.FileChange;
 import org.gradle.work.Incremental;
@@ -60,12 +71,17 @@ public abstract class UMLPTask extends CommonUMLPTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getForClient();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getUseSpring();
+
 
   public UMLPTask() {
     super();
 
     getCdToGui().convention(false);
     getForClient().convention(false);
+    getUseSpring().convention(false);
   }
 
 
@@ -124,6 +140,10 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
     if(this.getForClient().get()){
       result.add("-" + UMLPToolOptions.FOR_CLIENT.getCMD());
+    }
+
+    if(this.getUseSpring().get()){
+      result.add("-" + UMLPToolOptions.USE_SPRING.getCMD());
     }
 
     return result;

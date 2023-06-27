@@ -42,6 +42,7 @@ import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.domain.UMLPGenerator;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.GUINodeIdTrafo;
@@ -82,6 +83,7 @@ import static umlp.UMLPToolOptions.REPORTS;
 import static umlp.UMLPToolOptions.REPORT_BASE;
 import static umlp.UMLPToolOptions.SYMTAB;
 import static umlp.UMLPToolOptions.TMPL_PATH;
+import static umlp.UMLPToolOptions.USE_SPRING;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -286,18 +288,18 @@ public class UMLPTool extends UMLPToolTOP {
             .map(p -> p.toFile()).collect(Collectors.toList()));
 
         CD4C.init(genSetup);
+        UMLPGeneratorConfig config = new UMLPGeneratorConfig(USE_SPRING.isSelected(cmd));
         if (FOR_CLIENT.isSelected(cmd)) {
-          TSUMLPGenerator generator = new TSUMLPGenerator(genSetup);
+          TSUMLPGenerator generator = new TSUMLPGenerator(genSetup, config);
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
           generator.generate(ast, configTemplate);
         }
         else {
           // execute generator
-          UMLPGenerator generator = new UMLPGenerator(genSetup);
+          UMLPGenerator generator = new UMLPGenerator(genSetup, config);
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
           generator.generate(ast, configTemplate);
         }
-
 
         // write reports
         Reporting.flush(ast);
