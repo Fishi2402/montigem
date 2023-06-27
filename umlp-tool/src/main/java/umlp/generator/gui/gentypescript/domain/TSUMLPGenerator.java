@@ -39,6 +39,9 @@ public class TSUMLPGenerator extends UMLPGenerator {
         CD2JavaTemplates.INTERFACE, new TemplateHookPoint(GUI2ComponentTemplates.INTERFACE)
     );
     genSetup.getGlex().replaceTemplate(
+        CD2JavaTemplates.ENUM, new TemplateHookPoint(GUI2ComponentTemplates.ENUM)
+    );
+    genSetup.getGlex().replaceTemplate(
         CD2JavaTemplates.ATTRIBUTE, new TemplateHookPoint(GUI2ComponentTemplates.ATTRIBUTE)
     );
     /*

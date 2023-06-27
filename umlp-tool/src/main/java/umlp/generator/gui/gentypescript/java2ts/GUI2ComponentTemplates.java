@@ -6,6 +6,8 @@ public final class GUI2ComponentTemplates {
 
   public static final String INTERFACE = "umlp.gui2ts.TSInterface";
 
+  public static final String ENUM = "umlp.gui2ts.TSEnum";
+
   public static final String ATTRIBUTE = "umlp.gui2ts.TSAttribute";
 
   public static final String VALUE = "cd2java.Value";
@@ -17,8 +19,6 @@ public final class GUI2ComponentTemplates {
   public static final String EMPTY_BODY = "cd2java.EmptyBody";
 
   public static final String CONSTANT = "cd2java.Constants";
-
-  public static final String ENUM = "cd2java.Enum";
 
   public static final String IMPORTS = "umlp.gui2ts.TSImports";
 
