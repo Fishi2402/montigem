@@ -92,7 +92,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           if (util.isDomainType(paramSTE)) {
             getCD4C().addImport(decoratedClass, domainQName.get() + "." + paramSTE.print());
           }
-          if (util.isDomainListType(paramSTE) && util.getDomainListInnerType(paramSTE).isPresent()) {
+          else if (util.isDomainListType(paramSTE) && util.getDomainListInnerType(paramSTE).isPresent()) {
             getCD4C().addImport(decoratedClass, domainQName.get() + "."
                 + util.getDomainListInnerType(paramSTE).get().print());
           }
