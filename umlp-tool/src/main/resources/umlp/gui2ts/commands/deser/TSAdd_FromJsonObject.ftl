@@ -10,7 +10,7 @@ ${cd4c.method("protected Optional<${command}> fromJsonObject(any jsonObject)")}
     ${objectMapperName}.<${type}>deserialize(jsonObject.isJsonString() ? '"' + jsonObject.getAsJsonString().getValue() + '"' : String(jsonObject), "${type}"),
 <#else>
     <#if isCDEnum>
-      ${type?keep_after_last(".")}.valueOf(jsonObject.getMember("${attrName}").${json}),
+      ${type?keep_after_last(".")}[(jsonObject.getMember("${attrName}").${json}) as keyof typeof ${type?keep_after_last(".")}],
     <#else>
       +jsonObject["${attrName}"],
     </#if>
