@@ -265,6 +265,7 @@ public class GenService {
   }
 
   public static boolean isDerived(ASTCDAssocSide side, List<ASTCDAssociation> derivedAssocs) {
+    //side.getSymbol().getAssoc()
     return derivedAssocs.stream().anyMatch(c -> c.getLeft().equals(side) || c.getRight().equals(side));
   }
 
