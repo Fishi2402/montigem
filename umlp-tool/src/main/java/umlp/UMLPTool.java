@@ -258,7 +258,7 @@ public class UMLPTool extends UMLPToolTOP {
                     + Names.getPathFromPackage(symbolTable.getPackageName())
                     + File.separator
                     + symbolTable.getName()
-                    + ".cdsym");
+                    + ".umlpsym");
             JsonPrinter.disableIndentation();
             storeSymbols(symbolTable, symbolPath.toString());
           }
