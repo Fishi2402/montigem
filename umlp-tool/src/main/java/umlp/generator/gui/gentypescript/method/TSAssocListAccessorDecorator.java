@@ -4,8 +4,6 @@ package umlp.generator.gui.gentypescript.method;
 import com.google.common.collect.Lists;
 import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.cd.codegen.methods.accessor.MandatoryAccessorDecorator;
-import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -24,7 +22,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 public class TSAssocListAccessorDecorator extends AssocListAccessorDecorator {
 
   public TSAssocListAccessorDecorator(GlobalExtensionManagement glex, CDGenService service,
-                                    ASTCDType ast) {
+                                      ASTCDType ast) {
     super(glex, service, ast);
   }
 

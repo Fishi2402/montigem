@@ -37,7 +37,7 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     List<ASTCDMethod> methodList = Lists.newArrayList();
 
     String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
-    String paramName = ast.getName().replaceFirst("_","");
+    String paramName = getParamName(ast);
 
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Contains", paramName, targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.ContainsAll", paramName, targetName).get());
@@ -56,11 +56,12 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
   }
 
   protected ASTCDMethod createGetMethod(ASTCDAttribute ast) {
-    String name = String.format(GET, StringTransformations.capitalize(service.getNativeAttributeName(ast.getName())));
+    String paramName = getParamName(ast);
+    String name = String.format(GET, paramName);
     String type = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
     ASTCDParameter param = getCDParameterFacade().createParameter("int", "index");
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name, param);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getAssocGetTemplate(), ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getAssocGetTemplate(), paramName));
     return method;
   }
 
@@ -73,4 +74,9 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     method.setName("_internal_" + method.getName() + "GemList");
     return method;
   }
+
+  private String getParamName(ASTCDAttribute ast) {
+    return StringTransformations.capitalize(service.getNativeAttributeName(ast.getName()));
+  }
 }
+
