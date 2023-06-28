@@ -99,14 +99,14 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     ASTCDClass ast = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
             .setName(classname)
-            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
+            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
             .build();
 
     ASTCDAttribute gemAttr = getCD4C().addAttribute(ast, "protected long gemId");
     ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected " + (isGem ? "long" : type.print()) + " " + attrName);
 
-    getCD4C().addConstructor(ast, getConstructorTemplate(), classname, getPackageName(origCD, COMMAND_PACKAGE),
-            attrName, isGem ? "long" : type.print());
+    addConstructor(ast, classname, getPackageName(origCD, COMMAND_PACKAGE),
+        attrName, isGem ? "long" : type.print());
 
     getCD4C().addMethod(ast, getDoRunTemplate(), name, domainClass.getName(), origCD.getCDDefinition().getName(), isGem, name);
     if (isGem) {
@@ -128,9 +128,23 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     if (GenService.isCDEnum(type)) {
       getCD4C().addImport(ast,getPackageName(origCD, DEFAULT_PACKAGE)+"."+ type.print());
     } else if (GenService.isJavaType(type)) {
-      getCD4C().addImport(ast, type.printFullName());
+      addJavaImport(ast, type);
     }
     return ast;
+  }
+
+  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
+    getCD4C().addImport(ast, type.printFullName());
+  }
+
+  protected void addConstructor(ASTCDClass ast, String classname, String packageName,
+      String attrName, String type) {
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname, packageName,
+        attrName, type);
+  }
+
+  protected String extendedClass() {
+    return "Command<Void>";
   }
 
   protected String getConstructorTemplate() {
@@ -176,6 +190,16 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getSet_FromJsonObjectTemplate(), cmdName, name, typeName, false, GenService.isInnerCDEnum(type), jsonString, useDeSer, baseClassDecorator, makeAbstract);
     getCD4C().addMethod(ast, getSet_BuildJsonTemplate(), cmdName, name, typeName, GenService.isInnerCDEnum(type), getter, useDeSer, baseClassDecorator, makeAbstract);
 
+    addDeSerImport(ast, origCD, useDeSer, baseClassDecorator, type, innerType, cmdName);
+    if (makeAbstract) {
+      ast.setModifier(PUBLIC_ABSTRACT.build());
+    }
+    addedDeSers.add(ast);
+    return ast;
+  }
+
+  protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, boolean useDeSer,
+      String baseClassDecorator, SymTypeExpression type, SymTypeExpression innerType, String cmdName) {
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
@@ -187,11 +211,6 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     } else if (GenService.isJavaType(innerType)) {
       getCD4C().addImport(ast, innerType.printFullName());
     }
-    if (makeAbstract) {
-      ast.setModifier(PUBLIC_ABSTRACT.build());
-    }
-    addedDeSers.add(ast);
-    return ast;
   }
 
   protected String getSet_BuildJsonTemplate() {

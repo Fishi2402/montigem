@@ -1,0 +1,228 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.time.LocalDate;
+
+/*
+  Zweck dieses Klassendiagramms:
+
+  * Beschreibung der logischen
+    (und gegebenenfalls auch der physikalischen)
+    Struktur von Maschinen und Produkten
+    (Beispiel: Auto, Produktionsstraße, Motor, Getriebe,
+    inclusive expliziter Einbeziehung der Steuerung durch
+    Softwarekomponenten) auf der Basis des Konzepts "Funktion"
+
+  * die funktionale Beschreibung der Komponenten
+    beinhaltet deren Namen sowie die Form aller Interaktionen
+     mit der Umgebung in Form von Inputs und Outputs.
+
+  * Interaktion basiert auf Kanälen, auf denen
+    Material, Energie und Daten fließen.
+
+  * Funktionen können hierarchisch dekomponiert sein.
+
+  * Funktionen komplex sein, brechen sich aber letztlich runter
+    auf entweder Software, Sensoren, Aktuatoren oder elementare
+    Funktionen, wie sie der Maschinenbauer in Form von
+    etwa 300 Stück kennt.
+
+  * Die Funktionen können internen Zustand haben und diesen Zustand
+    dynamisch wechseln.
+    (das lässt sich genauso wie das Geschehen auf versteckten Kanälen
+     möglicherweise nicht beobachten, aber zu Modellierung
+     und Spezifikation lassen sich diese Dinge dennoch verwenden.)
+
+  * Das Klassendiagramm beschreibt diese Funktionsstruktur
+    die logisch oder physikalisch interpretiert werden kann.
+
+  * Die Verwendung des Diagramms ist in der Entwicklung oder auch
+    bei der Ableitung eines digitalen Zwillings vorgesehen,
+    wobei dort jeweils spezifische Ergänzungen und Erweiterungen sinnvoll
+    und notwendig erscheinen.
+
+  * Dieses Diagramm hat den Charakter eines Referenzmodell,
+    seine Realisierung erlaubt aber auch die Entwicklung darauf
+    aufbauender Funktionalitäten.
+
+  -------------
+  Das Klassendiagramm beschreibt nicht:
+
+  * sich dynamisch ändernde Strukturen (also weder das
+    Rewiring noch das Hinzufügen neuer Komponenten.
+    Möglich ist allerdings die Auslegung einer Maximalstruktur,
+    bei der gelegentlich Teile abgeschaltet (spezieller Zustand) sind.
+
+  * Variabilität in dem Produkt
+
+  * "Versenden" von Kanälen oder Identifiern, wie im Pi-Kalül oder
+    OOP üblich.
+
+  * Geometrie oder andere physikalische Eigenschaften (Material, etc.)
+    der Funktionskomponenten.
+
+  * Entwicklungsinformation (wer, wann erstellt? abgestimmt? status?)
+
+  ... entsprechende Ergänzungen sind aber natürlich möglich.
+
+  Grundlegende Literatur: https://www.se-rwth.de/research/
+  Stichworte: CPS, Ströme, [RR11], [HNZ+23], [DRW+20], [KPRR20],
+        [GHK+07], ...
+*/
+
+umlp FunctionsStructure {
+
+  /* ---------------------------------------------------------
+   * Strukturteil
+   * --------------------------------------------------------- */
+
+  /* Klasse Funktion:
+        das Kernelement der Funktionsstruktur.
+        Sie wird beschrieben durch ihre Schnittstellen
+        und gegebenenfalls einem internen Zustand
+        und gegebenenfalls einer Dekompositions-Struktur
+        (Architektur), bestehend aus weiteren Funktionen
+  */
+  class Function { String name; }
+
+
+  /*
+    Ports sind die Schnittstellen für Funktionen:
+    Ports können Kommunikation nach innen oder aussen
+    gerichtet sein.
+  */
+  class  InPort { String name; }
+  class OutPort { String name; }
+
+  /*
+    Jede Funktion hat eine Sammlung von eingehenden und
+    ausgehenden Ports, die ihre Signatur darstellen.
+
+    Ports können zwischen mehreren Funktionen geshared
+    werden: damit lassen sich zum Beispiel von außen kommende
+    InPorts darstellen, die zu Subfunktionen weitergereicht
+    werden.
+  */
+  association [1..*] Function -> InPort [*];
+  association [1..*] Function -> OutPort [*];
+
+  // BEM BR: Ports könnte man auch Typisieren und Nach Material/Energie
+  // etc. kategorisieren, wenn wir das hier tun.
+  // Muss aber nicht sein, denn die Nachrichtenströme sind ja auch
+  // schon typisiert.
+
+  /*
+     Funktionen sind hierarchisch dekomponiert:
+     Das Composite Pattern erlaubt die Darstellung
+     der Sub-Strukturen.
+
+     Vorsicht: es gibt einige nicht im Diagramm
+     selbst dargestellte Randbedingungen. Ein Auschnitt:
+     * Baumstruktur, kein Zyklus, kein DAG in
+       dieser Enthaltenssein-Struktur
+     * die Ports der Subfunktionen
+       sind mit den Ports der Hauptfunktion
+       strukturell passend verbunden
+  */
+  composition Function -> (subFunction) Function [*];
+
+  /*
+    Innerhalb einer Dekompositions-Struktur (Architektur)
+    kann ein OutPort mit beliebig vielen InPorts
+    verbunden werden.
+
+    Genau dann, wenn ein InPort unverbunden ist, dann wird
+    er in die Signatur der Ober-Funktion aufgenommen.
+
+    Es ist auch möglich den OutPort einfach zu ignorieren.
+
+    Anhand der internen Struktur ist nicht erkennbar,
+    ob der Outport verkapselt oder nach aussen sichtbar ist
+    (das entscheidet die Ober-Funktion).
+  */
+
+  association [0..1] OutPort (out) <- (in) InPort [*];
+
+
+  /* TODO BR: meines Erachtens besteht das Problem, dass
+     ein InPort p, der bei Funktion F auch als Einzelport
+     ankommt und dann an mehrere Subfunktionen von F
+     weiter verteilt wird dadurch nicht modularisiert
+     darstellen (korrekt darstellbar ist es im Prinzip aber
+     schon).
+     (Dafür wäre der ThroughPort extens InPort, OutPort geeignet)
+  */
+
+  /* TODO:
+       Es bietet sich an OCL Bedingungen für weitere
+       Constraints einfach mal hier anzugeben?
+  */
+
+
+  /* ---------------------------------------------------------
+   * Monitoring Teil
+   * --------------------------------------------------------- */
+
+  /*
+    Eine Beobachtung im Bezug auf einen Kanal ist
+    eine kontinuierliche oder diskrete Sequenz von
+    aufgenommenen Messages, Events, Material- oder Energieflüssen.
+  */
+  enum FlowKind { Solid, Fluid, Energy, Data, Event, Value; }
+  // TODO: MBSE-Folien wissen evtl.noch mehr ...
+
+  /*
+    Eine Beobachtung ist zu kategorisieren
+    und seine Elemente auch noch zu typisieren.
+
+    Dauer der Zeiteinheiten, etc. sind ggf. individuell zu lösen
+
+    Randbedingung: die Werte im Strom müssen zum Typ der Beobachtung passen
+  */
+  class Observation {
+    LocalDate start;
+    LocalDate end;
+    -> Type [1];
+    -> FlowKind [1];
+    boolean continuous;   // im Prinzip continuierlicher Fluss
+    -> MCStream [1];
+  }
+
+
+  /*
+    Abstrakte Definition dieser Klasse:
+    Hier wird eine effiziente Realisierung abhängig von der
+    Datenmenge, der Regelmäßigkeit, etc. zu erwarten sein.
+
+    Streams können auch unvollständige Beobachtungen sein, die nur
+    bestimmte Intervalle, und bei kontinuierlichen Beobachtungen
+    bestimmte Abtastraten realisieren.
+    Dies wird innerhalb der Datenstruktur "Stream" behandelt.
+  */
+  abstract class MCStream;
+
+
+  /*
+    Jeder OutPort kann beobachtet werden.
+    InPorts werden nicht beobachtet, denn sie sind immer mit
+    OutPorts verbunden.
+
+    Bei Strömen herrschte die Annahme, dass keine
+    Kommunikationsverzögerungen stattfinden. Sollte dies der Fall sein,
+    so würde dies durch eigene Funktionen modelliert werden ("Delay").
+  */
+
+  association OutPort -> Observation [1];
+
+
+  /*
+    Zustände können beobachtet werden.
+    Die Beobachtung eines Zustands funktioniert analog zur
+    Beobachtung eines Kanals bzw. Geschehens auf einem Port,
+    auch wenn dies konzeptuell etwas anderes ist.
+  */
+
+  association [1] Function -> (state) MCStream [1];
+
+
+  class Type;
+}

@@ -50,9 +50,9 @@ public class GetDecorator extends AbstractDeSerDecorator {
       .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Request<"+classname+">"))
       .setName(classname+SUFFIX)
       .build();
-    ASTCDAttribute attr = getCD4C().addAttribute(ast, "private final long gemId");
+    ASTCDAttribute attr = addGemId(ast);
 
-    getCD4C().addConstructor(ast, getConstructorTemplate(), classname,"", SUFFIX, packageName);
+    addConstructor(ast, classname, packageName);
     getCD4C().addMethod(ast, getDoRunTemplate(), classname, domainPackage, origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
     getCD4C().addMethod(ast, getGetNewlySubscribedGemIdsTemplate());
@@ -66,6 +66,14 @@ public class GetDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
 
     return ast;
+  }
+
+  protected ASTCDAttribute addGemId(ASTCDClass ast) {
+    return getCD4C().addAttribute(ast, "private final long gemId");
+  }
+
+  protected void addConstructor(ASTCDClass ast, String classname, String packageName) {
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname,"", SUFFIX, packageName);
   }
 
   protected String getGetNewlySubscribedGemIdsTemplate() {
@@ -96,12 +104,16 @@ public class GetDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getGet_FromJsonObjectTemplate(), cmdName);
     getCD4C().addMethod(ast, getGet_BuildJsonTemplate(),cmdName);
 
-    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
-    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
+    addDeSerImport(origCD, ast, cmdName);
 
     addedDeSers.add(ast);
     return ast;
+  }
+
+  protected void addDeSerImport(ASTCDCompilationUnit origCD, ASTCDClass ast, String cmdName) {
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
   }
 
   protected String getGet_BuildJsonTemplate() {

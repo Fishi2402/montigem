@@ -4,7 +4,6 @@ package umlp.generator.gui.genjava;
 
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
@@ -24,9 +23,6 @@ public class GUI2CDTrafo {
 
     // set the package
     cdAst.setMCPackageDeclaration(guiAst.getMCPackageDeclaration());
-
-    // set imports
-    cdAst.setMCImportStatementList(guiAst.getMCImportStatementList());
 
     return cdAst;
   }

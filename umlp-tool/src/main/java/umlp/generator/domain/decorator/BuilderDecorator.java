@@ -65,7 +65,7 @@ public class BuilderDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
 
     // Constructors
-    getCD4C().addConstructor(builderClass, getConstructorTemplate(), domainClass.getName(), managerName, attrAssocLists);
+    addConstructor(builderClass, domainClass, managerName, attrAssocLists);
 
     // Attributes
     List<ASTCDAttribute> attrList = createAttributes(domainClass, attrFields.stream().map(a -> a.getName()).collect(Collectors.toList()), false);
@@ -85,12 +85,22 @@ public class BuilderDecorator extends AbstractDecorator {
     builderClass.addAllCDMembers(methodDecorator.decorate(internalAttr));
     createSetAndCheckMethods(domainClass, builderClass, attrFields, attrAssocs);
     getCD4C().addMethod(builderClass, getBuildTemplate(), domainClass.getName(), managerName, attrAssocLists);
-    getCD4C().addMethod(builderClass, getIsBuildableTemplate(), attrList);
+
+    // TODO: filter by mandatory
+    List<ASTCDAttribute> mandatoryAttrList = attrList;
+    getCD4C().addMethod(builderClass, getIsBuildableTemplate(), mandatoryAttrList);
 
     // Imports
     addImports(domainClass, builderClass);
 
     return builderClass;
+  }
+
+  protected void addConstructor(
+      ASTCDClass builderClass, ASTCDClass domainClass,
+      String managerName, List<ASTCDAssocSide> attrAssocLists
+  ) {
+    getCD4C().addConstructor(builderClass, getConstructorTemplate(), domainClass.getName(), managerName, attrAssocLists);
   }
 
   protected String getConstructorTemplate() {

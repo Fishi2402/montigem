@@ -1,0 +1,21 @@
+@import "../variables";
+@import "../mixins";
+
+@mixin forgot-theme($primary-color) {
+  .gem-form-style {
+    flex: 1 1 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+    flex-direction: column;
+    display: flex;
+    place-content: stretch center;
+  }
+
+  .gem-div-style {
+    flex: 1 1 100%;
+    box-sizing: border-box;
+    max-height: 100%;
+    flex-direction: column;
+    display: flex;
+  }
+}

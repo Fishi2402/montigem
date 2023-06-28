@@ -65,7 +65,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     ASTCDClass ast = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
             .setName(classname)
-            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
+            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
             .build();
 
     String sourceName = assoc.getLeft().getName();
@@ -85,8 +85,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
-    getCD4C().addConstructor(ast, getConstructorTemplate(), classname, COMMAND_ASSOC_PACKAGE,
-            sourceName, targetName);
+    addConstructor(ast, getConstructorTemplate(), classname, sourceName, targetName);
 
     // methods
     getCD4C().addMethod(ast, getAdd_DoRunTemplate(), assoc.getName(),
@@ -112,7 +111,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     ASTCDClass ast = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
             .setName(classname)
-            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
+            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
             .build();
 
     String sourceName = assoc.getLeft().getName();
@@ -132,8 +131,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
-    getCD4C().addConstructor(ast, getConstructorTemplate(), classname,
-            COMMAND_ASSOC_PACKAGE, sourceName, targetName);
+    addConstructor(ast, getConstructorTemplate(), classname, sourceName, targetName);
 
     // methods
     getCD4C().addMethod(ast, getRemove_DoRunTemplate(), assoc.getName(),
@@ -163,7 +161,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     ASTCDClass ast = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
             .setName(classname)
-            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Command<Void>"))
+            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
             .build();
 
     String sourceName = assoc.getLeft().getName();
@@ -186,8 +184,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     attr = getCD4C().addAttribute(ast, "protected int " + targetName+"Index");
     ast.addAllCDMembers(accessor.decorate(attr));
 
-    getCD4C().addConstructor(ast, getSet_ConstructorTemplate(), classname, COMMAND_ASSOC_PACKAGE,
-            sourceName, targetName);
+    addConstructor(ast, getSet_ConstructorTemplate(), classname, sourceName, targetName);
 
     getCD4C().addMethod(ast, getSet_DoRunTemplate(),
             sourceName, targetName);
@@ -205,6 +202,17 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     addImports(origCD, ast, sourceType, targetType);
 
     return ast;
+  }
+
+  protected void addConstructor(
+      ASTCDClass ast, String template, String classname, String sourceName, String targetName
+  ) {
+    getCD4C().addConstructor(ast, template, classname, COMMAND_ASSOC_PACKAGE,
+        sourceName, targetName);
+  }
+
+  protected String extendedClass() {
+    return "Command<Void>";
   }
 
   protected String getSet_ConstructorTemplate() {
@@ -237,12 +245,16 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getBuildJsonTemplate(), cmdName,
             cmdClass.getCDAttributeList().stream().map(a -> a.getName()).collect(Collectors.toList()));
 
-    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
-    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
+    addDeSerImports(origCD, ast, cmdName);
 
     addedDeSers.add(ast);
     return ast;
+  }
+
+  protected void addDeSerImports(ASTCDCompilationUnit origCD, ASTCDClass ast, String cmdName) {
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
   }
 
   protected String getBuildJsonTemplate() {

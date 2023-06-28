@@ -42,7 +42,7 @@ public class GUIComponentAnnotationDecorator {
         String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName()
             + "." + clazz.getName();
 
-        Optional<String> hwHtmlPath = util.getRelativeHandwrittenPath(
+        Optional<String> hwHtmlPath = util.getRelativeImportPath(
             hwPath, outPath, qName, "html");
         if (hwHtmlPath.isPresent()) {
           htmlPath = hwHtmlPath.get();
@@ -50,7 +50,7 @@ public class GUIComponentAnnotationDecorator {
 
         List<String> scssPaths = new ArrayList<>();
 
-        Optional<String> hwScssPath = util.getRelativeHandwrittenPath(
+        Optional<String> hwScssPath = util.getRelativeImportPath(
             hwPath, outPath, qName, "scss");
         if (hwScssPath.isPresent()) {
           scssPaths.add(hwScssPath.get());

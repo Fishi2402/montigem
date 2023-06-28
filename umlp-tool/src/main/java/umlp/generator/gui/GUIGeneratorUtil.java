@@ -10,7 +10,6 @@ import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
-import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
@@ -35,6 +34,9 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.gui.genjava.decorator.GUIArgValueReplaceVisitor;
+import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
 import java.net.URL;
@@ -105,6 +107,51 @@ public class GUIGeneratorUtil {
     }
     IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
     return DOMAIN_MODELS.contains(as.getFullName());
+  }
+
+  public final boolean isDomainListType(ASTGUIParam astguiParam) {
+    SymTypeExpression type = astguiParam.getSymbol().getType();
+    return isDomainListType(type);
+  }
+
+  public final boolean isDomainListType(SymTypeExpression type) {
+    if (type.hasTypeInfo() && GenService.isList(type)) {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+        SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+        TypeSymbol ts = inner.getTypeInfo();
+        if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {
+          IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
+          return DOMAIN_MODELS.contains(as.getFullName());
+        }
+      }
+    }
+    return false;
+  }
+
+  public final String getDomainListInnerType(ASTGUIParam astguiParam) {
+    SymTypeExpression type = astguiParam.getSymbol().getType();
+    if (type.hasTypeInfo() && GenService.isList(type)) {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+        SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+        TypeSymbol ts = inner.getTypeInfo();
+        if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {
+          return ts.getName();
+        }
+      }
+    }
+    String res = astguiParam.getMCType().printType();
+    res = res.replaceAll("List<", "");
+    res = res.replaceAll("", ">");
+    return res;
+  }
+
+  public final Optional<SymTypeExpression> getDomainListInnerType(SymTypeExpression type) {
+    if (type.hasTypeInfo() && GenService.isList(type)) {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+        return Optional.of(((SymTypeOfGenerics) type).getArgument(0));
+      }
+    }
+    return Optional.empty();
   }
 
   public final boolean isDomainImport(ASTMCImportStatement i) {
@@ -213,6 +260,10 @@ public class GUIGeneratorUtil {
     return getHTMLName("set" + StringTransformations.capitalize(domainParamName));
   }
 
+  public String gui2cdAttrBuilderSetterName(String domainParamName) {
+    return getHTMLName(domainParamName);
+  }
+
   public String gui2cdAttrGetterName(String componentId, String argName) {
     return getHTMLName("get"
         + StringTransformations.capitalize(componentId)
@@ -255,8 +306,10 @@ public class GUIGeneratorUtil {
   // TODO AGe: remove when problem with RangeControl is resolved
   public String getShortIteratorIterable(ASTGUIIterate iterate) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
-      return getHTMLName(
-          print(((ASTGUIShortIterateControl) iterate.getIterateControl()).getIterable()));
+      ASTGUIShortIterateControl ic = ((ASTGUIShortIterateControl) iterate.getIterateControl());
+      GUIIterableReplaceVisitor visitor = new GUIIterableReplaceVisitor();
+      visitor.transform(ic);
+      return getHTMLName(print(visitor.getGetterExpression()));
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
         + " was not processed: range iterate control not supported yet");
@@ -280,6 +333,25 @@ public class GUIGeneratorUtil {
 
   public String getHTMLName(String name) {
     return name.replaceAll(TPL_INTERN, "").replaceAll(TPL_SUFFIX, "");
+  }
+
+  public String gui2tsManagerImport(String forComponent) {
+    Optional<String> domainQName = getMainDomainModelQName();
+    if (domainQName.isPresent()) {
+      String name = domainQName.get();
+      if (name.lastIndexOf(".") > 0) {
+        String part1 = name.substring(0, name.lastIndexOf("."));
+        String part2 = name.substring(name.lastIndexOf(".") + 1);
+        return part1 + "." + StringTransformations.uncapitalize(part2) + "." + part2 + ManagerDecorator.SUFFIX;
+      }
+      return StringTransformations.uncapitalize(name) + "." + name + ManagerDecorator.SUFFIX;
+    }
+    else {
+      Log.error("0x00000 GUI Model " + forComponent
+          + " is missing a connection to the domain model."
+          + " Please specify the domain model using '-dm' flag.");
+      return "";
+    }
   }
 
   public boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
@@ -349,6 +421,12 @@ public class GUIGeneratorUtil {
     return !isViewElement(ste)
         && !isViewElementsCollection(ste)
         && !type.equals(BuiltInTypes.EVENT.getName());
+  }
+
+  public boolean hasSetter(ASTGUIComponent comp, ASTGUINamedArg arg) {
+    Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
+        arg.getEnclosingScope(), comp.getQualifiedName(), arg.getName());
+    return paramSym.isPresent() && hasGetter(paramSym.get().getType()) && paramSym.get().isIsReference();
   }
 
   public boolean isViewElementsCollection(ASTGUIComponent comp, ASTGUINamedArg arg) {
@@ -501,6 +579,10 @@ public class GUIGeneratorUtil {
       return node.getGUIIterate().getId().getName();
     }
     if (node.isPresentExpression()) {
+      String value = print(node);
+      if (node.getEnclosingScope().resolveGUIParam(value).isPresent()) {
+        return print(node);
+      }
       return print(node) + TPL_SUFFIX;
     }
     if (node.isPresentGUIList()) {
@@ -528,14 +610,14 @@ public class GUIGeneratorUtil {
     return res;
   }
 
-  public Optional<String> getRelativeHandwrittenPath(
-      MCPath targetPath, Path outPath, String qualifiedName, String fileExtension) {
+  public Optional<String> getRelativeImportPath(
+      MCPath imported, Path importer, String qualifiedName, String fileExtension) {
     String hwFile = Names.getPathFromPackage(qualifiedName) + "." + fileExtension;
-    Optional<URL> hwFilePath = targetPath.find(hwFile);
+    Optional<URL> hwFilePath = imported.find(hwFile);
     Optional<String> res = Optional.empty();
     if (hwFilePath.isPresent()) {
       Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
-      res = Optional.of(outPath.resolve(hwFile).getParent()
+      res = Optional.of(importer.resolve(hwFile).getParent()
           .toAbsolutePath()
           .normalize()
           .relativize(hwPath.get().toAbsolutePath())
@@ -545,7 +627,7 @@ public class GUIGeneratorUtil {
       hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path,
           Paths.get(hwFile)));
     }
-    Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
+    Reporting.reportHWCExistenceCheck(imported, Paths.get(hwFile), hwFilePath);
     return res;
   }
 

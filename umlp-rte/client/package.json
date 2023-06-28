@@ -20,7 +20,21 @@
     "@angular/router": "^15.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.12.0"
+    "zone.js": "~0.12.0",
+    "chart.js": "^3.0.0",
+    "@angular/cdk": "15.1.3",
+    "ng2-charts": "3.1.2",
+    "angular-plotly.js": "^4.0.4",
+    "moment": "2.29.4",
+    "@swimlane/ngx-charts": "20.1.2",
+    "venn.js": "^0.2.20",
+    "vis-network": "^9.1.2",
+    "d3": "7.8.2",
+    "@perfectmemory/ngx-contextmenu": "15.1.1",
+    "@angular/material": "15.1.3",
+    "@upe/logger": "^2.0.3",
+    "@swimlane/ngx-datatable": "20.1.0",
+    "angular2-text-mask": "9.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.1.6",

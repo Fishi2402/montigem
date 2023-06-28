@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("command")}
-${cd4c.method("public void buildJson(${command} command, JsonPrinter jsonPrinter)")}
+${cd4c.method("public void buildJson(${command} command, any printer)")}
 
-super.buildJson(command, jsonPrinter);
-jsonPrinter.member("gemId", command.getGemId());
+super.buildJson(command, printer);
+printer["gemId"] = command.getGemId();

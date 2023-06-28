@@ -2,7 +2,9 @@
 
 package umlp.generator.domain.decorator;
 
+import com.google.common.collect.Sets;
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -18,6 +20,8 @@ import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.Collection;
+
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
@@ -29,7 +33,7 @@ public class ManagerDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     astcdPackage.addCDElement(createClass(origCD));
   }
@@ -43,7 +47,7 @@ public class ManagerDecorator extends AbstractDecorator {
 
     // Attribute observerList
     ASTCDAttribute attrObserver = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-            "List<" + name + "Observer>", StringTransformations.uncapitalize(name) + "Observers");
+            getObserversType(name), StringTransformations.uncapitalize(name) + "Observers");
     glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint(defaultListValue()));
     managerClass.addCDMember(attrObserver);
 
@@ -59,6 +63,10 @@ public class ManagerDecorator extends AbstractDecorator {
     addImports(managerClass);
 
     return managerClass;
+  }
+
+  protected String getObserversType(String name) {
+    return "List<" + name + "Observer>";
   }
 
   protected String defaultListValue() {
@@ -118,18 +126,22 @@ public class ManagerDecorator extends AbstractDecorator {
       }
 
       // Associations
-      CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
-        SymTypeExpression type = a.getSymbol().getType();
-        String printedType = type.print();
-        ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+      Collection<String> types = Sets.newHashSet();
+      CDSymbolTables.getAssociations(domainClass).stream().
+          filter(a -> !types.contains(a.getName())).
+          filter(a -> GenService.isList(a)).forEach(a -> {
+            types.add(a.getName());
+            SymTypeExpression type = a.getSymbol().getType();
+            String printedType = type.print();
+            ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
 
-        getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+            getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
 
-        getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc", a.getName(), printedType, true);
-        getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc", a.getName(), printedType, false);
-        getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", a.getName(), printedType, true);
-        getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", a.getName(), printedType, false);
-      });
+            getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc",  getAssocName(domainClass, a), printedType, true);
+            getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc",  getAssocName(domainClass, a), printedType, false);
+            getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", getAssocName(domainClass, a), printedType, true);
+            getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", getAssocName(domainClass, a), printedType, false);
+          });
     }
 
   }
@@ -156,21 +168,26 @@ public class ManagerDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, false);
 
       // Associations
-      CDSymbolTables.getAssociations(domainInterface).stream().filter(GenService::isList).forEach(a -> {
-        SymTypeExpression type = a.getSymbol().getType();
-        String printedType = type.print();
-        ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+      Collection<String> types = Sets.newHashSet();
+      CDSymbolTables.getAssociations(domainInterface).stream().
+          filter(GenService::isList).
+          filter(a -> !types.contains(a.getName())).
+          forEach(a -> {
+            types.add(a.getName());
+            SymTypeExpression type = a.getSymbol().getType();
+            String printedType = type.print();
+            ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
 
-        getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
-        getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc", a.getName(), printedType, true);
-        getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc", a.getName(), printedType, false);
-        getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", a.getName(), printedType, true);
-        getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", a.getName(), printedType, false);
-      });
+            getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+            getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc",  getAssocName(domainInterface, a), printedType, true);
+            getCD4C().addMethod(managerClass, "umlp.manager.CreateAssoc",  getAssocName(domainInterface, a), printedType, false);
+            getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", getAssocName(domainInterface, a), printedType, true);
+            getCD4C().addMethod(managerClass, "umlp.manager.BuilderAssoc", getAssocName(domainInterface, a), printedType, false);
+          });
     }
   }
 
-    protected void addImports(ASTCDType clazz) {
+  protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));

@@ -1,0 +1,119 @@
+import org.gradle.work.Incremental
+import org.gradle.work.InputChanges
+import groovy.json.JsonGenerator
+import groovy.json.JsonSlurper
+
+
+plugins {
+  id 'java'
+  id 'com.diffplug.spotless' version '6.19.0'
+}
+repositories {
+  mavenCentral()
+}
+dependencies {
+}
+def libs = [
+  "basic",
+  "charts",
+  "common",
+  "table",
+  "input",
+  "arrange",
+  "theme",
+  "utils"]
+class StaticMethods {
+  static void updateVersion(String lib) {
+    def jsonSlurper = new JsonSlurper()
+    def data = jsonSlurper.parse(new File("projects/umlp/" + lib + "/package.json"))
+    String oldVersion = data["version"]
+    int startIndex = oldVersion.length() - 1;
+    while (startIndex > -1 && oldVersion.charAt(startIndex) != ".".charAt(0)) {
+      startIndex--;
+    }
+    String newVersion;
+    if (startIndex < 0) {
+      println("false version format")
+      return;
+    } else {
+      int versionNumber = oldVersion.substring(startIndex + 1).toInteger();
+      versionNumber++;
+      newVersion = oldVersion.substring(0, startIndex + 1) + versionNumber as String;
+      data["version"] = newVersion
+    }
+
+    def generator = new JsonGenerator.Options()
+      .build()
+    def json = generator.toJson(data)
+
+    File file = new File("projects/umlp/" + lib + "/package.json")
+    file.write(json)
+
+  }
+}
+
+
+abstract class IncrementalReverseTask extends DefaultTask {
+  @Incremental
+  @PathSensitive(PathSensitivity.NAME_ONLY)
+  @InputDirectory
+  abstract DirectoryProperty getInputDir()
+
+  @OutputDirectory
+  abstract DirectoryProperty getOutputDir()
+
+  @Input
+  abstract Property<String> getInputProperty()
+
+  @TaskAction
+  void execute(InputChanges inputChanges) {
+    if (!inputChanges.isIncremental()) {
+      println("First run, all libraries history is saved");
+      return
+    }
+
+    def libs = [
+      "basic",
+      "charts",
+      "common",
+      "table",
+      "input",
+      "arrange",
+      "theme",
+      "utils"]
+    libs.forEach(lib -> {
+      def pattern = ".*" + "projects" + ".+" + "umlp" + ".+" + lib + ".*";
+      if (inputChanges.getFileChanges(inputDir).toString().matches(pattern)) {
+        StaticMethods.updateVersion(lib);
+        println(lib + " library verstion updated")
+      }
+    })
+  }
+}
+
+
+tasks.register('incrementalReverse', IncrementalReverseTask) {
+  inputDir = file('projects/umlp')
+  outputDir = file("projects/dist")
+  inputProperty = project.properties['taskInputProperty'] ?: 'original'
+}
+
+spotless {
+  json {
+    target 'projects/umlp/**/package.json'
+    simple()
+  }
+}
+
+tasks.register("updateVersion")
+  {
+    dependsOn("incrementalReverse")
+    dependsOn("spotlessApply")
+  }
+
+
+tasks.register("start")
+  {
+    dependsOn("incrementalReverse")
+    dependsOn("spotlessApply")
+  }

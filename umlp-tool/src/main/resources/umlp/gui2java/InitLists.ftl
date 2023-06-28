@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("uniqueVarName", "setterName", "isItemPrimitive", "values")}
+${tc.signature("uniqueVarName", "setterName", "isItemPrimitive", "values", "iteratorArgs")}
 <#-- TODO AGe: Type -->
     List ${uniqueVarName} = new ArrayList();
   <#if isItemPrimitive>
@@ -11,4 +11,5 @@ ${tc.signature("uniqueVarName", "setterName", "isItemPrimitive", "values")}
       ${uniqueVarName}.add(new ${v});
   </#list>
   </#if>
-    ${setterName}(${uniqueVarName});
+    // TODO AGe:
+    ${setterName}(${uniqueVarName}<#list iteratorArgs as arg>, null</#list>);

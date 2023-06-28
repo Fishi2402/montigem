@@ -31,6 +31,8 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
       return true;
     } else if (UMLPAdapterUtils.substituteMethodInvocation_JavaLangString(this, invocation)) {
       return true;
+    } else if (UMLPAdapterUtils.substituteMethodInvocation_JavaLists(this, invocation)) {
+      return true;
     }
     return super.substituteMethodInvocation(invocation);
   }

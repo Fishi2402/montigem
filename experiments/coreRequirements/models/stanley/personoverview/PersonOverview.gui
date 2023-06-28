@@ -25,10 +25,10 @@ import table.src.lib.gemtable.TableTypes.TableColumn;
 page PersonOverview(List<Human> ps) {
   @iterate(Human p : ps) {
     @GemText(value = p.age);
+    @GemCard(
+      component = t@GemTable(rows = ps)
+    );
   }
-  @GemCard(
-    component = t@GemTable(rows = ps)
-  );
 }
 /**/
 /*
@@ -57,22 +57,25 @@ page PersonOverview(List<Person> ps) {
 }
 /**/
 page PersonOverview(List<Person> ps) {
-  @iterate(Person p : ps) {
-    @GemText(value = p.age);
-    /*
-    @SearchBar(p = p, g =
-      box@InfoBox(
-        text = "This is some important information that you should know.",
-        color = "#8ebae5"
-      )
-    );
-    /**/
-  }
+  @GemCard(
+    component =
+      @iterate(Person p : ps) {
+        @GemText(value = p.age);
+        @SearchBar(p = p, g =
+          box@InfoBox(
+            text = "This is some important information that you should know.",
+            color = "#8ebae5"
+          )
+        );
+      }
+  );
+  /*
   @GemCard(
     component = t@GemTable(
       rows = ps,
       columns = [ TableColumn("nickname", "Name") ],
       delete = deletePerson
     ));
+  /**/
 }
 /**/

@@ -1,3 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("domainVar", "domainVarType", "manager")}
-// this.${domainVar} = ${manager}.get${domainVarType}Sure(123);
+// ${manager}.get${domainVarType}Sure(this.${domainVar}RoutingId).then(v => this.${domainVar} = v);
+${tc.include("umlp.gui2java.InitDomainBody")}

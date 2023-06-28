@@ -90,15 +90,17 @@ public class DeSerDecorator extends DomainClassDecorator {
 
     getCD4C().addMethod(deSer, getFromJsonTemplate(), originalClassName);
 
+    addDeSerAddons(deSer, cdClass);
 
+    return deSer;
+  }
+
+  protected void addDeSerAddons(ASTCDClass deSer, ASTCDClass cdClass) {
     CD4CTemplateHelper th = new CD4CTemplateHelper();
     th.method("protected void serialize_Addons(" + cdClass.getName() + " obj, JsonPrinter jsonPrinter)");
     deSer.addCDMember(th.getMethod().get());
     th.method("protected void deserialize_Addons(" + cdClass.getName() + "Builder builder, JsonObject json)");
     deSer.addCDMember(th.getMethod().get());
-
-
-    return deSer;
   }
 
   protected String getSerializeTemplate() {
@@ -195,7 +197,6 @@ public class DeSerDecorator extends DomainClassDecorator {
     return "umlp.deser.deserializeGemField";
   }
 
-  @Override
   protected void addImports(ASTCDType domainType, ASTCDType clazz) {
     super.addImports(domainType, clazz);
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.JsonPrinter");

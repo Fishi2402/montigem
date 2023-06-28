@@ -4,6 +4,7 @@ package umlp.generator.domain.decorator.commands;/* (c) https://github.com/Monti
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.ManagerDecorator;
@@ -29,18 +30,24 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
         astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
         astcdPackage.addCDElement(createDeSer(origCD, c));
       });
+
+    origCD.getCDDefinition().getCDInterfacesList().stream().filter(c -> !c.getSymbol().isIsDerived())
+        .forEach(c -> {
+          astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
+          astcdPackage.addCDElement(createDeSer(origCD, c));
+        });
   }
 
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String packageName) {
-    String classname = domainClass.getName();
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDType domainType, String packageName) {
+    String classname = domainType.getName();
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
-      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("Request<Long>"))
+      .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
       .setName(classname+SUFFIX)
       .build();
 
-    getCD4C().addConstructor(ast, getConstructorTemplate(), classname,"", SUFFIX, packageName);
+    addConstructor(ast, classname, packageName);
     getCD4C().addMethod(ast, getDoRunTemplate(), classname, origCD.getCDDefinition().getName());
 
     getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
@@ -48,6 +55,14 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
 
     return ast;
+  }
+
+  protected String extendedClass() {
+    return "Request<Long>";
+  }
+
+  protected void addConstructor(ASTCDClass ast, String classname, String packageName) {
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname, "", SUFFIX, packageName);
   }
 
   protected String getDoRunTemplate() {
@@ -58,8 +73,8 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
     return "umlp.commands.get_filtered.Constructor";
   }
 
-  protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
-    String cmdName = domainClass.getName() + SUFFIX;
+  protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDType domainType) {
+    String cmdName = domainType.getName() + SUFFIX;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
@@ -70,12 +85,16 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getGetFiltered_FromJsonObjectTemplate(), cmdName);
     getCD4C().addMethod(ast, getGetFiltered_BuildJsonTemplate(),cmdName);
 
-    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
-    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
+    addDeSerImport(origCD, ast, cmdName);
 
     addedDeSers.add(ast);
     return ast;
+  }
+
+  protected void addDeSerImport(ASTCDCompilationUnit origCD, ASTCDClass ast, String cmdName) {
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
   }
 
   protected String getGetFiltered_BuildJsonTemplate() {

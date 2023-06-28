@@ -27,12 +27,14 @@ import java.util.Arrays;
 public class UMLPGenerator {
 
   protected GeneratorSetup genSetup;
+  protected UMLPGeneratorConfig config;
 
   protected CDGenerator cdGenerator;
   protected SQLSchemaGenerator schemaGenerator;
 
-  public UMLPGenerator(GeneratorSetup genSetup) {
+  public UMLPGenerator(GeneratorSetup genSetup, UMLPGeneratorConfig config) {
     this.genSetup = genSetup;
+    this.config = config;
 
     genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter());
     genSetup.getGlex().setGlobalValue("genService", new GenService());
@@ -62,7 +64,7 @@ public class UMLPGenerator {
     // create an empty classdiagram
     ASTCDCompilationUnit decoratedAST = createCompilationUnit(cdAST);
 
-
+    genSetup.getGlex().setGlobalValue("UMLPGeneratorConfig", config);
 
     TemplateController tc = genSetup.getNewTemplateController(configTemplate);
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);

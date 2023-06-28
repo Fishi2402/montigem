@@ -69,17 +69,17 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
       getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
     }
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
-      if (c.getName() != domainType.getName()) {
+      if (!c.getName().equals(domainType.getName())) {
         getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
       }
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
-      if (c.getName() != domainType.getName()) {
+      if (!c.getName().equals(domainType.getName())) {
         getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
       }
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
-      if (c.getName() != domainType.getName()) {
+      if (!c.getName().equals(domainType.getName())) {
         getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
       }
     }
@@ -129,6 +129,12 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
         .filter(GenService::isVisible).collect(Collectors.toList());
 
     for (ASTCDAttribute visibleAttribute: visibleAttributes) {
+      ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+          createType(visibleAttribute), GenService.createName(visibleAttribute.getName()));
+      attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
+      attributesList.add(attribute);
+      /**/
+      /*
       ASTMCType type = createType(visibleAttribute);
       if (GenService.isOptional(visibleAttribute)) {
         String innerType = visibleAttribute.getMCType().printType().replace("Optional<", "");
@@ -141,6 +147,7 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
           type , GenService.createName(visibleAttribute.getName()));
       attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
       attributesList.add(attribute);
+      /**/
       if (GenService.isOptional(visibleAttribute)) {
         glex.replaceTemplate("cd2java.Value", attribute, new StringHookPoint(" = null"));
       }

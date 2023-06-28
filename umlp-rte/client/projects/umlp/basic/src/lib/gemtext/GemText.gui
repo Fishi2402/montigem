@@ -1,0 +1,6 @@
+package basic.src.lib.gemtext;
+
+component GemText(
+  String value,
+  String style
+)

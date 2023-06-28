@@ -3,7 +3,7 @@ ${tc.signature("cdName", "className", "fieldName", "fieldType", "isAssoc")}
 <#if isAssoc>
 ${cd4c.method("public void ${className?uncap_first}Set${fieldName?cap_first} (long id, long value)")}
 <#else>
-${cd4c.method("public void ${className?uncap_first}Set${fieldName?cap_first} (long id, ${fieldType} value)")}
+${cd4c.method("public void ${className?uncap_first}Set${fieldName?cap_first} (long id, ${fieldType?split('.')?last} value)")}
 </#if>
   Optional<${className}> ${className?uncap_first} = ${cdName}Manager.${className?uncap_first}Opt(id);
 <#if isAssoc>

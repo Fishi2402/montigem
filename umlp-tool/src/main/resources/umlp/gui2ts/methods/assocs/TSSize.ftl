@@ -2,4 +2,4 @@
 ${tc.signature("name")}
 
 ${cd4c.method("public int size${name?cap_first}s()")}
-return this._${name}.length;
+return this._${name}.size();

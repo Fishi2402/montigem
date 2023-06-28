@@ -1,15 +1,15 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("command", "attrName", "type", "isCDEnum" "getterName", "useDeSer", "objectMapperName", "makeAbstract")}
 <#if makeAbstract>
-${cd4c.method("public abstract void buildJson(${command} command, JsonPrinter jsonPrinter)")}
+${cd4c.method("public abstract void buildJson(${command} command, any printer)")}
 <#else>
-${cd4c.method("public void buildJson(${command} command, JsonPrinter jsonPrinter)")}
-  super.buildJson(command, jsonPrinter);
-  jsonPrinter.member("gemId", command.getGemId());
+${cd4c.method("public void buildJson(${command} command, any printer)")}
+  super.buildJson(command, printer);
+  printer["gemId"] = command.getGemId();
 <#if useDeSer>
-  jsonPrinter.memberJson("${attrName}", ${objectMapperName}.serialize(command.${getterName}(), "${type}"));
+  printer["${attrName}"] = ${objectMapperName}.serialize(command.${getterName}(), "${type}"));
 <#else>
-  jsonPrinter.member("${attrName}", command.${getterName}()<#if isCDEnum>.name()</#if>);
+  printer["${attrName}"] = command.${getterName}()<#if isCDEnum>.name()</#if>;
 </#if>
-  jsonPrinter.member("indexInList", command.getIndexInList());
+  printer["indexInList"] = command.getIndexInList();
 </#if>

@@ -10,5 +10,5 @@ for(const idx of idxs){
 this._${name}._internal_remove(idxs);
 this.check${name?cap_first}();
 for(const e of idxToId.entries()) {
-    this.${sourceName?uncap_first}Observers.forEach(obs => obs.maybeNotifyRemove${name?cap_first}(<${sourceName}> this, e[1], e[0], scope));
+    this.${sourceName?uncap_first}Observers.forEach(obs => obs.maybeNotifyRemove${name?cap_first}(<${sourceName}> <any> this, e[1], e[0], scope));
 }

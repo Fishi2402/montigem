@@ -55,14 +55,14 @@ public class SQLSchemaGenerator {
         fqnClassNameToType.put("Integer", "INTEGER");
         fqnClassNameToType.put("int", "INTEGER");
         fqnClassNameToType.put("java.lang.Long", "BIGINT");
-        fqnClassNameToType.put("Long", "INTEGER");
-        fqnClassNameToType.put("long", "INTEGER");
-        fqnClassNameToType.put("java.lang.Float", "FLOAT");
-        fqnClassNameToType.put("Float", "FLOAT");
-        fqnClassNameToType.put("float", "FLOAT");
-        fqnClassNameToType.put("java.lang.Double", "DOUBLE");
-        fqnClassNameToType.put("Double", "DOUBLE");
-        fqnClassNameToType.put("double", "DOUBLE");
+        fqnClassNameToType.put("Long", "BIGINT");
+        fqnClassNameToType.put("long", "BIGINT");
+        fqnClassNameToType.put("java.lang.Float", "REAL");
+        fqnClassNameToType.put("Float", "REAL");
+        fqnClassNameToType.put("float", "REAL");
+        fqnClassNameToType.put("java.lang.Double", "DOUBLE PRECISION");
+        fqnClassNameToType.put("Double", "DOUBLE PRECISION");
+        fqnClassNameToType.put("double", "DOUBLE PRECISION");
         fqnClassNameToType.put("java.lang.Boolean", "BOOLEAN");
         fqnClassNameToType.put("Boolean", "BOOLEAN");
         fqnClassNameToType.put("boolean", "BOOLEAN");
@@ -71,6 +71,8 @@ public class SQLSchemaGenerator {
         fqnClassNameToType.put("char", "CHAR");
 
         fqnClassNameToType.put("java.time.LocalDate", "DATE");
+        fqnClassNameToType.put("java.time.LocalDateTime", "TIMESTAMP");
+        fqnClassNameToType.put("java.time.LocalTime", "TIME(6) WITHOUT TIME ZONE");
     }
 
     public void addClassToSQLTypeMapping(String fqnClassName, String sqlType) {

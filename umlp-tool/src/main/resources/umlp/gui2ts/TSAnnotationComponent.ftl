@@ -4,5 +4,6 @@ ${tc.signature("htmlPath", "scssPaths")}
 @Component({
   selector: '${genHelper.getComponentNameFromCamelCaseName(ast.getName())}',
   templateUrl: '${htmlPath}',
+  styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: [<#list scssPaths as path>'${path}',</#list>]
 })

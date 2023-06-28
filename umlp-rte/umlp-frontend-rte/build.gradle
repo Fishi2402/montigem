@@ -91,7 +91,7 @@ task generateIndexTS(type: Exec) {
 /**/
 
 task buildLib(type: NpxTask) {
-  // dependsOn(generateIndexTS)
+//   dependsOn(generateIndexTS)
   command = "ng"
   args = ["build", "--prod"]
   dependsOn(tasks.npmInstall)
@@ -101,12 +101,14 @@ task buildLib(type: NpxTask) {
   outputs.dir("${project.buildDir}/dist")
 }
 
+/*
 project.getTasksByName("jsweet", true).forEach {
   t ->
     t.finalizedBy(buildLib)
     buildLib.dependsOn(t)
-    // generateIndexTS.dependsOn(t)
+    generateIndexTS.dependsOn(t)
 }
+/**/
 
 //build.dependsOn(buildLib)
 

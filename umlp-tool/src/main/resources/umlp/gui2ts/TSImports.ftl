@@ -8,4 +8,4 @@ import {
   TemplateRef,
 } from '@angular/core';
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';

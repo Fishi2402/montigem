@@ -51,7 +51,7 @@ public class ShellAPIDecorator extends AbstractDecorator {
         "@ShellOption(value = \"--url\", defaultValue = \"localhost\")",
         "@ShellOption(value = \"--port\", defaultValue = \"8081\")",
         String.format("@ShellOption(value = \"--appName\", defaultValue = \"%s\")", name.toLowerCase()),
-        "@ShellOption(value = \"--api\", defaultValue = \"wsapi\")",
+        "@ShellOption(value = \"--api\", defaultValue = \"command\")",
         "@ShellOption(value = \"--user\", defaultValue = \"\")",
         "@ShellOption(value = \"--password\", defaultValue = \"\")",
         "@ShellOption(value = \"scheme\", defaultValue = \"ws\")"

@@ -4,6 +4,7 @@ package umlptest;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import org.junit.jupiter.api.Test;
 import umlp.generator.domain.UMLPGenerator;
+import umlp.generator.domain.UMLPGeneratorConfig;
 
 import java.io.File;
 
@@ -17,7 +18,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
     runAfterParseTrafo(ast);
     createSymTab(ast);
 
-    UMLPGenerator gen = new UMLPGenerator(getGenSetup());
+    UMLPGenerator gen = new UMLPGenerator(getGenSetup(), new UMLPGeneratorConfig(false));
     gen.generate(ast, "umlp.UMLP2Java");
 
     assertNoErrors();
@@ -29,7 +30,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
     runAfterParseTrafo(ast);
     createSymTab(ast);
 
-    UMLPGenerator gen = new UMLPGenerator(getGenSetup());
+    UMLPGenerator gen = new UMLPGenerator(getGenSetup(), new UMLPGeneratorConfig(false));
     gen.generate(ast, "umlp.UMLP2Java");
 
     assertNoErrors();

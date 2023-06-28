@@ -44,11 +44,7 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
     String classname = domainClass.getName() + getSuffix();
 
-    ASTCDClass ast = UMLPMill.cDClassBuilder()
-            .setModifier(PUBLIC.build())
-            .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(domainClass.getName()+"Observer"))
-            .setName(classname)
-            .build();
+    ASTCDClass ast = createEmptyClass(domainClass, classname);
 
     getCD4C().addMethod(ast, scopeTmplt());
 
@@ -142,6 +138,14 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     addImports(UMLPSymbolTables.getDiagramFor(domainClass), domainClass, ast);
 
     return ast;
+  }
+
+  protected ASTCDClass createEmptyClass(ASTCDClass domainClass, String classname) {
+    return UMLPMill.cDClassBuilder()
+        .setModifier(PUBLIC.build())
+        .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(domainClass.getName() + "Observer"))
+        .setName(classname)
+        .build();
   }
 
   protected void setOverrideAnnotation(ASTCDMethodSignature m) {

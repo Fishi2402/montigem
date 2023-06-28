@@ -8,9 +8,7 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import umlp.generator.gui.GUIComponentsVisitor;
-import umlp.generator.gui.genjava.decorator.EventDecorator;
 import umlp.generator.gui.genjava.decorator.GUI2JavaComponentsDecorator;
-import umlp.generator.gui.genjava.decorator.GUI2JavaGuardDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,7 @@ public class GUI2TypeScriptComponentsDecorator extends GUI2JavaComponentsDecorat
       decorator.transform(decoratedClass, c);
       init.addAll(decorator.getInitHPs());
       if (util.isEventComponent(c)) {
-        new EventDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c);
+        new TSEventDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c);
       }
     }
     glex.replaceTemplate("umlp.gui2java.InitBody", init);

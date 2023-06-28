@@ -12,6 +12,7 @@ import de.monticore.cd.facade.CDStereotypeFacade;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -22,6 +23,7 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.StringTransformations;
 import umlp.generator.domain.decorator.GenService;
 
 import java.util.Arrays;
@@ -136,6 +138,12 @@ public abstract class AbstractDecorator {
   protected String getTypeFromFQNString(String fQN) {
     String[] subNames = fQN.split("\\.");
     return subNames[subNames.length-1];
+  }
+
+  protected String getAssocName(ASTCDType type, ASTCDAssocSide assoc) {
+    return type.getName()
+        + "_"
+        + StringTransformations.capitalize(assoc.getName());
   }
 
   protected void addImports(ASTCDType domainType, ASTCDType cdType) {

@@ -3,15 +3,25 @@ package gradle;
 
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
-import org.gradle.api.file.*;
+import org.gradle.api.file.Directory;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileSystemLocation;
+import org.gradle.api.file.FileType;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.*;
+import org.gradle.api.tasks.CacheableTask;
+import org.gradle.api.tasks.IgnoreEmptyDirectories;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
+import org.gradle.api.tasks.TaskAction;
 import org.gradle.work.ChangeType;
 import org.gradle.work.FileChange;
 import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
-import umlp.UMLPTool;
 import umlp.UMLPToolOptions;
 
 import java.io.File;
@@ -20,7 +30,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -36,8 +45,11 @@ public abstract class UMLPTask extends CommonUMLPTask {
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental
   public abstract DirectoryProperty getSymbolDir();
+
+  @OutputDirectory
+  @org.gradle.api.tasks.Optional
+  public abstract DirectoryProperty getSymbolOutDir();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
@@ -57,11 +69,11 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract Property<Boolean> getGUIDelta();
+  public abstract Property<Boolean> getForClient();
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract Property<Boolean> getForClient();
+  public abstract Property<Boolean> getUseSpring();
 
 
   public UMLPTask() {
@@ -69,7 +81,7 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
     getCdToGui().convention(false);
     getForClient().convention(false);
-    getGUIDelta().convention(false);
+    getUseSpring().convention(false);
   }
 
 
@@ -97,12 +109,19 @@ public abstract class UMLPTask extends CommonUMLPTask {
     result.add("-r");
     result.add(handlePath.apply(getReportDirOfFile(filePath.toFile()).getAsFile().toPath()));
 
-    if(this.getModelDir().isPresent()) {
+    if(this.getSymbolDir().isPresent()) {
       result.add("-path");
+      result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
+    }
+
+    if(this.getModelDir().isPresent()) {
+      result.add("-modelPath");
       result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
-      if (this.getSymbolDir().isPresent()) {
-        result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
-      }
+    }
+
+    if(this.getSymbolOutDir().isPresent()) {
+      result.add("-s");
+      result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
     }
 
     if(this.getTmplDir().isPresent()) {
@@ -123,15 +142,8 @@ public abstract class UMLPTask extends CommonUMLPTask {
       result.add("-" + UMLPToolOptions.FOR_CLIENT.getCMD());
     }
 
-    if(this.getGUIDelta().get()){
-      result.add("-" + UMLPToolOptions.GUIDelta.getCMD());
-      List<Path> guiFiles = getInput().getAsFileTree().getFiles().stream().filter(p -> p.getPath().endsWith(".gui")).map(File::toPath).collect(Collectors.toList());
-      if(!guiFiles.isEmpty()){
-        result.add("-gp");
-        for(Path p : guiFiles){
-          result.add(handlePath.apply(p));
-        }
-      }
+    if(this.getUseSpring().get()){
+      result.add("-" + UMLPToolOptions.USE_SPRING.getCMD());
     }
 
     return result;
@@ -202,7 +214,7 @@ public abstract class UMLPTask extends CommonUMLPTask {
 
   @Internal
   protected Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
-    return Set.of(getHwcDir(), getModelDir(), getSymbolDir());
+    return Set.of(getHwcDir(), getModelDir());
   }
   private Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
     Stream<FileChange> result = StreamSupport.stream(inputChanges.getFileChanges(getInput()).spliterator(), false);
