@@ -23,13 +23,11 @@ repositories {
 }
 
 configurations {
-  cdParser
   guiParser
   guiLib
 }
 
 dependencies {
-  cdParser "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
   guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
   guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
 }
@@ -65,39 +63,20 @@ dependencies {
   implementation "umlp:frontend-rte:$mc_version:cd2java"
 }
 
+// TODO AGe: the whole serialization thing should be reworked
+def symPath = "${project.buildDir}/symbols";
+
 generateUmlpBackend {
   input = file("../models/hardy/Flensburg.umlp")
+  symbolOutDir = file("${symPath}")
 }
 
 task runServer {
   dependsOn(bootRun)
 }
 
-// TODO AGe: the whole serialization thing should be reworked
-def symPath = "${project.buildDir}/symbols";
-
-task serializeCD {
-  dependsOn('unpackGUILibSymbols')
-  doLast {
-    def modelPathStr = "${project.projectDir.parent}/models"
-    def modelPath = Paths.get(modelPathStr)
-    fileTree(modelPathStr).matching {
-      include "**/*.umlp"
-    }.each {
-      def path = it.path
-      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
-      javaexec {
-        mainClass = 'de.monticore.CD4CodeTool'
-        classpath = configurations.cdParser
-        args "-i", path,
-            "-s", "${symPath}/${relativeModelPathStr}sym"
-      }
-    }
-  }
-}
-
 task serializeGUI {
-  dependsOn('serializeCD')
+  dependsOn('generateUmlpBackend', 'unpackGUILibSymbols')
   doLast {
     def modelPathStr = "${project.projectDir.parent}/models"
     def modelPath = Paths.get(modelPathStr)
@@ -142,7 +121,6 @@ test {
 
 sourceSets {
   main {
-    // java.srcDirs += [layout.buildDirectory.dir("umlp/backend")]
     // TODO MB
     //java.srcDirs += [layout.buildDirectory.dir("testgui")]
     //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
