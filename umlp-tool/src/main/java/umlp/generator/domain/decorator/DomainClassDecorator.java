@@ -185,12 +185,12 @@ public class DomainClassDecorator extends DomainTypeDecorator {
         .stream().filter(GenService::isVisibleNotDerived).collect(Collectors.toList())) {
       getCD4C().addMethod(clazz, "umlp.domain.Check",
           domainClass.getName(), attr.getName(),
-          !GenService.isList(attr) && !GenService.isOptional(attr));
+          !GenService.isList(attr) && !GenService.isOptional(attr), false);
     }
     for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
       getCD4C().addMethod(clazz, "umlp.domain.Check",
           domainClass.getName(), assoc.getName(),
-          !GenService.isOptional(assoc));
+          !GenService.isOptional(assoc), GenService.isList(assoc));
     }
   }
 
