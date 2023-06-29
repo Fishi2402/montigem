@@ -67,7 +67,7 @@ public class DeSerDecorator extends DomainClassDecorator {
       addSerAndDeserMethod(origCD.getCDDefinition().getName(), originalClassName, deSer, a);
     });
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(cdClass).stream()
-        .filter(a -> !a.getModifier().isDerived())
+        .filter(assoc -> !GenService.isDerived(assoc, GenService.getDerivedAssocs(origCD)))
         .collect(Collectors.toList());
     assocs.forEach(a -> {
       addSerAndDeserMethod(cdName, originalClassName, deSer, a);
