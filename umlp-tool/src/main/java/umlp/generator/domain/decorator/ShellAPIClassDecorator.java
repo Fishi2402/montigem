@@ -59,7 +59,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
         .filter(attr -> !attr.getModifier().isDerived())
         .collect(Collectors.toList());
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(cdClass).stream()
-        .filter(a -> !a.getModifier().isDerived())
+        .filter(assoc -> !GenService.isDerived(assoc, GenService.getDerivedAssocs(origCD)))
         .collect(Collectors.toList());
 
     addCreateMethod(cdName, originalClassName, shellapiClass, domainAttributes, assocs);
