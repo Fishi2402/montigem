@@ -280,14 +280,14 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     // SymTypeExpression rightType = tc.typeOf(rightExp);
     GUIExpressionTypeVisitor visitor = new GUIExpressionTypeVisitor();
     Optional<SymTypeExpression> rightTypeOpt = visitor.getType(rightExp);
-    ;
     if (rightTypeOpt.isPresent()) {
       SymTypeExpression rightType = rightTypeOpt.get();
       // TODO AGe: still not nice
       boolean leftIsString = TypeScriptTypes.isString(leftType);
 
       boolean rightIsNumber = TypeScriptTypes.isNumber(rightType);
-      boolean rightIsDate = rightType.print().equals("LocalDate");
+      boolean rightIsDate = rightType.print().endsWith("LocalDate");
+      boolean rightIsGemList = util.isDomainListType(rightType);
 
       if (leftIsString && rightIsDate) {
         if (forGetter) {
@@ -305,6 +305,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           return stringToNumberConversion(rightType.print());
         }
       }
+      if (rightIsGemList) {
+        return gemlistToArrayConversion();
+      }
     }
     return s -> s;
   }
@@ -319,6 +322,10 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   protected Function<String, String> numberToStringConversion() {
     return s -> "String.valueOf(" + s + ")";
+  }
+
+  protected Function<String, String> gemlistToArrayConversion() {
+    return s -> s;
   }
 
   protected Function<String, String> stringToNumberConversion(String type) {
