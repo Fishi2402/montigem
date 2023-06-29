@@ -1,0 +1,36 @@
+package gui;
+
+import Weather.Forecast;
+
+import gui.ForecastCreate;
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+import charts.src.lib.gemlinechart.GemLineChart;
+import table.src.lib.gemtable.GemTable;
+import table.src.lib.gemtable.TableTypes.TableColumn;
+
+page WeatherView(List<Forecast> forecasts) {
+  @GemRow(colGap = "5px", height = "initial", components = [
+    @GemCard(
+      title = "Forecast data list",
+      component = @GemTable(
+        rows = forecasts,
+        columns = [
+          TableColumn("_date", "Date"),
+          TableColumn("_temperature", "Temperature"),
+          TableColumn("_windspeed", "Wind speed"),
+          TableColumn("_realtiveHumidity", "Humidity")
+        ]
+      )
+    ),
+    @GemCard(
+      title = "Forecast Temperature",
+      component = @GemColumn(width = "800px", rowGap = "20px", components = [
+        chart@GemLineChart(data = null),
+        @ForecastCreate()
+      ])
+    )
+  ]);
+}

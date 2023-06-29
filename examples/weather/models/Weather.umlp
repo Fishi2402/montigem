@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
-umlp Weather {
+classdiagram Weather {
 
   class Forecast {
-    java.time.LocalDateTime date;
+    // java.time.LocalDateTime date;
+    java.time.LocalDate date;
 
     Double longitude;
     Double latitude;
@@ -15,12 +16,16 @@ umlp Weather {
   class HvacConfig {
     Double temperature;
     boolean humidifyAir;
-    HvacMode mode;
+    // HvacMode mode;
+    String mode;
 
-    java.time.LocalTime timeOn;
-    java.time.LocalTime timeOff;
+    // java.time.LocalTime timeOn;
+    // java.time.LocalTime timeOff;
+    java.time.LocalDate timeOn;
+    java.time.LocalDate timeOff;
   }
 
+  /*
   enum HvacMode {
     AUTO,
     HUMIDIFY,
@@ -28,6 +33,7 @@ umlp Weather {
     HEAT,
     COOL;
   }
+  /**/
 
 }
 
