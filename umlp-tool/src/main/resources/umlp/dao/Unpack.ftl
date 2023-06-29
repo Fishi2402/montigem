@@ -1,7 +1,7 @@
 ${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs")}
 ${cd4c.method("public Optional<${typeName}> unpack${typeName}(ResultSet res) throws SQLException")}
   int gemId = res.getInt("id");
-  ${typeName}Builder builder = ${cdName}Manager.${typeName?uncap_first}Builder(gemId);
+  ${typeName}Builder builder = ${cdName}Manager.${typeName?uncap_first}BuilderFromId(gemId);
   builder.setINTERNAL_deser_mode(true);
 <#if attributes?has_content>
   builder

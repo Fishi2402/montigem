@@ -5,5 +5,5 @@ ${tc.signature("name", "hasDelegate")}
   return getSingleton()._do${name}Builder();
 <#else>
   ${cd4c.method("protected ${name}Builder _do${name}Builder()")}
-  return getSingleton()._do${name}Builder(_doGetFreeGemId());
+  return getSingleton()._do${name}BuilderFromId(_doGetFreeGemId());
 </#if>
