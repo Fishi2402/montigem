@@ -43,6 +43,9 @@ public class ServerApplicationDecorator extends AbstractDecorator {
         ".service\"}\n" +
         ")"));
 
+    ASTCDMethodSignature initMethod = getCD4C().addMethod(serverApplicationClass, "umlp.serverapplication.init", name);
+    glex.replaceTemplate("cd2java.Annotations", initMethod, new StringHookPoint("@javax.annotation.PostConstruct "));
+
     // Imports
     addImports(serverApplicationClass);
     return serverApplicationClass;
