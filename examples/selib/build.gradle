@@ -73,13 +73,13 @@ dependencies {
 
 application {
   // Set Entrypoint of Application
-    mainClass = 'selib.SeLibServerApplication'
+    mainClass = 'selib.SELibServerApplication'
 }
 
 
 task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
     classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'selib.SeLibServerApplication'
+    mainClass = 'selib.SELibShellAPIApplication'
     standardInput = System.in
 }
 
