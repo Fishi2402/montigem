@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -18,7 +19,7 @@ public class WeatherReport {
     JsonObject data = getWeatherData();
     for (int i = 0; i < data.getObjectMember("hourly").getArrayMember("time").size(); i++) {
 
-      LocalDateTime date = LocalDateTime.parse(data.getObjectMember("hourly").getArrayMember("time").get(i).getAsJsonString()
+      LocalDate date = LocalDate.parse(data.getObjectMember("hourly").getArrayMember("time").get(i).getAsJsonString()
           .getValue(), DateTimeFormatter.ISO_DATE_TIME);
 
       WeatherManager.forecastBuilder()

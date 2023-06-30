@@ -86,12 +86,12 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
 
   @Override
   protected Function<String, String> dateToStringConversion() {
-    return s -> "+" + s;
+    return s -> s + "?.toDateString()";
   }
 
   @Override
   protected Function<String, String> stringToDateConversion() {
-    return s -> "Date.parse(" + s + ")";
+    return s -> "new Date(" + s + ")";
   }
 
   @Override
@@ -102,6 +102,11 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
   @Override
   protected Function<String, String> stringToNumberConversion(String type) {
     return s -> "+" + s;
+  }
+
+  @Override
+  protected Function<String, String> gemlistToArrayConversion() {
+    return s -> s + ".toArray()";
   }
 
 }

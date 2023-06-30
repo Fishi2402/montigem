@@ -5,6 +5,7 @@ import de.monticore.cd.methodtemplates.CD4CTemplateHelper;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
@@ -112,6 +113,9 @@ public class TSDeSerDecorator extends DeSerDecorator {
               + c.getName() + DeSerDecorator.SUFFIX);
         }
       }
+    }
+    for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
+      getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
     }
   }
 }
