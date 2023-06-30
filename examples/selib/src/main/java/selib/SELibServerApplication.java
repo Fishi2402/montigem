@@ -3,7 +3,6 @@ package selib;
 
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
-import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -12,7 +11,6 @@ import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Optional;
 
 // TODO: can we generate this?
@@ -22,19 +20,19 @@ import java.util.Optional;
     scanBasePackages={"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "selib.service"}
 )
 //@AutoConfiguration
-public class SeLibServerApplication {
+public class SELibServerApplication {
   public static void main(String[] args) throws IOException {
     Log.enableFailQuick(false);
     Log.warn("I AM ALIVE!");
     SELibManagerImpl.init();
 
-    Optional<URL> optionalURL = Optional.ofNullable(SeLibServerApplication.class.getResource("/SELib.sql"));
+    Optional<URL> optionalURL = Optional.ofNullable(SELibServerApplication.class.getResource("/SELib.sql"));
     if(optionalURL.isEmpty()) {
       Log.error("0xAAAAAA Could not find schema for database.");
     }
     String schema = FileReaderWriter.readFromFile(optionalURL.get());
     Log.warn("Loading schema: " + schema);
     DatabaseAccessManager.initSchema(schema);
-    SpringApplication.run(SeLibServerApplication.class, args);
+    SpringApplication.run(SELibServerApplication.class, args);
   }
 }
