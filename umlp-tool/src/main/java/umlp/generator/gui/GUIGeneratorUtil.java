@@ -35,7 +35,6 @@ import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
-import umlp.generator.gui.genjava.decorator.GUIArgValueReplaceVisitor;
 import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
@@ -128,6 +127,10 @@ public class GUIGeneratorUtil {
     return false;
   }
 
+  public final boolean isListType(SymTypeExpression type) {
+    return type.hasTypeInfo() && GenService.isList(type);
+  }
+
   public final String getDomainListInnerType(ASTGUIParam astguiParam) {
     SymTypeExpression type = astguiParam.getSymbol().getType();
     if (type.hasTypeInfo() && GenService.isList(type)) {
@@ -145,7 +148,7 @@ public class GUIGeneratorUtil {
     return res;
   }
 
-  public final Optional<SymTypeExpression> getDomainListInnerType(SymTypeExpression type) {
+  public final Optional<SymTypeExpression> getListInnerType(SymTypeExpression type) {
     if (type.hasTypeInfo() && GenService.isList(type)) {
       if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
         return Optional.of(((SymTypeOfGenerics) type).getArgument(0));

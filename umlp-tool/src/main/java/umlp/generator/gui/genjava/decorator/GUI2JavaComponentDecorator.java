@@ -83,7 +83,13 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     String paramType = convertType(paramSTE.print());
     if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
       // TODO AGe: all possible types
-      if (!util.isDomainType(paramSTE) && !util.isDomainListType(paramSTE)) {
+      if (util.isListType(paramSTE)) {
+        String innerType = util.getListInnerType(paramSTE).get().print();
+        if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
+          getCD4C().addImport(decoratedClass, innerType);
+        }
+      }
+      else if (!util.isDomainType(paramSTE) && !util.isDomainListType(paramSTE)) {
         getCD4C().addImport(decoratedClass, paramSTE.printFullName());
       }
       else {
@@ -92,9 +98,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           if (util.isDomainType(paramSTE)) {
             getCD4C().addImport(decoratedClass, domainQName.get() + "." + paramSTE.print());
           }
-          else if (util.isDomainListType(paramSTE) && util.getDomainListInnerType(paramSTE).isPresent()) {
+          else if (util.isDomainListType(paramSTE) && util.getListInnerType(paramSTE).isPresent()) {
             getCD4C().addImport(decoratedClass, domainQName.get() + "."
-                + util.getDomainListInnerType(paramSTE).get().print());
+                + util.getListInnerType(paramSTE).get().print());
           }
           else {
             Log.warn("0x0000A GUI Model " + this.guiAst.getComponentName()
