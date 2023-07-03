@@ -27,13 +27,13 @@ build:
   cache:
     key:
       files:  # Cache depends on state of "package-lock"
-        - experiments/coreRequirements/stanley/package-lock.json
+        - examples/weather/frontend/package-lock.json
     paths:
-      - experiments/coreRequirements/stanley/node_modules
-      - experiments/coreRequirements/stanley/.gradle/nodejs
+      - examples/weather/frontend/node_modules
+      - examples/weather/frontend/.gradle/nodejs
   artifacts:
     paths:
-      - experiments/coreRequirements/stanley/dist/**
+      - experiments/examples/weather/frontend/dist/**
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
@@ -43,9 +43,9 @@ deployBackendDocker:
   dependencies:
     - build
   script:
-      # Core Requirements
-    - "gradle :experiments:coreRequirements:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-      -Djib.to.image=$CI_REGISTRY_IMAGE/corerequirements:latest \
+      # Weather Backend
+    - "gradle :examples:weather:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
+      -Djib.to.image=$CI_REGISTRY_IMAGE/weather_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # Stat-Server
@@ -67,20 +67,20 @@ deployRTE:
     - dev
 
 ### TODO: Do this via Gradle. e.g. similar to backend with JIB
-# deployFrontendDocker:
-  # stage: deploy
-  # tags:
-    # - shell
-    # - docker
-  # dependencies:
-    # - build
-  # script:
-    # - "cd experiments/coreRequirements/stanley"
-    # - "docker build . -t $CI_REGISTRY_IMAGE/corerequirements_frontend:latest"
-    # - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
-    # - "docker push $CI_REGISTRY_IMAGE/corerequirements_frontend:latest"
-  # only:
-    # - dev
+deployWeatherFrontendDocker:
+  stage: deploy
+  tags:
+    - shell
+    - docker
+  dependencies:
+   - build
+  script:
+    - "cd examples/weather/frontend"
+    - "docker build . -t $CI_REGISTRY_IMAGE/weather_frontend:latest"
+    - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+    - "docker push $CI_REGISTRY_IMAGE/weather_frontend:latest"
+  only:
+    - dev
 
 
 checkMDLinks:
@@ -93,20 +93,3 @@ checkMDLinks:
     - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
   only:
     - master
-
-# Test that the docker-compose file in <experiments/coreRequirements> is working & that the docker-containers start
-testDeployed:
-  stage: testDeployed
-  tags:
-    - shell
-    - docker
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - cd experiments/coreRequirements/
-    - docker compose up -d
-    ## TODO: Test a bit more
-    - docker compose down
-  after_script:
-    - docker-compose down
-  only:
-    - dev
