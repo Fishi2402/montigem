@@ -78,11 +78,22 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
   private boolean isUMLPRTEAsync(ExecutableElement method) {
     Element owner = method.getEnclosingElement();
     String ownerName = owner.toString();
+    String ownerSimpleName = ownerName.substring(ownerName.lastIndexOf(".") + 1);
+    String methodSimpleName = method.getSimpleName().toString();
     if (ownerName.startsWith(RTEPathUtil.getBackendRTEPath())) {
-      if (ownerName.equals(RTEPathUtil.getBackendRTECommandPath("CommandManager"))) {
-        if (method.getSimpleName().toString().equals("executeCommand")) {
-          return true;
-        }
+      if (ownerName.equals(RTEPathUtil.getBackendRTECommandPath("CommandManager"))
+          && methodSimpleName.equals("executeCommand")) {
+        return true;
+      }
+      else if (methodSimpleName.contains("doRun")) {
+        return true;
+      }
+      else if (ownerSimpleName.startsWith("GemList") && methodSimpleName.startsWith("loadObjects")) {
+        return true;
+      }
+      else if (ownerSimpleName.equals("Gem") && (methodSimpleName.equals("isPresent")
+          || methodSimpleName.equals("get") || methodSimpleName.equals("loadIfRequired"))) {
+        return true;
       }
     }
 

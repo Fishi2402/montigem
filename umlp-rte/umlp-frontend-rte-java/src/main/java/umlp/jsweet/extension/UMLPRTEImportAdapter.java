@@ -1,5 +1,6 @@
 package umlp.jsweet.extension;/* (c) https://github.com/MontiCore/monticore */
 
+import org.jsweet.transpiler.AsyncAwaitPropagationScanner;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
@@ -82,6 +83,7 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
   @Override
   public void onTranspilationStarted() {
     new UMLPAsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
+    new AsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
 
     super.onTranspilationStarted();
   }

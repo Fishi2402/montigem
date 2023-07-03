@@ -69,7 +69,11 @@ jsweet {
     '**/GemList.java',
     '**/GemListBuilder.java',
     '**/LocalDateDeSer.java',
-    '**/BaseClassObjectMapper.java'
+    '**/LocalTimeDeSer.java',
+    '**/LocalDateTimeDeSer.java',
+    '**/BaseClassObjectMapper.java',
+    '**/SerializableDeSer.java',
+    '**/DateDeSer.java'
   ]
 }
 
@@ -91,7 +95,6 @@ task generateIndexTS(type: Exec) {
 /**/
 
 task buildLib(type: NpxTask) {
-//   dependsOn(generateIndexTS)
   command = "ng"
   args = ["build", "--prod"]
   dependsOn(tasks.npmInstall)
@@ -101,16 +104,25 @@ task buildLib(type: NpxTask) {
   outputs.dir("${project.buildDir}/dist")
 }
 
-/*
 project.getTasksByName("jsweet", true).forEach {
   t ->
     t.finalizedBy(buildLib)
     buildLib.dependsOn(t)
-    generateIndexTS.dependsOn(t)
 }
-/**/
 
 //build.dependsOn(buildLib)
+
+
+//////////////////////////////   TEST   //////////////////////////////
+task testLib(type: NpxTask) {
+  command = "ng"
+  args = ["test"]
+  dependsOn(tasks.npmInstall)
+  inputs.dir(project.fileTree("projects/umlp-frontend-rte/src"))
+  inputs.dir("node_modules")
+  inputs.files("tsconfig.spec.json")
+  outputs.dir("${project.buildDir}/dist")
+}
 
 //////////////////////////////   CLEAN   //////////////////////////////
 

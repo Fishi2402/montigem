@@ -12,7 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Base64;
 import java.util.Optional;
-@Erased
+
 public class SerializableDeSer implements DeSer<Serializable> {
 
   @Override
