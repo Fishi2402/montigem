@@ -17,7 +17,9 @@ public class BEDecorator extends AbstractDecorator {
 
   boolean neo4j = false;
 
-  boolean shellAPI = false;
+  boolean spring = false;
+
+
 
   protected MCPath hwPath;
 
@@ -31,7 +33,7 @@ public class BEDecorator extends AbstractDecorator {
 
     if(glex.hasGlobalVar("UMLPGeneratorConfig")){
       UMLPGeneratorConfig config = (UMLPGeneratorConfig) glex.getGlobalVar("UMLPGeneratorConfig");
-      shellAPI = config.isUseSpring();
+      spring = config.isUseSpring();
     }
   }
 
@@ -164,7 +166,7 @@ public class BEDecorator extends AbstractDecorator {
     commandResultDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandResultDeSerDecorator", BEDecorator.class.getName());
 
-    if (shellAPI) {
+    if (spring) {
       ShellAPIDecorator shellAPIDecorator = new ShellAPIDecorator(glex);
       shellAPIDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ShellAPIDecorator", ShellAPIDecorator.class.getName());
@@ -172,14 +174,25 @@ public class BEDecorator extends AbstractDecorator {
       ShellAPIClassDecorator shellApiClassDecorator = new ShellAPIClassDecorator(glex, hwPath, supportedDesers);
       shellApiClassDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ShellAPIClassDecorator", ShellAPIClassDecorator.class.getName());
+
+      ServerApplicationDecorator serverApplicationDecorator = new ServerApplicationDecorator(glex);
+      serverApplicationDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ServerApplicationDecorator", BEDecorator.class.getName());
+
     }
+
 
     TestContextDecorator testContextDecorator = new TestContextDecorator(glex);
     testContextDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TestContextDecorator", ShellAPIDecorator.class.getName());
 
+    TestSetupDecorator testSetupDecorator = new TestSetupDecorator(glex);
+    testSetupDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: TestContextDecorator", TestSetupDecorator.class.getName());
+
     glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
   }
+
 
   public void addSupportedDeSer(String... deSers) {
     this.supportedDesers.addAll(Arrays.asList(deSers));
@@ -189,7 +202,7 @@ public class BEDecorator extends AbstractDecorator {
     this.neo4j = neo4j;
   }
 
-  public void setShellApi(boolean shellAPI) {
-    this.shellAPI = shellAPI;
+  public void setSpring(boolean shellAPI) {
+    this.spring = shellAPI;
   }
 }

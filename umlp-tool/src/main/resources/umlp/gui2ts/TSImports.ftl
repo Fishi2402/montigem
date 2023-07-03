@@ -5,6 +5,7 @@ import {
   Component,
   Input,
   Output,
+  EventEmitter,
   TemplateRef,
 } from '@angular/core';
 

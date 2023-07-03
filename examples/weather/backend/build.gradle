@@ -36,6 +36,10 @@ application {
   mainClass = 'weather.WeatherServerApplication'
 }
 
+jib {
+  container.mainClass = application.mainClass.get()
+}
+
 dependencies {
   def withoutSpringLogging = {
     exclude module: 'spring-boot-starter-logging'
