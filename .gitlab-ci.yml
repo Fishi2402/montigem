@@ -33,7 +33,7 @@ build:
       - examples/weather/frontend/.gradle/nodejs
   artifacts:
     paths:
-      - experiments/examples/weather/frontend/dist/**
+      - examples/weather/frontend/dist/**
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
