@@ -307,10 +307,11 @@ public class GUIGeneratorUtil {
   }
 
   // TODO AGe: remove when problem with RangeControl is resolved
-  public String getShortIteratorIterable(ASTGUIIterate iterate) {
+  public String getShortIteratorIterable(ASTGUIIterate iterate, List<String> ignore) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
       ASTGUIShortIterateControl ic = ((ASTGUIShortIterateControl) iterate.getIterateControl());
       GUIIterableReplaceVisitor visitor = new GUIIterableReplaceVisitor();
+      visitor.setIgnore(ignore);
       visitor.transform(ic);
       return getHTMLName(print(visitor.getGetterExpression()));
     }
