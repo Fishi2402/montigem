@@ -62,7 +62,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -307,6 +309,8 @@ public class UMLPTool extends UMLPToolTOP {
         ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
       }
       else if (isGuiFile(inputFile)) {
+        Map<String,List<ASTGUICompilationUnit>> routesMap=new HashMap<>();
+
         for (String guiPathString : cmd.getOptionValues(INPUT.getCMD())) {
           Path guiModel = Paths.get(guiPathString);
           guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
@@ -318,6 +322,13 @@ public class UMLPTool extends UMLPToolTOP {
           GUIDSLMill.init();
           // parse, create symbol table, check all cocos
           ASTGUICompilationUnit astGui = parseGUI(guiModel.toString());
+
+          if(astGui!=null && astGui.getGUIComponentDeclaration().isPage()) {
+            if (!routesMap.containsKey(astGui.getPackage())) {
+              routesMap.put(astGui.getPackage(), new ArrayList<>());
+            }
+            routesMap.get(astGui.getPackage()).add(astGui);
+          }
           Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
 
           IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, importedSymbolPath);
@@ -359,6 +370,7 @@ public class UMLPTool extends UMLPToolTOP {
             domainModels.addAll(Arrays.asList(cmd.getOptionValues(DOMAIN.getCMD())));
           }
 
+
           List<String> createModels = new ArrayList<>();
           if (GUI_CREATE.isSelected(cmd)) {
             createModels.addAll(Arrays.asList(cmd.getOptionValues(GUI_CREATE.getCMD())));
@@ -388,6 +400,7 @@ public class UMLPTool extends UMLPToolTOP {
 
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, viewComponents);
           String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
+
           typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
 
           GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
@@ -406,6 +419,23 @@ public class UMLPTool extends UMLPToolTOP {
           // write reports
           Reporting.flush(astGui);
         }
+
+        //create routes file
+
+        GeneratorSetup genSetup = new GeneratorSetup();
+        // set output directory
+        genSetup.setOutputDirectory(outDir);
+        // set hwc directories
+        genSetup.setHandcodedPath(hwcPath);
+        // set template path
+        genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
+            .map(p -> p.toFile()).collect(Collectors.toList()));
+        genSetup.setGlex(new GlobalExtensionManagement());
+        routesMap.values().forEach(astList->
+        {
+          GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
+          typeScriptGenerator.generate(astList);
+        });
       }
     } catch (ParseException e) {
       printHelp(options);

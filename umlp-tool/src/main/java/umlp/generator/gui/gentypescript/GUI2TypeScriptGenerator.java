@@ -15,7 +15,9 @@ import umlp.generator.gui.GUIGeneratorUtil;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static de.se_rwth.commons.Names.constructQualifiedName;
@@ -46,6 +48,53 @@ public class GUI2TypeScriptGenerator {
 
     hpp.processValue(tc, modelAST,
         Arrays.asList(modelAST, setup.getGlex(), setup.getHandcodedPath(), this, viewComponents));
+  }
+
+  public void generate(List<ASTGUICompilationUnit> astguiCompilationUnitList)
+  {
+    this.setup.setTracing(false);
+    GeneratorEngine genEngine = new GeneratorEngine(setup);
+    ASTGUICompilationUnit astGuiFirst;
+
+    if(!astguiCompilationUnitList.isEmpty())
+    {
+      astGuiFirst=astguiCompilationUnitList.get(0);
+    }
+    else
+    {
+      return;
+    }
+    List<List<String>> ids=new ArrayList<>();
+    int fullPathIndex=-1;
+    for(int index=0;index<astguiCompilationUnitList.size();index++)
+    {
+      ASTGUICompilationUnit ast=astguiCompilationUnitList.get(index);
+      List<String> idStrings=util.getRoutingIds(ast);
+      if(idStrings.isEmpty())
+      {
+        fullPathIndex=index;
+      }
+      ids.add(idStrings);
+    }
+    astguiCompilationUnitList.forEach(ast ->{
+      List<String> idStrings=util.getRoutingIds(ast);
+      if(idStrings.isEmpty())
+      {
+      }
+      else {
+        ids.add(util.getRoutingIds(ast));
+      }
+    });
+    String pathName=String.join("/", astGuiFirst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
+    String temp=astGuiFirst.getPackage();
+    String []tempArray=temp.split("\\.");
+    String routeName=tempArray[tempArray.length-1].substring(0,1).toUpperCase()+tempArray[tempArray.length-1].substring(1);
+
+    Path generatedFiles = Paths.get(pathName,
+        routeName+ ROUTES_FILE + "." + TS_FILE_EXTENSION);
+    genEngine.generateNoA("umlp.gui2ts.TSPackageRoutes", generatedFiles,
+        astguiCompilationUnitList, ids,fullPathIndex);
+
   }
 
   public void generate(ASTGUICompilationUnit decoratedAst) {
