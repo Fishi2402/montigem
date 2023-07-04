@@ -8,7 +8,7 @@ ${tc.signature("args")}
 <#if isTpl>
   <ng-template #${genHelper.getNgTemplateActualName(ast.getId().getName())}>
 </#if>
-<${tag}
+<${tag} class="${genHelper.getComponentActualName(ast.getId().getName())}"
   <#list ast.getGUINamedArgs().getGUINamedArgList() as namedArg>
     <#if genHelper.isEventArgument(ast, namedArg)>
       (${namedArg.getName()}) = '${genHelper.gui2cdEventCallName(ast, namedArg.getName())}.bind(this)($event<#list args as arg>, ${arg}</#list>)'
