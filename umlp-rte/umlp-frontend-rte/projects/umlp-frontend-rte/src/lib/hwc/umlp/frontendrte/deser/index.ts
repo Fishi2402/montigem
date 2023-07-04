@@ -1,4 +1,3 @@
-
-export * from './DateDeser';
-export * from './LocalDateDeSer';
-export * from './SerializableDeSer';
+export * from "./DateDeser";
+export * from "./LocalDateDeSer";
+export * from "./SerializableDeSer";

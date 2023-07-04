@@ -1,2 +1,1 @@
-
-export * from './CommandResultDeSer';
+export * from "./CommandResultDeSer";

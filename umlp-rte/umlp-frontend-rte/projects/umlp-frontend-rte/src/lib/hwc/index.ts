@@ -1,2 +1,1 @@
-
-export * from './umlp';
+export * from "./umlp";
