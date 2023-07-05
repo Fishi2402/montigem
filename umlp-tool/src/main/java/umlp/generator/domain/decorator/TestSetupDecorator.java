@@ -1,16 +1,17 @@
 package umlp.generator.domain.decorator;
 
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
 public class TestSetupDecorator extends AbstractDecorator {
@@ -26,6 +27,7 @@ public class TestSetupDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage aPackage = getPackage(origCD, decoratedCD, PACK_TEST_INFRASTRUCTURE);
     aPackage.addCDElement(createMockTestSetup(origCD));
+    aPackage.addCDElement(createDbTestSetup(origCD));
   }
 
   protected ASTCDClass createMockTestSetup(ASTCDCompilationUnit origCD) {
@@ -39,10 +41,10 @@ public class TestSetupDecorator extends AbstractDecorator {
     // Attributes
     String testContextClass = name + TestContextDecorator.SUFFIX;
     getCD4C().addAttribute(res, false, false, "protected " + testContextClass + " backend;");
-    getCD4C().addAttribute(res, false, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
+    ASTCDAttribute clientsAttr = getCD4C().addAttribute(res, false, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
+    glex.replaceTemplate("cd2java.Value", clientsAttr, new StringHookPoint(" = new ArrayList<>();"));
 
     // Methods
-
     getCD4C().addMethod(res, "umlp.test_infrastructure.mockTestSetup.Init", name);
 
     addImports(origCD, res);
@@ -53,13 +55,15 @@ public class TestSetupDecorator extends AbstractDecorator {
     String name = origCD.getCDDefinition().getName();
 
     ASTCDClass res = UMLPMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
+        .setModifier(PUBLIC_ABSTRACT.build())
+        .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("umlp.backendrte.test_infrastructure.TestSetup"))
         .setName(name + DB_TEST_SETUP).build();
 
     // Attributes
     String testContextClass = name + TestContextDecorator.SUFFIX;
     getCD4C().addAttribute(res, false, false, "protected " + testContextClass + " backend;");
-    getCD4C().addAttribute(res, false, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
+    ASTCDAttribute clientsAttr = getCD4C().addAttribute(res, false, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
+    glex.replaceTemplate("cd2java.Value", clientsAttr, new StringHookPoint(" = new ArrayList<>();"));
 
     // Methods
     getCD4C().addMethod(res, "umlp.test_infrastructure.dbTestSetup.Init", name);
@@ -78,7 +82,14 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + TestContextDecorator.SUFFIX));
     getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + ManagerDecorator.SUFFIX));
+
     getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + ManagerMockDecorator.SUFFIX));
     getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + ManagerClientImplDecorator.SUFFIX));
+
+    getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + ManagerImplDecorator.SUFFIX));
+    getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + DbObserverDecorator.SUFFIX));
+    getCD4C().addImport(type, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "DatabaseAccessManager"));
+    getCD4C().addImport(type, "java.nio.charset.StandardCharsets");
+    getCD4C().addImport(type, "org.apache.commons.io.IOUtils");
   }
 }
