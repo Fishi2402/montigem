@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.cd.facade.CDConstructorFacade;
@@ -14,9 +15,12 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -25,9 +29,12 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.util.ComposedHookPoint;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 // TODO refactor this class
 public abstract class AbstractDecorator {
@@ -171,6 +178,33 @@ public abstract class AbstractDecorator {
         cdExtension.getDefiningSymbol().ifPresent(definingSymbol ->
             getCD4C().addImport(cdType, Joiners.DOT.join(definingSymbol.getPackageName().toLowerCase(),
                 definingSymbol.getName()))));
+  }
+
+  protected void addDecoratorComment(ASTCDElement... nodes){
+    addDecoratorComment(Arrays.stream(nodes).collect(Collectors.toList()));
+  }
+
+  protected void addDecoratorComment(List<ASTCDElement> nodes){
+    StringHookPoint stringHookPoint = new StringHookPoint("/* Created by decorator " + getClass().getName() + " */\n");
+    for (ASTNode node : nodes) {
+      glex.replaceTemplate("cd2java.Class", node, new ComposedHookPoint(
+          stringHookPoint,
+          new TemplateHookPoint("cd2java.Class"))
+      );
+      glex.replaceTemplate("cd2java.Enum", node, new ComposedHookPoint(
+          stringHookPoint,
+          new TemplateHookPoint("cd2java.Enum"))
+      );
+      glex.replaceTemplate("cd2java.Interface", node, new ComposedHookPoint(
+          stringHookPoint,
+          new TemplateHookPoint("cd2java.Interface"))
+      );
+    }
+  }
+
+  protected ASTCDElement withOrigin(ASTCDElement element){
+    addDecoratorComment(element);
+    return element;
   }
 
   abstract public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD);
