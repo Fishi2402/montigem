@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "attributename","classname","definition", "isGem", "targetname", "targettype")}
+${tc.signature( "attributename","classname","manager", "isGem", "targetname", "targettype", "targetTypeManager")}
 ${cd4c.method("public Promise<StatusResult> doRun()")}
 return Promise.all([
-  ${definition}Manager.${classname?uncap_first}Opt(this.gemId)
+  ${manager}.${classname?uncap_first}Opt(this.gemId)
   <#if isGem>, ${definition}Manager.${targettype?uncap_first}Opt(this.${targetname}GemId)</#if>
 ]).then(v => {
   let ${classname?uncap_first}Opt = v[0];

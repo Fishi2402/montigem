@@ -1,4 +1,4 @@
-/* (c) https://github.com/MontiCore/monticore */
+package database;/* (c) https://github.com/MontiCore/monticore */
 
 // GEN-T
 
@@ -25,7 +25,7 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager {
     try {
       DriverManager.registerDriver(new org.neo4j.jdbc.bolt.BoltDriver());
       // Files for Neo4j DB can be found in target/temporaryNeo4jDB it is started in the GenAbstractDBTest
-      connection = DriverManager.getConnection("jdbc:neo4j:bolt://localhost:7688/?flatten=1", "neo4j", "");
+      connection = DriverManager.getConnection("jdbc:neo4j:bolt://localhost:7689/?flatten=1", "neo4j", "");
     } catch (SQLException e) {
       Log.error("Error while initializing db", e);
     }
@@ -34,7 +34,7 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager {
   protected static void close(){
     try {
       // Delete DB
-      connection.prepareStatement("MATCH(n) DETACH DELETE n").execute();
+      //connection.prepareStatement("MATCH(n) DETACH DELETE n").execute();
       if(connection != null && !connection.isClosed()){
         connection.close();
       }

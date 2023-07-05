@@ -1,12 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "attributename","classname","definition", "isGem", "targettype")}
+${tc.signature( "attributename","classname","manager", "isGem", "targettype", "targetTypeManager")}
 ${cd4c.method("public Promise<StatusResult> doRun()")}
 
 console.debug("Executing set_${attributename} to " + this.${attributename}<#if isGem>GemId</#if> + " on ${classname?uncap_first} " + this.gemId);
 console.trace();
 return Promise.all([
-  ${definition}Manager.${classname?uncap_first}Opt(this.gemId)
-  <#if isGem>, ${definition}Manager.create${targettype}Gem(this.${attributename}GemId)</#if>
+  ${manager}.${classname?uncap_first}Opt(this.gemId)
+  <#if isGem>, ${manager}.create${targettype}Gem(this.${attributename}GemId)</#if>
 ]).then(v => {
   let ${classname?uncap_first}Opt = v[0];
   if(${classname?uncap_first}Opt != null) {

@@ -1,4 +1,4 @@
-/* (c) https://github.com/MontiCore/monticore */
+package database;/* (c) https://github.com/MontiCore/monticore */
 
 import baseartifactstest.BaseArtifactsTestManagerImpl;
 import de.se_rwth.commons.logging.Log;
@@ -23,7 +23,7 @@ public abstract class GenAbstractNeo4jDBTest {
 
   private static DatabaseManagementService managementService = null;
 
-  @BeforeAll
+ /* @BeforeAll
   public static void initDB() {
     if(managementService != null) {
       managementService.database(DEFAULT_DATABASE_NAME);
@@ -32,16 +32,15 @@ public abstract class GenAbstractNeo4jDBTest {
     managementService =
         new DatabaseManagementServiceBuilder(Paths.get("target", "temporaryNeo4jDB"))
             .setConfig(BoltConnector.enabled, true )
-            .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", 7688 )).build();
+            .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", 7689)).build();
     registerShutdownHook(managementService);
     managementService.database(DEFAULT_DATABASE_NAME);
-  }
+  }*/
 
   @BeforeEach
   public void init(){
     Log.init();
-    TestDatabaseAccessManager.init();
-    BaseArtifactsTestManagerImpl.init();
+    TestDatabaseAccessManagerSQL.init();
   }
 
   @AfterEach

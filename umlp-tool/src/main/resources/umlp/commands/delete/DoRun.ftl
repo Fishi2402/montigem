@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("classname","definition")}
+${tc.signature("classname","managerName")}
 ${cd4c.method("public StatusResult doRun()")}
-  if (${definition}Manager.delete${classname}(gemId)) {
+  if (${managerName}.delete${classname}(gemId)) {
     return StatusResult.ok(getId());
   } else {
     return StatusResult.error(getId());
