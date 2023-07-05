@@ -50,7 +50,16 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     methodList.add(createGetMethod(ast));
 
     // generate getXGem-Method
-    methodList.add(createGetGemList(ast));
+    ASTCDMethod getGemList = createGetGemList(ast);
+    if (getGemList.getModifier().isAbstract()){
+      //Add method to override
+      ASTCDMethod getOverride = createGetGemListOverride(ast);
+      methodList.add(getOverride);
+      //modify internal getter to call override
+      getGemList.getModifier().setAbstract(false);
+      this.replaceTemplate(EMPTY_BODY, getGemList, new TemplateHookPoint("umlp.methods.GetDerivedList", getOverride.getName()));
+    }
+    methodList.add(getGemList);
 
     return methodList;
   }
@@ -72,6 +81,13 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
   protected ASTCDMethod createGetGemList(ASTCDAttribute ast) {
     ASTCDMethod method = createGetter(ast);
     method.setName("_internal_" + method.getName() + "GemList");
+    return method;
+  }
+
+  private ASTCDMethod createGetGemListOverride(ASTCDAttribute ast){
+    ASTCDMethod method = createGetter(ast);
+    method.getModifier().setAbstract(true);
+    method.setName(method.getName() + "DerivedGemList");
     return method;
   }
 
