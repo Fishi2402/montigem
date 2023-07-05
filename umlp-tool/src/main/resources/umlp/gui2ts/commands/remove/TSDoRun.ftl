@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "attributename","classname","definition", "isGem", "targetname")}
+${tc.signature( "attributename","classname","manager", "isGem", "targetname")}
 ${cd4c.method("public Promise<StatusResult> doRun()")}
 
-return ${definition}Manager.${classname?uncap_first}Opt(this.gemId).then(v => {
+return ${manager}.${classname?uncap_first}Opt(this.gemId).then(v => {
   let ${classname?uncap_first}Opt = v;
   if (${classname?uncap_first}Opt == null) {
     // TODO AHe: add GemId to reportSyncError or replace with <Class>ErrorCollector.reportPersonNotPresent(gemId)...

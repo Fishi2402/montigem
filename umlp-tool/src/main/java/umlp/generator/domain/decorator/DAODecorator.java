@@ -14,17 +14,21 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.db.sql.SQLSchemaGenerator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PRIVATE;
@@ -45,7 +49,7 @@ public class DAODecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
         .filter(c -> !c.getSymbol().isIsAbstract())
-        .forEach(c -> astcdPackage.addCDElement(createDAOClassForDomainClass(c, origCD.getCDDefinition().getCDAssociationsList())));
+        .forEach(c -> astcdPackage.addCDElement(createDAOClassForDomainClass(c)));
 
     origCD.getCDDefinition().getCDAssociationsList().stream().filter(a -> !a.getModifier().isDerived()).forEach
         (assoc -> astcdPackage.addCDElement(createDAOClassForAssoc(assoc)));
@@ -55,11 +59,10 @@ public class DAODecorator extends AbstractDecorator {
   /**
    * Creates DaoClass from a DomainClass
    * @param domainClass
-   * @param associations
    * @return
    */
-  private ASTCDClass createDAOClassForDomainClass(ASTCDClass domainClass, List<ASTCDAssociation> associations) {
-    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = getOppositeSideToAssociationMap(domainClass, associations);
+  private ASTCDClass createDAOClassForDomainClass(ASTCDClass domainClass) {
+    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = getOppositeSideToAssociationMap(domainClass);
     ASTCDClassBuilder builder = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(domainClass.getName()+"DAO")
@@ -68,7 +71,7 @@ public class DAODecorator extends AbstractDecorator {
 
     ASTCDClass clazz = builder.build();
     addStaticImports(clazz);
-    super.addImports(domainClass, clazz);
+    this.addImports(domainClass, clazz);
     domainClassDAOMethods(clazz, domainClass, assocSideToAssociation);
     return clazz;
   }
@@ -380,11 +383,16 @@ public class DAODecorator extends AbstractDecorator {
     getOptionalAttributes(domainClass).forEach(e -> optMap.put(e,
         SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
 
+    Map<String, String> assocToCorrectManagerMap = new HashMap<>();
+    gemAssociationMap.values().forEach(assoc ->
+        assocToCorrectManagerMap.put(assoc.getName(),
+            UMLPSymbolTables.getDiagramFor(assoc).getCDDefinition().getName()+ManagerDecorator.SUFFIX));
+
     Map<ASTCDAttribute, String> attributeMap = Maps.newLinkedHashMap();
     attributes.forEach(e -> attributeMap.put(e,
         SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
     getCD4C().addMethod(daoClass, "umlp.dao.Unpack", domainClass.getName(), cdName, attributeMap,
-        optMap, listAttributes, listAssociationMap, gemAssociationMap);
+        optMap, listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap);
   }
 
   protected void insertMethod(ASTCDClass daoClass, ASTCDClass domainClass,
@@ -433,17 +441,32 @@ public class DAODecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "java.util.Optional");
   }
 
-  static Map<ASTCDAssocSide, ASTCDAssociation> getOppositeSideToAssociationMap(ASTCDClass domainClass, List<ASTCDAssociation> associations) {
+  static Map<ASTCDAssocSide, ASTCDAssociation> getOppositeSideToAssociationMap(ASTCDClass domainClass) {
     List<ASTCDAssocSide> assocSides = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
-        .filter(a -> GenService.isVisible(a)).collect(Collectors.toList());
+        .filter(GenService::isVisible).collect(Collectors.toList());
     Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = new HashMap<>();
     for (ASTCDAssocSide assocSide : assocSides) {
-      Optional<ASTCDAssociation> assocOfAssocSide = associations.stream().filter(a -> a.getRight().equals(assocSide)).findFirst();
-      assocOfAssocSide.ifPresent(a -> assocSideToAssociation.put(assocSide, a));
-
-      assocOfAssocSide = associations.stream().filter(a -> a.getLeft().equals(assocSide)).findFirst();
-      assocOfAssocSide.ifPresent(a -> assocSideToAssociation.put(assocSide, a));
+      ASTCDAssociation assocOfAssocSide = assocSide.getSymbol().getAssoc().getAssociation().getAstNode();
+      assocSideToAssociation.put(assocSide, assocOfAssocSide);
     }
     return assocSideToAssociation;
+  }
+
+  @Override
+  protected void addImports(ASTCDType domainClass, ASTCDType clazz) {
+    super.addImports(domainClass, clazz);
+    Set<String> managersFromExtendedCDs = new HashSet<>();
+    getOppositeSideToAssociationMap((ASTCDClass) domainClass).values().stream()
+        .filter(association -> ! UMLPSymbolTables.getDiagramFor(association).getCDDefinition().getName().equals(
+            UMLPSymbolTables.getDiagramFor(domainClass).getCDDefinition().getName()))
+        .forEach(association -> {
+              managersFromExtendedCDs.add(
+                  Joiners.DOT.join(association.getSymbol().getPackageName().toLowerCase(),
+                      getCorrectManager(association)));
+              getCD4C().addImport(clazz,
+                  Joiners.DOT.join(association.getSymbol().getPackageName().toLowerCase(),
+                      "Assoc"+StringTransformations.capitalize(association.getName())+"DAO"));
+            });
+    managersFromExtendedCDs.forEach(managerImport -> getCD4C().addImport(clazz, managerImport));
   }
 }

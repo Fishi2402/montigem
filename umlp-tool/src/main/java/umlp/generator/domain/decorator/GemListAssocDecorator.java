@@ -84,7 +84,7 @@ public class GemListAssocDecorator extends AbstractDecorator {
     // constructor
     addConstructors(ast, className);
     // methods
-    getCD4C().addMethod(ast, getLoadObjectsTemplate(), targetName, managerName);
+    getCD4C().addMethod(ast, getLoadObjectsTemplate(), targetName, getCorrectManager(targetSymbol.getAstNode()));
     getCD4C().addMethod(ast, getGetOwnerTemplate(), sourceName, managerName);
     getCD4C().addMethod(ast, getInternalAddTemplate(), assocName);
     getCD4C().addMethod(ast, getInternalSetTemplate(), assocName);
@@ -130,6 +130,7 @@ public class GemListAssocDecorator extends AbstractDecorator {
                             ASTCDCompilationUnit targetCD, String targetName, ASTCDClass ast) {
     getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), domainName));
     getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(targetCD, DEFAULT_PACKAGE), targetName));
+    getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(targetCD, DEFAULT_PACKAGE), targetCD.getCDDefinition().getName()+ SUFFIX));
     getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), origCD.getCDDefinition().getName() + SUFFIX));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GemListBuilder"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));

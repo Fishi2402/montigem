@@ -24,6 +24,13 @@ public class ExtractorUtils {
     return path.replace("\\","/");
   }
 
+  public static String normalizePath(String path) {
+    if(path.endsWith("/")) {
+      return path.substring(0, path.length()-1);
+    }
+    return path;
+  }
+
   /**
    * Make all paths unique in their appearance so only "/" is used never "\"
    * And also remove part of the root
@@ -32,7 +39,7 @@ public class ExtractorUtils {
    * @return path without "\" and root path yielding a relative path inside of the root
    */
   public static String removeRootPathFromAbsolutePath(String path, RootArtifact r){
-    return transformWindowsPathToLinuxStyle(path).replace(r.getFullName(), "");
+    return transformWindowsPathToLinuxStyle(path).replace(r.getFullName()+"/", "");
   }
 
 
@@ -41,7 +48,7 @@ public class ExtractorUtils {
 
     int pointFoundAt = fileName.lastIndexOf(".");
     nameAndExtension[SIMPLE_NAME_POS] = pointFoundAt >= 0 ? fileName.substring(0, pointFoundAt) : fileName;
-    nameAndExtension[NAME_EXTENSION_POS] = pointFoundAt >= 0 && pointFoundAt < fileName.length() ?
+    nameAndExtension[NAME_EXTENSION_POS] = pointFoundAt >= 0 ?
         fileName.substring(pointFoundAt) :
         "";
     return nameAndExtension;

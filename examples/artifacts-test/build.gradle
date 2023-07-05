@@ -6,7 +6,7 @@ plugins {
 description 'artifacts example'
 
 generateUmlpBackend {
-  configTemplate = "umlp.UMLP2JavaNeo4j"
+  //configTemplate = "umlp.UMLP2JavaNeo4j"
 }
 
 dependencies {

@@ -1,0 +1,8 @@
+package de.monticore;
+
+umlp AssociationSymbolPackage {
+  class Foo;
+  class Bar;
+
+  association owns Foo <-> Bar;
+}
