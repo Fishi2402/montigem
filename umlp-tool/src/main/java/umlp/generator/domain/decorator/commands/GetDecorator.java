@@ -53,7 +53,7 @@ public class GetDecorator extends AbstractDeSerDecorator {
     ASTCDAttribute attr = addGemId(ast);
 
     addConstructor(ast, classname, packageName);
-    getCD4C().addMethod(ast, getDoRunTemplate(), classname, domainPackage, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, getDoRunTemplate(), classname, domainPackage, getCorrectManager(domainType));
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
     getCD4C().addMethod(ast, getGetNewlySubscribedGemIdsTemplate());
     AccessorDecorator accessor = new AccessorDecorator(glex);
@@ -63,7 +63,7 @@ public class GetDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("LoadingState"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+classname);
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainType));
 
     return ast;
   }
