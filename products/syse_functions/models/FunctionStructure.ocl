@@ -3,28 +3,23 @@
 ocl FunctionsStructure {
 /*
   Die Dekompositions-Struktur (Architektur) einer Funktion
-  ist eine Baumstruktur (innerhalb einer Funktion darf
-  es Zykel geben)
+  ist eine Baumstruktur 
 */
-/*
-  context Function inv treeStructure:
-    azyklisch
-*/
+  context Function f inv treeStructure:
+    !f.subfunctions**.contains(f); // Angenommen die transitive Hülle enthält "f" selbst nicht
+
 
 /*
-  Assoziationen zwischen zwei Funktionen gibt es nur innerhalb
-  der gleichen Hierarchiestufe in einer äußeren Funktion
+  Assoziationen von Input Port zu Output Port setzt voraus, 
+  dass sich die zugehörigen Funktionen entweder auf gleicher
+  Hierarchiestufe befinden oder dass es einen validen "Pfad" 
+  gibt, welcher sich durch die Hierarchie zieht (Stichwort
+  gleiches Portobjekt bei Verknüpfung zw. äußerer und 
+  innterer Funktion)
 */
-/*
-  context Function f inv hierarchy:
-    forall sf1 in f.subfunctions:
-      for all inport in sf1.inPorts:
-        inport.out.isPresent() implies
-          exists Function sf2 in f.subfunctions:
-            exists outport in sf2.outPorts:
-              inport.out == outport
-*/
+  context Function f1, f2 inv validPath:
+    f1.composit != null && f2.composit != null implies
+      forall o in f2.inPort.out:
+        o in f1.outPort && f1.composit != f2.composit implies
+          o in f1.composit.outPort && o in f2.super.inPort.out // sollte sich dann durch die Struktur durchziehen
 }
-
-
-
