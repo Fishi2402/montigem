@@ -3,7 +3,7 @@ ${tc.signature( "attributename","classname","manager", "isGem", "targetname", "t
 ${cd4c.method("public Promise<StatusResult> doRun()")}
 return Promise.all([
   ${manager}.${classname?uncap_first}Opt(this.gemId)
-  <#if isGem>, ${definition}.${targettype?uncap_first}Opt(this.${targetname}GemId)</#if>
+  <#if isGem>, ${manager}.${targettype?uncap_first}Opt(this.${targetname}GemId)</#if>
 ]).then(v => {
   let ${classname?uncap_first}Opt = v[0];
   if(${classname?uncap_first}Opt == null){
