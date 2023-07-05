@@ -50,7 +50,7 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
               CDSymbolTables.getAttributesInHierarchy(c)
                       .stream()
                       .filter(a -> !a.getModifier().isDerived())
-                      .filter(a -> GenService.isList(a))
+                      .filter(GenService::isList)
                       .forEach(a -> {
                         astcdPackage.addCDElement(createClass(origCD, a.getName(),
                             ((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0), c, false));
@@ -58,9 +58,9 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
                       });
               CDSymbolTables.getAssociations(c)
                       .stream()
-                      .filter(a -> !a.getModifier().isDerived())
+                      .filter(a -> !GenService.isDerived(a, GenService.getDerivedAssocs(origCD)))
                       .filter(a -> !GenService.isBidirectional(a))
-                      .filter(a -> GenService.isList(a))
+                      .filter(GenService::isList)
                       .forEach(a -> {
                         astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true));
                         astcdPackage.addCDElement(createDeSer(origCD, a.getName(), getSymType("long"), c, true));
@@ -80,7 +80,7 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
                       });
               CDSymbolTables.getAssociations(c)
                       .stream()
-                      .filter(a -> !a.getModifier().isDerived())
+                      .filter(a -> !GenService.isDerived(a, GenService.getDerivedAssocs(origCD)))
                       .filter(a -> !GenService.isBidirectional(a))
                       .filter(GenService::isList)
                       .forEach(a -> {
