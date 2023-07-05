@@ -8,12 +8,15 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
 public class TestSetupDecorator extends AbstractDecorator {
   public static final String PACK_TEST_INFRASTRUCTURE = "test_infrastructure";
-  public static final String SUFFIX = "MockTestSetup";
+  public static final String MOCK_TEST_SETUP = "MockTestSetup";
+  public static final String DB_TEST_SETUP = "DBTestSetup";
 
   public TestSetupDecorator(GlobalExtensionManagement glex) {
     super(glex);
@@ -29,8 +32,9 @@ public class TestSetupDecorator extends AbstractDecorator {
     String name = origCD.getCDDefinition().getName();
 
     ASTCDClass res = UMLPMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
-        .setName(name + SUFFIX).build();
+        .setModifier(PUBLIC_ABSTRACT.build())
+        .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("umlp.backendrte.test_infrastructure.TestSetup"))
+        .setName(name + MOCK_TEST_SETUP).build();
 
     // Attributes
     String testContextClass = name + TestContextDecorator.SUFFIX;
@@ -45,10 +49,36 @@ public class TestSetupDecorator extends AbstractDecorator {
     return res;
   }
 
+  protected ASTCDClass createDbTestSetup(ASTCDCompilationUnit origCD) {
+    String name = origCD.getCDDefinition().getName();
+
+    ASTCDClass res = UMLPMill.cDClassBuilder()
+        .setModifier(PUBLIC.build())
+        .setName(name + DB_TEST_SETUP).build();
+
+    // Attributes
+    String testContextClass = name + TestContextDecorator.SUFFIX;
+    getCD4C().addAttribute(res, false, false, "protected " + testContextClass + " backend;");
+    getCD4C().addAttribute(res, false, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
+
+    // Methods
+    getCD4C().addMethod(res, "umlp.test_infrastructure.dbTestSetup.Init", name);
+    getCD4C().addMethod(res, "umlp.test_infrastructure.dbTestSetup.Cleanup", name);
+
+    addImports(origCD, res);
+    return res;
+  }
+
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDType type){
     String name = origCD.getCDDefinition().getName();
 
+    getCD4C().addImport(type, Joiners.DOT.join(PathUtil.getBackendRTECommandPath(), "CommandManager"));
+    getCD4C().addImport(type, Joiners.DOT.join(PathUtil.getBackendRTECommandPath(), "TestClientCommandManager"));
+    getCD4C().addImport(type, Joiners.DOT.join(PathUtil.getBackendRTECommandPath(), "CommandDirectCommunication"));
+
     getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + TestContextDecorator.SUFFIX));
+    getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + ManagerDecorator.SUFFIX));
     getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + ManagerMockDecorator.SUFFIX));
+    getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + ManagerClientImplDecorator.SUFFIX));
   }
 }
