@@ -44,7 +44,7 @@ public class BuilderDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isDerived())
         .filter(c -> !c.getModifier().isAbstract())
-      .forEach(c -> astcdPackage.addCDElement(createClass(c, name)));
+      .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c, name))));
   }
 
   public static String getClassName(String domainClassName) {

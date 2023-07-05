@@ -54,16 +54,16 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
               .stream()
               .filter(a -> a.getModifier().isDerived())
               .forEach(a -> {
-                astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType(), c, false));
-                astcdPackage.addCDElement(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c));
+                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, false)));
+                astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c)));
               });
           CDSymbolTables.getAssociationsInHierarchy(c)
               .stream()
               .filter(a -> a.getModifier().isDerived())
               .filter(a -> !GenService.isBidirectional(a))
               .forEach(a -> {
-                astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true));
-                astcdPackage.addCDElement(createDeSer(origCD, a.getName(), getSymType("long"), c));
+                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true)));
+                astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c)));
               });
         });
   }

@@ -27,14 +27,14 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
       .forEach(c -> {
-        astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
-        astcdPackage.addCDElement(createDeSer(origCD, c));
+        astcdPackage.addCDElement(withOrigin(createClass(origCD, c, astcdPackage.getName())));
+        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, c)));
       });
 
     origCD.getCDDefinition().getCDInterfacesList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> {
-          astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
-          astcdPackage.addCDElement(createDeSer(origCD, c));
+          astcdPackage.addCDElement(withOrigin(createClass(origCD, c, astcdPackage.getName())));
+          astcdPackage.addCDElement(withOrigin(createDeSer(origCD, c)));
         });
   }
 

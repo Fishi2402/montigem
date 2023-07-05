@@ -44,7 +44,7 @@ public class DbObserverDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isDerived())
         .filter(c -> !c.getModifier().isAbstract())
-      .forEach(c -> astcdPackage.addCDElement(createClass(c)));
+      .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c))));
   }
 
   protected ASTCDClass createClass(ASTCDClass domainClass) {

@@ -43,7 +43,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     origCD.getCDDefinition().getCDAssociationsList().stream()
             .filter(a -> !a.getModifier().isDerived())
             .filter(a -> a.getCDAssocDir() instanceof ASTCDBiDir).
-            forEach(a -> astcdPackage.addAllCDElements(createClass(origCD, a)));
+            forEach(a -> astcdPackage.addAllCDElements(withOrigin(createClass(origCD, a))));
   }
 
   protected Collection<ASTCDClass> createClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {

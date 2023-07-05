@@ -26,8 +26,8 @@ public class TestSetupDecorator extends AbstractDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage aPackage = getPackage(origCD, decoratedCD, PACK_TEST_INFRASTRUCTURE);
-    aPackage.addCDElement(createMockTestSetup(origCD));
-    aPackage.addCDElement(createDbTestSetup(origCD));
+    aPackage.addCDElement(withOrigin(createMockTestSetup(origCD)));
+    aPackage.addCDElement(withOrigin(createDbTestSetup(origCD)));
   }
 
   protected ASTCDClass createMockTestSetup(ASTCDCompilationUnit origCD) {

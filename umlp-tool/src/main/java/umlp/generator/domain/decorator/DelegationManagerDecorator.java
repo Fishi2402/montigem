@@ -89,7 +89,7 @@ public class DelegationManagerDecorator extends ManagerDecorator {
       }
       String packageNameWithCD = packageName.map(s -> Joiners.DOT.join(s, extendedCDName)).orElseGet(() -> extendedCDName);
       ASTCDPackage astcdPackage = getCorrectPackage(packageNameWithCD.toLowerCase(), decoratedCD);
-      astcdPackage.addCDElement(createManagerClass((UMLPArtifactScope) extendedCDSymbol.get().getEnclosingScope(), extendedCDName, origCD));
+      astcdPackage.addCDElement(withOrigin(createManagerClass((UMLPArtifactScope) extendedCDSymbol.get().getEnclosingScope(), extendedCDName, origCD)));
     });
   }
 

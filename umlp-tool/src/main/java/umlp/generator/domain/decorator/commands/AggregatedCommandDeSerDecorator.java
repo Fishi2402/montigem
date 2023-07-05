@@ -30,7 +30,7 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    astcdPackage.addCDElement(createDeSer(origCD, decoratedCD));
+    astcdPackage.addCDElement(withOrigin(createDeSer(origCD, decoratedCD)));
   }
 
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {

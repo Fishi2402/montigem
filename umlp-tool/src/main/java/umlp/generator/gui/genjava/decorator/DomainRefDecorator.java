@@ -63,7 +63,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
     // class
     decoratedClass = createClass(guiAst);
-    astcdPackage.addCDElement(decoratedClass);
+    astcdPackage.addCDElement(withOrigin(decoratedClass));
 
     // imports
     boolean addedManager = false;

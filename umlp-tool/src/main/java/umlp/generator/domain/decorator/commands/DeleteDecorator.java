@@ -33,8 +33,8 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
         .filter(c -> !c.getSymbol().isIsDerived())
         .filter(c -> !c.getSymbol().isIsAbstract())
       .forEach(c -> {
-        astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
-        astcdPackage.addCDElement(createDeSer(origCD, c));
+        astcdPackage.addCDElement(withOrigin(createClass(origCD, c, astcdPackage.getName())));
+        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, c)));
       });
   }
 

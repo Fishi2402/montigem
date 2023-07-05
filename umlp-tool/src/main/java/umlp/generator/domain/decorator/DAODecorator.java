@@ -49,10 +49,10 @@ public class DAODecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
         .filter(c -> !c.getSymbol().isIsAbstract())
-        .forEach(c -> astcdPackage.addCDElement(createDAOClassForDomainClass(c)));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createDAOClassForDomainClass(c))));
 
     origCD.getCDDefinition().getCDAssociationsList().stream().filter(a -> !a.getModifier().isDerived()).forEach
-        (assoc -> astcdPackage.addCDElement(createDAOClassForAssoc(assoc)));
+        (assoc -> astcdPackage.addCDElement(withOrigin(createDAOClassForAssoc(assoc))));
 
   }
 

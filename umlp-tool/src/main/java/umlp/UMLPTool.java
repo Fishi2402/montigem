@@ -44,6 +44,7 @@ import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
+import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIComponentsVisitor;
@@ -332,6 +333,7 @@ public class UMLPTool extends UMLPToolTOP {
 
         ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
         GeneratorSetup genSetup = new GeneratorSetup();
+        genSetup.setGlex(createGlex());
         // set output directory
         genSetup.setOutputDirectory(outDir);
 
@@ -407,7 +409,8 @@ public class UMLPTool extends UMLPToolTOP {
           // set template path
           genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
               .map(p -> p.toFile()).collect(Collectors.toList()));
-          genSetup.setGlex(new GlobalExtensionManagement());
+          GlobalExtensionManagement glex = createGlex();
+          genSetup.setGlex(glex);
 
           List<String> domainModels = new ArrayList<>();
           if (DOMAIN.isSelected(cmd)) {
@@ -475,6 +478,14 @@ public class UMLPTool extends UMLPToolTOP {
         guidsl_reportManagerFactory.close();
       }
     }
+  }
+
+  private static GlobalExtensionManagement createGlex() {
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    glex.setBeforeTemplate("cd2java.Class", AbstractDecorator.getOriginHookPoint());
+    glex.setBeforeTemplate("cd2java.Enum", AbstractDecorator.getOriginHookPoint());
+    glex.setBeforeTemplate("cd2java.Interface", AbstractDecorator.getOriginHookPoint());
+    return glex;
   }
 
   protected  void storeSymbols (IGUIDSLArtifactScope scope,String path)

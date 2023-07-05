@@ -25,8 +25,8 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
     @Override
     public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
         ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, REQUESTS_PACKAGE);
-        astcdPackage.addCDElement(createClass(origCD, astcdPackage.getName()));
-        astcdPackage.addCDElement(createDeSer(origCD, astcdPackage.getName()));
+        astcdPackage.addCDElement(withOrigin(createClass(origCD, astcdPackage.getName())));
+        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, astcdPackage.getName())));
 
     }
 

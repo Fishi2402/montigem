@@ -38,7 +38,7 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isDerived())
         .filter(c -> !c.getModifier().isAbstract())
-        .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c))));
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {

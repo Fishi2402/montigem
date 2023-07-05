@@ -22,8 +22,7 @@ import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
@@ -38,15 +37,26 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.UMLPSymbolTables;
-import umlp.generator.util.ComposedHookPoint;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 // TODO refactor this class
 public abstract class AbstractDecorator {
+
+  protected static Map<ASTNode, String> origins = new HashMap<>();
+
+  protected static HookPoint originHookPoint = new OriginHookPoint(origins);
+
+  public static HookPoint getOriginHookPoint() {
+    return originHookPoint;
+  }
+
 
   public AbstractDecorator(GlobalExtensionManagement glex) {
     this.glex = glex;
@@ -193,21 +203,9 @@ public abstract class AbstractDecorator {
     addDecoratorComment(Arrays.stream(nodes).collect(Collectors.toList()));
   }
 
-  protected void addDecoratorComment(List<ASTCDElement> nodes){
-    StringHookPoint stringHookPoint = new StringHookPoint("/* Created by decorator " + getClass().getName() + " */\n");
-    for (ASTNode node : nodes) {
-      glex.replaceTemplate("cd2java.Class", node, new ComposedHookPoint(
-          stringHookPoint,
-          new TemplateHookPoint("cd2java.Class"))
-      );
-      glex.replaceTemplate("cd2java.Enum", node, new ComposedHookPoint(
-          stringHookPoint,
-          new TemplateHookPoint("cd2java.Enum"))
-      );
-      glex.replaceTemplate("cd2java.Interface", node, new ComposedHookPoint(
-          stringHookPoint,
-          new TemplateHookPoint("cd2java.Interface"))
-      );
+  protected void addDecoratorComment(Collection<? extends ASTCDElement> nodes){
+    for (ASTCDElement node : nodes) {
+      origins.put(node, "/* Created by decorator " + getClass().getName() + " */\n");
     }
   }
 
@@ -216,8 +214,12 @@ public abstract class AbstractDecorator {
     return element;
   }
 
-  abstract public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD);
+  protected Collection<? extends ASTCDElement> withOrigin(Collection<? extends ASTCDElement> elements){
+    addDecoratorComment(elements);
+    return elements;
+  }
 
+  abstract public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD);
 
 
   protected String getCorrectManager(ASTCDAssociation assoc) {
@@ -268,5 +270,4 @@ public abstract class AbstractDecorator {
     }
     return fullName[fullName.length-2]+ManagerDecorator.SUFFIX;
   }
-
 }
