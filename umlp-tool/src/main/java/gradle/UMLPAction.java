@@ -2,6 +2,7 @@
 package gradle;
 
 import de.monticore.AmbiguityException;
+import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.workers.WorkAction;
 import umlp.UMLPTool;
@@ -17,11 +18,13 @@ public abstract class UMLPAction implements WorkAction<ArgActionParameter> {
             "\t  java -jar UMLPTool.jar " + Arrays.toString(arrayArgs), getClass().toString());
     try {
       UMLPTool.main(arrayArgs);
-    }catch (AmbiguityException e){
-      AmbiguityException wrappedE = new AmbiguityException("This might be a gradle-setup problem. Are the MontiCore-Plugin and UMLP-Plugin loaded in the same project? \n" +
-          "Gradle doesn't isolate plugins, so resources are found twice. \n\n" + e.getMessage());
-      wrappedE.setStackTrace(e.getStackTrace());
-      throw wrappedE;
+    }catch (final RuntimeException e){
+      RuntimeException newThrow = e;
+      if(e.getCause() instanceof AmbiguityException){ // Freemarker adds special Freemarker Exceptions
+        newThrow = new RuntimeException("This might be a gradle-setup problem. Are the MontiCore-Plugin and UMLP-Plugin loaded in the same project? \n" +
+            "Gradle doesn't isolate plugins, so resources are found twice. \n\n", e);
+      }
+      throw newThrow;
     }
   }
 }
