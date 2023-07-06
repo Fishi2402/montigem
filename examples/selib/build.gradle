@@ -73,7 +73,7 @@ dependencies {
 
 application {
   // Set Entrypoint of Application
-    mainClass = 'selib.SeLibServerApplication'
+    mainClass = 'selib.SELibServerApplication'
 }
 
 

@@ -24,6 +24,8 @@ public class CommandDecorator extends AbstractDecorator {
 
     // TODO: Why is there another set in BEDecorator?
     supportedDeSers.add("java.time.LocalDate");
+    supportedDeSers.add("java.time.LocalDateTime");
+    supportedDeSers.add("java.time.LocalTime");
   }
 
   @Override

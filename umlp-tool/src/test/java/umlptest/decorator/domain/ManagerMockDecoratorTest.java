@@ -38,7 +38,7 @@ public class ManagerMockDecoratorTest extends DecoratorTest {
             () -> existsMethod(clazz, "init"),
             () -> existsMethod(clazz, "errorNotificationScope"),
             () -> existsMethod(clazz, "secretlyAdaptNextGemId"),
-            () -> existsMethod(clazz, "_doFooBuilder"),
+            () -> existsMethod(clazz, "_doFooBuilderFromId"),
 
             () -> existsMethod(clazz, "_doFooDeSerBuilder"),
             () -> existsMethod(clazz, "_doFooOpt"),

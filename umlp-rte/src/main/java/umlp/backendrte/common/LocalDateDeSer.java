@@ -8,10 +8,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class LocalDateDeSer implements DeSer<LocalDate> {
+  private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
   @Override
   public String serialize(LocalDate obj) {
-    return '"' + DateTimeFormatter.ISO_LOCAL_DATE.format(obj) + '"';
+    return '"' + formatter.format(obj) + '"';
   }
 
   @Override
@@ -21,6 +22,7 @@ public class LocalDateDeSer implements DeSer<LocalDate> {
       return Optional.empty();
     }
 
-    return Optional.of(LocalDate.parse(str.substring(1, str.length() - 1), DateTimeFormatter.ISO_LOCAL_DATE));
+    String content = str.substring(1, str.length() - 1);
+    return Optional.of(LocalDate.from(formatter.parse(content)));
   }
 }

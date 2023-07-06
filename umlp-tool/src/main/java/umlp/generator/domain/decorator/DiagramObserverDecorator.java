@@ -20,7 +20,7 @@ public class DiagramObserverDecorator extends AbstractDecorator {
 
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    astcdPackage.addCDElement(createInterface(origCD));
+    astcdPackage.addCDElement(withOrigin(createInterface(origCD)));
   }
 
   protected ASTCDInterface createInterface(ASTCDCompilationUnit origCD) {

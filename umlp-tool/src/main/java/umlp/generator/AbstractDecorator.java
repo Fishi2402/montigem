@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.cd.facade.CDConstructorFacade;
@@ -13,24 +14,49 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdassociation._ast.ASTCDAssociation;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDElement;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.MCTypeFacade;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
+import de.monticore.umlstereotype._ast.ASTStereoValue;
+import de.monticore.umlstereotype._ast.ASTStereoValueTOP;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 // TODO refactor this class
 public abstract class AbstractDecorator {
+
+  protected static Map<ASTNode, String> origins = new HashMap<>();
+
+  protected static HookPoint originHookPoint = new OriginHookPoint(origins);
+
+  public static HookPoint getOriginHookPoint() {
+    return originHookPoint;
+  }
+
 
   public AbstractDecorator(GlobalExtensionManagement glex) {
     this.glex = glex;
@@ -173,6 +199,75 @@ public abstract class AbstractDecorator {
                 definingSymbol.getName()))));
   }
 
+  protected void addDecoratorComment(ASTCDElement... nodes){
+    addDecoratorComment(Arrays.stream(nodes).collect(Collectors.toList()));
+  }
+
+  protected void addDecoratorComment(Collection<? extends ASTCDElement> nodes){
+    for (ASTCDElement node : nodes) {
+      origins.put(node, "/* Created by decorator " + getClass().getName() + " */\n");
+    }
+  }
+
+  protected ASTCDElement withOrigin(ASTCDElement element){
+    addDecoratorComment(element);
+    return element;
+  }
+
+  protected Collection<? extends ASTCDElement> withOrigin(Collection<? extends ASTCDElement> elements){
+    addDecoratorComment(elements);
+    return elements;
+  }
+
   abstract public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD);
 
+
+  protected String getCorrectManager(ASTCDAssociation assoc) {
+    return UMLPSymbolTables.getDiagramFor(assoc).getCDDefinition().getName()+ ManagerDecorator.SUFFIX;
+  }
+
+  protected String getCorrectManager(ASTCDType type) {
+    return UMLPSymbolTables.getDiagramFor(type).getCDDefinition().getName()+ManagerDecorator.SUFFIX;
+  }
+
+  protected String getCorrectManager(ASTCDAssocSide assocSide) {
+    return UMLPSymbolTables.getDiagramFor(assocSide).getCDDefinition().getName()+ManagerDecorator.SUFFIX;
+  }
+
+  protected String getCorrectManagerOfTargetType(ASTCDAssocSide assocSideTarget) {
+    return getCorrectManagerFromSymTypeExpression(assocSideTarget.getSymbol().getType());
+  }
+
+  protected String getCorrectManager(ASTCDAttribute attribute) {
+    return attribute.getSymbol().getPackageName()+ManagerDecorator.SUFFIX;
+  }
+
+  protected void addCorrectMangerImportForTargetType(ASTCDDefinition origCD, ASTCDType ast, SymTypeExpression type) {
+    String[] fullName = type.printFullName().split("\\.");
+    if(fullName.length<=1) {
+      return;
+    }
+    String potentialExtendedCDName = fullName[fullName.length-2];
+    String packageName = Joiners.DOT.join(Arrays.copyOfRange(fullName, 0, fullName.length-1)).toLowerCase();
+    // this checks if a cd import requires a manager
+    if(!origCD.getModifier().isPresentStereotype()) {
+      return;
+    }
+    List<ASTStereoValue> valueList = origCD.getModifier().getStereotype().getValuesList();
+    List<String> extendedCDs = valueList.stream().filter(value -> value.getName().equals("extends"))
+        .map(ASTStereoValueTOP::getValue).collect(Collectors.toList());
+
+    // This checks a CD 'extends' another one, i.e. a UMLP Project extends/ is composed of another one
+    if(extendedCDs.stream().anyMatch(cdName -> cdName.equals(potentialExtendedCDName))) {
+      getCD4C().addImport(ast, Joiners.DOT.join(packageName, potentialExtendedCDName+ ManagerDecorator.SUFFIX));
+    }
+  }
+
+  protected String getCorrectManagerFromSymTypeExpression(SymTypeExpression type) {
+    String[] fullName = type.printFullName().split("\\.");
+    if(fullName.length<=1) {
+      Log.error("Managername cannot be calculated. SymTypeExpression: '"+type+"'. Does not belong to a package defined by a Class Diagram.");
+    }
+    return fullName[fullName.length-2]+ManagerDecorator.SUFFIX;
+  }
 }

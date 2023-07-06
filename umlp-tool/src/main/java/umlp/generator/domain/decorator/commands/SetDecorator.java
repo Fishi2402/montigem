@@ -4,6 +4,8 @@ package umlp.generator.domain.decorator.commands;/* (c) https://github.com/Monti
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -15,6 +17,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import org.gradle.internal.impldep.com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,6 +28,7 @@ import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
@@ -56,8 +60,8 @@ public class SetDecorator extends AbstractDeSerDecorator {
                       .filter(a -> !a.getModifier().isDerived())
                       .filter(a -> !GenService.isList(a))
                       .forEach(a -> {
-                        astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType(), c, false));
-                        astcdPackage.addCDElement(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false));
+                        astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManager(a), false)));
+                        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false)));
                       });
               CDSymbolTables.getAssociationsInHierarchy(c)
                       .stream()
@@ -65,8 +69,8 @@ public class SetDecorator extends AbstractDeSerDecorator {
                       .filter(a -> !GenService.isBidirectional(a))
                       .filter(a -> !GenService.isList(a))
                       .forEach(a -> {
-                        astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true));
-                        astcdPackage.addCDElement(createDeSer(origCD, a.getName(), getSymType("long"), c, true));
+                        astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManagerOfTargetType(a), true)));
+                        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c, true)));
                       });            });
 
     origCD.getCDDefinition().getCDInterfacesList().stream()
@@ -77,8 +81,8 @@ public class SetDecorator extends AbstractDeSerDecorator {
               .filter(a -> !a.getModifier().isDerived())
               .filter(a -> !GenService.isList(a))
               .forEach(a -> {
-                astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType(), c, false));
-                astcdPackage.addCDElement(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false));
+                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManager(a),false)));
+                astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false)));
               });
           CDSymbolTables.getAssociations(c)
               .stream()
@@ -86,14 +90,15 @@ public class SetDecorator extends AbstractDeSerDecorator {
               .filter(a -> !GenService.isBidirectional(a))
               .filter(a -> !GenService.isList(a))
               .forEach(a -> {
-                astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true));
-                astcdPackage.addCDElement(createDeSer(origCD, a.getName(), getSymType("long"), c, true));
+                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManagerOfTargetType(a), true)));
+                astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c, true)));
               });
         });
   }
 
 
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDType domainType, boolean isGem) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDType domainType,
+                                   String targetTypeManager, boolean isGem) {
     String classname = domainType.getName()+SUFFIX
             + StringTransformations.capitalize(name);
     String completeName = isGem?name+"GemId":name;
@@ -113,7 +118,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
     addConstructor(ast, classname, getPackageName(origCD, COMMAND_PACKAGE),
         completeName, isGem ? "long" : GenService.createType(type).printType());
 
-    getCD4C().addMethod(ast, getDoRunTemplate(), name, domainType.getName(), origCD.getCDDefinition().getName(), isGem, type.print());
+    getCD4C().addMethod(ast, getDoRunTemplate(), name, domainType.getName(), getCorrectManager(domainType), isGem, type.print(), targetTypeManager);
     if (isGem) {
       getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("gemId" , name+"GemId"));
     } else {
@@ -162,7 +167,8 @@ public class SetDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ domainType.getName());
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainType));
+    addCorrectMangerImportForTargetType(origCD.getCDDefinition(), ast, type);
     if (GenService.isOptional(type)) {
       if (GenService.isInnerCDEnum(type)) {
         getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + GenService.getInnerType(attr.getMCType()));

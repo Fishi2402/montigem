@@ -7,7 +7,7 @@ import basic.src.lib.gembutton.GemButton;
 import input.src.lib.gemtextinput.GemTextInput;
 import table.src.lib.gemtable.GemTable;
 
-page AccountCreate(Account acc) {
+page AccountCreate(/*Account acc*/) {
   @GemText(value = "New Account");
   @GemTextInput(entry = acc.name);
   @GemTable(rows = acc.budget);

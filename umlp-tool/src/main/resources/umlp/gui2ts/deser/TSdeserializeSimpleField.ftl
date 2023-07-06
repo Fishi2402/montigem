@@ -16,7 +16,7 @@ ${tc.signature("className", "attr", "fieldType", "jsonStr", "isList", "innerType
       <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
 <#--        TODO MB: ist das hier so richtig, oder sollte lieber innerType richtig berechnet werden? -->
       <#-- TODO AGe: find out if that's ok -->
-      result.push(${innerType?keep_after_last(".")}.valueOf(json["${fieldName}"]));
+      result.push(${innerType?keep_after_last(".")}[json["${fieldName}"] as keyof typeof ${innerType?keep_after_last(".")}]);
       <#else>
       result.push(e);
       </#if>
@@ -29,7 +29,7 @@ ${tc.signature("className", "attr", "fieldType", "jsonStr", "isList", "innerType
       return ${objectMapperName}.deserialize(value, "${innerType}");
       <#else>
         <#if genService.isInnerCDEnum(attr.getSymbol().getType())>
-          return ${innerType?keep_after_last(".")}.valueOf(json["${fieldName}"]);
+          return ${innerType?keep_after_last(".")}[json["${fieldName}"] as keyof typeof ${innerType?keep_after_last(".")}];
         <#else>
           return json["${fieldName}"];
         </#if>
@@ -44,7 +44,7 @@ ${tc.signature("className", "attr", "fieldType", "jsonStr", "isList", "innerType
       return ${objectMapperName}.deserialize(value, "${fieldType}");
       <#else>
         <#if genService.isCDEnum(attr.getSymbol().getType())>
-      return ${fieldType}.valueOf(json["${fieldName}"]);
+      return ${fieldType}[json["${fieldName}"] as keyof typeof ${attr.getSymbol().getType().getTypeInfo().getName()}];
         <#else>
       return json["${fieldName}"];
           </#if>

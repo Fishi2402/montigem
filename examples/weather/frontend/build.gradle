@@ -1,0 +1,137 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.nio.file.Paths
+
+
+plugins {
+  id "com.github.node-gradle.node" version "3.4.0"
+  id 'de.rwth.se.umlp-tool' version "$mc_version"
+}
+
+
+configurations {
+  cdParser
+  guiParser
+  guiLib
+}
+
+dependencies {
+  cdParser "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
+  guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
+  guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
+}
+
+node {
+  // Whether to download and install a specific Node.js version or not
+  // If false, it will use the globally installed Node.js
+  // If true, it will download node using above parameters
+  // Note that npm is bundled with Node.js
+  download = true
+
+  // Version of node to download and install (only used if download is true)
+  // It will be unpacked in the workDir
+  version = "18.10.0"
+
+  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
+  // according the proxy configuration defined for Gradle
+  // Disable this option if you want to configure the proxy for npm or yarn on your own
+  // (in the .npmrc file for instance)
+  nodeProxySettings = ProxySettings.OFF
+}
+
+// TODO AGe: don't know if that is needed
+task generateCDTOGUI(type: UMLPTask) {
+  input = file("../models/Weather.umlp")
+  cdToGui = true
+  outputDir = layout.buildDirectory.dir("cd2gui")
+}
+
+def symPath = "${project.buildDir}/symbols";
+
+task serializeCD {
+  dependsOn('unpackGUILibSymbols')
+  doLast {
+    def modelPathStr = "${project.projectDir.parent}/models"
+    def modelPath = Paths.get(modelPathStr)
+    fileTree(modelPathStr).matching {
+      include "**/*.umlp"
+    }.each {
+      def path = it.path
+      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
+      javaexec {
+        mainClass = 'de.monticore.CD4CodeTool'
+        classpath = configurations.cdParser
+        args "-i", path,
+            "-s", "${symPath}/${relativeModelPathStr}sym"
+      }
+    }
+  }
+}
+
+task unpackGUILibSymbols(type: Copy) {
+  from zipTree(configurations.guiLib.asPath)
+  into "${symPath}"
+}
+
+task genDomain(type: UMLPTask) {
+  input = file("../models/Weather.umlp")
+  outputDir = file("$project.buildDir/appdomain")
+  forClient = true
+}
+
+task genGUI(type: UMLPGuiGenTask) {
+  dependsOn('serializeCD')
+  input = file("../models")
+  outputDir = file("$project.buildDir/appgui")
+  hwcDir = file("$projectDir/src/app")
+  modelDir = layout.projectDirectory.dir("../models")
+  symbolDir = file(symPath)
+  domainModels = ["Weather"]
+  guiCreateModels = ["gui.ForecastCreate"]
+}
+
+task genGUI2(type: UMLPGuiGenTask) {
+  dependsOn(genGUI, generateCDTOGUI)
+  input = file(layout.buildDirectory.dir("cd2gui/models"))
+  symbolDir = file(symPath)
+  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
+  outputDir = layout.buildDirectory.dir("umlp/fe2")
+  domainModels = ["Weather"]
+}
+
+task generateNPMAuth(type: NPMAuthCreate)
+
+npm_install.dependsOn(generateNPMAuth, genGUI)
+// TODO AGe: npm_update too slow - strategy to make occasional checks
+// npm_update.dependsOn(npm_install)
+
+task buildApp(type: NpxTask) {
+  dependsOn('genDomain', npm_install)
+  command = "ng"
+  args = ["build"]
+  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
+  inputs.dir("node_modules")
+  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.app.json")
+  outputs.dir("${project.buildDir}/dist")
+}
+assemble.dependsOn(buildApp)
+
+task testApp(type: NpxTask) {
+  dependsOn('genDomain', npm_install)
+  command = "ng"
+  args = ["test"]
+  inputs.dir("src")
+  inputs.dir("node_modules")
+  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json", "karma.conf.js")
+  outputs.upToDateWhen { true }
+}
+
+task runApp(type: NpxTask) {
+  dependsOn('genDomain', npm_install)
+  command = "ng"
+  args = ["serve"]
+  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
+  inputs.dir("node_modules")
+  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json")
+  outputs.upToDateWhen { true }
+}

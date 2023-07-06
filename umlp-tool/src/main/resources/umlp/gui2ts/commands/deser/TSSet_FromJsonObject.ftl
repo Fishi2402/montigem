@@ -10,7 +10,7 @@ ${cd4c.method("protected Optional<${command}> fromJsonObject(any jsonObject)")}
     ${objectMapperName}.deserialize(typeof jsonObject["${attrName}"] === 'string' ? '"' + jsonObject["${attrName}"] + '"' : String(jsonObject["${attrName}"]), "${type}")
 <#else>
     <#if isCDEnum>
-    ${type?keep_after_last(".")}.valueOf(jsonObject["${attrName}"].${json})
+    ${type?keep_after_last(".")}[(jsonObject["${attrName}"].${json} as keyof typeof ${type?keep_after_last(".")})]
     <#else>
     jsonObject["${attrName}"].${json}
     </#if>

@@ -1,15 +1,13 @@
 import BaseArtifactsTest.*;
 
+<<extends="BaseArtifactsTest">>
 umlp JavaProject{
 
     // ______________________________________________________
     // Artifacts
     // ______________________________________________________
 
-    // cd can not be emtpy
-    class Empty{}
-
-    /* TODO: Composition of Managers, similar to MC Mill
+     //TODO: Composition of Managers, similar to MC Mill
     //TODO nessesary?
     association reliesOnJavaArtifact [*] JavaView -> (reliedOnViews) JavaView [*] ;
 
@@ -43,8 +41,6 @@ umlp JavaProject{
     association compiledTo [1] JavaView -> (compiledArtifacts) Artifact [*] ;
 
 
-
-
     // ______________________________________________________
     // ArtifactInternals
     // ______________________________________________________
@@ -68,13 +64,13 @@ umlp JavaProject{
     //TODO was composition
     //association [0..1] JavaType(containingType) -> (innerType)JavaType [*] ;
 
-    association reliesOnJavaType [*] JavaType -> (reliedOn) JavaType [*] ;
+    //association reliesOnJavaType [*] JavaType -> (reliedOn) JavaType [*] ;
 
     association methods [1] JavaType <-> JavaMethod [*];
 
     association typeVisibility [1] JavaType -> JavaVisibility [1];
 
-    association innerClasses [*] JavaType -> JavaClass [*];
+    association innerClasses [*] JavaType -> (innerClass) JavaClass [*];
 
 
     // JavaClass
@@ -151,5 +147,5 @@ umlp JavaProject{
         int loc;
     }
 
-  */
+
 }

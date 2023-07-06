@@ -23,7 +23,7 @@ public class ManagerDbObserverDecorator extends AbstractDecorator {
 
   public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    astcdPackage.addCDElement(createDBObserver(origCD));
+    astcdPackage.addCDElement(withOrigin(createDBObserver(origCD)));
   }
 
   protected ASTCDClass createDBObserver(ASTCDCompilationUnit origCD) {

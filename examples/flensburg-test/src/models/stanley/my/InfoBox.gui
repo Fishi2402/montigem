@@ -1,5 +1,0 @@
-package stanley.my;
-
-component InfoBox(
-  String text, String color = "green"
-)

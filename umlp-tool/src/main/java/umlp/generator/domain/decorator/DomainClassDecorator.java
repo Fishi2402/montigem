@@ -51,13 +51,13 @@ public class DomainClassDecorator extends DomainTypeDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-        .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c))));
 
     origCD.getCDDefinition().getCDEnumsList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> {
               ASTCDEnum enumCopy = c.deepClone();
               enumCopy.setModifier(PUBLIC.build());
-              astcdPackage.addCDElement(enumCopy);
+              astcdPackage.addCDElement(withOrigin(enumCopy));
             });
   }
 

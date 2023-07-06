@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("classname","definition")}
+${tc.signature("classname", "managerName")}
 ${cd4c.method("public StatusResult doRun()")}
 
-${definition}Manager.add${classname}(${classname?uncap_first});
+${managerName}.add${classname}(${classname?uncap_first});
 return StatusResult.ok(getId());

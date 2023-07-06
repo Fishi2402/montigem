@@ -51,6 +51,27 @@ public class DAONeo4jDecorator extends DAODecorator {
   }
 
   @Override
+  protected void selectAllIdsMethod(ASTCDClass daoClass, ASTCDClass domainClass,
+                                    Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
+                                    Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap){
+    List<ASTCDAttribute> listAttributes = getListAttributes(domainClass);
+    List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
+    Map<ASTCDAttribute, String> optMap = Maps.newLinkedHashMap();
+    getOptionalAttributes(domainClass).forEach(e -> optMap.put(e,
+        SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
+
+    getCD4C().addMethod(daoClass, "umlp.dao.SelectAllIdsInitNeo4j",
+        SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED), domainClass.getName(),
+        attributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)).collect(Collectors.toList()));
+
+    Map<ASTCDAttribute, String> attributeMap = Maps.newLinkedHashMap();
+    attributes.forEach(e -> attributeMap.put(e,
+        SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
+    getCD4C().addMethod(daoClass, "umlp.dao.SelectAllIds", domainClass.getName(), cdName, attributeMap,
+        optMap, listAttributes, listAssociationMap, gemAssociationMap);
+  }
+
+  @Override
   protected void selectMethod(ASTCDClass daoClass, ASTCDClass domainClass,
                             Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
                             Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
