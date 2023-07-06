@@ -23,6 +23,7 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
+import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,6 +191,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       // TODO AGe: explicit gem lists when domain typed lists are used as an input
       if (!paramType.contains("GemList")) {
         getterValue = conversion.apply(getterValue);
+      } else {
+        getCD4C().addImport(decoratedClass, PathUtil.getBackendRTECommonPath("GemList"));
       }
 
       addGetComponentMethod(decoratedClass, getterName, paramType,
