@@ -54,11 +54,11 @@ public class GUIExpressionTypeVisitor implements ExpressionsBasisVisitor2, Commo
   @Override
   public void endVisit(ASTFieldAccessExpression node) {
     if (res.isPresent() && res.get().hasTypeInfo()) {
-      for (VariableSymbol vs : res.get().getTypeInfo().getVariableList()) {
-        if (vs.getName().equals(node.getName())) {
-          res = Optional.ofNullable(vs.getType());
-          break;
-        }
+      Optional<VariableSymbol> vs = res.get().getTypeInfo().getSpannedScope().resolveVariable(node.getName());
+      if (vs.isPresent()) {
+        res = Optional.of(vs.get().getType());
+      } else {
+        res = Optional.empty();
       }
     }
   }

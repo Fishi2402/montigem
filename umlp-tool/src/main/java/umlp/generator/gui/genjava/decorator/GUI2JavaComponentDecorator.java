@@ -80,40 +80,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       return;
     }
 
-    String paramType = convertType(paramSTE.print());
-    if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
-      // TODO AGe: all possible types
-      if (util.isListType(paramSTE)) {
-        String innerType = util.getListInnerType(paramSTE).get().print();
-        if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
-          getCD4C().addImport(decoratedClass, innerType);
-        }
-      }
-      else if (!util.isDomainType(paramSTE) && !util.isDomainListType(paramSTE)) {
-        getCD4C().addImport(decoratedClass, paramSTE.printFullName());
-      }
-      else {
-        Optional<String> domainQName = util.getMainDomainModelQName();
-        if (domainQName.isPresent()) {
-          if (util.isDomainType(paramSTE)) {
-            getCD4C().addImport(decoratedClass, domainQName.get() + "." + paramSTE.print());
-          }
-          else if (util.isDomainListType(paramSTE) && util.getListInnerType(paramSTE).isPresent()) {
-            getCD4C().addImport(decoratedClass, domainQName.get() + "."
-                + util.getListInnerType(paramSTE).get().print());
-          }
-          else {
-            Log.warn("0x0000A GUI Model " + this.guiAst.getComponentName()
-                + " uses type '" + paramSTE.print() + "' that could not be resolved.");
-          }
-        }
-        else {
-          Log.error("0x00000 GUI Model " + this.guiAst.getComponentName()
-              + " is missing a connection to the domain model."
-              + " Please specify the domain model using '-dm' flag.");
-        }
-      }
-    }
+    String paramType = convertType(paramSTE.getTypeInfo().getName());
+
     String getterName = util.gui2cdAttrGetterName(
         guiComponent.getId().getName(), namedArg.getName());
     String setterName = util.gui2cdAttrSetterName(
@@ -257,7 +225,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   protected String getSetterTemplate() {
-    return "umlp.gui2java.SetComponent";
+    return "umlp.gui2java.SetComponentReplaced";
   }
 
   protected String getSetterReplacedTemplate() {
