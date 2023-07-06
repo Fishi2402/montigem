@@ -15,6 +15,7 @@ import umlp.UMLPMill;
 import umlp.generator.domain.UMLAssocToAttrTrafo;
 import umlp.generator.domain.UMLAttrToAssocTrafo;
 import umlp.generator.domain.UMLPGenerator;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
@@ -24,8 +25,8 @@ import java.util.Arrays;
 
 public class TSUMLPGenerator extends UMLPGenerator {
 
-  public TSUMLPGenerator(GeneratorSetup genSetup) {
-    super(genSetup);
+  public TSUMLPGenerator(GeneratorSetup genSetup, UMLPGeneratorConfig config) {
+    super(genSetup, config);
 
     genSetup.getGlex().setGlobalValue("cdPrinter", new TSUtilsPrinter());
     genSetup.getGlex().setGlobalValue("genService", new GenService());
@@ -36,6 +37,9 @@ public class TSUMLPGenerator extends UMLPGenerator {
     );
     genSetup.getGlex().replaceTemplate(
         CD2JavaTemplates.INTERFACE, new TemplateHookPoint(GUI2ComponentTemplates.INTERFACE)
+    );
+    genSetup.getGlex().replaceTemplate(
+        CD2JavaTemplates.ENUM, new TemplateHookPoint(GUI2ComponentTemplates.ENUM)
     );
     genSetup.getGlex().replaceTemplate(
         CD2JavaTemplates.ATTRIBUTE, new TemplateHookPoint(GUI2ComponentTemplates.ATTRIBUTE)

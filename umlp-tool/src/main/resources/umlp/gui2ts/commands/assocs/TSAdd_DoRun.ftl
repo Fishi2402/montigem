@@ -1,18 +1,18 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("assoc","sourceName","targetName","sourceType","targetType",
-               "isSourceList","isTargetList","definition")}
+               "isSourceList","isTargetList","manager")}
 ${cd4c.method("public Promise<StatusResult> doRun()")}
 
 <#assign csourceName=sourceName?cap_first>
 <#assign ctargetName=targetName?cap_first>
-let loaded${ctargetName}: boolean = ${definition}Manager.isLoaded${targetType}(this.${targetName}GemId);
-let loaded${csourceName}: boolean = ${definition}Manager.isLoaded${sourceType}(this.${sourceName}GemId);
+let loaded${ctargetName}: boolean = ${manager}.isLoaded${targetType}(this.${targetName}GemId);
+let loaded${csourceName}: boolean = ${manager}.isLoaded${sourceType}(this.${sourceName}GemId);
 
 // TODO: With DB: server must have loaded both
 console.assert(CommandManager.getParticipantId() != 0 || (loaded${ctargetName} && loaded${csourceName}), "0x50008 Add. source: ${sourceName}, target: ${targetName}");
 
-let promiseSource = ${definition}Manager.get${sourceType}Sure(this.${sourceName}GemId);
-let promiseTarget = ${definition}Manager.get${targetType}Sure(this.${targetName}GemId);
+let promiseSource = ${manager}.get${sourceType}Sure(this.${sourceName}GemId);
+let promiseTarget = ${manager}.get${targetType}Sure(this.${targetName}GemId);
 
 let promiseRes;
 

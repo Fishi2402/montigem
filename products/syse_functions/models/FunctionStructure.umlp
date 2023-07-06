@@ -32,7 +32,7 @@ import java.time.LocalDate;
      möglicherweise nicht beobachten, aber zu Modellierung
      und Spezifikation lassen sich diese Dinge dennoch verwenden.)
 
-  * Das Klassendiagramm beschreibt diese Funktionsstruktur
+  * Das Klassendiagramm beschreibt diese Funktionsstruktur,
     die logisch oder physikalisch interpretiert werden kann.
 
   * Die Verwendung des Diagramms ist in der Entwicklung oder auch
@@ -54,7 +54,7 @@ import java.time.LocalDate;
 
   * Variabilität in dem Produkt
 
-  * "Versenden" von Kanälen oder Identifiern, wie im Pi-Kalül oder
+  * "Versenden" von Kanälen oder Identifiern, wie im Pi-Kalkül oder
     OOP üblich.
 
   * Geometrie oder andere physikalische Eigenschaften (Material, etc.)
@@ -82,6 +82,7 @@ umlp FunctionsStructure {
         und gegebenenfalls einer Dekompositions-Struktur
         (Architektur), bestehend aus weiteren Funktionen
   */
+  // BEM MH: Wollen wir noch Verhalten an die Funktion drankleben?
   class Function { String name; }
 
 
@@ -97,15 +98,21 @@ umlp FunctionsStructure {
     Jede Funktion hat eine Sammlung von eingehenden und
     ausgehenden Ports, die ihre Signatur darstellen.
 
-    Ports können zwischen mehreren Funktionen geshared
+    Ports können zwischen mehreren Funktionen geteilt
     werden: damit lassen sich zum Beispiel von außen kommende
     InPorts darstellen, die zu Subfunktionen weitergereicht
-    werden.
+    werden. (Inport der aeußerem Funktion zeigt auf das
+    selbe Inport Objekt der inneren Funktion, um einen
+    Konnektor von Inport zu Inport darzustellen)
+    Das hat auch zur Folge, dass es keine implizite Typ-
+    konvertierung in einem Konnektor zw. äußerer und
+    innerer Funktion stattfinden kann, nur über eine
+    explizite Komponente
   */
   association [1..*] Function -> InPort [*];
   association [1..*] Function -> OutPort [*];
 
-  // BEM BR: Ports könnte man auch Typisieren und Nach Material/Energie
+  // BEM BR: Ports könnte man auch Typisieren und nach Material/Energie
   // etc. kategorisieren, wenn wir das hier tun.
   // Muss aber nicht sein, denn die Nachrichtenströme sind ja auch
   // schon typisiert.
@@ -139,6 +146,16 @@ umlp FunctionsStructure {
     ob der Outport verkapselt oder nach aussen sichtbar ist
     (das entscheidet die Ober-Funktion).
   */
+  /*
+    BEM MH: Ich bin mir nicht sicher, ob wir über hier
+    nicht über einen veralteten Punkt sprechen: Wir können
+    ja nun auch von der äußerem Funktion auf das gleiche
+    Port Objekt zeigen und erreichen so eine explizite
+    Assoziation zwischen den Ports der inneren und
+    äußeren Funktion. MMn. brauchen wir dies hier nicht
+       Genau dann, wenn ein InPort unverbunden ist, dann wird
+       er in die Signatur der Ober-Funktion aufgenommen.
+   */
 
   association [0..1] OutPort (out) <- (in) InPort [*];
 
@@ -149,7 +166,7 @@ umlp FunctionsStructure {
      weiter verteilt wird dadurch nicht modularisiert
      darstellen (korrekt darstellbar ist es im Prinzip aber
      schon).
-     (Dafür wäre der ThroughPort extens InPort, OutPort geeignet)
+     (Dafür wäre der ThroughPort extends InPort, OutPort geeignet)
   */
 
   /* TODO:
@@ -166,9 +183,31 @@ umlp FunctionsStructure {
     Eine Beobachtung im Bezug auf einen Kanal ist
     eine kontinuierliche oder diskrete Sequenz von
     aufgenommenen Messages, Events, Material- oder Energieflüssen.
+
+    Material: elements, compounds, alloys, ...
+      Fluid: continuously flowing materia, typically not countable
+             (water, gas, sand)
+      Item: discrete physical items, e.g. cars
+    Energy: types of energy
+      Mechanical Energy
+      Electrical Energy
+      ...
+    Physical:
+      Force
+      Speed
+      ...
+    Data: for data objects, basic data (e.g. int)
+      Event: for discrete data that triggers behavior
+    Signal: for continuously flowing data
   */
   enum FlowKind { Solid, Fluid, Energy, Data, Event, Value; }
-  // TODO: MBSE-Folien wissen evtl.noch mehr ...
+  // TODO: MBSE-Folien wissen evtl.noch mehr ... MH aus MBSysE oben ergänzt
+  // TODO: Solid -> Item? Value -> Signal?
+  // TODO: Wie weit runter wollen wir gehen?
+  /*
+    BEM MH: Ist ein Enum hier richtig? In der Vorlesung beschreiben
+    wir ja z.B. Fluid als Unterkategorie von Material
+  */
 
   /*
     Eine Beobachtung ist zu kategorisieren

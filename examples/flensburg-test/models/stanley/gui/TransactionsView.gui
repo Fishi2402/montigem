@@ -1,0 +1,9 @@
+package stanley.gui;
+
+import hardy.Flensburg.Transaction;
+
+import stanley.gui.MonthlyTransactions;
+
+page TransactionsView(List<Transaction> t) {
+  @MonthlyTransactions(transactions = t);
+}

@@ -36,6 +36,8 @@ public class BaseClassObjectMapper {
     baseDeSers.put("java.lang.String", new StringDeSer());
 
     baseDeSers.put("java.time.LocalDate", new LocalDateDeSer());
+    baseDeSers.put("java.time.LocalDateTime", new LocalDateTimeDeSer());
+    baseDeSers.put("java.time.LocalTime", new LocalTimeDeSer());
   }
 
   public static Optional<String> serialize(Object o, String className) {

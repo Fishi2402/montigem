@@ -99,8 +99,8 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
   }
 
   public set(object: E): void {
-    if (this.object != null) {
-      this.object = this.object;
+    if (object != null) {
+      this.object = object;
       this.gemId = this.object.getGemId();
       this.loadingState = LoadingState.LOADED;
     }

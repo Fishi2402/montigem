@@ -1,6 +1,8 @@
 /* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
 import { GemList } from '@umlp-rte/hwc/common/GemList';
-import {GemBuildable, GemIdentifiable, IDOrBuilder} from "@umlp-rte/target/common";
+import {GemIdentifiable} from "@umlp-rte/target/common/GemIdentifiable";
+import {GemBuildable} from "@umlp-rte/target/common/GemBuildable";
+import {IDOrBuilder} from "@umlp-rte/target/common/IDOrBuilder";
 
 export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> extends GemList<E> {
     buildFinished: boolean;
@@ -23,7 +25,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
      *
      * @return {Optional}
      */
-    public build(): GemList<any> {
+    public build(): GemList<E> {
         if (this.buildFinished){
             return (v => { if (v == null) throw new Error('value is null'); return v; })(this);
         }
@@ -64,7 +66,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
      * @param {number} idx
      * @return {}
      */
-    public get(idx: number): E {
+    public async get(idx: number): Promise<E> {
         if (this.buildFinished){
           return super.get(idx);
         } else {

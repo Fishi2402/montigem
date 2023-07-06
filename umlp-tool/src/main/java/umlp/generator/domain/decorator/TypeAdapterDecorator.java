@@ -25,14 +25,14 @@ public class TypeAdapterDecorator extends AbstractDecorator {
   public TypeAdapterDecorator(final GlobalExtensionManagement glex) {
     super(glex);
   }
-  
+
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-            .forEach(c -> astcdPackage.addAllCDElements(createClasses(c, origCD.getCDDefinition().getName())));
+            .forEach(c -> astcdPackage.addAllCDElements(withOrigin(createClasses(c, origCD.getCDDefinition().getName()))));
   }
-  
+
   protected List<ASTCDClass> createClasses(ASTCDClass domainClass, String name) {
     String className = domainClass.getName();
     List<ASTCDClass> classList = Lists.newArrayList();

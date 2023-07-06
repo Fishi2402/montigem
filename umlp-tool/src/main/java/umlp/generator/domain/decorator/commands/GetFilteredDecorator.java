@@ -27,14 +27,14 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
       .forEach(c -> {
-        astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
-        astcdPackage.addCDElement(createDeSer(origCD, c));
+        astcdPackage.addCDElement(withOrigin(createClass(origCD, c, astcdPackage.getName())));
+        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, c)));
       });
 
     origCD.getCDDefinition().getCDInterfacesList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> {
-          astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
-          astcdPackage.addCDElement(createDeSer(origCD, c));
+          astcdPackage.addCDElement(withOrigin(createClass(origCD, c, astcdPackage.getName())));
+          astcdPackage.addCDElement(withOrigin(createDeSer(origCD, c)));
         });
   }
 
@@ -48,11 +48,11 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
       .build();
 
     addConstructor(ast, classname, packageName);
-    getCD4C().addMethod(ast, getDoRunTemplate(), classname, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, getDoRunTemplate(), classname,  getCorrectManager(domainType));
 
     getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ getCorrectManager(domainType));
 
     return ast;
   }

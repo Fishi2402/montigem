@@ -37,7 +37,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
   public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    astcdPackage.addCDElement(createClass(origCD));
+    astcdPackage.addCDElement(withOrigin(createClass(origCD)));
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
@@ -51,7 +51,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
     // methods
     getCD4C().addMethod(managerClass, "umlp.managerimpl.Constructor", name + SUFFIX);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.Init", name, name + ManagerDecorator.SUFFIX);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.Init", name, name + ManagerDecorator.SUFFIX+"Impl");
     List<String> classList = origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .map(c -> c.getName()).collect(Collectors.toList());
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFreeGemId");

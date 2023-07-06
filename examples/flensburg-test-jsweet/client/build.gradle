@@ -33,32 +33,51 @@ jsweet {
   candiesJsOut = project.file('target/candies')
   targetVersion = 'ES6'
   includes = ['**/flensburg/**/*.java']
+  excludes = [
+      '**/flensburg/FlensburgManagerImpl.java',
+      '**/flensburg/FlensburgMock.java',
+      '**/flensburg/FlensburgDummyProvider.java',
+      '**/flensburg/FlensburgTestContext.java'
+  ]
   module = 'commonjs'
   workingDir = project.file('target/.jsweet')
   excludeTranspilation = [
-//        '**/*DeSer*.java',
-'flensburg/*DAO.java',
-'flensburg/*DbObserver.java',
-'flensburg/FlensburgManagerImpl.java',
-'flensburg/FlensburgMock.java',
-'flensburg/FlensburgDummyProvider.java',
-'flensburg/FlensburgTestContext.java'
+    '**/flensburg/*DAO.java',
+    '**/flensburg/*DbObserver.java',
+    '**/flensburg/FlensburgManagerImpl.java',
+    '**/flensburg/FlensburgMock.java',
+    '**/flensburg/FlensburgDummyProvider.java',
+    '**/flensburg/FlensburgTestContext.java'
   ]
 }
 
 node {
   download = true
-  version = "12.18.2"
+  version = "18.16.1"
 }
 
-task buildApp(type: NpxTask) {
+task generateNPMAuth(type: NPMAuthCreate)
+//npmInstall.dependsOn(generateNPMAuth)
+
+task buildFlensburgApp(type: NpxTask) {
   command = "ng"
-  args = ["build", "--prod"]
+  args = ["build"]
+  dependsOn(tasks.npmInstall)
+  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
+  inputs.dir(project.fileTree("target/generated-sources/ts"))
+  inputs.dir(project.fileTree("node_modules"))
+  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.app.json")
+  outputs.dir("${project.buildDir}/webapp")
+}
+
+task runFlensburgApp(type: NpxTask) {
+  command = "ng"
+  args = ["serve"]
   dependsOn(tasks.npmInstall)
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")
-  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.app.json")
-  outputs.dir("${project.buildDir}/webapp")
+  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json")
+  outputs.upToDateWhen { true }
 }
 
 compileJava {

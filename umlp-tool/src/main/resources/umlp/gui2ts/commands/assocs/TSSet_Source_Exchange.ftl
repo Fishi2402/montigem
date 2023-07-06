@@ -6,14 +6,14 @@ ${tc.signature( "assoc","sourceName","targetName", "sourceType", "targetType",
 
 ${cd4c.method("protected Promise<StatusResult> exchange${ctargetName}()")}
 
-let ${sourceName}Loaded: boolean = ${definition}Manager.isLoaded${sourceType}(this.${sourceName}GemId);
-let old${ctargetName}Loaded: boolean = ${definition}Manager.isLoaded${targetType}(this.old${ctargetName}GemId);
-let new${ctargetName}Loaded: boolean = ${definition}Manager.isLoaded${targetType}(this.${targetName}GemId);
+let ${sourceName}Loaded: boolean = ${definition}.isLoaded${sourceType}(this.${sourceName}GemId);
+let old${ctargetName}Loaded: boolean = ${definition}.isLoaded${targetType}(this.old${ctargetName}GemId);
+let new${ctargetName}Loaded: boolean = ${definition}.isLoaded${targetType}(this.${targetName}GemId);
 
 let promiseRes1 = Promise.resolve();
 
 if(${sourceName}Loaded){
-  promiseRes1 = ${definition}Manager.get${sourceType}Sure(this.${sourceName}GemId).then(v => {
+  promiseRes1 = ${definition}.get${sourceType}Sure(this.${sourceName}GemId).then(v => {
     let p: ${sourceType} = v;
     // Will automatically change other side of the association
     <#if isTargetList>
@@ -23,7 +23,7 @@ if(${sourceName}Loaded){
     </#if>
   });
 } else if(old${ctargetName}Loaded){
-  promiseRes1 = ${definition}Manager.get${targetType}Sure(this.old${ctargetName}GemId).then(v => {
+  promiseRes1 = ${definition}.get${targetType}Sure(this.old${ctargetName}GemId).then(v => {
     let old${ctargetName}: ${targetType} = v;
     // Does not change other side
   <#if isSourceList>
@@ -39,7 +39,7 @@ if(${sourceName}Loaded){
 let promiseRes2 = Promise.resolve();
 
 if(new${ctargetName}Loaded){
-  promiseRes2 = ${definition}Manager.get${targetType}Sure(this.${targetName}GemId).then(v => {
+  promiseRes2 = ${definition}.get${targetType}Sure(this.${targetName}GemId).then(v => {
     let newLoaded: ${targetType} = v
   <#if isSourceList>
     newLoaded._internal_add${csourceName}(newLoaded.size${csourceName}s(), [this.${sourceName}GemId], NotificationScope.MINIMAL);

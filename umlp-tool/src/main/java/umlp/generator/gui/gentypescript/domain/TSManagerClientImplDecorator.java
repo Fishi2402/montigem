@@ -78,11 +78,11 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
       getCD4C().addImport(clazz, this.astcdPackage + "."
-          + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+          + c.getName());
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
       getCD4C().addImport(clazz, this.astcdPackage + "."
-          + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+          + c.getName());
     }
 
     return clazz;

@@ -10,6 +10,9 @@ import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandObjectMapper;
 import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.command.Participant;
+import umlp.backendrte.command.StatusResult;
+import umlp.backendrte.common.LoadResult;
+import umlp.backendrte.common.LoadingState;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -49,7 +52,19 @@ public class CommandWebSocketService extends TextWebSocketHandler {
       }
       Command command = commandOptional.get();
       CommandResult res = CommandManager.executeCommand(command);
-      returnResult = CommandObjectMapper.serializeResponse(res);
+      // Check if the object was found. If not, then someone might have tried to load a subclass
+      // instance instead of a class instance
+      // TODO AGe: isSuccessful should probably be a part of CommandResult interface
+      // TODO AGe: all cases when such check is needed?
+      if (res.isSimpleResult() && res.asSimpleResult().isSuccessful()
+          || res.isListResult() && res.asListResult().isSuccessful()
+          || res.isStatusResult() && res.asStatusResult().wasSuccessful()
+      ) {
+        returnResult = CommandObjectMapper.serializeResponse(res);
+      }
+      else {
+        returnResult = CommandObjectMapper.serializeResponse(StatusResult.error(command.getId()));
+      }
     } catch (Exception e) {
       returnResult = "Command could not be parsed!";
     }

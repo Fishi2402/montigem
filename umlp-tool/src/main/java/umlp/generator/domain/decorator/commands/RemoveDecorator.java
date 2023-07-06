@@ -52,9 +52,9 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
                       .filter(a -> !a.getModifier().isDerived())
                       .filter(a -> GenService.isList(a))
                       .forEach(a -> {
-                        astcdPackage.addCDElement(createClass(origCD, a.getName(),
-                            ((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0), c, false));
-                        astcdPackage.addCDElement(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false));
+                        astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(),
+                            ((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0), c, false)));
+                        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false)));
                       });
               CDSymbolTables.getAssociations(c)
                       .stream()
@@ -62,8 +62,8 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
                       .filter(a -> !GenService.isBidirectional(a))
                       .filter(a -> GenService.isList(a))
                       .forEach(a -> {
-                        astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true));
-                        astcdPackage.addCDElement(createDeSer(origCD, a.getName(), getSymType("long"), c, true));
+                        astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true)));
+                        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c, true)));
                       });
             });
     origCD.getCDDefinition().getCDInterfacesList().stream()
@@ -74,9 +74,9 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
                       .filter(a -> !a.getModifier().isDerived())
                       .filter(GenService::isList)
                       .forEach(a -> {
-                        astcdPackage.addCDElement(createClass(origCD, a.getName(),
-                            ((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0), c, false));
-                        astcdPackage.addCDElement(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false));
+                        astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(),
+                            ((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0), c, false)));
+                        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false)));
                       });
               CDSymbolTables.getAssociations(c)
                       .stream()
@@ -84,8 +84,8 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
                       .filter(a -> !GenService.isBidirectional(a))
                       .filter(GenService::isList)
                       .forEach(a -> {
-                        astcdPackage.addCDElement(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true));
-                        astcdPackage.addCDElement(createDeSer(origCD, a.getName(), getSymType("long"), c, true));
+                        astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true)));
+                        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c, true)));
                       });
             });
   }
@@ -108,7 +108,7 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     addConstructor(ast, classname, getPackageName(origCD, COMMAND_PACKAGE),
         attrName, isGem ? "long" : type.print());
 
-    getCD4C().addMethod(ast, getDoRunTemplate(), name, domainClass.getName(), origCD.getCDDefinition().getName(), isGem, name);
+    getCD4C().addMethod(ast, getDoRunTemplate(), name, domainClass.getName(), getCorrectManager(domainClass), isGem, name);
     if (isGem) {
       getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList(name + "GemId"));
     } else {
@@ -124,7 +124,7 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + origCD.getCDDefinition().getName() + ManagerDecorator.SUFFIX);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + getCorrectManager(domainClass));
     if (GenService.isCDEnum(type)) {
       getCD4C().addImport(ast,getPackageName(origCD, DEFAULT_PACKAGE)+"."+ type.print());
     } else if (GenService.isJavaType(type)) {

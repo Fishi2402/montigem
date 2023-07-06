@@ -6,7 +6,7 @@ plugins {
 description 'artifacts example'
 
 generateUmlpBackend {
-  configTemplate = "umlp.UMLP2JavaNeo4j"
+  //configTemplate = "umlp.UMLP2JavaNeo4j"
   modelDir.set(project(":examples:artifacts-test").projectDir.toPath().resolve("src").resolve("models").toFile())
 }
 
@@ -15,4 +15,5 @@ dependencies {
   implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
   testImplementation "org.neo4j:neo4j:4.4.10"
   implementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
+  implementation "com.github.javaparser:javaparser-symbol-solver-core:3.25.1"
 }
