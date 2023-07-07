@@ -65,11 +65,16 @@ classdiagram Flensburg {
     Optional<String> category;
   }
 
+  enum Currency {
+    DOLLAR, EURO;
+  }
+
   association [1] Account -> (budget) Budget [*];
 
   class Budget {
     String name;
     long balance;
+    Optional<Currency> cur;
     Optional<String> tag;
     Optional<String> category;
   }
