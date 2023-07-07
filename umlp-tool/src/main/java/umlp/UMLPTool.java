@@ -420,8 +420,7 @@ public class UMLPTool extends UMLPToolTOP {
           Reporting.flush(astGui);
         }
 
-        //create routes file
-
+        //create routes file for every package and
         GeneratorSetup genSetup = new GeneratorSetup();
         // set output directory
         genSetup.setOutputDirectory(outDir);
@@ -434,8 +433,13 @@ public class UMLPTool extends UMLPToolTOP {
         routesMap.values().forEach(astList->
         {
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
-          typeScriptGenerator.generate(astList);
+          typeScriptGenerator.generateRoutingForPackages(astList);
         });
+        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
+        typeScriptGenerator.generateAppRouting(new ArrayList<>(routesMap.values()));
+
+
+
       }
     } catch (ParseException e) {
       printHelp(options);

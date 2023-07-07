@@ -50,7 +50,30 @@ public class GUI2TypeScriptGenerator {
         Arrays.asList(modelAST, setup.getGlex(), setup.getHandcodedPath(), this, viewComponents));
   }
 
-  public void generate(List<ASTGUICompilationUnit> astguiCompilationUnitList)
+  public void generateAppRouting(List<List<ASTGUICompilationUnit>> astguiCompilationUnitList)
+  {
+    this.setup.setTracing(false);
+    GeneratorEngine genEngine = new GeneratorEngine(setup);
+    List<ASTGUICompilationUnit> astguiCompilationUnits=new ArrayList<>();
+    List<String> paths=new ArrayList<>();
+    astguiCompilationUnitList.forEach(asts->{
+      if(!asts.isEmpty())
+      {
+        asts.forEach(ast->{
+          if(util.getRoutingIds(ast).isEmpty()) {
+            astguiCompilationUnits.add(ast);
+            paths.add(String.join("/", ast.getMCPackageDeclaration().getMCQualifiedName().getPartsList()) + "/" + ast.getComponentName() + MODULES_FILE);
+          }
+          });
+      }
+    });
+    Path generatedFiles = Paths.get("",
+        "app."+ ROUTES_FILE + "." + TS_FILE_EXTENSION);
+    genEngine.generateNoA("umlp.gui2ts.TSAppRoutes", generatedFiles,
+        astguiCompilationUnits, paths);
+  }
+
+  public void generateRoutingForPackages(List<ASTGUICompilationUnit> astguiCompilationUnitList)
   {
     this.setup.setTracing(false);
     GeneratorEngine genEngine = new GeneratorEngine(setup);
@@ -76,15 +99,7 @@ public class GUI2TypeScriptGenerator {
       }
       ids.add(idStrings);
     }
-    astguiCompilationUnitList.forEach(ast ->{
-      List<String> idStrings=util.getRoutingIds(ast);
-      if(idStrings.isEmpty())
-      {
-      }
-      else {
-        ids.add(util.getRoutingIds(ast));
-      }
-    });
+
     String pathName=String.join("/", astGuiFirst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
     String temp=astGuiFirst.getPackage();
     String []tempArray=temp.split("\\.");
@@ -94,7 +109,6 @@ public class GUI2TypeScriptGenerator {
         routeName+ ROUTES_FILE + "." + TS_FILE_EXTENSION);
     genEngine.generateNoA("umlp.gui2ts.TSPackageRoutes", generatedFiles,
         astguiCompilationUnitList, ids,fullPathIndex);
-
   }
 
   public void generate(ASTGUICompilationUnit decoratedAst) {
