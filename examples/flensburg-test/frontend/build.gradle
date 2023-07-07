@@ -120,27 +120,6 @@ task serializeCD {
   }
 }
 
-task serializeGUI {
-  dependsOn('serializeCD')
-  doLast {
-    def modelPathStr = "${project.projectDir.parent}/models"
-    def modelPath = Paths.get(modelPathStr)
-    fileTree(modelPathStr).matching {
-      include "**/*.gui"
-    }.each {
-      def path = it.path
-      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
-      javaexec {
-        mainClass = 'de.monticore.guidsl.GUIDSLTool'
-        classpath = configurations.guiParser
-        args "-i", path,
-            "-s", "${symPath}/${relativeModelPathStr}sym",
-            "-path", "${symPath}"
-      }
-    }
-  }
-}
-
 task unpackGUILibSymbols(type: Copy) {
   from zipTree(configurations.guiLib.asPath)
   into "${symPath}"
@@ -153,7 +132,7 @@ task genDomain(type: UMLPTask) {
 }
 
 task genGUI(type: UMLPGuiGenTask) {
-  dependsOn('serializeGUI')
+  dependsOn('serializeCD')
   input = file("../models")
   outputDir = file("$project.buildDir/appgui")
   hwcDir = file("$projectDir/src/app")
@@ -177,11 +156,20 @@ task genGUI2(type: UMLPGuiGenTask) {
 
 task generateNPMAuth(type: NPMAuthCreate)
 
+/*
 yarn_install.dependsOn(generateNPMAuth, genGUI)
 yarn_upgrade.dependsOn(yarn_install)
+/**/
+npm_install.dependsOn(generateNPMAuth, genGUI)
+npm_update.dependsOn(npm_install)
 
+/*
 task buildApp(type: YarnTask) {
   dependsOn('genDomain', yarn_upgrade)
+/**/
+task buildApp(type: NpxTask) {
+  dependsOn('genDomain', npm_install)
+  command = "ng"
   args = ["build"]
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")
@@ -189,8 +177,13 @@ task buildApp(type: YarnTask) {
   outputs.dir("${project.buildDir}/dist")
 }
 
+/*
 task testApp(type: YarnTask) {
   dependsOn('genDomain', yarn_upgrade)
+/**/
+task testApp(type: NpxTask) {
+  dependsOn('genDomain', npm_install)
+  command = "ng"
   args = ["test"]
   inputs.dir("src")
   inputs.dir("node_modules")
@@ -198,8 +191,13 @@ task testApp(type: YarnTask) {
   outputs.upToDateWhen { true }
 }
 
+/*
 task runApp(type: YarnTask) {
   dependsOn('genDomain', yarn_upgrade)
+/**/
+task runApp(type: NpxTask) {
+  dependsOn('genDomain', npm_install)
+  command = "ng"
   args = ["start"]
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")
