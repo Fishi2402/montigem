@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("cdName")}
-${cd4c.method("public void init() throws Exception")}
+${cd4c.method("public void _init() throws Exception")}
 
 ${cdName}TestContext.clear();
 ${cdName}ManagerImpl.init();

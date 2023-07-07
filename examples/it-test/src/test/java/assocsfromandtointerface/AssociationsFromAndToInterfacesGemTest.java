@@ -39,6 +39,7 @@ public class AssociationsFromAndToInterfacesGemTest {
   public static List<AdaptedTestSetup> getSetups() {
     return List.of(
         new AdaptedTestSetup.MockTestSetup(0),
+        // TODO: Ticket #3442
         //new AdaptedTestSetup.DbTestSetup(0),
         new AdaptedTestSetup.MockTestSetup(1)
     );
