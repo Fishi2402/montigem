@@ -33,8 +33,9 @@ page PersonEdit(Person p) {
           // show and edit the nickname
           @GemTextInput(entry = p.nickname),
 
+          // TODO AGe: superclass attr trap
           // show and edit the age as number
-          @GemTextInput(entry = p.age),
+          // @GemTextInput(entry = p.age),
 
           // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
           // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird

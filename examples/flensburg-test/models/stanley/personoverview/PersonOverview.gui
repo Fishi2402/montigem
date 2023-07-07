@@ -57,7 +57,8 @@ page PersonOverview(List<Person> ps) {
 /**/
 page PersonOverview(List<Person> ps) {
   @iterate(Person p : ps) {
-    @GemText(value = p.age);
+    // TODO AGe: superclass attr trap
+    // @GemText(value = p.age);
   }
   box@InfoBox(
     text = "This is some important information that you should know.",

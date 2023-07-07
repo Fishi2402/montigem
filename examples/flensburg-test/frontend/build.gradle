@@ -199,7 +199,8 @@ task runApp(type: YarnTask) {
 task runApp(type: NpxTask) {
   dependsOn('genDomain', npm_install)
   command = "ng"
-  args = ["start"]
+  args = ["serve"]
+  // args = ["start"]
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")
   inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json")
