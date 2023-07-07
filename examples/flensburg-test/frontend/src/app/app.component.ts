@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FlensburgManagerClientImpl } from '@src/flensburg/FlensburgManagerClientImpl';
+import { FlensburgManagerClientImpl } from '@src/hardy/flensburg/FlensburgManagerClientImpl';
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
 
 @Component({
