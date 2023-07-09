@@ -1,12 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 ocl FunctionsStructure {
+
 /*
   Die Dekompositions-Struktur (Architektur) einer Funktion
-  ist eine Baumstruktur 
+  ist eine Baumstruktur, also kein loop und kein DAG.
+  Wir erlauben aber unzusammenhängende Komponenten (Wald).
+  
+  TODO: Bem BR: nachfolgende Spezifikation könnte richtig sein, 
+  aber sie ist auch unnötig, weil "composition" im CD 
+  das per Konstruktion bereits festschreibt.
+  Also löschen.
+  
+  context Function f inv loopFreeHierarchy:
+    !f in f.subfunctions.subfunctions**; 
+
+  context Function f,g,h inv singleContainment:
+    f in g.subfunctions && f in h.subfunctions implies g==h; 
 */
-  context Function f inv treeStructure:
-    !f.subfunctions**.contains(f); // Angenommen die transitive Hülle enthält "f" selbst nicht
 
 
 /*
@@ -15,11 +26,43 @@ ocl FunctionsStructure {
   Hierarchiestufe befinden oder dass es einen validen "Pfad" 
   gibt, welcher sich durch die Hierarchie zieht (Stichwort
   gleiches Portobjekt bei Verknüpfung zw. äußerer und 
-  innterer Funktion)
+  interer Funktion)
+  
+  Dafür folgende Constraints:
 */
-  context Function f1, f2 inv validPath:
-    f1.composit != null && f2.composit != null implies
+
+  /*
+    In each component structure there is only one feed 
+    for an inpout port: either a sister-component or from the outside:
+  */
+  context Function f, InPort p inv validPortStructureInDecomposition:
+      p in f.inPort implies 
+          p in f.owner.inPort xor
+          p in f.owner.subFunction.outPort;
+
+  /*
+    OutPorts are present in the signature of a containing
+    function f, when they are defined inside and used outside
+  */
+  context Function f inv validOutPortPath:
+      let externals = { OutPort p in f.outPort | 
+                  p.in.setminus(f.owner.subfunction**) != {} }
+      in
+        f.owner.outPort.contains(externals);
+
+
+// TODO BR: ... ob das stimmt: ich wage das zu bezweifeln. Aber eine Prüfung wäre sinnvoll
+
+}
+
+
+// TODO Bem BR: Es gibt keine "null" als valider Wert in OCL
+// "composit" existiert nicht, "super" existiert nicht
+// und wenn ich es richtig sehe, dann wird nicht auf Input und Outputseite
+// nach oben navigiert (und das auch noch von verschiedenen Tiefen aus)
+// also dies entfernen
+/*    f1.composit != null && f2.composit != null implies
       forall o in f2.inPort.out:
         o in f1.outPort && f1.composit != f2.composit implies
           o in f1.composit.outPort && o in f2.super.inPort.out // sollte sich dann durch die Struktur durchziehen
-}
+*/
