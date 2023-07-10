@@ -68,6 +68,7 @@ subprojects {
     String taskname = it.name + "__check_report"
     gradle.UMLPTask umlTask = it
     Task t = task "$taskname"(type: gradle.UMLPOutputReportCheck) {
+      dependsOn(umlTask)
       input.from(umlTask.input)
       symbolOutDir.set(umlTask.symbolOutDir)
       outputDir.set(umlTask.outputDir)
