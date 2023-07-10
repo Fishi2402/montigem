@@ -1,5 +1,5 @@
+import gradle.common.CommonUMLPTask
 import gradle.common.UMLPOutputReportCheck
-import gradle.specific.UMLPTask
 
 /* (c) https://github.com/MontiCore/monticore */
 
@@ -67,18 +67,21 @@ build.dependsOn(umlp_check_report)
 subprojects {
   // After every UMLPTask, run basic checks on the generated report
   // e.g. "every generated file is also reported"
-  tasks.withType(UMLPTask).all {
+  tasks.withType(CommonUMLPTask).all {
     String taskname = it.name + "__check_report"
-    UMLPTask umlTask = it
-    Task t = task "$taskname"(type: UMLPOutputReportCheck) {
-      dependsOn(umlTask)
-      input.from(umlTask.input)
-      symbolOutDir.set(umlTask.symbolOutDir)
-      outputDir.set(umlTask.outputDir)
-      reportDir.set(umlTask.reportDir)
-      hwcDir.set(umlTask.hwcDir)
+    CommonUMLPTask umlpTask = it
+    if(!umlpTask.name.equals("guidelta")) {  // ToDo @LN: Reporting for GuiVariabilityHandler
+      Task t = task "$taskname"(type: UMLPOutputReportCheck) {
+        dependsOn(umlpTask)
+        input.from(umlpTask.input)
+        // symbolOutDir.set(umlpTask.symbolOutDir)
+        outputDir.set(umlpTask.outputDir)
+        reportDir.set(umlpTask.reportDir)
+        hwcDir.set(umlpTask.hwcDir)
+        setOriginalTask(umlpTask)
+      }
+      umlp_check_report.dependsOn(t)
     }
-    umlp_check_report.dependsOn(t)
   }
 }
 

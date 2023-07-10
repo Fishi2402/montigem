@@ -3,7 +3,6 @@ package gradle.common;
 
 import com.google.common.collect.Sets;
 import de.se_rwth.commons.logging.Log;
-import gradle.specific.UMLPTask;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
@@ -35,11 +34,13 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
   abstract DirectoryProperty getOutputDir();
 
   @InputDirectory // Nothing is written, only read!
-  @org.gradle.api.tasks.Optional
-  abstract DirectoryProperty getSymbolOutDir();
-
-  @InputDirectory // Nothing is written, only read!
   abstract DirectoryProperty getReportDir();
+
+  private CommonUMLPTask originalTask;
+
+  public void setOriginalTask(CommonUMLPTask originalTask) {
+    this.originalTask = originalTask;
+  }
 
   @TaskAction
   public void run() throws IOException {
@@ -48,12 +49,12 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
     Log.init();
     Log.enableFailQuick(true);
 
-    UMLPTask dummyUMLPTask = this.getProject().getTasks().create("dummyTestTask_usedForOutputReportFrom" + this.getName(), UMLPTask.class);
-    dummyUMLPTask.getReportDir().set(this.getReportDir());
+    CommonUMLPTask dummyUMLPTask = originalTask; // this.getProject().getTasks().create("dummyTestTask_usedForOutputReportFrom" + this.getName(), CommonUMLPTask.class);
+    /*dummyUMLPTask.getReportDir().set(this.getReportDir());
     dummyUMLPTask.getInput().from(this.getInput());
     dummyUMLPTask.getOutputDir().set(this.getOutputDir());
     dummyUMLPTask.getHwcDir().set(this.getHwcDir());
-
+*/
     Map<File, IncGenData> incGenReports = getInput().getAsFileTree().getFiles().stream()
         .filter(dummyUMLPTask::isInputFile)
         .peek(f -> Log.debug("IncGenFile is in: " + dummyUMLPTask.getIncGenFile(f), this.getClass().getName()))
@@ -110,24 +111,25 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
       }
 
       List<String> allowedOutputPaths = new ArrayList<>();
-      allowedOutputPaths.add(this.getOutputDir().get().getAsFile().getCanonicalPath());
-      if(this.getSymbolOutDir().isPresent()) {
-        allowedOutputPaths.add(this.getSymbolOutDir().get().getAsFile().getCanonicalPath());
+      for(File f: dummyUMLPTask.getOutputs().getFiles().getFiles()){
+        allowedOutputPaths.add(f.getCanonicalPath());
       }
+      assert(allowedOutputPaths.contains(this.getOutputDir().get().getAsFile().getCanonicalPath()));
+
       for (File f : reportedGenFiles) {
         String fcanon = f.getCanonicalPath();
         if (allowedOutputPaths.stream().noneMatch(fcanon::startsWith)) {
-          Log.error("0xahfh3a Reported Generated File is _not_ in the outputDirectory or the symbolOutDir. \n" +
+          Log.error("0xahfh3a Reported Generated File is _not_ in the outputs tracked by gradle. \n" +
               "All generated files must be in the declared output directories of the gradle task, otherwise gradle cannot track the state correctly.\n" +
               "File: " + f.getPath()
           );
         }
       }
 
-      Set<File> falslyReportedGenFiles = Sets.difference(reportedGenFiles, realGenFiles);
-      if (!falslyReportedGenFiles.isEmpty()) {
+      Set<File> falselyReportedGenFiles = Sets.difference(reportedGenFiles, realGenFiles);
+      if (!falselyReportedGenFiles.isEmpty()) {
         Log.warn("Files are reported wrongly reported as generated, which do not exist. \n" +
-            "\t" + falslyReportedGenFiles.stream().map(File::getPath).collect(Collectors.joining("\n\t"))
+            "\t" + falselyReportedGenFiles.stream().map(File::getPath).collect(Collectors.joining("\n\t"))
         );
       }
     }
