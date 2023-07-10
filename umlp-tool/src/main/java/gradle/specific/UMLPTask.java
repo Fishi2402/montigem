@@ -144,6 +144,10 @@ public abstract class UMLPTask extends UMLPSingleFileTask {
   @Override
   protected void prepareRun(){
     super.prepareRun();
-    System.err.println("Using <UMLPTask> is deprecated! The functionality will be removed 20.07.2023!");
+    System.err.println("Using <UMLPTask> is deprecated! The functionality will be removed after 20.07.2023!\n" +
+        "Instead use these alternatives: \n" +
+        "\t <UMLPBackendTask> to generate java backend\n" +
+        "\t ???? for cd2gui\n" +
+        "\t ???? to generate typescript frontend");
   }
 }

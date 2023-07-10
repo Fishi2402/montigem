@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
+import gradle.common.CommonUMLPTask;
+import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -29,7 +31,7 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     project.getPluginManager().apply(UMLPPluginBase.class);
     project.getPluginManager().apply("java");
 
-    TaskProvider<UMLPTask> umlpTask = createUMLPBackendTask(project);
+    TaskProvider<UMLPBackendTask> umlpTask = createUMLPBackendTask(project);
     // Generate Backend must run before JavaCompile
     project.getTasks().withType(AbstractCompile.class).configureEach(compile -> {
       compile.dependsOn(umlpTask);
@@ -43,7 +45,7 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
   }
 
   // Add generated files to SourceSets
-  private void addToSourceSet(Project project, UMLPTask umlpTask) {
+  private void addToSourceSet(Project project, UMLPBackendTask umlpTask) {
     JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
     SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
     main.getJava().srcDir(umlpTask.getOutputDir());
@@ -52,8 +54,8 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     main.getResources().srcDir(umlpTask.getOutputDir().dir("resources"));
   }
 
-  protected TaskProvider<UMLPTask> createUMLPBackendTask(final Project project) {
-    final TaskProvider<UMLPTask> result = project.getTasks().register(UMLP_BACKEND_TASK_NAME, UMLPTask.class, umlpTask -> {
+  protected TaskProvider<UMLPBackendTask> createUMLPBackendTask(final Project project) {
+    final TaskProvider<UMLPBackendTask> result = project.getTasks().register(UMLP_BACKEND_TASK_NAME, UMLPBackendTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
 
       setIfPathExists(umlpTask::setInput, Path.of(

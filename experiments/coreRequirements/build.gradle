@@ -29,7 +29,7 @@ sourceSets {
 }
 
 compileJava {
-    dependsOn project.collect { it.tasks.withType(UMLPTask) }
+    dependsOn project.collect { it.tasks.withType(UMLPBackendTask) }
 }
 
 repositories {
@@ -81,7 +81,7 @@ task guidelta(type: GuiVariabilityHandlerTask) {
 }
 
 /*
-task generateFlensburg(type: UMLPTask) {
+task generateFlensburg(type: UMLPBackendTask) {
     dependsOn(generateCDTOGUI)
     input = (file("models/hardy"))
     outputDir = layout.buildDirectory.dir("genumlp/hardy")

@@ -114,7 +114,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
       getDebug().convention(false);
     }
     this.getOutputs().doNotCacheIf("Do not cache when debugging is enabled",
-        (task) ->  ((UMLPTask)task).getDebug().get());
+        (task) ->  ((CommonUMLPTask)task).getDebug().get());
   }
 
   /** Create CLI-Arguments for UMLPTool. Notice that "input" parameter is not set, must be added in subclass

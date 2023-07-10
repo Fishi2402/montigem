@@ -2,6 +2,7 @@
 package gradle;
 
 import gradle.specific.NPMAuthCreate;
+import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPGuiGenTask;
 import gradle.specific.merge.UMLPMergeTask;
 import gradle.specific.UMLPTask;
@@ -21,6 +22,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       project.getExtensions().getExtraProperties().set("UMLPMergeTask", UMLPMergeTask.class);
       project.getExtensions().getExtraProperties().set("UMLPGuiGenTask", UMLPGuiGenTask.class);
       project.getExtensions().getExtraProperties().set("NPMAuthCreate", NPMAuthCreate.class);
+      project.getExtensions().getExtraProperties().set("UMLPBackendTask", UMLPBackendTask.class);
 
       StatisticListener.registerOnce(project);
     }
