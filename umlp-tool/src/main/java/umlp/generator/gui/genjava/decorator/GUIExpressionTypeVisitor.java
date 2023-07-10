@@ -73,11 +73,9 @@ public class GUIExpressionTypeVisitor implements ExpressionsBasisVisitor2, Commo
       ts = intermediate;
     }
     if (ts.isPresent()) {
-      for (VariableSymbol vs : ts.get().getVariableList()) {
-        if (vs.getName().equals(node.getName())) {
-          res = Optional.ofNullable(vs.getType());
-          break;
-        }
+      Optional<VariableSymbol> vs = ts.get().getSpannedScope().resolveVariable(node.getName());
+      if (vs.isPresent()) {
+        res = Optional.ofNullable(vs.get().getType());
       }
     }
   }
