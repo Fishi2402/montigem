@@ -130,20 +130,20 @@ public abstract class UMLPTask extends UMLPSingleFileTask {
 
   @Internal
   @Override
-  protected Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
+  public Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
     Set<Provider<? extends FileSystemLocation>> result = new HashSet<>(super.getOtherInputDirectories());
     result.add(getModelDir());
     return result;
   }
 
   @Override
-  protected boolean isInputFile(File f) {
+  public boolean isInputFile(File f) {
     return f.getName().endsWith(".umlp") || f.getName().endsWith(".gui");
   }
 
   @Override
   protected void prepareRun(){
     super.prepareRun();
-    Log.warn("Using <UMLPTask> is deprecated! The functionality will be removed 20.07.2023!");
+    System.err.println("Using <UMLPTask> is deprecated! The functionality will be removed 20.07.2023!");
   }
 }

@@ -175,7 +175,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
 
 
   @Internal
-  protected Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
+  public Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
     return Set.of(getHwcDir());
   }
   protected Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {

@@ -21,7 +21,7 @@ abstract public class UMLPSingleFileTask extends CommonUMLPTask {
    * @param f file which should be checked
    * @return if file should be used as input for UMLPTool
    */
-  protected boolean isInputFile(File f){
+  public boolean isInputFile(File f){
     return true;
   }
 
