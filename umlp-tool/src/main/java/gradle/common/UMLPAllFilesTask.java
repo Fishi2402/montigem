@@ -3,6 +3,7 @@ package gradle.common;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.file.Directory;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.work.InputChanges;
 import umlp.UMLPToolOptions;
@@ -21,6 +22,7 @@ abstract public class UMLPAllFilesTask extends CommonUMLPTask {
     return getReportDir().get();
   }
 
+  @Internal
   protected Stream<File> getInputFilesAsStream() {
     return this.getInput().getAsFileTree().getFiles().stream()
         .filter(File::isFile)
