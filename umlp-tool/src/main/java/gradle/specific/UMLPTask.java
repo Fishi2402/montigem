@@ -102,16 +102,6 @@ public abstract class UMLPTask extends UMLPSingleFileTask {
       result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
     }
 
-    if(this.getTmplDir().isPresent()) {
-      result.add("-fp");
-      result.add(handlePath.apply(getTmplDir().getAsFile().get().toPath()));
-    }
-
-    if(this.getConfigTemplate().isPresent()){
-      result.add("-ct");
-      result.add(getConfigTemplate().get());
-    }
-
     if(this.getCdToGui().get()){
       result.add("-" + UMLPToolOptions.CD2GUI.getCMD());
     }

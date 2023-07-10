@@ -70,6 +70,16 @@ public abstract class CommonUMLPTask extends DefaultTask {
   @IgnoreEmptyDirectories
   public abstract DirectoryProperty getHwcDir();
 
+  @InputDirectory
+  @org.gradle.api.tasks.Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @IgnoreEmptyDirectories
+  // Do not add "@Incremental" (unless you really know what you are doing)
+  public abstract DirectoryProperty getTmplDir();
+
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<String> getConfigTemplate();
 
   @Input
   @org.gradle.api.tasks.Optional
@@ -131,6 +141,16 @@ public abstract class CommonUMLPTask extends DefaultTask {
 
     result.add("-" + UMLPToolOptions.REPORT_BASE.getCMD());
     result.add(handlePath.apply(getProject().getProjectDir().toPath()));
+
+    if(this.getTmplDir().isPresent()) {
+      result.add("-" + UMLPToolOptions.TMPL_PATH.getCMD());
+      result.add(handlePath.apply(getTmplDir().getAsFile().get().toPath()));
+    }
+
+    if(this.getConfigTemplate().isPresent()){
+      result.add("-" + UMLPToolOptions.CFGTMPL.getCMD());
+      result.add(getConfigTemplate().get());
+    }
 
     if(getHwcDir().isPresent()) {
       result.add("-" + UMLPToolOptions.HWC_PATH.getCMD());

@@ -36,17 +36,6 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
   @org.gradle.api.tasks.Optional
   public abstract DirectoryProperty getSymbolOutDir();
 
-  @InputDirectory
-  @org.gradle.api.tasks.Optional
-  @PathSensitive(PathSensitivity.RELATIVE)
-  @IgnoreEmptyDirectories
-  // Do not add "@Incremental" (unless you really know what you are doing)
-  public abstract DirectoryProperty getTmplDir();
-
-  @Input
-  @org.gradle.api.tasks.Optional
-  public abstract Property<String> getConfigTemplate();
-
   @Input
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getUseSpring();
@@ -80,16 +69,6 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
     if(this.getSymbolOutDir().isPresent()) {
       result.add("-s");
       result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
-    }
-
-    if(this.getTmplDir().isPresent()) {
-      result.add("-fp");
-      result.add(handlePath.apply(getTmplDir().getAsFile().get().toPath()));
-    }
-
-    if(this.getConfigTemplate().isPresent()){
-      result.add("-ct");
-      result.add(getConfigTemplate().get());
     }
 
     if(this.getUseSpring().get()){
