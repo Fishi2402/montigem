@@ -77,9 +77,12 @@ task runServer {
 
 task serializeGUI {
   dependsOn('generateUmlpBackend', 'unpackGUILibSymbols')
+  inputs.dir(file("${project.projectDir.parent}/models/stanley"))
+  outputs.dir(file("$project.buildDir/symbols/stanley"))
   doLast {
     def modelPathStr = "${project.projectDir.parent}/models"
     def modelPath = Paths.get(modelPathStr)
+
     fileTree(modelPathStr).matching {
       include "**/*.gui"
     }.each {
