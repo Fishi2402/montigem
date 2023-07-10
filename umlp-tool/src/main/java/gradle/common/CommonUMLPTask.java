@@ -4,6 +4,7 @@ import de.se_rwth.commons.logging.Log;
 import gradle.specific.UMLPTask;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.provider.ListProperty;
@@ -208,6 +209,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
   }
 
   protected void prepareRun(){
+    Log.info("Starting Task", this.getName());
     if(getDebug().get()){
       Log.warn("Task is running in debug modus and isolation is disabled. This can lead to errors, especially when two UMLPTasks are running parallel. \n" +
           "Deactivate debug modus once debugging is finished!");
@@ -216,5 +218,32 @@ public abstract class CommonUMLPTask extends DefaultTask {
     checkParameters();
     workQueue = getWorkerExecutor().classLoaderIsolation();
   }
+
+  /**
+   *
+   * @param f file which should be checked
+   * @return if file should be used as input for UMLPTool
+   */
+  public boolean isInputFile(File f){
+    return true;
+  }
+
+  /**
+   * @param f File, which is used as tool-input
+   * @return Sub-Directory in <ReportDir>, where reports for input file should be stored
+   */
+  protected abstract Directory getReportDirOfFile(File f);
+
+  /**
+   * @param inputFile File, which is used as tool-input
+   * @return Generated 'IncGenGradleCheck' file from previous run. File might not always exist.
+   */
+  protected File getIncGenFile(File inputFile) {
+    assert(isInputFile(inputFile));
+    return getReportDirOfFile(inputFile).dir(
+        inputFile.getName().toLowerCase().replace(".", "__")
+    ).file("IncGenGradleCheck.txt").getAsFile();
+  }
+
 
 }

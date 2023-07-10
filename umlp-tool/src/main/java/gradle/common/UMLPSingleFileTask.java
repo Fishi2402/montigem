@@ -16,32 +16,11 @@ import java.util.List;
 import java.util.function.Function;
 
 abstract public class UMLPSingleFileTask extends CommonUMLPTask {
-  /**
-   *
-   * @param f file which should be checked
-   * @return if file should be used as input for UMLPTool
-   */
-  public boolean isInputFile(File f){
-    return true;
-  }
 
-  /**
-   * @param f File, which is used as tool-input
-   * @return Sub-Directory in <ReportDir>, where reports for input file should be stored
-   */
+  @Override
   protected Directory getReportDirOfFile(File f) {
     String pathName = f.getName();
     return getReportDir().dir(pathName.replace(".", "__")).get();
-  }
-
-  /**
-   * @param inputFile File, which is used as tool-input
-   * @return Generated 'IncGenGradleCheck' file from previous run. File might not always exist.
-   */
-  protected File getIncGenFile(File inputFile) {
-    return getReportDirOfFile(inputFile).dir(
-        inputFile.getName().toLowerCase().replace(".", "__")
-    ).file("IncGenGradleCheck.txt").getAsFile();
   }
 
   protected void deletePreviousOutput(File f, IncGenData lastRun) {
@@ -83,7 +62,7 @@ abstract public class UMLPSingleFileTask extends CommonUMLPTask {
     );
 
     List<String> args = createArgList(f.toPath(), p -> p.toAbsolutePath().toString());
-    super.startGeneration(args);
+    startGeneration(args);
   }
 
   /**
@@ -107,7 +86,6 @@ abstract public class UMLPSingleFileTask extends CommonUMLPTask {
 
   @TaskAction
   public void run(InputChanges inputChanges) {
-    Log.info("Starting Task", this.getName());
     prepareRun();
 
     // Remove Artifacts from deleted inputs
