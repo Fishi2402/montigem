@@ -169,17 +169,15 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
     Person p1001C1 = FlensburgManager.getPersonSure(gemId);
     PersonEdit e1 = new PersonEdit(p1001C1);
 
-    // no error initially in the GUI of client
-    // TODO MB assertEquals("", e1.getGemNumberInputComp2ValueError());
     // work on server
     backendContext.activate();
     Person p1001S = FlensburgManager.getPersonSure(gemId);
     // set invalid age
     p1001S.setAge(15);
+    // TODO MB assertEquals(24, p1001S.getAge());
 
-    // error is shown in GUI of client
-    // TODO MB assertEquals("Age 15 of Person with gemId 1001 is invalid!",
-    //    e1.getGemNumberInputComp2ValueError());
+    clientContext1.activate();
+    // TODO MB assertEquals(24, p1001C1.getAge());
   }
 
   /**
@@ -225,10 +223,6 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
     PersonEdit e1 = new PersonEdit(p1001C1);
     // put invalid value into input field
     e1.setGemTextInput5Entry("15");
-
-    // error check happens in client and shows error
-    // TODO MB assertEquals("Age 15 of Person with gemId 1001 is invalid!",
-    //    e1.getGemNumberInputComp2ValueError());
 
     // work on server
     backendContext.activate();
