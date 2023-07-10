@@ -39,12 +39,13 @@ public abstract class UMLPTask extends CommonUMLPTask {
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental
+  @Incremental  // This Annotation requires custom java-logic to run correctly. See "getOtherInputDirectories()"
   public abstract DirectoryProperty getModelDir();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
+  // No @Incremental, changes of the Symbols lead to full rebuild
   public abstract DirectoryProperty getSymbolDir();
 
   @OutputDirectory
