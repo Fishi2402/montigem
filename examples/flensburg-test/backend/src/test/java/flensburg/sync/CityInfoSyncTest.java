@@ -1,13 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
-package flensburg.gui.sync;
+package flensburg.sync;
 
 // RTE-T: Testet Infrastruktur für die Synchronisation
 // HWC-GT: Testet synchronisation der Klasse CityInfo
 
-import infrastructure.command.FlensburgManagerClientImplBuilder;
+import flensburg.infrastructure.FlensburgManagerClientImplBuilder;
+import hardy.flensburg.Address;
+import hardy.flensburg.Car;
+import hardy.flensburg.CityInfo;
+import hardy.flensburg.FlensburgManager;
+import hardy.flensburg.FlensburgMock;
+import hardy.flensburg.FlensburgTestContext;
+import hardy.flensburg.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import stanley.FlensburgTestContext;
 
 import java.util.List;
 
@@ -24,7 +30,7 @@ public class CityInfoSyncTest {
     FlensburgMock.init();
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
     long startGemId = 1001L;
-    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    FlensburgMock.secretlyAdaptNextGemId(startGemId);
 
     Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
     Person p1 = FlensburgManager.personBuilder().mainResidence(addr).age(20).nickname("Smith").build().get();
@@ -33,15 +39,15 @@ public class CityInfoSyncTest {
     Person p2 = FlensburgManager.personBuilder().mainResidence(addr2).age(20).nickname("Doe").build().get();
 
 
-    FlensburgMock.secretlyAdaptnextGemIds(3001L);
-    Car c1 = FlensburgManager.carBuilder().build().get();
-    Car c2 = FlensburgManager.carBuilder().build().get();
-    Car c3 = FlensburgManager.carBuilder().build().get();
+    FlensburgMock.secretlyAdaptNextGemId(3001L);
+    Car c1 = FlensburgManager.carBuilder().wheelLeft(true).build().get();
+    Car c2 = FlensburgManager.carBuilder().wheelLeft(true).build().get();
+    Car c3 = FlensburgManager.carBuilder().wheelLeft(true).build().get();
     p1.addOwns(c1);
     p1.addOwns(c2);
     p1.addOwns(c3);
 
-    Car c4 = FlensburgManager.carBuilder().build().get();
+    Car c4 = FlensburgManager.carBuilder().wheelLeft(true).build().get();
     p2.addOwns(c4);
 
 
@@ -66,7 +72,7 @@ public class CityInfoSyncTest {
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
     FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder().backendContext(serverContext).build().get();
     long startGemId = 1001L;
-    FlensburgMock.secretlyAdaptnextGemIds(startGemId);
+    FlensburgMock.secretlyAdaptNextGemId(startGemId);
 
     Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
     Person p1 = FlensburgManager.personBuilder().mainResidence(addr).age(20).nickname("Smith").build().get();
@@ -75,15 +81,15 @@ public class CityInfoSyncTest {
     Person p2 = FlensburgManager.personBuilder().mainResidence(addr2).age(20).nickname("Doe").build().get();
 
 
-    FlensburgMock.secretlyAdaptnextGemIds(3001L);
-    Car c1 = FlensburgManager.carBuilder().build().get();
-    Car c2 = FlensburgManager.carBuilder().build().get();
-    Car c3 = FlensburgManager.carBuilder().build().get();
+    FlensburgMock.secretlyAdaptNextGemId(3001L);
+    Car c1 = FlensburgManager.carBuilder().wheelLeft(true).build().get();
+    Car c2 = FlensburgManager.carBuilder().wheelLeft(true).build().get();
+    Car c3 = FlensburgManager.carBuilder().wheelLeft(true).build().get();
     p1.addOwns(c1);
     p1.addOwns(c2);
     p1.addOwns(c3);
 
-    Car c4 = FlensburgManager.carBuilder().build().get();
+    Car c4 = FlensburgManager.carBuilder().wheelLeft(true).build().get();
     p2.addOwns(c4);
 
     clientContext1.activate();
