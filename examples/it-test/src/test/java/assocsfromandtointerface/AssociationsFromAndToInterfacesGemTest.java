@@ -4,7 +4,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import umlp.backendrte.common.LoadingState;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static assocsfromandtointerface.AssocsFromAndToInterfaceManager.aC5ImplBuilder;
@@ -37,24 +36,26 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AssociationsFromAndToInterfacesGemTest {
 
-  public static List<TestSetup> getSetups() {
+  public static List<AdaptedTestSetup> getSetups() {
     return List.of(
-        new MockTestSetup(),
-        new DBTestSetup(),
-        new ClientTestSetup()
+        new AdaptedTestSetup.MockTestSetup(0),
+        // TODO: Ticket #3442
+        //new AdaptedTestSetup.DbTestSetup(0),
+        new AdaptedTestSetup.MockTestSetup(1)
     );
   }
 
   @ParameterizedTest
   @MethodSource("getSetups")
-  public void testClassToInterfaceDuringSetup(TestSetup setup) throws SQLException {
-    setup.initialize();
+  public void testClassToInterfaceDuringSetup(AdaptedTestSetup setup) throws Exception {
+    setup.init();
     try {
       I5 i5 = i5ImplBuilder().build().get();
       C5 c5 = c5Builder().i5(i5).build().get();
 
       // Reload from remote(if remote exists)
-      setup.clearCacheOfRemote();
+      setup.clearCaches();
+
       i5 = getI5Sure(i5.getGemId());
       c5 = getC5Sure(c5.getGemId());
 
@@ -67,8 +68,8 @@ public class AssociationsFromAndToInterfacesGemTest {
 
   @ParameterizedTest
   @MethodSource("getSetups")
-  public void testClassToInterfaceAfterSetup(TestSetup setup) throws SQLException {
-    setup.initialize();
+  public void testClassToInterfaceAfterSetup(AdaptedTestSetup setup) throws Exception {
+    setup.init();
     try {
       I5 i5 = i5ImplBuilder().build().get();
       C5 c5 = c5Builder().build().get();
@@ -77,7 +78,7 @@ public class AssociationsFromAndToInterfacesGemTest {
       c5.setI5(i5);
 
       // Reload from remote(if remote exists)
-      setup.clearCacheOfRemote();
+      setup.clearCaches();
       i5 = getI5Sure(i5.getGemId());
       c5 = getC5Sure(c5.getGemId());
 
@@ -90,14 +91,14 @@ public class AssociationsFromAndToInterfacesGemTest {
 
   @ParameterizedTest
   @MethodSource("getSetups")
-  public void testInterfaceToClassDuringSetup(TestSetup setup) throws SQLException {
-    setup.initialize();
+  public void testInterfaceToClassDuringSetup(AdaptedTestSetup setup) throws Exception {
+    setup.init();
     try {
       C6 c6 = c6Builder().build().get();
       I6 i6 = i6ImplBuilder().c6(c6).build().get();
 
       // Reload from remote(if remote exists)
-      setup.clearCacheOfRemote();
+      setup.clearCaches();
       c6 = getC6Sure(c6.getGemId());
       i6 = getI6Sure(i6.getGemId());
 
@@ -110,8 +111,8 @@ public class AssociationsFromAndToInterfacesGemTest {
 
   @ParameterizedTest
   @MethodSource("getSetups")
-  public void testInterfaceToClassAfterSetup(TestSetup setup) throws SQLException {
-    setup.initialize();
+  public void testInterfaceToClassAfterSetup(AdaptedTestSetup setup) throws Exception {
+    setup.init();
     try {
       C6 c6 = c6Builder().build().get();
       I6 i6 = i6ImplBuilder().build().get();
@@ -121,7 +122,7 @@ public class AssociationsFromAndToInterfacesGemTest {
       i6.setC6(c6);
 
       // Reload from remote(if remote exists)
-      setup.clearCacheOfRemote();
+      setup.clearCaches();
       c6 = getC6Sure(c6.getGemId());
       i6 = getI6Sure(i6.getGemId());
 
@@ -134,14 +135,14 @@ public class AssociationsFromAndToInterfacesGemTest {
 
   @ParameterizedTest
   @MethodSource("getSetups")
-  public void testInterfaceToInterfaceDuringSetup(TestSetup setup) throws SQLException {
-    setup.initialize();
+  public void testInterfaceToInterfaceDuringSetup(AdaptedTestSetup setup) throws Exception {
+    setup.init();
     try {
       I8 i8 = i8ImplBuilder().build().get();
       I7 i7 = i7ImplBuilder().i8(i8).build().get();
 
       // Reload from remote(if remote exists)
-      setup.clearCacheOfRemote();
+      setup.clearCaches();
       i8 = getI8Sure(i8.getGemId());
       i7 = getI7Sure(i7.getGemId());
 
@@ -154,8 +155,8 @@ public class AssociationsFromAndToInterfacesGemTest {
 
   @ParameterizedTest
   @MethodSource("getSetups")
-  public void testInterfaceToInterfaceAfterSetup(TestSetup setup) throws SQLException {
-    setup.initialize();
+  public void testInterfaceToInterfaceAfterSetup(AdaptedTestSetup setup) throws Exception {
+    setup.init();
     try {
       I8 i8 = i8ImplBuilder().build().get();
       I7 i7 = i7ImplBuilder().build().get();
@@ -165,7 +166,7 @@ public class AssociationsFromAndToInterfacesGemTest {
       i7.setI8(i8);
 
       // Reload from remote(if remote exists)
-      setup.clearCacheOfRemote();
+      setup.clearCaches();
       i8 = getI8Sure(i8.getGemId());
       i7 = getI7Sure(i7.getGemId());
 
@@ -179,14 +180,14 @@ public class AssociationsFromAndToInterfacesGemTest {
 
   @ParameterizedTest
   @MethodSource("getSetups")
-  public void testClassToAbstractClassDuringSetup(TestSetup setup) throws SQLException {
-    setup.initialize();
+  public void testClassToAbstractClassDuringSetup(AdaptedTestSetup setup) throws Exception {
+    setup.init();
     try {
       AC5 aC5 = aC5ImplBuilder().build().get();
       C7 c7 = c7Builder().aC5(aC5).build().get();
 
       // Reload from remote(if remote exists)
-      setup.clearCacheOfRemote();
+      setup.clearCaches();
       aC5 = getAC5Sure(aC5.getGemId());
       c7 = getC7Sure(c7.getGemId());
 
@@ -199,8 +200,8 @@ public class AssociationsFromAndToInterfacesGemTest {
 
   @ParameterizedTest
   @MethodSource("getSetups")
-  public void testClassToAbstractClassAfterSetup(TestSetup setup) throws SQLException {
-    setup.initialize();
+  public void testClassToAbstractClassAfterSetup(AdaptedTestSetup setup) throws Exception {
+    setup.init();
     try {
       AC5 aC5 = aC5ImplBuilder().build().get();
       C7 c7 = c7Builder().build().get();
@@ -209,7 +210,7 @@ public class AssociationsFromAndToInterfacesGemTest {
       c7.setAC5(aC5);
 
       // Reload from remote(if remote exists)
-      setup.clearCacheOfRemote();
+      setup.clearCaches();
       aC5 = getAC5Sure(aC5.getGemId());
       c7 = getC7Sure(c7.getGemId());
 
@@ -222,14 +223,14 @@ public class AssociationsFromAndToInterfacesGemTest {
 
   @ParameterizedTest
   @MethodSource("getSetups")
-  public void testAbstractClassToClassDuringSetup(TestSetup setup) throws SQLException {
-    setup.initialize();
+  public void testAbstractClassToClassDuringSetup(AdaptedTestSetup setup) throws Exception {
+    setup.init();
     try {
       C8 c8 = c8Builder().build().get();
       AC6 aC6 = aC6ImplBuilder().c8(c8).build().get();
 
       // Reload from remote(if remote exists)
-      setup.clearCacheOfRemote();
+      setup.clearCaches();
       c8 = getC8Sure(c8.getGemId());
       aC6 = getAC6Sure(aC6.getGemId());
 
@@ -242,8 +243,8 @@ public class AssociationsFromAndToInterfacesGemTest {
 
   @ParameterizedTest
   @MethodSource("getSetups")
-  public void testAbstractClassToClassAfterSetup(TestSetup setup) throws SQLException {
-    setup.initialize();
+  public void testAbstractClassToClassAfterSetup(AdaptedTestSetup setup) throws Exception {
+    setup.init();
     try {
       C8 c8 = c8Builder().build().get();
       AC6 aC6 = aC6ImplBuilder().build().get();
@@ -253,7 +254,7 @@ public class AssociationsFromAndToInterfacesGemTest {
       aC6.setC8(c8);
 
       // Reload from remote(if remote exists)
-      setup.clearCacheOfRemote();
+      setup.clearCaches();
       c8 = getC8Sure(c8.getGemId());
       aC6 = getAC6Sure(aC6.getGemId());
 
@@ -266,14 +267,14 @@ public class AssociationsFromAndToInterfacesGemTest {
 
   @ParameterizedTest
   @MethodSource("getSetups")
-  public void testAbstractClassToAbstractClassDuringSetup(TestSetup setup) throws SQLException {
-    setup.initialize();
+  public void testAbstractClassToAbstractClassDuringSetup(AdaptedTestSetup setup) throws Exception {
+    setup.init();
     try {
       AC8 aC8 = aC8ImplBuilder().build().get();
       AC7 aC7 = aC7ImplBuilder().aC8(aC8).build().get();
 
       // Reload from remote(if remote exists)
-      setup.clearCacheOfRemote();
+      setup.clearCaches();
       aC8 = getAC8Sure(aC8.getGemId());
       aC7 = getAC7Sure(aC7.getGemId());
 
@@ -286,8 +287,8 @@ public class AssociationsFromAndToInterfacesGemTest {
 
   @ParameterizedTest
   @MethodSource("getSetups")
-  public void testAbstractClassToAbstractClassAfterSetup(TestSetup setup) throws SQLException {
-    setup.initialize();
+  public void testAbstractClassToAbstractClassAfterSetup(AdaptedTestSetup setup) throws Exception {
+    setup.init();
     try {
       AC8 aC8 = aC8ImplBuilder().build().get();
       AC7 aC7 = aC7ImplBuilder().build().get();
@@ -297,7 +298,7 @@ public class AssociationsFromAndToInterfacesGemTest {
       aC7.setAC8(aC8);
 
       // Reload from remote(if remote exists)
-      setup.clearCacheOfRemote();
+      setup.clearCaches();
       aC8 = getAC8Sure(aC8.getGemId());
       aC7 = getAC7Sure(aC7.getGemId());
 

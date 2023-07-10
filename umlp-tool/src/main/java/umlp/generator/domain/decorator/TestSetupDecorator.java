@@ -12,7 +12,9 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
+import java.util.List;
+
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class TestSetupDecorator extends AbstractDecorator {
   public static final String PACK_TEST_INFRASTRUCTURE = "test_infrastructure";
@@ -34,15 +36,19 @@ public class TestSetupDecorator extends AbstractDecorator {
     String name = origCD.getCDDefinition().getName();
 
     ASTCDClass res = UMLPMill.cDClassBuilder()
-        .setModifier(PUBLIC_ABSTRACT.build())
-        .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("umlp.backendrte.test_infrastructure.TestSetup"))
+        .setModifier(PUBLIC.build())
+        .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("umlp.backendrte.test_infrastructure.TestSetup<" + name + "TestContext>"))
         .setName(name + MOCK_TEST_SETUP).build();
 
     // Attributes
     String testContextClass = name + TestContextDecorator.SUFFIX;
-    getCD4C().addAttribute(res, false, false, "protected " + testContextClass + " backend;");
-    ASTCDAttribute clientsAttr = getCD4C().addAttribute(res, false, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
+    getCD4C().addAttribute(res, true, false, "protected " + testContextClass + " backend;");
+    ASTCDAttribute clientsAttr = getCD4C().addAttribute(res, true, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
     glex.replaceTemplate("cd2java.Value", clientsAttr, new StringHookPoint(" = new ArrayList<>();"));
+    ASTCDAttribute numberOfClientsArg = getCD4C().addAttribute(res, true, false, "protected int numberOfClients;");
+
+    // Constructor
+    getCD4C().addConstructor(res, "umlp.common.BasicConstructor", res.getName(), List.of(numberOfClientsArg));
 
     // Methods
     getCD4C().addMethod(res, "umlp.test_infrastructure.mockTestSetup.Init", name);
@@ -55,15 +61,19 @@ public class TestSetupDecorator extends AbstractDecorator {
     String name = origCD.getCDDefinition().getName();
 
     ASTCDClass res = UMLPMill.cDClassBuilder()
-        .setModifier(PUBLIC_ABSTRACT.build())
-        .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("umlp.backendrte.test_infrastructure.TestSetup"))
+        .setModifier(PUBLIC.build())
+        .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("umlp.backendrte.test_infrastructure.TestSetup<" + name + "TestContext>"))
         .setName(name + DB_TEST_SETUP).build();
 
     // Attributes
     String testContextClass = name + TestContextDecorator.SUFFIX;
-    getCD4C().addAttribute(res, false, false, "protected " + testContextClass + " backend;");
-    ASTCDAttribute clientsAttr = getCD4C().addAttribute(res, false, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
+    getCD4C().addAttribute(res, true, false, "protected " + testContextClass + " backend;");
+    ASTCDAttribute clientsAttr = getCD4C().addAttribute(res, true, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
     glex.replaceTemplate("cd2java.Value", clientsAttr, new StringHookPoint(" = new ArrayList<>();"));
+    ASTCDAttribute numberOfClientsArg = getCD4C().addAttribute(res, true, false, "protected int numberOfClients;");
+
+    // Constructor
+    getCD4C().addConstructor(res, "umlp.common.BasicConstructor", res.getName(), List.of(numberOfClientsArg));
 
     // Methods
     getCD4C().addMethod(res, "umlp.test_infrastructure.dbTestSetup.Init", name);
@@ -91,5 +101,7 @@ public class TestSetupDecorator extends AbstractDecorator {
     getCD4C().addImport(type, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "DatabaseAccessManager"));
     getCD4C().addImport(type, "java.nio.charset.StandardCharsets");
     getCD4C().addImport(type, "org.apache.commons.io.IOUtils");
+    getCD4C().addImport(type, "java.util.Spliterator");
+    getCD4C().addImport(type, "java.util.ListIterator");
   }
 }

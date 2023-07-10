@@ -6,4 +6,6 @@ ${cd4c.method("public void ${methodName}(${args})")}
     return null;
   }
 </#if>
+<#if attr != "null">
     ${attr}(${argValueHolder});
+</#if>

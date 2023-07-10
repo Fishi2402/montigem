@@ -33,6 +33,7 @@ page PersonEdit(Person p) {
           // show and edit the nickname
           @GemTextInput(entry = p.nickname),
 
+          // TODO AGe: superclass attr trap
           // show and edit the age as number
           @GemTextInput(inputType = "number", entry = p.age),
 

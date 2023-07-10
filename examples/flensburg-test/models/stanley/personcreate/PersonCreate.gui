@@ -27,7 +27,8 @@ page PersonCreate(Person p) {
   card@GemCard(
     component = col@GemColumn(components = [
       name@GemTextInput(entry = p.nickname),
-      age@GemTextInput(entry = p.age, inputType = "number"),
+      // TODO AGe: superclass attr trap
+      // age@GemTextInput(entry = p.age, inputType = "number"),
       save@GemButton(label = "Save"/*, leftClick = create*/)
     ])
   );

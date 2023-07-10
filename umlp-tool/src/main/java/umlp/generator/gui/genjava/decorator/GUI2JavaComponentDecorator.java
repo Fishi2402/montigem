@@ -24,6 +24,7 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
+import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,13 +82,24 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       return;
     }
 
-    String paramType = convertType(paramSTE.getTypeInfo().getName());
+    String paramType = convertType(paramSTE);
     if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
       // TODO AGe: all possible types
-      if (util.isListType(paramSTE) && !util.isDomainListType(paramSTE)) {
-        String innerType = util.getListInnerType(paramSTE).get().print();
+      if (util.isListType(paramSTE)) {
+        SymTypeExpression innerType = util.getListInnerType(paramSTE).get();
         if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
-          getCD4C().addImport(decoratedClass, innerType);
+          if (!util.isDomainType(innerType)) {
+            getCD4C().addImport(decoratedClass, innerType.print());
+          } else {
+            Optional<String> domainQName = util.getMainDomainModelQName();
+            if (domainQName.isPresent()) {
+              getCD4C().addImport(decoratedClass, domainQName.get() + "." + innerType.print());
+            }
+            else {
+              Log.warn("0x0000A GUI Model " + this.guiAst.getComponentName()
+                  + " uses type '" + paramSTE.print() + "' that could not be resolved.");
+            }
+          }
         }
       }
       else if (!util.isDomainType(paramSTE) && !util.isDomainListType(paramSTE)) {
@@ -177,7 +189,12 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       Function<String, String> conversion = getConversion(
           paramSTE, namedArg.getGUIArgValue().getExpression(), true
       );
-      getterValue = conversion.apply(getterValue);
+      // TODO AGe: explicit gem lists when domain typed lists are used as an input
+      if (!paramType.contains("GemList")) {
+        getterValue = conversion.apply(getterValue);
+      } else {
+        getCD4C().addImport(decoratedClass, PathUtil.getBackendRTECommonPath("GemList"));
+      }
 
       addGetComponentMethod(decoratedClass, getterName, paramType,
           getterValue, getArgs(it2Arg.getArgs()), isLiteral, nullCheck);
@@ -198,8 +215,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     }
   }
 
-  protected String convertType(String mcType) {
-    return mcType;
+  protected String convertType(SymTypeExpression mcType) {
+    return mcType.print();
   }
 
   protected String getInitListsTemplate() {

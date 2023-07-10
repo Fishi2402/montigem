@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.types.check.SymTypeExpression;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.genjava.decorator.GUI2JavaComponentDecorator;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
@@ -35,8 +36,14 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
   /**/
 
   @Override
-  protected String convertType(String mcType) {
-    String paramType = TypeScriptTypes.toTSType(mcType);
+  protected String convertType(SymTypeExpression mcType) {
+    String paramType = mcType.print();
+    if (util.isListType(mcType)) {
+      SymTypeExpression innerType = util.getListInnerType(mcType).get();
+      if (util.isDomainType(innerType)) {
+        paramType = "GemList<" + innerType.print() + ">";
+      }
+    }
     // TODO AGe: detect underspecified types
     if (paramType.equals("Array")) {
       paramType = "Array<any>";
