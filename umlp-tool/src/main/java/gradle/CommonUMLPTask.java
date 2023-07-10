@@ -58,8 +58,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental
-  // No full rebuild, when only HWC-Directory is changed. Requires logic in Task Execution!
+  @Incremental  // No full rebuild, when only HWC-Directory is changed. Requires logic in Task Execution!
   @IgnoreEmptyDirectories
   public abstract DirectoryProperty getHwcDir();
 
@@ -79,9 +78,8 @@ public abstract class CommonUMLPTask extends DefaultTask {
   @OutputDirectory
   public abstract DirectoryProperty getReportDir();
 
-  @Inject
+  @Inject // Used for isolated/parallel execution
   protected abstract WorkerExecutor getWorkerExecutor();
-
   protected WorkQueue workQueue;
 
   public CommonUMLPTask(){
@@ -94,12 +92,13 @@ public abstract class CommonUMLPTask extends DefaultTask {
 
     // Project wide setting of debug modus
     if(getProject().hasProperty(UMLP_TASK_DEBUG)){
-      boolean debug = "true" .equals(getProject().property(UMLP_TASK_DEBUG));
+      boolean debug = "true".equals(getProject().property(UMLP_TASK_DEBUG));
       getDebug().convention(debug);
 
       // The debug-mode disables isolation... hence static variables are shared and errors can occur, especially in parallel execution.
       if(debug && getProject().hasProperty(ORG_GRADLE_PARALLEL) && "true".equals(getProject().property(ORG_GRADLE_PARALLEL))){
         Log.warn("Gradle Parallel Execution should be disabled in UMLP Debug Mode. \n" +
+            "Otherwise static variables (e.g., Mills, SymbolTables) of one Task can influence other parallel Tasks!\n" +
             "set\n\t" + ORG_GRADLE_PARALLEL + "=false\n in your <gradle.properties>" );
       }
     } else {
@@ -108,36 +107,44 @@ public abstract class CommonUMLPTask extends DefaultTask {
     }
     this.getOutputs().doNotCacheIf("Do not cache when debugging is enabled",
         (task) ->  ((UMLPTask)task).getDebug().get());
-
   }
 
+  /** Create CLI-Arguments for UMLPTool. Notice that "input" parameter is not set, must be added in subclass
+   *
+   * @param handlePath converts Paths String-Argument. _Must_ be used for all Paths!
+   *                   It is used to print relative paths OR absolute paths
+   * @return Arguments that can be handed to UMLPTool.main(...)
+   */
   protected List<String> createArgList(Function<Path, String> handlePath) {
     List<String> result = new ArrayList<>();
 
-    result.add("-o");
+    result.add("-" + UMLPToolOptions.OUTPUT.getCMD());
     result.add(handlePath.apply(getOutputDir().getAsFile().get().toPath()));
 
-    result.add("-rb");
+    result.add("-" + UMLPToolOptions.REPORT_BASE.getCMD());
     result.add(handlePath.apply(getProject().getProjectDir().toPath()));
 
-    if(this.getHwcDir().isPresent()) {
-      result.add("-hwc");
+    if(getHwcDir().isPresent()) {
+      result.add("-" + UMLPToolOptions.HWC_PATH.getCMD());
       result.add(handlePath.apply(getHwcDir().getAsFile().get().toPath()));
     }
 
-    if(this.getDebug().get()){
-      // Set the "debug" flag in the arguments
+    if(getDebug().get()){
       result.add("-" + UMLPToolOptions.DEBUG.getCMD());
     }
 
-    if (this.getMoreArgs().isPresent()) {
+    if(getMoreArgs().isPresent()) {
       result.addAll(this.getMoreArgs().get());
     }
 
     return result;
   }
 
-  protected  void startGeneration( List<String> args) {
+  /** Run UMLPTool with the given Arguments. Depending on "debug" this is either run in a WorkAction or directly.
+   *
+   * @param args Arguments for UMLPTool.main(...)
+   */
+  protected  void startGeneration(List<String> args) {
     if (getDebug().get()){
       // In debug mode, run code directly. Otherwise, breakpoints etc. do not work
       UMLPAction.run(args.toArray(new String[0]));
@@ -146,6 +153,4 @@ public abstract class CommonUMLPTask extends DefaultTask {
       workQueue.submit(UMLPAction.class, param -> param.getArgs().set(args));
     }
   }
-
-
 }
