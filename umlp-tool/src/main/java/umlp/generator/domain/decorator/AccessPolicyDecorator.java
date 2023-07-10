@@ -26,7 +26,7 @@ public class AccessPolicyDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-        .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c))));
 
   }
 
