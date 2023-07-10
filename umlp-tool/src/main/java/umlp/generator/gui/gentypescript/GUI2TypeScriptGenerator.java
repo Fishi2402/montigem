@@ -62,7 +62,7 @@ public class GUI2TypeScriptGenerator {
         asts.forEach(ast->{
           if(util.getRoutingIds(ast).isEmpty()) {
             astguiCompilationUnits.add(ast);
-            paths.add(String.join("/", ast.getMCPackageDeclaration().getMCQualifiedName().getPartsList()) + "/" + ast.getComponentName() + MODULES_FILE);
+            paths.add(String.join("/", ast.getMCPackageDeclaration().getMCQualifiedName().getPartsList()) + "/");
           }
           });
       }
