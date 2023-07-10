@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gradle;
+package gradle.common;
 
 import de.se_rwth.commons.logging.Log;
 import org.gradle.work.ChangeType;

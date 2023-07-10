@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gradle;
+package gradle.common;
 
 import org.gradle.api.provider.ListProperty;
 import org.gradle.workers.WorkParameters;

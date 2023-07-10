@@ -1,29 +1,21 @@
 package gradle.inputset;
 
 import de.se_rwth.commons.logging.Log;
-import gradle.CommonUMLPTask;
-import gradle.UMLPAction;
-import org.gradle.api.DefaultTask;
-import org.gradle.api.file.ConfigurableFileCollection;
+import gradle.common.CommonUMLPTask;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.ListProperty;
-import org.gradle.api.tasks.IgnoreEmptyDirectories;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
-import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
-import umlp.UMLPTool;
 import umlp.UMLPToolOptions;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 

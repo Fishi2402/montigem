@@ -1,7 +1,7 @@
 package gradle.inputset;
 
 import de.se_rwth.commons.logging.Log;
-import gradle.CommonUMLPTask;
+import gradle.common.CommonUMLPTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.work.InputChanges;
 

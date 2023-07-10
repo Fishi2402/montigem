@@ -3,11 +3,11 @@ package gradle;
 
 import com.google.common.collect.Sets;
 import de.se_rwth.commons.logging.Log;
+import gradle.common.IncGenData;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.InputDirectory;

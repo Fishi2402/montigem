@@ -2,11 +2,9 @@
 package gradle;
 
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.io.FileUtils;
-import org.gradle.api.file.Directory;
+import gradle.common.UMLPSingleFileTask;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileSystemLocation;
-import org.gradle.api.file.FileType;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.CacheableTask;
@@ -17,24 +15,18 @@ import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
-import org.gradle.api.tasks.TaskAction;
-import org.gradle.work.ChangeType;
-import org.gradle.work.FileChange;
 import org.gradle.work.Incremental;
-import org.gradle.work.InputChanges;
 import umlp.UMLPToolOptions;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @CacheableTask
+@Deprecated // See output from prepareRun();
 public abstract class UMLPTask extends UMLPSingleFileTask {
 
   @InputDirectory
@@ -149,4 +141,9 @@ public abstract class UMLPTask extends UMLPSingleFileTask {
     return f.getName().endsWith(".umlp") || f.getName().endsWith(".gui");
   }
 
+  @Override
+  protected void prepareRun(){
+    super.prepareRun();
+    Log.warn("Using <UMLPTask> is deprecated! The functionality will be removed 20.07.2023!");
+  }
 }

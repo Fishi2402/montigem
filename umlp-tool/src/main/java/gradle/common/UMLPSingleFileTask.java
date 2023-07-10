@@ -1,4 +1,4 @@
-package gradle;
+package gradle.common;
 
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
