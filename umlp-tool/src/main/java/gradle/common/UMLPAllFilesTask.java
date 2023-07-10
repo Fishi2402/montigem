@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 abstract public class UMLPAllFilesTask extends CommonUMLPTask {
 
@@ -20,6 +21,13 @@ abstract public class UMLPAllFilesTask extends CommonUMLPTask {
     return getReportDir().get();
   }
 
+  protected Stream<File> getInputFilesAsStream() {
+    return this.getInput().getAsFileTree().getFiles().stream()
+        .filter(File::isFile)
+        .filter(this::isInputFile);
+  };
+
+
   /**
    * @return Arguments that can be used to start CLI-Tool
    */
@@ -27,9 +35,7 @@ abstract public class UMLPAllFilesTask extends CommonUMLPTask {
   protected List<String> createArgList(Function<Path, String> handlePath) {
     List<String> result = super.createArgList(handlePath);
 
-    this.getInput().getAsFileTree().getFiles().stream()
-        .filter(File::isFile)
-        .filter(this::isInputFile)
+    getInputFilesAsStream()
         .forEach(f -> {
           result.add("-" + UMLPToolOptions.INPUT.getCMD());
           result.add(handlePath.apply(f.toPath()));
@@ -50,12 +56,22 @@ abstract public class UMLPAllFilesTask extends CommonUMLPTask {
     FileUtils.deleteDirectory(getReportDir().get().getAsFile());
   }
 
+  protected boolean shouldRunAgain(InputChanges inputChanges){
+    return getInputFilesAsStream()
+        .map(this::getIncGenFile)
+        .map(incGenFile -> new IncGenData(incGenFile, this.getProject().getProjectDir()))
+        .map(incGenData -> incGenData.isUpToDate(getStreamOfChanges(inputChanges)))
+        .anyMatch(upToDate -> !upToDate);
+  }
+
   @TaskAction
   public void run(InputChanges inputChanges) throws IOException {
     prepareRun();
 
-    boolean shouldRunAgain = true;
+    boolean shouldRunAgain = !inputChanges.isIncremental() || shouldRunAgain(inputChanges);
     if (shouldRunAgain) {
+      Log.warn("*NOT* UP-TO-DATE, starting generation process");
+
       cleanOutputs();
 
       Path cwd = getProject().getProjectDir().toPath().toAbsolutePath();
@@ -66,6 +82,8 @@ abstract public class UMLPAllFilesTask extends CommonUMLPTask {
 
       List<String> args = createArgList(p -> p.toAbsolutePath().toString());
       startGeneration(args);
+    } else {
+      Log.warn("UP-TO-DATE, no action required");
     }
   }
 }
