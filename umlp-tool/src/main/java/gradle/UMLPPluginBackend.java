@@ -29,12 +29,15 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     project.getPluginManager().apply("java");
 
     TaskProvider<UMLPTask> umlpTask = createUMLPBackendTask(project);
+    // Generate Backend must run before JavaCompile
     project.getTasks().withType(AbstractCompile.class).configureEach(compile -> {
       compile.dependsOn(umlpTask);
     });
+    // Generate Backend must run before ProcessResources (e.g. for SQL schemata)
     project.getTasks().withType(ProcessResources.class).configureEach(compile -> {
       compile.dependsOn(umlpTask);
     });
+
     addToSourceSet(project, umlpTask.get());
   }
 
@@ -59,7 +62,7 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
       setIfPathExists(x -> umlpTask.getTmplDir().set(x), Path.of(
           project.getProjectDir().getAbsolutePath(), "src", "templates"));
 
-      // Always set Output dir (Gradle creates it, if not already exists)
+      // Always set output dir (Gradle creates it, if not already exists)
       umlpTask.getOutputDir().set(Path.of(
           project.getBuildDir().getAbsolutePath(), "umlp", "backend").toFile());
     });

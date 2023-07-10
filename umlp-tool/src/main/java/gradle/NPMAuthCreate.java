@@ -12,6 +12,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+/**
+ * Create ".npmrc" file with authentication data for Nexus.
+ * Also ensures that the file is not committed in git.
+ */
 abstract class NPMAuthCreate extends DefaultTask {
 
   public NPMAuthCreate() {

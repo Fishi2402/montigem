@@ -139,13 +139,11 @@ public abstract class CommonUMLPTask extends DefaultTask {
 
   protected  void startGeneration( List<String> args) {
     if (getDebug().get()){
-      // In debug mode, run code directly. Otherwise breakpoints etc do not work
-      UMLPTool.main(args.toArray(new String[0]));
+      // In debug mode, run code directly. Otherwise, breakpoints etc. do not work
+      UMLPAction.run(args.toArray(new String[0]));
     } else {
       // In normal mode, run in a workQue. This ensures isolation & parallelization
-      workQueue.submit(UMLPAction.class, param -> {
-        param.getArgs().set(args);
-      });
+      workQueue.submit(UMLPAction.class, param -> param.getArgs().set(args));
     }
   }
 

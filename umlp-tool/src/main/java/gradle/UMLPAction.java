@@ -9,16 +9,23 @@ import umlp.UMLPTool;
 
 import java.util.Arrays;
 
+/**
+ * Isolated?/Parallel? Execution of UMLPTool
+ */
 public abstract class UMLPAction implements WorkAction<ArgActionParameter> {
   @Override
   public void execute() {
-    String[] arrayArgs = this.getParameters().getArgs().get().toArray(new String[0]);
+    String[] args = this.getParameters().getArgs().get().toArray(new String[0]);
+    run(args);
+  }
 
+  // Execute UMLPTool. If "debug" is enabled, this method is called directly (without WorkAction)
+  public static void run(String[] args){
     Log.info("Starting UMLPTool: \n" +
-            "\t  java -jar UMLPTool.jar " + Arrays.toString(arrayArgs), getClass().toString());
+        "\t  java -jar UMLPTool.jar " + Arrays.toString(args), UMLPAction.class.getName());
     try {
-      UMLPTool.main(arrayArgs);
-    }catch (final RuntimeException e){
+      UMLPTool.main(args);
+    }catch (final AmbiguityException | MontiCoreFreeMarkerException e){
       RuntimeException newThrow = e;
       if(e.getCause() instanceof AmbiguityException){ // Freemarker adds special Freemarker Exceptions
         newThrow = new RuntimeException("This might be a gradle-setup problem. Are the MontiCore-Plugin and UMLP-Plugin loaded in the same project? \n" +
