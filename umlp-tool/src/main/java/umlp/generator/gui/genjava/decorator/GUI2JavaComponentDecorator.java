@@ -15,11 +15,15 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
+import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
+import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
@@ -300,17 +304,19 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   public Function<String, String> getConversion(SymTypeExpression leftType, ASTExpression rightExp, boolean forGetter) {
     // TODO AGe: cannot resolve type when @iterate is present
     // TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
-    // SymTypeExpression rightType = tc.typeOf(rightExp);
+    // SymTypeExpression rightType1 = tc.typeOf(rightExp);
     GUIExpressionTypeVisitor visitor = new GUIExpressionTypeVisitor();
     Optional<SymTypeExpression> rightTypeOpt = visitor.getType(rightExp);
     if (rightTypeOpt.isPresent()) {
       SymTypeExpression rightType = rightTypeOpt.get();
       // TODO AGe: still not nice
       boolean leftIsString = TypeScriptTypes.isString(leftType);
-
+      boolean rightIsString = rightType.print().endsWith("String");
       boolean rightIsNumber = TypeScriptTypes.isNumber(rightType);
       boolean rightIsDate = rightType.print().endsWith("LocalDate");
       boolean rightIsGemList = util.isDomainListType(rightType);
+      boolean rightIsDomainOptional = util.isDomainOptionalType(rightType);
+      boolean rightIsEnum = false; //util.isDomainEnum(rightType) || util.isOptionalDomainEnum(rightType);
 
       if (leftIsString && rightIsDate) {
         if (forGetter) {
@@ -328,8 +334,19 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           return stringToNumberConversion(rightType.print());
         }
       }
+      if (leftIsString && rightIsEnum) {
+        if (forGetter) {
+          return enumToStringConversion();
+        }
+        else {
+          return stringToEnumConversion(rightType.print());
+        }
+      }
       if (rightIsGemList) {
         return gemlistToArrayConversion();
+      }
+      if (leftIsString && !rightIsString && forGetter) {
+        return toStringConversion();
       }
     }
     return s -> s;
@@ -345,6 +362,18 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   protected Function<String, String> numberToStringConversion() {
     return s -> "String.valueOf(" + s + ")";
+  }
+
+  protected Function<String, String> enumToStringConversion() {
+    return s -> s + ".toString()";
+  }
+
+  protected Function<String, String> toStringConversion() {
+    return s -> s + " + ''";
+  }
+
+  protected Function<String, String> stringToEnumConversion(String type) {
+    return s -> type + "[" + s + "]";
   }
 
   protected Function<String, String> gemlistToArrayConversion() {

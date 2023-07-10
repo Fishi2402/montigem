@@ -65,7 +65,9 @@ public class TSObserverDecorator extends ObserverDecorator {
           getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyRemove", a.getName(), className, innerType);
         }
 
-        if (GenService.isInnerCDEnum(a.getSymbol().getType())) {
+        if (GenService.isCDType(a.getSymbol().getType())) {
+          additionalImports.add(a.getSymbol().getType());
+        } else if (GenService.isInnerCDEnum(a.getSymbol().getType())) {
           additionalImports.add(((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0));
         }
 

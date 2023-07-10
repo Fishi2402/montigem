@@ -129,12 +129,22 @@ public class GUIGeneratorUtil {
 
   public final boolean isDomainOptionalType(SymTypeExpression type) {
     if (type.hasTypeInfo() && GenService.isOptional(type)) {
-      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1) {
         SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+        if (GenService.isJavaType(inner)) {
+          return false;
+        }
         TypeSymbol ts = inner.getTypeInfo();
-        if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {
+        if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {  // Das funktioniert nicht
           IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
           return DOMAIN_MODELS.contains(as.getFullName());
+        }
+        Optional<TypeSymbol> symb = ts.getEnclosingScope().resolveType(ts.getName()); // Das schon
+        if (symb.isPresent()) {
+          if (symb.get().getEnclosingScope() instanceof IGUIDSLArtifactScope) {
+            IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) symb.get().getEnclosingScope();
+            return DOMAIN_MODELS.contains(as.getFullName());
+          }
         }
       }
     }

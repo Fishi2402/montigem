@@ -9,9 +9,10 @@ import input.src.lib.gemtextinput.GemTextInput;
 
 component CustomAccountView(List<Budget> bs) {
   @iterate(Budget b : bs) {
-    // shows DOLLAR or EURO or 0 or 1 or ...
-    @GemText(value = b.cur);
     @GemText(value = b.name);
     @GemText(value = b.balance);
+    // shows DOLLAR or EURO or 0 or 1 or ...
+    @GemText(value = b.cur);
+    @GemText(value = b.cur1);
   }
 }
