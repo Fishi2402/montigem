@@ -1,4 +1,5 @@
 import gradle.common.UMLPOutputReportCheck
+import gradle.specific.UMLPTask
 
 /* (c) https://github.com/MontiCore/monticore */
 
@@ -68,7 +69,7 @@ subprojects {
   // e.g. "every generated file is also reported"
   tasks.withType(UMLPTask).all {
     String taskname = it.name + "__check_report"
-    gradle.UMLPTask umlTask = it
+    UMLPTask umlTask = it
     Task t = task "$taskname"(type: UMLPOutputReportCheck) {
       dependsOn(umlTask)
       input.from(umlTask.input)

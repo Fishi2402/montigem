@@ -1,4 +1,4 @@
-package gradle.inputset;
+package gradle.specific;
 
 import de.se_rwth.commons.logging.Log;
 import gradle.common.CommonUMLPTask;

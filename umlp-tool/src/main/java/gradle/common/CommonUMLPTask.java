@@ -1,7 +1,7 @@
 package gradle.common;
 
 import de.se_rwth.commons.logging.Log;
-import gradle.UMLPTask;
+import gradle.specific.UMLPTask;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;

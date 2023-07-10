@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gradle.merge;
+package gradle.specific.merge;
 
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.FileTree;

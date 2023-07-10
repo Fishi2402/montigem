@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
-import gradle.inputset.UMLPGuiGenTask;
-import gradle.merge.UMLPMergeTask;
+import gradle.specific.NPMAuthCreate;
+import gradle.specific.UMLPGuiGenTask;
+import gradle.specific.merge.UMLPMergeTask;
+import gradle.specific.UMLPTask;
 import gradle.stat.StatisticListener;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -15,10 +17,10 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
     @Override
     public void apply(Project project) {
       // Make the Tasks available without fully qualified name
-      project.getExtensions().getExtraProperties().set("UMLPTask", gradle.UMLPTask.class);
+      project.getExtensions().getExtraProperties().set("UMLPTask", UMLPTask.class);
       project.getExtensions().getExtraProperties().set("UMLPMergeTask", UMLPMergeTask.class);
       project.getExtensions().getExtraProperties().set("UMLPGuiGenTask", UMLPGuiGenTask.class);
-      project.getExtensions().getExtraProperties().set("NPMAuthCreate", gradle.NPMAuthCreate.class);
+      project.getExtensions().getExtraProperties().set("NPMAuthCreate", NPMAuthCreate.class);
 
       StatisticListener.registerOnce(project);
     }

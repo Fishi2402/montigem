@@ -3,8 +3,7 @@ package gradle.common;
 
 import com.google.common.collect.Sets;
 import de.se_rwth.commons.logging.Log;
-import gradle.UMLPTask;
-import gradle.common.IncGenData;
+import gradle.specific.UMLPTask;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
