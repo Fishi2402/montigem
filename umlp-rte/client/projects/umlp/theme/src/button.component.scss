@@ -1,0 +1,77 @@
+@import "../variables";
+@import "../mixins";
+
+@mixin button-theme($background-color, $hover-color) {
+  .blue-green-transition {
+    background-color: $background-color;
+    color: white;
+    border-radius: 30px;
+    border: none;
+    touch-action: manipulation;
+    cursor: pointer;
+  }
+
+  .blue-green-transition:hover:enabled {
+    border: none;
+    transition: all 0.4s ease;
+    box-shadow: inset 0 0 0 1em $hover-color;
+    color: white;
+    background: $hover-color;
+  }
+
+  .gem-button {
+    background-color: $background-color;
+    color: white;
+    border: none;
+    touch-action: manipulation;
+    cursor: pointer;
+  }
+}
+
+.btn-select {
+  background: transparent;
+  border: 2px solid #646567;
+  border-radius: 10px;
+  margin: 24px;
+  letter-spacing: 0.03em;
+}
+
+.btn-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  box-shadow: none;
+}
+
+.btn-select:hover:enabled,
+.active {
+  background-color: $rwth-blue;
+  color: $montigem-white;
+  border: 0;
+  -o-transition: color 0.2s ease-out, background 0.1s ease-in;
+  -ms-transition: color 0.2s ease-out, background 0.1s ease-in;
+  -moz-transition: color 0.2s ease-out, background 0.1s ease-in;
+  -webkit-transition: color 0.2s ease-out, background 0.1s ease-in;
+  /* ...and now override with proper CSS property */
+  transition: color 0.2s ease-out, background 0.1s ease-in;
+  letter-spacing: 0.03em;
+}
+
+button.btn-select.active {
+  border: 0;
+}
+
+.blue-green-transition:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  box-shadow: none;
+}
+
+.select-button {
+  float: left;
+}
+
+.no-wrap {
+  white-space: nowrap;
+}

@@ -8,4 +8,7 @@ umlp DerivedAttributesAndAssocs{
   }
 
   // TODO: Derived assocs
+  class Bar;
+
+  / association Foo -> (bar) Bar [*];
 }

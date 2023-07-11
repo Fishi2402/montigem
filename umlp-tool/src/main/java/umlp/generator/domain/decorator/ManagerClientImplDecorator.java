@@ -38,7 +38,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
 
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    astcdPackage.addCDElement(createClass(origCD));
+    astcdPackage.addCDElement(withOrigin(createClass(origCD)));
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
@@ -58,6 +58,12 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, getDoGetFreeGemIdTemplate());
     getCD4C().addMethod(managerClass, getErrorNotificationScopeTemplate());
 
+    List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
+        .collect(Collectors.toList());
+    getCD4C().addMethod(managerClass, getClearCacheTemplate(), concreteDomainClasses);
+
+
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
@@ -67,6 +73,10 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     // Imports
     addImports(origCD, managerClass);
     return managerClass;
+  }
+
+  protected String getClearCacheTemplate() {
+    return "umlp.managerclientimpl.ClearCache";
   }
 
   protected String getInitTemplate() {
@@ -98,7 +108,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainClass);
     getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, false);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetList", name, false);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
 
     if(!domainClass.getModifier().isAbstract()) {
@@ -110,6 +120,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_get"));
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_get_filtered"));
 
     if(!domainClass.getModifier().isAbstract()) {
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + "CommandObserver"));
@@ -146,9 +157,10 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainInterface);
     getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, true);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetList", name, true);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get"));
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get_filtered"));
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));
 
@@ -189,6 +201,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ListResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(clazz, Joiners.DOT.join(getPackageName(origCD, REQUESTS_PACKAGE), GetFreeGemIdRequestDecorator.CLASS_NAME));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));

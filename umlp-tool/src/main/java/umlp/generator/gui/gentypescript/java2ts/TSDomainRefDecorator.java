@@ -10,9 +10,14 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
+import de.monticore.types.MCTypeFacade;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.genjava.decorator.DomainRefDecorator;
+import umlp.generator.util.PathUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +37,11 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
   public void transform(ASTGUICompilationUnit guiAst, ASTCDCompilationUnit decoratedAST) {
     this.guiAst = guiAst;
     super.transform(guiAst, decoratedAST);
+  }
+
+  @Override
+  protected void addManagerImport(ASTCDClass clazz, String manager) {
+    getCD4C().addImport(decoratedClass, util.gui2tsManagerImport(guiAst.getComponentName()));
   }
 
   @Override
@@ -56,6 +66,10 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
     Optional<String> domainQName = util.getMainDomainModelQName();
     if (domainQName.isPresent()) {
       String className = clazz.getName();
+      glex.replaceTemplate(getConstructorTemplate(), clazz,
+          new TemplateHookPoint(getConstructorWithBuilderTemplate(), domainQName.get(),
+              className, domainAttributes, guiDSLPrinter)
+      );
       /*
       getCD4C().addConstructor(clazz, getConstructorWithBuilderTemplate(),
           domainQName.get(), className, // TODO MB: Diagramm name UMLPDefSymbol
@@ -92,12 +106,27 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
   }
 
   @Override
+  protected String getInitDomainListTemplate() {
+    return "umlp.gui2ts.TSInitDomainList";
+  }
+
+  @Override
   protected void addAnnotation(ASTCDAttribute attr) {
     glex.replaceTemplate(
         GUI2ComponentTemplates.ANNOTATIONS,
         attr,
         new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_INPUT)
     );
+  }
+
+  @Override
+  protected ASTMCType transformTypeForAttr(ASTCDClass clazz, ASTGUIParam param) {
+    if (util.isDomainListType(param)) {
+      String inner = util.getDomainListInnerType(param);
+      getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
+      return MCTypeFacade.getInstance().createBasicGenericTypeOf("GemList", inner);
+    }
+    return param.getMCType();
   }
 
   @Override

@@ -3,22 +3,28 @@ package umlp.generator.db.sql;
 
 import com.google.common.base.CaseFormat;
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDBasisNode;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
+import umlp._auxiliary.CD4AnalysisMillForUMLP;
 import umlp._prettyprint.UMLPFullPrettyPrinter;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -55,14 +61,14 @@ public class SQLSchemaGenerator {
         fqnClassNameToType.put("Integer", "INTEGER");
         fqnClassNameToType.put("int", "INTEGER");
         fqnClassNameToType.put("java.lang.Long", "BIGINT");
-        fqnClassNameToType.put("Long", "INTEGER");
-        fqnClassNameToType.put("long", "INTEGER");
-        fqnClassNameToType.put("java.lang.Float", "FLOAT");
-        fqnClassNameToType.put("Float", "FLOAT");
-        fqnClassNameToType.put("float", "FLOAT");
-        fqnClassNameToType.put("java.lang.Double", "DOUBLE");
-        fqnClassNameToType.put("Double", "DOUBLE");
-        fqnClassNameToType.put("double", "DOUBLE");
+        fqnClassNameToType.put("Long", "BIGINT");
+        fqnClassNameToType.put("long", "BIGINT");
+        fqnClassNameToType.put("java.lang.Float", "REAL");
+        fqnClassNameToType.put("Float", "REAL");
+        fqnClassNameToType.put("float", "REAL");
+        fqnClassNameToType.put("java.lang.Double", "DOUBLE PRECISION");
+        fqnClassNameToType.put("Double", "DOUBLE PRECISION");
+        fqnClassNameToType.put("double", "DOUBLE PRECISION");
         fqnClassNameToType.put("java.lang.Boolean", "BOOLEAN");
         fqnClassNameToType.put("Boolean", "BOOLEAN");
         fqnClassNameToType.put("boolean", "BOOLEAN");
@@ -71,6 +77,8 @@ public class SQLSchemaGenerator {
         fqnClassNameToType.put("char", "CHAR");
 
         fqnClassNameToType.put("java.time.LocalDate", "DATE");
+        fqnClassNameToType.put("java.time.LocalDateTime", "TIMESTAMP");
+        fqnClassNameToType.put("java.time.LocalTime", "TIME(6) WITHOUT TIME ZONE");
     }
 
     public void addClassToSQLTypeMapping(String fqnClassName, String sqlType) {
@@ -109,17 +117,42 @@ public class SQLSchemaGenerator {
     protected String generateContent(ASTCDCompilationUnit cd) {
         IndentPrinter p = new IndentPrinter();
 
-        generateTypeSchemas(cd, p);
+        generateSQLSchemasForAllExtendedCDs(cd, p);
+
+        generateTypeSchemas(cd.getCDDefinition(), p);
         for (ASTCDAssociation association : cd.getCDDefinition().getCDAssociationsList()) {
             if (!association.getModifier().isDerived()) {
-                generateAssociationSchema(cd, association, p);
+                generateAssociationSchema(cd.getCDDefinition(), association, p);
             }
         }
 
         return p.getContent();
     }
 
-    protected void generateTypeSchemas(ASTCDCompilationUnit cd, IndentPrinter p) {
+    protected void generateSQLSchemasForAllExtendedCDs(ASTCDCompilationUnit cd, IndentPrinter p) {
+      if(cd.getCDDefinition().getModifier().isPresentStereotype()) {
+        cd.getCDDefinition().getModifier().getStereotype().getValuesList().forEach(astStereoValue -> {
+          if(astStereoValue.getName().equals("extends")) {
+            Optional<String> extendedCD = cd.getMCImportStatementList().stream().filter(stmnt ->
+                    stmnt.getMCQualifiedName().getPartsList().get(stmnt.getMCQualifiedName().getPartsList().size()-1).equals(astStereoValue.getValue()))
+                .findFirst().map(ASTMCImportStatement::getQName);
+            if(extendedCD.isPresent()) {
+              Optional<DiagramSymbol> symbOpt = CD4AnalysisMill.globalScope().resolveDiagram(extendedCD.get());
+              if(symbOpt.isPresent() && symbOpt.get().getAstNode() instanceof ASTCDDefinition) {
+                generateTypeSchemas((ASTCDDefinition) symbOpt.get().getAstNode(), p);
+                for (ASTCDAssociation association : ((ASTCDDefinition) symbOpt.get().getAstNode()).getCDAssociationsList()) {
+                  if (!association.getModifier().isDerived()) {
+                    generateAssociationSchema(((ASTCDDefinition) symbOpt.get().getAstNode()), association, p);
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    protected void generateTypeSchemas(ASTCDDefinition cd, IndentPrinter p) {
         var v = new CDBasisVisitor2() {
             @Override
             public void visit(ASTCDClass node) {
@@ -133,7 +166,7 @@ public class SQLSchemaGenerator {
         cd.accept(t);
     }
 
-    public void generateClassSchema(ASTCDCompilationUnit cd, ASTCDClass node, IndentPrinter p) {
+    public void generateClassSchema(ASTCDDefinition cd, ASTCDClass node, IndentPrinter p) {
         p.print("CREATE TABLE ");
         // TODO: is this mapping always unique and possible?
         String tableName = convertClassName(node.getName(), AttributeType.QUOTED);
@@ -174,7 +207,7 @@ public class SQLSchemaGenerator {
         }
     }
 
-    protected void generateListFieldTable(ASTCDCompilationUnit cd, ASTCDClass classNode, ASTCDAttribute attribute, IndentPrinter p) {
+    protected void generateListFieldTable(ASTCDDefinition cd, ASTCDClass classNode, ASTCDAttribute attribute, IndentPrinter p) {
         p.print("CREATE TABLE ");
         String tableName = convertClassName(classNode.getName(), AttributeType.PLAIN) + "$" + convertAttributeName(attribute.getName(), AttributeType.PLAIN);
         p.print(tableName);
@@ -192,7 +225,7 @@ public class SQLSchemaGenerator {
         String type = GenService.isInnerCDEnum(attribute.getSymbol().getType())?
             "java.lang.Enum":((SymTypeOfGenerics) attribute.getSymbol().getType()).getArgument(0).printFullName();
         if (!fqnClassNameToType.containsKey(type)) {
-            Log.error("0xdf10c Can not convert type to SQL: " + type + " used in " + cd.getCDDefinition().getName() + "." + classNode.getName() + "." + attribute.getName());
+            Log.error("0xdf10c Can not convert type to SQL: " + type + " used in " + cd.getName() + "." + classNode.getName() + "." + attribute.getName());
         }
 
         p.print(fqnClassNameToType.get(type));
@@ -210,28 +243,28 @@ public class SQLSchemaGenerator {
         p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (id)");
     }
 
-    protected void generateSimpleField(ASTCDCompilationUnit cd, ASTCDClass classNode, ASTCDAttribute attribute, IndentPrinter p) {
+    protected void generateSimpleField(ASTCDDefinition cd, ASTCDClass classNode, ASTCDAttribute attribute, IndentPrinter p) {
         p.print(convertAttributeName(attribute.getName(), AttributeType.QUOTED));
         p.print(" ");
         Optional<? extends ISymbol> typeSymbolOpt = attribute.getMCType().getDefiningSymbol();
         if (typeSymbolOpt.isEmpty()) {
-            Log.error("0xdf10d Can not find symbol for type of attribute " + cd.getCDDefinition().getName() + "." + classNode.getName() + "." + attribute.getName());
+            Log.error("0xdf10d Can not find symbol for type of attribute " + cd.getName() + "." + classNode.getName() + "." + attribute.getName());
             return;
         }
 
         String fullName = GenService.isCDEnum(attribute.getSymbol().getType())?
             "java.lang.Enum":typeSymbolOpt.get().getFullName();
         if (!fqnClassNameToType.containsKey(fullName)) {
-            Log.error("0xdf10e Can not transform type to SQL: " + fullName + " used in " + cd.getCDDefinition().getName() + "." + classNode.getName() + "." + attribute.getName());
+            Log.error("0xdf10e Can not transform type to SQL: " + fullName + " used in " + cd.getName() + "." + classNode.getName() + "." + attribute.getName());
         }
         p.print(fqnClassNameToType.get(fullName));
 
         p.println(" NOT NULL");
     }
 
-    protected void generateAssociationSchema(ASTCDCompilationUnit cd, ASTCDAssociation association, IndentPrinter p) {
-        Optional<CDTypeSymbol> lSymbolOpt = cd.getCDDefinition().getEnclosingScope().resolveCDType(association.getLeft().getMCQualifiedType().getMCQualifiedName().getQName());
-        Optional<CDTypeSymbol> rSymbolOpt = cd.getCDDefinition().getEnclosingScope().resolveCDType(association.getRight().getMCQualifiedType().getMCQualifiedName().getQName());
+    protected void generateAssociationSchema(ASTCDDefinition cd, ASTCDAssociation association, IndentPrinter p) {
+        Optional<CDTypeSymbol> lSymbolOpt = cd.getEnclosingScope().resolveCDType(association.getLeft().getMCQualifiedType().getMCQualifiedName().getQName());
+        Optional<CDTypeSymbol> rSymbolOpt = cd.getEnclosingScope().resolveCDType(association.getRight().getMCQualifiedType().getMCQualifiedName().getQName());
         if (lSymbolOpt.isEmpty()) {
             UMLPFullPrettyPrinter prettyPrinter = new UMLPFullPrettyPrinter();
             Log.error("0xdf10a Can not find type " +

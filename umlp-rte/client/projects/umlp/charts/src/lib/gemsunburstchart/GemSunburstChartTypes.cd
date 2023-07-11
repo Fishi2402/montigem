@@ -1,0 +1,19 @@
+package charts.src.lib.gemsunburstchart;
+
+classdiagram GemSunburstChartTypes {
+  class GemSunburstData {
+    GemSunburstEntry entry;
+    List<GemSunburstData> subEntries;
+  }
+
+  class GemSunburstEntry {
+    String label;
+    Integer value;
+  }
+
+  class GemSDNshort {
+    List c;
+    List<GemSDNshort> sN;
+  }
+  
+}

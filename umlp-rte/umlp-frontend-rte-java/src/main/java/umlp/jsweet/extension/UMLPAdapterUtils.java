@@ -99,6 +99,18 @@ public class UMLPAdapterUtils {
     return false;
   }
 
+  public static boolean substituteMethodInvocation_JavaLists(PrinterAdapter adapter,
+      MethodInvocationElement invocation) {
+    if (invocation.getTargetType().toString().equals("com.google.common.collect.Lists")) {
+      if (invocation.getMethodName().equals("newArrayList")) {
+        String msg = invocation.getArgumentCount() > 1 ? invocation.getArgument(1).toString() : "";
+        adapter.print("[" + msg + "]");
+        return true;
+      }
+    }
+    return false;
+  }
+
   public static String getSimpleName(String importedName) {
     int index = 0;
     if (importedName.lastIndexOf("/") > 0) {

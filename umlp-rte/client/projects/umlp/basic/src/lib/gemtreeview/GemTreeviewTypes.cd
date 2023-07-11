@@ -1,0 +1,11 @@
+package basic.src.lib.gemtreeview;
+
+classdiagram GemTreeviewTypes {
+    
+  class GemTreeviewEntry {
+    Boolean expanded;
+    String name;
+    List<GemTreeviewEntry> children;
+  }
+
+}

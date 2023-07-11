@@ -1,0 +1,16 @@
+<label class="gem-label" [for]="id">{{ labelText }}</label>
+<input
+  class="gem-input"
+  [matTooltip]="
+    validity.status === 'Error' || validity.status === 'Warning'
+      ? validity.message
+      : null
+  "
+  matTooltipPosition="after"
+  [class.gem-inputError]="validity.status === 'Error'"
+  [class.gem-inputWarning]="validity.status === 'Warning'"
+  [id]="id"
+  [type]="inputType"
+  [ngModel]="entry"
+  (ngModelChange)="onEntryChange($event)"
+/>

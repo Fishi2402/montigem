@@ -3,6 +3,206 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
+
+    "@umlp/basic": {
+      "projectType": "library",
+      "root": "projects/umlp/basic",
+      "sourceRoot": "projects/umlp/basic/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/umlp/basic/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/umlp/basic/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/umlp/basic/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/umlp/basic/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "@umlp/charts": {
+      "projectType": "library",
+      "root": "projects/umlp/charts",
+      "sourceRoot": "projects/umlp/charts/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/umlp/charts/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/umlp/charts/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/umlp/charts/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/umlp/charts/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "@umlp/table": {
+      "projectType": "library",
+      "root": "projects/umlp/table",
+      "sourceRoot": "projects/umlp/table/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/umlp/table/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/umlp/table/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/umlp/table/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/umlp/table/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+
+    "@umlp/theme": {
+      "projectType": "library",
+      "root": "projects/umlp/theme",
+      "sourceRoot": "projects/umlp/theme/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/umlp/theme/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/umlp/theme/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/umlp/theme/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/umlp/theme/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "@umlp/input": {
+      "projectType": "library",
+      "root": "projects/umlp/input",
+      "sourceRoot": "projects/umlp/input/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/umlp/input/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/umlp/input/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/umlp/input/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/umlp/input/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "@umlp/arrange": {
+      "projectType": "library",
+      "root": "projects/umlp/arrange",
+      "sourceRoot": "projects/umlp/arrange/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/umlp/arrange/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/umlp/arrange/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/umlp/arrange/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/umlp/arrange/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
     "@umlp/common": {
       "projectType": "library",
       "root": "projects/umlp/common",
@@ -36,5 +236,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

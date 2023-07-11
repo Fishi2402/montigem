@@ -35,7 +35,6 @@ import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
-import umlp.generator.gui.genjava.decorator.GUIArgValueReplaceVisitor;
 import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
@@ -107,6 +106,55 @@ public class GUIGeneratorUtil {
     }
     IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
     return DOMAIN_MODELS.contains(as.getFullName());
+  }
+
+  public final boolean isDomainListType(ASTGUIParam astguiParam) {
+    SymTypeExpression type = astguiParam.getSymbol().getType();
+    return isDomainListType(type);
+  }
+
+  public final boolean isDomainListType(SymTypeExpression type) {
+    if (type.hasTypeInfo() && GenService.isList(type)) {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+        SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+        TypeSymbol ts = inner.getTypeInfo();
+        if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {
+          IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
+          return DOMAIN_MODELS.contains(as.getFullName());
+        }
+      }
+    }
+    return false;
+  }
+
+  public final boolean isListType(SymTypeExpression type) {
+    return type.hasTypeInfo() && GenService.isList(type);
+  }
+
+  public final String getDomainListInnerType(ASTGUIParam astguiParam) {
+    SymTypeExpression type = astguiParam.getSymbol().getType();
+    if (type.hasTypeInfo() && GenService.isList(type)) {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+        SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+        TypeSymbol ts = inner.getTypeInfo();
+        if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {
+          return ts.getName();
+        }
+      }
+    }
+    String res = astguiParam.getMCType().printType();
+    res = res.replaceAll("List<", "");
+    res = res.replaceAll("", ">");
+    return res;
+  }
+
+  public final Optional<SymTypeExpression> getListInnerType(SymTypeExpression type) {
+    if (type.hasTypeInfo() && GenService.isList(type)) {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+        return Optional.of(((SymTypeOfGenerics) type).getArgument(0));
+      }
+    }
+    return Optional.empty();
   }
 
   public final boolean isDomainImport(ASTMCImportStatement i) {
@@ -259,10 +307,11 @@ public class GUIGeneratorUtil {
   }
 
   // TODO AGe: remove when problem with RangeControl is resolved
-  public String getShortIteratorIterable(ASTGUIIterate iterate) {
+  public String getShortIteratorIterable(ASTGUIIterate iterate, List<String> ignore) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
       ASTGUIShortIterateControl ic = ((ASTGUIShortIterateControl) iterate.getIterateControl());
       GUIIterableReplaceVisitor visitor = new GUIIterableReplaceVisitor();
+      visitor.setIgnore(ignore);
       visitor.transform(ic);
       return getHTMLName(print(visitor.getGetterExpression()));
     }

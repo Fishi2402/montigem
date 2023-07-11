@@ -1,0 +1,54 @@
+.wholeChartContainer {
+  width: auto;
+  height: 100%;
+  position: flex;
+}
+
+.wholeChartWithLegendLeftContainer {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.wholeChartWithLegendTopContainer {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.wholeChartWithLegendBottomContainer {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.wholeChartWithLegendRightContainer {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+}
+
+.legendButtons {
+  display: flex;
+  column-gap: 10px;
+  justify-content: space-between;
+}
+
+.slider {
+  width: 100px;
+  display:inline;
+}
+
+.right{
+  display: inline-block;
+  padding: 5px;
+  text-align: center;
+}
+
+.field > * {
+  vertical-align: middle;
+}

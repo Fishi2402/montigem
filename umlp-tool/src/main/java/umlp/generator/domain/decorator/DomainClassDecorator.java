@@ -45,22 +45,14 @@ public class DomainClassDecorator extends DomainTypeDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-        .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c))));
 
     origCD.getCDDefinition().getCDEnumsList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> {
           ASTCDEnum enumCopy = c.deepClone();
           enumCopy.setModifier(PUBLIC.build());
-          astcdPackage.addCDElement(enumCopy);
+          astcdPackage.addCDElement(withOrigin(enumCopy));
         });
-  }
-
-  private void createAssociation(ASTCDCompilationUnit origCD, ASTCDAssociation c) {
-    try {
-      System.out.println("Association: " + c.getName() + " l: " + c.getLeft().getName() + " r: " + c.getRight().getName());
-    } catch (Error e) {
-      e.printStackTrace();
-    }
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
@@ -185,7 +177,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
         .stream().filter(GenService::isVisibleNotDerived).collect(Collectors.toList())) {
       getCD4C().addMethod(clazz, "umlp.domain.Check",
           domainClass.getName(), attr.getName(),
-          !GenService.isList(attr) && !GenService.isOptional(attr), false);
+          !GenService.isList(attr) && !GenService.isOptional(attr));
     }
     for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
       getCD4C().addMethod(clazz, "umlp.domain.Check",

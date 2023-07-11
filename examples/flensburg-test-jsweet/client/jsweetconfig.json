@@ -1,0 +1,27 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.UMLPJavaBasicsAdapter",
+    "umlp.jsweet.extension.UMLPRTEImportAdapter",
+    "umlp.jsweet.extension.UMLPBasicsAdapter"
+  ],
+  "@Async": {
+    "include": [
+      "hardy.flensburg.commands.**.doRun*",
+      "hardy.flensburg.requests.**.doRun*",
+      "hardy.flensburg.FlensburgManager*._doGet*Sure*",
+      "hardy.flensburg.FlensburgManager*._do*Opt*",
+      "hardy.flensburg.FlensburgManager*._doGet*"
+    ]
+  },
+  "@Erased": {
+    "include": [
+      "hardy.flensburg.FlensburgDummyProvider",
+      "hardy.flensburg.*DAO",
+      "hardy.flensburg.*DbObserver",
+      "hardy.flensburg.FlensburgManagerImpl",
+      "hardy.flensburg.FlensburgMock",
+      "hardy.flensburg.FlensburgDummyProvider",
+      "hardy.flensburg.FlensburgTestContext"
+    ]
+  }
+}

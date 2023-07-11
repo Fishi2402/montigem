@@ -41,7 +41,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     origCD.getCDDefinition().getCDClassesList()
         .stream()
         .filter(cdclass -> !cdclass.getModifier().isDerived())
-        .forEach(cdClass -> astcdPackage.addCDElement(createAPI(origCD, cdName, cdClass)));
+        .forEach(cdClass -> astcdPackage.addCDElement(withOrigin(createAPI(origCD, cdName, cdClass))));
   }
 
   protected ASTCDElement createAPI(ASTCDCompilationUnit origCD, String cdName, ASTCDClass cdClass) {
@@ -115,7 +115,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
 
     Map<String, String> deserAttributeNamesAndDeSer = domainAttributes.stream()
         .filter(a -> mustBeDeserialized(a))
-        .collect(Collectors.toMap(a -> a.getName(), a -> a.getMCType().printType().replaceAll(".*[.]([^.]*)", "$1") + "DeSer"));
+        .collect(Collectors.toMap(a -> a.getName(), a -> "umlp.backendrte.common." + a.getMCType().printType().replaceAll(".*[.]([^.]*)", "$1") + "DeSer"));
 
     List<String> assocNames = assocs.stream().filter(a -> !GenService.isList(a) && !GenService.isOptional(a)).map(a -> a.getName()).collect(Collectors.toList());
     ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Create", cdName,

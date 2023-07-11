@@ -1,0 +1,91 @@
+/* (c) https://github.com/MontiCore/monticore */
+package umlp.generator.gui.genjava.decorator;
+
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
+import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._ast.ASTGUIIterate;
+import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
+import de.monticore.guidsl._symboltable.GUIParamSymbol;
+import de.monticore.guidsl._symboltable.IGUIDSLScope;
+import de.monticore.guidsl._visitor.GUIDSLTraverser;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symboltable.IScope;
+import de.monticore.types.check.SymTypeExpression;
+import de.se_rwth.commons.logging.Log;
+import umlp.generator.gui.GUIGeneratorUtil;
+
+import java.util.Optional;
+
+// TODO: remove when typecheck extended for GUI DSL
+public class GUIExpressionTypeVisitor implements ExpressionsBasisVisitor2, CommonExpressionsVisitor2 {
+
+  protected GUIDSLTraverser traverser;
+  protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
+
+  protected Optional<SymTypeExpression> res = Optional.empty();
+  protected Optional<TypeSymbol> intermediate = Optional.empty();
+
+  public GUIExpressionTypeVisitor() {
+    traverser = GUIDSLMill.traverser();
+    traverser.add4ExpressionsBasis(this);
+    traverser.add4CommonExpressions(this);
+  }
+
+  public Optional<SymTypeExpression> getType(ASTExpression exp) {
+    exp.accept(traverser);
+    return res;
+  }
+
+  @Override
+  public void endVisit(ASTNameExpression node) {
+    Optional<VariableSymbol> vs = getScope(node.getEnclosingScope()).resolveVariable(node.getName());
+    if (vs.isPresent()) {
+      res = Optional.ofNullable(vs.get().getType());
+      if (res.isEmpty()
+          && node.getEnclosingScope().isPresentAstNode()
+          && node.getEnclosingScope().getAstNode() instanceof ASTGUIIterate
+          && ((ASTGUIIterate) node.getEnclosingScope().getAstNode()).getIterateControl() instanceof ASTGUIShortIterateControl
+          && ((ASTGUIShortIterateControl) ((ASTGUIIterate) node.getEnclosingScope().getAstNode())
+          .getIterateControl()).isPresentMCType()) {
+        intermediate = getScope(node.getEnclosingScope()).resolveType(((ASTGUIShortIterateControl) ((ASTGUIIterate) node.getEnclosingScope().getAstNode())
+            .getIterateControl()).getMCType().printType());
+      }
+    }
+    else {
+      Optional<GUIParamSymbol> ps = getScope(node.getEnclosingScope()).resolveGUIParam(node.getName());
+      if (ps.isPresent()) {
+        res = Optional.ofNullable(ps.get().getType());
+      }
+    }
+  }
+
+  @Override
+  public void endVisit(ASTFieldAccessExpression node) {
+    Optional<TypeSymbol> ts = Optional.empty();
+    if (res.isPresent() && res.get().hasTypeInfo()) {
+      ts = Optional.ofNullable(res.get().getTypeInfo());
+    } else if (intermediate.isPresent()) {
+      ts = intermediate;
+    }
+    if (ts.isPresent()) {
+      Optional<VariableSymbol> vs = ts.get().getSpannedScope().resolveVariable(node.getName());
+      if (vs.isPresent()) {
+        res = Optional.ofNullable(vs.get().getType());
+      }
+    }
+  }
+
+  protected IGUIDSLScope getScope(IScope scope) {
+    if (scope instanceof IGUIDSLScope) {
+      return (IGUIDSLScope) scope;
+    }
+    Log.error("0x00009 Detected rogue scope in GUI model");
+    return null;
+  }
+
+}

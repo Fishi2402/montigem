@@ -47,8 +47,8 @@ export class BaseClassObjectMapper {
   }
 
   public static serialize(o: any, className: string): string {
-    return JSON.stringify(o);
-    // return this.getInstance()._serialize(o, className);
+    // return JSON.stringify(o);
+    return this.getInstance()._serialize(o, className);
   }
 
   public _serialize(o: any, className: string): string {

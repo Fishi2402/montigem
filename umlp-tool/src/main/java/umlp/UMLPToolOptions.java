@@ -12,6 +12,8 @@ public enum UMLPToolOptions {
 
   CD2GUI("cdt", "cdtogui", "runs cd2gui to generate gui files from the input"),
 
+  GUIDelta("gd", "guidelta", "Alterates guiFiles from the gp options with the guidelta files there and writes them to the outDir"),
+
   // with one arg
   INPUT("i", "input", "Reads the source file (mandatory) and parses the contents", "file"),
   SYMTAB("s", "symboltable", "Serializes the symbol table of the given artifact.", "file", true),
@@ -27,6 +29,8 @@ public enum UMLPToolOptions {
   //with multiple args
   PATH(Option.builder("path").hasArgs()
       .desc("Sets the artifact path for imported symbols, space separated.").build()),
+  GUI_PATH(Option.builder("gp").hasArgs()
+          .desc("Sets the Paths of the .gui files, needed for GUIDelta").build()),
   HWC_PATH(Option.builder("hwc").hasArgs()
       .desc("Sets the artifact paths for handwritten code, space separated.").build()),
   TMPL_PATH(Option.builder("fp").longOpt("templatePath").hasArgs()
@@ -34,6 +38,8 @@ public enum UMLPToolOptions {
 
   DOMAIN(Option.builder("dm").longOpt("domainModels").hasArgs()
       .desc("Fully qualified names of the domain models, space separated").build()),
+  MODEl_PATH(Option.builder("mp").longOpt("modelPath").hasArgs()
+      .desc("Sets the artifact path for imported models, space separated").build()),
 
   /**
    * RQ: GUI has no strategy to differentiate create and update pages, but we should only generate
@@ -43,8 +49,8 @@ public enum UMLPToolOptions {
    * Example: -guic stanley.PersonForm
    */
   GUI_CREATE(Option.builder("guic").longOpt("guiCreateModels").hasArgs()
-      .desc("Fully qualified names of the gui models for object creation, space separated").build())
-  ;
+      .desc("Fully qualified names of the gui models for object creation, space separated").build()),
+  USE_SPRING(Option.builder("use_spring").desc("If the backend is generated, generate additional spring classes").build());
 
   UMLPToolOptions(Option option) {
     this.option = option;

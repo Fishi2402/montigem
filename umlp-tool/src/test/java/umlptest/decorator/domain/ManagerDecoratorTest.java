@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ManagerDecoratorTest extends DecoratorTest {
 
@@ -24,7 +26,7 @@ public class ManagerDecoratorTest extends DecoratorTest {
 
             // check no of methods and attributes
             () -> assertEquals(2, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(172, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(174, clazz.getCDMethodList().size(), "number of methods"),
 
             // check attributes
             () -> existsAttribute(clazz, "instance"),

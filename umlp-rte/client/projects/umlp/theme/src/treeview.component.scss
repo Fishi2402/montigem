@@ -1,0 +1,88 @@
+@import "../variables";
+@import "../mixins";
+
+@mixin treeview-theme ($primary-color,$button-hover-color) {
+
+
+
+  *{
+    box-sizing: border-box;
+    list-style-type:none;
+}
+
+.system-main li span {
+  border:1px solid #999;
+  border-radius:5px;
+  display:inline-block;
+  padding:1px 8px;
+  text-decoration:none
+} 
+
+
+
+.system-main {
+  li{
+  position: relative;
+  margin:10px 10px 10px 10px;
+  list-style-type: none;
+  display: block;
+}}
+/*
+.system-main li::before, .system-main li::after {
+  content:'';
+  left:-10px;
+  position:absolute;
+  right:auto
+}
+.system-main li::before {
+border-left:1px solid #999;
+//bottom:50px;
+top: -17px;
+height:50px;
+width:10px;
+
+}
+.system-main li::after {
+border-top:1px solid #999;
+top:15px;
+width:28px
+}
+
+
+.system-main li:last-child::before {
+height:35px;
+
+}
+
+
+*/
+      .system-main__apps {
+       // color: $primary-color;
+        font-size: 17px; 
+        
+      }
+
+        
+      .system-main__apps:hover {
+          //color:palevioletred;
+          cursor: pointer;
+          
+      }
+
+      .system-main__icon {
+        font-size: 17px;
+        margin-right: 5px;
+        margin-left: 0px;
+        
+      }
+
+      .system-main li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span {
+        background:#eee;
+        border:1px solid #94a0b4;
+        color:#000
+    }
+    
+
+
+
+}

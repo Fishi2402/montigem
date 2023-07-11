@@ -21,6 +21,7 @@ import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -36,7 +37,7 @@ public class ManagerMockDecorator extends AbstractDecorator {
 
   public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    astcdPackage.addCDElement(createClass(origCD));
+    astcdPackage.addCDElement(withOrigin(createClass(origCD)));
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
@@ -58,6 +59,12 @@ public class ManagerMockDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managermock.ErrorNotificationScope");
     getCD4C().addMethod(managerClass, "umlp.managermock.SecretlyAdaptNextGemId");
 
+    List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
+        .collect(Collectors.toList());
+    getCD4C().addMethod(managerClass, "umlp.managermock.ClearCache", concreteDomainClasses);
+
+
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
@@ -76,13 +83,14 @@ public class ManagerMockDecorator extends AbstractDecorator {
     String lName = StringTransformations.uncapitalize(name);
 
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainClass);
-    getCD4C().addMethod(managerClass, "umlp.managermock.DoOpt", name, UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass));
+    Set<ASTCDType> concreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass);
+    getCD4C().addMethod(managerClass, "umlp.managermock.DoOpt", name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managermock.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name, UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass));
+    getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name, concreteSubclassesInclSelf);
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
 
     if(!domainClass.getModifier().isAbstract()) {
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name);
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name, concreteSubclassesInclSelf);
 
       ASTCDAttribute attr = getCD4C().addAttribute(managerClass, "protected HashMapWithOrderedKeys<Long, " + name + "> " + lName + "s");
       glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new HashMapWithOrderedKeys<>()"));
@@ -126,10 +134,11 @@ public class ManagerMockDecorator extends AbstractDecorator {
     glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList().build().get()"));
 
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainClass);
-    getCD4C().addMethod(managerClass, "umlp.managermock.DoOpt", name, UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass));
+    Set<ASTCDType> concreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass);
+    getCD4C().addMethod(managerClass, "umlp.managermock.DoOpt", name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managermock.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name);
-    getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name, UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass));
+    getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name, concreteSubclassesInclSelf);
+    getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name, concreteSubclassesInclSelf);
 
     // Imports
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));

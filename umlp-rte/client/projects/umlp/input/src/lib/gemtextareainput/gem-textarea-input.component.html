@@ -1,0 +1,7 @@
+<label class="gem-label-textarea" [for]="id">{{ labelText }}</label>
+<textarea
+  class="gem-textarea"
+  [id]="id"
+  [ngModel]="textArea"
+  (ngModelChange)="onTextAreaChange($event)"
+></textarea>

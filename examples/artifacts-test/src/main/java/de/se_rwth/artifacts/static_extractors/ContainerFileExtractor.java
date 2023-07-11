@@ -25,11 +25,7 @@ public class ContainerFileExtractor extends BaseExtractor {
 
   private RootArtifact defaultRoot;
 
-  BaseArtifactsTestManager manager;
-
-  public ContainerFileExtractor(BaseArtifactsTestManager manager) {
-    this.manager = manager;
-  }
+  public ContainerFileExtractor() { }
 
   /**
    * This method does the extraction for roots, directories and fileartifacts i.e., creating their object representations and
@@ -55,7 +51,13 @@ public class ContainerFileExtractor extends BaseExtractor {
   }
 
   private void fillAbsolutePathToArtifactMap(Map<String, Artifact> stringArtifactMap, List<Artifact> artifacts) {
-    artifacts.forEach(a -> stringArtifactMap.put(a.getRoot().getFullName()+"/"+a.getFullName(), a));
+    artifacts.forEach(a -> {
+      if(a.getFullName().equals(a.getRoot().getFullName())) {
+        stringArtifactMap.put(a.getFullName(), a);
+      } else {
+        stringArtifactMap.put(a.getRoot().getFullName()+"/"+a.getFullName(), a);
+      }
+    });
   }
 
   private List<FileArtifact> getAllFullyBuiltFileArtifacts(List<Artifact> artifacts) {
@@ -65,7 +67,7 @@ public class ContainerFileExtractor extends BaseExtractor {
   private List<Directory> connectEveryDirectoryToItsSubArtifacts(Map<String, Collection<RootAwareFile>> filetype2Files) {
     List<Directory> connectedDirectories = new ArrayList<>();
 
-    if(filetype2Files.get(DIRECTORY_FILE_TYPE) != null) {
+    if(!filetype2Files.containsKey(DIRECTORY_FILE_TYPE)) {
       return connectedDirectories;
     }
     Collection<RootAwareFile> directorySystemRepresentations = filetype2Files.get(DIRECTORY_FILE_TYPE);
@@ -152,7 +154,7 @@ public class ContainerFileExtractor extends BaseExtractor {
     RootArtifactBuilder rootBuilder = BaseArtifactsTestManager.rootArtifactBuilder();
 
     RootArtifact rootArtifact =  rootBuilder.isExternal(f.isExternal())
-        .fullName(ExtractorUtils.transformWindowsPathToLinuxStyle(f.getAbsolutePath()))
+        .fullName(ExtractorUtils.normalizePath(ExtractorUtils.transformWindowsPathToLinuxStyle(f.getAbsolutePath())))
         .name(FilenameUtils.getBaseName(f.getAbsolutePath()))
         .build().orElse(null);
     if(rootArtifact == null) {

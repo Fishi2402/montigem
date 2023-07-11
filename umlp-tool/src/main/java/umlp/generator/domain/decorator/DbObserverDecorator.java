@@ -1,9 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain.decorator;
 
+import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
+import de.monticore.cdassociation._symboltable.CDAssociationSymbol;
 import de.monticore.cdassociation._symboltable.CDRoleSymbol;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -13,6 +15,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.check.SymTypeExpression;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -41,10 +44,10 @@ public class DbObserverDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isDerived())
         .filter(c -> !c.getModifier().isAbstract())
-      .forEach(c -> astcdPackage.addCDElement(createClass(c, origCD.getCDDefinition().getCDAssociationsList().stream().filter(a -> !a.getModifier().isDerived()).collect(Collectors.toList()))));
+      .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c, origCD.getCDDefinition().getCDAssociationsList().stream().filter(a -> !a.getModifier().isDerived()).collect(Collectors.toList())))));
   }
 
-  protected ASTCDClass createClass(ASTCDClass domainClass, List<ASTCDAssociation> associations) {
+  protected ASTCDClass createClass(ASTCDClass domainClass) {
     String className = domainClass.getName();
 
     ASTCDClass observerClass = UMLPMill.cDClassBuilder()
@@ -52,7 +55,7 @@ public class DbObserverDecorator extends AbstractDecorator {
       .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(className + "Observer"))
       .setName(className + SUFFIX)
       .addCDMember(getDAOAttribute(domainClass))
-      .addAllCDMembers(getAssocDaoAttributes(domainClass, associations)).build();
+      .addAllCDMembers(getAssocDaoAttributes(domainClass)).build();
 
     UMLPSymbolTables.getAttributesInHierarchyWithDefiningType(domainClass).entrySet().stream()
       .filter(e -> !e.getKey().getModifier().isDerived())
@@ -66,39 +69,40 @@ public class DbObserverDecorator extends AbstractDecorator {
         getCD4C().addImport(observerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + e.getValue().getName());
       });
 
-    for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e: DAODecorator.getOppositeSideToAssociationMap(domainClass, associations).entrySet()) {
-      CDRoleSymbol cdRollSymbol = e.getKey().getSymbol();
+    for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e: DAODecorator.getOppositeSideToAssociationMap(domainClass).entrySet()) {
+      if (!e.getValue().getModifier().isDerived()) {
+        CDRoleSymbol cdRollSymbol = e.getKey().getSymbol();
 
-      SymTypeExpression type = cdRollSymbol.getType();
+        SymTypeExpression type = cdRollSymbol.getType();
 
-      SymTypeExpression otherType = cdRollSymbol.getOtherSide().getType();
-      String otherTypeName = otherType.print();
+        SymTypeExpression otherType = cdRollSymbol.getOtherSide().getType();
+        String otherTypeName = otherType.print();
 
-      ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-      ASTCDCompilationUnit otherTypeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) otherType.getTypeInfo().getAstNode());
-      getCD4C().addImport(observerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
-      getCD4C().addImport(observerClass, getPackageName(otherTypeCD, DEFAULT_PACKAGE) + "." + otherType.print());
+        ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+        ASTCDCompilationUnit otherTypeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) otherType.getTypeInfo().getAstNode());
+        getCD4C().addImport(observerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+        getCD4C().addImport(observerClass, getPackageName(otherTypeCD, DEFAULT_PACKAGE) + "." + otherType.print());
 
-      ASTCDMethodSignature add = null;
-      ASTCDMethodSignature remove = null;
-      if(e.getKey().getCDCardinality().isMult()) {
-        add = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.AddNotify",
+        ASTCDMethodSignature add = null;
+        ASTCDMethodSignature remove = null;
+        if (e.getKey().getCDCardinality().isMult()) {
+          add = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.AddNotify",
+              className, e.getValue().getName(), e.getKey(), otherTypeName);
+          remove = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.RemoveNotify",
+              className, e.getValue().getName(), e.getKey(), otherTypeName);
+        }
+        ASTCDMethodSignature set = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.SetNotify",
             className, e.getValue().getName(), e.getKey(), otherTypeName);
-        remove = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.RemoveNotify",
-            className, e.getValue().getName(), e.getKey(), otherTypeName);
-      }
-      ASTCDMethodSignature set = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.SetNotify",
-          className, e.getValue().getName(), e.getKey(), otherTypeName);
 
-      if(add != null && remove != null) {
-        glex.replaceTemplate("cd2java.Annotations", add, new StringHookPoint("@Override"));
-        glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
+        if (add != null && remove != null) {
+          glex.replaceTemplate("cd2java.Annotations", add, new StringHookPoint("@Override"));
+          glex.replaceTemplate("cd2java.Annotations", remove, new StringHookPoint("@Override"));
+        }
+        glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
       }
-      glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
     }
 
-    addImports(observerClass);
-
+    addImports(domainClass, observerClass);
     return observerClass;
   }
 
@@ -110,23 +114,39 @@ public class DbObserverDecorator extends AbstractDecorator {
     return domainClassDaoAttr;
   }
 
-  private List<ASTCDAttribute> getAssocDaoAttributes(ASTCDClass domainClass, List<ASTCDAssociation> associations) {
-    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociationMap = DAODecorator.getOppositeSideToAssociationMap(domainClass, associations);
+  private List<ASTCDAttribute> getAssocDaoAttributes(ASTCDClass domainClass) {
+    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociationMap = DAODecorator.getOppositeSideToAssociationMap(domainClass);
     List<ASTCDAttribute> attributes = new ArrayList<>();
     for (ASTCDAssociation association : assocSideToAssociationMap.values()) {
-      String type = "Assoc"+StringTransformations.capitalize(association.getName())+"DAO";
-      String attrName = StringTransformations.uncapitalize(type);
-      if(attributes.stream().noneMatch(attribute -> attribute.getName().equals(attrName))) {
-        ASTCDAttribute assocDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
-            getMCTypeFacade().createQualifiedType(type), attrName);
-        getGlex().replaceTemplate("cd2java.Value", assocDaoAttr, new StringHookPoint(" = new " + type + "()"));
-        attributes.add(assocDaoAttr);
+      if (!association.getModifier().isDerived()) {
+        String type = "Assoc" + StringTransformations.capitalize(association.getName()) + "DAO";
+        String attrName = StringTransformations.uncapitalize(type);
+        if (attributes.stream().noneMatch(attribute -> attribute.getName().equals(attrName))) {
+          ASTCDAttribute assocDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
+              getMCTypeFacade().createQualifiedType(type), attrName);
+          getGlex().replaceTemplate("cd2java.Value", assocDaoAttr, new StringHookPoint(" = new " + type + "()"));
+          attributes.add(assocDaoAttr);
+        }
       }
     }
     return attributes;
   }
 
-  protected void addImports(ASTCDType observerClass) {
+  protected void addImports(ASTCDClass domainClass, ASTCDType observerClass) {
     getCD4C().addImport(observerClass, PathUtil.getBackendRTECommonPath("DatabaseAccessManager"));
+
+    List<ASTCDAssocSide> assocSides = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+        .filter(GenService::isVisible).collect(Collectors.toList());
+    assocSides.stream().map(assocSide -> assocSide.getSymbol().getAssoc().getAssociation())
+        .filter(associationSymbol -> !associationSymbol.getAstNode().getModifier().isDerived())
+        .forEach(associationSymbol -> {
+      if(!associationSymbol.getPackageName().isEmpty()) {
+        getCD4C().addImport(observerClass, Joiners.DOT.join(
+            associationSymbol.getPackageName().toLowerCase(),
+            "Assoc"+StringTransformations.capitalize(associationSymbol.getName()))+"DAO");
+      } else {
+        getCD4C().addImport(observerClass, "Assoc"+StringTransformations.capitalize(associationSymbol.getName())+"DAO");
+      }
+    });
   }
 }

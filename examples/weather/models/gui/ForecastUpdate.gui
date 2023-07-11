@@ -1,0 +1,27 @@
+package gui;
+
+import Weather.Forecast;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+import basic.src.lib.gembutton.GemButton;
+import basic.src.lib.gemtext.GemText;
+import input.src.lib.gemtextinput.GemTextInput;
+
+page ForecastUpdate(Forecast f) {
+  @GemCard(title = "New Forecast", component =
+    @GemColumn(
+      rowGap = "20px",
+      components = [
+        @GemTextInput(labelText = "Date", inputType = "date", entry = f.date),
+        @GemTextInput(labelText = "Longitude", inputType = "number", entry = f.longitude),
+        @GemTextInput(labelText = "Latitude", inputType = "number", entry = f.latitude),
+        @GemTextInput(labelText = "Temperature", inputType = "number", entry = f.temperature),
+        @GemTextInput(labelText = "Wind speed", inputType = "number", entry = f.windspeed),
+        @GemTextInput(labelText = "Relative humidity", inputType = "number", entry = f.realtiveHumidity)
+      ]
+    )
+  );
+}

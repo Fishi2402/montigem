@@ -3,19 +3,13 @@
 package umlp.generator.gui.gentypescript.domain;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.StringTransformations;
-import umlp.UMLPMill;
-import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
@@ -26,14 +20,9 @@ import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator;
 import umlp.generator.util.PathUtil;
-import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.GemListAssocDecorator.getName;
 
 public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
@@ -78,14 +67,18 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
       getCD4C().addImport(clazz, this.astcdPackage + "."
-          + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+          + c.getName());
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
       getCD4C().addImport(clazz, this.astcdPackage + "."
-          + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+          + c.getName());
     }
 
     return clazz;
+  }
+
+  protected String getClearCacheTemplate() {
+    return "umlp.gui2ts.managerclientimpl.TSClearCache";
   }
 
   @Override
@@ -122,7 +115,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainClass);
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoOpt", name, concreteSubclassesOrderedByDistance);
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoGetList", name, false);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoGetList", name, false);
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSIsLoaded", name, concreteSubclassesOrderedByDistance);
 
     if(!domainClass.getModifier().isAbstract()) {
@@ -134,6 +127,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_get"));
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_get_filtered"));
 
     if(!domainClass.getModifier().isAbstract()) {
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + "CommandObserver"));
@@ -158,9 +152,10 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainInterface);
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoOpt", name, concreteSubclassesOrderedByDistance);
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoGetList", name, true);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoGetList", name, true);
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSIsLoaded", name, concreteSubclassesOrderedByDistance);
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get"));
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get_filtered"));
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));
 
@@ -182,6 +177,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ListResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(clazz, Joiners.DOT.join(getPackageName(origCD, REQUESTS_PACKAGE), GetFreeGemIdRequestDecorator.CLASS_NAME));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));

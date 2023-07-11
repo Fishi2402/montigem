@@ -14,7 +14,7 @@ let currentIdx: number = idx;
 for(const gemID of gemIDs) {
   this.check${name?cap_first}();
   for(const obs of this.${sourceName?uncap_first}Observers) {
-    obs.maybeNotifyAdd${name?cap_first}(<${sourceName}> this, gemID, currentIdx, scope);
+    obs.maybeNotifyAdd${name?cap_first}(<${sourceName}> <any> this, gemID, currentIdx, scope);
   }
   currentIdx++;
 }

@@ -1,0 +1,82 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+// run tasks in this project with command:
+// gradle :products:syse_functions:<taskName>
+//
+// important tasks / commands are:
+// * start UMLP generator and compile java files:
+//   * gradle :products:syse_functions:assemble
+// * start UMLP Backend Server:
+//   * gradle :products:syse_functions:bootRun
+//   * command does not terminate. Stopping the command is also stopping the server
+//   * url: http://localhost:8081 (there is no frontend)
+//   * there can only be a single running server. A second server cannot start.
+//
+plugins {
+  id 'java' // Setup Java Compiler
+  id 'application'  // ensures that the JAR can be executed
+
+  // Spring Plugins
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+  id 'org.springframework.boot' version "${spring_version}"
+
+  id 'de.rwth.se.umlp-tool' // Makes the task-types `UMLPTask` and `UMLPMergeTask` available
+}
+
+description 'Syse Functions'
+
+
+task mergeUMLPModels(type: UMLPMergeTask){
+
+  // One way to define input: List files manually
+  // source = files("models/AMergeTest.umlp", "src/models/SELib.umlp")
+
+   // Other way to define input: add whole directory, and use regex to include/exclude files
+    source = layout.projectDirectory.dir("models/")
+    // includes = ["**.umlp"]
+    excludes = ["**.gui", "**.ocl"]
+
+  // Where should the merged result be stored?
+  outputFile = layout.buildDirectory.file("FunctionsStructure.umlp")  // buildDirectory = "build/"
+}
+
+task generateJavaCode(type: UMLPBackendTask) {
+  input = mergeUMLPModels.outputFile  // when the input is defined like this, gradle automatically runs the task "mergeUMLPModels" before this task
+
+  // Other way to define inputs:
+  // input = file("src/models/")  // All files in directory are used as input
+  // input = files("src/models/AMergeTest.umlp", "src/models/SELib.umlp")  // Listed files are used as input
+
+  hwcDir = file("src/main/java")
+
+  // tmplDir = file("src/templates")    // location for user-defined templates
+  // configTemplate = "umlp/UMLPConfig4teaching.ftl"
+
+  outputDir = layout.buildDirectory.dir("umlp_backend")
+}
+
+sourceSets {
+  main.java.srcDirs += generateJavaCode.getOutputDir()  // Add generated files to the input of java compiler
+  main.resources.srcDirs += generateJavaCode.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
+}
+
+dependencies {
+  implementation project(':umlp-rte')
+  implementation 'com.h2database:h2:2.1.214'  // In-Memory database written in java
+
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version  // Required for Hot-Reload
+  implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+}
+
+
+application {
+  // Set Entrypoint of Application
+  mainClass = 'se.Application'
+}
+
+
+tasks.named("bootRun") {
+  systemProperty "spring.shell.interactive.enabled", "false"
+}

@@ -1,0 +1,18 @@
+package charts.src.lib.gembarchart;
+
+classdiagram GemBarChartTypes {
+
+  class GemBarChartData {
+    List<GemBarChartEntry> entries;
+    List<String> labels;
+  }
+ 
+  class GemBarChartEntry {
+    String label;
+    String stack;
+    List<Integer> data;
+    String backgroundColor;
+    String hoverBackgroundColor;
+  }
+
+}

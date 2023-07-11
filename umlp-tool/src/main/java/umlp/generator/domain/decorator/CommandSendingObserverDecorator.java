@@ -38,7 +38,7 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isDerived())
         .filter(c -> !c.getModifier().isAbstract())
-        .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c))));
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
@@ -86,7 +86,9 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
             });
 
     // Assoziationen
-    DAODecorator.getOppositeSideToAssociationMap(domainClass, origCD.getCDDefinition().getCDAssociationsList()).entrySet().stream()
+    DAODecorator.getOppositeSideToAssociationMap(domainClass).entrySet().stream()
+        // TODO @CBU, @AHe how to handle association inherited from superclass from imported CD?
+        .filter(e -> UMLPSymbolTables.getDiagramFor(e.getKey()).getCDDefinition().getName().equals(origCD.getCDDefinition().getName()))
         .filter(e -> !(e.getValue().getModifier().isDerived() || e.getValue().getModifier().isReadonly()))
         .forEach(e -> {
           ASTCDAssocSide a = e.getKey();

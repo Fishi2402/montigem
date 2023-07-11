@@ -19,11 +19,15 @@ public class TypeScriptSimpleGenericTypesPrettyPrinter extends MCSimpleGenericTy
       String last = node.getName(node.sizeNames() - 1);
       // TODO AGe: some Optionals land here ...
       if (!last.equals("Optional")) {
-        getPrinter().print(TypeScriptTypes.toTSType(last));
-        getPrinter().stripTrailing();
-        getPrinter().print("<");
+        if (last.equals("Consumer")) {
+          getPrinter().print("(arg: any) => void");
+        } else {
+          getPrinter().print(TypeScriptTypes.toTSType(last));
+          getPrinter().stripTrailing();
+          getPrinter().print("<");
+        }
       }
-      if (iter_mCTypeArgument.hasNext()) {
+      if (iter_mCTypeArgument.hasNext() && !last.equals("Consumer")) {
         iter_mCTypeArgument.next().accept(getTraverser());
         while (iter_mCTypeArgument.hasNext()) {
           getPrinter().stripTrailing();
@@ -32,7 +36,7 @@ public class TypeScriptSimpleGenericTypesPrettyPrinter extends MCSimpleGenericTy
         }
       }
       getPrinter().stripTrailing();
-      if (!last.equals("Optional")) {
+      if (!last.equals("Optional") && !last.equals("Consumer")) {
         getPrinter().print(">");
       }
     }

@@ -1,0 +1,18 @@
+package charts.src.lib.gemlinechart;
+
+classdiagram GemLineChartTypes {
+
+  class GemLineChartData {
+    List<GemLineChartEntry> entries;
+    List<String> labels;
+  }
+ 
+  class GemLineChartEntry {
+    String label;
+    List<Integer> data;
+    String borderColor;
+    String backgroundColor;
+    String pointBackgroundColor;
+  }
+
+}

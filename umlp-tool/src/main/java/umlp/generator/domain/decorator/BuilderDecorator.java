@@ -15,6 +15,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -26,17 +27,20 @@ public class BuilderDecorator extends AbstractDecorator {
 
   public static final String BUILDER_SUFFIX = "Builder";
 
+  private ASTCDCompilationUnit origCD;
+
   public BuilderDecorator(final GlobalExtensionManagement glex) {
     super(glex);
   }
 
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    this.origCD = origCD;
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isDerived())
         .filter(c -> !c.getModifier().isAbstract())
-        .forEach(c -> astcdPackage.addCDElement(createClass(c, name, origCD)));
+      .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c, name, origCD))));
   }
 
   public static String getClassName(String domainClassName) {
@@ -89,19 +93,25 @@ public class BuilderDecorator extends AbstractDecorator {
         managerName,
         nonDerivedAttrAssocsList
     );
-    getCD4C().addMethod(builderClass, getIsBuildableTemplate(), attrList);
+    // TODO: filter by mandatory
+    List<ASTCDAttribute> mandatoryAttrList = attrList;
+    getCD4C().addMethod(builderClass, getIsBuildableTemplate(), mandatoryAttrList);
 
     // Imports
     addImports(domainClass, builderClass);
+    attrAssocLists.forEach(assocSide -> {
+      addCorrectMangerImportForTargetType(origCD.getCDDefinition(), builderClass, assocSide.getSymbol().getType());
+    });
 
     return builderClass;
   }
 
   protected void addConstructor(
       ASTCDClass builderClass, ASTCDClass domainClass,
-      String managerName, List<ASTCDAssocSide> attrAssocLists
-  ) {
-    getCD4C().addConstructor(builderClass, getConstructorTemplate(), domainClass.getName(), managerName, attrAssocLists);
+      String managerName, List<ASTCDAssocSide> attrAssocLists) {
+    HashMap<ASTCDAssocSide, String> correctManagerToAttrAssocSides = new HashMap<>();
+    attrAssocLists.forEach(assocSide -> correctManagerToAttrAssocSides.put(assocSide, getCorrectManager(assocSide)));
+    getCD4C().addConstructor(builderClass, getConstructorTemplate(), domainClass.getName(), correctManagerToAttrAssocSides);
   }
 
   protected String getConstructorTemplate() {

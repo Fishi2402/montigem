@@ -4,7 +4,6 @@ package umlp.generator.domain.decorator;
 
 import com.google.common.collect.Sets;
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -35,7 +34,7 @@ public class ManagerDecorator extends AbstractDecorator {
 
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    astcdPackage.addCDElement(createClass(origCD));
+    astcdPackage.addCDElement(withOrigin(createClass(origCD)));
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
@@ -89,6 +88,9 @@ public class ManagerDecorator extends AbstractDecorator {
 
     getCD4C().addMethod(managerClass, "umlp.manager.GetFreeGemId", true);
     getCD4C().addMethod(managerClass, "umlp.manager.GetFreeGemId", false);
+
+    getCD4C().addMethod(managerClass, "umlp.manager.ClearCache", true);
+    getCD4C().addMethod(managerClass, "umlp.manager.ClearCache", false);
   }
 
   protected void addClassElements(ASTCDClass domainClass, ASTCDClass managerClass) {

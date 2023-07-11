@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+classdiagram Weather {
+
+  class Forecast {
+    // java.time.LocalDateTime date;
+    java.time.LocalDate date;
+
+    Double longitude;
+    Double latitude;
+
+    Double temperature;
+    Double windspeed;
+    int realtiveHumidity;
+  }
+
+  class HvacConfig {
+    Double temperature;
+    boolean humidifyAir;
+    // HvacMode mode;
+    String mode;
+
+    // java.time.LocalTime timeOn;
+    // java.time.LocalTime timeOff;
+    java.time.LocalDate timeOn;
+    java.time.LocalDate timeOff;
+  }
+
+  /*
+  enum HvacMode {
+    AUTO,
+    HUMIDIFY,
+    VENTILATE,
+    HEAT,
+    COOL;
+  }
+  /**/
+
+}
+

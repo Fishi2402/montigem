@@ -1,0 +1,36 @@
+<!--  (c) https://github.com/MontiCore/monticore -->
+
+<context-menu id="contextMenu" #contextMenu>
+    <ng-container *ngFor="let action of contextMenuActions">
+        <ng-container *ngIf="action.children === undefined || action.children.length === 0">
+            <ng-template  contextMenuItem let-item
+                          [visible]="action.visible" [enabled]="action.enabled" [divider]="action.divider"
+                          (execute)="action.click($event.value)">
+
+                {{ action.html(item) }}
+            </ng-template>
+        </ng-container>
+
+        <ng-container *ngIf="action.children !== undefined && action.children.length > 0">
+
+            <ng-template  contextMenuItem let-item
+                          [visible]="action.visible" [enabled]="action.enabled" [divider]="action.divider"
+                          (execute)="action.click($event.value)" [subMenu]="subMenu">
+
+                {{ action.html(item) }}
+            </ng-template>
+
+
+            <context-menu #subMenu>
+                <ng-container *ngFor="let subAction of action.children">
+                    <ng-template  contextMenuItem let-item
+                                  [visible]="subAction.visible" [enabled]="subAction.enabled" [divider]="subAction.divider"
+                                  (execute)="subAction.click($event.value)">
+
+                        {{ subAction.html(item) }}
+                    </ng-template>
+                </ng-container>
+            </context-menu>
+        </ng-container>
+    </ng-container>
+</context-menu>

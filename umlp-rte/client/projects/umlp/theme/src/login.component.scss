@@ -1,0 +1,17 @@
+@import "../variables";
+@import "../mixins";
+
+@mixin login-theme($primary-color) {
+  .montigem-login {
+    display: flex;
+  }
+
+  .gem-form-style {
+    flex: 1 1 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+    flex-direction: column;
+    place-content: stretch center;
+    align-items: stretch;
+  }
+}

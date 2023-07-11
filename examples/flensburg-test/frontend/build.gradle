@@ -1,0 +1,205 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.nio.file.Paths
+
+buildscript {
+  repositories {
+    mavenCentral()
+    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  }
+  dependencies {
+    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
+      transitive = true
+    }
+    classpath group: 'umlp', name: 'umlp-frontend-rte-java'
+    // classpath project(":umlp-rte:umlp-frontend-rte-java")
+  }
+}
+
+plugins {
+  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
+  id "com.github.node-gradle.node" version "3.4.0"
+  id 'de.rwth.se.umlp-tool' version "$mc_version"
+}
+
+repositories {
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+  mavenCentral()
+}
+
+configurations {
+  cdParser
+  guiParser
+  guiLib
+}
+
+dependencies {
+  cdParser "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
+  guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
+  guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
+
+  implementation "umlp:frontend-rte:$mc_version:cd2java"
+}
+
+node {
+  // Whether to download and install a specific Node.js version or not
+  // If false, it will use the globally installed Node.js
+  // If true, it will download node using above parameters
+  // Note that npm is bundled with Node.js
+  download = true
+
+  // Version of node to download and install (only used if download is true)
+  // It will be unpacked in the workDir
+  version = "18.10.0"
+
+  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
+  // according the proxy configuration defined for Gradle
+  // Disable this option if you want to configure the proxy for npm or yarn on your own
+  // (in the .npmrc file for instance)
+  nodeProxySettings = ProxySettings.OFF
+}
+
+// ------------------------ jsweet start ------------------------
+// also uses buildscript and one plugin
+
+jsweet {
+  autoPropagateAsyncAwaits = true
+  verbose = true
+  encoding = 'UTF-8'
+  sourceMap = true
+  tsOnly = true
+  tsOut = project.file('target/generated-sources/ts')
+  candiesJsOut = project.file('target/candies')
+  targetVersion = 'ES6'
+  includes = ['**/flensburg/**/*.java']
+  module = 'commonjs'
+  workingDir = project.file('target/.jsweet')
+  excludeTranspilation = [
+    // '**/*DeSer*.java',
+    'flensburg/*DAO.java',
+    'flensburg/*DbObserver.java'
+  ]
+}
+
+// ------------------------ jsweet end ------------------------
+
+// TODO AGe: don't know if that is needed
+task generateCDTOGUI(type: UMLPCdToGuiTask) {
+  input = file("../models/hardy")
+  outputDir = layout.buildDirectory.dir("cd2gui")
+}
+
+def symPath = "${project.buildDir}/symbols";
+
+task serializeCD {
+  dependsOn('unpackGUILibSymbols')
+  doLast {
+    def modelPathStr = "${project.projectDir.parent}/models"
+    def modelPath = Paths.get(modelPathStr)
+    fileTree(modelPathStr).matching {
+      include "**/*.umlp"
+    }.each {
+      def path = it.path
+      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
+      javaexec {
+        mainClass = 'de.monticore.CD4CodeTool'
+        classpath = configurations.cdParser
+        args "-i", path,
+            "-s", "${symPath}/${relativeModelPathStr}sym"
+      }
+    }
+  }
+}
+
+task unpackGUILibSymbols(type: Copy) {
+  from zipTree(configurations.guiLib.asPath)
+  into "${symPath}"
+}
+
+task genDomain(type: UMLPFrontendTask) {
+  input = file("../models/hardy/Flensburg.umlp")
+  outputDir = file("$project.buildDir/appdomain")
+  hwcDir = file("$projectDir/src/app")
+}
+
+task genGUI(type: UMLPGuiGenTask) {
+  dependsOn('serializeCD')
+  input = file("../models")
+  outputDir = file("$project.buildDir/appgui")
+  hwcDir = file("$projectDir/src/app")
+  modelDir = layout.projectDirectory.dir("../models")
+  symbolDir = file(symPath)
+  domainModels = ["hardy.Flensburg"]
+  guiCreateModels = ["stanley.gui.AccountCreate"]
+}
+
+task genGUI2(type: UMLPGuiGenTask) {
+  dependsOn(genGUI, generateCDTOGUI)
+  input = file(layout.buildDirectory.dir("cd2gui/models"))
+  symbolDir = file(symPath)
+  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
+  outputDir = layout.buildDirectory.dir("umlp/fe2")
+  domainModels = ["hardy.Flensburg"]
+}
+
+task generateNPMAuth(type: NPMAuthCreate)
+
+/*
+yarn_install.dependsOn(generateNPMAuth, genGUI)
+yarn_upgrade.dependsOn(yarn_install)
+/**/
+npm_install.dependsOn(generateNPMAuth, genGUI)
+npm_update.dependsOn(npm_install)
+
+/*
+task buildApp(type: YarnTask) {
+  dependsOn('genDomain', yarn_upgrade)
+/**/
+task buildApp(type: NpxTask) {
+  dependsOn('genDomain', npm_install)
+  command = "ng"
+  args = ["build"]
+  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
+  inputs.dir("node_modules")
+  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.app.json")
+  outputs.dir("${project.buildDir}/dist")
+}
+
+/*
+task testApp(type: YarnTask) {
+  dependsOn('genDomain', yarn_upgrade)
+/**/
+task testApp(type: NpxTask) {
+  dependsOn('genDomain', npm_install)
+  command = "ng"
+  args = ["test"]
+  inputs.dir("src")
+  inputs.dir("node_modules")
+  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json", "karma.conf.js")
+  outputs.upToDateWhen { true }
+}
+
+/*
+task runApp(type: YarnTask) {
+  dependsOn('genDomain', yarn_upgrade)
+/**/
+task runApp(type: NpxTask) {
+  dependsOn('genDomain', npm_install)
+  command = "ng"
+  args = ["serve"]
+  // args = ["start"]
+  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
+  inputs.dir("node_modules")
+  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json")
+  outputs.upToDateWhen { true }
+}
+
+clean.dependsOn(jsweetClean)
