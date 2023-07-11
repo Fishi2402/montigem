@@ -5,6 +5,7 @@ import hardy.Flensburg.Budget;
 import hardy.Flensburg.Transaction;
 
 import basic.src.lib.gemtext.GemText;
+import input.src.lib.gemtextinput.GemTextInput;
 
 component CustomAccountView(Account acc, List<Budget> bs) {
   // @iterate(Budget b : acc.budget) {
@@ -13,10 +14,13 @@ component CustomAccountView(Account acc, List<Budget> bs) {
     @GemText(value = b.name);
         @GemText(value = b.balance);
         // shows DOLLAR or EURO or 0 or 1 or ...
+        @GemTextInput(entry = b.cur);
         @GemText(value = b.cur);
-        @GemText(value = b.cur1);
-      @iterate(Transaction t : b.transaction) {
-        @GemText(value = t.date.toString());
-      }
+        @GemTextInput(entry = b.curOpt);
+        @GemText(value = b.curOpt);
+
+        @iterate(Transaction t : b.transaction) {
+          @GemText(value = t.date);
+        }
     }
 }

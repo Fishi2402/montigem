@@ -338,7 +338,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         }
         else {
           String type = rightType.print();
-          getCD4C().addImport(decoratedClass, type);
+          addImport(decoratedClass, type);
           type = type.lastIndexOf('.') > 0 ? type.substring(type.lastIndexOf('.') + 1) : type;
           return stringToEnumConversion(type);
         }
@@ -350,7 +350,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         }
         else {
           String innerType = ((SymTypeOfGenerics) rightType).getArgument(0).print();
-          getCD4C().addImport(decoratedClass, innerType);
+          addImport(decoratedClass, innerType);
           innerType = innerType.lastIndexOf('.') > 0 ? innerType.substring(innerType.lastIndexOf('.') + 1) : innerType;
           return stringToOptionalEnumConversion(innerType);
         }
@@ -367,12 +367,15 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return s -> s;
   }
 
+  protected void addImport(ASTCDClass decoratedClass, String type) { // TODO: remove this method if compiling of test java files fixed
+  }
+
   protected Function<String, String> enumOptionalToStringConversion() {
     return s -> s + "!= null?" + s + " + \"\" : \"\"";
   }
 
   protected Function<String, String> stringToOptionalEnumConversion(String type) {
-    return s -> type + ".values.contains(" + s + ")? " + type + "[" + s + "] : null";
+    return s -> "null"; //type + ".valueOf(" + s + ")"; TODO: check Import
   }
 
   protected Function<String, String> dateToStringConversion() {
@@ -396,7 +399,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   protected Function<String, String> stringToEnumConversion(String type) {
-    return s -> type + "[" + s + "]";
+    return s -> "null"; //type + ".valueOf(" + s + ")"; TODO: check Import
   }
 
   protected Function<String, String> gemlistToArrayConversion() {
