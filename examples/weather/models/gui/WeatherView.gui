@@ -18,12 +18,12 @@ page WeatherView(List<Forecast> forecasts) {
       component = @GemTable(
         rows = forecasts,
         columns = [
-          TableColumn("_date", "Date"),
           TableColumn("_temperature", "Temperature"),
           TableColumn("_windspeed", "Wind speed"),
           TableColumn("_realtiveHumidity", "Humidity")
         ],
-        edit = updateForecast
+        edit = navigateToUpdatePage,
+        update = log
       )
     ),
     @GemCard(

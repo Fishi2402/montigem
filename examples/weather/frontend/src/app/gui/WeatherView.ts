@@ -53,8 +53,8 @@ export class WeatherView extends WeatherViewTOP {
     return this.cache.chartData;
   }
 
-  public override updateForecast(row: Forecast): void {
-    console.log(row);
+  public override navigateToUpdatePage(row: Forecast): void {
+    this.router.navigate(["..", "b", "ForecastUpdate", row.getGemId()]);
   }
 
 }
