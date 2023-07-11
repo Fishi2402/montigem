@@ -10,8 +10,9 @@ import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManag
 export class AppComponent {
   constructor() {
     WeatherManagerClientImpl.init();
+    const ws_protocol = document.location.protocol == "https:" ? "wss": "ws";
     const cmdManager = new ClientCommandManager(new ClientCommandWebsocketCommunication(
-      'ws://localhost:4200/umlp/api/command'
+      ws_protocol + '://' + document.location.host + '/umlp/api/command'
     ));
     CommandManager.initMe(cmdManager);
   }

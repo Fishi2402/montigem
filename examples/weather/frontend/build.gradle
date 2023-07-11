@@ -40,9 +40,8 @@ node {
 }
 
 // TODO AGe: don't know if that is needed
-task generateCDTOGUI(type: UMLPTask) {
+task generateCDTOGUI(type: UMLPCdToGuiTask) {
   input = file("../models/Weather.umlp")
-  cdToGui = true
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
 
@@ -73,10 +72,9 @@ task unpackGUILibSymbols(type: Copy) {
   into "${symPath}"
 }
 
-task genDomain(type: UMLPTask) {
+task genDomain(type: UMLPFrontendTask) {
   input = file("../models/Weather.umlp")
   outputDir = file("$project.buildDir/appdomain")
-  forClient = true
 }
 
 task genGUI(type: UMLPGuiGenTask) {

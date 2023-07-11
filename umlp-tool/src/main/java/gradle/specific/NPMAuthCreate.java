@@ -1,4 +1,4 @@
-package gradle;
+package gradle.specific;
 
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
@@ -12,7 +12,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-abstract class NPMAuthCreate extends DefaultTask {
+/**
+ * Create ".npmrc" file with authentication data for Nexus.
+ * Also ensures that the file is not committed in git.
+ */
+abstract public class NPMAuthCreate extends DefaultTask {
 
   public NPMAuthCreate() {
     super();

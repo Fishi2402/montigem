@@ -18,13 +18,13 @@ dependencies {
 
 
 // TODO AGe: don't know if that is needed
-//task generateCDTOGUI(type: UMLPTask) {
+//task generateCDTOGUI(type: UMLPBackendTask) {
 //  input = file("src/models/hardy")
 //  cdToGui = true
 //  outputDir = layout.buildDirectory.dir("cd2gui")
 //}
 
-task generateFlensburg_BE(type: UMLPTask) {
+task generateFlensburg_BE(type: UMLPBackendTask) {
   input = file("src/models/hardy")
   hwcDir = file("src/main/java")
   symbolOutDir = file("$project.buildDir/umlp/symbols")

@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gradle.merge;
+package gradle.specific.merge;
 
 import com.google.common.collect.Sets;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;

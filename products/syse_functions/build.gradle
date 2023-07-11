@@ -40,7 +40,7 @@ task mergeUMLPModels(type: UMLPMergeTask){
   outputFile = layout.buildDirectory.file("FunctionsStructure.umlp")  // buildDirectory = "build/"
 }
 
-task generateJavaCode(type: UMLPTask) {
+task generateJavaCode(type: UMLPBackendTask) {
   input = mergeUMLPModels.outputFile  // when the input is defined like this, gradle automatically runs the task "mergeUMLPModels" before this task
 
   // Other way to define inputs:

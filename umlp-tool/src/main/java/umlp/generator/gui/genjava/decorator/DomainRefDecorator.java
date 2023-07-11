@@ -74,19 +74,22 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
           addManagerImport(decoratedClass, util.gui2tsManagerImport(guiAst.getComponentName()));
           addedManager = true;
         }
+        String qName = i.getQName();
+        String importStr = Joiners.DOT.join(Names.getQualifier(qName).toLowerCase(), Names.getSimpleName(qName));
         // add builder import
         if (util.isCreateModel(guiAst.getComponentQName()) && util.isDomainImport(i)) {
-          getCD4C().addImport(decoratedClass, i.getQName() + BuilderDecorator.BUILDER_SUFFIX);
+          getCD4C().addImport(decoratedClass, importStr + BuilderDecorator.BUILDER_SUFFIX);
+        } else if (util.isDomainImport(i)) {
+          getCD4C().addImport(decoratedClass, importStr);
         } else {
-          String qName = i.getQName();
-          getCD4C().addImport(decoratedClass,
-              Joiners.DOT.join(Names.getQualifier(qName).toLowerCase(), Names.getSimpleName(qName)));
+          getCD4C().addImport(decoratedClass, qName);
         }
       }
     }
   }
 
   protected void addManagerImport(ASTCDClass clazz, String manager) {
+    getCD4C().addImport(clazz, manager);
   }
 
   protected String getBuildTemplate() {
@@ -263,7 +266,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   protected void addBuilderConstructor(
       ASTCDClass clazz, List<ASTCDAttribute> domainAttributes, String componentName
   ) {
-    Optional<String> domainQName = util.getMainDomainModelQName();
+    Optional<String> domainQName = util.getMainDomainModelSimpleName();
     if (domainQName.isPresent()) {
       String className = clazz.getName();
       getCD4C().addConstructor(clazz, getConstructorWithBuilderTemplate(),

@@ -92,9 +92,8 @@ jsweet {
 // ------------------------ jsweet end ------------------------
 
 // TODO AGe: don't know if that is needed
-task generateCDTOGUI(type: UMLPTask) {
+task generateCDTOGUI(type: UMLPCdToGuiTask) {
   input = file("../models/hardy")
-  cdToGui = true
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
 
@@ -125,11 +124,10 @@ task unpackGUILibSymbols(type: Copy) {
   into "${symPath}"
 }
 
-task genDomain(type: UMLPTask) {
+task genDomain(type: UMLPFrontendTask) {
   input = file("../models/hardy/Flensburg.umlp")
   outputDir = file("$project.buildDir/appdomain")
   hwcDir = file("$projectDir/src/app")
-  forClient = true
 }
 
 task genGUI(type: UMLPGuiGenTask) {
@@ -141,9 +139,6 @@ task genGUI(type: UMLPGuiGenTask) {
   symbolDir = file(symPath)
   domainModels = ["hardy.Flensburg"]
   guiCreateModels = ["stanley.gui.AccountCreate"]
-
-  debug = true
-  outputs.upToDateWhen { false }
 }
 
 task genGUI2(type: UMLPGuiGenTask) {

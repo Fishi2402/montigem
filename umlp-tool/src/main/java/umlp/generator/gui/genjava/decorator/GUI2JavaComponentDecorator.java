@@ -22,6 +22,8 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCalculator;
+import de.monticore.types.check.SymTypeOfGenerics;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.GUIAbstractDecorator;
@@ -96,9 +98,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           } else {
             Optional<String> domainQName = util.getMainDomainModelQName();
             if (domainQName.isPresent()) {
-              getCD4C().addImport(decoratedClass, domainQName.get() + "." + innerType.print());
-            }
-            else {
+              getCD4C().addImport(decoratedClass, domainQName.get().toLowerCase() + "."
+                  + Names.getSimpleName(util.getListInnerType(paramSTE).get().print()));
+            } else {
               Log.warn("0x0000A GUI Model " + this.guiAst.getComponentName()
                   + " uses type '" + paramSTE.print() + "' that could not be resolved.");
             }
@@ -115,8 +117,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
             getCD4C().addImport(decoratedClass, domainQName.get() + "." + paramSTE.print());
           }
           else if (util.isDomainListType(paramSTE) && util.getListInnerType(paramSTE).isPresent()) {
-            getCD4C().addImport(decoratedClass, domainQName.get() + "."
-                + util.getListInnerType(paramSTE).get().print());
+            getCD4C().addImport(decoratedClass, domainQName.get().toLowerCase() + "."
+                + Names.getSimpleName(util.getListInnerType(paramSTE).get().print()));
           }
           else {
             Log.warn("0x0000A GUI Model " + this.guiAst.getComponentName()
@@ -219,6 +221,10 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   protected String convertType(SymTypeExpression mcType) {
+    // TODO MB Bessere Lösung
+    if (mcType instanceof SymTypeOfGenerics) {
+      return ((SymTypeOfGenerics) mcType).getBaseName()+"<"+Names.getSimpleName(((SymTypeOfGenerics) mcType).getArgument(0).getTypeInfo().getName())+">";
+    }
     return mcType.print();
   }
 
@@ -278,7 +284,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   protected String getSetterTemplate() {
-    return "umlp.gui2java.SetComponent";
+    return "umlp.gui2java.SetComponentReplaced";
   }
 
   protected String getSetterReplacedTemplate() {
