@@ -22,7 +22,8 @@ page WeatherView(List<Forecast> forecasts) {
           TableColumn("_temperature", "Temperature"),
           TableColumn("_windspeed", "Wind speed"),
           TableColumn("_realtiveHumidity", "Humidity")
-        ]
+        ],
+        edit = updateForecast
       )
     ),
     @GemCard(
