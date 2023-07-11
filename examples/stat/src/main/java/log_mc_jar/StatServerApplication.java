@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import javax.annotation.PreDestroy;
 import java.net.URL;
@@ -32,7 +33,7 @@ public class StatServerApplication {
       Log.error("0xAAAAAA Could not find schema for database.");
     }
     String schema = FileReaderWriter.readFromFile(optionalURL.get());
-    DatabaseAccessManager.initSchema(schema);
+    DatabaseAccessManager4SQL.initSchema(schema);
 
     // Allow External Access to H2 Database
     // Connect via "URL-Only" to "jdbc:h2:tcp://localhost/mem:umlpdb"

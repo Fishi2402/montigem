@@ -6,11 +6,12 @@ import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class TestDatabaseAccessManager extends DatabaseAccessManager {
 
-  private static long freeGemId = -1;
+  private static long freeGemId = 0;
 
   public static void init(){
     instance = new TestDatabaseAccessManager();
@@ -29,6 +30,16 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager {
     } catch (SQLException e) {
       Log.error("Error while initializing db", e);
     }
+  }
+
+  @Override
+  protected long _getFreeGemId() {
+    return freeGemId++;
+  }
+
+  @Override
+  public PreparedStatement _prepareStatement(String statement) {
+    return null;
   }
 
   protected static void close(){

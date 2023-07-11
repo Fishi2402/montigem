@@ -4,6 +4,7 @@ import de.se_rwth.commons.logging.LogStub;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,9 +37,10 @@ public class LocalDateTest {
 
   @Test
   public void testCreatePersonWithLocalDateDb() throws IOException {
-    RestaurantOrgManagerImpl.init();
     URL schemaUrl = getClass().getResource("/RestaurantOrg.sql");
-    DatabaseAccessManager.initSchema(IOUtils.toString(schemaUrl, StandardCharsets.UTF_8));
+    DatabaseAccessManager4SQL.init();
+    RestaurantOrgManagerImpl.init();
+    DatabaseAccessManager4SQL.initSchema(IOUtils.toString(schemaUrl, StandardCharsets.UTF_8));
     LogStub.init();
 
     // TODO: Job is optional!

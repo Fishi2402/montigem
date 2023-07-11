@@ -7,16 +7,18 @@ import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import org.h2.tools.Server;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class TestDatabaseAccessManager extends DatabaseAccessManager {
+public class TestDatabaseAccessManager extends DatabaseAccessManager4SQL {
 
   public static void init(){
     instance = new TestDatabaseAccessManager();
+    setup();
   }
 
   @Override

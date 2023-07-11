@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.net.URL;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class FlensburgServerApplication {
   public static void main(String[] args) {
     SpringApplication.run(FlensburgServerApplication.class, args);
+    DatabaseAccessManager4SQL.init();
     FlensburgManagerImpl.init();
 
     Optional<URL> optionalURL = FileReaderWriter.getResource(FlensburgServerApplication.class.getClassLoader(), "Flensburg.sql");
@@ -29,7 +31,7 @@ public class FlensburgServerApplication {
     }
     String schema = FileReaderWriter.readFromFile(optionalURL.get());
     Log.warn("Loading schema: " + schema);
-    if (DatabaseAccessManager.initSchema(schema)) {
+    if (DatabaseAccessManager4SQL.initSchema(schema)) {
       // FlensburgDummies.getInstance().inventComplex();
     }
   }
