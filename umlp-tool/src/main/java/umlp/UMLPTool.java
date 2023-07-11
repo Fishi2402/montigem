@@ -16,8 +16,8 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
-import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
+import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
 import de.monticore.io.FileReaderWriter;
@@ -25,8 +25,8 @@ import de.monticore.io.paths.MCPath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbolDeSer;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonBoolean;
 import de.monticore.symboltable.serialization.json.JsonElement;
@@ -74,12 +74,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static umlp.UMLPToolOptions.CD2GUI;
-import static umlp.UMLPToolOptions.GUIDelta;
-import static umlp.UMLPToolOptions.GUI_PATH;
 import static umlp.UMLPToolOptions.DEBUG;
 import static umlp.UMLPToolOptions.DOMAIN;
 import static umlp.UMLPToolOptions.FOR_CLIENT;
+import static umlp.UMLPToolOptions.GUIDelta;
 import static umlp.UMLPToolOptions.GUI_CREATE;
+import static umlp.UMLPToolOptions.GUI_PATH;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
@@ -585,17 +585,17 @@ public class UMLPTool extends UMLPToolTOP {
     gs.addAdaptedTypeSymbolResolver(new Class2MCResolver());
     gs.setSymbolPath(modelPath);
     // gs.putSymbolDeSer("umlp._symboltable.UMLPDefSymbol", new UMLPDefSymbolDeSer());
-    gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new TypeSymbolDeSer());
-    gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol", new VariableSymbolDeSer());
-    gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new VariableSymbolDeSer());
-    FunctionSymbol navigateFunction = GUIDSLMill.functionSymbolBuilder()
+    gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new OOTypeSymbolDeSer());
+    gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol", new FieldSymbolDeSer());
+    gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new FieldSymbolDeSer());
+    FunctionSymbol navigateFunction = GUIDSLMill.methodSymbolBuilder()
         .setName("navigate")
         .setEnclosingScope(gs)
         .setSpannedScope(GUIDSLMill.scope())
         .setType(SymTypeExpressionFactory.createTypeObject(de.monticore.guidsl._symboltable.BuiltInTypes.EVENT.getName(), gs))
         .build();
     navigateFunction.getSpannedScope().add(
-        GUIDSLMill.variableSymbolBuilder()
+        GUIDSLMill.fieldSymbolBuilder()
             .setName("arg")
             .setType(SymTypeExpressionFactory.createTypeObject(de.monticore.guidsl._symboltable.BuiltInTypes.GUI_VIEW_ELEMENT.getName(), gs))
             .setEnclosingScope(navigateFunction.getSpannedScope())
