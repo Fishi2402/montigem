@@ -13,17 +13,17 @@ import { Forecast } from '@src/weather/Forecast';
 })
 export class WeatherView extends WeatherViewTOP {
 
-  protected cache: { chartData: GemLineChartData } = { chartData: null };
+  protected cache: {
+    chart: { hash: string, data: GemLineChartData }
+    table: { hash: string, data: Forecast[] }
+  } = {
+    chart: { hash: null, data: null },
+    table: { hash: null, data: null }
+  };
 
   public override getChartData(): GemLineChartData {
     if (!this.getForecasts()) {
       return null;
-    }
-    if (this.cache.chartData != null
-       && this.cache.chartData.entries.length
-       && this.cache.chartData.labels.length
-    ) {
-      return this.cache.chartData;
     }
     let forecasts = this.getForecasts().toArray();
 
@@ -49,8 +49,28 @@ export class WeatherView extends WeatherViewTOP {
       entry.label = key;
       chartEntries.push(entry);
     }
-    this.cache.chartData = new GemLineChartData(chartEntries, xAxis);
-    return this.cache.chartData;
+    const result = new GemLineChartData(chartEntries, xAxis);
+    const hash = JSON.stringify(result);
+    if (this.cache.chart.hash != hash) {
+      this.cache.chart.hash = hash;
+      this.cache.chart.data = result;
+    }
+    return this.cache.chart.data;
+  }
+
+  public override getGemTable2Rows(): Array<any> {
+    if (!this.getForecasts()) {
+      return null;
+    }
+
+    const result = this.getForecasts().toArray();
+    const hash = JSON.stringify(result);
+    if (this.cache.table.hash != hash) {
+      this.cache.table.hash = hash;
+      this.cache.table.data = [...result];
+    }
+
+    return this.cache.table.data;
   }
 
   public override navigateToUpdatePage(row: Forecast): void {
