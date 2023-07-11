@@ -34,25 +34,28 @@ public class DAODecorator extends AbstractDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    List<ASTCDAssociation> nonDerivedAssocs = origCD.getCDDefinition().getCDAssociationsList().stream().filter(a -> !a.getModifier().isDerived()).collect(Collectors.toList());
     cdName = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
         .filter(c -> !c.getSymbol().isIsAbstract())
-        .forEach(c -> astcdPackage.addCDElement(withOrigin(createDAOClassForDomainClass(c, nonDerivedAssocs))));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createDAOClassForDomainClass(c))));
 
-    nonDerivedAssocs.forEach(assoc -> astcdPackage.addCDElement(withOrigin(createDAOClassForAssoc(assoc))));
+    origCD.getCDDefinition().getCDAssociationsList().stream()
+        .filter(a -> !a.getModifier().isDerived())
+        .forEach(assoc -> astcdPackage.addCDElement(withOrigin(createDAOClassForAssoc(assoc))));
   }
 
   /**
    * Creates DaoClass from a DomainClass
    *
    * @param domainClass
-   * @param associations
    * @return
    */
-  private ASTCDClass createDAOClassForDomainClass(ASTCDClass domainClass, List<ASTCDAssociation> associations) {
-    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = getOppositeSideToAssociationMap(domainClass, associations);
+  private ASTCDClass createDAOClassForDomainClass(ASTCDClass domainClass) {
+    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = getOppositeSideToAssociationMap(domainClass)
+        .entrySet().stream()
+        .filter(entry -> !entry.getValue().getModifier().isDerived())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     ASTCDClassBuilder builder = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(domainClass.getName() + "DAO")
@@ -435,7 +438,8 @@ public class DAODecorator extends AbstractDecorator {
 
   static Map<ASTCDAssocSide, ASTCDAssociation> getOppositeSideToAssociationMap(ASTCDClass domainClass) {
     List<ASTCDAssocSide> assocSides = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
-        .filter(GenService::isVisible).collect(Collectors.toList());
+        .filter(GenService::isVisible)
+        .collect(Collectors.toList());
     Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = new HashMap<>();
     for (ASTCDAssocSide assocSide : assocSides) {
       ASTCDAssociation assocOfAssocSide = assocSide.getSymbol().getAssoc().getAssociation().getAstNode();
