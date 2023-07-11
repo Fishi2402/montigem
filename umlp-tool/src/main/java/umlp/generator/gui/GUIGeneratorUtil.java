@@ -25,6 +25,7 @@ import de.monticore.io.paths.MCPath;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
@@ -127,26 +128,42 @@ public class GUIGeneratorUtil {
     return false;
   }
 
-  public final boolean isDomainOptionalType(SymTypeExpression type) {
-    if (type.hasTypeInfo() && GenService.isOptional(type)) {
-      if (((SymTypeOfGenerics) type).sizeArguments() == 1) {
-        SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
-        if (GenService.isJavaType(inner)) {
-          return false;
-        }
-        TypeSymbol ts = inner.getTypeInfo();
-        if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {  // Das funktioniert nicht
-          IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
-          return DOMAIN_MODELS.contains(as.getFullName());
-        }
-        Optional<TypeSymbol> symb = ts.getEnclosingScope().resolveType(ts.getName()); // Das schon
-        if (symb.isPresent()) {
-          if (symb.get().getEnclosingScope() instanceof IGUIDSLArtifactScope) {
-            IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) symb.get().getEnclosingScope();
-            return DOMAIN_MODELS.contains(as.getFullName());
-          }
+  public final boolean isEnumType(SymTypeExpression type) {
+    Optional<TypeSymbol> symb = type.getTypeInfo().getEnclosingScope().resolveType(type.getTypeInfo().getName());
+    if (symb.isPresent()) {
+      if (OOSymbolsMill.typeDispatcher().isOOType(symb.get())) {
+        return OOSymbolsMill.typeDispatcher().asOOType(symb.get()).isIsEnum();
+      }
+    }
+    return false;
+  }
+
+  public final boolean isDomainEnumType(SymTypeExpression type) {
+    Optional<TypeSymbol> symb = type.getTypeInfo().getEnclosingScope().resolveType(type.getTypeInfo().getName());
+    if (symb.isPresent()) {
+      if (symb.get().getEnclosingScope() instanceof IGUIDSLArtifactScope) {
+        IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) symb.get().getEnclosingScope();
+        boolean isDomain = DOMAIN_MODELS.contains(as.getFullName());
+        if (isDomain && OOSymbolsMill.typeDispatcher().isOOType(symb.get())) {
+          return OOSymbolsMill.typeDispatcher().asOOType(symb.get()).isIsEnum();
         }
       }
+    }
+    return false;
+  }
+
+  public final boolean isOptionalEnumType(SymTypeExpression type) {
+    if (type.hasTypeInfo() && GenService.isOptional(type) && ((SymTypeOfGenerics) type).sizeArguments() == 1) {
+      SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+      return isEnumType(inner);
+    }
+    return false;
+  }
+
+  public final boolean isDomainOptionalEnumType(SymTypeExpression type) {
+    if (type.hasTypeInfo() && GenService.isOptional(type) && ((SymTypeOfGenerics) type).sizeArguments() == 1) {
+      SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+      return isDomainEnumType(inner);
     }
     return false;
   }
