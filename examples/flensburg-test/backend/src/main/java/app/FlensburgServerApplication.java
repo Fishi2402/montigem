@@ -2,13 +2,13 @@ package app;/* (c) https://github.com/MontiCore/monticore */
 
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
-import hardy.flensburg.FlensburgDummies;
 import hardy.flensburg.FlensburgManagerImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.net.URL;
 import java.util.Optional;
@@ -22,6 +22,7 @@ import java.util.Optional;
 public class FlensburgServerApplication {
   public static void main(String[] args) {
     SpringApplication.run(FlensburgServerApplication.class, args);
+    DatabaseAccessManager4SQL.init();
     FlensburgManagerImpl.init();
 
     Optional<URL> optionalURL = FileReaderWriter.getResource(FlensburgServerApplication.class.getClassLoader(), "Flensburg.sql");
@@ -30,8 +31,8 @@ public class FlensburgServerApplication {
     }
     String schema = FileReaderWriter.readFromFile(optionalURL.get());
     Log.warn("Loading schema: " + schema);
-    if (DatabaseAccessManager.initSchema(schema)) {
-      FlensburgDummies.getInstance().inventComplex();
+    if (DatabaseAccessManager4SQL.initSchema(schema)) {
+      // FlensburgDummies.getInstance().inventComplex();
     }
   }
 }

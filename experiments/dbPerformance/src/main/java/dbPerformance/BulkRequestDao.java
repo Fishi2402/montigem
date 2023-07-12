@@ -2,6 +2,7 @@ package dbPerformance;
 
 import com.google.common.base.Stopwatch;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,7 +30,7 @@ public class BulkRequestDao implements ExpDao{
 
   @Override
   public boolean dbContainsId(String id) throws SQLException {
-    Optional<ResultSet> res = DatabaseAccessManager.executeSQLQuery(getStatement(id));
+    Optional<ResultSet> res = DatabaseAccessManager4SQL.executeSQLQuery(getStatement(id));
     // TODO: does not work with parameters!
     if(res.isEmpty()){
       return false;

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -31,7 +32,7 @@ public class BulkVsMultipleRequests {
   @BeforeAll
   public static void setup() throws IOException {
     DatabaseAccessManager.setup();
-    DatabaseAccessManager.initSchema(schema);
+    DatabaseAccessManager4SQL.initSchema(schema);
 
     for(int i = 0; i < NUM_TABLES; i++){
       for(int j = 0; j < NUM_ENTRIES_PER_TABLE; j++){

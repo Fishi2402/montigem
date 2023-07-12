@@ -75,6 +75,7 @@ task unpackGUILibSymbols(type: Copy) {
 task genDomain(type: UMLPFrontendTask) {
   input = file("../models/Weather.umlp")
   outputDir = file("$project.buildDir/appdomain")
+  hwcDir = file("$projectDir/src/app")
 }
 
 task genGUI(type: UMLPGuiGenTask) {
