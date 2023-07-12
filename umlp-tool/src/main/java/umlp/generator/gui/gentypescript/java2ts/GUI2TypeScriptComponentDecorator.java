@@ -73,7 +73,7 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
   }
 
   @Override
-  protected void addImport(ASTCDClass decoratedClass, String type) { // TODO: remove this method if compiling of test java files fixed
+  protected void addImport(ASTCDClass decoratedClass, String type) {
     getCD4C().addImport(decoratedClass, type);
   }
 

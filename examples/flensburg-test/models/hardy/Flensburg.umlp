@@ -65,7 +65,7 @@ classdiagram Flensburg {
     Optional<String> category;
   }
 
-  enum CurrencyEnum {
+  enum Currency {
     DOLLAR, EURO;
   }
 
@@ -74,8 +74,8 @@ classdiagram Flensburg {
   class Budget {
     String name;
     long balance;
-    CurrencyEnum cur;
-    Optional<CurrencyEnum> curOpt;
+    Currency cur;
+    Optional<Currency> curOpt;
     Optional<String> tag;
     Optional<String> category;
   }

@@ -35,7 +35,7 @@ public class FlensburgDummies {
         .name("My Budget")
         .category(Optional.of("some category"))
         .balance(10000L)
-        .cur(CurrencyEnum.DOLLAR)
+        .cur(Currency.DOLLAR)
         .build()
         .get();
 
@@ -60,7 +60,7 @@ public class FlensburgDummies {
         .name("Scientific workers")
         .category(Optional.of("Staff"))
         .balance(30000L)
-        .cur(CurrencyEnum.DOLLAR)
+        .cur(Currency.DOLLAR)
         .build()
         .get();
 
@@ -77,8 +77,8 @@ public class FlensburgDummies {
         .name("Material resources")
         .category(Optional.of("Material"))
         .balance(10000L)
-        .cur(CurrencyEnum.EURO)
-        .curOpt(Optional.of(CurrencyEnum.DOLLAR))
+        .cur(Currency.EURO)
+        .curOpt(Optional.of(Currency.DOLLAR))
         .build()
         .get();
 

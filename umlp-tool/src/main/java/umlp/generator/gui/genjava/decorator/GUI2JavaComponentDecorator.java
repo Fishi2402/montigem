@@ -20,6 +20,7 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
@@ -367,7 +368,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return s -> s;
   }
 
-  protected void addImport(ASTCDClass decoratedClass, String type) { // TODO: remove this method if compiling of test java files fixed
+  protected void addImport(ASTCDClass decoratedClass, String type) {
+    getCD4C().addImport(decoratedClass, Joiners.DOT.join(Names.getQualifier(type).toLowerCase(),
+        Names.getSimpleName(type)));
   }
 
   protected Function<String, String> enumOptionalToStringConversion() {
@@ -375,7 +378,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   protected Function<String, String> stringToOptionalEnumConversion(String type) {
-    return s -> "null"; //type + ".valueOf(" + s + ")"; TODO: check Import
+    return s -> "Optional.of(" + type + ".valueOf(" + s + "))";
   }
 
   protected Function<String, String> dateToStringConversion() {
@@ -399,7 +402,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   protected Function<String, String> stringToEnumConversion(String type) {
-    return s -> "null"; //type + ".valueOf(" + s + ")"; TODO: check Import
+    return s -> type + ".valueOf(" + s + ")"; // TODO: check Import
   }
 
   protected Function<String, String> gemlistToArrayConversion() {

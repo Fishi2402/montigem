@@ -2,6 +2,7 @@ package app;/* (c) https://github.com/MontiCore/monticore */
 
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
+import hardy.flensburg.FlensburgDummies;
 import hardy.flensburg.FlensburgManagerImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,7 +33,7 @@ public class FlensburgServerApplication {
     String schema = FileReaderWriter.readFromFile(optionalURL.get());
     Log.warn("Loading schema: " + schema);
     if (DatabaseAccessManager4SQL.initSchema(schema)) {
-      // FlensburgDummies.getInstance().inventComplex();
+      FlensburgDummies.getInstance().inventComplex();
     }
   }
 }

@@ -83,7 +83,7 @@ classdiagram Flensburg {
     long amount;
   }
 
-   enum CurrencyEnum {
+   enum Currency {
       DOLLAR, EURO;
     }
 
