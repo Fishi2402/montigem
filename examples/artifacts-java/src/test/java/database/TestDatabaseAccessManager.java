@@ -4,11 +4,13 @@ package database;/* (c) https://github.com/MontiCore/monticore */
 
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class TestDatabaseAccessManager extends DatabaseAccessManager {
+public class TestDatabaseAccessManager extends DatabaseAccessManager4Neo4j {
 
   private static long freeGemId = -1;
 

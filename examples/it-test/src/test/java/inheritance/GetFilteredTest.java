@@ -7,6 +7,7 @@ import umlp.backendrte.command.CommandDirectCommunication;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.TestClientCommandManager;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 import umlp.backendrte.common.GemList;
 
 import java.nio.charset.StandardCharsets;
@@ -53,9 +54,10 @@ public class GetFilteredTest {
   static class WithDBBackend extends Setup {
     void setup() throws Exception {
       InheritanceTestContext.clear();
+      DatabaseAccessManager4SQL.init();
       InheritanceManagerImpl.init();
       String schema = IOUtils.resourceToString("/Inheritance.sql", StandardCharsets.UTF_8);
-      assertTrue(DatabaseAccessManager.initSchema(schema));
+      assertTrue(DatabaseAccessManager4SQL.initSchema(schema));
       backend = InheritanceTestContext.fromCurrentContext();
       setupFrontend();
     }

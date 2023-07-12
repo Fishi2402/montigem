@@ -1,6 +1,7 @@
 package dbPerformance;
 
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +19,7 @@ public class EncodedInIdDao implements ExpDao{
     }
 
     String table = m.group(1);
-    Optional<ResultSet> res = DatabaseAccessManager.executeSQLQuery(String.format("Select * from %s Where id = '%s'", table, i));
+    Optional<ResultSet> res = DatabaseAccessManager4SQL.executeSQLQuery(String.format("Select * from %s Where id = '%s'", table, i));
     if(res.isEmpty()){
       return false;
     }

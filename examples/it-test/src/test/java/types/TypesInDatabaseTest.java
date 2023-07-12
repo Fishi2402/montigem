@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,9 +19,10 @@ public class TypesInDatabaseTest {
   @BeforeEach
   public void init() throws IOException {
     TypesManagerImpl.init();
+    DatabaseAccessManager4SQL.init();
     DatabaseAccessManager.executeStatement("DROP ALL OBJECTS");
     String schema = IOUtils.resourceToString("/Types.sql", StandardCharsets.UTF_8);
-    assertTrue(DatabaseAccessManager.initSchema(schema));
+    assertTrue(DatabaseAccessManager4SQL.initSchema(schema));
   }
 
   @Test
