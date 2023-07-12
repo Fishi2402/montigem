@@ -7,7 +7,6 @@ import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -18,7 +17,7 @@ import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.umlmodifier._ast.ASTModifier;
-import de.monticore.umlstereotype._ast.ASTStereotype;
+import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
@@ -68,6 +67,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     }
 
     // Stereotype
+    ASTStereotypeBuilder stereotype = UMLPMill.stereotypeBuilder();
     List<ASTCDAttribute> derivedAttribFields = filterDerivedAttributes(domainClass.getCDAttributeList(), true);
     if (derivedAttribFields.size() > 0) {
       String derivedAttribs = derivedAttribFields.stream()
@@ -81,15 +81,36 @@ public class DomainClassDecorator extends DomainTypeDecorator {
                 sourcePosition.getColumn()
             );
           }).collect(Collectors.joining(", "));
-      ASTStereotype stereotype = UMLPMill.stereotypeBuilder()
-          .addValues(
-              TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
-                  String.format("Custom implementation for class: %s required. Contains derived attribute(s): %s", domainClass.getName(), derivedAttribs)
-              )
-          ).build();
-      modifier.setStereotype(stereotype);
-    }
 
+      stereotype.addValues(
+          TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
+              String.format("Custom implementation for class: %s required. Contains derived attribute(s): %s", domainClass.getName(), derivedAttribs)
+          )
+      );
+    }
+    List<ASTCDAssocSide> derivedAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+        .filter(a -> GenService.isDerived(a, GenService.getDerivedAssocs(origCD)))
+        .collect(Collectors.toList());
+    if (derivedAssocs.size() > 0) {
+      String derivedAssocsStr = derivedAssocs.stream()
+          .map(assoc -> {
+            SourcePosition sourcePosition = assoc.get_SourcePositionStart();
+            return String.format(
+                "%s in %s:%s:%s",
+                assoc.getName(),
+                sourcePosition.getFileName().orElse("unknown"),
+                sourcePosition.getLine(),
+                sourcePosition.getColumn()
+            );
+          }).collect(Collectors.joining(", "));
+
+      stereotype.addValues(
+          TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
+              String.format("Custom implementation for class: %s required. Contains derived association(s): %s", domainClass.getName(), derivedAssocsStr)
+          )
+      );
+    }
+    modifier.setStereotype(stereotype.build());
     //Build class
     ASTCDClass clazz = builder.build();
 

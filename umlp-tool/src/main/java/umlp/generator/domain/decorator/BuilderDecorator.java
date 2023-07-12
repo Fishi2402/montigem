@@ -40,7 +40,7 @@ public class BuilderDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isDerived())
         .filter(c -> !c.getModifier().isAbstract())
-      .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c, name, origCD))));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c, name, origCD))));
   }
 
   public static String getClassName(String domainClassName) {
@@ -57,15 +57,19 @@ public class BuilderDecorator extends AbstractDecorator {
         .setName(className).build();
 
     List<ASTCDAttribute> attrFields = CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-        .filter(a -> GenService.isVisibleNotDerived(a)).collect(Collectors.toList());
+        .filter(GenService::isVisibleNotDerived)
+        .collect(Collectors.toList());
     List<ASTCDAssocSide> attrAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
-        .filter(a -> GenService.isVisibleNotDerived(a)).collect(Collectors.toList());
+        .filter(GenService::isVisibleNotDerived)
+        .collect(Collectors.toList());
     List<ASTCDAssocSide> attrAssocLists = attrAssocs.stream()
         .filter(GenService::isList)
-        //.filter(assoc -> !GenService.isDerived(assoc, GenService.getDerivedAssocs(origCD)))
         .collect(Collectors.toList());
     List<ASTCDAssocSide> nonDerivedAttrAssocsList = attrAssocLists.stream()
         .filter(assoc -> !GenService.isDerived(assoc, GenService.getDerivedAssocs(origCD)))
+        .collect(Collectors.toList());
+    List<ASTCDAssocSide> derivedAttrAssocsList = attrAssocLists.stream()
+        .filter(assoc -> GenService.isDerived(assoc, GenService.getDerivedAssocs(origCD)))
         .collect(Collectors.toList());
 
     // Constructors

@@ -129,7 +129,10 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     }
 
     // Associations
-    CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
+    CDSymbolTables.getAssociations(domainClass).stream()
+        .filter(GenService::isList)
+        .filter(a -> !GenService.isDerived(a, GenService.getDerivedAssocs(origCD)))
+        .forEach(a -> {
       SymTypeExpression type = a.getSymbol().getType();
       String printedType = type.print();
       ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
@@ -165,7 +168,10 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));
 
     // Associations
-    CDSymbolTables.getAssociations(domainInterface).stream().filter(GenService::isList).forEach(a -> {
+    CDSymbolTables.getAssociations(domainInterface).stream()
+        .filter(GenService::isList)
+        .filter(a -> !GenService.isDerived(a, GenService.getDerivedAssocs(origCD)))
+        .forEach(a -> {
       SymTypeExpression type = a.getSymbol().getType();
       String printedType = type.print();
       ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
