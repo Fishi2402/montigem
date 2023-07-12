@@ -226,7 +226,7 @@ public class DAODecorator extends AbstractDecorator {
   }
 
   protected void assocDAOMethods(ASTCDClass daoClass, ASTCDAssociation association) {
-    addMethodForAssociationDAO(daoClass, association);
+    addMethodsForAssociationDAO(daoClass, association);
 
     removeMethodForAssociationDAO(daoClass, association);
     if(association.getCDAssocDir().isDefinitiveNavigableRight()) {
@@ -277,11 +277,12 @@ public class DAODecorator extends AbstractDecorator {
     getCD4C().addMethod(daoClass, "umlp.dao.associations.SelectForGemAssocDAO", start.getName(), end.getName());
   }
 
-  protected void addMethodForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
+  protected void addMethodsForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddInitForAssocDAO", assoc.getName(),
         SQLSchemaGenerator.convertAssociationRollName(assoc.getLeft().getName()), SQLSchemaGenerator.convertAssociationRollName(assoc.getRight().getName()),
         SQLSchemaGenerator.convertAssocName(assoc.getName()));
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddForAssocDAO", assoc);
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.BulkAddForAssocDAO", assoc);
   }
 
   protected void updateMethodForAssocDAO(ASTCDClass daoClass, String assocName, String startName, String endName) {
@@ -439,6 +440,8 @@ public class DAODecorator extends AbstractDecorator {
     // Java
     getCD4C().addImport(clazz, "java.util.List");
     getCD4C().addImport(clazz, "java.util.Optional");
+    getCD4C().addImport(clazz, "java.util.Map;");
+    getCD4C().addImport(clazz, "java.util.HashMap;");
   }
 
   static Map<ASTCDAssocSide, ASTCDAssociation> getOppositeSideToAssociationMap(ASTCDClass domainClass) {

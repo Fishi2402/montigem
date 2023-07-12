@@ -3,7 +3,6 @@ package de.se_rwth.artifacts.static_extractors.commons;
 
 import baseartifactstest.RootArtifact;
 
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 
 public class ExtractorUtils {

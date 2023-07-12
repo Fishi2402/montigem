@@ -40,14 +40,18 @@ public abstract class GenAbstractNeo4jDBTest {
   @BeforeEach
   public void init(){
     Log.init();
-    TestDatabaseAccessManagerSQL.init();
+    TestDatabaseAccessManager.init();
   }
 
   @AfterEach
   public void cleanup(){
-    TestDatabaseAccessManagerSQL.close();
-  }
+    try {
+      TestDatabaseAccessManager.closeConnection();
+    } catch (Exception e) {
+      throw  new RuntimeException(e);
+    }
 
+  }
 
   private static void registerShutdownHook( final DatabaseManagementService managementService )
   {

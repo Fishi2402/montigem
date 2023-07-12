@@ -24,7 +24,7 @@ public class DAONeo4jDecorator extends DAODecorator {
 
   @Override
   protected void assocDAOMethods(ASTCDClass daoClass, ASTCDAssociation association) {
-    addMethodForAssociationDAO(daoClass, association);
+    addMethodsForAssociationDAO(daoClass, association);
 
     removeMethodForAssociationDAO(daoClass, association);
     if(association.getCDAssocDir().isDefinitiveNavigableRight()) {
@@ -40,14 +40,14 @@ public class DAONeo4jDecorator extends DAODecorator {
   }
 
   @Override
-  protected void addMethodForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
+  protected void addMethodsForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddInitNeo4jForAssocDAO", assoc.getName(),
             assoc.getLeft().getSymbol().getType().print(),
             assoc.getRight().getSymbol().getType().print(),
             assoc.getLeft().getName(), assoc.getRight().getName(), assoc.getCDAssocDir().isDefinitiveNavigableLeft(),
             assoc.getCDAssocDir().isDefinitiveNavigableRight());
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddForAssocDAO", assoc);
-
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.BulkAddForAssocDAO", assoc);
   }
 
   @Override
