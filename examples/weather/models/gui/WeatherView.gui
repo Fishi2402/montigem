@@ -8,6 +8,7 @@ import arrange.src.lib.gemrow.GemRow;
 import arrange.src.lib.gemcolumn.GemColumn;
 
 import charts.src.lib.gemlinechart.GemLineChart;
+import charts.src.lib.gemgaugechart.GemGaugeChart;
 import table.src.lib.gemtable.GemTable;
 import table.src.lib.gemtable.TableTypes.TableColumn;
 
@@ -27,11 +28,25 @@ page WeatherView(List<Forecast> forecasts) {
       )
     ),
     @GemCard(
-      title = "Forecast Temperature",
+      title = "Forecast Temperature (Avg./day)",
       component = @GemColumn(width = "800px", rowGap = "20px", components = [
         chart@GemLineChart(data = null),
         @ForecastCreate()
       ])
+    ),
+    @GemCard(
+      title = "Humidity and Wind speed (Avg.)",
+      component = @GemColumn(
+        rowGap = "100px",
+        components = [
+          @GemColumn(width = "400px", height = "300px", hAlign = "center", vAlign = "center", components = [
+            humidity@GemGaugeChart(data = null, min = 0, max = 100, unit = "%", textValue = "Humidity")
+          ]),
+          @GemColumn(width = "400px", height = "300px", hAlign = "center", vAlign = "center", components = [
+            windspeed@GemGaugeChart(data = null, min = 0, max = 40, unit = "m/s", textValue = "Wind speed")
+          ])
+        ]
+      )
     )
   ]);
 }
