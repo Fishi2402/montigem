@@ -24,6 +24,7 @@ public class UMLPApplication {
     FlensburgMock.init();
     FlensburgManagerImpl.init();
     String schema = Resources.toString(Objects.requireNonNull(UMLPApplication.class.getResource("/Flensburg.sql")), StandardCharsets.UTF_8);
+    DatabaseAccessManager4SQL.init();
     if (DatabaseAccessManager4SQL.initSchema(schema)) {
       (new FlensburgDummies()).inventDummiesOne();
     }
