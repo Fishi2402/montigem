@@ -24,7 +24,7 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-            .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c, name)));
+            .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c, name))));
   }
 
   public static String getClassName(String domainClassName) {

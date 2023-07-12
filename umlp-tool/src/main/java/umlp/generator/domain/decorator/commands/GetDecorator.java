@@ -30,14 +30,14 @@ public class GetDecorator extends AbstractDeSerDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
       .forEach(c -> {
-        astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
-        astcdPackage.addCDElement(createDeSer(origCD, c));
+        astcdPackage.addCDElement(withOrigin(createClass(origCD, c, astcdPackage.getName())));
+        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, c)));
       });
 
     origCD.getCDDefinition().getCDInterfacesList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> {
-          astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
-          astcdPackage.addCDElement(createDeSer(origCD, c));
+          astcdPackage.addCDElement(withOrigin(createClass(origCD, c, astcdPackage.getName())));
+          astcdPackage.addCDElement(withOrigin(createDeSer(origCD, c)));
         });
   }
 
@@ -53,7 +53,7 @@ public class GetDecorator extends AbstractDeSerDecorator {
     ASTCDAttribute attr = addGemId(ast);
 
     addConstructor(ast, classname, packageName);
-    getCD4C().addMethod(ast, getDoRunTemplate(), classname, domainPackage, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, getDoRunTemplate(), classname, domainPackage, getCorrectManager(domainType));
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
     getCD4C().addMethod(ast, getGetNewlySubscribedGemIdsTemplate());
     AccessorDecorator accessor = new AccessorDecorator(glex);
@@ -63,7 +63,7 @@ public class GetDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("LoadingState"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+classname);
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainType));
 
     return ast;
   }

@@ -42,4 +42,18 @@ umlp Inheritance{
   class L extends K{
     int lField;
   }
+
+  // Association between Super Classes
+  class M{ }
+  class N extends M{ } // direct subclass => instances exist
+  abstract class O1 extends M { } // abstract subclass => no direct instances
+  class P extends O1{ } // => indirect instances of C
+
+  class Q { }
+  class R extends Q { }
+
+  association mToQOptional [*] M -> (setQ) Q [*]; // M,N,O1,P -> Q,R
+  association mToQMandatory [*] M -> (mandatoryQ) Q [1];
+
+  association qToOBidirectional [*] Q <-> O1 [*]; // Q,R <-> O1, P
 }

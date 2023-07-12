@@ -33,8 +33,8 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
         .filter(c -> !c.getSymbol().isIsDerived())
         .filter(c -> !c.getSymbol().isIsAbstract())
       .forEach(c -> {
-        astcdPackage.addCDElement(createClass(origCD, c, astcdPackage.getName()));
-        astcdPackage.addCDElement(createDeSer(origCD, c));
+        astcdPackage.addCDElement(withOrigin(createClass(origCD, c, astcdPackage.getName())));
+        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, c)));
       });
   }
 
@@ -50,7 +50,7 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
     ASTCDAttribute attr = addDomainAttr(ast);
 
     addConstructor(ast, classname, packageName);
-    getCD4C().addMethod(ast, getDoRunTemplate(), classname, origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, getDoRunTemplate(), classname, getCorrectManager(domainClass));
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("gemId"));
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));
@@ -58,7 +58,7 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+classname);
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainClass));
 
     return ast;
   }

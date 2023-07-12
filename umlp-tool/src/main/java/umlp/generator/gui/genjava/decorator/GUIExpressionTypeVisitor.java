@@ -7,9 +7,12 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._ast.ASTGUIIterate;
+import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symboltable.IScope;
 import de.monticore.types.check.SymTypeExpression;
@@ -25,6 +28,7 @@ public class GUIExpressionTypeVisitor implements ExpressionsBasisVisitor2, Commo
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
   protected Optional<SymTypeExpression> res = Optional.empty();
+  protected Optional<TypeSymbol> intermediate = Optional.empty();
 
   public GUIExpressionTypeVisitor() {
     traverser = GUIDSLMill.traverser();
@@ -42,6 +46,15 @@ public class GUIExpressionTypeVisitor implements ExpressionsBasisVisitor2, Commo
     Optional<VariableSymbol> vs = getScope(node.getEnclosingScope()).resolveVariable(node.getName());
     if (vs.isPresent()) {
       res = Optional.ofNullable(vs.get().getType());
+      if (res.isEmpty()
+          && node.getEnclosingScope().isPresentAstNode()
+          && node.getEnclosingScope().getAstNode() instanceof ASTGUIIterate
+          && ((ASTGUIIterate) node.getEnclosingScope().getAstNode()).getIterateControl() instanceof ASTGUIShortIterateControl
+          && ((ASTGUIShortIterateControl) ((ASTGUIIterate) node.getEnclosingScope().getAstNode())
+          .getIterateControl()).isPresentMCType()) {
+        intermediate = getScope(node.getEnclosingScope()).resolveType(((ASTGUIShortIterateControl) ((ASTGUIIterate) node.getEnclosingScope().getAstNode())
+            .getIterateControl()).getMCType().printType());
+      }
     }
     else {
       Optional<GUIParamSymbol> ps = getScope(node.getEnclosingScope()).resolveGUIParam(node.getName());
@@ -53,12 +66,16 @@ public class GUIExpressionTypeVisitor implements ExpressionsBasisVisitor2, Commo
 
   @Override
   public void endVisit(ASTFieldAccessExpression node) {
+    Optional<TypeSymbol> ts = Optional.empty();
     if (res.isPresent() && res.get().hasTypeInfo()) {
-      for (VariableSymbol vs : res.get().getTypeInfo().getVariableList()) {
-        if (vs.getName().equals(node.getName())) {
-          res = Optional.ofNullable(vs.getType());
-          break;
-        }
+      ts = Optional.ofNullable(res.get().getTypeInfo());
+    } else if (intermediate.isPresent()) {
+      ts = intermediate;
+    }
+    if (ts.isPresent()) {
+      Optional<VariableSymbol> vs = ts.get().getSpannedScope().resolveVariable(node.getName());
+      if (vs.isPresent()) {
+        res = Optional.ofNullable(vs.get().getType());
       }
     }
   }

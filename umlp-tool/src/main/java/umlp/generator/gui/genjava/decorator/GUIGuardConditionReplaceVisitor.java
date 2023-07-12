@@ -94,10 +94,14 @@ public class GUIGuardConditionReplaceVisitor extends ExpressionReplaceSearchVisi
     if (potentialHolder != null) {
       if (potentialHolder.getValue().equals(node) && !ignore.contains(node.getName())) {
         Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.callExpressionBuilder()
-            .setExpression(
-                ExpressionsBasisMill.nameExpressionBuilder()
-                    .setName(util.gui2cdAttrGetterName(node.getName()))
-                    .build()
+            .setExpression(CommonExpressionsMill.fieldAccessExpressionBuilder()
+                .setName(util.gui2cdAttrGetterName(node.getName()))
+                .setExpression(
+                    ExpressionsBasisMill.nameExpressionBuilder()
+                        // TODO AGe: technically java "this" expression
+                        .setName("this")
+                        .build())
+                .build()
             )
             .setArguments(
                 ExpressionsBasisMill.argumentsBuilder()

@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
+import gradle.common.CommonUMLPTask;
+import gradle.specific.UMLPBackendTask;
+import gradle.specific.UMLPTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPluginConvention;
@@ -28,18 +31,21 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     project.getPluginManager().apply(UMLPPluginBase.class);
     project.getPluginManager().apply("java");
 
-    TaskProvider<UMLPTask> umlpTask = createUMLPBackendTask(project);
+    TaskProvider<UMLPBackendTask> umlpTask = createUMLPBackendTask(project);
+    // Generate Backend must run before JavaCompile
     project.getTasks().withType(AbstractCompile.class).configureEach(compile -> {
       compile.dependsOn(umlpTask);
     });
+    // Generate Backend must run before ProcessResources (e.g. for SQL schemata)
     project.getTasks().withType(ProcessResources.class).configureEach(compile -> {
       compile.dependsOn(umlpTask);
     });
+
     addToSourceSet(project, umlpTask.get());
   }
 
   // Add generated files to SourceSets
-  private void addToSourceSet(Project project, UMLPTask umlpTask) {
+  private void addToSourceSet(Project project, UMLPBackendTask umlpTask) {
     JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
     SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
     main.getJava().srcDir(umlpTask.getOutputDir());
@@ -48,8 +54,8 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     main.getResources().srcDir(umlpTask.getOutputDir().dir("resources"));
   }
 
-  protected TaskProvider<UMLPTask> createUMLPBackendTask(final Project project) {
-    final TaskProvider<UMLPTask> result = project.getTasks().register(UMLP_BACKEND_TASK_NAME, UMLPTask.class, umlpTask -> {
+  protected TaskProvider<UMLPBackendTask> createUMLPBackendTask(final Project project) {
+    final TaskProvider<UMLPBackendTask> result = project.getTasks().register(UMLP_BACKEND_TASK_NAME, UMLPBackendTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
 
       setIfPathExists(umlpTask::setInput, Path.of(
@@ -59,7 +65,7 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
       setIfPathExists(x -> umlpTask.getTmplDir().set(x), Path.of(
           project.getProjectDir().getAbsolutePath(), "src", "templates"));
 
-      // Always set Output dir (Gradle creates it, if not already exists)
+      // Always set output dir (Gradle creates it, if not already exists)
       umlpTask.getOutputDir().set(Path.of(
           project.getBuildDir().getAbsolutePath(), "umlp", "backend").toFile());
     });

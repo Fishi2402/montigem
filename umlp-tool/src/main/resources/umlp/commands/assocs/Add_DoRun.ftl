@@ -1,19 +1,19 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("assoc","sourceName","targetName","sourceType","targetType",
-               "isSourceList","isTargetList","definition")}
+               "isSourceList","isTargetList","managerName")}
 ${cd4c.method("public StatusResult doRun()")}
 
 <#assign csourceName=sourceName?cap_first>
 <#assign ctargetName=targetName?cap_first>
-boolean loaded${ctargetName} = ${definition}Manager.isLoaded${targetType}(${targetName}GemId);
-boolean loaded${csourceName} = ${definition}Manager.isLoaded${sourceType}(${sourceName}GemId);
+boolean loaded${ctargetName} = ${managerName}.isLoaded${targetType}(${targetName}GemId);
+boolean loaded${csourceName} = ${managerName}.isLoaded${sourceType}(${sourceName}GemId);
 
 // TODO: With DB: server must have loaded both
 assert CommandManager.getParticipantId() != 0 || (loaded${ctargetName} && loaded${csourceName});
 
 if(loaded${ctargetName} && loaded${csourceName}){
-  ${sourceType} source = ${definition}Manager.get${sourceType}Sure(${sourceName}GemId);
-  ${targetType} target = ${definition}Manager.get${targetType}Sure(${targetName}GemId);
+  ${sourceType} source = ${managerName}.get${sourceType}Sure(${sourceName}GemId);
+  ${targetType} target = ${managerName}.get${targetType}Sure(${targetName}GemId);
 
   // TODO: only in server?
 <#if isSourceList>
@@ -43,7 +43,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
 }else{
   // Do not trigger load of ${csourceName}. If the ${ctargetName} is loaded, we can change it instead and avoid a load operation
   if(loaded${ctargetName}){
-    ${targetType} target = ${definition}Manager.get${targetType}Sure(${targetName}GemId);
+    ${targetType} target = ${managerName}.get${targetType}Sure(${targetName}GemId);
 <#if isSourceList>
     if(${targetName}Index == -1){
       ${targetName}Index = target.size${csourceName}s();
@@ -53,7 +53,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
    target._internal_set${csourceName}(${sourceName}GemId, NotificationScope.MINIMAL);
 </#if>
 } else if(loaded${csourceName}) {
-    ${sourceType} source = ${definition}Manager.get${sourceType}Sure(${sourceName}GemId);
+    ${sourceType} source = ${managerName}.get${sourceType}Sure(${sourceName}GemId);
 <#if isTargetList>
     if(${sourceName}Index == -1){
       ${sourceName}Index = source.size${ctargetName}s();

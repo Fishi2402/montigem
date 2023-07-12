@@ -3,6 +3,7 @@
 import { Component } from '@angular/core';
 import { GemLineChartData, GemLineChartEntry } from '@monticore/montigem-charts';
 import { WeatherViewTOP } from '@src/gui/WeatherViewTOP';
+import { Forecast } from '@src/weather/Forecast';
 
 @Component({
   selector: 'weather-view',
@@ -12,6 +13,14 @@ import { WeatherViewTOP } from '@src/gui/WeatherViewTOP';
 })
 export class WeatherView extends WeatherViewTOP {
 
+  protected cache: {
+    chart: { hash: string, data: GemLineChartData }
+    table: { hash: string, data: Forecast[] }
+  } = {
+    chart: { hash: null, data: null },
+    table: { hash: null, data: null }
+  };
+
   public override getChartData(): GemLineChartData {
     if (!this.getForecasts()) {
       return null;
@@ -20,7 +29,6 @@ export class WeatherView extends WeatherViewTOP {
 
     const list = forecasts.map(f => f.getDate());
     const xAxis = Array.from(new Set(list.sort().map(d => d.toDateString())));
-
 
     const m: Map<string, number[]> = new Map();
     for (const f of forecasts) {
@@ -41,10 +49,32 @@ export class WeatherView extends WeatherViewTOP {
       entry.label = key;
       chartEntries.push(entry);
     }
+    const result = new GemLineChartData(chartEntries, xAxis);
+    const hash = JSON.stringify(result);
+    if (this.cache.chart.hash != hash) {
+      this.cache.chart.hash = hash;
+      this.cache.chart.data = result;
+    }
+    return this.cache.chart.data;
+  }
 
-    return new GemLineChartData(chartEntries, xAxis);
+  public override getGemTable2Rows(): Array<any> {
+    if (!this.getForecasts()) {
+      return null;
+    }
+
+    const result = this.getForecasts().toArray();
+    const hash = JSON.stringify(result);
+    if (this.cache.table.hash != hash) {
+      this.cache.table.hash = hash;
+      this.cache.table.data = [...result];
+    }
+
+    return this.cache.table.data;
+  }
+
+  public override navigateToUpdatePage(row: Forecast): void {
+    this.router.navigate(["..", "b", "ForecastUpdate", row.getGemId()]);
   }
 
 }
-
-

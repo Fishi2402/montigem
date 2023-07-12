@@ -9,8 +9,11 @@ import basic.src.lib.gemtext.GemText;
 component CustomAccountView(Account acc, List<Budget> bs) {
   // @iterate(Budget b : acc.budget) {
     // @iterate(Transaction t : b.transaction) {
-    @iterate(Transaction t : bs) {
-      @GemText(value = t.date);
+    @iterate(Budget b : bs) {
+      @iterate(Transaction t : b.transaction) {
+        @GemText(value = t.date.toString());
+      }
     }
+
   // }
 }

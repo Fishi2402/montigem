@@ -112,6 +112,10 @@ public class BEDecorator extends AbstractDecorator {
     cmdDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandObserverDecorator", BEDecorator.class.getName());
 
+    AccessPolicyDecorator accessDecorator = new AccessPolicyDecorator(glex);
+    accessDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: AccessPolicyDecorator", BEDecorator.class.getName());
+
     DerivedClassDecorator derivedClassDecorator= new DerivedClassDecorator(glex);
     derivedClassDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DerivedClassDecorator", BEDecorator.class.getName());
@@ -125,6 +129,10 @@ public class BEDecorator extends AbstractDecorator {
     ManagerDecorator managerDecorator = new ManagerDecorator(glex);
     managerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerDecorator", BEDecorator.class.getName());
+
+    DelegationManagerDecorator delegationManagerDecorator = new DelegationManagerDecorator(glex);
+    delegationManagerDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: DelegationManagerDecorator", BEDecorator.class.getName());
 
     ManagerImplDecorator managerImplDecorator = new ManagerImplDecorator(glex);
     managerImplDecorator.transform(cdAST, decoratedAST);

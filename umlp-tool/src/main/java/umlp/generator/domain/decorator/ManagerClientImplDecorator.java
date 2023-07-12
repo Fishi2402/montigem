@@ -38,7 +38,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
 
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    astcdPackage.addCDElement(createClass(origCD));
+    astcdPackage.addCDElement(withOrigin(createClass(origCD)));
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
@@ -58,6 +58,12 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, getDoGetFreeGemIdTemplate());
     getCD4C().addMethod(managerClass, getErrorNotificationScopeTemplate());
 
+    List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
+        .collect(Collectors.toList());
+    getCD4C().addMethod(managerClass, getClearCacheTemplate(), concreteDomainClasses);
+
+
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
@@ -67,6 +73,10 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     // Imports
     addImports(origCD, managerClass);
     return managerClass;
+  }
+
+  protected String getClearCacheTemplate() {
+    return "umlp.managerclientimpl.ClearCache";
   }
 
   protected String getInitTemplate() {

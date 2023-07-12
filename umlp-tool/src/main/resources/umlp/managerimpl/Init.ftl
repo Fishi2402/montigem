@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("cDName", "managerName")}
+${tc.signature("cdDefinitionName", "managerName")}
 ${cd4c.method("public static void init()")}
-  ${managerName}Impl impl = new ${managerName}Impl();
-  impl.${cdName?uncap_first}Observers.add(new ${cdName}DbObserver());
+  ${managerName} impl = new ${managerName}();
+  impl.${cdDefinitionName?uncap_first}Observers.add(new ${cdDefinitionName}DbObserver());
   ${managerName}.setInstance(impl);

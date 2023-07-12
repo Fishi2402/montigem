@@ -2,6 +2,7 @@ package umlp.generator.util;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -113,6 +114,10 @@ public class UMLPSymbolTables {
 
 
   public static ASTCDCompilationUnit getDiagramFor(ASTCDAssocSide a) {
+    return getDiagramFor((ASTNode) a);
+  }
+
+  public static ASTCDCompilationUnit getDiagramFor(ASTCDAssociation a) {
     return getDiagramFor((ASTNode) a);
   }
 

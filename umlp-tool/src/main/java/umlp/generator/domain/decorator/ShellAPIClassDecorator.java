@@ -41,7 +41,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     origCD.getCDDefinition().getCDClassesList()
         .stream()
         .filter(cdclass -> !cdclass.getModifier().isDerived())
-        .forEach(cdClass -> astcdPackage.addCDElement(createAPI(origCD, cdName, cdClass)));
+        .forEach(cdClass -> astcdPackage.addCDElement(withOrigin(createAPI(origCD, cdName, cdClass))));
   }
 
   protected ASTCDElement createAPI(ASTCDCompilationUnit origCD, String cdName, ASTCDClass cdClass) {

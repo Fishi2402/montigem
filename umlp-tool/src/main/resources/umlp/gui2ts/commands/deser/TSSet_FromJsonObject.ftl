@@ -12,7 +12,7 @@ ${cd4c.method("protected Optional<${command}> fromJsonObject(any jsonObject)")}
     <#if isCDEnum>
     ${type?keep_after_last(".")}[(jsonObject["${attrName}"].${json} as keyof typeof ${type?keep_after_last(".")})]
     <#else>
-    jsonObject["${attrName}"].${json}
+    jsonObject["${attrName}"]
     </#if>
 </#if>
   );

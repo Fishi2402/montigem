@@ -10,6 +10,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.GenService;
@@ -42,7 +43,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     origCD.getCDDefinition().getCDAssociationsList().stream()
             .filter(a -> !a.getModifier().isDerived())
             .filter(a -> a.getCDAssocDir() instanceof ASTCDBiDir).
-            forEach(a -> astcdPackage.addAllCDElements(createClass(origCD, a)));
+            forEach(a -> astcdPackage.addAllCDElements(withOrigin(createClass(origCD, a))));
   }
 
   protected Collection<ASTCDClass> createClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {
@@ -91,7 +92,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getAdd_DoRunTemplate(), assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
-            origCD.getCDDefinition().getName());
+            getCorrectManager(assoc));
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
 
@@ -137,7 +138,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getRemove_DoRunTemplate(), assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
-            origCD.getCDDefinition().getName());
+            getCorrectManager(assoc));
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
 
@@ -191,11 +192,11 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getSet_Source_ExchangeTemplate(), assoc.getName(),
             targetName, sourceName, targetType, sourceType,
             GenService.isList(assoc.getRight()), GenService.isList(assoc.getLeft()),
-            origCD.getCDDefinition().getName());
+            getCorrectManager(assoc));
     getCD4C().addMethod(ast, getSet_Source_ExchangeTemplate(), assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
-            origCD.getCDDefinition().getName());
+            getCorrectManager(assoc));
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
 

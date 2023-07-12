@@ -35,10 +35,10 @@ public class TSObserverDecorator extends ObserverDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     this.astcdPackage = astcdPackage.getName();
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-        .forEach(c -> astcdPackage.addCDElement(createClass(c)));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c))));
 
     origCD.getCDDefinition().getCDInterfacesList().stream().filter(c -> !c.getModifier().isDerived())
-        .forEach(c -> astcdPackage.addCDElement(createClass(c)));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c))));
   }
 
   protected ASTCDClass createClass(ASTCDType domainClass) {

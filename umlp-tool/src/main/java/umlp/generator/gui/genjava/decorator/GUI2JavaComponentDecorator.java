@@ -19,10 +19,13 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfGenerics;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
+import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,13 +83,24 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       return;
     }
 
-    String paramType = convertType(paramSTE.print());
+    String paramType = convertType(paramSTE);
     if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
       // TODO AGe: all possible types
       if (util.isListType(paramSTE)) {
-        String innerType = util.getListInnerType(paramSTE).get().print();
+        SymTypeExpression innerType = util.getListInnerType(paramSTE).get();
         if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
-          getCD4C().addImport(decoratedClass, innerType);
+          if (!util.isDomainType(innerType)) {
+            getCD4C().addImport(decoratedClass, innerType.print());
+          } else {
+            Optional<String> domainQName = util.getMainDomainModelQName();
+            if (domainQName.isPresent()) {
+              getCD4C().addImport(decoratedClass, domainQName.get().toLowerCase() + "."
+                  + Names.getSimpleName(util.getListInnerType(paramSTE).get().print()));
+            } else {
+              Log.warn("0x0000A GUI Model " + this.guiAst.getComponentName()
+                  + " uses type '" + paramSTE.print() + "' that could not be resolved.");
+            }
+          }
         }
       }
       else if (!util.isDomainType(paramSTE) && !util.isDomainListType(paramSTE)) {
@@ -99,8 +113,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
             getCD4C().addImport(decoratedClass, domainQName.get() + "." + paramSTE.print());
           }
           else if (util.isDomainListType(paramSTE) && util.getListInnerType(paramSTE).isPresent()) {
-            getCD4C().addImport(decoratedClass, domainQName.get() + "."
-                + util.getListInnerType(paramSTE).get().print());
+            getCD4C().addImport(decoratedClass, domainQName.get().toLowerCase() + "."
+                + Names.getSimpleName(util.getListInnerType(paramSTE).get().print()));
           }
           else {
             Log.warn("0x0000A GUI Model " + this.guiAst.getComponentName()
@@ -176,7 +190,12 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       Function<String, String> conversion = getConversion(
           paramSTE, namedArg.getGUIArgValue().getExpression(), true
       );
-      getterValue = conversion.apply(getterValue);
+      // TODO AGe: explicit gem lists when domain typed lists are used as an input
+      if (!paramType.contains("GemList")) {
+        getterValue = conversion.apply(getterValue);
+      } else {
+        getCD4C().addImport(decoratedClass, PathUtil.getBackendRTECommonPath("GemList"));
+      }
 
       addGetComponentMethod(decoratedClass, getterName, paramType,
           getterValue, getArgs(it2Arg.getArgs()), isLiteral, nullCheck);
@@ -197,8 +216,12 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     }
   }
 
-  protected String convertType(String mcType) {
-    return mcType;
+  protected String convertType(SymTypeExpression mcType) {
+    // TODO MB Bessere Lösung
+    if (mcType instanceof SymTypeOfGenerics) {
+      return ((SymTypeOfGenerics) mcType).getBaseName()+"<"+Names.getSimpleName(((SymTypeOfGenerics) mcType).getArgument(0).getTypeInfo().getName())+">";
+    }
+    return mcType.print();
   }
 
   protected String getInitListsTemplate() {
@@ -257,7 +280,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   protected String getSetterTemplate() {
-    return "umlp.gui2java.SetComponent";
+    return "umlp.gui2java.SetComponentReplaced";
   }
 
   protected String getSetterReplacedTemplate() {
