@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +24,8 @@ public class UMLPApplication {
     FlensburgMock.init();
     FlensburgManagerImpl.init();
     String schema = Resources.toString(Objects.requireNonNull(UMLPApplication.class.getResource("/Flensburg.sql")), StandardCharsets.UTF_8);
-    if (DatabaseAccessManager.initSchema(schema)) {
+    DatabaseAccessManager4SQL.init();
+    if (DatabaseAccessManager4SQL.initSchema(schema)) {
       (new FlensburgDummies()).inventDummiesOne();
     }
   }

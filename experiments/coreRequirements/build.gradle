@@ -1,4 +1,4 @@
-import gradle.inputset.GuiVariabilityHandlerTask
+import gradle.specific.GuiVariabilityHandlerTask
 
 /* (c) https://github.com/MontiCore/monticore */
 
@@ -29,7 +29,7 @@ sourceSets {
 }
 
 compileJava {
-    dependsOn project.collect { it.tasks.withType(UMLPTask) }
+    dependsOn project.collect { it.tasks.withType(UMLPBackendTask) }
 }
 
 repositories {
@@ -67,9 +67,8 @@ task runServer {
     dependsOn(bootRun)
 }
 
-task generateCDTOGUI(type: UMLPTask) {
+task generateCDTOGUI(type: UMLPCdToGuiTask) {
     input = file("models/hardy")
-    cdToGui = true
     outputDir = layout.buildDirectory.dir("genumlp/cd2gui")
 }
 
@@ -81,7 +80,7 @@ task guidelta(type: GuiVariabilityHandlerTask) {
 }
 
 /*
-task generateFlensburg(type: UMLPTask) {
+task generateFlensburg(type: UMLPBackendTask) {
     dependsOn(generateCDTOGUI)
     input = (file("models/hardy"))
     outputDir = layout.buildDirectory.dir("genumlp/hardy")

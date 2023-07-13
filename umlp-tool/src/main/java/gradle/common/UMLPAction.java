@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gradle;
+package gradle.common;
 
 import de.monticore.AmbiguityException;
 import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;

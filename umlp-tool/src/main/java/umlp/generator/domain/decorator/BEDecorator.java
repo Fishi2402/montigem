@@ -183,7 +183,7 @@ public class BEDecorator extends AbstractDecorator {
       shellApiClassDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ShellAPIClassDecorator", ShellAPIClassDecorator.class.getName());
 
-      ServerApplicationDecorator serverApplicationDecorator = new ServerApplicationDecorator(glex);
+      ServerApplicationDecorator serverApplicationDecorator = new ServerApplicationDecorator(glex, neo4j);
       serverApplicationDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ServerApplicationDecorator", BEDecorator.class.getName());
 
@@ -194,7 +194,7 @@ public class BEDecorator extends AbstractDecorator {
     testContextDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TestContextDecorator", ShellAPIDecorator.class.getName());
 
-    TestSetupDecorator testSetupDecorator = new TestSetupDecorator(glex);
+    TestSetupDecorator testSetupDecorator = new TestSetupDecorator(glex, neo4j);
     testSetupDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TestContextDecorator", TestSetupDecorator.class.getName());
 

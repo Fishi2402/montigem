@@ -20,6 +20,7 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
@@ -187,9 +188,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       String getterValue = guiDSLPrinter.prettyprint(visitor.getGetterExpression());
       boolean isLiteral = visitor.getGetterExpression() instanceof ASTLiteralExpression;
 
-      Function<String, String> conversion = getConversion(
-          paramSTE, namedArg.getGUIArgValue().getExpression(), true
-      );
+      Function<String, String> conversion = getConversion(decoratedClass,
+          paramSTE, namedArg.getGUIArgValue().getExpression(), true);
       // TODO AGe: explicit gem lists when domain typed lists are used as an input
       if (!paramType.contains("GemList")) {
         getterValue = conversion.apply(getterValue);
@@ -207,7 +207,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         setterArgs.add(paramType + " " + argValueHolder);
         setterArgs.addAll(getArgs(it2Arg.getArgs()));
         conversion = getConversion(
-            paramSTE, namedArg.getGUIArgValue().getExpression(), false
+            decoratedClass, paramSTE, namedArg.getGUIArgValue().getExpression(), false
         );
         argValueHolder = conversion.apply(argValueHolder);
         addSetComponentMethod(getSetterReplacedTemplate(), decoratedClass, setterName, paramType,
@@ -303,20 +303,17 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   // TODO AGe: replace with RTE functions and specific components
-  public Function<String, String> getConversion(SymTypeExpression leftType, ASTExpression rightExp, boolean forGetter) {
+  public Function<String, String> getConversion(ASTCDClass decoratedClass, SymTypeExpression leftType, ASTExpression rightExp, boolean forGetter) {
     // TODO AGe: cannot resolve type when @iterate is present
-    // TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
-    // SymTypeExpression rightType = tc.typeOf(rightExp);
+ /*   TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL());
+    SymTypeExpression rightType = tc.typeOf(rightExp);*/
     GUIExpressionTypeVisitor visitor = new GUIExpressionTypeVisitor();
     Optional<SymTypeExpression> rightTypeOpt = visitor.getType(rightExp);
     if (rightTypeOpt.isPresent()) {
       SymTypeExpression rightType = rightTypeOpt.get();
       // TODO AGe: still not nice
       boolean leftIsString = TypeScriptTypes.isString(leftType);
-
-      boolean rightIsNumber = TypeScriptTypes.isNumber(rightType);
       boolean rightIsDate = rightType.print().endsWith("LocalDate");
-      boolean rightIsGemList = util.isDomainListType(rightType);
 
       if (leftIsString && rightIsDate) {
         if (forGetter) {
@@ -326,6 +323,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           return stringToDateConversion();
         }
       }
+      boolean rightIsNumber = TypeScriptTypes.isNumber(rightType);
       if (leftIsString && rightIsNumber) {
         if (forGetter) {
           return numberToStringConversion();
@@ -334,11 +332,53 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           return stringToNumberConversion(rightType.print());
         }
       }
+      boolean rightIsEnum = util.isEnumType(rightType);
+      if (leftIsString && rightIsEnum) {
+        if (forGetter) {
+          return enumToStringConversion();
+        }
+        else {
+          String type = rightType.print();
+          addImport(decoratedClass, type);
+          type = type.lastIndexOf('.') > 0 ? type.substring(type.lastIndexOf('.') + 1) : type;
+          return stringToEnumConversion(type);
+        }
+      }
+      boolean rightIsOptionalEnum = util.isOptionalEnumType(rightType);
+      if (leftIsString && rightIsOptionalEnum) {
+        if (forGetter) {
+          return enumOptionalToStringConversion();
+        }
+        else {
+          String innerType = ((SymTypeOfGenerics) rightType).getArgument(0).print();
+          addImport(decoratedClass, innerType);
+          innerType = innerType.lastIndexOf('.') > 0 ? innerType.substring(innerType.lastIndexOf('.') + 1) : innerType;
+          return stringToOptionalEnumConversion(innerType);
+        }
+      }
+      boolean rightIsGemList = util.isDomainListType(rightType);
       if (rightIsGemList) {
         return gemlistToArrayConversion();
       }
+      boolean rightIsString = rightType.print().endsWith("String");
+      if (leftIsString && !rightIsString && forGetter) {
+        return toStringConversion();
+      }
     }
     return s -> s;
+  }
+
+  protected void addImport(ASTCDClass decoratedClass, String type) {
+    getCD4C().addImport(decoratedClass, Joiners.DOT.join(Names.getQualifier(type).toLowerCase(),
+        Names.getSimpleName(type)));
+  }
+
+  protected Function<String, String> enumOptionalToStringConversion() {
+    return s -> s + "!= null?" + s + " + \"\" : \"\"";
+  }
+
+  protected Function<String, String> stringToOptionalEnumConversion(String type) {
+    return s -> "Optional.of(" + type + ".valueOf(" + s + "))";
   }
 
   protected Function<String, String> dateToStringConversion() {
@@ -351,6 +391,18 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   protected Function<String, String> numberToStringConversion() {
     return s -> "String.valueOf(" + s + ")";
+  }
+
+  protected Function<String, String> enumToStringConversion() {
+    return s -> s + " + \"\"";
+  }
+
+  protected Function<String, String> toStringConversion() {
+    return s -> s + " + \"\"";
+  }
+
+  protected Function<String, String> stringToEnumConversion(String type) {
+    return s -> type + ".valueOf(" + s + ")"; // TODO: check Import
   }
 
   protected Function<String, String> gemlistToArrayConversion() {

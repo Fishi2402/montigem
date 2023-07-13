@@ -1,23 +1,29 @@
-package gradle;
+package gradle.common;
 
 import de.se_rwth.commons.logging.Log;
+import gradle.specific.UMLPTask;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.IgnoreEmptyDirectories;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SkipWhenEmpty;
+import org.gradle.work.FileChange;
 import org.gradle.work.Incremental;
+import org.gradle.work.InputChanges;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
-import umlp.UMLPTool;
 import umlp.UMLPToolOptions;
 
 import javax.inject.Inject;
@@ -25,7 +31,10 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public abstract class CommonUMLPTask extends DefaultTask {
   final String UMLP_TASK_DEBUG = "de.rwth.se.umlp.debug";
@@ -62,6 +71,16 @@ public abstract class CommonUMLPTask extends DefaultTask {
   @IgnoreEmptyDirectories
   public abstract DirectoryProperty getHwcDir();
 
+  @InputDirectory
+  @org.gradle.api.tasks.Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @IgnoreEmptyDirectories
+  // Do not add "@Incremental" (unless you really know what you are doing)
+  public abstract DirectoryProperty getTmplDir();
+
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<String> getConfigTemplate();
 
   @Input
   @org.gradle.api.tasks.Optional
@@ -106,7 +125,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
       getDebug().convention(false);
     }
     this.getOutputs().doNotCacheIf("Do not cache when debugging is enabled",
-        (task) ->  ((UMLPTask)task).getDebug().get());
+        (task) ->  ((CommonUMLPTask)task).getDebug().get());
   }
 
   /** Create CLI-Arguments for UMLPTool. Notice that "input" parameter is not set, must be added in subclass
@@ -124,6 +143,16 @@ public abstract class CommonUMLPTask extends DefaultTask {
     result.add("-" + UMLPToolOptions.REPORT_BASE.getCMD());
     result.add(handlePath.apply(getProject().getProjectDir().toPath()));
 
+    if(this.getTmplDir().isPresent()) {
+      result.add("-" + UMLPToolOptions.TMPL_PATH.getCMD());
+      result.add(handlePath.apply(getTmplDir().getAsFile().get().toPath()));
+    }
+
+    if(this.getConfigTemplate().isPresent()){
+      result.add("-" + UMLPToolOptions.CFGTMPL.getCMD());
+      result.add(getConfigTemplate().get());
+    }
+
     if(getHwcDir().isPresent()) {
       result.add("-" + UMLPToolOptions.HWC_PATH.getCMD());
       result.add(handlePath.apply(getHwcDir().getAsFile().get().toPath()));
@@ -140,11 +169,22 @@ public abstract class CommonUMLPTask extends DefaultTask {
     return result;
   }
 
+  protected void checkParameters() throws IllegalArgumentException {
+    if (getMoreArgs().isPresent()) {
+      List<String> arg = this.getMoreArgs().get();
+      if (arg.contains("-" + UMLPToolOptions.INPUT.getCMD())
+          || arg.contains("-" + UMLPToolOptions.OUTPUT.getCMD())
+          || arg.contains("-" + UMLPToolOptions.HWC_PATH.getCMD())) {
+        throw new IllegalArgumentException("'moreArgs' must not contain '-i' / '-o' or '-hwc' flag. Use Parameters instead");
+      }
+    }
+  }
+
   /** Run UMLPTool with the given Arguments. Depending on "debug" this is either run in a WorkAction or directly.
    *
    * @param args Arguments for UMLPTool.main(...)
    */
-  protected  void startGeneration(List<String> args) {
+  protected void startGeneration(List<String> args) {
     if (getDebug().get()){
       // In debug mode, run code directly. Otherwise, breakpoints etc. do not work
       UMLPAction.run(args.toArray(new String[0]));
@@ -153,4 +193,57 @@ public abstract class CommonUMLPTask extends DefaultTask {
       workQueue.submit(UMLPAction.class, param -> param.getArgs().set(args));
     }
   }
+
+
+  @Internal
+  public Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
+    return Set.of(getHwcDir());
+  }
+  protected Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
+    Stream<FileChange> result = StreamSupport.stream(inputChanges.getFileChanges(getInput()).spliterator(), false);
+
+    for(Provider<? extends FileSystemLocation> inputLocation: getOtherInputDirectories()){
+      result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(inputLocation).spliterator(), false));
+    }
+    return result;
+  }
+
+  protected void prepareRun(){
+    Log.info("Starting Task", this.getName());
+    if(getDebug().get()){
+      Log.warn("Task is running in debug modus and isolation is disabled. This can lead to errors, especially when two UMLPTasks are running parallel. \n" +
+          "Deactivate debug modus once debugging is finished!");
+    }
+
+    checkParameters();
+    workQueue = getWorkerExecutor().classLoaderIsolation();
+  }
+
+  /**
+   *
+   * @param f file which should be checked
+   * @return if file should be used as input for UMLPTool
+   */
+  public boolean isInputFile(File f){
+    return true;
+  }
+
+  /**
+   * @param f File, which is used as tool-input
+   * @return Sub-Directory in <ReportDir>, where reports for input file should be stored
+   */
+  protected abstract Directory getReportDirOfFile(File f);
+
+  /**
+   * @param inputFile File, which is used as tool-input
+   * @return Generated 'IncGenGradleCheck' file from previous run. File might not always exist.
+   */
+  protected File getIncGenFile(File inputFile) {
+    assert(isInputFile(inputFile));
+    return getReportDirOfFile(inputFile).dir(
+        inputFile.getName().toLowerCase().replace(".", "__")
+    ).file("IncGenGradleCheck.txt").getAsFile();
+  }
+
+
 }

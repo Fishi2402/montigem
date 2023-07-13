@@ -11,6 +11,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -82,6 +83,10 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
               if (GenService.isCDEnum(a.getSymbol().getType())) {
                 getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+
                         a.getSymbol().getType().print());
+              }
+              if (GenService.isInnerCDEnum(a.getSymbol().getType())) {
+                getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+
+                    (((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0)).print());
               }
             });
 

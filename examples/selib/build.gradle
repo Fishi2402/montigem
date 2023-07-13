@@ -20,7 +20,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version "${spring_version}"
 
-    id 'de.rwth.se.umlp-tool' // Makes the task-types `UMLPTask` and `UMLPMergeTask` available
+    id 'de.rwth.se.umlp-tool' // Makes the task-types `UMLPBackendTask` and `UMLPMergeTask` available
 }
 
 description 'SE Bib Example'
@@ -40,7 +40,7 @@ task mergeUMLPModels(type: UMLPMergeTask){
   outputFile = layout.buildDirectory.file("SELib.umlp")  // buildDirectory = "build/"
 }
 
-task generateJavaCode(type: UMLPTask) {
+task generateJavaCode(type: UMLPBackendTask) {
   input = mergeUMLPModels.outputFile  // when the input is defined like this, gradle automatically runs the task "mergeUMLPModels" before this task
 
   // Other way to define inputs:
