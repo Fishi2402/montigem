@@ -231,7 +231,10 @@ public class UMLPTool extends UMLPToolTOP {
         LinkedList<ASTGUICompilationUnit> variationASTs = new LinkedList<>();
 
         for(Path model : inputs){
+          String report_on = model.getFileName().toString().replace(".", "__");
+          Reporting.on(report_on);
           ASTGUICompilationUnit parsedModel = parseGUI(model.toString());
+          Reporting.reportParseInputFile(model.toAbsolutePath(), report_on);
 
           if(isGUIVariabilityFile(parsedModel)) variationASTs.add(parsedModel);
           else baseASTs.add(parsedModel);
@@ -249,7 +252,7 @@ public class UMLPTool extends UMLPToolTOP {
         }
 
         for(ASTGUICompilationUnit productAST : baseASTs){
-          Reporting.on(productAST.getComponentName());
+          Reporting.on(productAST.getComponentName() + "__gui");
           Path outputPath = outDir.toPath().resolve(        //file structure needs to reflect package declarations
               productAST.getMCPackageDeclaration().getMCQualifiedName().toString()
                   .replace(".","/")
