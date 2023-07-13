@@ -235,7 +235,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     } else if(GenService.isOptional(assoc)) {
       type = assoc.getMCQualifiedType().printType();
     } else {
-      type = assoc.getSymbol().getType().printFullName();
+      type = assoc.getSymbol().getType().print();
     }
     ASTCDMethodSignature m = getCD4C().addMethod(api, template, cdName,
         originalClassName, assoc.getName(), type, true);
