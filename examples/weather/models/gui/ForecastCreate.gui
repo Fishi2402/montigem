@@ -4,11 +4,13 @@ import Weather.Forecast;
 
 import arrange.src.lib.gemcard.GemCard;
 import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemrows.GemRows;
 import arrange.src.lib.gemcolumn.GemColumn;
 
 import basic.src.lib.gembutton.GemButton;
 import basic.src.lib.gemtext.GemText;
 import input.src.lib.gemtextinput.GemTextInput;
+import input.src.lib.gemradioinput.GemRadioInput;
 
 page ForecastCreate(Forecast f) {
   @GemCard(title = "New Forecast", component =
@@ -21,7 +23,34 @@ page ForecastCreate(Forecast f) {
         @GemTextInput(labelText = "Temperature", inputType = "number", entry = f.temperature),
         @GemTextInput(labelText = "Wind speed", inputType = "number", entry = f.windspeed),
         @GemTextInput(labelText = "Relative humidity", inputType = "number", entry = f.realtiveHumidity),
-
+        @GemRows(
+            components = [
+            @GemRadioInput(
+              id = "radio_cloudy",
+              labelText = "CLOUD",
+              value = "0",
+              selectedValue = f.weatherState
+            ),
+            @GemRadioInput(
+              id = "radio_sunny",
+              labelText = "SUNNY",
+              value = "1",
+              selectedValue = f.weatherState
+            ),
+            @GemRadioInput(
+              id = "radio_rainy",
+              labelText = "RAINY",
+              value = "2",
+              selectedValue = f.weatherState
+            ),
+            @GemRadioInput(
+              id = "radio_storm",
+              labelText = "STORM",
+              value = "3",
+              selectedValue = f.weatherState
+            )
+            ]
+          ),
         @GemRow(
           hAlign = "right",
           component = @GemButton(label = "Save", leftClick = saveForecast)

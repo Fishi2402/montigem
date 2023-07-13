@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class WeatherReport {
@@ -32,6 +31,8 @@ public class WeatherReport {
               .getNumberAsInteger())
           .windspeed(data.getObjectMember("hourly").getArrayMember("windspeed_10m").get(i).getAsJsonNumber()
               .getNumberAsDouble())
+          // TODO: from data/calculate
+          .weatherState(WeatherState.SUNNY)
           .build();
     }
   }
