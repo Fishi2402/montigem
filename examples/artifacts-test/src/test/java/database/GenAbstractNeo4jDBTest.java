@@ -40,13 +40,13 @@ public abstract class GenAbstractNeo4jDBTest {
   @BeforeEach
   public void init(){
     Log.init();
-    TestDatabaseAccessManager.init();
+    TestDatabaseAccessManagerSQL.init();
   }
 
   @AfterEach
   public void cleanup(){
     try {
-      TestDatabaseAccessManager.closeConnection();
+      TestDatabaseAccessManagerSQL.closeConnection();
     } catch (Exception e) {
       throw  new RuntimeException(e);
     }
