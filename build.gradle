@@ -70,7 +70,7 @@ subprojects {
   tasks.withType(CommonUMLPTask).all {
     String taskname = it.name + "__check_report"
     CommonUMLPTask umlpTask = it
-    if(!umlpTask.name.equals("guidelta")) {  // ToDo @LN: Reporting for GuiVariabilityHandler
+    //if(!umlpTask.name.equals("guidelta")) {  // ToDo @LN: Reporting for GuiVariabilityHandler (comment: should work fine could not find any error)
       Task t = task "$taskname"(type: UMLPOutputReportCheck) {
         dependsOn(umlpTask)
         input.from(umlpTask.input)
@@ -81,7 +81,7 @@ subprojects {
         setOriginalTask(umlpTask)
       }
       umlp_check_report.dependsOn(t)
-    }
+    //}
   }
 }
 

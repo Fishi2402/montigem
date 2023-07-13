@@ -1,4 +1,4 @@
-package umlp.generator.gui.guidelta;
+package umlp.generator.gui.guivariability;
 
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.*;
@@ -11,13 +11,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GUIVariationHandler implements GUIDSLHandler {
+public class GUIVariabilityHandler implements GUIDSLHandler {
 
     private GUIDSLTraverser traverser;
 
     private final ASTGUICompilationUnit adaptedAST;
     private ASTGUIArgValue argValueToAdd = null; //stores the new ArgValue to insert
-    private String componentNameToChange = null; //the Name of the Component needs to change with the current GUIDelta statement
+    private String componentNameToChange = null; //the Name of the Component needs to change with the current GUIVariability statement
 
     private AdaptionOptions adaptionOptions = null; //stores which operation to perform
 
@@ -45,11 +45,11 @@ public class GUIVariationHandler implements GUIDSLHandler {
     }
 
     /**
-     * The constructor fot GUIDelta handler
-     * @param adaptedAST the AST that should be adapted when traversing a guiDelta, correct function is only guaranteed
-     *                   when the GUIDeltaHandler is traversing a DeltaAST that does adapt specifically the adaptedAST.
+     * The constructor fot GUIVariabilityHandler handler
+     * @param adaptedAST the AST that should be adapted when traversing a GUIVariability AST, correct function is only guaranteed
+     *                   when the GUIVariabilityHandler is traversing a DeltaAST that does adapt specifically the adaptedAST.
      */
-    public GUIVariationHandler(ASTGUICompilationUnit adaptedAST) {
+    public GUIVariabilityHandler(ASTGUICompilationUnit adaptedAST) {
         traverser = GUIDSLMill.traverser();
         traverser.setGUIDSLHandler(this);
         this.adaptedAST = adaptedAST;
@@ -57,13 +57,13 @@ public class GUIVariationHandler implements GUIDSLHandler {
 
     /**
      * The ASTGUICompilationUnit contains the List of imports,
-     * for a working model after the adaption imports in the GUIDelta AST need to be added to the adapted (non-GUIDelta) AST if not already present.
+     * for a working model after the adaption imports in the GUIVariability AST need to be added to the adapted (non-GUIVariability) AST if not already present.
      * This is accomplished by saving the List of imports to the respective instance variable for later use in the traversal of the adapted AST.
      * The factor to differentiate the two ASTs is the variable componentNameToChange as it is set before the adapted ast is traversed and reset to null right after.
      * @param node the current node in the AST
      */
     public void handle (ASTGUICompilationUnit node){
-        if(componentNameToChange == null){ //GUIDeltaAST
+        if(componentNameToChange == null){ //GUIVariability AST
             imports = node.getMCImportStatementList();
         }
         else{ //AST to adapt, imports need to be added if not already existing
@@ -143,12 +143,12 @@ public class GUIVariationHandler implements GUIDSLHandler {
     /**
      * If the guiComponent, guiIterate or guiGuard with the correct name (componentNameToChange) is present in this GUIList
      * the method will perform the operation specified before in adaptionOptions.
-     * Otherwise, the children are traversed normally this is also the case when traversing a GUIDelta AST
+     * Otherwise, the children are traversed normally this is also the case when traversing a GUIVariability AST
      * The factor to differentiate the two ASTs is the variable componentNameToChange as it is set before the adapted ast is traversed and reset to null right after
      * @param node the current node in the AST
      */
     public void handle(ASTGUIList node){
-        if(componentNameToChange != null) {  //otherwise traversing GUIDelta AST
+        if(componentNameToChange != null) {  //otherwise traversing GUIVariability AST
 
             for (ASTGUIArgValue argValue : node.getGUIArgValueList()) {
                 if ((argValue.isPresentGUIComponent()
@@ -183,7 +183,7 @@ public class GUIVariationHandler implements GUIDSLHandler {
             }
         }
 
-        //variable not in List or GUIDelta
+        //variable not in List or GUIVariability AST
         node.forEachGUIArgValues(v -> v.accept(getTraverser()));
     }
 
@@ -193,14 +193,14 @@ public class GUIVariationHandler implements GUIDSLHandler {
      */
     public void handle(ASTGUIBlock node){
 
-        if(componentNameToChange != null) {  //otherwise traversing GUIDelta AST
+        if(componentNameToChange != null) {  //otherwise traversing GUIVariability AST
 
             List<ASTGUIBlockContent> blockContents = node.getGUIBlockContentList();
 
-            //adapts and removes shouldn't be here as GUIDelta should not be adapted itself
+            //adapts and removes shouldn't be here as GUIVariability should not be adapted itself
             for (ASTGUIBlockContent blockContent : blockContents) { //Error checking first
                 if (blockContent.isPresentGUIRemove() || blockContent.isPresentGUIAdapt())
-                    Log.error("0x45c0001 Attempting to adapt GUIDelta, this is not allowed");
+                    Log.error("0x45c0001 Attempting to adapt GUIVariability AST, this is not allowed");
             }
 
             for (ASTGUIBlockContent blockContent : blockContents) {
@@ -230,14 +230,14 @@ public class GUIVariationHandler implements GUIDSLHandler {
                             node.addAllGUIBlockContents(index, mapToBlockContent(flatMapGUIArgValue(argValueToAdd)));
                             return;
                         case NONE:
-                            Log.error("0x45c0000 Error when selecting delta Options, this is probably the result of a grammar alteration");
+                            Log.error("0x45c0000 Error when selecting adaption Options, this is probably the result of a grammar alteration");
                     }
                 }
 
             }
         }
 
-        //variable not in Block or GUIDelta
+        //variable not in Block or GUIVariability AST
         node.forEachGUIBlockContents(c -> c.accept(getTraverser()));
     }
 
@@ -296,7 +296,7 @@ public class GUIVariationHandler implements GUIDSLHandler {
     private List<ASTGUIArgValue> flatMapGUIArgValue(ASTGUIArgValue argValue){
         LinkedList<ASTGUIArgValue> result = new LinkedList<>();
         if(argValue.isPresentExpression()){
-            Log.warn("0x45c0101 Trying to add Expression with GUIDelta. This is most likely not wanted.");
+            Log.warn("0x45c0101 Trying to add Expression with GUIVariability. This is most likely not wanted.");
         }
         if(argValue.isPresentGUIList()) { //Lists need to be mapped to a single list
             for(ASTGUIArgValue argValueFromList : argValue.getGUIList().getGUIArgValueList()){
