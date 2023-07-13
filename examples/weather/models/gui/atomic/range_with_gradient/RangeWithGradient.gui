@@ -1,0 +1,11 @@
+package gui.atomic.range_with_gradient;
+
+component RangeWithGradient(
+  String width,
+  String height,
+  int startPercentage,
+  int endPercentage,
+  String minColor,
+  String maxColor,
+  String backgroundColor = "blue"
+)
