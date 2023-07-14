@@ -65,15 +65,13 @@ public class ContainerFileExtractor extends BaseExtractor {
   }
 
   private List<Directory> connectEveryDirectoryToItsSubArtifacts(Map<String, Collection<RootAwareFile>> filetype2Files) {
-    List<Directory> connectedDirectories = new ArrayList<>();
-
-    if(!filetype2Files.containsKey(DIRECTORY_FILE_TYPE)) {
-      return connectedDirectories;
+     if(!filetype2Files.containsKey(DIRECTORY_FILE_TYPE)) {
+      return new ArrayList<>();
     }
     Collection<RootAwareFile> directorySystemRepresentations = filetype2Files.get(DIRECTORY_FILE_TYPE);
 
     connectDirectoryObjectToSubSystemFiles(directorySystemRepresentations);
-    return connectedDirectories;
+    return BaseArtifactsTestManager.getDirectoryList();
   }
 
   private void connectDirectoryObjectToSubSystemFiles(Collection<RootAwareFile> directoriesSystemRepresentation) {
