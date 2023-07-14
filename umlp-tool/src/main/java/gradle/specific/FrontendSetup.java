@@ -2,8 +2,10 @@ package gradle.specific;
 
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
@@ -31,6 +33,9 @@ public abstract class FrontendSetup extends DefaultTask {
   @OutputDirectory
   public abstract DirectoryProperty getOutput();
 
+  @InputFiles
+  public abstract DirectoryProperty getInput();
+
   @TaskAction
   public void run() throws IOException, URISyntaxException {
 
@@ -40,6 +45,11 @@ public abstract class FrontendSetup extends DefaultTask {
       FileUtils.copyInputStreamToFile(file, getOutput().file(filename).get().getAsFile());
     }
 
+    // Then Copy User-Defined Files
+    for(File f: getInput().getAsFileTree()){
+      String filename = getInput().getAsFile().get().toPath().relativize(f.toPath()).toString();
+      FileUtils.copyFile(f, getOutput().file(filename).get().getAsFile());
+    }
   }
 
 

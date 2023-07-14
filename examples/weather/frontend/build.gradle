@@ -100,11 +100,13 @@ task genGUI2(type: UMLPGuiGenTask) {
 
 task generateNPMAuth(type: NPMAuthCreate)
 
+// Add Frontend-Config Files from UMLP-Tool Resources.
 task frontendSetup(type: FrontendSetup){
-  output = layout.buildDir.dir("frontendGen")
+  input = file("config/")   // Can be used to add or replace files
+  output = layout.buildDir.dir("frontendGen/")
 }
 
-npm_install.dependsOn(generateNPMAuth, genGUI)
+npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
 // TODO AGe: npm_update too slow - strategy to make occasional checks
 // npm_update.dependsOn(npm_install)
 
