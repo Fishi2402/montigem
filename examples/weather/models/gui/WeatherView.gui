@@ -4,6 +4,10 @@ import Weather.Forecast;
 
 import gui.ForecastCreate;
 import gui.GradientDemo;
+import gui.multi_day_forecast.MultiDayForecast;
+import gui.common.WeatherStateIcon;
+import basic.src.lib.gemimage.GemImage;
+
 import arrange.src.lib.gemcard.GemCard;
 import arrange.src.lib.gemrow.GemRow;
 import arrange.src.lib.gemcolumn.GemColumn;
@@ -49,6 +53,6 @@ page WeatherView(List<Forecast> forecasts) {
         ]
       )
     ),
-    @GradientDemo()
+    @MultiDayForecast(days = forecasts)
   ]);
 }

@@ -5,14 +5,33 @@ import Weather.Forecast;
 import arrange.src.lib.gemcard.GemCard;
 import arrange.src.lib.gemrow.GemRow;
 import arrange.src.lib.gemcolumn.GemColumn;
-
 import basic.src.lib.gemtext.GemText;
 
-component ForecastRow(Forecast forecast){
+import gui.common.WeatherStateIcon;
+import gui.common.ShortFormDateRenderer;
+import gui.atomic.range_with_gradient.RangeWithGradient;
+
+component ForecastRow(
+  Forecast forecast,
+  boolean today,
+  double groupMinTemp,
+  double groupMaxTemp
+){
   @GemRow(
     components = [
-      @GemText(value = forecast.getDate() + ": "),
-      @GemText(value = "Another")
+      @ShortFormDateRenderer(forecast = forecast),
+      @WeatherStateIcon(state = forecast.getWeatherState()),
+      @GemText(value = "10"), // TODO: hard coded, replace with derived daily?
+      @RangeWithGradient(
+        width="100px",
+        height="10px",
+        startPercentage=(10/(groupMaxTemp - groupMinTemp)) * 100, // TODO: hardcoded
+        endPercentage=(forecast.getTemperature()/(groupMaxTemp - groupMinTemp)) * 100,
+        minColor="green",
+        maxColor="red",
+        backgroundColor="blue"
+      ),
+      @GemText(value = forecast.getTemperature())
     ]
   );
 }

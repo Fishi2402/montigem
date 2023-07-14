@@ -16,7 +16,12 @@ component MultiDayForecast(List<Forecast> days){
     @GemColumn(
       components = [
         @iterate(Forecast day : days){
-          @ForecastRow(forecast = day);
+          @ForecastRow(
+            forecast = day,
+            today = false, // TODO: hardcoded
+            groupMinTemp = 1, // TODO: hardcoded, TODO: 0 does not work bc of null check
+            groupMaxTemp = 40 // TODO: hardcoded
+            );
         }
       ]
     )
