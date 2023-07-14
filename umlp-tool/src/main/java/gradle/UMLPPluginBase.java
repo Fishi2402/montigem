@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
+import gradle.specific.FrontendSetup;
 import gradle.specific.NPMAuthCreate;
 import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPCdToGuiTask;
@@ -27,6 +28,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       project.getExtensions().getExtraProperties().set("UMLPBackendTask", UMLPBackendTask.class);
       project.getExtensions().getExtraProperties().set("UMLPCdToGuiTask", UMLPCdToGuiTask.class);
       project.getExtensions().getExtraProperties().set("UMLPFrontendTask", UMLPFrontendTask.class);
+      project.getExtensions().getExtraProperties().set("FrontendSetup", FrontendSetup.class);
 
       StatisticListener.registerOnce(project);
     }

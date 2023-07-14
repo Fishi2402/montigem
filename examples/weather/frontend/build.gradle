@@ -100,6 +100,10 @@ task genGUI2(type: UMLPGuiGenTask) {
 
 task generateNPMAuth(type: NPMAuthCreate)
 
+task frontendSetup(type: FrontendSetup){
+  output = layout.buildDir.dir("frontendGen")
+}
+
 npm_install.dependsOn(generateNPMAuth, genGUI)
 // TODO AGe: npm_update too slow - strategy to make occasional checks
 // npm_update.dependsOn(npm_install)
