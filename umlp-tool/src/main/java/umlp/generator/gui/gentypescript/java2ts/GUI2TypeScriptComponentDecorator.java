@@ -2,6 +2,7 @@
 package umlp.generator.gui.gentypescript.java2ts;
 
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -72,6 +73,11 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
   }
 
   @Override
+  protected void addImport(ASTCDClass decoratedClass, String type) {
+    getCD4C().addImport(decoratedClass, type);
+  }
+
+  @Override
   protected String getInitListsTemplate() {
     return "umlp.gui2ts.TSInitLists";
   }
@@ -93,7 +99,7 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
 
   @Override
   protected Function<String, String> dateToStringConversion() {
-    return s -> s + "?.toDateString()";
+    return s -> s + ".toDateString()";
   }
 
   @Override
@@ -116,4 +122,22 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
     return s -> s + ".toArray()";
   }
 
+  @Override
+  protected Function<String, String> enumToStringConversion() { return s -> s + " + ''"; }
+
+  @Override
+  protected Function<String, String> toStringConversion() { return s -> s + " + ''"; }
+
+  @Override
+  protected Function<String, String> enumOptionalToStringConversion() { return s -> s + "!= null?" + s + " + '' : ''";  }
+
+  @Override
+  protected Function<String, String> stringToOptionalEnumConversion(String type) {
+    return s -> s + " in " + type + "? " + type + "[" + s + "] : null";
+  }
+
+  @Override
+  protected Function<String, String> stringToEnumConversion(String type) {
+    return s -> type + "[" + s + "]";
+  }
 }

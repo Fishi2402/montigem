@@ -20,14 +20,14 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
     List<Long> iDs;
     <#list listAssocs as assocSide, assoc>
     iDs = o._internal_get${assocSide.getName()?cap_first}GemList().getIDs();
-    for(int i = 0; i < iDs.size(); i++) {
-      Long id = iDs.get(i);
+    HashMap<Long, List<Long>> ${assocSide.getName()?uncap_first}Map = new HashMap<>();
       <#if assocSide.isLeft()>
-        assoc${assoc.getName()?cap_first}DAO.add${assoc.getName()?cap_first}(id, o.getGemId(), i);
+    iDs.forEach(id -> ${assocSide.getName()?uncap_first}Map.put(id, Arrays.asList(o.getGemId())));
       <#else>
-        assoc${assoc.getName()?cap_first}DAO.add${assoc.getName()?cap_first}(o.getGemId(), id, i);
+    ${assocSide.getName()?uncap_first}Map.put(o.getGemId(), iDs);
       </#if>
-    }
+    assoc${assoc.getName()?cap_first}DAO.bulkAdd${assoc.getName()?cap_first}(${assocSide.getName()?uncap_first}Map);
+
     </#list>
     <#list gemAssocs as assocSide, assoc>
     if(o.get${assocSide.getName()?cap_first}Gem().getGemId() != -1){

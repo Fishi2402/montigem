@@ -1,0 +1,42 @@
+package gui;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemcolumn.GemColumn;
+import gui.atomic.range_with_gradient.RangeWithGradient;
+
+page GradientDemo(){
+   @GemCard(title = "Demo of the RangeWithGradient component", component =
+    @GemColumn(
+      rowGap = "20px",
+      components = [
+        @RangeWithGradient(
+          width="100px",
+          height="10px",
+          startPercentage=0,
+          endPercentage=100,
+          minColor="green",
+          maxColor="red",
+          backgroundColor="blue"
+        ),
+        @RangeWithGradient(
+          width="100px",
+          height="10px",
+          startPercentage=20,
+          endPercentage=80,
+          minColor="green",
+          maxColor="red",
+          backgroundColor="blue"
+        ),
+        @RangeWithGradient(
+          width="100px",
+          height="10px",
+          startPercentage=50,
+          endPercentage=100,
+          minColor="blue",
+          maxColor="red",
+          backgroundColor="orange"
+        )
+      ]
+    )
+  );
+}

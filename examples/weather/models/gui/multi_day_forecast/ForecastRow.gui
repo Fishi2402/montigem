@@ -1,0 +1,18 @@
+package gui.multi_day_forecast;
+
+import Weather.Forecast;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+import basic.src.lib.gemtext.GemText;
+
+component ForecastRow(Forecast forecast){
+  @GemRow(
+    components = [
+      @GemText(value = forecast.getDate() + ": "),
+      @GemText(value = "Another")
+    ]
+  );
+}

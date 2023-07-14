@@ -1,0 +1,24 @@
+package gui.multi_day_forecast;
+
+import Weather.Forecast;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+import basic.src.lib.gemtext.GemText;
+
+import gui.multi_day_forecast.ForecastRow;
+
+component MultiDayForecast(List<Forecast> days){
+  @GemCard(
+    title = "-Day Forecast",
+    component =
+    @GemColumn(
+      components = [
+        @iterate(Forecast day : days){
+          @ForecastRow(forecast = day);
+        }
+      ]
+    )
+  );
+}

@@ -184,6 +184,8 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     String type;
     if (GenService.isList(attr)) {
       type = attr.getMCType().printType();
+    } else if(GenService.isOptional(attr)) {
+      type = attr.getMCType().printType();
     } else {
       type = attr.getSymbol().getType().printFullName();
     }
@@ -229,6 +231,8 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     }
     String type;
     if (GenService.isList(assoc)) {
+      type = assoc.getMCQualifiedType().printType();
+    } else if(GenService.isOptional(assoc)) {
       type = assoc.getMCQualifiedType().printType();
     } else {
       type = assoc.getSymbol().getType().print();

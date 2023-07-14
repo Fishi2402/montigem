@@ -9,6 +9,7 @@ import arrange.src.lib.gemcolumn.GemColumn;
 import basic.src.lib.gembutton.GemButton;
 import basic.src.lib.gemtext.GemText;
 import input.src.lib.gemtextinput.GemTextInput;
+import input.src.lib.gemradioinput.GemRadioInput;
 
 page ForecastCreate(Forecast f) {
   @GemCard(title = "New Forecast", component =
@@ -21,7 +22,34 @@ page ForecastCreate(Forecast f) {
         @GemTextInput(labelText = "Temperature", inputType = "number", entry = f.temperature),
         @GemTextInput(labelText = "Wind speed", inputType = "number", entry = f.windspeed),
         @GemTextInput(labelText = "Relative humidity", inputType = "number", entry = f.realtiveHumidity),
-
+        @GemColumn(
+            components = [
+              @GemRadioInput(
+                id = "radio_cloudy",
+                labelText = "Cloudy",
+                value = "0",
+                selectedValue = f.weatherState
+              ),
+              @GemRadioInput(
+                id = "radio_sunny",
+                labelText = "Sunny",
+                value = "1",
+                selectedValue = f.weatherState
+              ),
+              @GemRadioInput(
+                id = "radio_rainy",
+                labelText = "Rainy",
+                value = "2",
+                selectedValue = f.weatherState
+              ),
+              @GemRadioInput(
+                id = "radio_storm",
+                labelText = "Storm",
+                value = "3",
+                selectedValue = f.weatherState
+              )
+            ]
+          ),
         @GemRow(
           hAlign = "right",
           component = @GemButton(label = "Save", leftClick = saveForecast)

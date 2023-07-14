@@ -30,7 +30,7 @@ public class DAODecoratorTest extends DecoratorTest {
     assertAll(
         // check no of methods and attributes
         () -> assertEquals(6, assocDaoAst.getCDAttributeList().size(), "number of attributes"),
-        () -> assertEquals(10, assocDaoAst.getCDMethodList().size(), "number of methods")
+        () -> assertEquals(11, assocDaoAst.getCDMethodList().size(), "number of methods")
         );
   }
 
