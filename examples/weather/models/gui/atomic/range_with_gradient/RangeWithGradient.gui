@@ -7,5 +7,5 @@ component RangeWithGradient(
   int endPercentage,
   String minColor,
   String maxColor,
-  String backgroundColor = "blue"
+  String backgroundColor
 )

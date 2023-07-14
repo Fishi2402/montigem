@@ -15,7 +15,8 @@ page GradientDemo(){
           startPercentage=0,
           endPercentage=100,
           minColor="green",
-          maxColor="red"
+          maxColor="red",
+          backgroundColor="blue"
         ),
         @RangeWithGradient(
           width="100px",
@@ -23,7 +24,8 @@ page GradientDemo(){
           startPercentage=20,
           endPercentage=80,
           minColor="green",
-          maxColor="red"
+          maxColor="red",
+          backgroundColor="blue"
         ),
         @RangeWithGradient(
           width="100px",

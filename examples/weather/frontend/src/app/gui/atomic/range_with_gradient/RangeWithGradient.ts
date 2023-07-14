@@ -6,5 +6,10 @@ import {RangeWithGradientTOP} from "@src/gui/atomic/range_with_gradient/RangeWit
   templateUrl: "./RangeWithGradient.html",
 })
 export class RangeWithGradient extends RangeWithGradientTOP implements OnInit {
+  uuid: string;
+
+  ngOnInit() {
+    this.uuid = crypto.randomUUID();
+  }
 
 }
