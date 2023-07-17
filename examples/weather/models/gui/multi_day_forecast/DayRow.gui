@@ -1,6 +1,6 @@
 package gui.multi_day_forecast;
 
-import Weather.Forecast;
+import Weather.Day;
 
 import arrange.src.lib.gemcard.GemCard;
 import arrange.src.lib.gemrow.GemRow;
@@ -11,32 +11,32 @@ import gui.common.WeatherStateIcon;
 import gui.common.ShortFormDateRenderer;
 import gui.atomic.range_with_gradient.RangeWithGradient;
 
-component ForecastRow(
-  Forecast forecast,
+component DayRow(
+  Day day,
   boolean today,
   double groupMinTemp,
   double groupMaxTemp
 ){
   @GemRow(
     components = [
-      @ShortFormDateRenderer(forecast = forecast),
+      @ShortFormDateRenderer(day = day),
       @GemRow(
         width="1em",
         height="1em",
-        component = @WeatherStateIcon(state = forecast.getWeatherState())
+        component = @WeatherStateIcon(state = day.getWeatherState())
       ),
-      @GemText(value = "10"), // TODO: hard coded, replace with derived daily?
+      @GemText(value = day.getMinimumTemperature()),
       @RangeWithGradient(
         width="100px",
         height="5px",
-        startPercentage=(10/(groupMaxTemp - groupMinTemp)) * 100, // TODO: hardcoded
-        endPercentage=(forecast.getTemperature()/(groupMaxTemp - groupMinTemp)) * 100,
+        startPercentage=(day.getMinimumTemperature()/(groupMaxTemp - groupMinTemp)) * 100, // TODO: hardcoded
+        endPercentage=(day.getMaximumTemperature()/(groupMaxTemp - groupMinTemp)) * 100,
         minColor="green",
         middleColor="yellow",
         maxColor="red",
         backgroundColor="blue"
       ),
-      @GemText(value = forecast.getTemperature())
+      @GemText(value = day.getMaximumTemperature())
     ]
   );
 }

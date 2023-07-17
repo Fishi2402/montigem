@@ -51,7 +51,6 @@ page WeatherView(List<Forecast> forecasts) {
           ])
         ]
       )
-    ),
-    @MultiDayForecast(days = forecasts)
+    )
   ]);
 }

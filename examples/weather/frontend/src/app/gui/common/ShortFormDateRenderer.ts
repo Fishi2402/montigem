@@ -9,7 +9,7 @@ import {ShortFormDateRendererTOP} from "@src/gui/common/ShortFormDateRendererTOP
 })
 export  class ShortFormDateRenderer extends ShortFormDateRendererTOP {
   getGemText0Value(): string {
-    let res = this.getForecast()?.getDate()?.toLocaleDateString("en-US", {
+    let res = this.getDay()?.getDate()?.toLocaleDateString("en-US", {
       weekday: "short",
     });
 
