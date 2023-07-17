@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package weather;
 
+import com.google.common.collect.Multimap;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
@@ -11,11 +12,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 public class WeatherReport {
 
-  public void createWeatherForecast() {
-    JsonObject data = getWeatherData();
+  public void createWeatherForecast(City city) {
+    JsonObject data = getWeatherData(city);
     for (int i = 0; i < data.getObjectMember("hourly").getArrayMember("time").size(); i++) {
 
       LocalDate date = LocalDate.parse(data.getObjectMember("hourly").getArrayMember("time").get(i).getAsJsonString()
@@ -35,11 +38,20 @@ public class WeatherReport {
           .weatherState(WeatherState.SUNNY)
           .build();
     }
+
+    var grouped = WeatherManager.getForecastList().stream().collect(Collectors.groupingBy(Forecast::getDate));
+    grouped.forEach((d, forecasts) ->
+        WeatherManager.dayBuilder().city(city).date(d).dailyForecasts(new HashSet<>(forecasts)).build()
+    );
   }
 
-  public JsonObject getWeatherData() {
+  public JsonObject getWeatherData(City city) {
     try {
-      URL url = new URL("https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m");
+      URL url = new URL(String.format(
+          "https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m",
+          city.getLatitude(),
+          city.getLongitude()
+      ));
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       conn.setRequestMethod("GET");
       conn.setRequestProperty("Accept", "application/json");

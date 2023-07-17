@@ -9,6 +9,16 @@ classdiagram Weather {
     double latitude;
   }
 
+  class Day {
+    java.time.LocalDate date;
+    /double minimumTemperature;
+    /double maximumTemperature;
+    /WeatherState weatherState;
+  }
+
+  association [*] Day -> City [1];
+  association [0..1] Day -> (dailyForecasts) Forecast [*];
+
   class Forecast {
     // java.time.LocalDateTime date;
     java.time.LocalDate date;

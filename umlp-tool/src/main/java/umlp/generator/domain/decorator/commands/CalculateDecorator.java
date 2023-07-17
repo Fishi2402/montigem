@@ -14,13 +14,11 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypePrimitive;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
-import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
 
 import java.util.Optional;
@@ -54,7 +52,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
               .stream()
               .filter(a -> a.getModifier().isDerived())
               .forEach(a -> {
-                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, false)));
+                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, GenService.isCDEnum(a.getSymbol().getType()))));
                 astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c)));
               });
           CDSymbolTables.getAssociationsInHierarchy(c)
@@ -69,11 +67,11 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
   }
 
 
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDClass domainClass, boolean isGem) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDClass domainClass, boolean needsImport) {
     String classname = domainClass.getName()+SUFFIX
         + StringTransformations.capitalize(name);
 
-    String t = getType(type);
+    String t = needsImport ? getShortType(type) : getType(type);
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
@@ -105,7 +103,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainClass));
     if (GenService.isJavaType(type)) {
       addJavaImport(ast, type);
-    } else if (isGem) {
+    } else if (needsImport) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ t);
     }
 
@@ -137,6 +135,30 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
 
     }else{
       t = type.printFullName();
+    }
+    return t;
+  }
+
+  protected String getShortType(SymTypeExpression type) {
+    String t = null;
+    if(type.isPrimitive()){
+      t = SymTypePrimitive.box(type.print());
+    }else if(type.isGenericType()){
+      var genType = (SymTypeOfGenerics)type;
+
+      if(GenService.isList(type)){
+        SymTypeExpression inner = genType.getArgument(0);
+        if(inner.isPrimitive()){
+          t = SymTypePrimitive.box(inner.print());
+        }else{
+          t = inner.print();
+        }
+      }else{
+        Log.error("0x3F9F77 Can not generate DeSer for generic type " + type.print());
+      }
+
+    }else{
+      t = type.print();
     }
     return t;
   }
