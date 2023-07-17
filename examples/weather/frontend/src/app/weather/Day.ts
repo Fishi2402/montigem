@@ -48,6 +48,7 @@ export class Day extends DayTOP {
     }
 
     // Javascript is weird
+    console.log("GetWeatherState returns ", WeatherState[WeatherState[0]]);
     return WeatherState[WeatherState[0]];
   }
 }
