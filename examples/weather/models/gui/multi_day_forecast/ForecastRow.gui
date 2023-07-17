@@ -20,14 +20,19 @@ component ForecastRow(
   @GemRow(
     components = [
       @ShortFormDateRenderer(forecast = forecast),
-      @WeatherStateIcon(state = forecast.getWeatherState()),
+      @GemRow(
+        width="1em",
+        height="1em",
+        component = @WeatherStateIcon(state = forecast.getWeatherState())
+      ),
       @GemText(value = "10"), // TODO: hard coded, replace with derived daily?
       @RangeWithGradient(
         width="100px",
-        height="10px",
+        height="5px",
         startPercentage=(10/(groupMaxTemp - groupMinTemp)) * 100, // TODO: hardcoded
         endPercentage=(forecast.getTemperature()/(groupMaxTemp - groupMinTemp)) * 100,
         minColor="green",
+        middleColor="yellow",
         maxColor="red",
         backgroundColor="blue"
       ),

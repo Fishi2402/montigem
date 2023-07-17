@@ -3,7 +3,6 @@ package gui;
 import Weather.Forecast;
 
 import gui.ForecastCreate;
-import gui.GradientDemo;
 import gui.multi_day_forecast.MultiDayForecast;
 import gui.common.WeatherStateIcon;
 import basic.src.lib.gemimage.GemImage;
