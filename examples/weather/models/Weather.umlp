@@ -16,6 +16,13 @@ classdiagram Weather {
     /WeatherState weatherState;
   }
 
+  / class NextDays {
+    double minimumTemperature;
+    double maximumTemperature;
+  }
+
+  association [0..1] NextDays -> (containedDays) Day [*];
+
   association [*] Day -> City [1];
   association [0..1] Day -> (dailyForecasts) Forecast [*];
 

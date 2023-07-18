@@ -1,0 +1,33 @@
+package gui.multi_day_forecast;
+
+import Weather.Day;
+import Weather.NextDays;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+import basic.src.lib.gemtext.GemText;
+
+import gui.multi_day_forecast.DayRow;
+
+// TODO: use this to replace MultiDayForecast
+// TODO: override routing, since routing id is added for derived attributes!
+// TODO: fix routing in generator, problematic since OOTypes don't have isDerived
+page MultiDayForecastAlternative(NextDays nextDays){
+  @GemCard(
+    title = "7-Day Forecast",
+    component =
+    @GemColumn(
+      components = [
+        @iterate(Day day : nextDays.containedDays){
+          @DayRow(
+            day = day,
+            today = false, // TODO
+            groupMinTemp = nextDays.getMinimumTemperature(),
+            groupMaxTemp = nextDays.getMaximumTemperature()
+          );
+        }
+      ]
+    )
+  );
+}

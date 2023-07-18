@@ -40,8 +40,8 @@ component DayRow(
         component = @RangeWithGradient(
                             width="100px",
                             height="5px",
-                            startPercentage=(day.getMinimumTemperature()/(groupMaxTemp - groupMinTemp)) * 100, // TODO: hardcoded
-                            endPercentage=(day.getMaximumTemperature()/(groupMaxTemp - groupMinTemp)) * 100,
+                            startPercentage=((day.getMinimumTemperature() - groupMinTemp)/(groupMaxTemp - groupMinTemp)) * 100, // TODO: hardcoded
+                            endPercentage=((day.getMaximumTemperature() - groupMinTemp)/(groupMaxTemp - groupMinTemp)) * 100,
                             minColor="green",
                             middleColor="yellow",
                             maxColor="red",
@@ -51,11 +51,7 @@ component DayRow(
       @GemRow(
         width="2em",
         height="1em",
-        component = @GemRow(
-                      width="1em",
-                      height="1em",
-                      component = @GemText(value = day.getMinimumTemperature())
-                    )
+        component = @GemText(value = day.getMaximumTemperature())
       )
     ]
   );
