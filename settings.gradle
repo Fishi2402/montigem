@@ -28,7 +28,7 @@ include ":experiments:initial"
 include ":experiments:coreRequirements"
 include ":experiments:coreRequirements:stanley"
 include ":experiments:dbPerformance"
-
+include ":experiments:statecharts-integration"
 
 include ":examples"
 include ':examples:cars'

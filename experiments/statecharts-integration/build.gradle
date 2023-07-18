@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+    id 'de.rwth.se.umlp-tool-backend'
+}
+
+group 'org.example'
+version '7.6.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+  scGenerator
+}
+
+def modelsDir = projectDir.toPath().resolve("src").resolve("models")
+def scOutDir = buildDir.toPath().resolve("sc")
+
+task genSc(type: JavaExec) {
+  classpath configurations.scGenerator
+  main("de.monticore.umlstatecharts.UMLStatechartsTool")
+
+  def ampel = modelsDir.resolve("AmpelSC.sc")
+
+  args = [
+      "-i", ampel.toAbsolutePath().toString(),
+      "-gen", scOutDir.toAbsolutePath().toString()
+  ]
+
+  inputs.file(ampel)
+  outputs.dir(scOutDir)
+}
+
+sourceSets.main.java {
+  srcDirs += scOutDir.toString()
+}
+
+tasks.compileJava.dependsOn(genSc)
+
+dependencies {
+    scGenerator("de.monticore.lang:statecharts:$mc_version:mc-tool"){
+      transitive = false
+    }
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
