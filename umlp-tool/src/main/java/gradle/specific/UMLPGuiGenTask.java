@@ -83,12 +83,19 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
       result.addAll(this.getGuiCreateModels().get());
     }
 
-    else if(this.getGuiCreateModelsAsFile().isPresent() && this.getGuiCreateModelsAsFile().get().exists())
+    //Do not put arguments in between here!
+
+    if(this.getGuiCreateModelsAsFile().isPresent())
     {
+      if(!this.getGuiCreateModelsAsFile().get().exists())
+        throw new IllegalArgumentException("File of argument guiCreateModelsAsFile does not exist");
+
       List<String> createModels = List.of(
           FileReaderWriter.readFromFile(this.getGuiCreateModelsAsFile().get().toPath()).split("\n")
       );
-      result.add("-" + UMLPToolOptions.GUI_CREATE.getCMD());
+      if(!getGuiCreateModels().isPresent() || (this.getGuiCreateModels().isPresent() && this.getGuiCreateModels().get().isEmpty())) {
+        result.add("-" + UMLPToolOptions.GUI_CREATE.getCMD());
+      }
       result.addAll(createModels);
     }
 
