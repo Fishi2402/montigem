@@ -5,13 +5,16 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 import log_mc_jar.Log_MC_JARManager;
+import log_mc_jar.MCJarCLIParameter;
 import log_mc_jar.MCJarLogEntry;
+import log_mc_jar.MCPreJarLogEntry;
 import log_mc_jar.MCSummary;
 import log_mc_jar.PreJarLogEntry;
 import log_mc_jar.PreJarLogEntryBuilder;
 import log_mc_jar.UMLPJarCLIParameter;
 import log_mc_jar.UMLPJarLogEntry;
 import log_mc_jar.UMLPJarLogEntryBuilder;
+import log_mc_jar.UMLPPreJarLogEntry;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +27,7 @@ import java.net.UnknownHostException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class LoggerEndpointService {
@@ -70,6 +74,54 @@ public class LoggerEndpointService {
         .get();
   }
 
+  protected UMLPPreJarLogEntry log_UMLP_PRE_JAR_JSON(JsonObject data) {
+    return Log_MC_JARManager.uMLPPreJarLogEntryBuilder()
+        .parameter(parseUmlpJarCLIParameter(data.getObjectMember("parameter")))
+
+        // PreJarLogEntry
+        .uuid(data.getStringMember("uuid"))
+        .toolVersion(data.getStringMember("version"))
+        .receivedTime(Instant.now())
+        .origin(InetAddress.getLoopbackAddress())  // TODO
+
+        .build()
+        .get();
+  }
+
+  public MCPreJarLogEntry log_MC_PRE_JAR_JSON(JsonObject data) {
+    return Log_MC_JARManager.mCPreJarLogEntryBuilder()
+        .parameter(parseMCJarCLIParameter(data.getObjectMember("parameter")))
+
+        // PreJarLogEntry
+        .uuid(data.getStringMember("uuid"))
+        .toolVersion(data.getStringMember("version"))
+        .receivedTime(Instant.now())
+        .origin(InetAddress.getLoopbackAddress())  // TODO
+
+        .build()
+        .get();
+  }
+
+  protected MCJarLogEntry log_MC_JAR_JSON(JsonObject data) throws UnknownHostException {
+    return Log_MC_JARManager.mCJarLogEntryBuilder()
+        .parameter(parseMCJarCLIParameter(data.getObjectMember("parameter")))
+
+        // JarLogEntry
+        .duration(Duration.ofMillis(data.getLongMember("duration")))
+        .summary(parseSummary(data.getObjectMember("summary"))) // TODO: Optional!
+        //TODO: Parse Error
+
+        // PreJarLogEntry
+        .uuid(data.getStringMember("uuid"))
+        .toolVersion(data.getStringMember("version"))
+        .receivedTime(Instant.now())
+        .origin(InetAddress.getLoopbackAddress())  // TODO
+
+        .build()
+        .get();
+  }
+
+
 
 
   private MCSummary parseSummary(JsonObject data){
@@ -110,6 +162,15 @@ public class LoggerEndpointService {
         .input(List.of(data.getStringMember("input")))
         .hwc(data.getBooleanMember("hwc"))
         .debug(data.getBooleanMember("debug"))
+        .build()
+        .get();
+  }
+
+  private MCJarCLIParameter parseMCJarCLIParameter(JsonObject data) {
+    return Log_MC_JARManager.mCJarCLIParameterBuilder()
+        .dstlGen(data.getBooleanMemberOpt("genDST").orElse(false))
+        .script(data.getBooleanMember("script"))
+        .grammar(data.getArrayMember("grammar").stream().map(e -> e.getAsJsonString().getValue()).collect(Collectors.toList()))
         .build()
         .get();
   }

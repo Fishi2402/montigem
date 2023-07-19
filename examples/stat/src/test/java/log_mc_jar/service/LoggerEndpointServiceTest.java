@@ -46,10 +46,41 @@ class LoggerEndpointServiceTest {
   @Test
   void umlp_jar_log() throws IOException {
     String logBody = "{\"uuid\":\"c72e7459-f075-44c4-b007-cdd8eadef755\",\"version\":\"7.5.0-SNAPSHOT\",\"parameter\":{\"input\":\"Log_MC_JAR.umlp\",\"debug\":false,\"hwc\":true},\"summary\":{\"errors\":0,\"warnings\":0,\"generated files\":178,\"instantiations\":4,\"template includes\":0,\"template writes\":0,\"used standard templates\":210,\"unused standard templates\":203,\"used handwritten templates\":0,\"unused handwritten templates\":0,\"max template depth\":4,\"max AST depth\":8,\"AST node instances\":178,\"AST node types\":19,\"AST node visits\":8029,\"variables\":3,\"variable assignments\":4,\"AST hook point sets\":1974,\"AST hook point calls\":1855,\"code hook point sets\":0,\"code hook point calls\":0,\"template hook point sets\":1,\"template hook point calls\":177,\"string hook point sets\":0,\"string hook point calls\":0,\"empty hook point called\":10,\"empty hook point calls\":2632},\"duration\":4930}";
-        // Files.readString(Path.of("build", "umlp_reports", "task_generateUmlpBackend", "Log_MC_JAR__umlp", "log_mc_jar__umlp", "20_Statistics.txt"));
-    String shash = getSHASH(logBody);
-
     JsonObject logObj = JsonParser.parseJsonObject(logBody);
-    sut.log_UMLP_JAR_JSON(logObj);
+
+    var result = sut.log_UMLP_JAR_JSON(logObj);
+
+    assertEquals("c72e7459-f075-44c4-b007-cdd8eadef755", result.getUuid());
   }
+
+  @Test
+  void umlp_pre_jar_log() throws IOException {
+    String logBody = "{\"uuid\":\"602216d9-e42c-4174-b183-1515ae00a9b5\",\"version\":\"7.5.0-SNAPSHOT\",\"parameter\":{\"input\":\"Domain.umlp\",\"debug\":false,\"hwc\":true}}";
+    JsonObject logObj = JsonParser.parseJsonObject(logBody);
+
+    var result = sut.log_UMLP_PRE_JAR_JSON(logObj);
+
+    assertEquals("602216d9-e42c-4174-b183-1515ae00a9b5", result.getUuid());
+  }
+
+  @Test
+  void mc_pre_jar_log() throws IOException {
+    String logBody = "{\"uuid\":\"bde38283-5074-4e61-ad70-9783afca37d0\",\"version\":\"7.5.0-SNAPSHOT\",\"parameter\":{\"grammar\":[\"Statechart.mc4\",\"TestLexicals.mc4\"],\"genDST\":null,\"script\":false}}";
+    JsonObject logObj = JsonParser.parseJsonObject(logBody);
+
+    var result = sut.log_MC_PRE_JAR_JSON(logObj);
+
+    assertEquals("bde38283-5074-4e61-ad70-9783afca37d0", result.getUuid());
+  }
+
+  @Test
+  void mc_jar_log() throws IOException {
+    String logBody = "{\"uuid\":\"bde38283-5074-4e61-ad70-9783afca37d0\",\"version\":\"7.5.0-SNAPSHOT\",\"parameter\":{\"grammar\":[\"Statechart.mc4\",\"TestLexicals.mc4\"],\"genDST\":null,\"script\":false},\"summary\":{\"errors\":0,\"warnings\":0,\"generated files\":62,\"instantiations\":0,\"template includes\":0,\"template writes\":0,\"used standard templates\":121,\"unused standard templates\":165,\"used handwritten templates\":0,\"unused handwritten templates\":0,\"max template depth\":18,\"max AST depth\":16,\"AST node instances\":110,\"AST node types\":13,\"AST node visits\":5220,\"variables\":33,\"variable assignments\":40,\"AST hook point sets\":1493,\"AST hook point calls\":1455,\"code hook point sets\":0,\"code hook point calls\":0,\"template hook point sets\":0,\"template hook point calls\":0,\"string hook point sets\":0,\"string hook point calls\":0,\"empty hook point called\":18,\"empty hook point calls\":1867},\"duration\":3024}";
+    JsonObject logObj = JsonParser.parseJsonObject(logBody);
+
+    var result = sut.log_MC_JAR_JSON(logObj);
+
+    assertEquals("bde38283-5074-4e61-ad70-9783afca37d0", result.getUuid());
+  }
+
 }
