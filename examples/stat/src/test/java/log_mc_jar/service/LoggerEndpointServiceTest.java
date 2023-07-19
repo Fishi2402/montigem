@@ -4,9 +4,12 @@ import com.google.common.hash.Hashing;
 import de.monticore.generating.templateengine.reporting.reporter.StatisticsReporter;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import log_mc_jar.Log_MC_JARManagerImpl;
 import log_mc_jar.Log_MC_JARMock;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +33,14 @@ class LoggerEndpointServiceTest {
   }
   @BeforeEach
   void setUp() {
-    Log_MC_JARMock.init();
+    //Log_MC_JARMock.init();
+    TestDatabaseAccessManager.init();
+    Log_MC_JARManagerImpl.init();
+  }
+
+  @AfterEach
+  public void cleanup(){
+    TestDatabaseAccessManager.close();
   }
 
   @Test
