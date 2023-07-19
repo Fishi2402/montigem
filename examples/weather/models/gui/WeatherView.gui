@@ -20,7 +20,7 @@ page WeatherView(List<Forecast> forecasts) {
   @GemRow(colGap = "5px", height = "initial", components = [
     @GemCard(
       title = "Forecast data list",
-      component = @GemTable(
+      component = forecastsTable@GemTable(
         rows = forecasts,
         columns = [
           TableColumn("_temperature", "Temperature"),
