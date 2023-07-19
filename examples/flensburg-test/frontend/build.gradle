@@ -148,9 +148,7 @@ task genGUI2(type: UMLPGuiGenTask) {
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe2")
   domainModels = ["hardy.Flensburg"]
-  if(file("$project.buildDir/cd2gui/meta/guiCreateModels.txt").exists()) {
-    guiCreateModels = file("$project.buildDir/cd2gui/meta/guiCreateModels.txt").readLines()
-  }
+  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
 }
 
 task generateNPMAuth(type: NPMAuthCreate)
