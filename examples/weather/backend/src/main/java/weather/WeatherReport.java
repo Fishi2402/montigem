@@ -13,6 +13,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class WeatherReport {
@@ -47,7 +48,7 @@ public class WeatherReport {
 
   public JsonObject getWeatherData(City city) {
     try {
-      URL url = new URL(String.format(
+      URL url = new URL(String.format(Locale.ROOT,
           "https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m",
           city.getLatitude(),
           city.getLongitude()
