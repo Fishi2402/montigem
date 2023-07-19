@@ -64,7 +64,7 @@ public class LoggerEndpointService {
         .uuid(data.getStringMember("uuid"))
         .toolVersion(data.getStringMember("version"))
         .receivedTime(Instant.now())
-        .origin(InetAddress.getLocalHost())  // TODO
+        .origin(InetAddress.getLoopbackAddress())  // TODO
 
         .build()
         .get();
