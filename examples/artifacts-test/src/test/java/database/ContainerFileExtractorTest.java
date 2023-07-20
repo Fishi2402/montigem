@@ -61,7 +61,7 @@ public class ContainerFileExtractorTest extends GenAbstractNeo4jDBTest {
     rootArtifactDAO.executeBatchAddAssocsRootArtifact();
     directoryDAO.executeBatchAddAssocsDirectory();
     fileArtifactDAO.executeBatchAddAssocsFileArtifact();
-    
+
      */
 
     //System.out.println(watch.elapsed());
@@ -97,6 +97,7 @@ public class ContainerFileExtractorTest extends GenAbstractNeo4jDBTest {
 
     //System.out.println(watch.elapsed());
 
+    /*
     // Phase 2 insert all links
     rootArtifactDAO.bulkAddAssocsToBatchRootArtifact(BaseArtifactsTestManager.getRootArtifactList());
     //System.out.println(watch.elapsed());
@@ -107,7 +108,7 @@ public class ContainerFileExtractorTest extends GenAbstractNeo4jDBTest {
 
     rootArtifactDAO.executeBatchAddAssocsRootArtifact();
     directoryDAO.executeBatchAddAssocsDirectory();
-    fileArtifactDAO.executeBatchAddAssocsFileArtifact();
+    fileArtifactDAO.executeBatchAddAssocsFileArtifact();*/
 
     //System.out.println(watch.elapsed());
 
