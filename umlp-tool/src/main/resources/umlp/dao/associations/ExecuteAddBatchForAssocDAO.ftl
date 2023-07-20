@@ -1,18 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("association")}
-${cd4c.method("public void bulkAdd${association.getName()?cap_first}(Map<Long, List<Long>> ${association.getName()?cap_first}s)")}
+${cd4c.method("public void executeBatchAdd${association.getName()?cap_first}()")}
   ensureAdd${association.getName()?cap_first}Created();
   try {
-    add${association.getName()?cap_first}.clearBatch();
-    for (Map.Entry<Long, List<Long>> entry : ${association.getName()?cap_first}s.entrySet()) {
-      for (Long rightHandSide : entry.getValue()) {
-        add${association.getName()?cap_first}.clearParameters();
-        add${association.getName()?cap_first}.setLong(1, entry.getKey());
-        add${association.getName()?cap_first}.setLong(2, rightHandSide);
-        add${association.getName()?cap_first}.addBatch();
-      }
-    }
     add${association.getName()?cap_first}.executeBatch();
+    add${association.getName()?cap_first}.clearBatch();
   } catch (SQLException e){
     throw new RuntimeException(e);
   }
