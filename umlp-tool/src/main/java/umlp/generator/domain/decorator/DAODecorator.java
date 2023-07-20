@@ -283,6 +283,8 @@ public class DAODecorator extends AbstractDecorator {
         SQLSchemaGenerator.convertAssocName(assoc.getName()));
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddForAssocDAO", assoc);
     getCD4C().addMethod(daoClass, "umlp.dao.associations.BulkAddForAssocDAO", assoc);
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.BulkAddBatchForAssocDAO", assoc);
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.ExecuteAddBatchForAssocDAO", assoc);
   }
 
   protected void updateMethodForAssocDAO(ASTCDClass daoClass, String assocName, String startName, String endName) {
@@ -408,6 +410,10 @@ public class DAODecorator extends AbstractDecorator {
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
     getCD4C().addMethod(daoClass, "umlp.dao.BulkInsert", domainClass.getName(), cdName, attributes,
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+    getCD4C().addMethod(daoClass, "umlp.dao.BulkAddAssociationsToBatch", domainClass.getName(), cdName, attributes,
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+    getCD4C().addMethod(daoClass, "umlp.dao.BulkExecuteAssocBatches", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
   }
 
