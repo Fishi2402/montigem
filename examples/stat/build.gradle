@@ -20,7 +20,7 @@ bootBuildImage {
 
 jib {
     to {
-        image 'yolanv/jib-demo:gradle'
+        image 'umlp_statserver'
     }
 }
 

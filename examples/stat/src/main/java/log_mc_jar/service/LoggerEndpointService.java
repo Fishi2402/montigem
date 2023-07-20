@@ -36,6 +36,7 @@ public class LoggerEndpointService {
       value="/logger",
       consumes = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<String> log(@RequestBody String body, @RequestHeader("SHASH") String shash, @RequestHeader("STAT-TYPE") String statType) throws UnknownHostException {
+    System.out.println("Got a Request of Type: " + statType + "!\n\t" + body);
     if(!StatisticsHandler.isValidSHASH(shash, body)){
       System.err.println("Invalid SHASH");
       return ResponseEntity.ok("");
