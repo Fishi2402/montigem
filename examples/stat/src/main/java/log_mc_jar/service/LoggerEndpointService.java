@@ -37,20 +37,28 @@ public class LoggerEndpointService {
       consumes = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<String> log(@RequestBody String body, @RequestHeader("SHASH") String shash, @RequestHeader("STAT-TYPE") String statType) throws UnknownHostException {
     if(!StatisticsHandler.isValidSHASH(shash, body)){
-      System.out.println("invalid SHASH");
+      System.err.println("Invalid SHASH");
       return ResponseEntity.ok("");
     }
 
     JsonObject dataObj = JsonParser.parseJsonObject(body);
     switch (statType) {
+      case "PRE_UMLP_JAR_JSON":
+        log_UMLP_PRE_JAR_JSON(dataObj);
+        break;
       case "UMLP_JAR_JSON":
         log_UMLP_JAR_JSON(dataObj);
         break;
-      case "JAR_JSON": // TODO find out the exact string
-        //log_MC_JAR_JSON(dataObj);
+
+      case "PRE_MC_JAR_JSON":
+        log_MC_PRE_JAR_JSON(dataObj);
+        break;
+      case "MC_JAR_JSON":
+        log_MC_JAR_JSON(dataObj);
         break;
       default:
-        Log.error("0x3uhsukh34 Unkown Stat-Type: " + statType);
+        System.err.println("0x3uhsukh34 Unkown Stat-Type: " + statType);
+        // Log.error("0x3uhsukh34 Unkown Stat-Type: " + statType);
     }
     return ResponseEntity.ok("");
   }
