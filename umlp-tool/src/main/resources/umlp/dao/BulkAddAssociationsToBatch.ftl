@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs")}
-${cd4c.method("public void bulkInsertAssocs${typeName}(Collection<${typeName}> objectsToInsert)")}
+${cd4c.method("public void bulkAddAssocsToBatch${typeName}(Collection<${typeName}> objectsToInsert)")}
 // TODO replace this with Commands
 
   for(${typeName} o : objectsToInsert) {
@@ -13,16 +13,18 @@ ${cd4c.method("public void bulkInsertAssocs${typeName}(Collection<${typeName}> o
         <#else>
             ${assocSide.getName()?uncap_first}Map.put(o.getGemId(), iDs);
         </#if>
-    assoc${assoc.getName()?cap_first}DAO.bulkAdd${assoc.getName()?cap_first}(${assocSide.getName()?uncap_first}Map);
+    assoc${assoc.getName()?cap_first}DAO.bulkBatchAdd${assoc.getName()?cap_first}(${assocSide.getName()?uncap_first}Map);
 
   </#list>
   <#list gemAssocs as assocSide, assoc>
     if(o.get${assocSide.getName()?cap_first}Gem().getGemId() != -1){
+    HashMap<Long, List<Long>> ${assocSide.getName()?uncap_first}Map = new HashMap<>();
       <#if assocSide.isLeft()>
-        assoc${assoc.getName()?cap_first}DAO.add${assoc.getName()?cap_first}(o.get${assocSide.getName()?cap_first}Gem().getGemId(), o.getGemId(),0);
+        ${assocSide.getName()?uncap_first}Map.put(o.get${assocSide.getName()?cap_first}Gem().getGemId(), Arrays.asList(o.getGemId()));
       <#else>
-        assoc${assoc.getName()?cap_first}DAO.add${assoc.getName()?cap_first}(o.getGemId(), o.get${assocSide.getName()?cap_first}Gem().getGemId(),0);
+        ${assocSide.getName()?uncap_first}Map.put(o.getGemId(), Arrays.asList(o.get${assocSide.getName()?cap_first}Gem().getGemId()));
       </#if>
+      assoc${assoc.getName()?cap_first}DAO.bulkBatchAdd${assoc.getName()?cap_first}(${assocSide.getName()?uncap_first}Map);
     }
   </#list>
     }

@@ -48,6 +48,8 @@ public class DAONeo4jDecorator extends DAODecorator {
             assoc.getCDAssocDir().isDefinitiveNavigableRight());
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddForAssocDAO", assoc);
     getCD4C().addMethod(daoClass, "umlp.dao.associations.BulkAddForAssocDAO", assoc);
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.BulkAddBatchForAssocDAO", assoc);
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.ExecuteAddBatchForAssocDAO", assoc);
   }
 
   @Override
@@ -90,7 +92,7 @@ public class DAONeo4jDecorator extends DAODecorator {
   }
 
   @Override
-  protected void insertMethod(ASTCDClass daoClass, ASTCDClass domainClass,
+  protected void insertMethods(ASTCDClass daoClass, ASTCDClass domainClass,
                             Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
                             Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
     List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
@@ -102,6 +104,12 @@ public class DAONeo4jDecorator extends DAODecorator {
     getCD4C().addMethod(daoClass, "umlp.dao.InsertInitNeo4j",
         superTypeNamesInclSelf, attributes);
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+    getCD4C().addMethod(daoClass, "umlp.dao.BulkInsert", domainClass.getName(), cdName, attributes,
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+    getCD4C().addMethod(daoClass, "umlp.dao.BulkAddAssociationsToBatch", domainClass.getName(), cdName, attributes,
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+    getCD4C().addMethod(daoClass, "umlp.dao.BulkExecuteAssocBatches", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
   }
 

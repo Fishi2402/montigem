@@ -218,7 +218,7 @@ public class DAODecorator extends AbstractDecorator {
     selectMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
     selectAllIdsMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
     unpackMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
-    insertMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
+    insertMethods(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
     deleteMethod(daoClass, domainClass, nonDerivedAssocSideToAssoc);
     updateAttrMethod(daoClass, domainClass);
     updateOptionalAttrMethod(daoClass, domainClass);
@@ -396,7 +396,7 @@ public class DAODecorator extends AbstractDecorator {
         optMap, listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap);
   }
 
-  protected void insertMethod(ASTCDClass daoClass, ASTCDClass domainClass,
+  protected void insertMethods(ASTCDClass daoClass, ASTCDClass domainClass,
                             Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
                             Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
     List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
@@ -406,6 +406,8 @@ public class DAODecorator extends AbstractDecorator {
     getCD4C().addMethod(daoClass, "umlp.dao.InsertInit",SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)
         ,domainClass.getName(), attributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)).collect(Collectors.toList()));
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+    getCD4C().addMethod(daoClass, "umlp.dao.BulkInsert", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
   }
 
