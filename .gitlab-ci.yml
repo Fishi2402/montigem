@@ -110,4 +110,4 @@ buildNativeImageDemoContainer:
     - shell
     - docker
   script:
-    - "gradle :examples:native-image:bootBuildImage -P mavenPassword=$pass -P mavenUser=$user"
+    - "gradle :examples:native-image:bootBuildImage --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
