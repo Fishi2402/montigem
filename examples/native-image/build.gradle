@@ -16,7 +16,6 @@ repositories {
 }
 
 generateUmlpBackend {
-  hwcDir = file("src/main/java")
   useSpring.set(true)
 }
 
