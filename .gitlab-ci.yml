@@ -106,6 +106,5 @@ checkMDLinks:
 
 buildNativeImageDemoContainer:
   stage: deploy
-  image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-dind
   script:
     - gradle :examples:native-image:bootBuildImage
