@@ -106,5 +106,7 @@ checkMDLinks:
 
 buildNativeImageDemoContainer:
   stage: deploy
+  services:
+    - docker:18-dind
   script:
     - "gradle :examples:native-image:bootBuildImage --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
