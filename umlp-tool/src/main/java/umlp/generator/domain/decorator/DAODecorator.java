@@ -304,7 +304,7 @@ public class DAODecorator extends AbstractDecorator {
 
   // All methods for domain class daos
 
-  private void updateAndSelectListAttrMethods(ASTCDClass doaClass, ASTCDClass domainClass) {
+  protected void updateAndSelectListAttrMethods(ASTCDClass doaClass, ASTCDClass domainClass) {
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).forEach(attr -> {
               GenService.createType(attr);
@@ -325,7 +325,7 @@ public class DAODecorator extends AbstractDecorator {
                     GenService.getDBType(attr.getSymbol().getType())));
   }
 
-  private void updateOptionalAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
+  protected void updateOptionalAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).forEach(attr ->
             getCD4C().addMethod(doaClass, "umlp.dao.UpdateOptionalAttr", SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED), attr.getName(),

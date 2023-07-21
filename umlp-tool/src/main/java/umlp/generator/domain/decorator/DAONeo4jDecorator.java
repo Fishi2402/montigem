@@ -131,4 +131,27 @@ public class DAONeo4jDecorator extends DAODecorator {
             getCD4C().addMethod(doaClass, "umlp.dao.UpdateAttrNeo4j", domainClass.getName(), attr.getName(),
                     attr.printType(), GenService.getDBType(attr.getSymbol().getType())));;
   }
+
+  @Override
+  protected void updateOptionalAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
+    CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+        .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).forEach(attr ->
+            getCD4C().addMethod(doaClass, "umlp.dao.UpdateOptionalAttr", SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED), attr.getName(),
+                GenService.createType(attr).printType(), GenService.getDBType(attr.getSymbol().getType())));
+  }
+
+  @Override
+  protected void updateAndSelectListAttrMethods(ASTCDClass doaClass, ASTCDClass domainClass) {
+    CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+        .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).forEach(attr -> {
+              GenService.createType(attr);
+              String innerType = GenService.getInnerType(GenService.createType(attr));
+              String tableName = SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.PLAIN)+
+                  "$"+SQLSchemaGenerator.convertAttributeName(attr.getName(), SQLSchemaGenerator.AttributeType.PLAIN);
+              String dbType = GenService.getDBType(attr.getSymbol().getType());
+              getCD4C().addMethod(doaClass, "umlp.dao.UpdateListAttrNeo4j", tableName, attr, innerType, dbType);
+              getCD4C().addMethod(doaClass, "umlp.dao.SelectListAttr", tableName, attr, innerType, dbType);
+            }
+        );
+  }
 }
