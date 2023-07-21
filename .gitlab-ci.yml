@@ -102,10 +102,3 @@ checkMDLinks:
     - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
   only:
     - master
-
-
-buildNativeImageDemoContainer:
-  image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-native-image
-  stage: build
-  script:
-    - "gradle :examples:native-image:nativeBuild --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
