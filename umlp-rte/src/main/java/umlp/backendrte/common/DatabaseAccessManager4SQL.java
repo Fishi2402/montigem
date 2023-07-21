@@ -6,10 +6,8 @@ import de.se_rwth.commons.logging.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,16 +18,9 @@ import java.util.Properties;
 
 public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
 
-  public static final String JDBC_DRIVER = "jdbc_driver";
 
   public static void init(String[] args) {
   }
-
-  protected static String DB_URL;
-
-  protected static final String DATABASE_PROPERTIES = "database.properties";
-
-  protected static Properties databaseProperties;
 
   protected DatabaseAccessManager4SQL() {
   }
@@ -47,7 +38,7 @@ public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
     // If the server dies, some ids are "wasted"
     // could be done asynchronously at 90% ids used to remove wait
     executeStatement("UPDATE __internal_key_value__ SET value_bigint = value_bigint + 1 WHERE k = 'gemid';");
-    Optional<ResultSet> rsOpt = executeSQLQuery("SELECT value_bigint FROM __internal_key_value__ WHERE k = 'gemid';");
+    Optional<ResultSet> rsOpt = executeQuery("SELECT value_bigint FROM __internal_key_value__ WHERE k = 'gemid';");
     if(rsOpt.isEmpty()){
       throw new RuntimeException("Can not find gemid in database");
     }
@@ -90,7 +81,7 @@ public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
     boolean initialized = false;
 
     executeStatement("CREATE TABLE IF NOT EXISTS __internal_key_value__ (k VARCHAR, value_bigint BIGINT, value_varchar VARCHAR);");
-    Optional<ResultSet> res = executeSQLQuery("SELECT k, value_varchar from __internal_key_value__ WHERE k = 'initialized';");
+    Optional<ResultSet> res = executeQuery("SELECT k, value_varchar from __internal_key_value__ WHERE k = 'initialized';");
     if(res.isPresent()){
       ResultSet resultSet = res.get();
       try {
@@ -116,15 +107,7 @@ public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
     }
   }
 
-  public static Optional<ResultSet> executeSQLQuery(String sql) {
-    try {
-      Statement stmt = connection.createStatement();
-      return Optional.ofNullable(stmt.executeQuery(sql));
-    } catch (SQLException e) {
-      Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
-    }
-    return Optional.empty();
-  }
+
 
   public static void setUpWithProperties(Properties properties) {
     databaseProperties = properties;
@@ -135,7 +118,7 @@ public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
     databaseProperties = new Properties();
     ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-    try (InputStream is = loader.getResourceAsStream(DATABASE_PROPERTIES)) {
+    try (InputStream is = loader.getResourceAsStream(DATABASE_PROPERTIES_STD_FILE_NAME)) {
       databaseProperties.load(is);
     } catch (IOException e) {
       e.printStackTrace();
@@ -157,7 +140,7 @@ public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
     databaseProperties = new Properties();
     ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-    try (InputStream is = loader.getResourceAsStream(DATABASE_PROPERTIES)) {
+    try (InputStream is = loader.getResourceAsStream(DATABASE_PROPERTIES_STD_FILE_NAME)) {
       databaseProperties.load(is);
     } catch (IOException e) {
       e.printStackTrace();

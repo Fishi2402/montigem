@@ -4,10 +4,21 @@ import de.se_rwth.commons.logging.Log;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
+import java.util.Properties;
 
 public abstract class DatabaseAccessManager {
+
+  public static final String JDBC_DRIVER = "jdbc_driver";
+  protected static final String DATABASE_PROPERTIES_STD_FILE_NAME = "database.properties";
+
+
+  protected static String DB_URL;
+  protected static Properties databaseProperties;
+
 
   protected static DatabaseAccessManager instance;
   protected static Connection connection;
@@ -50,6 +61,16 @@ public abstract class DatabaseAccessManager {
     }catch (SQLException e){
       Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
     }
+  }
+
+  public static Optional<ResultSet> executeQuery(String sql) {
+    try {
+      Statement stmt = connection.createStatement();
+      return Optional.ofNullable(stmt.executeQuery(sql));
+    } catch (SQLException e) {
+      Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
+    }
+    return Optional.empty();
   }
 
   public static void setInstance(DatabaseAccessManager databaseAccessManager) {
