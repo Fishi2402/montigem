@@ -106,8 +106,8 @@ checkMDLinks:
 
 buildNativeImageDemoContainer:
   stage: deploy
-  image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-dind
-  services:
-    - docker:20.10.16-dind
+  tags:
+    - shell
+    - docker
   script:
     - gradle :examples:native-image:bootBuildImage
