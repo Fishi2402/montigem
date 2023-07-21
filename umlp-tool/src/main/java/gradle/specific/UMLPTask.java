@@ -78,63 +78,9 @@ public abstract class UMLPTask extends UMLPSingleFileTask {
     getUseSpring().convention(false);
   }
 
-
-  /**
-   * @param filePath Path of InputFile
-   * @return Arguments that can be used to start CLI-Tool
-   */
-  @Override
-  protected List<String> createArgList(Path filePath, Function<Path, String> handlePath) {
-    List<String> result = super.createArgList(filePath, handlePath);
-
-    if(this.getSymbolDir().isPresent()) {
-      result.add("-path");
-      result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
-    }
-
-    if(this.getModelDir().isPresent()) {
-      result.add("-modelPath");
-      result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
-    }
-
-    if(this.getSymbolOutDir().isPresent()) {
-      result.add("-s");
-      result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
-    }
-
-    if(this.getCdToGui().get()){
-      result.add("-" + UMLPToolOptions.CD2GUI.getCMD());
-    }
-
-    if(this.getForClient().get()){
-      result.add("-" + UMLPToolOptions.FOR_CLIENT.getCMD());
-    }
-
-    if(this.getUseSpring().get()){
-      result.add("-" + UMLPToolOptions.USE_SPRING.getCMD());
-    }
-
-    return result;
-  }
-
-
-  @Internal
-  @Override
-  public Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
-    Set<Provider<? extends FileSystemLocation>> result = new HashSet<>(super.getOtherInputDirectories());
-    result.add(getModelDir());
-    return result;
-  }
-
-  @Override
-  public boolean isInputFile(File f) {
-    return f.getName().endsWith(".umlp") || f.getName().endsWith(".gui");
-  }
-
   @Override
   protected void prepareRun(){
-    super.prepareRun();
-    System.err.println("Using <UMLPTask> is deprecated! The functionality will be removed after 20.07.2023!\n" +
+    throw new RuntimeException("Using <UMLPTask> is deprecated! The functionality will be removed after 20.07.2023!\n" +
         "Instead use these alternatives: \n" +
         "\t <UMLPBackendTask> to generate java backend\n" +
         "\t <UMLPCdToGuiTask> for cd2gui\n" +
