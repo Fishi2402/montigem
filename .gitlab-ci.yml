@@ -105,7 +105,9 @@ checkMDLinks:
 
 
 buildNativeImageDemoContainer:
-  stage: deploy
+  stage: build
+  variables:
+    DOCKER_HOST: "tcp://docker:2375"
   services:
     - docker:18-dind
   script:
