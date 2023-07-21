@@ -484,13 +484,13 @@ public class UMLPTool extends UMLPToolTOP {
         routesMap.values().forEach(astList->
         {
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
-          typeScriptGenerator.generateRoutingForPackages(astList);
+          String output=typeScriptGenerator.generateRoutingForPackages(astList);
+          Reporting.reportFileCreation(outDir+output);
         });
         GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
-        typeScriptGenerator.generateAppRouting(new ArrayList<>(routesMap.values()));
-
-
-
+        String output=typeScriptGenerator.generateAppRouting(new ArrayList<>(routesMap.values()));
+        Reporting.reportFileCreation(outDir+output);
+        Reporting.flush(null);
       }
     } catch (ParseException e) {
       printHelp(options);
