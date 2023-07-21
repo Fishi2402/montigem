@@ -106,5 +106,8 @@ checkMDLinks:
 
 buildNativeImageDemoContainer:
   stage: deploy
+  tags:
+    - shell
+    - docker
   script:
-    - gradle :examples:native-image:bootBuildImage
+    - "gradle :examples:native-image:bootBuildImage -P mavenPassword=$pass -P mavenUser=$user"
