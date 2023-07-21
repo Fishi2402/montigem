@@ -2,16 +2,12 @@ package umlp.backendrte.common;
 
 import de.se_rwth.commons.logging.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 
 public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
 
@@ -45,12 +41,10 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
     } catch (SQLException exception) {
       Log.error("0xadakfjjflsd: Could not create MetaNode necessary for GemId Counter.", exception);
     }
-
-
   }
 
 
-  // TODO improve perfomance
+  // TODO improve performance by bulk requesting of gemIds
   @Override
   protected long _getFreeGemId() {
     try {
@@ -64,31 +58,30 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
     throw new RuntimeException("Failed to get fresh Gem Id from DB.");
   }
 
-  public  static  void init () {
+  public static void init() {
     DatabaseAccessManager4Neo4j impl = new DatabaseAccessManager4Neo4j();
     DatabaseAccessManager.setInstance(impl);
     impl._setup();
   }
 
-  protected void loadDBPropertiesFromStandardFileLocation() {
-    databaseProperties = new Properties();
-    ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
-    try (InputStream is = loader.getResourceAsStream(DATABASE_PROPERTIES_STD_FILE_NAME)) {
-      databaseProperties.load(is);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    // Load Properties from Environment Variables
-    // Can be used to select a different DB on production server
-    // Environment Properties have priority!
-    // TODO: Workaround for #3358
-    for (Map.Entry<String, String> envVar : System.getenv().entrySet()) {
-      if(!envVar.getKey().equalsIgnoreCase("user")) {
-        databaseProperties.put(envVar.getKey(), envVar.getValue());
-      }
-    }
-
-    DB_URL = databaseProperties.getProperty("database_url");
+  public static void initBoltLocalhost(int port, String user, String password) {
+    DatabaseAccessManager4Neo4j impl = new DatabaseAccessManager4Neo4j();
+    DatabaseAccessManager.setInstance(impl);
+    impl._setuoBoltLocalhost(port, user, password);
   }
+
+  protected void _setuoBoltLocalhost(int port, String user, String password) {
+    try {
+      Class<?> c = Class.forName("org.neo4j.jdbc.bolt.BoltDriver");
+      DriverManager.registerDriver((Driver) c.getDeclaredConstructor().newInstance());
+
+      connection = DriverManager.getConnection("jdbc:neo4j:bolt://localhost:"+port+"/?flatten=1", user, password);
+      Log.warn("New DB Connection created");
+    } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException |
+             InvocationTargetException | NoSuchMethodException e) {
+      throw new RuntimeException(e);
+    }
+    createMetaNodeSingleton();
+  }
+
 }

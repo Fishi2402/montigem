@@ -12,6 +12,7 @@ import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import org.neo4j.driver.Driver;
 
 import java.nio.file.Paths;
+import java.sql.SQLException;
 
 import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
 
@@ -44,8 +45,8 @@ public abstract class GenAbstractNeo4jDBTest {
   }
 
   @AfterEach
-  public void cleanup(){
-    TestDatabaseAccessManager.close();
+  public void cleanup() throws SQLException {
+    TestDatabaseAccessManagerSQL.closeConnection();
   }
 
 
