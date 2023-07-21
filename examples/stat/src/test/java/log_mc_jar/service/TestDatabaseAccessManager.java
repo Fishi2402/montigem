@@ -3,40 +3,31 @@ package log_mc_jar.service;
 
 // GEN-T
 
-import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
-import org.h2.tools.Server;
-import umlp.backendrte.common.DatabaseAccessManager4SQL;
+import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
 
-import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Optional;
 
-public class TestDatabaseAccessManager extends DatabaseAccessManager4SQL {
+public class TestDatabaseAccessManager extends DatabaseAccessManager4Neo4j {
 
-  public static void init(){
-    instance = new TestDatabaseAccessManager();
+  public static void init () {
+    TestDatabaseAccessManager impl = new TestDatabaseAccessManager();
+    DatabaseAccessManager.setInstance(impl);
     setup();
   }
 
   @Override
   protected void _setup() {
     try {
-      DriverManager.registerDriver(new org.h2.Driver());
-      // In memory db
-      // DB_CLOSE_DELAY=0 -> In memory db is deleted after connection is closed
-      connection = DriverManager.getConnection("jdbc:h2:mem:test_flensburg;DB_CLOSE_DELAY=0");
-      String schemaFileName = "Log_MC_JAR.sql";
-      Optional<URL> optionalURL = FileReaderWriter.getResource(this.getClass().getClassLoader(), schemaFileName);
-      if(optionalURL.isEmpty()) {
-        Log.error("0xAAAAAA: Could not find schema "+schemaFileName+" for database.");
-      }
-      String schema = FileReaderWriter.readFromFile(optionalURL.get());
-      initSchema(schema);
+      DriverManager.registerDriver(new org.neo4j.jdbc.bolt.BoltDriver());
+      // Files for Neo4j DB can be found in target/temporaryNeo4jDB it is started in the GenAbstractDBTest
+      connection = DriverManager.getConnection("jdbc:neo4j:bolt://localhost:7688/?flatten=1", "neo4j", "");
     } catch (SQLException e) {
       Log.error("Error while initializing db", e);
     }
+    createMetaNodeSingleton();
   }
 
   protected static void close(){
@@ -49,16 +40,4 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager4SQL {
     }
   }
 
-  /*
-   * Will open the H2 web console that can be used to inspect the current DB state
-   * and BLOCK THE THREAD.
-   * To continue program execution press disconnect in the web console.
-   */
-  protected static void openWebServer() {
-    try {
-      Server.startWebServer(connection);
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
-  }
 }
