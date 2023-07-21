@@ -55,7 +55,7 @@ public abstract class BaseExtractor {
       if(fileTypeToFiles.containsKey(extension)) {
         fileTypeToFiles.get(extension).add(file);
       } else {
-        fileTypeToFiles.put(extension, new HashSet<>());
+        fileTypeToFiles.put(extension, new HashSet<RootAwareFile>(){{add(file);}});
       }
     }
   }

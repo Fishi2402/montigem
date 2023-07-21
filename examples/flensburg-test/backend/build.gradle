@@ -77,9 +77,12 @@ task runServer {
 
 task serializeGUI {
   dependsOn('generateUmlpBackend', 'unpackGUILibSymbols')
+  inputs.dir(file("${project.projectDir.parent}/models/stanley"))
+  outputs.dir(file("$project.buildDir/symbols/stanley"))
   doLast {
     def modelPathStr = "${project.projectDir.parent}/models"
     def modelPath = Paths.get(modelPathStr)
+
     fileTree(modelPathStr).matching {
       include "**/*.gui"
     }.each {
@@ -121,16 +124,14 @@ test {
 
 sourceSets {
   main {
-    // TODO MB
-    //java.srcDirs += [layout.buildDirectory.dir("testgui")]
-    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
-    // main.resources.srcDirs += generateUmlpBackend.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
+    java.srcDirs += [layout.buildDirectory.dir("testgui")]
+    java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
+    //main.resources.srcDirs += generateUmlpBackend.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
   }
   test {
     java {
-      exclude '**/gui/**'
+      //exclude '**/gui/**'
     }
   }
 }
-
 compileJava.dependsOn(generateUmlpBackend, genTestGUI)

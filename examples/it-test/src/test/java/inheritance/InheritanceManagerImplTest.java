@@ -5,10 +5,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -33,9 +36,10 @@ public class InheritanceManagerImplTest {
   public void init() throws IOException {
     InheritanceTestContext.clear();
     InheritanceManagerImpl.init();
+    DatabaseAccessManager4SQL.init();
     DatabaseAccessManager.executeStatement("DROP ALL OBJECTS");
     String schema = IOUtils.resourceToString("/Inheritance.sql", StandardCharsets.UTF_8);
-    assertTrue(DatabaseAccessManager.initSchema(schema));
+    assertTrue(DatabaseAccessManager4SQL.initSchema(schema));
   }
 
   @AfterEach
@@ -248,6 +252,41 @@ public class InheritanceManagerImplTest {
     assertEquals(l.getIField(), ((L) lCopy3).getIField());
     assertEquals(l.getJField(), ((L) lCopy3).getJField());
     assertEquals(l.getKField(), ((L) lCopy3).getKField());
+  }
+
+  @Test
+  public void testAssociationsBetweenSuperClasses() {
+    InheritanceManagerImpl4Test.init();
+
+    assertTrue(InheritanceManager.instance instanceof InheritanceManagerImpl4Test);
+
+    Q q = InheritanceManager.qBuilder().build().get();
+    R r = InheritanceManager.rBuilder().build().get();
+
+    M m = InheritanceManager.mBuilder().mandatoryQ(r).setQ(Set.of(q,r)).build().get();
+    N n = InheritanceManager.nBuilder().mandatoryQ(r).setQ(Set.of(q,r)).build().get();
+    P p = InheritanceManager.pBuilder().mandatoryQ(r).setQ(Set.of(q,r)).build().get();
+
+    ((InheritanceManagerImpl4Test) InheritanceManager.instance).clearCache();
+
+    // get Q an R from M, N and P
+    assertEquals(InheritanceManager.getMSure(m.getGemId()).sizeSetQs(), 2);
+    assertEquals(InheritanceManager.getMSure(n.getGemId()).sizeSetQs(), 2);
+    assertEquals(InheritanceManager.getMSure(p.getGemId()).sizeSetQs(), 2);
+
+    Q q1 = InheritanceManager.qBuilder().build().get();
+    R r1 = InheritanceManager.rBuilder().build().get();
+
+    m.addAllSetQs(Set.of(q1,r1));
+    n.addAllSetQs(Set.of(q1,r1));
+    p.addAllSetQs(Set.of(q1,r1));
+
+    ((InheritanceManagerImpl4Test) InheritanceManager.instance).clearCache();
+
+    // get Q an R from M, N and P
+    assertEquals(InheritanceManager.getMSure(m.getGemId()).sizeSetQs(), 4);
+    assertEquals(InheritanceManager.getMSure(n.getGemId()).sizeSetQs(), 4);
+    assertEquals(InheritanceManager.getMSure(p.getGemId()).sizeSetQs(), 4);
   }
 
 }

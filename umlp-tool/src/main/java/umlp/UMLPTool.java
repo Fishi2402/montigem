@@ -16,14 +16,17 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
+import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbolDeSer;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonBoolean;
 import de.monticore.symboltable.serialization.json.JsonElement;
@@ -41,6 +44,7 @@ import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
+import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIComponentsVisitor;
@@ -52,6 +56,7 @@ import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
+import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +68,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -73,6 +79,7 @@ import static umlp.UMLPToolOptions.CD2GUI;
 import static umlp.UMLPToolOptions.DEBUG;
 import static umlp.UMLPToolOptions.DOMAIN;
 import static umlp.UMLPToolOptions.FOR_CLIENT;
+import static umlp.UMLPToolOptions.GUIVariability;
 import static umlp.UMLPToolOptions.GUI_CREATE;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
@@ -210,10 +217,52 @@ public class UMLPTool extends UMLPToolTOP {
         runDefaultCoCos(ast);
         CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, false);
         guiTool.generateGUI();
-        // TODO AGe: cd2gui is supposed to specify which models are for object creation,
-        //  see GUI_CREATE
-
         Reporting.flush(ast);
+      }
+
+      else if(GUIVariability.isSelected(cmd)){
+        List<Path> inputs = Arrays.stream(cmd.getOptionValues(INPUT.getCMD())).map(Path::of).collect(Collectors.toList());
+
+        guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
+        Reporting.init(outDir.getPath(), reportDir.getPath(), guidsl_reportManagerFactory);
+        GUIDSLMill.init();
+        LinkedList<ASTGUICompilationUnit> baseASTs = new LinkedList<>();
+        LinkedList<ASTGUICompilationUnit> variationASTs = new LinkedList<>();
+
+        for(Path model : inputs){
+          String report_on = model.getFileName().toString().replace(".", "__");
+          Reporting.on(report_on);
+          ASTGUICompilationUnit parsedModel = parseGUI(model.toString());
+          Reporting.reportParseInputFile(model.toAbsolutePath(), report_on);
+
+          if(isGUIVariabilityFile(parsedModel)) variationASTs.add(parsedModel);
+          else baseASTs.add(parsedModel);
+        }
+
+        for(ASTGUICompilationUnit variationAST : variationASTs){
+          List<ASTGUICompilationUnit> adaptedAST = baseASTs.stream()
+              .filter(ast -> ast.getComponentName().equals(variationAST.getGUIComponentDeclaration().getGUIComponentAdaptation().getTarget()))
+              .collect(Collectors.toList());
+          if(adaptedAST.size() != 1){
+            Log.error("expected exactly one matching file to adapt with GUIVariability, but found multiple or none");
+          }
+          GUIVariabilityHandler deltaHandler = new GUIVariabilityHandler(adaptedAST.get(0));
+          variationAST.accept(deltaHandler.getTraverser());
+        }
+
+        for(ASTGUICompilationUnit productAST : baseASTs){
+          Reporting.on(productAST.getComponentName() + "__gui");
+          Path outputPath = outDir.toPath().resolve(        //file structure needs to reflect package declarations
+              productAST.getMCPackageDeclaration().getMCQualifiedName().toString()
+                  .replace(".","/")
+                  .concat("/" + productAST.getComponentName() + ".gui")
+          );
+          GUIDSLFullPrettyPrinter pp = new GUIDSLFullPrettyPrinter(new IndentPrinter(), true);
+          FileReaderWriter.storeInFile(outputPath, pp.prettyprint(productAST));
+
+          Reporting.reportFileCreation(outputPath.toString());
+          Reporting.flush(productAST);
+        }
       }
 
       else if (isUmlpFile(inputFile)) {
@@ -279,6 +328,7 @@ public class UMLPTool extends UMLPToolTOP {
 
         ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
         GeneratorSetup genSetup = new GeneratorSetup();
+        genSetup.setGlex(createGlex());
         // set output directory
         genSetup.setOutputDirectory(outDir);
 
@@ -363,7 +413,8 @@ public class UMLPTool extends UMLPToolTOP {
           // set template path
           genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
               .map(p -> p.toFile()).collect(Collectors.toList()));
-          genSetup.setGlex(new GlobalExtensionManagement());
+          GlobalExtensionManagement glex = createGlex();
+          genSetup.setGlex(glex);
 
           List<String> domainModels = new ArrayList<>();
           if (DOMAIN.isSelected(cmd)) {
@@ -456,6 +507,14 @@ public class UMLPTool extends UMLPToolTOP {
     }
   }
 
+  private static GlobalExtensionManagement createGlex() {
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    glex.setBeforeTemplate("cd2java.Class", AbstractDecorator.getOriginHookPoint());
+    glex.setBeforeTemplate("cd2java.Enum", AbstractDecorator.getOriginHookPoint());
+    glex.setBeforeTemplate("cd2java.Interface", AbstractDecorator.getOriginHookPoint());
+    return glex;
+  }
+
   protected  void storeSymbols (IGUIDSLArtifactScope scope,String path)
 
   {
@@ -523,6 +582,10 @@ public class UMLPTool extends UMLPToolTOP {
     return f.getName().endsWith(".gui");
   }
 
+  protected boolean isGUIVariabilityFile(ASTGUICompilationUnit compilationUnit){
+    return compilationUnit.getGUIComponentDeclaration().isPresentGUIComponentAdaptation();
+  }
+
   public static ASTGUICompilationUnit parseGUI(String model) {
     try {
       GUIDSLParser parser = new GUIDSLParser();
@@ -549,17 +612,17 @@ public class UMLPTool extends UMLPToolTOP {
     gs.addAdaptedTypeSymbolResolver(new Class2MCResolver());
     gs.setSymbolPath(modelPath);
     // gs.putSymbolDeSer("umlp._symboltable.UMLPDefSymbol", new UMLPDefSymbolDeSer());
-    gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new TypeSymbolDeSer());
-    gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol", new VariableSymbolDeSer());
-    gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new VariableSymbolDeSer());
-    FunctionSymbol navigateFunction = GUIDSLMill.functionSymbolBuilder()
+    gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new OOTypeSymbolDeSer());
+    gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol", new FieldSymbolDeSer());
+    gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new FieldSymbolDeSer());
+    FunctionSymbol navigateFunction = GUIDSLMill.methodSymbolBuilder()
         .setName("navigate")
         .setEnclosingScope(gs)
         .setSpannedScope(GUIDSLMill.scope())
         .setType(SymTypeExpressionFactory.createTypeObject(de.monticore.guidsl._symboltable.BuiltInTypes.EVENT.getName(), gs))
         .build();
     navigateFunction.getSpannedScope().add(
-        GUIDSLMill.variableSymbolBuilder()
+        GUIDSLMill.fieldSymbolBuilder()
             .setName("arg")
             .setType(SymTypeExpressionFactory.createTypeObject(de.monticore.guidsl._symboltable.BuiltInTypes.GUI_VIEW_ELEMENT.getName(), gs))
             .setEnclosingScope(navigateFunction.getSpannedScope())

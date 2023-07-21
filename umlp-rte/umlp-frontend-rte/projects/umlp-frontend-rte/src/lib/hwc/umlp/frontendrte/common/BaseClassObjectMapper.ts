@@ -1,12 +1,14 @@
 /* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
 import { Log } from '@umlp-rte/hwc/logging/Log';
-import {
-  BooleanDeSer, ByteDeSer,
-  CharacterDeSer, DoubleDeSer, FloatDeSer,
-  IntegerDeSer,
-  LongDeSer,
-  ShortDeSer, StringDeSer
-} from "@umlp-rte/target/common";
+import {BooleanDeSer} from "@umlp-rte/target/common/BooleanDeSer";
+import {ShortDeSer} from "@umlp-rte/target/common/ShortDeSer";
+import {CharacterDeSer} from "@umlp-rte/target/common/CharacterDeSer";
+import {LongDeSer} from "@umlp-rte/target/common/LongDeSer";
+import {IntegerDeSer} from "@umlp-rte/target/common/IntegerDeSer";
+import {ByteDeSer} from "@umlp-rte/target/common/ByteDeSer";
+import {FloatDeSer} from "@umlp-rte/target/common/FloatDeSer";
+import {DoubleDeSer} from "@umlp-rte/target/common/DoubleDeSer";
+import {StringDeSer} from "@umlp-rte/target/common/StringDeSer";
 import {LocalDateDeSer} from "@umlp-rte/hwc/deser";
 
 /**

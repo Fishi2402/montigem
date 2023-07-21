@@ -41,7 +41,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     origCD.getCDDefinition().getCDClassesList()
         .stream()
         .filter(cdclass -> !cdclass.getModifier().isDerived())
-        .forEach(cdClass -> astcdPackage.addCDElement(createAPI(origCD, cdName, cdClass)));
+        .forEach(cdClass -> astcdPackage.addCDElement(withOrigin(createAPI(origCD, cdName, cdClass))));
   }
 
   protected ASTCDElement createAPI(ASTCDCompilationUnit origCD, String cdName, ASTCDClass cdClass) {
@@ -184,6 +184,8 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     String type;
     if (GenService.isList(attr)) {
       type = attr.getMCType().printType();
+    } else if(GenService.isOptional(attr)) {
+      type = attr.getMCType().printType();
     } else {
       type = attr.getSymbol().getType().printFullName();
     }
@@ -229,6 +231,8 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     }
     String type;
     if (GenService.isList(assoc)) {
+      type = assoc.getMCQualifiedType().printType();
+    } else if(GenService.isOptional(assoc)) {
       type = assoc.getMCQualifiedType().printType();
     } else {
       type = assoc.getSymbol().getType().print();

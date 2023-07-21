@@ -11,6 +11,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -38,7 +39,7 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isDerived())
         .filter(c -> !c.getModifier().isAbstract())
-        .forEach(c -> astcdPackage.addCDElement(createClass(origCD, c)));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c))));
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
@@ -83,10 +84,16 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
                 getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+
                         a.getSymbol().getType().print());
               }
+              if (GenService.isInnerCDEnum(a.getSymbol().getType())) {
+                getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+
+                    (((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0)).print());
+              }
             });
 
     // Assoziationen
-    DAODecorator.getOppositeSideToAssociationMap(domainClass, origCD.getCDDefinition().getCDAssociationsList()).entrySet().stream()
+    DAODecorator.getOppositeSideToAssociationMap(domainClass).entrySet().stream()
+        // TODO @CBU, @AHe how to handle association inherited from superclass from imported CD?
+        .filter(e -> UMLPSymbolTables.getDiagramFor(e.getKey()).getCDDefinition().getName().equals(origCD.getCDDefinition().getName()))
         .filter(e -> !(e.getValue().getModifier().isDerived() || e.getValue().getModifier().isReadonly()))
         .forEach(e -> {
           ASTCDAssocSide a = e.getKey();

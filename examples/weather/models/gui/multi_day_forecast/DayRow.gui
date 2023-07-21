@@ -1,0 +1,58 @@
+package gui.multi_day_forecast;
+
+import Weather.Day;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+import basic.src.lib.gemtext.GemText;
+
+import gui.common.WeatherStateIcon;
+import gui.common.ShortFormDateRenderer;
+import gui.atomic.range_with_gradient.RangeWithGradient;
+
+component DayRow(
+  Day day,
+  boolean today,
+  double groupMinTemp,
+  double groupMaxTemp
+){
+  @GemRow(
+    components = [
+      @GemRow(
+        width="3em",
+        height="1em",
+        component = @ShortFormDateRenderer(day = day)
+      ),
+      @GemRow(
+        width="1em",
+        height="1em",
+        component = @WeatherStateIcon(state = day.getWeatherState())
+      ),
+      @GemRow(
+        width="2em",
+        height="1em",
+        component = @GemText(value = day.getMinimumTemperature())
+      ),
+      @GemRow(
+        width="105px",
+        height="10px",
+        component = @RangeWithGradient(
+                            width="100px",
+                            height="5px",
+                            startPercentage=((day.getMinimumTemperature() - groupMinTemp)/(groupMaxTemp - groupMinTemp)) * 100, // TODO: hardcoded
+                            endPercentage=((day.getMaximumTemperature() - groupMinTemp)/(groupMaxTemp - groupMinTemp)) * 100,
+                            minColor="green",
+                            middleColor="yellow",
+                            maxColor="red",
+                            backgroundColor="blue"
+                          )
+      ),
+      @GemRow(
+        width="2em",
+        height="1em",
+        component = @GemText(value = day.getMaximumTemperature())
+      )
+    ]
+  );
+}

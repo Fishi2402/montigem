@@ -92,9 +92,8 @@ jsweet {
 // ------------------------ jsweet end ------------------------
 
 // TODO AGe: don't know if that is needed
-task generateCDTOGUI(type: UMLPTask) {
+task generateCDTOGUI(type: UMLPCdToGuiTask) {
   input = file("../models/hardy")
-  cdToGui = true
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
 
@@ -120,40 +119,19 @@ task serializeCD {
   }
 }
 
-task serializeGUI {
-  dependsOn('serializeCD')
-  doLast {
-    def modelPathStr = "${project.projectDir.parent}/models"
-    def modelPath = Paths.get(modelPathStr)
-    fileTree(modelPathStr).matching {
-      include "**/*.gui"
-    }.each {
-      def path = it.path
-      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
-      javaexec {
-        mainClass = 'de.monticore.guidsl.GUIDSLTool'
-        classpath = configurations.guiParser
-        args "-i", path,
-            "-s", "${symPath}/${relativeModelPathStr}sym",
-            "-path", "${symPath}"
-      }
-    }
-  }
-}
-
 task unpackGUILibSymbols(type: Copy) {
   from zipTree(configurations.guiLib.asPath)
   into "${symPath}"
 }
 
-task genDomain(type: UMLPTask) {
+task genDomain(type: UMLPFrontendTask) {
   input = file("../models/hardy/Flensburg.umlp")
   outputDir = file("$project.buildDir/appdomain")
-  forClient = true
+  hwcDir = file("$projectDir/src/app")
 }
 
 task genGUI(type: UMLPGuiGenTask) {
-  dependsOn('serializeGUI')
+  dependsOn('serializeCD')
   input = file("../models")
   outputDir = file("$project.buildDir/appgui")
   hwcDir = file("$projectDir/src/app")
@@ -161,9 +139,6 @@ task genGUI(type: UMLPGuiGenTask) {
   symbolDir = file(symPath)
   domainModels = ["hardy.Flensburg"]
   guiCreateModels = ["stanley.gui.AccountCreate"]
-
-  debug = true
-  outputs.upToDateWhen { false }
 }
 
 task genGUI2(type: UMLPGuiGenTask) {
@@ -173,15 +148,25 @@ task genGUI2(type: UMLPGuiGenTask) {
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe2")
   domainModels = ["hardy.Flensburg"]
+  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
 }
 
 task generateNPMAuth(type: NPMAuthCreate)
 
+/*
 yarn_install.dependsOn(generateNPMAuth, genGUI)
 yarn_upgrade.dependsOn(yarn_install)
+/**/
+npm_install.dependsOn(generateNPMAuth, genGUI)
+npm_update.dependsOn(npm_install)
 
+/*
 task buildApp(type: YarnTask) {
   dependsOn('genDomain', yarn_upgrade)
+/**/
+task buildApp(type: NpxTask) {
+  dependsOn('genDomain', npm_install)
+  command = "ng"
   args = ["build"]
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")
@@ -189,8 +174,13 @@ task buildApp(type: YarnTask) {
   outputs.dir("${project.buildDir}/dist")
 }
 
+/*
 task testApp(type: YarnTask) {
   dependsOn('genDomain', yarn_upgrade)
+/**/
+task testApp(type: NpxTask) {
+  dependsOn('genDomain', npm_install)
+  command = "ng"
   args = ["test"]
   inputs.dir("src")
   inputs.dir("node_modules")
@@ -198,9 +188,15 @@ task testApp(type: YarnTask) {
   outputs.upToDateWhen { true }
 }
 
+/*
 task runApp(type: YarnTask) {
   dependsOn('genDomain', yarn_upgrade)
-  args = ["start"]
+/**/
+task runApp(type: NpxTask) {
+  dependsOn('genDomain', npm_install)
+  command = "ng"
+  args = ["serve"]
+  // args = ["start"]
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")
   inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json")

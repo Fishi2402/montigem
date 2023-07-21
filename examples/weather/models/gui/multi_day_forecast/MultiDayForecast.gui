@@ -1,0 +1,29 @@
+package gui.multi_day_forecast;
+
+import Weather.Day;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+import basic.src.lib.gemtext.GemText;
+
+import gui.multi_day_forecast.DayRow;
+
+component MultiDayForecast(List<Day> days){
+  @GemCard(
+    title = "7-Day Forecast",
+    component =
+    @GemColumn(
+      components = [
+        @iterate(Day day : days){
+          @DayRow(
+            day = day,
+            today = false, // TODO: hardcoded
+            groupMinTemp = 1, // TODO: hardcoded, TODO: 0 does not work bc of null check
+            groupMaxTemp = 40 // TODO: hardcoded
+            );
+        }
+      ]
+    )
+  );
+}

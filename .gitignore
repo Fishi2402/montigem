@@ -12,6 +12,7 @@ build/
 gradlew
 gradlew.bat
 .npmrc
+umlp-tool/gradle
 
 node_modules/
 .jsweet/

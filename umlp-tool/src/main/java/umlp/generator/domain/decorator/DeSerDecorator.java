@@ -45,7 +45,7 @@ public class DeSerDecorator extends DomainClassDecorator {
         .stream()
         .filter(cdclass -> !cdclass.getModifier().isDerived())
         .filter(cdclass -> !cdclass.getModifier().isAbstract())
-        .forEach(cdClass -> astcdPackage.addCDElement(createDeSer(origCD, cdName, cdClass)));
+        .forEach(cdClass -> astcdPackage.addCDElement(withOrigin(createDeSer(origCD, cdName, cdClass))));
   }
 
   protected ASTCDElement createDeSer(ASTCDCompilationUnit origCD, String cdName, ASTCDClass cdClass) {
@@ -56,8 +56,6 @@ public class DeSerDecorator extends DomainClassDecorator {
         .setModifier(CDModifier.PUBLIC.build())
         .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("JsonDeSer<" + cdClass.getName() + ">"))
         .build();
-
-    addImports(cdClass, deSer);
 
     // TODO: also use for other templates!
     List<ASTCDAttribute> attributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
@@ -91,6 +89,9 @@ public class DeSerDecorator extends DomainClassDecorator {
     getCD4C().addMethod(deSer, getFromJsonTemplate(), originalClassName);
 
     addDeSerAddons(deSer, cdClass);
+
+    addImports(cdClass, deSer);
+    assocs.forEach(assocSide -> addCorrectMangerImportForTargetType(origCD.getCDDefinition(), deSer, assocSide.getSymbol().getType()));
 
     return deSer;
   }
@@ -166,7 +167,7 @@ public class DeSerDecorator extends DomainClassDecorator {
       getCD4C().addMethod(
           deSer,
           getDeserializeGemFieldTemplate(),
-          cdName,
+          getCorrectManager(attr),
           originalClassName,
           attr.getName(),
           attr.getSymbol().getType().print());

@@ -9,7 +9,7 @@ ${cd4c.method("public void buildJson(${command} command, any printer)")}
 <#if useDeSer>
   printer["${attrName}"] = ${objectMapperName}.serialize(command.${getterName}(), "${type}"));
 <#else>
-  printer["${attrName}"] = command.${getterName}()<#if isCDEnum>.name()</#if>;
+  printer["${attrName}"] = command.${getterName}()<#if isCDEnum>.toString()</#if>;
 </#if>
   printer["indexInList"] = command.getIndexInList();
 </#if>

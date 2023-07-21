@@ -33,8 +33,9 @@ page PersonEdit(Person p) {
           // show and edit the nickname
           @GemTextInput(entry = p.nickname),
 
+          // TODO AGe: superclass attr trap
           // show and edit the age as number
-          @GemTextInput(entry = p.age),
+          @GemTextInput(inputType = "number", entry = p.age),
 
           // Button mit Text "Decrease", und einer handgeschriebenen Aktion.
           // Eine Methode, die auf der Rechten Seite der Zuweisung steht, wird
@@ -42,7 +43,7 @@ page PersonEdit(Person p) {
           // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "PersonEditGUI.java".
           // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
           // deswegen wird eine Methode explizit importiert und aufgerufen
-          @GemButton(label = "Decrease"/*, leftClick = decreaseAge*/),
+          @GemButton(label = "Decrease", leftClick = decreaseAge),
 
           // Button mit Text "Ok" und Navigation auf eine andere Seite
           // (und die Logik dafür ist generiert und verfügbar)
@@ -65,7 +66,7 @@ page PersonEdit(Person p) {
     title = "Edit Person",
     content = @GemColumn(contents = [
       @GemTextInput(value = p.nickname),
-      @GemNumberInput(value = p.age),
+      @GemTextInput(inputType = "number", entry = p.age),
       @GemButton(text = "Back", leftClick = navigateBack),
     ])
   );

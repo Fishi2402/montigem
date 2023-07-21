@@ -1,0 +1,52 @@
+/* (c) https://github.com/MontiCore/monticore */
+classdiagram Weather {
+  // Singleton?
+  class App;
+
+  class City {
+    String name;
+    double longitude;
+    double latitude;
+  }
+
+  class Day {
+    java.time.LocalDate date;
+    /double minimumTemperature;
+    /double maximumTemperature;
+    /WeatherState weatherState;
+  }
+
+  / class NextDays {
+    double minimumTemperature;
+    double maximumTemperature;
+  }
+
+  association [0..1] NextDays -> (containedDays) Day [*];
+
+  association [*] Day -> City [1];
+  association [0..1] Day -> (dailyForecasts) Forecast [*];
+
+  class Forecast {
+    // java.time.LocalDateTime date;
+    java.time.LocalDate date;
+
+    Double longitude;
+    Double latitude;
+
+    Double temperature;
+    Double windspeed;
+    int realtiveHumidity;
+  }
+
+  enum WeatherState {
+    CLOUDY,
+    SUNNY,
+    RAINY,
+    STORM;
+  }
+
+  association favoriteCities [1] App -> (favorite) City [*];
+  association weatherPerCity [1] City -> Forecast [*];
+  association [*] Forecast -> WeatherState [1];
+}
+

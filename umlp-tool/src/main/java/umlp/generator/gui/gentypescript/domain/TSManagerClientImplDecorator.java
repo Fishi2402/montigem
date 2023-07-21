@@ -3,19 +3,13 @@
 package umlp.generator.gui.gentypescript.domain;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.StringTransformations;
-import umlp.UMLPMill;
-import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
@@ -26,14 +20,9 @@ import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator;
 import umlp.generator.util.PathUtil;
-import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.GemListAssocDecorator.getName;
 
 public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
@@ -78,14 +67,18 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
       getCD4C().addImport(clazz, this.astcdPackage + "."
-          + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+          + c.getName());
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
       getCD4C().addImport(clazz, this.astcdPackage + "."
-          + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+          + c.getName());
     }
 
     return clazz;
+  }
+
+  protected String getClearCacheTemplate() {
+    return "umlp.gui2ts.managerclientimpl.TSClearCache";
   }
 
   @Override

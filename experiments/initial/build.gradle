@@ -24,7 +24,7 @@ compileJava.onlyIf { project.hasProperty('testCompile') }
   // UMLP-Tool currently doesn't generate valid java code, so the compilation is not enabled by default
   // You can stat gradle with "gradle assemble -PtestCompile" to test the compilation of the generated code.
 
-task generateJava(type: UMLPTask) {
+task generateJava(type: UMLPBackendTask) {
   group = "umlP"
   input = files("models/B.umlp", "models/A.umlp")
 
@@ -57,7 +57,7 @@ task copyHWCDir(type: Copy) {
 }
 
 
-task generateJava_second_run(type: UMLPTask) {
+task generateJava_second_run(type: UMLPBackendTask) {
   dependsOn copyInputDir
   dependsOn copyHWCDir
 

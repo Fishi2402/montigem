@@ -7,7 +7,7 @@ ${tc.signature("args")}
 <#assign iterable = genHelper.getIteratorIterable(ast)>
 -->
 <#assign itemName = genHelper.getShortIteratorItemName(ast)>
-<#assign iterable = genHelper.getShortIteratorIterable(ast)>
+<#assign iterable = genHelper.getShortIteratorIterable(ast, args)>
 <#assign counterName = genHelper.getIteratorCounterName(ast)>
 <#assign contentList = ast.getGUIBlock().getGUIBlockContentList()>
 <#assign isTpl = genHelper.isNgTemplate(ast.getId().getName())>

@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import javax.annotation.PreDestroy;
 import java.net.URL;
@@ -26,13 +27,15 @@ public class StatServerApplication {
   public static void main(String[] args) throws SQLException {
     SpringApplication.run(StatServerApplication.class, args);
 
-    Log_MC_JARManagerImpl.init();
     Optional<URL> optionalURL = FileReaderWriter.getResource(StatServerApplication.class.getClassLoader(), "Log_MC_JAR.sql");
     if(optionalURL.isEmpty()) {
       Log.error("0xAAAAAA Could not find schema for database.");
     }
     String schema = FileReaderWriter.readFromFile(optionalURL.get());
-    DatabaseAccessManager.initSchema(schema);
+    DatabaseAccessManager4SQL.init();
+    DatabaseAccessManager4SQL.initSchema(schema);
+
+    Log_MC_JARManagerImpl.init();
 
     // Allow External Access to H2 Database
     // Connect via "URL-Only" to "jdbc:h2:tcp://localhost/mem:umlpdb"

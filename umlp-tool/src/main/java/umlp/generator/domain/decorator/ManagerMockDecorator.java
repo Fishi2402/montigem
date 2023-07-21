@@ -37,7 +37,7 @@ public class ManagerMockDecorator extends AbstractDecorator {
 
   public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    astcdPackage.addCDElement(createClass(origCD));
+    astcdPackage.addCDElement(withOrigin(createClass(origCD)));
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
@@ -58,6 +58,12 @@ public class ManagerMockDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managermock.DoGetFreeGemId");
     getCD4C().addMethod(managerClass, "umlp.managermock.ErrorNotificationScope");
     getCD4C().addMethod(managerClass, "umlp.managermock.SecretlyAdaptNextGemId");
+
+    List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
+        .collect(Collectors.toList());
+    getCD4C().addMethod(managerClass, "umlp.managermock.ClearCache", concreteDomainClasses);
+
 
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
             .forEach(c -> addClassElements(origCD, c, managerClass, name));

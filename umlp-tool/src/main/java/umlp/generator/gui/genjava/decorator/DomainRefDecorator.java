@@ -21,7 +21,6 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedNameBuilder;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.Joiners;
@@ -32,7 +31,6 @@ import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
-import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -63,7 +61,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
     // class
     decoratedClass = createClass(guiAst);
-    astcdPackage.addCDElement(decoratedClass);
+    astcdPackage.addCDElement(withOrigin(decoratedClass));
 
     // imports
     boolean addedManager = false;
@@ -74,19 +72,22 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
           addManagerImport(decoratedClass, util.gui2tsManagerImport(guiAst.getComponentName()));
           addedManager = true;
         }
+        String qName = i.getQName();
+        String importStr = Joiners.DOT.join(Names.getQualifier(qName).toLowerCase(), Names.getSimpleName(qName));
         // add builder import
         if (util.isCreateModel(guiAst.getComponentQName()) && util.isDomainImport(i)) {
-          getCD4C().addImport(decoratedClass, i.getQName() + BuilderDecorator.BUILDER_SUFFIX);
+          getCD4C().addImport(decoratedClass, importStr + BuilderDecorator.BUILDER_SUFFIX);
+        } else if (util.isDomainImport(i)) {
+          getCD4C().addImport(decoratedClass, importStr);
         } else {
-          String qName = i.getQName();
-          getCD4C().addImport(decoratedClass,
-              Joiners.DOT.join(Names.getQualifier(qName).toLowerCase(), Names.getSimpleName(qName)));
+          getCD4C().addImport(decoratedClass, qName);
         }
       }
     }
   }
 
   protected void addManagerImport(ASTCDClass clazz, String manager) {
+    getCD4C().addImport(clazz, manager);
   }
 
   protected String getBuildTemplate() {
@@ -198,7 +199,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
           addAnnotation(cdAttr);
           domainAttributes.add(cdAttr);
 
-          if (util.getMainDomainModelSimpleName().isPresent()) {
+          if (util.getMainDomainModelSimpleName().isPresent() && !util.isEnumType(p.getSymbol().getType())) {
             // TODO AGe: body of init method currently uses different hooks, improve
             hps.add(new TemplateHookPoint(
                 getInitDomainTemplate(),
@@ -263,7 +264,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   protected void addBuilderConstructor(
       ASTCDClass clazz, List<ASTCDAttribute> domainAttributes, String componentName
   ) {
-    Optional<String> domainQName = util.getMainDomainModelQName();
+    Optional<String> domainQName = util.getMainDomainModelSimpleName();
     if (domainQName.isPresent()) {
       String className = clazz.getName();
       getCD4C().addConstructor(clazz, getConstructorWithBuilderTemplate(),

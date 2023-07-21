@@ -34,13 +34,13 @@ task mergeUMLPModels(type: UMLPMergeTask){
    // Other way to define input: add whole directory, and use regex to include/exclude files
     source = layout.projectDirectory.dir("models/")
     // includes = ["**.umlp"]
-    excludes = ["**.gui"]
+    excludes = ["**.gui", "**.ocl"]
 
   // Where should the merged result be stored?
   outputFile = layout.buildDirectory.file("FunctionsStructure.umlp")  // buildDirectory = "build/"
 }
 
-task generateJavaCode(type: UMLPTask) {
+task generateJavaCode(type: UMLPBackendTask) {
   input = mergeUMLPModels.outputFile  // when the input is defined like this, gradle automatically runs the task "mergeUMLPModels" before this task
 
   // Other way to define inputs:

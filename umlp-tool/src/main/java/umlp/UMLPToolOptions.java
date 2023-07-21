@@ -12,6 +12,8 @@ public enum UMLPToolOptions {
 
   CD2GUI("cdt", "cdtogui", "runs cd2gui to generate gui files from the input"),
 
+  GUIVariability("gv", "guivariability", "Alterates guiFiles from the gp options with the guivariability files there and writes them to the outDir"),
+
   // with one arg
   INPUT("i", "input", "Reads the source file (mandatory) and parses the contents", "file"),
   SYMTAB("s", "symboltable", "Serializes the symbol table of the given artifact.", "file", true),

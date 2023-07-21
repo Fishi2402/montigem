@@ -93,11 +93,10 @@ task generateAngularApp(type: NpxTask) {
 }
 /**/
 
-task genTS(type: UMLPTask) {
+task genTS(type: UMLPFrontendTask) {
   input = file("../models/hardy")
-  outputDir = file("$project.buildDir/app")
+  outputDir = file("$project.buildDir/app/genTS")  // Output Dirs must be disjoint!
   hwcDir = file("$projectDir/src/app")
-  forClient = true
 
   /*
   debug = true
@@ -125,28 +124,24 @@ task serializeUMLP {
 }
 
 task copyGUISymbols(type: Copy) {
-  copy {
     from zipTree(configurations.symbol.asPath)
     into "$project.buildDir/symbols"
-  }
 }
 
+/* Commented out because run-behaviour is flakey. Terminates with error: "[ERROR] 0xGUI012 targeted GUI component 'cd2gui.models.AddressDetails' was not imported"
 task generateAll(type: UMLPGuiGenTask) {
   dependsOn(serializeUMLP)
   dependsOn(copyGUISymbols)
   input = file("../models")
-  outputDir = file("$project.buildDir/app")
+  outputDir = file("$project.buildDir/app/generateAll")
   hwcDir = file("$projectDir/src/app")
   modelDir = layout.projectDirectory.dir("../models")
-  symbolOutDir = layout.buildDirectory.dir("symbols")
+  symbolDir = layout.buildDirectory.dir("symbols")
   domainModels = ["hardy.Flensburg"]
   guiCreateModels = ["stanley.personcreate.PersonCreate", "stanley.gui.AccountCreate"]
 
   // moreArgs = ['-s', 'someArg']  // mehr CLI Argumente (nur zum debugging / testing!)
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
-}
+} */
 
 task iVerbose(type: NpmTask) {
   // install the express package only

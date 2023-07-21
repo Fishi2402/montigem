@@ -25,11 +25,7 @@ public class ContainerFileExtractor extends BaseExtractor {
 
   private RootArtifact defaultRoot;
 
-  BaseArtifactsTestManager manager;
-
-  public ContainerFileExtractor(BaseArtifactsTestManager manager) {
-    this.manager = manager;
-  }
+  public ContainerFileExtractor() { }
 
   /**
    * This method does the extraction for roots, directories and fileartifacts i.e., creating their object representations and
@@ -39,7 +35,7 @@ public class ContainerFileExtractor extends BaseExtractor {
    */
   @Override
   public Set<GemIdentifiable> doExtract(Map<String, Collection<RootAwareFile>> filetype2Files) {
-    java.util.Set<GemIdentifiable> runtimes = new HashSet<>();
+    Set<GemIdentifiable> runtimes = new HashSet<>();
 
     roots = createRoots(filetype2Files);
     runtimes.addAll(roots);
@@ -55,7 +51,13 @@ public class ContainerFileExtractor extends BaseExtractor {
   }
 
   private void fillAbsolutePathToArtifactMap(Map<String, Artifact> stringArtifactMap, List<Artifact> artifacts) {
-    artifacts.forEach(a -> stringArtifactMap.put(a.getRoot().getFullName()+"/"+a.getFullName(), a));
+    artifacts.forEach(a -> {
+      if(a.getFullName().equals(a.getRoot().getFullName())) {
+        stringArtifactMap.put(a.getFullName(), a);
+      } else {
+        stringArtifactMap.put(a.getRoot().getFullName()+"/"+a.getFullName(), a);
+      }
+    });
   }
 
   private List<FileArtifact> getAllFullyBuiltFileArtifacts(List<Artifact> artifacts) {
@@ -63,28 +65,21 @@ public class ContainerFileExtractor extends BaseExtractor {
   }
 
   private List<Directory> connectEveryDirectoryToItsSubArtifacts(Map<String, Collection<RootAwareFile>> filetype2Files) {
-    List<Directory> connectedDirectories = new ArrayList<>();
-
-    if(filetype2Files.get(DIRECTORY_FILE_TYPE) != null) {
-      return connectedDirectories;
+     if(!filetype2Files.containsKey(DIRECTORY_FILE_TYPE)) {
+      return new ArrayList<>();
     }
     Collection<RootAwareFile> directorySystemRepresentations = filetype2Files.get(DIRECTORY_FILE_TYPE);
 
-    HashMap<Directory, List<File>> directoriesToSubArtifactsInSystemRepresentation =
-        getDirectoryObjectToSubSystemFiles(directorySystemRepresentations);
-
-    directoriesToSubArtifactsInSystemRepresentation.entrySet().forEach(
-        e -> connectedDirectories.add(connectDirectoryToSubArtifactObjects(e)));
-
-    return connectedDirectories;
+    connectDirectoryObjectToSubSystemFiles(directorySystemRepresentations);
+    return BaseArtifactsTestManager.getDirectoryList();
   }
 
-  private HashMap<Directory, List<File>> getDirectoryObjectToSubSystemFiles(Collection<RootAwareFile> directoriesSystemRepresentation) {
-    HashMap<Directory, List<File>> directoriesToSubArtifactsInSystemRepresentation = new HashMap();
+  private void connectDirectoryObjectToSubSystemFiles(Collection<RootAwareFile> directoriesSystemRepresentation) {
 
-    directoriesSystemRepresentation.forEach(dir -> directoriesToSubArtifactsInSystemRepresentation.put(
-        getDirectoryOfFile(dir), Arrays.stream(dir.listFiles()).collect(Collectors.toList())));
-    return directoriesToSubArtifactsInSystemRepresentation;
+    directoriesSystemRepresentation.forEach(dir ->
+        getDirectoryOfFile(dir).addAllContainss(
+            Arrays.stream(Optional.ofNullable(dir.listFiles()).orElse(new File[0]))
+                .map(f -> absolutePathToArtifact.get(ExtractorUtils.transformWindowsPathToLinuxStyle(f.getAbsolutePath()))).collect(Collectors.toList())));
   }
 
   private Directory getDirectoryOfFile(File f) {
@@ -152,7 +147,7 @@ public class ContainerFileExtractor extends BaseExtractor {
     RootArtifactBuilder rootBuilder = BaseArtifactsTestManager.rootArtifactBuilder();
 
     RootArtifact rootArtifact =  rootBuilder.isExternal(f.isExternal())
-        .fullName(ExtractorUtils.transformWindowsPathToLinuxStyle(f.getAbsolutePath()))
+        .fullName(ExtractorUtils.normalizePath(ExtractorUtils.transformWindowsPathToLinuxStyle(f.getAbsolutePath())))
         .name(FilenameUtils.getBaseName(f.getAbsolutePath()))
         .build().orElse(null);
     if(rootArtifact == null) {

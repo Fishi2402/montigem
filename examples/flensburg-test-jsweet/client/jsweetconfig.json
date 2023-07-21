@@ -8,12 +8,20 @@
     "include": [
       "hardy.flensburg.commands.**.doRun*",
       "hardy.flensburg.requests.**.doRun*",
-      "hardy.flensburg.FlensburgManager._doGet*Sure*",
-      "hardy.flensburg.FlensburgManagerImpl._doGet*Sure*",
-      "hardy.flensburg.FlensburgManagerClientImpl._doGet*Sure*",
-      "hardy.flensburg.FlensburgManager._do*Opt*",
-      "hardy.flensburg.FlensburgManagerImpl._do*Opt*",
-      "hardy.flensburg.FlensburgManagerClientImpl._do*Opt*"
+      "hardy.flensburg.FlensburgManager*._doGet*Sure*",
+      "hardy.flensburg.FlensburgManager*._do*Opt*",
+      "hardy.flensburg.FlensburgManager*._doGet*"
+    ]
+  },
+  "@Erased": {
+    "include": [
+      "hardy.flensburg.FlensburgDummyProvider",
+      "hardy.flensburg.*DAO",
+      "hardy.flensburg.*DbObserver",
+      "hardy.flensburg.FlensburgManagerImpl",
+      "hardy.flensburg.FlensburgMock",
+      "hardy.flensburg.FlensburgDummyProvider",
+      "hardy.flensburg.FlensburgTestContext"
     ]
   }
 }

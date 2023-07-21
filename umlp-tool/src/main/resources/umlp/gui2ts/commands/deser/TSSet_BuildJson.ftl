@@ -9,6 +9,6 @@ ${cd4c.method("public void buildJson(${command} command, any jsonPrinter)")}
 <#if useDeSer>
   jsonPrinter["${attrName}"] = ${objectMapperName}.serialize(command.${getterName}(), "${type}");
 <#else>
-  jsonPrinter["${attrName}"] = command.${getterName}()<#if isCDEnum>.name()</#if>;
+  jsonPrinter["${attrName}"] = command.${getterName}()<#if isCDEnum>.toString()</#if>;
 </#if>
 </#if>

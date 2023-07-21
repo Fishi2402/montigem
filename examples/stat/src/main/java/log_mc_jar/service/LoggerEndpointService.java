@@ -5,9 +5,16 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 import log_mc_jar.Log_MC_JARManager;
+import log_mc_jar.MCJarCLIParameter;
+import log_mc_jar.MCJarLogEntry;
+import log_mc_jar.MCPreJarLogEntry;
 import log_mc_jar.MCSummary;
+import log_mc_jar.PreJarLogEntry;
+import log_mc_jar.PreJarLogEntryBuilder;
 import log_mc_jar.UMLPJarCLIParameter;
 import log_mc_jar.UMLPJarLogEntry;
+import log_mc_jar.UMLPJarLogEntryBuilder;
+import log_mc_jar.UMLPPreJarLogEntry;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,45 +22,115 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class LoggerEndpointService {
 
   @PostMapping(
-      value="/logger",
-      consumes = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<String> log(@RequestBody String body, @RequestHeader("SHASH") String shash, @RequestHeader("STAT-TYPE") String statType) {
+      value="/logger")
+  public ResponseEntity<String> log(@RequestBody String body, @RequestHeader("SHASH") String shash, @RequestHeader("STAT-TYPE") String statType) throws UnknownHostException {
+    System.out.println("Got a Request of Type: " + statType + "!\n\t" + body);
     if(!StatisticsHandler.isValidSHASH(shash, body)){
-      System.out.println("invalid SHASH");
+      System.err.println("Invalid SHASH");
       return ResponseEntity.ok("");
     }
 
     JsonObject dataObj = JsonParser.parseJsonObject(body);
     switch (statType) {
+      case "PRE_UMLP_JAR_JSON":
+        log_UMLP_PRE_JAR_JSON(dataObj);
+        break;
       case "UMLP_JAR_JSON":
         log_UMLP_JAR_JSON(dataObj);
         break;
+
+      case "PRE_MC_JAR_JSON":
+        log_MC_PRE_JAR_JSON(dataObj);
+        break;
+      case "MC_JAR_JSON":
+        log_MC_JAR_JSON(dataObj);
+        break;
       default:
-        Log.error("0x3uhsukh34 Unkown Stat-Type: " + statType);
+        System.err.println("0x3uhsukh34 Unkown Stat-Type: " + statType);
+        // Log.error("0x3uhsukh34 Unkown Stat-Type: " + statType);
     }
     return ResponseEntity.ok("");
   }
 
-  protected UMLPJarLogEntry log_UMLP_JAR_JSON(JsonObject data){
+  protected UMLPJarLogEntry log_UMLP_JAR_JSON(JsonObject data) throws UnknownHostException {
     return Log_MC_JARManager.uMLPJarLogEntryBuilder()
-        .duration(Duration.ofMillis(data.getLongMember("duration")))
-        .uuid(data.getStringMember("uuid"))
         .parameter(parseUmlpJarCLIParameter(data.getObjectMember("parameter")))
-        .summary(parseSummary(data.getObjectMember("summary")))
+
+        // JarLogEntry
+        .duration(Duration.ofMillis(data.getLongMember("duration")))
+        .summary(parseSummary(data.getObjectMember("summary"))) // TODO: Optional!
+          //TODO: Parse Error
+
+        // PreJarLogEntry
+        .uuid(data.getStringMember("uuid"))
         .toolVersion(data.getStringMember("version"))
         .receivedTime(Instant.now())
+        .origin(InetAddress.getLoopbackAddress())  // TODO
+
         .build()
         .get();
   }
+
+  protected UMLPPreJarLogEntry log_UMLP_PRE_JAR_JSON(JsonObject data) {
+    return Log_MC_JARManager.uMLPPreJarLogEntryBuilder()
+        .parameter(parseUmlpJarCLIParameter(data.getObjectMember("parameter")))
+
+        // PreJarLogEntry
+        .uuid(data.getStringMember("uuid"))
+        .toolVersion(data.getStringMember("version"))
+        .receivedTime(Instant.now())
+        .origin(InetAddress.getLoopbackAddress())  // TODO
+
+        .build()
+        .get();
+  }
+
+  public MCPreJarLogEntry log_MC_PRE_JAR_JSON(JsonObject data) {
+    return Log_MC_JARManager.mCPreJarLogEntryBuilder()
+        .parameter(parseMCJarCLIParameter(data.getObjectMember("parameter")))
+
+        // PreJarLogEntry
+        .uuid(data.getStringMember("uuid"))
+        .toolVersion(data.getStringMember("version"))
+        .receivedTime(Instant.now())
+        .origin(InetAddress.getLoopbackAddress())  // TODO
+
+        .build()
+        .get();
+  }
+
+  protected MCJarLogEntry log_MC_JAR_JSON(JsonObject data) throws UnknownHostException {
+    return Log_MC_JARManager.mCJarLogEntryBuilder()
+        .parameter(parseMCJarCLIParameter(data.getObjectMember("parameter")))
+
+        // JarLogEntry
+        .duration(Duration.ofMillis(data.getLongMember("duration")))
+        .summary(parseSummary(data.getObjectMember("summary"))) // TODO: Optional!
+        //TODO: Parse Error
+
+        // PreJarLogEntry
+        .uuid(data.getStringMember("uuid"))
+        .toolVersion(data.getStringMember("version"))
+        .receivedTime(Instant.now())
+        .origin(InetAddress.getLoopbackAddress())  // TODO
+
+        .build()
+        .get();
+  }
+
+
+
 
   private MCSummary parseSummary(JsonObject data){
     return Log_MC_JARManager.mCSummaryBuilder()
@@ -93,6 +170,15 @@ public class LoggerEndpointService {
         .input(List.of(data.getStringMember("input")))
         .hwc(data.getBooleanMember("hwc"))
         .debug(data.getBooleanMember("debug"))
+        .build()
+        .get();
+  }
+
+  private MCJarCLIParameter parseMCJarCLIParameter(JsonObject data) {
+    return Log_MC_JARManager.mCJarCLIParameterBuilder()
+        .dstlGen(data.getBooleanMemberOpt("genDST").orElse(false))
+        .script(data.getBooleanMember("script"))
+        .grammar(data.getArrayMember("grammar").stream().map(e -> e.getAsJsonString().getValue()).collect(Collectors.toList()))
         .build()
         .get();
   }

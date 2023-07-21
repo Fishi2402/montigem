@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+ocl FunctionsStructure {
+
+/*
+  Die Assoziation von Input Port zu Output Port setzt voraus,
+  dass sich die zugehörigen Funktionen entweder auf gleicher
+  Hierarchiestufe befinden oder dass es einen validen "Pfad"
+  gibt, welcher sich durch die Hierarchie zieht (Stichwort
+  gleiches Port-Objekt bei Verknüpfung zw. äußerer und
+  interner Funktion)
+
+  Dafür folgende Constraints:
+*/
+
+  /*
+    In each component structure there is only one feed
+    for an input port: either a sister-component or from the outside:
+  */
+  context Function f, InPort p inv ValidPortStructureInDecomposition:
+      p isin f.subFunction.inPort implies
+        p isin f.inPort ||
+        p isin f.subFunction.outPort.in;
+
+  /*
+    OutPorts are present in the signature of a containing
+    function f, when they are defined inside and used outside
+  */
+  context Function f inv ValidOutPortPath:
+        let externals = { OutPort p in f.subFunctions.outPort |
+                    exists Function f2: f2 notin f.subFunction** && p isin f2.inPort.out }
+        in
+          f.outPort.containsAll(externals);
