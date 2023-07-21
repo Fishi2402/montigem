@@ -33,8 +33,7 @@ import java.util.stream.Collectors;
 public class LoggerEndpointService {
 
   @PostMapping(
-      value="/logger",
-      consumes = {MediaType.APPLICATION_JSON_VALUE})
+      value="/logger")
   public ResponseEntity<String> log(@RequestBody String body, @RequestHeader("SHASH") String shash, @RequestHeader("STAT-TYPE") String statType) throws UnknownHostException {
     System.out.println("Got a Request of Type: " + statType + "!\n\t" + body);
     if(!StatisticsHandler.isValidSHASH(shash, body)){
