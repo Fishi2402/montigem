@@ -372,6 +372,11 @@ public class UMLPTool extends UMLPToolTOP {
           GUIDSLMill.init();
           // parse, create symbol table, check all cocos
           ASTGUICompilationUnit astGui = parseGUI(guiModel.toString());
+          Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
+
+          IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, importedSymbolPath);
+
+
 
           if(astGui!=null && astGui.getGUIComponentDeclaration().isPage()) {
             if (!routesMap.containsKey(astGui.getPackage())) {
@@ -379,9 +384,6 @@ public class UMLPTool extends UMLPToolTOP {
             }
             routesMap.get(astGui.getPackage()).add(astGui);
           }
-          Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
-
-          IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, importedSymbolPath);
 
           // print or store symbol table
           if (SYMTAB.isSelected(cmd)) {
@@ -471,6 +473,13 @@ public class UMLPTool extends UMLPToolTOP {
           Reporting.flush(astGui);
         }
 
+
+
+
+
+
+
+
         //create routes file for every package and
         GeneratorSetup genSetup = new GeneratorSetup();
         // set output directory
@@ -490,7 +499,7 @@ public class UMLPTool extends UMLPToolTOP {
         GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
         String output=typeScriptGenerator.generateAppRouting(new ArrayList<>(routesMap.values()));
         Reporting.reportFileCreation(outDir+output);
-        Reporting.flush(null);
+        Reporting.flush(new ASTGUICompilationUnit());
       }
     } catch (ParseException e) {
       printHelp(options);

@@ -54,6 +54,7 @@ public class GUI2TypeScriptGenerator {
   {
     this.setup.setTracing(false);
     GeneratorEngine genEngine = new GeneratorEngine(setup);
+
     List<ASTGUICompilationUnit> astguiCompilationUnits=new ArrayList<>();
     List<String> paths=new ArrayList<>();
     astguiCompilationUnitList.forEach(asts->{
@@ -137,6 +138,7 @@ public class GUI2TypeScriptGenerator {
     genEngine.generate("umlp.gui2ts.TSRoutes", generatedFiles,
         decoratedAst.getGUIComponentDeclaration(), "routes", existHWCRoutes,
         componentPath, util.getRoutingIds(decoratedAst));
+
 
     generatedFiles = Paths.get(pathName,
         decoratedAst.getComponentName() + MODULES_FILE + "." + TS_FILE_EXTENSION);
