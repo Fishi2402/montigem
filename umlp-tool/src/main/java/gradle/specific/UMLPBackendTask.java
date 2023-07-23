@@ -89,6 +89,6 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
 
   @Override
   public boolean isInputFile(File f) {
-    return f.getName().endsWith(".umlp");
+    return f.getName().endsWith(".umlp") || f.getName().endsWith(".cd");
   }
 }
