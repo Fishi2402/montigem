@@ -103,8 +103,26 @@ checkMDLinks:
   only:
     - master
 
-buildNativeImageDemoContainer:
+buildNativeImage:
   image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-native-image
   stage: build
+  artifacts:
+    paths:
+      - ./examples/native-image/build/native/nativeCompile/*
   script:
     - "gradle :examples:native-image:nativeBuild --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+
+deployNativeImageDocker:
+  stage: deploy
+  tags:
+    - shell
+    - docker
+  dependencies:
+    - buildNativeImage
+  script:
+    - "cd examples/native-image"
+    - "docker build . -t $CI_REGISTRY_IMAGE/native-image-demo:latest"
+    - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+    # - "docker push $CI_REGISTRY_IMAGE/native-image-demo:latest"
+  #only:
+  #  - dev
