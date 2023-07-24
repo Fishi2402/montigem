@@ -123,6 +123,6 @@ deployNativeImageDocker:
     - "cd examples/native-image"
     - "docker build . -t $CI_REGISTRY_IMAGE/native-image-demo:latest"
     - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
-    # - "docker push $CI_REGISTRY_IMAGE/native-image-demo:latest"
-  #only:
-  #  - dev
+    - "docker push $CI_REGISTRY_IMAGE/native-image-demo:latest"
+  only:
+    - dev
