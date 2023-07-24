@@ -1,6 +1,6 @@
 {
   "$schema": "../../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/theme",
+  "dest": "../../../dist/umlp/theme",
   "assets": [
     "./*.scss",
     "./src/*.scss"
