@@ -67,14 +67,19 @@ springAot {
   mainClass =  'nativeimagedemo.NativeImageDemoServerApplication'
 }
 
+def nativeImageBuildArgs = [
+  "--initialize-at-build-time=org.slf4j.impl.SimpleLogger,org.slf4j.LoggerFactory,org.slf4j.simple.SimpleLogger,org.slf4j.impl.StaticLoggerBinder"
+]
 
+graalvmNative.binaries.main {
+  buildArgs(nativeImageBuildArgs)
+}
 
 bootBuildImage {
   imageName = "registry.git.rwth-aachen.de/monticore/umlp/native_image_demo"
   builder = "paketobuildpacks/builder:tiny"
   environment = [
       "BP_NATIVE_IMAGE": "true",
-      "BP_NATIVE_IMAGE_BUILD_ARGUMENTS":
-          "--initialize-at-build-time=org.slf4j.impl.SimpleLogger,org.slf4j.LoggerFactory,org.slf4j.simple.SimpleLogger,org.slf4j.impl.StaticLoggerBinder"
+      "BP_NATIVE_IMAGE_BUILD_ARGUMENTS": nativeImageBuildArgs.join(" ")
   ]
 }
