@@ -100,6 +100,16 @@ class LoggerEndpointServiceTest {
   }
 
   @Test
+  void umlp_jar_log_with_error() throws IOException {
+    String logBody = "{\"uuid\":\"ea5c5b9a-a458-4f4b-9cec-dd30b31773de\",\"version\":\"7.6.0-SNAPSHOT\",\"parameter\":{\"input\":\"Log_MC_JAR.umlp\",\"debug\":false,\"hwc\":true},\"error\":\"no viable alternative at input 'asdsad' in rule stack: [CDCompilationUnit, CDDefinition, CDElement, CDAssociation, CDAssocType]\",\"duration\":383}";
+    JsonObject logObj = JsonParser.parseJsonObject(logBody);
+
+    var result = sut.log_UMLP_JAR_JSON(logObj);
+
+    assertEquals("ea5c5b9a-a458-4f4b-9cec-dd30b31773de", result.getUuid());
+  }
+
+  @Test
   void umlp_pre_jar_log() throws IOException {
     String logBody = "{\"uuid\":\"602216d9-e42c-4174-b183-1515ae00a9b5\",\"version\":\"7.5.0-SNAPSHOT\",\"parameter\":{\"input\":\"Domain.umlp\",\"debug\":false,\"hwc\":true}}";
     JsonObject logObj = JsonParser.parseJsonObject(logBody);

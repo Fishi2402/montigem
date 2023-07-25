@@ -102,7 +102,7 @@ public class DAONeo4jDecorator extends DAODecorator {
     superTypeNamesInclSelf.add(domainClass.getName());
 
     getCD4C().addMethod(daoClass, "umlp.dao.InsertInitNeo4j",
-        superTypeNamesInclSelf, attributes);
+        superTypeNamesInclSelf, attributes, optionalAttributes);
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
     getCD4C().addMethod(daoClass, "umlp.dao.BulkInsert", domainClass.getName(), cdName, attributes,
