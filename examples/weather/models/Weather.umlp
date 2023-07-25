@@ -9,22 +9,26 @@ classdiagram Weather {
     double latitude;
   }
 
-  class Day {
+  class DailyForecast {
     java.time.LocalDate date;
     /double minimumTemperature;
     /double maximumTemperature;
     /WeatherState weatherState;
   }
 
-  / class NextDays {
-    double minimumTemperature;
-    double maximumTemperature;
+  class Timeseries {
+    java.time.LocalDate start;
+    java.time.LocalDate end;
+    /double minimumTemperature;
+    /double maximumTemperature;
   }
 
-  association [0..1] NextDays -> (containedDays) Day [*];
+  / association City -> (nextDays) Timeseries;
+  association [1] City <-> DailyForecast [*];
+  association [0..1] Timeseries -> (containedDays) DailyForecast [*];
 
-  association [*] Day -> City [1];
-  association [0..1] Day -> (dailyForecasts) Forecast [*];
+  association [*] DailyForecast -> City [1];
+  association [0..1] DailyForecast -> (dailyForecasts) Forecast [*];
 
   class Forecast {
     // java.time.LocalDateTime date;
@@ -46,7 +50,6 @@ classdiagram Weather {
   }
 
   association favoriteCities [1] App -> (favorite) City [*];
-  association weatherPerCity [1] City -> Forecast [*];
   association [*] Forecast -> WeatherState [1];
 }
 

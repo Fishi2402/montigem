@@ -42,8 +42,10 @@ public class WeatherReport {
 
     var grouped = WeatherManager.getForecastList().stream().collect(Collectors.groupingBy(Forecast::getDate));
     grouped.forEach((d, forecasts) ->
-        WeatherManager.dayBuilder().city(city).date(d).dailyForecasts(new HashSet<>(forecasts)).build()
+        WeatherManager.dailyForecastBuilder().city(city).date(d).dailyForecasts(new HashSet<>(forecasts)).build()
     );
+
+    city.calcNextDays();
   }
 
   public JsonObject getWeatherData(City city) {

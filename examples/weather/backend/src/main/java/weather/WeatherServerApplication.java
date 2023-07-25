@@ -40,7 +40,7 @@ public class WeatherServerApplication extends WeatherServerApplicationTOP {
     new WeatherReport().createWeatherForecast(aachen.get());
 
     ForecastDeSer forecastDeSer = new ForecastDeSer();
-    WeatherManager.getDayList().stream().sorted(Comparator.comparing(Day::getDate)).forEach(day ->{
+    WeatherManager.getDailyForecastList().stream().sorted(Comparator.comparing(DailyForecast::getDate)).forEach(day ->{
       System.out.println("Day " + day.getDate());
       System.out.println("Min " + day.getMinimumTemperature());
       System.out.println("Max " + day.getMaximumTemperature());
@@ -52,5 +52,14 @@ public class WeatherServerApplication extends WeatherServerApplicationTOP {
       }
     });
 
+    TimeseriesDeSer timeseriesDeSer = new TimeseriesDeSer();
+    Timeseries timeseries = aachen.get()._nextDays.get();
+
+    System.out.println("Next days for Aachen");
+    System.out.print("Basic: ");
+    System.out.println(timeseriesDeSer.serialize(timeseries));
+    System.out.println("Calculated: ");
+    System.out.println("Min: " + timeseries.getMinimumTemperature());
+    System.out.println("Max: " + timeseries.getMinimumTemperature());
   }
 }

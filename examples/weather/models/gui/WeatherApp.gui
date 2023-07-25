@@ -1,11 +1,11 @@
 package gui;
 
-import Weather.Day;
+import Weather.DailyForecast;
 
 import arrange.src.lib.gemrow.GemRow;
 import gui.multi_day_forecast.MultiDayForecast;
 
-page WeatherApp(List<Day> days){
+page WeatherApp(List<DailyForecast> days){
   @GemRow(
     component = @MultiDayForecast(days = days)
   );
