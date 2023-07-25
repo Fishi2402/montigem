@@ -75,7 +75,7 @@ public class TSErrorCollectorDecorator extends ErrorCollectorDecorator {
             });
 
     // Add methods for domain associations
-    CDSymbolTables.getAssociationsInHierarchy(domainClass).stream().filter(a -> !a.getModifier().isDerived())
+    CDSymbolTables.getAssociationsInHierarchy(domainClass).stream().filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
             .forEach(a -> {
               getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSReportInvalid", a.getName(), domainClass.getName());
               getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_ReportInvalid", a.getName(), domainClass.getName());

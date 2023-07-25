@@ -65,7 +65,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
                       });
               CDSymbolTables.getAssociationsInHierarchy(c)
                       .stream()
-                      .filter(a -> !a.getModifier().isDerived())
+                      .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
                       .filter(a -> !GenService.isBidirectional(a))
                       .filter(a -> !GenService.isList(a))
                       .forEach(a -> {
@@ -86,7 +86,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
               });
           CDSymbolTables.getAssociations(c)
               .stream()
-              .filter(a -> !a.getModifier().isDerived())
+              .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
               .filter(a -> !GenService.isBidirectional(a))
               .filter(a -> !GenService.isList(a))
               .forEach(a -> {

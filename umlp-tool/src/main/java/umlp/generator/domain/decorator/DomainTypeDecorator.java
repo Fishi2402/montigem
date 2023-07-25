@@ -100,9 +100,9 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     List<ASTCDAttribute> attrList = Lists.newLinkedList();
     List<ASTCDAssocSide> associations = (isInterface)
             ? CDSymbolTables.getAssociations(domainType).stream()
-            .filter(GenService::isVisible).collect(Collectors.toList())
+            .filter(GenService::isVisible).filter(side -> !isDerived(side)).collect(Collectors.toList())
             : CDSymbolTables.getAssociationsInHierarchy(domainType).stream()
-            .filter(GenService::isVisible).collect(Collectors.toList());
+            .filter(GenService::isVisible).filter(side -> !isDerived(side)).collect(Collectors.toList());
 
     // handle associations
     for (ASTCDAssocSide assocSide: associations) {
@@ -118,6 +118,10 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
       attrList.add(attribute);
     }
     return attrList;
+  }
+
+  protected static boolean isDerived(ASTCDAssocSide side) {
+    return side.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived();
   }
 
   protected AttributesTuple getAllAttributes(ASTCDType domainType, boolean isInterface) {
