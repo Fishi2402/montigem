@@ -37,6 +37,13 @@ public class WeatherServerApplication extends WeatherServerApplicationTOP {
       aachen = WeatherManager.cityBuilder().name("Aachen").latitude(50.775555).longitude(6.083611).build();
     }
 
+    CityDeSer cityDeSer = new CityDeSer();
+    System.out.println(cityDeSer.serialize(aachen.get()));
+
+    if(WeatherManager.getAppList().isEmpty()){
+      WeatherManager.appBuilder().currentCity(aachen.get()).build();
+    }
+
     new WeatherReport().createWeatherForecast(aachen.get());
 
     ForecastDeSer forecastDeSer = new ForecastDeSer();

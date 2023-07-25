@@ -50,6 +50,7 @@ classdiagram Weather {
   }
 
   association favoriteCities [1] App -> (favorite) City [*];
+  association currentCity [1] App -> (currentCity) City [0..1];
   association [*] Forecast -> WeatherState [1];
 }
 

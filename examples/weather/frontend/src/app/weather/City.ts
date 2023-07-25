@@ -9,11 +9,14 @@ export class City extends CityTOP {
   _nextDays: Gem<Timeseries> = new Gem<Timeseries>();
 
   public getNextDays(): Timeseries {
+    console.log("getNextDays", this)
     return this.getNextDaysGem().get();
   }
 
   public getNextDaysGem(): Gem<Timeseries> {
+    console.log("getNextDaysGem1", this)
     this.calcNextDays();
+    console.log("getNextDaysGem2", this)
     return this._nextDays;
   }
 
