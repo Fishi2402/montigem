@@ -70,18 +70,16 @@ subprojects {
   tasks.withType(CommonUMLPTask).all {
     String taskname = it.name + "__check_report"
     CommonUMLPTask umlpTask = it
-    if(!umlpTask.name.equals("guiVariability")) {  // ToDo @LN: Reporting for GuiVariabilityHandler
-      Task t = task "$taskname"(type: UMLPOutputReportCheck) {
-        dependsOn(umlpTask)
-        input.from(umlpTask.input)
-        // symbolOutDir.set(umlpTask.symbolOutDir)
-        outputDir.set(umlpTask.outputDir)
-        reportDir.set(umlpTask.reportDir)
-        hwcDir.set(umlpTask.hwcDir)
-        setOriginalTask(umlpTask)
-      }
-      umlp_check_report.dependsOn(t)
+    Task t = task "$taskname"(type: UMLPOutputReportCheck) {
+      dependsOn(umlpTask)
+      input.from(umlpTask.input)
+      // symbolOutDir.set(umlpTask.symbolOutDir)
+      outputDir.set(umlpTask.outputDir)
+      reportDir.set(umlpTask.reportDir)
+      hwcDir.set(umlpTask.hwcDir)
+      setOriginalTask(umlpTask)
     }
+    umlp_check_report.dependsOn(t)
   }
 }
 

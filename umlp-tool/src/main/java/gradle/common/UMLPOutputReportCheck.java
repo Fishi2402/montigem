@@ -3,6 +3,7 @@ package gradle.common;
 
 import com.google.common.collect.Sets;
 import de.se_rwth.commons.logging.Log;
+import gradle.specific.GuiVariabilityHandlerTask;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
@@ -62,13 +63,20 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
             f -> new IncGenData(dummyUMLPTask.getIncGenFile(f),
                 dummyUMLPTask.getProject().getProjectDir().toPath().toAbsolutePath().toFile())));
 
-    // There must be a report for all input-files!
+    // There must be a report for all input-files, the only exceptions are GUIVariability Files as they don't produce any output.
     for (Map.Entry<File, IncGenData> entry : incGenReports.entrySet()) {
       if (!entry.getValue().reportExists) {
-        Log.error("0x438ea Didn't find report from previous run! This leads to errors in incremental build\n" +
-            "Is <Reporting> enabled in UMLPTask? Is the <IncGenGradleReporter> active?\n\n" +
-            "\tInput File: " + entry.getKey().getPath() + "\n" +
-            "\tExpected Report in: " + dummyUMLPTask.getIncGenFile(entry.getKey()).getPath() + "\n");
+        if(originalTask instanceof GuiVariabilityHandlerTask)
+          Log.debug("0x438ea Didn't find report from previous run! This may lead to errors in incremental build\n" +
+              "If the Input File is a GUIVariability Model this is intentional\n" +
+              "Is <Reporting> enabled in UMLPTask? Is the <IncGenGradleReporter> active?\n\n" +
+              "\tInput File: " + entry.getKey().getPath() + "\n" +
+              "\tExpected Report in: " + dummyUMLPTask.getIncGenFile(entry.getKey()).getPath() + "\n", this.getClass().getName());
+        else
+          Log.error("0x438ea Didn't find report from previous run! This leads to errors in incremental build\n" +
+              "Is <Reporting> enabled in UMLPTask? Is the <IncGenGradleReporter> active?\n\n" +
+              "\tInput File: " + entry.getKey().getPath() + "\n" +
+              "\tExpected Report in: " + dummyUMLPTask.getIncGenFile(entry.getKey()).getPath() + "\n");
       }
     }
 
@@ -137,13 +145,20 @@ public abstract class UMLPOutputReportCheck extends DefaultTask {
       }
     }
 
-    // Input File must be reported
+    // Input File must be reported, except GUIVariability (see above)
     for (Map.Entry<File, IncGenData> entry : incGenReports.entrySet()) {
       if (!entry.getValue().readFiles.contains(entry.getKey())) {
-        Log.error("0xab127 Input file is not reported. \n" +
+        if(originalTask instanceof GuiVariabilityHandlerTask)
+          Log.debug("0xab127 Input file is not reported. \n" +
+            "If the Input File is a GUIVariability Model this is intentional\n" +
             "You can report it with <Reporting.reportParseInputFile(...)> \n" +
-            "File: " + entry.getKey()
-        );
+            "File: " + entry.getKey(), this.getClass().getName()
+          );
+        else
+          Log.error("0xab127 Input file is not reported. \n" +
+              "You can report it with <Reporting.reportParseInputFile(...)> \n" +
+              "File: " + entry.getKey()
+          );
       }
     }
 
