@@ -69,7 +69,7 @@ public class LoggerEndpointService {
   }
 
   protected UMLPJarLogEntry log_UMLP_JAR_JSON(JsonObject data) throws UnknownHostException {
-    return Log_MC_JARManager.uMLPJarLogEntryBuilder()
+     UMLPJarLogEntryBuilder builder = Log_MC_JARManager.uMLPJarLogEntryBuilder()
         .parameter(parseUmlpJarCLIParameter(data.getObjectMember("parameter")))
 
         // JarLogEntry
@@ -81,10 +81,11 @@ public class LoggerEndpointService {
         .uuid(data.getStringMember("uuid"))
         .toolVersion(data.getStringMember("version"))
         .receivedTime(Instant.now())
-        .origin(InetAddress.getLoopbackAddress())  // TODO
-
-        .build()
-        .get();
+        .origin(InetAddress.getLoopbackAddress()); // TODO
+    if(data.hasStringMember("error")) {
+      builder.error(errorEntry(data.getStringMember("error")));
+    }
+    return builder.build().get();
   }
 
   protected UMLPPreJarLogEntry log_UMLP_PRE_JAR_JSON(JsonObject data) {
