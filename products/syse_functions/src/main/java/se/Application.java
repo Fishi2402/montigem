@@ -2,7 +2,7 @@ package se;/* (c) https://github.com/MontiCore/monticore */
 
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
-import functionsstructure.FunctionsStructureManagerImpl;
+import functionstructure.FunctionStructureManagerImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -26,7 +26,7 @@ public class Application {
     Log.enableFailQuick(false);
     Log.warn("I AM ALIVE!");
 
-    FunctionsStructureManagerImpl.init();
+    FunctionStructureManagerImpl.init();
 
     Optional<URL> optionalURL = Optional.ofNullable(Application.class.getResource("/FunctionsStructure.sql"));
     if(optionalURL.isEmpty()) {
