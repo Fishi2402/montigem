@@ -67,6 +67,6 @@ public class WeatherServerApplication extends WeatherServerApplicationTOP {
     System.out.println(timeseriesDeSer.serialize(timeseries));
     System.out.println("Calculated: ");
     System.out.println("Min: " + timeseries.getMinimumTemperature());
-    System.out.println("Max: " + timeseries.getMinimumTemperature());
+    System.out.println("Max: " + timeseries.getMaximumTemperature());
   }
 }

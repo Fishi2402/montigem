@@ -14,7 +14,6 @@ import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
@@ -118,10 +117,6 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
       attrList.add(attribute);
     }
     return attrList;
-  }
-
-  protected static boolean isDerived(ASTCDAssocSide side) {
-    return side.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived();
   }
 
   protected AttributesTuple getAllAttributes(ASTCDType domainType, boolean isInterface) {

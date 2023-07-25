@@ -3,6 +3,9 @@ classdiagram Weather {
   // Singleton?
   class App;
 
+  association currentCity [1] App -> (currentCity) City [0..1];
+  association favoriteCities [1] App -> (favorite) City [*];
+
   class City {
     String name;
     double longitude;
@@ -41,6 +44,7 @@ classdiagram Weather {
     Double windspeed;
     int realtiveHumidity;
   }
+  association [*] Forecast -> WeatherState [1];
 
   enum WeatherState {
     CLOUDY,
@@ -48,9 +52,5 @@ classdiagram Weather {
     RAINY,
     STORM;
   }
-
-  association favoriteCities [1] App -> (favorite) City [*];
-  association currentCity [1] App -> (currentCity) City [0..1];
-  association [*] Forecast -> WeatherState [1];
 }
 

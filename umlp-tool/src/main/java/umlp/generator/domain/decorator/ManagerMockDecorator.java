@@ -102,7 +102,10 @@ public class ManagerMockDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderParam", name);
       getCD4C().addMethod(managerClass, "umlp.managermock.DoDeSerBuilder", name);
       getCD4C().addMethod(managerClass, "umlp.managermock.DoAdd", name, managerName,
-          assocs.stream().filter(a -> GenService.isBidirectional(a)).collect(Collectors.toList()));
+          assocs.stream()
+              .filter(a -> GenService.isBidirectional(a))
+              .filter(side -> !isDerived(side))
+              .collect(Collectors.toList()));
       getCD4C().addMethod(managerClass, "umlp.managermock.DoDelete", name, managerName);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + CommandSendingObserverDecorator.SUFFIX));
     }else{
@@ -110,7 +113,10 @@ public class ManagerMockDecorator extends AbstractDecorator {
     }
 
     // Associations
-    assocs.stream().filter(a -> GenService.isList(a)).forEach(a -> {
+    assocs.stream()
+        .filter(a -> GenService.isList(a))
+        .filter(side -> !isDerived(side))
+        .forEach(a -> {
       SymTypeExpression type = a.getSymbol().getType();
       String printedType = type.print();
       ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
