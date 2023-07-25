@@ -9,8 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 @SpringBootApplication(scanBasePackages = {"selib.shellapi"})
 public class SELibShellAPIApplication {
   public static void main(String[] args) throws Exception {
-    Log.initSlf4j();
-    Log.initDEBUG();
+    Log.init();
     Log.info("Status: RUNNING", "UMLP API");
 
     SELibManager.initMe(new SELibManagerClientImpl());

@@ -1,7 +1,7 @@
 ${tc.signature("cdName")}
 ${cd4c.method("public static void main(String[] args)")}
 
-Log.initSlf4j();
+Log.init();
 Log.info("Status: RUNNING", "UMLP API");
 
 ${cdName}Manager.initMe(new ${cdName}ManagerClientImpl());

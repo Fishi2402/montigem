@@ -9,7 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 @SpringBootApplication(scanBasePackages = {"weather.shellapi"})
 public class WeatherShellAPIApplication {
   public static void main(String[] args) throws Exception {
-    Log.initSlf4j();
+    Log.init();
     Log.initDEBUG();
     Log.info("Status: RUNNING", "UMLP API");
 
