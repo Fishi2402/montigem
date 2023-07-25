@@ -71,17 +71,17 @@ public class LoggerEndpointService {
   protected UMLPJarLogEntry log_UMLP_JAR_JSON(JsonObject data) throws UnknownHostException {
      UMLPJarLogEntryBuilder builder = Log_MC_JARManager.uMLPJarLogEntryBuilder()
         .parameter(parseUmlpJarCLIParameter(data.getObjectMember("parameter")))
-
         // JarLogEntry
         .duration(Duration.ofMillis(data.getLongMember("duration")))
-        .summary(parseSummary(data.getObjectMember("summary"))) // TODO: Optional!
-          //TODO: Parse Error
-
         // PreJarLogEntry
         .uuid(data.getStringMember("uuid"))
         .toolVersion(data.getStringMember("version"))
         .receivedTime(Instant.now())
         .origin(InetAddress.getLoopbackAddress()); // TODO
+    if(data.hasObjectMember("summary")){
+      builder.summary(parseSummary(data.getObjectMember("summary")));
+    }
+    //TODO: Parse Error
     if(data.hasStringMember("error")) {
       builder.error(errorEntry(data.getStringMember("error")));
     }
@@ -119,10 +119,8 @@ public class LoggerEndpointService {
   protected MCJarLogEntry log_MC_JAR_JSON(JsonObject data) throws UnknownHostException {
     MCJarLogEntryBuilder builder = Log_MC_JARManager.mCJarLogEntryBuilder()
         .parameter(parseMCJarCLIParameter(data.getObjectMember("parameter")))
-
         // JarLogEntry
         .duration(Duration.ofMillis(data.getLongMember("duration")))
-        .summary(parseSummary(data.getObjectMember("summary"))) // TODO: Optional!
         //TODO: Parse Error
 
         // PreJarLogEntry
@@ -130,6 +128,9 @@ public class LoggerEndpointService {
         .toolVersion(data.getStringMember("version"))
         .receivedTime(Instant.now())
         .origin(InetAddress.getLoopbackAddress());
+    if(data.hasObjectMember("summary")){
+      builder.summary(parseSummary(data.getObjectMember("summary")));
+    }
     if(data.hasStringMember("error")) {
       builder.error(errorEntry(data.getStringMember("error")));
     }
