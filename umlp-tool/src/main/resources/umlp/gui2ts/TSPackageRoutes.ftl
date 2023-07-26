@@ -11,6 +11,8 @@ import { Routes } from "@angular/router";
 
 export const route: Routes = [
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
+    <#if astguiCompilationUnitList[index].getGUIComponentDeclaration().isPage() >
+
     <#if index==fullPathIndex>
       {
       path: "",
@@ -23,5 +25,6 @@ export const route: Routes = [
 path: "${astguiCompilationUnitList[index].getComponentName()}<#list ids[index] as id>/:${id}</#list>",
 component: ${astguiCompilationUnitList[index].getComponentName()}
 },
+</#if>
 </#list>
 ]

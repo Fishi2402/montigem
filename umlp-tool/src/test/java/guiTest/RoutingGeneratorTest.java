@@ -6,7 +6,6 @@ import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class RoutingGeneratorTest extends AbstractGUITest {
     astList.add(astguiCompilationUnit);
     GeneratorSetup generatorSetup=AbstractGUITest.getGenSetup();
     GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(generatorSetup, generatorSetup.getHandcodedPath(), null);
-    typeScriptGenerator.generateRoutingForPackages(astList);
+    typeScriptGenerator.generateConfigFileForPackages(astList);
     assertNoErrors();
   }
 

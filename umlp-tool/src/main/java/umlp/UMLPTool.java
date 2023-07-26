@@ -378,12 +378,12 @@ public class UMLPTool extends UMLPToolTOP {
 
 
 
-          if(astGui!=null && astGui.getGUIComponentDeclaration().isPage()) {
+          //if(astGui!=null && astGui.getGUIComponentDeclaration().isPage()) {
             if (!routesMap.containsKey(astGui.getPackage())) {
               routesMap.put(astGui.getPackage(), new ArrayList<>());
             }
             routesMap.get(astGui.getPackage()).add(astGui);
-          }
+          //}
 
           // print or store symbol table
           if (SYMTAB.isSelected(cmd)) {
@@ -489,11 +489,13 @@ public class UMLPTool extends UMLPToolTOP {
         // set template path
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
             .map(p -> p.toFile()).collect(Collectors.toList()));
-        genSetup.setGlex(new GlobalExtensionManagement());
+        GlobalExtensionManagement glex = createGlex();
+        genSetup.setGlex(glex);
+        genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
         routesMap.values().forEach(astList->
         {
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
-          String output=typeScriptGenerator.generateRoutingForPackages(astList);
+          String output=typeScriptGenerator.generateConfigFileForPackages(astList);
           Reporting.reportFileCreation(outDir+output);
         });
         GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);

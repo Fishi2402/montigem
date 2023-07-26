@@ -75,7 +75,7 @@ public class GUI2TypeScriptGenerator {
     return generatedFiles.toString();
   }
 
-  public String generateRoutingForPackages(List<ASTGUICompilationUnit> astguiCompilationUnitList)
+  public String generateConfigFileForPackages(List<ASTGUICompilationUnit> astguiCompilationUnitList)
   {
     this.setup.setTracing(false);
     GeneratorEngine genEngine = new GeneratorEngine(setup);
@@ -95,7 +95,7 @@ public class GUI2TypeScriptGenerator {
     {
       ASTGUICompilationUnit ast=astguiCompilationUnitList.get(index);
       List<String> idStrings=util.getRoutingIds(ast);
-      if(idStrings.isEmpty())
+      if(idStrings.isEmpty() && ast.getGUIComponentDeclaration().isPage())
       {
         fullPathIndex=index;
       }
@@ -107,11 +107,17 @@ public class GUI2TypeScriptGenerator {
     String []tempArray=temp.split("\\.");
     String routeName=tempArray[tempArray.length-1].substring(0,1).toUpperCase()+tempArray[tempArray.length-1].substring(1);
 
-    Path generatedFiles = Paths.get(pathName,
+    Path generatedRoutingFile = Paths.get(pathName,
         routeName+ ROUTES_FILE + "." + TS_FILE_EXTENSION);
-    genEngine.generateNoA("umlp.gui2ts.TSPackageRoutes", generatedFiles,
+    genEngine.generateNoA("umlp.gui2ts.TSPackageRoutes", generatedRoutingFile,
         astguiCompilationUnitList, ids,fullPathIndex);
-    return generatedFiles.toString();
+
+    Path generatedModuleFiles = Paths.get(pathName,
+        routeName+ MODULES_FILE + "." + TS_FILE_EXTENSION);
+    String compDecl=routeName;
+    genEngine.generateNoA("umlp.gui2ts.TSPackageModule", generatedModuleFiles,
+        astguiCompilationUnitList, ids,compDecl);
+    return generatedRoutingFile.toString();
   }
 
   public void generate(ASTGUICompilationUnit decoratedAst) {
