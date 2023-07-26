@@ -9,10 +9,24 @@ import {ShortFormDateRendererTOP} from "@src/gui/common/ShortFormDateRendererTOP
 })
 export  class ShortFormDateRenderer extends ShortFormDateRendererTOP {
   getGemText0Value(): string {
-    let res = this.getDay()?.getDate()?.toLocaleDateString("en-US", {
-      weekday: "short",
-    });
+    let today = new Date();
+    let date = this.getDay()?.getDate();
 
-    return res == null ? "???" : res;
+    if(date == null){
+      return "???";
+    }else{
+      if(this.getReplaceToday()
+         && today.getFullYear() == date.getFullYear()
+         && today.getMonth() == date.getMonth()
+         && today.getDate() == date.getDate()
+      ){
+        return "Today";
+      }else{
+        let res = date.toLocaleDateString("en-US", {
+          weekday: "short",
+        });
+        return res == null ? "???" : res;
+      }
+    }
   }
 }

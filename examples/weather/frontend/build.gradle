@@ -40,10 +40,10 @@ node {
 }
 
 // TODO AGe: don't know if that is needed
-task generateCDTOGUI(type: UMLPCdToGuiTask) {
+/*task generateCDTOGUI(type: UMLPCdToGuiTask) {
   input = file("../models/Weather.umlp")
   outputDir = layout.buildDirectory.dir("cd2gui")
-}
+}*/
 
 def symPath = "${project.buildDir}/symbols";
 
@@ -89,14 +89,14 @@ task genGUI(type: UMLPGuiGenTask) {
   guiCreateModels = ["gui.ForecastCreate"]
 }
 
-task genGUI2(type: UMLPGuiGenTask) {
+/*task genGUI2(type: UMLPGuiGenTask) {
   dependsOn(genGUI, generateCDTOGUI)
   input = file(layout.buildDirectory.dir("cd2gui/models"))
   symbolDir = file(symPath)
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe2")
   domainModels = ["Weather"]
-}
+}*/
 
 task generateNPMAuth(type: NPMAuthCreate)
 

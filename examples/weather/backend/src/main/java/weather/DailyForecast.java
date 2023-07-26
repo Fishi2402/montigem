@@ -3,7 +3,7 @@ package weather;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Day extends DayTOP{
+public class DailyForecast extends DailyForecastTOP{
 
   @Override
   public double getMinimumTemperature() {

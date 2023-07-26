@@ -63,7 +63,9 @@ public class BuilderDecorator extends AbstractDecorator {
     List<ASTCDAttribute> attrFields = CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
             .filter(a -> GenService.isVisibleNotDerived(a)).collect(Collectors.toList());
     List<ASTCDAssocSide> attrAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
-            .filter(a -> GenService.isVisibleNotDerived(a)).collect(Collectors.toList());
+        .filter(a -> GenService.isVisibleNotDerived(a))
+        .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
+        .collect(Collectors.toList());
     List<ASTCDAssocSide> attrAssocLists = attrAssocs.stream()
         .filter(GenService::isList)
         .collect(Collectors.toList());

@@ -41,7 +41,6 @@ public class DerivedClassDecorator extends AbstractDecorator {
         a.getSymbol().getType().print()));
 
     CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
-      .filter(a -> !a.getModifier().isDerived())
       .forEach(a -> {
         String type = a.getSymbol().getType().print();
         if (GenService.isList(a)) {

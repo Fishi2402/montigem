@@ -1,6 +1,6 @@
 package gui.multi_day_forecast;
 
-import Weather.Day;
+import Weather.DailyForecast;
 
 import arrange.src.lib.gemcard.GemCard;
 import arrange.src.lib.gemrow.GemRow;
@@ -12,8 +12,7 @@ import gui.common.ShortFormDateRenderer;
 import gui.atomic.range_with_gradient.RangeWithGradient;
 
 component DayRow(
-  Day day,
-  boolean today,
+  DailyForecast day,
   double groupMinTemp,
   double groupMaxTemp
 ){
@@ -22,7 +21,7 @@ component DayRow(
       @GemRow(
         width="3em",
         height="1em",
-        component = @ShortFormDateRenderer(day = day)
+        component = @ShortFormDateRenderer(day = day, replaceToday = true)
       ),
       @GemRow(
         width="1em",

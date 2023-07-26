@@ -38,14 +38,14 @@ public class GemListAssocDecorator extends AbstractDecorator {
             .filter(c -> !c.getSymbol().isIsDerived())
             .forEach(c -> CDSymbolTables.getAssociations(c)
                     .stream()
-                    .filter(a -> !a.getModifier().isDerived())
+                    .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
                     .forEach(a -> astcdPackage.addAllCDElements(withOrigin(createClasses(origCD, a, c)))));
 
     origCD.getCDDefinition().getCDInterfacesList().stream()
             .filter(i -> !i.getSymbol().isIsDerived())
             .forEach(i -> CDSymbolTables.getAssociations(i)
                     .stream()
-                    .filter(a -> !a.getModifier().isDerived())
+                    .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
                     .forEach(a -> astcdPackage.addAllCDElements(withOrigin(createClasses(origCD, a, i)))));
   }
 

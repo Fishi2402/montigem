@@ -47,7 +47,7 @@ public class ErrorObserverDecorator extends AbstractDecorator {
 
     // Add Notify for associations
     CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
-      .filter(c -> !c.getModifier().isDerived())
+      .filter(c -> !c.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
       .forEach(c ->
         getCD4C().addMethod(ast, getNotifyInvalidTemplate(), c.getName(), className));
     addImports(domainClass, ast);
