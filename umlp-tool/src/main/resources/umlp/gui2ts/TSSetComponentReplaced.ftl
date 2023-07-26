@@ -2,7 +2,7 @@
 ${tc.signature("methodName", "attrType", "attr", "args", "argValueHolder", "condition")}
 ${cd4c.method("public void ${methodName}(${args})")}
 <#if condition?has_content>
-  if (!${condition}) {
+  if (!(${condition})) {
     return null;
   }
 </#if>
