@@ -1,5 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+
+import gradle.specific.GuiVariabilityHandlerTask
+
 import java.nio.file.Paths
 
 buildscript {
@@ -95,6 +98,13 @@ jsweet {
 task generateCDTOGUI(type: UMLPCdToGuiTask) {
   input = file("../models/hardy")
   outputDir = layout.buildDirectory.dir("cd2gui")
+}
+
+task guiVariability(type: GuiVariabilityHandlerTask) {
+  dependsOn(generateCDTOGUI)
+  input.from(file("build/cd2gui/models"))
+  input.from(file("../models/stanley"))
+  outputDir = layout.buildDirectory.dir("guiVariability")
 }
 
 def symPath = "${project.buildDir}/symbols";
