@@ -8,7 +8,8 @@ import basic.src.lib.gemtext.GemText;
 /**
  * Renders date objects as the short form for the day of the week
  * e.g. Date containing 14.07.2023 will be rendered as Fri
+ * replaceToday will render "Today" for the current date.
  */
-component ShortFormDateRenderer(DailyForecast day){
+component ShortFormDateRenderer(DailyForecast day, boolean replaceToday = false){
   @GemText(value = "ReplacedWithTOP");
 }

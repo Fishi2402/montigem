@@ -22,7 +22,7 @@ component DayRow(
       @GemRow(
         width="3em",
         height="1em",
-        component = @ShortFormDateRenderer(day = day)
+        component = @ShortFormDateRenderer(day = day, replaceToday = true)
       ),
       @GemRow(
         width="1em",
