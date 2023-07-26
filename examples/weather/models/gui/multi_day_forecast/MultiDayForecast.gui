@@ -1,6 +1,7 @@
 package gui.multi_day_forecast;
 
 import Weather.DailyForecast;
+import Weather.Timeseries;
 
 import arrange.src.lib.gemcard.GemCard;
 import arrange.src.lib.gemrow.GemRow;
@@ -9,19 +10,18 @@ import basic.src.lib.gemtext.GemText;
 
 import gui.multi_day_forecast.DayRow;
 
-component MultiDayForecast(List<DailyForecast> days){
+component MultiDayForecast(Timeseries timeseries){
   @GemCard(
     title = "7-Day Forecast",
     component =
     @GemColumn(
       components = [
-        @iterate(DailyForecast day : days){
+        @iterate(DailyForecast day : timeseries.containedDays){
           @DayRow(
             day = day,
-            today = false, // TODO: hardcoded
-            groupMinTemp = 1, // TODO: hardcoded, TODO: 0 does not work bc of null check
-            groupMaxTemp = 40 // TODO: hardcoded
-            );
+            groupMinTemp = timeseries.getMinimumTemperature(),
+            groupMaxTemp = timeseries.getMaximumTemperature()
+          );
         }
       ]
     )

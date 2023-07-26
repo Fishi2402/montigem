@@ -19,9 +19,5 @@ export const routes: Routes = [
   {
     path: "c",
     loadChildren: () => import("../../build/appgui/gui/WeatherAppModule").then(m => m.WeatherappModule)
-  },
-  {
-    path: "d",
-    loadChildren: () => import("../../build/appgui/gui/multi_day_forecast/MultiDayForecastAlternativeModule").then(m => m.MultidayforecastalternativeModule)
   }
 ]

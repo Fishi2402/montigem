@@ -13,7 +13,6 @@ import gui.atomic.range_with_gradient.RangeWithGradient;
 
 component DayRow(
   DailyForecast day,
-  boolean today,
   double groupMinTemp,
   double groupMaxTemp
 ){

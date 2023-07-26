@@ -3,14 +3,14 @@ package gui;
 import Weather.App;
 
 import arrange.src.lib.gemrow.GemRow;
-import gui.multi_day_forecast.MultiDayForecastAlternative;
+import gui.multi_day_forecast.MultiDayForecast;
 
 // TODO: singleton app?
 page WeatherApp(List<App> apps){
   // There should only be one instance!
   @iterate(App app : apps){
     @GemRow(
-      component = @MultiDayForecastAlternative(timeseries = app.currentCity.nextDays)
+      component = @MultiDayForecast(timeseries = app.currentCity.nextDays)
     );
   }
 }
