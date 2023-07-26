@@ -1,6 +1,6 @@
 package gui.multi_day_forecast;
 
-import Weather.Day;
+import Weather.DailyForecast;
 
 import arrange.src.lib.gemcard.GemCard;
 import arrange.src.lib.gemrow.GemRow;
@@ -9,13 +9,13 @@ import basic.src.lib.gemtext.GemText;
 
 import gui.multi_day_forecast.DayRow;
 
-component MultiDayForecast(List<Day> days){
+component MultiDayForecast(List<DailyForecast> days){
   @GemCard(
     title = "7-Day Forecast",
     component =
     @GemColumn(
       components = [
-        @iterate(Day day : days){
+        @iterate(DailyForecast day : days){
           @DayRow(
             day = day,
             today = false, // TODO: hardcoded

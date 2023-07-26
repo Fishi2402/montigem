@@ -1,8 +1,8 @@
-import { DayTOP } from "@src/weather/DayTOP";
+import { DailyForecastTOP } from "@src/weather/DailyForecastTOP";
 import { WeatherState } from "@src/weather/WeatherState";
 
 // TODO: JSweet?
-export class Day extends DayTOP {
+export class DailyForecast extends DailyForecastTOP {
   getMinimumTemperature (): number {
     let min = NaN;
     for (let forecast of this.getDailyForecasts()) {

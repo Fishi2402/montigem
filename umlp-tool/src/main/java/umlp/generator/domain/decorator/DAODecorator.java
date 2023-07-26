@@ -209,7 +209,7 @@ public class DAODecorator extends AbstractDecorator {
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<ASTCDAssocSide, ASTCDAssociation> gemAssocSideToAssoc =
-        assocSideToAssoc.entrySet().stream().filter(e -> !GenService.isList(e.getKey()))
+        nonDerivedAssocSideToAssoc.entrySet().stream().filter(e -> !GenService.isList(e.getKey()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<ASTCDAssocSide, ASTCDAssociation> listAssocSideToAssoc =

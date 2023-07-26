@@ -1,6 +1,6 @@
 package gui.common;
 
-import Weather.Day;
+import Weather.DailyForecast;
 
 import basic.src.lib.gemtext.GemText;
 
@@ -9,6 +9,6 @@ import basic.src.lib.gemtext.GemText;
  * Renders date objects as the short form for the day of the week
  * e.g. Date containing 14.07.2023 will be rendered as Fri
  */
-component ShortFormDateRenderer(Day day){
+component ShortFormDateRenderer(DailyForecast day){
   @GemText(value = "ReplacedWithTOP");
 }
