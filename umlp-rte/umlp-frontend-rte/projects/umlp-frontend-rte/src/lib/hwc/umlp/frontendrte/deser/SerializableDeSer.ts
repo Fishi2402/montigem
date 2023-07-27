@@ -1,12 +1,12 @@
-import {DeSer} from "@umlp-rte/target/command/DeSer";
+import {DeSer} from "../command/DeSer";
 
 export class SerializableDeSer implements DeSer<any> {
-  deserialize(str: string): any {
-    return undefined;
+  deserialize(str: string): Promise<any> {
+    return Promise.resolve(undefined);
   }
 
-  serialize(obj: any): string {
-    return "";
+  serialize(obj: any): Promise<string> {
+    return Promise.resolve("");
   }
 
 }

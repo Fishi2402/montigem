@@ -35,7 +35,7 @@ public class CityInfo extends CityInfoTOP {
   @Override
   public String getCityWithMostCars() {
     Map<String, Integer> cityToCars = new HashMap<>();
-    Collection<Person> persons = FlensburgManager.getPersonList();
+    List<Person> persons = FlensburgManager.getPersonList();
 
     for (Person person : persons) {
       int curOwns = person.sizeOwnss();

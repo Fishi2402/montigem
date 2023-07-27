@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"ServerError.ts",
+"lineCount":22,
+"mappings":"A;;;;;AASC,C,gCAAiC,C;IAC/B,C;;IAEA,C,kBAAmB,C;AAAa,C,OAC9B,C,KAAM,C;;QACN,C,QAAS,C;AACV,C;;IAED,C;;;;kCACO,C;AAAqB,C,OAC1B,C,uCAAwC,C;QACxC,C,MAAO,C,eAAgB,C;AACxB;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\command\\ServerError.java"],
+"names":[]
+}

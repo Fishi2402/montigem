@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"ServerCommandCommunication.ts",
+"lineCount":14,
+"mappings":"A;;;;AASC,C;;;;;IAKE,C;;;;gCAA0C,C,gBAAQ;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\command\\ServerCommandCommunication.java"],
+"names":[]
+}

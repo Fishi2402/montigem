@@ -1,8 +1,8 @@
-import {GemList} from "@umlp-rte/hwc/common/GemList";
+import {GemList} from "../common/GemList";
 import {info} from "ng-packagr/lib/utils/log";
-import {GemIdentifiable} from "@umlp-rte/target/common/GemIdentifiable";
+import {GemIdentifiable} from "../common/GemIdentifiable";
 
-export class GemListAsyncIterator<E extends GemIdentifiable> implements AsyncIterator<E>{
+export class GemListAsyncIterator<E extends GemIdentifiable> implements AsyncIterator<E> {
   private index: number;
   private done: boolean;
   constructor(private gemList: GemList<E>) {
@@ -12,10 +12,10 @@ export class GemListAsyncIterator<E extends GemIdentifiable> implements AsyncIte
 
   next(): Promise<IteratorResult<E>> {
     if (this.done) {
-      return this.promiseWithValue(undefined);
+      return Promise.resolve({done: this.done, value: undefined});
     } else if (this.index === this.gemList.size()) {
       this.done = true;
-      return this.promiseWithValue(undefined);
+      return Promise.resolve({done: this.done, value: undefined});
     }
     let value: Promise<E> = this.gemList.get(this.index);
     ++this.index;
@@ -26,15 +26,6 @@ export class GemListAsyncIterator<E extends GemIdentifiable> implements AsyncIte
           value: val
         });
       })
-    });
-  }
-
-  private promiseWithValue(val: E | undefined) {
-    return new Promise<IteratorResult<E>>((resolve) => {
-      resolve({
-        done: this.done,
-        value: val
-      });
     });
   }
 }

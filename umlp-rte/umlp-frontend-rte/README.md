@@ -1,5 +1,9 @@
 # UmlpFrontendRte
 
+## Befehle zum lokalen installieren
+dist/umlp-frontend-rte `npm pack`
+`npm install ..\..\..\umlp-rte\umlp-frontend-rte\dist\umlp-frontend-rte\umlp-frontend-rte-7.5.0-SNAPSHOT.tgz`
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.18.
 
 ## Development server

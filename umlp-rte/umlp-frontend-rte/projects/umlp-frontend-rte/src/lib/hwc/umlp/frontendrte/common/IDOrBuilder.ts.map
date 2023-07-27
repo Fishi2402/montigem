@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"IDOrBuilder.ts",
+"lineCount":57,
+"mappings":"A;;AASC,C,kCAA4B,C,iBAAkB,C;IAE5C,C;;IAEA,C;;IAMA,C,kBAAmB,C;;;AAAW,C,2BARJ,C;8BAED,C;YAOvB,C,EAAG,CAAC,C,yBAA2B,C;gBAC7B,C,eAAW,C,qEAAY,C;aACxB,C,KACI,C;gBACH,C,iBAAa,C,qEAAY,C;aAC1B,C;AACF,C;;;AAX8B,C;;YAC7B,C,eAAW,C,qEAAY,C;AACxB,C;;;IAWD,C,qBAAO,C;AAAsB,C,OAC3B,C,MAAO,C;AACR,C;;IAED,C,0BAAO,C;AAA2B,C,OAChC,C,MAAO,C;AACR,C;;IAED,C;AAAoB,C,OAClB,C,MAAO,C;AACR,C;;IAED,C,oBAAO,C;AAAe,C,OACpB,C,MAAO,C;AACR,C;;IAMD,C;;;;;AAAiC,C,OAC/B,C,EAAG,CAAC,C,kBAAe,C;YACjB,C,MAAO,C;SACR,C,KACI,C;YACH,C,kBAAY,C;YACZ,C,EAAG,CAAC,CAAC,C,yBAA2B,C;gBAC9B,C;aACD,C;YACD,C,MAAO,C;SACR,C;AACF;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\common\\IDOrBuilder.java"],
+"names":[]
+}

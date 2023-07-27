@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"Participant.ts",
+"lineCount":24,
+"mappings":"A;;AAWC,C;IACE,C;;IACA,C,qBAAU,C;;IAEV,C,kBAAmB,C;AAAiD,C,2BAHvC,C;;QAI3B,C,2BAA4B,C;AAC7B,C;;IAED,C,qBAA4B,C,gBAAQ,C;AAAW,C,OAC7C,C,uDAA8C,C;AAC/C,C;;IAGD,C,qBAA8B,C,eAAvB,C;AAAkC,C,OACvC,C,MAAO,C,wCAAgB,C;AACxB,C;;IAED,C,gBAAsB,C;AAAwB,C,OAC5C,C,4DAAmB,C;AACpB;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\command\\Participant.java"],
+"names":[]
+}

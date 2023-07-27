@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Optional;
 
 public class DateDeSer implements DeSer<Date> {
+
   @Override
   public String serialize(Date obj) {
     TemporalAccessor ta = obj.toInstant();

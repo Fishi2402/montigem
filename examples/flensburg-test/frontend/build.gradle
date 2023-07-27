@@ -1,8 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-
-import gradle.specific.GuiVariabilityHandlerTask
-
 import java.nio.file.Paths
 
 buildscript {
@@ -101,8 +98,7 @@ task generateCDTOGUI(type: UMLPCdToGuiTask) {
 }
 
 task guiVariability(type: GuiVariabilityHandlerTask) {
-  dependsOn(generateCDTOGUI)
-  input.from(file("build/cd2gui/models"))
+  input.from(generateCDTOGUI.getOutputDir().dir("models"))
   input.from(file("../models/stanley"))
   outputDir = layout.buildDirectory.dir("guiVariability")
 }

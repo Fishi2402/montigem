@@ -30,6 +30,7 @@
     "font-awesome": "4.7.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "umlp-frontend-rte": "file:../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz",
     "zone.js": "~0.12.0"
   },
   "devDependencies": {
