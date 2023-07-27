@@ -1,0 +1,75 @@
+
+
+/* ---------------------------------------------------------
+ * Monitoring Teil
+ * --------------------------------------------------------- */
+
+
+classdiagram FunctionStructureMonitoringExtension {
+
+  /*
+    Eine Beobachtung ist zu kategorisieren
+    und seine Elemente auch noch zu typisieren:
+    Was wird beobachtet?
+
+    Dauer der Zeiteinheiten, etc. sind ggf. individuell zu lösen
+    ein Beobachtung kann festen Zeiteinheiten unterliegen,
+    eventbasiert sein, o.ä.
+
+    Wir müssen unterscheiden zwischen der tatsächlichen Beobachtung
+    mit den damit angenommenen/gemessenen oder spezifizierten
+    Beobachtungswerten
+    und den zugrunde liegenden physikalischen Modell des Austauschs.
+    Kontinuierliche Flüsse sind nur diskretisiert beobachtbar,
+    aber kontinuierlich spezifizierbar.
+
+    OCL-artige Randbedingung:
+    die Werte im Strom müssen zum Typ der Beobachtung passen
+
+    Eine Observation kann zeitlich begrenzt sein.
+  */
+  class Observation {
+    LocalDate start;
+    LocalDate end;
+    -> Type [1];
+    -> FlowKind [1];
+    boolean continuous;   // ist das im Prinzip ein kontinuierlicher Fluss
+    -> MCStream [1];
+  }
+
+
+  /*
+    Abstrakte Definition der Ströme als Bebcahtung und Spezifikationsmittel:
+    Hier wird eine effiziente Realisierung abhängig von der
+    Datenmenge, der Regelmäßigkeit, etc. zu erwarten sein.
+
+    Streams können auch unvollständige Beobachtungen sein, die nur
+    bestimmte Intervalle, und bei kontinuierlichen Beobachtungen
+    bestimmte Abtastraten realisieren.
+    Dies wird innerhalb der Datenstruktur "MCStream" behandelt.
+  */
+  abstract class MCStream;
+
+
+  /*
+    Jeder OutPort kann beobachtet werden.
+    InPorts werden nicht beobachtet, denn sie sind immer mit
+    OutPorts verbunden.
+
+    Kommunikation findet nach Annahme ohne Delay und ohne Verlust statt.
+    Ist relevant, so ist dies zB durch eine Delay-Komponente oder
+    Kommunikations-Medium spezifizierbar.
+  */
+
+  association OutPort -> Observation [1];
+
+
+  /*
+    Zustände können beobachtet werden.
+    Die Beobachtung eines Zustands funktioniert analog zur
+    Beobachtung eines Kanals bzw. Geschehens auf einem Port,
+    auch wenn dies konzeptuell etwas anderes ist.
+  */
+
+  association [1] Function -> (state) Observation [1];
+}
