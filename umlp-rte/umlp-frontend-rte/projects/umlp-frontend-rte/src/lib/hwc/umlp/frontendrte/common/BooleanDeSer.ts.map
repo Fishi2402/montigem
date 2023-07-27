@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"BooleanDeSer.ts",
+"lineCount":33,
+"mappings":"A;;;;;AAYC,C,oCAA8B,C;IAC5B,C,wCACwB,C;;;;;;;;;;;;;;;IAIxB,C;;;;;6BACqC,C;AAAY,C,OAC/C,C,cAAgB,C,UAAiB,C;QACjC,C,EAAG,CAAC,CAAC,C,iBAAmB,C;YACtB,C,MAAO,C;SACR,C;QAED,C,MAAO,C,qEAAY,C;AACpB;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\common\\BooleanDeSer.java"],
+"names":[]
+}

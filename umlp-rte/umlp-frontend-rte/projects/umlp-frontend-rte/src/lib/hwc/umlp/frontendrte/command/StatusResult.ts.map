@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"StatusResult.ts",
+"lineCount":32,
+"mappings":"A;;;;AAQC,C,iCAAkC,C;IAChC,C,WAAU,C;;IACV,C,WAAuB,C,WAAS,C;AAAoB,C,OAClD,C,KAAM,C,GAAI,C;;QACV,C,iBAAkB,C;AACnB,C;;IAED,C,gBAA8B,C,YAAhB,C;AAAwB,C,OACpC,C,MAAO,C,GAAI,C,YAAa,C,GAAI,C;AAC7B,C;;IAED,C,mBAAiC,C,YAAnB,C;AAA2B,C,OACvC,C,MAAO,C,GAAI,C,YAAa,C,GAAI,C;AAC7B,C;;IAED,C,uBAAO,C;AAAuB,C,OAC5B,C,MAAO,C;AACR,C;;IAED,C;;;;6BACO,C;AAAyB,C,OAC9B,C,MAAO,C;AACR;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\command\\StatusResult.java"],
+"names":[]
+}
