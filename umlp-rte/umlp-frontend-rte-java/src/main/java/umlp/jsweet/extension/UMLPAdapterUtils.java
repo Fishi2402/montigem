@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension;
 
+import org.jetbrains.annotations.Nullable;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 
@@ -25,6 +26,7 @@ public class UMLPAdapterUtils {
     };
   }
 
+  @Nullable
   public static TypeMirror mapOptionalType(PrinterAdapter adapter, TypeMirror type) {
     if (adapter.types().isSubtype(adapter.types().erasure(type), adapter.types().erasure(
         adapter.util().getType(Optional.class)))

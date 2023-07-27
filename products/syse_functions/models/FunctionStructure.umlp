@@ -96,6 +96,9 @@ umlp FunctionStructure {
         und gegebenenfalls einer Dekompositions-Struktur
         (Architektur), bestehend aus weiteren Funktionen
   */
+  // TODO BEM MH: Wollen wir noch Verhalten an die Funktion drankleben?
+  // BR: nein, nicht hier --> ist eine Ergänzung
+  // (weil da unterschiedliche existieren werden)
   class Function { String name; }
 
 
@@ -107,13 +110,8 @@ umlp FunctionStructure {
     Designentscheidung:
     Wir codieren die Richtung in der Port-Klassenart.
   */
-  abstract class Port {
-    String name;
-    -> FlowKind [1];
-    -> Type [1];
-  }
-  class  InPort extends Port;
-  class OutPort extends Port;
+  class  InPort { String name; }
+  class OutPort { String name; }
 
   /*
     Jede Funktion hat eine Sammlung von eingehenden und
@@ -178,6 +176,24 @@ umlp FunctionStructure {
     (das entscheidet die Ober-Funktion).
   */
 
+  /*
+    TODO BEM MH: Ich bin mir nicht sicher, ob wir über hier
+    nicht über einen veralteten Punkt sprechen: Wir können
+    ja nun auch von der äußerem Funktion auf das gleiche
+    Port Objekt zeigen und erreichen so eine explizite
+    Assoziation zwischen den Ports der inneren und
+    äußeren Funktion. MMn. brauchen wir dies hier nicht
+       Genau dann, wenn ein InPort unverbunden ist, dann wird
+       er in die Signatur der Ober-Funktion aufgenommen.
+    BR: Stimmt, genau deswegen ist der Port ist ja Teil der Signatur der
+    Ober-Funktion, der Satz ist also richtig.
+    Ausserdem gilt: InPorts sind nur alle verbunden,
+    wenn ausschließlich eine komplette Vollstruktur
+    des Systems dargestellt wird. wenn man modulare Teilsysteme ebenfalls
+    darstellen will (und das wollen wir), dann existiert die äussere
+    Funktion eventuell noch nicht.
+  */
+
   association [0..1] OutPort (out) <- (in) InPort [*];
 
 
@@ -189,6 +205,107 @@ umlp FunctionStructure {
      schon).
      (Dafür wäre der ThroughPort extends InPort, OutPort geeignet)
   */
+
+
+  /* ---------------------------------------------------------
+   * Monitoring Teil
+   * --------------------------------------------------------- */
+
+  /*
+    Eine Beobachtung im Bezug auf einen Kanal ist
+    eine kontinuierliche oder diskrete Sequenz von
+    beobachteten Messages, Events, Material- oder Energieflüssen.
+
+    Material: elements, compounds, alloys, ...
+      Fluid: continuously flowing materia, typically not countable
+             (water, gas, sand)
+      Item: discrete physical items, e.g. cars
+    Energy: types of energy
+      Mechanical Energy
+      Electrical Energy
+      ...
+    Physical:
+      Force
+      Speed
+      ...
+    Data: for data objects, basic data (e.g. int)
+      Event: for discrete data that triggers behavior
+    Signal: for continuously flowing data
+  */
+  enum FlowKind { Solid, Fluid, Energy, Data, Event, Value; }
+
+  /*
+    TODO BEM MH: Ist ein Enum hier richtig? In der Vorlesung beschreiben
+    wir ja z.B. Fluid als Unterkategorie von Material
+    BR: Das hier ist ja die "Kind" und da ist ein Enum schon richtig,
+    das Fluid nutzt diesen kind ja wohl
+  */
+
+  /*
+    Eine Beobachtung ist zu kategorisieren
+    und seine Elemente auch noch zu typisieren:
+    Was wird beobachtet?
+
+    Dauer der Zeiteinheiten, etc. sind ggf. individuell zu lösen
+    ein Beobachtung kann festen Zeiteinheiten unterliegen,
+    eventbasiert sein, o.ä.
+
+    Wir müssen unterscheiden zwischen der tatsächlichen Beobachtung
+    mit den damit angenommenen/gemessenen oder spezifizierten
+    Beobachtungswerten
+    und den zugrunde liegenden physikalischen Modell des Austauschs.
+    Kontinuierliche Flüsse sind nur diskretisiert beobachtbar,
+    aber kontinuierlich spezifizierbar.
+
+    OCL-artige Randbedingung:
+    die Werte im Strom müssen zum Typ der Beobachtung passen
+
+    Eine Observation kann zeitlich begrenzt sein.
+  */
+  class Observation {
+    LocalDate start;
+    LocalDate end;
+    -> Type [1];
+    -> FlowKind [1];
+    boolean continuous;   // ist das im Prinzip ein kontinuierlicher Fluss
+    -> MCStream [1];
+  }
+
+
+  /*
+    Abstrakte Definition der Ströme als Bebcahtung und Spezifikationsmittel:
+    Hier wird eine effiziente Realisierung abhängig von der
+    Datenmenge, der Regelmäßigkeit, etc. zu erwarten sein.
+
+    Streams können auch unvollständige Beobachtungen sein, die nur
+    bestimmte Intervalle, und bei kontinuierlichen Beobachtungen
+    bestimmte Abtastraten realisieren.
+    Dies wird innerhalb der Datenstruktur "MCStream" behandelt.
+  */
+  abstract class MCStream;
+
+
+  /*
+    Jeder OutPort kann beobachtet werden.
+    InPorts werden nicht beobachtet, denn sie sind immer mit
+    OutPorts verbunden.
+
+    Kommunikation findet nach Annahme ohne Delay und ohne Verlust statt.
+    Ist relevant, so ist dies zB durch eine Delay-Komponente oder
+    Kommunikations-Medium spezifizierbar.
+  */
+
+  association OutPort -> Observation [1];
+
+
+  /*
+    Zustände können beobachtet werden.
+    Die Beobachtung eines Zustands funktioniert analog zur
+    Beobachtung eines Kanals bzw. Geschehens auf einem Port,
+    auch wenn dies konzeptuell etwas anderes ist.
+  */
+
+  association [1] Function -> (state) Observation [1];
 
 
   /* ---------------------------------------------------------
