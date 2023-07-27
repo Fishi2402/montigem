@@ -45,37 +45,41 @@ dependencies {
 
 /////////////////////////   JSweet   //////////////////////////////
 
-jsweet {
-  verbose = true
-  encoding = 'UTF-8'
-  sourceMap = true
-  tsOnly = true
-  targetVersion = 'ES6'
-  module = 'commonjs'
-  autoPropagateAsyncAwaits = true
-  tsOut = project.file('projects/umlp-frontend-rte/src/lib/target')
-  workingDir = project.file('target/.jsweet')
-  includes = ['**/*.java']
-  excludes = [
-    '**/service/**',
-    '**/shellapi/**',
-    '**/ChunkedIdStorage.java'
-  ]
-  excludeTranspilation = [
-    '**/ClientCommandManager.java',
-    '**/DatabaseAccessManager.java',
-    '**/HashMapWithOrderedKeys.java',
-    '**/CommandResultDeSer.java',
-    '**/GemList.java',
-    '**/GemListBuilder.java',
-    '**/LocalDateDeSer.java',
-    '**/LocalTimeDeSer.java',
-    '**/LocalDateTimeDeSer.java',
-    '**/BaseClassObjectMapper.java',
-    '**/SerializableDeSer.java',
-    '**/DateDeSer.java'
-  ]
-}
+//jsweet {
+//  verbose = true
+//  encoding = 'UTF-8'
+//  sourceMap = true
+//  tsOnly = true
+//  targetVersion = 'ES6'
+//  module = 'commonjs'
+//  autoPropagateAsyncAwaits = true
+//  tsOut = project.file('projects/umlp-frontend-rte/src/lib/target')
+//  workingDir = project.file('target/.jsweet')
+//  includes = ['**/*.java']
+//  excludes = [
+//    '**/service/**',
+//    '**/shellapi/**',
+//    '**/ChunkedIdStorage.java',
+//    '**/test_infrastructure/**'
+//  ]
+//  excludeTranspilation = [
+//    '**/ClientCommandManager.java',
+//    '**/DatabaseAccessManager.java',
+//    '**/DatabaseAccessManager4Neo4j.java',
+//    '**/DatabaseAccessManager4SQL.java',
+//    '**/HashMapWithOrderedKeys.java',
+//    '**/CommandResultDeSer.java',
+//    '**/GemList.java',
+//    '**/GemListBuilder.java',
+//    '**/LocalDateDeSer.java',
+//    '**/LocalTimeDeSer.java',
+//    '**/LocalDateTimeDeSer.java',
+//    '**/BaseClassObjectMapper.java',
+//    '**/SerializableDeSer.java',
+//    '**/DateDeSer.java',
+//    '**/GemBuildable.java'
+//  ]
+//}
 
 /////////////////////////   NODE   //////////////////////////////
 node {
@@ -101,16 +105,16 @@ task generateIndexTS {
   }
 }
 
-project.getTasksByName("jsweet", true).forEach {
-  t ->
-    generateIndexTS.dependsOn(t)
-}
+//project.getTasksByName("jsweet", true).forEach {
+//  t ->
+//    generateIndexTS.dependsOn(t)
+//}
 
 task buildLib(type: NpxTask) {
   command = "ng"
   args = ["build", "--prod"]
-  dependsOn(tasks.npmInstall)
-  dependsOn(tasks.generateIndexTS)
+  dependsOn(project.tasks.npmInstall)
+  dependsOn(project.tasks.generateIndexTS)
   inputs.dir(project.fileTree("projects/umlp-frontend-rte/src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")
   inputs.files("tsconfig.json")
@@ -128,7 +132,7 @@ tasks.packLib.workingDir = project.file("dist/umlp-frontend-rte")
 task testLib(type: NpxTask) {
   command = "ng"
   args = ["test"]
-  dependsOn(tasks.npmInstall)
+  dependsOn(project.tasks.npmInstall)
   inputs.dir(project.fileTree("projects/umlp-frontend-rte/src"))
   inputs.dir("node_modules")
   inputs.files("tsconfig.spec.json")

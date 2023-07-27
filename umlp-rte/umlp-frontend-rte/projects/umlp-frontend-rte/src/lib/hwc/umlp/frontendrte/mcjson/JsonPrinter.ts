@@ -1,4 +1,4 @@
-import {Log} from "@umlp-rte/hwc/logging";
+import {Log} from "../logging";
 
 export class JsonPrinter {
   currElements = [];
