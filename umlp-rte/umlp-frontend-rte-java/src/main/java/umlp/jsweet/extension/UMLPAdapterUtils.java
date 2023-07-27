@@ -56,8 +56,10 @@ public class UMLPAdapterUtils {
 
   public static Function<TypeMirror, String> computeDateTypeMapping(PrinterAdapter adapter, Types types) {
     return (TypeMirror type) -> {
-      if (type.toString().equals("java.time.LocalDate")) {
-        return "Date";
+      switch (type.toString()) {
+        case "java.time.LocalDate":
+        case "java.util.Date":
+          return "Date";
       }
       return null;
     };
