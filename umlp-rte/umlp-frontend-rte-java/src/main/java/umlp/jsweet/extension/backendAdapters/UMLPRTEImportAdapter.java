@@ -1,10 +1,12 @@
-package umlp.jsweet.extension;/* (c) https://github.com/MontiCore/monticore */
+package umlp.jsweet.extension.backendAdapters;/* (c) https://github.com/MontiCore/monticore */
 
 import org.jsweet.transpiler.AsyncAwaitPropagationScanner;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ImportElement;
+import umlp.jsweet.extension.GUIComponentAdapter;
+import umlp.jsweet.extension.util.RTEPathUtil;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;

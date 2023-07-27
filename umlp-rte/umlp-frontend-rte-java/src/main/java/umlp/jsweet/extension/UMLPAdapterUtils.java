@@ -15,20 +15,30 @@ import java.util.function.Function;
 
 public class UMLPAdapterUtils {
 
-  public static Function<TypeMirror, String> computeOptionalTypeMapping(PrinterAdapter adapter, Types types) {
+  public static Function<TypeMirror, String> computeJavaOptionalTypeMapping(PrinterAdapter adapter, Types types) {
     return (TypeMirror type) -> {
-      if (types.isSubtype(types.erasure(type), types.erasure(adapter.util().getType(Optional.class)))
-          && type instanceof DeclaredType) {
-        List<? extends TypeMirror> typeArgs = ((DeclaredType) type).getTypeArguments();
-        if (typeArgs.size() > 0) {
-          TypeMirror backingType = typeArgs.get(0);
-          if (backingType.getKind() == TypeKind.DECLARED) {
-            return adapter.getMappedType(backingType);
-          }
-        }
+      TypeMirror mappedType = mapOptionalType(adapter, type);
+      if (mappedType != null) {
+        return adapter.getMappedType(mappedType);
       }
       return null;
     };
+  }
+
+  @Nullable
+  public static TypeMirror mapOptionalType(PrinterAdapter adapter, TypeMirror type) {
+    if (adapter.types().isSubtype(adapter.types().erasure(type), adapter.types().erasure(
+        adapter.util().getType(Optional.class)))
+        && type instanceof DeclaredType) {
+      List<? extends TypeMirror> typeArgs = ((DeclaredType) type).getTypeArguments();
+      if (typeArgs.size() > 0) {
+        TypeMirror backingType = typeArgs.get(0);
+        if (backingType.getKind() == TypeKind.DECLARED) {
+          return backingType;
+        }
+      }
+    }
+    return null;
   }
 
   public static Function<TypeMirror, String> computeMCJSonTypeMapping(PrinterAdapter adapter, Types types) {

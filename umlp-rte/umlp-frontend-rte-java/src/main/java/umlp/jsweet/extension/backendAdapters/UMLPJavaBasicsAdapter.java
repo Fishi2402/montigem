@@ -1,8 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.jsweet.extension;
+package umlp.jsweet.extension.backendAdapters;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import umlp.jsweet.extension.UMLPAdapterUtils;
+
+import javax.lang.model.type.TypeMirror;
 
 /**
  * This adapter is responsible to use some additional {@link java.util} classes.
@@ -15,7 +18,7 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
   }
 
   private void initTypeMappings() {
-    getTypeMirrorMappings().add(0, UMLPAdapterUtils.computeOptionalTypeMapping(this, types()));
+    getTypeMirrorMappings().add(0, UMLPAdapterUtils.computeJavaOptionalTypeMapping(this, types()));
     getTypeMirrorMappings().add(0, UMLPAdapterUtils.computeDateTypeMapping(this, types()));
   }
 
@@ -31,10 +34,13 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
       return true;
     } else if (UMLPAdapterUtils.substituteMethodInvocation_JavaLangString(this, invocation)) {
       return true;
-    } else if (UMLPAdapterUtils.substituteMethodInvocation_JavaLists(this, invocation)) {
-      return true;
     }
     return super.substituteMethodInvocation(invocation);
+  }
+
+  @Override
+  public TypeMirror mapType(TypeMirror type) {
+    return UMLPAdapterUtils.mapOptionalType(this, type);
   }
 
   @Override
@@ -43,4 +49,6 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
     addToStaticLibrary("java.util.Random");
     putToStaticLibrary("java.lang.String", "StringHelper");
   }
+
+
 }

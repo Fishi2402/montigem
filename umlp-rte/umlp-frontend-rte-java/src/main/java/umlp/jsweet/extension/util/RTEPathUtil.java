@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.jsweet.extension;
+package umlp.jsweet.extension.util;
 
 import de.se_rwth.commons.Joiners;
 
