@@ -125,6 +125,7 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + getCorrectManager(domainClass));
+    getCD4C().addImport(ast, "com.google.common.collect.Sets");
     if (GenService.isCDEnum(type)) {
       getCD4C().addImport(ast,getPackageName(origCD, DEFAULT_PACKAGE)+"."+ type.print());
     } else if (GenService.isJavaType(type)) {

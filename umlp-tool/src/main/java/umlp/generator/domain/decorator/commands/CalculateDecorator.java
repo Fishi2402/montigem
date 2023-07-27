@@ -103,6 +103,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainClass));
+    getCD4C().addImport(ast, "com.google.common.collect.Sets");
     if (GenService.isJavaType(type)) {
       addJavaImport(ast, type);
     } else if (isGem) {

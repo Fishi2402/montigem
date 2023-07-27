@@ -126,6 +126,7 @@ public class AddDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + getCorrectManager(domainClass));
+    getCD4C().addImport(ast, "com.google.common.collect.Sets");
     addCorrectMangerImportForTargetType(origCD.getCDDefinition(), ast, type);
 
     if (isGem) {

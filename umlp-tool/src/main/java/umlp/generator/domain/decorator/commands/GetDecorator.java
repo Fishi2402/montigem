@@ -62,6 +62,7 @@ public class GetDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("LoadingState"));
+    getCD4C().addImport(ast, "com.google.common.collect.Sets");
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+classname);
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainType));
 

@@ -168,6 +168,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ domainType.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainType));
+    getCD4C().addImport(ast, "com.google.common.collect.Sets");
     addCorrectMangerImportForTargetType(origCD.getCDDefinition(), ast, type);
     if (GenService.isOptional(type)) {
       if (GenService.isInnerCDEnum(type)) {

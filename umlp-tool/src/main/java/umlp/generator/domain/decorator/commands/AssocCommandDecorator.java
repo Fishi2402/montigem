@@ -269,6 +269,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass ast, String sourceType, String targetType) {
     // Importe
     getCD4C().addImport(ast, "com.google.common.collect.Lists");
+    getCD4C().addImport(ast, "com.google.common.collect.Sets");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandManager"));
