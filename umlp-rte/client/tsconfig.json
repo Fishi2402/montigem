@@ -4,25 +4,25 @@
   "compilerOptions": {
     "paths": {
       "@umlp/common": [
-        "dist/common"
+        "../dist/umlp/common"
       ],
       "@umlp/arrange": [
-        "dist/arrange"
+        "../dist/umlp/arrange"
       ],
       "@umlp/basic": [
-        "dist/basic"
+        "../dist/umlp/basic"
       ],
       "@umlp/charts": [
-        "dist/charts"
+        "../dist/umlp/charts"
       ],
       "@umlp/input": [
-        "dist/input"
+        "../dist/umlp/input"
       ],
       "@umlp/table": [
-        "dist/table"
+        "../dist/umlp/table"
       ],
       "@umlp/theme": [
-        "dist/theme"
+        "../dist/umlp/theme"
       ],
     },
     "baseUrl": "./",

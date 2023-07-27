@@ -70,7 +70,7 @@ export class WeatherView extends WeatherViewTOP {
     return this.cache.chart.data;
   }
 
-  public override getGemTable2Rows(): Array<any> {
+  public override getForecastsTableRows(): Array<any> {
     if (!this.getForecasts()) {
       return null;
     }

@@ -6,7 +6,7 @@ export const routes: Routes = [
     path: "",
     pathMatch: "full",
     // redirect to a module, not a component (use package part instead of the component name)
-    redirectTo: "a"
+    redirectTo: "c/WeatherApp"
   },
   {
     path: "a",
@@ -16,4 +16,8 @@ export const routes: Routes = [
     path: "b",
     loadChildren: () => import("../../build/appgui/gui/ForecastUpdateModule").then(m => m.ForecastupdateModule)
   },
+  {
+    path: "c",
+    loadChildren: () => import("../../build/appgui/gui/WeatherAppModule").then(m => m.WeatherappModule)
+  }
 ]

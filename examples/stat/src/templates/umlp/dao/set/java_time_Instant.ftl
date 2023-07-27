@@ -1,2 +1,2 @@
 ${signature("statement","attributeName", "index", "isOptional")}
-${statement}.setObject(${index}, ${attributeName}<#if isOptional>.orElse(null)</#if>)
+${statement}.setLong(${index}, ${attributeName}<#if isOptional>.orElse(null)</#if>.toEpochMilli())

@@ -1,0 +1,7 @@
+umlp SCExample{
+
+  <<behaviourStatechart="Ampel">>
+  class Ampel{
+    void timeout();
+  }
+}

@@ -130,6 +130,7 @@ public class ManagerDecorator extends AbstractDecorator {
       // Associations
       Collection<String> types = Sets.newHashSet();
       CDSymbolTables.getAssociations(domainClass).stream().
+          filter(side -> !isDerived(side)).
           filter(a -> !types.contains(a.getName())).
           filter(a -> GenService.isList(a)).forEach(a -> {
             types.add(a.getName());
@@ -173,6 +174,7 @@ public class ManagerDecorator extends AbstractDecorator {
       Collection<String> types = Sets.newHashSet();
       CDSymbolTables.getAssociations(domainInterface).stream().
           filter(GenService::isList).
+          filter(side -> !isDerived(side)).
           filter(a -> !types.contains(a.getName())).
           forEach(a -> {
             types.add(a.getName());

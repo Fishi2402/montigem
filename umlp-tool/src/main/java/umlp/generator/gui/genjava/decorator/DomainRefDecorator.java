@@ -21,7 +21,6 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedNameBuilder;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.Joiners;
@@ -32,7 +31,6 @@ import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
-import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -201,7 +199,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
           addAnnotation(cdAttr);
           domainAttributes.add(cdAttr);
 
-          if (util.getMainDomainModelSimpleName().isPresent()) {
+          if (util.getMainDomainModelSimpleName().isPresent() && !util.isEnumType(p.getSymbol().getType())) {
             // TODO AGe: body of init method currently uses different hooks, improve
             hps.add(new TemplateHookPoint(
                 getInitDomainTemplate(),

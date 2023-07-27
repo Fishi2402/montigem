@@ -6,6 +6,7 @@ component RangeWithGradient(
   int startPercentage,
   int endPercentage,
   String minColor,
+  String middleColor,
   String maxColor,
   String backgroundColor
 )

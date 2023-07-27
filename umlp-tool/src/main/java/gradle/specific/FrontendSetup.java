@@ -6,6 +6,7 @@ import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
@@ -34,6 +35,7 @@ public abstract class FrontendSetup extends DefaultTask {
   public abstract DirectoryProperty getOutput();
 
   @InputFiles
+  @Optional
   public abstract DirectoryProperty getInput();
 
   @TaskAction
@@ -45,10 +47,12 @@ public abstract class FrontendSetup extends DefaultTask {
       FileUtils.copyInputStreamToFile(file, getOutput().file(filename).get().getAsFile());
     }
 
-    // Then Copy User-Defined Files
-    for(File f: getInput().getAsFileTree()){
-      String filename = getInput().getAsFile().get().toPath().relativize(f.toPath()).toString();
-      FileUtils.copyFile(f, getOutput().file(filename).get().getAsFile());
+    if(getInput().isPresent()) {
+      // Then Copy User-Defined Files
+      for (File f : getInput().getAsFileTree()) {
+        String filename = getInput().getAsFile().get().toPath().relativize(f.toPath()).toString();
+        FileUtils.copyFile(f, getOutput().file(filename).get().getAsFile());
+      }
     }
   }
 
