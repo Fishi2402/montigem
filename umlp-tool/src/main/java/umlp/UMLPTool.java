@@ -94,7 +94,6 @@ import static umlp.UMLPToolOptions.REPORT_BASE;
 import static umlp.UMLPToolOptions.SYMTAB;
 import static umlp.UMLPToolOptions.TMPL_PATH;
 import static umlp.UMLPToolOptions.USE_SPRING;
-import static umlp.generator.domain.UMLPGenerator.logTrafoExec;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -215,8 +214,9 @@ public class UMLPTool extends UMLPToolTOP {
         Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
         runAfterParseTrafo(ast);
         createSymbolTable(ast);
-        runDefaultTrafo(ast);
         runDefaultCoCos(ast);
+        runDefaultTrafos(ast);
+        recreateSymbolTable(ast);
         CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, false);
         guiTool.generateGUI();
         Reporting.flush(ast);
