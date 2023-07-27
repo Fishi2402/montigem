@@ -73,4 +73,15 @@ public class TSAddDecorator extends AddDecorator {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics)type).getArgument(0).print());
     }
   }
+
+  @Override
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDType domainClass, ASTCDClass ast) {
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + getCorrectManager(domainClass));
+  }
 }

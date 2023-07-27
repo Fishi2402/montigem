@@ -3,6 +3,7 @@ package umlp.generator.gui.gentypescript.commands;/* (c) https://github.com/Mont
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.check.SymTypeExpression;
@@ -73,5 +74,16 @@ public class TSRemoveDecorator extends RemoveDecorator {
     if (GenService.isCDEnum(innerType)) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics)type).getArgument(0).print());
     }
+  }
+
+  @Override
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDType domainClass, ASTCDClass ast) {
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + getCorrectManager(domainClass));
   }
 }

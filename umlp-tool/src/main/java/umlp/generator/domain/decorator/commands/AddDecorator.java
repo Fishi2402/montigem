@@ -119,14 +119,7 @@ public class AddDecorator extends AbstractDeSerDecorator {
     ast.addAllCDMembers(accessor.decorate(attr));
     ast.addAllCDMembers(accessor.decorate(indexAttr));
 
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
-    getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + getCorrectManager(domainClass));
-    getCD4C().addImport(ast, "com.google.common.collect.Sets");
+    addImports(origCD, domainClass, ast);
     addCorrectMangerImportForTargetType(origCD.getCDDefinition(), ast, type);
 
     if (isGem) {
@@ -140,6 +133,17 @@ public class AddDecorator extends AbstractDeSerDecorator {
     }
 
     return ast;
+  }
+
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDType domainClass, ASTCDClass ast) {
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + getCorrectManager(domainClass));
+    getCD4C().addImport(ast, "com.google.common.collect.Sets");
   }
 
   protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
