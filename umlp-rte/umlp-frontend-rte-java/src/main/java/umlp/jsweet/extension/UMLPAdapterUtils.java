@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension;
 
+import org.jetbrains.annotations.Nullable;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 
@@ -109,16 +110,8 @@ public class UMLPAdapterUtils {
     return false;
   }
 
-  public static boolean substituteMethodInvocation_JavaLists(PrinterAdapter adapter,
-      MethodInvocationElement invocation) {
-    if (invocation.getTargetType().toString().equals("com.google.common.collect.Lists")) {
-      if (invocation.getMethodName().equals("newArrayList")) {
-        String msg = invocation.getArgumentCount() > 1 ? invocation.getArgument(1).toString() : "";
-        adapter.print("[" + msg + "]");
-        return true;
-      }
-    }
-    return false;
+  public static void printMacroName(PrinterAdapter adapter, String macroName) {
+    adapter.print("/* " + macroName + " */");
   }
 
   public static String getSimpleName(String importedName) {
@@ -169,6 +162,7 @@ public class UMLPAdapterUtils {
       "java.text",
       "java.util"
   );
+
   private static boolean isJ4TSPackage(String qualifiedName) {
     return j4tsPackages.stream().anyMatch(p -> qualifiedName.startsWith(p + "."));
   }
