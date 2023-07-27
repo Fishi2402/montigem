@@ -36,8 +36,10 @@ jsweet {
   excludes = [
       '**/flensburg/FlensburgManagerImpl.java',
       '**/flensburg/FlensburgMock.java',
+      '**/flensburg/FlensburgMockTestSetup.java',
       '**/flensburg/FlensburgDummyProvider.java',
-      '**/flensburg/FlensburgTestContext.java'
+      '**/flensburg/FlensburgTestContext.java',
+      '**/flensburg/test_infrastructure/**'
   ]
   module = 'commonjs'
   workingDir = project.file('target/.jsweet')
@@ -46,6 +48,7 @@ jsweet {
     '**/flensburg/*DbObserver.java',
     '**/flensburg/FlensburgManagerImpl.java',
     '**/flensburg/FlensburgMock.java',
+    '**/flensburg/FlensburgMockTestSetup.java',
     '**/flensburg/FlensburgDummyProvider.java',
     '**/flensburg/FlensburgTestContext.java'
   ]
@@ -59,10 +62,15 @@ node {
 task generateNPMAuth(type: NPMAuthCreate)
 //npmInstall.dependsOn(generateNPMAuth)
 
+//task installRTELocal(type: NpxTask) {
+//  command = "install"
+//  args ["..\\..\\..\\umlp-rte\\umlp-frontend-rte\\dist\\umlp-frontend-rte\\umlp-frontend-rte-7.5.0-SNAPSHOT.tgz"]
+//}
+
 task buildFlensburgApp(type: NpxTask) {
   command = "ng"
   args = ["build"]
-  dependsOn(tasks.npmInstall)
+  dependsOn(project.tasks.npmInstall)
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
   inputs.dir(project.fileTree("target/generated-sources/ts"))
   inputs.dir(project.fileTree("node_modules"))
@@ -73,11 +81,17 @@ task buildFlensburgApp(type: NpxTask) {
 task runFlensburgApp(type: NpxTask) {
   command = "ng"
   args = ["serve"]
-  dependsOn(tasks.npmInstall)
+  dependsOn(project.tasks.npmInstall)
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")
+  inputs.dir("target/generated-sources/ts")
   inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json")
   outputs.upToDateWhen { true }
+}
+
+project.getTasksByName("jsweet", true).forEach {
+  t ->
+    runFlensburgApp.dependsOn(t)
 }
 
 compileJava {
