@@ -43,24 +43,6 @@ public class UMLPGenerator {
   }
 
   public void generate(ASTCDCompilationUnit cdAST, String configTemplate) {
-    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
-    assocTrafo.transform(cdAST);
-    logTrafoExec("UMLAttrToAssocTrafo", cdAST);
-
-    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
-    assocNameTrafo.transform(cdAST);
-    logTrafoExec("UMLSetDefaultsTrafo", cdAST);
-
-    UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.traverser());
-    assoc2Trafo.transform(cdAST);
-    logTrafoExec("UMLAssocToAttrTrafo", cdAST);
-
-    // rebuild symbol table
-    CD4CodeMill.globalScope().removeSubScope(cdAST.getEnclosingScope());
-    UMLPMill.scopesGenitorDelegator().createFromAST(cdAST);
-    cdAST.accept(new CD4CodeSymbolTableCompleter(cdAST).getTraverser());
-    logTrafoExec("rebuildCD4CodeSymTab", cdAST);
-
     // create an empty classdiagram
     ASTCDCompilationUnit decoratedAST = createCompilationUnit(cdAST);
 

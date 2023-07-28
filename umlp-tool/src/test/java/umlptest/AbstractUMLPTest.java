@@ -4,6 +4,7 @@ package umlptest;
 
 import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd._symboltable.BuiltInTypes;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -17,8 +18,12 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import umlp.UMLPMill;
+import umlp.UMLPTool;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
+import umlp.generator.domain.UMLAssocToAttrTrafo;
+import umlp.generator.domain.UMLAttrToAssocTrafo;
+import umlp.generator.domain.UMLSetDefaultsTrafo;
 
 import java.io.File;
 import java.io.IOException;
@@ -124,5 +129,23 @@ public abstract class AbstractUMLPTest {
     MCPath hwcPath = new MCPath("src/test/java/");
     genSetup.setHandcodedPath(hwcPath);
     return genSetup;
+  }
+
+  public void runDefaultTrafos(ASTCDCompilationUnit node) {
+    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
+    assocTrafo.transform(node);
+
+    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
+    assocNameTrafo.transform(node);
+
+    UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.traverser());
+    assoc2Trafo.transform(node);
+  }
+
+  public void recreateSymbolTable(ASTCDCompilationUnit node) {
+    // rebuild symbol table
+    CD4CodeMill.globalScope().removeSubScope(node.getEnclosingScope());
+    UMLPMill.scopesGenitorDelegator().createFromAST(node);
+    node.accept(new CD4CodeSymbolTableCompleter(node).getTraverser());
   }
 }

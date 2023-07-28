@@ -45,8 +45,11 @@ import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.UMLAssocToAttrTrafo;
+import umlp.generator.domain.UMLAttrToAssocTrafo;
 import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.domain.UMLPGeneratorConfig;
+import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.GUINodeIdTrafo;
@@ -211,8 +214,9 @@ public class UMLPTool extends UMLPToolTOP {
         Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
         runAfterParseTrafo(ast);
         createSymbolTable(ast);
-        runDefaultTrafo(ast);
         runDefaultCoCos(ast);
+        runDefaultTrafos(ast);
+        recreateSymbolTable(ast);
         CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, false);
         guiTool.generateGUI();
         Reporting.flush(ast);
@@ -280,9 +284,10 @@ public class UMLPTool extends UMLPToolTOP {
             ASTCDCompilationUnit ast = UMLPMill.parser().parse(reader).orElseThrow();
             Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
             runAfterParseTrafo(ast);
-            IUMLPArtifactScope symbolTable = createSymbolTable(ast);
-            runDefaultTrafo(ast);
+            createSymbolTable(ast);
             runDefaultCoCos(ast);
+            runDefaultTrafos(ast);
+            recreateSymbolTable(ast);
           } catch (IOException e) {
             Log.error("Can not load model for url " + modelUrl);
           }
@@ -293,8 +298,9 @@ public class UMLPTool extends UMLPToolTOP {
         Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
         runAfterParseTrafo(ast);
         IUMLPArtifactScope symbolTable = createSymbolTable(ast);
-        runDefaultTrafo(ast);
         runDefaultCoCos(ast);
+        runDefaultTrafos(ast);
+        recreateSymbolTable(ast);
 
 
         // print or store symbol table
@@ -536,8 +542,30 @@ public class UMLPTool extends UMLPToolTOP {
     node.accept(trav);
   }
 
-  public void runDefaultTrafo(ASTCDCompilationUnit node) {
-    // empty
+  public void runDefaultTrafos(ASTCDCompilationUnit node) {
+    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
+    assocTrafo.transform(node);
+    logTrafoExec("UMLAttrToAssocTrafo", node);
+
+    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
+    assocNameTrafo.transform(node);
+    logTrafoExec("UMLSetDefaultsTrafo", node);
+
+    UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.traverser());
+    assoc2Trafo.transform(node);
+    logTrafoExec("UMLAssocToAttrTrafo", node);
+  }
+
+  public void recreateSymbolTable(ASTCDCompilationUnit node) {
+    // rebuild symbol table
+    CD4CodeMill.globalScope().removeSubScope(node.getEnclosingScope());
+    UMLPMill.scopesGenitorDelegator().createFromAST(node);
+    node.accept(new CD4CodeSymbolTableCompleter(node).getTraverser());
+    logTrafoExec("rebuildCD4CodeSymTab", node);
+  }
+
+  protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
+    Log.info("========= CD after '"+trafo+"': =========", UMLPTool.class.getName());
   }
 
   protected boolean isUmlpFile(File f) {
