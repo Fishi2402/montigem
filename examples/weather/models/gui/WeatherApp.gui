@@ -16,13 +16,15 @@ page WeatherApp(List<App> apps){
       components = [
         @MultiDayForecast(timeseries = app.currentCity.nextDays),
         @WeatherWidget(
-          title = "Wind Speed",
-          icon = "assets/icons/wind_widget_icon.svg",
+          widgetsTitle = "Wind Speed",
+          title = "",
+          icon = "assets/icons/wind.svg",
           component = @WindWidgetBody(timeseries = app.currentCity.nextDays)
         ),
         @WeatherWidget(
-          title = "Humidity",
-          icon = "assets/icons/humidity.svg",
+          widgetsTitle = "Humidity",
+          title = "",
+          icon = "assets/icons/humid.svg",
           component = @HumidityWidgetBody(timeseries = app.currentCity.nextDays)
         )
       ]

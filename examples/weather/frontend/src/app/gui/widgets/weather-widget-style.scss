@@ -6,8 +6,11 @@ $header-font-weight: bold;
 .gemColumn0 {
   position: relative;
   color: white;
-  background-color: #2E6CB0;
-  padding: 20px;
+  background: rgba(#00549f, 0.2) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px);
+
+
 }
 
 .gemRow1 {
@@ -16,7 +19,7 @@ $header-font-weight: bold;
 
 .gemText3 {
   text-transform: uppercase;
-  font-size: $header-font-size;
-  font-weight: $header-font-weight;
+  font-size: $header-font-size !important;
+  font-weight: $header-font-weight !important;
 }
 

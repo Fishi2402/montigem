@@ -6,3 +6,45 @@
 body {
   margin: 0;
 }
+
+#myVideo {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+.gem-card-header,
+.gem-card-body
+{
+  background: rgba(#fff, 0.5) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px);
+  color: #00549f;
+}
+
+weather-widget, multi-day-forecast
+{
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+gem-Text{
+  font-size: 30px !important;
+  color: #fff;
+}
+
+
+.mat-mdc-table,
+.mat-mdc-header-cell,
+{
+  background: rgba(#fff, 0.0) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px);
+}
+
