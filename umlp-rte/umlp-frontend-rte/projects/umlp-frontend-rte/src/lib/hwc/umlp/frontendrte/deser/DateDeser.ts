@@ -1,11 +1,11 @@
-import {DeSer} from "@umlp-rte/target/command/DeSer";
+import {DeSer} from "../command/DeSer";
 
 export class DateDeSer implements DeSer<Date> {
-  serialize(obj: Date): string {
-    return '"' + obj.toLocaleDateString() + '"';
+  serialize(obj: Date): Promise<string> {
+    return Promise.resolve('"' + obj.toLocaleDateString() + '"');
   }
 
-  deserialize(str: string): Date {
-    return new Date(str.slice(1, str.length - 1));
+  deserialize(str: string): Promise<Date> {
+    return Promise.resolve(new Date(str.slice(1, str.length - 1)));
   }
 }

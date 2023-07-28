@@ -1,0 +1,29 @@
+package gui.multi_day_forecast;
+
+import Weather.DailyForecast;
+import Weather.Timeseries;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+import basic.src.lib.gemtext.GemText;
+
+import gui.multi_day_forecast.DayRow;
+
+component MultiDayForecast(Timeseries timeseries){
+  @GemCard(
+    title = "7-Day Forecast",
+    component =
+    @GemColumn(
+      components = [
+        @iterate(DailyForecast day : timeseries.containedDays){
+          @DayRow(
+            day = day,
+            groupMinTemp = timeseries.getMinimumTemperature(),
+            groupMaxTemp = timeseries.getMaximumTemperature()
+          );
+        }
+      ]
+    )
+  );
+}

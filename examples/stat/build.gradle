@@ -20,7 +20,7 @@ bootBuildImage {
 
 jib {
     to {
-        image 'yolanv/jib-demo:gradle'
+        image 'umlp_statserver'
     }
 }
 
@@ -40,6 +40,9 @@ dependencies {
 
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
 
+    implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
+    testImplementation "org.neo4j:neo4j:4.4.10"
+    implementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
     //symbol "de.monticore:frontend-rte:$mc_version"
 }
 
@@ -53,6 +56,10 @@ task copyGeneratedFiles(type: Sync) {
   group = "diff"
   from generateUmlpBackend.getOutputDir()
   into layout.buildDirectory.dir(diff_location)
+}
+
+generateUmlpBackend {
+  configTemplate = "umlp.UMLP2JavaNeo4j"
 }
 
 task diff(type: Exec){

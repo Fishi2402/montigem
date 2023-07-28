@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"LoadResult.ts",
+"lineCount":42,
+"mappings":"A;;;;AAmBC,C;IAEE,C,IAAU,C;;IAEV,C,aAAU,C;;IAOV,C,kBAAkB,C;;;AAA2B,C;uBAT3B,C;YAUhB,C,EAAG,CAAC,C,gBAAgB,C,sBAAuB,C,gBAAgB,C,2BAA6B,C;gBACtF,C,SAAU,C;aACX,C;YACD,C,mBAAoB,C;AACrB,C;;;AAVwB,C;;YACvB,C,UAAW,C;YACX,C,mBAAoB,C;AACrB,C;;;IASD,C,yBAAO,C;AAA+B,C,OACpC,C,MAAO,C;AACR,C;;IAED,C;AAAoB,C,OAClB,C,MAAO,C,qBAAgB,C,sBAAuB,C,WAAO,C;AACtD,C;;IAED,C,aAAO,C;AAAQ,C,OACb,C,EAAG,CAAC,CAAC,C,gBAAa,C;YAChB,C,SAAU,C,mCAAoC,C;SAC/C,C;QACD,C,MAAO,C;AACR;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\common\\LoadResult.java"],
+"names":[]
+}

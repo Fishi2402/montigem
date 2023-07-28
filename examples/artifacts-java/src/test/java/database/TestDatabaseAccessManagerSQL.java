@@ -40,16 +40,6 @@ public class TestDatabaseAccessManagerSQL extends DatabaseAccessManager4SQL {
     }
   }
 
-  protected static void close(){
-    try {
-      if(connection != null && !connection.isClosed()){
-        connection.close();
-      }
-    } catch (SQLException e) {
-      Log.error("Error closing db", e);
-    }
-  }
-
   /*
    * Will open the H2 web console that can be used to inspect the current DB state
    * and BLOCK THE THREAD.

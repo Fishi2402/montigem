@@ -577,7 +577,7 @@ public class GUIGeneratorUtil {
     if (!isCreateModel(decoratedAst.getComponentQName())) {
       for (ASTGUIParam p : decoratedAst.getGUIComponentDeclaration().getGUIParamList()) {
         if (p.isPresentSymbol()) {
-          if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p)) {
+          if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p) && !isDerived(p)) {
             ids.add(p.getName() + "RoutingId");
           }
         }
@@ -589,6 +589,10 @@ public class GUIGeneratorUtil {
       }
     }
     return ids;
+  }
+
+  private boolean isDerived(ASTGUIParam p) {
+    return false;
   }
 
   public String getGenFileFolder(ASTMCPackageDeclaration pDecl) {

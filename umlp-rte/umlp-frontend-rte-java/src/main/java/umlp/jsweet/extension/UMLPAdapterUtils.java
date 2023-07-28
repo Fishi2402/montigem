@@ -15,20 +15,29 @@ import java.util.function.Function;
 
 public class UMLPAdapterUtils {
 
-  public static Function<TypeMirror, String> computeOptionalTypeMapping(PrinterAdapter adapter, Types types) {
+  public static Function<TypeMirror, String> computeJavaOptionalTypeMapping(PrinterAdapter adapter, Types types) {
     return (TypeMirror type) -> {
-      if (types.isSubtype(types.erasure(type), types.erasure(adapter.util().getType(Optional.class)))
-          && type instanceof DeclaredType) {
-        List<? extends TypeMirror> typeArgs = ((DeclaredType) type).getTypeArguments();
-        if (typeArgs.size() > 0) {
-          TypeMirror backingType = typeArgs.get(0);
-          if (backingType.getKind() == TypeKind.DECLARED) {
-            return adapter.getMappedType(backingType);
-          }
-        }
+      TypeMirror mappedType = mapOptionalType(adapter, type);
+      if (mappedType != null) {
+        return adapter.getMappedType(mappedType);
       }
       return null;
     };
+  }
+
+  public static TypeMirror mapOptionalType(PrinterAdapter adapter, TypeMirror type) {
+    if (adapter.types().isSubtype(adapter.types().erasure(type), adapter.types().erasure(
+        adapter.util().getType(Optional.class)))
+        && type instanceof DeclaredType) {
+      List<? extends TypeMirror> typeArgs = ((DeclaredType) type).getTypeArguments();
+      if (typeArgs.size() > 0) {
+        TypeMirror backingType = typeArgs.get(0);
+        if (backingType.getKind() == TypeKind.DECLARED) {
+          return backingType;
+        }
+      }
+    }
+    return null;
   }
 
   public static Function<TypeMirror, String> computeMCJSonTypeMapping(PrinterAdapter adapter, Types types) {
@@ -45,8 +54,10 @@ public class UMLPAdapterUtils {
 
   public static Function<TypeMirror, String> computeDateTypeMapping(PrinterAdapter adapter, Types types) {
     return (TypeMirror type) -> {
-      if (type.toString().equals("java.time.LocalDate")) {
-        return "Date";
+      switch (type.toString()) {
+        case "java.time.LocalDate":
+        case "java.util.Date":
+          return "Date";
       }
       return null;
     };
@@ -99,16 +110,8 @@ public class UMLPAdapterUtils {
     return false;
   }
 
-  public static boolean substituteMethodInvocation_JavaLists(PrinterAdapter adapter,
-      MethodInvocationElement invocation) {
-    if (invocation.getTargetType().toString().equals("com.google.common.collect.Lists")) {
-      if (invocation.getMethodName().equals("newArrayList")) {
-        String msg = invocation.getArgumentCount() > 1 ? invocation.getArgument(1).toString() : "";
-        adapter.print("[" + msg + "]");
-        return true;
-      }
-    }
-    return false;
+  public static void printMacroName(PrinterAdapter adapter, String macroName) {
+    adapter.print("/* " + macroName + " */");
   }
 
   public static String getSimpleName(String importedName) {
@@ -159,6 +162,7 @@ public class UMLPAdapterUtils {
       "java.text",
       "java.util"
   );
+
   private static boolean isJ4TSPackage(String qualifiedName) {
     return j4tsPackages.stream().anyMatch(p -> qualifiedName.startsWith(p + "."));
   }

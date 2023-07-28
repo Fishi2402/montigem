@@ -12,8 +12,10 @@ import org.neo4j.configuration.helpers.SocketAddress;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import org.neo4j.driver.Driver;
+import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
 
 import java.nio.file.Paths;
+import java.sql.SQLException;
 
 import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
 
@@ -21,9 +23,9 @@ import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAM
 
 public abstract class GenAbstractNeo4jDBTest {
 
-  private Driver driver;
-
   private static DatabaseManagementService managementService = null;
+
+  private static final int port = 7687;
 
   @BeforeAll
   public static void initDB() {
@@ -32,22 +34,24 @@ public abstract class GenAbstractNeo4jDBTest {
       return;
     }
     managementService =
-        new DatabaseManagementServiceBuilder(Paths.get("target", "temporaryNeo4jDB"))
+        new DatabaseManagementServiceBuilder(Paths.get("build", "temporaryNeo4jDB"))
             .setConfig(BoltConnector.enabled, true )
-            .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", 7687 )).build();
+            .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", port )).build();
     registerShutdownHook(managementService);
     managementService.database(DEFAULT_DATABASE_NAME);
   }
 
   @BeforeEach
   public void init(){
-    TestDatabaseAccessManager.init();
+    DatabaseAccessManager4Neo4j.initBoltLocalhost(port, "neo4j", "");
     Neo4jFlensburgManagerImpl.init();
   }
 
   @AfterEach
-  public void cleanup(){
-    TestDatabaseAccessManager.close();
+  public void cleanup() throws SQLException {
+    // After each test set the database into a blank state again
+    DatabaseAccessManager4Neo4j.executeStatement("MATCH(n) DETACH DELETE n");
+    DatabaseAccessManager4Neo4j.closeConnection();
   }
 
 

@@ -1,10 +1,10 @@
 package gradle.specific;
 
-import de.se_rwth.commons.logging.Log;
-import gradle.common.CommonUMLPTask;
+import de.monticore.io.FileReaderWriter;
 import gradle.common.UMLPAllFilesTask;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.OutputDirectory;
@@ -45,6 +45,10 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
   @org.gradle.api.tasks.Optional
   public abstract ListProperty<String> getGuiCreateModels();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<File> getGuiCreateModelsAsFile();
+
 
   /**
    *
@@ -77,6 +81,22 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
     if (this.getGuiCreateModels().isPresent() && !this.getGuiCreateModels().get().isEmpty()) {
       result.add("-" + UMLPToolOptions.GUI_CREATE.getCMD());
       result.addAll(this.getGuiCreateModels().get());
+    }
+
+    //Do not put arguments in between here!
+
+    if(this.getGuiCreateModelsAsFile().isPresent())
+    {
+      if(!this.getGuiCreateModelsAsFile().get().exists())
+        throw new IllegalArgumentException("File of argument guiCreateModelsAsFile does not exist");
+
+      List<String> createModels = List.of(
+          FileReaderWriter.readFromFile(this.getGuiCreateModelsAsFile().get().toPath()).split("\n")
+      );
+      if(!getGuiCreateModels().isPresent() || (this.getGuiCreateModels().isPresent() && this.getGuiCreateModels().get().isEmpty())) {
+        result.add("-" + UMLPToolOptions.GUI_CREATE.getCMD());
+      }
+      result.addAll(createModels);
     }
 
     return result;

@@ -97,6 +97,12 @@ task generateCDTOGUI(type: UMLPCdToGuiTask) {
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
 
+task guiVariability(type: GuiVariabilityHandlerTask) {
+  input.from(generateCDTOGUI.getOutputDir().dir("models"))
+  input.from(file("../models/stanley"))
+  outputDir = layout.buildDirectory.dir("guiVariability")
+}
+
 def symPath = "${project.buildDir}/symbols";
 
 task serializeCD {
@@ -148,6 +154,7 @@ task genGUI2(type: UMLPGuiGenTask) {
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe2")
   domainModels = ["hardy.Flensburg"]
+  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
 }
 
 task generateNPMAuth(type: NPMAuthCreate)

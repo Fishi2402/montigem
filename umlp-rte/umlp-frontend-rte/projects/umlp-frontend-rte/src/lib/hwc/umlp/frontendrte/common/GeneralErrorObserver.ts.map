@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"GeneralErrorObserver.ts",
+"lineCount":10,
+"mappings":"A;;;;AAMC,C;IACE,C,qBAAmC,C;;IACnC,C,iBAA+B,C;;IAE/B,C,eAA6B;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\common\\GeneralErrorObserver.java"],
+"names":[]
+}

@@ -244,9 +244,9 @@ public class GenService {
   }
 
   public static boolean isVisibleNotDerived(ASTCDAssocSide attr) {
-    return !attr.getModifier().isDerived()
-            && !attr.getModifier().isFinal()
-            && !attr.getModifier().isStatic();
+    return !attr.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived()
+        && !attr.getModifier().isFinal()
+        && !attr.getModifier().isStatic();
   }
 
   public static boolean isDerived(ASTCDAssocSide attr) {

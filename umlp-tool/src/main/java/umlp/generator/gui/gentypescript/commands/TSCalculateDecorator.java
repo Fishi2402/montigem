@@ -108,4 +108,13 @@ public class TSCalculateDecorator extends CalculateDecorator {
     }
   }
 
+  @Override
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass domainClass, ASTCDClass ast) {
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("LoadingState"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ domainClass.getName());
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainClass));
+  }
 }

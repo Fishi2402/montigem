@@ -40,10 +40,10 @@ node {
 }
 
 // TODO AGe: don't know if that is needed
-task generateCDTOGUI(type: UMLPCdToGuiTask) {
+/*task generateCDTOGUI(type: UMLPCdToGuiTask) {
   input = file("../models/Weather.umlp")
   outputDir = layout.buildDirectory.dir("cd2gui")
-}
+}*/
 
 def symPath = "${project.buildDir}/symbols";
 
@@ -89,18 +89,24 @@ task genGUI(type: UMLPGuiGenTask) {
   guiCreateModels = ["gui.ForecastCreate"]
 }
 
-task genGUI2(type: UMLPGuiGenTask) {
+/*task genGUI2(type: UMLPGuiGenTask) {
   dependsOn(genGUI, generateCDTOGUI)
   input = file(layout.buildDirectory.dir("cd2gui/models"))
   symbolDir = file(symPath)
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe2")
   domainModels = ["Weather"]
-}
+}*/
 
 task generateNPMAuth(type: NPMAuthCreate)
 
-npm_install.dependsOn(generateNPMAuth, genGUI)
+// Add Frontend-Config Files from UMLP-Tool Resources.
+task frontendSetup(type: FrontendSetup){
+  input = file("config/")   // Can be used to add or replace files
+  output = layout.buildDir.dir("frontendGen/")
+}
+
+npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
 // TODO AGe: npm_update too slow - strategy to make occasional checks
 // npm_update.dependsOn(npm_install)
 

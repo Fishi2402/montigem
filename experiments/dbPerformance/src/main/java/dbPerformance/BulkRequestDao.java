@@ -30,7 +30,7 @@ public class BulkRequestDao implements ExpDao{
 
   @Override
   public boolean dbContainsId(String id) throws SQLException {
-    Optional<ResultSet> res = DatabaseAccessManager4SQL.executeSQLQuery(getStatement(id));
+    Optional<ResultSet> res = DatabaseAccessManager4SQL.executeQuery(getStatement(id));
     // TODO: does not work with parameters!
     if(res.isEmpty()){
       return false;

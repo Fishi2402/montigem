@@ -10,16 +10,16 @@
     "inlineSources": true,
     "strict": false,
     "noImplicitReturns": true,
-    "types": [],
+    "types": ["node"],
     "lib": [
       "dom",
       "es2018"
     ],
     "baseUrl": "./",
-    "paths": {
-      "@umlp-rte/target/*": ["src/lib/target/umlp/backendrte/*"],
-      "@umlp-rte/hwc/*":    ["src/lib/hwc/umlp/frontendrte/*"]
-    }
+//    "paths": {
+//      "@umlp-rte/target/*": ["src/lib/target/umlp/backendrte/*"],
+//      "@umlp-rte/hwc/*":    ["src/lib/hwc/umlp/frontendrte/*"]
+//    }
   },
   "exclude": [
     "src/test.ts",
