@@ -1,0 +1,22 @@
+
+$header-font-size: 1.6rem;
+$header-font-weight: bold;
+
+
+.gemColumn0 {
+  position: relative;
+  color: white;
+  background-color: #2E6CB0;
+  padding: 20px;
+}
+
+.gemRow1 {
+  flex-wrap: nowrap;
+}
+
+.gemText3 {
+  text-transform: uppercase;
+  font-size: $header-font-size;
+  font-weight: $header-font-weight;
+}
+

@@ -1,0 +1,29 @@
+.gemColumn0 {
+  position: relative;
+
+  .gemText2 {
+    position: absolute;
+    font-size: width;
+  }
+  .gemText3 {
+    position: absolute;
+    font-size: width;
+  }
+}
+
+.gemText2 {
+  position: absolute;
+  font-size: 4em;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.gemText3 {
+  position: absolute;
+  font-size: 2.5em;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
