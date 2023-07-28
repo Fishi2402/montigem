@@ -281,7 +281,6 @@ public class UMLPTool extends UMLPToolTOP {
         List<URL> models = MCPathUtil.getAllModels(modelPath, ".*[.]umlp");
         for (URL modelUrl : models) {
           try (Reader reader = new InputStreamReader(modelUrl.openStream())){
-            System.out.println("processing " + modelUrl);
             ASTCDCompilationUnit ast = UMLPMill.parser().parse(reader).orElseThrow();
             Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
             runAfterParseTrafo(ast);
