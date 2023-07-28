@@ -6,7 +6,7 @@ import { WeatherWidgetTOP } from '@src/gui/widgets/WeatherWidgetTOP';
 @Component({
   selector: 'weather-widget',
   templateUrl: '../../../../build/appgui/gui/widgets/WeatherWidget.html',
-  styles: [":host{ display: flex; flex-direction: row }"],
+  styles: [":host{ display: nowrap; flex-direction: row }"],
   styleUrls: ['./weather-widget-style.scss']
 })
 

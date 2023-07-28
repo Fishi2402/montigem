@@ -6,7 +6,7 @@ import basic.src.lib.gemtext.GemText;
 import basic.src.lib.gemimage.GemImage;
 
 component WeatherWidget(String title, String icon, GUIViewElement component) {
-  @GemColumn(height = "100%", rowGap = "15px", components = [
+  @GemColumn(height = "auto", rowGap = "15px", components = [
     @GemRow(height = "1.5em", hAlign = "left", colGap = "15px", components = [
       @GemImage(source = icon),
       @GemText(value = title)
