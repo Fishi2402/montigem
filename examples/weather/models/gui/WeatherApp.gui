@@ -6,6 +6,7 @@ import arrange.src.lib.gemrow.GemRow;
 import gui.multi_day_forecast.MultiDayForecast;
 import gui.widgets.WeatherWidget;
 import gui.widgets.WindWidgetBody;
+import gui.widgets.HumidityWidgetBody;
 
 // TODO: singleton app?
 page WeatherApp(List<App> apps){
@@ -18,6 +19,11 @@ page WeatherApp(List<App> apps){
           title = "Wind Speed",
           icon = "assets/icons/wind_widget_icon.svg",
           component = @WindWidgetBody(timeseries = app.currentCity.nextDays)
+        ),
+        @WeatherWidget(
+          title = "Humidity",
+          icon = "assets/icons/humidity.svg",
+          component = @HumidityWidgetBody(timeseries = app.currentCity.nextDays)
         )
       ]
     );

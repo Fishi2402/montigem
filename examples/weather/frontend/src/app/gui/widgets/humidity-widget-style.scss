@@ -1,0 +1,17 @@
+
+.gemText1 {
+  font-size: 4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.gemText2 {
+  font-size: 1em;
+  word-wrap: break-word; /* For older browsers */
+  overflow-wrap: break-word; /* For modern browsers */
+  margin-top: 20px;
+}
+
