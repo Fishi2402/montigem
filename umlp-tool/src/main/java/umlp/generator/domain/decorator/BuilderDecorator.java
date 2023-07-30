@@ -66,22 +66,19 @@ public class BuilderDecorator extends AbstractDecorator {
         .filter(GenService::isList)
         .collect(Collectors.toList());
     List<ASTCDAssocSide> nonDerivedAttrAssocsList = attrAssocLists.stream()
-        .filter(assoc -> !GenService.isDerived(assoc, GenService.getDerivedAssocs(origCD)))
-        .collect(Collectors.toList());
-    List<ASTCDAssocSide> derivedAttrAssocsList = attrAssocLists.stream()
-        .filter(assoc -> GenService.isDerived(assoc, GenService.getDerivedAssocs(origCD)))
+        .filter(Predicate.not(GenService::isSymbolDerived))
         .collect(Collectors.toList());
 
     // Constructors
     addConstructor(builderClass, domainClass, managerName, nonDerivedAttrAssocsList);
 
     // Attributes
-    List<ASTCDAttribute> attrList = createAttributes(domainClass, attrFields.stream().map(a -> a.getName()).collect(Collectors.toList()), false);
+    List<ASTCDAttribute> attrList = createAttributes(domainClass, attrFields.stream().map(ASTCDAttributeTOP::getName).collect(Collectors.toList()), false);
     attrList.addAll(createAttributes(domainClass, attrAssocs.stream()
             .filter(Predicate.not(attrAssocLists::contains))
-            .map(a -> a.getName()).collect(Collectors.toList()),
+            .map(ASTCDAssocSide::getName).collect(Collectors.toList()),
         false));
-    attrList.addAll(createAttributes(domainClass, attrAssocLists.stream().map(a -> a.getName()).collect(Collectors.toList()), true));
+    attrList.addAll(createAttributes(domainClass, attrAssocLists.stream().map(ASTCDAssocSide::getName).collect(Collectors.toList()), true));
     builderClass.addAllCDMembers(attrList);
     ASTCDAttribute finishedAttr = getCD4C().addAttribute(builderClass, "protected boolean buildFinished = false");
     ASTCDAttribute internalAttr = getCD4C().addAttribute(builderClass, "protected boolean INTERNAL_deser_mode = false");
@@ -103,9 +100,7 @@ public class BuilderDecorator extends AbstractDecorator {
 
     // Imports
     addImports(domainClass, builderClass);
-    attrAssocLists.forEach(assocSide -> {
-      addCorrectMangerImportForTargetType(origCD.getCDDefinition(), builderClass, assocSide.getSymbol().getType());
-    });
+    attrAssocLists.forEach(assocSide -> addCorrectMangerImportForTargetType(origCD.getCDDefinition(), builderClass, assocSide.getSymbol().getType()));
 
     return builderClass;
   }
@@ -162,7 +157,7 @@ public class BuilderDecorator extends AbstractDecorator {
           assoc.getName(), domainClass.getName(),
           !GenService.isOptional(assoc));
       if (GenService.isList(assoc)) {
-        if (!GenService.isDerived(assoc, GenService.getDerivedAssocs(origCD))) {
+        if (!GenService.isSymbolDerived(assoc)) {
           getCD4C().addMethod(builderClass, "umlp.builder.AssocAdd",
               assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
               getClassName(domainClass.getName()));

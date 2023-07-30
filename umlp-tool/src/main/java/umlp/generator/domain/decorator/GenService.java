@@ -4,15 +4,17 @@ package umlp.generator.domain.decorator;
 import com.google.common.base.Defaults;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.class2mc.adapters.JClass2OOTypeSymbolAdapter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpressionBuilder;
 import de.monticore.types.MCTypeFacade;
-import de.monticore.types.check.*;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCheckResult;
+import de.monticore.types.check.TypeRelations;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -264,15 +266,8 @@ public class GenService {
     return assoc.getSymbol().isIsDefinitiveNavigable() && assoc.getSymbol().getOtherSide().isIsDefinitiveNavigable();
   }
 
-  public static boolean isDerived(ASTCDAssocSide side, List<ASTCDAssociation> derivedAssocs) {
-    //side.getSymbol().getAssoc()
-    return derivedAssocs.stream().anyMatch(c -> c.getLeft().equals(side) || c.getRight().equals(side));
-  }
-
-  public static List<ASTCDAssociation> getDerivedAssocs(ASTCDCompilationUnit cd) {
-    return cd != null ?
-        cd.getCDDefinition().getCDAssociationsList().stream().filter(assoc -> assoc.getModifier().isDerived()).collect(Collectors.toList()) :
-        List.of();
+  public static boolean isSymbolDerived(ASTCDAssocSide side) {
+    return side.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived();
   }
 
   public static String getInnerType(ASTMCType mcType) {

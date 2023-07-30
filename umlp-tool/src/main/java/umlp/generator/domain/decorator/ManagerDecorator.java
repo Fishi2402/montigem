@@ -16,6 +16,7 @@ import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.Collection;
+import java.util.function.Predicate;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
@@ -127,7 +128,7 @@ public class ManagerDecorator extends AbstractDecorator {
       Collection<String> types = Sets.newHashSet();
       CDSymbolTables.getAssociations(domainClass).stream()
           .filter(a -> !types.contains(a.getName()))
-          .filter(a -> !GenService.isDerived(a, GenService.getDerivedAssocs(typeCD)))
+          .filter(Predicate.not(GenService::isSymbolDerived))
           .filter(GenService::isList)
           .forEach(a -> {
             types.add(a.getName());
@@ -172,7 +173,7 @@ public class ManagerDecorator extends AbstractDecorator {
       CDSymbolTables.getAssociations(domainInterface).stream()
           .filter(GenService::isList)
           .filter(a -> !types.contains(a.getName()))
-          .filter(a -> !GenService.isDerived(a, GenService.getDerivedAssocs(typeCD)))
+          .filter(a -> !GenService.isSymbolDerived(a))
           .forEach(a -> {
             types.add(a.getName());
             SymTypeExpression type = a.getSymbol().getType();

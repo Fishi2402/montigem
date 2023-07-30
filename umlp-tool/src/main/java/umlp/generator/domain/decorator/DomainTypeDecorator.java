@@ -119,7 +119,7 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
           getMCTypeFacade().createBasicGenericTypeOf(GenService.isList(assocSide) ? "GemList" : "Gem", type),
           GenService.createName(assocSide.getName())
       );
-      if (GenService.isDerived(assocSide, GenService.getDerivedAssocs(cd))) {
+      if (GenService.isSymbolDerived(assocSide)) {
         attribute.getModifier().setDerived(true);
       }
       attrList.add(attribute);

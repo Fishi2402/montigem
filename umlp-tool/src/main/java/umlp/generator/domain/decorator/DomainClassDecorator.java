@@ -7,7 +7,12 @@ import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDClassBuilder;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDInterfaceUsage;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -69,7 +74,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     // Stereotype
     ASTStereotypeBuilder stereotype = UMLPMill.stereotypeBuilder();
     List<ASTCDAttribute> derivedAttribFields = filterDerivedAttributes(domainClass.getCDAttributeList(), true);
-    if (derivedAttribFields.size() > 0) {
+    if (!derivedAttribFields.isEmpty()) {
       String derivedAttribs = derivedAttribFields.stream()
           .map(attr -> {
             SourcePosition sourcePosition = attr.get_SourcePositionStart();
@@ -89,7 +94,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
       );
     }
     List<ASTCDAssocSide> derivedAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
-        .filter(a -> GenService.isDerived(a, GenService.getDerivedAssocs(origCD)))
+        .filter(GenService::isSymbolDerived)
         .collect(Collectors.toList());
     if (derivedAssocs.size() > 0) {
       String derivedAssocsStr = derivedAssocs.stream()
