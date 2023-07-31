@@ -1,8 +1,8 @@
 export * from "./error";
 export * from "./ClientCommandCommunication";
+export * from "./ClientCommandManager";
 export * from "./Command";
 export * from "./CommandDeSer";
-export * from "./CommandDirectCommunication";
 export * from "./CommandManager";
 export * from "./CommandObjectMapper";
 export * from "./CommandReceiveObserver";
@@ -18,4 +18,3 @@ export * from "./ServerError";
 export * from "./SimpleResult";
 export * from "./StatusResult";
 export * from "./SyncError";
-export * from "./TestClientCommandManager";

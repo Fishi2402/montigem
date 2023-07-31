@@ -22,7 +22,7 @@ export abstract class AggregatedCommandDeSer {
         printer.beginObject();
         this.buildJson(command, printer);
         printer.endObject();
-        return printer.toString();
+        return Promise.resolve(printer.toString());
     }
 
     public async deserialize<T>(cmdStr: string): Promise<Command<any>> {

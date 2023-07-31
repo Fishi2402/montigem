@@ -65,7 +65,7 @@ export class CommandManager {
         return await CommandManager.getInstance()._executeCommand<any>(command);
     }
 
-    async _executeCommand<T>(command: Command<T>): Promise<CommandResult<T>> {
+    protected async _executeCommand<T>(command: Command<T>): Promise<CommandResult<T>> {
         const res: CommandResult<T> = await command.doRun();
         if (/* containsKey */((m,k) => { if(m.entries==null) m.entries=[]; for(let i=0;i<m.entries.length;i++) if(m.entries[i].key==null && k==null || m.entries[i].key.equals!=null && m.entries[i].key.equals(k) || m.entries[i].key===k) { return true; } return false; })(<any>this.particpants, command.getParticipantId())){
             /* get */((m,k) => { if(m.entries==null) m.entries=[]; for(let i=0;i<m.entries.length;i++) if(m.entries[i].key==null && k==null || m.entries[i].key.equals!=null && m.entries[i].key.equals(k) || m.entries[i].key===k) { return m.entries[i].value; } return null; })(<any>this.particpants, command.getParticipantId()).subscribe(command.getNewlySubscribedGemIds());

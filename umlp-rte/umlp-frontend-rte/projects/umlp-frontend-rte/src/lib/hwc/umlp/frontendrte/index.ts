@@ -6,4 +6,5 @@ export * from "./javautil";
 export * from "./logging";
 export * from "./mcjson";
 export * from "./request";
+export * from "./service";
 export * from "./util";

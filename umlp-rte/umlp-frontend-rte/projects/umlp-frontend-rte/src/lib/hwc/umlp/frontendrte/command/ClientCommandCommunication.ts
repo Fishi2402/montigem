@@ -1,39 +1,23 @@
-/* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
-import { Result } from '../common/Result';
+/* (c) https://github.com/MontiCore/monticore */
 
-/**
- * Simuliert die Kommunikation zwischen Client und Server
- * @class
- */
+import { Command } from "./Command";
+import { CommandReceiveObserver } from "./CommandReceiveObserver";
+import { CommandResult } from "./CommandResult";
+import { CommandResultReceiveObserver } from "./CommandResultReceiveObserver";
+
 export interface ClientCommandCommunication {
-    /**
-     * Sendet ein Command an den Server und wartet auf das Ergebnis
-     * @param {Command} command
-     * @return {CommandResult}
-     */
-    sendCommandToServerAndReceiveResult<T>(command: Command<T>): Promise<CommandResult<T>>;
 
-    /**
-     * Initiiert die Verbindung und liefert die vom Server verteilte Participant Id
-     * @return {Result}
-     */
-    init(): Promise<Result<number>>;
+  /**
+   * Sendet ein Command an den Server und wartet auf das Ergebnis
+   */
+  sendCommandToServerAndReceiveResult<T>(command: Command<T>): Promise<CommandResult<T>> ;
 
-    onCommandReceived(observer: CommandReceiveObserver): ClientCommandCommunication;
+  /**
+   * Initiiert die Verbindung und liefert die vom Server verteilte Participant Id
+   */
+  init(): Promise<number>;
 
-    onCommandResultReceived(observer: CommandResultReceiveObserver): ClientCommandCommunication;
+  onCommandReceived(observer: CommandReceiveObserver): ClientCommandCommunication;
+
+  onCommandResultReceived(observer: CommandResultReceiveObserver): ClientCommandCommunication;
 }
-
-
-
-import { CommandResultReceiveObserver } from './CommandResultReceiveObserver';
-
-
-import { CommandReceiveObserver } from './CommandReceiveObserver';
-
-
-import { Command } from './Command';
-
-
-import { CommandResult } from './CommandResult';
-
