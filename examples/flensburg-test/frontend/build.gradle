@@ -20,7 +20,7 @@ buildscript {
 plugins {
   id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
   id "com.github.node-gradle.node" version "3.4.0"
-  id 'de.rwth.se.umlp-tool' version "$mc_version"
+  id 'de.rwth.se.umlp-tool'
 }
 
 repositories {

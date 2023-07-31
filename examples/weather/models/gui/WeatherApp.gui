@@ -4,13 +4,30 @@ import Weather.App;
 
 import arrange.src.lib.gemrow.GemRow;
 import gui.multi_day_forecast.MultiDayForecast;
+import gui.widgets.WeatherWidget;
+import gui.widgets.WindWidgetBody;
+import gui.widgets.HumidityWidgetBody;
 
 // TODO: singleton app?
 page WeatherApp(List<App> apps){
   // There should only be one instance!
   @iterate(App app : apps){
     @GemRow(
-      component = @MultiDayForecast(timeseries = app.currentCity.nextDays)
+      components = [
+        @MultiDayForecast(timeseries = app.currentCity.nextDays),
+        @WeatherWidget(
+          widgetsTitle = "Wind Speed",
+          title = "",
+          icon = "assets/icons/wind.svg",
+          component = @WindWidgetBody(timeseries = app.currentCity.nextDays)
+        ),
+        @WeatherWidget(
+          widgetsTitle = "Humidity",
+          title = "",
+          icon = "assets/icons/humid.svg",
+          component = @HumidityWidgetBody(timeseries = app.currentCity.nextDays)
+        )
+      ]
     );
   }
 }

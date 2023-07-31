@@ -5,7 +5,7 @@ import java.nio.file.Paths
 
 plugins {
   id "com.github.node-gradle.node" version "3.4.0"
-  id 'de.rwth.se.umlp-tool' version "$mc_version"
+  id 'de.rwth.se.umlp-tool'
 }
 
 

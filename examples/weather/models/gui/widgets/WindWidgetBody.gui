@@ -1,0 +1,18 @@
+package gui.widgets;
+
+import Weather.DailyForecast;
+import Weather.Timeseries;
+
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gemimage.GemImage;
+import gui.widgets.WeatherWidget;
+
+component WindWidgetBody(Timeseries timeseries) {
+  @GemColumn(components = [
+    @GemImage(source = "assets/images/WhiteCompassNoBackground.gif", style = "width: 200px; height: 200px"),
+    @GemText(value = "NA"),
+    @GemText(value = "km/h")
+  ]);
+}

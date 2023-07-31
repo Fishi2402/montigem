@@ -19,18 +19,18 @@ component DayRow(
   @GemRow(
     components = [
       @GemRow(
-        width="3em",
-        height="1em",
+        width="5em",
+        height="3em",
         component = @ShortFormDateRenderer(day = day, replaceToday = true)
       ),
       @GemRow(
-        width="1em",
-        height="1em",
+        width="3em",
+        height="3em",
         component = @WeatherStateIcon(state = day.getWeatherState())
       ),
       @GemRow(
-        width="2em",
-        height="1em",
+        width="4em",
+        height="3em",
         component = @GemText(value = day.getMinimumTemperature())
       ),
       @GemRow(
@@ -44,12 +44,12 @@ component DayRow(
                             minColor="green",
                             middleColor="yellow",
                             maxColor="red",
-                            backgroundColor="blue"
+                            backgroundColor="darkgrey"
                           )
       ),
       @GemRow(
-        width="2em",
-        height="1em",
+        width="4em",
+        height="3em",
         component = @GemText(value = day.getMaximumTemperature())
       )
     ]
