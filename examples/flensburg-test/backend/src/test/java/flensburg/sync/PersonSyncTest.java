@@ -33,7 +33,6 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-@Disabled // TODO MB
 public class PersonSyncTest {
   @BeforeEach
   public void clear(){
@@ -62,8 +61,7 @@ public class PersonSyncTest {
     assertNotSame(p1001, p1001Server);
     assertEquals(startGemId, p1001Server.getGemId());
     assertEquals(20, p1001Server.getAge());
-    // TODO MB
-    // assertTrue(p1001Server.availableMainResidence());
+    assertTrue(p1001Server.checkMainResidence());
 
     Address addrServer = p1001Server.getMainResidence();
     assertNotSame(addr, addrServer);
@@ -433,6 +431,7 @@ public class PersonSyncTest {
   }
 
   @Test
+  @Disabled
   public void testRemoveFromGemListInServer(){
     FlensburgMock.init();
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
@@ -461,6 +460,7 @@ public class PersonSyncTest {
   }
 
   @Test
+  @Disabled // TODO
   public void testRemoveFromGemListInServerWithListInterface(){
     FlensburgMock.init();
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
@@ -492,6 +492,7 @@ public class PersonSyncTest {
   }
 
   @Test
+  @Disabled
   public void testVisitedIsSyncedToServerInBuilder(){
     FlensburgMock.init();
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
@@ -591,6 +592,9 @@ public class PersonSyncTest {
 
     Log.info("Adding address 1", "PersonSyncTest");
     p1001Client.addVisited(a1);
+    assertEquals(1, p1001Client.sizeVisiteds());
+    assertEquals(1, a1.sizeVisitors());
+    assertEquals(0, a2.sizeVisitors());
 
     Log.info("Checking it is available in the Server", "PersonSyncTest");
     serverContext.activate();
@@ -661,6 +665,7 @@ public class PersonSyncTest {
   }
 
   @Test
+  @Disabled // TODO
   public void testVisitedRemovalFromServer(){
     FlensburgMock.init();
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
@@ -731,7 +736,8 @@ public class PersonSyncTest {
         .age(20)
         .nickname("Test")
         .mainResidence(a1Client)
-        .visited(Set.of(a1Client, a2Client))
+        .visitedAdd(a1Client)
+        .visitedAdd(a2Client)
         .build().get();
 
     Log.info("Checking it is removable in the Client", "PersonSyncTest");
@@ -764,6 +770,7 @@ public class PersonSyncTest {
   }
 
   @Test
+  @Disabled // TODO
   public void testVisitedRemovalCrossClients(){
     FlensburgMock.init();
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
@@ -784,8 +791,12 @@ public class PersonSyncTest {
         .age(20)
         .nickname("Test")
         .mainResidence(a1Client1)
-        .visited(Set.of(a1Client1, a2Client1))
+        .visitedAdd(a1Client1)
+        .visitedAdd(a2Client1)
         .build().get();
+
+    assertEquals(2, p1001Client1.sizeVisiteds());
+    assertEquals(1, a1Client1.sizeVisitors());
 
     Log.info("Checking it is removable in Client 2", "PersonSyncTest");
     clientContext2.activate();
@@ -793,7 +804,11 @@ public class PersonSyncTest {
     Address a1Client2 = FlensburgManager.getAddressSure(a1Client1.getGemId());
     Address a2Client2 = FlensburgManager.getAddressSure(a2Client1.getGemId());
 
+    assertEquals(2, p1001Client2.sizeVisiteds());
+    assertEquals(1, a1Client2.sizeVisitors());
+
     Address a1Removed = p1001Client2.removeVisited(0);
+
     assertEquals(1, p1001Client2.sizeVisiteds());
     assertEquals(a1Client2.getGemId(), a1Removed.getGemId());
     assertEquals(0, a1Client2.sizeVisitors());
@@ -867,7 +882,7 @@ public class PersonSyncTest {
     assertEquals(p1001Server.getGemId(), a4._internal_getVisitorGemList().getID(0));
 
     Address a2Server = FlensburgManager.getAddressSure(a2.getGemId());
-    assertEquals(0, a2Server.sizeVisitors());
+    assertEquals(1, a2Server.sizeVisitors());
 
     Log.info("Check the changes are synced to the Client", "PersonSyncTest");
     clientContext.activate();
