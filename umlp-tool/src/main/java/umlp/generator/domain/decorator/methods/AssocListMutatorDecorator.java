@@ -11,6 +11,8 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.se_rwth.commons.Joiners;
+import umlp.generator.domain.decorator.DomainTypeDecorator;
+import umlp.generator.gui.genjava.decorator.DomainRefDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +32,18 @@ public class AssocListMutatorDecorator extends SimpleMethodMutatorDecorator {
     List<ASTCDMethod> methodList = Lists.newArrayList();
     String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
     String sourceName = this.ast.getName();
+    String otherSide = ast.getModifier().isPresentStereotype() && ast.getModifier().getStereotype().contains(DomainTypeDecorator.STEREOTYPE_OTHERSIDE)?
+        ast.getModifier().getStereotype().getValue(DomainTypeDecorator.STEREOTYPE_OTHERSIDE):
+        "";
+    String managerName = ast.getModifier().isPresentStereotype()&& ast.getModifier().getStereotype().contains(DomainTypeDecorator.STEREOTYPE_MANAGER)?
+        ast.getModifier().getStereotype().getValue(DomainTypeDecorator.STEREOTYPE_MANAGER):
+        "";
+
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Add", service.getNativeAttributeName(ast.getName()), targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.AddId", service.getNativeAttributeName(ast.getName()), targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.AddAll", service.getNativeAttributeName(ast.getName()), targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.AddAllId", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.InternalAdd", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.InternalAdd", service.getNativeAttributeName(ast.getName()), otherSide, targetName, sourceName, managerName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.InternalAddId", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.InternalSet", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Remove", service.getNativeAttributeName(ast.getName()), targetName, sourceName).get());
