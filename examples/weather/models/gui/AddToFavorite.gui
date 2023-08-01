@@ -1,0 +1,30 @@
+package gui;
+
+import Weather.City;
+import Weather.App;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+import basic.src.lib.gembutton.GemButton;
+import basic.src.lib.gemtext.GemText;
+
+page AddToFavorite(City city, App app) {
+  @GemCard(title = "Add to favorites", component =
+    @GemColumn(
+      hAlign = "center",
+      rowGap = "10px", components = [
+      @GemRow(
+        rowGap = "5px", components = [
+        addbutton@GemButton(label = "+", leftClick = add2Favorite),
+        @GemText(value = " ") ]
+      ),
+      @GemText(value = "Favorites:"),
+      @iterate(City fav : app.favorite) {
+        @GemText(value = fav.getName());
+      },
+      clean@GemButton(label = "Clear Favorites", leftClick = clearFavorites) ]
+    )
+  );
+}
