@@ -4,7 +4,7 @@ import {ShortFormDateTimeRendererTOP} from "@src/gui/common/ShortFormDateTimeRen
 
 @Component({
   selector: 'short-form-date-time-renderer',
-  templateUrl: '../../../../build/appgui/gui/common/ShortFormDateTimeRenderer.html',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/common/ShortFormDateTimeRenderer.html',
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: []
 })
