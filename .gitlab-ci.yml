@@ -34,6 +34,10 @@ build:
   artifacts:
     paths:
       - examples/weather/frontend/build/frontendGen/dist/**
+      - examples/weather/frontend/build/frontendGen/Dockerfile
+      - examples/weather/frontend/build/frontendGen/Caddyfile
+      - examples/weather/frontend/build/frontendGen/.dockerignore
+
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
