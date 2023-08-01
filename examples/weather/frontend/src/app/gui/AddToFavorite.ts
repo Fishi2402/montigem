@@ -23,13 +23,17 @@ export class AddToFavorite extends AddToFavoriteTOP {
   public override add2Favorite(event: any): void {
     if (!this.isFavIncluded(this.getCity())) {
       this.app.addFavorite2(this.city);
-      //this.app._internal_getFavoriteGemList().loadAll();
+      this.app._internal_getFavoriteGemList().loadAll();
     }
   }
 
   public override clearFavorites(event: any): void {
     this.app.clearFavorites();
-    //this.app._internal_getFavoriteGemList().loadAll();
+    this.app._internal_getFavoriteGemList().loadAll().then(citylist => { // TODO: remove if update clarified
+      for (const a of citylist) {
+        console.log('City ' + a.getName());
+      }
+    });
   }
 
   public override getAddbuttonLabel(): string {

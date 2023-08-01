@@ -11,7 +11,7 @@ import basic.src.lib.gembutton.GemButton;
 import basic.src.lib.gemtext.GemText;
 
 page AddToFavorite(City city, App app) {
-  @GemCard(title = "Add to favorites", component =
+  @GemCard(title = "Add to Favorites", component =
     @GemColumn(
       hAlign = "center",
       rowGap = "10px", components = [
