@@ -3,7 +3,7 @@ import {ShortFormDateRendererTOP} from "@src/gui/common/ShortFormDateRendererTOP
 
 @Component({
   selector: 'short-form-date-renderer',
-  templateUrl: '../../../../build/appgui/gui/common/ShortFormDateRenderer.html',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/common/ShortFormDateRenderer.html',
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: []
 })
