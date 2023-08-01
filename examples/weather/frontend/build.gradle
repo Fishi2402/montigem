@@ -121,7 +121,7 @@ npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
 // npm_update.dependsOn(npm_install)
 
 task buildApp(type: NpxTask) {
-  dependsOn('genDomain', npm_install)
+  dependsOn(genDomain, npm_install, genGUI)
   command = "ng"
   args = ["build"]
 //  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
@@ -133,7 +133,7 @@ task buildApp(type: NpxTask) {
 assemble.dependsOn(buildApp)
 
 task testApp(type: NpxTask) {
-  dependsOn('genDomain', npm_install)
+  dependsOn(genDomain, npm_install, genGUI)
   command = "ng"
   args = ["test"]
 //  inputs.dir("src")
@@ -143,7 +143,7 @@ task testApp(type: NpxTask) {
 }
 
 task runApp(type: NpxTask) {
-  dependsOn('genDomain', npm_install)
+  dependsOn(genDomain, npm_install, genGUI)
   command = "ng"
   args = ["serve"]
 //  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
