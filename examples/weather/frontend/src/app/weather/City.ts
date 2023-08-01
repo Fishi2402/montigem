@@ -5,7 +5,6 @@ import {DailyForecast} from "@src/weather/DailyForecast";
 import {WeatherManager} from "@src/weather/WeatherManager";
 import { Forecast } from "@src/weather/Forecast";
 import {ForecastGemList} from "@src/weather/gemlists/ForecastGemList";
-import {Forecast} from "@src/weather/Forecast";
 
 // TODO: JSweet?
 export class City extends CityTOP {
