@@ -77,7 +77,7 @@ public class City extends CityTOP {
     LocalDate today = LocalDate.now();
 
     for (Forecast day : WeatherManager.getForecastList()) {
-      LocalDate cur = day.getDate();
+      LocalDate cur = day.getDate().toLocalDate();
       if (cur.getYear() == today.getYear()
           && cur.getMonth() == today.getMonth()
           && cur.getDayOfMonth() == today.getDayOfMonth()) {
