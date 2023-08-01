@@ -13,10 +13,10 @@ import { WindWidgetBodyTOP } from '@src/gui/widgets/WindWidgetBodyTOP';
 export class WindWidgetBody extends WindWidgetBodyTOP {
 
   public override getGemText2Value (): string {
-    let cur_day = this.getTimeseries().getContainedDays()[0];
-    let cur_forecast = cur_day.getDailyForecasts()[0];
-    let speed = cur_forecast.getWindspeed();
-    return "" + speed;
+    let curDay = this.getTimeseries().getContainedDays()[0];
+    let curForecast = curDay?.getDailyForecasts()[0];
+    let speed = curForecast?.getWindspeed();
+    return "" + speed ?? "";
   }
 
 }

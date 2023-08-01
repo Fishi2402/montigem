@@ -26,6 +26,7 @@
       "dom"
     ],
     "paths": {
+      "@umlp/common": ["../../../umlp-rte/client/projects/umlp/common/src/"],
       "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*"]
     }
   },

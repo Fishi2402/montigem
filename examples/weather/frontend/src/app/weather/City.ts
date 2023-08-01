@@ -3,20 +3,22 @@ import { Gem } from "@umlp/common";
 import { Timeseries } from "./Timeseries";
 import {DailyForecast} from "@src/weather/DailyForecast";
 import {WeatherManager} from "@src/weather/WeatherManager";
+import { Forecast } from "@src/weather/Forecast";
 
 // TODO: JSweet?
 export class City extends CityTOP {
   _nextDays: Gem<Timeseries> = new Gem<Timeseries>();
+  protected _current?: Forecast;
 
   public getNextDays(): Timeseries {
-    console.log("getNextDays", this)
+    // console.log("getNextDays", this)
     return this.getNextDaysGem().get();
   }
 
   public getNextDaysGem(): Gem<Timeseries> {
-    console.log("getNextDaysGem1", this)
+    // console.log("getNextDaysGem1", this)
     this.calcNextDays();
-    console.log("getNextDaysGem2", this)
+    // console.log("getNextDaysGem2", this)
     return this._nextDays;
   }
 
@@ -54,4 +56,24 @@ export class City extends CityTOP {
         )
     });
   }
+
+  public getCurrent(): Forecast | undefined {
+    return this._current;
+  }
+
+  public calcCurrent(): void {
+    let today = new Date();
+
+    WeatherManager.getForecastList().then(forecastGemList => {
+      for (let day of forecastGemList) {
+        const cur = day.getDate();
+        if (cur.getFullYear() == today.getFullYear()
+            && cur.getMonth() == today.getMonth()
+            && cur.getDate() == today.getDate()) {
+          this._current = day;
+        }
+      }
+    });
+  }
+
 }
