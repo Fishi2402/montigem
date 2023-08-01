@@ -1,10 +1,14 @@
 package weather;
 
 import umlp.backendrte.common.Gem;
+import weather.gemlists.ForecastGemList;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.List;
 import java.util.Set;
 
 public class City extends CityTOP {
@@ -18,6 +22,22 @@ public class City extends CityTOP {
   public Gem<Timeseries> getNextDaysGem() {
     calcNextDays();
     return _nextDays;
+  }
+
+  public ForecastGemList getNextHoursGemList() {
+    LocalDateTime today = LocalDateTime.now();
+    LocalDateTime until = today.plusHours(12);
+
+
+    List<Long> gemIds = new ArrayList<>();
+
+    WeatherManager.getForecastList().forEach(forecast -> {
+      var cur = forecast.getDate();
+      if (cur.isAfter(today) && cur.isBefore(until)) {
+        gemIds.add(forecast.getGemId());
+      }});
+
+    return new ForecastGemList(gemIds);
   }
 
   public void calcNextDays() {

@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Locale;
@@ -23,7 +24,7 @@ public class WeatherReport {
     JsonObject hourly = data.getObjectMember("hourly");
     for (int i = 0; i < hourly.getArrayMember("time").size(); i++) {
 
-      LocalDate date = LocalDate.parse(hourly.getArrayMember("time").get(i).getAsJsonString()
+      LocalDateTime date = LocalDateTime.parse(hourly.getArrayMember("time").get(i).getAsJsonString()
           .getValue(), DateTimeFormatter.ISO_DATE_TIME);
 
       WeatherManager.forecastBuilder()
@@ -40,10 +41,9 @@ public class WeatherReport {
           .build();
     }
 
-    var grouped = WeatherManager.getForecastList().stream().collect(Collectors.groupingBy(Forecast::getDate));
-    grouped.forEach((d, forecasts) ->
-        WeatherManager.dailyForecastBuilder().city(city).date(d).dailyForecasts(new HashSet<>(forecasts)).build()
-    );
+    // Group forecasts by their Date ignoring the time
+    var grouped = WeatherManager.getForecastList().stream().collect(Collectors.groupingBy(f -> f.getDate().toLocalDate()));
+    grouped.forEach((d, forecasts) -> WeatherManager.dailyForecastBuilder().city(city).date(d).dailyForecasts(new HashSet<>(forecasts)).build());
 
     city.calcNextDays();
   }

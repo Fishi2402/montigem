@@ -13,6 +13,7 @@ public enum TypeScriptTypes {
   LIST("List", "Array"),
   COLLECTION("Collection", "Array"),
   LOCAL_DATE("LocalDate", "Date"),
+  LOCAL_DATE_TIME("LocalDateTime", "Date"),
   ITERATOR("Iterator", "Iterator"),
   VOID("void", "void"),
   VOID_BOXED("Void", "void"),

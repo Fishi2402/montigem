@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { WindWidgetBodyTOP } from '@src/gui/widgets/WindWidgetBodyTOP';
+import {WindWidgetBodyTOP} from "@src/gui/widgets/WindWidgetBodyTOP";
 
 @Component({
   selector: 'wind-widget-body',
