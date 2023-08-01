@@ -5,7 +5,7 @@ import { FavoriteItemTOP } from '@src/gui/widgets/navigation/FavoriteItemTOP';
 
 @Component({
   selector: 'favorite-item',
-  templateUrl: '../../../../../build/appgui/gui/widgets/navigation/FavoriteItem.html',
+  templateUrl: '../../../../../build/frontendGen/build/appgui/gui/widgets/navigation/FavoriteItem.html',
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: ["./FavoriteItem.scss"]
 })

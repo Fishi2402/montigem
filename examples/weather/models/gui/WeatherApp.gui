@@ -7,6 +7,7 @@ import gui.multi_day_forecast.MultiDayForecast;
 import gui.widgets.WeatherWidget;
 import gui.widgets.WindWidgetBody;
 import gui.widgets.HumidityWidgetBody;
+import gui.AddToFavorite;
 
 // TODO: singleton app?
 page WeatherApp(List<App> apps){
@@ -14,6 +15,7 @@ page WeatherApp(List<App> apps){
   @iterate(App app : apps){
     @GemRow(
       components = [
+        @AddToFavorite(city = app.currentCity, app = app), // TODO: remove app if singleton; city as parameter
         @MultiDayForecast(timeseries = app.currentCity.nextDays),
         @WeatherWidget(
           widgetsTitle = "Wind Speed",

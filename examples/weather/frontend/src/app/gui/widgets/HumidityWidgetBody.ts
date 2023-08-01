@@ -5,7 +5,7 @@ import {HumidityWidgetBodyTOP} from "@src/gui/widgets/HumidityWidgetBodyTOP";
 
 @Component({
   selector: 'humidity-widget-body',
-  templateUrl: '../../../../build/appgui/gui/widgets/HumidityWidgetBody.html',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/widgets/HumidityWidgetBody.html',
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: ['./humidity-widget-style.scss']
 })

@@ -10,6 +10,13 @@
 
   handle {
     root * /srv
+
+    encode gzip zstd
+    @cachedFiles {
+        path *.jpg *.jpeg *.png *.svg *.gif *.ico *.mp4 *.css *.js     # Angular adds a hash to the CSS/JS files
+    }
+    header @cachedFiles Cache-Control "private, max-age=3600, must-revalidate"
+
     try_files {path} /index.html # try to serve static files, otherwise fallback to index.html
     file_server
   }
