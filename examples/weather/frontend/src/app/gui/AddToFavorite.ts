@@ -14,7 +14,7 @@ import {City} from "@src/weather/City";
 export class AddToFavorite extends AddToFavoriteTOP {
 
   public ngOnInit(): void {
-    super.ngOnInit();
+    // super.ngOnInit();
     if (!this.getCity()) {
       this.city = this.app.getCurrentCity();
     }
@@ -29,11 +29,7 @@ export class AddToFavorite extends AddToFavoriteTOP {
 
   public override clearFavorites(event: any): void {
     this.app.clearFavorites();
-    this.app._internal_getFavoriteGemList().loadAll().then(citylist => { // TODO: remove if update clarified
-      for (const a of citylist) {
-        console.log('City ' + a.getName());
-      }
-    });
+    this.app._internal_getFavoriteGemList().loadAll();
   }
 
   public override getAddbuttonLabel(): string {
