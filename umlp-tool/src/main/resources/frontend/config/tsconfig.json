@@ -31,8 +31,6 @@
       "@umlp/*": ["node_modules/@umlp/*"],
       "@monticore/*": ["node_modules/@monticore/*"],
       "tslib": ["node_modules/tslib"]
-      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*"],
-      "@umlp/common" : ["../../../umlp-rte/client/projects/umlp/common/src"]
     }
   },
   "angularCompilerOptions": {
