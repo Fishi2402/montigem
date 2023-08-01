@@ -6,7 +6,7 @@ import {City} from "@src/weather/City";
 
 @Component({
   selector: 'add-to-favorite',
-  templateUrl: '../../../build/appgui/gui/AddToFavorite.html',
+  templateUrl: '../../../build/frontendGen/build/appgui/gui/AddToFavorite.html',
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: []
 })
