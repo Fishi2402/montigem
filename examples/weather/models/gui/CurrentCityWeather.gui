@@ -1,0 +1,21 @@
+package gui;
+
+import Weather.Forecast;
+import Weather.City;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+import basic.src.lib.gemtext.GemText;
+
+component CurrentCityWeather(City city){
+  @GemColumn(hAlign = "center", components = [
+    @GemText(value=city.name),
+    @GemText(value=city.current.temperature + "°"),
+    @GemText(value="Mostly "),
+    @GemRow(colGap = "20px", components = [
+      @GemText(value="H:" + city.longitude + "°"),
+      @GemText(value="L:" + city.latitude + "°")
+    ])
+  ]);
+}

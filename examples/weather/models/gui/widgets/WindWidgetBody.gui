@@ -11,7 +11,7 @@ import gui.widgets.WeatherWidget;
 
 component WindWidgetBody(Timeseries timeseries) {
   @GemColumn(components = [
-    @GemImage(source = "assets/images/WhiteCompassNoBackground.gif", style = "width: 200px; height: 200px"),
+    @GemImage(source = "assets/images/compass.gif", style = "width: 200px; height: 200px"),
     @GemText(value = "NA"),
     @GemText(value = "km/h")
   ]);

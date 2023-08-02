@@ -9,6 +9,9 @@ import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.work.ChangeType;
+import org.gradle.work.Incremental;
+import org.gradle.work.InputChanges;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.StreamSupport;
 
 public abstract class FrontendSetup extends DefaultTask {
 
@@ -36,10 +40,20 @@ public abstract class FrontendSetup extends DefaultTask {
 
   @InputFiles
   @Optional
+  @Incremental
   public abstract DirectoryProperty getInput();
 
   @TaskAction
-  public void run() throws IOException, URISyntaxException {
+  public void run(InputChanges changes) throws IOException, URISyntaxException {
+    if(getInput().isPresent()) {
+      // Delete files in output, if file in input was deleted
+      StreamSupport.stream(changes.getFileChanges(getInput()).spliterator(), false)
+          .filter(ch -> ch.getChangeType().equals(ChangeType.REMOVED))
+          .forEach(ch -> {
+            String filename = getInput().getAsFile().get().toPath().relativize(ch.getFile().toPath()).toString();
+            FileUtils.deleteQuietly(getOutput().file(filename).get().getAsFile());
+          });
+    }
 
     // First Copy Files from Resources of UMLP-Tool
     for(String filename: getResourceListing(this.getClass(), FRONTEND_CONFIG)){

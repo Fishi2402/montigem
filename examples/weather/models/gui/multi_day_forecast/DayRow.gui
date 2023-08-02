@@ -19,37 +19,37 @@ component DayRow(
   @GemRow(
     components = [
       @GemRow(
-        width="5em",
-        height="3em",
+        width="5rem",
+        height="3rem",
         component = @ShortFormDateRenderer(day = day, replaceToday = true)
       ),
       @GemRow(
-        width="3em",
-        height="3em",
+        width="3rem",
+        height="3rem",
         component = @WeatherStateIcon(state = day.getWeatherState())
       ),
       @GemRow(
-        width="4em",
-        height="3em",
+        width="4rem",
+        height="3rem",
         component = @GemText(value = day.getMinimumTemperature())
       ),
       @GemRow(
         width="105px",
         height="10px",
         component = @RangeWithGradient(
-                            width="100px",
-                            height="5px",
-                            startPercentage=((day.getMinimumTemperature() - groupMinTemp)/(groupMaxTemp - groupMinTemp)) * 100, // TODO: hardcoded
-                            endPercentage=((day.getMaximumTemperature() - groupMinTemp)/(groupMaxTemp - groupMinTemp)) * 100,
-                            minColor="green",
-                            middleColor="yellow",
-                            maxColor="red",
-                            backgroundColor="darkgrey"
-                          )
+          width="100px",
+          height="5px",
+          startPercentage=((day.getMinimumTemperature() - groupMinTemp)/(groupMaxTemp - groupMinTemp)) * 100, // TODO: hardcoded
+          endPercentage=((day.getMaximumTemperature() - groupMinTemp)/(groupMaxTemp - groupMinTemp)) * 100,
+          minColor="green",
+          middleColor="yellow",
+          maxColor="red",
+          backgroundColor="darkgrey"
+        )
       ),
       @GemRow(
-        width="4em",
-        height="3em",
+        width="4rem",
+        height="3rem",
         component = @GemText(value = day.getMaximumTemperature())
       )
     ]
