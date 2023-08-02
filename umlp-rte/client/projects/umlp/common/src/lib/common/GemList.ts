@@ -185,10 +185,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     }
     toSort.reverse();
     for (let idx of toSort) {
-      let index = this.ids.findIndex(i => i === idx);
-      if (index >= 0) {
-        this.ids.splice(index, 1);
-      }
+      this.ids.splice(idx, 1);
     }
   }
 
