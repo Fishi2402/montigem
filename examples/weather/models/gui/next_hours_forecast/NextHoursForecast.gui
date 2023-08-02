@@ -1,0 +1,34 @@
+package gui.next_hours_forecast;
+
+import Weather.Timeseries;
+import Weather.Forecast;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+import basic.src.lib.gemtext.GemText;
+import gui.common.WeatherStateIcon;
+import gui.common.ShortFormDateTimeRenderer;
+
+component NextHoursForecast(List<Forecast> forecasts){
+  @GemCard(
+    title = "Next 12 Hours Forecast",
+    component =
+      @GemRow(
+        width="60vw",
+        components = [
+          @iterate(Forecast hourlyForecast : forecasts){
+            @GemColumn(
+             width="15em",
+             height="20em",
+             components = [
+               @ShortFormDateTimeRenderer(forecast = hourlyForecast, replaceToday = false),
+               @WeatherStateIcon(state = hourlyForecast.getWeatherState()),
+               @GemText(value = hourlyForecast.getTemperature())
+             ]
+            );
+          }
+        ]
+      )
+  );
+}

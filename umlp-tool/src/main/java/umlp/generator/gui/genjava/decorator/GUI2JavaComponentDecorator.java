@@ -313,7 +313,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       SymTypeExpression rightType = rightTypeOpt.get();
       // TODO AGe: still not nice
       boolean leftIsString = TypeScriptTypes.isString(leftType);
-      boolean rightIsDate = rightType.print().endsWith("LocalDate");
+      boolean rightIsDate = rightType.print().contains("LocalDate");
 
       if (leftIsString && rightIsDate) {
         if (forGetter) {
