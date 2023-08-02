@@ -118,10 +118,10 @@ task generateNPMAuth(type: NPMAuthCreate){
 
 npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
 // TODO AGe: npm_update too slow - strategy to make occasional checks
-// npm_update.dependsOn(npm_install)
+npm_update.dependsOn(npm_install)
 
 task buildApp(type: NpxTask) {
-  dependsOn(genDomain, npm_install, genGUI)
+  dependsOn(genDomain, npm_update, genGUI)
   command = "ng"
   args = ["build"]
 //  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
