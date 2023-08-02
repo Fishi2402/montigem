@@ -3,6 +3,10 @@
 
 @include montigem-theme();
 
+* {
+  color: #fff;
+}
+
 body {
   margin: 0;
 }
@@ -20,22 +24,22 @@ body {
 }
 
 .gem-card-header, .gem-card-body {
-  background: rgba(#fff, 0.5) !important;
+  background: rgba(0, 110, 206, 0.2) !important;
   backdrop-filter: blur(5px) !important;
-  -webkit-backdrop-filter: blur(5px);
-  color: #00549f;
+}
+
+.gem-card-header {
+  border-bottom: 1px solid #fff9;
+}
+
+gem-text {
+  font-size: 1.2rem;
 }
 
 weather-widget, multi-day-forecast {
   padding-left: 2px;
   padding-right: 2px;
 }
-
-gem-Text {
-  font-size: 30px !important;
-  color: #fff;
-}
-
 
 .mat-mdc-table, .mat-mdc-header-cell {
   background: rgba(#fff, 0.0) !important;

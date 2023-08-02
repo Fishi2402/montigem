@@ -7,7 +7,7 @@ import {WindWidgetBodyTOP} from "@src/gui/widgets/WindWidgetBodyTOP";
   selector: 'wind-widget-body',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/widgets/WindWidgetBody.html',
   styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['./wind-widget-style.scss']
+  styleUrls: ['./WindWidgetBody.scss']
 })
 
 export class WindWidgetBody extends WindWidgetBodyTOP {

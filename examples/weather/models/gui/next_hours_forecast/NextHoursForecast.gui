@@ -15,12 +15,11 @@ component NextHoursForecast(List<Forecast> forecasts){
     title = "Next 12 Hours Forecast",
     component =
       @GemRow(
-        width="60vw",
+        colGap = "5px",
         components = [
           @iterate(Forecast hourlyForecast : forecasts){
             @GemColumn(
-             width="15em",
-             height="20em",
+             width="7rem",
              components = [
                @ShortFormDateTimeRenderer(forecast = hourlyForecast, replaceToday = false),
                @WeatherStateIcon(state = hourlyForecast.getWeatherState()),
