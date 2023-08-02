@@ -13,6 +13,7 @@ export class City extends CityTOP {
 
   protected _nextHours: GemList<Forecast>;
 
+  // TODO: replace with umlp observers
   protected original = {
     nextDays: { value: null, hash: null, calculating: false },
     nextHours: { value: null, hash: null, calculating: false },
@@ -122,7 +123,7 @@ export class City extends CityTOP {
   }
 
   public calcCurrent(): void {
-    if (this.original.current.calculating || this.original.current.hash != null) {
+    if (this.original.current.calculating) {
       return;
     }
     this.original.current.calculating = true;
