@@ -12,6 +12,7 @@ import gui.widgets.WeatherWidget;
 import gui.widgets.WindWidgetBody;
 import gui.widgets.HumidityWidgetBody;
 import gui.AddToFavorite;
+import gui.CurrentCityWeather;
 
 // TODO: singleton app?
 page WeatherApp(List<App> apps){
@@ -21,6 +22,9 @@ page WeatherApp(List<App> apps){
       rowGap = "20px",
       components = [
         @AddToFavorite(city = app.currentCity, app = app), // TODO: remove app if singleton; city as parameter
+        @GemRow(hAlign = "center", components = [
+          @CurrentCityWeather(city = app.currentCity)
+        ]),
         @NextHoursForecast(forecasts = app.currentCity.nextHours),
         @GemRow(
           colGap = "20px",

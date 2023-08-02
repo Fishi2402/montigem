@@ -130,26 +130,29 @@ export class City extends CityTOP {
 
     let today = new Date();
 
+
     WeatherManager.getForecastList().then(forecastGemList => {
-      for (let day of forecastGemList) {
-        const cur = day.getDate();
-        if (cur.getFullYear() == today.getFullYear()
-          && cur.getMonth() == today.getMonth()
-          && cur.getDate() == today.getDate()) {
+      forecastGemList.loadAll().then(forecastList => {
+        for (let day of forecastGemList) {
+          const cur = day.getDate();
+          if (cur.getFullYear() == today.getFullYear()
+            && cur.getMonth() == today.getMonth()
+            && cur.getDate() == today.getDate()) {
 
-          this.original.current.calculating = false;
+            this.original.current.calculating = false;
 
-          const value = day;
-          const hash = JSON.stringify(value);
-          if (this.original.current.hash === hash) {
+            const value = day;
+            const hash = JSON.stringify(value);
+            if (this.original.current.hash === hash) {
+              return;
+            }
+            this.original.current.hash = hash;
+
+            this._current = value;
             return;
           }
-          this.original.current.hash = hash;
-
-          this._current = value;
-          return;
         }
-      }
+      });
     });
   }
 
