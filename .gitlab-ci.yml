@@ -27,13 +27,17 @@ build:
   cache:
     key:
       files:  # Cache depends on state of "package-lock"
-        - examples/weather/frontend/package-lock.json
+        - examples/weather/frontend/build/frontendGen/package-lock.json
     paths:
-      - examples/weather/frontend/node_modules
+      - examples/weather/frontend/build/frontendGen/node_modules
       - examples/weather/frontend/.gradle/nodejs
   artifacts:
     paths:
-      - examples/weather/frontend/dist/**
+      - examples/weather/frontend/build/frontendGen/dist/**
+      - examples/weather/frontend/build/frontendGen/Dockerfile
+      - examples/weather/frontend/build/frontendGen/Caddyfile
+      - examples/weather/frontend/build/frontendGen/.dockerignore
+
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
@@ -75,7 +79,7 @@ deployWeatherFrontendDocker:
   dependencies:
    - build
   script:
-    - "cd examples/weather/frontend"
+    - "cd examples/weather/frontend/build/frontendGen"
     - "docker build . -t $CI_REGISTRY_IMAGE/weather_frontend:latest"
     - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
     - "docker push $CI_REGISTRY_IMAGE/weather_frontend:latest"
