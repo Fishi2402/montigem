@@ -110,7 +110,7 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
 
     getCD4C().addMethod(ast, getDoRunTemplate(), name, domainClass.getName(), getCorrectManager(domainClass), isGem, name);
     if (isGem) {
-      getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList(name + "GemId"));
+      getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("getGemId()", name + "GemId"));
     } else {
       getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("getGemId()"));
     }

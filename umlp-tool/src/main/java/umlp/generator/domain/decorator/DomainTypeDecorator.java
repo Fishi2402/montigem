@@ -41,6 +41,8 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
 
   public static final String STEREOTYPE_OTHERSIDE = "otherSide";
   public static final String STEREOTYPE_MANAGER = "manager";
+  public static final String STEREOTYPE_OTHERSIDE_ISLIST = "isList";
+
   public DomainTypeDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }
@@ -124,7 +126,10 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
       ASTModifier modifier = PROTECTED.build();
       if (GenService.isBidirectional(assocSide)) {
         String setter = GenService.isList(assocSide.getSymbol().getOtherSide().getAssocSide())?"add":"set";
-        addStereotype(modifier, STEREOTYPE_OTHERSIDE, setter+ StringTransformations.capitalize(assocSide.getSymbol().getOtherSide().getName()));
+        addStereotype(modifier, STEREOTYPE_OTHERSIDE, assocSide.getSymbol().getOtherSide().getName());
+        if (GenService.isList(assocSide.getSymbol().getOtherSide().getAssocSide())) {
+          addStereotype(modifier, STEREOTYPE_OTHERSIDE_ISLIST, "");
+        }
         addStereotype(modifier, STEREOTYPE_MANAGER, getCorrectManager(assocSide));
       }
       if (GenService.isList(assocSide)) {

@@ -90,8 +90,7 @@ public class BuilderDecorator extends AbstractDecorator {
     builderClass.addAllCDMembers(methodDecorator.decorate(finishedAttr));
     builderClass.addAllCDMembers(methodDecorator.decorate(internalAttr));
     createSetAndCheckMethods(domainClass, builderClass, attrFields, attrAssocs);
-    getCD4C().addMethod(builderClass, getBuildTemplate(), domainClass.getName(), managerName, attrAssocLists);
-
+    getCD4C().addMethod(builderClass, getBuildTemplate(), domainClass.getName(), managerName, attrAssocs);
     // TODO: filter by mandatory
     List<ASTCDAttribute> mandatoryAttrList = attrList;
     getCD4C().addMethod(builderClass, getIsBuildableTemplate(), mandatoryAttrList);

@@ -15,7 +15,9 @@ for(long gemID : gemIDs) {
   check${name?cap_first}();
   <#if otherSideName?has_content>
   if (scope.contains(NotificationScope.LOCAL)) {
-    ${managerName}.get${targetName}Sure(gemID).${otherSideName}((${sourceName}) this, NotificationScope.MINIMAL);
+    if(${managerName}.isLoaded${targetName}(gemID)){
+      ${managerName}.get${targetName}Sure(gemID).${otherSideName}((${sourceName}) this, NotificationScope.MINIMAL);
+    }
   }
   </#if>
   for(${sourceName}Observer obs : ${sourceName?uncap_first}Observers) {
