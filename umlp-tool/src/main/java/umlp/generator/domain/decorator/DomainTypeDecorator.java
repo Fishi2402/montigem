@@ -9,18 +9,26 @@ import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.codegen.methods.MutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
+import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdassociation._symboltable.CDRoleSymbol;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.umlmodifier._ast.ASTModifier;
+import de.se_rwth.commons.StringTransformations;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
 import umlp.generator.domain.decorator.methods.AssocMutatorDecorator;
 import umlp.generator.domain.decorator.methods.MethodGenService;
 import umlp.generator.domain.decorator.methods.SimpleMethodMutatorDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +38,10 @@ import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static umlp.generator.domain.decorator.GenService.createType;
 
 public abstract class DomainTypeDecorator extends AbstractDecorator {
+
+  public static final String STEREOTYPE_OTHERSIDE = "otherSide";
+  public static final String STEREOTYPE_MANAGER = "manager";
+  public static final String STEREOTYPE_OTHERSIDE_ISLIST = "isList";
 
   public DomainTypeDecorator(GlobalExtensionManagement glex) {
     super(glex);
@@ -43,6 +55,10 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemBuildable"));
     addDBAnnotationInfo(cdType);
+    if (cdType.getModifier().isPresentStereotype()&& cdType.getModifier().getStereotype().contains(DomainTypeDecorator.STEREOTYPE_MANAGER)) {
+      getCD4C().addImport(cdType, getPackageName(UMLPSymbolTables.getDiagramFor(domainType), DEFAULT_PACKAGE+"."
+          +cdType.getModifier().getStereotype().getValue(DomainTypeDecorator.STEREOTYPE_MANAGER)));
+    }
   }
 
   protected void addDBAnnotationInfo(ASTCDType cdType) {
@@ -107,11 +123,20 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     for (ASTCDAssocSide assocSide: associations) {
       String type = assocSide.getSymbol().getType().print();
       ASTCDAttribute attribute;
+      ASTModifier modifier = PROTECTED.build();
+      if (GenService.isBidirectional(assocSide)) {
+        String setter = GenService.isList(assocSide.getSymbol().getOtherSide().getAssocSide())?"add":"set";
+        addStereotype(modifier, STEREOTYPE_OTHERSIDE, assocSide.getSymbol().getOtherSide().getName());
+        if (GenService.isList(assocSide.getSymbol().getOtherSide().getAssocSide())) {
+          addStereotype(modifier, STEREOTYPE_OTHERSIDE_ISLIST, "");
+        }
+        addStereotype(modifier, STEREOTYPE_MANAGER, getCorrectManager(assocSide));
+      }
       if (GenService.isList(assocSide)) {
-        attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+        attribute = getCDAttributeFacade().createAttribute(modifier,
                 getMCTypeFacade().createBasicGenericTypeOf("GemList", type), GenService.createName(assocSide.getName()));
       } else {
-        attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+        attribute = getCDAttributeFacade().createAttribute(modifier,
                 getMCTypeFacade().createBasicGenericTypeOf("Gem", type), GenService.createName(assocSide.getName()));
       }
       attrList.add(attribute);
@@ -119,6 +144,16 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     return attrList;
   }
 
+  //TODO MB: das muss in CD4A bzw. MontiCore behoben werden
+  protected void addStereotype(ASTModifier modifier, String name, String value) {
+    if (!modifier.isPresentStereotype()) {
+      modifier.setStereotype(CD4CodeMill.stereotypeBuilder().build());
+    }
+    ASTStringLiteral text = CD4CodeMill.stringLiteralBuilder().setSource(value).build();
+    modifier
+        .getStereotype()
+        .addValues(CD4CodeMill.stereoValueBuilder().setName(name).setText(text).setContent(value).build());
+  }
   protected AttributesTuple getAllAttributes(ASTCDType domainType, boolean isInterface) {
     return new AttributesTuple(
             getAttributesForFields(domainType),

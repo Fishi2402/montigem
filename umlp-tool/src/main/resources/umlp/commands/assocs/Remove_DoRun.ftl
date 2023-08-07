@@ -9,9 +9,6 @@ ${cd4c.method("public StatusResult doRun()")}
 boolean loaded${ctargetName} = ${managerName}.isLoaded${targetType}(${targetName}GemId);
 boolean loaded${csourceName} = ${managerName}.isLoaded${sourceType}(${sourceName}GemId);
 
-// TODO: With DB: server must have loaded both
-assert CommandManager.getParticipantId() != 0 || (loaded${ctargetName} && loaded${csourceName});
-
 if(loaded${ctargetName} && loaded${csourceName}){
   ${sourceType} p = ${managerName}.get${sourceType}Sure(${sourceName}GemId);
   ${targetType} a = ${managerName}.get${targetType}Sure(${targetName}GemId);

@@ -235,7 +235,9 @@ public abstract class AbstractDecorator {
   }
 
   protected String getCorrectManager(ASTCDAssocSide assocSide) {
-    return UMLPSymbolTables.getDiagramFor(assocSide).getCDDefinition().getName()+ManagerDecorator.SUFFIX;
+    ASTCDCompilationUnit diagram = UMLPSymbolTables.getDiagramFor(assocSide);
+    return Joiners.DOT.join(getPackageName(diagram, DEFAULT_PACKAGE),
+        diagram.getCDDefinition().getName()+ManagerDecorator.SUFFIX);
   }
 
   protected String getCorrectManagerOfTargetType(ASTCDAssocSide assocSideTarget) {

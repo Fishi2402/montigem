@@ -16,9 +16,9 @@ if (!o.containsObserver(the${name}CommandObserver)) {
     if(${managerName}Manager.isLoaded${type}(initialId)){
       ${type} other = ${managerName}Manager.get${type}Sure(initialId);
       <#if otherSide.getCDCardinality().isMult()>
-        other._internal_add${otherSide.getName()?cap_first}(other.size${otherSide.getName()?cap_first}s(), Collections.singletonList(o.getGemId()), NotificationScope.MINIMAL);
+        other.add${otherSide.getName()?cap_first}(other.size${otherSide.getName()?cap_first}s(), o, NotificationScope.MINIMAL);
       <#else>
-        other._internal_set${otherSide.getName()?cap_first}(o.getGemId(), NotificationScope.MINIMAL);
+        other.set${otherSide.getName()?cap_first}(o, NotificationScope.MINIMAL);
       </#if>
       }
     }

@@ -124,6 +124,8 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     for (ASTCDAttribute attr : nonDerivedAttrs) {
       if(GenService.isGem(attr) && !GenService.isGemList(attr)) {
         glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(getInitialGemValue()));
+      } else if (GenService.isList(attr)) {
+        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("=new ArrayList<>()"));
       }
     }
 
