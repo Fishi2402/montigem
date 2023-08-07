@@ -2,6 +2,7 @@
 package umlp.jsweet.extension.backendAdapters;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
+import org.jsweet.transpiler.model.ExtendedElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import umlp.jsweet.extension.UMLPAdapterUtils;
 
