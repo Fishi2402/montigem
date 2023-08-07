@@ -84,7 +84,7 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     return method;
   }
 
-  private ASTCDMethod createGetGemListOverride(ASTCDAttribute ast){
+  private ASTCDMethod createGetGemListOverride(ASTCDAttribute ast) {
     ASTCDMethod method = createGetter(ast);
     method.getModifier().setAbstract(true);
     method.setName(method.getName() + "DerivedGemList");

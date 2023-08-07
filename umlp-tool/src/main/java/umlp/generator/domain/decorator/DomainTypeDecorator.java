@@ -110,7 +110,6 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
         CDSymbolTables.getAssociationsInHierarchy(domainType))
         .stream()
         .filter(GenService::isVisible)
-        .filter(Predicate.not(GenService::isSymbolDerived))
         .collect(Collectors.toList());
 
     // handle associations
