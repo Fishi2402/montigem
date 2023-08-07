@@ -96,7 +96,6 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     List<ASTCDAssocSide> derivedAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
         .filter(GenService::isSymbolDerived)
         .collect(Collectors.toList());
-    System.out.println("derivedAssocs: " + derivedAssocs.stream().map(ASTCDAssocSide::getName).collect(Collectors.joining(", ")));
     if (!derivedAssocs.isEmpty()) {
       String derivedAssocsStr = derivedAssocs.stream()
           .map(assoc -> {
@@ -109,7 +108,6 @@ public class DomainClassDecorator extends DomainTypeDecorator {
                 sourcePosition.getColumn()
             );
           }).collect(Collectors.joining(", "));
-
       stereotype.addValues(
           TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
               String.format("Custom implementation for class: %s required. Contains derived association(s): %s", domainClass.getName(), derivedAssocsStr)
