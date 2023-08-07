@@ -12,7 +12,7 @@ import gui.widgets.WeatherWidget;
 import gui.widgets.WindWidgetBody;
 import gui.widgets.HumidityWidgetBody;
 import gui.AddToFavorite;
-import gui.CurrentCityWeather;
+import gui.current_city_weather.CurrentCityWeather;
 
 // TODO: singleton app?
 page WeatherApp(List<App> apps){

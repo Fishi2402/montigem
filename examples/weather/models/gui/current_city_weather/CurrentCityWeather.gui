@@ -1,4 +1,4 @@
-package gui;
+package gui.current_city_weather;
 
 import Weather.Forecast;
 import Weather.City;
