@@ -55,8 +55,8 @@ export class JsonPrinter {
     return this.currElements[this.currElements.length - 1];
   }
 
-  memberJson(value: string, s: string) {
-    // TODO
+  memberJson(kind: string, value: string) {
+    (this.getCurrentElement())[kind] = JSON.parse(value);
   }
 
   value(value: any) {

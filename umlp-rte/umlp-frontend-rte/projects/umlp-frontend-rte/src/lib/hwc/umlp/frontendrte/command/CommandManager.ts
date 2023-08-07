@@ -91,16 +91,12 @@ export class CommandManager {
                     if (!(participantId === command.getParticipantId())){
                         let match: boolean = false;
                         {
-                            let array1 = command.getEffectedGemIds();
-                            for(let index1 = 0; index1 < array1.length; index1++) {
-                                let gemId = array1[index1];
-                                {
-                                    if (participant.isSubscribedTo(gemId)){
-                                        match = true;
-                                        break;
-                                    }
-                                }
+                          for await (let gemId of command.getEffectedGemIds()) {
+                            if (participant.isSubscribedTo(gemId)){
+                              match = true;
+                              break;
                             }
+                          }
                         }
                         if (match){
                             Log.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + participantId, LogUtil.getLoggerName());

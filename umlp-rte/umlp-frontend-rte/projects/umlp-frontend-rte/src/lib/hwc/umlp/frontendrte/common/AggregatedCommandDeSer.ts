@@ -20,7 +20,7 @@ export abstract class AggregatedCommandDeSer {
     public async serialize(command: Command<any>): Promise<string> {
         const printer: JsonPrinter = new JsonPrinter(true);
         printer.beginObject();
-        this.buildJson(command, printer);
+        await this.buildJson(command, printer);
         printer.endObject();
         return Promise.resolve(printer.toString());
     }

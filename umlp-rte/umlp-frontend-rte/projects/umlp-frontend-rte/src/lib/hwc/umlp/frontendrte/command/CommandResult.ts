@@ -11,11 +11,17 @@ export abstract class CommandResult<T> {
 
     typeParameter: string;
 
-    constructor(id: number, typeParameter: string) {
-        if (this.commandId === undefined) { this.commandId = 0; }
-        if (this.typeParameter === undefined) { this.typeParameter = null; }
+    public constructor(id?: number, typeParameter?: string) {
+      if (id != undefined && id != null) {
         this.commandId = id;
         this.typeParameter = typeParameter;
+      }
+    }
+
+    protected setParams(id: number, typeParameter: string): CommandResult<T> {
+      this.commandId = id;
+      this.typeParameter = typeParameter;
+      return this;
     }
 
     public getCommandId(): number {

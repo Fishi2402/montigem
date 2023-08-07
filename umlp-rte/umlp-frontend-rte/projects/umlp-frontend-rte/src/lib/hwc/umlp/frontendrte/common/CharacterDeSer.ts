@@ -25,10 +25,10 @@ export class CharacterDeSer implements DeSer<string> {
      */
     public async deserialize(str: string): Promise<string> {
         const e: any = JSON.parse(str);
-        if (!e.isJsonNumber()){
+        if (typeof e != 'number'){
             return null;
         }
-        return (v => { if (v == null) throw new Error('value is null'); return v; })(String.fromCharCode(e.getAsJsonNumber().getNumberAsInteger()));
+        return (v => { if (v == null) throw new Error('value is null'); return v; })(String.fromCharCode(e));
     }
 
     constructor() {

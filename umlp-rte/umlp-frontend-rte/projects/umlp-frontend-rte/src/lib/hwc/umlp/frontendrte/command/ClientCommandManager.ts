@@ -25,9 +25,9 @@ export class ClientCommandManager extends CommandManager {
     })
   }
 
-  protected override _executeCommand<T>(command: Command<T>): Promise<CommandResult<T>> {
+  protected override async _executeCommand<T>(command: Command<T>): Promise<CommandResult<T>> {
     command.setParticipantId(this.participantId);
-    return this.commandCommunication.sendCommandToServerAndReceiveResult(command);
+    return await this.commandCommunication.sendCommandToServerAndReceiveResult(command);
   }
 
   public isInitSuccessFul(): boolean {

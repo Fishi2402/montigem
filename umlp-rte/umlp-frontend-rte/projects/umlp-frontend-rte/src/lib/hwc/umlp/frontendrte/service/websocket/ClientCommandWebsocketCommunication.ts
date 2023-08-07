@@ -50,9 +50,7 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
       let sendingSuccessful: boolean = this.sendMessage(payload);
       if (!sendingSuccessful) {
         ClientCommandWebsocketCommunication.warnCouldNotReceive(command);
-        return Promise.resolve(new SimpleResult(
-          command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType()
-        ));
+        return Promise.resolve(new SimpleResult().createFromLoadingState(command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType()));
       }
       const resultSubject = new Subject<CommandResult<T>>();
       this.messages.set(command.getId(), resultSubject);
