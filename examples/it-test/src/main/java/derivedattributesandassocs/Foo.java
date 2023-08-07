@@ -1,8 +1,11 @@
 package derivedattributesandassocs;
 
+import derivedattributesandassocs.gemlists.BarGemList;
+import umlp.backendrte.common.GemList;
+
 import java.util.List;
 
-public class Foo extends FooTOP{
+public class Foo extends FooTOP {
 
   @Override
   public int getA() {
@@ -17,6 +20,11 @@ public class Foo extends FooTOP{
   @Override
   public List<String> getCList() {
     return List.of("eins", "zwei");
+  }
+
+  @Override
+  public GemList<Bar> getBarDerivedGemList() {
+    return new BarGemList();
   }
 
   //@Override
