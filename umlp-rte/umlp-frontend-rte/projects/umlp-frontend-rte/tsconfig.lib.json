@@ -3,18 +3,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/lib",
-    "target": "es2017",
-    "module": "es2020",
-    "declaration": false,
-    "declarationMap": true,
-    "inlineSources": true,
-    "strict": false,
-    "noImplicitReturns": true,
-    "types": ["node"],
-    "lib": [
-      "dom",
-      "es2018"
-    ],
     "baseUrl": "./",
 //    "paths": {
 //      "@umlp-rte/target/*": ["src/lib/target/umlp/backendrte/*"],
@@ -22,7 +10,6 @@
 //    }
   },
   "exclude": [
-    "src/test.ts",
     "**/*.spec.ts"
   ]
 }

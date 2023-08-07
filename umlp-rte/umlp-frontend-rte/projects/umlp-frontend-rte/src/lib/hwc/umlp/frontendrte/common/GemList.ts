@@ -49,7 +49,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     if (this.isNotIdxInInclusiveBounds(idx)){
       this.logIndexError("0xAC729", "get", idx);
     }
-    const id: number = this.getID$int(idx);
+    const id: number = await this.getID$int(idx);
     const lr: LoadResult<E> = await this.loadSingleObject(id);
     if (lr.isPresent()){
       return lr.get();
@@ -232,7 +232,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     if (this.isNotIdxInInclusiveBounds(idx)) {
       this.logIndexError("oxAC728", "isPresent", idx);
     }
-    return (await this.loadSingleObject(this.getID$int(idx))).isPresent();
+    return (await this.loadSingleObject(await this.getID$int(idx))).isPresent();
   }
 
   public setIDs(changes: any) {
@@ -252,7 +252,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     if ((res.size() == 0)){
       return <any>(new LoadResult<any>(LoadingState.FAILED_TO_LOAD));
     }
-    return res[0];
+    return await res.get(0);
   }
 
   isNotIdxInInclusiveBounds(idx: number): boolean {
@@ -282,19 +282,19 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     }
   }
 
-  public getID$int(idx: number): number {
-    return /* get */this.getIDs$int$int(idx, idx + 1)[0];
+  public async getID$int(idx: number): Promise<number> {
+    return await this.getIDs$int$int(idx, idx + 1).get(0);
   }
 
   public getIDs$int$int(startIdx: number, endIdx: number): IUMLPList<number> {
-    return /* subList */new UMLPArrayList(this.ids.slice(startIdx, endIdx));
+    return new UMLPArrayList(this.ids.slice(startIdx, endIdx));
   }
 
   public getIDs(startIdx?: any, endIdx?: any): IUMLPList<number> {
     if (((typeof startIdx === 'number') || startIdx === null) && ((typeof endIdx === 'number') || endIdx === null)) {
-      return <any>this.getIDs$int$int(startIdx, endIdx);
+      return this.getIDs$int$int(startIdx, endIdx);
     } else if (startIdx === undefined && endIdx === undefined) {
-      return <any>this.getIDs$();
+      return this.getIDs$();
     } else throw new Error('invalid overload');
   }
 
@@ -311,11 +311,11 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    * @param {*} elem
    * @return {number}
    */
-  public getID(elem?: any): number {
-    if (((elem != null) || elem === null)) {
-      return <any>this.getID$umlp_backendrte_common_GemIdentifiable(elem);
-    } else if (((typeof elem === 'number') || elem === null)) {
-      return <any>this.getID$int(elem);
+  public async getID(elem?: any): Promise<number> {
+    if (((typeof elem === 'number') || elem === null)) {
+      return await this.getID$int(elem);
+    } else if (((elem != null) || elem === null)) {
+      return this.getID$umlp_backendrte_common_GemIdentifiable(elem);
     } else throw new Error('invalid overload');
   }
 

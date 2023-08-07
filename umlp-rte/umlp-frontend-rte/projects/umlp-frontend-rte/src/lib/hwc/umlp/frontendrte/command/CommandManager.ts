@@ -65,7 +65,7 @@ export class CommandManager {
         return await CommandManager.getInstance()._executeCommand<any>(command);
     }
 
-    async _executeCommand<T>(command: Command<T>): Promise<CommandResult<T>> {
+    protected async _executeCommand<T>(command: Command<T>): Promise<CommandResult<T>> {
         const res: CommandResult<T> = await command.doRun();
         if (/* containsKey */((m,k) => { if(m.entries==null) m.entries=[]; for(let i=0;i<m.entries.length;i++) if(m.entries[i].key==null && k==null || m.entries[i].key.equals!=null && m.entries[i].key.equals(k) || m.entries[i].key===k) { return true; } return false; })(<any>this.particpants, command.getParticipantId())){
             /* get */((m,k) => { if(m.entries==null) m.entries=[]; for(let i=0;i<m.entries.length;i++) if(m.entries[i].key==null && k==null || m.entries[i].key.equals!=null && m.entries[i].key.equals(k) || m.entries[i].key===k) { return m.entries[i].value; } return null; })(<any>this.particpants, command.getParticipantId()).subscribe(command.getNewlySubscribedGemIds());
@@ -91,16 +91,12 @@ export class CommandManager {
                     if (!(participantId === command.getParticipantId())){
                         let match: boolean = false;
                         {
-                            let array1 = command.getEffectedGemIds();
-                            for(let index1 = 0; index1 < array1.length; index1++) {
-                                let gemId = array1[index1];
-                                {
-                                    if (participant.isSubscribedTo(gemId)){
-                                        match = true;
-                                        break;
-                                    }
-                                }
+                          for await (let gemId of command.getEffectedGemIds()) {
+                            if (participant.isSubscribedTo(gemId)){
+                              match = true;
+                              break;
                             }
+                          }
                         }
                         if (match){
                             Log.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + participantId, LogUtil.getLoggerName());

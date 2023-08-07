@@ -19,6 +19,7 @@ import org.jsweet.transpiler.model.LiteralElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.NewClassElement;
 import org.jsweet.transpiler.util.Util;
+import umlp.jsweet.extension.UMLPAdapterUtils;
 import umlp.jsweet.extension.util.RTEPathUtil;
 
 import javax.lang.model.element.Element;
@@ -143,6 +144,7 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
         printMacroName(targetMethodName);
         print("new ").print(UMLPCollectionsAdapter.CustomUMLPListImplementationName).print("([")
             .printArgList(invocation.getArguments()).print("])");
+        getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
         return true;
       }
     }
@@ -154,6 +156,7 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
       case "newArrayList":
         String msg = invocation.getArgumentCount() > 1 ? invocation.getArgument(1).toString() : "";
         print("new " + UMLPCollectionsAdapter.CustomUMLPListImplementationName + "(" + msg + ")");
+        getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
         return true;
     }
     return false;
@@ -164,6 +167,7 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
       case "emptyList":
         printMacroName(targetMethodName);
         print("new " + UMLPCollectionsAdapter.CustomUMLPListImplementationName + "()");
+        getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
         return true;
       //        case "emptySet":
       //          printMacroName(adapter, targetMethodName);
@@ -176,6 +180,7 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
         printMacroName(targetMethodName);
         print("new " + UMLPCollectionsAdapter.CustomUMLPListImplementationName + "(")
             .printArgList(invocation.getArguments()).print(")");
+        getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
         return true;
       //        case "singleton":
       //          printMacroName(adapter, targetMethodName);
@@ -185,6 +190,7 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
         printMacroName(targetMethodName);
         print("new " + UMLPCollectionsAdapter.CustomUMLPListImplementationName + "([")
             .print(invocation.getArgument(0)).print("])");
+        getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
         return true;
     }
     return false;
@@ -243,8 +249,16 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
                 .print(newClass.getArgument(0)).print(")");
           }
         }
+        getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
         return true;
     }
+
+//    if (UMLPAdapterUtils.isSubTypeOf(newClass.getType(), "umlp.backendrte.common.GemListBuilder",
+//        util(), types(), context)) {
+//      print("(await new ").print(newClass.getConstructorAccess()).print("(")
+//          .printArgList(newClass.getArguments()).print(").finalizeConstructor())");
+//      return true;
+//    }
 
     return super.substituteNewClass(newClass);
   }
@@ -283,5 +297,26 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
       Log.error("0JS00001 Java2TypeScriptTranslater must be core Adapter");
       return null;
     }
+  }
+
+  @Override
+  public boolean substituteInstanceof(String exprStr, ExtendedElement expr, TypeMirror type) {
+    String typeString = types().erasure(type).toString();
+    if (this.listTypeMapping.containsKey(typeString)) {
+      print(exprStr, expr);
+      print(" != null && ");
+      print("(");
+      print(exprStr, expr);
+      print(" instanceof UMLPArrayList || ");
+      print(exprStr, expr);
+      print(" instanceof GemList || ");
+      print(exprStr, expr);
+      print(" instanceof Array)");
+
+      getPrinter().useModule(new ModuleImportDescriptor("GemList", getLibraryLocation()));
+      getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
+      return true;
+    }
+    return super.substituteInstanceof(exprStr, expr, type);
   }
 }

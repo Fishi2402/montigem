@@ -56,23 +56,16 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
         return Promise.resolve(<any>this.serialize$umlp_backendrte_command_CommandResult(command));
     }
 
-    public fromJson$de_monticore_symboltable_serialization_json_JsonObject(jsonObject: any): Promise<CommandResult<any>> {
-        if (/* orElse */((v, v2) => v == null ? v2 : v)(jsonObject.getBooleanMemberOpt("statusResult"),false)){
-            return Promise.resolve((v => { if (v == null) throw new Error('value is null'); return v; })(new StatusResult(jsonObject.getLongMember("commandId"), jsonObject.getBooleanMember("successful"))));
+    public fromJson(jsonObject: any): Promise<CommandResult<any>> {
+        if (/* orElse */((v, v2) => v == null ? v2 : v)(jsonObject["statusResult"],false)){
+            return Promise.resolve((v => { if (v == null) throw new Error('value is null'); return v; })(new StatusResult(jsonObject["commandId"], jsonObject["successful"])));
         }
+
         return Promise.resolve(null);
     }
 
-    public fromJson(jsonObject?: any): Promise<CommandResult<any>> {
-        return Promise.resolve(<any>this.fromJson$de_monticore_symboltable_serialization_json_JsonObject(jsonObject));
-    }
-
-    public fromJson$de_monticore_symboltable_serialization_json_JsonElement(jsonElement: any): Promise<CommandResult<any>> {
-        return this.fromJson$de_monticore_symboltable_serialization_json_JsonObject(jsonElement.getAsJsonObject());
-    }
-
     public deserialize(json: string): Promise<CommandResult<any>> {
-        return Promise.resolve(this.fromJson$de_monticore_symboltable_serialization_json_JsonObject(JSON.parse(json)));
+        return Promise.resolve(this.fromJson(JSON.parse(json)));
     }
 
     constructor() {

@@ -69,7 +69,7 @@ export class SimpleIdStorage implements IdStorage {
      *
      * @param {number[]} indicies
      */
-    public async remove(indicies: Array<number>) {
+    public async remove(indicies: Array<number> | IUMLPList<number>) {
         Log.trace("Removing indicies " + /* implicit toString */ (a => a?'['+a.join(', ')+']':'null')(indicies), "IdStorage " + LogUtil.getLoggerName());
         Log.trace("Initial state: " + this.idxToId, "IdStorage " + LogUtil.getLoggerName());
         const offsets: any = <any>({});

@@ -5,6 +5,7 @@ import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.MethodTree;
+import com.sun.source.tree.NewClassTree;
 import com.sun.source.util.Trees;
 import org.jsweet.JSweetConfig;
 import org.jsweet.transpiler.JSweetContext;
@@ -13,6 +14,7 @@ import org.jsweet.transpiler.model.ExtendedElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.util.AbstractTreeScanner;
 import org.jsweet.transpiler.util.Util;
+import umlp.jsweet.extension.UMLPAdapterUtils;
 import umlp.jsweet.extension.util.RTEPathUtil;
 
 import javax.lang.model.element.Element;
@@ -70,6 +72,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
         }
         break;
       case "umlp.backendrte.common.GemList":
+      case "umlp.backendrte.common.GemListBuilder":
         switch (methodSimpleName) {
           case "build":
             return true;
@@ -107,6 +110,15 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
       addAsyncKeywordToMethod();
     }
     return super.visitEnhancedForLoop(node, trees);
+  }
+
+  @Override
+  public Void visitNewClass(NewClassTree node, Trees trees) {
+//    ExtendedElement extendedElement = createExtendedElement(node);
+//    if (UMLPAdapterUtils.isSubTypeOf(extendedElement.getType(), RTEPathUtil.getBackendRTECommonPath("GemListBuilder"), util(), types(), context)) {
+//      addAsyncKeywordToMethod();
+//    }
+    return super.visitNewClass(node, trees);
   }
 
   private void addAsyncKeywordToMethod() {

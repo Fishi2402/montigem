@@ -1,9 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension;
 
+import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import org.jsweet.transpiler.util.Util;
+import umlp.jsweet.extension.backendAdapters.UMLPCollectionsAdapter;
 
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -65,12 +69,128 @@ public class UMLPAdapterUtils {
 
   public static boolean substituteMethodInvocation_MCJson(PrinterAdapter adapter,
       MethodInvocationElement invocation) {
-    if (invocation.getTargetType().toString().equals("de.monticore.symboltable.serialization.JsonParser")) {
-      if (invocation.getMethodName().equals("parseJsonObject") || invocation.getMethodName().equals("parse")) {
-        adapter.print("JSON.parse(").printArgList(invocation.getArguments()).print(")");
-        return true;
-      }
+    String targetType = invocation.getTargetType().toString();
+    String methodName = invocation.getMethodName();
+    switch (targetType) {
+      case "de.monticore.symboltable.serialization.JsonParser":
+        switch (methodName) {
+          case "parseJsonObject":
+          case "parse":
+            adapter.print("JSON.parse(").printArgList(invocation.getArguments()).print(")");
+            return true;
+        }
+      case "de.monticore.symboltable.serialization.json.JsonObject":
+      case "de.monticore.symboltable.serialization.json.JsonElement":
+      case "de.monticore.symboltable.serialization.json.JsonString":
+      case "de.monticore.symboltable.serialization.json.JsonArray":
+      case "de.monticore.symboltable.serialization.json.JsonBoolean":
+      case "de.monticore.symboltable.serialization.json.JsonNull":
+      case "de.monticore.symboltable.serialization.json.JsonNumber":
+      case "de.monticore.symboltable.serialization.json.JsonTraceableJsonObject":
+      case "de.monticore.symboltable.serialization.json.JsonUserJsonString":
+        switch (methodName) {
+          case "isJsonObject":
+            printMacroName(adapter, methodName);
+            adapter.print("(typeof ").print(invocation.getTargetExpression()).print(" == \"object\")");
+            return true;
+          case "isJsonArray":
+            printMacroName(adapter, methodName);
+            adapter.print("(Array.isArray(").print(invocation.getTargetExpression()).print("))");
+            return true;
+          case "isJsonBoolean":
+            printMacroName(adapter, methodName);
+            adapter.print("(typeof ").print(invocation.getTargetExpression()).print(" == \"boolean\")");
+            return true;
+          case "isJsonString":
+            printMacroName(adapter, methodName);
+            adapter.print("(typeof ").print(invocation.getTargetExpression()).print(" == \"string\")");
+            return true;
+          case "isJsonNumber":
+            printMacroName(adapter, methodName);
+            adapter.print("(typeof ").print(invocation.getTargetExpression()).print(" == \"number\")");
+            return true;
+          //          case "isJsonNull":
+          case "getAsJsonObject":
+          case "getAsJsonArray":
+          case "getAsJsonBoolean":
+          case "getAsJsonString":
+          case "getAsJsonNumber":
+          case "getNumberAsFloat":
+          case "getNumberAsDouble":
+          case "getNumberAsInteger":
+          case "getNumberAsLong":
+            printMacroName(adapter, methodName);
+            adapter.print(invocation.getTargetExpression());
+            return true;
+          //          case "getMembers":
+          //          case "setMembers":
+          //          case "sizeMembers":
+          //          case "hasMembers":
+          case "hasMember":
+            printMacroName(adapter, methodName);
+            adapter.print("(").print(invocation.getTargetExpression()).print("[")
+                .printArgList(invocation.getArguments()).print("] != undefined && ")
+                .print(invocation.getTargetExpression()).print("[")
+                .printArgList(invocation.getArguments()).print("] != null)");
+            return true;
+          //          case "putMember":
+          //          case "removeMember":
+          //          case "getMemberNames":
+          case "toString":
+            printMacroName(adapter, methodName);
+            adapter.print(invocation.getTargetExpression());
+            return true;
+          case "hasStringMember":
+            printMacroName(adapter, methodName);
+            adapter.print("(typeof ").print(invocation.getTargetExpression()).print("[").printArgList(invocation.getArguments()).print("] == \"string\")");
+            return true;
+          case "hasArrayMember":
+            printMacroName(adapter, methodName);
+            adapter.print("(Array.isArray(").print(invocation.getTargetExpression()).print("[").printArgList(invocation.getArguments()).print("]))");
+            return true;
+          case "hasBooleanMember":
+            printMacroName(adapter, methodName);
+            adapter.print("(typeof ").print(invocation.getTargetExpression()).print("[").printArgList(invocation.getArguments()).print("] == \"boolean\")");
+            return true;
+          case "hasObjectMember":
+            printMacroName(adapter, methodName);
+            adapter.print("(typeof ").print(invocation.getTargetExpression()).print("[").printArgList(invocation.getArguments()).print("] == \"object\")");
+            return true;
+          case "hasIntegerMember":
+          case "hasDoubleMember":
+          case "hasFloatMember":
+          case "hasLongMember":
+            printMacroName(adapter, methodName);
+            adapter.print("(typeof ").print(invocation.getTargetExpression()).print("[").printArgList(invocation.getArguments()).print("] == \"number\")");
+            return true;
+          case "getStringMember":
+          case "getStringMemberOpt":
+          case "getArrayMember":
+          case "getArrayMemberOpt":
+          case "getBooleanMember":
+          case "getBooleanMemberOpt":
+          case "getObjectMember":
+          case "getObjectMemberOpt":
+          case "getIntegerMember":
+          case "getIntegerMemberOpt":
+          case "getDoubleMember":
+          case "getDoubleMemberOpt":
+          case "getFloatMember":
+          case "getFloatMemberOpt":
+          case "getLongMember":
+          case "getLongMemberOpt":
+          case "getMember":
+            printMacroName(adapter, methodName);
+            adapter.print(invocation.getTargetExpression()).print("[").printArgList(invocation.getArguments()).print("]");
+            return true;
+          case "getValue":
+          case "getValues":
+            printMacroName(adapter, methodName);
+            adapter.print(invocation.getTargetExpression());
+            return true;
+        }
     }
+
     return false;
   }
 
@@ -165,5 +285,35 @@ public class UMLPAdapterUtils {
 
   private static boolean isJ4TSPackage(String qualifiedName) {
     return j4tsPackages.stream().anyMatch(p -> qualifiedName.startsWith(p + "."));
+  }
+
+  public static boolean isSubTypeOf(TypeMirror type,
+      String superClass, Util util, Types types, JSweetContext context) {
+    TypeElement typeElement = UMLPAdapterUtils.getTypeElement(type, util, types, context);
+    return isSubTypeOf(typeElement, superClass, util, types);
+  }
+
+  public static boolean isSubTypeOf(TypeElement type,
+      String superClass, Util util, Types types) {
+    if (types.erasure(type.asType()).toString().equals(superClass)) {
+      return true;
+    }
+    for (TypeElement anInterface : util.getInterfaces(type)) {
+      if (isSubTypeOf(anInterface, superClass, util, types)) {
+        return true;
+      }
+    }
+    if (type.getSuperclass() != null && !type.getSuperclass().toString().equals("none")) {
+      if (isSubTypeOf(util.getSuperclass(type), superClass, util, types)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static TypeElement getTypeElement(TypeMirror type, Util util, Types types,
+      JSweetContext context) {
+    TypeElement typeElementByName = util.getTypeElementByName(context,types.erasure(type).toString());
+    return typeElementByName;
   }
 }

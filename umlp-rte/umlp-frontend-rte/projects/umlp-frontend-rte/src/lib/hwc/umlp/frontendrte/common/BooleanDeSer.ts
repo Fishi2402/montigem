@@ -25,10 +25,10 @@ export class BooleanDeSer implements DeSer<boolean> {
      */
     public async deserialize(str: string): Promise<boolean> {
         const e: any = JSON.parse(str);
-        if (!e.isJsonBoolean()){
+        if (typeof e != 'boolean'){
             return null;
         }
-        return (v => { if (v == null) throw new Error('value is null'); return v; })(e.getAsJsonBoolean().getValue());
+        return (v => { if (v == null) throw new Error('value is null'); return v; })(e);
     }
 
     constructor() {

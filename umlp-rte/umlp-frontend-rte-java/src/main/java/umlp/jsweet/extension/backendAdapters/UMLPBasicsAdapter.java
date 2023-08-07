@@ -2,7 +2,9 @@
 package umlp.jsweet.extension.backendAdapters;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
+import org.jsweet.transpiler.model.ExtendedElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import org.jsweet.transpiler.model.NewClassElement;
 import umlp.jsweet.extension.UMLPAdapterUtils;
 
 public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
@@ -32,5 +34,22 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       return true;
     }
     return super.substituteMethodInvocation(invocation);
+  }
+
+  @Override
+  public boolean substituteNewClass(NewClassElement newClass) {
+    String className = newClass.getTypeAsElement().toString();
+    switch (className) {
+      case "umlp.backendrte.command.SimpleResult":
+        if (newClass.getArguments().size() == 3) {
+          ExtendedElement argument = newClass.getArgument(1);
+          if (argument.getTypeAsElement().toString().equals("umlp.backendrte.common.LoadingState")) {
+            print("new SimpleResult().createFromLoadingState(").printArgList(newClass.getArguments()).print(")");
+            return true;
+          }
+        }
+    }
+
+    return super.substituteNewClass(newClass);
   }
 }

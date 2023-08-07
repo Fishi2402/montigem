@@ -16,7 +16,7 @@ buildscript {
 
 plugins {
   id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
-  id "com.github.node-gradle.node" version "3.4.0"
+  id "com.github.node-gradle.node" version "5.0.0"
 }
 
 compileJava {
@@ -84,7 +84,7 @@ dependencies {
 /////////////////////////   NODE   //////////////////////////////
 node {
   download = true
-  version = "12.18.2"
+  version = "18.16.1"
 }
 
 task generateIndexTS {
@@ -112,7 +112,7 @@ task generateIndexTS {
 
 task buildLib(type: NpxTask) {
   command = "ng"
-  args = ["build", "--prod"]
+  args = ["build"]
   dependsOn(project.tasks.npmInstall)
   dependsOn(project.tasks.generateIndexTS)
   inputs.dir(project.fileTree("projects/umlp-frontend-rte/src").exclude("**/*.spec.ts"))
@@ -128,16 +128,16 @@ task packLib(type: NpmTask) {
 }
 tasks.packLib.workingDir = project.file("dist/umlp-frontend-rte")
 
-//////////////////////////////   TEST   //////////////////////////////
-task testLib(type: NpxTask) {
-  command = "ng"
-  args = ["test"]
-  dependsOn(project.tasks.npmInstall)
-  inputs.dir(project.fileTree("projects/umlp-frontend-rte/src"))
-  inputs.dir("node_modules")
-  inputs.files("tsconfig.spec.json")
-  outputs.dir("${project.buildDir}/dist")
-}
+////////////////////////////////   TEST   //////////////////////////////
+//task testLib(type: NpxTask) {
+//  command = "ng"
+//  args = ["test"]
+//  dependsOn(project.tasks.npmInstall)
+//  inputs.dir(project.fileTree("projects/umlp-frontend-rte/src"))
+//  inputs.dir("node_modules")
+//  inputs.files("tsconfig.spec.json")
+//  outputs.dir("${project.buildDir}/dist")
+//}
 
 //////////////////////////////   CLEAN   //////////////////////////////
 

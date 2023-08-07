@@ -25,10 +25,10 @@ export class ShortDeSer implements DeSer<number> {
      */
     public async deserialize(str: string): Promise<number> {
         const e: any = JSON.parse(str);
-        if (!e.isJsonNumber()){
+        if (typeof e != 'number'){
             return null;
         }
-        return (v => { if (v == null) throw new Error('value is null'); return v; })((<number>e.getAsJsonNumber().getNumberAsInteger()|0));
+        return (v => { if (v == null) throw new Error('value is null'); return v; })(e);
     }
 
     constructor() {

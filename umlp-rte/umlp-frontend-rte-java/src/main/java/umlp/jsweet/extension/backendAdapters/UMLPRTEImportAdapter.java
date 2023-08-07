@@ -6,12 +6,15 @@ import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ImportElement;
 import umlp.jsweet.extension.GUIComponentAdapter;
+import umlp.jsweet.extension.UMLPAdapterUtils;
 import umlp.jsweet.extension.util.RTEPathUtil;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.TypeMirror;
+import java.util.List;
 
 /**
  * This adapter is responsible for including the umlp RTE correctly.
@@ -63,17 +66,22 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
   @Override
   public void afterTypeBody(TypeElement type) {
     // Add default method implementation for interfaces defined in the RTE (JSweet does not find those)
-    for (TypeMirror anInterface : type.getInterfaces()) {
-      if (anInterface.toString().equals(RTEPathUtil.getBackendRTECommonPath("GemBuildable"))) {
-        addIsBuildFinished(type);
-      }
+
+    boolean buildFinishedAdded = false;
+    if (UMLPAdapterUtils.isSubTypeOf(type, RTEPathUtil.getBackendRTECommonPath("GemBuildable"), util(), types())) {
+      addIsBuildFinished(type);
+      buildFinishedAdded = true;
+    }
+    if (!buildFinishedAdded && UMLPAdapterUtils.isSubTypeOf(type, RTEPathUtil.getBackendRTECommonPath("GemListBuilder"), util(), types())) {
+      addIsBuildFinished(type);
+      buildFinishedAdded = true;
     }
     super.afterTypeBody(type);
   }
 
   private void addIsBuildFinished(TypeElement type) {
     for (Element enclosedElement : type.getEnclosedElements()) {
-      if (enclosedElement.getKind().name().equals("METHOD") && enclosedElement.getSimpleName().equals("isBuildFinished")) {
+      if (enclosedElement.getKind().name().equals("METHOD") && enclosedElement.getSimpleName().toString().equals("isBuildFinished")) {
         return;
       }
     }

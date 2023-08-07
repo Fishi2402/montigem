@@ -39,7 +39,10 @@ jsweet {
       '**/flensburg/FlensburgMockTestSetup.java',
       '**/flensburg/FlensburgDummyProvider.java',
       '**/flensburg/FlensburgTestContext.java',
-      '**/flensburg/test_infrastructure/**'
+      '**/flensburg/test_infrastructure/**',
+      '**/flensburg/FlensburgServerApplication.java',
+      '**/flensburg/FlensburgShellAPIApplication.java',
+      '**/flensburg/shellapi/**',
   ]
   module = 'commonjs'
   workingDir = project.file('target/.jsweet')
@@ -56,11 +59,14 @@ jsweet {
 
 node {
   download = true
-  version = "18.16.1"
+  version = "18.10.0"
+  nodeProxySettings = ProxySettings.OFF
 }
 
-task generateNPMAuth(type: NPMAuthCreate)
-//npmInstall.dependsOn(generateNPMAuth)
+task generateNPMAuth(type: NPMAuthCreate){
+  npmrcFile = project.file(".npmrc")
+}
+npmInstall.dependsOn(generateNPMAuth)
 
 //task installRTELocal(type: NpxTask) {
 //  command = "install"

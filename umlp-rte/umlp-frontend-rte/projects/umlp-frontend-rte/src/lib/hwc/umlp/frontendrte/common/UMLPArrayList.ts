@@ -5,7 +5,7 @@ import {addWarning} from "@angular-devkit/build-angular/src/utils/webpack-diagno
 export class UMLPArrayList<E> implements IUMLPList<E> {
 
 
-  array: E[];
+  array: E[] = [];
 
   constructor(elemenets?: Array<E> | IUMLPList<E>) {
     if (!!elemenets) {
@@ -16,12 +16,22 @@ export class UMLPArrayList<E> implements IUMLPList<E> {
       }
     }
   }
-  add(indexOrElement: number | E, element?: E): Promise<boolean> {
-    return Promise.resolve(false);
+  add(indexOrElement: number | E, elem?: E): Promise<boolean> {
+    if (elem === undefined || elem === null) {
+      this.array.push(<E>indexOrElement);
+    } else {
+      this.array.splice(<number>indexOrElement, 0, elem);
+    }
+    return Promise.resolve(true);
   }
 
-  addAll(index?: any, c?: any): Promise<boolean> {
-    return Promise.resolve(false);
+  addAll(indexOrElements: number | Array<E>, elems?: Array<E>): Promise<boolean> {
+    if (elems === undefined || elems === null) {
+      this.array.push(<E>indexOrElements);
+    } else {
+      this.array.splice(<number>indexOrElements, 0, ...<Array<E>>elems);
+    }
+    return Promise.resolve(true);
   }
 
   clear(): void {
@@ -46,7 +56,7 @@ export class UMLPArrayList<E> implements IUMLPList<E> {
   }
 
   get(index: number): Promise<E> {
-    return Promise.resolve(undefined);
+    return Promise.resolve(this.array[index]);
   }
 
   indexOf(o: any): Promise<number> {

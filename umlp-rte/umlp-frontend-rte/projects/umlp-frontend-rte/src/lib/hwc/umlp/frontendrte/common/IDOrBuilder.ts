@@ -4,23 +4,15 @@ export class IDOrBuilder<E extends GemIdentifiable & GemBuildable> {
 
     builderOpt: E;
 
-    public constructor(builder?: any) {
-        if (((builder != null) || builder === null)) {
-            let __args = arguments;
-            this.gemIDOpt = null;
+    public constructor(gemIdOrBuilder: number | E) {
+        this.gemIDOpt = null;
+        this.builderOpt = null;
+        if (typeof gemIdOrBuilder === 'number') {
+            this.gemIDOpt = (v => { if (v == null) throw new Error('value is null'); return v; })(gemIdOrBuilder);
             this.builderOpt = null;
-            if (builder.isBuildFinished()){
-                this.gemIDOpt = (v => { if (v == null) throw new Error('value is null'); return v; })(builder.getGemId());
-            } else {
-                this.builderOpt = (v => { if (v == null) throw new Error('value is null'); return v; })(builder);
-            }
-        } else if (((typeof builder === 'number') || builder === null)) {
-            let __args = arguments;
-            let gemID: any = __args[0];
-            this.gemIDOpt = null;
-            this.builderOpt = null;
-            this.gemIDOpt = (v => { if (v == null) throw new Error('value is null'); return v; })(gemID);
-        } else throw new Error('invalid overload');
+        } else {
+            this.builderOpt = (v => { if (v == null) throw new Error('value is null'); return v; })(gemIdOrBuilder);
+        }
     }
 
     public isPresentID(): boolean {

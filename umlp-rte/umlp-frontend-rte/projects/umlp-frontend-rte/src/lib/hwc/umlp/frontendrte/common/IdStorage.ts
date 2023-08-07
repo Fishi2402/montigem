@@ -8,7 +8,7 @@ export interface IdStorage {
 
     set(changes: any);
 
-    remove(indicies: Array<number>);
+    remove(indicies: Array<number> | IUMLPList<number>);
 
     containsIdx(idx: number): boolean;
 

@@ -8,22 +8,23 @@ export class SimpleResult<T> extends CommandResult<T> {
 
     loadingState: LoadingState;
 
-    public constructor(id?: any, loadingState?: any, typeParameter?: any) {
-        if (((typeof id === 'number') || id === null) && ((typeof loadingState === 'number') || loadingState === null) && ((typeof typeParameter === 'string') || typeParameter === null)) {
-            let __args = arguments;
-            super(id, typeParameter);
-            if (this.obj === undefined) { this.obj = null; }
-            if (this.loadingState === undefined) { this.loadingState = null; }
-            this.loadingState = loadingState;
-        } else if (((typeof id === 'number') || id === null) && ((loadingState != null) || loadingState === null) && ((typeof typeParameter === 'string') || typeParameter === null)) {
-            let __args = arguments;
-            let obj: any = __args[1];
-            super(id, typeParameter);
-            if (this.obj === undefined) { this.obj = null; }
-            if (this.loadingState === undefined) { this.loadingState = null; }
-            this.obj = obj;
-            this.loadingState = LoadingState.LOADED;
-        } else throw new Error('invalid overload');
+    public constructor(id?: number, obj?: T, typeParameter?: string) {
+      if (id != undefined && id != null) {
+        super(id, typeParameter);
+        if (this.obj === undefined) { this.obj = null; }
+        if (this.loadingState === undefined) { this.loadingState = null; }
+        this.obj = obj;
+        this.loadingState = LoadingState.LOADED;
+      } else {
+        super();
+      }
+    }
+
+    public createFromLoadingState<T>(id: number, loadingState: LoadingState, typeParameter: string): SimpleResult<T> {
+      super.setParams(id, typeParameter);
+      this.loadingState = loadingState;
+      this.obj = null;
+      return <SimpleResult<T>><unknown>this;
     }
 
     public get(): T {
@@ -31,7 +32,7 @@ export class SimpleResult<T> extends CommandResult<T> {
     }
 
     public isSuccessful(): boolean {
-        return /* Enum.equals */(<any>(LoadingState.LOADED) === <any>(this.loadingState));
+        return /* Enum.equals */(LoadingState.LOADED) === (this.loadingState);
     }
 
     public getLoadingState(): LoadingState {
