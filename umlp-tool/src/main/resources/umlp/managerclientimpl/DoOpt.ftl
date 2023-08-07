@@ -9,9 +9,9 @@ if(known${subclass.name?cap_first}s.containsKey(gemId)){
 // TODO: Optimize, multiple roundtrips are possible for multiple subclasses
 <#list concreteSubclassesInclSelf as subclass>
 {
-  CommandResult<Address> commandResult = CommandManager.executeCommand(new ${subclass.name}_get(gemId));
+  CommandResult<${subclass.name}> commandResult = CommandManager.executeCommand(new ${subclass.name}_get(gemId));
   if (commandResult.isSimpleResult()) {
-  SimpleResult<${subclass.name}> res = commandResult.asSimpleResult();
+    SimpleResult<${subclass.name}> res = commandResult.asSimpleResult();
     if (res.isSuccessful()) {
       ${subclass.name} ${subclass.name?uncap_first} = res.get();
       if (!(${subclass.name?uncap_first}).containsObserver(the${subclass.name}CommandObserver)) {
