@@ -79,7 +79,7 @@ classdiagram Flensburg {
   association [1] Budget -> (transaction) Transaction [*];
 
   class Transaction {
-    LocalDate date;
+    java.time.LocalDate date;
     long amount;
   }
 
