@@ -3,7 +3,11 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -164,8 +168,8 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
 
     // Associations
     CDSymbolTables.getAssociations(domainInterface).stream()
-        .filter(side -> !isDerived(side)).filter(GenService::isList)
-        .filter(a -> !GenService.isSymbolDerived(a))
+        .filter(Predicate.not(GenService::isSymbolDerived))
+        .filter(GenService::isList)
         .forEach(a -> {
           SymTypeExpression type = a.getSymbol().getType();
           String printedType = type.print();

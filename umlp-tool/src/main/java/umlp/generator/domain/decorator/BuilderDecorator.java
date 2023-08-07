@@ -139,9 +139,7 @@ public class BuilderDecorator extends AbstractDecorator {
     return attributesList;
   }
 
-  protected void createSetAndCheckMethods(ASTCDClass domainClass, ASTCDClass builderClass,
-                                          List<ASTCDAttribute> attrList,
-                                          List<ASTCDAssocSide> assocList, ASTCDCompilationUnit origCD) {
+  protected void createSetAndCheckMethods(ASTCDClass domainClass, ASTCDClass builderClass, List<ASTCDAttribute> attrList, List<ASTCDAssocSide> assocList) {
     for (ASTCDAttribute attribute : attrList) {
       getCD4C().addMethod(builderClass, "umlp.builder.Attr",
           attribute.getName(), getCDPrinter().prettyprint(createType(attribute)),

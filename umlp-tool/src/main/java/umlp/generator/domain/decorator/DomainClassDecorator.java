@@ -87,7 +87,6 @@ public class DomainClassDecorator extends DomainTypeDecorator {
                 sourcePosition.getColumn()
             );
           }).collect(Collectors.joining(", "));
-
       stereotype.addValues(
           TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
               String.format("Custom implementation for class: %s required. Contains derived attribute(s): %s", domainClass.getName(), derivedAttribs)
@@ -97,7 +96,8 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     List<ASTCDAssocSide> derivedAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
         .filter(GenService::isSymbolDerived)
         .collect(Collectors.toList());
-    if (derivedAssocs.size() > 0) {
+    System.out.println("derivedAssocs: " + derivedAssocs.stream().map(ASTCDAssocSide::getName).collect(Collectors.joining(", ")));
+    if (!derivedAssocs.isEmpty()) {
       String derivedAssocsStr = derivedAssocs.stream()
           .map(assoc -> {
             SourcePosition sourcePosition = assoc.get_SourcePositionStart();
@@ -204,14 +204,14 @@ public class DomainClassDecorator extends DomainTypeDecorator {
         .stream().filter(GenService::isVisibleNotDerived).collect(Collectors.toList())) {
       getCD4C().addMethod(clazz, "umlp.domain.Check",
           domainClass.getName(), attr.getName(),
-          !GenService.isList(attr) && !GenService.isOptional(attr), !attr.getModifier().isDerived(),
+          !GenService.isList(attr) && !GenService.isOptional(attr) && !attr.getModifier().isDerived(),
           false
       );
     }
     for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
       ASTCDMethodSignature m = getCD4C().addMethod(clazz, "umlp.domain.Check",
           domainClass.getName(), assoc.getName(),
-          !GenService.isOptional(assoc) && !isDerived(assoc),
+          !GenService.isOptional(assoc) && !GenService.isSymbolDerived(assoc),
           GenService.isList(assoc)
       );
     }
