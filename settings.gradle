@@ -54,5 +54,7 @@ include ':examples:flensburg-test-jsweet:client'
 include ':examples:it-test'
 include ':examples:assistenzsystem'
 include ':examples:native-image'
+include ':examples:sehub:backend'
+include ':examples:sehub:frontend'
 
 include ':products:syse_functions'
