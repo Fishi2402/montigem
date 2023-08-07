@@ -15,12 +15,12 @@ ocl FunctionsStructure {
 
   /*
     In each component structure there is only one feed
-    for an inpout port: either a sister-component or from the outside:
+    for an input port: either a sister-component or from the outside:
   */
-  context Function f, OutPort p inv ValidPortStructureInDecomposition:
+  context Function f, InPort p inv ValidPortStructureInDecomposition:
       p isin f.subFunction.inPort implies
-        p isin f.inPort ^
-        p isin f.subFunction.outPort;
+        p isin f.inPort ||
+        p isin f.subFunction.outPort.in;
 
   /*
     OutPorts are present in the signature of a containing
@@ -30,4 +30,4 @@ ocl FunctionsStructure {
         let externals = { OutPort p in f.subFunctions.outPort |
                     exists Function f2: f2 notin f.subFunction** && p isin f2.inPort.out }
         in
-          f.owner.outPort.containsAll(externals);
+          f.outPort.containsAll(externals);

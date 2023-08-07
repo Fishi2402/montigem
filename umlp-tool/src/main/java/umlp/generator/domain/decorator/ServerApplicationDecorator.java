@@ -15,10 +15,11 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 public class ServerApplicationDecorator extends AbstractDecorator {
 
   public static final String SUFFIX = "ServerApplication";
+  private boolean isNeo4jGen;
 
-
-  public ServerApplicationDecorator(GlobalExtensionManagement glex) {
+  public ServerApplicationDecorator(GlobalExtensionManagement glex, boolean isNeo4jGen) {
     super(glex);
+    this.isNeo4jGen = isNeo4jGen;
   }
 
   @Override
@@ -43,7 +44,8 @@ public class ServerApplicationDecorator extends AbstractDecorator {
         ".service\"}\n" +
         ")"));
 
-    ASTCDMethodSignature initMethod = getCD4C().addMethod(serverApplicationClass, "umlp.serverapplication.init", name);
+    ASTCDMethodSignature initMethod = isNeo4jGen? getCD4C().addMethod(serverApplicationClass, "umlp.serverapplication.initNeo4j", name)
+        : getCD4C().addMethod(serverApplicationClass, "umlp.serverapplication.init", name);
     glex.replaceTemplate("cd2java.Annotations", initMethod, new StringHookPoint("@javax.annotation.PostConstruct "));
 
     // Imports
@@ -60,12 +62,16 @@ public class ServerApplicationDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "org.springframework.boot.autoconfigure.SpringBootApplication");
     getCD4C().addImport(clazz, "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration");
     getCD4C().addImport(clazz, "org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration");
-    getCD4C().addImport(clazz, "umlp.backendrte.common.DatabaseAccessManager");
     getCD4C().addImport(clazz, "java.io.IOException");
     getCD4C().addImport(clazz, "java.net.URL");
     getCD4C().addImport(clazz, "java.sql.SQLException");
     getCD4C().addImport(clazz, "java.util.Optional");
 
+    if(isNeo4jGen) {
+      getCD4C().addImport(clazz, "umlp.backendrte.common.DatabaseAccessManager4Neo4j");
+    } else {
+      getCD4C().addImport(clazz, "umlp.backendrte.common.DatabaseAccessManager4SQL");
+    }
   }
 
 }

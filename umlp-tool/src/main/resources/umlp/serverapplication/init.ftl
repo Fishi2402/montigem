@@ -3,6 +3,8 @@ ${cd4c.method("public void init() throws IOException")}
 
 Log.enableFailQuick(false);
 Log.warn("I AM ALIVE!");
+
+DatabaseAccessManager4SQL.init();
 ${cdName}ManagerImpl.init();
 
 Optional<URL> optionalURL = Optional.ofNullable(${cdName}ServerApplication.class.getResource("/${cdName}.sql"));
@@ -11,4 +13,4 @@ if(optionalURL.isEmpty()) {
 }
 String schema = FileReaderWriter.readFromFile(optionalURL.get());
 Log.warn("Loading schema: " + schema);
-DatabaseAccessManager.initSchema(schema);
+DatabaseAccessManager4SQL.initSchema(schema);

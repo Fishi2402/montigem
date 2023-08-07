@@ -1,2 +1,1 @@
-
-export * from './frontendrte';
+export * from "./frontendrte";

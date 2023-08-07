@@ -5,7 +5,7 @@ import { ForecastUpdateTOP } from '@src/gui/ForecastUpdateTOP';
 
 @Component({
   selector: 'forecast-update',
-  templateUrl: '../../../build/appgui/gui/ForecastUpdate.html',
+  templateUrl: '../../../build/frontendGen/build/appgui/gui/ForecastUpdate.html',
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: []
 })

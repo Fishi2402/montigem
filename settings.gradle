@@ -11,6 +11,10 @@ pluginManagement {
     }
     gradlePluginPortal()
     mavenCentral()
+
+    // for the native image example
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
   }
 }
 
@@ -28,7 +32,7 @@ include ":experiments:initial"
 include ":experiments:coreRequirements"
 include ":experiments:coreRequirements:stanley"
 include ":experiments:dbPerformance"
-
+include ":experiments:statecharts-integration"
 
 include ":examples"
 include ':examples:cars'
@@ -49,5 +53,6 @@ include ':examples:flensburg-test-jsweet'
 include ':examples:flensburg-test-jsweet:client'
 include ':examples:it-test'
 include ':examples:assistenzsystem'
+include ':examples:native-image'
 
 include ':products:syse_functions'

@@ -30,7 +30,7 @@ public abstract class GenAbstractNeo4jDBTest {
       return;
     }
     managementService =
-        new DatabaseManagementServiceBuilder(Paths.get("target", "temporaryNeo4jDB"))
+        new DatabaseManagementServiceBuilder(Paths.get("build", "temporaryNeo4jDB"))
             .setConfig(BoltConnector.enabled, true )
             .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", 7688 )).build();
     registerShutdownHook(managementService);
@@ -45,9 +45,13 @@ public abstract class GenAbstractNeo4jDBTest {
 
   @AfterEach
   public void cleanup(){
-    TestDatabaseAccessManagerSQL.close();
-  }
+    try {
+      TestDatabaseAccessManagerSQL.closeConnection();
+    } catch (Exception e) {
+      throw  new RuntimeException(e);
+    }
 
+  }
 
   private static void registerShutdownHook( final DatabaseManagementService managementService )
   {

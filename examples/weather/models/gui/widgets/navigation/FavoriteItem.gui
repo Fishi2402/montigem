@@ -1,0 +1,24 @@
+package gui.widgets.navigation;
+
+import Weather.City;
+
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gemtext.GemText;
+
+component FavoriteItem(City fav) {
+  @GemRow(hAlign = "space-between", components = [
+    @GemColumn(vAlign = "space-between", components = [
+      @GemText(value = fav.name),
+      @GemText(value = fav.current.date),
+      @GemText(value = fav.current.weatherState)
+    ]),
+    @GemColumn(vAlign = "space-between", components = [
+      @GemText(value = fav.current.temperature),
+      @GemRow(components = [
+        @GemText(value = "H:" + fav.latitude + "°"),
+        @GemText(value = "L:" + fav.longitude + "°")
+      ])
+    ])
+  ]);
+}

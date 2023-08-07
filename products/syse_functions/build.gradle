@@ -37,7 +37,7 @@ task mergeUMLPModels(type: UMLPMergeTask){
     excludes = ["**.gui", "**.ocl"]
 
   // Where should the merged result be stored?
-  outputFile = layout.buildDirectory.file("FunctionsStructure.umlp")  // buildDirectory = "build/"
+  outputFile = layout.buildDirectory.file("FunctionStructure.umlp")  // buildDirectory = "build/"
 }
 
 task generateJavaCode(type: UMLPBackendTask) {

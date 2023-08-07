@@ -11,6 +11,7 @@ import { LocalDateDeSer } from "./LocalDateDeSer";
 import { LongDeSer } from "./LongDeSer";
 import { ShortDeSer } from "./ShortDeSer";
 import { StringDeSer } from "./StringDeSer";
+import {LocalDateTimeDeSer} from "./LocalDateTimeDeSer";
 
 // RTE-P
 
@@ -44,6 +45,7 @@ export class BaseClassObjectMapper {
     this.baseDeSers.set("java.lang.String", new StringDeSer());
 
     this.baseDeSers.set("java.time.LocalDate", new LocalDateDeSer());
+    this.baseDeSers.set("java.time.LocalDateTime", new LocalDateTimeDeSer());
   }
 
   public static serialize(o: any, className: string): string {

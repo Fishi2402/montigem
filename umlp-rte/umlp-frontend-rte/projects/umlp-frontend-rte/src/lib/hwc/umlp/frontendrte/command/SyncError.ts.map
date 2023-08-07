@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"SyncError.ts",
+"lineCount":18,
+"mappings":"A;;;;;AASC,C,8BAA+B,C;IAC7B,C;AAAkB,C,OAChB,C,KAAM,C;AACP,C;;IAED,C;;;;kCACO,C;AAAqB,C,OAC1B,C;QACA,C,MAAO,C,eAAgB,C;AACxB;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\command\\SyncError.java"],
+"names":[]
+}

@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"ValidationMessage.ts",
+"lineCount":23,
+"mappings":"A;;;;AAIC,C;IAEI,C;;IAIA,C,WAA0B,C;AAAgB,C;QACtC,C,cAAe,C;AAClB,C;;IAED,C;AAA2B,C,OACvB,C,MAAO,C;AACV,C;;IAED,C,iBAAuB,C;AAAgB,C,OACnC,C,cAAe,C;AAClB,C;;IAED,C,oBAAuC,C,iBAAzB,C;AAAyC,C,OACnD,C,MAAO,C,GAAI,C,iBAAkB,C;AAChC;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\common\\ValidationMessage.java"],
+"names":[]
+}

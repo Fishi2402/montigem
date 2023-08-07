@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"ListResult.ts",
+"lineCount":42,
+"mappings":"A;;;;;;AAKC,C,8CAA0C,C,WAAY,C,aAAc,C;IAClE,C,KAAU,C;;IACV,C,WAAU,C;;IAEV,C,WAAmB,C,kBAAgB,C,QAAQ,C,2BAA2B,C;AAAoB,C,OACxF,C,KAAM,C,UAAW,C;;;QACjB,C,WAAY,C;QACZ,C,iBAAkB,C;AACnB,C;;IAED,C,uCAAiC,C,GAAwB,C,kBAAgB,C,SAAS,C,4BAA7C,C,UAAW,C,EAAG,C;AAAyD,C,OAC1G,C,YAAO,C,GAAI,C,oBAAa,C,UAAW,C,MAAO,C,mBAAoB,C;AAC/D,C;;IAED,C,0CAAiC,C,GAA2B,C,kBAAgB,C,4BAAvC,C,UAAW,C,EAAG,C;AAAmD,C,OACpG,C,YAAO,C,GAAI,C,UAAW,C,EAAG,C,EAAG,C,UAAW,C,KAAM,C,mBAAoB,C;AAClE,C;;IAED,C,aAAO,C;AAAO,C,OACZ,C,MAAO,C;AACR,C;;IAED,C,sBAAO,C;AAAuB,C,OAC5B,C,MAAO,C;AACR,C;;IAEC,C;;;;2BACK,C;AAAuB,C,OAC5B,C,MAAO,C;AACR;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\command\\ListResult.java"],
+"names":[]
+}

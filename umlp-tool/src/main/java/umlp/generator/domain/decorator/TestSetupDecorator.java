@@ -21,8 +21,11 @@ public class TestSetupDecorator extends AbstractDecorator {
   public static final String MOCK_TEST_SETUP = "MockTestSetup";
   public static final String DB_TEST_SETUP = "DBTestSetup";
 
-  public TestSetupDecorator(GlobalExtensionManagement glex) {
+  private boolean isNeo4jGen;
+
+  public TestSetupDecorator(GlobalExtensionManagement glex, boolean isNeo4jGen) {
     super(glex);
+    this.isNeo4jGen = isNeo4jGen;
   }
 
   @Override
@@ -76,7 +79,11 @@ public class TestSetupDecorator extends AbstractDecorator {
     getCD4C().addConstructor(res, "umlp.common.BasicConstructor", res.getName(), List.of(numberOfClientsArg));
 
     // Methods
-    getCD4C().addMethod(res, "umlp.test_infrastructure.dbTestSetup.Init", name);
+    if(isNeo4jGen) {
+      getCD4C().addMethod(res, "umlp.test_infrastructure.dbTestSetup.InitNeo4j", name);
+    } else {
+      getCD4C().addMethod(res, "umlp.test_infrastructure.dbTestSetup.Init", name);
+    }
     getCD4C().addMethod(res, "umlp.test_infrastructure.dbTestSetup.Cleanup", name);
 
     addImports(origCD, res);
@@ -103,5 +110,11 @@ public class TestSetupDecorator extends AbstractDecorator {
     getCD4C().addImport(type, "org.apache.commons.io.IOUtils");
     getCD4C().addImport(type, "java.util.Spliterator");
     getCD4C().addImport(type, "java.util.ListIterator");
+
+    if(isNeo4jGen) {
+      getCD4C().addImport(type, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "DatabaseAccessManager4Neo4j"));
+    } else {
+      getCD4C().addImport(type, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "DatabaseAccessManager4SQL"));
+    }
   }
 }

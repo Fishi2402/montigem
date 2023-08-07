@@ -103,7 +103,10 @@ public class ManagerMockDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderParam", name);
       getCD4C().addMethod(managerClass, "umlp.managermock.DoDeSerBuilder", name);
       getCD4C().addMethod(managerClass, "umlp.managermock.DoAdd", name, managerName,
-          assocs.stream().filter(GenService::isBidirectional).collect(Collectors.toList()));
+          assocs.stream()
+              .filter(GenService::isBidirectional)
+              .filter(side -> !isDerived(side))
+              .collect(Collectors.toList()));
       getCD4C().addMethod(managerClass, "umlp.managermock.DoDelete", name, managerName);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + CommandSendingObserverDecorator.SUFFIX));
     } else {

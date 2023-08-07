@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"Request.ts",
+"lineCount":17,
+"mappings":"A;;;;;AAWC,C,wCAAyC,C,OAAQ,C;IAC/C,C,WAAkB,C;AAAoB,C,OACpC,C,KAAM,C;AACP,C;;IAED,C;;;;wBACO,C;AAAoB,C,OACzB,C,MAAO,C;AACR;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\request\\Request.java"],
+"names":[]
+}

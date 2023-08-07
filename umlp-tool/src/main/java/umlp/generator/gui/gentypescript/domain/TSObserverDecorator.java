@@ -63,9 +63,12 @@ public class TSObserverDecorator extends ObserverDecorator {
           getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyAdd", a.getName(), className, innerType);
           getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotifyRemove", a.getName(), className, innerType);
           getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyRemove", a.getName(), className, innerType);
-          if (GenService.isInnerCDEnum(a.getSymbol().getType())) {
-            additionalImports.add(((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0));
-          }
+        }
+
+        if (GenService.isCDType(a.getSymbol().getType())) {
+          additionalImports.add(a.getSymbol().getType());
+        } else if (GenService.isInnerCDEnum(a.getSymbol().getType())) {
+          additionalImports.add(((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0));
         }
 
         String fullType = getCDPrinter().prettyprint(createType(a));
@@ -75,7 +78,7 @@ public class TSObserverDecorator extends ObserverDecorator {
 
     // Add Notify for list associations
     CDSymbolTables.getAssociations(domainClass).stream()
-            .filter(a -> !a.getModifier().isDerived())
+            .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
             .filter(a -> GenService.isList(a))
             .forEach(a -> {
               getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotifyAdd", a.getName(), className, "long");
@@ -91,7 +94,7 @@ public class TSObserverDecorator extends ObserverDecorator {
 
     // Add Notify for associations
     CDSymbolTables.getAssociations(domainClass).stream()
-            .filter(a -> !a.getModifier().isDerived())
+            .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
             .filter(a -> !GenService.isList(a))
             .forEach(a -> {
               getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotify", a.getName(), className, "long", false);

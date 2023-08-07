@@ -173,7 +173,7 @@ public class ManagerDecorator extends AbstractDecorator {
       CDSymbolTables.getAssociations(domainInterface).stream()
           .filter(GenService::isList)
           .filter(a -> !types.contains(a.getName()))
-          .filter(a -> !GenService.isSymbolDerived(a))
+          .filter(Predicate.not(GenService::isSymbolDerived))
           .forEach(a -> {
             types.add(a.getName());
             SymTypeExpression type = a.getSymbol().getType();

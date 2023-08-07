@@ -8,7 +8,8 @@ import { Component } from "@angular/core";
 export class Navigation {
 
   readonly items: { url: string, title: string }[] = [
-    { url: '/a/WeatherView', title: 'Weather View' }
+    { url: '/a/WeatherView', title: 'Weather View' },
+    { url: '/c/WeatherApp', title: 'Weather App' },
   ];
 
 }

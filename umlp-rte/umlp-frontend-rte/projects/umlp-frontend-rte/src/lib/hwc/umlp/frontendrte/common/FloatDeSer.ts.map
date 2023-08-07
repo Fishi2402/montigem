@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"FloatDeSer.ts",
+"lineCount":33,
+"mappings":"A;;;;;AAYC,C,kCAAmC,C;IACjC,C,sCACwB,C;;;;;;;;;;;;;;;IAIxB,C;;;;;6BACmC,C;AAAY,C,OAC7C,C,cAAgB,C,UAAiB,C;QACjC,C,EAAE,CAAC,CAAC,C,gBAAkB,C;YACpB,C,MAAO,C;SACR,C;QAED,C,MAAO,C,qEAAY,C;AACpB;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\common\\FloatDeSer.java"],
+"names":[]
+}

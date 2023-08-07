@@ -61,16 +61,14 @@ public class BuilderDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
     List<ASTCDAssocSide> attrAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
         .filter(GenService::isVisibleNotDerived)
+        .filter(Predicate.not(GenService::isSymbolDerived))
         .collect(Collectors.toList());
     List<ASTCDAssocSide> attrAssocLists = attrAssocs.stream()
         .filter(GenService::isList)
         .collect(Collectors.toList());
-    List<ASTCDAssocSide> nonDerivedAttrAssocsList = attrAssocLists.stream()
-        .filter(Predicate.not(GenService::isSymbolDerived))
-        .collect(Collectors.toList());
 
     // Constructors
-    addConstructor(builderClass, domainClass, managerName, nonDerivedAttrAssocsList);
+    addConstructor(builderClass, domainClass, managerName, attrAssocLists);
 
     // Attributes
     List<ASTCDAttribute> attrList = createAttributes(domainClass, attrFields.stream().map(ASTCDAttributeTOP::getName).collect(Collectors.toList()), false);
@@ -88,11 +86,11 @@ public class BuilderDecorator extends AbstractDecorator {
     attrList.forEach(a -> builderClass.addAllCDMembers(methodDecorator.decorate(a)));
     builderClass.addAllCDMembers(methodDecorator.decorate(finishedAttr));
     builderClass.addAllCDMembers(methodDecorator.decorate(internalAttr));
-    createSetAndCheckMethods(domainClass, builderClass, attrFields, attrAssocs, origCD);
+    createSetAndCheckMethods(domainClass, builderClass, attrFields, attrAssocs);
     getCD4C().addMethod(builderClass, getBuildTemplate(),
         domainClass.getName(),
         managerName,
-        nonDerivedAttrAssocsList
+        attrAssocLists
     );
     // TODO: filter by mandatory
     List<ASTCDAttribute> mandatoryAttrList = attrList;

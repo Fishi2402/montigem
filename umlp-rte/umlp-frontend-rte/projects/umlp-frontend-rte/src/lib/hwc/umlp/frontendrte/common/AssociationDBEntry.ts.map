@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"AssociationDBEntry.ts",
+"lineCount":29,
+"mappings":"A;;AAIC,C;IACE,C;;IACA,C;;IACA,C;;IAEA,C,kBAA0B,C,iBAAe,C,iBAAe,C;AAAoB,C;;;QAC1E,C,eAAgB,C;QAChB,C,eAAgB,C;QAChB,C,qBAAsB,C;AACvB,C;;IAGD,C;AAA0B,C,OACxB,C,MAAO,C;AACR,C;;IAED,C;AAA0B,C,OACxB,C,MAAO,C;AACR,C;;IAED,C;AAA+B,C,OAC7B,C,MAAO,C;AACR;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\common\\AssociationDBEntry.java"],
+"names":[]
+}

@@ -59,7 +59,7 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
           CDSymbolTables.getAssociations(c)
               .stream()
               .filter(Predicate.not(GenService::isSymbolDerived))
-              .filter(a -> !GenService.isBidirectional(a))
+              .filter(Predicate.not(GenService::isBidirectional))
               .filter(GenService::isList)
               .forEach(a -> {
                 astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true)));
@@ -80,8 +80,8 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
               });
           CDSymbolTables.getAssociations(c)
               .stream()
-              .filter(a -> !GenService.isSymbolDerived(a))
-              .filter(a -> !GenService.isBidirectional(a))
+              .filter(Predicate.not(GenService::isSymbolDerived))
+              .filter(Predicate.not(GenService::isBidirectional))
               .filter(GenService::isList)
               .forEach(a -> {
                 astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true)));
@@ -118,6 +118,16 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     ast.addAllCDMembers(accessor.decorate(gemAttr));
     ast.addAllCDMembers(accessor.decorate(attr));
 
+    addImports(origCD, domainClass, ast);
+    if (GenService.isCDEnum(type)) {
+      getCD4C().addImport(ast,getPackageName(origCD, DEFAULT_PACKAGE)+"."+ type.print());
+    } else if (GenService.isJavaType(type)) {
+      addJavaImport(ast, type);
+    }
+    return ast;
+  }
+
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDType domainClass, ASTCDClass ast) {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
     getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
@@ -125,12 +135,8 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + getCorrectManager(domainClass));
-    if (GenService.isCDEnum(type)) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + type.print());
-    } else if (GenService.isJavaType(type)) {
-      addJavaImport(ast, type);
-    }
-    return ast;
+
+      getCD4C().addImport(ast, "com.google.common.collect.Sets");
   }
 
   protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {

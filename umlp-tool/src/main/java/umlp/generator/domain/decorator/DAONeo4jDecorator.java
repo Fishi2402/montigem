@@ -24,7 +24,7 @@ public class DAONeo4jDecorator extends DAODecorator {
 
   @Override
   protected void assocDAOMethods(ASTCDClass daoClass, ASTCDAssociation association) {
-    addMethodForAssociationDAO(daoClass, association);
+    addMethodsForAssociationDAO(daoClass, association);
 
     removeMethodForAssociationDAO(daoClass, association);
     if(association.getCDAssocDir().isDefinitiveNavigableRight()) {
@@ -40,14 +40,16 @@ public class DAONeo4jDecorator extends DAODecorator {
   }
 
   @Override
-  protected void addMethodForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
+  protected void addMethodsForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddInitNeo4jForAssocDAO", assoc.getName(),
             assoc.getLeft().getSymbol().getType().print(),
             assoc.getRight().getSymbol().getType().print(),
             assoc.getLeft().getName(), assoc.getRight().getName(), assoc.getCDAssocDir().isDefinitiveNavigableLeft(),
             assoc.getCDAssocDir().isDefinitiveNavigableRight());
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddForAssocDAO", assoc);
-
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.BulkAddForAssocDAO", assoc);
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.BulkAddBatchForAssocDAO", assoc);
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.ExecuteAddBatchForAssocDAO", assoc);
   }
 
   @Override
@@ -90,7 +92,7 @@ public class DAONeo4jDecorator extends DAODecorator {
   }
 
   @Override
-  protected void insertMethod(ASTCDClass daoClass, ASTCDClass domainClass,
+  protected void insertMethods(ASTCDClass daoClass, ASTCDClass domainClass,
                             Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
                             Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
     List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
@@ -100,8 +102,14 @@ public class DAONeo4jDecorator extends DAODecorator {
     superTypeNamesInclSelf.add(domainClass.getName());
 
     getCD4C().addMethod(daoClass, "umlp.dao.InsertInitNeo4j",
-        superTypeNamesInclSelf, attributes);
+        superTypeNamesInclSelf, attributes, optionalAttributes);
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+    getCD4C().addMethod(daoClass, "umlp.dao.BulkInsert", domainClass.getName(), cdName, attributes,
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+    getCD4C().addMethod(daoClass, "umlp.dao.BulkAddAssociationsToBatch", domainClass.getName(), cdName, attributes,
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+    getCD4C().addMethod(daoClass, "umlp.dao.BulkExecuteAssocBatches", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
   }
 
@@ -122,5 +130,28 @@ public class DAONeo4jDecorator extends DAODecorator {
         .filter(a -> !a.getModifier().isDerived() && !GenService.isList(a) && !GenService.isOptional(a)).forEach(attr ->
             getCD4C().addMethod(doaClass, "umlp.dao.UpdateAttrNeo4j", domainClass.getName(), attr.getName(),
                     attr.printType(), GenService.getDBType(attr.getSymbol().getType())));;
+  }
+
+  @Override
+  protected void updateOptionalAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
+    CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+        .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).forEach(attr ->
+            getCD4C().addMethod(doaClass, "umlp.dao.UpdateOptionalAttr", SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED), attr.getName(),
+                GenService.createType(attr).printType(), GenService.getDBType(attr.getSymbol().getType())));
+  }
+
+  @Override
+  protected void updateAndSelectListAttrMethods(ASTCDClass doaClass, ASTCDClass domainClass) {
+    CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+        .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).forEach(attr -> {
+              GenService.createType(attr);
+              String innerType = GenService.getInnerType(GenService.createType(attr));
+              String tableName = SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.PLAIN)+
+                  "$"+SQLSchemaGenerator.convertAttributeName(attr.getName(), SQLSchemaGenerator.AttributeType.PLAIN);
+              String dbType = GenService.getDBType(attr.getSymbol().getType());
+              getCD4C().addMethod(doaClass, "umlp.dao.UpdateListAttrNeo4j", tableName, attr, innerType, dbType);
+              getCD4C().addMethod(doaClass, "umlp.dao.SelectListAttr", tableName, attr, innerType, dbType);
+            }
+        );
   }
 }

@@ -45,37 +45,41 @@ dependencies {
 
 /////////////////////////   JSweet   //////////////////////////////
 
-jsweet {
-  verbose = true
-  encoding = 'UTF-8'
-  sourceMap = true
-  tsOnly = true
-  targetVersion = 'ES6'
-  module = 'commonjs'
-  autoPropagateAsyncAwaits = true
-  tsOut = project.file('projects/umlp-frontend-rte/src/lib/target')
-  workingDir = project.file('target/.jsweet')
-  includes = ['**/*.java']
-  excludes = [
-    '**/service/**',
-    '**/shellapi/**',
-    '**/ChunkedIdStorage.java'
-  ]
-  excludeTranspilation = [
-    '**/ClientCommandManager.java',
-    '**/DatabaseAccessManager.java',
-    '**/HashMapWithOrderedKeys.java',
-    '**/CommandResultDeSer.java',
-    '**/GemList.java',
-    '**/GemListBuilder.java',
-    '**/LocalDateDeSer.java',
-    '**/LocalTimeDeSer.java',
-    '**/LocalDateTimeDeSer.java',
-    '**/BaseClassObjectMapper.java',
-    '**/SerializableDeSer.java',
-    '**/DateDeSer.java'
-  ]
-}
+//jsweet {
+//  verbose = true
+//  encoding = 'UTF-8'
+//  sourceMap = true
+//  tsOnly = true
+//  targetVersion = 'ES6'
+//  module = 'commonjs'
+//  autoPropagateAsyncAwaits = true
+//  tsOut = project.file('projects/umlp-frontend-rte/src/lib/target')
+//  workingDir = project.file('target/.jsweet')
+//  includes = ['**/*.java']
+//  excludes = [
+//    '**/service/**',
+//    '**/shellapi/**',
+//    '**/ChunkedIdStorage.java',
+//    '**/test_infrastructure/**'
+//  ]
+//  excludeTranspilation = [
+//    '**/ClientCommandManager.java',
+//    '**/DatabaseAccessManager.java',
+//    '**/DatabaseAccessManager4Neo4j.java',
+//    '**/DatabaseAccessManager4SQL.java',
+//    '**/HashMapWithOrderedKeys.java',
+//    '**/CommandResultDeSer.java',
+//    '**/GemList.java',
+//    '**/GemListBuilder.java',
+//    '**/LocalDateDeSer.java',
+//    '**/LocalTimeDeSer.java',
+//    '**/LocalDateTimeDeSer.java',
+//    '**/BaseClassObjectMapper.java',
+//    '**/SerializableDeSer.java',
+//    '**/DateDeSer.java',
+//    '**/GemBuildable.java'
+//  ]
+//}
 
 /////////////////////////   NODE   //////////////////////////////
 node {
@@ -83,41 +87,52 @@ node {
   version = "12.18.2"
 }
 
-/*
-task generateIndexTS(type: Exec) {
-  workingDir "$projectDir"
-//  if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-//    commandLine 'cmd', '/c', 'mycommand'
-//  } else {
-    commandLine 'sh', '-c', './scripts/generateIndexTS.sh projects/umlp-frontend-rte/src/lib/'
-//  }
+task generateIndexTS {
+  println "Generating index.ts files for Frontend RTE TS Lib"
+  doLast {
+    project.file("projects/umlp-frontend-rte/src/lib").traverse { File file ->
+      if (file.directory) {
+        def out = file.listFiles().findAll { it.directory }
+          .collect { "export * from \"./" + it.name + "\";" }
+        out.addAll(file.listFiles()
+          .findAll { it.name.endsWith(".ts") && !it.name.equals('index.ts') }
+          .collect { "export * from \"./" + it.name.substring(0, it.name.length() - 3) + "\";" }
+        )
+        def outStr = out.join("\n")
+        new File(file, "index.ts").text = """$outStr"""
+      }
+    }
+  }
 }
-/**/
+
+//project.getTasksByName("jsweet", true).forEach {
+//  t ->
+//    generateIndexTS.dependsOn(t)
+//}
 
 task buildLib(type: NpxTask) {
   command = "ng"
   args = ["build", "--prod"]
-  dependsOn(tasks.npmInstall)
+  dependsOn(project.tasks.npmInstall)
+  dependsOn(project.tasks.generateIndexTS)
   inputs.dir(project.fileTree("projects/umlp-frontend-rte/src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")
   inputs.files("tsconfig.json")
   outputs.dir("${project.buildDir}/dist")
 }
-
-project.getTasksByName("jsweet", true).forEach {
-  t ->
-    t.finalizedBy(buildLib)
-    buildLib.dependsOn(t)
-}
-
 //build.dependsOn(buildLib)
 
+task packLib(type: NpmTask) {
+  dependsOn(buildLib)
+  args = ["pack"]
+}
+tasks.packLib.workingDir = project.file("dist/umlp-frontend-rte")
 
 //////////////////////////////   TEST   //////////////////////////////
 task testLib(type: NpxTask) {
   command = "ng"
   args = ["test"]
-  dependsOn(tasks.npmInstall)
+  dependsOn(project.tasks.npmInstall)
   inputs.dir(project.fileTree("projects/umlp-frontend-rte/src"))
   inputs.dir("node_modules")
   inputs.files("tsconfig.spec.json")
@@ -129,5 +144,4 @@ task testLib(type: NpxTask) {
 clean.doFirst {
   delete project.file("dist")
 }
-
 clean.dependsOn(jsweetClean)

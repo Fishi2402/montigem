@@ -25,6 +25,7 @@ import de.monticore.io.paths.MCPath;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
@@ -123,6 +124,46 @@ public class GUIGeneratorUtil {
           return DOMAIN_MODELS.contains(as.getFullName());
         }
       }
+    }
+    return false;
+  }
+
+  public final boolean isEnumType(SymTypeExpression type) {
+    Optional<TypeSymbol> symb = type.getTypeInfo().getEnclosingScope().resolveType(type.getTypeInfo().getName());
+    if (symb.isPresent()) {
+      if (OOSymbolsMill.typeDispatcher().isOOType(symb.get())) {
+        return OOSymbolsMill.typeDispatcher().asOOType(symb.get()).isIsEnum();
+      }
+    }
+    return false;
+  }
+
+  public final boolean isDomainEnumType(SymTypeExpression type) {
+    Optional<TypeSymbol> symb = type.getTypeInfo().getEnclosingScope().resolveType(type.getTypeInfo().getName());
+    if (symb.isPresent()) {
+      if (symb.get().getEnclosingScope() instanceof IGUIDSLArtifactScope) {
+        IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) symb.get().getEnclosingScope();
+        boolean isDomain = DOMAIN_MODELS.contains(as.getFullName());
+        if (isDomain && OOSymbolsMill.typeDispatcher().isOOType(symb.get())) {
+          return OOSymbolsMill.typeDispatcher().asOOType(symb.get()).isIsEnum();
+        }
+      }
+    }
+    return false;
+  }
+
+  public final boolean isOptionalEnumType(SymTypeExpression type) {
+    if (type.hasTypeInfo() && GenService.isOptional(type) && ((SymTypeOfGenerics) type).sizeArguments() == 1) {
+      SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+      return isEnumType(inner);
+    }
+    return false;
+  }
+
+  public final boolean isDomainOptionalEnumType(SymTypeExpression type) {
+    if (type.hasTypeInfo() && GenService.isOptional(type) && ((SymTypeOfGenerics) type).sizeArguments() == 1) {
+      SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+      return isDomainEnumType(inner);
     }
     return false;
   }
@@ -536,7 +577,7 @@ public class GUIGeneratorUtil {
     if (!isCreateModel(decoratedAst.getComponentQName())) {
       for (ASTGUIParam p : decoratedAst.getGUIComponentDeclaration().getGUIParamList()) {
         if (p.isPresentSymbol()) {
-          if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p)) {
+          if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p) && !isDerived(p)) {
             ids.add(p.getName() + "RoutingId");
           }
         }
@@ -548,6 +589,10 @@ public class GUIGeneratorUtil {
       }
     }
     return ids;
+  }
+
+  private boolean isDerived(ASTGUIParam p) {
+    return false;
   }
 
   public String getGenFileFolder(ASTMCPackageDeclaration pDecl) {

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package trafo;
 
-umlp EnumAssocOne {
+umlp EnumAssocMult {
   class Foo;
 
   enum Colour {

@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"CommandResult.ts",
+"lineCount":54,
+"mappings":"A;;;;;AAaC,C;;;;;IACE,C;;IAGA,C;;IAEA,C,WAAwB,C,WAAS,C;AAAsB,C;;QACrD,C,gBAAiB,C;QACjB,C,oBAAqB,C;AACtB,C;;IAED,C;AAA2B,C,OACzB,C,MAAO,C;AACR,C;;IAED,C,mBAAyB,C;AAAgB,C,OACvC,C,gBAAiB,C;AAClB,C;;IAUD,C,wBAAO,C;AAAwB,C,OAC7B,C,MAAO,C;AACR,C;;IAED,C,wBAAO,C;;;;IAIP,C,wBAAO,C;AAAwB,C,OAC7B,C,MAAO,C;AACR,C;;IAED,C,wBAAO,C,YAAa,C;;;;IAIpB,C;AAAiC,C,OAC/B,C,MAAO,C;AACR,C;;IAED,C,sBAAO,C;AAAuB,C,OAC5B,C,MAAO,C;AACR,C;;IAED,C,sBAAO,C,UAAW,C,YAAQ;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\command\\CommandResult.java"],
+"names":[]
+}

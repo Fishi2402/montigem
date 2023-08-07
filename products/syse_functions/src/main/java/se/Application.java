@@ -2,12 +2,13 @@ package se;/* (c) https://github.com/MontiCore/monticore */
 
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
-import functionsstructure.FunctionsStructureManagerImpl;
+import functionstructure.FunctionStructureManagerImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import umlp.backendrte.common.DatabaseAccessManager;
+import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,7 +26,7 @@ public class Application {
     Log.enableFailQuick(false);
     Log.warn("I AM ALIVE!");
 
-    FunctionsStructureManagerImpl.init();
+    FunctionStructureManagerImpl.init();
 
     Optional<URL> optionalURL = Optional.ofNullable(Application.class.getResource("/FunctionsStructure.sql"));
     if(optionalURL.isEmpty()) {
@@ -33,7 +34,8 @@ public class Application {
     }
     String schema = FileReaderWriter.readFromFile(optionalURL.get());
     Log.warn("Loading schema: " + schema);
-    DatabaseAccessManager.initSchema(schema);
+    DatabaseAccessManager4SQL.init();
+    DatabaseAccessManager4SQL.initSchema(schema);
     SpringApplication.run(Application.class, args);
   }
 }

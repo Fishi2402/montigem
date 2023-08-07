@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"NotificationScope.ts",
+"lineCount":24,
+"mappings":"A;;AAMC,C;IACE,C,QACA,C,MACA,C,OACA,C,IAQA,C;;;;;IANA,C;;uEAEkB,C;AAAW,C;QAC3B,C,YAAa,C;AACd,C;;oBAEuB,C,OAAjB,C;AAAyC,C,OAC9C,C,MAAO,C,+CAAe,C;AACvB,C;;;;;;mFAbO,C,iDACF,C,kDACC,C,+CACH;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\common\\NotificationScope.java"],
+"names":[]
+}

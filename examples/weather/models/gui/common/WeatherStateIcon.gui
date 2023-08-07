@@ -1,0 +1,22 @@
+package gui.common;
+
+import basic.src.lib.gemimage.GemImage;
+import basic.src.lib.gemtext.GemText;
+
+import Weather.WeatherState;
+
+component WeatherStateIcon(WeatherState state){
+  // TODO: referening WeatherState.SUNNY in guard does not work
+  @guard(state == 0){
+    @GemImage(source = "assets/icons/cloudy.svg", style = "width: 20px; height: 30px");
+  }
+  @guard(state == 1){
+    @GemImage(source = "assets/icons/sunny.svg", style = "width: 20px; height: 30px");
+  }
+  @guard(state == 2){
+    @GemImage(source = "assets/icons/rainy.svg", style = "width: 20px; height: 30px");
+  }
+  @guard(state == 3){
+    @GemImage(source = "assets/icons/lightning.svg", style = "width: 20px; height: 30px");
+  }
+}

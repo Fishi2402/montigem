@@ -80,6 +80,10 @@ public abstract class AbstractDecorator {
 
   protected TypeCheck typeCheck;
 
+  protected boolean isDerived(ASTCDAssocSide side) {
+    return side.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived();
+  }
+
   protected GlobalExtensionManagement getGlex() {
     return glex;
   }

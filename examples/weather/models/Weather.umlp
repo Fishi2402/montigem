@@ -1,9 +1,42 @@
 /* (c) https://github.com/MontiCore/monticore */
 classdiagram Weather {
+  // Singleton?
+  class App;
+
+  association currentCity [1] App -> (currentCity) City [0..1];
+  association favoriteCities [1] App -> (favorite) City [*];
+
+  class City {
+    String name;
+    double longitude;
+    double latitude;
+  }
+
+  class DailyForecast {
+    java.time.LocalDate date;
+    /double minimumTemperature;
+    /double maximumTemperature;
+    /WeatherState weatherState;
+  }
+
+  class Timeseries {
+    java.time.LocalDate start;
+    java.time.LocalDate end;
+    /double minimumTemperature;
+    /double maximumTemperature;
+  }
+
+  / association City -> (nextDays) Timeseries;
+  / association [1] City -> (current) Forecast [0..1];
+  / association City -> (nextHours) Forecast;
+  association [1] City <-> DailyForecast [*];
+  association [0..1] Timeseries -> (containedDays) DailyForecast [*];
+
+  association [*] DailyForecast -> City [1];
+  association [0..1] DailyForecast -> (dailyForecasts) Forecast [*];
 
   class Forecast {
-    // java.time.LocalDateTime date;
-    java.time.LocalDate date;
+    java.time.LocalDateTime date;
 
     Double longitude;
     Double latitude;
@@ -12,28 +45,13 @@ classdiagram Weather {
     Double windspeed;
     int realtiveHumidity;
   }
+  association [*] Forecast -> WeatherState [1];
 
-  class HvacConfig {
-    Double temperature;
-    boolean humidifyAir;
-    // HvacMode mode;
-    String mode;
-
-    // java.time.LocalTime timeOn;
-    // java.time.LocalTime timeOff;
-    java.time.LocalDate timeOn;
-    java.time.LocalDate timeOff;
+  enum WeatherState {
+    CLOUDY,
+    SUNNY,
+    RAINY,
+    STORM;
   }
-
-  /*
-  enum HvacMode {
-    AUTO,
-    HUMIDIFY,
-    VENTILATE,
-    HEAT,
-    COOL;
-  }
-  /**/
-
 }
 

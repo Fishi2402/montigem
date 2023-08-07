@@ -45,8 +45,11 @@ import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.UMLAssocToAttrTrafo;
+import umlp.generator.domain.UMLAttrToAssocTrafo;
 import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.domain.UMLPGeneratorConfig;
+import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.GUINodeIdTrafo;
@@ -56,7 +59,7 @@ import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
-import umlp.generator.gui.guidelta.GUIVariationHandler;
+import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,9 +80,8 @@ import static umlp.UMLPToolOptions.CD2GUI;
 import static umlp.UMLPToolOptions.DEBUG;
 import static umlp.UMLPToolOptions.DOMAIN;
 import static umlp.UMLPToolOptions.FOR_CLIENT;
-import static umlp.UMLPToolOptions.GUIDelta;
+import static umlp.UMLPToolOptions.GUIVariability;
 import static umlp.UMLPToolOptions.GUI_CREATE;
-import static umlp.UMLPToolOptions.GUI_PATH;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
@@ -212,24 +214,16 @@ public class UMLPTool extends UMLPToolTOP {
         Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
         runAfterParseTrafo(ast);
         createSymbolTable(ast);
-        runDefaultTrafo(ast);
         runDefaultCoCos(ast);
+        runDefaultTrafos(ast);
+        recreateSymbolTable(ast);
         CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, false);
         guiTool.generateGUI();
-        // TODO AGe: cd2gui is supposed to specify which models are for object creation,
-        //  see GUI_CREATE
-
         Reporting.flush(ast);
       }
 
-      else if(GUIDelta.isSelected(cmd)){
-        if(!GUI_PATH.isSelected(cmd))
-          Log.error("0x45c0003 Missing GUI Models with option -gp");
-
-        LinkedList<Path> gpPath = new LinkedList<>();
-        for (String v : cmd.getOptionValues(GUI_PATH.getCMD())) {
-          gpPath.add(Paths.get(v));
-        }
+      else if(GUIVariability.isSelected(cmd)){
+        List<Path> inputs = Arrays.stream(cmd.getOptionValues(INPUT.getCMD())).map(Path::of).collect(Collectors.toList());
 
         guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
         Reporting.init(outDir.getPath(), reportDir.getPath(), guidsl_reportManagerFactory);
@@ -237,10 +231,13 @@ public class UMLPTool extends UMLPToolTOP {
         LinkedList<ASTGUICompilationUnit> baseASTs = new LinkedList<>();
         LinkedList<ASTGUICompilationUnit> variationASTs = new LinkedList<>();
 
-        for(Path model : gpPath){
+        for(Path model : inputs){
+          String report_on = model.getFileName().toString().replace(".", "__");
+          Reporting.on(report_on);
           ASTGUICompilationUnit parsedModel = parseGUI(model.toString());
+          Reporting.reportParseInputFile(model.toAbsolutePath(), report_on);
 
-          if(isGUIDelta(parsedModel)) variationASTs.add(parsedModel);
+          if(isGUIVariabilityFile(parsedModel)) variationASTs.add(parsedModel);
           else baseASTs.add(parsedModel);
         }
 
@@ -249,14 +246,14 @@ public class UMLPTool extends UMLPToolTOP {
               .filter(ast -> ast.getComponentName().equals(variationAST.getGUIComponentDeclaration().getGUIComponentAdaptation().getTarget()))
               .collect(Collectors.toList());
           if(adaptedAST.size() != 1){
-            Log.error("expected exactly one matching file to adapt with GUIDelta, but found multiple or none");
+            Log.error("expected exactly one matching file to adapt with GUIVariability, but found multiple or none");
           }
-          GUIVariationHandler deltaHandler = new GUIVariationHandler(adaptedAST.get(0));
+          GUIVariabilityHandler deltaHandler = new GUIVariabilityHandler(adaptedAST.get(0));
           variationAST.accept(deltaHandler.getTraverser());
         }
 
         for(ASTGUICompilationUnit productAST : baseASTs){
-          Reporting.on(productAST.getComponentName());
+          Reporting.on(productAST.getComponentName() + "__gui");
           Path outputPath = outDir.toPath().resolve(        //file structure needs to reflect package declarations
               productAST.getMCPackageDeclaration().getMCQualifiedName().toString()
                   .replace(".","/")
@@ -287,9 +284,10 @@ public class UMLPTool extends UMLPToolTOP {
             ASTCDCompilationUnit ast = UMLPMill.parser().parse(reader).orElseThrow();
             Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
             runAfterParseTrafo(ast);
-            IUMLPArtifactScope symbolTable = createSymbolTable(ast);
-            runDefaultTrafo(ast);
+            createSymbolTable(ast);
             runDefaultCoCos(ast);
+            runDefaultTrafos(ast);
+            recreateSymbolTable(ast);
           } catch (IOException e) {
             Log.error("Can not load model for url " + modelUrl);
           }
@@ -300,8 +298,9 @@ public class UMLPTool extends UMLPToolTOP {
         Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
         runAfterParseTrafo(ast);
         IUMLPArtifactScope symbolTable = createSymbolTable(ast);
-        runDefaultTrafo(ast);
         runDefaultCoCos(ast);
+        runDefaultTrafos(ast);
+        recreateSymbolTable(ast);
 
 
         // print or store symbol table
@@ -543,8 +542,30 @@ public class UMLPTool extends UMLPToolTOP {
     node.accept(trav);
   }
 
-  public void runDefaultTrafo(ASTCDCompilationUnit node) {
-    // empty
+  public void runDefaultTrafos(ASTCDCompilationUnit node) {
+    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
+    assocTrafo.transform(node);
+    logTrafoExec("UMLAttrToAssocTrafo", node);
+
+    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
+    assocNameTrafo.transform(node);
+    logTrafoExec("UMLSetDefaultsTrafo", node);
+
+    UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.traverser());
+    assoc2Trafo.transform(node);
+    logTrafoExec("UMLAssocToAttrTrafo", node);
+  }
+
+  public void recreateSymbolTable(ASTCDCompilationUnit node) {
+    // rebuild symbol table
+    CD4CodeMill.globalScope().removeSubScope(node.getEnclosingScope());
+    UMLPMill.scopesGenitorDelegator().createFromAST(node);
+    node.accept(new CD4CodeSymbolTableCompleter(node).getTraverser());
+    logTrafoExec("rebuildCD4CodeSymTab", node);
+  }
+
+  protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
+    Log.info("========= CD after '"+trafo+"': =========", UMLPTool.class.getName());
   }
 
   protected boolean isUmlpFile(File f) {
@@ -555,7 +576,7 @@ public class UMLPTool extends UMLPToolTOP {
     return f.getName().endsWith(".gui");
   }
 
-  protected boolean isGUIDelta(ASTGUICompilationUnit compilationUnit){
+  protected boolean isGUIVariabilityFile(ASTGUICompilationUnit compilationUnit){
     return compilationUnit.getGUIComponentDeclaration().isPresentGUIComponentAdaptation();
   }
 

@@ -2,11 +2,12 @@
 ${tc.signature("cdName")}
 ${cd4c.method("public void _init() throws Exception")}
 
+DatabaseAccessManager4SQL.init();
 ${cdName}TestContext.clear();
 ${cdName}ManagerImpl.init();
 DatabaseAccessManager.executeStatement("DROP ALL OBJECTS");
 String schema = IOUtils.resourceToString("/${cdName}.sql", StandardCharsets.UTF_8);
-assert DatabaseAccessManager.initSchema(schema);
+assert DatabaseAccessManager4SQL.initSchema(schema);
 backend = ${cdName}TestContext.fromCurrentContext();
 
 for(int i = 0; i < getNumberOfClients(); i++){

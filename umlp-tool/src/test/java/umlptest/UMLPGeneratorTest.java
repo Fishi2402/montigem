@@ -17,6 +17,8 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
     ASTCDCompilationUnit ast = parse("de/monticore/A.umlp");
     runAfterParseTrafo(ast);
     createSymTab(ast);
+    runDefaultTrafos(ast);
+    recreateSymbolTable(ast);
 
     UMLPGenerator gen = new UMLPGenerator(getGenSetup(), new UMLPGeneratorConfig(false));
     gen.generate(ast, "umlp.UMLP2Java");
@@ -29,6 +31,8 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
     ASTCDCompilationUnit ast = parse("de/monticore/A.umlp");
     runAfterParseTrafo(ast);
     createSymTab(ast);
+    runDefaultTrafos(ast);
+    recreateSymbolTable(ast);
 
     UMLPGenerator gen = new UMLPGenerator(getGenSetup(), new UMLPGeneratorConfig(false));
     gen.generate(ast, "umlp.UMLP2Java");
