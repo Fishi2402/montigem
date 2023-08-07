@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
-import {FlensburgManager} from "../../target/generated-sources/ts/hardy/flensburg/FlensburgManager";
+import {FlensburgManager} from "../../build/frontendGen/build/appdomain//hardy/flensburg/FlensburgManager";
 import {
   FlensburgManagerClientImpl
-} from "../../target/generated-sources/ts/hardy/flensburg/FlensburgManagerClientImpl";
+} from "../../build/frontendGen/build/appdomain//hardy/flensburg/FlensburgManagerClientImpl";
 import {
   ClientCommandManager,
   ClientCommandWebsocketCommunication,
   CommandManager
 } from "umlp-frontend-rte";
-import {Address} from "../../target/generated-sources/ts/hardy/flensburg/Address";
-import {Person} from "../../target/generated-sources/ts/hardy/flensburg/Person";
+import {Address} from "../../build/frontendGen/build/appdomain//hardy/flensburg/Address";
+import {Person} from "../../build/frontendGen/build/appdomain//hardy/flensburg/Person";
 
 @Component({
   selector: 'app-root',

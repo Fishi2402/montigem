@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.jsweet.extension.backendAdapters;
+package umlp.jsweet.extension.domainAdapters;
 
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionTree;
@@ -19,7 +19,6 @@ import org.jsweet.transpiler.model.LiteralElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.NewClassElement;
 import org.jsweet.transpiler.util.Util;
-import umlp.jsweet.extension.UMLPAdapterUtils;
 import umlp.jsweet.extension.util.RTEPathUtil;
 
 import javax.lang.model.element.Element;
