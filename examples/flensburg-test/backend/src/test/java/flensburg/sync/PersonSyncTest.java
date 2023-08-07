@@ -2,7 +2,6 @@
 package flensburg.sync;
 
 import de.se_rwth.commons.logging.Log;
-
 import flensburg.infrastructure.FlensburgManagerClientImplBuilder;
 import hardy.flensburg.Address;
 import hardy.flensburg.Car;
@@ -22,10 +21,7 @@ import umlp.backendrte.command.TestClientCommandManager;
 import umlp.backendrte.common.GemList;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
