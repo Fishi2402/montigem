@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class adds the async keyword to every method that targets
+ *  an asynchronous RTE method.
+ */
 public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
 
   private boolean stillWorking = false;
@@ -53,6 +57,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
     return super.visitMethodInvocation(invocation, trees);
   }
 
+  // Returns true for asynchronous method calls
   private boolean isUMLPRTEAsync(ExecutableElement method, MethodInvocationTree invocation) {
     TypeMirror targetType = ((MethodInvocationElement) createExtendedElement(
         invocation)).getTargetType();
@@ -75,10 +80,17 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
             return true;
         }
         break;
+      case "umlp.backendrte.command.ClientCommandWebsocketCommunication":
+        switch (methodSimpleName) {
+          case "sendCommandToServerAndReceiveResult":
+          case "handleTextMessage":
+            return true;
+        }
       case "umlp.backendrte.common.GemList":
       case "umlp.backendrte.common.GemListBuilder":
         switch (methodSimpleName) {
           case "build":
+          case "loadIfRequired":
             return true;
         }
         break;
@@ -89,11 +101,24 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
         }
         break;
       case "umlp.backendrte.command.SyncError":
+      case "umlp.backendrte.command.ServerError":
         switch (methodSimpleName) {
           case "doRun":
             return true;
         }
         break;
+      case "umlp.backendrte.common.AggregatedCommandDeSer":
+      case "umlp.backendrte.common.BooleanDeSer":
+      case "umlp.backendrte.common.ByteDeSer":
+      case "umlp.backendrte.common.CharacterDeSer":
+      case "umlp.backendrte.common.DateDeSer":
+      case "umlp.backendrte.common.DoubleDeSer":
+      case "umlp.backendrte.common.FloatDeSer":
+      case "umlp.backendrte.common.IntegerDeSer":
+      case "umlp.backendrte.common.LongDeSer":
+      case "umlp.backendrte.common.SerializableDeSer":
+      case "umlp.backendrte.common.ShortDeSer":
+      case "umlp.backendrte.common.StringDeSer":
       case "umlp.backendrte.command.CommandDeSer":
       case "umlp.backendrte.command.CommandObjectMapper":
         switch (methodSimpleName) {
@@ -113,14 +138,38 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
           case "subscribe":
             return true;
         }
+      case "umlp.backendrte.common.IDOrBuilder":
+        switch (methodSimpleName) {
+          case "getIdAndMaybeBuild":
+            return true;
+        }
+      case "umlp.backendrte.common.SimpleIdStorage":
+        switch (methodSimpleName) {
+          case "addAll":
+          case "remove":
+            return true;
+        }
     }
 
     // Lists
     try {
       if (types().isSubtype(types().erasure(targetType),
           types().erasure(util().getType(java.util.List.class)))) {
-        if (stringStartsWith(methodSimpleName, "add", "addAll", "contains", "containsAll",
-            "get", "indexOf", "lastIndexOf", "remove", "removeAll", "set", "toArray")) {
+        if (stringStartsWith(methodSimpleName,
+            "add",
+            "addAll",
+            "contains",
+            "containsAll",
+            "get",
+            "indexOf",
+            "lastIndexOf",
+            "map",
+            "remove",
+            "removeElement",
+            "removeIndex",
+            "removeAll",
+            "set",
+            "toArray")) {
           return true;
         }
       }
@@ -131,25 +180,18 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
     return false;
   }
 
+  // For UMLP all List iterations are asynchronous, making methods using for each loops also asynchronous
   @Override
   public Void visitEnhancedForLoop(EnhancedForLoopTree node, Trees trees) {
     TypeMirror expressionType = Util.getType(node.getExpression());
-    if (types().isSubtype(expressionType, types().erasure(util().getType(List.class)))
-        || expressionType.toString().equals(RTEPathUtil.getBackendRTECommonPath("GemList"))) {
+    if (types().isSubtype(expressionType, types().erasure(util().getType(List.class)))) {
       addAsyncKeywordToMethod();
     }
     return super.visitEnhancedForLoop(node, trees);
   }
 
-  @Override
-  public Void visitNewClass(NewClassTree node, Trees trees) {
-//    ExtendedElement extendedElement = createExtendedElement(node);
-//    if (UMLPAdapterUtils.isSubTypeOf(extendedElement.getType(), RTEPathUtil.getBackendRTECommonPath("GemListBuilder"), util(), types(), context)) {
-//      addAsyncKeywordToMethod();
-//    }
-    return super.visitNewClass(node, trees);
-  }
-
+  // Adds the asynchronous keyword to the method, overloading methods, and other implementing classes
+  // Copied from JSweet Core
   private void addAsyncKeywordToMethod() {
     MethodTree parent = getParent(MethodTree.class);
     if (parent != null) {

@@ -30,10 +30,10 @@ export abstract class AggregatedCommandDeSer {
     }
 
     public async fromJson<T>(jsonObject: any): Promise<Command<any>> {
-        if (!jsonObject.hasStringMember("commandType")){
+        if (typeof jsonObject["commandType"] !== 'string'){
             return null;
         }
-        const commandType: string = jsonObject.getStringMember("commandType");
+        const commandType: string = jsonObject["commandType"];
         if (!/* containsKey */this.deSerMap.hasOwnProperty(commandType)){
             Log.error("Can not find deSer for commandType " + commandType);
             return null;

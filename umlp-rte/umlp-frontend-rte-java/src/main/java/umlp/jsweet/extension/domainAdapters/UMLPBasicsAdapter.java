@@ -10,6 +10,11 @@ import umlp.jsweet.extension.util.UMLPAdapterUtils;
 import javax.lang.model.type.TypeMirror;
 import java.util.function.Function;
 
+/**
+ * This adapter is responsible to correctly map Elements from the MontiCore world to correct
+ *  TS implementaitons.
+ * This is done mainly forde.monticore.symboltable.serialization.json.* and de.se_rwth.commons.logging.Log
+ */
 public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
 
   public UMLPBasicsAdapter(PrinterAdapter parentAdapter) {
@@ -71,6 +76,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
     return super.substituteMethodInvocation(invocation);
   }
 
+  // Replace with JSON.parse
   private boolean substituteJsonParserMethods(MethodInvocationElement invocation, String methodName) {
     switch (methodName) {
       case "parseJsonObject":
@@ -81,6 +87,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
     return false;
   }
 
+  // Replace with the TS access operator "[x]"
   private boolean substituteJsonElementMethods(MethodInvocationElement invocation, String methodName) {
     switch (methodName) {
       case "isJsonObject":
@@ -185,6 +192,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
     return false;
   }
 
+  // Better overload
   @Override
   public boolean substituteNewClass(NewClassElement newClass) {
     String className = newClass.getTypeAsElement().toString();

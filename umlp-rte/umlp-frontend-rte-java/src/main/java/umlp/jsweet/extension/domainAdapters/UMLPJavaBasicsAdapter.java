@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * This adapter is responsible to use some additional {@link java.util} classes.
+ * This adapter is responsible to enable the usage of some additional {@link java.util} classes.
  */
 public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
 

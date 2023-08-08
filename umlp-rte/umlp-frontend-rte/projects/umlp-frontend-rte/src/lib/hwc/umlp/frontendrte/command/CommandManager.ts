@@ -22,8 +22,8 @@ export class CommandManager {
         return await CommandManager.getInstance()._register(participant);
     }
 
-    public static deregister(participantId: number) {
-        CommandManager.getInstance()._deregister(participantId);
+    public static async deregister(participantId: number) {
+        await CommandManager.getInstance()._deregister(participantId);
     }
 
     public static getParticipantId(): number {

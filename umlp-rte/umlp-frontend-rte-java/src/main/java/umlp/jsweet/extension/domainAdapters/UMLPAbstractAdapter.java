@@ -11,6 +11,11 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import java.util.HashMap;
 
+/**
+ * Combines common elements for all Adapters
+ *
+ * This class uses a "static library" to remap types and import from the rte
+ */
 public abstract class UMLPAbstractAdapter extends PrinterAdapter {
   private static final String UMLP_RTE_LIBRARY_POINTER = "umlp-frontend-rte";
 
