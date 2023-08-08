@@ -62,9 +62,16 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
     //
     switch (targetClassName) {
       case "umlp.backendrte.command.CommandManager":
+      case "umlp.backendrte.command.ClientCommandCommunication":
         switch (methodSimpleName) {
           case "executeCommand":
           case "_executeCommand":
+          case "register":
+          case "_register":
+          case "deregister":
+          case "_deregister":
+          case "sendCommandToSubscribers":
+          case "_sendCommandToSubscribers":
             return true;
         }
         break;
@@ -81,6 +88,31 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
             return true;
         }
         break;
+      case "umlp.backendrte.command.SyncError":
+        switch (methodSimpleName) {
+          case "doRun":
+            return true;
+        }
+        break;
+      case "umlp.backendrte.command.CommandDeSer":
+      case "umlp.backendrte.command.CommandObjectMapper":
+        switch (methodSimpleName) {
+          case "fromJson":
+          case "fromJsonString":
+          case "serialize":
+          case "deserialize":
+          case "serializeCommand":
+          case "deserializeCommand":
+          case "serializeResponse":
+          case "deserializeResponse":
+            return true;
+        }
+        break;
+      case "umlp.backendrte.command.Participant":
+        switch (methodSimpleName) {
+          case "subscribe":
+            return true;
+        }
     }
 
     // Lists

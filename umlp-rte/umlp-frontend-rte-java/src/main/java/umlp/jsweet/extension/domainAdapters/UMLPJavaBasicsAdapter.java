@@ -88,35 +88,31 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
   }
 
   public boolean substituteMethodInvocation_JavaUtilObjects(MethodInvocationElement invocation) {
-    // java.util.Objects
-    if (invocation.getTargetType().toString().equals("java.util.Objects")) {
-      // java.util.Objects.requireNonNull
-      if (invocation.getMethodName().equals("requireNonNull")) {
+    switch (invocation.getMethodName()) {
+      case "requireNonNull":
         String msg = invocation.getArgumentCount() > 1 ? invocation.getArgument(1).toString() : "";
         this.print("/* requireNonNull */")
             .print(String.format(
                 "(obj => {if (obj == undefined || obj == null) { throw Object.defineProperty(new Error(%s), '__classes', { configurable: true, value: ['java.lang.Throwable','java.lang.Object','java.lang.RuntimeException','java.lang.NullPointerException','java.lang.Exception'] }) } else { return obj}}) (%s)",
                 msg, invocation.getArgument(0).toString()));
         return true;
-      }
-      // java.util.Objects.equals
-      if (invocation.getMethodName().equals("equals")) {
+      case "equals":
         this.print("/* equals */")
             .print(
                 String.format("((a, b) => { return a === b; }) (%s, %s)",
                     invocation.getArgument(0), invocation.getArgument(1)));
         return true;
-      }
     }
     return false;
   }
 
   public boolean substituteMethodInvocation_JavaLangString(MethodInvocationElement invocation) {
-    if (invocation.getTargetType().toString().equals("java.lang.String")) {
-      if (invocation.getMethodName().equals("format")) {
-        this.print("StringHelper.format(").printArgList(invocation.getArguments()).print(")");
-        return true;
-      }
+    switch (invocation.getMethodName()) {
+      case "format":
+        if (invocation.getMethodName().equals("format")) {
+          this.print("StringHelper.format(").printArgList(invocation.getArguments()).print(")");
+          return true;
+        }
     }
     return false;
   }

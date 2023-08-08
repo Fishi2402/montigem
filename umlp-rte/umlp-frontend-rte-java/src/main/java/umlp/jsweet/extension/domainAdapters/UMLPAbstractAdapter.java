@@ -53,6 +53,14 @@ public abstract class UMLPAbstractAdapter extends PrinterAdapter {
     staticLibrary.put(staticClass, replaceClass);
   }
 
+  protected boolean containedInStaticLibrary(String type) {
+    return this.staticLibrary.containsKey(type);
+  }
+
+  protected HashMap<String, String> getStaticLibrary() {
+    return this.staticLibrary;
+  }
+
   protected String getLibraryLocation() {
     return UMLP_RTE_LIBRARY_POINTER;
   }

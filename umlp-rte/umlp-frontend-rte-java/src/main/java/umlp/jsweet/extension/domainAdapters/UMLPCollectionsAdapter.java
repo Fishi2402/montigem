@@ -10,31 +10,25 @@ import de.se_rwth.commons.logging.Log;
 import org.jsweet.transpiler.Java2TypeScriptTranslator;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
-import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ExtendedElement;
 import org.jsweet.transpiler.model.ExtendedElementFactory;
 import org.jsweet.transpiler.model.ForeachLoopElement;
-import org.jsweet.transpiler.model.ImportElement;
 import org.jsweet.transpiler.model.LiteralElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.NewClassElement;
 import org.jsweet.transpiler.util.Util;
 import umlp.jsweet.extension.util.RTEPathUtil;
+import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -44,43 +38,20 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
 
   public static final String CustomUMLPListImplementationName = "UMLPArrayList";
 
-  protected Map<String, String> listTypeMapping = new HashMap<>();
-
   public UMLPCollectionsAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
-    init();
-  }
-
-  protected void init() {
-    listTypeMapping.put(List.class.getName(), CustomUMLPListInterfaceName);
-    listTypeMapping.put(AbstractList.class.getName(), CustomUMLPListInterfaceName);
-    listTypeMapping.put(ArrayList.class.getName(), CustomUMLPListImplementationName);
-    listTypeMapping.put(CopyOnWriteArrayList.class.getName(), CustomUMLPListImplementationName);
-    listTypeMapping.put(LinkedList.class.getName(), CustomUMLPListImplementationName);
-    listTypeMapping.put(Stack.class.getName(), CustomUMLPListImplementationName);
-    listTypeMapping.put(Vector.class.getName(), CustomUMLPListImplementationName);
-    addTypeMappings(listTypeMapping);
+    super.addTypeMappings(getStaticLibrary());
   }
 
   @Override
-  public String needsImport(ImportElement importElement, String qualifiedName) {
-    if (listTypeMapping.containsKey(qualifiedName)) {
-      return getRootRelativeName(importElement.getImportedType());
-    }
-    return super.needsImport(importElement, qualifiedName);
-  }
-
-  @Override
-  public ModuleImportDescriptor getModuleImportDescriptor(
-      CompilationUnitElement currentCompilationUnit, String importedName,
-      TypeElement importedClass) {
-    String fqn = importedClass.getQualifiedName().toString();
-    if (listTypeMapping.containsKey(fqn)) {
-      return new ModuleImportDescriptor(false,
-          (PackageElement) importedClass.getEnclosingElement(),
-          listTypeMapping.get(fqn), getLibraryLocation(), importedClass);
-    }
-    return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
+  protected void initStaticLibrary() {
+    putToStaticLibrary(List.class.getName(), CustomUMLPListInterfaceName);
+    putToStaticLibrary(AbstractList.class.getName(), CustomUMLPListInterfaceName);
+    putToStaticLibrary(ArrayList.class.getName(), CustomUMLPListImplementationName);
+    putToStaticLibrary(CopyOnWriteArrayList.class.getName(), CustomUMLPListImplementationName);
+    putToStaticLibrary(LinkedList.class.getName(), CustomUMLPListImplementationName);
+    putToStaticLibrary(Stack.class.getName(), CustomUMLPListImplementationName);
+    putToStaticLibrary(Vector.class.getName(), CustomUMLPListImplementationName);
   }
 
   @Override
@@ -214,9 +185,8 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
           ? Util.getType(methodInvocationTree.getMethodSelect())
           : null;
       ExpressionTree selected = ((MemberSelectTree) methodInvocationTree.getMethodSelect()).getExpression();
-      Element selectedTypeElement = Util.getTypeElement(selected);
       ExecutableElement methSym = util().findMethodDeclarationInType(
-          (TypeElement) selectedTypeElement, "remove", type);
+          Util.getTypeElement(selected), "remove", type);
 
       if (type.getReturnType().toString().equals("boolean")) {
         getContext().addMethodNameMapping(methSym, "removeElement");
@@ -266,8 +236,7 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
   public boolean substituteForEachLoop(ForeachLoopElement foreachLoop, boolean targetHasLength, String indexVarName) {
     EnhancedForLoopTree loop = ExtendedElementFactory.toTree(foreachLoop);
     TypeMirror expressionType = Util.getType(loop.getExpression());
-    if (types().isSubtype(expressionType, types().erasure(util().getType(List.class)))
-        || expressionType.toString().equals(RTEPathUtil.getBackendRTECommonPath("GemList"))) {
+    if (types().isSubtype(expressionType, types().erasure(util().getType(List.class)))) {
       printAwaitForEachLoop(loop, indexVarName);
       return true;
     }
@@ -275,17 +244,16 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
   }
 
   protected void printAwaitForEachLoop(EnhancedForLoopTree loop, String indexVarName) {
-    getPrinter().print("for await(" + Java2TypeScriptTranslator.VAR_DECL_KEYWORD + " " + loop.getVariable().getName().toString() + " of ");
-    if (loop.getExpression() instanceof TypeCastTree || loop.getExpression() instanceof MethodInvocationTree) {
-      print("(");
-    }
-    getPrinter().print(loop.getExpression());
-    if (loop.getExpression() instanceof TypeCastTree || loop.getExpression() instanceof MethodInvocationTree) {
-      print(")");
-    }
-    print(") {").println().startIndent().printIndent();
-    getPrinter().printIndent().print(loop.getStatement());
-    endIndent().println().printIndent().print("}");
+    print("for await(" + Java2TypeScriptTranslator.VAR_DECL_KEYWORD + " ")
+        .print(loop.getVariable().getName().toString() + " of ");
+    boolean parentheses = loop.getExpression() instanceof TypeCastTree
+        || loop.getExpression() instanceof MethodInvocationTree;
+    if (parentheses) { print("("); }
+    print(loop.getExpression());
+    if (parentheses) { print(")"); }
+    getPrinter().print(") {").println().startIndent().printIndent()
+        .printIndent().print(loop.getStatement())
+        .endIndent().println().printIndent().print("}");
   }
 
   @Override
@@ -301,7 +269,7 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
   @Override
   public boolean substituteInstanceof(String exprStr, ExtendedElement expr, TypeMirror type) {
     String typeString = types().erasure(type).toString();
-    if (this.listTypeMapping.containsKey(typeString)) {
+    if (containedInStaticLibrary(typeString)) {
       print(exprStr, expr);
       print(" != null && ");
       print("(");
