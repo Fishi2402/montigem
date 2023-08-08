@@ -90,7 +90,7 @@ task unpackGUILibSymbols(type: Copy) {
   into "${symPath}"
 }
 
-/*task genTestGUI(type: UMLPGuiGenTask) {
+task genTestGUI(type: UMLPGuiGenTask) {
   dependsOn('generateUmlpBackend', 'unpackGUILibSymbols')
   input = file("../models")
   outputDir = file("$project.buildDir/testgui")
@@ -98,8 +98,8 @@ task unpackGUILibSymbols(type: Copy) {
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = file(symPath)
   domainModels = ["Sehub"]
-  // guiCreateModels = ["stanley.gui.AccountCreate"]
-}*/
+  guiCreateModels = ["gui.UserCreate"]
+}
 
 test {
   testLogging {
@@ -121,5 +121,5 @@ sourceSets {
   }
 }
 
-//compileJava.dependsOn(generateUmlpBackend, genTestGUI)
-compileJava.dependsOn(generateUmlpBackend)
+compileJava.dependsOn(generateUmlpBackend, genTestGUI)
+//compileJava.dependsOn(generateUmlpBackend)
