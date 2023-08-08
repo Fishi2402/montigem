@@ -64,7 +64,7 @@ public class DAODecorator extends AbstractDecorator {
 
     ASTCDClass clazz = builder.build();
     addStaticImports(clazz);
-    super.addImports(domainClass, clazz);
+    this.addImports(domainClass, clazz);
     domainClassDAOMethods(clazz, domainClass, assocSideToAssociation);
     return clazz;
   }
