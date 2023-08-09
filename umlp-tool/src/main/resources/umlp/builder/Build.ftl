@@ -9,7 +9,7 @@ if (!buildFinished) {
 if (isBuildable()) {
 <#list assocList as assoc>
   <#if genService.isList(assoc)>
-    this._${assoc.getName()}.build();
+    //this._${assoc.getName()}.build();
   </#if>
 </#list>
 if(!INTERNAL_deser_mode) {
@@ -19,26 +19,25 @@ ${managerName}.add${name}(this);
   <#if genService.isList(assoc)>
     <#if genService.isBidirectional(assoc)>
       <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>
-      <#assign otherType=assoc.getSymbol().getType().print()>
-      for (long id: this._${assoc.getName()}.getIDs()) {
-        if (${managerName}.isLoaded${otherType}(id)) {
+      <#assign thisType=assoc.getSymbol().getType().print()>
+      for (${thisType} id: this._${assoc.getName()}) {
           <#if genService.isList(otherSide)>
-          ${managerName}.get${otherType}Sure(id).add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
+            id.add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
           <#else>
-          ${managerName}.get${otherType}Sure(id).set${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
+            id.set${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
           </#if>
-        }
       }
     </#if>
   <#else>
     <#if genService.isBidirectional(assoc)>
       <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>
-      <#assign otherType=assoc.getSymbol().getType().print()>
-      if (${managerName}.isLoaded${otherType}(this._${assoc.getName()}.getGemId())) {
+      if (is${assoc.getName()?cap_first}Present()) {
       <#if genService.isList(otherSide)>
-      ${managerName}.get${otherType}Sure(this._${assoc.getName()}.getGemId()).add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
+        if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}().contains(this)) {
+          this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
+        }
       <#else>
-      ${managerName}.get${otherType}Sure(this._${assoc.getName()}.getGemId()).set${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
+        this._${assoc.getName()}.get().set${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
       </#if>
       }
       </#if>
