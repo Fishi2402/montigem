@@ -133,7 +133,6 @@ public class BuilderDecorator extends AbstractDecorator {
       type.setEnclosingScope(BasicSymbolsMill.globalScope());
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(),
               type,  name + "Present");
-      attribute.getModifier().setReadonly(true);
       attribute.setInitial(UMLPMill.nameExpressionBuilder().setName(String.valueOf(initialValue)).build());
       attributesList.add(attribute);
     }
