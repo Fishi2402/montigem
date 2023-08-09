@@ -1,0 +1,23 @@
+package gui.login;
+
+import Sehub.User;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+import basic.src.lib.gembutton.GemButton;
+import basic.src.lib.gemtext.GemText;
+import input.src.lib.gemtextinput.GemTextInput;
+
+page UserLogin(User user) {
+  @GemCard(title = "Login", component =
+    @GemColumn(rowGap = "20px", components = [
+      @GemTextInput(labelText = "Username", inputType = "string", entry = user.username),
+      @GemTextInput(labelText = "Passwort", inputType = "string", entry = user.password),
+      @GemRow(hAlign = "center", component =
+        @GemButton(label = "Anmelden", leftClick = login)
+      )
+    ])
+  );
+}

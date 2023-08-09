@@ -7,7 +7,7 @@ classdiagram Sehub {
     String username;
     String password;
     java.time.LocalDateTime registrationDate;
-    ActivationStatus activated;
+   // ActivationStatus activated;
                                         <<dbColumn = "unique=true">>
     String email;
   }
