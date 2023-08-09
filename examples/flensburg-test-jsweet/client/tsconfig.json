@@ -26,7 +26,11 @@
       "dom"
     ],
     "paths": {
-      "@src/*": ["build/app/*"]
+      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*"],
+      "@angular/*": ["node_modules/@angular/*"],
+      "@umlp/*": ["node_modules/@umlp/*"],
+      "@monticore/*": ["node_modules/@monticore/*"],
+      "tslib": ["node_modules/tslib"]
     }
   },
   "angularCompilerOptions": {

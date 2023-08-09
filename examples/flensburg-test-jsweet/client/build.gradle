@@ -29,8 +29,9 @@ jsweet {
   encoding = 'UTF-8'
   sourceMap = true
   tsOnly = true
-  tsOut = project.file('target/generated-sources/ts')
-  candiesJsOut = project.file('target/candies')
+  tsOut = project.file('build/frontendGen/build/appdomain/')
+  candiesJsOut = project.file('build/jsweet/candies')
+  workingDir = project.file('build/jsweet')
   targetVersion = 'ES6'
   includes = ['**/flensburg/**/*.java']
   excludes = [
@@ -39,10 +40,12 @@ jsweet {
       '**/flensburg/FlensburgMockTestSetup.java',
       '**/flensburg/FlensburgDummyProvider.java',
       '**/flensburg/FlensburgTestContext.java',
-      '**/flensburg/test_infrastructure/**'
+      '**/flensburg/test_infrastructure/**',
+      '**/flensburg/FlensburgServerApplication.java',
+      '**/flensburg/FlensburgShellAPIApplication.java',
+      '**/flensburg/shellapi/**',
   ]
   module = 'commonjs'
-  workingDir = project.file('target/.jsweet')
   excludeTranspilation = [
     '**/flensburg/*DAO.java',
     '**/flensburg/*DbObserver.java',
@@ -56,11 +59,14 @@ jsweet {
 
 node {
   download = true
-  version = "18.16.1"
+  version = "18.10.0"
+  nodeProxySettings = ProxySettings.OFF
 }
 
-task generateNPMAuth(type: NPMAuthCreate)
-//npmInstall.dependsOn(generateNPMAuth)
+task generateNPMAuth(type: NPMAuthCreate){
+  npmrcFile = project.file(".npmrc")
+}
+npmInstall.dependsOn(generateNPMAuth)
 
 //task installRTELocal(type: NpxTask) {
 //  command = "install"
@@ -72,7 +78,7 @@ task buildFlensburgApp(type: NpxTask) {
   args = ["build"]
   dependsOn(project.tasks.npmInstall)
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
-  inputs.dir(project.fileTree("target/generated-sources/ts"))
+  inputs.dir(project.fileTree("build/frontendGen/build/appdomain/"))
   inputs.dir(project.fileTree("node_modules"))
   inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.app.json")
   outputs.dir("${project.buildDir}/webapp")
@@ -84,7 +90,7 @@ task runFlensburgApp(type: NpxTask) {
   dependsOn(project.tasks.npmInstall)
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
   inputs.dir("node_modules")
-  inputs.dir("target/generated-sources/ts")
+  inputs.dir("build/frontendGen/build/appdomain/")
   inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json")
   outputs.upToDateWhen { true }
 }

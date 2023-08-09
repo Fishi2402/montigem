@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+classdiagram Sehub {
+
+  class User {
+                                       <<dbColumn = "unique=true">>
+    String username;
+    String password;
+    java.time.LocalDateTime registrationDate;
+   // ActivationStatus activated;
+                                        <<dbColumn = "unique=true">>
+    String email;
+  }
+
+  enum ActivationStatus {
+    AKTIVIERT,
+    MAIL_NICHT_GESENDET,
+    MAIL_FEHLERHAFT,
+    MAIL_GESENDET;
+  }
+
+}

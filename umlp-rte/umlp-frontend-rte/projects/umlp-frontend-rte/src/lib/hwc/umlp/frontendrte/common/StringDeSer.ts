@@ -25,10 +25,10 @@ export class StringDeSer implements DeSer<string> {
      */
     public async deserialize(str: string): Promise<string> {
         const e: any = JSON.parse(str);
-        if (!e.isJsonString()){
+        if (typeof e != 'string'){
             return null;
         }
-        return (v => { if (v == null) throw new Error('value is null'); return v; })(e.getAsJsonString().getValue());
+        return (v => { if (v == null) throw new Error('value is null'); return v; })(e);
     }
 
     constructor() {

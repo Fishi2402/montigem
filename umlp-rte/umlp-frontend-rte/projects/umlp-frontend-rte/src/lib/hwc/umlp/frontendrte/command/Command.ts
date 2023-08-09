@@ -3,6 +3,7 @@ import { NotImplementedException } from './error/NotImplementedException';
 import { CommandResult } from './CommandResult';
 import { CommandManager } from './CommandManager';
 import {Log} from "../logging";
+import {IUMLPList, UMLPArrayList} from "../common";
 
 export abstract class Command<T> {
     /*private*/ id: number;
@@ -49,7 +50,7 @@ export abstract class Command<T> {
     }
 
     public getEffectedGemIds(): Array<number> {
-        return /* emptySet */[];
+        return [];
     }
 
     public getNewlySubscribedGemIds(): Array<number> {

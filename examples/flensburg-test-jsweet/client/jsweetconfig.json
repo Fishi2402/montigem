@@ -1,9 +1,9 @@
 {
   "adapters": [
-    "umlp.jsweet.extension.backendAdapters.UMLPCollectionsAdapter",
-    "umlp.jsweet.extension.backendAdapters.UMLPJavaBasicsAdapter",
-    "umlp.jsweet.extension.backendAdapters.UMLPRTEImportAdapter",
-    "umlp.jsweet.extension.backendAdapters.UMLPBasicsAdapter"
+    "umlp.jsweet.extension.domainAdapters.UMLPCollectionsAdapter",
+    "umlp.jsweet.extension.domainAdapters.UMLPJavaBasicsAdapter",
+    "umlp.jsweet.extension.domainAdapters.UMLPRTEImportAdapter",
+    "umlp.jsweet.extension.domainAdapters.UMLPBasicsAdapter"
   ],
   "@Async": {
     "include": [
@@ -19,17 +19,6 @@
       "**.*DeSer.fromJsonString(*)",
       "**.*DeSer.buildJson(*)",
       "**.FlensburgCommandObjectMapper.*serialize*(*)"
-    ]
-  },
-  "@Erased": {
-    "include": [
-      "hardy.flensburg.FlensburgDummyProvider",
-      "hardy.flensburg.*DAO",
-      "hardy.flensburg.*DbObserver",
-      "hardy.flensburg.FlensburgManagerImpl",
-      "hardy.flensburg.FlensburgMock",
-      "hardy.flensburg.FlensburgDummyProvider",
-      "hardy.flensburg.FlensburgTestContext"
     ]
   },
   "@Replace('return Promise.resolve(\'\"\' + obj.toLocaleDateString() + \'\"\');')": {
