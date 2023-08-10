@@ -6,15 +6,10 @@ ${tc.signature("name", "managerName", "assocList")}
 ${cd4c.method("public Optional<${name}> build()")}
 
 if (!buildFinished) {
-if (isBuildable()) {
-<#list assocList as assoc>
-  <#if genService.isList(assoc)>
-    //this._${assoc.getName()}.build();
-  </#if>
-</#list>
-if(!INTERNAL_deser_mode) {
-${managerName}.add${name}(this);
-}
+  if (isBuildable()) {
+    if(!INTERNAL_deser_mode) {
+      ${managerName}.add${name}(this);
+    }
 <#list assocList as assoc>
   <#if genService.isList(assoc)>
     <#if genService.isBidirectional(assoc)>

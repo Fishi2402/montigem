@@ -101,7 +101,13 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
       // TODO AGe: why is it getting set to abstract?
       methods.forEach(m -> m.getModifier().setAbstract(false));
       cdType.addAllCDMembers(methods);
+      getCD4C().addMethod(cdType, getSetPresentTemplate(), service.getNativeAttributeName(attribute.getName()));
     }
+  }
+
+  @Override
+  protected String getSetPresentTemplate() {
+    return "umlp.gui2ts.domain.TSSetPresent";
   }
 
   @Override

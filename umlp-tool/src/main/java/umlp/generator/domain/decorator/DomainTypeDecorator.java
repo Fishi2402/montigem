@@ -91,8 +91,12 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
       methods.forEach(m -> m.getModifier().setAbstract(isInterface));
       cdType.addAllCDMembers(methods);
-      getCD4C().addMethod(cdType, "umlp.domain.SetPresent", service.getNativeAttributeName(attribute.getName()));
+      getCD4C().addMethod(cdType, getSetPresentTemplate(), service.getNativeAttributeName(attribute.getName()));
     }
+  }
+
+  protected String getSetPresentTemplate() {
+    return "umlp.domain.SetPresent";
   }
 
   protected List<ASTCDAttribute> getAttributesForFields(ASTCDType domainType) {

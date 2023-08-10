@@ -50,7 +50,13 @@ public class TSDomainInterfaceDecorator extends DomainInterfaceDecorator {
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
       methods.forEach(m -> m.getModifier().setAbstract(isInterface));
       cdType.addAllCDMembers(methods);
+      getCD4C().addMethod(cdType, getSetPresentTemplate(), service.getNativeAttributeName(attribute.getName()));
     }
+  }
+
+  @Override
+  protected String getSetPresentTemplate() {
+    return "umlp.gui2ts.domain.TSSetPresent";
   }
 
   @Override
