@@ -36,7 +36,7 @@ public class SehubServerApplication extends SehubServerApplicationTOP {
           .registrationDate(LocalDateTime.now())
           .username("MyUser").username("MyUser")
           .email("MyEmail")
-          .activated(ActivationStatus.AKTIVIERT)
+      //    .activated(ActivationStatus.AKTIVIERT)
           .build();
       if (newUser.isPresent()) {
         UserDeSer userDeSer = new UserDeSer();
