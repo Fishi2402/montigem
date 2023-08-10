@@ -184,7 +184,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
   @Override
   public Void visitEnhancedForLoop(EnhancedForLoopTree node, Trees trees) {
     TypeMirror expressionType = Util.getType(node.getExpression());
-    if (types().isSubtype(expressionType, types().erasure(util().getType(List.class)))) {
+    if (types().isSubtype(types().erasure(expressionType), types().erasure(util().getType(List.class)))) {
       addAsyncKeywordToMethod();
     }
     return super.visitEnhancedForLoop(node, trees);
