@@ -2,6 +2,10 @@
 
 classdiagram Sehub {
 
+  /* Role datastructure - will later be separated in a general
+     and application specific part that are merged.
+  */
+
   class User {
                                        <<dbColumn = "unique=true">>
     String username;
@@ -10,6 +14,7 @@ classdiagram Sehub {
    // ActivationStatus activated;
                                         <<dbColumn = "unique=true">>
     String email;
+    SehubRole role;
   }
 
   enum ActivationStatus {
@@ -18,5 +23,43 @@ classdiagram Sehub {
     MAIL_FEHLERHAFT,
     MAIL_GESENDET;
   }
+
+  enum SehubRole {
+    GUEST,
+    REPORTER,
+    DEVELOPER,
+    MAINTAINER,
+    OWNER;
+  }
+
+  /* Application datastructure */
+
+  class ProjectApp {
+    String git;
+  }
+
+  association app [1] ProjectApp -> (users) User [*];
+  association tickets [1] ProjectApp -> (issues) Issue [*];
+
+  class Issue {
+    String title;
+    String description;
+    IssueState state;
+  }
+
+  association discussion [1] Issue -> (posts) Post [*];
+
+  enum IssueState {
+    UNASSIGNED,
+    IN_PROGRESS,
+    DONE;
+  }
+
+  class Post {
+    String text;
+  }
+
+  association auth [1] Post -> (author) User [1];
+  association resp [1] Post -> (responses) Post [*];
 
 }
