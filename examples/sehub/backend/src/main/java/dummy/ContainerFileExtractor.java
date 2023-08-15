@@ -164,6 +164,7 @@ public class ContainerFileExtractor extends BaseExtractor {
     Project rootArtifact =  rootBuilder
         .fullName(ExtractorUtils.normalizePath(ExtractorUtils.transformWindowsPathToLinuxStyle(f.getAbsolutePath())))
         .name(FilenameUtils.getBaseName(f.getAbsolutePath()))
+        .git("")
         .build().orElse(null);
     if(rootArtifact == null) {
       Log.error("Building root failed.");
@@ -252,7 +253,7 @@ public class ContainerFileExtractor extends BaseExtractor {
   private Project getDefaultRoot() {
     if(defaultRoot == null) {
       ProjectBuilder rootBuilder = SehubManager.projectBuilder();
-      defaultRoot = rootBuilder.fullName("DEFAULT_ERROR_ROOT").name("").build().orElse(null);
+      defaultRoot = rootBuilder.git("").fullName("DEFAULT_ERROR_ROOT").name("").build().orElse(null);
     }
     return this.defaultRoot;
   }

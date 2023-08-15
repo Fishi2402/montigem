@@ -25,11 +25,11 @@ export const routes: Routes = [
     loadChildren: () => import("../../build/appgui/gui/StartModule").then(m => m.StartModule)
   },
   {
-    path: "a",
+    path: "projects",
     loadChildren: () => import("../../build/appgui/gui/SehubMainPageModule").then(m => m.SehubmainpageModule)
   },
   {
-    path: "b",
+    path: "project",
     loadChildren: () => import("../../build/appgui/gui/ProjectPageModule").then(m => m.ProjectpageModule)
   }
 ]

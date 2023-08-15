@@ -26,7 +26,7 @@ export  class SehubMainPage extends SehubMainPageTOP {
   }
 
   public override navigateToProjectPage(row: Project): void {
-    this.router.navigate(["..", "b", "ProjectPage", row.getGemId()]);
+    this.router.navigate(["..", "project", "ProjectPage", row.getGemId()]);
   }
 
 }

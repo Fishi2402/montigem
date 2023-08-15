@@ -56,12 +56,14 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         System.out.println(userDeSer.serialize(newUser.get()));
       }
     }
+
+    createDummyData();
   }
 
+  private void createDummyData() {
     String path = "src/main/java";
     File file = new File(path);
     ContainerFileExtractor extractor = new ContainerFileExtractor();
-    Set<GemIdentifiable> artifacts = extractor.extractGivenRoot(List.of(file));
-
+    extractor.extractGivenRoot(List.of(file));
   }
 }

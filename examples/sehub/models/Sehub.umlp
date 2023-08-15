@@ -37,6 +37,7 @@ classdiagram Sehub {
   class Project {
     String git;
     String name;
+    String fullName;
   }
 
   association app [1] Project -> (users) User [*];
