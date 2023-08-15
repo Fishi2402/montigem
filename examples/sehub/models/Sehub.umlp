@@ -34,12 +34,13 @@ classdiagram Sehub {
 
   /* Application datastructure */
 
-  class ProjectApp {
+  class Project {
     String git;
+    String name;
   }
 
-  association app [1] ProjectApp -> (users) User [*];
-  association tickets [1] ProjectApp -> (issues) Issue [*];
+  association app [1] Project -> (users) User [*];
+  association tickets [1] Project -> (issues) Issue [*];
 
   class Issue {
     String title;
@@ -61,5 +62,29 @@ classdiagram Sehub {
 
   association auth [1] Post -> (author) User [1];
   association resp [1] Post -> (responses) Post [*];
+
+
+  // ABSTRACT!
+  class Artifact { // TODO shellAPI does not work with abstract classes
+    String simpleName;
+    String nameExtension;
+    String modified;
+    String name;
+    String fullName;
+  }
+
+  class FileArtifact extends Artifact {}
+
+  association refersTo [*] Artifact -> (referred) Artifact [*];
+
+  association produces [*] Artifact -> (produced) Artifact [*];
+
+  association root [*] Artifact -> (root) Project [1];
+
+  association artifactRepresentation [1] Project -> (rootArtifact) Directory [*]; // TODO Optional because of technical issue 1 <-> 1 cycles not allowed
+
+  class Directory extends Artifact {}
+
+  association contains [0..1] Directory -> (contains) Artifact [*];
 
 }

@@ -1,5 +1,6 @@
 package sehub;
 
+import dummy.ContainerFileExtractor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -10,13 +11,25 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@SpringBootApplication(
-    exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
-    scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "sehub.service"}
-)
-public class SehubServerApplication extends SehubServerApplicationTOP {
+import umlp.backendrte.common.GemIdentifiable;
 
-  public static void main(String[] args) {
+import javax.annotation.PostConstruct;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+@SpringBootApplication(
+    exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
+    scanBasePackages={"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "sehub.service"}
+)
+public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
+
+  public  static  void main (String[] args){
     SpringApplication.run(SehubServerApplication.class, args);
   }
 
@@ -45,4 +58,10 @@ public class SehubServerApplication extends SehubServerApplicationTOP {
     }
   }
 
+    String path = "src/main/java";
+    File file = new File(path);
+    ContainerFileExtractor extractor = new ContainerFileExtractor();
+    Set<GemIdentifiable> artifacts = extractor.extractGivenRoot(List.of(file));
+
+  }
 }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SehubManagerClientImpl } from '@src/sehub/SehubManagerClientImpl';
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
 import {SehubManagerClientImpl} from '@src/sehub/SehubManagerClientImpl';
 
