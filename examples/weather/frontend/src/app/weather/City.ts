@@ -123,13 +123,12 @@ export class City extends CityTOP {
   }
 
   public calcCurrent(): void {
-    if (this.original.current.calculating) {
+    if (this.original.current.calculating || this.original.current.hash != null) {
       return;
     }
     this.original.current.calculating = true;
 
     let today = new Date();
-
 
     WeatherManager.getForecastList().then(forecastGemList => {
       forecastGemList.loadAll().then(forecastList => {
