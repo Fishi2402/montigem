@@ -7,6 +7,7 @@ import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.util.CDMergeAfterParseTrafo;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
 import de.monticore.io.paths.MCPath;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import umlp.UMLPMill;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
+import umlp.generator.AbstractDecorator;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +33,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractGUITest {
+
+  protected static GlobalExtensionManagement createGlex() {
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    glex.setBeforeTemplate("cd2java.Class", AbstractDecorator.getOriginHookPoint());
+    glex.setBeforeTemplate("cd2java.Enum", AbstractDecorator.getOriginHookPoint());
+    glex.setBeforeTemplate("cd2java.Interface", AbstractDecorator.getOriginHookPoint());
+    return glex;
+  }
 
   public static ASTGUICompilationUnit parseGUI(String model) {
     return parseGUI("src/test/resources/", model);

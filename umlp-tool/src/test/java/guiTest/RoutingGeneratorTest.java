@@ -1,5 +1,6 @@
 package guiTest;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import org.junit.jupiter.api.Test;
 import umlp.generator.gui.GUIGeneratorUtil;
@@ -22,6 +23,9 @@ public class RoutingGeneratorTest extends AbstractGUITest {
     astguiCompilationUnit=parseGUI("gui.models/stanley/gui/TransactionsView.gui");
     astList.add(astguiCompilationUnit);
     GeneratorSetup generatorSetup=AbstractGUITest.getGenSetup();
+    GlobalExtensionManagement glex = createGlex();
+    generatorSetup.setGlex(glex);
+    generatorSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
     GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(generatorSetup, generatorSetup.getHandcodedPath(), null);
     typeScriptGenerator.generateConfigFileForPackages(astList);
     assertNoErrors();
@@ -39,7 +43,7 @@ public class RoutingGeneratorTest extends AbstractGUITest {
     astList.add(Collections.singletonList(astguiCompilationUnit));
     GeneratorSetup generatorSetup=AbstractGUITest.getGenSetup();
     GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(generatorSetup, generatorSetup.getHandcodedPath(), null);
-    typeScriptGenerator.generateAppRouting(astList);
+    typeScriptGenerator.generateAppConfigfile(astList);
     assertNoErrors();
   }
 
