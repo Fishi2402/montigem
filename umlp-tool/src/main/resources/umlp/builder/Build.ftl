@@ -6,7 +6,16 @@ ${tc.signature("name", "managerName", "assocList")}
 ${cd4c.method("public Optional<${name}> build()")}
 
 if (!buildFinished) {
-  if (isBuildable()) {
+  if (!isBuildable()) {
+    return Optional.empty();
+  }
+
+<#list assocList as assoc>
+    <#if genService.isList(assoc)>
+      this._${assoc.getName()}.build();
+    </#if>
+</#list>
+
     if(!INTERNAL_deser_mode) {
       ${managerName}.add${name}(this);
     }
@@ -41,8 +50,6 @@ if (!buildFinished) {
 
 ${name?uncap_first}Observers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
 buildFinished = true;
-
+}
 return Optional.of(this);
-}
-}
-return Optional.empty();
+

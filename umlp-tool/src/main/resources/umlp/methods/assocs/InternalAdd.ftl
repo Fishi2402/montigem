@@ -14,6 +14,14 @@ int currentIdx = idx;
 for(long gemID : gemIDs) {
   check${name?cap_first}();
 
+<#if otherSideName?has_content>
+  if (scope.contains(NotificationScope.LOCAL)) {
+    if(${managerName}.isLoaded${targetName}(gemID)){
+      ${managerName}.get${targetName}Sure(gemID).${otherSideName}((${sourceName}) this, NotificationScope.MINIMAL);
+    }
+  }
+</#if>
+
   for(${sourceName}Observer obs : ${sourceName?uncap_first}Observers) {
     obs.maybeNotifyAdd${name?cap_first}((${sourceName}) this, gemID, currentIdx, scope);
   }
