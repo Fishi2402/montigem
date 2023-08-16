@@ -18,7 +18,7 @@ if (!buildFinished) {
 
     if(!INTERNAL_deser_mode) {
       ${managerName}.add${name}(this);
-    }
+
 <#list assocList as assoc>
   <#if genService.isList(assoc)>
     <#if genService.isBidirectional(assoc)>
@@ -47,7 +47,7 @@ if (!buildFinished) {
       </#if>
     </#if>
 </#list>
-
+}
 ${name?uncap_first}Observers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
 buildFinished = true;
 }

@@ -83,8 +83,6 @@ public class BidirectionalAssociationsTest {
 
   }
 
-  //TODO generation error. 'Some' is not generated correctly. Edited the class diagram.
-
   @Test
   public void testOptToSomeSync() {
     AssociationsMock.init();
@@ -101,11 +99,9 @@ public class BidirectionalAssociationsTest {
     assertTrue(lhs.getOptToSomeRhs().contains(rhs2));
     assertTrue(lhs.getOptToSomeRhs().contains(rhs1));
 
-    //TODO does not work since other side is not automatically set.
     assertEquals(lhs, rhs1.getOptToSomeLhs());
     assertEquals(lhs, rhs2.getOptToSomeLhs());
     assertEquals(lhs, rhs3.getOptToSomeLhs());
-
 
     //Other side:
     OptToSomeRhsBuilder rhsBuilder1 = AssociationsManager.optToSomeRhsBuilder();
@@ -194,8 +190,6 @@ public class BidirectionalAssociationsTest {
 
   }
 
-  //TODO generation error. 'Some' is not generated correctly. Edited the class diagram.
-
   @Test
   public void testOneToSomeSync() {
     AssociationsMock.init();
@@ -259,23 +253,24 @@ public class BidirectionalAssociationsTest {
     assertEquals(lhs3, rhs.getManyToOptLhs(2));
     assertEquals(lhs1, rhs.getManyToOptLhs(0));
 
-    ManyToOptRhsBuilder rhsBuilder1 = AssociationsManager.manyToOptRhsBuilder();
-    ManyToOptRhsBuilder rhsBuilder2 = AssociationsManager.manyToOptRhsBuilder();
-    ManyToOptRhsBuilder rhsBuilder3 = AssociationsManager.manyToOptRhsBuilder();
-/*
-    ManyToOptLhs manyToOptLhs = AssociationsManager.manyToOptRhsBuilder().manyToOptRhs(Sets.newHashSet(rhsBuilder1, rhsBuilder2, rhsBuilder3)).build().get();
+    // Other side
+    ManyToOptLhs lhs11 = AssociationsManager.manyToOptLhsBuilder().build().get();
+    ManyToOptLhs lhs12 = AssociationsManager.manyToOptLhsBuilder().build().get();
+    ManyToOptLhs lhs13 = AssociationsManager.manyToOptLhsBuilder().build().get();
 
-    rhs1 = rhsBuilder1.build().get();
-    rhs2 = rhsBuilder2.build().get();
-    rhs3 = rhsBuilder3.build().get();
+    ManyToOptRhs rhs11 = AssociationsManager.manyToOptRhsBuilder()
+        .manyToOptLhsAdd(lhs11)
+        .manyToOptLhsAdd(lhs12)
+        .manyToOptLhsAdd(lhs13)
+        .build().get();
 
-    assertEquals(true , optToManyLhs.getOptToManyRhs().contains(rhs2) );
-   assertEquals(true , optToManyLhs.getOptToManyRhs().contains(rhs3) );
-  assertEquals(true , optToManyLhs.getOptToManyRhs().contains(rhs1) );
-    assertEquals(optToManyLhs , rhs1.getOptToManyLhs());
-    assertEquals(optToManyLhs , rhs2.getOptToManyLhs());
-    assertEquals(optToManyLhs , rhs3.getOptToManyLhs());
-*/
+    assertTrue(rhs11.getManyToOptLhs().contains(lhs11));
+    assertTrue(rhs11.getManyToOptLhs().contains(lhs12));
+    assertTrue(rhs11.getManyToOptLhs().contains(lhs13));
+
+    assertEquals(rhs11 , lhs11.getManyToOptRhs());
+    assertEquals(rhs11 , lhs12.getManyToOptRhs());
+    assertEquals(rhs11 , lhs13.getManyToOptRhs());
   }
 
   @Test

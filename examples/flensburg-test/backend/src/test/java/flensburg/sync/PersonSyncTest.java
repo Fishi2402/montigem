@@ -766,7 +766,6 @@ public class PersonSyncTest {
   }
 
   @Test
-  @Disabled
   public void testVisitedRemovalCrossClients(){
     FlensburgMock.init();
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
@@ -874,14 +873,10 @@ public class PersonSyncTest {
     assertEquals(1, a2Server.sizeVisitors());
 
     Log.info("Check the changes are synced to the Client", "PersonSyncTest");
-    // TODO MB/AHe
-    // Nach dem activate ist p1001Server kaputt
-    /*
     clientContext.activate();
     Address a4Client = FlensburgManager.getAddressSure(a4.getGemId());
     assertEquals(1, a4Client.sizeVisitors());
     assertEquals(p1001Server.getGemId(), a4Client._internal_getVisitorGemList().getID(0));
-    */
   }
 
   // TODO AHe: Continue here by testing more cases for Person#setVisited and Address#setVisitor
