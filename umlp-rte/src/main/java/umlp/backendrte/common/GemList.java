@@ -80,7 +80,7 @@ public abstract class GemList<E extends GemIdentifiable>
    * @return whether the object corresponding to gemID is contained in this list
    */
   public boolean contains(Long gemID) {
-    return ids.contains(gemID);
+    return ids.contains(gemID) || this.stream().anyMatch(e -> gemID==e.getGemId());
   }
 
   /**
@@ -239,11 +239,20 @@ public abstract class GemList<E extends GemIdentifiable>
    * The gemId is not required to be loaded in the idStorage, thus the result of idStorage.removeId must not be returned
    */
   public void removeIdSure(long gemId) {
-    System.out.println(ids);
     ids.removeIf(l -> Objects.equals(l, gemId));
+    this.removeIf(e -> e.getGemId()==gemId);
   }
 
   public int indexOfId(long gemId) {
-    return ids.indexOf(gemId);
+    int id = ids.indexOf(gemId);
+    if (id>=0) {
+      return id;
+    }
+    for (int i=0; i<this.size(); i++) {
+      if (gemId==this.get(i).getGemId()) {
+        return i;
+      }
+    }
+    return -1;
   }
 }
