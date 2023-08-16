@@ -5,6 +5,7 @@ import Weather.City;
 import arrange.src.lib.gemcolumn.GemColumn;
 import arrange.src.lib.gemrow.GemRow;
 import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gembutton.GemButton;
 
 component FavoriteItem(City fav) {
   @GemRow(hAlign = "space-between", components = [
@@ -14,7 +15,10 @@ component FavoriteItem(City fav) {
       @GemText(value = fav.current.weatherState)
     ]),
     @GemColumn(vAlign = "space-between", components = [
-      @GemText(value = fav.current.temperature),
+      @GemRow(hAlign = "space-between", vAlign = "center", components = [
+        @GemText(value = fav.current.temperature + "°C"),
+        @GemButton(label = "x", leftClick = removeFavorite)
+      ]),
       @GemRow(components = [
         @GemText(value = "H:" + fav.latitude + "°"),
         @GemText(value = "L:" + fav.longitude + "°")

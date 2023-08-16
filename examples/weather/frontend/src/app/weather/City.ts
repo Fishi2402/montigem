@@ -5,6 +5,7 @@ import { DailyForecast } from "@src/weather/DailyForecast";
 import { WeatherManager } from "@src/weather/WeatherManager";
 import { Forecast } from "@src/weather/Forecast";
 import { ForecastGemList } from "@src/weather/gemlists/ForecastGemList";
+import { App } from "@src/weather/App";
 
 // TODO: JSweet?
 export class City extends CityTOP {
@@ -153,6 +154,23 @@ export class City extends CityTOP {
         }
       });
     });
+  }
+
+  public async isFavorite(): Promise<boolean> {
+    const appGemList: GemList<App> = await WeatherManager.getAppList();
+    const app: App = await appGemList.get(0);
+    for (const fav of app.getFavorite()) {
+      if (fav.getGemId() === this.getGemId()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public async removeFavorite(): Promise<boolean> {
+    const appGemList: GemList<App> = await WeatherManager.getAppList();
+    const app: App = await appGemList.get(0);
+    return app.removeFavorite2(this);
   }
 
 }
