@@ -12,8 +12,7 @@ export class Navigation {
     { url: '/issue-tracker', title: 'Issue Tracker' },
     { url: '/projects', title: 'Artefakte' },
     { url: '/notes/NotesPage', title: 'Notizen'},
-    { url: '/login', title: 'Login' },
-    { url: '/start', title: 'Start' }
+    { url: '/login', title: 'Login' }
   ];
 
 }
