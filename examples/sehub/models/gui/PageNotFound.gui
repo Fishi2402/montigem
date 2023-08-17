@@ -3,11 +3,18 @@ package gui;
 import arrange.src.lib.gemcolumn.GemColumn;
 import arrange.src.lib.gemcard.GemCard;
 import basic.src.lib.gemtext.GemText;
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gemimage.GemImage;
 
 page PageNotFound(){
-  @GemCard(title = "SE Hub | 404", component =
-    @GemColumn(hAlign = "center", height = "auto", width = "800px", rowGap = "105px", components = [
-      @GemText(value = "Hier ist etwas schiefgegangen - gibt es schon ein Ticket dafür ?")
-    ])
-  );
+   @GemColumn(width = "100%", components = [
+     @GemRow(hAlign = "center", vAlign = "center", width = "800px", height = "auto", component =
+             @GemRow(width = "200px", component = @GemImage(source = "assets/images/Eule.png"))
+          ),
+    @GemCard(title = "SE Hub | 404", component =
+      @GemColumn(hAlign = "center", height = "auto", width = "800px", rowGap = "105px", components = [
+        @GemText(value = "Hier ist etwas schiefgegangen - gibt es schon ein Ticket dafür ?")
+      ])
+    )
+  ]);
 }
