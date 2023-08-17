@@ -1,0 +1,14 @@
+package gui;
+
+import Sehub.Post;
+import gui.note.Note;
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemcolumn.GemColumn;
+import basic.src.lib.gemtext.GemText;
+
+page NotesPage(List<Post> posts){
+  gc1@GemCard(title = "Notes:", component = @GemColumn(height = "auto", rowGap = "5px", components = [
+    p1@Note(),
+    p2@Note()
+  ]));
+}

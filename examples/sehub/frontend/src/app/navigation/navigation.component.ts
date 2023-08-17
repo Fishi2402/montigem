@@ -9,7 +9,9 @@ export class Navigation {
 
   readonly items: { url: string, title: string }[] = [
     { url: '/login', title: 'Login' },
-    { url: '/start', title: 'Start' }
+    { url: '/start', title: 'Start' },
+    { url: '/projects', title: 'Artefakte' },
+    { url: '/notes/NotesPage', title: 'Notizen' }
   ];
 
 }
