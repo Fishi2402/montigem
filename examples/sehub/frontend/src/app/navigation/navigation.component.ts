@@ -8,8 +8,10 @@ import { Component } from "@angular/core";
 export class Navigation {
 
   readonly items: { url: string, title: string }[] = [
-    { url: '/login', title: 'Login' },
-    { url: '/start', title: 'Start' }
+    { url: '/file-explorer', title: 'Dateiansicht' },
+    { url: '/issue-tracker', title: 'Issue Tracker' },
+    { url: '/artefact-model', title: 'Artefaktmodell' },
+    { url: '/notes', title: 'Notizen' }
   ];
 
 }

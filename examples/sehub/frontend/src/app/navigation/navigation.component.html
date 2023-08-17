@@ -1,8 +1,7 @@
-<nav>
-  <ul>
-    <img src = "assets/images/rwth_se_bild_weiss_rgb.png" alt="SEHub" width="200px"/>
-    <ng-container *ngFor="let item of items">
-      <li><a [routerLink]="item.url">{{item.title}}</a></li>
+<nav class="navMenu">
+    <img src = "assets/images/Eule.png" alt="SEHub" height="40px"/>
+    <ng-container *ngFor="let item of items"><a [routerLink]="item.url">{{item.title}}</a>
     </ng-container>
-  </ul>
+    <div class="dot"></div>
 </nav>
+
