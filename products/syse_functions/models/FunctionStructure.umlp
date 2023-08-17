@@ -199,7 +199,9 @@ umlp FunctionStructure {
     Der Typ wird dann in der Objektstruktur abgelegt, z.B. wie die MC
     SymTypeExpression
   */
-  class Type;
+  class Type {
+    String name;
+  }
 
   /*
     Eine Beobachtung im Bezug auf einen Kanal ist
