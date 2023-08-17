@@ -10,8 +10,10 @@ export class Navigation {
   readonly items: { url: string, title: string }[] = [
     { url: '/file-explorer', title: 'Dateiansicht' },
     { url: '/issue-tracker', title: 'Issue Tracker' },
-    { url: '/artefact-model', title: 'Artefaktmodell' },
-    { url: '/notes', title: 'Notizen' }
+    { url: '/projects', title: 'Artefakte' },
+    { url: '/notes/NotesPage', title: 'Notizen'},
+    { url: '/login', title: 'Login' },
+    { url: '/start', title: 'Start' }
   ];
 
 }

@@ -1,0 +1,13 @@
+package gui;
+
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemcard.GemCard;
+import basic.src.lib.gemtext.GemText;
+
+page PageNotFound(){
+  @GemCard(title = "SE Hub | 404", component =
+    @GemColumn(hAlign = "center", height = "auto", width = "800px", rowGap = "105px", components = [
+      @GemText(value = "Hier ist etwas schiefgegangen - gibt es schon ein Ticket dafür ?")
+    ])
+  );
+}
