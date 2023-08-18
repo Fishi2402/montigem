@@ -1,5 +1,7 @@
 package gui.note;
 
+import Sehub.Post;
+
 import arrange.src.lib.gemcolumn.GemColumn;
 import arrange.src.lib.gemcard.GemCard;
 import basic.src.lib.gemtext.GemText;
@@ -7,8 +9,10 @@ import input.src.lib.gemtextareainput.GemTextareaInput;
 import input.src.lib.gemtextinput.GemTextInput;
 import basic.src.lib.gembutton.GemButton;
 import arrange.src.lib.gemrow.GemRow;
+import gui.note.Response;
 
-component Note(){
+component Note(Post post){
+
   @GemCard(title = "TODO: CommentTitle", component =
       @GemColumn(height = "auto", width = "800px", vAlign = "top", rowGap = "5px", components = [
         @GemRow(hAlign = "left", vAlign = "space-around", components = [
@@ -23,7 +27,12 @@ component Note(){
         @GemTextareaInput(
                   id = "text1",
                   labelText = ""
-                )
+                ),
+
+        @iterate(Post r : post.responses){
+          @Response(post = r);
+        }
       ])
   );
+
 }

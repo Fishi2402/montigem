@@ -58,6 +58,19 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
       }
     }
 
+    Optional<Post> p1 = SehubManager.postBuilder()
+        .text("Post 1")
+        .build();
+
+    Optional<Post> p2 = SehubManager.postBuilder()
+        .text("Post 2")
+        .build();
+
+    SehubManager.postBuilder()
+        .text("Post 3")
+        .build();
+
+
     createDummyData();
   }
 

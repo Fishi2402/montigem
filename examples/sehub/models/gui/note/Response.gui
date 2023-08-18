@@ -1,0 +1,42 @@
+package gui.note;
+
+import Sehub.Post;
+
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemcard.GemCard;
+import basic.src.lib.gemtext.GemText;
+import input.src.lib.gemtextareainput.GemTextareaInput;
+import input.src.lib.gemtextinput.GemTextInput;
+import basic.src.lib.gembutton.GemButton;
+import arrange.src.lib.gemrow.GemRow;
+
+component Response(Post post){
+
+    @GemRow(width = "800px", hAlign = "right", components = [
+
+        // Small ICON indicating Resonse-Type
+        @GemRow(width = "100px", vAlign = "center", hAlign = "right", component = @GemText( value = "↪ RE:" )),
+
+        @GemColumn(height = "auto", width = "600px", vAlign = "top", rowGap = "5px", components = [
+
+          // Respnse Header
+          @GemRow(hAlign = "left", vAlign = "space-around", components = [
+            @GemRow(width = "150px", vAlign = "space-around", component = @GemText(style = "font-size:12px" , value = post.author)),
+            @GemRow(width = "450px", colGap = "5px", hAlign = "right", components = [
+              @GemButton(label = "Bearbeiten", leftClick = editPost),
+              @GemButton(label = "Löschen", leftClick = deletePost)
+            ])
+          ]),
+
+          // Textarea (where you enter the response)
+          @GemTextareaInput(
+                    id = "response",
+                    labelText = "",
+                    entry = post.text
+                  )
+          ])
+
+    ]);
+
+
+}
