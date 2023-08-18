@@ -50,6 +50,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
           .username("MyUser").username("MyUser")
           .email("MyEmail")
       //    .activated(ActivationStatus.AKTIVIERT)
+          .role(SehubRole.OWNER)
           .build();
       if (newUser.isPresent()) {
         UserDeSer userDeSer = new UserDeSer();
