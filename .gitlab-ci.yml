@@ -28,15 +28,22 @@ build:
     key:
       files:  # Cache depends on state of "package-lock"
         - examples/weather/frontend/build/frontendGen/package-lock.json
+        - examples/sehub/frontend/build/frontendGen/package-lock.json
     paths:
       - examples/weather/frontend/build/frontendGen/node_modules
       - examples/weather/frontend/.gradle/nodejs
+      - examples/sehub/frontend/build/frontendGen/node_modules
+      - examples/sehub/frontend/.gradle/nodejs
   artifacts:
     paths:
       - examples/weather/frontend/build/frontendGen/dist/**
       - examples/weather/frontend/build/frontendGen/Dockerfile
       - examples/weather/frontend/build/frontendGen/Caddyfile
       - examples/weather/frontend/build/frontendGen/.dockerignore
+      - examples/sehub/frontend/build/frontendGen/dist/**
+      - examples/sehub/frontend/build/frontendGen/Dockerfile
+      - examples/sehub/frontend/build/frontendGen/Caddyfile
+      - examples/sehub/frontend/build/frontendGen/.dockerignore
 
     reports:
       # Lets gitlab render infos about failed tests
@@ -47,9 +54,14 @@ deployBackendDocker:
   dependencies:
     - build
   script:
-      # Weather Backend
+    # Weather Backend
     - "gradle :examples:weather:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.to.image=$CI_REGISTRY_IMAGE/weather_backend:latest \
+      -Djib.to.auth.username=$CI_REGISTRY_USER  \
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+    # SEHub Backend
+    - "gradle :examples:sehub:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
+      -Djib.to.image=$CI_REGISTRY_IMAGE/sehub_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # Stat-Server
@@ -77,12 +89,27 @@ deployWeatherFrontendDocker:
     - shell
     - docker
   dependencies:
-   - build
+    - build
   script:
     - "cd examples/weather/frontend/build/frontendGen"
     - "docker build . -t $CI_REGISTRY_IMAGE/weather_frontend:latest"
     - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
     - "docker push $CI_REGISTRY_IMAGE/weather_frontend:latest"
+  only:
+    - dev
+
+deploySEHubFrontendDocker:
+  stage: deploy
+  tags:
+    - shell
+    - docker
+  dependencies:
+    - build
+  script:
+    - "cd examples/sehub/frontend/build/frontendGen"
+    - "docker build . -t $CI_REGISTRY_IMAGE/sehub_frontend:latest"
+    - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+    - "docker push $CI_REGISTRY_IMAGE/sehub_frontend:latest"
   only:
     - dev
 
