@@ -13,7 +13,7 @@ ${cdName}Manager.get${c.getName()}List()
   for(var obj: ${cdName}Manager.get${k}List()){
       <#list typeToAssocSides[k] as entry>
         <#assign side=entry.getValue()>
-        <#if side.isPresentCDCardinality() && side.getCDCardinality().isMult()>
+        <#if genService.isList(side)>
         <#-- List -->
         for(var other : obj.get${side.name?cap_first}()){
           if(obj.getGemId() >= 0 && other.getGemId() >= 0){
