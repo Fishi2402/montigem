@@ -21,7 +21,7 @@ component Response(Post post){
 
           // Respnse Header
           @GemRow(hAlign = "left", vAlign = "space-around", components = [
-            @GemRow(width = "150px", vAlign = "space-around", component = @GemText(style = "font-size:12px" , value = post.author)),
+            @GemRow(width = "150px", vAlign = "space-around", component = @GemText(style = "font-size:12px" , value = "Netz")), // TODO LN Replace with author
             @GemRow(width = "450px", colGap = "5px", hAlign = "right", components = [
               @GemButton(label = "Bearbeiten", leftClick = editPost),
               @GemButton(label = "Löschen", leftClick = deletePost)
