@@ -2,6 +2,8 @@ package gui.usersettings;
 
 import Sehub.User;
 
+import gui.usersettings.UserDisplay;
+
 import arrange.src.lib.gemcard.GemCard;
 import arrange.src.lib.gemrow.GemRow;
 import arrange.src.lib.gemcolumn.GemColumn;
@@ -12,15 +14,16 @@ import input.src.lib.gemtextinput.GemTextInput;
 import table.src.lib.gemtable.GemTable;
 import table.src.lib.gemtable.TableColumn;
 
-component UserSettings(User user, List<User> users) {
+component UserSettings(User currentUser, List<User> users) {
   @GemColumn(
+    width="90vw",
     components = [
       myAccount@GemCard(title = "My Account",
-        component = @GemRow(
+        component = @GemRow(hAlign = "left", vAlign = "space-around",
           components = [
-            userName@GemTextInput(labelText = "Username", inputType = "text", entry = user.username),
-            password@GemTextInput(labelText = "Password", inputType = "text", entry = user.password),
-            @GemText(value = user.email)
+            userName@GemTextInput(labelText = "Username", inputType = "text", entry = currentUser.username),
+            password@GemTextInput(labelText = "Password", inputType = "text", entry = currentUser.password),
+            userEMail@GemTextInput(labelText = "Email", inputType = "text", entry = currentUser.email)
           ]
         )
       ),
@@ -40,11 +43,11 @@ component UserSettings(User user, List<User> users) {
                 )
               ]
             ),
-            userList@GemTable(
-              rows = users,
-              columns = [
-                TableColumn("_userName", "User Name"),
-                TableColumn("_email", "EMail Address")
+            @GemColumn(
+              components = [
+                @iterate(User user: users) {
+                  @UserDisplay(user = user);
+                }
               ]
             )
           ]

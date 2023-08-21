@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import umlp.backendrte.common.GemIdentifiable;
@@ -46,7 +48,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
       Optional<User> newUser = SehubManager.userBuilder()
           .username("MyUser")
           .password("MyPasswort")
-          .registrationDate(LocalDateTime.now())
+          .registrationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
           .username("MyUser").username("MyUser")
           .email("MyEmail")
       //    .activated(ActivationStatus.AKTIVIERT)

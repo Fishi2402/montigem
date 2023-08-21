@@ -7,7 +7,7 @@ import { UserSettingsTOP } from '@src/gui/usersettings/UserSettingsTOP';
   selector: 'user-settings',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/usersettings/UserSettings.html',
   styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  styleUrls: ["./UserSettings.scss"]
 })
 
 
