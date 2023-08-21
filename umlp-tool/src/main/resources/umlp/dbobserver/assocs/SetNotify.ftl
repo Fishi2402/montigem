@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("className","assocName","assocSide", "otherClassName")}
-<#assign isMult=assocSide.getCDCardinality().isMult() />
+<#assign isMult=genService.isList(assocSide) />
 ${cd4c.method("public void notifySet${assocSide.name?cap_first}(${otherClassName} ${otherClassName?uncap_first}, ${isMult?then('int idx,', '')} long ${assocSide.name}GemId)")}
 <#if isMult>
   // TODO: Optimization, this might load ids we don't have loaded?

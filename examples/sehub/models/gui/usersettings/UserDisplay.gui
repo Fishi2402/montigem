@@ -1,0 +1,35 @@
+package gui.usersettings;
+
+import Sehub.User;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+import basic.src.lib.gembutton.GemButton;
+import basic.src.lib.gemtext.GemText;
+import input.src.lib.gemtextinput.GemTextInput;
+import table.src.lib.gemtable.GemTable;
+import table.src.lib.gemtable.TableColumn;
+
+component UserDisplay (User user) {
+  @GemRow(
+    components = [
+      @GemRow(
+        width="5rem",
+        height="3rem",
+        component = account@GemText(value = user.username)
+      ),
+      @GemRow(
+        width="5rem",
+        height="3rem",
+        component = role@GemText(value = user.role)
+      ),
+      @GemRow(
+        width="5rem",
+        height="3rem",
+        component = registration@GemText(value = user.registrationDate)
+      )
+    ]
+  );
+}

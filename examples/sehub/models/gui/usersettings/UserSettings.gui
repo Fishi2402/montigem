@@ -1,0 +1,58 @@
+package gui.usersettings;
+
+import Sehub.User;
+
+import gui.usersettings.UserDisplay;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+import basic.src.lib.gembutton.GemButton;
+import basic.src.lib.gemtext.GemText;
+import input.src.lib.gemtextinput.GemTextInput;
+import table.src.lib.gemtable.GemTable;
+import table.src.lib.gemtable.TableColumn;
+
+component UserSettings(User currentUser, List<User> users) {
+  @GemColumn(
+    width="90vw",
+    components = [
+      myAccount@GemCard(title = "My Account",
+        component = @GemRow(hAlign = "left", vAlign = "space-around",
+          components = [
+            userName@GemTextInput(labelText = "Username", inputType = "text", entry = currentUser.username),
+            password@GemTextInput(labelText = "Password", inputType = "text", entry = currentUser.password),
+            userEMail@GemTextInput(labelText = "Email", inputType = "text", entry = currentUser.email)
+          ]
+        )
+      ),
+      projectSettings@GemCard(title = "Project Settings",
+        component = @GemColumn(
+          components = [
+            @GemRow(
+              components = [
+                @GemCard(title = "Project Members",
+                  component = @GemText(value = "You can invite new members")
+                ),
+                @GemRow(
+                  components = [
+                    newUserEMail@GemTextInput(labelText = "New User EMail", inputType = "text"),
+                    createNewUser@GemButton(label = "Invite new member", leftClick = "createNewUser")
+                  ]
+                )
+              ]
+            ),
+            @GemColumn(
+              components = [
+                @iterate(User user: users) {
+                  @UserDisplay(user = user);
+                }
+              ]
+            )
+          ]
+        )
+      )
+    ]
+  );
+}

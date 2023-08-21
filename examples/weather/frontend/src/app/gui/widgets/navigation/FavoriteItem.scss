@@ -5,3 +5,9 @@
   flex-wrap: nowrap;
   border-top: 1px solid white;
 }
+
+:host ::ng-deep .gem-button {
+  background: transparent;
+  font-size: 1.2rem;
+  font-weight: bold;
+}

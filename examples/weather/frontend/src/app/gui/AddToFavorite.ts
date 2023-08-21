@@ -1,54 +1,61 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Component,} from '@angular/core';
-import {AddToFavoriteTOP} from '@src/gui/AddToFavoriteTOP';
-import {City} from "@src/weather/City";
+import { Component, } from '@angular/core';
+import { AddToFavoriteTOP } from '@src/gui/AddToFavoriteTOP';
+import { WeatherManager } from '@src/weather/WeatherManager';
 
 @Component({
   selector: 'add-to-favorite',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/AddToFavorite.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  styles: [":host{ display: flex; flex-direction: column; }", ".gemRow0{ flex-wrap: nowrap; }"],
 })
 
 export class AddToFavorite extends AddToFavoriteTOP {
 
+  public searchVal: string = "";
+  public options: string[] = [];
+
   public ngOnInit(): void {
-    // super.ngOnInit();
-    if (!this.getCity()) {
-      this.city = this.app.getCurrentCity();
+    if (this.app == null) {
+      WeatherManager.getAppSure(this.appRoutingId).then(gemPromiseRes => {
+        this.app = gemPromiseRes;
+      });
+    }
+
+    WeatherManager.getCityList().then(gemPromiseRes => {
+      this.cities = gemPromiseRes;
+      this.cities.loadAll().then(() => {
+        for (const city of this.cities) {
+          this.options.push(city.getName());
+        }
+        this.options = this.options.slice();
+      });
+    });
+  }
+
+  public override add2Favorite(): void {
+    for (const city of this.getCities()) {
+      if (city.getName() === this.searchVal) {
+        city.isFavorite().then(isFav => {
+          if (!isFav) {
+            this.app.addFavorite2(city);
+            this.app._internal_getFavoriteGemList().loadAll();
+          }
+        })
+      }
     }
   }
 
-  public override add2Favorite(event: any): void {
-    if (!this.isFavIncluded(this.getCity())) {
-      this.app.addFavorite2(this.city);
-      this.app._internal_getFavoriteGemList().loadAll();
-    }
+  public override getSearchOptions(): Array<string> {
+    return this.options;
   }
 
-  public override clearFavorites(event: any): void {
-    this.app.clearFavorites();
-    this.app._internal_getFavoriteGemList().loadAll();
+  public getSearchEntry(): string {
+    return this.searchVal;
   }
 
-  public override getAddbuttonLabel(): string {
-    return super.getAddbuttonLabel() + '    ' + this.getFavName();
-  }
-
-  private getFavName(): string {
-    if (!this.app || !this.city || !this.app.getFavorite() || this.isFavIncluded(this.city)) {
-      return '';
-    }
-    return this.city.getName();
-  }
-
-  private isFavIncluded(favCity: City): boolean {
-    if (!this.app || !favCity || !this.app.getFavorite()) {
-      return false;
-    }
-    return this.app.containsFavorite(this.city);
+  public setSearchEntry(value: string): void {
+    this.searchVal = value;
   }
 
 }
-

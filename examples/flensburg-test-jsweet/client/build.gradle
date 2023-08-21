@@ -33,7 +33,7 @@ jsweet {
   candiesJsOut = project.file('build/jsweet/candies')
   workingDir = project.file('build/jsweet')
   targetVersion = 'ES6'
-  includes = ['**/flensburg/**/*.java']
+  includes = ['**/hardy/**/*.java']
   excludes = [
       '**/flensburg/FlensburgManagerImpl.java',
       '**/flensburg/FlensburgMock.java',

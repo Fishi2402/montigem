@@ -21,7 +21,9 @@ page WeatherApp(List<App> apps){
     @GemColumn(
       rowGap = "20px",
       components = [
-        @AddToFavorite(city = app.currentCity, app = app), // TODO: remove app if singleton; city as parameter
+        @GemRow(hAlign = "right", components = [
+          @AddToFavorite(app = app)
+        ]),
         @GemRow(hAlign = "center", components = [
           @CurrentCityWeather(city = app.currentCity)
         ]),

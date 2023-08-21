@@ -9,7 +9,9 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class UMLPAdapterUtils {
 
@@ -92,6 +94,20 @@ public class UMLPAdapterUtils {
       }
     }
     return false;
+  }
+
+  public static Set<String> listSuperTypes(TypeElement type, Util util, Types types) {
+    Set<String> result = new HashSet<>();
+    result.add(type.getQualifiedName().toString());
+
+    for (TypeElement anInterface : util.getInterfaces(type)) {
+      result.addAll(listSuperTypes(anInterface, util, types));
+    }
+    if (type.getSuperclass() != null && !type.getSuperclass().toString().equals("none")) {
+      result.addAll(listSuperTypes((TypeElement) types.asElement(type.getSuperclass()), util, types));
+    }
+
+    return result;
   }
 
   public static TypeElement getTypeElement(TypeMirror type, Util util, Types types,

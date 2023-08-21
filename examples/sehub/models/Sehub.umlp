@@ -2,6 +2,10 @@
 
 classdiagram Sehub {
 
+  /* Role datastructure - will later be separated in a general
+     and application specific part that are merged.
+  */
+
   class User {
                                        <<dbColumn = "unique=true">>
     String username;
@@ -10,6 +14,7 @@ classdiagram Sehub {
    // ActivationStatus activated;
                                         <<dbColumn = "unique=true">>
     String email;
+    SehubRole role;
   }
 
   enum ActivationStatus {
@@ -18,5 +23,69 @@ classdiagram Sehub {
     MAIL_FEHLERHAFT,
     MAIL_GESENDET;
   }
+
+  enum SehubRole {
+    GUEST,
+    REPORTER,
+    DEVELOPER,
+    MAINTAINER,
+    OWNER;
+  }
+
+  /* Application datastructure */
+
+  class Project {
+    String git;
+    String name;
+    String fullName;
+  }
+
+  association app [1] Project -> (users) User [*];
+  association tickets [1] Project -> (issues) Issue [*];
+
+  class Issue {
+    String title;
+    String description;
+    IssueState state;
+  }
+
+  association discussion [1] Issue -> (posts) Post [*];
+
+  enum IssueState {
+    UNASSIGNED,
+    IN_PROGRESS,
+    DONE;
+  }
+
+  class Post {
+    String text;
+  }
+
+  // association auth [1] Post -> (author) User [1];
+  association resp [1] Post -> (responses) Post [*];
+
+
+  // ABSTRACT!
+  class Artifact { // TODO shellAPI does not work with abstract classes
+    String simpleName;
+    String nameExtension;
+    String modified;
+    String name;
+    String fullName;
+  }
+
+  class FileArtifact extends Artifact {}
+
+  association refersTo [*] Artifact -> (referred) Artifact [*];
+
+  association produces [*] Artifact -> (produced) Artifact [*];
+
+  association root [*] Artifact -> (root) Project [1];
+
+  association artifactRepresentation [1] Project -> (rootArtifact) Directory [*]; // TODO Optional because of technical issue 1 <-> 1 cycles not allowed
+
+  class Directory extends Artifact {}
+
+  association contains [0..1] Directory -> (contains) Artifact [*];
 
 }
