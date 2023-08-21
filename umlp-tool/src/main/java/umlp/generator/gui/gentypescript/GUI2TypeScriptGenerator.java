@@ -15,10 +15,7 @@ import umlp.generator.gui.GUIGeneratorUtil;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static de.se_rwth.commons.Names.constructQualifiedName;
 
@@ -50,7 +47,7 @@ public class GUI2TypeScriptGenerator {
         Arrays.asList(modelAST, setup.getGlex(), setup.getHandcodedPath(), this, viewComponents));
   }
 
-  public String generateAppConfigfile(List<List<ASTGUICompilationUnit>> astguiCompilationUnitList)
+  public List<String> generateAppConfigfile(List<List<ASTGUICompilationUnit>> astguiCompilationUnitList)
   {
     this.setup.setTracing(false);
     GeneratorEngine genEngine = new GeneratorEngine(setup);
@@ -68,18 +65,19 @@ public class GUI2TypeScriptGenerator {
           });
       }
     });
-    Path generatedFiles = Paths.get("",
-        "app."+ ROUTES_FILE + "." + TS_FILE_EXTENSION);
-    genEngine.generateNoA("umlp.gui2ts.TSAppRoutes", generatedFiles,
+    boolean existHWCRoutes = existsHandwrittenFile(hwcPath, "app"+ROUTES_FILE, TS_FILE_EXTENSION);
+    Path generatedRoutingFiles = Paths.get("",
+        "app"+ ROUTES_FILE +(existHWCRoutes?"TOP":"")+ "." + TS_FILE_EXTENSION);
+    genEngine.generateNoA("umlp.gui2ts.TSAppRoutes", generatedRoutingFiles,
         astguiCompilationUnits, paths);
 
     Path generatedModuleFiles = Paths.get("",
-            "app."+ MODULES_FILE + "." + TS_FILE_EXTENSION);
+            "app"+ MODULES_FILE + "." + TS_FILE_EXTENSION);
     genEngine.generateNoA("umlp.gui2ts.TSAppModule", generatedModuleFiles);
-    return generatedFiles.toString();
+    return Arrays.asList(generatedRoutingFiles.toString(),generatedModuleFiles.toString());
   }
 
-  public String generateConfigFileForPackages(List<ASTGUICompilationUnit> astguiCompilationUnitList)
+  public List<String> generateConfigFileForPackages(List<ASTGUICompilationUnit> astguiCompilationUnitList,  Map<String,String> topNameMap)
   {
     this.setup.setTracing(false);
     GeneratorEngine genEngine = new GeneratorEngine(setup);
@@ -91,8 +89,11 @@ public class GUI2TypeScriptGenerator {
     }
     else
     {
-      return "";
+      return new ArrayList<>();
     }
+
+
+
     List<List<String>> ids=new ArrayList<>();
     int fullPathIndex=-1;
     for(int index=0;index<astguiCompilationUnitList.size();index++)
@@ -109,19 +110,22 @@ public class GUI2TypeScriptGenerator {
     String pathName=String.join("/", astGuiFirst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
     String temp=astGuiFirst.getPackage();
     String []tempArray=temp.split("\\.");
-    String routeName=tempArray[tempArray.length-1].substring(0,1).toUpperCase()+tempArray[tempArray.length-1].substring(1);
+    String name =tempArray[tempArray.length-1].substring(0,1).toUpperCase()+tempArray[tempArray.length-1].substring(1);
+
+    boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathName+"/"+name + ROUTES_FILE, TS_FILE_EXTENSION);
 
     Path generatedRoutingFile = Paths.get(pathName,
-        routeName+ ROUTES_FILE + "." + TS_FILE_EXTENSION);
+        name + ROUTES_FILE +(existHWCRoutes?"TOP":"")+"." + TS_FILE_EXTENSION);
     genEngine.generateNoA("umlp.gui2ts.TSPackageRoutes", generatedRoutingFile,
-        astguiCompilationUnitList, ids,fullPathIndex);
+        astguiCompilationUnitList, ids,fullPathIndex, topNameMap);
 
-    Path generatedModuleFiles = Paths.get(pathName,
-        routeName+ MODULES_FILE + "." + TS_FILE_EXTENSION);
-    String compDecl=routeName;
+    boolean existHWCModules = existsHandwrittenFile(hwcPath, pathName+"/" +name + MODULES_FILE, TS_FILE_EXTENSION);
+    Path generatedModuleFiles = Paths.get(pathName,name+
+   MODULES_FILE + (existHWCModules?"TOP":"") + "." + TS_FILE_EXTENSION);
+    String compDecl= name;
     genEngine.generateNoA("umlp.gui2ts.TSPackageModule", generatedModuleFiles,
-        astguiCompilationUnitList, ids,compDecl);
-    return generatedRoutingFile.toString();
+        astguiCompilationUnitList, ids,compDecl, topNameMap);
+    return Arrays.asList(generatedRoutingFile.toString(),generatedModuleFiles.toString());
   }
 
   public void generate(ASTGUICompilationUnit decoratedAst) {
@@ -169,7 +173,7 @@ public class GUI2TypeScriptGenerator {
    * (e.g. to apply TOP mechanism)
    */
   public static boolean existsHandwrittenFile(MCPath targetPath, String qualifiedName, String fileExtension) {
-    String hwFile = Names.getPathFromPackage(qualifiedName) + fileExtension;
+    String hwFile = Names.getPathFromPackage(qualifiedName) + "." + fileExtension;
     Optional<URL> hwFilePath = targetPath.find(hwFile);
     boolean result = hwFilePath.isPresent();
     if (result) {

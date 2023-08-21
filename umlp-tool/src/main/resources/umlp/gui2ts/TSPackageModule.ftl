@@ -1,12 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("astguiCompilationUnitList","ids","compDecl")}
+${tc.signature("astguiCompilationUnitList","ids","compDecl","topNameMap")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 // always imported
 import { Routes } from "@angular/router";
 // imports of pages in the package
 <#list astguiCompilationUnitList as ast>
-  import { ${ast.getComponentName()} } from "./${ast.getComponentName()}";
+  import { ${ast.getComponentName()}${topNameMap[ast.getComponentName()]} } from "./${ast.getComponentName()}${topNameMap[ast.getComponentName()]}";
 </#list>
 
 <#list astguiCompilationUnitList as ast>

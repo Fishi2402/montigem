@@ -93,6 +93,8 @@ import static umlp.UMLPToolOptions.REPORT_BASE;
 import static umlp.UMLPToolOptions.SYMTAB;
 import static umlp.UMLPToolOptions.TMPL_PATH;
 import static umlp.UMLPToolOptions.USE_SPRING;
+import static umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator.TS_FILE_EXTENSION;
+import static umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator.existsHandwrittenFile;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -360,6 +362,7 @@ public class UMLPTool extends UMLPToolTOP {
       }
       else if (isGuiFile(inputFile)) {
         Map<String,List<ASTGUICompilationUnit>> routesMap=new HashMap<>();
+        Map<String,String> topNameMap=new HashMap<>();
 
         for (String guiPathString : cmd.getOptionValues(INPUT.getCMD())) {
           Path guiModel = Paths.get(guiPathString);
@@ -454,7 +457,13 @@ public class UMLPTool extends UMLPToolTOP {
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, viewComponents);
           String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
 
+          String pathName=String.join("/", astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
+
+
+          topNameMap.put(astGui.getComponentName(),
+                existsHandwrittenFile(hwcPath,pathName+"/"+astGui.getComponentName(),TS_FILE_EXTENSION)?"TOP":"");
           typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
+
 
           GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
           componentGenerator.generate(astGui, "umlp.GUI2Component");
@@ -473,13 +482,6 @@ public class UMLPTool extends UMLPToolTOP {
           Reporting.flush(astGui);
         }
 
-
-
-
-
-
-
-
         //create routes file for every package and
         GeneratorSetup genSetup = new GeneratorSetup();
         // set output directory
@@ -495,12 +497,13 @@ public class UMLPTool extends UMLPToolTOP {
         routesMap.values().forEach(astList->
         {
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
-          String output=typeScriptGenerator.generateConfigFileForPackages(astList);
-          Reporting.reportFileCreation(outDir+"/"+output);
+          List<String> outputs=typeScriptGenerator.generateConfigFileForPackages(astList,topNameMap);
+          outputs.forEach(output->Reporting.reportFileCreation(outDir+"/"+output));
+
         });
         GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
-        String output=typeScriptGenerator.generateAppConfigfile(new ArrayList<>(routesMap.values()));
-        Reporting.reportFileCreation(outDir+"/"+output);
+        List<String> outputs=typeScriptGenerator.generateAppConfigfile(new ArrayList<>(routesMap.values()));
+        outputs.forEach(output->Reporting.reportFileCreation(outDir+"/"+output));
         Reporting.flush(new ASTGUICompilationUnit());
       }
     } catch (ParseException e) {

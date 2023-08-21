@@ -1,11 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("astguiCompilationUnitList","ids","fullPathIndex")}
+${tc.signature("astguiCompilationUnitList","ids","fullPathIndex","topNameMap")}
 // always imported
 import { Routes } from "@angular/router";
 // imports of pages in the package
 <#list astguiCompilationUnitList as ast>
-      import { ${ast.getComponentName()} } from "./${ast.getComponentName()}";
+      import { ${ast.getComponentName()}${topNameMap["ShortFormDateRenderer"]}} from "./${ast.getComponentName()}${topNameMap[("ShortFormDateRenderer")]}";
 </#list>
 
 
