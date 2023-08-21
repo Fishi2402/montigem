@@ -20,10 +20,10 @@ component Response(Post post){
         @GemColumn(height = "auto", width = "600px", vAlign = "top", rowGap = "5px", components = [
 
           // Respnse Header
-          @GemRow(hAlign = "left", vAlign = "space-around", components = [
-            @GemRow(width = "150px", vAlign = "space-around", component = @GemText(style = "font-size:12px" , value = "Netz")), // TODO LN Replace with author
-            @GemRow(width = "450px", colGap = "5px", hAlign = "right", components = [
-              @GemButton(label = "Bearbeiten", leftClick = editPost),
+          @GemRow(hAlign = "right", vAlign = "space-around", components = [
+            @GemRow(width = "300px", vAlign = "space-around", component = @GemText(style = "font-size:12px" , value = post.title)),
+            @GemRow(width = "100px", colGap = "5px", hAlign = "right", components = [
+              //@GemButton(label = "Antworten", leftClick = editPost),
               @GemButton(label = "Löschen", leftClick = deletePost)
             ])
           ]),

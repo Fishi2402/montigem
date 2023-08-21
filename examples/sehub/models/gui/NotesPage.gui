@@ -1,6 +1,8 @@
 package gui;
 
 import Sehub.Post;
+import Sehub.Issue;
+
 import gui.note.Note;
 import gui.note.Response;
 import arrange.src.lib.gemcard.GemCard;
@@ -8,11 +10,11 @@ import arrange.src.lib.gemcolumn.GemColumn;
 import basic.src.lib.gemtext.GemText;
 import basic.src.lib.gembutton.GemButton;
 
-page NotesPage(List<Post> posts){
-  gc1@GemCard(title = "Notes:", component = @GemColumn(height = "auto", hAlign = "right", rowGap = "5px", components = [
-  @GemButton(label = "Neuer Post", leftClick = newPost),
-  @iterate(Post p : posts){
-            @Note(post = p);
-          }
-  ]));
+page NotesPage(Issue issue){
+    gc1@GemCard(title = "Notes:", component = @GemColumn(height = "auto", hAlign = "right", rowGap = "5px", components = [
+    @GemButton(label = "Neuer Post", leftClick = newPost),
+    @iterate(Post p : issue.posts){
+              @Note(post = p);
+            }
+    ]));
 }

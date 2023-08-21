@@ -6,6 +6,10 @@ import {PostBuilder} from "../../../build/frontendGen/build/appdomain/sehub/Post
 import {UserBuilder} from "../../../build/frontendGen/build/appdomain/sehub/UserBuilder";
 import {User} from "../../../build/frontendGen/build/appdomain/sehub/User";
 import { SehubManager } from '@src/sehub/SehubManager';
+import { Post } from '@src/sehub/Post';
+import { GemList } from '@umlp/common';
+import { PostGemList } from "@src/sehub/gemlists/PostGemList";
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'notes-page',
@@ -16,26 +20,16 @@ import { SehubManager } from '@src/sehub/SehubManager';
 
 export class NotesPage extends NotesPageTOP {
 
-  private postBuider : PostBuilder;
-
-
-  ngOnInit() {
-    this.posts.loadAll();
-    this.posts.add(0, this.postBuider.text("Text - Test " + new Date()).build())
-
-    super.ngOnInit();
+  newPost(event: any){
+    SehubManager.postBuilder().then(builder => {
+      let response = builder.responses(
+          new Set<Post>())
+          .title("")
+          .text("Eine Antwort " + new Date())
+          .build();
+      this.issue.addPosts2(response)
+      this.issue._internal_getPostsGemList().loadAll();
+    })
   }
 
-  newPost(event: any) {
-
-    this.postBuider = new PostBuilder(2);
-
-    console.log("Create Post");
-    this.posts.loadAll()
-    console.log(this.posts)
-
-    this.postBuider.text("Text - Test " + new Date()).build()
-
-
-  }
 }
