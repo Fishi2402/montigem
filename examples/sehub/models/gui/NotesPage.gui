@@ -11,10 +11,13 @@ import basic.src.lib.gemtext.GemText;
 import basic.src.lib.gembutton.GemButton;
 
 page NotesPage(Issue issue){
-    gc1@GemCard(title = "Notes:", component = @GemColumn(height = "auto", hAlign = "right", rowGap = "5px", components = [
-    @GemButton(label = "Neuer Post", leftClick = newPost),
-    @iterate(Post p : issue.posts){
-              @Note(post = p);
-            }
-    ]));
+    @GemColumn(hAlign = "center", component =
+      @GemCard(title = issue.title, component = @GemColumn(height = "auto", hAlign = "right", rowGap = "5px", components = [
+      @GemText(value = issue.description),
+      @GemButton(label = "Neue Notiz", leftClick = newPost),
+      @iterate(Post p : issue.posts){
+                @Note(post = p);
+              }
+      ]))
+    );
 }

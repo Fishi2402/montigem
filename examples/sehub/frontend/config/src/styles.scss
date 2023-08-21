@@ -57,7 +57,8 @@ gem-text {
 
 .gem-textarea {
   font-family: monospace;
-  min-height: 10em;
+  max-width: 800px;
+  min-height: 5em;
   font-size: 1em;
 }
 

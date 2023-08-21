@@ -14,19 +14,30 @@ import { Post } from '@src/sehub/Post';
 
 export class Note extends NoteTOP {
 
+  ngOnInit(): void {
+    const tx = document.getElementsByTagName("gem-textarea");
+    for (let i = 0; i < tx.length; i++) {
+      tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+      tx[i].addEventListener("input", OnInput, false);
+    }
+
+    function OnInput() {
+      this.style.height = 0;
+      this.style.height = (this.scrollHeight) + "px";
+    }
+  }
+
   answerPost(event: any){
     SehubManager.postBuilder().then(builder => {
+      let date = new Date();
       let response = builder.responses(
           new Set<Post>())
-          .title("")
-          .text("Eine Antwort " + new Date())
+          .title(" " + this.post.getTitle() +  " (" + date.getHours() + ":" + date.getMinutes() + ")")
+          .text("Eine Antwort ")
           .build();
       this.post.addResponses2(response)
       this.post._internal_getResponsesGemList().loadAll()
     })
-
-
-
     console.log("Responding")
   }
 
@@ -37,4 +48,7 @@ export class Note extends NoteTOP {
     })
     console.log("Removing... " + this.post.getResponses())
   }
+
+
+
 }
