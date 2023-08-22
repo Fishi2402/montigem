@@ -24,7 +24,6 @@ export class NotesPage extends NotesPageTOP {
           .text("Eine Antwort " + new Date())
           .build();
       this.issue.addPosts2(response)
-      this.issue._internal_getPostsGemList().loadAll();
     })
   }
 

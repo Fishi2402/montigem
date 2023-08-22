@@ -39,7 +39,6 @@ export class AddToFavorite extends AddToFavoriteTOP {
         city.isFavorite().then(isFav => {
           if (!isFav) {
             this.app.addFavorite2(city);
-            this.app._internal_getFavoriteGemList().loadAll();
           }
         })
       }

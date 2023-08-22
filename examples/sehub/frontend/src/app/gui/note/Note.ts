@@ -36,16 +36,13 @@ export class Note extends NoteTOP {
           .text("Eine Antwort ")
           .build();
       this.post.addResponses2(response)
-      this.post._internal_getResponsesGemList().loadAll()
     })
     console.log("Responding")
   }
 
 
   deletePost(event: any){
-    SehubManager.deletePost(this.post.getGemId()).then(() => {
-      this.post._internal_getResponsesGemList().loadAll()
-    })
+    SehubManager.deletePost(this.post.getGemId());
     console.log("Removing... " + this.post.getResponses())
   }
 

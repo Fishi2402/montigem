@@ -80,8 +80,6 @@ export class City extends CityTOP {
     return this._nextHours;
   }
 
-  protected once = false;
-
   public calcNextHours(): void {
     if (this.original.nextHours.calculating || this.original.nextHours.hash != null) {
       return;
