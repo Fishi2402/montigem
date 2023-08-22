@@ -14,7 +14,7 @@ import { UserSettingsTOP } from '@src/gui/usersettings/UserSettingsTOP';
 /* Hookpoint: ClassContent:Annotations */
 
 export  class UserSettings extends UserSettingsTOP {
-  public createNewUserLeftClick(): void {
-    console.log("HI");
+  public inviteUserLeftClick(): void {
+    this.router.navigate(['/login/registration']);
   }
 }

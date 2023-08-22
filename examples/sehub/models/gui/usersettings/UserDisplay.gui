@@ -13,22 +13,56 @@ import table.src.lib.gemtable.GemTable;
 import table.src.lib.gemtable.TableColumn;
 
 component UserDisplay (User user) {
-  @GemRow(
+  @GemColumn(
     components = [
-      @GemRow(
-        width="5rem",
-        height="3rem",
-        component = account@GemText(value = user.username)
+      bar@GemRow(
+        width="0.8vm",
+        height="2rem",
+        components = [ ]
       ),
       @GemRow(
-        width="5rem",
-        height="3rem",
-        component = role@GemText(value = user.role)
+        components = [
+          @GemRow(
+            width="20rem",
+            height="3rem",
+            components = [
+              @GemColumn (
+                width = "3rem",
+                component = @GemText(value = "Bild")
+              ),
+              @GemColumn (
+                components = [
+                  account@GemText(value = user.username),
+                  email@GemText(value = user.email)
+                ]
+              )
+            ]
+          ),
+          @GemRow(
+            width="20rem",
+            height="3rem",
+            component = role@GemTextInput(labelText = "Role", inputType = "dropdown", entry = user.role, options = null)
+          ),
+          @GemRow(
+            width="20rem",
+            height="3rem",
+            hAlign = "space-between",
+            vAlign = "center",
+            component = registration@GemText(value = user.registrationDate)
+          ),
+          @GemRow(
+            width="3rem",
+            height="3rem",
+            hAlign = "space-between",
+            vAlign = "center",
+            component = removeUser@GemButton(label = "x", leftClick = removeUser)
+          )
+        ]
       ),
-      @GemRow(
-        width="5rem",
-        height="3rem",
-        component = registration@GemText(value = user.registrationDate)
+      barBottom@GemRow(
+        width="0.8vm",
+        height="2rem",
+        components = [ ]
       )
     ]
   );
