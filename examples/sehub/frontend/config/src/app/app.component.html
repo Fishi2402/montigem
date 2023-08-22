@@ -1,4 +1,6 @@
-<navigation></navigation>
+<ng-container *ngIf="location.path() !== '/login/Login'">
+  <navigation class="my-nav"></navigation>
+</ng-container>
 <main class="app-main">
   <router-outlet></router-outlet>
 </main>
