@@ -34,8 +34,10 @@ public class GUI2JavaGuardDecorator extends GUIAbstractDecorator {
 
     String getterName = util.gui2cdAttrGetterName(guard.getId().getName(), "condition");
     String nullCheck = "";
-    if (visitor.getNullCheckExpression().isPresent()) {
-      nullCheck = guiDSLPrinter.prettyprint(visitor.getNullCheckExpression().get());
+    GUINullCheckVisitor nullCheckVisitor = new GUINullCheckVisitor();
+    nullCheckVisitor.transform(visitor.getGetterExpression());
+    if (nullCheckVisitor.getNullCheckExpression().isPresent()) {
+      nullCheck = guiDSLPrinter.prettyprint(nullCheckVisitor.getNullCheckExpression().get());
     }
     String getterValue = guiDSLPrinter.prettyprint(visitor.getGetterExpression());
     boolean isLiteral = visitor.getGetterExpression() instanceof ASTLiteralExpression;

@@ -12,9 +12,6 @@ ${tc.signature("args")}
 <#assign contentList = ast.getGUIBlock().getGUIBlockContentList()>
 <#assign isTpl = genHelper.isNgTemplate(ast.getId().getName())>
 
-<#-- TODO AGe: uncomment when problem with RangeControl is resolved
-<ng-container *ngFor='let ${itemName} of ${iterable}; index as ${counterName}'>
--->
 <#assign args = args + [itemName]>
 <#if isTpl><ng-template #${genHelper.getNgTemplateActualName(ast.getId().getName())}></#if>
 <ng-container *ngFor='let ${itemName} of ${iterable}; index as ${counterName}'>

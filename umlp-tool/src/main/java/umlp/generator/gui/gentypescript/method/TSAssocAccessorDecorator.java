@@ -14,7 +14,7 @@ public class TSAssocAccessorDecorator extends AccessorDecorator {
   public TSAssocAccessorDecorator(
       GlobalExtensionManagement glex, CDGenService service, ASTCDType ast) {
     super(glex,
-        new AssocMandatoryAccessorDecorator(glex, service),
+        new TSAssocMandatoryAccessorDecorator(glex, service),
         new TSOptionalAccessorDecorator(glex, service),
         new TSAssocListAccessorDecorator(glex, service, ast));
   }
