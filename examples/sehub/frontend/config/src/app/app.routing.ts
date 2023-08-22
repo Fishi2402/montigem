@@ -37,6 +37,10 @@ export const routes: Routes = [
     loadChildren: () => import("../../build/appgui/gui/ProjectPageModule").then(m => m.ProjectpageModule)
   },
   {
+    path: "usersettings",
+    loadChildren: () => import("../../build/appgui/gui/usersettings/UserSettingsModule").then(m => m.UsersettingsModule)
+  },
+  {
     path: '404',
     loadChildren: () => import("../../build/appgui/gui/PageNotFoundModule").then(m => m.PagenotfoundModule)
   },

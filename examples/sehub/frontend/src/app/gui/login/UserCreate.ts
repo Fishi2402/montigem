@@ -2,6 +2,7 @@
 
 import {Component} from '@angular/core';
 import {UserCreateTOP} from '@src/gui/login/UserCreateTOP';
+import { SehubRole } from '@src/sehub/SehubRole';
 import { ActivationStatus } from '@src/sehub/ActivationStatus';
 
 @Component({
@@ -16,7 +17,8 @@ export class UserCreate extends UserCreateTOP {
   public override saveUser(event: any): void {
     //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
     this.userBuilder.registrationDate(new Date());
-    this.build();
+    this.userBuilder.role(SehubRole.GUEST)
+    this.userBuilder.build();
   }
 
 }

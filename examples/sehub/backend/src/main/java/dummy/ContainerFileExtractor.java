@@ -216,7 +216,7 @@ public class ContainerFileExtractor extends BaseExtractor {
     String[] simpleNameAndExtension = ExtractorUtils.splitSimpleNameAndExtension(file.getName());
 
     return fileArtifactBuilder.fullName(nameStartingFromRoot)
-        .name(simpleNameAndExtension[SIMPLE_NAME_POS]+"."+simpleNameAndExtension[NAME_EXTENSION_POS])
+        .name(simpleNameAndExtension[SIMPLE_NAME_POS]+simpleNameAndExtension[NAME_EXTENSION_POS])
         .nameExtension(simpleNameAndExtension[NAME_EXTENSION_POS])
         .simpleName(simpleNameAndExtension[SIMPLE_NAME_POS])
         .modified(ExtractorUtils.ARTIFACTS_DATE_FORMAT.format(file.lastModified()));

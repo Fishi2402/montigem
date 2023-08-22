@@ -59,9 +59,10 @@ classdiagram Sehub {
 
   class Post {
     String text;
+    String title;
   }
 
-  association auth [1] Post -> (author) User [1];
+  // association auth [1] Post -> (author) User [1];
   association resp [1] Post -> (responses) Post [*];
 
 

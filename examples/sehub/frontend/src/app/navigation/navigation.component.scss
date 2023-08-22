@@ -30,7 +30,7 @@ $nav-padding: 5px;
   transition: all 0.2s ease-in-out;
 }
 
-.navMenu a:hover, a:focus {
+.navMenu a:hover, .navMenu a:focus {
   color: $acronio-orange-3;
 }
 
@@ -56,12 +56,12 @@ $nav-padding: 5px;
   padding: 5px;
 }
 
-img:hover {
+img:hover, img:focus {
   -webkit-filter: drop-shadow(0px 0px 5px $acronio-blue-alternate-3);
   filter: drop-shadow(0px 0px 5px $acronio-blue-alternate-3);
 }
 
-.navMenu a:nth-child(2):hover ~ .dot {
+.navMenu a:nth-child(2):hover ~ .dot, .navMenu a:nth-child(2):focus ~ .dot {
   -webkit-transform: translate(100px, 35px);
   transform: translate(100px, 35px);
   -webkit-transition: all 0.2s ease-in-out;
@@ -69,7 +69,7 @@ img:hover {
   opacity: 1;
 }
 
-.navMenu a:nth-child(3):hover ~ .dot {
+.navMenu a:nth-child(3):hover ~ .dot, .navMenu a:nth-child(3):focus ~ .dot {
   -webkit-transform: translate(230px, 35px);
   transform: translate(230px, 35px);
   -webkit-transition: all 0.2s ease-in-out;
@@ -77,7 +77,7 @@ img:hover {
   opacity: 1;
 }
 
-.navMenu a:nth-child(4):hover ~ .dot {
+.navMenu a:nth-child(4):hover ~ .dot, .navMenu a:nth-child(4):focus ~ .dot {
   -webkit-transform: translate(340px, 35px);
   transform: translate(340px, 35px);
   -webkit-transition: all 0.2s ease-in-out;
@@ -85,7 +85,7 @@ img:hover {
   opacity: 1;
 }
 
-.navMenu a:nth-child(5):hover ~ .dot {
+.navMenu a:nth-child(5):hover ~ .dot, .navMenu a:nth-child(5):focus ~ .dot {
   -webkit-transform: translate(425px, 35px);
   transform: translate(425px, 35px);
   -webkit-transition: all 0.2s ease-in-out;
@@ -93,7 +93,7 @@ img:hover {
   opacity: 1;
 }
 
-.navMenu a:nth-child(6):hover ~ .dot {
+.navMenu a:nth-child(6):hover ~ .dot, .navMenu a:nth-child(6):focus ~ .dot {
   -webkit-transform: translate(500px, 35px);
   transform: translate(500px, 35px);
   -webkit-transition: all 0.2s ease-in-out;
