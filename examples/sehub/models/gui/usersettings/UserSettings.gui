@@ -23,7 +23,7 @@ component UserSettings(User currentUser, List<User> users) {
         component = @GemRow(hAlign = "left", vAlign = "space-around",
           components = [
             userName@GemTextInput(labelText = "Username", inputType = "text", entry = currentUser.username),
-            password@GemTextInput(labelText = "Password", inputType = "text", entry = currentUser.password),
+            password@GemTextInput(labelText = "Password", inputType = "password", entry = currentUser.password),
             userEMail@GemTextInput(labelText = "Email", inputType = "text", entry = currentUser.email)
           ]
         )
