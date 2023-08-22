@@ -11,10 +11,12 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Optional;
 
 import umlp.backendrte.common.GemIdentifiable;
@@ -116,17 +118,20 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
       File f = GitRepoLoader.gitClone("git.rwth-aachen.de",repoPath, token);
       extractor.extractGivenRoot(List.of(f));
 
-      // Free disk space from MontiCore
+      // Free disk space from pulled git repo
       try {
+        // Git files are readOnly thus cannot be easily deleted after cloning
+        for (Iterator<File> i = FileUtils.iterateFiles(f, new String[]{"idx", "pack"}, true); i.hasNext();) {
+          File item = i.next();
+          item.setWritable(true);
+        }
         FileUtils.deleteDirectory(f);
       } catch (IOException e) {
-        Log.error("Could not free disk space of extracted git repo.", e);
+        Log.warn("Could not free disk space of extracted git repo.", e);
       }
-
     } else {
       Log.warn("No environment variable set with name "+"gitlab-token");
     }
-
     String path = "src/main/java";
     File file = new File(path);
     extractor.extractGivenRoot(List.of(file));

@@ -20,6 +20,7 @@ public class GitRepoLoader {
     try{
       Process process = processBuilder.start();
       process.waitFor();
+      process.destroy();
     } catch (InterruptedException | IOException e) {
       Log.warn("Something went wrong when cloning repository: ", e);
       throw new RuntimeException(e);
