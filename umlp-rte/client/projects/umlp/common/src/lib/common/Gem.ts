@@ -126,7 +126,6 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
       this.loadingState = LoadingState.LOADING;
       this.loader = this.loadFunction();
       this.loader.then(result => {;
-        console.log(result, result.loadingState === LoadingState.EMPTY, this.gemId);
         if (result.isPresent()) {
           this.set(result.get());
         }
