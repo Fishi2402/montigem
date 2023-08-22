@@ -186,8 +186,10 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     }
     else {
       String nullCheck = "";
-      if (visitor.getNullCheckExpression().isPresent()) {
-        nullCheck = guiDSLPrinter.prettyprint(visitor.getNullCheckExpression().get());
+      GUINullCheckVisitor nullCheckVisitor = new GUINullCheckVisitor();
+      nullCheckVisitor.transform(visitor.getGetterExpression());
+      if (nullCheckVisitor.getNullCheckExpression().isPresent()) {
+        nullCheck = guiDSLPrinter.prettyprint(nullCheckVisitor.getNullCheckExpression().get());
       }
       String getterValue = guiDSLPrinter.prettyprint(visitor.getGetterExpression());
       boolean isLiteral = visitor.getGetterExpression() instanceof ASTLiteralExpression;
