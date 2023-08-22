@@ -1,6 +1,9 @@
 package sehub;
 
+import de.se_rwth.commons.logging.Log;
 import dummy.ContainerFileExtractor;
+import dummy.GitRepoLoader;
+import org.apache.commons.io.FileUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -102,14 +105,30 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         .posts(Set.of(p3.get()))
         .build();
 
-
     createDummyData();
   }
 
   private void createDummyData() {
+    ContainerFileExtractor extractor = new ContainerFileExtractor();
+    String token = System.getenv("gitlab-token");
+    if(token != null) {
+      String repoPath = "monticore/monticore";
+      File f = GitRepoLoader.gitClone("git.rwth-aachen.de",repoPath, token);
+      extractor.extractGivenRoot(List.of(f));
+
+      // Free disk space from MontiCore
+      try {
+        FileUtils.deleteDirectory(f);
+      } catch (IOException e) {
+        Log.error("Could not free disk space of extracted git repo.", e);
+      }
+
+    } else {
+      Log.warn("No environment variable set with name "+"gitlab-token");
+    }
+
     String path = "src/main/java";
     File file = new File(path);
-    ContainerFileExtractor extractor = new ContainerFileExtractor();
     extractor.extractGivenRoot(List.of(file));
   }
 }

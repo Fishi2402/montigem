@@ -15,7 +15,7 @@ page ProjectPage(Project project) {
     title = "Files",
     component = files@GemTreeview(
     items = null,
-    allExpanded=true)
+    allExpanded=false)
   );
   @GemNetworkGraph(
     data = null
