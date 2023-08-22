@@ -53,7 +53,7 @@ export class UserDisplay extends UserDisplayTOP {
 
   public override removeUserLeftClick(event: any) {
     let gemId = this.user.getGemId();
-    if (gemId === 1 || gemId === SehubSecurityManager.getCurrentUser().getGemId()) {
+    if (gemId === 1 || (SehubSecurityManager.isSignedIn() && gemId === SehubSecurityManager.getCurrentUser().getGemId())) {
       console.log("Cannot remove main user");
     } else {
       SehubManager.deleteUser(gemId);
