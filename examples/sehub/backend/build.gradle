@@ -68,6 +68,7 @@ dependencies {
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
 
   implementation "umlp:frontend-rte:$mc_version:cd2java"
+  implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
 }
 
 // TODO AGe: the whole serialization thing should be reworked
