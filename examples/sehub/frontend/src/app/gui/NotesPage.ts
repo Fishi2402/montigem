@@ -6,6 +6,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import {SehubManager} from "../../../build/frontendGen/build/appdomain/sehub/SehubManager";
 import {Post} from "../../../build/frontendGen/build/appdomain/sehub/Post";
+import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
 
 @Component({
@@ -20,7 +21,6 @@ export class NotesPage extends NotesPageTOP {
     super(route, router);
   }
 
-
   ngOnInit() {
     super.ngOnInit();
     console.log("ISSUE: ", this.issue)
@@ -28,15 +28,21 @@ export class NotesPage extends NotesPageTOP {
 
   newPost(event: any){
     console.log("ISSUE: ", this.issue);
-    SehubManager.postBuilder().then(builder => {
 
-      let post = builder.responses(
-          new Set<Post>())
-          .title("")
-          .text("Eine Antwort " + new Date())
-          .build();
-      this.issue.addPosts2(post)
-    })
+    if(SehubSecurityManager.getCurrentUser() == undefined){
+      alert("No User Logged In")
+    } else {
+
+      SehubManager.postBuilder().then(builder => {
+        let post = builder.responses(
+            new Set<Post>())
+            .author(SehubSecurityManager.getCurrentUser())
+            .title("")
+            .text("Eine Antwort " + new Date())
+            .build();
+        this.issue.addPosts2(post)
+      })
+    }
   }
 
 }

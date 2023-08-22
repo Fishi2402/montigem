@@ -66,12 +66,14 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
     }
 
     Optional<Post> p1 = SehubManager.postBuilder()
+        .author(SehubManager.getUserList().get(0))
         .title("")
         .text("Post 1")
         .responses(Collections.emptySet())
         .build();
 
     Optional<Post> p2 = SehubManager.postBuilder()
+        .author(SehubManager.getUserList().get(0))
         .title("")
         .text("Post 2")
         .responses(Collections.emptySet())
@@ -82,6 +84,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
     responses.add(p2.get());
 
     Optional<Post> p3 = SehubManager.postBuilder()
+        .author(SehubManager.getUserList().get(0))
         .title("")
         .text("Post 3")
         .responses(responses)

@@ -5,6 +5,7 @@ import {Component} from '@angular/core';
 import { SehubManager } from '@src/sehub/SehubManager';
 import { Post } from '@src/sehub/Post';
 import { ActivatedRoute, Router } from '@angular/router';
+import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
 @Component({
   selector: 'note',
@@ -27,13 +28,23 @@ export class Note extends NoteTOP {
   answerPost(event: any){
     SehubManager.postBuilder().then(builder => {
       let date = new Date();
-      let response = builder.responses(
-          new Set<Post>())
-          .title(" " + this.post.getTitle() +  " (" + date.getHours() + ":" + date.getMinutes() + ")")
-          .text("Eine Antwort ")
-          .build();
-      this.post.addResponses2(response)
+
+
+      if(SehubSecurityManager.getCurrentUser() == undefined){
+        alert("No User Logged In")
+      } else {
+
+        let response = builder.responses(
+            new Set<Post>())
+            .title(" " + this.post.getTitle() + " (" + date.getHours() + ":" + date.getMinutes() + ")")
+            .author(SehubSecurityManager.getCurrentUser())
+            .text("Eine Antwort ")
+            .build();
+        this.post.addResponses2(response)
+      }
     })
+
+
     console.log("Responding")
   }
 
