@@ -15,7 +15,11 @@ export class UserSettings extends UserSettingsTOP {
 
   public ngOnInit(): void {
     this.currentUser = SehubSecurityManager.getCurrentUser();
-    this.currentUserRoutingId = SehubSecurityManager.getCurrentUser().getGemId();
+    if (this.currentUser !== null) {
+      this.currentUserRoutingId = SehubSecurityManager.getCurrentUser().getGemId();
+    } else {
+      this.router.navigate(["../..", "login"]);
+    }
   }
 
   public inviteUserLeftClick() {
