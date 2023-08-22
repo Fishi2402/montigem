@@ -1,6 +1,9 @@
 package sehub;
 
+import de.se_rwth.commons.logging.Log;
 import dummy.ContainerFileExtractor;
+import dummy.GitRepoLoader;
+import org.apache.commons.io.FileUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -11,6 +14,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Optional;
 
 import umlp.backendrte.common.GemIdentifiable;
@@ -61,25 +65,70 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
     }
 
     Optional<Post> p1 = SehubManager.postBuilder()
+        .title("")
         .text("Post 1")
+        .responses(Collections.emptySet())
         .build();
 
     Optional<Post> p2 = SehubManager.postBuilder()
+        .title("")
         .text("Post 2")
+        .responses(Collections.emptySet())
         .build();
 
-    SehubManager.postBuilder()
-        .text("Post 3")
+    Set<Post> responses = new java.util.HashSet<>(Collections.emptySet());
+    responses.add(p1.get());
+    responses.add(p2.get());
+
+    Optional<Post> p3 = SehubManager.postBuilder()
+        .title("")
+        .text("It is a long established fact that a reader will be distracted by the readable content " +
+            "of a page when looking at its layout. The point of using Lorem Ipsum is that it has a " +
+            "more-or-less normal distribution of letters, as opposed to using 'Content here, content " +
+            "here', making it look like readable English. Many desktop publishing packages and web " +
+            "page editors now use Lorem Ipsum as their default model text, and a search for 'lorem " +
+            "ipsum' will uncover many web sites still in their infancy. Various versions have evolved " +
+            "over the years, sometimes by accident, sometimes on purpose (injected humour and the like).")
+        .responses(responses)
         .build();
 
+    IssueBuilder issueBuilder = new IssueBuilder(42000);
+        issueBuilder
+        .title("MyIssue")
+        .description("Contrary to popular belief, Lorem Ipsum is not simply random text. It has " +
+            "roots in a piece of classical Latin literature from 45 BC, making it over 2000 years " +
+            "old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked " +
+            "up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and " +
+            "going through the cites of the word in classical literature, discovered the undoubtable " +
+            "source. ")
+        .state(IssueState.IN_PROGRESS)
+        .posts(Set.of(p3.get()))
+        .build();
 
     createDummyData();
   }
 
   private void createDummyData() {
+    ContainerFileExtractor extractor = new ContainerFileExtractor();
+    String token = System.getenv("gitlab-token");
+    if(token != null) {
+      String repoPath = "monticore/monticore";
+      File f = GitRepoLoader.gitClone("git.rwth-aachen.de",repoPath, token);
+      extractor.extractGivenRoot(List.of(f));
+
+      // Free disk space from MontiCore
+      try {
+        FileUtils.deleteDirectory(f);
+      } catch (IOException e) {
+        Log.error("Could not free disk space of extracted git repo.", e);
+      }
+
+    } else {
+      Log.warn("No environment variable set with name "+"gitlab-token");
+    }
+
     String path = "src/main/java";
     File file = new File(path);
-    ContainerFileExtractor extractor = new ContainerFileExtractor();
     extractor.extractGivenRoot(List.of(file));
   }
 }

@@ -13,20 +13,21 @@ import gui.note.Response;
 
 component Note(Post post){
 
-  @GemCard(title = "TODO: CommentTitle", component =
+  @GemCard(title = "", component =
       @GemColumn(height = "auto", width = "800px", vAlign = "top", rowGap = "5px", components = [
-        @GemRow(hAlign = "left", vAlign = "space-around", components = [
-          @GemRow(width = "200px", component = @GemTextInput(labelText = "", inputType = "string")),
-          @GemRow(width = "150px", vAlign = "space-around", component = @GemText(style = "font-size:1em; font-family:monospace; color:red" , value = "17-08 15:23")),
-          @GemRow(width = "450px", colGap = "5px", hAlign = "right", components = [
-            @GemButton(label = "Bearbeiten", leftClick = editPost),
+        @GemRow(hAlign = "right", vAlign = "space-around", components = [
+          @GemRow(width = "450px", component = @GemTextInput(labelText = "", inputType = "string", entry = post.title)),
+          @GemRow(width = "150px", vAlign = "space-around", component = @GemText(style = "font-size:1em; font-family:monospace; color:red" , value = "")),
+          @GemRow(width = "200px", colGap = "5px", hAlign = "right", components = [
+            // @GemButton(label = "Bearbeiten", leftClick = editPost),
             @GemButton(label = "Antworten", leftClick = answerPost),
             @GemButton(label = "Löschen", leftClick = deletePost)
           ])
         ]),
         @GemTextareaInput(
                   id = "text1",
-                  labelText = ""
+                  labelText = "",
+                  entry = post.text
                 ),
 
         @iterate(Post r : post.responses){
