@@ -18,6 +18,7 @@ component UserSettings(User currentUser, List<User> users) {
   @GemColumn(
     width="90vw",
     hAlign = "center",
+    rowGap = "5px",
     components = [
       myAccount@GemCard(title = "My Account",
         component = @GemRow(hAlign = "left", vAlign = "space-around",

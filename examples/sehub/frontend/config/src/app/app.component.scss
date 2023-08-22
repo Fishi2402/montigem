@@ -1,9 +1,15 @@
 :host {
   display: flex;
   column-gap: 5px;
+  flex-direction: column;
 }
 
 .app-main {
-  margin-top: 55px; /* Add a top margin to avoid content overlay */
   padding: 5px;
+}
+
+.my-nav {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
 }
