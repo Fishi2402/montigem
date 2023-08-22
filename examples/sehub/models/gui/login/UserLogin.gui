@@ -13,10 +13,10 @@ import input.src.lib.gemtextinput.GemTextInput;
 page UserLogin(List<User> users, User loginUser) {
   @GemCard(title = "Login", component =
     @GemColumn(rowGap = "20px", components = [
-      @GemTextInput(labelText = "Username", inputType = "text", entry = loginUser.username),
-      @GemTextInput(labelText = "Passwort", inputType = "password", entry = loginUser.password),
+      @GemTextInput(labelText = "Account", inputType = "text", entry = loginUser.username),
+      @GemTextInput(labelText = "Password", inputType = "password", entry = loginUser.password),
       @GemRow(hAlign = "center", component =
-        @GemButton(label = "Anmelden", leftClick = login)
+        @GemButton(label = "Sign in", leftClick = login)
       ),
       error@GemText(value = "")
     ])

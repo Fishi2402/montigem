@@ -13,11 +13,11 @@ import input.src.lib.gemtextinput.GemTextInput;
 page UserCreate(User newUser) {
   @GemCard(title = "Create account and use it to sign in", component =
     @GemColumn(rowGap = "20px", components = [
-      @GemTextInput(labelText = "Username", inputType = "text", entry = newUser.username),
-      @GemTextInput(labelText = "Passwort", inputType = "password", entry = newUser.password),
-      @GemTextInput(labelText = "E-Mail-Adresse", inputType = "text", entry = newUser.email),
+      @GemTextInput(labelText = "Account", inputType = "text", entry = newUser.username),
+      @GemTextInput(labelText = "Password", inputType = "password", entry = newUser.password),
+      @GemTextInput(labelText = "E-mail address", inputType = "text", entry = newUser.email),
       @GemRow(hAlign = "center", component =
-        @GemButton(label = "Account erstellen", leftClick = createUser)
+        @GemButton(label = "Create account", leftClick = createUser)
       ),
       error@GemText(value = "")
     ])

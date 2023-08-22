@@ -51,7 +51,7 @@ export class UserCreate extends UserCreateTOP {
       this.newUserBuilder.registrationDate(new Date());
       this.newUserBuilder.role(SehubRole.DEVELOPER);
       this.build();
-      this.router.navigate(["..", "login"]);
+      this.router.navigate(['/login']);
     } else {
       this.error = errorMessage + ' already being used';
     }

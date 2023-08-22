@@ -15,6 +15,8 @@ import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
 export class UserLogin extends UserLoginTOP {
 
+  private error: string = "";
+
   public ngOnInit(): void {
     SehubManager.getUserList().then(gemPromiseRes => {
       this.users = gemPromiseRes;
@@ -27,19 +29,31 @@ export class UserLogin extends UserLoginTOP {
   }
 
   public override login(event: any): void {
+    let userFound = false;
+    let passwordFound = false;
     if (!!this.loginUser) {
       for (let ind in this.users.ids) {
         this.users.get(+ind).then(user => {
           if (!!user) {
-            if (!!this.loginUser.getUsername() && this.loginUser.getUsername() === user.getUsername() &&
-                !!this.loginUser.getPassword() && this.loginUser.getPassword() === user.getPassword()) {
-              SehubSecurityManager.setCurrentUser(user);
-              this.router.navigate(["../..", "start"]);
+            if (!!this.loginUser.getUsername() && this.loginUser.getUsername() === user.getUsername()) {
+              userFound = true;
+              if (!!this.loginUser.getPassword() && this.loginUser.getPassword() === user.getPassword()) {
+                SehubSecurityManager.setCurrentUser(user);
+                this.router.navigate(['/start']);
+              } else {
+                this.error = 'Wrong password';
+              }
             }
           }
         });
+        this.error = 'There is no user ' + this.loginUser.getUsername();
       }
     }
+
+  }
+
+  public override getErrorValue(): string {
+    return this.error;
   }
 
 }

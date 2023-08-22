@@ -41,6 +41,11 @@ export class ResetPassword extends ResetPasswordTOP {
         }
       });
     }
+    this.error = 'There is no user with the E-mail ' + this.user.getEmail();
+  }
+
+  public override getErrorValue(): string {
+    return this.error;
   }
 
 }

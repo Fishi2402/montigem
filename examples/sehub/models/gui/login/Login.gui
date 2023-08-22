@@ -23,8 +23,8 @@ page Login(List<User> users){
          @GemText(value = us.getUsername());
         },*/
         @UserLogin(),
-        @GemLink(url = "/login/forgotpassword", text = "Passwort vergessen?"),
-        @GemLink(url = "/login/registration", text = "Neu hier? Registrieren")
+        @GemLink(url = "/login/forgotpassword", text = "Forgot your password?"),
+        @GemLink(url = "/login/registration", text = "Create new account")
       ])
     ])
   );
