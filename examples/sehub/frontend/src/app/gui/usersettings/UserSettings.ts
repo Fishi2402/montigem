@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Component } from '@angular/core';
-import { UserSettingsTOP } from '@src/gui/usersettings/UserSettingsTOP';
+import {Component} from '@angular/core';
+import {UserSettingsTOP} from '@src/gui/usersettings/UserSettingsTOP';
+import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
 @Component({
   selector: 'user-settings',
@@ -10,11 +11,14 @@ import { UserSettingsTOP } from '@src/gui/usersettings/UserSettingsTOP';
   styleUrls: ["./UserSettings.scss"]
 })
 
+export class UserSettings extends UserSettingsTOP {
 
-/* Hookpoint: ClassContent:Annotations */
+  public ngOnInit(): void {
+    this.currentUser = SehubSecurityManager.getCurrentUser();
+    this.currentUserRoutingId = SehubSecurityManager.getCurrentUser().getGemId();
+  }
 
-export  class UserSettings extends UserSettingsTOP {
-  public inviteUserLeftClick(): void {
+  public inviteUserLeftClick() {
     this.router.navigate(['/login/registration']);
   }
 }

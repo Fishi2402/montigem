@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Component } from '@angular/core';
-import { UserDisplayTOP } from '@src/gui/usersettings/UserDisplayTOP';
+import {Component} from '@angular/core';
+import {UserDisplayTOP} from '@src/gui/usersettings/UserDisplayTOP';
 
-import { SehubRole } from '@src/sehub/SehubRole';
-import { SehubManager } from '@src/sehub/SehubManager';
+import {SehubRole} from '@src/sehub/SehubRole';
+import {SehubManager} from '@src/sehub/SehubManager';
 
 @Component({
   selector: 'user-display',
@@ -14,9 +14,8 @@ import { SehubManager } from '@src/sehub/SehubManager';
 })
 export class UserDisplay extends UserDisplayTOP {
 
-  public override getRoleEntry (): string
-  {
-    if (!(this.getUser()!=null&&this.getUser()!=null)) {
+  public override getRoleEntry(): string {
+    if (!(this.getUser() != null && this.getUser() != null)) {
       return null;
     }
     return this.enumToString(SehubRole[this.getUser().getRole()] + '');
@@ -40,8 +39,8 @@ export class UserDisplay extends UserDisplayTOP {
     return res;
   }
 
-  public override setRoleEntry (value: string): void {
-    if (!(this.getUser()!=null&&this.getUser()!=null)) {
+  public override setRoleEntry(value: string): void {
+    if (!(this.getUser() != null && this.getUser() != null)) {
       return null;
     }
     if (value == null || value == undefined || value == "") {

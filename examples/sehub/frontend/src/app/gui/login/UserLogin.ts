@@ -4,6 +4,7 @@ import {Component} from '@angular/core';
 import {UserLoginTOP} from '@src/gui/login/UserLoginTOP';
 import {User} from "../../../../build/frontendGen/build/appdomain/sehub/User";
 import {SehubManager} from "../../../../build/frontendGen/build/appdomain/sehub/SehubManager";
+import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
 @Component({
   selector: 'user-login',
@@ -15,7 +16,6 @@ import {SehubManager} from "../../../../build/frontendGen/build/appdomain/sehub/
 export class UserLogin extends UserLoginTOP {
 
   public ngOnInit(): void {
-
     SehubManager.getUserList().then(gemPromiseRes => {
       this.users = gemPromiseRes;
       this.users.loadAll();
@@ -33,10 +33,11 @@ export class UserLogin extends UserLoginTOP {
           if (!!user) {
             if (!!this.loginUser.getUsername() && this.loginUser.getUsername() === user.getUsername() &&
                 !!this.loginUser.getPassword() && this.loginUser.getPassword() === user.getPassword()) {
+              SehubSecurityManager.setCurrentUser(user);
               this.router.navigate(["../..", "start"]);
             }
           }
-        })
+        });
       }
     }
   }
