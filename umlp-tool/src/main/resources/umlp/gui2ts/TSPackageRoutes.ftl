@@ -5,7 +5,7 @@ ${tc.signature("astguiCompilationUnitList","ids","fullPathIndex","topNameMap")}
 import { Routes } from "@angular/router";
 // imports of pages in the package
 <#list astguiCompilationUnitList as ast>
-      import { ${ast.getComponentName()}${topNameMap["ShortFormDateRenderer"]}} from "./${ast.getComponentName()}${topNameMap[("ShortFormDateRenderer")]}";
+      import { ${ast.getComponentName()}${topNameMap[ast.getComponentName()]}} from "./${ast.getComponentName()}${topNameMap[(ast.getComponentName())]}";
 </#list>
 
 

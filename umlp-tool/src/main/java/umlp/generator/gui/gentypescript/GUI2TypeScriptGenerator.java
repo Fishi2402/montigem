@@ -73,7 +73,8 @@ public class GUI2TypeScriptGenerator {
 
     Path generatedModuleFiles = Paths.get("",
             "app"+ MODULES_FILE + "." + TS_FILE_EXTENSION);
-    genEngine.generateNoA("umlp.gui2ts.TSAppModule", generatedModuleFiles);
+    Boolean existedModuleConfig=existsHandwrittenFile(hwcPath,"appModuleConfig",TS_FILE_EXTENSION);
+    genEngine.generateNoA("umlp.gui2ts.TSAppModule", generatedModuleFiles,existedModuleConfig);
     return Arrays.asList(generatedRoutingFiles.toString(),generatedModuleFiles.toString());
   }
 

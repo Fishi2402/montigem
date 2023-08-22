@@ -6,9 +6,7 @@ import org.junit.jupiter.api.Test;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class RoutingGeneratorTest extends AbstractGUITest {
 
@@ -27,7 +25,9 @@ public class RoutingGeneratorTest extends AbstractGUITest {
     generatorSetup.setGlex(glex);
     generatorSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
     GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(generatorSetup, generatorSetup.getHandcodedPath(), null);
-    typeScriptGenerator.generateConfigFileForPackages(astList);
+    Map<String,String> dummy=new HashMap<>();
+    astList.forEach(ast->dummy.put(ast.getComponentName(),""));
+    typeScriptGenerator.generateConfigFileForPackages(astList,dummy);
     assertNoErrors();
   }
 
