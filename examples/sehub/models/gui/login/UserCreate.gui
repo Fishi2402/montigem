@@ -11,7 +11,7 @@ import basic.src.lib.gemtext.GemText;
 import input.src.lib.gemtextinput.GemTextInput;
 
 page UserCreate(User newUser) {
-  @GemCard(title = "Account erstellen", component =
+  @GemCard(title = "Create account and use it to sign in", component =
     @GemColumn(rowGap = "20px", components = [
       @GemTextInput(labelText = "Username", inputType = "text", entry = newUser.username),
       @GemTextInput(labelText = "Passwort", inputType = "password", entry = newUser.password),

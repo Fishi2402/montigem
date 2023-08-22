@@ -18,7 +18,7 @@ export class UserSettings extends UserSettingsTOP {
     if (this.currentUser !== null) {
       this.currentUserRoutingId = SehubSecurityManager.getCurrentUser().getGemId();
     } else {
-      this.router.navigate(["../..", "login"]);
+      this.router.navigate(['/login']);
     }
   }
 

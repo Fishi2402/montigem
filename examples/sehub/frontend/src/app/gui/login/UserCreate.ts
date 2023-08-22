@@ -31,14 +31,14 @@ export class UserCreate extends UserCreateTOP {
 
     SehubManager.getUserList().then(gemPromiseRes => {
       this.users = gemPromiseRes;
-      for (let ind in this.users.ids) {  // TODO: remove this after synchronizing does properly
+     /* for (let ind in this.users.ids) {  // TODO: remove this after synchronizing does properly
         this.users.get(+ind).then(user => {
           if (!!user) {
             this.allUser.push(user);
             console.log('\n User:' + user.getUsername());
           }
         });
-      }
+      }*/
     });
 
   }
@@ -53,7 +53,7 @@ export class UserCreate extends UserCreateTOP {
       this.build();
       this.router.navigate(["..", "login"]);
     } else {
-      this.error = 'Es gibt schon einen Benutzer mit ' + errorMessage;
+      this.error = errorMessage + ' already being used';
     }
 
   }
@@ -66,10 +66,10 @@ export class UserCreate extends UserCreateTOP {
     let res: string = '';
     this.allUser.filter(user => {
       if (!!this.getNewUser().getUsername() && this.getNewUser().getUsername() === user.getUsername()) {
-        res += ' Username ' + this.getNewUser().getUsername();
+        res += ' Account ' + this.getNewUser().getUsername();
       }
       if (!!this.getNewUser().getEmail() && this.getNewUser().getEmail() === user.getEmail()) {
-        res += (res.length === 0? '': ' und ') + ' E-Mail ' + this.getNewUser().getEmail();
+        res += (res.length === 0? '': ' und ') + ' E-mail ' + this.getNewUser().getEmail();
       }
     });
     return res;
