@@ -2,11 +2,11 @@
 
 import {Component} from '@angular/core';
 import {UserCreateTOP} from '@src/gui/login/UserCreateTOP';
-import {User} from "../../../../build/frontendGen/build/appdomain/sehub/User";
-import {SehubRole} from "../../../../build/frontendGen/build/appdomain/sehub/SehubRole";
+import {User} from '@src/sehub/User';
+import {SehubRole} from '@src/sehub/SehubRole';
 import { ActivationStatus } from '@src/sehub/ActivationStatus';
 
-import {SehubManager} from "../../../../build/frontendGen/build/appdomain/sehub/SehubManager";
+import { SehubManager } from '@src/sehub/SehubManager';
 import { GemList } from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
 
 @Component({

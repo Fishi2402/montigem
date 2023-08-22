@@ -2,8 +2,8 @@
 
 import {Component} from '@angular/core';
 import {LoginTOP} from '@src/gui/login/LoginTOP';
-import {SehubManager} from "../../../../build/frontendGen/build/appdomain/sehub/SehubManager";
-import {User} from "../../../../build/frontendGen/build/appdomain/sehub/User";
+import { SehubManager } from '@src/sehub/SehubManager';
+import {User} from '@src/sehub//User';
 
 @Component({
   selector: 'login',

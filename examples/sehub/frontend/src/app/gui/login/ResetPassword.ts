@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {User} from "../../../../build/frontendGen/build/appdomain/sehub/User";
-import {SehubManager} from "../../../../build/frontendGen/build/appdomain/sehub/SehubManager";
+import {User} from '@src/sehub//User';
+import { SehubManager } from '@src/sehub/SehubManager';
 import {ResetPasswordTOP} from '@src/gui/login/ResetPasswordTOP';
 
 @Component({

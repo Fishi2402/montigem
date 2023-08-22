@@ -5,6 +5,7 @@ import {UserDisplayTOP} from '@src/gui/usersettings/UserDisplayTOP';
 
 import {SehubRole} from '@src/sehub/SehubRole';
 import {SehubManager} from '@src/sehub/SehubManager';
+import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
 @Component({
   selector: 'user-display',
@@ -52,7 +53,7 @@ export class UserDisplay extends UserDisplayTOP {
 
   public override removeUserLeftClick(event: any) {
     let gemId = this.user.getGemId();
-    if (gemId === 1) {
+    if (gemId === 1 || gemId === SehubSecurityManager.getCurrentUser().getGemId()) {
       console.log("Cannot remove main user");
     } else {
       SehubManager.deleteUser(gemId);

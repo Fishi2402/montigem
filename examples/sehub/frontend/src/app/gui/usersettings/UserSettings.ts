@@ -3,6 +3,7 @@
 import {Component} from '@angular/core';
 import {UserSettingsTOP} from '@src/gui/usersettings/UserSettingsTOP';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import { SehubManager } from '@src/sehub/SehubManager';
 
 @Component({
   selector: 'user-settings',
@@ -20,6 +21,10 @@ export class UserSettings extends UserSettingsTOP {
     } else {
       this.router.navigate(['/login']);
     }
+
+    SehubManager.getUserList().then(gemPromiseRes => {
+      this.users = gemPromiseRes;
+    });
   }
 
   public inviteUserLeftClick() {
