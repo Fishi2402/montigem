@@ -19,6 +19,9 @@ page Login(List<User> users){
         @GemImage(source = "assets/images/Eule.png")
       ),
       @GemColumn(hAlign = "center", width = "600px", rowGap = "20px", components = [
+      /*  @iterate(User us : users) {
+         @GemText(value = us.getUsername());
+        },*/
         @UserLogin(),
         @GemLink(url = "/login/forgotpassword", text = "Passwort vergessen?"),
         @GemLink(url = "/login/registration", text = "Neu hier? Registrieren")

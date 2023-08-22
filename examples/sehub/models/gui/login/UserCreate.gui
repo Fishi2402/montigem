@@ -10,15 +10,16 @@ import basic.src.lib.gembutton.GemButton;
 import basic.src.lib.gemtext.GemText;
 import input.src.lib.gemtextinput.GemTextInput;
 
-page UserCreate(User user) {
-  @GemCard(title = "Create user", component =
+page UserCreate(User newUser) {
+  @GemCard(title = "Account erstellen", component =
     @GemColumn(rowGap = "20px", components = [
-      @GemTextInput(labelText = "Username", inputType = "string", entry = user.username),
-      @GemTextInput(labelText = "Passwort", inputType = "string", entry = user.password),
-      @GemTextInput(labelText = "E-Mail-Adresse", inputType = "string", entry = user.email),
+      @GemTextInput(labelText = "Username", inputType = "text", entry = newUser.username),
+      @GemTextInput(labelText = "Passwort", inputType = "password", entry = newUser.password),
+      @GemTextInput(labelText = "E-Mail-Adresse", inputType = "text", entry = newUser.email),
       @GemRow(hAlign = "center", component =
-        @GemButton(label = "Create user", leftClick = saveUser)
-      )
+        @GemButton(label = "Account erstellen", leftClick = createUser)
+      ),
+      error@GemText(value = "")
     ])
   );
 }

@@ -55,7 +55,6 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
           .username("MyUser")
           .password("MyPasswort")
           .registrationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
-          .username("MyUser").username("MyUser")
           .email("MyEmail")
       //    .activated(ActivationStatus.AKTIVIERT)
           .role(SehubRole.OWNER)
