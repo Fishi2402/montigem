@@ -20,8 +20,8 @@ component Note(Post post){
           @GemRow(width = "150px", vAlign = "space-around", component = @GemText(style = "font-size:1em; font-family:monospace; color:red" , value = "")),
           @GemRow(width = "200px", colGap = "5px", hAlign = "right", components = [
             // @GemButton(label = "Bearbeiten", leftClick = editPost),
-            @GemButton(label = "Antworten", leftClick = answerPost),
-            @GemButton(label = "Löschen", leftClick = deletePost)
+            @GemButton(label = "↪️ Reply", leftClick = answerPost),
+            @GemButton(label = "❌", leftClick = deletePost)
           ])
         ]),
         @GemTextareaInput(

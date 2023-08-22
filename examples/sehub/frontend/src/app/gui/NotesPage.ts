@@ -3,8 +3,9 @@ import {
   Component,
 } from '@angular/core';
 
-import { SehubManager } from '@src/sehub/SehubManager';
-import { Post } from '@src/sehub/Post';
+import { ActivatedRoute, Router } from '@angular/router';
+import {SehubManager} from "../../../build/frontendGen/build/appdomain/sehub/SehubManager";
+import {Post} from "../../../build/frontendGen/build/appdomain/sehub/Post";
 
 
 @Component({
@@ -15,15 +16,26 @@ import { Post } from '@src/sehub/Post';
 })
 
 export class NotesPage extends NotesPageTOP {
+  public constructor(route: ActivatedRoute, protected router: Router) {
+    super(route, router);
+  }
+
+
+  ngOnInit() {
+    super.ngOnInit();
+    console.log("ISSUE: ", this.issue)
+  }
 
   newPost(event: any){
+    console.log("ISSUE: ", this.issue);
     SehubManager.postBuilder().then(builder => {
-      let response = builder.responses(
+
+      let post = builder.responses(
           new Set<Post>())
           .title("")
           .text("Eine Antwort " + new Date())
           .build();
-      this.issue.addPosts2(response)
+      this.issue.addPosts2(post)
       this.issue._internal_getPostsGemList().loadAll();
     })
   }
