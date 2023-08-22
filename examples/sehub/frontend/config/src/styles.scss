@@ -9,15 +9,20 @@
 }
 
 body {
-  margin: 0;
+  background-image: linear-gradient(rgba($acronio-black, 0.9),rgba($acronio-black, 0.9)) , url("assets/images/bg.jpg");
+  background-repeat: repeat;
+  background-size: 3000px;
+  //background: $acronio-black-1;
+}
+
+.settings-list>li, .settings-list, .button {
   background: $acronio-black-1;
 }
 
 
-
 //GemCard ------------------------------------------------------
 .gem-card-header, .gem-card-body {
-  background: rgba($acronio-black-2, 1) !important;
+  background: rgba($acronio-black-3, 0.2)!important;
   backdrop-filter: blur(5px) !important;
   box-shadow: 0 0 0 !important;
 }
@@ -31,7 +36,11 @@ body {
 .gem-card-header {
   border-radius: 5px 5px 0px 0px;
   border: 1px solid $acronio-black-3 ;
-  border-bottom: 1px solid $acronio-orange;
+  //border-bottom: 1px solid $acronio-orange;
+  //
+  //-webkit-box-shadow:0px 2px 5px $acronio-orange!important;
+  //-moz-box-shadow:0px 2px 5px $acronio-orange!important;
+  //box-shadow:0px 1px 1px $acronio-orange!important;
 }
 
 
@@ -41,9 +50,8 @@ gem-text {
   font-size: 1.2rem;
 }
 
-
 //GemInput ------------------------------------------------------
-.gem-label-text-input {
+.gem-label-text-input, .gem-label-textarea {
   color : $acronio-blue-alternate-4;
   font-weight: normal;
 }

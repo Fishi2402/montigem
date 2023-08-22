@@ -3,8 +3,8 @@
 import { NoteTOP } from "@src/gui/note/NoteTOP";
 import {Component} from '@angular/core';
 import { SehubManager } from '@src/sehub/SehubManager';
-import {PostBuilder} from "../../../../build/frontendGen/build/appdomain/sehub/PostBuilder";
 import { Post } from '@src/sehub/Post';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'note',
@@ -14,17 +14,14 @@ import { Post } from '@src/sehub/Post';
 
 export class Note extends NoteTOP {
 
-  ngOnInit(): void {
-    const tx = document.getElementsByTagName("gem-textarea");
-    for (let i = 0; i < tx.length; i++) {
-      tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
-      tx[i].addEventListener("input", OnInput, false);
-    }
+  public constructor(route: ActivatedRoute, protected router: Router) {
+    super(route, router);
+  }
 
-    function OnInput() {
-      this.style.height = 0;
-      this.style.height = (this.scrollHeight) + "px";
-    }
+  ngOnInit(): void {
+    console.log("Note Init")
+    super.ngOnInit();
+
   }
 
   answerPost(event: any){
