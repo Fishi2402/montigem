@@ -1,7 +1,5 @@
 @import '../../../config/src/variables';
 
-$nav-padding: 5px;
-
 * {
   margin: 0;
   padding: 0;
@@ -23,13 +21,13 @@ $nav-padding: 5px;
 
 .navMenu .material-symbols-outlined {
   font-size: 25px;
+  padding-top: 14px;
 }
 
 .navMenu a, .navMenu .user {
   padding-top: 15px;
   padding-left: 10px;
   padding-right: 10px;
-  padding-bottom: 15px;
 
   color: #fff;
   text-decoration: none;
@@ -122,13 +120,8 @@ img:hover, img:focus {
   opacity: 1;
 }
 
-.navMenu a:nth-child(8):hover {
-  font-size: 10px;
-}
-
 .navMenu .user {
   color: $acronio-orange-3;
-  text-align:center;
 }
 
 .navMenu .spacer {
