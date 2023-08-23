@@ -6,7 +6,6 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
-import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -209,10 +208,18 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
       if (GenService.isAStLeastOne(assoc)) {
         getCD4C().addMethod(clazz, "umlp.domain.CheckCard",
-            domainClass.getName(), assoc.getName(), !GenService.isSymbolDerived(assoc));
+            domainClass.getName(),
+            assoc.getName(),
+            !GenService.isSymbolDerived(assoc),
+            GenService.isList(assoc)
+        );
       } else {
         getCD4C().addMethod(clazz, "umlp.domain.Check",
-            domainClass.getName(), assoc.getName(), !GenService.isOptional(assoc) && !GenService.isSymbolDerived(assoc));
+            domainClass.getName(),
+            assoc.getName(),
+            !GenService.isOptional(assoc) && !GenService.isSymbolDerived(assoc),
+            GenService.isList(assoc)
+        );
       }
     }
   }
