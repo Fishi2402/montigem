@@ -67,15 +67,15 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
 
     Optional<Post> p1 = SehubManager.postBuilder()
         .author(SehubManager.getUserList().get(0))
-        .title("")
-        .text("Post 1")
+        .title(" | 15:57 ]: Können Wasserkocher Fliegen ?")
+        .text("Nein")
         .responses(Collections.emptySet())
         .build();
 
     Optional<Post> p2 = SehubManager.postBuilder()
         .author(SehubManager.getUserList().get(0))
-        .title("")
-        .text("Post 2")
+        .title(" | 16:34 ]: Können Wasserkocher Fliegen ?")
+        .text("Ja, während eines FoWos")
         .responses(Collections.emptySet())
         .build();
 
@@ -85,15 +85,15 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
 
     Optional<Post> p3 = SehubManager.postBuilder()
         .author(SehubManager.getUserList().get(0))
-        .title("")
-        .text("Post 3")
+        .title("Können Wasserkocher Fliegen ?")
+        .text("Wir sollten diese Frage vor dem FoWo klären! Ggf. Sollten Wasserkocher für eine Testreihe organisiert werden!")
         .responses(responses)
         .build();
 
     IssueBuilder issueBuilder = new IssueBuilder(42000);
         issueBuilder
-        .title("MyIssue")
-        .description("Post 4")
+        .title("Die Sache mit dem Wasserkocher")
+        .description("Hier kann eine Beschreibung stehen...")
         .state(IssueState.IN_PROGRESS)
         .posts(Set.of(p3.get()))
         .build();

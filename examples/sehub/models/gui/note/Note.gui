@@ -11,27 +11,27 @@ import basic.src.lib.gembutton.GemButton;
 import arrange.src.lib.gemrow.GemRow;
 import gui.note.Response;
 
-component Note(Post post){
+component Note(Post post, Boolean showResponses){
 
   @GemCard(title = "", component =
       @GemColumn(height = "auto", width = "800px", vAlign = "top", rowGap = "5px", components = [
         @GemRow(hAlign = "right", colGap="5px", vAlign = "space-around", components = [
-          @GemRow(width = "450px", component = @GemTextInput(labelText = "", inputType = "string", entry = post.title)),
+          @GemRow(width = "450px", component = postTitle@GemTextInput(labelText = "", inputType = "string", entry = post.title)),
           @GemRow(width = "140px", height = "30px" , vAlign = "bottom", component = @GemText(style= "font-size: 0.5rem;", value = post.author.username)),
-          @GemRow(width = "200px", colGap = "5px", hAlign = "right", components = [
+          @GemRow(width = "200px", height = "30px" , colGap = "5px",vAlign = "bottom", hAlign = "right", components = [
             // @GemButton(label = "Bearbeiten", leftClick = editPost),
-            @GemButton(label = "↪️ Reply", leftClick = answerPost),
+            //toggleButton@GemButton(label = "📜", leftClick = toggleResponses ),
+            replybutton@GemButton(label = "↪️ Reply ", leftClick = answerPost),
             @GemButton(label = "❌", leftClick = deletePost)
           ])
         ]),
-        @GemTextareaInput(
+        message@GemTextareaInput(
                   id = "text1",
                   labelText = "",
                   entry = post.text
                 ),
-
-        @iterate(Post r : post.responses){
-          @Response(post = r);
+        responseList@iterate(Post r : post.responses){
+           loadRespComponent@Response(post = r);
         }
       ])
   );

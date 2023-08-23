@@ -19,13 +19,7 @@ export class NotesPage extends NotesPageTOP {
     super(route, router);
   }
 
-  ngOnInit() {
-    super.ngOnInit();
-    console.log("ISSUE: ", this.issue)
-  }
-
   newPost(event: any) {
-    console.log("ISSUE: ", this.issue);
 
     if (!SehubSecurityManager.isSignedIn()) {
       alert("No User Logged In")
@@ -35,8 +29,8 @@ export class NotesPage extends NotesPageTOP {
         let post = builder.responses(
             new Set<Post>())
             .author(SehubSecurityManager.getCurrentUser())
-            .title("")
-            .text("Eine Antwort " + new Date())
+            .title("<< YOUR TITLE >>")
+            .text("<< YOUR DESCRIPTION >> ")
             .build();
         this.issue.addPosts2(post)
       })
