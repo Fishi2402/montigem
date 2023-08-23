@@ -1,4 +1,6 @@
 import { Component } from "@angular/core";
+import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
+import {User} from '@src/sehub/User';
 
 @Component({
   selector: "navigation",
@@ -13,7 +15,15 @@ export class Navigation {
     { url: '/projects', title: 'Artifacts' },
     { url: '/notes/NotesPage/42000', title: 'Notes'},
     { url: '/usersettings/UserSettings/1', title: 'User Settings'},
-    { url: '/login', title: 'Login' }
+    { url: '/login', title: 'Login' },
   ];
+  getUser(): User {
+    return SehubSecurityManager.getCurrentUser();
+  }
+
+  signOut(): void {
+    SehubSecurityManager.signOut();
+  }
+
 
 }

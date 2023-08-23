@@ -13,12 +13,19 @@ $nav-padding: 5px;
   width: 100vw;
   color: #fff;
   display: flex;
-  background: rgba($acronio-black-2, 1) !important;
+  flex-direction: row;
+  background: rgba($acronio-black-2, 0.5) !important;
   border-bottom: 1px solid $acronio-black-3;
   box-shadow: 0px 4px 5px rgba($acronio-black, 1) !important;
+  backdrop-filter: blur(3px) !important;
+  -webkit-backdrop-filter: blur(3px);
 }
 
-.navMenu a {
+.navMenu .material-symbols-outlined {
+  font-size: 25px;
+}
+
+.navMenu a, .navMenu .user {
   padding-top: 15px;
   padding-left: 10px;
   padding-right: 10px;
@@ -33,7 +40,7 @@ $nav-padding: 5px;
 }
 
 .navMenu a:hover, .navMenu a:focus {
-  color: $acronio-orange-3;
+  color: $acronio-orange-3 !important;
 }
 
 
@@ -113,4 +120,17 @@ img:hover, img:focus {
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;
+}
+
+.navMenu a:nth-child(8):hover {
+  font-size: 10px;
+}
+
+.navMenu .user {
+  color: $acronio-orange-3;
+  text-align:center;
+}
+
+.navMenu .spacer {
+  flex-grow: 1; /* this is the important bit */
 }
