@@ -94,14 +94,14 @@ abstract class IncrementalReverseTask extends DefaultTask {
 
 tasks.register('incrementalReverse', IncrementalReverseTask) {
   inputDir = file('projects/umlp')
-  outputDir = file("projects/dist")
+  outputDir = file("../dist")
   inputProperty = project.properties['taskInputProperty'] ?: 'original'
 }
 
 spotless {
   json {
     target 'projects/umlp/**/package.json'
-    simple()
+    simple().indentWithSpaces(2)
   }
 }
 

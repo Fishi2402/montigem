@@ -25,4 +25,8 @@ umlp A {
   class Bar4;
   association owns4 Foo4 <-> Bar4;
 
+  class Foo5;
+  class Bar5;
+  association owns5 Foo5 -> Bar5 [1..*];
+
 }

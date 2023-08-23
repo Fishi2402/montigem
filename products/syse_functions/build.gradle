@@ -37,7 +37,7 @@ task mergeUMLPModels(type: UMLPMergeTask){
     excludes = ["**.gui", "**.ocl"]
 
   // Where should the merged result be stored?
-  outputFile = layout.buildDirectory.file("FunctionsStructure.umlp")  // buildDirectory = "build/"
+  outputFile = layout.buildDirectory.file("FunctionStructure.umlp")  // buildDirectory = "build/"
 }
 
 task generateJavaCode(type: UMLPBackendTask) {
@@ -68,6 +68,8 @@ dependencies {
   implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+
+  implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
 }
 
 

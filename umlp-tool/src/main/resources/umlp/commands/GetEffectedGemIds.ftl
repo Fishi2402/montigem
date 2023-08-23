@@ -2,5 +2,4 @@
 ${tc.signature("gemIds")}
 ${cd4c.method("public Collection<Long> getEffectedGemIds()")}
 
-return Arrays.asList(<#list gemIds as gemId>${gemId}<#if gemId?has_next>, </#if></#list>);
-
+  return Sets.newHashSet(<#list gemIds as gemId>${gemId}<#if gemId?has_next>, </#if></#list>);

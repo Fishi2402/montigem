@@ -1,2 +1,1 @@
-
-export * from './JsonPrinter';
+export * from "./JsonPrinter";

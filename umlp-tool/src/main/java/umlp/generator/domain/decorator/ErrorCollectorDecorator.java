@@ -67,7 +67,7 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
             });
 
     // Add methods for domain associations
-    CDSymbolTables.getAssociationsInHierarchy(domainClass).stream().filter(a -> !a.getModifier().isDerived())
+    CDSymbolTables.getAssociationsInHierarchy(domainClass).stream().filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
             .forEach(a -> {
               getCD4C().addMethod(collectorClass, "umlp.errorcollector.ReportInvalid", a.getName(), domainClass.getName());
               getCD4C().addMethod(collectorClass, "umlp.errorcollector._ReportInvalid", a.getName(), domainClass.getName());

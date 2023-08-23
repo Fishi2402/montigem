@@ -10,6 +10,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
+import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import umlp.generator.gui.ExpressionReplaceSearchVisitor;
 import umlp.generator.gui.ExpressionReplaceVisitor;
 import umlp.generator.gui.ExpressionReplacement;
@@ -24,16 +25,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class GUIGuardConditionReplaceVisitor extends ExpressionReplaceSearchVisitor {
+public class GUIGuardConditionReplaceVisitor extends GUINameExpressionReplaceVisitor {
 
   protected GUIDSLTraverser traverser;
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
   protected ASTGUIGuard getterExpression;
-  protected Optional<ASTExpression> nullCheckExpression = Optional.empty();
-  protected List<ExpressionReplacement> replacements = new ArrayList<>();
-
-  protected Collection<String> ignore = new HashSet<>();
 
   public GUIGuardConditionReplaceVisitor() {
     traverser = GUIDSLMill.traverser();
@@ -60,10 +57,6 @@ public class GUIGuardConditionReplaceVisitor extends ExpressionReplaceSearchVisi
     return getterExpression.getCondition();
   }
 
-  public Optional<ASTExpression> getNullCheckExpression() {
-    return nullCheckExpression;
-  }
-
   public void setIgnore(Collection<String> ignore) {
     this.ignore = ignore;
   }
@@ -86,33 +79,6 @@ public class GUIGuardConditionReplaceVisitor extends ExpressionReplaceSearchVisi
       ExpressionReplacement nr = replacements.get(i);
       ExpressionReplaceVisitor visitor = new ExpressionReplaceVisitor();
       visitor.transform(nr.getHolder(), nr.getOldValue(), nr.getNewValue());
-    }
-  }
-
-  @Override
-  public void visit(ASTNameExpression node) {
-    if (potentialHolder != null) {
-      if (potentialHolder.getValue().equals(node) && !ignore.contains(node.getName())) {
-        Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.callExpressionBuilder()
-            .setExpression(CommonExpressionsMill.fieldAccessExpressionBuilder()
-                .setName(util.gui2cdAttrGetterName(node.getName()))
-                .setExpression(
-                    ExpressionsBasisMill.nameExpressionBuilder()
-                        // TODO AGe: technically java "this" expression
-                        .setName("this")
-                        .build())
-                .build()
-            )
-            .setArguments(
-                ExpressionsBasisMill.argumentsBuilder()
-                    .setExpressionsList(Collections.emptyList())
-                    .build()
-            )
-            .build();
-        nullCheckExpression = Optional.of(newValue.get());
-        replacements.add(new ExpressionReplacement(
-            potentialHolder.getKey(), potentialHolder.getValue(), newValue));
-      }
     }
   }
 

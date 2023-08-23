@@ -1,0 +1,38 @@
+package gui;
+
+import Sehub.Post;
+import Sehub.Issue;
+
+import gui.note.Note;
+import gui.note.Response;
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gembutton.GemButton;
+import input.src.lib.gemtextinput.GemTextInput;
+import input.src.lib.gemtextareainput.GemTextareaInput;
+
+page NotesPage(Issue issue){
+    @GemRow(colGap = "20px", components = [
+      @GemColumn(hAlign = "center", width = "850px", component =
+        @GemCard(title = issue.title + ": Comments & Discussion", component = @GemColumn(height = "auto", hAlign = "right", rowGap = "5px", components = [
+        @GemText(value = issue.description),
+        @GemButton(label = "Add Comment or Question", leftClick = newPost),
+        @iterate(Post p : issue.posts){
+                  @Note(post = p);
+                }
+        ]))
+      ),
+
+      @GemColumn(hAlign = "center", width = "400px", rowGap =" 5px", components = [
+        @GemText(value = "Issue-Description"),
+        @GemTextInput(labelText = "Issue-Title", entry= issue.title),
+        @GemTextareaInput(
+          id = "issueDescription",
+          labelText = "Descritprion",
+          entry = issue.description
+        )
+      ])
+    ]);
+}

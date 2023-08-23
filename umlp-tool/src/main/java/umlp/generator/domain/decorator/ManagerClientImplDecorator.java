@@ -129,7 +129,10 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     }
 
     // Associations
-    CDSymbolTables.getAssociations(domainClass).stream().filter(a -> GenService.isList(a)).forEach(a -> {
+    CDSymbolTables.getAssociations(domainClass).stream()
+        .filter(a -> GenService.isList(a))
+        .filter(side -> !isDerived(side))
+        .forEach(a -> {
       SymTypeExpression type = a.getSymbol().getType();
       String printedType = type.print();
       ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
@@ -165,7 +168,9 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));
 
     // Associations
-    CDSymbolTables.getAssociations(domainInterface).stream().filter(GenService::isList).forEach(a -> {
+    CDSymbolTables.getAssociations(domainInterface).stream()
+        .filter(side -> !isDerived(side))
+        .filter(GenService::isList).forEach(a -> {
       SymTypeExpression type = a.getSymbol().getType();
       String printedType = type.print();
       ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
@@ -202,6 +207,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ListResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(clazz, Joiners.DOT.join(getPackageName(origCD, REQUESTS_PACKAGE), GetFreeGemIdRequestDecorator.CLASS_NAME));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));

@@ -68,7 +68,7 @@ public class ObserverDecorator extends AbstractDecorator {
 
     // Add Notify for list associations
     CDSymbolTables.getAssociations(domainClass).stream()
-            .filter(a -> !a.getModifier().isDerived())
+            .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
             .filter(a -> GenService.isList(a))
             .forEach(a -> {
               getCD4C().addMethod(ast, "umlp.observer.NotifyAdd", a.getName(), className, "long");
@@ -81,7 +81,7 @@ public class ObserverDecorator extends AbstractDecorator {
 
     // Add Notify for associations
     CDSymbolTables.getAssociations(domainClass).stream()
-            .filter(a -> !a.getModifier().isDerived())
+            .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
             .filter(a -> !GenService.isList(a))
             .forEach(a -> {
               getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, "long", false);

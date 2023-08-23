@@ -4,9 +4,11 @@ import de.monticore.generating.templateengine.reporting.commons.StatisticsHandle
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
+import log_mc_jar.ErrorEntry;
 import log_mc_jar.Log_MC_JARManager;
 import log_mc_jar.MCJarCLIParameter;
 import log_mc_jar.MCJarLogEntry;
+import log_mc_jar.MCJarLogEntryBuilder;
 import log_mc_jar.MCPreJarLogEntry;
 import log_mc_jar.MCSummary;
 import log_mc_jar.PreJarLogEntry;
@@ -27,6 +29,9 @@ import java.net.UnknownHostException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @RestController
@@ -64,22 +69,23 @@ public class LoggerEndpointService {
   }
 
   protected UMLPJarLogEntry log_UMLP_JAR_JSON(JsonObject data) throws UnknownHostException {
-    return Log_MC_JARManager.uMLPJarLogEntryBuilder()
+     UMLPJarLogEntryBuilder builder = Log_MC_JARManager.uMLPJarLogEntryBuilder()
         .parameter(parseUmlpJarCLIParameter(data.getObjectMember("parameter")))
-
         // JarLogEntry
         .duration(Duration.ofMillis(data.getLongMember("duration")))
-        .summary(parseSummary(data.getObjectMember("summary"))) // TODO: Optional!
-          //TODO: Parse Error
-
         // PreJarLogEntry
         .uuid(data.getStringMember("uuid"))
         .toolVersion(data.getStringMember("version"))
         .receivedTime(Instant.now())
-        .origin(InetAddress.getLoopbackAddress())  // TODO
-
-        .build()
-        .get();
+        .origin(InetAddress.getLoopbackAddress()); // TODO
+    if(data.hasObjectMember("summary")){
+      builder.summary(parseSummary(data.getObjectMember("summary")));
+    }
+    //TODO: Parse Error
+    if(data.hasStringMember("error")) {
+      builder.error(errorEntry(data.getStringMember("error")));
+    }
+    return builder.build().get();
   }
 
   protected UMLPPreJarLogEntry log_UMLP_PRE_JAR_JSON(JsonObject data) {
@@ -111,25 +117,39 @@ public class LoggerEndpointService {
   }
 
   protected MCJarLogEntry log_MC_JAR_JSON(JsonObject data) throws UnknownHostException {
-    return Log_MC_JARManager.mCJarLogEntryBuilder()
+    MCJarLogEntryBuilder builder = Log_MC_JARManager.mCJarLogEntryBuilder()
         .parameter(parseMCJarCLIParameter(data.getObjectMember("parameter")))
-
         // JarLogEntry
         .duration(Duration.ofMillis(data.getLongMember("duration")))
-        .summary(parseSummary(data.getObjectMember("summary"))) // TODO: Optional!
         //TODO: Parse Error
 
         // PreJarLogEntry
         .uuid(data.getStringMember("uuid"))
         .toolVersion(data.getStringMember("version"))
         .receivedTime(Instant.now())
-        .origin(InetAddress.getLoopbackAddress())  // TODO
-
-        .build()
-        .get();
+        .origin(InetAddress.getLoopbackAddress());
+    if(data.hasObjectMember("summary")){
+      builder.summary(parseSummary(data.getObjectMember("summary")));
+    }
+    if(data.hasStringMember("error")) {
+      builder.error(errorEntry(data.getStringMember("error")));
+    }
+    return builder.build().get();
   }
 
+  protected ErrorEntry errorEntry(String error) {
+    return Log_MC_JARManager.errorEntryBuilder().message(error).code(getErrorCodeFromMessage(error)).build().get();
+  }
 
+  // Assume there is only one error message and it starts with the prefix 0x
+  protected Optional<String> getErrorCodeFromMessage(String errorMessage) {
+    Pattern pattern = Pattern.compile("0x\\w*");
+    Matcher matcher = pattern.matcher(errorMessage);
+    if(matcher.find()) {
+      return Optional.of(matcher.group());
+    }
+    return Optional.empty();
+  }
 
 
   private MCSummary parseSummary(JsonObject data){

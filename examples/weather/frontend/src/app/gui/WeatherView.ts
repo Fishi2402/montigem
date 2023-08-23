@@ -7,7 +7,7 @@ import { Forecast } from '@src/weather/Forecast';
 
 @Component({
   selector: 'weather-view',
-  templateUrl: '../../../build/appgui/gui/WeatherView.html',
+  templateUrl: '../../../build/frontendGen/build/appgui/gui/WeatherView.html',
   styles: [
     ":host { display: flex; flex-direction: column }",
     ":host .gemColumn8 { display: initial }",

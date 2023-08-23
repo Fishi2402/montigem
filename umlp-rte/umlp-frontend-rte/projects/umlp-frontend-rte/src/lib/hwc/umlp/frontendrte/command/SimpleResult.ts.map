@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"SimpleResult.ts",
+"lineCount":48,
+"mappings":"A;;;;;;AAMC,C,oCAAqC,C,aAAc,C;IACjD,C,IAAU,C;;IACV,C,aAAU,C;;IAQV,C,kBAAoB,C,SAAS,C,mBAA2B,C;;;AAAqB,C,WAC3E,C,KAAM,C,GAAI,C;;;YACV,C,mBAAoB,C;AACrB,C;;;AATyD,C,WACxD,C,KAAM,C,GAAI,C;;;YACV,C,UAAW,C;YACX,C,mBAAoB,C;AACrB,C;;;IAOD,C,aAAO,C;AAAO,C,OACZ,C,MAAO,C;AACR,C;;IAED,C,sBAAO,C;AAAsB,C,OAC3B,C,MAAO,C,sDAA2B,C;AACnC,C;;IAED,C,yBAAO,C;AAA8B,C,OACnC,C,MAAO,C;AACR,C;;IAED,C;;;;6BACO,C;AAAyB,C,OAC9B,C,MAAO,C;AACR;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\command\\SimpleResult.java"],
+"names":[]
+}

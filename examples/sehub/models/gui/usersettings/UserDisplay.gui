@@ -1,0 +1,69 @@
+package gui.usersettings;
+
+import Sehub.User;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+import basic.src.lib.gembutton.GemButton;
+import basic.src.lib.gemtext.GemText;
+import input.src.lib.gemtextinput.GemTextInput;
+import table.src.lib.gemtable.GemTable;
+import table.src.lib.gemtable.TableColumn;
+
+component UserDisplay (User user) {
+  @GemColumn(
+    components = [
+      bar@GemRow(
+        width="0.8vm",
+        height="2rem",
+        components = [ ]
+      ),
+      @GemRow(
+        components = [
+          @GemRow(
+            width="20rem",
+            height="3rem",
+            components = [
+              @GemColumn (
+                width = "3rem",
+                component = @GemText(value = "Bild")
+              ),
+              @GemColumn (
+                components = [
+                  account@GemText(value = user.username),
+                  email@GemText(value = user.email)
+                ]
+              )
+            ]
+          ),
+          @GemRow(
+            width="20rem",
+            height="3rem",
+            component = role@GemTextInput(labelText = "Role", inputType = "dropdown", entry = user.role, options = null)
+          ),
+          @GemRow(
+            width="20rem",
+            height="3rem",
+            hAlign = "space-between",
+            vAlign = "center",
+            component = registration@GemText(value = user.registrationDate)
+          ),
+          @GemRow(
+            width="3rem",
+            height="3rem",
+            hAlign = "space-between",
+            vAlign = "center",
+            component = removeUser@GemButton(label = "x", leftClick = removeUser)
+          )
+        ]
+      ),
+      barBottom@GemRow(
+        width="0.8vm",
+        height="2rem",
+        components = [ ]
+      )
+    ]
+  );
+}

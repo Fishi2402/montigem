@@ -1,0 +1,56 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import {Component} from '@angular/core';
+import {UserLoginTOP} from '@src/gui/login/UserLoginTOP';
+import {User} from '@src/sehub/User';
+import { SehubManager } from '@src/sehub/SehubManager';
+import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+
+@Component({
+  selector: 'user-login',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserLogin.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+
+export class UserLogin extends UserLoginTOP {
+
+  private error: string = "";
+
+  public ngOnInit(): void {
+    SehubManager.getUserList().then(gemPromiseRes => {
+      this.users = gemPromiseRes;
+      this.users.loadAll();
+    });
+
+    if (this.loginUser == null) {
+      this.loginUser = new User();
+    }
+  }
+
+  public override login(event: any): void {
+    if (!!this.loginUser) {
+      for (let ind in this.users.ids) {
+        this.users.get(+ind).then(user => {
+          if (!!user) {
+            if (!!this.loginUser.getUsername() && this.loginUser.getUsername() === user.getUsername()) {
+              if (!!this.loginUser.getPassword() && this.loginUser.getPassword() === user.getPassword()) {
+                SehubSecurityManager.setCurrentUser(user);
+                this.router.navigate(['/start']);
+              } else {
+                this.error = 'Wrong password';
+              }
+            }
+          }
+        });
+        this.error = 'There is no user ' + this.loginUser.getUsername();
+      }
+    }
+
+  }
+
+  public override getErrorValue(): string {
+    return this.error;
+  }
+
+}

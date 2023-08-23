@@ -5,7 +5,7 @@ import { ForecastCreateTOP } from '@src/gui/ForecastCreateTOP';
 
 @Component({
   selector: 'forecast-create',
-  templateUrl: '../../../build/appgui/gui/ForecastCreate.html',
+  templateUrl: '../../../build/frontendGen/build/appgui/gui/ForecastCreate.html',
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: []
 })

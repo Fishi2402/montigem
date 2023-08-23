@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Locale;
@@ -20,36 +21,73 @@ public class WeatherReport {
 
   public void createWeatherForecast(City city) {
     JsonObject data = getWeatherData(city);
-    for (int i = 0; i < data.getObjectMember("hourly").getArrayMember("time").size(); i++) {
+    JsonObject hourly = data.getObjectMember("hourly");
+    for (int i = 0; i < hourly.getArrayMember("time").size(); i++) {
 
-      LocalDate date = LocalDate.parse(data.getObjectMember("hourly").getArrayMember("time").get(i).getAsJsonString()
+      LocalDateTime date = LocalDateTime.parse(hourly.getArrayMember("time").get(i).getAsJsonString()
           .getValue(), DateTimeFormatter.ISO_DATE_TIME);
 
       WeatherManager.forecastBuilder()
           .longitude(data.getDoubleMember("longitude"))
           .latitude(data.getDoubleMember("latitude"))
           .date(date)
-          .temperature(data.getObjectMember("hourly").getArrayMember("temperature_2m").get(i).getAsJsonNumber()
+          .temperature(hourly.getArrayMember("temperature_2m").get(i).getAsJsonNumber()
               .getNumberAsDouble())
-          .realtiveHumidity(data.getObjectMember("hourly").getArrayMember("relativehumidity_2m").get(i).getAsJsonNumber()
+          .realtiveHumidity(hourly.getArrayMember("relativehumidity_2m").get(i).getAsJsonNumber()
               .getNumberAsInteger())
-          .windspeed(data.getObjectMember("hourly").getArrayMember("windspeed_10m").get(i).getAsJsonNumber()
+          .windspeed(hourly.getArrayMember("windspeed_10m").get(i).getAsJsonNumber()
               .getNumberAsDouble())
-          // TODO: from data/calculate
-          .weatherState(WeatherState.SUNNY)
+          .weatherState(getStateForWMOCode(hourly.getArrayMember("weathercode").get(i).getAsJsonNumber().getNumberAsInteger()))
           .build();
     }
 
-    var grouped = WeatherManager.getForecastList().stream().collect(Collectors.groupingBy(Forecast::getDate));
-    grouped.forEach((d, forecasts) ->
-        WeatherManager.dayBuilder().city(city).date(d).dailyForecasts(new HashSet<>(forecasts)).build()
-    );
+    // Group forecasts by their Date ignoring the time
+    var grouped = WeatherManager.getForecastList().stream().collect(Collectors.groupingBy(f -> f.getDate().toLocalDate()));
+    grouped.forEach((d, forecasts) -> WeatherManager.dailyForecastBuilder().city(city).date(d).dailyForecasts(new HashSet<>(forecasts)).build());
+
+    city.calcNextDays();
+  }
+
+  // https://open-meteo.com/en/docs#hourly=temperature_2m,weathercode Weather variable documentation
+  public WeatherState getStateForWMOCode(int code){
+    switch (code) {
+      case 0:
+      case 1:
+      case 2: return WeatherState.SUNNY;
+      case 3:
+      case 45:
+      case 48: return WeatherState.CLOUDY;
+      case 51:
+      case 53:
+      case 55:
+      case 56:
+      case 57:
+      case 61:
+      case 63:
+      case 65:
+      case 66:
+      case 67:
+      case 71:
+      case 73:
+      case 75:
+      case 77:
+      case 80:
+      case 81:
+      case 82:
+      case 85:
+      case 86: return WeatherState.RAINY;
+      case 95:
+      case 96:
+      case 99: return WeatherState.STORM;
+    }
+
+    return WeatherState.CLOUDY;
   }
 
   public JsonObject getWeatherData(City city) {
     try {
       URL url = new URL(String.format(Locale.ROOT,
-          "https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m",
+          "https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m,weathercode",
           city.getLatitude(),
           city.getLongitude()
       ));
@@ -67,6 +105,7 @@ public class WeatherReport {
       while ((currentLine = br.readLine()) != null) {
         json.append(currentLine);
       }
+      System.out.println(json);
       conn.disconnect();
       return JsonParser.parseJsonObject(json.toString());
     } catch (Exception e) {

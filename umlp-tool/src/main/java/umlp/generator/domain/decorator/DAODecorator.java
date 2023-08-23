@@ -209,7 +209,7 @@ public class DAODecorator extends AbstractDecorator {
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<ASTCDAssocSide, ASTCDAssociation> gemAssocSideToAssoc =
-        assocSideToAssoc.entrySet().stream().filter(e -> !GenService.isList(e.getKey()))
+        nonDerivedAssocSideToAssoc.entrySet().stream().filter(e -> !GenService.isList(e.getKey()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<ASTCDAssocSide, ASTCDAssociation> listAssocSideToAssoc =
@@ -304,7 +304,7 @@ public class DAODecorator extends AbstractDecorator {
 
   // All methods for domain class daos
 
-  private void updateAndSelectListAttrMethods(ASTCDClass doaClass, ASTCDClass domainClass) {
+  protected void updateAndSelectListAttrMethods(ASTCDClass doaClass, ASTCDClass domainClass) {
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).forEach(attr -> {
               GenService.createType(attr);
@@ -325,7 +325,7 @@ public class DAODecorator extends AbstractDecorator {
                     GenService.getDBType(attr.getSymbol().getType())));
   }
 
-  private void updateOptionalAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
+  protected void updateOptionalAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).forEach(attr ->
             getCD4C().addMethod(doaClass, "umlp.dao.UpdateOptionalAttr", SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED), attr.getName(),
@@ -406,7 +406,8 @@ public class DAODecorator extends AbstractDecorator {
     List<ASTCDAttribute> optionalAttributes = getOptionalAttributes(domainClass);
 
     getCD4C().addMethod(daoClass, "umlp.dao.InsertInit",SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)
-        ,domainClass.getName(), attributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)).collect(Collectors.toList()));
+        ,domainClass.getName(), attributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)).collect(Collectors.toList()),
+        optionalAttributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)).collect(Collectors.toList()));
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
     getCD4C().addMethod(daoClass, "umlp.dao.BulkInsert", domainClass.getName(), cdName, attributes,

@@ -35,7 +35,7 @@ public class AssocMandatoryAccessorDecorator extends MandatoryAccessorDecorator 
       type = ((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get().deepClone();
     }
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.methods.Get", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getGetTemplate(), ast));
     methodList.add(method);
 
     // generate getXGem-Method
@@ -44,6 +44,10 @@ public class AssocMandatoryAccessorDecorator extends MandatoryAccessorDecorator 
     methodList.add(method2);
 
     return methodList;
+  }
+
+  protected String getGetTemplate() {
+    return "umlp.methods.Get";
   }
 
 }

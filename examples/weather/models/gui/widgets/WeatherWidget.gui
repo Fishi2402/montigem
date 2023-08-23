@@ -1,0 +1,21 @@
+package gui.widgets;
+
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gemimage.GemImage;
+import arrange.src.lib.gemcard.GemCard;
+
+
+component WeatherWidget(String widgetsTitle, String title, String icon, GUIViewElement component) {
+  @GemCard(title = widgetsTitle, component =
+    @GemColumn(height = "auto", rowGap = "15px", components = [
+      @GemRow(height = "1.5em", hAlign = "left", colGap = "15px", components = [
+        @GemImage(source = icon),
+        @GemText(value = title)
+      ]),
+      component
+    ])
+  );
+
+}

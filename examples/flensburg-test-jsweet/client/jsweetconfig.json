@@ -1,27 +1,11 @@
 {
   "adapters": [
-    "umlp.jsweet.extension.UMLPJavaBasicsAdapter",
-    "umlp.jsweet.extension.UMLPRTEImportAdapter",
-    "umlp.jsweet.extension.UMLPBasicsAdapter"
+    "umlp.jsweet.extension.UMLPJSweetAdapter"
   ],
-  "@Async": {
-    "include": [
-      "hardy.flensburg.commands.**.doRun*",
-      "hardy.flensburg.requests.**.doRun*",
-      "hardy.flensburg.FlensburgManager*._doGet*Sure*",
-      "hardy.flensburg.FlensburgManager*._do*Opt*",
-      "hardy.flensburg.FlensburgManager*._doGet*"
-    ]
+  "@Replace('return Promise.resolve(\'\"\' + obj.toLocaleDateString() + \'\"\');')": {
+    "include": ["hardy.flensburg.DateDeSer.serialize(*)"]
   },
-  "@Erased": {
-    "include": [
-      "hardy.flensburg.FlensburgDummyProvider",
-      "hardy.flensburg.*DAO",
-      "hardy.flensburg.*DbObserver",
-      "hardy.flensburg.FlensburgManagerImpl",
-      "hardy.flensburg.FlensburgMock",
-      "hardy.flensburg.FlensburgDummyProvider",
-      "hardy.flensburg.FlensburgTestContext"
-    ]
+  "@Replace('return Promise.resolve(new Date(str.slice(1, str.length - 1)));')": {
+    "include": ["hardy.flensburg.DateDeSer.deserialize(*)"]
   }
 }

@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"Result.ts",
+"lineCount":33,
+"mappings":"A;;AAIC,C;IACE,C,kBAAc,C;;IACd,C,WAAU,C;;IACV,C,WAAiB,C,SAAS,C;AAAoB,C;;QAC5C,C,YAAa,C;QACb,C,iBAAkB,C;AACnB,C;;IAED,C,mBAA+B,C,UAAb,C,MAAO,C;AAAc,C,OACrC,C,YAAO,C,GAAI,C,MAAO,C,MAAO,C;AAC1B,C;;IAED,C,yBAAkB,C;AAAc,C,OAC9B,C,YAAO,C,GAAI,C,MAAO,C,KAAM,C;AACzB,C;;IAED,C,kBAAO,C;AAAa,C,OAClB,C,MAAO,C;AACR,C;;IAED,C,uBAAO,C;AAAuB,C,OAC5B,C,MAAO,C;AACR,C;;IAED,C,yBAAO,C;AAAyB,C,OAC9B,C,MAAO,CAAC,C;AACT;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\common\\Result.java"],
+"names":[]
+}

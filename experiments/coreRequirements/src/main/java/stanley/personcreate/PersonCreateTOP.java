@@ -17,7 +17,7 @@ import umlp.jsweet.extension.annotation.Directive;
 
 /********************************************************/
 
-@Directive
+@Directive("Flensburg")
 public class PersonCreateTOP implements PersonErrorObserver {
 
   // Person does not exist in the beginning, use builder instead

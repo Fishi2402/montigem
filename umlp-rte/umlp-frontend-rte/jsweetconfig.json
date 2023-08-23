@@ -1,5 +1,6 @@
 {
   "adapters": [
+    "umlp.jsweet.extension.internal.UMLPInternalCollectionsAdapter",
     "umlp.jsweet.extension.internal.UMLPInternalAdapter"
   ],
   "@Async": {
@@ -8,7 +9,12 @@
       "**.GemList*.loadObjects*",
       "**.Gem.isPresent()",
       "**.Gem.get()",
-      "**.Gem.loadIfRequired()"
+      "**.Gem.loadIfRequired()",
+      "**.*DeSer.serialize(*)",
+      "**.*DeSer.deserialize(*)",
+      "**.*DeSer.fromJson(*)",
+      "**.*DeSer.buildJson(*)",
+      "**.CommandObjectMapper.*serialize*(*)"
     ]
   },
   "@Replace('return \"\" + obj;')": {

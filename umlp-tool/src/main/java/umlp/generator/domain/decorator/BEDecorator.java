@@ -187,6 +187,9 @@ public class BEDecorator extends AbstractDecorator {
       serverApplicationDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ServerApplicationDecorator", BEDecorator.class.getName());
 
+      ShellApplicationDecorator shellApplicationDecorator = new ShellApplicationDecorator(glex);
+      shellApplicationDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ShellApplicationDecorator", BEDecorator.class.getName());
     }
 
 

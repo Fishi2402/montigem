@@ -12,4 +12,4 @@ if (_${name} == null) {
 }
 this._${name} = _${name};
 this.check${name?cap_first}();
-this.${domain?uncap_first}Observers.forEach(obs => obs.maybeNotifySet${name?cap_first}(<${domain}> this, _${name}<#if isGem>.getGemId()</#if>, scope));
+this.${domain?uncap_first}Observers.forEach(obs => obs.maybeNotifySet${name?cap_first}(<${domain}> <any> this, _${name}<#if isGem>.getGemId()</#if>, scope));

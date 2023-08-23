@@ -55,12 +55,18 @@ public class CreateDecorator extends AbstractDeSerDecorator {
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));
 
-    getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+classname);
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ getCorrectManager(domainClass));
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
+    addImports(origCD, domainClass, ast, classname);
 
     return ast;
+  }
+
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass domainClass, ASTCDClass ast,
+      String classname) {
+    getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ classname);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ getCorrectManager(domainClass));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
+    getCD4C().addImport(ast, "com.google.common.collect.Sets");
   }
 
   protected String extendedClass() {

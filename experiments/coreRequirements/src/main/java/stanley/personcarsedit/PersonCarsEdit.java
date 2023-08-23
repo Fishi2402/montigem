@@ -6,7 +6,7 @@ import umlp.jsweet.extension.annotation.Component;
 
 // no implementation of error observer, since no component with ?Type parameters present
 // i.e. no input fields exist on the page
-@Component
+@Component("Flensburg")
 public class PersonCarsEdit extends PersonCarsEditTOP {
 
   public PersonCarsEdit(Person p) {

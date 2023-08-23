@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"IdStorage.ts",
+"lineCount":20,
+"mappings":"A;;;;AAgBC,C;IACE,C,KAAqB,C;;IAErB,C,MAAY,C,UAAO,C;;IAEnB,C,GAAS,C;;IAET,C,MAAY,C;;IAEZ,C,WAAoB,C;;IAEpB,C;;IAEA,C;;IAEA,C,QAAiB;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\common\\IdStorage.java"],
+"names":[]
+}

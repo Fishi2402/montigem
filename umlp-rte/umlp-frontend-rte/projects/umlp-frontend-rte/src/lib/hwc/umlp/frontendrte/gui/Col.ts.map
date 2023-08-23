@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"Col.ts",
+"lineCount":25,
+"mappings":"A;;;;AAIC,C;IACE,C;;IACA,C;;IAQA,C,kBAAW,C,eAAiB,C;;;AAAgB,C;;YAC1C,C,eAAgB,C;YAChB,C,cAAe,C;AAChB,C;;AAV2B,C;;YAC1B,C,eAAgB,C;YAChB,C,EAAG,CAAC,CAAC,C,oCAAoB,C;gBACvB,C,cAAU,C,kBAAmB,C,EAAG,C,kBAAmB,C,kBAAmB,C;aACvE,C;AACF;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\gui\\Col.java"],
+"names":[]
+}

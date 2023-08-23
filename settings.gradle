@@ -11,6 +11,10 @@ pluginManagement {
     }
     gradlePluginPortal()
     mavenCentral()
+
+    // for the native image example
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
   }
 }
 
@@ -46,8 +50,15 @@ include ':examples:flensburg-test:frontend'
 include ':examples:weather:backend'
 include ':examples:weather:frontend'
 include ':examples:flensburg-test-jsweet'
+include ':examples:flensburg-test-jsweet:backend'
 include ':examples:flensburg-test-jsweet:client'
 include ':examples:it-test'
 include ':examples:assistenzsystem'
+include ':examples:native-image'
+include ':examples:sehub:backend'
+include ':examples:sehub:frontend'
 
 include ':products:syse_functions'
+include 'examples:flensburg-test-jsweet:backend'
+findProject(':examples:flensburg-test-jsweet:backend')?.name = 'backend'
+

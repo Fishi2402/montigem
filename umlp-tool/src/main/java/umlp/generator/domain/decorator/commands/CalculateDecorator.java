@@ -95,12 +95,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(gemAttr));
 
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("LoadingState"));
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+domainClass.getName());
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainClass));
+    addImports(origCD, domainClass, ast);
     if (GenService.isJavaType(type)) {
       addJavaImport(ast, type);
     } else if (needsImport) {
@@ -108,6 +103,16 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     }
 
     return ast;
+  }
+
+  protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass domainClass, ASTCDClass ast) {
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("LoadingState"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ domainClass.getName());
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainClass));
+    getCD4C().addImport(ast, "com.google.common.collect.Sets");
   }
 
   protected void addConstructor(ASTCDClass ast, String classname, String packageName) {

@@ -1,0 +1,19 @@
+package gui;
+
+import Weather.City;
+import Weather.App;
+
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gembutton.GemButton;
+import input.src.lib.gemtextinput.GemTextInput;
+
+component AddToFavorite(App app, List<City> cities) {
+  @GemRow(colGap = "5px", components = [
+    add@GemButton(label = "+", leftClick = add2Favorite),
+    search@GemTextInput(
+      inputType = "dropdown",
+      options = null,
+      entry = null
+    )
+  ]);
+}

@@ -1,13 +1,17 @@
 /* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
-import { JsonPrinter } from '@umlp-rte/hwc/mcjson/JsonPrinter';
-import { Log } from '@umlp-rte/hwc/logging/Log';
+import { JsonPrinter } from '../mcjson/JsonPrinter';
+import { Log } from '../logging/Log';
+import {CommandResult} from "./CommandResult";
+import {StatusResult} from "./StatusResult";
+import {BaseClassObjectMapper} from "../common";
+import {JsonDeSer} from "./JsonDeSer";
 
 export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
     /* Default method injected from umlp.backendrte.command.JsonDeSer */
-    serialize$java_lang_Object(obj: any): string {
+    serialize$java_lang_Object(obj: any): Promise<string> {
         const printer: JsonPrinter = new JsonPrinter(true);
         this.buildJson(obj, printer);
-        return printer.getContent();
+        return Promise.resolve(printer.getContent());
     }
     public buildJson$umlp_backendrte_command_CommandResult$de_monticore_symboltable_serialization_JsonPrinter(result: CommandResult<any>, printer: JsonPrinter) {
         printer.member("commandId", result.getCommandId());
@@ -35,12 +39,12 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
         } else throw new Error('invalid overload');
     }
 
-    public serialize$umlp_backendrte_command_CommandResult(command: CommandResult<any>): string {
+    public serialize$umlp_backendrte_command_CommandResult(command: CommandResult<any>): Promise<string> {
         const printer: JsonPrinter = new JsonPrinter(true);
         printer.beginObject();
         this.buildJson$umlp_backendrte_command_CommandResult$de_monticore_symboltable_serialization_JsonPrinter(command, printer);
         printer.endObject();
-        return printer.getContent();
+        return Promise.resolve(printer.getContent());
     }
 
     /**
@@ -48,27 +52,20 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
      * @param {CommandResult} command
      * @return {string}
      */
-    public serialize(command?: any): string {
-        return <any>this.serialize$umlp_backendrte_command_CommandResult(command);
+    public serialize(command?: any): Promise<string> {
+        return Promise.resolve(<any>this.serialize$umlp_backendrte_command_CommandResult(command));
     }
 
-    public fromJson$de_monticore_symboltable_serialization_json_JsonObject(jsonObject: any): CommandResult<any> {
-        if (/* orElse */((v, v2) => v == null ? v2 : v)(jsonObject.getBooleanMemberOpt("statusResult"),false)){
-            return (v => { if (v == null) throw new Error('value is null'); return v; })(new StatusResult(jsonObject.getLongMember("commandId"), jsonObject.getBooleanMember("successful")));
+    public fromJson(jsonObject: any): Promise<CommandResult<any>> {
+        if (/* orElse */((v, v2) => v == null ? v2 : v)(jsonObject["statusResult"],false)){
+            return Promise.resolve((v => { if (v == null) throw new Error('value is null'); return v; })(new StatusResult(jsonObject["commandId"], jsonObject["successful"])));
         }
-        return null;
+
+        return Promise.resolve(null);
     }
 
-    public fromJson(jsonObject?: any): CommandResult<any> {
-        return <any>this.fromJson$de_monticore_symboltable_serialization_json_JsonObject(jsonObject);
-    }
-
-    public fromJson$de_monticore_symboltable_serialization_json_JsonElement(jsonElement: any): CommandResult<any> {
-        return this.fromJson$de_monticore_symboltable_serialization_json_JsonObject(jsonElement.getAsJsonObject());
-    }
-
-    public deserialize(json: string): CommandResult<any> {
-        return this.fromJson$de_monticore_symboltable_serialization_json_JsonObject(JSON.parse(json));
+    public deserialize(json: string): Promise<CommandResult<any>> {
+        return Promise.resolve(this.fromJson(JSON.parse(json)));
     }
 
     constructor() {
@@ -76,9 +73,4 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
 }
 CommandResultDeSer["__class"] = "umlp.backendrte.command.CommandResultDeSer";
 CommandResultDeSer["__interfaces"] = ["umlp.backendrte.command.JsonDeSer","umlp.backendrte.command.DeSer"];
-
-import {BaseClassObjectMapper} from "@umlp-rte/hwc/common";
-import {CommandResult} from "@umlp-rte/target/command/CommandResult";
-import {StatusResult} from "@umlp-rte/target/command/StatusResult";
-import {JsonDeSer} from "@umlp-rte/target/command/JsonDeSer";
 

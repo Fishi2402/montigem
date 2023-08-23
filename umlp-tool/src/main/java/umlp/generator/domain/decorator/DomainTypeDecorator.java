@@ -14,7 +14,6 @@ import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
@@ -100,9 +99,9 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     List<ASTCDAttribute> attrList = Lists.newLinkedList();
     List<ASTCDAssocSide> associations = (isInterface)
             ? CDSymbolTables.getAssociations(domainType).stream()
-            .filter(GenService::isVisible).collect(Collectors.toList())
+            .filter(GenService::isVisible).filter(side -> !isDerived(side)).collect(Collectors.toList())
             : CDSymbolTables.getAssociationsInHierarchy(domainType).stream()
-            .filter(GenService::isVisible).collect(Collectors.toList());
+            .filter(GenService::isVisible).filter(side -> !isDerived(side)).collect(Collectors.toList());
 
     // handle associations
     for (ASTCDAssocSide assocSide: associations) {

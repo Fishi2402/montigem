@@ -9,4 +9,4 @@ if (this._${name} == null) {
 }
 
 this.check${name?cap_first}();
-this.${domain?uncap_first}Observers.forEach(obs => obs.maybeNotifySet${name?cap_first}(<${domain}> this, _${name}.getGemId(), scope));
+this.${domain?uncap_first}Observers.forEach(obs => obs.maybeNotifySet${name?cap_first}(<${domain}> <any> this, _${name}.getGemId(), scope));

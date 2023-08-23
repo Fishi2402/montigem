@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"ClientCommandCommunication.ts",
+"lineCount":25,
+"mappings":"A;;;;AASC,C;;;;;IAKE,C;;;;;2CAAyD,C,gBAAQ,C,YAA7D,C,aAAc,C;;IAKlB,C;;;;;;IAEA,C,iBAA4D,C,kCAA7C,C;;IAIf,C,uBAAkE,C,wCAAnD;",
+"sources":["..\\..\\..\\..\\..\\..\\..\\..\\..\\src\\main\\java\\umlp\\backendrte\\command\\ClientCommandCommunication.java"],
+"names":[]
+}

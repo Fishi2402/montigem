@@ -19,7 +19,7 @@ public class EncodedInIdDao implements ExpDao{
     }
 
     String table = m.group(1);
-    Optional<ResultSet> res = DatabaseAccessManager4SQL.executeSQLQuery(String.format("Select * from %s Where id = '%s'", table, i));
+    Optional<ResultSet> res = DatabaseAccessManager4SQL.executeQuery(String.format("Select * from %s Where id = '%s'", table, i));
     if(res.isEmpty()){
       return false;
     }
