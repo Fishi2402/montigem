@@ -29,14 +29,11 @@ export class UserLogin extends UserLoginTOP {
   }
 
   public override login(event: any): void {
-    let userFound = false;
-    let passwordFound = false;
     if (!!this.loginUser) {
       for (let ind in this.users.ids) {
         this.users.get(+ind).then(user => {
           if (!!user) {
             if (!!this.loginUser.getUsername() && this.loginUser.getUsername() === user.getUsername()) {
-              userFound = true;
               if (!!this.loginUser.getPassword() && this.loginUser.getPassword() === user.getPassword()) {
                 SehubSecurityManager.setCurrentUser(user);
                 this.router.navigate(['/start']);

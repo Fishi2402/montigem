@@ -3,7 +3,7 @@
 import {Component} from '@angular/core';
 import {UserSettingsTOP} from '@src/gui/usersettings/UserSettingsTOP';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
-import { SehubManager } from '@src/sehub/SehubManager';
+import {SehubManager} from '@src/sehub/SehubManager';
 
 @Component({
   selector: 'user-settings',
@@ -15,12 +15,11 @@ import { SehubManager } from '@src/sehub/SehubManager';
 export class UserSettings extends UserSettingsTOP {
 
   public ngOnInit(): void {
-    this.currentUser = SehubSecurityManager.getCurrentUser();
-    if (this.currentUser !== null) {
-      this.currentUserRoutingId = SehubSecurityManager.getCurrentUser().getGemId();
-    } else {
+    if (!SehubSecurityManager.isSignedIn()) {
       this.router.navigate(['/login']);
     }
+    this.currentUser = SehubSecurityManager.getCurrentUser();
+    this.currentUserRoutingId = SehubSecurityManager.getCurrentUserIdOrNull();
 
     SehubManager.getUserList().then(gemPromiseRes => {
       this.users = gemPromiseRes;

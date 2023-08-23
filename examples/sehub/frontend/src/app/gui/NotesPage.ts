@@ -1,9 +1,7 @@
 import {NotesPageTOP} from "../../../build/frontendGen/build/appgui/gui/NotesPageTOP";
-import {
-  Component,
-} from '@angular/core';
+import {Component,} from '@angular/core';
 
-import { ActivatedRoute, Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {SehubManager} from "../../../build/frontendGen/build/appdomain/sehub/SehubManager";
 import {Post} from "../../../build/frontendGen/build/appdomain/sehub/Post";
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
@@ -26,10 +24,10 @@ export class NotesPage extends NotesPageTOP {
     console.log("ISSUE: ", this.issue)
   }
 
-  newPost(event: any){
+  newPost(event: any) {
     console.log("ISSUE: ", this.issue);
 
-    if(SehubSecurityManager.getCurrentUser() == undefined){
+    if (!SehubSecurityManager.isSignedIn()) {
       alert("No User Logged In")
     } else {
 
