@@ -1,13 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("astguiCompilationUnitList","ids","fullPathIndex","topNameMap")}
+${tc.signature("astguiCompilationUnitList","ids","fullPathIndex","topNameMap","paths")}
 // always imported
 import { Routes } from "@angular/router";
 // imports of pages in the package
-<#list astguiCompilationUnitList as ast>
-      import { ${ast.getComponentName()}${topNameMap[ast.getComponentName()]}} from "./${ast.getComponentName()}${topNameMap[(ast.getComponentName())]}";
+<#list 0..(astguiCompilationUnitList?size - 1) as index>
+  import { ${astguiCompilationUnitList[index].getComponentName()} } from "${topNameMap[astguiCompilationUnitList[index].getComponentName()]}${paths[index]}${astguiCompilationUnitList[index].getComponentName()}";
 </#list>
-
 
 export const route: Routes = [
 <#list 0..(astguiCompilationUnitList?size - 1) as index>

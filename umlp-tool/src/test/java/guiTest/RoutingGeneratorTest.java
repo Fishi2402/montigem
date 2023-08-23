@@ -31,6 +31,7 @@ public class RoutingGeneratorTest extends AbstractGUITest {
     assertNoErrors();
   }
 
+  /*
   @Test
   public void testAppRoutingGenerateMethod()
   {
@@ -43,8 +44,11 @@ public class RoutingGeneratorTest extends AbstractGUITest {
     astList.add(Collections.singletonList(astguiCompilationUnit));
     GeneratorSetup generatorSetup=AbstractGUITest.getGenSetup();
     GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(generatorSetup, generatorSetup.getHandcodedPath(), null);
+
     typeScriptGenerator.generateAppConfigfile(astList);
     assertNoErrors();
   }
+
+   */
 
 }

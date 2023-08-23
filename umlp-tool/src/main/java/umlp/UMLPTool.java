@@ -461,7 +461,7 @@ public class UMLPTool extends UMLPToolTOP {
 
 
           topNameMap.put(astGui.getComponentName(),
-                existsHandwrittenFile(hwcPath,pathName+"/"+astGui.getComponentName(),TS_FILE_EXTENSION)?"TOP":"");
+                existsHandwrittenFile(hwcPath,pathName+"/"+astGui.getComponentName(),TS_FILE_EXTENSION)?"src/app/":"./");
           typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
 
 
