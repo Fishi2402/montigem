@@ -103,10 +103,9 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
 
   private void createDummyData() {
     ContainerFileExtractor extractor = new ContainerFileExtractor();
-    String token = System.getenv("gitlab-token");
-    if(token != null) {
-      String repoPath = "monticore/monticore";
-      File f = GitRepoLoader.gitClone("git.rwth-aachen.de",repoPath, token);
+    String onServer = System.getenv("deploy");
+    if(onServer != null && onServer.equals("true")) {
+      File f = GitRepoLoader.gitClone("https://github.com/MontiCore/sequence-diagram.git");
       extractor.extractGivenRoot(List.of(f));
 
       // Free disk space from pulled git repo
@@ -121,7 +120,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         Log.warn("Could not free disk space of extracted git repo.", e);
       }
     } else {
-      Log.warn("No environment variable set with name "+"gitlab-token");
+      Log.info("Did not clone public git repository, to save resources on local machine.", "SehubServerApplication");
     }
     String path = "src/main/java";
     File file = new File(path);

@@ -8,11 +8,11 @@ import java.io.File;
 
 public class GitRepoLoader {
 
-  public static File gitClone(String gitInstanceURL, String projectPath, String token) {
+  public static File gitClone(String publicGitRepo) {
     File clonedRepo = Files.createTempDir("gitRepo");
     clonedRepo.mkdirs();
     try{
-      Git git = Git.cloneRepository().setURI("https://github.com/MontiCore/monticore.git").setDirectory(clonedRepo).call();
+      Git git = Git.cloneRepository().setURI(publicGitRepo).setDirectory(clonedRepo).call();
       git.close();
     } catch (Exception e) {
       Log.error("Something went wrong when cloning repository: ", e);
