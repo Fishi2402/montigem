@@ -9,15 +9,18 @@ if(known${subclass.name?cap_first}s.containsKey(gemId)){
 // TODO: Optimize, multiple roundtrips are possible for multiple subclasses
 <#list concreteSubclassesInclSelf as subclass>
 {
-  SimpleResult<${subclass.name}> res = CommandManager.executeCommand(new ${subclass.name}_get(gemId)).asSimpleResult();
-  if (res.isSuccessful()) {
-    ${subclass.name} ${subclass.name?uncap_first} = res.get();
-    if (!(${subclass.name?uncap_first}).containsObserver(the${subclass.name}CommandObserver)) {
-      (${subclass.name?uncap_first}).addObserver(the${subclass.name}CommandObserver);
+  CommandResult<${subclass.name}> commandResult = CommandManager.executeCommand(new ${subclass.name}_get(gemId));
+  if (commandResult.isSimpleResult()) {
+    SimpleResult<${subclass.name}> res = commandResult.asSimpleResult();
+    if (res.isSuccessful()) {
+      ${subclass.name} ${subclass.name?uncap_first} = res.get();
+      if (!(${subclass.name?uncap_first}).containsObserver(the${subclass.name}CommandObserver)) {
+        (${subclass.name?uncap_first}).addObserver(the${subclass.name}CommandObserver);
+      }
+      Log.trace("Adding known ${subclass.name?uncap_first} " + gemId, LogUtil.getLoggerName());
+      known${subclass.name}s.put(${subclass.name?uncap_first}.getGemId(), ${subclass.name?uncap_first});
+      return Optional.of(${subclass.name?uncap_first});
     }
-    Log.trace("Adding known ${subclass.name?uncap_first} " + gemId, LogUtil.getLoggerName());
-    known${subclass.name}s.put(${subclass.name?uncap_first}.getGemId(), ${subclass.name?uncap_first});
-    return Optional.of(${subclass.name?uncap_first});
   }
 }
 </#list>

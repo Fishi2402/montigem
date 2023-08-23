@@ -91,7 +91,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         SymTypeExpression innerType = util.getListInnerType(paramSTE).get();
         if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
           if (!util.isDomainType(innerType)) {
-            getCD4C().addImport(decoratedClass, innerType.print());
+            if (!TypeScriptTypes.isDefault(innerType.print())) {
+              getCD4C().addImport(decoratedClass, innerType.print());
+            }
           } else {
             Optional<String> domainQName = util.getMainDomainModelQName();
             if (domainQName.isPresent()) {
@@ -104,7 +106,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           }
         }
       }
-      else if (!util.isDomainType(paramSTE) && !util.isDomainListType(paramSTE)) {
+      else if (!TypeScriptTypes.isDefault(paramSTE.printFullName())
+          && !util.isDomainType(paramSTE)
+          && !util.isDomainListType(paramSTE)) {
         getCD4C().addImport(decoratedClass, paramSTE.printFullName());
       }
       else {
@@ -182,8 +186,10 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     }
     else {
       String nullCheck = "";
-      if (visitor.getNullCheckExpression().isPresent()) {
-        nullCheck = guiDSLPrinter.prettyprint(visitor.getNullCheckExpression().get());
+      GUINullCheckVisitor nullCheckVisitor = new GUINullCheckVisitor();
+      nullCheckVisitor.transform(visitor.getGetterExpression());
+      if (nullCheckVisitor.getNullCheckExpression().isPresent()) {
+        nullCheck = guiDSLPrinter.prettyprint(nullCheckVisitor.getNullCheckExpression().get());
       }
       String getterValue = guiDSLPrinter.prettyprint(visitor.getGetterExpression());
       boolean isLiteral = visitor.getGetterExpression() instanceof ASTLiteralExpression;

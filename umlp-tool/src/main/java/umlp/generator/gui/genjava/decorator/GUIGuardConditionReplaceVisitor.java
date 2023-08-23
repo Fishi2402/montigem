@@ -57,10 +57,6 @@ public class GUIGuardConditionReplaceVisitor extends GUINameExpressionReplaceVis
     return getterExpression.getCondition();
   }
 
-  public Optional<ASTExpression> getNullCheckExpression() {
-    return nullCheckExpression;
-  }
-
   public void setIgnore(Collection<String> ignore) {
     this.ignore = ignore;
   }

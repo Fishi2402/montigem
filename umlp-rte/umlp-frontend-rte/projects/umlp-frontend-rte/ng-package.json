@@ -3,5 +3,6 @@
   "dest": "../../dist/umlp-frontend-rte",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "allowedNonPeerDependencies": ["rxjs"]
 }

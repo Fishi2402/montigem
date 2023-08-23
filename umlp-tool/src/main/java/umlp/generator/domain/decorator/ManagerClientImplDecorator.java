@@ -207,6 +207,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ListResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(clazz, Joiners.DOT.join(getPackageName(origCD, REQUESTS_PACKAGE), GetFreeGemIdRequestDecorator.CLASS_NAME));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));

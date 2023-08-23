@@ -1,6 +1,7 @@
 import {Log} from "../logging";
 
 export class JsonPrinter {
+  res = {};
   currElements = [];
   constructor(b: boolean) {
 
@@ -15,6 +16,8 @@ export class JsonPrinter {
         Log.error("0xA0613 JsonPrinter detected an invalid nesting of Json. "
           + "Cannot add a member as the first element of a Json String!");
       }
+    } else {
+      this.res = obj;
     }
     this.currElements.push(obj);
   }
@@ -45,18 +48,22 @@ export class JsonPrinter {
   }
 
   getContent(): any {
-    return this.getCurrentElement();
+    return this.res;
   }
 
   private getCurrentElement() {
     return this.currElements[this.currElements.length - 1];
   }
 
-  memberJson(value: string, s: string) {
-    // TODO
+  memberJson(kind: string, value: string) {
+    (this.getCurrentElement())[kind] = JSON.parse(value);
   }
 
   value(value: any) {
     // TODO
+  }
+
+  toString(): string {
+    return JSON.stringify(this.res);
   }
 }

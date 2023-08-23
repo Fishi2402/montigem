@@ -17,17 +17,11 @@ export interface IUMLPList<E> extends AsyncIterable<E> {
   set(index: number, element: E): Promise<E>;
   size(): number;
   sort(param: any): void;
-
   subList(fromIndex: number, toIndex: number): IUMLPList<E>;
-
   toArray(startIndex?: number, endIndex?: number): Promise<Array<E>>;
-
   // sort(c: java.util.Comparator<any>): any;
   [Symbol.asyncIterator](): AsyncIterator<E>;
-
   iterator(): AsyncIterator<E>;
-
   listIterator(from?: any): AsyncIterator<E>;
-
   join(delimiter: string): string;
 }

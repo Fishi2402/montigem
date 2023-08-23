@@ -22,8 +22,8 @@ export abstract class CommandDeSer<T extends Command<any>> {
     public async fromJson(jsonObject: any): Promise<T> {
         const res: T = await this.fromJsonObject(jsonObject);
         if (/* isPresent */(res != null)){
-            /* get */(v => { if (v == null) throw new Error('value is null'); return v; })(res).setId(jsonObject.getLongMember("id"));
-            /* get */(v => { if (v == null) throw new Error('value is null'); return v; })(res).setParticipantId(jsonObject.getLongMember("participantId"));
+            /* get */(v => { if (v == null) throw new Error('value is null'); return v; })(res).setId(jsonObject["id"]);
+            /* get */(v => { if (v == null) throw new Error('value is null'); return v; })(res).setParticipantId(jsonObject["participantId"]);
         }
         return res;
     }

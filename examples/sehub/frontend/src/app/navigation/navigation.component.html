@@ -1,0 +1,7 @@
+<nav class="navMenu">
+  <a class="startNav" href="/start"><img src = "assets/images/Eule.png" alt="SEHub" height="40px"/></a>
+    <ng-container *ngFor="let item of items"><a [routerLink]="item.url">{{item.title}}</a>
+    </ng-container>
+    <div class="dot"></div>
+</nav>
+

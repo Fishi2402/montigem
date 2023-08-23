@@ -8,7 +8,7 @@ package stanley.personcreate;
 
 import umlp.jsweet.extension.annotation.Component;
 
-@Component
+@Component("Flensburg")
 public class PersonCreate extends PersonCreateTOP {
 
   public PersonCreate() {

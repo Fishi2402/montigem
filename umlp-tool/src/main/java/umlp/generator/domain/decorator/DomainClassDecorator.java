@@ -207,11 +207,13 @@ public class DomainClassDecorator extends DomainTypeDecorator {
       );
     }
     for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
-      ASTCDMethodSignature m = getCD4C().addMethod(clazz, "umlp.domain.Check",
-          domainClass.getName(), assoc.getName(),
-          !GenService.isOptional(assoc) && !GenService.isSymbolDerived(assoc),
-          GenService.isList(assoc)
-      );
+      if (GenService.isAStLeastOne(assoc)) {
+        getCD4C().addMethod(clazz, "umlp.domain.CheckCard",
+            domainClass.getName(), assoc.getName(), !GenService.isSymbolDerived(assoc));
+      } else {
+        getCD4C().addMethod(clazz, "umlp.domain.Check",
+            domainClass.getName(), assoc.getName(), !GenService.isOptional(assoc) && !GenService.isSymbolDerived(assoc));
+      }
     }
   }
 

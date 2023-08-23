@@ -22,8 +22,8 @@ public class ManagerMockDecoratorTest extends DecoratorTest {
     ASTCDClass clazz = getClassByName("A" + ManagerMockDecorator.SUFFIX);
     assertAll(
             // check no of methods and attributes
-            () -> assertEquals(26, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(71, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(32, clazz.getCDAttributeList().size(), "number of attributes"),
+            () -> assertEquals(89, clazz.getCDMethodList().size(), "number of methods"),
 
             // check attributes
             () -> existsAttribute(clazz, "freeGemId"),

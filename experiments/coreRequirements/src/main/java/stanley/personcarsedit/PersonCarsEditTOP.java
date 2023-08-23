@@ -24,7 +24,7 @@ import java.util.List;
 
 /* Hookpoint: ClassContent:Annotations */
 
-@Directive
+@Directive("Flensburg")
 abstract public class PersonCarsEditTOP {
 
   /* Hookpoint: ClassContent:Elements */

@@ -182,9 +182,16 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
           !GenService.isList(attr) && !GenService.isOptional(attr) && !attr.getModifier().isDerived());
     }
     for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
-      getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSCheck",
-          domainClass.getName(), assoc.getName(),
-          !GenService.isOptional(assoc) && !GenService.isSymbolDerived(assoc));
+      if (GenService.isAStLeastOne(assoc)) {
+        getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSCheckCard",
+            domainClass.getName(), assoc.getName(),
+             !GenService.isSymbolDerived(assoc));
+
+      } else {
+        getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSCheck",
+            domainClass.getName(), assoc.getName(),
+            !GenService.isOptional(assoc) && !GenService.isSymbolDerived(assoc));
+      }
     }
   }
 

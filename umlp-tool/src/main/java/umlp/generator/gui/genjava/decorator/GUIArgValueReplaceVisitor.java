@@ -13,7 +13,6 @@ import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.types.check.SymTypeExpression;
 import umlp.generator.gui.ExpressionReplaceVisitor;
 import umlp.generator.gui.ExpressionReplacement;
-import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +23,6 @@ import java.util.function.Supplier;
 public class GUIArgValueReplaceVisitor extends GUINameExpressionReplaceVisitor {
 
   protected GUIDSLTraverser traverser;
-  protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
   protected ASTGUIArgValue getterExpression;
   protected Optional<ASTGUIArgValue> setterExpression = Optional.empty();
@@ -58,10 +56,6 @@ public class GUIArgValueReplaceVisitor extends GUINameExpressionReplaceVisitor {
 
   public ASTExpression getGetterExpression() {
     return getterExpression.getExpression();
-  }
-
-  public Optional<ASTExpression> getNullCheckExpression() {
-    return nullCheckExpression;
   }
 
   public Optional<ASTExpression> getSetterExpression() {
@@ -127,33 +121,42 @@ public class GUIArgValueReplaceVisitor extends GUINameExpressionReplaceVisitor {
     if (potentialHolder != null) {
       if (potentialHolder.getValue().equals(node)) {
         if (potentialHolder.getKey() instanceof ASTGUIArgValue) {
-          Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.fieldAccessExpressionBuilder()
-              .setExpression(node.getExpression())
-              .setName(usesBuilder
-                  ? util.gui2cdAttrBuilderSetterName(node.getName())
-                  : util.gui2cdAttrSetterName(node.getName()))
-              .build();
+          Supplier<ASTExpression> newValue = createFieldSetterSupplier(node);
           setterReplacement = Optional.of(new ExpressionReplacement(
               potentialHolder.getKey(), potentialHolder.getValue(), newValue));
         }
-        Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.callExpressionBuilder()
-            .setExpression(
-                CommonExpressionsMill.fieldAccessExpressionBuilder()
-                    .setExpression(node.getExpression())
-                    .setName(util.gui2cdAttrGetterName(node.getName()))
-                    .build()
-            )
-            .setArguments(
-                ExpressionsBasisMill.argumentsBuilder()
-                    .setExpressionsList(Collections.emptyList())
-                    .build()
-            )
-            .build();
+        Supplier<ASTExpression> fieldGetter = createFieldGetterSupplier(node);
+
         replacements.add(new ExpressionReplacement(
-            potentialHolder.getKey(), potentialHolder.getValue(), newValue));
+            potentialHolder.getKey(), potentialHolder.getValue(), fieldGetter));
       }
     }
     super.visit(node);
+  }
+
+  protected Supplier<ASTExpression> createFieldSetterSupplier(ASTFieldAccessExpression node) {
+    return () -> CommonExpressionsMill.fieldAccessExpressionBuilder()
+        .setExpression(node.getExpression())
+        .setName(usesBuilder
+            ? util.gui2cdAttrBuilderSetterName(node.getName())
+            : util.gui2cdAttrSetterName(node.getName()))
+        .build();
+  }
+
+  protected Supplier<ASTExpression> createFieldGetterSupplier(ASTFieldAccessExpression node) {
+    return () -> CommonExpressionsMill.callExpressionBuilder()
+        .setExpression(
+            CommonExpressionsMill.fieldAccessExpressionBuilder()
+                .setExpression(node.getExpression())
+                .setName(util.gui2cdAttrGetterName(node.getName()))
+                .build()
+        )
+        .setArguments(
+            ExpressionsBasisMill.argumentsBuilder()
+                .setExpressionsList(Collections.emptyList())
+                .build()
+        )
+        .build();
   }
 
 }

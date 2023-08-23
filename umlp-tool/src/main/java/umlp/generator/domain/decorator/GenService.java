@@ -255,7 +255,12 @@ public class GenService {
   }
 
   public static boolean isList(ASTCDAssocSide assoc) {
-    return assoc.isPresentCDCardinality() && assoc.getCDCardinality().isMult();
+    return assoc.isPresentCDCardinality()
+        && (assoc.getCDCardinality().isMult() || assoc.getCDCardinality().isAtLeastOne());
+  }
+
+  public static boolean isAStLeastOne(ASTCDAssocSide assoc) {
+    return assoc.isPresentCDCardinality() && assoc.getCDCardinality().isAtLeastOne();
   }
 
   public static boolean isOptional(ASTCDAssocSide assoc) {

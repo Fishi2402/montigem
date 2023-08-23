@@ -1,4 +1,6 @@
 /* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
+import {IUMLPList} from "../common";
+
 export class Participant {
     gemIds: Array<number>;
 
@@ -18,8 +20,13 @@ export class Participant {
         return /* contains */(this.gemIds.indexOf(<any>(gemId)) >= 0);
     }
 
-    public subscribe(gemIds: Array<number>) {
-        /* addAll */((l1, l2) => l1.push.apply(l1, l2))(this.gemIds, gemIds);
+    public async subscribe(gemIds: Array<number> | IUMLPList<number>) {
+      if (gemIds instanceof Array) {
+        /* addAll */
+        ((l1, l2) => l1.push.apply(l1, l2))(this.gemIds, gemIds);
+      } else {
+        this.gemIds.push(...await gemIds.toArray());
+      }
     }
 }
 Participant["__class"] = "umlp.backendrte.command.Participant";

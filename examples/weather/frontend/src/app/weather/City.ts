@@ -5,6 +5,7 @@ import { DailyForecast } from "@src/weather/DailyForecast";
 import { WeatherManager } from "@src/weather/WeatherManager";
 import { Forecast } from "@src/weather/Forecast";
 import { ForecastGemList } from "@src/weather/gemlists/ForecastGemList";
+import { App } from "@src/weather/App";
 
 // TODO: JSweet?
 export class City extends CityTOP {
@@ -79,8 +80,6 @@ export class City extends CityTOP {
     return this._nextHours;
   }
 
-  protected once = false;
-
   public calcNextHours(): void {
     if (this.original.nextHours.calculating || this.original.nextHours.hash != null) {
       return;
@@ -123,13 +122,12 @@ export class City extends CityTOP {
   }
 
   public calcCurrent(): void {
-    if (this.original.current.calculating) {
+    if (this.original.current.calculating || this.original.current.hash != null) {
       return;
     }
     this.original.current.calculating = true;
 
     let today = new Date();
-
 
     WeatherManager.getForecastList().then(forecastGemList => {
       forecastGemList.loadAll().then(forecastList => {
@@ -154,6 +152,23 @@ export class City extends CityTOP {
         }
       });
     });
+  }
+
+  public async isFavorite(): Promise<boolean> {
+    const appGemList: GemList<App> = await WeatherManager.getAppList();
+    const app: App = await appGemList.get(0);
+    for (const fav of app.getFavorite()) {
+      if (fav.getGemId() === this.getGemId()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public async removeFavorite(): Promise<boolean> {
+    const appGemList: GemList<App> = await WeatherManager.getAppList();
+    const app: App = await appGemList.get(0);
+    return app.removeFavorite2(this);
   }
 
 }

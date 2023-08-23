@@ -1,0 +1,24 @@
+package gui;
+
+import Sehub.Artifact;
+import Sehub.Project;
+
+import table.src.lib.gemtable.GemTable;
+import table.src.lib.gemtable.TableTypes.TableColumn;
+import charts.src.lib.gemnetworkgraph.GemNetworkGraph;
+import arrange.src.lib.gemcard.GemCard;
+import basic.src.lib.gemtreeview.GemTreeview;
+
+page ProjectPage(Project project) {
+
+  @GemCard(
+    title = "Files",
+    component = files@GemTreeview(
+    items = null,
+    allExpanded=false)
+  );
+  @GemNetworkGraph(
+    data = null
+  );
+
+}
