@@ -16,7 +16,7 @@ import input.src.lib.gemtextareainput.GemTextareaInput;
 page NotesPage(Issue issue){
     @GemRow(colGap = "20px", components = [
       @GemColumn(hAlign = "center", width = "850px", component =
-        @GemCard(title = "Comments & Discussion", component = @GemColumn(height = "auto", hAlign = "right", rowGap = "5px", components = [
+        @GemCard(title = issue.title + ": Comments & Discussion", component = @GemColumn(height = "auto", hAlign = "right", rowGap = "5px", components = [
         @GemText(value = issue.description),
         @GemButton(label = "Add Comment or Question", leftClick = newPost),
         @iterate(Post p : issue.posts){
