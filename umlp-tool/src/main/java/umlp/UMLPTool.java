@@ -502,7 +502,7 @@ public class UMLPTool extends UMLPToolTOP {
 
         });
         GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
-        List<String> outputs=typeScriptGenerator.generateAppConfigfile(new ArrayList<>(routesMap.values()));
+        List<String> outputs=typeScriptGenerator.generateAppConfigfile(new ArrayList<>(routesMap.values()),topNameMap);
         outputs.forEach(output->Reporting.reportFileCreation(outDir+"/"+output));
         Reporting.flush(new ASTGUICompilationUnit());
       }

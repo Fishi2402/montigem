@@ -47,7 +47,7 @@ public class GUI2TypeScriptGenerator {
         Arrays.asList(modelAST, setup.getGlex(), setup.getHandcodedPath(), this, viewComponents));
   }
 
-  public List<String> generateAppConfigfile(List<List<ASTGUICompilationUnit>> astguiCompilationUnitList)
+  public List<String> generateAppConfigfile(List<List<ASTGUICompilationUnit>> astguiCompilationUnitList,Map<String,String> topNameMap)
   {
     this.setup.setTracing(false);
     GeneratorEngine genEngine = new GeneratorEngine(setup);
@@ -69,7 +69,7 @@ public class GUI2TypeScriptGenerator {
     Path generatedRoutingFiles = Paths.get("",
         "app"+ ROUTES_FILE +(existHWCRoutes?"TOP":"")+ "." + TS_FILE_EXTENSION);
     genEngine.generateNoA("umlp.gui2ts.TSAppRoutes", generatedRoutingFiles,
-        astguiCompilationUnits, paths);
+        astguiCompilationUnits, paths,topNameMap);
 
     Path generatedModuleFiles = Paths.get("",
             "app"+ MODULES_FILE + "." + TS_FILE_EXTENSION);
