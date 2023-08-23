@@ -37,7 +37,9 @@ export class ResetPassword extends ResetPasswordTOP {
         this.router.navigate(['/login']);
       }
     });
-    this.error = 'There is no user with the E-mail ' + this.user.getEmail();
+    this.error = 'There is no user with the E-mail "' + this.user.getEmail() +'" !';
+    this.user.validityEmail = this.error;
+    this.user.statusEmail = 'Error';
   }
 
   public override getErrorValue(): string {

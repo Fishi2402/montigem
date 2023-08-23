@@ -61,18 +61,18 @@ export class UserCreate extends UserCreateTOP {
     let res: string = '';
     // Check Email format
     if (!UserCreate.email.test(this.getNewUser().getEmail())) {
-      return 'Wrong format for Email address';
+      return 'Wrong format for Email address!';
     }
 
     // Check if user is unique
     this.users.toArray().filter(user => {
       if (this.getNewUser().getUsername() === user.getUsername()) {
-        res += ' Account ' + this.getNewUser().getUsername();
+        res += ' Account "' + this.getNewUser().getUsername() + '"';
       }
       if (this.getNewUser().getEmail() === user.getEmail()) {
-        res += (res.length === 0? '': ' und ') + ' E-mail ' + this.getNewUser().getEmail();
+        res += (res.length === 0? '': ' und ') + ' E-mail "' + this.getNewUser().getEmail() + '"';
       }
     });
-    return res + (res.length === 0? '': ' already being used');
+    return res + (res.length === 0? '': ' already being used!');
   }
 }

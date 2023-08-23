@@ -6,9 +6,11 @@
   box-shadow: none !important;
 }
 
-:host .error, .gem-text {
-  color : red !important;
-  font-size: 2rem;
+:host ::ng-deep .error {
+  div {
+    color: red;
+    font-size: 1.5rem;
+  }
 }
 
 :host ::ng-deep .gem-card-body {

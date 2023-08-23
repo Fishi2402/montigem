@@ -33,18 +33,24 @@ export class UserLogin extends UserLoginTOP {
       return;
     }
     this.error = ``;
-        this.users.toArray().filter(user => {
+    this.loginUser.resetValidity();
+    this.users.toArray().filter(user => {
       if (!!user && this.loginUser.getUsername() === user.getUsername()) {
         if (this.loginUser.getPassword() === user.getPassword()) {
           SehubSecurityManager.setCurrentUser(user);
           this.router.navigate(['/start']);
         } else {
           this.error = 'Wrong password!';
+          this.loginUser.validityPassword = this.error;
+          this.loginUser.statusPassword = 'Error';
         }
       }
     });
-    this.error = !!this.error? this.error : 'There is no user ' + this.loginUser.getUsername();
-
+    if (!this.error) {
+      this.error = 'There is no user "' + this.loginUser.getUsername() + '" !';
+      this.loginUser.validityUsername = this.error;
+      this.loginUser.statusUsername = 'Error';
+    }
   }
 
   public override getErrorValue(): string {

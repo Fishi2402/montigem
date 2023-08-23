@@ -13,12 +13,12 @@ import input.src.lib.gemtextinput.GemTextInput;
 page UserLogin(List<User> users, User loginUser) {
   @GemCard(title = "Login", component =
     @GemColumn(rowGap = "20px", components = [
-      @GemTextInput(labelText = "Account", inputType = "text", entry = loginUser.username),
-      @GemTextInput(labelText = "Password", inputType = "password", entry = loginUser.password),
+      @GemTextInput(labelText = "Account", inputType = "text", entry = loginUser.username, validity = loginUser.validityUsername),
+      @GemTextInput(labelText = "Password", inputType = "password", entry = loginUser.password, validity = loginUser.validityPassword),
       @GemRow(hAlign = "center", component =
         @GemButton(label = "Sign in", leftClick = login)
       ),
-      error@GemText(value = "",  style= "font-size: 0.5rem; color: red")
+      error@GemText(value = "")
     ])
   );
 }
