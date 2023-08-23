@@ -42,9 +42,9 @@
 }
 
 
-.navMenu a:active {
-  font-weight:bold;
-}
+//.navMenu a:active {
+//  font-weight:bold;
+//}
 
 .navMenu .dot {
   position: absolute;
@@ -67,7 +67,7 @@
   padding-bottom: 2px;
 }
 
-img:hover, img:focus {
+.startNav img:hover, .startNav:focus {
   -webkit-filter: drop-shadow(0px 0px 5px $acronio-blue-alternate-3);
   filter: drop-shadow(0px 0px 5px $acronio-blue-alternate-3);
 }

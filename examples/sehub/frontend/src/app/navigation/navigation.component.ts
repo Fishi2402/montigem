@@ -17,11 +17,11 @@ export class Navigation {
     { url: '/usersettings/UserSettings/1', title: 'User Settings'},
     { url: '/login', title: 'Login' },
   ];
-  getUser(): User {
+  getCurrentUser(): User {
     return SehubSecurityManager.getCurrentUser();
   }
 
-  signOut(): void {
+  signOutCurrentUser(): void {
     SehubSecurityManager.signOut();
   }
 
