@@ -8,8 +8,15 @@ if(idx < 0){
 if(idx > this._${name}.size()){
   throw new IllegalStateException("idx must be at most owns.size");
 }
+long oldValue;
+if(this._${name}.size() > idx){
+  oldValue = this._${name}.getID(idx);
+} else {
+  oldValue = -1;
+}
+
 this._${name}._internal_set(idx, gemID);
 check${name?cap_first}();
 ${sourceName?uncap_first}Observers.forEach(obs ->
-  obs.maybeNotifySet${name?cap_first}((${sourceName}) this, idx, gemID, scope)
+  obs.maybeNotifySet${name?cap_first}((${sourceName}) this, idx, oldValue, gemID, scope)
 );
