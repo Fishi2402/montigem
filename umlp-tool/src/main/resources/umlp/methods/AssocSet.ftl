@@ -7,5 +7,12 @@ if(idx > ${name}.size()){
   throw new IllegalStateException("idx must be at most owns.size");
 }
 
+long oldValue;
+if(this.${name}.size() > idx){
+  oldValue = this.${name}.getID(idx);
+}else{
+  oldValue = -1;
+}
+
 this.${name}.set(idx, o);
-${className?uncap_first}Observers.forEach(obs -> obs.maybeNotifySet${name?cap_first}((${className}) this, idx, o.getGemId(), scope));
+${className?uncap_first}Observers.forEach(obs -> obs.maybeNotifySet${name?cap_first}((${className}) this, idx, oldValue, o.getGemId(), scope));
