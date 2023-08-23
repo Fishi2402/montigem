@@ -25,7 +25,10 @@ page Login(List<User> users){
         @UserLogin(),
         @GemLink(url = "/login/forgotpassword", text = "Forgot your password?"),
         @GemLink(url = "/login/registration", text = "Create new account")
-      ])
+      ]),
+      @GemRow(hAlign = "center", vAlign = "center", width = "150px", component =
+        @GemImage(source = "assets/images/rwth_se_bild_weiss_rgb.png")
+      )
     ])
   );
 }

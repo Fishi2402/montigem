@@ -46,4 +46,8 @@ export class ResetPassword extends ResetPasswordTOP {
     return this.error;
   }
 
+  public override navigateBack(): void {
+    this.router.navigate(['/login']);
+  }
+
 }

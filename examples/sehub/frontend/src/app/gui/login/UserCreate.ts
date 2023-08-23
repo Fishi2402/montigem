@@ -75,4 +75,9 @@ export class UserCreate extends UserCreateTOP {
     });
     return res + (res.length === 0? '': ' already being used!');
   }
+
+  public override navigateBack(): void {
+    this.router.navigate(['/login']);
+  }
+
 }
