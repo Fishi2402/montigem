@@ -27,10 +27,10 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage cdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getSymbol().isIsDerived())
-            .forEach(i -> cdPackage.addCDElement(withOrigin(createInterface(i))));
+            .forEach(i -> cdPackage.addCDElement(withOrigin(createInterface(i, origCD))));
   }
 
-  protected ASTCDInterface createInterface(ASTCDInterface domainInterface) {
+  protected ASTCDInterface createInterface(ASTCDInterface domainInterface, ASTCDCompilationUnit origCD) {
     String name = domainInterface.getName();
     ASTModifier modifier = PUBLIC.build();
 
@@ -50,7 +50,7 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
             .createCDExtendUsage(superInterfaces));
 
     ASTCDInterface cdInterface = builder.build();
-    AttributesTuple attributes = getAllAttributes(domainInterface, true);
+    AttributesTuple attributes = getAllAttributes(domainInterface, true, origCD);
 
     // Add method signatures for Getters and Setter to be implemented by Subclasses
     createGetterSetterForAttrs(cdInterface, domainInterface, attributes.attrFields, true);

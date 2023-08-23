@@ -5,12 +5,7 @@ import com.google.common.collect.Maps;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDClassBuilder;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDPackage;
-import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -22,13 +17,7 @@ import umlp.generator.db.sql.SQLSchemaGenerator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PRIVATE;
@@ -51,21 +40,25 @@ public class DAODecorator extends AbstractDecorator {
         .filter(c -> !c.getSymbol().isIsAbstract())
         .forEach(c -> astcdPackage.addCDElement(withOrigin(createDAOClassForDomainClass(c))));
 
-    origCD.getCDDefinition().getCDAssociationsList().stream().filter(a -> !a.getModifier().isDerived()).forEach
-        (assoc -> astcdPackage.addCDElement(withOrigin(createDAOClassForAssoc(assoc))));
-
+    origCD.getCDDefinition().getCDAssociationsList().stream()
+        .filter(a -> !a.getModifier().isDerived())
+        .forEach(assoc -> astcdPackage.addCDElement(withOrigin(createDAOClassForAssoc(assoc))));
   }
 
   /**
    * Creates DaoClass from a DomainClass
+   *
    * @param domainClass
    * @return
    */
   private ASTCDClass createDAOClassForDomainClass(ASTCDClass domainClass) {
-    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = getOppositeSideToAssociationMap(domainClass);
+    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = getOppositeSideToAssociationMap(domainClass)
+        .entrySet().stream()
+        .filter(entry -> !entry.getValue().getModifier().isDerived())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     ASTCDClassBuilder builder = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
-        .setName(domainClass.getName()+"DAO")
+        .setName(domainClass.getName() + "DAO")
         .addAllCDMembers(createAttributesForDomainClassDAOs(domainClass))
         .addAllCDMembers(getAssocAttributes(assocSideToAssociation));
 
@@ -78,13 +71,14 @@ public class DAODecorator extends AbstractDecorator {
 
   /**
    * Creates DaoClass from an Association
+   *
    * @param assoc
    * @return
    */
   private ASTCDClass createDAOClassForAssoc(ASTCDAssociation assoc) {
     ASTCDClassBuilder builder = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
-        .setName("Assoc"+StringTransformations.capitalize(assoc.getName())+"DAO")
+        .setName("Assoc" + StringTransformations.capitalize(assoc.getName()) + "DAO")
         .addAllCDMembers(createAttributesForAssociationDAOs(assoc));
     ASTCDClass associationDAOClass = builder.build();
     addStaticImports(associationDAOClass);
@@ -123,15 +117,15 @@ public class DAODecorator extends AbstractDecorator {
     // Set/Update PreparedStatements
     for (ASTCDAttribute attr : CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived()).collect(Collectors.toList())) {
-      if(GenService.isList(attr)) {
+      if (GenService.isList(attr)) {
         ASTCDAttribute removePrepStatement = getCDAttributeFacade().createAttribute(PRIVATE.build(),
-                createAttributeType("PreparedStatement"), getStatementAttributeName(attr, "remove"));
+            createAttributeType("PreparedStatement"), getStatementAttributeName(attr, "remove"));
         attributesList.add(removePrepStatement);
         ASTCDAttribute updatePrepStatement = getCDAttributeFacade().createAttribute(PRIVATE.build(),
-                createAttributeType("PreparedStatement"), getStatementAttributeName(attr, "update"));
+            createAttributeType("PreparedStatement"), getStatementAttributeName(attr, "update"));
         attributesList.add(updatePrepStatement);
         ASTCDAttribute selectPrepStatement = getCDAttributeFacade().createAttribute(PRIVATE.build(),
-                createAttributeType("PreparedStatement"), getStatementAttributeName(attr, "select"));
+            createAttributeType("PreparedStatement"), getStatementAttributeName(attr, "select"));
         attributesList.add(selectPrepStatement);
       } else {
         ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE.build(),
@@ -144,7 +138,7 @@ public class DAODecorator extends AbstractDecorator {
 
   private ASTCDAttribute createPreparedStatementAttrForMethod(String domainClassName, String methodName) {
     return getCDAttributeFacade().createAttribute(PRIVATE.build(),
-        createAttributeType("PreparedStatement"), methodName+domainClassName);
+        createAttributeType("PreparedStatement"), methodName + domainClassName);
   }
 
   private List<ASTCDAttribute> createAttributesForAssociationDAOs(ASTCDAssociation association) {
@@ -154,11 +148,11 @@ public class DAODecorator extends AbstractDecorator {
     attributesList.add(createPreparedStatementAttrForMethod("add", association));
     attributesList.add(createPreparedStatementAttrForMethod("remove", association));
 
-    if(association.getCDAssocDir().isDefinitiveNavigableRight()) {
+    if (association.getCDAssocDir().isDefinitiveNavigableRight()) {
       attributesList.add(createPreparedStatementAttrForMethodOfSide("removeAllEntriesRelatedTo", association.getLeft()));
       attributesList.add(createPreparedStatementAttrForMethodOfSide("update", association.getRight()));
     }
-    if(association.getCDAssocDir().isDefinitiveNavigableLeft()) {
+    if (association.getCDAssocDir().isDefinitiveNavigableLeft()) {
       attributesList.add(createPreparedStatementAttrForMethodOfSide("removeAllEntriesRelatedTo", association.getRight()));
       attributesList.add(createPreparedStatementAttrForMethodOfSide("update", association.getLeft()));
     }
@@ -175,28 +169,29 @@ public class DAODecorator extends AbstractDecorator {
 
   private ASTCDAttribute createPreparedStatementAttrForMethod(String method, ASTCDAssociation association) {
     return getCDAttributeFacade().createAttribute(PRIVATE.build(), createAttributeType("PreparedStatement"),
-        method+StringTransformations.capitalize(association.getName()));
+        method + StringTransformations.capitalize(association.getName()));
   }
 
   private ASTCDAttribute createPreparedStatementAttrForMethodOfSide(String method, ASTCDAssocSide assocSide) {
     return getCDAttributeFacade().createAttribute(PRIVATE.build(), createAttributeType("PreparedStatement"),
-        method+StringTransformations.capitalize(assocSide.getName()));
+        method + StringTransformations.capitalize(assocSide.getName()));
   }
 
   private ASTCDAttribute createPreparedStatementForSelect(String requested, String given, String requestedNumerus) {
     return getCDAttributeFacade().createAttribute(PRIVATE.build(),
         createAttributeType("PreparedStatement"),
-        "select"+StringTransformations.capitalize(requested)+"Id"+requestedNumerus+"For"+StringTransformations.capitalize(given));
+        "select" + StringTransformations.capitalize(requested) + "Id" + requestedNumerus + "For" + StringTransformations.capitalize(given));
   }
 
-  private String getIDNumerusForAssociationSide(ASTCDAssocSide side){
-    if(GenService.isList(side)) {
+  private String getIDNumerusForAssociationSide(ASTCDAssocSide side) {
+    if (GenService.isList(side)) {
       return "s";
-    } return "";
+    }
+    return "";
   }
 
   private String getStatementAttributeName(ASTCDAttribute attr, String methodName) {
-    return methodName+StringTransformations.capitalize(attr.getName())+"Statement";
+    return methodName + StringTransformations.capitalize(attr.getName()) + "Statement";
   }
 
   private ASTMCType createAttributeType(String typeName) {
@@ -229,12 +224,12 @@ public class DAODecorator extends AbstractDecorator {
     addMethodsForAssociationDAO(daoClass, association);
 
     removeMethodForAssociationDAO(daoClass, association);
-    if(association.getCDAssocDir().isDefinitiveNavigableRight()) {
+    if (association.getCDAssocDir().isDefinitiveNavigableRight()) {
       selectMethodForAssocDAO(daoClass, association.getName(), association.getLeft(), association.getRight());
       removeAllMethodForAssocDAO(daoClass, association.getName(), association.getLeft().getName());
       updateMethodForAssocDAO(daoClass, association.getName(), association.getLeft().getName(), association.getRight().getName());
     }
-    if(association.getCDAssocDir().isDefinitiveNavigableLeft()) {
+    if (association.getCDAssocDir().isDefinitiveNavigableLeft()) {
       selectMethodForAssocDAO(daoClass, association.getName(), association.getRight(), association.getLeft());
       removeAllMethodForAssocDAO(daoClass, association.getName(), association.getRight().getName());
       updateMethodForAssocDAO(daoClass, association.getName(), association.getRight().getName(), association.getLeft().getName());
@@ -295,7 +290,7 @@ public class DAODecorator extends AbstractDecorator {
   }
 
   protected void removeMethodForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
-    getCD4C().addMethod(daoClass, "umlp.dao.associations.RemoveInitForAssocDAO",  assoc.getName(),
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.RemoveInitForAssocDAO", assoc.getName(),
         SQLSchemaGenerator.convertAssociationRollName(assoc.getLeft().getName()), SQLSchemaGenerator.convertAssociationRollName(assoc.getRight().getName()),
         SQLSchemaGenerator.convertAssocName(assoc.getName()));
     getCD4C().addMethod(daoClass, "umlp.dao.associations.RemoveForAssocDAO", assoc);
@@ -309,8 +304,8 @@ public class DAODecorator extends AbstractDecorator {
         .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).forEach(attr -> {
               GenService.createType(attr);
               String innerType = GenService.getInnerType(GenService.createType(attr));
-              String tableName = SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.PLAIN)+
-                  "$"+SQLSchemaGenerator.convertAttributeName(attr.getName(), SQLSchemaGenerator.AttributeType.PLAIN);
+              String tableName = SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.PLAIN) +
+                  "$" + SQLSchemaGenerator.convertAttributeName(attr.getName(), SQLSchemaGenerator.AttributeType.PLAIN);
               String dbType = GenService.getDBType(attr.getSymbol().getType());
               getCD4C().addMethod(doaClass, "umlp.dao.UpdateListAttr", tableName, attr, innerType, dbType);
               getCD4C().addMethod(doaClass, "umlp.dao.SelectListAttr", tableName, attr, innerType, dbType);
@@ -318,18 +313,18 @@ public class DAODecorator extends AbstractDecorator {
         );
   }
 
-  protected void updateAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
+  protected void updateAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass) {
     getNormalAttributes(domainClass).forEach(attr ->
-      getCD4C().addMethod(doaClass, "umlp.dao.UpdateAttr", SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED),
-              attr.getName(), attr.printType(),
-                    GenService.getDBType(attr.getSymbol().getType())));
+        getCD4C().addMethod(doaClass, "umlp.dao.UpdateAttr", SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED),
+            attr.getName(), attr.printType(),
+            GenService.getDBType(attr.getSymbol().getType())));
   }
 
-  protected void updateOptionalAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
+  protected void updateOptionalAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass) {
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).forEach(attr ->
             getCD4C().addMethod(doaClass, "umlp.dao.UpdateOptionalAttr", SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED), attr.getName(),
-                    GenService.createType(attr).printType(), GenService.getDBType(attr.getSymbol().getType())));
+                GenService.createType(attr).printType(), GenService.getDBType(attr.getSymbol().getType())));
   }
 
   protected void deleteMethod(ASTCDClass daoClass, ASTCDClass domainClass, Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssoc) {
@@ -338,13 +333,13 @@ public class DAODecorator extends AbstractDecorator {
   }
 
   protected void selectMethod(ASTCDClass daoClass, ASTCDClass domainClass,
-                            Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
-                            Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
+                              Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
+                              Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
     List<ASTCDAttribute> listAttributes = getListAttributes(domainClass);
     List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
     Map<ASTCDAttribute, String> optMap = Maps.newLinkedHashMap();
     getOptionalAttributes(domainClass).forEach(e -> optMap.put(e,
-                    SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
+        SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
 
     getCD4C().addMethod(daoClass, "umlp.dao.SelectInit",
         SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED), domainClass.getName(),
@@ -352,7 +347,7 @@ public class DAODecorator extends AbstractDecorator {
 
     Map<ASTCDAttribute, String> attributeMap = Maps.newLinkedHashMap();
     attributes.forEach(e -> attributeMap.put(e,
-            SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
+        SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
     getCD4C().addMethod(daoClass, "umlp.dao.Select", domainClass.getName(), cdName, attributeMap,
         optMap, listAttributes, listAssociationMap, gemAssociationMap);
   }
@@ -399,17 +394,17 @@ public class DAODecorator extends AbstractDecorator {
   }
 
   protected void insertMethods(ASTCDClass daoClass, ASTCDClass domainClass,
-                            Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
-                            Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
+                              Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
+                              Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
     List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
     List<ASTCDAttribute> listAttributes = getListAttributes(domainClass);
     List<ASTCDAttribute> optionalAttributes = getOptionalAttributes(domainClass);
 
-    getCD4C().addMethod(daoClass, "umlp.dao.InsertInit",SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)
-        ,domainClass.getName(), attributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)).collect(Collectors.toList()),
+    getCD4C().addMethod(daoClass, "umlp.dao.InsertInit", SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)
+        , domainClass.getName(), attributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)).collect(Collectors.toList()),
         optionalAttributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)).collect(Collectors.toList()));
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
-        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+        optionalAttributes, listAttributes, listAssociationMap, gemAssociationMap);
     getCD4C().addMethod(daoClass, "umlp.dao.BulkInsert", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
     getCD4C().addMethod(daoClass, "umlp.dao.BulkAddAssociationsToBatch", domainClass.getName(), cdName, attributes,
@@ -429,9 +424,9 @@ public class DAODecorator extends AbstractDecorator {
   }
 
   protected List<ASTCDAttribute> getNormalAttributes(ASTCDClass domainClass) {
-     return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() &&
-                !GenService.isList(a) && !GenService.isOptional(a)).collect(Collectors.toList());
+            !GenService.isList(a) && !GenService.isOptional(a)).collect(Collectors.toList());
   }
 
   private void addStaticImports(ASTCDType clazz) {
@@ -455,7 +450,8 @@ public class DAODecorator extends AbstractDecorator {
 
   static Map<ASTCDAssocSide, ASTCDAssociation> getOppositeSideToAssociationMap(ASTCDClass domainClass) {
     List<ASTCDAssocSide> assocSides = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
-        .filter(GenService::isVisible).collect(Collectors.toList());
+        .filter(GenService::isVisible)
+        .collect(Collectors.toList());
     Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = new HashMap<>();
     for (ASTCDAssocSide assocSide : assocSides) {
       ASTCDAssociation assocOfAssocSide = assocSide.getSymbol().getAssoc().getAssociation().getAstNode();

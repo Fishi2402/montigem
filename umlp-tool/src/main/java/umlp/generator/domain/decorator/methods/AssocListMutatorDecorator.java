@@ -28,6 +28,9 @@ public class AssocListMutatorDecorator extends SimpleMethodMutatorDecorator {
   @Override
   public List<ASTCDMethod> decorate(ASTCDAttribute ast) {
     List<ASTCDMethod> methodList = Lists.newArrayList();
+    if(ast.getModifier().isDerived()){
+      return methodList;
+    }
     String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
     String sourceName = this.ast.getName();
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Add", service.getNativeAttributeName(ast.getName()), targetName).get());

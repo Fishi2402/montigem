@@ -7,7 +7,6 @@ umlp DerivedAttributesAndAssocs{
     // / Optional<java.lang.String> d;
   }
 
-  // TODO: Derived assocs
   class Bar;
 
   / association Foo -> (bar) Bar [*];

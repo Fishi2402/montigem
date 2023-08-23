@@ -5,9 +5,7 @@ package umlp.generator.domain.decorator;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
-import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
-import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -20,12 +18,11 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.umlmodifier._ast.ASTModifier;
-import de.monticore.umlstereotype._ast.ASTStereotype;
+import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
@@ -56,10 +53,10 @@ public class DomainClassDecorator extends DomainTypeDecorator {
 
     origCD.getCDDefinition().getCDEnumsList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> {
-              ASTCDEnum enumCopy = c.deepClone();
-              enumCopy.setModifier(PUBLIC.build());
-              astcdPackage.addCDElement(withOrigin(enumCopy));
-            });
+          ASTCDEnum enumCopy = c.deepClone();
+          enumCopy.setModifier(PUBLIC.build());
+          astcdPackage.addCDElement(withOrigin(enumCopy));
+        });
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
@@ -75,8 +72,9 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     }
 
     // Stereotype
+    ASTStereotypeBuilder stereotype = UMLPMill.stereotypeBuilder();
     List<ASTCDAttribute> derivedAttribFields = filterDerivedAttributes(domainClass.getCDAttributeList(), true);
-    if (derivedAttribFields.size() > 0) {
+    if (!derivedAttribFields.isEmpty()) {
       String derivedAttribs = derivedAttribFields.stream()
           .map(attr -> {
             SourcePosition sourcePosition = attr.get_SourcePositionStart();
@@ -88,15 +86,34 @@ public class DomainClassDecorator extends DomainTypeDecorator {
                 sourcePosition.getColumn()
             );
           }).collect(Collectors.joining(", "));
-      ASTStereotype stereotype = UMLPMill.stereotypeBuilder()
-          .addValues(
-              TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
-                  String.format("Custom implementation for class: %s required. Contains derived attribute(s): %s", domainClass.getName(), derivedAttribs)
-              )
-          ).build();
-      modifier.setStereotype(stereotype);
+      stereotype.addValues(
+          TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
+              String.format("Custom implementation for class: %s required. Contains derived attribute(s): %s", domainClass.getName(), derivedAttribs)
+          )
+      );
     }
-
+    List<ASTCDAssocSide> derivedAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+        .filter(GenService::isSymbolDerived)
+        .collect(Collectors.toList());
+    if (!derivedAssocs.isEmpty()) {
+      String derivedAssocsStr = derivedAssocs.stream()
+          .map(assoc -> {
+            SourcePosition sourcePosition = assoc.get_SourcePositionStart();
+            return String.format(
+                "%s in %s:%s:%s",
+                assoc.getName(),
+                sourcePosition.getFileName().orElse("unknown"),
+                sourcePosition.getLine(),
+                sourcePosition.getColumn()
+            );
+          }).collect(Collectors.joining(", "));
+      stereotype.addValues(
+          TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
+              String.format("Custom implementation for class: %s required. Contains derived association(s): %s", domainClass.getName(), derivedAssocsStr)
+          )
+      );
+    }
+    modifier.setStereotype(stereotype.build());
     //Build class
     ASTCDClass clazz = builder.build();
 
@@ -104,7 +121,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     getCD4C().addConstructor(clazz, getConstructorTemplate(), domainClass.getName());
 
     // Attributes
-    AttributesTuple attributes = getAllAttributes(domainClass, false);
+    AttributesTuple attributes = getAllAttributes(domainClass, false, origCD);
 
     if (!domainClass.isPresentCDExtendUsage()) {
       // Attribute gemId and getter and setter
@@ -122,7 +139,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     List<ASTCDAttribute> nonDerivedAttrs = filterDerivedAttributes(attributes.attrList, false);
     clazz.addAllCDMembers(nonDerivedAttrs);
     for (ASTCDAttribute attr : nonDerivedAttrs) {
-      if(GenService.isGem(attr) && !GenService.isGemList(attr)) {
+      if (GenService.isGem(attr) && !GenService.isGemList(attr)) {
         glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(getInitialGemValue()));
       }
     }
@@ -184,15 +201,25 @@ public class DomainClassDecorator extends DomainTypeDecorator {
         .stream().filter(GenService::isVisibleNotDerived).collect(Collectors.toList())) {
       getCD4C().addMethod(clazz, "umlp.domain.Check",
           domainClass.getName(), attr.getName(),
-          !GenService.isList(attr) && !GenService.isOptional(attr) && !attr.getModifier().isDerived());
+          !GenService.isList(attr) && !GenService.isOptional(attr) && !attr.getModifier().isDerived(),
+          false
+      );
     }
     for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
       if (GenService.isAStLeastOne(assoc)) {
         getCD4C().addMethod(clazz, "umlp.domain.CheckCard",
-            domainClass.getName(), assoc.getName(), !isDerived(assoc));
+            domainClass.getName(),
+            assoc.getName(),
+            !GenService.isSymbolDerived(assoc),
+            GenService.isList(assoc)
+        );
       } else {
         getCD4C().addMethod(clazz, "umlp.domain.Check",
-            domainClass.getName(), assoc.getName(), !GenService.isOptional(assoc) && !isDerived(assoc));
+            domainClass.getName(),
+            assoc.getName(),
+            !GenService.isOptional(assoc) && !GenService.isSymbolDerived(assoc),
+            GenService.isList(assoc)
+        );
       }
     }
   }
@@ -211,7 +238,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     List<String> objects = new ArrayList<>();
     FullSynthesizeFromCD4Code synthesize = new FullSynthesizeFromCD4Code();
 
-    for (ASTCDAttribute attribute: domainClass.getCDAttributeList()) {
+    for (ASTCDAttribute attribute : domainClass.getCDAttributeList()) {
       if (attribute.getModifier().isDerived() || attribute.getModifier().isAbstract()) {
         continue;
       }

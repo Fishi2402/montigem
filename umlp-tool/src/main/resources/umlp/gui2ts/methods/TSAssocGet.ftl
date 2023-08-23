@@ -1,3 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("attribute")}
-return this.${attribute.getName()}.getSync(index);
+${tc.signature("paramName")}
+return this.${paramName}.getSync(index);

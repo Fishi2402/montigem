@@ -37,29 +37,40 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     List<ASTCDMethod> methodList = Lists.newArrayList();
 
     String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
+    String paramName = getParamName(ast);
 
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Contains", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.ContainsAll", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Iterator", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Size", service.getNativeAttributeName(ast.getName())).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.GetList", service.getNativeAttributeName(ast.getName()), targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.SubList", service.getNativeAttributeName(ast.getName()), targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Contains", paramName, targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.ContainsAll", paramName, targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Iterator", paramName, targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Size", paramName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.GetList", paramName, targetName).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.SubList", paramName, targetName).get());
 
     // generate getX-Method
     methodList.add(createGetMethod(ast));
 
     // generate getXGem-Method
-    methodList.add(createGetGemList(ast));
+    ASTCDMethod getGemList = createGetGemList(ast);
+    if (getGemList.getModifier().isAbstract()){
+      //Add method to override
+      ASTCDMethod getOverride = createGetGemListOverride(ast);
+      methodList.add(getOverride);
+      //modify internal getter to call override
+      getGemList.getModifier().setAbstract(false);
+      this.replaceTemplate(EMPTY_BODY, getGemList, new TemplateHookPoint("umlp.methods.GetDerivedList", getOverride.getName()));
+    }
+    methodList.add(getGemList);
 
     return methodList;
   }
 
   protected ASTCDMethod createGetMethod(ASTCDAttribute ast) {
-    String name = String.format(GET, StringTransformations.capitalize(service.getNativeAttributeName(ast.getName())));
+    String paramName = getParamName(ast);
+    String name = String.format(GET, paramName);
     String type = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
     ASTCDParameter param = getCDParameterFacade().createParameter("int", "index");
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name, param);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getAssocGetTemplate(), ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getAssocGetTemplate(), paramName));
     return method;
   }
 
@@ -73,4 +84,15 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     return method;
   }
 
+  private ASTCDMethod createGetGemListOverride(ASTCDAttribute ast) {
+    ASTCDMethod method = createGetter(ast);
+    method.getModifier().setAbstract(true);
+    method.setName(method.getName() + "DerivedGemList");
+    return method;
+  }
+
+  private String getParamName(ASTCDAttribute ast) {
+    return StringTransformations.capitalize(service.getNativeAttributeName(ast.getName()));
+  }
 }
+
