@@ -9,7 +9,7 @@ import {User} from '@src/sehub//User';
   selector: 'login',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/Login.html',
   styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  styleUrls: ["/Login.scss"]
 })
 
 export class Login extends LoginTOP {
@@ -19,10 +19,6 @@ export class Login extends LoginTOP {
       this.users = gemPromiseRes;
       this.users.loadAll();
     });
-  }
-
-  public  getGemText6Value (us: User): string  {
-    return us.getUsername() + '';
   }
 
 }

@@ -1,0 +1,16 @@
+
+@import "../../../../config/src/variables";
+
+:host ::ng-deep .gem-card-header {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+:host .error, .gem-text {
+  color : red !important;
+  font-size: 2rem;
+}
+
+:host ::ng-deep .gem-card-body {
+  background: $acronio-black-1;
+}

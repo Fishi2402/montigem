@@ -18,7 +18,7 @@ page UserLogin(List<User> users, User loginUser) {
       @GemRow(hAlign = "center", component =
         @GemButton(label = "Sign in", leftClick = login)
       ),
-      error@GemText(value = "")
+      error@GemText(value = "",  style= "font-size: 0.5rem; color: red")
     ])
   );
 }

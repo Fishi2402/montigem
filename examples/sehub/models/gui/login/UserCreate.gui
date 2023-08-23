@@ -19,7 +19,7 @@ page UserCreate(User newUser) {
       @GemRow(hAlign = "center", component =
         @GemButton(label = "Create account", leftClick = createUser)
       ),
-      error@GemText(value = "")
+      error@GemText(value = "", style= "font-size: 0.5rem; color: #00549F")
     ])
   );
 }

@@ -3,14 +3,14 @@
 import {Component} from '@angular/core';
 import {UserLoginTOP} from '@src/gui/login/UserLoginTOP';
 import {User} from '@src/sehub/User';
-import { SehubManager } from '@src/sehub/SehubManager';
+import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
 @Component({
   selector: 'user-login',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserLogin.html',
   styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  styleUrls: ["/Login.scss"]
 })
 
 export class UserLogin extends UserLoginTOP {
@@ -29,23 +29,21 @@ export class UserLogin extends UserLoginTOP {
   }
 
   public override login(event: any): void {
-    if (!!this.loginUser) {
-      for (let ind in this.users.ids) {
-        this.users.get(+ind).then(user => {
-          if (!!user) {
-            if (!!this.loginUser.getUsername() && this.loginUser.getUsername() === user.getUsername()) {
-              if (!!this.loginUser.getPassword() && this.loginUser.getPassword() === user.getPassword()) {
-                SehubSecurityManager.setCurrentUser(user);
-                this.router.navigate(['/start']);
-              } else {
-                this.error = 'Wrong password';
-              }
-            }
-          }
-        });
-        this.error = 'There is no user ' + this.loginUser.getUsername();
-      }
+    if (!this.loginUser || !this.loginUser.getUsername() || !this.loginUser.getPassword()) {
+      return;
     }
+    this.error = ``;
+        this.users.toArray().filter(user => {
+      if (!!user && this.loginUser.getUsername() === user.getUsername()) {
+        if (this.loginUser.getPassword() === user.getPassword()) {
+          SehubSecurityManager.setCurrentUser(user);
+          this.router.navigate(['/start']);
+        } else {
+          this.error = 'Wrong password!';
+        }
+      }
+    });
+    this.error = !!this.error? this.error : 'There is no user ' + this.loginUser.getUsername();
 
   }
 
