@@ -44,10 +44,10 @@ export const routes: Routes = [
     path: "usersettings",
     loadChildren: () => import("../../build/appgui/gui/usersettings/UserSettingsModule").then(m => m.UsersettingsModule)
   },
-/*  {
+ {
     path: "issue-tracker",
     loadChildren: () => import("../../build/appgui/gui/issues/IssueTrackerPageModule").then(m => m.IssuetrackerpageModule)
-  },*/
+  },
   {
     path: '404',
     loadChildren: () => import("../../build/appgui/gui/PageNotFoundModule").then(m => m.PagenotfoundModule)
