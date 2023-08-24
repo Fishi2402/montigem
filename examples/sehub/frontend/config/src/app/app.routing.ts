@@ -29,11 +29,15 @@ export const routes: Routes = [
     loadChildren: () => import("../../build/appgui/gui/NotesPageModule").then(m => m.NotespageModule)
   },
   {
+    path: "project",
+    loadChildren: () => import("../../build/appgui/gui/ProjectFileViewModule").then(m => m.ProjectfileviewModule)
+  },
+  {
     path: "projects",
     loadChildren: () => import("../../build/appgui/gui/SehubMainPageModule").then(m => m.SehubmainpageModule)
   },
   {
-    path: "project",
+    path: "artifacts",
     loadChildren: () => import("../../build/appgui/gui/ProjectPageModule").then(m => m.ProjectpageModule)
   },
   {

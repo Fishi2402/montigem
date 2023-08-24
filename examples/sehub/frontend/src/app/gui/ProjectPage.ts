@@ -26,13 +26,12 @@ export class ProjectPage extends ProjectPageTOP {
   treeViewDataCheck = { value: null, hash: null, calculating: false };
 
   public getGemNetworkGraph1Data(): GemNetworkData  {
-    if(!(this.project && this.project.getRootArtifact()[0])) {
+    if(!(this.project)) {
       return null;
     }
     const networkData = new GemNetworkData();
-    const rootDir : Directory = this.project.getRootArtifact()[0];
 
-    const artifacts : Artifact[] = this.getAllArtifactsFromDir(rootDir, []);
+    const artifacts : Artifact[] = this.getAllArtifactsFromDir(this.project, []);
 
     networkData.nodes = this.getNodesFromArtifacts(artifacts);
     networkData.edges = this.getEdgesFromArtifacts(artifacts);
@@ -83,11 +82,10 @@ export class ProjectPage extends ProjectPageTOP {
   }
 
   public getFilesItems(): Array<GemTreeviewEntry> {
-    if(!(this.project && this.project.getRootArtifact()[0])) {
+    if(!(this.project)) {
       return [];
     }
-    const rootDir : Directory = this.project.getRootArtifact()[0];
-    const treeViewEntries = [this.recursivelyFillGemTreeviewItems(rootDir)]
+    const treeViewEntries = [this.recursivelyFillGemTreeviewItems(this.project)]
 
     const newHash = JSON.stringify(treeViewEntries);
     if(this.treeViewDataCheck.hash !== newHash) {

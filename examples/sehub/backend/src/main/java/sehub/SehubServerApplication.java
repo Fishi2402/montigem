@@ -2,7 +2,7 @@ package sehub;
 
 import de.se_rwth.commons.logging.Log;
 import dummy.ContainerFileExtractor;
-import dummy.GitRepoLoader;
+import dummy.DummyDataCreator;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,24 +11,14 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 
-import umlp.backendrte.common.GemIdentifiable;
-
-import javax.annotation.PostConstruct;
-import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @SpringBootApplication(
@@ -134,5 +124,6 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
     String path = "src/main/java";
     File file = new File(path);
     extractor.extractGivenRoot(List.of(file));
+    new DummyDataCreator().createDummyData();
   }
 }
