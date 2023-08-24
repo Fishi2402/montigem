@@ -696,6 +696,27 @@ public class GUIGeneratorUtil {
     return res;
   }
 
+  public Optional<String> getRelativeImportPathForAppConfigFile(
+      MCPath imported, Path importer, String qualifiedName, String fileExtension) {
+    String hwFile = Names.getPathFromPackage(qualifiedName) + "." + fileExtension;
+    Optional<URL> hwFilePath = imported.find(hwFile);
+    Optional<String> res = Optional.empty();
+    if (hwFilePath.isPresent()) {
+      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
+      res = Optional.of(importer
+          .toAbsolutePath()
+          .normalize()
+          .relativize(hwPath.get().toAbsolutePath())
+          .toString()
+          .replaceAll("\\\\", "/"));
+
+      hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path,
+          Paths.get(hwFile)));
+    }
+    Reporting.reportHWCExistenceCheck(imported, Paths.get(hwFile), hwFilePath);
+    return res;
+  }
+
   /*
   public Optional<String> getRelativeHandwrittenPath(
       MCPath hwPath, Path outPath, ASTMCPackageDeclaration packageDecl, String fileName) {

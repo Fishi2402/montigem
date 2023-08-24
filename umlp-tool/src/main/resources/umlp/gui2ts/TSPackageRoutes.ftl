@@ -5,7 +5,7 @@ ${tc.signature("astguiCompilationUnitList","ids","fullPathIndex","topNameMap","p
 import { Routes } from "@angular/router";
 // imports of pages in the package
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
-  import { ${astguiCompilationUnitList[index].getComponentName()} } from "${topNameMap[astguiCompilationUnitList[index].getComponentName()]}${paths[index]}${astguiCompilationUnitList[index].getComponentName()}";
+  import { ${astguiCompilationUnitList[index].getComponentName()} } from "${paths[index]}";
 </#list>
 
 export const route: Routes = [
