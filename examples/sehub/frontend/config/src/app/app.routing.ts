@@ -10,15 +10,15 @@ export const routes: Routes = [
   },
   {
     path: "login",
-    loadChildren: () => import("../../build/appgui/gui/login/LoginModule").then(m => m.LoginModule)
+    loadChildren: () => import("../../build/appgui/gui/login/LoginPageModule").then(m => m.LoginpageModule)
   },
   {
     path: "login/forgotpassword",
-    loadChildren: () => import("../../build/appgui/gui/login/ForgotPasswordModule").then(m => m.ForgotpasswordModule)
+    loadChildren: () => import("../../build/appgui/gui/login/ForgotPasswordPageModule").then(m => m.ForgotpasswordpageModule)
   },
   {
     path: "login/registration",
-    loadChildren: () => import("../../build/appgui/gui/login/RegistrationModule").then(m => m.RegistrationModule)
+    loadChildren: () => import("../../build/appgui/gui/login/RegistrationPageModule").then(m => m.RegistrationpageModule)
   },
   {
     path: "start",
@@ -40,6 +40,10 @@ export const routes: Routes = [
     path: "usersettings",
     loadChildren: () => import("../../build/appgui/gui/usersettings/UserSettingsModule").then(m => m.UsersettingsModule)
   },
+/*  {
+    path: "issue-tracker",
+    loadChildren: () => import("../../build/appgui/gui/issues/IssueTrackerPageModule").then(m => m.IssuetrackerpageModule)
+  },*/
   {
     path: '404',
     loadChildren: () => import("../../build/appgui/gui/PageNotFoundModule").then(m => m.PagenotfoundModule)

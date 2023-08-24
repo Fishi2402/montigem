@@ -10,7 +10,7 @@ import basic.src.lib.gembutton.GemButton;
 import basic.src.lib.gemtext.GemText;
 import input.src.lib.gemtextinput.GemTextInput;
 
-page UserLogin(List<User> users, User loginUser) {
+component UserLogin(List<User> users, User loginUser) {
   @GemCard(title = "Login", component =
     @GemColumn(rowGap = "20px", components = [
       @GemTextInput(labelText = "Account", inputType = "text", entry = loginUser.username, validity = loginUser.validityUsername),

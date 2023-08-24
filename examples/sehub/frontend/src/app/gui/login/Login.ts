@@ -3,7 +3,6 @@
 import {Component} from '@angular/core';
 import {LoginTOP} from '@src/gui/login/LoginTOP';
 import { SehubManager } from '@src/sehub/SehubManager';
-import {User} from '@src/sehub//User';
 
 @Component({
   selector: 'login',
