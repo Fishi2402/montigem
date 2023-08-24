@@ -3,7 +3,8 @@
 import {IssueState} from '@src/sehub/IssueState';
 import {Component} from '@angular/core';
 import {IssueCreateTOP} from '@src/gui/issues/IssueCreateTOP';
-import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {SehubManager} from "../../../../build/frontendGen/build/appdomain/sehub/SehubManager";
+import { Post } from '@src/sehub/Post';
 
 @Component({
   selector: 'issue-create',
@@ -15,12 +16,21 @@ import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 export class IssueCreate extends IssueCreateTOP {
 
   public ngOnInit(): void {
+      SehubManager.issueBuilder().then(gemPromiseRes => {
+        this.issueBuilder = gemPromiseRes;
+      });
     super.ngOnInit();
   }
 
   public override createIssue(event: any): void {
-    this.issueBuilder.state(IssueState.UNASSIGNED);
-    this.build();
+
+      this.issueBuilder.posts(new Set<Post>())
+      this.issueBuilder.state(IssueState.UNASSIGNED);
+      this.build();
+
+      console.log(this.getIssue().getGemId())
+
+
   }
 
 }

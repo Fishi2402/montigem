@@ -17,7 +17,9 @@ export class CurrentCityWeather extends CurrentCityWeatherTOP {
   }
 
   public printWeatherState(): string {
-    if (this.getCity() == null || this.getCity().getCurrent() == null) {
+    if (this.getCity() == null
+      || this.getCity().getCurrent() == null
+      || this.getCity().getCurrent().getWeatherState == null) {
       return "";
     }
     let weather: string = WeatherState[this.getCity().getCurrent().getWeatherState()].toString();

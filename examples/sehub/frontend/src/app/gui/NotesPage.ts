@@ -11,7 +11,7 @@ import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
   selector: 'notes-page',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/NotesPage.html',
   styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  styleUrls: ['./NotesPage.scss']
 })
 
 export class NotesPage extends NotesPageTOP {

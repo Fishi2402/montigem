@@ -17,4 +17,5 @@ export  class Bingo extends BingoTOP {
     public constructor(route: ActivatedRoute, protected router: Router) {
         super(route, router);
     }
+
 }

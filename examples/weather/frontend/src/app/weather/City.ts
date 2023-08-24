@@ -26,7 +26,7 @@ export class City extends CityTOP {
     return this._nextDays?.get();
   }
 
-  public calcNextDays() {
+  public async calcNextDays() {
     if (this.original.nextDays.calculating || this.original.nextDays.hash != null) {
       return;
     }
@@ -34,45 +34,43 @@ export class City extends CityTOP {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0)
-    const until = new Date();
+    const until = new Date(today);
     until.setDate(until.getDate() + 7);
 
     let containedDays: Set<DailyForecast> = new Set<DailyForecast>();
 
-    WeatherManager.getDailyForecastList().then(daysGemList => {
-      const promises = [];
-      for (let i = 0; i < daysGemList.size(); i++) {
-        promises.push(
-          daysGemList.get(i).then(day => {
-            const cur = day.getDate();
-            if (cur >= today && cur <= until) {
-              containedDays.add(day);
-            }
-          })
-        );
-      }
+    const daysGemList = await WeatherManager.getDailyForecastList()
 
-      Promise.all(promises).then(() => {
-        WeatherManager.timeseriesBuilder()
-          .then(builder => {
-            const timeseries = builder
-              .containedDays(containedDays)
-              .start(today)
-              .end(until)
-              .build();
+    const promises = [];
+    for (let i = 0; i < daysGemList.size(); i++) {
+      promises.push(
+        daysGemList.get(i).then(day => {
+          const cur = day.getDate();
+          if (cur >= today && cur <= until && this === day.getCity()) {
+            containedDays.add(day);
+          }
+        })
+      );
+    }
 
-            this.original.nextDays.calculating = false;
+    await Promise.all(promises);
 
-            const hash = JSON.stringify(builder);
-            if (this.original.nextDays.hash === hash) {
-              return;
-            }
-            this.original.nextDays.hash = hash;
+    const builder = await WeatherManager.timeseriesBuilder();
+    const timeseries = builder
+      .containedDays(containedDays)
+      .start(today)
+      .end(until)
+      .build();
 
-            this._nextDays.set(timeseries);
-          })
-      })
-    });
+    this.original.nextDays.calculating = false;
+
+    const hash = JSON.stringify(builder);
+    if (this.original.nextDays.hash === hash) {
+      return;
+    }
+    this.original.nextDays.hash = hash;
+
+    this._nextDays.set(timeseries);
   }
 
   public getNextHours() {
@@ -80,40 +78,36 @@ export class City extends CityTOP {
     return this._nextHours;
   }
 
-  public calcNextHours(): void {
+  public async calcNextHours() {
     if (this.original.nextHours.calculating || this.original.nextHours.hash != null) {
       return;
     }
     this.original.nextHours.calculating = true;
 
-    WeatherManager.getForecastList().then(forecastList => {
-      forecastList.loadAll().then(
-        forecastListLoaded => {
-          let smallerForecastList = [];
+    const forecastList = await WeatherManager.getForecastList();
+    const forecastListLoaded = await forecastList.loadAll();
+    let smallerForecastList = [];
 
-          const curTime = new Date();
-          let in12Hours = new Date();
-          in12Hours.setHours(curTime.getHours() + 12);
+    const curTime = new Date();
+    let in12Hours = new Date();
+    in12Hours.setHours(curTime.getHours() + 12);
 
-          for (let forecast of forecastListLoaded) {
-            if (forecast.getDate() >= curTime && forecast.getDate() <= in12Hours) {
-              smallerForecastList.push(forecast.getGemId())
-            }
-          }
+    for (let forecast of forecastListLoaded) {
+      if (forecast.getDate() >= curTime && forecast.getDate() <= in12Hours) {
+        smallerForecastList.push(forecast.getGemId())
+      }
+    }
 
-          this.original.nextHours.calculating = false;
+    this.original.nextHours.calculating = false;
 
-          const value = new ForecastGemList(smallerForecastList);
-          const hash = JSON.stringify(value);
-          if (this.original.nextHours.hash === hash) {
-            return;
-          }
-          this.original.nextHours.hash = hash;
+    const value = new ForecastGemList(smallerForecastList);
+    const hash = JSON.stringify(value);
+    if (this.original.nextHours.hash === hash) {
+      return;
+    }
+    this.original.nextHours.hash = hash;
 
-          this._nextHours = value;
-        }
-      )
-    })
+    this._nextHours = value;
   }
 
   public getCurrent(): Forecast | undefined {
@@ -121,7 +115,7 @@ export class City extends CityTOP {
     return this._current;
   }
 
-  public calcCurrent(): void {
+  public async calcCurrent() {
     if (this.original.current.calculating || this.original.current.hash != null) {
       return;
     }
@@ -129,29 +123,27 @@ export class City extends CityTOP {
 
     let today = new Date();
 
-    WeatherManager.getForecastList().then(forecastGemList => {
-      forecastGemList.loadAll().then(forecastList => {
-        for (let day of forecastGemList) {
-          const cur = day.getDate();
-          if (cur.getFullYear() == today.getFullYear()
-            && cur.getMonth() == today.getMonth()
-            && cur.getDate() == today.getDate()) {
+    const forecastGemList = await WeatherManager.getForecastList();
+    await forecastGemList.loadAll();
+    for (let day of forecastGemList) {
+      const cur = day.getDate();
+      if (cur.getFullYear() == today.getFullYear()
+        && cur.getMonth() == today.getMonth()
+        && cur.getDate() == today.getDate()) {
 
-            this.original.current.calculating = false;
+        this.original.current.calculating = false;
 
-            const value = day;
-            const hash = JSON.stringify(value);
-            if (this.original.current.hash === hash) {
-              return;
-            }
-            this.original.current.hash = hash;
-
-            this._current = value;
-            return;
-          }
+        const value = day;
+        const hash = value.getDate().toISOString();
+        if (this.original.current.hash === hash) {
+          return;
         }
-      });
-    });
+        this.original.current.hash = hash;
+
+        this._current = value;
+        return;
+      }
+    }
   }
 
   public async isFavorite(): Promise<boolean> {
