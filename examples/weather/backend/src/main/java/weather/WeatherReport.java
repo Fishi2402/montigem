@@ -42,8 +42,12 @@ public class WeatherReport {
     }
 
     // Group forecasts by their Date ignoring the time
-    var grouped = WeatherManager.getForecastList().stream().collect(Collectors.groupingBy(f -> f.getDate().toLocalDate()));
-    grouped.forEach((d, forecasts) -> WeatherManager.dailyForecastBuilder().city(city).date(d).dailyForecasts(new HashSet<>(forecasts)).build());
+    var grouped = WeatherManager.getForecastList()
+        .stream().collect(Collectors.groupingBy(f -> f.getDate().toLocalDate()));
+    grouped.forEach((d, forecasts) -> WeatherManager.dailyForecastBuilder()
+        .city(city)
+        .date(d)
+        .dailyForecasts(new HashSet<>(forecasts)).build());
 
     city.calcNextDays();
   }
