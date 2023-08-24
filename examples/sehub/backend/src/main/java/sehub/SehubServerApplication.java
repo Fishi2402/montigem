@@ -97,33 +97,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
           .entries(entrySet)
           .build();
 
-    createDummyData();
-  }
-
-  private void createDummyData() {
-    ContainerFileExtractor extractor = new ContainerFileExtractor();
-    String onServer = System.getenv("deploy");
-    if(onServer != null && onServer.equals("true")) {
-      File f = GitRepoLoader.gitClone("https://github.com/MontiCore/sequence-diagram.git");
-      extractor.extractGivenRoot(List.of(f));
-
-      // Free disk space from pulled git repo
-      try {
-        // Git files are readOnly thus cannot be easily deleted after cloning
-        for (Iterator<File> i = FileUtils.iterateFiles(f, new String[]{"idx", "pack"}, true); i.hasNext();) {
-          File item = i.next();
-          item.setWritable(true);
-        }
-        FileUtils.deleteDirectory(f);
-      } catch (IOException e) {
-        Log.warn("Could not free disk space of extracted git repo.", e);
-      }
-    } else {
-      Log.info("Did not clone public git repository, to save resources on local machine.", "SehubServerApplication");
-    }
-    String path = "src/main/java";
-    File file = new File(path);
-    extractor.extractGivenRoot(List.of(file));
     new DummyDataCreator().createDummyData();
   }
+
 }
