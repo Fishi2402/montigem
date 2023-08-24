@@ -18,16 +18,11 @@ import { SehubManager } from '@src/sehub/SehubManager';
 
 export class IssueTrackerPage extends IssueTrackerPageTOP {
 
-  private todo: GemList<Issue>;
-
-  private doing: GemList<Issue>;
-
-  private done: GemList<Issue>;
-
   public ngOnInit(): void {
     if (!SehubSecurityManager.isSignedIn()) {
       this.router.navigate(['/login']);
     }
+    super.ngOnInit();
   }
 
   public constructor(route: ActivatedRoute, protected router: Router) {
