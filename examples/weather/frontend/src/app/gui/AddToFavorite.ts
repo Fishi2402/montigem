@@ -7,7 +7,7 @@ import { WeatherManager } from '@src/weather/WeatherManager';
 @Component({
   selector: 'add-to-favorite',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/AddToFavorite.html',
-  styles: [":host{ display: flex; flex-direction: column; }", ".gemRow0{ flex-wrap: nowrap; }"],
+  styleUrls: ['./AddToFavorite.scss']
 })
 
 export class AddToFavorite extends AddToFavoriteTOP {
