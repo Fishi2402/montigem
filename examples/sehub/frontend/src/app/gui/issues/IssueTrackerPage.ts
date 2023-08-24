@@ -4,10 +4,8 @@ import {Issue} from '@src/sehub/Issue';
 import {Component} from '@angular/core';
 import {IssueTrackerPageTOP} from '@src/gui/issues/IssueTrackerPageTOP';
 import {GemList} from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
-import {IssueGemList} from '@src/sehub/gemlists/IssueGemList';
-import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {ActivatedRoute, Router} from '@angular/router';
-import { SehubManager } from '@src/sehub/SehubManager';
+import { SehubSecurityManager } from '@src/sehub/SehubSecurityManager';
 
 @Component({
   selector: 'issue-tracker-page',
@@ -29,22 +27,27 @@ export class IssueTrackerPage extends IssueTrackerPageTOP {
     super(route, router);
   }
 
-
-  public getTodoTitle (): string {
+  public override getTodoTitle(): string {
     let count = 0;
-    this.getIssues().toArray().forEach(i => {if(i.getState() == 0) count++})
+    this.getIssues().toArray().forEach(i => {
+      if (i.getState() === 0) count++
+    })
     return super.getTodoTitle() + " (" + count + ")"
   }
 
-  public  getDoingTitle (): string {
+  public override getDoingTitle(): string {
     let count = 0;
-    this.getIssues().toArray().forEach(i => {if(i.getState() == 1) count++})
+    this.getIssues().toArray().forEach(i => {
+      if (i.getState() === 1) count++
+    })
     return super.getDoingTitle() + " (" + count + ")"
   }
 
-  public  getDoneTitle (): string {
+  public override getDoneTitle(): string {
     let count = 0;
-    this.getIssues().toArray().forEach(i => {if(i.getState() == 2) count++})
+    this.getIssues().toArray().forEach(i => {
+      if (i.getState() === 2) count++
+    })
     return super.getDoneTitle() + " (" + count + ")"
   }
 
