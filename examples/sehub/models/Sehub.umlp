@@ -89,4 +89,12 @@ classdiagram Sehub {
 
   association contains [0..1] Directory -> (contains) Artifact [*];
 
+  class BingoBoard {}
+
+  class BingoEntry {
+    String word;
+    boolean isChecked;
+  }
+
+  association bingoEntries [1] BingoBoard -> (entries) BingoEntry [*];
 }

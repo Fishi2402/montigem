@@ -37,6 +37,10 @@ export const routes: Routes = [
     loadChildren: () => import("../../build/appgui/gui/ProjectPageModule").then(m => m.ProjectpageModule)
   },
   {
+    path: "bingo",
+    loadChildren: () => import("../../build/appgui/gui/BingoModule").then(m => m.BingoModule)
+  },
+  {
     path: "usersettings",
     loadChildren: () => import("../../build/appgui/gui/usersettings/UserSettingsModule").then(m => m.UsersettingsModule)
   },

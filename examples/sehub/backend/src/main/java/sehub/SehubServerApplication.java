@@ -98,6 +98,15 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         .posts(Set.of(p3.get()))
         .build();
 
+    Set<BingoEntry> entrySet = new java.util.HashSet<>(Collections.emptySet());
+    for (int i = 0; i <= 24; i++) {
+      entrySet.add(SehubManager.bingoEntryBuilder().word("").isChecked(false).build().get());
+    }
+    BingoBoardBuilder boardBuilder = new BingoBoardBuilder(42001);
+      boardBuilder
+          .entries(entrySet)
+          .build();
+
     createDummyData();
   }
 
