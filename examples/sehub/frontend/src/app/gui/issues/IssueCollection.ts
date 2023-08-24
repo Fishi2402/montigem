@@ -15,7 +15,7 @@ export class IssueCollection extends IssueCollectionTOP {
 
   public editIssue(event: any): void {
     console.log(this.getIssue().getGemId())
-    this.router.navigate(['//notes/NotesPage/' + this.getIssue().getGemId()]);
+    this.router.navigate(['/notes/NotesPage/' + this.getIssue().getGemId()]);
   }
 
   public promote(event: any): void {
