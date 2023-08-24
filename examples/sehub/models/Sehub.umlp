@@ -46,7 +46,7 @@ classdiagram Sehub {
   class Issue {
     String title;
     String description;
-    Long state;
+    IssueState state;
   }
 
   association discussion [1] Issue -> (posts) Post [*];

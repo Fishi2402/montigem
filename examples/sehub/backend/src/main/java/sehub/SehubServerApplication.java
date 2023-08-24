@@ -84,7 +84,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         issueBuilder
         .title("Die Sache mit dem Wasserkocher")
         .description("Hier kann eine Beschreibung stehen...")
-        .state(1L)
+        .state(IssueState.IN_PROGRESS)
         .posts(Set.of(p3.get()))
         .build();
 
@@ -94,7 +94,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
             "Zuerst muss die zu bearbeitende Dienstreise gelöscht, gespeichert und erneut bearbeitet werden. " +
             "Erst dann werden die Kontooptionen angezeigt." +
             "Es sollte möglich sein, direkt ein neues Konto auszuwählen.")
-        .state(2L)
+        .state(IssueState.DONE)
         .build();
 
     SehubManager.issueBuilder()
@@ -102,7 +102,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         .description("Das Änderungsdatum für Buchungen, Mittelabrufe, Rechnungen, Mittelzuweisungen und Stellenzuweisungen " +
             "ist aktuell nur auf der Seite Finazen/Zahlungen sichtbar. Das Änderungsdatum soll aber auch für die " +
             "einzelnen Elemente auf den Kontenseiten in einem Konto selbst sichtbar sein.")
-        .state(1L)
+        .state(IssueState.IN_PROGRESS)
         .build();
 
 
@@ -112,7 +112,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
             "Standardmäßig ist der Umfang mit 100% vorausgefüllt. Der Umfang kann allerdings bearbeitet werden und " +
             "auf mehr als 100% angepasst werden. Eine Zuweisung von mehr als 100% ergibt jedoch keinen Sinn, weshalb " +
             "der maximal zulässige Umfang auf 100% beschränkt werden sollte.")
-        .state(0L)
+        .state(IssueState.UNASSIGNED)
         .build();
 
     Set<BingoEntry> entrySet = new java.util.HashSet<>(Collections.emptySet());
