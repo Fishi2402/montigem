@@ -11,6 +11,7 @@ import { Project } from '@src/sehub/Project';
 import { Component } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
 @Component({
   selector: 'sehub-main-page',
@@ -20,6 +21,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 
 export  class SehubMainPage extends SehubMainPageTOP {
+
+  ngOnInit(){
+    if (!SehubSecurityManager.isSignedIn()) {
+      this.router.navigate(['/login']);
+    }
+  }
 
   public  getGemNetworkGraph1Data (): GemNetworkData  {
     return null;

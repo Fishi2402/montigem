@@ -7,6 +7,7 @@ import {Component} from '@angular/core';
 import {IssueTrackerPageTOP} from '@src/gui/issues/IssueTrackerPageTOP';
 import {GemList} from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
 import {IssueGemList} from '@src/sehub/gemlists/IssueGemList';
+import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
 @Component({
   selector: 'issue-tracker-page',
@@ -24,6 +25,9 @@ export class IssueTrackerPage extends IssueTrackerPageTOP {
   private done: GemList<Issue>;
 
   public ngOnInit(): void {
+    if (!SehubSecurityManager.isSignedIn()) {
+      this.router.navigate(['/login']);
+    }
     SehubManager.getIssueList().then(gemPromiseRes => {
       this.issues = gemPromiseRes;
 

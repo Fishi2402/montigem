@@ -3,6 +3,7 @@
 import {IssueState} from '@src/sehub/IssueState';
 import {Component} from '@angular/core';
 import {IssueCreateTOP} from '@src/gui/issues/IssueCreateTOP';
+import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
 @Component({
   selector: 'issue-create',

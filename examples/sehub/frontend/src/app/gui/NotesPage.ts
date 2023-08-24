@@ -19,12 +19,17 @@ export class NotesPage extends NotesPageTOP {
     super(route, router);
   }
 
-  newPost(event: any) {
+  ngOnInit(){
+    if (!SehubSecurityManager.isSignedIn()) {
+      alert("No User Logged In")
+      this.router.navigate(['/login']);
+    }
+  }
 
+  newPost(event: any) {
     if (!SehubSecurityManager.isSignedIn()) {
       alert("No User Logged In")
     } else {
-
       SehubManager.postBuilder().then(builder => {
         let post = builder.responses(
             new Set<Post>())
