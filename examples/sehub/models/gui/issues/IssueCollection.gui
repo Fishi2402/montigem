@@ -10,14 +10,20 @@ import basic.src.lib.gembutton.GemButton;
 import input.src.lib.gemtextinput.GemTextInput;
 import input.src.lib.gemtextareainput.GemTextareaInput;
 
-component IssueCollection(List<Issue> issues){
-  @iterate(Issue issue : issues){
+component IssueCollection(Issue issue){
     @GemColumn(hAlign = "center", width = "400px", rowGap =" 5px", component =
-      @GemCard(title = issue.title, component =
+      issueCard@GemCard(title = issue.title, component =
         @GemColumn(height = "auto", hAlign = "right", rowGap = "10px", components = [
+         @GemRow(colGap = "7px", width="100%", hAlign="center", components = [
+            @GemButton(label = "<<<", leftClick = demote),
+            @GemButton(label = "Edit", leftClick = editIssue),
+            @GemButton(label = "Delete", leftClick = deleteIssue),
+            @GemButton(label = ">>>", leftClick = promote)
+          ]),
           @GemText(value = issue.description)
+//          @GemText(value = issue.state),
+
         ])
       )
     );
-  };
 }

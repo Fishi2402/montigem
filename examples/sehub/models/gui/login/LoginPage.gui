@@ -13,22 +13,24 @@ import basic.src.lib.gemtext.GemText;
 import basic.src.lib.gemlink.GemLink;
 
 page LoginPage(List<User> users){
-  @GemCard(title = "SE Hub", component =
-    @GemColumn(hAlign = "center", height = "auto", width = "800px", rowGap = "105px", components = [
-      @GemRow(hAlign = "center", vAlign = "center", width = "150px", component =
-        @GemImage(source = "assets/images/Eule.png")
-      ),
-      @GemColumn(hAlign = "center", width = "600px", rowGap = "20px", components = [
-      /*  @iterate(User us : users) {
-         @GemText(value = us.getUsername());
-        },*/
+
+@GemRow(hAlign = "center", vAlign = "space-around", width = "100%", component =
+  loginCard@GemCard(title = "SE Hub", component =
+    @GemColumn(hAlign = "center", height = "auto", width = "800px", components = [
+      @GemRow(hAlign = "center", vAlign = "center", width = "100%", component =
+        @GemColumn(hAlign = "center", width = "600px", rowGap = "20px", components = [
+        @GemRow(width = "150px", hAlign = "center", component = @GemImage(source = "assets/images/Eule.png")),
+
         @UserLogin(),
         @GemLink(url = "/login/forgotpassword", text = "Forgot your password?"),
-        @GemLink(url = "/login/registration", text = "Create new account")
-      ]),
-      @GemRow(hAlign = "center", vAlign = "center", width = "150px", component =
-        @GemImage(source = "assets/images/rwth_se_bild_weiss_rgb.png")
-      )
+        @GemLink(url = "/login/registration", text = "Create new account"),
+        @GemRow(width = "150px", hAlign = "center", component =
+          @GemImage(source = "assets/images/rwth_se_bild_weiss_rgb.png")
+        )
+      ]))
+
     ])
+    )
   );
+
 }

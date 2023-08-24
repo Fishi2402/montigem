@@ -2,7 +2,9 @@ package gui.issues;
 
 import Sehub.Issue;
 
-import gui.issues.IssueCollection;
+import gui.issues.IssueDoingFilter;
+import gui.issues.IssueDoneFilter;
+import gui.issues.IssueTodoFilter;
 import gui.issues.IssueCreate;
 
 import arrange.src.lib.gemcard.GemCard;
@@ -14,21 +16,44 @@ import input.src.lib.gemtextinput.GemTextInput;
 import input.src.lib.gemtextareainput.GemTextareaInput;
 
 page IssueTrackerPage(List<Issue> issues) {
-  @GemCard(title = "Issues", component =
-    @GemColumn(hAlign = "center", width = "auto", components = [
-      @GemRow(hAlign = "center", width = "auto", colGap = "10px", components = [
-        @GemCard(title = "TODO", component =
-          todo@IssueCollection(issues = issues)
-        ),
-        @GemCard(title = "Doing", component =
-          doing@IssueCollection(issues = issues)
-        ),
-        @GemCard(title = "Done", component =
-          done@IssueCollection(issues = issues)
-        )
-      ]),
-      @IssueCreate()
-    ])
- );
 
+  @GemRow(width = "100%", hAlign= "center", colGap="5px", rowGap="20px", components = [
+
+    @GemCard(title = "New Issue", component = @GemColumn(hAlign = "center", width = "auto", component = @IssueCreate())),
+
+    @GemCard(title = "Issue - List", component =
+      @GemColumn(hAlign = "center", width = "auto", components = [
+        @GemRow(hAlign = "center", width = "auto", rowGap = "10px", colGap = "10px", components = [
+
+          // TBD Column
+          todo@GemCard(title = "TODO", component =
+            @GemColumn(width = "400px", vAlign="top", height="100%", rowGap= "5px",  component =
+              @iterate(Issue i : issues){
+                @IssueTodoFilter(issue = i);
+              }
+            )
+          ),
+
+          // WIP Column
+          doing@GemCard(title = "Doing", component =
+            @GemColumn(width = "400px", vAlign="top", height="100%", rowGap= "5px",  component =
+              @iterate(Issue i : issues){
+                @IssueDoingFilter(issue = i);
+              }
+            )
+          ),
+
+          // Done Column
+          done@GemCard(title = "Done", component =
+            @GemColumn(width = "400px", vAlign="top", height="100%", rowGap= "5px",  component =
+               @iterate(Issue i : issues){
+                 @IssueDoneFilter(issue = i);
+               }
+             )
+          )
+
+        ])
+      ])
+    )
+  ]);
 }
