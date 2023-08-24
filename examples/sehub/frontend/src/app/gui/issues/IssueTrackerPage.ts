@@ -7,7 +7,6 @@ import {GemList} from '../../../../build/frontendGen/node_modules/@umlp/common/l
 import {IssueGemList} from '@src/sehub/gemlists/IssueGemList';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {ActivatedRoute, Router} from '@angular/router';
-import { IssueGemList } from '@src/sehub/gemlists/IssueGemList';
 import { SehubManager } from '@src/sehub/SehubManager';
 
 @Component({
