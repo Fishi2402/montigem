@@ -2,7 +2,7 @@ package sehub;
 
 import de.se_rwth.commons.logging.Log;
 import dummy.ContainerFileExtractor;
-import dummy.GitRepoLoader;
+import dummy.DummyDataCreator;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,24 +11,14 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 
-import umlp.backendrte.common.GemIdentifiable;
-
-import javax.annotation.PostConstruct;
-import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @SpringBootApplication(
@@ -107,32 +97,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
           .entries(entrySet)
           .build();
 
-    createDummyData();
+    new DummyDataCreator().createDummyData();
   }
 
-  private void createDummyData() {
-    ContainerFileExtractor extractor = new ContainerFileExtractor();
-    String onServer = System.getenv("deploy");
-    if(onServer != null && onServer.equals("true")) {
-      File f = GitRepoLoader.gitClone("https://github.com/MontiCore/sequence-diagram.git");
-      extractor.extractGivenRoot(List.of(f));
-
-      // Free disk space from pulled git repo
-      try {
-        // Git files are readOnly thus cannot be easily deleted after cloning
-        for (Iterator<File> i = FileUtils.iterateFiles(f, new String[]{"idx", "pack"}, true); i.hasNext();) {
-          File item = i.next();
-          item.setWritable(true);
-        }
-        FileUtils.deleteDirectory(f);
-      } catch (IOException e) {
-        Log.warn("Could not free disk space of extracted git repo.", e);
-      }
-    } else {
-      Log.info("Did not clone public git repository, to save resources on local machine.", "SehubServerApplication");
-    }
-    String path = "src/main/java";
-    File file = new File(path);
-    extractor.extractGivenRoot(List.of(file));
-  }
 }
