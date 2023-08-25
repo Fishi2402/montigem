@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {SehubManager} from '@src/sehub/SehubManager';
+import {IssueState} from '@src/sehub/IssueState';
 import {Component} from '@angular/core';
 import {IssueCollectionTOP} from '@src/gui/issues/IssueCollectionTOP';
 
@@ -19,18 +20,18 @@ export class IssueCollection extends IssueCollectionTOP {
   }
 
   public promote(event: any): void {
-    if (this.getIssue().getState() === 0) {
-      this.getIssue().setState(1);
-    } else if (this.getIssue().getState() === 1) {
-      this.getIssue().setState(2);
+    if (this.getIssue().getState() === IssueState.UNASSIGNED) {
+      this.getIssue().setState(IssueState.IN_PROGRESS);
+    } else if (this.getIssue().getState() === IssueState.IN_PROGRESS) {
+      this.getIssue().setState(IssueState.DONE);
     }
   }
 
   public demote(event: any): void {
-    if (this.getIssue().getState() === 1) {
-      this.getIssue().setState(0);
-    } else if (this.getIssue().getState() === 2) {
-      this.getIssue().setState(1);
+    if (this.getIssue().getState() === IssueState.IN_PROGRESS) {
+      this.getIssue().setState(IssueState.UNASSIGNED);
+    } else if (this.getIssue().getState() === IssueState.DONE) {
+      this.getIssue().setState(IssueState.IN_PROGRESS);
     }
   }
 
