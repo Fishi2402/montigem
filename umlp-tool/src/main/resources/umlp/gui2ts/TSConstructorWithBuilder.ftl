@@ -1,5 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("diagrammName", "name", "attributes", "guiDSLPrinter")}
 <#assign router="router">
-public constructor(protected ${router}: Router) {
+public constructor(${router}: Router) {
+  super();
+  super.${router} = ${router};
 }

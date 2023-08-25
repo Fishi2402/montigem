@@ -2,15 +2,10 @@
 
 import {SehubManager} from '@src/sehub/SehubManager';
 import {IssueState} from '@src/sehub/IssueState';
-import {Component} from '@angular/core';
+import {Directive} from '@angular/core';
 import {IssueEntryTOP} from '@src/gui/issues/IssueEntryTOP';
 
-@Component({
-  selector: 'issue-entry',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueEntry.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
-})
+@Directive()
 
 export class IssueEntry extends IssueEntryTOP {
 

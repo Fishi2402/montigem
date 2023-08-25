@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { StartTOP } from '@src/gui/StartTOP';
+import { StartComponentTOP } from '@src/gui/StartComponentTOP';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
@@ -12,15 +12,11 @@ import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
   styleUrls: []
 })
 
-export  class Start extends StartTOP {
-
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super();
-  }
+export  class StartComponent extends StartComponentTOP {
 
   ngOnInit(){
     if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['/login']);
+      super.router.navigate(['/login']);
     }
   }
 

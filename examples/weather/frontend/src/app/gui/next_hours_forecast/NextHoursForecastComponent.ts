@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NextHoursForecastTOP } from "@src/gui/next_hours_forecast/NextHoursForecastTOP";
+import { NextHoursForecastComponentTOP } from "@src/gui/next_hours_forecast/NextHoursForecastComponentTOP";
 
 @Component({
   selector: 'next-hours-forecast',
@@ -7,7 +7,7 @@ import { NextHoursForecastTOP } from "@src/gui/next_hours_forecast/NextHoursFore
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: ['NextHoursForecast.scss',]
 })
-export class NextHoursForecast extends NextHoursForecastTOP {
+export class NextHoursForecastComponent extends NextHoursForecastComponentTOP {
 
   public ngOnInit(): void { // Do nothing, especially not loading default data
   }

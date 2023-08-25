@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("routes", "existHWCRoutes", "componentPath", "ids")}
+${tc.signature("routes", "existHWCRoutes", "componentPath", "ids", "componentSuffix")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign component = ast.getName()>
 <#assign idBased = ids?has_content>
@@ -8,7 +8,7 @@ ${tc.signature("routes", "existHWCRoutes", "componentPath", "ids")}
 // always imported
 import { Routes } from "@angular/router";
 // imports of pages in the package
-import { ${component} } from "${componentPath}";
+import { ${component}${componentSuffix} } from "${componentPath}";
 
 export const ${routes}<#if existHWCRoutes>TOP</#if>: Routes = [
 <#if !idBased>
@@ -20,6 +20,6 @@ export const ${routes}<#if existHWCRoutes>TOP</#if>: Routes = [
 </#if>
   {
     path: "${component}<#list ids as id>/:${id}</#list>",
-    component: ${ast.getName()}
+    component: ${ast.getName()}${componentSuffix}
   }
 ]

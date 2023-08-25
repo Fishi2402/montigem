@@ -2,7 +2,11 @@
 @import "../../../config/src/variables";
 
 :host ::ng-deep .gem-textarea {
-  min-height: 15em;
-  background: red;
+  //min-height: 2em;
+}
+
+:host ::ng-deep .edit {.gem-textarea {
+  min-height: 15em !important;
+}
 }
 

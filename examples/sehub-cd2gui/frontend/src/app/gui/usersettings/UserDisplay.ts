@@ -1,18 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Component} from '@angular/core';
+import {Directive} from '@angular/core';
 import {UserDisplayTOP} from '@src/gui/usersettings/UserDisplayTOP';
 
 import {SehubRole} from '@src/sehub/SehubRole';
 import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
-@Component({
-  selector: 'user-display',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/usersettings/UserDisplay.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ["/UserDisplay.scss"]
-})
+@Directive()
 export class UserDisplay extends UserDisplayTOP {
 
   public override getRoleEntry(): string {

@@ -5,6 +5,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
+import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.nio.file.Path;
@@ -15,6 +16,7 @@ import java.util.Optional;
 public class GUIComponentAnnotationDecorator {
 
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
+
   protected final GlobalExtensionManagement glex;
   protected final MCPath hwPath;
   protected final Path outPath;
@@ -29,7 +31,8 @@ public class GUIComponentAnnotationDecorator {
 
   public void transform(ASTCDCompilationUnit ast) {
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
-      if (util.isTop(clazz.getName())) {
+      String originalName = getOriginalName(clazz);
+      if (util.isTop(clazz.getName()) || !isComponent(clazz)) {
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
@@ -37,10 +40,10 @@ public class GUIComponentAnnotationDecorator {
         );
       }
       else {
-        String htmlFileName = clazz.getName() + ".html";
+        String htmlFileName = originalName + ".html";
         String htmlPath = "./" + htmlFileName;
         String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName()
-            + "." + clazz.getName();
+            + "." + originalName;
 
         Optional<String> hwHtmlPath = util.getRelativeImportPath(
             hwPath, outPath, qName, "html");
@@ -56,13 +59,26 @@ public class GUIComponentAnnotationDecorator {
           scssPaths.add(hwScssPath.get());
         }
 
+        String selector = GUIGeneratorUtil.getInstance().getComponentNameFromCamelCaseName(originalName);
+
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, htmlPath, scssPaths)
+            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, htmlPath, scssPaths, selector)
         );
       }
     }
+  }
+
+  private static String getOriginalName(ASTCDClass clazz) {
+    return isComponent(clazz) ?
+        clazz.getName()
+            .substring(0, clazz.getName().lastIndexOf(GUIAbstractDecorator.COMPONENT_SUFFIX)) :
+        clazz.getName();
+  }
+
+  private static boolean isComponent(ASTCDClass clazz) {
+    return clazz.getName().endsWith(GUIAbstractDecorator.COMPONENT_SUFFIX);
   }
 
 }

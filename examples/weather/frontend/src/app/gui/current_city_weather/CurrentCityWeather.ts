@@ -1,15 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { CurrentCityWeatherTOP } from '@src/gui/current_city_weather/CurrentCityWeatherTOP';
-import { Component } from '@angular/core';
+import { Directive } from '@angular/core';
 import { WeatherState } from "@src/weather/WeatherState";
 
-@Component({
-  selector: 'current-city-weather',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/current_city_weather/CurrentCityWeather.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['CurrentCityWeather.scss']
-})
+@Directive()
 export class CurrentCityWeather extends CurrentCityWeatherTOP {
 
   public getGemText3Value(): string {

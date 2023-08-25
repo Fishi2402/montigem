@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { WeatherWidgetTOP } from '@src/gui/widgets/WeatherWidgetTOP';
+import { WeatherWidgetComponentTOP } from '@src/gui/widgets/WeatherWidgetComponentTOP';
 
 @Component({
   selector: 'weather-widget',
@@ -10,7 +10,7 @@ import { WeatherWidgetTOP } from '@src/gui/widgets/WeatherWidgetTOP';
   styleUrls: ['./WeatherWidget.scss']
 })
 
-export class WeatherWidget extends WeatherWidgetTOP {
+export class WeatherWidgetComponent extends WeatherWidgetComponentTOP {
 
 }
 
