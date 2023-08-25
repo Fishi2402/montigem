@@ -35,8 +35,10 @@
     <#else>
       <#if useDeSer>
       printer["${fieldName}"] = ${objectMapperName}.serialize(obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}(), "${fieldType}");
+      <#elseif genService.isCDEnum(attr.getSymbol().getType())>
+      printer["${fieldName}"] = ${fieldType}[obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}()];
       <#else>
-      printer["${fieldName}"] = obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}()<#if genService.isCDEnum(attr.getSymbol().getType())>.toString()</#if>;
+      printer["${fieldName}"] = obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}();
       </#if>
     </#if>
 </#if>
