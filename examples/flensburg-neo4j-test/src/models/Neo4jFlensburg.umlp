@@ -14,6 +14,8 @@ umlp Neo4jFlensburg {
       int age;
     }
 
+    association [*] Neo4jHuman -> (bestFriend) Neo4jHuman [0..1];
+
     class Neo4jPerson extends Neo4jHuman {
         String nickname;
 

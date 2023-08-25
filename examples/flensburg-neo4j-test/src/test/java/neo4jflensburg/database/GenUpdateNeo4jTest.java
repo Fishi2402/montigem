@@ -135,4 +135,17 @@ public class GenUpdateNeo4jTest extends GenAbstractNeo4jDBTest {
       assertEquals(1, a2Copy.sizeVisitors());
     }
   }
+
+  @Test
+  public void testSettingOptionalValuesInDB() {
+    Neo4jHuman h = Neo4jFlensburgManager.neo4jHumanBuilder().age(10).build().get();
+    Neo4jHuman h2 = Neo4jFlensburgManager.neo4jHumanBuilder().age(11).build().get();
+
+    h.setBestFriend(h2);
+
+    assertTrue(h.getBestFriendGem().isPresent());
+
+    Neo4jHuman hCopy = new Neo4jHumanDAO().selectNeo4jHuman(h.getGemId()).get();
+    assertTrue(hCopy.getBestFriendGem().isPresent());
+  }
 }
