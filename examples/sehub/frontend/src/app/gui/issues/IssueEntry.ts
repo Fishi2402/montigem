@@ -3,16 +3,16 @@
 import {SehubManager} from '@src/sehub/SehubManager';
 import {IssueState} from '@src/sehub/IssueState';
 import {Component} from '@angular/core';
-import {IssueCollectionTOP} from '@src/gui/issues/IssueCollectionTOP';
+import {IssueEntryTOP} from '@src/gui/issues/IssueEntryTOP';
 
 @Component({
-  selector: 'issue-collection',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueCollection.html',
+  selector: 'issue-entry',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueEntry.html',
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: []
 })
 
-export class IssueCollection extends IssueCollectionTOP {
+export class IssueEntry extends IssueEntryTOP {
 
   public editIssue(event: any): void {
     console.log(this.getIssue().getGemId())

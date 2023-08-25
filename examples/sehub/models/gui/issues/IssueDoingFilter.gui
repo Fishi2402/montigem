@@ -1,10 +1,10 @@
 package gui.issues;
 import Sehub.Issue;
 
-import gui.issues.IssueCollection;
+import gui.issues.IssueEntry;
 
 component IssueDoingFilter(Issue issue){
       @guard(issue.state == 1 ){
-        @IssueCollection(issue = issue);
+        @IssueEntry(issue = issue);
       }
 }

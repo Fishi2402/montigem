@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Issue} from '@src/sehub/Issue';
+import {IssueState} from '@src/sehub/IssueState';
 import {Component} from '@angular/core';
 import {IssueTrackerPageTOP} from '@src/gui/issues/IssueTrackerPageTOP';
-import {GemList} from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
 import {ActivatedRoute, Router} from '@angular/router';
 import { SehubSecurityManager } from '@src/sehub/SehubSecurityManager';
 
@@ -30,7 +29,7 @@ export class IssueTrackerPage extends IssueTrackerPageTOP {
   public override getTodoTitle(): string {
     let count = 0;
     this.getIssues().toArray().forEach(i => {
-      if (i.getState() === 0) count++
+      if (i.getState() === IssueState.UNASSIGNED) count++
     })
     return super.getTodoTitle() + " (" + count + ")"
   }
@@ -38,7 +37,7 @@ export class IssueTrackerPage extends IssueTrackerPageTOP {
   public override getDoingTitle(): string {
     let count = 0;
     this.getIssues().toArray().forEach(i => {
-      if (i.getState() === 1) count++
+      if (i.getState() === IssueState.IN_PROGRESS) count++
     })
     return super.getDoingTitle() + " (" + count + ")"
   }
@@ -46,7 +45,7 @@ export class IssueTrackerPage extends IssueTrackerPageTOP {
   public override getDoneTitle(): string {
     let count = 0;
     this.getIssues().toArray().forEach(i => {
-      if (i.getState() === 2) count++
+      if (i.getState() === IssueState.DONE) count++
     })
     return super.getDoneTitle() + " (" + count + ")"
   }
