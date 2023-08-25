@@ -11,7 +11,7 @@ import input.src.lib.gemtextinput.GemTextInput;
 import input.src.lib.gemtextareainput.GemTextareaInput;
 
 component IssueCollection(Issue issue){
-    @GemColumn(hAlign = "center", width = "400px", rowGap =" 5px", component =
+    issueColumn@GemColumn(hAlign = "center", width = "400px", rowGap =" 5px", component =
       issueCard@GemCard(title = issue.title, component =
         @GemColumn(height = "auto", hAlign = "right", rowGap = "10px", components = [
          @GemRow(colGap = "7px", width="100%", hAlign="center", components = [
