@@ -1,0 +1,28 @@
+package gui;
+
+import Sehub.BingoBoard;
+import Sehub.BingoEntry;
+
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemcolumn.GemColumn;
+import basic.src.lib.gembutton.GemButton;
+import basic.src.lib.gemtext.GemText;
+import input.src.lib.gemtextareainput.GemTextareaInput;
+
+page Bingo(BingoBoard board){
+    @GemText(value = "Bingo !!");
+    @GemRow(width = "1025px", colGap = "5px", rowGap = "5px", component =
+      @iterate(BingoEntry b : board.entries){
+        @GemCard(title = "", component =
+           @GemColumn(width = "170px", components = [
+              @GemTextareaInput(
+                  id = "bingoEntry",
+                  labelText = "",
+                  entry = b.word
+              ),
+              @GemButton(label = "Check!", leftClick = checkEntry)
+           ])
+         );
+      });
+}

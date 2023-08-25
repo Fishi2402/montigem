@@ -1,0 +1,18 @@
+
+@import "../../../../config/src/variables";
+
+:host ::ng-deep .todo {
+  background-color: #d6eaf8 !important;
+}
+
+:host ::ng-deep .doing {
+  background-color: #aed6f1 !important;
+}
+
+:host ::ng-deep .done {
+  background-color:  #7fb3d5 !important;
+}
+
+
+
+

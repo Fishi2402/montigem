@@ -1,0 +1,8 @@
+<ng-container *ngIf="location.path() !== '/login/Login'
+  && location.path() !== '/login/forgotpassword/ForgotPassword'
+  && location.path() !== '/login/registration/UserCreate'">
+  <navigation class="my-nav"></navigation>
+</ng-container>
+<main class="app-main">
+  <router-outlet></router-outlet>
+</main>
