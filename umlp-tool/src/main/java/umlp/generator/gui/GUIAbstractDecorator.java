@@ -2,17 +2,22 @@
 package umlp.generator.gui;
 
 import com.google.common.collect.Lists;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
@@ -32,6 +37,8 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
   public static final Predicate<ASTGUIComponent> PREDICATE_PIE = c -> c.getQualifiedName().equals("umlp.gui.Pie");
   public static final Predicate<ASTGUIComponent> PREDICATE_NOT_TABLE = c -> !c.getQualifiedName().endsWith("table.GemTable");
   public static final Predicate<ASTGUIComponent> PREDICATE_NOT_BUTTON = c -> !c.getQualifiedName().equals("io.GemButton");
+
+  public static final String COMPONENT_SUFFIX = "Component";
 
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
   public static MCBasicTypesFullPrettyPrinter basicTypesPrinter;
@@ -80,5 +87,26 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  }
+
+  protected boolean isModelImportInGUI(ASTMCImportStatement i) {
+    return isCDModelImportInGUI(i) || isGUIModelImportInGUI(i);
+  }
+
+  protected boolean isGUIModelImportInGUI(ASTMCImportStatement i) { // TODO MB  guisym
+    return GUIDSLMill.globalScope()
+        .resolveGUIComponentDeclaration(i.getQName()).isPresent();
+  }
+
+  protected boolean isCDModelImportInGUI(ASTMCImportStatement i) { // TODO MB umlpsym UMLPDefSymbol
+    return util.isDomainImport(i) || !isGUIModelImportInGUI(i);
+  }
+
+  protected ASTMCType transformTypeForAttr(ASTCDClass clazz, ASTGUIParam param) {
+    return param.getMCType();
+  }
+
+  protected String getParam(String type, String name) {
+    return type + " " + name;
   }
 }

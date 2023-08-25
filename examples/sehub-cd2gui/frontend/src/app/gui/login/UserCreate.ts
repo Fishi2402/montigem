@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Component} from '@angular/core';
+import {Directive} from '@angular/core';
 import {UserCreateTOP} from '@src/gui/login/UserCreateTOP';
 import {User} from '@src/sehub/User';
 import {SehubRole} from '@src/sehub/SehubRole';
@@ -9,31 +9,15 @@ import { ActivationStatus } from '@src/sehub/ActivationStatus';
 import { SehubManager } from '@src/sehub/SehubManager';
 import { GemList } from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
 
-@Component({
-  selector: 'user-create',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserCreate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ["/Login.scss"]
-})
+@Directive()
 
 export class UserCreate extends UserCreateTOP {
 
-  private error: string = "";
+  protected error: string = "";
 
-  private users: GemList<User>;
+  protected users: GemList<User>;
 
   public static email: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-
-  public ngOnInit(): void {
-    SehubManager.userBuilder().then(gemPromiseRes => {
-      this.newUserBuilder = gemPromiseRes;
-    });
-
-    SehubManager.getUserList().then(gemPromiseRes => {
-      this.users = gemPromiseRes;
-    });
-
-  }
 
   public override createUser(event: any): void {
     this.error = "";

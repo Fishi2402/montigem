@@ -14,7 +14,7 @@ ${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "componentGenerator"
 
 <#--${includeArgs("umlp.generator.hook.BeforeTransform", decoratedAST, glex, hwPath, componentGenerator, guiDecorator, topDecorator)}-->
 
-${guiDecorator.transform(ast, decoratedAST, viewComponents)}
+${guiDecorator.transform(ast, decoratedAST, viewComponents, hwPath, outPath)}
 
 ${topDecorator.decorate(decoratedAST)}
 

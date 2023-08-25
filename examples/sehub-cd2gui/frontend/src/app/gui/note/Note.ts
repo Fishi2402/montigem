@@ -1,27 +1,18 @@
 
 
 import { NoteTOP } from "@src/gui/note/NoteTOP";
-import {Component} from '@angular/core';
+import {Directive} from '@angular/core';
 import { SehubManager } from '@src/sehub/SehubManager';
 import { Post } from '@src/sehub/Post';
 import { ActivatedRoute, Router } from '@angular/router';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {ViewChild} from '@angular/core';
 
-@Component({
-  selector: 'note',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/note/Note.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['./Note.scss']
-})
+@Directive()
 
 export class Note extends NoteTOP {
 
   public showResponsesFlag: boolean
-
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(route, router);
-  }
 
   public  getShowResponses (): boolean
 
@@ -34,17 +25,6 @@ export class Note extends NoteTOP {
   {
     return "↪️ Reply (" + this.getPost().getResponses().length + ")";
   }
-
-
-
-  ngOnInit(): void {
-    console.log("Note Init")
-    super.ngOnInit();
-
-  }
-
-
-
 
   answerPost(event: any){
     SehubManager.postBuilder().then(builder => {

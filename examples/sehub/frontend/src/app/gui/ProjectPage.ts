@@ -8,30 +8,20 @@ import { GemTreeviewEntry } from '@monticore/montigem-basic';
 import { Directory } from '@src/sehub/Directory';
 
 import {
-  Component,
+  Directive,
 } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
-@Component({
-  selector: 'project-page',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/ProjectPage.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
-})
+@Directive()
 
 export class ProjectPage extends ProjectPageTOP {
 
   networkDataCheck = { value: null, hash: null, calculating: false };
   treeViewDataCheck = { value: null, hash: null, calculating: false };
 
-  ngOnInit(){
-    if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['/login']);
-    }
-    super.ngOnInit();
-  }
+
   public getGemNetworkGraph1Data(): GemNetworkData  {
     if(!(this.project)) {
       return null;
