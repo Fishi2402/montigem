@@ -24,6 +24,8 @@ export class NotesPage extends NotesPageTOP {
       alert("No User Logged In")
       this.router.navigate(['/login']);
     }
+
+    super.ngOnInit();
   }
 
   newPost(event: any) {
