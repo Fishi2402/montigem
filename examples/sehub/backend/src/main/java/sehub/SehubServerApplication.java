@@ -19,7 +19,9 @@ import java.util.Optional;
 
 import java.io.File;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 @SpringBootApplication(
     exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
@@ -40,21 +42,62 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
       System.err.println("User " + user.getUsername());
     }
 
+    Set<BingoEntry> entrySet = new java.util.HashSet<>(Collections.emptySet());
+    for (int i = 0; i <= 24; i++) {
+      entrySet.add(SehubManager.bingoEntryBuilder().word("").build().get());
+    }
+    BingoBoardBuilder boardBuilder = new BingoBoardBuilder(42001);
+    Optional<BingoBoard> bingoBoard = boardBuilder
+        .bingoBoardEntries(entrySet)
+        .build();
+
+    Set<BoardMapper> mapping = new java.util.HashSet<>(Collections.emptySet());
+    int [] permutation = getBingoBoardPermutation();
+
+    for (int i = 0; i <= 24; i++) {
+      mapping.add(SehubManager.boardMapperBuilder().bingoBoardEntry(bingoBoard.get().getBingoBoardEntries(permutation[i])).isChecked(false).build().get());
+    }
+
+    System.out.println(mapping);
     if (SehubManager.getUserList().isEmpty()) {
       Optional<User> newUser = SehubManager.userBuilder()
           .username("MyUser")
           .password("MyPasswort")
           .registrationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
           .email("MyEmail")
+          .gridEntry(mapping)
       //    .activated(ActivationStatus.AKTIVIERT)
           .role(SehubRole.OWNER)
           .build();
+
+      System.out.println(newUser.get().getGemId());
+
       if (newUser.isPresent()) {
         UserDeSer userDeSer = new UserDeSer();
         System.out.println(userDeSer.serialize(newUser.get()));
       }
     }
 
+
+
+    Set<BoardMapper> mapping2 = new java.util.HashSet<>(Collections.emptySet());
+    int [] permutation2 = getBingoBoardPermutation();
+
+    for (int i = 0; i <= 24; i++) {
+      mapping2.add(SehubManager.boardMapperBuilder().bingoBoardEntry(bingoBoard.get().getBingoBoardEntries(permutation2[i])).isChecked(false).build().get());
+    }
+
+    Optional<User> newUser2 = SehubManager.userBuilder()
+        .username("admin")
+        .password("pwd")
+        .registrationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
+        .email("admin@sehub.de")
+        .gridEntry(mapping2)
+        //    .activated(ActivationStatus.AKTIVIERT)
+        .role(SehubRole.OWNER)
+        .build();
+
+    System.out.println(newUser2.get().getGemId());
     Optional<Post> p1 = SehubManager.postBuilder()
         .author(SehubManager.getUserList().get(0))
         .title(" | 15:57 ]: Können Wasserkocher Fliegen ?")
@@ -115,16 +158,23 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         .state(IssueState.UNASSIGNED)
         .build();
 
-    Set<BingoEntry> entrySet = new java.util.HashSet<>(Collections.emptySet());
-    for (int i = 0; i <= 24; i++) {
-      entrySet.add(SehubManager.bingoEntryBuilder().word("").isChecked(false).build().get());
-    }
-    BingoBoardBuilder boardBuilder = new BingoBoardBuilder(42001);
-      boardBuilder
-          .entries(entrySet)
-          .build();
 
     new DummyDataCreator().createDummyData();
   }
+
+  public static int[] getBingoBoardPermutation() {
+    int[] arr = IntStream.rangeClosed(0, 24).toArray();
+    Random random = new Random();
+
+    for (int i = arr.length - 1; i > 0; i--) {
+      int j = random.nextInt(i + 1); // random index from 0 to i
+      int temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp; // Swap elements
+    }
+
+    return arr;
+  }
+
 
 }

@@ -91,10 +91,17 @@ classdiagram Sehub {
 
   class BingoBoard {}
 
-  class BingoEntry {
-    String word;
+  class BoardMapper {
     boolean isChecked;
   }
 
-  association bingoEntries [1] BingoBoard -> (entries) BingoEntry [*];
+  class BingoEntry {
+    String word;
+
+  }
+
+  association mappedBingoEntry [1] User -> (gridEntry) BoardMapper [*];
+  association bingoBoardEnties [1] BingoBoard -> (bingoBoardEntries) BingoEntry [*];
+  association boardMapping [1] BoardMapper -> (bingoBoardEntry) BingoEntry [1];
+
 }
