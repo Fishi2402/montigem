@@ -26,6 +26,7 @@ export  class SehubMainPage extends SehubMainPageTOP {
     if (!SehubSecurityManager.isSignedIn()) {
       this.router.navigate(['/login']);
     }
+    super.ngOnInit();
   }
 
   public  getGemNetworkGraph1Data (): GemNetworkData  {
