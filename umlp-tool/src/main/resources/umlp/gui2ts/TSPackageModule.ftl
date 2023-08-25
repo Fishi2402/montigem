@@ -2,6 +2,7 @@
 <#-- Generates a routes file from the given model -->
 ${tc.signature("astguiCompilationUnitList","ids","compDecl","topNameMap","paths")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
+<#assign uniqueSet = []>
 // always imported
 import { Routes } from "@angular/router";
 // imports of pages in the package
@@ -9,10 +10,13 @@ import { Routes } from "@angular/router";
   import { ${astguiCompilationUnitList[index].getComponentName()} } from "${paths[index]}";
 </#list>
 
+
 <#list astguiCompilationUnitList as ast>
   <#list ast.getMCImportStatementList() as imp>
-    <#if genHelper.isGuiImport(imp)>
-      import { ${genHelper.getModuleClassName(imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1))} } from "${genHelper.java2tsModule(imp.getQName())}";
+      <#assign moduleClassName =genHelper.getModuleClassName(imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1)) >
+    <#if genHelper.isGuiImport(imp) && !uniqueSet?seq_contains(moduleClassName) >
+      import { ${moduleClassName} } from "${genHelper.java2tsModule(imp.getQName())}";
+        <#assign uniqueSet = uniqueSet + [moduleClassName]>
     </#if>
   </#list>
 </#list>
@@ -27,12 +31,9 @@ declarations: [
 imports: [
 CommonModule,
 RouterModule.forChild(routes),
-<#list astguiCompilationUnitList as ast>
-<#list ast.getMCImportStatementList() as imp>
-  <#if genHelper.isGuiImport(imp)>
-    ${genHelper.getModuleClassName(imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1))},
-  </#if>
-</#list>
+
+<#list uniqueSet as moduleClassName>
+  ${moduleClassName},
 </#list>
 ],
 exports: [
