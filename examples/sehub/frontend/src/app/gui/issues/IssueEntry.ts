@@ -39,4 +39,14 @@ export class IssueEntry extends IssueEntryTOP {
     SehubManager.deleteIssue(this.getIssue().getGemId())
   }
 
+  public  getIssueCardTitle (): string
+
+  {
+    let postCounter = 0;
+
+    this.getIssue().getPosts().forEach(p => { postCounter = postCounter + 1 + p.getResponses().length})
+
+    return super.getIssueCardTitle() + " (" + postCounter + ")"
+  }
+
 }

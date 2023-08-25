@@ -1,9 +1,0 @@
-package stanley.tmp.charts;
-
-import stanley.tmp.charts.PieTypes.PieEntry;
-
-/** Pie chart component interface definition
-*/
-component GemPie(
-  List<PieEntry> entries
-)
