@@ -172,15 +172,15 @@ public class GUI2TypeScriptGenerator {
     String []tempArray=temp.split("\\.");
     String name =tempArray[tempArray.length-1].substring(0,1).toUpperCase()+tempArray[tempArray.length-1].substring(1);
 
-    boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathName+"/"+name + ROUTES_FILE, TS_FILE_EXTENSION);
+    boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathName+"/"+name+ "." + ROUTES_FILE, TS_FILE_EXTENSION);
 
     Path generatedRoutingFile = Paths.get(pathName,
-        name + ROUTES_FILE +(existHWCRoutes?"TOP":"")+"." + TS_FILE_EXTENSION);
+        name+"." + ROUTES_FILE +(existHWCRoutes?"TOP":"")+"." + TS_FILE_EXTENSION);
     genEngine.generateNoA("umlp.gui2ts.TSPackageRoutes", generatedRoutingFile,
         astguiCompilationUnitList, ids,fullPathIndex, topNameMap,paths);
 
-    boolean existHWCModules = existsHandwrittenFile(hwcPath, pathName+"/" +name + MODULES_FILE, TS_FILE_EXTENSION);
-    Path generatedModuleFiles = Paths.get(pathName,name+
+    boolean existHWCModules = existsHandwrittenFile(hwcPath, pathName+"/" +name +"."+ MODULES_FILE, TS_FILE_EXTENSION);
+    Path generatedModuleFiles = Paths.get(pathName,name+"."+
    MODULES_FILE + (existHWCModules?"TOP":"") + "." + TS_FILE_EXTENSION);
     String compDecl= name;
     genEngine.generateNoA("umlp.gui2ts.TSPackageModule", generatedModuleFiles,

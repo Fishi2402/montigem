@@ -37,9 +37,13 @@ RouterModule.forChild(routes),
 </#list>
 ],
 exports: [
+<#list astguiCompilationUnitList as ast>
+    ${ast.getComponentName()},
+</#list>
 ]
 })
 
+export class ${compDecl}Module {}
 
 
 
