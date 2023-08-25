@@ -1,4 +1,0 @@
-**
-!httpd*.conf
-!Caddyfile
-!dist/**

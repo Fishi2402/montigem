@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
 @Component({
   selector: 'project-page',
@@ -25,6 +26,12 @@ export class ProjectPage extends ProjectPageTOP {
   networkDataCheck = { value: null, hash: null, calculating: false };
   treeViewDataCheck = { value: null, hash: null, calculating: false };
 
+  ngOnInit(){
+    if (!SehubSecurityManager.isSignedIn()) {
+      this.router.navigate(['/login']);
+    }
+    super.ngOnInit();
+  }
   public getGemNetworkGraph1Data(): GemNetworkData  {
     if(!(this.project)) {
       return null;

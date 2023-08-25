@@ -13,13 +13,11 @@ import {IssueCreateTOP} from '@src/gui/issues/IssueCreateTOP';
 
 export class IssueCreate extends IssueCreateTOP {
 
-  public ngOnInit(): void {
-    super.ngOnInit();
-  }
-
   public override createIssue(event: any): void {
     this.issueBuilder.state(IssueState.UNASSIGNED);
     this.build();
+
+    console.log(this.getIssue().getGemId())
   }
 
 }

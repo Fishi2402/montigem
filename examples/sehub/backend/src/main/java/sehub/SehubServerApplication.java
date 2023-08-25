@@ -88,6 +88,33 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         .posts(Set.of(p3.get()))
         .build();
 
+    SehubManager.issueBuilder()
+        .title("Verfügbare Konten sollen beim Bearbeiten von Dienstreisen auswählbar sein")
+        .description("Wenn eine bestehende Dienstreise bearbeitet wird, kann kein neues Konto ausgewählt werden. " +
+            "Zuerst muss die zu bearbeitende Dienstreise gelöscht, gespeichert und erneut bearbeitet werden. " +
+            "Erst dann werden die Kontooptionen angezeigt." +
+            "Es sollte möglich sein, direkt ein neues Konto auszuwählen.")
+        .state(IssueState.DONE)
+        .build();
+
+    SehubManager.issueBuilder()
+        .title("Änderungsdatum Erweiterung")
+        .description("Das Änderungsdatum für Buchungen, Mittelabrufe, Rechnungen, Mittelzuweisungen und Stellenzuweisungen " +
+            "ist aktuell nur auf der Seite Finazen/Zahlungen sichtbar. Das Änderungsdatum soll aber auch für die " +
+            "einzelnen Elemente auf den Kontenseiten in einem Konto selbst sichtbar sein.")
+        .state(IssueState.IN_PROGRESS)
+        .build();
+
+
+    SehubManager.issueBuilder()
+        .title("Finanzen: Umfang einer Zuweisung zu Organigrammstufe im Konto beschränken")
+        .description("Bei der Zuweisung einer Organigrammstufe in einem Konto kann ein Umfang hinterlegt werden. " +
+            "Standardmäßig ist der Umfang mit 100% vorausgefüllt. Der Umfang kann allerdings bearbeitet werden und " +
+            "auf mehr als 100% angepasst werden. Eine Zuweisung von mehr als 100% ergibt jedoch keinen Sinn, weshalb " +
+            "der maximal zulässige Umfang auf 100% beschränkt werden sollte.")
+        .state(IssueState.UNASSIGNED)
+        .build();
+
     Set<BingoEntry> entrySet = new java.util.HashSet<>(Collections.emptySet());
     for (int i = 0; i <= 24; i++) {
       entrySet.add(SehubManager.bingoEntryBuilder().word("").isChecked(false).build().get());

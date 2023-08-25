@@ -28,9 +28,6 @@ include ":umlp-rte:umlp-frontend-rte"
 include ":umlp-rte:umlp-frontend-rte-java"
 
 include ":experiments"
-include ":experiments:initial"
-include ":experiments:coreRequirements"
-include ":experiments:coreRequirements:stanley"
 include ":experiments:dbPerformance"
 include ":experiments:statecharts-integration"
 
