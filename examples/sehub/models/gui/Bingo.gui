@@ -22,7 +22,7 @@ page Bingo(User user){
                     labelText = "",
                     entry = b.bingoBoardEntry.word
                 ),
-                @GemButton(label = "Check!", leftClick = checkEntry)
+                checkButton@GemButton(label = "Check!", leftClick = checkEntry(b))
              ])
            );
         })

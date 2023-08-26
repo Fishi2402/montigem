@@ -58,7 +58,6 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
       mapping.add(SehubManager.boardMapperBuilder().bingoBoardEntry(bingoBoard.get().getBingoBoardEntries(permutation[i])).isChecked(false).build().get());
     }
 
-    System.out.println(mapping);
     if (SehubManager.getUserList().isEmpty()) {
       Optional<User> newUser = SehubManager.userBuilder()
           .username("MyUser")
@@ -70,7 +69,6 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
           .role(SehubRole.OWNER)
           .build();
 
-      System.out.println(newUser.get().getGemId());
 
       if (newUser.isPresent()) {
         UserDeSer userDeSer = new UserDeSer();
@@ -97,7 +95,6 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         .role(SehubRole.OWNER)
         .build();
 
-    System.out.println(newUser2.get().getGemId());
     Optional<Post> p1 = SehubManager.postBuilder()
         .author(SehubManager.getUserList().get(0))
         .title(" | 15:57 ]: Können Wasserkocher Fliegen ?")

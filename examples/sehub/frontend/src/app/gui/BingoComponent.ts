@@ -3,6 +3,7 @@ import {Component,} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 import { SehubManager } from "@src/sehub/SehubManager";
+import { BoardMapper } from "@src/sehub/BoardMapper";
 
 
 @Component({
@@ -22,5 +23,22 @@ export class BingoComponent extends BingoComponentTOP {
 
     super.ngOnInit();
 
+  }
+
+  public  checkButtonLeftClick (event: any,b: any): void
+  {
+    console.log(b)
+    if (b.isIsChecked()) b.setIsChecked(false)
+    else b.setIsChecked(true)
+
+    console.log(b.getGemId(), b.isIsChecked())
+    b.build();
+  }
+
+
+  public  getCheckButtonLabel (b: BoardMapper): string
+  {
+    if (b.isIsChecked()) return "-- ✅ --"
+    else return "Toggle"
   }
 }
