@@ -89,7 +89,14 @@ classdiagram Sehub {
 
   association contains [0..1] Directory -> (contains) Artifact [*];
 
+
+  // --------------------- Bingo ---------------------
+
   class BingoBoard {}
+
+  class Message {
+    String text;
+  }
 
   class BoardMapper {
     boolean isChecked;
@@ -97,7 +104,6 @@ classdiagram Sehub {
 
   class BingoEntry {
     String word;
-
   }
 
   association mappedBingoEntry [1] User -> (gridEntry) BoardMapper [*];

@@ -39,6 +39,15 @@
   backdrop-filter: none !important;
 }
 
+:host ::ng-deep .messageEntryTPL { div {
+  font-size: 12px;
+  color: $acronio-orange;
+  background: rgba($acronio-black, 0.5) !important;
+  border-radius: 5px 5px 5px 5px!important;
+
+  }
+}
+
 :host ::ng-deep .gem-button {
   color: $acronio-black-3 ;
   background: $acronio-black-1;
