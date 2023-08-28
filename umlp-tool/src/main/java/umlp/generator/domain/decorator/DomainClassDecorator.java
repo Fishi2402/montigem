@@ -147,7 +147,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
       if (GenService.isGem(attr) && !GenService.isGemList(attr)) {
         glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(getInitialGemValue()));
       } else if (GenService.isList(attr)) {
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("=new ArrayList<>()"));
+        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(defaultListValue()));
       }
     }
 
