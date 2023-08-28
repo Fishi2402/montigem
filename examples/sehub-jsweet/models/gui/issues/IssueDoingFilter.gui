@@ -1,0 +1,11 @@
+package gui.issues;
+import Sehub.Issue;
+import Sehub.IssueState;
+
+import gui.issues.IssueEntry;
+
+component IssueDoingFilter(Issue issue){
+      @guard(issue.state == IssueState.IN_PROGRESS ){
+        @IssueEntry(issue = issue);
+      }
+}

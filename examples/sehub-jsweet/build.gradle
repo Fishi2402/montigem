@@ -1,0 +1,3 @@
+project('frontend') {
+  sourceSets.main.java.srcDirs = ['../backend/src/main/java', '../backend/build/umlp/backend']
+}

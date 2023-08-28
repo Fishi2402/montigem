@@ -10,7 +10,6 @@ buildscript {
       transitive = true
     }
     classpath group: 'umlp', name: 'umlp-frontend-rte-java'
-//        classpath project(":umlp-rte:umlp-frontend-rte-java")
   }
 }
 

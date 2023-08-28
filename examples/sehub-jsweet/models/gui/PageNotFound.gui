@@ -1,0 +1,22 @@
+package gui;
+
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemcard.GemCard;
+import basic.src.lib.gemtext.GemText;
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gemimage.GemImage;
+
+page PageNotFound(){
+   @GemColumn(width = "100%", height="40%", rowGap="20px", vAlign = "center", hAlign = "center", components = [
+     @GemRow(hAlign = "center", vAlign = "center", height = "auto", component =
+             @GemRow(width = "200px", component = @GemImage(source = "assets/images/Eule.png"))
+          ),
+      @GemColumn(width= "600px", hAlign = "center", vAlign = "center", component =
+        @GemCard(title = "SE Hub | 404", component =
+          @GemColumn(hAlign = "center", height = "auto", width = "800px", rowGap = "105px", components = [
+            @GemText(value = "Oh no something went wrong - please fix it!")
+          ])
+        )
+      )
+    ]);
+}

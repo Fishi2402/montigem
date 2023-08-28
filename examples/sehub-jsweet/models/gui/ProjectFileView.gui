@@ -1,0 +1,25 @@
+package gui;
+
+import Sehub.Artifact;
+import Sehub.Directory;
+import Sehub.Project;
+
+import basic.src.lib.gembutton.GemButton;
+
+import table.src.lib.gemtable.GemTable;
+import table.src.lib.gemtable.TableTypes.TableColumn;
+
+import arrange.src.lib.gemcolumn.GemColumn;
+
+page ProjectFileView(Directory parent) {
+
+  @GemButton(label = "Go to Artifacts Page", leftClick = goToArtifactsPage);
+  @GemTable(
+    rows = parent.contains,
+    columns = [
+      TableColumn("_name", "Artifact Name"),
+      TableColumn("_modified", "Last update")
+    ],
+    delete = navigateToSubPage
+  );
+}
