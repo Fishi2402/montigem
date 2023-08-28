@@ -1,6 +1,7 @@
 package flensburg;//+ HWC-PT
 
 import hardy.flensburg.Address;
+import hardy.flensburg.Car;
 import hardy.flensburg.CarBuilder;
 import hardy.flensburg.CityInfo;
 import hardy.flensburg.FlensburgManager;
@@ -26,13 +27,12 @@ public class CityInfoTest {
   public void testCityInfo(){
     FlensburgMock.init();
 
-    CarBuilder c1 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>());
-    CarBuilder c2 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>());
-
-    CarBuilder c3 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>());
-    CarBuilder c4 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>());
-    CarBuilder c5 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>());
-    CarBuilder c6 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>());
+    Car c1 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>()).build().get();
+    Car c2 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>()).build().get();
+    Car c3 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>()).build().get();
+    Car c4 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>()).build().get();
+    Car c5 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>()).build().get();
+    Car c6 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>()).build().get();
 
     Address a1 = FlensburgManager.addressBuilder().city("Aachen").build().get();
     Address a2 = FlensburgManager.addressBuilder().city("Flensburg").build().get();

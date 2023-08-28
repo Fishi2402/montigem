@@ -2,6 +2,7 @@
 package umlp.backendrte.command;
 
 import de.se_rwth.commons.logging.Log;
+import umlp.backendrte.common.LoadingState;
 import umlp.backendrte.common.Result;
 import umlp.backendrte.util.LogUtil;
 import umlp.backendrte.util.TestContext;
@@ -53,6 +54,10 @@ public class CommandDirectCommunication implements ClientCommandCommunication,
     Command<?> recreatedCommand = CommandObjectMapper.deserializeCommand(cmdStr).get();
 
     CommandResult<?> res = CommandManager.executeCommand(recreatedCommand);
+    if (res.isSimpleResult() && !res.asSimpleResult().isSuccessful()) {
+      clientContext.activate();
+      return (CommandResult<T>)  res;
+    }
     String resStr = CommandObjectMapper.serializeResponse(res);
 
     clientContext.activate();
