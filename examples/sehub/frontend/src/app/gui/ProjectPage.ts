@@ -8,31 +8,27 @@ import { GemTreeviewEntry } from '@monticore/montigem-basic';
 import { Directory } from '@src/sehub/Directory';
 
 import {
-  Component,
+  Directive,
 } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
-@Component({
-  selector: 'project-page',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/ProjectPage.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
-})
+@Directive()
 
 export class ProjectPage extends ProjectPageTOP {
 
   networkDataCheck = { value: null, hash: null, calculating: false };
   treeViewDataCheck = { value: null, hash: null, calculating: false };
 
+
   public getGemNetworkGraph1Data(): GemNetworkData  {
-    if(!(this.project && this.project.getRootArtifact()[0])) {
+    if(!(this.project)) {
       return null;
     }
     const networkData = new GemNetworkData();
-    const rootDir : Directory = this.project.getRootArtifact()[0];
 
-    const artifacts : Artifact[] = this.getAllArtifactsFromDir(rootDir, []);
+    const artifacts : Artifact[] = this.getAllArtifactsFromDir(this.project, []);
 
     networkData.nodes = this.getNodesFromArtifacts(artifacts);
     networkData.edges = this.getEdgesFromArtifacts(artifacts);
@@ -83,11 +79,10 @@ export class ProjectPage extends ProjectPageTOP {
   }
 
   public getFilesItems(): Array<GemTreeviewEntry> {
-    if(!(this.project && this.project.getRootArtifact()[0])) {
+    if(!(this.project)) {
       return [];
     }
-    const rootDir : Directory = this.project.getRootArtifact()[0];
-    const treeViewEntries = [this.recursivelyFillGemTreeviewItems(rootDir)]
+    const treeViewEntries = [this.recursivelyFillGemTreeviewItems(this.project)]
 
     const newHash = JSON.stringify(treeViewEntries);
     if(this.treeViewDataCheck.hash !== newHash) {

@@ -59,9 +59,10 @@ classdiagram Sehub {
 
   class Post {
     String text;
+    String title;
   }
 
-  // association auth [1] Post -> (author) User [1];
+  association auth [1] Post -> (author) User [1];
   association resp [1] Post -> (responses) Post [*];
 
 
@@ -87,5 +88,26 @@ classdiagram Sehub {
   class Directory extends Artifact {}
 
   association contains [0..1] Directory -> (contains) Artifact [*];
+
+
+  // --------------------- Bingo ---------------------
+
+  class BingoBoard {}
+
+  class Message {
+    String text;
+  }
+
+  class BoardMapper {
+    boolean isChecked;
+  }
+
+  class BingoEntry {
+    String word;
+  }
+
+  association mappedBingoEntry [1] User -> (gridEntry) BoardMapper [*];
+  association bingoBoardEnties [1] BingoBoard -> (bingoBoardEntries) BingoEntry [*];
+  association boardMapping [1] BoardMapper -> (bingoBoardEntry) BingoEntry [1];
 
 }

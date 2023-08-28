@@ -1,41 +1,30 @@
 import {NotesPageTOP} from "../../../build/frontendGen/build/appgui/gui/NotesPageTOP";
-import {
-  Component,
-} from '@angular/core';
-import {PostBuilder} from "../../../build/frontendGen/build/appdomain/sehub/PostBuilder";
-import {UserBuilder} from "../../../build/frontendGen/build/appdomain/sehub/UserBuilder";
-import {User} from "../../../build/frontendGen/build/appdomain/sehub/User";
-import { SehubManager } from '@src/sehub/SehubManager';
+import {Directive,} from '@angular/core';
 
-@Component({
-  selector: 'notes-page',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/NotesPage.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
-})
+import {ActivatedRoute, Router} from '@angular/router';
+import {SehubManager} from "../../../build/frontendGen/build/appdomain/sehub/SehubManager";
+import {Post} from "../../../build/frontendGen/build/appdomain/sehub/Post";
+import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
+
+
+@Directive()
 
 export class NotesPage extends NotesPageTOP {
 
-  private postBuider : PostBuilder;
-
-
-  ngOnInit() {
-    this.posts.loadAll();
-    this.posts.add(0, this.postBuider.text("Text - Test " + new Date()).build())
-
-    super.ngOnInit();
-  }
-
   newPost(event: any) {
-
-    this.postBuider = new PostBuilder(2);
-
-    console.log("Create Post");
-    this.posts.loadAll()
-    console.log(this.posts)
-
-    this.postBuider.text("Text - Test " + new Date()).build()
-
-
+    if (!SehubSecurityManager.isSignedIn()) {
+      alert("No User Logged In")
+    } else {
+      SehubManager.postBuilder().then(builder => {
+        let post = builder.responses(
+            new Set<Post>())
+            .author(SehubSecurityManager.getCurrentUser())
+            .title("<< YOUR TITLE >>")
+            .text("<< YOUR DESCRIPTION >> ")
+            .build();
+        this.issue.addPosts2(post)
+      })
+    }
   }
+
 }

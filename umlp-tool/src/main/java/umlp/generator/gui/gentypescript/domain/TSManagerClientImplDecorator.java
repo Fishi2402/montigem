@@ -3,13 +3,16 @@
 package umlp.generator.gui.gentypescript.domain;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.StringTransformations;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
@@ -22,7 +25,9 @@ import umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator;
 import umlp.generator.util.PathUtil;
 
 import java.util.List;
+import java.util.function.Predicate;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static umlp.generator.domain.decorator.GemListAssocDecorator.getName;
 
 public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
@@ -107,7 +112,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
 
-    if(!domainClass.getModifier().isAbstract()) {
+    if (!domainClass.getModifier().isAbstract()) {
       managerClass.addCDMember(getCacheAttribute(domainClass));
       managerClass.addCDMember(getCommandObserverAttribute(domainClass));
     }
@@ -118,7 +123,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoGetList", name, false);
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSIsLoaded", name, concreteSubclassesOrderedByDistance);
 
-    if(!domainClass.getModifier().isAbstract()) {
+    if (!domainClass.getModifier().isAbstract()) {
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderParam", name);
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoDeSerBuilder", name);
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoAdd", name, managerName);
@@ -129,7 +134,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_get"));
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_get_filtered"));
 
-    if(!domainClass.getModifier().isAbstract()) {
+    if (!domainClass.getModifier().isAbstract()) {
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + "CommandObserver"));
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_create"));
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_delete"));
@@ -137,14 +142,14 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
 
     // Associations
     CDSymbolTables.getAssociations(domainClass).stream()
-        .filter(a -> GenService.isList(a))
-        .filter(side -> !isDerived(side))
+        .filter(GenService::isList)
+        .filter(Predicate.not(GenService::isSymbolDerived))
         .forEach(a -> {
-      String type = a.getSymbol().getType().print();
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", a.getName(), type, managerClass.getName());
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", domainClass.getName(), a.getName(), type);
-      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
-    });
+          String type = a.getSymbol().getType().print();
+          getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", a.getName(), type, managerClass.getName());
+          getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", domainClass.getName(), a.getName(), type);
+          getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
+        });
   }
 
   @Override
@@ -165,13 +170,21 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     // Associations
     CDSymbolTables.getAssociations(domainInterface).stream()
         .filter(GenService::isList)
-        .filter(side -> !isDerived(side))
+        .filter(Predicate.not(GenService::isSymbolDerived))
         .forEach(a -> {
-      String type = a.getSymbol().getType().print();
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", a.getName(), type, managerClass.getName());
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", name, a.getName(), type);
-      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainInterface, a)));
-    });
+          String type = a.getSymbol().getType().print();
+          getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", a.getName(), type, managerClass.getName());
+          getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", name, a.getName(), type);
+          getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainInterface, a)));
+        });
+  }
+
+  protected ASTCDAttribute getCacheAttribute(ASTCDType domainClass) {
+    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+        getMCTypeFacade().createBasicGenericTypeOf("Map", "Long", "Promise<" + domainClass.getName() + ">"),
+        StringTransformations.uncapitalize("known" + domainClass.getName() + "s"));
+    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(defaultMapValue()));
+    return domainClassDaoAttr;
   }
 
   @Override
@@ -182,6 +195,8 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
   @Override
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("LoadResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("LoadingState"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ListResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("StatusResult"));

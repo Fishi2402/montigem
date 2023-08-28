@@ -10,14 +10,16 @@ import basic.src.lib.gembutton.GemButton;
 import basic.src.lib.gemtext.GemText;
 import input.src.lib.gemtextinput.GemTextInput;
 
-page UserLogin(User user) {
+component UserLogin(List<User> users, User loginUser) {
   @GemCard(title = "Login", component =
     @GemColumn(rowGap = "20px", components = [
-      @GemTextInput(labelText = "Username", inputType = "string", entry = user.username),
-      @GemTextInput(labelText = "Passwort", inputType = "string", entry = user.password),
-      @GemRow(hAlign = "center", component =
-        @GemButton(label = "Anmelden", leftClick = login)
-      )
+      @GemTextInput(labelText = "Account", inputType = "text", entry = loginUser.username, validity = loginUser.validityUsername),
+      @GemTextInput(labelText = "Password", inputType = "password", entry = loginUser.password, validity = loginUser.validityPassword),
+      @GemRow(hAlign = "center", components = [
+     //   @GemButton(label = "Cancel", leftClick = navigateBack),
+        @GemButton(label = "Sign in", leftClick = login)
+      ]),
+      error@GemText(value = "")
     ])
   );
 }

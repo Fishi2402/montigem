@@ -2,7 +2,9 @@
 ${tc.signature("ids")}
 <#assign route="route">
 <#assign router="router">
-public constructor(${route}: ActivatedRoute, protected ${router}: Router) {
+public constructor(${route}: ActivatedRoute, ${router}: Router) {
+  super();
+  super.${router} = ${router};
   <#list ids as id>
     this.${id} = +${route}.snapshot.paramMap.get("${id}");
   </#list>

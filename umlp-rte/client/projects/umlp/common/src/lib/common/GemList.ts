@@ -123,6 +123,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     }
     const oldElem: Promise<E> = this.get(idx);
     this._internal_setAndSync(idx, elem.getGemId());
+
     return oldElem;
   }
 
@@ -138,6 +139,9 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
       this.logIndexError("0xAC726", "_internal_set", idx);
     }
     this.ids[idx] = gemID;
+
+    // TODO AGe: load at a later point and explicitely
+    this.loadAll();
   }
 
 
@@ -161,6 +165,9 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
       this.logIndexError("0xAC727", "_internal_add", idx);
     }
     this.ids.splice(idx, 0, ...gemIDs);
+
+    // TODO AGe: load at a later point and explicitely
+    this.loadAll();
   }
 
 
@@ -168,6 +175,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     // TODO: removeIdxsFunction needed?
     let elem: Promise<E> = this.get(idx);
     this._internal_removeAndSync(new Set([idx]));
+
     return elem;
   }
 
@@ -187,6 +195,9 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     for (let idx of toSort) {
       this.ids.splice(idx, 1);
     }
+
+    // TODO AGe: load at a later point and explicitely
+    this.loadAll();
   }
 
 

@@ -12,17 +12,18 @@ import basic.src.lib.gembutton.GemButton;
 import basic.src.lib.gemtext.GemText;
 import input.src.lib.gemtextinput.GemTextInput;
 import table.src.lib.gemtable.GemTable;
-import table.src.lib.gemtable.TableColumn;
 
 component UserSettings(User currentUser, List<User> users) {
   @GemColumn(
     width="90vw",
+    hAlign = "center",
+    rowGap = "5px",
     components = [
       myAccount@GemCard(title = "My Account",
         component = @GemRow(hAlign = "left", vAlign = "space-around",
           components = [
             userName@GemTextInput(labelText = "Username", inputType = "text", entry = currentUser.username),
-            password@GemTextInput(labelText = "Password", inputType = "text", entry = currentUser.password),
+            password@GemTextInput(labelText = "Password", inputType = "password", entry = currentUser.password),
             userEMail@GemTextInput(labelText = "Email", inputType = "text", entry = currentUser.email)
           ]
         )
@@ -32,13 +33,11 @@ component UserSettings(User currentUser, List<User> users) {
           components = [
             @GemRow(
               components = [
-                @GemCard(title = "Project Members",
-                  component = @GemText(value = "You can invite new members")
-                ),
+                projectmembers@GemText(value = "Project Members"),
                 @GemRow(
+                  hAlign = "right",
                   components = [
-                    newUserEMail@GemTextInput(labelText = "New User EMail", inputType = "text"),
-                    createNewUser@GemButton(label = "Invite new member", leftClick = "createNewUser")
+                    inviteUser@GemButton(label = "Invite new member", leftClick = "navigateToCreateNewUser")
                   ]
                 )
               ]

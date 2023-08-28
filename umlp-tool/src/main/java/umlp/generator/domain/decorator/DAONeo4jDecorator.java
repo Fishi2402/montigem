@@ -25,17 +25,16 @@ public class DAONeo4jDecorator extends DAODecorator {
   @Override
   protected void assocDAOMethods(ASTCDClass daoClass, ASTCDAssociation association) {
     addMethodsForAssociationDAO(daoClass, association);
+    updateMethodsForAssociationDAO(daoClass, association);
 
     removeMethodForAssociationDAO(daoClass, association);
     if(association.getCDAssocDir().isDefinitiveNavigableRight()) {
       selectMethodForAssocDAO(daoClass, association.getName(), association.getLeft(), association.getRight());
       removeAllMethodForAssocDAO(daoClass, association.getName(), association.getLeft().getName());
-      updateMethodForAssocDAO(daoClass, association.getName(), association.getLeft().getName(), association.getRight().getName());
     }
     if(association.getCDAssocDir().isDefinitiveNavigableLeft()) {
       selectMethodForAssocDAO(daoClass, association.getName(), association.getRight(), association.getLeft());
       removeAllMethodForAssocDAO(daoClass, association.getName(), association.getRight().getName());
-      updateMethodForAssocDAO(daoClass, association.getName(), association.getRight().getName(), association.getLeft().getName());
     }
   }
 
@@ -153,5 +152,28 @@ public class DAONeo4jDecorator extends DAODecorator {
               getCD4C().addMethod(doaClass, "umlp.dao.SelectListAttr", tableName, attr, innerType, dbType);
             }
         );
+  }
+
+  protected void updateMethodsForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation association) {
+    String leftType = association.getLeft().getMCQualifiedType().printType();
+    String rightType = association.getRight().getMCQualifiedType().printType();
+
+    String leftName = association.getLeft().getName();
+    String rightName = association.getRight().getName();
+
+    boolean navigableRight = association.getCDAssocDir().isDefinitiveNavigableRight();
+    boolean navigableLeft = association.getCDAssocDir().isDefinitiveNavigableLeft();
+
+    if(navigableLeft) {
+      getCD4C().addMethod(daoClass, "umlp.dao.associations.UpdateInitNeo4jForAssocDAO", association.getName(),
+          leftName, leftType, rightType, navigableLeft, navigableRight);
+      getCD4C().addMethod(daoClass, "umlp.dao.associations.UpdateNeo4jForAssocDAO", rightName, leftName);
+    }
+    if(navigableRight) {
+      getCD4C().addMethod(daoClass, "umlp.dao.associations.UpdateInitNeo4jForAssocDAO", association.getName(),
+          rightName, rightType, leftType, navigableLeft, navigableRight);
+      getCD4C().addMethod(daoClass, "umlp.dao.associations.UpdateNeo4jForAssocDAO", leftName, rightName);
+    }
+
   }
 }

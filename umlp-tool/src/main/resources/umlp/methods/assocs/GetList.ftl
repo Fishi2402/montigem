@@ -3,4 +3,4 @@ ${tc.signature("name", "targetName")}
 
 ${cd4c.method("public List<${targetName}> get${name?cap_first}()")}
 
-return this._${name};
+return this._internal_get${name?cap_first}GemList();

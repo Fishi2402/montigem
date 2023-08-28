@@ -4,8 +4,6 @@ package umlp.generator.gui.gentypescript.method;
 import com.google.common.collect.Lists;
 import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.cd.codegen.methods.accessor.MandatoryAccessorDecorator;
-import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -24,7 +22,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 public class TSAssocListAccessorDecorator extends AssocListAccessorDecorator {
 
   public TSAssocListAccessorDecorator(GlobalExtensionManagement glex, CDGenService service,
-                                    ASTCDType ast) {
+                                      ASTCDType ast) {
     super(glex, service, ast);
   }
 
@@ -55,7 +53,7 @@ public class TSAssocListAccessorDecorator extends AssocListAccessorDecorator {
     String type = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
     ASTCDParameter param = getCDParameterFacade().createParameter("int", "index");
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name, param);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getAssocGetTemplate(), ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getAssocGetTemplate(), ast.getName()));
     return method;
   }
 

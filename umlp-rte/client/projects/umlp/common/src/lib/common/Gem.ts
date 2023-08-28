@@ -28,7 +28,7 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
   // todo: warum doppelt geschachtelt? Supplier<LoadResult ?
   // => LoadResult may return the loaded object
   //    for type safety the value is typed
-  public loadFunction: () => LoadResult<E> = null;
+  public loadFunction: () => Promise<LoadResult<E>> = null;
 
   /*
    * Constructor for: Object exists and is loaded
@@ -43,10 +43,12 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
   /*
    * Constructor for: Object is not yet loaded, but we know the loading supplier
    */
-  public Gem3(gemId: number, supplier: () => LoadResult<E>) {
+  public Gem3(gemId: number, supplier: () => Promise<LoadResult<E>>) {
     this.gemId = gemId;
     this.loadFunction = supplier;
     this.loadingState = LoadingState.NOT_YET_LOADED;
+    // TODO AGe: explicit load
+    this.loadIfRequired();
     return this;
   }
 
@@ -83,18 +85,23 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
     return this.loadingState;
   }
 
-  public isPresent(): boolean {
-    this.loadIfRequired();
+  public async isPresent(): Promise<boolean> {
+    await this.loadIfRequired();
     return this.loadingState == LoadingState.LOADED && this.object != null;
   }
 
-  public get(): E {
-    this.loadIfRequired();
-    if (!this.isPresent()) {
+  public async load(): Promise<E> {
+    const present = await this.isPresent();
+    if (!present) {
       console.error("0xE2921 this.object was not loaded: " + this.loadingState.toString());
       // todo: wir müssen allgemein mal über den Umgang mit fatalen Fehlern reden
       // und was wir daraus machen. Ein Websystem ist ja was anderes als ein Batch-Generator
     }
+    return this.object;
+  }
+
+  public get(): E {
+    this.loadIfRequired();
     return this.object;
   }
 
@@ -106,22 +113,28 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
     }
   }
 
+  loader: Promise<LoadResult<E>>;
+
   /*
    * tries to load a yet unloaded this.object.
    * Returns only when the load was completed.
    *  (If the load is unsuccesful a lower mechanism checks all the
    *   communicative aspects)
    */
-  protected loadIfRequired(): void {
+  protected async loadIfRequired(): Promise<LoadResult<E>> {
     if (this.loadingState == LoadingState.NOT_YET_LOADED) {
-      const result: LoadResult<E> = this.loadFunction();
-      if (result.isPresent()) {
-        this.set(result.get());
-      }
-      else {
-        this.loadingState = result.loadingState;
-      }
+      this.loadingState = LoadingState.LOADING;
+      this.loader = this.loadFunction();
+      this.loader.then(result => {;
+        if (result.isPresent()) {
+          this.set(result.get());
+        }
+        else {
+          this.loadingState = result.loadingState;
+        }
+      })
     }
+    return this.loader;
   }
 
   public getGemId(): number {

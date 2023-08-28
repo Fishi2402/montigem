@@ -1,13 +1,8 @@
-import {Component} from '@angular/core';
+import {Directive} from '@angular/core';
 import {ShortFormDateRendererTOP} from "@src/gui/common/ShortFormDateRendererTOP";
 import {ShortFormDateTimeRendererTOP} from "@src/gui/common/ShortFormDateTimeRendererTOP";
 
-@Component({
-  selector: 'short-form-date-time-renderer',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/common/ShortFormDateTimeRenderer.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
-})
+@Directive()
 export  class ShortFormDateTimeRenderer extends ShortFormDateTimeRendererTOP {
   getGemText0Value(): string {
     let today = new Date();

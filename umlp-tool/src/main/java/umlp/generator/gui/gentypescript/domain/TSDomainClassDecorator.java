@@ -5,7 +5,6 @@ package umlp.generator.gui.gentypescript.domain;
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.CDGenService;
-import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.codegen.methods.MutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
@@ -20,18 +19,12 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
-import de.monticore.types.MCTypeFacade;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import umlp.generator.domain.decorator.DomainClassDecorator;
 import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.domain.decorator.methods.MethodGenService;
-import umlp.generator.gui.gentypescript.method.TSAccessorDecorator;
-import umlp.generator.gui.gentypescript.method.TSAssocAccessorDecorator;
-import umlp.generator.gui.gentypescript.method.TSAssocMutatorDecorator;
-import umlp.generator.gui.gentypescript.method.TSOptionalMutatorDecorator;
-import umlp.generator.gui.gentypescript.method.TSSimpleMethodMutatorDecorator;
+import umlp.generator.gui.gentypescript.method.*;
 import umlp.generator.util.PathUtil;
 
 import java.util.List;
@@ -87,7 +80,7 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
 
   @Override
   protected void createGetterSetterForAttrs(ASTCDType domainType, ASTCDType cdType,
-      List<ASTCDAttribute> attrList, boolean isInterface) {
+                                            List<ASTCDAttribute> attrList, boolean isInterface) {
     CDGenService service = new MethodGenService();
     MethodDecorator methodDecorator = new MethodDecorator(glex,
         new TSAccessorDecorator(glex, service),
@@ -112,7 +105,7 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
 
   @Override
   protected void createGetterSetterForAssocs(ASTCDType cdType,
-      List<ASTCDAttribute> attrList, boolean isInterface) {
+                                             List<ASTCDAttribute> attrList, boolean isInterface) {
     CDGenService service = new MethodGenService();
     MethodDecorator methodDecorator = new MethodDecorator(glex,
         new TSAssocAccessorDecorator(glex, service, cdType),
@@ -134,7 +127,7 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     List<ASTCDAttribute> visibleAttributes = CDSymbolTables.getAttributesInHierarchy(domainType).stream()
         .filter(GenService::isVisible).collect(Collectors.toList());
 
-    for (ASTCDAttribute visibleAttribute: visibleAttributes) {
+    for (ASTCDAttribute visibleAttribute : visibleAttributes) {
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
           createType(visibleAttribute), GenService.createName(visibleAttribute.getName()));
       attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
@@ -198,12 +191,12 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
       if (GenService.isAStLeastOne(assoc)) {
         getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSCheckCard",
             domainClass.getName(), assoc.getName(),
-             !isDerived(assoc));
+             !GenService.isSymbolDerived(assoc));
 
       } else {
         getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSCheck",
             domainClass.getName(), assoc.getName(),
-            !GenService.isOptional(assoc) && !isDerived(assoc));
+            !GenService.isOptional(assoc) && !GenService.isSymbolDerived(assoc));
       }
     }
   }

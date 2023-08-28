@@ -5,22 +5,16 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.methodtemplates.CD4CTemplateHelper;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDElement;
-import de.monticore.cdbasis._ast.ASTCDPackage;
-import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.check.SymTypeOfGenerics;
 import umlp.UMLPMill;
 import umlp.generator.util.PathUtil;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
@@ -29,10 +23,10 @@ public class DeSerDecorator extends DomainClassDecorator {
 
   public static final String SUFFIX = "DeSer";
 
-  private Set<String> supportedDesers;
+  private final Set<String> supportedDesers;
 
   public DeSerDecorator(GlobalExtensionManagement glex, MCPath hwPath,
-      Set<String> supportedDesers) {
+                        Set<String> supportedDesers) {
     super(glex, hwPath);
     this.supportedDesers = supportedDesers;
   }
@@ -61,29 +55,25 @@ public class DeSerDecorator extends DomainClassDecorator {
     List<ASTCDAttribute> attributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
         .filter(attr -> !attr.getModifier().isDerived())
         .collect(Collectors.toList());
-    attributes.forEach(a -> {
-      addSerAndDeserMethod(origCD.getCDDefinition().getName(), originalClassName, deSer, a);
-    });
+    attributes.forEach(a -> addSerAndDeserMethod(origCD.getCDDefinition().getName(), originalClassName, deSer, a));
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(cdClass).stream()
-        .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
+        .filter(Predicate.not(GenService::isSymbolDerived))
         .collect(Collectors.toList());
-    assocs.forEach(a -> {
-      addSerAndDeserMethod(cdName, originalClassName, deSer, a);
-    });
+    assocs.forEach(a -> addSerAndDeserMethod(cdName, originalClassName, deSer, a));
 
 
     getCD4C().addMethod(deSer, getSerializeTemplate(), originalClassName);
     getCD4C().addMethod(deSer, getDeserializeTemplate(),
         cdName,
         originalClassName,
-        attributes.stream().map(a -> a.getName()).collect(Collectors.toList()),
-        assocs.stream().filter(a -> !GenService.isList(a)).map(a -> a.getName()).collect(Collectors.toList()),
-        assocs.stream().filter(a -> GenService.isList(a)).map(a -> a.getName()).collect(Collectors.toList())
+        attributes.stream().map(ASTCDAttributeTOP::getName).collect(Collectors.toList()),
+        assocs.stream().filter(Predicate.not(GenService::isList)).map(ASTCDAssocSide::getName).collect(Collectors.toList()),
+        assocs.stream().filter(GenService::isList).map(ASTCDAssocSide::getName).collect(Collectors.toList())
     );
     getCD4C().addMethod(deSer, getBuildJsonTemplate(),
         originalClassName,
-        attributes.stream().map(a -> a.getName()).collect(Collectors.toList()),
-        assocs.stream().map(a -> a.getName()).collect(Collectors.toList())
+        attributes.stream().map(ASTCDAttributeTOP::getName).collect(Collectors.toList()),
+        assocs.stream().map(ASTCDAssocSide::getName).collect(Collectors.toList())
     );
 
     getCD4C().addMethod(deSer, getFromJsonTemplate(), originalClassName);
@@ -125,31 +115,30 @@ public class DeSerDecorator extends DomainClassDecorator {
     boolean isOptional = false;
     boolean useDeSer = false;
     String type = GenService.createType(attr.getSymbol().getType()).printType();
+    String innerTypeFull = "";
     String innerType = "";
     String jsonStr = "";
     if (GenService.isList(attr)) {
       isList = true;
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0));
-      innerType = ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName();
-      useDeSer = supportedDesers.contains(innerType);
-    }
-    else if (GenService.isOptional(attr)) {
+      innerTypeFull = ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName();
+      useDeSer = supportedDesers.contains(innerTypeFull);
+    } else if (GenService.isOptional(attr)) {
       isOptional = true;
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0));
-      innerType = ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName();
-      useDeSer = supportedDesers.contains(innerType);
-    }
-    else {
+      innerTypeFull = ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName();
+      useDeSer = supportedDesers.contains(innerTypeFull);
+    } else {
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
       useDeSer = supportedDesers.contains(type);
     }
-    boolean makeAbstract = jsonStr.equals("") && !useDeSer;
+    boolean makeAbstract = jsonStr.isEmpty() && !useDeSer;
 
     getCD4C().addMethod(deSer, getSerializeSimpleFieldTemplate(),
-        originalClassName, attr, type, jsonStr, isList, innerType, isOptional,
+        originalClassName, attr, type, jsonStr, isList, innerTypeFull, isOptional,
         useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
     getCD4C().addMethod(deSer, getDeserializeSimpleFieldTemplate(),
-        originalClassName, attr, type, jsonStr, isList, innerType, isOptional,
+        originalClassName, attr, type, jsonStr, isList, innerTypeFull, isOptional,
         useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
 
     if (makeAbstract) {
@@ -161,8 +150,7 @@ public class DeSerDecorator extends DomainClassDecorator {
     if (GenService.isList(attr)) {
       getCD4C().addMethod(deSer, getSerializeGemListFieldTemplate(), originalClassName, attr.getName());
       getCD4C().addMethod(deSer, getDeserializeGemListFieldTemplate(), cdName, originalClassName, attr.getName());
-    }
-    else {
+    } else {
       getCD4C().addMethod(deSer, getSerializeGemFieldTemplate(), originalClassName, attr.getName());
       getCD4C().addMethod(
           deSer,

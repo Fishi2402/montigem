@@ -64,25 +64,21 @@ public abstract class AbstractDecorator {
 
   public static final String DEFAULT_PACKAGE = "";
 
-  public static final String COMMAND_PACKAGE = DEFAULT_PACKAGE+"commands";
+  public static final String COMMAND_PACKAGE = DEFAULT_PACKAGE + "commands";
 
-  public static final String GEMLIST_PACKAGE = DEFAULT_PACKAGE+"gemlists";
+  public static final String GEMLIST_PACKAGE = DEFAULT_PACKAGE + "gemlists";
 
-  public static final String REQUESTS_PACKAGE = DEFAULT_PACKAGE+"requests";
+  public static final String REQUESTS_PACKAGE = DEFAULT_PACKAGE + "requests";
 
-  public static final String CLIENT_PACKAGE = DEFAULT_PACKAGE+"client";
+  public static final String CLIENT_PACKAGE = DEFAULT_PACKAGE + "client";
 
-  public static final String SHELLAPI_PACKAGE = DEFAULT_PACKAGE+"shellapi";
+  public static final String SHELLAPI_PACKAGE = DEFAULT_PACKAGE + "shellapi";
 
   protected final GlobalExtensionManagement glex;
 
   protected final CD4CodeFullPrettyPrinter printer = new CD4CodeFullPrettyPrinter(new IndentPrinter(), false);
 
   protected TypeCheck typeCheck;
-
-  protected boolean isDerived(ASTCDAssocSide side) {
-    return side.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived();
-  }
 
   protected GlobalExtensionManagement getGlex() {
     return glex;
@@ -124,7 +120,7 @@ public abstract class AbstractDecorator {
     return CD4C.getInstance();
   }
 
-  protected CD4CodeFullPrettyPrinter getCDPrinter (){
+  protected CD4CodeFullPrettyPrinter getCDPrinter() {
     return printer;
   }
 
@@ -139,12 +135,12 @@ public abstract class AbstractDecorator {
   protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
     String completeName = getPackageName(origCD, packageName);
     Optional<ASTCDPackage> astCDPackage = decoratedCD.getCDDefinition().getCDPackagesList().stream()
-            .filter(p -> p.getName().equals(completeName)).findFirst();
+        .filter(p -> p.getName().equals(completeName)).findFirst();
     if (astCDPackage.isPresent()) {
       return astCDPackage.get();
     } else {
       ASTCDPackage p = CD4CodeMill.cDPackageBuilder()
-              .setMCQualifiedName(getMCTypeFacade().createQualifiedName(completeName)).build();
+          .setMCQualifiedName(getMCTypeFacade().createQualifiedName(completeName)).build();
       decoratedCD.getCDDefinition().addCDElement(p);
       return p;
     }
@@ -152,12 +148,12 @@ public abstract class AbstractDecorator {
 
   protected String getPackageName(ASTCDCompilationUnit origCD, String subPackage) {
     String origPackage = Names.constructQualifiedName(origCD.getCDPackageList(), origCD.getCDDefinition().getName());
-    return (subPackage.isEmpty()?origPackage:Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
+    return (subPackage.isEmpty() ? origPackage : Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
   }
 
   protected Optional<String> getPackageFromFQNString(String fQN) {
     String[] subNames = fQN.split("\\.");
-    if(subNames.length>1) {
+    if (subNames.length > 1) {
       String[] packageNamesOnly = Arrays.copyOf(subNames, subNames.length - 1);
       return Optional.of(Joiners.DOT.join(packageNamesOnly));
     } else {
@@ -167,7 +163,7 @@ public abstract class AbstractDecorator {
 
   protected String getTypeFromFQNString(String fQN) {
     String[] subNames = fQN.split("\\.");
-    return subNames[subNames.length-1];
+    return subNames[subNames.length - 1];
   }
 
   protected String getAssocName(ASTCDType type, ASTCDAssocSide assoc) {
@@ -190,8 +186,8 @@ public abstract class AbstractDecorator {
     CDSymbolTables.getAssociationsInHierarchy(domainType).forEach(assocSide -> {
       getPackageFromFQNString(assocSide.getSymbol().getType().printFullName())
           .ifPresent(cdPackage ->
-          getCD4C().addImport(cdType, Joiners.DOT.join(cdPackage.toLowerCase(),
-              getTypeFromFQNString(assocSide.getSymbol().getType().printFullName()))));
+              getCD4C().addImport(cdType, Joiners.DOT.join(cdPackage.toLowerCase(),
+                  getTypeFromFQNString(assocSide.getSymbol().getType().printFullName()))));
     });
     domainType.getInterfaceList().forEach(cdInterface ->
         cdInterface.getDefiningSymbol().ifPresent(definingSymbol ->
@@ -203,22 +199,22 @@ public abstract class AbstractDecorator {
                 definingSymbol.getName()))));
   }
 
-  protected void addDecoratorComment(ASTCDElement... nodes){
+  protected void addDecoratorComment(ASTCDElement... nodes) {
     addDecoratorComment(Arrays.stream(nodes).collect(Collectors.toList()));
   }
 
-  protected void addDecoratorComment(Collection<? extends ASTCDElement> nodes){
+  protected void addDecoratorComment(Collection<? extends ASTCDElement> nodes) {
     for (ASTCDElement node : nodes) {
       origins.put(node, "/* Created by decorator " + getClass().getName() + " */\n");
     }
   }
 
-  protected ASTCDElement withOrigin(ASTCDElement element){
+  protected ASTCDElement withOrigin(ASTCDElement element) {
     addDecoratorComment(element);
     return element;
   }
 
-  protected Collection<? extends ASTCDElement> withOrigin(Collection<? extends ASTCDElement> elements){
+  protected Collection<? extends ASTCDElement> withOrigin(Collection<? extends ASTCDElement> elements) {
     addDecoratorComment(elements);
     return elements;
   }
@@ -227,15 +223,15 @@ public abstract class AbstractDecorator {
 
 
   protected String getCorrectManager(ASTCDAssociation assoc) {
-    return UMLPSymbolTables.getDiagramFor(assoc).getCDDefinition().getName()+ ManagerDecorator.SUFFIX;
+    return UMLPSymbolTables.getDiagramFor(assoc).getCDDefinition().getName() + ManagerDecorator.SUFFIX;
   }
 
   protected String getCorrectManager(ASTCDType type) {
-    return UMLPSymbolTables.getDiagramFor(type).getCDDefinition().getName()+ManagerDecorator.SUFFIX;
+    return UMLPSymbolTables.getDiagramFor(type).getCDDefinition().getName() + ManagerDecorator.SUFFIX;
   }
 
   protected String getCorrectManager(ASTCDAssocSide assocSide) {
-    return UMLPSymbolTables.getDiagramFor(assocSide).getCDDefinition().getName()+ManagerDecorator.SUFFIX;
+    return UMLPSymbolTables.getDiagramFor(assocSide).getCDDefinition().getName() + ManagerDecorator.SUFFIX;
   }
 
   protected String getCorrectManagerOfTargetType(ASTCDAssocSide assocSideTarget) {
@@ -243,18 +239,18 @@ public abstract class AbstractDecorator {
   }
 
   protected String getCorrectManager(ASTCDAttribute attribute) {
-    return attribute.getSymbol().getPackageName()+ManagerDecorator.SUFFIX;
+    return attribute.getSymbol().getPackageName() + ManagerDecorator.SUFFIX;
   }
 
   protected void addCorrectMangerImportForTargetType(ASTCDDefinition origCD, ASTCDType ast, SymTypeExpression type) {
     String[] fullName = type.printFullName().split("\\.");
-    if(fullName.length<=1) {
+    if (fullName.length <= 1) {
       return;
     }
-    String potentialExtendedCDName = fullName[fullName.length-2];
-    String packageName = Joiners.DOT.join(Arrays.copyOfRange(fullName, 0, fullName.length-1)).toLowerCase();
+    String potentialExtendedCDName = fullName[fullName.length - 2];
+    String packageName = Joiners.DOT.join(Arrays.copyOfRange(fullName, 0, fullName.length - 1)).toLowerCase();
     // this checks if a cd import requires a manager
-    if(!origCD.getModifier().isPresentStereotype()) {
+    if (!origCD.getModifier().isPresentStereotype()) {
       return;
     }
     List<ASTStereoValue> valueList = origCD.getModifier().getStereotype().getValuesList();
@@ -262,16 +258,16 @@ public abstract class AbstractDecorator {
         .map(ASTStereoValueTOP::getValue).collect(Collectors.toList());
 
     // This checks a CD 'extends' another one, i.e. a UMLP Project extends/ is composed of another one
-    if(extendedCDs.stream().anyMatch(cdName -> cdName.equals(potentialExtendedCDName))) {
-      getCD4C().addImport(ast, Joiners.DOT.join(packageName, potentialExtendedCDName+ ManagerDecorator.SUFFIX));
+    if (extendedCDs.stream().anyMatch(cdName -> cdName.equals(potentialExtendedCDName))) {
+      getCD4C().addImport(ast, Joiners.DOT.join(packageName, potentialExtendedCDName + ManagerDecorator.SUFFIX));
     }
   }
 
   protected String getCorrectManagerFromSymTypeExpression(SymTypeExpression type) {
     String[] fullName = type.printFullName().split("\\.");
-    if(fullName.length<=1) {
-      Log.error("Managername cannot be calculated. SymTypeExpression: '"+type+"'. Does not belong to a package defined by a Class Diagram.");
+    if (fullName.length <= 1) {
+      Log.error("Managername cannot be calculated. SymTypeExpression: '" + type + "'. Does not belong to a package defined by a Class Diagram.");
     }
-    return fullName[fullName.length-2]+ManagerDecorator.SUFFIX;
+    return fullName[fullName.length - 2] + ManagerDecorator.SUFFIX;
   }
 }

@@ -31,6 +31,9 @@ public class AssocListMutatorDecorator extends SimpleMethodMutatorDecorator {
   @Override
   public List<ASTCDMethod> decorate(ASTCDAttribute ast) {
     List<ASTCDMethod> methodList = Lists.newArrayList();
+    if(ast.getModifier().isDerived()){
+      return methodList;
+    }
     String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
     String sourceName = this.ast.getName();
     String otherSide = ast.getModifier().isPresentStereotype() && ast.getModifier().getStereotype().contains(DomainTypeDecorator.STEREOTYPE_OTHERSIDE)?

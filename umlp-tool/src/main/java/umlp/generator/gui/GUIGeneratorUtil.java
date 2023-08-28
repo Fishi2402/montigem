@@ -45,6 +45,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class GUIGeneratorUtil {
@@ -354,11 +356,25 @@ public class GUIGeneratorUtil {
       GUIIterableReplaceVisitor visitor = new GUIIterableReplaceVisitor();
       visitor.setIgnore(ignore);
       visitor.transform(ic);
-      return getHTMLName(print(visitor.getGetterExpression()));
+      String expressionWithNullChecks = replaceDots(print(visitor.getGetterExpression()));
+      return getHTMLName(expressionWithNullChecks);
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
         + " was not processed: range iterate control not supported yet");
     return "";
+  }
+
+  public static String replaceDots(String input) {
+    Pattern pattern = Pattern.compile("(?<!\\bthis)\\.");
+    Matcher matcher = pattern.matcher(input);
+    StringBuffer result = new StringBuffer();
+
+    while (matcher.find()) {
+      matcher.appendReplacement(result, "?\\.");
+    }
+    matcher.appendTail(result);
+
+    return result.toString();
   }
 
   public String getIteratorIterable(ASTGUIIterate iterate) {

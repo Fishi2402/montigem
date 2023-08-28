@@ -1,14 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Component } from '@angular/core';
+import { Directive } from '@angular/core';
 import { ForecastUpdateTOP } from '@src/gui/ForecastUpdateTOP';
 
-@Component({
-  selector: 'forecast-update',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/ForecastUpdate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
-})
+@Directive()
 export class ForecastUpdate extends ForecastUpdateTOP {
 
   // TODO AGe: date formatting

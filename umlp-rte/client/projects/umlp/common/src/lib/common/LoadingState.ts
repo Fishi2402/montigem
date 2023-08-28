@@ -12,6 +12,10 @@ export enum LoadingState {
    */
   NOT_YET_LOADED,
   /**
+   * the object is being loaded
+   */
+  LOADING,
+  /**
    * the object has been loaded
    */
   LOADED,

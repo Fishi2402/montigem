@@ -22,6 +22,7 @@ import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -44,10 +45,10 @@ public class ManagerMockDecorator extends AbstractDecorator {
     String name = origCD.getCDDefinition().getName();
 
     ASTCDClass managerClass = UMLPMill.cDClassBuilder()
-            .setModifier(PUBLIC.build())
-            .setName(name + SUFFIX)
-            .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(name + ManagerDecorator.SUFFIX))
-            .build();
+        .setModifier(PUBLIC.build())
+        .setName(name + SUFFIX)
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(name + ManagerDecorator.SUFFIX))
+        .build();
 
     // attributes
     getCD4C().addAttribute(managerClass, "static protected long freeGemId = 1001L");
@@ -66,10 +67,10 @@ public class ManagerMockDecorator extends AbstractDecorator {
 
 
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-            .forEach(c -> addClassElements(origCD, c, managerClass, name));
+        .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
     origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getModifier().isDerived())
-            .forEach(i -> addInterfaceElements(origCD, i, managerClass));
+        .forEach(i -> addInterfaceElements(origCD, i, managerClass));
 
     // Imports
     addImports(managerClass);
@@ -89,7 +90,7 @@ public class ManagerMockDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name, concreteSubclassesInclSelf);
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
 
-    if(!domainClass.getModifier().isAbstract()) {
+    if (!domainClass.getModifier().isAbstract()) {
       getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name, concreteSubclassesInclSelf);
 
       ASTCDAttribute attr = getCD4C().addAttribute(managerClass, "protected HashMapWithOrderedKeys<Long, " + name + "> " + lName + "s");
@@ -103,30 +104,30 @@ public class ManagerMockDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.managermock.DoDeSerBuilder", name);
       getCD4C().addMethod(managerClass, "umlp.managermock.DoAdd", name, managerName,
           assocs.stream()
-              .filter(a -> GenService.isBidirectional(a))
-              .filter(side -> !isDerived(side))
+              .filter(GenService::isBidirectional)
+              .filter(Predicate.not(GenService::isSymbolDerived))
               .collect(Collectors.toList()));
       getCD4C().addMethod(managerClass, "umlp.managermock.DoDelete", name, managerName);
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + CommandSendingObserverDecorator.SUFFIX));
-    }else{
+    } else {
       getCD4C().addMethod(managerClass, "umlp.managermock.DoGetListAbstract", name);
     }
 
     // Associations
     assocs.stream()
-        .filter(a -> GenService.isList(a))
-        .filter(side -> !isDerived(side))
+        .filter(GenService::isList)
+        .filter(Predicate.not(GenService::isSymbolDerived))
         .forEach(a -> {
-      SymTypeExpression type = a.getSymbol().getType();
-      String printedType = type.print();
-      ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+          SymTypeExpression type = a.getSymbol().getType();
+          String printedType = type.print();
+          ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
 
-      getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+          getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
 
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", getAssocName(domainClass, a), printedType);
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", getAssocName(domainClass,a), printedType);
-      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
-    });
+          getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", getAssocName(domainClass, a), printedType);
+          getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", getAssocName(domainClass, a), printedType);
+          getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
+        });
   }
 
   protected void addInterfaceElements(ASTCDCompilationUnit origCD, ASTCDInterface domainClass,
@@ -150,17 +151,20 @@ public class ManagerMockDecorator extends AbstractDecorator {
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
 
     // Associations
-    assocs.stream().filter(GenService::isList).forEach(a -> {
-      SymTypeExpression type = a.getSymbol().getType();
-      String printedType = type.print();
-      ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+    assocs.stream()
+        .filter(GenService::isList)
+        .filter(Predicate.not(GenService::isSymbolDerived))
+        .forEach(a -> {
+          SymTypeExpression type = a.getSymbol().getType();
+          String printedType = type.print();
+          ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
 
-      getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+          getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
 
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", getAssocName(domainClass, a), printedType);
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", getAssocName(domainClass, a), printedType);
-      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
-    });
+          getCD4C().addMethod(managerClass, "umlp.managermock.DoCreateAssoc", getAssocName(domainClass, a), printedType);
+          getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderAssoc", getAssocName(domainClass, a), printedType);
+          getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
+        });
   }
 
   protected void addImports(ASTCDClass clazz) {

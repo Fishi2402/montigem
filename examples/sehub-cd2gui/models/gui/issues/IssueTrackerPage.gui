@@ -1,0 +1,34 @@
+package gui.issues;
+
+import Sehub.Issue;
+
+import gui.issues.IssueCollection;
+import gui.issues.IssueCreate;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gembutton.GemButton;
+import input.src.lib.gemtextinput.GemTextInput;
+import input.src.lib.gemtextareainput.GemTextareaInput;
+
+page IssueTrackerPage(List<Issue> issues) {
+  @GemCard(title = "Issues", component =
+    @GemColumn(hAlign = "center", width = "auto", components = [
+      @GemRow(hAlign = "center", width = "auto", colGap = "10px", components = [
+        @GemCard(title = "TODO", component =
+          todo@IssueCollection(issues = issues)
+        ),
+        @GemCard(title = "Doing", component =
+          doing@IssueCollection(issues = issues)
+        ),
+        @GemCard(title = "Done", component =
+          done@IssueCollection(issues = issues)
+        )
+      ]),
+      @IssueCreate()
+    ])
+ );
+
+}

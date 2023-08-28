@@ -8,16 +8,12 @@ import { TableColumn } from '@monticore/montigem-table';
 import { SehubMainPageTOP } from '@src/gui/SehubMainPageTOP';
 import { Project } from '@src/sehub/Project';
 
-import { Component } from '@angular/core';
+import { Directive } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
-@Component({
-  selector: 'sehub-main-page',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/SehubMainPage.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
-})
+@Directive()
 
 export  class SehubMainPage extends SehubMainPageTOP {
 
@@ -26,7 +22,7 @@ export  class SehubMainPage extends SehubMainPageTOP {
   }
 
   public override navigateToProjectPage(row: Project): void {
-    this.router.navigate(["..", "project", "ProjectPage", row.getGemId()]);
+    this.router.navigate(["..", "project", "ProjectFileView", row.getRootArtifact()[0].getGemId()]);
   }
 
 }
