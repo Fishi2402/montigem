@@ -54,7 +54,7 @@ public class AssocMandatoryAccessorDecorator extends MandatoryAccessorDecorator 
             type = ((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get().deepClone();
         }
         ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, methodName);
-        this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getGetTemplate(), name));
+        this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getGetTemplate(), name, ast));
         return method;
     }
 

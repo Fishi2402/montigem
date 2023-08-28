@@ -1,3 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("paramName")}
-return this.${paramName}.get();
+${tc.signature("paramName","ast")}
+return this.${ast.getName()}.get();
