@@ -26,7 +26,7 @@ public class BuilderDecoratorTest extends DecoratorTest {
 
             // check no of methods and attributes
             () -> assertEquals(4, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(15, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(13, clazz.getCDMethodList().size(), "number of methods"),
 
             // check attributes
             () -> existsAttribute(clazz, "buildFinished"),

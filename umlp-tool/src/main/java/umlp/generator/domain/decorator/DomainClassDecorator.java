@@ -11,7 +11,6 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDClassBuilder;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDInterfaceUsage;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -25,13 +24,14 @@ import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -177,7 +177,7 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     }
     List<ASTStereoValue> valueList = origCD.getCDDefinition().getModifier().getStereotype().getValuesList();
     List<String> extendedCDs = valueList.stream().filter(value -> value.getName().equals("extends"))
-        .map(ASTStereoValueTOP::getValue).collect(Collectors.toList());
+        .map(ASTStereoValue::getValue).collect(Collectors.toList());
 
     extendedCDs.forEach(ecd -> {
       Optional<DiagramSymbol> diagramSymbol = origCD.getEnclosingScope().resolveDiagram(ecd);
