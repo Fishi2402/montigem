@@ -58,10 +58,10 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
               if (GenService.isList(a)) {
                 ASTCDMethodSignature add = getCD4C().addMethod(ast, addAttributeTmplt(),
                     t.getName(), a.getName(), GenService.getInnerType(a.getMCType()),
-                    a.getName(), false, t.getName());
+                    a.getName(), false, false, t.getName());
                 ASTCDMethodSignature remove = getCD4C().addMethod(ast, removeAttributeTmplt(),
                     t.getName(), a.getName(), GenService.getInnerType(a.getMCType()),
-                    a.getName(), false, t.getName());
+                    a.getName(), false, false, t.getName());
 
                 setOverrideAnnotation(add);
                 setOverrideAnnotation(remove);
@@ -100,14 +100,15 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
           ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor(a);
 
           boolean isBidirectional = GenService.isBidirectional(a);
+          boolean isLeft = a.getSymbol().isIsLeft();
           String assocName = a.getSymbol().getAssoc().getAssociation().getName();
           SymTypeExpression oneType = e.getKey().getSymbol().getType();
           SymTypeExpression otherType = e.getKey().getSymbol().getOtherSide().getType();
           if (GenService.isList(a)) {
             ASTCDMethodSignature add = getCD4C().addMethod(ast, addAttributeTmplt(), oneType.print(),
-                a.getName(), "long", assocName, isBidirectional, otherType.print());
+                a.getName(), "long", assocName, isBidirectional, isLeft, otherType.print());
             ASTCDMethodSignature remove = getCD4C().addMethod(ast, removeAttributeTmplt(), oneType.print(),
-                a.getName(), "long", assocName, isBidirectional, otherType.print());
+                a.getName(), "long", assocName, isBidirectional, isLeft, otherType.print());
 
             setOverrideAnnotation(add);
             setOverrideAnnotation(remove);

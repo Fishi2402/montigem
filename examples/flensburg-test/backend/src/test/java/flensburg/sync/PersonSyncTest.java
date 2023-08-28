@@ -33,7 +33,6 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-@Disabled // TODO MB
 public class PersonSyncTest {
   @BeforeEach
   public void clear(){
@@ -62,8 +61,8 @@ public class PersonSyncTest {
     assertNotSame(p1001, p1001Server);
     assertEquals(startGemId, p1001Server.getGemId());
     assertEquals(20, p1001Server.getAge());
-    // TODO MB
-    // assertTrue(p1001Server.availableMainResidence());
+    assertTrue(p1001Server.getMainResidenceGem().isPresent());
+    assertEquals("Flensburg", p1001Server.getMainResidence().getCity());
 
     Address addrServer = p1001Server.getMainResidence();
     assertNotSame(addr, addrServer);
@@ -242,7 +241,7 @@ public class PersonSyncTest {
 
       Log.info("Check it is synced to the client", "PersonSyncTest");
       clientContext.activate();
-      assertEquals(i + 1, p1001Owns.size());
+      assertEquals(i + 1, p1001.getOwns().size());
       Car c_i_client = p1001Owns.get(i);
       assertNotNull(c_i_client);
       assertNotSame(c_i_server, c_i_client);
@@ -511,7 +510,8 @@ public class PersonSyncTest {
         .age(20)
         .nickname("Test")
         .mainResidence(a1)
-        .visited(Set.of(a1, a2))
+        .visitedAdd(a1)
+        .visitedAdd(a2)
         .build().get();
 
     Log.info("Checking it is available in the Server", "PersonSyncTest");
@@ -680,7 +680,8 @@ public class PersonSyncTest {
         .age(20)
         .nickname("Test")
         .mainResidence(a1)
-        .visited(Set.of(a1, a2))
+        .visitedAdd(a1)
+        .visitedAdd(a2)
         .build().get();
 
     Log.info("Checking it is removable in the Server", "PersonSyncTest");
@@ -731,7 +732,8 @@ public class PersonSyncTest {
         .age(20)
         .nickname("Test")
         .mainResidence(a1Client)
-        .visited(Set.of(a1Client, a2Client))
+        .visitedAdd(a1Client)
+        .visitedAdd(a2Client)
         .build().get();
 
     Log.info("Checking it is removable in the Client", "PersonSyncTest");
@@ -784,7 +786,8 @@ public class PersonSyncTest {
         .age(20)
         .nickname("Test")
         .mainResidence(a1Client1)
-        .visited(Set.of(a1Client1, a2Client1))
+        .visitedAdd(a1Client1)
+        .visitedAdd(a2Client1)
         .build().get();
 
     Log.info("Checking it is removable in Client 2", "PersonSyncTest");
@@ -867,7 +870,7 @@ public class PersonSyncTest {
     assertEquals(p1001Server.getGemId(), a4._internal_getVisitorGemList().getID(0));
 
     Address a2Server = FlensburgManager.getAddressSure(a2.getGemId());
-    assertEquals(0, a2Server.sizeVisitors());
+    assertEquals(1, a2Server.sizeVisitors());
 
     Log.info("Check the changes are synced to the Client", "PersonSyncTest");
     clientContext.activate();

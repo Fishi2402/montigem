@@ -13,22 +13,27 @@ import de.monticore.cdbasis._ast.ASTCDClassBuilder;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDInterfaceUsage;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -141,6 +146,8 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     for (ASTCDAttribute attr : nonDerivedAttrs) {
       if (GenService.isGem(attr) && !GenService.isGemList(attr)) {
         glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(getInitialGemValue()));
+      } else if (GenService.isList(attr)) {
+        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("=new ArrayList<>()"));
       }
     }
 
@@ -160,9 +167,27 @@ public class DomainClassDecorator extends DomainTypeDecorator {
 
     // Imports
     addImports(domainClass, clazz);
+    addExtendedImport(origCD, clazz);
     return clazz;
   }
 
+  protected void addExtendedImport(ASTCDCompilationUnit origCD, ASTCDType ast) {
+    if (!origCD.getCDDefinition().getModifier().isPresentStereotype()) {
+      return;
+    }
+    List<ASTStereoValue> valueList = origCD.getCDDefinition().getModifier().getStereotype().getValuesList();
+    List<String> extendedCDs = valueList.stream().filter(value -> value.getName().equals("extends"))
+        .map(ASTStereoValue::getValue).collect(Collectors.toList());
+
+    extendedCDs.forEach(ecd -> {
+      Optional<DiagramSymbol> diagramSymbol = origCD.getEnclosingScope().resolveDiagram(ecd);
+      if (diagramSymbol.isPresent()) {
+        String packageName = diagramSymbol.get().getPackageName().isEmpty()?diagramSymbol.get().getName():Joiners.DOT.join(diagramSymbol.get().getPackageName(), diagramSymbol.get().getName());
+        String importName = Joiners.DOT.join(packageName.toLowerCase(), diagramSymbol.get().getName()+ManagerDecorator.SUFFIX);
+        getCD4C().addImport(ast, importName);
+      }
+    });
+  }
   protected String getInitialGemValue() {
     return "= new Gem<>()";
   }
