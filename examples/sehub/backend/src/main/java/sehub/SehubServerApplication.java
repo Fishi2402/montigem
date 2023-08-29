@@ -2,7 +2,7 @@ package sehub;
 
 import de.se_rwth.commons.logging.Log;
 import dummy.ContainerFileExtractor;
-import dummy.GitRepoLoader;
+import dummy.DummyDataCreator;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,24 +11,14 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 
-import umlp.backendrte.common.GemIdentifiable;
-
-import javax.annotation.PostConstruct;
-import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @SpringBootApplication(
@@ -67,15 +57,15 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
 
     Optional<Post> p1 = SehubManager.postBuilder()
         .author(SehubManager.getUserList().get(0))
-        .title("")
-        .text("Post 1")
+        .title(" | 15:57 ]: Können Wasserkocher Fliegen ?")
+        .text("Nein")
         .responses(Collections.emptySet())
         .build();
 
     Optional<Post> p2 = SehubManager.postBuilder()
         .author(SehubManager.getUserList().get(0))
-        .title("")
-        .text("Post 2")
+        .title(" | 16:34 ]: Können Wasserkocher Fliegen ?")
+        .text("Ja, während eines FoWos")
         .responses(Collections.emptySet())
         .build();
 
@@ -85,46 +75,56 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
 
     Optional<Post> p3 = SehubManager.postBuilder()
         .author(SehubManager.getUserList().get(0))
-        .title("")
-        .text("Post 3")
+        .title("Können Wasserkocher Fliegen ?")
+        .text("Wir sollten diese Frage vor dem FoWo klären! Ggf. Sollten Wasserkocher für eine Testreihe organisiert werden!")
         .responses(responses)
         .build();
 
     IssueBuilder issueBuilder = new IssueBuilder(42000);
         issueBuilder
-        .title("MyIssue")
-        .description("Post 4")
+        .title("Die Sache mit dem Wasserkocher")
+        .description("Hier kann eine Beschreibung stehen...")
         .state(IssueState.IN_PROGRESS)
         .posts(Set.of(p3.get()))
         .build();
 
-    createDummyData();
-  }
+    SehubManager.issueBuilder()
+        .title("Verfügbare Konten sollen beim Bearbeiten von Dienstreisen auswählbar sein")
+        .description("Wenn eine bestehende Dienstreise bearbeitet wird, kann kein neues Konto ausgewählt werden. " +
+            "Zuerst muss die zu bearbeitende Dienstreise gelöscht, gespeichert und erneut bearbeitet werden. " +
+            "Erst dann werden die Kontooptionen angezeigt." +
+            "Es sollte möglich sein, direkt ein neues Konto auszuwählen.")
+        .state(IssueState.DONE)
+        .build();
 
-  private void createDummyData() {
-    ContainerFileExtractor extractor = new ContainerFileExtractor();
-    String token = System.getenv("gitlab-token");
-    if(token != null) {
-      String repoPath = "monticore/monticore";
-      File f = GitRepoLoader.gitClone("git.rwth-aachen.de",repoPath, token);
-      extractor.extractGivenRoot(List.of(f));
+    SehubManager.issueBuilder()
+        .title("Änderungsdatum Erweiterung")
+        .description("Das Änderungsdatum für Buchungen, Mittelabrufe, Rechnungen, Mittelzuweisungen und Stellenzuweisungen " +
+            "ist aktuell nur auf der Seite Finazen/Zahlungen sichtbar. Das Änderungsdatum soll aber auch für die " +
+            "einzelnen Elemente auf den Kontenseiten in einem Konto selbst sichtbar sein.")
+        .state(IssueState.IN_PROGRESS)
+        .build();
 
-      // Free disk space from pulled git repo
-      try {
-        // Git files are readOnly thus cannot be easily deleted after cloning
-        for (Iterator<File> i = FileUtils.iterateFiles(f, new String[]{"idx", "pack"}, true); i.hasNext();) {
-          File item = i.next();
-          item.setWritable(true);
-        }
-        FileUtils.deleteDirectory(f);
-      } catch (IOException e) {
-        Log.warn("Could not free disk space of extracted git repo.", e);
-      }
-    } else {
-      Log.warn("No environment variable set with name "+"gitlab-token");
+
+    SehubManager.issueBuilder()
+        .title("Finanzen: Umfang einer Zuweisung zu Organigrammstufe im Konto beschränken")
+        .description("Bei der Zuweisung einer Organigrammstufe in einem Konto kann ein Umfang hinterlegt werden. " +
+            "Standardmäßig ist der Umfang mit 100% vorausgefüllt. Der Umfang kann allerdings bearbeitet werden und " +
+            "auf mehr als 100% angepasst werden. Eine Zuweisung von mehr als 100% ergibt jedoch keinen Sinn, weshalb " +
+            "der maximal zulässige Umfang auf 100% beschränkt werden sollte.")
+        .state(IssueState.UNASSIGNED)
+        .build();
+
+    Set<BingoEntry> entrySet = new java.util.HashSet<>(Collections.emptySet());
+    for (int i = 0; i <= 24; i++) {
+      entrySet.add(SehubManager.bingoEntryBuilder().word("").isChecked(false).build().get());
     }
-    String path = "src/main/java";
-    File file = new File(path);
-    extractor.extractGivenRoot(List.of(file));
+    BingoBoardBuilder boardBuilder = new BingoBoardBuilder(42001);
+      boardBuilder
+          .entries(entrySet)
+          .build();
+
+    new DummyDataCreator().createDummyData();
   }
+
 }

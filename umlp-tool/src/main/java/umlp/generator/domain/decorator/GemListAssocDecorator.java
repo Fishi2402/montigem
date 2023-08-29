@@ -21,6 +21,7 @@ import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.ManagerDecorator.SUFFIX;
@@ -38,14 +39,14 @@ public class GemListAssocDecorator extends AbstractDecorator {
             .filter(c -> !c.getSymbol().isIsDerived())
             .forEach(c -> CDSymbolTables.getAssociations(c)
                     .stream()
-                    .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
+                    .filter(Predicate.not(GenService::isSymbolDerived))
                     .forEach(a -> astcdPackage.addAllCDElements(withOrigin(createClasses(origCD, a, c)))));
 
     origCD.getCDDefinition().getCDInterfacesList().stream()
             .filter(i -> !i.getSymbol().isIsDerived())
             .forEach(i -> CDSymbolTables.getAssociations(i)
                     .stream()
-                    .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
+                    .filter(Predicate.not(GenService::isSymbolDerived))
                     .forEach(a -> astcdPackage.addAllCDElements(withOrigin(createClasses(origCD, a, i)))));
   }
 

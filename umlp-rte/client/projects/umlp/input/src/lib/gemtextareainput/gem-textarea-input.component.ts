@@ -18,11 +18,10 @@ export class GemTextareaInput extends GemTextareaInputTOP implements OnInit{
 
   onTextAreaChange(event: string) {
     this.textAreaChange.emit(event);
+    console.log("CHANGE")
   }
 
-  ngOnInit(): void {
 
-  }
 
 
 

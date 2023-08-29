@@ -26,13 +26,13 @@ classdiagram Weather {
     /double maximumTemperature;
   }
 
-  / association City -> (nextDays) Timeseries;
-  / association [1] City -> (current) Forecast [0..1];
-  / association City -> (nextHours) Forecast;
+  // TODO re-add when single deried assocs are supported
+  // / association City -> (nextDays) Timeseries;
+  // / association [1] City -> (current) Forecast [0..1];
+  // / association City -> (nextHours) Forecast;
   association [1] City <-> DailyForecast [*];
   association [0..1] Timeseries -> (containedDays) DailyForecast [*];
 
-  association [*] DailyForecast -> City [1];
   association [0..1] DailyForecast -> (dailyForecasts) Forecast [*];
 
   class Forecast {

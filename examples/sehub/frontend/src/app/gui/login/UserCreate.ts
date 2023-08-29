@@ -13,16 +13,16 @@ import { GemList } from '../../../../build/frontendGen/node_modules/@umlp/common
   selector: 'user-create',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserCreate.html',
   styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  styleUrls: ["/Login.scss"]
 })
 
 export class UserCreate extends UserCreateTOP {
 
   private error: string = "";
 
-  private allUser: User[] = [];
-
   private users: GemList<User>;
+
+  public static email: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
   public ngOnInit(): void {
     SehubManager.userBuilder().then(gemPromiseRes => {
@@ -37,6 +37,9 @@ export class UserCreate extends UserCreateTOP {
 
   public override createUser(event: any): void {
     this.error = "";
+    if (!this.getNewUser().getUsername() || !this.getNewUser().getPassword() || !this.getNewUser().getEmail()) {
+      return;
+    }
     let errorMessage = this.validateUser();
     if (!errorMessage) {
       //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
@@ -45,7 +48,7 @@ export class UserCreate extends UserCreateTOP {
       this.build();
       this.router.navigate(['/login']);
     } else {
-      this.error = errorMessage + ' already being used';
+      this.error = errorMessage;
     }
 
   }
@@ -54,16 +57,27 @@ export class UserCreate extends UserCreateTOP {
     return this.error;
   }
 
-  private validateUser(): String {
+  private validateUser(): string {
     let res: string = '';
+    // Check Email format
+    if (!UserCreate.email.test(this.getNewUser().getEmail())) {
+      return 'Wrong format for Email address!';
+    }
+
+    // Check if user is unique
     this.users.toArray().filter(user => {
-      if (!!this.getNewUser().getUsername() && this.getNewUser().getUsername() === user.getUsername()) {
-        res += ' Account ' + this.getNewUser().getUsername();
+      if (this.getNewUser().getUsername() === user.getUsername()) {
+        res += ' Account "' + this.getNewUser().getUsername() + '"';
       }
-      if (!!this.getNewUser().getEmail() && this.getNewUser().getEmail() === user.getEmail()) {
-        res += (res.length === 0? '': ' und ') + ' E-mail ' + this.getNewUser().getEmail();
+      if (this.getNewUser().getEmail() === user.getEmail()) {
+        res += (res.length === 0? '': ' und ') + ' E-mail "' + this.getNewUser().getEmail() + '"';
       }
     });
-    return res;
+    return res + (res.length === 0? '': ' already being used!');
   }
+
+  public override navigateBack(): void {
+    this.router.navigate(['/login']);
+  }
+
 }

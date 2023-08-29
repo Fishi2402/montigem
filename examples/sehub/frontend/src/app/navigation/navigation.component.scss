@@ -1,7 +1,5 @@
 @import '../../../config/src/variables';
 
-$nav-padding: 5px;
-
 * {
   margin: 0;
   padding: 0;
@@ -10,19 +8,26 @@ $nav-padding: 5px;
 }
 
 .navMenu {
-  width: 100vw;
+  width: 100%;
   color: #fff;
   display: flex;
-  background: rgba($acronio-black-2, 1) !important;
+  flex-direction: row;
+  background: rgba($acronio-black-2, 0.5) !important;
   border-bottom: 1px solid $acronio-black-3;
   box-shadow: 0px 4px 5px rgba($acronio-black, 1) !important;
+  backdrop-filter: blur(3px) !important;
+  -webkit-backdrop-filter: blur(3px);
 }
 
-.navMenu a {
+.navMenu .material-symbols-outlined {
+  font-size: 25px;
+  padding-top: 14px;
+}
+
+.navMenu a, .navMenu .user {
   padding-top: 15px;
   padding-left: 10px;
   padding-right: 10px;
-  padding-bottom: 15px;
 
   color: #fff;
   text-decoration: none;
@@ -32,14 +37,14 @@ $nav-padding: 5px;
   transition: all 0.2s ease-in-out;
 }
 
-.navMenu a:hover, .navMenu a:focus {
-  color: $acronio-orange-3;
+.navMenu.navMenu a:hover, .navMenu a:focus {
+  color: $acronio-orange-3 !important;
 }
 
 
-.navMenu a:active {
-  font-weight:bold;
-}
+//.navMenu a:active {
+//  font-weight:bold;
+//}
 
 .navMenu .dot {
   position: absolute;
@@ -49,8 +54,8 @@ $nav-padding: 5px;
   background: $acronio-orange-3;
   border-radius: 50%;
   opacity: 0;
-  -webkit-transform: translate(100px, 37px);
-  transform: translate(100px, 37px);
+  -webkit-transform: translate(82px, 37px);
+  transform: translate(82px, 37px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
@@ -62,55 +67,59 @@ $nav-padding: 5px;
   padding-bottom: 2px;
 }
 
-img:hover, img:focus {
+.startNav.startNav img:hover, .startNav:focus {
   -webkit-filter: drop-shadow(0px 0px 5px $acronio-blue-alternate-3);
   filter: drop-shadow(0px 0px 5px $acronio-blue-alternate-3);
 }
 
-.navMenu a:nth-child(2):hover ~ .dot, .navMenu a:nth-child(2):focus ~ .dot {
-  -webkit-transform: translate(100px, 37px);
-  transform: translate(100px, 37px);
+.navMenu.navMenu a:nth-child(1):hover ~ .dot {
+  -webkit-transform: translate(82px, 37px);
+  transform: translate(82px, 37px);
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  opacity: 0;
+}
+
+.navMenu.navMenu a:nth-child(2):hover ~ .dot, .navMenu a:nth-child(2):focus ~ .dot {
+  -webkit-transform: translate(82px, 37px);
+  transform: translate(82px, 37px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;
 }
 
-.navMenu a:nth-child(3):hover ~ .dot, .navMenu a:nth-child(3):focus ~ .dot {
-  -webkit-transform: translate(225px, 37px);
-  transform: translate(225px, 37px);
+.navMenu.navMenu a:nth-child(3):hover ~ .dot, .navMenu a:nth-child(3):focus ~ .dot {
+  -webkit-transform: translate(189px, 37px);
+  transform: translate(189px, 37px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;
 }
 
-.navMenu a:nth-child(4):hover ~ .dot, .navMenu a:nth-child(4):focus ~ .dot {
-  -webkit-transform: translate(333px, 37px);
-  transform: translate(333px, 37px);
+.navMenu.navMenu a:nth-child(4):hover ~ .dot, .navMenu a:nth-child(4):focus ~ .dot {
+  -webkit-transform: translate(287px, 37px);
+  transform: translate(287px, 37px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;
 }
 
-.navMenu a:nth-child(5):hover ~ .dot, .navMenu a:nth-child(5):focus ~ .dot {
-  -webkit-transform: translate(408px, 37px);
-  transform: translate(408px, 37px);
+.navMenu.navMenu a:nth-child(5):hover ~ .dot, .navMenu a:nth-child(5):focus ~ .dot {
+  -webkit-transform: translate(383px, 37px);
+  transform: translate(383px, 37px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;
 }
 
-.navMenu a:nth-child(6):hover ~ .dot, .navMenu a:nth-child(6):focus ~ .dot {
-  -webkit-transform: translate(505px, 37px);
-  transform: translate(505px, 37px);
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-  opacity: 1;
+.navMenu a:nth-child(6){
+  color: blue;
 }
 
-.navMenu a:nth-child(7):hover ~ .dot, .navMenu a:nth-child(7):focus ~ .dot {
-  -webkit-transform: translate(605px, 37px);
-  transform: translate(605px, 37px);
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-  opacity: 1;
+.navMenu .user {
+  color: $acronio-orange-3;
+}
+
+.navMenu .spacer {
+  flex-grow: 1; /* this is the important bit */
 }

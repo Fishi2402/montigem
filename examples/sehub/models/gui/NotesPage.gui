@@ -1,10 +1,14 @@
 package gui;
 
+// Domain Classes
 import Sehub.Post;
 import Sehub.Issue;
 
+// Custom GUI Components
 import gui.note.Note;
 import gui.note.Response;
+
+// Common GUI Components
 import arrange.src.lib.gemcard.GemCard;
 import arrange.src.lib.gemcolumn.GemColumn;
 import arrange.src.lib.gemrow.GemRow;
@@ -14,21 +18,22 @@ import input.src.lib.gemtextinput.GemTextInput;
 import input.src.lib.gemtextareainput.GemTextareaInput;
 
 page NotesPage(Issue issue){
-    @GemRow(colGap = "20px", components = [
+    @GemRow(width= "100%", hAlign="center", colGap = "20px", components = [
       @GemColumn(hAlign = "center", width = "850px", component =
-        @GemCard(title = issue.title + ": Comments & Discussion", component = @GemColumn(height = "auto", hAlign = "right", rowGap = "5px", components = [
-        @GemText(value = issue.description),
-        @GemButton(label = "Add Comment or Question", leftClick = newPost),
-        @iterate(Post p : issue.posts){
-                  @Note(post = p);
-                }
-        ]))
+        @GemCard(title = issue.title + ": Comments & Discussion", component =
+        @GemColumn(height = "auto", hAlign = "right", rowGap = "10px", components = [
+          @GemText(value = issue.description),
+          @GemButton(label = "Add Comment or Question", leftClick = newPost),
+          @iterate(Post p : issue.posts){
+                    @Note(post = p);
+                  }
+          ]))
       ),
 
-      @GemColumn(hAlign = "center", width = "400px", rowGap =" 5px", components = [
-        @GemText(value = "Issue-Description"),
-        @GemTextInput(labelText = "Issue-Title", entry= issue.title),
-        @GemTextareaInput(
+      edit@GemColumn(hAlign = "center", width = "400px", rowGap =" 5px", components = [
+        @GemText(value = "Edit Issue:"),
+        issueTitle@GemTextInput(labelText = "Issue-Title", entry= issue.title),
+        issueDescription@GemTextareaInput(
           id = "issueDescription",
           labelText = "Descritprion",
           entry = issue.description

@@ -11,6 +11,7 @@ import { Project } from '@src/sehub/Project';
 import { Component } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
 @Component({
   selector: 'sehub-main-page',
@@ -21,12 +22,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 export  class SehubMainPage extends SehubMainPageTOP {
 
+  ngOnInit(){
+    if (!SehubSecurityManager.isSignedIn()) {
+      this.router.navigate(['/login']);
+    }
+    super.ngOnInit();
+  }
+
   public  getGemNetworkGraph1Data (): GemNetworkData  {
     return null;
   }
 
   public override navigateToProjectPage(row: Project): void {
-    this.router.navigate(["..", "project", "ProjectPage", row.getGemId()]);
+    this.router.navigate(["..", "project", "ProjectFileView", row.getRootArtifact()[0].getGemId()]);
   }
 
 }

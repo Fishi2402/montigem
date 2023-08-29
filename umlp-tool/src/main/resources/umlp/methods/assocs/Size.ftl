@@ -2,4 +2,4 @@
 ${tc.signature("name")}
 
 ${cd4c.method("public int size${name?cap_first}s()")}
-return this._${name}.size();
+return this._internal_get${name?cap_first}GemList().size();

@@ -1,4 +1,0 @@
-<ng-container *ngFor="let c of contents">
-  <ng-template [ngTemplateOutlet]="c">
-  </ng-template>
-</ng-container>

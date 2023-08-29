@@ -19,6 +19,10 @@ body {
   background: $acronio-black-1;
 }
 
+.loginCard {
+  padding-top: 50px;
+}
+
 
 //GemCard ------------------------------------------------------
 .gem-card-header, .gem-card-body {
@@ -62,7 +66,6 @@ gem-text {
 .gem-textarea {
   font-family: monospace;
   max-width: 800px;
-  min-height: 5em;
   font-size: 1em;
 }
 

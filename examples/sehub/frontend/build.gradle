@@ -93,7 +93,7 @@ task genGUI(type: UMLPGuiGenTask) {
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = file(symPath)
   domainModels = ["Sehub"]
-  guiCreateModels = ["gui.login.UserCreate"]
+  guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
 }
 
 task generateNPMAuth(type: NPMAuthCreate){

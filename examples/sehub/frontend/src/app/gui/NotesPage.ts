@@ -11,7 +11,7 @@ import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
   selector: 'notes-page',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/NotesPage.html',
   styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  styleUrls: ['./NotesPage.scss']
 })
 
 export class NotesPage extends NotesPageTOP {
@@ -19,24 +19,25 @@ export class NotesPage extends NotesPageTOP {
     super(route, router);
   }
 
-  ngOnInit() {
+  ngOnInit(){
+    if (!SehubSecurityManager.isSignedIn()) {
+      alert("No User Logged In")
+      this.router.navigate(['/login']);
+    }
+
     super.ngOnInit();
-    console.log("ISSUE: ", this.issue)
   }
 
   newPost(event: any) {
-    console.log("ISSUE: ", this.issue);
-
     if (!SehubSecurityManager.isSignedIn()) {
       alert("No User Logged In")
     } else {
-
       SehubManager.postBuilder().then(builder => {
         let post = builder.responses(
             new Set<Post>())
             .author(SehubSecurityManager.getCurrentUser())
-            .title("")
-            .text("Eine Antwort " + new Date())
+            .title("<< YOUR TITLE >>")
+            .text("<< YOUR DESCRIPTION >> ")
             .build();
         this.issue.addPosts2(post)
       })

@@ -1,0 +1,33 @@
+package gui.issues;
+
+import Sehub.Issue;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gembutton.GemButton;
+import input.src.lib.gemtextinput.GemTextInput;
+import input.src.lib.gemtextareainput.GemTextareaInput;
+
+component IssueEntry(Issue issue){
+    issueColumn@GemColumn(hAlign = "center", width = "400px", rowGap =" 5px", component =
+      issueCard@GemCard(title = issue.title, component =
+        @GemColumn(height = "auto", hAlign = "right", rowGap = "10px", components = [
+         @GemRow(colGap = "7px", width="100%", hAlign="center", components = [
+      /*   @guard(issue.state != 0 ){  //TODO - funktioniert so nicht
+             @GemButton(label = "<<<", leftClick = demote);
+           },*/
+           @GemButton(label = "<<<", leftClick = demote),
+           @GemButton(label = "Edit", leftClick = editIssue),
+           @GemButton(label = "Delete", leftClick = deleteIssue),
+           @GemButton(label = ">>>", leftClick = promote)
+      /*   @guard(issue.state != 2 ){ //TODO - funktioniert so nicht
+             @GemButton(label = ">>>", leftClick = promote);
+           }*/
+         ]),
+         @GemText(value = issue.description)
+       ])
+      )
+    );
+}
