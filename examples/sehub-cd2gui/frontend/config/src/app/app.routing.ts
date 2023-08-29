@@ -58,12 +58,12 @@ export const routes: Routes = [
   },
   {
     path: 'CD2GUI',
-    redirectTo: 'CD2GUI/Navigation'
+    redirectTo: 'CD2GUI/UserOverview'
   },
-  {
-    path: 'CD2GUI/Navigation',
-    loadChildren: () => import("../../build/appgui/gui/CD2GUINavigationModule").then(m => m.Cd2guinaviationModule)
-  },
+  // {
+  //   path: 'CD2GUI/Navigation',
+  //   loadChildren: () => import("../../build/appgui/gui/CD2GUINavigationModule").then(m => m.Cd2guinaviationModule)
+  // },
   {
       path: 'CD2GUI/UserOverview',
       loadChildren: () => import("../../../umlp/fe2/cd2gui/models/UserOverviewModule").then(m => m.UseroverviewModule)
