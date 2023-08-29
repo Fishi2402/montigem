@@ -9,28 +9,25 @@ ${cd4c.method("public StatusResult doRun()")}
 boolean loaded${ctargetName} = ${managerName}.isLoaded${targetType}(${targetName}GemId);
 boolean loaded${csourceName} = ${managerName}.isLoaded${sourceType}(${sourceName}GemId);
 
-// TODO: With DB: server must have loaded both
-assert CommandManager.getParticipantId() != 0 || (loaded${ctargetName} && loaded${csourceName});
-
 if(loaded${ctargetName} && loaded${csourceName}){
   ${sourceType} p = ${managerName}.get${sourceType}Sure(${sourceName}GemId);
   ${targetType} a = ${managerName}.get${targetType}Sure(${targetName}GemId);
 
   // TODO: only in server?
 <#if isTargetList>
-  if(${sourceName}Index == -1){
-    ${sourceName}Index = p._internal_get${ctargetName}GemList().indexOfId(${targetName}GemId);
+  if(${targetName}Index == -1){
+    ${targetName}Index = p._internal_get${ctargetName}GemList().indexOfId(${targetName}GemId);
   }
-  p.remove${ctargetName}(${sourceName}Index, NotificationScope.MINIMAL);
+  p.remove${ctargetName}(${targetName}Index, NotificationScope.MINIMAL);
 <#else>
   // TODO
 </#if>
 
 <#if isSourceList>
-  if(${targetName}Index == -1){
-    ${targetName}Index = a._internal_get${csourceName}GemList().indexOfId(${sourceName}GemId);
+  if(${sourceName}Index == -1){
+    ${sourceName}Index = a._internal_get${csourceName}GemList().indexOfId(${sourceName}GemId);
   }
-  a.remove${csourceName}(${targetName}Index, NotificationScope.MINIMAL);
+  a.remove${csourceName}(${sourceName}Index, NotificationScope.MINIMAL);
 <#else>
   // TODO
 </#if>
@@ -41,7 +38,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
     ${targetType} a = ${managerName}.get${targetType}Sure(${targetName}GemId);
 <#if isSourceList>
     if(${targetName}Index == -1){
-      ${targetName}Index = a._internal_get${csourceName}GemList().indexOfId(${sourceName}GemId);
+      ${targetName}Index = a._internal_get${csourceName}GemList().indexOfId(${targetName}GemId);
     }
     a.remove${csourceName}(${targetName}Index, NotificationScope.MINIMAL);
 <#else>
@@ -51,7 +48,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
     ${sourceType} p = ${managerName}.get${sourceType}Sure(${sourceName}GemId);
 <#if isTargetList>
     if(${sourceName}Index == -1){
-      ${sourceName}Index = p._internal_get${ctargetName}GemList().indexOfId(${targetName}GemId);
+      ${sourceName}Index = p._internal_get${ctargetName}GemList().indexOfId(${sourceName}GemId);
     }
     p.remove${ctargetName}(${sourceName}Index, NotificationScope.MINIMAL);
 <#else>

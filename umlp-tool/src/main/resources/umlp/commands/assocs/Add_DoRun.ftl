@@ -8,9 +8,6 @@ ${cd4c.method("public StatusResult doRun()")}
 boolean loaded${ctargetName} = ${managerName}.isLoaded${targetType}(${targetName}GemId);
 boolean loaded${csourceName} = ${managerName}.isLoaded${sourceType}(${sourceName}GemId);
 
-// TODO: With DB: server must have loaded both
-assert CommandManager.getParticipantId() != 0 || (loaded${ctargetName} && loaded${csourceName});
-
 if(loaded${ctargetName} && loaded${csourceName}){
   ${sourceType} source = ${managerName}.get${sourceType}Sure(${sourceName}GemId);
   ${targetType} target = ${managerName}.get${targetType}Sure(${targetName}GemId);
@@ -29,13 +26,13 @@ if(loaded${ctargetName} && loaded${csourceName}){
 </#if>
 
 <#if isSourceList>
-  target.add${csourceName}(${targetName}Index, source, NotificationScope.MINIMAL);
+  target.add${csourceName}(${sourceName}Index, source, NotificationScope.MINIMAL);
 <#else>
   target.set${csourceName}(source, NotificationScope.MINIMAL);
 </#if>
 
 <#if isTargetList>
-  source.add${ctargetName}(${sourceName}Index, target, NotificationScope.MINIMAL);
+  source.add${ctargetName}(${targetName}Index, target, NotificationScope.MINIMAL);
 <#else>
   source.set${ctargetName}(target, NotificationScope.MINIMAL);
 </#if>

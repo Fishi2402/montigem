@@ -43,24 +43,25 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     origCD.getCDDefinition().getCDAssociationsList().stream()
             .filter(a -> !a.getModifier().isDerived())
             .filter(a -> a.getCDAssocDir() instanceof ASTCDBiDir).
-            forEach(a -> astcdPackage.addAllCDElements(withOrigin(createClass(origCD, a))));
+            forEach(a -> astcdPackage.addAllCDElements(withOrigin(createClass(origCD, a, astcdPackage.getName()))));
   }
 
-  protected Collection<ASTCDClass> createClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {
+  protected Collection<ASTCDClass> createClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc, String packageName) {
     List<ASTCDClass> retList = Lists.newArrayList();
-    ASTCDClass clazz = createAddClass(origCD, assoc);
+    ASTCDClass clazz = createAddClass(origCD, assoc, packageName);
     retList.add(createDeSer(origCD, clazz));
     retList.add(clazz);
-    clazz = createRemoveClass(origCD, assoc);
+    clazz = createRemoveClass(origCD, assoc, packageName);
     retList.add(createDeSer(origCD, clazz));
     retList.add(clazz);
-    clazz = createSetClass(origCD, assoc);
+    clazz = createSetClass(origCD, assoc, packageName);
     retList.add(createDeSer(origCD, clazz));
     retList.add(clazz);
     return retList;
   }
 
-  protected ASTCDClass createAddClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {
+  protected ASTCDClass createAddClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc,
+                                      String packageName) {
     String classname = StringTransformations.capitalize(assoc.getName()) + ADD_SUFFIX;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
@@ -86,7 +87,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
-    addConstructor(ast, getConstructorTemplate(), classname, sourceName, targetName);
+    addConstructor(ast, getConstructorTemplate(), classname, packageName, sourceName, targetName);
 
     // methods
     getCD4C().addMethod(ast, getAdd_DoRunTemplate(), assoc.getName(),
@@ -106,7 +107,8 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     return "umlp.commands.assocs.Add_DoRun";
   }
 
-  protected ASTCDClass createRemoveClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {
+  protected ASTCDClass createRemoveClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc,
+                                         String packageName) {
     String classname = StringTransformations.capitalize(assoc.getSymbol().getName()) + REMOVE_SUFFIX;
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
@@ -132,7 +134,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     ast.addAllCDMembers(accessor.decorate(attr));
 
     // constructor
-    addConstructor(ast, getConstructorTemplate(), classname, sourceName, targetName);
+    addConstructor(ast, getConstructorTemplate(), classname, packageName, sourceName, targetName);
 
     // methods
     getCD4C().addMethod(ast, getRemove_DoRunTemplate(), assoc.getName(),
@@ -156,7 +158,8 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     return "umlp.commands.assocs.Remove_DoRun";
   }
 
-  protected ASTCDClass createSetClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc) {
+  protected ASTCDClass createSetClass(ASTCDCompilationUnit origCD, ASTCDAssociation assoc,
+                                      String packageName) {
     String classname = StringTransformations.capitalize(assoc.getName() + SET_SUFFIX);
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
@@ -185,7 +188,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     attr = getCD4C().addAttribute(ast, "protected int " + targetName+"Index");
     ast.addAllCDMembers(accessor.decorate(attr));
 
-    addConstructor(ast, getSet_ConstructorTemplate(), classname, sourceName, targetName);
+    addConstructor(ast, getSet_ConstructorTemplate(), classname, packageName, sourceName, targetName);
 
     getCD4C().addMethod(ast, getSet_DoRunTemplate(),
             sourceName, targetName);
@@ -206,9 +209,9 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
   }
 
   protected void addConstructor(
-      ASTCDClass ast, String template, String classname, String sourceName, String targetName
+      ASTCDClass ast, String template, String classname, String packageName, String sourceName, String targetName
   ) {
-    getCD4C().addConstructor(ast, template, classname, COMMAND_ASSOC_PACKAGE,
+    getCD4C().addConstructor(ast, template, classname, packageName,
         sourceName, targetName);
   }
 
