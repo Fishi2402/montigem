@@ -5,17 +5,19 @@ import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
 import { routes } from './app.routing';
 import { Navigation } from '@src/navigation/navigation.component';
-import { FavoritelistModule } from '@src/gui/widgets/navigation/FavoriteListModule';
-
+import { NavigationModule } from '@src/gui/widgets/navigation/Navigation.Module';
+import { GuiModule } from '@src/gui/Gui.Module';
 @NgModule({
   declarations: [
     AppComponent,
-    Navigation
+    Navigation,
+
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
-    FavoritelistModule
+    NavigationModule,
+    GuiModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

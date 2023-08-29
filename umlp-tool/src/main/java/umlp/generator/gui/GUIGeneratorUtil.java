@@ -42,9 +42,12 @@ import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -56,6 +59,7 @@ public class GUIGeneratorUtil {
   // Fully qualified Name of a gui model, e.g. "stanley.PersonCreate"
   private List<String> CREATE_MODELS;
 
+  private Set<String> CREATE_TS_COMPONENTS;
   protected final String TPL_INTERN = "TPL_INTERN";
   protected final String TPL_SUFFIX = "TPL";
 
@@ -77,6 +81,10 @@ public class GUIGeneratorUtil {
   public void init(List<String> domainModels, List<String> createModels) {
     DOMAIN_MODELS = domainModels;
     CREATE_MODELS = createModels;
+  }
+
+  public void init(Set<String> createTSComponents) {
+    CREATE_TS_COMPONENTS=createTSComponents;
   }
 
   public final String print(ASTNode node) {
@@ -228,6 +236,11 @@ public class GUIGeneratorUtil {
       return Optional.of(parts[parts.length - 1]);
     }
     return Optional.empty();
+  }
+
+  public final boolean isCreatedTSComponent(String componentName)
+  {
+      return CREATE_TS_COMPONENTS.contains(componentName);
   }
 
   public final boolean isCreateModel(String componentQName) {
@@ -583,6 +596,26 @@ public class GUIGeneratorUtil {
     }
     return moduleName;
   }
+
+  public String getPackageModuleName(ASTMCImportStatement i)
+  {
+     List<String> temp=List.of(java2tsModule(i.getQName()).split("/"));
+     return temp.get(temp.size()-2).substring(0,1).toUpperCase()+temp.get(temp.size()-2).substring(1)+"Module";
+  }
+
+  public String getPackageModulePath(ASTMCImportStatement i)
+  {
+    List<String> temp=List.of(java2tsModule(i.getQName()).split("/"));
+    String moduleName=temp.get(temp.size()-2).substring(0,1).toUpperCase()+temp.get(temp.size()-2).substring(1);
+    String path="";
+    for(int index=0;index<temp.size()-1;index++)
+    {
+      path+=temp.get(index)+"/";
+    }
+    path+=moduleName+".Module";
+    return path;
+  }
+
 
   public String getModuleClassName(String compName) {
     return StringTransformations.capitalize(compName.toLowerCase()) + "Module";

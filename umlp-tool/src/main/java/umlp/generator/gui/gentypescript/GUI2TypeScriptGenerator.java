@@ -214,10 +214,12 @@ public class GUI2TypeScriptGenerator {
         componentPath, util.getRoutingIds(decoratedAst));
 
 
-    generatedFiles = Paths.get(pathName,
+    /*generatedFiles = Paths.get(pathName,
         decoratedAst.getComponentName() + MODULES_FILE + "." + TS_FILE_EXTENSION);
     genEngine.generate("umlp.gui2ts.TSModule", generatedFiles, decoratedAst,
         viewComponents.getModules(), componentPath);
+
+     */
     /*
     for (ASTMCImportStatement is : decoratedAst.getMCImportStatementList()) {
       is.getMCQualifiedName().getParts(is.getMCQualifiedName().sizeParts() - 1)

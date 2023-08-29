@@ -72,10 +72,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -370,6 +372,7 @@ public class UMLPTool extends UMLPToolTOP {
       else if (isGuiFile(inputFile)) {
         Map<String,List<ASTGUICompilationUnit>> routesMap=new HashMap<>();
         Map<String,String> topNameMap=new HashMap<>();
+        Set<String> createdTSComponents=new HashSet();
 
         for (String guiPathString : cmd.getOptionValues(INPUT.getCMD())) {
           Path guiModel = Paths.get(guiPathString);
@@ -393,6 +396,8 @@ public class UMLPTool extends UMLPToolTOP {
               routesMap.put(astGui.getPackage(), new ArrayList<>());
             }
             routesMap.get(astGui.getPackage()).add(astGui);
+            createdTSComponents.add(astGui.getComponentName().substring(0,1).toUpperCase()+
+                astGui.getComponentName().substring(1).toLowerCase()+"Module");
           //}
 
           // print or store symbol table
@@ -498,6 +503,7 @@ public class UMLPTool extends UMLPToolTOP {
         // set template path
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
             .map(p -> p.toFile()).collect(Collectors.toList()));
+        GUIGeneratorUtil.getInstance().init(createdTSComponents);
         GlobalExtensionManagement glex = createGlex();
         genSetup.setGlex(glex);
         genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());

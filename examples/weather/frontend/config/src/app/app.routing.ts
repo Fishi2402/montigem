@@ -1,5 +1,7 @@
 import { Routes } from "@angular/router";
-
+import {WeatherApp} from "../../build/appgui/gui/WeatherApp";
+import { ForecastUpdate } from "@src/gui/ForecastUpdate";
+import {WeatherView } from ""@src/gui/WeatherView"
 export const routes: Routes = [
   // default path like in other routing files
   {
@@ -10,14 +12,14 @@ export const routes: Routes = [
   },
   {
     path: "a",
-    loadChildren: () => import("../../build/appgui/gui/WeatherViewModule").then(m => m.WeatherviewModule)
+    component:WeatherView
   },
   {
     path: "b",
-    loadChildren: () => import("../../build/appgui/gui/ForecastUpdateModule").then(m => m.ForecastupdateModule)
+    component: ForecastUpdate
   },
   {
     path: "c",
-    loadChildren: () => import("../../build/appgui/gui/WeatherAppModule").then(m => m.WeatherappModule)
+    component: WeatherApp
   }
 ]
