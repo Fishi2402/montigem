@@ -87,7 +87,7 @@ classdiagram Sehub {
 
   class Directory extends Artifact {}
 
-  association contains [0..1] Directory -> (contains) Artifact [*];
+  association contains [*] Directory -> (contains) Artifact [*];
 
   class BingoBoard {}
 
