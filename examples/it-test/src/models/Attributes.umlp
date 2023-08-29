@@ -83,4 +83,8 @@ umlp Attributes {
       LocalDateTime bar_local_date_time;
       LocalTime bar_local_time;
   }
+
+  class ListOfPrimitives{
+    List<int> ints;
+  }
 }
