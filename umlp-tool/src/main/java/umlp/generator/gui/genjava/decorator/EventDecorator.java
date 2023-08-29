@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.genjava.decorator;
 
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -9,19 +10,18 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.GUIComponentsVisitor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Optional;
 
 public class EventDecorator extends GUI2JavaComponentDecorator {
 
   public EventDecorator(
       final GlobalExtensionManagement glex, ASTGUICompilationUnit guiAst,
-      GUIComponentsVisitor viewComponent
-  ) {
+      GUIComponentsVisitor viewComponent) {
     super(glex, guiAst, viewComponent);
   }
 
@@ -36,7 +36,10 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
           getCD4C().addMethod(decoratedClass, getEventTemplate(),
               util.gui2cdEventCallName(guiComponent, event.getName()), methodName);
 
-          getCD4C().addMethod(decoratedClass, getEventTemplate(), methodName, "");
+          Optional<ASTCDMethodSignature> methodSignature = getCD4C().createMethod(decoratedClass, getEventTemplate(), methodName, "");
+          if (methodSignature.isPresent() && !GenService.containsMethod(decoratedClass, methodSignature.get())) {
+            getCD4C().addMethod(decoratedClass, getEventTemplate(), methodName, "");
+          }
         }
         if (event.getGUIArgValue().getExpression() instanceof ASTCallExpression
             && ((ASTCallExpression) event.getGUIArgValue().getExpression()).getExpression() instanceof ASTNameExpression) {
@@ -52,7 +55,11 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
           getCD4C().addMethod(decoratedClass, getEventCallbackTemplate(),
               util.gui2cdEventCallName(guiComponent, event.getName()), methodName, args);
 
-          getCD4C().addMethod(decoratedClass, getEventCallbackTemplate(), methodName, "", args);
+          Optional<ASTCDMethodSignature> methodSignature = getCD4C().createMethod(decoratedClass,
+              getEventCallbackTemplate(), methodName, "", args);
+          if (methodSignature.isPresent() && !GenService.containsMethod(decoratedClass, methodSignature.get())) {
+            getCD4C().addMethod(decoratedClass, getEventCallbackTemplate(), methodName, "", args);
+          }
         }
       }
     }

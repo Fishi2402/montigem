@@ -9,6 +9,7 @@ import hardy.Flensburg.Person;
 import basic.src.lib.gemtext.GemText;
 import arrange.src.lib.gemcard.GemCard;
 import table.src.lib.gemtable.GemTable;
+import basic.src.lib.gembutton.GemButton;
 import stanley.my.InfoBox;
 // import type from a CD to describe a table column
 
@@ -64,6 +65,8 @@ page PersonOverview(List<Person> ps) {
     text = "This is some important information that you should know.",
     color = "#8ebae5"
   );
+  b1@GemButton(label = "Button 1", leftClick = doSomething);
+  b2@GemButton(label = "Button 2 (the same clickMethod)", leftClick = doSomething);
   @GemCard(
     component = t@GemTable(
       rows = ps,
