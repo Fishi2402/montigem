@@ -15,8 +15,15 @@ import java.util.stream.Collectors;
 
 public class GUI2TypeScriptDecorator extends GUI2JavaDecorator {
 
+  boolean generateTS = true;
+
   public GUI2TypeScriptDecorator(final GlobalExtensionManagement glex) {
     super(glex);
+  }
+
+  public GUI2TypeScriptDecorator(final GlobalExtensionManagement glex, boolean generateTS) {
+    super(glex);
+    this.generateTS = generateTS;
   }
 
   public void transform(ASTGUICompilationUnit guiAst,
@@ -24,13 +31,18 @@ public class GUI2TypeScriptDecorator extends GUI2JavaDecorator {
     boolean isInputGui = util.isInputGui(guiAst, viewComponents.getComponents().stream()
         .filter(c -> util.isInputComponent(c)).collect(Collectors.toList()));
 
-    TSDomainRefDecorator domainRefDecorator = new TSDomainRefDecorator(glex, isInputGui, viewComponents);
-    domainRefDecorator.transform(guiAst, decoratedAST);
-    Log.info("After decorator: TSDomainRefDecorator", DomainRefDecorator.class.getName());
+    if (generateTS) {
+      TSDomainRefDecorator domainRefDecorator = new TSDomainRefDecorator(glex, isInputGui,
+          viewComponents);
+      domainRefDecorator.transform(guiAst, decoratedAST);
+          Log.info("After decorator: TSDomainRefDecorator", DomainRefDecorator.class.getName());
+    }
 
-    GUI2TypeScriptAngularDecorator angularDecorator = new GUI2TypeScriptAngularDecorator(glex, isInputGui, viewComponents, hwPath, outPath);
+    GUI2TypeScriptAngularDecorator angularDecorator = new GUI2TypeScriptAngularDecorator(glex,
+        isInputGui, viewComponents, hwPath, outPath);
     angularDecorator.transform(guiAst, decoratedAST);
-    Log.info("After decorator: GUI2TypeScriptAngularDecorator", GUI2TypeScriptAngularDecorator.class.getName());
+    Log.info("After decorator: GUI2TypeScriptAngularDecorator",
+        GUI2TypeScriptAngularDecorator.class.getName());
 
 //    GUI2TypeScriptComponentsDecorator componentsDecorator =
 //        new GUI2TypeScriptComponentsDecorator(glex, viewComponents);

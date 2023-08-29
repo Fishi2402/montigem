@@ -2,10 +2,10 @@
 <#--
   This config template does the default GUI2Component generation.
 -->
-${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "componentGenerator", "viewComponents")}
+${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "componentGenerator", "viewComponents", "generateTS")}
 
 <#-- Call all decorators -->
-<#assign guiDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUI2TypeScriptDecorator", [glex])>
+<#assign guiDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUI2TypeScriptDecorator", [glex, generateTS])>
 
 <#-- TopDecorator -->
 <#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [hwPath])>

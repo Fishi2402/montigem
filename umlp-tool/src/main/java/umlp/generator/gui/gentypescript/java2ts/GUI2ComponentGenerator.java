@@ -21,9 +21,13 @@ public class GUI2ComponentGenerator extends CDGenerator {
 
   protected GUIComponentsVisitor viewComponents;
 
-  public GUI2ComponentGenerator(GeneratorSetup genSetup, GUIComponentsVisitor viewComponents) {
+  private final boolean generateTS;
+
+  public GUI2ComponentGenerator(GeneratorSetup genSetup, GUIComponentsVisitor viewComponents,
+      boolean generateTS) {
     super(genSetup);
     this.viewComponents = viewComponents;
+    this.generateTS = generateTS;
     // genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter()); // TODO GV
     genSetup.getGlex().setGlobalValue("cdPrinter", new TSUtilsPrinter());
 
@@ -60,7 +64,7 @@ public class GUI2ComponentGenerator extends CDGenerator {
     hpp.processValue(tc, modelAST,
         Arrays.asList(decoratedAST, setup.getGlex(),
             setup.getHandcodedPath(), setup.getOutputDirectory().toPath(),
-            this, viewComponents));
+            this, viewComponents, generateTS));
   }
 
 }

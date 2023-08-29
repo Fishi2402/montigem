@@ -83,6 +83,7 @@ import static umlp.UMLPToolOptions.DOMAIN;
 import static umlp.UMLPToolOptions.FOR_CLIENT;
 import static umlp.UMLPToolOptions.GUIVariability;
 import static umlp.UMLPToolOptions.GUI_CREATE;
+import static umlp.UMLPToolOptions.GUI_GEN_TS_FUNC;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
@@ -448,7 +449,9 @@ public class UMLPTool extends UMLPToolTOP {
           String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
           typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
 
-          GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
+          boolean generateTS = GUI_GEN_TS_FUNC.isSelected(cmd) ?
+              Boolean.parseBoolean(cmd.getOptionValue(GUI_GEN_TS_FUNC.getCMD())) : true;
+          GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents, generateTS);
           componentGenerator.generate(astGui, "umlp.GUI2Component");
 
           GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();

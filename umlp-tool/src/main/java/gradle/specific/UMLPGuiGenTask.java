@@ -49,6 +49,10 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<File> getGuiCreateModelsAsFile();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getGuiGenTSFuncionality();
+
 
   /**
    *
@@ -97,6 +101,11 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
         result.add("-" + UMLPToolOptions.GUI_CREATE.getCMD());
       }
       result.addAll(createModels);
+    }
+
+    if (this.getGuiGenTSFuncionality().isPresent()) {
+      result.add("-" + UMLPToolOptions.GUI_GEN_TS_FUNC.getCMD());
+      result.add(this.getGuiGenTSFuncionality().get() + "");
     }
 
     return result;
