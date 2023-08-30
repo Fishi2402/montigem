@@ -135,4 +135,29 @@ public class GenUpdateNeo4jTest extends GenAbstractNeo4jDBTest {
       assertEquals(1, a2Copy.sizeVisitors());
     }
   }
+
+  @Test
+  public void testSettingOptionalValuesInDB() {
+    Neo4jHuman h = Neo4jFlensburgManager.neo4jHumanBuilder().age(10).build().get();
+    Neo4jHuman h2 = Neo4jFlensburgManager.neo4jHumanBuilder().age(11).build().get();
+    Neo4jHuman h3 = Neo4jFlensburgManager.neo4jHumanBuilder().age(12).build().get();
+
+    // Update Optional where it was empty
+    h.setBestFriend(h2);
+
+    assertTrue(h.getBestFriendGem().isPresent());
+
+    Neo4jHuman hCopy = new Neo4jHumanDAO().selectNeo4jHuman(h.getGemId()).get();
+    assertTrue(hCopy.getBestFriendGem().isPresent());
+    assertEquals(h2.getGemId(), hCopy.getBestFriendGem().get().getGemId());
+
+    // Update Optional where a value was present
+    h.setBestFriend(h3);
+    assertTrue(h.getBestFriendGem().isPresent());
+    assertEquals(h3.getGemId(), h.getBestFriend().getGemId());
+
+    Neo4jHuman h2Copy = new Neo4jHumanDAO().selectNeo4jHuman(h.getGemId()).get();
+    assertTrue(h2Copy.getBestFriendGem().isPresent());
+    assertEquals(h3.getGemId(), h2Copy.getBestFriendGem().get().getGemId());
+  }
 }

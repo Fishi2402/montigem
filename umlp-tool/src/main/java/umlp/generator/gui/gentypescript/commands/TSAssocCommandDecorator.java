@@ -17,10 +17,10 @@ public class TSAssocCommandDecorator extends AssocCommandDecorator {
   }
 
   protected void addConstructor(
-      ASTCDClass ast, String template, String classname, String sourceName, String targetName
+      ASTCDClass ast, String template, String classname, String packageName, String sourceName, String targetName
   ) {
     glex.replaceTemplate(GUI2ComponentTemplates.CONSTRUCTOR, ast,
-        new TemplateHookPoint(template, classname, COMMAND_ASSOC_PACKAGE,
+        new TemplateHookPoint(template, classname, packageName,
             sourceName, targetName));
   }
 

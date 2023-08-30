@@ -1,0 +1,27 @@
+package gui.issues;
+
+import Sehub.Post;
+import Sehub.Issue;
+
+import gui.note.Note;
+import gui.note.Response;
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gembutton.GemButton;
+import input.src.lib.gemtextinput.GemTextInput;
+import input.src.lib.gemtextareainput.GemTextareaInput;
+
+component IssueCreate(Issue issue){
+  @GemColumn(hAlign = "center", width = "400px", rowGap =" 5px", components = [
+    @GemText(value = "Create new Issue"),
+    @GemTextInput(labelText = "Issue-Title", entry = issue.title),
+    @GemTextareaInput(
+      id = "issueDescription",
+      labelText = "Descritprion",
+      entry = issue.description
+    ),
+    @GemButton(label = "Create new Issue", leftClick = createIssue)
+  ]);
+}

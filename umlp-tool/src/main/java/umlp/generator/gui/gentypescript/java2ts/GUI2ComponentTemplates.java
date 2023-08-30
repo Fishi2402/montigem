@@ -10,6 +10,8 @@ public final class GUI2ComponentTemplates {
 
   public static final String ATTRIBUTE = "umlp.gui2ts.TSAttribute";
 
+  public static final String OVERRIDEATTRIBUTE = "umlp.gui2ts.TSOverrideAttribute";
+
   public static final String VALUE = "cd2java.Value";
 
   public static final String CONSTRUCTOR = "umlp.gui2ts.TSConstructor";

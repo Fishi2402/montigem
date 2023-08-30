@@ -115,18 +115,19 @@ public class DeSerDecorator extends DomainClassDecorator {
     boolean isOptional = false;
     boolean useDeSer = false;
     String type = GenService.createType(attr.getSymbol().getType()).printType();
+    String innerTypeFull = "";
     String innerType = "";
     String jsonStr = "";
     if (GenService.isList(attr)) {
       isList = true;
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0));
-      innerType = ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName();
-      useDeSer = supportedDesers.contains(innerType);
+      innerTypeFull = ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName();
+      useDeSer = supportedDesers.contains(innerTypeFull);
     } else if (GenService.isOptional(attr)) {
       isOptional = true;
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0));
-      innerType = ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName();
-      useDeSer = supportedDesers.contains(innerType);
+      innerTypeFull = ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName();
+      useDeSer = supportedDesers.contains(innerTypeFull);
     } else {
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
       useDeSer = supportedDesers.contains(type);
@@ -134,10 +135,10 @@ public class DeSerDecorator extends DomainClassDecorator {
     boolean makeAbstract = jsonStr.isEmpty() && !useDeSer;
 
     getCD4C().addMethod(deSer, getSerializeSimpleFieldTemplate(),
-        originalClassName, attr, type, jsonStr, isList, innerType, isOptional,
+        originalClassName, attr, type, jsonStr, isList, innerTypeFull, isOptional,
         useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
     getCD4C().addMethod(deSer, getDeserializeSimpleFieldTemplate(),
-        originalClassName, attr, type, jsonStr, isList, innerType, isOptional,
+        originalClassName, attr, type, jsonStr, isList, innerTypeFull, isOptional,
         useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
 
     if (makeAbstract) {

@@ -41,6 +41,7 @@ public class TSBuilderDecorator extends BuilderDecorator {
 
   protected void addImports(ASTCDType domainType, ASTCDType cdType) {
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("Gem"));
+    getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName());
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ErrorCollectorDecorator.SUFFIX);
 

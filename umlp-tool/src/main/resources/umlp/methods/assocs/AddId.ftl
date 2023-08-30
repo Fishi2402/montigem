@@ -6,5 +6,5 @@ if (o == null) {
   throw new IllegalArgumentException("Null argument not allowed here");
 }
 if (!this._${name}.contains(o.getGemId())) {
-  this._internal_add${name?cap_first}(index, java.util.Collections.singletonList(o.getGemId()));
+  this._internal_add${name?cap_first}(index, java.util.Collections.singletonList(o.getGemId()), scope);
 }

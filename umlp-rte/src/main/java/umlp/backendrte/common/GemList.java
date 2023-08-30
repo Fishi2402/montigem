@@ -239,7 +239,6 @@ public abstract class GemList<E extends GemIdentifiable>
    * The gemId is not required to be loaded in the idStorage, thus the result of idStorage.removeId must not be returned
    */
   public void removeIdSure(long gemId) {
-    System.out.println(ids);
     ids.removeIf(l -> Objects.equals(l, gemId));
   }
 

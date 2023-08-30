@@ -1,31 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Component} from '@angular/core';
+import {Directive} from '@angular/core';
 import {User} from '@src/sehub//User';
 import {SehubManager} from '@src/sehub/SehubManager';
 import {ResetPasswordTOP} from '@src/gui/login/ResetPasswordTOP';
 
-@Component({
-  selector: 'reset-password',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/ResetPassword.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ["/Login.scss"]
-})
+@Directive()
 
 export class ResetPassword extends ResetPasswordTOP {
 
   private error: string = "";
-
-  public ngOnInit(): void {
-    SehubManager.getUserList().then(gemPromiseRes => {
-      this.users = gemPromiseRes;
-      this.users.loadAll();
-    });
-
-    if (this.user == null) {
-      this.user = new User();
-    }
-  }
 
   public override resetPassword(event: any): void {
     if (!this.user || !this.user.getPassword() || !this.user.getEmail()) {

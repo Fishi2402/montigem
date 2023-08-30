@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
+import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 
@@ -197,12 +198,12 @@ public class GUI2TypeScriptGenerator {
     boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathToSearch + "."
         + decoratedAst.getComponentName() + ROUTES_FILE, TS_FILE_EXTENSION);
 
-    String componentPath = "./" + decoratedAst.getComponentName();
+    String componentPath = "./" + decoratedAst.getComponentName() + GUIAbstractDecorator.COMPONENT_SUFFIX;
 
     Optional<String> filePath = util.getRelativeImportPath(
         hwcPath, setup.getOutputDirectory().toPath(),
         decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getQName()
-            + "." + decoratedAst.getComponentName(), "ts");
+            + "." + decoratedAst.getComponentName() + GUIAbstractDecorator.COMPONENT_SUFFIX, "ts");
     if (filePath.isPresent()) {
       componentPath = util.removeExtension(filePath.get());
     }
@@ -211,15 +212,12 @@ public class GUI2TypeScriptGenerator {
         + (existHWCRoutes ? "TOP" : "") + ROUTES_FILE + "." + TS_FILE_EXTENSION);
     genEngine.generate("umlp.gui2ts.TSRoutes", generatedFiles,
         decoratedAst.getGUIComponentDeclaration(), "routes", existHWCRoutes,
-        componentPath, util.getRoutingIds(decoratedAst));
+        componentPath, util.getRoutingIds(decoratedAst), GUIAbstractDecorator.COMPONENT_SUFFIX);
 
-
-    /*generatedFiles = Paths.get(pathName,
+    generatedFiles = Paths.get(pathName,
         decoratedAst.getComponentName() + MODULES_FILE + "." + TS_FILE_EXTENSION);
     genEngine.generate("umlp.gui2ts.TSModule", generatedFiles, decoratedAst,
-        viewComponents.getModules(), componentPath);
-
-     */
+        viewComponents.getModules(), componentPath, GUIAbstractDecorator.COMPONENT_SUFFIX);
     /*
     for (ASTMCImportStatement is : decoratedAst.getMCImportStatementList()) {
       is.getMCQualifiedName().getParts(is.getMCQualifiedName().sizeParts() - 1)

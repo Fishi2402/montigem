@@ -1,0 +1,11 @@
+package gui;
+
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemcard.GemCard;
+
+page Start(){
+  @GemCard(title = "SE Hub | Welcome", component =
+    @GemColumn(hAlign = "center", height = "auto", width = "800px", rowGap = "105px", components = [
+    ])
+  );
+}

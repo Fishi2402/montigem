@@ -1,15 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {IssueState} from '@src/sehub/IssueState';
-import {Component} from '@angular/core';
+import {Directive} from '@angular/core';
 import {IssueCreateTOP} from '@src/gui/issues/IssueCreateTOP';
 
-@Component({
-  selector: 'issue-create',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueCreate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
-})
+@Directive()
 
 export class IssueCreate extends IssueCreateTOP {
 

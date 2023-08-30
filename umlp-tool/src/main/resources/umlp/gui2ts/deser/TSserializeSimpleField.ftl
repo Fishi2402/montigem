@@ -15,7 +15,7 @@
       }
       <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
       for (let e of obj.get${fieldName?cap_first}()) {
-        printer["${fieldName}"].push(e.toString());
+        printer["${fieldName}"].push(${attr.getSymbol().getType().getArgument(0).print()}[e]);
       }
       <#else>
       for (let e of obj.get${fieldName?cap_first}()) {
@@ -27,7 +27,7 @@
         <#if useDeSer>
         printer["${fieldName}"] = ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${innerType}");
         <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
-        printer["${fieldName}"] = obj.get${fieldName?cap_first}().toString();
+        printer["${fieldName}"] = ${attr.getSymbol().getType().getArgument(0).print()}[obj.get${fieldName?cap_first}()];
         <#else>
         printer["${fieldName}"] = obj.get${fieldName?cap_first}();
         </#if>
@@ -35,8 +35,10 @@
     <#else>
       <#if useDeSer>
       printer["${fieldName}"] = ${objectMapperName}.serialize(obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}(), "${fieldType}");
+      <#elseif genService.isCDEnum(attr.getSymbol().getType())>
+      printer["${fieldName}"] = ${fieldType}[obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}()];
       <#else>
-      printer["${fieldName}"] = obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}()<#if genService.isCDEnum(attr.getSymbol().getType())>.toString()</#if>;
+      printer["${fieldName}"] = obj.${genService.getGetterName(fieldName, attr.getSymbol().getType())}();
       </#if>
     </#if>
 </#if>

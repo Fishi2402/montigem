@@ -2,9 +2,12 @@
 package umlp.generator.domain.decorator;
 
 import com.google.common.base.Defaults;
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.class2mc.adapters.JClass2OOTypeSymbolAdapter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -20,6 +23,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
@@ -391,5 +395,9 @@ public class GenService {
       return "java.lang.Enum";
     }
     return type.printFullName();
+  }
+
+  public static boolean containsMethod(ASTCDType type, ASTCDMethodSignature method) {
+    return type.getCDMethodList().stream().filter(m -> m.deepEquals(method)).findAny().isPresent();
   }
 }

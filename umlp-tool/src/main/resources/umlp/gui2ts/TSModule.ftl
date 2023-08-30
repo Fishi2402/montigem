@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a module ts file from the given model -->
-${tc.signature("modules", "componentPath")}
+${tc.signature("modules", "componentPath", "componentSuffix")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign viewComponents = glex.getGlobalVar("viewComponents")>
 <#assign compDecl = ast.getGUIComponentDeclaration()>
@@ -9,7 +9,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { routes } from "./${compDecl.getName()}Routing";
-import { ${compDecl.getName()} } from "${componentPath}";
+import { ${compDecl.getName()}${componentSuffix} } from "${componentPath}";
 <#list ast.getMCImportStatementList() as imp>
   <#if genHelper.isGuiImport(imp)>
     import { ${genHelper.getModuleClassName(imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1))} } from "${genHelper.java2tsModule(imp.getQName())}";
@@ -18,7 +18,7 @@ import { ${compDecl.getName()} } from "${componentPath}";
 
 @NgModule({
   declarations: [
-    ${compDecl.getName()}
+    ${compDecl.getName()}${componentSuffix}
   ],
   imports: [
     CommonModule,
@@ -30,7 +30,7 @@ import { ${compDecl.getName()} } from "${componentPath}";
 </#list>
   ],
   exports: [
-    ${compDecl.getName()}
+    ${compDecl.getName()}${componentSuffix}
   ]
 })
 
