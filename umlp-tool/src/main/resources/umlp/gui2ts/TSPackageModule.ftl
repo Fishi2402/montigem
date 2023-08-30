@@ -4,10 +4,12 @@ ${tc.signature("astguiCompilationUnitList","ids","compDecl","topNameMap","paths"
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign uniqueSet = []>
 // always imported
+import { RouterModule } from "@angular/router";
 import { NgModule } from '@angular/core';
+import { routes } from './${compDecl}.Routing';
 // imports of pages in the package
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
-  import { ${astguiCompilationUnitList[index].getComponentName()} } from "${paths[index]}";
+  import { ${astguiCompilationUnitList[index].getComponentName()}Component } from "${paths[index]}";
 </#list>
 
 
@@ -33,17 +35,18 @@ import { NgModule } from '@angular/core';
 @NgModule({
 declarations: [
 <#list astguiCompilationUnitList as ast>
-    ${ast.getComponentName()},
+    ${ast.getComponentName()}Component,
 </#list>
 ],
 imports: [
+RouterModule.forChild(routes),
 <#list uniqueSet as moduleClassName>
   ${moduleClassName},
 </#list>
 ],
 exports: [
 <#list astguiCompilationUnitList as ast>
-    ${ast.getComponentName()},
+    ${ast.getComponentName()}Component,
 </#list>
 ]
 })

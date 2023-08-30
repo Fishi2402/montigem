@@ -9,7 +9,7 @@ export class Navigation {
 
   readonly items: { url: string, title: string }[] = [
     { url: '/a/WeatherView', title: 'Weather View' },
-    { url: '/c/WeatherApp', title: 'Weather App' },
+    { url: '/a/WeatherApp', title: 'Weather App' },
   ];
 
 }

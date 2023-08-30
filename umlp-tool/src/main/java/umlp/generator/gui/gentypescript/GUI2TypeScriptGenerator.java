@@ -140,14 +140,14 @@ public class GUI2TypeScriptGenerator {
       Optional<String> filePath = util.getRelativeImportPath(
           hwcPath, setup.getOutputDirectory().toPath(),
           ast.getMCPackageDeclaration().getMCQualifiedName().getQName()
-              + "." + ast.getComponentName(), "ts");
+              + "." + ast.getComponentName()+"Component", "ts");
       if(filePath.isPresent())
       {
         paths.add(util.removeExtension(filePath.get()));
       }
       else
       {
-        paths.add(util.removeExtension("./"+ast.getComponentName()));
+        paths.add(util.removeExtension("./"+ast.getComponentName()+"Component"));
       }
     });
 

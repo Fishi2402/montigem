@@ -15,6 +15,7 @@ import { GuiModule } from '@src/gui/Gui.Module';
   ],
   imports: [
     BrowserModule,
+
     RouterModule.forRoot(routes),
     NavigationModule,
     GuiModule,

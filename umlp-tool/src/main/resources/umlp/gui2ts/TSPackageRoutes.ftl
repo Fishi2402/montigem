@@ -5,10 +5,10 @@ ${tc.signature("astguiCompilationUnitList","ids","fullPathIndex","topNameMap","p
 import { Routes } from "@angular/router";
 // imports of pages in the package
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
-  import { ${astguiCompilationUnitList[index].getComponentName()} } from "${paths[index]}";
+  import { ${astguiCompilationUnitList[index].getComponentName()}Component } from "${paths[index]}";
 </#list>
 
-export const route: Routes = [
+export const routes: Routes = [
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
     <#if astguiCompilationUnitList[index].getGUIComponentDeclaration().isPage() >
 
@@ -22,7 +22,7 @@ export const route: Routes = [
 
 {
 path: "${astguiCompilationUnitList[index].getComponentName()}<#list ids[index] as id>/:${id}</#list>",
-component: ${astguiCompilationUnitList[index].getComponentName()}
+component: ${astguiCompilationUnitList[index].getComponentName()}Component
 },
 </#if>
 </#list>
