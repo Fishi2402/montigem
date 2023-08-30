@@ -102,7 +102,6 @@ public class DelegationManagerDecorator extends ManagerDecorator {
         .setName(delegationManagerName)
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedCDName+ManagerDecorator.SUFFIX+"Impl"))
         .build();
-    addOriginalManagerAttribute(delegationManagerClass, extendedCDName);
 
     String extendingManagerName = origCD.getCDDefinition().getName()+SUFFIX;
 
@@ -138,15 +137,6 @@ public class DelegationManagerDecorator extends ManagerDecorator {
     }
   }
 
-  protected void addOriginalManagerAttribute(ASTCDClass delegationManagerClass, String extendedCDName) {
-    String delegatedManager = extendedCDName+ManagerDecorator.SUFFIX+"Impl";
-
-    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
-        getMCTypeFacade().createQualifiedType(delegatedManager), StringTransformations.uncapitalize(delegatedManager));
-
-    getGlex().replaceTemplate("cd2java.Value", attr, new StringHookPoint(" = new " + delegatedManager + "()"));
-    delegationManagerClass.addCDMember(attr);
-  }
 
   protected Map<ASTCDType, Set<ASTCDType>> getEverySuperTypesFromExtendedCDToExtensions(UMLPArtifactScope extendedCDScope, ASTCDCompilationUnit origCD) {
 

@@ -102,7 +102,7 @@ task genGUI(type: UMLPGuiGenTask) {
 }
 
 task genGUI2(type: UMLPGuiGenTask) {
-  dependsOn(genGUI)
+  dependsOn(genGUI, generateCDTOGUI)
   input = file(generateCDTOGUI.getOutputDir().file("models"))
   symbolDir = file(symPath)
   hwcDir = file("src/app/")

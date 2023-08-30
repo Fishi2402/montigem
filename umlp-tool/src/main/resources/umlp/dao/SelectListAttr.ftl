@@ -3,7 +3,7 @@ ${tc.signature("tableName", "attr", "innerType", "dbType")}
 <#assign attrName=attr.getName()?cap_first>
 ${cd4c.method("public List<${innerType}> select${attrName}(long gemId)")}
   if(select${attrName}Statement == null) {
-    select${attrName}Statement = DatabaseAccessManager.prepareStatement("SELECT _value FROM ${tableName} WHERE id = ?");
+    select${attrName}Statement = DatabaseAccessManager.prepareStatement("SELECT _value FROM ${tableName} WHERE id = ? ORDER BY index ASC");
   }
   try {
   select${attrName}Statement.clearParameters();
