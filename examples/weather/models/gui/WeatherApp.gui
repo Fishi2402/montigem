@@ -10,6 +10,7 @@ import gui.multi_day_forecast.MultiDayForecast;
 import gui.next_hours_forecast.NextHoursForecast;
 import gui.widgets.WeatherWidget;
 import gui.widgets.WindWidgetBody;
+import gui.widgets.RadarBody;
 import gui.widgets.HumidityWidgetBody;
 import gui.AddToFavorite;
 import gui.current_city_weather.CurrentCityWeather;
@@ -30,6 +31,7 @@ page WeatherApp(List<App> apps){
         @NextHoursForecast(forecasts = app.currentCity.nextHours),
         @GemRow(
           colGap = "20px",
+          width = "90%",
           components = [
             @MultiDayForecast(timeseries = app.currentCity.nextDays),
             @GemCard(title = "Precipation"),
@@ -39,6 +41,7 @@ page WeatherApp(List<App> apps){
               icon = "assets/icons/wind.svg",
               component = @WindWidgetBody(timeseries = app.currentCity.nextDays)
             ),
+
             @WeatherWidget(
               widgetsTitle = "Humidity",
               title = "",
@@ -46,7 +49,14 @@ page WeatherApp(List<App> apps){
               component = @HumidityWidgetBody(timeseries = app.currentCity.nextDays)
             )
           ]
-        )
+        ),
+        @GemRow(width = "550px", component = @GemCard(title="Radar", component = @RadarBody()))
+//      @GemRow(width = "550px", component = @WeatherWidget(
+//              widgetsTitle = "Radar",
+//              title = "",
+//              icon = "assets/icons/humid.svg",
+//              component = @RadarBody())
+//            )
       ]
     );
   }
