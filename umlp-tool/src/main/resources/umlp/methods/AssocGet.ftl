@@ -1,3 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("paramName")}
-return this._internal_get${paramName?cap_first}GemList().get(index);
+${tc.signature("paramName", "ast")}
+return this.get${paramName}Gem().get();
