@@ -11,7 +11,7 @@ import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
 export class NotesPage extends NotesPageTOP {
 
-  newPost(event: any) {
+  public  newPost (event: any): void {
     if (!SehubSecurityManager.isSignedIn()) {
       alert("No User Logged In")
     } else {

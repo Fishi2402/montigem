@@ -17,8 +17,9 @@ import {ViewChild} from '@angular/core';
 export class NoteComponent extends NoteComponentTOP {
 
   ngOnInit(): void {
-    console.log("Note Init")
+
     super.ngOnInit();
+    this.post._internal_getResponsesGemList().build();
 
   }
 }

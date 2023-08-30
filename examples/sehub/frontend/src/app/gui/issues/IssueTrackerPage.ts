@@ -9,6 +9,7 @@ import {IssueTrackerPageTOP} from '@src/gui/issues/IssueTrackerPageTOP';
 export class IssueTrackerPage extends IssueTrackerPageTOP {
 
   public override getTodoTitle(): string {
+    console.log(this.getIssues())
     let count = 0;
     this.getIssues().toArray().forEach(i => {
       if (i.getState() === IssueState.UNASSIGNED) count++
