@@ -19,21 +19,12 @@ export class NotesPageComponent extends NotesPageComponentTOP {
     super(route, router);
   }
 
-  public  ngOnInit (): void {
+  ngOnInit() {
     if (!SehubSecurityManager.isSignedIn()) {
       alert("No User Logged In")
       this.router.navigate(['/login']);
     }
 
-    if(this.issueRoutingId > 0 && this.issue == null) {
-      SehubManager.getIssueSure(this.issueRoutingId).then(gemPromiseRes => {
-        this.issue = gemPromiseRes;
-
-        this.issue._internal_getPostsGemList().build()
-
-        });
-    }
-
-    this.init();
+    super.ngOnInit();
   }
 }
