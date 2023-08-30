@@ -54,10 +54,6 @@ public class CommandDirectCommunication implements ClientCommandCommunication,
     Command<?> recreatedCommand = CommandObjectMapper.deserializeCommand(cmdStr).get();
 
     CommandResult<?> res = CommandManager.executeCommand(recreatedCommand);
-    if (res.isSimpleResult() && !res.asSimpleResult().isSuccessful()) {
-      clientContext.activate();
-      return (CommandResult<T>)  res;
-    }
     String resStr = CommandObjectMapper.serializeResponse(res);
 
     clientContext.activate();

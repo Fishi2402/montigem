@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type")}
-${cd4c.constructor("public ${type}(long ownerGemID, List<Long> ids)")}
-super(ids);
+${cd4c.constructor("public ${type}(long ownerGemID)")}
+super(java.util.Collections.emptyList());
 this.ownerGemID = ownerGemID;

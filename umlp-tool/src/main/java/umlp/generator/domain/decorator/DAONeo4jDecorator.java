@@ -10,8 +10,10 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDTypeTOP;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.generator.db.sql.SQLSchemaGenerator;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -175,5 +177,28 @@ public class DAONeo4jDecorator extends DAODecorator {
       getCD4C().addMethod(daoClass, "umlp.dao.associations.UpdateNeo4jForAssocDAO", leftName, rightName);
     }
 
+  }
+
+  /**
+   * See method in super class. We do not want kebab-case for attributes as in the SQL variant
+   */
+  @Override
+  protected void unpackMethod(ASTCDClass daoClass, ASTCDClass domainClass,
+                              Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
+                              Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
+    List<ASTCDAttribute> listAttributes = getListAttributes(domainClass);
+    List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
+    Map<ASTCDAttribute, String> optMap = Maps.newLinkedHashMap();
+    getOptionalAttributes(domainClass).forEach(e -> optMap.put(e, "\"" + e.getName() + "\""));
+
+    Map<String, String> assocToCorrectManagerMap = new HashMap<>();
+    gemAssociationMap.values().forEach(assoc ->
+        assocToCorrectManagerMap.put(assoc.getName(),
+            UMLPSymbolTables.getDiagramFor(assoc).getCDDefinition().getName() + ManagerDecorator.SUFFIX));
+
+    Map<ASTCDAttribute, String> attributeMap = Maps.newLinkedHashMap();
+    attributes.forEach(e -> attributeMap.put(e, "\"" + e.getName() + "\""));
+    getCD4C().addMethod(daoClass, "umlp.dao.Unpack", domainClass.getName(), cdName, attributeMap,
+        optMap, listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap);
   }
 }

@@ -96,7 +96,7 @@ public class GemListAssocDecorator extends AbstractDecorator {
 
   protected void addConstructors(ASTCDClass ast, String className) {
     getCD4C().addConstructor(ast, getConstructorTemplate(), className);
-    getCD4C().addConstructor(ast, getConstructorEmptyTemplate(), className);
+//    getCD4C().addConstructor(ast, getConstructorEmptyTemplate(), className);
   }
 
   protected String getConstructorEmptyTemplate() {
