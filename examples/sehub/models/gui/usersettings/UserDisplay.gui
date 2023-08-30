@@ -16,10 +16,12 @@ component UserDisplay (User user) {
     components = [
       bar@GemRow(
         width="0.8vm",
-        height="2rem",
+        height="5px",
         components = [ ]
       ),
       @GemRow(
+        colGap = "5px",
+        hAlign = "space-between",
         components = [
           @GemRow(
             width="20rem",
@@ -46,7 +48,7 @@ component UserDisplay (User user) {
             width="20rem",
             height="3rem",
             hAlign = "space-between",
-            vAlign = "center",
+            vAlign = "bottom",
             component = registration@GemText(value = user.registrationDate)
           ),
           @GemRow(
@@ -60,7 +62,7 @@ component UserDisplay (User user) {
       ),
       barBottom@GemRow(
         width="0.8vm",
-        height="2rem",
+        height="5px",
         components = [ ]
       )
     ]
