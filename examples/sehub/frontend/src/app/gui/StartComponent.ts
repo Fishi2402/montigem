@@ -15,8 +15,9 @@ import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 export  class StartComponent extends StartComponentTOP {
 
   ngOnInit(){
+    console.log("here")
     if (!SehubSecurityManager.isSignedIn()) {
-      super.router.navigate(['/login']);
+      super.router.navigate(['/Login/LoginPage']);
     }
   }
 

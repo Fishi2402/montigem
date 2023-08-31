@@ -10,10 +10,10 @@ import {User} from '@src/sehub/User';
 export class Navigation {
 
   readonly items: { url: string, title: string }[] = [
-    { url: '/projects', title: 'Projects' },
-    {  url: '/issue-tracker/IssueTrackerPage', title: 'Issue Tracker' },
-    { url: '/notes/NotesPage/42000', title: 'Notes'},
-    { url: '/usersettings/UserSettings/1', title: 'User Settings'},
+    { url: '/Gui/SehubMainPage', title: 'Projects' },
+    {  url: '/Issues/IssueTrackerPage', title: 'Issue Tracker' },
+    { url: '/Note/NotesPage/42000', title: 'Notes'},
+    { url: '/Usersettings/UserSettings/1', title: 'User Settings'},
   ];
   getCurrentUser(): User {
     return SehubSecurityManager.getCurrentUser();

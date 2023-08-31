@@ -9,52 +9,27 @@ export const routes: Routes = [
     redirectTo: "login"
   },
   {
-    path: "login",
-    loadChildren: () => import("../../build/appgui/gui/login/LoginPageModule").then(m => m.LoginpageModule)
+    path: "Gui",
+    loadChildren: () => import("../../build/appgui/gui/Gui.Module").then(m => m.Gui_Module)
+  },
+
+  {
+    path:"Login",
+    loadChildren:() => import("../../build/appgui/gui/login/Login.Module").then(m => m.Login_Module)
+  },
+
+  {
+    path:"Issues",
+    loadChildren:() => import("../../build/appgui/gui/issues/Issues.Module").then(m => m.Issues_Module)
   },
   {
-    path: "login/forgotpassword",
-    loadChildren: () => import("../../build/appgui/gui/login/ForgotPasswordPageModule").then(m => m.ForgotpasswordpageModule)
+    path:"Note",
+    loadChildren:() => import("../../build/appgui/gui/note/Note.Module").then(m => m.Note_Module)
   },
+
   {
-    path: "login/registration",
-    loadChildren: () => import("../../build/appgui/gui/login/RegistrationPageModule").then(m => m.RegistrationpageModule)
-  },
-  {
-    path: "start",
-    loadChildren: () => import("../../build/appgui/gui/StartModule").then(m => m.StartModule)
-  },
-  {
-    path: "notes",
-    loadChildren: () => import("../../build/appgui/gui/NotesPageModule").then(m => m.NotespageModule)
-  },
-  {
-    path: "project",
-    loadChildren: () => import("../../build/appgui/gui/ProjectFileViewModule").then(m => m.ProjectfileviewModule)
-  },
-  {
-    path: "projects",
-    loadChildren: () => import("../../build/appgui/gui/SehubMainPageModule").then(m => m.SehubmainpageModule)
-  },
-  {
-    path: "artifacts",
-    loadChildren: () => import("../../build/appgui/gui/ProjectPageModule").then(m => m.ProjectpageModule)
-  },
-  {
-    path: "bingo",
-    loadChildren: () => import("../../build/appgui/gui/BingoModule").then(m => m.BingoModule)
-  },
-  {
-    path: "usersettings",
-    loadChildren: () => import("../../build/appgui/gui/usersettings/UserSettingsModule").then(m => m.UsersettingsModule)
-  },
- {
-    path: "issue-tracker",
-    loadChildren: () => import("../../build/appgui/gui/issues/IssueTrackerPageModule").then(m => m.IssuetrackerpageModule)
-  },
-  {
-    path: '404',
-    loadChildren: () => import("../../build/appgui/gui/PageNotFoundModule").then(m => m.PagenotfoundModule)
+    path:"Usersettings",
+    loadChildren:() => import("../../build/appgui/gui/usersettings/Usersettings.Module").then(m => m.Usersettings_Module)
   },
 
   //Woldcard Route for 404 Page:
