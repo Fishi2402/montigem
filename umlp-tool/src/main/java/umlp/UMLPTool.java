@@ -371,7 +371,6 @@ public class UMLPTool extends UMLPToolTOP {
       }
       else if (isGuiFile(inputFile)) {
         Map<String,List<ASTGUICompilationUnit>> routesMap=new HashMap<>();
-        Map<String,String> topNameMap=new HashMap<>();
         Set<String> createdTSComponents=new HashSet();
 
         for (String guiPathString : cmd.getOptionValues(INPUT.getCMD())) {
@@ -469,11 +468,8 @@ public class UMLPTool extends UMLPToolTOP {
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, viewComponents);
           String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
 
-          String pathName=String.join("/", astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
 
 
-          topNameMap.put(astGui.getComponentName(),
-                existsHandwrittenFile(hwcPath,pathName+"/"+astGui.getComponentName(),TS_FILE_EXTENSION)?"src/app/":"./");
           typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
 
 
@@ -510,12 +506,12 @@ public class UMLPTool extends UMLPToolTOP {
         routesMap.values().forEach(astList->
         {
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
-          List<String> outputs=typeScriptGenerator.generateConfigFileForPackages(astList,topNameMap);
+          List<String> outputs=typeScriptGenerator.generateConfigFileForPackages(astList);
           outputs.forEach(output->Reporting.reportFileCreation(outDir+"/"+output));
 
         });
         GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
-        List<String> outputs=typeScriptGenerator.generateAppConfigfile(new ArrayList<>(routesMap.values()),topNameMap);
+        List<String> outputs=typeScriptGenerator.generateAppConfigfile(new ArrayList<>(routesMap.values()));
         outputs.forEach(output->Reporting.reportFileCreation(outDir+"/"+output));
         Reporting.flush(new ASTGUICompilationUnit());
       }

@@ -27,7 +27,7 @@ public class RoutingGeneratorTest extends AbstractGUITest {
     GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(generatorSetup, generatorSetup.getHandcodedPath(), null);
     Map<String,String> dummy=new HashMap<>();
     astList.forEach(ast->dummy.put(ast.getComponentName(),""));
-    typeScriptGenerator.generateConfigFileForPackages(astList,dummy);
+    typeScriptGenerator.generateConfigFileForPackages(astList);
     assertNoErrors();
   }
 

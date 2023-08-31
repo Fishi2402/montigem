@@ -9,6 +9,6 @@ export const routes: Routes = [
   },
   {
     path:"a",
-    loadChildren: () => import("../../build/appgui/gui/Gui.Module").then(m => m.GuiModule)
+    loadChildren: () => import("../../build/appgui/gui/Gui.Module").then(m => m.Gui_Module)
   }
 ]

@@ -600,7 +600,7 @@ public class GUIGeneratorUtil {
   public String getPackageModuleName(ASTMCImportStatement i)
   {
      List<String> temp=List.of(java2tsModule(i.getQName()).split("/"));
-     return temp.get(temp.size()-2).substring(0,1).toUpperCase()+temp.get(temp.size()-2).substring(1)+"Module";
+     return temp.get(temp.size()-2).substring(0,1).toUpperCase()+temp.get(temp.size()-2).substring(1)+"_Module";
   }
 
   public String getPackageModulePath(ASTMCImportStatement i)

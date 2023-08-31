@@ -5,8 +5,8 @@ import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
 import { routes } from './app.routing';
 import { Navigation } from '@src/navigation/navigation.component';
-import { NavigationModule } from '@src/gui/widgets/navigation/Navigation.Module';
-import { GuiModule } from '@src/gui/Gui.Module';
+import { Navigation_Module } from '@src/gui/widgets/navigation/Navigation.Module';
+import { Gui_Module } from '@src/gui/Gui.Module';
 @NgModule({
   declarations: [
     AppComponent,
@@ -17,8 +17,8 @@ import { GuiModule } from '@src/gui/Gui.Module';
     BrowserModule,
 
     RouterModule.forRoot(routes),
-    NavigationModule,
-    GuiModule,
+    Navigation_Module,
+    Gui_Module,
   ],
   providers: [],
   bootstrap: [AppComponent]
