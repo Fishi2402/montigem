@@ -4,22 +4,53 @@ import Sehub.Artifact;
 import Sehub.Directory;
 import Sehub.Project;
 
-import basic.src.lib.gembutton.GemButton;
+import gui.artifacts.ArtifactTypeIcon;
+import gui.artifacts.DateTimeToPassedByTime;
 
+import basic.src.lib.gembutton.GemButton;
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gemimage.GemImage;
+
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
 import table.src.lib.gemtable.GemTable;
 import table.src.lib.gemtable.TableTypes.TableColumn;
 
-import arrange.src.lib.gemcolumn.GemColumn;
 
 page ProjectFileView(Directory parent) {
 
-  @GemButton(label = "Go to Artifacts Page", leftClick = goToArtifactsPage);
-  @GemTable(
-    rows = parent.contains,
-    columns = [
-      TableColumn("_name", "Artifact Name"),
-      TableColumn("_modified", "Last update")
-    ],
-    delete = navigateToSubPage
+  @GemColumn(
+    rowGap="20px",
+    components=[
+      @GemButton(label = "Go to Artifacts Page", leftClick = goToArtifactsPage),
+      @GemRow(
+        colGap="5%",
+        components = [
+          @GemColumn(height="20px", vAlign="center", hAlign="left", width="5%", component = @GemText(value = "")),
+          @GemColumn(height="20px", vAlign="center", hAlign="left", width="48%", component = @GemText(value = "Name")),
+          @GemColumn(height="20px", vAlign="center", hAlign="left", width="37%", component = @GemText(value = "Last Update"))
+        ]
+      ),
+      parentDirGuard@guard(parent.containedBy != null){
+        artifactsTable1@GemRow(
+          colGap="5%",
+          components = [
+            @GemColumn(height="20px", vAlign="center", hAlign="left", width="5%", components = [@ArtifactTypeIcon(type = "Directory")]),
+            @GemColumn(height="20px", vAlign="center", hAlign="left", width="48%", component = @GemButton(label = "..", leftClick = goToSuperpage(parent)))
+          ]
+        );
+      },
+      @iterate(Artifact artifact: parent.contains){
+        artifactsTable2@GemRow(
+          colGap="5%",
+          components = [
+            @GemColumn(height="20px", vAlign="center", hAlign="left",width="5%", components = [@ArtifactTypeIcon(type = artifact.getType())]),
+            @GemColumn(height="20px", vAlign="center", hAlign="left", width="48%", component = @GemButton(label = artifact.getName(), leftClick = goToSubpage(artifact))),
+            @GemColumn(height="20px", vAlign="center", hAlign="right", width="37%", component = @DateTimeToPassedByTime(artifact = artifact))
+          ]
+        );
+      }
+    ]
   );
+
 }

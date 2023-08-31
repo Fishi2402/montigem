@@ -73,6 +73,7 @@ classdiagram Sehub {
     String modified;
     String name;
     String fullName;
+    /String type;
   }
 
   class FileArtifact extends Artifact {}
@@ -87,7 +88,7 @@ classdiagram Sehub {
 
   class Directory extends Artifact {}
 
-  association contains [0..1] Directory -> (contains) Artifact [*];
+  association [0..1] Directory (containedBy) <-> (contains) Artifact [*];
 
 
   // --------------------- Bingo ---------------------

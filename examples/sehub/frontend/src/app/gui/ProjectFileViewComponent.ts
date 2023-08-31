@@ -43,10 +43,6 @@ export  class ProjectFileViewComponent extends ProjectFileViewComponentTOP {
       SehubManager.getDirectorySure(this.parentRoutingId).then(gemPromiseRes => {
         this.parent = gemPromiseRes;
       });
-      const gemTable1Columns: Array<any> = [];
-      gemTable1Columns.push(new TableColumn("_name","Artifact Name"));
-      gemTable1Columns.push(new TableColumn("_modified","Last update"));
-      this.setGemTable1Columns(gemTable1Columns);
     })
   }
 }

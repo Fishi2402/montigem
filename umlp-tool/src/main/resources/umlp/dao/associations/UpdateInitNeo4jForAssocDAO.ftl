@@ -9,6 +9,6 @@ ${cd4c.method("public void ensureUpdate${assocSideName?cap_first}Created()")}
     <#lt>  CREATE (l)-[aNew:${assocSideName}]->(rNew) <#t>
 </#if>
 <#if navigableLeft>
-    <#lt>  CREATE (l)<-[aNew:${assocSideName}]-(rNew) <#t>
+    <#lt>  CREATE (l)<-[bNew:${assocSideName}]-(rNew) <#t>
 </#if> <#lt> DELETE aOld");
 }
