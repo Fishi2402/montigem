@@ -1,0 +1,10 @@
+package gui.issues;
+
+import Sehub.Issue;
+
+component IssueDragDrop(
+  List<Issue> issues,
+  String dropId,
+  List<String> canDropTo,
+  Event drop
+)

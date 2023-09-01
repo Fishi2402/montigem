@@ -10,7 +10,7 @@ export class IssueTrackerPage extends IssueTrackerPageTOP {
 
   public override getTodoTitle(): string {
     let count = 0;
-    this.getIssues().toArray().forEach(i => {
+    this.getIssues()?.toArray().forEach(i => {
       if (i.getState() === IssueState.UNASSIGNED) count++
     })
     return super.getTodoTitle() + " (" + count + ")"
@@ -18,7 +18,7 @@ export class IssueTrackerPage extends IssueTrackerPageTOP {
 
   public override getDoingTitle(): string {
     let count = 0;
-    this.getIssues().toArray().forEach(i => {
+    this.getIssues()?.toArray().forEach(i => {
       if (i.getState() === IssueState.IN_PROGRESS) count++
     })
     return super.getDoingTitle() + " (" + count + ")"
@@ -26,7 +26,7 @@ export class IssueTrackerPage extends IssueTrackerPageTOP {
 
   public override getDoneTitle(): string {
     let count = 0;
-    this.getIssues().toArray().forEach(i => {
+    this.getIssues()?.toArray().forEach(i => {
       if (i.getState() === IssueState.DONE) count++
     })
     return super.getDoneTitle() + " (" + count + ")"
