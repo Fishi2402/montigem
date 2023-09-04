@@ -34,7 +34,6 @@ page WeatherApp(List<App> apps){
           width = "90%",
           components = [
             @MultiDayForecast(timeseries = app.currentCity.nextDays),
-            @GemCard(title = "Precipation"),
             @WeatherWidget(
               widgetsTitle = "Wind Speed",
               title = "",
