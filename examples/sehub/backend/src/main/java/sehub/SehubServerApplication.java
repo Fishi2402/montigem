@@ -39,8 +39,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
     for (int i = 0; i <= 24; i++) {
       entrySet.add(SehubManager.bingoEntryBuilder().word("").build().get());
     }
-    BingoBoardBuilder boardBuilder = new BingoBoardBuilder(42001);
-    Optional<BingoBoard> bingoBoard = boardBuilder
+    Optional<BingoBoard> bingoBoard = SehubManager.bingoBoardBuilder()
         .bingoBoardEntries(entrySet)
         .build();
 
