@@ -1,9 +1,6 @@
 package sehub;
 
-import de.se_rwth.commons.logging.Log;
-import dummy.ContainerFileExtractor;
 import dummy.DummyDataCreator;
-import org.apache.commons.io.FileUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -14,11 +11,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Optional;
-
-import java.io.File;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -127,6 +120,8 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         .state(IssueState.IN_PROGRESS)
         .posts(Set.of(p3.get()))
         .build();
+
+
 
     SehubManager.issueBuilder()
         .title("Verfügbare Konten sollen beim Bearbeiten von Dienstreisen auswählbar sein")

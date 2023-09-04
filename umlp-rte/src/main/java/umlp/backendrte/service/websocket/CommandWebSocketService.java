@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.backendrte.service.websocket;
 
+import de.se_rwth.commons.logging.Log;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -11,13 +12,13 @@ import umlp.backendrte.command.CommandObjectMapper;
 import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.command.Participant;
 import umlp.backendrte.command.StatusResult;
-import umlp.backendrte.common.LoadResult;
-import umlp.backendrte.common.LoadingState;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommandWebSocketService extends TextWebSocketHandler {
 
@@ -42,11 +43,12 @@ public class CommandWebSocketService extends TextWebSocketHandler {
 
   @Override
   public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-    System.out.println("Server received message");
+    String payload = message.getPayload();
+    System.out.println("Received:\t" + payload);
     String returnResult = "";
     try {
       // TODO: check participant id is correct
-      Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(message.getPayload());
+      Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(payload);
       if (!commandOptional.isPresent()) {
         return;
       }
@@ -66,9 +68,16 @@ public class CommandWebSocketService extends TextWebSocketHandler {
         returnResult = CommandObjectMapper.serializeResponse(StatusResult.error(command.getId()));
       }
     } catch (Exception e) {
-      returnResult = "Command could not be parsed!";
+      int commandId = -1;
+      Pattern p = Pattern.compile("\"id\":\\s*(\\d+)");
+      Matcher m = p.matcher(payload);
+      if(m.find()){
+        commandId = Integer.parseInt(m.group(1));
+      }
+      Log.error("Command could not be parsed:\n"+ payload, e);
+      returnResult = CommandObjectMapper.serializeResponse(StatusResult.error(commandId));
     }
-    System.out.println(returnResult);
+    System.out.println("Responding: " + returnResult);
     session.sendMessage(new TextMessage(returnResult));
   }
 
