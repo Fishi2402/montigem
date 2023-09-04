@@ -1,5 +1,6 @@
 package sehub;
 
+import de.se_rwth.commons.logging.Log;
 import dummy.DummyDataCreator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,6 +32,16 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
   public void init() throws IOException {
     super.init();
 
+    // Only create DummyData if database is empty
+    if(SehubManager.getUserList().isEmpty()){ // Is there a better way to check if dummy-data was already created?
+      Log.println("Creating Dummy Data");
+      createDummyData();
+    } else {
+      Log.println("_NOT_ Creating New Dummy Data. Data is already present.");
+    }
+  }
+
+  public void createDummyData(){
     for (User user : SehubManager.getUserList()) {
       System.err.println("User " + user.getUsername());
     }
