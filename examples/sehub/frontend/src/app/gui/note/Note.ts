@@ -51,12 +51,7 @@ export class Note extends NoteTOP {
   deletePost(event: any){
     this.getPost().getIssueGem().isPresent().then(b => {
       if(b){
-        const gemList = this.getPost().getIssue()._internal_getPostsGemList();
-        let idx = gemList.indexOfId(this.getPost().getGemId());
-        if(idx >= 0){
-          gemList.remove(idx);
-          SehubManager.deletePost(this.post.getGemId());
-        }
+        this.getPost().getIssue().removePosts2(this.getPost())
       }
     })
 

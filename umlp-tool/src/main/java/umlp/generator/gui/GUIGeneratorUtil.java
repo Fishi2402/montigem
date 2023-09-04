@@ -396,18 +396,31 @@ public class GUIGeneratorUtil {
     return name.replaceAll(TPL_INTERN, "").replaceAll(TPL_SUFFIX, "");
   }
 
+  public String gui2tsGeneralImport(String forComponent, String postfix) {
+    Optional<String> domainQName = getMainDomainModelQName();
+    if (domainQName.isPresent()) {
+      String name = domainQName.get();
+      String simpleName = name.substring(name.lastIndexOf(".") + 1);
+      if (name.lastIndexOf(".") > 0) {
+        String part1 = name.substring(0, name.lastIndexOf("."));
+        return part1 + "." + StringTransformations.uncapitalize(simpleName) + "." + postfix;
+      }
+      return StringTransformations.uncapitalize(name) + "." + postfix;
+    } else {
+      Log.error("0x00000 GUI Model " + forComponent
+          + " is missing a connection to the domain model."
+          + " Please specify the domain model using '-dm' flag.");
+      return "";
+    }
+  }
+
   public String gui2tsManagerImport(String forComponent) {
     Optional<String> domainQName = getMainDomainModelQName();
     if (domainQName.isPresent()) {
       String name = domainQName.get();
-      if (name.lastIndexOf(".") > 0) {
-        String part1 = name.substring(0, name.lastIndexOf("."));
-        String part2 = name.substring(name.lastIndexOf(".") + 1);
-        return part1 + "." + StringTransformations.uncapitalize(part2) + "." + part2 + ManagerDecorator.SUFFIX;
-      }
-      return StringTransformations.uncapitalize(name) + "." + name + ManagerDecorator.SUFFIX;
-    }
-    else {
+      String simpleName = name.substring(name.lastIndexOf(".") + 1);
+      return gui2tsGeneralImport(forComponent, simpleName + ManagerDecorator.SUFFIX);
+    } else {
       Log.error("0x00000 GUI Model " + forComponent
           + " is missing a connection to the domain model."
           + " Please specify the domain model using '-dm' flag.");

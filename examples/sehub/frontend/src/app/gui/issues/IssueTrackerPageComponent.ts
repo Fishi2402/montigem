@@ -33,13 +33,15 @@ export class IssueTrackerPageComponent extends IssueTrackerPageComponentTOP {
     if (!this.getIssues()) {
       return this.todoList;
     }
-    for (const i of this.todoList) {
-      if (!this.getIssues().contains(i.getGemId())) {
-        this.todoList.removeIdSure(i.getGemId());
+    const tmp: Issue[] = [];
+    for (const i of this.getIssues()) {
+      if (i.getState() === IssueState.UNASSIGNED) {
+        tmp.push(i);
       }
     }
-    for (const i of this.getIssues()) {
-      if (i.getState() === IssueState.UNASSIGNED && !this.todoList.contains(i.getGemId())) {
+    if (!this.equalIds(tmp.map(i => i.getGemId()), this.todoList.getIDs())) {
+      this.todoList = new IssueGemList([]).build();
+      for (let i of tmp) {
         this.todoList.push(i);
       }
     }
@@ -50,13 +52,15 @@ export class IssueTrackerPageComponent extends IssueTrackerPageComponentTOP {
     if (!this.getIssues()) {
       return this.doingList;
     }
-    for (const i of this.doingList) {
-      if (!this.getIssues().contains(i.getGemId())) {
-        this.doingList.removeIdSure(i.getGemId());
+    const tmp: Issue[] = [];
+    for (const i of this.getIssues()) {
+      if (i.getState() === IssueState.IN_PROGRESS) {
+        tmp.push(i);
       }
     }
-    for (const i of this.getIssues()) {
-      if (i.getState() === IssueState.IN_PROGRESS && !this.doingList.contains(i.getGemId())) {
+    if (!this.equalIds(tmp.map(i => i.getGemId()), this.doingList.getIDs())) {
+      this.doingList = new IssueGemList([]).build();
+      for (let i of tmp) {
         this.doingList.push(i);
       }
     }
@@ -67,13 +71,15 @@ export class IssueTrackerPageComponent extends IssueTrackerPageComponentTOP {
     if (!this.getIssues()) {
       return this.doneList;
     }
-    for (const i of this.doneList) {
-      if (!this.getIssues().contains(i.getGemId())) {
-        this.doneList.removeIdSure(i.getGemId());
+    const tmp: Issue[] = [];
+    for (const i of this.getIssues()) {
+      if (i.getState() === IssueState.DONE) {
+        tmp.push(i);
       }
     }
-    for (const i of this.getIssues()) {
-      if (i.getState() === IssueState.DONE && !this.doneList.contains(i.getGemId())) {
+    if (!this.equalIds(tmp.map(i => i.getGemId()), this.doneList.getIDs())) {
+      this.doneList = new IssueGemList([]).build();
+      for (let i of tmp) {
         this.doneList.push(i);
       }
     }
@@ -96,6 +102,12 @@ export class IssueTrackerPageComponent extends IssueTrackerPageComponentTOP {
     if (issue) {
       issue.setState(IssueState.DONE);
     }
+  }
+
+  protected equalIds(arr1: number[], arr2: number[]) {
+    const areAllInArr2 = arr1.every((num) => arr2.includes(num));
+    const areAllInArr1 = arr2.every((num) => arr1.includes(num));
+    return areAllInArr1 && areAllInArr2;
   }
 
 }
