@@ -35,7 +35,8 @@ umlp University {
 
   composition Student -> Course [*];
   association contactBook Person [java.lang.String] -> Contact;
-  association [*] Person (parent) <-> (children) Student [*]; // [0..2] not allowed, has to be checkd by a CoCo
+  association [*] Person (parent) <-> (children) Student [*];
+  // [0..2] not allowed, has to be checkd by a CoCo
 //  aggregation Course -> SportHall [0..*] ; // TODO: aggregations do not exist in CD4A
 
 }
