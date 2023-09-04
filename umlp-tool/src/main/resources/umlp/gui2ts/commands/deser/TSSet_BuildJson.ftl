@@ -8,7 +8,9 @@ ${cd4c.method("public void buildJson(${command} command, any jsonPrinter)")}
   jsonPrinter["gemId"] = command.getGemId();
 <#if useDeSer>
   jsonPrinter["${attrName}"] = ${objectMapperName}.serialize(command.${getterName}(), "${type}");
+<#elseif isCDEnum>
+  jsonPrinter["${attrName}"] = ${type?keep_after_last(".")}[command.${getterName}()];
 <#else>
-  jsonPrinter["${attrName}"] = command.${getterName}()<#if isCDEnum>.toString()</#if>;
+  jsonPrinter["${attrName}"] = command.${getterName}();
 </#if>
 </#if>
