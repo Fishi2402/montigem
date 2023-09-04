@@ -96,6 +96,11 @@ public class TSManagerDecorator extends ManagerDecorator {
 
     getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetFreeGemId", true);
     getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetFreeGemId", false);
+
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSAddManagerObserver", simpleName, true);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSAddManagerObserver", simpleName, false);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSRemoveManagerObserver", simpleName, true);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSRemoveManagerObserver", simpleName, false);
   }
 
   @Override
