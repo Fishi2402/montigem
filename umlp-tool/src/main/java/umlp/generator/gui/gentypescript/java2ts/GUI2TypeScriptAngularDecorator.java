@@ -143,6 +143,15 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     // constructor, attrs, getters
     if (!domainClass.getGUIParamList().isEmpty()) {
       addInitMethod(clazz);
+      if(ast.getGUIComponentDeclaration().isPage()
+          && domainClass.getGUIParamList().stream().anyMatch(util::isDomainListType)) {
+        addDestroyMethod(clazz);
+      }
+
+      if(ast.getGUIComponentDeclaration().isPage()) {
+        // Otherwise, the updates are provided by the parent component
+        addUpdateObserverAndUpdateMethods(clazz, ast);
+      }
 
       List<ASTGUIParam> domainParams = domainClass.getGUIParamList().stream()
           .filter(p -> util.isDomainType(p))
@@ -159,11 +168,14 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
 
         if (util.getMainDomainModelSimpleName().isPresent()) {
           // TODO AGe: body of init method currently uses different hooks, improve
-          glex.addAfterTemplate("umlp.gui2java.InitBody", new TemplateHookPoint(
-              "umlp.gui2ts.TSInitDomainList",
-              p.getName(),
-              util.getDomainListInnerType(p),
-              util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+          if(ast.getGUIComponentDeclaration().isPage()) {
+            // Otherwise, parent page updates parameters
+            glex.addAfterTemplate("umlp.gui2java.InitBody", new TemplateHookPoint(
+                "umlp.gui2ts.TSInitDomainList",
+                p.getName(),
+                util.getDomainListInnerType(p),
+                util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+          }
         }
         else {
           Log.warn("0x00007 Could not identify the manager name: domain classdiagram is missing");
@@ -267,6 +279,29 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     return clazz;
   }
 
+  protected void addUpdateObserverAndUpdateMethods(ASTCDClass clazz, ASTGUICompilationUnit ast) {
+    List<ASTGUIParam> paramsTypedListOfDomain = ast.getGUIComponentDeclaration().getGUIParamList().stream()
+        .filter(util::isDomainListType)
+        .collect(Collectors.toList());
+
+    List<String> types = paramsTypedListOfDomain.stream()
+        .map(util::getDomainListInnerType)
+        .collect(Collectors.toList());
+
+    String originalName = util.getMainDomainModelSimpleName().get();
+    getCD4C().addAttributeFromTemplate(clazz, "umlp.gui2ts.UpdateObserverAttr", originalName,types);
+    getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, originalName + "Observer"));
+    getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, "Empty" + originalName + "Observer"));
+
+    // Update methods
+    for (var p : paramsTypedListOfDomain) {
+      getCD4C().addMethod(clazz, "umlp.gui2ts.UpdateListOfDomain",
+          p.getName(),
+          util.getDomainListInnerType(p),
+          util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX);
+    }
+  }
+
   protected ASTCDAttribute addAttributForGUIParameter(ASTCDClass clazz, ASTGUIParam astguiParam, ASTModifier modifier) {
     // attr
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
@@ -284,6 +319,10 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     ASTCDMethod method = this.getCDMethodFacade().createMethod(CDModifier.PUBLIC.build(), "ngOnInit");
     glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("umlp.gui2ts.TSInit"));
     clazz.addCDMember(method);
+  }
+
+  protected void addDestroyMethod(ASTCDClass clazz) {
+    getCD4C().addMethod(clazz, "umlp.gui2ts.TSDestroy", util.getMainDomainModelSimpleName().get() + "Manager");
   }
 
   // TODO AGe: own event decorator
