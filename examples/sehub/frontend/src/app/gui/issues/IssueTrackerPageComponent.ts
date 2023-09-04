@@ -81,7 +81,6 @@ export class IssueTrackerPageComponent extends IssueTrackerPageComponentTOP {
   }
 
   public todoListDrop(issue: Issue): void {
-    // TODO AGe: doesn't work
     if (issue) {
       issue.setState(IssueState.UNASSIGNED);
     }

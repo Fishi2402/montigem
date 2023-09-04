@@ -24,7 +24,7 @@ export class IssueDragDropComponent extends IssueDragDropComponentTOP {
   }
 
   onDrop(event: CdkDragDrop<Issue[]>) {
-    this.drop.emit(event?.previousContainer?.data?.[0]);
+    this.drop.emit(event?.previousContainer?.data?.[event.previousIndex]);
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
