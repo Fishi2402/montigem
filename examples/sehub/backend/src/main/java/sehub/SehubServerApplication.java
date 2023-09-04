@@ -112,7 +112,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         .responses(responses)
         .build();
 
-    IssueBuilder issueBuilder = new IssueBuilder(42000);
+    IssueBuilder issueBuilder = SehubManager.issueBuilder();
         issueBuilder
         .title("Die Sache mit dem Wasserkocher")
         .description("Hier kann eine Beschreibung stehen...")
