@@ -44,12 +44,13 @@ component UserDisplay (User user) {
             height="3rem",
             component = role@GemTextInput(labelText = "Role", inputType = "dropdown", entry = user.role, options = null)
           ),
-          @GemRow(
+          @GemColumn(
             width="20rem",
             height="3rem",
             hAlign = "space-between",
             vAlign = "bottom",
-            component = registration@GemText(value = user.registrationDate)
+            components = [ regLabel@GemText(value = "Registration Date"),
+                           registration@GemText(value = user.registrationDate) ]
           ),
           @GemRow(
             width="3rem",
