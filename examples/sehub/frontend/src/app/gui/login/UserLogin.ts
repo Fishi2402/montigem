@@ -12,7 +12,13 @@ export class UserLogin extends UserLoginTOP {
 
   protected error: string = "";
 
-  public override login(event: any): void {
+  public override loginOnEnter(event: KeyboardEvent): void {
+    if (event.key === "Enter") {
+      this.login();
+    }
+  }
+
+  public override login(): void {
     if (!this.loginUser || !this.loginUser.getUsername() || !this.loginUser.getPassword()) {
       return;
     }
