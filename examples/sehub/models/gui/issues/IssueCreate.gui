@@ -19,7 +19,7 @@ component IssueCreate(Issue issue){
     @GemTextInput(labelText = "Issue-Title", entry = issue.title),
     @GemTextareaInput(
       id = "issueDescription",
-      labelText = "Descritprion",
+      labelText = "Description",
       entry = issue.description
     ),
     @GemButton(label = "Create new Issue", leftClick = createIssue)

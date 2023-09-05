@@ -35,7 +35,7 @@ page NotesPage(Issue issue){
         issueTitle@GemTextInput(labelText = "Issue-Title", entry= issue.title),
         issueDescription@GemTextareaInput(
           id = "issueDescription",
-          labelText = "Descritprion",
+          labelText = "Description",
           entry = issue.description
         )
       ])
