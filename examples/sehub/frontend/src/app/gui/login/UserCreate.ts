@@ -109,7 +109,7 @@ export class UserCreate extends UserCreateTOP {
   }
 
   public override navigateBack(): void {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login/LoginPage']);
   }
 
 }

@@ -5,7 +5,6 @@
   flex-wrap: nowrap;
 }
 
-.bar {
+:host {
   border-top: dashed 1px $acronio-orange-alternate;
 }
-

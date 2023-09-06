@@ -3,33 +3,17 @@ package gui.login;
 import Sehub.User;
 
 import gui.login.UserLogin;
+import gui.login.LoginContainer;
 
-import arrange.src.lib.gemrow.GemRow;
 import arrange.src.lib.gemcolumn.GemColumn;
-import arrange.src.lib.gemcard.GemCard;
-
-import basic.src.lib.gemimage.GemImage;
-import basic.src.lib.gemtext.GemText;
 import basic.src.lib.gemlink.GemLink;
 
-page LoginPage(List<User> users){
-
-  @GemRow(hAlign = "center", vAlign = "space-around", width = "100%", component =
-    loginCard@GemCard(title = "SE Hub", component =
-      @GemColumn(hAlign = "center", height = "auto", width = "800px", components = [
-        @GemRow(hAlign = "center", vAlign = "center", width = "100%", component =
-          @GemColumn(hAlign = "center", width = "600px", rowGap = "20px", components = [
-            @GemRow(width = "150px", hAlign = "center", component = @GemImage(source = "assets/images/Eule.png")),
-            @UserLogin(),
-            @GemLink(url = "/login/forgotpassword", text = "Forgot your password?"),
-            @GemLink(url = "/login/registration/RegistrationPage", text = "Create new account"),
-            @GemRow(width = "150px", hAlign = "center", component =
-              @GemImage(source = "assets/images/rwth_se_bild_weiss_rgb.png")
-            )
-          ])
-        )
-      ])
-    )
+page LoginPage(List<User> users) {
+  @LoginContainer(component =
+    @GemColumn(width = "400px", rowGap = "20px", hAlign = "center", components = [
+      @UserLogin(),
+      @GemLink(url = "/login/forgotpassword/ForgotPasswordPage", text = "Forgot your password?"),
+      @GemLink(url = "/login/registration/RegistrationPage", text = "Create new account")
+    ])
   );
-
 }
