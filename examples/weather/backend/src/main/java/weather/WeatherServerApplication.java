@@ -62,7 +62,7 @@ public class WeatherServerApplication extends WeatherServerApplicationTOP {
     });
 
     TimeseriesDeSer timeseriesDeSer = new TimeseriesDeSer();
-    Timeseries timeseries = aachen.get()._nextDays.get();
+    Timeseries timeseries = aachen.get().getNextDaysDerivedGem().get();
 
     System.out.println("Next days for Aachen");
     System.out.print("Basic: ");
