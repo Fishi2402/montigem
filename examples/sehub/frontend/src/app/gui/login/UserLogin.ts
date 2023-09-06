@@ -22,7 +22,7 @@ export class UserLogin extends UserLoginTOP {
       if (!!user && this.loginUser.getUsername() === user.getUsername()) {
         if (this.loginUser.getPassword() === user.getPassword()) {
           SehubSecurityManager.setCurrentUser(user);
-          this.router.navigate(['/start']);
+          this.router.navigate(['/Gui/Start']);
         } else {
           this.error = 'Wrong password!';
           this.loginUser.validityPassword = this.error;
