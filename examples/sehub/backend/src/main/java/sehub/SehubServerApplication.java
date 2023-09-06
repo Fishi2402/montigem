@@ -2,6 +2,7 @@ package sehub;
 
 import de.se_rwth.commons.logging.Log;
 import dummy.DummyDataCreator;
+import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -38,6 +40,13 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
       createDummyData();
     } else {
       Log.println("_NOT_ Creating New Dummy Data. Data is already present.");
+    }
+
+    try {
+      Server webServer = Server.createWebServer("-web", "-webAllowOthers").start();
+      Log.info(String.format("H2 Web Server started at: http://localhost:%s", webServer.getPort()), SehubServerApplication.class.getName());
+    } catch (SQLException e) {
+      throw new IOException(e);
     }
   }
 

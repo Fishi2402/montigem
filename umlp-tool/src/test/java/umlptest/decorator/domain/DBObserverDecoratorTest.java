@@ -27,7 +27,7 @@ public class DBObserverDecoratorTest extends DecoratorTest {
 
             // check no of methods and attributes
             () -> assertEquals(2, ast.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(2, ast.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(3, ast.getCDMethodList().size(), "number of methods"),
 
             // check methods
             () -> existsMethod(ast, "notifySetFooAttr")
