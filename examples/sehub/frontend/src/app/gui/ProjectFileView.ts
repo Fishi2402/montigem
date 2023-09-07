@@ -19,18 +19,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 export class ProjectFileView extends ProjectFileViewTOP {
 
-  public override goToSuperpage(parent: any): (arg: any) => void {
-    return event => {
-      this.router.navigate(["..", "project", "ProjectFileView", this.parent.getContainedBy().getGemId()]);
-    };
-
-  }
-
-  public override goToSubpage(artifact: any): (arg: any) => void {
-    return event => {
-      this.router.navigate(["..", "project", "ProjectFileView", artifact.getGemId()]);
-    };
-
+  public  getGemLink11Url (): string {
+    if(this.parent.getContainedBy() != null){
+      return "../project/ProjectFileView/"+ this.parent.getContainedBy().getGemId()
+    }
+    return ""
   }
 
   public override goToArtifactsPage(event: any): void {
@@ -45,6 +38,5 @@ export class ProjectFileView extends ProjectFileViewTOP {
     }
     console.warn(this.parent.getContainedBy() != null)
     return !(this.parent.getContainedBy() == null);
-
   }
 }
