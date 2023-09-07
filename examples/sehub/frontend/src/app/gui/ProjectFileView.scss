@@ -28,6 +28,14 @@
   font-weight: 400;
 }
 
+:host ::ng-deep .gemText0 {
+  text-align: right;
+}
+
+:host ::ng-deep .gemText7 {
+  text-align: right;
+}
+
 :host ::ng-deep .fileViewColumn {
   color: $acronio-warmgray-4 ;
   background: $acronio-warmgray-4;
