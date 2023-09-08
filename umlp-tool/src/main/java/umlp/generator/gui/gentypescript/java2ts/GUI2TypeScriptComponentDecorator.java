@@ -93,6 +93,9 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
   }
 
   @Override
+  protected String getEnum2CapStringTemplate() { return "umlp.gui2ts.methods.TSEnumToCapString"; }
+
+  @Override
   protected String getSetterReplacedTemplate() {
     return "umlp.gui2ts.TSSetComponentReplaced";
   }
@@ -123,21 +126,23 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
   }
 
   @Override
-  protected Function<String, String> enumToStringConversion() { return s -> s + " + ''"; }
+  protected Function<String, String> enumToStringConversion(String type) { return s ->
+      "this.enumToCapitalizedString(" + type + "[" + s + "])"; }
 
   @Override
   protected Function<String, String> toStringConversion() { return s -> s + " + ''"; }
 
   @Override
-  protected Function<String, String> enumOptionalToStringConversion() { return s -> s + "!= null?" + s + " + '' : ''";  }
+  protected Function<String, String> enumOptionalToStringConversion(String type) { return s ->
+      s + "!= null?" + "this.enumToCapitalizedString(" + type + "[" + s + "]) : ''";  }
 
   @Override
   protected Function<String, String> stringToOptionalEnumConversion(String type) {
-    return s -> s + " in " + type + "? " + type + "[" + s + "] : null";
+    return s -> s + " in " + type + "? " + type + "[" + s + ".toUpperCase()] : null";
   }
 
   @Override
   protected Function<String, String> stringToEnumConversion(String type) {
-    return s -> type + "[" + s + "]";
+    return s -> type + "[" + s + ".toUpperCase()]";
   }
 }
