@@ -19,7 +19,14 @@ component UserDisplay(User user) {
       email@GemText(value = user.email)
     ]),
     @GemColumn(width = "20%", components = [
-      role@GemTextInput(labelText = "Role", inputType = "dropdown", entry = user.role, options = null)
+      role@GemTextInput(
+        labelText = "Role",
+        inputType = "dropdown",
+        options = null,
+        entry = user.role,
+        validity = user.validityRole
+      )
+     // role@GemTextInput(labelText = "Role", inputType = "dropdown", entry = user.role, options = null)
     ]),
     @GemColumn(width = "20%", components = [
       regLabel@GemText(value = "Registration Date"),

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {UserTOP} from '@src/sehub/UserTOP';
+import { SehubRole } from '@src/sehub/SehubRole';
 
 export class User extends UserTOP {
 
@@ -52,6 +53,34 @@ export class User extends UserTOP {
     this._statusEmail = value;
   }
 
+  private _statusRole = '';
+
+  private _validityRole = '';
+
+  public getValidityRole(): any {
+    return {status: this._statusRole, message: this._validityRole};
+  }
+
+  public set validityRole(value: string) {
+    this._validityRole = value;
+  }
+
+  public set statusRole(value: string) {
+    this._statusRole = value;
+  }
+
+  public override getRole() :SehubRole {
+    let res = super.getRole();
+    if (!res) {
+      this.validityRole = 'The role must be set!';
+      this.statusRole = 'Error';
+    } else {
+      this.validityRole = '';
+      this.statusRole = '';
+    }
+    return res;
+  }
+
   public resetValidity() {
     this.statusUsername = '';
     this.statusEmail = '';
@@ -59,6 +88,8 @@ export class User extends UserTOP {
     this.validityUsername = '';
     this.validityEmail = '';
     this.validityPassword = '';
+    this.validityRole = '';
+    this.validityRole = '';
   }
 
 }
