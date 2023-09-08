@@ -355,17 +355,14 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       }
       boolean rightIsOptionalEnum = util.isOptionalEnumType(rightType);
       if (leftIsString && rightIsOptionalEnum) {
-        String type = rightType.print();
-        addImport(decoratedClass, type);
-        type = type.lastIndexOf('.') > 0 ? type.substring(type.lastIndexOf('.') + 1) : type;
+        String innerType = ((SymTypeOfGenerics) rightType).getArgument(0).print();
+        addImport(decoratedClass, innerType);
+        innerType = innerType.lastIndexOf('.') > 0 ? innerType.substring(innerType.lastIndexOf('.') + 1) : innerType;
         if (forGetter) {
-          addEnum2CapStringMethod(decoratedClass, type);
-          return enumOptionalToStringConversion(type);
+          addEnum2CapStringMethod(decoratedClass, innerType);
+          return enumOptionalToStringConversion(innerType);
         }
         else {
-          String innerType = ((SymTypeOfGenerics) rightType).getArgument(0).print();
-          addImport(decoratedClass, innerType);
-          innerType = innerType.lastIndexOf('.') > 0 ? innerType.substring(innerType.lastIndexOf('.') + 1) : innerType;
           return stringToOptionalEnumConversion(innerType);
         }
       }
