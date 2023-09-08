@@ -8,3 +8,10 @@
 :host {
   border-top: dashed 1px $acronio-orange-alternate;
 }
+
+:host ::ng-deep .errorrole {
+  div {
+    color: red;
+    font-size: 0.8rem;
+  }
+}

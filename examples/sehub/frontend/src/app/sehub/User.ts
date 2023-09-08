@@ -72,7 +72,7 @@ export class User extends UserTOP {
   public override getRole() :SehubRole {
     let res = super.getRole();
     if (!res) {
-      this.validityRole = 'The role must be set!';
+   //   this.validityRole = 'The role must be set!';
       this.statusRole = 'Error';
     } else {
       this.validityRole = '';
