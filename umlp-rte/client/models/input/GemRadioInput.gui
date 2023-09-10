@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package input;
+
+component GemRadioInput(
+  String id,
+  String labelText,
+  String value,
+  String labelPosition,
+  ?String selectedValue
+)

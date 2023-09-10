@@ -64,6 +64,9 @@ export class GemBarChart extends GemBarChartTOP {
    */
   @Input()
   public set data(data: GemBarChartData) {
+    if (!data) {
+      return;
+    }
     this.dataSets = [];
     const colors = [];
     const labels = [];

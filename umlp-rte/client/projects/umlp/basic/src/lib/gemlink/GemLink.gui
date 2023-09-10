@@ -1,6 +1,0 @@
-package basic.src.lib.gemlink;
-
-component GemLink(
-  String url,
-  String text
-)

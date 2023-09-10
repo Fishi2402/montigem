@@ -1,28 +1,28 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { GemTextareaInput as GemTextareaInputTOP } from './gem-textarea-input/gem-textarea-input.component-gen';
+import {
+  Component,
+  EventEmitter,
+  HostBinding,
+  OnInit,
+  Output,
+} from "@angular/core";
+import { GemTextareaInput as GemTextareaInputTOP } from "./gem-textarea-input/gem-textarea-input.component-gen";
 
 @Component({
-  selector: 'gem-textarea-input',
-  templateUrl: './gem-textarea-input.component.html',
-  styleUrls: ['./gem-textarea-input.component.scss']
+  selector: "gem-textarea-input",
+  templateUrl: "./gem-textarea-input.component.html",
 })
-export class GemTextareaInput extends GemTextareaInputTOP implements OnInit{
+export class GemTextareaInput extends GemTextareaInputTOP implements OnInit {
+  @HostBinding("attr.id") componentId: string;
 
-  // @Input() labelText: string;
+  @Output() entryChange = new EventEmitter<string>();
+  @Output() public keyup = new EventEmitter<KeyboardEvent>();
+  @Output() public keydown = new EventEmitter<KeyboardEvent>();
 
-  // @Input() textArea: string;
-
-  // @Input() id: string;
-
-  @Output() textAreaChange = new EventEmitter<string> ();
-
-  onTextAreaChange(event: string) {
-    this.textAreaChange.emit(event);
-    console.log("CHANGE")
+  onEntryChange(event: string) {
+    this.entryChange.emit(event);
   }
 
-
-
-
-
+  ngOnInit(): void {
+    this.componentId = this.id;
+  }
 }

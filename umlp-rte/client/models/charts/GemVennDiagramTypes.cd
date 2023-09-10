@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package charts;
+import java.util.List;
+
+classdiagram GemVennDiagramTypes {
+
+  public class GemVennDiagramData {
+    List<GemVennDiagramEntry> entries;
+  }
+
+  public class GemVennDiagramEntry {
+    List<String> sets;
+    String label;
+    Integer size;
+  }
+
+}

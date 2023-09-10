@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package arrange;
+
+import arrange.GemRow;
+import arrange.GemColumn;
+
+component GemCard(String title = "", GUIViewElement component) {
+  @GemColumn(style = "mat-elevation-z8", height = "100%", components = [
+    @GemRow(style = "gem-card-header"),
+    @GemColumn(style = "gem-card-body", component = component)
+  ]);
+}

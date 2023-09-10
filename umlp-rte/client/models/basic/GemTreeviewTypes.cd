@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package basic;
+import java.util.List;
+
+classdiagram GemTreeviewTypes {
+
+  public class GemTreeviewEntry {
+    boolean expanded;
+    String name;
+    List<GemTreeviewEntry> children;
+  }
+
+}
