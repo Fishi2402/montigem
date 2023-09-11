@@ -4,8 +4,8 @@
   // todo: to be handled:
 a) expand CommandList
 b) Erklärungen hinzufügen
-  
-*/ 
+
+*/
 
 package umlp.backendrte.command;
 // RTE-P
@@ -101,13 +101,7 @@ public class CommandManager {
     for (Long participantId : particpants.keySet()) {
       Participant participant = particpants.get(participantId);
       if (!participantId.equals(command.getParticipantId())) {
-        boolean match = false;
-        for (Long gemId : command.getEffectedGemIds()) {
-          if (participant.isSubscribedTo(gemId)) {
-            match = true;
-            break;
-          }
-        }
+        boolean match = shouldSendCommand(command, participant);
         if(match) {
           Log.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + participantId, LogUtil.getLoggerName());
           participant.sendCommand(command);
@@ -115,6 +109,31 @@ public class CommandManager {
           Log.trace("Skip sending command " + command.getCommandType() + " to " + participantId, LogUtil.getLoggerName());
         }
       }
+    }
+  }
+
+  public static <T> boolean shouldSendCommand(Command<T> command, Participant participant) {
+    return getInstance()._shouldSendCommand(command, participant);
+  }
+
+  protected  <T> boolean _shouldSendCommand(Command<T> command, Participant participant) {
+    for (Long gemId : command.getEffectedGemIds()) {
+      if (participant.isSubscribedTo(gemId)) {
+        return true;
+      }
+    }
+
+    return participant.isSubscribedToType(command.getCommandType());
+  }
+
+  public static void subscribeToType(long participantId, DomainTypeFilter domainTypeFilter){
+    getInstance()._subscribeToType(participantId, domainTypeFilter);
+  }
+
+  protected void _subscribeToType(long participantId, DomainTypeFilter domainTypeFilter) {
+    var p = particpants.get(participantId);
+    if(p != null){
+      p.subscribeType(domainTypeFilter);
     }
   }
 
