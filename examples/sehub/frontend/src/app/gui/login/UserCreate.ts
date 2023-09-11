@@ -42,7 +42,7 @@ export class UserCreate extends UserCreateTOP {
           this.newUserBuilder.role(SehubRole.DEVELOPER);
           this.newUserBuilder.gridEntry(mapping);
           this.build();
-          this.router.navigate(['/login']);
+          this.router.navigate(['/Login']);
           });
         } else {
           this.error = errorMessage;
@@ -109,7 +109,7 @@ export class UserCreate extends UserCreateTOP {
   }
 
   public override navigateBack(): void {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/Login']);
   }
 
 }

@@ -9,6 +9,6 @@ export class UserSettings extends UserSettingsTOP {
 
 
   public inviteUserLeftClick() {
-    this.router.navigate(['/login/registration']);
+    this.router.navigate(['/Login/Registration']);
   }
 }

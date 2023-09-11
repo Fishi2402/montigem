@@ -21,12 +21,12 @@ export class ProjectFileView extends ProjectFileViewTOP {
 
   public override navigateToSubPage (row: Artifact): void {
     if(row instanceof Directory) {
-      this.router.navigate(["..", "project", "ProjectFileView", row.getGemId()]);
+      this.router.navigate(["..", "Gui", "ProjectFileView", row.getGemId()]);
     }
   }
 
   public override goToArtifactsPage (event: any): void {
-    this.router.navigate(["..", "artifacts", "ProjectPage", this.parent.getGemId()]).then(() => {
+    this.router.navigate(["..", "Gui", "ProjectPage", this.parent.getGemId()]).then(() => {
       window.location.reload();
     });
   }

@@ -11,7 +11,7 @@ export class IssueEntry extends IssueEntryTOP {
 
   public editIssue(event: any): void {
     console.log(this.getIssue().getGemId())
-    this.router.navigate(['/notes/NotesPage/' + this.getIssue().getGemId()]);
+    this.router.navigate(['/Gui/NotesPage/' + this.getIssue().getGemId()]);
   }
 
   public promote(event: any): void {
