@@ -7,7 +7,7 @@ ${tc.signature("args")}
 <#assign isTpl = genHelper.isNgTemplate(ast.getId().getName())>
 
 <#if isTpl><ng-template #${genHelper.getNgTemplateActualName(ast.getId().getName())}></#if>
-<ng-template [ngIf]='${genHelper.gui2cdAttrGetterName(ast.getId().getName(), "condition")}()'
+<ng-template [ngIf]='${genHelper.gui2cdAttrGetterName(ast.getId().getName(), "condition")}(<#list args as arg> ${arg}<#sep>, </#list>)'
   <#if ast.isPresentElseStatement()>[ngIfElse]='${elseTpl}'</#if>
 >
   <#list thenStatement as content>
