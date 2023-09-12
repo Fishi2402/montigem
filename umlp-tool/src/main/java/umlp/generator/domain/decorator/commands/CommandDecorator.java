@@ -88,6 +88,10 @@ public class CommandDecorator extends AbstractDecorator {
     DomainTypeFilterDecorator domainTypeFilterDecorator = new DomainTypeFilterDecorator(glex);
     domainTypeFilterDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DomainTypeFilterDecorator", CommandDecorator.class.getName());
+
+    EventSendingObserverDecorator managerEventSendingObserverDecorator = new EventSendingObserverDecorator(glex);
+    managerEventSendingObserverDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: ManagerEventSendingObserverDecorator", CommandDecorator.class.getName());
   }
 
   public void addSupportedDeSer(String... supportedDeSers) {
