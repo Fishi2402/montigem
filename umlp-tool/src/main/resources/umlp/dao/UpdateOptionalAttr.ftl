@@ -9,7 +9,7 @@ ${cd4c.method("public void update${attributeName?cap_first}(long gemId, ${attrib
     ${statement}.clearParameters();
     ${includeArgs("umlp.dao.Set", statement, 1, innerType, attributeName, true)};
     ${statement}.setLong(2, gemId);
-    ${statement}.execute();
+    ${statement}.executeUpdate();
   } catch (SQLException e){
     throw new RuntimeException(e);
 }

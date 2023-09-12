@@ -373,8 +373,8 @@ public class DAODecorator extends AbstractDecorator {
   }
 
   protected void unpackMethod(ASTCDClass daoClass, ASTCDClass domainClass,
-                                 Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
-                                 Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap){
+                              Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
+                              Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap){
     List<ASTCDAttribute> listAttributes = getListAttributes(domainClass);
     List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
     Map<ASTCDAttribute, String> optMap = Maps.newLinkedHashMap();
@@ -394,8 +394,8 @@ public class DAODecorator extends AbstractDecorator {
   }
 
   protected void insertMethods(ASTCDClass daoClass, ASTCDClass domainClass,
-                              Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
-                              Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
+                               Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
+                               Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap) {
     List<ASTCDAttribute> attributes = getNormalAttributes(domainClass);
     List<ASTCDAttribute> listAttributes = getListAttributes(domainClass);
     List<ASTCDAttribute> optionalAttributes = getOptionalAttributes(domainClass);
@@ -468,13 +468,13 @@ public class DAODecorator extends AbstractDecorator {
         .filter(association -> ! UMLPSymbolTables.getDiagramFor(association).getCDDefinition().getName().equals(
             UMLPSymbolTables.getDiagramFor(domainClass).getCDDefinition().getName()))
         .forEach(association -> {
-              managersFromExtendedCDs.add(
-                  Joiners.DOT.join(association.getSymbol().getPackageName().toLowerCase(),
-                      getCorrectManager(association)));
-              getCD4C().addImport(clazz,
-                  Joiners.DOT.join(association.getSymbol().getPackageName().toLowerCase(),
-                      "Assoc"+StringTransformations.capitalize(association.getName())+"DAO"));
-            });
+          managersFromExtendedCDs.add(
+              Joiners.DOT.join(association.getSymbol().getPackageName().toLowerCase(),
+                  getCorrectManager(association)));
+          getCD4C().addImport(clazz,
+              Joiners.DOT.join(association.getSymbol().getPackageName().toLowerCase(),
+                  "Assoc"+StringTransformations.capitalize(association.getName())+"DAO"));
+        });
     managersFromExtendedCDs.forEach(managerImport -> getCD4C().addImport(clazz, managerImport));
   }
 }

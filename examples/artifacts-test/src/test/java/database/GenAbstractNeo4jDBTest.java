@@ -10,6 +10,7 @@ import org.neo4j.configuration.helpers.SocketAddress;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import org.neo4j.driver.Driver;
+import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
 
 import java.nio.file.Paths;
 
@@ -23,7 +24,7 @@ public abstract class GenAbstractNeo4jDBTest {
 
   private static DatabaseManagementService managementService = null;
 
-/*  @BeforeAll
+  /*@BeforeAll
   public static void initDB() {
     if(managementService != null) {
       managementService.database(DEFAULT_DATABASE_NAME);
@@ -47,6 +48,7 @@ public abstract class GenAbstractNeo4jDBTest {
   public void cleanup(){
     try {
       TestDatabaseAccessManagerSQL.closeConnection();
+      TestDatabaseAccessManagerSQL.clearLocalGemIds();
     } catch (Exception e) {
       throw  new RuntimeException(e);
     }
