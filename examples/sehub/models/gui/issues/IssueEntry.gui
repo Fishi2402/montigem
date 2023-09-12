@@ -15,20 +15,14 @@ component IssueEntry(Issue issue) {
     issueCard@GemCard(title = issue.title, component =
       @GemColumn(hAlign = "right", rowGap = "10px", components = [
         @GemRow(colGap = "7px", width = "100%", hAlign = "center", components = [
-          /*
-          @guard(issue.state != 0) {  //TODO - funktioniert so nicht
+          @guard(issue.state != 0) {
             @GemButton(label = "<<<", leftClick = demote);
           },
-          /**/
-          @GemButton(label = "<<<", leftClick = demote),
           @GemButton(label = "Edit", leftClick = editIssue),
           @GemButton(label = "Delete", leftClick = deleteIssue),
-          @GemButton(label = ">>>", leftClick = promote)
-          /*
-          @guard(issue.state != 2) { //TODO - funktioniert so nicht
+          @guard(issue.state != 2) {
             @GemButton(label = ">>>", leftClick = promote);
           }
-          /**/
         ]),
         @GemText(value = issue.description)
       ])
