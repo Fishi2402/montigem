@@ -47,6 +47,7 @@ public abstract class GenAbstractNeo4jDBTest {
   @AfterEach
   public void cleanup() throws SQLException {
     TestDatabaseAccessManagerSQL.closeConnection();
+    TestDatabaseAccessManagerSQL.clearLocalGemIds();
   }
 
 
