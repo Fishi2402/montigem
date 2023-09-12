@@ -18,9 +18,11 @@ component UserDisplay(User user) {
       account@GemText(value = user.username),
       email@GemText(value = user.email)
     ]),
-    @GemColumn(width = "20%", components = [
-      @GemRow(colGap = "5px", hAlign = "space-between", components = [
-        errorrole@GemText(value = ""),
+    @GemColumn(width = "30%", components = [
+      @GemColumn(width = "20%", component =
+        errorrole@GemText(value = "")
+      ),
+      @GemColumn(width = "80%", component =
         role@GemTextInput(
           labelText = "Role",
           inputType = "dropdown",
@@ -28,7 +30,7 @@ component UserDisplay(User user) {
           entry = user.role,
           validity = user.validityRole
         )
-      ])
+      )
     ]),
     @GemColumn(width = "20%", components = [
       regLabel@GemText(value = "Registration Date"),
