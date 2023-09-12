@@ -47,7 +47,7 @@ public class ManagerEventSyncTest extends FlensburgMockTestSetup {
     assertTrue(humanDeletedGemIds.isEmpty());
   }
 
-  // TODO: add observer to FlensburgManager, which sends events via CommandManager.sendToSubscribers
+  // TODO: add method to ManagerClientImpl or Manager to add objects without sending command
   @Disabled("Feature impl not finished")
   @Test
   public void testManagerEventsAreSyncedWithSubscription(){
