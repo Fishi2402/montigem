@@ -14,7 +14,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypePrimitive;
-import de.monticore.types3.util.SymTypeRelations;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
@@ -86,8 +86,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
 
     String originalClassname = domainClass.getName();
 
-    SymTypeRelations typeRelations = new SymTypeRelations();
-    String methodPrefix = typeRelations.isBoolean(type) ? "is" : "get";
+    String methodPrefix = SymTypeRelations.isBoolean(type) ? "is" : "get";
     if(GenService.isList(type)) {
       getCD4C().addMethod(ast, getDoRunListTemplate(), classname, originalClassname, t, getCorrectManager(domainClass), name);
     }else{
