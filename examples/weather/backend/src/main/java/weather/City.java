@@ -83,8 +83,8 @@ public class City extends CityTOP {
   }
 
   @Override
-  public Gem<Forecast> getNextHoursDerivedGem() {
+  public GemList<Forecast> getNextHoursDerivedGemList() {
     //TODO: fix cardinality
-    return new Gem<>();
+    return calcNextHours();
   }
 }
