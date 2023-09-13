@@ -70,6 +70,9 @@ export class GemLineChart extends GemLineChartTOP {
   /**setter that adjusts the data for the entries and sets colors for them */
   @Input()
   public set data(data: GemLineChartData) {
+    if (!data) {
+      return;
+    }
     this.dataSets = [];
     const colors = [];
     const labels = [];

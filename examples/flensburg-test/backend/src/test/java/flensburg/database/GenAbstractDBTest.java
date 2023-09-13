@@ -6,23 +6,25 @@ import hardy.flensburg.HumanBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+
 // Note: see TestDatabaseAccessManager.openWebServer to inspect the in-memory db
 public abstract class GenAbstractDBTest {
 
   @BeforeEach
   public void init(){
+    // init the DB with the schema
     TestDatabaseAccessManager.init();
     FlensburgManagerImpl.init();
   }
 
   @AfterEach
   public void cleanup(){
+    // if GemIds in DB are deleted they also need to be locally deleted
+    TestDatabaseAccessManager.clearLocalGemIds();
     TestDatabaseAccessManager.close();
   }
 
   // TODO: same from the perspective of address
-
-
   protected static class MockHumanBuilder extends HumanBuilder {
     // Accessible without FlensburgManager to test DAO without observers
     public MockHumanBuilder(long gemId) {

@@ -15,6 +15,7 @@ export class Navigation {
     { url: '/projects', title: 'Artifacts' },
     { url: '/notes/NotesPage/42000', title: 'Notes'},
     { url: '/usersettings/UserSettings/1', title: 'User Settings'},
+    { url: '/CD2GUI', title: 'CD2GUI'},
     { url: '/login', title: 'Login' },
   ];
   getCurrentUser(): User {

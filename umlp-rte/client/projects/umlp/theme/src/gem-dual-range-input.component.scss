@@ -1,0 +1,192 @@
+@mixin horizontal-range-two-thumbs-input-theme(
+  $slider-thumb-start-color,
+  $slider-thumb-end-color,
+  $flexDirection,
+  $itemsAlign,
+  $flexMargin,
+  $gap,
+  $labelMargin,
+  $labelPosition,
+  $valueBackgroundColor,
+  $valueColor
+) {
+  .gem-dual-range-start:focus::-webkit-slider-thumb,
+  .gem-dual-range-end:focus::-webkit-slider-thumb {
+    border: 1px solid #053a5f;
+    outline: 2px solid #053a5f;
+    outline-offset: 1px;
+  }
+
+  .gem-dual-range-min,
+  .gem-dual-range-max {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  gem-dual-range-input {
+    width: 100%;
+    display: flex;
+    flex-direction: $flexDirection;
+    align-items: $itemsAlign;
+    gap: $gap;
+    margin: $flexMargin;
+  }
+
+  .gem-dual-range-start-value span,
+  .gem-dual-range-end-value span {
+    padding-left: 2px;
+    padding-right: 3px;
+    line-height: 18px;
+    text-align: center;
+    background: $valueBackgroundColor;
+    color: $valueColor;
+    font-size: 12px;
+    display: block;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border-radius: 5px;
+  }
+
+  .gem-dual-range-container {
+    width: 100%;
+    position: relative;
+  }
+
+  .gem-dual-range-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    gap: 0.5%;
+  }
+
+  .gem-dual-range-start::-webkit-slider-thumb,
+  .gem-dual-range-end::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    pointer-events: all;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .gem-dual-range-start::-webkit-slider-thumb {
+    background-color: $slider-thumb-start-color;
+    margin-top: 1.5px;
+  }
+
+  .gem-dual-range-end::-webkit-slider-thumb {
+    background-color: $slider-thumb-end-color;
+    margin-bottom: 1.5px;
+  }
+
+  .gem-dual-range-start::-moz-range-thumb,
+  .gem-dual-range-end::-moz-range-thumb {
+    pointer-events: all;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .gem-dual-range-start,
+  .gem-dual-range-end {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 1.5px;
+    pointer-events: none;
+    display: block;
+    margin: 0;
+    width: 100%;
+  }
+
+  .gem-dual-range-start-value {
+    position: absolute;
+    bottom: -335%;
+  }
+
+  .gem-dual-range-end-value {
+    position: absolute;
+    bottom: -335%;
+  }
+
+  .gem-dual-range-label {
+    width: fit-content;
+    display: flex;
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;
+    margin: $labelMargin;
+    justify-content: $labelPosition;
+  }
+}
+
+@mixin vertical-range-two-thumbs-input-theme() {
+  .gem-vertical-dual-range-wrapper {
+    transform: rotate(180deg);
+    margin-bottom: 20%;
+    margin-top: 20%;
+  }
+
+  .gem-dual-vertical-range-min,
+  .gem-dual-vertical-range-max {
+    transform: rotate(90deg);
+  }
+
+  .gem-dual-vertical-range-value span {
+    transform: translate(-50%, 0) rotate(90deg);
+  }
+
+  //gem-dual-range-input {
+  //  flex-direction: row;
+  //  align-items: center;
+  //  margin-top: 5%;
+  //  margin-bottom: 5%;
+  //}
+
+  .gem-dual-vertical-range-min {
+    margin-right: 2%;
+  }
+
+  .gem-dual-vertical-range-label {
+    margin-right: -5%;
+    transform: rotate(270deg)
+  }
+}
+
+@mixin range-two-thumbs-input-theme(
+  $slider-thumb-start-color,
+  $slider-thumb-end-color,
+  $slider-track-color,
+  $flexDirection,
+  $itemsAlign,
+  $flexMargin,
+  $gap,
+  $labelMargin,
+  $labelPosition,
+  $rangeColor,
+  $valueBackgroundColor,
+  $valueColor
+) {
+  @include horizontal-range-two-thumbs-input-theme(
+    $slider-thumb-start-color,
+    $slider-thumb-end-color,
+    $flexDirection,
+    $itemsAlign,
+    $flexMargin,
+    $gap,
+    $labelMargin,
+    $labelPosition,
+    $valueBackgroundColor,
+    $valueColor
+  );
+
+  @include vertical-range-two-thumbs-input-theme();
+
+  :root {
+    --slider-color: #{$slider-track-color};
+    --slider-range-color: #{$rangeColor};
+  }
+}

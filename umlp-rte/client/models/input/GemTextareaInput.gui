@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package input;
+
+import input.GemTextareaInputTypes.GemTextareaInputValidity;
+
+component GemTextareaInput(
+  String labelText,
+  ?String entry,
+  String id,
+  GemTextareaInputValidity validity,
+  Event keyup,
+  Event keydown
+)

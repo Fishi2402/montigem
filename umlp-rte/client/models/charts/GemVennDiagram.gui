@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package charts;
+
+import charts.GemVennDiagramTypes.GemVennDiagramData;
+
+component GemVennDiagram(
+    GemVennDiagramData data
+)

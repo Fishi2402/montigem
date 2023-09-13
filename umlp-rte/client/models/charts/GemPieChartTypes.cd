@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package charts;
+import java.util.List;
+
+classdiagram GemPieChartTypes {
+
+  public class GemPieChartData {
+    List<GemPieChartEntry> entries;
+  }
+
+  public class GemPieChartEntry {
+    Integer value;
+    String label;
+    String backgroundColor;
+  }
+
+}

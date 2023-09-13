@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package charts;
+
+import charts.GemSunburstChartTypes.GemSunburstData;
+import charts.GemSunburstChartTypes.GemSDNshort;
+
+component GemSunburstChart (
+  GemSunburstData data,
+  GemSDNshort dataShort,
+  List<String> colors, 
+  Boolean ignoreError
+)
+

@@ -1,6 +1,0 @@
-package basic.src.lib.gemvideo;
-
-component GemVideo(
-  String source
-)
-

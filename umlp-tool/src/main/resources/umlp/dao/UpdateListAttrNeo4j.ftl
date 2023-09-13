@@ -10,7 +10,7 @@ ${cd4c.method("public void update${attrName}(long gemId, List<${innerType}> ${at
     update${attrName?cap_first}Statement.clearParameters();
     update${attrName?cap_first}Statement.setLong(1, gemId);
     update${attrName?cap_first}Statement.setObject(2, ${attrName?uncap_first});
-    update${attrName?cap_first}Statement.execute();
+    update${attrName?cap_first}Statement.executeUpdate();
 
   } catch (SQLException e){
     throw new RuntimeException(e);

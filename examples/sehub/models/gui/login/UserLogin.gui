@@ -12,7 +12,7 @@ import input.src.lib.gemtextinput.GemTextInput;
 
 component UserLogin(List<User> users, User loginUser) {
   @GemCard(title = "Login", component =
-    @GemColumn(rowGap = "20px", components = [
+    @GemColumn(hAlign = "center", rowGap = "20px", components = [
       @GemTextInput(
         labelText = "Account",
         inputType = "text",
@@ -27,10 +27,8 @@ component UserLogin(List<User> users, User loginUser) {
         validity = loginUser.validityPassword,
         keyup = loginOnEnter
       ),
-      @GemRow(hAlign = "center", components = [
-     //   @GemButton(label = "Cancel", leftClick = navigateBack),
-        @GemButton(label = "Sign in", leftClick = login)
-      ]),
+      // @GemButton(label = "Cancel", leftClick = navigateBack),
+      @GemButton(label = "Sign in", leftClick = login),
       error@GemText(value = "")
     ])
   );

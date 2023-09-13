@@ -1,8 +1,0 @@
-package input.src.lib.gemcheckboxinput;
-
-component GemCheckBoxInput(
-  String id,
-  String labelText,
-  String value,
-  ?Boolean checked
-)

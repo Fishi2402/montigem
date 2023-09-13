@@ -32,7 +32,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: 'project-file-view',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/ProjectFileView.html',
   styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  styleUrls: ['./ProjectFileView.scss']
 })
 export  class ProjectFileViewComponent extends ProjectFileViewComponentTOP {
   public constructor(protected route: ActivatedRoute, protected router: Router) {

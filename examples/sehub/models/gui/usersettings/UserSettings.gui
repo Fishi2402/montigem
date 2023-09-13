@@ -14,48 +14,26 @@ import input.src.lib.gemtextinput.GemTextInput;
 import table.src.lib.gemtable.GemTable;
 
 component UserSettings(User currentUser, List<User> users) {
-  @GemRow( width= "100%", hAlign = "center", component =
-    @GemColumn(
-      width="90vw",
-      hAlign = "center",
-      rowGap = "20px",
-      components = [
-        myAccount@GemCard(title = "My Account",
-          component = @GemRow(hAlign = "left", vAlign = "space-around",
-            components = [
-              userName@GemTextInput(labelText = "Username", inputType = "text", entry = currentUser.username),
-              password@GemTextInput(labelText = "Password", inputType = "password", entry = currentUser.password),
-              userEMail@GemTextInput(labelText = "Email", inputType = "text", entry = currentUser.email)
-            ]
-          )
-        ),
-        projectSettings@GemCard(title = "Project Settings",
-          component = @GemColumn(
-            components = [
-              @GemRow(
-                components = [
-                  projectmembers@GemText(value = "Project Members"),
-                  @GemRow(
-                    hAlign = "right",
-                    vAlign = "center",
-                    height="3rem",
-                    components = [
-                      inviteUser@GemButton(label = "Invite new member", leftClick = "navigateToCreateNewUser")
-                    ]
-                  )
-                ]
-              ),
-              @GemColumn(
-                components = [
-                  @iterate(User user: users) {
-                    @UserDisplay(user = user);
-                  }
-                ]
-              )
-            ]
-          )
-        )
-      ]
+  @GemColumn(hAlign = "center", rowGap = "20px", components = [
+    myAccount@GemCard(title = "My Account",
+      component = @GemColumn(rowGap = "5px", width = "400px", components = [
+        userName@GemTextInput(labelText = "Username", inputType = "text", entry = currentUser.username),
+        password@GemTextInput(labelText = "Password", inputType = "password", entry = currentUser.password),
+        userEMail@GemTextInput(labelText = "Email", inputType = "text", entry = currentUser.email)
+      ])
+    ),
+    projectSettings@GemCard(title = "Project Settings", component =
+      @GemColumn(width = "90vw", components = [
+        @GemRow(height = "3rem", hAlign = "space-between", vAlign = "center", components = [
+          projectmembers@GemText(value = "Project Members"),
+          inviteUser@GemButton(label = "Invite new member", leftClick = navigateToCreateNewUser)
+        ]),
+        @GemColumn(components = [
+          @iterate(User user: users) {
+            @UserDisplay(user = user);
+          }
+        ])
+      ])
     )
-  );
+  ]);
 }

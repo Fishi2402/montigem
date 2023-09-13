@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package input;
+
+classdiagram GemTextInputTypes {
+
+  public class GemTextInputValidity {
+    String status;
+    String message;
+  }
+
+}

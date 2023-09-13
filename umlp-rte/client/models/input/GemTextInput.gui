@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package input;
+
+import input.GemTextInputTypes.GemTextInputValidity;
+
+component GemTextInput(
+  String id,
+  String labelText,
+  String inputType,
+  List<String> options,
+  ?String entry,
+  GemTextInputValidity validity,
+  Event keyup,
+  Event keydown
+)

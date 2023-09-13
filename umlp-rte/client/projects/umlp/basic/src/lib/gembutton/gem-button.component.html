@@ -5,6 +5,7 @@
   [ngStyle]="style"
   [ngClass]="classes"
   [disabled]="disabled ? 'disabled' : null"
+  (click)="leftClick.emit($event)"
 >
   {{ label }}
 </button>

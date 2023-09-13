@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDMember;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -27,10 +28,11 @@ public class AccessPolicyDecorator extends AbstractDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
         .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c))));
-
+    origCD.getCDDefinition().getCDInterfacesList().stream().filter(c -> !c.getSymbol().isIsDerived())
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c))));
   }
 
-  protected ASTCDElement createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
+  protected ASTCDElement createClass(ASTCDCompilationUnit origCD, ASTCDType domainClass) {
     String className = domainClass.getName();
 
     ASTCDClass policyClass = UMLPMill.cDClassBuilder()
@@ -40,9 +42,7 @@ public class AccessPolicyDecorator extends AbstractDecorator {
     return policyClass;
   }
 
-  protected ASTCDMethodSignature createCheckPolicy(ASTCDClass domainClass) {
+  protected ASTCDMethodSignature createCheckPolicy(ASTCDType domainClass) {
     return getCD4C().addMethod(domainClass, "umlp.accesspolicy.CheckPermission");
   }
-
-
 }

@@ -365,6 +365,9 @@ export class GemCandlestickChart extends GemCandlestickChartTOP {
    */
   @Input()
   public set data(data: GemData2CandlestickChart[]) {
+    if (!data) {
+      return;
+    }
     //this.layout(null, null);
     for (let index = 0; index < data.length; index++) {
       this._data[0].x.push(data[index].label);

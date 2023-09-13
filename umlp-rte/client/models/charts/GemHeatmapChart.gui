@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package charts;
+
+import charts.GemHeatmapChartTypes.GemHeatmapChartData;
+
+component GemHeatmapChart (
+  GemHeatmapChartData data,
+  String xLabel,
+  String yLabel,
+  Boolean timestampdata
+)

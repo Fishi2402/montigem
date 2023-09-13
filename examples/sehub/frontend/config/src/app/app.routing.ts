@@ -6,7 +6,7 @@ export const routes: Routes = [
     path: "",
     pathMatch: "full",
     // redirect to a module, not a component (use package part instead of the component name)
-    redirectTo: "login"
+    redirectTo: "login/LoginPage"
   },
   {
     path: "login",

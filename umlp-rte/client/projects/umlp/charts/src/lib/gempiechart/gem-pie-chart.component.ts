@@ -49,6 +49,9 @@ export class GemPieChart extends GemPieChartTOP {
   /** sets the data of the entries and sets the colors of the entries where the color is not explicitly given */
   @Input()
   public set data(data: GemPieChartData) {
+    if (!data) {
+      return;
+    }
     this.labels = data.entries.map(entry => entry.label);
     const colors = [];
     const labels = [];

@@ -8,8 +8,7 @@ import de.monticore.cdassociation._ast.ASTCDAssocRightSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdassociation._visitor.CDAssociationVisitor2;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.prettyprint.IndentPrinter;
-import umlp._prettyprint.UMLPFullPrettyPrinter;
+import umlp.UMLPMill;
 
 /*
  * This transformation sets default values if an optional node is not defined.
@@ -29,11 +28,11 @@ public class UMLSetDefaultsTrafo implements CDAssociationVisitor2 {
     if (ast.isPresentName()) {
       return;
     }
-    UMLPFullPrettyPrinter pp = new UMLPFullPrettyPrinter(new IndentPrinter());
-    String name = pp.prettyprint(ast.getLeft().getMCQualifiedType()) +
+
+    String name = UMLPMill.prettyPrint(ast.getLeft().getMCQualifiedType(), false) +
             "_" + ast.getLeft().getName().replace(".", "_") +
             "_" + ast.getRight().getName().replace(".", "_") +
-            "_" + pp.prettyprint(ast.getRight().getMCQualifiedType());
+            "_" + UMLPMill.prettyPrint(ast.getRight().getMCQualifiedType(), false);
     ast.setName(name);
   }
 

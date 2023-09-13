@@ -14,11 +14,9 @@ import input.src.lib.gemtextinput.GemTextInput;
 import input.src.lib.gemtextareainput.GemTextareaInput;
 
 component IssueCreate(Issue issue){
-  @GemColumn(hAlign = "center", width = "400px", rowGap =" 5px", components = [
-    @GemText(value = "Create new Issue"),
-    @GemTextInput(labelText = "Issue-Title", entry = issue.title),
+  @GemColumn(hAlign = "center", width = "400px", rowGap = "5px", components = [
+    @GemTextInput(labelText = "Issue Title", entry = issue.title),
     @GemTextareaInput(
-      id = "issueDescription",
       labelText = "Description",
       entry = issue.description
     ),

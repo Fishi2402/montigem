@@ -1,4 +1,8 @@
-import { GemSunburstData, GemSDNshort } from './gem-sunburst-chart-types/gem-sunburst-chart-types.types-gen';
+import {
+  GemSunburstData as GemSunburstDataI,
+  GemSDNshort as GemSDNshortI,
+  GemSunburstEntry as GemSunburstEntryI
+} from './gem-sunburst-chart-types/gem-sunburst-chart-types.types-gen';
 
 
 // Checks if the given object is of type SDNshort (and not SunburstDataNode)
@@ -24,5 +28,30 @@ export function gemSdnShortToSDN(node: GemSDNshort): GemSunburstData {
       }
     }
     return sdnNode;
+  }
+}
+
+export class GemSunburstData implements GemSunburstDataI {
+  entry?: GemSunburstEntry;
+  subEntries?: GemSunburstData[];
+  constructor(entry?: GemSunburstEntry, subEntries?: GemSunburstData[]) {
+    this.entry = entry;
+    this.subEntries = subEntries;
+  }
+}
+export class GemSunburstEntry implements GemSunburstEntryI {
+  label?: string;
+  value?: number;
+  constructor(label?: string, value?: number) {
+    this.label = label;
+    this.value = value;
+  }
+}
+export class GemSDNshort implements GemSDNshortI {
+  c?: any[];
+  sN?: GemSDNshort[];
+  constructor(c?: any[], sN?: GemSDNshort[]) {
+    this.c = c;
+    this.sN = sN;
   }
 }
