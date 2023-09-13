@@ -11,5 +11,5 @@ if(accessPolicy.checkPermission(this)){
       return new SimpleResult<>(getId(), LoadingState.EMPTY, "${packagename}.${classname}");
     }
 } else {
-  return new ServerError(new SecurityException("Access Policy forbids Command. Do you have the required permissions?"));
+  return new SimpleResult<>(getId(), LoadingState.NOT_AUTHORIZED, "${packagename}.${classname}");
 }
