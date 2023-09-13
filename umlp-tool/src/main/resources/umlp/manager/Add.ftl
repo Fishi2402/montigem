@@ -5,5 +5,6 @@ ${tc.signature("name", "delegateFlag")}
 
   getSingleton()._doAdd${name}(${name?uncap_first});
 <#else>
-  ${cd4c.method("protected abstract void _doAdd${name}(${name} o)")}
+  ${cd4c.method("protected void _doAdd${name}(${name} o)")}
+  _doAdd${name}(o, NotificationScope.ALL);
 </#if>

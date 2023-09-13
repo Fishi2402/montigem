@@ -5,5 +5,6 @@ ${tc.signature("name", "delegateFlag")}
 
   return getSingleton()._doDelete${name}(gemId);
 <#else>
-  ${cd4c.method("protected abstract boolean _doDelete${name}(Long gemId)")}
+  ${cd4c.method("protected boolean _doDelete${name}(Long gemId)")}
+  return _doDelete${name}(gemId, NotificationScope.ALL);
 </#if>

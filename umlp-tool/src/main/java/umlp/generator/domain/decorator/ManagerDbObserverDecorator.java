@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -50,6 +51,11 @@ public class ManagerDbObserverDecorator extends AbstractDecorator {
         .forEach(c -> {
           ast.addCDMember(getDAOAttribute(c));
         });
+
+    // Scope
+    var getScope = getCD4C().addMethod(ast, "umlp.common_observer.GetScopeLocal");
+    glex.replaceTemplate("cd2java.Annotations", getScope, new StringHookPoint("@Override"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
 
     return ast;
   }

@@ -23,7 +23,7 @@ public class ManagerDbObserverDecoratorTest extends DecoratorTest {
     assertAll(
         // check no of methods and attributes
         () -> assertEquals(10, ast.getCDAttributeList().size(), "number of attributes"),
-        () -> assertEquals(20, ast.getCDMethodList().size(), "number of methods")
+        () -> assertEquals(21, ast.getCDMethodList().size(), "number of methods")
     );
   }
 

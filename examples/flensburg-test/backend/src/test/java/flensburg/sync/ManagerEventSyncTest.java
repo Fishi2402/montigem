@@ -5,7 +5,6 @@ import hardy.flensburg.FlensburgObserver;
 import hardy.flensburg.Human;
 import hardy.flensburg.commands.Human_subscribeManagerEvents;
 import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.CommandManager;
 
@@ -47,8 +46,6 @@ public class ManagerEventSyncTest extends FlensburgMockTestSetup {
     assertTrue(humanDeletedGemIds.isEmpty());
   }
 
-  // TODO: add method to ManagerClientImpl or Manager to add objects without sending command
-  @Disabled("Feature impl not finished")
   @Test
   public void testManagerEventsAreSyncedWithSubscription(){
     List<Long> humanAddedGemIds = new ArrayList<>();
@@ -67,7 +64,6 @@ public class ManagerEventSyncTest extends FlensburgMockTestSetup {
       }
     });
 
-    // TODO: CommandManager.subscribeType instead?
     CommandManager.executeCommand(new Human_subscribeManagerEvents());
 
     getBackend().activate();

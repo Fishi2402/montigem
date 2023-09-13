@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DiagramObserverDecoratorTest extends DecoratorTest {
 
@@ -22,7 +23,7 @@ public class DiagramObserverDecoratorTest extends DecoratorTest {
     assertAll(
             // check no of methods and attributes
             () -> assertEquals(0, ast.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(20, ast.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(41, ast.getCDMethodList().size(), "number of methods"),
 
             // check methods
             () -> existsMethod(ast, "notifyFooAdded"),
