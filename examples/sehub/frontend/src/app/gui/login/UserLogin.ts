@@ -46,7 +46,7 @@ export class UserLogin extends UserLoginTOP {
             })
             .then(redirect => {
               if (redirect) {
-                SehubSecurityManager.signIn();
+                SehubSecurityManager.signIn(this.loginUser);
                 window.location.href = '/start';
               }
             });

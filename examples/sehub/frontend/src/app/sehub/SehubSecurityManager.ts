@@ -18,19 +18,16 @@ export class SehubSecurityManager {
     return SehubSecurityManager.isSignedIn() ? SehubSecurityManager.getCurrentUser().getGemId() : null;
   }
 
-  public static signIn() {
-    localStorage.setItem('isSignedIn', JSON.stringify(true))
+  public static signIn(value: User) {
+    this.setCurrentUser(value);
   }
 
   public static signOut() {
-    localStorage.setItem('isSignedIn', JSON.stringify(false))
+    localStorage.removeItem('currentUser')
   }
 
   public static isSignedIn(): boolean {
-    if (localStorage.getItem('isSignedIn') === null) {
-      localStorage.setItem('isSignedIn', JSON.stringify(false))
-    }
-    return (JSON.parse(localStorage.getItem('isSignedIn')) as boolean);
+    return localStorage.getItem('currentUser') !== null;
   }
 
 }
