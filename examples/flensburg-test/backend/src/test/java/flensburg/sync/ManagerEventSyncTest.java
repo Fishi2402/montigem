@@ -5,6 +5,7 @@ import hardy.flensburg.FlensburgObserver;
 import hardy.flensburg.Human;
 import hardy.flensburg.commands.Human_subscribeManagerEvents;
 import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.CommandManager;
 
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ManagerEventSyncTest extends FlensburgMockTestSetup {
   public ManagerEventSyncTest() {
-    super(1);
+    super(2);
   }
 
   @Test
@@ -73,5 +74,34 @@ public class ManagerEventSyncTest extends FlensburgMockTestSetup {
     FlensburgManager.deleteHuman(h.getGemId());
     assertEquals(List.of(h.getGemId()), humanDeletedGemIds);
 
+  }
+
+  @Disabled("See https://git.rwth-aachen.de/monticore/monticore/-/issues/3550")
+  @Test
+  public void testManagerEventsAreSyncedWithSubscriptionBetweenClients(){
+    List<Long> humanAddedGemIds = new ArrayList<>();
+    List<Long> humanDeletedGemIds = new ArrayList<>();
+
+    getClients(0).activate();
+    FlensburgManager.addObserver(new FlensburgObserver() {
+      @Override
+      public void notifyHumanAdded(Human human) {
+        humanAddedGemIds.add(human.getGemId());
+      }
+
+      @Override
+      public void notifyHumanDeleted(Long gemId) {
+        humanDeletedGemIds.add(gemId);
+      }
+    });
+
+    CommandManager.executeCommand(new Human_subscribeManagerEvents());
+
+    getClients(1).activate();
+
+    var h = FlensburgManager.humanBuilder().age(20).build().get();
+    assertEquals(List.of(h.getGemId()), humanAddedGemIds);
+    FlensburgManager.deleteHuman(h.getGemId());
+    assertEquals(List.of(h.getGemId()), humanDeletedGemIds);
   }
 }

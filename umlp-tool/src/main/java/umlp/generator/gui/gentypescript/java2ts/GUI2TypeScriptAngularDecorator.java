@@ -292,6 +292,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     getCD4C().addAttributeFromTemplate(clazz, "umlp.gui2ts.UpdateObserverAttr", originalName,types);
     getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, originalName + "Observer"));
     getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, "Empty" + originalName + "Observer"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
 
     // Update methods
     for (var p : paramsTypedListOfDomain) {
@@ -299,6 +300,12 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
           p.getName(),
           util.getDomainListInnerType(p),
           util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX);
+      getCD4C().addMethod(clazz, "umlp.gui2ts.TSAddToListOfDomain",
+          p.getName(),
+          util.getDomainListInnerType(p));
+      getCD4C().addMethod(clazz, "umlp.gui2ts.TSRemoveFromListOfDomain",
+          p.getName(),
+          util.getDomainListInnerType(p));
     }
   }
 

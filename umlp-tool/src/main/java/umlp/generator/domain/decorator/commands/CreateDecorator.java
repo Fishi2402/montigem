@@ -61,7 +61,7 @@ public class CreateDecorator extends AbstractDeSerDecorator {
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass domainClass, ASTCDClass ast,
       String classname) {
-    getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ classname);
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ getCorrectManager(domainClass));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
@@ -70,7 +70,7 @@ public class CreateDecorator extends AbstractDeSerDecorator {
   }
 
   protected String extendedClass() {
-    return "Request<Void>";
+    return "Command<Void>";
   }
 
   protected ASTCDAttribute addDomainAttr(ASTCDClass ast, String classname) {

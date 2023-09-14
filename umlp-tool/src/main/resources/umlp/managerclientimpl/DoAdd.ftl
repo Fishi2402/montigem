@@ -10,4 +10,4 @@ ${cd4c.method("protected void _doAdd${name}(${name} o, NotificationScope scope)"
   if (!o.containsObserver(the${name}CommandObserver)) {
     o.addObserver(the${name}CommandObserver);
   }
-  ${managerName?uncap_first}Observers.forEach(obs -> obs.notify${name}Added(o));
+  ${managerName?uncap_first}Observers.forEach(obs -> obs.maybeNotify${name}Added(o, scope));

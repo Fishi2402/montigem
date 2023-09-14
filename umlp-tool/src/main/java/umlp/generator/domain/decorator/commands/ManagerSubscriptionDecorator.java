@@ -13,7 +13,6 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 
-// TODO: ts
 public class ManagerSubscriptionDecorator extends AbstractDeSerDecorator {
   public static final String SUFFIX = "_subscribeManagerEvents";
 

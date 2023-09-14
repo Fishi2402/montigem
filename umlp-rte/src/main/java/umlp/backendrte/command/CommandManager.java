@@ -103,7 +103,7 @@ public class CommandManager {
       if (!participantId.equals(command.getParticipantId())) {
         boolean match = shouldSendCommand(command, participant);
         if(match) {
-          Log.trace("Sending command " + command.getId() + " " + command.getCommandType() + " to " + participantId, LogUtil.getLoggerName());
+          System.out.println("Sending command " + command.getId() + " " + command.getCommandType() + " to " + participantId);
           participant.sendCommand(command);
         }else{
           Log.trace("Skip sending command " + command.getCommandType() + " to " + participantId, LogUtil.getLoggerName());
