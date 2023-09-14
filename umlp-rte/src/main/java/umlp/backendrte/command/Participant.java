@@ -13,8 +13,16 @@ public class Participant {
   protected ServerCommandCommunication commandCommunication;
   protected Set<DomainTypeFilter> domainTypeFilters = new HashSet<>();
 
+  protected String username;
+
   public Participant(ServerCommandCommunication commandCommunication) {
     this.commandCommunication = commandCommunication;
+    this.username = "";
+  }
+
+  public Participant(ServerCommandCommunication commandCommunication, String username) {
+    this.commandCommunication = commandCommunication;
+    this.username = username;
   }
 
   public <T> void sendCommand(Command<T> command){
@@ -36,5 +44,13 @@ public class Participant {
 
   public void subscribeType(DomainTypeFilter filter){
     domainTypeFilters.add(filter);
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
   }
 }
