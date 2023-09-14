@@ -6,15 +6,9 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.Joiners;
-import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.CommandResultDeSerDecorator;
-import umlp.generator.domain.decorator.DeSerBuilderDecorator;
 import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.util.PathUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
 
@@ -68,6 +62,7 @@ public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
   @Override
   protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResultDeSer"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));

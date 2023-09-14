@@ -9,11 +9,13 @@ if(result.isSimpleResult()){
     return;
   }
 
-  printer["value"] = {};
-  const tmp = printer;
-  printer = printer["value"];
-  this.serSingleValue(result.asSimpleResult(), printer, tp);
-  printer = tmp;
+  if(result.asSimpleResult().isSuccessful()) {
+    printer["value"] = {};
+    const tmp = printer;
+    printer = printer["value"];
+    this.serSingleValue(result.asSimpleResult(), printer, tp);
+    printer = tmp;
+  }
 }
 
 if(result.isListResult()){
@@ -22,13 +24,14 @@ if(result.isListResult()){
     return;
   }
 
-  printer["list"] = [];
-  const tmp = printer;
-  printer = printer["list"];
+  if(result.asListResult().isSuccessful()) {
+    printer["list"] = [];
+    const tmp = printer;
+    printer = printer["list"];
 
-  for(const o of result.asListResult().get()){
-    this.serSingleValue(result.asSimpleResult(), printer, tp);
+    for(const o of result.asListResult().get()){
+      this.serSingleValue(result.asSimpleResult(), printer, tp);
+    }
+    printer = tmp;
   }
-  printer = tmp;
-
 }

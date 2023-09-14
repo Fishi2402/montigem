@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { BaseClassObjectMapper } from "../common/BaseClassObjectMapper";
-import { CommandResult } from "./CommandResult";
-import { JsonDeSer } from "./JsonDeSer";
-import { StatusResult } from "./StatusResult";
+import {BaseClassObjectMapper} from "../common/BaseClassObjectMapper";
+import {CommandResult} from "./CommandResult";
+import {JsonDeSer} from "./JsonDeSer";
+import {StatusResult} from "./StatusResult";
 
 export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
   buildJson(result: CommandResult<any>, printer: any): void {
@@ -16,12 +16,15 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
     if (result.isStatusResult()) {
       printer["successful"] = result.asStatusResult().wasSuccessful();
     } else if (result.isSimpleResult()) {
-      if (BaseClassObjectMapper.canDeSer(tp)) {
-        let v: string = BaseClassObjectMapper.serialize(result.asSimpleResult().get(), tp);
-        if (v != null) {
-          printer["value"] = v;
-        } else {
-          console.warn("Error while serializing type " + tp);
+      printer["successful"] = result.asSimpleResult().isSuccessful();
+      if(result.asSimpleResult().isSuccessful()) {
+        if (BaseClassObjectMapper.canDeSer(tp)) {
+          let v: string = BaseClassObjectMapper.serialize(result.asSimpleResult().get(), tp);
+          if (v != null) {
+            printer["value"] = v;
+          } else {
+            console.warn("Error while serializing type " + tp);
+          }
         }
       }
     } else if (result.isListResult()) {
