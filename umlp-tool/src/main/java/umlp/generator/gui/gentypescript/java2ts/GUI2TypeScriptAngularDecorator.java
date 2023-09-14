@@ -29,6 +29,7 @@ import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.domain.decorator.commands.ManagerSubscriptionDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
@@ -161,6 +162,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
           .collect(Collectors.toList());
       List<ASTCDAttribute> domainAttributes = new ArrayList<>();
 
+      boolean updateObserverNeeded = false;
       for (ASTGUIParam p : domainListParams) {
         ASTCDAttribute cdAttr = addAttributForGUIParameter(clazz, p, CDModifier.PUBLIC.build());
         addAnnotation(cdAttr);
@@ -169,17 +171,30 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         if (util.getMainDomainModelSimpleName().isPresent()) {
           // TODO AGe: body of init method currently uses different hooks, improve
           if(ast.getGUIComponentDeclaration().isPage()) {
+            updateObserverNeeded = true;
             // Otherwise, parent page updates parameters
+            String originalName = util.getMainDomainModelSimpleName().get();
+
+            String domainType = util.getDomainListInnerType(p);
             glex.addAfterTemplate("umlp.gui2java.InitBody", new TemplateHookPoint(
                 "umlp.gui2ts.TSInitDomainList",
                 p.getName(),
-                util.getDomainListInnerType(p),
-                util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+                domainType,
+                originalName + ManagerDecorator.SUFFIX));
+            getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, domainType));
+            getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, "commands." + domainType + ManagerSubscriptionDecorator.SUFFIX));
           }
         }
         else {
           Log.warn("0x00007 Could not identify the manager name: domain classdiagram is missing");
         }
+      }
+
+      if(updateObserverNeeded){
+        glex.addAfterTemplate("umlp.gui2java.InitBody", new StringHookPoint(
+            util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX + ".addObserver(this.updateObserver);"
+            ));
+        getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
       }
 
       // attrs, getters

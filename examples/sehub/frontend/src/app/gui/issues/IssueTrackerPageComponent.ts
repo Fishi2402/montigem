@@ -6,8 +6,7 @@ import {Issue} from '@src/sehub/Issue';
 import {IssueState} from '@src/sehub/IssueState';
 import {SehubSecurityManager} from '@src/sehub/SehubSecurityManager';
 import {IssueGemList} from '@src/sehub/gemlists/IssueGemList';
-import {CommandManager, GemList} from '@umlp/common';
-import {Issue_subscribeManagerEvents} from '@src/sehub/commands/Issue_subscribeManagerEvents';
+import {GemList} from '@umlp/common';
 
 @Component({
   selector: 'issue-tracker-page',
@@ -27,9 +26,6 @@ export class IssueTrackerPageComponent extends IssueTrackerPageComponentTOP {
       this.router.navigate(['/login']);
     }
     super.ngOnInit();
-
-    console.log("Subscribing to issue events!");
-    CommandManager.executeCommand(new Issue_subscribeManagerEvents())
   }
 
   public override getTodoListIssues(): GemList<Issue> {
