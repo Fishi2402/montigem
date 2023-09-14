@@ -8,6 +8,7 @@ import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.common.NotificationScope;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,11 @@ public class ManagerEventSyncTest extends FlensburgMockTestSetup {
       @Override
       public void notifyHumanDeleted(Long gemId) {
         humanDeletedGemIds.add(gemId);
+      }
+
+      @Override
+      public NotificationScope getScope() {
+        return NotificationScope.LOCAL;
       }
     });
 
