@@ -39,9 +39,10 @@ export class UserLogin extends UserLoginTOP {
           fetch("/umlp/api/login", requestOptions)
               //.then(response => response.json())
               .then(result => console.log(result))
-              .then(result => this.initWS())
+              // .then(result => this.initWS())
               //.then(result => SehubSecurityManager.setCurrentUser(user))
-              .then(result => this.router.navigate(['/start']))
+              // .then(result => this.router.navigate(['/start']))
+              .then(result => window.location.href = '/start')
               .catch(error => console.log(error.message))
               .catch(error => alert("Invalid login"));
   }
