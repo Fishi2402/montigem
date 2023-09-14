@@ -31,8 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     http.csrf().disable();
 
     http.authorizeRequests((requests) -> requests.anyRequest().authenticated());
-    http.formLogin().successHandler((req, res, auth) -> res.setStatus(HttpStatus.NO_CONTENT.value()))
-        .failureHandler(new SimpleUrlAuthenticationFailureHandler());
+    http.formLogin();
     http.httpBasic();
 
   }
