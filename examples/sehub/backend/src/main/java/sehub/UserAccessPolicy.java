@@ -2,6 +2,7 @@
 package sehub;
 
 
+import sehub.commands.User_create;
 import sehub.commands.User_get;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.Participant;
@@ -9,7 +10,7 @@ import umlp.backendrte.command.Participant;
 import java.util.Collection;
 import java.util.Optional;
 
-import static sehub.SehubRole.GUEST;
+import static sehub.SehubRole.*;
 
 public class UserAccessPolicy extends UserAccessPolicyTOP {
 
@@ -31,22 +32,33 @@ public class UserAccessPolicy extends UserAccessPolicyTOP {
 
 
     // check authorization
+    if (command.isRequest()) {  // read
+      if (!role.equals(GUEST)) {
+        return true;
+      }
 
-    if (!role.equals(GUEST)) {
-      return true;
+      if (command instanceof User_get) {
+        long tgtUserGemId = ((User_get) command).getGemId();
+
+        if (user.getGemId() != tgtUserGemId) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+
+      return false;
     }
 
-    if (command instanceof User_get) {
-      long tgtUserGemId = ((User_get) command).getGemId();
-
-      if (user.getGemId() != tgtUserGemId) {
-        return false;
-      } else {
+    if (command instanceof User_create) {  // create
+      if (role.equals(OWNER) || role.equals(MAINTAINER)) {
         return true;
+      } else {
+        return false;
       }
     }
 
-    return false;
+    return true;
   }
 
 }
