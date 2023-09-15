@@ -53,6 +53,7 @@ export class Note extends NoteTOP {
       if(b){
         this.getPost().getIssue().removePosts2(this.getPost())
       }
+      SehubManager.deletePost(this.getPost().getGemId());
     })
 
     console.log("Removing... " + this.post.getResponses())
