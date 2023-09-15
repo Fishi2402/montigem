@@ -16,7 +16,7 @@ export class UserSettingsComponent extends UserSettingsComponentTOP {
 
   public ngOnInit(): void {
     if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login/LoginPage']);
     }
     this.currentUser = SehubSecurityManager.getCurrentUser();
     this.currentUserRoutingId = SehubSecurityManager.getCurrentUserIdOrNull();

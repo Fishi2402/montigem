@@ -32,7 +32,7 @@ public class CommandWebSocketService extends TextWebSocketHandler {
       subscriberId = clientIds.get(session.getId());
     } else {
       WebSocketCommandCommunication commandCommunication = new WebSocketCommandCommunication(session);
-      Participant participant = new Participant(commandCommunication);
+      Participant participant = new Participant(commandCommunication, session.getPrincipal().getName());
       participants.put(session, participant);
 
       subscriberId = CommandManager.register(participant);

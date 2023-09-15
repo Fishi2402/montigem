@@ -147,4 +147,8 @@ public class CommandManager {
   protected long _getFreeCommandId() {
     return freeCommandId++;
   }
+
+  public Participant getParticipant(long id) {
+    return particpants.get(id);
+  }
 }
