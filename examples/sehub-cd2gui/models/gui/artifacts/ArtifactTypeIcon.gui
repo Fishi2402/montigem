@@ -1,0 +1,12 @@
+package gui.artifacts;
+
+import basic.src.lib.gemimage.GemImage;
+
+component ArtifactTypeIcon(String type){
+  @guard(type == "Directory"){
+    @GemImage(source = "assets/icons/directory.png", style = "height: 23px; width: 23px");
+  }
+  @guard(!(type == "Directory")){
+    @GemImage(source = "assets/icons/file.png", style = "height: 23px; width: 23px");
+  }
+}

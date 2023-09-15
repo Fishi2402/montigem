@@ -1,0 +1,11 @@
+<div
+  cdkDropList
+  [id]="dropId"
+  [cdkDropListData]="issues?.toArray()"
+  [cdkDropListConnectedTo]="canDropTo"
+  class="drag-drop-list"
+  (cdkDropListDropped)="onDrop($event)">
+  <ng-container *ngFor="let issue of getIssues()">
+    <issue-entry cdkDrag [issue]="issue"></issue-entry>
+  </ng-container>
+</div>

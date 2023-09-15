@@ -1,7 +1,9 @@
 package gui;
 
+import Sehub.User;
+import Sehub.BoardMapper;
 import Sehub.BingoBoard;
-import Sehub.BingoEntry;
+import Sehub.Message;
 
 import arrange.src.lib.gemrow.GemRow;
 import arrange.src.lib.gemcard.GemCard;
@@ -9,20 +11,40 @@ import arrange.src.lib.gemcolumn.GemColumn;
 import basic.src.lib.gembutton.GemButton;
 import basic.src.lib.gemtext.GemText;
 import input.src.lib.gemtextareainput.GemTextareaInput;
+import input.src.lib.gemtextinput.GemTextInput;
 
-page Bingo(BingoBoard board){
-    @GemText(value = "Bingo !!");
-    @GemRow(width = "1025px", colGap = "5px", rowGap = "5px", component =
-      @iterate(BingoEntry b : board.entries){
+page Bingo(List<Message> messages, User user) {
+
+  // Board
+  @GemRow(width="100%", hAlign="center", components = [
+
+    @GemRow(width = "1025px", hAlign="center", colGap = "5px", rowGap = "5px", components = [
+      @GemRow(width = "1025px", hAlign="center", component = @GemText(value = "Bingo-Board")),
+      @iterate(BoardMapper b : user.gridEntry){
         @GemCard(title = "", component =
            @GemColumn(width = "170px", components = [
               @GemTextareaInput(
                   id = "bingoEntry",
                   labelText = "",
-                  entry = b.word
+                  entry = b.bingoBoardEntry.word
               ),
-              @GemButton(label = "Check!", leftClick = checkEntry)
+              checkButton@GemButton(label = "Check!", leftClick = checkEntry(b))
            ])
-         );
-      });
+        );
+      }
+    ]),
+
+    // MessageBoard
+    @GemRow(width = "600px", hAlign="center", colGap = "5px", rowGap = "5px", component =
+      @GemColumn(width = "570px", rowGap="5px", components = [
+        @GemText(value = "Chat / Log"),
+        @GemColumn(rowGap="5px", components = [
+          @iterate(Message m : messages){ messageEntry@GemText(value = m.text); }
+        ]),
+        newMessage@GemTextInput(labelText = "Add Text", inputType = "text"),
+        chat@GemButton(label = "Send", leftClick = addChat)
+      ])
+    )
+  ]);
+
 }

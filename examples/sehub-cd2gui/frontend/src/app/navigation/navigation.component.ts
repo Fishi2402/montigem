@@ -10,20 +10,22 @@ import {User} from '@src/sehub/User';
 export class Navigation {
 
   readonly items: { url: string, title: string }[] = [
-    { url: '/file-explorer', title: 'File Explorer' },
+    { url: '/projects', title: 'Projects' },
     {  url: '/issue-tracker/IssueTrackerPage', title: 'Issue Tracker' },
-    { url: '/projects', title: 'Artifacts' },
     { url: '/notes/NotesPage/42000', title: 'Notes'},
     { url: '/usersettings/UserSettings/1', title: 'User Settings'},
     { url: '/CD2GUI', title: 'CD2GUI'},
-    { url: '/login', title: 'Login' },
   ];
   getCurrentUser(): User {
     return SehubSecurityManager.getCurrentUser();
   }
 
   signOutCurrentUser(): void {
+    fetch("/umlp/api/logout")
     SehubSecurityManager.signOut();
+  }
+  isSignedIn(): boolean {
+    return SehubSecurityManager.isSignedIn();
   }
 
 

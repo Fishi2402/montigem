@@ -4,6 +4,7 @@ import {Component} from '@angular/core';
 import {User} from '@src/sehub//User';
 import {SehubManager} from '@src/sehub/SehubManager';
 import {ResetPasswordComponentTOP} from '@src/gui/login/ResetPasswordComponentTOP';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'reset-password',

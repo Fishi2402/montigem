@@ -10,40 +10,15 @@ import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 @Directive()
 export class UserDisplay extends UserDisplayTOP {
 
-  public override getRoleEntry(): string {
-    if (!(this.getUser() != null && this.getUser() != null)) {
-      return null;
-    }
-    return this.enumToString(SehubRole[this.getUser().getRole()] + '');
-  }
-
-  private enumToString(res: string) {
-    res = res.toLowerCase();
-    res = res.charAt(0).toUpperCase() + res.slice(1);
-    return res;
-  }
-
   public override getRoleOptions(): Array<string> {
     let res: Array<string> = [];
 
     for (let role of Object.values(SehubRole)) {
       if (isNaN(Number(role))) {
-        res.push(this.enumToString(role + ''))
+        res.push(this.enumToCapitalizedString(role + ''))
       }
     }
-
     return res;
-  }
-
-  public override setRoleEntry(value: string): void {
-    if (!(this.getUser() != null && this.getUser() != null)) {
-      return null;
-    }
-    if (value == null || value == undefined || value == "") {
-      return null;
-    }
-    let sehubRoleElement = SehubRole[value.toUpperCase()];
-    this.getUser().setRole(sehubRoleElement);
   }
 
   public override removeUserLeftClick(event: any) {
@@ -54,5 +29,9 @@ export class UserDisplay extends UserDisplayTOP {
       SehubManager.deleteUser(gemId);
     }
   }
+
+ /* public override getErrorroleValue(): string {
+    return this.user.getValidityRole().status;
+  }*/
 
 }
