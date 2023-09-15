@@ -50,15 +50,31 @@ public class UserAccessPolicy extends UserAccessPolicyTOP {
       return false;
     }
 
-    if (command instanceof User_create) {  // create
-      if (role.equals(OWNER) || role.equals(MAINTAINER)) {
-        return true;
-      } else {
-        return false;
-      }
+    return true;
+  }
+
+  public boolean checkCreatePermission(umlp.backendrte.command.Command command) {
+    // get user and role
+    Participant p = CommandManager.getInstance().getParticipant(command.getParticipantId());
+    Optional<User> userOpt = SehubManager.getUserList().stream()
+        .filter(u -> u.getUsername().equals(p.getUsername())) // user name is unique
+        .findAny();
+
+    if (!userOpt.isPresent()) {
+      return false;
     }
 
-    return true;
+    User user = userOpt.get();
+    SehubRole role = user.getRole();
+
+
+    // check authorization
+    if (command instanceof User_create) {
+      if (role.equals(OWNER) || role.equals(MAINTAINER)) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

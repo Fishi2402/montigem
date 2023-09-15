@@ -13,7 +13,7 @@ public class User_create extends User_createTOP {
 
   public StatusResult doRun() {
     UserAccessPolicy accessPolicy = new UserAccessPolicy();
-    if(accessPolicy.checkPermission(this)){
+    if(accessPolicy.checkCreatePermission(this)){
       return super.doRun();
     }
     return StatusResult.error(getId());
