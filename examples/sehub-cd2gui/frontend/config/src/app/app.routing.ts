@@ -6,7 +6,7 @@ export const routes: Routes = [
     path: "",
     pathMatch: "full",
     // redirect to a module, not a component (use package part instead of the component name)
-    redirectTo: "login"
+    redirectTo: "login/LoginPage"
   },
   {
     path: "login",
@@ -48,22 +48,22 @@ export const routes: Routes = [
     path: "usersettings",
     loadChildren: () => import("../../build/appgui/gui/usersettings/UserSettingsModule").then(m => m.UsersettingsModule)
   },
-/*  {
+ {
     path: "issue-tracker",
     loadChildren: () => import("../../build/appgui/gui/issues/IssueTrackerPageModule").then(m => m.IssuetrackerpageModule)
-  },*/
+  },
   {
     path: '404',
     loadChildren: () => import("../../build/appgui/gui/PageNotFoundModule").then(m => m.PagenotfoundModule)
   },
   {
     path: 'CD2GUI',
-    redirectTo: 'CD2GUI/UserOverview'
+    redirectTo: 'CD2GUI/Navigation'
   },
-  // {
-  //   path: 'CD2GUI/Navigation',
-  //   loadChildren: () => import("../../build/appgui/gui/CD2GUINavigationModule").then(m => m.Cd2guinaviationModule)
-  // },
+  {
+    path: 'CD2GUI/Navigation',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/CD2GUIDashboardModule").then(m => m.Cd2guidashboardModule)
+  },
   {
       path: 'CD2GUI/UserOverview',
       loadChildren: () => import("../../../umlp/fe2/cd2gui/models/UserOverviewModule").then(m => m.UseroverviewModule)
@@ -112,66 +112,66 @@ export const routes: Routes = [
     path: 'CD2GUI/IssueDetails',
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/IssueDetailsModule").then(m => m.IssuedetailsModule)
   },
-  // {
-  //   path: 'CD2GUI/FileArtifactOverview',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/FileArtifactOverviewModule").then(m => m.FileartifactoverviewModule)
-  // },
-  // {
-  //   path: 'CD2GUI/FileArtifactForm',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/FileArtifactFormModule").then(m => m.FileartifactformModule)
-  // },
-  // {
-  //   path: 'CD2GUI/FileArtifactDetails',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/FileArtifactDetailsModule").then(m => m.FileartifactdetailsModule)
-  // },
-  // {
-  //   path: 'CD2GUI/DirectoryOverview',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/DirectoryOverviewModule").then(m => m.DirectoryoverviewModule)
-  // },
-  // {
-  //   path: 'CD2GUI/DirectoryForm',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/DirectoryFormModule").then(m => m.DirectoryformModule)
-  // },
-  // {
-  //   path: 'CD2GUI/DirectoryDetails',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/DirectoryDetailsModule").then(m => m.DirectorydetailsModule)
-  // },
-  // {
-  //   path: 'CD2GUI/BingoEntryOverview',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoEntryOverviewModule").then(m => m.BingoentryoverviewModule)
-  // },
-  // {
-  //   path: 'CD2GUI/BingoEntryForm',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoEntryFormModule").then(m => m.BingoentryformModule)
-  // },
-  // {
-  //   path: 'CD2GUI/BingoEntryDetails',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoEntryDetailsModule").then(m => m.BingoentrydetailsModule)
-  // },
-  // {
-  //   path: 'CD2GUI/BingoBoardOverview',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoBoardOverviewModule").then(m => m.BingoboardoverviewModule)
-  // },
-  // {
-  //   path: 'CD2GUI/BingoBoardForm',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoBoardFormModule").then(m => m.BingoboardformModule)
-  // },
-  // {
-  //   path: 'CD2GUI/BingoBoardDetails',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoBoardDetailsModule").then(m => m.BingoboarddetailsModule)
-  // },
-  // {
-  //   path: 'CD2GUI/ArtifactOverview',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/ArtifactOverviewModule").then(m => m.ArtifactoverviewModule)
-  // },
-  // {
-  //   path: 'CD2GUI/ArtifactForm',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/ArtifactFormModule").then(m => m.ArtifactformModule)
-  // },
-  // {
-  //   path: 'CD2GUI/ArtifactDetails',
-  //   loadChildren: () => import("../../../umlp/fe2/cd2gui/models/ArtifactDetailsModule").then(m => m.ArtifactdetailsModule)
-  // },
+  {
+    path: 'CD2GUI/FileArtifactOverview',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/FileArtifactOverviewModule").then(m => m.FileartifactoverviewModule)
+  },
+  {
+    path: 'CD2GUI/FileArtifactForm',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/FileArtifactFormModule").then(m => m.FileartifactformModule)
+  },
+  {
+    path: 'CD2GUI/FileArtifactDetails',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/FileArtifactDetailsModule").then(m => m.FileartifactdetailsModule)
+  },
+  {
+    path: 'CD2GUI/DirectoryOverview',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/DirectoryOverviewModule").then(m => m.DirectoryoverviewModule)
+  },
+  {
+    path: 'CD2GUI/DirectoryForm',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/DirectoryFormModule").then(m => m.DirectoryformModule)
+  },
+  {
+    path: 'CD2GUI/DirectoryDetails',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/DirectoryDetailsModule").then(m => m.DirectorydetailsModule)
+  },
+  {
+    path: 'CD2GUI/BingoEntryOverview',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoEntryOverviewModule").then(m => m.BingoentryoverviewModule)
+  },
+  {
+    path: 'CD2GUI/BingoEntryForm',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoEntryFormModule").then(m => m.BingoentryformModule)
+  },
+  {
+    path: 'CD2GUI/BingoEntryDetails',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoEntryDetailsModule").then(m => m.BingoentrydetailsModule)
+  },
+  {
+    path: 'CD2GUI/BingoBoardOverview',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoBoardOverviewModule").then(m => m.BingoboardoverviewModule)
+  },
+  {
+    path: 'CD2GUI/BingoBoardForm',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoBoardFormModule").then(m => m.BingoboardformModule)
+  },
+  {
+    path: 'CD2GUI/BingoBoardDetails',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoBoardDetailsModule").then(m => m.BingoboarddetailsModule)
+  },
+  {
+    path: 'CD2GUI/ArtifactOverview',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/ArtifactOverviewModule").then(m => m.ArtifactoverviewModule)
+  },
+  {
+    path: 'CD2GUI/ArtifactForm',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/ArtifactFormModule").then(m => m.ArtifactformModule)
+  },
+  {
+    path: 'CD2GUI/ArtifactDetails',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/ArtifactDetailsModule").then(m => m.ArtifactdetailsModule)
+  },
 
 
   //Woldcard Route for 404 Page:

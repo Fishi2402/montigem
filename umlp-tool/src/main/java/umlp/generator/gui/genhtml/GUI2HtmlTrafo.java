@@ -6,10 +6,13 @@ import de.monticore.guidsl._ast.ASTGUIBlock;
 import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIDSLNode;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
+import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+import de.monticore.prettyprint.IndentPrinter;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayDeque;
@@ -33,6 +36,8 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
   protected Deque<ASTGUIBlock> holderStack = new ArrayDeque<>();
 
   protected Optional<ASTGUIComponent> current = Optional.empty();
+  protected Optional<ASTGUIGuard> currentGuard = Optional.empty();
+  protected Set<ASTGUIDSLNode> guardConditions = new HashSet<>();
 
   public GUI2HtmlTrafo() {
     traverser = GUIDSLMill.traverser();
@@ -73,7 +78,7 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
     if (current.isPresent() && current.get().equals(node)) {
       current = Optional.empty();
     }
-    else {
+    else if (currentGuard.isEmpty() || !guardConditions.contains(node)) {
       String templateId = util.getNgTemplateName(node.getId().getName());
       // TODO AGe: better solution, setting the name here makes derivation of method names incorrect
       node.getId().setName(util.getNgTemplateActualName(templateId));
@@ -87,8 +92,15 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
   }
 
   @Override
+  public void visit(ASTGUIGuard node) {
+    if (currentGuard.isEmpty()) {
+      setCurrentGuard(node);
+    }
+  }
+
+  @Override
   public void endVisit(ASTGUIGuard node) {
-    if (current.isPresent()) {
+    if (current.isPresent() && currentGuard.isPresent() && currentGuard.get().equals(node)) {
       String templateId = util.getNgTemplateName(node.getId().getName());
       node.getId().setName(util.getNgTemplateActualName(templateId));
       ASTGUIGuard clone = node.deepClone();
@@ -97,6 +109,7 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
           .setGUIGuard(clone)
           .build();
       addTemplate(content);
+      clearCurrentGuard();
     }
   }
 
@@ -128,6 +141,31 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
       templates.put(holderStack.peek(), new HashSet<>());
     }
     templates.get(holderStack.peek()).add(content);
+  }
+
+  protected void addCondition(ASTGUIBlockContent block) {
+    if (block.isPresentGUIComponent()) {
+      guardConditions.add(block.getGUIComponent());
+    }
+    if (block.isPresentGUIGuard()) {
+      guardConditions.add(block.getGUIGuard());
+    }
+    if (block.isPresentGUIIterate()) {
+      guardConditions.add(block.getGUIIterate());
+    }
+  }
+
+  protected void setCurrentGuard(ASTGUIGuard node) {
+    currentGuard = Optional.of(node);
+    node.getThenStatement().getGUIBlockContentList().forEach(e -> addCondition(e));
+    if (node.isPresentElseStatement()) {
+      node.getElseStatement().getGUIBlockContentList().forEach(e -> addCondition(e));
+    }
+  }
+
+  protected void clearCurrentGuard() {
+    currentGuard = Optional.empty();
+    guardConditions.clear();
   }
 
 }

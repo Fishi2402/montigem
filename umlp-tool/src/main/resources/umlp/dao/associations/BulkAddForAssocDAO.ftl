@@ -1,8 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("association")}
-${cd4c.method("public void bulkAdd${association.getName()?cap_first}(Map<Long, List<Long>> ${association.getName()?cap_first}s)")}
+${cd4c.method("public Boolean bulkAdd${association.getName()?cap_first}(Map<Long, List<Long>> ${association.getName()?cap_first}s)")}
   ensureAdd${association.getName()?cap_first}Created();
   try {
+    DatabaseAccessManager.getConnection().setAutoCommit(false);
     add${association.getName()?cap_first}.clearBatch();
     for (Map.Entry<Long, List<Long>> entry : ${association.getName()?cap_first}s.entrySet()) {
       for (Long rightHandSide : entry.getValue()) {
@@ -13,6 +14,23 @@ ${cd4c.method("public void bulkAdd${association.getName()?cap_first}(Map<Long, L
       }
     }
     add${association.getName()?cap_first}.executeBatch();
+    DatabaseAccessManager.getConnection().commit();
+    return true;
+
   } catch (SQLException e){
-    throw new RuntimeException(e);
+    try {
+      DatabaseAccessManager.getConnection().rollback();
+    } catch (SQLException ex) {
+      ex.printStackTrace();
+    }
+    e.printStackTrace();
+    return false;
+  }
+
+  finally{
+    try {
+      DatabaseAccessManager.getConnection().setAutoCommit(true);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }

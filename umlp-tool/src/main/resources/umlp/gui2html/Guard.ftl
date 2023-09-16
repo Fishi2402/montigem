@@ -6,9 +6,9 @@ ${tc.signature("args")}
 <#assign elseTpl = genHelper.getNgTemplateActualName(ast.getId().getName() + "Else")>
 <#assign isTpl = genHelper.isNgTemplate(ast.getId().getName())>
 
-<ng-template [ngIf]='${genHelper.gui2cdAttrGetterName(ast.getId().getName(), "condition")}()'
+<#if isTpl><ng-template #${genHelper.getNgTemplateActualName(ast.getId().getName())}></#if>
+<ng-template [ngIf]='${genHelper.gui2cdAttrGetterName(ast.getId().getName(), "condition")}(<#list args as arg> ${arg}<#sep>, </#list>)'
   <#if ast.isPresentElseStatement()>[ngIfElse]='${elseTpl}'</#if>
-  <#if isTpl>#${genHelper.getNgTemplateActualName(ast.getId().getName())}</#if>
 >
   <#list thenStatement as content>
     ${tc.includeArgs("umlp.gui2html.BlockContentOrArgValue", content, [args])}
@@ -23,3 +23,4 @@ ${tc.signature("args")}
     </#list>
   </ng-template>
 </#if>
+<#if isTpl></ng-template></#if>

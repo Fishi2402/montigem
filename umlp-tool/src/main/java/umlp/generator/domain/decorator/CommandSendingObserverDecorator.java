@@ -73,7 +73,7 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
               } else {
                 ASTCDMethodSignature set = getCD4C().addMethod(ast, setAttributeTmplt(),
                     t.getName(), a.getName(), GenService.createType(a).printType(),
-                    a.getName(), false, domainClass.getName());
+                    a.getName(), false, domainClass.getName(), false);
 
                 setOverrideAnnotation(set);
 
@@ -126,7 +126,7 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
             }
           } else {
             ASTCDMethodSignature set = getCD4C().addMethod(ast, setAttributeTmplt(), otherType.print(),
-                a.getName(), "long", assocName, isBidirectional, domainClass.getName());
+                a.getName(), "long", assocName, isBidirectional, domainClass.getName(), isLeft);
             setOverrideAnnotation(set);
 
             if (isBidirectional) {

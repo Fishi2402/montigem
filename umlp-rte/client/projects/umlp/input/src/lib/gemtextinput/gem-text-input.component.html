@@ -1,16 +1,23 @@
-<label class="gem-label" [for]="id">{{ labelText }}</label>
+<label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
 <input
-  class="gem-input"
+  class="gem-text-input"
   [matTooltip]="
-    validity.status === 'Error' || validity.status === 'Warning'
+    validity?.status === 'Error' || validity?.status === 'Warning'
       ? validity.message
       : null
   "
   matTooltipPosition="after"
-  [class.gem-inputError]="validity.status === 'Error'"
-  [class.gem-inputWarning]="validity.status === 'Warning'"
-  [id]="id"
+  [inputmode]="isNumeric ? 'numeric' : null"
+  [class.gem-input-error]="validity?.status === 'Error'"
+  [class.gem-input-warning]="validity?.status === 'Warning'"
   [type]="inputType"
+  [id]="id + 'Input'"
+  [attr.list]="id + 'List'"
   [ngModel]="entry"
   (ngModelChange)="onEntryChange($event)"
+  (keyup)="keyup.emit($event)"
+  (keydown)="keydown.emit($event)"
 />
+<datalist *ngIf="isDropdown" [id]="id + 'List'">
+  <option *ngFor="let option of options" [value]="option"></option>
+</datalist>

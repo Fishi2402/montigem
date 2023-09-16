@@ -1,12 +1,12 @@
-<label [for]="id" class="gem-label-radio">
+<label class="gem-label-radio" [for]="id + 'Radio'">
+  <span *ngIf="!rightPosition">{{ labelText }}</span>
   <input
     class="gem-radio"
     type="radio"
-    [id]="id"
+    [id]="id + 'Radio'"
     [value]="value"
     [ngModel]="selectedValue"
-    [checked]="isChecked"
     (ngModelChange)="onSelectedValueChange($event)"
   />
-  {{ labelText }}
+  <span *ngIf="rightPosition">{{ labelText }}</span>
 </label>

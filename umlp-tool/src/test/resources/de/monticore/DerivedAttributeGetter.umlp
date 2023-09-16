@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp DerivedAttributeGetter {
+  class Foo {
+    /boolean firstAttribute;
+  }
+
+  class Bar {
+    /int secondAttribute;
+  }
+}

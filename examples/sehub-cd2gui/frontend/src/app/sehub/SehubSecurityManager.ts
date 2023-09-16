@@ -4,10 +4,6 @@ import {User} from '@src/sehub/User';
 
 export class SehubSecurityManager {
 
-  public static isSignedIn(): boolean {
-    return localStorage.getItem('currentUser') !== null;
-  }
-
   public static getCurrentUser(): User {
     let currentUser: User = new User();
     Object.assign(currentUser, JSON.parse(localStorage.getItem('currentUser')) as User);
@@ -22,8 +18,16 @@ export class SehubSecurityManager {
     return SehubSecurityManager.isSignedIn() ? SehubSecurityManager.getCurrentUser().getGemId() : null;
   }
 
+  public static signIn(value: User) {
+    this.setCurrentUser(value);
+  }
+
   public static signOut() {
     localStorage.removeItem('currentUser')
+  }
+
+  public static isSignedIn(): boolean {
+    return localStorage.getItem('currentUser') !== null;
   }
 
 }

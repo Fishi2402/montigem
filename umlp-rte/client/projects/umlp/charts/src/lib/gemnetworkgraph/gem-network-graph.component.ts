@@ -46,6 +46,9 @@ export class GemNetworkGraph extends GemNetworkGraphTOP {
 
   @Input()
   public set data(data: GemNetworkData){
+    if (!data) {
+      return;
+    }
     this._data.edges = data.edges;
     this._nodes = new DataSet();
     
@@ -77,6 +80,15 @@ export class GemNetworkGraph extends GemNetworkGraphTOP {
       this.prepareData();
       this.redrawGraph();
     }
+  }
+
+  @Input()
+  public set improvedLayout(value: boolean) {
+    if (!this._options.layout) {
+      this._options.layout = {};
+    }
+    this._options.layout.improvedLayout = value;
+    this.redrawGraph();
   }
 
   @Input() filterEvents: Observable<void>;

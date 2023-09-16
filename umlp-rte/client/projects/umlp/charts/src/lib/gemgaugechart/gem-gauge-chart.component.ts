@@ -94,6 +94,9 @@ export class GemGaugeChart extends GemGaugeChartTOP {
    */
   @Input()
   public set data(data: GemGaugeChartData) {
+    if (!data) {
+      return;
+    }
     this.labels = data.entries.map(entry => entry.name);
     this.dataSets = [];
     const colors = [];
@@ -111,7 +114,7 @@ export class GemGaugeChart extends GemGaugeChartTOP {
         type: data.entries[i].type,
         backgroundColor: data.entries[i].backgroundColor
       };
-
+      
       labels.push(entry.name);
       colors.push(entry.backgroundColor);
       this.dataSets.push(entry);
@@ -144,7 +147,7 @@ export class GemGaugeChart extends GemGaugeChartTOP {
       }
 
     });
-
+    
     this.updateSelectedDataset();
   }
 
@@ -177,12 +180,12 @@ export class GemGaugeChart extends GemGaugeChartTOP {
     console.log(n);
   }
 
-  changeMin(min: number){
-    this._min = min;
+  changeMin(min: string){
+    this._min = +min;
   }
 
-  changeMax(max: number){
-    this._max = max;
+  changeMax(max: string){
+    this._max = +max;
   }
 
   changeUnit(unit: string){
@@ -200,7 +203,7 @@ export class GemGaugeChart extends GemGaugeChartTOP {
     this._textValue = this._sensorType;
 
     let t = this;
-
+    
     this.dataSets.forEach(function (entry: any) {
       if (t._sensorType.toLowerCase() == "all"
         || entry.type.toLowerCase() == t._sensorType.toLowerCase()) {
@@ -232,18 +235,17 @@ export class GemGaugeChart extends GemGaugeChartTOP {
   /** changes container style depending on legend position */
   public changeContainer() {
     switch(this.legendPosition) {
-      case 'left':
+      case 'left': 
         return 'wholeChartWithLegendLeftContainer';
-      case 'top':
+      case 'top': 
         return 'wholeChartWithLegendTopContainer';
-      case 'bottom':
+      case 'bottom': 
         return 'wholeChartWithLegendBottomContainer';
-      case 'right':
+      case 'right': 
         return 'wholeChartWithLegendRightContainer';
       default:
         return 'wholeChartWithLegendBottomContainer';
     }
   }
 
-  protected readonly Number = Number;
 }

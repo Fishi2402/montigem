@@ -1,7 +1,0 @@
-package basic.src.lib.gemtreeview;
-
-import basic.src.lib.gemtreeview.GemTreeviewTypes.GemTreeviewEntry;
-
-component GemTreeview(
-  List<GemTreeviewEntry> items
-)

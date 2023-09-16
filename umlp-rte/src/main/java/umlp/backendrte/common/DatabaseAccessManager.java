@@ -5,6 +5,7 @@ import de.se_rwth.commons.logging.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,6 +29,7 @@ public abstract class DatabaseAccessManager {
 
   protected abstract void _setup();
   protected abstract long _getFreeGemId();
+  protected abstract void _clearLocalGemIds();
 
   public static void setup() {
     getSingleton()._setup();
@@ -38,6 +40,10 @@ public abstract class DatabaseAccessManager {
       throw new RuntimeException("0xHFJHDF no DatabaseAccessManager initialized.");
     }
     return instance;
+  }
+
+  public static void clearLocalGemIds(){
+    getSingleton()._clearLocalGemIds();
   }
 
   public static long getFreeGemId(){
@@ -64,6 +70,10 @@ public abstract class DatabaseAccessManager {
     }catch (SQLException e){
       Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
     }
+  }
+
+  public static Connection getConnection(){
+    return connection;
   }
 
   public static Optional<ResultSet> executeQuery(String sql) {

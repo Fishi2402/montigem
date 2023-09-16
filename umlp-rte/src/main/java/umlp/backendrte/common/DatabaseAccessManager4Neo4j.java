@@ -11,6 +11,18 @@ import java.util.Optional;
 
 public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
 
+  GemIdManager4Neo4j idManager4Neo4j = new GemIdManager4Neo4j();
+
+  @Override
+  protected long _getFreeGemId() {
+    return idManager4Neo4j.getFreeGemId();
+  }
+
+  @Override
+  protected void _clearLocalGemIds(){
+    idManager4Neo4j.clear();
+  }
+
   @Override
   protected void _setup() {
     loadDBPropertiesFromStandardFileLocation();
@@ -22,7 +34,7 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
       connection = DriverManager.getConnection(DB_URL, databaseProperties);
       Log.warn("New DB Connection created");
     } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException |
-             InvocationTargetException | NoSuchMethodException e) {
+        InvocationTargetException | NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
     createMetaNodeSingleton();
@@ -44,20 +56,6 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
   }
 
 
-  // TODO improve performance by bulk requesting of gemIds
-  @Override
-  protected long _getFreeGemId() {
-    try {
-      ResultSet res = executeQuery("MATCH(n:METANODE) SET n.gemIdCounter= n.gemIdCounter+1 return n.gemIdCounter").get();
-      if(res.next()) {
-        return res.getLong(1);
-      }
-    } catch (SQLException e) {
-      Log.error("Oxalhfgjsd: Failed to get fresh Gem Id from DB", e);
-    }
-    throw new RuntimeException("Failed to get fresh Gem Id from DB.");
-  }
-
   public static void init() {
     DatabaseAccessManager4Neo4j impl = new DatabaseAccessManager4Neo4j();
     DatabaseAccessManager.setInstance(impl);
@@ -78,7 +76,7 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
       connection = DriverManager.getConnection("jdbc:neo4j:bolt://localhost:"+port+"/?flatten=1", user, password);
       Log.warn("New DB Connection created");
     } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException |
-             InvocationTargetException | NoSuchMethodException e) {
+        InvocationTargetException | NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
     createMetaNodeSingleton();

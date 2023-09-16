@@ -1,11 +1,11 @@
-<label [for]="id" class="gem-label-checkbox">
+<label class="gem-label-checkbox" [for]="id + 'Checkbox'">
+  <span *ngIf="!rightPosition">{{ labelText }}</span>
   <input
     type="checkbox"
     class="gem-checkbox"
-    [id]="id"
-    [value]="value"
+    [id]="id + 'Checkbox'"
     [ngModel]="checked"
     (ngModelChange)="onCheckedChange($event)"
   />
-  {{ labelText }}
+  <span *ngIf="rightPosition">{{ labelText }}</span>
 </label>

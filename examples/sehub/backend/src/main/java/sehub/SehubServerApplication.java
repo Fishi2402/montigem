@@ -1,31 +1,30 @@
 package sehub;
 
 import de.se_rwth.commons.logging.Log;
-import dummy.ContainerFileExtractor;
 import dummy.DummyDataCreator;
-import org.apache.commons.io.FileUtils;
+import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Optional;
-
-import java.io.File;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.IntStream;
 
 @SpringBootApplication(
     exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
-    scanBasePackages={"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "sehub.service"}
+    scanBasePackages={"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "sehub.service", "security"}
 )
 public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
 
@@ -38,6 +37,23 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
   public void init() throws IOException {
     super.init();
 
+    // Only create DummyData if database is empty
+    if(SehubManager.getUserList().isEmpty()){ // Is there a better way to check if dummy-data was already created?
+      Log.println("Creating Dummy Data");
+      createDummyData();
+    } else {
+      Log.println("_NOT_ Creating New Dummy Data. Data is already present.");
+    }
+
+    try {
+      Server webServer = Server.createWebServer("-web", "-webAllowOthers").start();
+      Log.info(String.format("H2 Web Server started at: http://localhost:%s", webServer.getPort()), SehubServerApplication.class.getName());
+    } catch (SQLException e) {
+      throw new IOException(e);
+    }
+  }
+
+  public void createDummyData(){
     for (User user : SehubManager.getUserList()) {
       System.err.println("User " + user.getUsername());
     }
@@ -46,8 +62,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
     for (int i = 0; i <= 24; i++) {
       entrySet.add(SehubManager.bingoEntryBuilder().word("").build().get());
     }
-    BingoBoardBuilder boardBuilder = new BingoBoardBuilder(42001);
-    Optional<BingoBoard> bingoBoard = boardBuilder
+    Optional<BingoBoard> bingoBoard = SehubManager.bingoBoardBuilder()
         .bingoBoardEntries(entrySet)
         .build();
 
@@ -58,10 +73,11 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
       mapping.add(SehubManager.boardMapperBuilder().bingoBoardEntry(bingoBoard.get().getBingoBoardEntries(permutation[i])).isChecked(false).build().get());
     }
 
+    PasswordEncoder encoder = new BCryptPasswordEncoder();
     if (SehubManager.getUserList().isEmpty()) {
       Optional<User> newUser = SehubManager.userBuilder()
           .username("MyUser")
-          .password("MyPasswort")
+          .password(encoder.encode("MyPasswort"))
           .registrationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
           .email("MyEmail")
           .gridEntry(mapping)
@@ -87,7 +103,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
 
     Optional<User> newUser2 = SehubManager.userBuilder()
         .username("admin")
-        .password("pwd")
+        .password(encoder.encode("pwd"))
         .registrationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
         .email("admin@sehub.de")
         .gridEntry(mapping2)
@@ -120,13 +136,15 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         .responses(responses)
         .build();
 
-    IssueBuilder issueBuilder = new IssueBuilder(42000);
+    IssueBuilder issueBuilder = SehubManager.issueBuilder();
         issueBuilder
         .title("Die Sache mit dem Wasserkocher")
         .description("Hier kann eine Beschreibung stehen...")
         .state(IssueState.IN_PROGRESS)
         .posts(Set.of(p3.get()))
         .build();
+
+
 
     SehubManager.issueBuilder()
         .title("Verfügbare Konten sollen beim Bearbeiten von Dienstreisen auswählbar sein")

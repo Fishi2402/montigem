@@ -1,7 +1,18 @@
-<label class="gem-label-textarea" [for]="id">{{ labelText }}</label>
+<label class="gem-label-textarea" [for]="id + 'TextArea'">{{ labelText }}</label>
 <textarea
   class="gem-textarea"
+  [id]="id + 'TextArea'"
+  [matTooltip]="
+    validity?.status === 'Error' || validity?.status === 'Warning'
+      ? validity.message
+      : null
+  "
+  matTooltipPosition="after"
+  [class.gem-textarea-error]="validity?.status === 'Error'"
+  [class.gem-textarea-warning]="validity?.status === 'Warning'"
   [id]="id"
-  [ngModel]="textArea"
-  (ngModelChange)="onTextAreaChange($event)"
+  [ngModel]="entry"
+  (ngModelChange)="onEntryChange($event)"
+  (keyup)="keyup.emit($event)"
+  (keydown)="keydown.emit($event)"
 ></textarea>

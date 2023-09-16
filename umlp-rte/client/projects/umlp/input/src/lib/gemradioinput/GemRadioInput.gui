@@ -1,9 +1,0 @@
-package input.src.lib.gemradioinput;
-
-component GemRadioInput(
-  String id,
-  String labelText,
-  String value,
-  ?String selectedValue,
-  Boolean isChecked
-)

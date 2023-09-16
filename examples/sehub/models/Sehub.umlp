@@ -49,7 +49,7 @@ classdiagram Sehub {
     IssueState state;
   }
 
-  association discussion [1] Issue -> (posts) Post [*];
+  association discussion [0..1] Issue <-> (posts) Post [*];
 
   enum IssueState {
     UNASSIGNED,
@@ -63,7 +63,7 @@ classdiagram Sehub {
   }
 
   association auth [1] Post -> (author) User [1];
-  association resp [1] Post -> (responses) Post [*];
+  association resp [0..1] Post (parent) <-> (responses) Post [*];
 
 
   // ABSTRACT!
@@ -73,6 +73,7 @@ classdiagram Sehub {
     String modified;
     String name;
     String fullName;
+    /String type;
   }
 
   class FileArtifact extends Artifact {}
@@ -87,7 +88,7 @@ classdiagram Sehub {
 
   class Directory extends Artifact {}
 
-  association contains [0..1] Directory -> (contains) Artifact [*];
+  association [0..1] Directory (containedBy) <-> (contains) Artifact [*];
 
 
   // --------------------- Bingo ---------------------

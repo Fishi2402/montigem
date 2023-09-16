@@ -26,7 +26,7 @@ public class ManagerDecoratorTest extends DecoratorTest {
 
             // check no of methods and attributes
             () -> assertEquals(2, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(218, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(262, clazz.getCDMethodList().size(), "number of methods"),
 
             // check attributes
             () -> existsAttribute(clazz, "instance"),

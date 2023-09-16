@@ -17,6 +17,7 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.commands.EventSendingObserverDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
@@ -55,10 +56,13 @@ public class ManagerMockDecorator extends AbstractDecorator {
     getCD4C().addAttribute(managerClass, "protected static " + name + "DummyProvider dummyProvider");
 
     // methods
+    getCD4C().addMethod(managerClass, "umlp.managermock.MockConstructor", name);
     getCD4C().addMethod(managerClass, "umlp.managermock.Init", name);
     getCD4C().addMethod(managerClass, "umlp.managermock.DoGetFreeGemId");
     getCD4C().addMethod(managerClass, "umlp.managermock.ErrorNotificationScope");
     getCD4C().addMethod(managerClass, "umlp.managermock.SecretlyAdaptNextGemId");
+
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), name + EventSendingObserverDecorator.SUFFIX));
 
     List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())

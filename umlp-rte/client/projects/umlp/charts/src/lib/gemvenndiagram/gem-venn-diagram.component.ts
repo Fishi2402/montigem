@@ -42,6 +42,9 @@ export class GemVennDiagram extends GemVennDiagramTOP {
   
   @Input()
   public set data(data: GemVennDiagramData) {
+    if (!data) {
+      return;
+    }
     const bgrColor = this.colorScheme.domain.map(x => x + "70");
     this.labels = data.entries.map(entry => entry.label);
     this._data = data;

@@ -57,7 +57,7 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
       methodList.add(getOverride);
       //modify internal getter to call override
       getGemList.getModifier().setAbstract(false);
-      this.replaceTemplate(EMPTY_BODY, getGemList, new TemplateHookPoint("umlp.methods.GetDerivedList", getOverride.getName()));
+      this.replaceTemplate(EMPTY_BODY, getGemList, new TemplateHookPoint("umlp.methods.GetDerived", getOverride.getName()));
     }
     methodList.add(getGemList);
 
@@ -75,7 +75,7 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
   }
 
   protected String getAssocGetTemplate() {
-    return "umlp.methods.AssocGet";
+    return "umlp.methods.AssocGetList";
   }
 
   protected ASTCDMethod createGetGemList(ASTCDAttribute ast) {

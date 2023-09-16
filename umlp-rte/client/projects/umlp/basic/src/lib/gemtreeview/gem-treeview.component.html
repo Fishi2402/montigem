@@ -1,13 +1,36 @@
-<ul class="system-main" *ngFor="let item of items">
-  <li class="system-main__apps" (click)="onexpand(item)">
-    <span class="system-main__icon">
-      <i class="fa fa-plus-square" *ngIf="!item.expanded && item.children"> </i>
-      <i class="fa fa-minus-square" *ngIf="item.expanded"> </i>
-      {{ item.name }}
+
+<ul class="gem-tree-root" *ngFor="let item of items">
+  <li class="gem-tree-item">
+    <span class="gem-tree-item-text">
+      <span *ngIf="item.children" class="gem-tree-item-icon" (click)="onExpand(item)">
+        <i class="fa fa-plus-square" *ngIf="!item.expanded"></i>
+        <i class="fa fa-minus-square" *ngIf="item.expanded"></i>
+      </span>
+      <span (click)="onClick(item)">{{ item.name }}</span>
     </span>
   </li>
 
-  <div *ngIf="item.expanded">
-    <gem-treeview [items]="item.children"></gem-treeview>
-  </div>
+  <ng-container *ngIf="item.expanded">
+    <ng-template [ngTemplateOutlet]="children" [ngTemplateOutletContext]="{items: item.children}">
+    </ng-template>
+  </ng-container>
 </ul>
+
+<ng-template #children let-items="items">
+  <ul class="gem-tree-root-nested" *ngFor="let item of items">
+    <li class="gem-tree-item">
+      <span class="gem-tree-item-text">
+        <span *ngIf="item.children" class="gem-tree-item-icon" (click)="onExpand(item)">
+          <i class="fa fa-plus-square" *ngIf="!item.expanded"></i>
+          <i class="fa fa-minus-square" *ngIf="item.expanded"></i>
+        </span>
+        <span (click)="onClick(item)">{{ item.name }}</span>
+      </span>
+    </li>
+
+    <ng-container *ngIf="item.expanded">
+      <ng-template [ngTemplateOutlet]="children" [ngTemplateOutletContext]="{items: item.children}">
+      </ng-template>
+    </ng-container>
+  </ul>
+</ng-template>

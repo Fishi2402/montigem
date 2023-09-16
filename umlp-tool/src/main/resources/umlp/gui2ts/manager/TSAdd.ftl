@@ -5,5 +5,6 @@ ${tc.signature("name", "delegateFlag")}
 
   return this.getSingleton()._doAdd${name}(${name?uncap_first});
 <#else>
-  ${cd4c.method("protected abstract Promise<Void> _doAdd${name}(${name} o)")}
+  ${cd4c.method("protected Promise<Void> _doAdd${name}(${name} o)")}
+  return this._doAdd${name}2(o, NotificationScope.ALL);
 </#if>

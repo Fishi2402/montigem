@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package basic;
+
+component GemVideo(
+  String source
+)
+

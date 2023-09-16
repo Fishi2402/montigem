@@ -1,0 +1,189 @@
+@mixin horizontal-range-input-theme(
+  $slider-track-color,
+  $slider-thumb-color,
+  $flexDirection,
+  $itemsAlign,
+  $flexMargin,
+  $gap,
+  $labelMargin,
+  $labelPosition,
+  $valueBackgroundColor,
+  $valueColor
+) {
+  .gem-range {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    margin: 0;
+  }
+
+  .gem-range:focus {
+    outline: none;
+  }
+
+  .gem-range::-webkit-slider-runnable-track {
+    background-color: $slider-track-color;
+    border-radius: 25px;
+    width: 100%;
+    height: 4px;
+  }
+
+  .gem-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -5.45px;
+    background-color: $slider-thumb-color;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+  }
+
+  .gem-range:focus::-webkit-slider-thumb {
+    border: 1px solid #053a5f;
+    outline: 2px solid #053a5f;
+    outline-offset: 1px;
+  }
+
+  .gem-range::-moz-range-track {
+    background-color: $slider-track-color;
+    border-radius: 25px;
+    height: 4px;
+  }
+
+  .gem-range::-moz-range-thumb {
+    appearance: none;
+    border: none;
+    border-radius: 50%;
+    margin-top: -5.45px;
+    background-color: $slider-thumb-color;
+    height: 15px;
+    width: 15px;
+  }
+
+  .gem-range:focus::-moz-range-thumb {
+    border: 1px solid #053a5f;
+    outline: 3px solid #053a5f;
+    outline-offset: 1px;
+  }
+
+  .gem-range-label {
+    white-space: nowrap;
+    width: fit-content;
+    display: flex;
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+    margin: $labelMargin;
+    justify-content: $labelPosition;
+  }
+
+  .gem-range-container {
+    width: 100%;
+    display: flex;
+    position: relative;
+  }
+
+  .gem-range-wrapper {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    gap: 0.5%;
+  }
+
+  gem-range-input {
+    width: 100%;
+    display: flex;
+    flex-direction: $flexDirection;
+    align-items: $itemsAlign;
+    gap: $gap;
+    margin: $flexMargin;
+  }
+
+  .gem-range-value {
+    position: absolute;
+    bottom: -22%;
+  }
+  .gem-range-value span {
+    padding-left: 2px;
+    padding-right: 3px;
+    line-height: 18px;
+    text-align: center;
+    background: $valueBackgroundColor;
+    color: $valueColor;
+    font-size: 12px;
+    display: block;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border-radius: 5px;
+  }
+
+  .gem-range-min,
+  .gem-range-max {
+    font-size: 14px;
+    font-weight: bold;
+  }
+}
+
+@mixin vertical-range-input-theme() {
+  .gem-vertical-range-wrapper {
+    transform: rotate(180deg);
+    margin-bottom: 20%;
+    margin-top: 20%;
+  }
+
+  .gem-vertical-range-min,
+  .gem-vertical-range-max {
+    transform: rotate(90deg);
+  }
+
+  .gem-vertical-range-min {
+    margin-right: 2%;
+  }
+
+  .gem-vertical-range-value span {
+    transform: translate(-50%, 0) rotate(90deg);
+  }
+
+  //gem-range-input {
+  //  flex-direction: row;
+  //  align-items: center;
+  //  margin-top: 5%;
+  //  margin-bottom: 5%;
+  //}
+
+  .gem-vertical-range-label {
+    transform: rotate(270deg);
+    margin-right: -5%;
+  }
+}
+
+@mixin range-input-theme(
+  $slider-track-color,
+  $slider-thumb-color,
+  $flexDirection,
+  $itemsAlign,
+  $flexMargin,
+  $gap,
+  $labelMargin,
+  $labelPosition,
+  $valueBackgroundColor,
+  $valueColor
+) {
+  @include horizontal-range-input-theme(
+    $slider-track-color,
+    $slider-thumb-color,
+    $flexDirection,
+    $itemsAlign,
+    $flexMargin,
+    $gap,
+    $labelMargin,
+    $labelPosition,
+    $valueBackgroundColor,
+    $valueColor
+  );
+  @include vertical-range-input-theme();
+}

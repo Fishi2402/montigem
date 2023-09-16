@@ -3,20 +3,11 @@ package umlp.generator.gui.gentypescript.domain;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import umlp.UMLPMill;
-import umlp.generator.AbstractDecorator;
-import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
-import umlp.generator.domain.decorator.BuilderDecorator;
-import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
-import umlp.generator.domain.decorator.DeSerBuilderDecorator;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
-import umlp.generator.domain.decorator.ObserverDecorator;
-
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import umlp.generator.util.PathUtil;
 
 public class TSDiagramObserverDecorator extends DiagramObserverDecorator {
 
@@ -37,6 +28,39 @@ public class TSDiagramObserverDecorator extends DiagramObserverDecorator {
 
   protected ASTCDInterface createInterface(ASTCDCompilationUnit origCD) {
     ASTCDInterface clazz = super.createInterface(origCD);
+
+    for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
+      getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
+    }
+    for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
+      getCD4C().addImport(clazz, this.astcdPackage + "."
+          + c.getName());
+    }
+    for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
+      getCD4C().addImport(clazz, this.astcdPackage + "."
+          + c.getName());
+    }
+
+    return clazz;
+  }
+
+  @Override
+  protected ASTCDClass createEmptyImpl(ASTCDCompilationUnit origCD, ASTCDInterface i) {
+    ASTCDClass clazz = super.createEmptyImpl(origCD, i);
+
+    // TODO: something like this:
+    // Methods with default impl
+    origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getModifier().isDerived())
+        .filter(c -> !c.getModifier().isAbstract())
+        .forEach(c -> {
+          getCD4C().addMethod(clazz, "umlp.diagram.MaybeNotifyAdd", c.getName());
+          getCD4C().addMethod(clazz, "umlp.diagram.MaybeNotifyDelete", c.getName());
+        });
+    getCD4C().addMethod(clazz, "umlp.common_observer.GetScopeGlobal");
+
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(clazz, this.astcdPackage + "." + i.getName());
 
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
       getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());

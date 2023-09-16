@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package table;
+
+/** Interfaces representing types for Table interface definition
+*/
+classdiagram TableTypes {
+
+  public class TableColumn {
+    String prop;
+    String name;
+  }
+
+}

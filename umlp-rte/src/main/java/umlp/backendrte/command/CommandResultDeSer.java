@@ -24,12 +24,15 @@ public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
     if(result.isStatusResult()){
       printer.member("successful", result.asStatusResult().wasSuccessful());
     }else if(result.isSimpleResult()){
-      if(BaseClassObjectMapper.canDeSer(tp)){
-        Optional<String> v = BaseClassObjectMapper.serialize(result.asSimpleResult().get(), tp);
-        if(v.isPresent()) {
-          printer.memberJson("value", v.get());
-        }else {
-          Log.warn("Error while serializing type " + tp);
+      printer.member("successful", result.asSimpleResult().isSuccessful());
+      if(result.asSimpleResult().isSuccessful()) {
+        if (BaseClassObjectMapper.canDeSer(tp)) {
+          Optional<String> v = BaseClassObjectMapper.serialize(result.asSimpleResult().get(), tp);
+          if (v.isPresent()) {
+            printer.memberJson("value", v.get());
+          } else {
+            Log.warn("Error while serializing type " + tp);
+          }
         }
       }
     }else if(result.isListResult()) {

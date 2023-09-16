@@ -19,7 +19,7 @@ export class NotesPageComponent extends NotesPageComponentTOP {
     super(route, router);
   }
 
-  public  ngOnInit (): void {
+  ngOnInit() {
     if (!SehubSecurityManager.isSignedIn()) {
       alert("No User Logged In")
       this.router.navigate(['/Login']);
@@ -32,8 +32,9 @@ export class NotesPageComponent extends NotesPageComponentTOP {
         this.issue._internal_getPostsGemList().build()
 
         });
+      this.router.navigate(['/login/LoginPage']);
     }
 
-    this.init();
+    super.ngOnInit();
   }
 }

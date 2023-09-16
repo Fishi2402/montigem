@@ -12,7 +12,7 @@ ${cd4c.method("public void update${attrName}(long gemId, List<${innerType}> ${at
   try{
     remove${attrName}Statement.clearParameters();
     remove${attrName}Statement.setLong(1, gemId);
-    remove${attrName}Statement.execute();
+    remove${attrName}Statement.executeUpdate();
 
     long index = 0;
     for(${innerType} element : ${attrName?uncap_first}) {
@@ -20,7 +20,7 @@ ${cd4c.method("public void update${attrName}(long gemId, List<${innerType}> ${at
       update${attrName}Statement.setLong(1, gemId);
       ${includeArgs("umlp.dao.Set", "update"+attrName+"Statement", 2, dbName, "element", false)};
       update${attrName}Statement.setLong(3, index++);
-      update${attrName}Statement.execute();
+      update${attrName}Statement.executeUpdate();
     }
 
   } catch (SQLException e){

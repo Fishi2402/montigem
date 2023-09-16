@@ -11,9 +11,18 @@ import java.util.Set;
 public class Participant {
   protected Set<Long> gemIds = new HashSet<>();
   protected ServerCommandCommunication commandCommunication;
+  protected Set<DomainTypeFilter> domainTypeFilters = new HashSet<>();
+
+  protected String username;
 
   public Participant(ServerCommandCommunication commandCommunication) {
     this.commandCommunication = commandCommunication;
+    this.username = "";
+  }
+
+  public Participant(ServerCommandCommunication commandCommunication, String username) {
+    this.commandCommunication = commandCommunication;
+    this.username = username;
   }
 
   public <T> void sendCommand(Command<T> command){
@@ -25,7 +34,23 @@ public class Participant {
     return gemIds.contains(gemId);
   }
 
+  public boolean isSubscribedToType(String typeId){
+    return domainTypeFilters.stream().anyMatch(d -> d.test(typeId));
+  }
+
   public void subscribe(Collection<Long> gemIds){
     this.gemIds.addAll(gemIds);
+  }
+
+  public void subscribeType(DomainTypeFilter filter){
+    domainTypeFilters.add(filter);
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
   }
 }

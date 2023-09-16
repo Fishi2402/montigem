@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package basic;
+
+component GemImage(
+  String source,
+  String alt,
+  String style
+)

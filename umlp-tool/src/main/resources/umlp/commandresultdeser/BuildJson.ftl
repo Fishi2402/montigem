@@ -9,9 +9,11 @@ if(result.isSimpleResult()){
     return;
   }
 
-  printer.beginObject("value");
-  serSingleValue(result.asSimpleResult().get(), printer, tp);
-  printer.endObject();
+  if(result.asSimpleResult().isSuccessful()) {
+    printer.beginObject("value");
+    serSingleValue(result.asSimpleResult().get(), printer, tp);
+    printer.endObject();
+  }
 }
 
 if(result.isListResult()){
@@ -20,12 +22,13 @@ if(result.isListResult()){
     return;
   }
 
-  printer.beginArray("list");
+  if(result.asListResult().isSuccessful()) {
+    printer.beginArray("list");
 
-  for(var o : result.asListResult().get()){
-    serSingleValue(result.asSimpleResult().get(), printer, tp);
+    for(var o : result.asListResult().get()){
+      serSingleValue(result.asSimpleResult().get(), printer, tp);
+    }
+    printer.endArray();
   }
-  printer.endArray();
-  printer.endObject();
-
+printer.endObject();
 }

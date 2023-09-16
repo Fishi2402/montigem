@@ -1,19 +1,25 @@
-import { Component, OnInit, EventEmitter, Output } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Output,
+  HostBinding,
+} from "@angular/core";
 import { GemCheckBoxInput as GemCheckBoxInputTOP } from "./gem-check-box-input/gem-check-box-input.component-gen";
 
 @Component({
-  selector: "gem-checkbox-input",
+  selector: "gem-check-box-input",
   templateUrl: "./gem-check-box-input.component.html",
-  styleUrls: ["./gem-check-box-input.component.scss"],
 })
 export class GemCheckBoxInput extends GemCheckBoxInputTOP implements OnInit {
+  @HostBinding("attr.id") componentId: string;
+  rightPosition: boolean = true;
+
   // @Input() public id: string;
 
   // @Input() public labelText: string;
 
   // @Input() public checked: boolean = false;
-
-  // @Input() public value: string;
 
   @Output() checkedChange = new EventEmitter<boolean>();
 
@@ -21,5 +27,13 @@ export class GemCheckBoxInput extends GemCheckBoxInputTOP implements OnInit {
     this.checkedChange.emit(event);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    /*
+    this.componentId = this.id;
+    if (this.labelPosition !== undefined) {
+      if (this.labelPosition.toLowerCase() === "left") {
+        this.rightPosition = false;
+      }
+    }*/
+  }
 }

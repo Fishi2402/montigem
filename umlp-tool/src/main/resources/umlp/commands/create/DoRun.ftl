@@ -2,5 +2,5 @@
 ${tc.signature("classname", "managerName")}
 ${cd4c.method("public StatusResult doRun()")}
 
-${managerName}.add${classname}(${classname?uncap_first});
+${managerName}.add${classname}(${classname?uncap_first}, NotificationScope.LOCAL);
 return StatusResult.ok(getId());

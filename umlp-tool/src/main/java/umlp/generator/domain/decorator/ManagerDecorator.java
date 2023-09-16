@@ -4,7 +4,11 @@ package umlp.generator.domain.decorator;
 
 import com.google.common.collect.Sets;
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -88,6 +92,11 @@ public class ManagerDecorator extends AbstractDecorator {
 
     getCD4C().addMethod(managerClass, "umlp.manager.ClearCache", true);
     getCD4C().addMethod(managerClass, "umlp.manager.ClearCache", false);
+
+    getCD4C().addMethod(managerClass, "umlp.manager.AddManagerObserver", simpleName, true);
+    getCD4C().addMethod(managerClass, "umlp.manager.AddManagerObserver", simpleName, false);
+    getCD4C().addMethod(managerClass, "umlp.manager.RemoveManagerObserver", simpleName, true);
+    getCD4C().addMethod(managerClass, "umlp.manager.RemoveManagerObserver", simpleName, false);
   }
 
   protected void addClassElements(ASTCDClass domainClass, ASTCDClass managerClass) {
@@ -120,8 +129,12 @@ public class ManagerDecorator extends AbstractDecorator {
         getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name, false);
         getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, true);
         getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, false);
+        getCD4C().addMethod(managerClass, "umlp.manager.DeleteWithScope", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.DeleteWithScope", name, false);
         getCD4C().addMethod(managerClass, "umlp.manager.Add", name, true);
         getCD4C().addMethod(managerClass, "umlp.manager.Add", name, false);
+        getCD4C().addMethod(managerClass, "umlp.manager.AddWithScope", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.AddWithScope", name, false);
       }
 
       // Associations
@@ -196,6 +209,4 @@ public class ManagerDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
   }
-
-
 }

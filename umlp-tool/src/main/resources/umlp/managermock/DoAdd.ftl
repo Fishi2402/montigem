@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("name", "managerName", "assocs")}
-${cd4c.method("protected void _doAdd${name}(${name} o)")}
+${cd4c.method("protected void _doAdd${name}(${name} o, NotificationScope scope)")}
 
 ${name?uncap_first}s.put(o.getGemId(), o);
 ${name?uncap_first}GemList.add(o);
@@ -35,4 +35,4 @@ if (!o.containsObserver(the${name}CommandObserver)) {
   </#if>
 </#list>
 
-${managerName?uncap_first}Observers.forEach(obs -> obs.notify${name}Added(o));
+${managerName?uncap_first}Observers.forEach(obs -> obs.maybeNotify${name}Added(o, scope));

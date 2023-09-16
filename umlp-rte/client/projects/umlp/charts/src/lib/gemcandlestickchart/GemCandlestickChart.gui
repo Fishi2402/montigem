@@ -1,8 +1,0 @@
-package charts.src.lib.gemcandlestickchart;
-
-import charts.src.lib.gemcandlestickchart.GemCandlestickChartTypes.GemData2CandlestickChart;
-
-component GemCandlestickChart(
-  List<GemData2CandlestickChart> data
-)
- 

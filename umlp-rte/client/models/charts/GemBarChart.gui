@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package charts;
+
+import charts.GemBarChartTypes.GemBarChartData;
+
+component GemBarChart(
+  GemBarChartData data,
+  Object displayValue,
+  Boolean stacked,
+  Integer maxValue,
+  Integer minValue
+)

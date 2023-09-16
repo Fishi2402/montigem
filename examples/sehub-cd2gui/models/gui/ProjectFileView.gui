@@ -4,22 +4,58 @@ import Sehub.Artifact;
 import Sehub.Directory;
 import Sehub.Project;
 
-import basic.src.lib.gembutton.GemButton;
+import gui.artifacts.ArtifactTypeIcon;
+import gui.artifacts.DateTimeToPassedByTime;
+import gui.artifacts.ProjectFileViewLink;
 
+import basic.src.lib.gembutton.GemButton;
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gemimage.GemImage;
+import basic.src.lib.gemlink.GemLink;
+
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
 import table.src.lib.gemtable.GemTable;
 import table.src.lib.gemtable.TableTypes.TableColumn;
 
-import arrange.src.lib.gemcolumn.GemColumn;
 
 page ProjectFileView(Directory parent) {
 
-  @GemButton(label = "Go to Artifacts Page", leftClick = goToArtifactsPage);
-  @GemTable(
-    rows = parent.contains,
-    columns = [
-      TableColumn("_name", "Artifact Name"),
-      TableColumn("_modified", "Last update")
-    ],
-    delete = navigateToSubPage
+  fileViewColumn@GemColumn(
+    rowGap="1px",
+    components=[
+      @GemButton(label = "Go to Artifacts Page", leftClick = goToArtifactsPage),
+      @GemRow(
+        height="20px", vAlign="center", width="100%",
+        colGap="5px",
+        components = [
+          @GemColumn(height="20px", vAlign="center", hAlign="left", width="20px", component = @GemText(value = "")),
+          @GemColumn(height="20px", vAlign="center", hAlign="center", width="48%", component = @GemText(value = "Name")),
+          @GemColumn(height="20px", vAlign="center", hAlign="left", width="37%", component = @GemText(value = "Last Update"))
+        ]
+      ),
+      parentDirGuard@guard(parent.containedBy != null){
+        artifactsTableOne@GemRow(
+          height="20px", vAlign="center", width="100%",
+          colGap="5px",
+          components = [
+            @GemColumn(height="20px", vAlign="center", hAlign="left", width="20px", components = [@ArtifactTypeIcon(type = "Directory")]),
+            @GemColumn(height="20px", vAlign="center", hAlign="left", width="48%", component = @GemLink(url = "OVERRIDE THIS", text = ".."))
+          ]
+        );
+      },
+      @iterate(Artifact artifact: parent.contains){
+        artifactsTableTwo@GemRow(
+          height="20px", vAlign="center", width="100%",
+          colGap="5px",
+          components = [
+            @GemColumn(height="20px", vAlign="center", hAlign="left",width="20px", components = [@ArtifactTypeIcon(type = artifact.getType())]),
+            @GemColumn(height="20px", vAlign="center", hAlign="left", width="48%", component = navigationButton@ProjectFileViewLink(artifact = artifact)),
+            @GemColumn(height="20px", vAlign="center", hAlign="right", width="37%", component = @DateTimeToPassedByTime(artifact = artifact))
+          ]
+        );
+      }
+    ]
   );
+
 }

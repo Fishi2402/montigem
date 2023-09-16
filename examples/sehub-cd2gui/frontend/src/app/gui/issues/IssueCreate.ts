@@ -3,18 +3,18 @@
 import {IssueState} from '@src/sehub/IssueState';
 import {Directive} from '@angular/core';
 import {IssueCreateTOP} from '@src/gui/issues/IssueCreateTOP';
+import { SehubManager } from '@src/sehub/SehubManager';
 
-@Directive
+@Directive()
 
 export class IssueCreate extends IssueCreateTOP {
 
-  public ngOnInit(): void {
-    super.ngOnInit();
-  }
-
   public override createIssue(event: any): void {
-    this.issueBuilder.state(IssueState.UNASSIGNED);
-    this.build();
+    SehubManager.issueBuilder().then(gemPromiseRes => {
+      this.issueBuilder.state(IssueState.UNASSIGNED);
+      this.build();
+      this.issueBuilder = gemPromiseRes;
+    });
   }
 
 }
