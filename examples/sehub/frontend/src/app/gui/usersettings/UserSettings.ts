@@ -18,7 +18,8 @@ export class UserSettings extends UserSettingsTOP {
     let curUser: User = this.getUsers().toArray().filter(user =>
       !!user && this.getCurrentUser().getUsername() === user.getUsername())[0];
 
-    if (!!curUser && SehubRole[curUser.getRole()] === "OWNER") {
+    if (!!curUser && (SehubRole[curUser.getRole()] === "OWNER" ||
+                      SehubRole[curUser.getRole()] === "MAINTAINER")) {
       return false;
     }
 
