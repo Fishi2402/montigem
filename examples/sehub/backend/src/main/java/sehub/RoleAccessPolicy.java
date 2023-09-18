@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package sehub;
 
+import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.Participant;
 
@@ -10,7 +11,7 @@ import static sehub.SehubRole.OWNER;
 
 public class RoleAccessPolicy {
 
-  public boolean checkPermission(umlp.backendrte.command.Command command) {
+  public boolean checkPermission(Command command) {
 
     // get user and role
     Participant p = CommandManager.getInstance().getParticipant(command.getParticipantId());
