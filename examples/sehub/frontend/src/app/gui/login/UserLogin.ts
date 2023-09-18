@@ -2,8 +2,6 @@
 
 import {Directive} from '@angular/core';
 import {UserLoginTOP} from '@src/gui/login/UserLoginTOP';
-import {User} from '@src/sehub/User';
-import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
 @Directive()
@@ -34,18 +32,14 @@ export class UserLogin extends UserLoginTOP {
             };
 
           fetch("/umlp/api/login", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-              console.log(result.toString());
-              return true;
-            })
+            .then(response => response.ok)
             .catch(error => {
               console.log(error);
               alert("Invalid Login: Wrong Username or Password!");
               return false;
             })
-            .then(redirect => {
-              if (redirect) {
+            .then(ok => {
+              if (ok) {
                 SehubSecurityManager.signIn(this.loginUser);
                 window.location.href = '/start';
               }
