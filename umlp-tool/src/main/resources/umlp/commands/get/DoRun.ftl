@@ -10,6 +10,7 @@ if(accessPolicy.checkPermission(this)){
     } else {
       return new SimpleResult<>(getId(), LoadingState.EMPTY, "${packagename}.${classname}");
     }
-} else {
+}
+else {
   return new SimpleResult<>(getId(), LoadingState.NOT_AUTHORIZED, "${packagename}.${classname}");
 }
