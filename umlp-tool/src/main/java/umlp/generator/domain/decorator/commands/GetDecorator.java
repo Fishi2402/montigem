@@ -43,7 +43,7 @@ public class GetDecorator extends AbstractDeSerDecorator {
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDType domainType, String packageName) {
     String classname = domainType.getName();
-    String domainPackage = packageName.substring(0, packageName.length()-".commands".length());
+    String domainPackage = getPackageName(origCD, DEFAULT_PACKAGE);
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())

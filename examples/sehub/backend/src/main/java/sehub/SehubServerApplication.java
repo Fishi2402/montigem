@@ -7,7 +7,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -73,7 +72,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
       mapping.add(SehubManager.boardMapperBuilder().bingoBoardEntry(bingoBoard.get().getBingoBoardEntries(permutation[i])).isChecked(false).build().get());
     }
 
-    PasswordEncoder encoder = new BCryptPasswordEncoder();
+    PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     if (SehubManager.getUserList().isEmpty()) {
       Optional<User> newUser = SehubManager.userBuilder()
           .username("MyUser")

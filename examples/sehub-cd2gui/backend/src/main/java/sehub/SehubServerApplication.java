@@ -1,29 +1,30 @@
 package sehub;
 
 import de.se_rwth.commons.logging.Log;
-import dummy.ContainerFileExtractor;
 import dummy.DummyDataCreator;
-import org.apache.commons.io.FileUtils;
+import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Optional;
-
-import java.io.File;
-import java.util.List;
+import java.util.Random;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 @SpringBootApplication(
     exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
-    scanBasePackages={"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "sehub.service"}
+    scanBasePackages={"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "sehub.service", "security"}
 )
 public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
 
@@ -36,24 +37,79 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
   public void init() throws IOException {
     super.init();
 
+    // Only create DummyData if database is empty
+    if(SehubManager.getUserList().isEmpty()){ // Is there a better way to check if dummy-data was already created?
+      Log.println("Creating Dummy Data");
+      createDummyData();
+    } else {
+      Log.println("_NOT_ Creating New Dummy Data. Data is already present.");
+    }
+
+    try {
+      Server webServer = Server.createWebServer("-web", "-webAllowOthers").start();
+      Log.info(String.format("H2 Web Server started at: http://localhost:%s", webServer.getPort()), SehubServerApplication.class.getName());
+    } catch (SQLException e) {
+      throw new IOException(e);
+    }
+  }
+
+  public void createDummyData(){
     for (User user : SehubManager.getUserList()) {
       System.err.println("User " + user.getUsername());
     }
 
+    Set<BingoEntry> entrySet = new java.util.HashSet<>(Collections.emptySet());
+    for (int i = 0; i <= 24; i++) {
+      entrySet.add(SehubManager.bingoEntryBuilder().word("").build().get());
+    }
+    Optional<BingoBoard> bingoBoard = SehubManager.bingoBoardBuilder()
+        .bingoBoardEntries(entrySet)
+        .build();
+
+    Set<BoardMapper> mapping = new java.util.HashSet<>(Collections.emptySet());
+    int [] permutation = getBingoBoardPermutation();
+
+    for (int i = 0; i <= 24; i++) {
+      mapping.add(SehubManager.boardMapperBuilder().bingoBoardEntry(bingoBoard.get().getBingoBoardEntries(permutation[i])).isChecked(false).build().get());
+    }
+
+    PasswordEncoder encoder = new BCryptPasswordEncoder();
     if (SehubManager.getUserList().isEmpty()) {
       Optional<User> newUser = SehubManager.userBuilder()
           .username("MyUser")
-          .password("MyPasswort")
+          .password(encoder.encode("MyPasswort"))
           .registrationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
           .email("MyEmail")
+          .gridEntry(mapping)
       //    .activated(ActivationStatus.AKTIVIERT)
           .role(SehubRole.OWNER)
           .build();
+
+
       if (newUser.isPresent()) {
         UserDeSer userDeSer = new UserDeSer();
         System.out.println(userDeSer.serialize(newUser.get()));
       }
     }
+
+
+
+    Set<BoardMapper> mapping2 = new java.util.HashSet<>(Collections.emptySet());
+    int [] permutation2 = getBingoBoardPermutation();
+
+    for (int i = 0; i <= 24; i++) {
+      mapping2.add(SehubManager.boardMapperBuilder().bingoBoardEntry(bingoBoard.get().getBingoBoardEntries(permutation2[i])).isChecked(false).build().get());
+    }
+
+    Optional<User> newUser2 = SehubManager.userBuilder()
+        .username("admin")
+        .password(encoder.encode("pwd"))
+        .registrationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
+        .email("admin@sehub.de")
+        .gridEntry(mapping2)
+        //    .activated(ActivationStatus.AKTIVIERT)
+        .role(SehubRole.OWNER)
+        .build();
 
     Optional<Post> p1 = SehubManager.postBuilder()
         .author(SehubManager.getUserList().get(0))
@@ -80,7 +136,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         .responses(responses)
         .build();
 
-    IssueBuilder issueBuilder = new IssueBuilder(42000);
+    IssueBuilder issueBuilder = SehubManager.issueBuilder();
         issueBuilder
         .title("Die Sache mit dem Wasserkocher")
         .description("Hier kann eine Beschreibung stehen...")
@@ -88,16 +144,52 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
         .posts(Set.of(p3.get()))
         .build();
 
-    Set<BingoEntry> entrySet = new java.util.HashSet<>(Collections.emptySet());
-    for (int i = 0; i <= 24; i++) {
-      entrySet.add(SehubManager.bingoEntryBuilder().word("").isChecked(false).build().get());
-    }
-    BingoBoardBuilder boardBuilder = new BingoBoardBuilder(42001);
-      boardBuilder
-          .entries(entrySet)
-          .build();
+
+
+    SehubManager.issueBuilder()
+        .title("Verfügbare Konten sollen beim Bearbeiten von Dienstreisen auswählbar sein")
+        .description("Wenn eine bestehende Dienstreise bearbeitet wird, kann kein neues Konto ausgewählt werden. " +
+            "Zuerst muss die zu bearbeitende Dienstreise gelöscht, gespeichert und erneut bearbeitet werden. " +
+            "Erst dann werden die Kontooptionen angezeigt." +
+            "Es sollte möglich sein, direkt ein neues Konto auszuwählen.")
+        .state(IssueState.DONE)
+        .build();
+
+    SehubManager.issueBuilder()
+        .title("Änderungsdatum Erweiterung")
+        .description("Das Änderungsdatum für Buchungen, Mittelabrufe, Rechnungen, Mittelzuweisungen und Stellenzuweisungen " +
+            "ist aktuell nur auf der Seite Finazen/Zahlungen sichtbar. Das Änderungsdatum soll aber auch für die " +
+            "einzelnen Elemente auf den Kontenseiten in einem Konto selbst sichtbar sein.")
+        .state(IssueState.IN_PROGRESS)
+        .build();
+
+
+    SehubManager.issueBuilder()
+        .title("Finanzen: Umfang einer Zuweisung zu Organigrammstufe im Konto beschränken")
+        .description("Bei der Zuweisung einer Organigrammstufe in einem Konto kann ein Umfang hinterlegt werden. " +
+            "Standardmäßig ist der Umfang mit 100% vorausgefüllt. Der Umfang kann allerdings bearbeitet werden und " +
+            "auf mehr als 100% angepasst werden. Eine Zuweisung von mehr als 100% ergibt jedoch keinen Sinn, weshalb " +
+            "der maximal zulässige Umfang auf 100% beschränkt werden sollte.")
+        .state(IssueState.UNASSIGNED)
+        .build();
+
 
     new DummyDataCreator().createDummyData();
   }
+
+  public static int[] getBingoBoardPermutation() {
+    int[] arr = IntStream.rangeClosed(0, 24).toArray();
+    Random random = new Random();
+
+    for (int i = arr.length - 1; i > 0; i--) {
+      int j = random.nextInt(i + 1); // random index from 0 to i
+      int temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp; // Swap elements
+    }
+
+    return arr;
+  }
+
 
 }

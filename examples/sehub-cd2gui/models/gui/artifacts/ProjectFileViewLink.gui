@@ -1,0 +1,16 @@
+package gui.artifacts;
+
+import Sehub.Artifact;
+
+import basic.src.lib.gembutton.GemButton;
+import basic.src.lib.gemlink.GemLink;
+import basic.src.lib.gemtext.GemText;
+
+component ProjectFileViewLink(Artifact artifact){
+  @guard(artifact.getType() == "Directory"){
+    @GemLink(url = "OVERRIDE", text = artifact.getName());
+  }
+  @guard(!(artifact.getType() == "Directory")){
+    @GemText(value = artifact.getName());
+  }
+}
