@@ -39,6 +39,7 @@ public class CreateDecorator extends AbstractDeSerDecorator {
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String packageName) {
     String classname = domainClass.getName();
+    String domainPackage = getPackageName(origCD, DEFAULT_PACKAGE);
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
@@ -49,7 +50,7 @@ public class CreateDecorator extends AbstractDeSerDecorator {
     ASTCDAttribute attr = addDomainAttr(ast, classname);
 
     addConstructor(ast, classname, packageName);
-    getCD4C().addMethod(ast, getDoRunTemplate(), classname, getCorrectManager(domainClass));
+    getCD4C().addMethod(ast, getDoRunTemplate(), classname, getCorrectManager(domainClass), domainPackage);
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList(StringTransformations.uncapitalize(classname) + ".getGemId()"));
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));

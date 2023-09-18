@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("classname","manager")}
+${tc.signature("classname","manager", "packagename")}
 ${cd4c.method("public Promise<StatusResult> doRun()")}
   return ${manager}.delete${classname}2(this.gemId, NotificationScope.LOCAL)
     .then(() => StatusResult.ok(this.getId()))
