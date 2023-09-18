@@ -3,9 +3,12 @@ package sehub.commands;
 
 import de.se_rwth.commons.logging.Log;
 import security.MailService;
+import sehub.SehubManager;
 import sehub.User;
 import umlp.backendrte.command.StatusResult;
+import umlp.backendrte.common.NotificationScope;
 import umlp.backendrte.util.LogUtil;
+import sehub.UserAccessPolicy;
 
 import javax.mail.MessagingException;
 
@@ -16,11 +19,14 @@ public class User_create extends User_createTOP {
   }
 
   public StatusResult doRun() {
-    StatusResult crateUserStatus = super.doRun();
-    if (!crateUserStatus.wasSuccessful()) {
-      return crateUserStatus;
+    UserAccessPolicy accessPolicy = new UserAccessPolicy();
+    if (accessPolicy.checkCreatePermission(this)) {
+      SehubManager.addUser(user, NotificationScope.LOCAL);
+      return sendMail();
+    } else {
+      return StatusResult.error(getId());
     }
-    return sendMail();
+
   }
 
   public StatusResult sendMail() {
