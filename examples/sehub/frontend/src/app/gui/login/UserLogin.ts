@@ -28,20 +28,24 @@ export class UserLogin extends UserLoginTOP {
 
           const requestOptions: RequestInit = {
             method: "POST",
-            body: form
-            };
+            body: form,
+            redirect: 'manual' // Otherwise the redirect to login?error is followed and 2xx is returned
+          };
 
           fetch("/umlp/api/login", requestOptions)
-            .then(response => response.ok)
+            .then(response => {
+              return response.ok
+            })
             .catch(error => {
               console.log(error);
-              alert("Invalid Login: Wrong Username or Password!");
               return false;
             })
             .then(ok => {
               if (ok) {
                 SehubSecurityManager.signIn(this.loginUser);
                 window.location.href = '/start';
+              }else{
+                alert("Invalid Login: Wrong Username or Password!");
               }
             });
 
