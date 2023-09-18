@@ -3,7 +3,9 @@ package sehub.commands;
 
 import sehub.Post;
 import sehub.PostAccessPolicy;
+import sehub.SehubManager;
 import umlp.backendrte.command.StatusResult;
+import umlp.backendrte.common.NotificationScope;
 
 public class Post_create extends Post_createTOP {
 
@@ -14,7 +16,8 @@ public class Post_create extends Post_createTOP {
   public StatusResult doRun() {
     PostAccessPolicy accessPolicy = new PostAccessPolicy();
     if(accessPolicy.checkCreatePermission(this)){
-      return super.doRun();
+      SehubManager.addPost(post, NotificationScope.LOCAL);
+      return StatusResult.ok(getId());
     }
     return StatusResult.error(getId());
   }
