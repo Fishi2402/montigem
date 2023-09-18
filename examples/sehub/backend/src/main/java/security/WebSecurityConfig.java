@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -32,10 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     http.authorizeRequests((requests) -> requests.anyRequest().authenticated());
     http.formLogin()
-        .successHandler((req, res, auth) -> res.setStatus(HttpStatus.NO_CONTENT.value()))
-        .failureHandler(new SimpleUrlAuthenticationFailureHandler());
-    http.httpBasic();
-
+        .successHandler((req, res, auth) -> res.setStatus(HttpStatus.NO_CONTENT.value()));
   }
 
 }
