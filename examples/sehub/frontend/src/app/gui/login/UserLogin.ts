@@ -3,6 +3,11 @@
 import {Directive} from '@angular/core';
 import {UserLoginTOP} from '@src/gui/login/UserLoginTOP';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {
+  ClientCommandManager,
+  ClientCommandWebsocketCommunication,
+  CommandManager
+} from '@umlp/common';
 
 @Directive()
 
@@ -43,6 +48,11 @@ export class UserLogin extends UserLoginTOP {
             .then(ok => {
               if (ok) {
                 SehubSecurityManager.signIn(this.loginUser);
+                const ws_protocol = document.location.protocol == "https:" ? "wss": "ws";
+                const cmdManager = new ClientCommandManager(new ClientCommandWebsocketCommunication(
+                    ws_protocol + '://' + document.location.host + '/umlp/api/command'
+                ));
+                CommandManager.initMe(cmdManager);
                 window.location.href = '/start';
               }else{
                 alert("Invalid Login: Wrong Username or Password!");
