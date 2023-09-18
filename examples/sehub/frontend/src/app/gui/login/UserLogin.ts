@@ -3,6 +3,8 @@
 import {Directive} from '@angular/core';
 import {UserLoginTOP} from '@src/gui/login/UserLoginTOP';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {User} from '@src/sehub/User';
+import {SehubManager} from '@src/sehub/SehubManager';
 import {
   ClientCommandManager,
   ClientCommandWebsocketCommunication,
@@ -47,7 +49,7 @@ export class UserLogin extends UserLoginTOP {
             })
             .then(ok => {
               if (ok) {
-                SehubSecurityManager.signIn(this.loginUser);
+                this.loginCurUser(this.loginUser);
                 const ws_protocol = document.location.protocol == "https:" ? "wss": "ws";
                 const cmdManager = new ClientCommandManager(new ClientCommandWebsocketCommunication(
                     ws_protocol + '://' + document.location.host + '/umlp/api/command'
@@ -63,6 +65,19 @@ export class UserLogin extends UserLoginTOP {
 
   public override getErrorValue(): string {
     return this.error;
+  }
+
+  private loginCurUser(loginInfo : User): void {
+    SehubManager.getUserList().then(gemPromiseRes => {
+      this.users = gemPromiseRes;
+      this.users.loadAll();
+    })
+
+    this.users.toArray().filter(user => {
+      if (!!user && loginInfo.getUsername() === user.getUsername()) {
+        SehubSecurityManager.signIn(user);
+      }
+    });
   }
 
 }
