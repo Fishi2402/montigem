@@ -3,7 +3,6 @@ package sehub.commands;
 
 import de.se_rwth.commons.logging.Log;
 import security.MailService;
-import sehub.SehubManager;
 import sehub.User;
 import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.util.LogUtil;
@@ -17,10 +16,11 @@ public class User_create extends User_createTOP {
   }
 
   public StatusResult doRun() {
-    SehubManager.addUser(user);
-
-    StatusResult statusSendMail = sendMail();
-    return statusSendMail.wasSuccessful() ? StatusResult.ok(getId()) : statusSendMail;
+    StatusResult crateUserStatus = super.doRun();
+    if (!crateUserStatus.wasSuccessful()) {
+      return crateUserStatus;
+    }
+    return sendMail();
   }
 
   public StatusResult sendMail() {
