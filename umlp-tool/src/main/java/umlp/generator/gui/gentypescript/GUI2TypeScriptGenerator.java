@@ -19,8 +19,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static de.se_rwth.commons.Names.constructQualifiedName;
-
 public class GUI2TypeScriptGenerator {
 
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
@@ -56,7 +54,7 @@ public class GUI2TypeScriptGenerator {
     String pathName = String.join("/", decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
     String pathToSearch = decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getQName();
     boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathToSearch + "."
-        + decoratedAst.getComponentName() + ROUTES_FILE, TS_FILE_EXTENSION);
+        + decoratedAst.getComponentName() + ROUTES_FILE, "." + TS_FILE_EXTENSION);
 
     String componentPath = "./" + decoratedAst.getComponentName() + GUIAbstractDecorator.COMPONENT_SUFFIX;
 
@@ -74,9 +72,24 @@ public class GUI2TypeScriptGenerator {
         decoratedAst.getGUIComponentDeclaration(), "routes", existHWCRoutes,
         componentPath, util.getRoutingIds(decoratedAst), GUIAbstractDecorator.COMPONENT_SUFFIX);
 
-    generatedFiles = Paths.get(pathName,
-        decoratedAst.getComponentName() + MODULES_FILE + "." + TS_FILE_EXTENSION);
-    genEngine.generate("umlp.gui2ts.TSModule", generatedFiles, decoratedAst,
+    // modules
+    boolean existHWCModules = existsHandwrittenFile(hwcPath, pathToSearch
+        + "." + decoratedAst.getComponentName() + MODULES_FILE + "TOP", "." + TS_FILE_EXTENSION);
+
+    generatedFiles = Paths.get(pathName, decoratedAst.getComponentName()
+        + MODULES_FILE + "." + TS_FILE_EXTENSION);
+
+    String hwcModulePath = util.getRelativeImportPath(hwcPath, setup.getOutputDirectory().toPath(),
+            decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getQName() + "." +
+                decoratedAst.getComponentName() + MODULES_FILE + "TOP", TS_FILE_EXTENSION).orElse("");
+    String pathWithoutExt = hwcModulePath;
+    int lastDotIndex = hwcModulePath.lastIndexOf('.');
+    if (lastDotIndex > 0) { // Ensure that there's at least one dot and it's not the first character
+      pathWithoutExt = pathWithoutExt.substring(0, lastDotIndex);
+    }
+
+    genEngine.generate("umlp.gui2ts.TSModule", generatedFiles,
+        decoratedAst, "config", existHWCModules, pathWithoutExt,
         viewComponents.getModules(), componentPath, GUIAbstractDecorator.COMPONENT_SUFFIX);
     /*
     for (ASTMCImportStatement is : decoratedAst.getMCImportStatementList()) {

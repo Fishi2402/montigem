@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package arrange;
+
+import arrange.GemRow;
+import arrange.GemColumn;
+
+component GemDashboard(List<GUIViewElement> components) {
+  @GemRow(style = "gem-dashboard", hAlign = "spaceEvenly", component =
+    @iterate (GUIViewElement c : components) {
+      @GemColumn(style = "gem-dashboard-item", width = "30%", component = c);
+    }
+  );
+}

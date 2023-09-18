@@ -2,13 +2,10 @@
 
 import {Component} from '@angular/core';
 import {UserCreateComponentTOP} from '@src/gui/login/UserCreateComponentTOP';
-import {User} from '@src/sehub/User';
-import {SehubRole} from '@src/sehub/SehubRole';
-import { ActivationStatus } from '@src/sehub/ActivationStatus';
 
-import { SehubManager } from '@src/sehub/SehubManager';
-import { GemList } from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
-import {ResetPasswordComponent} from "./ResetPasswordComponent";
+import {SehubManager} from '@src/sehub/SehubManager';
+import {Location} from '@angular/common';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'user-create',
@@ -19,6 +16,12 @@ import {ResetPasswordComponent} from "./ResetPasswordComponent";
 
 export class UserCreateComponent extends UserCreateComponentTOP {
 
+  public constructor(
+      protected location: Location,
+      protected router: Router) {
+    super(router);
+  }
+
   public ngOnInit(): void {
     SehubManager.userBuilder().then(gemPromiseRes => {
       this.newUserBuilder = gemPromiseRes;
@@ -28,5 +31,9 @@ export class UserCreateComponent extends UserCreateComponentTOP {
       this.users = gemPromiseRes;
     });
 
+  }
+
+  public override navigateBack(): void {
+    this.location.back();
   }
 }

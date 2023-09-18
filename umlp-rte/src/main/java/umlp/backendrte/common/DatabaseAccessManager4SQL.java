@@ -18,6 +18,8 @@ import java.util.Properties;
 
 public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
 
+  GemIdManager4SQL idManager4SQL = new GemIdManager4SQL();
+
   protected DatabaseAccessManager4SQL() {
   }
 
@@ -29,27 +31,12 @@ public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
 
   @Override
   protected long _getFreeGemId(){
-    // TODO: Bottelneck: one db call per gemid is slow
-    // Idea: "reserve" 1000 gemids in one call
-    // If the server dies, some ids are "wasted"
-    // could be done asynchronously at 90% ids used to remove wait
-    executeStatement("UPDATE __internal_key_value__ SET value_bigint = value_bigint + 1 WHERE k = 'gemid';");
-    Optional<ResultSet> rsOpt = executeQuery("SELECT value_bigint FROM __internal_key_value__ WHERE k = 'gemid';");
-    if(rsOpt.isEmpty()){
-      throw new RuntimeException("Can not find gemid in database");
-    }
+    return idManager4SQL.getFreeGemId();
+  }
 
-    ResultSet rs = rsOpt.get();
-
-    try {
-      if(!rs.next()){
-        throw new RuntimeException("Can not find gemid in database");
-      }else{
-        return rs.getLong(1);
-      }
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+  @Override
+  protected void _clearLocalGemIds(){
+     idManager4SQL.clear();
   }
 
   @Override

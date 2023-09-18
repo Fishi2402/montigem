@@ -1,0 +1,100 @@
+@mixin text-input-theme(
+  $border,
+  $flexDirection,
+  $labelPositioning,
+  $labelMargin
+) {
+  .gem-text-input:not([type="date"]) {
+    display: flex;
+    color: #333;
+    font-size: 16px;
+    font-weight: 200;
+    border: $border;
+    border-radius: 1px;
+    width: 100%;
+    height: 100%;
+    padding: 6px 16px 6px 6px;
+  }
+
+  .gem-input-error:not([type="date"]) {
+    border: 1px solid red;
+    background-image: url("./img/error.png");
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    /**/
+  }
+
+  .gem-input-warning:not([type="date"]) {
+    border: 1px solid #ff8c00;
+    background-image: url("./img/warning.png");
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+  }
+
+  .gem-text-input[type="date"] {
+    font-size: 16px;
+    color: #333;
+    font-weight: 200;
+    border: $border;
+    border-radius: 1px;
+    width: 100%;
+    height: 100%;
+    line-height: 100%;
+    padding: 6px;
+  }
+
+  .gem-text-input[type="list"]::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }
+
+  .gem-input-error[type="date"] {
+    border: 1px solid red;
+    background-image: url("./img/error.png");
+    background-position: right 1.6em center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    /**/
+  }
+
+  .gem-input-warning[type="date"] {
+    border: 1px solid #ff8c00;
+    background-image: url("./img/warning.png");
+    background-position: right 1.6em center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    /**/
+  }
+
+  .gem-text-input[type="number"]::-webkit-inner-spin-button,
+  .gem-text-input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .gem-text-input[type="search"]::-webkit-search-decoration,
+  .gem-text-input[type="search"]::-webkit-search-cancel-button,
+  .gem-text-input[type="search"]::-webkit-search-results-button,
+  .gem-text-input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+  }
+
+  .gem-label-text-input {
+    display: flex;
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+    margin: $labelMargin;
+    justify-content: $labelPositioning;
+    white-space: nowrap;
+    align-items: center;
+  }
+
+  gem-text-input {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: $flexDirection;
+  }
+}

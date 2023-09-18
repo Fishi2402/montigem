@@ -60,6 +60,7 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
   implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
 
@@ -69,6 +70,9 @@ dependencies {
 
   implementation "umlp:frontend-rte:$mc_version:cd2java"
   implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
+
+  implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
+  implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
 }
 
 // TODO AGe: the whole serialization thing should be reworked

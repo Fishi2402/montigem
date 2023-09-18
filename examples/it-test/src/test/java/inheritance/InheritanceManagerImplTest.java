@@ -35,8 +35,8 @@ public class InheritanceManagerImplTest {
   @BeforeEach
   public void init() throws IOException {
     InheritanceTestContext.clear();
-    InheritanceManagerImpl.init();
     DatabaseAccessManager4SQL.init();
+    InheritanceManagerImpl.init();
     DatabaseAccessManager.executeStatement("DROP ALL OBJECTS");
     String schema = IOUtils.resourceToString("/Inheritance.sql", StandardCharsets.UTF_8);
     assertTrue(DatabaseAccessManager4SQL.initSchema(schema));

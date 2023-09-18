@@ -96,6 +96,11 @@ public class TSManagerDecorator extends ManagerDecorator {
 
     getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetFreeGemId", true);
     getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetFreeGemId", false);
+
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSAddManagerObserver", simpleName, true);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSAddManagerObserver", simpleName, false);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSRemoveManagerObserver", simpleName, true);
+    getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSRemoveManagerObserver", simpleName, false);
   }
 
   @Override
@@ -126,8 +131,12 @@ public class TSManagerDecorator extends ManagerDecorator {
         getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDeSerBuilder", name, false);
         getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDelete", name, true);
         getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDelete", name, false);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDeleteWithScope", name, true);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDeleteWithScope", name, false);
         getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSAdd", name, true);
         getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSAdd", name, false);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSAddWithScope", name, true);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSAddWithScope", name, false);
       }
 
       // Associations

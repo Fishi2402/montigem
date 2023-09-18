@@ -6,30 +6,39 @@ if(fromSuper.isPresent()){
   return fromSuper;
 }
 
+boolean success = jsonObject.getBooleanMemberOpt("successful").orElse(false);
+
 if(jsonObject.getBooleanMemberOpt("simpleResult").orElse(false)){
   String tp = jsonObject.getStringMember("typeParameter");
-  Object res = deserSingleValue(jsonObject.getMember("value"), tp);
+  if(success){
+    Object res = deserSingleValue(jsonObject.getMember("value"), tp);
+    if(res == null){
+      return Optional.empty();
+    }
 
-  if(res == null){
-    return Optional.empty();
+    return Optional.of(new SimpleResult<>(jsonObject.getLongMember("commandId"), res, tp) );
+  }else{
+    return Optional.of(new SimpleResult<>(jsonObject.getLongMember("commandId"), umlp.backendrte.common.LoadingState.FAILED_TO_LOAD, tp));
   }
-
-  return Optional.of(new SimpleResult<>(jsonObject.getLongMember("commandId"), res, tp) );
 }
 
 if(jsonObject.getBooleanMemberOpt("listResult").orElse(false)){
   String tp = jsonObject.getStringMember("typeParameter");
-  List<Object> res = new ArrayList();
+  if(success){
+    List<Object> res = new ArrayList();
 
-  for(var o : jsonObject.getArrayMember("list")){
-    res.add(deserSingleValue(o, tp));
+    for(var o : jsonObject.getArrayMember("list")){
+      res.add(deserSingleValue(o, tp));
+    }
+
+    if(res == null){
+      return Optional.empty();
+    }
+
+    return Optional.of(ListResult.of(jsonObject.getLongMember("commandId"), res, tp) );
+  }else {
+    return Optional.of(ListResult.error(jsonObject.getLongMember("commandId"), tp));
   }
-
-  if(res == null){
-    return Optional.empty();
-  }
-
-  return Optional.of(ListResult.of(jsonObject.getLongMember("commandId"), res, tp) );
 }
 
 return Optional.empty();

@@ -289,6 +289,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return "umlp.gui2java.SetComponentReplaced";
   }
 
+  protected String getEnum2CapStringTemplate() { return "umlp.gui2java.TSEnumToCapString"; }
+
   protected String getSetterReplacedTemplate() {
     return "umlp.gui2java.SetComponent";
   }
@@ -340,25 +342,27 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       }
       boolean rightIsEnum = util.isEnumType(rightType);
       if (leftIsString && rightIsEnum) {
+        String type = rightType.print();
+        addImport(decoratedClass, type);
+        type = type.lastIndexOf('.') > 0 ? type.substring(type.lastIndexOf('.') + 1) : type;
         if (forGetter) {
-          return enumToStringConversion();
+          addEnum2CapStringMethod(decoratedClass, type);
+          return enumToStringConversion(type);
         }
         else {
-          String type = rightType.print();
-          addImport(decoratedClass, type);
-          type = type.lastIndexOf('.') > 0 ? type.substring(type.lastIndexOf('.') + 1) : type;
           return stringToEnumConversion(type);
         }
       }
       boolean rightIsOptionalEnum = util.isOptionalEnumType(rightType);
       if (leftIsString && rightIsOptionalEnum) {
+        String innerType = ((SymTypeOfGenerics) rightType).getArgument(0).print();
+        addImport(decoratedClass, innerType);
+        innerType = innerType.lastIndexOf('.') > 0 ? innerType.substring(innerType.lastIndexOf('.') + 1) : innerType;
         if (forGetter) {
-          return enumOptionalToStringConversion();
+          addEnum2CapStringMethod(decoratedClass, innerType);
+          return enumOptionalToStringConversion(innerType);
         }
         else {
-          String innerType = ((SymTypeOfGenerics) rightType).getArgument(0).print();
-          addImport(decoratedClass, innerType);
-          innerType = innerType.lastIndexOf('.') > 0 ? innerType.substring(innerType.lastIndexOf('.') + 1) : innerType;
           return stringToOptionalEnumConversion(innerType);
         }
       }
@@ -374,12 +378,19 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return s -> s;
   }
 
+  protected void addEnum2CapStringMethod(ASTCDClass decoratedClass, String type) {
+    if (type.length() > 1 && decoratedClass.getCDMethodList().stream().filter(m ->
+        m.getName().equals("enumToCapitalizedString")).findAny().isEmpty()) {
+      getCD4C().addMethod(decoratedClass, getEnum2CapStringTemplate(), type);
+    }
+  }
+
   protected void addImport(ASTCDClass decoratedClass, String type) {
     getCD4C().addImport(decoratedClass, Joiners.DOT.join(Names.getQualifier(type).toLowerCase(),
         Names.getSimpleName(type)));
   }
 
-  protected Function<String, String> enumOptionalToStringConversion() {
+  protected Function<String, String> enumOptionalToStringConversion(String type) {
     return s -> s + "!= null?" + s + " + \"\" : \"\"";
   }
 
@@ -399,7 +410,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return s -> "String.valueOf(" + s + ")";
   }
 
-  protected Function<String, String> enumToStringConversion() {
+  protected Function<String, String> enumToStringConversion(String type) {
     return s -> s + " + \"\"";
   }
 

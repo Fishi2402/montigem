@@ -6,7 +6,8 @@ ${cd4c.method("public void add${association.getName()?cap_first}(long ${associat
     add${association.getName()?cap_first}.clearParameters();
     add${association.getName()?cap_first}.setLong(1, ${association.getLeft().getName()}GemId);
     add${association.getName()?cap_first}.setLong(2, ${association.getRight().getName()}GemId);
-    add${association.getName()?cap_first}.execute();
+    add${association.getName()?cap_first}.executeUpdate();
+
   }catch (SQLException e){
     throw new RuntimeException(e);
   }

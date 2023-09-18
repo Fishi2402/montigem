@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package flensburg.database;
 
+import com.google.common.base.Stopwatch;
 import hardy.flensburg.Address;
 import hardy.flensburg.AddressDAO;
 import hardy.flensburg.Car;
@@ -12,11 +13,17 @@ import hardy.flensburg.HumanDAO;
 import hardy.flensburg.Person;
 import hardy.flensburg.PersonBuilder;
 import hardy.flensburg.PersonDAO;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.common.DatabaseAccessManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -25,8 +32,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GenCreateTest extends GenAbstractDBTest {
 
+  @Disabled
+  @Test
+  public void insertManyPersons(){
+
+    Stopwatch watch = Stopwatch.createStarted();
+    for(int i = 0; i < 20000; i++){
+      Address a1 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+      Person p1 = FlensburgManager.personBuilder().age(20).nickname("Jane").mainResidence(a1).build().get();
+    }
+    watch.stop();
+    Long time = watch.elapsed(TimeUnit.MILLISECONDS);
+
+    assert(2000 > time);
+  }
+
   @Test
   public void testCarDAO() {
+
     Optional<Car> carOpt = FlensburgManager.carBuilder()
         .wheelLeft(true)
         .namesOfAllParts(Arrays.asList("Mercedes Stern", "Bluetooth Radio", "17 Zoll Fernseher")).build();
@@ -84,8 +107,13 @@ public class GenCreateTest extends GenAbstractDBTest {
   // Test fuer 1 zu 1 Assoziationen
   @Test
   public void testMainResidence(){
+    Car car = FlensburgManager.carBuilder() //db observer insert into db
+        .wheelLeft(true)
+        .namesOfAllParts(Arrays.asList("Mercedes Stern", "Bluetooth Radio", "17 Zoll Fernseher")).build().get();
+    Set<Car> cars = new HashSet<>();
+    cars.add(car);
     Address a1 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
-    Person p1 = FlensburgManager.personBuilder().age(20).nickname("John").mainResidence(a1).build().get();
+    Person p1 = FlensburgManager.personBuilder().age(20).nickname("John").owns(cars).mainResidence(a1).build().get();
 
     PersonDAO personDAO = new PersonDAO();
 

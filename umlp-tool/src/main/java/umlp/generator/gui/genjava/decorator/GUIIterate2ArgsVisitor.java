@@ -4,6 +4,8 @@ package umlp.generator.gui.genjava.decorator;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIDSLNode;
+import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._ast.ASTIterateControl;
@@ -19,7 +21,7 @@ import java.util.Map;
 public class GUIIterate2ArgsVisitor implements GUIDSLVisitor2 {
 
   protected GUIDSLTraverser traverser;
-  protected ASTGUIComponent node;
+  protected ASTGUIDSLNode node;
 
   protected boolean active = false;
 
@@ -39,7 +41,7 @@ public class GUIIterate2ArgsVisitor implements GUIDSLVisitor2 {
     return args;
   }
 
-  public void transform(ASTGUICompilationUnit ast, ASTGUIComponent node) {
+  public void transform(ASTGUICompilationUnit ast, ASTGUIDSLNode node) {
     this.node = node;
     ast.accept(getTraverser());
 
@@ -59,8 +61,8 @@ public class GUIIterate2ArgsVisitor implements GUIDSLVisitor2 {
           }
           else {
             Log.error("0x00006 type of " + control.getItem().getName()
-                + " of iterate " + node.getId().getName()
-                + " has to be set explicitly. Type derivation is not yet supported");
+                + " has to be set explicitly. Type derivation is not yet supported",
+                control.get_SourcePositionStart());
           }
           /*
           Log.error("0x00006 iterate item " + control.getItem().getName()
@@ -71,14 +73,22 @@ public class GUIIterate2ArgsVisitor implements GUIDSLVisitor2 {
         args.put(control.getItem().getName(), type);
       }
       else {
-        Log.error("0x00004 iterate construct " + node.getId().getName()
-            + " was not processed: range iterate control not supported yet");
+        Log.error("0x00004 iterate construct "
+            + " was not processed: range iterate control not supported yet",
+            ic.get_SourcePositionStart());
       }
     }
   }
 
   @Override
   public void visit(ASTGUIComponent node) {
+    if (this.node.equals(node)) {
+      active = true;
+    }
+  }
+
+  @Override
+  public void visit(ASTGUIGuard node) {
     if (this.node.equals(node)) {
       active = true;
     }

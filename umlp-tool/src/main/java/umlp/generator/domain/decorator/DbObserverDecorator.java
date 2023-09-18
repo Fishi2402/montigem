@@ -57,6 +57,11 @@ public class DbObserverDecorator extends AbstractDecorator {
         .addCDMember(getDAOAttribute(domainClass))
         .addAllCDMembers(getAssocDaoAttributes(domainClass)).build();
 
+    var getScope = getCD4C().addMethod(observerClass, "umlp.common_observer.GetScopeLocal");
+    glex.replaceTemplate("cd2java.Annotations", getScope, new StringHookPoint("@Override"));
+    getCD4C().addImport(observerClass, PathUtil.getBackendRTECommonPath("NotificationScope"));
+
+
     UMLPSymbolTables.getAttributesInHierarchyWithDefiningType(domainClass).entrySet().stream()
         .filter(e -> !e.getKey().getModifier().isDerived())
         .forEach(e -> {

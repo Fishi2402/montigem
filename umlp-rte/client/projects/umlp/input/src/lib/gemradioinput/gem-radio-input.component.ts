@@ -1,12 +1,20 @@
-import { Component, OnInit, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  HostBinding,
+} from "@angular/core";
 import { GemRadioInput as GemRadioInputTOP } from "./gem-radio-input/gem-radio-input.component-gen";
 
 @Component({
   selector: "gem-radio-input",
   templateUrl: "./gem-radio-input.component.html",
-  styleUrls: ["./gem-radio-input.component.scss"],
 })
 export class GemRadioInput extends GemRadioInputTOP implements OnInit {
+  @HostBinding("attr.id") componentId: string;
+  rightPosition: boolean = true;
+
   // @Input() id: string;
 
   // @Input() labelText: string;
@@ -15,14 +23,21 @@ export class GemRadioInput extends GemRadioInputTOP implements OnInit {
 
   // @Input() selectedValue: string;
 
-  // @Input() isChecked: boolean = false;
-
   @Output() selectedValueChange = new EventEmitter<string>();
 
-  onSelectedValueChange(newValue: string) {
-    this.selectedValueChange.emit(newValue);
+  onSelectedValueChange(event: string) {
+    this.selectedValueChange.emit(event);
   }
 
+  ngOnInit(): void {
+    /*
+    this.componentId = this.id;
+    if (this.labelPosition !== undefined) {
+      if (this.labelPosition.toLowerCase() === "left") {
+        this.rightPosition = false;
+      }
+    }
+    */
+  }
 
-  ngOnInit(): void {}
 }

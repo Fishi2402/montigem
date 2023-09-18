@@ -1,5 +1,5 @@
 @import "../variables";
-@import "~perfect-scrollbar/css/perfect-scrollbar.css";
+// @import "~perfect-scrollbar/css/perfect-scrollbar.css";
 
 @mixin sidebar-theme($sidebar-color, $sidebarbutton-hover-color, $navbar-width: $navbar-width, $direction: column) {
   .gem-nav-aside {

@@ -2,8 +2,6 @@
 
 import {Directive} from '@angular/core';
 import {UserLoginTOP} from '@src/gui/login/UserLoginTOP';
-import {User} from '@src/sehub/User';
-import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
 @Directive()
@@ -12,29 +10,41 @@ export class UserLogin extends UserLoginTOP {
 
   protected error: string = "";
 
-  public override login(event: any): void {
+  public override loginOnEnter(event: KeyboardEvent): void {
+    if (event.key === "Enter") {
+      this.login();
+    }
+  }
+
+  public override login(): void {
     if (!this.loginUser || !this.loginUser.getUsername() || !this.loginUser.getPassword()) {
       return;
     }
-    this.error = ``;
-    this.loginUser.resetValidity();
-    this.users.toArray().filter(user => {
-      if (!!user && this.loginUser.getUsername() === user.getUsername()) {
-        if (this.loginUser.getPassword() === user.getPassword()) {
-          SehubSecurityManager.setCurrentUser(user);
-          this.router.navigate(['/start']);
-        } else {
-          this.error = 'Wrong password!';
-          this.loginUser.validityPassword = this.error;
-          this.loginUser.statusPassword = 'Error';
-        }
-      }
-    });
-    if (!this.error) {
-      this.error = 'There is no user "' + this.loginUser.getUsername() + '" !';
-      this.loginUser.validityUsername = this.error;
-      this.loginUser.statusUsername = 'Error';
-    }
+
+          const form = new FormData();
+
+          form.append('username', this.loginUser.getUsername());
+          form.append('password', this.loginUser.getPassword());
+
+          const requestOptions: RequestInit = {
+            method: "POST",
+            body: form
+            };
+
+          fetch("/umlp/api/login", requestOptions)
+            .then(response => response.ok)
+            .catch(error => {
+              console.log(error);
+              alert("Invalid Login: Wrong Username or Password!");
+              return false;
+            })
+            .then(ok => {
+              if (ok) {
+                SehubSecurityManager.signIn(this.loginUser);
+                window.location.href = '/start';
+              }
+            });
+
   }
 
   public override getErrorValue(): string {

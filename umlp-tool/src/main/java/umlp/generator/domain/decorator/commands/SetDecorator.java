@@ -55,7 +55,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
               .filter(a -> !a.getModifier().isDerived())
               .filter(a -> !GenService.isList(a))
               .forEach(a -> {
-                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManager(a), false)));
+                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManager(a), false, astcdPackage.getName())));
                 astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false)));
               });
           CDSymbolTables.getAssociationsInHierarchy(c)
@@ -64,7 +64,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
               .filter(a -> !GenService.isBidirectional(a))
               .filter(a -> !GenService.isList(a))
               .forEach(a -> {
-                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManagerOfTargetType(a), true)));
+                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManagerOfTargetType(a), true, astcdPackage.getName())));
                 astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c, true)));
               });
         });
@@ -77,7 +77,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
               .filter(a -> !a.getModifier().isDerived())
               .filter(a -> !GenService.isList(a))
               .forEach(a -> {
-                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManager(a), false)));
+                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManager(a),false, astcdPackage.getName())));
                 astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false)));
               });
           CDSymbolTables.getAssociations(c)
@@ -86,7 +86,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
               .filter(a -> !GenService.isBidirectional(a))
               .filter(a -> !GenService.isList(a))
               .forEach(a -> {
-                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManagerOfTargetType(a), true)));
+                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManagerOfTargetType(a), true, astcdPackage.getName())));
                 astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c, true)));
               });
         });
@@ -94,10 +94,12 @@ public class SetDecorator extends AbstractDeSerDecorator {
 
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDType domainType,
-                                   String targetTypeManager, boolean isGem) {
+                                   String targetTypeManager, boolean isGem, String packageName) {
     String classname = domainType.getName() + SUFFIX
-        + StringTransformations.capitalize(name);
+            + StringTransformations.capitalize(name);
     String completeName = isGem ? name + "GemId" : name;
+    String domainPackage = getPackageName(origCD, DEFAULT_PACKAGE);
+
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
@@ -114,7 +116,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
     addConstructor(ast, classname, getPackageName(origCD, COMMAND_PACKAGE),
         completeName, isGem ? "long" : GenService.createType(type).printType());
 
-    getCD4C().addMethod(ast, getDoRunTemplate(), name, domainType.getName(), getCorrectManager(domainType), isGem, type.print(), targetTypeManager);
+    getCD4C().addMethod(ast, getDoRunTemplate(), name, domainType.getName(), getCorrectManager(domainType), isGem, type.print(), targetTypeManager, domainPackage);
     if (isGem) {
       getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("gemId", name + "GemId"));
     } else {

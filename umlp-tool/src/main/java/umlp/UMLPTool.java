@@ -219,7 +219,7 @@ public class UMLPTool extends UMLPToolTOP {
         runDefaultCoCos(ast);
         runDefaultTrafos(ast);
         recreateSymbolTable(ast);
-        CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, false);
+        CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath);
         guiTool.generateGUI();
         Reporting.flush(ast);
       }

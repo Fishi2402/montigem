@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package basic;
+
+import basic.GemTreeviewTypes.GemTreeviewEntry;
+
+component GemTreeview(
+  List<GemTreeviewEntry> items,
+  boolean allExpanded = false,
+  Event<GemTreeviewEntry> expand,
+  Event<GemTreeviewEntry> leftClick
+)

@@ -2,10 +2,8 @@ package gui.issues;
 
 import Sehub.Issue;
 
-import gui.issues.IssueDoingFilter;
-import gui.issues.IssueDoneFilter;
-import gui.issues.IssueTodoFilter;
 import gui.issues.IssueCreate;
+import gui.issues.IssueDragDrop;
 
 import arrange.src.lib.gemcard.GemCard;
 import arrange.src.lib.gemcolumn.GemColumn;
@@ -16,42 +14,41 @@ import input.src.lib.gemtextareainput.GemTextareaInput;
 
 page IssueTrackerPage(List<Issue> issues) {
 
-  @GemRow(width = "100%", hAlign= "center", colGap="5px", rowGap="20px", components = [
+  @GemRow(hAlign = "center", colGap = "5px", rowGap = "20px", components = [
 
-    @GemCard(title = "New Issue", component = @GemColumn(hAlign = "center", width = "auto", component = @IssueCreate())),
+    @GemCard(title = "New Issue", component = @GemColumn(hAlign = "center", component = @IssueCreate())),
 
-    @GemCard(title = "Issue - List", component =
-      @GemColumn(hAlign = "center", width = "auto", components = [
-        issueCategories@GemRow(hAlign = "center", width = "auto", rowGap = "10px", colGap = "10px", components = [
-
-          // TBD Column
-          todo@GemCard(title = "TODO", component =
-            @GemColumn(width = "400px", vAlign="top", height="100%", rowGap= "5px",  component =
-              @iterate(Issue i : issues){
-                @IssueTodoFilter(issue = i);
-              }
-            )
-          ),
-
-          // WIP Column
-          doing@GemCard(title = "DOING", component =
-            @GemColumn(width = "400px", vAlign="top", height="100%", rowGap= "5px",  component =
-              @iterate(Issue i : issues){
-                @IssueDoingFilter(issue = i);
-              }
-            )
-          ),
-
-          // Done Column
-          done@GemCard(title = "DONE", component =
-            @GemColumn(width = "400px", vAlign="top", height="100%", rowGap= "5px",  component =
-               @iterate(Issue i : issues){
-                 @IssueDoneFilter(issue = i);
-               }
-             )
+    @GemCard(title = "Issue List", component =
+      issueCategories@GemRow(hAlign = "center", rowGap = "10px", colGap = "10px", components = [
+        // TBD Column
+        todo@GemCard(title = "TODO", component =
+          todoList@IssueDragDrop(
+            issues = issues,
+            dropId = "todoList",
+            canDropTo = ["doingList", "doneList"],
+            drop = updateIssue
           )
+        ),
 
-        ])
+        // WIP Column
+        doing@GemCard(title = "DOING", component =
+          doingList@IssueDragDrop(
+            issues = issues,
+            dropId = "doingList",
+            canDropTo = ["todoList", "doneList"],
+            drop = updateIssue
+          )
+        ),
+
+        // Done Column
+        done@GemCard(title = "DONE", component =
+          doneList@IssueDragDrop(
+            issues = issues,
+            dropId = "doneList",
+            canDropTo = ["todoList", "doingList"],
+            drop = updateIssue
+          )
+        )
       ])
     )
   ]);

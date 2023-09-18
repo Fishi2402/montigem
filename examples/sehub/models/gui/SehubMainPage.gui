@@ -2,23 +2,27 @@ package gui;
 
 import Sehub.Project;
 
-import table.src.lib.gemtable.GemTable;
-import table.src.lib.gemtable.TableTypes.TableColumn;
+import basic.src.lib.gembutton.GemButton;
 import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
 
-page SehubMainPage(List<Project> projects) {
+page SehubMainPage(List<Project> allProjects) {
 
   @GemCard(
     title = "Projects",
-    component = projectList@GemTable(
-      rows = projects,
-      columns = [
-        TableColumn("_name", "Project Name")
-      ],
-      edit = navigateToProjectPage,
-      update = log,
-      canDelete = false,
-      canCreate = false
+    component = projectList@GemColumn(
+      rowGap="20px",
+      components=[
+        @iterate(Project project : allProjects){
+          projectTable@GemColumn(
+            colGap="5%",
+            components = [
+              @GemRow(height="20px", vAlign="center", hAlign="left", width="100px%", component = @GemButton(label = project.getName(), leftClick = goToProjectPage(project)))
+            ]
+          );
+        }
+      ]
     )
   );
 }

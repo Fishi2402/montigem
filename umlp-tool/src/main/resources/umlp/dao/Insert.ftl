@@ -12,7 +12,7 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
     <#list optionalAttributes as attr><#assign index = index+1>
       ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", true)};
     </#list>
-    ${statement}.execute();
+    ${statement}.executeUpdate();
     <#list listAttributes as attr>
     update${attr.getName()?cap_first}(o.getGemId(), o.get${attr.getName()?cap_first}());
     </#list>

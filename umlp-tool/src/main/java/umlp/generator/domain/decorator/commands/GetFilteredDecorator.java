@@ -40,6 +40,7 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDType domainType, String packageName) {
     String classname = domainType.getName();
+    String domainPackage = getPackageName(origCD, DEFAULT_PACKAGE);
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
@@ -48,7 +49,7 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
       .build();
 
     addConstructor(ast, classname, packageName);
-    getCD4C().addMethod(ast, getDoRunTemplate(), classname,  getCorrectManager(domainType));
+    getCD4C().addMethod(ast, getDoRunTemplate(), classname,  getCorrectManager(domainType), domainPackage);
 
     getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));

@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package input;
+
+component GemCheckBoxInput(
+  String id,
+  String labelPosition,
+  String labelText,
+  ?Boolean checked
+)

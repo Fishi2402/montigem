@@ -6,7 +6,6 @@ package flensburg.database;
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import org.h2.tools.Server;
-import umlp.backendrte.common.DatabaseAccessManager;
 import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.net.URL;
@@ -24,10 +23,11 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager4SQL {
   @Override
   protected void _setup() {
     try {
-      DriverManager.registerDriver(new org.h2.Driver());
       // In memory db
       // DB_CLOSE_DELAY=0 -> In memory db is deleted after connection is closed
+      DriverManager.registerDriver(new org.h2.Driver());
       connection = DriverManager.getConnection("jdbc:h2:mem:test_flensburg;DB_CLOSE_DELAY=0");
+
       String schemaFileName = "Flensburg.sql";
       Optional<URL> optionalURL = FileReaderWriter.getResource(this.getClass().getClassLoader(), schemaFileName);
       if(optionalURL.isEmpty()) {

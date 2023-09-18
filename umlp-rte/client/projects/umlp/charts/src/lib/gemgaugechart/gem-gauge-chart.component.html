@@ -12,8 +12,8 @@
     <li>
       <h3>Gauge Chart Settings</h3>
       <label>
-        <input type="checkbox"
-          (change)="_showAxis = !_showAxis"
+        <input type="checkbox" 
+          (change)="_showAxis = !_showAxis" 
         /> Disable Axis
       </label>
       <br>
@@ -24,17 +24,17 @@
         /> Helper Ticks Quantity
       </label>
       <br>
-      <label>
+      <label [class.grayout]="!_showAxis">
         <input class="numberInput" #sliderSelector2
-          (change)="changeMin(Number(sliderSelector2.value))"
-          type="number" min="-100" max="100" value="0"
+          (change)="changeMin(sliderSelector2.value)"
+          type="number" value="{{_min}}"
         /> Min Value
       </label>
       <br>
-      <label>
+      <label [class.grayout]="!_showAxis">
         <input class="numberInput" #sliderSelector3
-          (change)="changeMax(Number(sliderSelector3.value))"
-          type="number" min="-100" max="100" value="0"
+          (change)="changeMax(sliderSelector3.value)"
+          type="number" value="{{_max}}"
         /> Max Value
       </label>
       <br>
@@ -44,7 +44,7 @@
           type="text"
         /> Unit
       </label>
-
+        
     </li>
   </chart-options>
 </div>
@@ -69,7 +69,7 @@
     [labels]="legendLabels"
     [colors]="legendColors"
     [displayLegend]="displayLegend"
-    >
+    > 
   </gem-chart-legend>
 </div>
 

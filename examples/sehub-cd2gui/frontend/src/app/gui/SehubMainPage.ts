@@ -21,9 +21,10 @@ export  class SehubMainPage extends SehubMainPageTOP {
     return null;
   }
 
-  public override navigateToProjectPage(row: Project): void {
-    this.router.navigate(["..", "project", "ProjectFileView", row.getRootArtifact()[0].getGemId()]);
+  public override goToProjectPage (project: any): (arg: any) => void {
+    return event => this.router.navigate(["..", "project", "ProjectFileView", project.getRootArtifact()[0].getGemId()]);
   }
+
 
 }
 

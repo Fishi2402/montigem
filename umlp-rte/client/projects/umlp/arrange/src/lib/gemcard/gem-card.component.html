@@ -4,13 +4,21 @@
 >
 </gem-column>
 <ng-template #gemNode2>
-  <gem-row class="gem-card-header">
+  <gem-row
+    height="initial"
+    class="gem-card-header"
+    [component]="titleTpl"
+  >
   </gem-row>
 </ng-template>
 <ng-template #gemNode4>
   <gem-column
+    height="initial"
     class="gem-card-body"
     [component]="component"
   >
   </gem-column>
+</ng-template>
+<ng-template #titleTpl>
+  {{title}}
 </ng-template>

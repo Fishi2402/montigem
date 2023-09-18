@@ -61,6 +61,7 @@ public class TSDeSerBuilderDecorator extends DeSerBuilderDecorator {
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemBuildable"));
     if (!domainType.getModifier().isAbstract()) {
       getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + BuilderDecorator.BUILDER_SUFFIX);
+      getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName());
       if (!domainType.getSuperclassList().isEmpty()) {
         getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
       }

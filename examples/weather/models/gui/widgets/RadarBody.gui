@@ -1,0 +1,7 @@
+package gui.widgets;
+
+component RadarBody() {
+
+    //Empty Body
+
+}
