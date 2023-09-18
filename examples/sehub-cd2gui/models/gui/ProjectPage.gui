@@ -13,12 +13,11 @@ page ProjectPage(Directory project) {
 
   @GemCard(
     title = "Files",
-    component = files@GemTreeview(
-    items = null,
-    allExpanded=false)
+    component = files@GemTreeview(items = null, allExpanded = false)
   );
   @GemNetworkGraph(
-    data = null
+    data = null,
+    improvedLayout = false
   );
 
 }

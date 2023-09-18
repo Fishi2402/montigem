@@ -2,9 +2,12 @@
 
 import {Directive} from '@angular/core';
 import {UserLoginTOP} from '@src/gui/login/UserLoginTOP';
-import {User} from '@src/sehub/User';
-import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {
+  ClientCommandManager,
+  ClientCommandWebsocketCommunication,
+  CommandManager
+} from '@umlp/common';
 
 @Directive()
 
@@ -30,24 +33,29 @@ export class UserLogin extends UserLoginTOP {
 
           const requestOptions: RequestInit = {
             method: "POST",
-            body: form
-            };
+            body: form,
+            redirect: 'manual' // Otherwise the redirect to login?error is followed and 2xx is returned
+          };
 
           fetch("/umlp/api/login", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-              console.log(result.toString());
-              return true;
+            .then(response => {
+              return response.ok
             })
             .catch(error => {
               console.log(error);
-              alert("Invalid Login: Wrong Username or Password!");
               return false;
             })
-            .then(redirect => {
-              if (redirect) {
+            .then(ok => {
+              if (ok) {
                 SehubSecurityManager.signIn(this.loginUser);
+                const ws_protocol = document.location.protocol == "https:" ? "wss": "ws";
+                const cmdManager = new ClientCommandManager(new ClientCommandWebsocketCommunication(
+                    ws_protocol + '://' + document.location.host + '/umlp/api/command'
+                ));
+                CommandManager.initMe(cmdManager);
                 window.location.href = '/start';
+              }else{
+                alert("Invalid Login: Wrong Username or Password!");
               }
             });
 

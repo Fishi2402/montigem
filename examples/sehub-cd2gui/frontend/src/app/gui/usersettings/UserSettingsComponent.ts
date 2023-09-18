@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Component } from '@angular/core';
-import { UserSettingsComponentTOP } from '@src/gui/usersettings/UserSettingsComponentTOP';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component} from '@angular/core';
+import {UserSettingsComponentTOP} from '@src/gui/usersettings/UserSettingsComponentTOP';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {SehubManager} from '@src/sehub/SehubManager';
 
@@ -16,7 +15,7 @@ export class UserSettingsComponent extends UserSettingsComponentTOP {
 
   public ngOnInit(): void {
     if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login/LoginPage']);
     }
     this.currentUser = SehubSecurityManager.getCurrentUser();
     this.currentUserRoutingId = SehubSecurityManager.getCurrentUserIdOrNull();
@@ -24,5 +23,7 @@ export class UserSettingsComponent extends UserSettingsComponentTOP {
     SehubManager.getUserList().then(gemPromiseRes => {
       this.users = gemPromiseRes;
     });
+
+    super.ngOnInit();
   }
 }

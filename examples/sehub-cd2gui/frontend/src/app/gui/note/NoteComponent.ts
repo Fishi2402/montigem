@@ -1,5 +1,4 @@
 
-
 import { NoteComponentTOP } from "@src/gui/note/NoteComponentTOP";
 import {Component} from '@angular/core';
 import { SehubManager } from '@src/sehub/SehubManager';
@@ -17,4 +16,9 @@ import {ViewChild} from '@angular/core';
 
 export class NoteComponent extends NoteComponentTOP {
 
+  ngOnInit(): void {
+    console.log("Note Init")
+    super.ngOnInit();
+
+  }
 }
