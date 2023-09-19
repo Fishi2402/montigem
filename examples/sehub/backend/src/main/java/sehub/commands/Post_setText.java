@@ -21,7 +21,7 @@ public class Post_setText extends Post_setTextTOP {
   public StatusResult doRun() {
 
     PostAccessPolicy accessPolicy = new PostAccessPolicy();
-    if (accessPolicy.checkWritePermission(this)) {
+    if (accessPolicy.checkPermission(this)) {
       Optional<Post> postOpt = SehubManager.postOpt(getGemId());
       if (postOpt.isPresent()) {
         postOpt.get().setText(text, NotificationScope.LOCAL);
