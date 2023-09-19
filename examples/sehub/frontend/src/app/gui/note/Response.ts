@@ -19,12 +19,19 @@ export class Response extends ResponseTOP {
 
   public override getGemButton8Disabled (): boolean {
     let curUser: User = SehubSecurityManager.getCurrentUser();
-      if (!!curUser && SehubRole[curUser.getRole()] === "OWNER") {
-        return false;
-      } else if (!!curUser && curUser.getUsername() === this.getPost().getAuthor().getUsername()) {
-        return false;
-      }
-      return true;
+    if (!!curUser && SehubRole[curUser.getRole()] === "OWNER") {
+      return false;
+    } else if (!!curUser && curUser.getUsername() === this.getPost().getAuthor().getUsername()) {
+      return false;
+    }
+    return true;
   }
 
+  public override getGemTextareaInput9Disabled (): boolean  {
+    let curUser: User = SehubSecurityManager.getCurrentUser();
+    if (!!curUser && SehubRole[curUser.getRole()] === "GUEST") {
+      return true;
+    }
+    return false;
+  }
 }

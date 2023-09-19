@@ -62,14 +62,10 @@ export class Note extends NoteTOP {
   }
 
   public override getReplybuttonDisabled (): boolean {
-    let curUser: User = SehubSecurityManager.getCurrentUser();
-    if (!!curUser && SehubRole[curUser.getRole()] === "GUEST") {
-      return true;
-    }
-    return false;
+    return this.disableWriteAccessforGuests();
   }
 
-  public  getGemButton7Disabled (): boolean {
+  public override getGemButton7Disabled (): boolean {
     let curUser: User = SehubSecurityManager.getCurrentUser();
     if (!!curUser && SehubRole[curUser.getRole()] === "OWNER") {
       return false;
@@ -79,4 +75,19 @@ export class Note extends NoteTOP {
     return true;
   }
 
+  public override getPostTitleDisabled (): boolean {
+    return this.disableWriteAccessforGuests();
+  }
+
+  public override getMessageDisabled (): boolean {
+    return this.disableWriteAccessforGuests();
+  }
+
+  public disableWriteAccessforGuests (): boolean {
+    let curUser: User = SehubSecurityManager.getCurrentUser();
+    if (!!curUser && SehubRole[curUser.getRole()] === "GUEST") {
+      return true;
+    }
+    return false;
+  }
 }

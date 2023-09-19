@@ -43,4 +43,12 @@ export class UserDisplay extends UserDisplayTOP {
     return true;
   }
 
+  public override getRoleDisabled (): boolean {
+    let curUser: User = SehubSecurityManager.getCurrentUser();
+    if (!!curUser && SehubRole[curUser.getRole()] === "OWNER") {
+      return false;
+    }
+    return true;
+  }
+
 }

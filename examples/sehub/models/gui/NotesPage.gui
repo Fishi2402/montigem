@@ -33,11 +33,12 @@ page NotesPage(Issue issue) {
 
     edit@GemColumn(hAlign = "center", width = "400px", rowGap =" 5px", components = [
       @GemText(value = "Edit Issue:"),
-      issueTitle@GemTextInput(labelText = "Issue-Title", entry= issue.title),
+      issueTitle@GemTextInput(labelText = "Issue-Title", entry= issue.title, disabled = false),
       issueDescription@GemTextareaInput(
         id = "issueDescription",
         labelText = "Description",
-        entry = issue.description
+        entry = issue.description,
+        disabled = false
       )
     ])
   ]);

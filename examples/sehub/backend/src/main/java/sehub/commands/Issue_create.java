@@ -13,7 +13,7 @@ public class Issue_create extends Issue_createTOP {
 
   public StatusResult doRun() {
     IssueAccessPolicy accessPolicy = new IssueAccessPolicy();
-    if(accessPolicy.checkCreatePermission(this)){
+    if(accessPolicy.checkCUDPermission(this)){
       return super.doRun();
     }
     return StatusResult.error(getId());

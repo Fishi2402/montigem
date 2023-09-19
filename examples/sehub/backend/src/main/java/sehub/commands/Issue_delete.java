@@ -16,7 +16,7 @@ public class Issue_delete extends Issue_deleteTOP {
 
   public StatusResult doRun() {
     IssueAccessPolicy accessPolicy = new IssueAccessPolicy();
-    if (accessPolicy.checkDeletePermission(this)) {
+    if (accessPolicy.checkCUDPermission(this)) {
       if (SehubManager.deleteIssue(getGemId(), NotificationScope.LOCAL)) {
         return StatusResult.ok(getId());
       } else {

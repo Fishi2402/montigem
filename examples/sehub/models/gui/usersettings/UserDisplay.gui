@@ -28,7 +28,8 @@ component UserDisplay(User user) {
           inputType = "dropdown",
           options = null,
           entry = user.role,
-          validity = user.validityRole
+          validity = user.validityRole,
+          disabled = false
         )
       )
     ]),

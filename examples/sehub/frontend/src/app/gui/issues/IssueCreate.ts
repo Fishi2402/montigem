@@ -20,7 +20,19 @@ export class IssueCreate extends IssueCreateTOP {
     });
   }
 
-  public  getGemButton3Disabled (): boolean {
+  public override getGemButton3Disabled (): boolean {
+    return this.creationDisabled();
+  }
+
+  public override getGemTextareaInput2Disabled (): boolean {
+    return this.creationDisabled();
+  }
+
+  public override getGemTextInput1Disabled (): boolean {
+    return this.creationDisabled();
+  }
+
+  public creationDisabled(): boolean {
     let curUser: User = SehubSecurityManager.getCurrentUser();
     if (!!curUser && SehubRole[curUser.getRole()] === "GUEST" ||
                      SehubRole[curUser.getRole()] === "REPORTER") {

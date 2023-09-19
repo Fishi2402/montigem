@@ -31,7 +31,8 @@ component Response(Post post){
           @GemTextareaInput(
                     id = "response",
                     labelText = "",
-                    entry = post.text
+                    entry = post.text,
+                    disabled = false
                   )
           ])
 

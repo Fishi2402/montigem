@@ -38,4 +38,22 @@ export class NotesPage extends NotesPageTOP {
     return false;
   }
 
+
+  public override getIssueTitleDisabled (): boolean {
+    return this.disableGuestReporterEdits();
+  }
+
+  public override getIssueDescriptionDisabled (): boolean {
+    return this.disableGuestReporterEdits();
+  }
+
+  public disableGuestReporterEdits (): boolean {
+    let curUser: User = SehubSecurityManager.getCurrentUser();
+    if (!!curUser && (SehubRole[curUser.getRole()] === "GUEST" ||
+                      SehubRole[curUser.getRole()] === "REPORTER")) {
+      return true;
+    }
+    return false;
+  }
+
 }
