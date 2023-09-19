@@ -9,11 +9,6 @@ import {IssueEntryTOP} from '@src/gui/issues/IssueEntryTOP';
 
 export class IssueEntry extends IssueEntryTOP {
 
-  public editIssue(event: any): void {
-    console.log(this.getIssue().getGemId())
-    this.router.navigate(['/notes/NotesPage/' + this.getIssue().getGemId()]);
-  }
-
   public promote(event: any): void {
     if (this.getIssue().getState() === IssueState.UNASSIGNED) {
       this.getIssue().setState(IssueState.IN_PROGRESS);
@@ -32,16 +27,6 @@ export class IssueEntry extends IssueEntryTOP {
 
   public override deleteIssue(event: any): void {
     SehubManager.deleteIssue(this.getIssue().getGemId())
-  }
-
-  public  getIssueCardTitle (): string
-
-  {
-    let postCounter = 0;
-
-    this.getIssue().getPosts().forEach(p => { postCounter = postCounter + 1 + p.getResponses().length})
-
-    return super.getIssueCardTitle() + " (" + postCounter + ")"
   }
 
 }
