@@ -3,6 +3,8 @@
 import {Directive} from '@angular/core';
 import {UserLoginTOP} from '@src/gui/login/UserLoginTOP';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {User} from '@src/sehub/User';
+import {SehubManager} from '@src/sehub/SehubManager';
 import {
   ClientCommandManager,
   ClientCommandWebsocketCommunication,
