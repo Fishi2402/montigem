@@ -4,6 +4,9 @@ import {IssueState} from '@src/sehub/IssueState';
 import {Directive} from '@angular/core';
 import {IssueCreateTOP} from '@src/gui/issues/IssueCreateTOP';
 import { SehubManager } from '@src/sehub/SehubManager';
+import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {User} from '@src/sehub/User';
+import {SehubRole} from '@src/sehub/SehubRole';
 
 @Directive()
 
@@ -15,6 +18,15 @@ export class IssueCreate extends IssueCreateTOP {
       this.build();
       this.issueBuilder = gemPromiseRes;
     });
+  }
+
+  public  getGemButton3Disabled (): boolean {
+    let curUser: User = SehubSecurityManager.getCurrentUser();
+    if (!!curUser && SehubRole[curUser.getRole()] === "GUEST" ||
+                     SehubRole[curUser.getRole()] === "REPORTER") {
+      return true;
+    }
+    return false;
   }
 
 }

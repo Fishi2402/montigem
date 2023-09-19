@@ -4,6 +4,9 @@ import {SehubManager} from '@src/sehub/SehubManager';
 import {IssueState} from '@src/sehub/IssueState';
 import {Directive} from '@angular/core';
 import {IssueEntryTOP} from '@src/gui/issues/IssueEntryTOP';
+import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {User} from '@src/sehub/User';
+import {SehubRole} from '@src/sehub/SehubRole';
 
 @Directive()
 
@@ -42,6 +45,15 @@ export class IssueEntry extends IssueEntryTOP {
     this.getIssue().getPosts().forEach(p => { postCounter = postCounter + 1 + p.getResponses().length})
 
     return super.getIssueCardTitle() + " (" + postCounter + ")"
+  }
+
+  public override getGemButton5Disabled (): boolean {
+    let curUser: User = SehubSecurityManager.getCurrentUser();
+    if (!!curUser && SehubRole[curUser.getRole()] === "GUEST" ||
+                     SehubRole[curUser.getRole()] === "REPORTER") {
+      return true;
+    }
+    return false;
   }
 
 }

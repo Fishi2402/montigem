@@ -20,6 +20,6 @@ component IssueCreate(Issue issue){
       labelText = "Description",
       entry = issue.description
     ),
-    @GemButton(label = "Create new Issue", leftClick = createIssue)
+    @GemButton(label = "Create new Issue", leftClick = createIssue, disabled = false)
   ]);
 }
