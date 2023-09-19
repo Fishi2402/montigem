@@ -12,6 +12,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
@@ -39,6 +40,7 @@ public class AccessPolicyDecorator extends AbstractDecorator {
         .setModifier(PUBLIC.build())
         .setName(className + SUFFIX)
         .addCDMember(createCheckPolicy(domainClass)).build();
+    getCD4C().addImport(policyClass, PathUtil.getBackendRTECommandPath("Command"));
     return policyClass;
   }
 

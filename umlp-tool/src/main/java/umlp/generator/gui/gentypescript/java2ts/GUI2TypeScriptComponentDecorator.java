@@ -96,6 +96,11 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
   protected String getEnum2CapStringTemplate() { return "umlp.gui2ts.methods.TSEnumToCapString"; }
 
   @Override
+  protected void addEnum2CapStringImport(ASTCDClass decoratedClass) {
+
+  }
+
+  @Override
   protected String getSetterReplacedTemplate() {
     return "umlp.gui2ts.TSSetComponentReplaced";
   }

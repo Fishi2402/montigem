@@ -47,12 +47,19 @@ public class CommandWebSocketService extends TextWebSocketHandler {
     System.out.println("Received:\t" + payload);
     String returnResult = "";
     try {
-      // TODO: check participant id is correct
       Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(payload);
       if (!commandOptional.isPresent()) {
         return;
       }
       Command command = commandOptional.get();
+
+      // check that participant id is correct
+      Participant participant = CommandManager.getInstance().getParticipant(command.getParticipantId());
+      String username = session.getPrincipal().getName();
+      if(!username.equals(participant.getUsername())){
+        throw new IllegalStateException("The participant with id " + command.getParticipantId() + " is not logged in as user " + username);
+      }
+
       CommandResult res = CommandManager.executeCommand(command);
       // Check if the object was found. If not, then someone might have tried to load a subclass
       // instance instead of a class instance
