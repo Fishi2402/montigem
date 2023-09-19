@@ -1,25 +1,25 @@
 package security;
 
-import javax.mail.Authenticator;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.Properties;
 import java.util.function.Function;
 
+import static umlp.backendrte.service.websocket.WebSocketConfig.UMLP_DOMAINNAME_ENV;
+
 public class MailService {
 
   public static final String SENDER = System.getenv().getOrDefault("mailAbsender", "noreply@sehub.se.rwth-aachen.de");
   public static final String IDENTIFIER = "SEHub";
   protected static final String MAIL_PASSWORD = System.getenv().getOrDefault("mailPassword", "");
-  public static final String URL = "http://localhost:4200/";
+  public static final String DEFAULT_URL = "https://sehub.demos.se.rwth-aachen.de/";
 
-  public static final String TEXT_REGISTRATION = " You've been successfully registered on the SEHub website :-)." +
-      "Please log in on " + getLink().apply(URL);
+  public static final String TEXT_REGISTRATION = " You've been successfully registered on the SEHub website :-).<br>" +
+      "Please log in on " + getLink().apply(getUrl());
+
+
   public static final String SUBJECT_REGISTRATION = "New registration";
 
   protected final Properties properties = new Properties();
@@ -55,6 +55,10 @@ public class MailService {
     t.connect();
     t.sendMessage(mail, mail.getAllRecipients());
     return true;
+  }
+
+  public static String getUrl() {
+    return System.getenv().containsKey(UMLP_DOMAINNAME_ENV) ? System.getenv().get(UMLP_DOMAINNAME_ENV) : DEFAULT_URL;
   }
 
   protected void addToProperties(String key, Object defaultValue) {
