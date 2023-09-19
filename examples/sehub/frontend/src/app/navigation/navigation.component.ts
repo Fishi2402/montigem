@@ -19,8 +19,7 @@ export class Navigation {
   }
 
   signOutCurrentUser(): void {
-    fetch("/umlp/api/logout")
-    SehubSecurityManager.signOut();
+    fetch("/umlp/api/logout").finally(() => SehubSecurityManager.signOut());
   }
   isSignedIn(): boolean {
     return SehubSecurityManager.isSignedIn();

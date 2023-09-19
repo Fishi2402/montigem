@@ -8,7 +8,6 @@ import {SehubManagerClientImpl} from '@src/sehub/SehubManagerClientImpl';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  private currentUrl : string;
   constructor() {
     SehubManagerClientImpl.init();
     const ws_protocol = document.location.protocol == "https:" ? "wss": "ws";
