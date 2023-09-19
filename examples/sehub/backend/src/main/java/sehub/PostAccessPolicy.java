@@ -38,6 +38,10 @@ public class PostAccessPolicy extends PostAccessPolicyTOP {
       return true;
     }
 
+    if (role.equals(GUEST)) {
+      return false;
+    }
+
     // workaround: to be improved in future versions
     long postID = -1;
     if (command.getCommandType().equals("sehub.commands.Post_setText")) {

@@ -34,5 +34,28 @@ public class IssueAccessPolicy extends IssueAccessPolicyTOP {
     return true;
 
   }
+
+  public boolean checkDeletePermission(Command command) {
+
+    // get user and role
+    Participant p = CommandManager.getInstance().getParticipant(command.getParticipantId());
+    Optional<User> userOpt = SehubManager.getUserList().stream()
+        .filter(u -> u.getUsername().equals(p.getUsername())) // user name is unique
+        .findAny();
+
+    if (!userOpt.isPresent()) {
+      return false;
+    }
+
+    User user = userOpt.get();
+    SehubRole role = user.getRole();
+
+    // check authorization
+    if (role.equals(GUEST) || role.equals(REPORTER)) {
+      return false;
+    }
+    return true;
+
+  }
 }
 

@@ -34,7 +34,7 @@ public class UserAccessPolicy extends UserAccessPolicyTOP {
 
     // check authorization
     if (command.isRequest()) {  // read
-      if (!role.equals(GUEST) && !role.equals(REPORTER)) {
+      if (!role.equals(GUEST)) {
         return true;
       }
 
