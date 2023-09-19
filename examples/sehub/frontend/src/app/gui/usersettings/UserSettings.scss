@@ -11,8 +11,5 @@
 
 :host ::ng-deep .gem-button:disabled {
   background-color: grey;
-  cursor: default;
-  &:hover {
-    pointer-events: none;
-  }
+  pointer-events: none;
 }

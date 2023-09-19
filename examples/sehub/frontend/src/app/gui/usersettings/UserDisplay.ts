@@ -6,6 +6,7 @@ import {UserDisplayTOP} from '@src/gui/usersettings/UserDisplayTOP';
 import {SehubRole} from '@src/sehub/SehubRole';
 import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {User} from '@src/sehub/User';
 
 @Directive()
 export class UserDisplay extends UserDisplayTOP {
@@ -33,5 +34,13 @@ export class UserDisplay extends UserDisplayTOP {
  /* public override getErrorroleValue(): string {
     return this.user.getValidityRole().status;
   }*/
+
+  public override getRemoveUserDisabled (): boolean {
+    let curUser: User = SehubSecurityManager.getCurrentUser();
+    if (!!curUser && SehubRole[curUser.getRole()] === "OWNER") {
+      return false;
+    }
+    return true;
+  }
 
 }
