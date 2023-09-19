@@ -49,7 +49,7 @@ export class UserLogin extends UserLoginTOP {
             })
             .then(ok => {
               if (ok) {
-                this.loginCurUser(this.loginUser);
+                SehubSecurityManager.signIn(this.loginUser);
                 const ws_protocol = document.location.protocol == "https:" ? "wss": "ws";
                 const cmdManager = new ClientCommandManager(new ClientCommandWebsocketCommunication(
                     ws_protocol + '://' + document.location.host + '/umlp/api/command'
@@ -65,19 +65,6 @@ export class UserLogin extends UserLoginTOP {
 
   public override getErrorValue(): string {
     return this.error;
-  }
-
-  private loginCurUser(loginInfo : User): void {
-    SehubManager.getUserList().then(gemPromiseRes => {
-      this.users = gemPromiseRes;
-      this.users.loadAll();
-    })
-
-    this.users.toArray().filter(user => {
-      if (!!user && loginInfo.getUsername() === user.getUsername()) {
-        SehubSecurityManager.signIn(user);
-      }
-    });
   }
 
 }
