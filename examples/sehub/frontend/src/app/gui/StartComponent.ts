@@ -1,9 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { StartComponentTOP } from '@src/gui/StartComponentTOP';
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {StartComponentTOP} from '@src/gui/StartComponentTOP';
+import {Component} from '@angular/core';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
+import {GetCurrentUserRequest} from "../security/GetCurrentUserRequest";
+import {CommandManager} from '@umlp/common';
 
 @Component({
   selector: 'start',
@@ -18,6 +19,16 @@ export  class StartComponent extends StartComponentTOP {
     if (!SehubSecurityManager.isSignedIn()) {
       super.router.navigate(['/login/LoginPage']);
     }
+
+    CommandManager.executeCommand(new GetCurrentUserRequest()).then(res => {
+      let sr = res.asSimpleResult();
+
+      if(sr.isSuccessful()){
+        console.log("GemId of current user is", sr.get())
+      }else{
+        console.log("Can not get GemId of current user");
+      }
+    });
   }
 
 }
