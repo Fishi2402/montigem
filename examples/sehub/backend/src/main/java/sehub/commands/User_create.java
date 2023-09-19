@@ -16,9 +16,9 @@ public class User_create extends User_createTOP {
   }
 
   public StatusResult doRun() {
-    StatusResult crateUserStatus = super.doRun();
-    if (!crateUserStatus.wasSuccessful()) {
-      return crateUserStatus;
+    StatusResult createUserStatus = super.doRun();
+    if (!createUserStatus.wasSuccessful()) {
+      return createUserStatus;
     }
     return sendMail();
   }
