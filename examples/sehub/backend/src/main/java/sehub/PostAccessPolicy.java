@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package sehub;
 
+import sehub.commands.Post_create;
 import sehub.commands.Post_delete;
 import sehub.commands.Post_setText;
 import sehub.commands.Post_setTitle;
@@ -77,6 +78,9 @@ public class PostAccessPolicy extends PostAccessPolicyTOP {
     User user = userOpt.get();
     SehubRole role = user.getRole();
 
+    // complete the post to guarantee correct athour assignment
+    completePost(command, user);
+
     if (role.equals(GUEST)) {
       return false;
     }
@@ -84,6 +88,18 @@ public class PostAccessPolicy extends PostAccessPolicyTOP {
     return true;
   }
 
+  /*
+   * This is not the correct location to complete
+   * missing information. Just a workaround.
+   */
+  protected void completePost(Command cmd, User user) {
+    if (cmd.getCommandType().equals("sehub.commands.Post_create")) {
+      Post post = ((Post_create) cmd).getPost();
+      if (post.getAuthor() == null) {
+        post.setAuthor(user);
+      }
+    }
+  }
 
 }
 
