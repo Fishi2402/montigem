@@ -4,6 +4,8 @@ import {SehubManager} from '@src/sehub/SehubManager';
 import {Post} from '@src/sehub/Post';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {Gem} from '@umlp/common';
+import {User} from '@src/sehub/User';
+import {SehubRole} from '@src/sehub/SehubRole';
 
 @Directive()
 
@@ -59,6 +61,22 @@ export class Note extends NoteTOP {
     console.log("Removing... " + this.post.getResponses())
   }
 
+  public override getReplybuttonDisabled (): boolean {
+    let curUser: User = SehubSecurityManager.getCurrentUser();
+    if (!!curUser && SehubRole[curUser.getRole()] === "GUEST") {
+      return true;
+    }
+    return false;
+  }
 
+  public  getGemButton7Disabled (): boolean {
+    let curUser: User = SehubSecurityManager.getCurrentUser();
+    if (!!curUser && SehubRole[curUser.getRole()] === "OWNER") {
+      return false;
+    } else if (!!curUser && curUser.getUsername() === this.getPost().getAuthor().getUsername()) {
+      return false;
+    }
+    return true;
+  }
 
 }
