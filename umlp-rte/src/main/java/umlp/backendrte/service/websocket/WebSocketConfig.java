@@ -14,7 +14,7 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
   private final Logger logger = LoggerFactory.getLogger(WebSocketConfig.class);
-  final static String UMLP_DOMAINNAME_ENV = "UMLP_DEPLOYED_DOMAIN";
+  public final static String UMLP_DOMAINNAME_ENV = "UMLP_DEPLOYED_DOMAIN";
 
   @Override
   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
