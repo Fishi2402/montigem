@@ -20,7 +20,7 @@ component IssueEntry(Issue issue) {
           @guard(issue.state != 0) {
             @GemButton(label = "<<<", leftClick = demote);
           },
-          @GemButton(label = "Delete", leftClick = deleteIssue),
+          @GemButton(label = "Delete", leftClick = deleteIssue, disabled = false),
           @guard(issue.state != 2) {
             @GemButton(label = ">>>", leftClick = promote);
           }

@@ -15,12 +15,12 @@ import input.src.lib.gemtextareainput.GemTextareaInput;
 
 component IssueCreate(Issue issue){
   @GemColumn(hAlign = "center", width = "400px", rowGap = "5px", components = [
-    @GemTextInput(labelText = "Issue Title", entry = issue.title),
+    @GemTextInput(labelText = "Issue Title", entry = issue.title, disabled = false),
     @GemTextareaInput(
       labelText = "Description",
       entry = issue.description,
       disabled = false
     ),
-    @GemButton(label = "Create new Issue", leftClick = createIssue)
+    @GemButton(label = "Create new Issue", leftClick = createIssue, disabled = false)
   ]);
 }
