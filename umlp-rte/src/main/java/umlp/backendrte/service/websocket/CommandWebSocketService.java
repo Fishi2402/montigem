@@ -61,19 +61,7 @@ public class CommandWebSocketService extends TextWebSocketHandler {
       }
 
       CommandResult res = CommandManager.executeCommand(command);
-      // Check if the object was found. If not, then someone might have tried to load a subclass
-      // instance instead of a class instance
-      // TODO AGe: isSuccessful should probably be a part of CommandResult interface
-      // TODO AGe: all cases when such check is needed?
-      if (res.isSimpleResult() && res.asSimpleResult().isSuccessful()
-          || res.isListResult() && res.asListResult().isSuccessful()
-          || res.isStatusResult() && res.asStatusResult().wasSuccessful()
-      ) {
-        returnResult = CommandObjectMapper.serializeResponse(res);
-      }
-      else {
-        returnResult = CommandObjectMapper.serializeResponse(StatusResult.error(command.getId()));
-      }
+      returnResult = CommandObjectMapper.serializeResponse(res);
     } catch (Exception e) {
       int commandId = -1;
       Pattern p = Pattern.compile("\"id\":\\s*(\\d+)");

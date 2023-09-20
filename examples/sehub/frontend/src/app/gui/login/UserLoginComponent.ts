@@ -70,7 +70,7 @@ export class UserLoginComponent extends UserLoginComponentTOP {
             ws_protocol + '://' + document.location.host + '/umlp/api/command'
           ));
           CommandManager.initMe(cmdManager);
-          this.router.navigate(["/start"]);
+          window.location.href = '/start'; // Do NOT use router as otherwise the websocket is not refreshed!
         } else {
           alert("Invalid Login: Wrong Username or Password!");
         }
