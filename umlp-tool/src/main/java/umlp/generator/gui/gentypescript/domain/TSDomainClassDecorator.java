@@ -113,9 +113,16 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     for (ASTCDAttribute attribute : attrList) {
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
       // methods.forEach(m -> m.getModifier().setAbstract(isInterface));
-      methods.forEach(m -> m.getModifier().setDerived(isInterface));
+      //methods.forEach(m -> m.getModifier().setDerived(isInterface));
       // TODO AGe: why is it getting set to abstract?
-      methods.forEach(m -> m.getModifier().setAbstract(false));
+      //methods.forEach(m -> m.getModifier().setAbstract(false));
+      if (isInterface) {
+        methods.forEach(m -> m.getModifier().setAbstract(true));
+      } else if (methods.stream().anyMatch(m -> m.getModifier().isAbstract())) {
+        cdType.getModifier().setAbstract(true);
+      } else {
+        methods.forEach(m -> m.getModifier().setAbstract(false));
+      }
       cdType.addAllCDMembers(methods);
     }
   }

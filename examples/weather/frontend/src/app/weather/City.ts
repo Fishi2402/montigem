@@ -73,11 +73,6 @@ export class City extends CityTOP {
     this._nextDays.set(timeseries);
   }
 
-  public getNextHours() {
-    this.calcNextHours();
-    return this._nextHours;
-  }
-
   public async calcNextHours() {
     if (this.original.nextHours.calculating || this.original.nextHours.hash != null) {
       return;
@@ -108,6 +103,11 @@ export class City extends CityTOP {
     this.original.nextHours.hash = hash;
 
     this._nextHours = value;
+  }
+
+  public getNextHoursDerivedGemList(): GemList<Forecast> {
+    this.calcNextHours();
+    return this._nextHours;
   }
 
   public getCurrent(): Forecast | undefined {
