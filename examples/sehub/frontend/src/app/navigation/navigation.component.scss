@@ -22,6 +22,23 @@
 .navMenu .material-symbols-outlined {
   font-size: 25px;
   padding-top: 14px;
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+.navMenu a.material-symbols-outlined .tooltip {
+  visibility: hidden;
+  font-size: 14px;
+  background-color: $acronio-black-1;
+  color: #fff;
+  text-align: center;
+  padding: 5px 5px;
+  border-radius: 6px;
+  overflow: visible;
+  position: fixed;
+  transform: translate(-30px, 36px);
+  -webkit-filter: drop-shadow(0px 0px 5px rgba(#000, 0.7));
+  filter: drop-shadow(0px 0px 5px rgba(#000, 0.7));
 }
 
 .navMenu a, .navMenu .user {
@@ -40,11 +57,6 @@
 .navMenu.navMenu a:hover, .navMenu a:focus {
   color: $acronio-orange-3 !important;
 }
-
-
-//.navMenu a:active {
-//  font-weight:bold;
-//}
 
 .navMenu .dot {
   position: absolute;
@@ -67,7 +79,23 @@
   padding-bottom: 2px;
 }
 
-.startNav.startNav img:hover, .startNav:focus {
+.startNav .tooltip {
+  visibility: hidden;
+  font-size: 14px;
+  background-color: $acronio-black-1;
+  color: #fff;
+  text-align: center;
+  padding: 5px 5px;
+  border-radius: 6px;
+  border-color: white;
+  overflow: visible;
+  position: fixed;
+  transform: translate(-40px, 45px);
+  -webkit-filter: drop-shadow(0px 0px 5px  rgba(#000, 0.7));
+  filter: drop-shadow(0px 0px 5px  rgba(#000, 0.7));
+}
+
+.startNav.startNav img:hover, .startNav:focus img {
   -webkit-filter: drop-shadow(0px 0px 5px $acronio-blue-alternate-3);
   filter: drop-shadow(0px 0px 5px $acronio-blue-alternate-3);
 }
@@ -103,18 +131,6 @@
   transition: all 0.2s ease-in-out;
   opacity: 1;
 }
-/*
-.navMenu.navMenu a:nth-child(5):hover ~ .dot, .navMenu a:nth-child(5):focus ~ .dot {
-  -webkit-transform: translate(383px, 37px);
-  transform: translate(383px, 37px);
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-  opacity: 1;
-}
-*/
-.navMenu a:nth-child(6){
-  color: blue;
-}
 
 .navMenu .user {
   color: $acronio-orange-3;
@@ -122,4 +138,12 @@
 
 .navMenu .spacer {
   flex-grow: 1; /* this is the important bit */
+}
+
+.navMenu a.material-symbols-outlined:hover .tooltip {
+  visibility: visible;
+}
+
+.startNav:hover .tooltip {
+  visibility: visible;
 }
