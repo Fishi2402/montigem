@@ -22,7 +22,7 @@ export class NotesPage extends NotesPageTOP {
             new Set<Post>())
             .author(SehubSecurityManager.getCurrentUser())
             .title("<< YOUR TITLE >>")
-            .text("<< YOUR DESCRIPTION >> ")
+            .text("")
             .issueGem(new Gem<Issue>().Gem2(this.getIssue()))
             .build();
         this.issue.addPosts2(post)

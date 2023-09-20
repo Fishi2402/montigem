@@ -29,7 +29,8 @@ component Note(Post post, Boolean showResponses){
                   id = "text1",
                   labelText = "",
                   entry = post.text,
-                  disabled = false
+                  disabled = false,
+                  placeholder = "Felix will handle this"
                 ),
         responseList@iterate(Post r : post.responses){
            loadRespComponent@Response(post = r);
