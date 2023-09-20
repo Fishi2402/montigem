@@ -25,6 +25,10 @@ export class UserLoginComponent extends UserLoginComponentTOP {
     });
     /**/
 
+    if (SehubSecurityManager.isSignedIn()) {
+      this.router.navigate(['/start']);
+    }
+
     if (this.loginUser == null) {
       this.loginUser = new User();
     }
