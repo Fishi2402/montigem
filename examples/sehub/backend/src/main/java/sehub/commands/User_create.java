@@ -20,9 +20,7 @@ public class User_create extends User_createTOP {
   }
 
   public StatusResult doRun() {
-    // Replace cleartext password with hashed password
-    user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getPassword()), NotificationScope.LOCAL);
-
+:wq
     UserAccessPolicy accessPolicy = new UserAccessPolicy();
     if (accessPolicy.checkCreatePermission(this)) {
       SehubManager.addUser(user, NotificationScope.LOCAL);
