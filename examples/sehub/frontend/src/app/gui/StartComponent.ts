@@ -23,7 +23,7 @@ export  class StartComponent extends StartComponentTOP {
   }
 
   ngOnInit(){
-    if (!SehubSecurityManager.isSignedIn()) {
+    if (!(SehubSecurityManager.isCurrentlyLoggingIn() || SehubSecurityManager.isSignedIn())) {
       this.router.navigate(['/login/LoginPage']);
     }
 
