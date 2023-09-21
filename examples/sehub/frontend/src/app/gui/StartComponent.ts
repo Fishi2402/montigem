@@ -6,6 +6,7 @@ import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 import {GetCurrentUserRequest} from "../security/GetCurrentUserRequest";
 import {CommandManager} from '@umlp/common';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'start',
@@ -16,9 +17,14 @@ import {CommandManager} from '@umlp/common';
 
 export  class StartComponent extends StartComponentTOP {
 
+  public constructor(route: ActivatedRoute, protected router: Router) {
+    super();
+    this.router = router;
+  }
+
   ngOnInit(){
     if (!SehubSecurityManager.isSignedIn()) {
-      super.router.navigate(['/login/LoginPage']);
+      this.router.navigate(['/login/LoginPage']);
     }
 
     CommandManager.executeCommand(new GetCurrentUserRequest()).then(res => {
