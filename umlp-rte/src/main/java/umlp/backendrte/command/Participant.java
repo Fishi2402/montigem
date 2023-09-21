@@ -9,6 +9,7 @@ import java.util.Set;
 
 // Ausbaustufe: nicht alle Commands versenden, nur für Objekte die der Client geladen hat
 public class Participant {
+  protected long participantId;
   protected Set<Long> gemIds = new HashSet<>();
   protected ServerCommandCommunication commandCommunication;
   protected Set<DomainTypeFilter> domainTypeFilters = new HashSet<>();
@@ -16,8 +17,7 @@ public class Participant {
   protected String username;
 
   public Participant(ServerCommandCommunication commandCommunication) {
-    this.commandCommunication = commandCommunication;
-    this.username = "";
+    this(commandCommunication, "");
   }
 
   public Participant(ServerCommandCommunication commandCommunication, String username) {
@@ -52,5 +52,21 @@ public class Participant {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public long getParticipantId() {
+    return participantId;
+  }
+
+  public void setParticipantId(long participantId) {
+    this.participantId = participantId;
+  }
+
+  @Override
+  public String toString() {
+    return "Participant{" +
+        "participantId=" + participantId +
+        ", username='" + username + '\'' +
+        '}';
   }
 }

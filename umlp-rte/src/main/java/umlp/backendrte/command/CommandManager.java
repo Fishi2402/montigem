@@ -49,6 +49,7 @@ public class CommandManager {
   public long _register(Participant participant) {
     long participantId = runningClientId++;
     particpants.put(participantId, participant);
+    participant.setParticipantId(runningClientId);
     return participantId;
   }
 
