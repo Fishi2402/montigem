@@ -14,13 +14,13 @@ import input.src.lib.gemtextareainput.GemTextareaInput;
 component IssueEntry(Issue issue) {
   issueColumn@GemColumn(width = "400px", rowGap = "5px", component =
     issueCard@GemCard(
-      titleComponent = @GemLink(url = "notes/NotesPage/" + issue.getGemId(), text = issue.title),
+      titleComponent = navButton@GemButton(leftClick = navigate, label = issue.title),
       component = @GemColumn(hAlign = "right", rowGap = "10px", components = [
         @GemRow(colGap = "7px", width = "100%", hAlign = "center", components = [
           @guard(issue.state != 0) {
             @GemButton(label = "<<<", leftClick = demote);
           },
-          @GemButton(label = "Delete", leftClick = deleteIssue, disabled = false),
+          delButton@GemButton(label = "Delete", leftClick = deleteIssue, disabled = false),
           @guard(issue.state != 2) {
             @GemButton(label = ">>>", leftClick = promote);
           }
