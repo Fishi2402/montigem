@@ -10,8 +10,8 @@ page LoginPage() {
   @LoginContainer(component =
     @GemColumn(width = "400px", rowGap = "20px", hAlign = "center", components = [
       @UserLogin(),
-      @GemLink(url = "/login/forgotpassword/ForgotPasswordPage", text = "Forgot your password?"),
-      @GemLink(url = "/login/registration/RegistrationPage", text = "Create new account")
+      // @GemLink(url = "/login/forgotpassword/ForgotPasswordPage", text = "Forgot your password?"),
+      // @GemLink(url = "/login/registration/RegistrationPage", text = "Create new account")
     ])
   );
 }
