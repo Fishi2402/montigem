@@ -1,0 +1,15 @@
+:host ::ng-deep .navButton > .gem-button {
+  color: white;
+  background: #0000;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 0;
+  border: #0000;
+  text-align: left;
+  text-decoration: underline;
+
+  &:hover {
+    background: #0000;
+    cursor: pointer;
+  }
+}

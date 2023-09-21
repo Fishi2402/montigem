@@ -7,6 +7,7 @@ import {IssueEntryTOP} from '@src/gui/issues/IssueEntryTOP';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
 import {SehubRole} from '@src/sehub/SehubRole';
+import { Issue } from '@src/sehub/Issue';
 
 @Directive()
 
@@ -32,7 +33,11 @@ export class IssueEntry extends IssueEntryTOP {
     SehubManager.deleteIssue(this.getIssue().getGemId())
   }
 
-  public override getGemButton5Disabled (): boolean {
+  public override navigate(): void {
+    this.router.navigate(['notes', 'NotesPage', this.issue.getGemId()]);
+  }
+
+  public override getDelButtonDisabled (): boolean {
     let curUser: User = SehubSecurityManager.getCurrentUser();
     if (!!curUser && SehubRole[curUser.getRole()] === "GUEST" ||
                      SehubRole[curUser.getRole()] === "REPORTER") {

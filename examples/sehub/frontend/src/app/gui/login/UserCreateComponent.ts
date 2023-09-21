@@ -27,11 +27,11 @@ export class UserCreateComponent extends UserCreateComponentTOP {
       this.newUserBuilder = gemPromiseRes;
     });
 
-    /*
+
     SehubManager.getUserList().then(gemPromiseRes => {
       this.users = gemPromiseRes;
     });
-    /**/
+    
 
   }
 
