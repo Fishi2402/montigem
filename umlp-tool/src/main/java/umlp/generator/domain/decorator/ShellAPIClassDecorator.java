@@ -166,6 +166,9 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
 
   protected void addAttributeGetMethod(String cdName, String originalClassName, ASTCDClass api, ASTCDAttribute attr) {
     String getterName = GenService.getGetterName(attr.getName(), attr.getSymbol().getType());
+    if (GenService.isList(attr)) {
+      getterName += "List";
+    }
     ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.Attribute_Get", cdName,
         originalClassName, attr.getName(), attr.getMCType().printType(), GenService.createType(attr).printType(), getterName);
     String annotation = String.format("@ShellMethod(key = \"%s-get-%s\", value = \"Get %s of %s\") @ShellMethodAvailability(\"isConnected\")",
