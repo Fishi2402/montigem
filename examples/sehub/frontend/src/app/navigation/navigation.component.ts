@@ -1,7 +1,7 @@
-import { Component } from "@angular/core";
-import { SehubSecurityManager } from "../sehub/SehubSecurityManager";
-import { User } from '@src/sehub/User';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component} from "@angular/core";
+import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
+import {User} from '@src/sehub/User';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: "navigation",
@@ -30,8 +30,6 @@ export class Navigation {
     });
   }
   isSignedIn(): boolean {
-    return SehubSecurityManager.isSignedIn();
+    return SehubSecurityManager.isCurrentlyLoggingIn() || SehubSecurityManager.isSignedIn();
   }
-
-
 }
