@@ -1,0 +1,24 @@
+@import '../../../config/src/variables';
+
+$alpha: 0.8;
+
+.NavMenu {
+  width: 100%;
+  color: #fff;
+  display: flex;
+  flex-direction: row;
+  background: rgba($acronio-blue-1, $alpha);
+  border-bottom: 1px solid rgba($acronio-blue-2, $alpha);
+  // box-shadow: 0px 4px 5px rgba($acronio-blue, $alpha);
+  backdrop-filter: blur(3px);
+}
+
+.NavMenu a {
+  padding: 15px 10px;
+
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  display: inline-block;
+  transition: all 0.2s ease-in-out;
+}

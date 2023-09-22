@@ -1,0 +1,122 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.nio.file.Paths
+
+
+plugins {
+  id "com.github.node-gradle.node" version "5.0.0"
+  id 'de.rwth.se.umlp-tool'
+}
+
+configurations {
+  cdParser
+  guiParser
+  guiLib
+}
+
+dependencies {
+  cdParser "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
+  guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
+  guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
+}
+
+// Add Frontend-Config Files from UMLP-Tool Resources.
+task frontendSetup(type: FrontendSetup) {
+  input = file("config/")   // Can be used to add or replace files
+  output = layout.buildDir.dir("frontendGen/")
+}
+
+node {
+  // Whether to download and install a specific Node.js version or not
+  // If false, it will use the globally installed Node.js
+  // If true, it will download node using above parameters
+  // Note that npm is bundled with Node.js
+  download = true
+
+  // Version of node to download and install (only used if download is true)
+  // It will be unpacked in the workDir
+  version = "18.10.0"
+
+  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
+  // according the proxy configuration defined for Gradle
+  // Disable this option if you want to configure the proxy for npm or yarn on your own
+  // (in the .npmrc file for instance)
+  nodeProxySettings = ProxySettings.OFF
+
+  // The Node.js project directory location
+  // This is where the package.json file and node_modules directory are located
+  // By default it is at the root of the current project
+  nodeProjectDir = frontendSetup.getOutput()
+}
+
+def symPath = "${project.buildDir}/symbols";
+
+task serializeCD {
+  dependsOn('unpackGUILibSymbols')
+  doLast {
+    def modelPathStr = "${project.projectDir.parent}/models"
+    def modelPath = Paths.get(modelPathStr)
+    fileTree(modelPathStr).matching {
+      include "**/*.umlp"
+    }.each {
+      def path = it.path
+      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
+      javaexec {
+        mainClass = 'de.monticore.CD4CodeTool'
+        classpath = configurations.cdParser
+        args "-i", path,
+            "-s", "${symPath}/${relativeModelPathStr}sym"
+      }
+    }
+  }
+}
+
+task unpackGUILibSymbols(type: Copy) {
+  from zipTree(configurations.guiLib.asPath)
+  into "${symPath}"
+}
+
+task genDomain(type: UMLPFrontendTask) {
+  input = file("../models/Domain.umlp")
+  dependsOn(frontendSetup)
+  outputDir = frontendSetup.getOutput().dir("build/appdomain")
+  hwcDir = file("src/app/")
+}
+
+task genGUI(type: UMLPGuiGenTask) {
+  dependsOn('serializeCD', frontendSetup)
+  input = file("../models")
+  outputDir = frontendSetup.getOutput().dir("build/appgui")
+  hwcDir = file("src/app/")
+  modelDir = layout.projectDirectory.dir("../models")
+  symbolDir = file(symPath)
+  domainModels = ["Domain"]
+  guiCreateModels = []
+}
+
+task generateNPMAuth(type: NPMAuthCreate) {
+  npmrcFile = frontendSetup.getOutput().file(".npmrc")
+}
+
+
+npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
+npm_update.dependsOn(npm_install)
+
+task buildApp(type: NpxTask) {
+  dependsOn(genDomain, npm_update, genGUI)
+  command = "ng"
+  args = ["build"]
+}
+assemble.dependsOn(buildApp)
+
+task testApp(type: NpxTask) {
+  dependsOn(genDomain, npm_install, genGUI)
+  command = "ng"
+  args = ["test"]
+}
+
+task runApp(type: NpxTask) {
+  dependsOn(genDomain, npm_install, genGUI)
+  command = "ng"
+  args = ["serve"]
+}
