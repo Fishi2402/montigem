@@ -91,7 +91,7 @@ task genGUI(type: UMLPGuiGenTask) {
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = file(symPath)
   domainModels = ["Domain"]
-  guiCreateModels = []
+  guiCreateModels = ["person.Create"]
 }
 
 task generateNPMAuth(type: NPMAuthCreate) {

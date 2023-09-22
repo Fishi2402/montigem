@@ -47,7 +47,6 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
 
   protected Address addAddress(String city, String street, int house) {
     return DomainManager.addressBuilder()
-        .city(city)
         .street(street)
         .house(house)
         .build()

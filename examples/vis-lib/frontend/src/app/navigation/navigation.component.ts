@@ -13,7 +13,7 @@ export class Navigation {
   }
 
   readonly items: { url: string, title: string }[] = [
-    { url: '/person', title: 'Overview' },
+    { url: '/person/Overview', title: 'Overview' },
   ];
 
 }

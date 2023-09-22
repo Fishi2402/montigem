@@ -7,7 +7,6 @@ classdiagram Domain {
   }
 
   class Address {
-    String city;
     String street;
     int house;
   }

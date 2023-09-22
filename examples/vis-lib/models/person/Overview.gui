@@ -8,14 +8,20 @@ import arrange.src.lib.gemcolumn.GemColumn;
 import arrange.src.lib.gemrow.GemRow;
 import basic.src.lib.gemtext.GemText;
 
+import person.Row;
+import person.Create;
+
 page Overview(List<Person> persons) {
-  @GemColumn(rowGap = "10px", components = [
+  @GemColumn(rowGap = "10px", width = "50%", components = [
+    @Create(),
     @iterate(Person p : persons) {
-      @GemRow(colGap = "10px", components = [
-        @GemText(value = p.birthday),
-        @GemText(value = p.name),
-        @GemText(value = p.address.street + " " + p.address.house)
-      ]);
+      // @guard(p.address.street != "Ahornstraße") {
+        @Row(
+          col1 = @GemText(value = p.birthday),
+          col2 = @GemText(value = p.name),
+          col3 = @GemText(value = p.address.street + " " + p.address.house)
+        );
+      // }
     }
   ]);
 }
