@@ -6,8 +6,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'create',
   templateUrl: '../../../build/frontendGen/build/appgui/person/Create.html',
-  styles: [":host{ display: flex; flex-direction: column; row-gap: 5px }"],
-  styleUrls: []
+  styleUrls: ['./Create.scss']
 })
 export class CreateComponent extends CreateComponentTOP {
 

@@ -1,15 +1,15 @@
 @import '../../../config/src/variables';
 
-$alpha: 0.8;
+$alpha: 1;
 
 .NavMenu {
   width: 100%;
   color: #fff;
   display: flex;
   flex-direction: row;
-  background: rgba($acronio-blue-1, $alpha);
-  border-bottom: 1px solid rgba($acronio-blue-2, $alpha);
-  // box-shadow: 0px 4px 5px rgba($acronio-blue, $alpha);
+  background: rgba($acronio-black-2, $alpha);
+  border-bottom: 1px solid $acronio-black-3;
+  box-shadow: 0px 4px 5px rgba($acronio-black, 1);
   backdrop-filter: blur(3px);
 }
 
