@@ -1,0 +1,8 @@
+umlp AccessRights {
+  class Foo{
+    // Foo_setA is always denied
+    int a;
+    // Foo_setB is always allowed
+    int b;
+  }
+}
