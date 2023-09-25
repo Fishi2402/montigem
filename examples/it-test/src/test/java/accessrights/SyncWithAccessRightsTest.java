@@ -25,7 +25,6 @@ public class SyncWithAccessRightsTest extends AccessRightsMockTestSetup {
     assertEquals(3, fooServer.getB());
   }
 
-  //@Disabled("Witness for https://git.rwth-aachen.de/monticore/monticore/-/issues/3561")
   @Test
   public void testDeniedAccessIsNotSynced(){
     Foo fooServer = AccessRightsManager.fooBuilder().a(1).b(2).build().get();
