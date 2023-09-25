@@ -14,7 +14,7 @@ import java.time.LocalDate;
 
 @SpringBootApplication(
     exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
-    scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest"}
+    scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "service"}
 )
 public class DomainServerApplication extends domain.DomainServerApplicationTOP {
 
