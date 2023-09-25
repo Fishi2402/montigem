@@ -19,4 +19,9 @@ public class ServerError extends Command<Void> {
     GeneralErrorCollector.reportServerError(t);
     return StatusResult.ok(getId());
   }
+
+  @Override
+  public boolean checkAccessPolicy() {
+    return true;
+  }
 }

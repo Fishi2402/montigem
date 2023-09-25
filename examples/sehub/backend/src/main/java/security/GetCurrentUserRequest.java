@@ -25,4 +25,9 @@ public class GetCurrentUserRequest extends Request<Long> {
 
     return new SimpleResult<>(getId(), LoadingState.FAILED_TO_LOAD, "java.lang.Long");
   }
+
+  @Override
+  public boolean checkAccessPolicy() {
+    return true;
+  }
 }

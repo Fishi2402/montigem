@@ -45,6 +45,7 @@ public class ManagerSubscriptionDecorator extends AbstractDeSerDecorator {
     addConstructor(ast, classname, packageName);
     getCD4C().addMethod(ast, getDoRunTemplate(), getCorrectManager(domainClass), domainClass.getName() + "Observer", classname);
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
+    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainClass.getName());
 
     addImports(origCD, domainClass, ast, classname);
     return ast;
@@ -56,6 +57,7 @@ public class ManagerSubscriptionDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandManager"));
     getCD4C().addImport(ast, "com.google.common.collect.Sets");
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ classname + "AccessPolicy");
   }
 
   protected String extendedClass() {

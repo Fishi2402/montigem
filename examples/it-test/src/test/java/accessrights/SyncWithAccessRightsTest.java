@@ -1,7 +1,6 @@
 package accessrights;
 
 import accessrights.test_infrastructure.AccessRightsMockTestSetup;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,7 +25,6 @@ public class SyncWithAccessRightsTest extends AccessRightsMockTestSetup {
     assertEquals(3, fooServer.getB());
   }
 
-  @Disabled("Witness for https://git.rwth-aachen.de/monticore/monticore/-/issues/3561")
   @Test
   public void testDeniedAccessIsNotSynced(){
     Foo fooServer = AccessRightsManager.fooBuilder().a(1).b(2).build().get();
@@ -38,8 +36,8 @@ public class SyncWithAccessRightsTest extends AccessRightsMockTestSetup {
     Foo fooC2 = AccessRightsManager.getFooSure(fooServer.gemId);
     fooC2.setA(3);
 
-    assertEquals(1, fooC1.getB());
-    assertEquals(1, fooServer.getB());
+    assertEquals(1, fooC1.getA());
+    assertEquals(1, fooServer.getA());
   }
 
 }

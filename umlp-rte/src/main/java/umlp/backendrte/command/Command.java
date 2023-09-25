@@ -93,4 +93,6 @@ public abstract class Command<T> {
   public void setParticipantId(long participantId) {
     this.participantId = participantId;
   }
+
+  public abstract boolean checkAccessPolicy();
 }
