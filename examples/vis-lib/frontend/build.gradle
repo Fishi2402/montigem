@@ -102,21 +102,25 @@ task generateNPMAuth(type: NPMAuthCreate) {
 npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
 npm_update.dependsOn(npm_install)
 
+def prebuildTasks = [
+    genDomain, genGUI, ':umlp-rte:client:npm_install'
+]
+
 task buildApp(type: NpxTask) {
-  dependsOn(genDomain, npm_update, genGUI)
+  dependsOn(npm_update, prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
 task testApp(type: NpxTask) {
-  dependsOn(genDomain, npm_install, genGUI)
+  dependsOn(genDomain, prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
 task runApp(type: NpxTask) {
-  dependsOn(genDomain, npm_install, genGUI)
+  dependsOn(genDomain, prebuildTasks)
   command = "ng"
   args = ["serve"]
 }
