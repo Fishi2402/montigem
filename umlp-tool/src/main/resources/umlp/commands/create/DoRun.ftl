@@ -2,8 +2,7 @@
 ${tc.signature("classname", "managerName", "packagename")}
 ${cd4c.method("public StatusResult doRun()")}
 
-${packagename}.${classname}AccessPolicy accessPolicy = new ${packagename}.${classname}AccessPolicy();
-if(accessPolicy.checkPermission(this)){
+if(checkAccessPolicy()){
   ${managerName}.add${classname}(${classname?uncap_first}, NotificationScope.LOCAL);
   return StatusResult.ok(getId());
 }

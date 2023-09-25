@@ -10,7 +10,6 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.GenService;
@@ -96,6 +95,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
             getCorrectManager(assoc));
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
+    getCD4C().addMethod(ast, "umlp.commands.assocs.AssocsCheckAccessPolicy", sourceType, targetType);
 
     // Importe
     addImports(origCD, ast, sourceType, targetType);
@@ -143,6 +143,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
             getCorrectManager(assoc));
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
+    getCD4C().addMethod(ast, "umlp.commands.assocs.AssocsCheckAccessPolicy", sourceType, targetType);
 
     // Importe
     addImports(origCD, ast, sourceType, targetType);
@@ -202,6 +203,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
             getCorrectManager(assoc));
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
+    getCD4C().addMethod(ast, "umlp.commands.assocs.AssocsCheckAccessPolicy", sourceType, targetType);
 
     addImports(origCD, ast, sourceType, targetType);
 
@@ -282,5 +284,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+origCD.getCDDefinition().getName()+ ManagerDecorator.SUFFIX);
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+sourceType);
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+targetType);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ sourceType + "AccessPolicy");
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ targetType + "AccessPolicy");
   }
 }

@@ -70,6 +70,7 @@ public class TSGetDecorator extends GetDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("LoadingState"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ classname);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+ "." + classname + "AccessPolicy");
     getCD4C().addImport(
         ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainType));
   }

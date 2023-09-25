@@ -16,4 +16,9 @@ public class SyncError extends Command<Void> {
     GeneralErrorCollector.reportSyncError();
     return StatusResult.ok(getId());
   }
+
+  @Override
+  public boolean checkAccessPolicy() {
+    return true;
+  }
 }

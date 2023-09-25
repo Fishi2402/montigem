@@ -80,18 +80,22 @@ public class CommandManager {
   }
 
   protected  <T> CommandResult<T> _executeCommand(Command<T> command) {
-    CommandResult<T> res = command.doRun();
-    // update subscribed gemIds
-    if(particpants.containsKey(command.getParticipantId())){
-      particpants.get(command.getParticipantId()).subscribe(command.getNewlySubscribedGemIds());
-    } else {
-      // TODO: MH: kann das passieren?
+    if(command.checkAccessPolicy()) {
+      CommandResult<T> res = command.doRun();
+      // update subscribed gemIds
+      if (particpants.containsKey(command.getParticipantId())) {
+        particpants.get(command.getParticipantId()).subscribe(command.getNewlySubscribedGemIds());
+      } else {
+        // TODO: MH: kann das passieren?
+      }
+      // TODO: error handling if doRun fails
+      if (!command.isRequest()) {
+        _sendCommandToSubscribers(command);
+      }
+      return res;
+    }else{
+      return (CommandResult<T>) StatusResult.error(command.getId());
     }
-    // TODO: error handling if doRun fails
-    if(!command.isRequest()) {
-      _sendCommandToSubscribers(command);
-    }
-    return res;
   }
 
   public static <T> void sendCommandToSubscribers(Command<T> command){

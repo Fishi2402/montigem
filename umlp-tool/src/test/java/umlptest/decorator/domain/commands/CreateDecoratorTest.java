@@ -14,7 +14,7 @@ import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 import static umlp.generator.domain.decorator.commands.CreateDecorator.SUFFIX;
 
 public class CreateDecoratorTest extends DecoratorTest {
-  
+
   @Override
   protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
     return new CreateDecorator(glex);
@@ -26,7 +26,7 @@ public class CreateDecoratorTest extends DecoratorTest {
     assertAll(
             // check no of methods and attributes
             () -> assertEquals(1, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(3, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(4, clazz.getCDMethodList().size(), "number of methods"),
 
             // check methods
             () -> existsMethod(clazz, "doRun"),

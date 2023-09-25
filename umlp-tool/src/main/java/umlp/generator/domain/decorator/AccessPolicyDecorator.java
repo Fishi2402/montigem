@@ -1,12 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain.decorator;
 
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDElement;
-import de.monticore.cdbasis._ast.ASTCDMember;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -45,6 +43,10 @@ public class AccessPolicyDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethodSignature createCheckPolicy(ASTCDType domainClass) {
-    return getCD4C().addMethod(domainClass, "umlp.accesspolicy.CheckPermission");
+    return getCD4C().addMethod(domainClass, getCheckPermissionTemplate());
+  }
+
+  protected String getCheckPermissionTemplate() {
+    return "umlp.accesspolicy.CheckPermission";
   }
 }
