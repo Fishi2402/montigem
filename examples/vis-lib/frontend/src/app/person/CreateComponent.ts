@@ -2,6 +2,7 @@
 
 import { CreateComponentTOP } from '@src/person/CreateComponentTOP';
 import { Component } from '@angular/core';
+import { DomainManager } from '@src/domain/DomainManager';
 
 @Component({
   selector: 'create',
@@ -17,6 +18,12 @@ export class CreateComponent extends CreateComponentTOP {
   public override create(): void {
     const addr = this.addressBuilder.build();
     this.personBuilder.address(addr).build();
+    DomainManager.addressBuilder().then(b => {
+      this.addressBuilder = b;
+    });
+    DomainManager.personBuilder().then(b => {
+      this.personBuilder = b;
+    });
   }
 
 }
