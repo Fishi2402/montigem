@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package person;
+
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemrow.GemRow;
+
+page Row(GUIViewElement col1, GUIViewElement col2, GUIViewElement col3) {
+  @GemRow(colGap = "10px", hAlign = "space-between", components = [
+    @GemColumn(width = "30%", components = [ col1 ]),
+    @GemColumn(width = "30%", components = [ col2 ]),
+    @GemColumn(width = "30%", components = [ col3 ])
+  ]);
+}

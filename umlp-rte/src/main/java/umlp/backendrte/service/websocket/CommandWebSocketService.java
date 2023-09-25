@@ -48,16 +48,22 @@ public class CommandWebSocketService extends TextWebSocketHandler {
     String returnResult = "";
     try {
       Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(payload);
-      if (!commandOptional.isPresent()) {
+      if (commandOptional.isEmpty()) {
         return;
       }
       Command command = commandOptional.get();
 
       // check that participant id is correct
-      Participant participant = CommandManager.getInstance().getParticipant(command.getParticipantId());
-      String username = session.getPrincipal().getName();
-      if(!username.equals(participant.getUsername())){
-        throw new IllegalStateException("The participant with id " + command.getParticipantId() + " is not logged in as user " + username);
+      var participantFromSession = Optional.ofNullable(participants.get(session));
+      if(participantFromSession.isEmpty()){
+        throw new IllegalStateException("User is not logged in!");
+      }
+
+      var participantFromId = Optional.ofNullable(CommandManager.getInstance().getParticipant(command.getParticipantId()));
+
+      if(!participantFromSession.equals(participantFromId)){
+        Log.warn("Participant from id " + command.getId() + ":" + participantFromId + "was not the same as participant from session " + participantFromSession);
+        command.setParticipantId(participantFromSession.get().getParticipantId());
       }
 
       CommandResult res = CommandManager.executeCommand(command);

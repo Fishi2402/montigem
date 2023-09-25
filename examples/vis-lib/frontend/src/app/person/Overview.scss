@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+@import '../../../config/src/variables';
+
+$alpha: 0.7;
+
+row {
+  &:nth-child(even) {
+    background: rgba($acronio-black, $alpha);
+  }
+  &:nth-child(odd) {
+    background: rgba($acronio-black-1, $alpha);
+  }
+}

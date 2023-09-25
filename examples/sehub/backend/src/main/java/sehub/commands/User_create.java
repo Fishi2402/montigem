@@ -2,6 +2,7 @@
 package sehub.commands;
 
 import de.se_rwth.commons.logging.Log;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import security.MailService;
 import sehub.SehubManager;
 import sehub.User;
@@ -19,6 +20,9 @@ public class User_create extends User_createTOP {
   }
 
   public StatusResult doRun() {
+    // Replace cleartext password with hashed password
+    user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getPassword()), NotificationScope.LOCAL);
+
     UserAccessPolicy accessPolicy = new UserAccessPolicy();
     if (accessPolicy.checkCreatePermission(this)) {
       SehubManager.addUser(user, NotificationScope.LOCAL);

@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package person;
+
+import Domain.Person;
+import Domain.Address;
+
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gembutton.GemButton;
+import input.src.lib.gemtextinput.GemTextInput;
+
+import person.Row;
+
+page Create(Person person, Address address) {
+  @Row(
+    col1 = bday@GemTextInput(labelText = "Birthday", entry = person.birthday, inputType = "date"),
+    col2 = name@GemTextInput(labelText = "Name", entry = person.name),
+    col3 = @GemRow(hAlign = "space-between", vAlign = "bottom", components = [
+      @GemColumn(width = "48%", components = [
+        street@GemTextInput(labelText = "Street", entry = address.street)
+      ]),
+      @GemColumn(width = "48%", components = [
+        house@GemTextInput(labelText = "House", entry = address.house, inputType = "number")
+      ])
+    ])
+  );
+  @GemButton(label = "Create person", leftClick = create);
+}
