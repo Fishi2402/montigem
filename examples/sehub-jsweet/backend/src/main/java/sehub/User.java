@@ -6,14 +6,14 @@ import input.src.lib.gemtextinput.GemTextInputValidity;
 public class User extends UserTOP {
 
   public GemTextInputValidity getValidityEmail() {
-    return new GemTextInputValidity();
+    return null;
   }
 
   public GemTextInputValidity getValidityUsername() {
-    return new GemTextInputValidity();
+    return null;
   }
 
   public GemTextInputValidity getValidityPassword() {
-    return new GemTextInputValidity();
+    return null;
   }
 }

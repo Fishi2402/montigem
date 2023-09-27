@@ -3,6 +3,7 @@ package umlp.jsweet.extension.domainAdapters;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import umlp.jsweet.extension.UMLPAbstractAdapter;
 
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
@@ -54,6 +55,7 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
   public Function<TypeMirror, String> computeDateTypeMapping() {
     return (TypeMirror type) -> {
       switch (type.toString()) {
+        case "java.time.LocalDateTime":
         case "java.time.LocalDate":
         case "java.util.Date":
           return "Date";

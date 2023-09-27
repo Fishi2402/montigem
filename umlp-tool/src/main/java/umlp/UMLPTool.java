@@ -422,7 +422,10 @@ public class UMLPTool extends UMLPToolTOP {
           if (GUI_CREATE.isSelected(cmd)) {
             createModels.addAll(Arrays.asList(cmd.getOptionValues(GUI_CREATE.getCMD())));
           }
-          GUIGeneratorUtil.getInstance().init(domainModels, createModels);
+
+          boolean generateTS = GUI_GEN_TS_FUNC.isSelected(cmd) ?
+              Boolean.parseBoolean(cmd.getOptionValue(GUI_GEN_TS_FUNC.getCMD())) : true;
+          GUIGeneratorUtil.getInstance().init(domainModels, createModels, generateTS);
 
           GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
           nodeIdTrafo.transform(astGui);
@@ -449,8 +452,6 @@ public class UMLPTool extends UMLPToolTOP {
           String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
           typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
 
-          boolean generateTS = GUI_GEN_TS_FUNC.isSelected(cmd) ?
-              Boolean.parseBoolean(cmd.getOptionValue(GUI_GEN_TS_FUNC.getCMD())) : true;
           GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents, generateTS);
           componentGenerator.generate(astGui, "umlp.GUI2Component");
 

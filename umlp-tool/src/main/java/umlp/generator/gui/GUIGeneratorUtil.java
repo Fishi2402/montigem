@@ -51,10 +51,15 @@ import java.util.stream.Collectors;
 
 public class GUIGeneratorUtil {
 
+  public static final String SYNCHRONIZED_SUFFIX = "_synchronized";
+
   // Fully qualified Name of the classdiagram, e.g. "hardy.Flensburg"
   private List<String> DOMAIN_MODELS;
   // Fully qualified Name of a gui model, e.g. "stanley.PersonCreate"
   private List<String> CREATE_MODELS;
+
+  // flag whether to generate ts files
+  private boolean GENERATE_TS;
 
   protected final String TPL_INTERN = "TPL_INTERN";
   protected final String TPL_SUFFIX = "TPL";
@@ -74,9 +79,10 @@ public class GUIGeneratorUtil {
     return instance;
   }
 
-  public void init(List<String> domainModels, List<String> createModels) {
+  public void init(List<String> domainModels, List<String> createModels, boolean generateTS) {
     DOMAIN_MODELS = domainModels;
     CREATE_MODELS = createModels;
+    GENERATE_TS = generateTS;
   }
 
   public final String print(ASTNode node) {
@@ -316,6 +322,13 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(argName));
   }
 
+  public String gui2cdAttrGetterNameTS(String componentId, String argName) {
+    return getHTMLName("get"
+        + StringTransformations.capitalize(componentId)
+        + StringTransformations.capitalize(argName)) +
+        (GENERATE_TS ? "" : SYNCHRONIZED_SUFFIX);
+  }
+
   public String gui2cdAttrSetterName(String componentId, String argName) {
     return getHTMLName("set"
         + StringTransformations.capitalize(componentId)
@@ -357,6 +370,9 @@ public class GUIGeneratorUtil {
       visitor.setIgnore(ignore);
       visitor.transform(ic);
       String expressionWithNullChecks = replaceDots(print(visitor.getGetterExpression()));
+      if (!GENERATE_TS) {
+        expressionWithNullChecks = expressionWithNullChecks.replace("()", SYNCHRONIZED_SUFFIX + "()");
+      }
       return getHTMLName(expressionWithNullChecks);
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()

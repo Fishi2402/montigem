@@ -70,7 +70,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
 
     // Lists
     try {
-      if (types().isSubtype(types().erasure(targetType),
+      if (targetType != null && types().isSubtype(types().erasure(targetType),
           types().erasure(util().getType(java.util.List.class)))) {
         if (stringStartsWith(methodSimpleName,
             "add",

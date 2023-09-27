@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package usersettings;
+
+import gui.usersettings.UserSettingsTOP;
+
+import java.util.List;
+
+import sehub.User;
+
+public class UserSettings extends UserSettingsTOP {
+  public UserSettings(User currentUser, List users) {
+    super(currentUser, users);
+  }
+
+  public void inviteUserLeftClick() {
+
+  }
+}

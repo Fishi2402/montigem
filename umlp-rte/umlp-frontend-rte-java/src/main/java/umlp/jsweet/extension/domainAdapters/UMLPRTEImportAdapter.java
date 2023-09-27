@@ -5,13 +5,16 @@ import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ImportElement;
-import umlp.jsweet.extension.GUIComponentAdapter;
+import umlp.jsweet.extension.UMLPAbstractAdapter;
+import umlp.jsweet.extension.guiAdapters.GUIComponentAdapter;
 import umlp.jsweet.extension.util.UMLPAdapterUtils;
 import umlp.jsweet.extension.util.RTEPathUtil;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
+import java.util.function.Function;
 
 /**
  * This adapter is responsible for including the umlp RTE correctly.

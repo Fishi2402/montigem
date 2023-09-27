@@ -33,13 +33,13 @@ component UserSettings(User currentUser, List<User> users) {
           components = [
             @GemRow(
               components = [
-                projectmembers@GemText(value = "Project Members"),
-                @GemRow(
-                  hAlign = "right",
-                  components = [
-                    inviteUser@GemButton(label = "Invite new member", leftClick = "navigateToCreateNewUser")
-                  ]
-                )
+                projectmembers@GemText(value = "Project Members")//,
+//                @GemRow(
+//                  hAlign = "right",
+//                  components = [
+//                    inviteUser@GemButton(label = "Invite new member", leftClick = "navigateToCreateNewUser")
+//                  ]
+//                )
               ]
             ),
             @GemColumn(

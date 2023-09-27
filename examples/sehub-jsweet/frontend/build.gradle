@@ -17,6 +17,7 @@ buildscript {
 }
 
 plugins {
+  id 'java'
   id "com.github.node-gradle.node" version "5.0.0"
   id 'de.rwth.se.umlp-tool'
   id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
@@ -95,7 +96,7 @@ task unpackGUILibSymbols(type: Copy) {
   into "${symPath}"
 }
 
-sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui']
+sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui', 'src/app/gui']
 
 jsweet {
   autoPropagateAsyncAwaits = true
@@ -107,7 +108,7 @@ jsweet {
   candiesJsOut = project.file('build/jsweet/candies')
   workingDir = project.file('build/jsweet')
   targetVersion = 'ES6'
-  includes = ['**/sehub/**/*.java', '**/gui/**/*.java']
+  includes = ['**/sehub/**/*.java', '**/gui/**/*.java', '**/usersettings/**/*.java']
   excludes = [
           '**/sehub/SehubManagerImpl.java',
           '**/sehub/SehubMock.java',
@@ -131,7 +132,17 @@ jsweet {
   ]
 }
 
-task genDomain() {
+task translateTypeScript() {
+  doLast {
+    copy {
+      from project.file('build/frontendGen/build/appdomain/gui')
+      into project.file('build/frontendGen/build/appgui/gui')
+    }
+    copy {
+      from project.file('build/frontendGen/build/appdomain/usersettings')
+      into project.file('build/frontendGen/build/appgui/gui/usersettings')
+    }
+  }
 }
 
 task genGUI(type: UMLPGuiGenTask) {
@@ -143,11 +154,17 @@ task genGUI(type: UMLPGuiGenTask) {
   symbolDir = file(symPath)
   domainModels = ["Sehub"]
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
+  guiGenTSFuncionality = false
+}
+
+task moveGUIFiles() {
 }
 
 project.getTasksByName("jsweet", true).forEach {
-  t ->
-    genDomain.dependsOn(t)
+  t -> {
+      translateTypeScript.dependsOn(t)
+      t.dependsOn(genGUI)
+    }
 }
 
 task generateNPMAuth(type: NPMAuthCreate){
@@ -159,21 +176,26 @@ npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
 // TODO AGe: npm_update too slow - strategy to make occasional checks
 npm_update.dependsOn(npm_install)
 
+task installLocalRTE(type: NpmTask) {
+  dependsOn(npm_install)
+  args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]
+}
+
 task buildApp(type: NpxTask) {
-  dependsOn(genDomain, npm_update, genGUI)
+  dependsOn(translateTypeScript, npm_update, genGUI, installLocalRTE)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
 task testApp(type: NpxTask) {
-  dependsOn(genDomain, npm_install, genGUI)
+  dependsOn(translateTypeScript, npm_install, genGUI, installLocalRTE)
   command = "ng"
   args = ["test"]
 }
 
 task runApp(type: NpxTask) {
-  dependsOn(genDomain, npm_install, genGUI)
+  dependsOn(translateTypeScript, npm_install, genGUI, installLocalRTE)
   command = "ng"
   args = ["serve"]
 }

@@ -17,7 +17,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
 
   public constructor(ids?: IUMLPList<number>) {
     if (typeof ids !== 'undefined' && ids != null) {
-      ids.toArray().then(numbers => this.ids = [...numbers]);
+      // ids.toArray().then(numbers => this.ids = [...numbers]);
+      this.ids = [...ids.toArray()];
     } else if (typeof ids === 'undefined') {
       this.ids = [];
     }
@@ -123,7 +124,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     this.ids[idx] = gemID;
 
     if (this.asArray != null) {
-      this.asArray[idx] = await this.loadSingleObject(gemID);
+      this.asArray[idx] = (await this.loadSingleObject(gemID)).get();
     }
   }
 
@@ -136,8 +137,15 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return true;
   }
 
-  public async addAll(idx: number, elems: IUMLPList<E>): Promise<boolean> {
-    await this._internal_addAndSync(idx, await elems.map((elem: E) => elem.getGemId()));
+  public async addAll(idxOrElems: number | IUMLPList<E> | Array<E>, elems?: IUMLPList<E>): Promise<boolean> {
+    if (elems === undefined || elems === null && idxOrElems instanceof Array) {
+      var gemIds = (<Array<E>> idxOrElems).map((elem: E) => elem.getGemId());
+      await this._internal_addAndSync(0, new UMLPArrayList(gemIds));
+    } else if (elems === undefined || elems === null) {
+      await this._internal_addAndSync(0, await (<IUMLPList<E>>idxOrElems).map((elem: E) => elem.getGemId()));
+    } else {
+      await this._internal_addAndSync(<number>idxOrElems, await elems.map((elem: E) => elem.getGemId()));
+    }
     return true;
   }
 
@@ -390,7 +398,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
 
   protected asArray: Array<E> = null;
   // protected asArrayMap: any<Array<E>> = {};
-  async toArray(startIndex?: number, endIndex?: number): Promise<Array<E>> {
+  toArray(startIndex?: number, endIndex?: number): Array<E> {
     // TODO Beachtung von startIndex und endIndex
     // if (startIndex !== undefined && startIndex !== unll && endIndex !== undefined && endIndex !== null) {
     //   if (asArrayMap[{startIndex, endIndex} == null]) {
@@ -399,11 +407,13 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     //   return asArrayMap[{startIndex, endIndex}];
     // }
     if (this.asArray == null) {
-      await this.loadObjects(new UMLPArrayList(this.ids));
       this.asArray = [];
-      for await (let gemListElement of this) {
-        this.asArray.push(gemListElement);
-      }
+      this.loadObjects(new UMLPArrayList(this.ids)).then(async _ => {
+        for await (let gemListElement of this) {
+          this.asArray.push(gemListElement);
+        }
+      });
+
     }
     return this.asArray;
   }

@@ -4,13 +4,16 @@ package umlp.generator.gui.genjava.decorator;
 import com.google.common.base.Joiner;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
@@ -29,6 +32,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BuilderDecorator;
+import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
@@ -156,7 +160,9 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
     // gettter
     String builderGetter = util.gui2cdAttrGetterName(astguiParam.getName());
-    getCD4C().addMethod(clazz, getGetterParamTemplate(), builderGetter, attributeType, attributeName);
+    ASTCDMethodSignature method = getCD4C().addMethod(clazz, getGetterParamTemplate(),
+        builderGetter, attributeType, attributeName);
+    addAnnotation(clazz, method);
 
     return domainAttribute;
   }
@@ -238,6 +244,12 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     else {
       addDefaultConstructor(clazz);
     }
+
+    clazz.getCDConstructorList().stream().findFirst().ifPresent(c -> {
+          glex.replaceTemplate("cd2java.Annotations", c,
+              new StringHookPoint("@OnInit"));
+          getCD4C().addImport(clazz, "umlp.jsweet.extension.annotation.OnInit");
+    });
 
     return clazz;
   }
@@ -394,9 +406,17 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
     // getter
     String getter = util.gui2cdAttrGetterName(astguiParam.getName());
-    getCD4C().addMethod(clazz, getGetterParamTemplate(),
+    ASTCDMethodSignature method = getCD4C().addMethod(clazz, getGetterParamTemplate(),
         getter, transformTypeForAttr(clazz, astguiParam).printType(), astguiParam.getName());
+    addAnnotation(clazz, method);
     return attr;
+  }
+
+  private void addAnnotation(ASTCDClass clazz, ASTCDMethodSignature method) {
+//    if (GenService.isList(((ASTCDMethod)method).getMCReturnType().getMCType())) {
+//      glex.replaceTemplate("cd2java.Annotations", method, new StringHookPoint("@SynchronizedGemList"));
+//      getCD4C().addImport(clazz, "umlp.jsweet.extension.annotation.SynchronizedGemList");
+//    }
   }
 
   protected void addInitialValue(ASTCDAttribute attr) {

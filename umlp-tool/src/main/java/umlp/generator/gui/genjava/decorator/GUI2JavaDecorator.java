@@ -3,6 +3,7 @@ package umlp.generator.gui.genjava.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIAbstractDecorator;
@@ -23,6 +24,8 @@ public class GUI2JavaDecorator extends GUIAbstractDecorator {
     DomainRefDecorator domainRefDecorator = new DomainRefDecorator(glex, isInputGui, viewComponents);
     domainRefDecorator.transform(guiAst, decoratedAST);
     Log.info("After decorator: DomainRefDecorator", DomainRefDecorator.class.getName());
+
+    glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
 
 //    GUI2JavaComponentsDecorator componentsDecorator = new GUI2JavaComponentsDecorator(glex, viewComponents);
 //    componentsDecorator.transform(guiAst, domainRefDecorator.getDecoratedClass());

@@ -60,6 +60,8 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
           if (methodSignature.isPresent() && !GenService.containsMethod(decoratedClass, methodSignature.get())) {
             getCD4C().addMethod(decoratedClass, getEventCallbackTemplate(), methodName, "", args);
           }
+
+          addImport(decoratedClass, "java.util.function.Consumer");
         }
       }
     }

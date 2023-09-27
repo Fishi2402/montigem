@@ -181,7 +181,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         TemplateHookPoint hp = new TemplateHookPoint(
             getInitListsTemplate(), attr.getName(), setterName, isPrimitive, initValues, getArgs(it2Arg.getArgs())
         );
-        initHPs.add(hp);
+//        initHPs.add(hp); // MH TODO: wird irgendwie in andere Dateien injected, in welche es nicht gehört (replace Template)
       }
     }
     else {
