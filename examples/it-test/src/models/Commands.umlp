@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp Commands {
+  class App {
+    <<command>> void sendEmail(List<String> receiverList, String text);
+  }
+
+}
+

@@ -23,6 +23,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -399,5 +400,12 @@ public class GenService {
 
   public static boolean containsMethod(ASTCDType type, ASTCDMethodSignature method) {
     return type.getCDMethodList().stream().filter(m -> m.deepEquals(method)).findAny().isPresent();
+  }
+
+  public static boolean hasStereotype(ASTModifier modifier, String value) {
+    if (modifier.isPresentStereotype()) {
+      return modifier.getStereotype().contains(value);
+    }
+    return false;
   }
 }

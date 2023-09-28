@@ -92,6 +92,10 @@ public class CommandDecorator extends AbstractDecorator {
     EventSendingObserverDecorator managerEventSendingObserverDecorator = new EventSendingObserverDecorator(glex);
     managerEventSendingObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerEventSendingObserverDecorator", CommandDecorator.class.getName());
+
+    CmdDecorator cmdDecorator = new CmdDecorator(glex, supportedDeSers);
+    cmdDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: CmdDecorator", CommandDecorator.class.getName());
   }
 
   public void addSupportedDeSer(String... supportedDeSers) {
