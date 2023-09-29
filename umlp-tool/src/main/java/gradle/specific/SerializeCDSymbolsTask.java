@@ -56,7 +56,7 @@ abstract public class SerializeCDSymbolsTask extends DefaultTask {
 
       Log.trace(args.toString(), this.getName());
 
-      de.monticore.cd4code.CD4CodeTool.main(args.toArray(new String[0]));
+      de.monticore.CDGeneratorTool.main(args.toArray(new String[0]));
     }
   }
 }

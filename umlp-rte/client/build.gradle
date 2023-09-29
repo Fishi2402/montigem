@@ -38,12 +38,12 @@ node {
 }
 
 task createCDSymbols(type: SerializeCDSymbolsTask){
-  input = file("models/")
+  input = file("models/arrange")  // TODO: Set to whole models directory
   symbolPath = file("models/")
   output = layout.buildDirectory.dir("CDSymbols")
 }
 task createGuiSymbols(type: SerializeGUISymbolsTask){
-  input = file("models/arrange")
+  input = file("models/arrange")  // TODO: Set to whole models directory
   symbolPath = createCDSymbols.getOutput()
   output = layout.buildDirectory.dir("GuiSymbols")
 }
