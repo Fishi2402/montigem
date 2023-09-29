@@ -30,28 +30,12 @@ import java.util.stream.Collectors;
 
 abstract public class SerializeGUISymbolsTask extends DefaultTask {
 
-  private final ConfigurableFileCollection input = getProject().getObjects().fileCollection();
-
-  @InputFiles
+  @InputDirectory
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Optional
-  public ConfigurableFileCollection getInput(){
-    return input; // TODO: FileTree & Matching?
-  }
-
-  public void setInput(File f){
-    input.from(f);
-  }
-  public void setInput(Iterable<File> f){
-    input.from(f);
-  }
-  public void setInput(Object... paths){
-    input.from(paths);
-  }
+  public abstract DirectoryProperty getInput();
 
   @InputDirectory
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Optional
   public abstract DirectoryProperty getSymbolPath();
 
   @OutputDirectory
@@ -83,7 +67,8 @@ abstract public class SerializeGUISymbolsTask extends DefaultTask {
       }
       {
         args.add("-s");
-        args.add(getOutput().file(inputFile.getName() + "sym").get().getAsFile().getAbsolutePath());
+        String relPath = getInput().get().getAsFile().toPath().relativize(inputFile.toPath()).toString();
+        args.add(getOutput().file(relPath + "sym").get().getAsFile().getAbsolutePath());
       }
 
       Log.trace(args.toString(), this.getName());
