@@ -17,6 +17,6 @@ if(${classname?uncap_first}Opt.isEmpty()){
   }
   ${classname?uncap_first}Opt.get().add${targetname?cap_first}(indexInList, ${targetname}Opt.get(), NotificationScope.LOCAL);
 <#else>
-  // TODO
+  ${classname?uncap_first}Opt.get().add${attributename?cap_first}(indexInList, ${attributename}, NotificationScope.LOCAL);
 </#if>
 return StatusResult.error(getId());

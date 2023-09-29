@@ -18,7 +18,7 @@ try{
     ${statement}.addBatch();
     <#list listAttributes as attr>
       // TODO replace this with Commands
-      update${attr.getName()?cap_first}(o.getGemId(), o.get${attr.getName()?cap_first}());
+      update${attr.getName()?cap_first}(o.getGemId(), o.get${attr.getName()?cap_first}List());
     </#list>
   }
   ${statement}.executeBatch();

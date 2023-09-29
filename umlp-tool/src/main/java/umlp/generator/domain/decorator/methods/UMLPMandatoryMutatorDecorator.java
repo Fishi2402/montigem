@@ -19,14 +19,14 @@ import java.util.List;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
-public class SimpleMethodMutatorDecorator extends MandatoryMutatorDecorator {
+public class UMLPMandatoryMutatorDecorator extends MandatoryMutatorDecorator {
 
   protected final ASTCDType ast;
 
   protected final CD4C cd4c = CD4C.getInstance();
 
-  public SimpleMethodMutatorDecorator(GlobalExtensionManagement glex, CDGenService service,
-                                      ASTCDType ast) {
+  public UMLPMandatoryMutatorDecorator(GlobalExtensionManagement glex, CDGenService service,
+                                       ASTCDType ast) {
     super(glex, service);
     this.ast = ast;
   }
