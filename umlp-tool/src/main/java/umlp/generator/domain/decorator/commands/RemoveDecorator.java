@@ -195,8 +195,8 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     String baseClassDecorator = origCD.getCDDefinition().getName() + BaseClassObjectMapperDecorator.SUFFIX;
     boolean useDeSer = supportedDeSers.contains(typeName);
     boolean makeAbstract = jsonString.isEmpty() && !useDeSer;
-    getCD4C().addMethod(ast, getSet_FromJsonObjectTemplate(), cmdName, name, typeName, GenService.isInnerCDEnum(type), jsonString, useDeSer, baseClassDecorator, makeAbstract);
-    getCD4C().addMethod(ast, getSet_BuildJsonTemplate(), cmdName, name, typeName, GenService.isInnerCDEnum(type), getter, useDeSer, baseClassDecorator, makeAbstract);
+    getCD4C().addMethod(ast, getAdd_FromJsonObjectTemplate(), cmdName, name, typeName, GenService.isInnerCDEnum(type), jsonString, useDeSer, baseClassDecorator, makeAbstract);
+    getCD4C().addMethod(ast, getAdd_BuildJsonTemplate(), cmdName, name, typeName, GenService.isInnerCDEnum(type), getter, useDeSer, baseClassDecorator, makeAbstract);
 
     addDeSerImport(ast, origCD, useDeSer, baseClassDecorator, type, innerType, cmdName);
     if (makeAbstract) {
@@ -221,11 +221,11 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     }
   }
 
-  protected String getSet_BuildJsonTemplate() {
+  protected String getAdd_BuildJsonTemplate() {
     return "umlp.commands.deser.Add_BuildJson";
   }
 
-  protected String getSet_FromJsonObjectTemplate() {
+  protected String getAdd_FromJsonObjectTemplate() {
     return "umlp.commands.deser.Add_FromJsonObject";
   }
 

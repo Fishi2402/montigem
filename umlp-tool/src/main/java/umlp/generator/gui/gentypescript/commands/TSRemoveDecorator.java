@@ -54,12 +54,12 @@ public class TSRemoveDecorator extends RemoveDecorator {
   }
 
   @Override
-  protected String getSet_BuildJsonTemplate() {
+  protected String getAdd_BuildJsonTemplate() {
     return "umlp.gui2ts.commands.deser.TSAdd_BuildJson";
   }
 
   @Override
-  protected String getSet_FromJsonObjectTemplate() {
+  protected String getAdd_FromJsonObjectTemplate() {
     return "umlp.gui2ts.commands.deser.TSAdd_FromJsonObject";
   }
 
