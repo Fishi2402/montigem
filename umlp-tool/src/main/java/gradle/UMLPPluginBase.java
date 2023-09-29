@@ -4,6 +4,7 @@ package gradle;
 import gradle.specific.FrontendSetup;
 import gradle.specific.GuiVariabilityHandlerTask;
 import gradle.specific.NPMAuthCreate;
+import gradle.specific.SerializeGUISymbolsTask;
 import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPCdToGuiTask;
 import gradle.specific.UMLPFrontendTask;
@@ -31,6 +32,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       project.getExtensions().getExtraProperties().set("GuiVariabilityHandlerTask", GuiVariabilityHandlerTask.class);
       project.getExtensions().getExtraProperties().set("UMLPFrontendTask", UMLPFrontendTask.class);
       project.getExtensions().getExtraProperties().set("FrontendSetup", FrontendSetup.class);
+      project.getExtensions().getExtraProperties().set("SerializeGUISymbolsTask", SerializeGUISymbolsTask.class);
 
       StatisticListener.registerOnce(project);
     }

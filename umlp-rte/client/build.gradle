@@ -37,6 +37,12 @@ node {
   nodeProjectDir = layout.buildDirectory
 }
 
+task createGuiSymbols(type: SerializeGUISymbolsTask){
+  input = file("models/arrange")
+  symbolPath = file("models/")
+  output = layout.buildDirectory.dir("GuiSymbols")
+}
+
 dependencies {
 }
 
