@@ -37,9 +37,14 @@ node {
   nodeProjectDir = layout.buildDirectory
 }
 
+task createCDSymbols(type: SerializeCDSymbolsTask){
+  input = file("models/")
+  symbolPath = file("models/")
+  output = layout.buildDirectory.dir("CDSymbols")
+}
 task createGuiSymbols(type: SerializeGUISymbolsTask){
   input = file("models/arrange")
-  symbolPath = file("models/")
+  symbolPath = createCDSymbols.getOutput()
   output = layout.buildDirectory.dir("GuiSymbols")
 }
 
