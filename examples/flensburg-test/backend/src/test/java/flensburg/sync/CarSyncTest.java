@@ -69,4 +69,19 @@ public class CarSyncTest extends FlensburgMockTestSetup {
     assertEquals(0, c1.getNamesOfAllPartsList().size());
     assertEquals(0, c1Client.getNamesOfAllPartsList().size());
   }
+
+  @Test
+  public void testRemoveNameInClient(){
+    Car c1 = FlensburgManager.carBuilder()
+        .wheelLeft(true).namesOfAllParts(Lists.newArrayList("Foo")).build().get();
+
+    getClients(0).activate();
+    Car c1Client = FlensburgManager.getCarSure(c1.getGemId());
+    assertNotNull(c1Client);
+    assertEquals(1, c1Client.getNamesOfAllPartsList().size());
+
+    c1Client.removeNamesOfAllParts(0);
+    assertEquals(0, c1.getNamesOfAllPartsList().size());
+    assertEquals(0, c1Client.getNamesOfAllPartsList().size());
+  }
 }
