@@ -29,7 +29,7 @@ public class GetDecoratorTest extends DecoratorTest {
             () -> assertEquals(5, clazz.getCDMethodList().size(), "number of methods"),
 
             // check methods
-            () -> existsMethod(clazz, "doRun"),
+            () -> existsMethod(clazz, "doAction"),
             () -> existsMethod(clazz, "getGemId"),
             () -> existsMethod(clazz, "getEffectedGemIds"),
             () -> existsMethod(clazz, "getNewlySubscribedGemIds")

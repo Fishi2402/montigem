@@ -2,7 +2,6 @@
 package sehub.commands.associations;
 
 import sehub.PostAccessPolicy;
-import umlp.backendrte.command.StatusResult;
 
 public class Discussion_remove extends Discussion_removeTOP {
 
@@ -10,14 +9,11 @@ public class Discussion_remove extends Discussion_removeTOP {
     super(issueGemId, postsGemId, issueIndex, postsIndex);
   }
 
-  public StatusResult doRun() {
+  @Override
+  public boolean checkAccessPolicy() {
     PostAccessPolicy accessPolicy = new PostAccessPolicy();
-    if (accessPolicy.checkWritePermission(this)) {
-      return super.doRun();
-    }
-    return StatusResult.error(getId());
+    return accessPolicy.checkWritePermission(this);
   }
-
 }
 
 

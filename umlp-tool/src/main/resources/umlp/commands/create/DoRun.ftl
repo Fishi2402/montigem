@@ -1,11 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("classname", "managerName", "packagename")}
-${cd4c.method("public StatusResult doRun()")}
+${cd4c.method("public StatusResult doAction()")}
 
-if(checkAccessPolicy()){
-  ${managerName}.add${classname}(${classname?uncap_first}, NotificationScope.LOCAL);
-  return StatusResult.ok(getId());
-}
-else {
-  return StatusResult.error(getId());
-}
+${managerName}.add${classname}(${classname?uncap_first}, NotificationScope.LOCAL);
+return StatusResult.ok(getId());

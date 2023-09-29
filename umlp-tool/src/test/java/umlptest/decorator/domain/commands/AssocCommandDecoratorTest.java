@@ -27,7 +27,7 @@ public class AssocCommandDecoratorTest extends DecoratorTest {
       () -> assertEquals(7, clazz.getCDMethodList().size(), "number of methods"),
 
       // check methods
-      () -> existsMethod(clazz, "doRun"),
+      () -> existsMethod(clazz, "doAction"),
       () -> existsMethod(clazz, "getEffectedGemIds")
     );
   }

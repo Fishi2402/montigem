@@ -29,6 +29,8 @@ public abstract class CommandResult<T> {
     this.commandId = commandId;
   }
 
+  public abstract boolean isSuccessful();
+
 
   // Durch Javas Type erasure ist es nicht möglich geschachtelte generics in einer Vererbung zu benutzten,
   // also kann der genaue return type von Command#doRun nicht per Typenparameter gesetzt werden.

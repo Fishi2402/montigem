@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("classname", "originalclassname", "returntype", "managerName", "fieldName")}
-${cd4c.method("public ListResult<${returntype}, List<${returntype}>> doRun()")}
+${cd4c.method("public ListResult<${returntype}, List<${returntype}>> doAction()")}
 
 Optional<${originalclassname}> ${originalclassname?uncap_first} = ${managerName}.${originalclassname?uncap_first}Opt(gemId);
 if(${originalclassname?uncap_first}.isPresent()){

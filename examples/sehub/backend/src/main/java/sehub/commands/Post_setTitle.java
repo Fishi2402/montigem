@@ -16,23 +16,23 @@ public class Post_setTitle extends Post_setTitleTOP {
     super(gemId, title);
   }
 
-  public StatusResult doRun() {
-    PostAccessPolicy accessPolicy = new PostAccessPolicy();
-    if (accessPolicy.checkWritePermission(this)) {
-      Optional<Post> postOpt = SehubManager.postOpt(getGemId());
-      if (postOpt.isPresent()) {
-        postOpt.get().setTitle(title, NotificationScope.LOCAL);
-        return StatusResult.ok(getId());
-      } else {
-        GeneralErrorCollector.reportSyncError();
-        return StatusResult.error(getId());
-      }
+  @Override
+  public StatusResult doAction() {
+    Optional<Post> postOpt = SehubManager.postOpt(getGemId());
+    if (postOpt.isPresent()) {
+      postOpt.get().setTitle(title, NotificationScope.LOCAL);
+      return StatusResult.ok(getId());
     } else {
+      GeneralErrorCollector.reportSyncError();
       return StatusResult.error(getId());
     }
-
   }
 
+  @Override
+  public boolean checkAccessPolicy() {
+    PostAccessPolicy accessPolicy = new PostAccessPolicy();
+    return accessPolicy.checkWritePermission(this);
+  }
 }
 
 

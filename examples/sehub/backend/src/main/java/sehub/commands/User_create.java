@@ -6,10 +6,10 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import security.MailService;
 import sehub.SehubManager;
 import sehub.User;
+import sehub.UserAccessPolicy;
 import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.common.NotificationScope;
 import umlp.backendrte.util.LogUtil;
-import sehub.UserAccessPolicy;
 
 import javax.mail.MessagingException;
 
@@ -19,7 +19,8 @@ public class User_create extends User_createTOP {
     super(user);
   }
 
-  public StatusResult doRun() {
+  @Override
+  public StatusResult doAction() {
     // Replace cleartext password with hashed password
     user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getPassword()), NotificationScope.LOCAL);
 

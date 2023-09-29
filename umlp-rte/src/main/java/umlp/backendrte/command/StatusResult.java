@@ -25,6 +25,11 @@ public class StatusResult extends CommandResult<Void> {
   }
 
   @Override
+  public boolean isSuccessful() {
+    return successful;
+  }
+
+  @Override
   public boolean isStatusResult() {
     return true;
   }

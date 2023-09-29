@@ -1,14 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("classname","managerName", "packagename")}
-${cd4c.method("public StatusResult doRun()")}
+${cd4c.method("public StatusResult doAction()")}
 
-if(checkAccessPolicy()){
-  if (${managerName}.delete${classname}(gemId, NotificationScope.LOCAL)) {
-    return StatusResult.ok(getId());
-  }
-  else {
-    return StatusResult.error(getId());
-  }
+if (${managerName}.delete${classname}(gemId, NotificationScope.LOCAL)) {
+  return StatusResult.ok(getId());
 }
 else {
   return StatusResult.error(getId());
