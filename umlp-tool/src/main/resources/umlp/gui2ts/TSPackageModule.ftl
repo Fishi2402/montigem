@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("astguiCompilationUnitList","ids","compDecl","paths","existHWCModules","pathHWModule","pathHWroutes","imports")}
+${tc.signature("astguiCompilationUnitList","ids","compDecl","paths","existHWCModules","pathHWModule","pathHWroutes","imports","modules")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign uniqueSet = []>
 // always imported
@@ -14,7 +14,7 @@ import { routes } from '${pathHWroutes}';
   import { ${astguiCompilationUnitList[index].getComponentName()}Component } from "${paths[index]}";
 </#list>
 <#if existHWCModules >
-import {config} from '${pathHWModule}'
+import {config} from '${pathHWModule}';
 </#if>
 
 
@@ -22,6 +22,14 @@ import {config} from '${pathHWModule}'
 
 <#list imports?keys as key>
   import {${key}} from "${imports[key]}";
+    <#assign uniqueSet=uniqueSet+[key]>
+</#list>
+
+<#list modules?keys as key>
+  <#if !uniqueSet?seq_contains(key+"_Module")>
+  import {${key}_Module} from "./${modules[key]}/${key}.Module";
+      <#assign uniqueSet=uniqueSet+[key+"_Module"]>
+  </#if>
 </#list>
 
 @NgModule({
@@ -36,8 +44,8 @@ declarations: [
 imports: [
 RouterModule.forChild(routes),
 CommonModule,
-<#list imports?keys as key>
-    ${key},
+<#list uniqueSet as moduleClassName>
+${moduleClassName},
 </#list>
 <#if existHWCModules >
   ...config.imports

@@ -10,10 +10,12 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Names;
+import org.gradle.internal.impldep.org.bouncycastle.math.raw.Mod;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -171,8 +173,10 @@ public class GUI2TypeScriptGenerator {
     boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathName+"/"+name+ ".Routing."+TS_FILE_EXTENSION);
     Path generatedRoutingFile = Paths.get(pathName,
         name+"." + ROUTES_FILE +(existHWCRoutes?"TOP":"")+"." + TS_FILE_EXTENSION);
+
+    Map<String,String> modules=findNextLevelModule(setup.getOutputDirectory().getPath().toString()+"/"+pathName);
     genEngine.generateNoA("umlp.gui2ts.TSPackageRoutes", generatedRoutingFile,
-        astguiCompilationUnitList, ids,fullPathIndex, paths);
+        astguiCompilationUnitList, ids,fullPathIndex, paths, modules);
 
     boolean existHWCModules = existsHandwrittenFile(hwcPath, pathName+"/" +name +".Module.Config."+TS_FILE_EXTENSION);
     String pathHWModule="";
@@ -195,6 +199,8 @@ public class GUI2TypeScriptGenerator {
       if(filePath.isPresent())
         pathHWRoutes=filePath.get();
     }
+
+
 
     Path generatedModuleFiles = Paths.get(pathName,name+"."+
    MODULES_FILE + "." + TS_FILE_EXTENSION);
@@ -222,7 +228,9 @@ public class GUI2TypeScriptGenerator {
 
     genEngine.generateNoA("umlp.gui2ts.TSPackageModule", generatedModuleFiles,
         astguiCompilationUnitList, ids,compDecl, paths,existHWCModules,util.removeExtension(pathHWModule),
-        util.removeExtension(pathHWRoutes),imports);
+        util.removeExtension(pathHWRoutes),imports,modules);
+
+
     return Arrays.asList(generatedRoutingFile.toString(),generatedModuleFiles.toString());
   }
 
@@ -312,5 +320,27 @@ public class GUI2TypeScriptGenerator {
     Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
     return result;
   }
+
+  public static Map<String,String> findNextLevelModule(String path){
+      Map<String, String> modules = new HashMap<>();
+
+      File folder = new File(path);
+      File[] listOfFiles = folder.listFiles();
+
+      if(listOfFiles!=null) {
+        for (int i = 0; i < listOfFiles.length; i++) {
+          if (listOfFiles[i].isDirectory()) {
+            String moduleName=listOfFiles[i].getName().toUpperCase().charAt(0)+listOfFiles[i].getName().substring(1);
+            if(new File(listOfFiles[i].getPath()+"/"+moduleName+".Module.ts").exists())
+            {
+              modules.put(moduleName, listOfFiles[i].getName());
+            }
+          }
+        }
+      }
+      return modules;
+
+  }
+
 
 }
