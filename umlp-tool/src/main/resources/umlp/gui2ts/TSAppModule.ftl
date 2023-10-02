@@ -6,6 +6,7 @@ ${tc.signature("existedModuleConfig","existHWCRoutes","existAppComponent","pathH
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { Gui_Module } from '../../build/appgui/gui/Gui.Module'
 <#if existedModuleConfig >
   import { config } from '${pathModuleConfig}';
 </#if>
@@ -31,6 +32,7 @@ declarations: [
 imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
+    Gui_Module,
 <#if existAppComponent >
   AppComponent,
 </#if>
