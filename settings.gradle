@@ -56,6 +56,8 @@ include ':examples:sehub:backend'
 include ':examples:sehub:frontend'
 include ':examples:sehub-cd2gui:backend'
 include ':examples:sehub-cd2gui:frontend'
+include ':examples:vis-lib:backend'
+include ':examples:vis-lib:frontend'
 
 include ':products:syse_functions'
 include 'examples:flensburg-test-jsweet:backend'

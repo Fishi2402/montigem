@@ -4,15 +4,14 @@ import {SehubManager} from '@src/sehub/SehubManager';
 import {IssueState} from '@src/sehub/IssueState';
 import {Directive} from '@angular/core';
 import {IssueEntryTOP} from '@src/gui/issues/IssueEntryTOP';
+import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {User} from '@src/sehub/User';
+import {SehubRole} from '@src/sehub/SehubRole';
+import { Issue } from '@src/sehub/Issue';
 
 @Directive()
 
 export class IssueEntry extends IssueEntryTOP {
-
-  public editIssue(event: any): void {
-    console.log(this.getIssue().getGemId())
-    this.router.navigate(['/Gui/NotesPage/' + this.getIssue().getGemId()]);
-  }
 
   public promote(event: any): void {
     if (this.getIssue().getState() === IssueState.UNASSIGNED) {
@@ -34,14 +33,17 @@ export class IssueEntry extends IssueEntryTOP {
     SehubManager.deleteIssue(this.getIssue().getGemId())
   }
 
-  public  getIssueCardTitle (): string
+  public override navigate(): void {
+    this.router.navigate(['notes', 'NotesPage', this.issue.getGemId()]);
+  }
 
-  {
-    let postCounter = 0;
-
-    this.getIssue().getPosts().forEach(p => { postCounter = postCounter + 1 + p.getResponses().length})
-
-    return super.getIssueCardTitle() + " (" + postCounter + ")"
+  public override getDelButtonDisabled (): boolean {
+    let curUser: User = SehubSecurityManager.getCurrentUser();
+    if (!!curUser && SehubRole[curUser.getRole()] === "GUEST" ||
+                     SehubRole[curUser.getRole()] === "REPORTER") {
+      return true;
+    }
+    return false;
   }
 
 }

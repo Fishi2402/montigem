@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature( "assoc","sourceName","targetName","sourceType","targetType",
                 "isSourceList","isTargetList","managerName")}
-${cd4c.method("public StatusResult doRun()")}
+${cd4c.method("public StatusResult doAction()")}
 
 <#assign csourceName=sourceName?cap_first>
 <#assign ctargetName=targetName?cap_first>

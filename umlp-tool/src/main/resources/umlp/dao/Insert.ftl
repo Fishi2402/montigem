@@ -14,7 +14,7 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
     </#list>
     ${statement}.executeUpdate();
     <#list listAttributes as attr>
-    update${attr.getName()?cap_first}(o.getGemId(), o.get${attr.getName()?cap_first}());
+    update${attr.getName()?cap_first}(o.getGemId(), o.get${attr.getName()?cap_first}List());
     </#list>
 
     List<Long> iDs;

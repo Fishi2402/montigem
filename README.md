@@ -15,7 +15,7 @@ code to meet your specific requirements.
 Make sure you have installed the following dependencies:
 - Java 11 (check it with `java -version`)
 - Gradle 7 (check it with `gradle --version`)
-- Make sure there is a file `~/gradle.properties` with your (SE RWTH) Nexus username and password. Example:
+- Make sure there is a file `~/.gradle/gradle.properties` with your (SE RWTH) Nexus username and password. Example:
 ```
 mavenUser=johndoe
 mavenPassword=mySuperStrongPassword

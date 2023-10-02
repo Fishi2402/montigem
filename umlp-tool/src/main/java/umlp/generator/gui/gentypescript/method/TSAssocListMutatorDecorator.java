@@ -11,7 +11,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.se_rwth.commons.Joiners;
-import umlp.generator.domain.decorator.methods.SimpleMethodMutatorDecorator;
+import umlp.generator.domain.decorator.methods.UMLPMandatoryMutatorDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
-public class TSAssocListMutatorDecorator extends SimpleMethodMutatorDecorator {
+public class TSAssocListMutatorDecorator extends UMLPMandatoryMutatorDecorator {
 
   public TSAssocListMutatorDecorator(GlobalExtensionManagement glex, CDGenService service,
                                    ASTCDType ast) {

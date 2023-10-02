@@ -7,7 +7,6 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
-import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -40,6 +39,7 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDType domainType, String packageName) {
     String classname = domainType.getName();
+    String domainPackage = getPackageName(origCD, DEFAULT_PACKAGE);
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
       .setModifier(PUBLIC.build())
@@ -48,8 +48,9 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
       .build();
 
     addConstructor(ast, classname, packageName);
-    getCD4C().addMethod(ast, getDoRunTemplate(), classname,  getCorrectManager(domainType));
-
+    getCD4C().addMethod(ast, getDoRunTemplate(), classname,  getCorrectManager(domainType), domainPackage);
+    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainType.getName());
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+ "." + classname + "AccessPolicy");
     getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ getCorrectManager(domainType));

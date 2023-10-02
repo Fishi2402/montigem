@@ -18,7 +18,8 @@ page UserSettings(User currentUser, List<User> users) {
     myAccount@GemCard(title = "My Account",
       component = @GemColumn(rowGap = "5px", width = "400px", components = [
         userName@GemTextInput(labelText = "Username", inputType = "text", entry = currentUser.username),
-        password@GemTextInput(labelText = "Password", inputType = "password", entry = currentUser.password),
+        password@GemTextInput(labelText = "Password", inputType = "password", entry = /* No auto sync */ currentUser.password),
+        @GemButton(label= "Change password", leftClick = changePassword),
         userEMail@GemTextInput(labelText = "Email", inputType = "text", entry = currentUser.email)
       ])
     ),
@@ -26,7 +27,7 @@ page UserSettings(User currentUser, List<User> users) {
       @GemColumn(width = "90vw", components = [
         @GemRow(height = "3rem", hAlign = "space-between", vAlign = "center", components = [
           projectmembers@GemText(value = "Project Members"),
-          inviteUser@GemButton(label = "Invite new member", leftClick = navigateToCreateNewUser)
+          inviteUser@GemButton(disabled = false, label = "Invite new member", leftClick = navigateToCreateNewUser)
         ]),
         @GemColumn(components = [
           @iterate(User user: users) {

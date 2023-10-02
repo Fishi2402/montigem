@@ -8,12 +8,13 @@ import arrange.src.lib.gemcolumn.GemColumn;
 
 import basic.src.lib.gembutton.GemButton;
 import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gemimage.GemImage;
 import input.src.lib.gemtextinput.GemTextInput;
 import table.src.lib.gemtable.GemTable;
 
 component UserDisplay(User user) {
   @GemRow(colGap = "5px", hAlign = "space-between", vAlign = "center", components = [
-    @GemColumn(width = "50px", component = @GemText(value = "Bild")),
+    @GemColumn(width = "50px", component = @GemImage(source = "assets/images/avatars/avatar_" + user.getAvatar() + ".png")),
     @GemColumn(width = "20%", components = [
       account@GemText(value = user.username),
       email@GemText(value = user.email)
@@ -28,7 +29,8 @@ component UserDisplay(User user) {
           inputType = "dropdown",
           options = null,
           entry = user.role,
-          validity = user.validityRole
+          validity = user.validityRole,
+          disabled = false
         )
       )
     ]),
@@ -37,7 +39,7 @@ component UserDisplay(User user) {
       registration@GemText(value = user.registrationDate)
     ]),
     @GemColumn(width = "50px", component =
-      removeUser@GemButton(label = "x", leftClick = removeUser)
+      removeUser@GemButton(label = "x", leftClick = removeUser, disabled = false)
     )
   ]);
 }

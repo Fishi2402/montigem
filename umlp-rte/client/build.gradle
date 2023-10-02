@@ -7,12 +7,50 @@ import groovy.json.JsonSlurper
 plugins {
   id 'java'
   id 'com.diffplug.spotless' version '6.19.0'
+  id "com.github.node-gradle.node" version "5.0.0"
 }
+
 repositories {
   mavenCentral()
 }
+
+node {
+  // Whether to download and install a specific Node.js version or not
+  // If false, it will use the globally installed Node.js
+  // If true, it will download node using above parameters
+  // Note that npm is bundled with Node.js
+  download = true
+
+  // Version of node to download and install (only used if download is true)
+  // It will be unpacked in the workDir
+  version = "18.10.0"
+
+  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
+  // according the proxy configuration defined for Gradle
+  // Disable this option if you want to configure the proxy for npm or yarn on your own
+  // (in the .npmrc file for instance)
+  nodeProxySettings = ProxySettings.OFF
+
+  // The Node.js project directory location
+  // This is where the package.json file and node_modules directory are located
+  // By default it is at the root of the current project
+  nodeProjectDir = layout.buildDirectory
+}
+
+task createCDSymbols(type: SerializeCDSymbolsTask){
+  input = file("models/arrange")  // TODO: Set to whole models directory
+  symbolPath = file("models/")
+  output = layout.buildDirectory.dir("CDSymbols")
+}
+task createGuiSymbols(type: SerializeGUISymbolsTask){
+  input = file("models/arrange")  // TODO: Set to whole models directory
+  symbolPath = createCDSymbols.getOutput()
+  output = layout.buildDirectory.dir("GuiSymbols")
+}
+
 dependencies {
 }
+
 def libs = [
   "basic",
   "charts",

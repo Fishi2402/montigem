@@ -14,7 +14,7 @@ import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 import static umlp.generator.domain.decorator.commands.DeleteDecorator.SUFFIX;
 
 public class DeleteDecoratorTest extends DecoratorTest {
-  
+
   @Override
   protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
     return new DeleteDecorator(glex);
@@ -26,10 +26,10 @@ public class DeleteDecoratorTest extends DecoratorTest {
     assertAll(
             // check no of methods and attributes
             () -> assertEquals(1, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(3, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(4, clazz.getCDMethodList().size(), "number of methods"),
 
             // check methods
-            () -> existsMethod(clazz, "doRun"),
+            () -> existsMethod(clazz, "doAction"),
             () -> existsMethod(clazz, "getGemId"),
             () -> existsMethod(clazz, "getEffectedGemIds")
     );
@@ -54,5 +54,5 @@ public class DeleteDecoratorTest extends DecoratorTest {
     generateAndCheckCode(getClassByName("Foo" + SUFFIX));
     generateAndCheckCode(getClassByName("Foo" + SUFFIX + DE_SER));
   }
-  
+
 }

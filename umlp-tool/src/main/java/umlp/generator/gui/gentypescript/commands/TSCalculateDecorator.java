@@ -6,7 +6,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.check.SymTypePrimitive;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.GenService;
@@ -116,5 +115,6 @@ public class TSCalculateDecorator extends CalculateDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainClass));
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+ "." + domainClass.getName() + "AccessPolicy");
   }
 }
