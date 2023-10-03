@@ -2,7 +2,6 @@
 package umlp.generator.domain.decorator.commands;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -78,9 +77,9 @@ public class CmdDecorator extends AbstractDeSerDecorator {
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
         .build();
     ASTStereotypeBuilder stereotype = UMLPMill.stereotypeBuilder();
-    stereotype.addValues(
+   /* stereotype.addValues(
         TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
-            String.format("Custom implementation for class: %s required. Contains do_run", classname)));
+            String.format("Custom implementation for class: %s required. Contains do_run", classname)));*/
 
     ast.getModifier().setStereotype(stereotype.build());
     List<ASTCDAttribute> attrList = Lists.newArrayList();
@@ -90,6 +89,10 @@ public class CmdDecorator extends AbstractDeSerDecorator {
     getCD4C().addConstructor(ast, getConstructorTemplate(), classname, getPackageName(origCD, COMMAND_PACKAGE), attrList);
 
     getCD4C().addMethod(ast, getDoRunTemplate());
+
+    getCD4C().addMethod(ast, getCheckAccessPolicyTemplate());
+
+    // TODO: generate CheckAccessPolicy if domain attributes are available
     // getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", classname);
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
 
@@ -120,8 +123,10 @@ public class CmdDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTEErrorPath("NotImplementedException"));
     getCD4C().addImport(ast, "com.google.common.collect.Sets");
     getCD4C().addImport(ast, "java.util.*");
+
   }
 
   protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
@@ -142,6 +147,10 @@ public class CmdDecorator extends AbstractDeSerDecorator {
 
   protected String getDoRunTemplate() {
     return "umlp.commands.cmd.DoRun";
+  }
+
+  protected String getCheckAccessPolicyTemplate() {
+    return "umlp.commands.cmd.CheckAccessPolicy";
   }
 
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDMethod meth) {
