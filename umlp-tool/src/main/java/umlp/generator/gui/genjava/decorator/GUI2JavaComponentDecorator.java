@@ -201,6 +201,10 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         getterValue = conversion.apply(getterValue);
       } else {
         getCD4C().addImport(decoratedClass, PathUtil.getBackendRTECommonPath("GemList"));
+        String[] split = getterValue.split("\\.");
+        String getterPartial = split[split.length - 1];
+        split[split.length - 1] = "_internal_" + getterPartial.replace("()", "") + "GemList()";
+        getterValue = String.join(".", split);
       }
 
       addGetComponentMethod(decoratedClass, getterName, paramType,
