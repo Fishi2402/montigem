@@ -119,7 +119,7 @@ public class CmdDecorator extends AbstractDeSerDecorator {
       }
     });
 
-    getCD4C().addMethod(ast, getCheckAccessPolicyTemplate(), domainParameters.isEmpty(), domainParameters);
+    getCD4C().addMethod(ast, getCheckAccessPolicyTemplate(), domainParameters);
 
     return ast;
   }

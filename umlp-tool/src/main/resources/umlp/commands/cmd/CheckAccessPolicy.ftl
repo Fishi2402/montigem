@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("checkPolicy", "types")}
+${tc.signature("types")}
 ${cd4c.method("public boolean checkAccessPolicy()")}
-  <#if checkPolicy>
+  <#if types?size == 0>
     return true;
   <#else>
     boolean ret = true;
