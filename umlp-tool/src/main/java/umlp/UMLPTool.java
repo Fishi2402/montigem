@@ -14,6 +14,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl.GUIDSLTool;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
@@ -57,7 +58,6 @@ import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genhtml.GUI2HtmlTrafo;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
-import umlp.generator.gui.gentypescript.ModuleRoutingInfo;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
@@ -99,6 +99,8 @@ import static umlp.UMLPToolOptions.REPORT_BASE;
 import static umlp.UMLPToolOptions.SYMTAB;
 import static umlp.UMLPToolOptions.TMPL_PATH;
 import static umlp.UMLPToolOptions.USE_SPRING;
+import static umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator.TS_FILE_EXTENSION;
+import static umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator.existsHandwrittenFile;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -227,7 +229,7 @@ public class UMLPTool extends UMLPToolTOP {
         Reporting.flush(ast);
       }
 
-      else if (GUIVariability.isSelected(cmd)) {
+      else if(GUIVariability.isSelected(cmd)){
         List<Path> inputs = Arrays.stream(cmd.getOptionValues(INPUT.getCMD())).map(Path::of).collect(Collectors.toList());
 
         guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
@@ -236,32 +238,32 @@ public class UMLPTool extends UMLPToolTOP {
         LinkedList<ASTGUICompilationUnit> baseASTs = new LinkedList<>();
         LinkedList<ASTGUICompilationUnit> variationASTs = new LinkedList<>();
 
-        for (Path model : inputs) {
+        for(Path model : inputs){
           String report_on = model.getFileName().toString().replace(".", "__");
           Reporting.on(report_on);
           ASTGUICompilationUnit parsedModel = parseGUI(model.toString());
           Reporting.reportParseInputFile(model.toAbsolutePath(), report_on);
 
-          if (isGUIVariabilityFile(parsedModel)) variationASTs.add(parsedModel);
+          if(isGUIVariabilityFile(parsedModel)) variationASTs.add(parsedModel);
           else baseASTs.add(parsedModel);
         }
 
-        for (ASTGUICompilationUnit variationAST : variationASTs) {
+        for(ASTGUICompilationUnit variationAST : variationASTs){
           List<ASTGUICompilationUnit> adaptedAST = baseASTs.stream()
               .filter(ast -> ast.getComponentName().equals(variationAST.getGUIComponentDeclaration().getGUIComponentAdaptation().getTarget()))
               .collect(Collectors.toList());
-          if (adaptedAST.size() != 1) {
+          if(adaptedAST.size() != 1){
             Log.error("expected exactly one matching file to adapt with GUIVariability, but found multiple or none");
           }
           GUIVariabilityHandler deltaHandler = new GUIVariabilityHandler(adaptedAST.get(0));
           variationAST.accept(deltaHandler.getTraverser());
         }
 
-        for (ASTGUICompilationUnit productAST : baseASTs) {
+        for(ASTGUICompilationUnit productAST : baseASTs){
           Reporting.on(productAST.getComponentName() + "__gui");
           Path outputPath = outDir.toPath().resolve(        //file structure needs to reflect package declarations
               productAST.getMCPackageDeclaration().getMCQualifiedName().toString()
-                  .replace(".", "/")
+                  .replace(".","/")
                   .concat("/" + productAST.getComponentName() + ".gui")
           );
           GUIDSLFullPrettyPrinter pp = new GUIDSLFullPrettyPrinter(new IndentPrinter(), true);
@@ -285,7 +287,7 @@ public class UMLPTool extends UMLPToolTOP {
 
         List<URL> models = MCPathUtil.getAllModels(modelPath, ".*[.]umlp");
         for (URL modelUrl : models) {
-          try (Reader reader = new InputStreamReader(modelUrl.openStream())) {
+          try (Reader reader = new InputStreamReader(modelUrl.openStream())){
             ASTCDCompilationUnit ast = UMLPMill.parser().parse(reader).orElseThrow();
             Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
             runAfterParseTrafo(ast);
@@ -368,8 +370,8 @@ public class UMLPTool extends UMLPToolTOP {
         ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
       }
       else if (isGuiFile(inputFile)) {
-        Map<String, ModuleRoutingInfo> routesMap = new HashMap<>();
-        Set<String> createdTSComponents = new HashSet();
+        Map<String,List<ASTGUICompilationUnit>> routesMap=new HashMap<>();
+        Set<String> createdTSComponents=new HashSet();
 
         for (String guiPathString : cmd.getOptionValues(INPUT.getCMD())) {
           Path guiModel = Paths.get(guiPathString);
@@ -387,13 +389,15 @@ public class UMLPTool extends UMLPToolTOP {
           IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, importedSymbolPath);
 
 
-          if (!routesMap.containsKey(astGui.getPackage())) {
-            routesMap.put(astGui.getPackage(), new ModuleRoutingInfo(
-                astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList()));
-          }
-          routesMap.get(astGui.getPackage()).add(astGui);
 
-          createdTSComponents.add(astGui.getComponentName() + "Module");
+          //if(astGui!=null && astGui.getGUIComponentDeclaration().isPage()) {
+            if (!routesMap.containsKey(astGui.getPackage())) {
+              routesMap.put(astGui.getPackage(), new ArrayList<>());
+            }
+            routesMap.get(astGui.getPackage()).add(astGui);
+            createdTSComponents.add(astGui.getComponentName().substring(0,1).toUpperCase()+
+                astGui.getComponentName().substring(1).toLowerCase()+"Module");
+          //}
 
           // print or store symbol table
           if (SYMTAB.isSelected(cmd)) {
@@ -461,6 +465,14 @@ public class UMLPTool extends UMLPToolTOP {
           String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
           javaGenerator.generate(astGui, javaConfigTemplate);
 
+          GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, viewComponents);
+          String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
+
+
+
+          typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
+
+
           GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
           componentGenerator.generate(astGui, "umlp.GUI2Component");
 
@@ -478,14 +490,6 @@ public class UMLPTool extends UMLPToolTOP {
           Reporting.flush(astGui);
         }
 
-        for (var entry : routesMap.values()) {
-          for (var subentry : routesMap.values()) {
-            if (entry.isDirectSubmodule(subentry)) {
-              entry.addSubmodule(subentry);
-            }
-          }
-        }
-
         //create routes file for every package and
         GeneratorSetup genSetup = new GeneratorSetup();
         // set output directory
@@ -496,17 +500,19 @@ public class UMLPTool extends UMLPToolTOP {
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
             .map(p -> p.toFile()).collect(Collectors.toList()));
         GUIGeneratorUtil.getInstance().init(createdTSComponents);
-        GlobalExtensionManagement glex = new GlobalExtensionManagement();
+        GlobalExtensionManagement glex = createGlex();
         genSetup.setGlex(glex);
         genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
-        routesMap.entrySet().forEach(astList -> {
-          GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
-          List<String> outputs = typeScriptGenerator.generateConfigFileForPackages(astList);
-          outputs.forEach(output -> Reporting.reportFileCreation(outDir + "/" + output));
+        routesMap.values().forEach(astList->
+        {
+          GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
+          List<String> outputs=typeScriptGenerator.generateConfigFileForPackages(astList,GUIGeneratorUtil.getInstance());
+          outputs.forEach(output->Reporting.reportFileCreation(outDir+"/"+output));
+
         });
         GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
-        List<String> outputs = typeScriptGenerator.generateAppConfigfile(new ArrayList<>(routesMap.values()));
-        outputs.forEach(output -> Reporting.reportFileCreation(outDir + "/" + output));
+        List<String> outputs=typeScriptGenerator.generateAppConfigfile(new ArrayList<>(routesMap.values()));
+        outputs.forEach(output->Reporting.reportFileCreation(outDir+"/"+output));
         Reporting.flush(new ASTGUICompilationUnit());
       }
     } catch (ParseException e) {
@@ -532,7 +538,9 @@ public class UMLPTool extends UMLPToolTOP {
     return glex;
   }
 
-  protected void storeSymbols(IGUIDSLArtifactScope scope, String path) {
+  protected  void storeSymbols (IGUIDSLArtifactScope scope,String path)
+
+  {
     GUIDSLSymbols2Json symbols2Json = new GUIDSLSymbols2Json();
     symbols2Json.store(scope, path);
   }
@@ -607,8 +615,8 @@ public class UMLPTool extends UMLPToolTOP {
     logTrafoExec("rebuildCD4CodeSymTab", node);
   }
 
-  protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast) {
-    Log.info("========= CD after '" + trafo + "': =========", UMLPTool.class.getName());
+  protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
+    Log.info("========= CD after '"+trafo+"': =========", UMLPTool.class.getName());
   }
 
   protected boolean isUmlpFile(File f) {
@@ -619,7 +627,7 @@ public class UMLPTool extends UMLPToolTOP {
     return f.getName().endsWith(".gui");
   }
 
-  protected boolean isGUIVariabilityFile(ASTGUICompilationUnit compilationUnit) {
+  protected boolean isGUIVariabilityFile(ASTGUICompilationUnit compilationUnit){
     return compilationUnit.getGUIComponentDeclaration().isPresentGUIComponentAdaptation();
   }
 
