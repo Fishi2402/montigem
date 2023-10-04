@@ -2,7 +2,6 @@
 
 package umlp._cocos.teaching;
 
-import de.monticore.cd4analysis.cocos.CD4AnalysisCoCosDelegator;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import umlp._cocos.UMLPCoCoChecker;
 
@@ -20,10 +19,6 @@ public class UMLPTeachingCoCos {
   protected void addCoCos(UMLPCoCoChecker checker) {
     checker.addCoCo(new CDAssociationIsNotBidirectional());
     checker.addCoCo(new CDAssociationsAreNotCyclicAtLeastOne());
-    checker.addCoCo(new CDClassDoesNotExtendClasses());
-    checker.addCoCo(new CDClassDoesNotImplementInterfaces());
-    checker.addCoCo(new CDEnumNotPresent());
-    checker.addCoCo(new CDInterfaceNotPresent());
   }
 
   public void check(ASTCDCompilationUnit ast) {
