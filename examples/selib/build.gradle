@@ -53,6 +53,7 @@ task generateJavaCode(type: UMLPBackendTask) {
   configTemplate = "umlp/UMLPConfig4teaching.ftl"
 
   outputDir = layout.buildDirectory.dir("umlp_backend")
+  useSpring.set(true)
 }
 
 sourceSets {

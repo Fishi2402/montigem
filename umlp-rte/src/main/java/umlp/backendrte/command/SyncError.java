@@ -12,7 +12,7 @@ public class SyncError extends Command<Void> {
   }
 
   @Override
-  public StatusResult doRun() {
+  public StatusResult doAction() {
     GeneralErrorCollector.reportSyncError();
     return StatusResult.ok(getId());
   }

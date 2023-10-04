@@ -13,20 +13,20 @@ public class Issue_delete extends Issue_deleteTOP {
     super(gemId);
   }
 
-
-  public StatusResult doRun() {
-    IssueAccessPolicy accessPolicy = new IssueAccessPolicy();
-    if (accessPolicy.checkCUDPermission(this)) {
-      if (SehubManager.deleteIssue(getGemId(), NotificationScope.LOCAL)) {
-        return StatusResult.ok(getId());
-      } else {
-        return StatusResult.error(getId());
-      }
+  @Override
+  public StatusResult doAction() {
+    if (SehubManager.deleteIssue(getGemId(), NotificationScope.LOCAL)) {
+      return StatusResult.ok(getId());
     } else {
       return StatusResult.error(getId());
     }
   }
 
+  @Override
+  public boolean checkAccessPolicy() {
+    IssueAccessPolicy accessPolicy = new IssueAccessPolicy();
+    return accessPolicy.checkCUDPermission(this);
+  }
 }
 
 

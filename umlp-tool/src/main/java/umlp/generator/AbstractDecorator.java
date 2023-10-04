@@ -17,8 +17,8 @@ import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -243,6 +243,10 @@ public abstract class AbstractDecorator {
   }
 
   protected void addCorrectMangerImportForTargetType(ASTCDDefinition origCD, ASTCDType ast, SymTypeExpression type) {
+    addImportForCorrectedPackage(origCD, ast, type, ManagerDecorator.SUFFIX);
+  }
+
+  protected void addImportForCorrectedPackage(ASTCDDefinition origCD, ASTCDType ast, SymTypeExpression type, String suffix){
     String[] fullName = type.printFullName().split("\\.");
     if (fullName.length <= 1) {
       return;
@@ -259,7 +263,7 @@ public abstract class AbstractDecorator {
 
     // This checks a CD 'extends' another one, i.e. a UMLP Project extends/ is composed of another one
     if (extendedCDs.stream().anyMatch(cdName -> cdName.equals(potentialExtendedCDName))) {
-      getCD4C().addImport(ast, Joiners.DOT.join(packageName, potentialExtendedCDName + ManagerDecorator.SUFFIX));
+      getCD4C().addImport(ast, Joiners.DOT.join(packageName, potentialExtendedCDName) + suffix);
     }
   }
 

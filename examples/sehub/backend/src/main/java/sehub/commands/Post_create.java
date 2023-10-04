@@ -13,16 +13,17 @@ public class Post_create extends Post_createTOP {
     super(post);
   }
 
-  public StatusResult doRun() {
-    PostAccessPolicy accessPolicy = new PostAccessPolicy();
-    if(accessPolicy.checkCreatePermission(this)){
-      SehubManager.addPost(post, NotificationScope.LOCAL);
-      return StatusResult.ok(getId());
-    }
-    return StatusResult.error(getId());
+  @Override
+  public StatusResult doAction() {
+    SehubManager.addPost(post, NotificationScope.LOCAL);
+    return StatusResult.ok(getId());
   }
 
-
+  @Override
+  public boolean checkAccessPolicy() {
+    PostAccessPolicy accessPolicy = new PostAccessPolicy();
+    return accessPolicy.checkCreatePermission(this);
+  }
 }
 
 

@@ -3,7 +3,6 @@ package sehub.commands;
 
 import sehub.RoleAccessPolicy;
 import sehub.SehubRole;
-import umlp.backendrte.command.StatusResult;
 
 
 public class User_setRole extends User_setRoleTOP {
@@ -13,14 +12,10 @@ public class User_setRole extends User_setRoleTOP {
   }
 
   @Override
-  public StatusResult doRun() {
+  public boolean checkAccessPolicy() {
     RoleAccessPolicy accessPolicy = new RoleAccessPolicy();
-    if(accessPolicy.checkPermission(this)){
-      return super.doRun();
-    }
-    return StatusResult.error(getId());
+    return accessPolicy.checkPermission(this);
   }
-
 }
 
 

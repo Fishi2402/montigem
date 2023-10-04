@@ -80,7 +80,7 @@ public class CommandManager {
   }
 
   protected  <T> CommandResult<T> _executeCommand(Command<T> command) {
-    if(command.checkAccessPolicy()) {
+    if(command.checkAccessPolicy() && command.checkContract()) {
       CommandResult<T> res = command.doRun();
       // update subscribed gemIds
       if (particpants.containsKey(command.getParticipantId())) {

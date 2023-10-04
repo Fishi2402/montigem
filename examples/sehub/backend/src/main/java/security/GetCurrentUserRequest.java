@@ -14,7 +14,7 @@ public class GetCurrentUserRequest extends Request<Long> {
   }
 
   @Override
-  public SimpleResult<Long> doRun() {
+  public SimpleResult<Long> doAction() {
     Participant p = CommandManager.getInstance().getParticipant(getParticipantId());
 
     for (User user : SehubManager.getUserList()) {

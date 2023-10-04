@@ -2,9 +2,7 @@
 package sehub.commands;
 
 import sehub.SehubManager;
-import sehub.User;
 import umlp.backendrte.command.ListResult;
-import umlp.backendrte.command.SimpleResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +13,8 @@ public class User_get_filtered extends User_get_filteredTOP {
     super();
   }
 
-
-  public ListResult<Long, List<Long>> doRun() {
+  @Override
+  public ListResult<Long, List<Long>> doAction() {
 
     List<Long> validAccessIDs = new ArrayList<>();
     for (long id : SehubManager.getUserList().getIDs()) {

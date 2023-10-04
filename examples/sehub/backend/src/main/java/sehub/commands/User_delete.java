@@ -12,19 +12,19 @@ public class User_delete extends User_deleteTOP {
     super(gemId);
   }
 
-  public StatusResult doRun() {
-    UserAccessPolicy accessPolicy = new UserAccessPolicy();
-    if (accessPolicy.checkDeletePermission(this)) {
-      if (SehubManager.deleteUser(getGemId(), NotificationScope.LOCAL)) {
-        return StatusResult.ok(getId());
-      }
-      else {
-        return StatusResult.error(getId());
-      }
+  public StatusResult doAction() {
+    if (SehubManager.deleteUser(getGemId(), NotificationScope.LOCAL)) {
+      return StatusResult.ok(getId());
+    } else {
+      return StatusResult.error(getId());
     }
-    return StatusResult.error(getId());
   }
 
+  @Override
+  public boolean checkAccessPolicy() {
+    UserAccessPolicy accessPolicy = new UserAccessPolicy();
+    return accessPolicy.checkDeletePermission(this);
+  }
 }
 
 

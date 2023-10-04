@@ -5,6 +5,7 @@ package umlp.backendrte.command;
 
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.command.error.NotImplementedException;
+import umlp.backendrte.common.LoadingState;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +33,17 @@ public abstract class Command<T> {
     this.commandType = commandType;
   }
 
-  public abstract CommandResult<T> doRun();
+  public final CommandResult<T> doRun(){
+    if(!checkAccessPolicy()) {
+      return new SimpleResult<>(getId(), LoadingState.NOT_AUTHORIZED, commandType);
+    }else if(!checkContract()){
+      return new SimpleResult<>(getId(), LoadingState.FAILED_TO_LOAD, commandType);
+    }else{
+      return doAction();
+    }
+  }
+
+  protected abstract CommandResult<T> doAction();
 
 
   // TODO: undo kann nicht immer ausgeführt werden.
@@ -95,4 +106,8 @@ public abstract class Command<T> {
   }
 
   public abstract boolean checkAccessPolicy();
+
+  public boolean checkContract(){
+    return true;
+  }
 }

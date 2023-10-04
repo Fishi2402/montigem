@@ -55,7 +55,8 @@ abstract public class NPMAuthCreate extends DefaultTask {
 
       String data = "@monticore:registry=https://nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/\n" +
           "@umlp:registry=https://nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/\n" +
-          "_auth=\"" + encodedAuthData + "\"";
+          "@monticore:_auth=\"" + encodedAuthData + "\"" +
+          "@umlp:_auth=\"" + encodedAuthData + "\"";
       FileUtils.writeStringToFile(getNpmrcFile().getAsFile().get(), data, StandardCharsets.UTF_8);
     } else {
       throw new RuntimeException("<mavenUser> / <mavenPassword> not found in properties!");

@@ -16,23 +16,22 @@ public class Issue_setDescription extends Issue_setDescriptionTOP {
     super(gemId, description);
   }
 
-  public StatusResult doRun() {
-    IssueAccessPolicy accessPolicy = new IssueAccessPolicy();
-    if (accessPolicy.checkCUDPermission(this)) {
-      Optional<Issue> issueOpt = SehubManager.issueOpt(getGemId());
-      if (issueOpt.isPresent()) {
-        issueOpt.get().setDescription(getDescription(), NotificationScope.LOCAL);
-        return StatusResult.ok(getId());
-      } else {
-        GeneralErrorCollector.reportSyncError();
-        return StatusResult.error(getId());
-      }
+  public StatusResult doAction() {
+    Optional<Issue> issueOpt = SehubManager.issueOpt(getGemId());
+    if (issueOpt.isPresent()) {
+      issueOpt.get().setDescription(getDescription(), NotificationScope.LOCAL);
+      return StatusResult.ok(getId());
     } else {
+      GeneralErrorCollector.reportSyncError();
       return StatusResult.error(getId());
     }
-
   }
 
+  @Override
+  public boolean checkAccessPolicy() {
+    IssueAccessPolicy accessPolicy = new IssueAccessPolicy();
+    return accessPolicy.checkCUDPermission(this);
+  }
 }
 
 

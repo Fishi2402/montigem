@@ -5,24 +5,20 @@ import com.google.common.collect.Lists;
 import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.se_rwth.commons.StringTransformations;
 import umlp.generator.domain.decorator.GenService;
 
 import java.util.List;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
-public class AssocMandatoryMutatorDecorator extends SimpleMethodMutatorDecorator {
+public class AssocMandatoryMutatorDecorator extends UMLPMandatoryMutatorDecorator {
 
   public AssocMandatoryMutatorDecorator(GlobalExtensionManagement glex, CDGenService service,
                                         ASTCDType domainAst) {
