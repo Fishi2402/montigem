@@ -43,6 +43,13 @@ public abstract class Command<T> {
     }
   }
 
+  /**
+   * The action this commando performs.
+   * Access rights checks should be implemented in {@link this#checkAccessPolicy()} and
+   * preconditions in {@link this#checkContract()}.
+   * Should not be called directly, instead use {@link this#doRun()}, which will perform the checks
+   * before executing the action.
+   */
   protected abstract CommandResult<T> doAction();
 
 
@@ -105,8 +112,14 @@ public abstract class Command<T> {
     this.participantId = participantId;
   }
 
+  /**
+   * Checks if the issuer of this command has the correct rights to execute it
+   */
   public abstract boolean checkAccessPolicy();
 
+  /**
+   * Checks if the preconditions for this command are met
+   */
   public boolean checkContract(){
     return true;
   }
