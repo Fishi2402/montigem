@@ -7,6 +7,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -21,7 +23,7 @@ import java.util.stream.IntStream;
 
 @SpringBootApplication(
     exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
-    scanBasePackages={"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "sehub.service"}
+    scanBasePackages={"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "sehub.service", "security"}
 )
 public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
 
@@ -70,10 +72,11 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
       mapping.add(SehubManager.boardMapperBuilder().bingoBoardEntry(bingoBoard.get().getBingoBoardEntries(permutation[i])).isChecked(false).build().get());
     }
 
+    PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     if (SehubManager.getUserList().isEmpty()) {
       Optional<User> newUser = SehubManager.userBuilder()
           .username("MyUser")
-          .password("MyPasswort")
+          .password(encoder.encode("MyPasswort"))
           .registrationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
           .email("MyEmail")
           .gridEntry(mapping)
@@ -99,7 +102,7 @@ public class SehubServerApplication extends sehub.SehubServerApplicationTOP {
 
     Optional<User> newUser2 = SehubManager.userBuilder()
         .username("admin")
-        .password("pwd")
+        .password(encoder.encode("pwd"))
         .registrationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
         .email("admin@sehub.de")
         .gridEntry(mapping2)

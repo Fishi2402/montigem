@@ -115,7 +115,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         Optional<String> domainQName = util.getMainDomainModelQName();
         if (domainQName.isPresent()) {
           if (util.isDomainType(paramSTE)) {
-            getCD4C().addImport(decoratedClass, domainQName.get() + "." + paramSTE.print());
+            getCD4C().addImport(decoratedClass, domainQName.get().toLowerCase() + "." + paramSTE.print());
           }
           else if (util.isDomainListType(paramSTE) && util.getListInnerType(paramSTE).isPresent()) {
             getCD4C().addImport(decoratedClass, domainQName.get().toLowerCase() + "."
@@ -386,7 +386,12 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     if (type.length() > 1 && decoratedClass.getCDMethodList().stream().filter(m ->
         m.getName().equals("enumToCapitalizedString")).findAny().isEmpty()) {
       getCD4C().addMethod(decoratedClass, getEnum2CapStringTemplate(), type);
+      addEnum2CapStringImport(decoratedClass);
     }
+  }
+
+  protected void addEnum2CapStringImport(ASTCDClass decoratedClass) {
+    getCD4C().addImport(decoratedClass, "de.se_rwth.commons.StringTransformations");
   }
 
   protected void addImport(ASTCDClass decoratedClass, String type) {

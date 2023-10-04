@@ -3,24 +3,8 @@ package gui.login;
 import Sehub.User;
 
 import gui.login.UserCreate;
-
-import arrange.src.lib.gemrow.GemRow;
-import arrange.src.lib.gemcolumn.GemColumn;
-import arrange.src.lib.gemcard.GemCard;
-
-import basic.src.lib.gemimage.GemImage;
-import basic.src.lib.gemtext.GemText;
-import basic.src.lib.gemlink.GemLink;
+import gui.login.LoginContainer;
 
 page RegistrationPage(List<User> users){
-  @GemCard(title = "Create new account", component =
-    @GemColumn(hAlign = "center", height = "auto", width = "800px", rowGap = "105px", components = [
-      @GemColumn(hAlign = "center", width = "150px", component =
-        @GemImage(source = "assets/images/Eule.png")
-      ),
-      @GemColumn(hAlign = "center", width = "600px", rowGap = "20px", components = [
-        @UserCreate()
-      ])
-    ])
-  );
+  @LoginContainer(component = @UserCreate());
 }

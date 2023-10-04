@@ -21,6 +21,6 @@ public class DbTypesTest extends AttributesDBTestSetup {
     var dao = new ListOfPrimitivesDAO();
 
     var clone = dao.selectListOfPrimitives(sut.gemId).get();
-    assertEquals(values, clone.getInts());
+    assertEquals(values, clone.getIntsList());
   }
 }

@@ -8,17 +8,15 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.MCTypeFacade;
-import de.se_rwth.commons.StringTransformations;
-import umlp.generator.domain.decorator.methods.SimpleMethodMutatorDecorator;
+import umlp.generator.domain.decorator.methods.UMLPMandatoryMutatorDecorator;
 
 import java.util.List;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
-public class TSSimpleMethodMutatorDecorator extends SimpleMethodMutatorDecorator {
+public class TSSimpleMethodMutatorDecorator extends UMLPMandatoryMutatorDecorator {
 
   public TSSimpleMethodMutatorDecorator(
       GlobalExtensionManagement glex, CDGenService service, ASTCDType ast) {

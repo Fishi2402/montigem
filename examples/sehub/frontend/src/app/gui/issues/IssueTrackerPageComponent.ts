@@ -1,13 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Component } from '@angular/core';
-import { IssueTrackerPageComponentTOP } from '@src/gui/issues/IssueTrackerPageComponentTOP';
-import { Issue } from '@src/sehub/Issue';
-import { IssueState } from '@src/sehub/IssueState';
-import { SehubManager } from '@src/sehub/SehubManager';
-import { SehubSecurityManager } from '@src/sehub/SehubSecurityManager';
-import { IssueGemList } from '@src/sehub/gemlists/IssueGemList';
-import { GemList } from '@umlp/common';
+import {Component} from '@angular/core';
+import {IssueTrackerPageComponentTOP} from '@src/gui/issues/IssueTrackerPageComponentTOP';
+import {Issue} from '@src/sehub/Issue';
+import {IssueState} from '@src/sehub/IssueState';
+import {SehubSecurityManager} from '@src/sehub/SehubSecurityManager';
+import {IssueGemList} from '@src/sehub/gemlists/IssueGemList';
+import {GemList} from '@umlp/common';
 
 @Component({
   selector: 'issue-tracker-page',
@@ -24,7 +23,7 @@ export class IssueTrackerPageComponent extends IssueTrackerPageComponentTOP {
 
   public ngOnInit(): void {
     if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login/LoginPage']);
     }
     super.ngOnInit();
   }

@@ -11,6 +11,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
+import umlp.generator.util.PathUtil;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
@@ -43,7 +44,12 @@ public class DiagramObserverDecorator extends AbstractDecorator {
             .forEach(c -> {
               getCD4C().addMethod(ast, "umlp.diagram.NotifyAdd", c.getName());
               getCD4C().addMethod(ast, "umlp.diagram.NotifyDelete", c.getName());
+              getCD4C().addMethod(ast, "umlp.diagram.MaybeNotifyAdd", c.getName());
+              getCD4C().addMethod(ast, "umlp.diagram.MaybeNotifyDelete", c.getName());
             });
+
+    getCD4C().addMethod(ast, "umlp.common_observer.GetScopeGlobal");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
 
     return ast;
   }
@@ -59,6 +65,9 @@ public class DiagramObserverDecorator extends AbstractDecorator {
         .setName("Empty" + i.getName()).build();
 
     for (ASTCDMethod astcdMethod : i.getCDMethodList()) {
+      if(astcdMethod.getName().startsWith("maybe") || astcdMethod.getName().equals("getScope")) {
+        continue;
+      }
       ASTCDMethod element = astcdMethod.deepClone();
       element.setIsDefault(false);
       element.getModifier().setAbstract(false);

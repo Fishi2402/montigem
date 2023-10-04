@@ -104,11 +104,13 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
 
     ASTCDAttribute gemAttr = getCD4C().addAttribute(ast, "protected long gemId");
     ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected " + (isGem ? "long" : type.print()) + " " + attrName);
+    ASTCDAttribute attrIndex = getCD4C().addAttribute(ast, "protected int indexInList");
 
     addConstructor(ast, classname, getPackageName(origCD, COMMAND_PACKAGE),
         attrName, isGem ? "long" : type.print());
 
     getCD4C().addMethod(ast, getDoRunTemplate(), name, domainClass.getName(), getCorrectManager(domainClass), isGem, name);
+    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainClass.getName());
     if (isGem) {
       getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("getGemId()", name + "GemId"));
     } else {
@@ -117,6 +119,7 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(gemAttr));
     ast.addAllCDMembers(accessor.decorate(attr));
+    ast.addAllCDMembers(accessor.decorate(attrIndex));
 
     addImports(origCD, domainClass, ast);
     if (GenService.isCDEnum(type)) {
@@ -135,8 +138,9 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + getCorrectManager(domainClass));
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ domainClass.getName() + "AccessPolicy");
 
-      getCD4C().addImport(ast, "com.google.common.collect.Sets");
+    getCD4C().addImport(ast, "com.google.common.collect.Sets");
   }
 
   protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
@@ -193,8 +197,8 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     String baseClassDecorator = origCD.getCDDefinition().getName() + BaseClassObjectMapperDecorator.SUFFIX;
     boolean useDeSer = supportedDeSers.contains(typeName);
     boolean makeAbstract = jsonString.isEmpty() && !useDeSer;
-    getCD4C().addMethod(ast, getSet_FromJsonObjectTemplate(), cmdName, name, typeName, false, GenService.isInnerCDEnum(type), jsonString, useDeSer, baseClassDecorator, makeAbstract);
-    getCD4C().addMethod(ast, getSet_BuildJsonTemplate(), cmdName, name, typeName, GenService.isInnerCDEnum(type), getter, useDeSer, baseClassDecorator, makeAbstract);
+    getCD4C().addMethod(ast, getAdd_FromJsonObjectTemplate(), cmdName, name, typeName, GenService.isInnerCDEnum(type), jsonString, useDeSer, baseClassDecorator, makeAbstract);
+    getCD4C().addMethod(ast, getAdd_BuildJsonTemplate(), cmdName, name, typeName, GenService.isInnerCDEnum(type), getter, useDeSer, baseClassDecorator, makeAbstract);
 
     addDeSerImport(ast, origCD, useDeSer, baseClassDecorator, type, innerType, cmdName);
     if (makeAbstract) {
@@ -219,12 +223,12 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     }
   }
 
-  protected String getSet_BuildJsonTemplate() {
-    return "umlp.commands.deser.Set_BuildJson";
+  protected String getAdd_BuildJsonTemplate() {
+    return "umlp.commands.deser.Add_BuildJson";
   }
 
-  protected String getSet_FromJsonObjectTemplate() {
-    return "umlp.commands.deser.Set_FromJsonObject";
+  protected String getAdd_FromJsonObjectTemplate() {
+    return "umlp.commands.deser.Add_FromJsonObject";
   }
 
   // TODO (MB): Bessere Lösung?

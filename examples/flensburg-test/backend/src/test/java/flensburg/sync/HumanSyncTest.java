@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-@Disabled // TODO MB
+
 public class HumanSyncTest {
 
   @BeforeEach
@@ -100,6 +100,7 @@ public class HumanSyncTest {
     assertEquals(40, hServer.getAge());
   }
 
+  @Disabled("Error concept will be replaced")
   @Test
   public void testInvalidAgeIsMirroredToClient(){
     Log.initDEBUG();

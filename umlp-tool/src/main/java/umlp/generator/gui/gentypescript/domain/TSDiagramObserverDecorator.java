@@ -7,6 +7,7 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
+import umlp.generator.util.PathUtil;
 
 public class TSDiagramObserverDecorator extends DiagramObserverDecorator {
 
@@ -46,6 +47,19 @@ public class TSDiagramObserverDecorator extends DiagramObserverDecorator {
   @Override
   protected ASTCDClass createEmptyImpl(ASTCDCompilationUnit origCD, ASTCDInterface i) {
     ASTCDClass clazz = super.createEmptyImpl(origCD, i);
+
+    // TODO: something like this:
+    // Methods with default impl
+    origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getModifier().isDerived())
+        .filter(c -> !c.getModifier().isAbstract())
+        .forEach(c -> {
+          getCD4C().addMethod(clazz, "umlp.diagram.MaybeNotifyAdd", c.getName());
+          getCD4C().addMethod(clazz, "umlp.diagram.MaybeNotifyDelete", c.getName());
+        });
+    getCD4C().addMethod(clazz, "umlp.common_observer.GetScopeGlobal");
+
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(clazz, this.astcdPackage + "." + i.getName());
 
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {

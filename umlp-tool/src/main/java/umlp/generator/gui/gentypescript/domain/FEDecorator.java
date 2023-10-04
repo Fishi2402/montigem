@@ -12,7 +12,6 @@ import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
 import umlp.generator.domain.decorator.CommandObserverDecorator;
 import umlp.generator.domain.decorator.CommandResultDeSerDecorator;
-import umlp.generator.domain.decorator.CommandSendingObserverDecorator;
 import umlp.generator.domain.decorator.DeSerBuilderDecorator;
 import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.domain.decorator.DerivedClassDecorator;
@@ -26,6 +25,7 @@ import umlp.generator.domain.decorator.GemListDomainDecorator;
 import umlp.generator.domain.decorator.ManagerClientImplDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.gui.gentypescript.commands.TSAccessPolicyDecorator;
 
 public class FEDecorator extends BEDecorator {
 
@@ -81,6 +81,10 @@ public class FEDecorator extends BEDecorator {
     ObserverDecorator observerDecorator = new TSObserverDecorator(glex);
     observerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ObserverDecorator", FEDecorator.class.getName());
+
+    TSAccessPolicyDecorator tsAccessPolicyDecorator = new TSAccessPolicyDecorator(glex);
+    tsAccessPolicyDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: TSAccessPolicyDecorator", FEDecorator.class.getName());
 
     /*
     ManagerDbObserverDecorator managerDbObserverDecorator = new ManagerDbObserverDecorator(glex);

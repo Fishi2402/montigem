@@ -5,6 +5,7 @@ package umlp.backendrte.command;
 
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.command.error.NotImplementedException;
+import umlp.backendrte.common.LoadingState;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +33,24 @@ public abstract class Command<T> {
     this.commandType = commandType;
   }
 
-  public abstract CommandResult<T> doRun();
+  public final CommandResult<T> doRun(){
+    if(!checkAccessPolicy()) {
+      return new SimpleResult<>(getId(), LoadingState.NOT_AUTHORIZED, commandType);
+    }else if(!checkContract()){
+      return new SimpleResult<>(getId(), LoadingState.FAILED_TO_LOAD, commandType);
+    }else{
+      return doAction();
+    }
+  }
+
+  /**
+   * The action this commando performs.
+   * Access rights checks should be implemented in {@link this#checkAccessPolicy()} and
+   * preconditions in {@link this#checkContract()}.
+   * Should not be called directly, instead use {@link this#doRun()}, which will perform the checks
+   * before executing the action.
+   */
+  protected abstract CommandResult<T> doAction();
 
 
   // TODO: undo kann nicht immer ausgeführt werden.
@@ -92,5 +110,17 @@ public abstract class Command<T> {
 
   public void setParticipantId(long participantId) {
     this.participantId = participantId;
+  }
+
+  /**
+   * Checks if the issuer of this command has the correct rights to execute it
+   */
+  public abstract boolean checkAccessPolicy();
+
+  /**
+   * Checks if the preconditions for this command are met
+   */
+  public boolean checkContract(){
+    return true;
   }
 }

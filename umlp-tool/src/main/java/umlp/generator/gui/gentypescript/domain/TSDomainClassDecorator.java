@@ -24,6 +24,7 @@ import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.domain.decorator.methods.MethodGenService;
+import umlp.generator.domain.decorator.methods.UMLPMutatorDecorator;
 import umlp.generator.gui.gentypescript.method.*;
 import umlp.generator.util.PathUtil;
 
@@ -84,9 +85,9 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     CDGenService service = new MethodGenService();
     MethodDecorator methodDecorator = new MethodDecorator(glex,
         new TSAccessorDecorator(glex, service),
-        new MutatorDecorator(glex, new TSSimpleMethodMutatorDecorator(glex, service, domainType),
+        new UMLPMutatorDecorator(glex, new TSSimpleMethodMutatorDecorator(glex, service, domainType),
             new TSOptionalMutatorDecorator(glex, service),
-            new ListMutatorDecorator(glex, service)), service);
+            new TSListMutatorDecorator(glex, service, domainType)), service);
     for (ASTCDAttribute attribute : attrList) {
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
       // methods.forEach(m -> m.getModifier().setAbstract(isInterface));

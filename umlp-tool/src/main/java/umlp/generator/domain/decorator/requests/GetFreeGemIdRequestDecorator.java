@@ -16,73 +16,75 @@ import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
 
-    public static final String CLASS_NAME = "GetFreeGemIdRequest";
+  public static final String CLASS_NAME = "GetFreeGemIdRequest";
 
-    public GetFreeGemIdRequestDecorator(GlobalExtensionManagement glex) {
-        super(glex);
-    }
+  public GetFreeGemIdRequestDecorator(GlobalExtensionManagement glex) {
+    super(glex);
+  }
 
-    @Override
-    public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-        ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, REQUESTS_PACKAGE);
-        astcdPackage.addCDElement(withOrigin(createClass(origCD, astcdPackage.getName())));
-        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, astcdPackage.getName())));
+  @Override
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, REQUESTS_PACKAGE);
+    astcdPackage.addCDElement(withOrigin(createClass(origCD, astcdPackage.getName())));
+    astcdPackage.addCDElement(withOrigin(createDeSer(origCD, astcdPackage.getName())));
 
-    }
+  }
 
-    protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String packageName) {
-        ASTCDClass ast = UMLPMill.cDClassBuilder()
-                .setModifier(PUBLIC.build())
-                .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
-                .setName(CLASS_NAME)
-                .build();
-        getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
-        getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE),
-                origCD.getCDDefinition().getName()+SUFFIX));
-        getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String packageName) {
+    ASTCDClass ast = UMLPMill.cDClassBuilder()
+        .setModifier(PUBLIC.build())
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
+        .setName(CLASS_NAME)
+        .build();
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
+    getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE),
+        origCD.getCDDefinition().getName() + SUFFIX));
+    getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
 
-        addConstructor(ast, origCD);
-        getCD4C().addMethod(ast, getDoRunTemplate(), origCD.getCDDefinition().getName());
-        return ast;
-    }
+    addConstructor(ast, origCD);
+    getCD4C().addMethod(ast, getDoRunTemplate(), origCD.getCDDefinition().getName());
+    getCD4C().addMethod(ast, "umlp.commands.AlwaysTrueCheckAccessPolicy");
 
-    protected String extendedClass() {
-       return "Request<Long>";
-    }
+    return ast;
+  }
 
-    protected void addConstructor(ASTCDClass ast, ASTCDCompilationUnit origCD) {
-        getCD4C().addConstructor(ast, getConstructorTemplate(),
-            CLASS_NAME, getPackageName(origCD, DEFAULT_PACKAGE));
-    }
+  protected String extendedClass() {
+    return "Request<Long>";
+  }
 
-    protected String getDoRunTemplate() {
-        return "umlp.requests.getfreegemid.DoRun";
-    }
+  protected void addConstructor(ASTCDClass ast, ASTCDCompilationUnit origCD) {
+    getCD4C().addConstructor(ast, getConstructorTemplate(),
+        CLASS_NAME, getPackageName(origCD, DEFAULT_PACKAGE));
+  }
 
-    protected String getConstructorTemplate() {
-        return "umlp.requests.getfreegemid.Constructor";
-    }
+  protected String getDoRunTemplate() {
+    return "umlp.requests.getfreegemid.DoRun";
+  }
 
-    protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, String packageName) {
-        ASTCDClass ast = UMLPMill.cDClassBuilder()
-                .setModifier(PUBLIC.build())
-                .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("CommandDeSer<" + CLASS_NAME + ">"))
-                .setName(CLASS_NAME + DE_SER)
-                .build();
+  protected String getConstructorTemplate() {
+    return "umlp.requests.getfreegemid.Constructor";
+  }
 
-        getCD4C().addMethod(ast, getFromJsonObjectTemplate());
+  protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, String packageName) {
+    ASTCDClass ast = UMLPMill.cDClassBuilder()
+        .setModifier(PUBLIC.build())
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("CommandDeSer<" + CLASS_NAME + ">"))
+        .setName(CLASS_NAME + DE_SER)
+        .build();
 
-        addDeSerImport(ast, origCD);
+    getCD4C().addMethod(ast, getFromJsonObjectTemplate());
 
-        return ast;
-    }
+    addDeSerImport(ast, origCD);
 
-    protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD) {
-        getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-        getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
-    }
+    return ast;
+  }
 
-    protected String getFromJsonObjectTemplate() {
-        return "umlp.requests.getfreegemid.FromJsonObject";
-    }
+  protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD) {
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
+  }
+
+  protected String getFromJsonObjectTemplate() {
+    return "umlp.requests.getfreegemid.FromJsonObject";
+  }
 }

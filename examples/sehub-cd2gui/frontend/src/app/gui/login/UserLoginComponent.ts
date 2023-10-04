@@ -5,6 +5,7 @@ import {UserLoginComponentTOP} from '@src/gui/login/UserLoginComponentTOP';
 import {User} from '@src/sehub/User';
 import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'user-login',
@@ -14,6 +15,10 @@ import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 })
 
 export class UserLoginComponent extends UserLoginComponentTOP {
+
+  public constructor(route: ActivatedRoute, router: Router) {
+    super(route, router);
+  }
 
   public ngOnInit(): void {
     SehubManager.getUserList().then(gemPromiseRes => {
@@ -25,5 +30,4 @@ export class UserLoginComponent extends UserLoginComponentTOP {
       this.loginUser = new User();
     }
   }
-
 }

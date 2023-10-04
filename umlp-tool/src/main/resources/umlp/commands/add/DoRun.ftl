@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature( "attributename","classname","managerName", "isGem", "targetname", "targettype", "targetTypeManager")}
-${cd4c.method("public StatusResult doRun()")}
+${cd4c.method("public StatusResult doAction()")}
 
 Optional<${classname}> ${classname?uncap_first}Opt = ${managerName}.${classname?uncap_first}Opt(gemId);
 if(${classname?uncap_first}Opt.isEmpty()){
@@ -17,6 +17,6 @@ if(${classname?uncap_first}Opt.isEmpty()){
   }
   ${classname?uncap_first}Opt.get().add${targetname?cap_first}(indexInList, ${targetname}Opt.get(), NotificationScope.LOCAL);
 <#else>
-  // TODO
+  ${classname?uncap_first}Opt.get().add${attributename?cap_first}(indexInList, ${attributename}, NotificationScope.LOCAL);
 </#if>
 return StatusResult.error(getId());

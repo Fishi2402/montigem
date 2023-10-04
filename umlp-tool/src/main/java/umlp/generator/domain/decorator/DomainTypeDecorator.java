@@ -4,36 +4,32 @@ package umlp.generator.domain.decorator;
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.CDGenService;
-import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
-import de.monticore.cd.codegen.methods.MutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
-import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdassociation._symboltable.CDRoleSymbol;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.umlmodifier._ast.ASTModifier;
-import de.se_rwth.commons.StringTransformations;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
 import umlp.generator.domain.decorator.methods.AssocMutatorDecorator;
 import umlp.generator.domain.decorator.methods.MethodGenService;
-import umlp.generator.domain.decorator.methods.SimpleMethodMutatorDecorator;
+import umlp.generator.domain.decorator.methods.UMLPListMutatorDecorator;
+import umlp.generator.domain.decorator.methods.UMLPMandatoryMutatorDecorator;
+import umlp.generator.domain.decorator.methods.UMLPAccessorDecorator;
+import umlp.generator.domain.decorator.methods.UMLPMutatorDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
@@ -71,11 +67,19 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
                                             List<ASTCDAttribute> attrList, boolean isInterface) {
     CDGenService service = new MethodGenService();
     MethodDecorator methodDecorator = new MethodDecorator(glex,
-        new AccessorDecorator(glex, service),
-        new MutatorDecorator(glex, new SimpleMethodMutatorDecorator(glex, service, domainType),
+        new UMLPAccessorDecorator(glex, service),
+        new UMLPMutatorDecorator(glex, new UMLPMandatoryMutatorDecorator(glex, service, domainType),
             new OptionalMutatorDecorator(glex, service),
-            new ListMutatorDecorator(glex, service)), service);
+            new UMLPListMutatorDecorator(glex, service, domainType)), service);
     for (ASTCDAttribute attribute : attrList) {
+      if (GenService.isList(attribute)) {
+        getCD4C().addImport(cdType, "java.util.function.Predicate");
+        getCD4C().addImport(cdType, "java.util.Spliterator");
+        getCD4C().addImport(cdType, "java.util.ListIterator");
+        getCD4C().addImport(cdType, "java.util.function.Consumer");
+        getCD4C().addImport(cdType, "java.util.function.UnaryOperator");
+        getCD4C().addImport(cdType, "java.util.Comparator");
+      }
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
       methods.forEach(m -> m.getModifier().setAbstract(isInterface));
       cdType.addAllCDMembers(methods);

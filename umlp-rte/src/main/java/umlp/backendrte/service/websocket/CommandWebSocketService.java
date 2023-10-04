@@ -2,6 +2,7 @@
 package umlp.backendrte.service.websocket;
 
 import de.se_rwth.commons.logging.Log;
+import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -20,10 +21,11 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CommandWebSocketService extends TextWebSocketHandler {
+@Service
+public class CommandWebSocketService extends TextWebSocketHandler implements WebSocketHandlerService {
 
-  Map<String, Long> clientIds = new HashMap<>();
-  Map<WebSocketSession, Participant> participants = new HashMap<>();
+  protected Map<String, Long> clientIds = new HashMap<>();
+  protected Map<WebSocketSession, Participant> participants = new HashMap<>();
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -32,7 +34,7 @@ public class CommandWebSocketService extends TextWebSocketHandler {
       subscriberId = clientIds.get(session.getId());
     } else {
       WebSocketCommandCommunication commandCommunication = new WebSocketCommandCommunication(session);
-      Participant participant = new Participant(commandCommunication);
+      Participant participant = new Participant(commandCommunication, session.getPrincipal().getName());
       participants.put(session, participant);
 
       subscriberId = CommandManager.register(participant);
@@ -47,26 +49,27 @@ public class CommandWebSocketService extends TextWebSocketHandler {
     System.out.println("Received:\t" + payload);
     String returnResult = "";
     try {
-      // TODO: check participant id is correct
       Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(payload);
-      if (!commandOptional.isPresent()) {
+      if (commandOptional.isEmpty()) {
         return;
       }
       Command command = commandOptional.get();
+
+      // check that participant id is correct
+      var participantFromSession = Optional.ofNullable(participants.get(session));
+      if(participantFromSession.isEmpty()){
+        throw new IllegalStateException("User is not logged in!");
+      }
+
+      var participantFromId = Optional.ofNullable(CommandManager.getInstance().getParticipant(command.getParticipantId()));
+
+      if(!participantFromSession.equals(participantFromId)){
+        Log.warn("Participant from id " + command.getId() + ":" + participantFromId + "was not the same as participant from session " + participantFromSession);
+        command.setParticipantId(participantFromSession.get().getParticipantId());
+      }
+
       CommandResult res = CommandManager.executeCommand(command);
-      // Check if the object was found. If not, then someone might have tried to load a subclass
-      // instance instead of a class instance
-      // TODO AGe: isSuccessful should probably be a part of CommandResult interface
-      // TODO AGe: all cases when such check is needed?
-      if (res.isSimpleResult() && res.asSimpleResult().isSuccessful()
-          || res.isListResult() && res.asListResult().isSuccessful()
-          || res.isStatusResult() && res.asStatusResult().wasSuccessful()
-      ) {
-        returnResult = CommandObjectMapper.serializeResponse(res);
-      }
-      else {
-        returnResult = CommandObjectMapper.serializeResponse(StatusResult.error(command.getId()));
-      }
+      returnResult = CommandObjectMapper.serializeResponse(res);
     } catch (Exception e) {
       int commandId = -1;
       Pattern p = Pattern.compile("\"id\":\\s*(\\d+)");

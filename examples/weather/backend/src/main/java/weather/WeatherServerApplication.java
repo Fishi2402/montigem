@@ -39,7 +39,7 @@ public class WeatherServerApplication extends WeatherServerApplicationTOP {
 
     if (WeatherManager.getAppList().isEmpty()) {
       WeatherManager.appBuilder()
-          .currentCity(aachen.get())
+          .currentCity(duesseldorf.get())
           .favoriteAdd(aachen.get())
           .favoriteAdd(duesseldorf.get())
           .build();

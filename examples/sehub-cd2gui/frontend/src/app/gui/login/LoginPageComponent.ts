@@ -1,17 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {LoginComponentTOP} from '@src/gui/login/LoginComponentTOP';
+import {LoginPageComponentTOP} from '@src/gui/login/LoginPageComponentTOP';
 import { SehubManager } from '@src/sehub/SehubManager';
 
 @Component({
   selector: 'login',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/Login.html',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/LoginPage.html',
   styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ["/Login.scss"]
+  styleUrls: ["./Login.scss"]
 })
 
-export class LoginComponent extends LoginComponentTOP {
+export class LoginPageComponent extends LoginPageComponentTOP {
 
   public ngOnInit(): void {
     SehubManager.getUserList().then(gemPromiseRes => {

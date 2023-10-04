@@ -129,8 +129,12 @@ public class ManagerDecorator extends AbstractDecorator {
         getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name, false);
         getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, true);
         getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, false);
+        getCD4C().addMethod(managerClass, "umlp.manager.DeleteWithScope", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.DeleteWithScope", name, false);
         getCD4C().addMethod(managerClass, "umlp.manager.Add", name, true);
         getCD4C().addMethod(managerClass, "umlp.manager.Add", name, false);
+        getCD4C().addMethod(managerClass, "umlp.manager.AddWithScope", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.AddWithScope", name, false);
       }
 
       // Associations
@@ -205,6 +209,4 @@ public class ManagerDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
   }
-
-
 }

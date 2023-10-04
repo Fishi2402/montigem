@@ -6,7 +6,7 @@ export const routes: Routes = [
     path: "",
     pathMatch: "full",
     // redirect to a module, not a component (use package part instead of the component name)
-    redirectTo: "login"
+    redirectTo: "login/LoginPage"
   },
   {
     path: "login",
@@ -48,10 +48,10 @@ export const routes: Routes = [
     path: "usersettings",
     loadChildren: () => import("../../build/appgui/gui/usersettings/UserSettingsModule").then(m => m.UsersettingsModule)
   },
-/*  {
+ {
     path: "issue-tracker",
     loadChildren: () => import("../../build/appgui/gui/issues/IssueTrackerPageModule").then(m => m.IssuetrackerpageModule)
-  },*/
+  },
   {
     path: '404',
     loadChildren: () => import("../../build/appgui/gui/PageNotFoundModule").then(m => m.PagenotfoundModule)
@@ -77,6 +77,10 @@ export const routes: Routes = [
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/UserDetailsModule").then(m => m.UserdetailsModule)
   },
   {
+    path: 'CD2GUI/UserDetailsEdit',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/UserDetailsEditModule").then(m => m.UserdetailseditModule)
+  },
+  {
     path: 'CD2GUI/ProjectOverview',
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/ProjectOverviewModule").then(m => m.ProjectoverviewModule)
   },
@@ -87,6 +91,10 @@ export const routes: Routes = [
   {
     path: 'CD2GUI/ProjectDetails',
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/ProjectDetailsModule").then(m => m.ProjectdetailsModule)
+  },
+  {
+    path: 'CD2GUI/ProjectDetailsEdit',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/ProjectDetailsEditModule").then(m => m.ProjectdetailseditModule)
   },
   {
     path: 'CD2GUI/PostOverview',
@@ -101,6 +109,10 @@ export const routes: Routes = [
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/PostDetailsModule").then(m => m.PostdetailsModule)
   },
   {
+    path: 'CD2GUI/PostDetailsEdit',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/PostDetailsEditModule").then(m => m.PostdetailseditModule)
+  },
+  {
     path: 'CD2GUI/IssueOverview',
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/IssueOverviewModule").then(m => m.IssueoverviewModule)
   },
@@ -111,6 +123,10 @@ export const routes: Routes = [
   {
     path: 'CD2GUI/IssueDetails',
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/IssueDetailsModule").then(m => m.IssuedetailsModule)
+  },
+  {
+    path: 'CD2GUI/IssueDetailsEdit',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/IssueDetailsEditModule").then(m => m.IssuedetailseditModule)
   },
   {
     path: 'CD2GUI/FileArtifactOverview',
@@ -125,6 +141,10 @@ export const routes: Routes = [
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/FileArtifactDetailsModule").then(m => m.FileartifactdetailsModule)
   },
   {
+    path: 'CD2GUI/FileArtifactDetailsEdit',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/FileArtifactDetailsEditModule").then(m => m.FileartifactdetailseditModule)
+  },
+  {
     path: 'CD2GUI/DirectoryOverview',
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/DirectoryOverviewModule").then(m => m.DirectoryoverviewModule)
   },
@@ -135,6 +155,10 @@ export const routes: Routes = [
   {
     path: 'CD2GUI/DirectoryDetails',
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/DirectoryDetailsModule").then(m => m.DirectorydetailsModule)
+  },
+  {
+    path: 'CD2GUI/DirectoryDetailsEdit',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/DirectoryDetailsEditModule").then(m => m.DirectorydetailseditModule)
   },
   {
     path: 'CD2GUI/BingoEntryOverview',
@@ -149,6 +173,10 @@ export const routes: Routes = [
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoEntryDetailsModule").then(m => m.BingoentrydetailsModule)
   },
   {
+    path: 'CD2GUI/BingoEntryDetailsEdit',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoEntryDetailsEditModule").then(m => m.BingoentrydetailseditModule)
+  },
+  {
     path: 'CD2GUI/BingoBoardOverview',
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoBoardOverviewModule").then(m => m.BingoboardoverviewModule)
   },
@@ -161,6 +189,10 @@ export const routes: Routes = [
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoBoardDetailsModule").then(m => m.BingoboarddetailsModule)
   },
   {
+    path: 'CD2GUI/BingoBoardDetailsEdit',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/BingoBoardDetailsEditModule").then(m => m.BingoboarddetailseditModule)
+  },
+  {
     path: 'CD2GUI/ArtifactOverview',
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/ArtifactOverviewModule").then(m => m.ArtifactoverviewModule)
   },
@@ -171,6 +203,10 @@ export const routes: Routes = [
   {
     path: 'CD2GUI/ArtifactDetails',
     loadChildren: () => import("../../../umlp/fe2/cd2gui/models/ArtifactDetailsModule").then(m => m.ArtifactdetailsModule)
+  },
+  {
+    path: 'CD2GUI/ArtifactDetailsEdit',
+    loadChildren: () => import("../../../umlp/fe2/cd2gui/models/ArtifactDetailsEditModule").then(m => m.ArtifactdetailseditModule)
   },
 
 

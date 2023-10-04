@@ -41,7 +41,7 @@ import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 export  class ProjectPageComponent extends ProjectPageComponentTOP {
   ngOnInit(){
     if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login/LoginPage']);
     }
     super.ngOnInit();
   }

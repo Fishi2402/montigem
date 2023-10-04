@@ -8,7 +8,7 @@
 }
 
 .navMenu {
-  width: 100vw;
+  width: 100%;
   color: #fff;
   display: flex;
   flex-direction: row;
@@ -54,8 +54,8 @@
   background: $acronio-orange-3;
   border-radius: 50%;
   opacity: 0;
-  -webkit-transform: translate(100px, 37px);
-  transform: translate(100px, 37px);
+  -webkit-transform: translate(82px, 37px);
+  transform: translate(82px, 37px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
@@ -73,59 +73,47 @@
 }
 
 .navMenu.navMenu a:nth-child(1):hover ~ .dot {
-  -webkit-transform: translate(100px, 37px);
-  transform: translate(100px, 37px);
+  -webkit-transform: translate(82px, 37px);
+  transform: translate(82px, 37px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 0;
 }
 
 .navMenu.navMenu a:nth-child(2):hover ~ .dot, .navMenu a:nth-child(2):focus ~ .dot {
-  -webkit-transform: translate(100px, 37px);
-  transform: translate(100px, 37px);
+  -webkit-transform: translate(82px, 37px);
+  transform: translate(82px, 37px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;
 }
 
 .navMenu.navMenu a:nth-child(3):hover ~ .dot, .navMenu a:nth-child(3):focus ~ .dot {
-  -webkit-transform: translate(225px, 37px);
-  transform: translate(225px, 37px);
+  -webkit-transform: translate(189px, 37px);
+  transform: translate(189px, 37px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;
 }
 
 .navMenu.navMenu a:nth-child(4):hover ~ .dot, .navMenu a:nth-child(4):focus ~ .dot {
-  -webkit-transform: translate(333px, 37px);
-  transform: translate(333px, 37px);
+  -webkit-transform: translate(287px, 37px);
+  transform: translate(287px, 37px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;
 }
 
 .navMenu.navMenu a:nth-child(5):hover ~ .dot, .navMenu a:nth-child(5):focus ~ .dot {
-  -webkit-transform: translate(408px, 37px);
-  transform: translate(408px, 37px);
+  -webkit-transform: translate(383px, 37px);
+  transform: translate(383px, 37px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;
 }
 
-.navMenu.navMenu a:nth-child(6):hover ~ .dot, .navMenu a:nth-child(6):focus ~ .dot {
-  -webkit-transform: translate(505px, 37px);
-  transform: translate(505px, 37px);
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-  opacity: 1;
-}
-
-.navMenu.navMenu a:nth-child(7):hover ~ .dot, .navMenu a:nth-child(7):focus ~ .dot {
-  -webkit-transform: translate(605px, 37px);
-  transform: translate(605px, 37px);
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-  opacity: 1;
+.navMenu a:nth-child(6){
+  color: blue;
 }
 
 .navMenu .user {
