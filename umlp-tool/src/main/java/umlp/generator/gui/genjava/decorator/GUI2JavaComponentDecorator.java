@@ -201,6 +201,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         getterValue = conversion.apply(getterValue);
       } else {
         getCD4C().addImport(decoratedClass, PathUtil.getBackendRTECommonPath("GemList"));
+        // TODO(Blocked #3580): with TypeCheck 3: Use Type4AST#getTypeOfExpression to calculate correct getter in visitor instead
         String[] split = getterValue.split("\\.");
         String getterPartial = split[split.length - 1];
         split[split.length - 1] = "_internal_" + getterPartial.replace("()", "") + "GemList()";
