@@ -258,6 +258,12 @@ TODO
   (z.B. um invalide Zwischenstände zu überspringen)
   werden in Aggregate-Kommandos gesammelt versandt. (TODO)
 
+* Bevor ein Kommando ausgeführt wird überprüft der CommandManager, ob die Rechte des Nutzers 
+  ausreichen(`Command#checkAccessPolicy`) und ob die Preconditions der Methode erfüllt sind(`Command#checkContract`)
+  
+  * Schläg einer dieser Checks fehl, wird das Kommando nicht ausgeführt und nicht an andere Clients
+    zwecks Synchronisierung weitergeleitet.
+
 ## Kommando-Infrastruktur
 
 ### Server-seitige Kommando-Infrastruktur

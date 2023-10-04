@@ -630,7 +630,7 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   public static void main(String[] args) {
-    Log.ensureInitalization(); // by default, don't use SLF4J log
+    Log.ensureInitialization(); // by default, don't use SLF4J log
     UMLPTool tool = new UMLPTool();
     tool.run(args);
   }
