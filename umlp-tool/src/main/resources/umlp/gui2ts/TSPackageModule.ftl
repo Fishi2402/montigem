@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("astguiCompilationUnitList","ids","compDecl","paths","existHWCModules","pathHWModule","pathHWroutes","imports","modules")}
+${tc.signature("astguiCompilationUnitList","ids","compDecl","paths","existHWCModules","pathHWModule","pathHWroutes","imports")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign uniqueSet = []>
 // always imported
@@ -25,12 +25,6 @@ import {config} from '${pathHWModule}';
     <#assign uniqueSet=uniqueSet+[key]>
 </#list>
 
-<#list modules?keys as key>
-  <#if !uniqueSet?seq_contains(key+"_Module")>
-  import {${key}_Module} from "./${modules[key]}/${key}.Module";
-      <#assign uniqueSet=uniqueSet+[key+"_Module"]>
-  </#if>
-</#list>
 
 @NgModule({
 declarations: [
