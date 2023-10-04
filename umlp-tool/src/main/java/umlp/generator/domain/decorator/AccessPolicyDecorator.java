@@ -37,13 +37,14 @@ public class AccessPolicyDecorator extends AbstractDecorator {
     ASTCDClass policyClass = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(className + SUFFIX)
-        .addCDMember(createCheckPolicy(domainClass)).build();
+        .build();
+    createCheckPolicy(policyClass);
     getCD4C().addImport(policyClass, PathUtil.getBackendRTECommandPath("Command"));
     return policyClass;
   }
 
-  protected ASTCDMethodSignature createCheckPolicy(ASTCDType domainClass) {
-    return getCD4C().addMethod(domainClass, getCheckPermissionTemplate());
+  protected ASTCDMethodSignature createCheckPolicy(ASTCDType policyClass) {
+    return getCD4C().addMethod(policyClass, getCheckPermissionTemplate());
   }
 
   protected String getCheckPermissionTemplate() {
