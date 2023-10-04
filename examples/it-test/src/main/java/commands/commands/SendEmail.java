@@ -10,7 +10,7 @@ public class SendEmail extends SendEmailTOP {
     super(receiverList, text);
   }
 
-  public StatusResult doRun() {
+  public StatusResult doAction() {
     return StatusResult.ok(0);
   }
 
