@@ -18,10 +18,12 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
+import umlp.generator.domain.decorator.AccessPolicyDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -90,8 +92,6 @@ public class CmdDecorator extends AbstractDeSerDecorator {
 
     getCD4C().addMethod(ast, getDoRunTemplate());
 
-    getCD4C().addMethod(ast, getCheckAccessPolicyTemplate());
-
     // TODO: generate CheckAccessPolicy if domain attributes are available
     // getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", classname);
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
@@ -101,11 +101,16 @@ public class CmdDecorator extends AbstractDeSerDecorator {
 
     addImports(origCD, ast);
 
+    List<SymTypeExpression> domainParameters = new ArrayList<>();
+
     meth.getCDParameterList().forEach(p -> {
       SymTypeExpression type = p.getSymbol().getType();
       if (GenService.isCDType(type)) {
         ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
         getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print()
+            + AccessPolicyDecorator.SUFFIX);
+        domainParameters.add(type);
       } else if (GenService.isCDEnum(type)) {
         ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
         getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
@@ -113,6 +118,8 @@ public class CmdDecorator extends AbstractDeSerDecorator {
         addJavaImport(ast, type);
       }
     });
+
+    getCD4C().addMethod(ast, getCheckAccessPolicyTemplate(), domainParameters);
 
     return ast;
   }
