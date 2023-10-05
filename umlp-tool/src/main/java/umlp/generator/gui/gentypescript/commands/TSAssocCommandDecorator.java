@@ -85,6 +85,8 @@ public class TSAssocCommandDecorator extends AssocCommandDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + origCD.getCDDefinition().getName() + ManagerDecorator.SUFFIX);
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + sourceType);
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + targetType);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+ "." + sourceType + "AccessPolicy");
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+ "." + targetType + "AccessPolicy");
   }
 
   @Override

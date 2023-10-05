@@ -5,3 +5,7 @@ For long-running server applications this typically is not useful, execept when 
 
 You can build an OCI/Docker container containing the native executable with `gradle :examples:native-image:bootBuildImage` and start it with `docker run -it -p 8081:8081 registry.git.rwth-aachen.de/monticore/umlp/native_image_demo`.
 Afterwards start the shell api with `gradle :examples:native-image:runShellApi`. Connect to the server with `init` and see all available commands with `help`.
+
+In CI, the container can be build and pushed using `gradle jib Djib.to.image=...`.
+See `.gitlab-ci.yml` for an example.
+The builder image needs GraalVM installed and the environment variable `GRAALVM_HOME` set.

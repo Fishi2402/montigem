@@ -15,8 +15,13 @@ public class ServerError extends Command<Void> {
   }
 
   @Override
-  public StatusResult doRun() {
+  public StatusResult doAction() {
     GeneralErrorCollector.reportServerError(t);
     return StatusResult.ok(getId());
+  }
+
+  @Override
+  public boolean checkAccessPolicy() {
+    return true;
   }
 }

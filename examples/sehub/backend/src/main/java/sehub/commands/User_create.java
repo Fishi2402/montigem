@@ -2,9 +2,13 @@
 package sehub.commands;
 
 import de.se_rwth.commons.logging.Log;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import security.MailService;
+import sehub.SehubManager;
 import sehub.User;
+import sehub.UserAccessPolicy;
 import umlp.backendrte.command.StatusResult;
+import umlp.backendrte.common.NotificationScope;
 import umlp.backendrte.util.LogUtil;
 
 import javax.mail.MessagingException;
@@ -15,12 +19,19 @@ public class User_create extends User_createTOP {
     super(user);
   }
 
-  public StatusResult doRun() {
-    StatusResult crateUserStatus = super.doRun();
-    if (!crateUserStatus.wasSuccessful()) {
-      return crateUserStatus;
+  @Override
+  public StatusResult doAction() {
+    // Replace cleartext password with hashed password
+    user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getPassword()), NotificationScope.LOCAL);
+
+    UserAccessPolicy accessPolicy = new UserAccessPolicy();
+    if (accessPolicy.checkCreatePermission(this)) {
+      SehubManager.addUser(user, NotificationScope.LOCAL);
+      return sendMail();
+    } else {
+      return StatusResult.error(getId());
     }
-    return sendMail();
+
   }
 
   public StatusResult sendMail() {

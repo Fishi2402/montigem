@@ -49,6 +49,7 @@ public class CommandManager {
   public long _register(Participant participant) {
     long participantId = runningClientId++;
     particpants.put(participantId, participant);
+    participant.setParticipantId(participantId);
     return participantId;
   }
 
@@ -79,18 +80,22 @@ public class CommandManager {
   }
 
   protected  <T> CommandResult<T> _executeCommand(Command<T> command) {
-    CommandResult<T> res = command.doRun();
-    // update subscribed gemIds
-    if(particpants.containsKey(command.getParticipantId())){
-      particpants.get(command.getParticipantId()).subscribe(command.getNewlySubscribedGemIds());
-    } else {
-      // TODO: MH: kann das passieren?
+    if(command.checkAccessPolicy() && command.checkContract()) {
+      CommandResult<T> res = command.doRun();
+      // update subscribed gemIds
+      if (particpants.containsKey(command.getParticipantId())) {
+        particpants.get(command.getParticipantId()).subscribe(command.getNewlySubscribedGemIds());
+      } else {
+        // TODO: MH: kann das passieren?
+      }
+      // TODO: error handling if doRun fails
+      if (!command.isRequest()) {
+        _sendCommandToSubscribers(command);
+      }
+      return res;
+    }else{
+      return (CommandResult<T>) StatusResult.error(command.getId());
     }
-    // TODO: error handling if doRun fails
-    if(!command.isRequest()) {
-      _sendCommandToSubscribers(command);
-    }
-    return res;
   }
 
   public static <T> void sendCommandToSubscribers(Command<T> command){

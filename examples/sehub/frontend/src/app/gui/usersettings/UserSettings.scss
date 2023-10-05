@@ -9,3 +9,7 @@
   flex-wrap: nowrap;
 }
 
+:host ::ng-deep .gem-button:disabled {
+  background-color: grey;
+  pointer-events: none;
+}

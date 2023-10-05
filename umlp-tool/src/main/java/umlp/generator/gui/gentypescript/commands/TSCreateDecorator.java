@@ -75,6 +75,7 @@ public class TSCreateDecorator extends CreateDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ classname);
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ getCorrectManager(domainClass));
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ classname + "AccessPolicy");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
   }
 }

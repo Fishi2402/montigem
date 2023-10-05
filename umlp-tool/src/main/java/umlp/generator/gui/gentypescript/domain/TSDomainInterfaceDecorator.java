@@ -13,6 +13,8 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.generator.domain.decorator.DomainInterfaceDecorator;
 import umlp.generator.domain.decorator.methods.MethodGenService;
+import umlp.generator.domain.decorator.methods.UMLPListMutatorDecorator;
+import umlp.generator.domain.decorator.methods.UMLPMutatorDecorator;
 import umlp.generator.gui.gentypescript.method.TSAccessorDecorator;
 import umlp.generator.gui.gentypescript.method.TSAssocAccessorDecorator;
 import umlp.generator.gui.gentypescript.method.TSAssocMutatorDecorator;
@@ -43,9 +45,9 @@ public class TSDomainInterfaceDecorator extends DomainInterfaceDecorator {
     CDGenService service = new MethodGenService();
     MethodDecorator methodDecorator = new MethodDecorator(glex,
         new TSAccessorDecorator(glex, service),
-        new MutatorDecorator(glex, new TSSimpleMethodMutatorDecorator(glex, service, domainType),
+        new UMLPMutatorDecorator(glex, new TSSimpleMethodMutatorDecorator(glex, service, domainType),
             new TSOptionalMutatorDecorator(glex, service),
-            new ListMutatorDecorator(glex, service)), service);
+            new UMLPListMutatorDecorator(glex, service, domainType)), service);
     for (ASTCDAttribute attribute : attrList) {
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
       methods.forEach(m -> m.getModifier().setAbstract(isInterface));

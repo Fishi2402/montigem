@@ -18,8 +18,18 @@ export class SehubSecurityManager {
     return SehubSecurityManager.isSignedIn() ? SehubSecurityManager.getCurrentUser().getGemId() : null;
   }
 
+  public static isCurrentlyLoggingIn(): boolean {
+    let item = localStorage.getItem('loggingIn');
+    return item !== null && item == "true";
+  }
+
+  public static setCurrentlyLoggingIng(val: boolean) {
+    localStorage.setItem("loggingIn", val ? "true" : "false");
+  }
+
   public static signIn(value: User) {
     this.setCurrentUser(value);
+    this.setCurrentlyLoggingIng(false);
   }
 
   public static signOut() {

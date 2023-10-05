@@ -9,5 +9,5 @@ ${cd4c.method("public void notifyRemove${name?cap_first}(${otherType} o, ${type}
   CommandManager.executeCommand(new ${assocName?cap_first}_remove(o.getGemId(), attr, -1, idx));
   </#if>
 <#else>
-  CommandManager.executeCommand(new ${otherType}_remove${name?cap_first}(o.getGemId(), attr));
+  CommandManager.executeCommand(new ${otherType}_remove${name?cap_first}(o.getGemId(), attr, idx));
 </#if>
