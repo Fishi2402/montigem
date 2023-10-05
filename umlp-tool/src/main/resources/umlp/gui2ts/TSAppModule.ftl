@@ -16,7 +16,7 @@ import { Gui_Module } from '../../build/appgui/gui/Gui.Module'
 </#if>
 
 <#if !existHWCRoutes >
-  import { routes } from './app.routing';
+  import { routes } from './AppGemRouting';
 </#if>
 
 <#if existAppComponent >

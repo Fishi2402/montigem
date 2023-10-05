@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript;
 
+import com.google.common.collect.Iterables;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
@@ -10,12 +11,10 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Names;
-import org.gradle.internal.impldep.org.bouncycastle.math.raw.Mod;
-import umlp.generator.gui.GUIAbstractDecorator;
+import de.se_rwth.commons.StringTransformations;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 
-import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,8 +28,8 @@ public class GUI2TypeScriptGenerator {
   protected GeneratorSetup setup;
   protected GUIComponentsVisitor viewComponents;
   protected MCPath hwcPath;
-  public final static String ROUTES_FILE = "Routing";
-  public final static String MODULES_FILE = "Module";
+  public final static String ROUTES_FILE = "GemRouting";
+  public final static String MODULES_FILE = "GemModule";
   public final static String TS_FILE_EXTENSION = "ts";
 
   public GUI2TypeScriptGenerator(GeneratorSetup generatorSetup, MCPath hwcPath,
@@ -41,6 +40,14 @@ public class GUI2TypeScriptGenerator {
     this.viewComponents = viewComponents;
   }
 
+  public GUI2TypeScriptGenerator(GeneratorSetup generatorSetup, MCPath hwcPath
+                                 ) {
+    this.generatorEngine = new GeneratorEngine(generatorSetup);
+    this.setup = generatorSetup;
+    this.hwcPath = hwcPath;
+  }
+
+
   public void generate(ASTGUICompilationUnit modelAST, String configTemplate) {
     TemplateController tc = setup.getNewTemplateController(configTemplate);
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
@@ -49,7 +56,7 @@ public class GUI2TypeScriptGenerator {
         Arrays.asList(modelAST, setup.getGlex(), setup.getHandcodedPath(), this, viewComponents));
   }
 
-  public List<String> generateAppConfigfile(List<List<ASTGUICompilationUnit>> astguiCompilationUnitList)
+  public List<String> generateAppConfigfile()
   {
     this.setup.setTracing(false);
     GeneratorEngine genEngine = new GeneratorEngine(setup);
@@ -57,22 +64,24 @@ public class GUI2TypeScriptGenerator {
     List<ASTGUICompilationUnit> astguiCompilationUnits=new ArrayList<>();
     List<String> paths=new ArrayList<>();
 
-    boolean existHWCRoutes = existsHandwrittenFile(hwcPath, "app.routing.ts");
+    boolean existHWCRoutes = existsHandwrittenFile(hwcPath, "App"+ROUTES_FILE+".ts");
+
+    // TODO AGe: change default app files path
     Path generatedRoutingFiles = Paths.get("../../src/app",
-        "app.routing"+(existHWCRoutes?"TOP":"")+ "." + TS_FILE_EXTENSION);
+        "app.routing.ts");
     genEngine.generateNoA("umlp.gui2ts.TSAppRoutes", generatedRoutingFiles,
         astguiCompilationUnits);
-
+    // TODO AGe: change default app files path
     Path generatedModuleFiles = Paths.get("../../src/app",
-            "app.module."+ TS_FILE_EXTENSION);
-    Boolean existedModuleConfig=existsHandwrittenFile(hwcPath,"app.module.config.ts");
+            "app.module.ts");
+    Boolean existedModuleConfig=existsHandwrittenFile(hwcPath,"App"+MODULES_FILE+"Config.ts");
 
-    String pathHWRoutes="./app.routing.ts";
+    String pathHWRoutes="./"+"App"+ROUTES_FILE+".ts";
     if(existHWCRoutes)
     {
       Optional<String> filePath = util.getRelativeImportPathForAppConfigFile(
           hwcPath, setup.getOutputDirectory().toPath(),
-          "app", "routing.ts");
+          "App"+ROUTES_FILE, "ts");
       pathHWRoutes=filePath.get();
     }
     String pathModuleConfig="";
@@ -80,7 +89,7 @@ public class GUI2TypeScriptGenerator {
     {
       Optional<String> filePath = util.getRelativeImportPathForAppConfigFile(
           hwcPath, setup.getOutputDirectory().toPath(),
-          "app", "module.config.ts");
+          "App"+MODULES_FILE+"Config", "ts");
       pathModuleConfig=filePath.get();
     }
 
@@ -100,20 +109,12 @@ public class GUI2TypeScriptGenerator {
     return Arrays.asList(generatedRoutingFiles.toString(),generatedModuleFiles.toString());
   }
 
-  public List<String> generateConfigFileForPackages(List<ASTGUICompilationUnit> astguiCompilationUnitList,GUIGeneratorUtil util)
+  public List<String> generateConfigFileForPackages(Map.Entry<String, ModuleRoutingInfo> packageInfo,GUIGeneratorUtil util)
   {
+    List<ASTGUICompilationUnit> astguiCompilationUnitList=packageInfo.getValue().getComponents();
     this.setup.setTracing(false);
     GeneratorEngine genEngine = new GeneratorEngine(setup);
-    ASTGUICompilationUnit astGuiFirst;
 
-    if(!astguiCompilationUnitList.isEmpty())
-    {
-      astGuiFirst=astguiCompilationUnitList.get(0);
-    }
-    else
-    {
-      return new ArrayList<>();
-    }
     List<String> paths=new ArrayList<>();
     astguiCompilationUnitList.forEach(ast->{
       Optional<String> filePath = util.getRelativeImportPath(
@@ -143,44 +144,44 @@ public class GUI2TypeScriptGenerator {
       ids.add(idStrings);
     }
 
-    String pathName=String.join("/", astGuiFirst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
-    String temp=astGuiFirst.getPackage();
-    String []tempArray=temp.split("\\.");
-    String name =tempArray[tempArray.length-1].substring(0,1).toUpperCase()+tempArray[tempArray.length-1].substring(1);
 
-    boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathName+"/"+name+ ".Routing."+TS_FILE_EXTENSION);
+
+    List<String> packageParts = packageInfo.getValue().getPackageParts();
+    String pathName = packageInfo.getValue().getRoutingPath();
+    String name = StringTransformations.capitalize(Iterables.getLast(packageParts));
+
+    boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathName+"/"+name+ ROUTES_FILE+"."+TS_FILE_EXTENSION);
     Path generatedRoutingFile = Paths.get(pathName,
-        name+"." + ROUTES_FILE +(existHWCRoutes?"TOP":"")+"." + TS_FILE_EXTENSION);
+        name+ ROUTES_FILE +(existHWCRoutes?"TOP":"")+"." + TS_FILE_EXTENSION);
 
-    Map<String,String> modules=findNextLevelModule(setup.getOutputDirectory().getPath().toString()+"/"+pathName);
     genEngine.generateNoA("umlp.gui2ts.TSPackageRoutes", generatedRoutingFile,
-        astguiCompilationUnitList, ids,fullPathIndex, paths, modules);
+        astguiCompilationUnitList, ids,fullPathIndex, paths,pathName);
 
-    boolean existHWCModules = existsHandwrittenFile(hwcPath, pathName+"/" +name +".Module.Config."+TS_FILE_EXTENSION);
+    boolean existHWCModules = existsHandwrittenFile(hwcPath, pathName+"/" +name +"GemModuleConfig."+TS_FILE_EXTENSION);
     String pathHWModule="";
     if(existHWCModules)
     {
       Optional<String> filePath = util.getRelativeImportPath(
           hwcPath, setup.getOutputDirectory().toPath(),pathName+"."+
-          name , "Module.Config.ts");
+          name+"GemModuleConfig", "ts");
       if(filePath.isPresent())
           pathHWModule=filePath.get();
     }
 
 
-    String pathHWRoutes="./"+name+".Routing.ts";
+    String pathRoutes ="./"+name+".Routing.ts";
     if(existHWCRoutes)
     {
       Optional<String> filePath = util.getRelativeImportPath(
           hwcPath, setup.getOutputDirectory().toPath(),pathName+"."+
               name , "Routing.ts");
       if(filePath.isPresent())
-        pathHWRoutes=filePath.get();
+        pathRoutes =filePath.get();
     }
 
 
 
-    Path generatedModuleFiles = Paths.get(pathName,name+"."+
+    Path generatedModuleFiles = Paths.get(pathName,name+
    MODULES_FILE + "." + TS_FILE_EXTENSION);
     String compDecl= name;
 
@@ -206,56 +207,14 @@ public class GUI2TypeScriptGenerator {
 
     genEngine.generateNoA("umlp.gui2ts.TSPackageModule", generatedModuleFiles,
         astguiCompilationUnitList, ids,compDecl, paths,existHWCModules,util.removeExtension(pathHWModule),
-        util.removeExtension(pathHWRoutes),imports,modules);
+        util.removeExtension(pathRoutes),imports);
 
 
     return Arrays.asList(generatedRoutingFile.toString(),generatedModuleFiles.toString());
   }
 
   public void generate(ASTGUICompilationUnit decoratedAst) {
-    this.setup.setTracing(false);
-    GeneratorEngine genEngine = new GeneratorEngine(setup);
 
-    String pathName = String.join("/", decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
-    String pathToSearch = decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getQName();
-    boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathToSearch + "."
-        + decoratedAst.getComponentName() + ROUTES_FILE, "." + TS_FILE_EXTENSION);
-
-    String componentPath = "./" + decoratedAst.getComponentName() + GUIAbstractDecorator.COMPONENT_SUFFIX;
-
-    Optional<String> filePath = util.getRelativeImportPath(
-        hwcPath, setup.getOutputDirectory().toPath(),
-        decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getQName()
-            + "." + decoratedAst.getComponentName() + GUIAbstractDecorator.COMPONENT_SUFFIX, "ts");
-    if (filePath.isPresent()) {
-      componentPath = util.removeExtension(filePath.get());
-    }
-
-    Path generatedFiles = Paths.get(pathName, decoratedAst.getComponentName()
-        + (existHWCRoutes ? "TOP" : "") + ROUTES_FILE + "." + TS_FILE_EXTENSION);
-    genEngine.generate("umlp.gui2ts.TSRoutes", generatedFiles,
-        decoratedAst.getGUIComponentDeclaration(), "routes", existHWCRoutes,
-        componentPath, util.getRoutingIds(decoratedAst), GUIAbstractDecorator.COMPONENT_SUFFIX);
-
-    // modules
-    boolean existHWCModules = existsHandwrittenFile(hwcPath, pathToSearch
-        + "." + decoratedAst.getComponentName() + MODULES_FILE + "TOP", "." + TS_FILE_EXTENSION);
-
-    generatedFiles = Paths.get(pathName, decoratedAst.getComponentName()
-        + MODULES_FILE + "." + TS_FILE_EXTENSION);
-
-    String hwcModulePath = util.getRelativeImportPath(hwcPath, setup.getOutputDirectory().toPath(),
-            decoratedAst.getMCPackageDeclaration().getMCQualifiedName().getQName() + "." +
-                decoratedAst.getComponentName() + MODULES_FILE + "TOP", TS_FILE_EXTENSION).orElse("");
-    String pathWithoutExt = hwcModulePath;
-    int lastDotIndex = hwcModulePath.lastIndexOf('.');
-    if (lastDotIndex > 0) { // Ensure that there's at least one dot and it's not the first character
-      pathWithoutExt = pathWithoutExt.substring(0, lastDotIndex);
-    }
-
-    genEngine.generate("umlp.gui2ts.TSModule", generatedFiles,
-        decoratedAst, "config", existHWCModules, pathWithoutExt,
-        viewComponents.getModules(), componentPath, GUIAbstractDecorator.COMPONENT_SUFFIX);
     /*
     for (ASTMCImportStatement is : decoratedAst.getMCImportStatementList()) {
       is.getMCQualifiedName().getParts(is.getMCQualifiedName().sizeParts() - 1)
@@ -299,26 +258,6 @@ public class GUI2TypeScriptGenerator {
     return result;
   }
 
-  public static Map<String,String> findNextLevelModule(String path){
-      Map<String, String> modules = new HashMap<>();
-
-      File folder = new File(path);
-      File[] listOfFiles = folder.listFiles();
-
-      if(listOfFiles!=null) {
-        for (int i = 0; i < listOfFiles.length; i++) {
-          if (listOfFiles[i].isDirectory()) {
-            String moduleName=listOfFiles[i].getName().toUpperCase().charAt(0)+listOfFiles[i].getName().substring(1);
-            if(new File(listOfFiles[i].getPath()+"/"+moduleName+".Module.ts").exists())
-            {
-              modules.put(moduleName, listOfFiles[i].getName());
-            }
-          }
-        }
-      }
-      return modules;
-
-  }
 
 
 }

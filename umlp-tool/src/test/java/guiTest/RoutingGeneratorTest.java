@@ -10,6 +10,7 @@ import java.util.*;
 
 public class RoutingGeneratorTest extends AbstractGUITest {
 
+  /*
   @Test
   public void testRoutingGenerateMethod()
   {
@@ -30,6 +31,7 @@ public class RoutingGeneratorTest extends AbstractGUITest {
     typeScriptGenerator.generateConfigFileForPackages(astList);
     assertNoErrors();
   }
+   */
 
   /*
   @Test

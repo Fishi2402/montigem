@@ -14,7 +14,6 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
-import de.monticore.guidsl.GUIDSLTool;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
@@ -58,6 +57,7 @@ import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genhtml.GUI2HtmlTrafo;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
+import umlp.generator.gui.gentypescript.ModuleRoutingInfo;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
@@ -99,7 +99,6 @@ import static umlp.UMLPToolOptions.REPORT_BASE;
 import static umlp.UMLPToolOptions.SYMTAB;
 import static umlp.UMLPToolOptions.TMPL_PATH;
 import static umlp.UMLPToolOptions.USE_SPRING;
-import static umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator.TS_FILE_EXTENSION;
 import static umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator.existsHandwrittenFile;
 
 /**
@@ -370,7 +369,8 @@ public class UMLPTool extends UMLPToolTOP {
         ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
       }
       else if (isGuiFile(inputFile)) {
-        Map<String,List<ASTGUICompilationUnit>> routesMap=new HashMap<>();
+        Map<String, ModuleRoutingInfo> routesMap = new HashMap<>();
+
         Set<String> createdTSComponents=new HashSet();
 
         for (String guiPathString : cmd.getOptionValues(INPUT.getCMD())) {
@@ -390,14 +390,15 @@ public class UMLPTool extends UMLPToolTOP {
 
 
 
-          //if(astGui!=null && astGui.getGUIComponentDeclaration().isPage()) {
-            if (!routesMap.containsKey(astGui.getPackage())) {
-              routesMap.put(astGui.getPackage(), new ArrayList<>());
-            }
-            routesMap.get(astGui.getPackage()).add(astGui);
-            createdTSComponents.add(astGui.getComponentName().substring(0,1).toUpperCase()+
+          if (!routesMap.containsKey(astGui.getPackage())) {
+            routesMap.put(astGui.getPackage(), new ModuleRoutingInfo(
+                astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList()));
+          }
+          routesMap.get(astGui.getPackage()).add(astGui);
+
+          createdTSComponents.add(astGui.getComponentName().substring(0,1).toUpperCase()+
                 astGui.getComponentName().substring(1).toLowerCase()+"Module");
-          //}
+
 
           // print or store symbol table
           if (SYMTAB.isSelected(cmd)) {
@@ -503,15 +504,15 @@ public class UMLPTool extends UMLPToolTOP {
         GlobalExtensionManagement glex = createGlex();
         genSetup.setGlex(glex);
         genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
-        routesMap.values().forEach(astList->
+        routesMap.entrySet().forEach(packageInfo ->
         {
-          GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
-          List<String> outputs=typeScriptGenerator.generateConfigFileForPackages(astList,GUIGeneratorUtil.getInstance());
+          GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
+          List<String> outputs=typeScriptGenerator.generateConfigFileForPackages(packageInfo,GUIGeneratorUtil.getInstance());
           outputs.forEach(output->Reporting.reportFileCreation(outDir+"/"+output));
 
         });
-        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, null);
-        List<String> outputs=typeScriptGenerator.generateAppConfigfile(new ArrayList<>(routesMap.values()));
+        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
+        List<String> outputs=typeScriptGenerator.generateAppConfigfile();
         outputs.forEach(output->Reporting.reportFileCreation(outDir+"/"+output));
         Reporting.flush(new ASTGUICompilationUnit());
       }
@@ -680,7 +681,7 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   public static void main(String[] args) {
-    Log.ensureInitalization(); // by default, don't use SLF4J log
+    //Log.ensureInitalization(); // by default, don't use SLF4J log
     UMLPTool tool = new UMLPTool();
     tool.run(args);
   }
