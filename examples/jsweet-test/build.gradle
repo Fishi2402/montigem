@@ -1,5 +1,5 @@
 project('frontend') {
-  sourceSets.main.java.srcDirs = ['../backend/src/main/java', '../backend/build/umlp/backend']
+  sourceSets.main.java.srcDirs += ['../backend/src/main/java', '../backend/build/umlp/backend']
 }
 
 //project('frontend').translateTypeScript.dependsOn(project('backend').generateUmlpBackend)

@@ -186,7 +186,7 @@ task buildApp(type: NpxTask) {
   command = "ng"
   args = ["build"]
 }
-assemble.dependsOn(buildApp)
+//assemble.dependsOn(buildApp)
 
 task testApp(type: NpxTask) {
   dependsOn(translateTypeScript, npm_install, genGUI, installLocalRTE)

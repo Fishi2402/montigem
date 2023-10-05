@@ -9,6 +9,11 @@ import basic.src.lib.gemimage.GemImage;
 page Start() {
   @GemCard(
     title = "JSweet Test",
-    component = @GemText(value = "hi")
+    component = @GemColumn(
+      components = [
+        erster@GemText(value = "hi"),
+        zweiter@GemText(value = "JSweet")
+      ]
+    )
   );
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
+import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from 'umlp-frontend-rte';
 import {JsweettestManagerClientImpl} from '@src/jsweettest/JsweettestManagerClientImpl';
 
 @Component({

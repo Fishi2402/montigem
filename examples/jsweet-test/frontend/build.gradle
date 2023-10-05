@@ -100,7 +100,7 @@ task genGUI(type: UMLPGuiGenTask) {
   dependsOn('serializeCD', frontendSetup)
   input = file("../models")
   outputDir = frontendSetup.getOutput().dir("build/appgui")
-  hwcDir = file("src/app/")
+  hwcDir = file("src/main/java")
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = file(symPath)
   domainModels = ["Jsweettest"]
@@ -212,7 +212,7 @@ task buildApp(type: NpxTask) {
   command = "ng"
   args = ["build"]
 }
-assemble.dependsOn(buildApp)
+//assemble.dependsOn(buildApp)
 
 task testApp(type: NpxTask) {
   dependsOn(translateTypeScript, npm_install, genGUI, installLocalRTE)
