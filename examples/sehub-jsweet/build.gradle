@@ -8,3 +8,10 @@ project('frontend').getTasksByName('jsweet', true).forEach {a -> {
     a.dependsOn(b)
   }}
 }}
+
+//project('frontend').translateTypeScript.dependsOn(project('backend').generateUmlpBackend)
+project('frontend').getTasksByName('jsweet', true).forEach {a -> {
+  project('backend').getTasksByName('generateUmlpBackend', true).forEach {b -> {
+    a.dependsOn(b)
+  }}
+}}

@@ -1,0 +1,6 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.UMLPJSweetAdapter",
+    "umlp.jsweet.extension.domainAdapters.JsweettestImportAdapter"
+  ]
+}
