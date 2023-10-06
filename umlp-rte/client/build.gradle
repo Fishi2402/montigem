@@ -136,22 +136,17 @@ tasks.register('incrementalReverse', IncrementalReverseTask) {
   inputProperty = project.properties['taskInputProperty'] ?: 'original'
 }
 
-spotless {
-  json {
-    target 'projects/umlp/**/package.json'
-    simple().indentWithSpaces(2)
-  }
-}
+
 
 tasks.register("updateVersion")
   {
     dependsOn("incrementalReverse")
-    dependsOn("spotlessApply")
+    //dependsOn("spotlessApply")
   }
 
 
 tasks.register("start")
   {
     dependsOn("incrementalReverse")
-    dependsOn("spotlessApply")
+    //dependsOn("spotlessApply")
   }
