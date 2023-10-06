@@ -121,6 +121,10 @@ public class UMLPSymbolTables {
     return getDiagramFor((ASTNode) a);
   }
 
+  public static ASTCDCompilationUnit getDiagramFor(ASTType type) {
+    return getDiagramFor((ASTNode) type);
+  }
+
   private static ASTCDCompilationUnit getDiagramFor(ASTNode node){
     IScope cur = node.getEnclosingScope();
     while(!(cur instanceof IUMLPArtifactScope)){
