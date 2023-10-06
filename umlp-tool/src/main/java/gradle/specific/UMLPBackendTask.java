@@ -95,7 +95,9 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
   @Internal
   @Override
   public Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
-    throw new IllegalStateException("never called");
+    return super.getOtherInputDirectories();
+
+    // TODO need to be adpated for checkReport Task
     /*Set<Provider<? extends FileSystemLocation>> result = new HashSet<>(super.getOtherInputDirectories());
     for (File file : getModelDir()) {
       // TODO: not lazy enough, all providers get resolved at config time
