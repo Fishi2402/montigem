@@ -5,7 +5,7 @@ import { GemNetworkData } from './gem-network-graph-types/gem-network-graph-type
 import { GemNetworkGraph as GemNetworkGraphTOP } from './gem-network-graph/gem-network-graph.component-gen';
 
 @Component({
-  selector: 'gem-network-graph',
+  selector: 'gem-network-graph-sigma',
   templateUrl: './gem-network-graph.component.html',
   styleUrls: ['./gem-network-graph.component.scss']
 })
@@ -21,7 +21,7 @@ export class GemNetworkGraph extends GemNetworkGraphTOP {
 
   /** defines the position of the legend */
   public legendPosition: string;
-  
+
   /**variable that enables or disables the legend */
   public displayLegend = true;
 
@@ -51,7 +51,7 @@ export class GemNetworkGraph extends GemNetworkGraphTOP {
     }
     this._data.edges = data.edges;
     this._nodes = new DataSet();
-    
+
     if (!this._labelEqualsID) {
       this._nodes.add(data.nodes);
     } else {
@@ -174,13 +174,13 @@ export class GemNetworkGraph extends GemNetworkGraphTOP {
   /** changes container style depending on legend position */
   public changeContainer() {
     switch(this.legendPosition) {
-      case 'left': 
+      case 'left':
         return 'wholeChartWithLegendLeftContainer';
-      case 'top': 
+      case 'top':
         return 'wholeChartWithLegendTopContainer';
-      case 'bottom': 
+      case 'bottom':
         return 'wholeChartWithLegendBottomContainer';
-      case 'right': 
+      case 'right':
         return 'wholeChartWithLegendRightContainer';
       default:
         return 'wholeChartWithLegendBottomContainer';
