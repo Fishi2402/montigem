@@ -2,7 +2,7 @@
 <#-- Generates a routes file from the given model -->
 ${tc.signature("astguiCompilationUnitList","ids","fullPathIndex","paths","pathName")}
 // always imported
-import { Routes } from "@angular/router";
+  import { Routes } from "@angular/router";
 // imports of pages in the package
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
   import { ${astguiCompilationUnitList[index].getComponentName()}Component } from "${paths[index]}";
@@ -22,10 +22,10 @@ export const routes: Routes = [
       },
     </#if>
 
-{
-path: "${pathName}/${astguiCompilationUnitList[index].getComponentName()}<#list ids[index] as id>/:${id}</#list>",
-component: ${astguiCompilationUnitList[index].getComponentName()}Component
-},
+     {
+     path: "${pathName}/${astguiCompilationUnitList[index].getComponentName()}<#list ids[index] as id>/:${id}</#list>",
+     component: ${astguiCompilationUnitList[index].getComponentName()}Component
+     },
 
 
 </#if>

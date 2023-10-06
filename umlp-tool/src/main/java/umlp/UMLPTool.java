@@ -507,7 +507,7 @@ public class UMLPTool extends UMLPToolTOP {
         routesMap.entrySet().forEach(packageInfo ->
         {
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
-          List<String> outputs=typeScriptGenerator.generateConfigFileForPackages(packageInfo,GUIGeneratorUtil.getInstance());
+          List<String> outputs=typeScriptGenerator.generateConfigFileForPackages(packageInfo);
           outputs.forEach(output->Reporting.reportFileCreation(outDir+"/"+output));
 
         });

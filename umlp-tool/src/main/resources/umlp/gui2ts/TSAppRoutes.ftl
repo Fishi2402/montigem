@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("astguiCompilationUnits")}
+${tc.signature()}
 // always imported
 import { Routes } from "@angular/router";
 // imports module of pages for every package

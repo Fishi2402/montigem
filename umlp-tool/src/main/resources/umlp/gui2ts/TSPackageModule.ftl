@@ -11,17 +11,17 @@ import { CommonModule } from "@angular/common"
 import { routes } from '${pathHWroutes}';
 // imports of pages in the package
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
-  import { ${astguiCompilationUnitList[index].getComponentName()}Component } from "${paths[index]}";
+import { ${astguiCompilationUnitList[index].getComponentName()}Component } from "${paths[index]}";
 </#list>
 <#if existHWCModules >
-import {config} from '${pathHWModule}';
+import { config } from '${pathHWModule}';
 </#if>
 
 
 
 
 <#list imports?keys as key>
-  import {${key}} from "${imports[key]}";
+    import {${key}} from "${imports[key]}";
     <#assign uniqueSet=uniqueSet+[key]>
 </#list>
 
@@ -36,10 +36,10 @@ declarations: [
 </#if>
 ],
 imports: [
-RouterModule.forChild(routes),
-CommonModule,
+    RouterModule.forChild(routes),
+    CommonModule,
 <#list uniqueSet as moduleClassName>
-${moduleClassName},
+    ${moduleClassName},
 </#list>
 <#if existHWCModules >
   ...config.imports

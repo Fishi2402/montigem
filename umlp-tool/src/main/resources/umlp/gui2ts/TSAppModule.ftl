@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("existedModuleConfig","existHWCRoutes","existAppComponent","pathHWRoutes","pathModuleConfig","pathAppComponent")}
+${tc.signature("existedModuleConfig","existHWCRoutes","pathHWRoutes","pathModuleConfig")}
 
 //always imported
 import { NgModule } from '@angular/core';
@@ -8,20 +8,16 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { Gui_Module } from '../../build/appgui/gui/Gui.Module'
 <#if existedModuleConfig >
-  import { config } from '${pathModuleConfig}';
+import { config } from '${pathModuleConfig}';
 </#if>
-
 <#if existHWCRoutes >
-  import { routes } from '${pathHWRoutes}';
+import { routes } from '${pathHWRoutes}';
 </#if>
-
 <#if !existHWCRoutes >
-  import { routes } from './AppGemRouting';
+import { routes } from './app.routing';
 </#if>
+import { AppComponent } from './app.component';
 
-<#if existAppComponent >
-  import { AppComponent } from '${pathAppComponent}';
-</#if>
 
 @NgModule({
 declarations: [
@@ -33,9 +29,7 @@ imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
     Gui_Module,
-<#if existAppComponent >
-  AppComponent,
-</#if>
+    AppComponent,
 
 <#if existedModuleConfig >
   ... config.imports

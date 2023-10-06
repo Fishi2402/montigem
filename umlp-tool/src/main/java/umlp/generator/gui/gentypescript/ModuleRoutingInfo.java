@@ -1,9 +1,13 @@
 package umlp.generator.gui.gentypescript;
 
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ModuleRoutingInfo {
 
@@ -61,5 +65,20 @@ public class ModuleRoutingInfo {
 
     }
     return routingPath;
+  }
+
+  public Map<String,String> getImports(GUIGeneratorUtil util,String compDecl) {
+    Map<String, String> imports = new HashMap<>();
+    for (ASTGUICompilationUnit ast : components) {
+      for (ASTMCImportStatement imp : ast.getMCImportStatementList()) {
+        String moduleClassName = util.getModuleClassName(imp.getMCQualifiedName().getParts(imp.getMCQualifiedName().sizeParts() - 1));
+        if (util.isGuiImport(imp) && !util.isCreatedTSComponent(moduleClassName)) {
+          imports.put(moduleClassName, util.java2tsModule(imp.getQName()));
+        } else if (util.isGuiImport(imp) && util.isCreatedTSComponent(moduleClassName) && !(compDecl + "_Module").equals(util.getPackageModuleName(imp))) {
+          imports.put(util.getPackageModuleName(imp), util.getPackageModulePath(imp));
+        }
+      }
+    }
+    return imports;
   }
 }
