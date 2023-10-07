@@ -1,6 +1,9 @@
+import { Navigation } from '@src/navigation/navigation.component';
+import { Navigation_Module } from '@src/gui/widgets/navigation/NavigationGemModule';
 export const config={
-  declarations:[],
+  declarations:[Navigation],
   exports:[],
-  imports:[]
+  imports:[Navigation_Module],
+  providers:[]
 }
 

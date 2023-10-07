@@ -37,6 +37,7 @@ import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
+import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
 import java.net.URL;
@@ -625,7 +626,7 @@ public class GUIGeneratorUtil {
     {
       path+=temp.get(index)+"/";
     }
-    path+=moduleName+".Module";
+    path+=moduleName+ GUI2TypeScriptGenerator.MODULES_FILE;
     return path;
   }
 
