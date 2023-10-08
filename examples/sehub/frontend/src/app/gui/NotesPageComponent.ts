@@ -22,7 +22,7 @@ export class NotesPageComponent extends NotesPageComponentTOP {
   ngOnInit() {
     if (!SehubSecurityManager.isSignedIn()) {
       alert("No User Logged In")
-      this.router.navigate(['/Login']);
+      this.router.navigate(['gui/login/LoginPage']);
     }
 
     if(this.issueRoutingId > 0 && this.issue == null) {
@@ -32,7 +32,7 @@ export class NotesPageComponent extends NotesPageComponentTOP {
         this.issue._internal_getPostsGemList().build()
 
         });
-      this.router.navigate(['/login/LoginPage']);
+      this.router.navigate(['gui/login/LoginPage']);
     }
 
     super.ngOnInit();

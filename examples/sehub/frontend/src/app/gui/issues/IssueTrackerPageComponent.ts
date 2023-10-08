@@ -23,7 +23,7 @@ export class IssueTrackerPageComponent extends IssueTrackerPageComponentTOP {
 
   public ngOnInit(): void {
     if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['/Login']);
+      this.router.navigate(['gui/login/LoginPage']);
     }
     super.ngOnInit();
   }
@@ -48,6 +48,7 @@ export class IssueTrackerPageComponent extends IssueTrackerPageComponentTOP {
   }
 
   public override getDoingListIssues(): GemList<Issue> {
+    console.log("here")
     if (!this.getIssues()) {
       return this.doingList;
     }

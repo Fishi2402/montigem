@@ -18,7 +18,7 @@ export class UserLoginComponent extends UserLoginComponentTOP {
 
   public ngOnInit(): void {
     if (SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['/start']);
+      this.router.navigate(['gui/Start']);
     }
 
     if (this.loginUser == null) {
@@ -63,7 +63,7 @@ export class UserLoginComponent extends UserLoginComponentTOP {
           SehubSecurityManager.setCurrentlyLoggingIng(true);
           // Do NOT use router as otherwise the websocket is not refreshed!
           // The AppComponent will initialize the websocket during reloading
-          window.location.href = '/start';
+          window.location.href = 'gui/Start';
         } else {
           alert("Invalid Login: Wrong Username or Password!");
         }

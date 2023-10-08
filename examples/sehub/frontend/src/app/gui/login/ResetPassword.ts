@@ -31,7 +31,7 @@ export class ResetPassword extends ResetPasswordTOP {
   }
 
   public override navigateBack(): void {
-    this.router.navigate(['/login/LoginPage']);
+    this.router.navigate(['gui/login/LoginPage']);
   }
 
 }

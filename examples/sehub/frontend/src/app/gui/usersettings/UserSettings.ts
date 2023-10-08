@@ -13,7 +13,7 @@ export class UserSettings extends UserSettingsTOP {
   private changePasswordValue = "";
 
   public inviteUserLeftClick() {
-    this.router.navigate(['/Login/Registration']);
+    this.router.navigate(['gui/login/RegistrationPage']);
   }
 
   public override getInviteUserDisabled (): boolean {
