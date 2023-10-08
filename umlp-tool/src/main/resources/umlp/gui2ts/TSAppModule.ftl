@@ -41,6 +41,7 @@ providers: [
   ... config.providers
 </#if>
 ],
+bootstrap: [AppComponent],
 })
 
 export class AppModule { }
