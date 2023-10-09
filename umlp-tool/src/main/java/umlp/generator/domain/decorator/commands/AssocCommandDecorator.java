@@ -95,7 +95,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
             getCorrectManager(assoc));
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
-    getCD4C().addMethod(ast, "umlp.commands.assocs.AssocsCheckAccessPolicy", sourceType, targetType);
+    getCD4C().addMethod(ast, "umlp.commands.assocs.AssocsCheckAccessPolicy", sourceType, targetType, "Create");
 
     // Importe
     addImports(origCD, ast, sourceType, targetType);
@@ -143,7 +143,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
             getCorrectManager(assoc));
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
-    getCD4C().addMethod(ast, "umlp.commands.assocs.AssocsCheckAccessPolicy", sourceType, targetType);
+    getCD4C().addMethod(ast, "umlp.commands.assocs.AssocsCheckAccessPolicy", sourceType, targetType, "Delete");
 
     // Importe
     addImports(origCD, ast, sourceType, targetType);
@@ -203,7 +203,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
             getCorrectManager(assoc));
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
-    getCD4C().addMethod(ast, "umlp.commands.assocs.AssocsCheckAccessPolicy", sourceType, targetType);
+    getCD4C().addMethod(ast, "umlp.commands.assocs.AssocsCheckAccessPolicy", sourceType, targetType, "Update");
 
     addImports(origCD, ast, sourceType, targetType);
 

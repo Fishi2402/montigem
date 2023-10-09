@@ -93,7 +93,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
       getCD4C().addMethod(ast, getDoRunSimpleTemplate(), classname, originalClassname, t, getCorrectManager(domainClass), name, methodPrefix);
     }
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("getGemId()"));
-    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainClass.getName());
+    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainClass.getName(), "Create");
 
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(gemAttr));
