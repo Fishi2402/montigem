@@ -1,6 +1,7 @@
-package person;
+package basic;
 import basic.src.lib.gembutton.GemButton;
-page Example()
-{
+page GemButtonExample(){
+
   @GemButton(label = "Example");
+
 }
