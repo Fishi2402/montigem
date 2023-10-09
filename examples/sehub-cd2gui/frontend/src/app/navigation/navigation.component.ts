@@ -10,10 +10,10 @@ import {User} from '@src/sehub/User';
 export class Navigation {
 
   readonly items: { url: string, title: string }[] = [
-    { url: '/projects', title: 'Projects' },
-    {  url: '/issue-tracker/IssueTrackerPage', title: 'Issue Tracker' },
-    { url: '/notes/NotesPage/42000', title: 'Notes'},
-    { url: '/usersettings/UserSettings/1', title: 'User Settings'},
+
+    { url: 'gui/SehubMainPage', title: 'Projects' },
+    { url: 'gui/issues/IssueTrackerPage', title: 'Issue Tracker' },
+    { url: 'gui/usersettings/UserSettings/1', title: 'User Settings' },
     { url: '/CD2GUI', title: 'CD2GUI'},
   ];
   getCurrentUser(): User {
