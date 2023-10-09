@@ -87,7 +87,6 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
     ast.getModifier().setStereotype(stereotype.build());
 
     List<ASTCDAttribute> attrList = Lists.newArrayList();
-    attrList.add(getCD4C().addAttribute(ast, "protected long gemId"));
     meth.getCDParameterList().forEach(p -> attrList.add(getCD4C().addAttribute(ast, getAttributeForMethodParameter(p))));
 
     getCD4C().addConstructor(ast, getConstructorTemplate(), classname, getPackageName(origCD, COMMAND_PACKAGE), attrList);

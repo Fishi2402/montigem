@@ -14,8 +14,8 @@ import java.util.Optional;
 
 public class SendIssueMail extends SendIssueMailTOP {
 
-  public SendIssueMail(long gemId, long emailGemId, long subjectGemId, String message) {
-    super(gemId, emailGemId, subjectGemId, message);
+  public SendIssueMail(long emailGemId, long subjectGemId, String message) {
+    super(emailGemId, subjectGemId, message);
   }
 
   public StatusResult doAction() {

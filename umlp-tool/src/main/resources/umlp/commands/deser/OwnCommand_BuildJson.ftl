@@ -5,7 +5,6 @@ ${tc.signature("command", "parameters", "types", "useDeser", "objectMapperName",
 <#else>
     ${cd4c.method("public void buildJson(${command} command, JsonPrinter jsonPrinter)")}
   super.buildJson(command, jsonPrinter);
-  jsonPrinter.member("gemId", command.getGemId());
 <#list parameters as param>
     <#assign type = types[param?index]>
     ${tc.includeArgs("umlp.commands.deser.OwnCommand_BuildJsonParameters", [param, type, genService.printTypeFullName(type), genService.isCDOrInnerCDEnum(type), genService.calculateJSonInclOptional(type), useDeser[param?index], objectMapperName])}
