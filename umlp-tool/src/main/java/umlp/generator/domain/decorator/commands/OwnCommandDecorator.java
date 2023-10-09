@@ -163,7 +163,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
   }
 
   protected String getConstructorTemplate() {
-    return "umlp.commands.cmd.Constructor";
+    return "umlp.commands.own.Constructor";
   }
 
   protected String getGetEffectedGemIdsTemplate() {
@@ -171,11 +171,11 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
   }
 
   protected String getDoActionTemplate() {
-    return "umlp.commands.cmd.DoAction";
+    return "umlp.commands.own.DoAction";
   }
 
   protected String getCheckAccessPolicyTemplate() {
-    return "umlp.commands.cmd.CheckAccessPolicy";
+    return "umlp.commands.own.CheckAccessPolicy";
   }
 
   protected ASTCDClass createCommandDeSer(ASTCDCompilationUnit origCD, ASTCDMethod meth) {
