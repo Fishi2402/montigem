@@ -111,4 +111,8 @@ classdiagram Sehub {
   association bingoBoardEnties [1] BingoBoard -> (bingoBoardEntries) BingoEntry [*];
   association boardMapping [1] BoardMapper -> (bingoBoardEntry) BingoEntry [1];
 
+  class App {
+    <<command>> void sendIssueMail(User email, Issue subject, String message);
+  }
+
 }
