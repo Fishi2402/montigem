@@ -1,0 +1,35 @@
+
+
+
+
+
+<gem-card class="gemCard0"
+      [title] = 'getGemCard0Title(
+        )'
+      [component] = 'filesTPL'
+>
+</gem-card>
+
+
+
+
+
+
+<gem-graph class="gemNetworkGraph1" [data] = 'getGemNetworkGraph1Data( )' style="width: 100%; height: 100vh"></gem-graph>
+
+
+
+
+
+
+  <ng-template #filesTPL>
+<gem-treeview class="files"
+      [items] = 'getFilesItems(
+        )'
+      [allExpanded] = 'getFilesAllExpanded(
+        )'
+>
+</gem-treeview>
+  </ng-template>
+
+

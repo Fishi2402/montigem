@@ -49,7 +49,7 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
 
     addConstructor(ast, classname, packageName);
     getCD4C().addMethod(ast, getDoRunTemplate(), classname,  getCorrectManager(domainType), domainPackage);
-    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainType.getName());
+    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainType.getName(), "Read");
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+ "." + classname + "AccessPolicy");
     getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));

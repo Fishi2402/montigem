@@ -16,7 +16,7 @@ component Note(Post post, Boolean showResponses){
   @GemCard(title = "", component =
       @GemColumn(height = "auto", width = "800px", vAlign = "top", rowGap = "5px", components = [
         @GemRow(hAlign = "right", colGap="5px", vAlign = "space-around", components = [
-          @GemRow(width = "450px", component = postTitle@GemTextInput(labelText = "", inputType = "string", entry = post.title, disabled = false)),
+          @GemRow(width = "450px", component = postTitle@GemTextInput(labelText = "", inputType = "string", entry = post.title, disabled = false, placeholder="Your title")),
           @GemRow(width = "140px", height = "30px" , vAlign = "bottom", component = @GemText(style= "font-size: 0.5rem;", value = post.author.username)),
           @GemRow(width = "200px", height = "30px" , colGap = "5px",vAlign = "bottom", hAlign = "right", components = [
             // @GemButton(label = "Bearbeiten", leftClick = editPost),
@@ -30,7 +30,7 @@ component Note(Post post, Boolean showResponses){
                   labelText = "",
                   entry = post.text,
                   disabled = false,
-                  placeholder = "Felix will handle this"
+                  placeholder = "Your comment"
                 ),
         responseList@iterate(Post r : post.responses){
            loadRespComponent@Response(post = r);

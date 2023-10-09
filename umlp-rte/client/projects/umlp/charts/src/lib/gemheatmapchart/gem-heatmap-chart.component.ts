@@ -39,15 +39,18 @@ export class GemHeatmapChart extends GemHeatmapChartTOP {
         switch (propName) {
           case 'data': {
             if (this.data) this.computed_data = this.rearrange_array(this.data.entries);
+            break;
           }
           case 'timestampdata': {
             if (this.timestampdata) {
               this.prettyprint_timestamps = true;
               this.loop_factor = 86400;
             }
+            break;
           }
           case 'defaultColor': {
             if (/^#[0-9A-F]{6}$/i.test(this.defaultColor)) this.enter_color(this.defaultColor);
+            break;
           }
           case 'defaultColNum': {
             this.enter_num_seperations(this.defaultColNum);
@@ -154,7 +157,7 @@ export class GemHeatmapChart extends GemHeatmapChartTOP {
       var secondary_blue = 255 - (255 - blue) * this.colorscalefactor;
     }
 
-    //Adds colorscalefactor-1 linear mid-steps between secondary color and input (For colorscalefactor=1 there is only secondary color and 2*input 
+    //Adds colorscalefactor-1 linear mid-steps between secondary color and input (For colorscalefactor=1 there is only secondary color and 2*input
     var new_domain = [];
     for (var i = 0; i < this.color_domain_mid_steps; i++) {
       new_domain.push(this.color_to_html_hex(((this.color_domain_mid_steps - i) * secondary_red + i * red) / this.color_domain_mid_steps, ((this.color_domain_mid_steps - i) * secondary_green + i * green) / this.color_domain_mid_steps, ((this.color_domain_mid_steps - i) * secondary_blue + i * blue) / this.color_domain_mid_steps));
@@ -293,7 +296,7 @@ export class GemHeatmapChart extends GemHeatmapChartTOP {
         max = max + UTCoffset;
       }
     }
-    //Period between earliest and latest timestamp 
+    //Period between earliest and latest timestamp
     var diff;
     diff = max - min;
     //Period divided into num_sperations equal chunks
@@ -376,7 +379,7 @@ export class GemHeatmapChart extends GemHeatmapChartTOP {
     else {
       // Will display time in 10:23 format
       return hours + ':' + minutes.substr(-2);
-      //return timestamp;	
+      //return timestamp;
     }
   };
 

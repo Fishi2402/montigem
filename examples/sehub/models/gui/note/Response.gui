@@ -32,7 +32,8 @@ component Response(Post post){
                     id = "response",
                     labelText = "",
                     entry = post.text,
-                    disabled = false
+                    disabled = false,
+                    placeholder = "Your reply"
                   )
           ])
 

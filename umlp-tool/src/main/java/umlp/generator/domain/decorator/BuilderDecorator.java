@@ -14,6 +14,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.HashMap;
 import java.util.List;
@@ -107,7 +108,8 @@ public class BuilderDecorator extends AbstractDecorator {
       ASTCDClass builderClass, ASTCDClass domainClass,
       String managerName, List<ASTCDAssocSide> attrAssocLists) {
     HashMap<ASTCDAssocSide, String> correctManagerToAttrAssocSides = new HashMap<>();
-    attrAssocLists.forEach(assocSide -> correctManagerToAttrAssocSides.put(assocSide, getCorrectManager(assocSide)));
+    attrAssocLists.forEach(assocSide -> correctManagerToAttrAssocSides.put(assocSide,
+        getCorrectManager(assocSide.getSymbol().getAssoc().getAssociation().getAstNode())));
     getCD4C().addConstructor(builderClass, getConstructorTemplate(), domainClass.getName(), correctManagerToAttrAssocSides);
   }
 
