@@ -38,7 +38,7 @@ export class Note extends NoteTOP {
             new Set<Post>())
             .title(" | " + date.getHours() + ":" + (date.getMinutes()<10?'0':'') + date.getMinutes() + " ]: " + this.post.getTitle())
             .author(SehubSecurityManager.getCurrentUser())
-            .text("<< YOUR REPLY >>")
+            .text("")
             .parentGem(new Gem<Post>().Gem2(this.getPost()))
             .build();
         this.post.addResponses2(response)
