@@ -1,22 +1,23 @@
 /* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
-import { LoadingState } from '../common/LoadingState';
-import { CommandResult } from './CommandResult';
-import { StringHelper } from '../javautil/StringHelper';
+import {LoadingState} from '../common/LoadingState';
+import {CommandResult} from './CommandResult';
 
 export class SimpleResult<T> extends CommandResult<T> {
     obj: T;
 
     loadingState: LoadingState;
 
-    public constructor(id?: number, obj?: T, typeParameter?: string) {
-      if (id != undefined && id != null) {
-        super(id, typeParameter);
-        if (this.obj === undefined) { this.obj = null; }
-        if (this.loadingState === undefined) { this.loadingState = null; }
-        this.obj = obj;
-        this.loadingState = LoadingState.LOADED;
-      } else {
+    public constructor(id?: number, obj?: LoadingState | T, typeParameter?: string) {
+      if (id === undefined || id === null) {
         super();
+      } else {
+        super(id, typeParameter);
+        if (id != undefined && id != null && obj instanceof <any>LoadingState) {
+          this.loadingState = <LoadingState>obj;
+        } else {
+          this.obj = <T>obj;
+          this.loadingState = LoadingState.LOADED;
+        }
       }
     }
 

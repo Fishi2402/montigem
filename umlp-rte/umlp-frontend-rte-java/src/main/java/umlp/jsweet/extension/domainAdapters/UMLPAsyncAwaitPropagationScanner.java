@@ -138,6 +138,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
       case "umlp.backendrte.command.ServerError":
         switch (methodSimpleName) {
           case "doRun":
+          case "doAction":
             return true;
         }
         break;
