@@ -1,5 +1,10 @@
 import { Routes } from "@angular/router";
 import { routes as routesTOP } from "../../build/frontendGen/src/app/app.routing"
+
+
+
+
+
 export const routes: Routes = [
   // default path like in other routing files
   {
@@ -8,5 +13,9 @@ export const routes: Routes = [
     // redirect to a module, not a component (use package part instead of the component name)
     redirectTo: "gui/login/LoginPage"
   },
-    ...routesTOP
-  ]
+    ...routesTOP,
+
+
+
+
+]

@@ -14,7 +14,7 @@ export class Navigation {
     { url: 'gui/SehubMainPage', title: 'Projects' },
     { url: 'gui/issues/IssueTrackerPage', title: 'Issue Tracker' },
     { url: 'gui/usersettings/UserSettings/1', title: 'User Settings' },
-    { url: '/CD2GUI', title: 'CD2GUI'},
+    { url: 'cd2gui/models/CD2GUIDashboard', title: 'CD2GUI'},
   ];
   getCurrentUser(): User {
     return SehubSecurityManager.getCurrentUser();

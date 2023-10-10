@@ -21,7 +21,7 @@ export class ProjectFileView extends ProjectFileViewTOP {
 
   public  getGemLink11Url (): string {
     if(this.parent.getContainedBy() != null){
-      return "../project/ProjectFileView/"+ this.parent.getContainedBy().getGemId()
+      return "/gui/ProjectFileView/"+ this.parent.getContainedBy().getGemId()
     }
     return ""
   }

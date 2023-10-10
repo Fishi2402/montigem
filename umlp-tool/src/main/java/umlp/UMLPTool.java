@@ -150,11 +150,6 @@ public class UMLPTool extends UMLPToolTOP {
     return null;
   }
 
-  public static void main(String[] args) {
-    //Log.ensureInitalization(); // by default, don't use SLF4J log
-    UMLPTool tool = new UMLPTool();
-    tool.run(args);
-  }
 
   /**
    * This method realizes a tool for processing FC models. See the project's Readme for a
