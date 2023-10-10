@@ -12,4 +12,6 @@ classdiagram Domain {
   }
 
   association home [1] Person -> (address) Address [0..1];
+
+  association friends [*] Person -> (friends) Person [*];
 }

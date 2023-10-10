@@ -2,7 +2,6 @@
 package umlp.generator.domain.decorator;
 
 import com.google.common.base.Defaults;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
@@ -12,8 +11,11 @@ import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.class2mc.adapters.JClass2OOTypeSymbolAdapter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpressionBuilder;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
@@ -23,7 +25,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
-import de.se_rwth.commons.Joiners;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
@@ -97,6 +99,29 @@ public class GenService {
     }
     // else make abstract or use template
     return json;
+  }
+
+  public static String calculateJSonInclOptional(SymTypeExpression type) {
+    if (!isOptional(type)) {
+      return calculateJSon(type);
+    }
+    return calculateJSon(((SymTypeOfGenerics) type).getArgument(0));
+  }
+
+  public static String printTypeFullName(SymTypeExpression type) {
+    if (!type.isGenericType()) {
+      return type.printFullName();
+    }
+    return ((SymTypeOfGenerics) type).getArgument(0).printFullName();
+  }
+
+  // TODO (MB): Bessere Lösung?
+  public static SymTypeExpression getSymType(String type) {
+    Optional<TypeSymbol> primitive = BasicSymbolsMill.globalScope().resolveType(type);
+    if (primitive.isPresent()) {
+      return SymTypeExpressionFactory.createPrimitive(primitive.get());
+    }
+    return SymTypeExpressionFactory.createObscureType();
   }
 
   public static Optional<String> getBuildJsonHelperMethod(SymTypeExpression type) {
@@ -350,6 +375,10 @@ public class GenService {
     return false;
   }
 
+  public static boolean isCDOrInnerCDEnum(SymTypeExpression type) {
+    return isCDEnum(type) || isInnerCDEnum(type);
+  }
+
   public static boolean isJavaType(SymTypeExpression type) {
     // TODO: Bessere Lösung?
     return type.getTypeInfo() instanceof JClass2OOTypeSymbolAdapter;
@@ -399,5 +428,12 @@ public class GenService {
 
   public static boolean containsMethod(ASTCDType type, ASTCDMethodSignature method) {
     return type.getCDMethodList().stream().filter(m -> m.deepEquals(method)).findAny().isPresent();
+  }
+
+  public static boolean hasStereotype(ASTModifier modifier, String value) {
+    if (modifier.isPresentStereotype()) {
+      return modifier.getStereotype().contains(value);
+    }
+    return false;
   }
 }

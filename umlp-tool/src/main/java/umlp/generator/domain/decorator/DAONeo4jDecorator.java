@@ -192,9 +192,16 @@ public class DAONeo4jDecorator extends DAODecorator {
     getOptionalAttributes(domainClass).forEach(e -> optMap.put(e, "\"" + e.getName() + "\""));
 
     Map<String, String> assocToCorrectManagerMap = new HashMap<>();
-    gemAssociationMap.values().forEach(assoc ->
+    gemAssociationMap.values().forEach(assoc -> {
+      // Assumes a CoCo guarantees there no type of CD is changed
+      if(assoc.getCDAssocDir().isDefinitiveNavigableRight()) {
         assocToCorrectManagerMap.put(assoc.getName(),
-            UMLPSymbolTables.getDiagramFor(assoc).getCDDefinition().getName() + ManagerDecorator.SUFFIX));
+            UMLPSymbolTables.getDiagramFor(assoc.getRight().getSymbol().getType().getTypeInfo().getAstNode()).getCDDefinition().getName()+ManagerDecorator.SUFFIX);
+      } else {
+        assocToCorrectManagerMap.put(assoc.getName(),
+            UMLPSymbolTables.getDiagramFor(assoc.getLeft().getSymbol().getType().getTypeInfo().getAstNode()).getCDDefinition().getName()+ManagerDecorator.SUFFIX);
+      }
+    });
 
     Map<ASTCDAttribute, String> attributeMap = Maps.newLinkedHashMap();
     attributes.forEach(e -> attributeMap.put(e, "\"" + e.getName() + "\""));

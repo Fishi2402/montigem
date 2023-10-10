@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature()}
-${cd4c.method("public boolean checkPermission(Command command)")}
+${tc.signature("method")}
+${cd4c.method("public boolean check${method}Permission(Command command)")}
 
 return true;

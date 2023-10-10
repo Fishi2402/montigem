@@ -2,12 +2,15 @@
 package gradle.specific;
 
 import gradle.common.UMLPSingleFileTask;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.*;
+import org.gradle.work.FileChange;
 import org.gradle.work.Incremental;
+import org.gradle.work.InputChanges;
 import umlp.UMLPToolOptions;
 
 import java.io.File;
@@ -16,15 +19,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @CacheableTask
 public abstract class UMLPBackendTask extends UMLPSingleFileTask {
 
-  @InputDirectory
+  @InputFiles
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental  // This Annotation requires custom java-logic to run correctly. See "getOtherInputDirectories()"
-  public abstract DirectoryProperty getModelDir();
+  @Incremental  // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
+  public abstract ConfigurableFileCollection getModelDir();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
@@ -61,9 +66,11 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
       result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
     }
 
-    if(this.getModelDir().isPresent()) {
-      result.add("-modelPath");
-      result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
+    if(!this.getModelDir().isEmpty()) {
+      for (File file : this.getModelDir()) {
+        result.add("-modelPath");
+        result.add(handlePath.apply(file.toPath()));
+      }
     }
 
     if(this.getSymbolOutDir().isPresent()) {
@@ -78,12 +85,10 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
     return result;
   }
 
-
-  @Internal
   @Override
-  public Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
-    Set<Provider<? extends FileSystemLocation>> result = new HashSet<>(super.getOtherInputDirectories());
-    result.add(getModelDir());
+  protected Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
+    Stream<FileChange> result = super.getStreamOfChanges(inputChanges);
+    result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(getModelDir()).spliterator(), false));
     return result;
   }
 

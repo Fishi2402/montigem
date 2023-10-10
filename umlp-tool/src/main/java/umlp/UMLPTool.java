@@ -377,8 +377,10 @@ public class UMLPTool extends UMLPToolTOP {
           // parse, create symbol table, check all cocos
           ASTGUICompilationUnit astGui = parseGUI(guiModel.toString());
           Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
+          GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
+          nodeIdTrafo.transform(astGui);
 
-          IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, importedSymbolPath);
+          IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, Optional.of(guiModel), importedSymbolPath);
 
           // print or store symbol table
           if (SYMTAB.isSelected(cmd)) {
@@ -427,8 +429,6 @@ public class UMLPTool extends UMLPToolTOP {
               Boolean.parseBoolean(cmd.getOptionValue(GUI_GEN_TS_FUNC.getCMD())) : true;
           GUIGeneratorUtil.getInstance().init(domainModels, createModels, generateTS);
 
-          GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
-          nodeIdTrafo.transform(astGui);
           // logTrafoExec("GUINodeIdTrafo", astGui);
 
           // TODO AGe: range iterate results in type check issue
@@ -458,7 +458,7 @@ public class UMLPTool extends UMLPToolTOP {
           GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();
           gui2HtmlTrafo.transform(astGui);
           ASTGUICompilationUnit astGui4Html = gui2HtmlTrafo.getOut();
-          createSymbolTable(astGui4Html, importedSymbolPath);
+          createSymbolTable(astGui4Html, Optional.empty(), importedSymbolPath);
 
           // System.out.println(new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astGui4Html));
           GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, viewComponents);
@@ -602,7 +602,16 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   // TODO MB
-  protected IGUIDSLArtifactScope createSymbolTable(ASTGUICompilationUnit ast, MCPath modelPath) {
+  protected IGUIDSLArtifactScope createSymbolTable(
+      ASTGUICompilationUnit ast, Optional<Path> modelFilePathOpt, MCPath modelPath) {
+    GUIDSLTool tool = new GUIDSLTool();
+    tool.defaultImportTrafo(ast);
+    tool.resetGSAndMill();
+    if (modelFilePathOpt.isPresent()) {
+      tool.registerLoadedFile(modelFilePathOpt.get().toString());
+    }
+    /*
+    IGUIDSLArtifactScope artifactScope = createSymbolTable(ast, new MCPath(modelPath));
     GUIDSLMill.globalScope().clear();
     GUIDSLMill.reset();
     GUIDSLMill.init();
@@ -630,7 +639,8 @@ public class UMLPTool extends UMLPToolTOP {
     gs.add(navigateFunction);
 
     IGUIDSLArtifactScope as = GUIDSLMill.scopesGenitorDelegator().createFromAST(ast);
-    return as;
+    /**/
+    return tool.createSymbolTable(ast, modelPath);
   }
 
   public static void main(String[] args) {

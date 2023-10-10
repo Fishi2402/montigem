@@ -1,0 +1,5 @@
+package gui;
+
+import Domain.Person;
+
+page NetworkChartExample(Person p)

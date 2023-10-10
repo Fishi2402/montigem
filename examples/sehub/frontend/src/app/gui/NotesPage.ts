@@ -21,7 +21,7 @@ export class NotesPage extends NotesPageTOP {
         let post = builder.responses(
             new Set<Post>())
             .author(SehubSecurityManager.getCurrentUser())
-            .title("<< YOUR TITLE >>")
+            .title("")
             .text("")
             .issueGem(new Gem<Issue>().Gem2(this.getIssue()))
             .build();

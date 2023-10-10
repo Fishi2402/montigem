@@ -25,11 +25,14 @@ repositories {
 configurations {
   guiParser
   guiLib
+  guiDefaultTypes
 }
 
 dependencies {
   guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
   guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
+  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+  implementation "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
 application {
@@ -65,54 +68,22 @@ dependencies {
   implementation "umlp:frontend-rte:$mc_version:cd2java"
 }
 
-// TODO AGe: the whole serialization thing should be reworked
-def symPath = "${project.buildDir}/symbols";
-
 generateUmlpBackend {
   input = file("../models/hardy/Flensburg.umlp")
-  symbolOutDir = file("${symPath}")
+  symbolOutDir = file("${project.buildDir}/symbols")
 }
 
 task runServer {
   dependsOn(bootRun)
 }
 
-task serializeGUI {
-  dependsOn('generateUmlpBackend', 'unpackGUILibSymbols')
-  inputs.dir(file("${project.projectDir.parent}/models/stanley"))
-  outputs.dir(file("$project.buildDir/symbols/stanley"))
-  doLast {
-    def modelPathStr = "${project.projectDir.parent}/models"
-    def modelPath = Paths.get(modelPathStr)
-
-    fileTree(modelPathStr).matching {
-      include "**/*.gui"
-    }.each {
-      def path = it.path
-      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
-      javaexec {
-        mainClass = 'de.monticore.guidsl.GUIDSLTool'
-        classpath = configurations.guiParser
-        args "-i", path,
-            "-s", "${symPath}/${relativeModelPathStr}sym",
-            "-path", "${symPath}"
-      }
-    }
-  }
-}
-
-task unpackGUILibSymbols(type: Copy) {
-  from zipTree(configurations.guiLib.asPath)
-  into "${symPath}"
-}
-
 task genTestGUI(type: UMLPGuiGenTask) {
-  dependsOn('serializeGUI')
+  dependsOn(generateUmlpBackend)
   input = file("../models")
   outputDir = file("$project.buildDir/testgui")
   hwcDir = file("$projectDir/src/main/java")
   modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = file(symPath)
+  symbolDir = files(generateUmlpBackend.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
   domainModels = ["hardy.Flensburg"]
   guiCreateModels = ["stanley.gui.AccountCreate"]
 }

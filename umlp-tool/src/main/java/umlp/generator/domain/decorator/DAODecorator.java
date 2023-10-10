@@ -382,9 +382,16 @@ public class DAODecorator extends AbstractDecorator {
         SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
 
     Map<String, String> assocToCorrectManagerMap = new HashMap<>();
-    gemAssociationMap.values().forEach(assoc ->
+    gemAssociationMap.values().forEach(assoc -> {
+      // Assumes a CoCo guarantees there no type of CD is changed
+      if(assoc.getCDAssocDir().isDefinitiveNavigableRight()) {
         assocToCorrectManagerMap.put(assoc.getName(),
-            UMLPSymbolTables.getDiagramFor(assoc).getCDDefinition().getName()+ManagerDecorator.SUFFIX));
+        UMLPSymbolTables.getDiagramFor(assoc.getRight().getSymbol().getType().getTypeInfo().getAstNode()).getCDDefinition().getName()+ManagerDecorator.SUFFIX);
+      } else {
+        assocToCorrectManagerMap.put(assoc.getName(),
+            UMLPSymbolTables.getDiagramFor(assoc.getLeft().getSymbol().getType().getTypeInfo().getAstNode()).getCDDefinition().getName()+ManagerDecorator.SUFFIX);
+      }
+    });
 
     Map<ASTCDAttribute, String> attributeMap = Maps.newLinkedHashMap();
     attributes.forEach(e -> attributeMap.put(e,
@@ -475,6 +482,11 @@ public class DAODecorator extends AbstractDecorator {
               Joiners.DOT.join(association.getSymbol().getPackageName().toLowerCase(),
                   "Assoc"+StringTransformations.capitalize(association.getName())+"DAO"));
         });
+
+    CDSymbolTables.getAssociations(domainClass).forEach(assocSide ->
+        managersFromExtendedCDs.add(
+            Joiners.DOT.join(assocSide.getSymbol().getType().getTypeInfo().getPackageName().toLowerCase(),
+            UMLPSymbolTables.getDiagramFor(assocSide.getSymbol().getType().getTypeInfo().getAstNode()).getCDDefinition().getName()+ManagerDecorator.SUFFIX)));
     managersFromExtendedCDs.forEach(managerImport -> getCD4C().addImport(clazz, managerImport));
   }
 }
