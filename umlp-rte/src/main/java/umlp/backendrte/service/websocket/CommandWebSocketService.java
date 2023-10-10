@@ -2,7 +2,6 @@
 package umlp.backendrte.service.websocket;
 
 import de.se_rwth.commons.logging.Log;
-import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -21,7 +20,6 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Service
 public class CommandWebSocketService extends TextWebSocketHandler implements WebSocketHandlerService {
 
   protected Map<String, Long> clientIds = new HashMap<>();
