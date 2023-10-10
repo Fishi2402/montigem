@@ -47,26 +47,29 @@ export class UserLoginComponent extends UserLoginComponentTOP {
     const requestOptions: RequestInit = {
       method: "POST",
       body: form,
-      redirect: 'manual' // Otherwise the redirect to login?error is followed and 2xx is returned
+      redirect: 'manual', // Otherwise the redirect to login?error is followed and 2xx is returned
+      headers: {
+        'Accept': 'application/json'
+      }
     };
 
     fetch("/umlp/api/login", requestOptions)
-      .then(response => {
-        return response.ok
-      })
-      .catch(error => {
-        console.error(error);
-        return false;
-      })
-      .then(ok => {
-        if (ok) {
+      .then(response => response.json())
+      .then(result => {
+        if (result.success) {
           SehubSecurityManager.setCurrentlyLoggingIng(true);
           // Do NOT use router as otherwise the websocket is not refreshed!
           // The AppComponent will initialize the websocket during reloading
           window.location.href = '/start';
+        } else if (result.reason) {
+          alert("Login Failed: " + result.reason)
         } else {
-          alert("Invalid Login: Wrong Username or Password!");
+          alert("Login Failed: Unknown")
         }
+      })
+      .catch(error => {
+        console.warn(error);
+        alert("Login Failed: Unable to communicate");
       });
   }
 
