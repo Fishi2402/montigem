@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript.printer;
 
-import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
+// import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
 import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCalculator;
+import de.monticore.types3.SymTypeRelations;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 public enum TypeScriptTypes {
   STRING("String", "string"),
@@ -68,7 +70,7 @@ public enum TypeScriptTypes {
         return true;
       }
     }
-    return false;
+    return GUIGeneratorUtil.getInstance().isBuiltIn(mcType);
   }
 
   // TODO AGe: deprecated, unclean
@@ -76,11 +78,14 @@ public enum TypeScriptTypes {
     if (toTSType(type.print()).equals(STRING.getTSType())) {
       return true;
     }
+    /*
     TypeCalculator tc = new TypeCalculator(
         new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL()
     );
     return tc.isString(type)
         || tc.isChar(type);
+    /**/
+    return SymTypeRelations.isString(type) || SymTypeRelations.isChar(type);
   }
 
   // TODO AGe: deprecated, unclean
@@ -88,6 +93,7 @@ public enum TypeScriptTypes {
     if (toTSType(type.print()).equals(INT.getTSType())) {
       return true;
     }
+    /*
     TypeCalculator tc = new TypeCalculator(
         new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL()
     );
@@ -96,6 +102,12 @@ public enum TypeScriptTypes {
         || tc.isFloat(type)
         || tc.isLong(type)
         || tc.isShort(type);
+        /**/
+    return SymTypeRelations.isDouble(type)
+        || SymTypeRelations.isInt(type)
+        || SymTypeRelations.isFloat(type)
+        || SymTypeRelations.isLong(type)
+        || SymTypeRelations.isShort(type);
   }
 
   public String getMCType() {

@@ -213,6 +213,19 @@ public class GUIGeneratorUtil {
     return GUIDSLMill.globalScope().resolveGUIComponentDeclaration(i.getQName()).isPresent();
   }
 
+  public final boolean isBuiltIn(String qName) {
+    for (BuiltInTypes type : BuiltInTypes.values()) {
+      if (type.getQName().equals(qName)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public final boolean isBuiltIn(ASTMCImportStatement i) {
+    return isBuiltIn(i.getQName());
+  }
+
   // TODO AGe: indicator of "main" model after cdmerge is built in
   public final Optional<String> getMainDomainModelQName() {
     if (!DOMAIN_MODELS.isEmpty()) {
