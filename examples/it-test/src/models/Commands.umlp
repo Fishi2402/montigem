@@ -8,7 +8,7 @@ umlp Commands {
   }
 
   class App {
-    <<command>> void sendEmail(User user, String text, Optional<String> subject);
+    <<command>> void sendEmail(User user, String text, Optional<String> subject, List<String> forwards);
   }
 
 }
