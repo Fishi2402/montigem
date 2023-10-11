@@ -48,12 +48,25 @@ public class ServerApplicationDecorator extends AbstractDecorator {
         : getCD4C().addMethod(serverApplicationClass, "umlp.serverapplication.init", name);
     glex.replaceTemplate("cd2java.Annotations", initMethod, new StringHookPoint("@javax.annotation.PostConstruct "));
 
+    // services
+    var sigNoAuth = getCD4C().addMethod(serverApplicationClass, "umlp.serverapplication.NoAuthWebsocketService");
+    var sigAuth = getCD4C().addMethod(serverApplicationClass, "umlp.serverapplication.AuthWebsocketService");
+
+    glex.replaceTemplate("cd2java.Annotations", sigNoAuth, new StringHookPoint(
+      "@Bean\n@ConditionalOnProperty(name = \"umlp.service.websocket.impl\", havingValue = \"noAuth\", matchIfMissing = true)"));
+    glex.replaceTemplate("cd2java.Annotations", sigAuth, new StringHookPoint(
+      "@Bean\n@ConditionalOnProperty(name = \"umlp.service.websocket.impl\", havingValue = \"auth\")"));
+
     // Imports
     addImports(serverApplicationClass);
     return serverApplicationClass;
   }
 
   protected void addImports(ASTCDClass clazz) {
+    getCD4C().addImport(clazz, "org.springframework.context.annotation.Bean");
+    getCD4C().addImport(clazz, "org.springframework.boot.autoconfigure.condition.ConditionalOnProperty");
+    getCD4C().addImport(clazz, PathUtil.getBackendRTEPath("service", "websocket", "CommandWebSocketService"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTEPath("service", "websocket", "CommandWebSocketNoAuthService"));
 
     getCD4C().addImport(clazz, "de.monticore.io.FileReaderWriter");
     getCD4C().addImport(clazz, "de.se_rwth.commons.logging.Log");

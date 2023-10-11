@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp Commands {
+
+  class User {
+    String name;
+    String email;
+  }
+
+  class App {
+    <<command>> void sendEmail(User user, String text, Optional<String> subject, List<String> forwards);
+  }
+
+}
+

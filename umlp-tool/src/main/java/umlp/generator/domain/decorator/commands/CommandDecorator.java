@@ -81,6 +81,11 @@ public class CommandDecorator extends AbstractDecorator {
     addedDeSers.addAll(managerSubscriptionDecorator.getAddedDeSers());
     Log.info("After decorator: ManagerSubscriptionCommandDecorator", CommandDecorator.class.getName());
 
+    OwnCommandDecorator cmdDecorator = new OwnCommandDecorator(glex, supportedDeSers);
+    cmdDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(cmdDecorator.getAddedDeSers());
+    Log.info("After decorator: CmdDecorator", CommandDecorator.class.getName());
+
     AggregatedCommandDeSerDecorator aggregatedCommandDeSerDecorator = new AggregatedCommandDeSerDecorator(glex, addedDeSers);
     aggregatedCommandDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: XCommandDeserDecorator", CommandDecorator.class.getName());
@@ -92,6 +97,7 @@ public class CommandDecorator extends AbstractDecorator {
     EventSendingObserverDecorator managerEventSendingObserverDecorator = new EventSendingObserverDecorator(glex);
     managerEventSendingObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerEventSendingObserverDecorator", CommandDecorator.class.getName());
+
   }
 
   public void addSupportedDeSer(String... supportedDeSers) {

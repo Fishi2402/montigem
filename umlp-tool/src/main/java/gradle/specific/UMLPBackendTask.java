@@ -28,7 +28,7 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
   @InputFiles
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental  // This Annotation requires custom java-logic to run correctly. See "getOtherInputDirectories()"
+  @Incremental  // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
   public abstract ConfigurableFileCollection getModelDir();
 
   @InputDirectory
@@ -87,23 +87,9 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
 
   @Override
   protected Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
-    Stream<FileChange> result = StreamSupport.stream(inputChanges.getFileChanges(getInput()).spliterator(), false);
+    Stream<FileChange> result = super.getStreamOfChanges(inputChanges);
     result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(getModelDir()).spliterator(), false));
     return result;
-  }
-
-  @Internal
-  @Override
-  public Set<Provider<? extends FileSystemLocation>> getOtherInputDirectories(){
-    return super.getOtherInputDirectories();
-
-    // TODO need to be adpated for checkReport Task
-    /*Set<Provider<? extends FileSystemLocation>> result = new HashSet<>(super.getOtherInputDirectories());
-    for (File file : getModelDir()) {
-      // TODO: not lazy enough, all providers get resolved at config time
-      result.add(getProject().getLayout().dir(getProject().provider(() -> file)));
-    }
-    return result;*/
   }
 
   @Override

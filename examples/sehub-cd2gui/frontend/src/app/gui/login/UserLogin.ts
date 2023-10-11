@@ -30,25 +30,27 @@ export class UserLogin extends UserLoginTOP {
 
           const requestOptions: RequestInit = {
             method: "POST",
-            body: form
-            };
+            body: form,
+            headers: {
+              'Accept': 'application/json'
+            }
+          };
 
           fetch("/umlp/api/login", requestOptions)
             .then(response => response.json())
             .then(result => {
-              console.log(result.toString());
-              return true;
-            })
-            .catch(error => {
-              console.log(error);
-              alert("Invalid Login: Wrong Username or Password!");
-              return false;
-            })
-            .then(redirect => {
-              if (redirect) {
+              if (result.success) {
                 SehubSecurityManager.signIn(this.loginUser);
                 window.location.href = '/start';
+              }else if (result.reason) {
+                alert("Login Failed: " + result.reason)
+              }else{
+                alert("Login Failed: Unknown")
               }
+            })
+            .catch(error => {
+              console.warn(error);
+              alert("Login Failed: Unable to communicate");
             });
 
   }
