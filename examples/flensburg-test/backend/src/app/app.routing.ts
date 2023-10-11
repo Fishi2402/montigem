@@ -7,6 +7,6 @@ import { Routes } from "@angular/router";
 export const routes: Routes = [
 {
 path:"gui",
-loadChildren:() => import("../../build/appgui/gui/Gui.Module").then(m => m.Gui_Module)
+loadChildren:() => import("../../build/appgui/gui/GuiGemModule").then(m => m.Gui_Module)
 },
 ]
