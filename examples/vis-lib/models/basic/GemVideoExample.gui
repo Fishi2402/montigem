@@ -1,0 +1,5 @@
+package basic;
+import basic.src.lib.gemvideo.GemVideo;
+page GemVideoExample(){
+  @GemVideo(source = "");
+}
