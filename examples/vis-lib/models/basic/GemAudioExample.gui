@@ -1,0 +1,6 @@
+package basic;
+import basic.src.lib.gemaudio.GemAudio;
+page GemAudioExample(){
+
+  @GemAudio(source="");
+}

@@ -14,6 +14,9 @@ export class Navigation {
 
   readonly items: { url: string, title: string }[] = [
     { url: '/person/Overview', title: 'Overview' },
+    { url: '/basic/GemButtonExample', title: 'GemButtonExample' },
+    { url: '/basic/GemAudioExample', title: 'GemAudioExample' }
+
   ];
 
 }

@@ -9,6 +9,21 @@ export const routes: Routes = [
     redirectTo: "person/Overview"
   },
   {
+    path: "basic",
+    loadChildren: () => import("../../build/appgui/basic/GemButtonExampleModule").then(m => m.GembuttonexampleModule)
+
+  },
+  {
+      path: "basic",
+      loadChildren: () => import("../../build/appgui/basic/GemAudioExampleModule").then(m => m.GemaudioexampleModule)
+
+  },
+    {
+      path: "basic",
+      loadChildren: () => import("../../build/appgui/basic/GemButtonExampleModule").then(m => m.GembuttonexampleModule)
+
+    },
+  {
     path: "person",
     loadChildren: () => import("../../build/appgui/person/OverviewModule").then(m => m.OverviewModule)
   },

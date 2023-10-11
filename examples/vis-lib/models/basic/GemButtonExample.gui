@@ -1,0 +1,5 @@
+package basic;
+import basic.src.lib.gembutton.GemButton;
+page GemButtonExample(){
+  @GemButton(label = "windows alert", leftClick = alert);
+}
