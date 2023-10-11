@@ -1,10 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript.printer;
 
-// import de.monticore.guidsl.types.check.FullDeriveFromGUIDSL;
-import de.monticore.guidsl.types.check.FullSynthesizeFromGUIDSL;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.TypeCalculator;
 import de.monticore.types3.SymTypeRelations;
 import umlp.generator.gui.GUIGeneratorUtil;
 
