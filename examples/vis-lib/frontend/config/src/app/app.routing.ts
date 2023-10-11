@@ -18,11 +18,11 @@ export const routes: Routes = [
       loadChildren: () => import("../../build/appgui/basic/GemAudioExampleModule").then(m => m.GemaudioexampleModule)
 
   },
-    {
-      path: "basic",
-      loadChildren: () => import("../../build/appgui/basic/GemButtonExampleModule").then(m => m.GembuttonexampleModule)
+  {
+     path: "basic",
+     loadChildren: () => import("../../build/appgui/basic/GemCheckboxExampleModule").then(m => m.GemcheckboxexampleModule)
 
-    },
+  },
   {
     path: "person",
     loadChildren: () => import("../../build/appgui/person/OverviewModule").then(m => m.OverviewModule)

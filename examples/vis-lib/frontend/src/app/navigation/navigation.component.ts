@@ -16,11 +16,8 @@ export class Navigation {
     { url: '/person/Overview', title: 'Overview' },
     { url: '/basic/GemButtonExample', title: 'GemButtonExample' },
     { url: '/basic/GemAudioExample', title: 'GemAudioExample' },
-    { url: '/basic/GemCheckboxExample', title: 'GemCheckboxExample' },
-    { url: '/basic/GemImageExample', title: 'GemImageExample' },
-    { url: '/basic/GemLinkExample', title: 'GemLinkExample' },
-    { url: '/basic/GemTextExample', title: 'GemTextExample' },
-    { url: '/basic/GemVideoExample', title: 'GemVideoExample' }
+    { url: '/basic/GemCheckboxExample', title: 'GemCheckboxExample' }
+
 
 
   ];
