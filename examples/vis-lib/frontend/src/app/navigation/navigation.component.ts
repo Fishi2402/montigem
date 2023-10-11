@@ -18,7 +18,8 @@ export class Navigation {
     { url: '/basic/GemAudioExample', title: 'GemAudioExample' },
     { url: '/basic/GemCheckboxExample', title: 'GemCheckboxExample' },
     { url: '/basic/GemImageExample', title: 'GemImageExample' },
-    { url: '/basic/GemLinkExample', title: 'GemLinkExample' }
+    { url: '/basic/GemLinkExample', title: 'GemLinkExample' },
+    { url: '/basic/GemTextExample', title: 'GemTextExample' }
 
 
   ];

@@ -1,0 +1,5 @@
+package basic;
+import basic.src.lib.gemtext.GemText;
+page GemTextExample(){
+  @GemText(value = "Hello");
+}
