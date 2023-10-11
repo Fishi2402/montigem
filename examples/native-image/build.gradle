@@ -26,6 +26,7 @@ def serverAppName = 'nativeimagedemo.NativeImageDemoServerApplication'
 
 generateUmlpBackend {
   useSpring.set(true)
+  useShell.set(true)
 }
 
 dependencies {

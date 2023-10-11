@@ -74,6 +74,7 @@ generateUmlpBackend {
   input = file("../models/Domain.umlp")
   symbolOutDir = file("${project.buildDir}/symbols")
   useSpring.set(true)
+  useShell.set(true)
 }
 
 task runServer {
