@@ -16,7 +16,7 @@ import { routes } from '${pathHWRoutes}';
 <#if !existHWCRoutes >
 import { routes } from './app.routing';
 </#if>
-import { AppComponent } from './app.component';
+import { AppComponent } from '@src/app.component';
 
 
 @NgModule({

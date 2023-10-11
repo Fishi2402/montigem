@@ -6,7 +6,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { Gui_Module } from '../../build/appgui/gui/GuiGemModule';
 import { routes } from './app.routing';
-import { AppComponent } from './app.component';
+import { AppComponent } from '@src/app.component';
 
 
 @NgModule({

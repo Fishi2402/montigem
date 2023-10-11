@@ -65,11 +65,11 @@ public class GUI2TypeScriptGenerator {
     boolean existHWCRoutes = existsHandwrittenFile(hwcPath, "App"+ROUTES_FILE+".ts");
 
     // TODO AGe: change default app files path
-    Path generatedRoutingFiles = Paths.get("../../src/app",
+    Path generatedRoutingFiles = Paths.get(
         "app.routing.ts");
     genEngine.generateNoA("umlp.gui2ts.TSAppRoutes", generatedRoutingFiles);
     // TODO AGe: change default app files path
-    Path generatedModuleFiles = Paths.get("../../src/app",
+    Path generatedModuleFiles = Paths.get(
             "app.module.ts");
     Boolean existedModuleConfig=existsHandwrittenFile(hwcPath,"App"+MODULES_FILE+"Config.ts");
 
