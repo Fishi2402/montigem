@@ -1,11 +1,7 @@
 package basic;
 import basic.src.lib.gembutton.GemButton;
 page GemButtonExample(){
-<<<<<<< HEAD
   @GemButton(label = "windows alert", leftClick = alert);
-=======
 
-  @GemButton(label = "Example");
 
->>>>>>> refs/remotes/origin/lisalin
 }
