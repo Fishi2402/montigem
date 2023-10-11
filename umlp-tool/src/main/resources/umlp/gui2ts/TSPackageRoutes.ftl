@@ -2,8 +2,7 @@
 <#-- Generates a routes file from the given model -->
 ${tc.signature("astguiCompilationUnitList","ids","fullPathIndex","paths","pathName")}
 // always imported
-  import { Routes } from "@angular/router";
-// imports of pages in the package
+import { Routes } from "@angular/router";
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
   import { ${astguiCompilationUnitList[index].getComponentName()}Component } from "${paths[index]}";
 </#list>

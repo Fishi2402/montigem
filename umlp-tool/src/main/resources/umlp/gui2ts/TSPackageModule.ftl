@@ -9,7 +9,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common"
 
 import { routes } from '${pathHWroutes}';
-// imports of pages in the package
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
 import { ${astguiCompilationUnitList[index].getComponentName()}Component } from "${paths[index]}";
 </#list>

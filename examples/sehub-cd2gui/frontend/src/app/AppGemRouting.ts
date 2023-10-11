@@ -1,5 +1,5 @@
 import { Routes } from "@angular/router";
-import { routes as routesTOP } from "../../build/frontendGen/src/app/app.routing"
+import { routes as routesTOP } from "@src/AppGemRoutingTOP"
 
 
 

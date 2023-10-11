@@ -9,7 +9,6 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -20,20 +19,14 @@ import de.monticore.guidsl._parser.GUIDSLParser;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
-import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.oosymbols._symboltable.FieldSymbolDeSer;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonBoolean;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
-import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -152,6 +145,11 @@ public class UMLPTool extends UMLPToolTOP {
     return null;
   }
 
+  public static void main(String[] args) {
+    Log.ensureInitialization(); // by default, don't use SLF4J log
+    UMLPTool tool = new UMLPTool();
+    tool.run(args);
+  }
 
   /**
    * This method realizes a tool for processing FC models. See the project's Readme for a
@@ -501,7 +499,7 @@ public class UMLPTool extends UMLPToolTOP {
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, viewComponents);
           String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
 
-          typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
+
 
           GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
           componentGenerator.generate(astGui, "umlp.GUI2Component");
@@ -516,13 +514,11 @@ public class UMLPTool extends UMLPToolTOP {
           String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
           htmlGenerator.generate(astGui4Html, htmlConfigTemplate);
 
-         for(ASTMCImportStatement imp :astGui.getMCImportStatementList())
-         {
-           if(GUIGeneratorUtil.getInstance().isGuiImport(imp))
-           {
-             routesMap.get(astGui.getPackage()).getGuiImport().add(imp.getQName());
-           }
-         }
+          for (ASTMCImportStatement imp : astGui.getMCImportStatementList()) {
+            if (GUIGeneratorUtil.getInstance().isGuiImport(imp)) {
+              routesMap.get(astGui.getPackage()).getGuiImport().add(imp.getQName());
+            }
+          }
 
           // write reports
           Reporting.flush(astGui);
@@ -697,12 +693,6 @@ public class UMLPTool extends UMLPToolTOP {
     IGUIDSLArtifactScope as = GUIDSLMill.scopesGenitorDelegator().createFromAST(ast);
     /**/
     return tool.createSymbolTable(ast, modelPath);
-  }
-
-  public static void main(String[] args) {
-    Log.ensureInitialization(); // by default, don't use SLF4J log
-    UMLPTool tool = new UMLPTool();
-    tool.run(args);
   }
 
 }

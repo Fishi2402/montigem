@@ -14,7 +14,7 @@ import { config } from '${pathModuleConfig}';
 import { routes } from '${pathHWRoutes}';
 </#if>
 <#if !existHWCRoutes >
-import { routes } from './app.routing';
+import { routes } from './AppGemRouting';
 </#if>
 import { AppComponent } from '@src/app.component';
 
