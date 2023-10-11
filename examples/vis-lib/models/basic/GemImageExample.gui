@@ -1,0 +1,5 @@
+package basic;
+import basic.src.lib.gemimage.GemImage;
+page GemImageExample(){
+  @GemImage(source="");
+}
