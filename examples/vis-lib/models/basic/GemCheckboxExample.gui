@@ -1,0 +1,5 @@
+package basic;
+import basic.src.lib.gemcheckbox.GemCheckbox;
+page GemCheckboxExample(){
+  @GemCheckbox(checkboxItem="checkboxtest");
+}
