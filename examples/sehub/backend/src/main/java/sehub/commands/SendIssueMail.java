@@ -10,12 +10,13 @@ import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.util.LogUtil;
 
 import javax.mail.MessagingException;
+import java.util.List;
 import java.util.Optional;
 
 public class SendIssueMail extends SendIssueMailTOP {
 
-  public SendIssueMail(long emailGemId, long subjectGemId, String message) {
-    super(emailGemId, subjectGemId, message);
+  public SendIssueMail(long emailGemId, long subjectGemId, String message, List<String> forwards) {
+    super(emailGemId, subjectGemId, message, forwards);
   }
 
   public StatusResult doAction() {
