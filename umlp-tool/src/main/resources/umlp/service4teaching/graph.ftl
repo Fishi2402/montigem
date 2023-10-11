@@ -5,6 +5,7 @@ List<String> links = new ArrayList<>();
 <#list cdClasses as c>
 ${cdName}Manager.get${c.getName()}List()
       .stream()
+      .filter(obj -> obj.getClass() == ${c.name}.class || obj.getClass() == ${c.name}Builder.class)
       .map(obj -> "{\"type\": \"${c.getName()}\"," + "\"id\": " + obj.getGemId() + "}")
       .forEach(objs::add);
 </#list>

@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 // --------------- always the same (start) --------------- //
-${signature("cdClasses")}
+${signature("cdClasses", "attributesInHierarchy")}
 
 <#function java2TS type>
   <#if type == "Float"
@@ -68,9 +68,9 @@ function showError(err) {
 }
 
 const TYPE_INFO = {
-<#list cdClasses as c>
+<#list attributesInHierarchy as c, attrs>
   "${c.getName()}": {
-  <#list c.getCDAttributeList() as attr>
+  <#list attrs as attr>
     <#assign attrType = attr.getMCType().printType()>
     "${attr.getName()}": {
       type: "${java2TS(attrType)}",
@@ -166,20 +166,20 @@ async function loadGraph() {
   return data;
 }
 
-<#list cdClasses as c>
+<#list attributesInHierarchy as c, attrs>
 async function load${c.getName()}() {
   let response = await fetch(GETALL_URL + "${c.getName()}");
   data = await response.json();
   if (data.length == 0) {
     data.push({
           "gemId": undefined,
-      <#list c.getCDAttributeList() as attr>
+      <#list attrs as attr>
           "${attr.getName()}": undefined,
       </#list>
     });
   }else{
     for(const d of data){
-    <#list c.getCDAttributeList() as attr>
+    <#list attrs as attr>
       <#if attr.modifier.isDerived()>
         try{
         const res = await sendCommand(
