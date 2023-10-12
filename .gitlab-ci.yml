@@ -29,11 +29,14 @@ build:
       files:  # Cache depends on state of "package-lock"
         - examples/weather/frontend/build/frontendGen/package-lock.json
         - examples/sehub/frontend/build/frontendGen/package-lock.json
+        - examples/dtcockpit/frontend/build/frontendGen/package-lock.json
     paths:
       - examples/weather/frontend/build/frontendGen/node_modules
       - examples/weather/frontend/.gradle/nodejs
       - examples/sehub/frontend/build/frontendGen/node_modules
       - examples/sehub/frontend/.gradle/nodejs
+      - examples/dtcockpit/frontend/build/frontendGen/node_modules
+      - examples/dtcockpit/frontend/.gradle/nodejs
   artifacts:
     paths:
       - examples/weather/frontend/build/frontendGen/dist/**
@@ -44,6 +47,10 @@ build:
       - examples/sehub/frontend/build/frontendGen/Dockerfile
       - examples/sehub/frontend/build/frontendGen/Caddyfile
       - examples/sehub/frontend/build/frontendGen/.dockerignore
+      - examples/dtcockpit/frontend/build/frontendGen/dist/**
+      - examples/dtcockpit/frontend/build/frontendGen/Dockerfile
+      - examples/dtcockpit/frontend/build/frontendGen/Caddyfile
+      - examples/dtcockpit/frontend/build/frontendGen/.dockerignore
 
     reports:
       # Lets gitlab render infos about failed tests
@@ -69,6 +76,11 @@ deployBackendDocker:
       -Djib.to.image=$CI_REGISTRY_IMAGE/stat_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+    # DTCockpit Backend
+     - "gradle :examples:dtcockpit:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
+       -Djib.to.image=$CI_REGISTRY_IMAGE/dtcockpit_backend:latest \
+       -Djib.to.auth.username=$CI_REGISTRY_USER  \
+       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
 
   only:
     - dev
@@ -110,6 +122,21 @@ deploySEHubFrontendDocker:
     - "docker build . -t $CI_REGISTRY_IMAGE/sehub_frontend:latest"
     - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
     - "docker push $CI_REGISTRY_IMAGE/sehub_frontend:latest"
+  only:
+    - dev
+
+deployDTCockpitFrontendDocker:
+  stage: deploy
+  tags:
+    - shell
+    - docker
+  dependencies:
+    - build
+  script:
+    - "cd examples/dtcockpit/frontend/build/frontendGen"
+    - "docker build . -t $CI_REGISTRY_IMAGE/dtcockpit_frontend:latest"
+    - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+    - "docker push $CI_REGISTRY_IMAGE/dtcockpit_frontend:latest"
   only:
     - dev
 
