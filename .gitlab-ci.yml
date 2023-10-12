@@ -77,7 +77,7 @@ deployBackendDocker:
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # DTCockpit Backend
-     - "gradle :examples:dtcockpit:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
+    - "gradle :examples:dtcockpit:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
        -Djib.to.image=$CI_REGISTRY_IMAGE/dtcockpit_backend:latest \
        -Djib.to.auth.username=$CI_REGISTRY_USER  \
        -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
