@@ -2,11 +2,9 @@
 
 import {Directive} from '@angular/core';
 import {UserCreateTOP} from '@src/gui/login/UserCreateTOP';
-import {User} from '@src/dtcockpit/User';
+import {User} from '@src/sehub/User';
 import {DtcockpitRole} from '@src/dtcockpit/DtcockpitRole';
-
-import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
-import {GemList} from '@umlp/common';
+import { GemList } from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
 
 @Directive()
 
@@ -19,26 +17,21 @@ export class UserCreate extends UserCreateTOP {
   public static email: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
   public override createUser(event: any): void {
-    DtcockpitManager.getBingoEntryList().then(entryList => {
-      entryList.loadAll().then(e => {
-        this.entries = e;
+    this.error = "";
+    if (!this.getNewUser().getUsername() || !this.getNewUser().getPassword() || !this.getNewUser().getEmail()) {
+      return;
+    }
+    let errorMessage = this.validateUser();
+    if (!errorMessage) {
+      //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
+      this.newUserBuilder.registrationDate(new Date());
+      this.newUserBuilder.role(DtcockpitRole.DEVELOPER);
+      this.build();
+      this.router.navigate(['/login']);
+    } else {
+      this.error = errorMessage;
+    }
 
-        this.error = "";
-        if (!this.getNewUser().getUsername() || !this.getNewUser().getPassword() || !this.getNewUser().getEmail()) {
-          return;
-        }
-        let errorMessage = this.validateUser();
-        if (!errorMessage) {
-          //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
-          this.newUserBuilder.registrationDate(new Date());
-          this.newUserBuilder.role(DtcockpitRole.DEVELOPER);
-          this.build();
-          this.navigateBack();
-        } else {
-          this.error = errorMessage;
-        }
-      });
-    });
   }
 
   public override getErrorValue(): string {
@@ -58,14 +51,14 @@ export class UserCreate extends UserCreateTOP {
         res += ' Account "' + this.getNewUser().getUsername() + '"';
       }
       if (this.getNewUser().getEmail() === user.getEmail()) {
-        res += (res.length === 0 ? '' : ' und ') + ' E-mail "' + this.getNewUser().getEmail() + '"';
+        res += (res.length === 0? '': ' und ') + ' E-mail "' + this.getNewUser().getEmail() + '"';
       }
     });
-    return res + (res.length === 0 ? '' : ' already being used!');
+    return res + (res.length === 0? '': ' already being used!');
   }
 
   public override navigateBack(): void {
-    this.router.navigate(['/login/LoginPage']);
+    this.router.navigate(['/login']);
   }
 
 }
