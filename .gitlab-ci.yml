@@ -35,7 +35,7 @@ build:
       files:  # Cache depends on state of "package-lock"
         - examples/sehub/frontend/build/frontendGen/package-lock.json
         - examples/dtcockpit/frontend/build/frontendGen/package-lock.json
-    paths:
+    - paths:
       - examples/sehub/frontend/build/frontendGen/node_modules
       - examples/sehub/frontend/.gradle/nodejs
       - examples/dtcockpit/frontend/build/frontendGen/node_modules
