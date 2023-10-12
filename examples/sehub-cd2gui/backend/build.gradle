@@ -78,6 +78,7 @@ generateUmlpBackend {
   input = file("../models/Sehub.umlp")
   symbolOutDir = file("${project.buildDir}/symbols")
   useSpring.set(true)
+  useShell.set(true)
 }
 
 task runServer {

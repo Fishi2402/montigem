@@ -7,7 +7,7 @@ ${cd4c.method("protected Optional<${command}> fromJsonObject(JsonObject jsonObje
   return Optional.of(new ${command}(
 <#list parameters as param>
     <#assign type = types[param?index]>
-    ${tc.includeArgs("umlp.commands.deser.OwnCommand_FromJsonObjectParameters", [param, genService.printTypeFullName(type), genService.isOptional(type), genService.isCDOrInnerCDEnum(type), genService.calculateJSonInclOptional(type), useDeser[param?index], objectMapperName])}<#if param?index != parameters?size -1>,</#if>
+    ${tc.includeArgs("umlp.commands.deser.OwnCommand_FromJsonObjectParameters", [param, genService.printTypeFullName(type), genService.isOptional(type), genService.isCDOrInnerCDEnum(type), genService.calculateJsonInclGenerics(type), useDeser[param?index], objectMapperName])}<#if param?index != parameters?size -1>,</#if>
 </#list>
   ));
 </#if>

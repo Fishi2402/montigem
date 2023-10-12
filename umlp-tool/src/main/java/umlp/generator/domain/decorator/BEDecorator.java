@@ -18,6 +18,7 @@ public class BEDecorator extends AbstractDecorator {
   boolean neo4j = false;
 
   boolean spring = false;
+  boolean shell = false;
 
 
 
@@ -34,6 +35,7 @@ public class BEDecorator extends AbstractDecorator {
     if(glex.hasGlobalVar("UMLPGeneratorConfig")){
       UMLPGeneratorConfig config = (UMLPGeneratorConfig) glex.getGlobalVar("UMLPGeneratorConfig");
       spring = config.isUseSpring();
+      shell = config.isUseShell();
     }
   }
 
@@ -174,7 +176,7 @@ public class BEDecorator extends AbstractDecorator {
     commandResultDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandResultDeSerDecorator", BEDecorator.class.getName());
 
-    if (spring) {
+    if (shell) {
       ShellAPIDecorator shellAPIDecorator = new ShellAPIDecorator(glex);
       shellAPIDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ShellAPIDecorator", ShellAPIDecorator.class.getName());
@@ -182,7 +184,9 @@ public class BEDecorator extends AbstractDecorator {
       ShellAPIClassDecorator shellApiClassDecorator = new ShellAPIClassDecorator(glex, hwPath, supportedDesers);
       shellApiClassDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ShellAPIClassDecorator", ShellAPIClassDecorator.class.getName());
+    }
 
+    if (spring) {
       ServerApplicationDecorator serverApplicationDecorator = new ServerApplicationDecorator(glex, neo4j);
       serverApplicationDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ServerApplicationDecorator", BEDecorator.class.getName());
@@ -213,7 +217,11 @@ public class BEDecorator extends AbstractDecorator {
     this.neo4j = neo4j;
   }
 
-  public void setSpring(boolean shellAPI) {
-    this.spring = shellAPI;
+  public void setSpring(boolean spring) {
+    this.spring = spring;
+  }
+
+  public void setShell(boolean shell) {
+    this.shell = shell;
   }
 }

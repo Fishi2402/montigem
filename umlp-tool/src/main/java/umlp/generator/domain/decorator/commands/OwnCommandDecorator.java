@@ -212,7 +212,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
       String typeName = GenService.printTypeFullName(type);
       userDeserList.add(supportedDeSers.contains(typeName));
 
-      jsonEmpty = jsonEmpty && GenService.calculateJSonInclOptional(type).isEmpty();
+      jsonEmpty = jsonEmpty && GenService.calculateJsonInclGenerics(type).isEmpty();
       useDeSer = useDeSer && supportedDeSers.contains(typeName);
 
       addDeSerImport(ast, origCD, supportedDeSers.contains(typeName), GenService.isCDOrInnerCDEnum(type),

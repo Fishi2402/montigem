@@ -101,11 +101,19 @@ public class GenService {
     return json;
   }
 
-  public static String calculateJSonInclOptional(SymTypeExpression type) {
+  public static String calculateJsonInclGenerics(SymTypeExpression type) {
+    if (isList(type)) {
+      return calculateJsonForList(type);
+    }
     if (!isOptional(type)) {
       return calculateJSon(type);
     }
     return calculateJSon(((SymTypeOfGenerics) type).getArgument(0));
+  }
+
+  public static String calculateJsonForList(SymTypeExpression type) {
+    return "getAsJsonArray().getValues().stream().map(e -> e." + calculateJSon(((SymTypeOfGenerics) type).getArgument(0)) +
+        ").collect(java.util.stream.Collectors.toList())";
   }
 
   public static String printTypeFullName(SymTypeExpression type) {

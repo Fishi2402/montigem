@@ -45,11 +45,15 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getUseSpring();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getUseShell();
 
   public UMLPBackendTask() {
     super();
 
     getUseSpring().convention(false);
+    getUseShell().convention(false);
   }
 
 
@@ -80,6 +84,10 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
 
     if(this.getUseSpring().get()){
       result.add("-" + UMLPToolOptions.USE_SPRING.getCMD());
+    }
+
+    if(this.getUseShell().get()){
+      result.add("-" + UMLPToolOptions.USE_SHELL.getCMD());
     }
 
     return result;

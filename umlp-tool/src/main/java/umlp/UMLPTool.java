@@ -96,6 +96,7 @@ import static umlp.UMLPToolOptions.REPORT_BASE;
 import static umlp.UMLPToolOptions.SYMTAB;
 import static umlp.UMLPToolOptions.TMPL_PATH;
 import static umlp.UMLPToolOptions.USE_SPRING;
+import static umlp.UMLPToolOptions.USE_SHELL;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -346,7 +347,8 @@ public class UMLPTool extends UMLPToolTOP {
             .map(p -> p.toFile()).collect(Collectors.toList()));
 
         CD4C.init(genSetup);
-        UMLPGeneratorConfig config = new UMLPGeneratorConfig(USE_SPRING.isSelected(cmd));
+        UMLPGeneratorConfig config = new UMLPGeneratorConfig(
+            USE_SPRING.isSelected(cmd), USE_SHELL.isSelected(cmd));
         if (FOR_CLIENT.isSelected(cmd)) {
           TSUMLPGenerator generator = new TSUMLPGenerator(genSetup, config);
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
