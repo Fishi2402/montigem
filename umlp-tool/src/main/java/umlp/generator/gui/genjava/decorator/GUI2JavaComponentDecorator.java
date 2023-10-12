@@ -108,7 +108,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       }
       else if (!TypeScriptTypes.isDefault(paramSTE.printFullName())
           && !util.isDomainType(paramSTE)
-          && !util.isDomainListType(paramSTE)) {
+          && !util.isDomainListType(paramSTE)
+          && !util.isBuiltIn(paramSTE.printFullName())
+      ) {
         getCD4C().addImport(decoratedClass, paramSTE.printFullName());
       }
       else {

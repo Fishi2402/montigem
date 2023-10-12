@@ -10,6 +10,7 @@ public class PathUtil {
   private static final String COMMON_POSTFIX = "common";
   private static final String GUI_POSTFIX = "gui";
   private static final String REQUEST_POSTFIX = "request";
+  private static final String ERROR_POSTFIX = "error";
   private static final String UTIL_POSTFIX = "util";
   private static final String SHELLAPI_POSTFIX = "shellapi";
   public static String getBackendRTEPath() {
@@ -46,6 +47,13 @@ public class PathUtil {
 
   public static String getBackendRTERequestPath() {
     return getBackendRTEPath(REQUEST_POSTFIX);
+  }
+
+  public static String getBackendRTEErrorPath(String... furtherPaths) {
+    return Joiners.DOT.join(getBackendRTEErrorPath(), String.join(".", furtherPaths));
+  }
+  public static String getBackendRTEErrorPath() {
+    return getBackendRTECommandPath(ERROR_POSTFIX);
   }
 
   public static String getBackendRTERequestPath(String... furtherPaths) {

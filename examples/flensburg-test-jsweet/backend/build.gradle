@@ -47,6 +47,7 @@ dependencies {
 generateUmlpBackend {
   input = file("../models/hardy/Flensburg.umlp")
   useSpring.set(true)
+  useShell.set(true)
 }
 
 task runFlensburgServer {

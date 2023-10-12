@@ -454,3 +454,14 @@ oder Technikfehler) um vs. Nutzerfehler?
 
 vgl auch Log.error, Exceptions, Warnungen, ...
 
+## Security
+### Spring
+#### Websocket
+There are two implementations of websocket message handling
+- `umlp.backendrte.service.websocket.CommandWebSocketService`, which uses the logged-in user to 
+  validate the participantId of commands
+- `umlp.backendrte.service.websocket.CommandWebSocketNoAuthService`, which validates the participantId
+  of commands via the session
+
+If you use authentication in your system, `CommandWebSocketService` must be used by setting
+`umlp.service.websocket.impl=auth` in `application.properties`

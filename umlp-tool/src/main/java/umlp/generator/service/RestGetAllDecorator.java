@@ -14,7 +14,11 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -29,7 +33,7 @@ public class RestGetAllDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE+"service");
+    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE + "service");
     astcdPackage.addCDElement(withOrigin(createClass(origCD)));
   }
 
@@ -52,13 +56,13 @@ public class RestGetAllDecorator extends AbstractDecorator {
   private void addGraph(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
     ASTCDMethodSignature graph = getCD4C().addMethod(clazz, "umlp.service4teaching.graph",
         origCD.getCDDefinition().getName(),
-        origCD.getCDDefinition().getCDClassesList(),
+        origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isAbstract()).collect(Collectors.toList()),
         origCD.getCDDefinition().getCDAssociationsList().stream().flatMap(a -> {
           List<Map.Entry<SymTypeExpression, ASTCDAssocSide>> sides = new ArrayList<>();
-          if(a.getLeft().getSymbol().isIsDefinitiveNavigable()){
+          if (a.getLeft().getSymbol().isIsDefinitiveNavigable()) {
             sides.add(Map.entry(a.getRight().getSymbol().getType(), a.getLeft()));
           }
-          if(a.getRight().getSymbol().isIsDefinitiveNavigable()){
+          if (a.getRight().getSymbol().isIsDefinitiveNavigable()) {
             sides.add(Map.entry(a.getLeft().getSymbol().getType(), a.getRight()));
           }
           return sides.stream();
@@ -71,8 +75,11 @@ public class RestGetAllDecorator extends AbstractDecorator {
   }
 
   private void addGetAll(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
+    List<ASTCDClass> classes = origCD.getCDDefinition().getCDClassesList().stream()
+        .filter(c -> !c.getModifier().isAbstract())
+        .collect(Collectors.toList());
     ASTCDMethodSignature getAll = getCD4C().addMethod(clazz, "umlp.service4teaching.getAll",
-        origCD.getCDDefinition().getName(), origCD.getCDDefinition().getCDClassesList());
+        origCD.getCDDefinition().getName(), classes);
     String annotation = "@GetMapping(value = \"/getall/{type}\") @CrossOrigin";
     glex.replaceTemplate("cd2java.Annotations", getAll, new StringHookPoint(annotation));
     addAnnotationToParameters(getAll, Arrays.asList("@PathVariable"));
@@ -86,10 +93,14 @@ public class RestGetAllDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "org.springframework.web.bind.annotation.RestController");
     getCD4C().addImport(clazz, "org.springframework.web.bind.annotation.RestController");
     getCD4C().addImport(clazz, "java.util.stream.Collectors");
-    getCD4C().addImport(clazz, String.format("%s.%s",getPackageName(origCD, ""), origCD.getCDDefinition().getName() + ManagerDecorator.SUFFIX));
-    origCD.getCDDefinition().getCDClassesList().forEach(c -> {
-      getCD4C().addImport(clazz, String.format("%s.%sDeSer", getPackageName(origCD, ""), c.getName()));
-    });
+    getCD4C().addImport(clazz, String.format("%s.%s", getPackageName(origCD, ""), origCD.getCDDefinition().getName() + ManagerDecorator.SUFFIX));
+    origCD.getCDDefinition().getCDClassesList()
+        .stream().filter(c -> !c.getModifier().isAbstract())
+        .forEach(c -> {
+          getCD4C().addImport(clazz, String.format("%s.%sDeSer", getPackageName(origCD, ""), c.getName()));
+          getCD4C().addImport(clazz, String.format("%s.%s", getPackageName(origCD, ""), c.getName()));
+          getCD4C().addImport(clazz, String.format("%s.%sBuilder", getPackageName(origCD, ""), c.getName()));
+        });
   }
 
   private void addAnnotationToParameters(ASTCDMethodSignature m, List<String> annotations) {

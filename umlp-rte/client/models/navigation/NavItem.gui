@@ -1,0 +1,8 @@
+package navigation;
+
+import basic.GemButton;
+
+component NavItem(
+  String title,
+  String target
+)

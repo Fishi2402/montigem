@@ -28,6 +28,7 @@
       "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*"],
       "@angular/*": ["node_modules/@angular/*"],
       "@umlp/common": ["../../../../../umlp-rte/client/projects/umlp/common/src"],
+      "@umlp/charts": ["../../../../../umlp-rte/client/projects/umlp/charts/src"],
       "@monticore/*": ["node_modules/@monticore/*"],
       "tslib": ["node_modules/tslib"]
     }

@@ -1,4 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
+buildscript {
+  dependencies {
+    classpath('com.google.cloud.tools:jib-native-image-extension-gradle:0.1.0')
+  }
+}
+
 plugins {
   id 'de.rwth.se.umlp-tool-backend'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
@@ -7,6 +13,7 @@ plugins {
 
   // native image, see settings.gradle pluginManagement
   id 'org.springframework.experimental.aot' version '0.12.2'
+  id 'com.google.cloud.tools.jib' version '3.2.1'
 }
 
 repositories {
@@ -15,8 +22,11 @@ repositories {
   maven { url "https://repo.spring.io/milestone" }
 }
 
+def serverAppName = 'nativeimagedemo.NativeImageDemoServerApplication'
+
 generateUmlpBackend {
   useSpring.set(true)
+  useShell.set(true)
 }
 
 dependencies {
@@ -59,12 +69,12 @@ task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
 }
 
 springBoot {
-  mainClass = 'nativeimagedemo.NativeImageDemoServerApplication'
+  mainClass = serverAppName
 }
 
 // native image
 springAot {
-  mainClass =  'nativeimagedemo.NativeImageDemoServerApplication'
+  mainClass =  serverAppName
 }
 
 def nativeImageBuildArgs = [
@@ -83,3 +93,20 @@ bootBuildImage {
       "BP_NATIVE_IMAGE_BUILD_ARGUMENTS": nativeImageBuildArgs.join(" ")
   ]
 }
+
+jib {
+  container{
+    mainClass = serverAppName
+  }
+
+  // Native image
+  pluginExtensions {
+    pluginExtension {
+      implementation = 'com.google.cloud.tools.jib.gradle.extension.nativeimage.JibNativeImageExtension'
+      properties = [
+          imageName: 'native-image'
+      ]
+    }
+  }
+}
+tasks.jib.dependsOn tasks.nativeBuild

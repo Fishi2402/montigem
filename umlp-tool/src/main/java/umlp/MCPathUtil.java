@@ -20,8 +20,6 @@ public class MCPathUtil {
   public static List<URL> getAllModels(MCPath path, String pathRegex){
     List<URL> res = new ArrayList<>();
 
-    GlobExpressionEvaluator outOfJar = new GlobExpressionEvaluator(pathRegex, FileSystems.getDefault(), false);
-
     for (Path entry : path.getEntries()) {
       if(entry.toString().endsWith(".jar") || entry.toString().endsWith(".zip")){
         GlobExpressionEvaluator inJar = new GlobExpressionEvaluator(pathRegex, MCPath.getJarFS(entry.toFile()), true);
@@ -29,6 +27,7 @@ public class MCPathUtil {
       }else{
         File file = entry.toFile();
         if(file.exists()){
+          GlobExpressionEvaluator outOfJar = new GlobExpressionEvaluator(pathRegex, FileSystems.getDefault(), false);
           res.addAll(toUrls(outOfJar.evaluate(file)));
         }
       }

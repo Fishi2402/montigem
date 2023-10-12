@@ -53,7 +53,6 @@ export class ProjectPage extends ProjectPageTOP {
     const edge = new GemNetworkEdge();
     edge.from = start;
     edge.to = end;
-    edge.length = 1.0;
     return edge;
   }
 
@@ -72,8 +71,9 @@ export class ProjectPage extends ProjectPageTOP {
   private getNodeFromArtifact(art : Artifact): GemNetworkNode {
     let node : GemNetworkNode = new GemNetworkNode();
     node.id = art.getFullName()
-    node.color = (art instanceof Directory)? "#FFFF00" : "#FF00BF";
-    node.mass = 1.0;
+    node.color = (art instanceof Directory)? "#a9dcd8" : "#c2f8cd";
+    node.mass = 50;
+    node.label = art.getName()
 
     return node;
   }

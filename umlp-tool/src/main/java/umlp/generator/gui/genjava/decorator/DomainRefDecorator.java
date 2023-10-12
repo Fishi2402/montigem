@@ -113,7 +113,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
           getCD4C().addImport(decoratedClass, importStr + BuilderDecorator.BUILDER_SUFFIX);
         } else if (util.isDomainImport(i)) {
           getCD4C().addImport(decoratedClass, importStr);
-        } else {
+        } else if (!util.isBuiltIn(i)) {
           getCD4C().addImport(decoratedClass, qName);
         }
       }
@@ -403,10 +403,8 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
   }
 
   protected void addImportForGUIParameter(ASTCDClass clazz, String qName) {
-    for (BuiltInTypes type : BuiltInTypes.values()) {
-      if (type.getName().equals(qName)) {
-        return;
-      }
+    if (util.isBuiltIn(qName)) {
+      return;
     }
     getCD4C().addImport(clazz, qName);
   }

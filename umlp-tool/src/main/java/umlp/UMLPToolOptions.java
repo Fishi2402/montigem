@@ -48,7 +48,8 @@ public enum UMLPToolOptions {
    */
   GUI_CREATE(Option.builder("guic").longOpt("guiCreateModels").hasArgs()
       .desc("Fully qualified names of the gui models for object creation, space separated").build()),
-  USE_SPRING(Option.builder("use_spring").desc("If the backend is generated, generate additional spring classes").build());
+  USE_SPRING(Option.builder("use_spring").desc("If the backend is generated, generate additional spring classes").build()),
+  USE_SHELL(Option.builder("use_shell").desc("If the backend is generated, generate additional sping shell classes").build());
 
   UMLPToolOptions(Option option) {
     this.option = option;

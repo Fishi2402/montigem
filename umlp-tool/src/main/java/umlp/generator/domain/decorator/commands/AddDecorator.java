@@ -109,7 +109,7 @@ public class AddDecorator extends AbstractDeSerDecorator {
         attrName, isGem ? "long" : type.print());
 
     getCD4C().addMethod(ast, getDoRunTemplate(), name, domainClass.getName(), getCorrectManager(domainClass), isGem, name, type.print(), targetTypeManager);
-    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainClass.getName());
+    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainClass.getName(), "Create");
     if (isGem) {
       getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("gemId", name + "GemId"));
     } else {

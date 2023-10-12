@@ -1,32 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
-package service;
+package umlp.backendrte.service.websocket;
 
 import de.se_rwth.commons.logging.Log;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
-import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandObjectMapper;
 import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.command.Participant;
 import umlp.backendrte.command.StatusResult;
-import umlp.backendrte.service.websocket.CommandWebSocketService;
-import umlp.backendrte.service.websocket.WebSocketCommandCommunication;
-import umlp.backendrte.service.websocket.WebSocketHandlerService;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Service
-@Primary
 public class CommandWebSocketNoAuthService extends CommandWebSocketService {
 
   @Override

@@ -54,6 +54,7 @@ task generateJavaCode(type: UMLPBackendTask) {
 
   outputDir = layout.buildDirectory.dir("umlp_backend")
   useSpring.set(true)
+  useShell.set(true)
 }
 
 sourceSets {

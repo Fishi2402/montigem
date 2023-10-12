@@ -13,7 +13,11 @@ export const routes: Routes = [
     loadChildren: () => import("../../build/appgui/person/OverviewModule").then(m => m.OverviewModule)
   },
   {
+    path: "gui",
+    loadChildren: () => import("../../build/appgui/gui/NetworkChartExampleModule").then(m => m.NetworkchartexampleModule)
+  }/*,
+  {
     path: '**',
     redirectTo: 'person'
-  }
+  }*/
 ]
