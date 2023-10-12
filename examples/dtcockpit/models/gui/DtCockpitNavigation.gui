@@ -1,0 +1,22 @@
+package gui;
+
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gembutton.GemButton;
+
+
+import navigation.NavItem;
+
+component DtCockpitNavigation(String username) {
+  @guard(username != null){
+    @GemColumn(components = [
+      @GemText(value = username),
+      @GemButton(label = "logout") // TODO: leftClick for logout
+    ]);
+  }
+  @GemRow(components = [
+    //@NavItem(title = "Home" , target = "/start/Start")
+  ]);
+}
