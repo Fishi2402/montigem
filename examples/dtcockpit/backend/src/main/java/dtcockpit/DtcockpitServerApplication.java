@@ -6,10 +6,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 @SpringBootApplication(
     exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
@@ -29,6 +31,13 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
     // Only create DummyData if database is empty
     if (DtcockpitManager.getUserList().isEmpty()) { // Is there a better way to check if dummy-data was already created?
       Log.println("Creating Dummy Data");
+      DtcockpitManager.userBuilder()
+          .username("MyUser")
+          .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("MyPasswort"))
+          .registrationDate(LocalDateTime.now())
+          .email("unknown")
+          .role(DtcockpitRole.OWNER)
+          .build();
     }
     else {
       Log.println("_NOT_ Creating New Dummy Data. Data is already present.");

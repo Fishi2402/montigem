@@ -2,9 +2,9 @@
 
 import {Directive} from '@angular/core';
 import {UserCreateTOP} from '@src/gui/login/UserCreateTOP';
-import {User} from '@src/sehub/User';
 import {DtcockpitRole} from '@src/dtcockpit/DtcockpitRole';
-import { GemList } from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
+import {User} from "@src/dtcockpit/User";
+import {GemList} from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
 
 @Directive()
 
@@ -51,10 +51,10 @@ export class UserCreate extends UserCreateTOP {
         res += ' Account "' + this.getNewUser().getUsername() + '"';
       }
       if (this.getNewUser().getEmail() === user.getEmail()) {
-        res += (res.length === 0? '': ' und ') + ' E-mail "' + this.getNewUser().getEmail() + '"';
+        res += (res.length === 0 ? '' : ' und ') + ' E-mail "' + this.getNewUser().getEmail() + '"';
       }
     });
-    return res + (res.length === 0? '': ' already being used!');
+    return res + (res.length === 0 ? '' : ' already being used!');
   }
 
   public override navigateBack(): void {

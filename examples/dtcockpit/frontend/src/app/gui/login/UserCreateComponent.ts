@@ -26,13 +26,6 @@ export class UserCreateComponent extends UserCreateComponentTOP {
     DtcockpitManager.userBuilder().then(gemPromiseRes => {
       this.newUserBuilder = gemPromiseRes;
     });
-
-
-    DtcockpitManager.getUserList().then(gemPromiseRes => {
-      this.users = gemPromiseRes;
-    });
-
-
   }
 
   public override navigateBack(): void {
