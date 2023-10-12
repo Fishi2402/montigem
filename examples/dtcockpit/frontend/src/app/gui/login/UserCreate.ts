@@ -2,11 +2,9 @@
 
 import {Directive} from '@angular/core';
 import {UserCreateTOP} from '@src/gui/login/UserCreateTOP';
-import {User} from '@src/dtcockpit/User';
 import {DtcockpitRole} from '@src/dtcockpit/DtcockpitRole';
-
-import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
-import {GemList} from '@umlp/common';
+import {User} from "@src/dtcockpit/User";
+import {GemList} from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
 
 @Directive()
 
@@ -29,7 +27,7 @@ export class UserCreate extends UserCreateTOP {
       this.newUserBuilder.registrationDate(new Date());
       this.newUserBuilder.role(DtcockpitRole.DEVELOPER);
       this.build();
-      this.navigateBack();
+      this.router.navigate(['/login']);
     } else {
       this.error = errorMessage;
     }
@@ -60,7 +58,7 @@ export class UserCreate extends UserCreateTOP {
   }
 
   public override navigateBack(): void {
-    this.router.navigate(['/login/LoginPage']);
+    this.router.navigate(['/login']);
   }
 
 }
