@@ -20,7 +20,7 @@ export const routes: Routes = [
   },
   {
      path: "basic",
-     loadChildren: () => import("../../build/appgui/basic/GemCheckboxExampleModule").then(m => m.GemcheckboxexampleModule)
+     loadChildren: () => import("../../build/appgui/basic/GemCheckBoxInputExampleModule").then(m => m.GemcheckboxinputexampleModule)
 
   },
   {

@@ -16,7 +16,7 @@ export class Navigation {
     { url: '/person/Overview', title: 'Overview' },
     { url: '/basic/GemButtonExample', title: 'GemButtonExample' },
     { url: '/basic/GemAudioExample', title: 'GemAudioExample' },
-    { url: '/basic/GemCheckboxExample', title: 'GemCheckboxExample' }
+    { url: '/basic/GemCheckBoxInputExample', title: 'GemCheckBoxInputExample' }
 
 
 
