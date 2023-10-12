@@ -14,11 +14,8 @@ export class Navigation {
     this.router = router;
   }
 
-  readonly items: { url: string, title: string }[] = [
-    { url: '/projects', title: 'Projects' },
-    { url: '/issue-tracker/IssueTrackerPage', title: 'Issue Tracker' },
-    { url: '/usersettings/UserSettings/1', title: 'User Settings' },
-  ];
+  readonly items: { url: string, title: string }[] = [];
+
   getCurrentUser(): User {
     return DtcockpitSecurityManager.getCurrentUser();
   }
@@ -29,6 +26,7 @@ export class Navigation {
       this.router.navigate(['/login/LoginPage']);
     });
   }
+
   isSignedIn(): boolean {
     return DtcockpitSecurityManager.isCurrentlyLoggingIn() || DtcockpitSecurityManager.isSignedIn();
   }
