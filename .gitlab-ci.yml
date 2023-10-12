@@ -27,7 +27,6 @@ build:
   cache:
     key:
       files:  # Cache depends on state of "package-lock"
-        - examples/weather/frontend/build/frontendGen/package-lock.json
         - examples/sehub/frontend/build/frontendGen/package-lock.json
         - examples/dtcockpit/frontend/build/frontendGen/package-lock.json
     paths:
