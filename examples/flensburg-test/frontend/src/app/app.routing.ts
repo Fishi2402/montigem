@@ -1,12 +1,37 @@
+// GEN-P
 
-// always imported
+// this file is generated if there is at least one GUI model describing a page 
+// It is always in the top-most folder which is generated from the package names
+// Example: package a.b.c; page D() {} -> a.routing.ts is created
+// It has slightly different structure from other routing files
 import { Routes } from "@angular/router";
-// imports module of pages for every package
-
 
 export const routes: Routes = [
-{
-path:"gui",
-loadChildren:() => import("../../build/appgui/gui/GuiGemModule").then(m => m.Gui_Module)
-},
+  // default path like in other routing files
+  {
+    path: "",
+    pathMatch: "full",
+    // redirect to a module, not a component (use package part instead of the component name)
+    redirectTo: "test5"
+  },
+  {
+    path: "test",
+    loadChildren: () => import("../../build/appgui/stanley/my/InfoBoxModule").then(m => m.InfoboxModule)
+  },
+  {
+    path: "test2",
+    loadChildren: () => import("../../build/appgui/stanley/personoverview/PersonOverviewModule").then(m => m.PersonoverviewModule)
+  },
+  {
+    path: "test3",
+    loadChildren: () => import("../../build/appgui/stanley/personcreate/PersonCreateModule").then(m => m.PersoncreateModule)
+  },
+  {
+    path: "test4",
+    loadChildren: () => import("../../build/appgui/stanley/personedit/PersonEditModule").then(m => m.PersoneditModule)
+  },
+  {
+    path: "test5",
+    loadChildren: () => import("../../build/appgui/stanley/gui/AccountCreateModule").then(m => m.AccountcreateModule)
+  },
 ]
