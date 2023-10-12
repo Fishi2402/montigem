@@ -7,26 +7,26 @@ export class SimpleResult<T> extends CommandResult<T> {
 
     loadingState: LoadingState;
 
-    public constructor(id?: number, obj?: LoadingState | T, typeParameter?: string) {
-      if (id === undefined || id === null) {
-        super();
-      } else {
-        super(id, typeParameter);
-        if (id != undefined && id != null && obj instanceof <any>LoadingState) {
-          this.loadingState = <LoadingState>obj;
-        } else {
-          this.obj = <T>obj;
-          this.loadingState = LoadingState.LOADED;
-        }
+    public constructor(id?: number, obj?: T, typeParameter?: string) {
+      super();
+      if (id !== undefined && id !== null) {
+        this.createFromObject(id, obj, typeParameter);
       }
     }
 
-    public createFromLoadingState<T>(id: number, loadingState: LoadingState, typeParameter: string): SimpleResult<T> {
-      super.setParams(id, typeParameter);
-      this.loadingState = loadingState;
-      this.obj = null;
-      return <SimpleResult<T>><unknown>this;
-    }
+  public createFromLoadingState(id: number, loadingState: LoadingState, typeParameter: string): SimpleResult<T> {
+    super.setParams(id, typeParameter);
+    this.loadingState = loadingState;
+    this.obj = null;
+    return <SimpleResult<T>><unknown>this;
+  }
+
+  public createFromObject(id: number, obj: T, typeParameter: string): SimpleResult<T> {
+    super.setParams(id, typeParameter);
+    this.loadingState = LoadingState.LOADED;
+    this.obj = obj;
+    return <SimpleResult<T>><unknown>this;
+  }
 
     public get(): T {
         return this.obj;
