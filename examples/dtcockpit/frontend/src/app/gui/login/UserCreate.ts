@@ -2,9 +2,11 @@
 
 import {Directive} from '@angular/core';
 import {UserCreateTOP} from '@src/gui/login/UserCreateTOP';
-import {User} from '@src/sehub/User';
+import {User} from '@src/dtcockpit/User';
 import {DtcockpitRole} from '@src/dtcockpit/DtcockpitRole';
-import { GemList } from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
+
+import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
+import {GemList} from '@umlp/common';
 
 @Directive()
 
@@ -27,7 +29,7 @@ export class UserCreate extends UserCreateTOP {
       this.newUserBuilder.registrationDate(new Date());
       this.newUserBuilder.role(DtcockpitRole.DEVELOPER);
       this.build();
-      this.router.navigate(['/login']);
+      this.navigateBack();
     } else {
       this.error = errorMessage;
     }
@@ -51,14 +53,14 @@ export class UserCreate extends UserCreateTOP {
         res += ' Account "' + this.getNewUser().getUsername() + '"';
       }
       if (this.getNewUser().getEmail() === user.getEmail()) {
-        res += (res.length === 0? '': ' und ') + ' E-mail "' + this.getNewUser().getEmail() + '"';
+        res += (res.length === 0 ? '' : ' und ') + ' E-mail "' + this.getNewUser().getEmail() + '"';
       }
     });
-    return res + (res.length === 0? '': ' already being used!');
+    return res + (res.length === 0 ? '' : ' already being used!');
   }
 
   public override navigateBack(): void {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login/LoginPage']);
   }
 
 }
