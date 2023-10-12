@@ -185,7 +185,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
         .print(" {").println().startIndent().printIndent();
 
     // Method Body
-    print("if (this." + fieldName + " == undefined) {").startIndent().println().printIndent();
+    print("if (this." + fieldName + " === undefined) {").startIndent().println().printIndent();
     print("this." + fieldName + " = " + initializer + ";").println().printIndent();
     print("new Promise<");
     printType(returnType, optionalArrayStart, optionalArrayEnd, overloadMethod);
