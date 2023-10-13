@@ -2,13 +2,22 @@
 
 classdiagram Dtcockpit {
 
+  <<singleton>>
+  class App{
+    <<command>> void sendMail(User email, String subject, String message, List<String> forwards);
+  }
+
+  association [1] App -> User [*];
+  association [1] App -> Room [*];
+  association [1] App -> Project [*];
+
   class User {
-                                       <<dbColumn = "unique=true">>
+    <<dbColumn = "unique=true">>
     String username;
     String password;
     java.time.LocalDateTime registrationDate;
    // ActivationStatus activated;
-                                        <<dbColumn = "unique=true">>
+    <<dbColumn = "unique=true">>
     String email;
     DtcockpitRole role;
   }
@@ -21,15 +30,36 @@ classdiagram Dtcockpit {
   }
 
   enum DtcockpitRole {
-    GUEST,
-    REPORTER,
-    DEVELOPER,
-    MAINTAINER,
-    OWNER;
+    USER,
+    ADMIN;
   }
 
-  class App {
-    <<command>> void sendMail(User email, String subject, String message, List<String> forwards);
+  class Room {
+    int roomNumber;
+    int level;
+  }
+
+  association [1] Room <-> (rStatistics) RoomStatistic [*];
+
+  class RoomStatistic {
+    java.time.LocalDate time;
+    double temperature;
+    double nominalTemperature;
+    boolean acActivated;
+    boolean occupied;
+  }
+
+  class Project {
+    String name;
+    String git;
+  }
+
+  association [1] Project <-> (pStatistics) PipelineStatistic [*];
+
+  class PipelineStatistic {
+    java.time.LocalDate time;
+    long duration;
+    boolean successful;
   }
 
 }

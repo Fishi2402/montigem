@@ -25,7 +25,7 @@ export class UserCreate extends UserCreateTOP {
     if (!errorMessage) {
       //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
       this.newUserBuilder.registrationDate(new Date());
-      this.newUserBuilder.role(DtcockpitRole.DEVELOPER);
+      this.newUserBuilder.role(DtcockpitRole.USER);
       this.build();
       this.router.navigate(['/login']);
     } else {

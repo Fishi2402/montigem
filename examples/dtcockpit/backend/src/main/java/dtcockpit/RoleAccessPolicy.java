@@ -7,7 +7,7 @@ import umlp.backendrte.command.Participant;
 
 import java.util.Optional;
 
-import static dtcockpit.DtcockpitRole.OWNER;
+import static dtcockpit.DtcockpitRole.ADMIN;
 
 public class RoleAccessPolicy {
 
@@ -28,7 +28,7 @@ public class RoleAccessPolicy {
 
 
     // check authorization
-    if (role.equals(OWNER)) {
+    if (role.equals(ADMIN)) {
       return true;
     }
     return false;

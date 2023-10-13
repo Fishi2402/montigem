@@ -36,7 +36,7 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
           .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("MyPasswort"))
           .registrationDate(LocalDateTime.now())
           .email("unknown")
-          .role(DtcockpitRole.OWNER)
+          .role(DtcockpitRole.ADMIN)
           .build();
     }
     else {

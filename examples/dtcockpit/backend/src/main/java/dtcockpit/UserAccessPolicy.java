@@ -34,7 +34,7 @@ public class UserAccessPolicy extends UserAccessPolicyTOP {
 
     // check authorization
     if (command.isRequest()) {  // read
-      if (!role.equals(GUEST)) {
+      if (!role.equals(USER)) {
         return true;
       }
 
@@ -70,7 +70,7 @@ public class UserAccessPolicy extends UserAccessPolicyTOP {
 
 
     // check authorization
-      if (role.equals(OWNER) || role.equals(MAINTAINER)) {
+      if (role.equals(ADMIN)) {
         return true;
       }
     return false;
@@ -91,7 +91,7 @@ public class UserAccessPolicy extends UserAccessPolicyTOP {
     DtcockpitRole role = user.getRole();
 
     // check authorization
-    if (role.equals(OWNER)) {
+    if (role.equals(ADMIN)) {
       return true;
     }
     return false;
