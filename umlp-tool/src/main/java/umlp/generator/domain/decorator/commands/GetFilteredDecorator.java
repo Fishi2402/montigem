@@ -6,7 +6,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.util.PathUtil;
 

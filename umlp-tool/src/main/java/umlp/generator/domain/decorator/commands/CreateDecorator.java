@@ -9,7 +9,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.StringTransformations;
-import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.util.PathUtil;

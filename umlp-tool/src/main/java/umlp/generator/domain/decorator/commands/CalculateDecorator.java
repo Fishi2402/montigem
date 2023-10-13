@@ -17,7 +17,6 @@ import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;

@@ -16,7 +16,6 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.StringTransformations;
-import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
