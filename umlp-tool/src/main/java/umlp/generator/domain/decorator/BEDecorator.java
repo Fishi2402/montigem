@@ -33,9 +33,8 @@ public class BEDecorator extends AbstractDecorator {
     initExtraDeSers();
 
     if(glex.hasGlobalVar("UMLPGeneratorConfig")){
-      UMLPGeneratorConfig config = (UMLPGeneratorConfig) glex.getGlobalVar("UMLPGeneratorConfig");
-      spring = config.isUseSpring();
-      shell = config.isUseShell();
+      spring = UMLPGeneratorConfig.getInstance().isUseSpring();
+      shell = UMLPGeneratorConfig.getInstance().isUseShell();
     }
   }
 

@@ -34,6 +34,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
@@ -58,9 +59,6 @@ public class GUIGeneratorUtil {
   // Fully qualified Name of a gui model, e.g. "stanley.PersonCreate"
   private List<String> CREATE_MODELS;
 
-  // flag whether to generate ts files
-  private boolean GENERATE_TS;
-
   protected final String TPL_INTERN = "TPL_INTERN";
   protected final String TPL_SUFFIX = "TPL";
 
@@ -79,10 +77,9 @@ public class GUIGeneratorUtil {
     return instance;
   }
 
-  public void init(List<String> domainModels, List<String> createModels, boolean generateTS) {
+  public void init(List<String> domainModels, List<String> createModels) {
     DOMAIN_MODELS = domainModels;
     CREATE_MODELS = createModels;
-    GENERATE_TS = generateTS;
   }
 
   public final String print(ASTNode node) {
@@ -339,7 +336,11 @@ public class GUIGeneratorUtil {
     return getHTMLName("get"
         + StringTransformations.capitalize(componentId)
         + StringTransformations.capitalize(argName)) +
-        (GENERATE_TS ? "" : SYNCHRONIZED_SUFFIX);
+        (UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? "" : SYNCHRONIZED_SUFFIX);
+  }
+
+  public String getIsSynchronizedSuffix() {
+    return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? SYNCHRONIZED_SUFFIX : "";
   }
 
   public String gui2cdAttrSetterName(String componentId, String argName) {
@@ -383,7 +384,7 @@ public class GUIGeneratorUtil {
       visitor.setIgnore(ignore);
       visitor.transform(ic);
       String expressionWithNullChecks = replaceDots(print(visitor.getGetterExpression()));
-      if (!GENERATE_TS) {
+      if (!UMLPGeneratorConfig.getInstance().isGenerateTypescript()) {
         expressionWithNullChecks = expressionWithNullChecks.replace("()", SYNCHRONIZED_SUFFIX + "()");
       }
       return getHTMLName(expressionWithNullChecks);

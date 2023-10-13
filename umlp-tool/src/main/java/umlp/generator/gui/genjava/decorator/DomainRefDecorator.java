@@ -31,6 +31,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;

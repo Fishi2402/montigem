@@ -71,6 +71,10 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getGuiGenTSFuncionality();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getGuiGenJsweet();
+
 
   /**
    * @param f file which should be checked

@@ -6,6 +6,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.genjava.decorator.DomainRefDecorator;
 import umlp.generator.gui.genjava.decorator.GUI2JavaDecorator;
@@ -15,15 +16,8 @@ import java.util.stream.Collectors;
 
 public class GUI2TypeScriptDecorator extends GUI2JavaDecorator {
 
-  boolean generateTS = true;
-
   public GUI2TypeScriptDecorator(final GlobalExtensionManagement glex) {
     super(glex);
-  }
-
-  public GUI2TypeScriptDecorator(final GlobalExtensionManagement glex, boolean generateTS) {
-    super(glex);
-    this.generateTS = generateTS;
   }
 
   public void transform(ASTGUICompilationUnit guiAst,
@@ -31,7 +25,7 @@ public class GUI2TypeScriptDecorator extends GUI2JavaDecorator {
     boolean isInputGui = util.isInputGui(guiAst, viewComponents.getComponents().stream()
         .filter(c -> util.isInputComponent(c)).collect(Collectors.toList()));
 
-    if (generateTS) {
+    if (UMLPGeneratorConfig.getInstance().isGenerateTypescript()) {
       TSDomainRefDecorator domainRefDecorator = new TSDomainRefDecorator(glex, isInputGui,
           viewComponents);
       domainRefDecorator.transform(guiAst, decoratedAST);

@@ -347,8 +347,7 @@ public class UMLPTool extends UMLPToolTOP {
             .map(p -> p.toFile()).collect(Collectors.toList()));
 
         CD4C.init(genSetup);
-        UMLPGeneratorConfig config = new UMLPGeneratorConfig(
-            USE_SPRING.isSelected(cmd), USE_SHELL.isSelected(cmd));
+        UMLPGeneratorConfig config = UMLPGeneratorConfig.getInstance().initFromCmd(cmd);
         if (FOR_CLIENT.isSelected(cmd)) {
           TSUMLPGenerator generator = new TSUMLPGenerator(genSetup, config);
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
@@ -427,9 +426,7 @@ public class UMLPTool extends UMLPToolTOP {
             createModels.addAll(Arrays.asList(cmd.getOptionValues(GUI_CREATE.getCMD())));
           }
 
-          boolean generateTS = GUI_GEN_TS_FUNC.isSelected(cmd) ?
-              Boolean.parseBoolean(cmd.getOptionValue(GUI_GEN_TS_FUNC.getCMD())) : true;
-          GUIGeneratorUtil.getInstance().init(domainModels, createModels, generateTS);
+          GUIGeneratorUtil.getInstance().init(domainModels, createModels);
 
           // logTrafoExec("GUINodeIdTrafo", astGui);
 
@@ -445,6 +442,7 @@ public class UMLPTool extends UMLPToolTOP {
           GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
           genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
           genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
+          genSetup.getGlex().setGlobalValue("UMLPGeneratorConfig", UMLPGeneratorConfig.getInstance().initFromCmd(cmd));
 
           GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, viewComponents);
           String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
@@ -454,7 +452,7 @@ public class UMLPTool extends UMLPToolTOP {
           String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
           typeScriptGenerator.generate(astGui, typeScriptConfigTemplate);
 
-          GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents, generateTS);
+          GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
           componentGenerator.generate(astGui, "umlp.GUI2Component");
 
           GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();
