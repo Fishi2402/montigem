@@ -6,7 +6,10 @@ variables:
 
 cache:
   paths:
-    - .gradle/wrapper
+    - ".gradle/wrapper"
+    - "**/build/"
+    - "**/.gradle/"
+    - "**/target/"
   key: ${CI_COMMIT_REF_SLUG}
 
 before_script:
@@ -24,14 +27,6 @@ build:
   script:
     - "gradle --version"
     - "gradle build --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
-  cache:
-    paths:
-      - examples/weather/frontend/build/frontendGen/node_modules
-      - examples/weather/frontend/.gradle/nodejs
-      - examples/sehub/frontend/build/frontendGen/node_modules
-      - examples/sehub/frontend/.gradle/nodejs
-      - examples/dtcockpit/frontend/build/frontendGen/node_modules
-      - examples/dtcockpit/frontend/.gradle/nodejs
   artifacts:
     paths:
       - examples/weather/frontend/build/frontendGen/dist/**
