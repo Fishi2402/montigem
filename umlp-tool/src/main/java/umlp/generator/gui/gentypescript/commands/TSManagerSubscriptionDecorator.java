@@ -59,6 +59,11 @@ public class TSManagerSubscriptionDecorator extends ManagerSubscriptionDecorator
   }
 
   @Override
+  protected String getGeneralCheckAccessPolicyTemplate() {
+    return "umlp.gui2ts.accesspolicy.TSGeneralCheckAccessPolicy";
+  }
+
+  @Override
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, ASTCDClass domainClass, String cmdName) {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());

@@ -38,6 +38,7 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
+import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
 import java.net.URL;
@@ -713,6 +714,9 @@ public class GUIGeneratorUtil {
       if (javaPackage.startsWith(type.getJavaPackage())) {
         res = type.getTSPackage();
       }
+    }
+    if (TSBackendMap.isBackendRTEPackage(javaPackage)) {
+      res = TSBackendMap.getTSRTEPackage();
     }
 
     return res;

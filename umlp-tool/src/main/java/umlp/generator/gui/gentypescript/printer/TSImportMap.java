@@ -7,10 +7,7 @@ public enum TSImportMap {
   BASIC("basic.src.lib", "@monticore/montigem-basic"),
   CHARTS("charts.src.lib", "@monticore/montigem-charts"),
   INPUT("input.src.lib", "@monticore/montigem-input"),
-  TABLE("table.src.lib", "@monticore/montigem-table"),
-
-  // Gem, NotificationScope, etc.
-  BACKEND_RTE("umlp.backendrte", "umlp-frontend-rte");
+  TABLE("table.src.lib", "@monticore/montigem-table");
 
   private final String tsPackage;
   private final String javaPackage;

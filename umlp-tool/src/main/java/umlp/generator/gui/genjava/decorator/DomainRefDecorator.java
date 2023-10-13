@@ -246,11 +246,13 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
       addDefaultConstructor(clazz);
     }
 
-    clazz.getCDConstructorList().stream().findFirst().ifPresent(c -> {
-          glex.replaceTemplate("cd2java.Annotations", c,
-              new StringHookPoint("@OnInit"));
-          getCD4C().addImport(clazz, "umlp.jsweet.extension.annotation.OnInit");
-    });
+    if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+      clazz.getCDConstructorList().stream().findFirst().ifPresent(c -> {
+        glex.replaceTemplate("cd2java.Annotations", c,
+            new StringHookPoint("@OnInit"));
+        getCD4C().addImport(clazz, "umlp.jsweet.extension.annotation.OnInit");
+      });
+    }
 
     return clazz;
   }

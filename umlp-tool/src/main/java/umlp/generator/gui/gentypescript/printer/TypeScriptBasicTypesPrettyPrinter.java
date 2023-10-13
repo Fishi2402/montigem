@@ -64,6 +64,9 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
           from = type.getTSPackage();
         }
       }
+      if (TSBackendMap.isBackendRTEPackage(node.getQName())) {
+        from = TSBackendMap.getTSRTEPackage();
+      }
       getPrinter().print(from);
       // --- path calculation (end)
 
