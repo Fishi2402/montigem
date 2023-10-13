@@ -26,7 +26,7 @@ build:
   stage: build
   script:
     - "gradle --version"
-    - "gradle build --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   artifacts:
     paths:
       - examples/weather/frontend/build/frontendGen/dist/**
