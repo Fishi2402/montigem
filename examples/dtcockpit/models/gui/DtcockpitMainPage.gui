@@ -1,0 +1,18 @@
+package gui;
+
+import basic.src.lib.gembutton.GemButton;
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+page DtcockpitMainPage() {
+
+  @GemCard(
+    title = "Dashboard",
+    component = projectList@GemColumn(
+      rowGap="20px",
+      components=[
+      ]
+    )
+  );
+}

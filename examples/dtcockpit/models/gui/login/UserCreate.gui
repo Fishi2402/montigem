@@ -1,0 +1,36 @@
+package gui.login;
+
+import Dtcockpit.User;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+
+import basic.src.lib.gembutton.GemButton;
+import basic.src.lib.gemtext.GemText;
+import input.src.lib.gemtextinput.GemTextInput;
+
+component UserCreate(User newUser) {
+  @GemCard(title = "Create account and use it to sign in", component =
+    @GemColumn(rowGap = "20px", components = [
+      @GemTextInput(
+        labelText = "Account",
+        inputType = "text",
+        entry = newUser.username,
+        validity = newUser.validityUsername
+      ),
+      @GemTextInput(labelText = "Password", inputType = "password", entry = newUser.password),
+      @GemTextInput(
+        labelText = "E-mail address",
+        inputType = "text",
+        entry = newUser.email,
+        validity = newUser.validityEmail
+      ),
+      @GemRow(hAlign = "center", colGap = "10px", components = [
+        @GemButton(label = "Cancel", leftClick = navigateBack),
+        @GemButton(label = "Create account", leftClick = createUser)
+      ]),
+      error@GemText(value = "")
+    ])
+  );
+}
