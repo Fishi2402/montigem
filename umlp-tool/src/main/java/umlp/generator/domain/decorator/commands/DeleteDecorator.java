@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.util.PathUtil;
@@ -50,7 +51,7 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
 
     addConstructor(ast, classname, packageName);
     getCD4C().addMethod(ast, getDoRunTemplate(), classname, getCorrectManager(domainClass), domainPackage);
-    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainClass.getName(), "Delete");
+    getCD4C().addMethod(ast, getGeneralCheckAccessPolicyTemplate(), domainClass.getName(), "Delete");
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("gemId"));
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));
@@ -58,6 +59,10 @@ public class DeleteDecorator extends AbstractDeSerDecorator {
     addImports(origCD, domainClass, ast, classname);
 
     return ast;
+  }
+
+  protected String getGeneralCheckAccessPolicyTemplate() {
+    return "umlp.commands.GeneralCheckAccessPolicy";
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass domainClass, ASTCDClass ast,

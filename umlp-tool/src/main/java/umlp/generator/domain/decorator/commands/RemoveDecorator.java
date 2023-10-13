@@ -16,6 +16,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.StringTransformations;
+import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
@@ -110,7 +111,7 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
         attrName, isGem ? "long" : type.print());
 
     getCD4C().addMethod(ast, getDoRunTemplate(), name, domainClass.getName(), getCorrectManager(domainClass), isGem, name);
-    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainClass.getName(), "Delete");
+    getCD4C().addMethod(ast, getCheckAccessPolicyTemplate(), domainClass.getName(), "Delete");
     if (isGem) {
       getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("getGemId()", name + "GemId"));
     } else {
@@ -128,6 +129,10 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
       addJavaImport(ast, type);
     }
     return ast;
+  }
+
+  protected String getCheckAccessPolicyTemplate() {
+    return "umlp.commands.GeneralCheckAccessPolicy";
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDType domainClass, ASTCDClass ast) {

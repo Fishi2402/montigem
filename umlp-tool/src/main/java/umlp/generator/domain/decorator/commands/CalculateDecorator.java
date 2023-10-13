@@ -17,6 +17,7 @@ import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
@@ -93,7 +94,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
       getCD4C().addMethod(ast, getDoRunSimpleTemplate(), classname, originalClassname, t, getCorrectManager(domainClass), name, methodPrefix);
     }
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("getGemId()"));
-    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainClass.getName(), "Create");
+    getCD4C().addMethod(ast, getGeneralCheckAccessPolicyTemplate(), domainClass.getName(), "Create");
 
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(gemAttr));
@@ -106,6 +107,9 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     }
 
     return ast;
+  }
+  protected String getGeneralCheckAccessPolicyTemplate() {
+    return "umlp.commands.GeneralCheckAccessPolicy";
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass domainClass, ASTCDClass ast) {

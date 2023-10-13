@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.util.PathUtil;
 
@@ -53,7 +54,7 @@ public class GetDecorator extends AbstractDeSerDecorator {
 
     addConstructor(ast, classname, packageName);
     getCD4C().addMethod(ast, getDoRunTemplate(), classname, domainPackage, getCorrectManager(domainType));
-    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainType.getName(), "Read");
+    getCD4C().addMethod(ast, getGeneralCheckAccessPolicyTemplate(), domainType.getName(), "Read");
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
     getCD4C().addMethod(ast, getGetNewlySubscribedGemIdsTemplate());
     AccessorDecorator accessor = new AccessorDecorator(glex);
@@ -62,6 +63,10 @@ public class GetDecorator extends AbstractDeSerDecorator {
     addImports(origCD, domainType, ast, classname);
 
     return ast;
+  }
+
+  protected String getGeneralCheckAccessPolicyTemplate() {
+    return "umlp.commands.GeneralCheckAccessPolicy";
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDType domainType, ASTCDClass ast,

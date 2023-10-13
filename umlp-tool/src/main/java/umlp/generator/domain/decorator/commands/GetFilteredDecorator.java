@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.util.PathUtil;
 
@@ -49,13 +50,17 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
 
     addConstructor(ast, classname, packageName);
     getCD4C().addMethod(ast, getDoRunTemplate(), classname,  getCorrectManager(domainType), domainPackage);
-    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainType.getName(), "Read");
+    getCD4C().addMethod(ast, getGeneralCheckAccessPolicyTemplate(), domainType.getName(), "Read");
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+ "." + classname + "AccessPolicy");
     getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ getCorrectManager(domainType));
 
     return ast;
+  }
+
+  protected String getGeneralCheckAccessPolicyTemplate() {
+    return "umlp.commands.GeneralCheckAccessPolicy";
   }
 
   protected String extendedClass() {
