@@ -106,6 +106,7 @@ task genGUI(type: UMLPGuiGenTask) {
   domainModels = ["Jsweettest"]
   guiGenTSFuncionality = false
 }
+compileJava.dependsOn(genGUI)
 
 org.jsweet.gradle.JSweetPluginExtension jsweetDomainConf = project.getExtensions().create("jsweetDomain", org.jsweet.gradle.JSweetPluginExtension.class)
 jsweetDomain {
