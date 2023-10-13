@@ -25,10 +25,6 @@ build:
     - "gradle --version"
     - "gradle build --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   cache:
-    key:
-      files:  # Cache depends on state of "package-lock"
-        - examples/sehub/frontend/build/frontendGen/package-lock.json
-        - examples/dtcockpit/frontend/build/frontendGen/package-lock.json
     paths:
       - examples/weather/frontend/build/frontendGen/node_modules
       - examples/weather/frontend/.gradle/nodejs
