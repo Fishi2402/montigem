@@ -3,6 +3,7 @@ package umlp.generator.domain.decorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnumConstant;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.ocl._ast.ASTOCLConstraint;
@@ -16,9 +17,7 @@ import umlp.generator.util.PathUtil;
 import umlp.generator.validator.ocl.OCLContextCollector;
 import umlp.generator.validator.ocl.OCLParser;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -32,9 +31,15 @@ public class ValidatorDecorator extends AbstractDecorator {
     super(glex);
   }
 
+  private final Map<String, List<String>> enumMap = new HashMap<>();
+
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
+    origCD.getCDDefinition().getCDEnumsList().forEach(e -> {
+      List<String> enumValues = e.getCDEnumConstantList().stream().map(ASTCDEnumConstant::getName).collect(Collectors.toList());
+      enumMap.put(e.getName(), enumValues);
+    });
     origCD.getCDDefinition().getCDClassesList().stream()
             .filter(c -> !c.getSymbol().isIsDerived())
             .filter(c -> !c.getSymbol().isIsAbstract())
@@ -72,7 +77,7 @@ public class ValidatorDecorator extends AbstractDecorator {
         ASTOCLInvariant invariant = (ASTOCLInvariant) constraint;
         String inputParams = getInputParams(invariant);
         String oclRuleName = invariant.getName();
-        String oclRule = OCLParser.generate(invariant.getExpression(), new IndentPrinter());
+        String oclRule = OCLParser.generate(invariant.getExpression(), new IndentPrinter(), enumMap);
         oclRules.add(getCD4C().addMethod(domainClass, "umlp.validator.ValidateRule", oclRuleName, oclRule, "", inputParams));
       }
     }

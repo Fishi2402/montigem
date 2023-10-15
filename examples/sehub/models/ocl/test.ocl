@@ -1,5 +1,8 @@
 package ocl;
 import Sehub.SehubRole;
+import Sehub.User;
+import Sehub.Post;
+import Sehub.Artifact;
 
 ocl SehubOCL {
 
@@ -26,9 +29,9 @@ ocl SehubOCL {
   context User u inv RegistrationDateIsNotInFuture:
     !(u.registrationDate.isAfter(ChronoLocalDateTime.from(ZonedDateTime.now())));
 
-  /*context Project p inv GuestCannotHaveProjectRights:
+  context Project p inv GuestCannotHaveProjectRights:
     forall User u in p.users:
-      u.role != SehubRole.GUEST;*/
+      u.role != SehubRole.GUEST;
 
   /* context User u inv UsernameHasToBeUnique:
     forall User u1 in loadAll(User.username): // loadAll in Backend, two methods, one for loading, one for the constraints.
