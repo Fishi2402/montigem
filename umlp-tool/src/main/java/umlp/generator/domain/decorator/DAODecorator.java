@@ -334,9 +334,10 @@ public class DAODecorator extends AbstractDecorator {
   protected void updateOptionalAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass) {
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).forEach(attr ->
-            getCD4C().addMethod(doaClass, "umlp.dao.UpdateOptionalAttr", SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED),
+            getCD4C().addMethod(doaClass, "umlp.dao.UpdateOptionalAttr",
+                SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED),
                 attr.getName(),
-                SQLSchemaGenerator.convertAttributeName(attr.getName(), SQLSchemaGenerator.AttributeType.QUOTED),
+                SQLSchemaGenerator.convertAttributeName(attr.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED),
                 GenService.createType(attr).printType(), GenService.getDBType(attr.getSymbol().getType())));
   }
 
