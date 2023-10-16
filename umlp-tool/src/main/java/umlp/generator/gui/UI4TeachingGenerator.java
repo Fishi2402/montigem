@@ -7,6 +7,7 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 
@@ -32,12 +33,24 @@ public class UI4TeachingGenerator {
     List<ASTCDClass> classes = cdAST.getCDDefinition().getCDClassesList().stream()
             .filter(c -> !c.getModifier().isAbstract())
             .collect(Collectors.toList());
+    List<ASTCDEnum> enums = cdAST.getCDDefinition().getCDEnumsList();
     Multimap<ASTCDClass, ASTCDAttribute> attributesInHierarchy = ArrayListMultimap.create();
 
     for (ASTCDClass aClass : classes) {
       attributesInHierarchy.putAll(aClass, CDSymbolTables.getAttributesInHierarchy(aClass));
     }
 
-    generatorEngine.generate("umlp.gui4teaching.js", Paths.get("resources", "static","index.js"), cdAST, classes, attributesInHierarchy.asMap());
+    generatorEngine.generate("umlp.gui4teaching.js", Paths.get("resources", "static","index.js"), cdAST,
+        classes, enums, this, attributesInHierarchy.asMap());
   }
+
+  public boolean isEnum(String attrType, List<ASTCDEnum> enums) {
+    for (ASTCDEnum astcdEnum : enums) {
+      if (astcdEnum.getName().equals(attrType)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

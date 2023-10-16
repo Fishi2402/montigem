@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 // --------------- always the same (start) --------------- //
-${signature("cdClasses", "attributesInHierarchy")}
+${signature("cdClasses", "cdEnums", "generator", "attributesInHierarchy")}
 
 <#function java2TS type>
   <#if type == "Float"
@@ -67,13 +67,31 @@ function showError(err) {
    + " Tell you supervisor if you can't figure out what that means.");
 }
 
+<#list cdEnums as cdEnum>
+const ${cdEnum.getName()} = {
+  forwardMap: {
+    <#list cdEnum.getCDEnumConstantList() as cdEnumConst>
+    ${cdEnumConst.getName()}: ${cdEnumConst?index},
+    </#list>
+  },
+  reverseMap: {
+    <#list cdEnum.getCDEnumConstantList() as cdEnumConst>
+    ${cdEnumConst?index}: "${cdEnumConst.getName()}",
+    </#list>
+  }
+}
+</#list>
+
 const TYPE_INFO = {
 <#list attributesInHierarchy as c, attrs>
   "${c.getName()}": {
   <#list attrs as attr>
     <#assign attrType = attr.getMCType().printType()>
+    <#assign isEnum = generator.isEnum(attrType, cdEnums)>
     "${attr.getName()}": {
-      type: "${java2TS(attrType)}",
+      type: <#if isEnum>${java2TS(attrType)}<#else>"${java2TS(attrType)}"</#if>,
+      typeName: "${java2TS(attrType)}",
+      isEnum: ${isEnum?string("true", "false")},
       editable: ${(java2TS(attrType) != "Array" && !attr.getModifier().isDerived())?c},
     },
   </#list>
@@ -119,8 +137,20 @@ function getType(className, attr) {
   }
 }
 
+function getTypeName(className, attr) {
+  if (TYPE_INFO[className][attr] != null) {
+    return TYPE_INFO[className][attr].typeName;
+  } else {
+    return "Unknown";
+  }
+}
+
 function isReadonly(className, attr) {
   return attr === "gemId" || !TYPE_INFO[className][attr] || !TYPE_INFO[className][attr].editable;
+}
+
+function isEnum(className, attr) {
+  return attr !== "gemId" && TYPE_INFO[className][attr] && TYPE_INFO[className][attr].isEnum;
 }
 
 function uncapitalize(str1){

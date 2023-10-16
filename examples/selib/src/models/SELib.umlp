@@ -21,6 +21,21 @@ umlp SELib {
   class BookDescription extends Medium {
     String description;
     String imageUrl;
+    Genre genre;
+  }
+
+  enum Genre {
+    FICTION,
+    NON_FICTION,
+    MYSTERY,
+    SCIENCE_FICTION,
+    ROMANCE,
+    FANTASY,
+    HORROR,
+    SELF_HELP,
+    BIOGRAPHY,
+    HISTORY,
+    OTHER;
   }
 
   class ScientificBookDescription extends BookDescription {
