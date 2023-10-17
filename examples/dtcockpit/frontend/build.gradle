@@ -67,7 +67,7 @@ task genGUI(type: UMLPGuiGenTask) {
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = files(genDomain.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
   domainModels = ["Dtcockpit"]
-  guiCreateModels = ["gui.login.UserCreate"]
+  guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate"]
 
   /*
   debug = true
