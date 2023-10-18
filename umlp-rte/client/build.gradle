@@ -58,6 +58,42 @@ task createGuiSymbols(type: SerializeGUISymbolsTask) {
   output = layout.buildDirectory.dir("GuiSymbols")
 }
 
+def buildTaskPrefix = "build"
+def publishTaskPrefix = "publish"
+
+def libs = [
+    "arrange",
+    "basic",
+    "charts",
+    "common",
+    "input",
+    "navigation",
+    "table",
+    "theme",
+]
+
+libs.each {
+  def libName = it
+  def buildTaskName = "${buildTaskPrefix}_${libName}"
+  def publishTaskName = "${publishTaskPrefix}_${libName}"
+
+  // task runs `npm run build @umlp/<lib_name>`
+  task "${buildTaskName}"(type: NpmTask) {
+    dependsOn tasks.npm_install
+    args = ["run", "build", "@umlp/${libName}"]
+    inputs.dir(project.fileTree("projects/umlp/${libName}/")
+        .exclude("**/*.spec.ts", "**/*.md"))
+    inputs.files("angular.json", "tsconfig.base.json", "package-lock.json")
+    outputs.dir("${project.buildDir}/libs/${libName}")
+  }
+
+  // task runs `npm publish <lib_name>`
+  task "${publishTaskName}"(type: NpmTask) {
+    dependsOn "${buildTaskName}"
+    args = ["publish", "dist/libs/${libName}"]
+  }
+}
+
 dependencies {
 }
 
