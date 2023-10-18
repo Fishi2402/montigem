@@ -58,9 +58,6 @@ task createGuiSymbols(type: SerializeGUISymbolsTask) {
   output = layout.buildDirectory.dir("GuiSymbols")
 }
 
-def buildTaskPrefix = "build"
-def publishTaskPrefix = "publish"
-
 def libs = [
     "arrange",
     "basic",
@@ -74,23 +71,32 @@ def libs = [
 
 libs.each {
   def libName = it
-  def buildTaskName = "${buildTaskPrefix}_${libName}"
-  def publishTaskName = "${publishTaskPrefix}_${libName}"
+  def buildTaskName = "build_${libName}"
+  def genNpmrcTaskName = "gen_npmrc_${libName}"
+  def publishTaskName = "publish_${libName}"
+  def npmOutput = "dist/umlp/${libName}"
 
-  // task runs `npm run build @umlp/<lib_name>`
+  // task `build_<lib_name>` that runs `npm run build @umlp/<lib_name>`
   task "${buildTaskName}"(type: NpmTask) {
     dependsOn tasks.npm_install
     args = ["run", "build", "@umlp/${libName}"]
     inputs.dir(project.fileTree("projects/umlp/${libName}/")
         .exclude("**/*.spec.ts", "**/*.md"))
     inputs.files("angular.json", "tsconfig.base.json", "package-lock.json")
-    outputs.dir("${project.buildDir}/libs/${libName}")
+    outputs.dir("${project.buildDir}/${npmOutput}")
   }
 
-  // task runs `npm publish <lib_name>`
-  task "${publishTaskName}"(type: NpmTask) {
+  // task `gen_npmrc_<lib_name>` that creates .npmrc file for publishing
+  task "${genNpmrcTaskName}"(type: NPMAuthCreate) {
     dependsOn "${buildTaskName}"
-    args = ["publish", "dist/libs/${libName}"]
+    npmrcFile = file("${project.buildDir}/${npmOutput}/.npmrc")
+    unscoped = true
+  }
+
+  // task `publish_<lib_name>` that runs `npm publish <lib_name>`
+  task "${publishTaskName}"(type: NpmTask) {
+    dependsOn "${genNpmrcTaskName}"
+    args = ["publish", "${npmOutput}"]
   }
 }
 
