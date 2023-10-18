@@ -11,7 +11,6 @@ import { App } from "@src/weather/App";
 export class City extends CityTOP {
   protected _nextDays: Gem<Timeseries> = new Gem<Timeseries>();
   protected _current?: Forecast;
-
   protected _nextHours: GemList<Forecast>;
 
   // TODO: replace with umlp observers
@@ -21,9 +20,21 @@ export class City extends CityTOP {
     current: { value: null, hash: null, calculating: false }
   }
 
-  public getNextDays(): Timeseries {
+  public getNextDaysDerivedGem(): Gem<Timeseries> {
     this.calcNextDays();
-    return this._nextDays?.get();
+    return this._nextDays;
+  }
+
+  public getCurrentDerivedGem (): Gem<Forecast> {
+    this.calcCurrent();
+    const res = new Gem<Forecast>();
+    res.set(this._current);
+    return res;
+  }
+
+  public getNextHoursDerivedGemList(): GemList<Forecast> {
+    this.calcNextHours();
+    return this._nextHours;
   }
 
   public async calcNextDays() {
@@ -73,6 +84,37 @@ export class City extends CityTOP {
     this._nextDays.set(timeseries);
   }
 
+  public async calcCurrent() {
+    if (this.original.current.calculating || this.original.current.hash != null) {
+      return;
+    }
+    this.original.current.calculating = true;
+
+    let today = new Date();
+
+    const forecastGemList = await WeatherManager.getForecastList();
+    await forecastGemList.loadAll();
+    for (let day of forecastGemList) {
+      const cur = day.getDate();
+      if (cur.getFullYear() == today.getFullYear()
+          && cur.getMonth() == today.getMonth()
+          && cur.getDate() == today.getDate()) {
+
+        this.original.current.calculating = false;
+
+        const value = day;
+        const hash = value.getDate().toISOString();
+        if (this.original.current.hash === hash) {
+          return;
+        }
+        this.original.current.hash = hash;
+
+        this._current = value;
+        return;
+      }
+    }
+  }
+
   public async calcNextHours() {
     if (this.original.nextHours.calculating || this.original.nextHours.hash != null) {
       return;
@@ -103,47 +145,6 @@ export class City extends CityTOP {
     this.original.nextHours.hash = hash;
 
     this._nextHours = value;
-  }
-
-  public getNextHoursDerivedGemList(): GemList<Forecast> {
-    this.calcNextHours();
-    return this._nextHours;
-  }
-
-  public getCurrent(): Forecast | undefined {
-    this.calcCurrent();
-    return this._current;
-  }
-
-  public async calcCurrent() {
-    if (this.original.current.calculating || this.original.current.hash != null) {
-      return;
-    }
-    this.original.current.calculating = true;
-
-    let today = new Date();
-
-    const forecastGemList = await WeatherManager.getForecastList();
-    await forecastGemList.loadAll();
-    for (let day of forecastGemList) {
-      const cur = day.getDate();
-      if (cur.getFullYear() == today.getFullYear()
-        && cur.getMonth() == today.getMonth()
-        && cur.getDate() == today.getDate()) {
-
-        this.original.current.calculating = false;
-
-        const value = day;
-        const hash = value.getDate().toISOString();
-        if (this.original.current.hash === hash) {
-          return;
-        }
-        this.original.current.hash = hash;
-
-        this._current = value;
-        return;
-      }
-    }
   }
 
   public async isFavorite(): Promise<boolean> {
