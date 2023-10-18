@@ -96,7 +96,8 @@ libs.each {
   // task `publish_<lib_name>` that runs `npm publish <lib_name>`
   task "${publishTaskName}"(type: NpmTask) {
     dependsOn "${genNpmrcTaskName}"
-    args = ["publish", "${npmOutput}"]
+    workingDir = file("${project.buildDir}/${npmOutput}")
+    args = ["publish"]
   }
 }
 
