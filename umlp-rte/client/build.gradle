@@ -38,14 +38,21 @@ node {
   nodeProjectDir = layout.buildDirectory
 }
 
+configurations {
+  guiDefaultTypes
+}
+dependencies {
+  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+}
+
 task createCDSymbols(type: SerializeCDSymbolsTask){
   input = file("models/")
   // symbolPath = file("models/")
   output = layout.buildDirectory.dir("CDSymbols")
 }
 task createGuiSymbols(type: SerializeGUISymbolsTask){
-  input = file("models/arrange")  // TODO: Set to whole models directory
-  symbolPath = createCDSymbols.getOutput()
+  input = file("models/")
+  symbolDir = files(createCDSymbols.getOutput(),configurations.guiDefaultTypes.files)
   output = layout.buildDirectory.dir("GuiSymbols")
 }
 
@@ -157,7 +164,7 @@ tasks.register("start")
 sourceSets {
   symbols {
     resources {
-      srcDirs(createCDSymbols.getOutput())
+      srcDirs(createCDSymbols.getOutput(), createGuiSymbols.getOutput())
       include "**/*sym"
     }
   }
