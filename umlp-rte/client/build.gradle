@@ -6,6 +6,7 @@ import groovy.json.JsonSlurper
 
 plugins {
   id 'java'
+  id 'maven-publish'
   id 'com.diffplug.spotless' version '6.19.0'
   id "com.github.node-gradle.node" version "5.0.0"
 }
@@ -150,3 +151,30 @@ tasks.register("start")
     dependsOn("incrementalReverse")
     //dependsOn("spotlessApply")
   }
+
+
+
+sourceSets {
+  symbols {
+    resources {
+      srcDirs(createCDSymbols.getOutput())
+      include "**/*sym"
+    }
+  }
+}
+task symbolJar(type: Jar) {
+  from sourceSets.symbols.output
+  includeEmptyDirs = false
+}
+jar.dependsOn(symbolJar)
+artifacts {
+  archives symbolJar
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      artifact symbolJar
+    }
+  }
+}
