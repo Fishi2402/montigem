@@ -97,7 +97,7 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
 
     if(!this.getOcl().isEmpty()) {
       result.add("-ocl");
-      result.add(handlePath.apply(getOcl().getSingleFile().toPath()));
+      result.add(handlePath.apply(Path.of(getOcl().getAsPath())));
     }
 
     if(this.getUseSpring().get()){

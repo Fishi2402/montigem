@@ -50,7 +50,7 @@ public class CreateDecorator extends AbstractDeSerDecorator {
     ASTCDAttribute attr = addDomainAttr(ast, classname);
 
     addConstructor(ast, classname, packageName);
-    getCD4C().addMethod(ast, getDoRunTemplate(), classname, getCorrectManager(domainClass), domainPackage);
+    getCD4C().addMethod(ast, getDoRunTemplate(), classname, getCorrectManager(domainClass), domainPackage, hasOCL);
     getCD4C().addMethod(ast, getGeneralCheckAccessPolicyTemplate(), domainClass.getName(), "Create");
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList(StringTransformations.uncapitalize(classname) + ".getGemId()"));
     AccessorDecorator accessor = new AccessorDecorator(glex);
@@ -68,12 +68,21 @@ public class CreateDecorator extends AbstractDeSerDecorator {
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass domainClass, ASTCDClass ast,
       String classname) {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ classname);
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + classname);
+
+    if(hasOCL) {
+      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + classname + "Validator");
+    }
+
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ getCorrectManager(domainClass));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ classname + "AccessPolicy");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, "com.google.common.collect.Sets");
+    getCD4C().addImport(ast, "umlp.backendrte.command.CommandResult");
+    getCD4C().addImport(ast, "umlp.backendrte.common.ValidationMessage");
+    getCD4C().addImport(ast, "umlp.backendrte.common.ValidationStatus");
+    getCD4C().addImport(ast, "java.util.stream.Collectors;");
   }
 
   protected String extendedClass() {

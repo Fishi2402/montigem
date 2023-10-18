@@ -21,11 +21,8 @@ import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
-import de.monticore.ocl.ocl.OCLMill;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.ocl._parser.OCLParser;
-import de.monticore.ocl.ocl._symboltable.OCLSymbolTableCompleter;
-import de.monticore.ocl.ocl._symboltable.OCLSymbols2Json;
 import de.monticore.ocl.util.SymbolTableUtil;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -58,6 +55,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -296,25 +294,33 @@ public class UMLPTool extends UMLPToolTOP {
             storeSymbols(symbolTable, symbolPath.toString());
 
             if(OCL.isSelected(cmd)) {
-              File oclFile = new File(OCL.getValue(cmd));
-              OCLParser oclParser = new OCLParser();
-              Optional<ASTOCLCompilationUnit> oclCompilationUnit;
-              try {
-                oclCompilationUnit = oclParser.parse(oclFile.getAbsolutePath());
-              } catch (IOException e) {
-                throw new RuntimeException(e);
+              MCPath oclModelPath = new MCPath();
+              for (String v : cmd.getOptionValues(OCL.getCMD())) {
+                oclModelPath.addEntry(Paths.get(v));
               }
-              if(!oclCompilationUnit.isPresent()) {
-                Log.error("0xE0001 Could not parse OCL file");
-              }
-              ASTOCLCompilationUnit oCLAst = oclCompilationUnit.get();
+              List<URL> oclFiles = MCPathUtil.getAllModels(oclModelPath, ".*[.]ocl");
+              for (URL modelUrl : oclFiles) {
+                File oclFile = new File(modelUrl.toURI());
+                OCLParser oclParser = new OCLParser();
+                Optional<ASTOCLCompilationUnit> oclCompilationUnit;
+                try {
+                  oclCompilationUnit = oclParser.parse(oclFile.getAbsolutePath());
+                } catch (IOException e) {
+                  throw new RuntimeException(e);
+                }
+                if (!oclCompilationUnit.isPresent()) {
+                  Log.error("0xE0001 Could not parse OCL file");
+                }
+                ASTOCLCompilationUnit oCLAst = oclCompilationUnit.get();
 
-              SymbolTableUtil.prepareMill();
-              UMLPSymbolTables.addCd4cSymbols();
-              SymbolTableUtil.loadSymbolFile(symbolPath.toString());
-              SymbolTableUtil.runSymTabGenitor(oCLAst);
-              SymbolTableUtil.runSymTabCompleter(oCLAst);
-              oclCompilationUnits.add(oCLAst);
+                SymbolTableUtil.prepareMill();
+                UMLPSymbolTables.addCd4cSymbols();
+                SymbolTableUtil.loadSymbolFile(symbolPath.toString());
+                SymbolTableUtil.runSymTabGenitor(oCLAst);
+                SymbolTableUtil.runSymTabCompleter(oCLAst);
+                oclCompilationUnits.add(oCLAst);
+                AbstractDecorator.hasOCL = true;
+              }
             }
           }
           else {
@@ -469,6 +475,8 @@ public class UMLPTool extends UMLPToolTOP {
     } catch (ParseException e) {
       printHelp(options);
       Log.error("0xB005 An exception occurred while processing the CLI input!", e);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
     } finally {
       UMLPMill.globalScope().clear();
       Reporting.off();

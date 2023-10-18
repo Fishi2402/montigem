@@ -205,9 +205,9 @@ public class BEDecorator extends AbstractDecorator {
     testSetupDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TestContextDecorator", TestSetupDecorator.class.getName());
 
-    if(!UMLPTool.getOclCompilationUnits().isEmpty()) {
+    if(hasOCL) {
       ValidatorDecorator validatorDecorator = new ValidatorDecorator(glex);
-      validatorDecorator.setOclCompilationUnit(UMLPTool.getOclCompilationUnits().get(0));
+      validatorDecorator.setOclCompilationUnits(UMLPTool.getOclCompilationUnits());
       validatorDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ValidatorDecorator", BEDecorator.class.getName());
     }

@@ -79,7 +79,7 @@ dependencies {
 
 generateUmlpBackend {
   input = file("../models/Sehub.umlp")
-  ocl = file("../models/ocl/test.ocl")
+  ocl = file("../models/ocl")
   symbolOutDir = file("${project.buildDir}/symbols")
   useSpring.set(true)
   useShell.set(true)
