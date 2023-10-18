@@ -6,8 +6,6 @@ import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.methods.MethodDecorator;
-import de.monticore.cd.codegen.methods.MutatorDecorator;
-import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -91,11 +89,13 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     for (ASTCDAttribute attribute : attrList) {
       List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
       // methods.forEach(m -> m.getModifier().setAbstract(isInterface));
-      methods.forEach(m -> m.getModifier().setDerived(isInterface));
+      //methods.forEach(m -> m.getModifier().setDerived(isInterface));
       // TODO AGe: why is it getting set to abstract?
-      methods.forEach(m -> m.getModifier().setAbstract(false));
+      // methods.forEach(m -> m.getModifier().setAbstract(false));
       cdType.addAllCDMembers(methods);
-      getCD4C().addMethod(cdType, getSetPresentTemplate(), service.getNativeAttributeName(attribute.getName()));
+      if (!GenService.isDerived(attribute)) {
+        getCD4C().addMethod(cdType, getSetPresentTemplate(), service.getNativeAttributeName(attribute.getName()));
+      }
     }
   }
 
