@@ -69,11 +69,14 @@ def libs = [
     "theme",
 ]
 
+def buildTaskPrefix = "build"
+def publishTaskPrefix = "publish"
+
 libs.each {
   def libName = it
-  def buildTaskName = "build_${libName}"
+  def buildTaskName = "${buildTaskPrefix}_${libName}"
   def genNpmrcTaskName = "gen_npmrc_${libName}"
-  def publishTaskName = "publish_${libName}"
+  def publishTaskName = "${publishTaskPrefix}_${libName}"
   def npmOutput = "dist/umlp/${libName}"
 
   // task `build_<lib_name>` that runs `npm run build @umlp/<lib_name>`
@@ -100,6 +103,16 @@ libs.each {
     args = ["publish"]
   }
 }
+
+/*
+tasks.register('buildAll') {
+  dependsOn tasks.findAll { it.name.startsWith(buildTaskPrefix) }
+}
+
+tasks.register('publishAll') {
+  dependsOn tasks.findAll { it.name.startsWith(publishTaskPrefix) }
+}
+/**/
 
 dependencies {
 }
@@ -173,7 +186,7 @@ abstract class IncrementalReverseTask extends DefaultTask {
 
 tasks.register('incrementalReverse', IncrementalReverseTask) {
   inputDir = file('projects/umlp')
-  outputDir = file("../dist")
+  outputDir = file("${project.buildDir}/dist")
   inputProperty = project.properties['taskInputProperty'] ?: 'original'
 }
 
