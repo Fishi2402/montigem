@@ -2,6 +2,7 @@ import java.lang.*;
 umlp A {
   class Foo {
     int fooAttr;
+    EnumFoo enumFooAttr;
     /String derivedAttr;
     // Optional<int> optFooAttr;
     // List<int> ListFooAttr;
@@ -29,4 +30,8 @@ umlp A {
   class Bar5;
   association owns5 Foo5 -> Bar5 [1..*];
 
+  enum EnumFoo {
+    FOO,
+    BAR;
+  }
 }

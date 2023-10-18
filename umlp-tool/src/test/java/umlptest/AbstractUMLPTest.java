@@ -11,6 +11,9 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.util.CDMergeAfterParseTrafo;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
+import de.monticore.ocl.ocl.OCLMill;
+import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
+import de.monticore.ocl.util.SymbolTableUtil;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.se_rwth.commons.logging.Finding;
@@ -24,6 +27,7 @@ import umlp._visitor.UMLPTraverser;
 import umlp.generator.domain.UMLAssocToAttrTrafo;
 import umlp.generator.domain.UMLAttrToAssocTrafo;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,11 +47,17 @@ public abstract class AbstractUMLPTest {
     Log.enableFailQuick(false);
     UMLPMill.reset();
     UMLPMill.init();
+    OCLMill.reset();
+    OCLMill.init();
     BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
   }
 
   public ASTCDCompilationUnit parse(String model) {
     return parse("src/test/resources", model);
+  }
+
+  public ASTOCLCompilationUnit parseOCL(String model, ASTCDCompilationUnit cdAst) {
+    return parseOCL("src/test/resources", model, cdAst);
   }
 
   public ASTCDCompilationUnit parse(String testPath, String model) {
@@ -56,6 +66,25 @@ public abstract class AbstractUMLPTest {
     try {
       Optional<ASTCDCompilationUnit> ast = UMLPMill.parser().parse(m.toString());
       assertTrue(ast.isPresent());
+      return ast.get();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+      fail();
+    }
+    return null;
+  }
+
+  public ASTOCLCompilationUnit parseOCL(String testPath, String model, ASTCDCompilationUnit cdAst) {
+    Path m = Paths.get(testPath, model);
+    assertTrue(m.toFile().exists());
+    try {
+      Optional<ASTOCLCompilationUnit> ast = OCLMill.parser().parse(m.toString());
+      assertTrue(ast.isPresent());
+      SymbolTableUtil.prepareMill();
+      UMLPSymbolTables.addCd4cSymbols();
+      SymbolTableUtil.runSymTabGenitor(ast.get());
+      SymbolTableUtil.runSymTabCompleter(ast.get());
       return ast.get();
     }
     catch (IOException e) {
