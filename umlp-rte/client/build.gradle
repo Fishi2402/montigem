@@ -1,8 +1,9 @@
-import org.gradle.work.Incremental
-import org.gradle.work.InputChanges
+/* (c) https://github.com/MontiCore/monticore */
+
 import groovy.json.JsonGenerator
 import groovy.json.JsonSlurper
-
+import org.gradle.work.Incremental
+import org.gradle.work.InputChanges
 
 plugins {
   id 'java'
@@ -45,29 +46,21 @@ dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
-task createCDSymbols(type: SerializeCDSymbolsTask){
+task createCDSymbols(type: SerializeCDSymbolsTask) {
   input = file("models/")
   // symbolPath = file("models/")
   output = layout.buildDirectory.dir("CDSymbols")
 }
-task createGuiSymbols(type: SerializeGUISymbolsTask){
+
+task createGuiSymbols(type: SerializeGUISymbolsTask) {
   input = file("models/")
-  symbolDir = files(createCDSymbols.getOutput(),configurations.guiDefaultTypes.files)
+  symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
   output = layout.buildDirectory.dir("GuiSymbols")
 }
 
 dependencies {
 }
 
-def libs = [
-  "basic",
-  "charts",
-  "common",
-  "table",
-  "input",
-  "arrange",
-  "theme",
-  "utils"]
 class StaticMethods {
   static void updateVersion(String lib) {
     def jsonSlurper = new JsonSlurper()
@@ -89,15 +82,13 @@ class StaticMethods {
     }
 
     def generator = new JsonGenerator.Options()
-      .build()
+        .build()
     def json = generator.toJson(data)
 
     File file = new File("projects/umlp/" + lib + "/package.json")
     file.write(json)
-
   }
 }
-
 
 abstract class IncrementalReverseTask extends DefaultTask {
   @Incremental
@@ -119,24 +110,23 @@ abstract class IncrementalReverseTask extends DefaultTask {
     }
 
     def libs = [
-      "basic",
-      "charts",
-      "common",
-      "table",
-      "input",
-      "arrange",
-      "theme",
-      "utils"]
+        "basic",
+        "charts",
+        "common",
+        "table",
+        "input",
+        "arrange",
+        "theme",
+        "utils"]
     libs.forEach(lib -> {
       def pattern = ".*" + "projects" + ".+" + "umlp" + ".+" + lib + ".*";
       if (inputChanges.getFileChanges(inputDir).toString().matches(pattern)) {
         StaticMethods.updateVersion(lib);
-        println(lib + " library verstion updated")
+        println(lib + " library version updated")
       }
     })
   }
 }
-
 
 tasks.register('incrementalReverse', IncrementalReverseTask) {
   inputDir = file('projects/umlp')
@@ -144,22 +134,15 @@ tasks.register('incrementalReverse', IncrementalReverseTask) {
   inputProperty = project.properties['taskInputProperty'] ?: 'original'
 }
 
+tasks.register("updateVersion") {
+  dependsOn("incrementalReverse")
+  //dependsOn("spotlessApply")
+}
 
-
-tasks.register("updateVersion")
-  {
-    dependsOn("incrementalReverse")
-    //dependsOn("spotlessApply")
-  }
-
-
-tasks.register("start")
-  {
-    dependsOn("incrementalReverse")
-    //dependsOn("spotlessApply")
-  }
-
-
+tasks.register("start") {
+  dependsOn("incrementalReverse")
+  //dependsOn("spotlessApply")
+}
 
 sourceSets {
   symbols {
@@ -169,11 +152,14 @@ sourceSets {
     }
   }
 }
+
 task symbolJar(type: Jar) {
   from sourceSets.symbols.output
   includeEmptyDirs = false
 }
+
 jar.dependsOn(symbolJar)
+
 artifacts {
   archives symbolJar
 }
