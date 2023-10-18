@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -12,6 +10,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,14 +33,14 @@ public class UI4TeachingGenerator {
             .filter(c -> !c.getModifier().isAbstract())
             .collect(Collectors.toList());
     List<ASTCDEnum> enums = cdAST.getCDDefinition().getCDEnumsList();
-    Multimap<ASTCDClass, ASTCDAttribute> attributesInHierarchy = ArrayListMultimap.create();
+    Map<ASTCDClass, List<ASTCDAttribute>> attributesInHierarchy = new HashMap<>();
 
     for (ASTCDClass aClass : classes) {
-      attributesInHierarchy.putAll(aClass, CDSymbolTables.getAttributesInHierarchy(aClass));
+      attributesInHierarchy.put(aClass, CDSymbolTables.getAttributesInHierarchy(aClass));
     }
 
     generatorEngine.generate("umlp.gui4teaching.js", Paths.get("resources", "static","index.js"), cdAST,
-        classes, enums, this, attributesInHierarchy.asMap());
+        classes, enums, this, attributesInHierarchy);
   }
 
   public boolean isEnum(String attrType, List<ASTCDEnum> enums) {
