@@ -43,6 +43,19 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
       Log.println("_NOT_ Creating New Dummy Data. Data is already present.");
     }
 
+    // Create two default projects, if no projects are present
+    if (DtcockpitManager.getProjectList().isEmpty()) {
+      Log.println("Creating dummy project data");
+      DtcockpitManager.projectBuilder()
+          .name("MontiCore")
+          .git("https://git.rwth-aachen.de/monticore/monticore")
+          .build();
+      DtcockpitManager.projectBuilder()
+          .name("umlp")
+          .git("https://git.rwth-aachen.de/monticore/umlp")
+          .build();
+    }
+
     try {
       Server webServer = Server.createWebServer("-web", "-webAllowOthers").start();
       Log.info(String.format("H2 Web Server started at: http://localhost:%s", webServer.getPort()), DtcockpitServerApplication.class.getName());
