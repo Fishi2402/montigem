@@ -1,0 +1,27 @@
+package gui.pipelines;
+
+import charts.src.lib.gembarchart.GemBarChart;
+import arrange.src.lib.gemcard.GemCard;
+import basic.src.lib.gembutton.GemButton;
+
+
+import Dtcockpit.Project;
+
+page PipelineStats(Project p) {
+
+  @GemCard(
+    title = "Dashboard ",
+    component = barChartForPipelineRuns@GemBarChart(
+      data = null,
+      displayValue = null,
+      stacked = false,
+      maxValue = 100,
+      minValue = 0
+    )
+  );
+  @GemButton(
+    label="Load PipelineInformation into Backend",
+    leftClick=loadPipelineInfoIntoBackend(p),
+    disabled=false
+  );
+}

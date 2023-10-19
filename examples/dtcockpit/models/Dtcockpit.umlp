@@ -5,6 +5,7 @@ classdiagram Dtcockpit {
   <<singleton>>
   class App{
     <<command>> void sendMail(User email, String subject, String message, List<String> forwards);
+    <<command>> void createPipelineAnalysisData(Project project);
   }
 
   association [1] App -> User [*];
