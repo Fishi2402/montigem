@@ -1,7 +1,9 @@
 package basic;
 import basic.src.lib.gemtreeview.GemTreeview;
 import basic.src.lib.gemtreeview.GemTreeviewTypes.GemTreeviewEntry;
-
+//The TreeView component is a graphical user interface element commonly
+//used in software applications and websites to represent hierarchical data in a tree-like structure.
+//It provides a visual representation of parent-child relationships, allowing users to navigate and interact with a hierarchical dataset.
 page GemTreeviewExample(List<GemTreeviewEntry> item){
   @GemTreeview( items = item );
 }

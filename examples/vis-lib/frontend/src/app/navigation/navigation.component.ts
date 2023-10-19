@@ -14,9 +14,9 @@ export class Navigation {
 
   readonly items: { url: string, title: string }[] = [
     { url: '/person/Overview', title: 'Overview' },
-    { url: '/basic/GemButtonExample', title: 'GemButtonExample' },
-    { url: '/basic/GemAudioExample', title: 'GemAudioExample' },
-    { url: '/basic/GemCheckBoxInputExample', title: 'GemCheckBoxInputExample' }
+    { url: '/basic/GemButtonExample', title: 'Button' },
+    { url: '/basic/GemAudioExample', title: 'Audio' }
+    //{ url: '/basic/GemCheckBoxInputExample', title: 'GemCheckBoxInputExample' }
 
 
 

@@ -14,13 +14,18 @@ export const routes: Routes = [
 
   },
   {
-      path: "basic",
-      loadChildren: () => import("../../build/appgui/basic/GemAudioExampleModule").then(m => m.GemaudioexampleModule)
+    path: "basic",
+    loadChildren: () => import("../../build/appgui/basic/GemAudioExampleModule").then(m => m.GemaudioexampleModule)
 
   },
   {
-     path: "basic",
-     loadChildren: () => import("../../build/appgui/basic/GemCheckBoxInputExampleModule").then(m => m.GemcheckboxinputexampleModule)
+    path: "basic",
+    loadChildren: () => import("../../build/appgui/basic/GemCheckBoxInputExampleModule").then(m => m.GemcheckboxinputexampleModule)
+
+  },
+  {
+    path: "basic",
+    loadChildren: () => import("../../build/appgui/basic/GemImageExampleModule").then(m => m.GemimageexampleModule)
 
   },
   {

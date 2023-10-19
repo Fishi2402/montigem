@@ -1,6 +1,7 @@
 package basic;
 import basic.src.lib.gemaudio.GemAudio;
+//The audio component is used to embed sound content in the documents.
+//It looks like a music player with a play button and a track bar. It may contain one or more audio sources.
 page GemAudioExample(){
-
   @GemAudio(source="");
 }

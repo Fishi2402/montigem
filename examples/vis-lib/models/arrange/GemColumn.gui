@@ -1,0 +1,13 @@
+package arrange;
+//GemColumn is a container which arranges any number of input elements vertically
+component GemColumn(
+  String height,
+  String width,
+  String hAlign,
+  String vAlign,
+  String rowGap,
+  String colGap,
+  String style,
+  List<GUIViewElement> components,
+  GUIViewElement component
+)
