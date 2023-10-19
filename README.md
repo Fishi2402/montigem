@@ -42,4 +42,3 @@ You can try UMLP using the [SELib Example](./examples/selib).
 * **experiments** contains experiments that demonstrate edge cases of specific UMLPTool features and, at the same time, are integration tests for the UMLPTool
 * **umlp-rte** contains the implementation of the run-time environment, i.e., the code that is the same for all applications
 * **umlp-tool** contains the implementation of the language, tool, and generator
-

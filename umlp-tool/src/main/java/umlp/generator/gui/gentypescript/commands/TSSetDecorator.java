@@ -68,6 +68,11 @@ public class TSSetDecorator extends SetDecorator {
   }
 
   @Override
+  protected String getGeneralCheckAccessPolicyTemplate() {
+    return "umlp.gui2ts.accesspolicy.TSGeneralCheckAccessPolicy";
+  }
+
+  @Override
   protected void addImports(ASTCDClass ast, ASTCDCompilationUnit origCD, ASTCDType domainType,
       SymTypeExpression type, boolean isGem, ASTCDAttribute attr) {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));

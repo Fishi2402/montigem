@@ -1,0 +1,25 @@
+package gui.login;
+
+import Dtcockpit.User;
+
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemcard.GemCard;
+
+import basic.src.lib.gemimage.GemImage;
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gemlink.GemLink;
+
+component LoginContainer(GUIViewElement component) {
+  @GemRow(hAlign = "center", component =
+    @GemCard(title = "DT Cockpit", component =
+      @GemColumn(width = "600px", hAlign = "center", rowGap = "20px", components = [
+        @GemRow(width = "150px", component = @GemImage(source = "assets/images/dt.png")),
+        component,
+        @GemRow(width = "150px", component =
+          @GemImage(source = "assets/images/rwth_se_bild_weiss_rgb.png")
+        )
+      ])
+    )
+  );
+}

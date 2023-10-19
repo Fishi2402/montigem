@@ -5,6 +5,8 @@ import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.ExtendedElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.NewClassElement;
+import org.jsweet.transpiler.model.TypeCastElement;
+import umlp.jsweet.extension.UMLPAbstractAdapter;
 import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
 import javax.lang.model.type.TypeMirror;
@@ -42,6 +44,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
   protected void initStaticLibrary() {
     addToStaticLibrary("de.se_rwth.commons.logging.Log");
     addToStaticLibrary("de.monticore.symboltable.serialization.JsonPrinter");
+    addToStaticLibrary("de.se_rwth.commons.StringTransformations");
   }
 
   @Override
@@ -208,5 +211,15 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
     }
 
     return super.substituteNewClass(newClass);
+  }
+
+  @Override
+  public boolean substituteTypeCast(TypeCastElement castExpression) {
+    if (castExpression.getExpression().toString().equals("this")) {
+      print("<").print(types().asElement(castExpression.getType()).getSimpleName().toString()).print(">");
+      print("<unknown>").print(castExpression.getExpression());
+      return true;
+    }
+    return super.substituteTypeCast(castExpression);
   }
 }

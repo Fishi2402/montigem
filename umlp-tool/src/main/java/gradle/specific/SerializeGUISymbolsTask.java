@@ -1,29 +1,19 @@
 package gradle.specific;
 
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.tasks.IgnoreEmptyDirectories;
-import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
-import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,9 +24,25 @@ abstract public class SerializeGUISymbolsTask extends DefaultTask {
   @PathSensitive(PathSensitivity.RELATIVE)
   public abstract DirectoryProperty getInput();
 
-  @InputDirectory
+  private final ConfigurableFileCollection symbolDir = getProject().getObjects().fileCollection();
+
+  @InputFiles
+  @Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  public abstract DirectoryProperty getSymbolPath();
+  public ConfigurableFileCollection getSymbolDir() {
+    return symbolDir;
+  }
+
+  public void setSymbolDir(File f){
+    symbolDir.from(f);
+  }
+
+  public void setSymbolDir(Iterable<File> f){
+    symbolDir.from(f);
+  }
+  public void setSymbolDir(Object... paths) {
+    symbolDir.from(paths);
+  }
 
   @OutputDirectory
   public abstract DirectoryProperty getOutput();
@@ -62,13 +68,18 @@ abstract public class SerializeGUISymbolsTask extends DefaultTask {
         args.add(inputFile.getAbsolutePath());
       }
       {
-        args.add("-path");
-        args.add(getSymbolPath().get().getAsFile().getAbsolutePath());
+        if (!this.getSymbolDir().isEmpty()) {
+          for (var symDir : this.getSymbolDir()) {
+            args.add("-path");
+            args.add(symDir.getAbsolutePath());
+          }
+        }
       }
       {
         args.add("-s");
         String relPath = getInput().get().getAsFile().toPath().relativize(inputFile.toPath()).toString();
         args.add(getOutput().file(relPath + "sym").get().getAsFile().getAbsolutePath());
+        // args.add(getOutput().getAsFile().get().getAbsolutePath());
       }
 
       Log.trace(args.toString(), this.getName());

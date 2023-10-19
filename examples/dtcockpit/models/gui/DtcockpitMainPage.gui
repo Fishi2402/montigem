@@ -1,0 +1,26 @@
+package gui;
+
+import basic.src.lib.gembutton.GemButton;
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemrow.GemRow;
+import arrange.src.lib.gemcolumn.GemColumn;
+import basic.src.lib.gemtext.GemText;
+
+import Dtcockpit.Project;
+
+page DtcockpitMainPage(List<Project> projects) {
+  @GemCard(
+    title = "Dashboard",
+    component = projectList@GemRow(
+      rowGap="20px",
+      colGap="5px",
+      components=[
+        @iterate(Project p : projects) {
+          // Note: the classes have to be overridden to be applied, as lists of literals is a WIP
+          pButton@GemButton(label = p.getName(), classes = ["project-dashboard-btn"], leftClick = navigateToProject(p));
+        },
+        newButton@GemButton(label = "+", classes=["project-dashboard-btn"], leftClick = navigateToNewProject)
+      ]
+    )
+  );
+}

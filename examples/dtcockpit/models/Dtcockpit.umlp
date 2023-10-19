@@ -1,0 +1,65 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+classdiagram Dtcockpit {
+
+  <<singleton>>
+  class App{
+    <<command>> void sendMail(User email, String subject, String message, List<String> forwards);
+  }
+
+  association [1] App -> User [*];
+  association [1] App -> Room [*];
+  association [1] App -> Project [*];
+
+  class User {
+    <<dbColumn = "unique=true">>
+    String username;
+    String password;
+    java.time.LocalDateTime registrationDate;
+   // ActivationStatus activated;
+    <<dbColumn = "unique=true">>
+    String email;
+    DtcockpitRole role;
+  }
+
+  enum ActivationStatus {
+    AKTIVIERT,
+    MAIL_NICHT_GESENDET,
+    MAIL_FEHLERHAFT,
+    MAIL_GESENDET;
+  }
+
+  enum DtcockpitRole {
+    USER,
+    ADMIN;
+  }
+
+  class Room {
+    int roomNumber;
+    int level;
+  }
+
+  association [1] Room <-> (rStatistics) RoomStatistic [*];
+
+  class RoomStatistic {
+    java.time.LocalDate time;
+    double temperature;
+    double nominalTemperature;
+    boolean acActivated;
+    boolean occupied;
+  }
+
+  class Project {
+    String name;
+    String git;
+  }
+
+  association [1] Project <-> (pStatistics) PipelineStatistic [*];
+
+  class PipelineStatistic {
+    java.time.LocalDate time;
+    long duration;
+    boolean successful;
+  }
+
+}

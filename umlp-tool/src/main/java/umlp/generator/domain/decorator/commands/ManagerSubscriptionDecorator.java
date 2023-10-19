@@ -45,10 +45,14 @@ public class ManagerSubscriptionDecorator extends AbstractDeSerDecorator {
     addConstructor(ast, classname, packageName);
     getCD4C().addMethod(ast, getDoRunTemplate(), getCorrectManager(domainClass), domainClass.getName() + "Observer", classname);
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
-    getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainClass.getName(), "Create");
+    getCD4C().addMethod(ast, getGeneralCheckAccessPolicyTemplate(), domainClass.getName(), "Create");
 
     addImports(origCD, domainClass, ast, classname);
     return ast;
+  }
+
+  protected String getGeneralCheckAccessPolicyTemplate() {
+    return "umlp.commands.GeneralCheckAccessPolicy";
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass domainClass, ASTCDClass ast,

@@ -4,6 +4,7 @@ ${tc.signature("args")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign isTpl = genHelper.isNgTemplate(ast.getId().getName())>
 <#assign tag = genHelper.getComponentNameFromCamelCaseName(ast.getName())>
+<#assign synchronizedSuffix = genHelper.getIsSynchronizedSuffix>
 
 <#if isTpl>
   <ng-template #${genHelper.getNgTemplateActualName(ast.getId().getName())}>
@@ -15,7 +16,7 @@ ${tc.signature("args")}
     <#elseif genHelper.isViewElement(ast, namedArg) || genHelper.isViewElementsCollection(ast, namedArg)>
       [${namedArg.getName()}] = '${genHelper.gui2htmlArgValue(namedArg.getGUIArgValue())}'
     <#elseif genHelper.hasGetter(ast, namedArg)>
-      [${namedArg.getName()}] = '${genHelper.gui2cdAttrGetterName(ast.getId().getName(), namedArg.getName())}(
+      [${namedArg.getName()}] = '${genHelper.gui2cdAttrGetterNameTS(ast.getId().getName(), namedArg.getName())}(
         <#list args as arg>${arg}<#if !arg?is_last>,</#if></#list>)'
       <#if genHelper.hasSetter(ast, namedArg)>
         (${namedArg.getName()}Change) = '${genHelper.gui2cdAttrSetterName(ast.getId().getName(), namedArg.getName())}(
@@ -24,7 +25,7 @@ ${tc.signature("args")}
     <#else>
       <#-- TODO AGe: iterator index -->
       <#-- [${namedArg.getName()}] = '${genHelper.gui2cdAttrGetterName(ast, namedArg.getName())}()' -->
-      [${namedArg.getName()}] = '${genHelper.print(namedArg.getGUIArgValue())}(
+      [${namedArg.getName()}] = '${genHelper.print(namedArg.getGUIArgValue())}${synchronizedSuffix}(
         <#list args as arg>${arg}<#if !arg?is_last>,</#if></#list>)'
     </#if>
   </#list>

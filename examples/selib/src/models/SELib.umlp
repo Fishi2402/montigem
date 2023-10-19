@@ -2,16 +2,44 @@
 umlp SELib {
   class Person {
     String name;
-	String email;
-	String password;
-	boolean isManager;
+	  String email;
+	  String password;
+	  boolean isManager;
   }
 
-  class BookDescription {
+  interface TimeMarker {
+    Long created;
+  }
+
+  abstract class Medium implements TimeMarker {
+    String isbn;
     String title;
+  }
+
+  class CDDescription extends Medium;
+
+  class BookDescription extends Medium {
     String description;
     String imageUrl;
-    String isbn;
+    Genre genre;
+  }
+
+  enum Genre {
+    FICTION,
+    NON_FICTION,
+    MYSTERY,
+    SCIENCE_FICTION,
+    ROMANCE,
+    FANTASY,
+    HORROR,
+    SELF_HELP,
+    BIOGRAPHY,
+    HISTORY,
+    OTHER;
+  }
+
+  class ScientificBookDescription extends BookDescription {
+    String doi;
   }
 
   class Book{

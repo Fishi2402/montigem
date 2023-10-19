@@ -1,0 +1,31 @@
+package gui;
+
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemcard.GemCard;
+import basic.src.lib.gemtext.GemText;
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gemimage.GemImage;
+
+page Start(){
+  @GemRow(width = "100%", hAlign="center", component =
+    @GemColumn(width = "30%", component =
+      @GemCard(title = "SE Hub | Welcome", component =
+        @GemColumn(hAlign = "center", height = "auto", width = "550px", rowGap = "10px", components = [
+        @GemText(value = "This platform, developed using the MontiCore language workbench in a model-driven approach, " +
+                          "serves as a technical demonstration as well as a dedicated space for queries related to the " +
+                          "upcoming presentations at the FoWo Science Workshop. Here, questions regarding topics, " +
+                          "methodologies, and innovations to be discussed find their space, epitomizing the blend of " +
+                          "state-of-the-art technology with the unyielding spirit of scientific exploration."),
+        @GemText(value =  "Users can browse through existing discussions, submit new questions, and find clarity amidst " +
+                          "the vast expanse of research. With every interaction, the true essence of research is showcased " +
+                          "- not just the understanding, but the perpetual pursuit of knowledge."),
+        @GemText(value =  "Begin the exploration and let the discoveries unfold."),
+
+        @GemRow(hAlign = "right", vAlign = "center", width = "300px", component =
+          @GemImage(source = "assets/images/rwth_se_bild_weiss_rgb.png")
+        )
+        ])
+      ) //card
+    )
+  );
+}

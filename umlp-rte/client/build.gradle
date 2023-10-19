@@ -6,6 +6,7 @@ import groovy.json.JsonSlurper
 
 plugins {
   id 'java'
+  id 'maven-publish'
   id 'com.diffplug.spotless' version '6.19.0'
   id "com.github.node-gradle.node" version "5.0.0"
 }
@@ -37,14 +38,21 @@ node {
   nodeProjectDir = layout.buildDirectory
 }
 
+configurations {
+  guiDefaultTypes
+}
+dependencies {
+  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+}
+
 task createCDSymbols(type: SerializeCDSymbolsTask){
-  input = file("models/arrange")  // TODO: Set to whole models directory
-  symbolPath = file("models/")
+  input = file("models/")
+  // symbolPath = file("models/")
   output = layout.buildDirectory.dir("CDSymbols")
 }
 task createGuiSymbols(type: SerializeGUISymbolsTask){
-  input = file("models/arrange")  // TODO: Set to whole models directory
-  symbolPath = createCDSymbols.getOutput()
+  input = file("models/")
+  symbolDir = files(createCDSymbols.getOutput(),configurations.guiDefaultTypes.files)
   output = layout.buildDirectory.dir("GuiSymbols")
 }
 
@@ -150,3 +158,38 @@ tasks.register("start")
     dependsOn("incrementalReverse")
     //dependsOn("spotlessApply")
   }
+
+
+
+sourceSets {
+  symbols {
+    resources {
+      srcDirs(createCDSymbols.getOutput(), createGuiSymbols.getOutput())
+      include "**/*sym"
+    }
+  }
+}
+task symbolJar(type: Jar) {
+  from sourceSets.symbols.output
+  includeEmptyDirs = false
+}
+jar.dependsOn(symbolJar)
+artifacts {
+  archives symbolJar
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      artifact symbolJar
+    }
+  }
+  repositories.maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+
+    def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+    def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+    url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+  }
+}

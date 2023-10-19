@@ -133,6 +133,40 @@
     .not-editable:hover {
       cursor: not-allowed;
     }
+
+    .dropdown-cell {
+      position: relative;
+    }
+
+    .dropdown-input {
+      display: block;
+      border: none;
+      padding: 4px;
+      width: 100%;
+    }
+
+    .dropdown-options {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+
+    .dropdown-options li {
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .dropdown-options li:hover {
+      background-color: #f0f0f0;
+    }
+
   </style>
   <!--
     import data loading functions: file can be directly inserted into next <script>
@@ -162,6 +196,41 @@
         // }
         const command = {
           "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_set" + capitalizeFirstLetter(attr),
+          "gemId": gemId
+        };
+        command[attr] = value;
+        // console.log(command);
+
+        // send request to the server;
+        // don't have to wait for result, the cell is already modified
+        sendCommand(command);
+      } catch (err) {
+        showError(err);
+      }
+    }
+
+    async function updateObjForInputField(input, className, attr, gemId) {
+      // Get the input value from the table cell
+      try {
+        if (!isEnum(className, attr)) {
+          warnChangeUneditable(attr);
+          return;
+        }
+        let value = input.value.trim();
+        const enumValues = Object.keys(getType(className, attr).forwardMap);
+        if (!enumValues.includes(value) && value !== "") {
+          throw typeError(value, getTypeName(className, attr));
+        }
+
+        // TODO: form proper command, maybe delete next comment and log line
+        // example:
+        // {
+        //   type: Person_setName,
+        //   gemId: 4,
+        //   data: Bob
+        // }
+        const command = {
+          "commandType": "selib.commands." + className + "_set" + capitalizeFirstLetter(attr),
           "gemId": gemId
         };
         command[attr] = value;
@@ -239,6 +308,17 @@
       }, 1000));
     }
 
+    function handleInputFieldInput(input, className, attr, gemId) {
+      // refresh timer if user still types
+      if (timeoutIds.has(input)) {
+        clearTimeout(timeoutIds.get(input));
+      }
+      // set timer to 1 sec for update action
+      timeoutIds.set(input, setTimeout(function () {
+        updateObjForInputField(input, className, attr, gemId);
+      }, 1000));
+    }
+
     function addBodyCell(row, onInput) {
       const td = document.createElement("td");
       // editable cells
@@ -257,6 +337,33 @@
       row.appendChild(td);
       td.classList.add("not-editable");
       return td;
+    }
+
+    function addDropdownBodyCell(row, attr, options, onInput) {
+      const dropdownTpl = document.querySelector("#celldropdowntpl");
+      const dropdownClone = dropdownTpl.content.cloneNode(true);
+
+      const dropdownCell = dropdownClone.querySelector("td");
+      // const dropdownInput = dropdownCell.querySelector(".dropdown-input");
+      const dropdownList = dropdownCell.querySelector("select");
+
+      const listId = "list" + attr;
+      dropdownList.id = listId;
+      // dropdownInput.setAttribute("list", listId);
+      for (const opt of options) {
+        const optNode = document.createElement("option");
+        optNode.setAttribute("value", opt);
+        let optionText = document.createTextNode(opt);
+        optNode.appendChild(optionText);
+        dropdownList.appendChild(optNode);
+      }
+      if (onInput) {
+        dropdownList.addEventListener("change", onInput);
+        // dropdownInput.addEventListener("input", onInput);
+      }
+
+      row.appendChild(dropdownClone);
+      return dropdownList;
     }
 
     function capitalizeFirstLetter(str) {
@@ -361,6 +468,10 @@
               if (isReadonly(className, attr)) {
                 const td = addReadOnlyBodyCell(tableAddRow);
                 addRowCells.set(attr, td);
+              } else if (isEnum(className, attr)) {
+                const input = addDropdownBodyCell(
+                  tableAddRow, attr, Object.keys(getType(className, attr).forwardMap));
+                addRowCells.set(attr, input);
               } else {
                 const td = addBodyCell(tableAddRow);
                 addRowCells.set(attr, td);
@@ -372,24 +483,38 @@
               const obj = {};
               let valid = false;
               const cells = [];
+              const inputs = [];
               try {
                 for (const key of addRowCells.keys()) {
-                  // table cell corresponding to the column
-                  const td = addRowCells.get(key);
-                  if (td) {
-                    cells.push(td);
-                    const value = td.textContent.trim();
-                    // TODO: delete if empty objects are allowed;
-                    // object is valid if at least one property is a non-empty value;
-                    // prevents creating a bunch of empty objects
-                    if (value.length > 0) {
-                      valid = true;
+                  if (isEnum(className, key)) {
+                    const input = addRowCells.get(key);
+                    if (input) {
+                      inputs.push(input);
+                      const value = input.value.trim();
+                      if (value.length > 0) {
+                        valid = true;
+                      }
+                      console.log(getType(className, key));
+                      obj[key] = value;
                     }
-                    const attrType = getType(className, key);
-                    if (attrType !== "Unknown" && attrType !== "Array") {
-                      obj[key] = convert(value, attrType);
-                    } else {
-                      warnChangeUneditable(key);
+                  } else {
+                    // table cell corresponding to the column
+                    const td = addRowCells.get(key);
+                    if (td) {
+                      cells.push(td);
+                      const value = td.textContent.trim();
+                      // TODO: delete if empty objects are allowed;
+                      // object is valid if at least one property is a non-empty value;
+                      // prevents creating a bunch of empty objects
+                      if (value.length > 0) {
+                        valid = true;
+                      }
+                      const attrType = getType(className, key);
+                      if (attrType !== "Unknown" && attrType !== "Array") {
+                        obj[key] = convert(value, attrType);
+                      } else {
+                        warnChangeUneditable(key);
+                      }
                     }
                   }
                 }
@@ -399,6 +524,9 @@
                   createObj(obj, className).then(_ => {
                     for (const cell of cells) {
                       cell.innerText = "";
+                    }
+                    for (const input of inputs) {
+                      input.value = "";
                     }
                   });
                 } else {
@@ -432,6 +560,12 @@
                   if (isReadonly(className, attr)) {
                     const td = addReadOnlyBodyCell(tableBodyRow);
                     td.innerText = entry[attr];
+                  } else if (isEnum(className, attr)) {
+                    const input = addDropdownBodyCell(
+                      tableBodyRow, attr, Object.keys(getType(className, attr).forwardMap), () => {
+                        handleInputFieldInput(input, className, attr, gemId);
+                      });
+                    input.value = entry[attr];
                   } else {
                     const td = addBodyCell(tableBodyRow, () => {
                       handleInput(td, className, attr, gemId);
@@ -618,6 +752,14 @@
 <!-- table delete cell template -->
 <template id="celldeletetpl">
   <td class="first-col">&#128465;</td>
+</template>
+<!-- table dropdown cell -->
+<template id="celldropdowntpl">
+  <td class="dropdown-cell">
+    <!-- <input type="text" class="dropdown-input"/> -->
+    <select class="dropdown-input">
+    </select>
+  </td>
 </template>
 
 </html>

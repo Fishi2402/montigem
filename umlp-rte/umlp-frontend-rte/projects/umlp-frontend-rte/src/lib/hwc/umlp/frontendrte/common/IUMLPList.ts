@@ -1,6 +1,6 @@
 export interface IUMLPList<E> extends AsyncIterable<E> {
   add(indexOrElement: number | E, element?: E): Promise<boolean>;
-  addAll(index?: any, c?: any): Promise<boolean>;
+  addAll(idxOrElems: number | IUMLPList<E> | Array<E>, elems?: IUMLPList<E>): Promise<boolean>;
   clear(): void;
   contains(o: any): Promise<boolean>;
   containsAll(c: IUMLPList<any> | Array<any>): Promise<boolean>;
@@ -18,7 +18,7 @@ export interface IUMLPList<E> extends AsyncIterable<E> {
   size(): number;
   sort(param: any): void;
   subList(fromIndex: number, toIndex: number): IUMLPList<E>;
-  toArray(startIndex?: number, endIndex?: number): Promise<Array<E>>;
+  toArray(startIndex?: number, endIndex?: number): Array<E>;
   // sort(c: java.util.Comparator<any>): any;
   [Symbol.asyncIterator](): AsyncIterator<E>;
   iterator(): AsyncIterator<E>;

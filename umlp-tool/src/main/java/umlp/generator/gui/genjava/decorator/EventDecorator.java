@@ -10,6 +10,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.GUIComponentsVisitor;
 
@@ -59,6 +60,9 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
               getEventCallbackTemplate(), methodName, "", args);
           if (methodSignature.isPresent() && !GenService.containsMethod(decoratedClass, methodSignature.get())) {
             getCD4C().addMethod(decoratedClass, getEventCallbackTemplate(), methodName, "", args);
+          }
+          if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+            addImport(decoratedClass, "java.util.function.Consumer");
           }
         }
       }

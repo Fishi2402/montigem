@@ -1,0 +1,25 @@
+package gui.project;
+
+import Dtcockpit.Project;
+
+import arrange.src.lib.gemcard.GemCard;
+import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.src.lib.gemrow.GemRow;
+import basic.src.lib.gemtext.GemText;
+import basic.src.lib.gembutton.GemButton;
+import input.src.lib.gemtextinput.GemTextInput;
+
+page ProjectCreate(Project project){
+
+  @GemColumn(width = "100%", hAlign = "center", component =
+    @GemCard(title = "New Project", component =
+      @GemColumn(width = "50vw", rowGap = "10px", components = [
+        createPTitle@GemTextInput(labelText = "Project Title", entry = project.name, disabled = false),
+        createPGit@GemTextInput(labelText = "Git", entry = project.git, disabled = false),
+        error@GemText(value = ""),
+        @GemButton(label = "Create new project", leftClick = createProject, disabled = false),
+        @GemButton(label = "Abort", leftClick = navigateBack, disabled = false)
+      ])
+    ) // end card
+  ); // end column
+}

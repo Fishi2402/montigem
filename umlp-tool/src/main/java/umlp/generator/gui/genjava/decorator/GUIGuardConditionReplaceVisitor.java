@@ -9,8 +9,11 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIGuard;
+import de.monticore.guidsl._symboltable.GUIDSLScope;
+import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import umlp.generator.gui.ExpressionReplaceSearchVisitor;
 import umlp.generator.gui.ExpressionReplaceVisitor;
 import umlp.generator.gui.ExpressionReplacement;
@@ -31,6 +34,7 @@ public class GUIGuardConditionReplaceVisitor extends GUINameExpressionReplaceVis
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
   protected ASTGUIGuard getterExpression;
+  protected IGUIDSLScope enclosingScope;
 
   public GUIGuardConditionReplaceVisitor() {
     traverser = GUIDSLMill.traverser();
@@ -63,6 +67,7 @@ public class GUIGuardConditionReplaceVisitor extends GUINameExpressionReplaceVis
 
   public void transform(ASTGUIGuard guard) {
     getterExpression = guard.deepClone();
+    enclosingScope = guard.getEnclosingScope();
 
     potentialHolder = Map.entry(getterExpression, getterExpression.getCondition());
     getterExpression.getCondition().accept(getTraverser());
@@ -85,7 +90,7 @@ public class GUIGuardConditionReplaceVisitor extends GUINameExpressionReplaceVis
   @Override
   public void visit(ASTFieldAccessExpression node) {
     if (potentialHolder != null) {
-      if (potentialHolder.getValue().equals(node)) {
+      if (potentialHolder.getValue().equals(node) && !isEnum(node)) {
         Supplier<ASTExpression> newValue = () -> CommonExpressionsMill.callExpressionBuilder()
             .setExpression(
                 CommonExpressionsMill.fieldAccessExpressionBuilder()
@@ -106,4 +111,8 @@ public class GUIGuardConditionReplaceVisitor extends GUINameExpressionReplaceVis
     super.visit(node);
   }
 
+  @Override
+  protected IGUIDSLScope getEnclosingScope() {
+    return this.enclosingScope;
+  }
 }

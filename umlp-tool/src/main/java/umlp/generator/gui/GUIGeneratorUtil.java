@@ -34,9 +34,11 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
+import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
 import java.net.URL;
@@ -50,6 +52,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class GUIGeneratorUtil {
+
+  public static final String SYNCHRONIZED_SUFFIX = "_synchronized";
 
   // Fully qualified Name of the classdiagram, e.g. "hardy.Flensburg"
   private List<String> DOMAIN_MODELS;
@@ -329,6 +333,17 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(argName));
   }
 
+  public String gui2cdAttrGetterNameTS(String componentId, String argName) {
+    return getHTMLName("get"
+        + StringTransformations.capitalize(componentId)
+        + StringTransformations.capitalize(argName)) +
+        (UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? "" : SYNCHRONIZED_SUFFIX);
+  }
+
+  public String getIsSynchronizedSuffix() {
+    return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? SYNCHRONIZED_SUFFIX : "";
+  }
+
   public String gui2cdAttrSetterName(String componentId, String argName) {
     return getHTMLName("set"
         + StringTransformations.capitalize(componentId)
@@ -370,6 +385,9 @@ public class GUIGeneratorUtil {
       visitor.setIgnore(ignore);
       visitor.transform(ic);
       String expressionWithNullChecks = replaceDots(print(visitor.getGetterExpression()));
+      if (!UMLPGeneratorConfig.getInstance().isGenerateTypescript()) {
+        expressionWithNullChecks = expressionWithNullChecks.replace("()", SYNCHRONIZED_SUFFIX + "()");
+      }
       return getHTMLName(expressionWithNullChecks);
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
@@ -696,6 +714,9 @@ public class GUIGeneratorUtil {
       if (javaPackage.startsWith(type.getJavaPackage())) {
         res = type.getTSPackage();
       }
+    }
+    if (TSBackendMap.isBackendRTEPackage(javaPackage)) {
+      res = TSBackendMap.getTSRTEPackage();
     }
 
     return res;

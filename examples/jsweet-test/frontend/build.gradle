@@ -1,0 +1,231 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.nio.file.Paths
+
+buildscript {
+  repositories {
+    mavenCentral()
+    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  }
+  dependencies {
+    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
+      transitive = true
+    }
+    classpath group: 'umlp', name: 'umlp-frontend-rte-java'
+  }
+}
+
+plugins {
+  id 'java'
+  id "com.github.node-gradle.node" version "5.0.0"
+  id 'de.rwth.se.umlp-tool'
+  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT" apply(false)
+}
+
+compileJava {
+  enabled = true
+}
+
+configurations {
+  cdParser
+  guiParser
+  guiLib
+}
+
+dependencies {
+  cdParser "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
+  guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
+  guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
+
+  implementation project(":examples:jsweet-test:backend")
+}
+
+// Add Frontend-Config Files from UMLP-Tool Resources.
+task frontendSetup(type: FrontendSetup){
+  input = file("config/")   // Can be used to add or replace files
+  output = layout.buildDir.dir("frontendGen/")
+}
+
+node {
+  // Whether to download and install a specific Node.js version or not
+  // If false, it will use the globally installed Node.js
+  // If true, it will download node using above parameters
+  // Note that npm is bundled with Node.js
+  download = true
+
+  // Version of node to download and install (only used if download is true)
+  // It will be unpacked in the workDir
+  version = "18.10.0"
+
+  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
+  // according the proxy configuration defined for Gradle
+  // Disable this option if you want to configure the proxy for npm or yarn on your own
+  // (in the .npmrc file for instance)
+  nodeProxySettings = ProxySettings.OFF
+
+  // The Node.js project directory location
+  // This is where the package.json file and node_modules directory are located
+  // By default it is at the root of the current project
+  nodeProjectDir = frontendSetup.getOutput()
+
+}
+
+def symPath = "${project.buildDir}/symbols";
+
+task serializeCD {
+  dependsOn('unpackGUILibSymbols')
+  doLast {
+    def modelPathStr = "${project.projectDir.parent}/models"
+    def modelPath = Paths.get(modelPathStr)
+    fileTree(modelPathStr).matching {
+      include "**/*.umlp"
+    }.each {
+      def path = it.path
+      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
+      javaexec {
+        mainClass = 'de.monticore.CD4CodeTool'
+        classpath = configurations.cdParser
+        args "-i", path,
+            "-s", "${symPath}/${relativeModelPathStr}sym"
+      }
+    }
+  }
+}
+
+task unpackGUILibSymbols(type: Copy) {
+  from zipTree(configurations.guiLib.asPath)
+  into "${symPath}"
+}
+
+task genGUI(type: UMLPGuiGenTask) {
+  dependsOn('serializeCD', frontendSetup)
+  input = file("../models")
+  outputDir = frontendSetup.getOutput().dir("build/appgui")
+  hwcDir = file("src/main/java")
+  modelDir = layout.projectDirectory.dir("../models")
+  symbolDir = file(symPath)
+  domainModels = ["Jsweettest"]
+  guiGenTSFuncionality = false
+}
+compileJava.dependsOn(genGUI)
+
+org.jsweet.gradle.JSweetPluginExtension jsweetDomainConf = project.getExtensions().create("jsweetDomain", org.jsweet.gradle.JSweetPluginExtension.class)
+jsweetDomain {
+  autoPropagateAsyncAwaits = true
+  verbose = true
+  encoding = 'UTF-8'
+  sourceMap = true
+  tsOnly = true
+  tsOut = project.file('build/frontendGen/build/appdomain/')
+  candiesJsOut = project.file('build/jsweet/candies')
+  workingDir = project.file('build/jsweet')
+  targetVersion = 'ES6'
+  includes = ['**/jsweettest/**/*.java']
+  excludes = [
+      '**/jsweettest/JsweettestManagerImpl.java',
+      '**/jsweettest/JsweettestMock.java',
+      '**/jsweettest/JsweettestMockTestSetup.java',
+      '**/jsweettest/JsweettestDummyProvider.java',
+      '**/jsweettest/JsweettestTestContext.java',
+      '**/jsweettest/test_infrastructure/**',
+      '**/jsweettest/JsweettestServerApplication*.java',
+      '**/jsweettest/JsweettestShellAPIApplication.java',
+      '**/jsweettest/shellapi/**',
+  ]
+  module = 'commonjs'
+  excludeTranspilation = [
+      '**/jsweettest/*DAO.java',
+      '**/jsweettest/*DbObserver.java',
+      '**/jsweettest/JsweettestManagerImpl.java',
+      '**/jsweettest/JsweettestMock.java',
+      '**/jsweettest/JsweettestMockTestSetup.java',
+      '**/jsweettest/JsweettestDummyProvider.java',
+      '**/jsweettest/JsweettestTestContext.java'
+  ]
+}
+
+task translateJava2TSDomain(type: org.jsweet.gradle.JSweetTranspileTask) {
+  setGroup("generate");
+  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, genGUI);
+  setConfiguration(jsweetDomainConf);
+  setSources(sourceSets.main.java);
+  setClasspath(configurations.runtimeClasspath);
+}
+
+sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui']
+
+org.jsweet.gradle.JSweetPluginExtension jsweetGUIConf = project.getExtensions().create("jsweetGUI", org.jsweet.gradle.JSweetPluginExtension.class)
+jsweetGUI {
+  autoPropagateAsyncAwaits = true
+  verbose = true
+  encoding = 'UTF-8'
+  sourceMap = true
+  tsOnly = true
+  tsOut = project.file('build/frontendGen/build/appgui/')
+  candiesJsOut = project.file('build/jsweet/candies')
+  workingDir = project.file('build/jsweet')
+  targetVersion = 'ES6'
+  includes = ['**/jsweettest/**/*.java', '**/gui/**/*.java']
+  module = 'commonjs'
+  excludes = [
+      '**/jsweettest/JsweettestManagerImpl.java',
+      '**/jsweettest/JsweettestMock.java',
+      '**/jsweettest/JsweettestMockTestSetup.java',
+      '**/jsweettest/JsweettestDummyProvider.java',
+      '**/jsweettest/JsweettestTestContext.java',
+      '**/jsweettest/test_infrastructure/**',
+      '**/jsweettest/JsweettestServerApplication*.java',
+      '**/jsweettest/JsweettestShellAPIApplication.java',
+      '**/jsweettest/shellapi/**',
+  ]
+  excludeTranspilation = [
+      '**/jsweettest/**/*.java'
+  ]
+}
+
+task translateJava2TSGUI(type: org.jsweet.gradle.JSweetTranspileTask) {
+  setGroup("generate");
+  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, frontendSetup, genGUI);
+  setConfiguration(jsweetGUIConf);
+  setSources(sourceSets.main.java);
+  setClasspath(configurations.runtimeClasspath);
+}
+
+task translateTypeScript() {
+  dependsOn(translateJava2TSDomain, translateJava2TSGUI)
+}
+
+task generateNPMAuth(type: NPMAuthCreate){
+  npmrcFile = frontendSetup.getOutput().file(".npmrc")
+}
+
+
+npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
+// TODO AGe: npm_update too slow - strategy to make occasional checks
+npm_update.dependsOn(npm_install)
+
+task installLocalRTE(type: NpmTask) {
+  dependsOn(npm_install)
+  args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]
+}
+
+task buildApp(type: NpxTask) {
+  dependsOn(translateTypeScript, npm_update, genGUI, installLocalRTE)
+  command = "ng"
+  args = ["build"]
+}
+//assemble.dependsOn(buildApp)
+
+task testApp(type: NpxTask) {
+  dependsOn(translateTypeScript, npm_install, genGUI, installLocalRTE)
+  command = "ng"
+  args = ["test"]
+}
+
+task runApp(type: NpxTask) {
+  dependsOn(translateTypeScript, npm_install, genGUI, installLocalRTE)
+  command = "ng"
+  args = ["serve"]
+}
+

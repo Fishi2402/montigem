@@ -10,6 +10,7 @@ export * from "./CommandResult";
 export * from "./CommandResultDeSer";
 export * from "./CommandResultReceiveObserver";
 export * from "./DeSer";
+export * from "./DomainTypeFilter";
 export * from "./JsonDeSer";
 export * from "./ListResult";
 export * from "./Participant";

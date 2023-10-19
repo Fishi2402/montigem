@@ -5,7 +5,9 @@ ${cd4c.method("public ResponseEntity<String> getAll(String type)")}
   switch (type) {
   <#list cdClasses as c>
     case "${c.getName()}":
-      msg = ${cdName}Manager.get${c.getName()}List().stream().map(obj -> new ${c.getName()}DeSer().serialize(obj))
+      msg = ${cdName}Manager.get${c.getName()}List().stream()
+        .filter(obj -> obj.getClass() == ${c.name}.class || obj.getClass() == ${c.name}Builder.class)
+        .map(obj -> new ${c.getName()}DeSer().serialize(obj))
         .collect(Collectors.joining(", "));
       break;
   </#list>

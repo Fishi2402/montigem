@@ -8,8 +8,8 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -20,20 +20,14 @@ import de.monticore.guidsl._parser.GUIDSLParser;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
-import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.oosymbols._symboltable.FieldSymbolDeSer;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonBoolean;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
-import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -83,6 +77,7 @@ import static umlp.UMLPToolOptions.DOMAIN;
 import static umlp.UMLPToolOptions.FOR_CLIENT;
 import static umlp.UMLPToolOptions.GUIVariability;
 import static umlp.UMLPToolOptions.GUI_CREATE;
+import static umlp.UMLPToolOptions.GUI_GEN_TS_FUNC;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
@@ -95,6 +90,7 @@ import static umlp.UMLPToolOptions.REPORT_BASE;
 import static umlp.UMLPToolOptions.SYMTAB;
 import static umlp.UMLPToolOptions.TMPL_PATH;
 import static umlp.UMLPToolOptions.USE_SPRING;
+import static umlp.UMLPToolOptions.USE_SHELL;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -345,7 +341,7 @@ public class UMLPTool extends UMLPToolTOP {
             .map(p -> p.toFile()).collect(Collectors.toList()));
 
         CD4C.init(genSetup);
-        UMLPGeneratorConfig config = new UMLPGeneratorConfig(USE_SPRING.isSelected(cmd));
+        UMLPGeneratorConfig config = UMLPGeneratorConfig.getInstance().initFromCmd(cmd);
         if (FOR_CLIENT.isSelected(cmd)) {
           TSUMLPGenerator generator = new TSUMLPGenerator(genSetup, config);
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
@@ -423,6 +419,7 @@ public class UMLPTool extends UMLPToolTOP {
           if (GUI_CREATE.isSelected(cmd)) {
             createModels.addAll(Arrays.asList(cmd.getOptionValues(GUI_CREATE.getCMD())));
           }
+
           GUIGeneratorUtil.getInstance().init(domainModels, createModels);
 
           // logTrafoExec("GUINodeIdTrafo", astGui);
@@ -439,6 +436,7 @@ public class UMLPTool extends UMLPToolTOP {
           GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
           genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
           genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
+          genSetup.getGlex().setGlobalValue("UMLPGeneratorConfig", UMLPGeneratorConfig.getInstance().initFromCmd(cmd));
 
           GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, viewComponents);
           String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);

@@ -23,7 +23,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
     runDefaultTrafos(ast);
     recreateSymbolTable(ast);
 
-    UMLPGenerator gen = new UMLPGenerator(getGenSetup(), new UMLPGeneratorConfig(false));
+    UMLPGenerator gen = new UMLPGenerator(getGenSetup(), UMLPGeneratorConfig.getInstance());
     gen.generate(ast, "umlp.UMLP2Java");
 
     assertNoErrors();
@@ -37,7 +37,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
     runDefaultTrafos(ast);
     recreateSymbolTable(ast);
 
-    UMLPGenerator gen = new UMLPGenerator(getGenSetup(), new UMLPGeneratorConfig(false));
+    UMLPGenerator gen = new UMLPGenerator(getGenSetup(), UMLPGeneratorConfig.getInstance());
     gen.generate(ast, "umlp.UMLP2Java");
 
     assertNoErrors();
@@ -54,7 +54,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
     runDefaultTrafos(ast);
     recreateSymbolTable(ast);
 
-    UMLPGenerator gen = new UMLPGenerator(getGenSetup(), new UMLPGeneratorConfig(false));
+    UMLPGenerator gen = new UMLPGenerator(getGenSetup(), UMLPGeneratorConfig.getInstance());
     gen.generate(ast, "umlp.UMLP2Java");
 
     File f1 = new File("target/generated-test-sources/derivedattributegetter/commands/Foo_calculateFirstAttribute.java");

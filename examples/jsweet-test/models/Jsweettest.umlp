@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+classdiagram Jsweettest {
+  class A {
+    String value;
+  }
+
+  class B {
+    String value;
+  }
+
+  association [1] A -> B [*];
+}
