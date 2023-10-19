@@ -18,6 +18,7 @@ configurations {
 dependencies {
   guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
   guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
+  guiLib "umlp.umlp-rte:client:${project.properties['mc_version']}"
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 

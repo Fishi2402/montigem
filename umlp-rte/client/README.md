@@ -24,8 +24,8 @@ gradle script.
 # Updating a library
 
 Whenever changes are made to a library, the version needs to be updated in the `package.json` file
-of the library. Example (all links lead to the `arrange` example, use paths relevant for you case
-instead):
+of the library. Example (all references to the `arrange` example should be replaced with your own
+library):
 
 - A file is changed in `arrange` library, i.e. any file inside [the library
   folder](./projects/umlp/arrange).
@@ -36,6 +36,29 @@ instead):
   ```
   gradle publish_arrange
   ```
+- Commit and push changes
+
+To use the library
+- add dependency to the library in your project's `package.json` file:
+  ```
+  "dependencies": {
+    ...,
+    "@umlp/arrange": "^7.5.0"
+  }
+  ```
+  - In case of a Fenix-local example (`examples` folder) add the dependency to the `package.json`
+    [default configuration](../../umlp-tool/src/main/resources/frontend/config/package.json) if not done already.
+- add dependency to the GUI symbols library in your project's frontend and backend `build.gradle`
+  files if not done already (same change for both):
+  ```gradle
+  // add a dependency to new symbols
+  dependencies {
+    /*...*/
+    guiLib "umlp.umlp-rte:client:${project.properties['mc_version']}"
+  }
+  ```
+
+> Note: the steps will become obsolete in a near future, i.e. everything will be done automatically
 
 <!--
 # Usage of the Library
