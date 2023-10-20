@@ -1,8 +1,8 @@
-import { GemgraphModule} from '@umlp/charts';
+import { GemgraphModule } from '@umlp/charts';
 
-export const config={
-  declarations:[],
-  exports:[],
-  imports:[GemgraphModule]
+export const config = {
+  declarations: [],
+  exports: [],
+  imports: [GemgraphModule]
 }
 

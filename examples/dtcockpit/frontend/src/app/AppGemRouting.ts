@@ -1,5 +1,5 @@
 import { Routes } from "@angular/router";
-import { routes as routesTOP } from "@src/gui/GuiGemRouting"
+import { routes as routesTOP } from "@src/AppGemRoutingTOP"
 
 export const routes: Routes = [
   // default path like in other routing files
