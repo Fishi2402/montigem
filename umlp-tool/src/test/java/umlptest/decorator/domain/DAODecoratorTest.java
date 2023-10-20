@@ -22,8 +22,8 @@ public class DAODecoratorTest extends DecoratorTest {
     ASTCDClass domainDaoAst = getClassByName("Foo"+"DAO");
     assertAll(
         // check no of methods and attributes
-        () -> assertEquals(6, domainDaoAst.getCDAttributeList().size(), "number of attributes"),
-        () -> assertEquals(12, domainDaoAst.getCDMethodList().size(), "number of methods")
+        () -> assertEquals(7, domainDaoAst.getCDAttributeList().size(), "number of attributes"),
+        () -> assertEquals(13, domainDaoAst.getCDMethodList().size(), "number of methods")
     );
 
     ASTCDClass assocDaoAst = getClassByName("AssocOwns2"+"DAO");

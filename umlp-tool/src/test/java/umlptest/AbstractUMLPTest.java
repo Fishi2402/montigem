@@ -47,8 +47,6 @@ public abstract class AbstractUMLPTest {
     Log.enableFailQuick(false);
     UMLPMill.reset();
     UMLPMill.init();
-    OCLMill.reset();
-    OCLMill.init();
     BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
   }
 
