@@ -49,12 +49,16 @@ To use the library
   - In case of a Fenix-local example (`examples` folder) add the dependency to the `package.json`
     [default configuration](../../umlp-tool/src/main/resources/frontend/config/package.json) if not done already.
 - add dependency to the GUI symbols library in your project's frontend and backend `build.gradle`
-  files if not done already (same change for both):
+  files if not done already (similar change for both):
   ```gradle
-  // add a dependency to new symbols
-  dependencies {
+  // add a dependency to new symbols for the genGUI task
+  task genGUI(type: UMLPGuiGenTask) {
+    dependsOn(genDomain, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
     /*...*/
-    guiLib "umlp.umlp-rte:client:${project.properties['mc_version']}"
+    symbolDir = files(
+      /*...*/
+      project(":umlp-rte:client").tasks.createGuiSymbols.output
+    )
   }
   ```
 
