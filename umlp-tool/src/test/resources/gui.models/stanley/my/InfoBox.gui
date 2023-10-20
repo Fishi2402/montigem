@@ -1,0 +1,5 @@
+package stanley.my;
+
+import hardy.Flensburg.Account;
+
+component InfoBox(List<Account> accs, String text, String color = "green")

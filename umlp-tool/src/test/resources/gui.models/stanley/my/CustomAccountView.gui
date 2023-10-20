@@ -1,0 +1,16 @@
+package stanley.my;
+
+import hardy.Flensburg.Account;
+import hardy.Flensburg.Budget;
+import hardy.Flensburg.Transaction;
+
+import basic.src.lib.gemtext.GemText;
+
+component CustomAccountView(Account acc, List<Budget> bs) {
+  // @iterate(Budget b : acc.budget) {
+    // @iterate(Transaction t : b.transaction) {
+    @iterate(Transaction t : bs) {
+      @GemText(value = t.date);
+    }
+  // }
+}

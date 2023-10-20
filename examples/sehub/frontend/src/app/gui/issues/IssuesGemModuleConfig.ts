@@ -1,10 +1,11 @@
-import { GemgraphModule} from '@umlp/charts';
+
+import { DragDropModule } from "@angular/cdk/drag-drop";
 
 export const config = {
   declarations: [
   ],
   imports: [
-    GemgraphModule
+    DragDropModule,
   ],
   exports: [
   ]
