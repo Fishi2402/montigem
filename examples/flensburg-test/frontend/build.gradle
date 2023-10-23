@@ -96,12 +96,12 @@ jsweet {
 //  input = file("../models/hardy")
 //  outputDir = layout.buildDirectory.dir("cd2gui")
 //}
-
-task guiVariability(type: GuiVariabilityHandlerTask) {
-  input.from(generateCDTOGUI.getOutputDir().dir("models"))
-  input.from(file("../models/stanley"))
-  outputDir = layout.buildDirectory.dir("guiVariability")
-}
+//
+//task guiVariability(type: GuiVariabilityHandlerTask) {
+//  input.from(generateCDTOGUI.getOutputDir().dir("models"))
+//  input.from(file("../models/stanley"))
+//  outputDir = layout.buildDirectory.dir("guiVariability")
+//}
 
 task genDomain(type: UMLPFrontendTask) {
   input = file("../models/hardy/Flensburg.umlp")
