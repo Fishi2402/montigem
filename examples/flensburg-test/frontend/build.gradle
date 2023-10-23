@@ -92,10 +92,10 @@ jsweet {
 // ------------------------ jsweet end ------------------------
 
 // TODO AGe: don't know if that is needed
-task generateCDTOGUI(type: UMLPCdToGuiTask) {
-  input = file("../models/hardy")
-  outputDir = layout.buildDirectory.dir("cd2gui")
-}
+//task generateCDTOGUI(type: UMLPCdToGuiTask) {
+//  input = file("../models/hardy")
+//  outputDir = layout.buildDirectory.dir("cd2gui")
+//}
 
 task guiVariability(type: GuiVariabilityHandlerTask) {
   input.from(generateCDTOGUI.getOutputDir().dir("models"))
