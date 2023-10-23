@@ -14,9 +14,11 @@
   [id]="id + 'Input'"
   [attr.list]="id + 'List'"
   [ngModel]="entry"
+  [disabled]="disabled"
+  [placeholder]="placeholder"
   (ngModelChange)="onEntryChange($event)"
-  (keyup)="keyup.emit($event)"
-  (keydown)="keydown.emit($event)"
+  (keyup)="keyRelease.emit($event)"
+  (keydown)="keyPress.emit($event)"
 />
 <datalist *ngIf="isDropdown" [id]="id + 'List'">
   <option *ngFor="let option of options" [value]="option"></option>
