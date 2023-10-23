@@ -5,7 +5,6 @@ classdiagram Dtcockpit {
   <<singleton>>
   class App{
     <<command>> void sendMail(User email, String subject, String message, List<String> forwards);
-    <<command>> void createPipelineAnalysisData(Project project);
   }
 
   association [1] App -> User [*];
@@ -55,7 +54,7 @@ classdiagram Dtcockpit {
     String git;
   }
 
-  association [1] Project <-> (pStatistics) PipelineStatistic [*];
+  association [0..1] Project <-> (pStatistics) PipelineStatistic [*];
 
   class PipelineStatistic {
     java.time.LocalDate time;

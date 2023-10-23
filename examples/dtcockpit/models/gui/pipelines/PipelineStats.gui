@@ -13,7 +13,6 @@ page PipelineStats(Project p) {
     title = "Dashboard ",
     component = barChartForPipelineRuns@GemBarChart(
       data = null,
-      displayValue = null,
       stacked = false,
       maxValue = 100,
       minValue = 0
