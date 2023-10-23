@@ -91,12 +91,17 @@ task runServer {
 }
 
 task genTestGUI(type: UMLPGuiGenTask) {
-  dependsOn('generateUmlpBackend')
+  dependsOn(generateUmlpBackend, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
   input = file("../models")
   outputDir = file("$project.buildDir/testgui")
   hwcDir = file("$projectDir/src/main/java")
   modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(generateUmlpBackend.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
+  symbolDir = files(
+      generateUmlpBackend.symbolOutDir,
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      configurations.guiLib.files,
+      configurations.guiDefaultTypes.files
+  )
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.UserCreate"]
 }
