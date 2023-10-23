@@ -29,6 +29,10 @@ export const routes: Routes = [
     loadChildren: () => import("../../build/appgui/gui/DtcockpitMainPageModule").then(m => m.DtcockpitmainpageModule),
   },
   {
+    path: "status",
+    loadChildren: () => import("../../build/appgui/gui/pipelines/PipelineStatsModule").then(m => m.PipelinestatsModule),
+  },
+  {
     path: "project/new",
     loadChildren: () => import("../../build/appgui/gui/project/ProjectCreateModule").then(m => m.ProjectcreateModule)
   },

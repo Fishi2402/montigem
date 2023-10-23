@@ -1,11 +1,14 @@
 package dtcockpit;
 
 import de.se_rwth.commons.logging.Log;
+import dtcockpit.commands.Project_create;
+import dtcockpit.pipelines.PipelineInformationExtractor;
 import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import javax.annotation.PostConstruct;
@@ -46,10 +49,12 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
     // Create two default projects, if no projects are present
     if (DtcockpitManager.getProjectList().isEmpty()) {
       Log.println("Creating dummy project data");
-      DtcockpitManager.projectBuilder()
+      Project monticore = DtcockpitManager.projectBuilder()
           .name("MontiCore")
-          .git("https://git.rwth-aachen.de/monticore/monticore")
-          .build();
+          .git("monticore/monticore")
+          .build().get();
+      PipelineInformationExtractor extractor = new PipelineInformationExtractor();
+      extractor.extractPipelineDataOf("https://git.rwth-aachen.de/", monticore);
       DtcockpitManager.projectBuilder()
           .name("umlp")
           .git("https://git.rwth-aachen.de/monticore/umlp")
