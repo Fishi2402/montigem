@@ -5,5 +5,5 @@ import Domain.Person;
 //such as agreeing to terms and conditions or opting in to a newsletter.
 //A single instance of the component results in a single checkbox input.
 page GemCheckBoxInputExample(Person person){
-  @GemCheckBoxInput(labelText="checkboxtest", checked=person.employed);
+  @GemCheckBoxInput(labelText = "checkboxtest", checked = person.employed);
 }
