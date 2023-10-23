@@ -15,48 +15,45 @@ import gui.widgets.HumidityWidgetBody;
 import gui.AddToFavorite;
 import gui.current_city_weather.CurrentCityWeather;
 
-// TODO: singleton app?
-page WeatherApp(List<App> apps){
-  // There should only be one instance!
-  @iterate(App app : apps){
-    @GemColumn(
-      rowGap = "20px",
-      components = [
-        @GemRow(hAlign = "right", components = [
-          @AddToFavorite(app = app)
-        ]),
-        @GemRow(hAlign = "center", components = [
-          @CurrentCityWeather(city = app.currentCity)
-        ]),
-        @NextHoursForecast(forecasts = app.currentCity.nextHours),
-        @GemRow(
-          colGap = "20px",
-          width = "90%",
-          components = [
-            @MultiDayForecast(timeseries = app.currentCity.nextDays),
-            @WeatherWidget(
-              widgetsTitle = "Wind Speed",
-              title = "",
-              icon = "assets/icons/wind.svg",
-              component = @WindWidgetBody(timeseries = app.currentCity.nextDays)
-            ),
 
-            @WeatherWidget(
-              widgetsTitle = "Humidity",
-              title = "",
-              icon = "assets/icons/humid.svg",
-              component = @HumidityWidgetBody(timeseries = app.currentCity.nextDays)
-            )
-          ]
-        ),
-        @GemRow(width = "550px", component = @GemCard(title="Radar", component = @RadarBody()))
+page WeatherApp(App app) {
+  @GemColumn(
+    rowGap = "20px",
+    components = [
+      @GemRow(hAlign = "right", components = [
+        @AddToFavorite(app = app)
+      ]),
+      @GemRow(hAlign = "center", components = [
+        @CurrentCityWeather(city = app.currentCity)
+      ]),
+      @NextHoursForecast(forecasts = app.currentCity.nextHours),
+      @GemRow(
+        colGap = "20px",
+        width = "90%",
+        components = [
+          @MultiDayForecast(timeseries = app.currentCity.nextDays),
+          @WeatherWidget(
+            widgetsTitle = "Wind Speed",
+            title = "",
+            icon = "assets/icons/wind.svg",
+            component = @WindWidgetBody(timeseries = app.currentCity.nextDays)
+          ),
+
+          @WeatherWidget(
+            widgetsTitle = "Humidity",
+            title = "",
+            icon = "assets/icons/humid.svg",
+            component = @HumidityWidgetBody(timeseries = app.currentCity.nextDays)
+          )
+        ]
+      ),
+      @GemRow(width = "550px", component = @GemCard(title="Radar", component = @RadarBody()))
 //      @GemRow(width = "550px", component = @WeatherWidget(
 //              widgetsTitle = "Radar",
 //              title = "",
 //              icon = "assets/icons/humid.svg",
 //              component = @RadarBody())
 //            )
-      ]
-    );
-  }
+    ]
+  );
 }

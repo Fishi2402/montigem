@@ -7,12 +7,10 @@ import arrange.src.lib.gemrow.GemRow;
 import basic.src.lib.gemtext.GemText;
 import gui.widgets.navigation.FavoriteItem;
 
-component FavoriteList(List<App> apps) {
-  @iterate(App app : apps) {
-    @GemColumn(components = [
-      @iterate(City favorite : app.favorite) {
-        @FavoriteItem(fav = favorite);
-      }
-    ]);
-  }
+component FavoriteList(App app) {
+  @GemColumn(components = [
+    @iterate(City favorite : app.favorite) {
+      @FavoriteItem(fav = favorite);
+    }
+  ]);
 }

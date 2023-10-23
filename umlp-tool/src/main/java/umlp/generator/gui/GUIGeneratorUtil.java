@@ -40,6 +40,7 @@ import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
+import umlp.generator.util.SingletonLookUp;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -637,7 +638,8 @@ public class GUIGeneratorUtil {
     if (!isCreateModel(decoratedAst.getComponentQName())) {
       for (ASTGUIParam p : decoratedAst.getGUIComponentDeclaration().getGUIParamList()) {
         if (p.isPresentSymbol()) {
-          if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p) && !isDerived(p)) {
+          if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p) && !isDerived(p)
+              && !SingletonLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())) {
             ids.add(p.getName() + "RoutingId");
           }
         }
