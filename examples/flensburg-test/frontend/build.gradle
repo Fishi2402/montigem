@@ -92,16 +92,16 @@ jsweet {
 // ------------------------ jsweet end ------------------------
 
 // TODO AGe: don't know if that is needed
-//task generateCDTOGUI(type: UMLPCdToGuiTask) {
-//  input = file("../models/hardy")
-//  outputDir = layout.buildDirectory.dir("cd2gui")
-//}
-//
-//task guiVariability(type: GuiVariabilityHandlerTask) {
-//  input.from(generateCDTOGUI.getOutputDir().dir("models"))
-//  input.from(file("../models/stanley"))
-//  outputDir = layout.buildDirectory.dir("guiVariability")
-//}
+task generateCDTOGUI(type: UMLPCdToGuiTask) {
+  input = file("../models/hardy")
+  outputDir = layout.buildDirectory.dir("cd2gui")
+}
+
+task guiVariability(type: GuiVariabilityHandlerTask) {
+  input.from(generateCDTOGUI.getOutputDir().dir("models"))
+  input.from(file("../models/stanley"))
+  outputDir = layout.buildDirectory.dir("guiVariability")
+}
 
 task genDomain(type: UMLPFrontendTask) {
   input = file("../models/hardy/Flensburg.umlp")
@@ -121,15 +121,15 @@ task genGUI(type: UMLPGuiGenTask) {
   guiCreateModels = ["stanley.gui.AccountCreate"]
 }
 
-//task genGUI2(type: UMLPGuiGenTask) {
-//  dependsOn(genGUI, generateCDTOGUI)
-//  input = file(layout.buildDirectory.dir("cd2gui/models"))
-//  symbolDir = files(genDomain.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
-//  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
-//  outputDir = layout.buildDirectory.dir("umlp/fe2")
-//  domainModels = ["hardy.Flensburg"]
-//  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
-//}
+task genGUI2(type: UMLPGuiGenTask) {
+  dependsOn(genGUI, generateCDTOGUI)
+  input = file(layout.buildDirectory.dir("cd2gui/models"))
+  symbolDir = files(genDomain.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
+  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
+  outputDir = layout.buildDirectory.dir("umlp/fe2")
+  domainModels = ["hardy.Flensburg"]
+  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
+}
 
 task generateNPMAuth(type: NPMAuthCreate)
 
