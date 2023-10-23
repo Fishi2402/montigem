@@ -121,15 +121,15 @@ task genGUI(type: UMLPGuiGenTask) {
   guiCreateModels = ["stanley.gui.AccountCreate"]
 }
 
-task genGUI2(type: UMLPGuiGenTask) {
-  dependsOn(genGUI, generateCDTOGUI)
-  input = file(layout.buildDirectory.dir("cd2gui/models"))
-  symbolDir = files(genDomain.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
-  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
-  outputDir = layout.buildDirectory.dir("umlp/fe2")
-  domainModels = ["hardy.Flensburg"]
-  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
-}
+//task genGUI2(type: UMLPGuiGenTask) {
+//  dependsOn(genGUI, generateCDTOGUI)
+//  input = file(layout.buildDirectory.dir("cd2gui/models"))
+//  symbolDir = files(genDomain.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
+//  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
+//  outputDir = layout.buildDirectory.dir("umlp/fe2")
+//  domainModels = ["hardy.Flensburg"]
+//  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
+//}
 
 task generateNPMAuth(type: NPMAuthCreate)
 
