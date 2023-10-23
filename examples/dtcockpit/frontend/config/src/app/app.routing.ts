@@ -25,6 +25,18 @@ export const routes: Routes = [
     loadChildren: () => import("../../build/appgui/gui/StartModule").then(m => m.StartModule)
   },
   {
+    path: "projects",
+    loadChildren: () => import("../../build/appgui/gui/DtcockpitMainPageModule").then(m => m.DtcockpitmainpageModule),
+  },
+  {
+    path: "status",
+    loadChildren: () => import("../../build/appgui/gui/pipelines/PipelineStatsModule").then(m => m.PipelinestatsModule),
+  },
+  {
+    path: "project/new",
+    loadChildren: () => import("../../build/appgui/gui/project/ProjectCreateModule").then(m => m.ProjectcreateModule)
+  },
+  {
     path: '404',
     loadChildren: () => import("../../build/appgui/gui/PageNotFoundModule").then(m => m.PagenotfoundModule)
   },

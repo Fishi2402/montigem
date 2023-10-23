@@ -1,11 +1,13 @@
-import org.gradle.work.Incremental
-import org.gradle.work.InputChanges
+/* (c) https://github.com/MontiCore/monticore */
+
 import groovy.json.JsonGenerator
 import groovy.json.JsonSlurper
-
+import org.gradle.work.Incremental
+import org.gradle.work.InputChanges
 
 plugins {
   id 'java'
+  id 'maven-publish'
   id 'com.diffplug.spotless' version '6.19.0'
   id "com.github.node-gradle.node" version "5.0.0"
 }
@@ -37,29 +39,84 @@ node {
   nodeProjectDir = layout.buildDirectory
 }
 
-task createCDSymbols(type: SerializeCDSymbolsTask){
-  input = file("models/arrange")  // TODO: Set to whole models directory
-  symbolPath = file("models/")
+configurations {
+  guiDefaultTypes
+}
+dependencies {
+  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+}
+
+task createCDSymbols(type: SerializeCDSymbolsTask) {
+  input = file("models/")
+  // symbolPath = file("models/")
   output = layout.buildDirectory.dir("CDSymbols")
 }
-task createGuiSymbols(type: SerializeGUISymbolsTask){
-  input = file("models/arrange")  // TODO: Set to whole models directory
-  symbolPath = createCDSymbols.getOutput()
+
+task createGuiSymbols(type: SerializeGUISymbolsTask) {
+  input = file("models/")
+  symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
   output = layout.buildDirectory.dir("GuiSymbols")
 }
+
+def libs = [
+    "arrange",
+    "basic",
+    "charts",
+    "common",
+    "input",
+    "navigation",
+    "table",
+    "theme",
+]
+
+def buildTaskPrefix = "build"
+def publishTaskPrefix = "publish"
+
+libs.each {
+  def libName = it
+  def buildTaskName = "${buildTaskPrefix}_${libName}"
+  def genNpmrcTaskName = "gen_npmrc_${libName}"
+  def publishTaskName = "${publishTaskPrefix}_${libName}"
+  def npmOutput = "dist/umlp/${libName}"
+
+  // task `build_<lib_name>` that runs `npm run build @umlp/<lib_name>`
+  task "${buildTaskName}"(type: NpmTask) {
+    dependsOn tasks.npm_install
+    args = ["run", "build", "@umlp/${libName}"]
+    inputs.dir(project.fileTree("projects/umlp/${libName}/")
+        .exclude("**/*.spec.ts", "**/*.md"))
+    inputs.files("angular.json", "tsconfig.base.json", "package-lock.json")
+    outputs.dir("${project.buildDir}/${npmOutput}")
+  }
+
+  // task `gen_npmrc_<lib_name>` that creates .npmrc file for publishing
+  task "${genNpmrcTaskName}"(type: NPMAuthCreate) {
+    dependsOn "${buildTaskName}"
+    npmrcFile = file("${project.buildDir}/${npmOutput}/.npmrc")
+    unscoped = true
+  }
+
+  // task `publish_<lib_name>` that runs `npm publish <lib_name>`
+  task "${publishTaskName}"(type: NpmTask) {
+    dependsOn "${genNpmrcTaskName}"
+    workingDir = file("${project.buildDir}/${npmOutput}")
+    args = ["publish"]
+  }
+}
+
+/*
+tasks.register('buildAll') {
+  dependsOn tasks.findAll { it.name.startsWith(buildTaskPrefix) }
+}
+
+tasks.register('publishAll') {
+  dependsOn tasks.findAll { it.name.startsWith(publishTaskPrefix) }
+}
+/**/
 
 dependencies {
 }
 
-def libs = [
-  "basic",
-  "charts",
-  "common",
-  "table",
-  "input",
-  "arrange",
-  "theme",
-  "utils"]
 class StaticMethods {
   static void updateVersion(String lib) {
     def jsonSlurper = new JsonSlurper()
@@ -81,15 +138,13 @@ class StaticMethods {
     }
 
     def generator = new JsonGenerator.Options()
-      .build()
+        .build()
     def json = generator.toJson(data)
 
     File file = new File("projects/umlp/" + lib + "/package.json")
     file.write(json)
-
   }
 }
-
 
 abstract class IncrementalReverseTask extends DefaultTask {
   @Incremental
@@ -111,42 +166,72 @@ abstract class IncrementalReverseTask extends DefaultTask {
     }
 
     def libs = [
-      "basic",
-      "charts",
-      "common",
-      "table",
-      "input",
-      "arrange",
-      "theme",
-      "utils"]
+        "basic",
+        "charts",
+        "common",
+        "table",
+        "input",
+        "arrange",
+        "theme",
+        "utils"]
     libs.forEach(lib -> {
       def pattern = ".*" + "projects" + ".+" + "umlp" + ".+" + lib + ".*";
       if (inputChanges.getFileChanges(inputDir).toString().matches(pattern)) {
         StaticMethods.updateVersion(lib);
-        println(lib + " library verstion updated")
+        println(lib + " library version updated")
       }
     })
   }
 }
 
-
 tasks.register('incrementalReverse', IncrementalReverseTask) {
   inputDir = file('projects/umlp')
-  outputDir = file("../dist")
+  outputDir = file("${project.buildDir}/dist")
   inputProperty = project.properties['taskInputProperty'] ?: 'original'
 }
 
+tasks.register("updateVersion") {
+  dependsOn("incrementalReverse")
+  //dependsOn("spotlessApply")
+}
 
+tasks.register("start") {
+  dependsOn("incrementalReverse")
+  //dependsOn("spotlessApply")
+}
 
-tasks.register("updateVersion")
-  {
-    dependsOn("incrementalReverse")
-    //dependsOn("spotlessApply")
+sourceSets {
+  symbols {
+    resources {
+      srcDirs(createCDSymbols.getOutput(), createGuiSymbols.getOutput())
+      include "**/*sym"
+    }
   }
+}
 
+task symbolJar(type: Jar) {
+  from sourceSets.symbols.output
+  includeEmptyDirs = false
+}
 
-tasks.register("start")
-  {
-    dependsOn("incrementalReverse")
-    //dependsOn("spotlessApply")
+jar.dependsOn(symbolJar)
+
+artifacts {
+  archives symbolJar
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      artifact symbolJar
+    }
   }
+  repositories.maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+
+    def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+    def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+    url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+  }
+}

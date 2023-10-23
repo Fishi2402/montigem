@@ -75,6 +75,8 @@ dependencies {
 
   implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
   implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
+
+  implementation group: 'org.gitlab4j', name: 'gitlab4j-api', version: '5.3.0'
 }
 
 generateUmlpBackend {
@@ -91,12 +93,17 @@ task runServer {
 }
 
 task genTestGUI(type: UMLPGuiGenTask) {
-  dependsOn('generateUmlpBackend')
+  dependsOn(generateUmlpBackend, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
   input = file("../models")
   outputDir = file("$project.buildDir/testgui")
   hwcDir = file("$projectDir/src/main/java")
   modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(generateUmlpBackend.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
+  symbolDir = files(
+      generateUmlpBackend.symbolOutDir,
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      configurations.guiLib.files,
+      configurations.guiDefaultTypes.files
+  )
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.UserCreate"]
 }
