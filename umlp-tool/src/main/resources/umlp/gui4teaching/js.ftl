@@ -86,14 +86,16 @@ const TYPE_INFO = {
 <#list attributesInHierarchy as c, attrs>
   "${c.getName()}": {
     <#list attrs as attr>
+        <#assign isArray = genService.isList(attr)>
         <#assign attrType = attr.getMCType().printType()>
+        <#if isArray><#assign attrType = genService.getInnerType(attr.getMCType())></#if>
         <#assign isEnum = generator.isEnum(attrType, cdEnums)>
       "${attr.getName()}": {
       type: <#if isEnum>${java2TS(attrType)}<#else>"${java2TS(attrType)}"</#if>,
       typeName: "${java2TS(attrType)}",
       isEnum: ${isEnum?string("true", "false")},
       editable: ${(!attr.getModifier().isDerived())?c},
-      isArray: ${(java2TS(attrType) == "Array")?c}
+      isArray: ${(isArray)?c}
       },
     </#list>
     <#if associationsInHierarchy?keys?seq_contains(c)>
@@ -115,20 +117,16 @@ const TYPE_INFO = {
 }
 
 function convert(value, type, isArray = false) {
-  if (isArray && type !== "Number") {
-    throw typeError(value, type);
-  }
   if (isArray) {
     let array = [];
-    if (value.startsWith('[')) {
-      array = JSON.parse(value);
-    } else {
-      array = JSON.parse("[" + value + "]");
-    }
-    for (const arrayElement of array) {
-      if (isNaN(Number(arrayElement))) {
-        throw typeError(value, type);
+    array = value.trim().split(",");
+    if (type === "Number"){
+      for (const arrayElement of array) {
+        if (isNaN(Number(arrayElement))) {
+          throw typeError(value, type);
+        }
       }
+      array = array.map(Number);
     }
     return array;
   }

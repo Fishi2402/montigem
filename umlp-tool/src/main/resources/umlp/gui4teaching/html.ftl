@@ -182,7 +182,7 @@
       try {
         const attrType = getType(className, attr);
         const isArray = getIsArray(className, attr);
-        if (attrType === "Unknown" || attrType === "Array") {
+        if (attrType === "Unknown") {
           warnChangeUneditable(attr);
           return;
         }
@@ -204,6 +204,7 @@
               "indexInList": 0
             };
             command[attr + "GemId"] = add;
+            command[attr] = add;
             sendCommand(command);
           }
           for (const remove of toRemove) {
@@ -213,6 +214,7 @@
               "indexInList": 0
             };
             command[attr + "GemId"] = remove;
+            command[attr] = remove;
             sendCommand(command);
           }
         } else {
@@ -541,7 +543,7 @@
                       }
                       const attrType = getType(className, key);
                       const isArray = getIsArray(className, key);
-                      if (attrType !== "Unknown" && attrType !== "Array") {
+                      if (attrType !== "Unknown") {
                         obj[key] = convert(value, attrType, isArray);
                       } else {
                         warnChangeUneditable(key);
