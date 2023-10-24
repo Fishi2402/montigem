@@ -24,7 +24,7 @@ export  class StartComponent extends StartComponentTOP {
 
   ngOnInit(){
     if (!(DtcockpitSecurityManager.isCurrentlyLoggingIn() || DtcockpitSecurityManager.isSignedIn())) {
-      this.router.navigate(['/login/LoginPage']);
+      this.router.navigate(['gui', 'login', 'LoginPage']);
     }
 
     CommandManager.executeCommand(new GetCurrentUserRequest()).then(res => {

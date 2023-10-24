@@ -22,7 +22,7 @@ export  class SehubMainPage extends SehubMainPageTOP {
   }
 
   public override goToProjectPage (project: any): (arg: any) => void {
-    return event => this.router.navigate(["..", "project", "ProjectFileView", project.getRootArtifact()[0].getGemId()]);
+    return event => this.router.navigate(["gui", "ProjectFileView", project.getRootArtifact()[0].getGemId()]);
   }
 
 

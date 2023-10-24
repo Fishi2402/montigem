@@ -35,6 +35,7 @@ import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.SingletonLookUp;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -240,11 +241,19 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
 
           if (util.getMainDomainModelSimpleName().isPresent() && !util.isEnumType(p.getSymbol().getType())) {
             // TODO AGe: body of init method currently uses different hooks, improve
-            hps.add(new TemplateHookPoint(
-                "umlp.gui2ts.TSInitDomain",
-                p.getName(),
-                p.getMCType().printType(),
-                util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+            if (SingletonLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())) {
+              hps.add(new TemplateHookPoint(
+                      "umlp.gui2ts.TSInitDomainSingleton",
+                      p.getName(),
+                      p.getMCType().printType(),
+                      util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+            } else {
+              hps.add(new TemplateHookPoint(
+                      "umlp.gui2ts.TSInitDomain",
+                      p.getName(),
+                      p.getMCType().printType(),
+                      util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+            }
           }
           else {
             Log.warn("0x00007 Could not identify the manager name: domain classdiagram is missing");

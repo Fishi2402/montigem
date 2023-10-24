@@ -24,7 +24,7 @@ import {ProjectFileView} from "../ProjectFileView";
 export  class ProjectFileViewLink extends ProjectFileViewLinkTOP {
 
   public override getGemLink1Url (): string  {
-     return "../project/ProjectFileView/"+this.getArtifact().getGemId();
+     return "gui/ProjectFileView/"+this.getArtifact().getGemId();
   }
 }
 

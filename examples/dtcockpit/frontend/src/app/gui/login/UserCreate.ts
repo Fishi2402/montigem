@@ -27,7 +27,7 @@ export class UserCreate extends UserCreateTOP {
       this.newUserBuilder.registrationDate(new Date());
       this.newUserBuilder.role(DtcockpitRole.USER);
       this.build();
-      this.router.navigate(['/login']);
+      this.router.navigate(['gui', 'login']);
     } else {
       this.error = errorMessage;
     }
@@ -58,7 +58,7 @@ export class UserCreate extends UserCreateTOP {
   }
 
   public override navigateBack(): void {
-    this.router.navigate(['/login']);
+    this.router.navigate(['gui', 'login']);
   }
 
 }
