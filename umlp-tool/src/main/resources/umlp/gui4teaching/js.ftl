@@ -107,7 +107,7 @@ const TYPE_INFO = {
       type: "Number",
       typeName: "Number",
       isEnum: false,
-      editable: ${(!assoc.getModifier().isDerived())?c},
+      editable: ${(!genService.isSymbolDerived(assoc))?c},
       isArray: ${(genService.isList(assoc))?c}
       },
       </#list>
@@ -272,18 +272,18 @@ async function load${c.getName()}() {
       <#assign seq_index = associationsInHierarchy?keys?seq_index_of(c) />
       <#assign assocs = associationsInHierarchy?values[seq_index]/>
       <#list assocs as assoc>
-        <#if assoc.modifier.isDerived()>
-        try{
-          const res = await sendCommand(
-          {"commandType": "${ast.getCDDefinition().getName()?lower_case}.commands.${c.getName()}_calculate${assoc.name?cap_first}",
-          "gemId": d.gemId}
-          );
-          d.${assoc.getName()} = res.value;
-        }catch(error){
-          d.${assoc.getName()} = undefined;
-          console.log("Can not load ${assoc.name}", error);
-        }
-        </#if>
+<#--        <#if genService.isSymbolDerived(assoc)>-->
+<#--        try{-->
+<#--          const res = await sendCommand(-->
+<#--          {"commandType": "${ast.getCDDefinition().getName()?lower_case}.commands.${c.getName()}_calculate${assoc.name?cap_first}",-->
+<#--          "gemId": d.gemId}-->
+<#--          );-->
+<#--          d.${assoc.getName()} = res.value;-->
+<#--        }catch(error){-->
+<#--          d.${assoc.getName()} = undefined;-->
+<#--          console.log("Can not load ${assoc.name}", error);-->
+<#--        }-->
+<#--        </#if>-->
       </#list>
     </#if>
     }
