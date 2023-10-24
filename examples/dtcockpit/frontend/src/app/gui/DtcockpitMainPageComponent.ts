@@ -16,20 +16,19 @@ import { Project } from '@src/dtcockpit/Project';
 export class DtcockpitMainPageComponent extends DtcockpitMainPageComponentTOP {
   ngOnInit(){
     if (!DtcockpitSecurityManager.isSignedIn()) {
-      this.router.navigate(['/login/LoginPage']);
+      this.router.navigate(['gui', 'login', 'LoginPage']);
     }
     super.ngOnInit();
   }
 
 
   public navigateToProject(p: Project): (arg: any) => void {
-    this.router.navigate(['/project/', p.getName(), 'show'])
-    return () => {
-    }
+    this.router.navigate(['gui', 'project', p.getName(), 'show'])
+    return () => { }
   }
 
   public navigateToNewProject(event: any): void {
-    this.router.navigate(['/project/new'])
+    this.router.navigate(['gui', 'project', 'ProjectCreate'])
   }
 
 

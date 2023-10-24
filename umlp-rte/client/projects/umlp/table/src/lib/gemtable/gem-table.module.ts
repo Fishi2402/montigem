@@ -19,8 +19,6 @@ import { MatTableModule } from "@angular/material/table";
 //import { InputFilterModule } from "@shared/components/guidsl/filter/input-filter.module";
 //import { InputModule } from "@shared/components/guidsl/input/input.module";
 //import { PipesModule } from "@shared/pipes";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { TextMaskModule } from "angular2-text-mask";
 import { ContextMenuModule, ContextMenuService } from "@perfectmemory/ngx-contextmenu";
 import { GemTableComponent } from "./gem-table.component";
 import { FocusColumnDirective } from "./focus-column.directive";
@@ -39,15 +37,12 @@ import { MatSortModule } from "@angular/material/sort";
     MatPaginatorModule,
     MatInputModule,
     MatButtonModule,
-    TextMaskModule,
     MatMenuModule,
     MatListModule,
-    MatIconModule,
     //InputFilterModule,
     MatCheckboxModule,
     MatRadioModule,
     MatDialogModule,
-    NgxDatatableModule,
     //InputModule,
     //PipesModule,
     MatButtonToggleModule,

@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -34,13 +37,15 @@ public class UI4TeachingGenerator {
             .collect(Collectors.toList());
     List<ASTCDEnum> enums = cdAST.getCDDefinition().getCDEnumsList();
     Map<ASTCDClass, List<ASTCDAttribute>> attributesInHierarchy = new HashMap<>();
+    Map<ASTCDClass, List<ASTCDAssocSide>> associationsInHierarchy = new HashMap<>();
 
     for (ASTCDClass aClass : classes) {
       attributesInHierarchy.put(aClass, CDSymbolTables.getAttributesInHierarchy(aClass));
+      associationsInHierarchy.put(aClass, CDSymbolTables.getAssociationsInHierarchy(aClass));
     }
 
     generatorEngine.generate("umlp.gui4teaching.js", Paths.get("resources", "static","index.js"), cdAST,
-        classes, enums, this, attributesInHierarchy);
+        classes, enums, this, attributesInHierarchy, associationsInHierarchy);
   }
 
   public boolean isEnum(String attrType, List<ASTCDEnum> enums) {

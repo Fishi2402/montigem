@@ -41,7 +41,7 @@ export class UserLogin extends UserLoginTOP {
             .then(result => {
               if (result.success) {
                 SehubSecurityManager.signIn(this.loginUser);
-                window.location.href = '/start';
+                window.location.href = 'gui/Start';
               }else if (result.reason) {
                 alert("Login Failed: " + result.reason)
               }else{

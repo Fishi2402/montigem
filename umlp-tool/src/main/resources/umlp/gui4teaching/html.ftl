@@ -181,29 +181,59 @@
       // Get the input value from the table cell
       try {
         const attrType = getType(className, attr);
+        const isArray = getIsArray(className, attr);
         if (attrType === "Unknown" || attrType === "Array") {
           warnChangeUneditable(attr);
           return;
         }
-        let value = convert(cell.textContent.trim(), attrType);
+        let value = convert(cell.textContent.trim(), attrType, isArray);
 
-        // TODO: form proper command, maybe delete next comment and log line
-        // example:
-        // {
-        //   type: Person_setName,
-        //   gemId: 4,
-        //   data: Bob
-        // }
-        const command = {
-          "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_set" + capitalizeFirstLetter(attr),
-          "gemId": gemId
-        };
-        command[attr] = value;
-        // console.log(command);
+        if (isArray) {
+          const command = {
+            "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_get",
+            "gemId": gemId
+          }
+          const originalObj = await sendCommand(command);
+          const originalValue = originalObj.value[attr];
+          let toRemove = originalValue.filter(x => !value.includes(x));
+          let toAdd = value.filter(x => !originalValue.includes(x));
+          for (const add of toAdd) {
+            const command = {
+              "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_add" + capitalizeFirstLetter(attr),
+              "gemId": gemId,
+              "indexInList": 0
+            };
+            command[attr + "GemId"] = add;
+            sendCommand(command);
+          }
+          for (const remove of toRemove) {
+            const command = {
+              "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_remove" + capitalizeFirstLetter(attr),
+              "gemId": gemId,
+              "indexInList": 0
+            };
+            command[attr + "GemId"] = remove;
+            sendCommand(command);
+          }
+        } else {
+          // TODO: form proper command, maybe delete next comment and log line
+          // example:
+          // {
+          //   type: Person_setName,
+          //   gemId: 4,
+          //   data: Bob
+          // }
+          const command = {
+            "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_set" + capitalizeFirstLetter(attr),
+            "gemId": gemId
+          };
+          command[attr] = value;
+          // console.log(command);
 
-        // send request to the server;
-        // don't have to wait for result, the cell is already modified
-        sendCommand(command);
+          // send request to the server;
+          // don't have to wait for result, the cell is already modified
+          sendCommand(command);
+        }
       } catch (err) {
         showError(err);
       }
@@ -510,8 +540,9 @@
                         valid = true;
                       }
                       const attrType = getType(className, key);
+                      const isArray = getIsArray(className, key);
                       if (attrType !== "Unknown" && attrType !== "Array") {
-                        obj[key] = convert(value, attrType);
+                        obj[key] = convert(value, attrType, isArray);
                       } else {
                         warnChangeUneditable(key);
                       }

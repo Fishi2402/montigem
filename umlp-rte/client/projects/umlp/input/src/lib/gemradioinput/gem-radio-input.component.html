@@ -6,6 +6,7 @@
     [id]="id + 'Radio'"
     [value]="value"
     [ngModel]="selectedValue"
+    [disabled]="disabled"
     (ngModelChange)="onSelectedValueChange($event)"
   />
   <span *ngIf="rightPosition">{{ labelText }}</span>

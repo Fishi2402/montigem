@@ -23,7 +23,7 @@ export class Navigation {
   signOutCurrentUser(): void {
     fetch("/umlp/api/logout").finally(() => {
       DtcockpitSecurityManager.signOut();
-      this.router.navigate(['/login/LoginPage']);
+      this.router.navigate(['gui', 'login', 'LoginPage']);
     });
   }
 
