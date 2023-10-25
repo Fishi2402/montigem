@@ -12,7 +12,7 @@ export class City extends CityTOP {
   protected _nextDays: Gem<Timeseries> = new Gem<Timeseries>();
   protected _current?: Forecast;
 
-  protected _nextHours: GemList<Forecast>;
+  protected _nextHours: Forecast;
 
   // TODO: replace with umlp observers
   protected original = {
@@ -107,7 +107,7 @@ export class City extends CityTOP {
     }
     this.original.nextHours.hash = hash;
 
-    this._nextHours = value;
+    this._nextHours = await value.get(0);
   }
 
   public getCurrent(): Forecast | undefined {
