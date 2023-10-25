@@ -26,6 +26,10 @@
   place-content: center;
 }
 
+.gem-radio:disabled {
+  cursor: not-allowed;
+}
+
 .gem-radio::before {
   content: "";
   width: 0.65em;

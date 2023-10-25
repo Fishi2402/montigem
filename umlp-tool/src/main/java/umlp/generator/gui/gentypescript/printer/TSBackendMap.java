@@ -7,7 +7,7 @@ public class TSBackendMap {
 
   // Gem, NotificationScope, etc.
   private static final String BACKEND_RTE = "umlp.backendrte";
-  private static final String COMMON_RTE = "@umlp/common";
+  private static final String COMMON_RTE = TSImportMap.COMMON.getTSPackage();
   private static final String JSWEET_RTE = "umlp-frontend-rte";
 
   public static boolean isBackendRTEPackage(String packageName) {

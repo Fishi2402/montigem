@@ -1,18 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Artifact } from '@src/sehub/Artifact';
-import { GemNetworkData, GemNetworkNode, GemNetworkEdge } from '@monticore/montigem-charts';
-import {  } from '@monticore/montigem-charts';
+import { GemTreeviewEntry } from '@umlp/basic';
+import { GemNetworkData, GemNetworkEdge, GemNetworkNode } from '@umlp/charts';
 import { ProjectPageTOP } from '@src/gui/ProjectPageTOP';
-import { GemTreeviewEntry } from '@monticore/montigem-basic';
+import { Artifact } from '@src/sehub/Artifact';
 import { Directory } from '@src/sehub/Directory';
 
 import {
   Directive,
 } from '@angular/core';
 
-import { ActivatedRoute, Router } from '@angular/router';
-import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
 @Directive()
 

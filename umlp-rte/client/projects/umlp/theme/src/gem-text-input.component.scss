@@ -33,6 +33,10 @@
     background-size: 16px;
   }
 
+  .gem-text-input:disabled {
+    cursor: not-allowed;
+  }
+
   .gem-text-input[type="date"] {
     font-size: 16px;
     color: #333;

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Directive } from '@angular/core';
-import { GemGaugeChartData, GemGaugeChartEntry, GemLineChartData, GemLineChartEntry } from '@monticore/montigem-charts';
+import { GemGaugeChartData, GemGaugeChartEntry, GemLineChartData, GemLineChartEntry } from '@umlp/charts';
 import { WeatherViewTOP } from '@src/gui/WeatherViewTOP';
 import { Forecast } from '@src/weather/Forecast';
 

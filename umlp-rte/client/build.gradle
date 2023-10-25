@@ -69,14 +69,14 @@ def libs = [
     "theme",
 ]
 
-def buildTaskPrefix = "build"
-def publishTaskPrefix = "publish"
+def buildTaskPrefix = "build_"
+def publishTaskPrefix = "publish_"
 
 libs.each {
   def libName = it
-  def buildTaskName = "${buildTaskPrefix}_${libName}"
+  def buildTaskName = "${buildTaskPrefix}${libName}"
   def genNpmrcTaskName = "gen_npmrc_${libName}"
-  def publishTaskName = "${publishTaskPrefix}_${libName}"
+  def publishTaskName = "${publishTaskPrefix}${libName}"
   def npmOutput = "dist/umlp/${libName}"
 
   // task `build_<lib_name>` that runs `npm run build @umlp/<lib_name>`
@@ -104,7 +104,6 @@ libs.each {
   }
 }
 
-/*
 tasks.register('buildAll') {
   dependsOn tasks.findAll { it.name.startsWith(buildTaskPrefix) }
 }
@@ -112,7 +111,6 @@ tasks.register('buildAll') {
 tasks.register('publishAll') {
   dependsOn tasks.findAll { it.name.startsWith(publishTaskPrefix) }
 }
-/**/
 
 dependencies {
 }
@@ -219,6 +217,10 @@ jar.dependsOn(symbolJar)
 artifacts {
   archives symbolJar
 }
+
+build.dependsOn(buildAll)
+
+publish.dependsOn(publishAll)
 
 publishing {
   publications {
