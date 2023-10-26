@@ -12,6 +12,8 @@ Each exemplary project has the following folder structure:
 
 All models are located in the `models` directory. 
 The domain model (for example, `Dtcockpit.umlp`) is placed in the main directory, and it is recommended to put all GUI models in the `gui` subdirectory.
+The directory name for GUI models forms the package name for these models.
+For example, for a GUI model in the subdirectory `models/gui/login`, the package name is `package gui.login;`.
 
 Domain classes (classes defined in the domain model) can be used as parameters of GUI components in GUI models.
 In this case domain classes have to be imported.  
