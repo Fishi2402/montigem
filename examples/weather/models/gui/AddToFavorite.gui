@@ -3,9 +3,9 @@ package gui;
 import Weather.City;
 import Weather.App;
 
-import arrange.src.lib.gemrow.GemRow;
-import basic.src.lib.gembutton.GemButton;
-import input.src.lib.gemtextinput.GemTextInput;
+import arrange.GemRow;
+import basic.GemButton;
+import input.GemTextInput;
 
 component AddToFavorite(App app, List<City> cities) {
   @GemRow(colGap = "5px", components = [

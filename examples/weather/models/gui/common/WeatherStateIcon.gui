@@ -1,7 +1,7 @@
 package gui.common;
 
-import basic.src.lib.gemimage.GemImage;
-import basic.src.lib.gemtext.GemText;
+import basic.GemImage;
+import basic.GemText;
 
 import Weather.WeatherState;
 

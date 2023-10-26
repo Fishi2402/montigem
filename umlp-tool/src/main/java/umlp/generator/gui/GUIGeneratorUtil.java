@@ -30,6 +30,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -496,7 +497,7 @@ public class GUIGeneratorUtil {
   }
 
   public boolean isEventArgument(GUIParamSymbol paramSym) {
-    return paramSym.getType().getTypeInfo().getName().equals(BuiltInTypes.EVENT.getName());
+    return paramSym.getType().getTypeInfo().getFullName().equals(BuiltInTypes.EVENT.getQName());
   }
 
   public boolean isStringLiteral(ASTGUIArgValue argValue) {
@@ -533,10 +534,10 @@ public class GUIGeneratorUtil {
   }
 
   public boolean hasGetter(SymTypeExpression ste) {
-    String type = ste.getTypeInfo().getName();
+    String type = ste.getTypeInfo().getFullName();
     return !isViewElement(ste)
         && !isViewElementsCollection(ste)
-        && !type.equals(BuiltInTypes.EVENT.getName());
+        && !type.equals(BuiltInTypes.EVENT.getQName());
   }
 
   public boolean hasSetter(ASTGUIComponent comp, ASTGUINamedArg arg) {
@@ -571,7 +572,7 @@ public class GUIGeneratorUtil {
   }
 
   public boolean isViewElement(SymTypeExpression ste) {
-    return ste.getTypeInfo().getName().equals(BuiltInTypes.GUI_VIEW_ELEMENT.getName());
+    return ste.getTypeInfo().getFullName().equals(BuiltInTypes.GUI_VIEW_ELEMENT.getQName());
   }
 
   public boolean isNgTemplate(String compName) {

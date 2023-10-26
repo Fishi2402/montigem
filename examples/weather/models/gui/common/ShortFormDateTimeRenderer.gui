@@ -2,7 +2,7 @@ package gui.common;
 
 import Weather.Forecast;
 
-import basic.src.lib.gemtext.GemText;
+import basic.GemText;
 
 // TODO: Can LocalDate/Date be used as an parameter?
 /**

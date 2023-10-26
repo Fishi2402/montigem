@@ -2,8 +2,8 @@
 
 package person;
 
-import arrange.src.lib.gemcolumn.GemColumn;
-import arrange.src.lib.gemrow.GemRow;
+import arrange.GemColumn;
+import arrange.GemRow;
 
 page Row(GUIViewElement col1, GUIViewElement col2, GUIViewElement col3) {
   @GemRow(colGap = "10px", hAlign = "space-between", components = [

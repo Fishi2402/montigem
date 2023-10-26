@@ -2,9 +2,9 @@ package gui;
 
 import Weather.App;
 
-import arrange.src.lib.gemrow.GemRow;
-import arrange.src.lib.gemcolumn.GemColumn;
-import arrange.src.lib.gemcard.GemCard;
+import arrange.GemRow;
+import arrange.GemColumn;
+import arrange.GemCard;
 
 import gui.multi_day_forecast.MultiDayForecast;
 import gui.next_hours_forecast.NextHoursForecast;

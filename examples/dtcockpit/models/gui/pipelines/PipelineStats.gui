@@ -1,8 +1,8 @@
 package gui.pipelines;
 
-import charts.src.lib.gembarchart.GemBarChart;
-import arrange.src.lib.gemcard.GemCard;
-import basic.src.lib.gembutton.GemButton;
+import charts.GemBarChart;
+import arrange.GemCard;
+import basic.GemButton;
 
 
 import Dtcockpit.Project;

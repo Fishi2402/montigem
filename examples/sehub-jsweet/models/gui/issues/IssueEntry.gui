@@ -2,13 +2,13 @@ package gui.issues;
 
 import Sehub.Issue;
 
-import arrange.src.lib.gemcard.GemCard;
-import arrange.src.lib.gemcolumn.GemColumn;
-import arrange.src.lib.gemrow.GemRow;
-import basic.src.lib.gemtext.GemText;
-import basic.src.lib.gembutton.GemButton;
-import input.src.lib.gemtextinput.GemTextInput;
-import input.src.lib.gemtextareainput.GemTextareaInput;
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import basic.GemButton;
+import input.GemTextInput;
+import input.GemTextareaInput;
 
 component IssueEntry(Issue issue){
     issueColumn@GemColumn(hAlign = "center", width = "400px", rowGap =" 5px", component =

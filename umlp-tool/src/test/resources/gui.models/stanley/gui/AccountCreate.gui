@@ -2,10 +2,10 @@ package stanley.gui;
 
 import hardy.Flensburg.Account;
 
-import basic.src.lib.gemtext.GemText;
-import basic.src.lib.gembutton.GemButton;
-import input.src.lib.gemtextinput.GemTextInput;
-import table.src.lib.gemtable.GemTable;
+import basic.GemText;
+import basic.GemButton;
+import input.GemTextInput;
+import table.GemTable;
 
 // import stanley.my.CustomAccountView;
 

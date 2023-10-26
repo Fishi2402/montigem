@@ -362,7 +362,9 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
 
   // TODO AGe: own event decorator
   protected void addInitialValue(ASTCDAttribute attr) {
-    if (attr.getMCType().printType().equals(BuiltInTypes.EVENT.getName())) {
+    if (attr.getMCType().printType().equals(BuiltInTypes.EVENT.getQName())
+        || attr.getMCType().printType().equals(BuiltInTypes.EVENT.getName())
+    ) {
       glex.replaceTemplate("cd2java.Value", attr,
           new StringHookPoint(" = new EventEmitter<any>()"));
     }

@@ -48,7 +48,6 @@ export class IssueTrackerPageComponent extends IssueTrackerPageComponentTOP {
   }
 
   public override getDoingListIssues(): GemList<Issue> {
-    console.log("here")
     if (!this.getIssues()) {
       return this.doingList;
     }

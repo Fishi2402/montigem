@@ -10,14 +10,10 @@ plugins {
 
 
 configurations {
-  guiParser
-  guiLib
   guiDefaultTypes
 }
 
 dependencies {
-  guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
-  guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
@@ -70,7 +66,11 @@ task genGUI(type: UMLPGuiGenTask) {
   outputDir = frontendSetup.getOutput().dir("build/appgui")
   hwcDir = file("src/app/")
   modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(genDomain.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
+  symbolDir = files(
+      genDomain.symbolOutDir,
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      configurations.guiDefaultTypes.files
+  )
   domainModels = ["Sehub"]
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
 }
@@ -78,7 +78,11 @@ task genGUI(type: UMLPGuiGenTask) {
 task genGUI2(type: UMLPGuiGenTask) {
   dependsOn(genGUI, generateCDTOGUI)
   input = file(generateCDTOGUI.getOutputDir().file("models"))
-  symbolDir = files(genDomain.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
+  symbolDir = files(
+      genDomain.symbolOutDir,
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      configurations.guiDefaultTypes.files
+  )
   hwcDir = file("src/app/")
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe2")

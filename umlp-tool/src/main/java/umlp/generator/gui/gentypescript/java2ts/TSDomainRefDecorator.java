@@ -186,7 +186,7 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
 
   @Override
   protected void addImportForGUIParameter(ASTCDClass clazz, String qName) {
-    if (BuiltInTypes.EVENT.getName().equals(qName)) {
+    if (BuiltInTypes.EVENT.getQName().equals(qName)) {
       getCD4C().addImport(clazz, qName);
       return;
     }
