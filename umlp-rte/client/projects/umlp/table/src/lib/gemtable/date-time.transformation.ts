@@ -205,6 +205,7 @@ export function dayOfWeek(date: string): number | null {
   if (isValidISODate(date)) {
     return moment.utc(date).utcOffset(0, true).isoWeekday();
   }
+  return null;
 }
 
 /**
@@ -212,10 +213,11 @@ export function dayOfWeek(date: string): number | null {
  *
  * @returns week number, null if the date is incorrect
  */
-export function calendarWeek(date: string): number {
+export function calendarWeek(date: string): number | null {
   if (isValidISODate(date)) {
     return moment.utc(date).utcOffset(0, true).isoWeek();
   }
+  return null;
 }
 
 /**

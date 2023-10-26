@@ -30,15 +30,17 @@ library):
 - A file is changed in `arrange` library, i.e. any file inside [the library
   folder](./projects/umlp/arrange).
 - Open [`package.json` file](./projects/umlp/arrange/package.json) of the changed library. 
-- Increment the last version number of the `"version"` field.
-  - e.g., current value is `"7.5.1"`. Set new value `"7.5.2"`.
-- Call gradle command for publishing the library:
-  ```
-  gradle publish_arrange
-  ```
+- Increment the version number of the `"version"` field.
+  - last version number if you make a patch (bug fix, minor stuff) or a backward compatible change,
+    e.g., current value is `"7.5.1"`. Set new value `"7.5.2"`.
+  - middle version number if you add a backward compatible feature, e.g., current value is
+    `"7.5.12"`. Set new value `"7.6.0"`.
+  - first version number if you make a breaking change, e.g., current value is `"7.5.12"`. Set new
+    value according to MontiCore version `"8.0.0"`.
 - Commit and push changes
 
-To use the library
+# Using a library
+
 - add dependency to the library in your project's `package.json` file:
   ```
   "dependencies": {
@@ -47,7 +49,9 @@ To use the library
   }
   ```
   - In case of a Fenix-local example (`examples` folder) add the dependency to the `package.json`
-    [default configuration](../../umlp-tool/src/main/resources/frontend/config/package.json) if not done already.
+    [default configuration](../../umlp-tool/src/main/resources/frontend/config/package.json) if not
+    done already. Alternatively overwrite the `package.json` file by providing your own
+    configuration.
 - add dependency to the GUI symbols library in your project's frontend and backend `build.gradle`
   files if not done already (similar change for both):
   ```gradle
@@ -61,8 +65,6 @@ To use the library
     )
   }
   ```
-
-> Note: the steps will become obsolete in a near future, i.e. everything will be done automatically
 
 <!--
 # Usage of the Library
