@@ -59,6 +59,8 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
           .name("umlp")
           .git("https://git.rwth-aachen.de/monticore/umlp")
           .build();
+      // TODO: App#getProject should contain all projects by default?
+      DtcockpitManager.getApp().addProject(monticore);
     }
 
     try {

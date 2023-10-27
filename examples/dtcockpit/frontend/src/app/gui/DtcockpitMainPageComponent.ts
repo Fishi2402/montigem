@@ -9,7 +9,7 @@ import { Project } from '@src/dtcockpit/Project';
 @Component({
   selector: 'dtcockpit-main-page',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/DtcockpitMainPage.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
+  styles: [":host{ display: flex; flex-direction: row }"],
   styleUrls: []
 })
 

@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input} from '@angular/core';
 
 @Component(
   {
@@ -8,7 +8,8 @@ import {Component, Input} from '@angular/core';
   })
 export class NavItem {
   protected _title: string;
-  protected _target: string;
+  protected _target: string | null;
+  protected _leftClick: EventEmitter<any> = new EventEmitter();
 
   public get title(): string {
     return this._title;
@@ -19,12 +20,21 @@ export class NavItem {
     this._title = title;
   }
 
-  public get target(): string {
+  public get target(): string | null {
     return this._target;
   }
 
   @Input()
-  public set target(target: string) {
+  public set target(target: string | null) {
     this._target = target;
+  }
+
+  public get leftClick(): EventEmitter<any> {
+    return this._leftClick;
+  }
+
+  @Input()
+  public set leftClick(leftClick: EventEmitter<any>) {
+    this._leftClick = leftClick;
   }
 }

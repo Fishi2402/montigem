@@ -6,21 +6,26 @@ import arrange.GemRow;
 import arrange.GemColumn;
 import basic.GemText;
 
+import gui.DtCockpitNavigation;
+
 import Dtcockpit.Project;
 
 page DtcockpitMainPage(List<Project> projects) {
-  @GemCard(
-    title = "Dashboard",
-    component = projectList@GemRow(
-      rowGap="20px",
-      colGap="5px",
-      components=[
-        @iterate(Project p : projects) {
-          // Note: the classes have to be overridden to be applied, as lists of literals is a WIP
-          pButton@GemButton(label = p.getName(), leftClick = navigateToProject(p));
-        },
-        newButton@GemButton(label = "+", leftClick = navigateToNewProject)
-      ]
+  @DtCockpitNavigation(username="FixMe", projects = projects);
+  @GemColumn(width = "100%", hAlign = "left", component =
+    @GemCard(
+      title = "Dashboard",
+      component = projectList@GemRow(
+        rowGap="20px",
+        colGap="5px",
+        components=[
+          @iterate(Project p : projects) {
+            // Note: the classes have to be overridden to be applied, as lists of literals is a WIP
+            pButton@GemButton(label = p.getName(), leftClick = navigateToProject(p));
+          },
+          newButton@GemButton(label = "+", leftClick = navigateToNewProject)
+        ]
+      )
     )
   );
 }
