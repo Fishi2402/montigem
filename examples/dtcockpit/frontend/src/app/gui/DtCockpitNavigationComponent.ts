@@ -13,12 +13,5 @@ import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
   styleUrls: []
 })
 export  class DtCockpitNavigationComponent extends DtCockpitNavigationComponentTOP  {
-  ngOnInit(){
-    if (!DtcockpitSecurityManager.isSignedIn()) {
-      this.router.navigate(['gui', 'login', 'LoginPage']);
-    }
-    super.ngOnInit();
-  }
+
 }
-
-
