@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package arrange;
-
+//GemRow is a container which arranges any number of input elements horizontally
 component GemRow(
   String height,
   String width,

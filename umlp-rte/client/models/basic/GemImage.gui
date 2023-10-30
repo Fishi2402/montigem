@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package basic;
-
+//The Image web component displays images on a webpage. It needs the source attribute to set the image path.
+//You can use the optional alt attribute for a text description if the image doesn't load.
 component GemImage(
   String source,
   String alt,

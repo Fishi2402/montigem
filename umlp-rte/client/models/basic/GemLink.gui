@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package basic;
 
+//The link element is used to create a hyperlink to another web page or to a specific section within a page.
+//The source attribute specifies the destination of the link. The text attribute specifies the text to be displayed for the link
+
 component GemLink(
   String url,
   String text

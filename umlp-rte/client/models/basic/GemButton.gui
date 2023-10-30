@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package basic;
-
+//A button enables user interaction through simple clicks or taps, triggering actions or tasks
 component GemButton(
   String label,
   List<String> classes,

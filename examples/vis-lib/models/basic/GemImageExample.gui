@@ -1,7 +1,7 @@
 package basic;
+
 import basic.src.lib.gemimage.GemImage;
-//The Image web component displays images on a webpage. It needs the source attribute to set the image path.
-//You can use the optional alt attribute for a text description if the image doesn't load.
+
 page GemImageExample(){
   @GemImage(source="../../../../frontend/config/src/assets/images/World.png");
 }

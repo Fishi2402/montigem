@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package basic;
 
+//The text component is used to display text on a webpage.
+//It needs the value attribute to set the text. You can use the optional style attribute for a style to be applied to the text.
+
 component GemText(
   String value,
   String style

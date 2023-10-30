@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package arrange;
-
+//GemColumn is a container which arranges any number of input elements vertically
 component GemColumn(
   String height,
   String width,

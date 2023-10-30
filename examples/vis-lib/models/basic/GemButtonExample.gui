@@ -1,6 +1,7 @@
 package basic;
+
 import basic.src.lib.gembutton.GemButton;
-//A button enables user interaction through simple clicks or taps, triggering actions or tasks
+
 page GemButtonExample(){
   @GemButton(label = "windows alert", leftClick = alert);
 }

@@ -4,6 +4,10 @@ package table;
 import table.TableTypes.TableColumn;
 
 // TODO: precise types
+//A table organizes and displays data in rows and columns.
+//Data tables allow users to input, edit, and manipulate data easily, perform calculations and analyses, sort and filter data.
+//A visualization of a table can be seen in the following Figure.
+
 component GemTable(
   List rows,
   List columns,
