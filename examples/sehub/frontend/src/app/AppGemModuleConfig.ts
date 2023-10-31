@@ -6,6 +6,6 @@ import { Usersettings_Module } from '@src/gui/usersettings/UsersettingsGemModule
 export const config = {
   declarations: [Navigation],
   exports: [],
-  imports: [Login_Module, Issues_Module, Usersettings_Module],
+  imports: [],
   providers: []
 }

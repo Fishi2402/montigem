@@ -8,7 +8,6 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -83,7 +82,6 @@ import static umlp.UMLPToolOptions.DOMAIN;
 import static umlp.UMLPToolOptions.FOR_CLIENT;
 import static umlp.UMLPToolOptions.GUIVariability;
 import static umlp.UMLPToolOptions.GUI_CREATE;
-import static umlp.UMLPToolOptions.GUI_GEN_TS_FUNC;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
@@ -95,8 +93,6 @@ import static umlp.UMLPToolOptions.REPORTS;
 import static umlp.UMLPToolOptions.REPORT_BASE;
 import static umlp.UMLPToolOptions.SYMTAB;
 import static umlp.UMLPToolOptions.TMPL_PATH;
-import static umlp.UMLPToolOptions.USE_SPRING;
-import static umlp.UMLPToolOptions.USE_SHELL;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -426,10 +422,11 @@ public class UMLPTool extends UMLPToolTOP {
           nodeIdTrafo.transform(astGui);
 
           IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, Optional.of(guiModel), importedSymbolPath);
-
+          List<String> arrayTemp=Arrays.stream(guiPathString.split("/")).collect(Collectors.toList());
+          String packageModelPath = guiPathString.substring(0,guiPathString.length()-arrayTemp.get(arrayTemp.size()-1).length());
           if (!routesMap.containsKey(astGui.getPackage())) {
             routesMap.put(astGui.getPackage(), new ModuleRoutingInfo(
-                astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList()));
+                astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList(), packageModelPath));
           }
           routesMap.get(astGui.getPackage()).add(astGui);
 
