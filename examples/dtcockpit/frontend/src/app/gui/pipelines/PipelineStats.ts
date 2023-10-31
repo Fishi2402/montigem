@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { GemBarChartData } from '@monticore/montigem-charts';
-import { GemBarChartEntry } from '@monticore/montigem-charts';
+import { GemBarChartData } from '@umlp/charts';
+import { GemBarChartEntry } from '@umlp/charts';
 import { DtcockpitManager } from '@src/dtcockpit/DtcockpitManager';
 import { Project } from '@src/dtcockpit/Project';
 import { PipelineStatistic } from '@src/dtcockpit/PipelineStatistic';
