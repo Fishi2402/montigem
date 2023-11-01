@@ -2,10 +2,10 @@ package gui;
 
 import Sehub.Project;
 
-import table.src.lib.gemtable.GemTable;
-import table.src.lib.gemtable.TableTypes.TableColumn;
-import charts.src.lib.gemnetworkgraph.GemNetworkGraph;
-import arrange.src.lib.gemcard.GemCard;
+import table.GemTable;
+import table.TableTypes.TableColumn;
+import charts.GemNetworkGraph;
+import arrange.GemCard;
 
 page SehubMainPage(List<Project> projects) {
 

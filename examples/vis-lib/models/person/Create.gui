@@ -5,11 +5,11 @@ package person;
 import Domain.Person;
 import Domain.Address;
 
-import arrange.src.lib.gemcolumn.GemColumn;
-import arrange.src.lib.gemrow.GemRow;
-import basic.src.lib.gemtext.GemText;
-import basic.src.lib.gembutton.GemButton;
-import input.src.lib.gemtextinput.GemTextInput;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import basic.GemButton;
+import input.GemTextInput;
 
 import person.Row;
 

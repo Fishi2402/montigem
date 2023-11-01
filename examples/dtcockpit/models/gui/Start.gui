@@ -1,22 +1,25 @@
 package gui;
 
-import arrange.src.lib.gemcolumn.GemColumn;
-import arrange.src.lib.gemcard.GemCard;
-import basic.src.lib.gemtext.GemText;
-import arrange.src.lib.gemrow.GemRow;
-import basic.src.lib.gemimage.GemImage;
+import arrange.GemColumn;
+import arrange.GemCard;
+import basic.GemText;
+import arrange.GemRow;
+import basic.GemImage;
 
-page Start() {
-  @GemColumn(width = "100%", hAlign = "center", component =
-    @GemCard(title = "DT Cockpit | Welcome", component =
-      @GemColumn(width = "50vw", rowGap = "10px", components = [
-        @GemText(value =
-          "This platform was developed using the MontiCore language workbench in a model-driven approach."),
+import gui.DtCockpitNavigation;
+import gui.widgets.Welcome;
 
-        @GemRow(hAlign = "right", vAlign = "center", width = "300px", component =
-          @GemImage(source = "assets/images/rwth_se_bild_weiss_rgb.png")
-        )
-      ])
-    ) //card
-  );
+import Dtcockpit.Project;
+
+page Start(List<Project> projects) {
+  @DtCockpitNavigation(username="FixMe", projects = projects);
+
+  @GemRow(width = "100%", rowGap="10px", colGap="10px", hAlign = "center", components = [
+
+    //Welcome Widget
+    @Welcome(),
+    @Welcome(),
+    @Welcome()
+
+  ]); // column
 }

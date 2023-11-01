@@ -2,13 +2,13 @@ package gui.note;
 
 import Sehub.Post;
 
-import arrange.src.lib.gemcolumn.GemColumn;
-import arrange.src.lib.gemcard.GemCard;
-import basic.src.lib.gemtext.GemText;
-import input.src.lib.gemtextareainput.GemTextareaInput;
-import input.src.lib.gemtextinput.GemTextInput;
-import basic.src.lib.gembutton.GemButton;
-import arrange.src.lib.gemrow.GemRow;
+import arrange.GemColumn;
+import arrange.GemCard;
+import basic.GemText;
+import input.GemTextareaInput;
+import input.GemTextInput;
+import basic.GemButton;
+import arrange.GemRow;
 import gui.note.Response;
 
 component Note(Post post, Boolean showResponses){

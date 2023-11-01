@@ -9,13 +9,13 @@ import gui.note.Note;
 import gui.note.Response;
 
 // Common GUI Components
-import arrange.src.lib.gemcard.GemCard;
-import arrange.src.lib.gemcolumn.GemColumn;
-import arrange.src.lib.gemrow.GemRow;
-import basic.src.lib.gemtext.GemText;
-import basic.src.lib.gembutton.GemButton;
-import input.src.lib.gemtextinput.GemTextInput;
-import input.src.lib.gemtextareainput.GemTextareaInput;
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import basic.GemButton;
+import input.GemTextInput;
+import input.GemTextareaInput;
 
 page NotesPage(Issue issue) {
   @GemRow(width= "100%", hAlign="center", colGap = "20px", components = [

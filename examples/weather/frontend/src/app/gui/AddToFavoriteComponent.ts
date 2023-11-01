@@ -14,7 +14,7 @@ export class AddToFavoriteComponent extends AddToFavoriteComponentTOP {
 
   public ngOnInit(): void {
     if (this.app == null) {
-      WeatherManager.getAppSure(this.appRoutingId).then(gemPromiseRes => {
+      WeatherManager.getApp().then(gemPromiseRes => {
         this.app = gemPromiseRes;
       });
     }

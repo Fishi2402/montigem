@@ -17,6 +17,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
+import umlp.generator.util.SingletonLookUp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,9 +67,15 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
         .filter(Predicate.not(GenService::isSymbolDerived))
         .collect(Collectors.toList());
 
-    addCreateMethod(cdName, originalClassName, shellapiClass, domainAttributes, assocs);
+    boolean isSingleton = SingletonLookUp.isSingleton(cdClass);
+
+    if (!isSingleton) {
+      addCreateMethod(cdName, originalClassName, shellapiClass, domainAttributes, assocs);
+    }
     addGetMethod(cdName, originalClassName, shellapiClass);
-    addDeleteMethod(cdName, originalClassName, shellapiClass);
+    if (!isSingleton) {
+      addDeleteMethod(cdName, originalClassName, shellapiClass);
+    }
     domainAttributes.stream().filter(Predicate.not(GenService::isList)).forEach(a -> addAttributeSetMethod(cdName, originalClassName, shellapiClass, a));
     domainAttributes.stream().filter(GenService::isList).forEach(a -> {
       // TODO Not yet supported

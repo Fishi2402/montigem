@@ -34,7 +34,7 @@ export class IssueEntry extends IssueEntryTOP {
   }
 
   public override navigate(): void {
-    this.router.navigate(['notes', 'NotesPage', this.issue.getGemId()]);
+    this.router.navigate(['gui', 'NotesPage', this.issue.getGemId()]);
   }
 
   public override getDelButtonDisabled (): boolean {

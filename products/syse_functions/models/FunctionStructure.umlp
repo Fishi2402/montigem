@@ -96,10 +96,9 @@ umlp FunctionStructure {
         und gegebenenfalls einer Dekompositions-Struktur
         (Architektur), bestehend aus weiteren Funktionen
   */
-  // TODO BEM MH: Wollen wir noch Verhalten an die Funktion drankleben?
-  // BR: nein, nicht hier --> ist eine Ergänzung
-  // (weil da unterschiedliche existieren werden)
-  class Function { String name; }
+  class Function {
+    String name;
+  }
 
 
   /*
@@ -111,8 +110,7 @@ umlp FunctionStructure {
     Wir codieren die Richtung in der Port-Klassenart.
   */
   abstract class Port {
-    String name;
-    -> FlowKind [1];
+    Optional<String> name;
   }
   class  InPort extends Port;
   class OutPort extends Port;
@@ -124,9 +122,9 @@ umlp FunctionStructure {
     Ports können zwischen mehreren Funktionen geteilt
     werden: damit lassen sich zum Beispiel von außen kommende
     InPorts darstellen, die zu Subfunktionen weitergereicht
-    werden. (Inport der aeußerem Funktion zeigt auf das
-    selbe Inport Objekt der inneren Funktion, um einen
-    Konnektor von Inport zu Inport darzustellen)
+    werden. (InPort der aeußerem Funktion zeigt auf das
+    selbe InPort Objekt der inneren Funktion, um einen
+    Konnektor von InPort zu InPort darzustellen)
     Das hat auch zur Folge, dass es keine implizite Typ-
     konvertierung in einem Konnektor zw. äußerer und
     innerer Funktion stattfinden kann, nur über eine
@@ -159,7 +157,7 @@ umlp FunctionStructure {
        strukturell passend verbunden
      --> dies wird per OCL constraints präzisiert
   */
-  composition Function (owner) -> (subFunction) Function [*];
+  composition [1] Function (owner) -> (subFunction) Function [*];
 
   /*
     Innerhalb einer Dekompositions-Struktur (Architektur)
@@ -177,11 +175,15 @@ umlp FunctionStructure {
     verbunden werden.
 
     Anhand der internen Struktur ist nicht erkennbar,
-    ob der Outport verkapselt oder nach aussen auch sichtbar ist
+    ob der OutPort verkapselt oder nach aussen auch sichtbar ist
     (das entscheidet die Ober-Funktion).
+
+    Kommunikation findet nach Annahme ohne Delay und ohne Verlust statt.
+    Bei Relevanz, so ist dies zB durch eine Delay-Komponente oder
+    Kommunikations-Medium spezifizierbar.
   */
 
-  association [0..1] OutPort (out) <- (in) InPort [*];
+  association [0..1] OutPort (out) <-> (in) InPort [*];
 
 
   /* TODO(!) BR: meines Erachtens besteht das Problem, dass
@@ -192,22 +194,53 @@ umlp FunctionStructure {
      schon).
      (Dafür wäre der ThroughPort extends InPort, OutPort geeignet)
   */
+  /* MH: Das ist richtig, hier steht noch eine letzte Entscheidung aus
+  */
+
+
+  /*
+    Abstrakte Definition der Ströme als Spezifikationsmittel, welche an
+    den Ports anliegen. Ströme liegen nur an Output Ports an oder an
+    den Input Ports der äußersten Funktion. Außerdem beschreibt ein
+    Stream auch den inneren Zustand einer Funktion.
+
+    Hier wird eine effiziente Realisierung abhängig von der
+    Datenmenge, der Regelmäßigkeit, etc. zu erwarten sein.
+    Dies wird innerhalb der Datenstruktur "FunctionStream" behandelt.
+  */
+  class FunctionStream;
+
+  association [*] FunctionStream -> Type [1];
+
+  association [0..1] Port <-> FunctionStream [0..1];
+  composition [0..1] Function -> (state) FunctionStream [1];
 
 
   /*
     Typisierungen für Nachrichten, Materie, etc. oder auch inneren Zustand
     Der Typ wird dann in der Objektstruktur abgelegt, z.B. wie die MC
-    SymTypeExpression
+    SymTypeExpression. Ein Beispiel wäre `Diesel als Fluid in l/s <Int>`.
+    Sowohl Ports, als auch Ströme haben einen Typen, welcher bei einem Port
+    und zugehörigem Strom gleich sein müssen.
+
+    Typ-Instanzen sind einzigartig und können auch mehrfach von verschiedenen
+    Ports oder Ströme assoziiert werden.
   */
   class Type {
-    String name;
+    -> Kind [0..1];
   }
 
   /*
-    Eine Beobachtung im Bezug auf einen Kanal ist
-    eine kontinuierliche oder diskrete Sequenz von
-    beobachteten Messages, Events, Material- oder Energieflüssen.
+    Eine Beobachtung im Bezug auf einen Kanal ist eine kontinuierliche oder
+    diskrete Sequenz von beobachteten Messages, Events, Material- oder
+    Energieflüssen. Diese sind kodiert im Kind, der Teil des konkreten Typs
+    ist.
 
+    Aus der Literatur kennen wir die 3 Grundtypen Material, Data & Energy.
+    Diese lassen sich nochmal domänen-abhängig kategorisieren. Das passiert
+    in der Konkretisierung dieses Referenzmodells.
+
+    Als Beispiel die Domäne der Produktion:
     Material: elements, compounds, alloys, ...
       Fluid: continuously flowing materia, typically not countable
              (water, gas, sand)
@@ -224,82 +257,61 @@ umlp FunctionStructure {
       Event: for discrete data that triggers behavior
     Signal: for continuously flowing data
   */
-  enum FlowKind { Solid, Fluid, Energy, Data, Event, Value; }
+  class Kind;
+
 
   /* ---------------------------------------------------------
    * Monitoring Teil
    * --------------------------------------------------------- */
 
-  /*
-    Eine Beobachtung ist zu kategorisieren
-    und seine Elemente auch noch zu typisieren:
-    Was wird beobachtet?
 
-    Dauer der Zeiteinheiten, etc. sind ggf. individuell zu lösen
-    ein Beobachtung kann festen Zeiteinheiten unterliegen,
-    eventbasiert sein, o.ä.
+  /*
+    Jeder Stream auf Output Ports kann beobachtet werden.
 
     Wir müssen unterscheiden zwischen der tatsächlichen Beobachtung
     mit den damit angenommenen/gemessenen oder spezifizierten
-    Beobachtungswerten
-    und den zugrunde liegenden physikalischen Modell des Austauschs.
-    Kontinuierliche Flüsse sind nur diskretisiert beobachtbar,
+    Beobachtungswerten und den zugrunde liegenden physikalischen Modell
+    des Austauschs. Kontinuierliche Flüsse sind nur diskretisiert beobachtbar,
     aber kontinuierlich spezifizierbar.
+    Deshalb zeigt die Beobachtung auf den beobachteten Strom und enthält
+    ein (zeitlich begrenztes) Subset auf dessen Werte mit der Möglichkeit
+    durchaus den Strom als Ganzes zu beobachten. Beobachtungen können auch
+    in der zeitlichen Einschränkung unvollständig sein und bei kontinuierlichen
+    Strömen bestimmte Abtastraten realisieren.
+    Zustände können ebenfalls beobachtet werden.
+    Die Beobachtung eines Zustands funktioniert analog zur
+    Beobachtung eines Kanals bzw. Geschehens auf einem Port,
+    auch wenn dies konzeptuell etwas anderes ist.
+
+    Eine Beobachtung kann individuell in einer Inkarnation weiter
+    kategorisiert werden:
+    - Was wird beobachtet?
+    - Dauer der Zeiteinheiten
+    - Eventbasiert
+    - Abtastrate
+    - etc.
 
     OCL-artige Randbedingung:
     die Werte im Strom müssen zum Typ der Beobachtung passen
-
-    Eine Observation kann zeitlich begrenzt sein.
   */
   class Observation {
     LocalDate start;
     LocalDate end;
-    boolean continuous;   // ist das im Prinzip ein kontinuierlicher Fluss
-    -> MCStream [1];
   }
 
+  association [*] Observation <-> FunctionStream [1];
   association [*] Observation -> Type [1];
 
   /*
-    Abstrakte Definition der Ströme als Bebcahtung und Spezifikationsmittel:
-    Hier wird eine effiziente Realisierung abhängig von der
-    Datenmenge, der Regelmäßigkeit, etc. zu erwarten sein.
-
-    Streams können auch unvollständige Beobachtungen sein, die nur
-    bestimmte Intervalle, und bei kontinuierlichen Beobachtungen
-    bestimmte Abtastraten realisieren.
-    Dies wird innerhalb der Datenstruktur "MCStream" behandelt.
-  */
-  abstract class MCStream;
-
-  association [*] MCStream -> Type [1];
-
-
-  /*
-    Jeder OutPort kann beobachtet werden.
-    InPorts werden nicht beobachtet, denn sie sind immer mit
-    OutPorts verbunden.
-
-    Kommunikation findet nach Annahme ohne Delay und ohne Verlust statt.
-    Ist relevant, so ist dies zB durch eine Delay-Komponente oder
-    Kommunikations-Medium spezifizierbar.
+    Die konkreten Werte auf einem Strom oder in einer Beobachtung werden in
+    der Klasse Value individuell realisiert.
+    Ströme und Beobachtungen enthalten eine zeitlich geordnete Liste von diesen
+    Werten.
   */
 
-  association [1] OutPort -> Observation [1];
+  class Value;
 
-
-  /*
-    Zustände können beobachtet werden.
-    Die Beobachtung eines Zustands funktioniert analog zur
-    Beobachtung eines Kanals bzw. Geschehens auf einem Port,
-    auch wenn dies konzeptuell etwas anderes ist.
-  */
-
-  association [1] Function -> (state) Observation [1];
-
-
-  /* ---------------------------------------------------------
-   * Hilfsklassen (aus Sicht des Referenzmodells)
-   * --------------------------------------------------------- */
+  association [0..1] FunctionStream -> Value [*] {ordered};
+  association [*] Observation -> Value [*] {ordered};
 
 }

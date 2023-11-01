@@ -26,6 +26,10 @@
   place-content: center;
 }
 
+.gem-checkbox:disabled {
+  cursor: not-allowed;
+}
+
 .gem-checkbox::before {
   content: "";
   width: 0.65em;

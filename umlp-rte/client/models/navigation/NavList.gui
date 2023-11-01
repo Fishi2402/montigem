@@ -1,0 +1,3 @@
+package navigation;
+
+component NavList (List<GUIViewElement> components)

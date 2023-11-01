@@ -10,14 +10,10 @@ plugins {
 
 
 configurations {
-  guiParser
-  guiLib
   guiDefaultTypes
 }
 
 dependencies {
-  guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
-  guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
@@ -60,14 +56,18 @@ task genDomain(type: UMLPFrontendTask) {
 }
 
 task genGUI(type: UMLPGuiGenTask) {
-  dependsOn(genDomain)
+  dependsOn(genDomain, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
   input = file("../models")
   outputDir = frontendSetup.getOutput().dir("build/appgui")
   hwcDir = file("src/app/")
   modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(genDomain.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
+  symbolDir = files(
+      genDomain.symbolOutDir,
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      configurations.guiDefaultTypes.files
+  )
   domainModels = ["Dtcockpit"]
-  guiCreateModels = ["gui.login.UserCreate"]
+  guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate"]
 
   /*
   debug = true

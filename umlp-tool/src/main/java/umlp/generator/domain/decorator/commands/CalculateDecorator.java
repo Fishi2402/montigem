@@ -58,7 +58,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
               });
           CDSymbolTables.getAssociationsInHierarchy(c)
               .stream()
-              .filter(a -> a.getModifier().isDerived())
+              .filter(a -> GenService.isSymbolDerived(a))
               .filter(a -> !GenService.isBidirectional(a))
               .forEach(a -> {
                 astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true)));

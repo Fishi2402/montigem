@@ -1,8 +1,8 @@
 <button
   type="button"
   role="button"
-  class="nav-item"
-  (click)="navigate()"
+  class="nav-item {{isActive?'active' :''}}"
+  (click)="navigateOrAct()"
 >
   {{title}}
 </button>

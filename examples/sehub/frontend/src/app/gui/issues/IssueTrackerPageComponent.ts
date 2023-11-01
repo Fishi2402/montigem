@@ -23,7 +23,7 @@ export class IssueTrackerPageComponent extends IssueTrackerPageComponentTOP {
 
   public ngOnInit(): void {
     if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['/login/LoginPage']);
+      this.router.navigate(['gui/login/LoginPage']);
     }
     super.ngOnInit();
   }

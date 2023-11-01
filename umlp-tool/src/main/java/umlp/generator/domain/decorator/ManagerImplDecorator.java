@@ -18,6 +18,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.commands.EventSendingObserverDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.SingletonLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
@@ -61,6 +62,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
     List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
+        .filter(c -> !SingletonLookUp.isSingleton(c))
         .collect(Collectors.toList());
     getCD4C().addMethod(managerClass, "umlp.managerimpl.ClearCache", concreteDomainClasses);
 
@@ -78,22 +80,33 @@ public class ManagerImplDecorator extends AbstractDecorator {
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
-
+    boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
     if (!domainClass.getModifier().isAbstract()) {
       managerClass.addCDMember(getDaoAttribute(domainClass));
-      managerClass.addCDMember(getCacheAttribute(domainClass));
       managerClass.addCDMember(getDBObserverAttribute(domainClass));
+      if (isSingleton) {
+        managerClass.addCDMember(getSingletonAttribute(domainClass));
+      } else {
+        managerClass.addCDMember(getCacheAttribute(domainClass));
+      }
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName);
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete", name, managerName);
+      if (!isSingleton) {
+        getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName);
+        getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete", name, managerName);
+      }
     }
-
-    Set<ASTCDType> collectConcreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name, collectConcreteSubclassesInclSelf);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, collectConcreteSubclassesInclSelf);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, collectConcreteSubclassesInclSelf);
+    if (isSingleton) {
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSingletonElement", name, managerName);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOptSingletonElement", name);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetListSingletonElement", name);
+    }else {
+      Set<ASTCDType> collectConcreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name, collectConcreteSubclassesInclSelf);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, collectConcreteSubclassesInclSelf);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, collectConcreteSubclassesInclSelf);
+    }
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
     // Associations
@@ -165,6 +178,13 @@ public class ManagerImplDecorator extends AbstractDecorator {
         getMCTypeFacade().createQualifiedType(type), "the" + type);
     getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new " + type + "()"));
     return domainClassDaoAttr;
+  }
+
+  protected ASTCDAttribute getSingletonAttribute(ASTCDType domainClass) {
+    ASTCDAttribute singletonAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+        getMCTypeFacade().createQualifiedType( domainClass.getName()),
+        StringTransformations.uncapitalize(domainClass.getName() + "Instance"));
+    return singletonAttr;
   }
 
   protected void addImports(ASTCDClass clazz) {

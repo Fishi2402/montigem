@@ -91,7 +91,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         SymTypeExpression innerType = util.getListInnerType(paramSTE).get();
         if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
           if (!util.isDomainType(innerType)) {
-            if (!TypeScriptTypes.isDefault(innerType.print())) {
+            if (!TypeScriptTypes.isDefault(innerType.print())
+              && !innerType.print().equals("java.util.List.E")) {
               getCD4C().addImport(decoratedClass, innerType.print());
             }
           } else {

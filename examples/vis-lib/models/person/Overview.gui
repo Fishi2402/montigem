@@ -4,9 +4,9 @@ package person;
 
 import Domain.Person;
 
-import arrange.src.lib.gemcolumn.GemColumn;
-import arrange.src.lib.gemrow.GemRow;
-import basic.src.lib.gemtext.GemText;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
 
 import person.Row;
 import person.Create;

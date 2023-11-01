@@ -8,15 +8,15 @@ import gui.artifacts.ArtifactTypeIcon;
 import gui.artifacts.DateTimeToPassedByTime;
 import gui.artifacts.ProjectFileViewLink;
 
-import basic.src.lib.gembutton.GemButton;
-import basic.src.lib.gemtext.GemText;
-import basic.src.lib.gemimage.GemImage;
-import basic.src.lib.gemlink.GemLink;
+import basic.GemButton;
+import basic.GemText;
+import basic.GemImage;
+import basic.GemLink;
 
-import arrange.src.lib.gemrow.GemRow;
-import arrange.src.lib.gemcolumn.GemColumn;
-import table.src.lib.gemtable.GemTable;
-import table.src.lib.gemtable.TableTypes.TableColumn;
+import arrange.GemRow;
+import arrange.GemColumn;
+import table.GemTable;
+import table.TableTypes.TableColumn;
 
 
 page ProjectFileView(Directory parent) {

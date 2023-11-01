@@ -2,7 +2,7 @@
 <#--
   The build method is generated to allow object creation.
 -->
-${tc.signature("name", "managerName", "assocList")}
+${tc.signature("name", "managerName", "assocList", "isSingleton")}
 ${cd4c.method("public ${name} build()")}
 
 if (!this.buildFinished) {
@@ -15,7 +15,9 @@ if (!this.buildFinished) {
 </#list>
 
     if(!this.INTERNAL_deser_mode) {
+<#if !isSingleton>
       ${managerName}.add${name}(this);
+</#if>
     }
 <#list assocList as assoc>
   <#if genService.isList(assoc)>
