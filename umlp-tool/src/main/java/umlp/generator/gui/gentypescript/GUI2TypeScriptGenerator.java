@@ -230,20 +230,18 @@ public class GUI2TypeScriptGenerator {
     File[] listOfFiles = folder.listFiles();
 
     if(listOfFiles!=null) {
-      for (int i = 0; i < listOfFiles.length; i++) {
-        if (listOfFiles[i].isDirectory()) {
-          String moduleName=listOfFiles[i].getName().toUpperCase().charAt(0)+listOfFiles[i].getName().substring(1);
-          File[] subListOfFiles =listOfFiles[i].listFiles();
-          for(File file:subListOfFiles)
-          {
-            if(!file.isDirectory() && file.getName().contains(".gui"));
-            {
-              modules.put(moduleName+"_Module", "./"+listOfFiles[i].getName()+"/"+moduleName+MODULES_FILE);
-              break;
+        for (File listOfFile : listOfFiles) {
+            if (listOfFile.isDirectory()) {
+                String moduleName = listOfFile.getName().toUpperCase().charAt(0) + listOfFile.getName().substring(1);
+                File[] subListOfFiles = listOfFile.listFiles();
+                for (File file : subListOfFiles) {
+                    if (file.isFile() && file.getName().contains(".gui")) {
+                        modules.put(moduleName + "_Module", "./" + listOfFile.getName() + "/" + moduleName + MODULES_FILE);
+                        break;
+                    }
+                }
             }
-          }
         }
-      }
     }
     return modules;
 
