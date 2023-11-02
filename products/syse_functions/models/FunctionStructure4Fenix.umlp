@@ -83,7 +83,7 @@ import java.time.LocalDate;
         [GHK+07], ...
 */
 
-umlp FunctionStructure {
+umlp FunctionStructure4Fenix {
 
   /* ---------------------------------------------------------
    * Strukturteil
@@ -225,7 +225,7 @@ umlp FunctionStructure {
     und zugehörigem Strom gleich sein müssen.
 
     Typ-Instanzen sind einzigartig und können auch mehrfach von verschiedenen
-    Ports oder Ströme assoziiert werden. 
+    Ports oder Ströme assoziiert werden.
 	TODO: Diskussion ob typeidentifier im Modell String oder MCType ist.
   */
   class Type {
