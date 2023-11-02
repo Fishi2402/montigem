@@ -1,0 +1,5 @@
+package pack_gui;
+
+page SomePage(){
+
+}

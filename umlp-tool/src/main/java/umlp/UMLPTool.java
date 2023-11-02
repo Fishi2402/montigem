@@ -8,10 +8,10 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl.GUIDSLTool;
@@ -83,7 +83,6 @@ import static umlp.UMLPToolOptions.DOMAIN;
 import static umlp.UMLPToolOptions.FOR_CLIENT;
 import static umlp.UMLPToolOptions.GUIVariability;
 import static umlp.UMLPToolOptions.GUI_CREATE;
-import static umlp.UMLPToolOptions.GUI_GEN_TS_FUNC;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
@@ -95,8 +94,6 @@ import static umlp.UMLPToolOptions.REPORTS;
 import static umlp.UMLPToolOptions.REPORT_BASE;
 import static umlp.UMLPToolOptions.SYMTAB;
 import static umlp.UMLPToolOptions.TMPL_PATH;
-import static umlp.UMLPToolOptions.USE_SPRING;
-import static umlp.UMLPToolOptions.USE_SHELL;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -119,11 +116,17 @@ public class UMLPTool extends UMLPToolTOP {
     BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
   }
 
-  private static GlobalExtensionManagement createGlex() {
+  private static GlobalExtensionManagement createGlex(List<String> moduleConfigTemplates) {
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.setBeforeTemplate("cd2java.Class", AbstractDecorator.getOriginHookPoint());
     glex.setBeforeTemplate("cd2java.Enum", AbstractDecorator.getOriginHookPoint());
     glex.setBeforeTemplate("cd2java.Interface", AbstractDecorator.getOriginHookPoint());
+
+    for (String moduleConfigTemplate : moduleConfigTemplates) {
+      // Arguments are the same as original include call
+      glex.addAfterTemplate("umlp.generator.hook.InitModules", new TemplateHookPoint(moduleConfigTemplate));
+    }
+
     return glex;
   }
 
@@ -375,7 +378,7 @@ public class UMLPTool extends UMLPToolTOP {
 
         ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
         GeneratorSetup genSetup = new GeneratorSetup();
-        genSetup.setGlex(createGlex());
+        genSetup.setGlex(createGlex(getModuleConfigTemplates(cmd)));
         // set output directory
         genSetup.setOutputDirectory(outDir);
 
@@ -466,7 +469,7 @@ public class UMLPTool extends UMLPToolTOP {
           // set template path
           genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
               .map(p -> p.toFile()).collect(Collectors.toList()));
-          GlobalExtensionManagement glex = createGlex();
+          GlobalExtensionManagement glex = createGlex(getModuleConfigTemplates(cmd));
           genSetup.setGlex(glex);
 
           List<String> domainModels = new ArrayList<>();
@@ -539,7 +542,7 @@ public class UMLPTool extends UMLPToolTOP {
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
             .map(p -> p.toFile()).collect(Collectors.toList()));
         GUIGeneratorUtil.getInstance().init(createdTSComponents);
-        GlobalExtensionManagement glex = createGlex();
+        GlobalExtensionManagement glex = createGlex(getModuleConfigTemplates(cmd));
         genSetup.setGlex(glex);
         genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
         routesMap.entrySet().forEach(packageInfo ->
@@ -568,6 +571,14 @@ public class UMLPTool extends UMLPToolTOP {
       if (guidsl_reportManagerFactory != null) {
         guidsl_reportManagerFactory.close();
       }
+    }
+  }
+
+  protected List<String> getModuleConfigTemplates(CommandLine cmd){
+    if(!cmd.hasOption(UMLPToolOptions.MODULE_CONFIG.getCMD())){
+      return List.of();
+    }else {
+      return List.of(cmd.getOptionValues(UMLPToolOptions.MODULE_CONFIG.getCMD()));
     }
   }
 
