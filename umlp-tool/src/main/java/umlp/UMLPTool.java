@@ -37,6 +37,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
+import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLAssocToAttrTrafo;
@@ -55,7 +56,6 @@ import umlp.generator.gui.gentypescript.ModuleRoutingInfo;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
-import umlptagdefinition.UMLPTagDefinitionMill;
 
 import java.io.File;
 import java.io.IOException;
@@ -322,12 +322,7 @@ public class UMLPTool extends UMLPToolTOP {
         String report_on = inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
         Reporting.on(report_on);
 
-        // init the umlp tagdef mill (which includes umlp)
-        if (SYMTAB.isSelected(cmd))
-          UMLPTagDefinitionMill.init();
-        else
-          UMLPMill.init();
-
+        UMLPMill.init();
         BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
         UMLPMill.globalScope().setSymbolPath(importedSymbolPath);
 
@@ -368,28 +363,19 @@ public class UMLPTool extends UMLPToolTOP {
                     + symbolTable.getName()
                     + ".umlpsym");
             JsonPrinter.disableIndentation();
-            // use the UMLPTagDefSymbols2JSON with an UMLP artifact scope (instead of storeSymbols(symbolTable, symbolPath.toString());)
-            umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json symbols2Json = new umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json();
-            symbolTable.accept(symbols2Json.getTraverser());
-            de.monticore.io.FileReaderWriter.storeInFile(symbolPath, symbols2Json.getSerializedString());
+            storeSymbols(symbolTable, symbolPath.toString());
           }
           else {
             //print (formatted!) symboltable to console
-            umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json s2j = new umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json();
+            UMLPSymbols2Json s2j = new UMLPSymbols2Json();
             JsonPrinter.enableIndentation();
-            symbolTable.accept(s2j.getTraverser());
-            System.out.println(s2j.getSerializedString());
+            System.out.println(s2j.serialize(symbolTable));
           }
         }
 
         // pretty print model and either output on stdout or store to file
         if (PRETTYPRINT.isSelected(cmd)) {
           prettyPrint(ast, PRETTYPRINT.getValue(cmd));
-        }
-
-        // Also store singleton-stereo information
-        if (SYMTAB.isSelected(cmd)) {
-          TagRelated.doStoreTagStereos(ast, this, symbolTable, cmd);
         }
 
         ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
@@ -428,9 +414,6 @@ public class UMLPTool extends UMLPToolTOP {
         Map<String, ModuleRoutingInfo> routesMap = new HashMap<>();
 
         Set<String> createdTSComponents = new HashSet();
-
-        // Prepare the SingletonLookup
-        TagRelated.initLookup(importedSymbolPath);
 
         for (String guiPathString : cmd.getOptionValues(INPUT.getCMD())) {
           Path guiModel = Paths.get(guiPathString);
