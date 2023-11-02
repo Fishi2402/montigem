@@ -105,6 +105,7 @@ task genGUI(type: UMLPGuiGenTask) {
   )
   domainModels = ["Jsweettest"]
   guiGenTSFuncionality = false
+  guiGenJsweet = true
 }
 compileJava.dependsOn(genGUI)
 
@@ -145,7 +146,7 @@ jsweetDomain {
 
 task translateJava2TSDomain(type: org.jsweet.gradle.JSweetTranspileTask) {
   setGroup("generate");
-  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, genGUI);
+  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME);
   setConfiguration(jsweetDomainConf);
   setSources(sourceSets.main.java);
   setClasspath(configurations.runtimeClasspath);

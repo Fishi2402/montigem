@@ -5,6 +5,8 @@ import arrange.GemCard;
 import basic.GemText;
 import arrange.GemRow;
 import basic.GemImage;
+import basic.GemButton;
+import input.GemTextInput;
 
 page Start() {
   @GemCard(
@@ -12,7 +14,8 @@ page Start() {
     component = @GemColumn(
       components = [
         erster@GemText(value = "hi"),
-        zweiter@GemText(value = "JSweet")
+        zweiter@GemText(value = "JSweet"),
+        buttonEins@GemButton(label = "Erzeuge B", leftClick = createB)
       ]
     )
   );
