@@ -2,6 +2,7 @@ package dtcockpit.pipelines;
 
 import de.se_rwth.commons.logging.Log;
 import dtcockpit.DtcockpitManager;
+import dtcockpit.Group;
 import dtcockpit.PipelineStatistic;
 import dtcockpit.Project;
 import org.gitlab4j.api.GitLabApi;
@@ -32,26 +33,43 @@ public class PipelineInformationExtractor {
     this.gitApiAccessToken = System.getenv("gitApiAccessToken");
   }
 
-  public void extractPipelineDataOf(String hostURL, Project projectID) {
-    this.extractPipelineDataOf(hostURL, projectID, this.gitApiAccessToken);
+  public void extractPipelineDataOf(String hostURL, Project project) {
+    GitLabApi api = new GitLabApi(hostURL, this.gitApiAccessToken);
+    this.extractPipelineDataOf(api, project);
+  }
+
+  public void extractPipelineDataOfAllProjectsInGroup(String hostURL, Group group) {
+
+    GitLabApi api = new GitLabApi(hostURL, this.gitApiAccessToken);
+    try{
+      Pager<org.gitlab4j.api.models.Project> projectPager = api.getGroupApi().getProjects(group.getGit(), 100);
+      while(projectPager.hasNext()) {
+        List<org.gitlab4j.api.models.Project> projects = projectPager.next();
+        for (org.gitlab4j.api.models.Project project : projects) {
+          Optional<Project> newProject =
+              DtcockpitManager.projectBuilder().name(group.getName()+"/"+project.getName()).git(project.getId().toString()).build();
+          extractPipelineDataOf(api, newProject.get());
+          group.addSubProjects(newProject.get());
+        }
+      }
+    } catch (GitLabApiException e) {
+      Log.info("Problem when trying to retrieve projects of group:", e, this.getClass().getName());
+    }
   }
 
   /**
    *
-   * @param hostURL
    * @param project the GitLab Api allows a path as String or the projectID as a long
-   * @param apiToken
+   * @param api with valid token
    */
-  public void extractPipelineDataOf(String hostURL, Project project, String apiToken){
-    GitLabApi api = new GitLabApi(hostURL, apiToken);
-
+  public void extractPipelineDataOf(GitLabApi api, Project project){
     try{
       Pager<Pipeline> pipelinePager = api.getPipelineApi().getPipelines(project.getGit(), 100);
 
       // TODO for now maximum at 100 pipelines if all pipelines wanted replace if with while
       if(pipelinePager.hasNext()) {
         List<Pipeline> pipelines = pipelinePager.next();
-        Log.info("Starting to extract Pipeline data ("+pipelines.size()+" pipelines) for "+hostURL+"/"+project.getGit(), "GitAPI Extraction Debugger");
+        Log.info("Starting to extract Pipeline data ("+pipelines.size()+" pipelines) for "+api.getGitLabServerUrl()+"/"+project.getGit(), "GitAPI Extraction Debugger");
         for (Pipeline pipeline: pipelines) {
           if(pipeline.getUpdatedAt() == null) {
             Log.warn("Skipped a Pipeline, because it does not have a value at UpdatedAt.");
@@ -65,17 +83,17 @@ public class PipelineInformationExtractor {
               .build();
           if(opt.isEmpty()) {
             Log.warn("Could not create pipeline stats for"+
-                hostURL+"/"+project.getGit()+".");
+                api.getGitLabServerUrl()+"/"+project.getGit()+".");
           } else {
             project.addPStatistics(opt.get());
           }
         }
       }
-      Log.info("Finished to extract Pipeline data for "+hostURL+"/"+project.getGit()+
+      Log.info("Finished to extract Pipeline data for "+api.getGitLabServerUrl()+"/"+project.getGit()+
           ". Number of extracted Pipelines is:"+project.getPStatistics().size(), "GitAPI Extraction Debugger");
     } catch (GitLabApiException exceptione) {
       Log.warn("Could not extract Pipeline data for "+
-          hostURL+"/"+project.getGit()+" with the given apiToken.");
+          api.getGitLabServerUrl()+"/"+project.getGit()+" with the given apiToken.");
     }
   }
 }

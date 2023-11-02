@@ -8,7 +8,6 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -38,7 +37,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
-import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLAssocToAttrTrafo;
@@ -57,6 +55,7 @@ import umlp.generator.gui.gentypescript.ModuleRoutingInfo;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
+import umlptagdefinition.UMLPTagDefinitionMill;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,7 +82,6 @@ import static umlp.UMLPToolOptions.DOMAIN;
 import static umlp.UMLPToolOptions.FOR_CLIENT;
 import static umlp.UMLPToolOptions.GUIVariability;
 import static umlp.UMLPToolOptions.GUI_CREATE;
-import static umlp.UMLPToolOptions.GUI_GEN_TS_FUNC;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
@@ -95,8 +93,6 @@ import static umlp.UMLPToolOptions.REPORTS;
 import static umlp.UMLPToolOptions.REPORT_BASE;
 import static umlp.UMLPToolOptions.SYMTAB;
 import static umlp.UMLPToolOptions.TMPL_PATH;
-import static umlp.UMLPToolOptions.USE_SPRING;
-import static umlp.UMLPToolOptions.USE_SHELL;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -119,11 +115,20 @@ public class UMLPTool extends UMLPToolTOP {
     BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
   }
 
-  private static GlobalExtensionManagement createGlex() {
+  private static GlobalExtensionManagement createGlex(List<String> moduleConfigTemplates) {
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.setBeforeTemplate("cd2java.Class", AbstractDecorator.getOriginHookPoint());
     glex.setBeforeTemplate("cd2java.Enum", AbstractDecorator.getOriginHookPoint());
     glex.setBeforeTemplate("cd2java.Interface", AbstractDecorator.getOriginHookPoint());
+
+    ModuleController mod = new ModuleController(glex);
+    glex.defineGlobalVar("mod", mod);
+
+    for (String moduleConfigTemplate : moduleConfigTemplates) {
+      // Arguments are the same as original include call
+      mod.addModuleToHookpoint("umlp.generator.hook.InitModules", moduleConfigTemplate);
+    }
+
     return glex;
   }
 
@@ -317,7 +322,12 @@ public class UMLPTool extends UMLPToolTOP {
         String report_on = inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
         Reporting.on(report_on);
 
-        UMLPMill.init();
+        // init the umlp tagdef mill (which includes umlp)
+        if (SYMTAB.isSelected(cmd))
+          UMLPTagDefinitionMill.init();
+        else
+          UMLPMill.init();
+
         BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
         UMLPMill.globalScope().setSymbolPath(importedSymbolPath);
 
@@ -358,13 +368,17 @@ public class UMLPTool extends UMLPToolTOP {
                     + symbolTable.getName()
                     + ".umlpsym");
             JsonPrinter.disableIndentation();
-            storeSymbols(symbolTable, symbolPath.toString());
+            // use the UMLPTagDefSymbols2JSON with an UMLP artifact scope (instead of storeSymbols(symbolTable, symbolPath.toString());)
+            umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json symbols2Json = new umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json();
+            symbolTable.accept(symbols2Json.getTraverser());
+            de.monticore.io.FileReaderWriter.storeInFile(symbolPath, symbols2Json.getSerializedString());
           }
           else {
             //print (formatted!) symboltable to console
-            UMLPSymbols2Json s2j = new UMLPSymbols2Json();
+            umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json s2j = new umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json();
             JsonPrinter.enableIndentation();
-            System.out.println(s2j.serialize(symbolTable));
+            symbolTable.accept(s2j.getTraverser());
+            System.out.println(s2j.getSerializedString());
           }
         }
 
@@ -373,9 +387,14 @@ public class UMLPTool extends UMLPToolTOP {
           prettyPrint(ast, PRETTYPRINT.getValue(cmd));
         }
 
+        // Also store singleton-stereo information
+        if (SYMTAB.isSelected(cmd)) {
+          TagRelated.doStoreTagStereos(ast, this, symbolTable, cmd);
+        }
+
         ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
         GeneratorSetup genSetup = new GeneratorSetup();
-        genSetup.setGlex(createGlex());
+        genSetup.setGlex(createGlex(getModuleConfigTemplates(cmd)));
         // set output directory
         genSetup.setOutputDirectory(outDir);
 
@@ -409,6 +428,9 @@ public class UMLPTool extends UMLPToolTOP {
         Map<String, ModuleRoutingInfo> routesMap = new HashMap<>();
 
         Set<String> createdTSComponents = new HashSet();
+
+        // Prepare the SingletonLookup
+        TagRelated.initLookup(importedSymbolPath);
 
         for (String guiPathString : cmd.getOptionValues(INPUT.getCMD())) {
           Path guiModel = Paths.get(guiPathString);
@@ -466,7 +488,7 @@ public class UMLPTool extends UMLPToolTOP {
           // set template path
           genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
               .map(p -> p.toFile()).collect(Collectors.toList()));
-          GlobalExtensionManagement glex = createGlex();
+          GlobalExtensionManagement glex = createGlex(getModuleConfigTemplates(cmd));
           genSetup.setGlex(glex);
 
           List<String> domainModels = new ArrayList<>();
@@ -539,7 +561,7 @@ public class UMLPTool extends UMLPToolTOP {
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
             .map(p -> p.toFile()).collect(Collectors.toList()));
         GUIGeneratorUtil.getInstance().init(createdTSComponents);
-        GlobalExtensionManagement glex = createGlex();
+        GlobalExtensionManagement glex = createGlex(getModuleConfigTemplates(cmd));
         genSetup.setGlex(glex);
         genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
         routesMap.entrySet().forEach(packageInfo ->
@@ -568,6 +590,14 @@ public class UMLPTool extends UMLPToolTOP {
       if (guidsl_reportManagerFactory != null) {
         guidsl_reportManagerFactory.close();
       }
+    }
+  }
+
+  protected List<String> getModuleConfigTemplates(CommandLine cmd){
+    if(!cmd.hasOption(UMLPToolOptions.MODULE_CONFIG.getCMD())){
+      return List.of();
+    }else {
+      return List.of(cmd.getOptionValues(UMLPToolOptions.MODULE_CONFIG.getCMD()));
     }
   }
 

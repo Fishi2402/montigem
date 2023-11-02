@@ -1,0 +1,75 @@
+plugins {
+  id "base"
+  id "java"
+  id 'maven-publish'
+  id 'de.rwth.se.umlp-tool-backend'
+}
+
+// TODO: generated code for frontend
+// TODO: hw code for frontend
+
+configurations {
+  moduleGenTimeCompileOnly
+  moduleGenTime
+}
+
+dependencies {
+  moduleGenTimeCompileOnly("umlp:umlp-tool")
+  moduleGenTimeCompileOnly group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+  moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+  moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+}
+
+sourceSets {
+  moduleGenTime {
+    java {}
+  }
+}
+
+def moduleClassifier = "module-generator-time"
+
+task moduleJar(type: Jar){
+  from("src/models"){
+    include "**/*.*"
+  }
+  from(sourceSets.moduleGenTime.output)
+  archiveClassifier = moduleClassifier
+}
+tasks.jar.dependsOn(moduleJar)
+
+artifacts {
+  moduleGenTime moduleJar
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      artifact moduleJar
+    }
+  }
+  // TODO: correct repo
+  repositories {
+    maven {
+      url "file://${project.buildDir}/repo"
+    }
+  }
+}
+
+task printStuff(){
+  doLast{
+    println("Files")
+    sourceSets.moduleGenTime.output.files.each {
+      println(it)
+    }
+
+    println("JC name " + sourceSets.moduleGenTime.compileJavaTaskName)
+
+    configurations.each {
+      println("Config name ${it.name}")
+    }
+
+    println(project.group)
+    println(project.name)
+  }
+}
+

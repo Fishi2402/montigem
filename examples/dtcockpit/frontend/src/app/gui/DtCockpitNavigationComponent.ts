@@ -9,8 +9,7 @@ import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
 @Component({
   selector: 'dt-cockpit-navigation',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/DtCockpitNavigation.html',
-  styles: [":host{ display: flex; flex-direction: column; max-width: 25%; flex-basis: 25%; }"],
-  styleUrls: []
+  styleUrls: ["./DtCockpitNavigationComponent.scss"]
 })
 export  class DtCockpitNavigationComponent extends DtCockpitNavigationComponentTOP  {
 
