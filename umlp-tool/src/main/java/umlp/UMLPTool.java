@@ -11,7 +11,6 @@ import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl.GUIDSLTool;
@@ -38,7 +37,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
-import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLAssocToAttrTrafo;
@@ -123,9 +121,12 @@ public class UMLPTool extends UMLPToolTOP {
     glex.setBeforeTemplate("cd2java.Enum", AbstractDecorator.getOriginHookPoint());
     glex.setBeforeTemplate("cd2java.Interface", AbstractDecorator.getOriginHookPoint());
 
+    ModuleController mod = new ModuleController(glex);
+    glex.defineGlobalVar("mod", mod);
+
     for (String moduleConfigTemplate : moduleConfigTemplates) {
       // Arguments are the same as original include call
-      glex.addAfterTemplate("umlp.generator.hook.InitModules", new TemplateHookPoint(moduleConfigTemplate));
+      mod.addModuleToHookpoint("umlp.generator.hook.InitModules", moduleConfigTemplate);
     }
 
     return glex;

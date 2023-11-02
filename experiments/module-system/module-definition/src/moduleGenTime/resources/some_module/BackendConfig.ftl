@@ -1,5 +1,4 @@
 ${tc.signature("glex")}
 
-${glex.addAfterTemplate("umlp.generator.hook.BeforeTransform",  tc.instantiate("de.monticore.generating.templateengine.TemplateHookPoint", ["some_module.Backend_BeforeTransform"]))}
-
-${glex.addAfterTemplate("umlp.generator.hook.AfterTransform",  tc.instantiate("de.monticore.generating.templateengine.TemplateHookPoint", ["some_module.Backend_AfterTransform"]))}
+${mod.addModuleToHookpoint("umlp.generator.hook.BeforeTransform", "some_module.Backend_BeforeTransform")}
+${mod.addModuleToHookpoint("umlp.generator.hook.AfterTransform",  "some_module.Backend_AfterTransform")}
