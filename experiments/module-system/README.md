@@ -18,6 +18,9 @@ This jar is then added to the classpath of the generator, making all classes and
 All items marked with (compile) need to be available during Java compilation in the consuming project
 and are packed into the normal jar without a classifier.
 
+`module-usage` imports and uses the defined module and contains the needed Gradle configuration to
+adapt the umlp tasks.
+
 # Configuration
 All modules need to provide a file `${name}.metadata.json`, which has info on what the module
 contains and how it should be used. This file defines a config template per task that needs to be
