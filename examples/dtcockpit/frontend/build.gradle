@@ -67,7 +67,7 @@ task genGUI(type: UMLPGuiGenTask) {
       configurations.guiDefaultTypes.files
   )
   domainModels = ["Dtcockpit"]
-  guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate"]
+  guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
   /*
   debug = true
