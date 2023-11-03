@@ -38,6 +38,10 @@
       "tslib": ["node_modules/tslib"]
     }
   },
+  "include": [
+    "**/*",
+    "../../src/**/*.ts"
+  ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

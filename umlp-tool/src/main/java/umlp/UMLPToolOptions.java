@@ -39,6 +39,8 @@ public enum UMLPToolOptions {
       .desc("Fully qualified names of the domain models, space separated").build()),
   MODEl_PATH(Option.builder("mp").longOpt("modelPath").hasArgs()
       .desc("Sets the artifact path for imported models, space separated").build()),
+  MODULE_CONFIG(Option.builder("m").longOpt("module-config").hasArgs()
+      .desc("Fully qualified name(s) of config template(s) for added modules").build()),
 
   /**
    * RQ: GUI has no strategy to differentiate create and update pages, but we should only generate

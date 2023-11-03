@@ -1,0 +1,7 @@
+package gui;
+
+import pack_gui.SomeComponent;
+
+page UsingModuleComp(){
+  @SomeComponent()
+}
