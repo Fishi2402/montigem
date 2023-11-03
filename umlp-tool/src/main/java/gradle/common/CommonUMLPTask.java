@@ -1,7 +1,7 @@
 package gradle.common;
 
 import de.se_rwth.commons.logging.Log;
-import gradle.specific.UMLPTask;
+import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
@@ -15,6 +15,7 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
@@ -22,6 +23,7 @@ import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.work.FileChange;
 import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
+import org.gradle.workers.ClassLoaderWorkerSpec;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
 import umlp.UMLPToolOptions;
@@ -97,6 +99,16 @@ public abstract class CommonUMLPTask extends DefaultTask {
   @OutputDirectory
   public abstract DirectoryProperty getReportDir();
 
+  @InputFiles
+  @Optional
+  // Absolute, since this can contain elements from the gradle jar cache, outside the project
+  @PathSensitive(PathSensitivity.ABSOLUTE)
+  public abstract ConfigurableFileCollection getExtraClasspathElements();
+
+  @Input
+  @Optional
+  public abstract ListProperty<String> getModuleConfigTemplates();
+
   @Inject // Used for isolated/parallel execution
   protected abstract WorkerExecutor getWorkerExecutor();
   protected WorkQueue workQueue;
@@ -166,6 +178,13 @@ public abstract class CommonUMLPTask extends DefaultTask {
       result.addAll(this.getMoreArgs().get());
     }
 
+    if(getModuleConfigTemplates().isPresent()){
+      for (String moduleConfigTemplate : getModuleConfigTemplates().get()) {
+        result.add("--module-config");
+        result.add(moduleConfigTemplate);
+      }
+    }
+
     return result;
   }
 
@@ -216,7 +235,14 @@ public abstract class CommonUMLPTask extends DefaultTask {
     }
 
     checkParameters();
-    workQueue = getWorkerExecutor().classLoaderIsolation();
+    workQueue = getWorkerExecutor().classLoaderIsolation(new Action<ClassLoaderWorkerSpec>() {
+      @Override
+      public void execute(ClassLoaderWorkerSpec classLoaderWorkerSpec) {
+        if(!getExtraClasspathElements().isEmpty()) {
+          classLoaderWorkerSpec.getClasspath().from(getExtraClasspathElements());
+        }
+      }
+    });
   }
 
   /**

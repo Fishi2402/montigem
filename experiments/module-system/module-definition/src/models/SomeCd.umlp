@@ -1,0 +1,6 @@
+umlp SomeCd {
+  class Foo{
+    int aField;
+    / int hwField;
+  }
+}

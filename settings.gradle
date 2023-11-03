@@ -30,6 +30,8 @@ include ":umlp-rte:umlp-frontend-rte-java"
 include ":experiments"
 include ":experiments:dbPerformance"
 include ":experiments:statecharts-integration"
+include ":experiments:module-system:module-definition"
+include ":experiments:module-system:modules-usage"
 
 include ":examples"
 include ':examples:cars'

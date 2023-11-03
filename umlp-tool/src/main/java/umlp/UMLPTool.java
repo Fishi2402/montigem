@@ -115,11 +115,20 @@ public class UMLPTool extends UMLPToolTOP {
     BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
   }
 
-  private static GlobalExtensionManagement createGlex() {
+  private static GlobalExtensionManagement createGlex(List<String> moduleConfigTemplates) {
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.setBeforeTemplate("cd2java.Class", AbstractDecorator.getOriginHookPoint());
     glex.setBeforeTemplate("cd2java.Enum", AbstractDecorator.getOriginHookPoint());
     glex.setBeforeTemplate("cd2java.Interface", AbstractDecorator.getOriginHookPoint());
+
+    ModuleController mod = new ModuleController(glex);
+    glex.defineGlobalVar("mod", mod);
+
+    for (String moduleConfigTemplate : moduleConfigTemplates) {
+      // Arguments are the same as original include call
+      mod.addModuleToHookpoint("umlp.generator.hook.InitModules", moduleConfigTemplate);
+    }
+
     return glex;
   }
 
@@ -371,7 +380,7 @@ public class UMLPTool extends UMLPToolTOP {
 
         ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
         GeneratorSetup genSetup = new GeneratorSetup();
-        genSetup.setGlex(createGlex());
+        genSetup.setGlex(createGlex(getModuleConfigTemplates(cmd)));
         // set output directory
         genSetup.setOutputDirectory(outDir);
 
@@ -463,7 +472,7 @@ public class UMLPTool extends UMLPToolTOP {
           // set template path
           genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
               .map(p -> p.toFile()).collect(Collectors.toList()));
-          GlobalExtensionManagement glex = createGlex();
+          GlobalExtensionManagement glex = createGlex(getModuleConfigTemplates(cmd));
           genSetup.setGlex(glex);
 
           List<String> domainModels = new ArrayList<>();
@@ -536,7 +545,7 @@ public class UMLPTool extends UMLPToolTOP {
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
             .map(p -> p.toFile()).collect(Collectors.toList()));
         GUIGeneratorUtil.getInstance().init(createdTSComponents);
-        GlobalExtensionManagement glex = createGlex();
+        GlobalExtensionManagement glex = createGlex(getModuleConfigTemplates(cmd));
         genSetup.setGlex(glex);
         genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
         routesMap.entrySet().forEach(packageInfo ->
@@ -565,6 +574,14 @@ public class UMLPTool extends UMLPToolTOP {
       if (guidsl_reportManagerFactory != null) {
         guidsl_reportManagerFactory.close();
       }
+    }
+  }
+
+  protected List<String> getModuleConfigTemplates(CommandLine cmd){
+    if(!cmd.hasOption(UMLPToolOptions.MODULE_CONFIG.getCMD())){
+      return List.of();
+    }else {
+      return List.of(cmd.getOptionValues(UMLPToolOptions.MODULE_CONFIG.getCMD()));
     }
   }
 
