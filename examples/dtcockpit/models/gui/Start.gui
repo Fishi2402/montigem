@@ -7,22 +7,20 @@ import arrange.GemRow;
 import basic.GemImage;
 
 import gui.DtCockpitNavigation;
+import gui.widgets.Welcome;
 
 import Dtcockpit.Project;
+import Dtcockpit.Group;
 
+page Start(List<Project> projects, List<Group> groups) {
+  @DtCockpitNavigation(username="FixMe", projects = projects, groups= groups);
 
-page Start(List<Project> projects) {
-  @DtCockpitNavigation(username="FixMe", projects = projects);
-  @GemColumn(width = "100%", hAlign = "center", component =
-    @GemCard(title = "DT Cockpit | Welcome", component =
-      @GemColumn(width = "50vw", rowGap = "10px", components = [
-        @GemText(value =
-          "This platform was developed using the MontiCore language workbench in a model-driven approach."),
+  @GemRow(width = "100%", rowGap="10px", colGap="10px", hAlign = "center", components = [
 
-        @GemRow(hAlign = "right", vAlign = "center", width = "300px", component =
-          @GemImage(source = "assets/images/rwth_se_bild_weiss_rgb.png")
-        )
-      ])
-    ) //card
-  ); // column
+    //Welcome Widget
+    @Welcome(),
+    @Welcome(),
+    @Welcome()
+
+  ]); // column
 }

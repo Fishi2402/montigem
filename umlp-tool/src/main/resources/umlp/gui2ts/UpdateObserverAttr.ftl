@@ -8,6 +8,6 @@ ${cd4c.attribute("public ${name}Observer updateObserver;") }
 <#list types as type>
   notify${type}Added(o: ${type}) { this.ref.${type?uncap_first}Added(o) }
   notify${type}Deleted(gemId: number) { this.ref.${type?uncap_first}Deleted(gemId) }
-  getScope() { return NotificationScope.LOCAL }
 </#list>
+getScope() { return NotificationScope.LOCAL }
 }(this)

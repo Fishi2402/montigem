@@ -2,32 +2,130 @@
 
 ocl FunctionsStructure {
 
-/*
-  Die Assoziation von Input Port zu Output Port setzt voraus,
-  dass sich die zugehörigen Funktionen entweder auf gleicher
-  Hierarchiestufe befinden oder dass es einen validen "Pfad"
-  gibt, welcher sich durch die Hierarchie zieht (Stichwort
-  gleiches Port-Objekt bei Verknüpfung zw. äußerer und
-  interner Funktion)
+  /*
+    Die Assoziation von Input Port zu Output Port setzt voraus,
+    dass sich die zugehörigen Funktionen entweder auf gleicher
+    Hierarchiestufe befinden oder dass es einen validen "Pfad"
+    gibt, welcher sich durch die Hierarchie zieht (Stichwort
+    gleiches Port-Objekt bei Verknüpfung zw. äußerer und
+    interner Funktion)
 
-  Dafür folgende Constraints:
-*/
+    Dafür folgende Constraints:
+  */
 
   /*
     In each component structure there is only one feed
     for an input port: either a sister-component or from the outside:
   */
   context Function f, InPort p inv ValidPortStructureInDecomposition:
-      p isin f.subFunction.inPort implies
-        p isin f.inPort ||
-        p isin f.subFunction.outPort.in;
+    p isin f.subFunction.inPort implies
+      p isin f.inPort ||
+      p isin f.subFunction.outPort.in;
 
   /*
     OutPorts are present in the signature of a containing
     function f, when they are defined inside and used outside
   */
   context Function f inv ValidOutPortPath:
-        let externals = { OutPort p in f.subFunctions.outPort |
-                    exists Function f2: f2 notin f.subFunction** && p isin f2.inPort.out }
-        in
-          f.outPort.containsAll(externals);
+    let externals = { OutPort p in f.subFunctions.outPort |
+      exists Function f2: f2 notin f.subFunction** && p isin f2.inPort.out }
+    in
+      f.outPort.containsAll(externals);
+
+  <--------------------------------------------------------------------------->
+
+  /*
+    In Funktionen "produzieren" nur die Output Ports Daten, an denen dann ein
+    Strom anliegt. Die einzige Ausnahme bilden die Input Ports der äußersten
+    Funktion.
+
+    Dafür gilt folgender Constaint:
+  */
+
+  /*
+    Each output port "produces" data
+  */
+  context OutPort p inv OutPortContainsStream:
+    p.stream.isPresent;
+
+  /*
+    Whenever an input port contains a stream, this port is part of the
+    signature of an outermost function
+  */
+  context Function g, InPort p inv PortContainingStreams:
+    p isin g.inPort && p.stream.isPresent implies:
+      not exists Function f: g isin f.subFunction;
+
+  <--------------------------------------------------------------------------->
+
+  /*
+    Funktionen können nur miteinander versteckt werden, wenn die Signaturen
+    zueinander passen. Dazu müssen verknüpfte Ports vom gleichen Typen sein.
+    Für die Ströme auf den Kanälen gilt das auch.
+
+    Dafür gelten folgende Constaints:
+  */
+
+  /*
+    The types of connected input and output ports must match
+  */
+  context InPort in, Outport out inv ChannelTypeConsistency:
+    in isin out.in implies
+      in.type == out.type;
+
+  /*
+    The types of a port and its stream must match
+  */
+  context Port p, FunctionStream s inv StreamTypeConsistency:
+    s == p.stream implies:
+      s.type == p.type;
+
+
+  /* ---------------------------------------------------------
+   * Monitoring Teil
+   * --------------------------------------------------------- */
+
+  /*
+    Beobachtungen auf Strömen enthalten nur die eine Teilmenge von Werten,
+    welche tatsächlich auch dem Strom gehören. Diese sind auch alle vom
+    gleichen Typen.
+
+    Dafür gelten folgende Constaints:
+  */
+
+  /*
+    All observed values must be contained in the observed stream
+  */
+  context Stream s, Observation o, Value v inv ObservationOnlyOnStream:
+    s == o.stream && v isin observation.value implies:
+      v isin s.value;
+
+  /*
+    The types of an observation and the observed stream must match
+  */
+  context FunctionStream s, Observation o inv ObservationTypeConsistency:
+    s == o.stream implies:
+      s.type == o.type;
+
+  /*
+    The types of a stream and its values must match
+  */
+  context FunctionStream s, Value v inv ValueTypeConsistency:
+    v isin s.value implies:
+      s.type == v.type;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
