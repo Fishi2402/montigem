@@ -227,23 +227,35 @@ public class GUI2TypeScriptGenerator {
     Map<String, String> modules = new HashMap<>();
 
     File folder = new File(path);
-    File[] listOfFiles = folder.listFiles();
-
-    if(listOfFiles!=null) {
-        for (File listOfFile : listOfFiles) {
-            if (listOfFile.isDirectory()) {
-                String moduleName = listOfFile.getName().toUpperCase().charAt(0) + listOfFile.getName().substring(1);
-                File[] subListOfFiles = listOfFile.listFiles();
-                for (File file : subListOfFiles) {
-                    if (file.isFile() && file.getName().contains(".gui")) {
-                        modules.put(moduleName + "_Module", "./" + listOfFile.getName() + "/" + moduleName + MODULES_FILE);
-                        break;
-                    }
-                }
-            }
-        }
-    }
+    submoduleForPackageHelper(modules,folder,".");
     return modules;
+
+  }
+
+  private static void submoduleForPackageHelper(Map<String,String> modules,File dir, String path)
+  {
+    File[] listOfFiles=dir.listFiles();
+    if(listOfFiles!=null)
+    {
+      for (File listOfFile : listOfFiles) {
+        if (listOfFile.isDirectory()) {
+          String moduleName = listOfFile.getName().toUpperCase().charAt(0) + listOfFile.getName().substring(1);
+          File[] subListOfFiles = listOfFile.listFiles();
+          boolean hasGUI=false;
+          for (File file : subListOfFiles) {
+            if (file.isFile() && file.getName().contains(".gui")) {
+              modules.put(moduleName + "_Module", path+"/" + listOfFile.getName() + "/" + moduleName + MODULES_FILE);
+              hasGUI=true;
+              break;
+            }
+          }
+          if(!hasGUI)
+          {
+             submoduleForPackageHelper(modules, listOfFile, path + "/" + listOfFile.getName());
+          }
+        }
+      }
+    }
 
   }
 
