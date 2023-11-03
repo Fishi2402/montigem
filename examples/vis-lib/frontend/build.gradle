@@ -90,7 +90,7 @@ assemble.dependsOn(buildApp)
 task testApp(type: NpxTask) {
   dependsOn(genDomain, prebuildTasks)
   command = "ng"
-  args = ["test", "--watch=false"]
+  args = ["test"]
 }
 
 task runApp(type: NpxTask) {
