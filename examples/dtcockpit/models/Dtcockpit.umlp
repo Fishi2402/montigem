@@ -71,4 +71,12 @@ classdiagram Dtcockpit {
     boolean successful;
   }
 
+  class AggregatedPipelineStatisticsOverDate {
+    java.time.LocalDate time;
+    int numberOfSuccessfulRuns;
+    int numberOfUnsuccessfulRuns;
+  }
+
+  association [0..1] Group <-> (statistics) AggregatedPipelineStatisticsOverDate [*];
+
 }
