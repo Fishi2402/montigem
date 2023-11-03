@@ -79,7 +79,6 @@ public class ValidatorDecorator extends AbstractDecorator {
           String oclMessage = invariant.getStereotypeList().stream().filter(s -> !s.getValue("message").isEmpty()).findFirst().map(s -> s.getValue("message")).orElse("");
           String inputParams = getInputParams(invariant);
           String oclRuleName = invariant.getName();
-          String test = "";
           String oclRule = OCLParser.generate(invariant.getExpression(), new IndentPrinter(), enumMap);
           oclRules.add(getCD4C().addMethod(domainClass, "umlp.validator.ValidateRule", oclRuleName, oclRule, oclMessage, inputParams));
         }

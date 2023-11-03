@@ -7,7 +7,6 @@ import security.MailService;
 import sehub.SehubManager;
 import sehub.User;
 import sehub.UserAccessPolicy;
-import sehub.UserValidator;
 import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.common.NotificationScope;
 import umlp.backendrte.common.ValidationMessage;
@@ -31,12 +30,6 @@ public class User_create extends User_createTOP {
 
     UserAccessPolicy accessPolicy = new UserAccessPolicy();
     if (accessPolicy.checkCreatePermission(this)) {
-      UserValidator validator = new UserValidator();
-      List<ValidationMessage> messages = validator.validate(user);
-      if (messages.stream().anyMatch(m -> m.getStatus() == ValidationStatus.ERROR)) {
-        Log.error("Validation failed for user:\n" + messages.stream().filter(m -> m.getStatus() == ValidationStatus.ERROR).map(ValidationMessage::getMessage).collect(Collectors.joining("\n")));
-        return StatusResult.error(this.getId());
-      }
       SehubManager.addUser(user, NotificationScope.LOCAL);
       return sendMail();
     } else {
