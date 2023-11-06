@@ -8,13 +8,14 @@ import basic.GemButton;
 
 import Dtcockpit.App;
 import Dtcockpit.Project;
+import Dtcockpit.Group;
 
 import navigation.NavItem;
 import navigation.NavList;
 
 // We have to pass the list of projects as an argument, as only pages are able to observe
 // The parent component should be styled like `styles: [":host{ display: flex; flex-direction: row }"]`
-component DtCockpitNavigation(String username, List<Project> projects) {
+component DtCockpitNavigation(String username, List<Group> groups, List<Project> projects) {
 @GemColumn(height="auto", components = [
   @guard(username != null){
     @GemRow(height="auto",components = [
@@ -30,11 +31,16 @@ component DtCockpitNavigation(String username, List<Project> projects) {
 
   @GemRow(height="auto",components = [
     @NavList( components = [
-      @iterate(Project p : projects) {
-        @GemRow(height="auto",components = [
-          @NavItem(title = p.getName() , target = "/gui/pipelines/PipelineStats/" + p.getGemId())
-        ]);
-      }
+     @iterate(Group g : groups) {
+       @GemRow(height="auto",components = [
+         @NavItem(title = g.getName() , target = "/gui/pipelines/PipelineStatsPerGroup/" + g.getGemId())
+       ]);
+     },
+     @iterate(Project p : projects) {
+       @GemRow(height="auto",components = [
+         @NavItem(title = p.getName() , target = "/gui/pipelines/PipelineStats/" + p.getGemId())
+       ]);
+     }
     ]
   )]),
 

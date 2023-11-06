@@ -12,9 +12,14 @@ import org.gitlab4j.api.models.Pipeline;
 import org.gitlab4j.api.models.PipelineStatus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class PipelineInformationExtractor {
 
@@ -52,9 +57,36 @@ public class PipelineInformationExtractor {
           group.addSubProjects(newProject.get());
         }
       }
+      createAggregatedPipelineStatistic(group);
     } catch (GitLabApiException e) {
       Log.info("Problem when trying to retrieve projects of group:", e, this.getClass().getName());
     }
+  }
+
+  private void createAggregatedPipelineStatistic(Group g) {
+    Map<LocalDate, int[]> dateToRuns = new HashMap<>();
+    for (Project p :g.getSubProjects()) {
+      for (PipelineStatistic stat :  p.getPStatistics()) {
+        if(!dateToRuns.containsKey(stat.getTime())) {
+          dateToRuns.put(stat.getTime(), new int[]{0,0});
+        }
+        if(stat.isSuccessful()) {
+          dateToRuns.get(stat.getTime())[0] +=1;
+        } else {
+          dateToRuns.get(stat.getTime())[1] +=1;
+        }
+      }
+    }
+
+    dateToRuns.keySet().forEach(date ->{
+          Log.info("Add aggregated statistic to group: "+ date,this.getClass().getName());
+          g.addStatistics(DtcockpitManager.aggregatedPipelineStatisticsOverDateBuilder()
+          .time(date)
+          .numberOfSuccessfulRuns(dateToRuns.get(date)[0])
+          .numberOfUnsuccessfulRuns(dateToRuns.get(date)[1]).build().get());
+        })
+        ;
+
   }
 
   /**
