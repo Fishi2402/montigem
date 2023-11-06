@@ -182,6 +182,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
                 domainType,
                 originalName + ManagerDecorator.SUFFIX));
             getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, domainType));
+            // TODO: this import produces '@src/sELib/commands/Book_subscribeManagerEvents' instead of '@src/selib/commands/Book_subscribeManagerEvents'
             getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, "commands." + domainType + ManagerSubscriptionDecorator.SUFFIX));
           }
         }
