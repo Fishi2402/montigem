@@ -194,6 +194,11 @@ task translateTypeScript() {
   dependsOn(translateJava2TSDomain, translateJava2TSGUI)
 }
 
+task generateNPMAuth(type: NPMAuthCreate){
+  npmrcFile = frontendSetup.getOutput().file(".npmrc")
+}
+npm_install.dependsOn(generateNPMAuth)
+
 task installLocalRTE(type: NpmTask) {
   dependsOn(npm_install)
   args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]

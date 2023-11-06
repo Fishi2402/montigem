@@ -90,6 +90,11 @@ task genGUI2(type: UMLPGuiGenTask) {
   guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
 }
 
+task generateNPMAuth(type: NPMAuthCreate){
+  npmrcFile = frontendSetup.getOutput().file(".npmrc")
+}
+npm_install.dependsOn(generateNPMAuth)
+
 def prebuildTasks = [
     npm_install, genDomain
 ]

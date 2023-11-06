@@ -139,6 +139,8 @@ yarn_install.dependsOn(generateNPMAuth, genGUI)
 yarn_upgrade.dependsOn(yarn_install)
 /**/
 
+npm_install.dependsOn(generateNPMAuth)
+
 def prebuildTasks = [
     npm_install, genDomain
 ]

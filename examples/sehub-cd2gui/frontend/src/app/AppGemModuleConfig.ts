@@ -6,7 +6,8 @@ import {Issues_Module} from '@src/gui/issues/IssuesGemModule';
 
 import {Usersettings_Module} from '@src/gui/usersettings/UsersettingsGemModule';
 
-import {Models_Module} from '../../build/umlp/fe2/cd2gui/models/ModelsGemModule'
+import {Models_Module} from '@src/cd2gui/models/ModelsGemModule';
+
 export const config={
   declarations:[Navigation],
   exports:[],

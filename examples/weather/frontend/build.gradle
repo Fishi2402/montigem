@@ -90,6 +90,11 @@ task genGUI(type: UMLPGuiGenTask) {
   domainModels = ["Weather"]
 }*/
 
+task generateNPMAuth(type: NPMAuthCreate){
+  npmrcFile = frontendSetup.getOutput().file(".npmrc")
+}
+npm_install.dependsOn(generateNPMAuth)
+
 def prebuildTasks = [
     npm_install, genDomain, genGUI, ':umlp-rte:client:npm_install'
 ]
