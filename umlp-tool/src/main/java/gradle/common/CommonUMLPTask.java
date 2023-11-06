@@ -3,6 +3,7 @@ package gradle.common;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
@@ -39,8 +40,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public abstract class CommonUMLPTask extends DefaultTask {
-  final String UMLP_TASK_DEBUG = "de.rwth.se.umlp.debug";
-  final String ORG_GRADLE_PARALLEL = "org.gradle.parallel";
+  final static String UMLP_TASK_DEBUG = "de.rwth.se.umlp.debug";
+  final static String ORG_GRADLE_PARALLEL = "org.gradle.parallel";
 
   private final ConfigurableFileCollection input = getProject().getObjects().fileCollection();
 
@@ -121,23 +122,27 @@ public abstract class CommonUMLPTask extends DefaultTask {
         getProject().getLayout().getBuildDirectory().dir("umlp_reports/task_" + this.getName())
     );
 
+    setDebugConvention(getProject(), getDebug());
+    this.getOutputs().doNotCacheIf("Do not cache when debugging is enabled",
+        (task) ->  ((CommonUMLPTask)task).getDebug().get());
+  }
+
+  public static void setDebugConvention(Project project, Property<Boolean> debugProp) {
     // Project wide setting of debug modus
-    if(getProject().hasProperty(UMLP_TASK_DEBUG)){
-      boolean debug = "true".equals(getProject().property(UMLP_TASK_DEBUG));
-      getDebug().convention(debug);
+    if(project.hasProperty(UMLP_TASK_DEBUG)){
+      boolean debug = "true".equals(project.property(UMLP_TASK_DEBUG));
+      debugProp.convention(debug);
 
       // The debug-mode disables isolation... hence static variables are shared and errors can occur, especially in parallel execution.
-      if(debug && getProject().hasProperty(ORG_GRADLE_PARALLEL) && "true".equals(getProject().property(ORG_GRADLE_PARALLEL))){
+      if(debug && project.hasProperty(ORG_GRADLE_PARALLEL) && "true".equals(project.property(ORG_GRADLE_PARALLEL))){
         Log.warn("Gradle Parallel Execution should be disabled in UMLP Debug Mode. \n" +
             "Otherwise static variables (e.g., Mills, SymbolTables) of one Task can influence other parallel Tasks!\n" +
             "set\n\t" + ORG_GRADLE_PARALLEL + "=false\n in your <gradle.properties>" );
       }
     } else {
       // Default: No Debug
-      getDebug().convention(false);
+      debugProp.convention(false);
     }
-    this.getOutputs().doNotCacheIf("Do not cache when debugging is enabled",
-        (task) ->  ((CommonUMLPTask)task).getDebug().get());
   }
 
   /** Create CLI-Arguments for UMLPTool. Notice that "input" parameter is not set, must be added in subclass
