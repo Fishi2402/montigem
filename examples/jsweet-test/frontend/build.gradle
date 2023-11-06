@@ -194,35 +194,30 @@ task translateTypeScript() {
   dependsOn(translateJava2TSDomain, translateJava2TSGUI)
 }
 
-task generateNPMAuth(type: NPMAuthCreate){
-  npmrcFile = frontendSetup.getOutput().file(".npmrc")
-}
-
-
-npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
-// TODO AGe: npm_update too slow - strategy to make occasional checks
-npm_update.dependsOn(npm_install)
-
 task installLocalRTE(type: NpmTask) {
   dependsOn(npm_install)
   args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]
 }
 
+def prebuildTasks = [
+    installLocalRTE, translateTypeScript, genGUI
+]
+
 task buildApp(type: NpxTask) {
-  dependsOn(translateTypeScript, npm_update, genGUI, installLocalRTE)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 //assemble.dependsOn(buildApp)
 
 task testApp(type: NpxTask) {
-  dependsOn(translateTypeScript, npm_install, genGUI, installLocalRTE)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
 task runApp(type: NpxTask) {
-  dependsOn(translateTypeScript, npm_install, genGUI, installLocalRTE)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }

@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id "com.github.node-gradle.node" version "5.0.0"
+  id 'de.rwth.se.umlp-tool'
+}
+
+node {
+  download = true
+  version = "18.10.0"
+  nodeProxySettings = ProxySettings.OFF
+  nodeProjectDir = layout.buildDir.dir("node")
+}
+
+task generateNPMAuth(type: NPMAuthCreate) {
+  npmrcFile = file(".npmrc")
+}
+
+npm_install.dependsOn(generateNPMAuth)
+npm_update.dependsOn(generateNPMAuth)
+
+task cleanDeps(type: Delete) {
+  description = "Removes node_modules directory and package-lock.json used by example projects"
+  delete 'node_modules'
+  delete 'package-lock.json'
+}
+
+clean.dependsOn(cleanDeps)

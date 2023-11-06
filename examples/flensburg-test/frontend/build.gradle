@@ -16,7 +16,7 @@ buildscript {
 
 plugins {
   id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
-  id "com.github.node-gradle.node" version "3.4.0"
+  id "com.github.node-gradle.node" version "5.0.0"
   id 'de.rwth.se.umlp-tool'
 }
 
@@ -138,15 +138,17 @@ task generateNPMAuth(type: NPMAuthCreate)
 yarn_install.dependsOn(generateNPMAuth, genGUI)
 yarn_upgrade.dependsOn(yarn_install)
 /**/
-npm_install.dependsOn(generateNPMAuth, genGUI)
-npm_update.dependsOn(npm_install)
+
+def prebuildTasks = [
+    npm_install, genDomain
+]
 
 /*
 task buildApp(type: YarnTask) {
   dependsOn('genDomain', yarn_upgrade)
 /**/
 task buildApp(type: NpxTask) {
-  dependsOn(genDomain, npm_install)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
   inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
@@ -160,7 +162,7 @@ task testApp(type: YarnTask) {
   dependsOn('genDomain', yarn_upgrade)
 /**/
 task testApp(type: NpxTask) {
-  dependsOn(genDomain, npm_install)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
   inputs.dir("src")
@@ -174,7 +176,7 @@ task runApp(type: YarnTask) {
   dependsOn('genDomain', yarn_upgrade)
 /**/
 task runApp(type: NpxTask) {
-  dependsOn(genDomain, npm_install)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
   // args = ["start"]

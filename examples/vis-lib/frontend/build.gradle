@@ -68,33 +68,25 @@ task genGUI(type: UMLPGuiGenTask) {
   guiCreateModels = ["person.Create"]
 }
 
-task generateNPMAuth(type: NPMAuthCreate) {
-  npmrcFile = frontendSetup.getOutput().file(".npmrc")
-}
-
-
-npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
-npm_update.dependsOn(npm_install)
-
 def prebuildTasks = [
-    genDomain, genGUI, ':umlp-rte:client:npm_install'
+    npm_install, genDomain, genGUI, ':umlp-rte:client:npm_install'
 ]
 
 task buildApp(type: NpxTask) {
-  dependsOn(npm_update, prebuildTasks)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
 task testApp(type: NpxTask) {
-  dependsOn(genDomain, prebuildTasks)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
 task runApp(type: NpxTask) {
-  dependsOn(genDomain, prebuildTasks)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }

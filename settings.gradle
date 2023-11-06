@@ -34,6 +34,7 @@ include ":experiments:module-system:module-definition"
 include ":experiments:module-system:modules-usage"
 
 include ":examples"
+// include ':examples:common-deps'
 include ':examples:cars'
 include ':examples:filesystem'
 include ':examples:mediahub'
