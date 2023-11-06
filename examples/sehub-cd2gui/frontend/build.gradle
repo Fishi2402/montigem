@@ -96,7 +96,7 @@ task generateNPMAuth(type: NPMAuthCreate){
 npm_install.dependsOn(generateNPMAuth)
 
 def prebuildTasks = [
-    npm_install, genDomain
+    npm_install, genGUI2
 ]
 
 task buildApp(type: NpxTask) {
