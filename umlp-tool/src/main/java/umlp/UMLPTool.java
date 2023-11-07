@@ -440,10 +440,11 @@ public class UMLPTool extends UMLPToolTOP {
           nodeIdTrafo.transform(astGui);
 
           IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, Optional.of(guiModel), importedSymbolPath);
-
+          List<String> arrayTemp=Arrays.stream(guiPathString.split("/")).collect(Collectors.toList());
+          String packageModelPath = guiPathString.substring(0,guiPathString.length()-arrayTemp.get(arrayTemp.size()-1).length());
           if (!routesMap.containsKey(astGui.getPackage())) {
             routesMap.put(astGui.getPackage(), new ModuleRoutingInfo(
-                astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList()));
+                astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList(), packageModelPath));
           }
           routesMap.get(astGui.getPackage()).add(astGui);
 
