@@ -1,6 +1,6 @@
 package basic;
 
-import basic.src.lib.gemlink.GemLink;
+import basic.GemLink;
 
 page GemLinkExample(){
   @GemLink(url = "https://www.google.com/");

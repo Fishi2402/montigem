@@ -1,5 +1,6 @@
 package basic;
-import input.src.lib.gemcheckboxinput.GemCheckBoxInput;
+
+import input.GemCheckBoxInput;
 import Domain.Person;
 
 page GemCheckBoxInputExample(Person person){

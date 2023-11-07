@@ -1,7 +1,7 @@
 package basic;
 
-import basic.src.lib.gemtreeview.GemTreeview;
-import basic.src.lib.gemtreeview.GemTreeviewTypes.GemTreeviewEntry;
+import basic.GemTreeview;
+import basic.GemTreeviewTypes.GemTreeviewEntry;
 
 page GemTreeviewExample(List<GemTreeviewEntry> item){
   @GemTreeview( items = item );

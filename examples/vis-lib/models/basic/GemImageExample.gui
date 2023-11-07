@@ -1,6 +1,6 @@
 package basic;
 
-import basic.src.lib.gemimage.GemImage;
+import basic.GemImage;
 
 page GemImageExample(){
   @GemImage(source="../../../../frontend/config/src/assets/images/World.png");
