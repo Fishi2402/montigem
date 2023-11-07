@@ -6,6 +6,7 @@ import gradle.common.UMLPOutputReportCheck
 plugins {
   id 'base'
   id 'de.rwth.se.umlp-tool' // See "umlp-tool/src/main/java/gradle"
+  id "io.github.themrmilchmann.ecj" version "0.2.0" 
 }
 
 subprojects {
@@ -43,6 +44,7 @@ subprojects {
 
   tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+    options.warnings = false
   }
 
   jar {
@@ -56,6 +58,18 @@ subprojects {
       exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
     }
   }
+}
+
+repositories { // required to resolve the ecj dependency, including the whole chain of repos to avoid unexpected behaviour
+    if(("true").equals(getProperty('useLocalRepo'))) {
+        mavenLocal()
+    }
+    maven {
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        url repo
+    }
+    mavenCentral()
 }
 
 

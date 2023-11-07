@@ -7,6 +7,7 @@ plugins {
     id 'monticore' version "$mc_version"
     id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
     id 'maven-publish'
+    id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 
 dependencies {
@@ -76,6 +77,7 @@ task generateUMLP(type: MCTask) {
 
 compileJava {
     dependsOn project.collect { it.tasks.withType(MCTask) }
+    options.warnings = false
 }
 
 ///////////////////////// Building Jars //////////////////////////////////
