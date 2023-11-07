@@ -25,8 +25,8 @@ public class DomainClassDecoratorTest extends DecoratorTest {
         () -> hasSuperInterface(clazz, "GemIdentifiable"),
 
         // check no of methods and attributes
-        () -> assertEquals(4, clazz.getCDAttributeList().size(), "number of attributes"),
-        () -> assertEquals(22, clazz.getCDMethodList().size(), "number of methods"),
+        () -> assertEquals(5, clazz.getCDAttributeList().size(), "number of attributes"),
+        () -> assertEquals(27, clazz.getCDMethodList().size(), "number of methods"),
 
         // check attributes
         () -> existsAttribute(clazz, "gemId"),

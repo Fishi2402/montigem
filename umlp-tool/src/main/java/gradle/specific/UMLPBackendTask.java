@@ -56,6 +56,19 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
     getUseShell().convention(false);
   }
 
+  ConfigurableFileCollection ocl = getProject().getObjects().fileCollection();
+
+  @SkipWhenEmpty
+  @InputFiles
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @IgnoreEmptyDirectories
+  public ConfigurableFileCollection getOcl() {
+    return ocl;
+  }
+
+  public void setOcl(File f){
+    ocl.from(f);
+  }
 
   /**
    * @param filePath Path of InputFile
@@ -80,6 +93,11 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
     if(this.getSymbolOutDir().isPresent()) {
       result.add("-s");
       result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
+    }
+
+    if(!this.getOcl().isEmpty()) {
+      result.add("-ocl");
+      result.add(handlePath.apply(Path.of(getOcl().getAsPath())));
     }
 
     if(this.getUseSpring().get()){

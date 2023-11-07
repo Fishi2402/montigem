@@ -11,6 +11,7 @@ plugins {
 }
 
 dependencies {
+    implementation group: 'de.monticore.lang', name: 'ocl', version: mc_version
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
     implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
     implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version

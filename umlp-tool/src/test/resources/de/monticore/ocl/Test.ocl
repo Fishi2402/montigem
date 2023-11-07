@@ -1,0 +1,9 @@
+package ocl;
+
+ocl Test {
+  context Foo f inv FoosBarIsNotNull:
+    f.bar != null;
+
+  context Foo f inv FooEnumIsFoo:
+    f.enumFooAttr == EnumFoo.FOO;
+}
