@@ -3,12 +3,13 @@ package umlp.generator.gui.gentypescript.printer;
 // TODO AGe: move to frontend-rte
 public enum TSImportMap {
   // vis libs
-  ARRANGE("arrange.src.lib", "@monticore/montigem-arrange"),
-  BASIC("basic.src.lib", "@monticore/montigem-basic"),
-  CHARTS("charts.src.lib", "@monticore/montigem-charts"),
+  ARRANGE("arrange", "@umlp/arrange"),
+  BASIC("basic", "@umlp/basic"),
+  CHARTS("charts", "@umlp/charts"),
+  COMMON("common", "@umlp/common"),
   NAVIGATION("navigation", "@umlp/navigation"),
-  INPUT("input.src.lib", "@monticore/montigem-input"),
-  TABLE("table.src.lib", "@monticore/montigem-table");
+  INPUT("input", "@umlp/input"),
+  TABLE("table", "@umlp/table");
 
   private final String tsPackage;
   private final String javaPackage;

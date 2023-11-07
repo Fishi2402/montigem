@@ -5,16 +5,16 @@ import Weather.Forecast;
 import gui.ForecastCreate;
 import gui.multi_day_forecast.MultiDayForecast;
 import gui.common.WeatherStateIcon;
-import basic.src.lib.gemimage.GemImage;
+import basic.GemImage;
 
-import arrange.src.lib.gemcard.GemCard;
-import arrange.src.lib.gemrow.GemRow;
-import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.GemCard;
+import arrange.GemRow;
+import arrange.GemColumn;
 
-import charts.src.lib.gemlinechart.GemLineChart;
-import charts.src.lib.gemgaugechart.GemGaugeChart;
-import table.src.lib.gemtable.GemTable;
-import table.src.lib.gemtable.TableTypes.TableColumn;
+import charts.GemLineChart;
+import charts.GemGaugeChart;
+import table.GemTable;
+import table.TableTypes.TableColumn;
 
 page WeatherView(List<Forecast> forecasts) {
   @GemRow(colGap = "5px", height = "initial", components = [

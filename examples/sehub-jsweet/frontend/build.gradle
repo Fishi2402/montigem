@@ -29,14 +29,14 @@ compileJava {
 
 configurations {
   cdParser
-  guiParser
   guiLib
+  guiDefaultTypes
 }
 
 dependencies {
   cdParser "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
-  guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
   guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
+  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
 // Add Frontend-Config Files from UMLP-Tool Resources.
@@ -72,7 +72,6 @@ node {
 def symPath = "${project.buildDir}/symbols";
 
 task serializeCD {
-  dependsOn('unpackGUILibSymbols')
   doLast {
     def modelPathStr = "${project.projectDir.parent}/models"
     def modelPath = Paths.get(modelPathStr)
@@ -89,11 +88,6 @@ task serializeCD {
       }
     }
   }
-}
-
-task unpackGUILibSymbols(type: Copy) {
-  from zipTree(configurations.guiLib.asPath)
-  into "${symPath}"
 }
 
 sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui', 'src/app/gui']
@@ -146,12 +140,16 @@ task translateTypeScript() {
 }
 
 task genGUI(type: UMLPGuiGenTask) {
-  dependsOn('serializeCD', frontendSetup)
+  dependsOn(serializeCD, frontendSetup)
   input = file("../models")
   outputDir = frontendSetup.getOutput().dir("build/appgui")
   hwcDir = file("src/app/")
   modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = file(symPath)
+  symbolDir = files(
+      file(symPath),
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      configurations.guiDefaultTypes.files
+  )
   domainModels = ["Sehub"]
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
   guiGenTSFuncionality = false
@@ -170,32 +168,32 @@ project.getTasksByName("jsweet", true).forEach {
 task generateNPMAuth(type: NPMAuthCreate){
   npmrcFile = frontendSetup.getOutput().file(".npmrc")
 }
-
-
-npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
-// TODO AGe: npm_update too slow - strategy to make occasional checks
-npm_update.dependsOn(npm_install)
+npm_install.dependsOn(generateNPMAuth)
 
 task installLocalRTE(type: NpmTask) {
   dependsOn(npm_install)
   args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]
 }
 
+def prebuildTasks = [
+    installLocalRTE, translateTypeScript, genGUI
+]
+
 task buildApp(type: NpxTask) {
-  dependsOn(translateTypeScript, npm_update, genGUI, installLocalRTE)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 //assemble.dependsOn(buildApp)
 
 task testApp(type: NpxTask) {
-  dependsOn(translateTypeScript, npm_install, genGUI, installLocalRTE)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
 task runApp(type: NpxTask) {
-  dependsOn(translateTypeScript, npm_install, genGUI, installLocalRTE)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }

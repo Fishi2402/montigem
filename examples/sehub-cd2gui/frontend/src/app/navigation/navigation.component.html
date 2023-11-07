@@ -1,6 +1,6 @@
 <nav class="navMenu">
   <ng-container *ngIf="isSignedIn()">
-    <a class="startNav" [routerLink]="'/start/Start'"><img src = "assets/images/Eule.png" alt="SEHub" height="40px"/></a>
+    <a class="startNav" [routerLink]="'/gui/Start'"><img src = "assets/images/Eule.png" alt="SEHub" height="40px"/></a>
     <ng-container *ngFor="let item of items">
       <a [routerLink]="item.url">{{item.title}}</a>
     </ng-container>

@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 // --------------- always the same (start) --------------- //
-${signature("cdClasses", "cdEnums", "generator", "attributesInHierarchy")}
+${signature("cdClasses", "cdEnums", "generator", "attributesInHierarchy", "associationsInHierarchy")}
 
 <#function java2TS type>
   <#if type == "Float"
@@ -85,21 +85,51 @@ const ${cdEnum.getName()} = {
 const TYPE_INFO = {
 <#list attributesInHierarchy as c, attrs>
   "${c.getName()}": {
-  <#list attrs as attr>
-    <#assign attrType = attr.getMCType().printType()>
-    <#assign isEnum = generator.isEnum(attrType, cdEnums)>
-    "${attr.getName()}": {
+    <#list attrs as attr>
+        <#assign isArray = genService.isList(attr)>
+        <#assign attrType = attr.getMCType().printType()>
+        <#if isArray><#assign attrType = genService.getInnerType(attr.getMCType())></#if>
+        <#assign isEnum = generator.isEnum(attrType, cdEnums)>
+      "${attr.getName()}": {
       type: <#if isEnum>${java2TS(attrType)}<#else>"${java2TS(attrType)}"</#if>,
       typeName: "${java2TS(attrType)}",
       isEnum: ${isEnum?string("true", "false")},
-      editable: ${(java2TS(attrType) != "Array" && !attr.getModifier().isDerived())?c},
-    },
-  </#list>
+      editable: ${(!attr.getModifier().isDerived())?c},
+      isArray: ${(isArray)?c}
+      },
+    </#list>
+    <#if associationsInHierarchy?keys?seq_contains(c)>
+      <#assign seq_index = associationsInHierarchy?keys?seq_index_of(c) />
+      <#assign assocs = associationsInHierarchy?values[seq_index]/>
+      <#list assocs as assoc>
+        <#assign assocType = assoc.getMCQualifiedType().printType()>
+      "${assoc.getName()}": {
+      type: "Number",
+      typeName: "Number",
+      isEnum: false,
+      editable: ${(!genService.isSymbolDerived(assoc))?c},
+      isArray: ${(genService.isList(assoc))?c}
+      },
+      </#list>
+    </#if>
   },
 </#list>
 }
 
-function convert(value, type) {
+function convert(value, type, isArray = false) {
+  if (isArray) {
+    let array = [];
+    array = value.trim().split(",");
+    if (type === "Number"){
+      for (const arrayElement of array) {
+        if (isNaN(Number(arrayElement))) {
+          throw typeError(value, type);
+        }
+      }
+      array = array.map(Number);
+    }
+    return array;
+  }
   if (type === "Number") {
     if (isNaN(Number(value))) {
       throw typeError(value, type);
@@ -134,6 +164,14 @@ function getType(className, attr) {
     return TYPE_INFO[className][attr].type;
   } else {
     return "Unknown";
+  }
+}
+
+function getIsArray(className, attr) {
+  if (TYPE_INFO[className][attr] != null) {
+    return TYPE_INFO[className][attr].isArray;
+  } else {
+    return false;
   }
 }
 
@@ -206,23 +244,48 @@ async function load${c.getName()}() {
       <#list attrs as attr>
           "${attr.getName()}": undefined,
       </#list>
+      <#if associationsInHierarchy?keys?seq_contains(c)>
+        <#assign seq_index = associationsInHierarchy?keys?seq_index_of(c) />
+        <#assign assocs = associationsInHierarchy?values[seq_index]/>
+          <#list assocs as assoc>
+          "${assoc.getName()}": undefined,
+          </#list>
+      </#if>
     });
   }else{
     for(const d of data){
     <#list attrs as attr>
       <#if attr.modifier.isDerived()>
         try{
-        const res = await sendCommand(
-        {"commandType": "${ast.getCDDefinition().getName()?lower_case}.commands.${c.getName()}_calculate${attr.name?cap_first}",
-        "gemId": d.gemId}
-        );
-        d.${attr.getName()} = res.value;
+          const res = await sendCommand(
+          {"commandType": "${ast.getCDDefinition().getName()?lower_case}.commands.${c.getName()}_calculate${attr.name?cap_first}",
+          "gemId": d.gemId}
+          );
+          d.${attr.getName()} = res.value;
         }catch(error){
           d.${attr.getName()} = undefined;
           console.log("Can not load ${attr.name}", error);
         }
      </#if>
     </#list>
+    <#if associationsInHierarchy?keys?seq_contains(c)>
+      <#assign seq_index = associationsInHierarchy?keys?seq_index_of(c) />
+      <#assign assocs = associationsInHierarchy?values[seq_index]/>
+      <#list assocs as assoc>
+<#--        <#if genService.isSymbolDerived(assoc)>-->
+<#--        try{-->
+<#--          const res = await sendCommand(-->
+<#--          {"commandType": "${ast.getCDDefinition().getName()?lower_case}.commands.${c.getName()}_calculate${assoc.name?cap_first}",-->
+<#--          "gemId": d.gemId}-->
+<#--          );-->
+<#--          d.${assoc.getName()} = res.value;-->
+<#--        }catch(error){-->
+<#--          d.${assoc.getName()} = undefined;-->
+<#--          console.log("Can not load ${assoc.name}", error);-->
+<#--        }-->
+<#--        </#if>-->
+      </#list>
+    </#if>
     }
   }
   return data;

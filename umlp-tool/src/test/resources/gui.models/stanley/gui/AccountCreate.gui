@@ -1,0 +1,18 @@
+package stanley.gui;
+
+import hardy.Flensburg.Account;
+
+import basic.GemText;
+import basic.GemButton;
+import input.GemTextInput;
+import table.GemTable;
+
+// import stanley.my.CustomAccountView;
+
+page AccountCreate(Account acc) {
+  @GemText(value = "New Account");
+  @GemTextInput(entry = acc.name);
+  @GemTable(rows = acc.budget);
+  @GemButton(label = "Save");
+  // @CustomAccountView(acc = acc);
+}

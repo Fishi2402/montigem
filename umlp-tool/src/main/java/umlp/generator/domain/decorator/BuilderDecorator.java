@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -14,8 +15,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.SingletonLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
@@ -69,7 +72,11 @@ public class BuilderDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
 
     // Constructors
-    addConstructor(builderClass, domainClass, managerName, attrAssocLists);
+    addConstructor(builderClass, domainClass, managerName, attrAssocLists,
+        SingletonLookUp.isSingleton(domainClass) ? domainClass.getCDAttributeList().stream()
+            .filter(ASTCDAttributeTOP::isPresentInitial)
+            .map(a->new String[]{a.getName(), CD4CodeMill.prettyPrint(a.getInitial(), false)})
+            .collect(Collectors.toList()) : new ArrayList<>());
 
     // Attributes
     List<ASTCDAttribute> attrList = createAttributes(domainClass, attrFields.stream().map(ASTCDAttributeTOP::getName).collect(Collectors.toList()), false);
@@ -91,7 +98,8 @@ public class BuilderDecorator extends AbstractDecorator {
     getCD4C().addMethod(builderClass, getBuildTemplate(),
         domainClass.getName(),
         managerName,
-        attrAssocLists
+        attrAssocLists,
+        SingletonLookUp.isSingleton(domainClass)
     );
     // TODO: filter by mandatory
     List<ASTCDAttribute> mandatoryAttrList = attrList;
@@ -106,11 +114,12 @@ public class BuilderDecorator extends AbstractDecorator {
 
   protected void addConstructor(
       ASTCDClass builderClass, ASTCDClass domainClass,
-      String managerName, List<ASTCDAssocSide> attrAssocLists) {
+      String managerName, List<ASTCDAssocSide> attrAssocLists,
+      List<String[]> initialAttributes) {
     HashMap<ASTCDAssocSide, String> correctManagerToAttrAssocSides = new HashMap<>();
     attrAssocLists.forEach(assocSide -> correctManagerToAttrAssocSides.put(assocSide,
         getCorrectManager(assocSide.getSymbol().getAssoc().getAssociation().getAstNode())));
-    getCD4C().addConstructor(builderClass, getConstructorTemplate(), domainClass.getName(), correctManagerToAttrAssocSides);
+    getCD4C().addConstructor(builderClass, getConstructorTemplate(), domainClass.getName(), correctManagerToAttrAssocSides, initialAttributes);
   }
 
   protected String getConstructorTemplate() {

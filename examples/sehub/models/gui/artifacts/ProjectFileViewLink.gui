@@ -2,9 +2,9 @@ package gui.artifacts;
 
 import Sehub.Artifact;
 
-import basic.src.lib.gembutton.GemButton;
-import basic.src.lib.gemlink.GemLink;
-import basic.src.lib.gemtext.GemText;
+import basic.GemButton;
+import basic.GemLink;
+import basic.GemText;
 
 component ProjectFileViewLink(Artifact artifact){
   @guard(artifact.getType() == "Directory"){

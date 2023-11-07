@@ -3,10 +3,10 @@ package gui.widgets;
 import Weather.DailyForecast;
 import Weather.Timeseries;
 
-import arrange.src.lib.gemcolumn.GemColumn;
-import arrange.src.lib.gemrow.GemRow;
-import basic.src.lib.gemtext.GemText;
-import basic.src.lib.gemimage.GemImage;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import basic.GemImage;
 import gui.widgets.WeatherWidget;
 
 component WindWidgetBody(Timeseries timeseries) {

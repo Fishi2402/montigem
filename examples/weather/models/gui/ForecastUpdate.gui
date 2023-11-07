@@ -2,13 +2,13 @@ package gui;
 
 import Weather.Forecast;
 
-import arrange.src.lib.gemcard.GemCard;
-import arrange.src.lib.gemrow.GemRow;
-import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.GemCard;
+import arrange.GemRow;
+import arrange.GemColumn;
 
-import basic.src.lib.gembutton.GemButton;
-import basic.src.lib.gemtext.GemText;
-import input.src.lib.gemtextinput.GemTextInput;
+import basic.GemButton;
+import basic.GemText;
+import input.GemTextInput;
 
 page ForecastUpdate(Forecast f) {
   @GemCard(title = "New Forecast", component =

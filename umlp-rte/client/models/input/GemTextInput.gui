@@ -12,7 +12,9 @@ component GemTextInput(
   String inputType,
   List<String> options,
   ?String entry,
+  boolean disabled = false,
+  String placeholder = "",
   GemTextInputValidity validity,
-  Event keyup,
-  Event keydown
+  Event keyRelease,
+  Event keyPress
 )

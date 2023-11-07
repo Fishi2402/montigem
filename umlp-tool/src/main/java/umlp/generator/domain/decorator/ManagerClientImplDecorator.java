@@ -18,6 +18,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.SingletonLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
@@ -59,6 +60,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
 
     List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
+        .filter(c -> !SingletonLookUp.isSingleton(c))
         .collect(Collectors.toList());
     getCD4C().addMethod(managerClass, getClearCacheTemplate(), concreteDomainClasses);
 
@@ -99,22 +101,36 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
 
+    boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
+
     if (!domainClass.getModifier().isAbstract()) {
-      managerClass.addCDMember(getCacheAttribute(domainClass));
+      if (isSingleton) {
+        managerClass.addCDMember(getSingletonAttribute(domainClass));
+      }else {
+        managerClass.addCDMember(getCacheAttribute(domainClass));
+      }
       managerClass.addCDMember(getCommandObserverAttribute(domainClass));
     }
 
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainClass);
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetList", name, false);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
+
+    if (isSingleton) {
+      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOptSingletonElement", name);
+      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetSingletonElement", name);
+    } else {
+      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
+    }
 
     if (!domainClass.getModifier().isAbstract()) {
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
-      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoAdd", name, managerName);
-      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoDelete", name, managerName);
+      if (!isSingleton) {
+        getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoAdd", name, managerName);
+        getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoDelete", name, managerName);
+      }
     }
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
@@ -201,6 +217,18 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
         getMCTypeFacade().createQualifiedType(type), "the" + type);
     getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new " + type + "()"));
     return domainClassDaoAttr;
+  }
+
+  protected ASTCDAttribute getSingletonAttribute(ASTCDType domainClass) {
+    ASTCDAttribute singletonAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+        getMCTypeFacade().createOptionalTypeOf(domainClass.getName()),
+        StringTransformations.uncapitalize(domainClass.getName() + "Instance"));
+    getGlex().replaceTemplate("cd2java.Value", singletonAttr, new StringHookPoint(defaultEmptyOptional()));
+    return singletonAttr;
+  }
+
+  protected String defaultEmptyOptional() {
+    return " = Optional.empty()";
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz) {

@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {NavItem} from "./nav-item/nav-item.component-gen";
+import {NavItem} from "./nav-item.component";
 import {CommonModule} from "@angular/common";
 
 @NgModule(

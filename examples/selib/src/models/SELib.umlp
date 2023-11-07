@@ -5,6 +5,7 @@ umlp SELib {
 	  String email;
 	  String password;
 	  boolean isManager;
+	  List<String> comments;
   }
 
   interface TimeMarker {

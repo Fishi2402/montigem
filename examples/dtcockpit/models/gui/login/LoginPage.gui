@@ -3,8 +3,8 @@ package gui.login;
 import gui.login.UserLogin;
 import gui.login.LoginContainer;
 
-import arrange.src.lib.gemcolumn.GemColumn;
-import basic.src.lib.gemlink.GemLink;
+import arrange.GemColumn;
+import basic.GemLink;
 
 page LoginPage() {
   @LoginContainer(component =

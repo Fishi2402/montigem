@@ -49,6 +49,6 @@ export class ProjectCreate extends ProjectCreateTOP {
   }
 
   public override navigateBack(): void {
-    this.router.navigate(['/projects/']);
+    this.router.navigate(['gui', 'projects']);
   }
 }

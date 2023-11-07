@@ -5,7 +5,7 @@ import { GemNetworkData } from './gem-network-graph-types/gem-network-graph-type
 import { GemNetworkGraph as GemNetworkGraphTOP } from './gem-network-graph/gem-network-graph.component-gen';
 
 @Component({
-  selector: 'gem-network-graph-sigma',
+  selector: 'gem-network-graph',
   templateUrl: './gem-network-graph.component.html',
   styleUrls: ['./gem-network-graph.component.scss']
 })

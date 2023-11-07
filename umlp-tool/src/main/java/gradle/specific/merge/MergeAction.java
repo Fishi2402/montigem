@@ -20,28 +20,32 @@ import java.util.stream.Collectors;
 public abstract class MergeAction implements WorkAction<MergeActionParameter> {
   @Override
   public void execute() {
+    umlpMerge(this.getParameters().getInputs().getFiles(), getParameters().getOutputFile().getAsFile().get());
+  }
+
+  public static void umlpMerge(Set<File> inputFiles, File outputFile){
 
     // Parse and convert to CDCompilationUnit
-    Set<ASTCDCompilationUnit> models = this.getParameters().getInputs().getFiles().stream()
+    Set<ASTCDCompilationUnit> models = inputFiles.stream()
         .map(File::toPath)
         .map(Path::toAbsolutePath)
-        .map(this::parseAndCheck)
+        .map(MergeAction::parseAndCheck)
         .collect(Collectors.toSet());
 
-    String outputModelName = FileUtils.removeExtension(getParameters().getOutputFile().get().getAsFile().getName());
+    String outputModelName = FileUtils.removeExtension(outputFile.getName());
     ASTCDCompilationUnit merge = CDMerge.merge(models, outputModelName, Sets.newHashSet());
     UMLPFullPrettyPrinter printer = new UMLPFullPrettyPrinter();
     merge.accept(printer.getTraverser());
 
 
-    try (PrintWriter out = new PrintWriter(new FileOutputStream(this.getParameters().getOutputFile().get().getAsFile()), true)) {
+    try (PrintWriter out = new PrintWriter(new FileOutputStream(outputFile), true)) {
       out.println(printer.getPrinter().getContent());
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
   }
 
-  protected ASTCDCompilationUnit parseAndCheck(Path absolutePath) {
+  protected static ASTCDCompilationUnit parseAndCheck(Path absolutePath) {
     UMLPTool tool = new UMLPTool();
 
     ASTCDCompilationUnit result = tool.parse(absolutePath.toString());

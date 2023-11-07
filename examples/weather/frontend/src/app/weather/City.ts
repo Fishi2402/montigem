@@ -75,6 +75,13 @@ export class City extends CityTOP {
 
   public getNextHours() {
     this.calcNextHours();
+    let value = null;
+    this._nextHours.get(0).then(v => value = v);
+    return value;
+  }
+
+  public getNextHoursGemList() {
+    this.calcNextHours();
     return this._nextHours;
   }
 

@@ -23,13 +23,11 @@ repositories {
 }
 
 configurations {
-  guiParser
-  guiLib
+  guiDefaultTypes
 }
 
 dependencies {
-  guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
-  guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
+  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
 application {
@@ -86,18 +84,17 @@ task runServer {
   })
 }
 
-task unpackGUILibSymbols(type: Copy) {
-  from zipTree(configurations.guiLib.asPath)
-  into "${symPath}"
-}
-
 task genTestGUI(type: UMLPGuiGenTask) {
-  dependsOn('generateUmlpBackend', 'unpackGUILibSymbols')
+  dependsOn('generateUmlpBackend')
   input = file("../models")
   outputDir = file("$project.buildDir/testgui")
   hwcDir = file("$projectDir/src/main/java")
   modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = file(symPath)
+  symbolDir = files(
+      generateUmlpBackend.symbolOutDir,
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      configurations.guiDefaultTypes.files
+  )
   domainModels = ["Jsweettest"]
   guiCreateModels = ["gui.UserCreate"]
 }

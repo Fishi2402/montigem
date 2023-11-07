@@ -10,14 +10,10 @@ plugins {
 
 
 configurations {
-  guiParser
-  guiLib
   guiDefaultTypes
 }
 
 dependencies {
-  guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
-  guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
@@ -70,7 +66,11 @@ task genGUI(type: UMLPGuiGenTask) {
   outputDir = frontendSetup.getOutput().dir("build/appgui")
   hwcDir = file("src/app/")
   modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(genDomain.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
+  symbolDir = files(
+      genDomain.symbolOutDir,
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      configurations.guiDefaultTypes.files
+  )
   domainModels = ["Sehub"]
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
 }
@@ -78,7 +78,11 @@ task genGUI(type: UMLPGuiGenTask) {
 task genGUI2(type: UMLPGuiGenTask) {
   dependsOn(genGUI, generateCDTOGUI)
   input = file(generateCDTOGUI.getOutputDir().file("models"))
-  symbolDir = files(genDomain.symbolOutDir, configurations.guiLib.files, configurations.guiDefaultTypes.files)
+  symbolDir = files(
+      genDomain.symbolOutDir,
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      configurations.guiDefaultTypes.files
+  )
   hwcDir = file("src/app/")
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe2")
@@ -89,27 +93,27 @@ task genGUI2(type: UMLPGuiGenTask) {
 task generateNPMAuth(type: NPMAuthCreate){
   npmrcFile = frontendSetup.getOutput().file(".npmrc")
 }
+npm_install.dependsOn(generateNPMAuth)
 
-
-npm_install.dependsOn(generateNPMAuth, genGUI, genGUI, frontendSetup)
-// TODO AGe: npm_update too slow - strategy to make occasional checks
-npm_update.dependsOn(npm_install)
+def prebuildTasks = [
+    npm_install, genGUI2
+]
 
 task buildApp(type: NpxTask) {
-  dependsOn(genDomain, npm_update, genGUI, genGUI2)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
 task testApp(type: NpxTask) {
-  dependsOn(genDomain, npm_install, genGUI, genGUI2)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
 task runApp(type: NpxTask) {
-  dependsOn(genDomain, npm_install, genGUI, genGUI2)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }

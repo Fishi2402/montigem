@@ -10,6 +10,7 @@ classdiagram Dtcockpit {
   association [1] App -> User [*];
   association [1] App -> Room [*];
   association [1] App -> Project [*];
+  association [1] App -> Group [*];
 
   class User {
     <<dbColumn = "unique=true">>
@@ -49,17 +50,33 @@ classdiagram Dtcockpit {
     boolean occupied;
   }
 
+  class Group {
+    String name;
+    String git;
+  }
+
+  association [0..1] Group -> (subProjects) Project [*];
+  association [0..1] Group -> (subGroups) Group [*];
+
   class Project {
     String name;
     String git;
   }
 
-  association [1] Project <-> (pStatistics) PipelineStatistic [*];
+  association [0..1] Project <-> (pStatistics) PipelineStatistic [*];
 
   class PipelineStatistic {
     java.time.LocalDate time;
     long duration;
     boolean successful;
   }
+
+  class AggregatedPipelineStatisticsOverDate {
+    java.time.LocalDate time;
+    int numberOfSuccessfulRuns;
+    int numberOfUnsuccessfulRuns;
+  }
+
+  association [0..1] Group <-> (statistics) AggregatedPipelineStatisticsOverDate [*];
 
 }

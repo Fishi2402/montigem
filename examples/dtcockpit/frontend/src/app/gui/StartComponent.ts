@@ -11,20 +11,21 @@ import {ActivatedRoute, Router} from '@angular/router';
 @Component({
   selector: 'start',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/Start.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
+  styles: [":host{ display: flex; flex-direction: row }"],
   styleUrls: []
 })
 
 export  class StartComponent extends StartComponentTOP {
 
   public constructor(route: ActivatedRoute, protected router: Router) {
-    super();
+    super(route, router);
     this.router = router;
   }
 
   ngOnInit(){
     if (!(DtcockpitSecurityManager.isCurrentlyLoggingIn() || DtcockpitSecurityManager.isSignedIn())) {
-      this.router.navigate(['/login/LoginPage']);
+      this.router.navigate(['gui', 'login', 'LoginPage']);
+      return;
     }
 
     CommandManager.executeCommand(new GetCurrentUserRequest()).then(res => {
@@ -40,6 +41,7 @@ export  class StartComponent extends StartComponentTOP {
         console.error("Can not get GemId of current user");
       }
     });
+    super.ngOnInit();
   }
 
 }

@@ -17,6 +17,7 @@ import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.SingletonLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.Collection;
@@ -109,32 +110,50 @@ public class ManagerDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, false);
     } else {
-      getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, true);
-      getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, false);
+      boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
+      if (isSingleton) {
+        getCD4C().addMethod(managerClass, "umlp.manager.GetSingletonElement", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.GetSingletonElement", name, false);
+
+        // also generate some of the methods
+        getCD4C().addMethod(managerClass, "umlp.manager.GetSingletonElementSure", name);
+      }else {
+        getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, false);
+        getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name, false);
+        getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, false);
+      }
       getCD4C().addMethod(managerClass, "umlp.manager.Opt", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.Opt", name, false);
-      getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name, true);
-      getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name, false);
+
       getCD4C().addMethod(managerClass, "umlp.manager.GetList", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.GetList", name, false);
-      getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, true);
-      getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, false);
+
 
       if (!domainClass.getModifier().isAbstract()) {
-        getCD4C().addMethod(managerClass, "umlp.manager.Builder", name, true);
-        getCD4C().addMethod(managerClass, "umlp.manager.Builder", name, false);
         getCD4C().addMethod(managerClass, "umlp.manager.BuilderParam", name, true);
         getCD4C().addMethod(managerClass, "umlp.manager.BuilderParam", name, false);
-        getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name, true);
-        getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name, false);
-        getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, true);
-        getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, false);
-        getCD4C().addMethod(managerClass, "umlp.manager.DeleteWithScope", name, true);
-        getCD4C().addMethod(managerClass, "umlp.manager.DeleteWithScope", name, false);
-        getCD4C().addMethod(managerClass, "umlp.manager.Add", name, true);
-        getCD4C().addMethod(managerClass, "umlp.manager.Add", name, false);
-        getCD4C().addMethod(managerClass, "umlp.manager.AddWithScope", name, true);
-        getCD4C().addMethod(managerClass, "umlp.manager.AddWithScope", name, false);
+        if (isSingleton) {
+          // methods that throw errors when invoked
+          getCD4C().addMethod(managerClass, "umlp.manager.AddWithScopeSingletonElement", name);
+          getCD4C().addMethod(managerClass, "umlp.manager.DeleteWithScopeSingletonElement", name);
+        } else {
+          getCD4C().addMethod(managerClass, "umlp.manager.Builder", name, true);
+          getCD4C().addMethod(managerClass, "umlp.manager.Builder", name, false);
+
+          getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name, true);
+          getCD4C().addMethod(managerClass, "umlp.manager.DeSerBuilder", name, false);
+          getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, true);
+          getCD4C().addMethod(managerClass, "umlp.manager.Delete", name, false);
+          getCD4C().addMethod(managerClass, "umlp.manager.DeleteWithScope", name, true);
+          getCD4C().addMethod(managerClass, "umlp.manager.DeleteWithScope", name, false);
+          getCD4C().addMethod(managerClass, "umlp.manager.Add", name, true);
+          getCD4C().addMethod(managerClass, "umlp.manager.Add", name, false);
+          getCD4C().addMethod(managerClass, "umlp.manager.AddWithScope", name, true);
+          getCD4C().addMethod(managerClass, "umlp.manager.AddWithScope", name, false);
+        }
       }
 
       // Associations

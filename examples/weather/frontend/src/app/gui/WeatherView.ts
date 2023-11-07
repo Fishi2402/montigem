@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Directive } from '@angular/core';
-import { GemGaugeChartData, GemGaugeChartEntry, GemLineChartData, GemLineChartEntry } from '@monticore/montigem-charts';
+import { GemGaugeChartData, GemGaugeChartEntry, GemLineChartData, GemLineChartEntry } from '@umlp/charts';
 import { WeatherViewTOP } from '@src/gui/WeatherViewTOP';
 import { Forecast } from '@src/weather/Forecast';
 
@@ -77,7 +77,7 @@ export class WeatherView extends WeatherViewTOP {
   }
 
   public override navigateToUpdatePage(row: Forecast): void {
-    this.router.navigate(["..", "b", "ForecastUpdate", row.getGemId()]);
+    this.router.navigate(["..", "gui", "ForecastUpdate", row.getGemId()]);
   }
 
   public override getWindspeedData(): GemGaugeChartData {

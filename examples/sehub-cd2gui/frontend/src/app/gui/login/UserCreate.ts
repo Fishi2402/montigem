@@ -7,7 +7,7 @@ import {SehubRole} from '@src/sehub/SehubRole';
 import { ActivationStatus } from '@src/sehub/ActivationStatus';
 
 import { SehubManager } from '@src/sehub/SehubManager';
-import { GemList } from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
+import { GemList } from '@umlp/common';
 import { BoardMapper } from '@src/sehub/BoardMapper';
 import { BingoEntry } from '@src/sehub/BingoEntry';
 

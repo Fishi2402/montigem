@@ -4,12 +4,12 @@ import Sehub.Artifact;
 import Sehub.Directory;
 import Sehub.Project;
 
-import basic.src.lib.gembutton.GemButton;
+import basic.GemButton;
 
-import table.src.lib.gemtable.GemTable;
-import table.src.lib.gemtable.TableTypes.TableColumn;
+import table.GemTable;
+import table.TableTypes.TableColumn;
 
-import arrange.src.lib.gemcolumn.GemColumn;
+import arrange.GemColumn;
 
 page ProjectFileView(Directory parent) {
 

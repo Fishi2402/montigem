@@ -23,14 +23,10 @@ repositories {
 }
 
 configurations {
-  guiParser
-  guiLib
   guiDefaultTypes
 }
 
 dependencies {
-  guiParser "de.monticore.lang:guidsl:${project.properties['mc_version']}"
-  guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
@@ -75,6 +71,8 @@ dependencies {
 
   implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
   implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
+
+  implementation group: 'org.gitlab4j', name: 'gitlab4j-api', version: '5.3.0'
 }
 
 generateUmlpBackend {
@@ -99,7 +97,6 @@ task genTestGUI(type: UMLPGuiGenTask) {
   symbolDir = files(
       generateUmlpBackend.symbolOutDir,
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      configurations.guiLib.files,
       configurations.guiDefaultTypes.files
   )
   domainModels = ["Dtcockpit"]

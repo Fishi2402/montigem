@@ -1,18 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Artifact } from '@src/sehub/Artifact';
-import { GemNetworkData, GemNetworkNode, GemNetworkEdge } from '@monticore/montigem-charts';
-import {  } from '@monticore/montigem-charts';
+import { GemTreeviewEntry } from '@umlp/basic';
+import { GemNetworkData, GemNetworkEdge, GemNetworkNode } from '@umlp/charts';
 import { ProjectPageTOP } from '@src/gui/ProjectPageTOP';
-import { GemTreeviewEntry } from '@monticore/montigem-basic';
+import { Artifact } from '@src/sehub/Artifact';
 import { Directory } from '@src/sehub/Directory';
 
 import {
   Directive,
 } from '@angular/core';
 
-import { ActivatedRoute, Router } from '@angular/router';
-import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
 @Directive()
 
@@ -22,18 +19,18 @@ export class ProjectPage extends ProjectPageTOP {
   treeViewDataCheck = { value: null, hash: null, calculating: false };
 
 
-  public getGemNetworkGraph1Data(): GemNetworkData  {
-    if(!(this.project)) {
+  public getGemNetworkGraph1Data(): GemNetworkData {
+    if (!(this.project)) {
       return null;
     }
     const networkData = new GemNetworkData();
 
-    const artifacts : Artifact[] = this.getAllArtifactsFromDir(this.project, []);
+    const artifacts: Artifact[] = this.getAllArtifactsFromDir(this.project, []);
 
     networkData.nodes = this.getNodesFromArtifacts(artifacts);
     networkData.edges = this.getEdgesFromArtifacts(artifacts);
     const newHash = JSON.stringify(networkData);
-    if(this.networkDataCheck.hash !== newHash) {
+    if (this.networkDataCheck.hash !== newHash) {
       this.networkDataCheck.hash = newHash;
       this.networkDataCheck.value = networkData;
     }
@@ -41,15 +38,15 @@ export class ProjectPage extends ProjectPageTOP {
   }
 
 
-  private getEdgesFromArtifacts(artifacts:Artifact[]) : GemNetworkEdge[] {
-    let edges : GemNetworkEdge[] = [];
-    artifacts.filter(a => a instanceof Directory).forEach((dir : Directory) => {
+  private getEdgesFromArtifacts(artifacts: Artifact[]): GemNetworkEdge[] {
+    let edges: GemNetworkEdge[] = [];
+    artifacts.filter(a => a instanceof Directory).forEach((dir: Directory) => {
       dir.getContains().forEach(a => edges.push(this.createEdge(dir.getFullName(), a.getFullName())))
     })
     return edges;
   }
 
-  private createEdge(start : string, end: string): GemNetworkEdge {
+  private createEdge(start: string, end: string): GemNetworkEdge {
     const edge = new GemNetworkEdge();
     edge.from = start;
     edge.to = end;
@@ -57,50 +54,50 @@ export class ProjectPage extends ProjectPageTOP {
     return edge;
   }
 
-  private getNodesFromArtifacts(artifacts:Artifact[]): GemNetworkNode[] {
+  private getNodesFromArtifacts(artifacts: Artifact[]): GemNetworkNode[] {
     return artifacts.map(a => this.getNodeFromArtifact(a));
   }
 
-  private getAllArtifactsFromDir(art: Artifact, artifacts: Artifact[]): Artifact []{
-    if(art instanceof Directory) {
+  private getAllArtifactsFromDir(art: Artifact, artifacts: Artifact[]): Artifact[] {
+    if (art instanceof Directory) {
       (art as Directory).getContains().forEach(a => this.getAllArtifactsFromDir(a, artifacts))
     }
     artifacts.push(art)
     return artifacts;
   }
 
-  private getNodeFromArtifact(art : Artifact): GemNetworkNode {
-    let node : GemNetworkNode = new GemNetworkNode();
+  private getNodeFromArtifact(art: Artifact): GemNetworkNode {
+    let node: GemNetworkNode = new GemNetworkNode();
     node.id = art.getFullName()
-    node.color = (art instanceof Directory)? "#FFFF00" : "#FF00BF";
+    node.color = (art instanceof Directory) ? "#FFFF00" : "#FF00BF";
     node.mass = 1.0;
 
     return node;
   }
 
   public getFilesItems(): Array<GemTreeviewEntry> {
-    if(!(this.project)) {
+    if (!(this.project)) {
       return [];
     }
     const treeViewEntries = [this.recursivelyFillGemTreeviewItems(this.project)]
 
     const newHash = JSON.stringify(treeViewEntries);
-    if(this.treeViewDataCheck.hash !== newHash) {
+    if (this.treeViewDataCheck.hash !== newHash) {
       this.treeViewDataCheck.hash = newHash;
       this.treeViewDataCheck.value = treeViewEntries;
     }
     return this.treeViewDataCheck.value
   }
 
-  private recursivelyFillGemTreeviewItems(artifact:Artifact): GemTreeviewEntry {
-    let curViewEntry : GemTreeviewEntry = this.createGemTreeviewEntryFromArtifact(artifact)
-    if(artifact instanceof Directory) {
+  private recursivelyFillGemTreeviewItems(artifact: Artifact): GemTreeviewEntry {
+    let curViewEntry: GemTreeviewEntry = this.createGemTreeviewEntryFromArtifact(artifact)
+    if (artifact instanceof Directory) {
       (artifact as Directory).getContains().forEach(art => curViewEntry.children.push(this.recursivelyFillGemTreeviewItems(art)))
     }
     return curViewEntry;
   }
 
-  private createGemTreeviewEntryFromArtifact(artifact:Artifact): GemTreeviewEntry {
+  private createGemTreeviewEntryFromArtifact(artifact: Artifact): GemTreeviewEntry {
     const viewEntry = new GemTreeviewEntry();
     viewEntry.expanded = true
     viewEntry.children = []

@@ -6,14 +6,14 @@ package stanley.personoverview;
 import hardy.Flensburg.Person;
 
 // import stanley.tmp.table.GemTable;
-import basic.src.lib.gemtext.GemText;
-import arrange.src.lib.gemcard.GemCard;
-import table.src.lib.gemtable.GemTable;
-import basic.src.lib.gembutton.GemButton;
+import basic.GemText;
+import arrange.GemCard;
+import table.GemTable;
+import basic.GemButton;
 import stanley.my.InfoBox;
 // import type from a CD to describe a table column
 
-import table.src.lib.gemtable.TableTypes.TableColumn;
+// import table.TableTypes.TableColumn;
 
 /**
  * This example defines a
@@ -67,11 +67,14 @@ page PersonOverview(List<Person> ps) {
   );
   b1@GemButton(label = "Button 1", leftClick = doSomething);
   b2@GemButton(label = "Button 2 (the same clickMethod)", leftClick = doSomething);
+  // TODO AGe: GemTable in Java requires TableColumn class
+  /*
   @GemCard(
     component = t@GemTable(
       rows = ps,
       columns = [ TableColumn("nickname", "Name") ],
       delete = deletePerson
     ));
+    /**/
 }
 /**/
