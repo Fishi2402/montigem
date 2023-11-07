@@ -70,6 +70,9 @@ sourceSets {
 
 java {
   registerFeature('grammars') { usingSourceSet(sourceSets.grammars) }
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(11)
+  }
 }
 
 description = 'UML/P Language and Tool'
@@ -84,7 +87,7 @@ task generateUMLP(type: MCTask) {
 
 compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }
-    options.warnings = false
+  options.warnings = false
 }
 
 task autoconfigure(type: de.mclsg.task.AutoconfigureTask) {
