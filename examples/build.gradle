@@ -7,6 +7,26 @@ subprojects {
   }
 }
 
+// Make buildApp tasks sequential. Doesn't seem to lose time compared to a parallel build,
+// but makes build process more stable
+gradle.projectsEvaluated {
+  project(":examples:dtcockpit:frontend").tasks.buildApp.mustRunAfter(
+      project(":examples:sehub:frontend").tasks.buildApp
+  )
+  project(":examples:sehub:frontend").tasks.buildApp.mustRunAfter(
+      project(":examples:sehub-cd2gui:frontend").tasks.buildApp
+  )
+  project(":examples:sehub-cd2gui:frontend").tasks.buildApp.mustRunAfter(
+      project(":examples:sehub-jsweet:frontend").tasks.buildApp
+  )
+  project(":examples:sehub-jsweet:frontend").tasks.buildApp.mustRunAfter(
+      project(":examples:vis-lib:frontend").tasks.buildApp
+  )
+  project(":examples:vis-lib:frontend").tasks.buildApp.mustRunAfter(
+      project(":examples:weather:frontend").tasks.buildApp
+  )
+}
+
 clean.dependsOn(subprojects.collect { it.getTasksByName("clean", false) })
 
 build.dependsOn(subprojects.collect { it.getTasksByName("build", false) })
