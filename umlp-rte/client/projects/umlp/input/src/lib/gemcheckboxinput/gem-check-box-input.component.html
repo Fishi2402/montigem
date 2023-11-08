@@ -5,6 +5,7 @@
     class="gem-checkbox"
     [id]="id + 'Checkbox'"
     [ngModel]="checked"
+    [disabled]="disabled"
     (ngModelChange)="onCheckedChange($event)"
   />
   <span *ngIf="rightPosition">{{ labelText }}</span>

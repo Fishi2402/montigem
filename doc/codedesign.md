@@ -465,3 +465,25 @@ There are two implementations of websocket message handling
 
 If you use authentication in your system, `CommandWebSocketService` must be used by setting
 `umlp.service.websocket.impl=auth` in `application.properties`
+
+## Module
+
+Für oft wiederkehrende Features bietet sich ein Modulsystem an welches Reuse erlaubt.
+In diesem Projekt kann ein Feature implementiert sein durch:
+1. Runtime Code, unabhängig vom Generat
+   - Wobei sowohl Java also auch Typescript Code möglich sind
+2. Modelle
+   - Sowohl Klassendiagramme als auch GUI-Modelle
+   - GUI-Modelle können importiert werden
+   - Klassendiagramme können via CDMerge oder als Referenzmodell integriert werden
+   - Für beide Modellarten führt die Nutzung zu neuem generierten Code 
+3. Handgeschriebener Code, welcher das Generat anpasst
+   - Per TOP-Mechanismus kann sowohl Java-Code als auch Typescript code angepasst werden
+   - Muss immer mit Modellen kombiniert sein
+4. Anpassungen am Generator
+   - Durch Hinzufügen oder Ersetzten vom Templates
+   - Durch eine Veränderung des Generatorablaufs per Configscript
+   - Durch Hinzufügen von zusätzlichen Generatoren
+5. Eine Kombination der vorherigen Techniken
+
+Weiterhin könnten Module während der Einbindung in ein Projekt konfigurierbar sein

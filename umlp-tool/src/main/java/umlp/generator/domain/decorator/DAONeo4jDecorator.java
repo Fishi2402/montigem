@@ -137,7 +137,10 @@ public class DAONeo4jDecorator extends DAODecorator {
   protected void updateOptionalAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).forEach(attr ->
-            getCD4C().addMethod(doaClass, "umlp.dao.UpdateOptionalAttr", SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED), attr.getName(),
+            getCD4C().addMethod(doaClass, "umlp.dao.UpdateOptionalAttr",
+                SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED),
+                attr.getName(),
+                SQLSchemaGenerator.convertAttributeName(attr.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED),
                 GenService.createType(attr).printType(), GenService.getDBType(attr.getSymbol().getType())));
   }
 

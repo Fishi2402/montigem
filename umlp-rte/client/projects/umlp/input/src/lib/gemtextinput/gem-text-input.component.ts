@@ -18,8 +18,8 @@ export class GemTextInput extends GemTextInputTOP implements OnInit {
   @HostBinding("attr.id") componentId: string;
 
   @Output() public entryChange = new EventEmitter<string>();
-  @Output() public keyup = new EventEmitter<KeyboardEvent>();
-  @Output() public keydown = new EventEmitter<KeyboardEvent>();
+  @Output() public override keyRelease = new EventEmitter<KeyboardEvent>();
+  @Output() public override keyPress = new EventEmitter<KeyboardEvent>();
 
   onEntryChange(event: string) {
     this.entryChange.emit(event);

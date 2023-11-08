@@ -7,7 +7,9 @@ component GemTextareaInput(
   String labelText,
   ?String entry,
   String id,
+  boolean disabled = false,
+  String placeholder = "",
   GemTextareaInputValidity validity,
-  Event keyup,
-  Event keydown
+  Event keyRelease,
+  Event keyPress
 )

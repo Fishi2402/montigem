@@ -15,9 +15,9 @@ export class Navigation {
   }
 
   readonly items: { url: string, title: string }[] = [
-    { url: '/projects', title: 'Projects' },
-    { url: '/issue-tracker/IssueTrackerPage', title: 'Issue Tracker' },
-    { url: '/usersettings/UserSettings/1', title: 'User Settings' },
+    { url: 'gui/SehubMainPage', title: 'Projects' },
+    { url: 'gui/issues/IssueTrackerPage', title: 'Issue Tracker' },
+    { url: 'gui/usersettings/UserSettings/1', title: 'User Settings' },
   ];
   getCurrentUser(): User {
     return SehubSecurityManager.getCurrentUser();
@@ -26,7 +26,7 @@ export class Navigation {
   signOutCurrentUser(): void {
     fetch("/umlp/api/logout").finally(() => {
       SehubSecurityManager.signOut();
-      this.router.navigate(['/login/LoginPage']);
+      this.router.navigate(['gui/login/LoginPage']);
     });
   }
   isSignedIn(): boolean {

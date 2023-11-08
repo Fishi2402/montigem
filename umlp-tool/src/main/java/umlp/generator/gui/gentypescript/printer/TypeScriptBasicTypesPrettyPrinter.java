@@ -23,7 +23,12 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
     // print only last
     if (node.getPartsList().size() > 0) {
       // TODO AGe: underspecified List lands here
-      if (node.getBaseName().equals(TypeScriptTypes.LIST.getMCType())) {
+      if (node.getBaseName().equals("E")) {
+        getPrinter().print("any");
+      }
+      // TODO AGe: underspecified List landed here, but not anymore.
+      //  Wasn't pretty in the first place.
+      else if (node.getBaseName().equals(TypeScriptTypes.LIST.getMCType())) {
         getPrinter().print("Array<any>");
       } else {
         getPrinter().print(TypeScriptTypes.toTSType(node.getBaseName()));
@@ -39,7 +44,7 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
-    if (node.getQName().equals(BuiltInTypes.EVENT.getName())) {
+    if (node.getQName().equals(BuiltInTypes.EVENT.getQName())) {
       getPrinter().print("import { " + TypeScriptTypes.EVENT.getTSType()
           + " } from '@angular/core';");
     } else {
@@ -63,6 +68,9 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
         if (node.getQName().startsWith(type.getJavaPackage())) {
           from = type.getTSPackage();
         }
+      }
+      if (TSBackendMap.isBackendRTEPackage(node.getQName())) {
+        from = TSBackendMap.getTSRTEPackage();
       }
       getPrinter().print(from);
       // --- path calculation (end)

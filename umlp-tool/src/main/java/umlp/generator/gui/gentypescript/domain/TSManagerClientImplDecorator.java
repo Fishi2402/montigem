@@ -23,6 +23,7 @@ import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.SingletonLookUp;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -111,23 +112,39 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
+    boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
 
     if (!domainClass.getModifier().isAbstract()) {
-      managerClass.addCDMember(getCacheAttribute(domainClass));
+      if (isSingleton) {
+        managerClass.addCDMember(getSingletonAttribute(domainClass));
+      } else {
+        managerClass.addCDMember(getCacheAttribute(domainClass));
+      }
       managerClass.addCDMember(getCommandObserverAttribute(domainClass));
     }
 
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainClass);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoOpt", name, concreteSubclassesOrderedByDistance);
+
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoGetList", name, false);
-    getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSIsLoaded", name, concreteSubclassesOrderedByDistance);
+
 
     if (!domainClass.getModifier().isAbstract()) {
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderParam", name);
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoDeSerBuilder", name);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoAdd", name, managerName);
-      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoDelete", name, managerName);
+      if (!isSingleton) {
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoAdd", name, managerName);
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoDelete", name, managerName);
+      }
+    }
+
+    if (isSingleton) {
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoOptSingletonElement", name);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoGetSingletonElement", name);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoGetListSingletonElement", name);
+    } else {
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoOpt", name, concreteSubclassesOrderedByDistance);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSIsLoaded", name, concreteSubclassesOrderedByDistance);
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoGetList", name, false);
     }
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
@@ -191,6 +208,17 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
   protected String defaultMapValue() {
     return " = new Map()";
   }
+
+  protected ASTCDAttribute getSingletonAttribute(ASTCDType domainClass) {
+    ASTCDAttribute singletonInstanceAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+        getMCTypeFacade().createOptionalTypeOf( "Promise<" + domainClass.getName() + ">"),
+        StringTransformations.uncapitalize(domainClass.getName() + "Instance"));
+    // Add the "?" notation for optional types
+    getGlex().replaceTemplate("umlp.gui2ts.TSAttribute", singletonInstanceAttr,
+            new StringHookPoint(" protected " + StringTransformations.uncapitalize(domainClass.getName()) + "Instance?: Promise<"+domainClass.getName()+">;"));
+    return singletonInstanceAttr;
+  }
+
 
   @Override
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDClass clazz) {

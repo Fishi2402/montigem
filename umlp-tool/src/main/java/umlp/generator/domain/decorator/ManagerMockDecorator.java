@@ -19,10 +19,12 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.commands.EventSendingObserverDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.SingletonLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -67,7 +69,10 @@ public class ManagerMockDecorator extends AbstractDecorator {
     List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
         .collect(Collectors.toList());
-    getCD4C().addMethod(managerClass, "umlp.managermock.ClearCache", concreteDomainClasses);
+    Function<ASTCDClass, Boolean> isSingleton = SingletonLookUp::isSingleton;
+    getCD4C().addMethod(managerClass, "umlp.managermock.ClearCache",
+            concreteDomainClasses.stream().filter(x -> !isSingleton.apply(x)).collect(Collectors.toList()),
+            concreteDomainClasses.stream().filter(isSingleton::apply).collect(Collectors.toList()));
 
 
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
@@ -86,32 +91,59 @@ public class ManagerMockDecorator extends AbstractDecorator {
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
     String lName = StringTransformations.uncapitalize(name);
+    boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
 
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainClass);
     Set<ASTCDType> concreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass);
-    getCD4C().addMethod(managerClass, "umlp.managermock.DoOpt", name, concreteSubclassesInclSelf);
+    if (isSingleton) {
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoOptSingletonElement", name);
+    } else {
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoOpt", name, concreteSubclassesInclSelf);
+    }
     getCD4C().addMethod(managerClass, "umlp.managermock.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name, concreteSubclassesInclSelf);
+    if (!isSingleton) {
+      getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name, concreteSubclassesInclSelf);
+    }
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
 
-    if (!domainClass.getModifier().isAbstract()) {
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name, concreteSubclassesInclSelf);
+    if (isSingleton) {
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoGetSingletonElement", name);
+    }
 
-      ASTCDAttribute attr = getCD4C().addAttribute(managerClass, "protected HashMapWithOrderedKeys<Long, " + name + "> " + lName + "s");
-      glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new HashMapWithOrderedKeys<>()"));
-      attr = getCD4C().addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList");
-      glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList().build().get()"));
+
+
+    if (!domainClass.getModifier().isAbstract()) {
+      if (isSingleton) {
+        getCD4C().addMethod(managerClass, "umlp.managermock.DoGetListSingletonElement", name);
+      } else {
+        getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name, concreteSubclassesInclSelf);
+      }
+
+      ASTCDAttribute attr;
+      if (isSingleton) {
+        attr = getCD4C().addAttribute(managerClass, "protected Optional<" + name + "> " + lName + "Instance");
+        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= Optional.empty()"));
+        attr = getCD4C().addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList");
+        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList().build().get()"));
+      }else {
+        attr = getCD4C().addAttribute(managerClass, "protected HashMapWithOrderedKeys<Long, " + name + "> " + lName + "s");
+        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new HashMapWithOrderedKeys<>()"));
+        attr = getCD4C().addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList");
+        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList().build().get()"));
+      }
       attr = getCD4C().addAttribute(managerClass, "protected " + name + "CommandSendingObserver the" + name + "CommandObserver");
       glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "CommandSendingObserver()"));
 
       getCD4C().addMethod(managerClass, "umlp.managermock.DoBuilderParam", name);
       getCD4C().addMethod(managerClass, "umlp.managermock.DoDeSerBuilder", name);
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoAdd", name, managerName,
-          assocs.stream()
-              .filter(GenService::isBidirectional)
-              .filter(Predicate.not(GenService::isSymbolDerived))
-              .collect(Collectors.toList()));
-      getCD4C().addMethod(managerClass, "umlp.managermock.DoDelete", name, managerName);
+      if (!isSingleton) {
+        getCD4C().addMethod(managerClass, "umlp.managermock.DoAdd", name, managerName,
+            assocs.stream()
+                .filter(GenService::isBidirectional)
+                .filter(Predicate.not(GenService::isSymbolDerived))
+                .collect(Collectors.toList()));
+        getCD4C().addMethod(managerClass, "umlp.managermock.DoDelete", name, managerName);
+      }
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + CommandSendingObserverDecorator.SUFFIX));
     } else {
       getCD4C().addMethod(managerClass, "umlp.managermock.DoGetListAbstract", name);

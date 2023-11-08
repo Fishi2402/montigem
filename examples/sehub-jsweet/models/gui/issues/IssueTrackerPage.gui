@@ -1,0 +1,58 @@
+package gui.issues;
+
+import Sehub.Issue;
+
+import gui.issues.IssueDoingFilter;
+import gui.issues.IssueDoneFilter;
+import gui.issues.IssueTodoFilter;
+import gui.issues.IssueCreate;
+
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import input.GemTextInput;
+import input.GemTextareaInput;
+
+page IssueTrackerPage(List<Issue> issues) {
+
+  @GemRow(width = "100%", hAlign= "center", colGap="5px", rowGap="20px", components = [
+
+    @GemCard(title = "New Issue", component = @GemColumn(hAlign = "center", width = "auto", component = @IssueCreate())),
+
+    @GemCard(title = "Issue - List", component =
+      @GemColumn(hAlign = "center", width = "auto", components = [
+        issueCategories@GemRow(hAlign = "center", width = "auto", rowGap = "10px", colGap = "10px", components = [
+
+          // TBD Column
+          todo@GemCard(title = "TODO", component =
+            @GemColumn(width = "400px", vAlign="top", height="100%", rowGap= "5px",  component =
+              @iterate(Issue i : issues){
+                @IssueTodoFilter(issue = i);
+              }
+            )
+          ),
+
+          // WIP Column
+          doing@GemCard(title = "DOING", component =
+            @GemColumn(width = "400px", vAlign="top", height="100%", rowGap= "5px",  component =
+              @iterate(Issue i : issues){
+                @IssueDoingFilter(issue = i);
+              }
+            )
+          ),
+
+          // Done Column
+          done@GemCard(title = "DONE", component =
+            @GemColumn(width = "400px", vAlign="top", height="100%", rowGap= "5px",  component =
+               @iterate(Issue i : issues){
+                 @IssueDoneFilter(issue = i);
+               }
+             )
+          )
+
+        ])
+      ])
+    )
+  ]);
+}

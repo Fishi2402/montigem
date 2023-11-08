@@ -3,6 +3,8 @@ package gradle.specific;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
@@ -23,6 +25,7 @@ abstract public class NPMAuthCreate extends DefaultTask {
 
     getNpmrcFile().convention(getProject().getObjects().fileProperty().fileValue(getProject().file(".npmrc")));
     getGitignore().convention(getProject().getObjects().fileProperty().fileValue(getProject().file(".gitignore")));
+    getUnscoped().convention(false);
   }
 
   @OutputFile
@@ -31,6 +34,15 @@ abstract public class NPMAuthCreate extends DefaultTask {
 
   @InputFile
   abstract protected RegularFileProperty getGitignore();
+
+  /**
+   * Set to true in exceptional cases, such as publishing to a Nexus repository, which does not
+   * support scoped authentication.
+   * @return whether the registry and _auth entries should be unscoped.
+   */
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getUnscoped();
 
   void checkGitignore() throws IOException {
     File gitignore = getGitignore().get().getAsFile();
@@ -57,6 +69,10 @@ abstract public class NPMAuthCreate extends DefaultTask {
           "@umlp:registry=https://nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/\n" +
           "@monticore:_auth=\"" + encodedAuthData + "\"" +
           "@umlp:_auth=\"" + encodedAuthData + "\"";
+      if (getUnscoped().isPresent() && getUnscoped().get()) {
+        data = "registry=https://nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/\n" +
+            "_auth=\"" + encodedAuthData + "\"";
+      }
       FileUtils.writeStringToFile(getNpmrcFile().getAsFile().get(), data, StandardCharsets.UTF_8);
     } else {
       throw new RuntimeException("<mavenUser> / <mavenPassword> not found in properties!");

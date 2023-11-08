@@ -1,5 +1,6 @@
 package stanley.gui;
 
 import hardy.Flensburg.Transaction;
+import table.GemTable;
 
 component MonthlyTransactions(List<Transaction> transactions)

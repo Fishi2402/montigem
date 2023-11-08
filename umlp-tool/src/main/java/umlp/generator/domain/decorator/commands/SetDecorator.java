@@ -125,7 +125,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
       ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
       getCD4C().addImport(ast, getPackageName(cd, DEFAULT_PACKAGE) + "." + otherType + "AccessPolicy");
     } else {
-      getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", domainType.getName(), "Update");
+      getCD4C().addMethod(ast, getGeneralCheckAccessPolicyTemplate(), domainType.getName(), "Update");
       getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("getGemId()"));
     }
     AccessorDecorator accessor = getAccessorDecorator();
@@ -135,6 +135,10 @@ public class SetDecorator extends AbstractDeSerDecorator {
     addImports(ast, origCD, domainType, type, isGem, attr);
 
     return ast;
+  }
+
+  protected String getGeneralCheckAccessPolicyTemplate() {
+    return "umlp.commands.GeneralCheckAccessPolicy";
   }
 
   protected String extendedClass() {

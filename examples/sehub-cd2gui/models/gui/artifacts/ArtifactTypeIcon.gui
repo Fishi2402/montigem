@@ -1,6 +1,6 @@
 package gui.artifacts;
 
-import basic.src.lib.gemimage.GemImage;
+import basic.GemImage;
 
 component ArtifactTypeIcon(String type){
   @guard(type == "Directory"){

@@ -58,6 +58,11 @@ public class TSGetDecorator extends GetDecorator {
   }
 
   @Override
+  protected String getGeneralCheckAccessPolicyTemplate() {
+    return "umlp.gui2ts.accesspolicy.TSGeneralCheckAccessPolicy";
+  }
+
+  @Override
   protected void addDeSerImport(ASTCDCompilationUnit origCD, ASTCDClass ast, String cmdName) {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
     getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE) + "." + cmdName);

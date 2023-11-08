@@ -1,0 +1,5 @@
+package stanley.gui;
+
+import hardy.Flensburg.Transaction;
+
+component MonthlyTransactions(List<Transaction> transactions)

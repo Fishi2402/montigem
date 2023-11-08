@@ -19,6 +19,7 @@ abstract public class SerializeCDSymbolsTask extends DefaultTask {
 
   @InputDirectory
   @PathSensitive(PathSensitivity.RELATIVE)
+  @Optional
   public abstract DirectoryProperty getSymbolPath();
 
   @OutputDirectory
@@ -45,14 +46,19 @@ abstract public class SerializeCDSymbolsTask extends DefaultTask {
         args.add(inputFile.getAbsolutePath());
       }
       {
-        args.add("-path");
-        args.add(getSymbolPath().get().getAsFile().getAbsolutePath());
+        if(getSymbolPath().isPresent()) {
+          args.add("-path");
+          args.add(getSymbolPath().get().getAsFile().getAbsolutePath());
+        }
       }
       {
         args.add("-s");
-        String relPath = getInput().get().getAsFile().toPath().relativize(inputFile.toPath()).toString();
-        args.add(getOutput().file(relPath + "sym").get().getAsFile().getAbsolutePath());
+        //String relPath = getInput().get().getAsFile().toPath().relativize(inputFile.toPath()).toString();
+        //args.add(getOutput().file(relPath + "sym").get().getAsFile().getAbsolutePath());
+        args.add(getOutput().getAsFile().get().getAbsolutePath());
       }
+
+      args.add("-c2mc");
 
       Log.trace(args.toString(), this.getName());
 

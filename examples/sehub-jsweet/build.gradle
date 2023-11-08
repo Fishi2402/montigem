@@ -1,0 +1,17 @@
+project('frontend') {
+  sourceSets.main.java.srcDirs = ['../backend/src/main/java', '../backend/build/umlp/backend']
+}
+
+//project('frontend').translateTypeScript.dependsOn(project('backend').generateUmlpBackend)
+project('frontend').getTasksByName('jsweet', true).forEach {a -> {
+  project('backend').getTasksByName('generateUmlpBackend', true).forEach {b -> {
+    a.dependsOn(b)
+  }}
+}}
+
+//project('frontend').translateTypeScript.dependsOn(project('backend').generateUmlpBackend)
+project('frontend').getTasksByName('jsweet', true).forEach {a -> {
+  project('backend').getTasksByName('generateUmlpBackend', true).forEach {b -> {
+    a.dependsOn(b)
+  }}
+}}

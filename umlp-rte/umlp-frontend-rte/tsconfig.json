@@ -8,7 +8,7 @@
     "strict": false,
     "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": true,
-    "noFallthroughCasesInSwitch": true,
+    "noFallthroughCasesInSwitch": false,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,

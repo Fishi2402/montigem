@@ -6,5 +6,6 @@ component GemRadioInput(
   String labelText,
   String value,
   String labelPosition,
+  boolean disabled = false,
   ?String selectedValue
 )

@@ -18,7 +18,7 @@ if(jsonObject.getBooleanMemberOpt("simpleResult").orElse(false)){
 
     return Optional.of(new SimpleResult<>(jsonObject.getLongMember("commandId"), res, tp) );
   }else{
-    return Optional.of(new SimpleResult<>(jsonObject.getLongMember("commandId"), umlp.backendrte.common.LoadingState.FAILED_TO_LOAD, tp));
+    return Optional.of(new SimpleResult<>(jsonObject.getLongMember("commandId"), LoadingState.FAILED_TO_LOAD, tp));
   }
 }
 

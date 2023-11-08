@@ -1,0 +1,25 @@
+package gui;
+
+import Sehub.Project;
+
+import table.GemTable;
+import table.TableTypes.TableColumn;
+import charts.GemNetworkGraph;
+import arrange.GemCard;
+
+page SehubMainPage(List<Project> projects) {
+
+  @GemCard(
+    title = "Projects",
+    component = projectList@GemTable(
+      rows = projects,
+      columns = [
+        TableColumn("_name", "Project Name")
+      ],
+      edit = navigateToProjectPage,
+      update = log,
+      canDelete = false,
+      canCreate = false
+    )
+  );
+}

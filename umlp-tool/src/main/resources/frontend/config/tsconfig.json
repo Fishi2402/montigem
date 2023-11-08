@@ -9,7 +9,7 @@
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
+    "noFallthroughCasesInSwitch": false,
     "noStrictGenericChecks": true,
     "strictNullChecks": false,
     "sourceMap": true,
@@ -33,6 +33,10 @@
       "tslib": ["node_modules/tslib"]
     }
   },
+  "include": [
+    "**/*",
+    "../../src/**/*.ts"
+  ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

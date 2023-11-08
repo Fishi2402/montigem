@@ -22,6 +22,10 @@
     /**/
   }
 
+  .gem-textarea:disabled {
+    cursor: not-allowed;
+  }
+
   .gem-textarea-warning {
     border: 1px solid #ff8c00;
     background-image: url("./img/warning.png");

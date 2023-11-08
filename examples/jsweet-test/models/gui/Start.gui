@@ -1,0 +1,19 @@
+package gui;
+
+import arrange.GemColumn;
+import arrange.GemCard;
+import basic.GemText;
+import arrange.GemRow;
+import basic.GemImage;
+
+page Start() {
+  @GemCard(
+    title = "JSweet Test",
+    component = @GemColumn(
+      components = [
+        erster@GemText(value = "hi"),
+        zweiter@GemText(value = "JSweet")
+      ]
+    )
+  );
+}

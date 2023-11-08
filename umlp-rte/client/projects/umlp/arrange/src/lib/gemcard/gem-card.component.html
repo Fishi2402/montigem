@@ -20,5 +20,11 @@
   </gem-column>
 </ng-template>
 <ng-template #titleTpl>
-  {{title}}
+  <ng-template [ngIf]="!titleComponent">
+    {{title}}
+  </ng-template>
+  <ng-template [ngIf]="titleComponent">
+    <ng-template [ngTemplateOutlet]="titleComponent">
+    </ng-template>
+  </ng-template>
 </ng-template>

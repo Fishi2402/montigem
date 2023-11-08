@@ -27,6 +27,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.commands.ManagerSubscriptionDecorator;
@@ -34,6 +35,7 @@ import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.SingletonLookUp;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -225,7 +227,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
 
         }
         glex.setBeforeTemplate("umlp.gui2java.InitBody", hps);
-        getCD4C().addMethod(clazz, "umlp.gui2ts.TSBuild", builders);
+//        getCD4C().addMethod(clazz, "umlp.gui2ts.TSBuild", builders); // TODO entfernen
 
         // Add constructor
         addBuilderConstructor(clazz, domainAttributes, ast.getComponentQName());
@@ -240,11 +242,19 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
 
           if (util.getMainDomainModelSimpleName().isPresent() && !util.isEnumType(p.getSymbol().getType())) {
             // TODO AGe: body of init method currently uses different hooks, improve
-            hps.add(new TemplateHookPoint(
-                "umlp.gui2ts.TSInitDomain",
-                p.getName(),
-                p.getMCType().printType(),
-                util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+            if (SingletonLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())) {
+              hps.add(new TemplateHookPoint(
+                      "umlp.gui2ts.TSInitDomainSingleton",
+                      p.getName(),
+                      p.getMCType().printType(),
+                      util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+            } else {
+              hps.add(new TemplateHookPoint(
+                      "umlp.gui2ts.TSInitDomain",
+                      p.getName(),
+                      p.getMCType().printType(),
+                      util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+            }
           }
           else {
             Log.warn("0x00007 Could not identify the manager name: domain classdiagram is missing");
@@ -309,6 +319,9 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, originalName + "Observer"));
     getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, "Empty" + originalName + "Observer"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+      getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("UMLPArrayList"));
+    }
 
     // Update methods
     for (var p : paramsTypedListOfDomain) {
@@ -350,7 +363,9 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
 
   // TODO AGe: own event decorator
   protected void addInitialValue(ASTCDAttribute attr) {
-    if (attr.getMCType().printType().equals(BuiltInTypes.EVENT.getName())) {
+    if (attr.getMCType().printType().equals(BuiltInTypes.EVENT.getQName())
+        || attr.getMCType().printType().equals(BuiltInTypes.EVENT.getName())
+    ) {
       glex.replaceTemplate("cd2java.Value", attr,
           new StringHookPoint(" = new EventEmitter<any>()"));
     }

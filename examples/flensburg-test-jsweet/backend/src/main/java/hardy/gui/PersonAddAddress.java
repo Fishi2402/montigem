@@ -4,10 +4,9 @@ package hardy.gui;
 
 import hardy.flensburg.Address;
 import hardy.flensburg.Person;
-import umlp.backendrte.common.GemList;
 import umlp.jsweet.extension.annotation.Directive;
 import umlp.jsweet.extension.annotation.Input;
-import umlp.jsweet.extension.annotation.SynchronizedGemList;
+import umlp.jsweet.extension.annotation.UMLPSynchronized;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class PersonAddAddress {
 
   }
 
-  @SynchronizedGemList
+  @UMLPSynchronized
   public List<Person> getChildren() {
     return this.person.getChildren();
   }

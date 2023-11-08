@@ -71,10 +71,10 @@ public class TSBuilderDecorator extends BuilderDecorator {
   @Override
   protected void addConstructor(
       ASTCDClass builderClass, ASTCDClass domainClass,
-      String managerName, List<ASTCDAssocSide> attrAssocLists
+      String managerName, List<ASTCDAssocSide> attrAssocLists, List<String[]> initialAttributes
   ) {
     glex.replaceTemplate(GUI2ComponentTemplates.CONSTRUCTOR, builderClass,
-        new TemplateHookPoint(getConstructorTemplate(), domainClass.getName(), managerName, attrAssocLists));
+        new TemplateHookPoint(getConstructorTemplate(), domainClass.getName(), managerName, attrAssocLists, initialAttributes));
   }
 
   protected String getConstructorTemplate() {

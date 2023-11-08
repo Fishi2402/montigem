@@ -1646,7 +1646,7 @@ export class GemTableComponent<
     return this.columns.filter((c) => !c.uneditable)[0];
   }
 
-  private findNextRow(rowId: number): T {
+  private findNextRow(rowId: number): T | null {
     const rows: T[] = this.rowData.filter(
       (r: T | Group): r is T => !(r instanceof Group)
     );
@@ -1654,9 +1654,10 @@ export class GemTableComponent<
     if (index > -1 && index < rows.length - 1) {
       return rows[index + 1];
     }
+    return null;
   }
 
-  private findPrevRow(rowId: number): T {
+  private findPrevRow(rowId: number): T | null {
     const rows: T[] = this.rowData.filter(
       (r: T | Group): r is T => !(r instanceof Group)
     );
@@ -1664,6 +1665,7 @@ export class GemTableComponent<
     if (index > 0) {
       return rows[index - 1];
     }
+    return null;
   }
 
   // -------------------- advanced editing hotkeys (end) --------------------

@@ -37,12 +37,11 @@ public class WeatherServerApplication extends WeatherServerApplicationTOP {
       duesseldorf = WeatherManager.cityBuilder().name("Düsseldorf").latitude(51.233334).longitude(6.783333).build();
     }
 
-    if (WeatherManager.getAppList().isEmpty()) {
-      WeatherManager.appBuilder()
-          .currentCity(duesseldorf.get())
-          .favoriteAdd(aachen.get())
-          .favoriteAdd(duesseldorf.get())
-          .build();
+    if (!WeatherManager.getApp().getCurrentCityGem().isPresent()) {
+      WeatherManager.getApp()
+          .setCurrentCity(duesseldorf.get());
+      WeatherManager.getApp()
+          .addFavorite(aachen.get());
     }
 
     new WeatherReport().createWeatherForecast(aachen.get());

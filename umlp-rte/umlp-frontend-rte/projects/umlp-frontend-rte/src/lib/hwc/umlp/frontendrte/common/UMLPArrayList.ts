@@ -12,7 +12,8 @@ export class UMLPArrayList<E> implements IUMLPList<E> {
       if (elemenets instanceof Array) {
         this.array = elemenets;
       } else {
-        elemenets.toArray().then(numbers => this.array = numbers);
+        this.array = elemenets.toArray();
+        // elemenets.toArray().then(numbers => this.array = numbers);
       }
     }
   }
@@ -25,11 +26,11 @@ export class UMLPArrayList<E> implements IUMLPList<E> {
     return Promise.resolve(true);
   }
 
-  addAll(indexOrElements: number | Array<E>, elems?: Array<E>): Promise<boolean> {
+  async addAll(idxOrElems: number | IUMLPList<E> | Array<E>, elems?: IUMLPList<E>): Promise<boolean> {
     if (elems === undefined || elems === null) {
-      this.array.push(<E>indexOrElements);
+      this.array.push(<E>idxOrElems);
     } else {
-      this.array.splice(<number>indexOrElements, 0, ...<Array<E>>elems);
+      this.array.splice(<number>idxOrElems, 0, ...(await <Array<E>>elems.toArray()));
     }
     return Promise.resolve(true);
   }
@@ -132,8 +133,8 @@ export class UMLPArrayList<E> implements IUMLPList<E> {
     return undefined; // TODO
   }
 
-  toArray (startIndex?:number, endIndex?:number): Promise<Array<E>> {
-    return Promise.resolve(this.array);
+  toArray (startIndex?:number, endIndex?:number): Array<E> {
+    return this.array;
   }
 
 

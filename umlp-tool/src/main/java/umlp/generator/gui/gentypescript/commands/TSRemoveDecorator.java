@@ -64,6 +64,11 @@ public class TSRemoveDecorator extends RemoveDecorator {
   }
 
   @Override
+  protected String getCheckAccessPolicyTemplate() {
+    return "umlp.gui2ts.accesspolicy.TSGeneralCheckAccessPolicy";
+  }
+
+  @Override
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, boolean useDeSer,
       String baseClassDecorator, SymTypeExpression type, SymTypeExpression innerType, String cmdName) {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));

@@ -30,14 +30,19 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
+import umlp.generator.gui.gentypescript.printer.TSBackendMap;
+import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
+import umlp.generator.util.SingletonLookUp;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -45,23 +50,24 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class GUIGeneratorUtil {
 
+  public static final String SYNCHRONIZED_SUFFIX = "_synchronized";
+
+  protected static GUIGeneratorUtil instance;
+  protected final String TPL_INTERN = "TPL_INTERN";
+  protected final String TPL_SUFFIX = "TPL";
+  protected GUIDSLFullPrettyPrinter printer;
   // Fully qualified Name of the classdiagram, e.g. "hardy.Flensburg"
   private List<String> DOMAIN_MODELS;
   // Fully qualified Name of a gui model, e.g. "stanley.PersonCreate"
   private List<String> CREATE_MODELS;
-
-  protected final String TPL_INTERN = "TPL_INTERN";
-  protected final String TPL_SUFFIX = "TPL";
-
-  protected static GUIGeneratorUtil instance;
-
-  protected GUIDSLFullPrettyPrinter printer;
+  private Set<String> CREATE_TS_COMPONENTS;
 
   private GUIGeneratorUtil() {
     printer = new GUIDSLFullPrettyPrinter(new IndentPrinter());
@@ -74,9 +80,26 @@ public class GUIGeneratorUtil {
     return instance;
   }
 
+  public static String replaceDots(String input) {
+    Pattern pattern = Pattern.compile("(?<!\\bthis)\\.");
+    Matcher matcher = pattern.matcher(input);
+    StringBuffer result = new StringBuffer();
+
+    while (matcher.find()) {
+      matcher.appendReplacement(result, "?\\.");
+    }
+    matcher.appendTail(result);
+
+    return result.toString();
+  }
+
   public void init(List<String> domainModels, List<String> createModels) {
     DOMAIN_MODELS = domainModels;
     CREATE_MODELS = createModels;
+  }
+
+  public void init(Set<String> createTSComponents) {
+    CREATE_TS_COMPONENTS = createTSComponents;
   }
 
   public final String print(ASTNode node) {
@@ -118,7 +141,7 @@ public class GUIGeneratorUtil {
 
   public final boolean isDomainListType(SymTypeExpression type) {
     if (type.hasTypeInfo() && GenService.isList(type)) {
-      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1) {
         SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
         TypeSymbol ts = inner.getTypeInfo();
         if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {
@@ -177,7 +200,7 @@ public class GUIGeneratorUtil {
   public final String getDomainListInnerType(ASTGUIParam astguiParam) {
     SymTypeExpression type = astguiParam.getSymbol().getType();
     if (type.hasTypeInfo() && GenService.isList(type)) {
-      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1) {
         SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
         TypeSymbol ts = inner.getTypeInfo();
         if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {
@@ -193,7 +216,7 @@ public class GUIGeneratorUtil {
 
   public final Optional<SymTypeExpression> getListInnerType(SymTypeExpression type) {
     if (type.hasTypeInfo() && GenService.isList(type)) {
-      if (((SymTypeOfGenerics) type).sizeArguments() == 1)  {
+      if (((SymTypeOfGenerics) type).sizeArguments() == 1) {
         return Optional.of(((SymTypeOfGenerics) type).getArgument(0));
       }
     }
@@ -243,6 +266,10 @@ public class GUIGeneratorUtil {
     return Optional.empty();
   }
 
+  public final boolean isCreatedTSComponent(String componentName) {
+    return CREATE_TS_COMPONENTS.contains(componentName);
+  }
+
   public final boolean isCreateModel(String componentQName) {
     return CREATE_MODELS.contains(componentQName);
   }
@@ -264,15 +291,15 @@ public class GUIGeneratorUtil {
     return arg.isPresentGUIComponent();
   }
 
-  public List<ASTGUIComponent> getComponentAsArguments(ASTGUIComponent guiComponent) {
-    return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getGUIArgValue()).filter(a -> isComponentArgument(guiComponent, a))
-        .map(a -> a.getGUIComponent()).collect(Collectors.toList());
-  }
-
 /*  public  List<ASTGUINamedArg> getComponentArguments(ASTGUIComponent guiComponent) {
     return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().filter(a -> isComponentArgument(guiComponent, a))
        .collect(Collectors.toList());
   }*/
+
+  public List<ASTGUIComponent> getComponentAsArguments(ASTGUIComponent guiComponent) {
+    return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getGUIArgValue()).filter(a -> isComponentArgument(guiComponent, a))
+        .map(a -> a.getGUIComponent()).collect(Collectors.toList());
+  }
 
   public List<ASTGUIArgValue> getComponentArguments(ASTGUIComponent guiComponent) {
     List<ASTGUIArgValue> values = new ArrayList<>();
@@ -329,6 +356,17 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(argName));
   }
 
+  public String gui2cdAttrGetterNameTS(String componentId, String argName) {
+    return getHTMLName("get"
+        + StringTransformations.capitalize(componentId)
+        + StringTransformations.capitalize(argName)) +
+        (UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? "" : SYNCHRONIZED_SUFFIX);
+  }
+
+  public String getIsSynchronizedSuffix() {
+    return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? SYNCHRONIZED_SUFFIX : "";
+  }
+
   public String gui2cdAttrSetterName(String componentId, String argName) {
     return getHTMLName("set"
         + StringTransformations.capitalize(componentId)
@@ -370,24 +408,14 @@ public class GUIGeneratorUtil {
       visitor.setIgnore(ignore);
       visitor.transform(ic);
       String expressionWithNullChecks = replaceDots(print(visitor.getGetterExpression()));
+      if (!UMLPGeneratorConfig.getInstance().isGenerateTypescript()) {
+        expressionWithNullChecks = expressionWithNullChecks.replace("()", SYNCHRONIZED_SUFFIX + "()");
+      }
       return getHTMLName(expressionWithNullChecks);
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
         + " was not processed: range iterate control not supported yet");
     return "";
-  }
-
-  public static String replaceDots(String input) {
-    Pattern pattern = Pattern.compile("(?<!\\bthis)\\.");
-    Matcher matcher = pattern.matcher(input);
-    StringBuffer result = new StringBuffer();
-
-    while (matcher.find()) {
-      matcher.appendReplacement(result, "?\\.");
-    }
-    matcher.appendTail(result);
-
-    return result.toString();
   }
 
   public String getIteratorIterable(ASTGUIIterate iterate) {
@@ -419,7 +447,8 @@ public class GUIGeneratorUtil {
         return part1 + "." + StringTransformations.uncapitalize(simpleName) + "." + postfix;
       }
       return StringTransformations.uncapitalize(name) + "." + postfix;
-    } else {
+    }
+    else {
       Log.error("0x00000 GUI Model " + forComponent
           + " is missing a connection to the domain model."
           + " Please specify the domain model using '-dm' flag.");
@@ -433,7 +462,8 @@ public class GUIGeneratorUtil {
       String name = domainQName.get();
       String simpleName = name.substring(name.lastIndexOf(".") + 1);
       return gui2tsGeneralImport(forComponent, simpleName + ManagerDecorator.SUFFIX);
-    } else {
+    }
+    else {
       Log.error("0x00000 GUI Model " + forComponent
           + " is missing a connection to the domain model."
           + " Please specify the domain model using '-dm' flag.");
@@ -467,7 +497,7 @@ public class GUIGeneratorUtil {
   }
 
   public boolean isEventArgument(GUIParamSymbol paramSym) {
-    return paramSym.getType().getTypeInfo().getName().equals(BuiltInTypes.EVENT.getName());
+    return paramSym.getType().getTypeInfo().getFullName().equals(BuiltInTypes.EVENT.getQName());
   }
 
   public boolean isStringLiteral(ASTGUIArgValue argValue) {
@@ -504,10 +534,10 @@ public class GUIGeneratorUtil {
   }
 
   public boolean hasGetter(SymTypeExpression ste) {
-    String type = ste.getTypeInfo().getName();
+    String type = ste.getTypeInfo().getFullName();
     return !isViewElement(ste)
         && !isViewElementsCollection(ste)
-        && !type.equals(BuiltInTypes.EVENT.getName());
+        && !type.equals(BuiltInTypes.EVENT.getQName());
   }
 
   public boolean hasSetter(ASTGUIComponent comp, ASTGUINamedArg arg) {
@@ -542,7 +572,7 @@ public class GUIGeneratorUtil {
   }
 
   public boolean isViewElement(SymTypeExpression ste) {
-    return ste.getTypeInfo().getName().equals(BuiltInTypes.GUI_VIEW_ELEMENT.getName());
+    return ste.getTypeInfo().getFullName().equals(BuiltInTypes.GUI_VIEW_ELEMENT.getQName());
   }
 
   public boolean isNgTemplate(String compName) {
@@ -610,6 +640,22 @@ public class GUIGeneratorUtil {
     return moduleName;
   }
 
+  public String getPackageModuleName(ASTMCImportStatement i) {
+    List<String> temp = List.of(java2tsModule(i.getQName()).split("/"));
+    return temp.get(temp.size() - 2).substring(0, 1).toUpperCase() + temp.get(temp.size() - 2).substring(1) + "_Module";
+  }
+
+  public String getPackageModulePath(ASTMCImportStatement i) {
+    List<String> temp = List.of(java2tsModule(i.getQName()).split("/"));
+    String moduleName = temp.get(temp.size() - 2).substring(0, 1).toUpperCase() + temp.get(temp.size() - 2).substring(1);
+    String path = "";
+    for (int index = 0; index < temp.size() - 1; index++) {
+      path += temp.get(index) + "/";
+    }
+    path += moduleName + GUI2TypeScriptGenerator.MODULES_FILE;
+    return path;
+  }
+
   public String getModuleClassName(String compName) {
     return StringTransformations.capitalize(compName.toLowerCase()) + "Module";
   }
@@ -619,7 +665,8 @@ public class GUIGeneratorUtil {
     if (!isCreateModel(decoratedAst.getComponentQName())) {
       for (ASTGUIParam p : decoratedAst.getGUIComponentDeclaration().getGUIParamList()) {
         if (p.isPresentSymbol()) {
-          if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p) && !isDerived(p)) {
+          if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p) && !isDerived(p)
+              && !SingletonLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())) {
             ids.add(p.getName() + "RoutingId");
           }
         }
@@ -697,6 +744,9 @@ public class GUIGeneratorUtil {
         res = type.getTSPackage();
       }
     }
+    if (TSBackendMap.isBackendRTEPackage(javaPackage)) {
+      res = TSBackendMap.getTSRTEPackage();
+    }
 
     return res;
   }
@@ -709,6 +759,27 @@ public class GUIGeneratorUtil {
     if (hwFilePath.isPresent()) {
       Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
       res = Optional.of(importer.resolve(hwFile).getParent()
+          .toAbsolutePath()
+          .normalize()
+          .relativize(hwPath.get().toAbsolutePath())
+          .toString()
+          .replaceAll("\\\\", "/"));
+
+      hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path,
+          Paths.get(hwFile)));
+    }
+    Reporting.reportHWCExistenceCheck(imported, Paths.get(hwFile), hwFilePath);
+    return res;
+  }
+
+  public Optional<String> getRelativeImportPathForAppConfigFile(
+      MCPath imported, Path importer, String qualifiedName, String fileExtension) {
+    String hwFile = Names.getPathFromPackage(qualifiedName) + "." + fileExtension;
+    Optional<URL> hwFilePath = imported.find(hwFile);
+    Optional<String> res = Optional.empty();
+    if (hwFilePath.isPresent()) {
+      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
+      res = Optional.of(importer
           .toAbsolutePath()
           .normalize()
           .relativize(hwPath.get().toAbsolutePath())
@@ -787,6 +858,6 @@ public class GUIGeneratorUtil {
     if (index2 == -1) {
       return name;
     }
-    return name.substring(0, index2) + name.substring(index1, name.length());
+    return name.substring(0, index2) + name.substring(index1);
   }
 }

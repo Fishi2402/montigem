@@ -17,8 +17,7 @@ import org.jsweet.transpiler.model.LiteralElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.NewClassElement;
 import org.jsweet.transpiler.util.Util;
-import umlp.jsweet.extension.util.RTEPathUtil;
-import umlp.jsweet.extension.util.UMLPAdapterUtils;
+import umlp.jsweet.extension.UMLPAbstractAdapter;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;

@@ -16,6 +16,7 @@ public enum UMLPToolOptions {
 
   // with one arg
   INPUT("i", "input", "Reads the source file (mandatory) and parses the contents", "file"),
+  OCL("ocl", "ocl", "Reads an ocl file (optional) and parses the contents", "file"),
   SYMTAB("s", "symboltable", "Serializes the symbol table of the given artifact.", "file", true),
   OUTPUT("o", "out", "Path of the output files.", "dir"),
   REPORTS("r", "report", "Prints reports of the artifact to the specified directory.", "dir", true),
@@ -38,6 +39,8 @@ public enum UMLPToolOptions {
       .desc("Fully qualified names of the domain models, space separated").build()),
   MODEl_PATH(Option.builder("mp").longOpt("modelPath").hasArgs()
       .desc("Sets the artifact path for imported models, space separated").build()),
+  MODULE_CONFIG(Option.builder("m").longOpt("module-config").hasArgs()
+      .desc("Fully qualified name(s) of config template(s) for added modules").build()),
 
   /**
    * RQ: GUI has no strategy to differentiate create and update pages, but we should only generate
@@ -48,6 +51,10 @@ public enum UMLPToolOptions {
    */
   GUI_CREATE(Option.builder("guic").longOpt("guiCreateModels").hasArgs()
       .desc("Fully qualified names of the gui models for object creation, space separated").build()),
+  GUI_GEN_TS_FUNC(Option.builder("guits").longOpt("guiGenTSFuncionality").hasArgs()
+      .desc("Flag which determines whether TS functionality should directly be generated from GUI models").build()),
+  GUI_GEN_JSWEET(Option.builder("jsweet").longOpt("guiGenJsweet").hasArgs()
+      .desc("Flag which determines whether TS code should be transpiled instead of generated from GUI models directly").build()),
   USE_SPRING(Option.builder("use_spring").desc("If the backend is generated, generate additional spring classes").build()),
   USE_SHELL(Option.builder("use_shell").desc("If the backend is generated, generate additional sping shell classes").build());
 

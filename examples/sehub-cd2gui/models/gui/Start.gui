@@ -1,10 +1,10 @@
 package gui;
 
-import arrange.src.lib.gemcolumn.GemColumn;
-import arrange.src.lib.gemcard.GemCard;
-import basic.src.lib.gemtext.GemText;
-import arrange.src.lib.gemrow.GemRow;
-import basic.src.lib.gemimage.GemImage;
+import arrange.GemColumn;
+import arrange.GemCard;
+import basic.GemText;
+import arrange.GemRow;
+import basic.GemImage;
 
 page Start() {
   @GemColumn(width = "100%", hAlign = "center", component =

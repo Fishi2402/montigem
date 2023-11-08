@@ -1,0 +1,23 @@
+{
+  "name": "SomeModule",
+  "tasks": [
+    {
+      "name": "backend",
+      "additionalConfigs": [
+        "some_module.BackendConfig.ftl"
+      ],
+      "additionalParams": []
+    },
+    {
+      "name": "frontend",
+      "additionalConfigs": [
+        "some_module.FrontendConfig.ftl"
+      ],
+      "additionalParams": []
+    },
+    {
+      "name": "merge",
+      "__comment__": "TODO: does this add a new task? The others only change tasks"
+    }
+  ]
+}

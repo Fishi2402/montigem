@@ -20,13 +20,14 @@
     "@angular/platform-browser": "^15.1.0",
     "@angular/platform-browser-dynamic": "^15.1.0",
     "@angular/router": "^15.1.0",
-    "@monticore/montigem-arrange": "^7.5.0",
-    "@monticore/montigem-basic": "^7.5.0",
-    "@monticore/montigem-charts": "^7.5.0",
-    "@monticore/montigem-input": "^7.5.0",
-    "@monticore/montigem-table": "^7.5.0",
-    "@monticore/montigem-theme": "^7.5.0",
+    "@umlp/arrange": "^7.5.0",
+    "@umlp/basic": "^7.5.0",
+    "@umlp/charts": "^7.5.0",
     "@umlp/common": "^7.5.0",
+    "@umlp/input": "^7.5.0",
+    "@umlp/navigation": "^7.5.0",
+    "@umlp/table": "^7.5.0",
+    "@umlp/theme": "^7.5.0",
     "font-awesome": "4.7.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
@@ -43,6 +44,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "puppeteer": "^21.4.1",
     "typescript": "~4.9.4"
   }
 }
