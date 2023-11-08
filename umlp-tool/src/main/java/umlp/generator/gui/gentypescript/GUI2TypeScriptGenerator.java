@@ -19,9 +19,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class GUI2TypeScriptGenerator {
 
@@ -102,38 +104,32 @@ public class GUI2TypeScriptGenerator {
 
   }
 
-  private static Map<String, String> findNextLevelModuleForPackageConfig(String path) {
+  private static Map<String, String> findNextLevelModuleForPackageConfig(Map.Entry<String, ModuleRoutingInfo> packageInfo,
+                                                                         Map<String, ModuleRoutingInfo> routingInfoMap) {
     Map<String, String> modules = new HashMap<>();
-
-    File folder = new File(path);
-    submoduleForPackageHelper(modules, folder, ".");
+    Set<String> subModuleInfo = new HashSet<>();
+    routingInfoMap.forEach((key, value) -> {
+      if (key.contains(packageInfo.getKey()) && !key.equals(packageInfo.getKey()))
+        subModuleInfo.add(key);
+    });
+    for (String info : subModuleInfo) {
+      boolean imported = true;
+      for (String infoParent : subModuleInfo) {
+          if (info.contains(infoParent) && !info.equals(infoParent)) {
+              imported = false;
+              break;
+          }
+      }
+      if (imported) {
+        String name = StringTransformations.capitalize(Iterables.getLast(routingInfoMap.get(info).getPackageParts()));
+        String path = "." + routingInfoMap.get(info).getRoutingPath().substring(packageInfo.getValue().getRoutingPath().length());
+        modules.put(name + "_Module", path + "/" + name + MODULES_FILE);
+      }
+    }
     return modules;
 
   }
 
-  private static void submoduleForPackageHelper(Map<String, String> modules, File dir, String path) {
-    File[] listOfFiles = dir.listFiles();
-    if (listOfFiles != null) {
-      for (File listOfFile : listOfFiles) {
-        if (listOfFile.isDirectory()) {
-          String moduleName = listOfFile.getName().toUpperCase().charAt(0) + listOfFile.getName().substring(1);
-          File[] subListOfFiles = listOfFile.listFiles();
-          boolean hasGUI = false;
-          for (File file : subListOfFiles) {
-            if (file.isFile() && file.getName().contains(".gui")) {
-              modules.put(moduleName + "_Module", path + "/" + listOfFile.getName() + "/" + moduleName + MODULES_FILE);
-              hasGUI = true;
-              break;
-            }
-          }
-          if (!hasGUI) {
-            submoduleForPackageHelper(modules, listOfFile, path + "/" + listOfFile.getName());
-          }
-        }
-      }
-    }
-
-  }
 
   public List<String> generateAppConfigfile() {
     this.setup.setTracing(false);
@@ -174,7 +170,7 @@ public class GUI2TypeScriptGenerator {
     return Arrays.asList(generatedRoutingFiles.toString(), generatedModuleFiles.toString());
   }
 
-  public List<String> generateConfigFileForPackages(Map.Entry<String, ModuleRoutingInfo> packageInfo) {
+  public List<String> generateConfigFileForPackages(Map.Entry<String, ModuleRoutingInfo> packageInfo, Map<String, ModuleRoutingInfo> routingInfoMap) {
     List<ASTGUICompilationUnit> astguiCompilationUnitList = packageInfo.getValue().getComponents();
     this.setup.setTracing(false);
     GeneratorEngine genEngine = new GeneratorEngine(setup);
@@ -240,7 +236,7 @@ public class GUI2TypeScriptGenerator {
     String compDecl = name;
 
     Map<String, String> imports = packageInfo.getValue().getImports(util, compDecl);
-    Map<String, String> subPackageImports = findNextLevelModuleForPackageConfig(packageInfo.getValue().getPackageModelPath());
+    Map<String, String> subPackageImports = findNextLevelModuleForPackageConfig(packageInfo, routingInfoMap);
     subPackageImports.keySet().forEach(key -> imports.put(key, subPackageImports.get(key)));
 
 
