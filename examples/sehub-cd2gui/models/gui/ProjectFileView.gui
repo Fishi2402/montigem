@@ -49,7 +49,7 @@ page ProjectFileView(Directory parent) {
           height="20px", vAlign="center", width="100%",
           colGap="5px",
           components = [
-            @GemColumn(height="20px", vAlign="center", hAlign="left",width="20px", components = [@ArtifactTypeIcon(type = artifact.getType())]),
+            @GemColumn(height="20px", vAlign="center", hAlign="left",width="20px", components = [@ArtifactTypeIcon(type = artifact.type)]),
             @GemColumn(height="20px", vAlign="center", hAlign="left", width="48%", component = navigationButton@ProjectFileViewLink(artifact = artifact)),
             @GemColumn(height="20px", vAlign="center", hAlign="right", width="37%", component = @DateTimeToPassedByTime(artifact = artifact))
           ]

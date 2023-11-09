@@ -26,12 +26,12 @@ component DayRow(
       @GemRow(
         width="3rem",
         height="3rem",
-        component = @WeatherStateIcon(state = day.getWeatherState())
+        component = @WeatherStateIcon(state = day.weatherState)
       ),
       @GemRow(
         width="4rem",
         height="3rem",
-        component = @GemText(value = day.getMinimumTemperature())
+        component = @GemText(value = day.minimumTemperature)
       ),
       @GemRow(
         width="105px",
@@ -39,8 +39,8 @@ component DayRow(
         component = @RangeWithGradient(
           width="100px",
           height="5px",
-          startPercentage=((day.getMinimumTemperature() - groupMinTemp)/(groupMaxTemp - groupMinTemp)) * 100, // TODO: hardcoded
-          endPercentage=((day.getMaximumTemperature() - groupMinTemp)/(groupMaxTemp - groupMinTemp)) * 100,
+          startPercentage=((day.minimumTemperature - groupMinTemp)/(groupMaxTemp - groupMinTemp)) * 100, // TODO: hardcoded
+          endPercentage=((day.maximumTemperature - groupMinTemp)/(groupMaxTemp - groupMinTemp)) * 100,
           minColor="green",
           middleColor="yellow",
           maxColor="red",
@@ -50,7 +50,7 @@ component DayRow(
       @GemRow(
         width="4rem",
         height="3rem",
-        component = @GemText(value = day.getMaximumTemperature())
+        component = @GemText(value = day.maximumTemperature)
       )
     ]
   );

@@ -45,8 +45,8 @@ classdiagram Weather {
     Double temperature;
     Double windspeed;
     int realtiveHumidity;
+    WeatherState weatherState;
   }
-  association [*] Forecast -> WeatherState [1];
 
   enum WeatherState {
     CLOUDY,

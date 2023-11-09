@@ -1,6 +1,7 @@
 package gui.issues;
 
 import Sehub.Issue;
+import Sehub.IssueState;
 
 import arrange.GemCard;
 import arrange.GemColumn;
@@ -15,12 +16,12 @@ component IssueEntry(Issue issue) {
     issueCard@GemCard(title = issue.title, component =
       @GemColumn(hAlign = "right", rowGap = "10px", components = [
         @GemRow(colGap = "7px", width = "100%", hAlign = "center", components = [
-          @guard(issue.state != 0) {
+          @guard(issue.state != IssueState.UNASSIGNED) {
             @GemButton(label = "<<<", leftClick = demote);
           },
           @GemButton(label = "Edit", leftClick = editIssue),
           @GemButton(label = "Delete", leftClick = deleteIssue),
-          @guard(issue.state != 2) {
+          @guard(issue.state != IssueState.DONE) {
             @GemButton(label = ">>>", leftClick = promote);
           }
         ]),

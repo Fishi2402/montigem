@@ -75,6 +75,7 @@ task genGUI(type: UMLPGuiGenTask) {
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
 }
 
+/* TODO
 task genGUI2(type: UMLPGuiGenTask) {
   dependsOn(genGUI, generateCDTOGUI)
   input = file(generateCDTOGUI.getOutputDir().file("models"))
@@ -88,7 +89,7 @@ task genGUI2(type: UMLPGuiGenTask) {
   outputDir = layout.buildDirectory.dir("umlp/fe2")
   domainModels = ["Sehub"]
   guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
-}
+}*/
 
 task generateNPMAuth(type: NPMAuthCreate){
   npmrcFile = frontendSetup.getOutput().file(".npmrc")
@@ -96,7 +97,7 @@ task generateNPMAuth(type: NPMAuthCreate){
 npm_install.dependsOn(generateNPMAuth)
 
 def prebuildTasks = [
-    npm_install, genGUI2
+    npm_install // TODO, genGUI2
 ]
 
 task buildApp(type: NpxTask) {

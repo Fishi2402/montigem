@@ -26,7 +26,7 @@ page WeatherApp(App app) {
       @GemRow(hAlign = "center", components = [
         @CurrentCityWeather(city = app.currentCity)
       ]),
-      @NextHoursForecast(forecasts = app.currentCity.nextHoursGemList),
+      @NextHoursForecast(forecasts = app.currentCity.nextHours),
       @GemRow(
         colGap = "20px",
         width = "90%",

@@ -22,8 +22,8 @@ component NextHoursForecast(List<Forecast> forecasts){
              width="7rem",
              components = [
                @ShortFormDateTimeRenderer(forecast = hourlyForecast, replaceToday = false),
-               @WeatherStateIcon(state = hourlyForecast.getWeatherState()),
-               @GemText(value = hourlyForecast.getTemperature())
+               @WeatherStateIcon(state = hourlyForecast.weatherState),
+               @GemText(value = hourlyForecast.temperature)
              ]
             );
           }
