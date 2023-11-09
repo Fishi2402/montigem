@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import umlp.backendrte.service.mqtt.MqttService;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -72,6 +73,12 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
     catch (SQLException e) {
       throw new IOException(e);
     }
+
+    MqttSerializer.instance = new MqttSerializer();
+    MqttService service = new MqttService();
+    service.connect();
+
+    DtcockpitManager.roomBuilder().roomNumber(17).temperature(5).level(2).build();
   }
 
 }

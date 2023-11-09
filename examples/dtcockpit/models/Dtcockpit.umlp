@@ -38,6 +38,7 @@ classdiagram Dtcockpit {
   class Room {
     int roomNumber;
     int level;
+    int temperature;
   }
 
   association [1] Room <-> (rStatistics) RoomStatistic [*];
