@@ -104,8 +104,8 @@ public class GUI2TypeScriptGenerator {
 
   }
 
-  private static Map<String, String> findNextLevelModuleForPackageConfig(Map.Entry<String, ModuleRoutingInfo> packageInfo,
-                                                                         Map<String, ModuleRoutingInfo> routingInfoMap) {
+  private static Map<String, String> findSubmoduleForPackageConfig(Map.Entry<String, ModuleRoutingInfo> packageInfo,
+                                                                   Map<String, ModuleRoutingInfo> routingInfoMap) {
     Map<String, String> modules = new HashMap<>();
     Set<String> subModuleInfo = new HashSet<>();
     routingInfoMap.forEach((key, value) -> {
@@ -236,7 +236,7 @@ public class GUI2TypeScriptGenerator {
     String compDecl = name;
 
     Map<String, String> imports = packageInfo.getValue().getImports(util, compDecl);
-    Map<String, String> subPackageImports = findNextLevelModuleForPackageConfig(packageInfo, routingInfoMap);
+    Map<String, String> subPackageImports = findSubmoduleForPackageConfig(packageInfo, routingInfoMap);
     subPackageImports.keySet().forEach(key -> imports.put(key, subPackageImports.get(key)));
 
 
