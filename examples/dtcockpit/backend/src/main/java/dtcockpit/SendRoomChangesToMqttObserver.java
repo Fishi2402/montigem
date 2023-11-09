@@ -1,0 +1,20 @@
+package dtcockpit;
+
+import com.hivemq.client.mqtt.datatypes.MqttQos;
+import umlp.backendrte.service.mqtt.MqttService;
+
+public class SendRoomChangesToMqttObserver implements RoomObserver{
+
+  @Override
+  public void notifySetTemperature(Room room, Integer oldValue, Integer o) {
+    // TODO: correct device_uuid
+    String uuid = "mock_uuid_1234";
+
+    MqttService.client
+        .publishWith()
+        .topic("/device/" + uuid + "/room/" + room.getRoomNumber() + "/temperature")
+        .qos(MqttQos.EXACTLY_ONCE)
+        .payload(o.toString().getBytes())
+        .send();
+  }
+}

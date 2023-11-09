@@ -1,14 +1,12 @@
 package dtcockpit;
 
 import de.se_rwth.commons.logging.Log;
-import dtcockpit.commands.Project_create;
 import dtcockpit.pipelines.PipelineInformationExtractor;
 import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import umlp.backendrte.service.mqtt.MqttService;
 
@@ -16,6 +14,8 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @SpringBootApplication(
     exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
@@ -78,7 +78,23 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
     MqttService service = new MqttService();
     service.connect();
 
-    DtcockpitManager.roomBuilder().roomNumber(17).temperature(5).level(2).build();
+    SendRoomChangesToMqttObserver mqttRoomObserver = new SendRoomChangesToMqttObserver();
+    DtcockpitManager.addObserver(new DtcockpitObserver() {
+      @Override
+      public void notifyRoomAdded(Room room) {
+        room.addObserver(mqttRoomObserver);
+      }
+    });
+
+    Room room17 = DtcockpitManager.roomBuilder().roomNumber(17).temperature(5).level(2).build().get();
+
+    // Increase temperature every 10s
+    new Timer(false).scheduleAtFixedRate(new TimerTask() {
+      @Override
+      public void run() {
+        room17.setTemperature(room17.getTemperature() + 1);
+      }
+    }, 10_000, 10_000);
   }
 
 }

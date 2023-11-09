@@ -3,8 +3,8 @@ package dtcockpit;
 
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
+import de.se_rwth.commons.logging.Log;
 import dtcockpit.commands.Room_setTemperature;
-import org.jline.utils.Log;
 import umlp.backendrte.command.Command;
 
 import java.util.Optional;
@@ -15,7 +15,7 @@ public class MqttSerializer extends umlp.backendrte.service.mqtt.MqttSerializer 
     String[] topicParts = topic.split("/");
 
     if (!topicParts[1].equals("room")) {
-      Log.warn("Topic '" + topicParts[0] + "' does not match '/room'");
+      Log.warn("Topic '" + topicParts[1] + "' does not match '/room'");
       return Optional.empty();
     }
 

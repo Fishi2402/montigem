@@ -15,9 +15,8 @@ import java.util.UUID;
 
 public class MqttService {
 
-  Mqtt5BlockingClient client;
-
-
+  // TODO: anything but global state
+  public static Mqtt5BlockingClient client;
 
   public void connect() {
 
