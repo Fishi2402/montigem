@@ -18,11 +18,14 @@ dependencies {
   implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
   implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
   implementation group: 'de.monticore', name: 'class2mc', version: mc_version
+  implementation group: 'de.monticore', name: 'monticore-grammar-tagging', version: mc_version
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'cdmerge'
   implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version
   implementation group: 'de.monticore.lang', name: 'cd2gui', version: mc_version
+  implementation group: 'de.monticore.lang', name: 'cd4analysis-tagging', version: mc_version,  classifier: 'tagging'
   implementation "de.monticore.language-server:monticore-language-server-runtime:$mclsg_version"
+  implementation "de.monticore.lang:cd4analysis-language-server:$mc_version"
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
@@ -83,9 +86,30 @@ task generateUMLP(type: MCTask) {
   outputs.upToDateWhen { uptoDate }
 }
 
+task generateUMLPTagDef(type: MCTask) {
+  grammar = file "$buildDir/generated-sources/monticore/sourcecode/UMLPTagDefinition.mc4"
+  outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+  modelPath("$projectDir/$grammarDir")
+  modelPath("$buildDir/generated-sources/monticore/sourcecode")
+  dependsOn(generateUMLP)
+  genTag = true
+  def uptoDate = incCheck("UMLP.mc4")
+  outputs.upToDateWhen { uptoDate }
+}
+task generateUMLPTagSchema(type: MCTask) {
+  grammar = file "$buildDir/generated-sources/monticore/sourcecode/UMLPTagSchema.mc4"
+  outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+  modelPath("$projectDir/$grammarDir")
+  modelPath("$buildDir/generated-sources/monticore/sourcecode")
+  dependsOn(generateUMLPTagDef)
+  def uptoDate = incCheck("UMLP.mc4")
+  outputs.upToDateWhen { uptoDate }
+}
+
+
 compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }
-    options.warnings = false
+  options.warnings = false
 }
 
 task autoconfigure(type: de.mclsg.task.AutoconfigureTask) {
@@ -121,6 +145,7 @@ task sourcesJar(type: Jar) {
 }
 
 sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
+sourcesJar.dependsOn generateUMLPWithGUILanguageServer
 
 
 shadowJar { // all in one jar
