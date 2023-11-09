@@ -18,6 +18,8 @@ classdiagram Weather {
     /double minimumTemperature;
     /double maximumTemperature;
     /WeatherState weatherState;
+    double getMinimumTemperature();
+    double getMaximumTemperature();
   }
 
   class Timeseries {
@@ -25,6 +27,8 @@ classdiagram Weather {
     java.time.LocalDate end;
     /double minimumTemperature;
     /double maximumTemperature;
+    double getMinimumTemperature();
+    double getMaximumTemperature();
   }
 
   // TODO re-add when single deried assocs are supported
