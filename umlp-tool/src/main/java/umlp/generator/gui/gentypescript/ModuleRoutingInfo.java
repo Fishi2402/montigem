@@ -21,12 +21,10 @@ public class ModuleRoutingInfo {
   protected final Set<String> guiImport = new HashSet<>();
   private final String routingPath;
 
-  private final String packageModelPath;
 
-  public ModuleRoutingInfo(List<String> packageParts,String packageModelPath) {
+  public ModuleRoutingInfo(List<String> packageParts) {
     this.packageParts = packageParts;
     this.routingPath = String.join("/", packageParts);
-    this.packageModelPath=packageModelPath;
   }
 
   public void add(ASTGUICompilationUnit comp) {
@@ -71,10 +69,6 @@ public class ModuleRoutingInfo {
     return routingPath;
   }
 
-  public String getPackageModelPath()
-  {
-    return packageModelPath;
-  }
   public Set<String> getGuiImport() {
     return guiImport;
   }
