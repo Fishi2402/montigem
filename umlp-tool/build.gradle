@@ -134,6 +134,7 @@ task runLsp(type: JavaExec){
   classpath tasks.packUMLPWithGUILanguageServer.archiveFile.get().asFile
   args("-port", "3000", "-r" ,"-mp", lspWorkdir)
   environment("LSP_SYSTEM_EXIT", "false")
+  dependsOn tasks.packUMLPWithGUILanguageServer
 }
 
 ///////////////////////// Building Jars //////////////////////////////////
