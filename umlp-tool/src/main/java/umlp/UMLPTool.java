@@ -439,12 +439,11 @@ public class UMLPTool extends UMLPToolTOP {
           GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
           nodeIdTrafo.transform(astGui);
 
+
           IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, Optional.of(guiModel), importedSymbolPath);
-          List<String> arrayTemp=Arrays.stream(guiPathString.split("/")).collect(Collectors.toList());
-          String packageModelPath = guiPathString.substring(0,guiPathString.length()-arrayTemp.get(arrayTemp.size()-1).length());
           if (!routesMap.containsKey(astGui.getPackage())) {
             routesMap.put(astGui.getPackage(), new ModuleRoutingInfo(
-                astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList(), packageModelPath));
+                astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList()));
           }
           routesMap.get(astGui.getPackage()).add(astGui);
 
@@ -560,7 +559,7 @@ public class UMLPTool extends UMLPToolTOP {
         routesMap.entrySet().forEach(packageInfo ->
         {
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
-          List<String> outputs = typeScriptGenerator.generateConfigFileForPackages(packageInfo);
+          List<String> outputs = typeScriptGenerator.generateConfigFileForPackages(packageInfo,routesMap);
           outputs.forEach(output -> Reporting.reportFileCreation(outDir + "/" + output));
 
         });
