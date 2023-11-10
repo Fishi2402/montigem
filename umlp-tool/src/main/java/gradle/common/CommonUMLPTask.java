@@ -116,6 +116,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
 
   public CommonUMLPTask(){
     super();
+    Log.init();
 
     // Report directory is required for incremental check
     this.getReportDir().convention(

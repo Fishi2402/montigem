@@ -23,7 +23,7 @@ public class ErrorObserverDecoratorTest extends DecoratorTest {
     assertAll(
             // check no of methods and attributes
             () -> assertEquals(0, ast.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(2, ast.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(3, ast.getCDMethodList().size(), "number of methods"),
 
             // check methods
             () -> existsMethod(ast, "notifyFooAttrInvalid"),

@@ -16,6 +16,7 @@ public enum UMLPToolOptions {
 
   // with one arg
   INPUT("i", "input", "Reads the source file (mandatory) and parses the contents", "file"),
+  OCL("ocl", "ocl", "Reads an ocl file (optional) and parses the contents", "file"),
   SYMTAB("s", "symboltable", "Serializes the symbol table of the given artifact.", "file", true),
   OUTPUT("o", "out", "Path of the output files.", "dir"),
   REPORTS("r", "report", "Prints reports of the artifact to the specified directory.", "dir", true),

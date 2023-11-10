@@ -74,6 +74,8 @@ public abstract class AbstractDecorator {
 
   public static final String SHELLAPI_PACKAGE = DEFAULT_PACKAGE + "shellapi";
 
+  public static boolean hasOCL = false;
+
   protected final GlobalExtensionManagement glex;
 
   protected final CD4CodeFullPrettyPrinter printer = new CD4CodeFullPrettyPrinter(new IndentPrinter(), false);

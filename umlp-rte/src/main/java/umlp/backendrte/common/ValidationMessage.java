@@ -5,10 +5,13 @@ public class ValidationMessage {
 
     private String message;
 
+    private ValidationStatus status;
+
     // extend with further attributes
 
-    private ValidationMessage(String message) {
-        this.message = message;
+    public ValidationMessage(ValidationStatus status, String message) {
+      this.message = message;
+      this.status = status;
     }
 
     public String getMessage() {
@@ -19,7 +22,19 @@ public class ValidationMessage {
         this.message = message;
     }
 
-    public static ValidationMessage create(String message) {
-        return new ValidationMessage(message);
+  public ValidationStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(ValidationStatus status) {
+    this.status = status;
+  }
+
+    @Override
+    public String toString() {
+        return "ValidationMessage{" +
+                "message='" + message + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

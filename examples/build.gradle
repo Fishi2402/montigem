@@ -1,12 +1,32 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 subprojects {
-    dependencies {
-      implementation project(':umlp-rte')
-      testImplementation "com.h2database:h2:${h2_database}"
-    }
+  dependencies {
+    implementation project(':umlp-rte')
+    testImplementation "com.h2database:h2:${h2_database}"
+  }
 }
 
-clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
+// Make buildApp tasks sequential. Doesn't seem to lose time compared to a parallel build,
+// but makes build process more stable
+gradle.projectsEvaluated {
+  project(":examples:dtcockpit:frontend").tasks.buildApp.mustRunAfter(
+      project(":examples:sehub:frontend").tasks.buildApp
+  )
+  project(":examples:sehub:frontend").tasks.buildApp.mustRunAfter(
+      project(":examples:sehub-cd2gui:frontend").tasks.buildApp
+  )
+  project(":examples:sehub-cd2gui:frontend").tasks.buildApp.mustRunAfter(
+      project(":examples:sehub-jsweet:frontend").tasks.buildApp
+  )
+  project(":examples:sehub-jsweet:frontend").tasks.buildApp.mustRunAfter(
+      project(":examples:vis-lib:frontend").tasks.buildApp
+  )
+  project(":examples:vis-lib:frontend").tasks.buildApp.mustRunAfter(
+      project(":examples:weather:frontend").tasks.buildApp
+  )
+}
 
-build.dependsOn(subprojects.collect{ it.getTasksByName("build", false)})
+clean.dependsOn(subprojects.collect { it.getTasksByName("clean", false) })
+
+build.dependsOn(subprojects.collect { it.getTasksByName("build", false) })
