@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 // HWC-P
 
 import { Component } from "@angular/core";

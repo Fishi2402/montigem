@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package accessrights;
 
 import accessrights.test_infrastructure.AccessRightsMockTestSetup;

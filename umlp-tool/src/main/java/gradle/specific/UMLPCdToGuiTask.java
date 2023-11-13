@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package gradle.specific;
 
 import gradle.common.UMLPSingleFileTask;

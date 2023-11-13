@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.backendrte.service.rest;
 
 import org.springframework.http.ResponseEntity;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package gradle.specific;
 
 import de.monticore.io.FileReaderWriter;

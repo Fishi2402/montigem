@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package derivedattributesandassocs;
 
 import derivedattributesandassocs.commands.Foo_calculateA;

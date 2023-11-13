@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package assocsfromandtointerface;
 
 import org.junit.jupiter.params.ParameterizedTest;

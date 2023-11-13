@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package associations;
 
 import associations.test_infrastructure.AssociationsMockTestSetup;

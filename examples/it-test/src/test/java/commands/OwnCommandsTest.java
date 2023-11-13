@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package commands;
 
 import com.google.common.collect.Lists;

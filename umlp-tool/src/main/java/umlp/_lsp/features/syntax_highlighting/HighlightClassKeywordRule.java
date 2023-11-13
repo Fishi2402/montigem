@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package umlp._lsp.features.syntax_highlighting;
 
 import de.mclsg.lsp.extensions.syntax_highlighting.lexer.Token;

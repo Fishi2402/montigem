@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package umlp._lsp;
 
 import de.mclsg.lsp.CommonLanguageServer;
