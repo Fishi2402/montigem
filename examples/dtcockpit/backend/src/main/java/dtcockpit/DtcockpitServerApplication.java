@@ -27,6 +27,17 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
     SpringApplication.run(DtcockpitServerApplication.class, args);
   }
 
+  public Room createRoom(int roomNumber) {
+    return DtcockpitManager.roomBuilder()
+        .roomNumber(roomNumber)
+        .level(3)
+        .temperature(-17.0)
+        .humidity(0.0)
+        .atmosphericPressure(0.0)
+        .motionDetected(false)
+        .build().get();
+  }
+
   @PostConstruct
   @Override
   public void init() throws IOException {
@@ -86,22 +97,11 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
       }
     });
 
-    Room room17 = DtcockpitManager.roomBuilder()
-        .roomNumber(17)
-        .level(2)
-        .temperature(5.0)
-        .humidity(0.0)
-        .atmosphericPressure(0.0)
-        .motionDetected(false)
-        .build().get();
-    Room rumpeRoom = DtcockpitManager.roomBuilder()
-        .roomNumber(4301)
-        .level(3)
-        .temperature(-17.0)
-        .humidity(0.0)
-        .atmosphericPressure(0.0)
-        .motionDetected(false)
-        .build().get();
+    Room room17 = createRoom(17);
+    Room rumpeRoom = createRoom(4301);
+    Room ckiRoom = createRoom(4315);
+    Room smartRoom = createRoom(4311);
+    Room seminarRoom = createRoom(4312);
 
     // Increase temperature every 10s
     new Timer(false).scheduleAtFixedRate(new TimerTask() {
