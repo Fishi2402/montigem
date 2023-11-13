@@ -86,7 +86,22 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
       }
     });
 
-    Room room17 = DtcockpitManager.roomBuilder().roomNumber(17).temperature(5).level(2).build().get();
+    Room room17 = DtcockpitManager.roomBuilder()
+        .roomNumber(17)
+        .level(2)
+        .temperature(5.0)
+        .humidity(0.0)
+        .atmosphericPressure(0.0)
+        .motionDetected(false)
+        .build().get();
+    Room rumpeRoom = DtcockpitManager.roomBuilder()
+        .roomNumber(4301)
+        .level(3)
+        .temperature(-17.0)
+        .humidity(0.0)
+        .atmosphericPressure(0.0)
+        .motionDetected(false)
+        .build().get();
 
     // Increase temperature every 10s
     new Timer(false).scheduleAtFixedRate(new TimerTask() {

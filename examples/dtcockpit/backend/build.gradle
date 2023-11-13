@@ -88,6 +88,12 @@ task runServer {
   })
 }
 
+task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
+  classpath = sourceSets.main.runtimeClasspath
+  mainClass = 'dtcockpit.DtcockpitShellAPIApplication'
+  standardInput = System.in
+}
+
 task genTestGUI(type: UMLPGuiGenTask) {
   dependsOn(generateUmlpBackend, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
   input = file("../models")

@@ -6,13 +6,13 @@ import umlp.backendrte.service.mqtt.MqttService;
 public class SendRoomChangesToMqttObserver implements RoomObserver{
 
   @Override
-  public void notifySetTemperature(Room room, Integer oldValue, Integer o) {
+  public void notifySetTemperature(Room room, Double oldValue, Double o) {
     // TODO: correct device_uuid
     String uuid = "mock_uuid_1234";
 
     MqttService.client
         .publishWith()
-        .topic("/device/" + uuid + "/room/" + room.getRoomNumber() + "/temperature")
+        .topic("/_device/" + uuid + "/room/" + room.getRoomNumber() + "/temperature")
         .qos(MqttQos.EXACTLY_ONCE)
         .payload(o.toString().getBytes())
         .send();

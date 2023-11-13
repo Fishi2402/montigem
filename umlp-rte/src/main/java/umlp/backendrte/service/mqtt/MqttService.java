@@ -23,7 +23,7 @@ public class MqttService {
     // TODO: Replace "localhost" with name of Docker container that executes broker
     client = Mqtt5Client.builder()
         .identifier(UUID.randomUUID().toString())
-        .serverHost("localhost")
+        .serverHost("dt.demos.se.rwth-aachen.de")
         .serverPort(1883)
         .buildBlocking();
 

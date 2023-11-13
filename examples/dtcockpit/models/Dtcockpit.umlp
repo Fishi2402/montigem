@@ -38,7 +38,10 @@ classdiagram Dtcockpit {
   class Room {
     int roomNumber;
     int level;
-    int temperature;
+    double temperature; // in °C
+    double atmosphericPressure; // in hPa
+    double humidity; // relative, in %
+    boolean motionDetected;
   }
 
   association [1] Room <-> (rStatistics) RoomStatistic [*];
