@@ -1,26 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-// run tasks in this project with command:
-// gradle :examples:selib:<taskName>
-//
-// important tasks / commands are:
-// * start UMLP generator and compile java files:
-//   * gradle :examples:selib:assemble
-// * start UMLP Backend Server:
-//   * gradle :examples:selib:bootRun
-//   * command does not terminate. Stopping the command is also stopping the server
-//   * url: http://localhost:8081
-//   * there can only be a single running server. A second server cannot start.
-//
+
+/**
+ * Run UMLP generator and compile: 
+ * - gradle :examples:selib:assemble
+ *
+ * Start UMLP backend server:
+ * - gradle :examples:selib:bootRun
+ * The command does not terminate. Stopping the command is also stopping
+ * the server. There can only be a single running server. A second server 
+ * cannot start. 
+ * 
+ * Connect to the server:
+ * - open the url http://localhost:8081 in your browser of choice
+ */
 plugins {
-    id 'java' // Setup Java Compiler
-    id 'application'  // ensures that the JAR can be executed
+  id 'java'
+  id 'application'
 
-    // Spring Plugins
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.springframework.boot' version "${spring_version}"
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+  id 'org.springframework.boot' version "${spring_version}"
 
-    id 'de.rwth.se.umlp-tool' // Makes the task-types `UMLPBackendTask` and `UMLPMergeTask` available
+  // Makes the task-types `UMLPBackendTask` and `UMLPMergeTask` available
+  id 'de.rwth.se.umlp-tool'
 }
 
 description 'SE Bib Example'
@@ -75,14 +77,14 @@ dependencies {
 
 application {
   // Set Entrypoint of Application
-    mainClass = 'selib.SELibServerApplication'
+  mainClass = 'selib.SELibServerApplication'
 }
 
 
 task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'selib.SELibShellAPIApplication'
-    standardInput = System.in
+  classpath = sourceSets.main.runtimeClasspath
+  mainClass = 'selib.SELibShellAPIApplication'
+  standardInput = System.in
 }
 
 tasks.named("bootRun") {
