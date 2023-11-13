@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package umlp._lsp.features.code_action;
 
 import de.mclsg.lsp.document_management.DocumentManager;

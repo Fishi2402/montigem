@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Routes } from "@angular/router";
 import { routes as routesTOP } from "@src/AppGemRoutingTOP";
 

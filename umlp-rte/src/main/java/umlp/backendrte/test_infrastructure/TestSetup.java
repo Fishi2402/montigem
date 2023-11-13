@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.backendrte.test_infrastructure;
 
 import org.junit.jupiter.api.AfterEach;

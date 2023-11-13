@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package gui.next_hours_forecast;
 
 import Weather.Timeseries;

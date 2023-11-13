@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package associations2;
 
 import associations2.test_infrastructure.Associations2DBTestSetup;

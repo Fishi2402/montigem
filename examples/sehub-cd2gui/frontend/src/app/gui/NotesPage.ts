@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {NotesPageTOP} from "../../../build/frontendGen/build/appgui/gui/NotesPageTOP";
 import {Directive,} from '@angular/core';
 import {SehubManager} from "../../../build/frontendGen/build/appdomain/sehub/SehubManager";

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.backendrte.common;
 import java.sql.ResultSet;
 import java.sql.SQLException;

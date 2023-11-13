@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {Directive} from '@angular/core';
 import {ShortFormDateRendererTOP} from "@src/gui/common/ShortFormDateRendererTOP";
 

@@ -1,4 +1,5 @@
-package database;/* (c) https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package database;
 
 import baseartifactstest.BaseArtifactsTestManagerImpl;
 import de.se_rwth.commons.logging.Log;
