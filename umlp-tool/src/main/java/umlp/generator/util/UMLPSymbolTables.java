@@ -15,6 +15,7 @@ import de.monticore.ocl.util.SymbolTableUtil;
 import de.monticore.symbols.basicsymbols._ast.ASTType;
 import de.monticore.symboltable.IScope;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import umlp.UMLPMill;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
@@ -108,6 +109,10 @@ public class UMLPSymbolTables {
     }
 
     return res;
+  }
+
+  public static ASTCDCompilationUnit getDiagramFor(ASTMCType type){
+    return getDiagramFor(type.getDefiningSymbol().get().getAstNode());
   }
 
   public static ASTCDCompilationUnit getDiagramFor(ASTCDType type){

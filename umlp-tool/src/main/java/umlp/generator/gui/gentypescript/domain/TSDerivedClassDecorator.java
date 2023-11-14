@@ -8,6 +8,7 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.generator.domain.decorator.DerivedClassDecorator;
+import umlp.generator.util.UMLPSymbolTables;
 
 public class TSDerivedClassDecorator extends DerivedClassDecorator {
 
@@ -28,7 +29,8 @@ public class TSDerivedClassDecorator extends DerivedClassDecorator {
   @Override
   protected void addImports(ASTCDType domainType, ASTCDType cdType) {
     if (!domainType.getSuperclassList().isEmpty()) {
-      getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
+      ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainType.getSuperclassList().get(0));
+      getCD4C().addImport(cdType, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainType.getSuperclassList().get(0).printType());
     }
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
       if (!c.getName().equals(domainType.getName())) {

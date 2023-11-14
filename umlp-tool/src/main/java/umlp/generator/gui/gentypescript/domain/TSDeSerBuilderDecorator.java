@@ -9,13 +9,11 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.DeSerBuilderDecorator;
-import umlp.generator.domain.decorator.ErrorCollectorDecorator;
-import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 public class TSDeSerBuilderDecorator extends DeSerBuilderDecorator {
 
@@ -63,7 +61,8 @@ public class TSDeSerBuilderDecorator extends DeSerBuilderDecorator {
       getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + BuilderDecorator.BUILDER_SUFFIX);
       getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName());
       if (!domainType.getSuperclassList().isEmpty()) {
-        getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
+        ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainType.getSuperclassList().get(0));
+        getCD4C().addImport(cdType, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainType.getSuperclassList().get(0).printType());
       }
     }
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
