@@ -7,6 +7,7 @@ import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
@@ -129,6 +130,11 @@ public class UMLPSymbolTables {
   }
 
   public static ASTCDCompilationUnit getDiagramFor(ASTType type) {
+    return getDiagramFor((ASTNode) type);
+  }
+
+
+  public static ASTCDCompilationUnit getDiagramFor(ASTCDDefinition type) {
     return getDiagramFor((ASTNode) type);
   }
 
