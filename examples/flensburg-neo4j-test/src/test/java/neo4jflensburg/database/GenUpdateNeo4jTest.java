@@ -18,7 +18,7 @@ public class GenUpdateNeo4jTest extends GenAbstractNeo4jDBTest {
     builder.age(age);
     Neo4jHuman h1001 = builder.build().get();
 
-    Neo4jHumanDAO dao = new Neo4jHumanDAO();
+    Neo4jHumanDAONeo4J dao = new Neo4jHumanDAONeo4J();
     dao.insertNeo4jHuman(h1001);
 
     int changedAge = 21;
@@ -42,7 +42,7 @@ public class GenUpdateNeo4jTest extends GenAbstractNeo4jDBTest {
     builder.age(age);
     Neo4jHuman h1001db = builder.build().get();
 
-    Neo4jHumanDAO dao = new Neo4jHumanDAO();
+    Neo4jHumanDAONeo4J dao = new Neo4jHumanDAONeo4J();
     dao.insertNeo4jHuman(h1001db);
 
     Neo4jHuman h1001 = Neo4jFlensburgManager.getNeo4jHumanSure(gemId);
@@ -58,7 +58,7 @@ public class GenUpdateNeo4jTest extends GenAbstractNeo4jDBTest {
     int changedAge = 21;
     h.setAge(changedAge);
 
-    Neo4jHumanDAO dao = new Neo4jHumanDAO();
+    Neo4jHumanDAONeo4J dao = new Neo4jHumanDAONeo4J();
     Optional<Neo4jHuman> hCopyOpt = dao.selectNeo4jHuman(h.getGemId());
     assertTrue(hCopyOpt.isPresent());
     Neo4jHuman hCopy = hCopyOpt.get();
@@ -74,11 +74,11 @@ public class GenUpdateNeo4jTest extends GenAbstractNeo4jDBTest {
     Neo4jPersonBuilder pb = Neo4jFlensburgManager.neo4jPersonBuilder().age(20).nickname("John").mainResidence(a1);
     Neo4jPerson p = pb.build().get();
 
-    Neo4jPersonDAO neo4jPersonDAO = new Neo4jPersonDAO();
+    Neo4jPersonDAONeo4J neo4jPersonDAONeo4J = new Neo4jPersonDAONeo4J();
 
     // Initially empty
     {
-      Optional<Neo4jPerson> pCopyOpt = neo4jPersonDAO.selectNeo4jPerson(p.getGemId());
+      Optional<Neo4jPerson> pCopyOpt = neo4jPersonDAONeo4J.selectNeo4jPerson(p.getGemId());
       assertTrue(pCopyOpt.isPresent());
 
       Neo4jPerson pCopy = pCopyOpt.get();
@@ -91,7 +91,7 @@ public class GenUpdateNeo4jTest extends GenAbstractNeo4jDBTest {
     p.addVisited(a1);
 
     {
-      Optional<Neo4jPerson> pCopyOpt = neo4jPersonDAO.selectNeo4jPerson(p.getGemId());
+      Optional<Neo4jPerson> pCopyOpt = neo4jPersonDAONeo4J.selectNeo4jPerson(p.getGemId());
       assertTrue(pCopyOpt.isPresent());
 
       Neo4jPerson pCopy = pCopyOpt.get();
@@ -109,11 +109,11 @@ public class GenUpdateNeo4jTest extends GenAbstractNeo4jDBTest {
     Neo4jPerson p = pb.build().get();
 
 
-    Neo4jAddressDAO neo4jAddressDAO = new Neo4jAddressDAO();
+    Neo4jAddressDAONeo4J neo4jAddressDAONeo4J = new Neo4jAddressDAONeo4J();
 
     // Initially empty
     {
-      Optional<Neo4jAddress> a2CopyOpt = neo4jAddressDAO.selectNeo4jAddress(a2.getGemId());
+      Optional<Neo4jAddress> a2CopyOpt = neo4jAddressDAONeo4J.selectNeo4jAddress(a2.getGemId());
       assertTrue(a2CopyOpt.isPresent());
 
       Neo4jAddress a2Copy = a2CopyOpt.get();
@@ -126,7 +126,7 @@ public class GenUpdateNeo4jTest extends GenAbstractNeo4jDBTest {
     a2.addVisitor(p);
 
     {
-      Optional<Neo4jAddress> a2CopyOpt = neo4jAddressDAO.selectNeo4jAddress(a2.getGemId());
+      Optional<Neo4jAddress> a2CopyOpt = neo4jAddressDAONeo4J.selectNeo4jAddress(a2.getGemId());
       assertTrue(a2CopyOpt.isPresent());
 
       Neo4jAddress a2Copy = a2CopyOpt.get();
@@ -147,7 +147,7 @@ public class GenUpdateNeo4jTest extends GenAbstractNeo4jDBTest {
 
     assertTrue(h.getBestFriendGem().isPresent());
 
-    Neo4jHuman hCopy = new Neo4jHumanDAO().selectNeo4jHuman(h.getGemId()).get();
+    Neo4jHuman hCopy = new Neo4jHumanDAONeo4J().selectNeo4jHuman(h.getGemId()).get();
     assertTrue(hCopy.getBestFriendGem().isPresent());
     assertEquals(h2.getGemId(), hCopy.getBestFriendGem().get().getGemId());
 
@@ -156,7 +156,7 @@ public class GenUpdateNeo4jTest extends GenAbstractNeo4jDBTest {
     assertTrue(h.getBestFriendGem().isPresent());
     assertEquals(h3.getGemId(), h.getBestFriend().getGemId());
 
-    Neo4jHuman h2Copy = new Neo4jHumanDAO().selectNeo4jHuman(h.getGemId()).get();
+    Neo4jHuman h2Copy = new Neo4jHumanDAONeo4J().selectNeo4jHuman(h.getGemId()).get();
     assertTrue(h2Copy.getBestFriendGem().isPresent());
     assertEquals(h3.getGemId(), h2Copy.getBestFriendGem().get().getGemId());
   }

@@ -30,7 +30,7 @@ ${cd4c.method("public Optional<${typeName}> unpack${typeName}(ResultSet res) thr
     <#else>
         <#assign otherSide=assoc.getLeft().getName()>
     </#if>
-  builder.${assocSide.getName()}GemListIds(assoc${assoc.getName()?cap_first}DAO.select${assocSide.getName()?cap_first}IdsFor${otherSide?cap_first}(gemId));
+  builder.${assocSide.getName()}GemListIds(${cdName}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().select${assocSide.getName()?cap_first}IdsFor${otherSide?cap_first}(gemId));
 </#list>
 <#list gemAssocs as assocSide, assoc><#assign assocType = assocSide.getSymbol().getType().print()>
   <#if assocSide.isLeft()>
@@ -38,7 +38,7 @@ ${cd4c.method("public Optional<${typeName}> unpack${typeName}(ResultSet res) thr
   <#else>
       <#assign otherSide=assoc.getLeft().getName()>
   </#if>
-  Optional<Long> ${assocSide.getName()}IdOpt = assoc${assoc.getName()?cap_first}DAO.select${assocSide.getName()?cap_first}IdFor${otherSide?cap_first}(gemId);
+  Optional<Long> ${assocSide.getName()}IdOpt = ${cdName}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().select${assocSide.getName()?cap_first}IdFor${otherSide?cap_first}(gemId);
   if(${assocSide.getName()}IdOpt.isPresent()) {
     builder.${assocSide.getName()}Gem(new Gem<>(${assocSide.getName()}IdOpt.get(), () -> {
         Optional<${assocType}> opt = ${gemAssocsToManagerMap[assoc.getName()]}.${assocType?uncap_first}Opt(${assocSide.getName()}IdOpt.get());

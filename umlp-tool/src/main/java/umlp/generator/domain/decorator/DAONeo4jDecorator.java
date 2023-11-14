@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDTypeTOP;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.StringTransformations;
 import umlp.generator.db.sql.SQLSchemaGenerator;
 import umlp.generator.util.UMLPSymbolTables;
 
@@ -20,8 +21,20 @@ import java.util.stream.Collectors;
 
 public class DAONeo4jDecorator extends DAODecorator {
 
+  public static final String neo4J_SUFFIX = "Neo4J";
+
   public DAONeo4jDecorator(GlobalExtensionManagement glex) {
     super(glex);
+  }
+
+  @Override
+  protected String getDAOClassName(ASTCDClass domainClass) {
+    return domainClass.getName() + "DAO"+ neo4J_SUFFIX;
+  }
+
+  @Override
+  protected String getDAOSpecificNameForAssoc(String assocName) {
+    return "Assoc" + StringTransformations.capitalize(assocName) + "DAO"+neo4J_SUFFIX;
   }
 
   @Override
@@ -48,8 +61,8 @@ public class DAONeo4jDecorator extends DAODecorator {
             assoc.getLeft().getName(), assoc.getRight().getName(), assoc.getCDAssocDir().isDefinitiveNavigableLeft(),
             assoc.getCDAssocDir().isDefinitiveNavigableRight());
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddForAssocDAO", assoc);
-    getCD4C().addMethod(daoClass, "umlp.dao.associations.BulkAddForAssocDAO", assoc);
-    getCD4C().addMethod(daoClass, "umlp.dao.associations.BulkAddBatchForAssocDAO", assoc);
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.AddManyForAssocDAO", assoc);
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.AddManyToBatchForAssocDAO", assoc);
     getCD4C().addMethod(daoClass, "umlp.dao.associations.ExecuteAddBatchForAssocDAO", assoc);
   }
 
@@ -108,9 +121,9 @@ public class DAONeo4jDecorator extends DAODecorator {
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
     getCD4C().addMethod(daoClass, "umlp.dao.BulkInsert", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
-    getCD4C().addMethod(daoClass, "umlp.dao.BulkAddAssociationsToBatch", domainClass.getName(), cdName, attributes,
+    getCD4C().addMethod(daoClass, "umlp.dao.AddManyAssociationsToBatch", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
-    getCD4C().addMethod(daoClass, "umlp.dao.BulkExecuteAssocBatches", domainClass.getName(), cdName, attributes,
+    getCD4C().addMethod(daoClass, "umlp.dao.ExecuteAssocBatches", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
   }
 

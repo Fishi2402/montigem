@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("oneSideName", "otherSide")}
-<#assign methodName = otherSideName?cap_first+"IdsFor"+oneSideName?cap_first>
+<#assign methodName = otherSide?cap_first+"IdsFor"+oneSideName?cap_first>
 ${cd4c.method("public List<Long> select${methodName}(long ${oneSideName}GemId)")}
   ensureSelect${methodName?cap_first}Created();
   try {

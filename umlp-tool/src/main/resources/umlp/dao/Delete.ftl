@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("tableName", "typeName", "associations")}
+${tc.signature("cdName","tableName", "typeName", "associations")}
 ${cd4c.method("public void delete${typeName}(long gemId)")}
 try{
   if(delete${typeName} == null || delete${typeName}.isClosed()){
@@ -11,7 +11,7 @@ try{
       <#else>
           <#assign otherSide=assoc.getLeft().getName()>
       </#if>
-  assoc${assoc.getName()?cap_first}DAO.removeAllEntriesRelatedTo${otherSide?cap_first}(gemId);
+  ${cdName}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().removeAllEntriesRelatedTo${otherSide?cap_first}(gemId);
   </#list>
   delete${typeName}.clearParameters();
   delete${typeName}.setLong(1, gemId);

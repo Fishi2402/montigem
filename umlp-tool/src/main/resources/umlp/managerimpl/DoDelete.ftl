@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name", "managerName")}
+${tc.signature("cdName","name", "managerName")}
 ${cd4c.method("protected boolean _doDelete${name}(Long gemId, NotificationScope scope)")}
-  if(!(known${name}s.containsKey(gemId) || ${name?uncap_first}DAO.select${name}(gemId).isPresent())) {
+  if(!(known${name}s.containsKey(gemId) || ${cdName}DAOFactory.get${name?cap_first}DAO().select${name}(gemId).isPresent())) {
     return false;
   }
   known${name}s.remove(gemId);
