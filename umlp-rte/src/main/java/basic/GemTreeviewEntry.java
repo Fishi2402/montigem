@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package basic.src.lib.gemtreeview;
+package basic;
 
 public class GemTreeviewEntry {
 }

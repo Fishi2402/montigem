@@ -16,8 +16,8 @@ export class SyncError extends Command<void> {
     return Promise.resolve(StatusResult.ok(this.getId()));
   }
 
-  checkAccessPolicy(): boolean {
-    return true;
+  checkAccessPolicy(): Promise<boolean> {
+    return Promise.resolve(true);
   }
 }
 

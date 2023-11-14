@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package input.src.lib.gemtextinput;
+package input;
 
 public class GemTextInputValidity {
 }

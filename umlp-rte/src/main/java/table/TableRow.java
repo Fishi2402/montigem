@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package table.src.lib.gemtable.TableTypes;
+package table;
 
 public class TableRow {
 }
