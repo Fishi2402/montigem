@@ -280,6 +280,10 @@ public abstract class AbstractDecorator {
   }
 
   protected List<ASTCDCompilationUnit> getExtendedDefinitions(ASTCDCompilationUnit origCD){
+    if(!origCD.getCDDefinition().getModifier().isPresentStereotype()){
+      return List.of();
+    }
+
     List<ASTStereoValue> valuesList = origCD.getCDDefinition().getModifier().getStereotype().getValuesList();
     List<String> extendedCDs = valuesList.stream().filter(value -> value.getName().equals("extends"))
         .map(ASTStereoValue::getValue).collect(Collectors.toList());
