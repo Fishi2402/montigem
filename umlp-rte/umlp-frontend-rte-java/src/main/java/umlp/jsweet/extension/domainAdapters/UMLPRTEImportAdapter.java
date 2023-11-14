@@ -14,7 +14,10 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * This adapter is responsible for including the umlp RTE correctly.
@@ -32,8 +35,7 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
 
   @Override
   public String needsImport(ImportElement importElement, String qualifiedName) {
-    if (importElement.getImportedType() != null && qualifiedName.startsWith(
-        RTEPathUtil.getBackendRTEPath())) {
+    if (importElement.getImportedType() != null && isRTEIncluded(qualifiedName)) {
       return getRootRelativeName(importElement.getImportedType());
     }
     return super.needsImport(importElement, qualifiedName);
@@ -54,13 +56,25 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
             (PackageElement) importedClass.getEnclosingElement(), importedName,
             ANGULAR_CORE_PATH, importedClass);
       }
-      else if (fqn.startsWith(RTEPathUtil.getBackendRTEPath())) {
+      else if (isRTEIncluded(fqn)) {
         return new ModuleImportDescriptor(false,
             (PackageElement) importedClass.getEnclosingElement(), importedName,
             getLibraryLocation(), importedClass);
       }
     }
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
+  }
+
+  private boolean isRTEIncluded(String fullyQualifiedName) {
+    if (!fullyQualifiedName.startsWith(RTEPathUtil.getBackendRTEPath())) {
+      return false;
+    }
+    for (Pattern exclude : excludes) {
+      if (exclude.matcher(fullyQualifiedName).matches()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override
@@ -97,4 +111,8 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
 
     super.onTranspilationStarted();
   }
+
+  private static final List<Pattern> excludes = Arrays.asList(
+      Pattern.compile("umlp\\.backendrte\\.service\\.websocket\\.WebSocketConfig")
+  );
 }
