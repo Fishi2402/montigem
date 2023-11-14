@@ -1,0 +1,29 @@
+package gui.widgets;
+
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemRow;
+import arrange.GemColumn;
+import basic.GemText;
+import basic.GemImage;
+
+
+import gui.widgets.Widget;
+
+component Welcome() {
+  @Widget(widgetTitle="Welcome", content =
+    @GemColumn(components = [
+      @GemText(value =
+        "This platform was developed using the MontiCore language workbench in a model-driven approach. "),
+
+      @GemRow(
+        hAlign = "right",
+        vAlign = "center",
+        width = "300px",
+        component =
+          @GemImage(source = "assets/images/rwth_se_bild_weiss_rgb.png")
+      )
+    ])
+  );
+
+}

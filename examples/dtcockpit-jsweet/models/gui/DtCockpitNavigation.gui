@@ -1,0 +1,50 @@
+package gui;
+
+import arrange.GemRow;
+import arrange.GemColumn;
+
+import basic.GemText;
+import basic.GemButton;
+
+import Dtcockpit.App;
+import Dtcockpit.Project;
+
+import navigation.NavItem;
+import navigation.NavList;
+
+// We have to pass the list of projects as an argument, as only pages are able to observe
+component DtCockpitNavigation(String username, List<Project> projects) {
+@GemColumn(height="auto", components = [
+  @guard(username != null){
+    @GemRow(height="auto",components = [
+      @NavItem(title = username + " > Logout", leftClick = logout)
+    ]);
+  },
+  @GemRow(height="auto",components = [
+    @NavItem(title = "Home" , target = "/gui/Start")
+  ]),
+  @GemRow(height="auto",components = [
+    @NavItem(title = "Projects" , target = "/gui/DtcockpitMainPage")
+  ]),
+
+  @GemRow(height="auto",components = [
+    @NavList( components = [
+     @GemRow(height="auto",components = [
+            @NavItem(title = "1111" , target = "/gui/project/111/show")
+          ]),
+      @iterate(Project p : projects) {
+        @GemRow(height="auto",components = [
+          @NavItem(title = p.getName() , target = "/gui/project/" + p.getName() + "/show")
+        ]);
+      },
+      @GemRow(height="auto",components = [
+        @NavItem(title = "TestProject" , target = "/gui/project/testproject/show")
+      ])
+    ]
+  )]),
+
+  @GemRow(height="auto",components = [
+    @NavItem(title = "Settings" , target = "/gui/settings")
+  ])
+]);
+}
