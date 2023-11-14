@@ -2,10 +2,10 @@
 
 package umlp._lsp.language_access;
 
+import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd4analysis._symboltable.CD4AnalysisSymbolTableCompleter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.io.paths.MCPath;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp._symboltable.IUMLPArtifactScope;
@@ -20,7 +20,7 @@ public class UMLPScopeManager extends UMLPScopeManagerTOP {
   public void initGlobalScope(MCPath modelPath) {
     UMLPMill.init();
     super.initGlobalScope(modelPath);
-    syncAccessGlobalScope(gs -> BasicSymbolsMill.initializePrimitives());
+    syncAccessGlobalScope(BuiltInTypes::addBuiltInTypes);
   }
 
   @Override
