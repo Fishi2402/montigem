@@ -1,0 +1,13 @@
+package example_arrange;
+
+import arrange.GemCard;
+import basic.GemText;
+
+page GemCardExample(){
+  @GemCard(
+    title = "Info Text",
+    component = @GemText(
+      value = "Some Text"
+    )
+  );
+}

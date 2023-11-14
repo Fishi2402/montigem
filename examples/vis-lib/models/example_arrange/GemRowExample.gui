@@ -1,0 +1,14 @@
+package example_arrange;
+
+import arrange.GemRow;
+import input.GemTextInput;
+
+page GemRowExample() {
+  @GemRow(
+   // components = [
+     // @GemTextInput(value = p.firstName),
+     // @GemTextInput(value = p.lastName),
+    //  @GemTextInput(value = p.dateOfBirth)
+   // ]
+  );
+}

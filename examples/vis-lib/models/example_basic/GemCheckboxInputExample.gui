@@ -1,8 +1,8 @@
-package basic;
+package example_basic;
 
 import input.GemCheckBoxInput;
 import Domain.Person;
 
 page GemCheckBoxInputExample(Person person){
-  @GemCheckBoxInput(labelText = "checkboxtest", checked = person.employed);
+  //@GemCheckBoxInput(labelText = "checkboxtest", checked = person.employed);
 }
