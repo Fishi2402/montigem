@@ -1,4 +1,5 @@
-package gradle.specific;
+/* (c) https://github.com/MontiCore/monticore */
+package gradle.specific.serialize;
 
 import de.se_rwth.commons.logging.Log;
 import org.gradle.api.DefaultTask;

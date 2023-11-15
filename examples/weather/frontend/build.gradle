@@ -93,10 +93,10 @@ task genGUI(type: UMLPGuiGenTask) {
 task generateNPMAuth(type: NPMAuthCreate){
   npmrcFile = frontendSetup.getOutput().file(".npmrc")
 }
-npm_install.dependsOn(generateNPMAuth)
+npm_install.dependsOn(generateNPMAuth, ':umlp-rte:client:npm_install')
 
 def prebuildTasks = [
-    npm_install, genDomain, genGUI, ':umlp-rte:client:npm_install'
+    npm_install, genDomain, genGUI
 ]
 
 task buildApp(type: NpxTask) {

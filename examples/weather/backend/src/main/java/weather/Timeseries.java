@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package weather;
 
 public class Timeseries extends TimeseriesTOP {

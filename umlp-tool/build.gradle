@@ -13,15 +13,19 @@ plugins {
 }
 
 dependencies {
+  implementation group: 'de.monticore.lang', name: 'ocl', version: mc_version
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
   implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
   implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
   implementation group: 'de.monticore', name: 'class2mc', version: mc_version
+  implementation group: 'de.monticore', name: 'monticore-grammar-tagging', version: mc_version
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'cdmerge'
   implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version
   implementation group: 'de.monticore.lang', name: 'cd2gui', version: mc_version
+  implementation group: 'de.monticore.lang', name: 'cd4analysis-tagging', version: mc_version,  classifier: 'tagging'
   implementation "de.monticore.language-server:monticore-language-server-runtime:$mclsg_version"
+  implementation "de.monticore.lang:cd4analysis-language-server:$mc_version"
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
@@ -70,9 +74,6 @@ sourceSets {
 
 java {
   registerFeature('grammars') { usingSourceSet(sourceSets.grammars) }
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
-  }
 }
 
 description = 'UML/P Language and Tool'
@@ -84,6 +85,27 @@ task generateUMLP(type: MCTask) {
   def uptoDate = incCheck("UMLP.mc4")
   outputs.upToDateWhen { uptoDate }
 }
+
+task generateUMLPTagDef(type: MCTask) {
+  grammar = file "$buildDir/generated-sources/monticore/sourcecode/UMLPTagDefinition.mc4"
+  outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+  modelPath("$projectDir/$grammarDir")
+  modelPath("$buildDir/generated-sources/monticore/sourcecode")
+  dependsOn(generateUMLP)
+  genTag = true
+  def uptoDate = incCheck("UMLP.mc4")
+  outputs.upToDateWhen { uptoDate }
+}
+task generateUMLPTagSchema(type: MCTask) {
+  grammar = file "$buildDir/generated-sources/monticore/sourcecode/UMLPTagSchema.mc4"
+  outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+  modelPath("$projectDir/$grammarDir")
+  modelPath("$buildDir/generated-sources/monticore/sourcecode")
+  dependsOn(generateUMLPTagDef)
+  def uptoDate = incCheck("UMLP.mc4")
+  outputs.upToDateWhen { uptoDate }
+}
+
 
 compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }
@@ -112,6 +134,7 @@ task runLsp(type: JavaExec){
   classpath tasks.packUMLPWithGUILanguageServer.archiveFile.get().asFile
   args("-port", "3000", "-r" ,"-mp", lspWorkdir)
   environment("LSP_SYSTEM_EXIT", "false")
+  dependsOn tasks.packUMLPWithGUILanguageServer
 }
 
 ///////////////////////// Building Jars //////////////////////////////////
@@ -123,6 +146,7 @@ task sourcesJar(type: Jar) {
 }
 
 sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
+sourcesJar.dependsOn generateUMLPWithGUILanguageServer
 
 
 shadowJar { // all in one jar

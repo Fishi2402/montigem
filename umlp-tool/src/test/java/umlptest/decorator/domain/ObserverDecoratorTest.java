@@ -23,7 +23,7 @@ public class ObserverDecoratorTest extends DecoratorTest {
     assertAll(
             // check no of methods and attributes
             () -> assertEquals(0, ast.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(7, ast.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(9, ast.getCDMethodList().size(), "number of methods"),
 
             // check methods
             () -> existsMethod(ast, "getScope"),

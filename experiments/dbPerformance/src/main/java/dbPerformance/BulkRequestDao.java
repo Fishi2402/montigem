@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package dbPerformance;
 
 import com.google.common.base.Stopwatch;

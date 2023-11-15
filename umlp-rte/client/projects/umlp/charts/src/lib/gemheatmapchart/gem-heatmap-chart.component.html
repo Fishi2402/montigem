@@ -1,3 +1,5 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
 <div style="margin-bottom: 5px">
 	<chart-options>
 		<li>
@@ -12,46 +14,46 @@
 			<br>
 			<label>
 				<input #box style="width:50px"
-					[value]=defaultColNum 
-					(change)="enter_num_seperations(box.value)" 
+					[value]=defaultColNum
+					(change)="enter_num_seperations(box.value)"
 					type="number"
-					min="1" 
+					min="1"
 					max="32"
 				> Columns
 			</label>
 			<br>
-			
+
 			<div *ngIf="_timestampdata; then thenblock else elseblock"></div>
-	
+
 			<ng-template #thenblock>
 				<label>
-					<input #checkbox1 
-					[defaultChecked]="1" 
+					<input #checkbox1
+					[defaultChecked]="1"
 					(change)="enter_pretty_date(checkbox1.checked)"
 					type="checkbox"
 				> Pretty-Print timestamps
 				</label>
 				<br>
 				<label>
-					<input #checkbox2 
-						(change)="enter_loop_days(checkbox2.checked);  _hasGroupingFactor = !_hasGroupingFactor;" 
+					<input #checkbox2
+						(change)="enter_loop_days(checkbox2.checked);  _hasGroupingFactor = !_hasGroupingFactor;"
 						type="checkbox"
 					> Group by grouping factor
 				</label>
 				<br>
 				<label [class.grayout]="!_hasGroupingFactor">
 					<input #loopbox class="numberSlider"
-						[value]="86400" 
-						(change)="enter_num_loop_factor(loopbox.value)" 
+						[value]="86400"
+						(change)="enter_num_loop_factor(loopbox.value)"
 						type="number"
 					> Select Grouping factor (86400 = 1day)
 				</label>
 			</ng-template>
-	
+
 			<ng-template #elseblock>
 				<label>
-					<input #checkbox2 
-						(change)="enter_loop_days(checkbox2.checked);  _hasGroupingFactor = !_hasGroupingFactor;" 
+					<input #checkbox2
+						(change)="enter_loop_days(checkbox2.checked);  _hasGroupingFactor = !_hasGroupingFactor;"
 						type="checkbox"
 					> Group by grouping factor
 				</label>

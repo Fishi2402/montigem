@@ -2,6 +2,7 @@
 
 package umlp.generator.gui.gentypescript.domain;
 
+import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -15,10 +16,11 @@ import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
-import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static umlp.generator.domain.decorator.GenService.createType;
@@ -49,7 +51,8 @@ public class TSBuilderDecorator extends BuilderDecorator {
     getCD4C().addImport(cdType, this.astcdPackage + "."
         + name + ManagerDecorator.SUFFIX);
     if (!domainType.getSuperclassList().isEmpty()) {
-      getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
+      ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainType.getSuperclassList().get(0));
+      getCD4C().addImport(cdType, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainType.getSuperclassList().get(0).printType());
     }
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
       if (!c.getName().equals(domainType.getName())) {
@@ -63,7 +66,15 @@ public class TSBuilderDecorator extends BuilderDecorator {
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
       if (!c.getName().equals(domainType.getName())) {
-        getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
+        ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainType.getSuperclassList().get(0));
+        getCD4C().addImport(cdType, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainType.getSuperclassList().get(0).printType());
+      }
+    }
+
+    for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainType)) {
+      ASTCDCompilationUnit cdOfAssoc = UMLPSymbolTables.getDiagramFor(assoc.getMCQualifiedType());
+      if (!cdOfAssoc.equals(origCD)) {
+        getCD4C().addImport(cdType, getPackageName(cdOfAssoc, DEFAULT_PACKAGE) + "." + assoc.getMCQualifiedType().printType());
       }
     }
   }
@@ -73,8 +84,11 @@ public class TSBuilderDecorator extends BuilderDecorator {
       ASTCDClass builderClass, ASTCDClass domainClass,
       String managerName, List<ASTCDAssocSide> attrAssocLists, List<String[]> initialAttributes
   ) {
+    HashMap<ASTCDAssocSide, String> correctManagerToAttrAssocSides = new HashMap<>();
+    attrAssocLists.forEach(assocSide -> correctManagerToAttrAssocSides.put(assocSide,
+        getCorrectManager(assocSide.getSymbol().getAssoc().getAssociation().getAstNode())));
     glex.replaceTemplate(GUI2ComponentTemplates.CONSTRUCTOR, builderClass,
-        new TemplateHookPoint(getConstructorTemplate(), domainClass.getName(), managerName, attrAssocLists, initialAttributes));
+        new TemplateHookPoint(getConstructorTemplate(), domainClass.getName(), correctManagerToAttrAssocSides, initialAttributes));
   }
 
   protected String getConstructorTemplate() {
@@ -90,8 +104,8 @@ public class TSBuilderDecorator extends BuilderDecorator {
   }
 
   protected void createSetAndCheckMethods(ASTCDClass domainClass, ASTCDClass builderClass,
-      List<ASTCDAttribute> attrList,
-      List<ASTCDAssocSide> assocList) {
+                                          List<ASTCDAttribute> attrList,
+                                          List<ASTCDAssocSide> assocList) {
     for (ASTCDAttribute attribute : attrList) {
       getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.TSAttr",
           attribute.getName(), getCDPrinter().prettyprint(createType(attribute)),
@@ -115,8 +129,7 @@ public class TSBuilderDecorator extends BuilderDecorator {
             assoc.getName(),
             getClassName(domainClass.getName()));
 
-      }
-      else {
+      } else {
         getCD4C().addMethod(builderClass, "umlp.gui2ts.builder.TSAssocOne",
             assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
             getClassName(domainClass.getName()));

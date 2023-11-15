@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs", "gemAssocsToManagerMap")}
 ${cd4c.method("public Optional<${typeName}> unpack${typeName}(ResultSet res) throws SQLException")}
   int gemId = res.getInt("id");

@@ -24,6 +24,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -38,6 +39,7 @@ import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -73,6 +75,8 @@ public abstract class AbstractDecorator {
   public static final String CLIENT_PACKAGE = DEFAULT_PACKAGE + "client";
 
   public static final String SHELLAPI_PACKAGE = DEFAULT_PACKAGE + "shellapi";
+
+  public static boolean hasOCL = false;
 
   protected final GlobalExtensionManagement glex;
 
@@ -273,5 +277,26 @@ public abstract class AbstractDecorator {
       Log.error("Managername cannot be calculated. SymTypeExpression: '" + type + "'. Does not belong to a package defined by a Class Diagram.");
     }
     return fullName[fullName.length - 2] + ManagerDecorator.SUFFIX;
+  }
+
+  protected List<ASTCDCompilationUnit> getExtendedDefinitions(ASTCDCompilationUnit origCD){
+    if(!origCD.getCDDefinition().getModifier().isPresentStereotype()){
+      return List.of();
+    }
+
+    List<ASTStereoValue> valuesList = origCD.getCDDefinition().getModifier().getStereotype().getValuesList();
+    List<String> extendedCDs = valuesList.stream().filter(value -> value.getName().equals("extends"))
+        .map(ASTStereoValue::getValue).collect(Collectors.toList());
+    List<ASTCDCompilationUnit> res = new ArrayList<>();
+
+    extendedCDs.forEach(ecd -> {
+      Optional<DiagramSymbol> diagramSymbol = origCD.getEnclosingScope().resolveDiagram(ecd);
+      if (diagramSymbol.isPresent()) {
+        ASTCDDefinition astNode = (ASTCDDefinition) diagramSymbol.get().getAstNode();
+        res.add(UMLPSymbolTables.getDiagramFor(astNode));
+      }
+    });
+
+    return res;
   }
 }

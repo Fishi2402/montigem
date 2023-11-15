@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package commands.commands;
 
 import umlp.backendrte.command.StatusResult;

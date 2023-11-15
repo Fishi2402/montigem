@@ -14,6 +14,7 @@ import umlp.UMLPMill;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.HashSet;
 import java.util.List;
@@ -111,7 +112,8 @@ public class TSObserverDecorator extends ObserverDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, this.astcdPackage + "." + domainClass.getName());
     if (!domainClass.getSuperclassList().isEmpty()) {
-      getCD4C().addImport(ast, this.astcdPackage + "." + domainClass.getSuperclassList().get(0).printType() + ObserverDecorator.SUFFIX);
+      ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainClass.getSuperclassList().get(0));
+      getCD4C().addImport(ast, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainClass.getSuperclassList().get(0).printType() + "Observer");
     }
     additionalImports.forEach(e -> getCD4C().addImport(ast, e.getTypeInfo().getFullName()));
 

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package dtcockpit.commands;
 
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;

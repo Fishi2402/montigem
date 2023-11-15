@@ -168,7 +168,7 @@ project.getTasksByName("jsweet", true).forEach {
 task generateNPMAuth(type: NPMAuthCreate){
   npmrcFile = frontendSetup.getOutput().file(".npmrc")
 }
-npm_install.dependsOn(generateNPMAuth)
+npm_install.dependsOn(generateNPMAuth, ':umlp-rte:client:npm_install')
 
 task installLocalRTE(type: NpmTask) {
   dependsOn(npm_install)

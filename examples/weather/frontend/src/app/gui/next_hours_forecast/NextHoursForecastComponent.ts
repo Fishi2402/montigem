@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
 import { NextHoursForecastComponentTOP } from "@src/gui/next_hours_forecast/NextHoursForecastComponentTOP";
 
