@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs")}
+${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs", "assocsToDefinitionDiagramMap")}
 ${cd4c.method("public void addManyAssocsToBatch${typeName}(Collection<${typeName}> objectsToInsert)")}
 // TODO replace this with Commands
 
@@ -13,7 +13,7 @@ ${cd4c.method("public void addManyAssocsToBatch${typeName}(Collection<${typeName
         <#else>
             ${assocSide.getName()?uncap_first}Map.put(o.getGemId(), iDs);
         </#if>
-  ${cdName}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().addManyToBatch${assoc.getName()?cap_first}(${assocSide.getName()?uncap_first}Map);
+     ${assocsToDefinitionDiagramMap[assoc.getName()]}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().addManyToBatch${assoc.getName()?cap_first}(${assocSide.getName()?uncap_first}Map);
 
   </#list>
   <#list gemAssocs as assocSide, assoc>
@@ -24,7 +24,7 @@ ${cd4c.method("public void addManyAssocsToBatch${typeName}(Collection<${typeName
       <#else>
         ${assocSide.getName()?uncap_first}Map.put(o.getGemId(), Arrays.asList(o.get${assocSide.getName()?cap_first}Gem().getGemId()));
       </#if>
-      ${cdName}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().addManyToBatch${assoc.getName()?cap_first}(${assocSide.getName()?uncap_first}Map);
+      ${assocsToDefinitionDiagramMap[assoc.getName()]}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().addManyToBatch${assoc.getName()?cap_first}(${assocSide.getName()?uncap_first}Map);
     }
   </#list>
     }

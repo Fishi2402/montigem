@@ -1,21 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package database;
 
-import baseartifactstest.BaseArtifactsTestManagerImpl;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.neo4j.configuration.connectors.BoltConnector;
-import org.neo4j.configuration.helpers.SocketAddress;
 import org.neo4j.dbms.api.DatabaseManagementService;
-import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import org.neo4j.driver.Driver;
-import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
-
-import java.nio.file.Paths;
-
-import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
 
 //import org.neo4j.dbms.api.DatabaseManagementService;
 
