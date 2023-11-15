@@ -2,13 +2,13 @@ package example_arrange;
 
 import arrange.GemRow;
 import input.GemTextInput;
+import Domain.Person;
 
-page GemRowExample() {
+page GemRowExample(Person p) {
   @GemRow(
-   // components = [
-     // @GemTextInput(value = p.firstName),
-     // @GemTextInput(value = p.lastName),
-    //  @GemTextInput(value = p.dateOfBirth)
-   // ]
+    components = [
+      @GemTextInput(labelText = "Birthday", entry = p.birthday, inputType = "date"),
+      @GemTextInput(labelText = "Name", entry = p.name)
+     ]
   );
 }

@@ -10,8 +10,8 @@ classdiagram Domain {
   class Address {
     String street;
     int house;
-
   }
+
 
   association home [1] Person -> (address) Address [0..1];
 

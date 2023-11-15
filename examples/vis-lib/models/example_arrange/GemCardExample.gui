@@ -4,6 +4,7 @@ import arrange.GemCard;
 import basic.GemText;
 
 page GemCardExample(){
+
   @GemCard(
     title = "Info Text",
     component = @GemText(
