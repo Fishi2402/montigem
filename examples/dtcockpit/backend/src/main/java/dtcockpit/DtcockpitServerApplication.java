@@ -86,8 +86,8 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
     }
 
     MqttSerializer.instance = new MqttSerializer();
-    MqttService service = new MqttService();
-    service.connect();
+
+    MqttService.getInstance().connect();
 
     SendRoomChangesToMqttObserver mqttRoomObserver = new SendRoomChangesToMqttObserver();
     DtcockpitManager.addObserver(new DtcockpitObserver() {

@@ -10,7 +10,7 @@ public class SendRoomChangesToMqttObserver implements RoomObserver{
     // TODO: correct device_uuid
     String uuid = "mock_uuid_1234";
 
-    MqttService.client
+    MqttService.getInstance().getClient().get()
         .publishWith()
         .topic("/_device/" + uuid + "/room/" + room.getRoomNumber() + "/temperature")
         .qos(MqttQos.EXACTLY_ONCE)
