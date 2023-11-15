@@ -103,7 +103,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
       }
     }
     if (isSingleton) {
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSingletonElement", name, managerName);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSingletonElement", origCD.getCDDefinition().getName(), name, managerName);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOptSingletonElement", name);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetListSingletonElement", name);
     }else {
