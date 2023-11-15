@@ -112,6 +112,9 @@ compileJava {
   options.warnings = false
 }
 
+// Language server + IntelliJ Plugin
+intellij.version = "2022.2"
+
 task autoconfigure(type: de.mclsg.task.AutoconfigureTask) {
   mclsgAggregation {
     languageAggregationName = "UMLPWithGUI"
