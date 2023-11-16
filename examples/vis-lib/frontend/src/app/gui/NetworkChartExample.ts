@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import {Directive} from '@angular/core';
 import {NetworkChartExampleTOP} from '@src/gui/NetworkChartExampleTOP';
 import {Person} from '@src/domain/Person';
 import {NetworkData} from '@umlp/charts';
 import {NetworkEdge} from '@umlp/charts';
 import {NetworkNode} from '@umlp/charts';
 
+@Directive()
 export class NetworkChartExample extends NetworkChartExampleTOP  {
 
   private networkData : NetworkData;
@@ -43,7 +45,7 @@ export class NetworkChartExample extends NetworkChartExampleTOP  {
     alreadyCaptured.add(curPerson)
     curPerson.getFriends().forEach(p=> {
           edges.push({from: curPerson.getName(), to: p.getName()});
-          edges.concat(this.fillFriendsEdgesRecursively(p, alreadyCaptured));
+          edges = edges.concat(this.fillFriendsEdgesRecursively(p, alreadyCaptured));
         }
     )
     return edges;
