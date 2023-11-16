@@ -85,7 +85,7 @@ task genGUI2(type: UMLPGuiGenTask) {
   dependsOn(genGUI, guiVariability)
   input = file(guiVariability.getOutputDir().dir("cd2gui"))
   symbolDir = files(
-      genDomain.symbolOutDir,
+      generateCDTOGUI.getOutputDir().file("symbols"),
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
       configurations.guiDefaultTypes.files
   )

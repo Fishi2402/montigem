@@ -15,7 +15,7 @@ import arrange.GemColumn;
 import charts.GemLineChart;
 import charts.GemGaugeChart;
 import table.GemTable;
-import table.TableTypes.TableColumn;
+import table.TableTypes.TableColumn.*;
 
 page WeatherView(List<Forecast> forecasts) {
   @GemRow(colGap = "5px", height = "initial", components = [
