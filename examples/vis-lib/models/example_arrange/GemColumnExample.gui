@@ -2,9 +2,7 @@ package example_arrange;
 
 import arrange.GemColumn;
 import input.GemTextInput;
-import input.GemRangeInput;
 import Domain.Person;
-import Domain.Address;
 
 page GemColumnExample(Person p) {
   @GemColumn(
