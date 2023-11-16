@@ -356,11 +356,23 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(argName));
   }
 
-  public String gui2cdAttrGetterNameTS(String componentId, String argName) {
+  public String gui2cdAttrGetterNameTS(String componentId, ASTGUINamedArg namedArg) {
     return getHTMLName("get"
         + StringTransformations.capitalize(componentId)
-        + StringTransformations.capitalize(argName)) +
-        (UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? "" : SYNCHRONIZED_SUFFIX);
+        + StringTransformations.capitalize(namedArg.getName())) +
+        (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg) ? "" : SYNCHRONIZED_SUFFIX);
+  }
+
+  public boolean isList(ASTGUINamedArg namedArg) {
+    IGUIDSLScope enclosingScope = namedArg.getEnclosingScope();
+    if (enclosingScope == null) {
+      return false;
+    }
+    Optional<GUIParamSymbol> guiParamSymbolOpt = enclosingScope.resolveGUIParam(namedArg.getName());
+    if (guiParamSymbolOpt.isEmpty() || guiParamSymbolOpt.get().getType() == null) {
+      return false;
+    }
+    return GenService.isList(guiParamSymbolOpt.get().getType());
   }
 
   public String getIsSynchronizedSuffix() {

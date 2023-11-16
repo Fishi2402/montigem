@@ -16,7 +16,7 @@ ${tc.signature("args")}
     <#elseif genHelper.isViewElement(ast, namedArg) || genHelper.isViewElementsCollection(ast, namedArg)>
       [${namedArg.getName()}] = '${genHelper.gui2htmlArgValue(namedArg.getGUIArgValue())}'
     <#elseif genHelper.hasGetter(ast, namedArg)>
-      [${namedArg.getName()}] = '${genHelper.gui2cdAttrGetterNameTS(ast.getId().getName(), namedArg.getName())}(
+      [${namedArg.getName()}] = '${genHelper.gui2cdAttrGetterNameTS(ast.getId().getName(), namedArg)}(
         <#list args as arg>${arg}<#if !arg?is_last>,</#if></#list>)'
       <#if genHelper.hasSetter(ast, namedArg)>
         (${namedArg.getName()}Change) = '${genHelper.gui2cdAttrSetterName(ast.getId().getName(), namedArg.getName())}(

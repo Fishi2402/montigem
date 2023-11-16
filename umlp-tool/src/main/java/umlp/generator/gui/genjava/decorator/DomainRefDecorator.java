@@ -123,6 +123,12 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         }
       }
     }
+
+    addJavaImports();
+  }
+
+  protected void addJavaImports() {
+    getCD4C().addImport(decoratedClass, "de.monticore.guidsl.types.GUIViewElement");
   }
 
   protected GUI2JavaComponentDecorator instantiateComponentDecorator(ASTGUICompilationUnit guiAst) {
@@ -217,7 +223,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         }
         List<String> params = new ArrayList<>();
         domainClass.forEachGUIParams(p -> params.add(
-            getParam(p.getSymbol().getType().getTypeInfo().getName(), p.getName())
+            getParam(p.getSymbol().getType(), p.getName())
         ));
 
         addEditConstructor(clazz, params, domainAttributes, otherAttributes);

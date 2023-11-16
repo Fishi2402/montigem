@@ -272,7 +272,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         }
         List<String> params = new ArrayList<>();
         domainClass.forEachGUIParams(p -> params.add(
-            getParam(p.getSymbol().getType().getTypeInfo().getName(), p.getName())
+            getParam(p.getSymbol().getType(), p.getName())
         ));
 
         addEditConstructor(clazz, params, domainAttributes, otherAttributes, ast);
