@@ -53,8 +53,11 @@ public class DAOFactoryDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
         .forEach(c -> addClassElements(c, daoFactory));
 
+    // TODO remove this cancerous check for multiple associations with the same name introduced by CDMerge
     origCD.getCDDefinition().getCDAssociationsList().stream()
         .filter(a -> !a.getModifier().isDerived())
+        .collect(Collectors.groupingBy(ASTCDAssociation::getName))
+        .entrySet().stream().map(entry -> entry.getValue().get(0))
         .forEach(assoc -> addAssocDAOElements(assoc, daoFactory));
 
     // methods
