@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package gui;
 
 import basic.GemButton;
@@ -21,7 +22,7 @@ page DtcockpitMainPage(List<Project> projects) {
         components=[
           @iterate(Project p : projects) {
             // Note: the classes have to be overridden to be applied, as lists of literals is a WIP
-            pButton@GemButton(label = p.getName(), leftClick = navigateToProject(p));
+            pButton@GemButton(label = p.name, leftClick = navigateToProject(p));
           },
           newButton@GemButton(label = "+", leftClick = navigateToNewProject)
         ]

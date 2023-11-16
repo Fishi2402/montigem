@@ -56,6 +56,19 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
     getUseShell().convention(false);
   }
 
+  ConfigurableFileCollection ocl = getProject().getObjects().fileCollection();
+
+  @InputFiles
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @IgnoreEmptyDirectories
+  @Incremental  // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
+  public ConfigurableFileCollection getOcl() {
+    return ocl;
+  }
+
+  public void setOcl(File f){
+    ocl.from(f);
+  }
 
   /**
    * @param filePath Path of InputFile
@@ -82,6 +95,11 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
       result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
     }
 
+    if(!this.getOcl().isEmpty()) {
+      result.add("-ocl");
+      result.add(handlePath.apply(Path.of(getOcl().getAsPath())));
+    }
+
     if(this.getUseSpring().get()){
       result.add("-" + UMLPToolOptions.USE_SPRING.getCMD());
     }
@@ -97,6 +115,7 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
   protected Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
     Stream<FileChange> result = super.getStreamOfChanges(inputChanges);
     result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(getModelDir()).spliterator(), false));
+    result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(getOcl()).spliterator(), false));
     return result;
   }
 

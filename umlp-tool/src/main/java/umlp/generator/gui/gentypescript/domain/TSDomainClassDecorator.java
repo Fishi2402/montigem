@@ -6,8 +6,6 @@ import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.methods.MethodDecorator;
-import de.monticore.cd.codegen.methods.MutatorDecorator;
-import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -25,8 +23,14 @@ import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.domain.decorator.methods.MethodGenService;
 import umlp.generator.domain.decorator.methods.UMLPMutatorDecorator;
-import umlp.generator.gui.gentypescript.method.*;
+import umlp.generator.gui.gentypescript.method.TSAccessorDecorator;
+import umlp.generator.gui.gentypescript.method.TSAssocAccessorDecorator;
+import umlp.generator.gui.gentypescript.method.TSAssocMutatorDecorator;
+import umlp.generator.gui.gentypescript.method.TSListMutatorDecorator;
+import umlp.generator.gui.gentypescript.method.TSOptionalMutatorDecorator;
+import umlp.generator.gui.gentypescript.method.TSSimpleMethodMutatorDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,7 +64,8 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ObserverDecorator.SUFFIX);
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ErrorCollectorDecorator.SUFFIX);
     if (!domainType.getSuperclassList().isEmpty()) {
-      getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
+      ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainType.getSuperclassList().get(0));
+      getCD4C().addImport(cdType, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainType.getSuperclassList().get(0).printType());
     }
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
       if (!c.getName().equals(domainType.getName())) {
@@ -74,7 +79,15 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
       if (!c.getName().equals(domainType.getName())) {
-        getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
+        ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainType.getSuperclassList().get(0));
+        getCD4C().addImport(cdType, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainType.getSuperclassList().get(0).printType());
+      }
+    }
+
+    for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainType)) {
+      ASTCDCompilationUnit cdOfAssoc = UMLPSymbolTables.getDiagramFor(assoc.getMCQualifiedType());
+      if(!cdOfAssoc.equals(origCD)){
+        getCD4C().addImport(cdType, getPackageName(cdOfAssoc, DEFAULT_PACKAGE) + "." + assoc.getMCQualifiedType().printType());
       }
     }
   }

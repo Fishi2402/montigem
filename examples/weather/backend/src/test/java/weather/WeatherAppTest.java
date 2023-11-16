@@ -1,4 +1,5 @@
-package weather;/* (c) https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package weather;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

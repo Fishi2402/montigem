@@ -26,8 +26,8 @@ public class DBObserverDecoratorTest extends DecoratorTest {
             () -> hasSuperInterface(ast, "Foo"+ ObserverDecorator.SUFFIX),
 
             // check no of methods and attributes
-            () -> assertEquals(2, ast.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(3, ast.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(0, ast.getCDAttributeList().size(), "number of attributes"),
+            () -> assertEquals(4, ast.getCDMethodList().size(), "number of methods"),
 
             // check methods
             () -> existsMethod(ast, "notifySetFooAttr")

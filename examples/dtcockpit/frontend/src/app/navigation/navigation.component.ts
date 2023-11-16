@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {Component} from "@angular/core";
 import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
 import {User} from '@src/dtcockpit/User';

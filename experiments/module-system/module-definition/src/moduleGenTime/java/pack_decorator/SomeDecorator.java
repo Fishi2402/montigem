@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package pack_decorator;
 
 import de.monticore.cd.facade.CDModifier;

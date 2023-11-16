@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package dtcockpit.pipelines;
 
 import de.se_rwth.commons.logging.Log;

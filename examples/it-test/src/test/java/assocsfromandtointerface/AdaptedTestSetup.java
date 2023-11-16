@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package assocsfromandtointerface;
 
 import assocsfromandtointerface.test_infrastructure.AssocsFromAndToInterfaceDBTestSetup;

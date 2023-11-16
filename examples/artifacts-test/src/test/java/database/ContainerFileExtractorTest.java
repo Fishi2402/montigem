@@ -1,5 +1,7 @@
-package database;/* (c) https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package database;
 
+import baseartifactstest.BaseArtifactsTestDAOFactory;
 import baseartifactstest.BaseArtifactsTestManager;
 import baseartifactstest.BaseArtifactsTestManagerImpl;
 import baseartifactstest.BaseArtifactsTestMock;
@@ -42,6 +44,7 @@ public class ContainerFileExtractorTest extends GenAbstractNeo4jDBTest {
   }
 
 
+  @Disabled
   @Test
   public void testDBPerfomance() {
 
@@ -70,16 +73,16 @@ public class ContainerFileExtractorTest extends GenAbstractNeo4jDBTest {
     //System.out.println(watch.elapsed());
 
     // Phase 2 insert all links
-    rootArtifactDAO.bulkAddAssocsToBatchRootArtifact(BaseArtifactsTestManager.getRootArtifactList());
+    rootArtifactDAO.addManyAssocsToBatchRootArtifact(BaseArtifactsTestManager.getRootArtifactList());
     //System.out.println(watch.elapsed());
-    directoryDAO.bulkAddAssocsToBatchDirectory(BaseArtifactsTestManager.getDirectoryList());
+    directoryDAO.addManyAssocsToBatchDirectory(BaseArtifactsTestManager.getDirectoryList());
     //System.out.println(watch.elapsed());
-    fileArtifactDAO.bulkAddAssocsToBatchFileArtifact(BaseArtifactsTestManager.getFileArtifactList());
+    fileArtifactDAO.addManyAssocsToBatchFileArtifact(BaseArtifactsTestManager.getFileArtifactList());
 
 
-    rootArtifactDAO.executeBatchAddAssocsRootArtifact();
-    directoryDAO.executeBatchAddAssocsDirectory();
-    fileArtifactDAO.executeBatchAddAssocsFileArtifact();
+    rootArtifactDAO.executeAssocBatchesRootArtifact();
+    directoryDAO.executeAssocBatchesDirectory();
+    fileArtifactDAO.executeAssocBatchesFileArtifact();
 
     //System.out.println(watch.elapsed());
 

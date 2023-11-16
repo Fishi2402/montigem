@@ -2,20 +2,20 @@
 
 package umlp.generator.gui.gentypescript.domain;
 
+import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.DeSerBuilderDecorator;
-import umlp.generator.domain.decorator.ErrorCollectorDecorator;
-import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 public class TSDeSerBuilderDecorator extends DeSerBuilderDecorator {
 
@@ -63,7 +63,8 @@ public class TSDeSerBuilderDecorator extends DeSerBuilderDecorator {
       getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + BuilderDecorator.BUILDER_SUFFIX);
       getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName());
       if (!domainType.getSuperclassList().isEmpty()) {
-        getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getSuperclassList().get(0).printType());
+        ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainType.getSuperclassList().get(0));
+        getCD4C().addImport(cdType, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainType.getSuperclassList().get(0).printType());
       }
     }
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
@@ -84,7 +85,14 @@ public class TSDeSerBuilderDecorator extends DeSerBuilderDecorator {
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
       if (!c.getName().equals(domainType.getName())) {
-        getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
+        ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainType.getSuperclassList().get(0));
+        getCD4C().addImport(cdType, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainType.getSuperclassList().get(0).printType());
+      }
+    }
+    for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainType)) {
+      ASTCDCompilationUnit cdOfAssoc = UMLPSymbolTables.getDiagramFor(assoc.getMCQualifiedType());
+      if(!cdOfAssoc.equals(origCD)){
+        getCD4C().addImport(cdType, getPackageName(cdOfAssoc, DEFAULT_PACKAGE) + "." + assoc.getMCQualifiedType().printType());
       }
     }
   }

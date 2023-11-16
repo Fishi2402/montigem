@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.guiAdapters;
 
 import com.sun.source.tree.Tree;

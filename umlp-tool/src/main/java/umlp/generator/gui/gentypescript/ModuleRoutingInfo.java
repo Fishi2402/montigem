@@ -21,6 +21,7 @@ public class ModuleRoutingInfo {
   protected final Set<String> guiImport = new HashSet<>();
   private final String routingPath;
 
+
   public ModuleRoutingInfo(List<String> packageParts) {
     this.packageParts = packageParts;
     this.routingPath = String.join("/", packageParts);
@@ -65,9 +66,6 @@ public class ModuleRoutingInfo {
  */
 
   public String getRoutingPath() {
-    if (this.routingPath == null) {
-
-    }
     return routingPath;
   }
 

@@ -1,3 +1,5 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
 <div style="margin-bottom: 5px">
   <chart-options>
     <li *ngIf="displayLegend === true">
@@ -17,14 +19,14 @@
     <canvas
       baseChart
       [labels]="labels"
-      [datasets]="dataSets" 
+      [datasets]="dataSets"
       [options]="options"
       [type]="'line'"
       >
     </canvas>
   </div>
-  <gem-chart-legend 
-    [labels]="legendLabels" 
+  <gem-chart-legend
+    [labels]="legendLabels"
     [colors]="legendColors"
     [displayLegend]="displayLegend"
     >

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package flensburg.sync;
 
 import hardy.flensburg.FlensburgManager;

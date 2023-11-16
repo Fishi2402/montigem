@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package gradle.common;
 
 import de.se_rwth.commons.logging.Log;
@@ -116,6 +117,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
 
   public CommonUMLPTask(){
     super();
+    Log.init();
 
     // Report directory is required for incremental check
     this.getReportDir().convention(

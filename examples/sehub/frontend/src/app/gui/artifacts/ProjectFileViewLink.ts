@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Artifact } from '@src/sehub/Artifact';
 import { SehubManager } from '@src/sehub/SehubManager';
 import {ProjectFileViewLinkTOP} from '@src/gui/artifacts/ProjectFileViewLinkTOP';

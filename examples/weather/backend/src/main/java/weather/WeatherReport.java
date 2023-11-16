@@ -1,4 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
+/* (c) https://github.com/MontiCore/monticore */
 package weather;
 
 import com.google.common.collect.Multimap;

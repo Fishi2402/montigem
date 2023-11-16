@@ -24,6 +24,8 @@ build:
   script:
     - "gradle --version"
     - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "cd umlp-tool"
+    - "gradle buildPlugin --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   cache:
     paths:
       - examples/weather/frontend/build/frontendGen/node_modules
@@ -46,6 +48,7 @@ build:
       - examples/dtcockpit/frontend/build/frontendGen/Dockerfile
       - examples/dtcockpit/frontend/build/frontendGen/Caddyfile
       - examples/dtcockpit/frontend/build/frontendGen/.dockerignore
+      - umlp-tool/target/distributions/**
 
     reports:
       # Lets gitlab render infos about failed tests

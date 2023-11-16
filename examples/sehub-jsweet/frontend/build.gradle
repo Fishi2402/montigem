@@ -71,23 +71,12 @@ node {
 
 def symPath = "${project.buildDir}/symbols";
 
-task serializeCD {
-  doLast {
-    def modelPathStr = "${project.projectDir.parent}/models"
-    def modelPath = Paths.get(modelPathStr)
-    fileTree(modelPathStr).matching {
-      include "**/*.umlp"
-    }.each {
-      def path = it.path
-      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
-      javaexec {
-        mainClass = 'de.monticore.CD4CodeTool'
-        classpath = configurations.cdParser
-        args "-i", path,
-            "-s", "${symPath}/${relativeModelPathStr}sym"
-      }
-    }
-  }
+task genDomain(type: UMLPFrontendTask) {
+  dependsOn(frontendSetup)
+  input = file("../models/Sehub.umlp")
+  outputDir = frontendSetup.getOutput().dir("build/appdomain")
+  symbolOutDir = file("${project.buildDir}/symbols")
+  hwcDir = file("src/app/")
 }
 
 sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui', 'src/app/gui']
@@ -140,7 +129,7 @@ task translateTypeScript() {
 }
 
 task genGUI(type: UMLPGuiGenTask) {
-  dependsOn(serializeCD, frontendSetup)
+  dependsOn(genDomain, frontendSetup)
   input = file("../models")
   outputDir = frontendSetup.getOutput().dir("build/appgui")
   hwcDir = file("src/app/")
@@ -168,7 +157,7 @@ project.getTasksByName("jsweet", true).forEach {
 task generateNPMAuth(type: NPMAuthCreate){
   npmrcFile = frontendSetup.getOutput().file(".npmrc")
 }
-npm_install.dependsOn(generateNPMAuth)
+npm_install.dependsOn(generateNPMAuth, ':umlp-rte:client:npm_install')
 
 task installLocalRTE(type: NpmTask) {
   dependsOn(npm_install)

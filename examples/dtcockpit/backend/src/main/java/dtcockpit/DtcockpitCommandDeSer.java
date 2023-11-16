@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package dtcockpit;
 
 import security.GetCurrentUserRequestDeSer;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package flensburg;//+ HWC-PT
 
 import hardy.flensburg.Address;

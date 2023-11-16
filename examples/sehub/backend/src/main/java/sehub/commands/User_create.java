@@ -9,9 +9,13 @@ import sehub.User;
 import sehub.UserAccessPolicy;
 import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.common.NotificationScope;
+import umlp.backendrte.common.ValidationMessage;
+import umlp.backendrte.common.ValidationStatus;
 import umlp.backendrte.util.LogUtil;
 
 import javax.mail.MessagingException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class User_create extends User_createTOP {
 

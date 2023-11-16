@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.util;
 
 import de.monticore.ast.ASTNode;
@@ -6,13 +7,16 @@ import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.ocl.util.SymbolTableUtil;
 import de.monticore.symbols.basicsymbols._ast.ASTType;
 import de.monticore.symboltable.IScope;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import umlp.UMLPMill;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
@@ -108,6 +112,10 @@ public class UMLPSymbolTables {
     return res;
   }
 
+  public static ASTCDCompilationUnit getDiagramFor(ASTMCType type){
+    return getDiagramFor(type.getDefiningSymbol().get().getAstNode());
+  }
+
   public static ASTCDCompilationUnit getDiagramFor(ASTCDType type){
     return getDiagramFor((ASTNode) type);
   }
@@ -125,6 +133,11 @@ public class UMLPSymbolTables {
     return getDiagramFor((ASTNode) type);
   }
 
+
+  public static ASTCDCompilationUnit getDiagramFor(ASTCDDefinition type) {
+    return getDiagramFor((ASTNode) type);
+  }
+
   private static ASTCDCompilationUnit getDiagramFor(ASTNode node){
     IScope cur = node.getEnclosingScope();
     while(!(cur instanceof IUMLPArtifactScope)){
@@ -132,5 +145,13 @@ public class UMLPSymbolTables {
     }
     IUMLPArtifactScope asArtifactScope = (IUMLPArtifactScope) cur;
     return (ASTCDCompilationUnit) asArtifactScope.getAstNode();
+  }
+
+  public static void addCd4cSymbols() {
+    SymbolTableUtil.addTypeSymbol("de.monticore.cdbasis._symboltable.CDTypeSymbol");
+    SymbolTableUtil.addFunctionSymbol("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol");
+    SymbolTableUtil.addVariableSymbol("de.monticore.symbols.oosymbols._symboltable.FieldSymbol");
+    SymbolTableUtil.addVariableSymbol("de.monticore.cdassociation._symboltable.CDRoleSymbol");
+    SymbolTableUtil.ignoreSymbolKind("de.monticore.cdassociation._symboltable.CDAssociationSymbol");
   }
 }
