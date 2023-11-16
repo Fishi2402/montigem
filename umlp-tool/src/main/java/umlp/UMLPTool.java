@@ -240,7 +240,21 @@ public class UMLPTool extends UMLPToolTOP {
         recreateSymbolTable(ast);
         CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath);
         guiTool.generateGUI();
+
+        // TODO (MB): Ist diese Lösung okay?
+        // Create a customized symbol table for the generated GUI-models
+        new UMLAddGemIdTrafo(UMLPMill.traverser()).transform(ast);
+        IUMLPArtifactScope symbolTable = recreateSymbolTable(ast);
+        Path symbolPath = Paths.get(
+            outDir.getPath() + File.separator
+                + "symbols" + File.separator
+                + Names.getPathFromPackage(symbolTable.getPackageName()) + File.separator
+                + symbolTable.getName() + ".umlpsym");
+        JsonPrinter.disableIndentation();
+        storeSymbols(symbolTable, symbolPath.toString());
+
         Reporting.flush(ast);
+
       } else if (GUIVariability.isSelected(cmd)) {
         List<Path> inputs = Arrays.stream(cmd.getOptionValues(INPUT.getCMD())).map(Path::of).collect(Collectors.toList());
 
