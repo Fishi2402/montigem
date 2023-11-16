@@ -16,6 +16,7 @@ def shouldBuildIntelliJPlugin = ("true").equals(getProperty('buildIntelliJPlugin
 
 if(shouldBuildIntelliJPlugin) {
   apply plugin: "org.jetbrains.intellij"
+  intellij.version = "2022.2"
 }
 
 dependencies {
@@ -118,9 +119,6 @@ compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }
   options.warnings = false
 }
-
-// Language server + IntelliJ Plugin
-intellij.version = "2022.2"
 
 task autoconfigure(type: de.mclsg.task.AutoconfigureTask) {
   mclsgAggregation {
