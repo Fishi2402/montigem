@@ -34,7 +34,7 @@ component DtCockpitNavigation(String username, List<Project> projects) {
           ]),
       @iterate(Project p : projects) {
         @GemRow(height="auto",components = [
-          @NavItem(title = p.getName() , target = "/gui/project/" + p.getName() + "/show")
+          @NavItem(title = p.name , target = "/gui/project/" + p.name + "/show")
         ]);
       },
       @GemRow(height="auto",components = [

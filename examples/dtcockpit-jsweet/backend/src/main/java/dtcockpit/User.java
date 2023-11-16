@@ -17,4 +17,16 @@ public class User extends UserTOP {
     return null;
   }
 
+  public GemTextInputValidity validityEmail() {
+    return getValidityEmail();
+  }
+
+  public GemTextInputValidity validityUsername() {
+    return getValidityUsername();
+  }
+
+  public GemTextInputValidity validityPassword() {
+    return getValidityPassword();
+  }
+
 }
