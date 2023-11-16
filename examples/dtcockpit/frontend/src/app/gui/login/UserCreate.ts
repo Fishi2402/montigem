@@ -4,7 +4,7 @@ import {Directive} from '@angular/core';
 import {UserCreateTOP} from '@src/gui/login/UserCreateTOP';
 import {DtcockpitRole} from '@src/dtcockpit/DtcockpitRole';
 import {User} from "@src/dtcockpit/User";
-import {GemList} from '../../../../build/frontendGen/node_modules/@umlp/common/lib/common/GemList';
+import {GemList} from '@umlp/common';
 
 @Directive()
 

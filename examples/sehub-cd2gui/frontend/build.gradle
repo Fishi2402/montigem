@@ -52,6 +52,12 @@ task generateCDTOGUI(type: UMLPCdToGuiTask) {
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
 
+task guiVariability(type: GuiVariabilityHandlerTask) {
+  input.from(generateCDTOGUI.getOutputDir().dir("models"))
+  input.from(file("../models/gui"))
+  outputDir = layout.buildDirectory.dir("guiVariability")
+}
+
 task genDomain(type: UMLPFrontendTask) {
   dependsOn(frontendSetup)
   input = file("../models/Sehub.umlp")
@@ -61,8 +67,8 @@ task genDomain(type: UMLPFrontendTask) {
 }
 
 task genGUI(type: UMLPGuiGenTask) {
-  dependsOn(genDomain)
-  input = file("../models")
+  dependsOn(genDomain, guiVariability)
+  input = file(guiVariability.getOutputDir().dir("gui"))
   outputDir = frontendSetup.getOutput().dir("build/appgui")
   hwcDir = file("src/app/")
   modelDir = layout.projectDirectory.dir("../models")
@@ -76,8 +82,8 @@ task genGUI(type: UMLPGuiGenTask) {
 }
 
 task genGUI2(type: UMLPGuiGenTask) {
-  dependsOn(genGUI, generateCDTOGUI)
-  input = file(generateCDTOGUI.getOutputDir().file("models"))
+  dependsOn(genGUI, guiVariability)
+  input = file(guiVariability.getOutputDir().dir("cd2gui"))
   symbolDir = files(
       genDomain.symbolOutDir,
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
@@ -93,27 +99,27 @@ task genGUI2(type: UMLPGuiGenTask) {
 task generateNPMAuth(type: NPMAuthCreate){
   npmrcFile = frontendSetup.getOutput().file(".npmrc")
 }
+npm_install.dependsOn(generateNPMAuth, ':umlp-rte:client:npm_install')
 
-
-npm_install.dependsOn(generateNPMAuth, genGUI, genGUI, frontendSetup)
-// TODO AGe: npm_update too slow - strategy to make occasional checks
-npm_update.dependsOn(npm_install)
+def prebuildTasks = [
+    npm_install, genGUI2
+]
 
 task buildApp(type: NpxTask) {
-  dependsOn(genDomain, npm_update, genGUI, genGUI2)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
 task testApp(type: NpxTask) {
-  dependsOn(genDomain, npm_install, genGUI, genGUI2)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
 task runApp(type: NpxTask) {
-  dependsOn(genDomain, npm_install, genGUI, genGUI2)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }

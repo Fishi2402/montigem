@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {Component} from "@angular/core";
 import {RangeWithGradientComponentTOP} from "@src/gui/atomic/range_with_gradient/RangeWithGradientComponentTOP";
 

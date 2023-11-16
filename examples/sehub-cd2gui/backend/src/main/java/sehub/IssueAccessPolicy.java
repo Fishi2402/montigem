@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package sehub;
 
 public class IssueAccessPolicy extends IssueAccessPolicyTOP {

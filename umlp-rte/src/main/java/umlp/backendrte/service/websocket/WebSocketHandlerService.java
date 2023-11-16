@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.backendrte.service.websocket;
 
 import org.springframework.web.socket.TextMessage;

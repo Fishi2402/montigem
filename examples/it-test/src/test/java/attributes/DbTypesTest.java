@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package attributes;
 
 import attributes.test_infrastructure.AttributesDBTestSetup;

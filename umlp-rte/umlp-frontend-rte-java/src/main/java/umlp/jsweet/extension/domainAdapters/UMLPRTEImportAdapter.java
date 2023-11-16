@@ -1,4 +1,5 @@
-package umlp.jsweet.extension.domainAdapters;/* (c) https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package umlp.jsweet.extension.domainAdapters;
 
 import org.jsweet.transpiler.AsyncAwaitPropagationScanner;
 import org.jsweet.transpiler.ModuleImportDescriptor;

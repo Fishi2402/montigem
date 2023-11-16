@@ -17,6 +17,7 @@ import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.util.SingletonLookUp;
 
+import java.util.ArrayList;
 import java.util.function.Predicate;
 
 public class TSManagerDecorator extends ManagerDecorator {
@@ -48,22 +49,28 @@ public class TSManagerDecorator extends ManagerDecorator {
     getCD4C().addImport(clazz, this.astcdPackage + "."
         + name + ObserverDecorator.SUFFIX);
 
-    for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
-      if (!c.getModifier().isDerived() && !c.getModifier().isAbstract()) {
-        getCD4C().addImport(clazz, this.astcdPackage + "."
-            + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
-        getCD4C().addImport(clazz, this.astcdPackage + "."
-            + c.getName() + DeSerBuilderDecorator.DESER_BUILDER_SUFFIX);
+    ArrayList<ASTCDCompilationUnit> cdDefs = new ArrayList<>();
+    cdDefs.add(origCD);
+    cdDefs.addAll(getExtendedDefinitions(origCD));
+
+    for (ASTCDCompilationUnit cdDef : cdDefs) {
+      for (ASTCDClass c : cdDef.getCDDefinition().getCDClassesList()) {
+        getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "." + c.getName());
+        if (!c.getModifier().isDerived() && !c.getModifier().isAbstract()) {
+          getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
+              + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
+          getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
+              + c.getName() + DeSerBuilderDecorator.DESER_BUILDER_SUFFIX);
+        }
       }
-    }
-    for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "."
-          + c.getName());
-    }
-    for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "."
-          + c.getName());
+      for (ASTCDEnum c : cdDef.getCDDefinition().getCDEnumsList()) {
+        getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
+            + c.getName());
+      }
+      for (ASTCDInterface c : cdDef.getCDDefinition().getCDInterfacesList()) {
+        getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
+            + c.getName());
+      }
     }
 
     return clazz;

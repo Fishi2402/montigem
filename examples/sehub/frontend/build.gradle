@@ -78,31 +78,27 @@ task genGUI(type: UMLPGuiGenTask) {
 task generateNPMAuth(type: NPMAuthCreate){
   npmrcFile = frontendSetup.getOutput().file(".npmrc")
 }
-
-
-npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
-// TODO AGe: npm_update too slow - strategy to make occasional checks
-npm_update.dependsOn(npm_install)
+npm_install.dependsOn(generateNPMAuth, ':umlp-rte:client:npm_install')
 
 def prebuildTasks = [
-    genDomain, genGUI, ':umlp-rte:client:npm_install'
+    npm_install, genDomain, genGUI
 ]
 
 task buildApp(type: NpxTask) {
-  dependsOn(npm_update, prebuildTasks)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
 task testApp(type: NpxTask) {
-  dependsOn(genDomain, prebuildTasks)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
 task runApp(type: NpxTask) {
-  dependsOn(genDomain, prebuildTasks)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }

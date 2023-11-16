@@ -17,7 +17,7 @@ export const routes: Routes = [
       {
       path: "${pathName}",
       pathMatch: "full",
-      redirectTo: "${astguiCompilationUnitList[index].getComponentName()}"
+      redirectTo: "${pathName}/${astguiCompilationUnitList[index].getComponentName()}"
       },
     </#if>
 

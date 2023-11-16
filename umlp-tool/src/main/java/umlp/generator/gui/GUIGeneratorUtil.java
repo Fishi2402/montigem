@@ -30,7 +30,6 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
-import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -39,8 +38,8 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
-import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
+import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.util.SingletonLookUp;
 
@@ -456,9 +455,10 @@ public class GUIGeneratorUtil {
       String simpleName = name.substring(name.lastIndexOf(".") + 1);
       if (name.lastIndexOf(".") > 0) {
         String part1 = name.substring(0, name.lastIndexOf("."));
-        return part1 + "." + StringTransformations.uncapitalize(simpleName) + "." + postfix;
+        return part1.toLowerCase() + "." + StringTransformations.uncapitalize(simpleName) + "." + postfix;
+      }else{
+        return name.toLowerCase() + "." + postfix;
       }
-      return StringTransformations.uncapitalize(name) + "." + postfix;
     }
     else {
       Log.error("0x00000 GUI Model " + forComponent

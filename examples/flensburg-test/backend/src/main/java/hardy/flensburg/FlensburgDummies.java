@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package hardy.flensburg;
 
 import java.time.LocalDate;

@@ -31,7 +31,7 @@ public class GenCreateNeo4jTest extends GenAbstractNeo4jDBTest {
 
     // use direct person builder, so no associations are created
     // faster
-    Neo4jPersonDAO personDAO = new Neo4jPersonDAO();
+    Neo4jPersonDAONeo4J personDAO = new Neo4jPersonDAONeo4J();
     Stopwatch watch2 = Stopwatch.createStarted();
     for(int i = 0; i < 20000; i++){
       Neo4jPerson p =  new Neo4jPersonBuilder(i);
@@ -70,7 +70,7 @@ public class GenCreateNeo4jTest extends GenAbstractNeo4jDBTest {
     builder.age(age);
     Neo4jHuman h1001 = builder.build().get();
 
-    Neo4jHumanDAO dao = new Neo4jHumanDAO();
+    Neo4jHumanDAONeo4J dao = new Neo4jHumanDAONeo4J();
     dao.insertNeo4jHuman(h1001);
 
     Optional<Neo4jHuman> h1001CopyOpt = dao.selectNeo4jHuman(h1001.getGemId());
@@ -91,7 +91,7 @@ public class GenCreateNeo4jTest extends GenAbstractNeo4jDBTest {
     builder.age(age);
     Neo4jHuman h1001db = builder.build().get();
 
-    Neo4jHumanDAO dao = new Neo4jHumanDAO();
+    Neo4jHumanDAONeo4J dao = new Neo4jHumanDAONeo4J();
     dao.insertNeo4jHuman(h1001db);
 
     Neo4jHuman h1001 = Neo4jFlensburgManager.getNeo4jHumanSure(gemId);
@@ -107,7 +107,7 @@ public class GenCreateNeo4jTest extends GenAbstractNeo4jDBTest {
     Neo4jAddress a1 = Neo4jFlensburgManager.neo4jAddressBuilder().city("Flensburg").build().get();
     Neo4jPerson p1 = Neo4jFlensburgManager.neo4jPersonBuilder().age(20).nickname("John").mainResidence(a1).build().get();
 
-    Neo4jPersonDAO neo4jPersonDAO = new Neo4jPersonDAO();
+    Neo4jPersonDAONeo4J neo4jPersonDAO = new Neo4jPersonDAONeo4J();
 
     Optional<Neo4jPerson> p1CopyOpt = neo4jPersonDAO.selectNeo4jPerson(p1.getGemId());
     assertTrue(p1CopyOpt.isPresent());
@@ -128,7 +128,7 @@ public class GenCreateNeo4jTest extends GenAbstractNeo4jDBTest {
     int age = 20;
     Neo4jHuman h = Neo4jFlensburgManager.neo4jHumanBuilder().age(age).build().get();
 
-    Neo4jHumanDAO dao = new Neo4jHumanDAO();
+    Neo4jHumanDAONeo4J dao = new Neo4jHumanDAONeo4J();
     Optional<Neo4jHuman> hCopyOpt = dao.selectNeo4jHuman(h.getGemId());
     assertTrue(hCopyOpt.isPresent());
     Neo4jHuman hCopy = hCopyOpt.get();
@@ -148,7 +148,7 @@ public class GenCreateNeo4jTest extends GenAbstractNeo4jDBTest {
     pb.addVisited(a1);
     pb.addVisited(a2);
 
-    Neo4jPersonDAO neo4jPersonDAO = new Neo4jPersonDAO();
+    Neo4jPersonDAONeo4J neo4jPersonDAO = new Neo4jPersonDAONeo4J();
 
     Optional<Neo4jPerson> pCopyOpt = neo4jPersonDAO.selectNeo4jPerson(p.getGemId());
     assertTrue(pCopyOpt.isPresent());
@@ -171,7 +171,7 @@ public class GenCreateNeo4jTest extends GenAbstractNeo4jDBTest {
 
     Neo4jAddress a2 = Neo4jFlensburgManager.neo4jAddressBuilder().city("Aachen").visitorGemListIds(List.of(p1.getGemId(), p2.getGemId())).build().get();
 
-    Neo4jAddressDAO neo4jAddressDAO = new Neo4jAddressDAO();
+    Neo4jAddressDAONeo4J neo4jAddressDAO = new Neo4jAddressDAONeo4J();
 
     Optional<Neo4jAddress> a2CopyOpt = neo4jAddressDAO.selectNeo4jAddress(a2.getGemId());
     assertTrue(a2CopyOpt.isPresent());

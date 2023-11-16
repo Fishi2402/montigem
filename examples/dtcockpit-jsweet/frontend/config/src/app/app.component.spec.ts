@@ -1,5 +1,6 @@
-import {TestBed} from '@angular/core/testing';
-import {AppComponent} from './app.component';
+/* (c) https://github.com/MontiCore/monticore */
+import { TestBed } from '@angular/core/testing';
+import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
