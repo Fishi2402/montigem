@@ -81,7 +81,6 @@ task genDomain(type: UMLPFrontendTask) {
   input = file("../models/Dtcockpit.umlp")
   outputDir = frontendSetup.getOutput().dir("build/appdomain")
   symbolOutDir = file("${project.buildDir}/symbols")
-  hwcDir = file("src/app/")
   generateSymbolsOnly = true
 //  debug = true
 }
