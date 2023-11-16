@@ -3,6 +3,9 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -21,11 +24,14 @@ import umlp.generator.util.PathUtil;
 import umlp.generator.util.SingletonLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.GemListAssocDecorator.getName;
@@ -55,6 +61,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     // methods
     getCD4C().addMethod(managerClass, "umlp.managerimpl.Constructor", name + SUFFIX, name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.Init", name, name + ManagerDecorator.SUFFIX + "Impl");
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.InitNeo4J", name, name + ManagerDecorator.SUFFIX + "Impl");
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFreeGemId");
     getCD4C().addMethod(managerClass, "umlp.managerimpl.ErrorNotificationScope");
 
@@ -82,7 +89,6 @@ public class ManagerImplDecorator extends AbstractDecorator {
     String name = domainClass.getName();
     boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
     if (!domainClass.getModifier().isAbstract()) {
-      managerClass.addCDMember(getDaoAttribute(domainClass));
       managerClass.addCDMember(getDBObserverAttribute(domainClass));
       if (isSingleton) {
         managerClass.addCDMember(getSingletonAttribute(domainClass));
@@ -93,18 +99,18 @@ public class ManagerImplDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
       if (!isSingleton) {
         getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName);
-        getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete", name, managerName);
+        getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete",origCD.getCDDefinition().getName(), name, managerName);
       }
     }
     if (isSingleton) {
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSingletonElement", name, managerName);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSingletonElement", origCD.getCDDefinition().getName(), name, managerName);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOptSingletonElement", name);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetListSingletonElement", name);
     }else {
       Set<ASTCDType> collectConcreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass);
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name, collectConcreteSubclassesInclSelf);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", origCD.getCDDefinition().getName(), name, collectConcreteSubclassesInclSelf);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, collectConcreteSubclassesInclSelf);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", origCD.getCDDefinition().getName(), name, collectConcreteSubclassesInclSelf);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, collectConcreteSubclassesInclSelf);
     }
 
@@ -131,9 +137,9 @@ public class ManagerImplDecorator extends AbstractDecorator {
     String name = domainInterface.getName();
 
     Set<ASTCDType> concreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainInterface);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", name, concreteSubclassesInclSelf);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", origCD.getCDDefinition().getName(),name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", name, concreteSubclassesInclSelf);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", origCD.getCDDefinition().getName(), name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesInclSelf);
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));
@@ -153,15 +159,6 @@ public class ManagerImplDecorator extends AbstractDecorator {
           getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderAssoc", getAssocName(domainInterface, a), printedType);
           getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainInterface, a)));
         });
-  }
-
-  protected ASTCDAttribute getDaoAttribute(ASTCDType domainClass) {
-    String type = domainClass.getName() + "DAO";
-    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-        getMCTypeFacade().createQualifiedType(type),
-        StringTransformations.uncapitalize(type));
-    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new " + type + "()"));
-    return domainClassDaoAttr;
   }
 
   protected ASTCDAttribute getCacheAttribute(ASTCDType domainClass) {

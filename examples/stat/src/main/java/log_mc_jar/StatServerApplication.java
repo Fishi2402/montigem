@@ -30,7 +30,7 @@ public class StatServerApplication {
 
     DatabaseAccessManager4Neo4j.init();
 
-    Log_MC_JARManagerImpl.init();
+    Log_MC_JARManagerImpl.initNeo4J();
   }
 
   @PreDestroy

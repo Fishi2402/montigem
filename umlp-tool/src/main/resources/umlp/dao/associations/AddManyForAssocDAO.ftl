@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("association")}
-${cd4c.method("public Boolean bulkAdd${association.getName()?cap_first}(Map<Long, List<Long>> ${association.getName()?cap_first}s)")}
+${cd4c.method("public Boolean addMany${association.getName()?cap_first}(Map<Long, List<Long>> ${association.getName()?cap_first}s)")}
   ensureAdd${association.getName()?cap_first}Created();
   try {
     DatabaseAccessManager.getConnection().setAutoCommit(false);

@@ -9,19 +9,34 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDTypeTOP;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.StringTransformations;
 import umlp.generator.db.sql.SQLSchemaGenerator;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DAONeo4jDecorator extends DAODecorator {
 
+  public static final String neo4J_SUFFIX = "Neo4J";
+
   public DAONeo4jDecorator(GlobalExtensionManagement glex) {
     super(glex);
+  }
+
+  @Override
+  protected String getDAOClassName(ASTCDClass domainClass) {
+    return domainClass.getName() + "DAO"+ neo4J_SUFFIX;
+  }
+
+  @Override
+  protected String getDAOSpecificNameForAssoc(String assocName) {
+    return "Assoc" + StringTransformations.capitalize(assocName) + "DAO"+neo4J_SUFFIX;
   }
 
   @Override
@@ -48,8 +63,8 @@ public class DAONeo4jDecorator extends DAODecorator {
             assoc.getLeft().getName(), assoc.getRight().getName(), assoc.getCDAssocDir().isDefinitiveNavigableLeft(),
             assoc.getCDAssocDir().isDefinitiveNavigableRight());
     getCD4C().addMethod(daoClass, "umlp.dao.associations.AddForAssocDAO", assoc);
-    getCD4C().addMethod(daoClass, "umlp.dao.associations.BulkAddForAssocDAO", assoc);
-    getCD4C().addMethod(daoClass, "umlp.dao.associations.BulkAddBatchForAssocDAO", assoc);
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.AddManyForAssocDAO", assoc);
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.AddManyToBatchForAssocDAO", assoc);
     getCD4C().addMethod(daoClass, "umlp.dao.associations.ExecuteAddBatchForAssocDAO", assoc);
   }
 
@@ -102,16 +117,19 @@ public class DAONeo4jDecorator extends DAODecorator {
     List<String> superTypeNamesInclSelf = new ArrayList<>(CDSymbolTables.getTransitiveSuperTypes(domainClass).stream().map(ASTCDTypeTOP::getName).collect(Collectors.toList()));
     superTypeNamesInclSelf.add(domainClass.getName());
 
+    Map<String, String> assocToCorrectManagerMap =
+        getAssocToSourceDefinitionCD(Stream.of(gemAssociationMap.values(), listAssociationMap.values()).flatMap(Collection::stream));
+
     getCD4C().addMethod(daoClass, "umlp.dao.InsertInitNeo4j",
         superTypeNamesInclSelf, attributes, optionalAttributes);
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
-        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap);
     getCD4C().addMethod(daoClass, "umlp.dao.BulkInsert", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
-    getCD4C().addMethod(daoClass, "umlp.dao.BulkAddAssociationsToBatch", domainClass.getName(), cdName, attributes,
-        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
-    getCD4C().addMethod(daoClass, "umlp.dao.BulkExecuteAssocBatches", domainClass.getName(), cdName, attributes,
-        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+    getCD4C().addMethod(daoClass, "umlp.dao.AddManyAssociationsToBatch", domainClass.getName(), cdName, attributes,
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap);
+    getCD4C().addMethod(daoClass, "umlp.dao.ExecuteAssocBatches", domainClass.getName(), cdName, attributes,
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap);
   }
 
   @Override
@@ -194,21 +212,15 @@ public class DAONeo4jDecorator extends DAODecorator {
     Map<ASTCDAttribute, String> optMap = Maps.newLinkedHashMap();
     getOptionalAttributes(domainClass).forEach(e -> optMap.put(e, "\"" + e.getName() + "\""));
 
-    Map<String, String> assocToCorrectManagerMap = new HashMap<>();
-    gemAssociationMap.values().forEach(assoc -> {
-      // Assumes a CoCo guarantees there no type of CD is changed
-      if(assoc.getCDAssocDir().isDefinitiveNavigableRight()) {
-        assocToCorrectManagerMap.put(assoc.getName(),
-            UMLPSymbolTables.getDiagramFor(assoc.getRight().getSymbol().getType().getTypeInfo().getAstNode()).getCDDefinition().getName()+ManagerDecorator.SUFFIX);
-      } else {
-        assocToCorrectManagerMap.put(assoc.getName(),
-            UMLPSymbolTables.getDiagramFor(assoc.getLeft().getSymbol().getType().getTypeInfo().getAstNode()).getCDDefinition().getName()+ManagerDecorator.SUFFIX);
-      }
-    });
+    Map<String, String> assocToCorrectManagerMap =
+        getAssocToSourceDefinitionCD(Stream.of(gemAssociationMap.values(), listAssociationMap.values()).flatMap(Collection::stream));
+
+    Map<String, String> assocToCorrectDAOFactoryMap =
+        getAssocToTargetDefinitionCD(Stream.of(gemAssociationMap.values(), listAssociationMap.values()).flatMap(Collection::stream));
 
     Map<ASTCDAttribute, String> attributeMap = Maps.newLinkedHashMap();
     attributes.forEach(e -> attributeMap.put(e, "\"" + e.getName() + "\""));
     getCD4C().addMethod(daoClass, "umlp.dao.Unpack", domainClass.getName(), cdName, attributeMap,
-        optMap, listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap);
+        optMap, listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap, assocToCorrectDAOFactoryMap);
   }
 }

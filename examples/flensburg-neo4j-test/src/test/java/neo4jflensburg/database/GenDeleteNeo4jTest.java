@@ -19,7 +19,7 @@ public class GenDeleteNeo4jTest extends GenAbstractNeo4jDBTest {
     builder.age(age);
     Neo4jHuman h1001 = builder.build().get();
 
-    Neo4jHumanDAO dao = new Neo4jHumanDAO();
+    Neo4jHumanDAONeo4J dao = new Neo4jHumanDAONeo4J();
     dao.insertNeo4jHuman(h1001);
 
     dao.deleteNeo4jHuman(gemId);
@@ -36,7 +36,7 @@ public class GenDeleteNeo4jTest extends GenAbstractNeo4jDBTest {
     builder.age(age);
     Neo4jHuman h1001db = builder.build().get();
 
-    Neo4jHumanDAO dao = new Neo4jHumanDAO();
+    Neo4jHumanDAONeo4J dao = new Neo4jHumanDAONeo4J();
 
     dao.insertNeo4jHuman(h1001db);
     assertTrue(dao.selectNeo4jHuman(gemId).isPresent());
@@ -55,7 +55,7 @@ public class GenDeleteNeo4jTest extends GenAbstractNeo4jDBTest {
     Neo4jFlensburgManager.deleteNeo4jHuman(h1001.getGemId());
     assertTrue(Neo4jFlensburgManager.neo4jHumanOpt(h1001.getGemId()).isEmpty());
 
-    Neo4jHumanDAO dao = new Neo4jHumanDAO();
+    Neo4jHumanDAONeo4J dao = new Neo4jHumanDAONeo4J();
     assertTrue(dao.selectNeo4jHuman(h1001.getGemId()).isEmpty());
   }
 
@@ -73,23 +73,23 @@ public class GenDeleteNeo4jTest extends GenAbstractNeo4jDBTest {
     long neo4jNeo4jPersonId = jamesBond.get().getGemId();
     long neo4jNeo4jAddressId = neo4jNeo4jAddress.getGemId();
 
-    Neo4jAddressDAO neo4jNeo4jAddressDAO = new Neo4jAddressDAO();
-    assertTrue(neo4jNeo4jAddressDAO.selectNeo4jAddress(neo4jNeo4jAddressId).isPresent());
+    Neo4jAddressDAONeo4J neo4jNeo4jAddressDAONeo4J = new Neo4jAddressDAONeo4J();
+    assertTrue(neo4jNeo4jAddressDAONeo4J.selectNeo4jAddress(neo4jNeo4jAddressId).isPresent());
 
-    Neo4jPersonDAO neo4jNeo4jPersonDAO = new Neo4jPersonDAO();
-    assertTrue(neo4jNeo4jPersonDAO.selectNeo4jPerson(neo4jNeo4jPersonId).isPresent());
+    Neo4jPersonDAONeo4J neo4jNeo4jPersonDAONeo4J = new Neo4jPersonDAONeo4J();
+    assertTrue(neo4jNeo4jPersonDAONeo4J.selectNeo4jPerson(neo4jNeo4jPersonId).isPresent());
 
-    AssocNeo4jPerson_neo4jPerson_mainResidence_Neo4jAddressDAO assocNeo4jPerson_neo4jNeo4jPerson_mainResidence_neo4jNeo4jAddressDAO = new AssocNeo4jPerson_neo4jPerson_mainResidence_Neo4jAddressDAO();
-    assertFalse(assocNeo4jPerson_neo4jNeo4jPerson_mainResidence_neo4jNeo4jAddressDAO.selectMainResidenceIdForNeo4jPerson(neo4jNeo4jPersonId).isEmpty());
+    AssocNeo4jPerson_neo4jPerson_mainResidence_Neo4jAddressDAONeo4J assocNeo4jPerson_neo4jNeo4jPerson_mainResidence_neo4jNeo4jAddressDAONeo4J = new AssocNeo4jPerson_neo4jPerson_mainResidence_Neo4jAddressDAONeo4J();
+    assertFalse(assocNeo4jPerson_neo4jNeo4jPerson_mainResidence_neo4jNeo4jAddressDAONeo4J.selectMainResidenceIdForNeo4jPerson(neo4jNeo4jPersonId).isEmpty());
 
-    AssocNeo4jVisitsDAO assocVisitsDAO = new AssocNeo4jVisitsDAO();
-    assertFalse(assocVisitsDAO.selectVisitedIdsForVisitor(neo4jNeo4jPersonId).isEmpty());
-    assertFalse(assocVisitsDAO.selectVisitorIdsForVisited(neo4jNeo4jAddressId).isEmpty());
+    AssocNeo4jVisitsDAONeo4J assocVisitsDAONeo4J = new AssocNeo4jVisitsDAONeo4J();
+    assertFalse(assocVisitsDAONeo4J.selectVisitedIdsForVisitor(neo4jNeo4jPersonId).isEmpty());
+    assertFalse(assocVisitsDAONeo4J.selectVisitorIdsForVisited(neo4jNeo4jAddressId).isEmpty());
 
-    neo4jNeo4jAddressDAO.deleteNeo4jAddress(neo4jNeo4jAddressId);
+    neo4jNeo4jAddressDAONeo4J.deleteNeo4jAddress(neo4jNeo4jAddressId);
 
-    assertTrue(assocVisitsDAO.selectVisitedIdsForVisitor(neo4jNeo4jPersonId).isEmpty());
-    assertTrue(assocVisitsDAO.selectVisitorIdsForVisited(neo4jNeo4jAddressId).isEmpty());
+    assertTrue(assocVisitsDAONeo4J.selectVisitedIdsForVisitor(neo4jNeo4jPersonId).isEmpty());
+    assertTrue(assocVisitsDAONeo4J.selectVisitorIdsForVisited(neo4jNeo4jAddressId).isEmpty());
   }
 
   @Test

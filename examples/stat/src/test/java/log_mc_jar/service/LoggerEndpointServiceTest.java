@@ -80,7 +80,7 @@ class LoggerEndpointServiceTest {
   @BeforeEach
   void setUp() {
     DatabaseAccessManager4Neo4j.initBoltLocalhost(port, "neo4j", "");
-    Log_MC_JARManagerImpl.init();
+    Log_MC_JARManagerImpl.initNeo4J();
   }
 
   @AfterEach

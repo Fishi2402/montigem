@@ -44,7 +44,7 @@ public abstract class GenAbstractNeo4jDBTest {
   @BeforeEach
   public void init(){
     DatabaseAccessManager4Neo4j.initBoltLocalhost(port, "neo4j", "");
-    Neo4jFlensburgManagerImpl.init();
+    Neo4jFlensburgManagerImpl.initNeo4J();
   }
 
   @AfterEach
