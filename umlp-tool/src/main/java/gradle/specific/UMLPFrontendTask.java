@@ -35,10 +35,6 @@ public abstract class UMLPFrontendTask extends UMLPSingleFileTask {
   // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
   public abstract ConfigurableFileCollection getModelDir();
 
-  @Input
-  @org.gradle.api.tasks.Optional
-  public abstract Property<Boolean> getGenerateSymbolsOnly();
-
   /**
    * @param filePath Path of InputFile
    * @return Arguments that can be used to start CLI-Tool
@@ -47,11 +43,7 @@ public abstract class UMLPFrontendTask extends UMLPSingleFileTask {
   protected List<String> createArgList(Path filePath, Function<Path, String> handlePath) {
     List<String> result = super.createArgList(filePath, handlePath);
 
-    if (!getGenerateSymbolsOnly().isPresent() || !getGenerateSymbolsOnly().get()) {
-      result.add("-" + UMLPToolOptions.FOR_CLIENT.getCMD());
-    } else {
-      result.add("-" + UMLPToolOptions.NO_CODE_GENERATION.getCMD());
-    }
+    result.add("-" + UMLPToolOptions.FOR_CLIENT.getCMD());
 
     if (this.getSymbolOutDir().isPresent()) {
       result.add("-s");

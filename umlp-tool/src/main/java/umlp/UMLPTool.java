@@ -407,7 +407,7 @@ public class UMLPTool extends UMLPToolTOP {
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
           generator.generate(ast, configTemplate);
         }
-        else if (!NO_CODE_GENERATION.isSelected(cmd)) {
+        else if (!GEN_SYMBOLS_ONLY.isSelected(cmd)) {
           // execute generator
           UMLPGenerator generator = new UMLPGenerator(genSetup, config);
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);

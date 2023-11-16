@@ -34,6 +34,9 @@ configurations {
 }
 
 dependencies {
+  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+  implementation group: "de.monticore.lang", name: 'guidsl', version: "7.6.0-SNAPSHOT"
+
   cdParser "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
   guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"

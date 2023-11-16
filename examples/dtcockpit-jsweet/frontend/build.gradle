@@ -76,23 +76,21 @@ node {
 
 }
 
-task genDomain(type: UMLPFrontendTask) {
+task genSymbols(type: UMLPSymbolsTask) {
   dependsOn(frontendSetup)
   input = file("../models/Dtcockpit.umlp")
-  outputDir = frontendSetup.getOutput().dir("build/appdomain")
   symbolOutDir = file("${project.buildDir}/symbols")
-  generateSymbolsOnly = true
-//  debug = true
+  outputDir = file("${project.buildDir}/symbols")
 }
 
 task genGUI(type: UMLPGuiGenTask) {
-  dependsOn(genDomain, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
+  dependsOn(genSymbols, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
   input = file("../models")
   outputDir = frontendSetup.getOutput().dir("build/appgui")
   hwcDir = file("src/main/java")
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = files(
-      genDomain.symbolOutDir,
+      genSymbols.symbolOutDir,
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
       configurations.guiDefaultTypes.files
   )
