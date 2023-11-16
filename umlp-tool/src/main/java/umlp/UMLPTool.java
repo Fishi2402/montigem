@@ -86,6 +86,7 @@ import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
 import static umlp.UMLPToolOptions.MODEl_PATH;
+import static umlp.UMLPToolOptions.NO_CODE_GENERATION;
 import static umlp.UMLPToolOptions.OUTPUT;
 import static umlp.UMLPToolOptions.PATH;
 import static umlp.UMLPToolOptions.PRETTYPRINT;
@@ -398,7 +399,7 @@ public class UMLPTool extends UMLPToolTOP {
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
           generator.generate(ast, configTemplate);
         }
-        else {
+        else if (!NO_CODE_GENERATION.isSelected(cmd)) {
           // execute generator
           UMLPGenerator generator = new UMLPGenerator(genSetup, config);
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);

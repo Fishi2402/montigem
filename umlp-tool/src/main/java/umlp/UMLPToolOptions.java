@@ -25,6 +25,7 @@ public enum UMLPToolOptions {
   PRETTYPRINT("pp", "prettyprint", "Prints the AST to stdout or the specified file (optional)", "file", true),
 
   FOR_CLIENT("4c", "forclient", "forces UMLP generator to produce TypeScript code for client"),
+  NO_CODE_GENERATION("ncg", "nocodegeneration", "forces UMLP generator to produce no code"),
 
   //with multiple args
   PATH(Option.builder("path").hasArgs()
