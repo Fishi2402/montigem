@@ -84,7 +84,7 @@ task testApp(type: NpxTask) {
 }
 
 task buildApp(type: NpxTask) {
-  dependsOn(testApp)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
