@@ -3,15 +3,22 @@ package flensburg.database;
 
 import hardy.flensburg.Address;
 import hardy.flensburg.AddressDAO;
+import hardy.flensburg.AddressDAOInterface;
 import hardy.flensburg.AssocPerson_person_mainResidence_AddressDAO;
+import hardy.flensburg.AssocPerson_person_mainResidence_AddressDAOInterface;
 import hardy.flensburg.AssocVisitsDAO;
+import hardy.flensburg.AssocVisitsDAOInterface;
+import hardy.flensburg.FlensburgDAOFactory;
 import hardy.flensburg.FlensburgManager;
 import hardy.flensburg.Human;
 import hardy.flensburg.HumanBuilder;
 import hardy.flensburg.HumanDAO;
+import hardy.flensburg.HumanDAOInterface;
 import hardy.flensburg.Person;
 import hardy.flensburg.PersonBuilder;
 import hardy.flensburg.PersonDAO;
+import hardy.flensburg.PersonDAOInterface;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -19,17 +26,35 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GenDeleteTest extends GenAbstractDBTest {
+public abstract class GenDeleteTest extends GenAbstractDBTest {
+
+  @DisplayName("Neo4J Delete Tests")
+  public static class Neo4JTestSuite extends GenDeleteTest {
+    Neo4JTestSuite() {
+      super(DatabaseConnectionType.NEO4J);
+    }
+  }
+
+  @DisplayName("SQL Delete Tests")
+  public static class SQLTestSuite extends GenDeleteTest {
+    SQLTestSuite() {
+      super(DatabaseConnectionType.SQL);
+    }
+  }
+
+  public GenDeleteTest(DatabaseConnectionType dbConnectionType) {
+    super(dbConnectionType);
+  }
 
   @Test
   public void testHumanDaoDelete() {
     long gemId = 1001;
     int age = 20;
-    HumanBuilder builder = new GenAbstractDBTest.MockHumanBuilder(gemId);
+    HumanBuilder builder = new MockHumanBuilder(gemId);
     builder.age(age);
     Human h1001 = builder.build().get();
 
-    HumanDAO dao = new HumanDAO();
+    HumanDAOInterface dao = FlensburgDAOFactory.getHumanDAO();
     dao.insertHuman(h1001);
 
     dao.deleteHuman(gemId);
@@ -46,7 +71,7 @@ public class GenDeleteTest extends GenAbstractDBTest {
     builder.age(age);
     Human h1001db = builder.build().get();
 
-    HumanDAO dao = new HumanDAO();
+    HumanDAOInterface dao = FlensburgDAOFactory.getHumanDAO();
 
     dao.insertHuman(h1001db);
     assertTrue(dao.selectHuman(gemId).isPresent());
@@ -65,7 +90,7 @@ public class GenDeleteTest extends GenAbstractDBTest {
     FlensburgManager.deleteHuman(h1001.getGemId());
     assertTrue(FlensburgManager.humanOpt(h1001.getGemId()).isEmpty());
 
-    HumanDAO dao = new HumanDAO();
+    HumanDAOInterface dao = FlensburgDAOFactory.getHumanDAO();
     assertTrue(dao.selectHuman(h1001.getGemId()).isEmpty());
   }
 
@@ -83,16 +108,16 @@ public class GenDeleteTest extends GenAbstractDBTest {
     long personId = jamesBond.get().getGemId();
     long addressId = address.getGemId();
 
-    AddressDAO addressDAO = new AddressDAO();
+    AddressDAOInterface addressDAO = FlensburgDAOFactory.getAddressDAO();
     assertTrue(addressDAO.selectAddress(addressId).isPresent());
 
-    PersonDAO personDAO = new PersonDAO();
+    PersonDAOInterface personDAO = FlensburgDAOFactory.getPersonDAO();
     assertTrue(personDAO.selectPerson(personId).isPresent());
 
-    AssocPerson_person_mainResidence_AddressDAO assocPerson_person_mainResidence_addressDAO = new AssocPerson_person_mainResidence_AddressDAO();
+    AssocPerson_person_mainResidence_AddressDAOInterface assocPerson_person_mainResidence_addressDAO = FlensburgDAOFactory.getAssocPerson_person_mainResidence_AddressDAO();
     assertFalse(assocPerson_person_mainResidence_addressDAO.selectMainResidenceIdForPerson(personId).isEmpty());
 
-    AssocVisitsDAO assocVisitsDAO = new AssocVisitsDAO();
+    AssocVisitsDAOInterface assocVisitsDAO = FlensburgDAOFactory.getAssocVisitsDAO();
     assertFalse(assocVisitsDAO.selectVisitedIdsForVisitor(personId).isEmpty());
     assertFalse(assocVisitsDAO.selectVisitorIdsForVisited(addressId).isEmpty());
 
