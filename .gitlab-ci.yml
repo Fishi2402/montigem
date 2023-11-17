@@ -23,7 +23,7 @@ build:
   stage: build
   script:
     - "gradle --version"
-    - "gradle build --debug --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
     - "cd umlp-tool"
     - "gradle buildPlugin --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   cache:
