@@ -20,6 +20,9 @@ classdiagram Dtcockpit {
     <<dbColumn = "unique=true">>
     String email;
     DtcockpitRole role;
+    String validityUsername();
+    String validityEmail();
+    String validityPassword();
   }
 
   enum ActivationStatus {
