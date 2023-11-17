@@ -54,7 +54,7 @@ public abstract class GenAbstractDBTest {
     }
   }
 
-  //@BeforeAll
+  @BeforeAll
   public static void setUpLocalNeo4jInstance() {
 
     if(managementService != null) {
