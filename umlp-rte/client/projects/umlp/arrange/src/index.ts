@@ -4,3 +4,5 @@ export * from "./lib/gemrows";
 export * from "./lib/gemrow";
 export * from "./lib/gemcolumn";
 export * from "./lib/gemcolumns";
+export * from "./lib/gemoverlay";
+export * from "./lib/gemoverlayitem";
