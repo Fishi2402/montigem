@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
-import { NextHoursForecastComponentTOP } from "@src/gui/next_hours_forecast/NextHoursForecastComponentTOP";
+import { NextHoursForecastComponent } from "@src/gui/next_hours_forecast/NextHoursForecastComponent";
 
 @Component({
   selector: 'next-hours-forecast',
@@ -8,7 +8,7 @@ import { NextHoursForecastComponentTOP } from "@src/gui/next_hours_forecast/Next
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: ['NextHoursForecast.scss',]
 })
-export class NextHoursForecastComponent extends NextHoursForecastComponentTOP {
+export class NextHoursForecast extends NextHoursForecastComponent {
 
   public ngOnInit(): void { // Do nothing, especially not loading default data
   }

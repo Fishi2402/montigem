@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserLoginComponentTOP} from '@src/gui/login/UserLoginComponentTOP';
+import {UserLoginComponent} from '@src/gui/login/UserLoginComponent';
 import {User} from '@src/dtcockpit/User';
 import {DtcockpitSecurityManager} from "../../dtcockpit/DtcockpitSecurityManager";
 
@@ -14,7 +14,7 @@ import {DtcockpitSecurityManager} from "../../dtcockpit/DtcockpitSecurityManager
   styleUrls: ["./Login.scss"]
 })
 
-export class UserLoginComponent extends UserLoginComponentTOP {
+export class UserLogin extends UserLoginComponent {
 
   public ngOnInit(): void {
     if (DtcockpitSecurityManager.isSignedIn()) {

@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {DtcockpitMainPageComponentTOP} from '@src/gui/DtcockpitMainPageComponentTOP';
-
+import {DtcockpitMainPageComponent} from '@src/gui/DtcockpitMainPageComponent';
 import {Component} from '@angular/core';
+import {Project} from '@src/dtcockpit/Project';
 import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
-import { Project } from '@src/dtcockpit/Project';
 
 @Component({
   selector: 'dtcockpit-main-page',
@@ -13,7 +12,7 @@ import { Project } from '@src/dtcockpit/Project';
   styleUrls: []
 })
 
-export class DtcockpitMainPageComponent extends DtcockpitMainPageComponentTOP {
+export class DtcockpitMainPage extends DtcockpitMainPageComponent {
   ngOnInit(){
     if (!DtcockpitSecurityManager.isSignedIn()) {
       this.router.navigate(['gui', 'login', 'LoginPage']);

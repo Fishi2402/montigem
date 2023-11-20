@@ -1,11 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {BingoComponentTOP} from "../../../build/frontendGen/build/appgui/gui/BingoComponentTOP";
-import {Component,} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {BingoComponent} from "../../../build/frontendGen/build/appgui/gui/BingoComponent";
+import {Component} from '@angular/core';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
-import { SehubManager } from "@src/sehub/SehubManager";
-import { BoardMapper } from "@src/sehub/BoardMapper";
-
+import {SehubManager} from "@src/sehub/SehubManager";
+import {BoardMapper} from "@src/sehub/BoardMapper";
 
 @Component({
   selector: 'bingo',
@@ -13,8 +11,7 @@ import { BoardMapper } from "@src/sehub/BoardMapper";
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: ['./Bingo.scss']
 })
-
-export class BingoComponent extends BingoComponentTOP {
+export class Bingo extends BingoComponent {
   ngOnInit() {
     if (!SehubSecurityManager.isSignedIn()) {
       this.router.navigate(['/Login']);
@@ -84,12 +81,12 @@ export class BingoComponent extends BingoComponentTOP {
         })
 
       } else if(this.messages.size() > 30) {
-          this.messages.get(0).then(m => {
-            SehubManager.deleteMessage(m.getGemId());
-            this.messages.remove(0);
-          })
-        }
-      })
+        this.messages.get(0).then(m => {
+          SehubManager.deleteMessage(m.getGemId());
+          this.messages.remove(0);
+        })
+      }
+    })
   }
 
   public limitString(str, length = 50) {

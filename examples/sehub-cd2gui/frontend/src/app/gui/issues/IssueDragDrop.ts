@@ -1,12 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {
-  CdkDragDrop,
-  moveItemInArray, transferArrayItem
-} from '@angular/cdk/drag-drop';
-import { Component, Output, EventEmitter } from '@angular/core';
-import { IssueDragDropComponentTOP } from '@src/gui/issues/IssueDragDropComponentTOP';
-import { Issue } from '@src/sehub/Issue';
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import {Component, EventEmitter, Output} from '@angular/core';
+import {IssueDragDropComponent} from '@src/gui/issues/IssueDragDropComponent';
+import {Issue} from '@src/sehub/Issue';
 
 @Component({
   selector: 'issue-drag-drop',
@@ -14,7 +11,7 @@ import { Issue } from '@src/sehub/Issue';
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: ['./IssueDragDrop.scss',]
 })
-export class IssueDragDropComponent extends IssueDragDropComponentTOP {
+export class IssueDragDrop extends IssueDragDropComponent {
 
   // TODO: fix generator error
   @Output()
@@ -29,10 +26,10 @@ export class IssueDragDropComponent extends IssueDragDropComponentTOP {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex,
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex,
       );
     }
   }

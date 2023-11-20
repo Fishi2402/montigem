@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { RadarBodyComponentTOP } from '@src/gui/widgets/RadarBodyComponentTOP';
+import { RadarBodyComponent } from '@src/gui/widgets/RadarBodyComponent';
 
 @Component({
     selector: 'radar-body',
@@ -9,8 +9,7 @@ import { RadarBodyComponentTOP } from '@src/gui/widgets/RadarBodyComponentTOP';
     styles: [":host{ display: flex; flex-direction: column }"],
     styleUrls: ['./WindWidgetBody.scss']
 })
-
-export class RadarBodyComponent extends RadarBodyComponentTOP {
+export class RadarBody extends RadarBodyComponent {
 
 }
 

@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { CreateComponentTOP } from '@src/person/CreateComponentTOP';
+import { CreateComponent } from '@src/person/CreateComponent';
 import { Component } from '@angular/core';
 import { DomainManager } from '@src/domain/DomainManager';
 
@@ -9,7 +9,7 @@ import { DomainManager } from '@src/domain/DomainManager';
   templateUrl: '../../../build/frontendGen/build/appgui/person/Create.html',
   styleUrls: ['./Create.scss']
 })
-export class CreateComponent extends CreateComponentTOP {
+export class Create extends CreateComponent {
 
   public override getBdayEntry(): string {
     return this.getPerson()?.getBirthday()?.toDateString();

@@ -44,6 +44,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.TopDecorator.TOP_SUFFIX;
 
 public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
   private final GUIComponentsVisitor viewComponents;
@@ -70,7 +71,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     String originalName = guiAst.getComponentName();
 
     // class
-    ASTCDClass decoratedClass = createClass(guiAst);
+    ASTCDClass decoratedClass = createClass(guiAst, packageName);
     astcdPackage.addCDElement(withOrigin(decoratedClass));
 
     // imports
@@ -96,7 +97,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
       }
     }
 
-    if (util.isTop(decoratedClass.getName())) {
+    if (existsHandwrittenDomainClass(guiAst.getGUIComponentDeclaration(), guiAst)) {
       glex.replaceTemplate(
           GUI2ComponentTemplates.ANNOTATIONS,
           decoratedClass,
@@ -133,15 +134,20 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     }
   }
 
-  protected ASTCDClass createClass(ASTGUICompilationUnit ast) {
+  protected ASTCDClass createClass(ASTGUICompilationUnit ast, String packageName) {
     ASTGUIComponentDeclaration domainClass = ast.getGUIComponentDeclaration();
     // empty class
     String className = domainClass.getName() + GUIAbstractDecorator.COMPONENT_SUFFIX;
+    String domainClassName = getDomainClassName(domainClass, ast);
+
     ASTCDClass clazz = UMLPMill.cDClassBuilder()
         .setModifier(CDModifier.PUBLIC.build())
         .setName(className)
-        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(domainClass.getName()))
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(domainClassName))
         .build();
+
+    // imports
+    getCD4C().addImport(clazz,packageName + "." + domainClassName);
 
     // constructor, attrs, getters
     if (!domainClass.getGUIParamList().isEmpty()) {
@@ -441,5 +447,15 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     for (String id : ids) {
       getCD4C().addAttribute(clazz, "public int " + id);
     }
+  }
+
+  public String getDomainClassName(ASTGUIComponentDeclaration domainClass, ASTGUICompilationUnit ast) {
+    String domainClassName = Names.getQualifiedName(ast.getPackage(), domainClass.getName());
+    return domainClass.getName() + (GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, domainClassName)? TOP_SUFFIX :"");
+  }
+
+  public boolean existsHandwrittenDomainClass(ASTGUIComponentDeclaration domainClass, ASTGUICompilationUnit ast) {
+    String domainClassName = Names.getQualifiedName(ast.getPackage(), domainClass.getName());
+    return GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, domainClassName);
   }
 }

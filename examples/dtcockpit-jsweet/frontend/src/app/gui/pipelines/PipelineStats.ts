@@ -1,20 +1,27 @@
 /* (c) https://github.com/MontiCore/monticore */
+import {Component} from '@angular/core';
+import {GemBarChartData, GemBarChartEntry} from '@umlp/charts';
+import {Project} from '@src/dtcockpit/Project';
+import {PipelineStatistic} from '@src/dtcockpit/PipelineStatistic';
+import {PipelineStatsComponent} from '@src/gui/pipelines/PipelineStatsComponent';
 
-import { GemBarChartData } from '@umlp/charts';
-import { GemBarChartEntry } from '@umlp/charts';
-import { DtcockpitManager } from '@src/dtcockpit/DtcockpitManager';
-import { Project } from '@src/dtcockpit/Project';
-import { PipelineStatistic } from '@src/dtcockpit/PipelineStatistic';
-import { PipelineStatsTOP } from '@src/gui/pipelines/PipelineStatsTOP';
-
-
-
-
-export class PipelineStats extends PipelineStatsTOP {
+@Component({
+  selector: 'pipeline-stats',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/pipelines/PipelineStats.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export class PipelineStats extends PipelineStatsComponent {
 
   private disableButton = false;
   private maxValue : number = 0;
   private stacked : boolean = true;
+
+  private dateOptions : Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  };
 
   projectDataCheck = { value: null, hash: null, calculating: false };
   private project : Project;
@@ -34,11 +41,7 @@ export class PipelineStats extends PipelineStatsTOP {
     entries.set("Unsuccessful", [])
     this.getP().getPStatistics().forEach((stat : PipelineStatistic) =>
         {
-          const label = stat.getTime().toLocaleString("de-DE", {
-            year: "2-digit",
-            month: "2-digit",
-            day: "2-digit",
-          })
+          const label = stat.getTime().toLocaleString("de-DE", this.dateOptions)
           let index = labels.indexOf(label)
           if(index === -1) {
             labels.push(label)
@@ -53,31 +56,30 @@ export class PipelineStats extends PipelineStatsTOP {
           }
         }
     )
+    for (let i = 0; i < entries.get("Successful").length; i++) {
+      if(this.stacked) {
+        if(this.maxValue < entries.get("Successful")[i]+entries.get("Unsuccessful")[i]+5){
+          this.maxValue = entries.get("Successful")[i]+entries.get("Unsuccessful")[i]+5
+          console.debug("Updated maxValue: ", this.maxValue)
+        }
+      } else {
+        if(this.maxValue < entries.get("Successful")[i]+5){
+          this.maxValue = entries.get("Successful")[i]+5
+          console.debug("Updated maxValue: ", this.maxValue)
+        }
+        if (this.maxValue < entries.get("Unsuccessful")[i]+5){
+          this.maxValue = entries.get("Unsuccessful")[i]+5
+          console.debug("Updated maxValue: ", this.maxValue)
+        }
+      }
+    }
     let barChartEntries : GemBarChartEntry[] = []
     entries.forEach((data, label) => {
-      if(data[0] >= this.maxValue) {
-        this.maxValue = data[0] +5
-      } if(data[1] >= this.maxValue) {
-        this.maxValue = data[1] +5
-      }
       barChartEntries.push({
         label:label,
         data:data
       })
     })
-    if(this.stacked) {
-      let counterSuccessful = 0;
-      let counterUnsuccessful = 0;
-      entries.forEach((data, label) => {
-        counterSuccessful += data[0];
-        counterUnsuccessful += data[1];
-      })
-      if(counterSuccessful >= this.maxValue) {
-        this.maxValue = counterSuccessful +5
-      } if(counterUnsuccessful >= this.maxValue) {
-        this.maxValue = counterUnsuccessful +5
-      }
-    }
     const data : GemBarChartData = {
       labels: labels,
       entries: barChartEntries
@@ -115,6 +117,7 @@ export class PipelineStats extends PipelineStatsTOP {
   }
 
   public  getBarChartForPipelineRunsMaxValue (): number {
+    console.debug("Max Value: ", this.maxValue)
     return this.maxValue;
   }
 

@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {NoteTOP} from "@src/gui/note/NoteTOP";
-import {Directive} from '@angular/core';
+import {NoteComponent} from "@src/gui/note/NoteComponent";
+import {Component} from '@angular/core';
 import {SehubManager} from '@src/sehub/SehubManager';
 import {Post} from '@src/sehub/Post';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
@@ -8,9 +8,13 @@ import {Gem} from '@umlp/common';
 import {User} from '@src/sehub/User';
 import {SehubRole} from '@src/sehub/SehubRole';
 
-@Directive()
-
-export class Note extends NoteTOP {
+@Component({
+  selector: 'note',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/note/Note.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ['./Note.scss']
+})
+export class Note extends NoteComponent {
 
   public showResponsesFlag: boolean
 

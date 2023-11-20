@@ -1,20 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserLoginComponentTOP} from '@src/gui/login/UserLoginComponentTOP';
+import {UserLoginComponent} from '@src/gui/login/UserLoginComponent';
 import {User} from '@src/sehub/User';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
-// import { ActivatedRoute, Router } from '@angular/router';
-
 @Component({
   selector: 'user-login',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserLogin.html',
+  templateUrl: '../../../..//build/frontendGen/build/appgui/gui/login/UserLogin.html',
   styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ["./Login.scss"]
+  styleUrls: []
 })
-
-export class UserLoginComponent extends UserLoginComponentTOP {
+export class UserLogin extends UserLoginComponent {
 
   public ngOnInit(): void {
     if (SehubSecurityManager.isSignedIn()) {
@@ -74,4 +71,5 @@ export class UserLoginComponent extends UserLoginComponentTOP {
   public override getErrorValue(): string {
     return this.error;
   }
+
 }

@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {StartComponentTOP} from '@src/gui/StartComponentTOP';
+import {StartComponent} from '@src/gui/StartComponent';
 import {Component} from '@angular/core';
-import {SehubManager} from '@src/sehub/SehubManager';
-import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
+import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
+import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
 import {GetCurrentUserRequest} from "../security/GetCurrentUserRequest";
 import {CommandManager} from '@umlp/common';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -11,20 +11,21 @@ import {ActivatedRoute, Router} from '@angular/router';
 @Component({
   selector: 'start',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/Start.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
+  styles: [":host{ display: flex; flex-direction: row }"],
   styleUrls: []
 })
 
-export  class StartComponent extends StartComponentTOP {
+export  class Start extends StartComponent {
 
   public constructor(route: ActivatedRoute, protected router: Router) {
-    super();
+    super(route, router);
     this.router = router;
   }
 
   ngOnInit(){
-    if (!(SehubSecurityManager.isCurrentlyLoggingIn() || SehubSecurityManager.isSignedIn())) {
-      this.router.navigate(['gui/login/LoginPage']);
+    if (!(DtcockpitSecurityManager.isCurrentlyLoggingIn() || DtcockpitSecurityManager.isSignedIn())) {
+      this.router.navigate(['gui', 'login', 'LoginPage']);
+      return;
     }
 
     CommandManager.executeCommand(new GetCurrentUserRequest()).then(res => {
@@ -32,14 +33,15 @@ export  class StartComponent extends StartComponentTOP {
 
       if(sr.isSuccessful()){
         console.log("GemId of current user is", sr.get());
-        SehubManager.getUserSure(sr.get()).then(usr => {
-          SehubSecurityManager.signIn(usr);
+        DtcockpitManager.getUserSure(sr.get()).then(usr => {
+          DtcockpitSecurityManager.signIn(usr);
           console.log("User login complete.");
         });
       }else{
         console.error("Can not get GemId of current user");
       }
     });
+    super.ngOnInit();
   }
 
 }
