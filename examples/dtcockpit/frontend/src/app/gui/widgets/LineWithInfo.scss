@@ -1,9 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 @import '../../../../config/src/variables';
 
+// see LineWithInfo.html : <line> elements
 $x-line-end: 10%;
-$y-line-end: 98%;
+$y-line-end-down: 80%;
+
+$y-line-end-up: 20%;
+// default svg element size
+$x-width: 300px;
+// see LineWithInfo.html : <svg> element
 $scale: 0.15;
+
 $font-size: 1rem;
 
 :host {
@@ -22,22 +29,40 @@ $font-size: 1rem;
   fill: $acronio-blue-1;
 }
 
-.top-text-container {
+.text-container {
   color: black;
-  padding-left: calc($scale * ($x-line-end) + 5px);
+  text-align: left;
   overflow: visible;
   white-space: nowrap;
   font-size: $font-size;
-  // negative top margin to put the text on top of the horizontal line
-  margin-top: calc($scale * (-1 * (100% - $y-line-end)) - $font-size - 2px);
+  padding-left: calc($scale * ($x-line-end) + 5px);
+
+  // upper text of \_
+  &.top-down {
+    // negative top margin to put the text on top of the horizontal line
+    margin-top: calc($scale * (-1 * (100% - $y-line-end-down)) / 2  - $font-size - 4px);
+  }
+
+  // bottom text of \_
+  &.bot-down {
+    // margin to put the text below the horizontal line
+    margin-top: 4px;
+  }
+
+  // top text of /‾
+  &.top-up {
+    // very negative top margin to put the text on top of the horizontal line
+    margin-top: calc($scale * (-1 * (100% - $y-line-end-up)) / 2 - $font-size - 4px);
+  }
+
+  // bottom text of /‾
+  &.bot-up {
+    // less negative top margin to put the text below the horizontal line
+    margin-top: 4px;
+  }
+
 }
 
-.bot-text-container {
-  color: black;
-  padding-left: calc($scale * ($x-line-end) + 5px);
-  overflow: visible;
-  white-space: nowrap;
-  font-size: $font-size;
-  // margin to put the text below the horizontal line
-  margin-top: calc($scale * (100% - $y-line-end) + 2px);
+.up {
+  transform: scaleY(-1);
 }

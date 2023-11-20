@@ -26,7 +26,19 @@ component RoomStats(List<RoomStatistic> stats) {
       ),
       components = [
         room4304@GemOverlayItem(x = "38%", y = "78%", component = @LineWithInfo(
-          topInfo = "Büro 4304 (AGe, ALu, Sek-HiWi)", botInfo = -23 + " °C"
+          topInfo = "Raum 4304 (AGe, ALu, Sek-HiWi)",
+          botInfo = -23 + " °C",
+          direction = "down"
+        )),
+        room4315@GemOverlayItem(x = "38%", y = "5%", component = @LineWithInfo(
+          topInfo = "Raum 4315 (SH, CKi, JG)",
+          botInfo = 23 + " °C",
+          direction = "up"
+        )),
+        room4312@GemOverlayItem(x = "68%", y = "5%", component = @LineWithInfo(
+          topInfo = "Raum 4312 (Seminarraum)",
+          botInfo = 3 + " °C",
+          direction = "up"
         ))
       ]
     )
