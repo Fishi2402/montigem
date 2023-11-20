@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.widgets;
+
+/**
+  * Display a circle with a line and text at the end of the line. Used to show
+  * information for a part of a figure
+  * @param info text at the end of the line
+  * @direction direction of the line from the circle. "up" or "down".
+  */
+component LineWithInfo(String info = "", String direction = "down")
