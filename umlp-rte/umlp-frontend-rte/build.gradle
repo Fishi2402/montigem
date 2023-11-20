@@ -84,7 +84,7 @@ dependencies {
 /////////////////////////   NODE   //////////////////////////////
 node {
   download = true
-  version = "18.16.1"
+  version = "18.10.0"
 }
 
 task generateIndexTS {
