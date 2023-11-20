@@ -1,6 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 @import '../../../../config/src/variables';
 
+$x-line-end: 10%;
+$y-line-end: 98%;
+$scale: 0.15;
+$font-size: 1rem;
+
 :host {
   display: flex;
   position: relative;
@@ -17,6 +22,22 @@
   fill: $acronio-blue-1;
 }
 
-.text-container {
-  text-align: center;
+.top-text-container {
+  color: black;
+  padding-left: calc($scale * ($x-line-end) + 5px);
+  overflow: visible;
+  white-space: nowrap;
+  font-size: $font-size;
+  // negative top margin to put the text on top of the horizontal line
+  margin-top: calc($scale * (-1 * (100% - $y-line-end)) - $font-size - 2px);
+}
+
+.bot-text-container {
+  color: black;
+  padding-left: calc($scale * ($x-line-end) + 5px);
+  overflow: visible;
+  white-space: nowrap;
+  font-size: $font-size;
+  // margin to put the text below the horizontal line
+  margin-top: calc($scale * (100% - $y-line-end) + 2px);
 }

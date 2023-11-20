@@ -16,19 +16,19 @@ import Dtcockpit.RoomStatistic;
 component RoomStats(List<RoomStatistic> stats) {
   @GemCard(
     titleComponent = @GemText(value = "Rooms' characteristics"),
-    component = imageContainer@GemRow(
-      hAlign = "right",
-      vAlign = "center",
-      width = "70vw",
-      height = "35vw",
-      component = @GemOverlay(
-        background = @GemImage(source = "assets/images/3OG.png"),
-        components = [
-          room4304@GemOverlayItem(x = "30%", y = "85%", component =
-          @LineWithInfo(info = "Test 1"))
-          // @GemText(value = "Test 1"))
-        ]
-      )
+    component = @GemOverlay(
+      background = imageContainer@GemRow(
+        hAlign = "right",
+        vAlign = "center",
+        width = "70vw",
+        height = "35vw",
+        component = @GemImage(source = "assets/images/3OG.png")
+      ),
+      components = [
+        room4304@GemOverlayItem(x = "38%", y = "78%", component = @LineWithInfo(
+          topInfo = "Büro 4304 (AGe, ALu, Sek-HiWi)", botInfo = -23 + " °C"
+        ))
+      ]
     )
   );
 }
