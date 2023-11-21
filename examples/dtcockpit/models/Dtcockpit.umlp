@@ -83,4 +83,18 @@ classdiagram Dtcockpit {
 
   association [0..1] Group <-> (statistics) AggregatedPipelineStatisticsOverDate [*];
 
+  class Server {
+    String hostname;
+  }
+
+  class ServerStatus {
+    java.time.LocalDate time;
+    int diskUsage;        // In GB
+    int maxDisk;          // In GB
+    int ramUsage;         // In MB
+    int maxRam;           // In MB
+    float processorUsage; // 0 to 1
+  }
+
+  association [1] Server -> ServerStatus [*];
 }
