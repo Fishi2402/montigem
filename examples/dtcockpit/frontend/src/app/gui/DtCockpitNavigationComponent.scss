@@ -4,12 +4,15 @@
 :host {
   display: flex;
   flex-direction: column;
-  max-width: 25%;
-  flex-basis: 25%;
+  width: 40ch;
 }
 
 :host ::ng-deep button.nav-item {
   color: $acronio-black;
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.projectList {
+  overflow: auto;
 }

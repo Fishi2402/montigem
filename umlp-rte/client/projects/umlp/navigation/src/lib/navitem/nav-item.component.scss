@@ -1,8 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+// TODO: move to theme
+
+$acronio-black: #232528;
+$acronio-black-1: #373A3F;
+$acronio-black-2: #565B62;
+$acronio-black-3: #8B9198;
+$acronio-black-4: #E8E9EB;
+
+$acronio-orange: #ffa400;
+$acronio-orange-1: #7f5200;
+$acronio-orange-2: #bf7b00;
+$acronio-orange-3: #ffc866;
+$acronio-orange-4: #ffedcc;
 
 :host {
   width: 100%;
+  display: flex;
 }
 
-:host >button {
+.gem-nav-item {
   width: 100%;
+  padding: 0.5rem;
+  text-decoration: none;
+  color: $acronio-black-4;
+  background: $acronio-black-1;
+  border: 1px solid $acronio-black-2;
+  font-size: 1rem;
+}
+
+.active {
+  background: $acronio-black;
+  color: $acronio-orange;
 }

@@ -3,50 +3,35 @@ package gui;
 
 import arrange.GemRow;
 import arrange.GemColumn;
-
 import basic.GemText;
 import basic.GemButton;
+import navigation.NavItem;
+import navigation.NavList;
+
+import gui.navigation.DtNavHeader;
 
 import Dtcockpit.App;
 import Dtcockpit.Project;
 import Dtcockpit.Group;
 
-import navigation.NavItem;
-import navigation.NavList;
-
 // We have to pass the list of projects as an argument, as only pages are able to observe
 // The parent component should be styled like `styles: [":host{ display: flex; flex-direction: row }"]`
 component DtCockpitNavigation(String username, List<Group> groups, List<Project> projects) {
-@GemColumn(height="auto", components = [
-  @guard(username != null){
-    @GemRow(height="auto",components = [
-      @NavItem(title = "User: " + username)
-    ]);
-  },
-  @GemRow(height="auto",components = [
-    @NavItem(title = "Home" , target = "/gui/Start")
-  ]),
-  @GemRow(height="auto",components = [
-    @NavItem(title = "Projects" , target = "/gui/DtcockpitMainPage")
-  ]),
-
-  @GemRow(height="auto",components = [
-    @NavList( components = [
-     @iterate(Group g : groups) {
-       @GemRow(height="auto",components = [
-         grouptNav@NavItem(title = g.name , target = "/gui/pipelines/PipelineStatsPerGroup/" + g.name)
-       ]);
-     },
-     @iterate(Project p : projects) {
-       @GemRow(height="auto",components = [
-         projectNav@NavItem(title = p.name , target = "/gui/pipelines/PipelineStats/" + p.name)
-       ]);
-     }
-    ]
-  )]),
-
-  @GemRow(height="auto",components = [
-    @NavItem(title = "Settings" , target = "/gui/settings")
-  ])
-]);
+  @NavList(components = [
+    @DtNavHeader(),
+    @guard(username != null) {
+      @NavItem(title = "User: " + username);
+    },
+    @NavItem(title = "Home", target = "/gui/Start"),
+    @NavItem(title = "Projects", target = "/gui/DtcockpitMainPage"),
+    @iterate(Group g : groups) {
+      grouptNav@NavItem(title = g.name, target = "/gui/pipelines/PipelineStatsPerGroup/" + g.name);
+    },
+    projectList@GemRow(height = "100%", component =
+      @iterate(Project p : projects) {
+        projectNav@NavItem(title = p.name, target = "/gui/pipelines/PipelineStats/" + p.name);
+      }
+    ),
+    @NavItem(title = "Settings", target = "/gui/settings")
+  ]);
 }
