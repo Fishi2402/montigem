@@ -4,7 +4,7 @@ classdiagram Domain {
   class Person {
     java.time.LocalDate birthday;
     String name;
-    boolean employed;
+    //?boolean employed;
   }
 
   class Address {
