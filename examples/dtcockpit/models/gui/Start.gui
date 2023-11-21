@@ -2,26 +2,27 @@
 package gui;
 
 import arrange.GemColumn;
-import arrange.GemCard;
-import basic.GemText;
 import arrange.GemRow;
+import arrange.GemCard;
+import arrange.GemOverlay;
+import arrange.GemOverlayItem;
+import basic.GemText;
 import basic.GemImage;
 
 import gui.DtCockpitNavigation;
 import gui.widgets.Welcome;
+import gui.rooms.RoomStats;
 
 import Dtcockpit.Project;
 import Dtcockpit.Group;
+import Dtcockpit.RoomStatistic;
 
-page Start(List<Project> projects, List<Group> groups) {
+page Start(List<Project> projects, List<Group> groups, List<RoomStatistic> stats) {
   @DtCockpitNavigation(username="FixMe", projects = projects, groups= groups);
 
   @GemRow(width = "100%", rowGap="10px", colGap="10px", hAlign = "center", components = [
-
-    //Welcome Widget
+    // Welcome Widget
     @Welcome(),
-    @Welcome(),
-    @Welcome()
-
-  ]); // column
+    @RoomStats(stats = stats)
+  ]);
 }
