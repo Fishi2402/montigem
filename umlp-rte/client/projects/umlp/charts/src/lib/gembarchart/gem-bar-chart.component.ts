@@ -156,11 +156,23 @@ export class GemBarChart extends GemBarChartTOP {
       scales: {
         x: {
           stacked: this._stacked,
+          grid: {
+            color: '#888'
+          },
+          ticks: {
+            color: '#888'
+          }
         },
         y: {
           min: this._minValue,
           max: this._maxValue,
-          stacked: this._stacked
+          stacked: this._stacked,
+          grid: {
+            color: '#888'
+          },
+          ticks: {
+            color: '#888'
+          }
         }
       },
       plugins: {

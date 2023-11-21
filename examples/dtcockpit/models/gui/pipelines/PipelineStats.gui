@@ -4,14 +4,11 @@ package gui.pipelines;
 import charts.GemBarChart;
 import arrange.GemCard;
 import basic.GemButton;
-
-
 import Dtcockpit.Project;
 
 page PipelineStats(Project p) {
-
   @GemCard(
-    title = "Dashboard ",
+    title = "Pipeline dashboard for " + p.name,
     component = barChartForPipelineRuns@GemBarChart(
       data = null,
       stacked = false,
@@ -20,8 +17,8 @@ page PipelineStats(Project p) {
     )
   );
   @GemButton(
-    label="Load PipelineInformation into Backend",
-    leftClick=loadPipelineInfoIntoBackend(p),
-    disabled=false
+    label = "Load PipelineInformation into Backend",
+    leftClick = loadPipelineInfoIntoBackend(p),
+    disabled = false
   );
 }
