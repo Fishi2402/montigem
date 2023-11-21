@@ -12,6 +12,7 @@ classdiagram Dtcockpit {
   association [1] App -> Room [*];
   association [1] App -> Project [*];
   association [1] App -> Group [*];
+  association [1] App -> (dashboardGroup) Group [0..1];
 
   class User {
     <<dbColumn = "unique=true">>
