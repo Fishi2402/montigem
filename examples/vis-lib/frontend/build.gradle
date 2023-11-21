@@ -78,18 +78,18 @@ def prebuildTasks = [
     npm_install, genDomain, genGUI
 ]
 
+task testApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["test"]
+}
+
 task buildApp(type: NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
-
-task testApp(type: NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
-}
 
 task runApp(type: NpxTask) {
   dependsOn(prebuildTasks)

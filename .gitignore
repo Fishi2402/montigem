@@ -7,6 +7,7 @@ build/
 *.log
 *.iml
 .idea/
+.vscode/
 .angular/
 /gradle/
 gradlew

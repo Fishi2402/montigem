@@ -39,9 +39,7 @@ dependencies {
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-  grammar("de.monticore.lang:cd4analysis:$mc_version") {
-    capabilities { requireCapability("de.monticore.lang:cd4analysis-grammars") }
-  }
+  grammar("de.monticore.lang:cd4analysis:$mc_version:grammars")
   grammar("de.monticore:monticore-grammar:$mc_version") {
     capabilities { requireCapability("de.monticore:monticore-grammar-grammars") }
   }
