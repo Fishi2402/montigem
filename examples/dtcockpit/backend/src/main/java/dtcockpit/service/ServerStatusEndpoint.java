@@ -3,7 +3,6 @@ package dtcockpit.service;
 import dtcockpit.DtcockpitManager;
 import dtcockpit.Server;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +16,9 @@ import java.util.Set;
 public class ServerStatusEndpoint {
 
 
-  @PostMapping("/{hostname}")
-  public ResponseEntity<String> processJson(@RequestBody ExternalServerStatus data, @PathVariable String hostname) {
+  @PostMapping("/")
+  public ResponseEntity<String> processJson(@RequestBody ExternalServerStatus data) {
+    String hostname = data.hostname;
     if(hostname == null || hostname.isBlank()){
       return ResponseEntity.badRequest().build();
     }
@@ -51,12 +51,21 @@ public class ServerStatusEndpoint {
 
 
   private static class ExternalServerStatus {
+    private String hostname;
     private LocalDateTime time;
     private int diskUsage;
     private int maxDisk;
     private int ramUsage;
     private int maxRam;
     private float processorUsage;
+
+    public String getHostname() {
+      return hostname;
+    }
+
+    public void setHostname(String hostname) {
+      this.hostname = hostname;
+    }
 
     public LocalDateTime getTime() {
       return time;
