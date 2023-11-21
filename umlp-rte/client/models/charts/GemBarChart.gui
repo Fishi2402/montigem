@@ -8,5 +8,6 @@ component GemBarChart(
   Object displayValue,
   Boolean stacked,
   Integer maxValue,
-  Integer minValue
+  Integer minValue,
+  boolean showConfig = true
 )

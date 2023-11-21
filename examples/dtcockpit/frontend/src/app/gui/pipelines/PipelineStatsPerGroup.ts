@@ -20,7 +20,7 @@ export class PipelineStatsPerGroup extends PipelineStatsPerGroupTOP {
   projectDataCheck = { value: null, hash: null, calculating: false };
 
   public getBarChartForPipelineRunsData(): GemBarChartData {
-    if (!this.getG()) {
+    if (!this.getG()?.getStatistics()?.length) {
       return null;
     }
     //console.debug("Group is "+ this.getG().getName())

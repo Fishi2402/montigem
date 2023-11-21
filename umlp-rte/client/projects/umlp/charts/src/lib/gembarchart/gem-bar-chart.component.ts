@@ -54,6 +54,9 @@ export class GemBarChart extends GemBarChartTOP {
     maintainAspectRatio: true,
   };
 
+  @Input()
+  public showConfig: boolean = true;
+
   /**gives the colors from the constant autoColors */
   public getColors() {
     return autoColors;

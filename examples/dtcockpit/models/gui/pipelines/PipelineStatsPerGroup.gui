@@ -20,7 +20,8 @@ page PipelineStatsPerGroup(Group g) {
         data = null,
         stacked = false,
         maxValue = 100,
-        minValue = 0
+        minValue = 0,
+        showConfig = false
       ),
       filterComponents@GemRow(colGap = "1%", vAlign = "bottom", components = [
         minDate@GemTextInput(
