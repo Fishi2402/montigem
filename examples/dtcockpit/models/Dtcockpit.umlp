@@ -89,7 +89,7 @@ classdiagram Dtcockpit {
   }
 
   class ServerStatus {
-    java.time.LocalDate time;
+    java.time.LocalDateTime time;
     int diskUsage;        // In GB
     int maxDisk;          // In GB
     int ramUsage;         // In MB
