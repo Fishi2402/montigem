@@ -1,5 +1,7 @@
 package umlp.generator.domain.decorator;
 
+import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -41,15 +43,7 @@ public class ManagerDbObserverDecorator extends AbstractDecorator {
         .filter(c -> !c.getModifier().isAbstract())
         .forEach(c -> {
           getCD4C().addMethod(ast, "umlp.dbobserver.manager.NotifyAdd", cDName, c.getName());
-          getCD4C().addMethod(ast, "umlp.dbobserver.manager.NotifyDelete", c.getName());
-        });
-
-    // Attributes
-    origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getModifier().isDerived())
-        .filter(c -> !c.getModifier().isAbstract())
-        .forEach(c -> {
-          ast.addCDMember(getDAOAttribute(c));
+          getCD4C().addMethod(ast, "umlp.dbobserver.manager.NotifyDelete",cDName, c.getName());
         });
 
     // Scope
@@ -60,11 +54,4 @@ public class ManagerDbObserverDecorator extends AbstractDecorator {
     return ast;
   }
 
-  private ASTCDAttribute getDAOAttribute(ASTCDClass domainClass){
-    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PRIVATE.build(),
-        getMCTypeFacade().createQualifiedType(domainClass.getName()+"DAO"),
-        StringTransformations.uncapitalize(domainClass.getName())+"DAO");
-    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new "+domainClass.getName()+"DAO"+"()"));
-    return domainClassDaoAttr;
-  }
 }

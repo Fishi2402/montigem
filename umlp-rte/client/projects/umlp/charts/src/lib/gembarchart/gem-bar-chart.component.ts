@@ -54,6 +54,9 @@ export class GemBarChart extends GemBarChartTOP {
     maintainAspectRatio: true,
   };
 
+  @Input()
+  public showConfig: boolean = true;
+
   /**gives the colors from the constant autoColors */
   public getColors() {
     return autoColors;
@@ -156,11 +159,23 @@ export class GemBarChart extends GemBarChartTOP {
       scales: {
         x: {
           stacked: this._stacked,
+          grid: {
+            color: '#888'
+          },
+          ticks: {
+            color: '#888'
+          }
         },
         y: {
           min: this._minValue,
           max: this._maxValue,
-          stacked: this._stacked
+          stacked: this._stacked,
+          grid: {
+            color: '#888'
+          },
+          ticks: {
+            color: '#888'
+          }
         }
       },
       plugins: {

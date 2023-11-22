@@ -8,8 +8,15 @@ plugins {
   id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
   id 'maven-publish'
   id 'de.monticore.language-server' version "$mclsg_version"
-  id 'org.jetbrains.intellij' version '1.13.3'
+  id 'org.jetbrains.intellij' version '1.13.3' apply(false)
   id "io.github.themrmilchmann.ecj" version "0.2.0"
+}
+
+def shouldBuildIntelliJPlugin = ("true").equals(getProperty('buildIntelliJPlugin')) || System.getenv("CI") == "true"
+
+if(shouldBuildIntelliJPlugin) {
+  apply plugin: "org.jetbrains.intellij"
+  intellij.version = "2022.2"
 }
 
 dependencies {
@@ -32,9 +39,7 @@ dependencies {
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-  grammar("de.monticore.lang:cd4analysis:$mc_version") {
-    capabilities { requireCapability("de.monticore.lang:cd4analysis-grammars") }
-  }
+  grammar("de.monticore.lang:cd4analysis:$mc_version:grammars")
   grammar("de.monticore:monticore-grammar:$mc_version") {
     capabilities { requireCapability("de.monticore:monticore-grammar-grammars") }
   }
@@ -56,8 +61,9 @@ repositories {
     url repo
   }
   mavenCentral()
-  // lsp4intellij
-  maven { url 'https://www.jitpack.io' }
+  if(shouldBuildIntelliJPlugin) {
+    maven { url 'https://www.jitpack.io' }
+  }
 }
 
 // configure non-standard source sets
@@ -119,22 +125,26 @@ task autoconfigure(type: de.mclsg.task.AutoconfigureTask) {
     member("UMLP", "umlp", true)
     member("de.monticore.GUIDSL", "gui", false)
     modelPath = ["$projectDir/src/main/grammars"]
-    including(de.mclsg.TaskTypes.INTELLIJ_PLUGIN)
+    if(shouldBuildIntelliJPlugin) {
+      including(de.mclsg.TaskTypes.INTELLIJ_PLUGIN)
+    }
   }
 }
 tasks.build.dependsOn autoconfigure
 
-def lspWorkdir = file("../examples/sehub/models").getAbsolutePath()
+if(shouldBuildIntelliJPlugin) {
+  def lspWorkdir = file("../examples/sehub/models").getAbsolutePath()
 
-runIde{
-  args += lspWorkdir
-}
+  runIde {
+    args += lspWorkdir
+  }
 
-task runLsp(type: JavaExec){
-  classpath tasks.packUMLPWithGUILanguageServer.archiveFile.get().asFile
-  args("-port", "3000", "-r" ,"-mp", lspWorkdir)
-  environment("LSP_SYSTEM_EXIT", "false")
-  dependsOn tasks.packUMLPWithGUILanguageServer
+  task runLsp(type: JavaExec) {
+    classpath tasks.packUMLPWithGUILanguageServer.archiveFile.get().asFile
+    args("-port", "3000", "-r", "-mp", lspWorkdir)
+    environment("LSP_SYSTEM_EXIT", "false")
+    dependsOn tasks.packUMLPWithGUILanguageServer
+  }
 }
 
 ///////////////////////// Building Jars //////////////////////////////////

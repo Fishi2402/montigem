@@ -34,12 +34,12 @@ component DtCockpitNavigation(String username, List<Group> groups, List<Project>
     @NavList( components = [
      @iterate(Group g : groups) {
        @GemRow(height="auto",components = [
-         @NavItem(title = g.getName() , target = "/gui/pipelines/PipelineStatsPerGroup/" + g.getGemId())
+         grouptNav@NavItem(title = g.name , target = "/gui/pipelines/PipelineStatsPerGroup/" + g.name)
        ]);
      },
      @iterate(Project p : projects) {
        @GemRow(height="auto",components = [
-         @NavItem(title = p.getName() , target = "/gui/pipelines/PipelineStats/" + p.getGemId())
+         projectNav@NavItem(title = p.name , target = "/gui/pipelines/PipelineStats/" + p.name)
        ]);
      }
     ]

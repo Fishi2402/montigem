@@ -8,10 +8,10 @@ import basic.GemLink;
 import basic.GemText;
 
 component ProjectFileViewLink(Artifact artifact){
-  @guard(artifact.getType() == "Directory"){
-    @GemLink(url = "OVERRIDE", text = artifact.getName());
+  @guard(artifact.type == "Directory"){
+    @GemLink(url = "OVERRIDE", text = artifact.name);
   }
-  @guard(!(artifact.getType() == "Directory")){
-    @GemText(value = artifact.getName());
+  @guard(!(artifact.type == "Directory")){
+    @GemText(value = artifact.name);
   }
 }

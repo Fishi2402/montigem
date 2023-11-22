@@ -15,7 +15,7 @@ import table.GemTable;
 
 component UserDisplay(User user) {
   @GemRow(colGap = "5px", hAlign = "space-between", vAlign = "center", components = [
-    @GemColumn(width = "50px", component = @GemImage(source = "assets/images/avatars/avatar_" + user.getAvatar() + ".png")),
+    @GemColumn(width = "50px", component = @GemImage(source = "assets/images/avatars/avatar_" + user.avatar + ".png")),
     @GemColumn(width = "20%", components = [
       account@GemText(value = user.username),
       email@GemText(value = user.email)

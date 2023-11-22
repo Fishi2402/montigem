@@ -6,6 +6,7 @@ import arrange.GemCard;
 import basic.GemButton;
 import input.GemTextInput;
 import arrange.GemRow;
+import arrange.GemColumn;
 
 import Dtcockpit.Project;
 import Dtcockpit.Group;
@@ -13,28 +14,35 @@ import Dtcockpit.Group;
 page PipelineStatsPerGroup(Group g) {
 
   pipelineBarChart@GemCard(
-    title = "Dashboard ",
-    component = barChartForPipelineRuns@GemBarChart(
-      data = null,
-      stacked = false,
-      maxValue = 100,
-      minValue = 0
-    )
-  );
-  stackedToggle@GemButton(label = "Balken nebeneinander anzeigen", leftClick=toggleStackedInfo);
-  dateFilter@GemCard(
-    title = "Filter nach Datum",
-    component = filterComponents@GemRow(
-      components=[
-        minDate@GemTextInput(id = "minimumDate",
-                             labelText = "From:",
-                             inputType = "date",
-                             entry = null),
-        maxDate@GemTextInput(id ="maximumDate",
-                             labelText = "To:",
-                             inputType = "date",
-                             entry = null)
-      ]
-    )
+    title = "Pipeline dashboard for " + g.name,
+    component = @GemColumn(rowGap = "20px", components = [
+      barChartForPipelineRuns@GemBarChart(
+        data = null,
+        stacked = false,
+        maxValue = 100,
+        minValue = 0,
+        showConfig = false
+      ),
+      filterComponents@GemRow(colGap = "1%", vAlign = "bottom", components = [
+        minDate@GemTextInput(
+          id = "minimumDate",
+          labelText = "From:",
+          inputType = "date",
+          width = "auto",
+          entry = null
+        ),
+        maxDate@GemTextInput(
+          id = "maximumDate",
+          labelText = "To:",
+          inputType = "date",
+          width = "auto",
+          entry = null
+        ),
+        stackedToggle@GemButton(
+          label = "Balken nebeneinander anzeigen",
+          leftClick = toggleStackedInfo
+        )
+      ])
+    ])
   );
 }

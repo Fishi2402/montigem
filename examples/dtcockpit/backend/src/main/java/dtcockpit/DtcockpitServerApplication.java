@@ -72,8 +72,9 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
           .name("umlp")
           .git("https://git.rwth-aachen.de/monticore/umlp")
           .build();
-      extractor.extractPipelineDataOfAllProjectsInGroup("https://git.rwth-aachen.de/",
-          DtcockpitManager.groupBuilder().name("SWT").git("121471").build().get());
+      Group swt = DtcockpitManager.groupBuilder().name("SWT").git("121471").build().get();
+      extractor.extractPipelineDataOfAllProjectsInGroup("https://git.rwth-aachen.de/", swt);
+      DtcockpitManager.getApp().setDashboardGroup(swt);
       // TODO: App#getProject should contain all projects by default?
       DtcockpitManager.getApp().addProject(monticore);
     }

@@ -4,20 +4,24 @@ package flensburg.database;
 import com.google.common.base.Stopwatch;
 import hardy.flensburg.Address;
 import hardy.flensburg.AddressDAO;
+import hardy.flensburg.AddressDAOInterface;
 import hardy.flensburg.Car;
 import hardy.flensburg.CarDAO;
+import hardy.flensburg.CarDAOInterface;
+import hardy.flensburg.FlensburgDAOFactory;
 import hardy.flensburg.FlensburgManager;
 import hardy.flensburg.Human;
 import hardy.flensburg.HumanBuilder;
 import hardy.flensburg.HumanDAO;
+import hardy.flensburg.HumanDAOInterface;
 import hardy.flensburg.Person;
 import hardy.flensburg.PersonBuilder;
 import hardy.flensburg.PersonDAO;
+import hardy.flensburg.PersonDAOInterface;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.common.DatabaseAccessManager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +34,25 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GenCreateTest extends GenAbstractDBTest {
+public abstract class GenCreateTest extends GenAbstractDBTest {
+
+  @DisplayName("Neo4J Create Tests")
+  public static class Neo4JTestSuite extends GenCreateTest {
+    Neo4JTestSuite() {
+      super(DatabaseConnectionType.NEO4J);
+    }
+  }
+
+  @DisplayName("SQL Create Tests")
+  public static class SQLTestSuite extends GenCreateTest {
+    SQLTestSuite() {
+      super(DatabaseConnectionType.SQL);
+    }
+  }
+
+  public GenCreateTest(DatabaseConnectionType dbConnectionType) {
+    super(dbConnectionType);
+  }
 
   @Disabled
   @Test
@@ -56,7 +78,7 @@ public class GenCreateTest extends GenAbstractDBTest {
     assertTrue(carOpt.isPresent());
 
     long gemId = carOpt.get().getGemId();
-    CarDAO carDAO = new CarDAO();
+    CarDAOInterface carDAO = FlensburgDAOFactory.getCarDAO();
     Optional<Car> carFromDBOpt = carDAO.selectCar(gemId);
 
     assertTrue(carFromDBOpt.isPresent());
@@ -73,7 +95,7 @@ public class GenCreateTest extends GenAbstractDBTest {
     builder.age(age);
     Human h1001 = builder.build().get();
 
-    HumanDAO dao = new HumanDAO();
+    HumanDAOInterface dao = FlensburgDAOFactory.getHumanDAO();
     dao.insertHuman(h1001);
 
     Optional<Human> h1001CopyOpt = dao.selectHuman(h1001.getGemId());
@@ -94,7 +116,7 @@ public class GenCreateTest extends GenAbstractDBTest {
     builder.age(age);
     Human h1001db = builder.build().get();
 
-    HumanDAO dao = new HumanDAO();
+    HumanDAOInterface dao = FlensburgDAOFactory.getHumanDAO();
     dao.insertHuman(h1001db);
 
     Human h1001 = FlensburgManager.getHumanSure(gemId);
@@ -115,7 +137,7 @@ public class GenCreateTest extends GenAbstractDBTest {
     Address a1 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
     Person p1 = FlensburgManager.personBuilder().age(20).nickname("John").owns(cars).mainResidence(a1).build().get();
 
-    PersonDAO personDAO = new PersonDAO();
+    PersonDAOInterface personDAO = FlensburgDAOFactory.getPersonDAO();
 
     Optional<Person> p1CopyOpt = personDAO.selectPerson(p1.getGemId());
     assertTrue(p1CopyOpt.isPresent());
@@ -136,7 +158,7 @@ public class GenCreateTest extends GenAbstractDBTest {
     int age = 20;
     Human h = FlensburgManager.humanBuilder().age(age).build().get();
 
-    HumanDAO dao = new HumanDAO();
+    HumanDAOInterface dao = FlensburgDAOFactory.getHumanDAO();
     Optional<Human> hCopyOpt = dao.selectHuman(h.getGemId());
     assertTrue(hCopyOpt.isPresent());
     Human hCopy = hCopyOpt.get();
@@ -156,7 +178,7 @@ public class GenCreateTest extends GenAbstractDBTest {
     pb.addVisited(a1);
     pb.addVisited(a2);
 
-    PersonDAO personDAO = new PersonDAO();
+    PersonDAOInterface personDAO = FlensburgDAOFactory.getPersonDAO();
 
     Optional<Person> pCopyOpt = personDAO.selectPerson(p.getGemId());
     assertTrue(pCopyOpt.isPresent());
@@ -179,7 +201,7 @@ public class GenCreateTest extends GenAbstractDBTest {
 
     Address a2 = FlensburgManager.addressBuilder().city("Aachen").visitorGemListIds(List.of(p1.getGemId(), p2.getGemId())).build().get();
 
-    AddressDAO addressDAO = new AddressDAO();
+    AddressDAOInterface addressDAO = FlensburgDAOFactory.getAddressDAO();
 
     Optional<Address> a2CopyOpt = addressDAO.selectAddress(a2.getGemId());
     assertTrue(a2CopyOpt.isPresent());

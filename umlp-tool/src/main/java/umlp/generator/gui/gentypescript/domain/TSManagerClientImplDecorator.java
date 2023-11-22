@@ -90,6 +90,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     return clazz;
   }
 
+  @Override
   protected String getClearCacheTemplate() {
     return "umlp.gui2ts.managerclientimpl.TSClearCache";
   }
@@ -170,8 +171,8 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
         .filter(Predicate.not(GenService::isSymbolDerived))
         .forEach(a -> {
           String type = a.getSymbol().getType().print();
-          getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", a.getName(), type, managerClass.getName());
-          getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", domainClass.getName(), a.getName(), type);
+          getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", getAssocName(domainClass, a), type, managerClass.getName());
+          getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", domainClass.getName(), getAssocName(domainClass, a), type);
           getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
         });
   }
@@ -197,12 +198,13 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
         .filter(Predicate.not(GenService::isSymbolDerived))
         .forEach(a -> {
           String type = a.getSymbol().getType().print();
-          getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", a.getName(), type, managerClass.getName());
-          getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", name, a.getName(), type);
+          getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoCreateAssoc", getAssocName(domainInterface, a), type, managerClass.getName());
+          getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", name, getAssocName(domainInterface, a), type);
           getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainInterface, a)));
         });
   }
 
+  @Override
   protected ASTCDAttribute getCacheAttribute(ASTCDType domainClass) {
     ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
         getMCTypeFacade().createBasicGenericTypeOf("Map", "Long", "Promise<" + domainClass.getName() + ">"),
@@ -216,6 +218,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     return " = new Map()";
   }
 
+  @Override
   protected ASTCDAttribute getSingletonAttribute(ASTCDType domainClass) {
     ASTCDAttribute singletonInstanceAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
         getMCTypeFacade().createOptionalTypeOf( "Promise<" + domainClass.getName() + ">"),

@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs")}
+${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs", "assocsToDefinitionDiagramMap")}
 ${cd4c.method("public void insert${typeName}(${typeName} o)")}
   <#assign statement="insert"+typeName>
   ensureInsert${typeName}Created();
@@ -26,15 +26,14 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
       <#else>
     ${assocSide.getName()?uncap_first}Map.put(o.getGemId(), iDs);
       </#if>
-    assoc${assoc.getName()?cap_first}DAO.bulkAdd${assoc.getName()?cap_first}(${assocSide.getName()?uncap_first}Map);
-
+    ${assocsToDefinitionDiagramMap[assoc.getName()]}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().addMany${assoc.getName()?cap_first}(${assocSide.getName()?uncap_first}Map);
     </#list>
     <#list gemAssocs as assocSide, assoc>
     if(o.get${assocSide.getName()?cap_first}Gem().getGemId() != -1){
     <#if assocSide.isLeft()>
-      assoc${assoc.getName()?cap_first}DAO.add${assoc.getName()?cap_first}(o.get${assocSide.getName()?cap_first}Gem().getGemId(), o.getGemId(),0);
+      ${assocsToDefinitionDiagramMap[assoc.getName()]}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().add${assoc.getName()?cap_first}(o.get${assocSide.getName()?cap_first}Gem().getGemId(), o.getGemId(),0);
     <#else>
-      assoc${assoc.getName()?cap_first}DAO.add${assoc.getName()?cap_first}(o.getGemId(), o.get${assocSide.getName()?cap_first}Gem().getGemId(),0);
+      ${assocsToDefinitionDiagramMap[assoc.getName()]}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().add${assoc.getName()?cap_first}(o.getGemId(), o.get${assocSide.getName()?cap_first}Gem().getGemId(),0);
     </#if>
     }
     </#list>
