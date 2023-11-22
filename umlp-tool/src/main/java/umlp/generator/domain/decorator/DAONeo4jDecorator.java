@@ -172,7 +172,7 @@ public class DAONeo4jDecorator extends DAODecorator {
                   "$"+SQLSchemaGenerator.convertAttributeName(attr.getName(), SQLSchemaGenerator.AttributeType.PLAIN);
               String dbType = GenService.getDBType(attr.getSymbol().getType());
               getCD4C().addMethod(doaClass, "umlp.dao.UpdateListAttrNeo4j", tableName, attr, innerType, dbType);
-              getCD4C().addMethod(doaClass, "umlp.dao.SelectListAttr", tableName, attr, innerType, dbType);
+              getCD4C().addMethod(doaClass, "umlp.dao.SelectListAttrNeo4j", tableName, attr, innerType, dbType);
             }
         );
   }
