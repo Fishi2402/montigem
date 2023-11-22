@@ -1,17 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {Component} from "@angular/core";
-import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
-import {User} from '@src/dtcockpit/User';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component } from "@angular/core";
+import { ActivatedRoute, Router } from '@angular/router';
+import { DtcockpitSecurityManager } from "@src/dtcockpit/DtcockpitSecurityManager";
+import { User } from '@src/dtcockpit/User';
+import { DtNavHeaderComponentTOP } from '@src/gui/navigation/DtNavHeaderComponentTOP';
 
 @Component({
-  selector: "navigation",
-  templateUrl: "./navigation.component.html",
-  styleUrls: ["./navigation.component.scss"]
+  selector: "dt-nav-header",
+  templateUrl: "./DtNavHeader.html",
+  styleUrls: ["./DtNavHeader.scss"]
 })
-export class Navigation {
+export class DtNavHeaderComponent extends DtNavHeaderComponentTOP {
 
   public constructor(route: ActivatedRoute, protected router: Router) {
+    super();
     this.router = router;
   }
 

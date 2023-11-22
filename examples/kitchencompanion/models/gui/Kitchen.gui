@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui;
+
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemRow;
+import arrange.GemColumn;
+import basic.GemText;
+
+import KitchenCompanion.User;
+//import KitchenCompanion.Project;
+
+page Kitchen(List<User> user) {
+  @GemColumn(width = "100%", hAlign = "left", component =
+    title@GemText(value = "Coffee List"),
+    component = projectList@GemRow(
+      rowGap="20px",
+      colGap="20px",
+      components=[
+        @GemButton(label = "Person 1"),
+        @GemButton(label = "Person 2")
+      ]
+    )
+  );
+}

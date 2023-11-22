@@ -1,4 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
 package navigation;
 
-component NavList (List<GUIViewElement> components)
+component NavList(List<GUIViewElement> components)

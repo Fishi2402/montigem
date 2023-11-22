@@ -1,10 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { PipelineStatistic } from '@src/dtcockpit/PipelineStatistic';
-import { PipelineStatsTOP } from '@src/gui/pipelines/PipelineStatsTOP';
+import { PipelineStatsComponentTOP } from '@src/gui/pipelines/PipelineStatsComponentTOP';
 import { GemBarChartData, GemBarChartEntry } from '@umlp/charts';
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
-export class PipelineStats extends PipelineStatsTOP {
+@Component({
+  selector: 'pipeline-stats',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/pipelines/PipelineStats.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+})
+export class PipelineStatsComponent extends PipelineStatsComponentTOP {
 
   private disableButton = false;
   private maxValue: number = 0;
@@ -17,6 +24,19 @@ export class PipelineStats extends PipelineStatsTOP {
   };
 
   projectDataCheck = { value: null, hash: null, calculating: false };
+
+  public constructor(protected route: ActivatedRoute, router: Router) {
+    super(route, router);
+  }
+
+  public ngOnInit() {
+    this.route.paramMap.subscribe(() => {
+      this.projectDataCheck = { value: null, hash: null, calculating: false };
+      this.pRoutingId = +this.route.snapshot.paramMap.get("pRoutingId");
+      this.p = null;
+      super.ngOnInit();
+    });
+  }
 
   public getBarChartForPipelineRunsData(): GemBarChartData {
     if (!this.getP()) {

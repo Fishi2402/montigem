@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+import input.GemTextInputTypes.GemTextInputValidity;
+
+classdiagram KitchenCompanion {
+
+  <<singleton>>
+  class App{
+    //<<command>> void sendMail(User email, String subject, String message, List<String> forwards);
+  }
+
+  association [1] App -> User [*];
+
+  class User {
+    <<dbColumn = "unique=true">>
+    String username;
+    String password;
+    <<dbColumn = "unique=true">>
+    String email;
+    KitchenCompanionRole role;
+  }
+
+  enum KitchenCompanionRole {
+    USER,
+    ACCOUNTANT,
+    ADMIN;
+  }
+
+  class BillingInfo {
+    int coffeeCount;
+    int waterCount;
+  }
+
+  association [1] User -> BillingInfo [0..1];
+
+}

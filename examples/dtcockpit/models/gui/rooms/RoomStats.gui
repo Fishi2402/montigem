@@ -11,9 +11,9 @@ import basic.GemImage;
 
 import gui.widgets.LineWithInfo;
 
-import Dtcockpit.RoomStatistic;
+import Dtcockpit.Room;
 
-component RoomStats(List<RoomStatistic> stats) {
+component RoomStats(List<Room> stats) {
   @GemOverlay(
     background = imageContainer@GemRow(
       hAlign = "right",
@@ -23,19 +23,19 @@ component RoomStats(List<RoomStatistic> stats) {
       component = @GemImage(source = "assets/images/3OG.png")
     ),
     components = [
-      room4304@GemOverlayItem(x = "38%", y = "78%", component = @LineWithInfo(
+      room4304@GemOverlayItem(x = "38%", y = "78%", component = infoLine4304@LineWithInfo(
         topInfo = "Raum 4304 (AGe, ALu, Sek-HiWi)",
-        botInfo = -23 + " °C",
+        botInfo = "? °C",
         direction = "down"
       )),
-      room4315@GemOverlayItem(x = "38%", y = "5%", component = @LineWithInfo(
+      room4315@GemOverlayItem(x = "38%", y = "5%", component = infoLine4315@LineWithInfo(
         topInfo = "Raum 4315 (SH, CKi, JG)",
-        botInfo = 23 + " °C",
+        botInfo = "? °C",
         direction = "up"
       )),
-      room4312@GemOverlayItem(x = "68%", y = "5%", component = @LineWithInfo(
+      room4312@GemOverlayItem(x = "68%", y = "5%", component = infoLine4312@LineWithInfo(
         topInfo = "Raum 4312 (Seminarraum)",
-        botInfo = 3 + " °C",
+        botInfo = "? °C",
         direction = "up"
       ))
     ]

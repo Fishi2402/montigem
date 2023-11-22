@@ -65,6 +65,8 @@ include ':examples:dtcockpit:backend'
 include ':examples:dtcockpit:frontend'
 include ':examples:jsweet-test:backend'
 include ':examples:jsweet-test:frontend'
+include ':examples:kitchencompanion:backend'
+include ':examples:kitchencompanion:frontend'
 
 include ':products:syse_functions'
 include 'examples:flensburg-test-jsweet:backend'
