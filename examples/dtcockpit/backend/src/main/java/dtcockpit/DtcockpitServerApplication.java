@@ -2,6 +2,8 @@
 package dtcockpit;
 
 import de.se_rwth.commons.logging.Log;
+import dtcockpit.branches.BranchesExtractor;
+import dtcockpit.commands.Project_create;
 import dtcockpit.pipelines.PipelineInformationExtractor;
 import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
@@ -66,15 +68,23 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
           .build().get();
       PipelineInformationExtractor extractor = new PipelineInformationExtractor();
       extractor.extractPipelineDataOf("https://git.rwth-aachen.de/", monticore);
-      DtcockpitManager.projectBuilder()
+      Project umlp = DtcockpitManager.projectBuilder()
           .name("umlp")
-          .git("https://git.rwth-aachen.de/monticore/umlp")
-          .build();
+          .git("monticore/umlp")
+          .build().get();
       Group swt = DtcockpitManager.groupBuilder().name("SWT").git("121471").build().get();
       extractor.extractPipelineDataOfAllProjectsInGroup("https://git.rwth-aachen.de/", swt);
       DtcockpitManager.getApp().setDashboardGroup(swt);
       // TODO: App#getProject should contain all projects by default?
       DtcockpitManager.getApp().addProject(monticore);
+
+      Group montiVerse = DtcockpitManager.groupBuilder().name("MontiVerse").git("monticore/montiverseci").build().get();
+      montiVerse.addSubProjects(monticore);
+      montiVerse.addSubProjects(umlp);
+      BranchesExtractor branchesExtractor = new BranchesExtractor();
+      for (Project project: montiVerse.getSubProjects()) {
+        branchesExtractor.extractBranches("https://git.rwth-aachen.de/", project);
+      }
     }
 
     try {

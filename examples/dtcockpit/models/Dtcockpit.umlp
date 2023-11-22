@@ -72,6 +72,13 @@ classdiagram Dtcockpit {
     String git;
   }
 
+  class Branch {
+    String name;
+    String git;
+  }
+
+  association [0..1] Project -> (branches) Branch [*];
+
   association [0..1] Project <-> (pStatistics) PipelineStatistic [*];
 
   class PipelineStatistic {

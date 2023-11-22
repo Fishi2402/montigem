@@ -33,6 +33,9 @@ export class ProjectCreate extends ProjectCreateTOP {
       },
       notifyPStatisticsInvalid: (project: Project,msg: string): void => {
         this.error = msg;
+      },
+      notifyBranchesInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
       }
     };
     ProjectErrorCollector.addErrorObserver(observer);
