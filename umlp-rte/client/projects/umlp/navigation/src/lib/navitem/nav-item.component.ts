@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router, Scroll } from "@angular/router";
+import { ChangeDetectorRef, Component } from '@angular/core';
+import { ActivatedRoute, Router, Scroll } from "@angular/router";
 import { filter } from 'rxjs/operators';
 import { NavItem as NavItemTOP } from "./nav-item/nav-item.component-gen";
 
@@ -10,15 +10,20 @@ import { NavItem as NavItemTOP } from "./nav-item/nav-item.component-gen";
 })
 export class NavItem extends NavItemTOP {
 
-  protected isActive: boolean = false;
+  public isActive: boolean = false;
 
-  public constructor(protected router: Router) {
+  public constructor(protected route: ActivatedRoute, protected router: Router, protected cdRef: ChangeDetectorRef) {
     super();
+  }
 
-    router.events.pipe(
+  ngOnInit() {
+    this.router.events.pipe(
       filter(event => event instanceof Scroll)
     ).subscribe(event => {
-      this.isActive = (event as Scroll).routerEvent.url.startsWith(this.target);
+      if ("/gui/pipelines/PipelineGroupStats/103" === this.target) {
+        console.error(this.target, (event as Scroll).routerEvent.urlAfterRedirects)
+      }
+      this.isActive = (event as Scroll).routerEvent.urlAfterRedirects === this.target;
     });
   }
 

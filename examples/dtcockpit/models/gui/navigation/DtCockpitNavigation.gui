@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gui;
+package gui.navigation;
 
 import arrange.GemRow;
 import arrange.GemColumn;
@@ -16,22 +16,18 @@ import Dtcockpit.Group;
 
 // We have to pass the list of projects as an argument, as only pages are able to observe
 // The parent component should be styled like `styles: [":host{ display: flex; flex-direction: row }"]`
-component DtCockpitNavigation(String username, List<Group> groups, List<Project> projects) {
+component DtCockpitNavigation(List<Group> groups, List<Project> projects) {
   @NavList(components = [
     @DtNavHeader(),
-    @guard(username != null) {
-      @NavItem(title = "User: " + username);
-    },
     @NavItem(title = "Home", target = "/gui/Start"),
     @NavItem(title = "Projects", target = "/gui/DtcockpitMainPage"),
     @iterate(Group g : groups) {
-      grouptNav@NavItem(title = g.name, target = "/gui/pipelines/PipelineStatsPerGroup/" + g.name);
+      grouptNav@NavItem(title = g.name, target = "/gui/pipelines/PipelineGroupStats/" + g.name);
     },
-    projectList@GemRow(height = "100%", component =
+    projectList@GemColumn(height = "100%", component =
       @iterate(Project p : projects) {
         projectNav@NavItem(title = p.name, target = "/gui/pipelines/PipelineStats/" + p.name);
       }
-    ),
-    @NavItem(title = "Settings", target = "/gui/settings")
+    )
   ]);
 }

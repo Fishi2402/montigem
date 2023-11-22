@@ -11,7 +11,7 @@ import arrange.GemColumn;
 import Dtcockpit.Project;
 import Dtcockpit.Group;
 
-page PipelineStatsPerGroup(Group g) {
+component PipelineStatsPerGroup(Group g, List<Group> groups, List<Project> projects) {
 
   pipelineBarChart@GemCard(
     title = "Pipeline dashboard for " + g.name,
