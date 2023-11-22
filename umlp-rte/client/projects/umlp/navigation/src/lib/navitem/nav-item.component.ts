@@ -20,9 +20,6 @@ export class NavItem extends NavItemTOP {
     this.router.events.pipe(
       filter(event => event instanceof Scroll)
     ).subscribe(event => {
-      if ("/gui/pipelines/PipelineGroupStats/103" === this.target) {
-        console.error(this.target, (event as Scroll).routerEvent.urlAfterRedirects)
-      }
       this.isActive = (event as Scroll).routerEvent.urlAfterRedirects === this.target;
     });
   }

@@ -16,6 +16,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class GUIIterate2ArgsVisitor implements GUIDSLVisitor2 {
@@ -25,7 +26,7 @@ public class GUIIterate2ArgsVisitor implements GUIDSLVisitor2 {
 
   protected boolean active = false;
 
-  protected Map<String, String> args = new HashMap();
+  protected LinkedHashMap<String, String> args = new LinkedHashMap<>();
   Deque<ASTGUIIterate> iterateStack = new ArrayDeque<>();
 
   public GUIIterate2ArgsVisitor() {
@@ -37,7 +38,7 @@ public class GUIIterate2ArgsVisitor implements GUIDSLVisitor2 {
     return traverser;
   }
 
-  public Map<String, String> getArgs() {
+  public LinkedHashMap<String, String> getArgs() {
     return args;
   }
 
