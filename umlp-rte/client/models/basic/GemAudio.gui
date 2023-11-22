@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package basic;
 
-//The audio component is used to embed sound content in the documents
+//The audio component is used to embed sound content in the documents.
 //It looks like a music player with a play button and a track bar. It may contain one or more audio sources
+
 component GemAudio(
   String source
 )

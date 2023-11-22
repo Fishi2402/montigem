@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package example_arrange;
 
 import arrange.GemColumn;
@@ -8,7 +9,7 @@ page GemColumnExample(Person p) {
   @GemColumn(
     components = [
       @GemTextInput(labelText = "Birthday", entry = p.birthday, inputType = "date"),
-      @GemTextInput(labelText = "Name", entry = p.name)
+      @GemTextInput(labelText = "ColumnName", entry = p.name)
     ]
   );
 }

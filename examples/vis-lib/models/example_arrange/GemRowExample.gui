@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package example_arrange;
 
 import arrange.GemRow;
@@ -5,10 +6,10 @@ import input.GemTextInput;
 import Domain.Person;
 
 page GemRowExample(Person p) {
-  @GemRow(width="30%",
+  @GemRow(width="50%",
     components = [
       @GemTextInput(labelText = "Birthday", entry = p.birthday, inputType = "date"),
-      @GemTextInput(labelText = "Name", entry = p.name)
+      @GemTextInput(labelText = "RowName", entry = p.name)
      ]
   );
 }
