@@ -97,11 +97,13 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
       }
     });
 
-    Room rumpeRoom = createRoom(4301);
-    Room ageRoom = createRoom(4304);
-    Room ckiRoom = createRoom(4315);
-    Room smartRoom = createRoom(4311);
-    Room seminarRoom = createRoom(4312);
+    if(DtcockpitManager.getRoomList().isEmpty()) {
+      Room rumpeRoom = createRoom(4301);
+      Room ageRoom = createRoom(4304);
+      Room ckiRoom = createRoom(4315);
+      Room smartRoom = createRoom(4311);
+      Room seminarRoom = createRoom(4312);
+    }
   }
 
 }
