@@ -2,6 +2,7 @@ import {
   Component,
   EventEmitter,
   HostBinding,
+  Input,
   OnInit,
   Output,
 } from "@angular/core";
@@ -16,6 +17,14 @@ export class GemTextInput extends GemTextInputTOP implements OnInit {
   isDropdown: boolean = false;
 
   @HostBinding("attr.id") componentId: string;
+
+  @HostBinding("style.width")
+  @Input()
+  width: string = '100%';
+
+  @HostBinding("style.height")
+  @Input()
+  height: string = '100%';
 
   @Output() public entryChange = new EventEmitter<string>();
   @Output() public override keyRelease = new EventEmitter<KeyboardEvent>();
