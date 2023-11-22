@@ -18,13 +18,13 @@ import java.nio.charset.Charset;
 import java.util.Optional;
 import java.util.UUID;
 
-import static umlp.backendrte.service.websocket.WebSocketConfig.UMLP_DOMAINNAME_ENV;
-
 public class MqttService {
 
   protected static MqttService instance;
 
   protected Mqtt5BlockingClient client;
+
+  public static String UMLP_MQTT_BROKER = "UMLP_MQTT_BROKER";
 
   /**
    * Connects to an MQTT broker on port 1883 and subscribes to all topics.
@@ -34,7 +34,7 @@ public class MqttService {
    */
   public void connect() {
 
-    String brokerHost = System.getenv().getOrDefault(UMLP_DOMAINNAME_ENV, "localhost");
+    String brokerHost = System.getenv().getOrDefault(UMLP_MQTT_BROKER, "localhost");
 
     if (!isServerReachable(brokerHost, 1883)) {
       Log.warn("Expected MQTT broker '" + brokerHost + "' is unreachable on port 1883. MQTT will not be available.");

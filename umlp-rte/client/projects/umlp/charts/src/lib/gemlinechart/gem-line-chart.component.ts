@@ -50,6 +50,9 @@ export class GemLineChart extends GemLineChartTOP {
     maintainAspectRatio: true,
   };
 
+  @Input()
+  public showConfig: boolean = true;
+
   /**gives the colors from the constant autoColors */
   public getColors() {
     return autoColors;
@@ -116,20 +119,38 @@ export class GemLineChart extends GemLineChartTOP {
     this.saveAllOptionsChanges();
   }
 
+  ngOnInit(): void {
+    this.saveAllOptionsChanges();
+  }
+
   /**
    * The function saves the data for all variables with settings for the variable options 
    * that are not reset in the specific setter
    */
   public saveAllOptionsChanges() {
     this.options = {
-      scales: {
-        y: {
-          max: this._maxValue,
-          min: this._minValue
-        }
-      },
       responsive: true,
       maintainAspectRatio: false,
+      scales: {
+        x: {
+          grid: {
+            color: '#888'
+          },
+          ticks: {
+            color: '#888'
+          }
+        },
+        y: {
+          max: this._maxValue,
+          min: this._minValue,
+          grid: {
+            color: '#888'
+          },
+          ticks: {
+            color: '#888'
+          }
+        }
+      },
       elements: {
         line: {
           fill: this._enableBackgroundColor,
