@@ -10,17 +10,21 @@ import basic.GemText;
 import basic.GemButton;
 import input.GemTextInput;
 
-page ProjectCreate(Project project){
+import gui.navigation.DtCockpitNavigation;
 
-  @GemColumn(width = "100%", hAlign = "center", component =
-    @GemCard(title = "New Project", component =
-      @GemColumn(width = "50vw", rowGap = "10px", components = [
-        createPTitle@GemTextInput(labelText = "Project Title", entry = project.name, disabled = false),
-        createPGit@GemTextInput(labelText = "Git", entry = project.git, disabled = false),
-        error@GemText(value = ""),
-        @GemButton(label = "Create new project", leftClick = createProject, disabled = false),
-        @GemButton(label = "Abort", leftClick = navigateBack, disabled = false)
-      ])
-    ) // end card
-  ); // end column
+page ProjectCreate(Project project, List<Group> groups, List<Project> projects) {
+  @GemRow(wrap = "nowrap", components = [
+    @DtCockpitNavigation(projects = projects, groups = groups),
+    @GemColumn(hAlign = "center", component =
+      @GemCard(title = "New Project", component =
+        @GemColumn(width = "50vw", rowGap = "10px", components = [
+          createPTitle@GemTextInput(labelText = "Project Title", entry = project.name, disabled = false),
+          createPGit@GemTextInput(labelText = "Git", entry = project.git, disabled = false),
+          error@GemText(value = ""),
+          @GemButton(label = "Create new project", leftClick = createProject, disabled = false),
+          @GemButton(label = "Abort", leftClick = navigateBack, disabled = false)
+        ])
+      )
+    )
+  ]);
 }

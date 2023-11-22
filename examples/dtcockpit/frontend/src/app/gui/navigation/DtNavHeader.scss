@@ -1,0 +1,90 @@
+@import '../../../../config/src/variables';
+
+$font-size: 1.3rem;
+$font-size-sm: 0.8rem;
+
+:host {
+  position: sticky;
+  top: 0;
+}
+
+.navMenu {
+  height: 3rem;
+  width: 100%;
+  color: #fff;
+  display: flex;
+  background: rgba($acronio-black-2, 0.2);
+  border-bottom: 1px solid $acronio-black-3;
+  box-shadow: 0px 4px 5px rgba($acronio-black, 1);
+  backdrop-filter: blur(3px);
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+
+.navMenu .material-symbols-outlined {
+  position: relative;
+}
+
+.navMenu a.material-symbols-outlined .tooltip {
+  visibility: hidden;
+  font-size: $font-size-sm;
+  background-color: $acronio-black-1;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  overflow: visible;
+  position: fixed;
+  transform: translate(-30px, 36px);
+  -webkit-filter: drop-shadow(0px 0px 5px #000);
+  filter: drop-shadow(0px 0px 5px rgba(#000, 1));
+}
+
+.navMenu a, .navMenu .user {
+  color: #fff;
+  text-decoration: none;
+  font-size: $font-size;
+  transition: all 0.2s ease-in-out;
+}
+
+.navMenu.navMenu a:hover, .navMenu a:focus {
+  color: $acronio-orange-3;
+}
+
+.startNav .tooltip {
+  visibility: hidden;
+  font-size: $font-size-sm;
+  background-color: $acronio-black-1;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  border-color: white;
+  overflow: visible;
+  position: fixed;
+  transform: translate(-40px, 45px);
+  filter: drop-shadow(0px 0px 5px  rgba($acronio-black, 1));
+}
+
+.startNav.startNav img:hover, .startNav:focus img {
+  filter: drop-shadow(0px 0px 5px $acronio-black-1);
+}
+
+.navMenu .user {
+  color: $acronio-orange-3;
+}
+
+.navMenu a.material-symbols-outlined:hover .tooltip {
+  visibility: visible;
+}
+
+.startNav:hover .tooltip {
+  visibility: visible;
+}
+
+.logoutBlock {
+  display: flex;
+  width: 50%;
+  column-gap: 5px;
+  align-items: center;
+  justify-content: flex-end;
+}
