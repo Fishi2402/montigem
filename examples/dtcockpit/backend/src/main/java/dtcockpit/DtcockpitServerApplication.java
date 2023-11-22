@@ -15,8 +15,6 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.Timer;
-import java.util.TimerTask;
 
 @SpringBootApplication(
     exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
@@ -99,19 +97,11 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
       }
     });
 
-    Room room17 = createRoom(17);
     Room rumpeRoom = createRoom(4301);
+    Room ageRoom = createRoom(4304);
     Room ckiRoom = createRoom(4315);
     Room smartRoom = createRoom(4311);
     Room seminarRoom = createRoom(4312);
-
-    // Increase temperature every 10s
-    new Timer(false).scheduleAtFixedRate(new TimerTask() {
-      @Override
-      public void run() {
-        room17.setTemperature(room17.getTemperature() + 1);
-      }
-    }, 10_000, 10_000);
   }
 
 }

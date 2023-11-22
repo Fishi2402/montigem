@@ -65,10 +65,14 @@ public class MqttService {
    * @param client MQTT client that received the message
    */
   protected static void onMessage(final Mqtt5Publish mqtt5Publish, final Mqtt5AsyncClient client) {
-    String topic = mqtt5Publish.getTopic().toString();
-    String message = new String(mqtt5Publish.getPayloadAsBytes(), Charset.defaultCharset());
-    Optional<Command<?>> cmd = MqttSerializer.deserialize(topic, message);
-    cmd.ifPresent(CommandManager::executeCommand);
+    try {
+      String topic = mqtt5Publish.getTopic().toString();
+      String message = new String(mqtt5Publish.getPayloadAsBytes(), Charset.defaultCharset());
+      Optional<Command<?>> cmd = MqttSerializer.deserialize(topic, message);
+      cmd.ifPresent(CommandManager::executeCommand);
+    }catch (Exception e){
+      Log.error("Error while executing command received via mqtt", e);
+    }
   }
 
   /**
