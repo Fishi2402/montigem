@@ -106,6 +106,7 @@ public class DelegationManagerDecorator extends ManagerDecorator {
     String extendingManagerName = origCD.getCDDefinition().getName()+SUFFIX;
 
     addManagerInit(delegationManagerClass, extendedCDName, delegationManagerName);
+    addManagerInitNeo4J(delegationManagerClass, extendedCDName, delegationManagerName);
 
     Map<ASTCDType, Set<ASTCDType>> typesToSuperTypesFromExtendedCD = getEverySuperTypesFromExtendedCDToExtensions(extendedCDScope, origCD);
 
@@ -122,6 +123,10 @@ public class DelegationManagerDecorator extends ManagerDecorator {
 
   protected void addManagerInit(ASTCDClass delegationManagerClass, String extendedCDName, String delegationManagerName) {
     getCD4C().addMethod(delegationManagerClass, "umlp.managerimpl.Init", extendedCDName, delegationManagerName);
+  }
+
+  protected void addManagerInitNeo4J(ASTCDClass delegationManagerClass, String extendedCDName, String delegationManagerName) {
+    getCD4C().addMethod(delegationManagerClass, "umlp.managerimpl.InitNeo4J", extendedCDName, delegationManagerName);
   }
 
   protected void addDelegationGetters(ASTCDClass delegationManagerClass, String extendingManagerName, String delegatedManagerName,

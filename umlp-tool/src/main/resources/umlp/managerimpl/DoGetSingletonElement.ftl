@@ -1,10 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name", "managerName")}
+${tc.signature("cdName","name", "managerName")}
 ${cd4c.method("protected ${name} _doGet${name}()")}
 if (${name?uncap_first}Instance == null) { // Fetch from DAO
-  List< Long> ids = ${name?uncap_first}DAO.selectAllIds${name}();
+  List< Long> ids = ${cdName}DAOFactory.get${name?cap_first}DAO().selectAllIds${name}();
   if (!ids.isEmpty()) {
-    Optional<${name}> opt = ${name?uncap_first}DAO.select${name}(ids.get(0));
+    Optional<${name}> opt = ${cdName}DAOFactory.get${name?cap_first}DAO().select${name}(ids.get(0));
     if (opt.isPresent()) {
       ${name?uncap_first}Instance = opt.get();
       if(!${name?uncap_first}Instance.containsObserver(the${name}DbObserver)){

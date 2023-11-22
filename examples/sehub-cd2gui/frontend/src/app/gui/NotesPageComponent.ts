@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {NotesPageComponentTOP} from "../../../build/frontendGen/build/appgui/gui/NotesPageComponentTOP";
 import {Component,} from '@angular/core';
 

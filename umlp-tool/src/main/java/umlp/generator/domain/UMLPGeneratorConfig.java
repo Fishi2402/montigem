@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.domain;
 
 import org.apache.commons.cli.CommandLine;

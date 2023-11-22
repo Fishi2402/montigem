@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package gui;
 
 import Sehub.Project;
@@ -18,7 +19,7 @@ page SehubMainPage(List<Project> allProjects) {
           projectTable@GemColumn(
             colGap="5%",
             components = [
-              @GemRow(height="20px", vAlign="center", hAlign="left", width="100px%", component = @GemButton(label = project.getName(), leftClick = goToProjectPage(project)))
+              @GemRow(height="20px", vAlign="center", hAlign="left", width="100px%", component = @GemButton(label = project.name, leftClick = goToProjectPage(project)))
             ]
           );
         }

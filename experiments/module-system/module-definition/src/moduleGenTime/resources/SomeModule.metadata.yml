@@ -1,0 +1,20 @@
+name: SomeModule
+tasks:
+  - name: backend
+    additionalConfigs:
+      - some_module.BackendConfig.ftl
+    additionalParams: []
+    # TODO:
+    # replaceTemplate:
+    #  before: a.b.C.ftl
+    #  replacement: a.b.D.ftl
+  - name: frontend
+    additionalConfigs:
+      - some_module.FrontendConfig.ftl
+    additionalParams: []
+  - name: merge
+    # TODO: does this add a new task? The others only change tasks
+# TODO:
+# depencencies:
+#  - Auth
+#  - OCL

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package log_mc_jar.service;
 
 import de.monticore.generating.templateengine.reporting.commons.StatisticsHandler;

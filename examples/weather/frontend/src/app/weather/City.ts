@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { CityTOP } from "@src/weather/CityTOP";
 import { Gem, GemList } from "@umlp/common";
 import { Timeseries } from "./Timeseries";

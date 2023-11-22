@@ -3,13 +3,19 @@ package flensburg.database;
 
 import hardy.flensburg.Address;
 import hardy.flensburg.AddressDAO;
+import hardy.flensburg.AddressDAOInterface;
+import hardy.flensburg.FlensburgDAOFactory;
 import hardy.flensburg.FlensburgManager;
 import hardy.flensburg.Human;
 import hardy.flensburg.HumanBuilder;
 import hardy.flensburg.HumanDAO;
+import hardy.flensburg.HumanDAOInterface;
 import hardy.flensburg.Person;
 import hardy.flensburg.PersonBuilder;
 import hardy.flensburg.PersonDAO;
+import hardy.flensburg.PersonDAOInterface;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -18,7 +24,26 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GenUpdateTest extends GenAbstractDBTest {
+public abstract class GenUpdateTest extends GenAbstractDBTest {
+
+  @DisplayName("Neo4J Update Tests")
+  public static class Neo4JTestSuite extends GenUpdateTest {
+    Neo4JTestSuite() {
+      super(DatabaseConnectionType.NEO4J);
+    }
+  }
+
+  @DisplayName("SQL Update Tests")
+  public static class SQLTestSuite extends GenUpdateTest {
+    SQLTestSuite() {
+      super(DatabaseConnectionType.SQL);
+    }
+  }
+
+  public GenUpdateTest(DatabaseConnectionType dbConnectionType) {
+    super(dbConnectionType);
+  }
+
 
   @Test
   public void testHumanDaoSetAge() {
@@ -28,7 +53,7 @@ public class GenUpdateTest extends GenAbstractDBTest {
     builder.age(age);
     Human h1001 = builder.build().get();
 
-    HumanDAO dao = new HumanDAO();
+    HumanDAOInterface dao = FlensburgDAOFactory.getHumanDAO();
     dao.insertHuman(h1001);
 
     int changedAge = 21;
@@ -52,7 +77,7 @@ public class GenUpdateTest extends GenAbstractDBTest {
     builder.age(age);
     Human h1001db = builder.build().get();
 
-    HumanDAO dao = new HumanDAO();
+    HumanDAOInterface dao = FlensburgDAOFactory.getHumanDAO();
     dao.insertHuman(h1001db);
 
     Human h1001 = FlensburgManager.getHumanSure(gemId);
@@ -68,7 +93,7 @@ public class GenUpdateTest extends GenAbstractDBTest {
     int changedAge = 21;
     h.setAge(changedAge);
 
-    HumanDAO dao = new HumanDAO();
+    HumanDAOInterface dao = FlensburgDAOFactory.getHumanDAO();
     Optional<Human> hCopyOpt = dao.selectHuman(h.getGemId());
     assertTrue(hCopyOpt.isPresent());
     Human hCopy = hCopyOpt.get();
@@ -84,7 +109,7 @@ public class GenUpdateTest extends GenAbstractDBTest {
     PersonBuilder pb = FlensburgManager.personBuilder().age(20).nickname("John").mainResidence(a1);
     Person p = pb.build().get();
 
-    PersonDAO personDAO = new PersonDAO();
+    PersonDAOInterface personDAO = FlensburgDAOFactory.getPersonDAO();
 
     // Initially empty
     {
@@ -119,7 +144,7 @@ public class GenUpdateTest extends GenAbstractDBTest {
     Person p = pb.build().get();
 
 
-    AddressDAO addressDAO = new AddressDAO();
+    AddressDAOInterface addressDAO = FlensburgDAOFactory.getAddressDAO();
 
     // Initially empty
     {

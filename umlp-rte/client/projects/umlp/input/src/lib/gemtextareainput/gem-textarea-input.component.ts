@@ -13,6 +13,8 @@ import { GemTextareaInput as GemTextareaInputTOP } from "./gem-textarea-input/ge
 })
 export class GemTextareaInput extends GemTextareaInputTOP implements OnInit {
   @HostBinding("attr.id") componentId: string;
+  @HostBinding("style.width") width: string = '100%';
+  @HostBinding("style.height") height: string = '100%';
 
   @Output() entryChange = new EventEmitter<string>();
   @Output() public override keyRelease = new EventEmitter<KeyboardEvent>();

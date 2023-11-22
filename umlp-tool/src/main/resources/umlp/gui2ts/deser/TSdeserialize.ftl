@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("cdName", "className", "simpleAttributes", "gemAttributes", "gemListAttributes")}
 ${cd4c.method("public Optional<${className}> deserialize(any json)")}
-  let builder: ${className}Builder = ${cdName}Manager.${className?uncap_first}Builder1(json["gemId"]);
+  let builder: ${className}Builder = ${cdName}Manager.${className?uncap_first}BuilderFromId(json["gemId"]);
   builder.setINTERNAL_deser_mode(true);
   <#if simpleAttributes?has_content || gemAttributes?has_content || gemListAttributes?has_content>
   builder

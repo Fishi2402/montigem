@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {Directive} from '@angular/core';
 import {SehubManager} from '@src/sehub/SehubManager';
 import {ResponseTOP} from '@src/gui/note/ResponseTOP';

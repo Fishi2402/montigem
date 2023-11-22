@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {BingoComponentTOP} from "../../../build/frontendGen/build/appgui/gui/BingoComponentTOP";
 import {Component,} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';

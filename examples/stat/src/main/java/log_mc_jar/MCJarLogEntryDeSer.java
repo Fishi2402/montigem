@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package log_mc_jar;
 
 import de.monticore.symboltable.serialization.JsonPrinter;

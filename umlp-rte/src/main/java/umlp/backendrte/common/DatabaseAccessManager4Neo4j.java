@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.backendrte.common;
 
 import de.se_rwth.commons.logging.Log;
@@ -65,10 +66,10 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
   public static void initBoltLocalhost(int port, String user, String password) {
     DatabaseAccessManager4Neo4j impl = new DatabaseAccessManager4Neo4j();
     DatabaseAccessManager.setInstance(impl);
-    impl._setuoBoltLocalhost(port, user, password);
+    impl._setupBoltLocalhost(port, user, password);
   }
 
-  protected void _setuoBoltLocalhost(int port, String user, String password) {
+  protected void _setupBoltLocalhost(int port, String user, String password) {
     try {
       Class<?> c = Class.forName("org.neo4j.jdbc.bolt.BoltDriver");
       DriverManager.registerDriver((Driver) c.getDeclaredConstructor().newInstance());

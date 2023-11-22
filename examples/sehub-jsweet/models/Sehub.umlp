@@ -15,6 +15,9 @@ classdiagram Sehub {
                                         <<dbColumn = "unique=true">>
     String email;
     SehubRole role;
+    String validityEmail();
+    String validityUsername();
+    String validityPassword();
   }
 
   enum ActivationStatus {

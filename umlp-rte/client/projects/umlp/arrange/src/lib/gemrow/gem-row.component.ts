@@ -26,6 +26,10 @@ export class GemRow extends GemRowTOP {
   @HostBinding('style.column-gap')
   protected override _colGap: string;
 
+  @HostBinding('style.flex-wrap')
+  @Input()
+  public wrap: string = 'wrap';
+
   public override get hAlign(): string {
     return this._hAlign;
   }

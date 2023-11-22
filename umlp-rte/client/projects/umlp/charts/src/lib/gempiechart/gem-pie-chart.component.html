@@ -1,3 +1,5 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
 <div style="margin-bottom: 5px">
   <chart-options>
     <li *ngIf="displayLegend === true">
@@ -15,7 +17,7 @@
         <input class="slider" #sliderSelector
           (change)="changeInnerRadius(+sliderSelector.value)"
           type="range" min="0" max="100" value="_innerRadius"
-        /> 
+        />
         <span class="right">Inner Radius</span>
       </div>
     </li>
@@ -40,7 +42,7 @@
     [labels]="legendLabels"
     [colors]="legendColors"
     [displayLegend]="displayLegend"
-    > 
+    >
   </gem-chart-legend>
 </div>
 

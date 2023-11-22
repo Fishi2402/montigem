@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package inheritance;
 
 class InheritanceManagerImpl4Test extends InheritanceManagerImpl {

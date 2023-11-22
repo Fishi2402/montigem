@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript.domain;
 
+import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.methodtemplates.CD4CTemplateHelper;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -13,6 +15,7 @@ import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.Set;
 
@@ -116,6 +119,13 @@ public class TSDeSerDecorator extends DeSerDecorator {
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
       getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
+    }
+
+    for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainType)) {
+      ASTCDCompilationUnit cdOfAssoc = UMLPSymbolTables.getDiagramFor(assoc.getMCQualifiedType());
+      if(!cdOfAssoc.equals(origCD)){
+        getCD4C().addImport(clazz, getPackageName(cdOfAssoc, DEFAULT_PACKAGE) + "." + assoc.getMCQualifiedType().printType());
+      }
     }
   }
 }

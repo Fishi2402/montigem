@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package gui.common;
 
 import basic.GemImage;
@@ -7,16 +8,16 @@ import Weather.WeatherState;
 
 component WeatherStateIcon(WeatherState state){
   // TODO: referening WeatherState.SUNNY in guard does not work
-  @guard(state == 0){
+  @guard(state == WeatherState.CLOUDY){
     @GemImage(source = "assets/icons/cloudy.svg", style = "width: 20px; height: 30px");
   }
-  @guard(state == 1){
+  @guard(state == WeatherState.SUNNY){
     @GemImage(source = "assets/icons/sunny.svg", style = "width: 20px; height: 30px");
   }
-  @guard(state == 2){
+  @guard(state == WeatherState.RAINY){
     @GemImage(source = "assets/icons/rainy.svg", style = "width: 20px; height: 30px");
   }
-  @guard(state == 3){
+  @guard(state == WeatherState.STORM){
     @GemImage(source = "assets/icons/lightning.svg", style = "width: 20px; height: 30px");
   }
 }

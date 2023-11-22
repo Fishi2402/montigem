@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+import input.GemTextInputTypes.GemTextInputValidity;
 
 classdiagram Dtcockpit {
 
@@ -11,6 +12,7 @@ classdiagram Dtcockpit {
   association [1] App -> Room [*];
   association [1] App -> Project [*];
   association [1] App -> Group [*];
+  association [1] App -> (dashboardGroup) Group [0..1];
 
   class User {
     <<dbColumn = "unique=true">>
@@ -21,6 +23,9 @@ classdiagram Dtcockpit {
     <<dbColumn = "unique=true">>
     String email;
     DtcockpitRole role;
+    String validityUsername();
+    String validityEmail();
+    String validityPassword();
   }
 
   enum ActivationStatus {
@@ -79,4 +84,18 @@ classdiagram Dtcockpit {
 
   association [0..1] Group <-> (statistics) AggregatedPipelineStatisticsOverDate [*];
 
+  class Server {
+    String hostname;
+  }
+
+  class ServerStatus {
+    java.time.LocalDateTime time;
+    int diskUsage;        // In GB
+    int maxDisk;          // In GB
+    int ramUsage;         // In MB
+    int maxRam;           // In MB
+    float processorUsage; // 0 to 1
+  }
+
+  association [1] Server -> ServerStatus [*];
 }

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package flensburg;//+ GEN-T        : handwritten, testet generiertes product
 
 import com.google.common.collect.ListMultimap;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { DailyForecastTOP } from "@src/weather/DailyForecastTOP";
 import { WeatherState } from "@src/weather/WeatherState";
 
