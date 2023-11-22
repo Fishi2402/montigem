@@ -145,11 +145,12 @@ jsweetDomain {
       '**/dtcockpit/DtcockpitDummyProvider.java',
       '**/dtcockpit/DtcockpitTestContext.java',
   ]
+  extraSystemPath = project.file('.gradle/nodejs/node-v18.10.0-win-x64')
 }
 
 task translateJava2TSDomain(type: org.jsweet.gradle.JSweetTranspileTask) {
   setGroup("generate");
-  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME);
+  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, npm_install);
   setConfiguration(jsweetDomainConf);
   setSources(sourceSets.main.java);
   setClasspath(configurations.runtimeClasspath);
@@ -200,7 +201,7 @@ jsweetGUI {
 
 task translateJava2TSGUI(type: org.jsweet.gradle.JSweetTranspileTask) {
   setGroup("generate");
-  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, frontendSetup, genGUI);
+  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, frontendSetup, genGUI, npm_install);
   setConfiguration(jsweetGUIConf);
   setSources(sourceSets.main.java);
   setClasspath(configurations.runtimeClasspath);
@@ -236,13 +237,13 @@ task buildApp(type: NpxTask) {
 assemble.dependsOn(buildApp)
 
 task testApp(type: NpxTask) {
-  dependsOn(translateJava2TSDomain, prebuildTasks)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
 task runApp(type: NpxTask) {
-  dependsOn(translateJava2TSDomain, prebuildTasks)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }
