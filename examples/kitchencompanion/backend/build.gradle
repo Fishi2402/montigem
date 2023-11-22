@@ -1,0 +1,127 @@
+import java.nio.file.Paths
+
+plugins {
+  id 'java'
+  id 'de.rwth.se.umlp-tool-backend'
+
+  id 'application'
+  id 'com.google.cloud.tools.jib' version '3.2.1'
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+  id 'org.springframework.boot' version "${spring_version}"
+}
+
+repositories {
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+  mavenCentral()
+}
+
+configurations {
+  guiDefaultTypes
+}
+
+dependencies {
+  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+}
+
+application {
+  mainClass = 'kitchencompanion.KitchenCompanionServerApplication'
+}
+
+jib {
+  container.mainClass = application.mainClass.get()
+}
+
+dependencies {
+  def withoutSpringLogging = {
+    exclude module: 'spring-boot-starter-logging'
+    exclude module: 'logback-classic'
+    exclude module: 'log4j-to-slf4j'
+  }
+
+  implementation group: 'umlp', name: 'umlp-rte', version: mc_version, {
+    exclude group: "org.slf4j", module: "slf4j-simple"
+  }
+
+  implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
+  implementation 'com.h2database:h2:2.1.214'
+
+  // Spring Boot Dependencies
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version, withoutSpringLogging
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
+  implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
+
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
+
+  implementation "umlp:frontend-rte:$mc_version:cd2java"
+  implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
+
+  implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
+  implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
+
+  implementation group: 'org.gitlab4j', name: 'gitlab4j-api', version: '5.3.0'
+}
+
+generateUmlpBackend {
+  input = file("../models/KitchenCompanion.umlp")
+  symbolOutDir = file("${project.buildDir}/symbols")
+  useSpring.set(true)
+  useShell.set(true)
+}
+
+task runServer {
+  dependsOn(bootRun {
+    systemProperty "spring.shell.interactive.enabled", "false"
+  })
+}
+
+task genTestGUI(type: UMLPGuiGenTask) {
+  dependsOn(generateUmlpBackend, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
+  input = file("../models")
+  outputDir = file("$project.buildDir/testgui")
+  hwcDir = file("$projectDir/src/main/java")
+  modelDir = layout.projectDirectory.dir("../models")
+  symbolDir = files(
+      generateUmlpBackend.symbolOutDir,
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      configurations.guiDefaultTypes.files
+  )
+  domainModels = ["KitchenCompanion"]
+  guiCreateModels = ["gui.UserCreate"]
+}
+
+test {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform()
+}
+
+sourceSets {
+  main {
+    //java.srcDirs += [layout.buildDirectory.dir("testgui")]
+    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
+    // main.resources.srcDirs += generateUmlpBackend.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
+  }
+  test {
+    java {
+      exclude '**/gui/**'
+    }
+  }
+}
+
+compileJava.dependsOn(generateUmlpBackend, genTestGUI)
+//compileJava.dependsOn(generateUmlpBackend)

@@ -26,7 +26,7 @@ page Start(
   List<App> apps,
   List<Project> projects,
   List<Group> groups,
-  List<RoomStatistic> stats,
+  List<Room> rooms,
   List<Server> servers
 ) {
   @DtCockpitNavigation(projects = projects, groups = groups);
@@ -41,6 +41,6 @@ page Start(
     @GemCard(title = "RamUsage (MB)", component = @GemColumn(width = "30vw", components = [
       serverChart@GemLineChart(data = null, showConfig = false)
     ])),
-    @GemCard(title = "Rooms' characteristics", component = @RoomStats(stats = stats))
+    @GemCard(title = "Rooms' characteristics", component = @RoomStats(stats = rooms))
   ]);
 }
