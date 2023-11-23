@@ -3,16 +3,23 @@ package umlp.generator.domain.decorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnumConstant;
+import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHandler;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.ocl.ocl.OCLMill;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.ocl._ast.ASTOCLConstraint;
 import de.monticore.ocl.ocl._ast.ASTOCLInvariant;
+import de.monticore.ocl.ocl._visitor.OCLTraverser;
 import de.monticore.prettyprint.IndentPrinter;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
-import umlp.generator.validator.ocl.OCLContextCollector;
+import umlp.generator.validator.ocl.visitors.CustomCommonExpressionsHandler;
+import umlp.generator.validator.ocl.visitors.OCLContextCollector;
 import umlp.generator.validator.ocl.OCLParser;
+import umlp.generator.validator.ocl.visitors.OCLInvariantExpressionsVisitor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,12 +87,22 @@ public class ValidatorDecorator extends AbstractDecorator {
           String inputParams = getInputParams(invariant);
           String oclRuleName = invariant.getName();
           String oclRule = OCLParser.generate(invariant.getExpression(), new IndentPrinter(), enumMap);
-          oclRules.add(getCD4C().addMethod(domainClass, "umlp.validator.ValidateRule", oclRuleName, oclRule, oclMessage, inputParams));
+          OCLTraverser traverser = OCLMill.traverser();
+          OCLInvariantExpressionsVisitor invariantExpressionsVisitor = new OCLInvariantExpressionsVisitor(invariant, oclContextCollector.collectParamDeclarationsForConstraint(constraint));
+          traverser.add4CommonExpressions(invariantExpressionsVisitor);
+          traverser.setCommonExpressionsHandler(new CustomCommonExpressionsHandler(traverser));
+          traverser.traverse(invariant);
+          List<String> attributes = invariantExpressionsVisitor.collectAttributeNamesForInvariant(invariant);
+          oclRules.add(getCD4C().addMethod(domainClass, getValidationRuleTemplate(), oclRuleName, oclRule, oclMessage, inputParams, attributes));
         }
       }
     }
 
     return oclRules;
+  }
+
+  protected String getValidationRuleTemplate() {
+    return "umlp.validator.ValidateRule";
   }
 
   public List<ASTOCLCompilationUnit> getOclCompilationUnits() {

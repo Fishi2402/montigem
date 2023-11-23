@@ -1,25 +1,40 @@
-package umlp.generator.validator.ocl;
+package umlp.generator.validator.ocl.visitors;
 
-import de.monticore.ocl.ocl._ast.*;
-import de.monticore.ocl.ocl._visitor.OCLTraverser;
+import de.monticore.ocl.ocl._ast.ASTOCLArtifact;
+import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
+import de.monticore.ocl.ocl._ast.ASTOCLConstraint;
+import de.monticore.ocl.ocl._ast.ASTOCLConstructorSignature;
+import de.monticore.ocl.ocl._ast.ASTOCLContextDefinition;
+import de.monticore.ocl.ocl._ast.ASTOCLInvariant;
+import de.monticore.ocl.ocl._ast.ASTOCLMethodSignature;
+import de.monticore.ocl.ocl._ast.ASTOCLOperationConstraint;
+import de.monticore.ocl.ocl._ast.ASTOCLOperationSignature;
+import de.monticore.ocl.ocl._ast.ASTOCLParamDeclaration;
 import de.monticore.ocl.ocl._visitor.OCLVisitor2;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class OCLContextCollector implements OCLVisitor2 {
 
   private ASTOCLConstraint currentConstraint;
-  private final Map<ASTOCLConstraint, List<ASTMCType>> typesForConstraints;
+  private final Map<ASTOCLConstraint, List<ASTOCLParamDeclaration>> paramDeclarationsForConstraints;
 
   public OCLContextCollector(ASTOCLCompilationUnit node) {
-    this.typesForConstraints = new HashMap<>();
+    this.paramDeclarationsForConstraints = new HashMap<>();
     this.visit(node);
   }
 
   public List<ASTMCType> collectOCLContextForConstraint(ASTOCLConstraint constraint) {
-    return typesForConstraints.get(constraint);
+    return paramDeclarationsForConstraints.get(constraint).stream()
+            .map(ASTOCLParamDeclaration::getMCType)
+            .collect(Collectors.toList());
   }
 
   public List<ASTOCLConstraint> collectConstraintsForType(String typeName) {
@@ -28,9 +43,10 @@ public class OCLContextCollector implements OCLVisitor2 {
 
   public List<ASTOCLConstraint> collectConstraintsForOCLContext(List<String> typeNames) {
     List<ASTOCLConstraint> result = new ArrayList<>();
-    for(ASTOCLConstraint constraint : typesForConstraints.keySet()) {
-      if(new HashSet<>(typesForConstraints.get(constraint))
+    for(ASTOCLConstraint constraint : paramDeclarationsForConstraints.keySet()) {
+      if(new HashSet<>(paramDeclarationsForConstraints.get(constraint))
               .stream()
+              .map(ASTOCLParamDeclaration::getMCType)
               .map(ASTMCType::printType)
               .collect(Collectors.toSet())
               .containsAll(typeNames)) {
@@ -43,7 +59,7 @@ public class OCLContextCollector implements OCLVisitor2 {
   @Override
   public void visit(ASTOCLConstraint node) {
     currentConstraint = node;
-    typesForConstraints.put(currentConstraint, new ArrayList<>());
+    paramDeclarationsForConstraints.put(currentConstraint, new ArrayList<>());
     if(node instanceof ASTOCLOperationConstraint) {
       this.visit((ASTOCLOperationConstraint) node);
     } else if(node instanceof ASTOCLInvariant) {
@@ -53,30 +69,24 @@ public class OCLContextCollector implements OCLVisitor2 {
 
   @Override
   public void visit(ASTOCLContextDefinition node) {
-    typesForConstraints.get(currentConstraint).add(node.getOCLParamDeclaration().getMCType());
+    paramDeclarationsForConstraints.get(currentConstraint).add(node.getOCLParamDeclaration());
   }
 
   @Override
   public void visit(ASTOCLMethodSignature node) {
-    typesForConstraints
+    paramDeclarationsForConstraints
             .get(currentConstraint)
             .addAll(
                     node.getOCLParamDeclarationList()
-                            .stream()
-                            .map(ASTOCLParamDeclaration::getMCType)
-                            .collect(Collectors.toList())
             );
   }
 
   @Override
   public void visit(ASTOCLConstructorSignature node) {
-    typesForConstraints
+    paramDeclarationsForConstraints
             .get(currentConstraint)
             .addAll(
                     node.getOCLParamDeclarationList()
-                            .stream()
-                            .map(ASTOCLParamDeclaration::getMCType)
-                            .collect(Collectors.toList())
             );
   }
 
@@ -107,5 +117,9 @@ public class OCLContextCollector implements OCLVisitor2 {
     } else if(node instanceof ASTOCLConstructorSignature) {
       this.visit((ASTOCLConstructorSignature) node);
     }
+  }
+
+  public List<ASTOCLParamDeclaration> collectParamDeclarationsForConstraint(ASTOCLConstraint constraint) {
+    return paramDeclarationsForConstraints.get(constraint);
   }
 }
