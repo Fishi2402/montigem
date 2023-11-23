@@ -4,6 +4,9 @@ import {BaseClassObjectMapper} from "../common/BaseClassObjectMapper";
 import {CommandResult} from "./CommandResult";
 import {JsonDeSer} from "./JsonDeSer";
 import {StatusResult} from "./StatusResult";
+import {ValidationResult} from "./ValidationResult";
+import {ValidationMessage} from "../common/ValidationMessage";
+import {ValidationStatus} from "../common/ValidationStatus";
 
 export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
   buildJson(result: CommandResult<any>, printer: any): void {
@@ -61,6 +64,16 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
       return new StatusResult().StatusResult(
         jsonObject.commandId,
         jsonObject.successful
+      );
+    }
+    if(jsonObject.validationResult) {
+      let messages: ValidationMessage[] = [];
+      for (const m of jsonObject.messages) {
+        messages.push(ValidationMessage.create(m.message, m.status, m.attributes));
+      }
+      return new ValidationResult().ValidationResult(
+        jsonObject.commandId,
+        messages
       );
     }
     // Simple result is handled in generated subclass

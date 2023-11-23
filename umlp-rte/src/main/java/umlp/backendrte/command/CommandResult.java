@@ -5,6 +5,8 @@ package umlp.backendrte.command;
 
 // todo: erläutern
 
+import umlp.backendrte.common.ValidationResult;
+
 import java.util.List;
 
 /**
@@ -65,5 +67,13 @@ public abstract class CommandResult<T> {
 
   public ListResult<T, List<T>> asListResult() {
     return (ListResult<T, List<T>>) this;
+  }
+
+  public ValidationResult asValidationResult() {
+    return (ValidationResult) this;
+  }
+
+  public boolean isValidationResult() {
+    return false;
   }
 }

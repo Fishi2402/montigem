@@ -64,6 +64,7 @@ public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResultDeSer"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ValidationResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ListResult"));

@@ -7,6 +7,8 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.common.BaseClassObjectMapper;
+import umlp.backendrte.common.ValidationMessage;
+import umlp.backendrte.common.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +23,7 @@ public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
     printer.member("statusResult", result.isStatusResult());
     printer.member("simpleResult", result.isSimpleResult());
     printer.member("listResult", result.isListResult());
+    printer.member("validationResult", result.isValidationResult());
     if(result.isStatusResult()){
       printer.member("successful", result.asStatusResult().wasSuccessful());
     }else if(result.isSimpleResult()){
@@ -55,6 +58,21 @@ public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
           printer.member("list", Collections.emptyList());
         }
       }
+    } else if (result.isValidationResult()) {
+      ValidationResult vr = result.asValidationResult();
+      printer.beginArray("messages");
+      for(ValidationMessage msg : vr.get()) { // ValidationMessage
+        printer.beginObject();
+        printer.member("message", msg.getMessage());
+        printer.beginArray("attributes"); // Attribute list
+        for(String attr : msg.getAttributes()){
+          printer.value(attr);
+        }
+        printer.endArray();
+        printer.member("status", msg.getStatus().ordinal());
+        printer.endObject();
+      }
+      printer.endArray();
     }
   }
 
