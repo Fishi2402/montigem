@@ -135,7 +135,7 @@ jsweetDomain {
       '**/security/MailService.java',
       '**/security/WebSecurityConfig.java',
   ]
-  module = 'commonjs'
+  module =  'commonjs'
   excludeTranspilation = [
       '**/dtcockpit/*DAO.java',
       '**/dtcockpit/*DbObserver.java',
