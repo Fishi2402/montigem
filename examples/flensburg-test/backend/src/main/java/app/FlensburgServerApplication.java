@@ -1,4 +1,5 @@
-package app;/* (c) https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package app;
 
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;

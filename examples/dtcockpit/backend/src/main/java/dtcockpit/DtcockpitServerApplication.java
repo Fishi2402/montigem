@@ -1,15 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
 package dtcockpit;
 
 import de.se_rwth.commons.logging.Log;
-import dtcockpit.commands.Project_create;
 import dtcockpit.pipelines.PipelineInformationExtractor;
 import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import umlp.backendrte.service.mqtt.MqttService;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -24,6 +24,17 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
 
   public static void main(String[] args) {
     SpringApplication.run(DtcockpitServerApplication.class, args);
+  }
+
+  public Room createRoom(int roomNumber) {
+    return DtcockpitManager.roomBuilder()
+        .roomNumber(roomNumber)
+        .level(3)
+        .temperature(-17.0)
+        .humidity(0.0)
+        .atmosphericPressure(0.0)
+        .motionDetected(false)
+        .build().get();
   }
 
   @PostConstruct
@@ -59,8 +70,9 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
           .name("umlp")
           .git("https://git.rwth-aachen.de/monticore/umlp")
           .build();
-      extractor.extractPipelineDataOfAllProjectsInGroup("https://git.rwth-aachen.de/",
-          DtcockpitManager.groupBuilder().name("SWT").git("121471").build().get());
+      Group swt = DtcockpitManager.groupBuilder().name("SWT").git("121471").build().get();
+      extractor.extractPipelineDataOfAllProjectsInGroup("https://git.rwth-aachen.de/", swt);
+      DtcockpitManager.getApp().setDashboardGroup(swt);
       // TODO: App#getProject should contain all projects by default?
       DtcockpitManager.getApp().addProject(monticore);
     }
@@ -71,6 +83,26 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
     }
     catch (SQLException e) {
       throw new IOException(e);
+    }
+
+    MqttSerializer.instance = new MqttSerializer();
+
+    MqttService.getInstance().connect();
+
+    SendRoomChangesToMqttObserver mqttRoomObserver = new SendRoomChangesToMqttObserver();
+    DtcockpitManager.addObserver(new DtcockpitObserver() {
+      @Override
+      public void notifyRoomAdded(Room room) {
+        room.addObserver(mqttRoomObserver);
+      }
+    });
+
+    if(DtcockpitManager.getRoomList().isEmpty()) {
+      Room rumpeRoom = createRoom(4301);
+      Room ageRoom = createRoom(4304);
+      Room ckiRoom = createRoom(4315);
+      Room smartRoom = createRoom(4311);
+      Room seminarRoom = createRoom(4312);
     }
   }
 

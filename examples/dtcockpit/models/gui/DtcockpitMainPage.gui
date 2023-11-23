@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package gui;
 
 import basic.GemButton;
@@ -6,13 +7,15 @@ import arrange.GemRow;
 import arrange.GemColumn;
 import basic.GemText;
 
-import gui.DtCockpitNavigation;
+import gui.navigation.DtCockpitNavigation;
 
 import Dtcockpit.Project;
+import Dtcockpit.Group;
 
-page DtcockpitMainPage(List<Project> projects) {
-  @DtCockpitNavigation(username="FixMe", projects = projects);
-  @GemColumn(width = "100%", hAlign = "left", component =
+page DtcockpitMainPage(List<Group> groups, List<Project> projects) {
+  @DtCockpitNavigation(groups = groups, projects = projects);
+
+  @GemColumn(hAlign = "left", component =
     @GemCard(
       title = "Dashboard",
       component = projectList@GemRow(
@@ -21,7 +24,7 @@ page DtcockpitMainPage(List<Project> projects) {
         components=[
           @iterate(Project p : projects) {
             // Note: the classes have to be overridden to be applied, as lists of literals is a WIP
-            pButton@GemButton(label = p.getName(), leftClick = navigateToProject(p));
+            pButton@GemButton(label = p.name, leftClick = navigateToProject(p));
           },
           newButton@GemButton(label = "+", leftClick = navigateToNewProject)
         ]

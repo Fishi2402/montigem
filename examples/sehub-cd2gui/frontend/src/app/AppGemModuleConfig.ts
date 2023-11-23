@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Navigation } from './navigation/navigation.component';
 
 

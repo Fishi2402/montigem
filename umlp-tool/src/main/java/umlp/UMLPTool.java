@@ -15,6 +15,7 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl.GUIDSLTool;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._cocos.GUIDSLCoCos;
 import de.monticore.guidsl._parser.GUIDSLParser;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
@@ -124,8 +125,7 @@ public class UMLPTool extends UMLPToolTOP {
         return optAst.get();
       }
       Log.error("0xA1050x72114 Model could not be parsed.");
-    }
-    catch (NullPointerException | java.io.IOException e) {
+    } catch (NullPointerException | java.io.IOException e) {
       Log.error("0xA1051x37376 Failed to parse " + model, e);
     }
     // should never be reached (unless failquick is off)
@@ -162,8 +162,7 @@ public class UMLPTool extends UMLPToolTOP {
       boolean enableFailQuick = Log.isFailQuickEnabled();
       if (DEBUG.isSelected(cmd)) {
         Log.initDEBUG();
-      }
-      else {
+      } else {
         Log.initWARN();
       }
       Log.enableFailQuick(enableFailQuick);
@@ -183,8 +182,7 @@ public class UMLPTool extends UMLPToolTOP {
       if (!report_base.isEmpty()) {
         Path base_dir = Paths.get(report_base).toAbsolutePath();
         reportPathOutput = p -> base_dir.relativize(p.toAbsolutePath());
-      }
-      else {
+      } else {
         reportPathOutput = Path::toAbsolutePath;
       }
 
@@ -242,10 +240,22 @@ public class UMLPTool extends UMLPToolTOP {
         recreateSymbolTable(ast);
         CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath);
         guiTool.generateGUI();
-        Reporting.flush(ast);
-      }
 
-      else if (GUIVariability.isSelected(cmd)) {
+        // TODO (MB): Ist diese Lösung okay?
+        // Create a customized symbol table for the generated GUI-models
+        new UMLAddGemIdTrafo(UMLPMill.traverser()).transform(ast);
+        IUMLPArtifactScope symbolTable = recreateSymbolTable(ast);
+        Path symbolPath = Paths.get(
+            outDir.getPath() + File.separator
+                + "symbols" + File.separator
+                + Names.getPathFromPackage(symbolTable.getPackageName()) + File.separator
+                + symbolTable.getName() + ".umlpsym");
+        JsonPrinter.disableIndentation();
+        storeSymbols(symbolTable, symbolPath.toString());
+
+        Reporting.flush(ast);
+
+      } else if (GUIVariability.isSelected(cmd)) {
         List<Path> inputs = Arrays.stream(cmd.getOptionValues(INPUT.getCMD())).map(Path::of).collect(Collectors.toList());
 
         guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
@@ -262,8 +272,7 @@ public class UMLPTool extends UMLPToolTOP {
 
           if (isGUIVariabilityFile(parsedModel)) {
             variationASTs.add(parsedModel);
-          }
-          else {
+          } else {
             baseASTs.add(parsedModel);
           }
         }
@@ -292,9 +301,7 @@ public class UMLPTool extends UMLPToolTOP {
           Reporting.reportFileCreation(outputPath.toString());
           Reporting.flush(productAST);
         }
-      }
-
-      else if (isUmlpFile(inputFile)) {
+      } else if (isUmlpFile(inputFile)) {
         umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath, buildJsonData(cmd));
 
         Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
@@ -315,8 +322,7 @@ public class UMLPTool extends UMLPToolTOP {
             runDefaultCoCos(ast);
             runDefaultTrafos(ast);
             recreateSymbolTable(ast);
-          }
-          catch (IOException e) {
+          } catch (IOException e) {
             Log.error("Can not load model for url " + modelUrl);
           }
         }
@@ -325,10 +331,10 @@ public class UMLPTool extends UMLPToolTOP {
         ASTCDCompilationUnit ast = parse(inputFile.getPath());
         Reporting.reportParseInputFile(inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
         runAfterParseTrafo(ast);
-        IUMLPArtifactScope symbolTable = createSymbolTable(ast);
+        createSymbolTable(ast);
         runDefaultCoCos(ast);
         runDefaultTrafos(ast);
-        recreateSymbolTable(ast);
+        IUMLPArtifactScope symbolTable = recreateSymbolTable(ast);
 
         // print or store symbol table
         if (SYMTAB.isSelected(cmd)) {
@@ -407,7 +413,7 @@ public class UMLPTool extends UMLPToolTOP {
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
           generator.generate(ast, configTemplate);
         }
-        else {
+        else if (!GEN_SYMBOLS_ONLY.isSelected(cmd)) {
           // execute generator
           UMLPGenerator generator = new UMLPGenerator(genSetup, config);
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
@@ -418,8 +424,7 @@ public class UMLPTool extends UMLPToolTOP {
         Reporting.flush(ast);
 
         ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
-      }
-      else if (isGuiFile(inputFile)) {
+      } else if (isGuiFile(inputFile)) {
         Map<String, ModuleRoutingInfo> routesMap = new HashMap<>();
 
         Set<String> createdTSComponents = new HashSet();
@@ -450,6 +455,9 @@ public class UMLPTool extends UMLPToolTOP {
           createdTSComponents.add(astGui.getComponentName().substring(0, 1).toUpperCase() +
               astGui.getComponentName().substring(1).toLowerCase() + "Module");
 
+          // Run cocos
+          runDefaultCoCos(astGui);
+
           // print or store symbol table
           if (SYMTAB.isSelected(cmd)) {
             String s = SYMTAB.getValue(cmd);
@@ -463,8 +471,7 @@ public class UMLPTool extends UMLPToolTOP {
                       + ".guisym");
               JsonPrinter.disableIndentation();
               storeSymbols(symbolTable, symbolPath.toString());
-            }
-            else {
+            } else {
               //print (formatted!) symboltable to console
               GUIDSLSymbols2Json s2j = new GUIDSLSymbols2Json();
               JsonPrinter.enableIndentation();
@@ -519,7 +526,6 @@ public class UMLPTool extends UMLPToolTOP {
           String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
 
 
-
           GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
           componentGenerator.generate(astGui, "umlp.GUI2Component");
 
@@ -568,8 +574,7 @@ public class UMLPTool extends UMLPToolTOP {
         outputs.forEach(output -> Reporting.reportFileCreation(outDir + "/" + output));
         Reporting.flush(new ASTGUICompilationUnit());
       }
-    }
-    catch (ParseException e) {
+    } catch (ParseException e) {
       printHelp(options);
       Log.error("0xB005 An exception occurred while processing the CLI input!", e);
     } catch (URISyntaxException e) {
@@ -661,12 +666,13 @@ public class UMLPTool extends UMLPToolTOP {
     logTrafoExec("UMLAssocToAttrTrafo", node);
   }
 
-  public void recreateSymbolTable(ASTCDCompilationUnit node) {
+  public IUMLPArtifactScope recreateSymbolTable(ASTCDCompilationUnit node) {
     // rebuild symbol table
     CD4CodeMill.globalScope().removeSubScope(node.getEnclosingScope());
-    UMLPMill.scopesGenitorDelegator().createFromAST(node);
+    IUMLPArtifactScope artifactScope = UMLPMill.scopesGenitorDelegator().createFromAST(node);
     node.accept(new CD4CodeSymbolTableCompleter(node).getTraverser());
     logTrafoExec("rebuildCD4CodeSymTab", node);
+    return artifactScope;
   }
 
   protected boolean isUmlpFile(File f) {
@@ -743,4 +749,8 @@ public class UMLPTool extends UMLPToolTOP {
     return tool.createSymbolTable(ast, modelPath);
   }
 
+  protected void runDefaultCoCos(ASTGUICompilationUnit ast) {
+    GUIDSLCoCos checker = new GUIDSLCoCos();
+    checker.createChecker().checkAll(ast);
+  }
 }

@@ -1,15 +1,35 @@
-import {NotesPageTOP} from "../../../build/frontendGen/build/appgui/gui/NotesPageTOP";
-import {Directive,} from '@angular/core';
+/* (c) https://github.com/MontiCore/monticore */
+import {Component} from '@angular/core';
 import {SehubManager} from "../../../build/frontendGen/build/appdomain/sehub/SehubManager";
 import {Post} from "../../../build/frontendGen/build/appdomain/sehub/Post";
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 import {Gem} from '@umlp/common';
 import {Issue} from "@src/sehub/Issue";
+import {User} from '@src/sehub/User';
+import {SehubRole} from '@src/sehub/SehubRole';
+import {ActivatedRoute, Router} from '@angular/router';
+import {NotesPageComponent} from "../../../build/frontendGen/build/appgui/gui/NotesPageComponent";
 
+@Component({
+  selector: 'notes-page',
+  templateUrl: '../../../build/frontendGen/build/appgui/gui/NotesPage.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ['./NotesPage.scss']
+})
+export class NotesPage extends NotesPageComponent {
 
-@Directive()
+  public constructor(route: ActivatedRoute, protected router: Router) {
+    super(route, router);
+  }
 
-export class NotesPage extends NotesPageTOP {
+  ngOnInit() {
+    if (!SehubSecurityManager.isSignedIn()) {
+      alert("No User Logged In")
+      this.router.navigate(['gui/login/LoginPage']);
+    }
+
+    super.ngOnInit();
+  }
 
   newPost(event: any) {
     if (!SehubSecurityManager.isSignedIn()) {

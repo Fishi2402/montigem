@@ -1,12 +1,19 @@
-import {Directive} from '@angular/core';
+/* (c) https://github.com/MontiCore/monticore */
 import {SehubManager} from '@src/sehub/SehubManager';
-import {ResponseTOP} from '@src/gui/note/ResponseTOP';
+import {Component} from '@angular/core';
+import {ResponseComponent} from '@src/gui/note/ResponseComponent';
 import {Post} from '@src/sehub/Post';
+import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {User} from '@src/sehub/User';
+import {SehubRole} from '@src/sehub/SehubRole';
 
-
-@Directive()
-
-export class Response extends ResponseTOP {
+@Component({
+  selector: 'response',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/note/Response.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ['./Note.scss']
+})
+export class Response extends ResponseComponent {
 
   deletePost(event: any){
     let parent: Post = this.getPost().getParent()

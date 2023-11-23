@@ -2,12 +2,19 @@
 
 import {SehubManager} from '@src/sehub/SehubManager';
 import {IssueState} from '@src/sehub/IssueState';
-import {Directive} from '@angular/core';
-import {IssueEntryTOP} from '@src/gui/issues/IssueEntryTOP';
+import {Component} from '@angular/core';
+import {IssueEntryComponent} from '@src/gui/issues/IssueEntryComponent';
+import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {User} from '@src/sehub/User';
+import {SehubRole} from '@src/sehub/SehubRole';
 
-@Directive()
-
-export class IssueEntry extends IssueEntryTOP {
+@Component({
+  selector: 'issue-entry',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueEntry.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export class IssueEntry extends IssueEntryComponent {
 
   public editIssue(event: any): void {
     console.log(this.getIssue().getGemId())

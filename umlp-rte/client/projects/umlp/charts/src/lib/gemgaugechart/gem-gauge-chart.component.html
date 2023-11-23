@@ -1,3 +1,5 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
 <div style="margin-bottom: 5px">
   <chart-options>
     <li *ngIf="displayLegend === true">
@@ -12,8 +14,8 @@
     <li>
       <h3>Gauge Chart Settings</h3>
       <label>
-        <input type="checkbox" 
-          (change)="_showAxis = !_showAxis" 
+        <input type="checkbox"
+          (change)="_showAxis = !_showAxis"
         /> Disable Axis
       </label>
       <br>
@@ -44,7 +46,7 @@
           type="text"
         /> Unit
       </label>
-        
+
     </li>
   </chart-options>
 </div>
@@ -69,7 +71,7 @@
     [labels]="legendLabels"
     [colors]="legendColors"
     [displayLegend]="displayLegend"
-    > 
+    >
   </gem-chart-legend>
 </div>
 

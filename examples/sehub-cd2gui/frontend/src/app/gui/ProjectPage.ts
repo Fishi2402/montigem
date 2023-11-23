@@ -1,23 +1,30 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { GemTreeviewEntry } from '@umlp/basic';
-import { GemNetworkData, GemNetworkEdge, GemNetworkNode } from '@umlp/charts';
-import { ProjectPageTOP } from '@src/gui/ProjectPageTOP';
-import { Artifact } from '@src/sehub/Artifact';
-import { Directory } from '@src/sehub/Directory';
+import {GemTreeviewEntry} from '@umlp/basic';
+import {GemNetworkData, GemNetworkEdge, GemNetworkNode} from '@umlp/charts';
+import {ProjectPageComponent} from '@src/gui/ProjectPageComponent';
+import {Artifact} from '@src/sehub/Artifact';
+import {Directory} from '@src/sehub/Directory';
+import { SehubSecurityManager } from "../sehub/SehubSecurityManager";
+import {Component} from '@angular/core';
 
-import {
-  Directive,
-} from '@angular/core';
-
-
-@Directive()
-
-export class ProjectPage extends ProjectPageTOP {
+@Component({
+  selector: 'project-page',
+  templateUrl: '../../../build/frontendGen/build/appgui/gui/ProjectPage.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export class ProjectPage extends ProjectPageComponent {
 
   networkDataCheck = { value: null, hash: null, calculating: false };
   treeViewDataCheck = { value: null, hash: null, calculating: false };
 
+  ngOnInit(){
+    if (!SehubSecurityManager.isSignedIn()) {
+      this.router.navigate(['gui/login/LoginPage']);
+    }
+    super.ngOnInit();
+  }
 
   public getGemNetworkGraph1Data(): GemNetworkData {
     if (!(this.project)) {

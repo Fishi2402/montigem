@@ -1,14 +1,25 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { GemNetworkData } from '@umlp/charts';
-import { SehubMainPageTOP } from '@src/gui/SehubMainPageTOP';
+import {GemNetworkData} from '@umlp/charts';
+import {SehubMainPageComponent} from '@src/gui/SehubMainPageComponent';
 
-import { Directive } from '@angular/core';
+import {Component} from '@angular/core';
+import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
+@Component({
+  selector: 'sehub-main-page',
+  templateUrl: '../../../build/frontendGen/build/appgui/gui/SehubMainPage.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export  class SehubMainPage extends SehubMainPageComponent {
 
-@Directive()
-
-export  class SehubMainPage extends SehubMainPageTOP {
+  ngOnInit() {
+    if (!SehubSecurityManager.isSignedIn()) {
+      this.router.navigate(['gui/login/LoginPage']);
+    }
+    super.ngOnInit();
+  }
 
   public  getGemNetworkGraph1Data (): GemNetworkData  {
     return null;

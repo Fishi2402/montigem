@@ -12,18 +12,21 @@ import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
 import umlp.generator.domain.decorator.CommandObserverDecorator;
 import umlp.generator.domain.decorator.CommandResultDeSerDecorator;
+import umlp.generator.domain.decorator.CommandSendingObserverDecorator;
 import umlp.generator.domain.decorator.DeSerBuilderDecorator;
 import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.domain.decorator.DerivedClassDecorator;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
 import umlp.generator.domain.decorator.DomainClassDecorator;
 import umlp.generator.domain.decorator.DomainInterfaceDecorator;
+import umlp.generator.domain.decorator.DummyProviderDecorator;
 import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.ErrorObserverDecorator;
 import umlp.generator.domain.decorator.GemListAssocDecorator;
 import umlp.generator.domain.decorator.GemListDomainDecorator;
 import umlp.generator.domain.decorator.ManagerClientImplDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.domain.decorator.ManagerMockDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.gui.gentypescript.commands.TSAccessPolicyDecorator;
 
@@ -128,11 +131,11 @@ public class FEDecorator extends BEDecorator {
     managerClientImplDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerClientImplDecorator", FEDecorator.class.getName());
 
-    /*
-    ManagerMockDecorator managerMockDecorator = new ManagerMockDecorator(glex);
+    ManagerMockDecorator managerMockDecorator = new TSManagerMockDecorator(glex);
     managerMockDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerMockDecorator", FEDecorator.class.getName());
 
+    /*
     DummyProviderDecorator dummyProviderDecorator = new DummyProviderDecorator(glex);
     dummyProviderDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DummyProviderDecorator", FEDecorator.class.getName());

@@ -30,6 +30,11 @@ public class TSAssocCommandDecorator extends AssocCommandDecorator {
   }
 
   @Override
+  protected String getAssocsCheckAccessPolicyTemplate() {
+    return "umlp.gui2ts.commands.assocs.TSAssocsCheckAccessPolicy";
+  }
+
+  @Override
   protected String getAdd_DoRunTemplate() {
     return "umlp.gui2ts.commands.assocs.TSAdd_DoRun";
   }

@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package umlp._lsp.features.code_lens;
 
 import de.mclsg.lsp.ISymbolUsageResolutionProvider;

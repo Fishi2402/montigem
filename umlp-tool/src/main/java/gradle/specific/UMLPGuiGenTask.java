@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package gradle.specific;
 
 import de.monticore.io.FileReaderWriter;
@@ -128,6 +129,11 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
     if (this.getGuiGenTSFuncionality().isPresent()) {
       result.add("-" + UMLPToolOptions.GUI_GEN_TS_FUNC.getCMD());
       result.add(this.getGuiGenTSFuncionality().get() + "");
+    }
+
+    if (this.getGuiGenJsweet().isPresent()) {
+      result.add("-" + UMLPToolOptions.GUI_GEN_JSWEET.getCMD());
+      result.add(this.getGuiGenJsweet().get() + "");
     }
 
     return result;

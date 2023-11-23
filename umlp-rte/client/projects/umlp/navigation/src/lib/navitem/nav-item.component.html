@@ -1,7 +1,10 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
 <button
   type="button"
   role="button"
-  class="nav-item {{isActive?'active' :''}}"
+  class="gem-nav-item"
+  [ngClass]="{'gem-nav-item-active' : isActive}"
   (click)="navigateOrAct()"
 >
   {{title}}

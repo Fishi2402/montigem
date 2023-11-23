@@ -18,12 +18,16 @@ export class StatusResult extends CommandResult<void> {
         return new StatusResult(id, false);
     }
 
-    public wasSuccessful(): boolean {
-        return this.successful;
+    public wasSuccessful(): Promise<boolean> {
+      return this.isSuccessful();
+    }
+
+    public isSuccessful(): Promise<boolean> {
+        return Promise.resolve(this.successful);
     }
 
     /**
-     * 
+     *
      * @return {boolean}
      */
     public isStatusResult(): boolean {

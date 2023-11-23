@@ -1,10 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Directive } from '@angular/core';
-import { ForecastUpdateTOP } from '@src/gui/ForecastUpdateTOP';
+import { Component } from '@angular/core';
+import { ForecastUpdateComponent } from '@src/gui/ForecastUpdateComponent';
 
-@Directive()
-export class ForecastUpdate extends ForecastUpdateTOP {
+@Component({
+  selector: 'forecast-update',
+  templateUrl: '../../../build/frontendGen/build/appgui/gui/ForecastUpdate.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export class ForecastUpdate extends ForecastUpdateComponent {
 
   // TODO AGe: date formatting
   public override getGemTextInput2Entry(): string {

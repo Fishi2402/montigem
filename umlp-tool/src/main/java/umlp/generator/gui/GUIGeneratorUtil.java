@@ -3,18 +3,13 @@ package umlp.generator.gui;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
-import de.monticore.guidsl._ast.ASTGUIArgValue;
-import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.guidsl._ast.ASTGUIComponent;
-import de.monticore.guidsl._ast.ASTGUIIterate;
-import de.monticore.guidsl._ast.ASTGUINamedArg;
-import de.monticore.guidsl._ast.ASTGUIParam;
-import de.monticore.guidsl._ast.ASTGUIRangeIterateControl;
-import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
+import de.monticore.guidsl._ast.*;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
@@ -30,7 +25,6 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
-import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -39,8 +33,8 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
-import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
+import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.util.SingletonLookUp;
 
@@ -80,7 +74,7 @@ public class GUIGeneratorUtil {
     return instance;
   }
 
-  public static String replaceDots(String input) {
+  public String replaceDots(String input) {
     Pattern pattern = Pattern.compile("(?<!\\bthis)\\.");
     Matcher matcher = pattern.matcher(input);
     StringBuffer result = new StringBuffer();
@@ -91,6 +85,46 @@ public class GUIGeneratorUtil {
     matcher.appendTail(result);
 
     return result.toString();
+  }
+
+  public boolean isComponent(ASTCDClass clazz) {
+    return clazz.getName().endsWith(GUIAbstractDecorator.COMPONENT_SUFFIX);
+  }
+
+  public String getOriginalName(ASTCDClass clazz) {
+    return isComponent(clazz) ?
+        clazz.getName()
+            .substring(0, clazz.getName().lastIndexOf(GUIAbstractDecorator.COMPONENT_SUFFIX)) :
+        clazz.getName();
+  }
+
+  public String getPackageName(ASTCDCompilationUnit origCD) {
+    String origPackage = Names.constructQualifiedName(
+        origCD.getCDPackageList(), origCD.getCDDefinition().getName()
+    );
+    return origPackage;
+  }
+
+  public boolean existsHandwrittenClass(MCPath targetPath, String qualifiedName) {
+    String hwFile = Names.getPathFromPackage(qualifiedName) + ".ts";
+    Optional<URL> hwFilePath = targetPath.find(hwFile);
+    boolean result = hwFilePath.isPresent();
+    if (result) {
+      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
+      hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path,
+          Paths.get(hwFile)));
+    }
+    Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
+    return result;
+  }
+
+  public boolean existsHandwrittenDomainClass(MCPath targetPath, ASTGUICompilationUnit ast) {
+    String domainClassName = Names.getQualifiedName(ast.getPackage(), ast.getGUIComponentDeclaration().getName());
+    return existsHandwrittenClass(targetPath, domainClassName);
+  }
+
+  public boolean existsHandwrittenDomainClass(MCPath targetPath, String quailifiedName) {
+    return existsHandwrittenClass(targetPath, quailifiedName);
   }
 
   public void init(List<String> domainModels, List<String> createModels) {
@@ -356,11 +390,23 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(argName));
   }
 
-  public String gui2cdAttrGetterNameTS(String componentId, String argName) {
+  public String gui2cdAttrGetterNameTS(String componentId, ASTGUINamedArg namedArg) {
     return getHTMLName("get"
         + StringTransformations.capitalize(componentId)
-        + StringTransformations.capitalize(argName)) +
-        (UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? "" : SYNCHRONIZED_SUFFIX);
+        + StringTransformations.capitalize(namedArg.getName())) +
+        (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg) ? "" : SYNCHRONIZED_SUFFIX);
+  }
+
+  public boolean isList(ASTGUINamedArg namedArg) {
+    IGUIDSLScope enclosingScope = namedArg.getEnclosingScope();
+    if (enclosingScope == null) {
+      return false;
+    }
+    Optional<GUIParamSymbol> guiParamSymbolOpt = enclosingScope.resolveGUIParam(namedArg.getName());
+    if (guiParamSymbolOpt.isEmpty() || guiParamSymbolOpt.get().getType() == null) {
+      return false;
+    }
+    return GenService.isList(guiParamSymbolOpt.get().getType());
   }
 
   public String getIsSynchronizedSuffix() {
@@ -444,9 +490,10 @@ public class GUIGeneratorUtil {
       String simpleName = name.substring(name.lastIndexOf(".") + 1);
       if (name.lastIndexOf(".") > 0) {
         String part1 = name.substring(0, name.lastIndexOf("."));
-        return part1 + "." + StringTransformations.uncapitalize(simpleName) + "." + postfix;
+        return part1.toLowerCase() + "." + StringTransformations.uncapitalize(simpleName) + "." + postfix;
+      }else{
+        return name.toLowerCase() + "." + postfix;
       }
-      return StringTransformations.uncapitalize(name) + "." + postfix;
     }
     else {
       Log.error("0x00000 GUI Model " + forComponent

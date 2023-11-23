@@ -34,6 +34,9 @@ configurations {
 }
 
 dependencies {
+  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+  implementation group: "de.monticore.lang", name: 'guidsl', version: "7.6.0-SNAPSHOT"
+
   cdParser "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
   guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
@@ -105,6 +108,7 @@ task genGUI(type: UMLPGuiGenTask) {
   )
   domainModels = ["Jsweettest"]
   guiGenTSFuncionality = false
+  guiGenJsweet = true
 }
 compileJava.dependsOn(genGUI)
 
@@ -145,7 +149,7 @@ jsweetDomain {
 
 task translateJava2TSDomain(type: org.jsweet.gradle.JSweetTranspileTask) {
   setGroup("generate");
-  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, genGUI);
+  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME);
   setConfiguration(jsweetDomainConf);
   setSources(sourceSets.main.java);
   setClasspath(configurations.runtimeClasspath);
@@ -197,7 +201,7 @@ task translateTypeScript() {
 task generateNPMAuth(type: NPMAuthCreate){
   npmrcFile = frontendSetup.getOutput().file(".npmrc")
 }
-npm_install.dependsOn(generateNPMAuth)
+npm_install.dependsOn(generateNPMAuth, ':umlp-rte:client:npm_install')
 
 task installLocalRTE(type: NpmTask) {
   dependsOn(npm_install)

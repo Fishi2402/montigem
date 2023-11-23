@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package associations;
 
 import com.google.common.collect.Sets;

@@ -1,9 +1,16 @@
-import {Directive} from '@angular/core';
-import {ShortFormDateRendererTOP} from "@src/gui/common/ShortFormDateRendererTOP";
-import {ShortFormDateTimeRendererTOP} from "@src/gui/common/ShortFormDateTimeRendererTOP";
+/* (c) https://github.com/MontiCore/monticore */
+import {Component} from '@angular/core';
+import {
+  ShortFormDateTimeRendererComponent
+} from "@src/gui/common/ShortFormDateTimeRendererComponent";
 
-@Directive()
-export  class ShortFormDateTimeRenderer extends ShortFormDateTimeRendererTOP {
+@Component({
+  selector: 'short-form-date-time-renderer',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/common/ShortFormDateTimeRenderer.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export  class ShortFormDateTimeRenderer extends ShortFormDateTimeRendererComponent {
   getGemText0Value(): string {
     let today = new Date();
     let date = this.getForecast()?.getDate();

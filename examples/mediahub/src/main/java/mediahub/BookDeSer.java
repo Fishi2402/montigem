@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mediahub;
 
 import de.monticore.symboltable.serialization.JsonPrinter;

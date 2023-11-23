@@ -13,6 +13,7 @@ import umlp.generator.gui.genjava.decorator.GUI2JavaComponentDecorator;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -61,15 +62,6 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
   protected void setDefaultListValue(ASTCDAttribute attr) {
     glex.replaceTemplate("cd2java.Value", attr,
         new StringHookPoint(" = []"));
-  }
-
-  @Override
-  public List<String> getArgs(Map<String, String> args) {
-    List<String> res = new ArrayList<>();
-    for (Map.Entry<String, String> arg : args.entrySet()) {
-      res.add(arg.getValue() + " " + arg.getKey());
-    }
-    return res;
   }
 
   @Override

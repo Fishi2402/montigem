@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package umlp;
 
 import de.monticore.io.paths.GlobExpressionEvaluator;

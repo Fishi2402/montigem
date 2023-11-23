@@ -58,10 +58,10 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
 
   ConfigurableFileCollection ocl = getProject().getObjects().fileCollection();
 
-  @SkipWhenEmpty
   @InputFiles
   @PathSensitive(PathSensitivity.RELATIVE)
   @IgnoreEmptyDirectories
+  @Incremental  // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
   public ConfigurableFileCollection getOcl() {
     return ocl;
   }
@@ -115,6 +115,7 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
   protected Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
     Stream<FileChange> result = super.getStreamOfChanges(inputChanges);
     result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(getModelDir()).spliterator(), false));
+    result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(getOcl()).spliterator(), false));
     return result;
   }
 

@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package umlp._lsp.features.syntax_highlighting;
 
 import de.monticore.cd4analysis._lsp.features.syntax_highlighting.rule.*;

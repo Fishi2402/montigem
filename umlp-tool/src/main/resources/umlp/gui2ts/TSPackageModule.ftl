@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("astguiCompilationUnitList","ids","compDecl","paths","existHWCModules","pathHWModule","pathHWroutes","imports")}
+${tc.signature("astguiCompilationUnitList", "existHWC", "ids","compDecl","paths","existHWCModules","pathHWModule","pathHWroutes","imports")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign uniqueSet = []>
 // always imported
@@ -10,7 +10,7 @@ import { CommonModule } from "@angular/common"
 
 import { routes } from '${pathHWroutes}';
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
-import { ${astguiCompilationUnitList[index].getComponentName()}Component } from "${paths[index]}";
+import { ${astguiCompilationUnitList[index].getComponentName()}<#if !existHWC[index]>Component</#if> } from "${paths[index]}";
 </#list>
 <#if existHWCModules >
 import { config } from '${pathHWModule}';
@@ -27,8 +27,8 @@ import { config } from '${pathHWModule}';
 
 @NgModule({
 declarations: [
-<#list astguiCompilationUnitList as ast>
-    ${ast.getComponentName()}Component,
+<#list 0..(astguiCompilationUnitList?size - 1) as index>
+    ${astguiCompilationUnitList[index].getComponentName()}<#if !existHWC[index]>Component</#if>,
 </#list>
 <#if existHWCModules >
    ...config.declarations
@@ -45,8 +45,8 @@ imports: [
 </#if>
 ],
 exports: [
-<#list astguiCompilationUnitList as ast>
-    ${ast.getComponentName()}Component,
+<#list 0..(astguiCompilationUnitList?size - 1) as index>
+    ${astguiCompilationUnitList[index].getComponentName()}<#if !existHWC[index]>Component</#if>,
 </#list>
 <#if existHWCModules >
   ...config.exports

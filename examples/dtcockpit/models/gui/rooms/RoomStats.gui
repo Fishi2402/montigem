@@ -1,0 +1,43 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.rooms;
+
+import arrange.GemColumn;
+import arrange.GemRow;
+import arrange.GemCard;
+import arrange.GemOverlay;
+import arrange.GemOverlayItem;
+import basic.GemText;
+import basic.GemImage;
+
+import gui.widgets.LineWithInfo;
+
+import Dtcockpit.Room;
+
+component RoomStats(List<Room> stats) {
+  @GemOverlay(
+    background = imageContainer@GemRow(
+      hAlign = "right",
+      vAlign = "center",
+      width = "70vw",
+      height = "35vw",
+      component = @GemImage(source = "assets/images/3OG.png")
+    ),
+    components = [
+      room4304@GemOverlayItem(x = "38%", y = "78%", component = infoLine4304@LineWithInfo(
+        topInfo = "Raum 4304 (AGe, ALu, Sek-HiWi)",
+        botInfo = "? °C",
+        direction = "down"
+      )),
+      room4315@GemOverlayItem(x = "38%", y = "5%", component = infoLine4315@LineWithInfo(
+        topInfo = "Raum 4315 (SH, CKi, JG)",
+        botInfo = "? °C",
+        direction = "up"
+      )),
+      room4312@GemOverlayItem(x = "68%", y = "5%", component = infoLine4312@LineWithInfo(
+        topInfo = "Raum 4312 (Seminarraum)",
+        botInfo = "? °C",
+        direction = "up"
+      ))
+    ]
+  );
+}

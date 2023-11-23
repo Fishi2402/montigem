@@ -9,6 +9,7 @@ component GemRow(
   String rowGap,
   String colGap,
   String style,
+  String wrap = "wrap",
   List<GUIViewElement> components,
   GUIViewElement component
 )

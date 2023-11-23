@@ -4,7 +4,7 @@ ${cd4c.method("protected Object deserSingleValue(JsonElement val, String tp)")}
 
 Object res = null;
 if(BaseClassObjectMapper.canDeSer(tp)){
-  var value = val;
+  JsonElement value = val;
   res = BaseClassObjectMapper.deserialize(value.isJsonString() ? '"' + value.getAsJsonString().getValue() + '"' : value.toString(), tp).orElse(null);
 }else {
   switch (tp) {

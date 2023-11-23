@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package guiTest;
 
 import de.monticore.cd._parser.CDAfterParseHelper;
