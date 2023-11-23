@@ -27,9 +27,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Directive()
 export  class OverviewPage extends OverviewPageTOP {
 
-  public override showBranches (g: any): (arg: any) => void {
-    this.router.navigate(["..", "gui", "montiverse", "ShowBranches", g.getGemId()]);
-    return event => {};
+  public override showBranches (g: Project): (arg: any) => void {
+    return event => {
+      this.router.navigate(["gui", "montiverse", "ShowBranches", g.getGemId()]);
+    };
   }
 }
 
