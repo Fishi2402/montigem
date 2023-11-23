@@ -106,13 +106,8 @@ task genGUI(type: UMLPGuiGenTask) {
 }
 compileJava.dependsOn(genGUI)
 
-tasks.register('ensureNodeInit') {
-  // Store target directory into a variable to avoid project reference in the configuration cache
-  def directory = project.file("build/jsweet/.node-init")
-
-  doLast {
-    Files.createDirectories(directory.toPath())
-  }
+task ensureNodeInit {
+  project.file("build/jsweet/.node-init").mkdirs()
 }
 
 org.jsweet.gradle.JSweetPluginExtension jsweetDomainConf = project.getExtensions().create("jsweetDomain", org.jsweet.gradle.JSweetPluginExtension.class)
