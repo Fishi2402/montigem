@@ -17,6 +17,7 @@ import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
 import umlp.generator.domain.decorator.DeSerBuilderDecorator;
+import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerClientImplDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
@@ -69,6 +70,8 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
             + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
         getCD4C().addImport(clazz, this.astcdPackage + "."
             + c.getName() + DeSerBuilderDecorator.DESER_BUILDER_SUFFIX);
+        getCD4C().addImport(clazz, this.astcdPackage + "."
+                + c.getName() + ErrorCollectorDecorator.SUFFIX);
       }
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
@@ -233,6 +236,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemListBuilder"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("ValidationStatus"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTEUtilPath("LogUtil"));
   }
 
