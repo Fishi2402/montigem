@@ -13,12 +13,18 @@ import input.GemTextInput;
 import input.GemTextareaInput;
 
 page ShowBranches(Project project) {
-  @GemText(value = project.name);
-  @GemCard(title = "Branches of " + project.name, component =
-    @GemColumn(rowGap = "20px", components = [
-      @iterate(Branch branch : project.branches) {
-        @GemButton(label = branch.name);
-      }
-    ])
+  @GemColumn(hAlign = "left", component =
+    @GemCard(
+      title = project.name + ": Branches",
+      component = projectList@GemRow(
+        rowGap="20px",
+        colGap="5px",
+        components=[
+          @iterate(Branch branch : project.branches) {
+            pButton@GemButton(label = branch.name, leftClick = chooseBranch(branch));
+          }
+        ]
+      )
+    )
   );
 }

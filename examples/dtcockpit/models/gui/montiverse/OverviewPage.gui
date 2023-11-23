@@ -3,9 +3,6 @@ package gui.montiverse;
 
 import Dtcockpit.Project;
 import Dtcockpit.Group;
-import Dtcockpit.App;
-import Dtcockpit.Room;
-import Dtcockpit.Server;
 
 import basic.GemButton;
 import arrange.GemCard;
@@ -15,20 +12,20 @@ import basic.GemText;
 import input.GemTextInput;
 import input.GemTextareaInput;
 
-page OverviewPage(List<App> apps,
-                  List<Project> projects,
-                  List<Group> groups,
-                  List<Room> rooms,
-                  List<Server> servers) {
-  @iterate(Group group: groups) {
-    @guard(group.name == "MontiVerse") {
-      @GemCard(title = "MontiVerse", component =
-        @GemColumn(rowGap = "20px", components = [
-          @iterate(Project p: group.subProjects) {
-            @GemButton(label = p.name, leftClick = showBranches(p));
+page OverviewPage(Group g, List<Group> groups, List<Project> projects) {
+ @GemColumn(hAlign = "left", component =
+    @GemCard(
+      title = "MontiVerse Lite",
+      component = projectList@GemRow(
+        rowGap="20px",
+        colGap="5px",
+        components=[
+          @iterate(Project p: g.subProjects) {
+            pButton@GemButton(label = p.name, leftClick = showBranches(p));
           }
-        ])
-      );
-    }
-  }
+        ]
+      )
+    )
+  );
+  startButton@GemButton(label = "start pipeline", leftClick = startButton);
 }
