@@ -1,16 +1,37 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Directive} from '@angular/core';
-import {UserSettingsTOP} from '@src/gui/usersettings/UserSettingsTOP';
+import {Component} from '@angular/core';
+import {UserSettingsComponent} from '@src/gui/usersettings/UserSettingsComponent';
 import {SehubRole} from '@src/sehub/SehubRole';
 import {User} from '@src/sehub/User';
 import {CommandManager} from '@umlp/common';
 import {User_setPassword} from '@src/sehub/commands/User_setPassword';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {SehubManager} from '@src/sehub/SehubManager';
 
-@Directive()
-export class UserSettings extends UserSettingsTOP {
+@Component({
+  selector: 'user-settings',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/usersettings/UserSettings.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ['./UserSettings.scss',]
+})
+export class UserSettings extends UserSettingsComponent {
+
   private changePasswordValue = "";
+
+  public ngOnInit(): void {
+    if (!SehubSecurityManager.isSignedIn()) {
+      this.router.navigate(['gui/login/LoginPage']);
+    }
+    this.currentUser = SehubSecurityManager.getCurrentUser();
+    this.currentUserRoutingId = SehubSecurityManager.getCurrentUserIdOrNull();
+
+    SehubManager.getUserList().then(gemPromiseRes => {
+      this.users = gemPromiseRes;
+    });
+
+    super.ngOnInit();
+  }
 
   public inviteUserLeftClick() {
     this.router.navigate(['gui/login/RegistrationPage']);

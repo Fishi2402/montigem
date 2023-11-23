@@ -20,7 +20,7 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
         printer.member("statusResult", result.isStatusResult());
         printer.member("simpleResult", result.isSimpleResult());
         if (result.isStatusResult()){
-            printer.member("successful", result.asStatusResult().wasSuccessful());
+            printer.member("successful", result.asStatusResult().isSuccessful());
         } else {
             if (BaseClassObjectMapper.canDeSer(tp)){
                 const v: string = BaseClassObjectMapper.serialize(result.asSimpleResult().get(), tp);

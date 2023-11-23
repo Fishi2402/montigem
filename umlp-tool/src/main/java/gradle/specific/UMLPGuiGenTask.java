@@ -131,6 +131,11 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
       result.add(this.getGuiGenTSFuncionality().get() + "");
     }
 
+    if (this.getGuiGenJsweet().isPresent()) {
+      result.add("-" + UMLPToolOptions.GUI_GEN_JSWEET.getCMD());
+      result.add(this.getGuiGenJsweet().get() + "");
+    }
+
     return result;
   }
 }

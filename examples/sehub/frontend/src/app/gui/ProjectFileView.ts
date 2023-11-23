@@ -1,10 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { ProjectFileViewTOP } from '@src/gui/ProjectFileViewTOP';
-import { Directive, } from '@angular/core';
+import {ProjectFileViewComponent} from '@src/gui/ProjectFileViewComponent';
+import {Component} from '@angular/core';
+import {SehubManager} from '@src/sehub/SehubManager';
 
-@Directive()
-export class ProjectFileView extends ProjectFileViewTOP {
+import {ActivatedRoute, Router} from '@angular/router';
+
+@Component({
+  selector: 'project-file-view',
+  templateUrl: '../../../build/frontendGen/build/appgui/gui/ProjectFileView.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ['./ProjectFileView.scss']
+})
+export class ProjectFileView extends ProjectFileViewComponent {
+
+  public constructor(protected route: ActivatedRoute, protected router: Router) {
+    super(route, router);
+    route.paramMap.subscribe(map => {
+      console.warn("_________________________________________")
+      this.parentRoutingId = +map.get("parentRoutingId")
+      SehubManager.getDirectorySure(this.parentRoutingId).then(gemPromiseRes => {
+        this.parent = gemPromiseRes;
+      });
+    })
+  }
 
   public getGemLink11Url(): string {
     if (this.parent.getContainedBy() != null) {
