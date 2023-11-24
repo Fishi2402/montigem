@@ -3,15 +3,13 @@
 package example_table;
 
 import table.GemTable;
-
 import table.TableTypes.TableColumn;
+import Domain.Person;
 
-page GemTableExample(
-  List rows,
-  List columns
-) {
-    @GemTable(
-      rows = rows,
-      columns = columns
-    );
-  }
+page GemTableExample(List<Person> persons) {
+  @GemTable(
+    rows = persons,
+    columns = [TableColumn("name","Name"), TableColumn("age","Age")]);
+}
+
+
