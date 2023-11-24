@@ -3,14 +3,14 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
 import { DtcockpitSecurityManager } from "@src/dtcockpit/DtcockpitSecurityManager";
 import { User } from '@src/dtcockpit/User';
-import { DtNavHeaderComponentTOP } from '@src/gui/navigation/DtNavHeaderComponentTOP';
+import { DtNavHeaderComponent } from '@src/gui/navigation/DtNavHeaderComponent';
 
 @Component({
   selector: "dt-nav-header",
   templateUrl: "./DtNavHeader.html",
   styleUrls: ["./DtNavHeader.scss"]
 })
-export class DtNavHeaderComponent extends DtNavHeaderComponentTOP {
+export class DtNavHeader extends DtNavHeaderComponent {
 
   public constructor(route: ActivatedRoute, protected router: Router) {
     super();

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { PipelineStatistic } from '@src/dtcockpit/PipelineStatistic';
-import { PipelineStatsComponentTOP } from '@src/gui/pipelines/PipelineStatsComponentTOP';
+import { PipelineStatsComponent } from '@src/gui/pipelines/PipelineStatsComponent';
 import { GemBarChartData, GemBarChartEntry } from '@umlp/charts';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/pipelines/PipelineStats.html',
   styles: [":host{ display: flex; flex-direction: column }"],
 })
-export class PipelineStatsComponent extends PipelineStatsComponentTOP {
+export class PipelineStats extends PipelineStatsComponent {
 
   private disableButton = false;
   private maxValue: number = 0;
