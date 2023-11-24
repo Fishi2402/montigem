@@ -5,6 +5,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
 import de.monticore.tagging.TagRepository;
 import de.monticore.tagging.tags.TagsMill;
@@ -54,6 +55,7 @@ public class TagRelated {
               + symbolTable.getName()
               + ".tags");
       tool.print(TagsMill.prettyPrint(tagUnit, true), tagPath.toString());
+      Reporting.reportFileCreation(tagPath.toString());
 
       TagRepository.unloadTagModel(tagUnit);
       try {
