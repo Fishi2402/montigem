@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import charts.GemHeatmapChart;
+import charts.GemHeatmapChartTypes.GemHeatmapChartData;
+
+page GemHeatmapChartExample(
+  GemHeatmapChartData data
+) {
+  @GemHeatmapChart(
+    data = data
+  );
+}

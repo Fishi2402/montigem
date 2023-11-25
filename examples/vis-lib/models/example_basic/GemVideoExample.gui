@@ -4,5 +4,5 @@ package example_basic;
 import basic.GemVideo;
 
 page GemVideoExample(){
-  @GemVideo(source = "assets/video/video.mp4");
+  @GemVideo(source = "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4");
 }
