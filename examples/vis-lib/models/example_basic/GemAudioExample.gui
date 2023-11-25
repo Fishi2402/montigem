@@ -4,5 +4,5 @@ package example_basic;
 import basic.GemAudio;
 
 page GemAudioExample(){
-  @GemAudio(source="../../../../frontend/config/src/assets/audio/audio.mp3");
+  @GemAudio(source="assets/audio/audio.mp3");
 }

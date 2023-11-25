@@ -4,5 +4,5 @@ package example_basic;
 import basic.GemVideo;
 
 page GemVideoExample(){
-  @GemVideo(source = "");
+  @GemVideo(source = "assets/video/video.mp4");
 }

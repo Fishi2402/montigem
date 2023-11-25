@@ -3,7 +3,7 @@ import { GemButtonExampleComponentTOP } from '@src/example_basic/GemButtonExampl
 import { Component } from '@angular/core';
 @Component({
   selector: 'GemButtonExample',
-  templateUrl: '../../../../backend/build/testgui/example_basic/GemButtonExample.html',
+  templateUrl: '../../../build/frontendGen/build/appgui/example_basic/GemButtonExample.html',
   //styleUrls: ['./button.component.css']
 })
 

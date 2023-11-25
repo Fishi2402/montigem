@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import input.GemTextInput;
+
+page GemTextInputExample(){
+  @GemTextInput(labelText="Hello");
+}

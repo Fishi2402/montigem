@@ -4,5 +4,5 @@ package example_basic;
 import basic.GemImage;
 
 page GemImageExample(){
-  @GemImage(source="../../../../frontend/config/src/assets/images/World.png");
+  @GemImage(source="assets/images/World.png");
 }

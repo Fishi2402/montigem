@@ -22,9 +22,10 @@ export class Navigation {
     { url: '/example_table/GemTableExample', title: 'Table' },
     { url: '/example_arrange/GemCardExample', title: 'Card' },
     { url: '/example_arrange/GemColumnExample', title: 'Column' },
-    { url: '/example_arrange/GemRowExample', title: 'Row' }
-
-
+    { url: '/example_arrange/GemRowExample', title: 'Row' },
+    { url: '/example_input/GemTextInputExample', title: 'TextInput' },
+    { url: '/example_basic/GemTreeviewExample', title: 'Treeview' },
+    { url: '/example_basic/GemVideoExample', title: 'Video' }
 
   ];
 
