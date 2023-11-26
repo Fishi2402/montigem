@@ -1,20 +1,43 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Directive} from '@angular/core';
-import {UserCreateTOP} from '@src/gui/login/UserCreateTOP';
+import {Component} from '@angular/core';
+import {UserCreateComponent} from '@src/gui/login/UserCreateComponent';
 import {DtcockpitRole} from '@src/dtcockpit/DtcockpitRole';
 import {User} from "@src/dtcockpit/User";
 import {GemList} from '@umlp/common';
+import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
+import {Location} from '@angular/common';
+import {Router} from '@angular/router';
 
-@Directive()
-
-export class UserCreate extends UserCreateTOP {
+@Component({
+  selector: 'user-create',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserCreate.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ["/Login.scss"]
+})
+export class UserCreate extends UserCreateComponent {
 
   private error: string = "";
 
   protected users: GemList<User>;
 
   public static email: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+  public constructor(
+      protected location: Location,
+      protected router: Router) {
+    super(router);
+  }
+
+  public ngOnInit(): void {
+    DtcockpitManager.userBuilder().then(gemPromiseRes => {
+      this.newUserBuilder = gemPromiseRes;
+    });
+  }
+
+  public override navigateBack(): void {
+    this.location.back();
+  }
 
   public override createUser(event: any): void {
     this.error = "";
@@ -55,10 +78,6 @@ export class UserCreate extends UserCreateTOP {
       }
     });
     return res + (res.length === 0 ? '' : ' already being used!');
-  }
-
-  public override navigateBack(): void {
-    this.router.navigate(['gui', 'login']);
   }
 
 }

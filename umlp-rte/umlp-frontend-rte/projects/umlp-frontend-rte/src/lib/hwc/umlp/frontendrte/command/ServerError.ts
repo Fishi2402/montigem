@@ -22,8 +22,8 @@ export class ServerError extends Command<void> {
     return StatusResult.ok(this.getId());
   }
 
-  public checkAccessPolicy(): boolean {
-    return true;
+  public checkAccessPolicy(): Promise<boolean> {
+    return Promise.resolve(true);
   }
 }
 

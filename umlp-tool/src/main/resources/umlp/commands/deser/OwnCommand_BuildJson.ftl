@@ -7,6 +7,6 @@ ${tc.signature("command", "parameters", "types", "useDeser", "objectMapperName",
   super.buildJson(command, jsonPrinter);
 <#list parameters as param>
     <#assign type = types[param?index]>
-    ${tc.includeArgs("umlp.commands.deser.OwnCommand_BuildJsonParameters", [param, type, genService.printTypeFullName(type), genService.isCDOrInnerCDEnum(type), genService.calculateJsonInclGenerics(type), useDeser[param?index], objectMapperName])}
+    ${tc.includeArgs("umlp.commands.deser.OwnCommand_BuildJsonParameters", [param, type, genService.printTypeFullName(type), genService.isCDOrInnerCDEnum(type), genService.calculateJsonInclGenerics(type, param), useDeser[param?index], objectMapperName])}
 </#list>
 </#if>

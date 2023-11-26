@@ -14,6 +14,8 @@ component GemTextInput(
   ?String entry,
   boolean disabled = false,
   String placeholder = "",
+  String width = "100%",
+  String height = "100%",
   GemTextInputValidity validity,
   Event keyRelease,
   Event keyPress

@@ -2,4 +2,4 @@
 ${tc.signature("name")}
 ${cd4c.method("protected ${name}DAOInterface _get${name}DAO()")}
 
-return this.instance.${name?uncap_first}DAO;
+return instance.${name?uncap_first}DAO;

@@ -54,6 +54,9 @@ export class GemBarChart extends GemBarChartTOP {
     maintainAspectRatio: true,
   };
 
+  @Input()
+  public showConfig: boolean = true;
+
   /**gives the colors from the constant autoColors */
   public getColors() {
     return autoColors;
@@ -92,7 +95,6 @@ export class GemBarChart extends GemBarChartTOP {
       colors.push(entry.backgroundColor);
       this.dataSets.push(entry);
     }
-    console.log()
     this.legendLabels = labels;
     this.legendColors = colors;
   }
@@ -127,6 +129,7 @@ export class GemBarChart extends GemBarChartTOP {
   }
 
   ngOnInit(): void {
+    this.saveAllOptionsChanges();
   }
 
   /**
@@ -156,11 +159,23 @@ export class GemBarChart extends GemBarChartTOP {
       scales: {
         x: {
           stacked: this._stacked,
+          grid: {
+            color: '#888'
+          },
+          ticks: {
+            color: '#888'
+          }
         },
         y: {
           min: this._minValue,
           max: this._maxValue,
-          stacked: this._stacked
+          stacked: this._stacked,
+          grid: {
+            color: '#888'
+          },
+          ticks: {
+            color: '#888'
+          }
         }
       },
       plugins: {

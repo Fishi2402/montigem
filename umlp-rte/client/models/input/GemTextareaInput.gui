@@ -13,6 +13,8 @@ component GemTextareaInput(
   boolean disabled = false,
   String placeholder = "",
   GemTextareaInputValidity validity,
+  String width = "100%",
+  String height = "100%",
   Event keyRelease,
   Event keyPress
 )

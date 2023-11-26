@@ -1,10 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
+import {Component} from '@angular/core';
 import { GemBarChartData } from '@umlp/charts';
 import { GemBarChartEntry } from '@umlp/charts';
-import { PipelineStatsPerGroupTOP } from '@src/gui/pipelines/PipelineStatsPerGroupTOP';
+import { PipelineStatsPerGroupComponent } from '@src/gui/pipelines/PipelineStatsPerGroupComponent';
 
-
-export class PipelineStatsPerGroup extends PipelineStatsPerGroupTOP {
+@Component({
+  selector: 'pipeline-stats-per-group',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/pipelines/PipelineStatsPerGroup.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
 
   private disableButton = false;
   private maxValue : number = 0;

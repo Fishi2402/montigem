@@ -32,8 +32,8 @@ export class SimpleResult<T> extends CommandResult<T> {
         return this.obj;
     }
 
-    public isSuccessful(): boolean {
-        return /* Enum.equals */(LoadingState.LOADED) === (this.loadingState);
+    public isSuccessful(): Promise<boolean> {
+        return Promise.resolve((LoadingState.LOADED) === (this.loadingState));
     }
 
     public getLoadingState(): LoadingState {

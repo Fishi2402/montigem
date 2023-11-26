@@ -9,6 +9,7 @@ component GemColumn(
   String rowGap,
   String colGap,
   String style,
+  String wrap = "nowrap",
   List<GUIViewElement> components,
   GUIViewElement component
 )

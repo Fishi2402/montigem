@@ -38,7 +38,7 @@ public class UMLPShellAPI {
     ClientCommandManager commandManager = new ClientCommandManager(clientCommandWebsocketCommunication);
     if (commandManager.isInitSuccessFul()) {
       ClientCommandManager.initMe(commandManager);
-      Log.info(String.format("Websocket connection to server with uri '%s' was successfull. Participant ID: %s",
+      Log.info(String.format("Websocket connection to server with uri '%s' was successful. Participant ID: %s",
           uri, CommandManager.getParticipantId()), UMLP_SHELL_API);
     } else {
       Log.info(String.format("Could not establish a websocket connection to server with uri '%s', please check your parameters",

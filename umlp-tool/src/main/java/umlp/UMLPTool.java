@@ -31,6 +31,7 @@ import de.monticore.symboltable.serialization.json.JsonBoolean;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
+import de.monticore.tagging.tags.TagsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -53,6 +54,7 @@ import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 import umlp.generator.util.UMLPSymbolTables;
+import umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json;
 
 import java.io.File;
 import java.io.IOException;
@@ -308,6 +310,9 @@ public class UMLPTool extends UMLPToolTOP {
         String report_on = inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
         Reporting.on(report_on);
 
+        // If we were to with to use concrete syntax, we would have to use the UMLPTagDefinitionMill
+        if (SYMTAB.isSelected(cmd))
+          TagsMill.init(); // instead we only support generic tagging models
         UMLPMill.init();
         BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
         UMLPMill.globalScope().setSymbolPath(importedSymbolPath);
@@ -348,7 +353,10 @@ public class UMLPTool extends UMLPToolTOP {
                     + symbolTable.getName()
                     + ".umlpsym");
             JsonPrinter.disableIndentation();
-            storeSymbols(symbolTable, symbolPath.toString());
+            // use the UMLPTagDefSymbols2JSON with an UMLP artifact scope (instead of storeSymbols(symbolTable, symbolPath.toString());)
+            umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json symbols2Json = new umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json();
+            symbolTable.accept(symbols2Json.getTraverser());
+            de.monticore.io.FileReaderWriter.storeInFile(symbolPath, symbols2Json.getSerializedString());
 
             if(OCL.isSelected(cmd)) {
               MCPath oclModelPath = new MCPath();
@@ -382,15 +390,21 @@ public class UMLPTool extends UMLPToolTOP {
           }
           else {
             //print (formatted!) symboltable to console
-            UMLPSymbols2Json s2j = new UMLPSymbols2Json();
+            UMLPTagDefinitionSymbols2Json s2j = new UMLPTagDefinitionSymbols2Json();
             JsonPrinter.enableIndentation();
-            System.out.println(s2j.serialize(symbolTable));
+            symbolTable.accept(s2j.getTraverser());
+            System.out.println(s2j.getSerializedString());
           }
         }
 
         // pretty print model and either output on stdout or store to file
         if (PRETTYPRINT.isSelected(cmd)) {
           prettyPrint(ast, PRETTYPRINT.getValue(cmd));
+        }
+
+        // Also store singleton-stereo information
+        if (SYMTAB.isSelected(cmd)) {
+          TagRelated.doStoreTagStereos(ast, this, symbolTable, cmd);
         }
 
         ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
@@ -412,7 +426,8 @@ public class UMLPTool extends UMLPToolTOP {
           TSUMLPGenerator generator = new TSUMLPGenerator(genSetup, config);
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
           generator.generate(ast, configTemplate);
-        } else {
+        }
+        else if (!GEN_SYMBOLS_ONLY.isSelected(cmd)) {
           // execute generator
           UMLPGenerator generator = new UMLPGenerator(genSetup, config);
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE);
@@ -427,6 +442,9 @@ public class UMLPTool extends UMLPToolTOP {
         Map<String, ModuleRoutingInfo> routesMap = new HashMap<>();
 
         Set<String> createdTSComponents = new HashSet();
+
+        // Prepare the SingletonLookup
+        TagRelated.initLookup(importedSymbolPath);
 
         for (String guiPathString : cmd.getOptionValues(INPUT.getCMD())) {
           Path guiModel = Paths.get(guiPathString);

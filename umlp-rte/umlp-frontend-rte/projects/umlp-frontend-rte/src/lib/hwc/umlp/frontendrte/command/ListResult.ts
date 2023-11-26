@@ -28,8 +28,8 @@ export class ListResult<U, T extends IUMLPList<U>> extends CommandResult<U> {
         return this.list;
     }
 
-    public isSuccessful(): boolean {
-        return this.successful;
+    public isSuccessful(): Promise<boolean> {
+        return Promise.resolve(this.successful);
     }
 
     /**

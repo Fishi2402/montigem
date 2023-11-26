@@ -27,6 +27,7 @@ configurations {
 }
 
 dependencies {
+  implementation group: "de.monticore.lang", name: 'guidsl', version: "7.6.0-SNAPSHOT"
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 

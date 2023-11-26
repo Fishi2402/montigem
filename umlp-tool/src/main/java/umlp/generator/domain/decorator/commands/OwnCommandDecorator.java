@@ -21,6 +21,7 @@ import umlp.UMLPMill;
 import umlp.generator.domain.decorator.AccessPolicyDecorator;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.util.DecoratorUtil;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
@@ -91,7 +92,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
 
     getCD4C().addConstructor(ast, getConstructorTemplate(), classname, getPackageName(origCD, COMMAND_PACKAGE), attrList);
 
-    AccessorDecorator accessor = new AccessorDecorator(glex);
+    AccessorDecorator accessor = DecoratorUtil.streamlessListAcessor(glex);
     attrList.forEach(a -> ast.addAllCDMembers(accessor.decorate(a)));
 
     getCD4C().addMethod(ast, getDoActionTemplate());
@@ -151,7 +152,8 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
     getCD4C().addImport(ast, "com.google.common.collect.Sets");
-    getCD4C().addImport(ast, "java.util.*");
+    getCD4C().addImport(ast, "java.util.ListIterator");
+    getCD4C().addImport(ast, "java.util.Spliterator");
   }
 
   protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
@@ -212,11 +214,16 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
       String typeName = GenService.printTypeFullName(type);
       userDeserList.add(supportedDeSers.contains(typeName));
 
-      jsonEmpty = jsonEmpty && GenService.calculateJsonInclGenerics(type).isEmpty();
+      jsonEmpty = jsonEmpty && GenService.calculateJsonInclGenerics(type, paramName).isEmpty();
       useDeSer = useDeSer && supportedDeSers.contains(typeName);
 
       addDeSerImport(ast, origCD, supportedDeSers.contains(typeName), GenService.isCDOrInnerCDEnum(type),
           baseClassDecorator, typeName, cmdName);
+
+      if (GenService.isList(type)) {
+        getCD4C().addMethod(ast, "umlp.commands.deser.OwnCommand_FromJsonObjectParametersList", p.getName());
+        getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonElement");
+      }
     }
 
     boolean makeAbstract = jsonEmpty && !useDeSer;

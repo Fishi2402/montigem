@@ -121,7 +121,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
       String otherType = GenService.createType(type).printType();
 
       getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("gemId", name + "GemId"));
-      getCD4C().addMethod(ast, "umlp.commands.assocs.AssocsCheckAccessPolicy", domainType.getName(), otherType, "Update");
+      getCD4C().addMethod(ast, getAssocsCheckAccessPolicyTemplate(), domainType.getName(), otherType, "Update");
       ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
       getCD4C().addImport(ast, getPackageName(cd, DEFAULT_PACKAGE) + "." + otherType + "AccessPolicy");
     } else {
@@ -135,6 +135,10 @@ public class SetDecorator extends AbstractDeSerDecorator {
     addImports(ast, origCD, domainType, type, isGem, attr);
 
     return ast;
+  }
+
+  protected String getAssocsCheckAccessPolicyTemplate() {
+    return "umlp.commands.assocs.AssocsCheckAccessPolicy";
   }
 
   protected String getGeneralCheckAccessPolicyTemplate() {
