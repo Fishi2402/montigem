@@ -8,13 +8,11 @@ page GemBarChartExample(
   GemBarChartData data,
   Integer maxValue,
   Integer minValue
- // Object displayValue
 ) {
   @GemBarChart(
     data = data,
     stacked = true,
     maxValue = maxValue,
     minValue = minValue
-  //  displayValue = displayValue
   );
 }

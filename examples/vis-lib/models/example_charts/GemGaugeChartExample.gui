@@ -9,11 +9,10 @@ page GemGaugeChartExample(
 ) {
   @GemGaugeChart(
     data = data,
-    min = 1,
-    max = 100,
-    unit = "meters",
-    textValue = "50"
-
+    min = -30,
+    max = 70,
+    unit = "kt",
+    textValue = "CO2 Emission"
   );
 }
 

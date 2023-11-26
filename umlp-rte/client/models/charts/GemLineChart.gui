@@ -2,8 +2,10 @@
 package charts;
 
 import charts.GemLineChartTypes.GemLineChartData;
+
 //Line chart is a graphical representation to describe the data changes over a given period. It is connected by straight line segments.
 //The horizontal axis is usually a time scale; for example, minutes, hours, days, months, or years, while the vertical axis would have the values.
+
 component GemLineChart(
   GemLineChartData data,
   Object displayValue,

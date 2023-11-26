@@ -9,47 +9,56 @@ import { GemTreeviewEntry } from '@umlp/basic';
 })
 
 export  class GemTreeviewExampleComponent extends GemTreeviewExampleComponentTOP  {
-
-  getItem (): Array<GemTreeviewEntry>{
-
-      // Sample data for the tree view
-      const treeData: Array<GemTreeviewEntry> = [
+        treeData: Array<GemTreeviewEntry> = [
           {
-              expanded: true, // or false if you want it to be initially collapsed
-              name: "Item 1",
-              children: [
+            expanded: true,
+            name: "Item 1",
+            children: [
+              {
+                expanded: true,
+                name: "Item 1.1",
+                children: []
+              },
+              {
+                expanded: false,
+                name: "Item 1.2",
+                children: [
                   {
-                      expanded: true,
-                      name: "Item 1.1",
-                      children: [] // No children for this node
-                  },
-                  {
-                      expanded: false,
-                      name: "Item 1.2",
-                      children: [
-                          // Further nested children, if any
-                          {
-                              expanded: true,
-                              name: "Item 1.2.1",
-                              children: [] // Example of further nesting
-                          }
-                      ]
+                    expanded: true,
+                    name: "Item 1.2.1",
+                    children: []
                   }
-              ]
+                ]
+              }
+            ]
           },
           {
-              expanded: false,
-              name: "Item 2",
-              children: [] // Assuming no children for this node
+            expanded: false,
+            name: "Item 2",
+            children: []
           }
-          // ... more items if necessary
-      ];
 
-      return treeData;
+          ];
+
+  getItem(): Array<GemTreeviewEntry>{
+      return this.treeData;
   }
 
+  gemTreeview0Expand(event: any): void{
+   let itemName = event.itemName;
+   this.expandTreeItem(this.treeData, itemName);
+  }
 
-
-
+  expandTreeItem(items: Array<GemTreeviewEntry>, itemName: string): void {
+  for(let item of items){
+    if (item.name === itemName) {
+    item.expanded = true;
+    return;
+    }
+    if (item.children && item.children.length > 0) {
+      this.expandTreeItem(item.children, itemName);
+    }
+  }
+  }
 }
 

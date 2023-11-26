@@ -2,9 +2,11 @@
 package charts;
 
 import charts.GemPieChartTypes.GemPieChartData;
+
 //Pie chart is also called circle chart. It looks like a circle, which is divided to slices to visualize information.
 //Different categories of data could be indicated by different colors.
 //It is helpful to observe the numerical proportion of data.
+
 component GemPieChart(
     GemPieChartData data,
     Integer innerRadius
