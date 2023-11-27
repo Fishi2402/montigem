@@ -1,14 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
 
-import { GemCandlestickChartExampleComponentTOP } from '@src/example_charts/GemCandlestickChartExampleComponentTOP';
 import { Component } from '@angular/core';
-import { GemData2CandlestickChart } from '@umlp/charts';
-@Component({
-  selector: 'GemCandlestickChartExample',
-  templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemCandlestickChartExample.html',
-  //styleUrls: ['./button.component.css']
-})
+import { GemCandlestickChartExampleComponent } from '@src/example_charts/GemCandlestickChartExampleComponent';
 
-export  class GemCandlestickChartExampleComponent extends GemCandlestickChartExampleComponentTOP  {
+@Component({
+  selector: 'gem-candlestick-chart-example',
+  templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemCandlestickChartExample.html',
+})
+export class GemCandlestickChartExample extends GemCandlestickChartExampleComponent {
 
   data = [
     { label: '2017-01-17', value: [118, 144, 117, 136] },

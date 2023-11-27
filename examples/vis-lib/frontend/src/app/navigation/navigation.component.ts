@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 import { Component } from "@angular/core";
 import { Router } from '@angular/router';
 
@@ -14,7 +16,11 @@ export class Navigation {
 
   readonly items: { url: string, title: string }[] = [
     { url: '/person/Overview', title: 'Overview' },
-    /*{ url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
+    { url: '/example_basic/example_basic/GemLinkExample', title: 'Link' },
+    { url: '/example_basic/example_basic/GemButtonExample', title: 'Button' },
+    { url: '/example_basic/example_basic/GemTextExample', title: 'Text' },
+    /*
+    { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
     { url: '/example_table/GemTableExample', title: 'Table' },
     { url: '/example_arrange/GemCardExample', title: 'Card' },
     { url: '/example_arrange/GemColumnExample', title: 'Column' },
@@ -35,10 +41,7 @@ export class Navigation {
     { url: '/example_charts/GemPieChartExample', title: 'PieChart' },
     { url: '/example_charts/GemSunburstChartExample', title: 'SunburstChart' },
     { url: '/example_charts/GemVennDiagramExample', title: 'VennDiagram' },
-    { url: '/example_charts/GemGraphChartExample', title: 'GraphChart' }
-
-
-
+    { url: '/example_charts/GemGraphChartExample', title: 'GraphChart' },
   ];
 
 }
