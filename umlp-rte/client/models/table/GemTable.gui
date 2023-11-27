@@ -1,16 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
+
 package table;
 
 import table.TableTypes.TableColumn;
+import java.util.function.Function;
 
 // TODO: precise types
-//A table organizes and displays data in rows and columns.
-//Data tables allow users to input, edit, and manipulate data easily, perform calculations and analyses, sort and filter data.
-//A visualization of a table can be seen in the following Figure.
-
+/**
+  A table organizes and displays data in rows and columns.
+  Allows input, edit, and manipulation of data, such as sorting and filtering.
+*/
 component GemTable(
+  /** List of objects displayed in a table */
   List rows,
-  List columns,
+  /**
+    Columns of the table. Each column defines header and what properties of rows
+    are shown in each column.
+  */
+  List<TableColumn> columns,
   Event edit,
   Event update,
   Event cancelUpdate,
@@ -20,20 +27,21 @@ component GemTable(
   Event create,
   Event cancelCreate,
 
-  Object cellStyle,
-  Object tableContainerStyle,
-  boolean compactStyle,
-  boolean hasColumnFooter,
-  GUIViewElement footerTemplate,
-  Object activeRow,
-  Object inactiveRowStyle,
-  boolean isFilterable,
-  Object sortDirection,
-  List selection,
+  // TODO: add to the public API
+  Function cellStyle = null,
+  Object tableContainerStyle = null,
+  boolean compactStyle = false,
+  boolean hasColumnFooter = false,
+  GUIViewElement footerTemplate = null,
+  Function activeRow = null,
+  Object inactiveRowStyle = null,
+  boolean isFilterable = false,
+  List sortDirection = null,
+  List selection = null,
+  Object selectionType = null,
+  boolean batchMode = false,
   Event batchModeToggle,
   Event rowsSelect,
-  Object selectionType,
-  boolean batchMode,
   Object staticRow,
   Object extendableRow,
   Object groupClass,

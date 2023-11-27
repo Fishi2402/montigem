@@ -9,7 +9,9 @@ import Domain.Person;
 page GemTableExample(List<Person> persons) {
   @GemTable(
     rows = persons,
-    columns = [TableColumn("name","Name"), TableColumn("age","Age")]);
+    columns = [
+      TableColumn("_name", "Name"),
+      TableColumn("_birthday", "Birthday")
+    ]
+  );
 }
-
-
