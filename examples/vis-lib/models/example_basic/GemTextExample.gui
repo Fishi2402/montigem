@@ -3,6 +3,6 @@ package example_basic;
 
 import basic.GemText;
 
-page GemTextExample(){
-  @GemText(value = "Hello");
+page GemTextExample() {
+  @GemText(value = "My text");
 }
