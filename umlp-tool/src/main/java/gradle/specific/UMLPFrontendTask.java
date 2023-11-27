@@ -4,8 +4,6 @@ package gradle.specific;
 import gradle.common.UMLPSingleFileTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.provider.Property;
-import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
@@ -23,6 +21,10 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public abstract class UMLPFrontendTask extends UMLPSingleFileTask {
+
+  public UMLPFrontendTask() {
+    super("UMLPFrontendTask");
+  }
 
   @OutputDirectory
   @org.gradle.api.tasks.Optional

@@ -1,29 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle.specific;
 
-import de.se_rwth.commons.logging.Log;
 import gradle.common.UMLPSingleFileTask;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.provider.Property;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.IgnoreEmptyDirectories;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.work.Incremental;
-import umlp.UMLPToolOptions;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
 
 @CacheableTask
 @Deprecated // See output from prepareRun();
@@ -71,7 +59,7 @@ public abstract class UMLPTask extends UMLPSingleFileTask {
 
 
   public UMLPTask() {
-    super();
+    super("UMLPTask");
 
     getCdToGui().convention(false);
     getForClient().convention(false);

@@ -4,15 +4,15 @@ package gradle;
 import gradle.specific.FrontendSetup;
 import gradle.specific.GuiVariabilityHandlerTask;
 import gradle.specific.NPMAuthCreate;
-import gradle.specific.UMLPSymbolsTask;
-import gradle.specific.serialize.SerializeCDSymbolsTask;
-import gradle.specific.serialize.SerializeGUISymbolsTask;
 import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPCdToGuiTask;
 import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
-import gradle.specific.merge.UMLPMergeTask;
+import gradle.specific.UMLPSymbolsTask;
 import gradle.specific.UMLPTask;
+import gradle.specific.merge.UMLPMergeTask;
+import gradle.specific.serialize.SerializeCDSymbolsTask;
+import gradle.specific.serialize.SerializeGUISymbolsTask;
 import gradle.stat.StatisticListener;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -22,7 +22,10 @@ import org.gradle.api.Project;
  * Nothing else is done! See other Plugins (e.g. UMLPPluginBackend.java) for alternatives
  */
 public abstract class UMLPPluginBase implements Plugin<Project> {
-    @Override
+
+  public static final String UMLP_MODULES_CONFIG = "umlpModules";
+
+  @Override
     public void apply(Project project) {
       // Make the Tasks available without fully qualified name
       project.getExtensions().getExtraProperties().set("UMLPTask", UMLPTask.class);
@@ -37,6 +40,9 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       project.getExtensions().getExtraProperties().set("FrontendSetup", FrontendSetup.class);
       project.getExtensions().getExtraProperties().set("SerializeGUISymbolsTask", SerializeGUISymbolsTask.class);
       project.getExtensions().getExtraProperties().set("SerializeCDSymbolsTask", SerializeCDSymbolsTask.class);
+
+      // Module system
+      project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);
 
       StatisticListener.registerOnce(project);
     }

@@ -2,6 +2,7 @@
 package gradle.common;
 
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.IOUtils;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
@@ -29,16 +30,25 @@ import org.gradle.workers.ClassLoaderWorkerSpec;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
 import umlp.UMLPToolOptions;
+import umlp.module_system.ModuleMetadata;
+import umlp.module_system.TaskModuleMetadata;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import static gradle.UMLPPluginBase.UMLP_MODULES_CONFIG;
 
 public abstract class CommonUMLPTask extends DefaultTask {
   final static String UMLP_TASK_DEBUG = "de.rwth.se.umlp.debug";
@@ -53,6 +63,11 @@ public abstract class CommonUMLPTask extends DefaultTask {
   public ConfigurableFileCollection getInput(){
     return input; // TODO: FileTree & Matching?
   }
+
+  @InputFiles
+  @PathSensitive(PathSensitivity.NAME_ONLY)
+  @Optional
+  public abstract ConfigurableFileCollection getModules();
 
   public void setInput(File f){
     input.from(f);
@@ -115,8 +130,11 @@ public abstract class CommonUMLPTask extends DefaultTask {
   protected abstract WorkerExecutor getWorkerExecutor();
   protected WorkQueue workQueue;
 
-  public CommonUMLPTask(){
+  protected final String type;
+
+  public CommonUMLPTask(String type){
     super();
+    this.type = type;
     Log.init();
 
     // Report directory is required for incremental check
@@ -127,6 +145,18 @@ public abstract class CommonUMLPTask extends DefaultTask {
     setDebugConvention(getProject(), getDebug());
     this.getOutputs().doNotCacheIf("Do not cache when debugging is enabled",
         (task) ->  ((CommonUMLPTask)task).getDebug().get());
+
+    getModules().from(getProject().getConfigurations().getByName(UMLP_MODULES_CONFIG));
+
+    getModuleConfigTemplates().convention(getProject().provider(() -> {
+      List<String> res = new ArrayList<>();
+      for (TaskModuleMetadata taskMetadata : getMetadataForThisTask()) {
+        res.addAll(taskMetadata.getAdditionalConfigs());
+      }
+      return res;
+    }));
+
+    getExtraClasspathElements().from(getModules());
   }
 
   public static void setDebugConvention(Project project, Property<Boolean> debugProp) {
@@ -213,6 +243,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
   protected void startGeneration(List<String> args) {
     if (getDebug().get()){
       // In debug mode, run code directly. Otherwise, breakpoints etc. do not work
+      // TODO: debug = true => module jar is not on classpath!
       UMLPAction.run(args.toArray(new String[0]));
     } else {
       // In normal mode, run in a workQue. This ensures isolation & parallelization
@@ -227,6 +258,8 @@ public abstract class CommonUMLPTask extends DefaultTask {
   }
   protected Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
     Stream<FileChange> result = StreamSupport.stream(inputChanges.getFileChanges(getInput()).spliterator(), false);
+
+    result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(getModules()).spliterator(), false));
 
     for(Provider<? extends FileSystemLocation> inputLocation: getOtherInputDirectories()){
       result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(inputLocation).spliterator(), false));
@@ -278,5 +311,48 @@ public abstract class CommonUMLPTask extends DefaultTask {
     ).file("IncGenGradleCheck.txt").getAsFile();
   }
 
+  @Internal
+  protected List<ModuleMetadata> getModuleMetadataList(){
+    List<ModuleMetadata> res = new ArrayList<>();
 
+    for (File file : getModules().getFiles()) {
+      res.add(ModuleMetadata.fromYaml(readModuleMetadata(file)));
+    }
+    return res;
+  }
+
+  protected String readModuleMetadata(File file) {
+    try(var zf = new ZipFile(file)){
+      Enumeration<? extends ZipEntry> entries = zf.entries();
+      ZipEntry entry;
+      while((entry = entries.nextElement()) != null){
+        if(entry.getName().matches("[^/]+[.]metadata[.]yml")){
+          break;
+        }
+      }
+      if(entry != null){
+        try(var is = zf.getInputStream(entry)){
+          return IOUtils.toString(is, StandardCharsets.UTF_8);
+        }
+      }
+    }catch (IOException e){
+      throw new RuntimeException("Error loading metadata of module " + file, e);
+    }
+
+    throw new IllegalStateException("Can not find metadata of module "  + file);
+  }
+
+  @Internal
+  protected List<TaskModuleMetadata> getMetadataForThisTask(){
+    List<TaskModuleMetadata> res = new ArrayList<>();
+
+    for (ModuleMetadata moduleMetadata : getModuleMetadataList()) {
+      for (TaskModuleMetadata taskModuleMetadata : moduleMetadata.getTasks()) {
+        if(taskModuleMetadata.getType().equals(type)){
+          res.add(taskModuleMetadata);
+        }
+      }
+    }
+    return res;
+  }
 }
