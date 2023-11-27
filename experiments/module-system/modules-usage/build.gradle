@@ -2,20 +2,9 @@ plugins {
   id 'de.rwth.se.umlp-tool-backend'
 }
 
-configurations {
-  umlpModules
-}
-
 dependencies {
   implementation(project(":experiments:module-system:module-definition"))
   umlpModules(project(path: ":experiments:module-system:module-definition", configuration: "moduleGenTime"))
-}
-
-generateUmlpBackend {
-  extraClasspathElements.from(configurations.umlpModules)
-  modelDir.from(configurations.umlpModules)
-  // TODO: read this from SomeModule.metadata.json
-  moduleConfigTemplates.set(["some_module.BackendConfig.ftl"])
 }
 
 task printUmlpModules(){

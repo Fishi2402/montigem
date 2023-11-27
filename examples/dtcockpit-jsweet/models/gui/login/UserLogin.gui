@@ -1,0 +1,35 @@
+package gui.login;
+
+import Dtcockpit.User;
+
+import arrange.GemCard;
+import arrange.GemRow;
+import arrange.GemColumn;
+
+import basic.GemButton;
+import basic.GemText;
+import input.GemTextInput;
+
+component UserLogin(List<User> users, User loginUser) {
+  @GemCard(title = "Login", component =
+    @GemColumn(hAlign = "center", rowGap = "20px", components = [
+      @GemTextInput(
+        labelText = "Account",
+        inputType = "text",
+        entry = loginUser.username,
+        validity = loginUser.validityUsername,
+        keyRelease = loginOnEnter
+      ),
+      @GemTextInput(
+        labelText = "Password",
+        inputType = "password",
+        entry = loginUser.password,
+        validity = loginUser.validityPassword,
+        keyRelease = loginOnEnter
+      ),
+      // @GemButton(label = "Cancel", leftClick = navigateBack),
+      @GemButton(label = "Sign in", leftClick = login),
+      error@GemText(value = "")
+    ])
+  );
+}

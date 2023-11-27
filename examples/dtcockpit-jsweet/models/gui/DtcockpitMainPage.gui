@@ -1,0 +1,31 @@
+package gui;
+
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemRow;
+import arrange.GemColumn;
+import basic.GemText;
+
+import gui.DtCockpitNavigation;
+
+import Dtcockpit.Project;
+
+page DtcockpitMainPage(List<Project> projects) {
+  @DtCockpitNavigation(username="FixMe", projects = projects);
+  @GemColumn(width = "100%", hAlign = "left", component =
+    @GemCard(
+      title = "Dashboard",
+      component = projectList@GemRow(
+        rowGap="20px",
+        colGap="5px",
+        components=[
+          @iterate(Project p : projects) {
+            // Note: the classes have to be overridden to be applied, as lists of literals is a WIP
+            pButton@GemButton(label = p.name, leftClick = navigateToProject(p));
+          },
+          newButton@GemButton(label = "+", leftClick = navigateToNewProject)
+        ]
+      )
+    )
+  );
+}

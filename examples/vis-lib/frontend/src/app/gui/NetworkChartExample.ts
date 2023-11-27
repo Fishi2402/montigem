@@ -1,14 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-import {Directive} from '@angular/core';
-import {NetworkChartExampleTOP} from '@src/gui/NetworkChartExampleTOP';
+import {Component} from '@angular/core';
+import {NetworkChartExampleComponent} from '@src/gui/NetworkChartExampleComponent';
 import {Person} from '@src/domain/Person';
-import {NetworkData} from '@umlp/charts';
-import {NetworkEdge} from '@umlp/charts';
-import {NetworkNode} from '@umlp/charts';
+import {NetworkData, NetworkEdge, NetworkNode} from '@umlp/charts';
 
-@Directive()
-export class NetworkChartExample extends NetworkChartExampleTOP  {
+@Component({
+  selector: 'network-chart-example',
+  templateUrl: './NetworkChartExample.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export class NetworkChartExample extends NetworkChartExampleComponent  {
 
   private networkData : NetworkData;
   private networkDataHash : string;

@@ -1,15 +1,18 @@
-
-
-import {Directive} from '@angular/core';
+/* (c) https://github.com/MontiCore/monticore */
+import {Component} from '@angular/core';
 import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
-import {ProjectsCreateByGroupTOP} from '@src/gui/project/ProjectsCreateByGroupTOP';
+import {ProjectsCreateByGroupComponent} from '@src/gui/project/ProjectsCreateByGroupComponent';
 import { ProjectErrorCollector } from '@src/dtcockpit/ProjectErrorCollector';
 import { Project } from '@src/dtcockpit/Project';
 
 
-@Directive()
-
-export class ProjectsCreateByGroup extends ProjectsCreateByGroupTOP {
+@Component({
+  selector: 'projects-create-by-group',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/project/ProjectsCreateByGroup.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
 
   private error: string = "";
 

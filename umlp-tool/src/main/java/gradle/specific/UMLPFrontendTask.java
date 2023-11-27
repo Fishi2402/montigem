@@ -22,6 +22,10 @@ import java.util.stream.StreamSupport;
 
 public abstract class UMLPFrontendTask extends UMLPSingleFileTask {
 
+  public UMLPFrontendTask() {
+    super("UMLPFrontendTask");
+  }
+
   @OutputDirectory
   @org.gradle.api.tasks.Optional
   public abstract DirectoryProperty getSymbolOutDir();

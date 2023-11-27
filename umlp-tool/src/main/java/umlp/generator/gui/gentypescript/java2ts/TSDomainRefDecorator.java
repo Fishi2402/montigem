@@ -67,6 +67,10 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
   }
 
   @Override
+  protected void addJavaImports() {
+  }
+
+  @Override
   protected void addDefaultConstructor(ASTCDClass clazz) {
   }
 

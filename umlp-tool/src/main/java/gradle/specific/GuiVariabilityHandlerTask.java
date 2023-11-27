@@ -11,6 +11,10 @@ import java.util.function.Function;
 
 abstract public class GuiVariabilityHandlerTask extends UMLPAllFilesTask {
 
+  public GuiVariabilityHandlerTask() {
+    super("GuiVariabilityHandlerTask");
+  }
+
   @Override
   public boolean isInputFile(File f){
     return f.getName().endsWith(".gui");

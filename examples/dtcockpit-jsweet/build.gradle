@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+subprojects {
+  dependencies {
+    implementation project(':umlp-rte')
+    testImplementation "com.h2database:h2:${h2_database}"
+  }
+}
+
+clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
+
+build.dependsOn(subprojects.collect{ it.getTasksByName("build", false)})
+
+project('frontend') {
+  sourceSets.main.java.srcDirs += ['../backend/src/main/java', '../backend/build/umlp/backend']
+}
+
+//project('frontend').translateTypeScript.dependsOn(project('backend').generateUmlpBackend)
+project('frontend').getTasksByName('translateJava2TSDomain', true).forEach {a -> {
+  project('backend').getTasksByName('generateUmlpBackend', true).forEach {b -> {
+    a.dependsOn(b)
+  }}
+}}
+project('frontend').getTasksByName('translateJava2TSGUI', true).forEach {a -> {
+  project('backend').getTasksByName('generateUmlpBackend', true).forEach {b -> {
+    a.dependsOn(b)
+  }}
+}}

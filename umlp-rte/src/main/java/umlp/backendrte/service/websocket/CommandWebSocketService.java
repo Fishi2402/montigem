@@ -79,7 +79,10 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
       returnResult = CommandObjectMapper.serializeResponse(StatusResult.error(commandId));
     }
     System.out.println("Responding: " + returnResult);
-    session.sendMessage(new TextMessage(returnResult));
+    TextMessage msg = new TextMessage(returnResult);
+    synchronized (session) {
+      session.sendMessage(msg);
+    }
   }
 
   @Override

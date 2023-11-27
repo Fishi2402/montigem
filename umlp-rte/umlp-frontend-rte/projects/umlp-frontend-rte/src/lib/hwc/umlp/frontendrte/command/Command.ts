@@ -91,13 +91,13 @@ export abstract class Command<T> {
   /**
    * Checks if the issuer of this command has the correct rights to execute it
    */
-  public abstract checkAccessPolicy(): boolean;
+  public abstract checkAccessPolicy(): Promise<boolean>;
 
   /**
    * Checks if the preconditions for this command are met
    */
-  public checkContract(): boolean {
-    return true;
+  public checkContract(): Promise<boolean> {
+    return Promise.resolve(true);
   }
 }
 
