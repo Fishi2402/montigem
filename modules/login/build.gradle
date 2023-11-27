@@ -1,0 +1,52 @@
+plugins {
+  id "base"
+  id "java"
+  id 'maven-publish'
+}
+
+configurations {
+  moduleGenTimeCompileOnly
+  moduleGenTime
+}
+
+dependencies {
+  moduleGenTimeCompileOnly("umlp:umlp-tool")
+  moduleGenTimeCompileOnly group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+  moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+  moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+}
+
+sourceSets {
+  moduleGenTime {
+    java {}
+  }
+}
+
+def moduleClassifier = "module-generator-time"
+
+task moduleJar(type: Jar){
+  from("src/models"){
+    include "**/*.*"
+  }
+  from(sourceSets.moduleGenTime.output)
+  archiveClassifier = moduleClassifier
+}
+tasks.jar.dependsOn(moduleJar)
+
+artifacts {
+  moduleGenTime moduleJar
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      artifact moduleJar
+    }
+  }
+  // TODO: correct repo
+  repositories {
+    maven {
+      url "file://${project.buildDir}/repo"
+    }
+  }
+}

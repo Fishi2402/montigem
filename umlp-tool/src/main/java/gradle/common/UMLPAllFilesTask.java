@@ -18,6 +18,10 @@ import java.util.stream.Stream;
 
 abstract public class UMLPAllFilesTask extends CommonUMLPTask {
 
+  public UMLPAllFilesTask(String type) {
+    super(type);
+  }
+
   @Override
   protected Directory getReportDirOfFile(File f) {
     return getReportDir().get();

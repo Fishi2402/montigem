@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.function.Function;
 
 public abstract class UMLPCdToGuiTask extends UMLPSingleFileTask {
+  public UMLPCdToGuiTask() {
+    super("UMLPCdToGuiTask");
+  }
+
   /**
    * @param filePath Path of InputFile
    * @return Arguments that can be used to start CLI-Tool

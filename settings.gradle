@@ -72,3 +72,4 @@ include ':products:syse_functions'
 include 'examples:flensburg-test-jsweet:backend'
 findProject(':examples:flensburg-test-jsweet:backend')?.name = 'backend'
 
+include ':modules:login'
