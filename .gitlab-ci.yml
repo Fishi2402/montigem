@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-chromium-deps
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7.4.2-jdk11
 
 variables:
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
