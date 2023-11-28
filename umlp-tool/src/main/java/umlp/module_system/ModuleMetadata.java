@@ -1,5 +1,6 @@
 package umlp.module_system;
 
+import com.google.gson.Gson;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.ArrayList;
@@ -7,11 +8,16 @@ import java.util.List;
 
 public class ModuleMetadata {
   private static final Yaml yaml = new Yaml();
+  private static final Gson gson = new Gson();
   private String name;
   private List<TaskModuleMetadata> tasks = new ArrayList<>();
 
   public static ModuleMetadata fromYaml(String content){
     return yaml.loadAs(content, ModuleMetadata.class);
+  }
+
+  public static ModuleMetadata fromJson(String content){
+    return gson.fromJson(content, ModuleMetadata.class);
   }
 
   public ModuleMetadata(){
