@@ -8,8 +8,8 @@ tasks:
     additionalConfigs:
       - some_module.FrontendConfig.ftl
     additionalParameters: []
-  - type: merge
-    # TODO: does this add a new task? The others only change tasks
+# - type: merge
+# TODO: does this add a new task? The others only change tasks
 # TODO:
 # depencencies:
 #  - Auth

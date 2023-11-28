@@ -347,6 +347,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
     for (ModuleMetadata moduleMetadata : getModuleMetadataList()) {
       for (TaskModuleMetadata taskModuleMetadata : moduleMetadata.getTasks()) {
         if(taskModuleMetadata.getType().equals(type)){
+          Log.info("Adding module " + moduleMetadata.getName(), this.getName());
           res.add(taskModuleMetadata);
         }
       }
