@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("astguiCompilationUnitList","ids","fullPathIndex","paths","pathName")}
+${tc.signature("astguiCompilationUnitList","ids","fullPathIndex","paths","routingLinkPrefix")}
 // always imported
 import { Routes } from "@angular/router";
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
@@ -15,16 +15,24 @@ export const routes: Routes = [
 
     <#if index==fullPathIndex>
       {
-      path: "${pathName}",
+      path: "${routingLinkPrefix}",
       pathMatch: "full",
-      redirectTo: "${pathName}/${astguiCompilationUnitList[index].getComponentName()}"
+      redirectTo: "${routingLinkPrefix}/${astguiCompilationUnitList[index].getComponentName()}"
       },
     </#if>
 
+      <#if routingLinkPrefix!="">
      {
-     path: "${pathName}/${astguiCompilationUnitList[index].getComponentName()}<#list ids[index] as id>/:${id}</#list>",
+     path: "${routingLinkPrefix}/${astguiCompilationUnitList[index].getComponentName()}<#list ids[index] as id>/:${id}</#list>",
      component: ${astguiCompilationUnitList[index].getComponentName()}Component
      },
+      </#if>
+        <#if routingLinkPrefix=="">
+          {
+          path: "${astguiCompilationUnitList[index].getComponentName()}<#list ids[index] as id>/:${id}</#list>",
+          component: ${astguiCompilationUnitList[index].getComponentName()}Component
+          },
+        </#if>
 
 
 </#if>

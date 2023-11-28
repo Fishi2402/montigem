@@ -54,7 +54,7 @@ exports: [
 ]
 })
 
-export class ${compDecl}_Module {}
+export class ${compDecl}GemModule {}
 
 
 
