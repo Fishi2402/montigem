@@ -4,7 +4,17 @@ ${cd4c.method("protected void configure(HttpSecurity http) throws Exception")}
 // ToDo: insecure!!!!
 http.csrf().disable();
 
-http.authorizeRequests((requests) -> requests.anyRequest().authenticated());
+http.authorizeRequests((requests) -> {
+      var cur = requests;
+      for (Map.Entry<HttpMethod, String> noAuthRoute : getNoAuthRoutes()) {
+        cur = requests.antMatchers(noAuthRoute.getKey(), noAuthRoute.getValue()).permitAll();
+      }
+      cur
+          .anyRequest()
+          .authenticated();
+    }
+);
+
 http.formLogin()
     .failureHandler(new SimpleUrlAuthenticationFailureHandler() {
       // Note: The HTML error information will not be shown, as spring does not allow the re-use of its error page
