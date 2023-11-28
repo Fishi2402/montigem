@@ -99,7 +99,7 @@ public class DAONeo4jDecorator extends DAODecorator {
     getOptionalAttributes(domainClass).forEach(e -> optMap.put(e,
                     SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
 
-    getCD4C().addMethod(daoClass, "umlp.dao.SelectInitNeo4j", domainClass.getName(), attributes);
+    getCD4C().addMethod(daoClass, "umlp.dao.SelectInitNeo4j", domainClass.getName(), attributes, getOptionalAttributes(domainClass));
 
     Map<ASTCDAttribute, String> attributeMap = Maps.newLinkedHashMap();
     attributes.forEach(e -> attributeMap.put(e, SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
@@ -148,18 +148,15 @@ public class DAONeo4jDecorator extends DAODecorator {
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && !GenService.isList(a) && !GenService.isOptional(a)).forEach(attr ->
             getCD4C().addMethod(doaClass, "umlp.dao.UpdateAttrNeo4j", domainClass.getName(), attr.getName(),
-                    attr.printType(), GenService.getDBType(attr.getSymbol().getType())));;
+                    attr.printType(), GenService.getDBType(attr.getSymbol().getType()), false));
   }
 
   @Override
   protected void updateOptionalAttrMethod(ASTCDClass doaClass, ASTCDClass domainClass){
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).forEach(attr ->
-            getCD4C().addMethod(doaClass, "umlp.dao.UpdateOptionalAttr",
-                SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED),
-                attr.getName(),
-                SQLSchemaGenerator.convertAttributeName(attr.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED),
-                GenService.createType(attr).printType(), GenService.getDBType(attr.getSymbol().getType())));
+            getCD4C().addMethod(doaClass, "umlp.dao.UpdateAttrNeo4j", domainClass.getName(), attr.getName(),
+                GenService.createType(attr).printType(), GenService.getDBType(attr.getSymbol().getType()), true));
   }
 
   @Override

@@ -19,6 +19,7 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp._auxiliary.CD4AnalysisMillForUMLP;
@@ -186,6 +187,10 @@ public class SQLSchemaGenerator {
         p.print(",");
         generateSimpleField(cd, node, attribute, p);
       }
+      if(GenService.isOptional(attribute)) {
+        p.print(",");
+        generateOptionalField(cd, node, attribute, p);
+      }
     }
 
     p.unindent();
@@ -194,9 +199,6 @@ public class SQLSchemaGenerator {
     // TODO: associations in hierarchie?
     for (ASTCDAttribute attribute : relevantAttributes) {
       if (GenService.isList(attribute)) {
-        generateListFieldTable(cd, node, attribute, p);
-      }
-      if (GenService.isOptional(attribute)) {
         generateListFieldTable(cd, node, attribute, p);
       }
       if (attribute.getMCType().getDefiningSymbol().isEmpty()) {
@@ -244,7 +246,7 @@ public class SQLSchemaGenerator {
     p.println("CONSTRAINT pk_" + tableName + " PRIMARY KEY (id)");
   }
 
-  protected void generateSimpleField(ASTCDDefinition cd, ASTCDClass classNode, ASTCDAttribute attribute, IndentPrinter p) {
+  protected void generateOptionalField(ASTCDDefinition cd, ASTCDClass classNode, ASTCDAttribute attribute, IndentPrinter p) {
     p.print(convertAttributeName(attribute.getName(), AttributeType.QUOTED));
     p.print(" ");
     Optional<? extends ISymbol> typeSymbolOpt = attribute.getMCType().getDefiningSymbol();
@@ -253,12 +255,22 @@ public class SQLSchemaGenerator {
       return;
     }
 
-    String fullName = GenService.isCDEnum(attribute.getSymbol().getType()) ?
-        "java.lang.Enum" : typeSymbolOpt.get().getFullName();
+    String fullName;
+    if(GenService.isCDEnum(attribute.getSymbol().getType()) || GenService.isInnerCDEnum(attribute.getSymbol().getType())) {
+      fullName = "java.lang.Enum";
+    } else if(GenService.isOptional(attribute)) {
+      fullName = ((SymTypeOfGenerics) attribute.getSymbol().getType()).getArgument(0).printFullName();
+    } else {
+      fullName = typeSymbolOpt.get().getFullName();
+    }
     if (!fqnClassNameToType.containsKey(fullName)) {
       Log.error("0xdf10e Can not transform type to SQL: " + fullName + " used in " + cd.getName() + "." + classNode.getName() + "." + attribute.getName());
     }
     p.print(fqnClassNameToType.get(fullName));
+  }
+
+  protected void generateSimpleField(ASTCDDefinition cd, ASTCDClass classNode, ASTCDAttribute attribute, IndentPrinter p) {
+    generateOptionalField(cd, classNode, attribute, p);
 
     p.println(" NOT NULL");
   }

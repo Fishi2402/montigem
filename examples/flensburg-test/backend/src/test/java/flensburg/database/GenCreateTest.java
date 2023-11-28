@@ -2,6 +2,8 @@
 package flensburg.database;
 
 import com.google.common.base.Stopwatch;
+import hardy.flensburg.Account;
+import hardy.flensburg.AccountDAO;
 import hardy.flensburg.Address;
 import hardy.flensburg.AddressDAO;
 import hardy.flensburg.AddressDAOInterface;
@@ -210,5 +212,34 @@ public abstract class GenCreateTest extends GenAbstractDBTest {
     assertNotSame(a2, a2Copy);
 
     assertEquals(2, a2Copy.sizeVisitors());
+  }
+
+  // Tests Primitive (String included) optional attributes
+  @Test
+  public void testCreateAccountEmptyOptionalAttributes() {
+    Account a1 = FlensburgManager.accountBuilder().name("A1").build().get();
+
+    Optional<Account> a1Copy =  FlensburgDAOFactory.getAccountDAO().selectAccount(a1.getGemId());
+    assertTrue(a1Copy.isPresent());
+
+    assertEquals(a1.getGemId(), a1Copy.get().getGemId());
+    assertTrue(a1.getTag().isEmpty());
+    assertTrue(a1Copy.get().getTag().isEmpty());
+  }
+
+  @Test
+  public void testCreateAccountPresentOptionalAttributes() {
+    Account a1 = FlensburgManager.accountBuilder()
+        .name("A1")
+        .tag(Optional.of("A1-Tag"))
+        .category(Optional.empty()).build().get();
+
+    Optional<Account> a1Copy =  FlensburgDAOFactory.getAccountDAO().selectAccount(a1.getGemId());
+    assertTrue(a1Copy.isPresent());
+
+    assertEquals(a1.getGemId(), a1Copy.get().getGemId());
+    assertTrue(a1Copy.get().getTag().isPresent());
+    assertEquals(a1.getTag().get(), a1Copy.get().getTag().get());
+    assertTrue(a1Copy.get().getCategory().isEmpty());
   }
 }
