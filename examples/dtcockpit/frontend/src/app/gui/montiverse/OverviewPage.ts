@@ -32,6 +32,13 @@ export  class OverviewPage extends OverviewPageTOP {
       this.router.navigate(["gui", "montiverse", "ShowBranches", g.getGemId()]);
     };
   }
+
+  public override startPipeline (g: Project): (arg: any) => void {
+    return event => {
+      console.error(g)
+      this.router.navigate(["gui", "montiverse", "Pipeline", g.getGemId()]);
+    };
+  }
 }
 
 

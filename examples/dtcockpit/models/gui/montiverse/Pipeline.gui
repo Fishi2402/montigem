@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.montiverse;
+
+import Dtcockpit.Project;
+import Dtcockpit.Branch;
+
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import input.GemTextInput;
+import input.GemTextareaInput;
+
+page Pipeline(Project project) {
+ @GemColumn(hAlign = "left", component =
+    @GemCard(
+      title = "MontiVerse Lite",
+      component = projectList@GemRow(
+        rowGap="20px",
+        colGap="5px",
+        components=[
+          @iterate(Project p: project.dependentProjects) {
+            @GemRow(components = [
+              @GemText(value = p.name),
+              @GemText(value = ":" + p.ciInfos.variableName)
+            ]);
+          }
+        ]
+      )
+    )
+  );
+}

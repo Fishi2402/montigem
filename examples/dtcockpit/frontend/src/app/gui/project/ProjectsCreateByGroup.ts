@@ -36,6 +36,12 @@ export class ProjectsCreateByGroup extends ProjectsCreateByGroupTOP {
       },
       notifyBranchesInvalid: (project: Project,msg: string): void => {
         this.error = msg;
+      },
+      notifyDependentProjectsInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      },
+      notifyCiInfosInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
       }
     };
     ProjectErrorCollector.addErrorObserver(observer);

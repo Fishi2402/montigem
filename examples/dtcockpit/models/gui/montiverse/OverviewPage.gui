@@ -12,7 +12,7 @@ import basic.GemText;
 import input.GemTextInput;
 import input.GemTextareaInput;
 
-page OverviewPage(Group g, List<Group> groups, List<Project> projects) {
+page OverviewPage(Project g, List<Group> groups, List<Project> projects) {
  @GemColumn(hAlign = "left", component =
     @GemCard(
       title = "MontiVerse Lite",
@@ -20,12 +20,14 @@ page OverviewPage(Group g, List<Group> groups, List<Project> projects) {
         rowGap="20px",
         colGap="5px",
         components=[
-          @iterate(Project p: g.subProjects) {
+          @iterate(Project p: g.dependentProjects) {
             pButton@GemButton(label = p.name, leftClick = showBranches(p));
           }
         ]
       )
     )
   );
-  startButton@GemButton(label = "start pipeline", leftClick = startButton);
+  // Funktioniert noch nicht: Fehler im Generator
+  startButton@GemButton(label = "start pipeline", leftClick = startPipeline(g));
+
 }
