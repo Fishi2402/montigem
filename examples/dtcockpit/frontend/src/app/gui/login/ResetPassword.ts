@@ -1,13 +1,30 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Directive} from '@angular/core';
-import {ResetPasswordTOP} from '@src/gui/login/ResetPasswordTOP';
+import {Component} from '@angular/core';
+import {ResetPasswordComponent} from '@src/gui/login/ResetPasswordComponent';
+import {User} from '@src/dtcockpit//User';
+import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
 
-@Directive()
-
-export class ResetPassword extends ResetPasswordTOP {
+@Component({
+  selector: 'reset-password',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/ResetPassword.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ["/Login.scss"]
+})
+export class ResetPassword extends ResetPasswordComponent {
 
   private error: string = "";
+
+  public ngOnInit(): void {
+    DtcockpitManager.getUserList().then(gemPromiseRes => {
+      this.users = gemPromiseRes;
+      this.users.loadAll();
+    });
+
+    if (this.user == null) {
+      this.user = new User();
+    }
+  }
 
   public override resetPassword(event: any): void {
     if (!this.user || !this.user.getPassword() || !this.user.getEmail()) {

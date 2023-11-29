@@ -95,7 +95,6 @@ export class GemBarChart extends GemBarChartTOP {
       colors.push(entry.backgroundColor);
       this.dataSets.push(entry);
     }
-    console.log()
     this.legendLabels = labels;
     this.legendColors = colors;
   }
@@ -130,6 +129,7 @@ export class GemBarChart extends GemBarChartTOP {
   }
 
   ngOnInit(): void {
+    this.saveAllOptionsChanges();
   }
 
   /**

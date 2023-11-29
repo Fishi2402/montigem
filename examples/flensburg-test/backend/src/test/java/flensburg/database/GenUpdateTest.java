@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package flensburg.database;
 
+import hardy.flensburg.Account;
 import hardy.flensburg.Address;
 import hardy.flensburg.AddressDAO;
 import hardy.flensburg.AddressDAOInterface;
@@ -169,5 +170,37 @@ public abstract class GenUpdateTest extends GenAbstractDBTest {
 
       assertEquals(1, a2Copy.sizeVisitors());
     }
+  }
+
+  @Test
+  public void testAccountOptAttrUpdate() {
+    Account a = FlensburgManager.accountBuilder()
+        .name("A1")
+        .tag(Optional.of("A1-Tag"))
+        .category(Optional.empty()).build().get();
+
+    Optional<Account> aCopy = FlensburgDAOFactory.getAccountDAO().selectAccount(a.getGemId());
+    assertTrue(aCopy.isPresent());
+
+    assertEquals(a.getGemId(), aCopy.get().getGemId());
+    assertTrue(aCopy.get().getTag().isPresent());
+    assertEquals(a.getTag().get(), aCopy.get().getTag().get());
+    assertTrue(aCopy.get().getCategory().isEmpty());
+
+    String updatedTag = "New Tag";
+    String updatedCategory = "New Category";
+    a.setTag(Optional.of(updatedTag));
+    a.setCategory(Optional.of(updatedCategory));
+
+    Optional<Account> aCopy2 = FlensburgDAOFactory.getAccountDAO().selectAccount(a.getGemId());
+    assertTrue(aCopy2.isPresent());
+
+    assertEquals(a.getTag().get(), aCopy2.get().getTag().get());
+    assertEquals(a.getCategory().get(), aCopy2.get().getCategory().get());
+
+    a.setTag(Optional.empty());
+    Optional<Account> aCopy3 = FlensburgDAOFactory.getAccountDAO().selectAccount(a.getGemId());
+    assertTrue(aCopy3.isPresent());
+    assertTrue(aCopy3.get().getTag().isEmpty());
   }
 }

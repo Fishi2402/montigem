@@ -1,11 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Directive } from '@angular/core';
-import {HumidityWidgetBodyTOP} from "@src/gui/widgets/HumidityWidgetBodyTOP";
+import { Component } from '@angular/core';
+import {HumidityWidgetBodyComponent} from "@src/gui/widgets/HumidityWidgetBodyComponent";
 
-@Directive()
-
-export class HumidityWidgetBody extends HumidityWidgetBodyTOP {
+@Component({
+  selector: 'humidity-widget-body',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/widgets/HumidityWidgetBody.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ['./HumidityWidgetBody.scss']
+})
+export class HumidityWidgetBody extends HumidityWidgetBodyComponent {
 
   public override getGemText1Value (): string {
     let cur_day = this.getTimeseries()?.getContainedDays()[0];

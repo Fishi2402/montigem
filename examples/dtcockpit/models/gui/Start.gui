@@ -8,6 +8,7 @@ import arrange.GemOverlay;
 import arrange.GemOverlayItem;
 import basic.GemText;
 import basic.GemImage;
+import charts.GemLineChart;
 
 import gui.navigation.DtCockpitNavigation;
 import gui.widgets.Welcome;
@@ -18,17 +19,28 @@ import Dtcockpit.App;
 import Dtcockpit.Project;
 import Dtcockpit.Group;
 import Dtcockpit.RoomStatistic;
+import Dtcockpit.Server;
+import Dtcockpit.ServerStatus;
 
-page Start(List<App> apps, List<Project> projects, List<Group> groups, List<RoomStatistic> stats) {
+page Start(
+  List<App> apps,
+  List<Project> projects,
+  List<Group> groups,
+  List<Room> rooms,
+  List<Server> servers
+) {
   @DtCockpitNavigation(projects = projects, groups = groups);
 
   @GemRow(width = "100%", rowGap = "10px", colGap = "10px", hAlign = "center", components = [
     // Welcome Widget
-    @GemCard(title = "Welcome", component = @Welcome()),
+    @GemRow(width = "100%", hAlign = "center", component = @GemCard(title = "Welcome", component = @Welcome())),
     // TODO: App is a singleton
     @iterate(App app : apps) {
-      @GemColumn(width = "70vw", component = @PipelineStatsPerGroup(g = app.dashboardGroup));
+      @GemColumn(width = "50vw", component = @PipelineStatsPerGroup(g = app.dashboardGroup));
     },
-    @GemCard(title = "Rooms' characteristics", component = @RoomStats(stats = stats))
+    @GemCard(title = "RamUsage (MB)", component = @GemColumn(width = "30vw", components = [
+      serverChart@GemLineChart(data = null, showConfig = false)
+    ])),
+    @GemCard(title = "Rooms' characteristics", component = @RoomStats(stats = rooms))
   ]);
 }

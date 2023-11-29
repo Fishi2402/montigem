@@ -30,3 +30,4 @@ export * from "./StringDeSer";
 export * from "./UMLPArrayList";
 export * from "./UMLPArrayListIterator";
 export * from "./ValidationMessage";
+export * from "./ValidationStatus";

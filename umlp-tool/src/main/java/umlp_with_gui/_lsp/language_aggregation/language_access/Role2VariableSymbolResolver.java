@@ -20,14 +20,17 @@ class Role2VariableSymbolResolver implements IVariableSymbolResolver {
 
   @Override
   public List<VariableSymbol> resolveAdaptedVariableSymbol(boolean foundSymbols, String name, AccessModifier modifier, Predicate<VariableSymbol> predicate) {
-    List<VariableSymbol> res = new ArrayList<>();
-    for (CDRoleSymbol roleSymbol : CD4AnalysisMill.globalScope().resolveCDRoleMany(foundSymbols, name, modifier)) {
-      VariableSymbol variableSymbol = new CDRoleSymbol2VariableSymbolAdapter(roleSymbol);
+    try (var c = umlpLanguageServerContext.open()) {
+      List<VariableSymbol> res = new ArrayList<>();
+      //noinspect globalScopeAccess
+      for (CDRoleSymbol roleSymbol : CD4AnalysisMill.globalScope().resolveCDRoleMany(foundSymbols, name, modifier)) {
+        VariableSymbol variableSymbol = new CDRoleSymbol2VariableSymbolAdapter(roleSymbol);
 
-      if(predicate.test(variableSymbol)) {
-        res.add(variableSymbol);
+        if (predicate.test(variableSymbol)) {
+          res.add(variableSymbol);
+        }
       }
+      return res;
     }
-    return res;
   }
 }

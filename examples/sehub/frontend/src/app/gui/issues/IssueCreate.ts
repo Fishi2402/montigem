@@ -1,16 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {IssueState} from '@src/sehub/IssueState';
-import {Directive} from '@angular/core';
-import {IssueCreateTOP} from '@src/gui/issues/IssueCreateTOP';
+import {Component} from '@angular/core';
+import {IssueCreateComponent} from '@src/gui/issues/IssueCreateComponent';
 import { SehubManager } from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
 import {SehubRole} from '@src/sehub/SehubRole';
 
-@Directive()
 
-export class IssueCreate extends IssueCreateTOP {
+@Component({
+  selector: 'issue-create',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueCreate.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export class IssueCreate extends IssueCreateComponent {
 
   public override createIssue(event: any): void {
     SehubManager.issueBuilder().then(gemPromiseRes => {

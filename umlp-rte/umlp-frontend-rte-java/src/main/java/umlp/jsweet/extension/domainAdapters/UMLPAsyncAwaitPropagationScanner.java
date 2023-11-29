@@ -139,9 +139,21 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
         switch (methodSimpleName) {
           case "doRun":
           case "doAction":
+          case "checkAccessPolicy":
+          case "checkContract":
             return true;
         }
         break;
+      case "umlp.backendrte.command.CommandResult":
+        switch (methodSimpleName) {
+          case "isSuccessful":
+            return true;
+        }
+      case "umlp.backendrte.command.StatusResult":
+        switch (methodSimpleName) {
+          case "wasSuccessful":
+            return true;
+        }
       case "umlp.backendrte.common.AggregatedCommandDeSer":
       case "umlp.backendrte.common.BooleanDeSer":
       case "umlp.backendrte.common.ByteDeSer":
