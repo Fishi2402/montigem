@@ -1,0 +1,11 @@
+{
+  "name": "Login",
+  "tasks": [
+    {
+      "type": "UMLPBackendTask",
+      "additionalConfigs": [
+        "login_module.backend.LoginBackendConfig.ftl"
+      ]
+    }
+  ]
+}

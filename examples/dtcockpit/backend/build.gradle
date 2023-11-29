@@ -26,7 +26,7 @@ configurations {
 
 dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-  // umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
+  umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
 }
 
 application {

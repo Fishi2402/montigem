@@ -314,7 +314,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
     List<ModuleMetadata> res = new ArrayList<>();
 
     for (File file : getModules().getFiles()) {
-      res.add(ModuleMetadata.fromYaml(readModuleMetadata(file)));
+      res.add(ModuleMetadata.fromJson(readModuleMetadata(file)));
     }
     return res;
   }
@@ -324,7 +324,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
       Enumeration<? extends ZipEntry> entries = zf.entries();
       ZipEntry entry;
       while((entry = entries.nextElement()) != null){
-        if(entry.getName().matches("[^/]+[.]metadata[.]yml")){
+        if(entry.getName().matches("[^/]+[.]metadata[.](json)")){
           break;
         }
       }
@@ -347,6 +347,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
     for (ModuleMetadata moduleMetadata : getModuleMetadataList()) {
       for (TaskModuleMetadata taskModuleMetadata : moduleMetadata.getTasks()) {
         if(taskModuleMetadata.getType().equals(type)){
+          Log.info("Adding module " + moduleMetadata.getName(), this.getName());
           res.add(taskModuleMetadata);
         }
       }
