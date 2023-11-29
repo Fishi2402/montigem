@@ -22,7 +22,7 @@ gradle.projectsEvaluated {
   project(":examples:dtcockpit-jsweet:frontend").tasks.buildApp.mustRunAfter(
       project(":examples:vis-lib:frontend").tasks.buildApp
   )
-  project(":examples:vis-lib:frontend").tasks.buildApp.mustRunAfter(
+  project(":examples:vis-lib:frontend").tasks.testApp.mustRunAfter(
       project(":examples:weather:frontend").tasks.buildApp
   )
 }
