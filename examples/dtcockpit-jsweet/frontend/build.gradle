@@ -223,18 +223,14 @@ task installLocalRTE(type: NpmTask) {
 task generateNPMAuth(type: NPMAuthCreate){
   npmrcFile = frontendSetup.getOutput().file(".npmrc")
 }
-
-
-npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
-// TODO AGe: npm_update too slow - strategy to make occasional checks
-npm_update.dependsOn(npm_install)
+npm_install.dependsOn(generateNPMAuth, ':umlp-rte:client:npm_install')
 
 def prebuildTasks = [
-    translateTypeScript, installLocalRTE, ':umlp-rte:client:npm_install'
+    npm_install, translateTypeScript, installLocalRTE
 ]
 
 task buildApp(type: NpxTask) {
-  dependsOn(npm_update, prebuildTasks)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
