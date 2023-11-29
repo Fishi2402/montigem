@@ -80,6 +80,8 @@ node {
 
 }
 
+nodeSetup.dependsOn(frontendSetup)
+
 task genSymbols(type: UMLPSymbolsTask) {
   dependsOn(frontendSetup)
   input = file("../models/Dtcockpit.umlp")
