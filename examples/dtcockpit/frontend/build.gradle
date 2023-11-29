@@ -61,7 +61,7 @@ task genDomain(type: UMLPFrontendTask) {
 }
 */
 genGUI {
-  dependsOn(tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
+  //dependsOn(tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
   // input = file("../models")
   // outputDir = frontendSetup.getOutput().dir("build/appgui")
   // hwcDir = file("src/app/")
