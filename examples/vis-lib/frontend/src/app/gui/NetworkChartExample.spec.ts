@@ -7,13 +7,13 @@ import { DomainMock } from '@src/domain/DomainMock';
 import { Person } from '@src/domain/Person';
 import { PersonBuilder } from '@src/domain/PersonBuilder';
 import { NetworkData, NetworkEdge, NetworkNode } from '@umlp/charts';
-import { NetworkChartExampleComponent } from '@src/gui/NetworkChartExampleComponent';
+import { NetworkChartExample } from '@src/gui/NetworkChartExample';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('NetworkChartExample', () => {
 
-  let fixture: ComponentFixture<NetworkChartExampleComponent>;
-  let comp: NetworkChartExampleComponent;
+  let fixture: ComponentFixture<NetworkChartExample>;
+  let comp: NetworkChartExample;
 
   let person1: PersonBuilder;
   let address1: AddressBuilder;
@@ -116,7 +116,7 @@ describe('NetworkChartExample', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [
-        NetworkChartExampleComponent
+        NetworkChartExample
       ],
       imports: [
         RouterTestingModule
@@ -126,7 +126,7 @@ describe('NetworkChartExample', () => {
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(NetworkChartExampleComponent);
+    fixture = TestBed.createComponent(NetworkChartExample);
     comp = fixture.componentInstance;
     fixture.detectChanges();
   });

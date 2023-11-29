@@ -17,13 +17,13 @@ A User class with fields `String passwort` and `String name`.
 - TODO: Replace user class, identifier, or password storage
 - TODO: Route for login
 - TODO: Reset button available
-- TODO: unsecured routs
+- unsecured routes can be configured by overriding `getNoAuthRoutes` of `XSecurityConfig` via the TOP-Mechanism
 
 ## Effects
 Backend:
 - TODO: Dependency Spring Security is added as dependency to backend
-- TODO: All routes + websocket are secured
-- TODO: Login endpoint is added and accessible before login
+- All routes + websocket are secured
+- Login endpoint is added and accessible before login
 
 Frontend
 - TODO: Page is generated from LoginPage
