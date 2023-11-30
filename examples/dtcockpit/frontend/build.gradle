@@ -68,7 +68,7 @@ genGUI {
   // hwcDir = file("src/app/")
   // modelDir = layout.projectDirectory.dir("../models")
   symbolDir = files(
-      genDomain.symbolOutDir,
+      // genDomain.symbolOutDir, // Wird vom Frontend-Plugin übernommen
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
       // configurations.guiTypes.files // Wird vom Frontend-Plugin übernommen
   )

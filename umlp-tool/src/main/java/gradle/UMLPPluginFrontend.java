@@ -42,21 +42,24 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     TaskProvider<?> frontendSetupTask = createFrontendSetupTask(project);
     frontendSetupTask.get().dependsOn(authTask);
 
-    TaskProvider<?> frontendDomainTask = createFrontendDomainTask(project);
+    TaskProvider<UMLPFrontendTask> frontendDomainTask = createFrontendDomainTask(project);
     frontendDomainTask.get().dependsOn(frontendSetupTask);
 
-    TaskProvider<?> frontendGuiTask = createFrontendGuiTask(project,guiTypes);
+    TaskProvider<?> frontendGuiTask = createFrontendGuiTask(project,guiTypes, frontendDomainTask);
     frontendGuiTask.get().dependsOn(frontendSetupTask);
 
   }
 
-  private TaskProvider<UMLPGuiGenTask> createFrontendGuiTask(final Project project, final Configuration guiTypes) {
+  private TaskProvider<UMLPGuiGenTask> createFrontendGuiTask(final Project project, final Configuration guiTypes, TaskProvider<UMLPFrontendTask> frontendDomainTask) {
     final TaskProvider<UMLPGuiGenTask> result = project.getTasks().register(UMLP_FRONTEND_GUI_TASK_NAME, UMLPGuiGenTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
 
       umlpTask.getInput().from(Path.of(project.getProjectDir().getAbsolutePath(), "..", "models"));
       umlpTask.getModelDir().set(Path.of(project.getProjectDir().getAbsolutePath(), "..", "models").toFile());
+
       umlpTask.getSymbolDir().from(guiTypes);
+      umlpTask.getSymbolDir().from(frontendDomainTask.get().getSymbolOutDir());
+
 
       // TODO: von FrontendSetup Ordner übernehmen
       umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "frontendGen", "build", "appgui").toFile());
