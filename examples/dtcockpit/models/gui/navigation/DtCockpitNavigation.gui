@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.navigation;
+
+import arrange.GemRow;
+import arrange.GemColumn;
+import basic.GemText;
+import basic.GemButton;
+import navigation.NavItem;
+import navigation.NavList;
+
+import gui.navigation.DtNavHeader;
+
+import Dtcockpit.App;
+import Dtcockpit.Project;
+import Dtcockpit.Group;
+
+// We have to pass the list of projects as an argument, as only pages are able to observe
+// The parent component should be styled like `styles: [":host{ display: flex; flex-direction: row }"]`
+component DtCockpitNavigation(List<Group> groups, List<Project> projects) {
+  @NavList(components = [
+    @DtNavHeader(),
+    @NavItem(title = "Home", target = "/gui/Start"),
+    @NavItem(title = "Projects", target = "/gui/DtcockpitMainPage"),
+    @iterate(Group g : groups) {
+      grouptNav@NavItem(title = g.name, target = "/gui/pipelines/PipelineGroupStats/" + g.name);
+    },
+    projectList@NavList(components = [
+        @NavItem(title = "Git Projects", target = "/gui/Start"),
+        @iterate(Project p : projects) {
+          projectNav@NavItem(title = p.name, target = "/gui/pipelines/PipelineStats/" + p.name);
+        }
+      ])
+  ]);
+}

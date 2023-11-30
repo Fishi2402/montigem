@@ -4,5 +4,5 @@ package navigation;
 component NavItem(
   String title,
   String target,
-  Event leftClick
+  Event<Void> leftClick
 )

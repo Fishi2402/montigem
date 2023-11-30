@@ -176,11 +176,14 @@ public class GUI2TypeScriptGenerator {
     GeneratorEngine genEngine = new GeneratorEngine(setup);
 
     List<String> paths = new ArrayList<>();
+    List<Boolean> existHWC = new ArrayList<>();
     astguiCompilationUnitList.forEach(ast -> {
+      boolean existsHandwrittenDomainClass = GUIGeneratorUtil.getInstance().existsHandwrittenDomainClass(hwcPath, ast);
+      existHWC.add(existsHandwrittenDomainClass);
       Optional<String> filePath = util.getRelativeImportPath(
           hwcPath, setup.getOutputDirectory().toPath(),
           ast.getMCPackageDeclaration().getMCQualifiedName().getQName()
-              + "." + ast.getComponentName() + "Component", "ts");
+              + "." + ast.getComponentName() + (existsHandwrittenDomainClass? "" : "Component"), "ts");
       if (filePath.isPresent()) {
         paths.add(util.removeExtension(filePath.get()));
       } else {
@@ -209,7 +212,7 @@ public class GUI2TypeScriptGenerator {
         name + ROUTES_FILE + (existHWCRoutes ? "TOP" : "") + "." + TS_FILE_EXTENSION);
 
     genEngine.generateNoA("umlp.gui2ts.TSPackageRoutes", generatedRoutingFile,
-        astguiCompilationUnitList, ids, fullPathIndex, paths,routingLinkPrefix);
+        astguiCompilationUnitList, existHWC, ids, fullPathIndex, paths, routingLinkPrefix);
 
     boolean existHWCModules = existsHandwrittenFile(hwcPath, pathName + "/" + name + "GemModuleConfig." + TS_FILE_EXTENSION);
     String pathHWModule = "";
@@ -235,14 +238,13 @@ public class GUI2TypeScriptGenerator {
     Path generatedModuleFiles = Paths.get(pathName, name +
         MODULES_FILE + "." + TS_FILE_EXTENSION);
     String compDecl = name;
-
     Map<String, String> imports = packageInfo.getValue().getImports(util, compDecl);
     Map<String, String> subPackageImports = findSubmoduleForPackageConfig(packageInfo, routingInfoMap);
     subPackageImports.keySet().forEach(key -> imports.put(key, subPackageImports.get(key)));
 
 
     genEngine.generateNoA("umlp.gui2ts.TSPackageModule", generatedModuleFiles,
-        astguiCompilationUnitList, ids, compDecl, paths, existHWCModules, util.removeExtension(pathHWModule),
+        astguiCompilationUnitList, existHWC, ids, compDecl, paths, existHWCModules, util.removeExtension(pathHWModule),
         util.removeExtension(pathRoutes), imports);
 
     return Arrays.asList(generatedRoutingFile.toString(), generatedModuleFiles.toString());

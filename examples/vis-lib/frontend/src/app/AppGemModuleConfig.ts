@@ -1,13 +1,13 @@
 import { Navigation } from '@src/navigation/navigation.component';
 
-import { Person_Module } from '@src/person/PersonGemModule';
+import { PersonGemModule } from '@src/person/PersonGemModule';
 
-import { Gui_Module } from '@src/gui/GuiGemModule';
+import { GuiGemModule } from '@src/gui/GuiGemModule';
 
 export const config = {
   declarations: [Navigation],
   exports: [],
-  imports: [Person_Module, Gui_Module],
+  imports: [],
   providers: []
 }
 

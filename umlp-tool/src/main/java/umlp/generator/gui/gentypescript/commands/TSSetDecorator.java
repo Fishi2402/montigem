@@ -68,6 +68,11 @@ public class TSSetDecorator extends SetDecorator {
   }
 
   @Override
+  protected String getAssocsCheckAccessPolicyTemplate() {
+    return "umlp.gui2ts.commands.assocs.TSAssocsCheckAccessPolicy";
+  }
+
+  @Override
   protected String getGeneralCheckAccessPolicyTemplate() {
     return "umlp.gui2ts.accesspolicy.TSGeneralCheckAccessPolicy";
   }

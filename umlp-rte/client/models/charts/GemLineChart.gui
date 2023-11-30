@@ -8,5 +8,6 @@ component GemLineChart(
   Object displayValue,
   Boolean enableBackgroundColor,
   Integer maxValue,
-  Integer minValue
+  Integer minValue,
+  boolean showConfig = true
 )

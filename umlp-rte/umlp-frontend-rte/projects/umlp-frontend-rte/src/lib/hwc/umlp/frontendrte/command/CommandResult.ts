@@ -32,6 +32,8 @@ export abstract class CommandResult<T> {
         this.commandId = commandId;
     }
 
+    public abstract isSuccessful(): Promise<boolean>;
+
     public isStatusResult(): boolean {
         return false;
     }

@@ -1,22 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Artifact } from '@src/sehub/Artifact';
-import { SehubManager } from '@src/sehub/SehubManager';
-import { DateTimeToPassedByTimeTOP } from '@src/gui/artifacts/DateTimeToPassedByTimeTOP';
+import {DateTimeToPassedByTimeComponent} from '@src/gui/artifacts/DateTimeToPassedByTimeComponent';
 
-import {
-  Directive,
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  TemplateRef,
-} from '@angular/core';
+import {Component,} from '@angular/core';
 
-import { ActivatedRoute, Router } from '@angular/router';
-
-@Directive()
-export  class DateTimeToPassedByTime extends DateTimeToPassedByTimeTOP {
+@Component({
+  selector: 'date-time-to-passed-by-time',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/artifacts/DateTimeToPassedByTime.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export  class DateTimeToPassedByTime extends DateTimeToPassedByTimeComponent {
 
   oneYearInMilliSes : number    = 31557600000;
   oneMonthInMilliSecs : number  =  2629800000;

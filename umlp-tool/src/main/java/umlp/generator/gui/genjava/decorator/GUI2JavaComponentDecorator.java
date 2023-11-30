@@ -29,6 +29,7 @@ import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -227,6 +228,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   protected String convertType(SymTypeExpression mcType) {
     // TODO MB Bessere Lösung
+    if (util.isDomainListType(mcType)) {
+      return "GemList" + "<"+Names.getSimpleName(((SymTypeOfGenerics) mcType).getArgument(0).getTypeInfo().getName())+">";
+    }
     if (mcType instanceof SymTypeOfGenerics) {
       return ((SymTypeOfGenerics) mcType).getBaseName()+"<"+Names.getSimpleName(((SymTypeOfGenerics) mcType).getArgument(0).getTypeInfo().getName())+">";
     }
@@ -258,9 +262,11 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
   /**/
 
-  public List<String> getArgs(Map<String, String> args) {
+  public List<String> getArgs(LinkedHashMap<String, String> args) {
     List<String> res = new ArrayList<>();
-    for (Map.Entry arg : args.entrySet()) {
+    List<Map.Entry<String, String>> list = new ArrayList<>(args.entrySet());
+    for (int i = list.size() - 1; i >= 0; i--) {
+      Map.Entry<String, String> arg = list.get(i);
       res.add(arg.getValue() + " " + arg.getKey());
     }
     return res;

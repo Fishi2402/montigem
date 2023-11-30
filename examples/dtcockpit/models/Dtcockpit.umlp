@@ -12,6 +12,7 @@ classdiagram Dtcockpit {
   association [1] App -> Room [*];
   association [1] App -> Project [*];
   association [1] App -> Group [*];
+  association [1] App -> (dashboardGroup) Group [0..1];
 
   class User {
     <<dbColumn = "unique=true">>
@@ -42,6 +43,10 @@ classdiagram Dtcockpit {
   class Room {
     int roomNumber;
     int level;
+    double temperature; // in °C
+    double atmosphericPressure; // in hPa
+    double humidity; // relative, in %
+    boolean motionDetected;
   }
 
   association [1] Room <-> (rStatistics) RoomStatistic [*];
@@ -83,4 +88,18 @@ classdiagram Dtcockpit {
 
   association [0..1] Group <-> (statistics) AggregatedPipelineStatisticsOverDate [*];
 
+  class Server {
+    String hostname;
+  }
+
+  class ServerStatus {
+    java.time.LocalDateTime time;
+    int diskUsage;        // In GB
+    int maxDisk;          // In GB
+    int ramUsage;         // In MB
+    int maxRam;           // In MB
+    float processorUsage; // 0 to 1
+  }
+
+  association [1] Server -> ServerStatus [*];
 }

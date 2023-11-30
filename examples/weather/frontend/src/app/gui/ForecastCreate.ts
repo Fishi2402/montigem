@@ -1,10 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Directive } from '@angular/core';
-import { ForecastCreateTOP } from '@src/gui/ForecastCreateTOP';
+import { Component } from '@angular/core';
+import { ForecastCreateComponent } from '@src/gui/ForecastCreateComponent';
 
-@Directive()
-export class ForecastCreate extends ForecastCreateTOP {
+@Component({
+  selector: 'forecast-create',
+  templateUrl: '../../../build/frontendGen/build/appgui/gui/ForecastCreate.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export class ForecastCreate extends ForecastCreateComponent {
   public override saveForecast(event: any): void {
     this.build();
   }

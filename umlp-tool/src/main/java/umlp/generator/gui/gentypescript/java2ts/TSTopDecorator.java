@@ -13,6 +13,7 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -37,27 +38,27 @@ public class TSTopDecorator extends TopDecorator {
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compUnit, boolean importHW) {
     super.decorate(compUnit);
     for (ASTCDClass cdClass : compUnit.getCDDefinition().getCDClassesList()) {
-      if (existsHandwrittenClass(hwPath, determineQualifiedName(cdClass, compUnit))) {
+      if (!GUIGeneratorUtil.getInstance().isComponent(cdClass) && GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdClass, compUnit))) {
         if (importHW) {
-          CD4C.getInstance().addImport(cdClass, getPackageName(compUnit) + "." + cdClass.getName());
+          CD4C.getInstance().addImport(cdClass, GUIGeneratorUtil.getInstance().getPackageName(compUnit) + "." + cdClass.getName());
         }
         applyTopMechanism(cdClass);
       }
     }
 
     for (ASTCDInterface cdInterface : compUnit.getCDDefinition().getCDInterfacesList()) {
-      if (existsHandwrittenClass(hwPath, determineQualifiedName(cdInterface, compUnit))) {
+      if (GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdInterface, compUnit))) {
         if (importHW) {
-          CD4C.getInstance().addImport(cdInterface, getPackageName(compUnit) + "." + cdInterface.getName());
+          CD4C.getInstance().addImport(cdInterface, GUIGeneratorUtil.getInstance().getPackageName(compUnit) + "." + cdInterface.getName());
         }
         applyTopMechanism(cdInterface);
       }
     }
 
     for (ASTCDEnum cdEnum : compUnit.getCDDefinition().getCDEnumsList()) {
-      if (existsHandwrittenClass(hwPath, determineQualifiedName(cdEnum, compUnit))) {
+      if (GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdEnum, compUnit))) {
         if (importHW) {
-          CD4C.getInstance().addImport(cdEnum, getPackageName(compUnit) + "." + cdEnum.getName());
+          CD4C.getInstance().addImport(cdEnum, GUIGeneratorUtil.getInstance().getPackageName(compUnit) + "." + cdEnum.getName());
         }
         applyTopMechanism(cdEnum);
       }

@@ -9,4 +9,8 @@ export class Log {
   static error(msg: string) {
     console.log("[ERROR] " + msg);
   }
+
+  public static info(msg: string, logName: string) {
+    console.log("[INFO]  " + logName + " : " + msg)
+  }
 }

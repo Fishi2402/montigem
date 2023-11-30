@@ -8,20 +8,21 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
-import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.types.MCTypeFacade;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -103,10 +104,18 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
   }
 
   protected ASTMCType transformTypeForAttr(ASTCDClass clazz, ASTGUIParam param) {
+    if (util.isDomainListType(param)) {
+      String inner = util.getDomainListInnerType(param);
+      getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
+      return MCTypeFacade.getInstance().createBasicGenericTypeOf("GemList", inner);
+    }
     return param.getMCType();
   }
 
-  protected String getParam(String type, String name) {
-    return type + " " + name;
+  protected String getParam(SymTypeExpression type, String name) {
+    if (util.isDomainListType(type)) {
+      return PathUtil.getBackendRTECommonPath("GemList") + " " + name;
+    }
+    return type.getTypeInfo().getName() + " " + name;
   }
 }

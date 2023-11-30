@@ -1,87 +1,98 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { GemBarChartData } from '@umlp/charts';
-import { GemBarChartEntry } from '@umlp/charts';
-import { DtcockpitManager } from '@src/dtcockpit/DtcockpitManager';
-import { Project } from '@src/dtcockpit/Project';
 import { PipelineStatistic } from '@src/dtcockpit/PipelineStatistic';
-import { PipelineStatsTOP } from '@src/gui/pipelines/PipelineStatsTOP';
+import { PipelineStatsComponent } from '@src/gui/pipelines/PipelineStatsComponent';
+import { GemBarChartData, GemBarChartEntry } from '@umlp/charts';
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
-export class PipelineStats extends PipelineStatsTOP {
+@Component({
+  selector: 'pipeline-stats',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/pipelines/PipelineStats.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+})
+export class PipelineStats extends PipelineStatsComponent {
 
   private disableButton = false;
-  private maxValue : number = 0;
-  private stacked : boolean = true;
+  private maxValue: number = 0;
+  private stacked: boolean = true;
 
-  private dateOptions : Intl.DateTimeFormatOptions = {
+  private dateOptions: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   };
 
   projectDataCheck = { value: null, hash: null, calculating: false };
-  private project : Project;
 
-  public  getGemCard0Title (): string {
-    return "Pipeline dashboard for "+this.getP().getName();
+  public constructor(protected route: ActivatedRoute, router: Router) {
+    super(route, router);
   }
 
-  public  getBarChartForPipelineRunsData (): GemBarChartData {
-    if(!this.getP()) {
+  public ngOnInit() {
+    this.route.paramMap.subscribe(() => {
+      this.projectDataCheck = { value: null, hash: null, calculating: false };
+      this.pRoutingId = +this.route.snapshot.paramMap.get("pRoutingId");
+      this.p = null;
+      super.ngOnInit();
+    });
+  }
+
+  public getBarChartForPipelineRunsData(): GemBarChartData {
+    if (!this.getP()) {
       return null;
     }
-    console.debug("Project is "+ this.getP().getName())
-    let labels : string[] = []
-    let entries : Map<string,number[]> = new Map()
+    console.debug("Project is " + this.getP().getName())
+    let labels: string[] = []
+    let entries: Map<string, number[]> = new Map()
     entries.set("Successful", [])
     entries.set("Unsuccessful", [])
-    this.getP().getPStatistics().forEach((stat : PipelineStatistic) =>
-        {
-          const label = stat.getTime().toLocaleString("de-DE", this.dateOptions)
-          let index = labels.indexOf(label)
-          if(index === -1) {
-            labels.push(label)
-            index = labels.indexOf(label)
-            entries.get("Successful").push(0)
-            entries.get("Unsuccessful").push(0)
-          }
-          if(stat.isSuccessful()) {
-            entries.get("Successful")[index] +=1
-          } else {
-            entries.get("Unsuccessful")[index] +=1
-          }
-        }
+    this.getP().getPStatistics().forEach((stat: PipelineStatistic) => {
+      const label = stat.getTime().toLocaleString("de-DE", this.dateOptions)
+      let index = labels.indexOf(label)
+      if (index === -1) {
+        labels.push(label)
+        index = labels.indexOf(label)
+        entries.get("Successful").push(0)
+        entries.get("Unsuccessful").push(0)
+      }
+      if (stat.isSuccessful()) {
+        entries.get("Successful")[index] += 1
+      } else {
+        entries.get("Unsuccessful")[index] += 1
+      }
+    }
     )
     for (let i = 0; i < entries.get("Successful").length; i++) {
-      if(this.stacked) {
-        if(this.maxValue < entries.get("Successful")[i]+entries.get("Unsuccessful")[i]+5){
-          this.maxValue = entries.get("Successful")[i]+entries.get("Unsuccessful")[i]+5
+      if (this.stacked) {
+        if (this.maxValue < entries.get("Successful")[i] + entries.get("Unsuccessful")[i] + 5) {
+          this.maxValue = entries.get("Successful")[i] + entries.get("Unsuccessful")[i] + 5
           console.debug("Updated maxValue: ", this.maxValue)
         }
       } else {
-        if(this.maxValue < entries.get("Successful")[i]+5){
-          this.maxValue = entries.get("Successful")[i]+5
+        if (this.maxValue < entries.get("Successful")[i] + 5) {
+          this.maxValue = entries.get("Successful")[i] + 5
           console.debug("Updated maxValue: ", this.maxValue)
         }
-        if (this.maxValue < entries.get("Unsuccessful")[i]+5){
-          this.maxValue = entries.get("Unsuccessful")[i]+5
+        if (this.maxValue < entries.get("Unsuccessful")[i] + 5) {
+          this.maxValue = entries.get("Unsuccessful")[i] + 5
           console.debug("Updated maxValue: ", this.maxValue)
         }
       }
     }
-    let barChartEntries : GemBarChartEntry[] = []
+    let barChartEntries: GemBarChartEntry[] = []
     entries.forEach((data, label) => {
       barChartEntries.push({
-        label:label,
-        data:data
+        label: label,
+        data: data
       })
     })
-    const data : GemBarChartData = {
+    const data: GemBarChartData = {
       labels: labels,
       entries: barChartEntries
     }
     const newHash = JSON.stringify(data);
-    if(this.projectDataCheck.hash !== newHash) {
+    if (this.projectDataCheck.hash !== newHash) {
       this.projectDataCheck.hash = newHash;
       this.projectDataCheck.value = data;
     }
@@ -89,13 +100,13 @@ export class PipelineStats extends PipelineStatsTOP {
     return this.projectDataCheck.value
   }
 
-  public getGemButton1Disabled() :boolean {
+  public getGemButton1Disabled(): boolean {
     return this.disableButton;
   }
 
   // TODO alles erst mal provisorisch um anzuzeigen, dass sich im Backend was getan hat
-  public  getGemButton1Label (): string {
-    if(this.disableButton) {
+  public getGemButton1Label(): string {
+    if (this.disableButton) {
       return "PipelineInformation already loaded into Backend"
     }
     return "Load PipelineInformation into Backend";
@@ -103,21 +114,21 @@ export class PipelineStats extends PipelineStatsTOP {
   }
 
   // TODO how do I add a custom command into a UMLP App
-  public  loadPipelineInfoIntoBackend (p: any): (arg: any) => void {
+  public loadPipelineInfoIntoBackend(p: any): (arg: any) => void {
 
-    return () => {}
+    return () => { }
     /*    return event => {
       DtcockpitManager.createPipelineStatisticGem(this.getP().getGemId()).load().finally(
         () => {this.disableButton = true}
     )};*/
   }
 
-  public  getBarChartForPipelineRunsMaxValue (): number {
+  public getBarChartForPipelineRunsMaxValue(): number {
     console.debug("Max Value: ", this.maxValue)
     return this.maxValue;
   }
 
-  public  getBarChartForPipelineRunsStacked (): boolean {
+  public getBarChartForPipelineRunsStacked(): boolean {
     return this.stacked;
   }
 
