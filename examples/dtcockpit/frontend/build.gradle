@@ -70,7 +70,7 @@ genGUI {
   symbolDir = files(
       genDomain.symbolOutDir,
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      configurations.guiTypes.files
+      // configurations.guiTypes.files // Wird vom Frontend-Plugin übernommen
   )
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
