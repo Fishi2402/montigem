@@ -27,6 +27,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Currently tags are used to exchange information given in class diagrams
+ * (such as <code><<singleton>></code> StereoTypes on classes)
+ *
+ * This stereotype information is then copied into a tags file,
+ * which is then loaded again during the Gui-generation tasks.
+ */
 public class TagRelated {
 
   // We use the Symtab cmd option here to store our tagmodels
