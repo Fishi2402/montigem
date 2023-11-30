@@ -8,6 +8,7 @@ import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.tasks.TaskProvider;
 
 import java.io.File;
@@ -31,6 +32,9 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   public void apply(Project project) {
     project.getPluginManager().apply(UMLPPluginBase.class);
     project.getPluginManager().apply("base");
+
+    Configuration guiTypes = project.getConfigurations().create("guiTypes");
+    // TODO: Dependency als default hinzufügen: "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 
     // TODO: Was, wenn der "config" Ordner nicht existiert?
     TaskProvider<?> authTask = createAuthTask(project);

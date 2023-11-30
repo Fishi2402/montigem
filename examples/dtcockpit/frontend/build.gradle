@@ -5,13 +5,14 @@ plugins {
   id 'de.rwth.se.umlp-tool-frontend'
 }
 
-
+/* Wird vom Frontend-Plugin übernommen
 configurations {
-  guiDefaultTypes
+  guiTypes
 }
+*/
 
 dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+  guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
 /* Wird vom Frontend-Plugin übernommen
@@ -69,7 +70,7 @@ genGUI {
   symbolDir = files(
       genDomain.symbolOutDir,
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      configurations.guiDefaultTypes.files
+      configurations.guiTypes.files
   )
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
