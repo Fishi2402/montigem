@@ -32,7 +32,7 @@ describe('NetworkChartExample', () => {
 
   /**
    * Friends tree:
-   * 
+   *
    * p1 -> p2
    * p1 -> p3 -> p4
    * p5
@@ -174,10 +174,10 @@ describe('NetworkChartExample', () => {
 
     let data: NetworkData | null;
 
-    data = comp.getGemNetworkGraphData();
+    data = comp.getGemGraph0Data();
     expect(data).toBeNull();
 
-    data = comp.getGemNetworkGraphData();
+    data = comp.getGemGraph0Data();
     expect(data).toBeNull();
   });
 
@@ -186,7 +186,7 @@ describe('NetworkChartExample', () => {
 
     let data: NetworkData | null;
 
-    data = comp.getGemNetworkGraphData();
+    data = comp.getGemGraph0Data();
 
     const nodes: NetworkNode[] = [
       { id: person1.getName(), label: person1.getName(), mass: 50, color: "yellow" },
@@ -206,10 +206,10 @@ describe('NetworkChartExample', () => {
     comp.p = person1;
 
     let data1: NetworkData | null;
-    data1 = comp.getGemNetworkGraphData();
+    data1 = comp.getGemGraph0Data();
 
     let data2: NetworkData | null;
-    data2 = comp.getGemNetworkGraphData();
+    data2 = comp.getGemGraph0Data();
 
     expect(data1).toBe(data2);
   });
