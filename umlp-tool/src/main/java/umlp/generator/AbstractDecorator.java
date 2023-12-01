@@ -155,6 +155,12 @@ public abstract class AbstractDecorator {
     return (subPackage.isEmpty() ? origPackage : Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
   }
 
+  protected String getPackageName(DiagramSymbol cD, String subPackage) {
+    String origPackage = cD.getPackageName().isEmpty()? cD.getName().toLowerCase() :
+        Joiners.DOT.join(cD.getPackageName(), cD.getName().toLowerCase());
+    return (subPackage.isEmpty() ? origPackage : Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
+  }
+
   protected Optional<String> getPackageFromFQNString(String fQN) {
     String[] subNames = fQN.split("\\.");
     if (subNames.length > 1) {
