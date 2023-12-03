@@ -6,7 +6,6 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 import umlp._cocos.UMLPCheckDiagramName;
 import umlp._cocos.UMLPCoCoChecker;
-import umlp._cocos.teaching.CDInterfaceNotPresent;
 import umlptest.AbstractUMLPTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
