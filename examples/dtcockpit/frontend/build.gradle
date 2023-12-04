@@ -84,7 +84,8 @@ genGUI {
 npm_install.dependsOn(':umlp-rte:client:npm_install')
 
 def prebuildTasks = [
-    npm_install, generate
+    npm_install,
+    generate  // Created from UMLP-Frontend Plugin. 
 ]
 
 task buildApp(type: NpxTask) {
