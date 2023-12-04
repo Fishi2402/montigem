@@ -16,8 +16,10 @@ export class Navigation {
 
   readonly items: { url: string, title: string }[] = [
     { url: '/person/person/Overview', title: 'Overview' },
-    { url: '/example_basic/example_basic/GemLinkExample', title: 'Link' },
+    { url: '/example_basic/example_basic/GemAudioExample', title: 'Audio' },
     { url: '/example_basic/example_basic/GemButtonExample', title: 'Button' },
+    { url: '/example_basic/example_basic/GemImageExample', title: 'Image' },
+    { url: '/example_basic/example_basic/GemLinkExample', title: 'Link' },
     { url: '/example_basic/example_basic/GemTextExample', title: 'Text' },
     { url: '/example_table/example_table/GemTableExample', title: 'Table' },
     /*

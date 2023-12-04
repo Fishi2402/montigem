@@ -6,8 +6,8 @@ package basic;
   specific section within a page.
 */
 component GemLink(
-  /** URL the hyperlink redirects to */
+  /** URL the hyperlink redirects to. */
   String url = "",
-  /** Text of the link */
+  /** Text of the link. */
   String text = ""
 )

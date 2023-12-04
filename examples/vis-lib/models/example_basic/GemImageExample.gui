@@ -3,6 +3,9 @@ package example_basic;
 
 import basic.GemImage;
 
-page GemImageExample(){
-  @GemImage(source="assets/images/World.png");
+page GemImageExample() {
+  @GemImage(
+    source = "assets/images/World.png",
+    alt = "Image of the Earth"
+  );
 }

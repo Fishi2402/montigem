@@ -3,6 +3,7 @@ package example_basic;
 
 import basic.GemButton;
 
-page GemButtonExample(){
+page GemButtonExample() {
   @GemButton(label = "windows alert", leftClick = alert);
+  @GemButton(label = "Cannot click me", disabled = true);
 }

@@ -3,6 +3,6 @@ package example_basic;
 
 import basic.GemAudio;
 
-page GemAudioExample(){
-  @GemAudio(source="assets/audio/audio.mp3");
+page GemAudioExample() {
+  @GemAudio(source = "assets/audio/audio.mp3");
 }
