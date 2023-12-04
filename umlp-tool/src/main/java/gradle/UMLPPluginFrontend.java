@@ -8,8 +8,10 @@ import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.tasks.TaskProvider;
+import org.gradle.jvm.tasks.Jar;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -48,6 +50,13 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     TaskProvider<?> frontendGuiTask = createFrontendGuiTask(project,guiTypes, frontendDomainTask);
     frontendGuiTask.get().dependsOn(frontendSetupTask);
 
+    // Lifecycle task "generate" which depends on Backend-Creation
+    Task generateTask = project.getTasks().create("generate");
+    generateTask.dependsOn(frontendGuiTask);
+
+    // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
+    Task continuousTask = project.getTasks().create("continuous");
+    continuousTask.dependsOn(generateTask);
   }
 
   private TaskProvider<UMLPGuiGenTask> createFrontendGuiTask(final Project project, final Configuration guiTypes, TaskProvider<UMLPFrontendTask> frontendDomainTask) {

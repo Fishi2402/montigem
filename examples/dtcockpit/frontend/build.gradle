@@ -84,7 +84,7 @@ genGUI {
 npm_install.dependsOn(':umlp-rte:client:npm_install')
 
 def prebuildTasks = [
-    npm_install, genDomain, genGUI
+    npm_install, generate
 ]
 
 task buildApp(type: NpxTask) {
@@ -104,4 +104,7 @@ task runApp(type: NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
+}
+task run {
+  dependsOn(runApp)
 }
