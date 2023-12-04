@@ -62,7 +62,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     TaskProvider<?> syncGuiTask = project.getTasks().register("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class, syncTask -> {
       syncTask.from(frontendGuiTask.get().getOutputDir());
       syncTask.into(Path.of(project.getBuildDir().getAbsolutePath(), "frontendGen", "build", "appgui").toFile());
-      syncTask.dependsOn(frontendGuiTask,frontendDomainTask); // I want that the sync tasks runs after all generate tasks
+      syncTask.dependsOn(frontendGuiTask,frontendDomainTask,syncDomainTask); // I want that the sync tasks runs after all generate tasks
     });
 
 
