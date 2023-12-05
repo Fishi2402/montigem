@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package dtcockpit.montiverse;
 
+import com.google.common.collect.Maps;
 import de.se_rwth.commons.logging.Log;
 import dtcockpit.DtcockpitManager;
 import dtcockpit.Project;
@@ -9,8 +10,6 @@ import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Branch;
 
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MontiVerseLite {
 
@@ -18,28 +17,29 @@ public class MontiVerseLite {
   protected GitLabApi api;
   protected static final String HOST_URL = "https://git.rwth-aachen.de/";
 
-  protected Map<String, String> projectMap = Stream.of(new String[][] {
-      { "monticore/se-commons/se-commons", "$SECOMMONS_BRANCH" },
-      { "monticore/tools/class2mc", "$CLASS2MC_BRANCH" },
-      { "monticore/cd4analysis/cd4analysis", "CD4A_BRANCH" },
-      { "monticore/languages/mlc", "$MLC_BRANCH" },
-      { "monticore/artifacts/artifacts", "$ARTIFACTS_BRANCH" },
-      { "monticore/languages/xml", "$XML_BRANCH" },
-      { "monticore/languages/json", "$JSON_BRANCH" },
-      { "monticore/languages/siunits", "$SIUNITES_BRANCH" },
-      { "monticore/langexperiments", "$LANGEXPERIMENTS_BRANCH" },
-      { "monticore/languages/ucd", "$UCD_BRANCH" },
-      { "monticore/languages/OCL", "$OCL_BRANCH" },
-      { "monticore/languages/od", "$OD_BRANCH" },
-      { "monticore/languages/gui-dsl", "$GUIDSL_BRANCH" },
-      { "monticore/statechart/sc-language", "$SC_BRANCH" },
-      { "monticore/languages/automaton", "$AUTOMATON_BRANCH" },
-      { "monticore/languages/feature-diagram", "$FD_BRANCH" },
-      { "monticore/languages/montifun", "$MONTIFUN_BRANCH" },
-      { "monticore/statechart/sd-language", "$SD_BRANCH" }
-  }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+  protected Map<String, String[]> projectMap = Maps.newHashMap();
 
   public MontiVerseLite() {
+    projectMap.put("monticore/se-commons/se-commons",  new String[] {"$SECOMMONS_BRANCH", "dev"});
+    projectMap.put("monticore/tools/class2mc",  new String[] {"$CLASS2MC_BRANCH", "dev"});
+    projectMap.put("monticore/monticore",  new String[] {"MONTICORE_BRANCH", "develop"});
+    projectMap.put("monticore/cd4analysis/cd4analysis",  new String[] {"CD4A_BRANCH", "develop"});
+    projectMap.put("monticore/languages/mlc",  new String[] {"$MLC_BRANCH", "develop"});
+    projectMap.put("monticore/artifacts/artifacts",  new String[] {"$ARTIFACTS_BRANCH", "dev"});
+    projectMap.put("monticore/languages/xml",  new String[] {"$XML_BRANCH", "develop"});
+    projectMap.put("monticore/languages/json",  new String[] {"$JSON_BRANCH", "develop"});
+    projectMap.put("monticore/languages/siunits",  new String[] {"$SIUNITES_BRANCH", "dev"});
+    projectMap.put("monticore/langexperiments",  new String[] {"$LANGEXPERIMENTS_BRANCH", "dev"});
+    projectMap.put("monticore/languages/ucd",  new String[] {"$UCD_BRANCH", "dev"});
+    projectMap.put("monticore/languages/OCL",  new String[] {"$OCL_BRANCH", "develop"});
+    projectMap.put("monticore/languages/od",  new String[] {"$OD_BRANCH", "dev"});
+    projectMap.put("monticore/languages/gui-dsl",  new String[] {"$GUIDSL_BRANCH", "dev"});
+    projectMap.put("monticore/statechart/sc-language",  new String[] {"$SC_BRANCH", "dev"});
+    projectMap.put("monticore/languages/automaton",  new String[] {"$AUTOMATON_BRANCH", "master"});
+    projectMap.put("monticore/languages/feature-diagram",  new String[] {"$FD_BRANCH", "develop"});
+    projectMap.put("monticore/languages/montifun",  new String[] {"$MONTIFUN_BRANCH", "dev"});
+    projectMap.put("monticore/statechart/sd-language",  new String[] {"$SD_BRANCH", "dev"});
+
     /*
     * Get access token from the environment for now. Later we could think about sending it to the server
     * Current implication is that the environment defines which (not publicly available) GitLab instance
@@ -53,17 +53,26 @@ public class MontiVerseLite {
   }
   public Project createProjects() {
     Project montiVerse = DtcockpitManager.projectBuilder().name("MontiVerse").git("monticore/montiverseci").build().get();
+    Map<String, Project> allProjects = Maps.newHashMap();
+    DtcockpitManager.getProjectList().forEach(p -> allProjects.put(p.getName(), p));
     projectMap.entrySet().forEach(s -> {
-      Project p = (DtcockpitManager.projectBuilder()
-        .name(getSimpleName(s.getKey()))
-        .git(s.getKey())
-        .build().get());
-      montiVerse.addDependentProjects(p);
-      p.setCiInfos(DtcockpitManager.cIInformationBuilder().variableName(s.getValue()).build().get());
+      String simpleName = getSimpleName(s.getKey());
+      Project project;
+      if (!allProjects.containsKey(simpleName)) {
+        project = (DtcockpitManager.projectBuilder()
+            .name(simpleName)
+            .git(s.getKey())
+            .build().get());
+      } else {
+        project = allProjects.get(simpleName);
+      }
+      montiVerse.addDependentProjects(project);
+      project.setCiInfos(DtcockpitManager.cIInformationBuilder().variableName(s.getValue()[0]).branchName(s.getValue()[1]).build().get());
     });
     return montiVerse;
   }
   public void createBranches(Project project) {
+    Log.info("Branches of " + project.getName(), this.getClass().getName());
     try {
       for (Branch branch : this.api.getRepositoryApi().getBranches(project.getGit())) {
         project.addBranches(DtcockpitManager.branchBuilder().name(branch.getName()).git(branch.getWebUrl()).build().get());

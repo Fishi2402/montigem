@@ -79,8 +79,7 @@ classdiagram Dtcockpit {
 
   class CIInformation {
     String variableName;
-    // TODO: Optional
-    List<String> defaultBranch;
+    String branchName;
   }
 
   association [0..1] Project -> (ciInfos) CIInformation [0..1];

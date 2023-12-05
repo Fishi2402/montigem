@@ -1,20 +1,11 @@
-
-
 /* (c) https://github.com/MontiCore/monticore */
-
 
 import {OverviewPageComponent} from '@src/gui/montiverse/OverviewPageComponent';
 import { Project } from '@src/dtcockpit/Project';
 
-
-
 import {
   Component
 } from '@angular/core';
-
-import { ActivatedRoute, Router } from '@angular/router';
-import {DtcockpitSecurityManager} from "../../dtcockpit/DtcockpitSecurityManager";
-
 
 @Component({
   selector: 'overview-page',
@@ -30,10 +21,9 @@ export  class OverviewPage extends OverviewPageComponent {
     };
   }
 
-  public override startPipeline (g: Project): (arg: any) => void {
+  public override startPipeline (): (arg: any) => void {
     return event => {
-      console.error(g)
-      this.router.navigate(["gui", "montiverse", "Pipeline", g.getGemId()]);
+      this.router.navigate(["gui", "montiverse", "Pipeline", this.g.getGemId()]);
     };
   }
 }

@@ -3,15 +3,8 @@ import {ShowBranchesComponent} from '@src/gui/montiverse/ShowBranchesComponent';
 import { Branch } from '@src/dtcockpit/Branch';
 
 import {
-  Directive,
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  TemplateRef,
+  Component
 } from '@angular/core';
-
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'show-branches',
@@ -23,7 +16,7 @@ export  class ShowBranches extends ShowBranchesComponent {
 
   public override chooseBranch (g: Branch): (arg: any) => void {
     return event => {
-      g.getProject().getCiInfos().addDefaultBranch(0, g.getName());
+      g.getProject().getCiInfos().setBranchName(g.getName());
     };
   }
 

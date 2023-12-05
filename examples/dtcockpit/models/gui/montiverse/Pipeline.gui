@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.montiverse;
 
+import gui.navigation.DtCockpitNavigation;
 import Dtcockpit.Project;
 import Dtcockpit.Branch;
 
@@ -12,8 +13,10 @@ import basic.GemText;
 import input.GemTextInput;
 import input.GemTextareaInput;
 
-page Pipeline(Project project) {
- @GemColumn(hAlign = "left", component =
+page Pipeline(Project project, List<Group> groups, List<Project> projects) {
+  @GemRow(wrap = "nowrap", components = [
+    @DtCockpitNavigation(projects = projects, groups = groups),
+  @GemColumn(hAlign = "left", component =
     @GemCard(
       title = "MontiVerse Lite",
       component = projectList@GemRow(
@@ -23,11 +26,13 @@ page Pipeline(Project project) {
           @iterate(Project p: project.dependentProjects) {
             @GemRow(components = [
               @GemText(value = p.name),
-              @GemText(value = ":" + p.ciInfos.variableName)
+              @GemText(value = " "),
+              @GemText(value = p.ciInfos.branchName + ": " + p.ciInfos.variableName)
             ]);
           }
         ]
       )
     )
-  );
+    )
+  ]);
 }
