@@ -1,15 +1,18 @@
-
-
-import {Directive} from '@angular/core';
+/* (c) https://github.com/MontiCore/monticore */
+import {Component} from '@angular/core';
 import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
-import {ProjectCreateTOP} from '@src/gui/project/ProjectCreateTOP';
+import {ProjectCreateComponent} from '@src/gui/project/ProjectCreateComponent';
 import { ProjectErrorCollector } from '@src/dtcockpit/ProjectErrorCollector';
 import { Project } from '@src/dtcockpit/Project';
 
 
-@Directive()
-
-export class ProjectCreate extends ProjectCreateTOP {
+@Component({
+  selector: 'project-create',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/project/ProjectCreate.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export class ProjectCreate extends ProjectCreateComponent {
 
   private error: string = "";
 

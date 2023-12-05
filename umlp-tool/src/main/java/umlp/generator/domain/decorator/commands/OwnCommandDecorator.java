@@ -14,6 +14,8 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -21,6 +23,7 @@ import umlp.UMLPMill;
 import umlp.generator.domain.decorator.AccessPolicyDecorator;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.util.DecoratorUtil;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
@@ -30,6 +33,7 @@ import java.util.Set;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.types.check.SymTypePrimitive.box;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class OwnCommandDecorator extends AbstractDeSerDecorator {
@@ -76,8 +80,8 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
     ASTCDClass ast = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(classname)
-        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
         .build();
+    ast.setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass(meth, ast)));
     ast.setModifier(PUBLIC_ABSTRACT.build());
 
     ASTStereotypeBuilder stereotype = UMLPMill.stereotypeBuilder();
@@ -91,12 +95,11 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
 
     getCD4C().addConstructor(ast, getConstructorTemplate(), classname, getPackageName(origCD, COMMAND_PACKAGE), attrList);
 
-    AccessorDecorator accessor = new AccessorDecorator(glex);
+    AccessorDecorator accessor = DecoratorUtil.streamlessListAcessor(glex);
     attrList.forEach(a -> ast.addAllCDMembers(accessor.decorate(a)));
 
-    getCD4C().addMethod(ast, getDoActionTemplate());
+    getCD4C().addMethod(ast, getDoActionTemplate(), buildReturnType(meth, ast));
 
-    // getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", classname);
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
 
     addImports(ast);
@@ -105,19 +108,9 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
     meth.getCDParameterList().forEach(p -> {
       SymTypeExpression type = p.getSymbol().getType();
       if (GenService.isCDType(type)) {
-        ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
-        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print()
-            + AccessPolicyDecorator.SUFFIX);
         domainParameters.add(type);
       }
-      else if (GenService.isCDEnum(type)) {
-        ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
-      }
-      else if (GenService.isJavaType(type)) {
-        addJavaImport(ast, type);
-      }
+      addImport(type, ast);
     });
 
     getCD4C().addMethod(ast, getCheckAccessPolicyTemplate(), domainParameters);
@@ -145,21 +138,63 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
   }
 
   protected void addImports(ASTCDClass ast) {
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
     getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
     getCD4C().addImport(ast, "com.google.common.collect.Sets");
-    getCD4C().addImport(ast, "java.util.*");
+    getCD4C().addImport(ast, "java.util.ListIterator");
+    getCD4C().addImport(ast, "java.util.Spliterator");
+  }
+
+  protected void addImport(SymTypeExpression type, ASTCDClass ast) {
+    if (GenService.isCDType(type)) {
+      ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+      getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+      getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print()
+          + AccessPolicyDecorator.SUFFIX);
+    } else if (GenService.isCDEnum(type)) {
+      ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+      getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+    } else if (GenService.isJavaType(type)) {
+      addJavaImport(ast, type);
+    }
   }
 
   protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
-    getCD4C().addImport(ast, type.printFullName());
+    getCD4C().addImport(ast, box(type.printFullName()));
   }
 
-  protected String extendedClass() {
-    return "Command<Void>";
+  protected String extendedClass(ASTCDMethod command, ASTCDClass ast) {
+    SymTypeExpression returnTypeSymbol = command.getSymbol().getType();
+    if (returnTypeSymbol.isVoidType()) {
+      return buildExtendedCommandType("Void");
+    }
+    if (returnTypeSymbol.isGenericType()) {
+      SymTypeExpression innerType = ((SymTypeOfGenerics) returnTypeSymbol).getArgumentList().get(0);
+      addImport(innerType, ast);
+      return buildExtendedCommandType(innerType.getTypeInfo().getName());
+    }
+    addImport(returnTypeSymbol, ast);
+    return buildExtendedCommandType(returnTypeSymbol.getTypeInfo().getName());
+  }
+
+  public String buildReturnType(ASTCDMethod command, ASTCDClass ast) {
+    ASTMCReturnType retType = command.getMCReturnType();
+    if (retType.isPresentMCVoidType()) {
+      getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
+      return "StatusResult";
+    } else if (retType.isPresentMCType()) {
+      ASTMCType mcType = retType.getMCType();
+      if (GenService.isList(mcType)) {
+        return buildListResult(GenService.getInnerType(mcType), ast);
+      }
+      if (GenService.isOptional(mcType)) {
+        return buildSimpleResult(GenService.getInnerType(mcType), ast);
+      }
+      return buildSimpleResult(UMLPMill.prettyPrint(mcType, false), ast);
+    }
+    return buildSimpleResult("Object", ast);
   }
 
   protected String getConstructorTemplate() {
@@ -176,6 +211,23 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
 
   protected String getCheckAccessPolicyTemplate() {
     return "umlp.commands.own.CheckAccessPolicy";
+  }
+
+  protected static String buildExtendedCommandType(String typeParam) {
+    return new StringBuilder(StringTransformations.capitalize(COMMAND)).append("<")
+        .append(box(typeParam)).append(">").toString();
+  }
+
+  protected String buildSimpleResult(String typeParam, ASTCDClass ast) {
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
+    return new StringBuilder("SimpleResult").append("<").append(box(typeParam)).append(">").toString();
+  }
+
+  protected String buildListResult(String typeParam, ASTCDClass ast) {
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));
+    getCD4C().addImport(ast, "java.util.List");
+    return new StringBuilder("ListResult").append("<").append(box(typeParam)).append(", List<")
+        .append(box(typeParam)).append(">>").toString();
   }
 
   protected ASTCDClass createCommandDeSer(ASTCDCompilationUnit origCD, ASTCDMethod meth) {
@@ -196,6 +248,10 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
     boolean useDeSer = true;
     boolean jsonEmpty = true;
 
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
+
     for (ASTCDParameter p : meth.getCDParameterList()) {
       SymTypeExpression type = p.getSymbol().getType();
       String paramName = p.getName();
@@ -212,11 +268,16 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
       String typeName = GenService.printTypeFullName(type);
       userDeserList.add(supportedDeSers.contains(typeName));
 
-      jsonEmpty = jsonEmpty && GenService.calculateJsonInclGenerics(type).isEmpty();
+      jsonEmpty = jsonEmpty && GenService.calculateJsonInclGenerics(type, paramName).isEmpty();
       useDeSer = useDeSer && supportedDeSers.contains(typeName);
 
       addDeSerImport(ast, origCD, supportedDeSers.contains(typeName), GenService.isCDOrInnerCDEnum(type),
-          baseClassDecorator, typeName, cmdName);
+          baseClassDecorator, typeName);
+
+      if (GenService.isList(type)) {
+        getCD4C().addMethod(ast, "umlp.commands.deser.OwnCommand_FromJsonObjectParametersList", p.getName());
+        getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonElement");
+      }
     }
 
     boolean makeAbstract = jsonEmpty && !useDeSer;
@@ -241,10 +302,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
   }
 
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, boolean useDeSer,
-      boolean isCDEnum, String baseClassDecorator, String typeName, String cmdName) {
-    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
-    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
+                                boolean isCDEnum, String baseClassDecorator, String typeName) {
     if (isCDEnum) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + Names.getSimpleName(typeName));
     }
@@ -262,7 +320,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
   }
 
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD,
-      ASTCDType domainClass, SymTypeExpression type, SymTypeExpression innerType, String cmdName) {
+                                ASTCDType domainClass, SymTypeExpression type, SymTypeExpression innerType, String cmdName) {
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));

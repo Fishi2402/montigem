@@ -101,9 +101,9 @@ public class GenService {
     return json;
   }
 
-  public static String calculateJsonInclGenerics(SymTypeExpression type) {
+  public static String calculateJsonInclGenerics(SymTypeExpression type, String parameterName) {
     if (isList(type)) {
-      return calculateJsonForList(type);
+      return calculateJsonForList(type, parameterName);
     }
     if (!isOptional(type)) {
       return calculateJSon(type);
@@ -111,9 +111,10 @@ public class GenService {
     return calculateJSon(((SymTypeOfGenerics) type).getArgument(0));
   }
 
-  public static String calculateJsonForList(SymTypeExpression type) {
-    return "getAsJsonArray().getValues().stream().map(e -> e." + calculateJSon(((SymTypeOfGenerics) type).getArgument(0)) +
-        ").collect(java.util.stream.Collectors.toList())";
+  public static String calculateJsonForList(SymTypeExpression type, String parameterName) {
+//    return "getAsJsonArray().getValues().stream().map(e -> e." + calculateJSon(((SymTypeOfGenerics) type).getArgument(0)) +
+//        ").collect(java.util.stream.Collectors.toList())";
+    return "get" + StringTransformations.capitalize(parameterName) + "(jsonObject)";
   }
 
   public static String printTypeFullName(SymTypeExpression type) {
@@ -263,7 +264,7 @@ public class GenService {
     return isOptional(mcType);
   }
 
-  private static boolean isOptional(ASTMCType mcType) {
+  public static boolean isOptional(ASTMCType mcType) {
     if (mcType instanceof ASTMCOptionalType) {
       return true;
     }

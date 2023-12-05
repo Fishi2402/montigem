@@ -48,7 +48,7 @@ dependencies {
 
 4. Add Task in ``build.gradle``
 ````
-task myFirstUMLPTask(type: UMLPTask) {
+task myFirstUMLPTask(type: UMLPBackendTask) {
   input = file("models/")
   hwcDir = layout.projectDirectory.dir("hwc/")
 
@@ -105,6 +105,7 @@ org.gradle.parallel=false  // parallel execution not compatible with debugging
 
 Only enable the debug modus for debugging, and disable if afterwards. It must not be active for production builds.
 
+## HotReload
 
 ### Hot Reload of UMLP Backend
 The build can be configured to automatically compile & re-start the backend on each save-operation.
@@ -120,7 +121,7 @@ Initial configuration for Hot Reload of Backend:
 Start Hot Reload:
 * Start ``gradle <backend_subproject>:run``
   * Command should keep running, do not terminate
-* Start ``gradle <backend_subproject>:assemble --continuous`` in new terminal
+* Start ``gradle <backend_subproject>:continuous --continuous`` in new terminal
   * Command should keep running, do not terminate
 * Edit files. On each "Save" the new state should be started automatically. Look at the output of the previous commands for information.
 * (Optional) Install LiveReload Plugin in the Browser. It will automatically refresh the page after each update.
@@ -128,7 +129,7 @@ Start Hot Reload:
 
 Currently Known Limitations:
 * Changes in the database-schemata (e.g. changes of .umlp file) could lead to problems and might require a full restart
-  * Closing the database-connection on exit _might_ fix it:
+  * Workaround: Close the DBConnection on Exit
 ```java
 @PreDestroy
 public void onExit() {
@@ -137,7 +138,19 @@ public void onExit() {
 ```
 * changes in the gradle build setup (e.g., `build.gradle`) do not lead to an automatic reload
 
-### Notes for Developers of UMLP-Tool
+### Hot Reload of UMLP Frontend
+Requires use of UMLP-Frontend-Plugin
+
+Start Hot Reload:
+* Start ``gradle <frontend_subproject>:run``
+  * Command should keep running, do not terminate
+* Start ``gradle <frontend_subproject>:continuous --continuous`` in new terminal
+  * Command should keep running, do not terminate
+
+Currently Known Limitations:
+* During reload an error-message might be shown for a few seconds
+
+## Notes for Developers of UMLP-Tool
 The gradle-``UMLPTask`` supports incremental builds.
 It only runs when a _relevant_ input has changed.
 For example, when a new file ``hwc/A.java`` is added and it corresponds to a generated `A.java` in the output, the generator runs again.

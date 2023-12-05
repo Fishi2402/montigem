@@ -1,11 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {RoomStatsTOP} from '@src/gui/rooms/RoomStatsTOP';
+import {RoomStatsComponent} from '@src/gui/rooms/RoomStatsComponent';
+
 import {RoomObserver} from '@src/dtcockpit/RoomObserver';
 import {Room} from '@src/dtcockpit/Room';
 import {NotificationScope} from '@umlp/common';
+import { Component } from '@angular/core';
 
-export class RoomStats extends RoomStatsTOP {
+@Component({
+  selector: 'room-stats',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/rooms/RoomStats.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export class RoomStats extends RoomStatsComponent {
   temp4304 = "? °C";
   temp4315 = "? °C";
   temp4312 = "? °C";

@@ -18,6 +18,10 @@ import java.util.function.Function;
 
 abstract public class UMLPSingleFileTask extends CommonUMLPTask {
 
+  public UMLPSingleFileTask(String type) {
+    super(type);
+  }
+
   @Override
   protected Directory getReportDirOfFile(File f) {
     String pathName = f.getName();

@@ -10,18 +10,22 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import umlp.backendrte.common.DatabaseAccessManager;
 import umlp.backendrte.service.mqtt.MqttService;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @SpringBootApplication(
     exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
     scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "dtcockpit.service", "security"}
 )
 public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplicationTOP {
+  private static Set<Server> servers;
 
   public static void main(String[] args) {
     SpringApplication.run(DtcockpitServerApplication.class, args);
@@ -88,6 +92,7 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
     try {
       Server webServer = Server.createWebServer("-web", "-webAllowOthers").start();
       Log.info(String.format("H2 Web Server started at: http://localhost:%s", webServer.getPort()), DtcockpitServerApplication.class.getName());
+      servers = Set.of(webServer);
     }
     catch (SQLException e) {
       throw new IOException(e);
@@ -114,4 +119,17 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
     }
   }
 
+  // For HotReload helpful. Otherwise the h2-webserverport is used when reloading
+  // ToDo: How to preserve the most data across reload? e.g. when dataschema is the same
+  @PreDestroy
+  public void onExit() {
+    Log.warn("PreDestroy: Closing DB Connection");
+    try {
+      DatabaseAccessManager.closeConnection();
+    } catch (SQLException ignored) {
+    }
+    for (Server server : servers) {
+      server.stop();
+    }
+  }
 }

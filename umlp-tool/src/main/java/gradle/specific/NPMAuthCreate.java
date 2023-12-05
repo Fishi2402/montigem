@@ -30,11 +30,11 @@ abstract public class NPMAuthCreate extends DefaultTask {
   }
 
   @OutputFile
-  abstract RegularFileProperty getNpmrcFile();
+  public abstract RegularFileProperty getNpmrcFile();
 
 
   @InputFile
-  abstract protected RegularFileProperty getGitignore();
+  public abstract RegularFileProperty getGitignore();
 
   /**
    * Set to true in exceptional cases, such as publishing to a Nexus repository, which does not

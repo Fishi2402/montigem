@@ -1,10 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Directive } from '@angular/core';
-import { FavoriteItemTOP } from '@src/gui/widgets/navigation/FavoriteItemTOP';
+import { Component } from '@angular/core';
+import { FavoriteItemComponent } from '@src/gui/widgets/navigation/FavoriteItemComponent';
 
-@Directive()
-export class FavoriteItem extends FavoriteItemTOP {
+@Component({
+  selector: 'favorite-item',
+  templateUrl: '../../../../../build/frontendGen/build/appgui/gui/widgets/navigation/FavoriteItem.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ["./FavoriteItem.scss"]
+})
+export class FavoriteItem extends FavoriteItemComponent {
 
   public getGemText3Value(): string {
     return this.getFav()?.getCurrent()?.getDate().toDateString();

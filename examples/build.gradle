@@ -17,12 +17,12 @@ gradle.projectsEvaluated {
       project(":examples:sehub-cd2gui:frontend").tasks.buildApp
   )
   project(":examples:sehub-cd2gui:frontend").tasks.buildApp.mustRunAfter(
-      project(":examples:sehub-jsweet:frontend").tasks.buildApp
+      project(":examples:dtcockpit-jsweet:frontend").tasks.buildApp
   )
-  project(":examples:sehub-jsweet:frontend").tasks.buildApp.mustRunAfter(
+  project(":examples:dtcockpit-jsweet:frontend").tasks.buildApp.mustRunAfter(
       project(":examples:vis-lib:frontend").tasks.buildApp
   )
-  project(":examples:vis-lib:frontend").tasks.buildApp.mustRunAfter(
+  project(":examples:vis-lib:frontend").tasks.testApp.mustRunAfter(
       project(":examples:weather:frontend").tasks.buildApp
   )
 }

@@ -2,11 +2,14 @@
 
 import { Group } from '@src/dtcockpit/Group';
 import { Project } from '@src/dtcockpit/Project';
-import { DtCockpitNavigationTOP } from '@src/gui/navigation/DtCockpitNavigationTOP';
-import { Directive } from '@angular/core';
+import { DtCockpitNavigationComponent } from '@src/gui/navigation/DtCockpitNavigationComponent';
+import { Component } from '@angular/core';
 
-@Directive()
-export class DtCockpitNavigation extends DtCockpitNavigationTOP {
+@Component({
+  selector: 'dt-cockpit-navigation',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/navigation/DtCockpitNavigation.html'
+  // styleUrls: ["./DtCockpitNavigationComponent.scss"] // File missing?
+})export class DtCockpitNavigation extends DtCockpitNavigationComponent {
 
   public getProjectNavTarget(p: Project): string {
     return "/gui/pipelines/PipelineStats/" + p.getGemId();

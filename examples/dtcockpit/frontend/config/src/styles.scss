@@ -140,3 +140,133 @@ gem-text {
   height: 170px;
 }
 
+
+//
+// Christmas lights
+// Adapted from https://codepen.io/tobyj/pen/QjvEex
+// No license found - NOT FOR PUBLIC RELEASE, only for internal consumption :)
+//
+// Feel free to remove the lights again (git revert) or scroll down a bit to hide them
+//
+
+$globe-width:   12px;
+$globe-height:  28px;
+$globe-spacing: 40px;
+$globe-spread: 3px;
+$light-off-opacity: 0.4;
+$lights-speed: 2;
+
+.christmas-lights {
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  position: absolute;
+  z-index: 1;
+  margin: -15px 0 0 0;
+  padding: 0;
+  pointer-events: none;
+  width: 100%;
+
+  li {
+    position: relative;
+    animation-fill-mode: both;
+    animation-iteration-count: infinite;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: $globe-width;
+    height: $globe-height;
+    border-radius: 50%;
+    margin: $globe-spacing/2;
+    display: inline-block;
+    background: $acronio-blue;
+    box-shadow: 0 $globe-height/6 $globe-width*2 $globe-spread $acronio-blue;
+    animation-name: flash-1;
+    animation-duration: $lights-speed*2s;
+
+    &:nth-child(2n+1) {
+      background: $acronio-orange;
+      box-shadow: 0 $globe-height/6 $globe-width*2 $globe-spread $acronio-orange;
+      animation-name: flash-2;
+      animation-duration: $lights-speed*0.8s;
+    }
+
+    &:nth-child(4n+2) {
+      background: $acronio-red;
+      box-shadow: 0px $globe-height/6 $globe-width*2 $globe-spread $acronio-red;
+      animation-name: flash-3;
+      animation-duration: $lights-speed*2.2s;
+    }
+
+    &:nth-child(odd) {
+      animation-duration: $lights-speed*3.6s;
+    }
+
+    &:nth-child(3n+1) {
+      animation-duration: $lights-speed*2.8s;
+    }
+
+    &:before {
+      content: "";
+      position: absolute;
+      background: #222;
+      width: ($globe-width - 2);
+      height: $globe-height/3;
+      border-radius: 3px;
+      top: (0 - ($globe-height/6));
+      left: 1px;
+    }
+
+    &:after {
+      content: "";
+      top: (0 - $globe-height/2);
+      left: $globe-width - 3;
+      position: absolute;
+      width: $globe-spacing + 12;
+      height: ($globe-height/3 * 2);
+      border-bottom: solid #222 2px;
+      border-radius: 50%;
+    }
+
+    &:last-child:after {
+      content: none;
+    }
+
+    &:first-child {
+      margin-left: -$globe-spacing;
+    }
+  }
+}
+
+@keyframes flash-1 {
+  0%, 100% {
+    background: $acronio-blue;
+    box-shadow: 0px $globe-height/6 $globe-width*2 $globe-spread $acronio-blue;
+  }
+  50% {
+    background: rgba(0, 159, 253, $light-off-opacity);
+    box-shadow: 0px $globe-height/6 $globe-width*2 $globe-spread rgba(0, 159, 253, 0.2);
+  }
+}
+
+@keyframes flash-2 {
+  0%, 100% {
+    background: $acronio-orange;
+    box-shadow: 0px $globe-height/6 $globe-width*2 $globe-spread $acronio-orange;
+  }
+  50% {
+    background: rgba(255, 164, 0, $light-off-opacity);
+    box-shadow: 0px $globe-height/6 $globe-width*2 $globe-spread rgba(255, 164, 0, 0.2);
+  }
+}
+
+@keyframes flash-3 {
+  0%, 100% {
+    background: $acronio-red;
+    box-shadow: 0px $globe-height/6 $globe-width*2 $globe-spread $acronio-red;
+  }
+  50% {
+    background: rgba(146, 20, 12, $light-off-opacity);
+    box-shadow: 0px $globe-height/6 $globe-width*2 $globe-spread rgba(146, 20, 12, 0.2);
+  }
+}

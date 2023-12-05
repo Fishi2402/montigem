@@ -29,10 +29,14 @@ component DtCockpitNavigation(List<Group> groups, List<Project> projects) {
     @iterate(Group g : groups) {
       grouptNav@NavItem(title = g.name, target = "/gui/pipelines/PipelineGroupStats/" + g.name);
     },
-    projectList@GemColumn(height = "100%", component =
-      @iterate(Project p : projects) {
-        projectNav@NavItem(title = p.name, target = "/gui/pipelines/PipelineStats/" + p.name);
-      }
-    )
+    projectList@NavList(
+        header = @NavItem(title = "Git PipelineStats"),
+        components = [
+          @iterate(Project p : projects) {
+            projectNav@NavItem(title = p.name, target = "/gui/pipelines/PipelineStats/" + p.name);
+          }
+        ],
+        footer = @NavItem(title = "This is an always visible footer for this navlist")
+      )
   ]);
 }

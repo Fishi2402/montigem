@@ -1,11 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Directive } from '@angular/core';
-import {WindWidgetBodyTOP} from "@src/gui/widgets/WindWidgetBodyTOP";
+import { Component } from '@angular/core';
+import {WindWidgetBodyComponent} from "@src/gui/widgets/WindWidgetBodyComponent";
 
-@Directive()
-
-export class WindWidgetBody extends WindWidgetBodyTOP {
+@Component({
+  selector: 'wind-widget-body',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/widgets/WindWidgetBody.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ['./WindWidgetBody.scss']
+})
+export class WindWidgetBody extends WindWidgetBodyComponent {
 
   public override getGemText2Value (): string {
     if (this.getTimeseries() == null) {

@@ -1,0 +1,18 @@
+package login_module;
+
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import input.GemTextInput;
+
+
+page LoginPage(String username, String password) {
+  @GemRow(
+    components = [
+      @GemText(value = "Name"),
+      @GemTextInput(value = username),
+      @GemText(value = "Password"),
+      @GemTextInput(value = password) // TODO: hide password
+    ]
+  );
+}

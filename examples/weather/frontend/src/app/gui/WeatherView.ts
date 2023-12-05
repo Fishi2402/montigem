@@ -1,12 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Directive } from '@angular/core';
+import { Component } from '@angular/core';
 import { GemGaugeChartData, GemGaugeChartEntry, GemLineChartData, GemLineChartEntry } from '@umlp/charts';
-import { WeatherViewTOP } from '@src/gui/WeatherViewTOP';
+import { WeatherViewComponent } from '@src/gui/WeatherViewComponent';
 import { Forecast } from '@src/weather/Forecast';
 
-@Directive()
-export class WeatherView extends WeatherViewTOP {
+@Component({
+  selector: 'weather-view',
+  templateUrl: '../../../build/frontendGen/build/appgui/gui/WeatherView.html',
+  styles: [
+    ":host { display: flex; flex-direction: column }",
+    ":host .gemColumn8 { display: initial }",
+    ":host .gemColumn9 { display: initial }"
+  ],
+  styleUrls: []
+})
+export class WeatherView extends WeatherViewComponent {
 
   protected cache: {
     chart: { hash: string, data: GemLineChartData }

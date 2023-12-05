@@ -1,0 +1,149 @@
+@import '../../../config/src/variables';
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.navMenu {
+  width: 100%;
+  color: #fff;
+  display: flex;
+  flex-direction: row;
+  background: rgba($acronio-black-2, 0.5) !important;
+  border-bottom: 1px solid $acronio-black-3;
+  box-shadow: 0px 4px 5px rgba($acronio-black, 1) !important;
+  backdrop-filter: blur(3px) !important;
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.navMenu .material-symbols-outlined {
+  font-size: 25px;
+  padding-top: 14px;
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+.navMenu a.material-symbols-outlined .tooltip {
+  visibility: hidden;
+  font-size: 14px;
+  background-color: $acronio-black-1;
+  color: #fff;
+  text-align: center;
+  padding: 5px 5px;
+  border-radius: 6px;
+  overflow: visible;
+  position: fixed;
+  transform: translate(-30px, 36px);
+  -webkit-filter: drop-shadow(0px 0px 5px #000);
+  filter: drop-shadow(0px 0px 5px rgba(#000, 1));
+}
+
+.navMenu a, .navMenu .user {
+  padding-top: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  display: inline-block;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+.navMenu.navMenu a:hover, .navMenu a:focus {
+  color: $acronio-orange-3 !important;
+}
+
+.navMenu .dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  padding: 0px;
+  background: $acronio-orange-3;
+  border-radius: 50%;
+  opacity: 0;
+  -webkit-transform: translate(82px, 37px);
+  transform: translate(82px, 37px);
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+.navMenu .startNav {
+  padding-top: 5px;
+  padding-left: 5px;
+  padding-right: 0px;
+  padding-bottom: 2px;
+}
+
+.startNav .tooltip {
+  visibility: hidden;
+  font-size: 14px;
+  background-color: $acronio-black-1;
+  color: #fff;
+  text-align: center;
+  padding: 5px 5px;
+  border-radius: 6px;
+  border-color: white;
+  overflow: visible;
+  position: fixed;
+  transform: translate(-40px, 45px);
+  -webkit-filter: drop-shadow(0px 0px 5px  #000);
+  filter: drop-shadow(0px 0px 5px  rgba(#000, 1));
+}
+
+.startNav.startNav img:hover, .startNav:focus img {
+  -webkit-filter: drop-shadow(0px 0px 5px $acronio-blue-alternate-3);
+  filter: drop-shadow(0px 0px 5px $acronio-blue-alternate-3);
+}
+
+.navMenu.navMenu a:nth-child(1):hover ~ .dot {
+  -webkit-transform: translate(82px, 37px);
+  transform: translate(82px, 37px);
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  opacity: 0;
+}
+
+.navMenu.navMenu a:nth-child(2):hover ~ .dot, .navMenu a:nth-child(2):focus ~ .dot {
+  -webkit-transform: translate(82px, 37px);
+  transform: translate(82px, 37px);
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  opacity: 1;
+}
+
+.navMenu.navMenu a:nth-child(3):hover ~ .dot, .navMenu a:nth-child(3):focus ~ .dot {
+  -webkit-transform: translate(189px, 37px);
+  transform: translate(189px, 37px);
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  opacity: 1;
+}
+
+.navMenu.navMenu a:nth-child(4):hover ~ .dot, .navMenu a:nth-child(4):focus ~ .dot {
+  -webkit-transform: translate(317px, 37px);
+  transform: translate(317px, 37px);
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  opacity: 1;
+}
+
+.navMenu .user {
+  color: $acronio-orange-3;
+}
+
+.navMenu .spacer {
+  flex-grow: 1; /* this is the important bit */
+}
+
+.navMenu a.material-symbols-outlined:hover .tooltip {
+  visibility: visible;
+}
+
+.startNav:hover .tooltip {
+  visibility: visible;
+}

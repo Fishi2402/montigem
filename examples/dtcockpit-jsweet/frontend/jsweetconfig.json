@@ -1,0 +1,21 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.UMLPJSweetAdapter",
+    "umlp.jsweet.extension.domainAdapters.DTCockpitImportAdapter"
+  ],
+  "@Replace('this.password = this.password;')": {
+    "include": ["**.User_setPassword.init()"]
+  },
+  "@Replace('//Do nothing);')": {
+    "include": [
+      "**.PipelineInformationExtractor.init()",
+      "**.PipelineInformationExtractor.extractPipelineDataOf(..)"
+    ]
+  },
+  "@Replace('return StatusResult.ok(this.getId());')": {
+    "include": [
+      "dtcockpit.commands.SendMail.doAction(..)",
+      "dtcockpit.commands.User_create.sendMail(..)"
+    ]
+  }
+}

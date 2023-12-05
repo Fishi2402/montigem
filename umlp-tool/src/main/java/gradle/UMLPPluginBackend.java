@@ -6,10 +6,12 @@ import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.compile.AbstractCompile;
+import org.gradle.jvm.tasks.Jar;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
 import java.io.File;
@@ -42,6 +44,14 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     });
 
     addToSourceSet(project, umlpTask.get());
+
+    // Lifecycle task "generate" which depends on Backend-Creation
+    Task generateTask = project.getTasks().create("generate");
+    generateTask.dependsOn(umlpTask);
+
+    // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
+    Task continuousTask = project.getTasks().create("continuous");
+    continuousTask.dependsOn(project.getTasks().withType(Jar.class));
   }
 
   // Add generated files to SourceSets

@@ -1,14 +1,27 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Directive} from '@angular/core';
-import {UserLoginTOP} from '@src/gui/login/UserLoginTOP';
+import {Component} from '@angular/core';
+import {UserLoginComponent} from '@src/gui/login/UserLoginComponent';
 import {User} from '@src/sehub/User';
-import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
-@Directive()
+@Component({
+  selector: 'user-login',
+  templateUrl: '../../../..//build/frontendGen/build/appgui/gui/login/UserLogin.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
+export class UserLogin extends UserLoginComponent {
 
-export class UserLogin extends UserLoginTOP {
+  public ngOnInit(): void {
+    if (SehubSecurityManager.isSignedIn()) {
+      this.router.navigate(['gui/Start']);
+    }
+
+    if (this.loginUser == null) {
+      this.loginUser = new User();
+    }
+  }
 
   protected error: string = "";
 

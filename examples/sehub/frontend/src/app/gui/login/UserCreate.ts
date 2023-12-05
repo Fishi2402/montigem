@@ -1,19 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Directive} from '@angular/core';
-import {UserCreateTOP} from '@src/gui/login/UserCreateTOP';
+import {Component} from '@angular/core';
+import {Location} from '@angular/common';
+import {Router} from '@angular/router';
 import {User} from '@src/sehub/User';
 import {SehubRole} from '@src/sehub/SehubRole';
-import { ActivationStatus } from '@src/sehub/ActivationStatus';
+import {SehubManager} from '@src/sehub/SehubManager';
+import {BoardMapper} from '@src/sehub/BoardMapper';
+import {BingoEntry} from '@src/sehub/BingoEntry';
+import {GemList} from '@umlp/common';
+import {UserCreateComponent} from '@src/gui/login/UserCreateComponent';
 
-import { SehubManager } from '@src/sehub/SehubManager';
-import { BoardMapper } from '@src/sehub/BoardMapper';
-import { BingoEntry } from '@src/sehub/BingoEntry';
-import { GemList } from '@umlp/common';
-
-@Directive()
-
-export class UserCreate extends UserCreateTOP {
+@Component({
+  selector: 'user-create',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserCreate.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ["./Login.scss"]
+})
+export class UserCreate extends UserCreateComponent {
 
   private error: string = "";
 
@@ -23,6 +27,23 @@ export class UserCreate extends UserCreateTOP {
 
   private permutation : number[];
   private entries : BingoEntry[];
+
+  public constructor(
+      protected location: Location,
+      protected router: Router) {
+    super(router);
+  }
+
+  public ngOnInit(): void {
+    SehubManager.userBuilder().then(gemPromiseRes => {
+      this.newUserBuilder = gemPromiseRes;
+    });
+
+    SehubManager.getUserList().then(gemPromiseRes => {
+      this.users = gemPromiseRes;
+    });
+
+  }
 
   public override createUser(event: any): void {
     SehubManager.getBingoEntryList().then(entryList => {
@@ -109,7 +130,7 @@ export class UserCreate extends UserCreateTOP {
   }
 
   public override navigateBack(): void {
-    this.router.navigate(['/Login']);
+    this.location.back();
   }
 
 }

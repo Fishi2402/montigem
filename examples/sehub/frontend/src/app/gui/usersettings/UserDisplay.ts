@@ -1,15 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Directive} from '@angular/core';
-import {UserDisplayTOP} from '@src/gui/usersettings/UserDisplayTOP';
+import {Component} from '@angular/core';
+import {UserDisplayComponent} from '@src/gui/usersettings/UserDisplayComponent';
 
 import {SehubRole} from '@src/sehub/SehubRole';
 import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
 
-@Directive()
-export class UserDisplay extends UserDisplayTOP {
+@Component({
+  selector: 'user-display',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/usersettings/UserDisplay.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ['./UserDisplay.scss',]
+})
+export class UserDisplay extends UserDisplayComponent {
 
   public override getRoleOptions(): Array<string> {
     let res: Array<string> = [];
@@ -31,9 +36,9 @@ export class UserDisplay extends UserDisplayTOP {
     }
   }
 
- /* public override getErrorroleValue(): string {
-    return this.user.getValidityRole().status;
-  }*/
+  /* public override getErrorroleValue(): string {
+     return this.user.getValidityRole().status;
+   }*/
 
   public override getRemoveUserDisabled (): boolean {
     let curUser: User = SehubSecurityManager.getCurrentUser();

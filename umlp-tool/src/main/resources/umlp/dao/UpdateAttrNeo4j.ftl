@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("typeName", "attributeName", "attributeType", "dbType")}
+${tc.signature("typeName", "attributeName", "attributeType", "dbType", "isOptional")}
 ${cd4c.method("public void update${attributeName?cap_first}(long gemId, ${attributeType} ${attributeName})")}
   if(update${attributeName?cap_first}Statement == null) {
     update${attributeName?cap_first}Statement = DatabaseAccessManager.prepareStatement("match(n:${typeName} {gemId: ?}) SET n.${attributeName} = ?");
@@ -8,7 +8,7 @@ ${cd4c.method("public void update${attributeName?cap_first}(long gemId, ${attrib
     <#assign statement="update"+attributeName?cap_first+"Statement">
     ${statement}.clearParameters();
     ${statement}.setLong(1, gemId);
-    ${includeArgs("umlp.dao.Set", statement, 2, dbType, attributeName, false)};
+    ${includeArgs("umlp.dao.Set", statement, 2, dbType, attributeName, isOptional)};
     ${statement}.executeUpdate();
 
   } catch (SQLException e){

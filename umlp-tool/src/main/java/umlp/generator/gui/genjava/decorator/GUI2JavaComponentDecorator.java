@@ -228,6 +228,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   protected String convertType(SymTypeExpression mcType) {
     // TODO MB Bessere Lösung
+    if (util.isDomainListType(mcType)) {
+      return "GemList" + "<"+Names.getSimpleName(((SymTypeOfGenerics) mcType).getArgument(0).getTypeInfo().getName())+">";
+    }
     if (mcType instanceof SymTypeOfGenerics) {
       return ((SymTypeOfGenerics) mcType).getBaseName()+"<"+Names.getSimpleName(((SymTypeOfGenerics) mcType).getArgument(0).getTypeInfo().getName())+">";
     }
