@@ -3,22 +3,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 
-import {OverviewPageTOP} from '@src/gui/montiverse/OverviewPageTOP';
-import { GemList } from '@umlp/common';
-import { App } from '@src/dtcockpit/App';
-import { DtcockpitManager } from '@src/dtcockpit/DtcockpitManager';
-import { Group } from '@src/dtcockpit/Group';
+import {OverviewPageComponent} from '@src/gui/montiverse/OverviewPageComponent';
 import { Project } from '@src/dtcockpit/Project';
 
 
 
 import {
-  Directive,
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  TemplateRef,
+  Component
 } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
@@ -31,7 +22,7 @@ import {DtcockpitSecurityManager} from "../../dtcockpit/DtcockpitSecurityManager
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: []
 })
-export  class OverviewPage extends OverviewPageTOP {
+export  class OverviewPage extends OverviewPageComponent {
 
   public override showBranches (g: Project): (arg: any) => void {
     return event => {

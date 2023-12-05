@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {ShowBranchesTOP} from '@src/gui/montiverse/ShowBranchesTOP';
+import {ShowBranchesComponent} from '@src/gui/montiverse/ShowBranchesComponent';
 import { Branch } from '@src/dtcockpit/Branch';
-import { DtcockpitManager } from '@src/dtcockpit/DtcockpitManager';
-import { Project } from '@src/dtcockpit/Project';
 
 import {
   Directive,
@@ -21,7 +19,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: []
 })
-export  class ShowBranches extends ShowBranchesTOP {
+export  class ShowBranches extends ShowBranchesComponent {
 
   public override chooseBranch (g: Branch): (arg: any) => void {
     return event => {
