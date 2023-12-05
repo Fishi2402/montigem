@@ -15,7 +15,12 @@ import {
 
 import { ActivatedRoute, Router } from '@angular/router';
 
-@Directive()
+@Component({
+  selector: 'show-branches',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/montiverse/ShowBranches.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
 export  class ShowBranches extends ShowBranchesTOP {
 
   public override chooseBranch (g: Branch): (arg: any) => void {

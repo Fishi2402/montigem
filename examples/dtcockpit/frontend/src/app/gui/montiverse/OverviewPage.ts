@@ -22,9 +22,15 @@ import {
 } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import {DtcockpitSecurityManager} from "../../dtcockpit/DtcockpitSecurityManager";
 
 
-@Directive()
+@Component({
+  selector: 'overview-page',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/montiverse/OverviewPage.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: []
+})
 export  class OverviewPage extends OverviewPageTOP {
 
   public override showBranches (g: Project): (arg: any) => void {
