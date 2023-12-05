@@ -40,10 +40,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     // TODO: Dependency als default hinzufügen: "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 
     // TODO: Was, wenn der "config" Ordner nicht existiert?
-    TaskProvider<?> authTask = createAuthTask(project);
-
     TaskProvider<?> frontendSetupTask = createFrontendSetupTask(project);
-    frontendSetupTask.get().dependsOn(authTask);
 
     TaskProvider<UMLPFrontendTask> frontendDomainTask = createFrontendDomainTask(project);
     frontendDomainTask.get().dependsOn(frontendSetupTask);
@@ -108,19 +105,6 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
       umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols").toFile());
       umlpTask.getHwcDir().set(Path.of(project.getProjectDir().getAbsolutePath(), "src","app").toFile());
-    });
-    return result;
-  }
-
-  private TaskProvider<NPMAuthCreate> createAuthTask(final Project project) {
-    final TaskProvider<NPMAuthCreate> result = project.getTasks().register(UMLP_AUTH_TASK_NAME, NPMAuthCreate.class, umlpTask -> {
-      umlpTask.setGroup(UMLP_GROUP_NAME);
-
-      umlpTask.getNpmrcFile().set(Path.of(
-          project.getProjectDir().getAbsolutePath(), "config", ".npmrc").toFile());
-      /*setIfPathExists(f -> umlpTask.getNpmrcFile().set(f), Path.of(
-          project.getProjectDir().getAbsolutePath(), "config", ".npmrc"));
-       */
     });
     return result;
   }
