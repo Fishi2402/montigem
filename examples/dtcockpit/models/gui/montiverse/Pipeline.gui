@@ -16,23 +16,20 @@ import input.GemTextareaInput;
 page Pipeline(Project project, List<Group> groups, List<Project> projects) {
   @GemRow(wrap = "nowrap", components = [
     @DtCockpitNavigation(projects = projects, groups = groups),
-  @GemColumn(hAlign = "left", component =
-    @GemCard(
-      title = "MontiVerse Lite",
-      component = projectList@GemRow(
-        rowGap="20px",
-        colGap="5px",
-        components=[
-          @iterate(Project p: project.dependentProjects) {
-            @GemRow(components = [
-              @GemText(value = p.name),
-              @GemText(value = " "),
-              @GemText(value = p.ciInfos.branchName + ": " + p.ciInfos.variableName)
-            ]);
-          }
-        ]
+    @GemColumn(hAlign = "left", component =
+      @GemCard(title = "MontiVerse Lite", component = projectList@GemRow(
+        rowGap="20px", colGap="5px", component=
+          @GemColumn(components = [
+            @GemText(value = "curl --request POST \\"),
+            @GemText(value = "--form token=TOKEN \\"),
+            @GemText(value = "--form ref=main \\"),
+            @iterate(Project dependentProject: project.dependentProjects) {
+              @GemText(value = "--form " + dependentProject.ciInfos.variableName + "=\"" + dependentProject.ciInfos.branchName + "\"\\");
+            },
+            @GemText(value="\"https://git.rwth-aachen.de/monticore/montiverseci/91803/trigger/pipeline\"")
+          ])
       )
     )
-    )
+  )
   ]);
 }
