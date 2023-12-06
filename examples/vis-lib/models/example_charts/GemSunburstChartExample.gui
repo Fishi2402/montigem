@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import charts.GemSunburstChart;
+import charts.GemSunburstChartTypes.GemSunburstData;
+import charts.GemSunburstChartTypes.GemSDNshort;
+
+page GemSunburstChartExample(
+  GemSunburstData data,
+  GemSDNshort dataShort
+) {
+  @GemSunburstChart(
+    data = data,
+    dataShort = dataShort,
+    ignoreError = true
+  );
+}

@@ -6,5 +6,5 @@ import charts.GemGraph;
 
 page NetworkChartExample(Person p) {
 
-  @GemGraph(data=null);
+  personGraph@GemGraph(data=null);
 }

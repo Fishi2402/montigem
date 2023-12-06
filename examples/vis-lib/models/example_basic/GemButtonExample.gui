@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_basic;
+
+import basic.GemButton;
+
+page GemButtonExample() {
+  @GemButton(label = "windows alert", leftClick = alert);
+  @GemButton(label = "Cannot click me", disabled = true);
+}

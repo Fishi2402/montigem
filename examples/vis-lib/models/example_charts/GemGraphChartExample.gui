@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import charts.GemNetworkGraph;
+import charts.GemNetworkGraphTypes.GemNetworkData;
+
+page GemGraphChartExample( GemNetworkData data) {
+  @GemNetworkGraph(
+    data = data
+  );
+}

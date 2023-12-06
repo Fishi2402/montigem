@@ -3,6 +3,9 @@ package charts;
 
 import charts.GemNetworkGraphTypes.GemNetworkData;
 
+//NetworkGraph is a graphical representation of a network. It is composed of nodes and edges.
+//Nodes are the entities of the network, and edges are the relationships between the nodes.
+
 component GemGraph(
   GemNetworkData data
 )
