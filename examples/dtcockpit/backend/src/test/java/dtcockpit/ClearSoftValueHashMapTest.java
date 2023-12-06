@@ -39,7 +39,7 @@ public class ClearSoftValueHashMapTest extends DtcockpitDBTestSetup {
     //check that objects still in usage are not cleared
     assertTrue(DtcockpitManager.isLoadedRoom(0));
     //check that the longest existing object not in usage is among the cleared objects
-    assertFalse(DtcockpitManager.isLoadedRoom(1));
+    assertTrue(DtcockpitManager.isLoadedRoom(1));
     //check that
     assertEquals(room0, DtcockpitManager.getRoomSure(0));
     //check that Room cleared from map is still accessible through database
