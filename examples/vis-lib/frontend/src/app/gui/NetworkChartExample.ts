@@ -16,7 +16,7 @@ export class NetworkChartExample extends NetworkChartExampleComponent {
   private networkData: NetworkData;
   private networkDataHash: string;
 
-  public getGemNetworkGraphData(): NetworkData {
+  public getPersonGraphData(): NetworkData {
     if (!this.getP()) {
       return null;
     }
