@@ -72,3 +72,51 @@ task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
   mainClass = 'dtcockpit.DtcockpitShellAPIApplication'
   standardInput = System.in
 }
+
+task genTestGUI(type: UMLPGuiGenTask) {
+  dependsOn(generateUmlpBackend, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
+  input = file("../models")
+  outputDir = file("$project.buildDir/testgui")
+  hwcDir = file("$projectDir/src/main/java")
+  modelDir = layout.projectDirectory.dir("../models")
+  symbolDir = files(
+      generateUmlpBackend.symbolOutDir,
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      configurations.guiDefaultTypes.files
+  )
+  domainModels = ["Dtcockpit"]
+  guiCreateModels = ["gui.UserCreate"]
+}
+
+test {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform() {
+    excludeTags "LoadTest"
+  }
+
+}
+
+tasks.register("loadTests", Test) {
+  useJUnitPlatform {
+    includeTags "LoadTest"
+  }
+  shouldRunAfter test
+}
+
+sourceSets {
+  main {
+    //java.srcDirs += [layout.buildDirectory.dir("testgui")]
+    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
+    // main.resources.srcDirs += generateUmlpBackend.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
+  }
+  test {
+    java {
+      exclude '**/gui/**'
+    }
+  }
+}
+
+compileJava.dependsOn(generateUmlpBackend, genTestGUI)
+//compileJava.dependsOn(generateUmlpBackend)

@@ -15,6 +15,7 @@ before_script:
 stages:
   - build
 #  - it_tests
+  - loadtest
   - check
   - deploy
   - testDeployed
@@ -24,7 +25,7 @@ build:
   script:
     - "gradle --version"
     - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
-    - "cd umlp-tool"
+    - "cd examples/dtcockpit"
     - "gradle buildPlugin --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   cache:
     paths:
@@ -49,6 +50,28 @@ build:
       - examples/dtcockpit/frontend/build/frontendGen/Caddyfile
       - examples/dtcockpit/frontend/build/frontendGen/.dockerignore
       - umlp-tool/target/distributions/**
+
+    reports:
+      # Lets gitlab render infos about failed tests
+      junit: "**/test/**/TEST-*.xml"
+
+loadtest:
+  stage: loadtest
+#  rules:
+#    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - "gradle --version"
+    - "gradle loadtest --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+  cache:
+    paths:
+      - examples/dtcockpit/frontend/build/frontendGen/node_modules
+      - examples/dtcockpit/frontend/.gradle/nodejs
+  artifacts:
+    paths:
+      - examples/dtcockpit/frontend/build/frontendGen/dist/**
+      - examples/dtcockpit/frontend/build/frontendGen/Dockerfile
+      - examples/dtcockpit/frontend/build/frontendGen/Caddyfile
+      - examples/dtcockpit/frontend/build/frontendGen/.dockerignore
 
     reports:
       # Lets gitlab render infos about failed tests

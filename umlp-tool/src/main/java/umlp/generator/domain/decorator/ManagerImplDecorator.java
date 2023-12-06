@@ -165,7 +165,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
         getMCTypeFacade().createBasicGenericTypeOf("Map", "Long", domainClass.getName()),
         StringTransformations.uncapitalize("known" + domainClass.getName() + "s"));
-    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new HashMap<>()"));
+    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new SoftValueHashMap<>()"));
     return domainClassDaoAttr;
   }
 
@@ -190,6 +190,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemListBuilder"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("SoftValueHashMap"));
     getCD4C().addImport(clazz, "java.util.HashMap");
     getCD4C().addImport(clazz, "java.util.Map");
   }
