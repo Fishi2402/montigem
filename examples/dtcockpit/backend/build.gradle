@@ -45,7 +45,6 @@ dependencies {
 
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
 
-  implementation "umlp:frontend-rte:$mc_version:cd2java"
   implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
 
   implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
