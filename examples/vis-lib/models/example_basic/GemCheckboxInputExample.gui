@@ -1,9 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package example_basic;
-
-import input.GemCheckBoxInput;
-import Domain.Person;
-
-page GemCheckBoxInputExample(Person person){
-  //@GemCheckBoxInput(labelText = "checkboxtest", checked = person.employed);
-}
