@@ -55,23 +55,15 @@ build:
       junit: "**/test/**/TEST-*.xml"
 
 loadtest:
-  stage: build
-  #  rules:
-  #    - if: $CI_PIPELINE_SOURCE == "schedule"
+  stage: check
+  dependencies:
+    - build
+#  rules:
+#    - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
     - "gradle --version"
-    - "gradle loadtest --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
-  cache:
-    paths:
-      - examples/dtcockpit/frontend/build/frontendGen/node_modules
-      - examples/dtcockpit/frontend/.gradle/nodejs
+    - "gradle loadtest --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   artifacts:
-    paths:
-      - examples/dtcockpit/frontend/build/frontendGen/dist/**
-      - examples/dtcockpit/frontend/build/frontendGen/Dockerfile
-      - examples/dtcockpit/frontend/build/frontendGen/Caddyfile
-      - examples/dtcockpit/frontend/build/frontendGen/.dockerignore
-
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
