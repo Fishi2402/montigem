@@ -2,5 +2,9 @@
 package gui;
 
 import Domain.Person;
+import charts.GemGraph;
 
-page NetworkChartExample(Person p)
+page NetworkChartExample(Person p) {
+
+  @GemGraph(data=null);
+}

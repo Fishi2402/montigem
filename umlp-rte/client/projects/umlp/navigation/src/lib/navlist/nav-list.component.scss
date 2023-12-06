@@ -39,10 +39,10 @@ $acronio-orange-4: #ffedcc;
 }
 
 // Only show 6 children elements
-.gem-nav-menu:not(:hover).collapsible-6 ::ng-deep :nth-child(n+7 of nav-item) {
+.gem-nav-menu:not(:hover).collapsible-6 ::ng-deep .nav-list-components :nth-child(n+7 of nav-item) {
   display: none; // hide every element after the 6th, unless the parent is collapsed
 }
-.gem-nav-menu:not(:hover).collapsible-6 ::ng-deep :nth-child(6 of nav-item)::after {
+.gem-nav-menu:not(:hover).collapsible-6 ::ng-deep .nav-list-components :nth-child(6 of nav-item)::after {
   // and show an icon on the 6th element to somewhat show this
   content: '◿';
   display: block;

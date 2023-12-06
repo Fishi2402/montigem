@@ -56,18 +56,13 @@ public abstract class CommonUMLPTask extends DefaultTask {
 
   private final ConfigurableFileCollection input = getProject().getObjects().fileCollection();
 
-  @SkipWhenEmpty    // Implies @Incremental. Do nothing if no input model exists
+  @SkipWhenEmpty    // Implies @Incremental. Do nothing if no input model exists. Requires custom logic in "getStreamOfChanges()"
   @InputFiles
   @PathSensitive(PathSensitivity.RELATIVE)
   @IgnoreEmptyDirectories
   public ConfigurableFileCollection getInput(){
     return input; // TODO: FileTree & Matching?
   }
-
-  @InputFiles
-  @PathSensitive(PathSensitivity.NAME_ONLY)
-  @Optional
-  public abstract ConfigurableFileCollection getModules();
 
   public void setInput(File f){
     input.from(f);
@@ -81,12 +76,17 @@ public abstract class CommonUMLPTask extends DefaultTask {
   }
 
 
+  @InputFiles     // Not Incremental. Any change should trigger full rebuild
+  @PathSensitive(PathSensitivity.NAME_ONLY)
+  @Optional
+  public abstract ConfigurableFileCollection getModules();
+
 
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental  // No full rebuild, when only HWC-Directory is changed. Requires logic in Task Execution!
+  @Incremental  // No full rebuild, when only HWC-Directory is changed. Requires logic in Task Execution (see getOtherInputDirectories())!
   @IgnoreEmptyDirectories
   public abstract DirectoryProperty getHwcDir();
 
@@ -259,8 +259,6 @@ public abstract class CommonUMLPTask extends DefaultTask {
   protected Stream<FileChange> getStreamOfChanges(InputChanges inputChanges) {
     Stream<FileChange> result = StreamSupport.stream(inputChanges.getFileChanges(getInput()).spliterator(), false);
 
-    result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(getModules()).spliterator(), false));
-
     for(Provider<? extends FileSystemLocation> inputLocation: getOtherInputDirectories()){
       result = Stream.concat(result, StreamSupport.stream(inputChanges.getFileChanges(inputLocation).spliterator(), false));
     }
@@ -316,7 +314,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
     List<ModuleMetadata> res = new ArrayList<>();
 
     for (File file : getModules().getFiles()) {
-      res.add(ModuleMetadata.fromYaml(readModuleMetadata(file)));
+      res.add(ModuleMetadata.fromJson(readModuleMetadata(file)));
     }
     return res;
   }
@@ -326,7 +324,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
       Enumeration<? extends ZipEntry> entries = zf.entries();
       ZipEntry entry;
       while((entry = entries.nextElement()) != null){
-        if(entry.getName().matches("[^/]+[.]metadata[.]yml")){
+        if(entry.getName().matches("[^/]+[.]metadata[.](json)")){
           break;
         }
       }
@@ -349,6 +347,7 @@ public abstract class CommonUMLPTask extends DefaultTask {
     for (ModuleMetadata moduleMetadata : getModuleMetadataList()) {
       for (TaskModuleMetadata taskModuleMetadata : moduleMetadata.getTasks()) {
         if(taskModuleMetadata.getType().equals(type)){
+          Log.info("Adding module " + moduleMetadata.getName(), this.getName());
           res.add(taskModuleMetadata);
         }
       }

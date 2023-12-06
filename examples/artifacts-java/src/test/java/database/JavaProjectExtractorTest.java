@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JavaProjectExtractorTest extends GenAbstractNeo4jDBTest {
 
-  // TODO neo4j Test Infrastruktur muss aufgebaut werden
   @Test
   public void testSimpleJavaExtractor() {
     // Gets resolved to the Java directory of artifacts-test at runtime

@@ -264,7 +264,7 @@ public class GenService {
     return isOptional(mcType);
   }
 
-  private static boolean isOptional(ASTMCType mcType) {
+  public static boolean isOptional(ASTMCType mcType) {
     if (mcType instanceof ASTMCOptionalType) {
       return true;
     }

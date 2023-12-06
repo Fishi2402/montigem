@@ -5,13 +5,14 @@ plugins {
   id 'de.rwth.se.umlp-tool-frontend'
 }
 
-
+/* Wird vom Frontend-Plugin übernommen
 configurations {
-  guiDefaultTypes
+  guiTypes
 }
+*/
 
 dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+  guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
 /* Wird vom Frontend-Plugin übernommen
@@ -61,15 +62,15 @@ task genDomain(type: UMLPFrontendTask) {
 }
 */
 genGUI {
-  dependsOn(tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
+  //dependsOn(tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
   // input = file("../models")
   // outputDir = frontendSetup.getOutput().dir("build/appgui")
   // hwcDir = file("src/app/")
   // modelDir = layout.projectDirectory.dir("../models")
   symbolDir = files(
-      genDomain.symbolOutDir,
+      // genDomain.symbolOutDir, // Wird vom Frontend-Plugin übernommen
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      configurations.guiDefaultTypes.files
+      // configurations.guiTypes.files // Wird vom Frontend-Plugin übernommen
   )
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
@@ -83,7 +84,8 @@ genGUI {
 npm_install.dependsOn(':umlp-rte:client:npm_install')
 
 def prebuildTasks = [
-    npm_install, genDomain, genGUI
+    npm_install,
+    generate  // Created from UMLP-Frontend Plugin. 
 ]
 
 task buildApp(type: NpxTask) {
@@ -103,4 +105,7 @@ task runApp(type: NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
+}
+task run {
+  dependsOn(runApp)
 }

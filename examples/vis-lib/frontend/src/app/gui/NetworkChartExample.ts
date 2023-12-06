@@ -7,7 +7,7 @@ import { NetworkData, NetworkEdge, NetworkNode } from '@umlp/charts';
 
 @Component({
   selector: 'network-chart-example',
-  templateUrl: './NetworkChartExample.html',
+  templateUrl: '../../../build/frontendGen/build/appgui/gui/NetworkChartExample.html',
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: []
 })

@@ -8,7 +8,11 @@ import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
+import org.gradle.jvm.tasks.Jar;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -32,29 +36,59 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     project.getPluginManager().apply(UMLPPluginBase.class);
     project.getPluginManager().apply("base");
 
+    Configuration guiTypes = project.getConfigurations().create("guiTypes");
+    // TODO: Dependency als default hinzufügen: "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+
     // TODO: Was, wenn der "config" Ordner nicht existiert?
     TaskProvider<?> authTask = createAuthTask(project);
 
     TaskProvider<?> frontendSetupTask = createFrontendSetupTask(project);
     frontendSetupTask.get().dependsOn(authTask);
 
-    TaskProvider<?> frontendDomainTask = createFrontendDomainTask(project);
+    TaskProvider<UMLPFrontendTask> frontendDomainTask = createFrontendDomainTask(project);
     frontendDomainTask.get().dependsOn(frontendSetupTask);
 
-    TaskProvider<?> frontendGuiTask = createFrontendGuiTask(project);
+    TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project,guiTypes, frontendDomainTask);
     frontendGuiTask.get().dependsOn(frontendSetupTask);
 
+
+    // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
+    // and Hot-Reload aborts
+    TaskProvider<?> syncDomainTask = project.getTasks().register("SYNC_" + UMLP_FRONTEND_DOMAIN_TASK_NAME, Sync.class, syncTask -> {
+      syncTask.from(frontendDomainTask.get().getOutputDir());
+      syncTask.into(Path.of(project.getBuildDir().getAbsolutePath(), "frontendGen", "build", "appdomain").toFile());
+      syncTask.dependsOn(frontendGuiTask,frontendDomainTask); // I want that the sync tasks runs after all generate tasks
+    });
+    TaskProvider<?> syncGuiTask = project.getTasks().register("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class, syncTask -> {
+      syncTask.from(frontendGuiTask.get().getOutputDir());
+      syncTask.into(Path.of(project.getBuildDir().getAbsolutePath(), "frontendGen", "build", "appgui").toFile());
+      syncTask.dependsOn(frontendGuiTask,frontendDomainTask,syncDomainTask); // I want that the sync tasks runs after all generate tasks
+    });
+
+
+    // Lifecycle task "generate" which depends on Backend-Creation
+    Task generateTask = project.getTasks().create("generate");
+    generateTask.dependsOn(frontendGuiTask,syncDomainTask,syncGuiTask);
+
+    // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
+    Task continuousTask = project.getTasks().create("continuous");
+    continuousTask.dependsOn(generateTask);
   }
 
-  private TaskProvider<UMLPGuiGenTask> createFrontendGuiTask(final Project project) {
+  private TaskProvider<UMLPGuiGenTask> createFrontendGuiTask(final Project project, final Configuration guiTypes, TaskProvider<UMLPFrontendTask> frontendDomainTask) {
     final TaskProvider<UMLPGuiGenTask> result = project.getTasks().register(UMLP_FRONTEND_GUI_TASK_NAME, UMLPGuiGenTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
 
       umlpTask.getInput().from(Path.of(project.getProjectDir().getAbsolutePath(), "..", "models"));
       umlpTask.getModelDir().set(Path.of(project.getProjectDir().getAbsolutePath(), "..", "models").toFile());
 
+      umlpTask.getSymbolDir().from(guiTypes);
+      umlpTask.getSymbolDir().from(frontendDomainTask.get().getSymbolOutDir());
+
+
       // TODO: von FrontendSetup Ordner übernehmen
-      umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "frontendGen", "build", "appgui").toFile());
+      // umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "frontendGen", "build", "appgui").toFile());
+      umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "umlp_frontend", "intermediate", "appgui").toFile());
 
       umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui").toFile());
       umlpTask.getHwcDir().set(Path.of(project.getProjectDir().getAbsolutePath(), "src","app").toFile());
@@ -69,7 +103,8 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       umlpTask.getInput().from(Path.of(project.getProjectDir().getAbsolutePath(), "..", "models"));
 
       // TODO: von FrontendSetup Ordner übernehmen
-      umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "frontendGen", "build", "appdomain").toFile());
+      // umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "frontendGen", "build", "appdomain").toFile());
+      umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "umlp_frontend", "intermediate","appdomain").toFile());
 
       umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols").toFile());
       umlpTask.getHwcDir().set(Path.of(project.getProjectDir().getAbsolutePath(), "src","app").toFile());
