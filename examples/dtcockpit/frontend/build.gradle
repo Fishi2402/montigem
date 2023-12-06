@@ -62,6 +62,8 @@ task genDomain(type: UMLPFrontendTask) {
 }
 */
 genGUI {
+  dependsOn(tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
+
   //dependsOn(tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
   // input = file("../models")
   // outputDir = frontendSetup.getOutput().dir("build/appgui")
@@ -85,7 +87,7 @@ npm_install.dependsOn(':umlp-rte:client:npm_install')
 
 def prebuildTasks = [
     npm_install,
-    generate  // Created from UMLP-Frontend Plugin. 
+    generate  // Created from UMLP-Frontend Plugin.
 ]
 
 task buildApp(type: NpxTask) {
