@@ -4,9 +4,21 @@ package arrange;
 import arrange.GemRow;
 import arrange.GemColumn;
 
-// Card is a simple container which consists of a header and a body.
-// Body may contain any elements, such as button, inputs, charts, etc.
-component GemCard(String title = "", GUIViewElement titleComponent, GUIViewElement component) {
+/**
+  Card is a container with a header and a body. Both header and body may contain
+  any elements, such as button, inputs, charts, etc.
+*/
+component GemCard(
+  /** **Deprecated.** Text displayed at the top of the card. */
+  String title = "",
+  /**
+    A component displayed at the top of the card. If `titleComponent` and
+    `title` are both set, the `titleComponent` will be used.
+  */
+  GUIViewElement titleComponent,
+  /** Component displayed in body of the card. */
+  GUIViewElement component
+) {
   @GemColumn(style = "mat-elevation-z8", height = "100%", components = [
     @GemRow(style = "gem-card-header"),
     @GemColumn(style = "gem-card-body", component = component)

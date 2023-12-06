@@ -5,5 +5,8 @@ package basic;
   Displays text on a webpage.
 */
 component GemText(
-  String value
+  /** Text content. */
+  String value,
+  /** **Deprecated.** */
+  String style = ""
 )

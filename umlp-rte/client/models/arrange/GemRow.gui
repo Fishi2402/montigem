@@ -1,15 +1,64 @@
 /* (c) https://github.com/MontiCore/monticore */
 package arrange;
-//GemRow is a container which arranges any number of input elements horizontally
+
+/**
+  GemRow is a container which arranges input elements horizontally.
+*/
 component GemRow(
-  String height,
-  String width,
-  String hAlign,
-  String vAlign,
-  String rowGap,
-  String colGap,
-  String style,
-  String wrap = "wrap",
+  /**
+    Height of the component in `px`, `%`, `vh`, etc.
+  */
+  String height = "100%",
+  /**
+    Width of the component in `px`, `%`, `vh`, etc.
+  */
+  String width = "100%",
+  /**
+    Horizontal alignment of the embedded components. Invalid values are ignored.
+    Possible values:
+    `"left"`, `"center"`, `"right"`: Set position of the elements inside the container.
+    `"space-between"`: Distribute empty space equally between the elements.
+    `"space-around"`: Distribute empty space around each element equally.
+    `"space-evenly"`: Distribute empty space around the elements and make those gaps equal size.
+  */
+  String hAlign = "left",
+  /**
+    Vertical alignment of the embedded components. Invalid values are ignored.
+    Possible values:
+    `"top"`, `"center"`, `"bottom"`: Set position of the elements inside the container.
+    `"space-between"`: Distribute empty space equally between the elements.
+    `"space-around"`: Distribute empty space around the elements equally.
+    `"space-evenly"`: Distribute empty space around the elements and make those gaps equal size.
+  */
+  String vAlign = "top",
+  /**
+    Gap between rows of elements in the container in `px`, `%`, `vh`, etc.
+    Relevant when `wrap` is set to `"wrap"` or `"wrap-reverse"`.
+  */
+  String rowGap = "0",
+  /**
+    Gap between columns of elements in the container in `px`, `%`, `vh`, etc.
+  */
+  String colGap = "0",
+  /**
+    Set behavior for element wrapping. Invalid values are ignored.
+    `"nowrap"`: Elements are never wrapped. If elements do not into the
+    container, a scrollbar appears.
+    `"wrap"`: Elements that do not fit into the container are wrapped, i.e. a
+    new column is created to the right.
+    `"wrap-reverse"`: Similar to `"wrap"`, but a new column is created to the left.
+  */
+  String wrap = "nowrap",
+  /**
+    Components to display inside a column.
+  */
   List<GUIViewElement> components,
-  GUIViewElement component
+  /**
+    **Deprecated.** Shortcut for `components` property for the case when only
+    one component has to be displayed. If both `component` and `components`
+    are defined, `component` is shown first.
+  */
+  GUIViewElement component,
+  /** **Deprecated.** */
+  String style = ""
 )

@@ -2,14 +2,15 @@
 package example_arrange;
 
 import arrange.GemColumn;
-import input.GemTextInput;
-import Domain.Person;
+import basic.GemText;
 
-page GemColumnExample(Person p) {
+page GemColumnExample() {
   @GemColumn(
+    rowGap = "15px",
     components = [
-      @GemTextInput(labelText = "Birthday", entry = p.birthday, inputType = "date"),
-      @GemTextInput(labelText = "ColumnName", entry = p.name)
+      @GemText(value = "First row"),
+      @GemText(value = "Second row"),
+      @GemText(value = "Third row")
     ]
   );
 }

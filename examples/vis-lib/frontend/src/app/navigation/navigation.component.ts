@@ -22,11 +22,13 @@ export class Navigation {
     { url: '/example_basic/example_basic/GemLinkExample', title: 'Link' },
     { url: '/example_basic/example_basic/GemTextExample', title: 'Text' },
     { url: '/example_table/example_table/GemTableExample', title: 'Table' },
+    { url: '/example_arrange/example_arrange/GemCardExample', title: 'Card' },
+    { url: '/example_arrange/example_arrange/GemColumnExample', title: 'Column' },
+    { url: '/example_arrange/example_arrange/GemColumnExample2', title: 'Column2' },
+    { url: '/example_arrange/example_arrange/GemRowExample', title: 'Row' },
+    { url: '/example_arrange/example_arrange/GemRowExample2', title: 'Row2' },
     /*
     { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
-    { url: '/example_arrange/GemCardExample', title: 'Card' },
-    { url: '/example_arrange/GemColumnExample', title: 'Column' },
-    { url: '/example_arrange/GemRowExample', title: 'Row' },
     { url: '/example_input/GemTextInputExample', title: 'TextInput' },
     { url: '/example_input/GemTextareaInputExample', title: 'TextareaInput' }
     { url: '/example_input/GemCheckBoxInputExample', title: 'CheckBoxInput' },

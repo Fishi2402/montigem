@@ -2,14 +2,15 @@
 package example_arrange;
 
 import arrange.GemRow;
-import input.GemTextInput;
-import Domain.Person;
+import basic.GemText;
 
-page GemRowExample(Person p) {
-  @GemRow(width="50%",
+page GemRowExample() {
+  @GemRow(
+    colGap = "15px",
     components = [
-      @GemTextInput(labelText = "Birthday", entry = p.birthday, inputType = "date"),
-      @GemTextInput(labelText = "RowName", entry = p.name)
-     ]
+      @GemText(value = "First col"),
+      @GemText(value = "Second col"),
+      @GemText(value = "Third col")
+    ]
   );
 }
