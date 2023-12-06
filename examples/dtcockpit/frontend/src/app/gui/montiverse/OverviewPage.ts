@@ -15,15 +15,15 @@ import {
 })
 export  class OverviewPage extends OverviewPageComponent {
 
-  public override showBranches (g: Project): (arg: any) => void {
+  public override showBranches (project: Project): (arg: any) => void {
     return event => {
-      this.router.navigate(["gui", "montiverse", "ShowBranches", g.getGemId()]);
+      this.router.navigate(["gui", "montiverse", "ShowBranches", project.getGemId()]);
     };
   }
 
   public override startPipeline (): (arg: any) => void {
     return event => {
-      this.router.navigate(["gui", "montiverse", "Pipeline", this.g.getGemId()]);
+      this.router.navigate(["gui", "montiverse", "Pipeline", this.project.getGemId()]);
     };
   }
 }

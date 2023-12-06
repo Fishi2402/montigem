@@ -2,6 +2,7 @@
 package gui.montiverse;
 
 import gui.navigation.DtCockpitNavigation;
+import gui.pipelines.PipelineStats;
 import Dtcockpit.Project;
 import Dtcockpit.Group;
 
@@ -13,23 +14,23 @@ import basic.GemText;
 import input.GemTextInput;
 import input.GemTextareaInput;
 
-page OverviewPage(Project g, List<Group> groups, List<Project> projects) {
+page OverviewPage(Project project, List<Group> groups, List<Project> projects) {
   @GemRow(wrap = "nowrap", components = [
     @DtCockpitNavigation(projects = projects, groups = groups),
-    @GemColumn(hAlign = "left", component =
+    @GemColumn(hAlign = "left", components = [
       @GemCard(
         title = "MontiVerse Lite",
         component = projectList@GemRow(
           rowGap="20px",
           colGap="5px",
           components=[
-            @iterate(Project p: g.dependentProjects) {
-              pButton@GemButton(label = p.name, leftClick = showBranches(p));
+            @iterate(Project dependentProject: project.dependentProjects) {
+              pButton@GemButton(label = dependentProject.name, leftClick = showBranches(dependentProject));
             }
           ]
         )
-      )
-    )
-    //startButton@GemButton(label = "start pipeline", leftClick = startPipeline(g))
+      ),
+      startButton@GemButton(label = "start pipeline", leftClick = startPipeline(project))
+    ])
   ]);
 }

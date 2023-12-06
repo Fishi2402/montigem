@@ -22,8 +22,8 @@ public class MontiVerseLite {
   public MontiVerseLite() {
     projectMap.put("monticore/se-commons/se-commons",  new String[] {"$SECOMMONS_BRANCH", "dev"});
     projectMap.put("monticore/tools/class2mc",  new String[] {"$CLASS2MC_BRANCH", "dev"});
-    projectMap.put("monticore/monticore",  new String[] {"MONTICORE_BRANCH", "develop"});
-    projectMap.put("monticore/cd4analysis/cd4analysis",  new String[] {"CD4A_BRANCH", "develop"});
+    projectMap.put("monticore/monticore",  new String[] {"$MONTICORE_BRANCH", "develop"});
+    projectMap.put("monticore/cd4analysis/cd4analysis",  new String[] {"$CD4A_BRANCH", "develop"});
     projectMap.put("monticore/languages/mlc",  new String[] {"$MLC_BRANCH", "develop"});
     projectMap.put("monticore/artifacts/artifacts",  new String[] {"$ARTIFACTS_BRANCH", "dev"});
     projectMap.put("monticore/languages/xml",  new String[] {"$XML_BRANCH", "develop"});
