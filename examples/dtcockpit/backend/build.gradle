@@ -1,5 +1,4 @@
 plugins {
-  id 'java'
   id 'de.rwth.se.umlp-tool-backend'
 
   id 'application'
@@ -8,20 +7,14 @@ plugins {
   id 'org.springframework.boot' version "${spring_version}"
 }
 
-configurations {
-  guiDefaultTypes
-}
-
 dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
   umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
 }
 
-application {
+application { // Set Main-Class for "run" task
   mainClass = 'dtcockpit.DtcockpitServerApplication'
 }
-
-jib {
+jib { // For Docker-Container
   container.mainClass = application.mainClass.get()
 }
 
@@ -51,8 +44,6 @@ dependencies {
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
 
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
-  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
 
   implementation "umlp:frontend-rte:$mc_version:cd2java"
   implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
@@ -67,9 +58,8 @@ dependencies {
 
 generateUmlpBackend {
   input = file("../models/Dtcockpit.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
-  useSpring.set(true)
-  useShell.set(true)
+  useSpring = true
+  useShell = true
 }
 
 task runServer {
@@ -82,11 +72,4 @@ task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
   classpath = sourceSets.main.runtimeClasspath
   mainClass = 'dtcockpit.DtcockpitShellAPIApplication'
   standardInput = System.in
-}
-
-test {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform()
 }
