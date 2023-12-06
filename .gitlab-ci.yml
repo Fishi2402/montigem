@@ -14,8 +14,7 @@ before_script:
 
 stages:
   - build
-#  - it_tests
-  - loadtest
+  #  - it_tests
   - check
   - deploy
   - testDeployed
@@ -25,7 +24,7 @@ build:
   script:
     - "gradle --version"
     - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
-    - "cd examples/dtcockpit"
+    - "cd umlp-tool"
     - "gradle buildPlugin --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   cache:
     paths:
@@ -56,9 +55,9 @@ build:
       junit: "**/test/**/TEST-*.xml"
 
 loadtest:
-  stage: loadtest
-#  rules:
-#    - if: $CI_PIPELINE_SOURCE == "schedule"
+  stage: build
+  #  rules:
+  #    - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
     - "gradle --version"
     - "gradle loadtest --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
