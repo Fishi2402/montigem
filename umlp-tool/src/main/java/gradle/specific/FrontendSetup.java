@@ -6,6 +6,8 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
@@ -22,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -44,6 +47,20 @@ public abstract class FrontendSetup extends DefaultTask {
   @Incremental
   public abstract DirectoryProperty getInput();
 
+  @Input
+  @Optional
+  public abstract Property<Boolean> getCreateNpmrc();
+
+  @Input
+  @Optional
+  public abstract Property<Boolean> getUnscopedNpmrc();
+
+  public FrontendSetup(){
+    super();
+    getCreateNpmrc().convention(true);
+    getUnscopedNpmrc().convention(false);
+  }
+
   @TaskAction
   public void run(InputChanges changes) throws IOException, URISyntaxException {
     if(getInput().isPresent()) {
@@ -54,6 +71,11 @@ public abstract class FrontendSetup extends DefaultTask {
             String filename = getInput().getAsFile().get().toPath().relativize(ch.getFile().toPath()).toString();
             FileUtils.deleteQuietly(getOutput().file(filename).get().getAsFile());
           });
+    }
+
+    if(getCreateNpmrc().get()){
+      String data = NPMAuthCreate.getNpmrcContent(getProject(), getUnscopedNpmrc().get());
+      FileUtils.writeStringToFile(getOutput().get().file(".npmrc").getAsFile(), data, StandardCharsets.UTF_8);
     }
 
     // First Copy Files from Resources of UMLP-Tool

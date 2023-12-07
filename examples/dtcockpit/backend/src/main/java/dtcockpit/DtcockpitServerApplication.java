@@ -4,6 +4,7 @@ package dtcockpit;
 import de.se_rwth.commons.logging.Log;
 import dtcockpit.montiverse.MontiVerseLite;
 import dtcockpit.pipelines.PipelineInformationExtractor;
+import dtcockpit.welcome_board.OutlookConnection;
 import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +19,12 @@ import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication(
     exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
@@ -117,6 +123,29 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
       Room smartRoom = createRoom(4311);
       Room seminarRoom = createRoom(4312);
     }
+
+    OutlookConnection outlookConnection = new OutlookConnection();
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    scheduler.scheduleAtFixedRate(outlookConnection::updateMeetings, 0, 5, TimeUnit.MINUTES);
+
+    // For dev: 2 dummy meetings
+    DtcockpitManager.meetingBuilder()
+        .start(LocalDateTime.now())
+        .end(LocalDateTime.now().plusHours(1))
+        .categories(List.of("Vortrag", "Dev")) // Dev entries will not be deleted by connector
+        .title("Test")
+        .description(Optional.of("This is a test"))
+        .location(Optional.of("Seminarraum"))
+        .build();
+
+    DtcockpitManager.meetingBuilder()
+        .start(LocalDateTime.now().plusHours(1))
+        .end(LocalDateTime.now().plusHours(2))
+        .categories(List.of("Privat", "Dev")) // Dev entries will not be deleted by connector
+        .title("Test2")
+        .description(Optional.of("This is another test"))
+        .location(Optional.of("Smartroom"))
+        .build();
   }
 
   // For HotReload helpful. Otherwise the h2-webserverport is used when reloading

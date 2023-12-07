@@ -119,14 +119,17 @@ classdiagram Dtcockpit {
 
   association [1] Server -> ServerStatus [*];
 
-
-  // LCD @ SE front door
+  // Welcome board  @ SE front door LCD
   association [1] App -> (montiCoreProjects) Project [*];
 
   class Meeting {
+    java.time.LocalDateTime start;
+    java.time.LocalDateTime end;
+
     String title;
     Optional<String> location;
     Optional<String> description;
+    List<String> categories;
   }
 
   class MessageOfTheDay {

@@ -24,7 +24,7 @@ abstract public class UMLPSingleFileTask extends CommonUMLPTask {
 
   @Override
   protected Directory getReportDirOfFile(File f) {
-    String pathName = f.getName();
+    String pathName = getProject().getProjectDir().toPath().toAbsolutePath().relativize(f.toPath()).toString();
     return getReportDir().dir(pathName.replace(".", "__")).get();
   }
 

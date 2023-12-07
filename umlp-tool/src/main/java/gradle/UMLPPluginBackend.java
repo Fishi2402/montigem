@@ -78,6 +78,11 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
       // Always set output dir (Gradle creates it, if not already exists)
       umlpTask.getOutputDir().set(Path.of(
           project.getBuildDir().getAbsolutePath(), "umlp", "backend").toFile());
+
+      // Always create symbols
+      umlpTask.getSymbolOutDir().set(Path.of(
+          project.getBuildDir().getAbsolutePath(), "umlp", "backend_symbols").toFile());
+
     });
     return result;
   }
