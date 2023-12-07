@@ -2,10 +2,10 @@
 
 Start the backend:
 ```
-gradle :examples:dtcockpit:backend:runServer
+gradle :examples:vis-lib:backend:runServer
 ```
 Start the frontend:
 ```
-gradle :examples:dtcockpit:frontend:runApp
+gradle :examples:vis-lib:frontend:runApp
 ```
 The App is accessible at http://localhost:4200
