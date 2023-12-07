@@ -6,6 +6,7 @@ ${tc.signature("existedModuleConfig","existHWCRoutes","pathHWRoutes","pathModule
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { CommonModule } from "@angular/common"
 <#if existedModuleConfig >
 import { config } from '${pathModuleConfig}';
 </#if>
@@ -20,14 +21,15 @@ import { AppComponent } from '@src/app.component';
 
 @NgModule({
 declarations: [
+  AppComponent,
 <#if existedModuleConfig >
   ... config.declarations,
-  AppComponent,
 </#if>
 ],
 imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
+    CommonModule,
 
 
 <#if existedModuleConfig >
