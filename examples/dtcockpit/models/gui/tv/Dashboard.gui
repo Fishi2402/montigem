@@ -10,19 +10,25 @@ import gui.tv.LastPipelineStat;
 
 import Dtcockpit.App;
 import Dtcockpit.Project;
+import Dtcockpit.MessageOfTheDay;
 
-page Dashboard(List<App> apps) {
-  @GemRow(hAlign = "space-evenly", components = [
-    @GemColumn(width = "33%", components = [
-      @iterate(App app : apps) {
+page Dashboard(List<App> apps, List<MessageOfTheDay> msgs) {
+  // TODO AGe: singleton App
+  @iterate(App app : apps) {
+    @GemRow(hAlign = "space-evenly", components = [
+      @GemColumn(width = "33%", components = [
         @iterate(Project p : app.montiCoreProjects) {
           @LastPipelineStat(p = p);
         }
-      }
-    ]),
-    @GemColumn(width = "33%", components = [
-    ]),
-    @GemColumn(width = "33%", components = [
-    ])
-  ]);
+      ]),
+      @GemColumn(width = "33%", components = [
+        @iterate(MessageOfTheDay msg : msgs) {
+          @GemText(value = msg.date);
+          @GemText(value = msg.message);
+        }
+      ]),
+      @GemColumn(width = "33%", components = [
+      ])
+    ]);
+  }
 }
