@@ -11,8 +11,9 @@ import gui.tv.LastPipelineStat;
 import Dtcockpit.App;
 import Dtcockpit.Project;
 import Dtcockpit.MessageOfTheDay;
+import Dtcockpit.Meeting;
 
-page Dashboard(List<App> apps, List<MessageOfTheDay> msgs) {
+page Dashboard(List<App> apps, List<MessageOfTheDay> msgs, List<Meeting> meetings) {
   // TODO AGe: singleton App
   @iterate(App app : apps) {
     @GemRow(hAlign = "space-evenly", components = [
@@ -28,6 +29,14 @@ page Dashboard(List<App> apps, List<MessageOfTheDay> msgs) {
         }
       ]),
       @GemColumn(width = "33%", components = [
+        @iterate(Meeting m : meetings) {
+          @GemText(value = m.start);
+          @GemText(value = m.end);
+          @GemText(value = m.title);
+          @GemText(value = m.location);
+          @GemText(value = m.description);
+          @GemText(value = m.categories);
+        }
       ])
     ]);
   }
