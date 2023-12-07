@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -155,6 +156,8 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
         .description(Optional.of("This is another test that should not be displayed, since it is private"))
         .location(Optional.of("Smartroom"))
         .build();
+
+    createDummyMessageOfTheDay();
   }
 
   private static void updateMontiCorePipelines(PipelineInformationExtractor extractor, App app) {
@@ -171,6 +174,13 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
         montiCoreProject.setLastPipeline(last.get());
       }
     }
+  }
+
+  private void createDummyMessageOfTheDay() {
+    DtcockpitManager.messageOfTheDayBuilder()
+        .message("I give up")
+        .date(LocalDate.now())
+        .build();
   }
 
   // For HotReload helpful. Otherwise the h2-webserverport is used when reloading
