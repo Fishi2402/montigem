@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.tv;
+
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import basic.GemImage;
+
+import Dtcockpit.Project;
+
+component LastPipelineStat(Project p) {
+  @GemRow(components = [
+    @GemText(value = p.lastPipeline.gitlabId),
+    @GemText(value = p.lastPipeline.reference),
+    @GemText(value = p.lastPipeline.time),
+    @GemText(value = p.lastPipeline.duration)
+    // @GemText(value = p.lastPipeline.successful)
+  ]);
+}

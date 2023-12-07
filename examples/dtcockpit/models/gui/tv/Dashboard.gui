@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.tv;
+
+import arrange.GemColumn;
+import arrange.GemRow;
+import arrange.GemCard;
+import basic.GemText;
+import basic.GemImage;
+import gui.tv.LastPipelineStat;
+
+import Dtcockpit.App;
+import Dtcockpit.Project;
+
+page Dashboard(List<App> apps) {
+  @GemRow(hAlign = "space-evenly", components = [
+    @GemColumn(width = "33%", components = [
+      @iterate(App app : apps) {
+        @iterate(Project p : app.montiCoreProjects) {
+          @LastPipelineStat(p = p);
+        }
+      }
+    ]),
+    @GemColumn(width = "33%", components = [
+    ]),
+    @GemColumn(width = "33%", components = [
+    ])
+  ]);
+}
