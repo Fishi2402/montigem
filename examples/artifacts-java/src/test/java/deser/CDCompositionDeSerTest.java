@@ -11,7 +11,7 @@ import javaproject.JavaProjectManagerImpl;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.CommandManager;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CDCompositionDeSerTest extends GenAbstractNeo4jDBTest {
 
