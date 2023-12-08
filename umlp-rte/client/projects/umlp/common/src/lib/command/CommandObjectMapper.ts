@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Command } from "./Command";
-import { CommandResult } from "./CommandResult";
+import {Command} from "./Command";
+import {CommandResult} from "./CommandResult";
+import {ServerError} from "./ServerError";
 
 // RTE-P
 
@@ -21,14 +22,23 @@ export abstract class CommandObjectMapper {
   }
 
   public static serializeCommand(command: Command<any>): string {
+    let err: Error | null = null;
+
     try {
-      return CommandObjectMapper.getInstance()._serializeCommand(command);
+      const result = CommandObjectMapper.getInstance()._serializeCommand(command);
+      if (result !== null && result !== undefined) {
+        return result;
+      } else {
+        err = new Error("Instance returned null or undefined");
+      }
     } catch (e) {
-      let msg: string = `0xS0002 Could not serialize command: ${command.getCommandType()}\n${e}`;
-      console.error(msg);
-      return null;
-      // return CommandObjectMapper.getInstance()._serializeCommand(new Error(e));
+      err = e;
     }
+
+    const msg: string = `0xS0004 Could not serialize command: ${command.getCommandType()}\n${err.message}`;
+    console.error(msg);
+    const serverError = new ServerError(err);
+    return CommandObjectMapper.getInstance()._serializeCommand(serverError) as string;
   }
 
   protected abstract _serializeCommand(command: Command<any>): string;

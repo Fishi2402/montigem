@@ -1,6 +1,14 @@
 /* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
 import {Log} from '../logging/Log';
 import {StringHelper} from '../javautil/StringHelper';
+import {StatusResult} from './StatusResult';
+
+
+import {CommandResult} from './CommandResult';
+
+
+import {Command} from './Command';
+import {ServerError} from "./ServerError";
 
 export abstract class CommandObjectMapper {
   static instance: CommandObjectMapper = null;
@@ -18,15 +26,25 @@ export abstract class CommandObjectMapper {
     })(CommandObjectMapper.instance));
   }
 
-  public static async serializeCommand(command: Command<any>): Promise<string> {
+  public static async serializeCommand(command: Command<any>): Promise<string | null> {
+    let err: Error | undefined;
+
     try {
-      return await CommandObjectMapper.getInstance()._serializeCommand(command);
+      const result = await CommandObjectMapper.getInstance()._serializeCommand(command);
+      if (result !== null && result !== undefined) {
+        return result;
+      } else {
+        err = new Error("Instance returned null or undefined");
+      }
     } catch (e) {
-      const msg: string = StringHelper.format("%s Could not serialize command: %s\n%s", "0xS0004", command.getCommandType(), e.message);
-      Log.error(msg);
-      // return await CommandObjectMapper.getInstance()._serializeCommand(new ServerError(e));
-      return null;
+      err = e;
     }
+
+    const msg: string = StringHelper.format("%s Could not serialize command: %s\n%s", "0xS0004", command.getCommandType(), err?.message);
+    Log.error(msg);
+
+    const serverError = new ServerError(err);
+    return await CommandObjectMapper.getInstance()._serializeCommand(serverError);
   }
 
   abstract _serializeCommand(command: Command<any>): Promise<string>;
@@ -70,15 +88,4 @@ export abstract class CommandObjectMapper {
 
 CommandObjectMapper["__class"] = "umlp.backendrte.command.CommandObjectMapper";
 
-
-import {StatusResult} from './StatusResult';
-
-
-import {CommandResult} from './CommandResult';
-
-
-// import {ServerError} from './ServerError';
-
-
-import {Command} from './Command';
 
