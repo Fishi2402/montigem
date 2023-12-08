@@ -2,7 +2,7 @@
 
 import {Command} from "./Command";
 import {CommandResult} from "./CommandResult";
-import {ServerError} from "./ServerError";
+// import {ServerError} from "./ServerError"; // Leads to errors in packed js
 
 // RTE-P
 
@@ -37,8 +37,11 @@ export abstract class CommandObjectMapper {
 
     const msg: string = `0xS0004 Could not serialize command: ${command.getCommandType()}\n${err.message}`;
     console.error(msg);
-    const serverError = new ServerError(err);
-    return CommandObjectMapper.getInstance()._serializeCommand(serverError) as string;
+
+    // Leads to errors in packed js
+    //const serverError = new ServerError(err);
+    //return CommandObjectMapper.getInstance()._serializeCommand(serverError) as string;
+    return null;
   }
 
   protected abstract _serializeCommand(command: Command<any>): string;

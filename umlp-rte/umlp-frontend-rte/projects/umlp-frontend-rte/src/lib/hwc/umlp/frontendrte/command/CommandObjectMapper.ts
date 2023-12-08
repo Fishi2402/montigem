@@ -1,4 +1,3 @@
-/* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
 import {Log} from '../logging/Log';
 import {StringHelper} from '../javautil/StringHelper';
 import {StatusResult} from './StatusResult';
@@ -8,7 +7,7 @@ import {CommandResult} from './CommandResult';
 
 
 import {Command} from './Command';
-import {ServerError} from "./ServerError";
+// import {ServerError} from "./ServerError"; // Leads to errors in packed js
 
 export abstract class CommandObjectMapper {
   static instance: CommandObjectMapper = null;
@@ -43,8 +42,10 @@ export abstract class CommandObjectMapper {
     const msg: string = StringHelper.format("%s Could not serialize command: %s\n%s", "0xS0004", command.getCommandType(), err?.message);
     Log.error(msg);
 
-    const serverError = new ServerError(err);
-    return await CommandObjectMapper.getInstance()._serializeCommand(serverError);
+    // Leads to errors in packed js
+    //const serverError = new ServerError(err);
+    //return await CommandObjectMapper.getInstance()._serializeCommand(serverError);
+    return null;
   }
 
   abstract _serializeCommand(command: Command<any>): Promise<string>;
