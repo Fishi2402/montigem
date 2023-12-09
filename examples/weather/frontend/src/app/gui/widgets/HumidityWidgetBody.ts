@@ -2,8 +2,11 @@
 
 import { Component } from '@angular/core';
 import {HumidityWidgetBodyComponent} from "@src/gui/widgets/HumidityWidgetBodyComponent";
+import {config} from "@src/gui/widgets/HumidityWidgetBodyStandaloneConfig";
 
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'humidity-widget-body',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/widgets/HumidityWidgetBody.html',
   styles: [":host{ display: flex; flex-direction: column }"],

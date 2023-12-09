@@ -35,13 +35,21 @@ import de.monticore.tagging.tags.TagsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
-import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.AbstractDecorator;
-import umlp.generator.domain.*;
+import umlp.generator.domain.UMLAddGemIdTrafo;
+import umlp.generator.domain.UMLAssocToAttrTrafo;
+import umlp.generator.domain.UMLAttrToAssocTrafo;
+import umlp.generator.domain.UMLPGenerator;
+import umlp.generator.domain.UMLPGeneratorConfig;
+import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.GUINodeIdTrafo;
@@ -64,11 +72,37 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static umlp.UMLPToolOptions.*;
+import static umlp.UMLPToolOptions.CD2GUI;
+import static umlp.UMLPToolOptions.DEBUG;
+import static umlp.UMLPToolOptions.DOMAIN;
+import static umlp.UMLPToolOptions.FOR_CLIENT;
+import static umlp.UMLPToolOptions.GEN_SYMBOLS_ONLY;
+import static umlp.UMLPToolOptions.GUIVariability;
+import static umlp.UMLPToolOptions.GUI_CREATE;
+import static umlp.UMLPToolOptions.HELP;
+import static umlp.UMLPToolOptions.HWC_PATH;
+import static umlp.UMLPToolOptions.INPUT;
+import static umlp.UMLPToolOptions.MODEl_PATH;
+import static umlp.UMLPToolOptions.OCL;
+import static umlp.UMLPToolOptions.OUTPUT;
+import static umlp.UMLPToolOptions.PATH;
+import static umlp.UMLPToolOptions.PRETTYPRINT;
+import static umlp.UMLPToolOptions.REPORTS;
+import static umlp.UMLPToolOptions.REPORT_BASE;
+import static umlp.UMLPToolOptions.SYMTAB;
+import static umlp.UMLPToolOptions.TMPL_PATH;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -127,7 +161,8 @@ public class UMLPTool extends UMLPToolTOP {
         return optAst.get();
       }
       Log.error("0xA1050x72114 Model could not be parsed.");
-    } catch (NullPointerException | java.io.IOException e) {
+    }
+    catch (NullPointerException | java.io.IOException e) {
       Log.error("0xA1051x37376 Failed to parse " + model, e);
     }
     // should never be reached (unless failquick is off)
@@ -138,6 +173,23 @@ public class UMLPTool extends UMLPToolTOP {
     Log.ensureInitialization(); // by default, don't use SLF4J log
     UMLPTool tool = new UMLPTool();
     tool.run(args);
+  }
+
+  public static ASTOCLCompilationUnit parseOCL(String model) {
+    try {
+      OCLParser parser = new OCLParser();
+      Optional<ASTOCLCompilationUnit> optAst = parser.parse(model);
+
+      if (!parser.hasErrors() && optAst.isPresent()) {
+        return optAst.get();
+      }
+      Log.error("0xA1050x72114 Model could not be parsed.");
+    }
+    catch (NullPointerException | java.io.IOException e) {
+      Log.error("0xA1051x37376 Failed to parse " + model, e);
+    }
+    // should never be reached (unless failquick is off)
+    return null;
   }
 
   /**
@@ -164,7 +216,8 @@ public class UMLPTool extends UMLPToolTOP {
       boolean enableFailQuick = Log.isFailQuickEnabled();
       if (DEBUG.isSelected(cmd)) {
         Log.initDEBUG();
-      } else {
+      }
+      else {
         Log.initWARN();
       }
       Log.enableFailQuick(enableFailQuick);
@@ -184,7 +237,8 @@ public class UMLPTool extends UMLPToolTOP {
       if (!report_base.isEmpty()) {
         Path base_dir = Paths.get(report_base).toAbsolutePath();
         reportPathOutput = p -> base_dir.relativize(p.toAbsolutePath());
-      } else {
+      }
+      else {
         reportPathOutput = Path::toAbsolutePath;
       }
 
@@ -257,7 +311,8 @@ public class UMLPTool extends UMLPToolTOP {
 
         Reporting.flush(ast);
 
-      } else if (GUIVariability.isSelected(cmd)) {
+      }
+      else if (GUIVariability.isSelected(cmd)) {
         List<Path> inputs = Arrays.stream(cmd.getOptionValues(INPUT.getCMD())).map(Path::of).collect(Collectors.toList());
 
         guidsl_reportManagerFactory = new GUIDSLReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath);
@@ -274,7 +329,8 @@ public class UMLPTool extends UMLPToolTOP {
 
           if (isGUIVariabilityFile(parsedModel)) {
             variationASTs.add(parsedModel);
-          } else {
+          }
+          else {
             baseASTs.add(parsedModel);
           }
         }
@@ -303,7 +359,8 @@ public class UMLPTool extends UMLPToolTOP {
           Reporting.reportFileCreation(outputPath.toString());
           Reporting.flush(productAST);
         }
-      } else if (isUmlpFile(inputFile)) {
+      }
+      else if (isUmlpFile(inputFile)) {
         umlp_reportManagerFactory = new UMLPReports(outDir.getPath(), reportDir.getPath(), reportPathOutput, hwcPath, buildJsonData(cmd));
 
         Reporting.init(outDir.getPath(), reportDir.getPath(), umlp_reportManagerFactory);
@@ -311,8 +368,9 @@ public class UMLPTool extends UMLPToolTOP {
         Reporting.on(report_on);
 
         // If we were to with to use concrete syntax, we would have to use the UMLPTagDefinitionMill
-        if (SYMTAB.isSelected(cmd))
+        if (SYMTAB.isSelected(cmd)) {
           TagsMill.init(); // instead we only support generic tagging models
+        }
         UMLPMill.init();
         BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
         UMLPMill.globalScope().setSymbolPath(importedSymbolPath);
@@ -327,7 +385,8 @@ public class UMLPTool extends UMLPToolTOP {
             runDefaultCoCos(ast);
             runDefaultTrafos(ast);
             recreateSymbolTable(ast);
-          } catch (IOException e) {
+          }
+          catch (IOException e) {
             Log.error("Can not load model for url " + modelUrl);
           }
         }
@@ -358,7 +417,7 @@ public class UMLPTool extends UMLPToolTOP {
             symbolTable.accept(symbols2Json.getTraverser());
             de.monticore.io.FileReaderWriter.storeInFile(symbolPath, symbols2Json.getSerializedString());
 
-            if(OCL.isSelected(cmd)) {
+            if (OCL.isSelected(cmd)) {
               MCPath oclModelPath = new MCPath();
               for (String v : cmd.getOptionValues(OCL.getCMD())) {
                 oclModelPath.addEntry(Paths.get(v));
@@ -370,7 +429,8 @@ public class UMLPTool extends UMLPToolTOP {
                 Optional<ASTOCLCompilationUnit> oclCompilationUnit;
                 try {
                   oclCompilationUnit = oclParser.parse(oclFile.getAbsolutePath());
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                   throw new RuntimeException(e);
                 }
                 if (!oclCompilationUnit.isPresent()) {
@@ -438,7 +498,8 @@ public class UMLPTool extends UMLPToolTOP {
         Reporting.flush(ast);
 
         ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
-      } else if (isGuiFile(inputFile)) {
+      }
+      else if (isGuiFile(inputFile)) {
         Map<String, ModuleRoutingInfo> routesMap = new HashMap<>();
 
         Set<String> createdTSComponents = new HashSet();
@@ -460,7 +521,6 @@ public class UMLPTool extends UMLPToolTOP {
           Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
           GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
           nodeIdTrafo.transform(astGui);
-
 
           IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, Optional.of(guiModel), importedSymbolPath);
           if (!routesMap.containsKey(astGui.getPackage())) {
@@ -488,7 +548,8 @@ public class UMLPTool extends UMLPToolTOP {
                       + ".guisym");
               JsonPrinter.disableIndentation();
               storeSymbols(symbolTable, symbolPath.toString());
-            } else {
+            }
+            else {
               //print (formatted!) symboltable to console
               GUIDSLSymbols2Json s2j = new GUIDSLSymbols2Json();
               JsonPrinter.enableIndentation();
@@ -542,9 +603,11 @@ public class UMLPTool extends UMLPToolTOP {
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, viewComponents);
           String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
 
-
           GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
           componentGenerator.generate(astGui, "umlp.GUI2Component");
+
+          GUI2TypeScriptGenerator tsConfigGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
+          tsConfigGenerator.genStandaloneConfig(astGui);
 
           GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();
           gui2HtmlTrafo.transform(astGui);
@@ -582,7 +645,7 @@ public class UMLPTool extends UMLPToolTOP {
         routesMap.entrySet().forEach(packageInfo ->
         {
           GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
-          List<String> outputs = typeScriptGenerator.generateConfigFileForPackages(packageInfo,routesMap);
+          List<String> outputs = typeScriptGenerator.generateConfigFileForPackages(packageInfo, routesMap);
           outputs.forEach(output -> Reporting.reportFileCreation(outDir + "/" + output));
 
         });
@@ -591,12 +654,15 @@ public class UMLPTool extends UMLPToolTOP {
         outputs.forEach(output -> Reporting.reportFileCreation(outDir + "/" + output));
         Reporting.flush(new ASTGUICompilationUnit());
       }
-    } catch (ParseException e) {
+    }
+    catch (ParseException e) {
       printHelp(options);
       Log.error("0xB005 An exception occurred while processing the CLI input!", e);
-    } catch (URISyntaxException e) {
+    }
+    catch (URISyntaxException e) {
       throw new RuntimeException(e);
-    } finally {
+    }
+    finally {
       UMLPMill.globalScope().clear();
       Reporting.off();
       if (umlp_reportManagerFactory != null) {
@@ -608,10 +674,11 @@ public class UMLPTool extends UMLPToolTOP {
     }
   }
 
-  protected List<String> getModuleConfigTemplates(CommandLine cmd){
-    if(!cmd.hasOption(UMLPToolOptions.MODULE_CONFIG.getCMD())){
+  protected List<String> getModuleConfigTemplates(CommandLine cmd) {
+    if (!cmd.hasOption(UMLPToolOptions.MODULE_CONFIG.getCMD())) {
       return List.of();
-    }else {
+    }
+    else {
       return List.of(cmd.getOptionValues(UMLPToolOptions.MODULE_CONFIG.getCMD()));
     }
   }
@@ -706,22 +773,6 @@ public class UMLPTool extends UMLPToolTOP {
 
   protected boolean isOCLFile(File f) {
     return f.getName().endsWith(".ocl");
-  }
-
-  public static ASTOCLCompilationUnit parseOCL(String model) {
-    try {
-      OCLParser parser = new OCLParser();
-      Optional<ASTOCLCompilationUnit> optAst = parser.parse(model);
-
-      if (!parser.hasErrors() && optAst.isPresent()) {
-        return optAst.get();
-      }
-      Log.error("0xA1050x72114 Model could not be parsed.");
-    } catch (NullPointerException | java.io.IOException e) {
-      Log.error("0xA1051x37376 Failed to parse " + model, e);
-    }
-    // should never be reached (unless failquick is off)
-    return null;
   }
 
   // TODO MB

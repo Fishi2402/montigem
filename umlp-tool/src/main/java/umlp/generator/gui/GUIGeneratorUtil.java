@@ -9,7 +9,14 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
-import de.monticore.guidsl._ast.*;
+import de.monticore.guidsl._ast.ASTGUIArgValue;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIIterate;
+import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._ast.ASTGUIParam;
+import de.monticore.guidsl._ast.ASTGUIRangeIterateControl;
+import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
@@ -225,6 +232,15 @@ public class GUIGeneratorUtil {
       return isDomainEnumType(inner);
     }
     return false;
+  }
+
+  public final boolean isTSPackageImport(String javaPackage) {
+    for (TSImportMap type : TSImportMap.values()) {
+      if (javaPackage.startsWith(type.getJavaPackage())) {
+        return false;
+      }
+    }
+    return !TSBackendMap.isBackendRTEPackage(javaPackage);
   }
 
   public final boolean isListType(SymTypeExpression type) {
@@ -491,7 +507,8 @@ public class GUIGeneratorUtil {
       if (name.lastIndexOf(".") > 0) {
         String part1 = name.substring(0, name.lastIndexOf("."));
         return part1.toLowerCase() + "." + StringTransformations.uncapitalize(simpleName) + "." + postfix;
-      }else{
+      }
+      else {
         return name.toLowerCase() + "." + postfix;
       }
     }
@@ -781,6 +798,10 @@ public class GUIGeneratorUtil {
     Log.error("0x00005 corrupt ASTGUIArgValue node " + node
         + ": missing actual value");
     return "";
+  }
+
+  public String getComponentPath(String javaPackage) {
+    return "@src/" + qName2path(javaPackage);
   }
 
   public String java2tsModule(String javaPackage) {

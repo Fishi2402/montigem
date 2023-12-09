@@ -4,8 +4,10 @@ import { Component } from '@angular/core';
 import { GemGaugeChartData, GemGaugeChartEntry, GemLineChartData, GemLineChartEntry } from '@umlp/charts';
 import { WeatherViewComponent } from '@src/gui/WeatherViewComponent';
 import { Forecast } from '@src/weather/Forecast';
-
+import { config } from '@src/gui/WeatherViewStandaloneConfig'
 @Component({
+  standalone:true,
+  imports: [ ...config.imports],
   selector: 'weather-view',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/WeatherView.html',
   styles: [

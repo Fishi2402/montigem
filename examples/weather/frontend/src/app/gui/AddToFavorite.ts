@@ -3,8 +3,10 @@
 import { Component, } from '@angular/core';
 import { AddToFavoriteComponent } from '@src/gui/AddToFavoriteComponent';
 import { WeatherManager } from '@src/weather/WeatherManager';
-
+import {config } from '@src/gui/AddToFavoriteStandaloneConfig';
 @Component({
+  standalone:true,
+  imports:[... config.imports],
   selector: 'add-to-favorite',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/AddToFavorite.html',
   styleUrls: ['./AddToFavorite.scss']

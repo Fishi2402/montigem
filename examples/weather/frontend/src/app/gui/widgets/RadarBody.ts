@@ -2,8 +2,10 @@
 
 import { Component } from '@angular/core';
 import { RadarBodyComponent } from '@src/gui/widgets/RadarBodyComponent';
-
+import { config } from '@src/gui/widgets/RadarBodyStandaloneConfig';
 @Component({
+  standalone:true,
+  imports:[...config.imports],
     selector: 'radar-body',
     templateUrl: './RadarBody.html',
     styles: [":host{ display: flex; flex-direction: column }"],

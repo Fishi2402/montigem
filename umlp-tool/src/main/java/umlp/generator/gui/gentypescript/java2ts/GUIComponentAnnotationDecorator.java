@@ -62,7 +62,7 @@ public class GUIComponentAnnotationDecorator {
           glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, htmlPath, scssPaths, selector)
+            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, htmlPath, scssPaths, selector,"./"+originalName+"StandaloneConfig")
           );
         } else {
           glex.replaceTemplate(

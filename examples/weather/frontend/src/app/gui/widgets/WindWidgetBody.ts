@@ -2,8 +2,10 @@
 
 import { Component } from '@angular/core';
 import {WindWidgetBodyComponent} from "@src/gui/widgets/WindWidgetBodyComponent";
-
+import {config} from "@src/gui/widgets/WindWidgetBodyStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'wind-widget-body',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/widgets/WindWidgetBody.html',
   styles: [":host{ display: flex; flex-direction: column }"],

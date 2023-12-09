@@ -3,8 +3,10 @@
 import { CurrentCityWeatherComponent } from '@src/gui/current_city_weather/CurrentCityWeatherComponent';
 import { Component } from '@angular/core';
 import { WeatherState } from "@src/weather/WeatherState";
-
+import { config } from '@src/gui/current_city_weather/CurrentCityWeatherStandaloneConfig';
 @Component({
+  standalone:true,
+  imports:[... config.imports],
   selector: 'current-city-weather',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/current_city_weather/CurrentCityWeather.html',
   styles: [":host{ display: flex; flex-direction: column }"],

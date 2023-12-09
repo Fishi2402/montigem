@@ -2,8 +2,10 @@
 
 import { Component } from '@angular/core';
 import { ForecastUpdateComponent } from '@src/gui/ForecastUpdateComponent';
-
+import { config } from '@src/gui/ForecastUpdateStandaloneConfig';
 @Component({
+  standalone:true,
+  imports:[... config.imports],
   selector: 'forecast-update',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/ForecastUpdate.html',
   styles: [":host{ display: flex; flex-direction: column }"],
