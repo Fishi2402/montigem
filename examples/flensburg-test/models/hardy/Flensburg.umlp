@@ -38,6 +38,7 @@ classdiagram Flensburg {
   association visits [*] Person (visitor) <-> (visited) Address [*];
   // man beachte hier die intern gekapselte bidirektionale Verwaltung
   association parent [1] Person -> (children) Person [*];
+  association [*] Person -> (bestFriend) Person [0..1];
 
   // ---------------------------------------------------------------------------
 
