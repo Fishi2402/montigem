@@ -1,8 +1,10 @@
 package dtcockpit.welcome_board;
 
 import de.se_rwth.commons.logging.Log;
+import dtcockpit.App;
 import dtcockpit.DtcockpitManager;
 import dtcockpit.Meeting;
+import dtcockpit.MessageOfTheDay;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.PropertySet;
 import microsoft.exchange.webservices.data.core.enumeration.property.BodyType;
@@ -26,17 +28,68 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 public class OutlookConnection {
   private ExchangeService service;
+
+  private static void clearOldMeetings() {
+    List<Long> gemIds = new ArrayList<>();
+    for (Meeting m : DtcockpitManager.getMeetingList()) {
+      if (!m.getCategoriesList().contains("Dev")) {
+        gemIds.add(m.getGemId());
+      }
+    }
+
+    for (Long gemId : gemIds) {
+      DtcockpitManager.deleteMeeting(gemId);
+    }
+  }
 
   public void updateMeetings() {
     clearOldMeetings();
     try {
       ensureServiceCreated();
       buildMeetingsFromExchange();
+      updateMessageOfTheDay();
+      updateDisplayedMeetings();
     } catch (Exception e) {
       Log.warn("Error while loading meetings from exchange", e);
+    }
+  }
+
+  protected void updateDisplayedMeetings() {
+    LocalDateTime now = LocalDateTime.now();
+    App app = DtcockpitManager.getApp();
+    app.getDisplayedMeetings().clear();
+
+    List<Meeting> displayedMeetings = DtcockpitManager.getMeetingList().stream()
+        .filter(it -> !it.isEmptyCategories())
+        .filter(it -> !it.containsCategories("Privat"))
+        .filter(it -> !it.containsCategories("Ankündigung"))
+        .filter(it -> it.getEnd().isAfter(now))
+        .collect(Collectors.toList());
+
+    app.getDisplayedMeetings().addAll(displayedMeetings);
+  }
+
+  protected void updateMessageOfTheDay() {
+    App app = DtcockpitManager.getApp();
+
+    for (Meeting meeting : DtcockpitManager.getMeetingList()) {
+      LocalDateTime now = LocalDateTime.now();
+      if (meeting.containsCategories("Ankündigung")
+          && meeting.getStart().isBefore(now)
+          && meeting.getEnd().isAfter(now)
+      ) {
+        String newMsg = meeting.getTitle();
+        if (!app.getCurrentMessageGem().isPresent() || !app.getCurrentMessage().getMessage().equals(newMsg)) {
+          MessageOfTheDay tmp = DtcockpitManager.messageOfTheDayBuilder()
+              .message(newMsg).date(now.toLocalDate()).build().get();
+
+          app.setCurrentMessage(tmp);
+        }
+      }
     }
   }
 
@@ -80,19 +133,6 @@ public class OutlookConnection {
           .categories(categories)
           .location(Optional.ofNullable(appointment.getLocation()))
           .build();
-    }
-  }
-
-  private static void clearOldMeetings() {
-    List<Long> gemIds = new ArrayList<>();
-    for (Meeting m : DtcockpitManager.getMeetingList()) {
-      if (!m.getCategoriesList().contains("Dev")) {
-        gemIds.add(m.getGemId());
-      }
-    }
-
-    for (Long gemId : gemIds) {
-      DtcockpitManager.deleteMeeting(gemId);
     }
   }
 

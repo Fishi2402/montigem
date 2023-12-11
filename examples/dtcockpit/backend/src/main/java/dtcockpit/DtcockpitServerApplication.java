@@ -142,7 +142,7 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
         .start(LocalDateTime.now())
         .end(LocalDateTime.now().plusHours(1))
         .categories(List.of("Vortrag", "Dev")) // Dev entries will not be deleted by connector
-        .title("Test")
+        .title("DevTest")
         .description(Optional.of("This is a test"))
         .location(Optional.of("Seminarraum"))
         .build();
@@ -151,8 +151,8 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
         .start(LocalDateTime.now().plusHours(1))
         .end(LocalDateTime.now().plusHours(2))
         .categories(List.of("Privat", "Dev")) // Dev entries will not be deleted by connector
-        .title("Test2")
-        .description(Optional.of("This is another test"))
+        .title("DevTest2")
+        .description(Optional.of("This is another test that should not be displayed, since it is private"))
         .location(Optional.of("Smartroom"))
         .build();
   }
