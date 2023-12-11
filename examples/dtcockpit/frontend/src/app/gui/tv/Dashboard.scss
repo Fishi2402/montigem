@@ -1,11 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-:host ::ng-deep .pipelinesCard > .gem-card > .gem-card-body {
-  > *:not(:last-child)  {
+:host {
+  display: flex;
+  flex-direction: column
+}
+
+:host ::ng-deep .pipelinesCard>.gem-card>.gem-card-body {
+  >*:not(:last-child) {
     padding-bottom: 8px;
     border-bottom: 1px solid #777;
   }
-  > *:not(:first-child)  {
+
+  >*:not(:first-child) {
     padding-top: 8px;
   }
 }
