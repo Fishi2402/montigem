@@ -1,0 +1,91 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.time.LocalDate;
+import java.time.Duration;
+import java.net.URI;
+
+umlp DemoRec {
+
+  class BatteryPack {
+    double stateOfCharge;
+    double health;
+
+    List<URI> photos;
+  }
+
+  class BatteryPackType {
+    double capacity;
+    String bmsLocation;
+    String carType;
+  }
+
+  association [*] BatteryPack (inspectedInstances) <-> (type) BatteryPackType [1];
+
+  class Process {}
+
+  association [*] Process -> (deconstructionOf) BatteryPack [1];
+
+  class ProcessStep {
+    Duration timeconsumption;
+    ProcessStepType type;
+    Optional<String> description;
+  }
+
+  association [1] Process -> (consistsOf)  ProcessStep [*] {ordered};
+
+  enum ProcessStepType {
+    DECONSTRCUTION,
+    OTHER;
+  }
+
+  class SensorValue {
+    String name;
+    String unit;
+    // Value
+  }
+
+  association [*] ProcessStep -> (measured) SensorValue [*];
+  association [*] ProcessStep -> (uses) EndEffector [1];
+  association [*] ProcessStep <-> (deconstructs) JoinConnection [0..1];
+
+  // TODO what characterizes an EndEffector? What about dimensions or form? Is the set of endeffectors already known?
+  class EndEffector {}
+
+  class Component {
+    double xPos;
+    double yPos;
+    double zPos;
+
+    double width;
+    double length;
+    double height;
+
+    double weight;
+
+    boolean isDesconstructible;
+
+    List<URI> photos;
+    List<URI> threeDFiles;
+  }
+
+  class Element extends Component;
+  class Composite extends Component;
+
+  class JoinConnection {
+    double state; // TODO what kind of data type for state?
+    JoinConnectionType type;
+  }
+
+  association [*] Composite -> (linkedBy) JoinConnection [*]; // TODO + should be allowed
+
+  association [*] Component <-> (composedWith) JoinConnection [*];  // TODO should be 2..* on left side
+
+  enum JoinConnectionType {
+    SCREW,
+    GLUE,
+    WELDING,
+    PLUG,
+    ELECTRCIAL,
+    UNDEFINED;
+  }
+}

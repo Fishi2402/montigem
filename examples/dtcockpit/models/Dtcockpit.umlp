@@ -75,6 +75,8 @@ classdiagram Dtcockpit {
   association [0..1] Project <-> (pStatistics) PipelineStatistic [*];
 
   class PipelineStatistic {
+    long gitlabId;
+    String reference; // branch, tag, etc
     java.time.LocalDate time;
     long duration;
     boolean successful;
@@ -102,4 +104,23 @@ classdiagram Dtcockpit {
   }
 
   association [1] Server -> ServerStatus [*];
+
+  // Welcome board  @ SE front door LCD
+  association [1] App -> (montiCoreProjects) Project [*];
+  association [1] Project -> (lastPipeline) PipelineStatistic [0..1];
+
+  class Meeting {
+    java.time.LocalDateTime start;
+    java.time.LocalDateTime end;
+
+    String title;
+    Optional<String> location;
+    Optional<String> description;
+    List<String> categories;
+  }
+
+  class MessageOfTheDay {
+    java.time.LocalDate date;
+    String message;
+  }
 }

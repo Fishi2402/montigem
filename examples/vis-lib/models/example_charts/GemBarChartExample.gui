@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import charts.GemBarChart;
+import charts.GemBarChartTypes.GemBarChartData;
+
+page GemBarChartExample(
+  GemBarChartData data,
+  Integer maxValue,
+  Integer minValue
+) {
+  @GemBarChart(
+    data = data,
+    stacked = true,
+    maxValue = maxValue,
+    minValue = minValue
+  );
+}

@@ -1,7 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package basic;
 
+/**
+  Displays text on a webpage.
+*/
 component GemText(
+  /** Text content. */
   String value,
-  String style
+  /** **Deprecated.** */
+  String style = ""
 )

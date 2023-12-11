@@ -1,25 +1,24 @@
 /* (c) https://github.com/MontiCore/monticore */
 package flensburg.database;
 
+import de.se_rwth.commons.logging.Finding;
+import de.se_rwth.commons.logging.Log;
 import hardy.flensburg.Account;
 import hardy.flensburg.Address;
-import hardy.flensburg.AddressDAO;
 import hardy.flensburg.AddressDAOInterface;
 import hardy.flensburg.FlensburgDAOFactory;
 import hardy.flensburg.FlensburgManager;
 import hardy.flensburg.Human;
 import hardy.flensburg.HumanBuilder;
-import hardy.flensburg.HumanDAO;
 import hardy.flensburg.HumanDAOInterface;
 import hardy.flensburg.Person;
 import hardy.flensburg.PersonBuilder;
-import hardy.flensburg.PersonDAO;
 import hardy.flensburg.PersonDAOInterface;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -202,5 +201,21 @@ public abstract class GenUpdateTest extends GenAbstractDBTest {
     Optional<Account> aCopy3 = FlensburgDAOFactory.getAccountDAO().selectAccount(a.getGemId());
     assertTrue(aCopy3.isPresent());
     assertTrue(aCopy3.get().getTag().isEmpty());
+  }
+
+  @Test
+  public void testSetGemAfterCreate(){
+    var mainResidence = FlensburgManager.addressBuilder().city("Aachen").build().get();
+
+    var p = FlensburgManager.personBuilder().age(23).nickname("Jon").mainResidence(mainResidence).build().get();
+    var p2 = FlensburgManager.personBuilder().age(23).nickname("Foo").mainResidence(mainResidence).build().get();
+
+    p.setBestFriend(p2);
+
+    var idOpt = FlensburgDAOFactory.getAssocPerson_person_bestFriend_PersonDAO().selectBestFriendIdForPerson(p.getGemId());
+    assertTrue(idOpt.isPresent());
+
+    assertEquals(0, Log.getErrorCount(),
+        () -> Log.getFindings().stream().map(Finding::toString).collect(Collectors.joining("\n")));
   }
 }

@@ -1,0 +1,37 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_arrange;
+
+import arrange.GemColumn;
+import basic.GemText;
+
+/**
+  Following example shows a `300 x 200` column. The horizontal alignment of
+  elements is set to evenly distribute extra space to the left of the column
+  containing two rows, between the column and the "Third row", and to the right of
+  the "Third row". The outer column is set to wrap elements that cannot fit into
+  the container. Since the inner column has height of `100%`, the "Third row" is
+  forced to wrap. The inner column sets vertical align to `"bottom"` which forces
+  "First row" and "Second row" to the bottom of the container. The `rowGap` is set
+  to `"5px"` which creates a gap between the "First row" and "Second row".
+*/
+page GemColumnExample2() {
+  outer@GemColumn(
+    width = "300px",
+    height = "200px",
+    hAlign = "space-evenly",
+    wrap = "wrap",
+    components = [
+      inner@GemColumn(
+        width = "30%",
+        height = "100%",
+        vAlign = "bottom",
+        rowGap = "5px",
+        components = [
+          @GemText(value = "First row"),
+          @GemText(value = "Second row")
+        ]
+      ),
+      @GemText(value = "Third row")
+    ]
+  );
+}

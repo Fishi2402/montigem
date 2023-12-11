@@ -19,12 +19,13 @@ public class ModuleRoutingInfo {
   //protected final List<ModuleRoutingInfo> submodules = new ArrayList<>();
 
   protected final Set<String> guiImport = new HashSet<>();
+  private final String generatedFileDir;
   private final String routingPath;
-
 
   public ModuleRoutingInfo(List<String> packageParts) {
     this.packageParts = packageParts;
-    this.routingPath = String.join("/", packageParts);
+    this.generatedFileDir = String.join("/", packageParts);
+    this.routingPath=packageParts.size()>1?(packageParts.get(1)+String.join("/", packageParts.subList(2,packageParts.size()))):"";
   }
 
   public void add(ASTGUICompilationUnit comp) {
@@ -69,6 +70,10 @@ public class ModuleRoutingInfo {
     return routingPath;
   }
 
+  public String getGeneratedFileDir() {
+    return generatedFileDir;
+  }
+
   public Set<String> getGuiImport() {
     return guiImport;
   }
@@ -81,7 +86,7 @@ public class ModuleRoutingInfo {
         if (guiImport.contains(imp.getQName()) && !util.isCreatedTSComponent(moduleClassName)) {
           imports.put(moduleClassName, util.java2tsModule(imp.getQName()));
         }
-        else if (guiImport.contains(imp.getQName()) && util.isCreatedTSComponent(moduleClassName) && !(compDecl + "_Module").equals(util.getPackageModuleName(imp))) {
+        else if (guiImport.contains(imp.getQName()) && util.isCreatedTSComponent(moduleClassName) && !(compDecl + "GemModule").equals(util.getPackageModuleName(imp))) {
           imports.put(util.getPackageModuleName(imp), util.getPackageModulePath(imp));
         }
       }

@@ -13,14 +13,12 @@ import org.gitlab4j.api.models.Pipeline;
 import org.gitlab4j.api.models.PipelineStatus;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PipelineInformationExtractor {
 
@@ -99,6 +97,9 @@ public class PipelineInformationExtractor {
     try{
       Pager<Pipeline> pipelinePager = api.getPipelineApi().getPipelines(project.getGit(), 100);
 
+      List<Long> knownPipelines = project.getPStatistics().stream()
+          .map(PipelineStatistic::getGitlabId).collect(Collectors.toList());
+
       // TODO for now maximum at 100 pipelines if all pipelines wanted replace if with while
       if(pipelinePager.hasNext()) {
         List<Pipeline> pipelines = pipelinePager.next();
@@ -107,7 +108,13 @@ public class PipelineInformationExtractor {
           if(pipeline.getUpdatedAt() == null) {
             Log.warn("Skipped a Pipeline, because it does not have a value at UpdatedAt.");
           }
+          if(knownPipelines.contains(pipeline.getId())){
+            continue;
+          }
+
           Optional<PipelineStatistic> opt = DtcockpitManager.pipelineStatisticBuilder()
+              .gitlabId(pipeline.getId())
+              .reference(pipeline.getRef())
               .time(LocalDate.from(pipeline.getCreatedAt().toInstant().atZone(ZoneId.systemDefault())))
               // TODO duration ist ne schwierige Sachen in GitLab warum auch immer
               .duration((long) (pipeline.getUpdatedAt().getTime()- pipeline.getCreatedAt().getTime()))

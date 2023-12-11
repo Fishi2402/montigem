@@ -17,16 +17,24 @@ public abstract class CommandObjectMapper {
   }
 
   public static String serializeCommand(Command<?> command){
+    Exception err;
     try {
-      return getInstance()._serializeCommand(command);
+      Optional<String> opt = getInstance()._serializeCommand(command);
+      if(opt.isPresent()) {
+        return opt.get();
+      }else{
+        err = new IllegalStateException("Instance returned Optional.empty");
+      }
     } catch (Exception e) {
-      String msg = String.format("%s Could not serialize command: %s\n%s", "0xS0004", command.getCommandType(), e.getMessage());
-      Log.error(msg);
-      return getInstance()._serializeCommand(new ServerError(e));
+      err = e;
     }
+
+    String msg = String.format("%s Could not serialize command: %s\n%s", "0xS0004", command.getCommandType(), err.getMessage());
+    Log.error(msg);
+    return getInstance()._serializeCommand(new ServerError(err)).get();
   }
 
-  protected abstract String _serializeCommand(Command<?> command);
+  protected abstract Optional<String> _serializeCommand(Command<?> command);
 
 
   public static Optional<Command<Object>> deserializeCommand(String cmdStr){

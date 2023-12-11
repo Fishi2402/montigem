@@ -1,9 +1,7 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
@@ -11,34 +9,20 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._ast.ASTCDTypeTOP;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
-import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.StringTransformations;
-import de.se_rwth.commons.logging.Log;
-import jdk.jshell.Diag;
 import umlp.UMLPMill;
-import umlp._symboltable.UMLPArtifactScope;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class DelegationManagerDecorator extends ManagerDecorator {
@@ -57,9 +41,7 @@ public class DelegationManagerDecorator extends ManagerDecorator {
 
   protected void createClasses(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
 
-    LinkedHashMap<DiagramSymbol, LinkedHashSet<DiagramSymbol>> extensionDiamond = new LinkedHashMap<>();
-    getExtensionDiamond(origCD.getCDDefinition().getSymbol(), extensionDiamond);
-
+    var extensionDiamond = UMLPSymbolTables.getExtensionDiamond(origCD.getCDDefinition().getSymbol());
     LinkedHashMap<DiagramSymbol, LinkedHashSet<DiagramSymbol>> parentToChildDiamond = new LinkedHashMap<>();
     extensionDiamond.values().stream().flatMap(Collection::stream).distinct().collect(Collectors.toList())
         .forEach(symbol -> parentToChildDiamond.put(symbol, new LinkedHashSet<>(
@@ -139,39 +121,6 @@ public class DelegationManagerDecorator extends ManagerDecorator {
           superTypeToExtensions.getValue().stream().map(ASTCDTypeTOP::getName).collect(Collectors.toList()),
           cdTypeToCorrectManager);
     }
-  }
-
-  protected void getExtensionDiamond(DiagramSymbol currentDiagram, Map<DiagramSymbol, LinkedHashSet<DiagramSymbol>> extensionDiamond) {
-    if(extensionDiamond.containsKey(currentDiagram)) {
-      return;
-    }
-    ASTCDDefinition currentCdDefinition = (ASTCDDefinition) currentDiagram.getAstNode();
-
-    LinkedHashSet<DiagramSymbol> currentExtensions = getExtendedCDs(currentCdDefinition);
-    extensionDiamond.put(currentDiagram, currentExtensions);
-    currentExtensions.forEach(diagramSymbol -> getExtensionDiamond(diagramSymbol, extensionDiamond));
-  }
-
-  protected LinkedHashSet<DiagramSymbol> getExtendedCDs(ASTCDDefinition astcdDefinition) {
-    LinkedHashSet<DiagramSymbol> extendedCDs = new LinkedHashSet<>();
-    if(!astcdDefinition.getModifier().isPresentStereotype()) {
-      return extendedCDs;
-    }
-    astcdDefinition.getModifier().getStereotype().getValuesList().forEach(value -> {
-      if (!value.getName().equals("extends")) {
-        return;
-      }
-      String extendedCDName = value.getValue();
-      Optional<DiagramSymbol> extendedCDSymbol = astcdDefinition.getSymbol().getEnclosingScope()
-          .resolveDiagram(extendedCDName);
-      if(extendedCDSymbol.isPresent()) {
-        extendedCDs.add(extendedCDSymbol.get());
-      } else {
-        Log.error("0xABF643: Can not resolve extended diagram "+extendedCDName + " in "
-            +astcdDefinition.getName());
-      }
-    });
-    return extendedCDs;
   }
 
   protected LinkedHashMap<ASTCDType, LinkedHashSet<ASTCDType>> getSuperToTypes(DiagramSymbol superCD,
