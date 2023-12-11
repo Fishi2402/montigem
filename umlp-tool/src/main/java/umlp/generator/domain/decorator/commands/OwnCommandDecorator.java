@@ -25,6 +25,7 @@ import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.util.DecoratorUtil;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
         .forEach(c -> c.getCDMethodList()
             .stream()
             .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
+            .filter(m -> TagLookUp.isCommand(m.getSymbol()))
             .forEach(m -> {
               astcdPackage.addCDElement(withOrigin(createCommandClass(origCD, m)));
               astcdPackage.addCDElement(withOrigin(createCommandDeSer(origCD, m)));
@@ -67,6 +69,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
         .forEach(c -> c.getCDMethodList()
             .stream()
             .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
+            .filter(m -> TagLookUp.isCommand(m.getSymbol()))
             .forEach(m -> {
               astcdPackage.addCDElement(withOrigin(createCommandClass(origCD, m)));
               astcdPackage.addCDElement(withOrigin(createCommandDeSer(origCD, m)));

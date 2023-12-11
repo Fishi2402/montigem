@@ -18,6 +18,7 @@ import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -67,25 +68,41 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
       Log.println("_NOT_ Creating New Dummy Data. Data is already present.");
     }
 
+
+    PipelineInformationExtractor extractor = new PipelineInformationExtractor();
+
     // Create two default projects, if no projects are present
+    App app = DtcockpitManager.getApp();
     if (DtcockpitManager.getProjectList().isEmpty()) {
       Log.println("Creating dummy project data");
       Project monticore = DtcockpitManager.projectBuilder()
           .name("MontiCore")
           .git("monticore/monticore")
           .build().get();
-      PipelineInformationExtractor extractor = new PipelineInformationExtractor();
+
       extractor.extractPipelineDataOf("https://git.rwth-aachen.de/", monticore);
       DtcockpitManager.projectBuilder()
           .name("umlp")
-          .git("https://git.rwth-aachen.de/monticore/umlp")
+          .git("monticore/umlp")
           .build();
       Group swt = DtcockpitManager.groupBuilder().name("SWT").git("121471").build().get();
       extractor.extractPipelineDataOfAllProjectsInGroup("https://git.rwth-aachen.de/", swt);
-      DtcockpitManager.getApp().setDashboardGroup(swt);
+      app.setDashboardGroup(swt);
       // TODO: App#getProject should contain all projects by default?
-      DtcockpitManager.getApp().addProject(monticore);
+      app.addProject(monticore);
     }
+
+    if(app.getMontiCoreProjects().isEmpty()){
+      List<String> projectNames = List.of("monticore", "umlp"); // TODO: all
+
+      for (Project project : DtcockpitManager.getProjectList()) {
+        if(projectNames.contains(project.getName().toLowerCase())){
+          app.addMontiCoreProjects(project);
+        }
+      }
+    }
+    ScheduledExecutorService pipelineScheduler = Executors.newScheduledThreadPool(1);
+    pipelineScheduler.scheduleAtFixedRate(() -> updateMontiCorePipelines(extractor, app), 1, 5, TimeUnit.MINUTES);
 
     try {
       Server webServer = Server.createWebServer("-web", "-webAllowOthers").start();
@@ -138,6 +155,22 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
         .description(Optional.of("This is another test"))
         .location(Optional.of("Smartroom"))
         .build();
+  }
+
+  private static void updateMontiCorePipelines(PipelineInformationExtractor extractor, App app) {
+    List<String> devBranchNames = List.of("dev", "develop");
+
+    for (Project montiCoreProject : app.getMontiCoreProjects()) {
+      extractor.extractPipelineDataOf("https://git.rwth-aachen.de/", montiCoreProject);
+      Optional<PipelineStatistic> last = montiCoreProject.getPStatistics().stream()
+          .filter(it -> devBranchNames.contains(it.getReference()))
+          .max(Comparator.comparing(PipelineStatistic::getTime)
+                         .thenComparing(PipelineStatistic::getGitlabId)
+      );
+      if(last.isPresent()) {
+        montiCoreProject.setLastPipeline(last.get());
+      }
+    }
   }
 
   // For HotReload helpful. Otherwise the h2-webserverport is used when reloading

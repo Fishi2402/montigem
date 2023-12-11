@@ -69,6 +69,7 @@ include ':examples:kitchencompanion:backend'
 include ':examples:kitchencompanion:frontend'
 
 include ':products:syse_functions'
+include ':products:demo-recycling:backend'
 include 'examples:flensburg-test-jsweet:backend'
 findProject(':examples:flensburg-test-jsweet:backend')?.name = 'backend'
 
