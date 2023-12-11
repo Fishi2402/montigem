@@ -15,7 +15,7 @@ export class LastPipelineStat extends LastPipelineStatComponent {
       return '';
     }
     const res: string = this.getP()?.getLastPipeline()?.isSuccessful()
-      ? 'assets/@gitlab/svgs/sprite_icons/status_success.svg' 
+      ? 'assets/@gitlab/svgs/sprite_icons/status_success.svg'
       : 'assets/@gitlab/svgs/sprite_icons/status_failed.svg';
     return res;
   }
@@ -25,7 +25,7 @@ export class LastPipelineStat extends LastPipelineStatComponent {
       return '';
     }
     const res: string = this.getP()?.getLastPipeline()?.isSuccessful()
-      ? 'success' 
+      ? 'success'
       : 'failed';
     return res;
   }
@@ -35,9 +35,25 @@ export class LastPipelineStat extends LastPipelineStatComponent {
       return '';
     }
     const res: string = this.getP()?.getLastPipeline()?.isSuccessful()
-      ? 'passed' 
+      ? 'passed'
       : 'failed';
     return res;
+  }
+
+  public override getDurationValue(): string {
+    if (this.getP() == null || this.getP().getLastPipeline() == null) {
+      return null;
+    }
+    const totalSeconds = Math.floor(this.getP().getLastPipeline().getDuration() / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const formattedHours = hours.toString().padStart(2, '0');
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+    const formattedSeconds = seconds.toString().padStart(2, '0');
+
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   }
 
 }

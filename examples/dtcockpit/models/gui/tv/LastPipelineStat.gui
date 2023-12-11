@@ -18,8 +18,8 @@ component LastPipelineStat(Project p) {
         statusIcon@GitLabIcon(source = "", status = "none"),
         statusText@GemText(value = "")
       ]),
-      @GemText(value = p.lastPipeline.time),
-      @GemText(value = p.lastPipeline.duration)
+      time@GemText(value = p.lastPipeline.time),
+      duration@GemText(value = p.lastPipeline.duration)
     ]),
     @GemColumn(rowGap = "3px", components = [
       @GemText(value = p.name),
