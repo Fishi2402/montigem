@@ -1,3 +1,7 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-<div [innerHTML]="source">
+<div
+  class="svg-container"
+  [innerHTML]="source"
+  [ngClass]="{'success': status === 'success', 'failed': status === 'failed'}"
+>
 </div>

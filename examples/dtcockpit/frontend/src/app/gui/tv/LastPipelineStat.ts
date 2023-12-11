@@ -20,6 +20,16 @@ export class LastPipelineStat extends LastPipelineStatComponent {
     return res;
   }
 
+  public override getStatusIconStatus(): string {
+    if (this.getP()?.getLastPipeline() == null) {
+      return '';
+    }
+    const res: string = this.getP()?.getLastPipeline()?.isSuccessful()
+      ? 'success' 
+      : 'failed';
+    return res;
+  }
+
   public override getStatusTextValue(): string {
     if (this.getP()?.getLastPipeline() == null) {
       return '';

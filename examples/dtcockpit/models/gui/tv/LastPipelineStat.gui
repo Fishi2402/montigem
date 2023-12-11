@@ -13,15 +13,15 @@ import Dtcockpit.Project;
 
 component LastPipelineStat(Project p) {
   @GemRow(wrap = "nowrap", components = [
-    @GemColumn(components = [
-      @GemRow(components = [
-        statusIcon@GitLabIcon(source = ""),
+    @GemColumn(rowGap = "3px", components = [
+      @GemRow(colGap = "5px", components = [
+        statusIcon@GitLabIcon(source = "", status = "none"),
         statusText@GemText(value = "")
       ]),
       @GemText(value = p.lastPipeline.time),
       @GemText(value = p.lastPipeline.duration)
     ]),
-    @GemColumn(components = [
+    @GemColumn(rowGap = "3px", components = [
       @GemText(value = p.name),
       @GemLink(
         url = "https://git.rwth-aachen.de/monticore/"

@@ -7,16 +7,19 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'git-lab-icon',
   templateUrl: './GitLabIcon.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
+  styleUrls: ['./GitLabIcon.scss']
 })
 export class GitLabIcon {
 
   private _source: SafeHtml | string = "";
 
   @Input()
+  public status: string = 'none';
+
+  @Input()
   public set source(value: SafeHtml | string) {
     if (typeof value === 'string') {
-      this.http.get(value, {responseType: 'text'})
+      this.http.get(value, { responseType: 'text' })
         .subscribe(data => this._source = this.sanitizer.bypassSecurityTrustHtml(data));
     } else {
       this._source = value;

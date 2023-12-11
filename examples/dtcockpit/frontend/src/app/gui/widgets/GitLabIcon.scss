@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+@import '../../../../config/src/variables';
+
+:host {
+  display: flex;
+  align-items: center;
+}
+
+.svg-container {
+  display: flex;
+}
+
+.success {
+  fill: $acronio-green-3;
+}
+
+.failed {
+  fill: $acronio-red-3;
+}

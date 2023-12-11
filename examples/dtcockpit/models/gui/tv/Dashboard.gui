@@ -7,6 +7,7 @@ import arrange.GemCard;
 import basic.GemText;
 import basic.GemImage;
 import gui.tv.LastPipelineStat;
+import gui.widgets.Calendar;
 
 import Dtcockpit.App;
 import Dtcockpit.Project;
@@ -17,33 +18,26 @@ page Dashboard(List<App> apps, List<MessageOfTheDay> msgs, List<Meeting> meeting
   // TODO AGe: singleton App
   @GemRow(height = "50px");
   @iterate(App app : apps) {
-    @GemRow(hAlign = "space-evenly", components = [
-      @GemColumn(width = "99%", components = [
+    @GemRow(hAlign = "space-between", rowGap = "5px", components = [
+      @GemColumn(components = [
         @GemCard(title = "Message of the day", component =
           @iterate(MessageOfTheDay msg : msgs) {
-            @GemText(value = msg.date);
-            @GemText(value = msg.message);
+            message@GemText(value = "\"" + msg.message + "\"");
+            @GemRow(hAlign = "right", components = [
+              @GemText(value = msg.date)
+            ]);
           }
         )
       ]),
       @GemColumn(width = "33%", components = [
-        @GemCard(title = "Pipeline status", component =
+        pipelinesCard@GemCard(title = "Pipeline status", component =
           @iterate(Project p : app.montiCoreProjects) {
             @LastPipelineStat(p = p);
           }
         )
       ]),
       @GemColumn(width = "66%", components = [
-        @GemCard(title = "Important dates", component =
-          @iterate(Meeting m : meetings) {
-            @GemText(value = m.start);
-            @GemText(value = m.end);
-            @GemText(value = m.title);
-            @GemText(value = m.location);
-            @GemText(value = m.description);
-            @GemText(value = m.categories);
-          }
-        )
+        @GemCard(title = "Important dates", component = calendar@Calendar(meetings = meetings))
       ])
     ]);
   }
