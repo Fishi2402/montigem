@@ -54,7 +54,6 @@ import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 import umlp.generator.util.UMLPSymbolTables;
-import umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json;
 
 import java.io.File;
 import java.io.IOException;
@@ -353,10 +352,9 @@ public class UMLPTool extends UMLPToolTOP {
                     + symbolTable.getName()
                     + ".umlpsym");
             JsonPrinter.disableIndentation();
-            // use the UMLPTagDefSymbols2JSON with an UMLP artifact scope (instead of storeSymbols(symbolTable, symbolPath.toString());)
-            umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json symbols2Json = new umlptagdefinition._symboltable.UMLPTagDefinitionSymbols2Json();
-            symbolTable.accept(symbols2Json.getTraverser());
-            de.monticore.io.FileReaderWriter.storeInFile(symbolPath, symbols2Json.getSerializedString());
+            // Due to our broken-on-purpose-language aggregation (Tags and UMLP initialized separately)
+            // we can simply store the UMLP symbol table (and ignore any tags in this regard)
+            this.storeSymbols(symbolTable, symbolPath.toString());
 
             if(OCL.isSelected(cmd)) {
               MCPath oclModelPath = new MCPath();
@@ -390,7 +388,7 @@ public class UMLPTool extends UMLPToolTOP {
           }
           else {
             //print (formatted!) symboltable to console
-            UMLPTagDefinitionSymbols2Json s2j = new UMLPTagDefinitionSymbols2Json();
+            UMLPSymbols2Json s2j = new UMLPSymbols2Json();
             JsonPrinter.enableIndentation();
             symbolTable.accept(s2j.getTraverser());
             System.out.println(s2j.getSerializedString());
