@@ -26,7 +26,7 @@ export class NetworkChartExample extends NetworkChartExampleComponent {
     const edges: NetworkEdge[] = this.fillFriendsEdgesRecursively(person, allPersons);
     let nodes: NetworkNode[] = []
 
-    allPersons.forEach(p => nodes.push({ id: p.getName(), label: p.getName(), mass: 50, color: "yellow" }))
+    allPersons.forEach(p => nodes.push({ id: p.getName(), label: p.getName(), group: p.constructor.name, mass: 50, color: "yellow" }))
 
 
     const newNetworkData = { nodes: nodes, edges: edges };
