@@ -189,10 +189,10 @@ describe('NetworkChartExample', () => {
     data = comp.getPersonGraphData();
 
     const nodes: NetworkNode[] = [
-      { id: person1.getName(), label: person1.getName(), mass: 50, color: "yellow" },
-      { id: person2.getName(), label: person2.getName(), mass: 50, color: "yellow" },
-      { id: person3.getName(), label: person3.getName(), mass: 50, color: "yellow" },
-      { id: person4.getName(), label: person4.getName(), mass: 50, color: "yellow" }
+      { id: person1.getName(), label: person1.getName(), group: person1.constructor.name, mass: 50, color: "yellow" },
+      { id: person2.getName(), label: person2.getName(), group: person2.constructor.name, mass: 50, color: "yellow" },
+      { id: person3.getName(), label: person3.getName(), group: person3.constructor.name, mass: 50, color: "yellow" },
+      { id: person4.getName(), label: person4.getName(), group: person4.constructor.name, mass: 50, color: "yellow" }
     ];
     const allPersons: Set<Person> = new Set();
     // @ts-expect-error
