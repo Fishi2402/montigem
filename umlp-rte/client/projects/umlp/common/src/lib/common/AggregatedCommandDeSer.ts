@@ -19,7 +19,7 @@ export abstract class AggregatedCommandDeSer {
 
     const printer: any = {};
     this.deSerMap.get(commandType).buildJson(command, printer);
-    return printer.toString();
+    return JSON.stringify(printer);
   }
 
   public deserialize<T>(cmdStr: string): Command<T> {
