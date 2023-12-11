@@ -9,8 +9,16 @@ public class DtcockpitManagerImpl extends DtcockpitManagerImplTOP {
     return getSingleton()._getKnownRooms();
   }
 
+  public static Map<Long,User> getKnownUsers (){
+    return getSingleton()._getKnownUsers();
+  }
+
   public Map<Long,Room> _getKnownRooms(){
     return this.knownRooms;
+  }
+
+  public Map<Long,User> _getKnownUsers(){
+    return this.knownUsers;
   }
 
   public static DtcockpitManagerImpl getSingleton(){

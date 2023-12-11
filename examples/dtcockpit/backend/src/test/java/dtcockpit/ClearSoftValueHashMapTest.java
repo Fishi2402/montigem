@@ -6,7 +6,10 @@ package dtcockpit;
 import dtcockpit.test_infrastructure.DtcockpitDBTestSetup;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.common.DatabaseAccessManager;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +22,7 @@ public class ClearSoftValueHashMapTest extends DtcockpitDBTestSetup {
   }
 
   @Test
-  @Tag("LoadTest")
+  @Tag("SlowTest")
   public void testHashmap() {
     Room room0 = DtcockpitManagerImpl.roomBuilderFromId(0)
         .roomNumber(0).humidity(2.0)
@@ -35,11 +38,17 @@ public class ClearSoftValueHashMapTest extends DtcockpitDBTestSetup {
     Map<Long,Room> knownRooms = DtcockpitManagerImpl.getKnownRooms();
 
     //check that Map got cleared
-    assertTrue(knownRooms.size() < DtcockpitManagerImpl.getRoomList().size());
+    ResultSet rooms = DatabaseAccessManager.executeQuery("SELECT COUNT(*) FROM \"room\"").get();
+    try {
+      rooms.next();
+      assertTrue(knownRooms.size() < rooms.getInt(1));
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
     //check that objects still in usage are not cleared
     assertTrue(DtcockpitManager.isLoadedRoom(0));
     //check that the longest existing object not in usage is among the cleared objects
-    assertTrue(DtcockpitManager.isLoadedRoom(1));
+    assertFalse(DtcockpitManager.isLoadedRoom(1));
     //check that
     assertEquals(room0, DtcockpitManager.getRoomSure(0));
     //check that Room cleared from map is still accessible through database
