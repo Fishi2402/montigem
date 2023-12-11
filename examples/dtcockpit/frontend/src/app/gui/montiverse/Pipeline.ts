@@ -16,8 +16,7 @@ import {
 
 export class Pipeline extends PipelineComponent {
   public okLeftClick(event: any): void {
-    //const { exec } = require('node:child_process')
-    //exec(this.getInfoValue());
+    this.project.setCmd(this.getInfoValue());
   }
 
   public getInfoValue(): string {

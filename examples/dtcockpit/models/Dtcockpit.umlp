@@ -70,6 +70,7 @@ classdiagram Dtcockpit {
   class Project {
     String name;
     String git;
+    Optional<String> cmd;
   }
 
   class Branch {

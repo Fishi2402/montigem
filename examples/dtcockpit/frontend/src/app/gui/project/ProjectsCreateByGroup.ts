@@ -45,6 +45,9 @@ export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
       },
       notifyCiInfosInvalid: (project: Project,msg: string): void => {
         this.error = msg;
+      },
+      notifyCmdInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
       }
     };
     ProjectErrorCollector.addErrorObserver(observer);

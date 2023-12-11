@@ -45,6 +45,9 @@ export class ProjectCreate extends ProjectCreateComponent {
       },
       notifyCiInfosInvalid: (project: Project,msg: string): void => {
         this.error = msg;
+      },
+      notifyCmdInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
       }
     };
     ProjectErrorCollector.addErrorObserver(observer);
