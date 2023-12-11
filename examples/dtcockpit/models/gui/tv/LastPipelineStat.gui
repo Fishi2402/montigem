@@ -4,16 +4,34 @@ package gui.tv;
 import arrange.GemColumn;
 import arrange.GemRow;
 import basic.GemText;
+import basic.GemLink;
 import basic.GemImage;
+
+import gui.widgets.GitLabIcon;
 
 import Dtcockpit.Project;
 
 component LastPipelineStat(Project p) {
-  @GemRow(components = [
-    @GemText(value = p.lastPipeline.gitlabId),
-    @GemText(value = p.lastPipeline.reference),
-    @GemText(value = p.lastPipeline.time),
-    @GemText(value = p.lastPipeline.duration)
-    // @GemText(value = p.lastPipeline.successful)
+  @GemRow(wrap = "nowrap", components = [
+    @GemColumn(components = [
+      @GemRow(components = [
+        statusIcon@GitLabIcon(source = ""),
+        statusText@GemText(value = "")
+      ]),
+      @GemText(value = p.lastPipeline.time),
+      @GemText(value = p.lastPipeline.duration)
+    ]),
+    @GemColumn(components = [
+      @GemText(value = p.name),
+      @GemLink(
+        url = "https://git.rwth-aachen.de/monticore/"
+          + p.name + "/-/pipelines/" + p.lastPipeline.gitlabId,
+        text = "#" + p.lastPipeline.gitlabId
+      ),
+      @GemRow(components = [
+        @GitLabIcon(source = "assets/@gitlab/svgs/sprite_icons/branch.svg"),
+        @GemText(value = p.lastPipeline.reference)
+      ])
+    ])
   ]);
 }

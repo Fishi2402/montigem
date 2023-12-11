@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import { Component, Input } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+
+@Component({
+  selector: 'git-lab-icon',
+  templateUrl: './GitLabIcon.html',
+  styles: [":host{ display: flex; flex-direction: column }"],
+})
+export class GitLabIcon {
+
+  private _source: SafeHtml | string = "";
+
+  @Input()
+  public set source(value: SafeHtml | string) {
+    if (typeof value === 'string') {
+      this.http.get(value, {responseType: 'text'})
+        .subscribe(data => this._source = this.sanitizer.bypassSecurityTrustHtml(data));
+    } else {
+      this._source = value;
+    }
+  };
+
+  public get source(): SafeHtml | string {
+    return this._source;
+  };
+
+  public constructor(protected sanitizer: DomSanitizer, protected http: HttpClient) {
+  }
+
+}
+
+

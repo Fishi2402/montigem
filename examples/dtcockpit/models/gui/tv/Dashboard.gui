@@ -15,28 +15,35 @@ import Dtcockpit.Meeting;
 
 page Dashboard(List<App> apps, List<MessageOfTheDay> msgs, List<Meeting> meetings) {
   // TODO AGe: singleton App
+  @GemRow(height = "50px");
   @iterate(App app : apps) {
     @GemRow(hAlign = "space-evenly", components = [
-      @GemColumn(width = "33%", components = [
-        @iterate(Project p : app.montiCoreProjects) {
-          @LastPipelineStat(p = p);
-        }
+      @GemColumn(width = "99%", components = [
+        @GemCard(title = "Message of the day", component =
+          @iterate(MessageOfTheDay msg : msgs) {
+            @GemText(value = msg.date);
+            @GemText(value = msg.message);
+          }
+        )
       ]),
       @GemColumn(width = "33%", components = [
-        @iterate(MessageOfTheDay msg : msgs) {
-          @GemText(value = msg.date);
-          @GemText(value = msg.message);
-        }
+        @GemCard(title = "Pipeline status", component =
+          @iterate(Project p : app.montiCoreProjects) {
+            @LastPipelineStat(p = p);
+          }
+        )
       ]),
-      @GemColumn(width = "33%", components = [
-        @iterate(Meeting m : meetings) {
-          @GemText(value = m.start);
-          @GemText(value = m.end);
-          @GemText(value = m.title);
-          @GemText(value = m.location);
-          @GemText(value = m.description);
-          @GemText(value = m.categories);
-        }
+      @GemColumn(width = "66%", components = [
+        @GemCard(title = "Important dates", component =
+          @iterate(Meeting m : meetings) {
+            @GemText(value = m.start);
+            @GemText(value = m.end);
+            @GemText(value = m.title);
+            @GemText(value = m.location);
+            @GemText(value = m.description);
+            @GemText(value = m.categories);
+          }
+        )
       ])
     ]);
   }
