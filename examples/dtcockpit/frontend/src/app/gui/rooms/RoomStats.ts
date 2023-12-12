@@ -20,7 +20,9 @@ export class RoomStats extends RoomStatsComponent {
 
   public override init(): void {
     setTimeout(() => {
-      console.log(this.getStats())
+      if (this.getStats() == null) {
+        return;
+      }
       for (let i = 0; i < this.getStats().ids.length; i++) {
         this.getStats().get(i).then(room => {
           if(room.getRoomNumber() == 4304){
