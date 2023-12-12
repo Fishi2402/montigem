@@ -14,7 +14,7 @@ before_script:
 
 stages:
   - build
-#  - it_tests
+  #  - it_tests
   - check
   - deploy
   - testDeployed
@@ -53,6 +53,20 @@ build:
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
+
+slowtest:
+  stage: check
+  dependencies:
+    - build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - "gradle --version"
+    - "gradle slowtest --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+  artifacts:
+    reports:
+      # Lets gitlab render infos about failed tests
+      junit: "**/slowtest/**/TEST-*.xml"
 
 deployBackendDocker:
   stage: deploy
