@@ -4,8 +4,10 @@ import {Component} from '@angular/core';
 import {ResetPasswordComponent} from '@src/gui/login/ResetPasswordComponent';
 import {User} from '@src/sehub/User';
 import {SehubManager} from '@src/sehub/SehubManager';
-
+import {config} from "@src/gui/login/ResetPasswordStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'reset-password',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/ResetPassword.html',
   styles: [":host{ display: flex; flex-direction: column }"],

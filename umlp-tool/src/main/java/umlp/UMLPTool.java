@@ -607,7 +607,7 @@ public class UMLPTool extends UMLPToolTOP {
           componentGenerator.generate(astGui, "umlp.GUI2Component");
 
           GUI2TypeScriptGenerator tsConfigGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
-          tsConfigGenerator.genStandaloneConfig(astGui);
+          Reporting.reportFileCreation(tsConfigGenerator.genStandaloneConfig(astGui));
 
           GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();
           gui2HtmlTrafo.transform(astGui);

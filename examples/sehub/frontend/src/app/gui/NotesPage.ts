@@ -9,8 +9,10 @@ import {User} from '@src/sehub/User';
 import {SehubRole} from '@src/sehub/SehubRole';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NotesPageComponent} from "../../../build/frontendGen/build/appgui/gui/NotesPageComponent";
-
+import {config} from "@src/gui/NotesPageStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'notes-page',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/NotesPage.html',
   styles: [":host{ display: flex; flex-direction: column }"],

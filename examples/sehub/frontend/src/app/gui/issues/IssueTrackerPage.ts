@@ -7,8 +7,10 @@ import {IssueState} from '@src/sehub/IssueState';
 import {SehubSecurityManager} from '@src/sehub/SehubSecurityManager';
 import {IssueGemList} from '@src/sehub/gemlists/IssueGemList';
 import {GemList} from '@umlp/common';
-
+import {config} from "@src/gui/issues/IssueTrackerPageStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'issue-tracker-page',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueTrackerPage.html',
   styles: [":host{ display: flex; flex-direction: column }"],

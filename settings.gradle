@@ -31,7 +31,7 @@ include ":experiments"
 include ":experiments:dbPerformance"
 include ":experiments:statecharts-integration"
 include ":experiments:module-system:module-definition"
-include ":experiments:module-system:modules-usage"
+include ":experiments:module-system:routes-usage"
 
 include ":examples"
 include ':examples:cars'
@@ -73,4 +73,4 @@ include ':products:demo-recycling:backend'
 include 'examples:flensburg-test-jsweet:backend'
 findProject(':examples:flensburg-test-jsweet:backend')?.name = 'backend'
 
-include ':modules:login'
+include ':routes:login'

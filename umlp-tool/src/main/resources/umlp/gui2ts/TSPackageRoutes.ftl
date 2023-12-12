@@ -1,15 +1,20 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("astguiCompilationUnitList", "existHWC", "ids","fullPathIndex","paths","routingLinkPrefix")}
+${tc.signature("astguiCompilationUnitList", "existHWC", "ids","fullPathIndex","paths","routingLinkPrefix","subRoutes")}
 // always imported
-import { Routes } from "@angular/router";
+import { Route } from "@angular/router";
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
   import { ${astguiCompilationUnitList[index].getComponentName()}<#if !existHWC[index]>Component</#if> } from "${paths[index]}";
 </#list>
 
+<#list subRoutes?keys as key>
+  import {routes as ${key} } from "${subRoutes[key]}";
+</#list>
 
-
-export const routes: Routes = [
+export const routes: Route[] = [
+<#list subRoutes?keys as key>
+  ...${key},
+</#list>
 <#list 0..(astguiCompilationUnitList?size - 1) as index>
     <#if astguiCompilationUnitList[index].getGUIComponentDeclaration().isPage() >
 

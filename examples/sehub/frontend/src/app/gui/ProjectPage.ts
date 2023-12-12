@@ -7,8 +7,11 @@ import {Artifact} from '@src/sehub/Artifact';
 import {Directory} from '@src/sehub/Directory';
 import { SehubSecurityManager } from "../sehub/SehubSecurityManager";
 import {Component} from '@angular/core';
-
+import {config} from "@src/gui/ProjectPageStandaloneConfig";
+import { GemgraphModule } from '@umlp/charts';
 @Component({
+  standalone:true,
+  imports:[...config.imports,GemgraphModule],
   selector: 'project-page',
   templateUrl: './ProjectPage.html',
   styles: [":host{ display: flex; flex-direction: column }"],

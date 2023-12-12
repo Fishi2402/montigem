@@ -7,8 +7,10 @@ import {IssueEntryComponent} from '@src/gui/issues/IssueEntryComponent';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
 import {SehubRole} from '@src/sehub/SehubRole';
-
+import {config} from "@src/gui/issues/IssueEntryStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'issue-entry',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueEntry.html',
   styles: [":host{ display: flex; flex-direction: column }"],

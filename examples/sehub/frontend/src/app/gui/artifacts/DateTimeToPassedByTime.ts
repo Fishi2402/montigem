@@ -3,8 +3,10 @@
 import {DateTimeToPassedByTimeComponent} from '@src/gui/artifacts/DateTimeToPassedByTimeComponent';
 
 import {Component,} from '@angular/core';
-
+import {config} from "@src/gui/artifacts/DateTimeToPassedByTimeStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'date-time-to-passed-by-time',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/artifacts/DateTimeToPassedByTime.html',
   styles: [":host{ display: flex; flex-direction: column }"],

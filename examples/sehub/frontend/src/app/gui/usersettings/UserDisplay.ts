@@ -7,8 +7,10 @@ import {SehubRole} from '@src/sehub/SehubRole';
 import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
-
+import {config} from "@src/gui/usersettings/UserDisplayStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'user-display',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/usersettings/UserDisplay.html',
   styles: [":host{ display: flex; flex-direction: column }"],

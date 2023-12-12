@@ -8,8 +8,10 @@ import {CommandManager} from '@umlp/common';
 import {User_setPassword} from '@src/sehub/commands/User_setPassword';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {SehubManager} from '@src/sehub/SehubManager';
-
+import {config} from "@src/gui/usersettings/UserSettingsStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'user-settings',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/usersettings/UserSettings.html',
   styles: [":host{ display: flex; flex-direction: column }"],

@@ -5,8 +5,10 @@ import {Component} from '@angular/core';
 import {SehubManager} from '@src/sehub/SehubManager';
 
 import {ActivatedRoute, Router} from '@angular/router';
-
+import {config} from "@src/gui/ProjectFileViewStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'project-file-view',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/ProjectFileView.html',
   styles: [":host{ display: flex; flex-direction: column }"],

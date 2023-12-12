@@ -8,8 +8,10 @@ import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
 import {SehubRole} from '@src/sehub/SehubRole';
 
-
+import {config} from "@src/gui/issues/IssueCreateStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'issue-create',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueCreate.html',
   styles: [":host{ display: flex; flex-direction: column }"],
