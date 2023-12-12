@@ -154,6 +154,7 @@ public class OutlookConnection {
       );
       service.setCredentials(credentials);
       service.setUrl(URI.create("https://mail.rwth-aachen.de/EWS/Exchange.asmx"));
+      Log.info("Created ExchangeService", "OutlookConnection");
     }
   }
 }

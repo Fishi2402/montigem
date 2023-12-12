@@ -136,7 +136,10 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
 
     OutlookConnection outlookConnection = new OutlookConnection();
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    scheduler.scheduleAtFixedRate(outlookConnection::updateMeetings, 0, 5, TimeUnit.MINUTES);
+    scheduler.scheduleAtFixedRate(() -> {
+      Log.info("Trigger outlook update", "ServerApp");
+      outlookConnection.updateMeetings();
+    }, 0, 5, TimeUnit.MINUTES);
 
     // For dev: 2 dummy meetings
     DtcockpitManager.meetingBuilder()
