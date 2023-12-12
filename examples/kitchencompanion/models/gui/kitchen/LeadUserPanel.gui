@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.kitchen;
+
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import basic.GemButton;
+import input.GemTextInput;
+import input.GemTextareaInput;
+
+component LeadUserPanel(){
+  @GemRow(hAlign = "center", colGap="1rem", rowGap="1rem", wrap="wrap", components = [
+    @GemButton(label = "Bernhard Rumpe"),
+    @GemButton(label = "Manfred Nagl")
+  ]);
+}

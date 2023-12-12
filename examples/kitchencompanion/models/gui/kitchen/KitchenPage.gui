@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.kitchen;
+
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemRow;
+import arrange.GemColumn;
+import basic.GemText;
+
+import KitchenCompanion.User;
+
+import gui.kitchen.LeadUserPanel;
+import gui.kitchen.OrdinaryUserPanel;
+
+page KitchenPage(List<User> users) {
+  @GemColumn(width = "70rem", hAlign = "center", rowGap="1rem", wrap="wrap", //component =
+//    title@GemText(value = "Coffee List"),
+//    component = projectList@GemRow(
+//      rowGap="20px",
+//      colGap="20px",
+      components=[
+        @LeadUserPanel(),
+        @OrdinaryUserPanel(allUsers=users),
+        chairBut@GemButton(label = "Lehrstuhl")
+      ]
+//    )
+  );
+}

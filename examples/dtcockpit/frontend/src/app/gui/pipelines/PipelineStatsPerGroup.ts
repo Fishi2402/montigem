@@ -61,6 +61,10 @@ export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
         labels.push(label)
       }
     })
+    if (!labels.length) {
+      return null;
+    }
+
     labels.sort((s1, s2) => {
       let str1Arr = s1.split(".");
       let reverse1Arr = str1Arr.reverse();
@@ -70,7 +74,6 @@ export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
       let reverse2Str = reverse2Arr.join('');
       return reverse1Str.localeCompare(reverse2Str)
     })
-    labels.reverse()
     if(!this.maxDate) {
       this.maxDate = labels[0].split(".").reverse().join("-");
     }

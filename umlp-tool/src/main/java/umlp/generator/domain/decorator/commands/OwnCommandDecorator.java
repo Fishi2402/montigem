@@ -25,6 +25,7 @@ import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.util.DecoratorUtil;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
         .forEach(c -> c.getCDMethodList()
             .stream()
             .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
+            .filter(m -> TagLookUp.isCommand(m.getSymbol()))
             .forEach(m -> {
               astcdPackage.addCDElement(withOrigin(createCommandClass(origCD, m)));
               astcdPackage.addCDElement(withOrigin(createCommandDeSer(origCD, m)));
@@ -67,6 +69,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
         .forEach(c -> c.getCDMethodList()
             .stream()
             .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
+            .filter(m -> TagLookUp.isCommand(m.getSymbol()))
             .forEach(m -> {
               astcdPackage.addCDElement(withOrigin(createCommandClass(origCD, m)));
               astcdPackage.addCDElement(withOrigin(createCommandDeSer(origCD, m)));
@@ -151,8 +154,10 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
     if (GenService.isCDType(type)) {
       ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
       getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
-      getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print()
-          + AccessPolicyDecorator.SUFFIX);
+      if (!GenService.isCDEnum(type)) {
+        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print()
+                                     + AccessPolicyDecorator.SUFFIX);
+      }
     } else if (GenService.isCDEnum(type)) {
       ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
       getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
@@ -173,7 +178,11 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
     if (returnTypeSymbol.isGenericType()) {
       SymTypeExpression innerType = ((SymTypeOfGenerics) returnTypeSymbol).getArgumentList().get(0);
       addImport(innerType, ast);
-      return buildExtendedCommandType(innerType.getTypeInfo().getName());
+      if (GenService.isList(returnTypeSymbol) || GenService.isOptional(returnTypeSymbol)) {
+        return buildExtendedCommandType(innerType.getTypeInfo().getName());
+      }
+      addImport(returnTypeSymbol, ast);
+      return buildExtendedCommandType(returnTypeSymbol.printFullName());
     }
     addImport(returnTypeSymbol, ast);
     return buildExtendedCommandType(returnTypeSymbol.getTypeInfo().getName());

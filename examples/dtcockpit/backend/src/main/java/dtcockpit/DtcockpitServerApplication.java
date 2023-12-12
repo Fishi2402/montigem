@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -142,7 +143,7 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
         .start(LocalDateTime.now())
         .end(LocalDateTime.now().plusHours(1))
         .categories(List.of("Vortrag", "Dev")) // Dev entries will not be deleted by connector
-        .title("Test")
+        .title("DevTest")
         .description(Optional.of("This is a test"))
         .location(Optional.of("Seminarraum"))
         .build();
@@ -151,10 +152,12 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
         .start(LocalDateTime.now().plusHours(1))
         .end(LocalDateTime.now().plusHours(2))
         .categories(List.of("Privat", "Dev")) // Dev entries will not be deleted by connector
-        .title("Test2")
-        .description(Optional.of("This is another test"))
+        .title("DevTest2")
+        .description(Optional.of("This is another test that should not be displayed, since it is private"))
         .location(Optional.of("Smartroom"))
         .build();
+
+    createDummyMessageOfTheDay();
   }
 
   private static void updateMontiCorePipelines(PipelineInformationExtractor extractor, App app) {
@@ -171,6 +174,21 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
         montiCoreProject.setLastPipeline(last.get());
       }
     }
+  }
+
+  private void createDummyMessageOfTheDay() {
+    DtcockpitManager.messageOfTheDayBuilder()
+        .message("Our Mission\n" +
+            "\n" +
+            "Improving software and systems development by identifying:\n" +
+            "\n" +
+            "    methods, concepts, tools and infrastructures for\n" +
+            "    innovative and efficient incremental development\n" +
+            "    of software and software intensive high quality systems\n" +
+            "    in less time while\n" +
+            "    flexibly integrating evolving requirements.\n")
+        .date(LocalDate.now())
+        .build();
   }
 
   // For HotReload helpful. Otherwise the h2-webserverport is used when reloading

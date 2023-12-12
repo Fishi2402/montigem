@@ -35,7 +35,7 @@ import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.util.PathUtil;
-import umlp.generator.util.SingletonLookUp;
+import umlp.generator.util.TagLookUp;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -247,7 +247,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
 
           if (util.getMainDomainModelSimpleName().isPresent() && !util.isEnumType(p.getSymbol().getType())) {
             // TODO AGe: body of init method currently uses different hooks, improve
-            if (SingletonLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())) {
+            if (TagLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())) {
               hps.add(new TemplateHookPoint(
                       "umlp.gui2ts.TSInitDomainSingleton",
                       p.getName(),
