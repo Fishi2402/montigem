@@ -174,10 +174,10 @@ describe('NetworkChartExample', () => {
 
     let data: NetworkData | null;
 
-    data = comp.getGemGraph0Data();
+    data = comp.getPersonGraphData();
     expect(data).toBeNull();
 
-    data = comp.getGemGraph0Data();
+    data = comp.getPersonGraphData();
     expect(data).toBeNull();
   });
 
@@ -186,13 +186,13 @@ describe('NetworkChartExample', () => {
 
     let data: NetworkData | null;
 
-    data = comp.getGemGraph0Data();
+    data = comp.getPersonGraphData();
 
     const nodes: NetworkNode[] = [
-      { id: person1.getName(), label: person1.getName(), mass: 50, color: "yellow" },
-      { id: person2.getName(), label: person2.getName(), mass: 50, color: "yellow" },
-      { id: person3.getName(), label: person3.getName(), mass: 50, color: "yellow" },
-      { id: person4.getName(), label: person4.getName(), mass: 50, color: "yellow" }
+      { id: person1.getName(), label: person1.getName(), group: person1.constructor.name, mass: 50, color: "yellow" },
+      { id: person2.getName(), label: person2.getName(), group: person2.constructor.name, mass: 50, color: "yellow" },
+      { id: person3.getName(), label: person3.getName(), group: person3.constructor.name, mass: 50, color: "yellow" },
+      { id: person4.getName(), label: person4.getName(), group: person4.constructor.name, mass: 50, color: "yellow" }
     ];
     const allPersons: Set<Person> = new Set();
     // @ts-expect-error
@@ -206,10 +206,10 @@ describe('NetworkChartExample', () => {
     comp.p = person1;
 
     let data1: NetworkData | null;
-    data1 = comp.getGemGraph0Data();
+    data1 = comp.getPersonGraphData();
 
     let data2: NetworkData | null;
-    data2 = comp.getGemGraph0Data();
+    data2 = comp.getPersonGraphData();
 
     expect(data1).toBe(data2);
   });

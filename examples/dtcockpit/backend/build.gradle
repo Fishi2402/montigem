@@ -54,6 +54,10 @@ dependencies {
 
   implementation group: 'org.gitlab4j', name: 'gitlab4j-api', version: '5.3.0'
 
+  // Welcome board
+  implementation("com.microsoft.ews-java-api:ews-java-api:2.0") // Exchange api for calendar
+  implementation("org.jsoup:jsoup:1.17.1") // HTML of outlook appointment body to readable text
+
   testImplementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
   testImplementation "org.neo4j:neo4j:4.4.10"
   testImplementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
@@ -89,6 +93,9 @@ test {
 }
 
 tasks.register("slowtest", Test) {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
   useJUnitPlatform {
     includeTags "SlowTest"
   }

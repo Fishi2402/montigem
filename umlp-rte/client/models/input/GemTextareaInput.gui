@@ -3,6 +3,9 @@ package input;
 
 import input.GemTextareaInputTypes.GemTextareaInputValidity;
 
+//This component represents a text area with an optional label.
+//It is designed to be used in forms or other contexts where multi-line user text input is required
+
 component GemTextareaInput(
   String labelText,
   ?String entry,

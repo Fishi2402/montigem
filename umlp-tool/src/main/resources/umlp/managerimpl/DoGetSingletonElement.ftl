@@ -10,7 +10,6 @@ if (${name?uncap_first}Instance == null) { // Fetch from DAO
       if(!${name?uncap_first}Instance.containsObserver(the${name}DbObserver)){
         ${name?uncap_first}Instance.addObserver(the${name}DbObserver);
       }
-      ${managerName?uncap_first}Observers.forEach(obs -> obs.maybeNotify${name}Added(${name?uncap_first}Instance, NotificationScope.ALL));
     }
   }
 }

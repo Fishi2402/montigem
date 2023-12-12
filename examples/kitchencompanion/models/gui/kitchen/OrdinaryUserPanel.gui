@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.kitchen;
+
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import basic.GemButton;
+import input.GemTextInput;
+import input.GemTextareaInput;
+
+import KitchenCompanion.User;
+
+component OrdinaryUserPanel(List<User> allUsers){
+  @GemRow(hAlign = "center", colGap="1rem", rowGap="1rem", wrap="wrap", components = [
+
+    @iterate(User user : allUsers) {
+      @GemButton(label = user.username);
+    }
+
+  ]);
+}

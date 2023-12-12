@@ -4,17 +4,19 @@ package umlp.generator.domain.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
@@ -59,6 +61,19 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
     for (ASTCDClass c :  origCD.getCDDefinition().getCDClassesList()) {
       if (canSerialize(c)) {
         classNames.add(Joiners.DOT.join(packageName, c.getName()));
+      }
+    }
+
+    // Other extended CDs
+    DiagramSymbol originalDiagram = origCD.getCDDefinition().getSymbol();
+    var extensionHierarchy = UMLPSymbolTables.getExtensionDiamond(originalDiagram);
+    for (DiagramSymbol diagramSymbol : extensionHierarchy.get(originalDiagram)) {
+      String curPackName = getPackageName(diagramSymbol, DEFAULT_PACKAGE);
+      ASTCDDefinition def = ((ASTCDDefinition)diagramSymbol.getAstNode());
+      for (ASTCDClass astcdClass : def.getCDClassesList()) {
+        if(canSerialize(astcdClass)) {
+          classNames.add(Joiners.DOT.join(curPackName, astcdClass.getName()));
+        }
       }
     }
     return classNames;
