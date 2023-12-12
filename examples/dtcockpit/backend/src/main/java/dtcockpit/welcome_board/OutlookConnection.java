@@ -47,6 +47,7 @@ public class OutlookConnection {
   }
 
   public void updateMeetings() {
+    Log.info("Loading Meetings from exchange", "OutlookConnection");
     clearOldMeetings();
     try {
       ensureServiceCreated();
@@ -56,9 +57,11 @@ public class OutlookConnection {
     } catch (Exception e) {
       Log.warn("Error while loading meetings from exchange", e);
     }
+    Log.info("Finished loading Meetings from exchange", "OutlookConnection");
   }
 
   protected void updateDisplayedMeetings() {
+    Log.info("Updating displayedMeetings", "OutlookConnection");
     LocalDateTime now = LocalDateTime.now();
     App app = DtcockpitManager.getApp();
     app.getDisplayedMeetings().clear();
@@ -71,9 +74,11 @@ public class OutlookConnection {
         .collect(Collectors.toList());
 
     app.getDisplayedMeetings().addAll(displayedMeetings);
+    Log.info(displayedMeetings.size() + " meetings will be displayed", "OutlookConnection");
   }
 
   protected void updateMessageOfTheDay() {
+    Log.info("Updating MessageOfTheDay", "OutlookConnection");
     App app = DtcockpitManager.getApp();
 
     for (Meeting meeting : DtcockpitManager.getMeetingList()) {
@@ -84,6 +89,7 @@ public class OutlookConnection {
       ) {
         String newMsg = meeting.getTitle();
         if (!app.getCurrentMessageGem().isPresent() || !app.getCurrentMessage().getMessage().equals(newMsg)) {
+          Log.info("Replacing MessageOfTheDay", "OutlookConnection");
           MessageOfTheDay tmp = DtcockpitManager.messageOfTheDayBuilder()
               .message(newMsg).date(now.toLocalDate()).build().get();
 
@@ -98,6 +104,8 @@ public class OutlookConnection {
     Instant start = new Date().toInstant().minus(1, ChronoUnit.DAYS);
     Instant end = new Date().toInstant().plus(7, ChronoUnit.DAYS);
     FindItemsResults<Appointment> appointments = folder.findAppointments(new CalendarView(Date.from(start), Date.from(end)));
+
+    Log.info("Loaded " + appointments.getTotalCount() + " Appointments from exchange", "OutlookConnection");
 
     for (Appointment appointment : appointments) {
       appointment.load(new PropertySet(
@@ -138,6 +146,7 @@ public class OutlookConnection {
 
   private void ensureServiceCreated() {
     if (service == null) {
+      Log.info("Creating ExchangeService", "OutlookConnection");
       service = new ExchangeService();
       ExchangeCredentials credentials = new WebCredentials(
           System.getenv("WELCOME_BOARD_EXCHANGE_USER"),
