@@ -139,7 +139,8 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
     scheduler.scheduleAtFixedRate(() -> {
       Log.info("Trigger outlook update", "ServerApp");
       outlookConnection.updateMeetings();
-    }, 0, 5, TimeUnit.MINUTES);
+      Log.info("Finished outlook update", "ServerApp");
+    }, 30, 2 * 60, TimeUnit.SECONDS);
 
     // For dev: 2 dummy meetings
     DtcockpitManager.meetingBuilder()

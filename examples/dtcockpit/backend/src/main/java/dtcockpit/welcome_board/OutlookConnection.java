@@ -34,6 +34,7 @@ public class OutlookConnection {
   private ExchangeService service;
 
   private static void clearOldMeetings() {
+    Log.info("Clearing old meetings", "OutlookConnection");
     List<Long> gemIds = new ArrayList<>();
     for (Meeting m : DtcockpitManager.getMeetingList()) {
       if (!m.getCategoriesList().contains("Dev")) {
@@ -44,12 +45,14 @@ public class OutlookConnection {
     for (Long gemId : gemIds) {
       DtcockpitManager.deleteMeeting(gemId);
     }
+
+    Log.info("Cleared old meetings", "OutlookConnection");
   }
 
   public void updateMeetings() {
     Log.info("Loading Meetings from exchange", "OutlookConnection");
-    clearOldMeetings();
     try {
+      clearOldMeetings();
       ensureServiceCreated();
       buildMeetingsFromExchange();
       updateMessageOfTheDay();
@@ -97,9 +100,11 @@ public class OutlookConnection {
         }
       }
     }
+    Log.info("Updated MessageOfTheDay", "OutlookConnection");
   }
 
   private void buildMeetingsFromExchange() throws Exception {
+    Log.info("Building meetings from Appointments", "OutlookConnection");
     CalendarFolder folder = CalendarFolder.bind(service, WellKnownFolderName.Calendar);
     Instant start = new Date().toInstant().minus(1, ChronoUnit.DAYS);
     Instant end = new Date().toInstant().plus(7, ChronoUnit.DAYS);
@@ -133,7 +138,7 @@ public class OutlookConnection {
         categories.add(category);
       }
 
-      DtcockpitManager.meetingBuilder()
+      var m = DtcockpitManager.meetingBuilder()
           .start(LocalDateTime.from(appStart.toInstant().atZone(TimeZone.getTimeZone("Europe/Berlin").toZoneId())))
           .end(LocalDateTime.from(appEnd.toInstant().atZone(TimeZone.getTimeZone("Europe/Berlin").toZoneId())))
           .title(subject)
@@ -141,7 +146,9 @@ public class OutlookConnection {
           .categories(categories)
           .location(Optional.ofNullable(appointment.getLocation()))
           .build();
+      Log.info("Build meeting " + m, "OutlookConnection");
     }
+    Log.info("Build meetings from Appointments", "OutlookConnection");
   }
 
   private void ensureServiceCreated() {
