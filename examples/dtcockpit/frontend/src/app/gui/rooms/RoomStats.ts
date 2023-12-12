@@ -10,8 +10,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'room-stats',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/rooms/RoomStats.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  styleUrls: ['./RoomStats.scss']
 })
 export class RoomStats extends RoomStatsComponent {
   temp4304 = "? °C";
