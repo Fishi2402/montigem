@@ -178,7 +178,15 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
 
   private void createDummyMessageOfTheDay() {
     DtcockpitManager.messageOfTheDayBuilder()
-        .message("I give up")
+        .message("Our Mission\n" +
+            "\n" +
+            "Improving software and systems development by identifying:\n" +
+            "\n" +
+            "    methods, concepts, tools and infrastructures for\n" +
+            "    innovative and efficient incremental development\n" +
+            "    of software and software intensive high quality systems\n" +
+            "    in less time while\n" +
+            "    flexibly integrating evolving requirements.\n")
         .date(LocalDate.now())
         .build();
   }
