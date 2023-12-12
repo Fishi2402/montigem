@@ -54,7 +54,7 @@ build:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
 
-loadtest:
+slowtest:
   stage: check
   dependencies:
     - build
@@ -66,7 +66,7 @@ loadtest:
   artifacts:
     reports:
       # Lets gitlab render infos about failed tests
-      junit: "examples/dtcockpit/backend/**/test/**/TEST-*.xml"
+      junit: "**/test/**/TEST-*.xml"
 
 deployBackendDocker:
   stage: deploy
