@@ -7,8 +7,10 @@ import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
 import {GetCurrentUserRequest} from "../security/GetCurrentUserRequest";
 import {CommandManager} from '@umlp/common';
 import {ActivatedRoute, Router} from '@angular/router';
-
+import {config} from "@src/gui/StartStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'start',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/Start.html',
   styles: [":host{ display: flex; flex-direction: row }"],

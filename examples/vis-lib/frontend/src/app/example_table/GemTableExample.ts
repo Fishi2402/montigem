@@ -3,8 +3,10 @@
 import { GemTableExampleComponent } from '@src/example_table/GemTableExampleComponent';
 import { Component } from '@angular/core';
 import { TableColumn } from '@umlp/table';
-
+import {config} from "@src/example_table/GemTableExampleStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'gem-table-example',
   templateUrl: '../../../build/frontendGen/build/appgui/example_table/GemTableExample.html',
   styles: [":host{ display: flex; flex-direction: column }"],

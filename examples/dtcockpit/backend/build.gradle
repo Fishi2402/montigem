@@ -8,8 +8,9 @@ plugins {
 }
 
 dependencies {
-  umlpModules(project(path: ":routes:login", configuration: "moduleGenTime"))
+  umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
 }
+
 
 application { // Set Main-Class for "run" task
   mainClass = 'dtcockpit.DtcockpitServerApplication'

@@ -3,8 +3,10 @@
 import { Component } from '@angular/core';
 import { GemGaugeChartExampleComponent } from '@src/example_charts/GemGaugeChartExampleComponent';
 import { GemGaugeChartData, GemGaugeChartEntry } from '@umlp/charts';
-
+import {config} from "@src/example_charts/GemGaugeChartExampleStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'gem-gauge-chart-example',
   templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemGaugeChartExample.html'
 })

@@ -10,8 +10,10 @@ import {BoardMapper} from '@src/sehub/BoardMapper';
 import {BingoEntry} from '@src/sehub/BingoEntry';
 import {GemList} from '@umlp/common';
 import {UserCreateComponent} from '@src/gui/login/UserCreateComponent';
-
+import {config} from "@src/gui/login/UserCreateStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'user-create',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserCreate.html',
   styles: [":host{ display: flex; flex-direction: column }"],

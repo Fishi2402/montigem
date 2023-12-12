@@ -2,9 +2,10 @@
 import {ProjectFileViewLinkComponent} from '@src/gui/artifacts/ProjectFileViewLinkComponent';
 
 import {Component,} from '@angular/core';
-
-
+import {config} from "@src/gui/artifacts/ProjectFileViewLinkStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'project-file-view-link',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/artifacts/ProjectFileViewLink.html',
   styles: [":host{ display: flex; flex-direction: column }"],

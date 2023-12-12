@@ -4,8 +4,10 @@ import {Component} from '@angular/core';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 import {SehubManager} from "@src/sehub/SehubManager";
 import {BoardMapper} from "@src/sehub/BoardMapper";
-
+import {config} from "@src/gui/BingoStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'bingo',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/Bingo.html',
   styles: [":host{ display: flex; flex-direction: column }"],

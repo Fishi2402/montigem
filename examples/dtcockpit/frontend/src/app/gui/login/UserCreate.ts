@@ -8,8 +8,10 @@ import {GemList} from '@umlp/common';
 import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
 import {Location} from '@angular/common';
 import {Router} from '@angular/router';
-
+import {config} from "@src/gui/login/UserCreateStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'user-create',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserCreate.html',
   styles: [":host{ display: flex; flex-direction: column }"],

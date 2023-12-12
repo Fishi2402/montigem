@@ -4,9 +4,10 @@ import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
 import {ProjectsCreateByGroupComponent} from '@src/gui/project/ProjectsCreateByGroupComponent';
 import {ProjectErrorCollector} from '@src/dtcockpit/ProjectErrorCollector';
 import {Project} from '@src/dtcockpit/Project';
-
-
+import {config} from "@src/gui/project/ProjectsCreateByGroupStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'projects-create-by-group',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/project/ProjectsCreateByGroup.html',
   styles: [":host{ display: flex; flex-direction: column }"],

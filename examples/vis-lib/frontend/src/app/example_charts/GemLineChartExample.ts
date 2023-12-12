@@ -3,8 +3,10 @@
 import { Component } from '@angular/core';
 import { GemLineChartExampleComponent } from '@src/example_charts/GemLineChartExampleComponent';
 import { GemLineChartData, GemLineChartEntry } from '@umlp/charts';
-
+import {config} from "@src/example_charts/GemLineChartExampleStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'gem-line-chart-example',
   templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemLineChartExample.html'
 })

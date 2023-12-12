@@ -6,8 +6,10 @@ import {User} from '@src/dtcockpit/User';
 import {DtcockpitSecurityManager} from "../../dtcockpit/DtcockpitSecurityManager";
 
 // import { ActivatedRoute, Router } from '@angular/router';
-
+import {config} from "@src/gui/login/UserLoginStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'user-login',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserLogin.html',
   styles: [":host{ display: flex; flex-direction: column }"],

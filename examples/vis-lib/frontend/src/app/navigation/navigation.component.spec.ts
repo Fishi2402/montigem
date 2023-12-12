@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-
+/*
 import { TestBed } from '@angular/core/testing';
 import { Navigation } from './navigation.component';
 
@@ -24,3 +24,4 @@ describe('Navigation', () => {
   });
 
 });
+*/

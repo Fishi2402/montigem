@@ -7,8 +7,10 @@ import {Artifact} from '@src/sehub/Artifact';
 import {Directory} from '@src/sehub/Directory';
 import { SehubSecurityManager } from "../sehub/SehubSecurityManager";
 import {Component} from '@angular/core';
-
+import {config} from "@src/gui/ProjectPageStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'project-page',
   templateUrl: '../../../build/frontendGen/build/appgui/gui/ProjectPage.html',
   styles: [":host{ display: flex; flex-direction: column }"],

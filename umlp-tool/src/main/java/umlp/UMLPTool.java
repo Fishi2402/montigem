@@ -42,6 +42,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
+import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLAddGemIdTrafo;

@@ -22,7 +22,7 @@ export const routes: Route[] = [
       {
       path: "${routingLinkPrefix}",
       pathMatch: "full",
-      redirectTo: "${routingLinkPrefix}/${astguiCompilationUnitList[index].getComponentName()}"
+      redirectTo: "<#if routingLinkPrefix!="">${routingLinkPrefix}/</#if>${astguiCompilationUnitList[index].getComponentName()}"
       },
     </#if>
 

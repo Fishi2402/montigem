@@ -115,7 +115,7 @@ public class GUI2TypeScriptGenerator {
   }
 
   private static Map<String, String> findSubroutesForPackageConfig(Map.Entry<String, ModuleRoutingInfo> packageInfo,
-      Map<String, ModuleRoutingInfo> routingInfoMap) {
+      Map<String, ModuleRoutingInfo> routingInfoMap,MCPath targetPath ) {
     Map<String, String> routes = new HashMap<>();
     Set<String> subModuleInfo = new HashSet<>();
     routingInfoMap.forEach((key, value) -> {
@@ -133,8 +133,15 @@ public class GUI2TypeScriptGenerator {
       }
       if (imported) {
         String name = StringTransformations.capitalize(Iterables.getLast(routingInfoMap.get(info).getPackageParts()));
-        String path = "." + routingInfoMap.get(info).getGeneratedFileDir().substring(packageInfo.getValue().getGeneratedFileDir().length());
-        routes.put(name+"Route", path + "/" + name + ROUTES_FILE);
+        String path = routingInfoMap.get(info).getGeneratedFileDir().substring(packageInfo.getValue().getGeneratedFileDir().length());
+        if(existsHandwrittenFile(targetPath, routingInfoMap.get(info).getGeneratedFileDir() + "/" + name + ROUTES_FILE + "." + TS_FILE_EXTENSION))
+        {
+          routes.put(name + "Route", "@src/" + routingInfoMap.get(info).getGeneratedFileDir() + "/" + name + ROUTES_FILE);
+        }
+        else
+        {
+          routes.put(name + "Route", "."+path + "/" + name + ROUTES_FILE);
+        }
       }
     }
     return routes;
@@ -221,7 +228,7 @@ public class GUI2TypeScriptGenerator {
     boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathName + "/" + name + ROUTES_FILE + "." + TS_FILE_EXTENSION);
     Path generatedRoutingFile = Paths.get(pathName,
         name + ROUTES_FILE + (existHWCRoutes ? "TOP" : "") + "." + TS_FILE_EXTENSION);
-    Map<String, String> subRoutes= findSubroutesForPackageConfig(packageInfo, routingInfoMap);
+    Map<String, String> subRoutes= findSubroutesForPackageConfig(packageInfo, routingInfoMap,this.hwcPath);
     genEngine.generateNoA("umlp.gui2ts.TSPackageRoutes", generatedRoutingFile,
         astguiCompilationUnitList, existHWC, ids, fullPathIndex, paths, routingLinkPrefix,subRoutes);
 

@@ -3,8 +3,10 @@
 import { Component } from '@angular/core';
 import { GemGraphChartExampleComponent } from '@src/example_charts/GemGraphChartExampleComponent';
 import { GemNetworkData, GemNetworkEdge, GemNetworkNode } from '@umlp/charts';
-
+import {config} from "@src/example_charts/GemGraphChartExampleStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'gem-graph-chart-example',
   templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemGraphChartExample.html'
 })

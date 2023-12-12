@@ -3,8 +3,10 @@
 import { Component } from '@angular/core';
 import { GemHeatmapChartExampleComponent } from '@src/example_charts/GemHeatmapChartExampleComponent';
 import { GemHeatmapChartData, GemHeatmapChartEntry } from '@umlp/charts';
-
+import {config} from "@src/example_charts/GemHeatmapChartExampleStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'gem-heatmap-chart-example',
   templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemHeatmapChartExample.html'
 })

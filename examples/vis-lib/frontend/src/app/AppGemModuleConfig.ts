@@ -3,9 +3,9 @@
 import { Navigation } from '@src/navigation/navigation.component';
 
 export const config = {
-  declarations: [Navigation],
+  declarations: [],
   exports: [],
-  imports: [],
+  imports: [Navigation],
   providers: []
 }
 

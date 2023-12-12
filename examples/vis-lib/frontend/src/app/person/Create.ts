@@ -3,8 +3,10 @@
 import { CreateComponent } from '@src/person/CreateComponent';
 import { Component } from '@angular/core';
 import { DomainManager } from '@src/domain/DomainManager';
-
+import {config} from "@src/person/CreateStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'create',
   templateUrl: '../../../build/frontendGen/build/appgui/person/Create.html',
   styleUrls: ['./Create.scss']

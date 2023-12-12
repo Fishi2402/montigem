@@ -2,8 +2,10 @@
 
 import { Component } from '@angular/core';
 import { GemSunburstChartExampleComponent } from '@src/example_charts/GemSunburstChartExampleComponent';
-
+import {config} from "@src/example_charts/GemSunburstChartExampleStandaloneConfig";
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'gem-sunburst-chart-example',
   templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemSunburstChartExample.html'
 })
