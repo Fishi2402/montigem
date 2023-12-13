@@ -1,0 +1,14 @@
+package guivariability;
+
+page BeforeTest() adapts BaseModel{
+
+    before exampleText: newGuard@guard(true){
+       @Text(value = "Guard before Text");
+    };
+
+    before exampleGuard: newIterate@iterate(j from 0 to 5){
+       @Text(value = "Iterate before Guard");
+    };
+
+    before exampleIterate: [newComponent1@Text(value = "Text before Iterate 1"), newComponent2@Text(value = "Text before Iterate 2")];
+}

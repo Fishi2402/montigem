@@ -20,21 +20,18 @@ import java.util.Optional;
 public abstract class AggregatedCommandDeSer {
   protected Map<String, CommandDeSer> deSerMap = new HashMap<>();
 
-  public void buildJson(Command<?> command, JsonPrinter printer) {
+  public Optional<String> serialize(Command<?> command){
     String commandType = command.getCommandType();
-    if(deSerMap.containsKey(commandType)) {
-      deSerMap.get(commandType).buildJson(command, printer);
-    } else {
-      Log.error("Can not find deSer for commandType " + commandType);
+    if(!deSerMap.containsKey(commandType)){
+      return Optional.empty();
     }
-  }
 
-  public String serialize(Command<?> command){
     JsonPrinter printer = new JsonPrinter(true);
     printer.beginObject();
-    buildJson(command, printer);
+    deSerMap.get(commandType).buildJson(command, printer);
     printer.endObject();
-    return printer.toString();
+
+    return Optional.of(printer.toString());
   }
 
   public <T> Optional<Command<T>> deserialize(String cmdStr){
@@ -48,7 +45,7 @@ public abstract class AggregatedCommandDeSer {
 
     String commandType = jsonObject.getStringMember("commandType");
     if(!deSerMap.containsKey(commandType)){
-      Log.error("Can not find deSer for commandType " + commandType);
+      Log.warn("Can not find deSer for commandType " + commandType);
       return Optional.empty();
     }
 

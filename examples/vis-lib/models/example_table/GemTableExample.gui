@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package example_table;
+
+import table.GemTable;
+import table.TableTypes.TableColumn;
+import Domain.Person;
+
+page GemTableExample(List<Person> persons) {
+  @GemTable(
+    rows = persons,
+    columns = [
+      TableColumn("_name", "Name"),
+      TableColumn("_birthday", "Birthday")
+    ]
+  );
+}

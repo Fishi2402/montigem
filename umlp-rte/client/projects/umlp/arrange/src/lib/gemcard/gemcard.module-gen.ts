@@ -8,11 +8,8 @@ import {GemCard} from './gem-card/gem-card.component-gen';
 import {NgModule} from '@angular/core';
 
 @NgModule(
-{ 
+{
 "declarations":[GemCard],"imports":[CommonModule,GemrowModule,GemcolumnModule],"exports":[GemCard]
 })
 export class GemcardModule  {
-
-
-
 }

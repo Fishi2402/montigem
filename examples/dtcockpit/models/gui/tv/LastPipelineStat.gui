@@ -1,0 +1,37 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.tv;
+
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import basic.GemLink;
+import basic.GemImage;
+
+import gui.widgets.GitLabIcon;
+
+import Dtcockpit.Project;
+
+component LastPipelineStat(Project p) {
+  @GemRow(wrap = "nowrap", components = [
+    @GemColumn(rowGap = "3px", components = [
+      @GemRow(colGap = "5px", components = [
+        statusIcon@GitLabIcon(source = "", status = "none"),
+        statusText@GemText(value = "")
+      ]),
+      time@GemText(value = p.lastPipeline.time),
+      duration@GemText(value = p.lastPipeline.duration)
+    ]),
+    @GemColumn(rowGap = "3px", components = [
+      @GemText(value = p.name),
+      @GemLink(
+        url = "https://git.rwth-aachen.de/monticore/"
+          + p.name + "/-/pipelines/" + p.lastPipeline.gitlabId,
+        text = "#" + p.lastPipeline.gitlabId
+      ),
+      @GemRow(components = [
+        @GitLabIcon(source = "assets/@gitlab/svgs/sprite_icons/branch.svg"),
+        @GemText(value = p.lastPipeline.reference)
+      ])
+    ])
+  ]);
+}

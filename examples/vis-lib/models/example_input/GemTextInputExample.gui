@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import input.GemTextInput;
+
+page GemTextInputExample() {
+  @GemTextInput(
+    id = "firstName",
+    labelText = "First name: ",
+    inputType = "dropdown"
+  );
+  @GemTextInput(
+    id = "firstName",
+    labelText = "Last name: ",
+    inputType = "text"
+  );
+  @GemTextInput(
+    id = "dateOfBirth",
+    labelText = "Date of birth: ",
+    inputType = "date"
+  );
+}

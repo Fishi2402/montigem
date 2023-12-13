@@ -5,4 +5,8 @@ umlp Types {
     double d1;
     Double d2;
   }
+
+  class StringTypes {
+    String strFieldNoStereotype;
+  }
 }

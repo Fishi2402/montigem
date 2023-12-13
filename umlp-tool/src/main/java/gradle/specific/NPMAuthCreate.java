@@ -3,6 +3,7 @@ package gradle.specific;
 
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
@@ -19,6 +20,7 @@ import java.util.Base64;
  * Create ".npmrc" file with authentication data for Nexus.
  * Also ensures that the file is not committed in git.
  */
+@Deprecated
 abstract public class NPMAuthCreate extends DefaultTask {
 
   public NPMAuthCreate() {
@@ -60,9 +62,14 @@ abstract public class NPMAuthCreate extends DefaultTask {
   public void run() throws IOException {
     checkGitignore();
 
-    if (getProject().getProperties().containsKey("mavenUser") && getProject().getProperties().containsKey("mavenPassword")) {
-      String username = this.getProject().getProperties().get("mavenUser").toString();
-      String password = this.getProject().getProperties().get("mavenPassword").toString();
+    String data = getNpmrcContent(getProject(), getUnscoped().get());
+    FileUtils.writeStringToFile(getNpmrcFile().getAsFile().get(), data, StandardCharsets.UTF_8);
+  }
+
+  public static String getNpmrcContent(Project project, boolean unscoped){
+    if (project.getProperties().containsKey("mavenUser") && project.getProperties().containsKey("mavenPassword")) {
+      String username = project.getProperties().get("mavenUser").toString();
+      String password = project.getProperties().get("mavenPassword").toString();
 
       String encodedAuthData = Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
 
@@ -70,11 +77,11 @@ abstract public class NPMAuthCreate extends DefaultTask {
           "@umlp:registry=https://nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/\n" +
           "@monticore:_auth=\"" + encodedAuthData + "\"" +
           "@umlp:_auth=\"" + encodedAuthData + "\"";
-      if (getUnscoped().isPresent() && getUnscoped().get()) {
+      if (unscoped) {
         data = "registry=https://nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/\n" +
             "_auth=\"" + encodedAuthData + "\"";
       }
-      FileUtils.writeStringToFile(getNpmrcFile().getAsFile().get(), data, StandardCharsets.UTF_8);
+      return data;
     } else {
       throw new RuntimeException("<mavenUser> / <mavenPassword> not found in properties!");
     }

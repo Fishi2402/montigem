@@ -8,7 +8,7 @@ export const routes: Routes = [
     path: "",
     pathMatch: "full",
     // redirect to a module, not a component (use package part instead of the component name)
-    redirectTo: "gui/Kitchen"
+    redirectTo: "gui/kitchen/KitchenPage"
   },
   ...routesTOP
 ]

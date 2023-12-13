@@ -1,10 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package basic;
 
+/**
+  Button enables user interaction through simple clicks or taps, triggering actions or tasks.
+*/
 component GemButton(
-  String label,
-  List<String> classes,
-  Object style,
-  Boolean disabled,
-  Event leftClick
+  /** Button text. */
+  String label = "",
+  /** If true, the button cannot be clicked. */
+  boolean disabled = false,
+  /** Callback that is executed when a button is clicked. */
+  Event<Void> leftClick
 )

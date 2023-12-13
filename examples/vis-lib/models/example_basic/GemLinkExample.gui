@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_basic;
+
+import basic.GemLink;
+
+page GemLinkExample() {
+  @GemLink(
+    url = "https://www.google.com/",
+    text = "click here for Google"
+  );
+}

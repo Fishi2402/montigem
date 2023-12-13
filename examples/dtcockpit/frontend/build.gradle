@@ -2,31 +2,13 @@
 
 plugins {
   id "com.github.node-gradle.node" version "5.0.0"
-  id 'de.rwth.se.umlp-tool-frontend'
-}
-
-
-configurations {
-  guiDefaultTypes
+  id "de.rwth.se.umlp-tool-frontend"
 }
 
 dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+  // Types which are used in genGUI-Task
+  guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
-
-/* Wird vom Frontend-Plugin übernommen
-task generateNPMAuth(type: NPMAuthCreate){
-  npmrcFile = file("config/.npmrc")
-}*/
-
-/* Wird vom Frontend-Plugin übernommen
-// Add Frontend-Config Files from UMLP-Tool Resources.
-task frontendSetup(type: FrontendSetup){
-  input = file("config/")   // Can be used to add or replace files
-  dependsOn(generateNPMAuth)
-  output = layout.buildDir.dir("frontendGen/")
-}
-*/
 
 node {
   // Whether to download and install a specific Node.js version or not
@@ -49,27 +31,12 @@ node {
   // This is where the package.json file and node_modules directory are located
   // By default it is at the root of the current project
   nodeProjectDir = frontendSetup.getOutput()
+}
 
-}
-/* Wird vom Frontend-Plugin übernommen
-task genDomain(type: UMLPFrontendTask) {
-  dependsOn(frontendSetup)
-  input = file("../models/Dtcockpit.umlp")
-  outputDir = frontendSetup.getOutput().dir("build/appdomain")
-  symbolOutDir = file("${project.buildDir}/symbols")
-  hwcDir = file("src/app/")
-}
-*/
 genGUI {
-  //dependsOn(tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
-  // input = file("../models")
-  // outputDir = frontendSetup.getOutput().dir("build/appgui")
-  // hwcDir = file("src/app/")
-  // modelDir = layout.projectDirectory.dir("../models")
+  dependsOn(tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
   symbolDir = files(
-      genDomain.symbolOutDir,
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      configurations.guiDefaultTypes.files
   )
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
@@ -83,7 +50,8 @@ genGUI {
 npm_install.dependsOn(':umlp-rte:client:npm_install')
 
 def prebuildTasks = [
-    npm_install, genDomain, genGUI
+    npm_install,
+    generate  // Created from UMLP-Frontend Plugin.
 ]
 
 task buildApp(type: NpxTask) {
@@ -103,4 +71,7 @@ task runApp(type: NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
+}
+task run {
+  dependsOn(runApp)
 }

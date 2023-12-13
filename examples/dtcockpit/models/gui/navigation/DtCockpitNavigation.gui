@@ -21,14 +21,18 @@ component DtCockpitNavigation(List<Group> groups, List<Project> projects) {
     @DtNavHeader(),
     @NavItem(title = "Home", target = "/gui/Start"),
     @NavItem(title = "Projects", target = "/gui/DtcockpitMainPage"),
+    @NavItem(title = "TV", target = "/gui/tv/Dashboard"),
     @iterate(Group g : groups) {
       grouptNav@NavItem(title = g.name, target = "/gui/pipelines/PipelineGroupStats/" + g.name);
     },
-    projectList@NavList(components = [
-        @NavItem(title = "Git Projects", target = "/gui/Start"),
-        @iterate(Project p : projects) {
-          projectNav@NavItem(title = p.name, target = "/gui/pipelines/PipelineStats/" + p.name);
-        }
-      ])
+    projectList@NavList(
+        header = @NavItem(title = "Git PipelineStats"),
+        components = [
+          @iterate(Project p : projects) {
+            projectNav@NavItem(title = p.name, target = "/gui/pipelines/PipelineStats/" + p.name);
+          }
+        ],
+        footer = @NavItem(title = "This is an always visible footer for this navlist")
+      )
   ]);
 }

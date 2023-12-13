@@ -28,22 +28,10 @@ export class GemGraphComponent implements OnInit, OnDestroy{
   private iteration: number = 0;
   private maxIteration: number = 300;
   private _data : NetworkData;
-
-  // TODO remove these hardcoded colors
-  private colors: any = {
-    JarArchive: "#8F71E3",
-    Archive: "#8f71e3",
-    Directory: "#88DBE4",
-    Pkg: "#ff9d00",
-    JavaSourceFile: "#95e000",
-    FreeMarkerTemplate: "#5e87fc",
-    Type: "#ff6d6d",
-    MCGrammar: "#ff19f0",
-  };
+  public types : IterableIterator<[string, string[]]>;
 
   public ngOnInit(): void {
     // console.log(this.panelData);
-
   }
 
   @Input()
@@ -52,6 +40,17 @@ export class GemGraphComponent implements OnInit, OnDestroy{
       return;
     }
     this._data = data
+    let types = new Map<string, string[]>
+    data.nodes.forEach(node => {
+      if(types.has(node.group)) {
+        const col = types.get(node.group)[0]
+        const amount = parseInt(types.get(node.group)[1]) +1
+        types.set(node.group, [col, amount.toString()])
+      } else {
+        types.set(node.group, [node.color, "1"])
+      }
+    });
+    this.types = types.entries()
     console.log(this._data)
     this.visualizeWithSigma()
   }
