@@ -73,4 +73,4 @@ include ':products:demo-recycling:backend'
 include 'examples:flensburg-test-jsweet:backend'
 findProject(':examples:flensburg-test-jsweet:backend')?.name = 'backend'
 
-include ':routes:login'
+include ':modules:login'

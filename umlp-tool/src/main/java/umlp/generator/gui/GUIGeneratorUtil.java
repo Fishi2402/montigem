@@ -51,7 +51,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -68,7 +67,6 @@ public class GUIGeneratorUtil {
   private List<String> DOMAIN_MODELS;
   // Fully qualified Name of a gui model, e.g. "stanley.PersonCreate"
   private List<String> CREATE_MODELS;
-  private Set<String> CREATE_TS_COMPONENTS;
 
   private GUIGeneratorUtil() {
     printer = new GUIDSLFullPrettyPrinter(new IndentPrinter());
@@ -137,10 +135,6 @@ public class GUIGeneratorUtil {
   public void init(List<String> domainModels, List<String> createModels) {
     DOMAIN_MODELS = domainModels;
     CREATE_MODELS = createModels;
-  }
-
-  public void init(Set<String> createTSComponents) {
-    CREATE_TS_COMPONENTS = createTSComponents;
   }
 
   public final String print(ASTNode node) {
@@ -316,9 +310,6 @@ public class GUIGeneratorUtil {
     return Optional.empty();
   }
 
-  public final boolean isCreatedTSComponent(String componentName) {
-    return CREATE_TS_COMPONENTS.contains(componentName);
-  }
 
   public final boolean isCreateModel(String componentQName) {
     return CREATE_MODELS.contains(componentQName);

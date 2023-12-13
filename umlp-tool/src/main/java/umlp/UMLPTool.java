@@ -32,7 +32,6 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.monticore.tagging.tags.TagsMill;
-import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -528,9 +527,6 @@ public class UMLPTool extends UMLPToolTOP {
           }
           routesMap.get(astGui.getPackage()).add(astGui);
 
-          createdTSComponents.add(astGui.getComponentName().substring(0, 1).toUpperCase() +
-              astGui.getComponentName().substring(1).toLowerCase() + "Module");
-
           // Run cocos
           runDefaultCoCos(astGui);
 
@@ -606,7 +602,7 @@ public class UMLPTool extends UMLPToolTOP {
           componentGenerator.generate(astGui, "umlp.GUI2Component");
 
           GUI2TypeScriptGenerator tsConfigGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
-          Reporting.reportFileCreation(tsConfigGenerator.genStandaloneConfig(astGui));
+          Reporting.reportFileCreation(outDir + "/"+tsConfigGenerator.genStandaloneConfig(astGui));
 
           GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();
           gui2HtmlTrafo.transform(astGui);
@@ -617,12 +613,6 @@ public class UMLPTool extends UMLPToolTOP {
           GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, viewComponents);
           String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
           htmlGenerator.generate(astGui4Html, htmlConfigTemplate);
-
-          for (ASTMCImportStatement imp : astGui.getMCImportStatementList()) {
-            if (GUIGeneratorUtil.getInstance().isGuiImport(imp)) {
-              routesMap.get(astGui.getPackage()).getGuiImport().add(imp.getQName());
-            }
-          }
 
           // write reports
           Reporting.flush(astGui);
@@ -637,7 +627,6 @@ public class UMLPTool extends UMLPToolTOP {
         // set template path
         genSetup.setAdditionalTemplatePaths(fpPath.getEntries().stream()
             .map(p -> p.toFile()).collect(Collectors.toList()));
-        GUIGeneratorUtil.getInstance().init(createdTSComponents);
         GlobalExtensionManagement glex = createGlex(getModuleConfigTemplates(cmd));
         genSetup.setGlex(glex);
         genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());

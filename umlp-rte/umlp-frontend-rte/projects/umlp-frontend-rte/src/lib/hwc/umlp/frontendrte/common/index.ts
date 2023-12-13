@@ -1,4 +1,3 @@
-export * from "./AggregatedCommandDeSer";
 export * from "./AssociationDBEntry";
 export * from "./BaseClassObjectMapper";
 export * from "./BooleanDeSer";
@@ -29,5 +28,6 @@ export * from "./UMLPArrayListIterator";
 export * from "./GemList";
 export * from "./IUMLPList";
 export * from "./UMLPArrayList";
+export * from "./AggregatedCommandDeSer";
 export * from "./ValidationMessage";
 export * from "./ValidationStatus";
