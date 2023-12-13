@@ -5,6 +5,7 @@ package dtcockpit.commands;
 import de.se_rwth.commons.logging.Log;
 import dtcockpit.DtcockpitManager;
 import dtcockpit.Project;
+import dtcockpit.montiverse.MontiVerseLite;
 import umlp.backendrte.command.StatusResult;
 
 import java.io.IOException;
@@ -16,13 +17,8 @@ public  class Project_setCmd extends Project_setCmdTOP  {
   @Override
   public StatusResult doAction() {
     StatusResult result = super.doAction();
-    try {
-      Log.info("Execute command " + this.getCmd(), getClass().getName());
-      ProcessBuilder processBuilder = new ProcessBuilder(this.getCmd().split(" "));
-      processBuilder.start();
-    } catch (IOException e) {
-      Log.info("Error during executing command \n" + this.getCmd(), getClass().getName());
-    }
+    Project project = DtcockpitManager.getProjectSure(getGemId());
+    MontiVerseLite.getInstance().createPipeline(project);
     return result;
   }
 

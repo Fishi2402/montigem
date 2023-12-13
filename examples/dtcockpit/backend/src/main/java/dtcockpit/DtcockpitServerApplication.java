@@ -87,7 +87,7 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
       // TODO: App#getProject should contain all projects by default?
       DtcockpitManager.getApp().addProject(monticore);
 
-      MontiVerseLite montiVerseLite = new MontiVerseLite();
+      MontiVerseLite montiVerseLite = MontiVerseLite.getInstance();
       Project montiVerse = montiVerseLite.createProjects();
       extractor.extractPipelineDataOf("https://git.rwth-aachen.de/", montiVerse);
       for (Project project: montiVerse.getDependentProjects()) {

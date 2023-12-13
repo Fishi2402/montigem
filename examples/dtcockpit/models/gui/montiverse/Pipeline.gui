@@ -17,8 +17,21 @@ page Pipeline(Project project, List<Group> groups, List<Project> projects) {
   @GemRow(wrap = "nowrap", components = [
     @DtCockpitNavigation(projects = projects, groups = groups),
     @GemColumn(hAlign = "left", components = [
-      info@GemText(value = ""),
-      ok@GemButton(label = "Ok", leftClick = executeCommand)
-    ])
-  ]);
+      @GemCard(
+        title = "MontiVerse Lite",
+        component = projectList@GemRow(
+          rowGap="20px",
+          colGap="5px",
+          components=[
+            @iterate(Project p: project.dependentProjects) {
+              @GemRow(components = [
+                @GemText(value = p.name + ": " + p.ciInfos.branchName)
+              ]);
+            }
+          ]
+        )
+      ),
+      ok@GemButton(label = "Ok", leftClick = executeCommand)    ])
+    ]
+  );
 }

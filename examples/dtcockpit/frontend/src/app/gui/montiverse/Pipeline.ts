@@ -16,7 +16,7 @@ import {
 
 export class Pipeline extends PipelineComponent {
   public okLeftClick(event: any): void {
-    this.project.setCmd(this.getInfoValue());
+    this.project.setCmd("execute");
   }
 
   public getInfoValue(): string {
