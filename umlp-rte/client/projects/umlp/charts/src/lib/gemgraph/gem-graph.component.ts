@@ -1,12 +1,12 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import Sigma from "sigma";
+import * as Sigma from "sigma";
 import { MultiGraph } from "graphology";
 import { Settings } from "sigma/settings";
 import { SerializedGraph } from "graphology-types";
-import FA2Layout from "graphology-layout-forceatlas2/worker";
-import FA2LayoutSupervisor from "graphology-layout-forceatlas2/worker";
-import forceAtlas2 from "graphology-layout-forceatlas2";
-import circular from "graphology-layout/circular";
+import * as FA2Layout from "graphology-layout-forceatlas2/worker";
+import * as FA2LayoutSupervisor from "graphology-layout-forceatlas2/worker";
+import * as forceAtlas2 from "graphology-layout-forceatlas2";
+import * as circular from "graphology-layout/circular";
 // import { DownloadOptions } from "../../panels/menu-item/menu-item.const"; TODO Exporter
 // import { downloadChartAsPNG } from "./sigmajs.exporter";
 import { CameraState } from "sigma/types";
