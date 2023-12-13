@@ -4,6 +4,7 @@ import de.se_rwth.commons.logging.Log;
 import dtcockpit.App;
 import dtcockpit.DtcockpitManager;
 import dtcockpit.Meeting;
+import dtcockpit.MeetingDeSer;
 import dtcockpit.MessageOfTheDay;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.PropertySet;
@@ -57,7 +58,7 @@ public class OutlookConnection {
       buildMeetingsFromExchange();
       updateMessageOfTheDay();
       updateDisplayedMeetings();
-    } catch (Exception e) {
+    } catch (Throwable e) {
       Log.warn("Error while loading meetings from exchange", e);
     }
     Log.info("Finished loading Meetings from exchange", "OutlookConnection");
@@ -146,7 +147,7 @@ public class OutlookConnection {
           .categories(categories)
           .location(Optional.ofNullable(appointment.getLocation()))
           .build();
-      Log.info("Build meeting " + m, "OutlookConnection");
+      Log.info("Build meeting " + m.map(it -> new MeetingDeSer().serialize(it)), "OutlookConnection");
     }
     Log.info("Build meetings from Appointments", "OutlookConnection");
   }
@@ -161,6 +162,7 @@ public class OutlookConnection {
       );
       service.setCredentials(credentials);
       service.setUrl(URI.create("https://mail.rwth-aachen.de/EWS/Exchange.asmx"));
+      service.setTimeout(10 * 1000);
       Log.info("Created ExchangeService", "OutlookConnection");
     }
   }
