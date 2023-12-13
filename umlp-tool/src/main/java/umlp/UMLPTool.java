@@ -602,7 +602,7 @@ public class UMLPTool extends UMLPToolTOP {
           componentGenerator.generate(astGui, "umlp.GUI2Component");
 
           GUI2TypeScriptGenerator tsConfigGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
-          Reporting.reportFileCreation(outDir + "/"+tsConfigGenerator.genStandaloneConfig(astGui));
+          String standaloneConfigPath=outDir + "/"+tsConfigGenerator.genStandaloneConfig(astGui);
 
           GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();
           gui2HtmlTrafo.transform(astGui);
@@ -616,6 +616,7 @@ public class UMLPTool extends UMLPToolTOP {
 
           // write reports
           Reporting.flush(astGui);
+          Reporting.reportFileCreation(standaloneConfigPath);
         }
 
         //create routes file for every package and

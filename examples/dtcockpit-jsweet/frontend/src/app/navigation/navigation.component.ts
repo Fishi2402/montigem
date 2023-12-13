@@ -2,8 +2,11 @@ import {Component} from "@angular/core";
 import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
 import {User} from '@src/dtcockpit/User';
 import {ActivatedRoute, Router} from '@angular/router';
-
+import { RouterModule } from '@angular/router';
+import {CommonModule} from '@angular/common';
 @Component({
+  standalone:true,
+  imports:[RouterModule,CommonModule],
   selector: "navigation",
   templateUrl: "./navigation.component.html",
   styleUrls: ["./navigation.component.scss"]
