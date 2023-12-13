@@ -19,15 +19,6 @@ export class Pipeline extends PipelineComponent {
     this.project.setCmd("execute");
   }
 
-  public getInfoValue(): string {
-    let info: string = "curl --request POST --fail -F token=$gitTriggerMontiVerseCI -F ref=main ";
-    this.project.getDependentProjects().forEach((element) => {
-      info = info + " -F " + element.getCiInfos().getVariableName() + "=\"" + element.getCiInfos().getBranchName() + "\"";
-    });
-    info = info + " https://git.rwth-aachen.de/api/v4/projects/91803/trigger/pipeline";
-    return info;
-  }
-
 }
 
 
