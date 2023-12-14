@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.login;
+
+import gui.login.UserLogin;
+import gui.login.LoginContainer;
+
+import arrange.GemColumn;
+import basic.GemLink;
+
+page LoginPage() {
+  @LoginContainer(component =
+    @GemColumn(width = "400px", rowGap = "20px", hAlign = "center", components = [
+      @UserLogin()
+    ])
+  );
+}

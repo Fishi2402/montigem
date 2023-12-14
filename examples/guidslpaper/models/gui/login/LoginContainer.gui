@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.login;
+
+import Guidslpaper.User;
+
+import arrange.GemRow;
+import arrange.GemColumn;
+import arrange.GemCard;
+
+import basic.GemImage;
+import basic.GemText;
+import basic.GemLink;
+
+component LoginContainer(GUIViewElement component) {
+  @GemRow(hAlign = "center", component =
+    @GemCard(title = "MaCoCo", component =
+      @GemColumn(width = "800px", hAlign = "center", rowGap = "20px", components = [
+        @GemRow(width = "150px", component = @GemImage(source = "assets/images/macoco-logo.png")),
+        component,
+        @GemRow(width = "250px", component =
+          @GemImage(source = "assets/images/rwth_se_bild_weiss_rgb.png")
+        )
+      ])
+    )
+  );
+}

@@ -1,0 +1,132 @@
+/* (c) https://github.com/MontiCore/monticore */
+import java.time.LocalDate;
+
+classdiagram Guidslpaper {
+
+  class Person {
+    String vorname;
+    String nachname;
+    <<dbColumn = "unique=true">>
+    String kuerzel;
+    Optional<String> personalnummer;
+    Optional<LocalDate> beschBeginn;
+    Optional<LocalDate> beschEnde;
+    Optional<LocalDate> aenderungsdatum;
+    Optional<String> kommentar;
+  }
+
+   association [1] Person -> (vertraege) Vertrag [*];
+
+   class Vertrag {
+     BeschaeftigungsArt beschArt;
+     LocalDate vertragsBeginn;
+     LocalDate vertragsEnde;
+     VertragsStatus vertragsStatus;
+     long umfang;
+     Optional<String> entgeltGruppe;
+     Optional<String> erfahrungsStufe;
+     LocalDate anstellungVon;
+     Optional<LocalDate> anstellungBis;
+     long gehaltCent;
+     Optional<String> kommentar;
+   }
+
+   enum BeschaeftigungsArt {
+     WiMi,
+     HiWi,
+     BTV,
+     BEAMTE,
+     AZUBI,
+     PLAN;
+   }
+
+   enum VertragsStatus {
+     AKTIV,
+     PLANUNG,
+     ABGELAUFEN;
+   }
+
+   association [1] Vertrag -> (kostenstellen) Kostenstelle [*];
+
+   class Kostenstelle {
+     LocalDate verbuchungsBeginn;
+     LocalDate verbuchungsEnde;
+     UmfangsEinheit beschaeftigungsUmfang;
+     long umfang;
+     Optional<String> kommentar;
+   }
+
+   enum UmfangsEinheit {
+     PERCENT,
+     STUNDE;
+   }
+
+   association [*] Kostenstelle -> Konto [1];
+
+   class Konto {
+      <<dbColumn = "unique=true">>
+      String name;
+      <<dbColumn = "unique=true">>
+      Optional<String> pspElement;
+      String kontoart;
+      Optional<String> kontotyp;
+      boolean istPlanKonto;
+      long budgetRahmenCent;
+      Optional<LocalDate> aenderungsdatum;
+      Optional<LocalDate> optStartDatum;
+      Optional<LocalDate> optEndDatum;
+      Optional<String> kommentar;
+   }
+
+   enum Geschaeftsvorgang {
+     BUCHUNG,
+     GELDZUFLUSS;
+   }
+
+   association [1] Konto <-> (buchungen) Buchung [*];
+
+   class Buchung {
+     LocalDate buchungsdatum;
+     String zahlungsgrund;
+     long betragCent;
+     BuchungsStatus status;
+     Geschaeftsvorgang gueltigerGeschaeftsvorgang;
+     Optional<String> buchungseintragText;
+     Optional<String> kommentar;
+     /String lfdeNummer;
+   }
+
+   enum BuchungsStatus {
+     EINGEREICHT,
+     SAP,
+     SAP_STORNIERT,
+     PLANUNG,
+     FEHLERHAFT;
+   }
+
+   enum Role {
+     USER,
+     ADMIN;
+   }
+
+   class User {
+     <<dbColumn = "unique=true">>
+     String username;
+     String password;
+     LocalDate registrationDate;
+     <<dbColumn = "unique=true">>
+     String email;
+     Role role;
+     String validityUsername();
+     String validityEmail();
+     String validityPassword();
+   }
+
+   <<singleton>>
+   class App {
+   }
+
+   association [1] App -> Person [*];
+   association [1] App -> Konto [*];
+   association [1] App -> User [*];
+}
