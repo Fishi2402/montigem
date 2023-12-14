@@ -23,6 +23,10 @@ body {
   padding-top: 50px;
 }
 
+//GemColumn ------------------------------------------------------
+.gemColumn17, .gemColumn19, .gemColumn21, .gemColumn23, .gemColumn25, .gemColumn27, .gemColumn29, .gemColumn31 {
+  word-break: break-all ;
+}
 
 //GemCard ------------------------------------------------------
 .gem-card-header, .gem-card-body {
