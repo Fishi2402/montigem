@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import charts.GemLineChart;
+import charts.GemLineChartTypes.GemLineChartData;
+import charts.GemLineChartTypes.GemLineChartEntry;
+
+page GemLineChartExample(
+  GemLineChartData data
+) {
+  @GemLineChart(
+    data = data,
+    enableBackgroundColor = true,
+    maxValue = 400,
+    minValue = 100
+  );
+}
+

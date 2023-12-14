@@ -1,8 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package basic;
 
+/**
+  The image component embeds image on a page.
+*/
 component GemImage(
+  /**
+    The path to the image file. It can be a URL or a relative path.
+    The relative path starts from the root folder (typically `src/`).
+  */
   String source,
-  String alt,
-  String style
+  /**
+    The text that is shown if image could not be loaded.
+  */
+  String alt = "",
+  /** **Deprecated.** */
+  String style = ""
 )

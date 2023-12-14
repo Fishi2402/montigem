@@ -14,15 +14,19 @@ import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.ocl.util.SymbolTableUtil;
 import de.monticore.symbols.basicsymbols._ast.ASTType;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symboltable.IScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class UMLPSymbolTables {
@@ -153,5 +157,44 @@ public class UMLPSymbolTables {
     SymbolTableUtil.addVariableSymbol("de.monticore.symbols.oosymbols._symboltable.FieldSymbol");
     SymbolTableUtil.addVariableSymbol("de.monticore.cdassociation._symboltable.CDRoleSymbol");
     SymbolTableUtil.ignoreSymbolKind("de.monticore.cdassociation._symboltable.CDAssociationSymbol");
+  }
+
+  public static Map<DiagramSymbol, LinkedHashSet<DiagramSymbol>> getExtensionDiamond(DiagramSymbol currentDiagram){
+    Map<DiagramSymbol, LinkedHashSet<DiagramSymbol>> res = new LinkedHashMap<>();
+    getExtensionDiamond(currentDiagram, res);
+    return res;
+  }
+
+  protected static void getExtensionDiamond(DiagramSymbol currentDiagram, Map<DiagramSymbol, LinkedHashSet<DiagramSymbol>> extensionDiamond) {
+    if(extensionDiamond.containsKey(currentDiagram)) {
+      return;
+    }
+    ASTCDDefinition currentCdDefinition = (ASTCDDefinition) currentDiagram.getAstNode();
+
+    LinkedHashSet<DiagramSymbol> currentExtensions = getExtendedCDs(currentCdDefinition);
+    extensionDiamond.put(currentDiagram, currentExtensions);
+    currentExtensions.forEach(diagramSymbol -> getExtensionDiamond(diagramSymbol, extensionDiamond));
+  }
+
+  protected static LinkedHashSet<DiagramSymbol> getExtendedCDs(ASTCDDefinition astcdDefinition) {
+    LinkedHashSet<DiagramSymbol> extendedCDs = new LinkedHashSet<>();
+    if(!astcdDefinition.getModifier().isPresentStereotype()) {
+      return extendedCDs;
+    }
+    astcdDefinition.getModifier().getStereotype().getValuesList().forEach(value -> {
+      if (!value.getName().equals("extends")) {
+        return;
+      }
+      String extendedCDName = value.getValue();
+      Optional<DiagramSymbol> extendedCDSymbol = astcdDefinition.getSymbol().getEnclosingScope()
+          .resolveDiagram(extendedCDName);
+      if(extendedCDSymbol.isPresent()) {
+        extendedCDs.add(extendedCDSymbol.get());
+      } else {
+        Log.error("0xABF643: Can not resolve extended diagram "+extendedCDName + " in "
+            +astcdDefinition.getName());
+      }
+    });
+    return extendedCDs;
   }
 }

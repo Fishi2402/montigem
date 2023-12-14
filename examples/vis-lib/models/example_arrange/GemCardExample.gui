@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_arrange;
+
+import arrange.GemCard;
+import basic.GemText;
+import basic.GemButton;
+import basic.GemLink;
+
+page GemCardExample() {
+  @GemCard(
+    title = "Info Text",
+    component = @GemText(value = "Some Text")
+  );
+
+  @GemCard(
+    titleComponent = @GemLink(url = "https://www.google.com/", text = "Google link"),
+    component = @GemButton(label = "A button")
+  );
+}

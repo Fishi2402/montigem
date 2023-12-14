@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_arrange;
+
+import arrange.GemColumn;
+import basic.GemText;
+
+page GemColumnExample() {
+  @GemColumn(
+    rowGap = "15px",
+    components = [
+      @GemText(value = "First row"),
+      @GemText(value = "Second row"),
+      @GemText(value = "Third row")
+    ]
+  );
+}

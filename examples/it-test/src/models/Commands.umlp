@@ -7,8 +7,23 @@ umlp Commands {
     String email;
   }
 
+  enum ActivationStatus {
+    AKTIVIERT,
+    MAIL_NICHT_GESENDET,
+    MAIL_FEHLERHAFT,
+    MAIL_GESENDET;
+  }
+
   class App {
     <<command>> void sendEmail(User user, String text, Optional<String> subject, List<String> forwards);
+    <<command>> List<User> getCDTypeList();
+    <<command>> User getCDType(long userId);
+    <<command>> Optional<User> getOptionalType(long userId);
+    <<command>> int getBoxingType();
+    <<command>> String getJavaType();
+    <<command>> ActivationStatus getEnumType();
+    <<command>> Set<String> getNotListGenericType();
+    <<command>> List<Integer> getJavaTypeList();
   }
 
 }

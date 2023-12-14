@@ -1,3 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature()}
-${cd4c.method("public abstract StatusResult doAction();")}
+${tc.signature("returnType")}
+${cd4c.method("public abstract " + returnType + " doAction();")}

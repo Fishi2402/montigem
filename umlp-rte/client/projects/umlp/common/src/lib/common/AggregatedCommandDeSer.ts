@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Command } from "../command/Command";
-import { CommandDeSer } from "../command/CommandDeSer";
+import {Command} from "../command/Command";
+import {CommandDeSer} from "../command/CommandDeSer";
 
 // RTE-P
 
@@ -11,18 +11,14 @@ import { CommandDeSer } from "../command/CommandDeSer";
 export abstract class AggregatedCommandDeSer {
   protected deSerMap: Map<String, CommandDeSer<any>> = new Map();
 
-  public buildJson(command: Command<any>, printer: any): void {
-    let commandType: string = command.getCommandType();
-    if (this.deSerMap.has(commandType)) {
-      this.deSerMap.get(commandType).buildJson(command, printer);
-    } else {
-      console.error("Can not find deSer for commandType " + commandType);
+  public serialize(command: Command<any>): string | null {
+    const commandType = command.getCommandType();
+    if (!this.deSerMap.has(commandType)) {
+      return null;
     }
-  }
 
-  public serialize(command: Command<any>): string {
-    let printer: any = {};
-    this.buildJson(command, printer);
+    const printer: any = {};
+    this.deSerMap.get(commandType).buildJson(command, printer);
     return JSON.stringify(printer);
   }
 

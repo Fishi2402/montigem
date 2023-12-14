@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import input.GemRangeInput;
+
+page GemRangeInputExample() {
+  @GemRangeInput(
+    id = "rangeInput5",
+    labelText = "Range1: ",
+    vertical = false,
+    step = 1,
+    minValue = 1,
+    maxValue = 100
+    //value = 50,
+  );
+}

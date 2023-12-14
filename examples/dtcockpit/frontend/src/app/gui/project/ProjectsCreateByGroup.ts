@@ -2,8 +2,8 @@
 import {Component} from '@angular/core';
 import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
 import {ProjectsCreateByGroupComponent} from '@src/gui/project/ProjectsCreateByGroupComponent';
-import { ProjectErrorCollector } from '@src/dtcockpit/ProjectErrorCollector';
-import { Project } from '@src/dtcockpit/Project';
+import {ProjectErrorCollector} from '@src/dtcockpit/ProjectErrorCollector';
+import {Project} from '@src/dtcockpit/Project';
 
 
 @Component({
@@ -36,7 +36,10 @@ export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
       },
       notifyPStatisticsInvalid: (project: Project,msg: string): void => {
         this.error = msg;
-      }
+      },
+      notifyLastPipelineInvalid: (project: Project,msg: string): void => {
+      this.error = msg;
+    }
     };
     ProjectErrorCollector.addErrorObserver(observer);
     if (!this.groupBuilder.isBuildable()) {

@@ -8,6 +8,8 @@ import {Component, Input, TemplateRef} from '@angular/core';
   })
 export class NavList {
   protected _components: TemplateRef<any>[];
+  protected _header?: TemplateRef<any>;
+  protected _footer?: TemplateRef<any>;
 
   public get components(): TemplateRef<any>[] {
     return this._components;
@@ -16,5 +18,23 @@ export class NavList {
   @Input()
   public set components(components: TemplateRef<any>[]) {
     this._components = components;
+  }
+
+  public get header(): TemplateRef<any> {
+    return this._header;
+  }
+
+  @Input()
+  public set header(header: TemplateRef<any>) {
+    this._header = header;
+  }
+
+  public get footer(): TemplateRef<any> {
+    return this._footer;
+  }
+
+  @Input()
+  public set footer(footer: TemplateRef<any>) {
+    this._footer = footer;
   }
 }

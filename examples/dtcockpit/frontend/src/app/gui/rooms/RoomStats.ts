@@ -10,8 +10,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'room-stats',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/rooms/RoomStats.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  styleUrls: ['./RoomStats.scss']
 })
 export class RoomStats extends RoomStatsComponent {
   temp4304 = "? °C";
@@ -20,7 +19,9 @@ export class RoomStats extends RoomStatsComponent {
 
   public override init(): void {
     setTimeout(() => {
-      console.log(this.getStats())
+      if (this.getStats() == null) {
+        return;
+      }
       for (let i = 0; i < this.getStats().ids.length; i++) {
         this.getStats().get(i).then(room => {
           if(room.getRoomNumber() == 4304){

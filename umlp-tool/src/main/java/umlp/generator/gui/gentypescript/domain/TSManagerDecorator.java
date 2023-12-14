@@ -15,7 +15,7 @@ import umlp.generator.domain.decorator.DeSerBuilderDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
-import umlp.generator.util.SingletonLookUp;
+import umlp.generator.util.TagLookUp;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
@@ -119,7 +119,7 @@ public class TSManagerDecorator extends ManagerDecorator {
       getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetDerived", name, true);
       getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetDerived", name, false);
     } else {
-      boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
+      boolean isSingleton = TagLookUp.isSingleton(domainClass);
       if (isSingleton) {
         getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetSingletonElement", name, true);
         getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSGetSingletonElement", name, false);

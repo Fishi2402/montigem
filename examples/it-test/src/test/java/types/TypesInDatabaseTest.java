@@ -1,29 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package types;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.common.DatabaseAccessManager;
-import umlp.backendrte.common.DatabaseAccessManager4SQL;
+import types.test_infrastructure.TypesDBTestSetup;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TypesInDatabaseTest {
-
-  @BeforeEach
-  public void init() throws IOException {
-    TypesManagerImpl.init();
-    DatabaseAccessManager4SQL.init();
-    DatabaseAccessManager.executeStatement("DROP ALL OBJECTS");
-    String schema = IOUtils.resourceToString("/Types.sql", StandardCharsets.UTF_8);
-    assertTrue(DatabaseAccessManager4SQL.initSchema(schema));
+public class TypesInDatabaseTest extends TypesDBTestSetup {
+  public TypesInDatabaseTest() {
+    super(0);
   }
 
   @Test
@@ -41,5 +30,18 @@ public class TypesInDatabaseTest {
     assertEquals(fp.getF2(), fpCopy.getF2(), 10e-10);
     assertEquals(fp.getD1(), fpCopy.getD1(), 10e-10);
     assertEquals(fp.getD2(), fpCopy.getD2(), 10e-10);
+  }
+
+  @Test
+  public void testLongStringWrittenToDb(){
+    String longStr = "a".repeat(5000);
+    StringTypes s = TypesManager.stringTypesBuilder().strFieldNoStereotype(longStr).build().get();
+    assertEquals(longStr, s.getStrFieldNoStereotype());
+
+    // Check db
+    StringTypes sClone = TypesDAOFactory.getStringTypesDAO().selectStringTypes(s.gemId).get();
+    assertNotSame(s, sClone);
+
+    assertEquals(longStr, sClone.getStrFieldNoStereotype());
   }
 }
