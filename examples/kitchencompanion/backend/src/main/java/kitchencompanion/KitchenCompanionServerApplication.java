@@ -72,6 +72,13 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
           .role(KitchenCompanionRole.USER)
           .build();
 
+      KitchenCompanionManager.userBuilder()
+          .username("Lehrstuhl")
+          .password( ("a"))
+          .nickname("Chair")
+          .email("a@se-rwth.de")
+          .role(KitchenCompanionRole.USER)
+          .build();
 
       // ordinary users
       KitchenCompanionManager.userBuilder()
