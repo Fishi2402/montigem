@@ -1,0 +1,43 @@
+<h1>Graph-Example</h1>
+
+<div class="wrapper">
+  <div class="var-1">
+    <h2>Variante 1</h2>
+    <div class="graph-wrapper">
+      <network-graph
+        [settings]="settings1"
+        [nodes]="nodes"
+        [edges]="edges"
+        [initialLayout]="{mode: InitialGraphLayouts.RANDOM}"
+        [complexLayout]="{
+        mode: ComplexGraphLayouts.FORCEATLAS2,
+        maxIterations: 100,
+        parameters: {
+          settings: {
+            gravity: 1,
+            slowDown: 1.2
+          }
+        }}"
+      ></network-graph>
+    </div>
+  </div>
+
+
+  <div class="var-2">
+    <h2>Variante 2</h2>
+    <div class="graph-wrapper">
+      <network-graph
+        [settings]="settings2"
+        [nodes]="nodes"
+        [edges]="edges"
+        [initialLayout]="{mode: InitialGraphLayouts.CIRCULAR}"
+        [showSearchNode]="false"
+        [showFilterGroup]="false"
+        [showControlButtons]="false"
+        [showInformation]="false"
+      ></network-graph>
+    </div>
+  </div>
+
+</div>
+

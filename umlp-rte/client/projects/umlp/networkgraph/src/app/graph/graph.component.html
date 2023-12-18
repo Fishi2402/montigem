@@ -1,0 +1,16 @@
+<!-- Template for the error message -->
+<ng-template #noWebGL>
+  <div class="error-container">
+    <h2>Chart Rendering Issue</h2>
+    <p>
+      We're sorry, but it appears that your browser does not support WebGPU, which is essential for rendering this
+      chart. Please update your browser or switch to a compatible one for the best experience.
+    </p>
+  </div>
+</ng-template>
+
+<!-- Main content -->
+<div *ngIf="hasWebGLSupport; else noWebGL" class="chart-container">
+  <!-- Container for Sigma Graph -->
+  <div #sigmaContainer class="chart-wrapper"></div>
+</div>

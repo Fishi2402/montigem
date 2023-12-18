@@ -6,5 +6,5 @@ import mc.fenix.charts.GemGraph;
 
 page NetworkChartExample(Person p) {
 
-  personGraph@GemGraph(data=null);
+  personGraph@GemGraph(data=null, layout=circular, showMetric=true);
 }
