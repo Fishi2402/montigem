@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui;
+
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemRow;
+import arrange.GemColumn;
+import basic.GemText;
+
+import gui.navigation.GuidslPaperNavigation;
+
+import Guidslpaper.Person;
+import Guidslpaper.Konto;
+
+page GuidslpaperMainPage(List<Person> personen, List<Konto> konten) {
+  @GuidslPaperNavigation(personen = personen);
+
+  @GemColumn(hAlign = "left", component =
+    @GemCard(
+      title = "Dashboard",
+      component = personenList@GemRow(
+        rowGap="20px",
+        colGap="5px",
+        components=[
+          @iterate(Person p : personen) {
+            pButton@GemButton(label = p.kuerzel, leftClick = navigateToPerson(p));
+          },
+          newButton@GemButton(label = "+", leftClick = navigateToNewPerson)
+        ]
+      )
+    )
+  );
+}
