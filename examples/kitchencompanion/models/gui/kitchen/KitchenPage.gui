@@ -13,16 +13,11 @@ import gui.kitchen.LeadUserPanel;
 import gui.kitchen.OrdinaryUserPanel;
 
 page KitchenPage(List<User> users) {
-  @GemColumn(width = "70rem", hAlign = "center", rowGap="1rem", wrap="wrap", //component =
-//    title@GemText(value = "Coffee List"),
-//    component = projectList@GemRow(
-//      rowGap="20px",
-//      colGap="20px",
-      components=[
-        @LeadUserPanel(),
-        @OrdinaryUserPanel(allUsers=users),
-        chairBut@GemButton(label = "Lehrstuhl")
-      ]
-//    )
+  @GemColumn(width = "70rem", hAlign = "center", rowGap="1rem", wrap="wrap",
+    components=[
+      @LeadUserPanel(allUsers=users),
+      @OrdinaryUserPanel(allUsers=users),
+      chairBut@GemButton(label = "Lehrstuhl")
+    ]
   );
 }

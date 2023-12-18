@@ -59,6 +59,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Bernhard Rumpe")
           .password( ("a"))
+          .nickname("BR")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -66,6 +67,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Manfred Nagl")
           .password( ("a"))
+          .nickname("MN")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -75,6 +77,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Vincent Bertram")
           .password( ("a"))
+          .nickname("VB")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -82,6 +85,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Jonas Böcker")
           .password( ("a"))
+          .nickname("JB")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -89,6 +93,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Marita Breuer")
           .password( ("a"))
+          .nickname("MB")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -96,6 +101,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Constantin Buschhaus")
           .password( ("a"))
+          .nickname("CBu")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -103,6 +109,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Joel Charles")
           .password( ("a"))
+          .nickname("JC")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -110,6 +117,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Juan Sebastian Diaz")
           .password( ("a"))
+          .nickname("JSD")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -117,6 +125,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Florian Drux")
           .password( ("a"))
+          .nickname("FDr")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -124,6 +133,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Lars Fischer")
           .password( ("a"))
+          .nickname("LF")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -131,6 +141,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Stefanie Fischer")
           .password( ("a"))
+          .nickname("SF")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -138,6 +149,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Arkadii Gerasimov")
           .password( ("a"))
+          .nickname("AGe")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -145,6 +157,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Julius Gummersbach")
           .password( ("a"))
+          .nickname("JG")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -152,6 +165,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Sylvia Gunder")
           .password( ("a"))
+          .nickname("SG")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -159,6 +173,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Malte Heithoff")
           .password( ("a"))
+          .nickname("MH")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -166,6 +181,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Alexander Hellwig")
           .password( ("a"))
+          .nickname("AHe")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -173,6 +189,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Steffen Hillemacher")
           .password( ("a"))
+          .nickname("SH")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -180,6 +197,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Anna Hühnerbein")
           .password( ("a"))
+          .nickname("AHu")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -187,6 +205,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Nico Jansen")
           .password( ("a"))
+          .nickname("NJ")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -194,6 +213,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Hendrik Kausch")
           .password( ("a"))
+          .nickname("HKa")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -201,6 +221,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Alexander Lüpges")
           .password( ("a"))
+          .nickname("ALu")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -208,6 +229,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Judith Michael")
           .password( ("a"))
+          .nickname("JM")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -215,6 +237,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Bogdan Naskow")
           .password( ("a"))
+          .nickname("BN")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -222,6 +245,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Lukas Netz")
           .password( ("a"))
+          .nickname("LN")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -229,6 +253,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Haron Nqiri")
           .password( ("a"))
+          .nickname("HN")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -236,6 +261,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Mathias Pfeiffer")
           .password( ("a"))
+          .nickname("MPf")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -243,6 +269,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Deni Raco")
           .password( ("a"))
+          .nickname("DRa")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -250,6 +277,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("David Schmalzing")
           .password( ("a"))
+          .nickname("DS")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -257,6 +285,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Marc Schmidt")
           .password( ("a"))
+          .nickname("MSm")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -264,6 +293,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Max Stachon")
           .password( ("a"))
+          .nickname("MSh")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -271,6 +301,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Felix Steinfurth")
           .password( ("a"))
+          .nickname("FSt")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -278,6 +309,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Sebastian Stüber")
           .password( ("a"))
+          .nickname("SSt")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -285,6 +317,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Samuel Thesing")
           .password( ("a"))
+          .nickname("ST")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -292,6 +325,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Galina Volkova")
           .password( ("a"))
+          .nickname("GV")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -299,6 +333,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Louis Wachtmeister")
           .password( ("a"))
+          .nickname("LW")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
@@ -306,6 +341,7 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
       KitchenCompanionManager.userBuilder()
           .username("Lucas Wollenhaupt")
           .password( ("a"))
+          .nickname("LWo")
           .email("a@se-rwth.de")
           .role(KitchenCompanionRole.USER)
           .build();
