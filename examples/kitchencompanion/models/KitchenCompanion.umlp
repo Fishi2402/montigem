@@ -9,6 +9,7 @@ classdiagram KitchenCompanion {
   }
 
   association [1] App -> User [*];
+  association [1] App -> Offer [*];
 
   class User {
     <<dbColumn = "unique=true">>
@@ -26,9 +27,9 @@ classdiagram KitchenCompanion {
     ADMIN;
   }
 
-  class BillingInfo {
-    int coffeeCount;
-    int waterCount;
+  class Offer {
+    String name;
+    double price;
   }
 
   association [1] User -> BillingInfo [0..1];
