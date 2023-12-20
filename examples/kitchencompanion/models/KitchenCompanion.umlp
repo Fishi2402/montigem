@@ -32,6 +32,5 @@ classdiagram KitchenCompanion {
     double price;
   }
 
-  association [1] User -> BillingInfo [0..1];
 
 }
