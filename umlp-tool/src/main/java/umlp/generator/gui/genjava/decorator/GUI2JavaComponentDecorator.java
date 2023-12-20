@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -201,7 +202,18 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       Function<String, String> conversion = getConversion(decoratedClass,
           paramSTE, namedArg.getGUIArgValue().getExpression(), true);
       // TODO AGe: explicit gem lists when domain typed lists are used as an input
-      if (!paramType.contains("GemList")) {
+      // TODO: This needs to be decided on the type of the expression, not the parameter
+      // Workaround for the simplest cases:
+      ASTExpression expr = namedArg.getGUIArgValue().getExpression();
+      boolean canResolveParam = false;
+      if(expr instanceof ASTNameExpression){
+        String name = ((ASTNameExpression) expr).getName();
+        canResolveParam = namedArg.getEnclosingScope().resolveGUIParam(name).isPresent();
+      }
+
+      if(canResolveParam){
+        // Keep getter value
+      } else if (!paramType.contains("GemList")) {
         getterValue = conversion.apply(getterValue);
       } else {
         getCD4C().addImport(decoratedClass, PathUtil.getBackendRTECommonPath("GemList"));
