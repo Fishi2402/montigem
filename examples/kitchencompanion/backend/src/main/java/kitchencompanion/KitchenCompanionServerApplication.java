@@ -353,7 +353,39 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
           .role(KitchenCompanionRole.USER)
           .build();
 
+      // offers examples
+      KitchenCompanionManager.offerBuilder()
+          .name("Kaffee")
+          .price(0.25)
+          .build();
+
+      KitchenCompanionManager.offerBuilder()
+          .name("Wasser")
+          .price(0.75)
+          .build();
+
+      KitchenCompanionManager.offerBuilder()
+          .name("Coca Cola/ Coca Cola Zero")
+          .price(0.5)
+          .build();
+
+      KitchenCompanionManager.offerBuilder()
+          .name("Reiswaffeln")
+          .price(1.0)
+          .build();
+
+      KitchenCompanionManager.offerBuilder()
+          .name("Erdnüsse")
+          .price(1.0)
+          .build();
+
+      KitchenCompanionManager.offerBuilder()
+          .name("Müsliriegeln/ Fruchtriegeln")
+          .price(0.25)
+          .build();
+
     }
+
     else {
       Log.println("_NOT_ Creating New Dummy Data. Data is already present.");
     }
