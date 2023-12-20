@@ -67,6 +67,8 @@ include ':examples:dtcockpit-jsweet:backend'
 include ':examples:dtcockpit-jsweet:frontend'
 include ':examples:kitchencompanion:backend'
 include ':examples:kitchencompanion:frontend'
+include ':examples:guidslpaper:backend'
+include ':examples:guidslpaper:frontend'
 
 include ':products:syse_functions'
 include ':products:demo-recycling:backend'

@@ -1,4 +1,4 @@
-package guivariability.Test;
+package guivariability;
 
 import guivariability.Text;
 import another.Text;

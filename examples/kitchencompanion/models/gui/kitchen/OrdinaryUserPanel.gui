@@ -14,9 +14,12 @@ import KitchenCompanion.User;
 component OrdinaryUserPanel(List<User> allUsers){
   @GemRow(hAlign = "center", colGap="1rem", rowGap="1rem", wrap="wrap", components = [
 
-    @iterate(User user : allUsers) {
-      @GemButton(label = user.username);
-    }
+  @iterate(User user : allUsers){
+      @guard(user.nickname != "BR" && user.nickname != "MN" && user.nickname != "Chair") {
+        @GemButton(label = user.username);
+      }
+   }
+
 
   ]);
 }

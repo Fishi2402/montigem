@@ -60,6 +60,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     glex.replaceTemplate("cd2java.Annotations", shellapiClass, new StringHookPoint("@ShellComponent"));
 
     addBasicImports(cdName, origCD, shellapiClass, originalClassName);
+    addImports(cdClass, shellapiClass);
     List<ASTCDAttribute> domainAttributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
         .filter(attr -> !attr.getModifier().isDerived())
         .collect(Collectors.toList());
