@@ -19,7 +19,7 @@ def scOutDir = buildDir.toPath().resolve("sc")
 
 task genSc(type: JavaExec) {
   classpath configurations.scGenerator
-  mainClass("de.monticore.umlstatecharts.UMLStatechartsTool")
+  mainClass = "de.monticore.umlstatecharts.UMLStatechartsTool"
 
   def ampel = modelsDir.resolve("AmpelSC.sc")
 
