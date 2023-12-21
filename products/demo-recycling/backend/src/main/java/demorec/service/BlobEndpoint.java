@@ -40,7 +40,19 @@ public class BlobEndpoint {
       byte[] fileBytes = file.getBytes();
 
       // Specify the file path where you want to save the uploaded file
-      String filePath = DemoRecServerApplication.blobStorageLocation+ path + file.getOriginalFilename();
+      String givenPath;
+      String filePath;
+      if(path.startsWith("/")) {
+        givenPath = path.replaceFirst("/", "");
+      } else {
+        givenPath = path;
+      }
+      filePath = DemoRecServerApplication.blobStorageLocation + givenPath;
+      if(!filePath.endsWith("/")) {
+        filePath = filePath + "/";
+      }
+
+      filePath = filePath + file.getOriginalFilename();
       File test = Paths.get(filePath).toFile();
       Log.info(test.getAbsolutePath(), this.getClass().getName());
       test.getParentFile().mkdirs();
@@ -67,12 +79,16 @@ public class BlobEndpoint {
   public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IOException {
 
     // Load the image from the classpath resource
-    Resource resource = new ClassPathResource("static/" + imageName);
+   /* Resource resource = new ClassPathResource("static/" + imageName);
     Path imagePath = resource.getFile().toPath();
-    System.out.println(imagePath.toAbsolutePath());
+    System.out.println(imagePath.toAbsolutePath());*/
+
+    String filePath = DemoRecServerApplication.blobStorageLocation+"/"+imageName ;
+    File test = Paths.get(filePath).toFile();
+    Log.info(test.getAbsolutePath(), this.getClass().getName());
 
     // Read the image bytes
-    byte[] imageBytes = Files.readAllBytes(imagePath);
+    byte[] imageBytes = Files.readAllBytes(Paths.get(filePath));
 
     // Set the content type and content disposition headers
     HttpHeaders headers = new HttpHeaders();

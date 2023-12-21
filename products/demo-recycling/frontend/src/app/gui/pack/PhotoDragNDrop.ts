@@ -29,8 +29,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class PhotoDragNDrop extends PhotoDragNDropComponent {
 
-  constructor(private http: HttpClient, router: Router) {
-    super(router)
+  constructor(private http: HttpClient,route: ActivatedRoute, router: Router) {
+    super(route, router)
   }
 
   @Input()
@@ -66,7 +66,7 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
     formData.append('file', file, file.name);
 
     const headers = new HttpHeaders({
-      'PATH': "test",
+      'PATH': "",
     });
 
     this.http.post(`/umlp/api/blob`, formData, { headers }).subscribe();

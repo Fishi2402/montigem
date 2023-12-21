@@ -25,7 +25,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export  class PhotoDisplay extends PhotoDisplayComponent {
 
-
+  public getImagePath() : string {
+    console.debug(this.getPack().getPhotoLocation()[0])
+    if(this.getPack().getPhotoLocation()[0]) {
+      console.debug(this.getPack().getPhotoLocation()[0])
+      return "umlp/api/images/" + this.getPack().getPhotoLocation()[0];
+    } else {
+      return null
+    }
+  }
 }
 
 

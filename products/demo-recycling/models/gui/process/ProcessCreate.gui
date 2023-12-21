@@ -45,13 +45,13 @@ page ProcessCreate(Process p, BatteryPack pack, BatteryPackType type) {
           ),
           @iterate(String location : pack.photoLocation) {
             @GemText(value=location);
-          },
-          guardBPackBuildFinished@guard(false) {
-            @PhotoDragNDrop(attachedPack = pack);
           }
         ]
       )
     );
+    guardBPackBuildFinished@guard(true) {
+      @PhotoDragNDrop(attachedPack = pack);
+    }
     // TODO make it an option to choose an already existing type or create a new one
     guardBPackType@guard(true) {
       @GemCard(

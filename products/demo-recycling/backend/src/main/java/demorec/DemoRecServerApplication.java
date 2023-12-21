@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
 
-  public static String blobStorageLocation = "storage/";
+  public static String blobStorageLocation = "";
 
   @javax.annotation.PostConstruct
   @Override
@@ -99,8 +99,14 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
   }
 
   public void setBlobStorageLocation() {
-    if(System.getenv("blob_location") != null) {
-      blobStorageLocation=System.getenv("blob_location");
+    if(System.getenv("FILE_LOCATION") != null) {
+      String filePath = System.getenv("FILE_LOCATION");
+      if(!filePath.endsWith("/")) {
+        blobStorageLocation=filePath+"/";
+      } else {
+        blobStorageLocation=filePath;
+      }
+      Log.info("Set file location to: "+blobStorageLocation, this.getClass().getName());
     }
   }
 

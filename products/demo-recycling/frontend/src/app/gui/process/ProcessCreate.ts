@@ -41,6 +41,7 @@ export  class ProcessCreate extends ProcessCreateComponent {
   public bPackTypeOptions: string[] = [newOption];
 
   public ngOnInit(): void {
+    super.ngOnInit()
     DemoRecManager.getBatteryPackList().then(gemPromiseRes => {
       const bPacks = gemPromiseRes;
       bPacks.loadAll().then(() => {
@@ -98,13 +99,27 @@ export  class ProcessCreate extends ProcessCreateComponent {
 
 
   public override sendEverything (event: any): void {
-    this.typeBuilder.build()
-    this.packBuilder.build()
+    this.getType().build()
+    this.getPack().type(this.getType())
+    this.getPack().build()
+    this.getP().deconstructionOf(this.getPack())
+    this.getP().build()
   }
 
   // TODO this is dangerous no name in GUI Model should not be necessary
   public override getPhotoDragNDrop10AttachedPack (): BatteryPackBuilder {
     return this.getPack();
+  }
+
+  public override getGuardBPackBuildFinishedCondition (): boolean {
+    if(this.getPack()) {
+      if(this.getPack().isBuildFinished()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
   }
 }
 
