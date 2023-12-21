@@ -1,17 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import java.time.LocalDate;
-import java.time.Duration;
-import java.net.URI;
+//import java.time.Duration;
+//import java.net.URI; TODO locations were URI instead of String change in future if possible
 
-umlp DemoRec {
+classdiagram DemoRec {
 
   class BatteryPack {
     double stateOfCharge;
     double health;
 
-    List<URI> photos;
+    List<String> photoLocation;
   }
+
+  association [1] BatteryPack -> (consistsOf) DemoRecComponent [*];
 
   class BatteryPackType {
     double capacity;
@@ -21,12 +23,14 @@ umlp DemoRec {
 
   association [*] BatteryPack (inspectedInstances) <-> (type) BatteryPackType [1];
 
-  class Process {}
+  class Process {
+    LocalDate startedAt;
+  }
 
   association [*] Process -> (deconstructionOf) BatteryPack [1];
 
   class ProcessStep {
-    Duration timeconsumption;
+    long timeconsumption;
     ProcessStepType type;
     Optional<String> description;
   }
@@ -49,9 +53,11 @@ umlp DemoRec {
   association [*] ProcessStep <-> (deconstructs) JoinConnection [0..1];
 
   // TODO what characterizes an EndEffector? What about dimensions or form? Is the set of endeffectors already known?
-  class EndEffector {}
+  class EndEffector {
+    String name;
+  }
 
-  class Component {
+  abstract class DemoRecComponent {
     double xPos;
     double yPos;
     double zPos;
@@ -64,12 +70,12 @@ umlp DemoRec {
 
     boolean isDesconstructible;
 
-    List<URI> photos;
-    List<URI> threeDFiles;
+    List<String> photoLocations;
+    List<String> threeDFileLocations;
   }
 
-  class Element extends Component;
-  class Composite extends Component;
+  class Element extends DemoRecComponent;
+  class Composite extends DemoRecComponent;
 
   class JoinConnection {
     double state; // TODO what kind of data type for state?
@@ -78,7 +84,7 @@ umlp DemoRec {
 
   association [*] Composite -> (linkedBy) JoinConnection [*]; // TODO + should be allowed
 
-  association [*] Component <-> (composedWith) JoinConnection [*];  // TODO should be 2..* on left side
+  association [*] DemoRecComponent <-> (composedWith) JoinConnection [*];  // TODO should be 2..* on left side
 
   enum JoinConnectionType {
     SCREW,

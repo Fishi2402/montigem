@@ -1,0 +1,7 @@
+package gui.step;
+
+import DemoRec.ProcessStep;
+
+page ProcessStepCreate(ProcessStep step) {
+
+}

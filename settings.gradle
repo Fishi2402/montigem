@@ -72,6 +72,7 @@ include ':examples:guidslpaper:frontend'
 
 include ':products:syse_functions'
 include ':products:demo-recycling:backend'
+include ':products:demo-recycling:frontend'
 include 'examples:flensburg-test-jsweet:backend'
 findProject(':examples:flensburg-test-jsweet:backend')?.name = 'backend'
 
