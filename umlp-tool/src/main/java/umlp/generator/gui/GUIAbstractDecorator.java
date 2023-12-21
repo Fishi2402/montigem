@@ -34,10 +34,10 @@ import java.util.stream.Collectors;
 public abstract class GUIAbstractDecorator extends AbstractDecorator {
 
   //public static final Predicate<ASTGUIComponent> PREDICATE_BUTTON = c -> c.getQualifiedName().equals("umlp.gui.Button");
-  public static final Predicate<ASTGUIComponent> PREDICATE_TABLE = c -> c.getQualifiedName().endsWith("table.GemTable");
-  public static final Predicate<ASTGUIComponent> PREDICATE_PIE = c -> c.getQualifiedName().equals("umlp.gui.Pie");
-  public static final Predicate<ASTGUIComponent> PREDICATE_NOT_TABLE = c -> !c.getQualifiedName().endsWith("table.GemTable");
-  public static final Predicate<ASTGUIComponent> PREDICATE_NOT_BUTTON = c -> !c.getQualifiedName().equals("io.GemButton");
+  public static final Predicate<ASTGUIComponent> PREDICATE_TABLE = c -> c.getNameSymbol().getFullName().endsWith("table.GemTable");
+  public static final Predicate<ASTGUIComponent> PREDICATE_PIE = c -> c.getNameSymbol().getFullName().equals("umlp.gui.Pie");
+  public static final Predicate<ASTGUIComponent> PREDICATE_NOT_TABLE = c -> !c.getNameSymbol().getFullName().endsWith("table.GemTable");
+  public static final Predicate<ASTGUIComponent> PREDICATE_NOT_BUTTON = c -> !c.getNameSymbol().getFullName().equals("io.GemButton");
 
   public static final String COMPONENT_SUFFIX = "Component";
 
