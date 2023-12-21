@@ -22,6 +22,10 @@ import java.util.stream.StreamSupport;
 
 public abstract class UMLPSymbolsTask extends UMLPSingleFileTask {
 
+  public UMLPSymbolsTask() {
+    super("UMLPSymbolsTask");
+  }
+
   @OutputDirectory
   @org.gradle.api.tasks.Optional
   public abstract DirectoryProperty getSymbolOutDir();

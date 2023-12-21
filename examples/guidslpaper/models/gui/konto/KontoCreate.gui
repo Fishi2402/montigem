@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.konto;
+
+import Guidslpaper.Konto;
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import basic.GemButton;
+import input.GemTextInput;
+
+import gui.navigation.GuidslPaperNavigation;
+
+page KontoCreate(Konto konto, List<Konto> konten) {
+  @GemRow(wrap = "nowrap", components = [
+    @GuidslPaperNavigation(konten = konten),
+    @GemColumn(hAlign = "center", component =
+      @GemCard(title = "New Konto", component =
+        @GemColumn(width = "50vw", rowGap = "10px", components = [
+          createPTitle@GemTextInput(labelText = "Konto Name", entry = konto.name, disabled = false),
+          @GemButton(label = "Create new konto", leftClick = createKonto, disabled = false),
+          @GemButton(label = "Abort", leftClick = navigateBack, disabled = false)
+        ])
+      )
+    )
+  ]);
+}

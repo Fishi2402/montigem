@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import input.GemRadioInput;
+
+page GemRadioInputExample() {
+  @GemRadioInput(
+    id = "genderMale",
+    labelText = "Male",
+    value = "male"
+  );
+  @GemRadioInput(
+    id = "genderFemale",
+    labelText = "Female",
+    value = "female"
+  );
+  @GemRadioInput(
+    id = "genderOther",
+    labelText = "Other",
+    value = "other"
+  );
+}

@@ -157,7 +157,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           }
           else {
             Log.error("0x00002 Cannot handle " + namedArg.getName()
-                + " of component " + guiComponent.getQualifiedName()
+                + " of component " + guiComponent.getNameSymbol().getFullName()
                 + " yet: nested objects initialization");
           }
         }

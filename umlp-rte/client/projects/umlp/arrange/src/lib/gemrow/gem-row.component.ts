@@ -14,17 +14,17 @@ export class GemRow extends GemRowTOP {
   protected override _width: string = '100%';
 
   @HostBinding('style.justify-content')
-  protected override _hAlign: string;
+  protected override _hAlign: string = "stretch";
 
   @HostBinding('style.align-content')
   @HostBinding('style.align-items')
-  protected override _vAlign: string;
+  protected override _vAlign: string = "stretch";
 
   @HostBinding('style.row-gap')
-  protected override _rowGap: string;
+  protected override _rowGap: string = "0";
 
   @HostBinding('style.column-gap')
-  protected override _colGap: string;
+  protected override _colGap: string = "0";
 
   @HostBinding('style.flex-wrap')
   @Input()

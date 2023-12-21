@@ -1,0 +1,9 @@
+package guivariability;
+
+import guivariability.Text;
+import another.Text;
+import guivariability.Button;
+
+page ImportTest() adapts BaseModel{
+    remove exampleText;
+}

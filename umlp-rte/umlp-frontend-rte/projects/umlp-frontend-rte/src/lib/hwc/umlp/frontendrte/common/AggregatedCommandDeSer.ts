@@ -1,9 +1,6 @@
-/* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
-import { JsonPrinter } from '../mcjson/JsonPrinter';
-import { Log } from '../logging/Log';
-import { Command } from '../command/Command';
-import { CommandDeSer } from '../command/CommandDeSer';
-import { StringHelper } from '../javautil/StringHelper';
+import {JsonPrinter} from '../mcjson/JsonPrinter';
+import {Log} from '../logging/Log';
+import {Command} from '../command/Command';
 
 export abstract class AggregatedCommandDeSer {
     deSerMap: any;
@@ -17,12 +14,19 @@ export abstract class AggregatedCommandDeSer {
         }
     }
 
-    public async serialize(command: Command<any>): Promise<string> {
-        const printer: JsonPrinter = new JsonPrinter(true);
-        printer.beginObject();
-        await this.buildJson(command, printer);
-        printer.endObject();
-        return Promise.resolve(printer.toString());
+    public async serialize(command: Command<any>): Promise<string | null> {
+      const commandType: string = command.getCommandType();
+
+      if (!this.deSerMap.has(commandType)) {
+        return Promise.resolve(null);
+      }
+
+      const printer: JsonPrinter = new JsonPrinter(true);
+      printer.beginObject();
+      await this.deSerMap.get(commandType).buildJson(command, printer);
+      printer.endObject();
+
+      return Promise.resolve(printer.toString());
     }
 
     public async deserialize<T>(cmdStr: string): Promise<Command<any>> {

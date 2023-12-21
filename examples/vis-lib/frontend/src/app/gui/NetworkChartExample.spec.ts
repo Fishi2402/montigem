@@ -7,13 +7,13 @@ import { DomainMock } from '@src/domain/DomainMock';
 import { Person } from '@src/domain/Person';
 import { PersonBuilder } from '@src/domain/PersonBuilder';
 import { NetworkData, NetworkEdge, NetworkNode } from '@umlp/charts';
-import { NetworkChartExampleComponent } from '@src/gui/NetworkChartExampleComponent';
+import { NetworkChartExample } from '@src/gui/NetworkChartExample';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('NetworkChartExample', () => {
 
-  let fixture: ComponentFixture<NetworkChartExampleComponent>;
-  let comp: NetworkChartExampleComponent;
+  let fixture: ComponentFixture<NetworkChartExample>;
+  let comp: NetworkChartExample;
 
   let person1: PersonBuilder;
   let address1: AddressBuilder;
@@ -32,7 +32,7 @@ describe('NetworkChartExample', () => {
 
   /**
    * Friends tree:
-   * 
+   *
    * p1 -> p2
    * p1 -> p3 -> p4
    * p5
@@ -116,7 +116,7 @@ describe('NetworkChartExample', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [
-        NetworkChartExampleComponent
+        NetworkChartExample
       ],
       imports: [
         RouterTestingModule
@@ -126,7 +126,7 @@ describe('NetworkChartExample', () => {
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(NetworkChartExampleComponent);
+    fixture = TestBed.createComponent(NetworkChartExample);
     comp = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -174,10 +174,10 @@ describe('NetworkChartExample', () => {
 
     let data: NetworkData | null;
 
-    data = comp.getGemNetworkGraphData();
+    data = comp.getPersonGraphData();
     expect(data).toBeNull();
 
-    data = comp.getGemNetworkGraphData();
+    data = comp.getPersonGraphData();
     expect(data).toBeNull();
   });
 
@@ -186,13 +186,13 @@ describe('NetworkChartExample', () => {
 
     let data: NetworkData | null;
 
-    data = comp.getGemNetworkGraphData();
+    data = comp.getPersonGraphData();
 
     const nodes: NetworkNode[] = [
-      { id: person1.getName(), label: person1.getName(), mass: 50, color: "yellow" },
-      { id: person2.getName(), label: person2.getName(), mass: 50, color: "yellow" },
-      { id: person3.getName(), label: person3.getName(), mass: 50, color: "yellow" },
-      { id: person4.getName(), label: person4.getName(), mass: 50, color: "yellow" }
+      { id: person1.getName(), label: person1.getName(), group: person1.constructor.name, mass: 50, color: "yellow" },
+      { id: person2.getName(), label: person2.getName(), group: person2.constructor.name, mass: 50, color: "yellow" },
+      { id: person3.getName(), label: person3.getName(), group: person3.constructor.name, mass: 50, color: "yellow" },
+      { id: person4.getName(), label: person4.getName(), group: person4.constructor.name, mass: 50, color: "yellow" }
     ];
     const allPersons: Set<Person> = new Set();
     // @ts-expect-error
@@ -206,10 +206,10 @@ describe('NetworkChartExample', () => {
     comp.p = person1;
 
     let data1: NetworkData | null;
-    data1 = comp.getGemNetworkGraphData();
+    data1 = comp.getPersonGraphData();
 
     let data2: NetworkData | null;
-    data2 = comp.getGemNetworkGraphData();
+    data2 = comp.getPersonGraphData();
 
     expect(data1).toBe(data2);
   });

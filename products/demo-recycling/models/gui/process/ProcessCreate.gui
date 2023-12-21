@@ -1,0 +1,70 @@
+package gui.process;
+
+import basic.GemText;
+import input.GemTextInput;
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemColumn;
+
+import gui.pack.PhotoDisplay;
+import gui.pack.PhotoDragNDrop;
+import gui.navigation.Navigation;
+
+import DemoRec.BatteryPack;
+import DemoRec.Process;
+import DemoRec.BatteryPackType;
+
+page ProcessCreate(Process p, BatteryPack pack, BatteryPackType type) {
+  @Navigation();
+  @GemCard(
+    title = "Process",
+    component = @GemColumn(
+      components = [
+        @GemTextInput(labelText = "Started", inputType = "date", entry = p.startedAt),
+        selectBPack@GemTextInput(
+          labelText = "Battery Pack",
+          inputType = "dropdown",
+          options = null,
+          entry = null
+        )
+      ]
+    )
+  );
+  guardBPack@guard(true) {
+    @GemCard(
+      title = "Battery Pack",
+      component = @GemColumn(
+        components = [
+          @GemTextInput(labelText = "State of Charge", inputType = "number", entry = pack.stateOfCharge),
+          @GemTextInput(labelText = "State of health", inputType = "number", entry = pack.health),
+          selectBPackType@GemTextInput(
+            labelText = "Battery Pack Type",
+            inputType = "dropdown",
+            options = null,
+            entry = null
+          ),
+          @iterate(String location : pack.photoLocation) {
+            @GemText(value=location);
+          }
+        ]
+      )
+    );
+    guardBPackBuildFinished@guard(true) {
+      @PhotoDragNDrop(attachedPack = pack);
+    }
+    // TODO make it an option to choose an already existing type or create a new one
+    guardBPackType@guard(true) {
+      @GemCard(
+        title = "Battery Pack Type",
+        component = @GemColumn(
+          components = [
+            @GemTextInput(labelText = "Car Model", inputType = "string", entry = type.carType),
+            @GemTextInput(labelText = "BMS Location", inputType = "string", entry = type.bmsLocation),
+            @GemTextInput(labelText = "Capacity", inputType = "number", entry = type.capacity)
+          ]
+        )
+      );
+    }
+    @GemButton(label = "Send everything to the server.", leftClick = sendEverything);
+  }
+}

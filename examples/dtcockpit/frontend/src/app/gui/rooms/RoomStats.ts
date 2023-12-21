@@ -1,18 +1,27 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {RoomStatsTOP} from '@src/gui/rooms/RoomStatsTOP';
+import {RoomStatsComponent} from '@src/gui/rooms/RoomStatsComponent';
+
 import {RoomObserver} from '@src/dtcockpit/RoomObserver';
 import {Room} from '@src/dtcockpit/Room';
 import {NotificationScope} from '@umlp/common';
+import { Component } from '@angular/core';
 
-export class RoomStats extends RoomStatsTOP {
+@Component({
+  selector: 'room-stats',
+  templateUrl: '../../../../build/frontendGen/build/appgui/gui/rooms/RoomStats.html',
+  styleUrls: ['./RoomStats.scss']
+})
+export class RoomStats extends RoomStatsComponent {
   temp4304 = "? °C";
   temp4315 = "? °C";
   temp4312 = "? °C";
 
   public override init(): void {
     setTimeout(() => {
-      console.log(this.getStats())
+      if (this.getStats() == null) {
+        return;
+      }
       for (let i = 0; i < this.getStats().ids.length; i++) {
         this.getStats().get(i).then(room => {
           if(room.getRoomNumber() == 4304){

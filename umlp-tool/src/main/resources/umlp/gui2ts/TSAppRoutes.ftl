@@ -15,7 +15,7 @@ export const routes: Routes = [
 <#list routingModules?keys as key>
   {
   path:"${routingModules[key]}",
-  loadChildren:() => import("./${routingModules[key]}/${key}GemModule").then(m=>m.${key}_Module)
+  loadChildren:() => import("./${routingModules[key]}/${key}GemModule").then(m=>m.${key}GemModule)
   },
 
 </#list>

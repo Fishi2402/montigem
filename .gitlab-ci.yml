@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7.4.2-jdk11
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-chromium-deps
 
 variables:
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
@@ -14,7 +14,7 @@ before_script:
 
 stages:
   - build
-#  - it_tests
+  #  - it_tests
   - check
   - deploy
   - testDeployed
@@ -23,7 +23,9 @@ build:
   stage: build
   script:
     - "gradle --version"
-    - "gradle :examples:dtcockpit-jsweet:frontend:translateJava2TSDomain --info --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "cd umlp-tool"
+    - "gradle buildPlugin --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   cache:
     paths:
       - examples/weather/frontend/build/frontendGen/node_modules
@@ -51,6 +53,20 @@ build:
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
+
+slowtest:
+  stage: check
+  dependencies:
+    - build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - "gradle --version"
+    - "gradle slowtest --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+  artifacts:
+    reports:
+      # Lets gitlab render infos about failed tests
+      junit: "**/slowtest/**/TEST-*.xml"
 
 deployBackendDocker:
   stage: deploy

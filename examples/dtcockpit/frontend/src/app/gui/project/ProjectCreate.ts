@@ -2,8 +2,8 @@
 import {Component} from '@angular/core';
 import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
 import {ProjectCreateComponent} from '@src/gui/project/ProjectCreateComponent';
-import { ProjectErrorCollector } from '@src/dtcockpit/ProjectErrorCollector';
-import { Project } from '@src/dtcockpit/Project';
+import {ProjectErrorCollector} from '@src/dtcockpit/ProjectErrorCollector';
+import {Project} from '@src/dtcockpit/Project';
 
 
 @Component({
@@ -35,6 +35,9 @@ export class ProjectCreate extends ProjectCreateComponent {
         this.error = msg;
       },
       notifyPStatisticsInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      },
+      notifyLastPipelineInvalid: (project: Project,msg: string): void => {
         this.error = msg;
       }
     };

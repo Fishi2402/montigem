@@ -15,7 +15,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.Names;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
-import umlp.generator.util.SingletonLookUp;
+import umlp.generator.util.TagLookUp;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -104,7 +104,7 @@ public class DummyProviderDecorator extends AbstractDecorator {
               .filter(a -> getTypeCheck().isInt(a.getSymbol().getType()) || getTypeCheck().isString(a.getSymbol().getType()))
               .collect(Collectors.toList());
       attrList.forEach(a -> getCD4C().addMethod(ast, "umlp.dummyprovider.InventAttribute", domainClass.getName(), a.getName(), getTypeCheck().isInt(a.getSymbol().getType())?"int":"String"));
-      boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
+      boolean isSingleton = TagLookUp.isSingleton(domainClass);
       getCD4C().addMethod(ast, "umlp.dummyprovider.InventClass",
               domainClass.getName(), providerName, attrList.stream().map(a -> a.getName()).collect(Collectors.toList()), isSingleton);
     }

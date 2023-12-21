@@ -36,7 +36,7 @@ import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
 import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
-import umlp.generator.util.SingletonLookUp;
+import umlp.generator.util.TagLookUp;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -310,14 +310,14 @@ public class GUIGeneratorUtil {
 
   public boolean isInputComponent(ASTGUIComponent guiComponent) {
     Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
-        .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
+        .resolveGUIComponentDeclaration(guiComponent.getNameSymbol().getFullName());
     return !guiComponentSymbol.isPresent() || guiComponent.getGUINamedArgs().getGUINamedArgList().stream()
         .anyMatch(a -> isInputArgument(guiComponentSymbol.get(), a));
   }
 
   public boolean isInputArgument(ASTGUIComponent guiComponent, ASTGUINamedArg arg) {
     Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope()
-        .resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
+        .resolveGUIComponentDeclaration(guiComponent.getNameSymbol().getFullName());
     return !guiComponentSymbol.isPresent() || isInputArgument(guiComponentSymbol.get(), arg);
   }
 
@@ -539,7 +539,7 @@ public class GUIGeneratorUtil {
 
   public boolean isEventArgument(ASTGUIComponent guiComponent, ASTGUINamedArg arg) {
     Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
-        arg.getEnclosingScope(), guiComponent.getQualifiedName(), arg.getName());
+        arg.getEnclosingScope(), guiComponent.getNameSymbol().getFullName(), arg.getName());
     return paramSym.isPresent() && isEventArgument(paramSym.get());
   }
 
@@ -553,7 +553,7 @@ public class GUIGeneratorUtil {
   }
 
   public List<ASTGUINamedArg> getInputArguments(ASTGUIComponent guiComponent) {
-    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIComponentDeclaration(guiComponent.getQualifiedName());
+    Optional<GUIComponentDeclarationSymbol> guiComponentSymbol = guiComponent.getEnclosingScope().resolveGUIComponentDeclaration(guiComponent.getNameSymbol().getFullName());
     if (guiComponentSymbol.isEmpty()) {
       return new ArrayList<>();
     }
@@ -576,7 +576,7 @@ public class GUIGeneratorUtil {
 
   public boolean hasGetter(ASTGUIComponent comp, ASTGUINamedArg arg) {
     Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
-        arg.getEnclosingScope(), comp.getQualifiedName(), arg.getName());
+        arg.getEnclosingScope(), comp.getNameSymbol().getFullName(), arg.getName());
     return paramSym.isPresent() && hasGetter(paramSym.get().getType());
   }
 
@@ -589,19 +589,19 @@ public class GUIGeneratorUtil {
 
   public boolean hasSetter(ASTGUIComponent comp, ASTGUINamedArg arg) {
     Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
-        arg.getEnclosingScope(), comp.getQualifiedName(), arg.getName());
+        arg.getEnclosingScope(), comp.getNameSymbol().getFullName(), arg.getName());
     return paramSym.isPresent() && hasGetter(paramSym.get().getType()) && paramSym.get().isIsReference();
   }
 
   public boolean isViewElementsCollection(ASTGUIComponent comp, ASTGUINamedArg arg) {
     Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
-        arg.getEnclosingScope(), comp.getQualifiedName(), arg.getName());
+        arg.getEnclosingScope(), comp.getNameSymbol().getFullName(), arg.getName());
     return paramSym.isPresent() && isViewElementsCollection(paramSym.get().getType());
   }
 
   public boolean isViewElement(ASTGUIComponent comp, ASTGUINamedArg arg) {
     Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
-        arg.getEnclosingScope(), comp.getQualifiedName(), arg.getName());
+        arg.getEnclosingScope(), comp.getNameSymbol().getFullName(), arg.getName());
     return paramSym.isPresent() && isViewElement(paramSym.get().getType());
   }
 
@@ -689,7 +689,7 @@ public class GUIGeneratorUtil {
 
   public String getPackageModuleName(ASTMCImportStatement i) {
     List<String> temp = List.of(java2tsModule(i.getQName()).split("/"));
-    return temp.get(temp.size() - 2).substring(0, 1).toUpperCase() + temp.get(temp.size() - 2).substring(1) + "_Module";
+    return temp.get(temp.size() - 2).substring(0, 1).toUpperCase() + temp.get(temp.size() - 2).substring(1) + "GemModule";
   }
 
   public String getPackageModulePath(ASTMCImportStatement i) {
@@ -713,7 +713,7 @@ public class GUIGeneratorUtil {
       for (ASTGUIParam p : decoratedAst.getGUIComponentDeclaration().getGUIParamList()) {
         if (p.isPresentSymbol()) {
           if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p) && !isDerived(p)
-              && !SingletonLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())) {
+              && !TagLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())) {
             ids.add(p.getName() + "RoutingId");
           }
         }

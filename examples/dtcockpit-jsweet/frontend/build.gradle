@@ -45,11 +45,15 @@ dependencies {
   implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
 }
 
+task generateNPMAuth(type: NPMAuthCreate){
+  npmrcFile = file("config/.npmrc")
+}
+
 // Add Frontend-Config Files from UMLP-Tool Resources.
 task frontendSetup(type: FrontendSetup){
+  dependsOn(generateNPMAuth, tasks.getByPath(":umlp-rte:umlp-frontend-rte:packLib"))
   input = file("config/")   // Can be used to add or replace files
   output = layout.buildDir.dir("frontendGen/")
-  dependsOn(tasks.getByPath(":umlp-rte:umlp-frontend-rte:packLib"))
 }
 
 node {
@@ -75,6 +79,8 @@ node {
   nodeProjectDir = frontendSetup.getOutput()
 
 }
+
+nodeSetup.dependsOn(frontendSetup)
 
 task genSymbols(type: UMLPSymbolsTask) {
   dependsOn(frontendSetup)
@@ -220,21 +226,14 @@ task installLocalRTE(type: NpmTask) {
   args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]
 }
 
-task generateNPMAuth(type: NPMAuthCreate){
-  npmrcFile = frontendSetup.getOutput().file(".npmrc")
-}
-
-
-npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
-// TODO AGe: npm_update too slow - strategy to make occasional checks
-npm_update.dependsOn(npm_install)
+npm_install.dependsOn(nodeSetup, ':umlp-rte:client:npm_install')
 
 def prebuildTasks = [
-    translateTypeScript, installLocalRTE, ':umlp-rte:client:npm_install'
+    npm_install, translateTypeScript, installLocalRTE
 ]
 
 task buildApp(type: NpxTask) {
-  dependsOn(npm_update, prebuildTasks)
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }

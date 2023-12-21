@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import charts.GemGaugeChart;
+import charts.GemGaugeChartTypes.GemGaugeChartData;
+
+page GemGaugeChartExample(
+  GemGaugeChartData data
+) {
+  @GemGaugeChart(
+    data = data,
+    min = -30,
+    max = 70,
+    unit = "kt",
+    textValue = "CO2 Emission"
+  );
+}
+

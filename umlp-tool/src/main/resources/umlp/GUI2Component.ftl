@@ -24,5 +24,5 @@ ${annotationDecorator.transform(decoratedAST)}
 
 <#--${includeArgs("umlp.generator.hook.AfterTransform", decoratedAST, glex, hwPath, componentGenerator, guiDecorator, topDecorator)}-->
 
-<#-- Generate Java-Code -->
+
 ${componentGenerator.generate(decoratedAST)}

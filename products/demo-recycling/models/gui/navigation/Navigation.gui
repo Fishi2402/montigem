@@ -1,0 +1,23 @@
+package gui.navigation;
+
+import DemoRec.Process;
+
+import arrange.GemRow;
+import arrange.GemColumn;
+import arrange.GemCard;
+import basic.GemText;
+import basic.GemLink;
+
+component Navigation() {
+  @GemRow(
+    colGap="1px",
+    components=[
+      @GemLink(url="gui/Start", text="Processes"),
+      @GemLink(url="gui/process/ProcessCreate", text="Start new Process"),
+      @GemLink(url="gui/pack/AllPacksOverview", text="Battery Packs"),
+      @GemLink(url="gui/pack/BatteryPackCreate", text="Enter new Pack")
+    ]
+  );
+
+
+}

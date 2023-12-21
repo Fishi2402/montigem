@@ -1,0 +1,21 @@
+package gui.pack;
+
+import DemoRec.BatteryPack;
+
+import arrange.GemRow;
+import arrange.GemColumn;
+import basic.GemText;
+
+import gui.pack.BatteryPackOverview;
+import gui.navigation.Navigation;
+
+page AllPacksOverview(List<BatteryPack> allPacks) {
+  @Navigation();
+  @GemColumn(
+    colGap="5px",
+    components = [
+      @iterate(BatteryPack pack : allPacks) {
+        @BatteryPackOverview(pack=pack);
+      }
+  ]);
+}

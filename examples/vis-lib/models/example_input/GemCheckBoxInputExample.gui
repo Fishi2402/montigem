@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import input.GemCheckBoxInput;
+
+page GemCheckBoxInputExample() {
+  @GemCheckBoxInput(
+    labelText = "TestCheckbox"
+  );
+  @GemCheckBoxInput(
+    labelText = "TestCheckbox2LongerLabelExample"
+  );
+}

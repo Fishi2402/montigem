@@ -30,3 +30,25 @@ $acronio-orange-4: #ffedcc;
   width: 100%;
   overflow-y: auto;
 }
+
+// list within list
+.gem-nav-menu .gem-nav-menu {
+  margin-left: 20px;
+  background-color: $acronio-black-3;
+  height: 100%;
+}
+
+// Only show 6 children elements
+.gem-nav-menu:not(:hover).collapsible-6 ::ng-deep .nav-list-components :nth-child(n+7 of nav-item) {
+  display: none; // hide every element after the 6th, unless the parent is collapsed
+}
+.gem-nav-menu:not(:hover).collapsible-6 ::ng-deep .nav-list-components :nth-child(6 of nav-item)::after {
+  // and show an icon on the 6th element to somewhat show this
+  content: '◿';
+  display: block;
+  position: absolute;
+  right: 4px;
+  bottom: 1px;
+  text-align: center;
+}
+// verdict: The amount of elements to display is not dynamic
