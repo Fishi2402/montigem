@@ -731,36 +731,6 @@ public class UMLPTool extends UMLPToolTOP {
     if (modelFilePathOpt.isPresent()) {
       tool.registerLoadedFile(modelFilePathOpt.get().toString());
     }
-    /*
-    IGUIDSLArtifactScope artifactScope = createSymbolTable(ast, new MCPath(modelPath));
-    GUIDSLMill.globalScope().clear();
-    GUIDSLMill.reset();
-    GUIDSLMill.init();
-    BasicSymbolsMill.initializePrimitives();
-    IGUIDSLGlobalScope gs = GUIDSLMill.globalScope();
-    gs.addAdaptedTypeSymbolResolver(new Class2MCResolver());
-    gs.setSymbolPath(modelPath);
-    // gs.putSymbolDeSer("umlp._symboltable.UMLPDefSymbol", new UMLPDefSymbolDeSer());
-    gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new OOTypeSymbolDeSer());
-    gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol", new FieldSymbolDeSer());
-    gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new FieldSymbolDeSer());
-    FunctionSymbol navigateFunction = GUIDSLMill.methodSymbolBuilder()
-        .setName("navigate")
-        .setEnclosingScope(gs)
-        .setSpannedScope(GUIDSLMill.scope())
-        .setType(SymTypeExpressionFactory.createTypeObject(de.monticore.guidsl._symboltable.BuiltInTypes.EVENT.getName(), gs))
-        .build();
-    navigateFunction.getSpannedScope().add(
-        GUIDSLMill.fieldSymbolBuilder()
-            .setName("arg")
-            .setType(SymTypeExpressionFactory.createTypeObject(de.monticore.guidsl._symboltable.BuiltInTypes.GUI_VIEW_ELEMENT.getName(), gs))
-            .setEnclosingScope(navigateFunction.getSpannedScope())
-            .build()
-    );
-    gs.add(navigateFunction);
-
-    IGUIDSLArtifactScope as = GUIDSLMill.scopesGenitorDelegator().createFromAST(ast);
-    /**/
     return tool.createSymbolTable(ast, modelPath);
   }
 
