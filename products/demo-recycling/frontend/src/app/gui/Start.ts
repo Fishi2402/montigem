@@ -29,7 +29,7 @@ export class Start extends StartComponent {
     return p.getDeconstructionOf();
   }
 
-  public getGemLink3Url (p: Process): string {
+  public getOverViewLinkUrl (p: Process): string {
     return "gui/process/ProcessOverview/"+p.getGemId();
   }
 }

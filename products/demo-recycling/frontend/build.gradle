@@ -67,7 +67,9 @@ task genGUI(type: UMLPGuiGenTask) {
       configurations.guiDefaultTypes.files
   )
   domainModels = ["DemoRec"]
-  guiCreateModels = ["gui.pack.BatteryPackCreate", "gui.process.ProcessCreate"]
+  guiCreateModels = ["gui.pack.BatteryPackCreate",
+                     "gui.process.ProcessCreate",
+                     "gui.step.ProcessStepCreate"]
 
   /*
   debug = true
