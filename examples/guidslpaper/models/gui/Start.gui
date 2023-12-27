@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui;
+
+import arrange.GemColumn;
+import arrange.GemRow;
+import arrange.GemCard;
+import basic.GemText;
+import basic.GemImage;
+
+import gui.navigation.GuidslPaperNavigation;
+
+import Guidslpaper.App;
+import Guidslpaper.Person;
+import Guidslpaper.Konto;
+
+page Start(
+  List<App> apps,
+  List<Person> personen,
+  List<Konto> konten
+) {
+  @GuidslPaperNavigation(personen = personen);
+
+  @GemRow(width = "100%", rowGap = "10px", colGap = "10px", hAlign = "center", components = [
+    // TODO: App is a singleton
+    @iterate(App app : apps) {
+    }
+  ]);
+}

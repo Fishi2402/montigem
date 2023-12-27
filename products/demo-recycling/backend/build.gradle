@@ -40,12 +40,13 @@ dependencies {
 
 application {
   // Set Entrypoint of Application
-  mainClass = 'se.Application'
+  mainClass = 'demorec.DemoRecServerApplication'
 }
 
 
 generateUmlpBackend {
   input = file("../models/DemoRec.umlp")
+  symbolOutDir = file("${project.buildDir}/symbols")
   tmplDir = file("../templates")
   useSpring = true
 }

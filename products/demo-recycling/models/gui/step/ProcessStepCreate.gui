@@ -1,0 +1,44 @@
+package gui.step;
+
+import basic.GemText;
+import input.GemTextInput;
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemColumn;
+
+import DemoRec.ProcessStep;
+import DemoRec.Process;
+
+page ProcessStepCreate(ProcessStep step, Process process) {
+  @GemCard(
+    title = "Create new Process",
+    component = @GemColumn(
+      components = [
+        @GemTextInput(
+            labelText = "Time Consumption in seconds",
+            inputType = "number",
+            entry = step.timeconsumption),
+        @GemTextInput(
+            labelText = "Description (optional)",
+            inputType = "text",
+            entry = step.description),
+        selectType@GemTextInput(
+            labelText = "Step type",
+            inputType = "dropdown",
+            options = null,
+            entry = null),
+        selectEndeffector@GemTextInput(
+            labelText = "Used Endeffector in this step",
+            inputType = "dropdown",
+            options = null,
+            entry = null),
+        selectJoinConnection@GemTextInput(
+            labelText = "Deconstructing Join Connection",
+            inputType = "dropdown",
+            options = null,
+            entry = null)
+      ]
+    )
+  );
+  buildStep@GemButton(label = "Create new Step.", leftClick = createNewStep);
+}

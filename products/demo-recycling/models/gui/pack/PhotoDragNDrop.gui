@@ -1,0 +1,9 @@
+package gui.pack;
+
+import DemoRec.BatteryPack;
+
+import basic.GemButton;
+
+component PhotoDragNDrop(BatteryPack attachedPack) {
+  upload@GemButton(label = "Upload Files.", leftClick = uploadAllFiles);
+}

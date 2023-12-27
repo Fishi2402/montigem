@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.management;
+
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import basic.GemButton;
+import input.GemTextInput;
+import input.GemTextareaInput;
+import KitchenCompanion.Offer;
+
+component OfferPanel(Offer offer){
+  @GemRow(hAlign = "center", colGap="1rem", rowGap="1rem", wrap="wrap", components = [
+
+    @GemText(value = offer.name),
+    @GemTextInput( entry = offer.price ),
+    @GemText(value = "€"),
+    @GemButton(label = "remove")
+
+  ]);
+}
