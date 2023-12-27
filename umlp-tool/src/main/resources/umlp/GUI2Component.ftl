@@ -20,7 +20,7 @@ ${guiDecorator.transform(ast, decoratedAST, viewComponents, hwPath, outPath)}
 ${topDecoratorTS.decorate(decoratedAST)}
 ${topDecoratorJava.decorate(decoratedAST)}
 
-${annotationDecorator.transform(decoratedAST)}
+${annotationDecorator.transform(decoratedAST,ast)}
 
 <#--${includeArgs("umlp.generator.hook.AfterTransform", decoratedAST, glex, hwPath, componentGenerator, guiDecorator, topDecorator)}-->
 

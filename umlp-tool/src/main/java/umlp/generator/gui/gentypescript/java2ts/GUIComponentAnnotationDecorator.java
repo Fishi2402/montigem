@@ -2,6 +2,7 @@ package umlp.generator.gui.gentypescript.java2ts;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
@@ -27,7 +28,7 @@ public class GUIComponentAnnotationDecorator {
     this.outPath = outPath;
   }
 
-  public void transform(ASTCDCompilationUnit ast) {
+  public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit astGui) {
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
       String originalName = GUIGeneratorUtil.getInstance().getOriginalName(clazz);
       String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName()
@@ -40,37 +41,42 @@ public class GUIComponentAnnotationDecorator {
         );
       }
       else {
+        boolean generateAnnotation=!GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qName);
         String htmlFileName = originalName + ".html";
         String htmlPath = "./" + htmlFileName;
-
-        Optional<String> hwHtmlPath = util.getRelativeImportPath(
-            hwPath, outPath, qName, "html");
-        if (hwHtmlPath.isPresent()) {
-          htmlPath = hwHtmlPath.get();
-        }
-
         List<String> scssPaths = new ArrayList<>();
 
-        Optional<String> hwScssPath = util.getRelativeImportPath(
-            hwPath, outPath, qName, "scss");
-        if (hwScssPath.isPresent()) {
-          scssPaths.add(hwScssPath.get());
+        if(generateAnnotation) {
+          Optional<String> hwHtmlPath = util.getRelativeImportPath(
+              hwPath, outPath, qName, "html");
+          if (hwHtmlPath.isPresent()) {
+            htmlPath = hwHtmlPath.get();
+          }
+          Optional<String> hwScssPath = util.getRelativeImportPath(
+              hwPath, outPath, qName, "scss");
+          if (hwScssPath.isPresent()) {
+            scssPaths.add(hwScssPath.get());
+          }
         }
-
+        else {
+          Optional<String> hwHtmlPath = util.getRelativeImportPath(
+              hwPath, outPath, qName, "html");
+          if (!hwHtmlPath.isPresent()) {
+            htmlPath = util.getRelativeImportPathForAnnotation(
+                outPath.toString(), new ArrayList<>(hwPath.getEntries()).get(0).toString(), qName).get();
+          }
+          Optional<String> hwScssPath = util.getRelativeImportPath(
+              hwPath, outPath, qName, "scss");
+          if (hwScssPath.isPresent()) {
+            scssPaths.add("./" + originalName + ".scss");
+          }
+        }
         String selector = GUIGeneratorUtil.getInstance().getComponentNameFromCamelCaseName(originalName);
-        if (!GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qName)) {
           glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, htmlPath, scssPaths, selector,"./"+originalName+"StandaloneConfig")
+            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, htmlPath, scssPaths, selector,astGui,hwPath,generateAnnotation)
           );
-        } else {
-          glex.replaceTemplate(
-            GUI2ComponentTemplates.ANNOTATIONS,
-            clazz,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_DIRECTIVE)
-          );
-        }
       }
     }
   }

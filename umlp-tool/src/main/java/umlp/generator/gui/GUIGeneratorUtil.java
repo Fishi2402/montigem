@@ -45,6 +45,7 @@ import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.util.TagLookUp;
 
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -808,6 +809,13 @@ public class GUIGeneratorUtil {
     }
 
     return res;
+  }
+  public Optional<String> getRelativeImportPathForAnnotation(
+      String path, String base, String qualifiedName) {
+    path=path+"/"+Names.getPathFromPackage(qualifiedName) + ".html"  ;
+    base=base+"/"+Names.getPathFromPackage(qualifiedName)+".ts";
+    String relative = Paths.get(base).getParent().relativize(Paths.get(path)).toString();
+    return Optional.of(relative);
   }
 
   public Optional<String> getRelativeImportPath(
