@@ -20,7 +20,7 @@ export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
     if (!this.checkBuild()) return;
     DtcockpitManager.groupBuilder().then(gemPromiseRes => {
       this.build();
-      this.groupBuilder = gemPromiseRes;
+      this.group = gemPromiseRes;
     });
 
   }
@@ -42,7 +42,7 @@ export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
     }
     };
     ProjectErrorCollector.addErrorObserver(observer);
-    if (!this.groupBuilder.isBuildable()) {
+    if (!this.group.isBuildable()) {
       ProjectErrorCollector.removeErrorObserver(observer);
       return false;
     }
