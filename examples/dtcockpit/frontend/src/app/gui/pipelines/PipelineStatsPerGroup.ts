@@ -2,15 +2,15 @@
 import {Component} from '@angular/core';
 import { GemBarChartData } from '@umlp/charts';
 import { GemBarChartEntry } from '@umlp/charts';
-import { PipelineStatsPerGroupComponent } from '@src/gui/pipelines/PipelineStatsPerGroupComponent';
-import {config} from "@src/gui/pipelines/PipelineStatsPerGroupStandaloneConfig";
+import { PipelineStatsPerGroupComponent,config } from '@src/gui/pipelines/PipelineStatsPerGroupComponent';
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'pipeline-stats-per-group',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/pipelines/PipelineStatsPerGroup.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
 

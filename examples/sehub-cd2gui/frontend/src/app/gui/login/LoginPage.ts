@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {LoginPageComponent} from '@src/gui/login/LoginPageComponent';
+import {LoginPageComponent,config} from '@src/gui/login/LoginPageComponent';
 import { SehubManager } from '@src/sehub/SehubManager';
-import {config} from "@src/gui/login/LoginPageStandaloneConfig";
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'login',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/LoginPage.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
   styleUrls: ["./Login.scss"]
 })
 

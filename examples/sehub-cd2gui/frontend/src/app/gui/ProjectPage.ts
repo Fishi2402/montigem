@@ -2,19 +2,19 @@
 
 import {GemTreeviewEntry} from '@umlp/basic';
 import {GemNetworkData, GemNetworkEdge, GemNetworkNode} from '@umlp/charts';
-import {ProjectPageComponent} from '@src/gui/ProjectPageComponent';
+import {ProjectPageComponent,config} from '@src/gui/ProjectPageComponent';
 import {Artifact} from '@src/sehub/Artifact';
 import {Directory} from '@src/sehub/Directory';
 import { SehubSecurityManager } from "../sehub/SehubSecurityManager";
 import {Component} from '@angular/core';
-import {config} from "@src/gui/ProjectPageStandaloneConfig";
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'project-page',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/ProjectPage.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class ProjectPage extends ProjectPageComponent {
 

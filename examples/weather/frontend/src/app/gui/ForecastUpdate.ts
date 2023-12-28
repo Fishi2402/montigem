@@ -1,15 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { ForecastUpdateComponent } from '@src/gui/ForecastUpdateComponent';
-import { config } from '@src/gui/ForecastUpdateStandaloneConfig';
+import { ForecastUpdateComponent,config } from '@src/gui/ForecastUpdateComponent';
 @Component({
   standalone:true,
   imports:[... config.imports],
-  selector: 'forecast-update',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/ForecastUpdate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class ForecastUpdate extends ForecastUpdateComponent {
 

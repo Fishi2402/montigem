@@ -11,7 +11,7 @@ import {SehubManager} from '@src/sehub/SehubManager';
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
-  styleUrls: config.styleUrls
+  styleUrls: ["./Login.scss"]
 })
 export class ResetPassword extends ResetPasswordComponent {
 

@@ -4,7 +4,7 @@ import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
 
-import { PhotoDragNDropComponent } from '../../../../build/frontendGen/build/appgui/gui/pack/PhotoDragNDropComponent';
+import { PhotoDragNDropComponent,config } from '../../../../build/frontendGen/build/appgui/gui/pack/PhotoDragNDropComponent';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -22,10 +22,12 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'photo-drag-n-drop',
-  templateUrl: './PhotoDragNDrop.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class PhotoDragNDrop extends PhotoDragNDropComponent {
 

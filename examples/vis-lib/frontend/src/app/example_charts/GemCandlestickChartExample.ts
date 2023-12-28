@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemCandlestickChartExampleComponent } from '@src/example_charts/GemCandlestickChartExampleComponent';
-import {config} from "@src/example_charts/GemCandlestickChartExampleStandaloneConfig";
+import { GemCandlestickChartExampleComponent ,config} from '@src/example_charts/GemCandlestickChartExampleComponent';
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'gem-candlestick-chart-example',
-  templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemCandlestickChartExample.html',
+  selector: config.selector,
+  templateUrl: config.templateUrl,
 })
 export class GemCandlestickChartExample extends GemCandlestickChartExampleComponent {
 

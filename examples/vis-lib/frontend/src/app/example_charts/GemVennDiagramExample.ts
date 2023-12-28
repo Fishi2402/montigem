@@ -1,14 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemVennDiagramExampleComponent } from '@src/example_charts/GemVennDiagramExampleComponent';
+import { GemVennDiagramExampleComponent ,config} from '@src/example_charts/GemVennDiagramExampleComponent';
 import { GemVennDiagramData, GemVennDiagramEntry } from '@umlp/charts';
-import {config} from "@src/example_charts/GemVennDiagramExampleStandaloneConfig";
+
 @Component({
   standalone:true,
   imports:[...config.imports],
   selector: 'GemVennChartExample',
-  templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemVennDiagramExample.html',
+  templateUrl: config.templateUrl,
 })
 export class GemVennDiagramExample extends GemVennDiagramExampleComponent {
 

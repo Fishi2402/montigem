@@ -1,19 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {SehubManager} from '@src/sehub/SehubManager';
 import {Component} from '@angular/core';
-import {ResponseComponent} from '@src/gui/note/ResponseComponent';
+import {ResponseComponent,config} from '@src/gui/note/ResponseComponent';
 import {Post} from '@src/sehub/Post';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
 import {SehubRole} from '@src/sehub/SehubRole';
-import {config} from "@src/gui/note/ResponseStandaloneConfig";
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'response',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/note/Response.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['./Note.scss']
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class Response extends ResponseComponent {
 

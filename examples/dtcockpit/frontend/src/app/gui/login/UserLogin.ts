@@ -1,18 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserLoginComponent} from '@src/gui/login/UserLoginComponent';
+import {UserLoginComponent,config} from '@src/gui/login/UserLoginComponent';
 import {User} from '@src/dtcockpit/User';
 import {DtcockpitSecurityManager} from "../../dtcockpit/DtcockpitSecurityManager";
 
 // import { ActivatedRoute, Router } from '@angular/router';
-import {config} from "@src/gui/login/UserLoginStandaloneConfig";
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'user-login',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserLogin.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
   styleUrls: ["./Login.scss"]
 })
 

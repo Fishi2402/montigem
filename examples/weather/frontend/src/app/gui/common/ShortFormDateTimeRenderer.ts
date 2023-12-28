@@ -1,18 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
 import {
-  ShortFormDateTimeRendererComponent
+  ShortFormDateTimeRendererComponent,config
 } from "@src/gui/common/ShortFormDateTimeRendererComponent";
-import {
-  config
-} from "@src/gui/common/ShortFormDateTimeRendererStandaloneConfig";
+
 @Component({
   standalone:true,
   imports:[... config.imports],
-  selector: 'short-form-date-time-renderer',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/common/ShortFormDateTimeRenderer.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export  class ShortFormDateTimeRenderer extends ShortFormDateTimeRendererComponent {
   getGemText0Value(): string {

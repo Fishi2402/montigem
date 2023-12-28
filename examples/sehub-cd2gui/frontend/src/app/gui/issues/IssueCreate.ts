@@ -2,16 +2,16 @@
 
 import {IssueState} from '@src/sehub/IssueState';
 import {Component} from '@angular/core';
-import {IssueCreateComponent} from '@src/gui/issues/IssueCreateComponent';
+import {IssueCreateComponent,config} from '@src/gui/issues/IssueCreateComponent';
 import { SehubManager } from '@src/sehub/SehubManager';
-import {config} from "@src/gui/issues/IssueCreateStandaloneConfig";
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'issue-create',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueCreate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class IssueCreate extends IssueCreateComponent {
 

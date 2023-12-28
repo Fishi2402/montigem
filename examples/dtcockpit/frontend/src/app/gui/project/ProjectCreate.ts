@@ -1,18 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
 import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
-import {ProjectCreateComponent} from '@src/gui/project/ProjectCreateComponent';
+import {ProjectCreateComponent,config} from '@src/gui/project/ProjectCreateComponent';
 import {ProjectErrorCollector} from '@src/dtcockpit/ProjectErrorCollector';
 import {Project} from '@src/dtcockpit/Project';
 
-import {config} from "@src/gui/project/ProjectCreateStandaloneConfig";
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'project-create',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/project/ProjectCreate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class ProjectCreate extends ProjectCreateComponent {
 

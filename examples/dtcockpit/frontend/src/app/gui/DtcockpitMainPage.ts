@@ -1,17 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {DtcockpitMainPageComponent} from '@src/gui/DtcockpitMainPageComponent';
+import {DtcockpitMainPageComponent,config} from '@src/gui/DtcockpitMainPageComponent';
 import {Component} from '@angular/core';
 import {Project} from '@src/dtcockpit/Project';
 import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
-import {config} from "@src/gui/DtcockpitMainPageStandaloneConfig";
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'dtcockpit-main-page',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/DtcockpitMainPage.html',
-  styles: [":host{ display: flex; flex-direction: row }"],
-  styleUrls: []
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 
 export class DtcockpitMainPage extends DtcockpitMainPageComponent {

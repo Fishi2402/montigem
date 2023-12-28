@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import {WindWidgetBodyComponent} from "@src/gui/widgets/WindWidgetBodyComponent";
-import {config} from "@src/gui/widgets/WindWidgetBodyStandaloneConfig";
+import {WindWidgetBodyComponent,config} from "@src/gui/widgets/WindWidgetBodyComponent";
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'wind-widget-body',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/widgets/WindWidgetBody.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['./WindWidgetBody.scss']
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class WindWidgetBody extends WindWidgetBodyComponent {
 

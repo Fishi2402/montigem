@@ -11,7 +11,7 @@ import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
-  styleUrls: config.styleUrls
+  styleUrls: ["./Login.scss"]
 })
 export class UserLogin extends UserLoginComponent {
 

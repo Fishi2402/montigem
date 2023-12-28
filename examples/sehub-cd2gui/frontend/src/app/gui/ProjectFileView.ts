@@ -1,18 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {ProjectFileViewComponent} from '@src/gui/ProjectFileViewComponent';
+import {ProjectFileViewComponent,config} from '@src/gui/ProjectFileViewComponent';
 import {Component} from '@angular/core';
 import {SehubManager} from '@src/sehub/SehubManager';
 
 import {ActivatedRoute, Router} from '@angular/router';
-import {config} from "@src/gui/ProjectFileViewStandaloneConfig";
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'project-file-view',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/ProjectFileView.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['./ProjectFileView.scss']
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class ProjectFileView extends ProjectFileViewComponent {
 

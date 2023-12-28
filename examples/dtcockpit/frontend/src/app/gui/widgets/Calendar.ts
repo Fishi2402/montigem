@@ -5,7 +5,7 @@ import { GemList } from '@umlp/common';
 
 import { Component, Input } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import {config} from "@src/gui/widgets/CalendarStandaloneConfig";
+import {config} from "@src/gui/widgets/CalendarComponent";
 interface CalendarBlock {
   x: number;
   y: number;
@@ -18,9 +18,9 @@ interface CalendarBlock {
 @Component({
   standalone:true,
   imports:[...config.imports, HttpClientModule],
-  selector: 'calendar',
-  templateUrl: './Calendar.html',
-  styleUrls: ['./Calendar.scss']
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styleUrls: config.styleUrls
 })
 export class Calendar {
 

@@ -1,18 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {RoomStatsComponent} from '@src/gui/rooms/RoomStatsComponent';
+import {RoomStatsComponent,config} from '@src/gui/rooms/RoomStatsComponent';
 
 import {RoomObserver} from '@src/dtcockpit/RoomObserver';
 import {Room} from '@src/dtcockpit/Room';
 import {NotificationScope} from '@umlp/common';
 import { Component } from '@angular/core';
-import {config} from "@src/gui/rooms/RoomStatsStandaloneConfig";
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'room-stats',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/rooms/RoomStats.html',
-  styleUrls: ['./RoomStats.scss']
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class RoomStats extends RoomStatsComponent {
   temp4304 = "? °C";

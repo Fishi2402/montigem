@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { FavoriteItemComponent } from '@src/gui/widgets/navigation/FavoriteItemComponent';
-import { config } from '@src/gui/widgets/navigation/FavoriteItemStandaloneConfig';
+import { FavoriteItemComponent,config } from '@src/gui/widgets/navigation/FavoriteItemComponent';
+
 @Component({
   standalone:true,
   imports:[...config.imports],

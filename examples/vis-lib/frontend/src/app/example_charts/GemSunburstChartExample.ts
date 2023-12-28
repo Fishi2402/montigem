@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemSunburstChartExampleComponent } from '@src/example_charts/GemSunburstChartExampleComponent';
-import {config} from "@src/example_charts/GemSunburstChartExampleStandaloneConfig";
+import { GemSunburstChartExampleComponent,config } from '@src/example_charts/GemSunburstChartExampleComponent';
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'gem-sunburst-chart-example',
-  templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemSunburstChartExample.html'
+  selector: config.selector,
+  templateUrl: config.templateUrl,
 })
 export class GemSunburstChartExample extends GemSunburstChartExampleComponent {
 

@@ -4,7 +4,7 @@ import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
 
-import { PhotoDisplayComponent } from '../../../../build/frontendGen/build/appgui/gui/pack/PhotoDisplayComponent';
+import { PhotoDisplayComponent,config } from '../../../../build/frontendGen/build/appgui/gui/pack/PhotoDisplayComponent';
 
 import {
   Directive,
@@ -18,10 +18,12 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'photo-display',
-  templateUrl: './PhotoDisplay.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export  class PhotoDisplay extends PhotoDisplayComponent {
 

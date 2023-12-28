@@ -1,14 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemBarChartExampleComponent } from '@src/example_charts/GemBarChartExampleComponent';
+import { GemBarChartExampleComponent ,config} from '@src/example_charts/GemBarChartExampleComponent';
 import { GemBarChartData, GemBarChartEntry } from '@umlp/charts';
-import {config} from "@src/example_charts/GemBarChartExampleStandaloneConfig";
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'gem-bar-chart-example',
-  templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemBarChartExample.html',
+  selector: config.selector,
+  templateUrl: config.templateUrl,
 })
 export class GemBarChartExample extends GemBarChartExampleComponent {
   entries: GemBarChartEntry[] = [

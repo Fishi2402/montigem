@@ -2,16 +2,16 @@
 
 import { Component } from '@angular/core';
 import { Person } from '@src/domain/Person';
-import { NetworkChartExampleComponent } from '@src/gui/NetworkChartExampleComponent';
+import { NetworkChartExampleComponent ,config} from '@src/gui/NetworkChartExampleComponent';
 import { NetworkData, NetworkEdge, NetworkNode } from '@umlp/charts';
-import {config} from "@src/gui/NetworkChartExampleStandaloneConfig";
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'network-chart-example',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/NetworkChartExample.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class NetworkChartExample extends NetworkChartExampleComponent {
 

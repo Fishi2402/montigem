@@ -17,7 +17,7 @@ import {UserCreateComponent,config} from '@src/gui/login/UserCreateComponent';
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
-  styleUrls: config.styleUrls
+  styleUrls: ["./Login.scss"]
 })
 export class UserCreate extends UserCreateComponent {
 

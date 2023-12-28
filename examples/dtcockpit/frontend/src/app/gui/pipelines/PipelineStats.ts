@@ -1,17 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { PipelineStatistic } from '@src/dtcockpit/PipelineStatistic';
-import { PipelineStatsComponent } from '@src/gui/pipelines/PipelineStatsComponent';
+import { PipelineStatsComponent,config } from '@src/gui/pipelines/PipelineStatsComponent';
 import { GemBarChartData, GemBarChartEntry } from '@umlp/charts';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {config} from "@src/gui/pipelines/PipelineStatsStandaloneConfig";
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'pipeline-stats',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/pipelines/PipelineStats.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class PipelineStats extends PipelineStatsComponent {
 

@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { RadarBodyComponent } from '@src/gui/widgets/RadarBodyComponent';
-import { config } from '@src/gui/widgets/RadarBodyStandaloneConfig';
+import { RadarBodyComponent,config } from '@src/gui/widgets/RadarBodyComponent';
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-    selector: 'radar-body',
-    templateUrl: './RadarBody.html',
-    styles: [":host{ display: flex; flex-direction: column }"],
-    styleUrls: ['./WindWidgetBody.scss']
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class RadarBody extends RadarBodyComponent {
 
