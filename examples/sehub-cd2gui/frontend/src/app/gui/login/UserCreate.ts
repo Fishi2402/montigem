@@ -36,7 +36,7 @@ export class UserCreate extends UserCreateComponent {
 
   public ngOnInit(): void {
     SehubManager.userBuilder().then(gemPromiseRes => {
-      this.newUserBuilder = gemPromiseRes;
+      this.newUser = gemPromiseRes;
     });
 
     SehubManager.getUserList().then(gemPromiseRes => {
@@ -58,10 +58,10 @@ export class UserCreate extends UserCreateComponent {
         if (!errorMessage) {
           this.permutation = this.getBoardPermutation();
           this.buildMapping().then(mapping => {
-          //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
-          this.newUserBuilder.registrationDate(new Date());
-          this.newUserBuilder.role(SehubRole.DEVELOPER);
-          this.newUserBuilder.gridEntry(mapping);
+          //this.user.activated(ActivationStatus.AKTIVIERT);
+          this.newUser.registrationDate(new Date());
+          this.newUser.role(SehubRole.DEVELOPER);
+          this.newUser.gridEntry(mapping);
           this.build();
           this.navigateBack();
           });

@@ -15,9 +15,9 @@ export class IssueCreate extends IssueCreateComponent {
 
   public override createIssue(event: any): void {
     SehubManager.issueBuilder().then(gemPromiseRes => {
-      this.issueBuilder.state(IssueState.UNASSIGNED);
+      this.issue.state(IssueState.UNASSIGNED);
       this.build();
-      this.issueBuilder = gemPromiseRes;
+      this.issue = gemPromiseRes;
     });
   }
 
