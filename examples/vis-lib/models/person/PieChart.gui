@@ -1,0 +1,19 @@
+package person;
+
+import charts.GemPieChartTypes.GemPieChartEntry;
+import charts.GemPieChart;
+import Domain.Person;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import person.Row;
+import person.Create;
+
+page PieChart(List<Person> persons) {
+  @GemColumn(rowGap = "10px", width = "100%", components = [
+  chart@GemPieChart(
+    data = null,
+    innerRadius = 10
+  )
+  ]);
+}
