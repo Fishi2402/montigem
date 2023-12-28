@@ -2,9 +2,9 @@ package umlp.generator.gui.gentypescript.java2ts;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.io.paths.MCPath;
 import umlp.generator.gui.GUIGeneratorUtil;
 
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class GUIComponentAnnotationDecorator {
+public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
 
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
@@ -21,7 +21,7 @@ public class GUIComponentAnnotationDecorator {
   protected final MCPath hwPath;
   protected final Path outPath;
 
-  public GUIComponentAnnotationDecorator(
+  public GUIComponentAnnotationDecoratorAndStandaloneConfig(
       final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     this.glex = glex;
     this.hwPath = hwPath;
@@ -32,7 +32,7 @@ public class GUIComponentAnnotationDecorator {
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
       String originalName = GUIGeneratorUtil.getInstance().getOriginalName(clazz);
       String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName()
-              + "." + originalName;
+          + "." + originalName;
       if (!GUIGeneratorUtil.getInstance().isComponent(clazz)) {
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
@@ -41,12 +41,12 @@ public class GUIComponentAnnotationDecorator {
         );
       }
       else {
-        boolean generateAnnotation=!GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qName);
+        boolean generateAnnotation = !GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qName);
         String htmlFileName = originalName + ".html";
         String htmlPath = "./" + htmlFileName;
         List<String> scssPaths = new ArrayList<>();
 
-        if(generateAnnotation) {
+        if (generateAnnotation) {
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
               hwPath, outPath, qName, "html");
           if (hwHtmlPath.isPresent()) {
@@ -72,11 +72,11 @@ public class GUIComponentAnnotationDecorator {
           }
         }
         String selector = GUIGeneratorUtil.getInstance().getComponentNameFromCamelCaseName(originalName);
-          glex.replaceTemplate(
+        glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, htmlPath, scssPaths, selector,astGui,hwPath,generateAnnotation)
-          );
+            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector, astGui, hwPath, generateAnnotation)
+        );
       }
     }
   }
