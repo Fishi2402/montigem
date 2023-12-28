@@ -14,6 +14,8 @@ import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._ast.ASTGUIParam;
+import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -23,6 +25,7 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
@@ -34,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
@@ -85,7 +89,6 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       return;
     }
 
-    String paramType = convertType(paramSTE);
     if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
       // TODO AGe: all possible types
       if (util.isListType(paramSTE)) {
@@ -141,6 +144,18 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         guiComponent.getId().getName(), namedArg.getName());
     String setterName = util.gui2cdAttrSetterName(
         guiComponent.getId().getName(), namedArg.getName());
+
+    String paramType = convertType(paramSTE);
+
+    Optional<GUIComponentDeclarationSymbol> declSym = namedArg.getEnclosingScope()
+        .resolveGUIComponentDeclaration(guiComponent.getName());
+    boolean isBuilderArg = util.isDomainType(paramSTE)
+        && declSym.isPresent()
+        && util.isCreateModel(declSym.get().getFullName());
+    if (isBuilderArg) {
+      paramType += BuilderDecorator.BUILDER_SUFFIX;
+    }
+
     if (visitor.argNeedsOwnParamWithInit()) {
       // TODO AGe: how to do that better?
       // if List

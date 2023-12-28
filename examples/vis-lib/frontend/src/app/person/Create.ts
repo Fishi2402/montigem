@@ -16,13 +16,13 @@ export class Create extends CreateComponent {
   }
 
   public override create(): void {
-    const addr = this.addressBuilder.build();
-    this.personBuilder.address(addr).build();
+    const addr = this.address.build();
+    this.person.address(addr).build();
     DomainManager.addressBuilder().then(b => {
-      this.addressBuilder = b;
+      this.address = b;
     });
     DomainManager.personBuilder().then(b => {
-      this.personBuilder = b;
+      this.person = b;
     });
   }
 

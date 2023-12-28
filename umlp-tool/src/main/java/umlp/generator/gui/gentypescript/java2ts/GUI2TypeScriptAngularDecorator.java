@@ -215,7 +215,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
           addAnnotation(cdAttr);
           domainAttributes.add(cdAttr);
 
-          String builder = BuilderDecorator.getClassName(p.getName());
+          String builder = p.getName();
           builders.add(builder);
           // fill init
           if (util.getMainDomainModelSimpleName().isPresent()) {
@@ -400,7 +400,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     TypeSymbol typeInfo = astguiParam.getSymbol().getType().getTypeInfo();
 
     String attributeType = BuilderDecorator.getClassName(typeInfo.getName());
-    String attributeName = astguiParam.getName() + "Builder";
+    String attributeName = astguiParam.getName();
     // --- end
 
     ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(

@@ -9,6 +9,7 @@ import arrange.GemColumn;
 import gui.pack.PhotoDisplay;
 import gui.pack.PhotoDragNDrop;
 import gui.navigation.Navigation;
+import gui.step.ProcessStepCreate;
 
 import DemoRec.BatteryPack;
 import DemoRec.Process;
@@ -67,4 +68,5 @@ page ProcessCreate(Process p, BatteryPack pack, BatteryPackType type) {
     }
     @GemButton(label = "Send everything to the server.", leftClick = sendEverything);
   }
+  @ProcessStepCreate(process = p);
 }
