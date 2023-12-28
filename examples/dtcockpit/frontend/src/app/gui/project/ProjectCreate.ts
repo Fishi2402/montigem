@@ -22,7 +22,7 @@ export class ProjectCreate extends ProjectCreateComponent {
     if (!this.checkBuild()) return;
     DtcockpitManager.projectBuilder().then(gemPromiseRes => {
       this.build();
-      this.projectBuilder = gemPromiseRes;
+      this.project = gemPromiseRes;
     });
 
   }
@@ -44,7 +44,7 @@ export class ProjectCreate extends ProjectCreateComponent {
       }
     };
     ProjectErrorCollector.addErrorObserver(observer);
-    if (!this.projectBuilder.isBuildable()) {
+    if (!this.project.isBuildable()) {
       ProjectErrorCollector.removeErrorObserver(observer);
       return false;
     }
