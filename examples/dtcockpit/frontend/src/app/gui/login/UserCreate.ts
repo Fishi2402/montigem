@@ -31,7 +31,7 @@ export class UserCreate extends UserCreateComponent {
 
   public ngOnInit(): void {
     DtcockpitManager.userBuilder().then(gemPromiseRes => {
-      this.newUserBuilder = gemPromiseRes;
+      this.newUser = gemPromiseRes;
     });
   }
 
@@ -46,9 +46,9 @@ export class UserCreate extends UserCreateComponent {
     }
     let errorMessage = this.validateUser();
     if (!errorMessage) {
-      //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
-      this.newUserBuilder.registrationDate(new Date());
-      this.newUserBuilder.role(DtcockpitRole.USER);
+      //this.user.activated(ActivationStatus.AKTIVIERT);
+      this.newUser.registrationDate(new Date());
+      this.newUser.role(DtcockpitRole.USER);
       this.build();
       this.router.navigate(['gui', 'login']);
     } else {
