@@ -9,15 +9,15 @@ import {SehubManager} from '@src/sehub/SehubManager';
 import {BoardMapper} from '@src/sehub/BoardMapper';
 import {BingoEntry} from '@src/sehub/BingoEntry';
 import {GemList} from '@umlp/common';
-import {UserCreateComponent} from '@src/gui/login/UserCreateComponent';
-import {config} from "@src/gui/login/UserCreateStandaloneConfig";
+import {UserCreateComponent,config} from '@src/gui/login/UserCreateComponent';
+
 @Component({
   standalone:true,
   imports:[...config.imports],
-  selector: 'user-create',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserCreate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ["./Login.scss"]
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class UserCreate extends UserCreateComponent {
 

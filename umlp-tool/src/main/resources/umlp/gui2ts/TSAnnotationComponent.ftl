@@ -59,14 +59,6 @@ styles: config.styles,
 styleUrls: config.styleUrls
 })
 </#if>
-
-readData (String url) {
-this.http.get(url)
-.subscribe(
-data => {
-console.log(data.text())
-},
-err => {
-console.log(err)
-});
-}
+<#if !generateAnnotation>
+@Directive()
+</#if>
