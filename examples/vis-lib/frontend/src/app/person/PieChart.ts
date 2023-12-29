@@ -1,13 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { PieChartComponent } from '@src/person/PieChartComponent';
+import { PieChartComponent, config } from '@src/person/PieChartComponent';
 import { Component } from '@angular/core';
 import { GemPieChartData } from '@umlp/charts';
 import { GemPieChartEntry } from '@umlp/charts';
 
 @Component({
-  selector: 'pie-chart',
-  templateUrl: '../../../build/frontendGen/build/appgui/person/PieChart.html',
+  standalone: true,
+  imports: config.imports,
+  selector: config.selector,
+  templateUrl: config.templateUrl,
 })
 export class PieChart extends PieChartComponent {
 
