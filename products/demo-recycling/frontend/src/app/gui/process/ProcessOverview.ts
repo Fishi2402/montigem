@@ -11,7 +11,7 @@ import { BatteryPackTypeBuilder } from '@src/demorec/BatteryPackTypeBuilder';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
 
-import { ProcessOverviewComponent } from '@src/gui/process/ProcessOverviewComponent';
+import { ProcessOverviewComponent,config } from '@src/gui/process/ProcessOverviewComponent';
 
 import {
   Directive,
@@ -27,10 +27,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 const newOption = "-- Create new --";
 
 @Component({
-  selector: 'process-overview',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/process/ProcessOverview.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export  class ProcessOverview extends ProcessOverviewComponent {
 

@@ -1,15 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {BingoComponent} from "../../../build/frontendGen/build/appgui/gui/BingoComponent";
+import {BingoComponent,config} from "../../../build/frontendGen/build/appgui/gui/BingoComponent";
 import {Component} from '@angular/core';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 import {SehubManager} from "@src/sehub/SehubManager";
 import {BoardMapper} from "@src/sehub/BoardMapper";
 
 @Component({
-  selector: 'bingo',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/Bingo.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['./Bingo.scss']
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class Bingo extends BingoComponent {
   ngOnInit() {

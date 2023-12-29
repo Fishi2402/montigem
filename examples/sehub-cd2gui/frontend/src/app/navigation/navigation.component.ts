@@ -2,8 +2,11 @@
 import { Component } from "@angular/core";
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
-
+import { RouterModule } from '@angular/router';
+import {CommonModule} from '@angular/common';
 @Component({
+  standalone:true,
+  imports:[RouterModule,CommonModule],
   selector: "navigation",
   templateUrl: "./navigation.component.html",
   styleUrls: ["./navigation.component.scss"]

@@ -3,11 +3,13 @@
 import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
-
+import {config} from "@src/gui/widgets/GitLabIconComponent";
 @Component({
-  selector: 'git-lab-icon',
-  templateUrl: './GitLabIcon.html',
-  styleUrls: ['./GitLabIcon.scss']
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styleUrls: config.styleUrls
 })
 export class GitLabIcon {
 

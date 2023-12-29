@@ -9,7 +9,14 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
-import de.monticore.guidsl._ast.*;
+import de.monticore.guidsl._ast.ASTGUIArgValue;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIIterate;
+import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._ast.ASTGUIParam;
+import de.monticore.guidsl._ast.ASTGUIRangeIterateControl;
+import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
@@ -38,13 +45,13 @@ import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.util.TagLookUp;
 
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -61,7 +68,6 @@ public class GUIGeneratorUtil {
   private List<String> DOMAIN_MODELS;
   // Fully qualified Name of a gui model, e.g. "stanley.PersonCreate"
   private List<String> CREATE_MODELS;
-  private Set<String> CREATE_TS_COMPONENTS;
 
   private GUIGeneratorUtil() {
     printer = new GUIDSLFullPrettyPrinter(new IndentPrinter());
@@ -130,10 +136,6 @@ public class GUIGeneratorUtil {
   public void init(List<String> domainModels, List<String> createModels) {
     DOMAIN_MODELS = domainModels;
     CREATE_MODELS = createModels;
-  }
-
-  public void init(Set<String> createTSComponents) {
-    CREATE_TS_COMPONENTS = createTSComponents;
   }
 
   public final String print(ASTNode node) {
@@ -227,6 +229,15 @@ public class GUIGeneratorUtil {
     return false;
   }
 
+  public final boolean isTSPackageImport(String javaPackage) {
+    for (TSImportMap type : TSImportMap.values()) {
+      if (javaPackage.startsWith(type.getJavaPackage())) {
+        return false;
+      }
+    }
+    return !TSBackendMap.isBackendRTEPackage(javaPackage);
+  }
+
   public final boolean isListType(SymTypeExpression type) {
     return type.hasTypeInfo() && GenService.isList(type);
   }
@@ -300,9 +311,6 @@ public class GUIGeneratorUtil {
     return Optional.empty();
   }
 
-  public final boolean isCreatedTSComponent(String componentName) {
-    return CREATE_TS_COMPONENTS.contains(componentName);
-  }
 
   public final boolean isCreateModel(String componentQName) {
     return CREATE_MODELS.contains(componentQName);
@@ -491,7 +499,8 @@ public class GUIGeneratorUtil {
       if (name.lastIndexOf(".") > 0) {
         String part1 = name.substring(0, name.lastIndexOf("."));
         return part1.toLowerCase() + "." + StringTransformations.uncapitalize(simpleName) + "." + postfix;
-      }else{
+      }
+      else {
         return name.toLowerCase() + "." + postfix;
       }
     }
@@ -783,6 +792,10 @@ public class GUIGeneratorUtil {
     return "";
   }
 
+  public String getComponentPath(String javaPackage) {
+    return "@src/" + qName2path(javaPackage);
+  }
+
   public String java2tsModule(String javaPackage) {
     String res = "@src/" + qName2path(javaPackage) + "Module";
 
@@ -796,6 +809,13 @@ public class GUIGeneratorUtil {
     }
 
     return res;
+  }
+  public Optional<String> getRelativeImportPathForAnnotation(
+      String path, String base, String qualifiedName) {
+    path=path+"/"+Names.getPathFromPackage(qualifiedName) + ".html"  ;
+    base=base+"/"+Names.getPathFromPackage(qualifiedName)+".ts";
+    String relative = Paths.get(base).getParent().relativize(Paths.get(path)).toString();
+    return Optional.of(relative);
   }
 
   public Optional<String> getRelativeImportPath(

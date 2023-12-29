@@ -3,12 +3,15 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
 import { GuidslpaperSecurityManager } from "@src/guidslpaper/GuidslpaperSecurityManager";
 import { User } from '@src/guidslpaper/User';
-import { GuidslPaperNavHeaderComponent } from '@src/gui/navigation/GuidslPaperNavHeaderComponent';
-
+import { GuidslPaperNavHeaderComponent,config } from '@src/gui/navigation/GuidslPaperNavHeaderComponent';
+import { RouterModule } from '@angular/router';
+import {CommonModule} from '@angular/common';
 @Component({
-  selector: "guidsl-paper-nav-header",
-  templateUrl: "./GuidslPaperNavHeader.html",
-  styleUrls: ["./GuidslPaperNavHeader.scss"]
+  standalone:true,
+  imports:[... config.imports,RouterModule,CommonModule],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styleUrls: config.styleUrls
 })
 export class GuidslPaperNavHeader extends GuidslPaperNavHeaderComponent {
 

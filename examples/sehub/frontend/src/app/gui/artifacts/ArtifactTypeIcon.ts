@@ -1,13 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {ArtifactTypeIconComponent} from '@src/gui/artifacts/ArtifactTypeIconComponent';
+import {ArtifactTypeIconComponent,config} from '@src/gui/artifacts/ArtifactTypeIconComponent';
 
 import {Component,} from '@angular/core';
 
 @Component({
-  selector: 'artifact-type-icon',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/artifacts/ArtifactTypeIcon.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class ArtifactTypeIcon extends ArtifactTypeIconComponent {
 

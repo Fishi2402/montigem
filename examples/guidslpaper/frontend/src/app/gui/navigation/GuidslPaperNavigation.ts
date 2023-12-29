@@ -1,13 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Person} from '@src/guidslpaper/Person';
-import {GuidslPaperNavigationComponent} from '@src/gui/navigation/GuidslPaperNavigationComponent';
+import {GuidslPaperNavigationComponent,config} from '@src/gui/navigation/GuidslPaperNavigationComponent';
 import {Component} from '@angular/core';
+import { RouterModule } from '@angular/router';
+import {CommonModule} from '@angular/common';
 
 @Component({
-  selector: 'guidsl-paper-navigation',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/navigation/GuidslPaperNavigation.html',
-  styleUrls: ["./GuidslPaperNavigation.scss"]
+  standalone:true,
+  imports:[... config.imports,RouterModule,CommonModule],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styleUrls: config.styleUrls
 })
 
 export class GuidslPaperNavigation extends GuidslPaperNavigationComponent {

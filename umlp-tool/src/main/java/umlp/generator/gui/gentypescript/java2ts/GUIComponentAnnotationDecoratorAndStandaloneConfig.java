@@ -4,6 +4,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.io.paths.MCPath;
 import umlp.generator.gui.GUIGeneratorUtil;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class GUIComponentAnnotationDecorator {
+public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
 
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
@@ -20,18 +21,18 @@ public class GUIComponentAnnotationDecorator {
   protected final MCPath hwPath;
   protected final Path outPath;
 
-  public GUIComponentAnnotationDecorator(
+  public GUIComponentAnnotationDecoratorAndStandaloneConfig(
       final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     this.glex = glex;
     this.hwPath = hwPath;
     this.outPath = outPath;
   }
 
-  public void transform(ASTCDCompilationUnit ast) {
+  public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit astGui) {
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
       String originalName = GUIGeneratorUtil.getInstance().getOriginalName(clazz);
       String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName()
-              + "." + originalName;
+          + "." + originalName;
       if (!GUIGeneratorUtil.getInstance().isComponent(clazz)) {
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
@@ -40,37 +41,42 @@ public class GUIComponentAnnotationDecorator {
         );
       }
       else {
+        boolean generateAnnotation = !GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qName);
         String htmlFileName = originalName + ".html";
         String htmlPath = "./" + htmlFileName;
-
-        Optional<String> hwHtmlPath = util.getRelativeImportPath(
-            hwPath, outPath, qName, "html");
-        if (hwHtmlPath.isPresent()) {
-          htmlPath = hwHtmlPath.get();
-        }
-
         List<String> scssPaths = new ArrayList<>();
 
-        Optional<String> hwScssPath = util.getRelativeImportPath(
-            hwPath, outPath, qName, "scss");
-        if (hwScssPath.isPresent()) {
-          scssPaths.add(hwScssPath.get());
+        if (generateAnnotation) {
+          Optional<String> hwHtmlPath = util.getRelativeImportPath(
+              hwPath, outPath, qName, "html");
+          if (hwHtmlPath.isPresent()) {
+            htmlPath = hwHtmlPath.get();
+          }
+          Optional<String> hwScssPath = util.getRelativeImportPath(
+              hwPath, outPath, qName, "scss");
+          if (hwScssPath.isPresent()) {
+            scssPaths.add(hwScssPath.get());
+          }
         }
-
+        else {
+          Optional<String> hwHtmlPath = util.getRelativeImportPath(
+              hwPath, outPath, qName, "html");
+          if (!hwHtmlPath.isPresent()) {
+            htmlPath = util.getRelativeImportPathForAnnotation(
+                outPath.toString(), new ArrayList<>(hwPath.getEntries()).get(0).toString(), qName).get();
+          }
+          Optional<String> hwScssPath = util.getRelativeImportPath(
+              hwPath, outPath, qName, "scss");
+          if (hwScssPath.isPresent()) {
+            scssPaths.add("./" + originalName + ".scss");
+          }
+        }
         String selector = GUIGeneratorUtil.getInstance().getComponentNameFromCamelCaseName(originalName);
-        if (!GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qName)) {
-          glex.replaceTemplate(
+        glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, htmlPath, scssPaths, selector)
-          );
-        } else {
-          glex.replaceTemplate(
-            GUI2ComponentTemplates.ANNOTATIONS,
-            clazz,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_DIRECTIVE)
-          );
-        }
+            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector, astGui, hwPath, generateAnnotation)
+        );
       }
     }
   }

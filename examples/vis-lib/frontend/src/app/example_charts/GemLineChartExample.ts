@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemLineChartExampleComponent } from '@src/example_charts/GemLineChartExampleComponent';
+import { GemLineChartExampleComponent,config } from '@src/example_charts/GemLineChartExampleComponent';
 import { GemLineChartData, GemLineChartEntry } from '@umlp/charts';
 
 @Component({
-  selector: 'gem-line-chart-example',
-  templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemLineChartExample.html'
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
 })
 export class GemLineChartExample extends GemLineChartExampleComponent {
 

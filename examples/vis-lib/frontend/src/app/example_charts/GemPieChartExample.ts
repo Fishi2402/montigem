@@ -1,13 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { GemPieChartExampleComponent } from '@src/example_charts/GemPieChartExampleComponent';
+import { GemPieChartExampleComponent,config } from '@src/example_charts/GemPieChartExampleComponent';
 import { Component } from '@angular/core';
 import { GemPieChartData } from '@umlp/charts';
 import { GemPieChartEntry } from '@umlp/charts';
 
 @Component({
-  selector: 'gem-pie-chart-example',
-  templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemPieChartExample.html',
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
 })
 export class GemPieChartExample extends GemPieChartExampleComponent {
 

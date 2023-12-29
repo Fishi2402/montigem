@@ -11,7 +11,7 @@ ${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "componentGenerator"
 <#assign topDecoratorTS = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [hwPath])>
 <#assign topDecoratorJava = tc.instantiate("de.monticore.cd.codegen.TopDecorator", [hwPath])>
 
-<#assign annotationDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUIComponentAnnotationDecorator", [glex, hwPath, outPath])>
+<#assign annotationDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUIComponentAnnotationDecoratorAndStandaloneConfig", [glex, hwPath, outPath])>
 
 <#--${includeArgs("umlp.generator.hook.BeforeTransform", decoratedAST, glex, hwPath, componentGenerator, guiDecorator, topDecorator)}-->
 
@@ -20,7 +20,7 @@ ${guiDecorator.transform(ast, decoratedAST, viewComponents, hwPath, outPath)}
 ${topDecoratorTS.decorate(decoratedAST)}
 ${topDecoratorJava.decorate(decoratedAST)}
 
-${annotationDecorator.transform(decoratedAST)}
+${annotationDecorator.transform(decoratedAST,ast)}
 
 <#--${includeArgs("umlp.generator.hook.AfterTransform", decoratedAST, glex, hwPath, componentGenerator, guiDecorator, topDecorator)}-->
 

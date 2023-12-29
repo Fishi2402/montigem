@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserDisplayComponent} from '@src/gui/usersettings/UserDisplayComponent';
+import {UserDisplayComponent,config} from '@src/gui/usersettings/UserDisplayComponent';
 
 import {SehubRole} from '@src/sehub/SehubRole';
 import {SehubManager} from '@src/sehub/SehubManager';
@@ -9,10 +9,12 @@ import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
 
 @Component({
-  selector: 'user-display',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/usersettings/UserDisplay.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['./UserDisplay.scss',]
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class UserDisplay extends UserDisplayComponent {
 

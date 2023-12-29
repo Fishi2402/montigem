@@ -11,7 +11,7 @@ import { BatteryPackTypeBuilder } from '@src/demorec/BatteryPackTypeBuilder';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
 
-import { ProcessCreateComponent } from '@src/gui/process/ProcessCreateComponent';
+import { ProcessCreateComponent,config } from '@src/gui/process/ProcessCreateComponent';
 
 import {
   Directive,
@@ -27,10 +27,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 const newOption = "-- Create new --";
 
 @Component({
-  selector: 'process-create',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/process/ProcessCreate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export  class ProcessCreate extends ProcessCreateComponent {
 

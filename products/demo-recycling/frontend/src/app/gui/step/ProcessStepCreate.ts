@@ -5,7 +5,7 @@ import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { ProcessStepType } from '@src/demorec/ProcessStepType';
 
-import { ProcessStepCreateComponent } from '@src/gui/step/ProcessStepCreateComponent';
+import { ProcessStepCreateComponent,config } from '@src/gui/step/ProcessStepCreateComponent';
 
 import {
   Component,
@@ -16,10 +16,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 const newOption = "-- Create new --";
 
 @Component({
-  selector: 'process-step-create',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/step/ProcessStepCreate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export  class ProcessStepCreate extends ProcessStepCreateComponent {
 

@@ -4,7 +4,7 @@ import { Process } from '@src/demorec/Process';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
 
-import { StartComponent } from '../../../build/frontendGen/build/appgui/gui/StartComponent';
+import { StartComponent,config } from '../../../build/frontendGen/build/appgui/gui/StartComponent';
 
 
 
@@ -17,10 +17,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
-  selector: 'start',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/Start.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class Start extends StartComponent {
 

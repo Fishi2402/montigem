@@ -2,8 +2,11 @@
 
 import { Component } from "@angular/core";
 import { Router } from '@angular/router';
-
+import { RouterModule } from '@angular/router';
+import {CommonModule} from '@angular/common';
 @Component({
+  standalone:true,
+  imports:[RouterModule,CommonModule],
   selector: "navigation",
   templateUrl: "./navigation.component.html",
   styleUrls: ["./navigation.component.scss"]
