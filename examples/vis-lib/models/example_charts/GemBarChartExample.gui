@@ -3,16 +3,14 @@ package example_charts;
 
 import charts.GemBarChart;
 import charts.GemBarChartTypes.GemBarChartData;
+import Domain.Person;
 
-page GemBarChartExample(
-  GemBarChartData data,
-  Integer maxValue,
-  Integer minValue
-) {
-  @GemBarChart(
-    data = data,
-    stacked = true,
-    maxValue = maxValue,
-    minValue = minValue
+page GemBarChartExample(List<Person> persons) 
+{
+  barchart@GemBarChart(
+    data = null,
+    stacked = false,
+    maxValue = 10,
+    minValue = null
   );
 }
