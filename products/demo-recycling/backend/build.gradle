@@ -50,6 +50,10 @@ application {
   mainClass = 'demorec.DemoRecServerApplication'
 }
 
+jib { // For Docker-Container
+  container.mainClass = application.mainClass.get()
+}
+
 
 generateUmlpBackend {
   input = file("../models/DemoRec.umlp")
