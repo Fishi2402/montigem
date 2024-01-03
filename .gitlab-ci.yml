@@ -101,7 +101,7 @@ deployBackendDocker:
        -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # DemoRec Application
     - "gradle :products:demorec:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-       -Djib.to.image=$CI_REGISTRY_IMAGE/dtcockpit_backend:latest \
+       -Djib.to.image=$CI_REGISTRY_IMAGE/demorec_backend:latest \
        -Djib.to.auth.username=$CI_REGISTRY_USER  \
        -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
 
