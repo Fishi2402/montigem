@@ -34,6 +34,8 @@ build:
       - examples/sehub/frontend/.gradle/nodejs
       - examples/dtcockpit/frontend/build/frontendGen/node_modules
       - examples/dtcockpit/frontend/.gradle/nodejs
+      - products/demorec/frontend/build/frontendGen/node_modules
+      - products/demorec/frontend/.gradle/nodejs
   artifacts:
     paths:
       - examples/weather/frontend/build/frontendGen/dist/**
@@ -48,6 +50,10 @@ build:
       - examples/dtcockpit/frontend/build/frontendGen/Dockerfile
       - examples/dtcockpit/frontend/build/frontendGen/Caddyfile
       - examples/dtcockpit/frontend/build/frontendGen/.dockerignore
+      - products/demorec/frontend/build/frontendGen/dist/**
+      - products/demorec/frontend/build/frontendGen/Dockerfile
+      - products/demorec/frontend/build/frontendGen/Caddyfile
+      - products/demorec/frontend/build/frontendGen/.dockerignore
       - umlp-tool/target/distributions/**
 
     reports:
