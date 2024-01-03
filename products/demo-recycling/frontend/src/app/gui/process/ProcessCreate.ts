@@ -24,7 +24,7 @@ import {
 
 import { ActivatedRoute, Router } from '@angular/router';
 
-const newOption = "-- Create new --";
+const newOption = "New";
 
 @Component({
   standalone:true,
@@ -103,13 +103,16 @@ export  class ProcessCreate extends ProcessCreateComponent {
   public override sendEverything (event: any): void {
     this.getType().build()
     this.getPack().type(this.getType())
+    this.getPack().xPos(0)
+    this.getPack().yPos(0)
+    this.getPack().zPos(0)
+    this.getPack().isDeconstructible(true)
     this.getPack().build()
     this.getP().deconstructionOf(this.getPack())
     this.getP().build()
   }
 
-  // TODO this is dangerous no name in GUI Model should not be necessary
-  public override getPhotoDragNDrop10AttachedPack (): BatteryPackBuilder {
+  public override getPhotoDragAndDropAttachedComponent (): BatteryPackBuilder {
     return this.getPack();
   }
 

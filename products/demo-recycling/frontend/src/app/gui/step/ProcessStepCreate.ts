@@ -4,16 +4,19 @@
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { ProcessStepType } from '@src/demorec/ProcessStepType';
+import { Process } from '@src/demorec/Process';
 
 import { ProcessStepCreateComponent,config } from '@src/gui/step/ProcessStepCreateComponent';
 
 import {
   Component,
+  Input,
+  OnInit
 } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 
-const newOption = "-- Create new --";
+const newOption = "NEW";
 
 @Component({
   standalone:true,
@@ -23,7 +26,7 @@ const newOption = "-- Create new --";
   styles: config.styles,
   styleUrls: config.styleUrls
 })
-export  class ProcessStepCreate extends ProcessStepCreateComponent {
+export  class ProcessStepCreate extends ProcessStepCreateComponent implements OnInit {
 
   public typeEntry : string ="";
 
@@ -33,13 +36,15 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
   public joinConnectionEntry: string = "";
   public joinConnectionOptions: string[] = [newOption];
 
-  public ngOnInit(): void {
+  public building : boolean = false;
+
+  public override ngOnInit(): void {
     super.ngOnInit()
     DemoRecManager.getEndEffectorList().then(gemPromiseRes => {
       const endEffectors = gemPromiseRes;
       endEffectors.loadAll().then(() => {
-        console.error(endEffectors)
-        this.endEffectorOptions = []
+        console.debug(endEffectors)
+        this.endEffectorOptions = [newOption]
         for (const endEffector of endEffectors) {
           this.endEffectorOptions.push(endEffector.getGemId() + "");
         }
@@ -50,9 +55,10 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
     DemoRecManager.getJoinConnectionList().then(gemPromiseRes => {
       const joinConnections = gemPromiseRes;
       joinConnections.loadAll().then(() => {
-        console.error(joinConnections)
-        this.joinConnectionOptions = []
+        console.debug(joinConnections)
+        this.joinConnectionOptions = [newOption]
         for (const joinConnection of joinConnections) {
+          console.debug("Refill Join Connection Options")
           this.joinConnectionOptions.push(joinConnection.getGemId() + "");
         }
         this.joinConnectionOptions = this.joinConnectionOptions.slice();
@@ -62,8 +68,7 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
 
   // Select Types
   public override getSelectTypeOptions(): Array<string> {
-    console.debug("Select Type Options")
-    return [ProcessStepType.DECONSTRCUTION.toString(), ProcessStepType.OTHER.toString()];
+    return [ProcessStepType.DECONSTRUCTION.toString(), ProcessStepType.OTHER.toString()];
   }
 
   public override getSelectTypeEntry(): string {
@@ -71,16 +76,12 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
   }
 
   public override setSelectTypeEntry(value: string): void {
-    if(ProcessStepType.DECONSTRCUTION.toString() == value) {
-      this.getStep().type(ProcessStepType.DECONSTRCUTION)
-    } else if(
-      this.getStep().type(ProcessStepType.OTHER)
-    )
     this.typeEntry = value;
   }
 
   // Select End Effectors
   public override getSelectEndeffectorOptions(): Array<string> {
+    console.debug("Endeffector Gem Ids ", this.endEffectorOptions)
     return this.endEffectorOptions;
   }
 
@@ -112,10 +113,52 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
   }
 
   public override createNewStep (event: any): void {
-    if(this.getStep().isBuildable()) {
-      this.getStep().build()
-      this.getProcess().addConsistsOf2(this.getStep())
+    console.debug("Clicked on Create Button")
+    const waitingFor = [];
+    waitingFor.push(DemoRecManager.getEndEffectorSure(+this.getSelectEndeffectorEntry())
+        .then((endEffector)  => {
+      this.getStep().uses(endEffector)
+    }))
+    waitingFor.push(DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
+        .then((joinConnection)  => {
+          this.getStep().deconstructs(joinConnection)
+        }))
+    if("Deconstruction" === this.getSelectTypeEntry()) {
+      this.getStep().type(ProcessStepType.DECONSTRUCTION)
+    } else {
+      this.getStep().type(ProcessStepType.OTHER)
     }
+    let i = 0
+    if(this.getProcess().sizeConsistsOfs() > 0) {
+      i = this.getProcess().getConsistsOf1(this.getProcess().sizeConsistsOfs()-1).getIndex() +1;
+    }
+    this.getStep().index(i)
+    this.building = true;
+    Promise.all(waitingFor).then( x => {
+
+      if(this.getStep().isBuildable()) {
+        this.getStep().build()
+        this.getProcess().addConsistsOf2(this.getStep())
+
+        // Execute superNgOnit again i.e. get a new builder from the backend
+        DemoRecManager.processStepBuilder().then(gemPromiseRes => {
+          this.stepBuilder = gemPromiseRes;
+          this.building = false;
+        })
+        console.debug("Process: ",this.getProcess())
+        console.debug("Steps: ",this.getProcess().getConsistsOf())
+      } else {
+        this.building = false;
+      }
+    })
+  }
+
+  public override getBuildStepDisabled (): boolean {
+    console.debug(this.getStep())
+    if(!this.getStep() || this.building) {
+      return true;
+    }
+    return false;
   }
 }
 

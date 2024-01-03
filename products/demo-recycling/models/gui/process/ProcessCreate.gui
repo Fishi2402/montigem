@@ -6,8 +6,7 @@ import basic.GemButton;
 import arrange.GemCard;
 import arrange.GemColumn;
 
-import gui.pack.PhotoDisplay;
-import gui.pack.PhotoDragNDrop;
+import gui.component.PhotoDragNDrop;
 import gui.navigation.Navigation;
 
 import DemoRec.BatteryPack;
@@ -35,22 +34,27 @@ page ProcessCreate(Process p, BatteryPack pack, BatteryPackType type) {
       title = "Battery Pack",
       component = @GemColumn(
         components = [
-          @GemTextInput(labelText = "State of Charge", inputType = "number", entry = pack.stateOfCharge),
+          @GemTextInput(labelText = "Component Name", inputType = "string", entry = pack.description),
+          @GemTextInput(labelText = "State of charge", inputType = "number", entry = pack.stateOfCharge),
           @GemTextInput(labelText = "State of health", inputType = "number", entry = pack.health),
+          @GemTextInput(labelText = "Width: ", inputType = "number", entry = pack.width),
+          @GemTextInput(labelText = "Length: ", inputType = "number", entry = pack.length),
+          @GemTextInput(labelText = "Height: ", inputType = "number", entry = pack.height),
+          @GemTextInput(labelText = "Weight: ", inputType = "number", entry = pack.weight),
           selectBPackType@GemTextInput(
             labelText = "Battery Pack Type",
             inputType = "dropdown",
             options = null,
             entry = null
           ),
-          @iterate(String location : pack.photoLocation) {
+          @iterate(String location : pack.photoLocations) {
             @GemText(value=location);
           }
         ]
       )
     );
     guardBPackBuildFinished@guard(true) {
-      @PhotoDragNDrop(attachedPack = pack);
+      photoDragAndDrop@PhotoDragNDrop(attachedComponent = pack);
     }
     // TODO make it an option to choose an already existing type or create a new one
     guardBPackType@guard(true) {

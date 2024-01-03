@@ -5,9 +5,11 @@ import DemoRec.BatteryPack;
 import arrange.GemRow;
 import arrange.GemColumn;
 import basic.GemText;
+import basic.GemLink;
 
 import gui.pack.PackTypeOverview;
-import gui.pack.PhotoDisplay;
+import gui.component.PhotoDisplay;
+import gui.component.ComponentTreeView;
 
 component BatteryPackOverview(BatteryPack pack) {
   @GemRow(
@@ -16,11 +18,14 @@ component BatteryPackOverview(BatteryPack pack) {
     components = [
       @GemColumn(
         components=[
+          @GemText(value="Description: "+pack.description),
           @GemText(value="State of Charge: "+pack.stateOfCharge),
           @GemText(value="State of Health: "+pack.health)
         ]
       ),
-      @PhotoDisplay(pack=pack),
-      @PackTypeOverview(type=pack.type)
+      editPack@GemLink(url="override", text="Edit Pack."),
+      @PhotoDisplay(component=pack),
+      @PackTypeOverview(type=pack.type),
+      @ComponentTreeView(component=pack)
   ]);
 }

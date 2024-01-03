@@ -30,11 +30,9 @@ public class BlobEndpoint {
       value="/blob")
   public ResponseEntity<String> storeBlob(@RequestPart("file") MultipartFile file,
                                           @RequestHeader("PATH") String path) {
-
     if (file.isEmpty()) {
       return ResponseEntity.badRequest().body("Please provide a file to upload");
     }
-
     try {
       // Get the bytes from the MultipartFile
       byte[] fileBytes = file.getBytes();
@@ -63,10 +61,6 @@ public class BlobEndpoint {
       try (FileOutputStream fos = new FileOutputStream(test)) {
         fos.write(fileBytes);
       }
-
-      // You can perform additional processing or validation here
-
-      // Return a success message or any other appropriate response
       return ResponseEntity.ok("File uploaded successfully");
     } catch (IOException e) {
       // Handle exceptions (e.g., IOException) and return an error response

@@ -2,9 +2,9 @@
 
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
-import { BatteryPack } from '@src/demorec/BatteryPack';
+import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
 
-import { PhotoDragNDropComponent,config } from '../../../../build/frontendGen/build/appgui/gui/pack/PhotoDragNDropComponent';
+import { PhotoDragNDropComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/PhotoDragNDropComponent';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -36,7 +36,7 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
   }
 
   @Input()
-  public attachedPack: BatteryPackBuilder;
+  public attachedComponent: DemoRecComponent;
 
   files: File[] = [];
 
@@ -75,18 +75,22 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
   }
 
   public override uploadAllFiles (event: any): void {
-    let size = this.getAttachedPack().getPhotoLocation().length
+    let size = this.getAttachedComponent().getPhotoLocations().length
     this.files.forEach(f =>
       {
         this.uploadFile(f)
-        this.getAttachedPack().addPhotoLocation(size, f.name)
-        size++;
+        if(this.getAttachedComponent().getPhotoLocations().indexOf(f.name) >= 0) {
+          console.error("File with this name was already uploaded.")
+        } else {
+          this.getAttachedComponent().addPhotoLocations(size, f.name)
+          size++;
+        }
       }
     )
   }
 
-  public  getAttachedPack (): BatteryPackBuilder {
-    return this.attachedPack;
+  public  getAttachedComponent (): DemoRecComponent {
+    return this.attachedComponent;
   }
 }
 

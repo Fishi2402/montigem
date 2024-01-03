@@ -12,10 +12,11 @@ component PackTypeOverview(BatteryPackType type) {
     title="BatteryPack Type",
     component=@GemColumn(
       rowGap="1px",
+      wrap="nowrap",
       components=[
-        @GemText(value=type.carType),
-        @GemText(value=type.capacity),
-        @GemText(value=type.bmsLocation)
+        @GemText(value="Car Type:"+type.carType),
+        @GemText(value="Capacity:"+type.capacity),
+        @GemText(value="BMS Location:"+type.bmsLocation)
       ]
     )
   );

@@ -11,21 +11,27 @@ import basic.GemLink;
 
 import gui.navigation.Navigation;
 import gui.step.ProcessStepCreate;
+import gui.pack.BatteryPackOverview;
 
 
 page ProcessOverview(Process p) {
   @Navigation();
   @GemCard(
+      title="Deconstruction Process of Pack",
+      component=@BatteryPackOverview(pack=p.deconstructionOf)
+    );
+  @GemCard(
     title="Process Steps",
     component=@GemColumn(
       components = [
-        @ProcessStepCreate(),
+        stepCreate@ProcessStepCreate(process=p),
         @iterate(ProcessStep step : p.consistsOf) {
           @GemRow(colGap="5px",
             components=[
+              @GemText(value="Step "+step.index),
               @GemText(value=step.type),
               @GemText(value=" took "),
-              @GemText(value=step.timeconsumption+ "seconds"),
+              @GemText(value=step.timeConsumption+ " seconds"),
               /*@guard(true) { // ensure that step.description is not null
                 @GemText(value=step.description);
               },*/

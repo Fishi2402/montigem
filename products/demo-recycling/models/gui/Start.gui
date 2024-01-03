@@ -25,7 +25,7 @@ page Start(List<Process> allProcesses) {
              components= [
                @GemColumn(
                  components= [
-                   overViewLink@GemLink(url="gui/process/ProcessOverview/", text="More detailed information."),
+                   overViewLink@GemLink(url="gui/process/ProcessOverview/", text="Edit Process."),
                    @GemText(value="Deconstruction started on: "+p.startedAt)
                  ]),
                @BatteryPackOverview(pack=p.deconstructionOf)

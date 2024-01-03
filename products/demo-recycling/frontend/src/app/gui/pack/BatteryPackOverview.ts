@@ -32,7 +32,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export  class BatteryPackOverview extends BatteryPackOverviewComponent {
 
- public getPackTypeOverview0Type(): BatteryPackType {
+  public override getEditPackUrl():string {
+    if(this.getPack()) {
+      return "gui/component/ComponentEdit/"+this.getPack().getGemId()
+    } else {
+      return "404"
+    }
+
+  }
+
+  public getPackTypeOverview0Type(): BatteryPackType {
    console.debug("Checking if type is here: "+this.getPack().getGemId())
    //DemoRecManager.getBatteryPackTypeSure(this.getPack().getTypeGem().getGemId())
    console.debug("Checking if type is here: "+this.getPack().getTypeGem().get().getCarType())
@@ -40,7 +49,7 @@ export  class BatteryPackOverview extends BatteryPackOverviewComponent {
    /*if (this.getPack()==null) {
      return null;
    }   */
- }
+  }
 
 }
 

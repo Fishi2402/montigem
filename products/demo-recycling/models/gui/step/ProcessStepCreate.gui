@@ -9,15 +9,17 @@ import arrange.GemColumn;
 import DemoRec.ProcessStep;
 import DemoRec.Process;
 
-page ProcessStepCreate(ProcessStep step, Process process) {
+import gui.joinconnection.JoinConnectionCreate;
+
+page ProcessStepCreate(Process process, ProcessStep step) {
   @GemCard(
-    title = "Create new Process",
+    title = "Deconstruction Step",
     component = @GemColumn(
       components = [
         @GemTextInput(
             labelText = "Time Consumption in seconds",
             inputType = "number",
-            entry = step.timeconsumption),
+            entry = step.timeConsumption),
         @GemTextInput(
             labelText = "Description (optional)",
             inputType = "text",
@@ -36,9 +38,12 @@ page ProcessStepCreate(ProcessStep step, Process process) {
             labelText = "Deconstructing Join Connection",
             inputType = "dropdown",
             options = null,
-            entry = null)
+            entry = null),
+        createNewJoinConnection@guard(true) {
+          @JoinConnectionCreate();
+        }
       ]
     )
   );
-  buildStep@GemButton(label = "Create new Step.", leftClick = createNewStep);
+  buildStep@GemButton(label = "Save Step", leftClick = createNewStep, disabled=true);
 }

@@ -6,14 +6,14 @@ import java.time.LocalDate;
 
 classdiagram DemoRec {
 
-  class BatteryPack {
+  class BatteryPack extends DemoRecComponent {
     double stateOfCharge;
     double health;
-
-    List<String> photoLocation;
   }
 
-  association [1] BatteryPack -> (consistsOf) DemoRecComponent [*];
+  // OCL BatteryPack is not part of a composition
+
+  //association [1] BatteryPack -> (consistsOf) DemoRecComponent [*]; Replaced by composedOf
 
   class BatteryPackType {
     double capacity;
@@ -30,15 +30,16 @@ classdiagram DemoRec {
   association [*] Process -> (deconstructionOf) BatteryPack [1];
 
   class ProcessStep {
-    long timeconsumption;
+    long timeConsumption;
     ProcessStepType type;
     Optional<String> description;
+    int index;
   }
 
   association [1] Process -> (consistsOf)  ProcessStep [*] {ordered};
 
   enum ProcessStepType {
-    DECONSTRCUTION,
+    DECONSTRUCTION,
     OTHER;
   }
 
@@ -57,7 +58,8 @@ classdiagram DemoRec {
     String name;
   }
 
-  abstract class DemoRecComponent {
+  class DemoRecComponent {
+    Optional<String> description;
     double xPos;
     double yPos;
     double zPos;
@@ -68,30 +70,27 @@ classdiagram DemoRec {
 
     double weight;
 
-    boolean isDesconstructible;
+    boolean isDeconstructible;
 
     List<String> photoLocations;
     List<String> threeDFileLocations;
   }
-
-  class Element extends DemoRecComponent;
-  class Composite extends DemoRecComponent;
 
   class JoinConnection {
     double state; // TODO what kind of data type for state?
     JoinConnectionType type;
   }
 
-  association [*] Composite -> (linkedBy) JoinConnection [*]; // TODO + should be allowed
+  association [*] DemoRecComponent -> (composedOf) JoinConnection [*];
 
-  association [*] DemoRecComponent <-> (composedWith) JoinConnection [*];  // TODO should be 2..* on left side
+  association [*] DemoRecComponent (connects) <-> (connectedBy) JoinConnection [*];  // TODO should be 2..* on left side
 
   enum JoinConnectionType {
     SCREW,
     GLUE,
     WELDING,
     PLUG,
-    ELECTRCIAL,
+    ELECTRICAL,
     UNDEFINED;
   }
 }
