@@ -11,7 +11,7 @@ import DemoRec.Process;
 
 import gui.joinconnection.JoinConnectionCreate;
 
-page ProcessStepCreate(Process process, ProcessStep step) {
+page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
   @GemCard(
     title = "Deconstruction Step",
     component = @GemColumn(
@@ -24,21 +24,23 @@ page ProcessStepCreate(Process process, ProcessStep step) {
             labelText = "Description (optional)",
             inputType = "text",
             entry = step.description),
-        selectType@GemTextInput(
-            labelText = "Step type",
-            inputType = "dropdown",
-            options = null,
-            entry = null),
         selectEndeffector@GemTextInput(
             labelText = "Used Endeffector in this step",
             inputType = "dropdown",
             options = null,
             entry = null),
-        selectJoinConnection@GemTextInput(
-            labelText = "Deconstructing Join Connection",
+        selectType@GemTextInput(
+            labelText = "Step type",
             inputType = "dropdown",
             options = null,
             entry = null),
+        isDeconstruction@guard(true) {
+          selectJoinConnection@GemTextInput(
+              labelText = "Deconstructing Join Connection",
+              inputType = "dropdown",
+              options = null,
+              entry = null);
+        },
         createNewJoinConnection@guard(true) {
           @JoinConnectionCreate();
         }

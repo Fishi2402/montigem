@@ -15,6 +15,7 @@ import input.GemTextInput;
 
 import gui.component.PhotoDisplay;
 import gui.component.PhotoDragNDrop;
+import gui.component.SubComponentView;
 import gui.navigation.Navigation;
 
 page ComponentEdit(DemoRecComponent component) {

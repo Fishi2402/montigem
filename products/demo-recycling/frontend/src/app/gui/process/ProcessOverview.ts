@@ -12,6 +12,7 @@ import { BatteryPackTypeBuilder } from '@src/demorec/BatteryPackTypeBuilder';
 import { BatteryPack } from '@src/demorec/BatteryPack';
 
 import { ProcessOverviewComponent,config } from '@src/gui/process/ProcessOverviewComponent';
+import {ProcessStep} from '@src/demorec/ProcessStep'
 
 import {
   Directive,
@@ -36,9 +37,11 @@ const newOption = "-- Create new --";
 })
 export  class ProcessOverview extends ProcessOverviewComponent {
 
-/*  public override getStepCreateProcessId (): number {
-    return this.getP().getGemId();
-  }*/
+  public override attachStep(step: ProcessStep) {
+    const consistsOf = this.getP().getConsistsOf()
+    step.setIndex(consistsOf[consistsOf.length - 1].getIndex() + 1)
+    this.getP().addConsistsOf2(step);
+  }
 
 }
 

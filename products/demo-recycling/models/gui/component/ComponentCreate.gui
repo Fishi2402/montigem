@@ -9,15 +9,15 @@ import arrange.GemColumn;
 import arrange.GemCard;
 import basic.GemText;
 import basic.GemLink;
-import basic.GemCheckbox;
 import basic.GemButton;
 import input.GemTextInput;
+import input.GemCheckBoxInput;
 
 import gui.component.PhotoDisplay;
 import gui.component.PhotoDragNDrop;
 import gui.navigation.Navigation;
 
-component ComponentCreate(DemoRecComponent component, JoinConnection connection) {
+component ComponentCreate(DemoRecComponent component, Event<DemoRecComponent> createComponent) {
   @GemCard(
     title = "Specify Component.",
     component = @GemColumn(
@@ -31,9 +31,10 @@ component ComponentCreate(DemoRecComponent component, JoinConnection connection)
           @GemTextInput(labelText = "Length: ", inputType = "number", entry = component.length),
           @GemTextInput(labelText = "Height: ", inputType = "number", entry = component.height),
           @GemTextInput(labelText = "Weight: ", inputType = "number", entry = component.weight),
-          @GemCheckbox(checkboxItem = "Deconstructible"),
+          deconstructible@GemCheckBoxInput(labelText = "Deconstructible", checked=null),
           @PhotoDisplay(component=component),
-          photoDragAndDrop@PhotoDragNDrop(attachedComponent = component)
+          photoDragAndDrop@PhotoDragNDrop(attachedComponent = component),
+          addComponent@GemButton(label = "Add Component", leftClick = createNewComponent, disabled=false)
       ])
   );
 }

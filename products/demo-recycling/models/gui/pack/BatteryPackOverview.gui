@@ -17,6 +17,7 @@ component BatteryPackOverview(BatteryPack pack) {
     wrap="nowrap",
     components = [
       @GemColumn(
+        width="30%",
         components=[
           @GemText(value="Description: "+pack.description),
           @GemText(value="State of Charge: "+pack.stateOfCharge),

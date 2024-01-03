@@ -7,7 +7,7 @@ import { BatteryPackType } from '@src/demorec/BatteryPackType';
 import { BatteryPack } from '@src/demorec/BatteryPack';
 import { JoinConnection } from '@src/demorec/JoinConnection';
 
-import { ComponentEditComponent } from '../../../../build/frontendGen/build/appgui/gui/component/ComponentEditComponent';
+import { ComponentEditComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/ComponentEditComponent';
 
 import {
   Directive,
@@ -21,10 +21,12 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'component-edit',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/component/ComponentEdit.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export  class ComponentEdit extends ComponentEditComponent {
 

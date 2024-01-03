@@ -14,7 +14,7 @@ import gui.component.ComponentEdit;
 import gui.component.ComponentCreate;
 import gui.joinconnection.RemoveCompButton;
 
-component JoinConnectionCreate(JoinConnection connection, DemoRecComponent component) {
+component JoinConnectionCreate(JoinConnection connection, List<String> dummyComponents) {
   @GemRow(
     wrap="nowrap",
     components=[
@@ -28,7 +28,7 @@ component JoinConnectionCreate(JoinConnection connection, DemoRecComponent compo
                     labelText = "State of Connection",
                     inputType = "number",
                     entry = connection.state),
-                selectTypeOfConnectiont@GemTextInput(
+                selectTypeOfConnection@GemTextInput(
                   labelText = "Type of Connection",
                   inputType = "dropdown",
                   options = null,
@@ -42,9 +42,10 @@ component JoinConnectionCreate(JoinConnection connection, DemoRecComponent compo
                     labelText = "Components connected by this connection",
                     inputType = "dropdown",
                     options = null,
-                    entry = null),
-                @iterate(DemoRecComponent existingComp : connection.connects){
-                  @RemoveCompButton(connection= connection, component=existingComp);
+                    entry = null,
+                    keyRelease = tryToAddComponent),
+                @iterate(String i : dummyComponents){
+                  @GemText(value=i);
                 }
               ]
             )
@@ -53,8 +54,7 @@ component JoinConnectionCreate(JoinConnection connection, DemoRecComponent compo
       ),
       @GemColumn(
         components=[
-          @ComponentCreate(),
-          addComponent@GemButton(label = "Save Component", leftClick = createNewComponent, disabled=false)
+          @ComponentCreate(createComponent=addNewComponent)
         ]
       )
     ]

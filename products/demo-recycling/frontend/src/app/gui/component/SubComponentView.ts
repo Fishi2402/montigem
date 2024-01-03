@@ -7,7 +7,7 @@ import { BatteryPackType } from '@src/demorec/BatteryPackType';
 import { BatteryPack } from '@src/demorec/BatteryPack';
 import { JoinConnection } from '@src/demorec/JoinConnection';
 
-import { SubComponentViewComponent } from '../../../../build/frontendGen/build/appgui/gui/component/SubComponentViewComponent';
+import { SubComponentViewComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/SubComponentViewComponent';
 
 import {
   Directive,
@@ -21,10 +21,12 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'sub-component-view',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/component/SubComponentView.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export  class SubComponentView extends SubComponentViewComponent {
 

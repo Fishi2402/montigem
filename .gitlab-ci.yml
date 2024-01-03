@@ -93,6 +93,11 @@ deployBackendDocker:
        -Djib.to.image=$CI_REGISTRY_IMAGE/dtcockpit_backend:latest \
        -Djib.to.auth.username=$CI_REGISTRY_USER  \
        -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+    # DemoRec Application
+    - "gradle :products:demo-recycling:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
+       -Djib.to.image=$CI_REGISTRY_IMAGE/dtcockpit_backend:latest \
+       -Djib.to.auth.username=$CI_REGISTRY_USER  \
+       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
 
   only:
     - dev
@@ -149,6 +154,21 @@ deployDTCockpitFrontendDocker:
     - "docker build . -t $CI_REGISTRY_IMAGE/dtcockpit_frontend:latest"
     - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
     - "docker push $CI_REGISTRY_IMAGE/dtcockpit_frontend:latest"
+  only:
+    - dev
+
+deployDemoRecFrontendDocker:
+  stage: deploy
+  tags:
+    - shell
+    - docker
+  dependencies:
+    - build
+  script:
+    - "cd products/demo-recycling/frontend/build/frontendGen"
+    - "docker build . -t $CI_REGISTRY_IMAGE/demorec_frontend:latest"
+    - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+    - "docker push $CI_REGISTRY_IMAGE/demorec_frontend:latest"
   only:
     - dev
 

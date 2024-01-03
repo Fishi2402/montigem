@@ -24,7 +24,7 @@ page ProcessOverview(Process p) {
     title="Process Steps",
     component=@GemColumn(
       components = [
-        stepCreate@ProcessStepCreate(process=p),
+        stepCreate@ProcessStepCreate(create = attachStep),
         @iterate(ProcessStep step : p.consistsOf) {
           @GemRow(colGap="5px",
             components=[

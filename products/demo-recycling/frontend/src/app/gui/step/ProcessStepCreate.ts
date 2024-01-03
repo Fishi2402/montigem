@@ -1,34 +1,36 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import {DemoRecManager} from '@src/demorec/DemoRecManager';
 
-import { ProcessStepType } from '@src/demorec/ProcessStepType';
-import { Process } from '@src/demorec/Process';
+import {ProcessStepType} from '@src/demorec/ProcessStepType';
+import {ProcessStep} from '@src/demorec/ProcessStep'
 
-import { ProcessStepCreateComponent,config } from '@src/gui/step/ProcessStepCreateComponent';
+import {ProcessStepCreateComponent, config} from '@src/gui/step/ProcessStepCreateComponent';
 
 import {
   Component,
   Input,
-  OnInit
+  Output,
+  OnInit,
+  EventEmitter
 } from '@angular/core';
 
-import { ActivatedRoute, Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 const newOption = "NEW";
 
 @Component({
-  standalone:true,
-  imports:[...config.imports],
+  standalone: true,
+  imports: [...config.imports],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: config.styleUrls
 })
-export  class ProcessStepCreate extends ProcessStepCreateComponent implements OnInit {
+export class ProcessStepCreate extends ProcessStepCreateComponent implements OnInit {
 
-  public typeEntry : string ="";
+  public typeEntry: string = "";
 
   public endEffectorEntry: string = "";
   public endEffectorOptions: string[] = [newOption];
@@ -36,7 +38,10 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent implements On
   public joinConnectionEntry: string = "";
   public joinConnectionOptions: string[] = [newOption];
 
-  public building : boolean = false;
+  public building: boolean = false;
+
+  @Output()
+  public create: EventEmitter<ProcessStep> = new EventEmitter<ProcessStep>();
 
   public override ngOnInit(): void {
     super.ngOnInit()
@@ -112,54 +117,74 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent implements On
     this.joinConnectionEntry = value;
   }
 
-  public override createNewStep (event: any): void {
+  public override createNewStep(event: any): void {
     console.debug("Clicked on Create Button")
     const waitingFor = [];
     waitingFor.push(DemoRecManager.getEndEffectorSure(+this.getSelectEndeffectorEntry())
-        .then((endEffector)  => {
-      this.getStep().uses(endEffector)
-    }))
-    waitingFor.push(DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
-        .then((joinConnection)  => {
-          this.getStep().deconstructs(joinConnection)
+        .then((endEffector) => {
+          this.getStep().uses(endEffector)
         }))
-    if("Deconstruction" === this.getSelectTypeEntry()) {
+    if (this.getSelectJoinConnectionEntry()) {
+      waitingFor.push(DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
+          .then((joinConnection) => {
+            this.getStep().deconstructs(joinConnection)
+          }))
+    }
+    if ("Deconstruction" === this.getSelectTypeEntry()) {
       this.getStep().type(ProcessStepType.DECONSTRUCTION)
     } else {
       this.getStep().type(ProcessStepType.OTHER)
     }
     let i = 0
+    /*
     if(this.getProcess().sizeConsistsOfs() > 0) {
       i = this.getProcess().getConsistsOf1(this.getProcess().sizeConsistsOfs()-1).getIndex() +1;
     }
+    /**/
     this.getStep().index(i)
     this.building = true;
-    Promise.all(waitingFor).then( x => {
+    Promise.all(waitingFor).then(x => {
 
-      if(this.getStep().isBuildable()) {
-        this.getStep().build()
-        this.getProcess().addConsistsOf2(this.getStep())
+      if (this.getStep().isBuildable()) {
+        const step = this.getStep().build()
+        this.create.emit(step);
+
+        // this.getProcess().addConsistsOf2(this.getStep())
 
         // Execute superNgOnit again i.e. get a new builder from the backend
         DemoRecManager.processStepBuilder().then(gemPromiseRes => {
-          this.stepBuilder = gemPromiseRes;
+          this.step = gemPromiseRes;
           this.building = false;
         })
+        /*
         console.debug("Process: ",this.getProcess())
         console.debug("Steps: ",this.getProcess().getConsistsOf())
+        /**/
       } else {
         this.building = false;
       }
     })
+    /**/
   }
 
-  public override getBuildStepDisabled (): boolean {
+  public override getBuildStepDisabled(): boolean {
     console.debug(this.getStep())
-    if(!this.getStep() || this.building) {
+    if (!this.getStep() || this.building) {
       return true;
     }
     return false;
   }
+
+  public override getIsDeconstructionCondition() :boolean {
+    return this.getSelectTypeEntry() === "Deconstruction"
+  }
+
+  public override getCreateNewJoinConnectionCondition() :boolean {
+    return this.getIsDeconstructionCondition() &&
+        (this.getSelectJoinConnectionEntry() === "NEW")
+  }
+
+
 }
 
 
