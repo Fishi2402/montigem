@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui.gentypescript;
+package umlp.generator.gui.gentypescript.config;
 
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -206,60 +206,6 @@ public class GUI2TSConfigGenerator {
       }
     }
     return Optional.empty();
-  }
-
-  public class ComponentRouting {
-    protected final String importPath;
-    protected final String importedSymbolName;
-    protected final String urlPrefix;
-    protected final String url;
-    protected final boolean hasIds;
-
-    public String getImportedSymbolName() {
-      return importedSymbolName;
-    }
-
-    public String getImportPath() {
-      return importPath;
-    }
-
-    public String getUrlPrefix() {
-      return urlPrefix;
-    }
-
-    public String getUrl() {
-      return url;
-    }
-
-    public boolean getHasIds() {
-      return hasIds;
-    }
-
-    protected ComponentRouting(
-        ASTGUICompilationUnit ast,
-        boolean existsHWC,
-        List<String> ids,
-        String importPath,
-        String urlPrefix
-    ) {
-      this.importPath = importPath;
-      this.urlPrefix = urlPrefix;
-
-      String importedSymbolName = ast.getComponentName();
-      if (!existsHWC) {
-        importedSymbolName += "Component";
-      }
-      this.importedSymbolName = importedSymbolName;
-
-      String url = urlPrefix;
-      if (!urlPrefix.isEmpty()) {
-        url += "/";
-      }
-      url += ast.getComponentName() + String.join(":/", ids);
-      this.url = url;
-
-      this.hasIds = !ids.isEmpty();
-    }
   }
 
 }

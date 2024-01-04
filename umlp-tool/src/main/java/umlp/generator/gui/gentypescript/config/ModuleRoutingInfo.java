@@ -1,4 +1,4 @@
-package umlp.generator.gui.gentypescript;
+package umlp.generator.gui.gentypescript.config;
 
 import com.google.common.collect.Iterables;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
