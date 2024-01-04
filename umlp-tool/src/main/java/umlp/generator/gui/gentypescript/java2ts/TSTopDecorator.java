@@ -3,15 +3,12 @@ package umlp.generator.gui.gentypescript.java2ts;
 
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.methodtemplates.CD4C;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import umlp.generator.gui.GUIGeneratorUtil;
 
@@ -38,7 +35,7 @@ public class TSTopDecorator extends TopDecorator {
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compUnit, boolean importHW) {
     super.decorate(compUnit);
     for (ASTCDClass cdClass : compUnit.getCDDefinition().getCDClassesList()) {
-      if (!GUIGeneratorUtil.getInstance().isComponent(cdClass) && GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdClass, compUnit))) {
+      if (!GUIGeneratorUtil.getInstance().isComponent(cdClass) && GUIGeneratorUtil.getInstance().existsHWC(hwPath, determineQualifiedName(cdClass, compUnit))) {
         if (importHW) {
           CD4C.getInstance().addImport(cdClass, GUIGeneratorUtil.getInstance().getPackageName(compUnit) + "." + cdClass.getName());
         }
@@ -47,7 +44,7 @@ public class TSTopDecorator extends TopDecorator {
     }
 
     for (ASTCDInterface cdInterface : compUnit.getCDDefinition().getCDInterfacesList()) {
-      if (GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdInterface, compUnit))) {
+      if (GUIGeneratorUtil.getInstance().existsHWC(hwPath, determineQualifiedName(cdInterface, compUnit))) {
         if (importHW) {
           CD4C.getInstance().addImport(cdInterface, GUIGeneratorUtil.getInstance().getPackageName(compUnit) + "." + cdInterface.getName());
         }
@@ -56,7 +53,7 @@ public class TSTopDecorator extends TopDecorator {
     }
 
     for (ASTCDEnum cdEnum : compUnit.getCDDefinition().getCDEnumsList()) {
-      if (GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdEnum, compUnit))) {
+      if (GUIGeneratorUtil.getInstance().existsHWC(hwPath, determineQualifiedName(cdEnum, compUnit))) {
         if (importHW) {
           CD4C.getInstance().addImport(cdEnum, GUIGeneratorUtil.getInstance().getPackageName(compUnit) + "." + cdEnum.getName());
         }

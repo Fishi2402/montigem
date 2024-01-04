@@ -453,11 +453,11 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
 
   public String getDomainClassName(ASTGUIComponentDeclaration domainClass, ASTGUICompilationUnit ast) {
     String domainClassName = Names.getQualifiedName(ast.getPackage(), domainClass.getName());
-    return domainClass.getName() + (GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, domainClassName) ? TOP_SUFFIX : "");
+    return domainClass.getName() + (GUIGeneratorUtil.getInstance().existsHWC(hwPath, domainClassName) ? TOP_SUFFIX : "");
   }
 
   public boolean existsHandwrittenDomainClass(ASTGUIComponentDeclaration domainClass, ASTGUICompilationUnit ast) {
     String domainClassName = Names.getQualifiedName(ast.getPackage(), domainClass.getName());
-    return GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, domainClassName);
+    return GUIGeneratorUtil.getInstance().existsHWC(hwPath, domainClassName);
   }
 }

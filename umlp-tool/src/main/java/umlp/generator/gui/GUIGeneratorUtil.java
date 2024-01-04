@@ -40,7 +40,7 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
-import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
+import umlp.generator.gui.gentypescript.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.util.TagLookUp;
@@ -110,7 +110,7 @@ public class GUIGeneratorUtil {
     return origPackage;
   }
 
-  public boolean existsHandwrittenClass(MCPath targetPath, String qualifiedName) {
+  public boolean existsHWC(MCPath targetPath, String qualifiedName) {
     String hwFile = Names.getPathFromPackage(qualifiedName) + ".ts";
     Optional<URL> hwFilePath = targetPath.find(hwFile);
     boolean result = hwFilePath.isPresent();
@@ -121,15 +121,6 @@ public class GUIGeneratorUtil {
     }
     Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
     return result;
-  }
-
-  public boolean existsHandwrittenDomainClass(MCPath targetPath, ASTGUICompilationUnit ast) {
-    String domainClassName = Names.getQualifiedName(ast.getPackage(), ast.getGUIComponentDeclaration().getName());
-    return existsHandwrittenClass(targetPath, domainClassName);
-  }
-
-  public boolean existsHandwrittenDomainClass(MCPath targetPath, String quailifiedName) {
-    return existsHandwrittenClass(targetPath, quailifiedName);
   }
 
   public void init(List<String> domainModels, List<String> createModels) {
@@ -707,7 +698,7 @@ public class GUIGeneratorUtil {
     for (int index = 0; index < temp.size() - 1; index++) {
       path += temp.get(index) + "/";
     }
-    path += moduleName + GUI2TypeScriptGenerator.MODULES_FILE;
+    path += moduleName + GUI2TSConfigGenerator.MODULES_FILE;
     return path;
   }
 
