@@ -143,13 +143,32 @@ public class GUI2TSConfigGenerator {
       Map.Entry<String, ModuleRoutingInfo> packageInfo,
       Map<String, ModuleRoutingInfo> routesMap
   ) {
-    List<ASTGUICompilationUnit> packageComponents = packageInfo.getValue().getComponents();
+    Path generatedRoutingFile = getGeneratedRoutingFile(packageInfo.getValue());
+    List<ComponentRouting> packageComponentRoutings = getComponentRoutings(packageInfo.getValue());
+    Optional<ComponentRouting> defaultRouting = getDefaultRouting(packageComponentRoutings);
+    Map<String, String> subRoutes = findSubroutesForPackageConfig(packageInfo, routesMap, hwcPath);
+
     GeneratorEngine genEngine = new GeneratorEngine(setup);
+    genEngine.generateNoA("umlp.gui2ts.TSPackageRoutes", generatedRoutingFile,
+        packageComponentRoutings, defaultRouting.orElse(null), subRoutes);
 
+    return generatedRoutingFile.toString();
+  }
+
+  protected Path getGeneratedRoutingFile(ModuleRoutingInfo routing) {
+    String dir = routing.getGeneratedFileDir();
+    String name = routing.getRoutingFileNameBase();
+
+    boolean existHWCRoutes = existsHandwrittenFile(
+        hwcPath, dir + "/" + name + ROUTES_FILE + "." + TS_FILE_EXTENSION);
+
+    return Paths.get(dir, name + ROUTES_FILE + (existHWCRoutes ? "TOP" : "") + "." + TS_FILE_EXTENSION);
+  }
+
+  protected List<ComponentRouting> getComponentRoutings(ModuleRoutingInfo routing) {
     List<ComponentRouting> packageComponentRoutings = new ArrayList<>();
-    ComponentRouting defaultRouting = null;
 
-    for (ASTGUICompilationUnit component : packageComponents) {
+    for (ASTGUICompilationUnit component : routing.getComponents()) {
       if (!component.getGUIComponentDeclaration().isPage()) {
         continue;
       }
@@ -172,33 +191,29 @@ public class GUI2TSConfigGenerator {
           existHWC,
           idStrings,
           util.removeExtension(componentFilePath),
-          packageInfo.getValue().getRoutingPath()
+          routing.getRoutingPath()
       );
-      if (idStrings.isEmpty()) {
-        defaultRouting = componentRouting;
-      }
       packageComponentRoutings.add(componentRouting);
     }
 
-    String dir = packageInfo.getValue().getGeneratedFileDir();
-    String name = packageInfo.getValue().getRoutingFileNameBase();
-
-    boolean existHWCRoutes = existsHandwrittenFile(
-        hwcPath, dir + "/" + name + ROUTES_FILE + "." + TS_FILE_EXTENSION);
-    Path generatedRoutingFile = Paths.get(dir,
-        name + ROUTES_FILE + (existHWCRoutes ? "TOP" : "") + "." + TS_FILE_EXTENSION);
-    Map<String, String> subRoutes = findSubroutesForPackageConfig(packageInfo, routesMap, hwcPath);
-    genEngine.generateNoA("umlp.gui2ts.TSPackageRoutes", generatedRoutingFile,
-        packageComponentRoutings, defaultRouting, subRoutes);
-
-    return generatedRoutingFile.toString();
+    return packageComponentRoutings;
   }
 
-  protected class ComponentRouting {
+  protected Optional<ComponentRouting> getDefaultRouting(List<ComponentRouting> routings) {
+    for (ComponentRouting routing : routings) {
+      if (!routing.getHasIds()) {
+        return Optional.of(routing);
+      }
+    }
+    return Optional.empty();
+  }
+
+  public class ComponentRouting {
     protected final String importPath;
     protected final String importedSymbolName;
     protected final String urlPrefix;
     protected final String url;
+    protected final boolean hasIds;
 
     public String getImportedSymbolName() {
       return importedSymbolName;
@@ -214,6 +229,10 @@ public class GUI2TSConfigGenerator {
 
     public String getUrl() {
       return url;
+    }
+
+    public boolean getHasIds() {
+      return hasIds;
     }
 
     protected ComponentRouting(
@@ -238,6 +257,8 @@ public class GUI2TSConfigGenerator {
       }
       url += ast.getComponentName() + String.join(":/", ids);
       this.url = url;
+
+      this.hasIds = !ids.isEmpty();
     }
   }
 
