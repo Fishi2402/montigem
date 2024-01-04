@@ -48,6 +48,7 @@ genGUI {
                      "gui.process.ProcessCreate",
                      "gui.step.ProcessStepCreate",
                      "gui.joinconnection.JoinConnectionCreate",
+                     "gui.endeffector.EndEffectorCreate",
                      "gui.component.ComponentCreate"]
 
   /*

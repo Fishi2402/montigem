@@ -25,7 +25,7 @@ component JoinConnectionCreate(JoinConnection connection, List<String> dummyComp
             component = @GemColumn(
               components = [
                 @GemTextInput(
-                    labelText = "State of Connection",
+                    labelText = "State of Connection (%)",
                     inputType = "number",
                     entry = connection.state),
                 selectTypeOfConnection@GemTextInput(

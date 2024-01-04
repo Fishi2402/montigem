@@ -8,6 +8,7 @@ import { ProcessBuilder } from '@src/demorec/ProcessBuilder';
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { BatteryPackTypeBuilder } from '@src/demorec/BatteryPackTypeBuilder';
+import { BatteryPackType } from '@src/demorec/BatteryPackType';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
 
@@ -42,6 +43,9 @@ export  class ProcessCreate extends ProcessCreateComponent {
 
   public bPackTypeEntry: string = "";
   public bPackTypeOptions: Option[] = [newOption];
+
+  public typeHash = -1
+  public lastType : BatteryPackType;
 
   public ngOnInit(): void {
     super.ngOnInit()
@@ -128,6 +132,46 @@ export  class ProcessCreate extends ProcessCreateComponent {
       }
     }
     return false;
+  }
+
+  public override getPackNameEntry (): string {
+    console.debug("Is Called")
+    if(this.getPack()?.getDescription() != null) {
+      return this.getPack().getDescription()
+    }
+
+    let typeName : string = ""
+
+    if(this.getP().getStartedAt()) {
+
+      const chosenDate = this.getP().getStartedAt()
+      typeName = chosenDate.getFullYear()+"_"+(chosenDate.getMonth()+1)+"_"+chosenDate.getDay()
+
+      if(this.getType()?.getCarType()) {
+
+      } else if(this.getSelectBPackTypeEntry()) {
+        const bTypeId = this.getSelectBPackTypeEntry()
+        if(this.typeHash == Number(bTypeId)) {
+          typeName = typeName+"_"+this.lastType?.getCarType().trim().replaceAll(" ", "_")
+        } else if(Number.isInteger(Number(bTypeId))) {
+          this.typeHash = Number(bTypeId)
+          DemoRecManager.getBatteryPackTypeSure(Number(this.getSelectBPackTypeEntry())).then(
+              (bType : BatteryPackType)  => {
+                this.lastType = bType
+          });
+        }
+
+      }
+    }
+    if(this.getPack()) {
+      typeName = typeName+"__"+this.getPack().getGemId()
+    }
+
+    if (this.getPack()==null) {
+      return null;
+    }
+    return typeName
+
   }
 }
 

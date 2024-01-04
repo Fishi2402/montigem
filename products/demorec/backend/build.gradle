@@ -26,10 +26,17 @@ plugins {
 
 description 'Demolition Recyling Database'
 
+application {
+  // Set Entrypoint of Application
+  mainClass = 'demorec.DemoRecServerApplication'
+}
+
 jib {
   to {
     image 'umlp_demorec'
   }
+  // For Docker-Container
+  container.mainClass = application.mainClass.get()
 }
 
 dependencies {
@@ -44,17 +51,6 @@ dependencies {
 
   implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
 }
-
-
-application {
-  // Set Entrypoint of Application
-  mainClass = 'demorec.DemoRecServerApplication'
-}
-
-jib { // For Docker-Container
-  container.mainClass = application.mainClass.get()
-}
-
 
 generateUmlpBackend {
   input = file("../models/DemoRec.umlp")

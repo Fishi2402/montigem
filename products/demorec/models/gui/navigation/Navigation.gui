@@ -15,7 +15,7 @@ component Navigation() {
       @GemLink(url="gui/Start", text="Processes"),
       @GemLink(url="gui/process/ProcessCreate", text="Start new Process"),
       @GemLink(url="gui/pack/AllPacksOverview", text="Battery Packs"),
-      @GemLink(url="gui/pack/BatteryPackCreate", text="Enter new Pack")
+      @GemLink(url="gui/endeffector/EndEffectorOverview", text="End Effectors")
     ]
   );
 

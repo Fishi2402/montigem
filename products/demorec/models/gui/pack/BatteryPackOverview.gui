@@ -19,9 +19,9 @@ component BatteryPackOverview(BatteryPack pack) {
       @GemColumn(
         width="30%",
         components=[
-          @GemText(value="Description: "+pack.description),
-          @GemText(value="State of Charge: "+pack.stateOfCharge),
-          @GemText(value="State of Health: "+pack.health)
+          @GemText(value="Description "+pack.description),
+          @GemText(value="State of Charge "+pack.stateOfCharge),
+          @GemText(value="State of Health (%) "+pack.health)
         ]
       ),
       editPack@GemLink(url="override", text="Edit Pack."),
