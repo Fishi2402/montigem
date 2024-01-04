@@ -5,7 +5,7 @@ import Domain.Person;
 
 import input.GemTextInput;
 
-page GemTextInputExample(Person persons) {
+page GemTextInputExample(List<Person> persons) {
   @iterate(Person p : persons) {
     dropdown@GemTextInput(
       id = "firstName",
