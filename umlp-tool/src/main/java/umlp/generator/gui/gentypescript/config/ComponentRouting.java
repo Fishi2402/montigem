@@ -52,7 +52,10 @@ public class ComponentRouting {
     if (!urlPrefix.isEmpty()) {
       url += "/";
     }
-    url += ast.getComponentName() + String.join(":/", ids);
+    url += ast.getComponentName();
+    if (!ids.isEmpty()) {
+      url += "/:" + String.join("/:", ids);
+    }
     this.url = url;
 
     this.hasIds = !ids.isEmpty();
