@@ -13,7 +13,9 @@ import {
 
 import { ActivatedRoute, Router } from '@angular/router';
 
-const newOption = "-- Create new --";
+import { Option } from '@umlp/input';
+
+const newOption: Option = { value: "-- Create new --", display: "-- Create new --" };
 
 @Component({
   standalone:true,
@@ -28,10 +30,10 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
   public typeEntry : string ="";
 
   public endEffectorEntry: string = "";
-  public endEffectorOptions: string[] = [newOption];
+  public endEffectorOptions: Option[] = [newOption];
 
   public joinConnectionEntry: string = "";
-  public joinConnectionOptions: string[] = [newOption];
+  public joinConnectionOptions: Option[] = [newOption];
 
   public ngOnInit(): void {
     super.ngOnInit()
@@ -41,7 +43,8 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
         console.error(endEffectors)
         this.endEffectorOptions = []
         for (const endEffector of endEffectors) {
-          this.endEffectorOptions.push(endEffector.getGemId() + "");
+          let value = endEffector.getGemId() + "";
+          this.endEffectorOptions.push({value: value, display: value});
         }
         this.endEffectorOptions = this.endEffectorOptions.slice();
       });
@@ -53,7 +56,8 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
         console.error(joinConnections)
         this.joinConnectionOptions = []
         for (const joinConnection of joinConnections) {
-          this.joinConnectionOptions.push(joinConnection.getGemId() + "");
+          let value = joinConnection.getGemId() + "";
+          this.joinConnectionOptions.push({value: value, display: value});
         }
         this.joinConnectionOptions = this.joinConnectionOptions.slice();
       });
@@ -61,7 +65,7 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
   }
 
   // Select Types
-  public override getSelectTypeOptions(): Array<string> {
+  public override getSelectTypeOptions(): Array<Option> {
     console.debug("Select Type Options")
     return [ProcessStepType.DECONSTRCUTION.toString(), ProcessStepType.OTHER.toString()];
   }
@@ -80,7 +84,7 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
   }
 
   // Select End Effectors
-  public override getSelectEndeffectorOptions(): Array<string> {
+  public override getSelectEndeffectorOptions(): Array<Option> {
     return this.endEffectorOptions;
   }
 
@@ -96,7 +100,7 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
   }
 
   // Select Join Connection
-  public override getSelectJoinConnectionOptions(): Array<string> {
+  public override getSelectJoinConnectionOptions(): Array<Option> {
     return this.joinConnectionOptions;
   }
 

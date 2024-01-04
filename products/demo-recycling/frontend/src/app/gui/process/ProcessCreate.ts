@@ -21,10 +21,11 @@ import {
   EventEmitter,
   TemplateRef,
 } from '@angular/core';
-
 import { ActivatedRoute, Router } from '@angular/router';
 
-const newOption = "-- Create new --";
+import { Option } from '@umlp/input';
+
+const newOption: Option = { value: "-- Create new --", display: "-- Create new --" };
 
 @Component({
   standalone:true,
@@ -37,10 +38,10 @@ const newOption = "-- Create new --";
 export  class ProcessCreate extends ProcessCreateComponent {
 
   public bPackEntry: string = "";
-  public bPackOptions: string[] = [newOption];
+  public bPackOptions: Option[] = [newOption];
 
   public bPackTypeEntry: string = "";
-  public bPackTypeOptions: string[] = [newOption];
+  public bPackTypeOptions: Option[] = [newOption];
 
   public ngOnInit(): void {
     super.ngOnInit()
@@ -49,7 +50,8 @@ export  class ProcessCreate extends ProcessCreateComponent {
       bPacks.loadAll().then(() => {
         console.error(bPacks)
         for (const bPack of bPacks) {
-          this.bPackOptions.push(bPack.getGemId() + "");
+          let value = bPack.getGemId() + "";
+          this.bPackOptions.push({value: value, display: value});
         }
         this.bPackOptions = this.bPackOptions.slice();
       });
@@ -60,14 +62,15 @@ export  class ProcessCreate extends ProcessCreateComponent {
       bPackTypes.loadAll().then(() => {
         console.error(bPackTypes)
         for (const bPackType of bPackTypes) {
-          this.bPackOptions.push(bPackType.getGemId() + "");
+          let value = bPackType.getGemId() + "";
+          this.bPackTypeOptions.push({value: value, display: value});
         }
         this.bPackOptions = this.bPackOptions.slice();
       });
     });
   }
 
-  public override getSelectBPackOptions(): Array<string> {
+  public override getSelectBPackOptions(): Array<Option> {
     return this.bPackOptions;
   }
 
@@ -83,7 +86,7 @@ export  class ProcessCreate extends ProcessCreateComponent {
     return this.getSelectBPackEntry() === newOption;
   }
 
-  public override getSelectBPackTypeOptions(): Array<string> {
+  public override getSelectBPackTypeOptions(): Array<Option> {
     return this.bPackTypeOptions;
   }
 

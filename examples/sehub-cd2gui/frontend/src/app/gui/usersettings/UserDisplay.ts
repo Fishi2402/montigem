@@ -7,6 +7,7 @@ import {SehubRole} from '@src/sehub/SehubRole';
 import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
+import {Option} from '@umlp/input';
 
 @Component({
   standalone:true,
@@ -19,11 +20,12 @@ import {User} from '@src/sehub/User';
 export class UserDisplay extends UserDisplayComponent {
 
   public override getRoleOptions(): Array<string> {
-    let res: Array<string> = [];
+    let res: Array<Option> = [];
 
     for (let role of Object.values(SehubRole)) {
       if (isNaN(Number(role))) {
-        res.push(this.enumToCapitalizedString(role + ''))
+        let value = this.enumToCapitalizedString(role + '')
+        res.push({value: value, display: value});
       }
     }
     return res;
