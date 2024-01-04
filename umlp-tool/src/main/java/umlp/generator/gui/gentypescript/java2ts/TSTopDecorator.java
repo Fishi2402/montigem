@@ -35,7 +35,7 @@ public class TSTopDecorator extends TopDecorator {
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compUnit, boolean importHW) {
     super.decorate(compUnit);
     for (ASTCDClass cdClass : compUnit.getCDDefinition().getCDClassesList()) {
-      if (!GUIGeneratorUtil.getInstance().isComponent(cdClass) && GUIGeneratorUtil.getInstance().existsHWC(hwPath, determineQualifiedName(cdClass, compUnit))) {
+      if (!GUIGeneratorUtil.getInstance().isComponent(cdClass) && GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdClass, compUnit))) {
         if (importHW) {
           CD4C.getInstance().addImport(cdClass, GUIGeneratorUtil.getInstance().getPackageName(compUnit) + "." + cdClass.getName());
         }
@@ -44,7 +44,7 @@ public class TSTopDecorator extends TopDecorator {
     }
 
     for (ASTCDInterface cdInterface : compUnit.getCDDefinition().getCDInterfacesList()) {
-      if (GUIGeneratorUtil.getInstance().existsHWC(hwPath, determineQualifiedName(cdInterface, compUnit))) {
+      if (GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdInterface, compUnit))) {
         if (importHW) {
           CD4C.getInstance().addImport(cdInterface, GUIGeneratorUtil.getInstance().getPackageName(compUnit) + "." + cdInterface.getName());
         }
@@ -53,7 +53,7 @@ public class TSTopDecorator extends TopDecorator {
     }
 
     for (ASTCDEnum cdEnum : compUnit.getCDDefinition().getCDEnumsList()) {
-      if (GUIGeneratorUtil.getInstance().existsHWC(hwPath, determineQualifiedName(cdEnum, compUnit))) {
+      if (GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdEnum, compUnit))) {
         if (importHW) {
           CD4C.getInstance().addImport(cdEnum, GUIGeneratorUtil.getInstance().getPackageName(compUnit) + "." + cdEnum.getName());
         }

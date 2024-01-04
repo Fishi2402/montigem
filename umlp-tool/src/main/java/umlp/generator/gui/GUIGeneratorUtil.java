@@ -110,7 +110,7 @@ public class GUIGeneratorUtil {
     return origPackage;
   }
 
-  public boolean existsHWC(MCPath targetPath, String qualifiedName) {
+  public boolean existsHandwrittenClass(MCPath targetPath, String qualifiedName) {
     String hwFile = Names.getPathFromPackage(qualifiedName) + ".ts";
     Optional<URL> hwFilePath = targetPath.find(hwFile);
     boolean result = hwFilePath.isPresent();
