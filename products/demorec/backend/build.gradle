@@ -37,7 +37,7 @@ dependencies {
   implementation 'com.h2database:h2:2.1.214'  // In-Memory database written in java
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
 
-  compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version  // Required for Hot-Reload
+  developmentOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version  // Required for Hot-Reload
   implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
