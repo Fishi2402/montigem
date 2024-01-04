@@ -19,7 +19,7 @@ import {Option} from '@umlp/input';
 })
 export class UserDisplay extends UserDisplayComponent {
 
-  public override getRoleOptions(): Array<string> {
+  public override getRoleOptions(): Array<Option> {
     let res: Array<Option> = [];
 
     for (let role of Object.values(SehubRole)) {
