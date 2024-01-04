@@ -83,7 +83,7 @@ export  class ProcessCreate extends ProcessCreateComponent {
   }
 
   public override getGuardBPackCondition(): boolean {
-    return this.getSelectBPackEntry() === newOption;
+    return this.getSelectBPackEntry() === newOption.value;
   }
 
   public override getSelectBPackTypeOptions(): Array<Option> {
@@ -99,7 +99,7 @@ export  class ProcessCreate extends ProcessCreateComponent {
   }
 
   public override getGuardBPackTypeCondition(): boolean {
-    return this.getSelectBPackTypeEntry() === newOption;
+    return this.getSelectBPackTypeEntry() === newOption.value;
   }
 
 

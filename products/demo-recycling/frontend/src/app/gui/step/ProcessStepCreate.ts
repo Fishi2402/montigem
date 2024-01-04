@@ -35,8 +35,18 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
   public joinConnectionEntry: string = "";
   public joinConnectionOptions: Option[] = [newOption];
 
+  public selectTypeOptions: Option[] = [];
+
   public ngOnInit(): void {
     super.ngOnInit()
+
+    let dec = ProcessStepType.DECONSTRCUTION.toString();
+    let other = ProcessStepType.OTHER.toString();
+    this.selectTypeOptions = [
+      {value: dec, display: dec},
+      {value: other, display: other},
+    ]
+
     DemoRecManager.getEndEffectorList().then(gemPromiseRes => {
       const endEffectors = gemPromiseRes;
       endEffectors.loadAll().then(() => {
@@ -67,7 +77,7 @@ export  class ProcessStepCreate extends ProcessStepCreateComponent {
   // Select Types
   public override getSelectTypeOptions(): Array<Option> {
     console.debug("Select Type Options")
-    return [ProcessStepType.DECONSTRCUTION.toString(), ProcessStepType.OTHER.toString()];
+    return this.selectTypeOptions;
   }
 
   public override getSelectTypeEntry(): string {
