@@ -28,9 +28,10 @@ public class TSDerivedClassCommandDecorator extends DerivedClassCommandDecorator
   }
 
   protected String cleanupType(ASTCDCompilationUnit origCD, String type) {
-    // Remove the "DtCockpit." prefix
-    if (type.startsWith(origCD.getCDDefinition().getName()))
-      return type.substring(origCD.getCDDefinition().getName().length()+1);
+    // Remove the "[pck.]DtCockpit." prefix
+    String pckName = getPackageName(origCD, DEFAULT_PACKAGE);
+    if (type.toLowerCase().startsWith(pckName))
+      return type.substring(pckName.length()+1);
 
     return super.cleanupType(origCD,type);
   }

@@ -3,7 +3,7 @@ package hardy.flensburg;
 
 import java.util.List;
 
-public class MonthlyReport extends MonthlyReportTOP {
+public class MonthlyReportImpl extends MonthlyReportImplTOP {
 
   @Override
   public int getMonth() {

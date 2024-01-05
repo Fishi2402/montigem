@@ -62,6 +62,10 @@ public class TSDerivedClassClientImplDecorator extends DerivedClassClientImplDec
     return "umlp.gui2ts.derivedclass.TSGetClientImpl";
   }
 
+  protected String getSizeTemplate() {
+    return "umlp.gui2ts.derivedclass.TSGetSizeImpl";
+  }
+
   @Override
   protected String getInitTemplate() {
     return "umlp.gui2ts.derivedclass.TSInit";
@@ -80,8 +84,6 @@ public class TSDerivedClassClientImplDecorator extends DerivedClassClientImplDec
     String attrType = type;
     if (attrType.equals("Array<String>"))
       attrType = "Array<string>";
-
-    System.err.println("##################" + type + "=>" + attrType);
 
     ast.addCDMember(getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(), getMCTypeFacade().createQualifiedType(attrType), name));
 
