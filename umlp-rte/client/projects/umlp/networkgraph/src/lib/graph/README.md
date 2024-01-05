@@ -43,7 +43,6 @@ Tested with [Angular](https://angular.io/) (`v16.2.7`) and the following depende
   "graphology-layout-noverlap": "^0.4.2",
   "graphology-metrics": "^2.2.0",
   "primeicons": "^6.0.1",
-  "primeng": "^16.5.0",
   "sigma": "3.0.0-alpha3",
   // Utility dependencies that might be necessary when using the entire "shared" folder
   "xlsx-js-style": "^1.2.0",
