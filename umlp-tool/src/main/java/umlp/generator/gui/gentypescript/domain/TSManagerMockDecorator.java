@@ -101,6 +101,10 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
       ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
+    if (domainClass.getModifier().isDerived()) {
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSGetDerived", name);
+      return;
+    }
     String lName = StringTransformations.uncapitalize(name);
     boolean isSingleton = TagLookUp.isSingleton(domainClass);
 

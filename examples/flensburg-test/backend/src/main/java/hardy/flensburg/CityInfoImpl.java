@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CityInfo extends CityInfoTOP {
+// Implement the getters
+public class CityInfoImpl extends CityInfoImplTOP {
 
   @Override
   public int getNumberOfCities() {

@@ -23,7 +23,7 @@ public class ManagerMockDecoratorTest extends DecoratorTest {
     assertAll(
             // check no of methods and attributes
             () -> assertEquals(32, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(89, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(90, clazz.getCDMethodList().size(), "number of methods"),
 
             // check attributes
             () -> existsAttribute(clazz, "freeGemId"),
