@@ -4,14 +4,13 @@ package hardy.flensburg;
 // HWC-P
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CityInfo extends CityInfoTOP {
+public class CityInfoImpl extends CityInfoImplTOP {
 
   @Override
   public int getNumberOfCities() {

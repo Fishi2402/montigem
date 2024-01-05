@@ -72,8 +72,13 @@ public class DerivedClassCommandDecorator extends AbstractDeSerDecorator {
     return retList;
   }
 
-  protected String cleanupType(ASTCDCompilationUnit origCD, String t) {
-    return StringTransformations.uncapitalize(t);
+  protected String cleanupType(ASTCDCompilationUnit origCD, String type) {
+    String pckName = getPackageName(origCD, DEFAULT_PACKAGE);
+    // Lower-case the package name, if from Domain
+    if (type.toLowerCase().startsWith(pckName.toLowerCase())) {
+      return pckName + type.substring(pckName.length());
+    }
+    return StringTransformations.uncapitalize(type);
   }
 
   protected ASTCDClass createGetMethod(ASTCDCompilationUnit origCD, ASTCDClass domainClass,

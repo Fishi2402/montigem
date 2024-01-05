@@ -35,13 +35,4 @@ export class DerivedInfoClientImpl extends DerivedInfoClientImplTOP {
 
   }
 
-  // TODO: Generate size methods (if needed)
-  public sizeManyStrings (): number {
-    return 0;
-  }
-
-  public sizeMonthlyMeetings (): number {
-    return 0;
-  }
-
 }

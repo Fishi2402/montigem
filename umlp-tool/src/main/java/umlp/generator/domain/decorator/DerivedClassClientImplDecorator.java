@@ -69,13 +69,6 @@ public class DerivedClassClientImplDecorator extends AbstractDecorator {
     List<ASTCDAssocSide> singleAssocs = new ArrayList<>();
     List<ASTCDAssocSide> listAssocs = new ArrayList<>();
 
-    CDSymbolTables.getAssociationsInHierarchy(domainClass)
-        .forEach(a -> {
-          System.err.println("XXXXXXXXXXXXXXXXXXX" + a.getModifier().isDerived());
-          System.err.println("   " + a.getName());
-          System.err.println("   " + a.getMCQualifiedType().printType());
-        });
-
     CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
 //        .filter(assoc -> assoc.getModifier().isDerived())
         .forEach(assoc -> {
@@ -108,10 +101,17 @@ public class DerivedClassClientImplDecorator extends AbstractDecorator {
   protected void handleAttribute(ASTCDClass domainClass, String name, String type, ASTCDClass ast,
       String packageName, boolean isList) {
     getCD4C().addMethod(ast, getGetTemplate(), name, type, domainClass.getName(), packageName, isList);
+    if (isList) {
+      getCD4C().addMethod(ast, getSizeTemplate(), name, type, domainClass.getName(), packageName);
+    }
   }
 
   protected String getGetTemplate() {
     return "umlp.derivedclass.GetClientImpl";
+  }
+
+  protected String getSizeTemplate() {
+    return "umlp.derivedclass.GetSizeImpl";
   }
 
   protected String getInitTemplate() {
