@@ -18,7 +18,9 @@ import {
 
 import {ActivatedRoute, Router} from '@angular/router';
 
-const newOption = "NEW";
+import { Option } from '@umlp/input';
+
+const newOption: Option = { value: "NEW", display: "NEW" };
 
 @Component({
   standalone: true,
@@ -33,10 +35,12 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   public typeEntry: string = "";
 
   public endEffectorEntry: string = "";
-  public endEffectorOptions: string[] = [newOption];
+  public endEffectorOptions: Option[] = [newOption];
 
   public joinConnectionEntry: string = "";
-  public joinConnectionOptions: string[] = [newOption];
+  public joinConnectionOptions: Option[] = [newOption];
+
+  public selectTypeOptions: Option[] = [];
 
   public building: boolean = false;
 
@@ -45,13 +49,22 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
 
   public override ngOnInit(): void {
     super.ngOnInit()
+
+    let dec = ProcessStepType.DECONSTRUCTION.toString();
+    let other = ProcessStepType.OTHER.toString();
+    this.selectTypeOptions = [
+      {value: dec, display: dec},
+      {value: other, display: other},
+    ];
+
     DemoRecManager.getEndEffectorList().then(gemPromiseRes => {
       const endEffectors = gemPromiseRes;
       endEffectors.loadAll().then(() => {
         console.debug(endEffectors)
         this.endEffectorOptions = [newOption]
         for (const endEffector of endEffectors) {
-          this.endEffectorOptions.push(endEffector.getGemId() + "");
+          let value = endEffector.getGemId() + "";
+          this.endEffectorOptions.push({value: value, display: value});
         }
         this.endEffectorOptions = this.endEffectorOptions.slice();
       });
@@ -64,7 +77,8 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
         this.joinConnectionOptions = [newOption]
         for (const joinConnection of joinConnections) {
           console.debug("Refill Join Connection Options")
-          this.joinConnectionOptions.push(joinConnection.getGemId() + "");
+          let value = joinConnection.getGemId() + "";
+          this.joinConnectionOptions.push({value: value, display: value});
         }
         this.joinConnectionOptions = this.joinConnectionOptions.slice();
       });
@@ -72,8 +86,8 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   }
 
   // Select Types
-  public override getSelectTypeOptions(): Array<string> {
-    return [ProcessStepType.DECONSTRUCTION.toString(), ProcessStepType.OTHER.toString()];
+  public override getSelectTypeOptions(): Array<Option> {
+    return this.selectTypeOptions;
   }
 
   public override getSelectTypeEntry(): string {
@@ -85,7 +99,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   }
 
   // Select End Effectors
-  public override getSelectEndeffectorOptions(): Array<string> {
+  public override getSelectEndeffectorOptions(): Array<Option> {
     console.debug("Endeffector Gem Ids ", this.endEffectorOptions)
     return this.endEffectorOptions;
   }
@@ -102,7 +116,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   }
 
   // Select Join Connection
-  public override getSelectJoinConnectionOptions(): Array<string> {
+  public override getSelectJoinConnectionOptions(): Array<Option> {
     return this.joinConnectionOptions;
   }
 

@@ -8,4 +8,9 @@ classdiagram GemTextInputTypes {
     String message;
   }
 
+  public class Option {
+    String value;
+    String display;
+  }
+
 }

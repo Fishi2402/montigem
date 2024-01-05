@@ -14,9 +14,9 @@ component PackTypeOverview(BatteryPackType type) {
       rowGap="1px",
       wrap="nowrap",
       components=[
-        @GemText(value="Car Type:"+type.carType),
-        @GemText(value="Capacity:"+type.capacity),
-        @GemText(value="BMS Location:"+type.bmsLocation)
+        @GemText(value="Car Type "+type.carType),
+        @GemText(value="BMS Location "+type.bmsLocation),
+        @GemText(value="Capacity (kWh) "+type.capacity)
       ]
     )
   );

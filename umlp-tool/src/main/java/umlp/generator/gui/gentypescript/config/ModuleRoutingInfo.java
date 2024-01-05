@@ -1,9 +1,12 @@
-package umlp.generator.gui.gentypescript;
+package umlp.generator.gui.gentypescript.config;
 
+import com.google.common.collect.Iterables;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ModuleRoutingInfo {
 
@@ -15,7 +18,9 @@ public class ModuleRoutingInfo {
   public ModuleRoutingInfo(List<String> packageParts) {
     this.packageParts = packageParts;
     this.generatedFileDir = String.join("/", packageParts);
-    this.routingPath = packageParts.size() > 1 ? (packageParts.get(1) + String.join("/", packageParts.subList(2, packageParts.size()))) : "";
+    this.routingPath = packageParts.size() > 1
+        ? packageParts.get(1) + String.join("/", packageParts.subList(2, packageParts.size()))
+        : "";
   }
 
   public void add(ASTGUICompilationUnit comp) {
@@ -26,8 +31,8 @@ public class ModuleRoutingInfo {
     return components;
   }
 
-  public List<String> getPackageParts() {
-    return packageParts;
+  public String getRoutingFileNameBase() {
+    return StringTransformations.capitalize(Iterables.getLast(packageParts));
   }
 
   public String getRoutingPath() {

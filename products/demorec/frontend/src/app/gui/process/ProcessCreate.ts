@@ -8,6 +8,7 @@ import { ProcessBuilder } from '@src/demorec/ProcessBuilder';
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { BatteryPackTypeBuilder } from '@src/demorec/BatteryPackTypeBuilder';
+import { BatteryPackType } from '@src/demorec/BatteryPackType';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
 
@@ -21,10 +22,11 @@ import {
   EventEmitter,
   TemplateRef,
 } from '@angular/core';
-
 import { ActivatedRoute, Router } from '@angular/router';
 
-const newOption = "New";
+import { Option } from '@umlp/input';
+
+const newOption: Option = { value: "New", display: "New" };
 
 @Component({
   standalone:true,
@@ -37,10 +39,13 @@ const newOption = "New";
 export  class ProcessCreate extends ProcessCreateComponent {
 
   public bPackEntry: string = "";
-  public bPackOptions: string[] = [newOption];
+  public bPackOptions: Option[] = [newOption];
 
   public bPackTypeEntry: string = "";
-  public bPackTypeOptions: string[] = [newOption];
+  public bPackTypeOptions: Option[] = [newOption];
+
+  public typeHash = -1
+  public lastType : BatteryPackType;
 
   public ngOnInit(): void {
     super.ngOnInit()
@@ -49,7 +54,8 @@ export  class ProcessCreate extends ProcessCreateComponent {
       bPacks.loadAll().then(() => {
         console.error(bPacks)
         for (const bPack of bPacks) {
-          this.bPackOptions.push(bPack.getGemId() + "");
+          let value = bPack.getGemId() + "";
+          this.bPackOptions.push({value: value, display: value});
         }
         this.bPackOptions = this.bPackOptions.slice();
       });
@@ -60,14 +66,15 @@ export  class ProcessCreate extends ProcessCreateComponent {
       bPackTypes.loadAll().then(() => {
         console.error(bPackTypes)
         for (const bPackType of bPackTypes) {
-          this.bPackOptions.push(bPackType.getGemId() + "");
+          let value = bPackType.getGemId() + "";
+          this.bPackTypeOptions.push({value: value, display: value});
         }
         this.bPackOptions = this.bPackOptions.slice();
       });
     });
   }
 
-  public override getSelectBPackOptions(): Array<string> {
+  public override getSelectBPackOptions(): Array<Option> {
     return this.bPackOptions;
   }
 
@@ -80,10 +87,10 @@ export  class ProcessCreate extends ProcessCreateComponent {
   }
 
   public override getGuardBPackCondition(): boolean {
-    return this.getSelectBPackEntry() === newOption;
+    return this.getSelectBPackEntry() === newOption.value;
   }
 
-  public override getSelectBPackTypeOptions(): Array<string> {
+  public override getSelectBPackTypeOptions(): Array<Option> {
     return this.bPackTypeOptions;
   }
 
@@ -96,7 +103,7 @@ export  class ProcessCreate extends ProcessCreateComponent {
   }
 
   public override getGuardBPackTypeCondition(): boolean {
-    return this.getSelectBPackTypeEntry() === newOption;
+    return this.getSelectBPackTypeEntry() === newOption.value;
   }
 
 
@@ -125,6 +132,46 @@ export  class ProcessCreate extends ProcessCreateComponent {
       }
     }
     return false;
+  }
+
+  public override getPackNameEntry (): string {
+    console.debug("Is Called")
+    if(this.getPack()?.getDescription() != null) {
+      return this.getPack().getDescription()
+    }
+
+    let typeName : string = ""
+
+    if(this.getP().getStartedAt()) {
+
+      const chosenDate = this.getP().getStartedAt()
+      typeName = chosenDate.getFullYear()+"_"+(chosenDate.getMonth()+1)+"_"+chosenDate.getDay()
+
+      if(this.getType()?.getCarType()) {
+
+      } else if(this.getSelectBPackTypeEntry()) {
+        const bTypeId = this.getSelectBPackTypeEntry()
+        if(this.typeHash == Number(bTypeId)) {
+          typeName = typeName+"_"+this.lastType?.getCarType().trim().replaceAll(" ", "_")
+        } else if(Number.isInteger(Number(bTypeId))) {
+          this.typeHash = Number(bTypeId)
+          DemoRecManager.getBatteryPackTypeSure(Number(this.getSelectBPackTypeEntry())).then(
+              (bType : BatteryPackType)  => {
+                this.lastType = bType
+          });
+        }
+
+      }
+    }
+    if(this.getPack()) {
+      typeName = typeName+"__"+this.getPack().getGemId()
+    }
+
+    if (this.getPack()==null) {
+      return null;
+    }
+    return typeName
+
   }
 }
 

@@ -20,7 +20,9 @@ import {
 
 import { ActivatedRoute, Router } from '@angular/router';
 
-const newOption : string = "NEW"
+import { Option } from '@umlp/input';
+
+const newOption: Option = { value: "NEW", display: "NEW" };
 
 @Component({
   standalone:true,
@@ -32,7 +34,8 @@ const newOption : string = "NEW"
 })
 export class JoinConnectionCreate extends JoinConnectionCreateComponent {
 
-  componentOptions : string[] = [newOption]
+  componentOptions : Option[] = [newOption]
+  joinConnectionTypeOptions : Option[] = []
 
   superComponentEntry : string = "";
   connectsComponentEntry : string = "";
@@ -40,6 +43,13 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
 
   public override ngOnInit(){
     super.ngOnInit()
+
+    this.joinConnectionTypeOptions = [];
+    for (let val of Object.values(JoinConnectionType)) {
+      let str = <string>val;
+      this.joinConnectionTypeOptions.push({value: str, display: str});
+    }
+
     DemoRecManager.getDemoRecComponentList().then(componentList => {
 
       const components = componentList;
@@ -48,7 +58,8 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
         this.componentOptions = [newOption]
         for (const component of components) {
           console.debug("Refill Join Connection Options")
-          this.componentOptions.push(component.getGemId() + "");
+          let value = component.getGemId() + "";
+          this.componentOptions.push({value: value, display: value});
         }
         this.componentOptions = this.componentOptions.slice();
       });
@@ -56,8 +67,8 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
   }
 
   // Select Type of connection
-  public override getSelectTypeOfConnectionOptions (): Array<string> {
-    return Object.values(JoinConnectionType) as string[];
+  public override getSelectTypeOfConnectionOptions (): Array<Option> {
+    return this.joinConnectionTypeOptions;
   }
 
   public override getSelectTypeOfConnectionEntry (): string {
@@ -69,7 +80,7 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
   }
 
   // Select Super component
-  public override getSelectSuperComponentOptions (): Array<string> {
+  public override getSelectSuperComponentOptions (): Array<Option> {
     return this.componentOptions;
   }
 
@@ -82,7 +93,7 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
   }
 
   // Select Connected Components
-  public override getSelectConnectsComponentOptions (): Array<string>{
+  public override getSelectConnectsComponentOptions (): Array<Option>{
     return this.componentOptions;
   }
 
