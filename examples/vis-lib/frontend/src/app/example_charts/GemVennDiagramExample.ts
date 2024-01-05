@@ -1,40 +1,62 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemVennDiagramExampleComponent ,config} from '@src/example_charts/GemVennDiagramExampleComponent';
+import { GemVennDiagramExampleComponent, config } from '@src/example_charts/GemVennDiagramExampleComponent';
 import { GemVennDiagramData, GemVennDiagramEntry } from '@umlp/charts';
+import { Person } from '@src/domain/Person';
 
 @Component({
-  standalone:true,
-  imports:[...config.imports],
+  standalone: true,
+  imports: [...config.imports],
   selector: 'GemVennChartExample',
   templateUrl: config.templateUrl,
 })
 export class GemVennDiagramExample extends GemVennDiagramExampleComponent {
+  private chartData: GemVennDiagramData;
+  private chartDataHash: string;
 
-  entries: GemVennDiagramEntry[] = [
-    {
-      label: 'Test 1',
-      sets: ['test1'],
-      size: 6
-    },
-    {
-      label: 'Test 2',
-      sets: ['test2'],
-      size: 3
-    },
-    {
-      label: 'Test 3',
-      sets: ['test3'],
-      size: 2
-    },
-    {
-      sets: ['test1', 'test2'],
-      size: 1
+  public override getVenndiagrammData(): GemVennDiagramData {
+    if (!this.persons) {
+      return null;
     }
-  ];
+    let entries: GemVennDiagramEntry[] = [];
+    let mapOfriends = new Map<string, Person[]>;
+    let limitPeople = 0;
 
-  data: GemVennDiagramData = {
-    entries: this.entries,
+    for (const person of this.persons) {
+      let node = {
+        label: person.getName(),
+        sets: [`${person.getName()}`],
+        size: person.getFriends().length
+      };
+      mapOfriends.set(person.getName(), person.getFriends());
+      entries.push(node);
+      limitPeople++;
+      if (limitPeople === 3) {
+        break;
+      }
+    }
+
+    mapOfriends.forEach((friends, person) => {
+      for (let friend of friends) {
+        if (mapOfriends.has(friend.getName())) {
+          let node = {
+            sets: [`${person}`, `${friend.getName()}`],
+            size: 1
+          };
+          entries.push(node);
+        }
+      }
+    })
+    let data: GemVennDiagramData = {
+      entries: entries,
+    }
+
+    if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
+      return this.chartData;
+    }
+    this.chartData = data;
+    this.chartDataHash = JSON.stringify(this.chartData);
+    return this.chartData;
   }
 }

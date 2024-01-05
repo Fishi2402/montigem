@@ -65,8 +65,6 @@ export class GemBarChartExample extends GemBarChartExampleComponent {
     }
     this.chartData = data;
     this.chartDataHash = JSON.stringify(this.chartData);
-    console.log(this.chartData.entries);
-    console.log(this.chartData.labels);
     return this.chartData;
   }
 

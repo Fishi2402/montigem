@@ -4,15 +4,14 @@ package example_charts;
 import charts.GemLineChart;
 import charts.GemLineChartTypes.GemLineChartData;
 import charts.GemLineChartTypes.GemLineChartEntry;
+import Domain.Person;
 
-page GemLineChartExample(
-  GemLineChartData data
-) {
-  @GemLineChart(
-    data = data,
+page GemLineChartExample(List<Person> persons) {
+  linechart@GemLineChart(
+    data = null,
     enableBackgroundColor = true,
-    maxValue = 400,
-    minValue = 100
+    maxValue = 10,
+    minValue = 0
   );
 }
 

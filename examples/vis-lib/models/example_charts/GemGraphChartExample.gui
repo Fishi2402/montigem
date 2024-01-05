@@ -3,9 +3,10 @@ package example_charts;
 
 import charts.GemNetworkGraph;
 import charts.GemNetworkGraphTypes.GemNetworkData;
+import Domain.Person;
 
-page GemGraphChartExample( GemNetworkData data) {
-  @GemNetworkGraph(
-    data = data
+page GemGraphChartExample(List<Person> persons) {
+  networkgraph@GemNetworkGraph(
+    data = null
   );
 }

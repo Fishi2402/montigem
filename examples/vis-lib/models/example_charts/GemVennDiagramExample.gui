@@ -3,11 +3,10 @@ package example_charts;
 
 import charts.GemVennDiagram;
 import charts.GemVennDiagramTypes.GemVennDiagramData;
+import Domain.Person;
 
-page GemVennDiagramExample(
-  GemVennDiagramData data
-) {
-  @GemVennDiagram(
-    data = data
+page GemVennDiagramExample(List<Person> persons) {
+  venndiagramm@GemVennDiagram(
+    data = null
   );
 }

@@ -4,12 +4,11 @@ package example_charts;
 import charts.GemPieChart;
 import charts.GemPieChartTypes.GemPieChartData;
 import charts.GemPieChartTypes.GemPieChartEntry;
+import Domain.Person;
 
-page GemPieChartExample(
-  GemPieChartData data
-) {
-  @GemPieChart(
-    data = data,
+page GemPieChartExample(List<Person> persons) {
+  chart@GemPieChart(
+    data = null,
     innerRadius = 10
   );
 }

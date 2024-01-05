@@ -48,7 +48,7 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
     Person mert = addPerson("Mert", LocalDate.of(1998, 10, 9), a);
     a = addAddress("Aachen", "Ahornstraße", 55);
     Person nico = addPerson("Nico", LocalDate.of(2016, 11, 1), a);
-    Person helen = addPerson("Helen", LocalDate.of(1010, 10, 10), a);
+    Person helen = addPerson("Helen", LocalDate.of(2010, 10, 10), a);
 
     alice.addFriends(bob);
     alice.addFriends(charles);
@@ -59,7 +59,6 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
     bob.addFriends(helen);
     bob.addFriends(alice);
     bob.addFriends(nico);
-    bob.addFriends(helen);
 
     charles.addFriends(alice);
     charles.addFriends(bob);

@@ -1,28 +1,80 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemLineChartExampleComponent,config } from '@src/example_charts/GemLineChartExampleComponent';
+import { GemLineChartExampleComponent, config } from '@src/example_charts/GemLineChartExampleComponent';
 import { GemLineChartData, GemLineChartEntry } from '@umlp/charts';
 
 @Component({
-  standalone:true,
-  imports:[...config.imports],
+  standalone: true,
+  imports: [...config.imports],
   selector: config.selector,
   templateUrl: config.templateUrl,
 })
 export class GemLineChartExample extends GemLineChartExampleComponent {
+  private chartData: GemLineChartData;
+  private chartDataHash: string;
 
-  labels: string[] = ['January', 'February', 'March', 'April', 'May', 'June'];
+  public override getLinechartData(): GemLineChartData {
+    if (!this.persons) {
+      return null;
+    }
+    let labels: string[] = ["People born before 1993", "People born between 1993 and 1998", "People born between 1998 and 2003", "People born after 2003"];
 
-  entries: GemLineChartEntry[] = [
-    { data: [132.54, 136.96, 153.65, 148.96, 182.01, 164.85], label: 'Apple Inc' },
-    { data: [252.18, 271.60, 301.88, 329.37, 336.32, 294.95], label: 'Microsoft Corp' },
-    { data: [138.82, 134.14, 139.24, 140.28, 152.68, 120.46], label: 'Siemens AG' },
-    { data: [252.12, 268.63, 238.38, 300.95, 237.92, 151.25], label: 'Spotify Tech. SA' },
-  ];
+    let entries: GemLineChartEntry[] = [
+      { data: [0, 0, 0, 0], label: '#born people with less than 2 friends' },
+      { data: [0, 0, 0, 0], label: '#born people with 2 friends' },
+      { data: [0, 0, 0, 0], label: '#born people with more than 2 friends' },
+    ];
 
-  data: GemLineChartData = {
-    entries: this.entries,
-    labels: this.labels
+    for (const person of this.persons) {
+      let birthday = Number(person?.getBirthday()?.toDateString().substring(11, 15));
+      let numberFriends = person.getFriends().length;
+      if (birthday < 1993) {
+        if (numberFriends < 2) {
+          entries[0].data[0]++;
+        } else if (numberFriends === 2) {
+          entries[1].data[0]++;
+        } else {
+          entries[2].data[0]++;
+        }
+      } else if (birthday >= 1993 && birthday <= 1998) {
+        if (numberFriends < 2) {
+          entries[0].data[1]++;
+        } else if (numberFriends === 2) {
+          entries[1].data[1]++;
+        } else {
+          entries[2].data[1]++;
+        }
+      } else if (birthday >= 1999 && birthday <= 2003) {
+        if (numberFriends < 2) {
+          entries[0].data[2]++;
+        } else if (numberFriends === 2) {
+          entries[1].data[2]++;
+        } else {
+          entries[2].data[2]++;
+        }
+      } else {
+        if (numberFriends <= 2) {
+          entries[0].data[3]++;
+        } else if (numberFriends === 2) {
+          entries[1].data[3]++;
+        } else {
+          entries[2].data[3]++;
+        }
+      }
+    }
+
+    let data: GemLineChartData = {
+      labels: labels,
+      entries: entries
+    }
+
+    if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
+      return this.chartData;
+    }
+    this.chartData = data;
+    this.chartDataHash = JSON.stringify(this.chartData);
+    return this.chartData;
   }
+
 }

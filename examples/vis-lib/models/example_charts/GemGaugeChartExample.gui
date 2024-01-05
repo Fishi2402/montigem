@@ -3,16 +3,15 @@ package example_charts;
 
 import charts.GemGaugeChart;
 import charts.GemGaugeChartTypes.GemGaugeChartData;
+import Domain.Person;
 
-page GemGaugeChartExample(
-  GemGaugeChartData data
-) {
+page GemGaugeChartExample(List<Person> persons) {
   @GemGaugeChart(
-    data = data,
-    min = -30,
-    max = 70,
-    unit = "kt",
-    textValue = "CO2 Emission"
+    data = null,
+    min = 0,
+    max = 5,
+    unit = "#friends",
+    textValue = "average number of friends for age group"
   );
 }
 
