@@ -75,7 +75,7 @@ public class ManagerMockDecorator extends AbstractDecorator {
             concreteDomainClasses.stream().filter(isSingleton::apply).collect(Collectors.toList()));
 
 
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+    origCD.getCDDefinition().getCDClassesList()
         .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
     origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getModifier().isDerived())
@@ -90,6 +90,11 @@ public class ManagerMockDecorator extends AbstractDecorator {
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
+    if (domainClass.getModifier().isDerived()) {
+      // Same as the backend/managerimpl
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.GetDerived", name);
+      return;
+    }
     String lName = StringTransformations.uncapitalize(name);
     boolean isSingleton = TagLookUp.isSingleton(domainClass);
 

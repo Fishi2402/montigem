@@ -3,18 +3,9 @@ package hardy.flensburg;
 
 import java.util.List;
 
-public class MonthlyReport extends MonthlyReportTOP {
+public class MonthlyReportClientImpl extends MonthlyReportClientImplTOP {
 
-  @Override
-  public int getMonth() {
-    return 0;
-  }
-
-  @Override
-  public long getBalanceChange() {
-    return 0;
-  }
-
+  // TODO: Associations
   @Override
   public int sizeMonthlyTransaction() {
     return 0;

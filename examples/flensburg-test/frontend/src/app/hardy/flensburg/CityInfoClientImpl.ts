@@ -1,12 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { CityInfoTOP } from '@src/hardy/flensburg/CityInfoTOP';
+import { CityInfo } from '@src/hardy/flensburg/CityInfo';
 import { Person } from '@src/hardy/flensburg/Person';
 
-export class CityInfo extends CityInfoTOP {
+// Hand-Written, before generation
+export class CityInfoClientImpl extends CityInfo {
 
   override getNumberOfCities(): number {
-    return 0;
+    return 12;
   }
 
   override getTotalNumberOfCars(): number {
