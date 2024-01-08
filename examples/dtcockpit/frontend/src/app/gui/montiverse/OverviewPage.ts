@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {OverviewPageComponent} from '@src/gui/montiverse/OverviewPageComponent';
+import { OverviewPageComponent, config } from '@src/gui/montiverse/OverviewPageComponent';
 import { Project } from '@src/dtcockpit/Project';
 
 import {
@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 
 @Component({
+  standalone: true,
+  imports: [...config.imports],
   selector: 'overview-page',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/montiverse/OverviewPage.html',
   styles: [":host{ display: flex; flex-direction: column }"],

@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {ShowBranchesComponent} from '@src/gui/montiverse/ShowBranchesComponent';
+import { ShowBranchesComponent, config } from '@src/gui/montiverse/ShowBranchesComponent';
 import { Branch } from '@src/dtcockpit/Branch';
 
 import {
@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 
 @Component({
+  standalone: true,
+  imports: [...config.imports],
   selector: 'show-branches',
   templateUrl: '../../../../build/frontendGen/build/appgui/gui/montiverse/ShowBranches.html',
   styles: [":host{ display: flex; flex-direction: column }"],
