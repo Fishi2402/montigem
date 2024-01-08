@@ -33,7 +33,7 @@ public class DerivedClassDecorator extends AbstractDecorator {
 
     getCD4C().addConstructor(ast, "umlp.derivedclass.Constructor", classname);
 
-    getCD4C().addMethod(ast, "umlp.derivedclass.Init", "NYI", "NYI");
+    getCD4C().addMethod(ast, "umlp.derivedclass.Init", "NYI", "NYI", "NYI", "NYI");
 
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
       .filter(a -> !a.getModifier().isDerived())

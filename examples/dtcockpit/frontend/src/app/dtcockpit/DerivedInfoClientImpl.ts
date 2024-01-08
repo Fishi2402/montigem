@@ -19,22 +19,4 @@ export class DerivedInfoClientImpl extends DerivedInfoClientImplTOP {
     this.init();
   }
 
-  public init() {
-    super.init();
-    // TODO: Generate assoc
-    CommandManager.executeCommand(new DerivedInfo_RandomMSG_get()).then(res => {
-      this.randomMSG = res.asSimpleResult().get();
-    });
-
-    CommandManager.executeCommand(new DerivedInfo_ManyStrings_get()).then(res => {
-      console.warn("res from manyStrings", res);
-      this.manyStrings = res.asListResult().get();
-    });
-    CommandManager.executeCommand(new DerivedInfo_MonthlyMeetings_get()).then(res => {
-      console.warn("res from DerivedInfo_MonthlyMeetings_get", res);
-      this.monthlyMeetings = res.asListResult().get();
-    });
-
-  }
-
 }

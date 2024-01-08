@@ -69,25 +69,22 @@ public class DerivedClassClientImplDecorator extends AbstractDecorator {
     List<ASTCDAssocSide> singleAssocs = new ArrayList<>();
     List<ASTCDAssocSide> listAssocs = new ArrayList<>();
 
-    CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
-//        .filter(assoc -> assoc.getModifier().isDerived())
+    CDSymbolTables.getAssociationsInHierarchy(domainClass)
         .forEach(assoc -> {
           String type = assoc.getSymbol().getType().print();
           boolean isList = GenService.isList(assoc);
           if (isList) {
             type = toList(type);
-            singleAssocs.add(assoc);
-          } else {
             listAssocs.add(assoc);
+          } else {
+            singleAssocs.add(assoc);
           }
           handleAttribute(domainClass, assoc.getName(), type, ast, packageName, isList);
         });
 
-    getCD4C().addMethod(ast, getInitTemplate(), domainClass.getName(), attributeList);
+    // Add the init template (which might execute the commands)
+    getCD4C().addMethod(ast, getInitTemplate(), domainClass.getName(), attributeList, singleAssocs, listAssocs);
 
-
-
-    // TODO: Associations
 
     addImports(domainClass, ast);
 
