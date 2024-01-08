@@ -38,6 +38,11 @@ public class DerivedInfoImpl extends DerivedInfoImplTOP {
   }
 
   @Override
+  public Meeting getRandomMeeting() {
+    return null;
+  }
+
+  @Override
   public int sizeManyStrings() {
     // TODO: Do we need this method?
     return getManyStrings().size();

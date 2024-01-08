@@ -28,6 +28,12 @@ page DerivedInfoPage(DerivedInfo ci) {
     @GemText(value = "someNumber" + ci.someNumber);
     @GemText(value = "someString" + ci.someString);
     @GemText(value = "randomMSG.message" + ci.randomMSG.message);
+    @guard(ci.randomMeeting != null) {
+      @GemText(value = "randomMeeting" + ci.randomMeeting.title);
+    }
+    @guard(ci.randomMeeting == null) {
+      @GemText(value = "No random meeting today");
+    }
 
     @iterate(Meeting meeting : ci.monthlyMeetings){
       @GemText(value = "meeting" + meeting.title);
