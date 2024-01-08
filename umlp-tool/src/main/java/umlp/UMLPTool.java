@@ -44,6 +44,7 @@ import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.UMLAddCommentTrafo;
 import umlp.generator.domain.UMLAddGemIdTrafo;
 import umlp.generator.domain.UMLAssocToAttrTrafo;
 import umlp.generator.domain.UMLAttrToAssocTrafo;
@@ -729,6 +730,10 @@ public class UMLPTool extends UMLPToolTOP {
     UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.traverser());
     assoc2Trafo.transform(node);
     logTrafoExec("UMLAssocToAttrTrafo", node);
+
+    UMLAddCommentTrafo commentTrafo = new UMLAddCommentTrafo(CD4CodeMill.traverser());
+    commentTrafo.transform(node);
+    logTrafoExec("UMLAddCommentTrafo", node);
   }
 
   public IUMLPArtifactScope recreateSymbolTable(ASTCDCompilationUnit node) {
