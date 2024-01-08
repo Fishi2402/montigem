@@ -26,7 +26,8 @@ For every attribute or association,
  a command is generated to fetch the value.
 
 The client implementation class then uses these commands 
- to the values.
+ to retrieve the values.
 
 The java client implementation fetches the values on demand,
-while the TypeScript implementation 
+while the TypeScript implementation performs the fetching after the initialization.
+(Due to the missing `async` keyword, we are unable to await the return of the command.)
