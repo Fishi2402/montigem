@@ -1,13 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { CreateComponent } from '@src/person/CreateComponent';
+import { CreateComponent,config } from '@src/person/CreateComponent';
 import { Component } from '@angular/core';
 import { DomainManager } from '@src/domain/DomainManager';
-
 @Component({
-  selector: 'create',
-  templateUrl: '../../../build/frontendGen/build/appgui/person/Create.html',
-  styleUrls: ['./Create.scss']
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styleUrls: config.styleUrls
 })
 export class Create extends CreateComponent {
 
@@ -16,13 +17,13 @@ export class Create extends CreateComponent {
   }
 
   public override create(): void {
-    const addr = this.addressBuilder.build();
-    this.personBuilder.address(addr).build();
+    const addr = this.address.build();
+    this.person.address(addr).build();
     DomainManager.addressBuilder().then(b => {
-      this.addressBuilder = b;
+      this.address = b;
     });
     DomainManager.personBuilder().then(b => {
-      this.personBuilder = b;
+      this.person = b;
     });
   }
 

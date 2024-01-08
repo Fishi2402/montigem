@@ -26,6 +26,7 @@ component DtCockpitNavigation(List<Group> groups, List<Project> projects) {
       }
     },
     @NavItem(title = "Projects", target = "/gui/DtcockpitMainPage"),
+    @NavItem(title = "TV", target = "/gui/tv/Dashboard"),
     @iterate(Group g : groups) {
       grouptNav@NavItem(title = g.name, target = "/gui/pipelines/PipelineGroupStats/" + g.name);
     },

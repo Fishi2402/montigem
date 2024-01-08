@@ -1,0 +1,16 @@
+package gui.joinconnection;
+
+import DemoRec.JoinConnection;
+import DemoRec.DemoRecComponent;
+
+import basic.GemText;
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+import input.GemTextInput;
+
+
+component RemoveCompButton(JoinConnection connection, DemoRecComponent component) {
+  @GemButton(label="Remove Component"+component.description, leftClick=removeComponentFromConnection);
+}

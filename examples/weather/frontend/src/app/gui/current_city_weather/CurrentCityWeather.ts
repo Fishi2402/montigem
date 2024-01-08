@@ -1,14 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { CurrentCityWeatherComponent } from '@src/gui/current_city_weather/CurrentCityWeatherComponent';
+import { CurrentCityWeatherComponent,config } from '@src/gui/current_city_weather/CurrentCityWeatherComponent';
 import { Component } from '@angular/core';
 import { WeatherState } from "@src/weather/WeatherState";
 
 @Component({
-  selector: 'current-city-weather',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/current_city_weather/CurrentCityWeather.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['CurrentCityWeather.scss']
+  standalone:true,
+  imports:[... config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class CurrentCityWeather extends CurrentCityWeatherComponent {
 

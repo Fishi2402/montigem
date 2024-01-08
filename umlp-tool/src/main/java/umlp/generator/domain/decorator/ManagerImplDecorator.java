@@ -3,9 +3,6 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cd.methodtemplates.CD4C;
-import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -21,17 +18,14 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.commands.EventSendingObserverDecorator;
 import umlp.generator.util.PathUtil;
-import umlp.generator.util.SingletonLookUp;
+import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.GemListAssocDecorator.getName;
@@ -69,11 +63,11 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
     List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
-        .filter(c -> !SingletonLookUp.isSingleton(c))
+        .filter(c -> !TagLookUp.isSingleton(c))
         .collect(Collectors.toList());
     getCD4C().addMethod(managerClass, "umlp.managerimpl.ClearCache", concreteDomainClasses);
 
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+    origCD.getCDDefinition().getCDClassesList()
         .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
     origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getModifier().isDerived())
@@ -87,7 +81,11 @@ public class ManagerImplDecorator extends AbstractDecorator {
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
-    boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
+    if (domainClass.getModifier().isDerived()) {
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.GetDerived", name);
+      return;
+    }
+    boolean isSingleton = TagLookUp.isSingleton(domainClass);
     if (!domainClass.getModifier().isAbstract()) {
       managerClass.addCDMember(getDBObserverAttribute(domainClass));
       if (isSingleton) {
@@ -165,7 +163,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
         getMCTypeFacade().createBasicGenericTypeOf("Map", "Long", domainClass.getName()),
         StringTransformations.uncapitalize("known" + domainClass.getName() + "s"));
-    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new HashMap<>()"));
+    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new SoftValueHashMap<>()"));
     return domainClassDaoAttr;
   }
 
@@ -190,6 +188,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemListBuilder"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("SoftValueHashMap"));
     getCD4C().addImport(clazz, "java.util.HashMap");
     getCD4C().addImport(clazz, "java.util.Map");
   }

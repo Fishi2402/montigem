@@ -1,10 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {Component} from "@angular/core";
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
 import {ActivatedRoute, Router} from '@angular/router';
-
+import { Component } from "@angular/core";
+import { RouterModule } from '@angular/router';
+import {CommonModule} from '@angular/common';
 @Component({
+  standalone:true,
+  imports:[RouterModule,CommonModule],
   selector: "navigation",
   templateUrl: "./navigation.component.html",
   styleUrls: ["./navigation.component.scss"]

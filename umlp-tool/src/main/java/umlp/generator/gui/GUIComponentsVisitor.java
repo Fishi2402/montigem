@@ -74,7 +74,7 @@ public class GUIComponentsVisitor implements GUIDSLVisitor2, CommonExpressionsVi
     }
 
     // Build modules
-    String qualifiedModuleName = node.getQualifiedName();
+    String qualifiedModuleName = node.getNameSymbol().getFullName();
     String moduleName = util.getModuleName(qualifiedModuleName);
     modules.put(node.getName(), moduleName);
     if (!modulesQualified.containsKey(moduleName)) {

@@ -17,7 +17,7 @@ import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
-import umlp.generator.util.SingletonLookUp;
+import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.Collection;
@@ -110,7 +110,7 @@ public class ManagerDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, false);
     } else {
-      boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
+      boolean isSingleton = TagLookUp.isSingleton(domainClass);
       if (isSingleton) {
         getCD4C().addMethod(managerClass, "umlp.manager.GetSingletonElement", name, true);
         getCD4C().addMethod(managerClass, "umlp.manager.GetSingletonElement", name, false);
@@ -186,8 +186,7 @@ public class ManagerDecorator extends AbstractDecorator {
     getCD4C().addImport(managerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + domainInterface.getName());
 
     if (domainInterface.getModifier().isDerived()) {
-      getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, true);
-      getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name);
     } else {
       getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, false);

@@ -92,6 +92,8 @@ classdiagram Dtcockpit {
   association [0..1] Project <-> (pStatistics) PipelineStatistic [*];
 
   class PipelineStatistic {
+    long gitlabId;
+    String reference; // branch, tag, etc
     java.time.LocalDate time;
     long duration;
     boolean successful;
@@ -122,6 +124,9 @@ classdiagram Dtcockpit {
 
   // Welcome board  @ SE front door LCD
   association [1] App -> (montiCoreProjects) Project [*];
+  association [1] Project -> (lastPipeline) PipelineStatistic [0..1];
+  association [1] App -> (currentMessage) MessageOfTheDay [0..1];
+  association [1] App -> (displayedMeetings) Meeting [*];
 
   class Meeting {
     java.time.LocalDateTime start;
@@ -137,4 +142,15 @@ classdiagram Dtcockpit {
     java.time.LocalDate date;
     String message;
   }
+
+ / class DerivedInfo {
+    int someNumber;
+    String someString;
+    MessageOfTheDay randomMSG;
+  }
+
+  / association DerivedInfo -> (manyStrings) java.lang.String [*];
+  / association [1] DerivedInfo -> (monthlyMeetings) Meeting [*];
+  / association [1] DerivedInfo -> (importantMeeting) Meeting [1];
+  / association [1] DerivedInfo -> (randomMeeting) Meeting [0..1];
 }

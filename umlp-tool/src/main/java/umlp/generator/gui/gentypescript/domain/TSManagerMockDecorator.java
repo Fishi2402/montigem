@@ -25,7 +25,7 @@ import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ManagerMockDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.util.PathUtil;
-import umlp.generator.util.SingletonLookUp;
+import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
     List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
         .collect(Collectors.toList());
-    Function<ASTCDClass, Boolean> isSingleton = SingletonLookUp::isSingleton;
+    Function<ASTCDClass, Boolean> isSingleton = TagLookUp::isSingleton;
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSClearCache",
         concreteDomainClasses.stream().filter(x -> !isSingleton.apply(x)).collect(Collectors.toList()),
         concreteDomainClasses.stream().filter(isSingleton::apply).collect(Collectors.toList()));
@@ -101,8 +101,12 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
       ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
+    if (domainClass.getModifier().isDerived()) {
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSGetDerived", name);
+      return;
+    }
     String lName = StringTransformations.uncapitalize(name);
-    boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
+    boolean isSingleton = TagLookUp.isSingleton(domainClass);
 
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainClass);
     Set<ASTCDType> concreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass);

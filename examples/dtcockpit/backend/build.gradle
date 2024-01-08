@@ -11,6 +11,7 @@ dependencies {
   umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
 }
 
+
 application { // Set Main-Class for "run" task
   mainClass = 'dtcockpit.DtcockpitServerApplication'
 }
@@ -56,7 +57,13 @@ dependencies {
 
   // Welcome board
   implementation("com.microsoft.ews-java-api:ews-java-api:2.0") // Exchange api for calendar
+  implementation("javax.xml.ws:jaxws-api:2.3.1") // Needed for exchange api
   implementation("org.jsoup:jsoup:1.17.1") // HTML of outlook appointment body to readable text
+
+  testImplementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
+  testImplementation "org.neo4j:neo4j:4.4.10"
+  testImplementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
+
 }
 
 generateUmlpBackend {
@@ -75,4 +82,24 @@ task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
   classpath = sourceSets.main.runtimeClasspath
   mainClass = 'dtcockpit.DtcockpitShellAPIApplication'
   standardInput = System.in
+}
+
+test {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform() {
+    excludeTags "SlowTest"
+  }
+
+}
+
+tasks.register("slowtest", Test) {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform {
+    includeTags "SlowTest"
+  }
+  shouldRunAfter test
 }

@@ -18,7 +18,9 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -68,14 +70,18 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
       Log.println("_NOT_ Creating New Dummy Data. Data is already present.");
     }
 
+
+    PipelineInformationExtractor extractor = new PipelineInformationExtractor();
+
     // Create two default projects, if no projects are present
+    App app = DtcockpitManager.getApp();
     if (DtcockpitManager.getProjectList().isEmpty()) {
       Log.println("Creating dummy project data");
       Project monticore = DtcockpitManager.projectBuilder()
           .name("MontiCore")
           .git("monticore/monticore")
           .build().get();
-      PipelineInformationExtractor extractor = new PipelineInformationExtractor();
+
       extractor.extractPipelineDataOf("https://git.rwth-aachen.de/", monticore);
       Project umlp = DtcockpitManager.projectBuilder()
           .name("umlp")
@@ -83,9 +89,9 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
           .build().get();
       Group swt = DtcockpitManager.groupBuilder().name("SWT").git("121471").build().get();
       extractor.extractPipelineDataOfAllProjectsInGroup("https://git.rwth-aachen.de/", swt);
-      DtcockpitManager.getApp().setDashboardGroup(swt);
+      app.setDashboardGroup(swt);
       // TODO: App#getProject should contain all projects by default?
-      DtcockpitManager.getApp().addProject(monticore);
+      app.addProject(monticore);
 
       MontiVerseLite montiVerseLite = MontiVerseLite.getInstance();
       Project montiVerse = montiVerseLite.createProjects();
@@ -94,6 +100,18 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
         montiVerseLite.createBranches(project);
       }
     }
+
+    if(app.getMontiCoreProjects().isEmpty()){
+      List<String> projectNames = List.of("monticore", "umlp"); // TODO: all
+
+      for (Project project : DtcockpitManager.getProjectList()) {
+        if(projectNames.contains(project.getName().toLowerCase())){
+          app.addMontiCoreProjects(project);
+        }
+      }
+    }
+    ScheduledExecutorService pipelineScheduler = Executors.newScheduledThreadPool(1);
+    pipelineScheduler.scheduleAtFixedRate(() -> updateMontiCorePipelines(extractor, app), 1, 5, TimeUnit.MINUTES);
 
     try {
       Server webServer = Server.createWebServer("-web", "-webAllowOthers").start();
@@ -126,14 +144,18 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
 
     OutlookConnection outlookConnection = new OutlookConnection();
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    scheduler.scheduleAtFixedRate(outlookConnection::updateMeetings, 0, 5, TimeUnit.MINUTES);
+    scheduler.scheduleAtFixedRate(() -> {
+      Log.info("Trigger outlook update", "ServerApp");
+      outlookConnection.updateMeetings();
+      Log.info("Finished outlook update", "ServerApp");
+    }, 30, 2 * 60, TimeUnit.SECONDS);
 
     // For dev: 2 dummy meetings
     DtcockpitManager.meetingBuilder()
         .start(LocalDateTime.now())
         .end(LocalDateTime.now().plusHours(1))
         .categories(List.of("Vortrag", "Dev")) // Dev entries will not be deleted by connector
-        .title("Test")
+        .title("DevTest")
         .description(Optional.of("This is a test"))
         .location(Optional.of("Seminarraum"))
         .build();
@@ -142,9 +164,42 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
         .start(LocalDateTime.now().plusHours(1))
         .end(LocalDateTime.now().plusHours(2))
         .categories(List.of("Privat", "Dev")) // Dev entries will not be deleted by connector
-        .title("Test2")
-        .description(Optional.of("This is another test"))
+        .title("DevTest2")
+        .description(Optional.of("This is another test that should not be displayed, since it is private"))
         .location(Optional.of("Smartroom"))
+        .build();
+
+    createDummyMessageOfTheDay();
+  }
+
+  private static void updateMontiCorePipelines(PipelineInformationExtractor extractor, App app) {
+    List<String> devBranchNames = List.of("dev", "develop");
+
+    for (Project montiCoreProject : app.getMontiCoreProjects()) {
+      extractor.extractPipelineDataOf("https://git.rwth-aachen.de/", montiCoreProject);
+      Optional<PipelineStatistic> last = montiCoreProject.getPStatistics().stream()
+          .filter(it -> devBranchNames.contains(it.getReference()))
+          .max(Comparator.comparing(PipelineStatistic::getTime)
+                         .thenComparing(PipelineStatistic::getGitlabId)
+      );
+      if(last.isPresent()) {
+        montiCoreProject.setLastPipeline(last.get());
+      }
+    }
+  }
+
+  private void createDummyMessageOfTheDay() {
+    DtcockpitManager.messageOfTheDayBuilder()
+        .message("Our Mission\n" +
+            "\n" +
+            "Improving software and systems development by identifying:\n" +
+            "\n" +
+            "    methods, concepts, tools and infrastructures for\n" +
+            "    innovative and efficient incremental development\n" +
+            "    of software and software intensive high quality systems\n" +
+            "    in less time while\n" +
+            "    flexibly integrating evolving requirements.\n")
+        .date(LocalDate.now())
         .build();
   }
 

@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Navigation } from '@src/navigation/navigation.component';
-import { Navigation_Module } from '@src/gui/widgets/navigation/NavigationGemModule';
 export const config = {
-  declarations: [Navigation],
+  declarations: [],
   exports: [],
-  imports: [Navigation_Module],
+  imports: [Navigation],
   providers: []
 }
 

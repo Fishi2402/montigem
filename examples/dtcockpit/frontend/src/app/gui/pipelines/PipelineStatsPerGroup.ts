@@ -2,13 +2,15 @@
 import {Component} from '@angular/core';
 import { GemBarChartData } from '@umlp/charts';
 import { GemBarChartEntry } from '@umlp/charts';
-import { PipelineStatsPerGroupComponent } from '@src/gui/pipelines/PipelineStatsPerGroupComponent';
+import { PipelineStatsPerGroupComponent,config } from '@src/gui/pipelines/PipelineStatsPerGroupComponent';
 
 @Component({
-  selector: 'pipeline-stats-per-group',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/pipelines/PipelineStatsPerGroup.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
 
@@ -61,6 +63,10 @@ export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
         labels.push(label)
       }
     })
+    if (!labels.length) {
+      return null;
+    }
+
     labels.sort((s1, s2) => {
       let str1Arr = s1.split(".");
       let reverse1Arr = str1Arr.reverse();
@@ -70,7 +76,6 @@ export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
       let reverse2Str = reverse2Arr.join('');
       return reverse1Str.localeCompare(reverse2Str)
     })
-    labels.reverse()
     if(!this.maxDate) {
       this.maxDate = labels[0].split(".").reverse().join("-");
     }

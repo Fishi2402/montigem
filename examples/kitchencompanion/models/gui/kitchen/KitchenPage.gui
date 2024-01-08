@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.kitchen;
+
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemRow;
+import arrange.GemColumn;
+import basic.GemText;
+
+import KitchenCompanion.User;
+
+import gui.kitchen.LeadUserPanel;
+import gui.kitchen.OrdinaryUserPanel;
+import gui.kitchen.ExtraUserPanel;
+
+page KitchenPage(List<User> users) {
+  @GemColumn(width = "70rem", hAlign = "center", rowGap="1rem", wrap="wrap",
+    components=[
+      @LeadUserPanel(allUsers=users),
+      @OrdinaryUserPanel(allUsers=users),
+      @ExtraUserPanel(allUsers=users)
+    ]
+  );
+}

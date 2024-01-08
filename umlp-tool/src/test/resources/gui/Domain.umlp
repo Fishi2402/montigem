@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+classdiagram Domain {
+  class Person {
+    java.time.LocalDate birthday;
+    String name;
+    boolean employed;
+  }
+
+  class Address {
+    String street;
+    int house;
+  }
+
+  association home [1] Person -> (address) Address [0..1];
+
+  association friends [*] Person -> (friends) Person [*];
+}

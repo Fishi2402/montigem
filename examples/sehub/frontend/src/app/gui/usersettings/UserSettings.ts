@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserSettingsComponent} from '@src/gui/usersettings/UserSettingsComponent';
+import {UserSettingsComponent,config} from '@src/gui/usersettings/UserSettingsComponent';
 import {SehubRole} from '@src/sehub/SehubRole';
 import {User} from '@src/sehub/User';
 import {CommandManager} from '@umlp/common';
@@ -10,10 +10,12 @@ import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {SehubManager} from '@src/sehub/SehubManager';
 
 @Component({
-  selector: 'user-settings',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/usersettings/UserSettings.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['./UserSettings.scss',]
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class UserSettings extends UserSettingsComponent {
 

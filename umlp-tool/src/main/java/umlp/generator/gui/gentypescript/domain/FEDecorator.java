@@ -107,6 +107,10 @@ public class FEDecorator extends BEDecorator {
     cmdDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandObserverDecorator", FEDecorator.class.getName());
 
+    TSDerivedClassClientImplDecorator derivedClassClientImplDecorator = new TSDerivedClassClientImplDecorator(glex);
+    derivedClassClientImplDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: TSDerivedClassClientImplDecorator", FEDecorator.class.getName());
+
     DerivedClassDecorator derivedClassDecorator = new TSDerivedClassDecorator(glex);
     derivedClassDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DerivedClassDecorator", FEDecorator.class.getName());

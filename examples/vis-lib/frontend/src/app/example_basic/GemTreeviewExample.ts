@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemTreeviewExampleComponent } from '@src/example_basic/GemTreeviewExampleComponent';
+import { GemTreeviewExampleComponent,config } from '@src/example_basic/GemTreeviewExampleComponent';
 import { GemTreeviewEntry } from '@umlp/basic';
 
 @Component({
-  selector: 'gem-treeview-example',
-  templateUrl: '../../../build/frontendGen/build/appgui/example_basic/GemTreeviewExample.html'
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
 })
 export class GemTreeviewExample extends GemTreeviewExampleComponent {
   treeData: Array<GemTreeviewEntry> = [

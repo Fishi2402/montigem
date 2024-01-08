@@ -15,7 +15,10 @@ export const routes: Routes = [
     redirectTo: "gui/login/LoginPage"
   },
     ...routesTOP,
-
+  {
+    path:"cd2gui",
+    loadChildren:() => import('../../build/umlp/fe2/cd2gui/models/ModelsGemRouting').then(m=>m.routes)
+  },
 
 
 

@@ -35,7 +35,7 @@ import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.util.PathUtil;
-import umlp.generator.util.SingletonLookUp;
+import umlp.generator.util.TagLookUp;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -47,11 +47,10 @@ import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.TopDecorator.TOP_SUFFIX;
 
 public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
-  private final GUIComponentsVisitor viewComponents;
-
-  private final boolean isInputGui;
   protected final MCPath hwPath;
   protected final Path outPath;
+  private final GUIComponentsVisitor viewComponents;
+  private final boolean isInputGui;
 
   public GUI2TypeScriptAngularDecorator(GlobalExtensionManagement glex, boolean isInputGui, GUIComponentsVisitor viewComponents, MCPath hwPath, Path outPath) {
     super(glex);
@@ -75,7 +74,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     astcdPackage.addCDElement(withOrigin(decoratedClass));
 
     // imports
-    getCD4C().addImport(decoratedClass,packageName + "." + originalName);
+    getCD4C().addImport(decoratedClass, packageName + "." + originalName);
     boolean addedManager = false;
     for (ASTMCImportStatement i : guiAst.getMCImportStatementList()) {
       if (!isGUIModelImportInGUI(i)) {
@@ -89,9 +88,11 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         // add builder import
         if (util.isCreateModel(guiAst.getComponentQName()) && util.isDomainImport(i)) {
           getCD4C().addImport(decoratedClass, importStr + BuilderDecorator.BUILDER_SUFFIX);
-        } else if (util.isDomainImport(i)) {
+        }
+        else if (util.isDomainImport(i)) {
           getCD4C().addImport(decoratedClass, importStr);
-        } else if (!util.isBuiltIn(i)) {
+        }
+        else if (!util.isBuiltIn(i)) {
           getCD4C().addImport(decoratedClass, qName);
         }
       }
@@ -129,7 +130,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
       glex.replaceTemplate(
           GUI2ComponentTemplates.ANNOTATIONS,
           decoratedClass,
-          new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_COMPONENT, htmlPath, scssPaths, selector)
+          new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector)
       );
     }
   }
@@ -147,17 +148,17 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         .build();
 
     // imports
-    getCD4C().addImport(clazz,packageName + "." + domainClassName);
+    getCD4C().addImport(clazz, packageName + "." + domainClassName);
 
     // constructor, attrs, getters
     if (!domainClass.getGUIParamList().isEmpty()) {
       addInitMethod(clazz);
-      if(ast.getGUIComponentDeclaration().isPage()
+      if (ast.getGUIComponentDeclaration().isPage()
           && domainClass.getGUIParamList().stream().anyMatch(util::isDomainListType)) {
         addDestroyMethod(clazz);
       }
 
-      if(ast.getGUIComponentDeclaration().isPage()) {
+      if (ast.getGUIComponentDeclaration().isPage()) {
         // Otherwise, the updates are provided by the parent component
         addUpdateObserverAndUpdateMethods(clazz, ast);
       }
@@ -178,7 +179,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
 
         if (util.getMainDomainModelSimpleName().isPresent()) {
           // TODO AGe: body of init method currently uses different hooks, improve
-          if(ast.getGUIComponentDeclaration().isPage()) {
+          if (ast.getGUIComponentDeclaration().isPage()) {
             updateObserverNeeded = true;
             // Otherwise, parent page updates parameters
             String originalName = util.getMainDomainModelSimpleName().get();
@@ -198,10 +199,10 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         }
       }
 
-      if(updateObserverNeeded){
+      if (updateObserverNeeded) {
         glex.addAfterTemplate("umlp.gui2java.InitBody", new StringHookPoint(
             util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX + ".addObserver(this.updateObserver);"
-            ));
+        ));
         getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
       }
 
@@ -215,7 +216,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
           addAnnotation(cdAttr);
           domainAttributes.add(cdAttr);
 
-          String builder = BuilderDecorator.getClassName(p.getName());
+          String builder = p.getName();
           builders.add(builder);
           // fill init
           if (util.getMainDomainModelSimpleName().isPresent()) {
@@ -232,7 +233,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
 
         }
         glex.setBeforeTemplate("umlp.gui2java.InitBody", hps);
-//        getCD4C().addMethod(clazz, "umlp.gui2ts.TSBuild", builders); // TODO entfernen
+        //        getCD4C().addMethod(clazz, "umlp.gui2ts.TSBuild", builders); // TODO entfernen
 
         // Add constructor
         addBuilderConstructor(clazz, domainAttributes, ast.getComponentQName());
@@ -247,18 +248,19 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
 
           if (util.getMainDomainModelSimpleName().isPresent() && !util.isEnumType(p.getSymbol().getType())) {
             // TODO AGe: body of init method currently uses different hooks, improve
-            if (SingletonLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())) {
+            if (TagLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())) {
               hps.add(new TemplateHookPoint(
-                      "umlp.gui2ts.TSInitDomainSingleton",
-                      p.getName(),
-                      p.getMCType().printType(),
-                      util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
-            } else {
+                  "umlp.gui2ts.TSInitDomainSingleton",
+                  p.getName(),
+                  p.getMCType().printType(),
+                  util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+            }
+            else {
               hps.add(new TemplateHookPoint(
-                      "umlp.gui2ts.TSInitDomain",
-                      p.getName(),
-                      p.getMCType().printType(),
-                      util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+                  "umlp.gui2ts.TSInitDomain",
+                  p.getName(),
+                  p.getMCType().printType(),
+                  util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
             }
           }
           else {
@@ -304,7 +306,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
       /**/
     }
     else {
-//      addDefaultConstructor(clazz);
+      //      addDefaultConstructor(clazz);
     }
 
     return clazz;
@@ -320,7 +322,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         .collect(Collectors.toList());
 
     String originalName = util.getMainDomainModelSimpleName().get();
-    getCD4C().addAttributeFromTemplate(clazz, "umlp.gui2ts.UpdateObserverAttr", originalName,types);
+    getCD4C().addAttributeFromTemplate(clazz, "umlp.gui2ts.UpdateObserverAttr", originalName, types);
     getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, originalName + "Observer"));
     getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, "Empty" + originalName + "Observer"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
@@ -400,7 +402,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     TypeSymbol typeInfo = astguiParam.getSymbol().getType().getTypeInfo();
 
     String attributeType = BuilderDecorator.getClassName(typeInfo.getName());
-    String attributeName = astguiParam.getName() + "Builder";
+    String attributeName = astguiParam.getName();
     // --- end
 
     ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(
@@ -451,7 +453,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
 
   public String getDomainClassName(ASTGUIComponentDeclaration domainClass, ASTGUICompilationUnit ast) {
     String domainClassName = Names.getQualifiedName(ast.getPackage(), domainClass.getName());
-    return domainClass.getName() + (GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, domainClassName)? TOP_SUFFIX :"");
+    return domainClass.getName() + (GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, domainClassName) ? TOP_SUFFIX : "");
   }
 
   public boolean existsHandwrittenDomainClass(ASTGUIComponentDeclaration domainClass, ASTGUICompilationUnit ast) {

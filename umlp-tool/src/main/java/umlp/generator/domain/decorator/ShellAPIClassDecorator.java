@@ -17,7 +17,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
-import umlp.generator.util.SingletonLookUp;
+import umlp.generator.util.TagLookUp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +60,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     glex.replaceTemplate("cd2java.Annotations", shellapiClass, new StringHookPoint("@ShellComponent"));
 
     addBasicImports(cdName, origCD, shellapiClass, originalClassName);
+    addImports(cdClass, shellapiClass);
     List<ASTCDAttribute> domainAttributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
         .filter(attr -> !attr.getModifier().isDerived())
         .collect(Collectors.toList());
@@ -67,7 +68,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
         .filter(Predicate.not(GenService::isSymbolDerived))
         .collect(Collectors.toList());
 
-    boolean isSingleton = SingletonLookUp.isSingleton(cdClass);
+    boolean isSingleton = TagLookUp.isSingleton(cdClass);
 
     if (!isSingleton) {
       addCreateMethod(cdName, originalClassName, shellapiClass, domainAttributes, assocs);

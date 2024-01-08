@@ -18,7 +18,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator;
 import umlp.generator.util.PathUtil;
-import umlp.generator.util.SingletonLookUp;
+import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
@@ -60,12 +60,12 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
 
     List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
-        .filter(c -> !SingletonLookUp.isSingleton(c))
+        .filter(c -> !TagLookUp.isSingleton(c))
         .collect(Collectors.toList());
     getCD4C().addMethod(managerClass, getClearCacheTemplate(), concreteDomainClasses);
 
 
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+    origCD.getCDDefinition().getCDClassesList()
         .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
     origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getModifier().isDerived())
@@ -101,7 +101,12 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
 
-    boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
+    if (domainClass.getModifier().isDerived()) {
+      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.GetDerived", name);
+      return;
+    }
+
+    boolean isSingleton = TagLookUp.isSingleton(domainClass);
 
     if (!domainClass.getModifier().isAbstract()) {
       if (isSingleton) {

@@ -1,0 +1,51 @@
+package gui.step;
+
+import basic.GemText;
+import input.GemTextInput;
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemColumn;
+
+import DemoRec.ProcessStep;
+import DemoRec.Process;
+
+import gui.joinconnection.JoinConnectionCreate;
+
+page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
+  @GemCard(
+    title = "Deconstruction Step",
+    component = @GemColumn(
+      components = [
+        @GemTextInput(
+            labelText = "Time Consumption in seconds",
+            inputType = "number",
+            entry = step.timeConsumption),
+        @GemTextInput(
+            labelText = "Description (optional)",
+            inputType = "text",
+            entry = step.description),
+        selectEndeffector@GemTextInput(
+            labelText = "Used Endeffector in this step",
+            inputType = "dropdown",
+            options = null,
+            entry = null),
+        selectType@GemTextInput(
+            labelText = "Step type",
+            inputType = "dropdown",
+            options = null,
+            entry = null),
+        isDeconstruction@guard(true) {
+          selectJoinConnection@GemTextInput(
+              labelText = "Deconstructing Join Connection",
+              inputType = "dropdown",
+              options = null,
+              entry = null);
+        },
+        createNewJoinConnection@guard(true) {
+          @JoinConnectionCreate();
+        }
+      ]
+    )
+  );
+  buildStep@GemButton(label = "Save Step", leftClick = createNewStep, disabled=true);
+}

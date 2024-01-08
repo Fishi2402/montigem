@@ -14,6 +14,8 @@ import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._ast.ASTGUIParam;
+import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -23,6 +25,7 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
@@ -34,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
@@ -85,7 +89,6 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       return;
     }
 
-    String paramType = convertType(paramSTE);
     if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
       // TODO AGe: all possible types
       if (util.isListType(paramSTE)) {
@@ -141,6 +144,18 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         guiComponent.getId().getName(), namedArg.getName());
     String setterName = util.gui2cdAttrSetterName(
         guiComponent.getId().getName(), namedArg.getName());
+
+    String paramType = convertType(paramSTE);
+
+    Optional<GUIComponentDeclarationSymbol> declSym = namedArg.getEnclosingScope()
+        .resolveGUIComponentDeclaration(guiComponent.getName());
+    boolean isBuilderArg = util.isDomainType(paramSTE)
+        && declSym.isPresent()
+        && util.isCreateModel(declSym.get().getFullName());
+    if (isBuilderArg) {
+      paramType += BuilderDecorator.BUILDER_SUFFIX;
+    }
+
     if (visitor.argNeedsOwnParamWithInit()) {
       // TODO AGe: how to do that better?
       // if List
@@ -157,7 +172,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           }
           else {
             Log.error("0x00002 Cannot handle " + namedArg.getName()
-                + " of component " + guiComponent.getQualifiedName()
+                + " of component " + guiComponent.getNameSymbol().getFullName()
                 + " yet: nested objects initialization");
           }
         }
@@ -375,6 +390,15 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           return stringToOptionalEnumConversion(innerType);
         }
       }
+      boolean rightIsOptionalNumber = util.isOptionalNumberType(rightType);
+      if (leftIsString && rightIsOptionalNumber) {
+        if (forGetter) {
+          return numberToStringConversion();
+        }
+        else {
+          return optionalStringToNumberConversion(util.getOptionalTypeArgument(rightType).print());
+        }
+      }
       boolean rightIsGemList = util.isDomainListType(rightType);
       if (rightIsGemList) {
         return gemlistToArrayConversion();
@@ -441,20 +465,12 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   protected Function<String, String> stringToNumberConversion(String type) {
-    if (TypeScriptTypes.INT.getMCType().equals(type)) {
-      type = TypeScriptTypes.INT_BOXED.getMCType();
-    }
-    if (TypeScriptTypes.LONG.getMCType().equals(type)) {
-      type = TypeScriptTypes.LONG_BOXED.getMCType();
-    }
-    if (TypeScriptTypes.DOUBLE.getMCType().equals(type)) {
-      type = TypeScriptTypes.DOUBLE_BOXED.getMCType();
-    }
-    if (TypeScriptTypes.FLOAT.getMCType().equals(type)) {
-      type = TypeScriptTypes.FLOAT_BOXED.getMCType();
-    }
-    String finalType = type;
+    String finalType = util.getBoxedType(type);
     return s -> finalType + ".valueOf(" + s + ")";
+  }
+
+  protected Function<String, String> optionalStringToNumberConversion(String type) {
+    return s -> s + " != null? " + type + ".valueOf(" + s + ") : null";
   }
 
 }

@@ -1,0 +1,28 @@
+package gui.endeffector;
+
+import DemoRec.EndEffector;
+
+import basic.GemText;
+import arrange.GemCard;
+import arrange.GemColumn;
+
+import gui.endeffector.EndEffectorCreate;
+import gui.navigation.Navigation;
+
+page EndEffectorOverview(List<EndEffector> endEffectors) {
+
+  @Navigation();
+  @GemCard(
+    title="EndEffectors",
+    component=@GemColumn(
+      rowGap="1px",
+      wrap="nowrap",
+      components=[
+        newEffector@EndEffectorCreate(),
+        @iterate(EndEffector endEffector : endEffectors) {
+          @GemText(value=endEffector.name);
+        }
+      ]
+    )
+  );
+}

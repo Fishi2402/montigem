@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {RoomStatsComponent} from '@src/gui/rooms/RoomStatsComponent';
+import {RoomStatsComponent,config} from '@src/gui/rooms/RoomStatsComponent';
 
 import {RoomObserver} from '@src/dtcockpit/RoomObserver';
 import {Room} from '@src/dtcockpit/Room';
@@ -8,10 +8,12 @@ import {NotificationScope} from '@umlp/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'room-stats',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/rooms/RoomStats.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class RoomStats extends RoomStatsComponent {
   temp4304 = "? °C";
@@ -20,7 +22,9 @@ export class RoomStats extends RoomStatsComponent {
 
   public override init(): void {
     setTimeout(() => {
-      console.log(this.getStats())
+      if (this.getStats() == null) {
+        return;
+      }
       for (let i = 0; i < this.getStats().ids.length; i++) {
         this.getStats().get(i).then(room => {
           if(room.getRoomNumber() == 4304){

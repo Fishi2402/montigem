@@ -1,16 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {GemNetworkData} from '@umlp/charts';
-import {SehubMainPageComponent} from '@src/gui/SehubMainPageComponent';
+import {SehubMainPageComponent,config} from '@src/gui/SehubMainPageComponent';
 
 import {Component} from '@angular/core';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
 @Component({
-  selector: 'sehub-main-page',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/SehubMainPage.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export  class SehubMainPage extends SehubMainPageComponent {
 

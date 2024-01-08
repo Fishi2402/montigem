@@ -15,8 +15,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
-import umlp.generator.util.SingletonLookUp;
-import umlp.generator.util.UMLPSymbolTables;
+import umlp.generator.util.TagLookUp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,7 +72,7 @@ public class BuilderDecorator extends AbstractDecorator {
 
     // Constructors
     addConstructor(builderClass, domainClass, managerName, attrAssocLists,
-        SingletonLookUp.isSingleton(domainClass) ? domainClass.getCDAttributeList().stream()
+        TagLookUp.isSingleton(domainClass) ? domainClass.getCDAttributeList().stream()
             .filter(ASTCDAttributeTOP::isPresentInitial)
             .map(a->new String[]{a.getName(), CD4CodeMill.prettyPrint(a.getInitial(), false)})
             .collect(Collectors.toList()) : new ArrayList<>());
@@ -99,7 +98,7 @@ public class BuilderDecorator extends AbstractDecorator {
         domainClass.getName(),
         managerName,
         attrAssocLists,
-        SingletonLookUp.isSingleton(domainClass)
+        TagLookUp.isSingleton(domainClass)
     );
     // TODO: filter by mandatory
     List<ASTCDAttribute> mandatoryAttrList = attrList;

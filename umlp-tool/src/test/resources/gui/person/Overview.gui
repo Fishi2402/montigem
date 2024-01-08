@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package person;
+
+import Domain.Person;
+
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+
+import person.Row;
+import person.Create;
+
+page Overview(List<Person> persons) {
+  @GemColumn(rowGap = "10px", width = "50%", components = [
+    @Create(),
+    @iterate(Person p : persons) {
+      @guard(p.address.street != "Ahornstraße") {
+        @Row(
+          col1 = @GemText(value = p.birthday),
+          col2 = gemText5@GemText(value = p.name),
+          col3 = @GemText(value = p.address.street + " " + p.address.house)
+        );
+      }
+    }
+  ]);
+}

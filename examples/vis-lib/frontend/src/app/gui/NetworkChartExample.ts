@@ -2,14 +2,16 @@
 
 import { Component } from '@angular/core';
 import { Person } from '@src/domain/Person';
-import { NetworkChartExampleComponent } from '@src/gui/NetworkChartExampleComponent';
+import { NetworkChartExampleComponent ,config} from '@src/gui/NetworkChartExampleComponent';
 import { NetworkData, NetworkEdge, NetworkNode } from '@umlp/charts';
 
 @Component({
-  selector: 'network-chart-example',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/NetworkChartExample.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class NetworkChartExample extends NetworkChartExampleComponent {
 
@@ -26,7 +28,7 @@ export class NetworkChartExample extends NetworkChartExampleComponent {
     const edges: NetworkEdge[] = this.fillFriendsEdgesRecursively(person, allPersons);
     let nodes: NetworkNode[] = []
 
-    allPersons.forEach(p => nodes.push({ id: p.getName(), label: p.getName(), mass: 50, color: "yellow" }))
+    allPersons.forEach(p => nodes.push({ id: p.getName(), label: p.getName(), group: p.constructor.name, mass: 50, color: "yellow" }))
 
 
     const newNetworkData = { nodes: nodes, edges: edges };

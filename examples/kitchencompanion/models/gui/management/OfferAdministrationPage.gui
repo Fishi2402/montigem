@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.management;
+
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemRow;
+import arrange.GemColumn;
+import basic.GemText;
+import gui.management.OfferPanel;
+
+import KitchenCompanion.Offer;
+
+import gui.kitchen.LeadUserPanel;
+import gui.kitchen.OrdinaryUserPanel;
+import gui.kitchen.ExtraUserPanel;
+
+page OfferAdministrationPage(List<Offer> offers) {
+  @GemColumn(width = "70rem", hAlign = "center", rowGap="1rem", wrap="wrap",
+    components=[
+      @iterate(Offer o : offers){
+        @OfferPanel(offer = o);
+    }]
+  );
+}

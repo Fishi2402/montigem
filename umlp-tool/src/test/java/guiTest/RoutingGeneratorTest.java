@@ -1,13 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 package guiTest;
-import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import org.junit.jupiter.api.Test;
-import umlp.generator.gui.GUIGeneratorUtil;
-import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
-
-import java.util.*;
 
 public class RoutingGeneratorTest extends AbstractGUITest {
 

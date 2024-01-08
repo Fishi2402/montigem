@@ -17,20 +17,22 @@ component GemColumn(
     Horizontal alignment of the embedded components. Invalid values are ignored.
     Possible values:
     `"left"`, `"center"`, `"right"`: Set position of the elements inside the container.
+    `"stretch"`: Stretch elements proportionally to fill space if the elements' size is not specified.
     `"space-between"`: Distribute empty space equally between the elements.
     `"space-around"`: Distribute empty space around each element equally.
     `"space-evenly"`: Distribute empty space around the elements and make those gaps equal size.
   */
-  String hAlign = "left",
+  String hAlign = "stretch",
   /**
     Vertical alignment of the embedded components. Invalid values are ignored.
     Possible values:
     `"top"`, `"center"`, `"bottom"`: Set position of the elements inside the container.
+    `"stretch"`: Stretch elements proportionally to fill space if the elements' size is not specified.
     `"space-between"`: Distribute empty space equally between the elements.
     `"space-around"`: Distribute empty space around the elements equally.
     `"space-evenly"`: Distribute empty space around the elements and make those gaps equal size.
   */
-  String vAlign = "top",
+  String vAlign = "stretch",
   /**
     Gap between rows of elements in the container in `px`, `%`, `vh`, etc.
   */

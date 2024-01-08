@@ -23,7 +23,7 @@ import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator;
 import umlp.generator.util.PathUtil;
-import umlp.generator.util.SingletonLookUp;
+import umlp.generator.util.TagLookUp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +120,13 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
-    boolean isSingleton = SingletonLookUp.isSingleton(domainClass);
+    if (domainClass.getModifier().isDerived()) {
+      getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSGetDerived", name);
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name));
+      getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + "ClientImpl"));
+      return;
+    }
+    boolean isSingleton = TagLookUp.isSingleton(domainClass);
 
     if (!domainClass.getModifier().isAbstract()) {
       if (isSingleton) {
