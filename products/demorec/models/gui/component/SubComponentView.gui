@@ -1,0 +1,22 @@
+package gui.component;
+
+import DemoRec.BatteryPack;
+import DemoRec.DemoRecComponent;
+import DemoRec.JoinConnection;
+
+import arrange.GemRow;
+import arrange.GemColumn;
+import arrange.GemCard;
+import basic.GemText;
+import basic.GemLink;
+import basic.GemButton;
+
+page SubComponentView(DemoRecComponent subComponent) {
+
+  @GemColumn(
+    components=[
+      @GemText(value="xPos is "+ subComponent.xPos),
+      editSubcomponent@GemLink(url="override", text="Edit Subcomponent.")
+    ]
+  );
+}

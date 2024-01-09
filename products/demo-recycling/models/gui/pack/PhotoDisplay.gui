@@ -1,5 +1,0 @@
-package gui.pack;
-
-import DemoRec.BatteryPack;
-
-component PhotoDisplay(BatteryPack pack) {}

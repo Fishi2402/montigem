@@ -1,16 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_input;
 
+import Domain.Person;
+
 import input.GemTextInput;
 
-page GemTextInputExample() {
+page GemTextInputExample(List<Person> persons) {
+  @iterate(Person p : persons) {
+    dropdown@GemTextInput(
+      id = "firstName",
+      labelText = "First name: ",
+      inputType = "dropdown",
+      options = null,
+      entry = p.name
+    );
+  }
   @GemTextInput(
-    id = "firstName",
-    labelText = "First name: ",
-    inputType = "dropdown"
-  );
-  @GemTextInput(
-    id = "firstName",
+    id = "lastName",
     labelText = "Last name: ",
     inputType = "text"
   );

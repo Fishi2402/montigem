@@ -125,4 +125,15 @@ classdiagram Dtcockpit {
     java.time.LocalDate date;
     String message;
   }
+
+ / class DerivedInfo {
+    int someNumber;
+    String someString;
+    MessageOfTheDay randomMSG;
+  }
+
+  / association DerivedInfo -> (manyStrings) java.lang.String [*];
+  / association [1] DerivedInfo -> (monthlyMeetings) Meeting [*];
+  / association [1] DerivedInfo -> (importantMeeting) Meeting [1];
+  / association [1] DerivedInfo -> (randomMeeting) Meeting [0..1];
 }

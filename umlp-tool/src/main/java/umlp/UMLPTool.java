@@ -56,8 +56,8 @@ import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genhtml.GUI2HtmlTrafo;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
-import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
-import umlp.generator.gui.gentypescript.ModuleRoutingInfo;
+import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
+import umlp.generator.gui.gentypescript.config.ModuleRoutingInfo;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
@@ -74,12 +74,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -500,8 +498,6 @@ public class UMLPTool extends UMLPToolTOP {
       else if (isGuiFile(inputFile)) {
         Map<String, ModuleRoutingInfo> routesMap = new HashMap<>();
 
-        Set<String> createdTSComponents = new HashSet();
-
         // Prepare the SingletonLookup
         TagRelated.initLookup(importedSymbolPath);
 
@@ -513,22 +509,20 @@ public class UMLPTool extends UMLPToolTOP {
           String report_on = guiModel.getFileName().toString().replace(".", "__");
           Reporting.on(report_on);
 
+          // parse, add default component ids, create symbol table, check all cocos
           GUIDSLMill.init();
-          // parse, create symbol table, check all cocos
           ASTGUICompilationUnit astGui = parseGUI(guiModel.toString());
           Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
           GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
           nodeIdTrafo.transform(astGui);
-
           IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, Optional.of(guiModel), importedSymbolPath);
+          runDefaultCoCos(astGui);
+
           if (!routesMap.containsKey(astGui.getPackage())) {
             routesMap.put(astGui.getPackage(), new ModuleRoutingInfo(
                 astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList()));
           }
           routesMap.get(astGui.getPackage()).add(astGui);
-
-          // Run cocos
-          runDefaultCoCos(astGui);
 
           // print or store symbol table
           if (SYMTAB.isSelected(cmd)) {
@@ -595,9 +589,6 @@ public class UMLPTool extends UMLPToolTOP {
           String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
           javaGenerator.generate(astGui, javaConfigTemplate);
 
-          GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath, viewComponents);
-          String typeScriptConfigTemplate = cmd.getOptionValue("ct_typescript", DEFAULT_CONFIGTEMPLATE_GUI2TS);
-
           GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
           componentGenerator.generate(astGui, "umlp.GUI2Component");
 
@@ -631,16 +622,17 @@ public class UMLPTool extends UMLPToolTOP {
         GlobalExtensionManagement glex = createGlex(getModuleConfigTemplates(cmd));
         genSetup.setGlex(glex);
         genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
-        routesMap.entrySet().forEach(packageInfo ->
-        {
-          GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
-          List<String> outputs = typeScriptGenerator.generateConfigFileForPackages(packageInfo, routesMap);
-          outputs.forEach(output -> Reporting.reportFileCreation(outDir + "/" + output));
+        genSetup.setTracing(false);
+        GUI2TSConfigGenerator tsConfigGenerator = new GUI2TSConfigGenerator(genSetup, hwcPath);
 
-        });
-        GUI2TypeScriptGenerator typeScriptGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
-        List<String> outputs = typeScriptGenerator.generateAppConfigfile();
-        outputs.forEach(output -> Reporting.reportFileCreation(outDir + "/" + output));
+        for (Map.Entry<String, ModuleRoutingInfo> packageInfo : routesMap.entrySet()) {
+          String output = tsConfigGenerator.generateComponentsRouting(packageInfo, routesMap);
+          Reporting.reportFileCreation(Paths.get(outDir.getPath(), output).toString());
+        }
+        List<String> outputs = tsConfigGenerator.generateAppConfigFiles();
+        for (String output : outputs) {
+          Reporting.reportFileCreation(Paths.get(outDir.getPath(), output).toString());
+        }
         Reporting.flush(new ASTGUICompilationUnit());
       }
     }
