@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {IssueTrackerPageComponent} from '@src/gui/issues/IssueTrackerPageComponent';
+import {IssueTrackerPageComponent,config} from '@src/gui/issues/IssueTrackerPageComponent';
 import {Issue} from '@src/sehub/Issue';
 import {IssueState} from '@src/sehub/IssueState';
 import {SehubSecurityManager} from '@src/sehub/SehubSecurityManager';
@@ -9,10 +9,12 @@ import {IssueGemList} from '@src/sehub/gemlists/IssueGemList';
 import {GemList} from '@umlp/common';
 
 @Component({
-  selector: 'issue-tracker-page',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueTrackerPage.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ["./Issue.scss"]
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class IssueTrackerPage extends IssueTrackerPageComponent {
 

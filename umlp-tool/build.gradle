@@ -185,6 +185,10 @@ gradlePlugin {
       id = "de.rwth.se.umlp-tool-backend"
       implementationClass = "gradle.UMLPPluginBackend"
     }
+    umlpplugin_backend_test {
+      id = "de.rwth.se.umlp-tool-backend-test"
+      implementationClass = "gradle.UMLPPluginBackendTest"
+    }
     umlpplugin_frontend {
       id = "de.rwth.se.umlp-tool-frontend"
       implementationClass = "gradle.UMLPPluginFrontend"

@@ -1,16 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
 import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
-import {ProjectCreateComponent} from '@src/gui/project/ProjectCreateComponent';
+import {ProjectCreateComponent,config} from '@src/gui/project/ProjectCreateComponent';
 import {ProjectErrorCollector} from '@src/dtcockpit/ProjectErrorCollector';
 import {Project} from '@src/dtcockpit/Project';
 
 
 @Component({
-  selector: 'project-create',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/project/ProjectCreate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class ProjectCreate extends ProjectCreateComponent {
 
@@ -20,7 +22,7 @@ export class ProjectCreate extends ProjectCreateComponent {
     if (!this.checkBuild()) return;
     DtcockpitManager.projectBuilder().then(gemPromiseRes => {
       this.build();
-      this.projectBuilder = gemPromiseRes;
+      this.project = gemPromiseRes;
     });
 
   }
@@ -42,7 +44,7 @@ export class ProjectCreate extends ProjectCreateComponent {
       }
     };
     ProjectErrorCollector.addErrorObserver(observer);
-    if (!this.projectBuilder.isBuildable()) {
+    if (!this.project.isBuildable()) {
       ProjectErrorCollector.removeErrorObserver(observer);
       return false;
     }

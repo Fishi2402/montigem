@@ -1,0 +1,19 @@
+<!-- file-upload.component.html -->
+<div
+    class="drop-container"
+    (drop)="onFileDropped($event)"
+    (dragover)="preventDefault($event)"
+    (dragenter)="preventDefault($event)"
+>
+  <p>Drag and drop files here, or click to select files</p>
+  <input type="file" (change)="onFileSelected($event)" multiple />
+  <div *ngFor="let file of files">
+    {{ file.name }}
+  </div>
+  <gem-button class="upload"
+              [label] = 'getUploadLabel()'
+              (leftClick) = 'uploadLeftClick.bind(this)($event)'
+  >
+  </gem-button>
+
+</div>

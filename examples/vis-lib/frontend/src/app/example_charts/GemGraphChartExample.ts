@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemGraphChartExampleComponent } from '@src/example_charts/GemGraphChartExampleComponent';
+import { GemGraphChartExampleComponent,config } from '@src/example_charts/GemGraphChartExampleComponent';
 import { GemNetworkData, GemNetworkEdge, GemNetworkNode } from '@umlp/charts';
 
 @Component({
-  selector: 'gem-graph-chart-example',
-  templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemGraphChartExample.html'
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
 })
 export class GemGraphChartExample extends GemGraphChartExampleComponent {
   nodes: GemNetworkNode[] = [

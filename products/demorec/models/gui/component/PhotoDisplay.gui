@@ -1,0 +1,5 @@
+package gui.component;
+
+import DemoRec.DemoRecComponent;
+
+component PhotoDisplay(DemoRecComponent component) {}

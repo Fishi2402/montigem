@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
-import { NextHoursForecastComponent } from "@src/gui/next_hours_forecast/NextHoursForecastComponent";
+import { NextHoursForecastComponent,config } from "@src/gui/next_hours_forecast/NextHoursForecastComponent";
 
 @Component({
-  selector: 'next-hours-forecast',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/next_hours_forecast/NextHoursForecast.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['NextHoursForecast.scss',]
+  standalone:true,
+  imports:[... config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class NextHoursForecast extends NextHoursForecastComponent {
 

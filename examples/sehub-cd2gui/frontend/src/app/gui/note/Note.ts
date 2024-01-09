@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {NoteComponent} from "@src/gui/note/NoteComponent";
+import {NoteComponent,config} from "@src/gui/note/NoteComponent";
 import {Component} from '@angular/core';
 import {SehubManager} from '@src/sehub/SehubManager';
 import {Post} from '@src/sehub/Post';
@@ -9,10 +9,12 @@ import {User} from '@src/sehub/User';
 import {SehubRole} from '@src/sehub/SehubRole';
 
 @Component({
-  selector: 'note',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/note/Note.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['./Note.scss']
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class Note extends NoteComponent {
 

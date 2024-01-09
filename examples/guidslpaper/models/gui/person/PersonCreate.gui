@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.person;
+
+import Guidslpaper.Person;
+import Guidslpaper.Konto;
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import basic.GemButton;
+import input.GemTextInput;
+
+import gui.navigation.GuidslPaperNavigation;
+
+page PersonCreate(Person person, List<Person> personen) {
+  @GemRow(wrap = "nowrap", components = [
+    @GuidslPaperNavigation(personen = personen),
+    @GemColumn(hAlign = "center", component =
+      @GemCard(title = "New Person", component =
+        @GemColumn(width = "50vw", rowGap = "10px", components = [
+          createPTitle@GemTextInput(labelText = "Person Name", entry = person.kuerzel, disabled = false),
+          @GemButton(label = "Create new person", leftClick = createPerson, disabled = false),
+          @GemButton(label = "Abort", leftClick = navigateBack, disabled = false)
+        ])
+      )
+    )
+  ]);
+}

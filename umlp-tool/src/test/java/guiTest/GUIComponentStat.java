@@ -1,0 +1,73 @@
+/* (c) https://github.com/MontiCore/monticore */
+package guiTest;
+
+import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
+import de.monticore.guidsl._ast.ASTGUIGuard;
+import de.monticore.guidsl._ast.ASTGUIIterate;
+import de.monticore.guidsl._visitor.GUIDSLTraverser;
+import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class GUIComponentStat implements GUIDSLVisitor2 {
+
+  protected static GUIComponentStat instance;
+  protected GUIDSLTraverser traverser;
+
+  protected List<ASTGUIComponent> components = new ArrayList<>();
+  protected List<ASTGUIGuard> guards = new ArrayList<>();
+  protected List<ASTGUIIterate> iterates = new ArrayList<>();
+
+  public static GUIComponentStat getInstance() {
+    if (instance == null) {
+      instance = new GUIComponentStat();
+    }
+    return instance;
+  }
+
+  protected GUIComponentStat() {
+    traverser = GUIDSLMill.traverser();
+    traverser.add4GUIDSL(this);
+  }
+
+  public GUIDSLTraverser getTraverser() {
+    return traverser;
+  }
+
+  public List<ASTGUIComponent> getComponents(ASTGUIComponentDeclaration node) {
+    components.clear();
+    node.accept(getTraverser());
+    return components;
+  }
+
+  public List<ASTGUIGuard> getGuards(ASTGUIComponentDeclaration node) {
+    guards.clear();
+    node.accept(getTraverser());
+    return guards;
+  }
+
+  public List<ASTGUIIterate> getIterates(ASTGUIComponentDeclaration node) {
+    iterates.clear();
+    node.accept(getTraverser());
+    return iterates;
+  }
+
+  @Override
+  public void visit(ASTGUIComponent node) {
+    components.add(node);
+  }
+
+  @Override
+  public void visit(ASTGUIGuard node) {
+    guards.add(node);
+  }
+
+  @Override
+  public void visit(ASTGUIIterate node) {
+    iterates.add(node);
+  }
+
+}

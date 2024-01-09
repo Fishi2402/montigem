@@ -8,13 +8,15 @@ import {Issue} from "@src/sehub/Issue";
 import {User} from '@src/sehub/User';
 import {SehubRole} from '@src/sehub/SehubRole';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NotesPageComponent} from "../../../build/frontendGen/build/appgui/gui/NotesPageComponent";
+import {NotesPageComponent,config} from "../../../build/frontendGen/build/appgui/gui/NotesPageComponent";
 
 @Component({
-  selector: 'notes-page',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/NotesPage.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['./NotesPage.scss']
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class NotesPage extends NotesPageComponent {
 

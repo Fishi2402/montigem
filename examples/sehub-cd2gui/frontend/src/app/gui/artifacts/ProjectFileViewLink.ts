@@ -1,14 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {ProjectFileViewLinkComponent} from '@src/gui/artifacts/ProjectFileViewLinkComponent';
+import {ProjectFileViewLinkComponent,config} from '@src/gui/artifacts/ProjectFileViewLinkComponent';
 
 import {Component,} from '@angular/core';
 
-
 @Component({
-  selector: 'project-file-view-link',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/artifacts/ProjectFileViewLink.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export  class ProjectFileViewLink extends ProjectFileViewLinkComponent {
 

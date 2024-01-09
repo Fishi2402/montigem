@@ -17,7 +17,7 @@ export const routes: Routes = [
     ...routesTOP,
   {
     path:"cd2gui",
-    loadChildren:() => import('../../build/umlp/fe2/cd2gui/models/ModelsGemModule').then(m=>m.ModelsGemModule)
+    loadChildren:() => import('../../build/umlp/fe2/cd2gui/models/ModelsGemRouting').then(m=>m.routes)
   },
 
 
