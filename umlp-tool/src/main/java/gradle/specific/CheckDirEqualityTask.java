@@ -15,10 +15,10 @@ import java.io.IOException;
  */
 public abstract class CheckDirEqualityTask extends DefaultTask {
   @InputDirectory
-  abstract DirectoryProperty getDir1();
+  public abstract DirectoryProperty getDir1();
 
   @InputDirectory
-  abstract DirectoryProperty getDir2();
+  public abstract DirectoryProperty getDir2();
 
   @TaskAction
   public void run() throws IOException {

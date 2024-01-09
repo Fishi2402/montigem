@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
-import gradle.common.CommonUMLPTask;
 import gradle.specific.UMLPBackendTask;
-import gradle.specific.UMLPTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -25,15 +23,15 @@ import java.util.function.Consumer;
  */
 public abstract class UMLPPluginBackend implements Plugin<Project> {
 
-  final String UMLP_BACKEND_TASK_NAME = "generateUmlpBackend";
-  final String UMLP_GROUP_NAME = "umlp";
+  final static String UMLP_BACKEND_TASK_NAME = "generateUmlpBackend";
+  static final String UMLP_GROUP_NAME = "umlp";
 
   @Override
   public void apply(Project project) {
     project.getPluginManager().apply(UMLPPluginBase.class);
     project.getPluginManager().apply("java");
 
-    TaskProvider<UMLPBackendTask> umlpTask = createUMLPBackendTask(project);
+    TaskProvider<UMLPBackendTask> umlpTask = createUMLPBackendTask(project, UMLP_BACKEND_TASK_NAME);
     // Generate Backend must run before JavaCompile
     project.getTasks().withType(AbstractCompile.class).configureEach(compile -> {
       compile.dependsOn(umlpTask);
@@ -64,8 +62,8 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     main.getResources().srcDir(umlpTask.getOutputDir().dir("resources"));
   }
 
-  protected TaskProvider<UMLPBackendTask> createUMLPBackendTask(final Project project) {
-    final TaskProvider<UMLPBackendTask> result = project.getTasks().register(UMLP_BACKEND_TASK_NAME, UMLPBackendTask.class, umlpTask -> {
+  protected static TaskProvider<UMLPBackendTask> createUMLPBackendTask(final Project project, String umlpBackendTaskName) {
+    final TaskProvider<UMLPBackendTask> result = project.getTasks().register(umlpBackendTaskName, UMLPBackendTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
 
       setIfPathExists(umlpTask::setInput, Path.of(
@@ -87,7 +85,7 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     return result;
   }
 
-  private void setIfPathExists(Consumer<File> add, Path path) {
+  private static void setIfPathExists(Consumer<File> add, Path path) {
     File f = path.toFile();
     if (f.exists()) {
       add.accept(f);
