@@ -2,7 +2,6 @@
 package example_charts;
 
 import charts.GemVennDiagram;
-import charts.GemVennDiagramTypes.GemVennDiagramData;
 import Domain.Person;
 
 page GemVennDiagramExample(List<Person> persons) {

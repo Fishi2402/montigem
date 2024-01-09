@@ -56,9 +56,9 @@ export class GemGaugeChartExample extends GemGaugeChartExampleComponent {
       }
     }
 
-    entries[0].value = Math.round(numberFriendsGroup1 / numberPeopleInGroup1);
-    entries[1].value = Math.round(numberFriendsGroup2 / numberPeopleInGroup2);
-    entries[2].value = Math.round(numberFriendsGroup3 / numberPeopleInGroup3);
+    entries[0].value = Math.round(numberFriendsGroup1 / numberPeopleInGroup1) * 10;
+    entries[1].value = Math.round(numberFriendsGroup2 / numberPeopleInGroup2) * 10;
+    entries[2].value = Math.round(numberFriendsGroup3 / numberPeopleInGroup3) * 10;
 
     let data: GemGaugeChartData = { entries: entries };
 

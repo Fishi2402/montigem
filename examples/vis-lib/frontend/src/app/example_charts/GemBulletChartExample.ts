@@ -25,7 +25,7 @@ export class GemBulletChartExample extends GemBulletChartExampleComponent {
             let age = currentYear - Number(person?.getBirthday()?.toDateString().substring(11, 15));
             sumOfAges += age;
         }
-        let averageYear = sumOfAges / this.persons.size();
+        let averageYear = Math.round(sumOfAges / this.persons.size());
         if (JSON.stringify(averageYear) === this.chartValueHash && this.chartValue) {
             return this.chartValue;
         }

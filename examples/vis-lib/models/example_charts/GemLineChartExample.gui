@@ -2,8 +2,6 @@
 package example_charts;
 
 import charts.GemLineChart;
-import charts.GemLineChartTypes.GemLineChartData;
-import charts.GemLineChartTypes.GemLineChartEntry;
 import Domain.Person;
 
 page GemLineChartExample(List<Person> persons) {

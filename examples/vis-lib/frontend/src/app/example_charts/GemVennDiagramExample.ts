@@ -32,7 +32,7 @@ export class GemVennDiagramExample extends GemVennDiagramExampleComponent {
       mapOfriends.set(person.getName(), person.getFriends());
       entries.push(node);
       limitPeople++;
-      if (limitPeople === 3) {
+      if (limitPeople === 10) {
         break;
       }
     }

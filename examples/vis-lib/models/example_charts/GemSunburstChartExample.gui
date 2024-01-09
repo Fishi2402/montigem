@@ -2,16 +2,11 @@
 package example_charts;
 
 import charts.GemSunburstChart;
-import charts.GemSunburstChartTypes.GemSunburstData;
-import charts.GemSunburstChartTypes.GemSDNshort;
+import Domain.Person;
 
-page GemSunburstChartExample(
-  GemSunburstData data,
-  GemSDNshort dataShort
-) {
+page GemSunburstChartExample(List<Person> persons) {
   @GemSunburstChart(
-    data = data,
-    dataShort = dataShort,
+    data = null,
     ignoreError = true
   );
 }

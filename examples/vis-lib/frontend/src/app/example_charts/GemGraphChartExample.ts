@@ -28,9 +28,9 @@ export class GemGraphChartExample extends GemGraphChartExampleComponent {
     for (const person of this.persons) {
       let node = {
         id: `${nodeId}`,
-        color: "Green",
+        color: "Red",
         label: person.getName(),
-        mass: 5,
+        mass: person.getFriends().length,
       };
       mapOfriends.set(nodeId, person.getFriends());
       mapOfPersons.set(person, nodeId);
@@ -43,7 +43,7 @@ export class GemGraphChartExample extends GemGraphChartExampleComponent {
         let edge = {
           from: `${nodeId}`,
           to: `${mapOfPersons.get(friend)}`,
-          length: 250
+          length: 200
         }
         edges.push(edge);
       }

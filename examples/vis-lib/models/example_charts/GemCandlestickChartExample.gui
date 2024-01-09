@@ -2,12 +2,10 @@
 package example_charts;
 
 import charts.GemCandlestickChart;
-import charts.GemCandlestickChartTypes.GemData2CandlestickChart;
+import Domain.Person;
 
-page GemCandlestickChartExample(
-  List<GemData2CandlestickChart> data
-) {
+page GemCandlestickChartExample(List<Person> persons) {
   @GemCandlestickChart(
-    data = data
+    data = null
   );
 }

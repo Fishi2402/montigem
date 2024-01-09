@@ -2,14 +2,13 @@
 package example_charts;
 
 import charts.GemGaugeChart;
-import charts.GemGaugeChartTypes.GemGaugeChartData;
 import Domain.Person;
 
 page GemGaugeChartExample(List<Person> persons) {
   @GemGaugeChart(
     data = null,
     min = 0,
-    max = 5,
+    max = 50,
     unit = "#friends",
     textValue = "average number of friends for age group"
   );

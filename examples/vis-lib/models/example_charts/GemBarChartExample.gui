@@ -2,7 +2,6 @@
 package example_charts;
 
 import charts.GemBarChart;
-import charts.GemBarChartTypes.GemBarChartData;
 import Domain.Person;
 
 page GemBarChartExample(List<Person> persons) 

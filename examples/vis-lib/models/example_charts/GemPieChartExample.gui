@@ -2,8 +2,6 @@
 package example_charts;
 
 import charts.GemPieChart;
-import charts.GemPieChartTypes.GemPieChartData;
-import charts.GemPieChartTypes.GemPieChartEntry;
 import Domain.Person;
 
 page GemPieChartExample(List<Person> persons) {

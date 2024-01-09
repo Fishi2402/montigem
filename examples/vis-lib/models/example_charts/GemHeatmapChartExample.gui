@@ -2,12 +2,13 @@
 package example_charts;
 
 import charts.GemHeatmapChart;
-import charts.GemHeatmapChartTypes.GemHeatmapChartData;
+import Domain.Person;
 
-page GemHeatmapChartExample(
-  GemHeatmapChartData data
-) {
+page GemHeatmapChartExample(List<Person> persons) {
   @GemHeatmapChart(
-    data = data
+    data = null,
+    timestampdata = true,
+    xLabel = "x",
+    yLabel = "y"
   );
 }
