@@ -17,13 +17,14 @@ public class UMLPPluginBackendTest implements Plugin<Project> {
     UMLPBackendTask firstTask = (UMLPBackendTask) project.getTasks().getByName(UMLPPluginBackend.UMLP_BACKEND_TASK_NAME);
     // UMLPBackendTask secondTask = UMLPPluginBackend.createUMLPBackendTask(project, "COMPARE_" + UMLPPluginBackend.UMLP_BACKEND_TASK_NAME).get();
     UMLPBackendTask secondTask = project.getTasks().register("COMPARE_" + UMLPPluginBackend.UMLP_BACKEND_TASK_NAME, UMLPBackendTask.class, umlpTask -> {
+      // TODO: Is there a better way to copy _all_ properties from the tasks?
       umlpTask.getInput().from(firstTask.getInput());
       umlpTask.getHwcDir().set(firstTask.getHwcDir());
       umlpTask.getSymbolDir().set(firstTask.getSymbolDir());
       umlpTask.getUseSpring().set(firstTask.getUseSpring());
       umlpTask.getUseShell().set(firstTask.getUseShell());
 
-      // Change Ouputs of the task... because we want to generate into a different directory
+      // Change Outputs of the task... because we want to generate into a different directory & compare afterwars
       umlpTask.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp_backend_test"));
       umlpTask.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp_backend_test_symbols"));
     }).get();
