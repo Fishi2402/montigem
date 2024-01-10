@@ -1,6 +1,7 @@
-package gradle.specific;
+package gradle.common;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.tasks.InputDirectory;
@@ -29,8 +30,21 @@ public abstract class CheckDirEqualityTask extends DefaultTask {
         String relPath1 = dir1.toPath().relativize(f1.toPath()).toString();
         File f2 = java.nio.file.Paths.get(dir2.toString(), relPath1).toFile();
         if (!FileUtils.contentEquals(f1, f2)) {
+          String difference = "";
+          { // Show the first difference directly in the output
+            LineIterator l1 = FileUtils.lineIterator(f1);
+            LineIterator l2 = FileUtils.lineIterator(f2);
+            while (l1.hasNext() && l2.hasNext()) {
+              String line1 = l1.nextLine();
+              String line2 = l2.nextLine();
+              if(!line1.equals(line2)){
+                difference = "\nIn " + f1.getPath() + ":\n\t" + line1 + "\nIn " + f2.getPath() + ":\n\t" + line2 + "\n\n";
+              }
+            }
+          }
+
           throw new java.lang.RuntimeException("Generated Files are not equal! Gradle Task cannot be cached! \n" +
-              "\t " + f1.toPath() + "\n\t " + f2.toPath() + "\n" +
+              "\t " + f1.toPath() + "\n\t " + f2.toPath() + "\n" + difference +
               "Often this is caused by iterating over a `HashSet` (or `HashMap`). Instead use `LinkedHashSet` / `TreeSet` (or `LinkedHashMap` / `TreeMap`)");
         }
       }

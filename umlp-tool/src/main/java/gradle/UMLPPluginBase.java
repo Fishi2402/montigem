@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
-import gradle.specific.CheckDirEqualityTask;
+import gradle.common.CheckDirEqualityTask;
 import gradle.specific.FrontendSetup;
 import gradle.specific.GuiVariabilityHandlerTask;
 import gradle.specific.NPMAuthCreate;
