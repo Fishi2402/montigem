@@ -20,6 +20,8 @@ public class UMLPPluginBackendTest implements Plugin<Project> {
       umlpTask.getInput().from(firstTask.getInput());
       umlpTask.getHwcDir().set(firstTask.getHwcDir());
       umlpTask.getSymbolDir().set(firstTask.getSymbolDir());
+      umlpTask.getUseSpring().set(firstTask.getUseSpring());
+      umlpTask.getUseShell().set(firstTask.getUseShell());
 
       // Change Ouputs of the task... because we want to generate into a different directory
       umlpTask.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp_backend_test"));
