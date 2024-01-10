@@ -22,8 +22,9 @@ import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -467,7 +468,7 @@ public class DAODecorator extends AbstractDecorator {
     List<ASTCDAssocSide> assocSides = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
         .filter(GenService::isVisible)
         .collect(Collectors.toList());
-    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = new HashMap<>();
+    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = new LinkedHashMap<>();
     for (ASTCDAssocSide assocSide : assocSides) {
       ASTCDAssociation assocOfAssocSide = assocSide.getSymbol().getAssoc().getAssociation().getAstNode();
       assocSideToAssociation.put(assocSide, assocOfAssocSide);
@@ -502,7 +503,7 @@ public class DAODecorator extends AbstractDecorator {
 
   // Used to find out correct Manager
   protected Map<String,String> getAssocToTargetDefinitionCD(Stream<ASTCDAssociation> associations) {
-    Map<String, String> assocToCorrectManagerMap = new HashMap<>();
+    Map<String, String> assocToCorrectManagerMap = new LinkedHashMap<>();
     associations.forEach(assoc -> {
       // Assumes a CoCo guarantees there no type of CD is changed
       if(assoc.getCDAssocDir().isDefinitiveNavigableRight()) {
@@ -518,7 +519,7 @@ public class DAODecorator extends AbstractDecorator {
 
   // Used to find out correct DAOFactory
   protected Map<String,String> getAssocToSourceDefinitionCD(Stream<ASTCDAssociation> associations) {
-    Map<String, String> assocToCorrectManagerMap = new HashMap<>();
+    Map<String, String> assocToCorrectManagerMap = new LinkedHashMap<>();
     associations.forEach(assoc -> {
       // Assumes a CoCo guarantees there no type of CD is changed
       if(assoc.getCDAssocDir().isDefinitiveNavigableRight()) {

@@ -73,7 +73,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -496,7 +496,7 @@ public class UMLPTool extends UMLPToolTOP {
         ///////////////////////// LANGUAGE FRONTEND  //////////////////////////////
       }
       else if (isGuiFile(inputFile)) {
-        Map<String, ModuleRoutingInfo> routesMap = new HashMap<>();
+        Map<String, ModuleRoutingInfo> routesMap = new LinkedHashMap<>();
 
         // Prepare the SingletonLookup
         TagRelated.initLookup(importedSymbolPath);

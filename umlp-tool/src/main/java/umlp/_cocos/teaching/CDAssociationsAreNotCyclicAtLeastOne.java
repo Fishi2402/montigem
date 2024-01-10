@@ -11,7 +11,7 @@ import java.util.*;
 
 public class CDAssociationsAreNotCyclicAtLeastOne implements CDBasisASTCDDefinitionCoCo {
 
-  Map<String, List<String>> graph = new HashMap<>();
+  Map<String, List<String>> graph = new LinkedHashMap<>();
 
   CDAssociationTypeDispatcher dispatcher = new CDAssociationTypeDispatcher();
 

@@ -17,7 +17,7 @@ import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -32,7 +32,7 @@ public class GUI2HtmlTrafo implements GUIDSLVisitor2 {
   protected ASTGUICompilationUnit out;
   protected ASTGUICompilationUnit in;
 
-  protected Map<ASTGUIBlock, Set<ASTGUIBlockContent>> templates = new HashMap();
+  protected Map<ASTGUIBlock, Set<ASTGUIBlockContent>> templates = new LinkedHashMap();
   protected Deque<ASTGUIBlock> holderStack = new ArrayDeque<>();
 
   protected Optional<ASTGUIComponent> current = Optional.empty();

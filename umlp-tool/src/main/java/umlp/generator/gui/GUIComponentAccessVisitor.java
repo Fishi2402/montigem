@@ -17,7 +17,7 @@ import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class GUIComponentAccessVisitor implements GUIDSLVisitor2, CommonExpressi
   protected List<ASTGUINamedArg> namedArgs = new ArrayList<>();
   protected List<ASTGUIShortIterateControl> iterates = new ArrayList<>();
 
-  protected Map<ASTGUINamedArg, Set<ASTFieldAccessExpression>> namedArgsFieldAccess = new HashMap<>();
+  protected Map<ASTGUINamedArg, Set<ASTFieldAccessExpression>> namedArgsFieldAccess = new LinkedHashMap<>();
 
   protected ASTGUINamedArg actualNamedArg = null;
 
