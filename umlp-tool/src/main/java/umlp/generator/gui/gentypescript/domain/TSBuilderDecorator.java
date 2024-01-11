@@ -20,8 +20,9 @@ import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static umlp.generator.domain.decorator.GenService.createType;
 
@@ -84,7 +85,7 @@ public class TSBuilderDecorator extends BuilderDecorator {
       ASTCDClass builderClass, ASTCDClass domainClass,
       String managerName, List<ASTCDAssocSide> attrAssocLists, List<String[]> initialAttributes
   ) {
-    HashMap<ASTCDAssocSide, String> correctManagerToAttrAssocSides = new HashMap<>();
+    Map<ASTCDAssocSide, String> correctManagerToAttrAssocSides = new LinkedHashMap<>();
     attrAssocLists.forEach(assocSide -> correctManagerToAttrAssocSides.put(assocSide,
         getCorrectManager(assocSide.getSymbol().getAssoc().getAssociation().getAstNode())));
     glex.replaceTemplate(GUI2ComponentTemplates.CONSTRUCTOR, builderClass,

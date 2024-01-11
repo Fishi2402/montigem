@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class GUI2TSConfigGenerator {
   }
 
   private static Map<String, String> findNextLevelModuleForAppConfig(String path) {
-    Map<String, String> modules = new HashMap<>();
+    Map<String, String> modules = new LinkedHashMap<>();
 
     File folder = new File(path);
     File[] listOfFiles = folder.listFiles();
@@ -72,7 +72,7 @@ public class GUI2TSConfigGenerator {
 
   private static Map<String, String> findSubroutesForPackageConfig(Map.Entry<String, ModuleRoutingInfo> packageInfo,
       Map<String, ModuleRoutingInfo> routingInfoMap, MCPath targetPath) {
-    Map<String, String> routes = new HashMap<>();
+    Map<String, String> routes = new LinkedHashMap<>();
     Set<String> subModuleInfo = new HashSet<>();
     routingInfoMap.forEach((key, value) -> {
       if (key.contains(packageInfo.getKey()) && !key.equals(packageInfo.getKey())) {

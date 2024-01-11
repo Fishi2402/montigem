@@ -21,7 +21,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import umlp.generator.domain.decorator.GenService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 
 /*
@@ -33,7 +33,7 @@ public class UMLAssocToAttrTrafo implements CDBasisVisitor2, CDAssociationVisito
 
   protected Optional<ASTCDPackage> astcdPackage = Optional.empty();
 
-  protected Multimap<Optional<ASTCDPackage>, ASTCDAssociation> assocMap = Multimaps.newMultimap(new HashMap<>(), ArrayList::new);
+  protected Multimap<Optional<ASTCDPackage>, ASTCDAssociation> assocMap = Multimaps.newMultimap(new LinkedHashMap<>(), ArrayList::new);
 
   protected CD4CodeTraverser traverser;
 

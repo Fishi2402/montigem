@@ -20,7 +20,7 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import umlp.generator.domain.decorator.GenService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -36,9 +36,9 @@ public class UMLAttrToAssocTrafo implements CDBasisVisitor2, CDInterfaceAndEnumV
 
   protected ASTCDType astcdType;
 
-  protected Multimap<ASTCDType, ASTCDAttribute> attrMap = Multimaps.newMultimap(new HashMap<>(), ArrayList::new);
+  protected Multimap<ASTCDType, ASTCDAttribute> attrMap = Multimaps.newMultimap(new LinkedHashMap<>(), ArrayList::new);
 
-  protected Multimap<Optional<ASTCDPackage>, ASTCDAssociation> assocMap = Multimaps.newMultimap(new HashMap<>(), ArrayList::new);
+  protected Multimap<Optional<ASTCDPackage>, ASTCDAssociation> assocMap = Multimaps.newMultimap(new LinkedHashMap<>(), ArrayList::new);
 
   protected CD4CodeTraverser traverser;
 
