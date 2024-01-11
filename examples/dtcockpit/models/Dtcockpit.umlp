@@ -70,7 +70,24 @@ classdiagram Dtcockpit {
   class Project {
     String name;
     String git;
+    Optional<String> cmd;
   }
+
+  class Branch {
+    String name;
+    String git;
+  }
+
+  class CIInformation {
+    String variableName;
+    String branchName;
+  }
+
+  association [0..1] Project -> (ciInfos) CIInformation [0..1];
+
+  association [0..1] Project -> (dependentProjects) Project [*];
+
+  association [0..1] Project <-> (branches) Branch [*];
 
   association [0..1] Project <-> (pStatistics) PipelineStatistic [*];
 

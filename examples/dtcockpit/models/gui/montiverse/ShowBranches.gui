@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.montiverse;
+
+import gui.navigation.DtCockpitNavigation;
+import Dtcockpit.Project;
+import Dtcockpit.Branch;
+
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+import basic.GemText;
+import input.GemTextInput;
+import input.GemTextareaInput;
+
+page ShowBranches(Project project, List<Group> groups, List<Project> projects) {
+  @GemRow(wrap = "nowrap", components = [
+    @DtCockpitNavigation(projects = projects, groups = groups),
+    @GemColumn(hAlign = "left", component =
+    @GemCard(
+      title = project.name + ": Branches",
+      component = projectList@GemRow(
+        rowGap="20px",
+        colGap="5px",
+        components=[
+          @iterate(Branch branch : project.branches) {
+            pButton@GemButton(label = branch.name, leftClick = chooseBranch(branch));
+          }
+        ]
+      )
+    )
+    )
+  ]);
+}
