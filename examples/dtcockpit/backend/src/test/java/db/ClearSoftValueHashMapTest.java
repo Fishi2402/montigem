@@ -1,9 +1,13 @@
-package dtcockpit;
+package db;
 
 /* (c) https://github.com/MontiCore/monticore */
 
 
+import dtcockpit.DtcockpitManager;
+import dtcockpit.DtcockpitManagerImpl;
+import dtcockpit.Room;
 import dtcockpit.test_infrastructure.DtcockpitDBTestSetup;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.common.DatabaseAccessManager;
@@ -46,7 +50,7 @@ public class ClearSoftValueHashMapTest extends DtcockpitDBTestSetup {
       throw new RuntimeException(e);
     }
     //check that objects still in usage are not cleared
-    assertTrue(DtcockpitManager.isLoadedRoom(0));
+    Assertions.assertTrue(DtcockpitManager.isLoadedRoom(0));
     //check that the longest existing object not in usage is among the cleared objects
     assertFalse(DtcockpitManager.isLoadedRoom(1));
     //check that
