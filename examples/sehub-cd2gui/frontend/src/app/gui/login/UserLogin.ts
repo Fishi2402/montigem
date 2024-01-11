@@ -1,15 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserLoginComponent} from '@src/gui/login/UserLoginComponent';
+import {UserLoginComponent,config} from '@src/gui/login/UserLoginComponent';
 import {User} from '@src/sehub/User';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
 @Component({
-  selector: 'user-login',
-  templateUrl: '../../../..//build/frontendGen/build/appgui/gui/login/UserLogin.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: ["./Login.scss"]
 })
 export class UserLogin extends UserLoginComponent {
 

@@ -1,15 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {ResetPasswordComponent} from '@src/gui/login/ResetPasswordComponent';
+import {ResetPasswordComponent,config} from '@src/gui/login/ResetPasswordComponent';
 import {User} from '@src/dtcockpit//User';
 import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
 
 @Component({
-  selector: 'reset-password',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/ResetPassword.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ["/Login.scss"]
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: ["./Login.scss"]
 })
 export class ResetPassword extends ResetPasswordComponent {
 

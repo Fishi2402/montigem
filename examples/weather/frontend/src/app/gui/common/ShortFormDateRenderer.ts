@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
-import {ShortFormDateRendererComponent} from "@src/gui/common/ShortFormDateRendererComponent";
+import {ShortFormDateRendererComponent,config} from "@src/gui/common/ShortFormDateRendererComponent";
 
 @Component({
-  selector: 'short-form-date-renderer',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/common/ShortFormDateRenderer.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[... config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 
 export  class ShortFormDateRenderer extends ShortFormDateRendererComponent {

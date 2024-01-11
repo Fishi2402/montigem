@@ -1,15 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {GuidslpaperMainPageComponent} from '@src/gui/GuidslpaperMainPageComponent';
+import {GuidslpaperMainPageComponent,config} from '@src/gui/GuidslpaperMainPageComponent';
 import {Component} from '@angular/core';
 import {Person} from '@src/guidslpaper/Person';
 import {GuidslpaperSecurityManager} from "../guidslpaper/GuidslpaperSecurityManager";
 
 @Component({
-  selector: 'guidslpaper-main-page',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/GuidslpaperMainPage.html',
-  styles: [":host{ display: flex; flex-direction: row }"],
-  styleUrls: []
+  standalone:true,
+  imports:[... config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 
 export class GuidslpaperMainPage extends GuidslpaperMainPageComponent {

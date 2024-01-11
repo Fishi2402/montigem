@@ -20,6 +20,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+// Task might not be a @CacheableTask since relative paths are generated for HWC-files
 public abstract class UMLPFrontendTask extends UMLPSingleFileTask {
 
   public UMLPFrontendTask() {

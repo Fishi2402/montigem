@@ -2,6 +2,7 @@
 package input;
 
 import input.GemTextInputTypes.GemTextInputValidity;
+import input.GemTextInputTypes.Option;
 
 //This component represents an input field with an optional label.
 //It is designed to be used in forms or other contexts where user input is required.
@@ -10,7 +11,7 @@ component GemTextInput(
   String id,
   String labelText,
   String inputType,
-  List<String> options,
+  List<Option> options,
   ?String entry,
   boolean disabled = false,
   String placeholder = "",

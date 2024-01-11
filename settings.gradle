@@ -31,7 +31,7 @@ include ":experiments"
 include ":experiments:dbPerformance"
 include ":experiments:statecharts-integration"
 include ":experiments:module-system:module-definition"
-include ":experiments:module-system:modules-usage"
+include ":experiments:module-system:routes-usage"
 
 include ":examples"
 include ':examples:cars'
@@ -71,7 +71,9 @@ include ':examples:guidslpaper:backend'
 include ':examples:guidslpaper:frontend'
 
 include ':products:syse_functions'
-include ':products:demo-recycling:backend'
+include ':products:demorec:backend'
+include ':products:demorec:frontend'
+include ':products:demo-recycling:frontend'
 include 'examples:flensburg-test-jsweet:backend'
 findProject(':examples:flensburg-test-jsweet:backend')?.name = 'backend'
 

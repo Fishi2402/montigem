@@ -3,8 +3,8 @@ package flensburg;//+ HWC-PT
 
 import hardy.flensburg.Address;
 import hardy.flensburg.Car;
-import hardy.flensburg.CarBuilder;
 import hardy.flensburg.CityInfo;
+import hardy.flensburg.CityInfoImpl;
 import hardy.flensburg.FlensburgManager;
 import hardy.flensburg.FlensburgMock;
 import hardy.flensburg.FlensburgTestContext;

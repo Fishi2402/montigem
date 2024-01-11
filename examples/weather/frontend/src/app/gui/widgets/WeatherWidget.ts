@@ -1,13 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { WeatherWidgetComponent } from '@src/gui/widgets/WeatherWidgetComponent';
+import { WeatherWidgetComponent,config } from '@src/gui/widgets/WeatherWidgetComponent';
 
 @Component({
-  selector: 'weather-widget',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/widgets/WeatherWidget.html',
-  styles: [":host{ display: nowrap; flex-direction: row }"],
-  styleUrls: ['./WeatherWidget.scss']
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 
 export class WeatherWidget extends WeatherWidgetComponent {

@@ -16,18 +16,14 @@
 
 :host ::ng-deep .issueCategories {.gem-card-header {
     font-size: 20px !important;
-    color: $acronio-orange-3;
-
 }}
 
 :host ::ng-deep .issueColumn { .gem-card-header {
   font-size: 16px !important;
-  color: $acronio-black-4;
 }}
 
 :host ::ng-deep .gem-card-body { div {
   font-size: 14px;
-  color: $acronio-black-3;
 }
 }
 
@@ -42,27 +38,6 @@
     background-color: rgba($acronio-green, 0.3) !important;
   } }
 }
-
-
-:host ::ng-deep .gem-button {
-  color: $acronio-black-3 ;
-  background: $acronio-black-1;
-  font-weight: bold;
-  font-size: 18px;
-  padding: 2px 20px;
-  border: 0.5px solid $acronio-black-2 ;
-}
-
-:host ::ng-deep .gem-button:hover {
-  color: $acronio-orange-4 ;
-  background: $acronio-orange;
-}
-
-:host ::ng-deep .gem-button:focus {
-  color: $acronio-orange-4 ;
-  background: $acronio-orange;
-}
-
 
 
 

@@ -2,10 +2,10 @@
 <#-- Generates a routes file from the given model -->
 ${tc.signature("routingModules","defaultRouting")}
 // always imported
-import { Routes } from "@angular/router";
+import { Route } from "@angular/router";
 
 
-export const routes: Routes = [
+export const routes: Route[] = [
  <#if defaultRouting!="">
  {
    path:"",
@@ -15,7 +15,7 @@ export const routes: Routes = [
 <#list routingModules?keys as key>
   {
   path:"${routingModules[key]}",
-  loadChildren:() => import("./${routingModules[key]}/${key}GemModule").then(m=>m.${key}GemModule)
+  loadChildren:() => import("./${routingModules[key]}/${key}GemRouting").then(m=>m.routes)
   },
 
 </#list>

@@ -1,13 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { GemTableExampleComponent } from '@src/example_table/GemTableExampleComponent';
+import { GemTableExampleComponent,config } from '@src/example_table/GemTableExampleComponent';
 import { Component } from '@angular/core';
 import { TableColumn } from '@umlp/table';
 
 @Component({
-  selector: 'gem-table-example',
-  templateUrl: '../../../build/frontendGen/build/appgui/example_table/GemTableExample.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
 })
 export class GemTableExample extends GemTableExampleComponent {
   override init(): void {

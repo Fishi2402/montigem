@@ -21,12 +21,8 @@ import umlp.generator.db.sql.SQLSchemaGenerator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -66,7 +62,7 @@ public class DAODecorator extends AbstractDecorator {
     Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = getOppositeSideToAssociationMap(domainClass)
         .entrySet().stream()
         .filter(entry -> !entry.getValue().getModifier().isDerived())
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (l,r) ->l, LinkedHashMap::new));
     ASTCDClassBuilder builder = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(className)
@@ -207,15 +203,15 @@ public class DAODecorator extends AbstractDecorator {
   private void domainClassDAOMethods(ASTCDClass daoClass, ASTCDClass domainClass, Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssoc) {
     Map<ASTCDAssocSide, ASTCDAssociation> nonDerivedAssocSideToAssoc =
         assocSideToAssoc.entrySet().stream().filter(e -> !e.getValue().getModifier().isDerived())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (l,r) -> l, LinkedHashMap::new));
 
     Map<ASTCDAssocSide, ASTCDAssociation> gemAssocSideToAssoc =
         nonDerivedAssocSideToAssoc.entrySet().stream().filter(e -> !GenService.isList(e.getKey()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (l,r) -> l, LinkedHashMap::new));
 
     Map<ASTCDAssocSide, ASTCDAssociation> listAssocSideToAssoc =
         nonDerivedAssocSideToAssoc.entrySet().stream().filter(e -> GenService.isList(e.getKey()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (l,r) -> l, LinkedHashMap::new));
     selectMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
     selectAllIdsMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
     unpackMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
@@ -467,7 +463,7 @@ public class DAODecorator extends AbstractDecorator {
     List<ASTCDAssocSide> assocSides = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
         .filter(GenService::isVisible)
         .collect(Collectors.toList());
-    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = new HashMap<>();
+    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = new LinkedHashMap<>();
     for (ASTCDAssocSide assocSide : assocSides) {
       ASTCDAssociation assocOfAssocSide = assocSide.getSymbol().getAssoc().getAssociation().getAstNode();
       assocSideToAssociation.put(assocSide, assocOfAssocSide);
@@ -502,7 +498,7 @@ public class DAODecorator extends AbstractDecorator {
 
   // Used to find out correct Manager
   protected Map<String,String> getAssocToTargetDefinitionCD(Stream<ASTCDAssociation> associations) {
-    Map<String, String> assocToCorrectManagerMap = new HashMap<>();
+    Map<String, String> assocToCorrectManagerMap = new LinkedHashMap<>();
     associations.forEach(assoc -> {
       // Assumes a CoCo guarantees there no type of CD is changed
       if(assoc.getCDAssocDir().isDefinitiveNavigableRight()) {
@@ -518,7 +514,7 @@ public class DAODecorator extends AbstractDecorator {
 
   // Used to find out correct DAOFactory
   protected Map<String,String> getAssocToSourceDefinitionCD(Stream<ASTCDAssociation> associations) {
-    Map<String, String> assocToCorrectManagerMap = new HashMap<>();
+    Map<String, String> assocToCorrectManagerMap = new LinkedHashMap<>();
     associations.forEach(assoc -> {
       // Assumes a CoCo guarantees there no type of CD is changed
       if(assoc.getCDAssocDir().isDefinitiveNavigableRight()) {
