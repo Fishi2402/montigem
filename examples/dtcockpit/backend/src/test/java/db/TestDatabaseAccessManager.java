@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package db;
 
-// GEN-T
-
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import org.h2.tools.Server;
@@ -23,10 +21,8 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager4SQL {
   @Override
   protected void _setup() {
     try {
-      // In memory db
-      // DB_CLOSE_DELAY=0 -> In memory db is deleted after connection is closed
-      DriverManager.registerDriver(new org.h2.Driver());
-      connection = DriverManager.getConnection("jdbc:postgresql://postgres:"+System.getenv("POSTGRES_PORT") +"/"+ System.getenv("POSTGRES_DB"));
+      // postgres db
+      connection = DriverManager.getConnection("jdbc:postgresql://postgres:5432/"+ System.getenv("POSTGRES_DB"));
       String schemaFileName = "Dtcockpit.sql";
       Optional<URL> optionalURL = FileReaderWriter.getResource(this.getClass().getClassLoader(), schemaFileName);
       if(optionalURL.isEmpty()) {
