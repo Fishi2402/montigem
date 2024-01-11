@@ -32,9 +32,10 @@ public class UMLPPluginBackendTest implements Plugin<Project> {
     TaskProvider<CheckDirEqualityTask> compareTask = createCompareTask(project, firstTask.getOutputDir(), secondTask.getOutputDir(), "checkEqualitiy");
     compareTask.get().dependsOn(firstTask, secondTask);
 
-    //TaskProvider<CheckDirEqualityTask> compareSymbolsTask = createCompareTask(project, firstTask.getSymbolOutDir(), secondTask.getSymbolOutDir(), "checkSymbolEqualitiy");
-    //compareSymbolsTask.get().dependsOn(firstTask, secondTask);
-    project.getTasks().getByName("build").dependsOn(compareTask); // also add "compareSymbolsTask"
+    TaskProvider<CheckDirEqualityTask> compareSymbolsTask = createCompareTask(project, firstTask.getSymbolOutDir(), secondTask.getSymbolOutDir(), "checkSymbolEqualitiy");
+    compareSymbolsTask.get().dependsOn(firstTask, secondTask);
+
+    project.getTasks().getByName("build").dependsOn(compareTask); // TODO: also add "compareSymbolsTask"
   }
 
   private TaskProvider<CheckDirEqualityTask> createCompareTask(Project project, DirectoryProperty dir1, DirectoryProperty dir2, String taskName){
