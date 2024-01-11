@@ -2,7 +2,7 @@
 
 plugins {
   id "com.github.node-gradle.node" version "5.0.0"
-  id "de.rwth.se.umlp-tool-frontend"
+  id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 }
 
 dependencies {
