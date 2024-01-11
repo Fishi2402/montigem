@@ -25,12 +25,16 @@ page OverviewPage(Project project, List<Group> groups, List<Project> projects) {
           colGap="5px",
           components=[
             @iterate(Project dependentProject: project.dependentProjects) {
-              pButton@GemButton(label = dependentProject.name, leftClick = showBranches(dependentProject));
+              branchDropdown@GemTextInput(inputType="dropdown",
+                            labelText=dependentProject.name,
+                            options= /*via TOP*/ null,
+                            entry=dependentProject.ciInfos.branchName
+                            );
             }
           ]
         )
       ),
-      startButton@GemButton(label = "start pipeline", leftClick = startPipeline(project))
+      startButton@GemButton(label = "Start pipeline", leftClick = startPipeline(project))
     ])
   ]);
 }

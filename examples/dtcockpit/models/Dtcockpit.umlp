@@ -6,6 +6,7 @@ classdiagram Dtcockpit {
   <<singleton>>
   class App{
     <<command>> void sendMail(User email, String subject, String message, List<String> forwards);
+    <<command>> void startMontiVerseLitePipeline();
   }
 
   association [1] App -> User [*];
@@ -70,7 +71,6 @@ classdiagram Dtcockpit {
   class Project {
     String name;
     String git;
-    Optional<String> cmd;
   }
 
   class Branch {

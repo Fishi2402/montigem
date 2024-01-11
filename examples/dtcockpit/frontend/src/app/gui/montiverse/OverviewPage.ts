@@ -2,6 +2,9 @@
 
 import { OverviewPageComponent, config } from '@src/gui/montiverse/OverviewPageComponent';
 import { Project } from '@src/dtcockpit/Project';
+import { Option } from '@umlp/input';
+import { CommandManager } from '@umlp/common';
+import { StartMontiVerseLitePipeline } from '../../command/StartMontiVerseLitePipeline';
 
 import {
   Component
@@ -16,17 +19,15 @@ import {
   styleUrls: []
 })
 export  class OverviewPage extends OverviewPageComponent {
-
-  public override showBranches (project: Project): (arg: any) => void {
+  public override startPipeline (): (arg: any) => void {
     return event => {
-      this.router.navigate(["gui", "montiverse", "ShowBranches", project.getGemId()]);
+      CommandManager.executeCommand(new StartMontiVerseLitePipeline());
+      window.open('https://git.rwth-aachen.de/monticore/montiverseci/-/pipelines', '_blank');
     };
   }
 
-  public override startPipeline (): (arg: any) => void {
-    return event => {
-      this.router.navigate(["gui", "montiverse", "Pipeline", this.project.getGemId()]);
-    };
+   public override getBranchDropdownOptions (dependentProject: Project): Array<Option> {
+    return dependentProject.getBranches().map(it => ({ value: it.getName(), display: it.getName() }));
   }
 }
 
