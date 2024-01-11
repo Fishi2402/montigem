@@ -3,7 +3,6 @@ package db;
 
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
-import org.h2.tools.Server;
 import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.net.URL;
