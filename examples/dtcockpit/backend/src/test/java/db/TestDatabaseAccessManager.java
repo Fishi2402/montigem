@@ -21,7 +21,9 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager4SQL {
   protected void _setup() {
     try {
       // postgres db
-      connection = DriverManager.getConnection("jdbc:postgresql://postgres:5432/"+ System.getenv("POSTGRES_DB"));
+      connection = DriverManager.getConnection("jdbc:postgresql://postgres:5432/"+
+          System.getenv("POSTGRES_DB")+"?user=" +  System.getenv("user") + "&password="+
+          System.getenv("pass"));
       String schemaFileName = "Dtcockpit.sql";
       Optional<URL> optionalURL = FileReaderWriter.getResource(this.getClass().getClassLoader(), schemaFileName);
       if(optionalURL.isEmpty()) {
