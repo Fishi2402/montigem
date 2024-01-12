@@ -15,6 +15,8 @@ import java.util.Map;
 public class MontiVerseLite {
 
   protected static final String GIT_API_ACCESS_TOKEN = "gitApiAccessToken";
+  protected static final String GIT_API_ACCESS_TOKEN_TRIGGER_CI = "MONTIVERSE_LITE_TRIGGER_CI_TOKEN";
+
   protected static GitLabApi api;
   protected static final String HOST_URL = "https://git.rwth-aachen.de/";
 
@@ -93,17 +95,18 @@ public class MontiVerseLite {
   }
 
   public static void createPipeline(Project project) {
-    Map<String,  String> variableMap = Maps.newHashMap();
-    project.getDependentProjects().forEach(element ->
-        variableMap.put(element.getCiInfos().getVariableName(), element.getCiInfos().getBranchName()));
-    PipelineApi pipelineApi = new PipelineApi(api);
-    try {
-      Log.info("Starting the pipeline",  "MontiVerseLite");
-      pipelineApi.createPipeline(project.getGit(),"main", variableMap);
-    } catch (GitLabApiException e) {
-      Log.info("Problem when starting the pipeline", e, "MontiVerseLite");
+    try (GitLabApi ciApi = new GitLabApi(HOST_URL, System.getenv(GIT_API_ACCESS_TOKEN_TRIGGER_CI))) {
+      Map<String,  String> variableMap = Maps.newHashMap();
+      project.getDependentProjects().forEach(element ->
+          variableMap.put(element.getCiInfos().getVariableName(), element.getCiInfos().getBranchName()));
+      PipelineApi pipelineApi = new PipelineApi(ciApi);
+      try {
+        Log.info("Starting the pipeline",  "MontiVerseLite");
+        pipelineApi.createPipeline(project.getGit(),"main", variableMap);
+      } catch (GitLabApiException e) {
+        Log.info("Problem when starting the pipeline: " + e.getValidationErrors(), e, "MontiVerseLite");
+      }
     }
-
   }
 
   protected static String getSimpleName(final String qualifiedName) {
