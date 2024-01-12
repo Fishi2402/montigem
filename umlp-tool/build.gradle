@@ -95,7 +95,10 @@ task generateUMLP(type: MCTask) {
 }
 
 task generateUMLPTagDef(type: MCTask) {
-  grammar = file "$buildDir/generated-sources/monticore/sourcecode/UMLPTagDefinition.mc4"
+  grammar = tasks.named("generateUMLP").get()
+      .getOutputs().getFiles().getAsFileTree()
+      .matching(patternFilterable -> patternFilterable.include( "**/UMLPTagDefinition.mc4"))
+      .getSingleFile();
   outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
   modelPath("$projectDir/$grammarDir")
   modelPath("$buildDir/generated-sources/monticore/sourcecode")
@@ -105,7 +108,10 @@ task generateUMLPTagDef(type: MCTask) {
   outputs.upToDateWhen { uptoDate }
 }
 task generateUMLPTagSchema(type: MCTask) {
-  grammar = file "$buildDir/generated-sources/monticore/sourcecode/UMLPTagSchema.mc4"
+  grammar = tasks.named("generateUMLP").get()
+      .getOutputs().getFiles().getAsFileTree()
+      .matching(patternFilterable -> patternFilterable.include( "**/UMLPTagSchema.mc4"))
+      .getSingleFile();
   outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
   modelPath("$projectDir/$grammarDir")
   modelPath("$buildDir/generated-sources/monticore/sourcecode")
