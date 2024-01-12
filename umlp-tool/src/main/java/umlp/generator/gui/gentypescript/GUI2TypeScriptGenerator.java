@@ -51,22 +51,6 @@ public class GUI2TypeScriptGenerator {
     this.hwcPath = hwcPath;
   }
 
-  /**
-   * Check whewther an handwritten version of this generated file already exists and shall be integrated
-   * (e.g. to apply TOP mechanism)
-   */
-  public static boolean existsHandwrittenFile(MCPath targetPath, String hwFile) {
-    Optional<URL> hwFilePath = targetPath.find(hwFile);
-    boolean result = hwFilePath.isPresent();
-    if (result) {
-      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
-      hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path,
-          Paths.get(hwFile)));
-    }
-    Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
-    return result;
-  }
-
   private static Map<String, String> findNextLevelModuleForAppConfig(String path) {
     Map<String, String> modules = new HashMap<>();
 
@@ -134,7 +118,8 @@ public class GUI2TypeScriptGenerator {
       if (imported) {
         String name = StringTransformations.capitalize(Iterables.getLast(routingInfoMap.get(info).getPackageParts()));
         String path = routingInfoMap.get(info).getGeneratedFileDir().substring(packageInfo.getValue().getGeneratedFileDir().length());
-        if(existsHandwrittenFile(targetPath, routingInfoMap.get(info).getGeneratedFileDir() + "/" + name + ROUTES_FILE + "." + TS_FILE_EXTENSION))
+        if(util.existsHandwrittenFile(targetPath,
+            routingInfoMap.get(info).getGeneratedFileDir() + "/" + name + ROUTES_FILE + "." + TS_FILE_EXTENSION))
         {
           routes.put(name + "Route", "@src/" + routingInfoMap.get(info).getGeneratedFileDir() + "/" + name + ROUTES_FILE);
         }
@@ -152,7 +137,7 @@ public class GUI2TypeScriptGenerator {
     this.setup.setTracing(false);
     GeneratorEngine genEngine = new GeneratorEngine(setup);
 
-    boolean existHWCRoutes = existsHandwrittenFile(hwcPath, "App" + ROUTES_FILE + ".ts");
+    boolean existHWCRoutes = util.existsHandwrittenFile(hwcPath, "App" + ROUTES_FILE + ".ts");
 
     Map<String, String> routingModules = findNextLevelModuleForAppConfig(setup.getOutputDirectory().toString());
     String defaultRouting = "";
@@ -165,7 +150,7 @@ public class GUI2TypeScriptGenerator {
 
     Path generatedModuleFiles = Paths.get(
         "App" + MODULES_FILE + ".ts");
-    Boolean existedModuleConfig = existsHandwrittenFile(hwcPath, "App" + MODULES_FILE + "Config.ts");
+    Boolean existedModuleConfig = util.existsHandwrittenFile(hwcPath, "App" + MODULES_FILE + "Config.ts");
 
     String pathHWRoutes = "./" + "App" + ROUTES_FILE + ".ts";
     if (existHWCRoutes) {
@@ -195,12 +180,12 @@ public class GUI2TypeScriptGenerator {
     List<String> paths = new ArrayList<>();
     List<Boolean> existHWC = new ArrayList<>();
     astguiCompilationUnitList.forEach(ast -> {
-      boolean existsHandwrittenDomainClass = GUIGeneratorUtil.getInstance().existsHandwrittenDomainClass(hwcPath, ast);
+      boolean existsHandwrittenDomainClass = util.existsHandwrittenDomainClass(hwcPath, ast);
       existHWC.add(existsHandwrittenDomainClass);
-      Optional<String> filePath = util.getRelativeImportPath(
+      Optional<String> filePath = util.getRelativeImportPathForClass(
           hwcPath, setup.getOutputDirectory().toPath(),
           ast.getMCPackageDeclaration().getMCQualifiedName().getQName()
-              + "." + ast.getComponentName() + (existsHandwrittenDomainClass ? "" : "Component"), "ts");
+              + "." + ast.getComponentName() + (existsHandwrittenDomainClass ? "" : "Component"));
       if (filePath.isPresent()) {
         paths.add(util.removeExtension(filePath.get()));
       }
@@ -225,7 +210,8 @@ public class GUI2TypeScriptGenerator {
     String routingLinkPrefix = packageInfo.getValue().getRoutingPath();
     String name = StringTransformations.capitalize(Iterables.getLast(packageParts));
 
-    boolean existHWCRoutes = existsHandwrittenFile(hwcPath, pathName + "/" + name + ROUTES_FILE + "." + TS_FILE_EXTENSION);
+    boolean existHWCRoutes = util.existsHandwrittenFile(hwcPath,
+        pathName + "/" + name + ROUTES_FILE + "." + TS_FILE_EXTENSION);
     Path generatedRoutingFile = Paths.get(pathName,
         name + ROUTES_FILE + (existHWCRoutes ? "TOP" : "") + "." + TS_FILE_EXTENSION);
     Map<String, String> subRoutes= findSubroutesForPackageConfig(packageInfo, routingInfoMap,this.hwcPath);

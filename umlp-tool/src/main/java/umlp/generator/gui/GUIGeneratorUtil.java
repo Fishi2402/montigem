@@ -110,8 +110,11 @@ public class GUIGeneratorUtil {
     return origPackage;
   }
 
-  public boolean existsHandwrittenClass(MCPath targetPath, String qualifiedName) {
-    String hwFile = Names.getPathFromPackage(qualifiedName) + ".ts";
+  /**
+   * Check whewther an handwritten version of this generated file already exists and shall be integrated
+   * (e.g. to apply TOP mechanism)
+   */
+  public boolean existsHandwrittenFile(MCPath targetPath, String hwFile) {
     Optional<URL> hwFilePath = targetPath.find(hwFile);
     boolean result = hwFilePath.isPresent();
     if (result) {
@@ -121,6 +124,12 @@ public class GUIGeneratorUtil {
     }
     Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
     return result;
+  }
+
+  public boolean existsHandwrittenClass(MCPath targetPath, String qualifiedName) {
+    return existsHandwrittenFile(targetPath, Names.getPathFromPackage(qualifiedName) + ".ts") ||
+        (UMLPGeneratorConfig.getInstance().isUseJsweet() && existsHandwrittenFile(targetPath,
+            Names.getPathFromPackage(qualifiedName) + ".java"));
   }
 
   public boolean existsHandwrittenDomainClass(MCPath targetPath, ASTGUICompilationUnit ast) {
@@ -843,6 +852,17 @@ public class GUIGeneratorUtil {
     }
     Reporting.reportHWCExistenceCheck(imported, Paths.get(hwFile), hwFilePath);
     return res;
+  }
+
+  public Optional<String> getRelativeImportPathForClass(MCPath imported, Path importer, String qualifiedName) {
+    Optional<String> result = getRelativeImportPath(imported, importer, qualifiedName, "ts");
+    if (result.isEmpty() && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+      result = getRelativeImportPath(imported, importer, qualifiedName, "java");
+      if (result.isPresent()) {
+        return Optional.of("./" + Names.getSimpleName(qualifiedName));
+      }
+    }
+    return result;
   }
 
   public Optional<String> getRelativeImportPathForAppConfigFile(

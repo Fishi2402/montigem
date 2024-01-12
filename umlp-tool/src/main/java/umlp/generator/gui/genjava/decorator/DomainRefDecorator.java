@@ -4,7 +4,6 @@ package umlp.generator.gui.genjava.decorator;
 import com.google.common.base.Joiner;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -20,7 +19,6 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIParam;
-import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -33,7 +31,6 @@ import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.BuilderDecorator;
-import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
@@ -97,6 +94,26 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     viewComponent.getIterates().stream()
         .forEach(c -> new IterateDecorator(glex, guiAst, viewComponent).transform(decoratedClass, c));
     /**/
+
+    addDirectiveAnnotation(guiAst, decoratedClass);
+  }
+
+  protected void addDirectiveAnnotation(ASTGUICompilationUnit domainClass, ASTCDClass decoratedClass) {
+    String domainModel = util.getMainDomainModelQName().orElse("");
+
+    String isEmpty = Boolean.toString(domainClass.getGUIComponentDeclaration().getGUIParamList().isEmpty());
+    String isCreate = Boolean.toString(util.isCreateModel(domainClass.getComponentQName()));
+
+    String content = String.format("@Directive(\n\t"
+            + "cdName = \"%s\",\n\t"
+            + "isEmpty = %s,\n\t"
+            + "isCreate = %s\n\t"
+            + ")",
+        domainModel,
+        isEmpty,
+        isCreate);
+    glex.replaceTemplate("cd2java.Annotations", decoratedClass, new StringHookPoint(content));
+    getCD4C().addImport(this.decoratedClass, "umlp.jsweet.extension.annotation.Directive");
   }
 
   protected void addAdditionalAttributes(ASTCDClass decoratedClass) {
