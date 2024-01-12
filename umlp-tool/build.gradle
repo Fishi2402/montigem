@@ -193,6 +193,10 @@ gradlePlugin {
       id = "de.rwth.se.umlp-tool-frontend"
       implementationClass = "gradle.UMLPPluginFrontend"
     }
+    umlpplugin_frontend_test {
+      id = "de.rwth.se.umlp-tool-frontend-test"
+      implementationClass = "gradle.UMLPPluginFrontendTest"
+    }
   }
 }
 

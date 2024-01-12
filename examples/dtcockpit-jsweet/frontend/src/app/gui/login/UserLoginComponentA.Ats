@@ -14,7 +14,7 @@ import {DtcockpitSecurityManager} from "../../dtcockpit/DtcockpitSecurityManager
   styleUrls: ["./Login.scss"]
 })
 
-export class UserLoginComponent extends UserLoginComponentTOP {
+export class UserLoginComponentA extends UserLoginComponentTOP {
 
   public ngOnInit(): void {
     if (DtcockpitSecurityManager.isSignedIn()) {

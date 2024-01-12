@@ -13,7 +13,7 @@ import { Project } from '@src/dtcockpit/Project';
   styleUrls: []
 })
 
-export class DtcockpitMainPageComponent extends DtcockpitMainPageComponentTOP {
+export class DtcockpitMainPageComponentA extends DtcockpitMainPageComponentTOP {
   ngOnInit(){
     if (!DtcockpitSecurityManager.isSignedIn()) {
       this.router.navigate(['gui', 'login', 'LoginPage']);

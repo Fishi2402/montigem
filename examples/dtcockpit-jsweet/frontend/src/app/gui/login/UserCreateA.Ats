@@ -8,7 +8,7 @@ import {GemList} from '../../../../build/frontendGen/node_modules/@umlp/common/l
 
 @Directive()
 
-export class UserCreate extends UserCreateTOP {
+export class UserCreateA extends UserCreateTOP {
 
   private error: string = "";
 
@@ -41,7 +41,7 @@ export class UserCreate extends UserCreateTOP {
   private validateUser(): string {
     let res: string = '';
     // Check Email format
-    if (!UserCreate.email.test(this.getNewUser().getEmail())) {
+    if (!UserCreateA.email.test(this.getNewUser().getEmail())) {
       return 'Wrong format for Email address!';
     }
 

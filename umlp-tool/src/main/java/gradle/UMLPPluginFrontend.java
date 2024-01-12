@@ -24,10 +24,10 @@ import java.util.function.Consumer;
  */
 public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
-  final String UMLP_FRONTEND_SETUP_TASK_NAME = "frontendSetup";
-  final String UMLP_FRONTEND_DOMAIN_TASK_NAME = "genDomain";
-  final String UMLP_FRONTEND_GUI_TASK_NAME = "genGUI";
-  final String UMLP_GROUP_NAME = "umlp";
+  static final String UMLP_FRONTEND_SETUP_TASK_NAME = "frontendSetup";
+  static final String UMLP_FRONTEND_DOMAIN_TASK_NAME = "genDomain";
+  static final String UMLP_FRONTEND_GUI_TASK_NAME = "genGUI";
+  static final String UMLP_GROUP_NAME = "umlp";
 
   @Override
   public void apply(Project project) {
@@ -87,7 +87,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     });
   }
 
-  private TaskProvider<UMLPFrontendTask> createFrontendDomainTask(final Project project) {
+  protected TaskProvider<UMLPFrontendTask> createFrontendDomainTask(final Project project) {
     return project.getTasks().register(UMLP_FRONTEND_DOMAIN_TASK_NAME, UMLPFrontendTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
 

@@ -1,7 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.annotation;
 
-@Directive("CD Name")
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+
+@Target(ElementType.TYPE)
 public @interface Directive {
-  public String value();
+//  String templateUrl() default "";
+//  String styleUrls() default "";
+//  String selector() default "";
+  String cdName() default "";
+  boolean isEmpty() default false;
+  boolean isCreate() default false;
 }

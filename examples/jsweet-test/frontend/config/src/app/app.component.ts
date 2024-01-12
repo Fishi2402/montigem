@@ -1,5 +1,10 @@
-import { Component } from '@angular/core';
-import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from 'umlp-frontend-rte';
+/* (c) https://github.com/MontiCore/monticore */
+import {Component} from '@angular/core';
+import {
+  ClientCommandManager,
+  ClientCommandWebsocketCommunication,
+  CommandManager
+} from 'umlp-frontend-rte';
 import {JsweettestManagerClientImpl} from '@src/jsweettest/JsweettestManagerClientImpl';
 
 @Component({
@@ -8,10 +13,10 @@ import {JsweettestManagerClientImpl} from '@src/jsweettest/JsweettestManagerClie
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  private currentUrl : string;
   constructor() {
     JsweettestManagerClientImpl.init();
     const ws_protocol = document.location.protocol == "https:" ? "wss": "ws";
+    // TODO: ClientCommandManager can fail async, but we need to check if the websocket is working
     const cmdManager = new ClientCommandManager(new ClientCommandWebsocketCommunication(
       ws_protocol + '://' + document.location.host + '/umlp/api/command'
     ));

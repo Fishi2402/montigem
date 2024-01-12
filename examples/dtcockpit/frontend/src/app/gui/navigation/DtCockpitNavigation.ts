@@ -24,6 +24,12 @@ export class DtCockpitNavigation extends DtCockpitNavigationComponent {
   public getGrouptNavTarget(g: Group): string {
     return "/gui/pipelines/PipelineGroupStats/" + g.getGemId();
   }
+
+  public  getMontiVerseNameTarget (p: Project): string
+  {
+    return "/gui/montiverse/OverviewPage/" + p.getGemId();
+  }
+
 }
 
 

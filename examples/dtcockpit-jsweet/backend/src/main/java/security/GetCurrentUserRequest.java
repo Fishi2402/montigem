@@ -9,7 +9,7 @@ import umlp.backendrte.common.LoadingState;
 import umlp.backendrte.request.Request;
 
 public class GetCurrentUserRequest extends Request<Long> {
-  protected GetCurrentUserRequest() {
+  public GetCurrentUserRequest() {
     super("security.GetCurrentUserRequest");
   }
 

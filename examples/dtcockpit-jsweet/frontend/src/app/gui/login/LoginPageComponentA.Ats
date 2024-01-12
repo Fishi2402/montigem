@@ -10,7 +10,7 @@ import {LoginPageComponentTOP} from '@src/gui/login/LoginPageComponentTOP';
   styleUrls: ["./Login.scss"]
 })
 
-export class LoginPageComponent extends LoginPageComponentTOP {
+export class LoginPageComponentA extends LoginPageComponentTOP {
 
   /*
   public ngOnInit(): void {

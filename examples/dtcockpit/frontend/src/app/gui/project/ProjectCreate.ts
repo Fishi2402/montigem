@@ -41,6 +41,18 @@ export class ProjectCreate extends ProjectCreateComponent {
       },
       notifyLastPipelineInvalid: (project: Project,msg: string): void => {
         this.error = msg;
+      },
+      notifyBranchesInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      },
+      notifyDependentProjectsInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      },
+      notifyCiInfosInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      },
+      notifyCmdInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
       }
     };
     ProjectErrorCollector.addErrorObserver(observer);

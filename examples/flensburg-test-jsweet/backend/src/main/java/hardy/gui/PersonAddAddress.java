@@ -10,7 +10,7 @@ import umlp.jsweet.extension.annotation.UMLPSynchronized;
 
 import java.util.List;
 
-@Directive(value="Flensburg")
+@Directive(cdName="Flensburg")
 public class PersonAddAddress {
 
   @Input

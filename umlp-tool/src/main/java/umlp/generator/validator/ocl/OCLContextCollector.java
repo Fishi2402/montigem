@@ -14,7 +14,7 @@ public class OCLContextCollector implements OCLVisitor2 {
   private final Map<ASTOCLConstraint, List<ASTMCType>> typesForConstraints;
 
   public OCLContextCollector(ASTOCLCompilationUnit node) {
-    this.typesForConstraints = new HashMap<>();
+    this.typesForConstraints = new LinkedHashMap<>();
     this.visit(node);
   }
 

@@ -28,7 +28,7 @@ import umlp.generator.domain.decorator.GenService;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -69,7 +69,7 @@ public class SQLSchemaGenerator {
   }
 
   protected void initClassNameToType() {
-    fqnClassNameToType = new HashMap<>();
+    fqnClassNameToType = new LinkedHashMap<>();
     fqnClassNameToType.put("java.lang.Enum", "VARCHAR");
     fqnClassNameToType.put("Enum", "VARCHAR");
     fqnClassNameToType.put("java.lang.String", "VARCHAR");

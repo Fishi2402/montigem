@@ -9,7 +9,7 @@ import { Project } from '@src/dtcockpit/Project';
 
 @Directive()
 
-export class ProjectCreate extends ProjectCreateTOP {
+export class ProjectCreateA extends ProjectCreateTOP {
 
   private error: string = "";
 
