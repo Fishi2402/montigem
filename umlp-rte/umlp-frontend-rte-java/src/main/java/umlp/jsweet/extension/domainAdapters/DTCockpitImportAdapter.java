@@ -9,7 +9,7 @@ public class DTCockpitImportAdapter extends DomainImportAdapter {
   }
 
   @Override
-  protected String getDomainName() {
-    return "dtcockpit";
+  protected void setDomainName() {
+    addDomainName("dtcockpit", "security");
   }
 }

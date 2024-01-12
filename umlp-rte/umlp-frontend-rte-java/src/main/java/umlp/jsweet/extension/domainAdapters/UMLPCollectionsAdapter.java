@@ -260,7 +260,7 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
     if (super.getPrinter() instanceof Java2TypeScriptTranslator) {
       return (Java2TypeScriptTranslator) super.getPrinter();
     } else {
-      Log.error("0JS00001 Java2TypeScriptTranslater must be core Adapter");
+      Log.error("0JS0001 Java2TypeScriptTranslater must be core Adapter");
       return null;
     }
   }
