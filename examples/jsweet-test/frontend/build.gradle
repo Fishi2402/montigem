@@ -28,24 +28,25 @@ compileJava {
 }
 
 configurations {
-  cdParser
-  guiLib
   guiDefaultTypes
 }
 
 dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-  implementation group: "de.monticore.lang", name: 'guidsl', version: "7.6.0-SNAPSHOT"
-
-  cdParser "de.monticore.lang:cd4analysis:${project.properties['mc_version']}:mc-tool"
-  guiLib "umlp:frontend-rte:${project.properties['mc_version']}"
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 
   implementation project(":examples:jsweet-test:backend")
+
+  implementation group: "de.monticore.lang", name: 'guidsl', version: "7.6.0-SNAPSHOT"
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+}
+
+task generateNPMAuth(type: NPMAuthCreate){
+  npmrcFile = file("config/.npmrc")
 }
 
 // Add Frontend-Config Files from UMLP-Tool Resources.
 task frontendSetup(type: FrontendSetup){
+  dependsOn(generateNPMAuth, tasks.getByPath(":umlp-rte:umlp-frontend-rte:packLib"))
   input = file("config/")   // Can be used to add or replace files
   output = layout.buildDir.dir("frontendGen/")
 }
@@ -74,35 +75,23 @@ node {
 
 }
 
-def symPath = "${project.buildDir}/symbols";
+nodeSetup.dependsOn(frontendSetup)
 
-task serializeCD {
-  doLast {
-    def modelPathStr = "${project.projectDir.parent}/models"
-    def modelPath = Paths.get(modelPathStr)
-    fileTree(modelPathStr).matching {
-      include "**/*.umlp"
-    }.each {
-      def path = it.path
-      def relativeModelPathStr = modelPath.relativize(Paths.get(path)).toString()
-      javaexec {
-        mainClass = 'de.monticore.CD4CodeTool'
-        classpath = configurations.cdParser
-        args "-i", path,
-            "-s", "${symPath}/${relativeModelPathStr}sym"
-      }
-    }
-  }
+task genSymbols(type: UMLPSymbolsTask) {
+  dependsOn(frontendSetup)
+  input = file("../models/Jsweettest.umlp")
+  symbolOutDir = file("${project.buildDir}/symbols")
+  outputDir = file("${project.buildDir}/symbols")
 }
 
 task genGUI(type: UMLPGuiGenTask) {
-  dependsOn(serializeCD, frontendSetup)
+  dependsOn(genSymbols, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
   input = file("../models")
   outputDir = frontendSetup.getOutput().dir("build/appgui")
-  hwcDir = file("src/main/java")
+  hwcDir = file("src/app")
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = files(
-      file(symPath),
+      genSymbols.symbolOutDir,
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
       configurations.guiDefaultTypes.files
   )
@@ -111,6 +100,10 @@ task genGUI(type: UMLPGuiGenTask) {
   guiGenJsweet = true
 }
 compileJava.dependsOn(genGUI)
+
+task ensureNodeInit {
+  project.file("build/jsweet/.node-init").mkdirs()
+}
 
 org.jsweet.gradle.JSweetPluginExtension jsweetDomainConf = project.getExtensions().create("jsweetDomain", org.jsweet.gradle.JSweetPluginExtension.class)
 jsweetDomain {
@@ -145,6 +138,7 @@ jsweetDomain {
       '**/jsweettest/JsweettestDummyProvider.java',
       '**/jsweettest/JsweettestTestContext.java'
   ]
+  extraSystemPath = project.file('.gradle/nodejs/node-v18.10.0-win-x64')
 }
 
 task translateJava2TSDomain(type: org.jsweet.gradle.JSweetTranspileTask) {
@@ -155,7 +149,7 @@ task translateJava2TSDomain(type: org.jsweet.gradle.JSweetTranspileTask) {
   setClasspath(configurations.runtimeClasspath);
 }
 
-sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui']
+sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui', 'src/app']
 
 org.jsweet.gradle.JSweetPluginExtension jsweetGUIConf = project.getExtensions().create("jsweetGUI", org.jsweet.gradle.JSweetPluginExtension.class)
 jsweetGUI {
@@ -188,7 +182,7 @@ jsweetGUI {
 
 task translateJava2TSGUI(type: org.jsweet.gradle.JSweetTranspileTask) {
   setGroup("generate");
-  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, frontendSetup, genGUI);
+  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, frontendSetup, genGUI, npm_install, ensureNodeInit);
   setConfiguration(jsweetGUIConf);
   setSources(sourceSets.main.java);
   setClasspath(configurations.runtimeClasspath);
@@ -198,18 +192,15 @@ task translateTypeScript() {
   dependsOn(translateJava2TSDomain, translateJava2TSGUI)
 }
 
-task generateNPMAuth(type: NPMAuthCreate){
-  npmrcFile = frontendSetup.getOutput().file(".npmrc")
-}
-npm_install.dependsOn(generateNPMAuth, ':umlp-rte:client:npm_install')
-
 task installLocalRTE(type: NpmTask) {
   dependsOn(npm_install)
   args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]
 }
 
+npm_install.dependsOn(nodeSetup, ':umlp-rte:client:npm_install')
+
 def prebuildTasks = [
-    installLocalRTE, translateTypeScript, genGUI
+    npm_install, translateTypeScript, installLocalRTE
 ]
 
 task buildApp(type: NpxTask) {
@@ -230,4 +221,3 @@ task runApp(type: NpxTask) {
   command = "ng"
   args = ["serve"]
 }
-

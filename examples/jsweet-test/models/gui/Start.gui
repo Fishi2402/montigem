@@ -9,7 +9,9 @@ import basic.GemImage;
 import basic.GemButton;
 import input.GemTextInput;
 
-page Start() {
+import Jsweettest.A;
+
+page Start(List<A> a) {
   @GemCard(
     title = "JSweet Test",
     component = @GemColumn(
