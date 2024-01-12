@@ -37,20 +37,6 @@ public class GUI2TSConfigGenerator {
     this.hwcPath = hwcPath;
   }
 
-  /**
-   * Check whether a handwritten version of this generated file already exists
-   */
-  public static boolean existsHandwrittenFile(MCPath targetPath, String hwFile) {
-    Optional<URL> hwFilePath = targetPath.find(hwFile);
-    boolean result = hwFilePath.isPresent();
-    if (result) {
-      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
-      hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path, Paths.get(hwFile)));
-    }
-    Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
-    return result;
-  }
-
   private static Map<String, String> findNextLevelModuleForAppConfig(String path) {
     Map<String, String> modules = new LinkedHashMap<>();
 
@@ -90,7 +76,7 @@ public class GUI2TSConfigGenerator {
       if (imported) {
         String name = routingInfoMap.get(info).getRoutingFileNameBase();
         String path = routingInfoMap.get(info).getGeneratedFileDir().substring(packageInfo.getValue().getGeneratedFileDir().length());
-        if (existsHandwrittenFile(targetPath, routingInfoMap.get(info).getGeneratedFileDir() + "/" + name + ROUTES_FILE + "." + TS_FILE_EXTENSION)) {
+        if (util.existsHandwrittenFile(targetPath, routingInfoMap.get(info).getGeneratedFileDir() + "/" + name + ROUTES_FILE + "." + TS_FILE_EXTENSION)) {
           routes.put(name + "Route", "@src/" + routingInfoMap.get(info).getGeneratedFileDir() + "/" + name + ROUTES_FILE);
         }
         else {
@@ -104,7 +90,7 @@ public class GUI2TSConfigGenerator {
   public List<String> generateAppConfigFiles() {
     GeneratorEngine genEngine = new GeneratorEngine(setup);
 
-    boolean existHWCRoutes = existsHandwrittenFile(hwcPath, "App" + ROUTES_FILE + "." + TS_FILE_EXTENSION);
+    boolean existHWCRoutes = util.existsHandwrittenFile(hwcPath, "App" + ROUTES_FILE + "." + TS_FILE_EXTENSION);
 
     Map<String, String> routingModules = findNextLevelModuleForAppConfig(setup.getOutputDirectory().toString());
     String defaultRouting = "";
@@ -117,7 +103,7 @@ public class GUI2TSConfigGenerator {
 
     Path generatedModuleFiles = Paths.get(
         "App" + MODULES_FILE + ".ts");
-    Boolean existedModuleConfig = existsHandwrittenFile(hwcPath, "App" + MODULES_FILE + "Config" + "." + TS_FILE_EXTENSION);
+    Boolean existedModuleConfig = util.existsHandwrittenFile(hwcPath, "App" + MODULES_FILE + "Config" + "." + TS_FILE_EXTENSION);
 
     String pathHWRoutes = "./" + "App" + ROUTES_FILE + ".ts";
     if (existHWCRoutes) {
@@ -159,7 +145,7 @@ public class GUI2TSConfigGenerator {
     String dir = routing.getGeneratedFileDir();
     String name = routing.getRoutingFileNameBase();
 
-    boolean existHWCRoutes = existsHandwrittenFile(
+    boolean existHWCRoutes = util.existsHandwrittenFile(
         hwcPath, dir + "/" + name + ROUTES_FILE + "." + TS_FILE_EXTENSION);
 
     return Paths.get(dir, name + ROUTES_FILE + (existHWCRoutes ? "TOP" : "") + "." + TS_FILE_EXTENSION);
@@ -172,9 +158,9 @@ public class GUI2TSConfigGenerator {
       if (!component.getGUIComponentDeclaration().isPage()) {
         continue;
       }
-      Optional<String> filePath = util.getRelativeImportPath(
+      Optional<String> filePath = util.getRelativeImportPathForClass(
           hwcPath, setup.getOutputDirectory().toPath(),
-          component.getComponentQName(), "ts"
+          component.getComponentQName()
       );
       boolean existHWC = filePath.isPresent();
       String componentFilePath;

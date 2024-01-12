@@ -133,15 +133,6 @@ public class GUIGeneratorUtil {
             Names.getPathFromPackage(qualifiedName) + ".java"));
   }
 
-  public boolean existsHandwrittenDomainClass(MCPath targetPath, ASTGUICompilationUnit ast) {
-    String domainClassName = Names.getQualifiedName(ast.getPackage(), ast.getGUIComponentDeclaration().getName());
-    return existsHandwrittenClass(targetPath, domainClassName);
-  }
-
-  public boolean existsHandwrittenDomainClass(MCPath targetPath, String quailifiedName) {
-    return existsHandwrittenClass(targetPath, quailifiedName);
-  }
-
   public void init(List<String> domainModels, List<String> createModels) {
     DOMAIN_MODELS = domainModels;
     CREATE_MODELS = createModels;
