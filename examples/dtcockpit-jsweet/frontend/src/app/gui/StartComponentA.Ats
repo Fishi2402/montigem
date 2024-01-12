@@ -15,7 +15,7 @@ import {ActivatedRoute, Router} from '@angular/router';
   styleUrls: []
 })
 
-export  class StartComponent extends StartComponentTOP {
+export  class StartComponentA extends StartComponentTOP {
 
   public constructor(route: ActivatedRoute, protected router: Router) {
     super(route, router);

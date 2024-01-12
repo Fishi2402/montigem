@@ -14,7 +14,7 @@ import {Router} from '@angular/router';
   styleUrls: ["/Login.scss"]
 })
 
-export class UserCreateComponent extends UserCreateComponentTOP {
+export class UserCreateComponentA extends UserCreateComponentTOP {
 
   public constructor(
       protected location: Location,

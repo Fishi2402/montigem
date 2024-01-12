@@ -11,7 +11,7 @@ import {PipelineStatsComponent} from '@src/gui/pipelines/PipelineStatsComponent'
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: []
 })
-export class PipelineStats extends PipelineStatsComponent {
+export class PipelineStatsA extends PipelineStatsComponent {
 
   private disableButton = false;
   private maxValue : number = 0;
