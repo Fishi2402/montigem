@@ -142,4 +142,9 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
   protected Function<String, String> stringToEnumConversion(String type) {
     return s -> type + "[" + s + ".toUpperCase()]";
   }
+
+  @Override
+  protected Function<String, String> optionalStringToNumberConversion(String type) {
+    return s -> "!!" + s + "? " + stringToNumberConversion(type).apply(s) + ": null";
+  }
 }

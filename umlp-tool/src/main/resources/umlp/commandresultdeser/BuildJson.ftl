@@ -26,9 +26,10 @@ if(result.isListResult()){
     printer.beginArray("list");
 
     for(var o : result.asListResult().get()){
-      serSingleValue(result.asSimpleResult().get(), printer, tp);
+      printer.beginObject();
+      serSingleValue(o, printer, tp);
+      printer.endObject();
     }
     printer.endArray();
   }
-printer.endObject();
 }

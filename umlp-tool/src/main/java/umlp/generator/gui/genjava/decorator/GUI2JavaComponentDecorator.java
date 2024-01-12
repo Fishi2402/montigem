@@ -390,6 +390,15 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           return stringToOptionalEnumConversion(innerType);
         }
       }
+      boolean rightIsOptionalNumber = util.isOptionalNumberType(rightType);
+      if (leftIsString && rightIsOptionalNumber) {
+        if (forGetter) {
+          return numberToStringConversion();
+        }
+        else {
+          return optionalStringToNumberConversion(util.getOptionalTypeArgument(rightType).print());
+        }
+      }
       boolean rightIsGemList = util.isDomainListType(rightType);
       if (rightIsGemList) {
         return gemlistToArrayConversion();
@@ -456,20 +465,12 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   protected Function<String, String> stringToNumberConversion(String type) {
-    if (TypeScriptTypes.INT.getMCType().equals(type)) {
-      type = TypeScriptTypes.INT_BOXED.getMCType();
-    }
-    if (TypeScriptTypes.LONG.getMCType().equals(type)) {
-      type = TypeScriptTypes.LONG_BOXED.getMCType();
-    }
-    if (TypeScriptTypes.DOUBLE.getMCType().equals(type)) {
-      type = TypeScriptTypes.DOUBLE_BOXED.getMCType();
-    }
-    if (TypeScriptTypes.FLOAT.getMCType().equals(type)) {
-      type = TypeScriptTypes.FLOAT_BOXED.getMCType();
-    }
-    String finalType = type;
+    String finalType = util.getBoxedType(type);
     return s -> finalType + ".valueOf(" + s + ")";
+  }
+
+  protected Function<String, String> optionalStringToNumberConversion(String type) {
+    return s -> s + " != null? " + type + ".valueOf(" + s + ") : null";
   }
 
 }

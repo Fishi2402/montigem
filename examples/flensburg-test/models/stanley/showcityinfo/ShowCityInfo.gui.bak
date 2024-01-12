@@ -9,9 +9,13 @@ import hardy.Flensburg.CityInfo;
 // hier werden importierte GUI-Modelle gefunden
 import stanley.tmp.table.GemRowTable;
 // hier werden importierte Typen der GUI-Komponenten gefunden
+/*
 import stanley.tmp.table.TableTypes.TableRow;
 import stanley.tmp.io.input.GemTextInput;
 import stanley.tmp.io.GemText;
+*/
+
+import basic.GemText;
 
 /**
  * This example defines a page with a table. Data in the table is read-only
@@ -19,8 +23,9 @@ import stanley.tmp.io.GemText;
  * the persisted data (domain data structure).
  */
 page ShowCityInfo(CityInfo ci) {
+  @GemText(value = ci.numberOfCities);
   // statistic about cities
-  @GemRowTable(
+ /* @GemRowTable(
     rows = [
       TableRow("Number of cities", ci.numberOfCities),
       TableRow("Total number of cars", ci.totalNumberOfCars),
@@ -28,7 +33,7 @@ page ShowCityInfo(CityInfo ci) {
       TableRow("Person with most cars", ci.personWithMostCars.nickname),
       TableRow("Average number of cars", ci.averageNumberOfCars)
     ]
-  );
+  ); */
 
   // list of cities
   @GemText(value = "List of cities");

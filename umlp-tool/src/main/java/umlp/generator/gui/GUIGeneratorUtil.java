@@ -40,9 +40,10 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
-import umlp.generator.gui.gentypescript.GUI2TypeScriptGenerator;
+import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
+import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.TagLookUp;
 
 import java.net.URL;
@@ -296,6 +297,22 @@ public class GUIGeneratorUtil {
       }
     }
     return false;
+  }
+
+  public final boolean isOptionalNumberType(SymTypeExpression type) {
+    if (type.hasTypeInfo() && GenService.isOptional(type) && ((SymTypeOfGenerics) type).sizeArguments() == 1) {
+      SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+      return TypeScriptTypes.isNumber(inner);
+    }
+    return false;
+  }
+
+  public final SymTypeExpression getOptionalTypeArgument(SymTypeExpression type) {
+    if (type.hasTypeInfo() && GenService.isOptional(type) && ((SymTypeOfGenerics) type).sizeArguments() == 1) {
+      SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
+      return ((SymTypeOfGenerics) type).getArgument(0);
+    }
+    return type;
   }
 
   public final boolean isBuiltIn(ASTMCImportStatement i) {
@@ -639,6 +656,22 @@ public class GUIGeneratorUtil {
     return ste.getTypeInfo().getFullName().equals(BuiltInTypes.GUI_VIEW_ELEMENT.getQName());
   }
 
+  public String getBoxedType(String type) {
+    if (TypeScriptTypes.INT.getMCType().equals(type)) {
+      return TypeScriptTypes.INT_BOXED.getMCType();
+    }
+    if (TypeScriptTypes.LONG.getMCType().equals(type)) {
+      return TypeScriptTypes.LONG_BOXED.getMCType();
+    }
+    if (TypeScriptTypes.DOUBLE.getMCType().equals(type)) {
+      return TypeScriptTypes.DOUBLE_BOXED.getMCType();
+    }
+    if (TypeScriptTypes.FLOAT.getMCType().equals(type)) {
+      return TypeScriptTypes.FLOAT_BOXED.getMCType();
+    }
+    return type;
+  }
+
   public boolean isNgTemplate(String compName) {
     return compName.endsWith(TPL_INTERN);
   }
@@ -716,7 +749,7 @@ public class GUIGeneratorUtil {
     for (int index = 0; index < temp.size() - 1; index++) {
       path += temp.get(index) + "/";
     }
-    path += moduleName + GUI2TypeScriptGenerator.MODULES_FILE;
+    path += moduleName + GUI2TSConfigGenerator.MODULES_FILE;
     return path;
   }
 

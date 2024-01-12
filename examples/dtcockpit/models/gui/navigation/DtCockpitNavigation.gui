@@ -20,6 +20,11 @@ component DtCockpitNavigation(List<Group> groups, List<Project> projects) {
   @NavList(components = [
     @DtNavHeader(),
     @NavItem(title = "Home", target = "/gui/Start"),
+    @iterate(Project g : projects) {
+      @guard(g.name=="MontiVerse") {
+        montiVerseName@NavItem(title = "MontiVerse Lite", target = "/gui/montiverse/OverviewPage");
+      }
+    },
     @NavItem(title = "Projects", target = "/gui/DtcockpitMainPage"),
     @NavItem(title = "TV", target = "/gui/tv/Dashboard"),
     @iterate(Group g : groups) {

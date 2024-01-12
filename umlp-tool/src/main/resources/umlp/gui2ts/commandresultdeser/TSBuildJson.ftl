@@ -30,7 +30,11 @@ if(result.isListResult()){
     printer = printer["list"];
 
     for(const o of result.asListResult().get()){
-      this.serSingleValue(result.asSimpleResult(), printer, tp);
+      const a_tmp = printer;
+      printer = {};
+      a_tmp.push(printer);
+      this.serSingleValue(o, printer, tp);
+      printer = a_tmp;
     }
     printer = tmp;
   }

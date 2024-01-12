@@ -3,6 +3,7 @@
 import { Component, } from '@angular/core';
 import { AddToFavoriteComponent ,config} from '@src/gui/AddToFavoriteComponent';
 import { WeatherManager } from '@src/weather/WeatherManager';
+import { Option } from '@umlp/input';
 
 @Component({
   standalone:true,
@@ -14,7 +15,7 @@ import { WeatherManager } from '@src/weather/WeatherManager';
 export class AddToFavorite extends AddToFavoriteComponent {
 
   public searchVal: string = "";
-  public options: string[] = [];
+  public options: Option[] = [];
 
   public ngOnInit(): void {
     if (this.app == null) {
@@ -27,14 +28,15 @@ export class AddToFavorite extends AddToFavoriteComponent {
       this.cities = gemPromiseRes;
       this.cities.loadAll().then(() => {
         for (const city of this.cities) {
-          this.options.push(city.getName());
+          let value = city.getName();
+          this.options.push({value: value, display: value});
         }
         this.options = this.options.slice();
       });
     });
   }
 
-  public override getSearchOptions(): Array<string> {
+  public override getSearchOptions(): Array<Option> {
     return this.options;
   }
 

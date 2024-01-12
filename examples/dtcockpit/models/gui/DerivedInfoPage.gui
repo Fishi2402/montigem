@@ -1,0 +1,45 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui;
+
+import arrange.GemColumn;
+import arrange.GemRow;
+import arrange.GemCard;
+import arrange.GemOverlay;
+import arrange.GemOverlayItem;
+import basic.GemText;
+import basic.GemImage;
+import charts.GemLineChart;
+
+import gui.navigation.DtCockpitNavigation;
+import gui.widgets.Welcome;
+import gui.rooms.RoomStats;
+import gui.pipelines.PipelineStatsPerGroup;
+
+import Dtcockpit.App;
+import Dtcockpit.Project;
+import Dtcockpit.Group;
+import Dtcockpit.RoomStatistic;
+import Dtcockpit.Server;
+import Dtcockpit.ServerStatus;
+import Dtcockpit.DerivedInfo;
+import Dtcockpit.Meeting;
+
+page DerivedInfoPage(DerivedInfo ci) {
+    @GemText(value = "someNumber" + ci.someNumber);
+    @GemText(value = "someString" + ci.someString);
+    @GemText(value = "randomMSG.message" + ci.randomMSG.message);
+    @guard(ci.randomMeeting != null) {
+      @GemText(value = "randomMeeting" + ci.randomMeeting.title);
+    }
+    @guard(ci.randomMeeting == null) {
+      @GemText(value = "No random meeting today");
+    }
+
+    @iterate(Meeting meeting : ci.monthlyMeetings){
+      @GemText(value = "meeting" + meeting.title);
+    }
+
+    @iterate(String x : ci.manyStrings){
+        @GemText(value = "manyStrings" + x);
+    }
+}

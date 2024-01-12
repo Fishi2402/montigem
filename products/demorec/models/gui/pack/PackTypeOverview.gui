@@ -1,0 +1,23 @@
+package gui.pack;
+
+import DemoRec.BatteryPackType;
+
+import basic.GemText;
+import arrange.GemCard;
+import arrange.GemColumn;
+
+component PackTypeOverview(BatteryPackType type) {
+
+  @GemCard(
+    title="BatteryPack Type",
+    component=@GemColumn(
+      rowGap="1px",
+      wrap="nowrap",
+      components=[
+        @GemText(value="Car Type "+type.carType),
+        @GemText(value="BMS Location "+type.bmsLocation),
+        @GemText(value="Capacity (kWh) "+type.capacity)
+      ]
+    )
+  );
+}

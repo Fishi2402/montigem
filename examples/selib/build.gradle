@@ -2,15 +2,15 @@
 
 
 /**
- * Run UMLP generator and compile: 
+ * Run UMLP generator and compile:
  * - gradle :examples:selib:assemble
  *
  * Start UMLP backend server:
  * - gradle :examples:selib:bootRun
  * The command does not terminate. Stopping the command is also stopping
- * the server. There can only be a single running server. A second server 
- * cannot start. 
- * 
+ * the server. There can only be a single running server. A second server
+ * cannot start.
+ *
  * Connect to the server:
  * - open the url http://localhost:8081 in your browser of choice
  */

@@ -6,6 +6,7 @@ classdiagram Dtcockpit {
   <<singleton>>
   class App{
     <<command>> void sendMail(User email, String subject, String message, List<String> forwards);
+    <<command>> void startMontiVerseLitePipeline();
   }
 
   association [1] App -> User [*];
@@ -72,6 +73,22 @@ classdiagram Dtcockpit {
     String git;
   }
 
+  class Branch {
+    String name;
+    String git;
+  }
+
+  class CIInformation {
+    String variableName;
+    String branchName;
+  }
+
+  association [0..1] Project -> (ciInfos) CIInformation [0..1];
+
+  association [0..1] Project -> (dependentProjects) Project [*];
+
+  association [0..1] Project <-> (branches) Branch [*];
+
   association [0..1] Project <-> (pStatistics) PipelineStatistic [*];
 
   class PipelineStatistic {
@@ -125,4 +142,15 @@ classdiagram Dtcockpit {
     java.time.LocalDate date;
     String message;
   }
+
+ / class DerivedInfo {
+    int someNumber;
+    String someString;
+    MessageOfTheDay randomMSG;
+  }
+
+  / association DerivedInfo -> (manyStrings) java.lang.String [*];
+  / association [1] DerivedInfo -> (monthlyMeetings) Meeting [*];
+  / association [1] DerivedInfo -> (importantMeeting) Meeting [1];
+  / association [1] DerivedInfo -> (randomMeeting) Meeting [0..1];
 }

@@ -186,8 +186,7 @@ public class ManagerDecorator extends AbstractDecorator {
     getCD4C().addImport(managerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + domainInterface.getName());
 
     if (domainInterface.getModifier().isDerived()) {
-      getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, true);
-      getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetDerived", name);
     } else {
       getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.CreateGem", name, false);

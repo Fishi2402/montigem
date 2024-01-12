@@ -39,8 +39,20 @@ export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
         this.error = msg;
       },
       notifyLastPipelineInvalid: (project: Project,msg: string): void => {
-      this.error = msg;
-    }
+        this.error = msg;
+      },
+      notifyBranchesInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      },
+      notifyDependentProjectsInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      },
+      notifyCiInfosInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      },
+      notifyCmdInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      }
     };
     ProjectErrorCollector.addErrorObserver(observer);
     if (!this.group.isBuildable()) {

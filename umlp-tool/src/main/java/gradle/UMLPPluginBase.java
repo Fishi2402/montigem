@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
+import gradle.common.CheckDirEqualityTask;
 import gradle.specific.FrontendSetup;
 import gradle.specific.GuiVariabilityHandlerTask;
 import gradle.specific.NPMAuthCreate;
@@ -40,6 +41,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       project.getExtensions().getExtraProperties().set("FrontendSetup", FrontendSetup.class);
       project.getExtensions().getExtraProperties().set("SerializeGUISymbolsTask", SerializeGUISymbolsTask.class);
       project.getExtensions().getExtraProperties().set("SerializeCDSymbolsTask", SerializeCDSymbolsTask.class);
+      project.getExtensions().getExtraProperties().set("CheckDirEqualityTask", CheckDirEqualityTask.class);
 
       // Module system
       project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);

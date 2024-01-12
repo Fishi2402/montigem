@@ -1,0 +1,19 @@
+package gui.endeffector;
+
+import DemoRec.EndEffector;
+
+import basic.GemText;
+import arrange.GemCard;
+import arrange.GemColumn;
+import input.GemTextInput;
+import basic.GemButton;
+
+page EndEffectorCreate(EndEffector endEffector) {
+
+  @GemTextInput(
+    labelText = "Name",
+    inputType = "text",
+    entry = endEffector.name);
+  @GemButton(label="Save", leftClick = createEndEffector);
+
+}

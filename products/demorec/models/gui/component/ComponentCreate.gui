@@ -1,0 +1,40 @@
+package gui.component;
+
+import DemoRec.BatteryPack;
+import DemoRec.DemoRecComponent;
+import DemoRec.JoinConnection;
+
+import arrange.GemRow;
+import arrange.GemColumn;
+import arrange.GemCard;
+import basic.GemText;
+import basic.GemLink;
+import basic.GemButton;
+import input.GemTextInput;
+import input.GemCheckBoxInput;
+
+import gui.component.PhotoDisplay;
+import gui.component.PhotoDragNDrop;
+import gui.navigation.Navigation;
+
+component ComponentCreate(DemoRecComponent component, Event<DemoRecComponent> createComponent) {
+  @GemCard(
+    title = "Specify Component.",
+    component = @GemColumn(
+        wrap="nowrap",
+        components=[
+          @GemTextInput(labelText = "Component Description", inputType = "string", entry = component.description),
+          @GemTextInput(labelText = "X-Position", inputType = "number", entry = component.xPos),
+          @GemTextInput(labelText = "Y-Position", inputType = "number", entry = component.yPos),
+          @GemTextInput(labelText = "Z-Position", inputType = "number", entry = component.zPos),
+          @GemTextInput(labelText = "Width (mm)", inputType = "number", entry = component.width),
+          @GemTextInput(labelText = "Length (mm)", inputType = "number", entry = component.length),
+          @GemTextInput(labelText = "Height (mm)", inputType = "number", entry = component.height),
+          @GemTextInput(labelText = "Weight (kg)", inputType = "number", entry = component.weight),
+          deconstructible@GemCheckBoxInput(labelText = "Deconstructible", checked=null),
+          @PhotoDisplay(component=component),
+          photoDragAndDrop@PhotoDragNDrop(attachedComponent = component),
+          addComponent@GemButton(label = "Add Component", leftClick = createNewComponent, disabled=false)
+      ])
+  );
+}
