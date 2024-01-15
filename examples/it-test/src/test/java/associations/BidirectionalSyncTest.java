@@ -16,10 +16,9 @@ public class BidirectionalSyncTest extends AssociationsMockTestSetup {
     super(1);
   }
 
-  @Disabled("https://git.rwth-aachen.de/monticore/monticore/-/issues/3534")
   @Test
   public void testSettingInBuildSyncs(){
-    Log.initDEBUG();
+    Log.init();
     // Build rhs1 <-> lhs1 in Client
     getClients(0).activate();
     OptToManyRhs rhs1 = AssociationsManager.optToManyRhsBuilder().build().get();
@@ -39,7 +38,7 @@ public class BidirectionalSyncTest extends AssociationsMockTestSetup {
 
   @Test
   public void testSettingAfterBuildSyncs(){
-    Log.initDEBUG();
+    Log.init();
     // Build rhs1 <-> lhs1 in Client
     getClients(0).activate();
     OptToManyRhs rhs1 = AssociationsManager.optToManyRhsBuilder().build().get();
