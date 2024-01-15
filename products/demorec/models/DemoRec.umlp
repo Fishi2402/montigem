@@ -43,13 +43,17 @@ classdiagram DemoRec {
     OTHER;
   }
 
-  class SensorValue {
-    String name;
-    String unit;
-    // Value
+  class MeasuringValue {
+    String value;
   }
 
-  association [*] ProcessStep -> (measured) SensorValue [*];
+  class Dimension {
+    String unit;
+    String name;
+  }
+
+  association [*] MeasuringValue -> (dimension) Dimension [1];
+  association [*] ProcessStep -> (measured) MeasuringValue [*];
   association [*] ProcessStep -> (uses) EndEffector [1];
   association [*] ProcessStep <-> (deconstructs) JoinConnection [0..1];
 
@@ -78,7 +82,7 @@ classdiagram DemoRec {
 
   class JoinConnection {
     double state; // TODO what kind of data type for state?
-    JoinConnectionType type;
+    JoinConnectionType joinConnectionType;
   }
 
   association [*] DemoRecComponent -> (composedOf) JoinConnection [*];

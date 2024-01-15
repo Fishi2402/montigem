@@ -108,7 +108,7 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
 
     JoinConnection connection = DemoRecManager.joinConnectionBuilder()
         .state(78.5)
-        .type(JoinConnectionType.SCREW)
+        .joinConnectionType(JoinConnectionType.SCREW)
         .build().get();
     connection.addConnects(component2);
     connection.addConnects(component3);

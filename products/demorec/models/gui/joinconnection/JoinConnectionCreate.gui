@@ -44,6 +44,7 @@ component JoinConnectionCreate(JoinConnection connection, List<String> dummyComp
                     options = null,
                     entry = null,
                     keyRelease = tryToAddComponent),
+                addComponent@GemButton(label = "Add Component", leftClick = connectSelectedComponent, disabled=false),
                 @iterate(String i : dummyComponents){
                   @GemText(value=i);
                 }
@@ -59,5 +60,5 @@ component JoinConnectionCreate(JoinConnection connection, List<String> dummyComp
       )
     ]
   );
-  buildStep@GemButton(label = "Save Connection", leftClick = createNewStep, disabled=true);
+  buildConnection@GemButton(label = "Save Connection", leftClick = createNewConnection, disabled=true);
 }

@@ -14,7 +14,7 @@ import gui.navigation.Navigation;
 page Start(List<Process> allProcesses) {
   @Navigation();
   @GemCard(
-    title="All Process",
+    title="All Processes",
     component=
       @GemColumn(
        components = [

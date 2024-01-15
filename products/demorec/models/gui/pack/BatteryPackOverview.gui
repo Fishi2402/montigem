@@ -19,14 +19,14 @@ component BatteryPackOverview(BatteryPack pack) {
       @GemColumn(
         width="30%",
         components=[
-          @GemText(value="Description "+pack.description),
-          @GemText(value="State of Charge "+pack.stateOfCharge),
-          @GemText(value="State of Health (%) "+pack.health)
+          @GemText(value=pack.description),
+          @GemText(value="Health (%) "+pack.health),
+          @GemText(value="Charge (%)"+pack.stateOfCharge)
         ]
       ),
       editPack@GemLink(url="override", text="Edit Pack."),
       @PhotoDisplay(component=pack),
       @PackTypeOverview(type=pack.type),
-      @ComponentTreeView(component=pack)
+      tree@ComponentTreeView(component=pack)
   ]);
 }

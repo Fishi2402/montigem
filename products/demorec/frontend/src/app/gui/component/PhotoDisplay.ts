@@ -29,7 +29,7 @@ export  class PhotoDisplay extends PhotoDisplayComponent {
 
   public getImagePaths() : string[] {
     if(this.getComponent() && this.getComponent().getPhotoLocations()) {
-      console.debug(this.getComponent().getPhotoLocations())
+      //console.debug(this.getComponent().getPhotoLocations())
       const photos: string[] = []
       this.getComponent().getPhotoLocations().forEach(photo => {
         photos.push("umlp/api/images/" + photo)
@@ -43,7 +43,7 @@ export  class PhotoDisplay extends PhotoDisplayComponent {
 
   public getImagePath() : string {
     if(this.getComponent() && this.getComponent().getPhotoLocations()[0]) {
-      console.debug(this.getComponent().getPhotoLocations()[0])
+      //console.debug(this.getComponent().getPhotoLocations()[0])
       return "umlp/api/images/" + this.getComponent().getPhotoLocations()[0];
     }
     else {

@@ -43,12 +43,13 @@ export class ComponentCreate extends ComponentCreateComponent {
   }
 
   public override createNewComponent(event: any): void {
-    if(this.getComponent()?.isBuildFinished()) {
+    /*if(this.getComponent()?.isBuildFinished()) {
       this.createComponent.emit(this.getComponent())
-    }
+    }*/
     if(this.getComponent()?.isBuildable() && !this.getComponent()?.isBuildFinished()) {
       const component = this.getComponent().build()
       this.createComponent.emit(component)
+      super.ngOnInit()
     }
   }
 }

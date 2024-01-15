@@ -31,10 +31,11 @@ page ProcessOverview(Process p) {
               @GemText(value="Step "+step.index),
               @GemText(value=step.type),
               @GemText(value=" took "),
-              @GemText(value=step.timeConsumption+ " seconds"),
+              @GemText(value=step.timeConsumption+ " seconds."),
               /*@guard(true) { // ensure that step.description is not null
                 @GemText(value=step.description);
               },*/
+              sensorValues@GemText(value=" Value"),
               editStep@GemLink(url="gui/process/ProcessStepCreate/", text="Edit Step")
             ]
           );

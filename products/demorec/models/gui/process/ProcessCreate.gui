@@ -19,11 +19,11 @@ page ProcessCreate(Process p, BatteryPack pack, BatteryPackType type) {
     title = "Process",
     component = @GemColumn(
       components = [
-        @GemTextInput(
+        startedAt@GemTextInput(
             labelText = "Started",
             inputType = "date",
-            entry = p.startedAt,
-            placeholder="today"),
+            entry = p.startedAt
+            ),
         selectBPack@GemTextInput(
           labelText = "Battery Pack",
           inputType = "dropdown",
@@ -77,6 +77,6 @@ page ProcessCreate(Process p, BatteryPack pack, BatteryPackType type) {
         )
       );
     }
-    @GemButton(label = "Send everything to the server.", leftClick = sendEverything);
   }
+  @GemButton(label = "Save Process.", leftClick = sendEverything);
 }
