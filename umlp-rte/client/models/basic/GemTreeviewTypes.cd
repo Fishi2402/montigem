@@ -1,12 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package basic;
+
 import java.util.List;
 
+/**
+  Types used in a GemTreeview component.
+*/
 classdiagram GemTreeviewTypes {
 
+  /**
+    Tree node description.
+  */
   public class GemTreeviewEntry {
+    /** Whether the tree node is expanded or not. */
     boolean expanded;
+    /** The name of the entry. */
     String name;
+    /** The children of the node. */
     List<GemTreeviewEntry> children;
   }
 
