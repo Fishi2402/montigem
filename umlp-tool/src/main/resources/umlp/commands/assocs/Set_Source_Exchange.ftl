@@ -26,16 +26,14 @@ if(${sourceName}Loaded){
 <#else>
   // Do nothing?
 </#if>
-} else {
-  return StatusResult.error(getId());
-}
-
-if(new${ctargetName}Loaded){
+} if(new${ctargetName}Loaded){
   ${targetType} newLoaded = ${managerName}.get${targetType}Sure(${targetName}GemId);
 <#if isSourceList>
   newLoaded._internal_add${csourceName}(newLoaded.size${csourceName}s(), Lists.newArrayList(${sourceName}GemId), NotificationScope.MINIMAL);
 <#else>
   newLoaded._internal_set${csourceName}(${sourceName}GemId, NotificationScope.MINIMAL);
 </#if>}
-
+else {
+return StatusResult.error(getId());
+}
 return StatusResult.ok(getId());
