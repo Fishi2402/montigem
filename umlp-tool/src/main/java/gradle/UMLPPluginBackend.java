@@ -68,7 +68,7 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
 
       setIfPathExists(umlpTask::setInput, Path.of(
           project.getProjectDir().getAbsolutePath(), "src", "models"));
-      setIfPathExists(x -> umlpTask.getHwcDir().set(x), Path.of(
+      setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
           project.getProjectDir().getAbsolutePath(), "src", "main", "java"));
       setIfPathExists(x -> umlpTask.getTmplDir().set(x), Path.of(
           project.getProjectDir().getAbsolutePath(), "src", "templates"));
