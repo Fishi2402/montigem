@@ -18,11 +18,11 @@ export class StatusResult extends CommandResult<void> {
         return new StatusResult(id, false);
     }
 
-    public wasSuccessful(): Promise<boolean> {
+    public async wasSuccessful(): Promise<boolean> {
       return this.isSuccessful();
     }
 
-    public isSuccessful(): Promise<boolean> {
+    public async isSuccessful(): Promise<boolean> {
         return Promise.resolve(this.successful);
     }
 
