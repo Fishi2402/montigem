@@ -12,6 +12,8 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.se_rwth.commons.StringTransformations;
+import umlp.generator.domain.decorator.DomainTypeDecorator;
 import umlp.generator.domain.decorator.GenService;
 
 import java.util.List;
@@ -35,6 +37,17 @@ public class AssocMandatoryMutatorDecorator extends UMLPMandatoryMutatorDecorato
     if(ast.getModifier().isDerived()){
       return methodList;
     }
+    String managerName = ast.getModifier().isPresentStereotype()&& ast.getModifier().getStereotype().contains(DomainTypeDecorator.STEREOTYPE_MANAGER)?
+        ast.getModifier().getStereotype().getValue(DomainTypeDecorator.STEREOTYPE_MANAGER):
+        "";
+    String getter = "";
+    String otherSide = ast.getModifier().isPresentStereotype() && ast.getModifier().getStereotype().contains(DomainTypeDecorator.STEREOTYPE_OTHERSIDE)?
+        ast.getModifier().getStereotype().getValue(DomainTypeDecorator.STEREOTYPE_OTHERSIDE):
+        "";
+    if (!otherSide.isEmpty()) {
+      boolean isList = ast.getModifier().isPresentStereotype() && ast.getModifier().getStereotype().contains(DomainTypeDecorator.STEREOTYPE_OTHERSIDE_ISLIST);
+      getter = (isList ? "add" : "set") + StringTransformations.capitalize(otherSide);
+    }
 
     // Generate setX-Methods
     ASTCDMethod method = createSetter(ast);
@@ -56,7 +69,7 @@ public class AssocMandatoryMutatorDecorator extends UMLPMandatoryMutatorDecorato
     methodList.add(method4);
 
     ASTCDMethod method5 = (ASTCDMethod) cd4c.createMethod(this.ast, getInternalSetOneTemplate(),
-            service.getNativeAttributeName(ast.getName()), CD4CodeMill.prettyPrint(simpleType, false), ast.getName()).get();
+            service.getNativeAttributeName(ast.getName()), getter, CD4CodeMill.prettyPrint(simpleType, false), this.ast.getName(), managerName).get();
     methodList.add(method5);
 
     return methodList;

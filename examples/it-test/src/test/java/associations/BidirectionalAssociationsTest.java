@@ -2,7 +2,6 @@
 package associations;
 
 import com.google.common.collect.Sets;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,9 +18,16 @@ public class BidirectionalAssociationsTest {
 
     OptToOptLhs lhs = AssociationsManager.optToOptLhsBuilder().build().get();
     OptToOptRhs rhs = AssociationsManager.optToOptRhsBuilder().build().get();
-
     lhs.setOptToOptRhs(rhs);
+
     assertEquals(rhs, lhs.getOptToOptRhs());
+    assertEquals(lhs, rhs.getOptToOptLhs());
+
+    OptToOptLhs lhs1 = AssociationsManager.optToOptLhsBuilder().build().get();
+    OptToOptRhs rhs1 = AssociationsManager.optToOptRhsBuilder().optToOptLhs(lhs1).build().get();
+
+    assertEquals(rhs1, lhs1.getOptToOptRhs());
+    assertEquals(lhs1, rhs1.getOptToOptLhs());
   }
 
 
@@ -33,6 +39,15 @@ public class BidirectionalAssociationsTest {
     OptToOneLhs lhs = AssociationsManager.optToOneLhsBuilder().optToOneRhs(rhs).build().get();
 
     assertEquals(rhs, lhs.getOptToOneRhs());
+    assertEquals(lhs, rhs.getOptToOneLhs());
+
+    // change assoc
+    OptToOneRhs rhs2 = AssociationsManager.optToOneRhsBuilder().build().get();
+    lhs.setOptToOneRhs(rhs2);
+
+    assertEquals(rhs2, lhs.getOptToOneRhs());
+    assertEquals(lhs, rhs2.getOptToOneLhs());
+
   }
 
 
@@ -41,13 +56,12 @@ public class BidirectionalAssociationsTest {
     AssociationsMock.init();
 
     // 3xR and 1xL
-    OptToManyLhsBuilder lhsBuilder = AssociationsManager.optToManyLhsBuilder();
+    OptToManyLhs lhs = AssociationsManager.optToManyLhsBuilder().build().get();
     // R1 -> L, R2 -> L, R3 -> L
-    OptToManyRhs rhs1 = AssociationsManager.optToManyRhsBuilder().optToManyLhs(lhsBuilder).build().get();
-    OptToManyRhs rhs2 = AssociationsManager.optToManyRhsBuilder().optToManyLhs(lhsBuilder).build().get();
-    OptToManyRhs rhs3 = AssociationsManager.optToManyRhsBuilder().optToManyLhs(lhsBuilder).build().get();
+    OptToManyRhs rhs1 = AssociationsManager.optToManyRhsBuilder().optToManyLhs(lhs).build().get();
+    OptToManyRhs rhs2 = AssociationsManager.optToManyRhsBuilder().optToManyLhs(lhs).build().get();
+    OptToManyRhs rhs3 = AssociationsManager.optToManyRhsBuilder().optToManyLhs(lhs).build().get();
     // L ->
-    OptToManyLhs lhs = lhsBuilder.build().get();
 
     assertEquals(lhs, rhs1.getOptToManyLhs());
     assertEquals(lhs, rhs2.getOptToManyLhs());
@@ -57,69 +71,63 @@ public class BidirectionalAssociationsTest {
     assertTrue(lhs.getOptToManyRhs().contains(rhs2));
     assertTrue(lhs.getOptToManyRhs().contains(rhs3));
 
-    OptToManyRhsBuilder rhsBuilder1 = AssociationsManager.optToManyRhsBuilder();
-    OptToManyRhsBuilder rhsBuilder2 = AssociationsManager.optToManyRhsBuilder();
-    OptToManyRhsBuilder rhsBuilder3 = AssociationsManager.optToManyRhsBuilder();
+    OptToManyRhs rhs21 = AssociationsManager.optToManyRhsBuilder().build().get();
+    OptToManyRhs rhs22 = AssociationsManager.optToManyRhsBuilder().build().get();
+    OptToManyRhs rhs23 = AssociationsManager.optToManyRhsBuilder().build().get();
+    OptToManyLhs lhs2 = AssociationsManager.optToManyLhsBuilder().optToManyRhs(Sets.newHashSet(rhs21, rhs22, rhs23)).build().get();
 
-    OptToManyLhs optToManyLhs = AssociationsManager.optToManyLhsBuilder().optToManyRhs(Sets.newHashSet(rhsBuilder1, rhsBuilder2, rhsBuilder3)).build().get();
+    assertTrue(lhs2.getOptToManyRhs().contains(rhs21));
+    assertTrue(lhs2.getOptToManyRhs().contains(rhs22));
+    assertTrue(lhs2.getOptToManyRhs().contains(rhs23));
 
-    rhs1 = rhsBuilder1.build().get();
-    rhs2 = rhsBuilder2.build().get();
-    rhs3 = rhsBuilder3.build().get();
+    assertEquals(lhs2, rhs21.getOptToManyLhs());
+    assertEquals(lhs2, rhs22.getOptToManyLhs());
+    assertEquals(lhs2, rhs23.getOptToManyLhs());
 
-    assertTrue(optToManyLhs.getOptToManyRhs().contains(rhs1));
-    assertTrue(optToManyLhs.getOptToManyRhs().contains(rhs2));
-    assertTrue(optToManyLhs.getOptToManyRhs().contains(rhs3));
-    //Object was not loaded: EMPTY
-    assertEquals(optToManyLhs, rhs1.getOptToManyLhs());
-    assertEquals(optToManyLhs, rhs2.getOptToManyLhs());
-    assertEquals(optToManyLhs, rhs3.getOptToManyLhs());
+    // Add assoc after build
+    OptToManyRhs rhs31 = AssociationsManager.optToManyRhsBuilder().build().get();
+    OptToManyRhs rhs32 = AssociationsManager.optToManyRhsBuilder().build().get();
+    OptToManyRhs rhs33 = AssociationsManager.optToManyRhsBuilder().build().get();
+    OptToManyLhs lhs3 = AssociationsManager.optToManyLhsBuilder().build().get();
+
+    lhs3.addOptToManyRhs(rhs31);
+    lhs3.addOptToManyRhs(rhs32);
+    lhs3.addOptToManyRhs(rhs33);
+
+    assertTrue(lhs3.getOptToManyRhs().contains(rhs31));
+    assertTrue(lhs3.getOptToManyRhs().contains(rhs32));
+    assertTrue(lhs3.getOptToManyRhs().contains(rhs33));
+
+    assertEquals(lhs3, rhs31.getOptToManyLhs());
+    assertEquals(lhs3, rhs32.getOptToManyLhs());
+    assertEquals(lhs3, rhs33.getOptToManyLhs());
 
   }
 
-  //TODO generation error. 'Some' is not generated correctly. Edited the class diagram.
-//ready
   @Test
   public void testOptToSomeSync() {
     AssociationsMock.init();
 
     // 1xL and  3xR
-    OptToSomeLhsBuilder lhsBuilder = AssociationsManager.optToSomeLhsBuilder();
     OptToSomeRhs rhs1 = AssociationsManager.optToSomeRhsBuilder().build().get();
     OptToSomeRhs rhs2 = AssociationsManager.optToSomeRhsBuilder().build().get();
     OptToSomeRhs rhs3 = AssociationsManager.optToSomeRhsBuilder().build().get();
-    // L1 <- R3
-    OptToSomeLhs lhs = lhsBuilder.optToSomeRhs(Sets.newHashSet(rhs3, rhs2, rhs1)).build().get();
+    OptToSomeLhs lhs = AssociationsManager.optToSomeLhsBuilder().optToSomeRhs(Sets.newHashSet(rhs3, rhs2, rhs1)).build().get();
 
     assertTrue(lhs.getOptToSomeRhs().contains(rhs3));
     assertTrue(lhs.getOptToSomeRhs().contains(rhs2));
     assertTrue(lhs.getOptToSomeRhs().contains(rhs1));
 
-    //TODO does not work since other side is not automatically set.
     assertEquals(lhs, rhs1.getOptToSomeLhs());
     assertEquals(lhs, rhs2 .getOptToSomeLhs());
     assertEquals(lhs, rhs3.getOptToSomeLhs());
 
+    // Add assoc after build
+    OptToSomeRhs rhs4 = AssociationsManager.optToSomeRhsBuilder().build().get();
+    lhs.addOptToSomeRhs(rhs4);
 
-    //Other side:
-    OptToSomeRhsBuilder rhsBuilder1 = AssociationsManager.optToSomeRhsBuilder();
-    OptToSomeRhsBuilder rhsBuilder2 = AssociationsManager.optToSomeRhsBuilder();
-    OptToSomeRhsBuilder rhsBuilder3 = AssociationsManager.optToSomeRhsBuilder();
-
-    OptToSomeLhs optToSomeLhs = AssociationsManager.optToSomeLhsBuilder().optToSomeRhs(Sets.newHashSet(rhsBuilder1, rhsBuilder2, rhsBuilder3)).build().get();
-
-    rhs1 = rhsBuilder1.build().get();
-    rhs2 = rhsBuilder2.build().get();
-    rhs3 = rhsBuilder3.build().get();
-
-    assertTrue(optToSomeLhs.getOptToSomeRhs().contains(rhs1));
-    assertTrue(optToSomeLhs.getOptToSomeRhs().contains(rhs2));
-    assertTrue(optToSomeLhs.getOptToSomeRhs().contains(rhs3));
-    //Object was not loaded: EMPTY
-    assertEquals(optToSomeLhs, rhs1.getOptToSomeLhs());
-    assertEquals(optToSomeLhs, rhs2.getOptToSomeLhs());
-    assertEquals(optToSomeLhs, rhs3.getOptToSomeLhs());
-
+    assertEquals(lhs, rhs4.getOptToSomeLhs());
+    assertTrue(lhs.getOptToSomeRhs().contains(rhs4));
   }
 
 
@@ -127,25 +135,30 @@ public class BidirectionalAssociationsTest {
   public void testOneToOptSync() {
     AssociationsMock.init();
 
-    OneToOptLhsBuilder lhsBuilder = AssociationsManager.oneToOptLhsBuilder();
-    OneToOptRhs rhs = AssociationsManager.oneToOptRhsBuilder().oneToOptLhs(lhsBuilder).build().get();
-    OneToOptLhs lhs = lhsBuilder.oneToOptRhs(rhs).build().get();
+    OneToOptLhs lhs = AssociationsManager.oneToOptLhsBuilder().build().get();
+    OneToOptRhs rhs = AssociationsManager.oneToOptRhsBuilder().oneToOptLhs(lhs).build().get();
+
     assertEquals(rhs, lhs.getOneToOptRhs());
+    assertEquals(lhs, rhs.getOneToOptLhs());
+
+    // change assoc after build
+    OneToOptLhs lhs2 = AssociationsManager.oneToOptLhsBuilder().build().get();
+    rhs.setOneToOptLhs(lhs2);
+
+    assertEquals(rhs, lhs2.getOneToOptRhs());
+    assertEquals(lhs2, rhs.getOneToOptLhs());
 
   }
 
-  @Disabled
   @Test
   public void testOneToManySync() {
     AssociationsMock.init();
 
-    OneToManyLhsBuilder lhsBuilder = AssociationsManager.oneToManyLhsBuilder();
+    OneToManyLhs lhs = AssociationsManager.oneToManyLhsBuilder().build().get();
 
-    OneToManyRhs rhs1 = AssociationsManager.oneToManyRhsBuilder().oneToManyLhs(lhsBuilder).build().get();
-    OneToManyRhs rhs2 = AssociationsManager.oneToManyRhsBuilder().oneToManyLhs(lhsBuilder).build().get();
-    OneToManyRhs rhs3 = AssociationsManager.oneToManyRhsBuilder().oneToManyLhs(lhsBuilder).build().get();
-
-    OneToManyLhs lhs = lhsBuilder.build().get();
+    OneToManyRhs rhs1 = AssociationsManager.oneToManyRhsBuilder().oneToManyLhs(lhs).build().get();
+    OneToManyRhs rhs2 = AssociationsManager.oneToManyRhsBuilder().oneToManyLhs(lhs).build().get();
+    OneToManyRhs rhs3 = AssociationsManager.oneToManyRhsBuilder().oneToManyLhs(lhs).build().get();
 
     assertEquals(lhs, rhs1.getOneToManyLhs());
     assertEquals(lhs, rhs2.getOneToManyLhs());
@@ -155,24 +168,12 @@ public class BidirectionalAssociationsTest {
     assertTrue(lhs.getOneToManyRhs().contains(rhs2));
     assertTrue(lhs.getOneToManyRhs().contains(rhs3));
 
-    //other side:
-    OneToManyRhsBuilder rhsBuilder1 = AssociationsManager.oneToManyRhsBuilder();
-    OneToManyRhsBuilder rhsBuilder2 = AssociationsManager.oneToManyRhsBuilder();
-    OneToManyRhsBuilder rhsBuilder3 = AssociationsManager.oneToManyRhsBuilder();
+    // change assoc after build
+    OneToManyLhs lhs2 = AssociationsManager.oneToManyLhsBuilder().build().get();
+    rhs1.setOneToManyLhs(lhs2);
 
-    OneToManyLhs oneToManyLhs = AssociationsManager.oneToManyLhsBuilder().oneToManyRhs(Sets.newHashSet(rhsBuilder1, rhsBuilder2, rhsBuilder3)).build().get();
-    //No value present
-    rhs1 = rhsBuilder1.build().get();
-    rhs2 = rhsBuilder2.build().get();
-    rhs3 = rhsBuilder3.build().get();
-
-    assertTrue(oneToManyLhs.getOneToManyRhs().contains(rhs1));
-    assertTrue(oneToManyLhs.getOneToManyRhs().contains(rhs2));
-    assertTrue(oneToManyLhs.getOneToManyRhs().contains(rhs3));
-    assertEquals(oneToManyLhs, rhs1.getOneToManyLhs());
-    assertEquals(oneToManyLhs, rhs2.getOneToManyLhs());
-    assertEquals(oneToManyLhs, rhs3.getOneToManyLhs());
-
+    assertEquals(lhs2, rhs1.getOneToManyLhs());
+    assertTrue(lhs2.getOneToManyRhs().contains(rhs1));
 
   }
 
@@ -180,13 +181,11 @@ public class BidirectionalAssociationsTest {
   public void testManyToOptSync() {
     AssociationsMock.init();
 
-    ManyToOptRhs rhsBuilder = AssociationsManager.manyToOptRhsBuilder().build().get();
+    ManyToOptRhs rhs = AssociationsManager.manyToOptRhsBuilder().build().get();
 
-    ManyToOptLhs lhs1 = AssociationsManager.manyToOptLhsBuilder().manyToOptRhs(rhsBuilder).build().get();
-    ManyToOptLhs lhs2 = AssociationsManager.manyToOptLhsBuilder().manyToOptRhs(rhsBuilder).build().get();
-    ManyToOptLhs lhs3 = AssociationsManager.manyToOptLhsBuilder().manyToOptRhs(rhsBuilder).build().get();
-
-    ManyToOptRhs rhs = rhsBuilder.build().get();
+    ManyToOptLhs lhs1 = AssociationsManager.manyToOptLhsBuilder().manyToOptRhs(rhs).build().get();
+    ManyToOptLhs lhs2 = AssociationsManager.manyToOptLhsBuilder().manyToOptRhs(rhs).build().get();
+    ManyToOptLhs lhs3 = AssociationsManager.manyToOptLhsBuilder().manyToOptRhs(rhs).build().get();
 
     assertEquals(rhs, lhs1.getManyToOptRhs());
     assertEquals(rhs, lhs2.getManyToOptRhs());
@@ -196,64 +195,80 @@ public class BidirectionalAssociationsTest {
     assertEquals(lhs3, rhs.getManyToOptLhs(2));
     assertEquals(lhs1, rhs.getManyToOptLhs(0));
 
-    ManyToOptRhsBuilder rhsBuilder1 = AssociationsManager.manyToOptRhsBuilder();
-    ManyToOptRhsBuilder rhsBuilder2 = AssociationsManager.manyToOptRhsBuilder();
-    ManyToOptRhsBuilder rhsBuilder3 = AssociationsManager.manyToOptRhsBuilder();
-/*
-    ManyToOptLhs manyToOptLhs = AssociationsManager.manyToOptRhsBuilder().manyToOptRhs(Sets.newHashSet(rhsBuilder1, rhsBuilder2, rhsBuilder3)).build().get();
+    // add assoc after build
+    ManyToOptRhs rhs2 = AssociationsManager.manyToOptRhsBuilder().build().get();
 
-    rhs1 = rhsBuilder1.build().get();
-    rhs2 = rhsBuilder2.build().get();
-    rhs3 = rhsBuilder3.build().get();
+    ManyToOptLhs lhs21 = AssociationsManager.manyToOptLhsBuilder().build().get();
+    ManyToOptLhs lhs22 = AssociationsManager.manyToOptLhsBuilder().build().get();
+    ManyToOptLhs lhs23 = AssociationsManager.manyToOptLhsBuilder().build().get();
 
-    assertEquals(true , optToManyLhs.getOptToManyRhs().contains(rhs2) );
-   assertEquals(true , optToManyLhs.getOptToManyRhs().contains(rhs3) );
-  assertEquals(true , optToManyLhs.getOptToManyRhs().contains(rhs1) );
-    assertEquals(optToManyLhs , rhs1.getOptToManyLhs());
-    assertEquals(optToManyLhs , rhs2.getOptToManyLhs());
-    assertEquals(optToManyLhs , rhs3.getOptToManyLhs());
-*/
+    rhs2.addManyToOptLhs(lhs21);
+    rhs2.addManyToOptLhs(lhs22);
+    rhs2.addManyToOptLhs(lhs23);
+
+    assertEquals(rhs2, lhs21.getManyToOptRhs());
+    assertEquals(rhs2, lhs22.getManyToOptRhs());
+    assertEquals(rhs2, lhs23.getManyToOptRhs());
+
+    assertEquals(lhs22, rhs2.getManyToOptLhs(1));
+    assertEquals(lhs23, rhs2.getManyToOptLhs(2));
+    assertEquals(lhs21, rhs2.getManyToOptLhs(0));
+
+    // add assoc after build: use another add
+    ManyToOptRhs rhs3 = AssociationsManager.manyToOptRhsBuilder().build().get();
+
+    ManyToOptLhs lhs31 = AssociationsManager.manyToOptLhsBuilder().build().get();
+    ManyToOptLhs lhs32 = AssociationsManager.manyToOptLhsBuilder().build().get();
+    ManyToOptLhs lhs33 = AssociationsManager.manyToOptLhsBuilder().build().get();
+
+    rhs3.addAllManyToOptLhss(Sets.newHashSet(lhs31, lhs32, lhs33));
+
+    assertEquals(rhs3, lhs31.getManyToOptRhs());
+    assertEquals(rhs3, lhs32.getManyToOptRhs());
+    assertEquals(rhs3, lhs33.getManyToOptRhs());
+
+    assertTrue(rhs3.containsManyToOptLhs(lhs31));
+    assertTrue(rhs3.containsManyToOptLhs(lhs32));
+    assertTrue(rhs3.containsManyToOptLhs(lhs33));
+
+    // add assoc after build: other side
+    ManyToOptRhs rhs4 = AssociationsManager.manyToOptRhsBuilder().build().get();
+    ManyToOptLhs lhs41 = AssociationsManager.manyToOptLhsBuilder().build().get();
+
+    lhs41.setManyToOptRhs(rhs4);
+
+    assertEquals(rhs4, lhs41.getManyToOptRhs());
+
+    assertTrue(rhs4.containsManyToOptLhs(lhs41));
   }
 
-  @Disabled
   @Test
   public void testManyToOneSync() {
     AssociationsMock.init();
 
-    ManyToOneRhsBuilder rhsBuilder = AssociationsManager.manyToOneRhsBuilder();
+    ManyToOneRhs rhs = AssociationsManager.manyToOneRhsBuilder().build().get();
 
-    ManyToOneLhs lhs1 = AssociationsManager.manyToOneLhsBuilder().manyToOneRhs(rhsBuilder).build().get();
-    ManyToOneLhs lhs2 = AssociationsManager.manyToOneLhsBuilder().manyToOneRhs(rhsBuilder).build().get();
-    ManyToOneLhs lhs3 = AssociationsManager.manyToOneLhsBuilder().manyToOneRhs(rhsBuilder).build().get();
-
-    ManyToOneRhs rhs = rhsBuilder.manyToOneLhs(Sets.newHashSet(lhs1, lhs2, lhs3)).build().get();
+    ManyToOneLhs lhs1 = AssociationsManager.manyToOneLhsBuilder().manyToOneRhs(rhs).build().get();
+    ManyToOneLhs lhs2 = AssociationsManager.manyToOneLhsBuilder().manyToOneRhs(rhs).build().get();
+    ManyToOneLhs lhs3 = AssociationsManager.manyToOneLhsBuilder().manyToOneRhs(rhs).build().get();
 
     assertTrue(rhs.getManyToOneLhs().contains(lhs1));
-    assertTrue(rhs.getManyToOneLhs().contains(lhs1));
-    assertTrue(rhs.getManyToOneLhs().contains(lhs1));
+    assertTrue(rhs.getManyToOneLhs().contains(lhs2));
+    assertTrue(rhs.getManyToOneLhs().contains(lhs3));
 
+    assertEquals(rhs, lhs1.getManyToOneRhs());
+    assertEquals(rhs, lhs2.getManyToOneRhs());
+    assertEquals(rhs, lhs3.getManyToOneRhs());
 
-    ManyToOneLhs lhsBuilder1 = AssociationsManager.manyToOneLhsBuilder().build().get();
-    ManyToOneLhs lhsBuilder2 = AssociationsManager.manyToOneLhsBuilder().build().get();
-    ManyToOneLhs lhsBuilder3 = AssociationsManager.manyToOneLhsBuilder().build().get();
+    // change assoc after build
+    ManyToOneRhs rhs2 = AssociationsManager.manyToOneRhsBuilder().build().get();
+    lhs1.setManyToOneRhs(rhs2);
 
+    assertTrue(rhs2.getManyToOneLhs().contains(lhs1));
+    assertEquals(rhs2, lhs1.getManyToOneRhs());
 
-    ManyToOneRhs manyToOneRhs = AssociationsManager.manyToOneRhsBuilder().manyToOneLhs(Sets.newHashSet(lhsBuilder1, lhsBuilder2, lhsBuilder3)).build().get();
-
-    lhs1 = lhsBuilder1.build().get();
-    lhs2 = lhsBuilder2.build().get();
-    lhs3 = lhsBuilder3.build().get();
-
-    assertTrue(manyToOneRhs.getManyToOneLhs().contains(lhs1));
-    assertTrue(manyToOneRhs.getManyToOneLhs().contains(lhs2));
-    assertTrue(manyToOneRhs.getManyToOneLhs().contains(lhs3));
-
-    assertEquals(manyToOneRhs, lhs1.getManyToOneRhs());
-    assertEquals(manyToOneRhs, lhs2.getManyToOneRhs());
-    assertEquals(manyToOneRhs, lhs3.getManyToOneRhs());
   }
 
-  @Disabled("Does not work since other side is not automatically set")
   @Test
   public void testManyToManySync() {
     AssociationsMock.init();
@@ -277,17 +292,19 @@ public class BidirectionalAssociationsTest {
     lhs3.addManyToManyRhs(rhs1);
     lhs3.addManyToManyRhs(rhs2);
     lhs3.addManyToManyRhs(rhs3);
-/*
+
     assertTrue(rhs1.getManyToManyLhs().contains(lhs1));
-    assertEquals(lhs1, rhs2.getManyToManyLhs());
-    assertEquals(lhs1, rhs3.getManyToManyLhs());
-    assertEquals(lhs2, rhs1.getManyToManyLhs());
-    assertEquals(lhs2, rhs2.getManyToManyLhs());
-    assertEquals(lhs2, rhs3.getManyToManyLhs());
-    assertEquals(lhs3, rhs1.getManyToManyLhs());
-    assertEquals(lhs3, rhs2.getManyToManyLhs());
-    assertEquals(lhs3, rhs3.getManyToManyLhs());
-*/
+    assertTrue(rhs2.getManyToManyLhs().contains(lhs1));
+    assertTrue(rhs3.getManyToManyLhs().contains(lhs1));
+
+    assertTrue(rhs1.getManyToManyLhs().contains(lhs2));
+    assertTrue(rhs2.getManyToManyLhs().contains(lhs2));
+    assertTrue(rhs3.getManyToManyLhs().contains(lhs2));
+
+    assertTrue(rhs1.getManyToManyLhs().contains(lhs3));
+    assertTrue(rhs2.getManyToManyLhs().contains(lhs3));
+    assertTrue(rhs3.getManyToManyLhs().contains(lhs3));
+
     assertTrue(lhs1.getManyToManyRhs().contains(rhs1));
     assertTrue(lhs1.getManyToManyRhs().contains(rhs2));
     assertTrue(lhs1.getManyToManyRhs().contains(rhs3));
@@ -300,9 +317,7 @@ public class BidirectionalAssociationsTest {
     assertTrue(lhs3.getManyToManyRhs().contains(rhs2));
     assertTrue(lhs3.getManyToManyRhs().contains(rhs3));
 
-
     //other side:
-
     ManyToManyRhs rhs11 = AssociationsManager.manyToManyRhsBuilder().build().get();
     ManyToManyRhs rhs22 = AssociationsManager.manyToManyRhsBuilder().build().get();
     ManyToManyRhs rhs33 = AssociationsManager.manyToManyRhsBuilder().build().get();
@@ -312,111 +327,71 @@ public class BidirectionalAssociationsTest {
     ManyToManyLhs lhs33 = AssociationsManager.manyToManyLhsBuilder().build().get();
 
     rhs11.addManyToManyLhs(lhs11);
+    rhs11.addManyToManyLhs(lhs22);
+    rhs11.addManyToManyLhs(lhs33);
+
+    rhs22.addManyToManyLhs(lhs11);
     rhs22.addManyToManyLhs(lhs22);
+    rhs22.addManyToManyLhs(lhs33);
+
+    rhs33.addManyToManyLhs(lhs11);
     rhs33.addManyToManyLhs(lhs22);
-
-    rhs11.addManyToManyLhs(lhs11);
-    rhs22.addManyToManyLhs(lhs22);
     rhs33.addManyToManyLhs(lhs33);
-
-    rhs11.addManyToManyLhs(lhs11);
-    rhs22.addManyToManyLhs(lhs22);
-    rhs33.addManyToManyLhs(lhs33);
-
-
-    assertEquals(rhs11, lhs11.getManyToManyRhs().get(0));
-    assertEquals(rhs11, lhs22.getManyToManyRhs().get(0));
-    assertEquals(rhs11, lhs33.getManyToManyRhs().get(0));
-    assertEquals(rhs22, lhs11.getManyToManyRhs().get(1));
-    assertEquals(rhs22, lhs22.getManyToManyRhs().get(1));
-    assertEquals(rhs22, lhs33.getManyToManyRhs().get(1));
-    assertEquals(rhs33, lhs11.getManyToManyRhs().get(2));
-    assertEquals(rhs33, lhs22.getManyToManyRhs().get(2));
-    assertEquals(rhs33, lhs33.getManyToManyRhs().get(2));
-
 
     assertTrue(rhs11.getManyToManyLhs().contains(lhs11));
-    assertTrue(rhs11.getManyToManyLhs().contains(lhs22));
-    assertTrue(rhs11.getManyToManyLhs().contains(lhs33));
-
-
     assertTrue(rhs22.getManyToManyLhs().contains(lhs11));
-    assertTrue(rhs22.getManyToManyLhs().contains(lhs22));
-    assertTrue(rhs22.getManyToManyLhs().contains(lhs33));
-
     assertTrue(rhs33.getManyToManyLhs().contains(lhs11));
+
+    assertTrue(rhs11.getManyToManyLhs().contains(lhs22));
+    assertTrue(rhs22.getManyToManyLhs().contains(lhs22));
     assertTrue(rhs33.getManyToManyLhs().contains(lhs22));
+
+    assertTrue(rhs11.getManyToManyLhs().contains(lhs33));
+    assertTrue(rhs22.getManyToManyLhs().contains(lhs33));
     assertTrue(rhs33.getManyToManyLhs().contains(lhs33));
 
+    assertTrue(lhs11.getManyToManyRhs().contains(rhs11));
+    assertTrue(lhs11.getManyToManyRhs().contains(rhs22));
+    assertTrue(lhs11.getManyToManyRhs().contains(rhs33));
+
+    assertTrue(lhs22.getManyToManyRhs().contains(rhs11));
+    assertTrue(lhs22.getManyToManyRhs().contains(rhs22));
+    assertTrue(lhs22.getManyToManyRhs().contains(rhs33));
+
+    assertTrue(lhs33.getManyToManyRhs().contains(rhs11));
+    assertTrue(lhs33.getManyToManyRhs().contains(rhs22));
+    assertTrue(lhs33.getManyToManyRhs().contains(rhs33));
 
   }
 
-  @Disabled
   @Test
   public void testManyToSomeSync(){
     AssociationsMock.init();
-
-    ManyToSomeLhs lhs1 = AssociationsManager.manyToSomeLhsBuilder().build().get();
-    ManyToSomeLhs lhs2 = AssociationsManager.manyToSomeLhsBuilder().build().get();
-    ManyToSomeLhs lhs3 = AssociationsManager.manyToSomeLhsBuilder().build().get();
 
     ManyToSomeRhs rhs1 = AssociationsManager.manyToSomeRhsBuilder().build().get();
     ManyToSomeRhs rhs2 = AssociationsManager.manyToSomeRhsBuilder().build().get();
     ManyToSomeRhs rhs3 = AssociationsManager.manyToSomeRhsBuilder().build().get();
 
-    lhs1.addManyToSomeRhs(rhs1);
-    lhs1.addManyToSomeRhs(rhs2);
-    lhs1.addManyToSomeRhs(rhs3);
-
-    lhs2.addManyToSomeRhs(rhs1);
-    lhs2.addManyToSomeRhs(rhs2);
-    lhs2.addManyToSomeRhs(rhs3);
-
-    lhs3.addManyToSomeRhs(rhs1);
-    lhs3.addManyToSomeRhs(rhs2);
-    lhs3.addManyToSomeRhs(rhs3);
+    ManyToSomeLhs lhs1 = AssociationsManager.manyToSomeLhsBuilder()
+        .manyToSomeRhsAdd(rhs1)
+        .manyToSomeRhsAdd(rhs2)
+        .manyToSomeRhsAdd(rhs3).build().get();
+    ManyToSomeLhs lhs2 = AssociationsManager.manyToSomeLhsBuilder()
+        .manyToSomeRhs(Sets.newHashSet(rhs1, rhs2, rhs3)).build().get();
+    ManyToSomeLhs lhs3 = AssociationsManager.manyToSomeLhsBuilder()
+        .manyToSomeRhs(Sets.newHashSet(rhs1, rhs2, rhs3)).build().get();
 
     assertTrue(lhs1.getManyToSomeRhs().contains(rhs1));
     assertTrue(lhs1.getManyToSomeRhs().contains(rhs2));
     assertTrue(lhs1.getManyToSomeRhs().contains(rhs3));
+
     assertTrue(lhs2.getManyToSomeRhs().contains(rhs1));
     assertTrue(lhs2.getManyToSomeRhs().contains(rhs2));
     assertTrue(lhs2.getManyToSomeRhs().contains(rhs3));
+
     assertTrue(lhs3.getManyToSomeRhs().contains(rhs1));
     assertTrue(lhs3.getManyToSomeRhs().contains(rhs2));
     assertTrue(lhs3.getManyToSomeRhs().contains(rhs3));
-
-    //other side:
-
-    ManyToSomeLhs lhs11 = AssociationsManager.manyToSomeLhsBuilder().build().get();
-    ManyToSomeLhs lhs22 = AssociationsManager.manyToSomeLhsBuilder().build().get();
-    ManyToSomeLhs lhs33 = AssociationsManager.manyToSomeLhsBuilder().build().get();
-
-    ManyToSomeRhs rhs11 = AssociationsManager.manyToSomeRhsBuilder().build().get();
-    ManyToSomeRhs rhs22 = AssociationsManager.manyToSomeRhsBuilder().build().get();
-    ManyToSomeRhs rhs33 = AssociationsManager.manyToSomeRhsBuilder().build().get();
-
-    rhs11.addManyToSomeLhs(lhs11);
-    rhs11.addManyToSomeLhs(lhs22);
-    rhs11.addManyToSomeLhs(lhs33);
-
-    rhs22.addManyToSomeLhs(lhs11);
-    rhs22.addManyToSomeLhs(lhs22);
-    rhs22.addManyToSomeLhs(lhs33);
-
-    rhs33.addManyToSomeLhs(lhs11);
-    rhs33.addManyToSomeLhs(lhs22);
-    rhs33.addManyToSomeLhs(lhs33);
-
-    assertTrue(lhs11.getManyToSomeRhs().contains(rhs11));
-    assertTrue(lhs11.getManyToSomeRhs().contains(rhs22));
-    assertTrue(lhs11.getManyToSomeRhs().contains(rhs33));
-    assertTrue(lhs22.getManyToSomeRhs().contains(rhs11));
-    assertTrue(lhs22.getManyToSomeRhs().contains(rhs22));
-    assertTrue(lhs22.getManyToSomeRhs().contains(rhs33));
-    assertTrue(lhs33.getManyToSomeRhs().contains(rhs11));
-    assertTrue(lhs33.getManyToSomeRhs().contains(rhs22));
-    assertTrue(lhs33.getManyToSomeRhs().contains(rhs33));
 
   }
 
@@ -425,58 +400,45 @@ public class BidirectionalAssociationsTest {
     AssociationsMock.init();
 
     // 3xL and  1xR
-    SomeToOptRhsBuilder rhsBuilder = AssociationsManager.someToOptRhsBuilder();
     SomeToOptLhs lhs1 = AssociationsManager.someToOptLhsBuilder().build().get();
     SomeToOptLhs lhs2 = AssociationsManager.someToOptLhsBuilder().build().get();
     SomeToOptLhs lhs3 = AssociationsManager.someToOptLhsBuilder().build().get();
 
     // R <- L1, L2, L3
-    SomeToOptRhs rhs = rhsBuilder.someToOptLhs(Sets.newHashSet(lhs1, lhs2, lhs3)).build().get();
+    SomeToOptRhs rhs = AssociationsManager.someToOptRhsBuilder().someToOptLhs(Sets.newHashSet(lhs1, lhs2, lhs3)).build().get();
 
     assertTrue(rhs.getSomeToOptLhs().contains(lhs1));
     assertTrue(rhs.getSomeToOptLhs().contains(lhs2));
     assertTrue(rhs.getSomeToOptLhs().contains(lhs3));
 
-    //TODO does not work since other side is not automatically set.
     assertEquals(rhs, lhs1.getSomeToOptRhs());
     assertEquals(rhs, lhs2.getSomeToOptRhs());
     assertEquals(rhs, lhs3.getSomeToOptRhs());
 
+    // add assoc after build
+    SomeToOptLhs lhs4 = AssociationsManager.someToOptLhsBuilder().build().get();
+    rhs.addSomeToOptLhs(lhs4);
 
-    //Other side:
-    SomeToOptLhsBuilder lhsBuilder1 = AssociationsManager.someToOptLhsBuilder();
-    SomeToOptLhsBuilder lhsBuilder2 = AssociationsManager.someToOptLhsBuilder();
-    SomeToOptLhsBuilder lhsBuilder3 = AssociationsManager.someToOptLhsBuilder();
+    assertTrue(rhs.getSomeToOptLhs().contains(lhs4));
+    assertEquals(rhs, lhs4.getSomeToOptRhs());
 
-    SomeToOptRhs SomeToOptRhs = AssociationsManager.someToOptRhsBuilder().someToOptLhs(Sets.newHashSet(lhsBuilder1, lhsBuilder2, lhsBuilder3)).build().get();
-
-    lhs1 = lhsBuilder1.build().get();
-    lhs2 = lhsBuilder2.build().get();
-    lhs3 = lhsBuilder3.build().get();
-
-    assertTrue(SomeToOptRhs.getSomeToOptLhs().contains(lhs1));
-    assertTrue(SomeToOptRhs.getSomeToOptLhs().contains(lhs2));
-    assertTrue(SomeToOptRhs.getSomeToOptLhs().contains(lhs3));
-
-    //Object was not loaded: EMPTY
-    assertEquals(SomeToOptRhs, lhs1.getSomeToOptRhs());
-    assertEquals(SomeToOptRhs, lhs2.getSomeToOptRhs());
-    assertEquals(SomeToOptRhs, lhs3.getSomeToOptRhs());
 
   }
 
-  @Disabled
   @Test
   public void testSomeToManySync() {
     AssociationsMock.init();
 
-    SomeToManyRhs rhs1 = AssociationsManager.someToManyRhsBuilder().build().get();
-    SomeToManyRhs rhs2 = AssociationsManager.someToManyRhsBuilder().build().get();
-    SomeToManyRhs rhs3 = AssociationsManager.someToManyRhsBuilder().build().get();
-
     SomeToManyLhs lhs1 = AssociationsManager.someToManyLhsBuilder().build().get();
     SomeToManyLhs lhs2 = AssociationsManager.someToManyLhsBuilder().build().get();
     SomeToManyLhs lhs3 = AssociationsManager.someToManyLhsBuilder().build().get();
+
+    SomeToManyRhs rhs1 = AssociationsManager.someToManyRhsBuilder()
+        .someToManyLhs(Sets.newHashSet(lhs1, lhs2, lhs3)).build().get();
+    SomeToManyRhs rhs2 = AssociationsManager.someToManyRhsBuilder()
+        .someToManyLhs(Sets.newHashSet(lhs1, lhs2, lhs3)).build().get();
+    SomeToManyRhs rhs3 = AssociationsManager.someToManyRhsBuilder()
+        .someToManyLhs(Sets.newHashSet(lhs1, lhs2, lhs3)).build().get();
 
     lhs1.addSomeToManyRhs(rhs1);
     lhs1.addSomeToManyRhs(rhs2);
@@ -499,38 +461,6 @@ public class BidirectionalAssociationsTest {
     assertTrue(lhs3.getSomeToManyRhs().contains(rhs1));
     assertTrue(lhs3.getSomeToManyRhs().contains(rhs2));
     assertTrue(lhs3.getSomeToManyRhs().contains(rhs3));
-
-    //other side:
-
-    SomeToManyLhs lhs11 = AssociationsManager.someToManyLhsBuilder().build().get();
-    SomeToManyLhs lhs22 = AssociationsManager.someToManyLhsBuilder().build().get();
-    SomeToManyLhs lhs33 = AssociationsManager.someToManyLhsBuilder().build().get();
-
-    SomeToManyRhs rhs11 = AssociationsManager.someToManyRhsBuilder().build().get();
-    SomeToManyRhs rhs22 = AssociationsManager.someToManyRhsBuilder().build().get();
-    SomeToManyRhs rhs33 = AssociationsManager.someToManyRhsBuilder().build().get();
-
-    rhs11.addSomeToManyLhs(lhs11);
-    rhs11.addSomeToManyLhs(lhs22);
-    rhs11.addSomeToManyLhs(lhs33);
-
-    rhs22.addSomeToManyLhs(lhs11);
-    rhs22.addSomeToManyLhs(lhs22);
-    rhs22.addSomeToManyLhs(lhs33);
-
-    rhs33.addSomeToManyLhs(lhs11);
-    rhs33.addSomeToManyLhs(lhs22);
-    rhs33.addSomeToManyLhs(lhs33);
-
-    assertTrue(lhs11.getSomeToManyRhs().contains(rhs11));
-    assertTrue(lhs11.getSomeToManyRhs().contains(rhs22));
-    assertTrue(lhs11.getSomeToManyRhs().contains(rhs33));
-    assertTrue(lhs22.getSomeToManyRhs().contains(rhs11));
-    assertTrue(lhs22.getSomeToManyRhs().contains(rhs22));
-    assertTrue(lhs22.getSomeToManyRhs().contains(rhs33));
-    assertTrue(lhs33.getSomeToManyRhs().contains(rhs11));
-    assertTrue(lhs33.getSomeToManyRhs().contains(rhs22));
-    assertTrue(lhs33.getSomeToManyRhs().contains(rhs33));
 
   }
 }
