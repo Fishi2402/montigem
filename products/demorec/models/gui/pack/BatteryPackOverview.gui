@@ -21,12 +21,32 @@ component BatteryPackOverview(BatteryPack pack) {
         components=[
           @GemText(value=pack.description),
           @GemText(value="Health (%) "+pack.health),
-          @GemText(value="Charge (%)"+pack.stateOfCharge)
+          @GemText(value="Charge (%) "+pack.stateOfCharge)
         ]
       ),
-      editPack@GemLink(url="override", text="Edit Pack."),
-      @PhotoDisplay(component=pack),
-      @PackTypeOverview(type=pack.type),
-      tree@ComponentTreeView(component=pack)
+      @GemColumn(
+        width="10%",
+        components=[
+          editPack@GemLink(url="override", text="Edit Pack.")
+        ]
+      ),
+      @GemColumn(
+        width="20%",
+        components=[
+          @PhotoDisplay(component=pack)
+        ]
+      ),
+      @GemColumn(
+        width="20%",
+        components=[
+          @PackTypeOverview(type=pack.type)
+        ]
+      ),
+      @GemColumn(
+        width="20%",
+        components=[
+          tree@ComponentTreeView(component=pack)
+        ]
+      )
   ]);
 }

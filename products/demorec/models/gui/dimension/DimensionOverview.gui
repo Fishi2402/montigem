@@ -15,7 +15,7 @@ page DimensionOverview(List<Dimension> dimensions) {
   @GemCard(
     title="Dimensions of values",
     component=@GemColumn(
-      rowGap="5%",
+      rowGap="1px",
       wrap="nowrap",
       components=[
         newDimension@DimensionCreate(),

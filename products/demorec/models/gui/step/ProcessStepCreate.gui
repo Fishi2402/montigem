@@ -14,30 +14,44 @@ import DemoRec.MeasuringValue;
 import gui.joinconnection.JoinConnectionCreate;
 import gui.step.MeasuringValueCreate;
 
-page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
+page ProcessStepCreate(ProcessStep step, List<String> values, Event<ProcessStep> create) {
   @GemCard(
     title = "Deconstruction Step",
     component = @GemColumn(
+      colGap="10px",
       components = [
         @GemRow(
           wrap="noWrap",
           colGap="5%",
           components = [
-            timerGuard@guard(true) {
-              startTimerButton@GemButton(label = "Start", leftClick = startTimer, disabled=true);
-            } else {
-              @GemColumn(
-                components= [
-                  stopTimerButton@GemButton(label = "Stop", leftClick = stopTimer, disabled=false),
-                  abortTimerButton@GemButton(label = "Abort", leftClick = abortTimer, disabled=false)
-                ]
-              );
-              passedTime@GemText(value="override");
-            },
-            timeConsumption@GemTextInput(
-              labelText = "Time Consumption in seconds",
-              inputType = "number",
-              entry = step.timeConsumption)
+            @GemColumn(
+              width="30%",
+              components = [
+                timerGuard@guard(true) {
+                  startTimerButton@GemButton(label = "Start", leftClick = startTimer, disabled=true);
+                } else {
+                  stopTimerButton@GemButton(label = "Stop", leftClick = stopTimer, disabled=false);
+                }
+              ]
+            ),
+            @GemColumn(
+              hAlign="center",
+              vAlign="center",
+              width="10%",
+              components = [
+                passedTime@GemText(value="override")
+              ]
+            ),
+            @GemColumn(
+              width="50%",
+              components = [
+                timeConsumption@GemTextInput(
+                  labelText = "Time Consumption in seconds",
+                  inputType = "number",
+                  entry = step.timeConsumption
+                )
+              ]
+            )
           ]
         ),
         @GemTextInput(
@@ -62,10 +76,10 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
               entry = null);
         },
         createNewJoinConnection@guard(true) {
-          @JoinConnectionCreate();
+          @JoinConnectionCreate(createJoinConnection=addNewJoinConnection);
         },
-        @iterate(MeasuringValue measuredValue : step.measured) {
-          @GemText(value=measuredValue.value+" "+measuredValue.dimension.name+" ("+measuredValue.dimension.unit+")");
+        @iterate(String val : values) {
+          @GemText(value=val);
         },
         @MeasuringValueCreate(measuringValueEvent = attachMeasuringValue)
       ]

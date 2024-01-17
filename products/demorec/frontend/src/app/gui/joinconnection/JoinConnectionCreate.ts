@@ -4,6 +4,8 @@ import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { BatteryPackType } from '@src/demorec/BatteryPackType';
 import { JoinConnectionType } from '@src/demorec/JoinConnectionType';
+import { JoinConnection } from '@src/demorec/JoinConnection';
+import { NotificationScope } from '@umlp/common';
 
 import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
 
@@ -17,8 +19,6 @@ import {
   EventEmitter,
   TemplateRef,
 } from '@angular/core';
-
-import { ActivatedRoute, Router } from '@angular/router';
 
 import { Option } from '@umlp/input';
 
@@ -40,6 +40,9 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
   superComponentEntry : string = "";
   connectsComponentEntry : string = "";
   connectionTypeEntry : string = "";
+
+  @Output()
+  public createJoinConnection: EventEmitter<JoinConnection> = new EventEmitter<JoinConnection>();
 
   public override ngOnInit(){
     super.ngOnInit()
@@ -132,11 +135,11 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
     if(this.getConnection().isBuildable()) {
       console.debug("New Connection is buildable")
       const joinConnection = this.getConnection().build()
-      if(this.getConnection().isBuildFinished()) {
-        DemoRecManager.getDemoRecComponentSure(+this.superComponentEntry).then(comp => {
+      DemoRecManager.getDemoRecComponentSure(+this.superComponentEntry).then(comp => {
           comp.addComposedOf2(joinConnection)
-        })
-      }
+      })
+      this.createJoinConnection.emit(joinConnection)
+
     } else {
       console.debug("New Connection is not buildable")
       this.getConnection().build()
@@ -155,13 +158,16 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
     setTimeout(() => console.debug("Connects List after adding Component: ", this.getConnection().getConnects()), 200)
   }
 
-  dummyComponents = []
+  dummyComponentNames : string[] = []
+  dummyComponents : DemoRecComponent[] = []
+
   getDummyComponents() {
-    return this.dummyComponents;
+    return this.dummyComponentNames;
   }
 
   syncDummyComponentsWithBuilderObject(comp: DemoRecComponent) {
-    this.dummyComponents.push("Added Component:"+comp.getDescription()+"_"+comp.getGemId());
+    this.dummyComponentNames.push(comp.getDescription()+":"+comp.getGemId());
+    this.dummyComponents.push(comp);
   }
 
   public override connectSelectedComponent(event: any) {
@@ -173,6 +179,30 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
           }
       )
     }
+  }
+
+  public override getNewCompGuardCondition() :boolean {
+    return this.getSelectConnectsComponentEntry() === newOption.value
+  }
+
+  public override removeSelectedComponent(i: string): (arg: any) => void {
+
+    return event => {
+      const nameSplitByDoubleColon = i.split(":")
+      const len = nameSplitByDoubleColon.length
+      if(len > 0) {
+        const gemIdOfComponent = nameSplitByDoubleColon[len-1]
+        const indexInDummyComps = this.dummyComponentNames.indexOf(i)
+        console.debug("Removing Component from Connects by Id ", gemIdOfComponent)
+        console.debug(this.getConnection().removeConnects(this.dummyComponents[indexInDummyComps],
+            NotificationScope.ALL))
+        this.getConnection().removeConnectsByIdSure(+gemIdOfComponent)
+        console.debug(this.getConnection().getConnects().map(c => c.getGemId()))
+
+        this.dummyComponentNames.splice(indexInDummyComps, 1)
+        this.dummyComponents.splice(indexInDummyComps, 1)
+      }
+    };
   }
 
 }

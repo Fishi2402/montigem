@@ -29,12 +29,14 @@ export  class ComponentTreeView extends ComponentTreeViewComponent {
 
   treeViewDataCheck = { value: null, hash: null, calculating: false };
 
+  seenCompsRecursionState : Set<number> = new Set<number>()
 
   public override getHierarchicalComponentsItems (): Array<GemTreeviewEntry> {
     console.debug("Create Hierarchical Component")
     if(!(this.getComponent())) {
       return [];
     }
+    this.seenCompsRecursionState = new Set()
     const treeViewEntries = this.createTreeRecursively(this.getComponent())
 
     const newHash = JSON.stringify(treeViewEntries);
@@ -47,6 +49,12 @@ export  class ComponentTreeView extends ComponentTreeViewComponent {
 
   private createTreeRecursively(curComponent : DemoRecComponent): GemTreeviewEntry[] {
     const children : GemTreeviewEntry[] = []
+
+    if(this.seenCompsRecursionState.has(curComponent.getGemId())) {
+      return children
+    }
+    this.seenCompsRecursionState.add(curComponent.getGemId())
+
     const alreadySeenChildren = new Set()
     curComponent.getComposedOf().forEach(joinConnection => {
       joinConnection.getConnects().forEach(child => {

@@ -8,6 +8,7 @@ import {ProcessStep} from '@src/demorec/ProcessStep'
 
 import {MeasuringValue} from '@src/demorec/MeasuringValue'
 import {JoinConnectionType} from '@src/demorec/JoinConnectionType'
+import {JoinConnection} from '@src/demorec/JoinConnection'
 
 import {ProcessStepCreateComponent, config} from '@src/gui/step/ProcessStepCreateComponent';
 
@@ -80,23 +81,31 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
         console.debug(joinConnections)
         this.joinConnectionOptions = [newOption]
         for (const joinConnection of joinConnections) {
-          joinConnection._internal_getConnectsGemList().loadAll().then(
-              list => {
-                console.debug("Connects: " + list.map(c => c.getDescription()))
-                console.debug(joinConnection._internal_getConnectsGemList().toArray())
-
-                let value = joinConnection.getGemId() + "";
-                const displayValue = list.map(c => c.getDescription()?
-                        c.getDescription()+":"+c.getGemId() :
-                        ":"+c.getGemId()).join("_")+
-                    "_"+JoinConnectionType[joinConnection.getJoinConnectionType()]
-                this.joinConnectionOptions.push({value: value, display: displayValue});
-              }
-          )
+          this.calculateDisplayValueOfJoinConnection(joinConnection).then(opt =>
+          this.joinConnectionOptions.push(opt))
         }
         this.joinConnectionOptions = this.joinConnectionOptions.slice();
       });
     });
+  }
+
+  private calculateDisplayValueOfJoinConnection(connection : JoinConnection) : Promise<Option> {
+    return connection._internal_getConnectsGemList().loadAll().then(
+        list => {
+          console.debug("Connects: " + list.map(c => c.getDescription()))
+          console.debug(connection._internal_getConnectsGemList().toArray())
+
+          let value = connection.getGemId() + "";
+          const displayValue = list.map(c => c.getDescription()?
+                  c.getDescription()+":"+c.getGemId() :
+                  ":"+c.getGemId()).join("_")+
+              "_"+JoinConnectionType[connection.getJoinConnectionType()]
+          return new Promise<Option>((resolve, reject) => {
+                resolve({value: value, display: displayValue})
+              }
+          )
+        }
+    )
   }
 
   // Select Types
@@ -183,6 +192,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
           this.endEffectorEntry = ""
           this.joinConnectionEntry = ""
           this.building = false;
+          this.values = []
         })
       } else {
         this.building = false;
@@ -240,14 +250,25 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   }
 
   public override getPassedTimeValue (): string {
-    return "Passed time "+this.passedSeconds;
+    return String(this.passedSeconds);
   }
 
   public override attachMeasuringValue(val: MeasuringValue) {
     this.getStep().addMeasured2(val);
+    this.values.push(val.getValue()+" "+val.getDimension().getUnit()+" "+val.getDimension().getName())
     console.error("Works")
   }
 
+  public override addNewJoinConnection(connection: JoinConnection) {
+    this.calculateDisplayValueOfJoinConnection(connection).then(
+      opt => this.joinConnectionOptions.push(opt)
+    )
+    this.setSelectJoinConnectionEntry(String(connection.getGemId()))
+  }
+
+  values : string[] = []
+
+  getValues() {
+    return this.values;
+  }
 }
-
-
