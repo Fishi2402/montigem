@@ -93,7 +93,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
       umlpTask.getInput().from(Path.of(project.getProjectDir().getAbsolutePath(), "..", "models"));
 
-      setIfPathExists(x -> umlpTask.getHwcDir().set(x), Path.of(
+      setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
           project.getProjectDir().getAbsolutePath(), "src", "app"));
 
       // It is important that the directory-depth of the intermediate-output is the the same as the final location (after sync!)

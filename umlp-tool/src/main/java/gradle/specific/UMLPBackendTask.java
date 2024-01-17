@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle.specific;
 
-import gradle.common.UMLPSingleFileTask;
+import gradle.common.UMLPSingleFilev2Task;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Property;
@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @CacheableTask
-public abstract class UMLPBackendTask extends UMLPSingleFileTask {
+public abstract class UMLPBackendTask extends UMLPSingleFilev2Task {
 
   @InputFiles
   @org.gradle.api.tasks.Optional
@@ -53,7 +53,7 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
   public abstract Property<Boolean> getUseShell();
 
   public UMLPBackendTask() {
-    super("UMLPBackendTask");
+    super("UMLPBackendTask", null);
 
     getUseSpring().convention(false);
     getUseShell().convention(false);

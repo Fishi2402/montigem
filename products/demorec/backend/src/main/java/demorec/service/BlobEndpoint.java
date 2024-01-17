@@ -85,6 +85,7 @@ public class BlobEndpoint {
     byte[] imageBytes = Files.readAllBytes(Paths.get(filePath));
 
     // Set the content type and content disposition headers
+    // TODO what about other Media Types?
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.IMAGE_JPEG); // adjust the media type based on your image type
     headers.setContentDispositionFormData("attachment", imageName);

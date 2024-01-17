@@ -5,21 +5,41 @@ import input.GemTextInput;
 import basic.GemButton;
 import arrange.GemCard;
 import arrange.GemColumn;
+import arrange.GemRow;
 
 import DemoRec.ProcessStep;
 import DemoRec.Process;
+import DemoRec.MeasuringValue;
 
 import gui.joinconnection.JoinConnectionCreate;
+import gui.step.MeasuringValueCreate;
 
 page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
   @GemCard(
     title = "Deconstruction Step",
     component = @GemColumn(
       components = [
-        @GemTextInput(
-            labelText = "Time Consumption in seconds",
-            inputType = "number",
-            entry = step.timeConsumption),
+        @GemRow(
+          wrap="noWrap",
+          colGap="5%",
+          components = [
+            timerGuard@guard(true) {
+              startTimerButton@GemButton(label = "Start", leftClick = startTimer, disabled=true);
+            } else {
+              @GemColumn(
+                components= [
+                  stopTimerButton@GemButton(label = "Stop", leftClick = stopTimer, disabled=false),
+                  abortTimerButton@GemButton(label = "Abort", leftClick = abortTimer, disabled=false)
+                ]
+              );
+              passedTime@GemText(value="override");
+            },
+            timeConsumption@GemTextInput(
+              labelText = "Time Consumption in seconds",
+              inputType = "number",
+              entry = step.timeConsumption)
+          ]
+        ),
         @GemTextInput(
             labelText = "Description (optional)",
             inputType = "text",
@@ -43,7 +63,11 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
         },
         createNewJoinConnection@guard(true) {
           @JoinConnectionCreate();
-        }
+        },
+        @iterate(MeasuringValue measuredValue : step.measured) {
+          @GemText(value=measuredValue.value+" "+measuredValue.dimension.name+" ("+measuredValue.dimension.unit+")");
+        },
+        @MeasuringValueCreate(measuringValueEvent = attachMeasuringValue)
       ]
     )
   );

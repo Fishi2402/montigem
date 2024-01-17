@@ -52,3 +52,8 @@ export * from './lib/request/Request';
 export * from './lib/service/websocket/ClientCommandWebsocketCommunication';
 
 export * from './lib/util/LogUtil';
+
+export * from './lib/dialog/NotificationService';
+export * from './lib/dialog/dialog.module';
+export * from './lib/dialog/dialog.component';
+export * from './lib/dialog/dialog.callback';

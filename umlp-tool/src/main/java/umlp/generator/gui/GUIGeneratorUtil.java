@@ -754,7 +754,8 @@ public class GUIGeneratorUtil {
       for (ASTGUIParam p : decoratedAst.getGUIComponentDeclaration().getGUIParamList()) {
         if (p.isPresentSymbol()) {
           if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p) && !isDerived(p)
-              && !TagLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())) {
+              && !TagLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())
+              && !TagLookUp.isDerived(p.getSymbol().getType().getTypeInfo())) {
             ids.add(p.getName() + "RoutingId");
           }
         }

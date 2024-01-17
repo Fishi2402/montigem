@@ -3,12 +3,12 @@
 package table;
 
 /**
-  Types used in a GemTable component
+  Types used in a GemTable component.
 */
 classdiagram TableTypes {
 
   /**
-    Table column description
+    Table column description.
   */
   public class TableColumn {
     /**

@@ -44,7 +44,7 @@ page ComponentEdit(DemoRecComponent component) {
         wrap="nowrap",
         components=[
           @GemText(value="Type of Connection: "),
-          @GemText(value=conn.type)
+          @GemText(value=conn.joinConnectionType)
       ]);
       @GemText(value="State of Connection: "+conn.state);
       @iterate(DemoRecComponent subComponent : conn.connects) {

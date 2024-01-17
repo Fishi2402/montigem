@@ -45,10 +45,9 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
     super.ngOnInit()
 
     this.joinConnectionTypeOptions = [];
-    for (let val of Object.values(JoinConnectionType)) {
-      let str = <string>val;
-      this.joinConnectionTypeOptions.push({value: str, display: str});
-    }
+    Object.keys(JoinConnectionType).filter(s => !isNaN(+s)).forEach(key => {
+      this.joinConnectionTypeOptions.push({value: key, display: JoinConnectionType[key]});
+    })
 
     DemoRecManager.getDemoRecComponentList().then(componentList => {
 
@@ -59,7 +58,7 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
         for (const component of components) {
           console.debug("Refill Join Connection Options")
           let value = component.getGemId() + "";
-          this.componentOptions.push({value: value, display: value});
+          this.componentOptions.push({value: value, display: component.getDescription()+" "+value});
         }
         this.componentOptions = this.componentOptions.slice();
       });
@@ -105,20 +104,75 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
     this.connectsComponentEntry = value;
   }
 
+  public override getBuildConnectionDisabled (): boolean {
+    return this.getConnection().isBuildable();
+  }
+
+  public override createNewConnection (event: any): void {
+    //
+    if (JoinConnectionType.SCREW.toString() === this.getSelectTypeOfConnectionEntry()) {
+      this.getConnection().joinConnectionType(JoinConnectionType.SCREW)
+    }
+    if (JoinConnectionType.GLUE.toString() === this.getSelectTypeOfConnectionEntry()) {
+      this.getConnection().joinConnectionType(JoinConnectionType.GLUE)
+    }
+    if (JoinConnectionType.WELDING.toString() === this.getSelectTypeOfConnectionEntry()) {
+      this.getConnection().joinConnectionType(JoinConnectionType.WELDING)
+    }
+    if (JoinConnectionType.PLUG.toString() === this.getSelectTypeOfConnectionEntry()) {
+      this.getConnection().joinConnectionType(JoinConnectionType.PLUG)
+    }
+    if (JoinConnectionType.ELECTRICAL.toString() === this.getSelectTypeOfConnectionEntry()) {
+      this.getConnection().joinConnectionType(JoinConnectionType.ELECTRICAL)
+    }
+    if (JoinConnectionType.UNDEFINED.toString() === this.getSelectTypeOfConnectionEntry()) {
+      this.getConnection().joinConnectionType(JoinConnectionType.UNDEFINED)
+    }
+
+    if(this.getConnection().isBuildable()) {
+      console.debug("New Connection is buildable")
+      const joinConnection = this.getConnection().build()
+      if(this.getConnection().isBuildFinished()) {
+        DemoRecManager.getDemoRecComponentSure(+this.superComponentEntry).then(comp => {
+          comp.addComposedOf2(joinConnection)
+        })
+      }
+    } else {
+      console.debug("New Connection is not buildable")
+      this.getConnection().build()
+    }
+
+  }
+
   public override addNewComponent(comp: DemoRecComponent) {
-    console.debug("Add Component to Connection")
-    console.debug(comp)
+    /*console.debug("Add Component to Connection")
+    console.debug(comp)*/
     this.getConnection().build()
     this.getConnection().connectsAdd(comp)
     //this.getConnection().addConnects2(comp)
-    console.debug("Connects List after adding Component: ", this.getConnection().getConnects())
-    this.dummyComponents.push("Hallo");
-    setTimeout(() => console.debug("Connects List after adding Component: ", this.getConnection().getConnects()), 2000)
+    /*console.debug("Connects List after adding Component: ", this.getConnection().getConnects())*/
+    this.syncDummyComponentsWithBuilderObject(comp)
+    setTimeout(() => console.debug("Connects List after adding Component: ", this.getConnection().getConnects()), 200)
   }
 
   dummyComponents = []
   getDummyComponents() {
     return this.dummyComponents;
+  }
+
+  syncDummyComponentsWithBuilderObject(comp: DemoRecComponent) {
+    this.dummyComponents.push("Added Component:"+comp.getDescription()+"_"+comp.getGemId());
+  }
+
+  public override connectSelectedComponent(event: any) {
+    if(this.getSelectConnectsComponentEntry()) {
+      DemoRecManager.getDemoRecComponentSure(+this.getSelectConnectsComponentEntry()).then(
+          demoRecComponent => {
+            this.getConnection().connectsAdd(demoRecComponent)
+            this.syncDummyComponentsWithBuilderObject(demoRecComponent)
+          }
+      )
+    }
   }
 
 }

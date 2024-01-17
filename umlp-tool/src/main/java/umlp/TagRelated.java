@@ -51,6 +51,10 @@ public class TagRelated {
           ASTTag astTag = TagsMill.simpleTagBuilder().setName("singleton").build();
           UMLPTagger.getInstance().addTag((ASTCDType) node, tagUnit, astTag);
         }
+        if (node.getModifier().isDerived()) {
+          ASTTag astTag = TagsMill.simpleTagBuilder().setName("derived").build();
+          UMLPTagger.getInstance().addTag((ASTCDType) node, tagUnit, astTag);
+        }
       }
     });
     traverser.add4CD4CodeBasis(new CD4CodeBasisVisitor2() {

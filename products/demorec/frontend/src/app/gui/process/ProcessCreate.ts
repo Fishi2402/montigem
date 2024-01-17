@@ -55,7 +55,7 @@ export  class ProcessCreate extends ProcessCreateComponent {
         console.error(bPacks)
         for (const bPack of bPacks) {
           let value = bPack.getGemId() + "";
-          this.bPackOptions.push({value: value, display: value});
+          this.bPackOptions.push({value: value, display: bPack.getDescription()});
         }
         this.bPackOptions = this.bPackOptions.slice();
       });
@@ -67,7 +67,7 @@ export  class ProcessCreate extends ProcessCreateComponent {
         console.error(bPackTypes)
         for (const bPackType of bPackTypes) {
           let value = bPackType.getGemId() + "";
-          this.bPackTypeOptions.push({value: value, display: value});
+          this.bPackTypeOptions.push({value: value, display: bPackType.getCarType()});
         }
         this.bPackOptions = this.bPackOptions.slice();
       });
@@ -109,14 +109,27 @@ export  class ProcessCreate extends ProcessCreateComponent {
 
   public override sendEverything (event: any): void {
     this.getType().build()
-    this.getPack().type(this.getType())
-    this.getPack().xPos(0)
-    this.getPack().yPos(0)
-    this.getPack().zPos(0)
-    this.getPack().isDeconstructible(true)
-    this.getPack().build()
-    this.getP().deconstructionOf(this.getPack())
-    this.getP().build()
+    if(this.getSelectBPackEntry() === newOption.value) {
+      this.getPack().type(this.getType())
+      this.getPack().xPos(0)
+      this.getPack().yPos(0)
+      this.getPack().zPos(0)
+      this.getPack().isDeconstructible(true)
+      this.getPack().build()
+      this.getP().deconstructionOf(this.getPack())
+      this.getP().build()
+      this.ngOnInit();
+      this.bPackEntry = ""
+    } else {
+      DemoRecManager.getBatteryPackSure(+this.getSelectBPackEntry()).then(pack => {
+        this.getP().deconstructionOf(pack)
+        this.getP().build()
+        this.ngOnInit();
+        this.bPackEntry = ""
+        })
+    }
+
+
   }
 
   public override getPhotoDragAndDropAttachedComponent (): BatteryPackBuilder {
