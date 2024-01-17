@@ -154,8 +154,8 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
         if (GenService.isList(assocSide.getSymbol().getOtherSide().getAssocSide())) {
           addStereotype(attribute.getModifier(), STEREOTYPE_OTHERSIDE_ISLIST, "");
         }
-        addStereotype(attribute.getModifier(), STEREOTYPE_MANAGER, getCorrectManager(assocSide));
       }
+      addStereotype(attribute.getModifier(), STEREOTYPE_MANAGER, getCorrectManager(assocSide));
       attrList.add(attribute);
     }
     return attrList;
