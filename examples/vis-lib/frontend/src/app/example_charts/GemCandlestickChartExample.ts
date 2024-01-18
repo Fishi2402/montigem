@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { GemCandlestickChartExampleComponent, config } from '@src/example_charts/GemCandlestickChartExampleComponent';
 import { GemData2CandlestickChart } from '@umlp/charts';
 import { Person } from '@src/domain/Person';
+import { Stock } from '@src/domain/Stock';
 
 @Component({
   standalone: true,
@@ -19,24 +20,40 @@ export class GemCandlestickChartExample extends GemCandlestickChartExampleCompon
       return null;
     }
     let data: GemData2CandlestickChart[] = [];
-    let personWithStocks: Person;
+    let mapStocks = new Map<Date, Stock[]>;
     for (let person of this.persons) {
-      if (person.getStocks().length > 0) {
-        personWithStocks = person;
-        break;
+      if (person.getStocks().length === 0) {
+        continue;
       }
+      let stock: Stock;
+      for (stock of person.getStocks()) {
+        if (mapStocks.has(stock.getDate())) {
+          let oldArr = mapStocks.get(stock.getDate());
+          if (!oldArr) {
+            let newArr: Stock[] = [stock];
+            mapStocks.set(stock.getDate(), newArr);
+          } else {
+            oldArr.push(stock);
+            mapStocks.set(stock.getDate(), oldArr);
+          }
+        } else {
+          let newArr: Stock[] = [stock];
+          mapStocks.set(stock.getDate(), newArr);
+        }
+      }
+      console.log(mapStocks);
     }
-    if (!personWithStocks) {
+    if (mapStocks.size <= 0) {
       return [];
     }
-    for (let stock of personWithStocks.getStocks()) {
-      let value = [stock.getOpen(), stock.getHigh(), stock.getLow(), stock.getClose()];
-      let month = this.getMonth(stock.getDate().toDateString().substring(4, 7));
+    for (let [date, arr] of mapStocks) {
+      let value = [this.getOpen(arr), this.getHigh(arr), this.getLow(arr), this.getClose(arr)];
+      let month = this.getMonth(date.toDateString().substring(4, 7));
       let entry: GemData2CandlestickChart = {
-        label: `${stock.getDate().toDateString().substring(11, 15)}-${month}-${stock.getDate().toDateString().substring(8, 10)}`,
+        label: `${date.toDateString().substring(11, 15)}-${month}-${date.toDateString().substring(8, 10)}`,
         value: value
       }
-      data.push(entry);
+      data.push(entry)
     }
     if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
       return this.chartData;
@@ -88,4 +105,58 @@ export class GemCandlestickChartExample extends GemCandlestickChartExampleCompon
     }
     return res;
   }
+
+  private getOpen(stocks: Stock[] | undefined): number {
+    if (!stocks) {
+      return 0;
+    }
+    let earliestHour: number = 25;
+    let open: number = 0;
+    for (let stock of stocks) {
+      if (stock.getHour() < earliestHour) {
+        earliestHour = stock.getHour();
+        open = stock.getPrice();
+      }
+    }
+    return open;
+  }
+  private getHigh(stocks: Stock[] | undefined): number {
+    if (!stocks) {
+      return 0;
+    }
+    let high: number = 0;
+    for (let stock of stocks) {
+      if (stock.getPrice() > high) {
+        high = stock.getPrice();
+      }
+    }
+    return high;
+  }
+  private getLow(stocks: Stock[] | undefined): number {
+    if (!stocks) {
+      return 0;
+    }
+    let low: number = 100000000;
+    for (let stock of stocks) {
+      if (stock.getPrice() < low) {
+        low = stock.getPrice();
+      }
+    }
+    return low;
+  }
+  private getClose(stocks: Stock[] | undefined): number {
+    if (!stocks) {
+      return 0;
+    }
+    let latestHour: number = -1;
+    let close: number = 0;
+    for (let stock of stocks) {
+      if (stock.getHour() > latestHour) {
+        latestHour = stock.getHour();
+        close = stock.getPrice();
+      }
+    }
+    return close;
+  }
+
 }

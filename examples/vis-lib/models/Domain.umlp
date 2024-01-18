@@ -14,10 +14,9 @@ classdiagram Domain {
 
   class Stock {
     java.time.LocalDate date;
-    int open;
-    int close;
-    int high;
-    int low;
+    int hour;
+    String name;
+    int price;
   }
 
 

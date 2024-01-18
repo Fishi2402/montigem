@@ -21,7 +21,6 @@ export class GemVennDiagramExample extends GemVennDiagramExampleComponent {
     }
     let entries: GemVennDiagramEntry[] = [];
     let mapOfriends = new Map<string, Person[]>;
-    let limitPeople = 0;
 
     for (const person of this.persons) {
       let node = {
@@ -31,10 +30,7 @@ export class GemVennDiagramExample extends GemVennDiagramExampleComponent {
       };
       mapOfriends.set(person.getName(), person.getFriends());
       entries.push(node);
-      limitPeople++;
-      if (limitPeople === 10) {
-        break;
-      }
+     
     }
 
     mapOfriends.forEach((friends, person) => {
