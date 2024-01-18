@@ -8,6 +8,8 @@ plugins {
   id 'de.rwth.se.umlp-tool'
 }
 
+def useCD2GUI = true
+
 
 configurations {
   guiDefaultTypes
@@ -47,13 +49,17 @@ node {
 
 }
 
-task generateCDTOGUI(type: UMLPCdToGuiTask) {
+tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
+  enabled(useCD2GUI)
+  setGroup('build')
   input = file("../models/Sehub.umlp")
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
 
 task guiVariability(type: GuiVariabilityHandlerTask) {
-  input.from(generateCDTOGUI.getOutputDir().dir("models"))
+  if(useCD2GUI) {
+    input.from(generateCDTOGUI.getOutputDir().dir("models"))
+  }
   input.from(file("../models/gui"))
   outputDir = layout.buildDirectory.dir("guiVariability")
 }
@@ -81,7 +87,9 @@ task genGUI(type: UMLPGuiGenTask) {
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
 }
 
-task genGUI2(type: UMLPGuiGenTask) {
+tasks.register('genGUI2', UMLPGuiGenTask) {
+  enabled(useCD2GUI)
+  setGroup('build')
   dependsOn(genGUI, guiVariability)
   input = file(guiVariability.getOutputDir().dir("cd2gui"))
   symbolDir = files(
