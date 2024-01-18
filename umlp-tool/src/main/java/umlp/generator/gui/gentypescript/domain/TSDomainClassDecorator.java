@@ -7,6 +7,7 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -35,6 +36,7 @@ import umlp.generator.util.UMLPSymbolTables;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static umlp.generator.domain.decorator.GenService.createType;
 
@@ -118,7 +120,12 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
   }
 
   @Override
-  protected void createGetterSetterForAssocs(ASTCDType cdType,
+  protected String getSetAbsentTemplate() {
+    return "umlp.gui2ts.domain.TSSetAbsent";
+  }
+
+  @Override
+  protected void createGetterSetterForAssocs(ASTCDType domainInterface, ASTCDType cdType,
                                              List<ASTCDAttribute> attrList, boolean isInterface) {
     CDGenService service = new MethodGenService();
     MethodDecorator methodDecorator = new MethodDecorator(glex,
@@ -131,9 +138,27 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
       // TODO AGe: why is it getting set to abstract?
       methods.forEach(m -> m.getModifier().setAbstract(false));
       cdType.addAllCDMembers(methods);
+      getCD4C().addMethod(cdType, getSetPresentTemplate(), service.getNativeAttributeName(attribute.getName()));
     }
+    CDSymbolTables.getAssociationsInHierarchy(domainInterface)
+        .stream()
+        .filter(GenService::isVisible)
+        .filter(GenService::isOptional)
+        .filter(a -> !GenService.isSymbolDerived(a))
+        .forEach(a -> createSetAbsent(cdType, a));
   }
 
+  @Override
+  protected void createSetAbsent(ASTCDType cdType, ASTCDAssocSide ast) {
+    // create method void set%Name%Absent(NotificationScope scope)
+    getCD4C().addMethod(cdType, getSetAbsentTemplate(), ast.getName());
+
+    // create method void set%Name%Absent()
+    ASTCDMethodSignature method = getCD4C().addMethod(cdType, getSetAbsentTemplate(), ast.getName());
+    method.clearCDParameters();
+    glex.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("this." + method.getName() + "(NotificationScope.ALL);"));
+    method.setName(method.getName()+"1");
+  }
   // TODO AGe: types aren't being built correctly in the super method
   @Override
   protected List<ASTCDAttribute> getAttributesForFields(ASTCDType domainType) {

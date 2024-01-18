@@ -5,25 +5,26 @@ import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.methods.MethodDecorator;
-import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd.codegen.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.umlmodifier._ast.ASTModifier;
+import de.se_rwth.commons.StringTransformations;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
 import umlp.generator.domain.decorator.methods.AssocMutatorDecorator;
 import umlp.generator.domain.decorator.methods.MethodGenService;
+import umlp.generator.domain.decorator.methods.UMLPAccessorDecorator;
 import umlp.generator.domain.decorator.methods.UMLPListMutatorDecorator;
 import umlp.generator.domain.decorator.methods.UMLPMandatoryMutatorDecorator;
-import umlp.generator.domain.decorator.methods.UMLPAccessorDecorator;
 import umlp.generator.domain.decorator.methods.UMLPMutatorDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static umlp.generator.domain.decorator.GenService.createType;
 
@@ -87,7 +89,7 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     }
   }
 
-  protected void createGetterSetterForAssocs(ASTCDType cdType,
+  protected void createGetterSetterForAssocs(ASTCDType domainType, ASTCDType cdType,
                                              List<ASTCDAttribute> attrList, boolean isInterface) {
     CDGenService service = new MethodGenService();
     MethodDecorator methodDecorator = new MethodDecorator(glex,
@@ -105,6 +107,29 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
       cdType.addAllCDMembers(methods);
       getCD4C().addMethod(cdType, getSetPresentTemplate(), service.getNativeAttributeName(attribute.getName()));
     }
+
+    CDSymbolTables.getAssociationsInHierarchy(domainType)
+        .stream()
+        .filter(GenService::isVisible)
+        .filter(a -> !GenService.isSymbolDerived(a))
+        .filter(GenService::isOptional)
+        .forEach(a -> createSetAbsent(cdType, a));
+
+  }
+
+  protected void createSetAbsent(ASTCDType cdType, ASTCDAssocSide ast) {
+    // create method void set%Name%Absent(NotificationScope scope)
+    getCD4C().addMethod(cdType, getSetAbsentTemplate(), ast.getName());
+
+    // create method void set%Name%Absent()
+    ASTCDMethodSignature method = getCD4C().addMethod(cdType, getSetAbsentTemplate(), ast.getName());
+    method.clearCDParameters();
+    glex.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("this." + method.getName() + "(NotificationScope.ALL);"));
+
+  }
+
+  protected String getSetAbsentTemplate() {
+    return "umlp.domain.SetAbsent";
   }
 
   protected String getSetPresentTemplate() {
