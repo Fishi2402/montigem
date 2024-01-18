@@ -18,6 +18,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
+import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
 import umlp.generator.domain.decorator.methods.AssocMutatorDecorator;
@@ -113,16 +114,18 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
         .filter(GenService::isVisible)
         .filter(a -> !GenService.isSymbolDerived(a))
         .filter(GenService::isOptional)
-        .forEach(a -> createSetAbsent(cdType, a));
+        .forEach(a -> createSetAbsent(cdType, a, isInterface));
 
   }
 
-  protected void createSetAbsent(ASTCDType cdType, ASTCDAssocSide ast) {
+  protected void createSetAbsent(ASTCDType cdType, ASTCDAssocSide ast, boolean isInterface) {
     // create method void set%Name%Absent(NotificationScope scope)
-    getCD4C().addMethod(cdType, getSetAbsentTemplate(), ast.getName());
-
-    // create method void set%Name%Absent()
     ASTCDMethodSignature method = getCD4C().addMethod(cdType, getSetAbsentTemplate(), ast.getName());
+    if (isInterface && UMLPMill.typeDispatcher().isASTCDMethod(method)) {
+      UMLPMill.typeDispatcher().asASTCDMethod(method).getModifier().setAbstract(true);
+    }
+    // create method void set%Name%Absent()
+    method = getCD4C().addMethod(cdType, getSetAbsentTemplate(), ast.getName());
     method.clearCDParameters();
     glex.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("this." + method.getName() + "(NotificationScope.ALL);"));
 

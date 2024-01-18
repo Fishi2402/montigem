@@ -145,11 +145,11 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
         .filter(GenService::isVisible)
         .filter(GenService::isOptional)
         .filter(a -> !GenService.isSymbolDerived(a))
-        .forEach(a -> createSetAbsent(cdType, a));
+        .forEach(a -> createSetAbsent(cdType, a, isInterface));
   }
 
   @Override
-  protected void createSetAbsent(ASTCDType cdType, ASTCDAssocSide ast) {
+  protected void createSetAbsent(ASTCDType cdType, ASTCDAssocSide ast, boolean isInterface) {
     // create method void set%Name%Absent(NotificationScope scope)
     getCD4C().addMethod(cdType, getSetAbsentTemplate(), ast.getName());
 
