@@ -8,8 +8,8 @@ page GemLineChartExample(List<Person> persons) {
   linechart@GemLineChart(
     data = null,
     enableBackgroundColor = true,
-    maxValue = 10,
-    minValue = 0
+    maxValue = null,
+    minValue = null
   );
 }
 

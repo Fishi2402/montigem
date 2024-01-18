@@ -13,8 +13,7 @@ classdiagram Domain {
   }
 
   class Stock {
-    java.time.LocalDate date;
-    int hour;
+    java.time.LocalDateTime date;
     String name;
     int price;
   }

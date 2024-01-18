@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class }, scanBasePackages = { "umlp.backendrte.service.websocket",
@@ -104,67 +105,67 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
     boris.addFriends(helen);
 
     Stock st;
-    st = createStock(LocalDate.of(2022, 1, 1), 8, "MontiCore", 80);
+    st = createStock(LocalDateTime.of(2022, 1, 1, 8, 0), "MontiCore", 80);
     alice.addStocks(st);
     john.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 1), 9, "MontiCore", 144);
+    st = createStock(LocalDateTime.of(2022, 1, 1, 9, 0), "MontiCore", 144);
     olivia.addStocks(st);
     michelle.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 1), 10, "MontiCore", 153);
+    st = createStock(LocalDateTime.of(2022, 1, 1, 10, 0), "MontiCore", 153);
     emma.addStocks(st);
     boris.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 1), 11, "MontiCore", 136);
+    st = createStock(LocalDateTime.of(2022, 1, 1, 11, 0), "MontiCore", 136);
     isabella.addStocks(st);
     john.addStocks(st);
 
-    st = createStock(LocalDate.of(2022, 1, 2), 8, "MontiCore", 90);
+    st = createStock(LocalDateTime.of(2022, 1, 2, 8, 0), "MontiCore", 90);
     emma.addStocks(st);
     john.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 2), 9, "MontiCore", 133);
+    st = createStock(LocalDateTime.of(2022, 1, 2, 9, 0), "MontiCore", 133);
     isabella.addStocks(st);
     michelle.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 2), 10, "MontiCore", 144);
+    st = createStock(LocalDateTime.of(2022, 1, 2, 10, 0), "MontiCore", 144);
     alice.addStocks(st);
     boris.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 2), 11, "MontiCore", 133);
+    st = createStock(LocalDateTime.of(2022, 1, 2, 11, 0), "MontiCore", 133);
     olivia.addStocks(st);
     bob.addStocks(st);
 
-    st = createStock(LocalDate.of(2022, 1, 3), 8, "MontiCore", 143);
+    st = createStock(LocalDateTime.of(2022, 1, 3, 8, 0), "MontiCore", 143);
     isabella.addStocks(st);
     boris.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 3), 9, "MontiCore", 125);
+    st = createStock(LocalDateTime.of(2022, 1, 3, 9, 0), "MontiCore", 125);
     olivia.addStocks(st);
     michelle.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 3), 10, "MontiCore", 143);
+    st = createStock(LocalDateTime.of(2022, 1, 3, 10, 0), "MontiCore", 143);
     alice.addStocks(st);
     bob.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 3), 11, "MontiCore", 123);
+    st = createStock(LocalDateTime.of(2022, 1, 3, 11, 0), "MontiCore", 123);
     emma.addStocks(st);
     john.addStocks(st);
 
-    st = createStock(LocalDate.of(2022, 1, 4), 8, "MontiCore", 100);
+    st = createStock(LocalDateTime.of(2022, 1, 4, 8, 0), "MontiCore", 100);
     isabella.addStocks(st);
     charles.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 4), 9, "MontiCore", 140);
+    st = createStock(LocalDateTime.of(2022, 1, 4, 9, 0), "MontiCore", 140);
     alice.addStocks(st);
     thomas.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 4), 10, "MontiCore", 150);
+    st = createStock(LocalDateTime.of(2022, 1, 4, 10, 0), "MontiCore", 150);
     emma.addStocks(st);
     bob.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 4), 11, "MontiCore", 123);
+    st = createStock(LocalDateTime.of(2022, 1, 4, 11, 0), "MontiCore", 123);
     michelle.addStocks(st);
     john.addStocks(st);
     
 
-    st = createStock(LocalDate.of(2022, 1, 5), 8, "MontiCore", 136);
+    st = createStock(LocalDateTime.of(2022, 1, 5, 8, 0), "MontiCore", 136);
     emma.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 5), 9, "MontiCore", 150);
+    st = createStock(LocalDateTime.of(2022, 1, 5, 9, 0), "MontiCore", 150);
     olivia.addStocks(st);
     john.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 5), 10, "MontiCore", 160);
+    st = createStock(LocalDateTime.of(2022, 1, 5, 10, 0), "MontiCore", 160);
     alice.addStocks(st);
-    st = createStock(LocalDate.of(2022, 1, 5), 11, "MontiCore", 132);
+    st = createStock(LocalDateTime.of(2022, 1, 5 , 11, 0), "MontiCore", 132);
     isabella.addStocks(st);
   }
 
@@ -185,10 +186,9 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
         .get();
   }
 
-  protected Stock createStock(LocalDate date, int hour, String name, int price) {
+  protected Stock createStock(LocalDateTime date, String name, int price) {
     return DomainManager.stockBuilder()
         .date(date)
-        .hour(hour)
         .name(name)
         .price(price)
         .build()

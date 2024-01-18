@@ -14,13 +14,13 @@ export class GemSunburstChartExample extends GemSunburstChartExampleComponent {
   private chartData: GemSunburstData;
   private chartDataHash: string;
 
-  public override getGemSunburstChart0Data(): GemSunburstData {
+  public override getGemSunburstChart2Data(): GemSunburstData {
     if (!this.persons) {
       return null;
     }
     let data: GemSunburstData = {
       entry: {
-        label: "People separated in age groups and then in number of friends",
+        label: "People separated in age groups",
         value: this.persons.size(),
       },
       subEntries: [
@@ -32,19 +32,19 @@ export class GemSunburstChartExample extends GemSunburstChartExampleComponent {
           subEntries: [
             {
               entry: {
-                label: "Number of people with less than 2 friends",
+                label: "Number of people born before 1987",
                 value: 0,
               },
             },
             {
               entry: {
-                label: "Number of people with 2 friends",
+                label: "Number of people born between 1987 and 1991",
                 value: 0,
               },
             },
             {
               entry: {
-                label: "Number of people with more than 2 friends",
+                label: "Number of people after 1991",
                 value: 0,
               }
             },
@@ -58,19 +58,19 @@ export class GemSunburstChartExample extends GemSunburstChartExampleComponent {
           subEntries: [
             {
               entry: {
-                label: "Number of people with less than 2 friends",
+                label: "Number of people born before 1995",
                 value: 0,
               },
             },
             {
               entry: {
-                label: "Number of people with 2 friends",
+                label: "Number of people born between 1995 and 1997",
                 value: 0,
               },
             },
             {
               entry: {
-                label: "Number of people with more than 2 friends",
+                label: "Number of people born after 1997",
                 value: 0,
               }
             },
@@ -84,19 +84,19 @@ export class GemSunburstChartExample extends GemSunburstChartExampleComponent {
           subEntries: [
             {
               entry: {
-                label: "Number of people with less than 2 friends",
+                label: "Number of people born before 2001",
                 value: 0,
               },
             },
             {
               entry: {
-                label: "Number of people with 2 friends",
+                label: "Number of people born between 2001 and 2002",
                 value: 0,
               },
             },
             {
               entry: {
-                label: "Number of people with more than 2 friends",
+                label: "Number of people born after 2002",
                 value: 0,
               }
             },
@@ -107,30 +107,29 @@ export class GemSunburstChartExample extends GemSunburstChartExampleComponent {
 
     for (const person of this.persons) {
       let birthday = Number(person?.getBirthday()?.toDateString().substring(11, 15));
-      let numberFriends = person.getFriends().length;
       if (birthday < 1993) {
         data.subEntries[0].entry.value++;
-        if (numberFriends < 2) {
+        if (birthday < 1987) {
           data.subEntries[0].subEntries[0].entry.value++;
-        } else if (numberFriends === 2) {
+        } else if (birthday < 1992) {
           data.subEntries[0].subEntries[1].entry.value++;
         } else {
           data.subEntries[0].subEntries[2].entry.value++;
         }
       } else if (birthday >= 1993 && birthday <= 1998) {
         data.subEntries[1].entry.value++;
-        if (numberFriends < 2) {
+        if (birthday < 1995) {
           data.subEntries[1].subEntries[0].entry.value++;
-        } else if (numberFriends === 2) {
+        } else if (birthday < 1998) {
           data.subEntries[1].subEntries[1].entry.value++;
         } else {
           data.subEntries[1].subEntries[2].entry.value++;
         }
       } else {
         data.subEntries[2].entry.value++;
-        if (numberFriends <= 2) {
+        if (birthday < 2001) {
           data.subEntries[2].subEntries[0].entry.value++;
-        } else if (numberFriends === 2) {
+        } else if (birthday < 2003) {
           data.subEntries[2].subEntries[1].entry.value++;
         } else {
           data.subEntries[2].subEntries[2].entry.value++;

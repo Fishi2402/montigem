@@ -10,10 +10,10 @@ page GemBulletChartExample(
   List<Integer> steps) {
   bulletchart@GemBulletChart(
     value = null,
-    reference = 22,
-    thresholdvalue = 22,
-    title = "Age Distribution",
-    subtitle = "Age",
+    reference = 4000,
+    thresholdvalue = 4000,
+    title = "Profit of MontiCore Inc. from stocks",
+    subtitle = "in US $",
     range = range,
     steps = steps
   );

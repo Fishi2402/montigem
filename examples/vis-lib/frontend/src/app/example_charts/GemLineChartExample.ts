@@ -3,6 +3,7 @@
 import { Component } from '@angular/core';
 import { GemLineChartExampleComponent, config } from '@src/example_charts/GemLineChartExampleComponent';
 import { GemLineChartData, GemLineChartEntry } from '@umlp/charts';
+import { Stock } from '@src/domain/Stock';
 
 @Component({
   standalone: true,
@@ -18,50 +19,43 @@ export class GemLineChartExample extends GemLineChartExampleComponent {
     if (!this.persons) {
       return null;
     }
-    let labels: string[] = ["People born before 1993", "People born between 1993 and 1998", "People born between 1998 and 2003", "People born after 2003"];
-
-    let entries: GemLineChartEntry[] = [
-      { data: [0, 0, 0, 0], label: '#born people with less than 2 friends' },
-      { data: [0, 0, 0, 0], label: '#born people with 2 friends' },
-      { data: [0, 0, 0, 0], label: '#born people with more than 2 friends' },
-    ];
-
-    for (const person of this.persons) {
-      let birthday = Number(person?.getBirthday()?.toDateString().substring(11, 15));
-      let numberFriends = person.getFriends().length;
-      if (birthday < 1993) {
-        if (numberFriends < 2) {
-          entries[0].data[0]++;
-        } else if (numberFriends === 2) {
-          entries[1].data[0]++;
-        } else {
-          entries[2].data[0]++;
-        }
-      } else if (birthday >= 1993 && birthday <= 1998) {
-        if (numberFriends < 2) {
-          entries[0].data[1]++;
-        } else if (numberFriends === 2) {
-          entries[1].data[1]++;
-        } else {
-          entries[2].data[1]++;
-        }
-      } else if (birthday >= 1999 && birthday <= 2003) {
-        if (numberFriends < 2) {
-          entries[0].data[2]++;
-        } else if (numberFriends === 2) {
-          entries[1].data[2]++;
-        } else {
-          entries[2].data[2]++;
-        }
-      } else {
-        if (numberFriends <= 2) {
-          entries[0].data[3]++;
-        } else if (numberFriends === 2) {
-          entries[1].data[3]++;
-        } else {
-          entries[2].data[3]++;
+    let labels: string[] = ["01/01/2022", "02/01/2022", "03/01/2022", "04/01/2022", "05/01/2022",];
+    let entries: GemLineChartEntry[] = [];
+    for (let person of this.persons) {
+      if (person.getStocks().length === 0) {
+        continue;
+      }
+      let stocks = [0, 0, 0, 0, 0];
+      for (let stock of person.getStocks()) {
+        switch (stock.getDate().toDateString().substring(8, 10)) {
+          case "01": {
+            stocks[0] += stock.getPrice(); 
+            break;
+          }
+          case "02": {
+            stocks[1] += stock.getPrice(); 
+            break;
+          }
+          case "03": {
+            stocks[2] += stock.getPrice(); 
+            break;
+          }
+          case "04": {
+            stocks[3] += stock.getPrice(); 
+            break;
+          }
+          case "05": {
+            stocks[4] += stock.getPrice(); 
+            break;
+          }
         }
       }
+      let entry = {
+        data: stocks,
+        labels: `Stocks bought by ${person.getName()}`
+      }
+      entries.push(entry);
+
     }
 
     let data: GemLineChartData = {
@@ -74,6 +68,7 @@ export class GemLineChartExample extends GemLineChartExampleComponent {
     }
     this.chartData = data;
     this.chartDataHash = JSON.stringify(this.chartData);
+    console.log(this.chartData);
     return this.chartData;
   }
 

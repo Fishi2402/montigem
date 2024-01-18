@@ -3,10 +3,16 @@ package example_charts;
 
 import charts.GemSunburstChart;
 import Domain.Person;
+import arrange.GemColumn;
+import arrange.GemRow;
 
 page GemSunburstChartExample(List<Person> persons) {
-  @GemSunburstChart(
-    data = null,
-    ignoreError = true
-  );
+  @GemRow(width = "513px", height = "620px", components = [
+    @GemColumn(rowGap = "10px", width = "100%", components = [
+      @GemSunburstChart(
+        data = null,
+        ignoreError = true
+      )
+    ])
+  ]);
 }

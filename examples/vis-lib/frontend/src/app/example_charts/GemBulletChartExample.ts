@@ -12,24 +12,23 @@ import { GemBulletChartExampleComponent, config } from '@src/example_charts/GemB
 export class GemBulletChartExample extends GemBulletChartExampleComponent {
     private chartValue: number;
     private chartValueHash: string;
-    range = [0, 100];
-    steps = [0, 13, 20, 36, 56];
+    range = [0, 6000];
+    steps = [0, 1000, 2000, 3000, 4000, 5000];
 
     public override getBulletchartValue(): number {
         if (!this.persons) {
             return null;
         }
-        let sumOfAges = 0;
+        let sumOfStockPrices: number = 0;
         for (let person of this.persons) {
-            let currentYear = new Date().getFullYear();
-            let age = currentYear - Number(person?.getBirthday()?.toDateString().substring(11, 15));
-            sumOfAges += age;
+            for (let stock of person.getStocks()) {
+                sumOfStockPrices += stock.getPrice();
+            }
         }
-        let averageYear = Math.round(sumOfAges / this.persons.size());
-        if (JSON.stringify(averageYear) === this.chartValueHash && this.chartValue) {
+        if (JSON.stringify(sumOfStockPrices) === this.chartValueHash && this.chartValue) {
             return this.chartValue;
         }
-        this.chartValue = averageYear;
+        this.chartValue = sumOfStockPrices;
         this.chartValueHash = JSON.stringify(this.chartValue);
         return this.chartValue;
     }
