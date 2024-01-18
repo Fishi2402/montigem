@@ -1,0 +1,139 @@
+/* (c) https://github.com/MontiCore/monticore */
+/* adapted and customized by (c) MaCoCo, ein RWTH Aachen projekt */
+@import "../variables";
+@import "../mixins";
+//@import "../../../../theme/theme";
+
+@mixin dialog-theme($background-color, $text-color, $title-background-color) {
+  $notification-component-margin: 0px;
+  $notification-padding-horizontal: 20px;
+  $notification-button-width: 90px;
+
+  .notification-background {
+    background-color: $background-color;
+    color: $text-color;
+  }
+
+  .notification-title {
+    margin-top: -$notification-component-margin;
+    margin-left: -$notification-component-margin;
+    margin-right: -$notification-component-margin;
+    padding-left: $notification-component-margin;
+    color: $text-color;
+    background-color: $title-background-color;
+    //border-radius: $top-round;
+  }
+
+  .notification-content {
+    @extend .notification-background;
+    margin-top: -$notification-padding-horizontal;
+    padding-top: $padding-large-vertical + $padding-small-vertical;
+    white-space: pre-line;
+
+  }
+
+  .notification-action {
+    @extend .notification-background;
+    margin-left: -$notification-component-margin;
+    margin-right: -$notification-component-margin;
+    padding-left: $notification-component-margin;
+    padding-right: $notification-component-margin;
+    padding-top: 10px;
+    border-top: none;
+    border-radius: $bottom-round;
+  }
+
+  .notification-errorCode-highlight {
+    padding: $padding-small-vertical;
+    border: $rwth-blue solid;
+    border-radius: 15px;
+  }
+
+  .notification-errorCode-text {
+    font-family: $font-family-monospace;
+    font-weight: $font;
+  }
+
+  .notification-button {
+    font-family: $font-size-large;
+    font-weight: $btn-font-weight;
+    border-radius: $btn-border-radius-large;
+    border: none;
+    -webkit-transition: all 0.4s ease;
+    -moz-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+    padding-left: $padding-small-horizontal;
+    padding-right: $padding-small-horizontal;
+    border: 1px solid rgba($rwth-black-2, 0.5);
+    background-color: white;
+    color: black;
+    min-width: $notification-button-width;
+  }
+
+  .notification-button-darkpattern {
+    font-family: $font-family-sans-serif;
+    font-weight: $btn-font-weight;
+    border-radius: $btn-border-radius-large;
+    border: none;
+    -webkit-transition: all 0.4s ease;
+    -moz-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+    padding-left: $padding-small-horizontal;
+    padding-right: $padding-small-horizontal;
+    border: 1px solid rgba($rwth-may-green-3, 0.5);
+    background-color: $rwth-may-green;
+    color: black;
+    min-width: $notification-button-width;
+  }
+
+  .notification-padding-bottom {
+    padding-bottom: $padding-large-vertical;
+  }
+
+  .notification-margin-right {
+    margin-right: $padding-large-horizontal;
+  }
+
+  .notification-fill-space {
+    flex: 1 1 auto;
+  }
+}
+
+/*==================================================
+ * Effect 7
+ * ===============================================*/
+.effect7
+{
+  position:relative;
+  -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+.effect7:before, .effect7:after
+{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  -webkit-box-shadow:0 0 20px rgba(0,0,0,0.8);
+  -moz-box-shadow:0 0 20px rgba(0,0,0,0.8);
+  box-shadow:0 0 20px rgba(0,0,0,0.8);
+  top:0;
+  bottom:0;
+  left:10px;
+  right:10px;
+  -moz-border-radius:100px / 10px;
+  border-radius:100px / 10px;
+}
+.effect7:after
+{
+  right:10px;
+  left:auto;
+  -webkit-transform:skew(8deg) rotate(3deg);
+  -moz-transform:skew(8deg) rotate(3deg);
+  -ms-transform:skew(8deg) rotate(3deg);
+  -o-transform:skew(8deg) rotate(3deg);
+  transform:skew(8deg) rotate(3deg);
+
+}

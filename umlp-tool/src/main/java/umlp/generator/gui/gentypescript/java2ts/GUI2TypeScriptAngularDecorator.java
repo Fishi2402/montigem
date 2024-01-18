@@ -254,6 +254,12 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
                   p.getName(),
                   p.getMCType().printType(),
                   util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+            } else if (TagLookUp.isDerived(p.getSymbol().getType().getTypeInfo())) {
+              hps.add(new TemplateHookPoint(
+                  "umlp.gui2ts.TSInitDomainDerived",
+                  p.getName(),
+                  p.getMCType().printType(),
+                  util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
             }
             else {
               hps.add(new TemplateHookPoint(

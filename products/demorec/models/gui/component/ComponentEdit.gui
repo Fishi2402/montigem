@@ -19,6 +19,7 @@ import gui.component.SubComponentView;
 import gui.navigation.Navigation;
 
 page ComponentEdit(DemoRecComponent component) {
+  @Navigation();
   @GemCard(
     title = "Edit the component.",
     component = @GemColumn(
@@ -39,18 +40,23 @@ page ComponentEdit(DemoRecComponent component) {
   );
   @GemCard(
     title = "Subparts of the component.",
-    component = @iterate(JoinConnection conn : component.composedOf) {
-      @GemRow(
-        wrap="nowrap",
+    component =
+      @GemColumn(
         components=[
-          @GemText(value="Type of Connection: "),
-          @GemText(value=conn.type)
-      ]);
-      @GemText(value="State of Connection: "+conn.state);
-      @iterate(DemoRecComponent subComponent : conn.connects) {
-        @SubComponentView(subComponent=subComponent);
-      }
-      buildConnection@GemButton(label = "Create new Connection.", leftClick = createNewConnection, disabled=true);
-    }
+          @iterate(JoinConnection conn : component.composedOf) {
+            @GemRow(
+              wrap="nowrap",
+              components=[
+                @GemText(value="Type of Connection: "),
+                @GemText(value=conn.joinConnectionType)
+            ]);
+            @GemText(value="State of Connection: "+conn.state);
+            @iterate(DemoRecComponent subComponent : conn.connects) {
+              @SubComponentView(subComponent=subComponent);
+            }
+          },
+          buildConnection@GemButton(label = "Create new Connection.", leftClick = createNewConnection, disabled=true)
+        ]
+      )
   );
 }

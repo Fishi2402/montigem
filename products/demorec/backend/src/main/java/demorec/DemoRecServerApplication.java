@@ -39,12 +39,6 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
 
     setBlobStorageLocation();
 
-    BatteryPackType type2 = DemoRecManager.batteryPackTypeBuilder()
-        .capacity(100.00)
-        .bmsLocation("Motorraum")
-        .carType("VW ID4")
-        .build().get();
-
     BatteryPackType type = DemoRecManager.batteryPackTypeBuilder()
         .capacity(100.00)
         .bmsLocation("Motorraum")
@@ -95,6 +89,7 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
         .isDeconstructible(false)
         .build().get();
 
+/*
     DemoRecComponent component3 = DemoRecManager.demoRecComponentBuilder()
         .xPos(2.0)
         .yPos(1.0)
@@ -105,15 +100,16 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
         .weight(1.5)
         .isDeconstructible(false)
         .build().get();
+*/
 
     JoinConnection connection = DemoRecManager.joinConnectionBuilder()
         .state(78.5)
-        .type(JoinConnectionType.SCREW)
+        .joinConnectionType(JoinConnectionType.SCREW)
         .build().get();
+    connection.addConnects(component);
     connection.addConnects(component2);
-    connection.addConnects(component3);
 
-    component.addComposedOf(connection);
+    pack.addComposedOf(connection);
 
     pack.addComposedOf(connection);
 
@@ -130,6 +126,8 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
         .build().get();
 
     process.addConsistsOf(step);
+
+    DemoRecManager.dimensionBuilder().name("Torque").unit("Nm").build().get();
   }
 
   public void setBlobStorageLocation() {

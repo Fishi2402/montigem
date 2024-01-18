@@ -14,7 +14,7 @@ import gui.component.ComponentEdit;
 import gui.component.ComponentCreate;
 import gui.joinconnection.RemoveCompButton;
 
-component JoinConnectionCreate(JoinConnection connection, List<String> dummyComponents) {
+component JoinConnectionCreate(JoinConnection connection, List<String> dummyComponents,  Event<JoinConnection> createJoinConnection) {
   @GemRow(
     wrap="nowrap",
     components=[
@@ -23,6 +23,7 @@ component JoinConnectionCreate(JoinConnection connection, List<String> dummyComp
           @GemCard(
             title = "Specify Connection to Deconstruct",
             component = @GemColumn(
+              rowGap="5px",
               components = [
                 @GemTextInput(
                     labelText = "State of Connection (%)",
@@ -38,26 +39,45 @@ component JoinConnectionCreate(JoinConnection connection, List<String> dummyComp
                     inputType = "dropdown",
                     options = null,
                     entry = null),
-                selectConnectsComponent@GemTextInput(
-                    labelText = "Components connected by this connection",
-                    inputType = "dropdown",
-                    options = null,
-                    entry = null,
-                    keyRelease = tryToAddComponent),
-                @iterate(String i : dummyComponents){
-                  @GemText(value=i);
-                }
+                @GemRow(
+                  wrap="nowrap",
+                  vAlign="center",
+                  hAlign="center",
+                  components= [
+                    selectConnectsComponent@GemTextInput(
+                        labelText = "Components connected by this connection",
+                        inputType = "dropdown",
+                        options = null,
+                        entry = null,
+                        keyRelease = tryToAddComponent),
+                    addComponent@GemButton(label = "Add Component", leftClick = connectSelectedComponent, disabled=false)
+                  ]
+                ),
+                @GemRow(
+                  wrap="nowrap",
+                  colGap="5px",
+                  components = [
+                    @iterate(String i : dummyComponents){
+                      @GemColumn(
+                        components= [removeComponent@GemButton(label=i, leftClick=removeSelectedComponent(i), disabled=false)]
+                      );
+                    }
+                  ]
+                )
+
               ]
             )
           )
         ]
       ),
-      @GemColumn(
-        components=[
-          @ComponentCreate(createComponent=addNewComponent)
-        ]
-      )
+      newCompGuard@guard(true) {
+        @GemColumn(
+          components=[
+            @ComponentCreate(createComponent=addNewComponent)
+          ]
+        );
+      }
     ]
   );
-  buildStep@GemButton(label = "Save Connection", leftClick = createNewStep, disabled=true);
+  buildConnection@GemButton(label = "Save Connection", leftClick = createNewConnection, disabled=true);
 }

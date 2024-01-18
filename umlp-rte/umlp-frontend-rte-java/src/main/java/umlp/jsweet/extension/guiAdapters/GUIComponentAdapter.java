@@ -4,6 +4,7 @@ package umlp.jsweet.extension.guiAdapters;
 import com.sun.source.tree.Tree;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
+import org.jsweet.JSweetConfig;
 import org.jsweet.transpiler.Java2TypeScriptTranslator;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.OverloadScanner;
@@ -222,16 +223,24 @@ public class GUIComponentAdapter extends PrinterAdapter {
     print("new Promise<");
     printType(returnType, optionalArrayStart, optionalArrayEnd, overloadMethod);
     print(">(async resolve => {").println().startIndent().printIndent();
-    print("resolve((await this.").print(executable.getSimpleName()).print("(");
+    print("resolve(");
+    if (isList) {
+      importFrom("GemListUtil", "umlp-frontend-rte");
+      print("GemListUtil.toArray(");
+    }
+    print("(");
+    if (context.hasAnnotationType(executable, JSweetConfig.ANNOTATION_ASYNC)) {
+      print("await ");
+    }
+    print("this.").print(executable.getSimpleName()).print("(");
     if (executable.getParameters().size() > 0){
       print(executable.getParameters().stream().map(p -> p.getSimpleName().toString()).collect(
           Collectors.joining(", ")));
     }
     print("))");
     if (isList) {
-      print(".toArray(")
       //        .printArgList((List<? extends ExtendedElement>) executable.getParameters())
-          .print(")");
+      print(")");
     }
     print(");").println().endIndent().printIndent();
     print("}).then(val => { this." + fieldName + " = val; });").println().endIndent().printIndent();

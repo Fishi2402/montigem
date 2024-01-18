@@ -1,11 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { GemTreeviewEntry } from '@umlp/basic';
+import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
 
-import { BatteryPackType } from '@src/demorec/BatteryPackType';
-
-import { BatteryPack } from '@src/demorec/BatteryPack';
-import { JoinConnection } from '@src/demorec/JoinConnection';
 
 import { ComponentTreeViewComponent,config } from '../../../../build/frontendGen/build/appgui/gui/component/ComponentTreeViewComponent';
 
@@ -30,7 +27,51 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export  class ComponentTreeView extends ComponentTreeViewComponent {
 
+  treeViewDataCheck = { value: null, hash: null, calculating: false };
 
+  seenCompsRecursionState : Set<number> = new Set<number>()
+
+  public override getHierarchicalComponentsItems (): Array<GemTreeviewEntry> {
+    console.debug("Create Hierarchical Component")
+    if(!(this.getComponent())) {
+      return [];
+    }
+    this.seenCompsRecursionState = new Set()
+    const treeViewEntries = this.createTreeRecursively(this.getComponent())
+
+    const newHash = JSON.stringify(treeViewEntries);
+    if(this.treeViewDataCheck.hash !== newHash) {
+      this.treeViewDataCheck.hash = newHash;
+      this.treeViewDataCheck.value = treeViewEntries;
+    }
+    return this.treeViewDataCheck.value
+  }
+
+  private createTreeRecursively(curComponent : DemoRecComponent): GemTreeviewEntry[] {
+    const children : GemTreeviewEntry[] = []
+
+    if(this.seenCompsRecursionState.has(curComponent.getGemId())) {
+      return children
+    }
+    this.seenCompsRecursionState.add(curComponent.getGemId())
+
+    const alreadySeenChildren = new Set()
+    curComponent.getComposedOf().forEach(joinConnection => {
+      joinConnection.getConnects().forEach(child => {
+        if(!alreadySeenChildren.has(child.getGemId())) {
+          alreadySeenChildren.add(child.getGemId())
+          let descr = ":"+child.getGemId()
+          if(child.getDescription()) {
+            descr = child.getDescription()+descr
+          }
+          children.push(new GemTreeviewEntry(false,
+              descr, this.createTreeRecursively(child)))
+        }
+
+      })
+    })
+    return children
+  }
 }
 
 

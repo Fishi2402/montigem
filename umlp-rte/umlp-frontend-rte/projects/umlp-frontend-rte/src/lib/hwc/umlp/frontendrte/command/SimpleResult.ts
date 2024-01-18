@@ -32,7 +32,7 @@ export class SimpleResult<T> extends CommandResult<T> {
         return this.obj;
     }
 
-    public isSuccessful(): Promise<boolean> {
+    public async isSuccessful(): Promise<boolean> {
         return Promise.resolve((LoadingState.LOADED) === (this.loadingState));
     }
 

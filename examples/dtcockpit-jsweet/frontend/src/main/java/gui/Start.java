@@ -21,7 +21,7 @@ public class Start extends StartTOP {
   @Override
   public void init() {
     if (!(DtcockpitSecurityManager.isCurrentlyLoggingIn() || DtcockpitSecurityManager.isSignedIn())) {
-      Router.navigate("gui", "login", " LoginPage ");
+      Router.navigate("gui", "login", "LoginPage");
       return;
     }
 

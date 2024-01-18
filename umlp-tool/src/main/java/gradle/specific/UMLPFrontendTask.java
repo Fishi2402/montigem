@@ -2,6 +2,7 @@
 package gradle.specific;
 
 import gradle.common.UMLPSingleFileTask;
+import gradle.common.UMLPSingleFilev2Task;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.tasks.InputFiles;
@@ -21,10 +22,10 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 // Task might not be a @CacheableTask since relative paths are generated for HWC-files
-public abstract class UMLPFrontendTask extends UMLPSingleFileTask {
+public abstract class UMLPFrontendTask extends UMLPSingleFilev2Task {
 
   public UMLPFrontendTask() {
-    super("UMLPFrontendTask");
+    super("UMLPFrontendTask", null);
   }
 
   @OutputDirectory
