@@ -14,7 +14,11 @@ for(Map.Entry<Integer, Long> e : idxToId.entrySet()) {
 <#if otherSideName?has_content>
   if (scope.contains(NotificationScope.LOCAL)) {
     if(${managerName}.isLoaded${targetName}(e.getValue())){
-      ${managerName}.get${targetName}Sure(e.getValue()).${otherSideName}((${sourceName}) this, NotificationScope.MINIMAL);
+      <#if otherSideName?starts_with("set")>
+        ${managerName}.get${targetName}Sure(e.getValue()).${otherSideName}Gem(new Gem<>(), NotificationScope.MINIMAL);
+      <#else>
+        ${managerName}.get${targetName}Sure(e.getValue()).${otherSideName}((${sourceName}) this, NotificationScope.MINIMAL);
+      </#if>
     }
   }
 </#if>
