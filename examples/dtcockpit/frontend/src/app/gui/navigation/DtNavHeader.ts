@@ -17,7 +17,7 @@ import {CommonModule} from '@angular/common';
 export class DtNavHeader extends DtNavHeaderComponent {
 
   public constructor(route: ActivatedRoute, protected router: Router) {
-    super();
+    super(router);
     this.router = router;
   }
 
