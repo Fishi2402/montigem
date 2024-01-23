@@ -357,7 +357,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
   protected void addDefaultConstructor(ASTCDClass clazz) {
     String className = clazz.getName();
-    getCD4C().addConstructor(clazz, "umlp.domain.Constructor", className);
+    getCD4C().addConstructor(clazz, "umlp.gui2java.DefaultConstructor", className);
   }
 
   protected void addBuilderConstructor(
