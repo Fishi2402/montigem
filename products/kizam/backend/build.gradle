@@ -1,0 +1,65 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+// run tasks in this project with command:
+// gradle :products:syse_functions:<taskName>
+//
+// important tasks / commands are:
+// * start UMLP generator and compile java files:
+//   * gradle :products:syse_functions:assemble
+// * start UMLP Backend Server:
+//   * gradle :products:syse_functions:bootRun
+//   * command does not terminate. Stopping the command is also stopping the server
+//   * url: http://localhost:8081 (there is no frontend)
+//   * there can only be a single running server. A second server cannot start.
+//
+plugins {
+  id 'java' // Setup Java Compiler
+  id 'application'  // ensures that the JAR can be executed
+
+  id 'com.google.cloud.tools.jib' version '3.2.1'
+  // Spring Plugins
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+  id 'org.springframework.boot' version "${spring_version}"
+
+  id 'de.rwth.se.umlp-tool-backend' // Makes the task-types `UMLPTask` and `UMLPMergeTask` available
+}
+
+description 'KIZAM backend'
+
+application {
+  // Set Entrypoint of Application
+  mainClass = 'kizam.KizamServerApplication'
+}
+
+jib {
+  to {
+    image 'umlp_kizam'
+  }
+  // For Docker-Container
+  container.mainClass = application.mainClass.get()
+}
+
+dependencies {
+  implementation project(':umlp-rte')
+  implementation 'com.h2database:h2:2.1.214'  // In-Memory database written in java
+  implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
+
+  developmentOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version  // Required for Hot-Reload
+  implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+
+  implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+}
+
+generateUmlpBackend {
+  input = file("../models/Kizam.umlp")
+  symbolOutDir = file("${project.buildDir}/symbols")
+  useSpring = true
+}
+
+task runServer {
+  dependsOn(bootRun {
+    systemProperty "spring.shell.interactive.enabled", "false"
+  })
+}
