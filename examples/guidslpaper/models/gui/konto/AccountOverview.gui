@@ -37,9 +37,11 @@ page AccountOverview(List<Konto> accounts) {
       bottom = @GemTable(
         rows = accounts,
         columns = [
-          TableColumn("_pspElement", "PSP-Element"),
-          TableColumn("_name", "Name"),
-          TableColumn("_kontotyp", "Typ")
+          TableColumn("pspElement", "PSP-Element"),
+          TableColumn("name", "Name"),
+          TableColumn("kontotyp", "Typ"),
+          TableColumn("kontoart", "Projektart"),
+          TableColumn("budgetRahmenCent", "Gesamtbudget")
         ]
       )
     )
