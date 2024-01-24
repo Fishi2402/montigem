@@ -20,7 +20,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -309,7 +308,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
       Optional<? extends Element> parentConstructor = parentClass.getEnclosedElements().stream()
           .filter(s -> s.getKind().toString().equals("CONSTRUCTOR")).findAny();
       if (getAnnotationPropertyValue(classElement, "isEmpty", Boolean.class, false)) {
-        println().printIndent().print("super()");
+        println().printIndent().print("super(router)");
       } else if (getAnnotationPropertyValue(classElement, "isCreate", Boolean.class, false)) {
         println().printIndent().print("super(router);");
       } else {

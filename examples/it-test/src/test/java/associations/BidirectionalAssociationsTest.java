@@ -3,8 +3,10 @@ package associations;
 
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.common.Gem;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BidirectionalAssociationsTest {
@@ -28,6 +30,13 @@ public class BidirectionalAssociationsTest {
 
     assertEquals(rhs1, lhs1.getOptToOptRhs());
     assertEquals(lhs1, rhs1.getOptToOptLhs());
+
+    // delete assoc
+    lhs1.setOptToOptRhsAbsent();
+
+    assertFalse(lhs1.getOptToOptRhsGem().isPresent());
+    assertFalse(rhs1.getOptToOptLhsGem().isPresent());
+
   }
 
 
@@ -47,6 +56,7 @@ public class BidirectionalAssociationsTest {
 
     assertEquals(rhs2, lhs.getOptToOneRhs());
     assertEquals(lhs, rhs2.getOptToOneLhs());
+    assertFalse(rhs.getOptToOneLhsGem().isPresent());
 
   }
 
@@ -102,6 +112,17 @@ public class BidirectionalAssociationsTest {
     assertEquals(lhs3, rhs32.getOptToManyLhs());
     assertEquals(lhs3, rhs33.getOptToManyLhs());
 
+    // delete assoc
+    lhs3.removeOptToManyRhs(rhs31);
+
+    assertFalse(lhs3.getOptToManyRhs().contains(rhs31));
+    assertTrue(lhs3.getOptToManyRhs().contains(rhs32));
+    assertTrue(lhs3.getOptToManyRhs().contains(rhs33));
+
+    assertFalse(rhs31.getOptToManyLhsGem().isPresent());
+    assertEquals(lhs3, rhs32.getOptToManyLhs());
+    assertEquals(lhs3, rhs33.getOptToManyLhs());
+
   }
 
   @Test
@@ -128,6 +149,19 @@ public class BidirectionalAssociationsTest {
 
     assertEquals(lhs, rhs4.getOptToSomeLhs());
     assertTrue(lhs.getOptToSomeRhs().contains(rhs4));
+
+    // delete right
+    lhs.removeOptToSomeRhs(rhs4);
+
+    assertFalse(lhs.getOptToSomeRhs().contains(rhs4));
+    assertFalse(rhs4.getOptToSomeLhsGem().isPresent());
+
+    // delete left
+    rhs1.setOptToSomeLhsAbsent();
+
+    assertFalse(rhs1.getOptToSomeLhsGem().isPresent());
+    assertFalse(lhs.getOptToSomeRhs().contains(rhs1));
+
   }
 
 
@@ -147,6 +181,7 @@ public class BidirectionalAssociationsTest {
 
     assertEquals(rhs, lhs2.getOneToOptRhs());
     assertEquals(lhs2, rhs.getOneToOptLhs());
+    assertFalse(lhs.getOneToOptRhsGem().isPresent());
 
   }
 
@@ -238,8 +273,17 @@ public class BidirectionalAssociationsTest {
     lhs41.setManyToOptRhs(rhs4);
 
     assertEquals(rhs4, lhs41.getManyToOptRhs());
-
     assertTrue(rhs4.containsManyToOptLhs(lhs41));
+
+    // delete right
+    lhs41.setManyToOptRhsAbsent();
+    assertFalse(lhs41.getManyToOptRhsGem().isPresent());
+    assertFalse(rhs4.containsManyToOptLhs(lhs41));
+
+    // delete left
+    rhs3.removeManyToOptLhs(lhs31);
+    assertFalse(rhs3.containsManyToOptLhs(lhs31));
+    assertFalse(lhs31.getManyToOptRhsGem().isPresent());
   }
 
   @Test
@@ -362,6 +406,16 @@ public class BidirectionalAssociationsTest {
     assertTrue(lhs33.getManyToManyRhs().contains(rhs22));
     assertTrue(lhs33.getManyToManyRhs().contains(rhs33));
 
+    // delete right
+    lhs11.removeManyToManyRhs(rhs11);
+    assertFalse(rhs11.getManyToManyLhs().contains(lhs11));
+    assertFalse(lhs11.getManyToManyRhs().contains(rhs11));
+
+    // delete left
+    rhs22.removeManyToManyLhs(lhs22);
+    assertFalse(rhs22.getManyToManyLhs().contains(lhs22));
+    assertFalse(lhs22.getManyToManyRhs().contains(rhs22));
+
   }
 
   @Test
@@ -393,6 +447,15 @@ public class BidirectionalAssociationsTest {
     assertTrue(lhs3.getManyToSomeRhs().contains(rhs2));
     assertTrue(lhs3.getManyToSomeRhs().contains(rhs3));
 
+    // delete right
+    lhs1.removeManyToSomeRhs(rhs1);
+    assertFalse(lhs1.containsManyToSomeRhs(rhs1));
+    assertFalse(rhs1.containsManyToSomeLhs(lhs1));
+
+    // delete left
+    rhs2.removeManyToSomeLhs(lhs2);
+    assertFalse(lhs2.containsManyToSomeRhs(rhs2));
+    assertFalse(rhs2.containsManyToSomeLhs(lhs2));
   }
 
   @Test
@@ -422,7 +485,10 @@ public class BidirectionalAssociationsTest {
     assertTrue(rhs.getSomeToOptLhs().contains(lhs4));
     assertEquals(rhs, lhs4.getSomeToOptRhs());
 
-
+    // delete right
+    lhs4.setSomeToOptRhsAbsent();
+    assertFalse(rhs.containsSomeToOptLhs(lhs4));
+    assertFalse(lhs4.getSomeToOptRhsGem().isPresent());
   }
 
   @Test
@@ -462,5 +528,15 @@ public class BidirectionalAssociationsTest {
     assertTrue(lhs3.getSomeToManyRhs().contains(rhs2));
     assertTrue(lhs3.getSomeToManyRhs().contains(rhs3));
 
+    // delete right
+    lhs1.removeSomeToManyRhs(rhs1);
+    assertFalse(lhs1.containsSomeToManyRhs(rhs1));
+    assertFalse(rhs1.containsSomeToManyLhs(lhs1));
+
+    // delete left
+    SomeToManyLhs checkLhs = rhs2.getSomeToManyLhs(0);
+    rhs2.removeSomeToManyLhs(0);
+    assertFalse(rhs2.containsSomeToManyLhs(checkLhs));
+    assertFalse(checkLhs.containsSomeToManyRhs(rhs2));
   }
 }

@@ -54,7 +54,7 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
 
     // Add method signatures for Getters and Setter to be implemented by Subclasses
     createGetterSetterForAttrs(cdInterface, domainInterface, attributes.attrFields, true);
-    createGetterSetterForAssocs(cdInterface, attributes.attrAssocs, true);
+    createGetterSetterForAssocs(domainInterface, cdInterface, attributes.attrAssocs, true);
 
     // Add method signatures for all Methods in Interface
     addMethodSignatures(domainInterface, cdInterface);

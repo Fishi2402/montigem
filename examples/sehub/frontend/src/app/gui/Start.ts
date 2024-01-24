@@ -18,7 +18,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 export  class Start extends StartComponent {
 
   public constructor(route: ActivatedRoute, protected router: Router) {
-    super();
+    super(router);
     this.router = router;
   }
 
