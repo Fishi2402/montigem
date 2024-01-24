@@ -1,0 +1,11 @@
+package gui.common;
+
+import arrange.GemColumn;
+import basic.GemText;
+
+component BalanceBox(String title, String color) {
+  @GemColumn(hAlign = "center", components = [
+    @GemText(value = "123 $"),
+    @GemText(value = title)
+  ]);
+}

@@ -14,11 +14,9 @@ import Guidslpaper.Person;
 import Guidslpaper.Konto;
 
 page Start(
-  List<App> apps,
-  List<Person> personen,
-  List<Konto> konten
+  List<App> apps
 ) {
-  @GuidslPaperNavigation(personen = personen);
+  @GuidslPaperNavigation();
 
   @GemRow(width = "100%", rowGap = "10px", colGap = "10px", hAlign = "center", components = [
     // TODO: App is a singleton

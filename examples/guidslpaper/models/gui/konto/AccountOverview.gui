@@ -1,0 +1,47 @@
+package gui.konto;
+
+import arrange.GemRow;
+import arrange.GemCard;
+import input.GemTextInput;
+import basic.GemButton;
+import table.GemTable;
+import table.TableTypes.TableColumn;
+
+import gui.common.BalanceBox;
+import gui.common.Header;
+import gui.common.Body;
+
+import Guidslpaper.Konto;
+
+page AccountOverview(List<Konto> accounts) {
+  @GemRow(hAlign = "right", components = [
+     @BalanceBox(title = "GESAMTBUDGET"),
+     @BalanceBox(title = "AUSGABEN"),
+     @BalanceBox(title = "PLANAUSGABEN"),
+     @BalanceBox(title = "RESTBUDGET", color = "green")
+  ]);
+
+  @GemCard(titleComponent =
+    @Header(left = "Übersicht Konten", right = [
+      @GemButton(label = "Zahlungen erfassen"),
+      @GemButton(label = "Konto hinzufügen"),
+      @GemButton(label = "?"),
+      @GemButton(label = "-")
+    ]),
+    component = @Body(
+      top = [
+        @GemTextInput(inputType = "dropdown"),
+        @GemTextInput(inputType = "dropdown"),
+        @GemTextInput(inputType = "dropdown")
+      ],
+      bottom = @GemTable(
+        rows = accounts,
+        columns = [
+          TableColumn("_pspElement", "PSP-Element"),
+          TableColumn("_name", "Name"),
+          TableColumn("_kontotyp", "Typ")
+        ]
+      )
+    )
+  );
+}
