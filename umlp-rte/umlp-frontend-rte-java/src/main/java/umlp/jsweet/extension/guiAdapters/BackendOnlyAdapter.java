@@ -3,10 +3,8 @@ package umlp.jsweet.extension.guiAdapters;
 
 import de.se_rwth.commons.logging.Log;
 import org.jsweet.transpiler.Java2TypeScriptTranslator;
-import org.jsweet.transpiler.extension.AnnotationManager;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
@@ -16,20 +14,14 @@ public class BackendOnlyAdapter extends PrinterAdapter {
 
   public BackendOnlyAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
-    addAnnotationManager(getBackendOnlyAnnotationManager());
-  }
-
-  @Override
-  public boolean substituteExecutable(ExecutableElement executable) {
-    return super.substituteExecutable(executable);
   }
 
   @Override
   public boolean substituteMethodBody(TypeElement parentTypeElement, ExecutableElement method) {
     if(isBackendOnly(method)){
-      print("throw new Error('This method can only be called in the backend!');");
+      print("throw new Error('This method can only be called in the backend!');\n");
       return true;
-    } else {
+    }else {
       return super.substituteMethodBody(parentTypeElement, method);
     }
   }
@@ -47,18 +39,5 @@ public class BackendOnlyAdapter extends PrinterAdapter {
 
   private boolean isBackendOnly(ExecutableElement method) {
     return context.hasAnnotationType(method, BACKEND_ONLY_ANNOTATION);
-  }
-
-
-  private AnnotationManager getBackendOnlyAnnotationManager() {
-    return new AnnotationManager() {
-      @Override
-      public Action manageAnnotation(Element element, String annotationType) {
-        // add the @Name annotation to non-public elements
-        return BACKEND_ONLY_ANNOTATION.equals(annotationType)
-            ? Action.VOID :
-            Action.ADD;
-      }
-    };
   }
 }
