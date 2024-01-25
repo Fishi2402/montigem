@@ -7,6 +7,8 @@ import org.jsweet.transpiler.extension.PrinterAdapter;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import java.util.Optional;
 
 public class BackendOnlyAdapter extends PrinterAdapter {
 
@@ -18,10 +20,20 @@ public class BackendOnlyAdapter extends PrinterAdapter {
 
   @Override
   public boolean substituteMethodBody(TypeElement parentTypeElement, ExecutableElement method) {
-    if(isBackendOnly(method)){
-      print("throw new Error('This method can only be called in the backend!');\n");
+    if (isBackendOnly(method)) {
+      String val = Optional.ofNullable(
+              getAnnotationValue(method, BACKEND_ONLY_ANNOTATION, VariableElement.class, null)
+          )
+          .map(VariableElement::getSimpleName).map(Object::toString).orElse(null);
+      if ("STATUS_OK".equals(val)) {
+        print("return StatusResult.ok(this.getId());\n");
+      } else if ("STATUS_ERROR".equals(val)) {
+        print("return StatusResult.error(this.getId());\n");
+      } else {
+        print("throw new Error('This method can only be called in the backend!');\n");
+      }
       return true;
-    }else {
+    } else {
       return super.substituteMethodBody(parentTypeElement, method);
     }
   }
