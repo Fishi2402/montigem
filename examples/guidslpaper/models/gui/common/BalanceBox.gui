@@ -4,7 +4,7 @@ import arrange.GemColumn;
 import basic.GemText;
 
 component BalanceBox(long value = 0, String title = "", String color = "blue") {
-  @GemColumn(hAlign = "center", components = [
+  @GemColumn(hAlign = "center", rowGap = "0.5rem", components = [
     @GemText(value = value + " €"),
     @GemText(value = title)
   ]);

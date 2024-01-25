@@ -14,8 +14,8 @@ import gui.common.Header;
 import Guidslpaper.Konto;
 
 page AccountOverview(List<Konto> accounts) {
-  @GemColumn(rowGap = "0.5rem", components = [
-    @GemRow(hAlign = "right", colGap = "0.5rem", components = [
+  @GemColumn(rowGap = "1rem", components = [
+    @GemRow(hAlign = "right", colGap = "1rem", components = [
        @BalanceBox(title = "GESAMTBUDGET", value = 52792531),
        @BalanceBox(title = "AUSGABEN"),
        @BalanceBox(title = "PLANAUSGABEN"),

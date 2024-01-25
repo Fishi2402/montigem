@@ -6,10 +6,11 @@ import { AccountOverviewComponent, config } from '@src/gui/konto/AccountOverview
 
 @Component({
   standalone: true,
-  imports:[... config.imports],
+  imports: config.imports,
   selector: config.selector,
   templateUrl: config.templateUrl,
-  styles: config.styles
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class AccountOverview extends AccountOverviewComponent {
 
