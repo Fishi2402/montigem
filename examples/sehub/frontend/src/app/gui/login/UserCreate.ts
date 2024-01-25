@@ -9,12 +9,14 @@ import {SehubManager} from '@src/sehub/SehubManager';
 import {BoardMapper} from '@src/sehub/BoardMapper';
 import {BingoEntry} from '@src/sehub/BingoEntry';
 import {GemList} from '@umlp/common';
-import {UserCreateComponent} from '@src/gui/login/UserCreateComponent';
+import {UserCreateComponent,config} from '@src/gui/login/UserCreateComponent';
 
 @Component({
-  selector: 'user-create',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserCreate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
   styleUrls: ["./Login.scss"]
 })
 export class UserCreate extends UserCreateComponent {
@@ -36,7 +38,7 @@ export class UserCreate extends UserCreateComponent {
 
   public ngOnInit(): void {
     SehubManager.userBuilder().then(gemPromiseRes => {
-      this.newUserBuilder = gemPromiseRes;
+      this.newUser = gemPromiseRes;
     });
 
     SehubManager.getUserList().then(gemPromiseRes => {
@@ -58,10 +60,10 @@ export class UserCreate extends UserCreateComponent {
         if (!errorMessage) {
           this.permutation = this.getBoardPermutation();
           this.buildMapping().then(mapping => {
-          //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
-          this.newUserBuilder.registrationDate(new Date());
-          this.newUserBuilder.role(SehubRole.DEVELOPER);
-          this.newUserBuilder.gridEntry(mapping);
+          //this.user.activated(ActivationStatus.AKTIVIERT);
+          this.newUser.registrationDate(new Date());
+          this.newUser.role(SehubRole.DEVELOPER);
+          this.newUser.gridEntry(mapping);
           this.build();
           this.router.navigate(['/Login']);
           });

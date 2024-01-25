@@ -3,15 +3,12 @@ package umlp.generator.gui.gentypescript.java2ts;
 
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.methodtemplates.CD4C;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import umlp.generator.gui.GUIGeneratorUtil;
 

@@ -1,0 +1,89 @@
+package gui.step;
+
+import basic.GemText;
+import input.GemTextInput;
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+
+import DemoRec.ProcessStep;
+import DemoRec.Process;
+import DemoRec.MeasuringValue;
+
+import gui.joinconnection.JoinConnectionCreate;
+import gui.step.MeasuringValueCreate;
+
+page ProcessStepCreate(ProcessStep step, List<String> values, Event<ProcessStep> create) {
+  @GemCard(
+    title = "Deconstruction Step",
+    component = @GemColumn(
+      colGap="10px",
+      components = [
+        @GemRow(
+          wrap="noWrap",
+          colGap="5%",
+          components = [
+            @GemColumn(
+              width="30%",
+              components = [
+                timerGuard@guard(true) {
+                  startTimerButton@GemButton(label = "Start", leftClick = startTimer, disabled=true);
+                } else {
+                  stopTimerButton@GemButton(label = "Stop", leftClick = stopTimer, disabled=false);
+                }
+              ]
+            ),
+            @GemColumn(
+              hAlign="center",
+              vAlign="center",
+              width="10%",
+              components = [
+                passedTime@GemText(value="override")
+              ]
+            ),
+            @GemColumn(
+              width="50%",
+              components = [
+                timeConsumption@GemTextInput(
+                  labelText = "Time Consumption in seconds",
+                  inputType = "number",
+                  entry = step.timeConsumption
+                )
+              ]
+            )
+          ]
+        ),
+        @GemTextInput(
+            labelText = "Description (optional)",
+            inputType = "text",
+            entry = step.description),
+        selectEndeffector@GemTextInput(
+            labelText = "Used Endeffector in this step",
+            inputType = "dropdown",
+            options = null,
+            entry = null),
+        selectType@GemTextInput(
+            labelText = "Step type",
+            inputType = "dropdown",
+            options = null,
+            entry = null),
+        isDeconstruction@guard(true) {
+          selectJoinConnection@GemTextInput(
+              labelText = "Deconstructing Join Connection",
+              inputType = "dropdown",
+              options = null,
+              entry = null);
+        },
+        createNewJoinConnection@guard(true) {
+          @JoinConnectionCreate(createJoinConnection=addNewJoinConnection);
+        },
+        @iterate(String val : values) {
+          @GemText(value=val);
+        },
+        @MeasuringValueCreate(measuringValueEvent = attachMeasuringValue)
+      ]
+    )
+  );
+  buildStep@GemButton(label = "Save Step", leftClick = createNewStep, disabled=true);
+}

@@ -4,6 +4,7 @@ package umlp.jsweet.extension.guiAdapters;
 import com.sun.source.tree.Tree;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
+import org.jsweet.JSweetConfig;
 import org.jsweet.transpiler.Java2TypeScriptTranslator;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.OverloadScanner;
@@ -19,10 +20,12 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,6 +36,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
   public static final String INPUT_ANNOTATION = "umlp.jsweet.extension.annotation.Input";
   public static final String OUTPUT_ANNOTATION = "umlp.jsweet.extension.annotation.Output";
   public static final String SYNCRHONIZED_ANNOTATION = "umlp.jsweet.extension.annotation.UMLPSynchronized";
+  public static final String ERASED_ANNOTATION = "jsweet.lang.Replace";
   public static final String ONINIT_ANNOTATION = "umlp.jsweet.extension.annotation.OnInit";
   public static final String SYNCHRONIZED_SUFFIX = "_synchronized";
 
@@ -44,19 +48,43 @@ public class GUIComponentAdapter extends PrinterAdapter {
   }
 
   @Override
-  public boolean substituteType(TypeElement type) {
-    if (isComponent(type)) {
-      print("@Component({");
-      print("selector: ");
-      print("'" + pascalToKebab(type.getSimpleName().toString()) + "'");
-      print("})").println().printIndent();
+  public boolean substituteType(TypeElement classElement) {
+    if (isComponent(classElement)) {
+      Boolean standAlone = getAnnotationPropertyValue(classElement, "standalone", Boolean.class, true);
+      String[] imports = getAnnotationPropertyValue(classElement, "imports",
+          String[].class, new String[] { "...config.imports" });
+      String selector = getAnnotationPropertyValue(classElement, "selector", String.class, "config.selector");
+      String templateUrl = getAnnotationPropertyValue(classElement, "templateUrl", String.class, "config.templateUrl");
+      String styles = getAnnotationPropertyValue(classElement, "styles", String.class, "config.styles");
+      String[] styleUrls = getAnnotationPropertyValue(classElement, "styleUrls",
+          String[].class, new String[]{ "...config.styleUrls" });
+      print("@Component({").println().startIndent().printIndent()
+          .print("standalone: " + standAlone + ",").println().printIndent()
+          .print("imports: " + Arrays.toString(imports) + ",").println().printIndent()
+          .print("selector: " + selector + ",").println().printIndent()
+          .print("templateUrl: " + templateUrl + ",").println().printIndent()
+          .print("styles: " + styles + ",").println().printIndent()
+          .print("styleUrls: " + Arrays.toString(styleUrls)).println().endIndent()
+          .print("})").println().printIndent();
+      importFrom("Component", "@angular/core");
     }
-    else if (isDirective(type)) {
+    else if (isHWCofComponent(classElement)) {
+      Log.error("0JSC003 " + classElement.getQualifiedName().toString() + " Handwritten Adaption of a GUI Component must be tagged with @Component()");
+    }
+    else if (isDirective(classElement)) {
       print("@Directive()").println().printIndent();
       importFrom("Directive", "@angular/core");
-      importFrom("ActivatedRoute, Router", "@angular/router");
     }
-    return super.substituteType(type);
+    importFrom("ActivatedRoute, Router", "@angular/router");
+    return super.substituteType(classElement);
+  }
+
+  @Override
+  public void beforeTypeBody(TypeElement type) {
+    if (isDirective(type)) {
+      println().printIndent().print("protected router: Router;").println();
+    }
+    super.beforeTypeBody(type);
   }
 
   @Override
@@ -76,23 +104,26 @@ public class GUIComponentAdapter extends PrinterAdapter {
 
   @Override
   public boolean substituteExecutable(ExecutableElement executable) {
-    TypeElement parentElement = getParentElement(TypeElement.class);
-    if ((isDirective(parentElement) || isComponent(parentElement))
+    TypeElement classElement = getParentElement(TypeElement.class);
+    if ((isDirective(classElement) || isComponent(classElement) || isHWCofComponent(classElement))
         && executable.getKind().toString().equals("CONSTRUCTOR")) {
       // handle Constrcuctor
-      String cdName = getCDName(parentElement);
+      String cdName = getAnnotationPropertyValue(classElement, "cdName", String.class, "");
       String managerName = cdName + "Manager";
-      String pathToManager = "../" + StringUtils.uncapitalize(cdName) + "/" + managerName;
+      String pathToManager = "@src/" + StringUtils.uncapitalize(cdName) + "/" + managerName;
       importFrom(managerName, pathToManager);
       printAdaptedConstructor(executable);
-      printNgOnInit(executable, cdName);
+//      printNgOnInit(executable, cdName);
       return true;
-    } else if (isOnInit(executable)) {
-      // Do not print any constructor. This is handled in the generated TS "Component" "OnInit"
-      getPrinter().printIndent().print("protected  router: Router;").println();
-      importFrom("Router", "@angular/router");
-      return true;
-    } else if (isSynchronized(executable) && executable.getKind().toString().equals("METHOD") &&
+//      return false;
+    }
+//    else if (isOnInit(executable)) {
+//      // Do not print any constructor. This is handled in the generated TS "Component" "OnInit"
+//      getPrinter().printIndent().print("protected  router: Router;").println();
+//      importFrom("Router", "@angular/router");
+//      return true;
+//    }
+    else if (isSynchronized(executable) && executable.getKind().toString().equals("METHOD") &&
       !util().isInterface(getParentElement(TypeElement.class)) &&
         !executable.getModifiers().contains(Modifier.ABSTRACT) &&
         !executable.getModifiers().contains(Modifier.STATIC) &&
@@ -191,16 +222,24 @@ public class GUIComponentAdapter extends PrinterAdapter {
     print("new Promise<");
     printType(returnType, optionalArrayStart, optionalArrayEnd, overloadMethod);
     print(">(async resolve => {").println().startIndent().printIndent();
-    print("resolve((await this.").print(executable.getSimpleName()).print("(");
+    print("resolve(");
+    if (isList) {
+      importFrom("GemListUtil", "umlp-frontend-rte");
+      print("GemListUtil.toArray(");
+    }
+    print("(");
+    if (context.hasAnnotationType(executable, JSweetConfig.ANNOTATION_ASYNC)) {
+      print("await ");
+    }
+    print("this.").print(executable.getSimpleName()).print("(");
     if (executable.getParameters().size() > 0){
       print(executable.getParameters().stream().map(p -> p.getSimpleName().toString()).collect(
           Collectors.joining(", ")));
     }
     print("))");
     if (isList) {
-      print(".toArray(")
       //        .printArgList((List<? extends ExtendedElement>) executable.getParameters())
-          .print(")");
+      print(")");
     }
     print(");").println().endIndent().printIndent();
     print("}).then(val => { this." + fieldName + " = val; });").println().endIndent().printIndent();
@@ -243,12 +282,12 @@ public class GUIComponentAdapter extends PrinterAdapter {
     println().println().printIndent().print("public ngOnInit(): void {").println().startIndent().printIndent();
     for (VariableElement parameter : executable.getParameters()) {
       Name typeSimpleName = Util.getElement(parameter.asType()).getSimpleName();
-      print("if (this.").print(parameter.getSimpleName()).print(" == null) {").startIndent()
+      print("if (super.").print(parameter.getSimpleName()).print(" == null) {").startIndent()
           .println().printIndent();
-      print(cdName + "Manager.get" + typeSimpleName + "Sure(this.")
+      print(cdName + "Manager.get" + typeSimpleName + "Sure(super.")
           .print(parameter.getSimpleName()).print("RoutingId).then(res => { ")
           .startIndent().println().printIndent()
-          .print("this.").print(parameter.getSimpleName()).print(" = res;")
+          .print("super.").print(parameter.getSimpleName()).print(" = res;")
           .endIndent().println().printIndent().print("});");
       endIndent().println().printIndent().print("}").println().printIndent();
     }
@@ -257,22 +296,42 @@ public class GUIComponentAdapter extends PrinterAdapter {
   }
 
   private void printAdaptedConstructor(ExecutableElement executable) {
-    print("public constructor(route: ActivatedRoute, protected router: Router) {");
-    startIndent();
-    for (VariableElement parameter : executable.getParameters()) {
-      println().printIndent().
-      print("this.").print(parameter.getSimpleName())
-          .print("RoutingId = +route.snapshot.paramMap.get(\"")
-          .print(parameter.getSimpleName()).print("RoutingId\");");
+    TypeElement classElement = getParentElement(TypeElement.class);
+
+    if (isDirective(classElement)) {
+      // Print Nothing, probably an error
+      return;
+    } else if (isComponent(classElement)) {
+      print("public constructor(route: ActivatedRoute, protected router: Router) {");
+      startIndent();
+      Element parentClass = types().asElement(classElement.getSuperclass());
+      Optional<? extends Element> parentConstructor = parentClass.getEnclosedElements().stream()
+          .filter(s -> s.getKind().toString().equals("CONSTRUCTOR")).findAny();
+      if (getAnnotationPropertyValue(classElement, "isEmpty", Boolean.class, false)) {
+        println().printIndent().print("super(router)");
+      } else if (getAnnotationPropertyValue(classElement, "isCreate", Boolean.class, false)) {
+        println().printIndent().print("super(router);");
+      } else {
+        println().printIndent().print("super(route, router);");
+      }
+//      for (VariableElement parameter : executable.getParameters()) {
+//        println().printIndent()
+//            .print("this.").print(parameter.getSimpleName())
+//            .print("RoutingId = +route.snapshot.paramMap.get(\"")
+//            .print(parameter.getSimpleName()).print("RoutingId\");");
+//      }
+      endIndent().println().printIndent().print("}");
     }
-    endIndent().println().printIndent().print("}");
   }
 
   @Override
   public void afterType(TypeElement type) {
     // Remove standard constructor
-    if ((isDirective(type) || isComponent(type))) {
+    if (isDirective(type) || isComponent(type) || isHWCofComponent(type)) {
       int publicConstructor = getPrinter().getOutput().lastIndexOf("constructor()");
+      if (publicConstructor < 0) {
+        return;
+      }
       int length = getPrinter().getOutput().length();
       getPrinter().removeLastChars(length - publicConstructor);
       println().print("}").println();
@@ -280,10 +339,18 @@ public class GUIComponentAdapter extends PrinterAdapter {
     }
   }
 
-  protected String pascalToKebab(String input) {
-    String regex = "([a-z])([A-Z]+)";
-    String replacement = "$1-$2";
-    return input.replaceAll(regex, replacement).toLowerCase();
+  @Override
+  public boolean substituteExtends(TypeElement type) {
+    if (isHWCofComponent(type)) {
+      String componentName = type.getSimpleName().toString() + "Component";
+      print(" extends " + componentName);
+      String path = type.getQualifiedName().toString().replace(".", "/");
+
+      importFrom(componentName + ", config", "@src/" + path + "Component");
+      importFrom("ActivatedRoute, Router", "@angular/router");
+      return true;
+    }
+    return super.substituteExtends(type);
   }
 
   @Override
@@ -291,7 +358,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
     if (super.getPrinter() instanceof Java2TypeScriptTranslator) {
       return (Java2TypeScriptTranslator) super.getPrinter();
     } else {
-      Log.error("0JS00001 Java2TypeScriptTranslater must be core Adapter");
+      Log.error("0JSC001 Java2TypeScriptTranslater must be core Adapter");
       return null;
     }
   }
@@ -308,19 +375,27 @@ public class GUIComponentAdapter extends PrinterAdapter {
     return context.hasAnnotationType(variable, INPUT_ANNOTATION);
   }
 
-  private boolean isDirective(TypeElement parentElement) {
-    return context.hasAnnotationType(parentElement, DIRECTIVE_ANNOTATION);
+  private boolean isDirective(TypeElement classElement) {
+    return context.hasAnnotationType(classElement, DIRECTIVE_ANNOTATION);
   }
 
   private boolean isSynchronized(ExecutableElement executable) {
     if (context.hasAnnotationType(executable, SYNCRHONIZED_ANNOTATION)) {
       return true;
     }
+    if (context.hasAnnotationType(executable, ERASED_ANNOTATION)) {
+      return false;
+    }
     OverloadScanner.Overload overload = context.getOverload(
         (TypeElement) executable.getEnclosingElement(), executable);
+    if (overload == null || overload.getEntries() == null) {
+      return false;
+    }
 
     for (OverloadScanner.OverloadMethodEntry overloadEntry : overload.getEntries()) {
-      context.hasAnnotationType(overloadEntry.methodElement, SYNCRHONIZED_ANNOTATION);
+      if (context.hasAnnotationType(overloadEntry.methodElement, SYNCRHONIZED_ANNOTATION)) {
+        return true;
+      }
     }
 
     return false;
@@ -349,10 +424,34 @@ public class GUIComponentAdapter extends PrinterAdapter {
         new ModuleImportDescriptor(importedName, pathToImportedClass));
   }
 
-  private String getCDName(TypeElement parentElement) {
-    String annotation = isDirective(parentElement) ? DIRECTIVE_ANNOTATION : COMPONENT_ANNOTATION;
-    String cdName = context.getAnnotationValue(parentElement, annotation, String.class, "");
-    return cdName;
+  private <T> T getAnnotationPropertyValue(TypeElement classElement, String annotationProperty,
+      Class<T> propertyClass, T defaultValue) {
+    if (isComponent(classElement) || isDirective(classElement)) {
+      String annotation = isDirective(classElement) ? DIRECTIVE_ANNOTATION : COMPONENT_ANNOTATION;
+      T value = context.getAnnotationValue(classElement, annotation, annotationProperty,
+          propertyClass, null);
+      if (value != null) {
+        return value;
+      }
+    }
+    if (isHWCofComponent(classElement)) {
+      T value = getAnnotationPropertyValue((TypeElement) types().asElement(classElement.getSuperclass()),
+          annotationProperty, propertyClass, defaultValue);
+      if (value != null) {
+        return value;
+      }
+    }
+//    Log.error("0JSC002 Cannot find " + annotationProperty + " of classElement " + classElement.getSimpleName().toString());
+    return defaultValue;
+  }
+
+  private boolean isHWCofComponent(TypeElement classElement) {
+    if (classElement.getSuperclass() == null || classElement.getSuperclass().toString() == "none") {
+      return false;
+    }
+    Element superType = types().asElement(classElement.getSuperclass());
+    return superType.getSimpleName().toString().endsWith("TOP")
+         && context.hasAnnotationType(superType, DIRECTIVE_ANNOTATION);
   }
 
   private AnnotationManager getRenamingUnsynchronizedAnnotationManager() {

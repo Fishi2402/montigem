@@ -84,9 +84,24 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
           return true;
         }
         break;
+      case "java.time.LocalDateTime":
+      case "java.time.LocalDate":
+      case "java.util.Date":
+        if (substituteMethodInvocation_Date(invocation)) {
+          return true;
+        }
     }
 
     return super.substituteMethodInvocation(invocation);
+  }
+
+  private boolean substituteMethodInvocation_Date(MethodInvocationElement invocation) {
+    switch (invocation.getMethodName()) {
+      case "now":
+        print("new Date()");
+        return true;
+    }
+    return false;
   }
 
   public boolean substituteMethodInvocation_JavaUtilObjects(MethodInvocationElement invocation) {

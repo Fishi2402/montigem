@@ -33,6 +33,7 @@ dependencies {
   implementation group: 'de.monticore.lang', name: 'cd4analysis-tagging', version: mc_version,  classifier: 'tagging'
   implementation "de.monticore.language-server:monticore-language-server-runtime:$mclsg_version"
   implementation "de.monticore.lang:cd4analysis-language-server:$mc_version"
+  implementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
 
   implementation group: "org.yaml", name: "snakeyaml", version: "$snake_yaml_version"
 
@@ -185,9 +186,17 @@ gradlePlugin {
       id = "de.rwth.se.umlp-tool-backend"
       implementationClass = "gradle.UMLPPluginBackend"
     }
+    umlpplugin_backend_test {
+      id = "de.rwth.se.umlp-tool-backend-test"
+      implementationClass = "gradle.UMLPPluginBackendTest"
+    }
     umlpplugin_frontend {
       id = "de.rwth.se.umlp-tool-frontend"
       implementationClass = "gradle.UMLPPluginFrontend"
+    }
+    umlpplugin_frontend_test {
+      id = "de.rwth.se.umlp-tool-frontend-test"
+      implementationClass = "gradle.UMLPPluginFrontendTest"
     }
   }
 }

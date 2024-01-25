@@ -20,12 +20,12 @@ pluginManagement {
 }
 ````
 
-2. Load Plugin
+2. Load Plugin (Note: there are different plugins, e.g. special plugins for backend&frontend. See below for more information)
 
 at the top of ``build.gradle``:
 ````
 plugins {
-  id 'de.rwth.se.umlp-tool' version '7.5.0-SNAPSHOT'
+  id 'de.rwth.se.umlp-tool' version '7.6.0-SNAPSHOT'
   id 'java'
   // [...]
 }
@@ -42,11 +42,11 @@ repositories {
   }
 }
 dependencies {
-  implementation group: 'umlp', name: 'umlp-rte', version: '7.5.0-SNAPSHOT'
+  implementation group: 'umlp', name: 'umlp-rte', version: '7.6.0-SNAPSHOT'
 }
 ````
 
-4. Add Task in ``build.gradle``
+4. Add Task in ``build.gradle`` 
 ````
 task myFirstUMLPTask(type: UMLPBackendTask) {
   input = file("models/")
@@ -63,14 +63,39 @@ sourceSets {
 }
 ````
 
+### Plugins
+1) `de.rwth.se.umlp-tool` - the basic plugin which is always loaded. No task is created
+2) `de.rwth.se.umlp-tool-backend` - plugin for generating the UMLP-backend. The following steps are performed:
+  * load `java` plugin
+  * create task ``generateUmlpBackend`` of type `UMLPBackendTask` with the following conventions:
+    * ``input=src/models/``
+    * ``hwcDir=src/main/java``
+    * ``tmplDir=src/templates``
+  * add generated files to java main-source-sets
+  * create ``generate`` and `continuous` lifecylce task
+3) `de.rwth.se.umlp-tool-frontend` - plugin for generating the UMLP-backend. The following steps are performed:
+* load `base` plugin
+* create configuration ``guiTypes`` which is used to load symbols
+* create task ``frontendSetup`` of type `FrontendSetup` with the following convention:
+  * ``input=config/``
+* create task ``genDomain`` of type `UMLPFrontendTask` with the following convention: 
+  * ``input=../models/``
+  * ``hwcDir=src/app/``
+* create task ``genGUI`` of type `UMLPGuiGenTask` with the following convention:
+  * ``input=../models/``
+  * ``modelDir=../models/``
+  * ``hwcDir=src/app/``
+  * symbols are loaded from configuration ``guiTypes`` and the output of `genDomain`
+* two sync tasks are created for both ``genDomain`` and ``genGUI`` which copy the generated code. This is required for `npm serve` and continuous build (see below)
+* create ``generate`` and `continuous` lifecylce task
 
-### Configuration Options for ``UMLPTask``
+### Configuration Options for all UMLP-Tasks
+The following options are available for all tasks. Some special tasks (e.g. `UMLPBackendTask`) have additional parameters.
+
 | Option         | Type                   | Description                                                                                                           |
 |----------------|------------------------|-----------------------------------------------------------------------------------------------------------------------|
 | input          | File, Files, Directory | Collection of input models. Each file is a seperate generation process. Only `.umlp` and `.gui` models are processed. |
-| modelDir       | Directory              | Used to resolve import statements.                                                                                    |
 | hwcDir         | Directory              | Directory with Handwritten Code. Used for TOP-Mechanism.                                                              |
-| symbolDir      | Directory              |                                                                                                                       |
 | tmplDir        | Directory              | Location of custom template-files. Can be used to customize generation process.                                       |
 | configTemplate | String                 | Filename of `.ftl` file in `tmplDir`                                                                                  |
 | moreArgs       | String Array           | Not recommended! Can break incremental build! Allows to pass custom arguments to command line interface of UMLP.      |

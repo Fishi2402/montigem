@@ -16,7 +16,7 @@ import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,13 +27,13 @@ public class GUIComponentsVisitor implements GUIDSLVisitor2, CommonExpressionsVi
   protected GUIDSLTraverser traverser;
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
-  protected Map<ASTGUIComponent, String> namedComponents = new HashMap<>();
-  protected Map<ASTGUIIterate, String> namedIterates = new HashMap<>();
-  protected Map<ASTGUIArgValue, String> namedTemplates = new HashMap<>();
-  protected Map<String, String> modules = new HashMap<>();
-  protected Map<String, String> modulesQualified = new HashMap<>();
+  protected Map<ASTGUIComponent, String> namedComponents = new LinkedHashMap<>();
+  protected Map<ASTGUIIterate, String> namedIterates = new LinkedHashMap<>();
+  protected Map<ASTGUIArgValue, String> namedTemplates = new LinkedHashMap<>();
+  protected Map<String, String> modules = new LinkedHashMap<>();
+  protected Map<String, String> modulesQualified = new LinkedHashMap<>();
   protected List<ASTGUIComponent> notNestedComponents = new ArrayList<>();
-  protected Map<ASTGUIComponent, ASTGUIIterate> componentIterate = new HashMap<>();
+  protected Map<ASTGUIComponent, ASTGUIIterate> componentIterate = new LinkedHashMap<>();
 
   protected List<ASTGUIGuard> guards = new ArrayList<>();
 
@@ -74,7 +74,7 @@ public class GUIComponentsVisitor implements GUIDSLVisitor2, CommonExpressionsVi
     }
 
     // Build modules
-    String qualifiedModuleName = node.getQualifiedName();
+    String qualifiedModuleName = node.getNameSymbol().getFullName();
     String moduleName = util.getModuleName(qualifiedModuleName);
     modules.put(node.getName(), moduleName);
     if (!modulesQualified.containsKey(moduleName)) {

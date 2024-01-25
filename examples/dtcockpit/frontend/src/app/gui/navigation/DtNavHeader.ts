@@ -3,17 +3,21 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
 import { DtcockpitSecurityManager } from "@src/dtcockpit/DtcockpitSecurityManager";
 import { User } from '@src/dtcockpit/User';
-import { DtNavHeaderComponent } from '@src/gui/navigation/DtNavHeaderComponent';
+import { DtNavHeaderComponent ,config} from '@src/gui/navigation/DtNavHeaderComponent';
 
+import { RouterModule } from '@angular/router';
+import {CommonModule} from '@angular/common';
 @Component({
-  selector: "dt-nav-header",
-  templateUrl: "./DtNavHeader.html",
-  styleUrls: ["./DtNavHeader.scss"]
+  standalone:true,
+  imports:[...config.imports,RouterModule,CommonModule],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styleUrls: config.styleUrls
 })
 export class DtNavHeader extends DtNavHeaderComponent {
 
   public constructor(route: ActivatedRoute, protected router: Router) {
-    super();
+    super(router);
     this.router = router;
   }
 

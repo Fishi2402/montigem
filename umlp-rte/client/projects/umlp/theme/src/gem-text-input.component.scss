@@ -35,6 +35,8 @@
 
   .gem-text-input:disabled {
     cursor: not-allowed;
+    background-color: #cccc;
+    color: #3336;
   }
 
   .gem-text-input[type="date"] {

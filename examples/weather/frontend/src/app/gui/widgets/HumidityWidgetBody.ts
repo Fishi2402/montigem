@@ -1,13 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import {HumidityWidgetBodyComponent} from "@src/gui/widgets/HumidityWidgetBodyComponent";
+import {HumidityWidgetBodyComponent,config} from "@src/gui/widgets/HumidityWidgetBodyComponent";
+
 
 @Component({
-  selector: 'humidity-widget-body',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/widgets/HumidityWidgetBody.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['./HumidityWidgetBody.scss']
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class HumidityWidgetBody extends HumidityWidgetBodyComponent {
 

@@ -1,0 +1,62 @@
+package gui.component;
+
+import DemoRec.BatteryPack;
+import DemoRec.DemoRecComponent;
+import DemoRec.JoinConnection;
+
+import arrange.GemRow;
+import arrange.GemColumn;
+import arrange.GemCard;
+import basic.GemText;
+import basic.GemLink;
+import basic.GemCheckbox;
+import basic.GemButton;
+import input.GemTextInput;
+
+import gui.component.PhotoDisplay;
+import gui.component.PhotoDragNDrop;
+import gui.component.SubComponentView;
+import gui.navigation.Navigation;
+
+page ComponentEdit(DemoRecComponent component) {
+  @Navigation();
+  @GemCard(
+    title = "Edit the component.",
+    component = @GemColumn(
+        wrap="nowrap",
+        components=[
+          @GemTextInput(labelText = "Component Description", inputType = "string", entry = component.description),
+          @GemTextInput(labelText = "X-Position: ", inputType = "number", entry = component.xPos),
+          @GemTextInput(labelText = "Y-Position: ", inputType = "number", entry = component.yPos),
+          @GemTextInput(labelText = "Z-Position: ", inputType = "number", entry = component.zPos),
+          @GemTextInput(labelText = "Width: ", inputType = "number", entry = component.width),
+          @GemTextInput(labelText = "Length: ", inputType = "number", entry = component.length),
+          @GemTextInput(labelText = "Height: ", inputType = "number", entry = component.height),
+          @GemTextInput(labelText = "Weight: ", inputType = "number", entry = component.weight),
+          @GemCheckbox(checkboxItem = "Deconstructible"),
+          @PhotoDisplay(component=component),
+          photoDragAndDrop@PhotoDragNDrop(attachedComponent = component)
+      ])
+  );
+  @GemCard(
+    title = "Subparts of the component.",
+    component =
+      @GemColumn(
+        components=[
+          @iterate(JoinConnection conn : component.composedOf) {
+            @GemRow(
+              wrap="nowrap",
+              components=[
+                @GemText(value="Type of Connection: "),
+                @GemText(value=conn.joinConnectionType)
+            ]);
+            @GemText(value="State of Connection: "+conn.state);
+            @iterate(DemoRecComponent subComponent : conn.connects) {
+              @SubComponentView(subComponent=subComponent);
+            }
+          },
+          buildConnection@GemButton(label = "Create new Connection.", leftClick = createNewConnection, disabled=true)
+        ]
+      )
+  );
+}

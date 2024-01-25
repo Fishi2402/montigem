@@ -14,8 +14,8 @@
   },
   "@Replace('return StatusResult.ok(this.getId());')": {
     "include": [
-      "dtcockpit.commands.SendMail.doAction(..)",
-      "dtcockpit.commands.User_create.sendMail(..)"
+      "dtcockpit.commands.User_create.sendMail(..)",
+      "dtcockpit.commands.SendMail.doAction(..)"
     ]
   }
 }

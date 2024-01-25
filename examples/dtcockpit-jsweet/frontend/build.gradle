@@ -36,12 +36,6 @@ dependencies {
   implementation group: "de.monticore.lang", name: 'guidsl', version: "7.6.0-SNAPSHOT"
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 
-  def withoutSpringLogging = {
-    exclude module: 'spring-boot-starter-logging'
-    exclude module: 'logback-classic'
-    exclude module: 'log4j-to-slf4j'
-  }
-
   implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
 }
 
@@ -166,7 +160,7 @@ task translateJava2TSDomain(type: org.jsweet.gradle.JSweetTranspileTask) {
   setClasspath(configurations.runtimeClasspath);
 }
 
-sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui']
+sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui', 'src/main/java']
 
 org.jsweet.gradle.JSweetPluginExtension jsweetGUIConf = project.getExtensions().create("jsweetGUI", org.jsweet.gradle.JSweetPluginExtension.class)
 jsweetGUI {

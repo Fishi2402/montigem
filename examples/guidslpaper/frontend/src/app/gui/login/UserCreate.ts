@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserCreateComponent} from '@src/gui/login/UserCreateComponent';
+import {UserCreateComponent,config} from '@src/gui/login/UserCreateComponent';
 import {Role} from '@src/guidslpaper/Role';
 import {User} from "@src/guidslpaper/User";
 import {GemList} from '@umlp/common';
@@ -10,11 +10,14 @@ import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 
 @Component({
-  selector: 'user-create',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserCreate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ["/Login.scss"]
+  standalone:true,
+  imports:[... config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: ["./Login.scss"]
 })
+
 export class UserCreate extends UserCreateComponent {
 
   private error: string = "";
@@ -31,7 +34,7 @@ export class UserCreate extends UserCreateComponent {
 
   public ngOnInit(): void {
     GuidslpaperManager.userBuilder().then(gemPromiseRes => {
-      this.newUserBuilder = gemPromiseRes;
+      this.newUser = gemPromiseRes;
     });
   }
 
@@ -46,9 +49,9 @@ export class UserCreate extends UserCreateComponent {
     }
     let errorMessage = this.validateUser();
     if (!errorMessage) {
-      //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
-      this.newUserBuilder.registrationDate(new Date());
-      this.newUserBuilder.role(Role.USER);
+      //this.user.activated(ActivationStatus.AKTIVIERT);
+      this.newUser.registrationDate(new Date());
+      this.newUser.role(Role.USER);
       this.build();
       this.router.navigate(['gui', 'login']);
     } else {

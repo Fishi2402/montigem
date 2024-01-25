@@ -15,8 +15,8 @@ public class JsweettestImportAdapter extends DomainImportAdapter {
     super(parentAdapter);
   }
 
-  protected String getDomainName() {
-    return "jsweettest";
+  @Override
+  protected void setDomainName() {
+    addDomainName("jsweettest");
   }
-
 }

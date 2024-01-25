@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
 
+// Task might not be a @CacheableTask since relative paths are generated for HWC-files
 public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
 
   public UMLPGuiGenTask() {

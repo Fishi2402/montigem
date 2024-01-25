@@ -1,0 +1,100 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.time.LocalDate;
+//import java.time.Duration;
+//import java.net.URI; TODO locations were URI instead of String change in future if possible
+
+classdiagram DemoRec {
+
+  class BatteryPack extends DemoRecComponent {
+    double stateOfCharge;
+    double health;
+  }
+
+  // OCL BatteryPack is not part of a composition
+
+  //association [1] BatteryPack -> (consistsOf) DemoRecComponent [*]; Replaced by composedOf
+
+  class BatteryPackType {
+    double capacity;
+    String bmsLocation;
+    String carType;
+  }
+
+  association [*] BatteryPack (inspectedInstances) <-> (type) BatteryPackType [1];
+
+  class Process {
+    LocalDate startedAt;
+  }
+
+  association [*] Process -> (deconstructionOf) BatteryPack [1];
+
+  class ProcessStep {
+    long timeConsumption;
+    ProcessStepType type;
+    Optional<String> description;
+    int index;
+  }
+
+  association [1] Process -> (consistsOf)  ProcessStep [*] {ordered};
+
+  enum ProcessStepType {
+    DECONSTRUCTION,
+    OTHER;
+  }
+
+  class MeasuringValue {
+    String value;
+  }
+
+  class Dimension {
+    String unit;
+    String name;
+  }
+
+  association [*] MeasuringValue -> (dimension) Dimension [1];
+  association [*] ProcessStep -> (measured) MeasuringValue [*];
+  association [*] ProcessStep -> (uses) EndEffector [1];
+  association [*] ProcessStep <-> (deconstructs) JoinConnection [0..1];
+
+  // TODO what characterizes an EndEffector? What about dimensions or form? Is the set of endeffectors already known?
+  class EndEffector {
+    String name;
+  }
+
+  class DemoRecComponent {
+    Optional<String> description;
+    double xPos;
+    double yPos;
+    double zPos;
+
+    double width;
+    double length;
+    double height;
+
+    double weight;
+
+    boolean isDeconstructible;
+
+    List<String> photoLocations;
+    List<String> threeDFileLocations;
+  }
+
+  class JoinConnection {
+    double state; // TODO what kind of data type for state?
+    JoinConnectionType joinConnectionType;
+  }
+
+  association [*] DemoRecComponent -> (composedOf) JoinConnection [*];
+
+  association [*] DemoRecComponent (connects) <-> (connectedBy) JoinConnection [*];  // TODO should be 2..* on left side
+
+  enum JoinConnectionType {
+    SCREW,
+    GLUE,
+    WELDING,
+    PLUG,
+    ELECTRICAL,
+    UNDEFINED;
+  }
+}

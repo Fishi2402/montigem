@@ -206,8 +206,24 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
           if (argument.getTypeAsElement().toString().equals("umlp.backendrte.common.LoadingState")) {
             print("new SimpleResult().createFromLoadingState(").printArgList(newClass.getArguments()).print(")");
             return true;
+          } else {
+            print("new SimpleResult().createFromObject(").printArgList(newClass.getArguments()).print(")");
+            return true;
           }
         }
+      case "input.GemTextInputValidity":
+      case "input.src.lib.gemtextinput.GemTextInputTypes.GemTextInputValidity":
+        if (newClass.getArguments().size() == 0) {
+          print("{}");
+          return true;
+        } else if (newClass.getArguments().size() == 2) {
+          print(String.format("{status: %s, message: %s}", newClass.getArguments().get(0), newClass.getArguments().get(1)));
+          return true;
+        } else {
+          // ERROR
+          return false;
+        }
+      default:
     }
 
     return super.substituteNewClass(newClass);

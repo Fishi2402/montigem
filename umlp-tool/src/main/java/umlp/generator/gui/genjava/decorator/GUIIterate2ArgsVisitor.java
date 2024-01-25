@@ -15,7 +15,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

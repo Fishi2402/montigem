@@ -15,7 +15,8 @@ public class SEHubImportAdapter extends DomainImportAdapter {
     super(parentAdapter);
   }
 
-  protected String getDomainName() {
-    return "sehub";
+  @Override
+  protected void setDomainName() {
+    addDomainName("sehub");
   }
 }

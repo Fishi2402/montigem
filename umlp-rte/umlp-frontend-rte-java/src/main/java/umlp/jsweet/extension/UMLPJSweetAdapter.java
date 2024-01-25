@@ -9,6 +9,7 @@ import umlp.jsweet.extension.domainAdapters.UMLPCollectionsAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPJavaBasicsAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPRTEImportAdapter;
 import umlp.jsweet.extension.guiAdapters.GUIImportAdapter;
+import umlp.jsweet.extension.guiAdapters.GUIUtilAdapter;
 import umlp.jsweet.extension.guiAdapters.TSTypesAdapter;
 
 public class UMLPJSweetAdapter extends PrinterAdapter {
@@ -22,7 +23,9 @@ public class UMLPJSweetAdapter extends PrinterAdapter {
                             new GUIComponentAdapter(
                                 new GUIImportAdapter(
                                     new TSTypesAdapter(
-                                        parentAdapter
+                                        new GUIUtilAdapter(
+                                            parentAdapter
+                                        )
                                     )
                                 )
                             )

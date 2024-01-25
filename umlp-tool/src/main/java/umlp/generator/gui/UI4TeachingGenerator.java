@@ -13,7 +13,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,8 +36,8 @@ public class UI4TeachingGenerator {
             .filter(c -> !c.getModifier().isAbstract())
             .collect(Collectors.toList());
     List<ASTCDEnum> enums = cdAST.getCDDefinition().getCDEnumsList();
-    Map<ASTCDClass, List<ASTCDAttribute>> attributesInHierarchy = new HashMap<>();
-    Map<ASTCDClass, List<ASTCDAssocSide>> associationsInHierarchy = new HashMap<>();
+    Map<ASTCDClass, List<ASTCDAttribute>> attributesInHierarchy = new LinkedHashMap<>();
+    Map<ASTCDClass, List<ASTCDAssocSide>> associationsInHierarchy = new LinkedHashMap<>();
 
     for (ASTCDClass aClass : classes) {
       attributesInHierarchy.put(aClass, CDSymbolTables.getAttributesInHierarchy(aClass));

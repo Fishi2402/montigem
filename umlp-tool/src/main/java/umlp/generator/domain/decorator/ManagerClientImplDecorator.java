@@ -65,7 +65,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, getClearCacheTemplate(), concreteDomainClasses);
 
 
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+    origCD.getCDDefinition().getCDClassesList()
         .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
     origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getModifier().isDerived())
@@ -100,6 +100,11 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
+
+    if (domainClass.getModifier().isDerived()) {
+      getCD4C().addMethod(managerClass, "umlp.managerclientimpl.GetDerived", name);
+      return;
+    }
 
     boolean isSingleton = TagLookUp.isSingleton(domainClass);
 
