@@ -21,9 +21,9 @@ ${cd4c.method("public Boolean addMany${association.getName()?cap_first}(Map<Long
     try {
       DatabaseAccessManager.getConnection().rollback();
     } catch (SQLException ex) {
-      ex.printStackTrace();
+      Log.error("Error rolling back transaction", ex);
     }
-    e.printStackTrace();
+    Log.error("Error in addMany${association.getName()?cap_first}", e);
     return false;
   }
 
@@ -31,6 +31,6 @@ ${cd4c.method("public Boolean addMany${association.getName()?cap_first}(Map<Long
     try {
       DatabaseAccessManager.getConnection().setAutoCommit(true);
     } catch (SQLException e) {
-      e.printStackTrace();
+      Log.error("Error while enabling autocommit in addMany${association.getName()?cap_first}", e);
     }
   }

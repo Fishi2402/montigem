@@ -1,16 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
 import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
-import {ProjectsCreateByGroupComponent} from '@src/gui/project/ProjectsCreateByGroupComponent';
+import {ProjectsCreateByGroupComponent,config} from '@src/gui/project/ProjectsCreateByGroupComponent';
 import {ProjectErrorCollector} from '@src/dtcockpit/ProjectErrorCollector';
 import {Project} from '@src/dtcockpit/Project';
 
-
 @Component({
-  selector: 'projects-create-by-group',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/project/ProjectsCreateByGroup.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
 
@@ -20,7 +21,7 @@ export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
     if (!this.checkBuild()) return;
     DtcockpitManager.groupBuilder().then(gemPromiseRes => {
       this.build();
-      this.groupBuilder = gemPromiseRes;
+      this.group = gemPromiseRes;
     });
 
   }
@@ -38,11 +39,23 @@ export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
         this.error = msg;
       },
       notifyLastPipelineInvalid: (project: Project,msg: string): void => {
-      this.error = msg;
-    }
+        this.error = msg;
+      },
+      notifyBranchesInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      },
+      notifyDependentProjectsInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      },
+      notifyCiInfosInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      },
+      notifyCmdInvalid: (project: Project,msg: string): void => {
+        this.error = msg;
+      }
     };
     ProjectErrorCollector.addErrorObserver(observer);
-    if (!this.groupBuilder.isBuildable()) {
+    if (!this.group.isBuildable()) {
       ProjectErrorCollector.removeErrorObserver(observer);
       return false;
     }

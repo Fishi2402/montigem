@@ -11,7 +11,7 @@ import umlp.UMLPMill;
 import umlp._symboltable.IUMLPArtifactScope;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class UMLPScopeManager extends UMLPScopeManagerTOP {
@@ -33,7 +33,7 @@ public class UMLPScopeManager extends UMLPScopeManagerTOP {
 
   @Override
   public Map<ASTCDCompilationUnit, UMLPArtifactScopeWithFindings> createAllArtifactScopes(Collection<ASTCDCompilationUnit> astNodes) {
-    final Map<ASTCDCompilationUnit, UMLPArtifactScopeWithFindings> res = new HashMap<>();
+    final Map<ASTCDCompilationUnit, UMLPArtifactScopeWithFindings> res = new LinkedHashMap<>();
     syncAccessGlobalScope(gs -> {
       clearGlobalScope();
       if(supportsIterativeScopeAppending()){

@@ -2,8 +2,10 @@
 // HWC-P
 
 import { Component } from "@angular/core";
-
+import { FavoriteListComponent } from '@src/gui/widgets/navigation/FavoriteListComponent';
 @Component({
+  standalone:true,
+  imports:[FavoriteListComponent],
   selector: "welcome",
   templateUrl: "./welcome.component.html",
   styleUrls: ["./welcome.component.scss"]

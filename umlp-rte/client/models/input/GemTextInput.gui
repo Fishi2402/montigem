@@ -2,21 +2,52 @@
 package input;
 
 import input.GemTextInputTypes.GemTextInputValidity;
+import input.GemTextInputTypes.Option;
 
-//This component represents an input field with an optional label.
-//It is designed to be used in forms or other contexts where user input is required.
-
+/**
+  The component is an input field with an optional label. It is used whenever a
+  user input is required, e.g. to create/update objects, provide a search field,
+  etc.
+*/
 component GemTextInput(
+  /**
+    In context of a `"dropdown"` input type id can be set to ensure the list of
+    options is specific to the input field.
+  */
   String id,
-  String labelText,
-  String inputType,
-  List<String> options,
+  /** Text describing the input field. */
+  String labelText = "",
+  /**
+    Type of the input field.
+    The possible types (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#input_types)
+    are defined by the browser/platform implementing the input fields.
+    Commonly used types:
+    `"text"`: Accept any input string.
+    `"dropdown"`: Input field turns into a dropdown.
+    `"number"`: Accept numbers.
+    `"date"`: Date input with a calender selection.
+    `"password"`: Field hiding the input string.
+  */
+  String inputType = "text",
+  /** A list of options for the `"dropdown"` input type. */
+  List<Option> options,
+  /**
+    The input field's value. If it is linked to a variable, the value of the
+    variable will change when the user enters a new value.
+  */
   ?String entry,
+  /** Whether the input field is disabled. */
   boolean disabled = false,
+  /** Text displayed when the field is empty. */
   String placeholder = "",
+  /** Width of the input field. */
   String width = "100%",
+  /** Height of the input field. */
   String height = "100%",
+  /** An object representing the validation status of the field. */
   GemTextInputValidity validity,
+  /** Callback that is executed when a key is released. */
   Event keyRelease,
+  /** Callback that is executed when a key is pressed. */
   Event keyPress
 )

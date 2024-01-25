@@ -1,0 +1,31 @@
+package gui.step;
+
+import basic.GemText;
+import input.GemTextInput;
+import basic.GemButton;
+import arrange.GemCard;
+import arrange.GemColumn;
+import arrange.GemRow;
+
+import DemoRec.MeasuringValue;
+import DemoRec.Dimension;
+
+page MeasuringValueCreate(MeasuringValue measuringValue, Event<MeasuringValue> measuringValueEvent) {
+  @GemCard(
+    title = "Measuring Value",
+    component = @GemRow(
+      wrap="nowrap",
+      colGap="5px",
+      components=[
+        @GemTextInput(labelText = "Value", inputType = "string", entry = measuringValue.value),
+        selectDimensionUnit@GemTextInput(
+          labelText = "Unit",
+          inputType = "dropdown",
+          options = null,
+          entry = null
+        ),
+        addMeasuringValue@GemButton(label = "Add Value", leftClick = createNewMeasuringValue, disabled=false)
+      ]
+    )
+  );
+}

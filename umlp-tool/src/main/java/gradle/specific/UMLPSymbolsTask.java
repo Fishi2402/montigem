@@ -2,8 +2,11 @@
 package gradle.specific;
 
 import gradle.common.UMLPSingleFileTask;
+import gradle.common.UMLPSingleFilev2Task;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.tasks.CacheableTask;
+import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
@@ -20,10 +23,11 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public abstract class UMLPSymbolsTask extends UMLPSingleFileTask {
+@CacheableTask
+public abstract class UMLPSymbolsTask extends UMLPSingleFilev2Task {
 
   public UMLPSymbolsTask() {
-    super("UMLPSymbolsTask");
+    super("UMLPSymbolsTask", null);
   }
 
   @OutputDirectory

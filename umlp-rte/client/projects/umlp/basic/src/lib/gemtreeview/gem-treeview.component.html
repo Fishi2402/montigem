@@ -21,7 +21,7 @@
   <ul class="gem-tree-root-nested" *ngFor="let item of items">
     <li class="gem-tree-item">
       <span class="gem-tree-item-text">
-        <span *ngIf="item.children" class="gem-tree-item-icon" (click)="onExpand(item)">
+        <span *ngIf="item.children && item.children.length > 0" class="gem-tree-item-icon" (click)="onExpand(item)">
           <i class="fa fa-plus-square" *ngIf="!item.expanded"></i>
           <i class="fa fa-minus-square" *ngIf="item.expanded"></i>
         </span>

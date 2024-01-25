@@ -2,14 +2,17 @@
 
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {Component, EventEmitter, Output} from '@angular/core';
-import {IssueDragDropComponent} from '@src/gui/issues/IssueDragDropComponent';
+import {IssueDragDropComponent,config} from '@src/gui/issues/IssueDragDropComponent';
 import {Issue} from '@src/sehub/Issue';
-
+import { DragDropModule } from "@angular/cdk/drag-drop";
+import { IssueEntry } from "./IssueEntry";
 @Component({
-  selector: 'issue-drag-drop',
-  templateUrl: './IssueDragDrop.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: ['./IssueDragDrop.scss',]
+  standalone:true,
+  imports:[...config.imports,DragDropModule,IssueEntry],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class IssueDragDrop extends IssueDragDropComponent {
 

@@ -3,13 +3,24 @@ package basic;
 
 import basic.GemTreeviewTypes.GemTreeviewEntry;
 
-//The TreeView component is a graphical user interface element commonly
-//used in software applications and websites to represent hierarchical data in a tree-like structure.
-//It provides a visual representation of parent-child relationships, allowing users to navigate and interact with a hierarchical dataset.
-
+/*
+  The tree view displays hierarchical data. It provides a visual representation of
+  parent-child relationships, allowing users to navigate and interact with a
+  hierarchical dataset.
+/**/
 component GemTreeview(
+  /** Tree nodes. Each node defines a root of a subtree and its children. */
   List<GemTreeviewEntry> items,
+  /** Whether the entire tree should be expanded. */
   boolean allExpanded = false,
+  /**
+    Callback that is executed when the expand/collapse button (+/-) is clicked.
+    Emits the toggled element.
+  */
   Event<GemTreeviewEntry> expand,
+  /**
+    Callback that is executed when the text of the element is clicked.
+    Emits the clicked element.
+  */
   Event<GemTreeviewEntry> leftClick
 )

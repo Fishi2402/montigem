@@ -30,19 +30,29 @@ export class GemTextInput extends GemTextInputTOP implements OnInit {
   @Output() public override keyRelease = new EventEmitter<KeyboardEvent>();
   @Output() public override keyPress = new EventEmitter<KeyboardEvent>();
 
+  public override get inputType(): string {
+    return this._inputType;
+  }
+
+  @Input()
+  public override set inputType(inputType: string) {
+    if (inputType === "numericText") {
+      this._inputType = "text";
+      this.isNumeric = true;
+    } else if (inputType === "dropdown") {
+      this._inputType = "text";
+      this.isDropdown = true;
+    } else {
+      this._inputType = inputType;
+    }
+  }
+
   onEntryChange(event: string) {
     this.entryChange.emit(event);
   }
 
   ngOnInit(): void {
     this.componentId = this.id;
-
-    if (this.inputType === "numericText") {
-      this.inputType = "text";
-      this.isNumeric = true;
-    } else if (this.inputType === "dropdown") {
-      this.inputType = "text";
-      this.isDropdown = true;
-    }
   }
+
 }

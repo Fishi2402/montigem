@@ -22,6 +22,7 @@ public class TagLookUp {
 
   private final static String SINGLETON = "singleton";
   private final static String COMMAND = "command";
+  private final static String DERIVED = "derived";
 
   // Consider caching this within the taggers?
   protected static LoadingCache<TypeSymbol, Boolean> isSingletonCacheSymbol = CacheBuilder.newBuilder()
@@ -48,6 +49,14 @@ public class TagLookUp {
         }
       });
 
+  protected static LoadingCache<TypeSymbol, Boolean> isDerivedCacheSymbol = CacheBuilder.newBuilder()
+      .build(new CacheLoader<>() {
+        @Override
+        public @NotNull Boolean load(@NotNull TypeSymbol key) {
+          return _isDerived(key);
+        }
+      });
+
   public static boolean isSingleton(TypeSymbol typeSymbol) {
     return isSingletonCacheSymbol.getUnchecked(typeSymbol);
   }
@@ -58,6 +67,10 @@ public class TagLookUp {
 
   public static boolean isCommand(CDMethodSignatureSymbol methodSignatureSymbol) {
     return isCommandCacheSymbol.getUnchecked(methodSignatureSymbol);
+  }
+
+  public static boolean isDerived(TypeSymbol typeSymbol) {
+    return isDerivedCacheSymbol.getUnchecked(typeSymbol);
   }
 
   protected static Boolean _isSingleton(TypeSymbol typeSymbol) {
@@ -73,6 +86,11 @@ public class TagLookUp {
     return ooSymbolsTagger.getTags(symbol, TagRepository.getLoadedTagUnits()).stream().anyMatch(TagLookUp::isCommand);
   }
 
+  public static boolean _isDerived(TypeSymbol typeSymbol) {
+    return basicSymbolsTagger.getTags(typeSymbol, TagRepository.getLoadedTagUnits()).stream().anyMatch(TagLookUp::isDerived);
+  }
+
+
   // This would be nice to have generated from a TagSchema
   protected static boolean isSingleton(ASTTag tag){
     if (tag instanceof ASTSimpleTag)
@@ -85,6 +103,13 @@ public class TagLookUp {
       return ((ASTSimpleTag) tag).getName().equals(COMMAND);
     return false;
   }
+
+  protected static boolean isDerived(ASTTag tag){
+    if (tag instanceof ASTSimpleTag)
+      return ((ASTSimpleTag) tag).getName().equals(DERIVED);
+    return false;
+  }
+
 
   protected static OOSymbolsTagger ooSymbolsTagger = new OOSymbolsTagger(){
     @Override

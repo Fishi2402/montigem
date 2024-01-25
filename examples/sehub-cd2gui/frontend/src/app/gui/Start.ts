@@ -1,15 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {StartComponent} from '@src/gui/StartComponent';
+import {StartComponent,config} from '@src/gui/StartComponent';
 import {Component} from '@angular/core';
 import {SehubManager} from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 
 @Component({
-  selector: 'start',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/Start.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export  class Start extends StartComponent {
 

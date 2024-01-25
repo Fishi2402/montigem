@@ -2,7 +2,7 @@ import java.nio.file.Paths
 
 plugins {
   id 'java'
-  id 'de.rwth.se.umlp-tool-backend'
+  id 'de.rwth.se.umlp-tool-backend-test'  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.2.1'

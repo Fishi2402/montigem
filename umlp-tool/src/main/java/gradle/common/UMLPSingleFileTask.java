@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
 
+@Deprecated
 abstract public class UMLPSingleFileTask extends CommonUMLPTask {
 
   public UMLPSingleFileTask(String type) {

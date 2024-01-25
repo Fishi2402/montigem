@@ -1,3 +1,4 @@
+export * from "./GemListUtil";
 export * from "./LogUtil";
-export * from "./TestContext";
 export * from "./StringTransformations";
+export * from "./TestContext";

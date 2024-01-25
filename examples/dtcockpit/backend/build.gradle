@@ -1,5 +1,5 @@
 plugins {
-  id 'de.rwth.se.umlp-tool-backend'
+  id 'de.rwth.se.umlp-tool-backend-test' // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.2.1'
@@ -10,6 +10,7 @@ plugins {
 dependencies {
   umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
 }
+
 
 application { // Set Main-Class for "run" task
   mainClass = 'dtcockpit.DtcockpitServerApplication'

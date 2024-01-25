@@ -3,16 +3,18 @@
 import {SehubManager} from '@src/sehub/SehubManager';
 import {IssueState} from '@src/sehub/IssueState';
 import {Component} from '@angular/core';
-import {IssueEntryComponent} from '@src/gui/issues/IssueEntryComponent';
+import {IssueEntryComponent,config} from '@src/gui/issues/IssueEntryComponent';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
 import {SehubRole} from '@src/sehub/SehubRole';
 
 @Component({
-  selector: 'issue-entry',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueEntry.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class IssueEntry extends IssueEntryComponent {
 

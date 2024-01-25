@@ -2,7 +2,7 @@
 
 import {IssueState} from '@src/sehub/IssueState';
 import {Component} from '@angular/core';
-import {IssueCreateComponent} from '@src/gui/issues/IssueCreateComponent';
+import {IssueCreateComponent,config} from '@src/gui/issues/IssueCreateComponent';
 import { SehubManager } from '@src/sehub/SehubManager';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {User} from '@src/sehub/User';
@@ -10,18 +10,20 @@ import {SehubRole} from '@src/sehub/SehubRole';
 
 
 @Component({
-  selector: 'issue-create',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/issues/IssueCreate.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export class IssueCreate extends IssueCreateComponent {
 
   public override createIssue(event: any): void {
     SehubManager.issueBuilder().then(gemPromiseRes => {
-      this.issueBuilder.state(IssueState.UNASSIGNED);
+      this.issue.state(IssueState.UNASSIGNED);
       this.build();
-      this.issueBuilder = gemPromiseRes;
+      this.issue = gemPromiseRes;
     });
   }
 

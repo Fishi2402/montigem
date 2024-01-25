@@ -1,9 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { FavoriteItemComponent } from '@src/gui/widgets/navigation/FavoriteItemComponent';
+import { FavoriteItemComponent,config } from '@src/gui/widgets/navigation/FavoriteItemComponent';
 
 @Component({
+  standalone:true,
+  imports:[...config.imports],
   selector: 'favorite-item',
   templateUrl: '../../../../../build/frontendGen/build/appgui/gui/widgets/navigation/FavoriteItem.html',
   styles: [":host{ display: flex; flex-direction: column }"],

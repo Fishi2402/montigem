@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from "@angular/core";
-import {RangeWithGradientComponent} from "@src/gui/atomic/range_with_gradient/RangeWithGradientComponent";
+import {RangeWithGradientComponent,config} from "@src/gui/atomic/range_with_gradient/RangeWithGradientComponent";
 
 @Component({
-  selector: "range-with-gradient",
-  templateUrl: "./RangeWithGradient.html",
+  standalone:true,
+  imports:[... config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
 })
 export class RangeWithGradient extends RangeWithGradientComponent {
   uuid: string;
