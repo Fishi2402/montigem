@@ -1,7 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-import java.nio.file.Paths
-
 buildscript {
   repositories {
     mavenCentral()
@@ -127,10 +124,12 @@ jsweetDomain {
       '**/jsweettest/JsweettestServerApplication*.java',
       '**/jsweettest/JsweettestShellAPIApplication.java',
       '**/jsweettest/shellapi/**',
+      '**/jsweettest/JsweettestDAOFactory.java',
   ]
   module = 'commonjs'
   excludeTranspilation = [
       '**/jsweettest/*DAO.java',
+      '**/jsweettest/*DAONeo4J.java',
       '**/jsweettest/*DbObserver.java',
       '**/jsweettest/JsweettestManagerImpl.java',
       '**/jsweettest/JsweettestMock.java',

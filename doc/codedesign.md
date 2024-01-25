@@ -487,3 +487,11 @@ In diesem Projekt kann ein Feature implementiert sein durch:
 5. Eine Kombination der vorherigen Techniken
 
 Weiterhin könnten Module während der Einbindung in ein Projekt konfigurierbar sein
+
+## Transpilation of Java to Typescript(JSweet)
+
+### Annotations
+#### BackendOnly
+The `@BackendOnly` annotation can be used on Java methods to replace the body of the transpiled
+Typescript method with an error, which indicates that the method can only be used in the backend.
+This is useful if a class that must be transpiled references backend exclusive classes. 
