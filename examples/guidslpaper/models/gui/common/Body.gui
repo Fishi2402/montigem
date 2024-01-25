@@ -1,8 +1,0 @@
-package gui.common;
-
-import arrange.GemRow;
-
-component Body(List<GUIViewElement> top, GUIViewElement bottom) {
-  @GemRow(components = top);
-  @GemRow(components = [bottom]);
-}

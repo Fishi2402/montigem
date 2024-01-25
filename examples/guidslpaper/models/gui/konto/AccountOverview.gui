@@ -1,6 +1,7 @@
 package gui.konto;
 
 import arrange.GemRow;
+import arrange.GemColumn;
 import arrange.GemCard;
 import input.GemTextInput;
 import basic.GemButton;
@@ -9,32 +10,25 @@ import table.TableTypes.TableColumn;
 
 import gui.common.BalanceBox;
 import gui.common.Header;
-import gui.common.Body;
 
 import Guidslpaper.Konto;
 
 page AccountOverview(List<Konto> accounts) {
-  @GemRow(hAlign = "right", components = [
-     @BalanceBox(title = "GESAMTBUDGET"),
-     @BalanceBox(title = "AUSGABEN"),
-     @BalanceBox(title = "PLANAUSGABEN"),
-     @BalanceBox(title = "RESTBUDGET", color = "green")
-  ]);
-
-  @GemCard(titleComponent =
-    @Header(left = "Übersicht Konten", right = [
-      @GemButton(label = "Zahlungen erfassen"),
-      @GemButton(label = "Konto hinzufügen"),
-      @GemButton(label = "?"),
-      @GemButton(label = "-")
+  @GemColumn(rowGap = "0.5rem", components = [
+    @GemRow(hAlign = "right", colGap = "0.5rem", components = [
+       @BalanceBox(title = "GESAMTBUDGET", value = 52792531),
+       @BalanceBox(title = "AUSGABEN"),
+       @BalanceBox(title = "PLANAUSGABEN"),
+       @BalanceBox(title = "RESTBUDGET", color = "green")
     ]),
-    component = @Body(
-      top = [
-        @GemTextInput(inputType = "dropdown"),
-        @GemTextInput(inputType = "dropdown"),
-        @GemTextInput(inputType = "dropdown")
-      ],
-      bottom = @GemTable(
+
+    @GemCard(titleComponent =
+      @Header(left = "Übersicht Konten", right = [
+        @GemButton(label = "Zahlungen erfassen"),
+        @GemButton(label = "Konto hinzufügen"),
+        @GemButton(label = "?")
+      ]),
+      component = @GemTable(
         rows = accounts,
         columns = [
           TableColumn("pspElement", "PSP-Element"),
@@ -45,5 +39,5 @@ page AccountOverview(List<Konto> accounts) {
         ]
       )
     )
-  );
+  ]);
 }

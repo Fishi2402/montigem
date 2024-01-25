@@ -14,7 +14,7 @@ import { AccountOverviewComponent, config } from '@src/gui/konto/AccountOverview
 export class AccountOverview extends AccountOverviewComponent {
 
   public override init() {
-    this.gemTable15Columns = [
+    this.gemTable11Columns = [
       new TableColumn("_pspElement", "PSP-Element"),
       new TableColumn("_name", "Name"),
       new TableColumn("_kontotyp", "Typ"),

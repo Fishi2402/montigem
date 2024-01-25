@@ -3,9 +3,9 @@ package gui.common;
 import arrange.GemColumn;
 import basic.GemText;
 
-component BalanceBox(String title, String color) {
+component BalanceBox(long value = 0, String title = "", String color = "blue") {
   @GemColumn(hAlign = "center", components = [
-    @GemText(value = "123 $"),
+    @GemText(value = value + " €"),
     @GemText(value = title)
   ]);
 }
