@@ -3,10 +3,15 @@ package umlp.generator.gui.gentypescript.java2ts;
 
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._visitor.CD4CodeTraverser;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cdinterfaceandenum._visitor.CDInterfaceAndEnumVisitor2;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
@@ -17,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+@SuppressWarnings("unused") // used in ftl
 public class TSTopDecorator extends TopDecorator {
 
   public TSTopDecorator(MCPath hwPath) {
@@ -33,7 +39,16 @@ public class TSTopDecorator extends TopDecorator {
   }
 
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compUnit, boolean importHW) {
-    super.decorate(compUnit);
+
+    // Ensure determineQualifiedName works by filling the nameMap
+    CD4CodeTraverser traverser = CD4CodeMill.traverser();
+    DetermineNameVisitor nameVisitor = new DetermineNameVisitor();
+    traverser.add4CDBasis(nameVisitor);
+    traverser.add4CDInterfaceAndEnum(nameVisitor);
+    compUnit.accept(traverser);
+
+    //
+
     for (ASTCDClass cdClass : compUnit.getCDDefinition().getCDClassesList()) {
       if (!GUIGeneratorUtil.getInstance().isComponent(cdClass) && GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdClass, compUnit))) {
         if (importHW) {
@@ -61,27 +76,42 @@ public class TSTopDecorator extends TopDecorator {
       }
     }
 
+    // Run the default top decorator afterwards
+    super.decorate(compUnit);
+
     return compUnit;
   }
 
-  protected String getPackageName(ASTCDCompilationUnit origCD) {
-    String origPackage = Names.constructQualifiedName(
-        origCD.getCDPackageList(), origCD.getCDDefinition().getName()
-    );
-    return origPackage;
-  }
 
-  protected boolean existsHandwrittenClass(MCPath targetPath, String qualifiedName) {
-    String hwFile = Names.getPathFromPackage(qualifiedName) + ".ts";
-    Optional<URL> hwFilePath = targetPath.find(hwFile);
-    boolean result = hwFilePath.isPresent();
-    if (result) {
-      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
-      hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path,
-          Paths.get(hwFile)));
+  // TODO: TopDecorator.DetermineNameVisitor has a protected constructor >.<
+  protected class DetermineNameVisitor implements CDBasisVisitor2, CDInterfaceAndEnumVisitor2 {
+
+    protected String packageName = "";
+
+    @Override
+    public void visit(ASTCDPackage node) {
+      packageName = node.getName();
     }
-    Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
-    return result;
+
+    @Override
+    public void endVisit(ASTCDPackage node) {
+      packageName = "";
+    }
+
+    @Override
+    public void visit(ASTCDClass node) {
+      nameMap.put(node, packageName);
+    }
+
+    @Override
+    public void visit(ASTCDInterface node) {
+      nameMap.put(node, packageName);
+    }
+
+    @Override
+    public void visit(ASTCDEnum node) {
+      nameMap.put(node, packageName);
+    }
   }
 
 }

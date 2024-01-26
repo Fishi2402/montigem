@@ -12,9 +12,9 @@ import input.GemTextInput;
 
 import gui.navigation.GuidslPaperNavigation;
 
-page PersonCreate(Person person, List<Person> personen) {
+page PersonCreate(Person person) {
   @GemRow(wrap = "nowrap", components = [
-    @GuidslPaperNavigation(personen = personen),
+    @GuidslPaperNavigation(),
     @GemColumn(hAlign = "center", component =
       @GemCard(title = "New Person", component =
         @GemColumn(width = "50vw", rowGap = "10px", components = [

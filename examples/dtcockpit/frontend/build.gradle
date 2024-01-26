@@ -8,6 +8,9 @@ plugins {
 dependencies {
   // Types which are used in genGUI-Task
   guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+
+  umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
+
 }
 
 node {
