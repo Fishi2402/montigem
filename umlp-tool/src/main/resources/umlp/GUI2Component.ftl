@@ -13,7 +13,6 @@ ${includeArgs("umlp.generator.hook.InitModules", glex)}
 
 <#-- TopDecorator -->
 <#assign topDecoratorTS = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [hwPath])>
-<#assign topDecoratorJava = tc.instantiate("de.monticore.cd.codegen.TopDecorator", [hwPath])>
 
 <#assign annotationDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUIComponentAnnotationDecoratorAndStandaloneConfig", [glex, hwPath, outPath])>
 
@@ -23,7 +22,7 @@ ${includeArgs("umlp.generator.hook.BeforeTransformGui2C", decoratedAST, glex, hw
 ${guiDecorator.transform(ast, decoratedAST, viewComponents, hwPath, outPath)}
 
 ${topDecoratorTS.decorate(decoratedAST)}
-${topDecoratorJava.decorate(decoratedAST)}
+<#--No need to call the topDecoratorJava, as the topDecoratorTS extends the default one-->
 
 ${annotationDecorator.transform(decoratedAST,ast)}
 
