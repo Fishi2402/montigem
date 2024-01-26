@@ -34,6 +34,14 @@ export abstract class CommandResult<T> {
 
     public abstract isSuccessful(): Promise<boolean>;
 
+
+  // Durch Javas Type erasure ist es nicht möglich geschachtelte generics in einer Vererbung zu benutzten,
+  // also kann der genaue return type von Command#doRun nicht per Typenparameter gesetzt werden.
+  // Stattdessen wird immer CommandResult<T> zurückgegeben.
+  // Um zwischen StatusResult und SimpleResult<T> zu unterscheiden werden die folgenden Methoden genutzt,
+  // welche verhindern, dass instanceof genutzt werden muss
+
+  // Wird in StatusResult so überschrieben, dass true zurückgegeben wird
     public isStatusResult(): boolean {
         return false;
     }

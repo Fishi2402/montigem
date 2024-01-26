@@ -15,6 +15,7 @@ export abstract class CommandObjectMapper {
   static getInstance(): CommandObjectMapper {
     return <any>(/* requireNonNull */(obj => {
       if (obj == undefined || obj == null) {
+        Log.error("CommandObjectMapper is not initialized!");
         throw Object.defineProperty(new Error("CommandObjectMapper is not initialized!"), '__classes', {
           configurable: true,
           value: ['java.lang.Throwable', 'java.lang.Object', 'java.lang.RuntimeException', 'java.lang.NullPointerException', 'java.lang.Exception']
@@ -48,7 +49,7 @@ export abstract class CommandObjectMapper {
     return null;
   }
 
-  abstract _serializeCommand(command: Command<any>): Promise<string>;
+  protected abstract _serializeCommand(command: Command<any>): Promise<string>;
 
   public static async deserializeCommand(cmdStr: string): Promise<Command<any>> {
     try {
@@ -60,7 +61,7 @@ export abstract class CommandObjectMapper {
     }
   }
 
-  abstract _deserializeCommand(cmdStr: string): Promise<Command<any>>;
+  protected abstract _deserializeCommand(cmdStr: string): Promise<Command<any>>;
 
   public static async serializeResponse(result: CommandResult<any>): Promise<string> {
     try {

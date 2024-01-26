@@ -1,9 +1,18 @@
 /* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
 import {Log} from '../logging/Log';
 import {LogUtil} from '../util/LogUtil';
+import {CommandObjectMapper} from './CommandObjectMapper';
+import {Command} from './Command';
+import {CommandResult} from './CommandResult';
+import {Participant} from './Participant';
+import {DomainTypeFilter} from "./DomainTypeFilter";
 
 export class CommandManager {
-  participantId: number;
+  protected participantId: number = null;
+  protected particpants: any;
+  protected runningClientId: number;
+
+  protected static instance: CommandManager = null;
 
   constructor() {
     this.participantId = 0;
@@ -13,12 +22,6 @@ export class CommandManager {
       this.freeCommandId = 0;
     }
   }
-
-  particpants: any;
-
-  runningClientId: number;
-
-  static instance: CommandManager = null;
 
   public static async register(participant: Participant): Promise<number> {
     return await CommandManager.getInstance()._register(participant);
@@ -32,7 +35,7 @@ export class CommandManager {
     return CommandManager.getInstance()._getParticipantId();
   }
 
-  _getParticipantId(): number {
+  protected _getParticipantId(): number {
     return this.participantId;
   }
 
@@ -76,7 +79,8 @@ export class CommandManager {
 
   public static getInstance(): CommandManager {
     if (CommandManager.instance == null) {
-      CommandManager.instance = new CommandManager();
+      Log.warn("0x10000 Command manager was not initialized");
+      CommandManager.init();
     }
     return CommandManager.instance;
   }
@@ -181,13 +185,13 @@ export class CommandManager {
     }
   }
 
-  freeCommandId: number;
+  protected freeCommandId: number = 0;
 
   public static getFreeCommandId(): number {
     return CommandManager.getInstance()._getFreeCommandId();
   }
 
-  _getFreeCommandId(): number {
+  protected _getFreeCommandId(): number {
     return this.freeCommandId++;
   }
 
@@ -197,17 +201,4 @@ export class CommandManager {
 }
 
 CommandManager["__class"] = "umlp.backendrte.command.CommandManager";
-
-
-import {CommandObjectMapper} from './CommandObjectMapper';
-
-
-import {Command} from './Command';
-
-
-import {CommandResult} from './CommandResult';
-
-
-import {Participant} from './Participant';
-import {DomainTypeFilter} from "./DomainTypeFilter";
 

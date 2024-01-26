@@ -19,7 +19,7 @@ export class ServerError extends Command<void> {
    */
   public async doAction(): Promise<StatusResult> {
     GeneralErrorCollector.reportServerError(this.t);
-    return StatusResult.ok(this.getId());
+    return Promise.resolve(StatusResult.ok(this.getId()));
   }
 
   public checkAccessPolicy(): Promise<boolean> {

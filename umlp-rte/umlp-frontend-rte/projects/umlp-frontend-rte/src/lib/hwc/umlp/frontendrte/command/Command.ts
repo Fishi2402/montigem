@@ -6,15 +6,22 @@ import {Log} from "../logging";
 import {IUMLPList, LoadingState, UMLPArrayList} from "../common";
 import {SimpleResult} from "./SimpleResult";
 
+// Der Typenparameter T gibt an, welchen Datentyp gewrapped in ein CommandResult<T> ein Command zurückgeben soll.
+// Falls es nur eine Status-Meldung ist, so wird T = Void genutzt und der Status aus dem CommandResult ausgelesen.
+// Bei Human_get wäre T = Human, sodass der Entwickler den Human aus dem CommandResult auslesen kann, oder am Status
+// erkennt, das ein Fehler aufgetreten ist.
 export abstract class Command<T> {
-  /*private*/
-  id: number;
+  // Der Ersteller des Commands vergibt diese id und nutzt sie nachher um die Response des Backends, welche dieselbe id enthält, diesem Command zuzuordnen.
+  // Ansonsten können parallel ankommende Responses nicht eindeutig ihren Commands zugeordnet werden.
+  private id: number;
 
-  /*private*/
-  participantId: number;
+  // Id des Clients der diesen Command erstellt hat.
+  // Hiermit wird sichergestellt, dass ein Client keine Commands zurückgeschickt bekommt, die von ihm erstellt wurden
+  private participantId: number;
 
-  /*private*/
-  commandType: string;
+  // Identifiziert den typen des Commands
+  // Wird bei der Deserialisierung benötigt um die korrekte Subklasse von Command zu instanziieren
+  private commandType: string;
 
   constructor(commandType: string) {
     if (this.id === undefined) {
@@ -51,7 +58,7 @@ export abstract class Command<T> {
   protected abstract doAction(): Promise<CommandResult<T>>;
 
   public undoRun() {
-    const res: string = "MAB0x9000: No undo for operation " + /* getName */(c => typeof c === 'string' ? c : c["__class"] ? c["__class"] : c["name"])((<any>this.constructor)) + " available";
+    let res: string = "MAB0x9000: No undo for operation " + this.constructor.name + " available";
     Log.warn(res);
     throw new NotImplementedException(res);
   }
@@ -60,7 +67,7 @@ export abstract class Command<T> {
     return this.id;
   }
 
-  public setId(id: number) {
+  public setId(id: number): void {
     this.id = id;
   }
 
@@ -72,19 +79,25 @@ export abstract class Command<T> {
     return this.participantId;
   }
 
+
+  // Ein request verändert die Daten nicht und muss daher nicht an andere Clients weitergeleitet werden
+  // z.B Human_get.
+  // Um die technische Umsetzung zu vereinfachen, nutzen Requests dieselbe Infrastruktur wie Commands
   public isRequest(): boolean {
     return false;
   }
 
+  // GemIds, der Daten welcher dieser Command verändert
   public getEffectedGemIds(): Array<number> {
     return [];
   }
 
+  // GemIds, zu welchen dieser Client updates erhalten muss
   public getNewlySubscribedGemIds(): Array<number> {
     return this.getEffectedGemIds();
   }
 
-  public setParticipantId(participantId: number) {
+  public setParticipantId(participantId: number): void {
     this.participantId = participantId;
   }
 

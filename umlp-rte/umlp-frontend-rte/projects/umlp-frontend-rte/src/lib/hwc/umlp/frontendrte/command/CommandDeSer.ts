@@ -1,9 +1,10 @@
 /* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
 
 import {JsonPrinter} from "../mcjson";
+import { Command } from './Command';
 
 export abstract class CommandDeSer<T extends Command<any>> {
-    public buildJson(command: T, printer: JsonPrinter) {
+    public buildJson(command: T, printer: JsonPrinter): void {
         printer.member("id", command.getId());
         printer.member("commandType", command.getCommandType());
         printer.member("participantId", command.getParticipantId());
@@ -33,9 +34,3 @@ export abstract class CommandDeSer<T extends Command<any>> {
     }
 }
 CommandDeSer["__class"] = "umlp.backendrte.command.CommandDeSer";
-
-
-
-
-import { Command } from './Command';
-
