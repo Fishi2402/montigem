@@ -228,6 +228,9 @@ public class BEDecorator extends AbstractDecorator {
       ValidationResultDecorator validationResultDecorator = new ValidationResultDecorator(glex);
       validationResultDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ValidationResultDecorator", BEDecorator.class.getName());
+      ValidationResultDeSerDecorator validationResultDeSerDecorator = new ValidationResultDeSerDecorator(glex);
+      validationResultDeSerDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ValidationResultDeSerDecorator", BEDecorator.class.getName());
     }
 
 

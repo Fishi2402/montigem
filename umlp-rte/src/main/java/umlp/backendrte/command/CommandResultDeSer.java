@@ -7,7 +7,6 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.common.BaseClassObjectMapper;
-import umlp.backendrte.common.ValidationMessage;
 import umlp.backendrte.common.ValidationResult;
 
 import java.util.ArrayList;
@@ -60,19 +59,8 @@ public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
       }
     } else if (result.isValidationResult()) {
       ValidationResult vr = result.asValidationResult();
-      printer.beginArray("messages");
-      for(ValidationMessage msg : vr.get()) { // ValidationMessage
-        printer.beginObject();
-        printer.member("message", msg.getMessage());
-        printer.beginArray("attributes"); // Attribute list
-        for(String attr : msg.getAttributes()){
-          printer.value(attr);
-        }
-        printer.endArray();
-        printer.member("status", msg.getStatus().ordinal());
-        printer.endObject();
-      }
-      printer.endArray();
+      printer.member("successful", vr.isSuccessful());
+
     }
   }
 
