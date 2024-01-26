@@ -1,6 +1,5 @@
 package umlp.generator.validator.ocl.visitors;
 
-import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.ocl._ast.ASTOCLConstraint;
 import de.monticore.ocl.ocl._ast.ASTOCLConstructorSignature;
 import de.monticore.ocl.ocl._ast.ASTOCLContextDefinition;
@@ -9,6 +8,8 @@ import de.monticore.ocl.ocl._ast.ASTOCLMethodSignature;
 import de.monticore.ocl.ocl._ast.ASTOCLOperationConstraint;
 import de.monticore.ocl.ocl._ast.ASTOCLParamDeclaration;
 import de.monticore.ocl.ocl._visitor.OCLVisitor2;
+import de.monticore.ocl.setexpressions._ast.ASTSetComprehension;
+import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
@@ -19,16 +20,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class OCLContextCollector implements OCLVisitor2 {
+public class OCLContextCollector implements OCLVisitor2, SetExpressionsVisitor2 {
 
   private ASTOCLOperationConstraint currentOperationConstraint;
   private ASTOCLInvariant currentInvariant;
   private final Map<ASTOCLOperationConstraint, List<ASTOCLParamDeclaration>> paramDeclarationsForOperationConstraints;
   private final Map<ASTOCLInvariant, List<ASTOCLParamDeclaration>> paramDeclarationsForInvariants;
+  private final Map<ASTSetComprehension, String> setComprehensionContext;
+  int setComprenhensionCounter = 0;
 
   public OCLContextCollector() {
     this.paramDeclarationsForOperationConstraints = new LinkedHashMap<>();
     this.paramDeclarationsForInvariants = new LinkedHashMap<>();
+    this.setComprehensionContext = new LinkedHashMap<>();
   }
 
   public List<ASTOCLConstraint> collectConstraintsForType(String typeName) {
@@ -59,6 +63,7 @@ public class OCLContextCollector implements OCLVisitor2 {
   public void visit(ASTOCLInvariant node) {
     currentInvariant = node;
     paramDeclarationsForInvariants.put(node, new ArrayList<>());
+    setComprenhensionCounter = 0;
   }
 
   @Override
@@ -82,6 +87,15 @@ public class OCLContextCollector implements OCLVisitor2 {
             .addAll(
                     node.getOCLParamDeclarationList()
             );
+  }
+
+  @Override
+  public void visit(ASTSetComprehension node) {
+    setComprehensionContext.put(node, "setComprehension" + setComprenhensionCounter++);
+  }
+
+  public Map<ASTSetComprehension, String> getSetComprehensionContext() {
+    return setComprehensionContext;
   }
 
   public Map<ASTOCLInvariant, List<ASTOCLParamDeclaration>> getParamDeclarationsForInvariants() {

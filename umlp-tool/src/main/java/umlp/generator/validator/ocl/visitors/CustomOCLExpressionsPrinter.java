@@ -1,5 +1,6 @@
 package umlp.generator.validator.ocl.visitors;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -31,7 +32,7 @@ import umlp.generator.validator.ocl.associationTree.OCLInvariantTreeNode;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,11 +40,13 @@ import java.util.Optional;
 public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
   private int currentForallLevel = 0;
   private final OCLInvariantTree oCLInvariantTree;
-  Map<String, Integer> firstVisitedInCallLevel = new HashMap<>();
+  private final Map<String, Integer> firstVisitedInCallLevel = new LinkedHashMap<>();
+  private final Map<ASTSetComprehension, String> setComprehensionContext;
 
-  public CustomOCLExpressionsPrinter(IndentPrinter printer, VariableNaming naming, IDerive deriver, ISynthesize syntheziser, OCLInvariantTree oCLInvariantTree) {
+  public CustomOCLExpressionsPrinter(IndentPrinter printer, VariableNaming naming, IDerive deriver, ISynthesize syntheziser, OCLInvariantTree oCLInvariantTree, Map<ASTSetComprehension, String> setComprehensionContext) {
     super(printer, naming, deriver, syntheziser);
     this.oCLInvariantTree = oCLInvariantTree;
+    this.setComprehensionContext = setComprehensionContext;
   }
 
   @Override
@@ -90,6 +93,23 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
       printer.println(call);
     }
     int valueLevel = currentForallLevel;
+    Map<ASTSetComprehension, OCLInvariantTreeNode> setComprehensionsInScope = new LinkedHashMap<>();
+    for(ASTSetComprehension setComprehension : setComprehensionContext.keySet()) {
+      ASTNode setNode = setComprehension.getEnclosingScope().getAstNode();
+      if(node.equals(setNode) && setComprehension.getLeft().isPresentGeneratorDeclaration()) {
+        List<String> call = getExpressionCall(setComprehension.getLeft().getGeneratorDeclaration().getExpression());
+        Optional<OCLInvariantTreeNode> treeNode = oCLInvariantTree.findMatchingBranch(call, setComprehension.getLeft().getGeneratorDeclaration().getEnclosingScope());
+        treeNode.ifPresent(oclInvariantTreeNode -> setComprehensionsInScope.put(setComprehension, oclInvariantTreeNode));
+      }
+    }
+    for(ASTSetComprehension setComprehension : setComprehensionsInScope.keySet()) {
+      String type = getDeriver().deriveType(setComprehension).getResult().printFullName();
+      String name = setComprehensionContext.get(setComprehension);
+      this.getPrinter().print(type);
+      this.getPrinter().print(" ");
+      this.getPrinter().print(name);
+      this.getPrinter().println(" = new HashSet<>();");
+    }
     this.getPrinter().print("boolean value");
     this.getPrinter().print(valueLevel);
     this.getPrinter().print(" = ");
@@ -98,6 +118,70 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
     this.getPrinter().println(";");
     for (String call : finishingCalls) {
       printer.println(call);
+    }
+    for(ASTSetComprehension setComprehension : setComprehensionsInScope.keySet()) {
+      OCLInvariantTreeNode treeNode = setComprehensionsInScope.get(setComprehension);
+      String name = setComprehension.getLeft().getGeneratorDeclaration().getName();
+      String setCompName = setComprehensionContext.get(setComprehension);
+      List<String> expressionCall = getExpressionCall(setComprehension.getLeft().getGeneratorDeclaration().getExpression());
+      String call = transformToActualCall(expressionCall);
+      OCLInvariantTreeNode deepestNodeForCall = treeNode.findDeepestNodeForCall(expressionCall).get();
+      String type = deepestNodeForCall.getAssociation().get().getRight().getMCQualifiedType().printType();
+      String listName = treeNode.findDeepestNodeForCall(expressionCall).get().getAssociation().get().getName();
+      if(deepestNodeForCall.getAssociation().get().getLeft().getMCQualifiedType().printType().equals(deepestNodeForCall.getAssociation().get().getRight().getMCQualifiedType().printType())) {
+          listName = "Right" + StringTransformations.capitalize(listName);
+        }
+      String vRCall = getVRCallForCallBranch(oCLInvariantTree, treeNode, currentForallLevel);
+      this.getPrinter().print("for(");
+      this.getPrinter().print(type);
+      this.getPrinter().print(" ");
+      this.getPrinter().print(setComprehension.getLeft().getGeneratorDeclaration().getName());
+      this.getPrinter().print(" : ");
+      this.getPrinter().print(call);
+      this.getPrinter().println(") {");
+      this.getPrinter().indent();
+      this.getPrinter().print("int i = ");
+      this.getPrinter().print(call);
+      this.getPrinter().print(".indexOf(");
+      this.getPrinter().print(name);
+      this.getPrinter().println(");");
+      this.getPrinter().print("boolean v");
+      this.getPrinter().print(valueLevel);
+      this.getPrinter().print(" = ");
+      this.getPrinter().print(setCompName);
+      this.getPrinter().print(".contains(");
+      this.getPrinter().print(setComprehension.getLeft().getGeneratorDeclaration().getName());
+      this.getPrinter().print(") ? ");
+      this.getPrinter().print("value");
+      this.getPrinter().print(valueLevel);
+      this.getPrinter().print(" : !value");
+      this.getPrinter().print(valueLevel);
+      this.getPrinter().println(";");
+      vRCall = vRCall.substring(0, vRCall.lastIndexOf(".")) + ".get" + StringTransformations.capitalize(listName) + "ValidationResults()";
+      this.getPrinter().print("if(");
+      this.getPrinter().print(vRCall);
+      this.getPrinter().print(".size() > i");
+      this.getPrinter().println(") {");
+      this.getPrinter().indent();
+      this.getPrinter().print(vRCall);
+      this.getPrinter().print(".get(i).addThisObjectRelatedValidationMessage(v");
+      this.getPrinter().print(valueLevel);
+      this.getPrinter().println(" ? ValidationMessage.ok() : ValidationMessage.error(message));");
+      this.getPrinter().unindent();
+      this.getPrinter().println("} else {");
+      this.getPrinter().indent();
+      this.getPrinter().print(vRCall);
+      this.getPrinter().print(".add(new ");
+      this.getPrinter().print(type);
+      this.getPrinter().print("ValidationResult());");
+      this.getPrinter().print(vRCall);
+      this.getPrinter().print(".get(i).addThisObjectRelatedValidationMessage(v");
+      this.getPrinter().print(valueLevel);
+      this.getPrinter().println(" ? ValidationMessage.ok() : ValidationMessage.error(message));");
+      this.getPrinter().unindent();
+      this.getPrinter().println("}");
+      this.getPrinter().unindent();
+      this.getPrinter().println("}");
     }
 
     this.getPrinter().print(getNaming().getName(node));
@@ -167,7 +251,7 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
           if(expressionNode.isPresent()) {
             OCLInvariantTreeNode deepestNode = expressionNode.get().findDeepestNodeForCallBranch();
             if(deepestNode.hasAssociation() && deepestNode.getAssociation().get().getRight().getCDCardinality().isMult()) {
-              //type = "List<" + type + ">";
+              //type = "List<" + type + ">"; // TODO: Clean this up
             }
           }
         }
@@ -293,6 +377,15 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
       }
     }
     return call.toString();
+  }
+
+  public static String transformToActualCall(List<String> call) {
+    StringBuilder result = new StringBuilder();
+    result.append(call.get(0));
+    for(int i = 1; i < call.size(); i++) {
+      result.append(".get").append(StringTransformations.capitalize(call.get(i))).append("()");
+    }
+    return result.toString();
   }
 
   public static IBasicSymbolsScope findBasicSymbolsScope(IExpressionsBasisScope expressionsBasisScope) {

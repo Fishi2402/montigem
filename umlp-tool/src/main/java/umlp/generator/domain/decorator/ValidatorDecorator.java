@@ -10,22 +10,17 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDEnumConstant;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.ocl.ocl.OCLMill;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
-import de.monticore.ocl.ocl._ast.ASTOCLContextDefinition;
 import de.monticore.ocl.ocl._ast.ASTOCLInvariant;
 import de.monticore.ocl.ocl._ast.ASTOCLParamDeclaration;
 import de.monticore.ocl.ocl._visitor.OCLTraverser;
 import de.monticore.ocl.setexpressions._ast.ASTSetComprehension;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import org.gradle.internal.Pair;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.validator.ocl.OCLParser;
-import umlp.generator.validator.ocl.associationTree.AssociationTreePrettyPrinterTraverser;
-import umlp.generator.validator.ocl.associationTree.BackwardsAssociationTreePrettyPrinter;
 import umlp.generator.validator.ocl.associationTree.OCLInvariantTree;
-import umlp.generator.validator.ocl.associationTree.OCLInvariantTreeNode;
 import umlp.generator.validator.ocl.visitors.CustomCommonExpressionsHandler;
 import umlp.generator.validator.ocl.visitors.CustomExpressionsBasisHandler;
 import umlp.generator.validator.ocl.visitors.CustomOCLExpressionsHandler;
@@ -43,17 +38,17 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class ValidatorDecorator extends AbstractDecorator {
   public static final String SUFFIX = "Validator";
-
   private List<ASTOCLCompilationUnit> oclCompilationUnits;
   private final List<OCLInvariantTree> oclInvariantTrees;
   private final Map<ASTOCLInvariant, List<ASTOCLParamDeclaration>> paramDeclarationsForInvariant = new LinkedHashMap<>();
+  private final Map<ASTSetComprehension, String> setComprehensionContext = new LinkedHashMap<>();
+
+  private final Map<String, List<String>> enumMap = new LinkedHashMap<>();
 
   public ValidatorDecorator(GlobalExtensionManagement glex) {
     super(glex);
     oclInvariantTrees = new ArrayList<>();
   }
-
-  private final Map<String, List<String>> enumMap = new LinkedHashMap<>();
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
@@ -72,6 +67,8 @@ public class ValidatorDecorator extends AbstractDecorator {
       traverser.add4OCLExpressions(invariantExpressionsVisitor);
       traverser.add4OCL(contextCollector);
       traverser.add4OCL(invariantExpressionsVisitor);
+      traverser.add4SetExpressions(contextCollector);
+      traverser.add4SetExpressions(invariantExpressionsVisitor);
       traverser.setCommonExpressionsHandler(new CustomCommonExpressionsHandler(traverser));
       traverser.setExpressionsBasisHandler(new CustomExpressionsBasisHandler(traverser));
       traverser.setOCLExpressionsHandler(new CustomOCLExpressionsHandler(traverser));
@@ -80,6 +77,7 @@ public class ValidatorDecorator extends AbstractDecorator {
 
       this.oclInvariantTrees.addAll(invariantExpressionsVisitor.getAssociationTrees());
       this.paramDeclarationsForInvariant.putAll(contextCollector.getParamDeclarationsForInvariants());
+      this.setComprehensionContext.putAll(contextCollector.getSetComprehensionContext());
     }
 
     String cdName = origCD.getCDDefinition().getName();
@@ -119,7 +117,7 @@ public class ValidatorDecorator extends AbstractDecorator {
       String oclRuleName = invariant.getName();
       // Has to be present, else something else went wrong
       OCLInvariantTree oCLInvariantTree = this.oclInvariantTrees.stream().filter(a -> a.getInvariant().equals(invariant)).findFirst().get();
-      String oclRule = OCLParser.generate(invariant.getExpression(), new IndentPrinter(), enumMap, oCLInvariantTree);
+      String oclRule = OCLParser.generate(invariant.getExpression(), new IndentPrinter(), enumMap, oCLInvariantTree, setComprehensionContext);
       oclRules.add(getCD4C().addMethod(domainClass, getValidateRuleTemplate(), oclRuleName, oclRule, oclMessage, domainClass.getName(), oCLInvariantTree.getBranchRootNodes()));
     }
 

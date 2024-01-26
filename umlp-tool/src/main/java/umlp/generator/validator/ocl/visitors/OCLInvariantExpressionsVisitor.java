@@ -44,7 +44,6 @@ public class OCLInvariantExpressionsVisitor implements OCLVisitor2, CommonExpres
   private final ASTCDCompilationUnit origCD;
   private final List<OCLInvariantTree> oCLInvariantTrees;
   private boolean isFirstFieldAccessExpression = true;
-  int currentTreeMaxDepth = 0;
 
   public OCLInvariantExpressionsVisitor(ASTCDCompilationUnit origCD) {
     this.origCD = origCD;
