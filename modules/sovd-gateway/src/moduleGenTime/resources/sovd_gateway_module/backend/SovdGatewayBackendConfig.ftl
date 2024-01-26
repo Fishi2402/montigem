@@ -1,3 +1,3 @@
 ${tc.signature("glex")}
 
-${mod.addModuleToHookpoint("umlp.generator.hook.AfterTransform",  "sovd_gateway_module.backend.SovdGatewayBackend_AfterTransform")}
+${mod.addModuleToHookpoint("umlp.generator.hook.BeforeTransform",  "sovd_gateway_module.backend.SovdGatewayBackend_BeforeTransform")}
