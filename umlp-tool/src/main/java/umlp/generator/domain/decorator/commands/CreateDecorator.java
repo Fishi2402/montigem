@@ -72,6 +72,7 @@ public class CreateDecorator extends AbstractDeSerDecorator {
 
     if(hasOCL) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + classname + "Validator");
+      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + classname + "ValidationResult");
     }
 
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ getCorrectManager(domainClass));
