@@ -12,6 +12,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.ocl.ocl.OCLMill;
 import de.monticore.ocl.util.SymbolTableUtil;
 import de.monticore.symbols.basicsymbols._ast.ASTType;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -20,6 +21,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
+import umlp._symboltable.CDRoleSymbol2VariableSymbolAdapterDeSer;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
 
@@ -151,11 +153,15 @@ public class UMLPSymbolTables {
     return (ASTCDCompilationUnit) asArtifactScope.getAstNode();
   }
 
+  public static void addRoleSymbol(String symbolFqn) {
+    OCLMill.globalScope().putSymbolDeSer(symbolFqn, new CDRoleSymbol2VariableSymbolAdapterDeSer());
+  }
+
   public static void addCd4cSymbols() {
     SymbolTableUtil.addTypeSymbol("de.monticore.cdbasis._symboltable.CDTypeSymbol");
     SymbolTableUtil.addFunctionSymbol("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol");
     SymbolTableUtil.addVariableSymbol("de.monticore.symbols.oosymbols._symboltable.FieldSymbol");
-    SymbolTableUtil.addVariableSymbol("de.monticore.cdassociation._symboltable.CDRoleSymbol");
+    addRoleSymbol("de.monticore.cdassociation._symboltable.CDRoleSymbol");
     SymbolTableUtil.ignoreSymbolKind("de.monticore.cdassociation._symboltable.CDAssociationSymbol");
   }
 
