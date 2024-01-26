@@ -79,3 +79,5 @@ include 'examples:flensburg-test-jsweet:backend'
 findProject(':examples:flensburg-test-jsweet:backend')?.name = 'backend'
 
 include ':modules:login'
+include ':modules:sovd-gateway'
+include ':modules:sovd-gateway-it:backend'

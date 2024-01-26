@@ -12,6 +12,7 @@ configurations {
 dependencies {
   moduleGenTimeCompileOnly("umlp:umlp-tool")
   moduleGenTimeCompileOnly group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+  moduleGenTimeCompileOnly group: 'de.monticore.lang', name: 'guidsl', version: mc_version
   moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-runtime', version: mc_version
   moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-grammar', version: mc_version
 }

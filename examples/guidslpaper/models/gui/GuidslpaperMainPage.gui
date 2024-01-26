@@ -13,7 +13,7 @@ import Guidslpaper.Person;
 import Guidslpaper.Konto;
 
 page GuidslpaperMainPage(List<Person> personen, List<Konto> konten) {
-  @GuidslPaperNavigation(personen = personen);
+  @GuidslPaperNavigation();
 
   @GemColumn(hAlign = "left", component =
     @GemCard(

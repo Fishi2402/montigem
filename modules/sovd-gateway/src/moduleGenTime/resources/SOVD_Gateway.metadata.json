@@ -1,0 +1,11 @@
+{
+  "name": "Sovd Gateway",
+  "tasks": [
+    {
+      "type": "UMLPBackendTask",
+      "additionalConfigs": [
+        "sovd_gateway_module.backend.SovdGatewayBackendConfig.ftl"
+      ]
+    }
+  ]
+}
