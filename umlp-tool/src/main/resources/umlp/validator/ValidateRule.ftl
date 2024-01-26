@@ -1,9 +1,12 @@
-<#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("oclRuleName", "oclRule", "oclMessage", "inputParams", "attributes")}
-${cd4c.method("public ValidationMessage validate${oclRuleName}(${inputParams})")}
-  boolean oclRule = ${oclRule};
-  if(!oclRule) {
-    return new ValidationMessage(ValidationStatus.ERROR, "${oclMessage}", Arrays.asList(<#list attributes as attribute>"${attribute}"<#if attribute_has_next>, </#if></#list>));
-  }
-
-  return new ValidationMessage(ValidationStatus.OK, "", Arrays.asList(<#list attributes as attribute>"${attribute}"<#if attribute_has_next>, </#if></#list>));
+ <#-- (c) https://github.com/MontiCore/monticore -->
+${tc.signature("oclRuleName", "oclRule", "oclMessage", "domainName", "branchRootNodes")}
+${cd4c.method("public static ${domainName}ValidationResult validate${oclRuleName}(${domainName} ${domainName?uncap_first?substring(0,1)})")}
+${domainName}ValidationResult ${domainName?uncap_first?substring(0,1)}ValidationResult = new ${domainName}ValidationResult();
+String message = "${oclMessage}";
+${oclRule}
+<#list branchRootNodes as treeNode>
+  <#list treeNode.getFinishingCalls(true, "value") as call>
+    ${call}
+  </#list>
+</#list>
+return ${domainName?uncap_first?substring(0,1)}ValidationResult;
