@@ -4,6 +4,10 @@
 -->
 ${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "componentGenerator", "viewComponents")}
 
+<#-- Initialize all modules, adding their templates to the other hookpoints, e.g., BeforeTransform -->
+${includeArgs("umlp.generator.hook.InitModules", glex)}
+
+
 <#-- Call all decorators -->
 <#assign guiDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUI2TypeScriptDecorator", [glex])>
 
@@ -13,7 +17,8 @@ ${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "componentGenerator"
 
 <#assign annotationDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUIComponentAnnotationDecoratorAndStandaloneConfig", [glex, hwPath, outPath])>
 
-<#--${includeArgs("umlp.generator.hook.BeforeTransform", decoratedAST, glex, hwPath, componentGenerator, guiDecorator, topDecorator)}-->
+<#--ToDo: Maybe use a better template name-->
+${includeArgs("umlp.generator.hook.BeforeTransformGui2C", decoratedAST, glex, hwPath, componentGenerator, guiDecorator, topDecorator)}
 
 ${guiDecorator.transform(ast, decoratedAST, viewComponents, hwPath, outPath)}
 
@@ -22,7 +27,7 @@ ${topDecoratorJava.decorate(decoratedAST)}
 
 ${annotationDecorator.transform(decoratedAST,ast)}
 
-<#--${includeArgs("umlp.generator.hook.AfterTransform", decoratedAST, glex, hwPath, componentGenerator, guiDecorator, topDecorator)}-->
+${includeArgs("umlp.generator.hook.AfterTransformGui2C", decoratedAST, glex, hwPath, componentGenerator, guiDecorator, topDecorator)}
 
 
 ${componentGenerator.generate(decoratedAST)}

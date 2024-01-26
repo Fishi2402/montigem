@@ -9,6 +9,10 @@ classdiagram Dtcockpit {
     <<command>> void startMontiVerseLitePipeline();
   }
 
+  // Singleton-Type used instead of stereotypes/annotations
+  <<singleton>>
+  class DoesNotRequireLogin { }
+
   association [1] App -> User [*];
   association [1] App -> Room [*];
   association [1] App -> Project [*];
