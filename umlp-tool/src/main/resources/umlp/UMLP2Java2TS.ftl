@@ -7,6 +7,9 @@
 -->
 ${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator")}
 
+<#-- Initialize all modules, adding their templates to the other hookpoints, e.g., BeforeTransform -->
+${includeArgs("umlp.generator.hook.InitModules", glex)}
+
 <#-- Call all decorators -->
 <#assign beDecorator = tc.instantiate("umlp.generator.gui.gentypescript.domain.FEDecorator", [glex, hwPath])>
 <#assign commandDecorator = tc.instantiate("umlp.generator.gui.gentypescript.commands.TSCommandDecorator", [glex])>

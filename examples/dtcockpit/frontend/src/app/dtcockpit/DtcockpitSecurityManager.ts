@@ -1,43 +1,41 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {User} from '@src/dtcockpit/User';
+import {LoginSecManager} from "./login/LoginSecManager";
 
+// Now delegated to the login-modules SecurityManager
 export class DtcockpitSecurityManager {
 
   public static getCurrentUser(): User {
-    let currentUser: User = new User();
-    Object.assign(currentUser, JSON.parse(localStorage.getItem('currentUser')) as User);
-    return currentUser;
+    return LoginSecManager.getCurrentUser();
   }
 
   public static setCurrentUser(value: User) {
-    localStorage.setItem('currentUser', JSON.stringify(value))
+    LoginSecManager.setCurrentUser(value);
   }
 
   public static getCurrentUserIdOrNull(): number | null {
-    return DtcockpitSecurityManager.isSignedIn() ? DtcockpitSecurityManager.getCurrentUser().getGemId() : null;
+    return LoginSecManager.getCurrentUserIdOrNull();
   }
 
   public static isCurrentlyLoggingIn(): boolean {
-    let item = localStorage.getItem('loggingIn');
-    return item !== null && item == "true";
+    return LoginSecManager.isCurrentlyLoggingIn();
   }
 
   public static setCurrentlyLoggingIng(val: boolean) {
-    localStorage.setItem("loggingIn", val ? "true" : "false");
+    LoginSecManager.setCurrentlyLoggingIng(val);
   }
 
   public static signIn(value: User) {
-    this.setCurrentUser(value);
-    this.setCurrentlyLoggingIng(false);
+    LoginSecManager.signIn(value);
   }
 
   public static signOut() {
-    localStorage.removeItem('currentUser')
+    LoginSecManager.signOut()
   }
 
   public static isSignedIn(): boolean {
-    return localStorage.getItem('currentUser') !== null;
+    return LoginSecManager.isSignedIn();
   }
 
 }

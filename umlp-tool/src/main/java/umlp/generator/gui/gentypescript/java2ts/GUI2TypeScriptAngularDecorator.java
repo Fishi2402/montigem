@@ -153,6 +153,14 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     // constructor, attrs, getters
     if (!domainClass.getGUIParamList().isEmpty()) {
       addInitMethod(clazz);
+
+      if (domainClass.isPage()) {
+        // hookpoint template for page nginit
+        glex.addAfterTemplate("umlp.gui2java.InitBody", new TemplateHookPoint(
+            "umlp.gui2java.InitPageBody"));
+        // TODO InitPageBody for empty parameters?
+      }
+
       if (ast.getGUIComponentDeclaration().isPage()
           && domainClass.getGUIParamList().stream().anyMatch(util::isDomainListType)) {
         addDestroyMethod(clazz);

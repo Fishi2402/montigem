@@ -5,7 +5,8 @@ import Dtcockpit.User;
 
 import gui.login.UserCreate;
 import gui.login.LoginContainer;
+import Dtcockpit.DoesNotRequireLogin;
 
-page RegistrationPage(List<User> users){
+page RegistrationPage(List<User> users, DoesNotRequireLogin doesNotRequireLogin){
   @LoginContainer(component = @UserCreate());
 }
