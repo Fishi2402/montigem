@@ -7,7 +7,7 @@ import Domain.Person;
 page GemHeatmapChartExample(List<Person> persons) {
   @GemHeatmapChart(
     data = null,
-    timestampdata = true,
+    timestampdata = false,
     xLabel = "x",
     yLabel = "y"
   );

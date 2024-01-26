@@ -22,7 +22,7 @@ export class GemHeatmapChartExample extends GemHeatmapChartExampleComponent {
     for (let person of this.persons) {
       let entry = {
         name: person.getName(),
-        timestamp: person?.getBirthday()?.getTime()
+        value: person?.getBirthday()?.getTime()
       };
       entries.push(entry);
     }
