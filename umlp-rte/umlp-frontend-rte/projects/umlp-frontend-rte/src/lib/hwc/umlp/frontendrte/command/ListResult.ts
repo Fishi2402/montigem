@@ -28,7 +28,7 @@ export class ListResult<U, T extends IUMLPList<U>> extends CommandResult<U> {
         return this.list;
     }
 
-    public isSuccessful(): Promise<boolean> {
+    public async isSuccessful(): Promise<boolean> {
         return Promise.resolve(this.successful);
     }
 

@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {StartComponent} from '@src/gui/StartComponent';
+import {StartComponent,config} from '@src/gui/StartComponent';
 import {Component} from '@angular/core';
 import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
 import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
@@ -9,10 +9,12 @@ import {CommandManager} from '@umlp/common';
 import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
-  selector: 'start',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/Start.html',
-  styles: [":host{ display: flex; flex-direction: row }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 
 export  class Start extends StartComponent {
@@ -23,10 +25,11 @@ export  class Start extends StartComponent {
   }
 
   ngOnInit(){
-    if (!(DtcockpitSecurityManager.isCurrentlyLoggingIn() || DtcockpitSecurityManager.isSignedIn())) {
-      this.router.navigate(['gui', 'login', 'LoginPage']);
-      return;
-    }
+    // Moved to the login module
+    // if (!(DtcockpitSecurityManager.isCurrentlyLoggingIn() || DtcockpitSecurityManager.isSignedIn())) {
+    //   this.router.navigate(['gui', 'login', 'LoginPage']);
+    //   return;
+    // }
 
     CommandManager.executeCommand(new GetCurrentUserRequest()).then(res => {
       let sr = res.asSimpleResult();

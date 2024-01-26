@@ -2,11 +2,10 @@
 import { Navigation } from './navigation/navigation.component';
 
 
-import {ModelsGemModule} from '@src/cd2gui/models/ModelsGemModule';
 
 export const config={
-  declarations:[Navigation],
+  declarations:[],
   exports:[],
-  imports:[ModelsGemModule],
+  imports:[Navigation],
   providers:[]
 }

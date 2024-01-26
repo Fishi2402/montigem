@@ -27,7 +27,7 @@ public class OCLContextCollector implements OCLVisitor2 {
   private final Map<ASTOCLConstraint, List<ASTOCLParamDeclaration>> paramDeclarationsForConstraints;
 
   public OCLContextCollector(ASTOCLCompilationUnit node) {
-    this.paramDeclarationsForConstraints = new HashMap<>();
+    this.paramDeclarationsForConstraints = new LinkedHashMap<>();
     this.visit(node);
   }
 

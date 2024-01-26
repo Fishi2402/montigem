@@ -22,7 +22,7 @@ import umlp.generator.validator.ocl.OCLParser;
 import umlp.generator.validator.ocl.visitors.OCLInvariantExpressionsVisitor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +38,7 @@ public class ValidatorDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  private final Map<String, List<String>> enumMap = new HashMap<>();
+  private final Map<String, List<String>> enumMap = new LinkedHashMap<>();
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {

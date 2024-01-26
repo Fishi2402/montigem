@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemHeatmapChartExampleComponent } from '@src/example_charts/GemHeatmapChartExampleComponent';
+import { GemHeatmapChartExampleComponent,config } from '@src/example_charts/GemHeatmapChartExampleComponent';
 import { GemHeatmapChartData, GemHeatmapChartEntry } from '@umlp/charts';
 
 @Component({
-  selector: 'gem-heatmap-chart-example',
-  templateUrl: '../../../build/frontendGen/build/appgui/example_charts/GemHeatmapChartExample.html'
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
 })
 export class GemHeatmapChartExample extends GemHeatmapChartExampleComponent {
 

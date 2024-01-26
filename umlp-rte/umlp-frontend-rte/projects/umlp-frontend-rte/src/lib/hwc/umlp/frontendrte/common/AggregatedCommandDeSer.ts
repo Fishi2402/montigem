@@ -17,13 +17,13 @@ export abstract class AggregatedCommandDeSer {
     public async serialize(command: Command<any>): Promise<string | null> {
       const commandType: string = command.getCommandType();
 
-      if (!this.deSerMap.has(commandType)) {
+      if (!this.deSerMap.hasOwnProperty(commandType)) {
         return Promise.resolve(null);
       }
 
       const printer: JsonPrinter = new JsonPrinter(true);
       printer.beginObject();
-      await this.deSerMap.get(commandType).buildJson(command, printer);
+      await this.deSerMap[commandType].buildJson(command, printer);
       printer.endObject();
 
       return Promise.resolve(printer.toString());

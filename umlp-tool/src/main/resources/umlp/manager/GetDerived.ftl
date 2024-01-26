@@ -5,7 +5,5 @@ ${tc.signature("name", "delegateFlag")}
 
   return getSingleton()._doGet${name}();
 <#else>
-  ${cd4c.method("protected ${name} _doGet${name}()")}
-
-  return new ${name}();
+  ${cd4c.method("protected abstract ${name} _doGet${name}()")}
 </#if>

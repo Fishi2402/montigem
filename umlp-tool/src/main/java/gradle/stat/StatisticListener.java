@@ -14,7 +14,7 @@ import org.gradle.api.tasks.TaskState;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -25,7 +25,7 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
   private static final AtomicBoolean alreadyRegistered = new AtomicBoolean(false);
   private static final StatisticListener singleton = new StatisticListener();
 
-  protected Map<Task, Instant> startTime = new HashMap<>();
+  protected Map<Task, Instant> startTime = new LinkedHashMap<>();
   protected Instant projectStartTime;
   protected StatisticData data;
 

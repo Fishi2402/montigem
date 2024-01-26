@@ -1,0 +1,10 @@
+package gui.joinconnection;
+
+import DemoRec.JoinConnection;
+
+import basic.GemText;
+
+component JoinConnectionOverview(JoinConnection connection) {
+  @GemText(value=connection.state);
+  @GemText(value=connection.joinConnectionType);
+}

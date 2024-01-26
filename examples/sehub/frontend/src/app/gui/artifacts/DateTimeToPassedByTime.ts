@@ -1,14 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {DateTimeToPassedByTimeComponent} from '@src/gui/artifacts/DateTimeToPassedByTimeComponent';
+import {DateTimeToPassedByTimeComponent,config} from '@src/gui/artifacts/DateTimeToPassedByTimeComponent';
 
 import {Component,} from '@angular/core';
 
 @Component({
-  selector: 'date-time-to-passed-by-time',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/artifacts/DateTimeToPassedByTime.html',
-  styles: [":host{ display: flex; flex-direction: column }"],
-  styleUrls: []
+  standalone:true,
+  imports:[...config.imports],
+  selector: config.selector,
+  templateUrl: config.templateUrl,
+  styles: config.styles,
+  styleUrls: config.styleUrls
 })
 export  class DateTimeToPassedByTime extends DateTimeToPassedByTimeComponent {
 

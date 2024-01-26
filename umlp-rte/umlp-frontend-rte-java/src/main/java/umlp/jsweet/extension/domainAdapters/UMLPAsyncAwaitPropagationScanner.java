@@ -145,6 +145,8 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
         }
         break;
       case "umlp.backendrte.command.CommandResult":
+      case "umlp.backendrte.command.SimpleResult":
+      case "umlp.backendrte.command.ListResult":
         switch (methodSimpleName) {
           case "isSuccessful":
             return true;
@@ -152,6 +154,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
       case "umlp.backendrte.command.StatusResult":
         switch (methodSimpleName) {
           case "wasSuccessful":
+          case "isSuccessful":
             return true;
         }
       case "umlp.backendrte.common.AggregatedCommandDeSer":

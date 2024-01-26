@@ -1,0 +1,52 @@
+package gui.pack;
+
+import DemoRec.BatteryPack;
+
+import arrange.GemRow;
+import arrange.GemColumn;
+import basic.GemText;
+import basic.GemLink;
+
+import gui.pack.PackTypeOverview;
+import gui.component.PhotoDisplay;
+import gui.component.ComponentTreeView;
+
+component BatteryPackOverview(BatteryPack pack) {
+  @GemRow(
+    colGap="5px",
+    wrap="nowrap",
+    components = [
+      @GemColumn(
+        width="30%",
+        components=[
+          @GemText(value=pack.description),
+          @GemText(value="Health (%) "+pack.health),
+          @GemText(value="Charge (%) "+pack.stateOfCharge)
+        ]
+      ),
+      @GemColumn(
+        width="10%",
+        components=[
+          editPack@GemLink(url="override", text="Edit Pack.")
+        ]
+      ),
+      @GemColumn(
+        width="20%",
+        components=[
+          @PhotoDisplay(component=pack)
+        ]
+      ),
+      @GemColumn(
+        width="20%",
+        components=[
+          @PackTypeOverview(type=pack.type)
+        ]
+      ),
+      @GemColumn(
+        width="20%",
+        components=[
+          tree@ComponentTreeView(component=pack)
+        ]
+      )
+  ]);
+}

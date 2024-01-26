@@ -11,9 +11,9 @@ import input.GemTextInput;
 
 import gui.navigation.GuidslPaperNavigation;
 
-page KontoCreate(Konto konto, List<Konto> konten) {
+page KontoCreate(Konto konto) {
   @GemRow(wrap = "nowrap", components = [
-    @GuidslPaperNavigation(konten = konten),
+    @GuidslPaperNavigation(),
     @GemColumn(hAlign = "center", component =
       @GemCard(title = "New Konto", component =
         @GemColumn(width = "50vw", rowGap = "10px", components = [
