@@ -10,17 +10,22 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDEnumConstant;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.ocl.ocl.OCLMill;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
+import de.monticore.ocl.ocl._ast.ASTOCLContextDefinition;
 import de.monticore.ocl.ocl._ast.ASTOCLInvariant;
 import de.monticore.ocl.ocl._ast.ASTOCLParamDeclaration;
 import de.monticore.ocl.ocl._visitor.OCLTraverser;
 import de.monticore.ocl.setexpressions._ast.ASTSetComprehension;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import org.gradle.internal.Pair;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.validator.ocl.OCLParser;
+import umlp.generator.validator.ocl.associationTree.AssociationTreePrettyPrinterTraverser;
+import umlp.generator.validator.ocl.associationTree.BackwardsAssociationTreePrettyPrinter;
 import umlp.generator.validator.ocl.associationTree.OCLInvariantTree;
+import umlp.generator.validator.ocl.associationTree.OCLInvariantTreeNode;
 import umlp.generator.validator.ocl.visitors.CustomCommonExpressionsHandler;
 import umlp.generator.validator.ocl.visitors.CustomExpressionsBasisHandler;
 import umlp.generator.validator.ocl.visitors.CustomOCLExpressionsHandler;
@@ -41,8 +46,9 @@ public class ValidatorDecorator extends AbstractDecorator {
   private List<ASTOCLCompilationUnit> oclCompilationUnits;
   private final List<OCLInvariantTree> oclInvariantTrees;
   private final Map<ASTOCLInvariant, List<ASTOCLParamDeclaration>> paramDeclarationsForInvariant = new LinkedHashMap<>();
+  private final Map<ASTOCLParamDeclaration, List<ASTOCLInvariant>> relevantInvariantsForParamDeclaration = new LinkedHashMap<>();
   private final Map<ASTSetComprehension, String> setComprehensionContext = new LinkedHashMap<>();
-
+  private final Map<ASTOCLInvariant, List<OCLInvariantTree>> directlyRelatedAssociationTreesForInvariant = new LinkedHashMap<>();
   private final Map<String, List<String>> enumMap = new LinkedHashMap<>();
 
   public ValidatorDecorator(GlobalExtensionManagement glex) {
@@ -80,12 +86,10 @@ public class ValidatorDecorator extends AbstractDecorator {
       this.setComprehensionContext.putAll(contextCollector.getSetComprehensionContext());
     }
 
-    String cdName = origCD.getCDDefinition().getName();
-
     origCD.getCDDefinition().getCDClassesList().stream()
             .filter(c -> !c.getSymbol().isIsDerived())
             .filter(c -> !c.getSymbol().isIsAbstract())
-            .forEach(c -> astcdPackage.addCDElement(withOrigin(createValidatorClassForDomainClass(c, cdName))));
+            .forEach(c -> astcdPackage.addCDElement(withOrigin(createValidatorClassForDomainClass(c))));
   }
 
   protected void addImports(ASTCDClass validatorClass) {
@@ -95,10 +99,10 @@ public class ValidatorDecorator extends AbstractDecorator {
     getCD4C().addImport(validatorClass, "java.time.chrono.ChronoLocalDateTime");
   }
 
-  protected ASTCDElement createValidatorClassForDomainClass(ASTCDType domainClass, String cdName) {
+  protected ASTCDElement createValidatorClassForDomainClass(ASTCDType domainClass) {
     String className = domainClass.getName();
 
-    List<ASTCDMethodSignature> methods = validateOCLRules(domainClass, cdName);
+    List<ASTCDMethodSignature> methods = validateOCLRules(domainClass);
 
     ASTCDClass validatorClass = UMLPMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
@@ -110,7 +114,7 @@ public class ValidatorDecorator extends AbstractDecorator {
     return validatorClass;
   }
 
-  protected List<ASTCDMethodSignature> validateOCLRules(ASTCDType domainClass, String cdName) {
+  protected List<ASTCDMethodSignature> validateOCLRules(ASTCDType domainClass) {
     List<ASTCDMethodSignature> oclRules = new ArrayList<>();
     for(ASTOCLInvariant invariant : collectInvariantsForType(domainClass.getName())) {
       String oclMessage = invariant.getStereotypeList().stream().filter(s -> !s.getValue("message").isEmpty()).findFirst().map(s -> s.getValue("message")).orElse("");
@@ -121,6 +125,17 @@ public class ValidatorDecorator extends AbstractDecorator {
       oclRules.add(getCD4C().addMethod(domainClass, getValidateRuleTemplate(), oclRuleName, oclRule, oclMessage, domainClass.getName(), oCLInvariantTree.getBranchRootNodes()));
     }
 
+    // The following only works if for an object of type Object and an association OtherObject -> Object the call object.getOtherObject() is possible
+    /*for(ASTOCLInvariant invariant : getAnyRelevantInvariant(domainClass)) {
+      String oclRuleName = invariant.getName();
+      OCLInvariantTree OCLInvariantTree = this.oclInvariantTrees.stream().filter(a -> a.getInvariant().equals(invariant)).findFirst().get();
+
+      Pair<OCLInvariantTree, OCLInvariantTree> splitAssociationTrees = OCLInvariantTree.splitTreeByDomainClass(domainClass);
+      OCLInvariantTree leftTree = splitAssociationTrees.getLeft();
+      String code = new AssociationTreePrettyPrinterTraverser(leftTree, new BackwardsAssociationTreePrettyPrinter()).prettyPrint().get(0);
+      oclRules.add(getCD4C().addMethod(domainClass, getValidateAssociatedRuleTemplate(), oclRuleName, domainClass.getName(), code));
+    }*/
+
     return oclRules;
   }
 
@@ -130,6 +145,10 @@ public class ValidatorDecorator extends AbstractDecorator {
 
   protected String getValidateRuleTemplate() {
     return "umlp.validator.ValidateRule";
+  }
+
+  protected String getValidateAssociatedRuleTemplate() {
+    return "umlp.validator.ValidateAssociatedRule";
   }
 
   public List<ASTOCLCompilationUnit> getOclCompilationUnits() {
@@ -146,6 +165,28 @@ public class ValidatorDecorator extends AbstractDecorator {
         result.add(invariant);
       }
     });
+    return result;
+  }
+  // Do not delete, this is relevant for the validation of associations (see commented code in this.validateOCLRules(...))
+  private List<ASTOCLInvariant> getAnyRelevantInvariant(ASTCDType domainClass) {
+    List<ASTOCLInvariant> result = new ArrayList<>();
+    List<ASTOCLInvariant> possibleInvariants = paramDeclarationsForInvariant.keySet().stream()
+            .filter(i -> !collectInvariantsForType(domainClass.getName()).contains(i))
+            .collect(Collectors.toList());
+    for(ASTOCLInvariant invariant : possibleInvariants) {
+      OCLInvariantTree oclInvariantTree = oclInvariantTrees.stream().filter(a -> a.getInvariant().equals(invariant)).findFirst().get();
+      List<OCLInvariantTreeNode> relevantBranches = oclInvariantTree.getBranchesRelatedToDomainClass(domainClass);
+      if(!relevantBranches.isEmpty()) {
+        result.add(invariant);
+        directlyRelatedAssociationTreesForInvariant.computeIfAbsent(invariant, v -> new ArrayList<>()).add(oclInvariantTree);
+        List<ASTOCLParamDeclaration> relevantParamDeclarations = invariant.getOCLContextDefinitionList().stream().map(ASTOCLContextDefinition::getOCLParamDeclaration).collect(Collectors.toList());
+        for(ASTOCLParamDeclaration paramDeclaration : relevantParamDeclarations) {
+          if(paramDeclaration.getMCType().printType().equals(domainClass.getName())) {
+            relevantInvariantsForParamDeclaration.computeIfAbsent(paramDeclaration, v -> new ArrayList<>()).add(invariant);
+          }
+        }
+      }
+    }
     return result;
   }
 }

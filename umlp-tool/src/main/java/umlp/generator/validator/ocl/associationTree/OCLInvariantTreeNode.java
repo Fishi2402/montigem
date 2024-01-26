@@ -165,6 +165,28 @@ public class OCLInvariantTreeNode {
     return calls;
   }
 
+  protected boolean thisOrChildrenAreRelatedToDomainClass(ASTCDType domainClass) {
+    if(isRelatedToDomainClass(domainClass)) {
+      return true;
+    }
+    if(isLeaf()) {
+      return false;
+    }
+    return this.children.stream().anyMatch(child -> child.thisOrChildrenAreRelatedToDomainClass(domainClass));
+  }
+
+  protected boolean isRelatedToDomainClass(ASTCDType domainClass) {
+    return isRelatedToDomainClassByDeclaration(domainClass) || isRelatedToDomainClassByAssociations(domainClass);
+  }
+
+  protected boolean isRelatedToDomainClassByDeclaration(ASTCDType domainClass) {
+    return hasParameterDeclaration() && this.parameterDeclaration.getMCType().printType().equals(domainClass.getName());
+  }
+
+  protected boolean isRelatedToDomainClassByAssociations(ASTCDType domainClass) {
+    return hasAssociation() && this.association.getRight().getMCQualifiedType().printType().equals(domainClass.getName());
+  }
+
   public boolean isLeaf() {
     return this.children.isEmpty();
   }
