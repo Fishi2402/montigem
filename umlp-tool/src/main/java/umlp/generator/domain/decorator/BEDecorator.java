@@ -225,6 +225,9 @@ public class BEDecorator extends AbstractDecorator {
       validatorDecorator.setOclCompilationUnits(UMLPTool.getOclCompilationUnits());
       validatorDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ValidatorDecorator", BEDecorator.class.getName());
+      ValidationResultDecorator validationResultDecorator = new ValidationResultDecorator(glex);
+      validationResultDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ValidationResultDecorator", BEDecorator.class.getName());
     }
 
 
