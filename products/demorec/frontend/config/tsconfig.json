@@ -25,7 +25,7 @@
       "dom"
     ],
     "paths": {
-      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*"],
+      "@src/*": ["build/appdomain/*", "build/appgui/*", "../umlp/fe2/*", "src/app/*", "../../src/app/*"],
       "@angular/*": ["node_modules/@angular/*"],
       "@umlp/arrange": ["../../../../../umlp-rte/client/projects/umlp/arrange/src"],
       "@umlp/basic": ["../../../../../umlp-rte/client/projects/umlp/basic/src"],
