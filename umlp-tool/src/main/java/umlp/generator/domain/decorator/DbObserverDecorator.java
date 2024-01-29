@@ -71,6 +71,14 @@ public class DbObserverDecorator extends AbstractDecorator {
         .filter(e -> !e.getKey().getModifier().isDerived())
         .forEach(e -> {
           ASTCDAttribute a = e.getKey();
+          if(GenService.isList(a)) {
+            String innerType = GenService.getInnerType(a.getMCType());
+            getCD4C().addMethod(observerClass, "umlp.dbobserver.listattrs.AddNotify",
+                a.getName(), e.getValue().getName(), innerType);
+            getCD4C().addMethod(observerClass, "umlp.dbobserver.listattrs.RemoveNotify",
+                a.getName(), e.getValue().getName(), innerType);
+          }
+
           ASTCDMethodSignature set = getCD4C().addMethod(observerClass, "umlp.dbobserver.Notify",
               cdName, className, a.getName(), e.getValue().getName(), GenService.getType(a.getSymbol().getType()));
           glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
