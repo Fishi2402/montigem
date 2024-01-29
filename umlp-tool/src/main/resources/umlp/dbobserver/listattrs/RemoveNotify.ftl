@@ -4,7 +4,7 @@ ${cd4c.method("public void notifyRemove${name?cap_first}(${className} ${classNam
 
 // TODO this is only a Hotfix an must be improved later -> goal: do not update the whole list
 
-  List<${type}> listToUpdate = ${cdName}DAOFactory.get${className?cap_first}DAO().select${name?cap_first}(${className?uncap_first}.getGemId());
+  var listToUpdate = ${cdName}DAOFactory.get${className?cap_first}DAO().select${name?cap_first}(${className?uncap_first}.getGemId());
   listToUpdate.remove(arg);
   ${cdName}DAOFactory.get${className?cap_first}DAO().update${name?cap_first}(
     ${className?uncap_first}.getGemId(),

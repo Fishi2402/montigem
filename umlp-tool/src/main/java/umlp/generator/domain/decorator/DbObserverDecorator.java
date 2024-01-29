@@ -124,6 +124,7 @@ public class DbObserverDecorator extends AbstractDecorator {
     }
 
     addImports(domainClass, observerClass);
+    super.addImports(domainClass, observerClass);
     return observerClass;
   }
 
