@@ -1,0 +1,7 @@
+package gui.navigation;
+
+import basic.GemText;
+
+component AlphaWarning() {
+  warning@GemText(value="Caution! This page is its in alpha version");
+}
