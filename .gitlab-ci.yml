@@ -63,7 +63,7 @@ build:
 slowtest:
   stage: check
   tags: 
-    - node10-docker-postgres
+    - node2-docker-postgres
   services:
     - postgres:12.2-alpine
   variables:
