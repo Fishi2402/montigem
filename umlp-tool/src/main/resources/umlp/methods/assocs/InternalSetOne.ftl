@@ -7,12 +7,22 @@ long oldValue = this._${name}.isPresent()?this._${name}.getGemId():0;
 
 if(${managerName}.isLoaded${targetName}(gemID)){
   this._${name} = new Gem<${targetName}>(${managerName}.get${targetName}Sure(gemID));
+} else {
+  this._${name} = new Gem<${targetName}>();
 }
 
 <#if otherSideName?has_content>
   if (scope.contains(NotificationScope.LOCAL)) {
     if(${managerName}.isLoaded${targetName}(gemID)){
       ${managerName}.get${targetName}Sure(gemID).${otherSideName}((${sourceName}) this, NotificationScope.MINIMAL);
+    }
+    if(${managerName}.isLoaded${targetName}(oldValue)){
+      <#if otherSideName?starts_with("set")>
+        ${managerName}.get${targetName}Sure(oldValue).${otherSideName}Gem(new Gem<>(), NotificationScope.MINIMAL);
+      <#else>
+        <#assign removeOtherSide=otherSideName?replace("add", "remove")>
+        ${managerName}.get${targetName}Sure(oldValue).${removeOtherSide}((${sourceName}) this, NotificationScope.MINIMAL);
+      </#if>
     }
   }
 </#if>

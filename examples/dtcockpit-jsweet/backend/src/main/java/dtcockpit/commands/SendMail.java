@@ -7,6 +7,8 @@ import dtcockpit.User;
 import security.MailService;
 import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.util.LogUtil;
+import umlp.jsweet.extension.annotation.BackendOnly;
+import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
 import javax.mail.MessagingException;
 import java.util.List;
@@ -18,6 +20,7 @@ public class SendMail extends SendMailTOP {
     super(emailGemId, subject, message, forwards);
   }
 
+  @BackendOnly(BackendOnlyModes.THROW_ERROR)
   public StatusResult doAction() {
     Optional<User> user = DtcockpitManager.userOpt(emailGemId);
     if (!user.isPresent()) {
