@@ -28,7 +28,7 @@ export class GemRow extends GemRowTOP {
 
   @HostBinding('style.flex-wrap')
   @Input()
-  public wrap: string = 'wrap';
+  public wrap: string = 'nowrap';
 
   public override get hAlign(): string {
     return this._hAlign;
