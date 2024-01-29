@@ -12,6 +12,7 @@ import hardy.flensburg.FlensburgTestContext;
 import hardy.flensburg.Person;
 import hardy.flensburg.PersonBuilder;
 import hardy.flensburg.requests.GetFreeGemIdRequest;
+import hardy.flensburg.test_infrastructure.FlensburgDBTestSetup;
 import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import umlp.backendrte.command.CommandDirectCommunication;
 import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.command.TestClientCommandManager;
 import umlp.backendrte.common.GemList;
+import umlp.backendrte.test_infrastructure.TestSetup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,19 +34,28 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class PersonSyncTest extends FlensburgMockTestSetup {
-  public PersonSyncTest() {
-    super(2);
+public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
+
+  class PersonSyncMockTest extends FlensburgMockTestSetup implements PersonSyncTest {
+    public PersonSyncMockTest() {
+      super(2);
+    }
+  }
+
+  class PersonSyncDBTest extends FlensburgDBTestSetup implements PersonSyncTest {
+    public PersonSyncDBTest() {
+      super(2);
+    }
   }
 
   @BeforeEach
-  public void clear(){
+  default void clear(){
     FlensburgTestContext.clear();
     Log.initDEBUG();
   }
 
   @Test
-  public void testMainResidenceIsSyncedToServer(){
+  default void testMainResidenceIsSyncedToServer(){
     long startGemId = 1001L;
 
     Log.info("Create a Person", "PersonSyncTest");
@@ -70,7 +81,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testMainResidenceChangeIsSyncedToClient(){
+  default void testMainResidenceChangeIsSyncedToClient(){
     long startGemId = 1001L;
 
     Log.info("Create a Person", "PersonSyncTest");
@@ -96,7 +107,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testAddOwnsIsSyncedToServer(){
+  default void testAddOwnsIsSyncedToServer(){
     long startGemId = 1001L;
 
     Log.info("Create a Person @ client", "PersonSyncTest");
@@ -128,7 +139,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testAddOwnsIsSyncedToServerWithListInterface(){
+  default void testAddOwnsIsSyncedToServerWithListInterface(){
     long startGemId = 1001L;
 
     Log.info("Create a Person @ client", "PersonSyncTest");
@@ -163,7 +174,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testAddOwnsIsSyncedToClient(){
+  default void testAddOwnsIsSyncedToClient(){
     long startGemId = 1001L;
 
     Log.info("Create a Person @ client", "PersonSyncTest");
@@ -195,7 +206,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testAddOwnsIsSyncedToClientWithListInterface(){
+  default void testAddOwnsIsSyncedToClientWithListInterface(){
     long startGemId = 1001L;
 
     Log.info("Create a Person @ client", "PersonSyncTest");
@@ -229,7 +240,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testExistingOwsIsLoadedOnClient(){
+  default void testExistingOwsIsLoadedOnClient(){
     long startGemId = 1001L;
 
     Log.info("Create a Person @ server", "PersonSyncTest");
@@ -261,7 +272,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testGemListSyncedToClientWithoutContent(){
+  default void testGemListSyncedToClientWithoutContent(){
     long startGemId = 1001L;
 
     Log.info("Create a Person with car @ server", "PersonSyncTest");
@@ -290,7 +301,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
 
   // TODO: move?
   @Test
-  public void testGemListNotSyncedWhileBuilding(){
+  default void testGemListNotSyncedWhileBuilding(){
     FlensburgMock.init();
     FlensburgTestContext serverContext = FlensburgTestContext.fromCurrentContext();
     long startGemId = 1001L;
@@ -319,7 +330,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testBuilderOwnsIsSyncedToServer(){
+  default void testBuilderOwnsIsSyncedToServer(){
     long startGemId = 1001L;
 
     Log.info("Create a Person @ client", "PersonSyncTest");
@@ -329,10 +340,9 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
     PersonBuilder pb1001 = FlensburgManager.personBuilderFromId(startGemId);
     pb1001.mainResidence(addr).age(20).nickname("Smith");
 
-    FlensburgMock.secretlyAdaptNextGemId(200);
     Log.info("Add Car from Client", "PersonSyncTest");
     getClients(0).activate();
-    Car c = FlensburgManager.carBuilder().wheelLeft(true).build().get();
+    Car c = FlensburgManager.carBuilderFromId(200).wheelLeft(true).build().get();
     pb1001.ownsAdd(c);
     Person p1001 = pb1001.build().get();
 
@@ -344,7 +354,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testRemoveFromGemListInClient(){
+  default void testRemoveFromGemListInClient(){
     long startGemId = 1001L;
 
     Log.info("Create a Person with car @ server", "PersonSyncTest");
@@ -367,7 +377,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testRemoveFromGemListInClientWithListInterface(){
+  default void testRemoveFromGemListInClientWithListInterface(){
     long startGemId = 1001L;
 
     Log.info("Create a Person with car @ server", "PersonSyncTest");
@@ -393,7 +403,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testRemoveFromGemListInServer(){
+  default void testRemoveFromGemListInServer(){
     long startGemId = 1001L;
 
     Log.info("Create a Person with car @ server", "PersonSyncTest");
@@ -417,7 +427,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testRemoveFromGemListInServerWithListInterface(){
+  default void testRemoveFromGemListInServerWithListInterface(){
     long startGemId = 1001L;
 
     Log.info("Create a Person with car @ server", "PersonSyncTest");
@@ -444,7 +454,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testVisitedIsSyncedToServerInBuilder(){
+  default void testVisitedIsSyncedToServerInBuilder(){
     long startGemId = 1001L;
 
     Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
@@ -478,7 +488,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testVisitedIsSyncedToServerInBuilderWithListInterface(){
+  default void testVisitedIsSyncedToServerInBuilderWithListInterface(){
     long startGemId = 1001L;
 
     Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
@@ -512,7 +522,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testVisitedIsSyncedToServerAfterBuilding(){
+  default void testVisitedIsSyncedToServerAfterBuilding(){
     long startGemId = 1001L;
 
     Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
@@ -553,7 +563,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testVisitedIsSyncedToServerAfterBuildingWithListInterface(){
+  default void testVisitedIsSyncedToServerAfterBuildingWithListInterface(){
     long startGemId = 1001L;
 
     Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
@@ -594,7 +604,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testVisitedRemovalFromServer(){
+  default void testVisitedRemovalFromServer(){
     long startGemId = 1001L;
 
     Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
@@ -641,7 +651,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testVisitedRemovalFromClient(){
+  default void testVisitedRemovalFromClient(){
     long startGemId = 1001L;
 
     Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
@@ -689,7 +699,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
   }
 
   @Test
-  public void testVisitedRemovalCrossClients(){
+  default void testVisitedRemovalCrossClients(){
     long startGemId = 1001L;
 
     Log.info("Building Person with visited Addresses in Client 1", "PersonSyncTest");
@@ -754,7 +764,7 @@ public class PersonSyncTest extends FlensburgMockTestSetup {
 
 
   @Test
-  public void testVisitedSetFromServer(){
+  default void testVisitedSetFromServer(){
     long startGemId = 1001L;
 
     Log.info("Building Person with visited Addresses in Client", "PersonSyncTest");
