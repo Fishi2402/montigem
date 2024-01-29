@@ -128,7 +128,7 @@ public class GUIGeneratorUtil {
   }
 
   public boolean existsHandwrittenClass(MCPath targetPath, String qualifiedName) {
-    return existsHandwrittenFile(targetPath, Names.getPathFromPackage(qualifiedName) + ".ts") ||
+    return existsHandwrittenFile(targetPath, Names.getPathFromPackage(qualifiedName) + ".ts") | // Use bitwise to report on both checks
         (UMLPGeneratorConfig.getInstance().isUseJsweet() && existsHandwrittenFile(targetPath,
             Names.getPathFromPackage(qualifiedName) + ".java"));
   }
