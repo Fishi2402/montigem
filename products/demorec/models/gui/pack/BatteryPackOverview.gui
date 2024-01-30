@@ -2,10 +2,10 @@ package gui.pack;
 
 import DemoRec.BatteryPack;
 
-import arrange.GemRow;
-import arrange.GemColumn;
-import basic.GemText;
-import basic.GemLink;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemLink;
 
 import gui.pack.PackTypeOverview;
 import gui.component.PhotoDisplay;

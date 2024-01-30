@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_basic;
 
-import basic.GemVideo;
+import mc.fenix.basic.GemVideo;
 
 page GemVideoExample() {
   @GemVideo(source = "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4");

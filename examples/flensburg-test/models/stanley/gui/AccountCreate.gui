@@ -3,10 +3,10 @@ package stanley.gui;
 
 import hardy.Flensburg.Account;
 
-import basic.GemText;
-import basic.GemButton;
-import input.GemTextInput;
-import table.GemTable;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.table.GemTable;
 
 import stanley.my.CustomAccountView;
 

@@ -1,10 +1,10 @@
 package gui.widgets;
 
-import arrange.GemCard;
-import arrange.GemColumn;
-import basic.GemButton;
-import arrange.GemRow;
-import basic.GemText;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
 
 
 component Widget(String widgetTitle, GUIViewElement content) {

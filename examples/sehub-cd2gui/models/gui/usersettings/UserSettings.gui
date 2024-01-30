@@ -5,14 +5,14 @@ import Sehub.User;
 
 import gui.usersettings.UserDisplay;
 
-import arrange.GemCard;
-import arrange.GemRow;
-import arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
 
-import basic.GemButton;
-import basic.GemText;
-import input.GemTextInput;
-import table.GemTable;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.table.GemTable;
 
 page UserSettings(User currentUser, List<User> users) {
   @GemColumn(hAlign = "center", rowGap = "20px", components = [

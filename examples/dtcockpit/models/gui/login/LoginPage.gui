@@ -5,8 +5,8 @@ import gui.login.UserLogin;
 import gui.login.LoginContainer;
 import Dtcockpit.DoesNotRequireLogin;
 
-import arrange.GemColumn;
-import basic.GemLink;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemLink;
 
 page LoginPage(DoesNotRequireLogin doesNotRequireLogin) {
   @LoginContainer(component =

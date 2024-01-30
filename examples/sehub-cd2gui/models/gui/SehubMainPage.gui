@@ -3,10 +3,10 @@ package gui;
 
 import Sehub.Project;
 
-import basic.GemButton;
-import arrange.GemCard;
-import arrange.GemRow;
-import arrange.GemColumn;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
 
 page SehubMainPage(List<Project> allProjects) {
 

@@ -2,9 +2,9 @@ package gui.pack;
 
 import DemoRec.BatteryPackType;
 
-import basic.GemText;
-import arrange.GemCard;
-import arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
 
 component PackTypeOverview(BatteryPackType type) {
 

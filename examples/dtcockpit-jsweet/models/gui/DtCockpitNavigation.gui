@@ -1,16 +1,16 @@
 package gui;
 
-import arrange.GemRow;
-import arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
 
-import basic.GemText;
-import basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
 
 import Dtcockpit.App;
 import Dtcockpit.Project;
 
-import navigation.NavItem;
-import navigation.NavList;
+import mc.fenix.navigation.NavItem;
+import mc.fenix.navigation.NavList;
 
 // We have to pass the list of projects as an argument, as only pages are able to observe
 component DtCockpitNavigation(String username, List<Project> projects) {

@@ -4,10 +4,10 @@ package gui.next_hours_forecast;
 import Weather.Timeseries;
 import Weather.Forecast;
 
-import arrange.GemCard;
-import arrange.GemRow;
-import arrange.GemColumn;
-import basic.GemText;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
 import gui.common.WeatherStateIcon;
 import gui.common.ShortFormDateTimeRenderer;
 

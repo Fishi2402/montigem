@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+
+import Dtcockpit.Project;
+import Dtcockpit.App;
+
+page DBTest(List<App> apps) {
+    @GemColumn(width = "33%", components = [
+      it1@iterate(App app : apps) {
+        it2@iterate(Project p : app.montiCoreProjects) {
+          @GemRow(components = [
+            foo@GemText(value = p.lastPipeline.gitlabId)
+          ]);
+        }
+      }
+    ]);
+}

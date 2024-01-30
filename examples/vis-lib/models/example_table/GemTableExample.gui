@@ -2,8 +2,8 @@
 
 package example_table;
 
-import table.GemTable;
-import table.TableTypes.TableColumn;
+import mc.fenix.table.GemTable;
+import mc.fenix.table.TableTypes.TableColumn;
 import Domain.Person;
 
 page GemTableExample(List<Person> persons) {
