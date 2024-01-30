@@ -17,7 +17,7 @@ Plugin providing Guidsl2 models to create and manage instances of a provided CD4
 - editing complex Attributes
 
 
-## Use CD2GUI with UMLP
+## Adding CD2GUI to your Project
 
 - A template can be found in :examples:sehub-cd2gui:frontend
 - add a variable useCD2GUI which can be used to turn cd2gui toggle cd2gui
@@ -31,7 +31,7 @@ Plugin providing Guidsl2 models to create and manage instances of a provided CD4
 - Be sure to add the the genGUI2 to the npm prerequisites and change the `@src/*` to also include `../umlp/fe2/*`
 - Note: when turning cd2gui on and off make sure to disable any caching for the first run
 
-## Extending CD2GUI Pages with GUIVariability
+## How to adapt a generated GUI Model
 
 - CD2GUI supports GUIVariability by adding meaningful component names refer to
 - All named components can be replaced, deleted and altered with GUIVariability, for the specific naming system please refer to the relevant templates
