@@ -70,11 +70,8 @@ node {
   // The Node.js project directory location
   // This is where the package.json file and node_modules directory are located
   // By default it is at the root of the current project
-  nodeProjectDir = frontendSetup.getOutput()
-
+  nodeProjectDir = file("${buildDir}/frontendGen")
 }
-
-nodeSetup.dependsOn(frontendSetup)
 
 task genSymbols(type: UMLPSymbolsTask) {
   dependsOn(frontendSetup)

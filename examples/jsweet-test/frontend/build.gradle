@@ -68,8 +68,7 @@ node {
   // The Node.js project directory location
   // This is where the package.json file and node_modules directory are located
   // By default it is at the root of the current project
-  nodeProjectDir = frontendSetup.getOutput()
-
+  nodeProjectDir = file("${buildDir}/frontendGen")
 }
 
 nodeSetup.dependsOn(frontendSetup)
@@ -199,7 +198,7 @@ task installLocalRTE(type: NpmTask) {
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npmInstall, translateTypeScript, installLocalRTE
+    npmInstall, translateTypeScript
 ]
 
 task buildApp(type: NpxTask) {
