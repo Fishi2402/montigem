@@ -31,7 +31,7 @@ Plugin providing Guidsl2 models to create and manage instances of a provided CD4
 - Be sure to add the the genGUI2 to the npm prerequisites and change the `@src/*` to also include `../umlp/fe2/*`
 - Add cd2gui to the routing pages `{ path:"cd2gui", loadChildren:() => import('../../build/umlp/fe2/cd2gui/models/ModelsGemRouting').then(m=>m.routes)}`
 - Add a link to the CD2GUI Dashboard (`cd2gui/models/CD2GUIDashboard`) or navigate there manually
-- Note: when turning cd2gui on and off make sure to disable any caching for the first run
+- Note: when turning cd2gui on and off make sure to disable any caching for the first run. Also remove all references in handwritten parts when turning cd2gui off.
 
 ## Stereotypes
 
