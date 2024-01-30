@@ -1,6 +1,6 @@
 package gui.navigation;
 
-import basic.GemText;
+import mc.fenix.basic.GemText;
 
 component AlphaWarning() {
   warning@GemText(value="Caution! This WebApplication is in alpha version and bound to be changed in the future");

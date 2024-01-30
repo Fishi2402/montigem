@@ -82,7 +82,7 @@ libs.each {
   // task `build_<lib_name>` that runs `npm run build @umlp/<lib_name>`
   task "${buildTaskName}"(type: NpmTask) {
     dependsOn tasks.npm_install
-    args = ["run", "build", "@umlp/mc/fenix/${libName}"]
+    args = ["run", "build", "@umlp/${libName}"]
     inputs.dir(project.fileTree("projects/umlp/mc/fenix/${libName}/")
         .exclude("**/*.spec.ts", "**/*.md"))
     inputs.files("angular.json", "tsconfig.base.json", "package-lock.json")

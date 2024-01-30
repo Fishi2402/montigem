@@ -49,12 +49,12 @@ node {
 
 }
 
-/*tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
+tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
   enabled(useCD2GUI)
   setGroup('build')
   input = file("../models/Sehub.umlp")
   outputDir = layout.buildDirectory.dir("cd2gui")
-}*/
+}
 
 task guiVariability(type: GuiVariabilityHandlerTask) {
   if(useCD2GUI) {
@@ -87,7 +87,7 @@ task genGUI(type: UMLPGuiGenTask) {
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
 }
 
-/*tasks.register('genGUI2', UMLPGuiGenTask) {
+tasks.register('genGUI2', UMLPGuiGenTask) {
   enabled(useCD2GUI)
   setGroup('build')
   dependsOn(genGUI, guiVariability)
@@ -102,7 +102,7 @@ task genGUI(type: UMLPGuiGenTask) {
   outputDir = layout.buildDirectory.dir("umlp/fe2")
   domainModels = ["Sehub"]
   guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
-}*/
+}
 
 task generateNPMAuth(type: NPMAuthCreate){
   npmrcFile = frontendSetup.getOutput().file(".npmrc")
@@ -110,7 +110,7 @@ task generateNPMAuth(type: NPMAuthCreate){
 npm_install.dependsOn(generateNPMAuth, ':umlp-rte:client:npm_install')
 
 def prebuildTasks = [
-    npm_install//, genGUI2
+    npm_install, genGUI2
 ]
 
 task buildApp(type: NpxTask) {
