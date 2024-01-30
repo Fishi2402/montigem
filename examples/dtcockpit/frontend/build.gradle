@@ -50,10 +50,10 @@ genGUI {
   /**/
 }
 
-npm_install.dependsOn(':umlp-rte:client:npm_install')
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npm_install,
+    npmInstall,
     generate  // Created from UMLP-Frontend Plugin.
 ]
 

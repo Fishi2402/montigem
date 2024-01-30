@@ -91,10 +91,10 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
   guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
 }
 
-npm_install.dependsOn(':umlp-rte:client:npm_install')
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npm_install, generate, genGUI2
+    npmInstall, generate, genGUI2
 ]
 
 task buildApp(type: NpxTask) {

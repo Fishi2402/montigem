@@ -80,10 +80,10 @@ task genGUI(type: UMLPGuiGenTask) {
   /**/
 }
 
-npm_install.dependsOn(':umlp-rte:client:npm_install')
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npm_install, genDomain, genGUI
+    npmInstall, genDomain, genGUI
 ]
 
 task buildApp(type: NpxTask) {

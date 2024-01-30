@@ -181,7 +181,7 @@ jsweetGUI {
 
 task translateJava2TSGUI(type: org.jsweet.gradle.JSweetTranspileTask) {
   setGroup("generate");
-  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, frontendSetup, genGUI, npm_install, ensureNodeInit);
+  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, frontendSetup, genGUI, npmInstall, ensureNodeInit);
   setConfiguration(jsweetGUIConf);
   setSources(sourceSets.main.java);
   setClasspath(configurations.runtimeClasspath);
@@ -192,14 +192,14 @@ task translateTypeScript() {
 }
 
 task installLocalRTE(type: NpmTask) {
-  dependsOn(npm_install)
+  dependsOn(npmInstall)
   args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]
 }
 
-npm_install.dependsOn(nodeSetup, ':umlp-rte:client:npm_install')
+npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npm_install, translateTypeScript, installLocalRTE
+    npmInstall, translateTypeScript, installLocalRTE
 ]
 
 task buildApp(type: NpxTask) {

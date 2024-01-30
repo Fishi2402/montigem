@@ -81,7 +81,7 @@ libs.each {
 
   // task `build_<lib_name>` that runs `npm run build @umlp/<lib_name>`
   task "${buildTaskName}"(type: NpmTask) {
-    dependsOn tasks.npm_install
+    dependsOn tasks.npmInstall
     args = ["run", "build", "@umlp/${libName}"]
     inputs.dir(project.fileTree("projects/umlp/${libName}/")
         .exclude("**/*.spec.ts", "**/*.md"))

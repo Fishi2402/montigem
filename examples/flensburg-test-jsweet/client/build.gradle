@@ -65,7 +65,7 @@ node {
 task generateNPMAuth(type: NPMAuthCreate){
   npmrcFile = project.file(".npmrc")
 }
-npm_install.dependsOn(generateNPMAuth, ':umlp-rte:client:npm_install')
+npmInstall.dependsOn(generateNPMAuth, ':umlp-rte:client:npmInstall')
 
 //task installRTELocal(type: NpxTask) {
 //  command = "install"
