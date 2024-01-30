@@ -5,6 +5,7 @@ import DemoRec.BatteryPackType;
 import basic.GemText;
 import arrange.GemCard;
 import arrange.GemColumn;
+import arrange.GemRow;
 
 component PackTypeOverview(BatteryPackType type) {
 
@@ -12,9 +13,17 @@ component PackTypeOverview(BatteryPackType type) {
     rowGap="1px",
     wrap="nowrap",
     components=[
-      @GemText(value=type.carType),
+      @GemText(value="Voltage (V) "+type.voltage),
       @GemText(value="Capacity (kWh) "+type.capacity),
-      @GemText(value="BMS located at "+type.bmsLocation)
+      @GemText(value="BMS located at "+type.bmsLocation),
+      @GemText(value="VIN "+type.vin),
+      @GemRow(
+        wrap="nowrap",
+        colGap="2px",
+        components=[
+          @GemText(value=type.carBrand),
+          @GemText(value=type.carModel),
+          @GemText(value=type.carYear)])
     ]
   );
 }

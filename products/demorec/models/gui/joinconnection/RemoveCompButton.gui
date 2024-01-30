@@ -12,5 +12,5 @@ import input.GemTextInput;
 
 
 component RemoveCompButton(JoinConnection connection, DemoRecComponent component) {
-  @GemButton(label="Remove Component"+component.description, leftClick=removeComponentFromConnection);
+  @GemButton(label="Remove Component"+component.name, leftClick=removeComponentFromConnection);
 }
