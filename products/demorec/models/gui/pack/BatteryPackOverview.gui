@@ -19,7 +19,7 @@ component BatteryPackOverview(BatteryPack pack) {
       @GemColumn(
         width="30%",
         components=[
-          @GemText(value=pack.description),
+          @GemText(value=pack.name),
           @GemText(value="Health (%) "+pack.health),
           @GemText(value="Charge (%) "+pack.stateOfCharge)
         ]
