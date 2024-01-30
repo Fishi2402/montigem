@@ -32,11 +32,6 @@ node {
   // Disable this option if you want to configure the proxy for npm or yarn on your own
   // (in the .npmrc file for instance)
   nodeProxySettings = ProxySettings.OFF
-
-  // The Node.js project directory location
-  // This is where the package.json file and node_modules directory are located
-  // By default it is at the root of the current project
-  nodeProjectDir = layout.buildDirectory
 }
 
 configurations {
