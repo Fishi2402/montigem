@@ -213,7 +213,7 @@ task translateTypeScript() {
 }
 
 task installLocalRTE(type: NpmTask) {
-  dependsOn(npmInstall)
+  dependsOn(npmInstall, tasks.getByPath(":umlp-rte:umlp-frontend-rte:packLib"))
   args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]
 }
 
