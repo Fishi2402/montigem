@@ -14,8 +14,6 @@ import Dtcockpit.App;
 import Dtcockpit.Project;
 import Dtcockpit.Group;
 
-// We have to pass the list of projects as an argument, as only pages are able to observe
-// The parent component should be styled like `styles: [":host{ display: flex; flex-direction: row }"]`
 component DtCockpitNavigation(List<Group> groups, List<Project> projects) {
   @NavList(components = [
     @DtNavHeader(),

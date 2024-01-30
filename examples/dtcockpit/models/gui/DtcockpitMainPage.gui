@@ -7,28 +7,28 @@ import arrange.GemRow;
 import arrange.GemColumn;
 import basic.GemText;
 
-import gui.navigation.DtCockpitNavigation;
+import gui.navigation.NavContainer;
 
 import Dtcockpit.Project;
 import Dtcockpit.Group;
 
 page DtcockpitMainPage(List<Group> groups, List<Project> projects) {
-  @DtCockpitNavigation(groups = groups, projects = projects);
-
-  @GemColumn(hAlign = "left", component =
-    @GemCard(
-      title = "Dashboard",
-      component = projectList@GemRow(
-        rowGap="20px",
-        colGap="5px",
-        components=[
-          @iterate(Project p : projects) {
-            // Note: the classes have to be overridden to be applied, as lists of literals is a WIP
-            pButton@GemButton(label = p.name, leftClick = navigateToProject(p));
-          },
-          newButton@GemButton(label = "+", leftClick = navigateToNewProject)
-        ]
+  @NavContainer(projects = projects, groups = groups, content = [
+    @GemColumn(hAlign = "left", component =
+      @GemCard(
+        title = "Dashboard",
+        component = projectList@GemRow(
+          rowGap="20px",
+          colGap="5px",
+          components=[
+            @iterate(Project p : projects) {
+              // Note: the classes have to be overridden to be applied, as lists of literals is a WIP
+              pButton@GemButton(label = p.name, leftClick = navigateToProject(p));
+            },
+            newButton@GemButton(label = "+", leftClick = navigateToNewProject)
+          ]
+        )
       )
     )
-  );
+  ]);
 }

@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.navigation;
+
+import arrange.GemRow;
+import arrange.GemColumn;
+
+import gui.navigation.DtCockpitNavigation;
+
+import Dtcockpit.Project;
+import Dtcockpit.Group;
+
+component NavContainer(
+  List<Group> groups,
+  List<Project> projects,
+  List<GUIViewElement> content
+) {
+  @GemRow(components = [
+    @DtCockpitNavigation(projects = projects, groups = groups),
+    mainCol@GemColumn(components = content)
+  ]);
+}

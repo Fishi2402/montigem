@@ -7,12 +7,11 @@ import arrange.GemRow;
 import arrange.GemColumn;
 import basic.GemButton;
 
-import gui.navigation.DtCockpitNavigation;
+import gui.navigation.NavContainer;
 import Dtcockpit.Project;
 
 page PipelineStats(Project p, List<Group> groups, List<Project> projects) {
-  @GemRow(wrap = "nowrap", components = [
-    @DtCockpitNavigation(projects = projects, groups = groups),
+  @NavContainer(projects = projects, groups = groups, content = [
     @GemColumn(components = [
       @GemCard(
         title = "Pipeline dashboard for " + p.name,
