@@ -302,11 +302,13 @@ public class DAODecorator extends AbstractDecorator {
   // All methods for domain class daos
 
   protected void updateAndSelectListAttrMethods(ASTCDClass doaClass, ASTCDClass domainClass) {
-    CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-        .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).forEach(attr -> {
+    UMLPSymbolTables.getAttributesInHierarchyWithDefiningType(domainClass).entrySet().stream()
+        .filter(entry -> !entry.getKey().getModifier().isDerived() && GenService.isList(entry.getKey())).forEach(entry -> {
+              ASTCDAttribute attr = entry.getKey();
+              ASTCDType definingType = entry.getValue();
               GenService.createType(attr);
               String innerType = GenService.getInnerType(GenService.createType(attr));
-              String tableName = SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.PLAIN) +
+              String tableName = SQLSchemaGenerator.convertClassName(definingType.getName(), SQLSchemaGenerator.AttributeType.PLAIN) +
                   "$" + SQLSchemaGenerator.convertAttributeName(attr.getName(), SQLSchemaGenerator.AttributeType.PLAIN);
               String dbType = GenService.getDBType(attr.getSymbol().getType());
               getCD4C().addMethod(doaClass, "umlp.dao.UpdateListAttr", tableName, attr, innerType, dbType);

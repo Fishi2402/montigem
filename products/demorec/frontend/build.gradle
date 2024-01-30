@@ -8,7 +8,7 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend"
 }
 
-
+def useCD2GUI = false
 
 dependencies {
   guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
@@ -38,6 +38,22 @@ node {
 
 }
 
+tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
+  enabled(useCD2GUI)
+  setGroup('build')
+  input = file("../models/DemoRec.umlp")
+  outputDir = layout.buildDirectory.dir("cd2gui")
+}
+
+tasks.register('guiVariability', GuiVariabilityHandlerTask) {
+  setGroup('build')
+  if (useCD2GUI) {
+    input.from(generateCDTOGUI.getOutputDir().dir("models"))
+  }
+  input.from(file("../models/gui"))
+  outputDir = layout.buildDirectory.dir("guiVariability")
+}
+
 genGUI {
   dependsOn(tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
   symbolDir = files(
@@ -59,10 +75,26 @@ genGUI {
   /**/
 }
 
+tasks.register('genGUI2', UMLPGuiGenTask) {
+  enabled(useCD2GUI)
+  setGroup('build')
+  dependsOn(genGUI, guiVariability)
+  input = file(guiVariability.getOutputDir().dir("cd2gui"))
+  symbolDir = files(
+      generateCDTOGUI.getOutputDir().file("symbols"),
+      project(":umlp-rte:client").tasks.createGuiSymbols.output
+  )
+  hwcDir = file("src/app/")
+  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
+  outputDir = layout.buildDirectory.dir("umlp/fe2")
+  domainModels = ["DemoRec"]
+  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
+}
+
 npm_install.dependsOn(':umlp-rte:client:npm_install')
 
 def prebuildTasks = [
-    npm_install, generate
+    npm_install, generate, genGUI2
 ]
 
 task buildApp(type: NpxTask) {

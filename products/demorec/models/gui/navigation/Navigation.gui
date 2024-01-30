@@ -6,8 +6,10 @@ import mc.fenix.arrange.GemCard;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemLink;
 
+import gui.navigation.AlphaWarning;
+
 component Navigation() {
-  @GemText(value="Caution! This page is in alpha version");
+  @AlphaWarning();
   @GemRow(
     colGap="1px",
     components=[

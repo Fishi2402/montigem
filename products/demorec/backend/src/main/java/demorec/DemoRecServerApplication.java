@@ -39,95 +39,90 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
 
     setBlobStorageLocation();
 
-    BatteryPackType type = DemoRecManager.batteryPackTypeBuilder()
-        .capacity(100.00)
-        .bmsLocation("Motorraum")
-        .carType("VW ID4")
-        .build().get();
+    loadDummyDataIfNotDeployed();
+  }
 
-    BatteryPack pack = DemoRecManager.batteryPackBuilder()
-        .xPos(0.0)
-        .yPos(0.0)
-        .zPos(0.0)
-        .width(200.0)
-        .length(300.2)
-        .height(52.8)
-        .weight(1556.5)
-        .stateOfCharge(0.00)
-        .health(70.00)
-        .type(type)
-        .description(Optional.of("Ganzes Pack"))
-        .isDeconstructible(true)
-        .build().get();
+  private void loadDummyDataIfNotDeployed() {
+    if(System.getenv("deploy") == null  || !System.getenv("deploy").equalsIgnoreCase("true")) {
+      BatteryPackType type = DemoRecManager.batteryPackTypeBuilder()
+          .capacity(100.00)
+          .bmsLocation("Motorraum")
+          .carType("VW ID4")
+          .build().get();
 
-    Process process = DemoRecManager.processBuilder()
-        .startedAt(LocalDate.now())
-        .deconstructionOf(pack)
-        .build().get();
+      BatteryPack pack = DemoRecManager.batteryPackBuilder()
+          .xPos(0.0)
+          .yPos(0.0)
+          .zPos(0.0)
+          .width(200.0)
+          .length(300.2)
+          .height(52.8)
+          .weight(1556.5)
+          .stateOfCharge(0.00)
+          .health(70.00)
+          .type(type)
+          .description(Optional.of("Ganzes Pack"))
+          .isDeconstructible(true)
+          .build().get();
 
-    DemoRecComponent component = DemoRecManager.demoRecComponentBuilder()
-        .xPos(0.5)
-        .yPos(15.0)
-        .zPos(21.2)
-        .width(200.0)
-        .length(150.2)
-        .height(52.8)
-        .weight(1056.5)
-        .description(Optional.of("Deckel"))
-        .isDeconstructible(true)
-        .build().get();
+      Process process = DemoRecManager.processBuilder()
+          .startedAt(LocalDate.now())
+          .deconstructionOf(pack)
+          .build().get();
 
-    DemoRecComponent component2 = DemoRecManager.demoRecComponentBuilder()
-        .xPos(1.0)
-        .yPos(187.0)
-        .zPos(25.2)
-        .width(2123.0)
-        .length(150.425)
-        .height(52.234)
-        .weight(19132.5)
-        .description(Optional.of("Unterteil"))
-        .isDeconstructible(false)
-        .build().get();
+      DemoRecComponent component = DemoRecManager.demoRecComponentBuilder()
+          .xPos(0.5)
+          .yPos(15.0)
+          .zPos(21.2)
+          .width(200.0)
+          .length(150.2)
+          .height(52.8)
+          .weight(1056.5)
+          .description(Optional.of("Deckel"))
+          .isDeconstructible(true)
+          .build().get();
 
-/*
-    DemoRecComponent component3 = DemoRecManager.demoRecComponentBuilder()
-        .xPos(2.0)
-        .yPos(1.0)
-        .zPos(2.2)
-        .width(3.0)
-        .length(0.425)
-        .height(2.234)
-        .weight(1.5)
-        .isDeconstructible(false)
-        .build().get();
-*/
+      DemoRecComponent component2 = DemoRecManager.demoRecComponentBuilder()
+          .xPos(1.0)
+          .yPos(187.0)
+          .zPos(25.2)
+          .width(2123.0)
+          .length(150.425)
+          .height(52.234)
+          .weight(19132.5)
+          .description(Optional.of("Unterteil"))
+          .isDeconstructible(false)
+          .build().get();
 
-    JoinConnection connection = DemoRecManager.joinConnectionBuilder()
-        .state(78.5)
-        .joinConnectionType(JoinConnectionType.SCREW)
-        .build().get();
-    connection.addConnects(component);
-    connection.addConnects(component2);
+      JoinConnection connection = DemoRecManager.joinConnectionBuilder()
+          .state(78.5)
+          .joinConnectionType(JoinConnectionType.SCREW)
+          .build().get();
+      connection.addConnects(component);
+      connection.addConnects(component2);
 
-    pack.addComposedOf(connection);
+      pack.addComposedOf(connection);
 
-    pack.addComposedOf(connection);
+      pack.addComposedOf(connection);
 
-    EndEffector endEffector = DemoRecManager.endEffectorBuilder()
-        .name("Screwdriver")
-        .build().get();
+      EndEffector endEffector = DemoRecManager.endEffectorBuilder()
+          .name("Screwdriver")
+          .build().get();
 
-    ProcessStep step = DemoRecManager.processStepBuilder()
-        .type(ProcessStepType.DECONSTRUCTION)
-        .uses(endEffector)
-        .deconstructs(connection)
-        .timeConsumption(786l)
-        .index(0)
-        .build().get();
+      ProcessStep step = DemoRecManager.processStepBuilder()
+          .type(ProcessStepType.DECONSTRUCTION)
+          .uses(endEffector)
+          .deconstructs(connection)
+          .timeConsumption(786l)
+          .index(0)
+          .build().get();
 
-    process.addConsistsOf(step);
+      process.addConsistsOf(step);
 
-    DemoRecManager.dimensionBuilder().name("Torque").unit("Nm").build().get();
+      DemoRecManager.dimensionBuilder().name("Torque").unit("Nm").build().get();
+
+      openWebServer();
+    }
   }
 
   public void setBlobStorageLocation() {
@@ -144,7 +139,7 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
 
   protected static void openWebServer() {
     try {
-      Server.startWebServer(DatabaseAccessManager.getConnection());
+      Server tcpServer = Server.createTcpServer("-tcp", "-tcpAllowOthers").start();
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
