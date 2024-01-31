@@ -17,6 +17,9 @@ gradle.projectsEvaluated {
       project(":examples:guidslpaper:frontend").tasks.npmInstall
   )
   project(":examples:guidslpaper:frontend").tasks.npmInstall.mustRunAfter(
+      project(":examples:jsweet-test:frontend").tasks.npmInstall
+  )
+  project(":examples:jsweet-test:frontend").tasks.npmInstall.mustRunAfter(
       project(":examples:kitchencompanion:frontend").tasks.npmInstall
   )
   project(":examples:kitchencompanion:frontend").tasks.npmInstall.mustRunAfter(
