@@ -2,8 +2,8 @@
 package example_charts;
 
 import Domain.Person;
-import arrange.GemColumn;
-import arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
 import mc.fenix.charts.GemSunburstChart;
 
 page GemSunburstChartExample(List<Person> persons) {
