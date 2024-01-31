@@ -1,8 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import java.nio.file.Paths
-
-
 plugins {
   id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend"
@@ -34,8 +31,7 @@ node {
   // The Node.js project directory location
   // This is where the package.json file and node_modules directory are located
   // By default it is at the root of the current project
-  nodeProjectDir = frontendSetup.getOutput()
-
+  nodeProjectDir = file("${buildDir}/frontendGen")
 }
 
 tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
@@ -55,9 +51,13 @@ tasks.register('guiVariability', GuiVariabilityHandlerTask) {
 }
 
 genGUI {
-  dependsOn(tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
+  dependsOn(
+      tasks.getByPath(":umlp-rte:client:createGuiSymbols"),
+      tasks.getByPath(":umlp-rte:client:createCDSymbols")
+  )
   symbolDir = files(
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      project(":umlp-rte:client").tasks.createCDSymbols.output,
   )
   domainModels = ["DemoRec"]
   guiCreateModels = ["gui.pack.BatteryPackCreate",
@@ -91,20 +91,16 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
   guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
 }
 
-npm_install.dependsOn(':umlp-rte:client:npm_install')
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npm_install, generate, genGUI2
+    npmInstall, generate, genGUI2
 ]
 
 task buildApp(type: NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
-//  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
-//  inputs.dir("node_modules")
-//  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.app.json")
-//  outputs.dir("${project.buildDir}/dist")
 
 }
 assemble.dependsOn(buildApp)
@@ -113,21 +109,14 @@ task testApp(type: NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
-//  inputs.dir("src")
-//  inputs.dir("node_modules")
-//  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json", "karma.conf.js")
-//  outputs.upToDateWhen { true }
 }
 
 task runApp(type: NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
-//  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
-//  inputs.dir("node_modules")
-//  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json")
-//  outputs.upToDateWhen { true }
 }
+
 task run {
   dependsOn(runApp)
 }
