@@ -198,7 +198,7 @@ task installLocalRTE(type: NpmTask) {
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npmInstall, translateTypeScript
+    installLocalRTE, translateTypeScript
 ]
 
 task buildApp(type: NpxTask) {
