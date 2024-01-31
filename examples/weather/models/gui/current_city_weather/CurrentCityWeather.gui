@@ -4,10 +4,10 @@ package gui.current_city_weather;
 import Weather.Forecast;
 import Weather.City;
 
-import arrange.GemCard;
-import arrange.GemRow;
-import arrange.GemColumn;
-import basic.GemText;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
 
 component CurrentCityWeather(City city){
   @GemColumn(hAlign = "center", components = [

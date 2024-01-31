@@ -2,9 +2,9 @@ package gui.endeffector;
 
 import DemoRec.EndEffector;
 
-import basic.GemText;
-import arrange.GemCard;
-import arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
 
 import gui.endeffector.EndEffectorCreate;
 import gui.navigation.Navigation;

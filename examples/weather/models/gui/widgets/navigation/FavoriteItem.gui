@@ -3,10 +3,10 @@ package gui.widgets.navigation;
 
 import Weather.City;
 
-import arrange.GemColumn;
-import arrange.GemRow;
-import basic.GemText;
-import basic.GemButton;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
 
 component FavoriteItem(City fav) {
   @GemRow(hAlign = "space-between", components = [

@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
-import charts.GemPieChart;
 import Domain.Person;
+import mc.fenix.charts.GemPieChart;
 
 page GemPieChartExample(List<Person> persons) {
   chart@GemPieChart(

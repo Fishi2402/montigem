@@ -87,4 +87,8 @@ umlp Attributes {
   class ListOfPrimitives{
     List<int> ints;
   }
+
+  class ListOfStrings{
+    List<String> strings;
+  }
 }

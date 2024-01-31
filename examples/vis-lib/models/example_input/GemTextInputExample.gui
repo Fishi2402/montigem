@@ -3,7 +3,7 @@ package example_input;
 
 import Domain.Person;
 
-import input.GemTextInput;
+import mc.fenix.input.GemTextInput;
 
 page GemTextInputExample(List<Person> persons) {
   @iterate(Person p : persons) {

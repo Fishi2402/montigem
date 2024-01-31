@@ -1,22 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.montiverse;
 
-import gui.navigation.DtCockpitNavigation;
+import gui.navigation.NavContainer;
 import gui.pipelines.PipelineStats;
 import Dtcockpit.Project;
 import Dtcockpit.Group;
 
-import basic.GemButton;
-import arrange.GemCard;
-import arrange.GemColumn;
-import arrange.GemRow;
-import basic.GemText;
-import input.GemTextInput;
-import input.GemTextareaInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemTextareaInput;
 
 page OverviewPage(Project project, List<Group> groups, List<Project> projects) {
-  @GemRow(wrap = "nowrap", components = [
-    @DtCockpitNavigation(projects = projects, groups = groups),
+  @NavContainer(projects = projects, groups = groups, content = [
     @GemColumn(hAlign = "left", components = [
       @GemCard(
         title = "MontiVerse Lite",

@@ -4,9 +4,9 @@ package person;
 
 import Domain.Person;
 
-import arrange.GemColumn;
-import arrange.GemRow;
-import basic.GemText;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
 
 import person.Row;
 import person.Create;

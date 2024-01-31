@@ -3,18 +3,17 @@ package gui.project;
 
 import Dtcockpit.Project;
 
-import arrange.GemCard;
-import arrange.GemColumn;
-import arrange.GemRow;
-import basic.GemText;
-import basic.GemButton;
-import input.GemTextInput;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
 
-import gui.navigation.DtCockpitNavigation;
+import gui.navigation.NavContainer;
 
 page ProjectCreate(Project project, List<Group> groups, List<Project> projects) {
-  @GemRow(wrap = "nowrap", components = [
-    @DtCockpitNavigation(projects = projects, groups = groups),
+  @NavContainer(projects = projects, groups = groups, content = [
     @GemColumn(hAlign = "center", component =
       @GemCard(title = "New Project", component =
         @GemColumn(width = "50vw", rowGap = "10px", components = [

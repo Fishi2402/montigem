@@ -10,7 +10,6 @@ dependencies {
   guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 
   umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
-
 }
 
 node {
@@ -33,7 +32,7 @@ node {
   // The Node.js project directory location
   // This is where the package.json file and node_modules directory are located
   // By default it is at the root of the current project
-  nodeProjectDir = frontendSetup.getOutput()
+  nodeProjectDir = file("${buildDir}/frontendGen")
 }
 
 genGUI {
@@ -49,11 +48,11 @@ genGUI {
   outputs.upToDateWhen { false }
   /**/
 }
-
-npm_install.dependsOn(':umlp-rte:client:npm_install')
+nodeSetup.dependsOn(frontendSetup)
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npm_install,
+    npmInstall,
     generate  // Created from UMLP-Frontend Plugin.
 ]
 

@@ -3,9 +3,9 @@ package gui;
 
 import Weather.App;
 
-import arrange.GemRow;
-import arrange.GemColumn;
-import arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
 
 import gui.multi_day_forecast.MultiDayForecast;
 import gui.next_hours_forecast.NextHoursForecast;

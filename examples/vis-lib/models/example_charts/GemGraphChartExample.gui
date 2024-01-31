@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
-import charts.GemNetworkGraph;
+
 import Domain.Person;
+import mc.fenix.charts.GemNetworkGraph;
 
 page GemGraphChartExample(List<Person> persons) {
   networkgraph@GemNetworkGraph(

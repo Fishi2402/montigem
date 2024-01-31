@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
-import charts.GemBulletChart;
 import Domain.Person;
+import mc.fenix.charts.GemBulletChart;
 
 page GemBulletChartExample(
   List<Person> persons,

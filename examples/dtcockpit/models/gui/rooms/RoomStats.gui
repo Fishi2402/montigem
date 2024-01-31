@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.rooms;
 
-import arrange.GemColumn;
-import arrange.GemRow;
-import arrange.GemCard;
-import arrange.GemOverlay;
-import arrange.GemOverlayItem;
-import basic.GemText;
-import basic.GemImage;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemOverlay;
+import mc.fenix.arrange.GemOverlayItem;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemImage;
 
 import gui.widgets.LineWithInfo;
 
