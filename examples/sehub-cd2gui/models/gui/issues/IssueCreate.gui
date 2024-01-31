@@ -6,13 +6,13 @@ import Sehub.Issue;
 
 import gui.note.Note;
 import gui.note.Response;
-import arrange.GemCard;
-import arrange.GemColumn;
-import arrange.GemRow;
-import basic.GemText;
-import basic.GemButton;
-import input.GemTextInput;
-import input.GemTextareaInput;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemTextareaInput;
 
 component IssueCreate(Issue issue){
   @GemColumn(hAlign = "center", width = "400px", rowGap = "5px", components = [

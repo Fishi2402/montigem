@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.artifacts;
 
-import basic.GemImage;
+import mc.fenix.basic.GemImage;
 
 component ArtifactTypeIcon(String type){
   @guard(type == "Directory"){

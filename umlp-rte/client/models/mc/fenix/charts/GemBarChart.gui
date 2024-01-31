@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+
+import mc.fenix.charts.GemBarChartTypes.GemBarChartData;
+
+//A Bar-Chart present a set of two dimensional data with a number of rectangular bars that can go horizontally or vertically, with their values being proportional to what they represent.
+//The chart itself visualizes categories (given as Strings) on one axis and a discrete integer value on the other as height or size.
+//Additionally, the bars can be stacked or aligned to visualizes multiple sub-categories of a second data dimension.
+
+component GemBarChart(
+  GemBarChartData data,
+  Object displayValue,
+  Boolean stacked,
+  Integer maxValue,
+  Integer minValue,
+  boolean showConfig = true
+)

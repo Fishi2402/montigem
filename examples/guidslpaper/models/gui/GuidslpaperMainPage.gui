@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui;
 
-import basic.GemButton;
-import arrange.GemCard;
-import arrange.GemRow;
-import arrange.GemColumn;
-import basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
 
 import gui.navigation.GuidslPaperNavigation;
 

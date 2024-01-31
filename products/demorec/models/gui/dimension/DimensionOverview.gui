@@ -2,9 +2,9 @@ package gui.dimension;
 
 import DemoRec.Dimension;
 
-import basic.GemText;
-import arrange.GemCard;
-import arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
 
 import gui.dimension.DimensionCreate;
 import gui.navigation.Navigation;

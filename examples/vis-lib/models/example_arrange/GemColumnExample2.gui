@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_arrange;
 
-import arrange.GemColumn;
-import basic.GemText;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
 
 /**
   Following example shows a `300 x 200` column. The horizontal alignment of

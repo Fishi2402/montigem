@@ -46,11 +46,21 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
     if(System.getenv("deploy") == null  || !System.getenv("deploy").equalsIgnoreCase("true")) {
       BatteryPackType type = DemoRecManager.batteryPackTypeBuilder()
           .capacity(100.00)
+          .voltage(750.00)
           .bmsLocation("Motorraum")
-          .carType("VW ID4")
+          .vin("000")
+          .carBrand(Optional.of("VW"))
+          .carModel(Optional.of("ID4"))
+          .carYear(Optional.of("2017"))
           .build().get();
 
       BatteryPack pack = DemoRecManager.batteryPackBuilder()
+          .name("Demontage gestartet am 24.01.29")
+          .uniqueId("1")
+          .oENumber("27347239")
+          .manufacturer("VW")
+          .condition(Optional.of("Sieht gut aus."))
+          .humanDescription(Optional.of("Ganzes Pack"))
           .xPos(0.0)
           .yPos(0.0)
           .zPos(0.0)
@@ -59,9 +69,9 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .height(52.8)
           .weight(1556.5)
           .stateOfCharge(0.00)
-          .health(70.00)
+          .health(Optional.of(70.00))
           .type(type)
-          .description(Optional.of("Ganzes Pack"))
+
           .isDeconstructible(true)
           .build().get();
 
@@ -71,6 +81,12 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .build().get();
 
       DemoRecComponent component = DemoRecManager.demoRecComponentBuilder()
+          .name("Deckel")
+          .uniqueId("2")
+          .oENumber("27347239")
+          .manufacturer("VW")
+          .condition(Optional.of("Sieht gut aus."))
+          .humanDescription(Optional.of("Deckel"))
           .xPos(0.5)
           .yPos(15.0)
           .zPos(21.2)
@@ -78,11 +94,16 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .length(150.2)
           .height(52.8)
           .weight(1056.5)
-          .description(Optional.of("Deckel"))
           .isDeconstructible(true)
           .build().get();
 
       DemoRecComponent component2 = DemoRecManager.demoRecComponentBuilder()
+          .name("PackUnterteil")
+          .uniqueId("3")
+          .oENumber("27347239")
+          .manufacturer("VW")
+          .condition(Optional.of("Top"))
+          .humanDescription(Optional.of("Pack nach Deckelentfernung"))
           .xPos(1.0)
           .yPos(187.0)
           .zPos(25.2)
@@ -90,7 +111,6 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .length(150.425)
           .height(52.234)
           .weight(19132.5)
-          .description(Optional.of("Unterteil"))
           .isDeconstructible(false)
           .build().get();
 

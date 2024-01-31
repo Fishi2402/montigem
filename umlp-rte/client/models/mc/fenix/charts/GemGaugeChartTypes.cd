@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+import java.util.List;
+
+classdiagram GemGaugeChartTypes {
+  public class GemGaugeChartData {
+    List<GemGaugeChartEntry> entries;
+  }
+
+  public class GemGaugeChartEntry {
+    String type;
+    String name;
+    Integer value;
+    String backgroundColor;
+  }
+
+}

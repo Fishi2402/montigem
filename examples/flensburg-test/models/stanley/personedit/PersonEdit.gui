@@ -9,11 +9,11 @@ import hardy.Flensburg.Person;
 // every library GUI component has Gem prefix to avoid name clashing with HTML elements from native
 // library and from other libraries
 // hier werden importierte GUI-Modelle gefunden
-import input.GemTextInput;
-import basic.GemText;
-import basic.GemButton;
-import arrange.GemCard;
-import arrange.GemColumn;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
 
 /**
  * This example defines a

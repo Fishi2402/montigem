@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_basic;
 
-import basic.GemText;
+import mc.fenix.basic.GemText;
 
 page GemTextExample() {
   @GemText(value = "My text");

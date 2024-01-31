@@ -4,12 +4,12 @@ import DemoRec.BatteryPack;
 import DemoRec.DemoRecComponent;
 import DemoRec.JoinConnection;
 
-import arrange.GemRow;
-import arrange.GemColumn;
-import arrange.GemCard;
-import basic.GemText;
-import basic.GemLink;
-import basic.GemButton;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemLink;
+import mc.fenix.basic.GemButton;
 
 page SubComponentView(DemoRecComponent subComponent) {
 

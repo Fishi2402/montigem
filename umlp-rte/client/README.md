@@ -16,7 +16,7 @@ gradle script.
 -->
 # Example setup
 
-- Example library: [arrange](./projects/umlp/arrange). `arrange` (full name: `@umlp/arrange`) can be
+- Example library: [arrange](projects/umlp/mc/fenix/arrange). `arrange` (full name: `@umlp/arrange`) can be
   replaced with any other library name in this instruction.
 - [Full library list](./projects/umlp)
 - [Project root](./). Will be referred to as "root" in this instruction.
@@ -28,8 +28,8 @@ of the library. Example (all references to the `arrange` example should be repla
 library):
 
 - A file is changed in `arrange` library, i.e. any file inside [the library
-  folder](./projects/umlp/arrange).
-- Open [`package.json` file](./projects/umlp/arrange/package.json) of the changed library. 
+  folder](projects/umlp/mc/fenix/arrange).
+- Open [`package.json` file](projects/umlp/mc/fenix/arrange/package.json) of the changed library. 
 - Increment the version number of the `"version"` field.
   - last version number if you make a patch (bug fix, minor stuff) or a backward compatible change,
     e.g., current value is `"7.5.1"`. Set new value `"7.5.2"`.

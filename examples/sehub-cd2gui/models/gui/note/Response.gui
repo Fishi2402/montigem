@@ -3,13 +3,13 @@ package gui.note;
 
 import Sehub.Post;
 
-import arrange.GemColumn;
-import arrange.GemCard;
-import basic.GemText;
-import input.GemTextareaInput;
-import input.GemTextInput;
-import basic.GemButton;
-import arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextareaInput;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemRow;
 
 component Response(Post post){
 

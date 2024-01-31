@@ -2,10 +2,10 @@ package gui.dimension;
 
 import DemoRec.Dimension;
 
-import basic.GemText;
-import arrange.GemRow;
-import input.GemTextInput;
-import basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
 
 page DimensionCreate(Dimension dimension) {
 

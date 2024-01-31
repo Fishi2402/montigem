@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.input;
+
+import mc.fenix.input.GemTextareaInputTypes.GemTextareaInputValidity;
+
+//This component represents a text area with an optional label.
+//It is designed to be used in forms or other contexts where multi-line user text input is required
+
+component GemTextareaInput(
+  String labelText,
+  ?String entry,
+  String id,
+  boolean disabled = false,
+  String placeholder = "",
+  GemTextareaInputValidity validity,
+  String width = "100%",
+  String height = "100%",
+  Event keyRelease,
+  Event keyPress
+)

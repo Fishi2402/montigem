@@ -1,8 +1,8 @@
 package gui.pipelines;
 
-import charts.GemBarChart;
-import arrange.GemCard;
-import basic.GemButton;
+import mc.fenix.charts.GemBarChart;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemButton;
 
 
 import Dtcockpit.Project;

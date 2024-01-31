@@ -76,7 +76,7 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
     let size = this.getAttachedComponent().getPhotoLocations().length
     this.files.forEach(f =>
       {
-        const path = this.getAttachedComponent().getDescription().replace(" ","_")+"_"+this.getAttachedComponent().getGemId()
+        const path = this.getAttachedComponent().getName().replace(" ","_")+"_"+this.getAttachedComponent().getGemId()
         this.uploadFile(f, path)
       }
     )
