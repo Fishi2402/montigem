@@ -42,7 +42,6 @@ public class ClearSoftValueHashMapIntegrationTest extends DtcockpitDBTestSetup {
     TestDatabaseAccessManager.init();
     DtcockpitTestContext.clear();
     DtcockpitManagerImpl.init();
-    TestDatabaseAccessManager.executeStatement("DROP ALL OBJECTS");
     String schema = IOUtils.resourceToString("/Dtcockpit.sql", StandardCharsets.UTF_8);
     assert TestDatabaseAccessManager.initSchema(schema);
     backend = DtcockpitTestContext.fromCurrentContext();
