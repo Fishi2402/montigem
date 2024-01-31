@@ -8,7 +8,7 @@ page GemHeatmapChartExample(List<Person> persons) {
   @GemHeatmapChart(
     data = null,
     timestampdata = false,
-    xLabel = "x",
-    yLabel = "y"
+    xLabel = "amount of money spent for stocks",
+    yLabel = "age groups"
   );
 }

@@ -11,24 +11,60 @@ import { GemHeatmapChartData, GemHeatmapChartEntry } from '@umlp/charts';
   templateUrl: config.templateUrl,
 })
 export class GemHeatmapChartExample extends GemHeatmapChartExampleComponent {
-  private chartData: GemHeatmapChartData;
+  private chartData;
   private chartDataHash: string;
 
   public override getGemHeatmapChart0Data(): GemHeatmapChartData {
     if (!this.persons) {
       return null;
     }
-    let entries: GemHeatmapChartEntry[] = [];
-    for (let person of this.persons) {
-      let entry = {
-        name: person.getName(),
-        value: person?.getBirthday()?.getTime()
-      };
-      entries.push(entry);
+    type Entry = {
+      name: string,
+      value: number
     }
-    let data: GemHeatmapChartData = {
+    let entries: Entry[] = [
+      {
+        name: "Older than 32",
+        value: 0
+      }, {
+        name: "Between 30 and 32",
+        value: 0
+      }, {
+        name: "Between 28 and 29",
+        value: 0
+      }, {
+        name: "Between 27 and 23",
+        value: 0
+      }, {
+        name: "Younger than 23",
+        value: 0
+      }
+    ];
+    for (const person of this.persons) {
+      if (person.getStocks().length === 0) {
+        continue;
+      }
+      let birthday = Number(person?.getBirthday()?.toDateString().substring(11, 15));
+      let sumStocks: number = 0;
+      for (let stock of person.getStocks()) {
+        sumStocks += stock.getPrice();
+      }
+      if (birthday < 1992) {
+        entries[0].value += sumStocks;
+      } else if (birthday < 1995) {
+        entries[1].value += sumStocks;
+      } else if (birthday < 1997) {
+        entries[2].value += sumStocks;
+      } else if (birthday < 2002) {
+        entries[3].value += sumStocks;
+      } else {
+        entries[4].value += sumStocks;
+      }
+    }
+    let data = {
       entries: entries
     }
+
     if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
       return this.chartData;
     }

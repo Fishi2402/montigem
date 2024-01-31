@@ -17,7 +17,7 @@ export class GemBulletChartExample extends GemBulletChartExampleComponent {
 
     public override getBulletchartValue(): number {
         if (!this.persons) {
-            return null;
+            return 0;
         }
         let sumOfStockPrices: number = 0;
         for (let person of this.persons) {

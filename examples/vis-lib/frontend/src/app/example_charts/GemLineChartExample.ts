@@ -99,7 +99,6 @@ export class GemLineChartExample extends GemLineChartExampleComponent {
     }
     this.chartData = data;
     this.chartDataHash = JSON.stringify(this.chartData);
-    console.log(this.chartData);
     return this.chartData;
   }
 

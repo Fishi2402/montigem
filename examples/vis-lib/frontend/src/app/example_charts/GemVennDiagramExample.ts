@@ -30,7 +30,7 @@ export class GemVennDiagramExample extends GemVennDiagramExampleComponent {
       };
       mapOfriends.set(person.getName(), person.getFriends());
       entries.push(node);
-     
+
     }
 
     mapOfriends.forEach((friends, person) => {

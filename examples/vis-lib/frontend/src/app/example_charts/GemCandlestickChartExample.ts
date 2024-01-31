@@ -59,7 +59,6 @@ export class GemCandlestickChartExample extends GemCandlestickChartExampleCompon
     }
     this.chartData = data;
     this.chartDataHash = JSON.stringify(this.chartData);
-    console.log(this.chartData);
     return this.chartData;
   }
 
@@ -113,7 +112,7 @@ export class GemCandlestickChartExample extends GemCandlestickChartExampleCompon
     let earliestHour: number = 25;
     let open: number = 0;
     for (let stock of stocks) {
-      if (stock.getDate().getHours()< earliestHour) {
+      if (stock.getDate().getHours() < earliestHour) {
         earliestHour = stock.getDate().getHours();
         open = stock.getPrice();
       }
