@@ -48,7 +48,7 @@ genGUI {
   outputs.upToDateWhen { false }
   /**/
 }
-
+nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
