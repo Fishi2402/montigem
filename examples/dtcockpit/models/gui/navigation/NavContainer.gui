@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.navigation;
 
-import arrange.GemRow;
-import arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
 
 import gui.navigation.DtCockpitNavigation;
 
