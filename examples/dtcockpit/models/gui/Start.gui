@@ -35,7 +35,7 @@ page Start(
       welcomeRow@GemRow(width = "100%", hAlign = "center", component = @GemCard(title = "Welcome", component = @Welcome())),
       // TODO: App is a singleton
       @iterate(App app : apps) {
-        @GemColumn(width = "50vw", component = @PipelineStatsPerGroup(g = app.dashboardGroup));
+        pipelineCol@GemColumn(width = "50vw", component = @PipelineStatsPerGroup(g = app.dashboardGroup));
       },
       @GemCard(title = "RamUsage (MB)", component = @GemColumn(width = "30vw", components = [
         serverChart@GemLineChart(data = null, showConfig = false)

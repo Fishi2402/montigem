@@ -1,3 +1,10 @@
+// TODO: move to themes
+$acronio-warmgray : #8A897C;
+$acronio-warmgray-1: #45453E;
+$acronio-warmgray-2 : #68675D;
+$acronio-warmgray-3 : #B9B8B0;
+$acronio-warmgray-4 : #D0D0CB;
+
 $card-color: white;
 $padding: 0.5rem;
 
@@ -25,4 +32,17 @@ $header-font-weight: bold;
 .gem-card-body {
   flex-grow: 1;
   width: 100%;
+}
+
+.gem-card-line {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    $acronio-warmgray-4 0%,
+    $acronio-warmgray-4 50%,
+    $acronio-warmgray-4 50%,
+    rgba($acronio-warmgray-4, 0.1) 100%
+  );
+  margin: 0;
 }
