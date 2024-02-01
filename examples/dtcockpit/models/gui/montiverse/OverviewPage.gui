@@ -16,24 +16,26 @@ import mc.fenix.input.GemTextareaInput;
 
 page OverviewPage(Project project, List<Group> groups, List<Project> projects) {
   @NavContainer(projects = projects, groups = groups, content = [
-    @GemColumn(hAlign = "left", components = [
-      @GemCard(
-        title = "MontiVerse Lite",
-        component = projectList@GemRow(
-          rowGap="20px",
-          colGap="5px",
-          components=[
-            @iterate(Project dependentProject: project.dependentProjects) {
-              branchDropdown@GemTextInput(inputType="dropdown",
-                            labelText=dependentProject.name,
-                            options= /*via TOP*/ null,
-                            entry=dependentProject.ciInfos.branchName
-                            );
-            }
-          ]
+    @GemCard(
+      title = "MontiVerse Lite",
+      component = @GemColumn(hAlign = "left", rowGap = "15px", components = [
+        projectList@GemRow(rowGap = "10px", colGap = "15px", wrap = "wrap", components = [
+          @iterate(Project dependentProject : project.dependentProjects) {
+            branchDropdown@GemTextInput(
+              inputType = "dropdown",
+              labelText = dependentProject.name,
+              options = null, // via TOP
+              entry = dependentProject.ciInfos.branchName,
+              width = "40ch"
+            );
+          }
+        ]),
+        startButton@GemButton(
+          label = "Start pipeline",
+          leftClick = startPipeline(project),
+          width = "fit-content"
         )
-      ),
-      startButton@GemButton(label = "Start pipeline", leftClick = startPipeline(project))
-    ])
+      ])
+    )
   ]);
 }
