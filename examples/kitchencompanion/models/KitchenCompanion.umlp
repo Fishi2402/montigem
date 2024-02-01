@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-import input.GemTextInputTypes.GemTextInputValidity;
+import mc.fenix.input.GemTextInputTypes.GemTextInputValidity;
 
 classdiagram KitchenCompanion {
 

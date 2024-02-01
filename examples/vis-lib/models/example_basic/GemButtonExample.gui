@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_basic;
 
-import basic.GemButton;
+import mc.fenix.basic.GemButton;
 
 page GemButtonExample() {
   @GemButton(label = "windows alert", leftClick = alert);

@@ -2,7 +2,7 @@
 package gui;
 
 import Domain.Person;
-import charts.GemGraph;
+import mc.fenix.charts.GemGraph;
 
 page NetworkChartExample(Person p) {
 

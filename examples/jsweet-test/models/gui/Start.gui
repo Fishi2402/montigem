@@ -1,15 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui;
 
-import arrange.GemColumn;
-import arrange.GemCard;
-import basic.GemText;
-import arrange.GemRow;
-import basic.GemImage;
-import basic.GemButton;
-import input.GemTextInput;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemImage;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
 
-page Start() {
+import Jsweettest.A;
+
+page Start(List<A> a) {
   @GemCard(
     title = "JSweet Test",
     component = @GemColumn(

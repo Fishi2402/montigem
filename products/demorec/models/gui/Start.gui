@@ -2,11 +2,11 @@ package gui;
 
 import DemoRec.Process;
 
-import arrange.GemRow;
-import arrange.GemColumn;
-import arrange.GemCard;
-import basic.GemText;
-import basic.GemLink;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemLink;
 
 import gui.pack.BatteryPackOverview;
 import gui.navigation.Navigation;
@@ -14,7 +14,7 @@ import gui.navigation.Navigation;
 page Start(List<Process> allProcesses) {
   @Navigation();
   @GemCard(
-    title="All Process",
+    title="All Processes",
     component=
       @GemColumn(
        components = [

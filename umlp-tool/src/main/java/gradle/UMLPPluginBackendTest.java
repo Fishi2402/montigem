@@ -18,8 +18,8 @@ public class UMLPPluginBackendTest implements Plugin<Project> {
     // UMLPBackendTask secondTask = UMLPPluginBackend.createUMLPBackendTask(project, "COMPARE_" + UMLPPluginBackend.UMLP_BACKEND_TASK_NAME).get();
     UMLPBackendTask secondTask = project.getTasks().register("COMPARE_" + UMLPPluginBackend.UMLP_BACKEND_TASK_NAME, UMLPBackendTask.class, umlpTask -> {
       // TODO: Is there a better way to copy _all_ properties from the tasks?
-      umlpTask.getInput().from(firstTask.getInput());
-      umlpTask.getHwcDir().set(firstTask.getHwcDir());
+      umlpTask.getInput().setFrom(firstTask.getInput());
+      umlpTask.getHwcDir().setFrom(firstTask.getHwcDir());
       umlpTask.getSymbolDir().set(firstTask.getSymbolDir());
       umlpTask.getUseSpring().set(firstTask.getUseSpring());
       umlpTask.getUseShell().set(firstTask.getUseShell());
@@ -32,9 +32,10 @@ public class UMLPPluginBackendTest implements Plugin<Project> {
     TaskProvider<CheckDirEqualityTask> compareTask = createCompareTask(project, firstTask.getOutputDir(), secondTask.getOutputDir(), "checkEqualitiy");
     compareTask.get().dependsOn(firstTask, secondTask);
 
-    //TaskProvider<CheckDirEqualityTask> compareSymbolsTask = createCompareTask(project, firstTask.getSymbolOutDir(), secondTask.getSymbolOutDir(), "checkSymbolEqualitiy");
-    //compareSymbolsTask.get().dependsOn(firstTask, secondTask);
-    project.getTasks().getByName("build").dependsOn(compareTask); // also add "compareSymbolsTask"
+    TaskProvider<CheckDirEqualityTask> compareSymbolsTask = createCompareTask(project, firstTask.getSymbolOutDir(), secondTask.getSymbolOutDir(), "checkSymbolEqualitiy");
+    compareSymbolsTask.get().dependsOn(firstTask, secondTask);
+
+    project.getTasks().getByName("build").dependsOn(compareTask); // TODO: also add "compareSymbolsTask"
   }
 
   private TaskProvider<CheckDirEqualityTask> createCompareTask(Project project, DirectoryProperty dir1, DirectoryProperty dir2, String taskName){

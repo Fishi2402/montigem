@@ -6,14 +6,14 @@ package stanley.personoverview;
 import hardy.Flensburg.Person;
 
 // import stanley.tmp.table.GemTable;
-import basic.GemText;
-import arrange.GemCard;
-import table.GemTable;
-import basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.table.GemTable;
+import mc.fenix.basic.GemButton;
 import stanley.my.InfoBox;
 // import type from a CD to describe a table column
 
-// import table.TableTypes.TableColumn;
+// import mc.fenix.table.TableTypes.TableColumn;
 
 /**
  * This example defines a

@@ -290,4 +290,40 @@ public class InheritanceManagerImplTest {
     assertEquals(InheritanceManager.getMSure(p.getGemId()).sizeSetQs(), 4);
   }
 
+  @Test
+  public void testListAttrs() {
+    InheritanceManagerImpl4Test.init();
+
+    assertTrue(InheritanceManager.instance instanceof InheritanceManagerImpl4Test);
+
+    String aEntry = "AEntry";
+    String bEntry = "BEntry";
+
+    AListAttr a = InheritanceManager.aListAttrBuilder().build().get();
+    a.addAList(0, aEntry);
+
+    // Load a from DB
+    ((InheritanceManagerImpl4Test) InheritanceManager.instance).clearCache();
+    a = InheritanceManager.getAListAttrSure(a.getGemId());
+    assertEquals(1, a.sizeAList());
+    assertEquals(aEntry, a.getAList(0));
+
+    // Check the same in inherited class
+    BListAttr b = InheritanceManager.bListAttrBuilder().build().get();
+    b.addAList(0,bEntry);
+    assertEquals(1, b.sizeAList());
+
+    // Load b from DB as instance of AListAttr
+    ((InheritanceManagerImpl4Test) InheritanceManager.instance).clearCache();
+    AListAttr bOfA = InheritanceManager.getAListAttrSure(b.getGemId());
+    assertEquals(1, bOfA.sizeAList());
+    assertEquals(bEntry, bOfA.getAList(0));
+
+    // Load b from DB as instance of BListAttr
+    ((InheritanceManagerImpl4Test) InheritanceManager.instance).clearCache();
+    b = InheritanceManager.getBListAttrSure(b.getGemId());
+    assertEquals(1, b.sizeAList());
+    assertEquals(bEntry, b.getAList(0));
+  }
+
 }

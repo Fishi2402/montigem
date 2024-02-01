@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_input;
 
-import input.GemTextareaInput;
+import mc.fenix.input.GemTextareaInput;
 
 page GemTextareaInputExample() {
   @GemTextareaInput(

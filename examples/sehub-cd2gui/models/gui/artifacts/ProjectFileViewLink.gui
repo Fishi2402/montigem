@@ -3,9 +3,9 @@ package gui.artifacts;
 
 import Sehub.Artifact;
 
-import basic.GemButton;
-import basic.GemLink;
-import basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemLink;
+import mc.fenix.basic.GemText;
 
 component ProjectFileViewLink(Artifact artifact){
   @guard(artifact.type == "Directory"){

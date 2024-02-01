@@ -2,8 +2,8 @@
 
 package person;
 
-import arrange.GemColumn;
-import arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
 
 page Row(GUIViewElement col1, GUIViewElement col2, GUIViewElement col3) {
   @GemRow(colGap = "10px", hAlign = "space-between", components = [

@@ -1,0 +1,62 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!-- adapted and customized by (c) MaCoCo, ein RWTH Aachen projekt -->
+
+<h2 matDialogTitle class="notification-title" *ngIf="data.denyName && data.confirmName">{{data.title}}</h2>
+<h2 matDialogTitle class="notification-title" *ngIf="!data.denyName && data.confirmName"> Hinweis:  {{data.title}}</h2>
+
+<mat-dialog-content class="notification-content">
+    <table style="width:100%; text-align: left;" >
+        <colgroup id="spaltengruppe">
+            <col style="width: 10%;">
+            <col style="width: 2%;">
+            <col style="width: 88%;">
+        </colgroup>
+
+        <!-- Icon Column -->
+        <tr>
+            <td>
+                <i *ngIf="data.denyName && data.confirmName"><img src="dialog.png" alt="Dialog" width="100"></i>
+                <i *ngIf="!data.denyName && data.confirmName"><img src="warning.png" alt="Dialog" width="100"></i>
+            </td>
+        </tr>
+        <!-- Spacing -->
+        <tr></tr>
+        <!-- Content Column -->
+        <tr>
+            <td></td>
+            <td></td>
+            <td><div *ngFor="let msg of data.msgs">
+                <h5 [innerHTML]="msg"></h5>
+            </div>
+                <h2 [innerHTML]="data.msg"></h2>
+            </td>
+        </tr>
+    </table>
+</mat-dialog-content>
+
+<!-- Actions -->
+<mat-dialog-actions class="notification-action">
+
+    <div fxLayout="column" fxLayoutGap="10px" style="width:100%">
+
+        <div fxFlex="100%" fxLayout="row" fxLayoutAlign="end none" style="width:100%">
+            <span>
+                <span class="notification-margin-right"></span>
+                <button [matDialogClose]="'confirm'" class="notification-button" id="btnConfirmShow"
+                        mat-button>{{data.confirmName}}
+                </button>
+            </span>
+
+            <ng-container *ngIf="data.abortName">
+                <span class="notification-margin-right"></span>
+                  <button [matDialogClose]="'abort'" class="notification-button" id="btnAbort"
+                        mat-button>{{data.abortName}}</button>
+            </ng-container>
+
+            <ng-container *ngIf="data.denyName">
+                <span class="notification-margin-right"></span>
+                 <button [matDialogClose]="'deny'" class="notification-button" id="btnDeny" mat-button>{{data.denyName}}</button>
+             </ng-container>
+        </div>
+    </div>
+</mat-dialog-actions>

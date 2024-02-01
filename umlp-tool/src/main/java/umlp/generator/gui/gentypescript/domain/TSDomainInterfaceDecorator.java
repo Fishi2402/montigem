@@ -3,10 +3,7 @@
 package umlp.generator.gui.gentypescript.domain;
 
 import de.monticore.cd.codegen.CDGenService;
-import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
-import de.monticore.cd.codegen.methods.MutatorDecorator;
-import de.monticore.cd.codegen.methods.mutator.ListMutatorDecorator;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -62,7 +59,7 @@ public class TSDomainInterfaceDecorator extends DomainInterfaceDecorator {
   }
 
   @Override
-  protected void createGetterSetterForAssocs(ASTCDType cdType,
+  protected void createGetterSetterForAssocs(ASTCDType domainType, ASTCDType cdType,
       List<ASTCDAttribute> attrList, boolean isInterface) {
     CDGenService service = new MethodGenService();
     MethodDecorator methodDecorator = new MethodDecorator(glex,

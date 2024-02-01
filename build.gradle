@@ -82,7 +82,7 @@ build.dependsOn(umlp_check_report)
 subprojects {
   // After every UMLPTask, run basic checks on the generated report
   // e.g. "every generated file is also reported"
-  tasks.withType(CommonUMLPTask).all {
+  tasks.withType(CommonUMLPTask).findAll( {it.enabled}).forEach {
     String taskname = it.name + "__check_report"
     CommonUMLPTask umlpTask = it
     Task t = task "$taskname"(type: UMLPOutputReportCheck) {

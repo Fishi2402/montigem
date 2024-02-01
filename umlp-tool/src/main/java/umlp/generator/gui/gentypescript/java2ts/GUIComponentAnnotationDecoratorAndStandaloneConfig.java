@@ -6,6 +6,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.io.paths.MCPath;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.nio.file.Path;
@@ -58,12 +59,25 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
             scssPaths.add(hwScssPath.get());
           }
         }
-        else {
+        else if (!UMLPGeneratorConfig.getInstance().isUseJsweet()){
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
               hwPath, outPath, qName, "html");
           if (!hwHtmlPath.isPresent()) {
             htmlPath = util.getRelativeImportPathForAnnotation(
                 outPath.toString(), new ArrayList<>(hwPath.getEntries()).get(0).toString(), qName).get();
+          }
+          Optional<String> hwScssPath = util.getRelativeImportPath(
+              hwPath, outPath, qName, "scss");
+          if (hwScssPath.isPresent()) {
+            scssPaths.add("./" + originalName + ".scss");
+          }
+        }
+        else {
+          // TODO #3768
+          Optional<String> hwHtmlPath = util.getRelativeImportPath(
+              hwPath, outPath, qName, "html");
+          if (hwHtmlPath.isPresent()) {
+            htmlPath = hwHtmlPath.get();
           }
           Optional<String> hwScssPath = util.getRelativeImportPath(
               hwPath, outPath, qName, "scss");

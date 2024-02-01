@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.montiverse;
+
+import gui.navigation.NavContainer;
+import gui.pipelines.PipelineStats;
+import Dtcockpit.Project;
+import Dtcockpit.Group;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemTextareaInput;
+
+page OverviewPage(Project project, List<Group> groups, List<Project> projects) {
+  @NavContainer(projects = projects, groups = groups, content = [
+    @GemColumn(hAlign = "left", components = [
+      @GemCard(
+        title = "MontiVerse Lite",
+        component = projectList@GemRow(
+          rowGap="20px",
+          colGap="5px",
+          components=[
+            @iterate(Project dependentProject: project.dependentProjects) {
+              branchDropdown@GemTextInput(inputType="dropdown",
+                            labelText=dependentProject.name,
+                            options= /*via TOP*/ null,
+                            entry=dependentProject.ciInfos.branchName
+                            );
+            }
+          ]
+        )
+      ),
+      startButton@GemButton(label = "Start pipeline", leftClick = startPipeline(project))
+    ])
+  ]);
+}

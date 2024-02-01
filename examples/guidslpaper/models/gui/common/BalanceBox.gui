@@ -1,0 +1,11 @@
+package gui.common;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+
+component BalanceBox(long value = 0, String title = "", String color = "blue") {
+  @GemColumn(hAlign = "center", rowGap = "0.5rem", components = [
+    @GemText(value = value + " €"),
+    @GemText(value = title)
+  ]);
+}

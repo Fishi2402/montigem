@@ -33,6 +33,7 @@ dependencies {
   implementation group: 'de.monticore.lang', name: 'cd4analysis-tagging', version: mc_version,  classifier: 'tagging'
   implementation "de.monticore.language-server:monticore-language-server-runtime:$mclsg_version"
   implementation "de.monticore.lang:cd4analysis-language-server:$mc_version"
+  implementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
 
   implementation group: "org.yaml", name: "snakeyaml", version: "$snake_yaml_version"
 

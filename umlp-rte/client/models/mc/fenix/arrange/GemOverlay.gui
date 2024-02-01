@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.arrange;
+
+component GemOverlay(
+  GUIViewElement background,
+  List<GUIViewElement> components
+)

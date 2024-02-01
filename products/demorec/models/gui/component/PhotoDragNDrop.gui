@@ -2,7 +2,7 @@ package gui.component;
 
 import DemoRec.DemoRecComponent;
 
-import basic.GemButton;
+import mc.fenix.basic.GemButton;
 
 component PhotoDragNDrop(DemoRecComponent attachedComponent) {
   upload@GemButton(label = "Upload Files.", leftClick = uploadAllFiles);

@@ -4,11 +4,11 @@ package gui;
 import Sehub.Artifact;
 import Sehub.Directory;
 
-import table.GemTable;
-import table.TableTypes.TableColumn;
-import charts.GemNetworkGraph;
-import arrange.GemCard;
-import basic.GemTreeview;
+import mc.fenix.table.GemTable;
+import mc.fenix.table.TableTypes.TableColumn;
+import mc.fenix.charts.GemNetworkGraph;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemTreeview;
 
 page ProjectPage(Directory project) {
 

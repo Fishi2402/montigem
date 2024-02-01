@@ -8,7 +8,7 @@ classdiagram DemoRec {
 
   class BatteryPack extends DemoRecComponent {
     double stateOfCharge;
-    double health;
+    Optional<double> health;
   }
 
   // OCL BatteryPack is not part of a composition
@@ -17,8 +17,12 @@ classdiagram DemoRec {
 
   class BatteryPackType {
     double capacity;
+    double voltage;
     String bmsLocation;
-    String carType;
+    String vin;
+    Optional<String> carBrand;
+    Optional<String> carModel;
+    Optional<String> carYear;
   }
 
   association [*] BatteryPack (inspectedInstances) <-> (type) BatteryPackType [1];
@@ -43,13 +47,17 @@ classdiagram DemoRec {
     OTHER;
   }
 
-  class SensorValue {
-    String name;
-    String unit;
-    // Value
+  class MeasuringValue {
+    String value;
   }
 
-  association [*] ProcessStep -> (measured) SensorValue [*];
+  class Dimension {
+    String unit;
+    String name;
+  }
+
+  association [*] MeasuringValue -> (dimension) Dimension [1];
+  association [*] ProcessStep -> (measured) MeasuringValue [*];
   association [*] ProcessStep -> (uses) EndEffector [1];
   association [*] ProcessStep <-> (deconstructs) JoinConnection [0..1];
 
@@ -59,7 +67,13 @@ classdiagram DemoRec {
   }
 
   class DemoRecComponent {
-    Optional<String> description;
+    String name;
+    String uniqueId;
+    String oENumber;
+    String manufacturer;
+
+    Optional<String> condition;
+    Optional<String> humanDescription;
     double xPos;
     double yPos;
     double zPos;
@@ -78,7 +92,7 @@ classdiagram DemoRec {
 
   class JoinConnection {
     double state; // TODO what kind of data type for state?
-    JoinConnectionType type;
+    JoinConnectionType joinConnectionType;
   }
 
   association [*] DemoRecComponent -> (composedOf) JoinConnection [*];

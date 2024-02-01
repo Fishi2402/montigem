@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_arrange;
 
-import arrange.GemCard;
-import basic.GemText;
-import basic.GemButton;
-import basic.GemLink;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemLink;
 
 page GemCardExample() {
   @GemCard(

@@ -3,11 +3,11 @@ package gui.process;
 import DemoRec.Process;
 import DemoRec.ProcessStep;
 
-import arrange.GemRow;
-import arrange.GemCard;
-import arrange.GemColumn;
-import basic.GemText;
-import basic.GemLink;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemLink;
 
 import gui.navigation.Navigation;
 import gui.step.ProcessStepCreate;
@@ -31,10 +31,11 @@ page ProcessOverview(Process p) {
               @GemText(value="Step "+step.index),
               @GemText(value=step.type),
               @GemText(value=" took "),
-              @GemText(value=step.timeConsumption+ " seconds"),
+              @GemText(value=step.timeConsumption+ " seconds."),
               /*@guard(true) { // ensure that step.description is not null
                 @GemText(value=step.description);
               },*/
+              sensorValues@GemText(value=" Value"),
               editStep@GemLink(url="gui/process/ProcessStepCreate/", text="Edit Step")
             ]
           );

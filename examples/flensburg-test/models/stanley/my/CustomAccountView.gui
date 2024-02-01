@@ -5,8 +5,8 @@ import hardy.Flensburg.Account;
 import hardy.Flensburg.Budget;
 import hardy.Flensburg.Transaction;
 
-import basic.GemText;
-import input.GemTextInput;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
 
 component CustomAccountView(Account acc, List<Budget> bs) {
   // @iterate(Budget b : acc.budget) {

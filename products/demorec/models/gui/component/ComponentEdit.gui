@@ -4,14 +4,14 @@ import DemoRec.BatteryPack;
 import DemoRec.DemoRecComponent;
 import DemoRec.JoinConnection;
 
-import arrange.GemRow;
-import arrange.GemColumn;
-import arrange.GemCard;
-import basic.GemText;
-import basic.GemLink;
-import basic.GemCheckbox;
-import basic.GemButton;
-import input.GemTextInput;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemLink;
+import mc.fenix.basic.GemCheckbox;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
 
 import gui.component.PhotoDisplay;
 import gui.component.PhotoDragNDrop;
@@ -19,12 +19,18 @@ import gui.component.SubComponentView;
 import gui.navigation.Navigation;
 
 page ComponentEdit(DemoRecComponent component) {
+  @Navigation();
   @GemCard(
     title = "Edit the component.",
     component = @GemColumn(
         wrap="nowrap",
         components=[
-          @GemTextInput(labelText = "Component Description", inputType = "string", entry = component.description),
+          @GemTextInput(labelText = "Component Name", inputType = "string", entry = component.name),
+          @GemTextInput(labelText = "Unique ID", inputType = "string", entry = component.uniqueId),
+          @GemTextInput(labelText = "OE-Number", inputType = "string", entry = component.oENumber),
+          @GemTextInput(labelText = "Component Manufacturer", inputType = "string", entry = component.manufacturer),
+          @GemTextInput(labelText = "Component Condition", inputType = "string", entry = component.condition),
+          @GemTextInput(labelText = "Description for human identification", inputType = "string", entry = component.humanDescription),
           @GemTextInput(labelText = "X-Position: ", inputType = "number", entry = component.xPos),
           @GemTextInput(labelText = "Y-Position: ", inputType = "number", entry = component.yPos),
           @GemTextInput(labelText = "Z-Position: ", inputType = "number", entry = component.zPos),
@@ -39,18 +45,23 @@ page ComponentEdit(DemoRecComponent component) {
   );
   @GemCard(
     title = "Subparts of the component.",
-    component = @iterate(JoinConnection conn : component.composedOf) {
-      @GemRow(
-        wrap="nowrap",
+    component =
+      @GemColumn(
         components=[
-          @GemText(value="Type of Connection: "),
-          @GemText(value=conn.type)
-      ]);
-      @GemText(value="State of Connection: "+conn.state);
-      @iterate(DemoRecComponent subComponent : conn.connects) {
-        @SubComponentView(subComponent=subComponent);
-      }
-      buildConnection@GemButton(label = "Create new Connection.", leftClick = createNewConnection, disabled=true);
-    }
+          @iterate(JoinConnection conn : component.composedOf) {
+            @GemRow(
+              wrap="nowrap",
+              components=[
+                @GemText(value="Type of Connection: "),
+                @GemText(value=conn.joinConnectionType)
+            ]);
+            @GemText(value="State of Connection: "+conn.state);
+            @iterate(DemoRecComponent subComponent : conn.connects) {
+              @SubComponentView(subComponent=subComponent);
+            }
+          },
+          buildConnection@GemButton(label = "Create new Connection.", leftClick = createNewConnection, disabled=true)
+        ]
+      )
   );
 }

@@ -1,34 +1,34 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui;
 
-import basic.GemButton;
-import arrange.GemCard;
-import arrange.GemRow;
-import arrange.GemColumn;
-import basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
 
-import gui.navigation.DtCockpitNavigation;
+import gui.navigation.NavContainer;
 
 import Dtcockpit.Project;
 import Dtcockpit.Group;
 
 page DtcockpitMainPage(List<Group> groups, List<Project> projects) {
-  @DtCockpitNavigation(groups = groups, projects = projects);
-
-  @GemColumn(hAlign = "left", component =
-    @GemCard(
-      title = "Dashboard",
-      component = projectList@GemRow(
-        rowGap="20px",
-        colGap="5px",
-        components=[
-          @iterate(Project p : projects) {
-            // Note: the classes have to be overridden to be applied, as lists of literals is a WIP
-            pButton@GemButton(label = p.name, leftClick = navigateToProject(p));
-          },
-          newButton@GemButton(label = "+", leftClick = navigateToNewProject)
-        ]
+  @NavContainer(projects = projects, groups = groups, content = [
+    @GemColumn(hAlign = "left", component =
+      @GemCard(
+        title = "Dashboard",
+        component = projectList@GemRow(
+          rowGap="20px",
+          colGap="5px",
+          components=[
+            @iterate(Project p : projects) {
+              // Note: the classes have to be overridden to be applied, as lists of literals is a WIP
+              pButton@GemButton(label = p.name, leftClick = navigateToProject(p));
+            },
+            newButton@GemButton(label = "+", leftClick = navigateToNewProject)
+          ]
+        )
       )
     )
-  );
+  ]);
 }

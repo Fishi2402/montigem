@@ -182,9 +182,9 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ASTCDAttribute attr = getCD4C().addAttribute(ast, "protected long old" + StringTransformations.capitalize(sourceName) + "GemId");
     ast.addAllCDMembers(accessor.decorate(attr));
-    attr = getCD4C().addAttribute(ast, "protected long " + sourceName + "GemId");
-    ast.addAllCDMembers(accessor.decorate(attr));
     attr = getCD4C().addAttribute(ast, "protected long old" + StringTransformations.capitalize(targetName) + "GemId");
+    ast.addAllCDMembers(accessor.decorate(attr));
+    attr = getCD4C().addAttribute(ast, "protected long " + sourceName + "GemId");
     ast.addAllCDMembers(accessor.decorate(attr));
     attr = getCD4C().addAttribute(ast, "protected long " + targetName + "GemId");
     ast.addAllCDMembers(accessor.decorate(attr));

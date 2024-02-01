@@ -1,0 +1,11 @@
+package gui.common;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+
+component Header(String left, List<GUIViewElement> right) {
+  @GemRow(hAlign = "space-between", components = [
+    @GemText(value = left),
+    @GemRow(width = "70%", hAlign = "right", vAlign = "center", colGap = "0.5rem", components = right)
+  ]);
+}

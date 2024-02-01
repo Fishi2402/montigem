@@ -1,20 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript.java2ts;
 
-import com.google.common.base.Joiner;
 import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.types.MCTypeFacade;
-import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIComponentsVisitor;
@@ -26,9 +22,6 @@ import umlp.generator.util.PathUtil;
 
 import java.util.List;
 import java.util.Optional;
-
-import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class TSDomainRefDecorator extends DomainRefDecorator {
 
@@ -42,7 +35,6 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
   public void transform(ASTGUICompilationUnit guiAst, ASTCDCompilationUnit decoratedAST) {
     this.guiAst = guiAst;
     super.transform(guiAst, decoratedAST);
-    addDirectiveAnnotation();
   }
 
   @Override
@@ -53,7 +45,8 @@ public class TSDomainRefDecorator extends DomainRefDecorator {
     decoratedClass.addCDMember(routerAttribute);
   }
 
-  private void addDirectiveAnnotation() {
+  @Override
+  protected void addDirectiveAnnotation(ASTGUICompilationUnit guiAst, ASTCDClass decoratedClass) {
     glex.replaceTemplate(
         GUI2ComponentTemplates.ANNOTATIONS,
         decoratedClass,

@@ -3,26 +3,20 @@ package example_input;
 
 import Domain.Person;
 
-import input.GemTextInput;
+import mc.fenix.input.GemTextInput;
 
 page GemTextInputExample(List<Person> persons) {
   @iterate(Person p : persons) {
-    dropdown@GemTextInput(
-      id = "firstName",
-      labelText = "First name: ",
-      inputType = "dropdown",
-      options = null,
-      entry = p.name
+    @GemTextInput(
+      id = "name",
+      labelText = "Name:",
+      entry = p.name,
+      disabled = true
+    );
+    @GemTextInput(
+      inputType = "date",
+      labelText = "Date of birth:",
+      entry = p.birthday
     );
   }
-  @GemTextInput(
-    id = "lastName",
-    labelText = "Last name: ",
-    inputType = "text"
-  );
-  @GemTextInput(
-    id = "dateOfBirth",
-    labelText = "Date of birth: ",
-    inputType = "date"
-  );
 }

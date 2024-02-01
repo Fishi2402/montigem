@@ -155,7 +155,7 @@ public class BuilderDecorator extends AbstractDecorator {
     for (ASTCDAttribute attribute : attrList) {
       getCD4C().addMethod(builderClass, "umlp.builder.Attr",
           attribute.getName(), getCDPrinter().prettyprint(createType(attribute)),
-          getClassName(domainClass.getName()));
+          getClassName(domainClass.getName()), GenService.isList(attribute));
       getCD4C().addMethod(builderClass, "umlp.builder.Check",
           attribute.getName(), domainClass.getName(),
           !GenService.isList(attribute) && !GenService.isOptional(attribute));

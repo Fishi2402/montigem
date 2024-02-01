@@ -2,6 +2,7 @@
 package dtcockpit;
 
 import de.se_rwth.commons.logging.Log;
+import dtcockpit.montiverse.MontiVerseLite;
 import dtcockpit.pipelines.PipelineInformationExtractor;
 import dtcockpit.welcome_board.OutlookConnection;
 import org.h2.tools.Server;
@@ -82,15 +83,22 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
           .build().get();
 
       extractor.extractPipelineDataOf("https://git.rwth-aachen.de/", monticore);
-      DtcockpitManager.projectBuilder()
+      Project umlp = DtcockpitManager.projectBuilder()
           .name("umlp")
           .git("monticore/umlp")
-          .build();
+          .build().get();
       Group swt = DtcockpitManager.groupBuilder().name("SWT").git("121471").build().get();
       extractor.extractPipelineDataOfAllProjectsInGroup("https://git.rwth-aachen.de/", swt);
       app.setDashboardGroup(swt);
       // TODO: App#getProject should contain all projects by default?
       app.addProject(monticore);
+
+      MontiVerseLite montiVerseLite = MontiVerseLite.getInstance();
+      Project montiVerse = montiVerseLite.createProjects();
+      extractor.extractPipelineDataOf("https://git.rwth-aachen.de/", montiVerse);
+      for (Project project: montiVerse.getDependentProjects()) {
+        montiVerseLite.createBranches(project);
+      }
     }
 
     if(app.getMontiCoreProjects().isEmpty()){

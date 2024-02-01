@@ -2,22 +2,28 @@ package gui.pack;
 
 import DemoRec.BatteryPackType;
 
-import basic.GemText;
-import arrange.GemCard;
-import arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
 
 component PackTypeOverview(BatteryPackType type) {
 
-  @GemCard(
-    title="BatteryPack Type",
-    component=@GemColumn(
-      rowGap="1px",
-      wrap="nowrap",
-      components=[
-        @GemText(value="Car Type "+type.carType),
-        @GemText(value="BMS Location "+type.bmsLocation),
-        @GemText(value="Capacity (kWh) "+type.capacity)
-      ]
-    )
+  @GemColumn(
+    rowGap="1px",
+    wrap="nowrap",
+    components=[
+      @GemText(value="Voltage (V) "+type.voltage),
+      @GemText(value="Capacity (kWh) "+type.capacity),
+      @GemText(value="BMS located at "+type.bmsLocation),
+      @GemText(value="VIN "+type.vin),
+      @GemRow(
+        wrap="nowrap",
+        colGap="2px",
+        components=[
+          @GemText(value=type.carBrand),
+          @GemText(value=type.carModel),
+          @GemText(value=type.carYear)])
+    ]
   );
 }

@@ -15,6 +15,7 @@ import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Set;
 
 @SpringBootApplication(
@@ -49,6 +50,8 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
       Log.println("_NOT_ Creating New Dummy Data. Data is already present.");
     }
 
+    createDummyData();
+
     try {
       Server webServer = Server.createWebServer("-web", "-webAllowOthers").start();
       Log.info(String.format("H2 Web Server started at: http://localhost:%s", webServer.getPort()), GuidslpaperServerApplication.class.getName());
@@ -58,6 +61,79 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
       throw new IOException(e);
     }
 
+  }
+
+  public void createDummyData() {
+    Konto k;
+    k = GuidslpaperManager.kontoBuilder()
+        .name("Haushaltskonto")
+        .pspElement(Optional.of(""))
+        .kontoart("")
+        .kontotyp(Optional.of("94 (Haushaltskonto)"))
+        .istPlanKonto(false)
+        .budgetRahmenCent(100000L)
+        .build()
+        .get();
+
+    k = GuidslpaperManager.kontoBuilder()
+        .name("BMBF Stuttgart")
+        .pspElement(Optional.of("172061234560003"))
+        .kontoart("06")
+        .kontotyp(Optional.of("BMBF"))
+        .istPlanKonto(false)
+        .budgetRahmenCent(8700L)
+        .build()
+        .get();
+
+    k = GuidslpaperManager.kontoBuilder()
+        .name("Haushaltskonto")
+        .pspElement(Optional.of("131100108300000"))
+        .kontoart("10")
+        .kontotyp(Optional.of("94 (Haushaltskonto)"))
+        .istPlanKonto(false)
+        .budgetRahmenCent(100000L)
+        .build()
+        .get();
+
+    k = GuidslpaperManager.kontoBuilder()
+        .name("EU München")
+        .pspElement(Optional.of("172101234560002"))
+        .kontoart("10")
+        .kontotyp(Optional.of("EU"))
+        .istPlanKonto(false)
+        .budgetRahmenCent(1900L)
+        .build()
+        .get();
+
+    k = GuidslpaperManager.kontoBuilder()
+        .name("AIF Berlin")
+        .pspElement(Optional.of("172111234560005"))
+        .kontoart("11")
+        .kontotyp(Optional.of("AiF"))
+        .istPlanKonto(false)
+        .budgetRahmenCent(6100L)
+        .build()
+        .get();
+
+    k = GuidslpaperManager.kontoBuilder()
+        .name("HSPIII Stuttgart")
+        .pspElement(Optional.of("172141234560007"))
+        .kontoart("14")
+        .kontotyp(Optional.of("HSPIII"))
+        .istPlanKonto(false)
+        .budgetRahmenCent(9905L)
+        .build()
+        .get();
+
+    k = GuidslpaperManager.kontoBuilder()
+        .name("FuE München")
+        .pspElement(Optional.of("172651234560006"))
+        .kontoart("65")
+        .kontotyp(Optional.of("Sonderfonds"))
+        .istPlanKonto(false)
+        .budgetRahmenCent(4450L)
+        .build()
+        .get();
   }
 
 

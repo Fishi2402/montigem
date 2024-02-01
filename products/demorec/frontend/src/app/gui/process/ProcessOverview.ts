@@ -39,10 +39,17 @@ export  class ProcessOverview extends ProcessOverviewComponent {
 
   public override attachStep(step: ProcessStep) {
     const consistsOf = this.getP().getConsistsOf()
-    step.setIndex(consistsOf[consistsOf.length - 1].getIndex() + 1)
+    if(consistsOf.length == 0) {
+      step.setIndex(0)
+    } else {
+      step.setIndex(consistsOf[consistsOf.length - 1].getIndex() + 1)
+    }
     this.getP().addConsistsOf2(step);
   }
 
+  public override getSensorValuesValue (step: ProcessStep): string {
+    return  step.getMeasured().length+" Values";
+  }
 }
 
 

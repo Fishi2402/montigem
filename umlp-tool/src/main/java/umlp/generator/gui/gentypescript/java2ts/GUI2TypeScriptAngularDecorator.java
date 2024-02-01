@@ -153,6 +153,14 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     // constructor, attrs, getters
     if (!domainClass.getGUIParamList().isEmpty()) {
       addInitMethod(clazz);
+
+      if (domainClass.isPage()) {
+        // hookpoint template for page nginit
+        glex.addAfterTemplate("umlp.gui2java.InitBody", new TemplateHookPoint(
+            "umlp.gui2java.InitPageBody"));
+        // TODO InitPageBody for empty parameters?
+      }
+
       if (ast.getGUIComponentDeclaration().isPage()
           && domainClass.getGUIParamList().stream().anyMatch(util::isDomainListType)) {
         addDestroyMethod(clazz);
@@ -254,6 +262,12 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
                   p.getName(),
                   p.getMCType().printType(),
                   util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
+            } else if (TagLookUp.isDerived(p.getSymbol().getType().getTypeInfo())) {
+              hps.add(new TemplateHookPoint(
+                  "umlp.gui2ts.TSInitDomainDerived",
+                  p.getName(),
+                  p.getMCType().printType(),
+                  util.getMainDomainModelSimpleName().get() + ManagerDecorator.SUFFIX));
             }
             else {
               hps.add(new TemplateHookPoint(
@@ -306,7 +320,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
       /**/
     }
     else {
-      //      addDefaultConstructor(clazz);
+      addDefaultConstructor(clazz);
     }
 
     return clazz;
@@ -449,6 +463,11 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     for (String id : ids) {
       getCD4C().addAttribute(clazz, "public int " + id);
     }
+  }
+
+  protected void addDefaultConstructor(ASTCDClass clazz) {
+    glex.replaceTemplate("umlp.gui2ts.TSConstructor", clazz,
+        new TemplateHookPoint("umlp.gui2ts.TSDefaultConstructor"));
   }
 
   public String getDomainClassName(ASTGUIComponentDeclaration domainClass, ASTGUICompilationUnit ast) {

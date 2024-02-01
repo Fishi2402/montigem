@@ -4,25 +4,25 @@
   "compilerOptions": {
     "paths": {
       "@umlp/common": [
-        "../dist/umlp/common"
+        "../dist/umlp/mc/fenix/common"
       ],
       "@umlp/arrange": [
-        "../dist/umlp/arrange"
+        "../dist/umlp/mc/fenix/arrange"
       ],
       "@umlp/basic": [
-        "../dist/umlp/basic"
+        "../dist/umlp/mc/fenix/basic"
       ],
       "@umlp/charts": [
-        "../dist/umlp/charts"
+        "../dist/umlp/mc/fenix/charts"
       ],
       "@umlp/input": [
-        "../dist/umlp/input"
+        "../dist/umlp/mc/fenix/input"
       ],
       "@umlp/table": [
-        "../dist/umlp/table"
+        "../dist/umlp/mc/fenix/table"
       ],
       "@umlp/theme": [
-        "../dist/umlp/theme"
+        "../dist/umlp/mc/fenix/theme"
       ],
     },
     "baseUrl": "./",

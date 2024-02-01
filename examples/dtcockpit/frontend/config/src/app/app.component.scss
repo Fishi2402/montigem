@@ -1,3 +1,5 @@
+@import "../variables";
+
 :host {
   display: flex;
   column-gap: 5px;
@@ -6,6 +8,7 @@
 
 .app-main {
   padding: 0;
+  background-color: rgba($acronio-blue-alternate-4, 0.2);
 }
 
 .my-nav {

@@ -21,8 +21,8 @@ public class UMLPPluginFrontendTest implements Plugin<Project> {
       UMLPFrontendTask firstTask = (UMLPFrontendTask) project.getTasks().getByName(UMLPPluginFrontend.UMLP_FRONTEND_DOMAIN_TASK_NAME);
       UMLPFrontendTask secondTask = project.getTasks().register("COMPARE_" + UMLPPluginFrontend.UMLP_FRONTEND_DOMAIN_TASK_NAME, UMLPFrontendTask.class, umlpTask -> {
         // TODO: Is there a better way to copy _all_ properties from the tasks?
-        umlpTask.getInput().from(firstTask.getInput());
-        umlpTask.getHwcDir().set(firstTask.getHwcDir());
+        umlpTask.getInput().setFrom(firstTask.getInput());
+        umlpTask.getHwcDir().setFrom(firstTask.getHwcDir());
 
         // Change Outputs of the task... because we want to generate into a different directory & compare afterwars
         umlpTask.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp_frontend_domain_test"));

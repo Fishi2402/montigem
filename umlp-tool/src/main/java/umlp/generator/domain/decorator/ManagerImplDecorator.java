@@ -88,6 +88,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     boolean isSingleton = TagLookUp.isSingleton(domainClass);
     if (!domainClass.getModifier().isAbstract()) {
       managerClass.addCDMember(getDBObserverAttribute(domainClass));
+      managerClass.addCDMember(getCommandSendingObserverAttribute(origCD, managerClass, domainClass));
       if (isSingleton) {
         managerClass.addCDMember(getSingletonAttribute(domainClass));
       } else {
@@ -172,6 +173,15 @@ public class ManagerImplDecorator extends AbstractDecorator {
     ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
         getMCTypeFacade().createQualifiedType(type), "the" + type);
     getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new " + type + "()"));
+    return domainClassDaoAttr;
+  }
+
+  protected ASTCDAttribute getCommandSendingObserverAttribute(ASTCDCompilationUnit origCD, ASTCDClass managerClass, ASTCDClass domainClass) {
+    String type = domainClass.getName() + "CommandSendingObserver";
+    ASTCDAttribute domainClassDaoAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
+        getMCTypeFacade().createQualifiedType(type), "the" + type);
+    getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(" = new " + type + "()"));
+    getCD4C().addImport(managerClass, getPackageName(origCD, CLIENT_PACKAGE) +"." + type);
     return domainClassDaoAttr;
   }
 

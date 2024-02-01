@@ -1,12 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_basic;
 
-import basic.GemTreeview;
-import basic.GemTreeviewTypes.GemTreeviewEntry;
+import Domain.Person;
 
-page GemTreeviewExample(List<GemTreeviewEntry> item){
-  @GemTreeview(
-    items = item,
-    allExpanded = true
-     );
+import mc.fenix.basic.GemTreeview;
+import mc.fenix.basic.GemTreeviewTypes.GemTreeviewEntry;
+
+page GemTreeviewExample(List<Person> persons) {
+  tree@GemTreeview(items = null, allExpanded = true, leftClick = sayHello);
 }

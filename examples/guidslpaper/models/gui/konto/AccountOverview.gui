@@ -1,0 +1,43 @@
+package gui.konto;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.table.GemTable;
+import mc.fenix.table.TableTypes.TableColumn;
+
+import gui.common.BalanceBox;
+import gui.common.Header;
+
+import Guidslpaper.Konto;
+
+page AccountOverview(List<Konto> accounts) {
+  @GemColumn(rowGap = "1rem", components = [
+    @GemRow(hAlign = "right", colGap = "1rem", components = [
+       @BalanceBox(title = "GESAMTBUDGET", value = 52792531),
+       @BalanceBox(title = "AUSGABEN", value = 173153),
+       @BalanceBox(title = "PLANAUSGABEN", value = 684184),
+       @BalanceBox(title = "RESTBUDGET", value = 4421915, color = "green")
+    ]),
+
+    @GemCard(titleComponent =
+      @Header(left = "Übersicht Konten", right = [
+        @GemButton(label = "Zahlungen erfassen"),
+        @GemButton(label = "Konto hinzufügen"),
+        @GemButton(label = "?")
+      ]),
+      component = @GemTable(
+        rows = accounts,
+        columns = [
+          TableColumn("pspElement", "PSP-Element"),
+          TableColumn("name", "Name"),
+          TableColumn("kontotyp", "Typ"),
+          TableColumn("kontoart", "Projektart"),
+          TableColumn("budgetRahmenCent", "Gesamtbudget")
+        ]
+      )
+    )
+  ]);
+}

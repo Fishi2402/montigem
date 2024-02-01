@@ -3,14 +3,14 @@ package gui;
 
 import Weather.Forecast;
 
-import arrange.GemCard;
-import arrange.GemRow;
-import arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
 
-import basic.GemButton;
-import basic.GemText;
-import input.GemTextInput;
-import input.GemRadioInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemRadioInput;
 
 page ForecastCreate(Forecast f) {
   @GemCard(title = "New Forecast", component =

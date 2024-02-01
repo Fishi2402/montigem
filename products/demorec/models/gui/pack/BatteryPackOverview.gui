@@ -2,10 +2,10 @@ package gui.pack;
 
 import DemoRec.BatteryPack;
 
-import arrange.GemRow;
-import arrange.GemColumn;
-import basic.GemText;
-import basic.GemLink;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemLink;
 
 import gui.pack.PackTypeOverview;
 import gui.component.PhotoDisplay;
@@ -19,14 +19,34 @@ component BatteryPackOverview(BatteryPack pack) {
       @GemColumn(
         width="30%",
         components=[
-          @GemText(value="Description "+pack.description),
-          @GemText(value="State of Charge "+pack.stateOfCharge),
-          @GemText(value="State of Health (%) "+pack.health)
+          @GemText(value=pack.name),
+          @GemText(value="Health (%) "+pack.health),
+          @GemText(value="Charge (%) "+pack.stateOfCharge)
         ]
       ),
-      editPack@GemLink(url="override", text="Edit Pack."),
-      @PhotoDisplay(component=pack),
-      @PackTypeOverview(type=pack.type),
-      @ComponentTreeView(component=pack)
+      @GemColumn(
+        width="10%",
+        components=[
+          editPack@GemLink(url="override", text="Edit Pack.")
+        ]
+      ),
+      @GemColumn(
+        width="20%",
+        components=[
+          @PhotoDisplay(component=pack)
+        ]
+      ),
+      @GemColumn(
+        width="20%",
+        components=[
+          @PackTypeOverview(type=pack.type)
+        ]
+      ),
+      @GemColumn(
+        width="20%",
+        components=[
+          tree@ComponentTreeView(component=pack)
+        ]
+      )
   ]);
 }
