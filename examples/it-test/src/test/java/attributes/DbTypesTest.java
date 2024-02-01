@@ -5,9 +5,14 @@ import attributes.test_infrastructure.AttributesDBTestSetup;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class DbTypesTest extends AttributesDBTestSetup {
   public DbTypesTest() {
     super(0);
@@ -124,4 +129,50 @@ public class DbTypesTest extends AttributesDBTestSetup {
     assertEquals(1, clone.getStringsList().size());
   }
 
+  @Test
+  public void testOptionalOfStringIsWritten() {
+    Optional<String> value = Optional.of("A");
+    var sut = AttributesManager.optionalOfStringBuilder().str(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfStringDAO();
+    var clone = dao.selectOptionalOfString(sut.gemId).get();
+    assertNotSame(sut, clone);
+
+    assertTrue(clone.getStr().isPresent());
+    assertEquals("A", clone.getStr().get());
+  }
+
+  @Test
+  public void testSetToOptionalOfString() {
+    var sut = AttributesManager.optionalOfStringBuilder().build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfStringDAO();
+    var clone = dao.selectOptionalOfString(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertFalse(clone.getStr().isPresent());
+
+    sut.setStr(Optional.of("A"));
+    clone = dao.selectOptionalOfString(sut.gemId).get();
+    assertTrue(sut.getStr().isPresent());
+    assertTrue(clone.getStr().isPresent());
+  }
+
+  @Test
+  public void testDeleteInOptionalOfString() {
+    Optional<String> value = Optional.of("A");
+    var sut = AttributesManager.optionalOfStringBuilder().str(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfStringDAO();
+    var clone = dao.selectOptionalOfString(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertTrue(clone.getStr().isPresent());
+
+    sut.setStr(Optional.empty());
+    clone = dao.selectOptionalOfString(sut.gemId).get();
+    assertFalse(sut.getStr().isPresent());
+    assertFalse(clone.getStr().isPresent());
+  }
 }

@@ -91,4 +91,9 @@ umlp Attributes {
   class ListOfStrings{
     List<String> strings;
   }
+
+  class OptionalOfString{
+    Optional<String> str;
+  }
+
 }
