@@ -110,11 +110,12 @@ export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
         }
       }
     }
+
     entries.forEach((data, label) => {
       barChartEntries.push({
         label:label,
         data:data,
-        backgroundColor: (label==="Successful")? '#00ff00' : '#D21404'
+        backgroundColor: (label==="Successful")? '#57ab27' : '#cc071e'
       })
     })
     const data : GemBarChartData = {
