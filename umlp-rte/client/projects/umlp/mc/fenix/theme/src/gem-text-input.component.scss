@@ -22,7 +22,6 @@
     background-position: right center;
     background-repeat: no-repeat;
     background-size: 16px;
-    /**/
   }
 
   .gem-input-warning:not([type="date"]) {
@@ -45,8 +44,6 @@
     font-weight: 200;
     border: $border;
     border-radius: 1px;
-    width: 100%;
-    height: 100%;
     line-height: 100%;
     padding: 6px;
   }
@@ -70,7 +67,6 @@
     background-position: right 1.6em center;
     background-repeat: no-repeat;
     background-size: 16px;
-    /**/
   }
 
   .gem-text-input[type="number"]::-webkit-inner-spin-button,
