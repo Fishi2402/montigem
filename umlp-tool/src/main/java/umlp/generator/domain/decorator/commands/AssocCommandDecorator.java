@@ -92,7 +92,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getAdd_DoRunTemplate(), assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
-            getCorrectManager(assoc));
+            getCorrectManager(assoc), hasOCL);
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
     getCD4C().addMethod(ast, getAssocsCheckAccessPolicyTemplate(), sourceType, targetType, "Create");
@@ -144,7 +144,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getRemove_DoRunTemplate(), assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
-            getCorrectManager(assoc));
+            getCorrectManager(assoc), hasOCL);
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
     getCD4C().addMethod(ast, getAssocsCheckAccessPolicyTemplate(), sourceType, targetType, "Delete");
@@ -200,11 +200,11 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getSet_Source_ExchangeTemplate(), assoc.getName(),
             targetName, sourceName, targetType, sourceType,
             GenService.isList(assoc.getRight()), GenService.isList(assoc.getLeft()),
-            getCorrectManager(assoc));
+            getCorrectManager(assoc), hasOCL);
     getCD4C().addMethod(ast, getSet_Source_ExchangeTemplate(), assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
-            getCorrectManager(assoc));
+            getCorrectManager(assoc), hasOCL);
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
     getCD4C().addMethod(ast, getAssocsCheckAccessPolicyTemplate(), sourceType, targetType, "Update");

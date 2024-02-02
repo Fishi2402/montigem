@@ -116,7 +116,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
     addConstructor(ast, classname, getPackageName(origCD, COMMAND_PACKAGE),
         completeName, isGem ? "long" : GenService.createType(type).printType());
 
-    getCD4C().addMethod(ast, getDoRunTemplate(), name, domainType.getName(), getCorrectManager(domainType), isGem, type.print(), targetTypeManager, domainPackage);
+    getCD4C().addMethod(ast, getDoRunTemplate(), name, domainType.getName(), getCorrectManager(domainType), isGem, type.print(), targetTypeManager, domainPackage, hasOCL);
     if (isGem) {
       String otherType = GenService.createType(type).printType();
 
