@@ -3,7 +3,7 @@
 import { Component } from '@angular/core';
 import { Person } from '@src/domain/Person';
 import { NetworkChartExampleComponent ,config} from '@src/gui/NetworkChartExampleComponent';
-import { NetworkData, NetworkEdge, NetworkNode } from '@umlp/charts';
+import { GraphEdge, GraphNode } from '@umlp/networkgraph';
 
 @Component({
   standalone:true,
@@ -15,34 +15,49 @@ import { NetworkData, NetworkEdge, NetworkNode } from '@umlp/charts';
 })
 export class NetworkChartExample extends NetworkChartExampleComponent {
 
-  private networkData: NetworkData;
-  private networkDataHash: string;
+  private gNodes : GraphNode[];
+  private gEdges : GraphEdge[];
+  private gNodesDataHash: string;
+  private gEdgesDataHash: string;
 
-  public getPersonGraphData(): NetworkData {
+  public override getPersonGraphEdges() : GraphEdge[] {
     if (!this.getP()) {
       return null;
     }
     let person: Person = this.getP();
 
     let allPersons: Set<Person> = new Set();
-    const edges: NetworkEdge[] = this.fillFriendsEdgesRecursively(person, allPersons);
-    let nodes: NetworkNode[] = []
+    const edges: GraphEdge[] = this.fillFriendsEdgesRecursively(person, allPersons);
+    if (JSON.stringify(this.gEdges) === this.gEdgesDataHash && this.gEdges) {
+      return this.gEdges
+    }
+    this.gEdges = edges
+    this.gEdgesDataHash = JSON.stringify(this.gEdges)
+    return this.gEdges;
+
+  }
+
+  public override getPersonGraphNodes(): GraphNode[] {
+    if (!this.getP()) {
+      return null;
+    }
+    let person: Person = this.getP();
+    let allPersons: Set<Person> = new Set();
+    this.fillFriendsEdgesRecursively(person, allPersons);
+    let nodes: GraphNode[] = []
 
     allPersons.forEach(p => nodes.push({ id: p.getName(), label: p.getName(), group: p.constructor.name, mass: 50, color: "yellow" }))
 
-
-    const newNetworkData = { nodes: nodes, edges: edges };
-
-    if (JSON.stringify(newNetworkData) === this.networkDataHash && this.networkData) {
-      return this.networkData
+    if (JSON.stringify(this.gNodes) === this.gNodesDataHash && this.gNodes) {
+      return this.gNodes
     }
-    this.networkData = newNetworkData
-    this.networkDataHash = JSON.stringify(this.networkData)
-    return this.networkData;
+    this.gNodes = nodes
+    this.gNodesDataHash = JSON.stringify(this.gNodes)
+    return this.gNodes;
   }
 
-  private fillFriendsEdgesRecursively(curPerson: Person, alreadyCaptured: Set<Person>): NetworkEdge[] {
-    let edges: NetworkEdge[] = []
+  private fillFriendsEdgesRecursively(curPerson: Person, alreadyCaptured: Set<Person>): GraphEdge[] {
+    let edges: GraphEdge[] = []
     if (alreadyCaptured.has(curPerson)) {
       return edges
     }

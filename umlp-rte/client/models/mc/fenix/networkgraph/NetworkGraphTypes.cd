@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.networkgraph;
+import java.util.List;
+
+classdiagram NetworkGraphTypes {
+
+  public class GraphNode {
+    String id;
+    Integer value;
+    String label;
+    Integer size;
+    String color;
+    String group;
+  }
+
+  public class GraphEdge {
+    String from;
+    String to;
+    Integer weight;
+  }
+
+}

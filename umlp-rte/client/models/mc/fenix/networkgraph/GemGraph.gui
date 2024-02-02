@@ -1,0 +1,32 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.networkgraph;
+
+import mc.fenix.networkgraph.NetworkGraphTypes.GraphNode;
+import mc.fenix.networkgraph.NetworkGraphTypes.GraphEdge;
+
+//NetworkGraph is a graphical representation of a network. It is composed of nodes and edges.
+//Nodes are the entities of the network, and edges are the relationships between the nodes.
+
+component GemGraph(
+  List<GraphNode> nodes, // TODO define these types somewhere
+  List<GraphEdge> edges,
+  boolean showFilterGroup=true,
+  boolean showSearchNode=true,
+  boolean showControlButtons=true,
+  boolean showInformation=true,
+  List<String> metricKeys
+
+  //@Input() customMetricsGenerator?: CustomMetricsGenerator;
+  //@Input() serializedGraph?: SerializedGraph<NodeAttributes, EdgeAttributes>;
+  //@Input() cameraState?: CameraState;
+  //@Input() settings?: Partial<GraphSettings>;
+  //@Input() initialLayout?: InitialGraphLayoutConfiguration | null;
+  //@Input() complexLayout?: ComplexGraphLayoutConfiguration | null;
+  //@Input() complexLayout?: ComplexGraphLayoutConfiguration | null;
+  //@Input() cbExtendButtons?: ControlButton[];
+  //@Input() cbRemoveButtons?: string[];
+  //@Input() cbLayout?: ControlButtonsLayout;
+  //@Input() cbSpeedDialConfig?: SpeedDialConfig;
+)
+
+

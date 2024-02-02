@@ -81,7 +81,7 @@ import Graph from "graphology";
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @AutoUnsubscribe()
-export class NetworkGraphComponent extends GraphBasisComponent implements OnChanges {
+export class GraphComponent extends GraphBasisComponent implements OnChanges {
     // ========================================================================================
     // Input Properties
     // ========================================================================================

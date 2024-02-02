@@ -35,6 +35,7 @@
       "@umlp/input": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/input/src"],
       "@umlp/navigation": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/navigation/src"],
       "@umlp/table": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/table/src"],
+      "@umlp/networkgraph": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/networkgraph/src"],
       "@umlp/*": ["node_modules/@umlp/*"],
       "tslib": ["node_modules/tslib"]
     }

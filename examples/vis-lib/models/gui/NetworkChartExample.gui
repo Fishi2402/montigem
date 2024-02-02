@@ -2,9 +2,16 @@
 package gui;
 
 import Domain.Person;
-import mc.fenix.charts.GemGraph;
+import mc.fenix.networkgraph.GemGraph;
 
 page NetworkChartExample(Person p) {
 
-  personGraph@GemGraph(data=null, layout=circular, showMetric=true);
+  personGraph@GemGraph(
+    nodes=null,
+    edges=null,
+    showFilterGroup=true,
+    showSearchNode=true,
+    showControlButtons=true,
+    showInformation=true
+  );
 }
