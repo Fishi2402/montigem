@@ -13,6 +13,7 @@
 @import "./src/forgot.component";
 @import "./src/login.component";
 @import "./src/gem-button.component";
+@import "./src/gem-card.component";
 @import "./src/breadcrumb.component";
 @import "./src/gem-treeview.component";
 @import "./src/action-buttons.component";
@@ -49,11 +50,12 @@
   @include forgot-theme($primary-color);
   @include login-theme($primary-color);
 
-  /* ##### Inout ##### */
+  /* ##### Basic ##### */
+  @include gem-treeview-theme($primary-color, $button-hover-color);
   @include gem-button-theme($primary-color, $button-hover-color);
 
-  @include gem-treeview-theme($primary-color, $button-hover-color);
   /* ##### Layout ##### */
+  @include gem-card-theme();
   @include breadcrumb-theme($primary-color);
   @include header-theme($primary-color);
   @include loadingbar-theme($primary-color);
