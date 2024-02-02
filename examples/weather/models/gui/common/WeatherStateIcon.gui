@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.common;
 
-import basic.GemImage;
-import basic.GemText;
+import mc.fenix.basic.GemImage;
+import mc.fenix.basic.GemText;
 
 import Weather.WeatherState;
 

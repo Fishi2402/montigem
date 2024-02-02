@@ -126,6 +126,9 @@ public class UMLPSymbolTables {
     return getDiagramFor((ASTNode) type);
   }
 
+  public static ASTCDCompilationUnit getDiagramFor(ASTCDAttribute a) {
+    return getDiagramFor((ASTNode) a);
+  }
 
   public static ASTCDCompilationUnit getDiagramFor(ASTCDAssocSide a) {
     return getDiagramFor((ASTNode) a);

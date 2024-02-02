@@ -6,13 +6,13 @@ import Sehub.BoardMapper;
 import Sehub.BingoBoard;
 import Sehub.Message;
 
-import arrange.GemRow;
-import arrange.GemCard;
-import arrange.GemColumn;
-import basic.GemButton;
-import basic.GemText;
-import input.GemTextareaInput;
-import input.GemTextInput;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextareaInput;
+import mc.fenix.input.GemTextInput;
 
 page Bingo(List<Message> messages, User user) {
 

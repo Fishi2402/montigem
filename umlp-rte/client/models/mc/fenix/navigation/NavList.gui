@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.navigation;
+
+component NavList(
+  List<GUIViewElement> components,
+  GUIViewElement header = null,
+  GUIViewElement footer = null
+)

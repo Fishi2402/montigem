@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+
+import mc.fenix.charts.GemSunburstChartTypes.GemSunburstData;
+import mc.fenix.charts.GemSunburstChartTypes.GemSDNshort;
+
+//Sunburst-charts look like pie-charts with multiple layers.
+//Each of them refine the information of the previous layer and give information about the distribution of the parent layer in percent.
+//The sunburst-chart can also be represented by a tree-like structure with parent nodes and subnodes which contain the refined information about the parent nodes.
+
+component GemSunburstChart (
+  GemSunburstData data,
+  GemSDNshort dataShort,
+  List<String> colors,
+  Boolean ignoreError
+)
+

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.backendrte.command;
 
+import def.js.Promise;
 import umlp.backendrte.common.Result;
 
 public class ClientCommandManager extends CommandManager {
@@ -11,6 +12,10 @@ public class ClientCommandManager extends CommandManager {
 
   public ClientCommandManager(ClientCommandCommunication commandCommunication){
     this.commandCommunication = commandCommunication.onCommandReceived(cmd -> cmd.doRun());
+    this.initCommunication();
+  }
+
+  public Promise<Object> initCommunication() {
     Result<Long> initResult = commandCommunication.init();
     if (initResult.wasSuccessful()) {
       participantId = initResult.getValue();
@@ -18,6 +23,7 @@ public class ClientCommandManager extends CommandManager {
     } else {
       // TODO MH
     }
+    return Promise.resolve(null); // TODO
   }
 
   @Override

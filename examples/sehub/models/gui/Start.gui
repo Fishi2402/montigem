@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui;
 
-import arrange.GemColumn;
-import arrange.GemCard;
-import basic.GemText;
-import arrange.GemRow;
-import basic.GemImage;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemImage;
 
 page Start() {
   @GemColumn(width = "100%", hAlign = "center", component =

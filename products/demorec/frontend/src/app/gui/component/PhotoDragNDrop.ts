@@ -61,14 +61,12 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
     event.stopPropagation();
   }
 
-  //private baseUrl = 'http://localhost:8080'; // Replace with your server URL
-
-  public uploadFile(file: File): void{
+  public uploadFile(file: File, path :string ): void{
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
 
     const headers = new HttpHeaders({
-      'PATH': "",
+      'PATH': path,
     });
 
     this.http.post(`/umlp/api/blob`, formData, { headers }).subscribe();
@@ -78,13 +76,8 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
     let size = this.getAttachedComponent().getPhotoLocations().length
     this.files.forEach(f =>
       {
-        this.uploadFile(f)
-        if(this.getAttachedComponent().getPhotoLocations().indexOf(f.name) >= 0) {
-          console.error("File with this name was already uploaded.")
-        } else {
-          this.getAttachedComponent().addPhotoLocations(size, f.name)
-          size++;
-        }
+        const path = this.getAttachedComponent().getName().replace(" ","_")+"_"+this.getAttachedComponent().getGemId()
+        this.uploadFile(f, path)
       }
     )
   }

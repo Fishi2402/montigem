@@ -212,6 +212,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
           }
         }
       case "input.GemTextInputValidity":
+      case "mc.fenix.input.GemTextInputValidity":
       case "input.src.lib.gemtextinput.GemTextInputTypes.GemTextInputValidity":
         if (newClass.getArguments().size() == 0) {
           print("{}");

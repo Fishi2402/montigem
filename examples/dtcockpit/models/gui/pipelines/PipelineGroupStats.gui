@@ -1,17 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.pipelines;
 
-import arrange.GemRow;
-import arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
 
-import gui.navigation.DtCockpitNavigation;
+import gui.navigation.NavContainer;
 import gui.pipelines.PipelineStatsPerGroup;
 import Dtcockpit.Project;
 import Dtcockpit.Group;
 
 page PipelineGroupStats(Group g, List<Group> groups, List<Project> projects) {
-  @GemRow(wrap = "nowrap", components = [
-    @DtCockpitNavigation(projects = projects, groups = groups),
+  @NavContainer(projects = projects, groups = groups, content = [
     @GemColumn(component = @PipelineStatsPerGroup(g = g))
   ]);
 }

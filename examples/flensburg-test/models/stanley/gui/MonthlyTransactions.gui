@@ -2,6 +2,6 @@
 package stanley.gui;
 
 import hardy.Flensburg.Transaction;
-import table.GemTable;
+import mc.fenix.table.GemTable;
 
 component MonthlyTransactions(List<Transaction> transactions)

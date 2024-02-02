@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.input;
+
+classdiagram GemTextInputTypes {
+
+  public class GemTextInputValidity {
+    String status;
+    String message;
+  }
+
+  public class Option {
+    String value;
+    String display;
+  }
+
+}

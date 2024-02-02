@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.pipelines;
 
-import charts.GemBarChart;
-import arrange.GemCard;
-import basic.GemButton;
-import input.GemTextInput;
-import arrange.GemRow;
-import arrange.GemColumn;
+import mc.fenix.charts.GemBarChart;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
 
 import Dtcockpit.Project;
 import Dtcockpit.Group;
@@ -40,7 +40,9 @@ component PipelineStatsPerGroup(Group g, List<Group> groups, List<Project> proje
         ),
         stackedToggle@GemButton(
           label = "Balken nebeneinander anzeigen",
-          leftClick = toggleStackedInfo
+          leftClick = toggleStackedInfo,
+          width = "auto",
+          height = "3.6ch"
         )
       ])
     ])

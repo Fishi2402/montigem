@@ -56,4 +56,10 @@ umlp Inheritance{
   association mToQMandatory [*] M -> (mandatoryQ) Q [1];
 
   association qToOBidirectional [*] Q <-> O1 [*]; // Q,R <-> O1, P
+
+  class AListAttr {
+    List<String> aList;
+  }
+
+  class BListAttr extends AListAttr {}
 }

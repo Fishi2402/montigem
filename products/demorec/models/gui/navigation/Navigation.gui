@@ -1,13 +1,15 @@
 package gui.navigation;
 
-import arrange.GemRow;
-import arrange.GemColumn;
-import arrange.GemCard;
-import basic.GemText;
-import basic.GemLink;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemLink;
+
+import gui.navigation.AlphaWarning;
 
 component Navigation() {
-  @GemText(value="Caution! This page is in alpha version");
+  @AlphaWarning();
   @GemRow(
     colGap="1px",
     components=[

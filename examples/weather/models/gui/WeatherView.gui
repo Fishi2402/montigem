@@ -6,16 +6,16 @@ import Weather.Forecast;
 import gui.ForecastCreate;
 import gui.multi_day_forecast.MultiDayForecast;
 import gui.common.WeatherStateIcon;
-import basic.GemImage;
+import mc.fenix.basic.GemImage;
 
-import arrange.GemCard;
-import arrange.GemRow;
-import arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
 
-import charts.GemLineChart;
-import charts.GemGaugeChart;
-import table.GemTable;
-import table.TableTypes.TableColumn.*;
+import mc.fenix.charts.GemLineChart;
+import mc.fenix.charts.GemGaugeChart;
+import mc.fenix.table.GemTable;
+import mc.fenix.table.TableTypes.TableColumn.*;
 
 page WeatherView(List<Forecast> forecasts) {
   @GemRow(colGap = "5px", height = "initial", components = [

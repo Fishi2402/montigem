@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_arrange;
 
-import arrange.GemRow;
-import basic.GemText;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
 
 /**
   Following example shows a `200 x 300` row. The vertical alignment of

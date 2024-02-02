@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.input;
+
+classdiagram GemTextareaInputTypes {
+
+  public class GemTextareaInputValidity {
+    String status;
+    String message;
+  }
+}

@@ -3,12 +3,12 @@ package gui.joinconnection;
 import DemoRec.JoinConnection;
 import DemoRec.DemoRecComponent;
 
-import basic.GemText;
-import basic.GemButton;
-import arrange.GemCard;
-import arrange.GemColumn;
-import arrange.GemRow;
-import input.GemTextInput;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.input.GemTextInput;
 
 import gui.component.ComponentEdit;
 import gui.component.ComponentCreate;

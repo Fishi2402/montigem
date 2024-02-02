@@ -62,10 +62,9 @@ node {
   nodeProxySettings = ProxySettings.OFF
 }
 
-task generateNPMAuth(type: NPMAuthCreate){
-  npmrcFile = project.file(".npmrc")
-}
-npm_install.dependsOn(generateNPMAuth, ':umlp-rte:client:npm_install')
+task generateNPMAuth(type: NPMAuthCreate)
+
+npmInstall.dependsOn(generateNPMAuth, ':umlp-rte:client:npmInstall')
 
 //task installRTELocal(type: NpxTask) {
 //  command = "install"

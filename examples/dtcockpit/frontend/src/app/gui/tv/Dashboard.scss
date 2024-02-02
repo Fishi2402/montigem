@@ -23,3 +23,11 @@
 .calendar {
   height: 70vh;
 }
+
+.mainRow, .msgCol, .statCol, .calCol {
+  overflow: visible;
+}
+
+.mainRow {
+  padding: 5px;
+}

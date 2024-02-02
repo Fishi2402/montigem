@@ -4,7 +4,7 @@ package stanley.gui;
 import hardy.Flensburg.Transaction;
 
 import stanley.gui.MonthlyTransactions;
-import table.GemTable;
+import mc.fenix.table.GemTable;
 
 page TransactionsView(List<Transaction> t) {
   @MonthlyTransactions(transactions = t);
