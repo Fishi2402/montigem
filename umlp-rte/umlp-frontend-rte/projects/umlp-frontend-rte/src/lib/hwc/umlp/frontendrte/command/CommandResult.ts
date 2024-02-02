@@ -61,6 +61,13 @@ export abstract class CommandResult<T> {
     public asListResult(): ListResult<T, IUMLPList<T>> {
         return <ListResult<T, IUMLPList<T>>><unknown>this;
     }
+    public isValidationResult(): boolean {
+      return false;
+    }
+
+    public asValidationResult(): ValidationResult {
+      return <ValidationResult> <any> this;
+    }
 }
 CommandResult["__class"] = "umlp.backendrte.command.CommandResult";
 
@@ -74,4 +81,5 @@ import { SimpleResult } from './SimpleResult';
 
 
 import { StatusResult } from './StatusResult';
+import {ValidationResult} from "./ValidationResult";
 

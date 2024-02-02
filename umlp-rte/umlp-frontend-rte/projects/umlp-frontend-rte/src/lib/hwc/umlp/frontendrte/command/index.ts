@@ -19,3 +19,4 @@ export * from "./ServerError";
 export * from "./SimpleResult";
 export * from "./StatusResult";
 export * from "./SyncError";
+export * from "./ValidationResult";
