@@ -14,7 +14,7 @@ component Welcome() {
       @GemText(value = "This platform was developed using the MontiCore language workbench in"
           + " a model-driven approach."),
       @GemRow(hAlign = "right", vAlign = "center", width = "300px", component = @GemImage(
-        source = "assets/images/rwth_se_bild_weiss_rgb.png"
+        source = "assets/images/rwth_se_bild_rgb.png"
       ))
     ])
   );
