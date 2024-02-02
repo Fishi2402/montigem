@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "attributename","classname","managerName", "isGem", "targettype", "targetManagerType", "packagename", "hasOCl")}
+${tc.signature( "attributename","classname","managerName", "isGem", "targettype", "targetManagerType", "packagename", "hasOCL")}
 ${cd4c.method("public StatusResult doAction()")}
 
 Log.trace("Executing set_${attributename} to " + ${attributename}<#if isGem>GemId</#if> + " on ${classname?uncap_first} " + gemId, LogUtil.getLoggerName());
