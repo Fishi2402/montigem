@@ -19,4 +19,9 @@ if(${classname?uncap_first}Opt.isEmpty()){
 <#else>
   ${classname?uncap_first}Opt.get().add${attributename?cap_first}(indexInList, ${attributename}, NotificationScope.LOCAL);
 </#if>
+  ${classname}Validator validator = new ${classname}Validator();
+  ${classname}ValidationResult validationResult = validator.validate(${classname?uncap_first}Opt.get());
+  if (validationResult.hasErrors()) {
+    return new ValidationResult(getId(), validationResult, "sehub.${classname}ValidationResult");
+  }
 return StatusResult.error(getId());

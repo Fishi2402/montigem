@@ -135,6 +135,12 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, ASTCDType domainClass, ASTCDClass ast) {
+    if(hasOCL) {
+      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName() + "Validator");
+      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName() + "ValidationResult");
+    }
+
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("ValidationResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
     getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));

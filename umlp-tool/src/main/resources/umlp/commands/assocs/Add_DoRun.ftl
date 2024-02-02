@@ -37,6 +37,17 @@ if(loaded${ctargetName} && loaded${csourceName}){
   source.set${ctargetName}(target, NotificationScope.MINIMAL);
 </#if>
 
+  ${sourceType}Validator sourceValidator = new ${sourceType}Validator();
+  ${sourceType}ValidationResult sourceValidationResult = sourceValidator.validate(source);
+  if (sourceValidationResult.hasErrors()) {
+    return new ValidationResult(getId(), sourceValidationResult, "sehub.${sourceType}ValidationResult");
+  }
+  ${targetType}Validator targetValidator = new ${targetType}Validator();
+  ${targetType}ValidationResult targetValidationResult = targetValidator.validate(target);
+  if (targetValidationResult.hasErrors()) {
+    return new ValidationResult(getId(), targetValidationResult, "sehub.${targetType}ValidationResult");
+  }
+
 }else{
   // Do not trigger load of ${csourceName}. If the ${ctargetName} is loaded, we can change it instead and avoid a load operation
   if(loaded${ctargetName}){
@@ -49,6 +60,11 @@ if(loaded${ctargetName} && loaded${csourceName}){
 <#else>
    target._internal_set${csourceName}(${sourceName}GemId, NotificationScope.MINIMAL);
 </#if>
+    ${targetType}Validator targetValidator = new ${targetType}Validator();
+    ${targetType}ValidationResult targetValidationResult = targetValidator.validate(target);
+    if (targetValidationResult.hasErrors()) {
+      return new ValidationResult(getId(), targetValidationResult, "sehub.${targetType}ValidationResult");
+    }
 } else if(loaded${csourceName}) {
     ${sourceType} source = ${managerName}.get${sourceType}Sure(${sourceName}GemId);
 <#if isTargetList>
@@ -59,6 +75,11 @@ if(loaded${ctargetName} && loaded${csourceName}){
 <#else>
     source._internal_set${ctargetName}(${targetName}GemId, NotificationScope.MINIMAL);
 </#if>
+    ${sourceType}Validator sourceValidator = new ${sourceType}Validator();
+    ${sourceType}ValidationResult sourceValidationResult = sourceValidator.validate(source);
+    if (sourceValidationResult.hasErrors()) {
+      return new ValidationResult(getId(), sourceValidationResult, "sehub.${sourceType}ValidationResult");
+    }
   } else {
     // Why did the client receive this command, if it does not contain a or p?
     GeneralErrorCollector.reportSyncError();

@@ -10,6 +10,11 @@ if(${classname?uncap_first}Opt.isPresent()){
 <#else>
     ${classname?uncap_first}Opt.get().set${attributename?cap_first}(${attributename}, NotificationScope.LOCAL);
 </#if>
+    ${classname}Validator validator = new ${classname}Validator();
+    ${classname}ValidationResult validationResult = validator.validate(${classname?uncap_first}Opt.get());
+    if (validationResult.hasErrors()) {
+    return new ValidationResult(getId(), validationResult, "sehub.${classname}ValidationResult");
+    }
     return StatusResult.ok(getId());
 } else {
   GeneralErrorCollector.reportSyncError();
