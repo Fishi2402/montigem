@@ -32,7 +32,7 @@ page Start(
   @NavContainer(projects = projects, groups = groups, content = [
     pageRow@GemRow(wrap = "wrap", width = "100%", rowGap = "10px", colGap = "10px", hAlign = "center", components = [
       // Welcome Widget
-      welcomeRow@GemRow(width = "100%", hAlign = "center", component = @GemCard(title = "Welcome", component = @Welcome())),
+      // welcomeRow@GemRow(width = "100%", hAlign = "center", component = @GemCard(title = "Welcome", component = @Welcome())),
       // TODO: App is a singleton
       @iterate(App app : apps) {
         pipelineCol@GemColumn(width = "50vw", component = @PipelineStatsPerGroup(g = app.dashboardGroup));
