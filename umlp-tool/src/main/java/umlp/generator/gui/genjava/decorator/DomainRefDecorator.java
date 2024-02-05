@@ -147,6 +147,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
   protected void addJavaImports() {
     getCD4C().addImport(decoratedClass, "de.monticore.guidsl.types.GUIViewElement");
+    getCD4C().addImport(decoratedClass, "java.util.function.Consumer");
   }
 
   protected GUI2JavaComponentDecorator instantiateComponentDecorator(ASTGUICompilationUnit guiAst) {

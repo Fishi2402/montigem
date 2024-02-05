@@ -30,12 +30,12 @@ page Start(
   List<Server> servers
 ) {
   @NavContainer(projects = projects, groups = groups, content = [
-    pageRow@GemRow(wrap = "wrap", width = "100%", rowGap = "10px", colGap = "10px", hAlign = "center", components = [
+    pageRow@GemRow(wrap = "wrap", rowGap = "10px", colGap = "10px", hAlign = "center", components = [
       // Welcome Widget
-      welcomeRow@GemRow(width = "100%", hAlign = "center", component = @GemCard(title = "Welcome", component = @Welcome())),
+      // welcomeRow@GemRow(width = "100%", hAlign = "center", component = @GemCard(title = "Welcome", component = @Welcome())),
       // TODO: App is a singleton
       @iterate(App app : apps) {
-        pipelineCol@GemColumn(width = "50vw", component = @PipelineStatsPerGroup(g = app.dashboardGroup));
+        pipelineCol@GemColumn(height = "auto", width = "50vw", component = @PipelineStatsPerGroup(g = app.dashboardGroup));
       },
       @GemCard(title = "RamUsage (MB)", component = @GemColumn(width = "30vw", components = [
         serverChart@GemLineChart(data = null, showConfig = false)

@@ -4,11 +4,16 @@ import { filter } from 'rxjs/operators';
 import { NavItem as NavItemTOP } from "./nav-item/nav-item.component-gen";
 
 @Component({
-  selector: "nav-item",
+  selector: "gem-nav-item",
   templateUrl: "./nav-item.component.html",
-  styleUrls: ["./nav-item.component.scss"]
+  styles: [`
+    :host {
+      width: 100%;
+      display: flex;
+    }
+  `]
 })
-export class NavItem extends NavItemTOP {
+export class GemNavItem extends NavItemTOP {
 
   public isActive: boolean = false;
 

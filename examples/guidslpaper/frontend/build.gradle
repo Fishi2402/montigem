@@ -32,6 +32,7 @@ node {
   // By default it is at the root of the current project
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
+nodeSetup.dependsOn(frontendSetup)
 
 genGUI {
   dependsOn(

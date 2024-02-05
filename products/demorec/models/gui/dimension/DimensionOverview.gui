@@ -8,6 +8,7 @@ import mc.fenix.arrange.GemColumn;
 
 import gui.dimension.DimensionCreate;
 import gui.navigation.Navigation;
+import gui.footer.Footer;
 
 page DimensionOverview(List<Dimension> dimensions) {
 
@@ -25,4 +26,5 @@ page DimensionOverview(List<Dimension> dimensions) {
       ]
     )
   );
+  @Footer();
 }

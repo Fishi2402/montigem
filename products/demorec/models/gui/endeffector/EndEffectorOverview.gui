@@ -8,6 +8,7 @@ import mc.fenix.arrange.GemColumn;
 
 import gui.endeffector.EndEffectorCreate;
 import gui.navigation.Navigation;
+import gui.footer.Footer;
 
 page EndEffectorOverview(List<EndEffector> endEffectors) {
 
@@ -25,4 +26,5 @@ page EndEffectorOverview(List<EndEffector> endEffectors) {
       ]
     )
   );
+  @Footer();
 }

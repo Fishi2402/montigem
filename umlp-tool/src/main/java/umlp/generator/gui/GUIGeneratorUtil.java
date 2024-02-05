@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
@@ -616,6 +617,14 @@ public class GUIGeneratorUtil {
     Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
         arg.getEnclosingScope(), comp.getNameSymbol().getFullName(), arg.getName());
     return paramSym.isPresent() && hasGetter(paramSym.get().getType()) && paramSym.get().isIsReference();
+  }
+
+  public boolean isNameExpression(ASTExpression expression) {
+    return expression instanceof ASTNameExpression;
+  }
+
+  public String getNameOfNameExpression(ASTExpression expression) {
+    return isNameExpression(expression)? ((ASTNameExpression)expression).getName() : "";
   }
 
   public boolean isViewElementsCollection(ASTGUIComponent comp, ASTGUINamedArg arg) {

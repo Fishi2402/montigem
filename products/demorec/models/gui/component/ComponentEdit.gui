@@ -17,6 +17,7 @@ import gui.component.PhotoDisplay;
 import gui.component.PhotoDragNDrop;
 import gui.component.SubComponentView;
 import gui.navigation.Navigation;
+import gui.footer.Footer;
 
 page ComponentEdit(DemoRecComponent component) {
   @Navigation();
@@ -64,4 +65,5 @@ page ComponentEdit(DemoRecComponent component) {
         ]
       )
   );
+  @Footer();
 }
