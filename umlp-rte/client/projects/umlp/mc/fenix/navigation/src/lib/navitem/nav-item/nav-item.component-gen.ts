@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input} from '@angular/core';
 
 @Component(
   {
-    "selector": "nav-item",
+    "selector": "gem-nav-item",
     "templateUrl": "./nav-item.component-gen.html",
     "styles": [":host { display:flex; flex-direction:column; }"]
   })

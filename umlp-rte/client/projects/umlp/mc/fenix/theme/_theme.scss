@@ -30,6 +30,8 @@
 @import "./src/gem-range-input.component";
 @import "./src/gem-radio-input.component";
 @import "./src/gem-check-box-input.component";
+@import "./src/gem-nav-item.component";
+@import "./src/gem-nav-list.component";
 @import "./src/dialog.component";
 @import "./src/gem-dual-range-input.component";
 
@@ -56,6 +58,8 @@
 
   /* ##### Layout ##### */
   @include gem-card-theme();
+  @include gem-nav-item-theme();
+  @include gem-nav-list-theme();
   @include breadcrumb-theme($primary-color);
   @include header-theme($primary-color);
   @include loadingbar-theme($primary-color);
