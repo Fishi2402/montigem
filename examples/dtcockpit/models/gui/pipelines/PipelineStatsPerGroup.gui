@@ -40,7 +40,9 @@ component PipelineStatsPerGroup(Group g, List<Group> groups, List<Project> proje
         ),
         stackedToggle@GemButton(
           label = "Balken nebeneinander anzeigen",
-          leftClick = toggleStackedInfo
+          leftClick = toggleStackedInfo,
+          width = "auto",
+          height = "3.6ch"
         )
       ])
     ])
