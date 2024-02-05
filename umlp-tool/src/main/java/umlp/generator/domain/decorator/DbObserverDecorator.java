@@ -74,9 +74,9 @@ public class DbObserverDecorator extends AbstractDecorator {
           if(GenService.isList(a)) {
             String innerType = GenService.getInnerType(a.getMCType());
             getCD4C().addMethod(observerClass, "umlp.dbobserver.listattrs.AddNotify",
-                a.getName(), e.getValue().getName(), innerType);
+                UMLPSymbolTables.getDiagramFor(a).getCDDefinition().getName(), a.getName(), e.getValue().getName(), innerType);
             getCD4C().addMethod(observerClass, "umlp.dbobserver.listattrs.RemoveNotify",
-                a.getName(), e.getValue().getName(), innerType);
+                UMLPSymbolTables.getDiagramFor(a).getCDDefinition().getName(), a.getName(), e.getValue().getName(), innerType);
           }
 
           ASTCDMethodSignature set = getCD4C().addMethod(observerClass, "umlp.dbobserver.Notify",

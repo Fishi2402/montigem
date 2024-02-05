@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_input;
 
-import input.GemRangeInput;
+import mc.fenix.input.GemRangeInput;
 
 page GemRangeInputExample() {
   @GemRangeInput(

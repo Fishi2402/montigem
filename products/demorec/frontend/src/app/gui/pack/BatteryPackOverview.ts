@@ -44,7 +44,7 @@ export  class BatteryPackOverview extends BatteryPackOverviewComponent {
   public getPackTypeOverview0Type(): BatteryPackType {
    console.debug("Checking if type is here: "+this.getPack().getGemId())
    //DemoRecManager.getBatteryPackTypeSure(this.getPack().getTypeGem().getGemId())
-   console.debug("Checking if type is here: "+this.getPack().getTypeGem().get().getCarType())
+   console.debug("Checking if type is here: "+this.getPack().getTypeGem().get().getCarModel())
    return this.getPack().getType();
    /*if (this.getPack()==null) {
      return null;

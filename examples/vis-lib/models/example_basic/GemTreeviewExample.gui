@@ -3,8 +3,8 @@ package example_basic;
 
 import Domain.Person;
 
-import basic.GemTreeview;
-import basic.GemTreeviewTypes.GemTreeviewEntry;
+import mc.fenix.basic.GemTreeview;
+import mc.fenix.basic.GemTreeviewTypes.GemTreeviewEntry;
 
 page GemTreeviewExample(List<Person> persons) {
   tree@GemTreeview(items = null, allExpanded = true, leftClick = sayHello);

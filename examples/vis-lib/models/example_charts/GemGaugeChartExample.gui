@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
-import charts.GemGaugeChart;
-import charts.GemGaugeChartTypes.GemGaugeChartData;
+import mc.fenix.charts.GemGaugeChart;
+import mc.fenix.charts.GemGaugeChartTypes.GemGaugeChartData;
 
 page GemGaugeChartExample(
   GemGaugeChartData data

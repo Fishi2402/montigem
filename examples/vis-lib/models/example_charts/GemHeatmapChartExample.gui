@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
-import charts.GemHeatmapChart;
-import charts.GemHeatmapChartTypes.GemHeatmapChartData;
+import mc.fenix.charts.GemHeatmapChart;
+import mc.fenix.charts.GemHeatmapChartTypes.GemHeatmapChartData;
 
 page GemHeatmapChartExample(
   GemHeatmapChartData data

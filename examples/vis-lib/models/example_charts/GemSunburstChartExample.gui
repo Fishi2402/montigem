@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
-import charts.GemSunburstChart;
-import charts.GemSunburstChartTypes.GemSunburstData;
-import charts.GemSunburstChartTypes.GemSDNshort;
+import mc.fenix.charts.GemSunburstChart;
+import mc.fenix.charts.GemSunburstChartTypes.GemSunburstData;
+import mc.fenix.charts.GemSunburstChartTypes.GemSDNshort;
 
 page GemSunburstChartExample(
   GemSunburstData data,

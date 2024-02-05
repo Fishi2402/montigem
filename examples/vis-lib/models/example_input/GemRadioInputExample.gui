@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_input;
 
-import input.GemRadioInput;
+import mc.fenix.input.GemRadioInput;
 
 page GemRadioInputExample() {
   @GemRadioInput(

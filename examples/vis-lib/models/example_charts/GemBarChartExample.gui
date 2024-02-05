@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
-import charts.GemBarChart;
-import charts.GemBarChartTypes.GemBarChartData;
+import mc.fenix.charts.GemBarChart;
+import mc.fenix.charts.GemBarChartTypes.GemBarChartData;
 
 page GemBarChartExample(
   GemBarChartData data,

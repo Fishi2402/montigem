@@ -45,7 +45,6 @@ export class PipelineStats extends PipelineStatsComponent {
     if (!this.getP()) {
       return null;
     }
-    console.debug("Project is " + this.getP().getName())
     let labels: string[] = []
     let entries: Map<string, number[]> = new Map()
     entries.set("Successful", [])
@@ -70,16 +69,13 @@ export class PipelineStats extends PipelineStatsComponent {
       if (this.stacked) {
         if (this.maxValue < entries.get("Successful")[i] + entries.get("Unsuccessful")[i] + 5) {
           this.maxValue = entries.get("Successful")[i] + entries.get("Unsuccessful")[i] + 5
-          console.debug("Updated maxValue: ", this.maxValue)
         }
       } else {
         if (this.maxValue < entries.get("Successful")[i] + 5) {
           this.maxValue = entries.get("Successful")[i] + 5
-          console.debug("Updated maxValue: ", this.maxValue)
         }
         if (this.maxValue < entries.get("Unsuccessful")[i] + 5) {
           this.maxValue = entries.get("Unsuccessful")[i] + 5
-          console.debug("Updated maxValue: ", this.maxValue)
         }
       }
     }
@@ -87,7 +83,8 @@ export class PipelineStats extends PipelineStatsComponent {
     entries.forEach((data, label) => {
       barChartEntries.push({
         label: label,
-        data: data
+        data: data,
+        backgroundColor: (label==="Successful")? '#57ab27' : '#cc071e'
       })
     })
     const data: GemBarChartData = {
@@ -99,7 +96,6 @@ export class PipelineStats extends PipelineStatsComponent {
       this.projectDataCheck.hash = newHash;
       this.projectDataCheck.value = data;
     }
-    console.debug(data)
     return this.projectDataCheck.value
   }
 
@@ -127,7 +123,6 @@ export class PipelineStats extends PipelineStatsComponent {
   }
 
   public getBarChartForPipelineRunsMaxValue(): number {
-    console.debug("Max Value: ", this.maxValue)
     return this.maxValue;
   }
 

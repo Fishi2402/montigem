@@ -1,9 +1,9 @@
 package login_module;
 
-import arrange.GemColumn;
-import arrange.GemRow;
-import basic.GemText;
-import input.GemTextInput;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
 
 
 page LoginPage(String username, String password) {

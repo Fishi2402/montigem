@@ -3,13 +3,13 @@ package gui.login;
 
 import Dtcockpit.User;
 
-import arrange.GemCard;
-import arrange.GemRow;
-import arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
 
-import basic.GemButton;
-import basic.GemText;
-import input.GemTextInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
 
 component UserCreate(User newUser) {
   @GemCard(title = "Create account and use it to sign in", component =

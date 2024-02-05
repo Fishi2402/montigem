@@ -5,13 +5,20 @@ package umlp.jsweet.extension.guiAdapters;
 
 public enum TSImportMap {
   // vis libs
-  ARRANGE("arrange", "@umlp/arrange"),
-  BASIC("basic", "@umlp/basic"),
-  CHARTS("charts", "@umlp/charts"),
-  COMMON("common", "@umlp/common"),
-  NAVIGATION("navigation", "@umlp/navigation"),
-  INPUT("input", "@umlp/input"),
-  TABLE("table", "@umlp/table");
+  ARRANGE("mc.fenix.arrange", "@umlp/arrange"),
+  BASIC("mc.fenix.mc.fenix.basic", "@umlp/basic"),
+  CHARTS("mc.fenix.charts", "@umlp/charts"),
+  COMMON("mc.fenix.common", "@umlp/common"),
+  NAVIGATION("mc.fenix.navigation", "@umlp/navigation"),
+  INPUT("mc.fenix.input", "@umlp/input"),
+  TABLE("mc.fenix.table", "@umlp/table"),
+  ARRANGE_DEPRECATED("arrange", "@umlp/arrange"),
+  BASIC_DEPRECATED("basic", "@umlp/basic"),
+  CHARTS_DEPRECATED("charts", "@umlp/charts"),
+  COMMON_DEPRECATED("common", "@umlp/common"),
+  NAVIGATION_DEPRECATED("navigation", "@umlp/navigation"),
+  INPUT_DEPRECATED("input", "@umlp/input"),
+  TABLE_DEPRECATED("table", "@umlp/table");
 
   private final String tsPackage;
   private final String javaPackage;

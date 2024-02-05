@@ -1,11 +1,11 @@
 package gui.step;
 
-import basic.GemText;
-import input.GemTextInput;
-import basic.GemButton;
-import arrange.GemCard;
-import arrange.GemColumn;
-import arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
 
 import DemoRec.ProcessStep;
 import DemoRec.Process;

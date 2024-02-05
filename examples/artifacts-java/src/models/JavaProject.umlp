@@ -149,4 +149,8 @@ umlp JavaProject{
     }
 
 
+    class TestListAttribut extends ArtifactInternal {
+      List<String> stringList;
+    }
+
 }

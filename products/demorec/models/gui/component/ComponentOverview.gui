@@ -2,7 +2,7 @@ package gui.component;
 
 import DemoRec.DemoRecComponent;
 
-import basic.GemText;
+import mc.fenix.basic.GemText;
 
 
 page ComponentOverview(DemoRecComponent c) {

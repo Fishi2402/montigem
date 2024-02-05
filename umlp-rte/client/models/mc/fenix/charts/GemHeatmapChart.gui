@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+
+import mc.fenix.charts.GemHeatmapChartTypes.GemHeatmapChartData;
+
+//Heatmap-charts visualize different kinds of data, for instance temperature, in a tabular-like format.
+//They are helpful for finding patterns, relationships between data or other kind of information.
+
+component GemHeatmapChart (
+  GemHeatmapChartData data,
+  String xLabel,
+  String yLabel,
+  Boolean timestampdata
+)

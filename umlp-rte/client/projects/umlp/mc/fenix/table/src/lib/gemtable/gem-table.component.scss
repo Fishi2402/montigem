@@ -1,0 +1,715 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+@import "../../../../theme/variables";
+
+$gap: 10px;
+
+.gem-table-wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: $gap;
+}
+
+.gem-table-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.gem-table-header-left {
+  column-gap: $gap;
+  display: flex;
+}
+
+.gem-table-filter {
+  align-items: center;
+  column-gap: $gap;
+  display: flex;
+}
+
+.gem-table-advanced-search {
+  display: flex;
+  flex-direction: row;
+}
+
+.gem-table-button {
+  align-items: center;
+  display: flex;
+  border: none;
+  border-radius: 2px;
+  transition: all 0.3s ease-in-out;
+  column-gap: 3px;
+
+  &:hover {
+    color: black;
+    opacity: 0.9;
+  }
+}
+
+.gem-table-slider {
+  display: flex;
+  align-items: center;
+}
+
+// mat style doesn't align with our
+.mat-mdc-slide-toggle {
+  display: flex;
+}
+
+.gem-table-settings-wrapper {
+  flex-flow: row wrap;
+  box-sizing: border-box;
+  display: flex;
+  place-content: stretch flex-end;
+  align-items: stretch;
+  flex: 2 1 auto;
+}
+
+.gem-table-settings-menu {
+  padding: 0 14px;
+  margin: 0;
+  list-style-type: none;
+}
+
+.gem-table-menu-header {
+  padding-left: 16px;
+  font-size: 10pt;
+  font-weight: bold;
+}
+
+.gem-table {
+  table-layout: fixed;
+}
+
+.gem-table-icons-col {
+  width: 130px;
+}
+
+.gem-table-column-filter-icon {
+  color: #333;
+}
+
+.gem-table-create-hidden {
+  visibility: hidden;
+}
+
+/*
+table {
+  width: 100%;
+}
+
+td.mat-column-star {
+  width: 20px;
+  padding-right: 8px;
+}
+
+th.mat-column-position,
+td.mat-column-position {
+  padding-left: 8px;
+}
+
+.mat-table-sticky:first-child {
+  border-right: 1px solid $rwth-black-5;
+}
+
+.mat-table-sticky:last-child {
+  border-left: 1px solid $rwth-black-5;
+}
+
+.resizable {
+  resize: horizontal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th.draggable {
+  background-color: $rwth-black-3;
+}
+
+.mat-column-select {
+  overflow: initial;
+}
+
+.hidden {
+  display: none;
+}
+/**/
+/*
+th div {
+  border: 0;
+  width: auto;
+  height: auto;
+  min-height: 20px;
+  min-width: 20px;
+}
+/**/
+
+// Old styles from previous table
+/*
+.table-header {
+  display: flex;
+  align-items: baseline;
+  padding: 5px 0;
+  font-size: $font-size-h5;
+  justify-content: space-between;
+  &-full {
+    min-height: 64px;
+  }
+  &-compact {
+    min-height: 0;
+  }
+}
+
+.filter:hover > .fa-search {
+  color: $rwth-blue;
+}
+
+.filter:active > .fa-search {
+  color: $rwth-blue;
+}
+
+.mat-menu-item {
+  font-size: 12px;
+}
+/**/
+
+// TODO: unused?
+/*
+.bordered {
+  border: 2px solid $gray-lighter;
+}
+
+.mat-form-field {
+  flex-grow: 1;
+}
+
+.mat-form-field-wrapper {
+  padding: 0 0 0 0;
+}
+
+.mat-row:hover {
+  background-color: lightgray;
+}
+/**/
+
+// TODO: external?
+/*
+.odd {
+  background-color: #f0f0f0;
+}
+
+.deactive {
+  background-color: #ececec;
+}
+
+.deactive .mat-cell {
+  color: grey;
+}
+
+.hidden-cell {
+  display: none;
+}
+/**/
+
+// TODO: use hidden
+/*
+.non-visible {
+  visibility: hidden;
+}
+/**/
+
+/*
+.button-wrapper {
+  button {
+    margin-right: 10px;
+  }
+}
+
+// TODO: ?
+:host ::ng-deep .action-controls .datatable-body-cell-label {
+  white-space: nowrap;
+}
+/**/
+
+// TODO: unused?
+/*
+.columns:focus {
+  background-color: #00549f;
+}
+/**/
+
+// TODO: unused?
+/*
+:host ::ng-deep .datatable-row-odd {
+  background-color: rgba(0, 84, 159, 0.04);
+}
+/**/
+
+/*
+$gem-table-button-height: 28px;
+
+.mat-icon-button {
+  height: $gem-table-button-height;
+  width: 28px;
+  color: $rwth-black-1;
+  line-height: $gem-table-button-height;
+}
+
+.icon{
+  font-size: 18px;
+}
+/**/
+
+// TODO: unused?
+/*
+.mat-icon-button:hover {
+  color: $rwth-blue;
+}
+/**/
+
+// TODO: ?
+/*
+:host ::ng-deep li:hover > a {
+  background: rgba(0, 0, 0, 0.55) !important;
+  -o-transition: color 0.2s ease-out, background 0.1s ease-in;
+  -ms-transition: color 0.2s ease-out, background 0.1s ease-in;
+  -moz-transition: color 0.2s ease-out, background 0.1s ease-in;
+  -webkit-transition: color 0.2s ease-out, background 0.1s ease-in;
+}
+/**/
+
+/*
+.datatable-header-cell-label {
+  font-weight: bold;
+  font-size: $font-size-h5;
+  white-space: normal;
+}
+.filter-button{
+  display: inline-grid;
+  position: absolute;
+  align-content: baseline;
+  margin-left: -5px;
+  color: $rwth-blue;
+  background: transparent none;
+  border: none;
+}
+.add-new-row {
+  background: rgba(0,84,159,0.04);
+}
+
+.search-icon{
+  font-size: 15px;
+}
+
+th.add-new-row-cell {
+  color: #333;
+}
+.datatable-body-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  align-content: baseline;
+  font-size: $font-size-text;
+  height: $cell-height-base;
+  padding: 2px;
+  display: table-cell !important;
+  position: relative;
+}
+/**/
+
+// TODO: unused?
+/*
+:host ::ng-deep .datatable-header-cell {
+  vertical-align: bottom !important;
+}
+
+:host ::ng-deep .macoco-datatable-header-container {
+  display: flex;
+  font-size: $font-size-text;
+  font-weight: bold;
+}
+
+:host ::ng-deep .macoco-datatable-header-sort-btn {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+}
+/**/
+
+/*
+:host ::ng-deep .mat-icon {
+  font-size: $font-size-xlarge;
+  height: initial;
+  width: initial;
+}
+
+/**/
+
+// TODO: possibly needed
+/*
+.cellBacklayer {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  z-index: 0;
+}
+
+.cellOverlay {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  z-index: 10;
+  text-align: right;
+  padding-right: 4px;
+  color: $rwth-red;
+}
+
+.cellValue {
+  z-index: 5;
+  position: relative;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.editTemplate {
+  z-index: 5;
+  position: relative;
+  min-height: 54px;
+}
+/**/
+
+// TODO: unused?
+/*
+:host ::ng-deep datatable-scroller {
+  width: 100% !important;
+}
+/**/
+
+// TODO: possibly used
+/*
+.page-count-input {
+  color: black;
+  width: 200px;
+
+  input {
+    text-align: center;
+    border-radius: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 40px;
+    background-color: $rwth-black-4;
+    border: 0px;
+    outline: none;
+  }
+
+  input:focus {
+    background-color: white;
+    border: 0px;
+    transition: all 0.4s ease;
+  }
+
+  span {
+    color: white;
+    font-size: 12px;
+    padding-left: 5px;
+  }
+}
+
+.page-footer-selection-sum {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 10px;
+}
+
+.strong-row {
+  font-weight: bold;
+  button {
+    visibility: hidden;
+  }
+}
+
+.strong-row1 {
+  background-color: green;
+
+  button {
+    visibility: hidden;
+  }
+}
+
+.bad-row {
+  background: #e6967944;
+}
+
+:host ::ng-deep .temp-highlight-row {
+  background-color: $rwth-blue-2 !important;
+}
+
+@keyframes highlight-row-animation {
+  0% {
+    background-color: #ffffff;
+  }
+  10% {
+    background-color: #03a9;
+  }
+  100% {
+    background-color: #ffffff;
+  }
+}
+/**/
+
+/*
+.inactive {
+  background-color: #e5e5e5 !important;
+  * {
+    color: #a1a1a1 !important;
+  }
+
+  .action-controls {
+    button {
+      visibility: hidden;
+    }
+  }
+}
+
+.plan {
+  background: #c3bcbc;
+}
+/**/
+
+// TODO: unused?
+/*
+:host ::ng-deep .showView {
+  color: red;
+  .action-controls {
+    button.view {
+      visibility: visible;
+    }
+  }
+}
+/**/
+
+/*
+.group-header {
+  padding-left: 5px;
+  color: $rwth-blue;
+  background: $rwth-blue-4;
+  border-bottom: solid 1px $rwth-blue-3;
+  border-top: solid 1px $rwth-blue-3;
+  font-size: $font-size-text;
+  min-height: $cell-height-small;
+  cursor: pointer;
+  text-decoration: none;
+}
+/**/
+
+// TODO: unused?
+/*
+.datatable-checkbox {
+  position: relative;
+  margin: 0;
+  cursor: pointer;
+  vertical-align: middle;
+  display: inline-block;
+  padding: 0;
+}
+/**/
+
+// TODO: unused?
+/*
+.control-button {
+  margin-bottom: 10px;
+}
+/**/
+
+// TODO: possibly needed
+/*
+.advanced-search-container {
+  padding-left: 20px;
+}
+/**/
+
+// TODO: should be external
+/*
+:host ::ng-deep .empty-budget {
+  //background-color: #094c9073;
+  font-style: italic;
+}
+
+:host ::ng-deep .empty-budget .action-controls {
+  button:nth-child(-n + 3) {
+    //       display:none;
+  }
+}
+/**/
+
+// TODO: external?
+/*
+:host ::ng-deep .colored-bar {
+  width: 100%;
+  height: auto;
+}
+/**/
+
+// TODO: possibly needed
+/*
+:host ::ng-deep .action-controls .cellOverlay {
+  z-index: 0;
+}
+/**/
+
+// TODO: ?
+/*
+:host ::ng-deep .mat-form-field-appearance-legacy.mat-form-field-invalid:not(.mat-focused) .mat-form-field-ripple {
+  height: 2px;
+}
+/**/
+
+/*
+.menu-header {
+  padding-left: 16px;
+  font-size: 10pt;
+  font-weight: bold;
+}
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,
+::ng-deep .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: rgb(27, 142, 241) !important;
+}
+
+::ng-deep .mat-ripple-element {
+  background: rgba(27, 142, 241, 0.4) !important;
+}
+
+::ng-deep .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+  border-color: rgb(27, 142, 241) !important;
+}
+
+::ng-deep .mat-radio-button.mat-accent .mat-radio-inner-circle {
+  background-color: rgb(27, 142, 241) !important;
+}
+
+::ng-deep .mat-slide-toggle.mat-primary.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+  //The first color fits better to the background color of the checkboxes in the table.
+  // The other color however fits better to the buttons at the top right of the table.
+  //background-color: rgb(27, 142, 241) !important;
+  background-color: $rwth-blue;
+}
+
+::ng-deep .mat-slide-toggle.mat-primary.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+  //background-color: rgba(27, 142, 241, .5) !important;
+  background-color: $rwth-blue-2;
+}
+
+::ng-deep .selection-checkbox {
+  .mat-checkbox-inner-container {
+    width: 15px;
+    height: 15px;
+  }
+
+  .mat-checkbox-ripple {
+    display: none;
+  }
+}
+/**/
+
+// TODO: possibly needed
+/*
+.footer-pager {
+  display: flex;
+  flex: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+}
+/**/
+
+/*
+// buttons in a datatable have a different height than usual
+// this fixes the wrong padding
+::ng-deep macoco-button button {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+::ng-deep button .mat-icon {
+  line-height: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+/**/
+
+// TODO: external
+/*
+:host ::ng-deep .absent {
+  background-color: $rwth-magenta-2;
+}
+
+:host ::ng-deep .weekend {
+  background-color: $rwth-black-3;
+}
+/**/
+
+// --------------------- New Styles ---------------------
+/*
+:host ::ng-deep tr.mat-row {
+  height: auto;
+}
+
+.montigem-table {
+  table-layout: fixed;
+}
+
+:host ::ng-deep td.mat-cell:first-of-type,
+td.mat-footer-cell:first-of-type,
+th.mat-header-cell:first-of-type {
+  padding-left: 15px;
+}
+
+.add-next-column {
+  width: 110px;
+}
+
+:host ::ng-deep .mat-cell,
+.mat-footer-cell {
+  color: inherit;
+  font-size: inherit;
+}
+/**/
+
+/*
+:host ::ng-deep td.mat-cell,
+td.mat-footer-cell,
+th.mat-header-cell {
+  border: none;
+}
+/**/
+
+/*
+:host ::ng-deep .mat-table-sticky:first-child {
+  border-right: none;
+}
+
+:host ::ng-deep .mat-table-sticky:last-child {
+  border-left: none;
+}
+
+.expand-button{
+  background: transparent none;
+  border: none;
+}
+
+.action-button {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-new-row {
+  background: rgba(0,84,159,0.04);
+}
+
+th.add-new-row-cell {
+  color: #333;
+}
+/**/

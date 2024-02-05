@@ -1,12 +1,12 @@
 package gui.konto;
 
-import arrange.GemRow;
-import arrange.GemColumn;
-import arrange.GemCard;
-import input.GemTextInput;
-import basic.GemButton;
-import table.GemTable;
-import table.TableTypes.TableColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.table.GemTable;
+import mc.fenix.table.TableTypes.TableColumn;
 
 import gui.common.BalanceBox;
 import gui.common.Header;
