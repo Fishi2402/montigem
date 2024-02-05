@@ -10,6 +10,7 @@ import mc.fenix.basic.GemLink;
 
 import gui.pack.BatteryPackOverview;
 import gui.navigation.Navigation;
+import gui.footer.Footer;
 
 page Start(List<Process> allProcesses) {
   @Navigation();
@@ -36,4 +37,5 @@ page Start(List<Process> allProcesses) {
        ]
      )
   );
+  @Footer();
 }

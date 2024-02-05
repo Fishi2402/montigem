@@ -112,22 +112,25 @@ export  class ProcessCreate extends ProcessCreateComponent {
   public override sendEverything (event: any): void {
     let type : Promise<BatteryPackType>
     let pack : Promise<BatteryPack>
-    if((this.getSelectBPackEntry() === newOption.value) &&
-        (this.getSelectBPackTypeEntry() != newOption.value)) {
-      type = DemoRecManager.getBatteryPackTypeSure(+this.getSelectBPackTypeEntry())
-    } else {
-      this.getType().build()
-      type = new Promise((resolve, reject) => {
-        if(this.getType().isBuildFinished()) {
-          resolve(this.getType())
-        } else {
-          reject("Type could not be built.")
-        }
-      })
-    }
+
     if(this.getSelectBPackEntry() != newOption.value) {
       pack = DemoRecManager.getBatteryPackSure(+this.getSelectBPackEntry())
+      type = new Promise((resolve, reject) => {
+        resolve(DemoRecManager.batteryPackTypeBuilder())
+      })
     } else {
+      if((this.getSelectBPackTypeEntry() != newOption.value)) {
+        type = DemoRecManager.getBatteryPackTypeSure(+this.getSelectBPackTypeEntry())
+      } else {
+        this.getType().build()
+        type = new Promise((resolve, reject) => {
+          if(this.getType().isBuildFinished()) {
+            resolve(this.getType())
+          } else {
+            reject("Type could not be built.")
+          }
+        })
+      }
       pack = type.then(bPackType => {
         return new Promise((resolve, reject) => {
           this.getPack().type(bPackType)

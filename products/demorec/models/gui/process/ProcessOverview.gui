@@ -10,6 +10,7 @@ import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemLink;
 
 import gui.navigation.Navigation;
+import gui.footer.Footer;
 import gui.step.ProcessStepCreate;
 import gui.pack.BatteryPackOverview;
 
@@ -43,5 +44,6 @@ page ProcessOverview(Process p) {
       ]
     )
   );
+  @Footer();
 
 }

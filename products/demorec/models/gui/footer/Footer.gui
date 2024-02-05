@@ -1,0 +1,22 @@
+package gui.footer;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemLink;
+
+import gui.footer.AlphaWarning;
+
+component Footer() {
+
+  @GemRow(
+    colGap="1px",
+    hAlign="right",
+    components=[
+      @AlphaWarning()
+    ]
+  );
+
+
+}
