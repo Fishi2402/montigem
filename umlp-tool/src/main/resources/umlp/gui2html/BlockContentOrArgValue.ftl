@@ -4,8 +4,12 @@ ${tc.signature("args")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 
 <#if ast.isPresentExpression()>
+  <#if genHelper.isNameExpression(ast.getExpression())>
+    ${tc.includeArgs("umlp.gui2html.Expression", ast.getExpression(), [genHelper.getNameOfNameExpression(ast.getExpression())])}
+  <#else>
   <#-- TODO AGe -->
-  ${genHelper.print(ast.getExpression())}
+  aaa  ${genHelper.print(ast.getExpression())}   zzz
+  </#if>
 <#elseif ast.isPresentGUIComponent()>
   ${tc.includeArgs("umlp.gui2html.Component", ast.getGUIComponent(), [args])}
 <#elseif ast.isPresentGUIGuard()>
@@ -13,3 +17,4 @@ ${tc.signature("args")}
 <#elseif ast.isPresentGUIIterate()>
   ${tc.includeArgs("umlp.gui2html.Iterate", ast.getGUIIterate(), [args])}
 </#if>
+
