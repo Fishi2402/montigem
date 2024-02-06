@@ -49,6 +49,11 @@ export  class ProcessCreate extends ProcessCreateComponent {
 
   public oldDerivedPackname : string = ""
 
+  public constructor(protected router: Router) {
+    super(router);
+  }
+
+
   public ngOnInit(): void {
     super.ngOnInit()
     DemoRecManager.getBatteryPackList().then(gemPromiseRes => {
@@ -145,9 +150,10 @@ export  class ProcessCreate extends ProcessCreateComponent {
     }
 
     Promise.all([type, pack]).then(([type, pack]) => {
-      this.getP().deconstructionOf(this.getPack())
+      this.getP().deconstructionOf(pack)
       this.getP().build()
       this.ngOnInit()
+      this.router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
     })
   }
 

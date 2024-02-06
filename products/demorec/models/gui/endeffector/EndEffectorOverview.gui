@@ -2,6 +2,9 @@ package gui.endeffector;
 
 import DemoRec.EndEffector;
 
+import mc.fenix.table.GemTable;
+import mc.fenix.table.TableTypes.TableColumn;
+
 import mc.fenix.basic.GemText;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
@@ -13,8 +16,19 @@ page EndEffectorOverview(List<EndEffector> endEffectors) {
 
   @NavContainer(
       content=[
+
+/*
+  endEffectorsTable@GemTable(
+    canCreate=true,
+    create=createEndEffector,
+    rows = endEffectors,
+    columns = [
+      TableColumn("name", "Name")
+    ]
+  ),*/
+
   @GemCard(
-    title="EndEffectors",
+    title="End Effectors",
     component=@GemColumn(
       rowGap="1px",
       wrap="nowrap",

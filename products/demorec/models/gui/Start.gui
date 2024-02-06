@@ -7,6 +7,7 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemLink;
+import mc.fenix.basic.GemButton;
 
 import gui.pack.BatteryPackOverview;
 import gui.staticcontainer.NavContainer;
@@ -27,7 +28,7 @@ page Start(List<Process> allProcesses) {
                    @GemColumn(
                      width="20%",
                      components= [
-                       overViewLink@GemLink(url="gui/process/ProcessOverview/", text="Edit Process."),
+                       editProcessButton@GemButton(label="Edit Process", leftClick=editProcess(p), disabled=false),
                        @GemText(value="Deconstruction started on: "+p.startedAt)
                      ]),
                    @BatteryPackOverview(pack=p.deconstructionOf)
