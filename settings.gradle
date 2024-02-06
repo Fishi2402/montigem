@@ -72,8 +72,6 @@ include ':products:demorec:backend'
 include ':products:demorec:frontend'
 include ':products:demo-recycling:frontend'
 include ':products:kizam:backend'
-include 'examples:flensburg-test-jsweet:backend'
-findProject(':examples:flensburg-test-jsweet:backend')?.name = 'backend'
 
 include ':modules:login'
 include ':modules:sovd-gateway'

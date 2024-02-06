@@ -20,6 +20,10 @@ plugins {
   id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT" apply(false)
 }
 
+repositories {
+  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+}
 
 configurations {
   guiDefaultTypes
@@ -38,6 +42,10 @@ dependencies {
   testImplementation "de.monticore.lang:guidsl:${project.properties['mc_version']}"
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+
+  implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
+  implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
+  implementation project(':umlp-rte:umlp-jsweet')
 }
 
 task generateNPMAuth(type: NPMAuthCreate){
