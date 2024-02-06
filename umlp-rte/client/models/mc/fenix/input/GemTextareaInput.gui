@@ -9,6 +9,8 @@ import mc.fenix.input.GemTextareaInputTypes.GemTextareaInputValidity;
   etc.
 */
 component GemTextareaInput(
+  /** **Deprecated** */
+  String id,
   /** Text describing the input field. */
   String labelText,
   /**
