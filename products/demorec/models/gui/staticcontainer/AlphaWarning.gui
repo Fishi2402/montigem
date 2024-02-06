@@ -1,4 +1,4 @@
-package gui.footer;
+package gui.staticcontainer;
 
 import mc.fenix.basic.GemText;
 

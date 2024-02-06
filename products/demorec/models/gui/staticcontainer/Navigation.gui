@@ -1,4 +1,4 @@
-package gui.navigation;
+package gui.staticcontainer;
 
 import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
