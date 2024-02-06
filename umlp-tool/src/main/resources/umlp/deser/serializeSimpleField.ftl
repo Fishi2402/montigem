@@ -11,7 +11,7 @@
       printer.beginArray("${fieldName}");
       <#if useDeSer>
       for (${innerType} e: obj.get${fieldName?cap_first}List()) {
-        ${objectMapperName}.serialize(e, "${innerType}");
+        printer.valueJson(${objectMapperName}.serialize(e, "${innerType}").orElse(""));
       }
       <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
       for (${innerType?keep_after_last(".")} e: obj.get${fieldName?cap_first}List()) {

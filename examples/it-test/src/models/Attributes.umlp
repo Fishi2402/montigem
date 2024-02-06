@@ -96,4 +96,7 @@ umlp Attributes {
     Optional<String> str;
   }
 
+  class ListOfTime{
+    List<LocalDate> dates;
+  }
 }

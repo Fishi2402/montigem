@@ -2,8 +2,10 @@
 package attributes;
 
 import attributes.test_infrastructure.AttributesMockTestSetup;
+import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -206,4 +208,73 @@ public class TypesSyncTest extends AttributesMockTestSetup {
     assertFalse(sut.getStr().isPresent());
     assertFalse(sutServer.getStr().isPresent());
  }
+
+  @Test
+  public void testListOfDatesIsWritten() {
+    // client
+    getClients(0).activate();
+    List<LocalDate> values = Lists.newArrayList();
+    values.add(LocalDate.now());
+    values.add(LocalDate.of(2000, 1, 1));
+    var sut = AttributesManager.listOfTimeBuilder().dates(values).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getListOfTimeSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertEquals(2, sutServer.getDatesList().size());
+  }
+
+  @Test
+  public void testAddToListOfDates() {
+    // client
+    getClients(0).activate();
+    List<LocalDate> values = Lists.newArrayList();
+    values.add(LocalDate.now());
+    values.add(LocalDate.of(2000, 1, 1));
+    var sut = AttributesManager.listOfTimeBuilder().dates(values).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getListOfTimeSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertEquals(2, sutServer.getDatesList().size());
+
+    // client: add element at the end
+    getClients(0).activate();
+    sut.addDates(2, LocalDate.of(2000,2,2));
+    assertEquals(3, sut.getDatesList().size());
+    assertEquals(3, sutServer.getDatesList().size());
+
+    // add element in the middle
+    sut.addDates(1, LocalDate.of(2000, 3, 3));
+    assertEquals(4, sut.getDatesList().size());
+    assertEquals(4, sutServer.getDatesList().size());
+  }
+
+  @Test
+  public void testDeleteInListOfDates() {
+    // client
+    getClients(0).activate();
+    List<LocalDate> values = List.of(LocalDate.now(), LocalDate.of(2000, 1, 1), LocalDate.of(2000, 2, 2));
+    var sut = AttributesManager.listOfTimeBuilder().dates(values).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getListOfTimeSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertEquals(3, sutServer.getDatesList().size());
+
+    // client: delete at the beginning
+    getClients(0).activate();
+    sut.removeDates(0);
+    assertEquals(2, sut.getDatesList().size());
+    assertEquals(2, sutServer.getDatesList().size());
+
+    // delete at the end
+    sut.removeDates(1);
+    assertEquals(1, sut.getDatesList().size());
+    assertEquals(1, sutServer.getDatesList().size());
+  }
+
 }
