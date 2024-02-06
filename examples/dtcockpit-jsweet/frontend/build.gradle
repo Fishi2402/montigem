@@ -54,7 +54,7 @@ task generateNPMAuth(type: NPMAuthCreate){
 
 // Add Frontend-Config Files from UMLP-Tool Resources.
 task frontendSetup(type: FrontendSetup){
-  dependsOn(generateNPMAuth, tasks.getByPath(":umlp-rte:umlp-frontend-rte:packLib"))
+  dependsOn(generateNPMAuth)
   input = file("config/")   // Can be used to add or replace files
   output = layout.buildDir.dir("frontendGen/")
 }
@@ -222,15 +222,10 @@ task translateTypeScript() {
   dependsOn(translateJava2TSDomain, translateJava2TSGUI)
 }
 
-task installLocalRTE(type: NpmTask) {
-  dependsOn(npmInstall, tasks.getByPath(":umlp-rte:umlp-frontend-rte:packLib"))
-  args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]
-}
-
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npmInstall, translateTypeScript, installLocalRTE
+    npmInstall, translateTypeScript
 ]
 
 task buildApp(type: NpxTask) {

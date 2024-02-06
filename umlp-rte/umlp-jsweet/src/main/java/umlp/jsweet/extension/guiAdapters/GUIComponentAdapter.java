@@ -216,7 +216,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
     print(">(async resolve => {").println().startIndent().printIndent();
     print("resolve(");
     if (isList) {
-      importFrom("GemListUtil", "umlp-frontend-rte");
+      importFrom("GemListUtil", "@umlp/commonj2ts");
       print("GemListUtil.toArray(");
     }
     print("(");

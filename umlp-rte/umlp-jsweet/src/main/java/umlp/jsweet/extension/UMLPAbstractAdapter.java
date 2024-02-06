@@ -17,7 +17,7 @@ import java.util.HashMap;
  * This class uses a "static library" to remap types and import from the rte
  */
 public abstract class UMLPAbstractAdapter extends PrinterAdapter {
-  private static final String UMLP_RTE_LIBRARY_POINTER = "umlp-frontend-rte";
+  private static final String UMLP_COMMON_RTE_POINTER = "@umlp/commonj2ts";
 
   private HashMap<String, String> staticLibrary = new HashMap<>();
 
@@ -65,6 +65,6 @@ public abstract class UMLPAbstractAdapter extends PrinterAdapter {
   }
 
   protected String getLibraryLocation() {
-    return UMLP_RTE_LIBRARY_POINTER;
+    return UMLP_COMMON_RTE_POINTER;
   }
 }
