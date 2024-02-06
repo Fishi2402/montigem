@@ -16,11 +16,12 @@ import mc.fenix.input.GemTextInput;
 import gui.component.PhotoDisplay;
 import gui.component.PhotoDragNDrop;
 import gui.component.SubComponentView;
-import gui.navigation.Navigation;
-import gui.footer.Footer;
+import gui.staticcontainer.NavContainer;
 
 page ComponentEdit(DemoRecComponent component) {
-  @Navigation();
+
+  @NavContainer(
+      content=[
   @GemCard(
     title = "Edit the component.",
     component = @GemColumn(
@@ -43,7 +44,7 @@ page ComponentEdit(DemoRecComponent component) {
           @PhotoDisplay(component=component),
           photoDragAndDrop@PhotoDragNDrop(attachedComponent = component)
       ])
-  );
+  ),
   @GemCard(
     title = "Subparts of the component.",
     component =
@@ -64,6 +65,5 @@ page ComponentEdit(DemoRecComponent component) {
           buildConnection@GemButton(label = "Create new Connection.", leftClick = createNewConnection, disabled=true)
         ]
       )
-  );
-  @Footer();
+  )]);
 }

@@ -1,4 +1,4 @@
-package gui.footer;
+package gui.staticcontainer;
 
 import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
@@ -6,7 +6,7 @@ import mc.fenix.arrange.GemCard;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemLink;
 
-import gui.footer.AlphaWarning;
+import gui.staticcontainer.AlphaWarning;
 
 component Footer() {
 

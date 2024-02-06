@@ -3,18 +3,31 @@ package mc.fenix.input;
 
 import mc.fenix.input.GemTextareaInputTypes.GemTextareaInputValidity;
 
-//This component represents a text area with an optional label.
-//It is designed to be used in forms or other contexts where multi-line user text input is required
-
+/**
+  The component is a text area with an optional label. It is used whenever a
+  multi-line user text input is required, e.g. for comment fields, feedback,
+  etc.
+*/
 component GemTextareaInput(
+  /** Text describing the input field. */
   String labelText,
+  /**
+    The input field's value. If it is linked to a variable, the value of the
+    variable will change when the user enters a new value.
+  */
   ?String entry,
-  String id,
+  /** Whether the input field is disabled. */
   boolean disabled = false,
+  /** Text displayed when the field is empty. */
   String placeholder = "",
-  GemTextareaInputValidity validity,
+  /** Width of the input field. */
   String width = "100%",
+  /** Height of the input field. */
   String height = "100%",
+  /** An object representing the validation status of the field. */
+  GemTextareaInputValidity validity,
+  /** Callback that is executed when a key is released. */
   Event keyRelease,
+  /** Callback that is executed when a key is pressed. */
   Event keyPress
 )
