@@ -113,16 +113,8 @@ public class GUIComponentAdapter extends PrinterAdapter {
       String pathToManager = "@src/" + StringUtils.uncapitalize(cdName) + "/" + managerName;
       importFrom(managerName, pathToManager);
       printAdaptedConstructor(executable);
-//      printNgOnInit(executable, cdName);
       return true;
-//      return false;
     }
-//    else if (isOnInit(executable)) {
-//      // Do not print any constructor. This is handled in the generated TS "Component" "OnInit"
-//      getPrinter().printIndent().print("protected  router: Router;").println();
-//      importFrom("Router", "@angular/router");
-//      return true;
-//    }
     else if (isSynchronized(executable) && executable.getKind().toString().equals("METHOD") &&
       !util().isInterface(getParentElement(TypeElement.class)) &&
         !executable.getModifiers().contains(Modifier.ABSTRACT) &&
@@ -314,12 +306,6 @@ public class GUIComponentAdapter extends PrinterAdapter {
       } else {
         println().printIndent().print("super(route, router);");
       }
-//      for (VariableElement parameter : executable.getParameters()) {
-//        println().printIndent()
-//            .print("this.").print(parameter.getSimpleName())
-//            .print("RoutingId = +route.snapshot.paramMap.get(\"")
-//            .print(parameter.getSimpleName()).print("RoutingId\");");
-//      }
       endIndent().println().printIndent().print("}");
     }
   }
