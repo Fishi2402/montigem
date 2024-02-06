@@ -1,11 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_input;
 
+import Domain.Person;
+
 import mc.fenix.input.GemTextareaInput;
 
-page GemTextareaInputExample() {
-  @GemTextareaInput(
-    id = "test3",
-    labelText = "Label here: "
-  );
+page GemTextareaInputExample(List<Person> persons) {
+  @iterate(Person p : persons) {
+    @GemTextareaInput(
+      id = "name",
+      labelText = p.name + ":",
+      entry = p.aboutMe
+    );
+  }
 }
