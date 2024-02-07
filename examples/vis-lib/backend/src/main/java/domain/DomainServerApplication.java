@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package domain;
 
-import de.se_rwth.commons.logging.Log;
-import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -10,7 +8,6 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 
 @SpringBootApplication(
@@ -34,7 +31,14 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
   public void createDummyData() {
     Address a;
     a = addAddress("Berlin", "Gitschiner Str.", 9);
-    Person alice = addPerson("Alice", LocalDate.of(2003, 1, 12), a);
+    Person alice = addPerson(
+        "Alice",
+        LocalDate.of(2003, 1, 12),
+        "A big fan of model-driven software engineering," +
+            " generative approaches, domain-specific languages," +
+            " and test-driven development",
+        a
+    );
     a = addAddress("München", "Lichtenfelser Str.", 18);
     Person bob = addPerson("Bob", LocalDate.of(2000, 3, 10), a);
     a = addAddress("New York", "Springbrook Rd.", 18);
@@ -65,13 +69,18 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
         .get();
   }
 
-  protected Person addPerson(String name, LocalDate birthday, Address address) {
+  protected Person addPerson(String name, LocalDate birthday, String aboutMe, Address address) {
     return DomainManager.personBuilder()
         .name(name)
         .birthday(birthday)
         .address(address)
+        .aboutMe(aboutMe)
         .build()
         .get();
+  }
+
+  protected Person addPerson(String name, LocalDate birthday, Address address) {
+    return addPerson(name, birthday, "", address);
   }
 
 }

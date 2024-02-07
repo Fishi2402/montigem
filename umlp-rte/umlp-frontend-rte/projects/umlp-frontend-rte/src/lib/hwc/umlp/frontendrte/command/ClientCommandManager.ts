@@ -14,15 +14,29 @@ export class ClientCommandManager extends CommandManager {
   public constructor(commandCommunication: ClientCommandCommunication) {
     super();
     this.commandCommunication = commandCommunication.onCommandReceived(cmd => cmd.doRun());
-    commandCommunication.init().then(res => {
+    this.initCommunication();
+  }
+
+  public initCommunication() {
+    let promiseResolve: (value: unknown) => void, promiseReject: (reason?: any) => void;
+
+    const retPromise = new Promise(function(resolve, reject){
+      promiseResolve = resolve;
+      promiseReject = reject;
+    });
+
+    this.commandCommunication.init().then(res => {
       let initResult: number = res;
       if (!Number.isNaN(initResult)) {
         this.participantId = initResult;
         this.initSuccessFul = true;
+        promiseResolve(this.participantId);
       } else {
+        promiseReject();
         // TODO MH
       }
     })
+    return retPromise;
   }
 
   protected override async _executeCommand<T>(command: Command<T>): Promise<CommandResult<T>> {

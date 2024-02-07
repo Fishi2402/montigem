@@ -12,7 +12,8 @@
 @import "./src/auth.component";
 @import "./src/forgot.component";
 @import "./src/login.component";
-@import "./src/button.component";
+@import "./src/gem-button.component";
+@import "./src/gem-card.component";
 @import "./src/breadcrumb.component";
 @import "./src/gem-treeview.component";
 @import "./src/action-buttons.component";
@@ -29,6 +30,8 @@
 @import "./src/gem-range-input.component";
 @import "./src/gem-radio-input.component";
 @import "./src/gem-check-box-input.component";
+@import "./src/gem-nav-item.component";
+@import "./src/gem-nav-list.component";
 @import "./src/dialog.component";
 @import "./src/gem-dual-range-input.component";
 
@@ -36,33 +39,10 @@
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
 }
 
-@mixin button-outline-theme($button-color, $button-hover-color) {
-  .btn-outline-primary {
-    color: $button-color;
-    background: transparent none;
-    border: 2px solid $button-color;
-  }
-
-  .btn-outline-primary:hover,
-  .btn-outline-primary-invert:hover {
-    color: $button-hover-color;
-    background: transparent none;
-    border: 2px solid $button-hover-color;
-  }
-}
-
-@mixin panel-theme($panel-heading-color) {
-  .panel-default > .panel-heading {
-    background-color: $panel-heading-color;
-    color: $montigem-white;
-    font-weight: bold;
-  }
-}
-
 @mixin montigem-theme(
-  $primary-color: $rwth-blue,
-  $secondary-color: $rwth-blue-1,
-  $button-hover-color: $rwth-may-green,
+  $primary-color: $acronio-blue-2,
+  $secondary-color: $acronio-blue-3,
+  $button-hover-color: $acronio-blue-1,
   $auth-link-color: #8cb9e2,
   $horizontal-layout: true
 ) {
@@ -72,20 +52,19 @@
   @include forgot-theme($primary-color);
   @include login-theme($primary-color);
 
-  /* ##### Inout ##### */
-  @include button-theme($primary-color, $button-hover-color);
-
+  /* ##### Basic ##### */
   @include gem-treeview-theme($primary-color, $button-hover-color);
+  @include gem-button-theme($primary-color, $button-hover-color);
+
   /* ##### Layout ##### */
+  @include gem-card-theme();
+  @include gem-nav-item-theme();
+  @include gem-nav-list-theme();
   @include breadcrumb-theme($primary-color);
   @include header-theme($primary-color);
   @include loadingbar-theme($primary-color);
   @include navigationbar-theme($primary-color);
   @include action-buttons-theme($primary-color);
-
-  /* ##### Theme ##### */
-  @include button-outline-theme($primary-color, $button-hover-color);
-  @include panel-theme($secondary-color);
 
   /* #### Input ####  */
   @include text-input-theme(1px solid $rwth-black-3, column, flex-start, 0);

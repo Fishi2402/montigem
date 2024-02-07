@@ -1,12 +1,35 @@
-import {Component, Input, TemplateRef} from '@angular/core';
+import {Component, HostBinding, Input, TemplateRef} from '@angular/core';
 
 @Component(
   {
-    "selector": "nav-list",
+    "selector": "gem-nav-list",
     "templateUrl": "./nav-list.component-gen.html",
-    "styles": [":host { display:flex; flex-direction:column; padding-left: 10px; }"]
   })
 export class NavList {
+  @HostBinding("style.width")
+  _width: string = "auto";
+
+  @HostBinding("style.height")
+  _height: string = "100%";
+
+  public get width(): string {
+    return this._width;
+  }
+
+  @Input()
+  public set width(width: string) {
+    this._width = width;
+  }
+
+  public get height(): string {
+    return this._height;
+  }
+
+  @Input()
+  public set height(height: string) {
+    this._height = height;
+  }
+
   protected _components: TemplateRef<any>[];
   protected _header?: TemplateRef<any>;
   protected _footer?: TemplateRef<any>;
