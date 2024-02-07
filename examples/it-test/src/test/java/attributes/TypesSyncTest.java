@@ -210,7 +210,7 @@ public class TypesSyncTest extends AttributesMockTestSetup {
  }
 
   @Test
-  public void testListOfDatesIsWritten() {
+  public void testListOfTimesIsWritten() {
     // client
     getClients(0).activate();
     List<LocalDate> values = Lists.newArrayList();
@@ -226,7 +226,7 @@ public class TypesSyncTest extends AttributesMockTestSetup {
   }
 
   @Test
-  public void testAddToListOfDates() {
+  public void testAddToListOfTimes() {
     // client
     getClients(0).activate();
     List<LocalDate> values = Lists.newArrayList();
@@ -253,7 +253,7 @@ public class TypesSyncTest extends AttributesMockTestSetup {
   }
 
   @Test
-  public void testDeleteInListOfDates() {
+  public void testDeleteInListOfTimes() {
     // client
     getClients(0).activate();
     List<LocalDate> values = List.of(LocalDate.now(), LocalDate.of(2000, 1, 1), LocalDate.of(2000, 2, 2));
@@ -275,6 +275,60 @@ public class TypesSyncTest extends AttributesMockTestSetup {
     sut.removeDates(1);
     assertEquals(1, sut.getDatesList().size());
     assertEquals(1, sutServer.getDatesList().size());
+  }
+
+  @Test
+  public void testOptionalOfTimeIsWritten() {
+    // client
+    getClients(0).activate();
+    Optional<LocalDate> value = Optional.of(LocalDate.now());
+    var sut = AttributesManager.optionalOfTimeBuilder().date(value).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getOptionalOfTimeSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertTrue(sutServer.getDate().isPresent());
+  }
+
+  @Test
+  public void testSetToOptionalOfTime() {
+    // client
+    getClients(0).activate();
+    var sut = AttributesManager.optionalOfTimeBuilder().build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getOptionalOfTimeSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertFalse(sutServer.getDate().isPresent());
+
+    // client: set element
+    getClients(0).activate();
+    sut.setDate(Optional.of(LocalDate.now()));
+    assertTrue(sut.getDate().isPresent());
+    assertTrue(sutServer.getDate().isPresent());
+
+  }
+
+  @Test
+  public void testDeleteInOptionalOfTime() {
+    // client
+    getClients(0).activate();
+    Optional<LocalDate> value = Optional.of(LocalDate.now());
+    var sut = AttributesManager.optionalOfTimeBuilder().date(value).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getOptionalOfTimeSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertTrue(sutServer.getDate().isPresent());
+
+    // client: delete element
+    getClients(0).activate();
+    sut.setDate(Optional.empty());
+    assertFalse(sut.getDate().isPresent());
+    assertFalse(sutServer.getDate().isPresent());
   }
 
 }

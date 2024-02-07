@@ -99,4 +99,8 @@ umlp Attributes {
   class ListOfTime{
     List<LocalDate> dates;
   }
+
+  class OptionalOfTime{
+    Optional<LocalDate> date;
+  }
 }

@@ -26,7 +26,7 @@
     <#elseif isOptional>
       if (obj.get${fieldName?cap_first}().isPresent()) {
         <#if useDeSer>
-        printer.memberJson("${fieldName}", ${objectMapperName}.serialize(obj.get${fieldName?cap_first}(), "${innerType}").get());
+        printer.memberJson("${fieldName}", ${objectMapperName}.serialize(obj.get${fieldName?cap_first}().get(), "${innerType}").get());
         <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
         printer.member("${fieldName}", obj.get${fieldName?cap_first}().get().name());
         <#else>
