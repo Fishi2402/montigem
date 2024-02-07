@@ -21,27 +21,24 @@ public class ProjectCreateE2ETest extends DtcockpitMockTestSetup {
 
     getClients(0).activate();
 
-    final ProjectCreate pageUnderTest = new ProjectCreate();
+    ProjectCreate pageUnderTest = new ProjectCreate();
     pageUnderTest.setCreatePTitleEntry(title);
     pageUnderTest.setCreatePGitEntry(git);
-    //TODO createProject vs gemButton3LeftClick?
-    //TODO what kind of event is expected?
-    pageUnderTest.createProject(null);
+    pageUnderTest.gemButton3LeftClick(null);
 
     //project should be present in backend
     getBackend().activate();
 
-    final Optional<Project> optProject = getProjectByName(title);
+    Optional<Project> optProject = getProjectByName(title);
     assertTrue(optProject.isPresent(), "project has not been created");
 
-    final Project project = optProject.get();
+    Project project = optProject.get();
 
     assertEquals(title, project.getName()); //technically unnecessary
     assertEquals(git, project.getGit());
   }
 
   private Optional<dtcockpit.Project> getProjectByName(String title) {
-    //TODO better way to get project by name?
     return dtcockpit.DtcockpitManager.getProjectList().stream().filter(p -> p.getName().equals(title)).findAny();
   }
 
@@ -57,11 +54,8 @@ public class ProjectCreateE2ETest extends DtcockpitMockTestSetup {
     pageUnderTest.setCreatePTitleEntry(title);
     pageUnderTest.setCreatePGitEntry(git);
 
-    //TODO is there a way to test, where the backbutton routs?
-    pageUnderTest.navigateBack(null);
+    pageUnderTest.gemButton4LeftClick(null);
 
     assertTrue(getProjectByName(title).isEmpty(), "project has been created");
   }
-
-
 }
