@@ -4,7 +4,7 @@ import {
   ClientCommandManager,
   ClientCommandWebsocketCommunication,
   CommandManager
-} from 'umlp-frontend-rte';
+} from '@umlp/commonj2ts';
 import {JsweettestManagerClientImpl} from '@src/jsweettest/JsweettestManagerClientImpl';
 
 @Component({

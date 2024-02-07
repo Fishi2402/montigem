@@ -4,7 +4,7 @@ import {
   ClientCommandManager,
   ClientCommandWebsocketCommunication,
   CommandManager
-} from 'umlp-frontend-rte';
+} from '@umlp/commonj2ts';
 import {DtcockpitManagerClientImpl} from '@src/dtcockpit/DtcockpitManagerClientImpl';
 
 @Component({

@@ -20,12 +20,11 @@ pluginManagement {
 
 rootProject.name = 'umlp'
 includeBuild "umlp-tool"
-includeBuild "umlp-rte/umlp-frontend-rte-java"
+includeBuild "umlp-rte/umlp-jsweet"
 
 include ":umlp-rte"
 include ":umlp-rte:client"
-include ":umlp-rte:umlp-frontend-rte"
-include ":umlp-rte:umlp-frontend-rte-java"
+include ":umlp-rte:umlp-jsweet"
 
 include ":experiments"
 include ":experiments:dbPerformance"
@@ -47,9 +46,6 @@ include ':examples:flensburg-test:backend'
 include ':examples:flensburg-test:frontend'
 include ':examples:weather:backend'
 include ':examples:weather:frontend'
-include ':examples:flensburg-test-jsweet'
-include ':examples:flensburg-test-jsweet:backend'
-include ':examples:flensburg-test-jsweet:client'
 include ':examples:it-test'
 include ':examples:assistenzsystem'
 include ':examples:native-image'
@@ -75,8 +71,6 @@ include ':products:demorec:backend'
 include ':products:demorec:frontend'
 include ':products:demo-recycling:frontend'
 include ':products:kizam:backend'
-include 'examples:flensburg-test-jsweet:backend'
-findProject(':examples:flensburg-test-jsweet:backend')?.name = 'backend'
 
 include ':modules:login'
 include ':modules:sovd-gateway'
