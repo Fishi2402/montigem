@@ -1,12 +1,13 @@
-package dtcockpit;
+package gui.project;
 
+import dtcockpit.Project;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
-import gui.project.ProjectCreate;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProjectCreateE2ETest extends DtcockpitMockTestSetup {
 
@@ -39,7 +40,11 @@ public class ProjectCreateE2ETest extends DtcockpitMockTestSetup {
   }
 
   private Optional<dtcockpit.Project> getProjectByName(String title) {
-    return dtcockpit.DtcockpitManager.getProjectList().stream().filter(p -> p.getName().equals(title)).findAny();
+    return dtcockpit.DtcockpitManager
+        .getProjectList()
+        .stream()
+        .filter(p -> p.getName().equals(title))
+        .findAny();
   }
 
   @Test
