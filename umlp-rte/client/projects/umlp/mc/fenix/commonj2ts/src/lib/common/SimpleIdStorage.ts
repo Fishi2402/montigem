@@ -193,7 +193,7 @@ export class SimpleIdStorage implements IdStorage {
             }
             return null;
           })(<any>this.idxToId, key);
-          if (/* contains */(indicies.indexOf(<any>(key)) >= 0)) {
+          if (/* contains */(await Promise.resolve(indicies.indexOf(<any>(key))) >= 0)) {
             continue;
           }
           const floorKey: number = offsets.floorKey(key);
