@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.staticcontainer;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+
+import gui.staticcontainer.Navigation;
+import gui.staticcontainer.Footer;
+
+component NavContainer(
+  List<GUIViewElement> content
+) {
+  @GemColumn(components = [
+    @Navigation(),
+    mainCol@GemColumn(components = content),
+    @Footer()
+  ]);
+}

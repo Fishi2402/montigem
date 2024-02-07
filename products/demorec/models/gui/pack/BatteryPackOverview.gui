@@ -6,6 +6,7 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemLink;
+import mc.fenix.basic.GemButton;
 
 import gui.pack.PackTypeOverview;
 import gui.component.PhotoDisplay;
@@ -27,7 +28,7 @@ component BatteryPackOverview(BatteryPack pack) {
       @GemColumn(
         width="10%",
         components=[
-          editPack@GemLink(url="override", text="Edit Pack.")
+          editPack@GemButton(label = "Edit Pack", leftClick = editPack)
         ]
       ),
       @GemColumn(

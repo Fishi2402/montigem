@@ -10,7 +10,6 @@ import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemImage;
 import mc.fenix.charts.GemLineChart;
 
-import gui.navigation.DtCockpitNavigation;
 import gui.widgets.Welcome;
 import gui.rooms.RoomStats;
 import gui.pipelines.PipelineStatsPerGroup;

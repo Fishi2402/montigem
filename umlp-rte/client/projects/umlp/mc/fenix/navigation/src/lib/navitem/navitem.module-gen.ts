@@ -1,13 +1,13 @@
 import {NgModule} from '@angular/core';
-import {NavItem} from "./nav-item.component";
+import {GemNavItem} from "./nav-item.component";
 import {CommonModule} from "@angular/common";
 
 @NgModule(
   {
-    "declarations": [NavItem],
+    "declarations": [GemNavItem],
     "imports": [CommonModule],
-    "exports": [NavItem]
+    "exports": [GemNavItem]
   })
-export class NavitemModule {
+export class GemnavitemModule {
 
 }

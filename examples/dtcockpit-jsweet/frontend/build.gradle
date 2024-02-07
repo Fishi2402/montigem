@@ -1,7 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-import java.nio.file.Paths
-
 buildscript {
   repositories {
     mavenCentral()
@@ -37,6 +34,10 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 
   implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
+
+  testImplementation "de.monticore.lang:guidsl:${project.properties['mc_version']}"
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 }
 
 task generateNPMAuth(type: NPMAuthCreate){
@@ -72,6 +73,7 @@ node {
   // By default it is at the root of the current project
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
+nodeSetup.dependsOn(frontendSetup)
 
 task genSymbols(type: UMLPSymbolsTask) {
   dependsOn(frontendSetup)
@@ -240,4 +242,11 @@ task runApp(type: NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
+}
+
+test {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform()
 }

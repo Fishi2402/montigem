@@ -1,0 +1,7 @@
+package gui.staticcontainer;
+
+import mc.fenix.basic.GemText;
+
+component AlphaWarning() {
+  warning@GemText(value="DemoRec Alpha Version");
+}

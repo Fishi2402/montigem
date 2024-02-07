@@ -26,12 +26,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class Start extends StartComponent {
 
+  public constructor(protected route: ActivatedRoute, protected router : Router) {
+    super(route, router);
+  }
+
   public getBatteryPackOverview5Pack (p: Process): BatteryPack {
     console.debug(p.getDeconstructionOf().getTypeGem().get())
     return p.getDeconstructionOf();
   }
 
-  public getOverViewLinkUrl (p: Process): string {
-    return "gui/process/ProcessOverview/"+p.getGemId();
+  public override editProcess (p: Process): (p: Process) => void {
+    console.debug("Event: ", p)
+    return () => this.router.navigate(["gui/process/ProcessOverview/"+p.getGemId()])
   }
 }
