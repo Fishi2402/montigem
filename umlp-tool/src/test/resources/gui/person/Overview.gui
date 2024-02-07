@@ -15,7 +15,7 @@ page Overview(List<Person> persons) {
   @GemColumn(rowGap = "10px", width = "50%", components = [
     @Create(),
     @iterate(Person p : persons) {
-      @guard(p.address.street != "Ahornstraße") {
+      @guard(p.address.street != "Ahornstrasse") {
         @Row(
           col1 = @GemText(value = p.birthday),
           col2 = gemText5@GemText(value = p.name),

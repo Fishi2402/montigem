@@ -40,6 +40,7 @@ dependencies {
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
+  testImplementation "de.monticore.lang:guidsl:$mc_version:default-types"
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
   grammar("de.monticore.lang:cd4analysis:$mc_version:grammars")

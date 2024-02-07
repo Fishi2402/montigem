@@ -6,8 +6,8 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
+import guiTest.AbstractGUITest;
 import guiTest.GUIComponentStat;
-import guiTest.GUIVariability.AbstractGUIVariabilityTest;
 import org.junit.jupiter.api.Test;
 import umlp.generator.gui.GUINodeIdTrafo;
 
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GUINodeIdTrafoTest extends AbstractGUIVariabilityTest {
+public class GUINodeIdTrafoTest extends AbstractGUITest {
 
   @Test
   public void testOverviewIdTrafo() {
