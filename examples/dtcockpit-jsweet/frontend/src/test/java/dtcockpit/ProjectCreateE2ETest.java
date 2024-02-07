@@ -30,8 +30,8 @@ public class ProjectCreateE2ETest extends DtcockpitMockTestSetup {
 
     //project should be present in backend
     getBackend().activate();
-    //TODO better way to get project by name?
-    final Optional<Project> optProject = dtcockpit.DtcockpitManager.getProjectList().stream().filter(p -> p.getName().equals(title)).findAny();
+
+    final Optional<Project> optProject = getProjectByName(title);
     assertTrue(optProject.isPresent(), "project has not been created");
 
     final Project project = optProject.get();
@@ -39,4 +39,29 @@ public class ProjectCreateE2ETest extends DtcockpitMockTestSetup {
     assertEquals(title, project.getName()); //technically unnecessary
     assertEquals(git, project.getGit());
   }
+
+  private Optional<dtcockpit.Project> getProjectByName(String title) {
+    //TODO better way to get project by name?
+    return dtcockpit.DtcockpitManager.getProjectList().stream().filter(p -> p.getName().equals(title)).findAny();
+  }
+
+  @Test
+  public void testAbort() {
+    String title = "myTitle";
+    String git = "myGit.git";
+
+    getClients(0).activate();
+    assertTrue(getProjectByName(title).isEmpty(), "project already exists");
+
+    ProjectCreate pageUnderTest = new ProjectCreate();
+    pageUnderTest.setCreatePTitleEntry(title);
+    pageUnderTest.setCreatePGitEntry(git);
+
+    //TODO is there a way to test, where the backbutton routs?
+    pageUnderTest.navigateBack(null);
+
+    assertTrue(getProjectByName(title).isEmpty(), "project has been created");
+  }
+
+
 }
