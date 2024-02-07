@@ -61,8 +61,8 @@ export  class ComponentTreeView extends ComponentTreeViewComponent {
         if(!alreadySeenChildren.has(child.getGemId())) {
           alreadySeenChildren.add(child.getGemId())
           let descr = ":"+child.getGemId()
-          if(child.getDescription()) {
-            descr = child.getDescription()+descr
+          if(child.getName()) {
+            descr = child.getName()+descr
           }
           children.push(new GemTreeviewEntry(false,
               descr, this.createTreeRecursively(child)))

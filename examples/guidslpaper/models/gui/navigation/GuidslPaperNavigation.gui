@@ -1,27 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.navigation;
 
-import arrange.GemRow;
-import arrange.GemColumn;
-import basic.GemText;
-import basic.GemButton;
-import navigation.NavItem;
-import navigation.NavList;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.navigation.GemNavItem;
+import mc.fenix.navigation.GemNavList;
 
 import gui.navigation.GuidslPaperNavHeader;
 
-import Guidslpaper.App;
-import Guidslpaper.Person;
-import Guidslpaper.Konto;
-
 // The parent component should be styled like `styles: [":host{ display: flex; flex-direction: row }"]`
-component GuidslPaperNavigation(List<Person> personen, List<Konto> konten) {
-  @NavList(components = [
+component GuidslPaperNavigation() {
+  @GemNavList(components = [
     @GuidslPaperNavHeader(),
-    @NavItem(title = "Home", target = "/gui/Start"),
-    @NavItem(title = "Personen", target = "/gui/GuidslpaperMainPage"),
-    @iterate(Person p : personen) {
-      personNav@NavItem(title = p.kuerzel, target = "/gui/personcreate/" + p.kuerzel);
-    }
+    @GemNavItem(title = "Home", target = "/gui/Start"),
+    @GemNavItem(title = "Finanzen", target = "/gui/konto/AccountOverview"),
+    @GemNavItem(title = "Personen", target = "/gui/person/PersonOverview")
   ]);
 }

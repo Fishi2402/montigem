@@ -10,5 +10,10 @@ public class PipelineStats extends PipelineStatsTOP {
     super(p);
   }
 
-  // TODO Body
+  @Override
+  public String getGemCard0Title() {
+    return "Pipeline dashboard for " + this.getP().getName();
+  }
+
+  // TODO Other methods
 }

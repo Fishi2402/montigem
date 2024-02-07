@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.navigation;
+
+component GemNavList(
+  List<GUIViewElement> components,
+  GUIViewElement header = null,
+  GUIViewElement footer = null,
+
+  /** Width of the list. */
+  String width = "auto",
+  /** Height of the list. */
+  String height = "100%"
+)

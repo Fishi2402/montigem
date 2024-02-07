@@ -3,13 +3,13 @@ package gui.login;
 
 import Dtcockpit.User;
 
-import arrange.GemRow;
-import arrange.GemColumn;
-import arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
 
-import basic.GemImage;
-import basic.GemText;
-import basic.GemLink;
+import mc.fenix.basic.GemImage;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemLink;
 
 component LoginContainer(GUIViewElement component) {
   @GemRow(hAlign = "center", component =
@@ -18,7 +18,7 @@ component LoginContainer(GUIViewElement component) {
         @GemRow(width = "150px", component = @GemImage(source = "assets/images/dt.png")),
         component,
         @GemRow(width = "150px", component =
-          @GemImage(source = "assets/images/rwth_se_bild_weiss_rgb.png")
+          @GemImage(source = "assets/images/rwth_se_bild_rgb.png")
         )
       ])
     )

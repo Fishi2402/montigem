@@ -8,6 +8,8 @@ plugins {
 dependencies {
   // Types which are used in genGUI-Task
   guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+
+  umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
 }
 
 node {
@@ -19,7 +21,7 @@ node {
 
   // Version of node to download and install (only used if download is true)
   // It will be unpacked in the workDir
-  version = "18.10.0"
+  version = "18.13.0"
 
   // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
   // according the proxy configuration defined for Gradle
@@ -30,7 +32,7 @@ node {
   // The Node.js project directory location
   // This is where the package.json file and node_modules directory are located
   // By default it is at the root of the current project
-  nodeProjectDir = frontendSetup.getOutput()
+  nodeProjectDir = file("${buildDir}/frontendGen")
 }
 
 genGUI {
@@ -46,11 +48,11 @@ genGUI {
   outputs.upToDateWhen { false }
   /**/
 }
-
-npm_install.dependsOn(':umlp-rte:client:npm_install')
+nodeSetup.dependsOn(frontendSetup)
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npm_install,
+    npmInstall,
     generate  // Created from UMLP-Frontend Plugin.
 ]
 

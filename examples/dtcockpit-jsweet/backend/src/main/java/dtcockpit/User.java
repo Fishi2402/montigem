@@ -1,10 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package dtcockpit;
 
-import input.GemTextInputValidity;
-
-import java.util.HashMap;
-import java.util.Map;
+import mc.fenix.input.GemTextInputValidity;
 
 public class User extends UserTOP {
 

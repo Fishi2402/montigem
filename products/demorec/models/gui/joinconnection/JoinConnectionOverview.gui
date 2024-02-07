@@ -2,7 +2,7 @@ package gui.joinconnection;
 
 import DemoRec.JoinConnection;
 
-import basic.GemText;
+import mc.fenix.basic.GemText;
 
 component JoinConnectionOverview(JoinConnection connection) {
   @GemText(value=connection.state);

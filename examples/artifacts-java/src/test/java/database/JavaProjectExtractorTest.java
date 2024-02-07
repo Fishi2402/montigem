@@ -4,8 +4,8 @@ package database;
 import baseartifactstest.ArtifactView;
 import baseartifactstest.BaseArtifactsTest4JavaProjectManagerImpl;
 import baseartifactstest.BaseArtifactsTestManager;
-import baseartifactstest.BaseArtifactsTestManagerImpl;
 import javaproject.JavaExtractor;
+import javaproject.JavaProjectCommandObjectMapper;
 import javaproject.JavaProjectManager;
 import javaproject.JavaProjectManagerImpl;
 import javaproject.JavaView;
@@ -18,7 +18,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JavaProjectExtractorTest extends GenAbstractNeo4jDBTest {
 
@@ -31,6 +34,7 @@ public class JavaProjectExtractorTest extends GenAbstractNeo4jDBTest {
 
     JavaProjectManagerImpl.init();
     BaseArtifactsTest4JavaProjectManagerImpl.init();
+    JavaProjectCommandObjectMapper.init();
 
     JavaExtractor extractor = new JavaExtractor();
 

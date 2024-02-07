@@ -89,7 +89,7 @@ export class SimpleIdStorage implements IdStorage {
                 let key = array[index];
                 {
                     const value: number = /* get */((m,k) => { if(m.entries==null) m.entries=[]; for(let i=0;i<m.entries.length;i++) if(m.entries[i].key==null && k==null || m.entries[i].key.equals!=null && m.entries[i].key.equals(k) || m.entries[i].key===k) { return m.entries[i].value; } return null; })(<any>this.idxToId, key);
-                    if (/* contains */(indicies.indexOf(<any>(key)) >= 0)){
+                    if (/* contains */(await Promise.resolve(indicies.indexOf(<any>(key))) >= 0)){
                         continue;
                     }
                     const floorKey: number = offsets.floorKey(key);

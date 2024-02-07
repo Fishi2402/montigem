@@ -6,12 +6,12 @@ import Sehub.Issue;
 import gui.issues.IssueCreate;
 import gui.issues.IssueDragDrop;
 
-import arrange.GemCard;
-import arrange.GemColumn;
-import arrange.GemRow;
-import basic.GemText;
-import input.GemTextInput;
-import input.GemTextareaInput;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemTextareaInput;
 
 page IssueTrackerPage(List<Issue> issues) {
 

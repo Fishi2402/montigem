@@ -8,8 +8,7 @@ plugins {
   id 'de.rwth.se.umlp-tool'
 }
 
-def useCD2GUI = true
-
+def useCD2GUI = false
 
 configurations {
   guiDefaultTypes
@@ -19,9 +18,14 @@ dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
+task generateNPMAuth(type: NPMAuthCreate){
+  npmrcFile = file("config/.npmrc")
+}
+
 // Add Frontend-Config Files from UMLP-Tool Resources.
 task frontendSetup(type: FrontendSetup){
   input = file("config/")   // Can be used to add or replace files
+  dependsOn(generateNPMAuth)
   output = layout.buildDir.dir("frontendGen/")
 }
 
@@ -34,7 +38,7 @@ node {
 
   // Version of node to download and install (only used if download is true)
   // It will be unpacked in the workDir
-  version = "18.10.0"
+  version = "18.13.0"
 
   // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
   // according the proxy configuration defined for Gradle
@@ -45,9 +49,9 @@ node {
   // The Node.js project directory location
   // This is where the package.json file and node_modules directory are located
   // By default it is at the root of the current project
-  nodeProjectDir = frontendSetup.getOutput()
-
+  nodeProjectDir = file("${buildDir}/frontendGen")
 }
+nodeSetup.dependsOn(frontendSetup)
 
 tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
   enabled(useCD2GUI)
@@ -104,13 +108,10 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
   guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
 }
 
-task generateNPMAuth(type: NPMAuthCreate){
-  npmrcFile = frontendSetup.getOutput().file(".npmrc")
-}
-npm_install.dependsOn(generateNPMAuth, ':umlp-rte:client:npm_install')
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npm_install, genGUI2
+    npmInstall, genGUI2
 ]
 
 task buildApp(type: NpxTask) {

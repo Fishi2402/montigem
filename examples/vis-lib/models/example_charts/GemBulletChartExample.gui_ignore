@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+//import mc.fenix.charts.GemBulletChart;
+
+page GemBulletChartExample(
+  Integer value,
+  Integer reference,
+  Integer thresholdvalue,
+  String title,
+  String subtitle,
+  List<Integer> range,
+  List<Integer> steps
+) {
+  @GemBulletChart(
+    value = value,
+    reference = reference,
+    thresholdvalue = thresholdvalue,
+    title = title,
+    subtitle = subtitle,
+    range = range,
+    steps = steps
+  );
+}

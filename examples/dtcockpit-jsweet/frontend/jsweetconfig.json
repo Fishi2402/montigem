@@ -11,11 +11,5 @@
       "**.PipelineInformationExtractor.init()",
       "**.PipelineInformationExtractor.extractPipelineDataOf(..)"
     ]
-  },
-  "@Replace('return StatusResult.ok(this.getId());')": {
-    "include": [
-      "dtcockpit.commands.User_create.sendMail(..)",
-      "dtcockpit.commands.SendMail.doAction(..)"
-    ]
   }
 }

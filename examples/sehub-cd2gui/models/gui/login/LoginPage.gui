@@ -6,8 +6,8 @@ import Sehub.User;
 import gui.login.UserLogin;
 import gui.login.LoginContainer;
 
-import arrange.GemColumn;
-import basic.GemLink;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemLink;
 
 page LoginPage(List<User> users) {
   @LoginContainer(component =

@@ -92,12 +92,12 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   private calculateDisplayValueOfJoinConnection(connection : JoinConnection) : Promise<Option> {
     return connection._internal_getConnectsGemList().loadAll().then(
         list => {
-          console.debug("Connects: " + list.map(c => c.getDescription()))
+          console.debug("Connects: " + list.map(c => c.getName()))
           console.debug(connection._internal_getConnectsGemList().toArray())
 
           let value = connection.getGemId() + "";
-          const displayValue = list.map(c => c.getDescription()?
-                  c.getDescription()+":"+c.getGemId() :
+          const displayValue = list.map(c => c.getName()?
+                  c.getName()+":"+c.getGemId() :
                   ":"+c.getGemId()).join("_")+
               "_"+JoinConnectionType[connection.getJoinConnectionType()]
           return new Promise<Option>((resolve, reject) => {
@@ -250,6 +250,9 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   }
 
   public override getPassedTimeValue (): string {
+    if(this.passedSeconds > 1) {
+      return String(this.passedSeconds.toFixed(0))
+    }
     return String(this.passedSeconds);
   }
 

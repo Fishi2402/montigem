@@ -1,7 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-import java.nio.file.Paths
-
 buildscript {
   repositories {
     mavenCentral()
@@ -37,6 +34,10 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 
   implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
+
+  testImplementation "de.monticore.lang:guidsl:${project.properties['mc_version']}"
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 }
 
 task generateNPMAuth(type: NPMAuthCreate){
@@ -59,7 +60,7 @@ node {
 
   // Version of node to download and install (only used if download is true)
   // It will be unpacked in the workDir
-  version = "18.10.0"
+  version = "18.13.0"
 
   // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
   // according the proxy configuration defined for Gradle
@@ -70,10 +71,8 @@ node {
   // The Node.js project directory location
   // This is where the package.json file and node_modules directory are located
   // By default it is at the root of the current project
-  nodeProjectDir = frontendSetup.getOutput()
-
+  nodeProjectDir = file("${buildDir}/frontendGen")
 }
-
 nodeSetup.dependsOn(frontendSetup)
 
 task genSymbols(type: UMLPSymbolsTask) {
@@ -149,12 +148,12 @@ jsweetDomain {
       '**/dtcockpit/DtcockpitDummyProvider.java',
       '**/dtcockpit/DtcockpitTestContext.java',
   ]
-  extraSystemPath = project.file('.gradle/nodejs/node-v18.10.0-win-x64')
+  extraSystemPath = project.file('.gradle/nodejs/node-v18.13.0-win-x64')
 }
 
 task translateJava2TSDomain(type: org.jsweet.gradle.JSweetTranspileTask) {
   setGroup("generate");
-  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, npm_install, ensureNodeInit);
+  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, npmInstall, ensureNodeInit);
   setConfiguration(jsweetDomainConf);
   setSources(sourceSets.main.java);
   setClasspath(configurations.runtimeClasspath);
@@ -205,7 +204,7 @@ jsweetGUI {
 
 task translateJava2TSGUI(type: org.jsweet.gradle.JSweetTranspileTask) {
   setGroup("generate");
-  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, frontendSetup, genGUI, npm_install, ensureNodeInit);
+  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, frontendSetup, genGUI, npmInstall, ensureNodeInit);
   setConfiguration(jsweetGUIConf);
   setSources(sourceSets.main.java);
   setClasspath(configurations.runtimeClasspath);
@@ -216,14 +215,14 @@ task translateTypeScript() {
 }
 
 task installLocalRTE(type: NpmTask) {
-  dependsOn(npm_install)
+  dependsOn(npmInstall, tasks.getByPath(":umlp-rte:umlp-frontend-rte:packLib"))
   args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]
 }
 
-npm_install.dependsOn(nodeSetup, ':umlp-rte:client:npm_install')
+npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npm_install, translateTypeScript, installLocalRTE
+    npmInstall, translateTypeScript, installLocalRTE
 ]
 
 task buildApp(type: NpxTask) {
@@ -243,4 +242,11 @@ task runApp(type: NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
+}
+
+test {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform()
 }

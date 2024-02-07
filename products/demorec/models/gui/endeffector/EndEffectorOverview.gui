@@ -2,18 +2,33 @@ package gui.endeffector;
 
 import DemoRec.EndEffector;
 
-import basic.GemText;
-import arrange.GemCard;
-import arrange.GemColumn;
+import mc.fenix.table.GemTable;
+import mc.fenix.table.TableTypes.TableColumn;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
 
 import gui.endeffector.EndEffectorCreate;
-import gui.navigation.Navigation;
+import gui.staticcontainer.NavContainer;
 
 page EndEffectorOverview(List<EndEffector> endEffectors) {
 
-  @Navigation();
+  @NavContainer(
+      content=[
+
+/*
+  endEffectorsTable@GemTable(
+    canCreate=true,
+    create=createEndEffector,
+    rows = endEffectors,
+    columns = [
+      TableColumn("name", "Name")
+    ]
+  ),*/
+
   @GemCard(
-    title="EndEffectors",
+    title="End Effectors",
     component=@GemColumn(
       rowGap="1px",
       wrap="nowrap",
@@ -24,5 +39,5 @@ page EndEffectorOverview(List<EndEffector> endEffectors) {
         }
       ]
     )
-  );
+  )]);
 }

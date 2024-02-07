@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package navigation;
-
-component NavList(
-  List<GUIViewElement> components,
-  GUIViewElement header = null,
-  GUIViewElement footer = null
-)

@@ -3,7 +3,7 @@ package gui.common;
 
 import Weather.DailyForecast;
 
-import basic.GemText;
+import mc.fenix.basic.GemText;
 
 // TODO: Can LocalDate/Date be used as an parameter?
 /**

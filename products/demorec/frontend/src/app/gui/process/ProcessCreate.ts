@@ -49,6 +49,11 @@ export  class ProcessCreate extends ProcessCreateComponent {
 
   public oldDerivedPackname : string = ""
 
+  public constructor(protected router: Router) {
+    super(router);
+  }
+
+
   public ngOnInit(): void {
     super.ngOnInit()
     DemoRecManager.getBatteryPackList().then(gemPromiseRes => {
@@ -57,7 +62,7 @@ export  class ProcessCreate extends ProcessCreateComponent {
         console.error(bPacks)
         for (const bPack of bPacks) {
           let value = bPack.getGemId() + "";
-          this.bPackOptions.push({value: value, display: bPack.getDescription()});
+          this.bPackOptions.push({value: value, display: bPack.getName()});
         }
         this.bPackOptions = this.bPackOptions.slice();
       });
@@ -69,7 +74,7 @@ export  class ProcessCreate extends ProcessCreateComponent {
         console.error(bPackTypes)
         for (const bPackType of bPackTypes) {
           let value = bPackType.getGemId() + "";
-          this.bPackTypeOptions.push({value: value, display: bPackType.getCarType()});
+          this.bPackTypeOptions.push({value: value, display: bPackType.getCarBrand()+" "+bPackType.getCarModel()+" "+bPackType.getCarYear()});
         }
         this.bPackOptions = this.bPackOptions.slice();
       });
@@ -112,22 +117,25 @@ export  class ProcessCreate extends ProcessCreateComponent {
   public override sendEverything (event: any): void {
     let type : Promise<BatteryPackType>
     let pack : Promise<BatteryPack>
-    if((this.getSelectBPackEntry() === newOption.value) &&
-        (this.getSelectBPackTypeEntry() != newOption.value)) {
-      type = DemoRecManager.getBatteryPackTypeSure(+this.getSelectBPackTypeEntry())
-    } else {
-      this.getType().build()
-      type = new Promise((resolve, reject) => {
-        if(this.getType().isBuildFinished()) {
-          resolve(this.getType())
-        } else {
-          reject("Type could not be built.")
-        }
-      })
-    }
+
     if(this.getSelectBPackEntry() != newOption.value) {
       pack = DemoRecManager.getBatteryPackSure(+this.getSelectBPackEntry())
+      type = new Promise((resolve, reject) => {
+        resolve(DemoRecManager.batteryPackTypeBuilder())
+      })
     } else {
+      if((this.getSelectBPackTypeEntry() != newOption.value)) {
+        type = DemoRecManager.getBatteryPackTypeSure(+this.getSelectBPackTypeEntry())
+      } else {
+        this.getType().build()
+        type = new Promise((resolve, reject) => {
+          if(this.getType().isBuildFinished()) {
+            resolve(this.getType())
+          } else {
+            reject("Type could not be built.")
+          }
+        })
+      }
       pack = type.then(bPackType => {
         return new Promise((resolve, reject) => {
           this.getPack().type(bPackType)
@@ -142,9 +150,10 @@ export  class ProcessCreate extends ProcessCreateComponent {
     }
 
     Promise.all([type, pack]).then(([type, pack]) => {
-      this.getP().deconstructionOf(this.getPack())
+      this.getP().deconstructionOf(pack)
       this.getP().build()
       this.ngOnInit()
+      this.router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
     })
   }
 
@@ -164,12 +173,14 @@ export  class ProcessCreate extends ProcessCreateComponent {
       const chosenDate = this.getP().getStartedAt()
       packNameStart = chosenDate.getFullYear()+"_"+(chosenDate.getMonth()+1)+"_"+chosenDate.getDate()
 
-      if(this.getType()?.getCarType()) {
-        packNameMiddle = "_"+this.getType().getCarType().trim().replaceAll(" ", "_")
+      if(this.getType()?.getCarBrand() && this.getType().getCarModel()) {
+        packNameMiddle = "_"+this.getType().getCarBrand().trim().replaceAll(" ", "_")
+        packNameMiddle += "_"+this.getType().getCarModel().trim().replaceAll(" ", "_")
       } else if(this.getSelectBPackTypeEntry()) {
         const bTypeId = this.getSelectBPackTypeEntry()
         if(this.typeHash == Number(bTypeId)) {
-          packNameMiddle = "_"+this.lastType?.getCarType().trim().replaceAll(" ", "_")
+          packNameMiddle = "_"+this.lastType?.getCarBrand().trim().replaceAll(" ", "_")
+          packNameMiddle += "_"+this.getType().getCarModel().trim().replaceAll(" ", "_")
         } else if(Number.isInteger(Number(bTypeId))) {
           this.typeHash = Number(bTypeId)
           DemoRecManager.getBatteryPackTypeSure(Number(this.getSelectBPackTypeEntry())).then(
@@ -189,13 +200,13 @@ export  class ProcessCreate extends ProcessCreateComponent {
     } else {
       const packName = packNameStart+packNameMiddle+packNameEnd
       console.debug(packName)
-      if(this.getPack().getDescription() && (this.getPack().getDescription() != this.oldDerivedPackname)) {
+      if(this.getPack().getName() && (this.getPack().getName() != this.oldDerivedPackname)) {
         // This means the user has manually edited the description field
-        return this.getPack().getDescription()
+        return this.getPack().getName()
       }
       this.oldDerivedPackname = packName
-      this.getPack().description(packName)
-      return this.getPack().getDescription()
+      this.getPack().name(packName)
+      return this.getPack().getName()
     }
   }
 

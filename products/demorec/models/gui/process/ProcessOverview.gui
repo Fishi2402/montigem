@@ -3,23 +3,25 @@ package gui.process;
 import DemoRec.Process;
 import DemoRec.ProcessStep;
 
-import arrange.GemRow;
-import arrange.GemCard;
-import arrange.GemColumn;
-import basic.GemText;
-import basic.GemLink;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemLink;
 
-import gui.navigation.Navigation;
+import gui.staticcontainer.NavContainer;
 import gui.step.ProcessStepCreate;
 import gui.pack.BatteryPackOverview;
 
 
 page ProcessOverview(Process p) {
-  @Navigation();
+
+  @NavContainer(
+      content=[
   @GemCard(
       title="Deconstruction Process of Pack",
       component=@BatteryPackOverview(pack=p.deconstructionOf)
-    );
+    ),
   @GemCard(
     title="Process Steps",
     component=@GemColumn(
@@ -42,6 +44,5 @@ page ProcessOverview(Process p) {
         }
       ]
     )
-  );
-
+  )]);
 }

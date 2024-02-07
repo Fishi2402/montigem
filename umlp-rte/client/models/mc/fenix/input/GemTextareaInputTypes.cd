@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.input;
+
+/**
+  Types used in a GemTextareaInput component.
+*/
+classdiagram GemTextareaInputTypes {
+
+  /**
+    An object representing the validation status of the field.
+  */
+  public class GemTextareaInputValidity {
+    /**
+      The validation status.
+      Possible values:
+      `"Error"`: There is a problem or issue that needs attention.
+      `"Unchecked"`: The input has not been inspected.
+      `"Success"`: Positive validation result.
+      `"Warning"`: There is a potential issue that should be noted.
+    */
+    String status;
+    /** A message to be displayed as a tooltip with the status */
+    String message;
+  }
+
+}

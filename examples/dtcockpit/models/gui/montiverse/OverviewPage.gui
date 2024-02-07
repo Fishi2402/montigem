@@ -1,40 +1,41 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.montiverse;
 
-import gui.navigation.DtCockpitNavigation;
+import gui.navigation.NavContainer;
 import gui.pipelines.PipelineStats;
 import Dtcockpit.Project;
 import Dtcockpit.Group;
 
-import basic.GemButton;
-import arrange.GemCard;
-import arrange.GemColumn;
-import arrange.GemRow;
-import basic.GemText;
-import input.GemTextInput;
-import input.GemTextareaInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemTextareaInput;
 
 page OverviewPage(Project project, List<Group> groups, List<Project> projects) {
-  @GemRow(wrap = "nowrap", components = [
-    @DtCockpitNavigation(projects = projects, groups = groups),
-    @GemColumn(hAlign = "left", components = [
-      @GemCard(
-        title = "MontiVerse Lite",
-        component = projectList@GemRow(
-          rowGap="20px",
-          colGap="5px",
-          components=[
-            @iterate(Project dependentProject: project.dependentProjects) {
-              branchDropdown@GemTextInput(inputType="dropdown",
-                            labelText=dependentProject.name,
-                            options= /*via TOP*/ null,
-                            entry=dependentProject.ciInfos.branchName
-                            );
-            }
-          ]
+  @NavContainer(projects = projects, groups = groups, content = [
+    @GemCard(
+      title = "MontiVerse Lite",
+      component = @GemColumn(hAlign = "left", rowGap = "15px", components = [
+        projectList@GemRow(rowGap = "10px", colGap = "15px", wrap = "wrap", components = [
+          @iterate(Project dependentProject : project.dependentProjects) {
+            branchDropdown@GemTextInput(
+              inputType = "dropdown",
+              labelText = dependentProject.name,
+              options = null, // via TOP
+              entry = dependentProject.ciInfos.branchName,
+              width = "40ch"
+            );
+          }
+        ]),
+        startButton@GemButton(
+          label = "Start pipeline",
+          leftClick = startPipeline(project),
+          width = "fit-content"
         )
-      ),
-      startButton@GemButton(label = "Start pipeline", leftClick = startPipeline(project))
-    ])
+      ])
+    )
   ]);
 }

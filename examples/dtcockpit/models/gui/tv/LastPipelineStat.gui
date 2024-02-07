@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.tv;
 
-import arrange.GemColumn;
-import arrange.GemRow;
-import basic.GemText;
-import basic.GemLink;
-import basic.GemImage;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemLink;
+import mc.fenix.basic.GemImage;
 
 import gui.widgets.GitLabIcon;
 

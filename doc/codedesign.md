@@ -487,3 +487,17 @@ In diesem Projekt kann ein Feature implementiert sein durch:
 5. Eine Kombination der vorherigen Techniken
 
 Weiterhin könnten Module während der Einbindung in ein Projekt konfigurierbar sein
+
+## Transpilation of Java to Typescript(JSweet)
+
+### Annotations
+#### BackendOnly
+The `@BackendOnly` annotation can be used on Java methods to replace the body of the transpiled
+Typescript.
+This is useful if a class that must be transpiled references backend exclusive classes. 
+Options:
+- `THROW_ERROR`: replaces the body with an error, which indicates that the method can only be used in the backend.
+- `STATUS_OK`: replaces the body with a return of the `StatusResult` ok. Only for use in Commandos.
+- `STATUS_ERROR`: replaces the body with a return of the `StatusResult` error. Only for use in Commandos.
+
+If more specific replacements are needed, the annotation `jsweet.lang.Replace` can be used.

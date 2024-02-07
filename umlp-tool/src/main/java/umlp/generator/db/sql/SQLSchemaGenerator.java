@@ -197,10 +197,17 @@ public class SQLSchemaGenerator {
     p.println(");");
 
     // TODO: associations in hierarchie?
-    for (ASTCDAttribute attribute : relevantAttributes) {
-      if (GenService.isList(attribute)) {
-        generateListFieldTable(cd, node, attribute, p);
-      }
+    // Only create List Attribute Tables once for inheritance chain
+    List<ASTCDAttribute> relevantListAttributes = node.getCDAttributeList()
+        .stream()
+        .filter(a -> !a.getModifier().isStatic())
+        .filter(a -> !a.getModifier().isDerived())
+        .filter(GenService::isList)
+        .collect(Collectors.toList());
+
+
+    for (ASTCDAttribute attribute : relevantListAttributes) {
+      generateListFieldTable(cd, node, attribute, p);
       if (attribute.getMCType().getDefiningSymbol().isEmpty()) {
         generateListFieldTable(cd, node, attribute, p);
       }

@@ -1,34 +1,34 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.pipelines;
 
-import charts.GemBarChart;
-import arrange.GemCard;
-import arrange.GemRow;
-import arrange.GemColumn;
-import basic.GemButton;
+import mc.fenix.charts.GemBarChart;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemButton;
 
-import gui.navigation.DtCockpitNavigation;
+import gui.navigation.NavContainer;
 import Dtcockpit.Project;
 
 page PipelineStats(Project p, List<Group> groups, List<Project> projects) {
-  @GemRow(wrap = "nowrap", components = [
-    @DtCockpitNavigation(projects = projects, groups = groups),
-    @GemColumn(components = [
-      @GemCard(
-        title = "Pipeline dashboard for " + p.name,
-        component = barChartForPipelineRuns@GemBarChart(
+  @NavContainer(projects = projects, groups = groups, content = [
+    @GemCard(
+      title = "Pipeline dashboard for " + p.name,
+      component = @GemColumn(rowGap = "5px", components = [
+        barChartForPipelineRuns@GemBarChart(
           data = null,
           stacked = false,
           maxValue = 100,
           minValue = 0,
           showConfig = false
+        ),
+        @GemButton(
+          label = "Load PipelineInformation into Backend",
+          leftClick = loadPipelineInfoIntoBackend(p),
+          disabled = false,
+          width = "fit-content"
         )
-      ),
-      @GemButton(
-        label = "Load PipelineInformation into Backend",
-        leftClick = loadPipelineInfoIntoBackend(p),
-        disabled = false
-      )
-    ])
+      ])
+    )
   ]);
 }

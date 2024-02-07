@@ -25,10 +25,11 @@ export  class Start extends StartComponent {
   }
 
   ngOnInit(){
-    if (!(DtcockpitSecurityManager.isCurrentlyLoggingIn() || DtcockpitSecurityManager.isSignedIn())) {
-      this.router.navigate(['gui', 'login', 'LoginPage']);
-      return;
-    }
+    // Moved to the login module
+    // if (!(DtcockpitSecurityManager.isCurrentlyLoggingIn() || DtcockpitSecurityManager.isSignedIn())) {
+    //   this.router.navigate(['gui', 'login', 'LoginPage']);
+    //   return;
+    // }
 
     CommandManager.executeCommand(new GetCurrentUserRequest()).then(res => {
       let sr = res.asSimpleResult();

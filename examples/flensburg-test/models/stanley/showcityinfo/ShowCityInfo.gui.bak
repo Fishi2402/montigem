@@ -15,7 +15,7 @@ import stanley.tmp.io.input.GemTextInput;
 import stanley.tmp.io.GemText;
 */
 
-import basic.GemText;
+import mc.fenix.basic.GemText;
 
 /**
  * This example defines a page with a table. Data in the table is read-only

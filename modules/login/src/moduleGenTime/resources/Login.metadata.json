@@ -6,6 +6,12 @@
       "additionalConfigs": [
         "login_module.backend.LoginBackendConfig.ftl"
       ]
+    },
+    {
+      "type": "UMLPGuiGenTask",
+      "additionalConfigs": [
+        "login_module.frontend.LoginFrontendConfig.ftl"
+      ]
     }
   ]
 }

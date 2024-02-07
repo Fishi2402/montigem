@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-import input.GemTextInputTypes.GemTextInputValidity;
+import mc.fenix.input.GemTextInputTypes.GemTextInputValidity;
 
 classdiagram Dtcockpit {
 
@@ -8,6 +8,10 @@ classdiagram Dtcockpit {
     <<command>> void sendMail(User email, String subject, String message, List<String> forwards);
     <<command>> void startMontiVerseLitePipeline();
   }
+
+  // Singleton-Type used instead of stereotypes/annotations
+  <<singleton>>
+  class DoesNotRequireLogin { }
 
   association [1] App -> User [*];
   association [1] App -> Room [*];

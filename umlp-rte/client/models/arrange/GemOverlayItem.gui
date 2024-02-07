@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package arrange;
-
-component GemOverlayItem(
-  GUIViewElement component,
-  String x,
-  String y
-)

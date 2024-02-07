@@ -1,16 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui;
 
-import arrange.GemColumn;
-import arrange.GemRow;
-import arrange.GemCard;
-import arrange.GemOverlay;
-import arrange.GemOverlayItem;
-import basic.GemText;
-import basic.GemImage;
-import charts.GemLineChart;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemOverlay;
+import mc.fenix.arrange.GemOverlayItem;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemImage;
+import mc.fenix.charts.GemLineChart;
 
-import gui.navigation.DtCockpitNavigation;
+import gui.navigation.NavContainer;
 import gui.widgets.Welcome;
 import gui.rooms.RoomStats;
 import gui.pipelines.PipelineStatsPerGroup;
@@ -29,18 +29,18 @@ page Start(
   List<Room> rooms,
   List<Server> servers
 ) {
-  @DtCockpitNavigation(projects = projects, groups = groups);
-
-  @GemRow(width = "100%", rowGap = "10px", colGap = "10px", hAlign = "center", components = [
-    // Welcome Widget
-    @GemRow(width = "100%", hAlign = "center", component = @GemCard(title = "Welcome", component = @Welcome())),
-    // TODO: App is a singleton
-    @iterate(App app : apps) {
-      @GemColumn(width = "50vw", component = @PipelineStatsPerGroup(g = app.dashboardGroup));
-    },
-    @GemCard(title = "RamUsage (MB)", component = @GemColumn(width = "30vw", components = [
-      serverChart@GemLineChart(data = null, showConfig = false)
-    ])),
-    @GemCard(title = "Rooms' characteristics", component = @RoomStats(stats = rooms))
+  @NavContainer(projects = projects, groups = groups, content = [
+    pageRow@GemRow(wrap = "wrap", rowGap = "10px", colGap = "10px", hAlign = "center", components = [
+      // Welcome Widget
+      // welcomeRow@GemRow(width = "100%", hAlign = "center", component = @GemCard(title = "Welcome", component = @Welcome())),
+      // TODO: App is a singleton
+      @iterate(App app : apps) {
+        pipelineCol@GemColumn(height = "auto", width = "50vw", component = @PipelineStatsPerGroup(g = app.dashboardGroup));
+      },
+      @GemCard(title = "RamUsage (MB)", component = @GemColumn(width = "30vw", components = [
+        serverChart@GemLineChart(data = null, showConfig = false)
+      ])),
+      @GemCard(title = "Rooms' characteristics", component = @RoomStats(stats = rooms))
+    ])
   ]);
 }

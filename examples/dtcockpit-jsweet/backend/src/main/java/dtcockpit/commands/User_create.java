@@ -2,14 +2,15 @@
 package dtcockpit.commands;
 
 import de.se_rwth.commons.logging.Log;
-//import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import security.MailService;
 import dtcockpit.DtcockpitManager;
 import dtcockpit.User;
 import dtcockpit.UserAccessPolicy;
+import security.MailService;
 import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.common.NotificationScope;
 import umlp.backendrte.util.LogUtil;
+import umlp.jsweet.extension.annotation.BackendOnly;
+import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
 import javax.mail.MessagingException;
 
@@ -34,6 +35,7 @@ public class User_create extends User_createTOP {
 
   }
 
+  @BackendOnly(BackendOnlyModes.STATUS_OK)
   public StatusResult sendMail() {
     Log.trace("Sending Email to " + user.getEmail(), LogUtil.getLoggerName());
     MailService mailsender = new MailService();

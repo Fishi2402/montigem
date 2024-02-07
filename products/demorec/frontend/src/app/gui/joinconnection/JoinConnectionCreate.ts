@@ -61,7 +61,7 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
         for (const component of components) {
           console.debug("Refill Join Connection Options")
           let value = component.getGemId() + "";
-          this.componentOptions.push({value: value, display: component.getDescription()+" "+value});
+          this.componentOptions.push({value: value, display: component.getName()+" "+value});
         }
         this.componentOptions = this.componentOptions.slice();
       });
@@ -166,7 +166,7 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
   }
 
   syncDummyComponentsWithBuilderObject(comp: DemoRecComponent) {
-    this.dummyComponentNames.push(comp.getDescription()+":"+comp.getGemId());
+    this.dummyComponentNames.push(comp.getName()+":"+comp.getGemId());
     this.dummyComponents.push(comp);
   }
 

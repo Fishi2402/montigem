@@ -2,20 +2,24 @@ package gui.pack;
 
 import DemoRec.BatteryPack;
 
-import arrange.GemRow;
-import arrange.GemColumn;
-import basic.GemText;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
 
 import gui.pack.BatteryPackOverview;
-import gui.navigation.Navigation;
+import gui.staticcontainer.NavContainer;
 
 page AllPacksOverview(List<BatteryPack> allPacks) {
-  @Navigation();
-  @GemColumn(
-    colGap="5px",
-    components = [
-      @iterate(BatteryPack pack : allPacks) {
-        @BatteryPackOverview(pack=pack);
-      }
-  ]);
+  @NavContainer(
+    content=[
+     @GemColumn(
+        colGap="5px",
+        components = [
+          @iterate(BatteryPack pack : allPacks) {
+            @BatteryPackOverview(pack=pack);
+          }
+      ])
+    ]
+  );
+
 }
