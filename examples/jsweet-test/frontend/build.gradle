@@ -57,7 +57,7 @@ node {
 
   // Version of node to download and install (only used if download is true)
   // It will be unpacked in the workDir
-  version = "18.10.0"
+  version = "18.13.0"
 
   // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
   // according the proxy configuration defined for Gradle
@@ -136,7 +136,7 @@ jsweetDomain {
       '**/jsweettest/JsweettestDummyProvider.java',
       '**/jsweettest/JsweettestTestContext.java'
   ]
-  extraSystemPath = project.file('.gradle/nodejs/node-v18.10.0-win-x64')
+  extraSystemPath = project.file('.gradle/nodejs/node-v18.13.0-win-x64')
 }
 
 task translateJava2TSDomain(type: org.jsweet.gradle.JSweetTranspileTask) {

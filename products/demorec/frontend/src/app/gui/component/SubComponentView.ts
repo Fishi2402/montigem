@@ -30,8 +30,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export  class SubComponentView extends SubComponentViewComponent {
 
-  public override getEditSubcomponentUrl (): string {
-    return "/gui/component/ComponentEdit/"+this.getSubComponent().getGemId();
+  public constructor(protected route: ActivatedRoute, protected router: Router) {
+    super(route, router);
+  }
+
+  public override editSubcomponent (): void {
+    console.debug("Click: ", this.getSubComponent().getGemId())
+    this.router.navigate(["/gui/component/ComponentEdit/"+this.getSubComponent().getGemId()])
   }
 }
 

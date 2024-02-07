@@ -10,6 +10,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": false,
     "noStrictGenericChecks": true,
+    "ignoreDeprecations": "5.0",
     "strictNullChecks": false,
     "sourceMap": true,
     "declaration": false,
@@ -27,7 +28,6 @@
     "paths": {
       "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*"],
       "@angular/*": ["node_modules/@angular/*"],
-      "@gitlab/svgs/*": ["node_modules/@gitlab/svgs/*"],
       "@umlp/arrange": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/arrange/src"],
       "@umlp/basic": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/basic/src"],
       "@umlp/charts": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/charts/src"],
