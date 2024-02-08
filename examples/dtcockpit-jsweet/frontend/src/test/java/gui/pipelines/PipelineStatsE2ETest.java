@@ -1,7 +1,7 @@
-package dtcockpit;
+package gui.pipelines;
 
+import dtcockpit.DtcockpitManager;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
-import gui.pipelines.PipelineStats;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,7 +13,7 @@ public class PipelineStatsE2ETest extends DtcockpitMockTestSetup {
   }
 
   @Test
-  public void testGemCardTitle(){
+  public void testGemCardTitle() {
     // Create dummy data
     long id = 123;
     String projectName = "SomeProject";
