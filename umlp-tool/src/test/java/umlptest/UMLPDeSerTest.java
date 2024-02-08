@@ -50,7 +50,7 @@ public class UMLPDeSerTest extends AbstractUMLPTest {
 
   @Test
   public void storeLoadD() {
-    String symFile = "target/symboltests/D.umlpsym";
+    String symFile = BUILD_FOLDER + "/symboltests/D.umlpsym";
 
     UMLPSymbols2Json s2j = new UMLPSymbols2Json();
     IUMLPArtifactScope expected = processModel("de/monticore/D.umlp");

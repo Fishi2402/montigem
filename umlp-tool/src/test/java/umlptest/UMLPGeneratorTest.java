@@ -42,7 +42,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
 
     assertNoErrors();
 
-    File f = new File("target/generated-test-sources/a/FooTOP.java");
+    File f = new File(BUILD_FOLDER + "/generated-test-sources/a/FooTOP.java");
     assertTrue(f.exists());
   }
 
@@ -57,9 +57,9 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
     UMLPGenerator gen = new UMLPGenerator(getGenSetup(), UMLPGeneratorConfig.getInstance());
     gen.generate(ast, "umlp.UMLP2Java");
 
-    File f1 = new File("target/generated-test-sources/derivedattributegetter/commands/Foo_calculateFirstAttribute.java");
+    File f1 = new File(BUILD_FOLDER + "/generated-test-sources/derivedattributegetter/commands/Foo_calculateFirstAttribute.java");
     assertTrue(f1.exists());
-    File f2 = new File("target/generated-test-sources/derivedattributegetter/commands/Bar_calculateSecondAttribute.java");
+    File f2 = new File(BUILD_FOLDER + "/generated-test-sources/derivedattributegetter/commands/Bar_calculateSecondAttribute.java");
     assertTrue(f2.exists());
 
     try {

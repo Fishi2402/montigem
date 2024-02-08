@@ -41,6 +41,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractUMLPTest {
 
+  public static final String BUILD_FOLDER = "target";
+
   @BeforeEach
   public void setup() {
     LogStub.init();
@@ -149,7 +151,7 @@ public abstract class AbstractUMLPTest {
     GeneratorSetup genSetup = new GeneratorSetup();
 
     // set output directory
-    File outDir = new File("target/generated-test-sources");
+    File outDir = new File(BUILD_FOLDER + "/generated-test-sources");
     genSetup.setOutputDirectory(outDir);
 
     // set hwc directories
