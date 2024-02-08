@@ -88,6 +88,61 @@ public class TypesSyncTest extends AttributesMockTestSetup {
   }
 
   @Test
+  public void testOptionalOfprimitivesIsWritten() {
+    // client
+    getClients(0).activate();
+    Optional<Integer> value = Optional.of(-1);
+    var sut = AttributesManager.optionalOfPrimitivesBuilder().iVal(value).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getOptionalOfPrimitivesSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertTrue(sutServer.getIVal().isPresent());
+    assertEquals(-1, sutServer.getIVal().get());
+  }
+
+  @Test
+  public void testSetToOptionalOfPrimitive() {
+    // client
+    getClients(0).activate();
+    var sut = AttributesManager.optionalOfPrimitivesBuilder().build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getOptionalOfPrimitivesSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertFalse(sutServer.getIVal().isPresent());
+
+    // client: set element
+    getClients(0).activate();
+    sut.setIVal(Optional.of(-2));
+    assertTrue(sut.getIVal().isPresent());
+    assertTrue(sutServer.getIVal().isPresent());
+    assertEquals(-2, sutServer.getIVal().get());
+  }
+
+  @Test
+  public void testDeleteInOptionalOfPrimitives() {
+    // client
+    getClients(0).activate();
+    Optional<Integer> value = Optional.of(-3);
+    var sut = AttributesManager.optionalOfPrimitivesBuilder().iVal(value).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getOptionalOfPrimitivesSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertTrue(sutServer.getIVal().isPresent());
+
+    // client: delete element
+    getClients(0).activate();
+    sut.setIVal(Optional.empty());
+    assertFalse(sut.getIVal().isPresent());
+    assertFalse(sutServer.getIVal().isPresent());
+  }
+
+  @Test
   public void testListOfStringsIsWritten() {
     // client
     getClients(0).activate();

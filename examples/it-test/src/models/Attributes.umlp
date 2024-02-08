@@ -88,6 +88,10 @@ umlp Attributes {
     List<int> ints;
   }
 
+  class OptionalOfPrimitives{
+    Optional<int> iVal;
+  }
+
   class ListOfStrings{
     List<String> strings;
   }

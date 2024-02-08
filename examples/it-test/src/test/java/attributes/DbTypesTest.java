@@ -77,6 +77,58 @@ public class DbTypesTest extends AttributesDBTestSetup {
   }
 
   @Test
+  public void testOptionalOfprimitivesIsWritten() {
+    Optional<Integer> value = Optional.of(-1);
+    var sut = AttributesManager.optionalOfPrimitivesBuilder().iVal(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfPrimitivesDAO();
+    var clone = dao.selectOptionalOfPrimitives(sut.gemId).get();
+    assertNotSame(sut, clone);
+
+    assertTrue(clone.getIVal().isPresent());
+    assertEquals(-1, clone.getIVal().get());
+  }
+
+  @Test
+  public void testSetToOptionalOfPrimitive() {
+    var sut = AttributesManager.optionalOfPrimitivesBuilder().build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfPrimitivesDAO();
+    var clone = dao.selectOptionalOfPrimitives(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertFalse(clone.getIVal().isPresent());
+
+    // set element
+    sut.setIVal(Optional.of(-2));
+    assertTrue(sut.getIVal().isPresent());
+
+    clone = dao.selectOptionalOfPrimitives(sut.gemId).get();
+    assertTrue(clone.getIVal().isPresent());
+    assertEquals(-2, clone.getIVal().get());
+  }
+
+  @Test
+  public void testDeleteInOptionalOfPrimitives() {
+    Optional<Integer> value = Optional.of(-3);
+    var sut = AttributesManager.optionalOfPrimitivesBuilder().iVal(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfPrimitivesDAO();
+    var clone = dao.selectOptionalOfPrimitives(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertTrue(clone.getIVal().isPresent());
+
+    // delete element
+    sut.setIVal(Optional.empty());
+    clone = dao.selectOptionalOfPrimitives(sut.gemId).get();
+
+    assertFalse(sut.getIVal().isPresent());
+    assertFalse(clone.getIVal().isPresent());
+  }
+
+  @Test
   public void testListOfStringsIsWrittenToDb() {
     List<String> values = List.of("A", "B", "C");
     var sut = AttributesManager.listOfStringsBuilder().strings(values).build().get();
