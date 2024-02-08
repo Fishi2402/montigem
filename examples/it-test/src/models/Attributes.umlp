@@ -107,4 +107,12 @@ umlp Attributes {
   class OptionalOfTime{
     Optional<LocalDate> date;
   }
+
+  class OptionalOfBoolean{
+    Optional<boolean> bVal;
+  }
+
+  class ListOfBooleans{
+    List<boolean> bVals;
+  }
 }

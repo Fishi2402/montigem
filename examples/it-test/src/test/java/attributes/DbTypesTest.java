@@ -342,4 +342,116 @@ public class DbTypesTest extends AttributesDBTestSetup {
     assertFalse(clone.getDate().isPresent());
   }
 
+  @Test
+  public void testListOfBooleansIsWritten() {
+    List<Boolean> values = List.of(true, false, true);
+    var sut = AttributesManager.listOfBooleansBuilder().bVals(values).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getListOfBooleansDAO();
+    var clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertEquals(values, clone.getBValsList());
+  }
+
+  @Test
+  public void testAddToListOfBooleans() {
+    List<Boolean> values = List.of(true, false, true);
+    var sut = AttributesManager.listOfBooleansBuilder().bVals(values).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getListOfBooleansDAO();
+    var clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertEquals(3, clone.getBValsList().size());
+
+    // add element at the end
+    sut.addBVals(3, false);
+    assertEquals(4, sut.getBValsList().size());
+    clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertEquals(4, clone.getBValsList().size());
+
+    // add element in the middle
+    sut.addBVals(1, true);
+    assertEquals(5, sut.getBValsList().size());
+    assertEquals(true, sut.getBVals(1));
+    clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertEquals(5, clone.getBValsList().size());
+    assertEquals(true, clone.getBVals(1));
+  }
+
+  @Test
+  public void testDeleteInListOfBooleans() {
+    List<Boolean> values = List.of(true, false, true);
+    var sut = AttributesManager.listOfBooleansBuilder().bVals(values).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getListOfBooleansDAO();
+    var clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertEquals(3, clone.getBValsList().size());
+
+    // delete at the beginning
+    sut.removeBVals(0);
+    assertEquals(2, sut.getBValsList().size());
+    clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertEquals(2, clone.getBValsList().size());
+
+    // delete at the end
+    sut.removeBVals(1);
+    assertEquals(1, sut.getBValsList().size());
+    clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertEquals(1, clone.getBValsList().size());
+  }
+
+  @Test
+  public void testOptionalOfBooleanIsWritten() {
+    Optional<Boolean> value = Optional.of(true);
+    var sut = AttributesManager.optionalOfBooleanBuilder().bVal(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfBooleanDAO();
+    var clone = dao.selectOptionalOfBoolean(sut.gemId).get();
+    assertNotSame(sut, clone);
+
+    assertTrue(clone.getBVal().isPresent());
+    assertEquals(true, clone.getBVal().get());
+  }
+
+  @Test
+  public void testSetToOptionalOfBoolean() {
+    var sut = AttributesManager.optionalOfBooleanBuilder().build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfBooleanDAO();
+    var clone = dao.selectOptionalOfBoolean(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertFalse(clone.getBVal().isPresent());
+
+    // set element
+    sut.setBVal(Optional.of(true));
+    assertTrue(sut.getBVal().isPresent());
+    clone = dao.selectOptionalOfBoolean(sut.gemId).get();
+    assertTrue(clone.getBVal().isPresent());
+    assertEquals(true, clone.getBVal().get());
+  }
+
+  @Test
+  public void testDeleteInOptionalOfBoolean() {
+    Optional<Boolean> value = Optional.of(true);
+    var sut = AttributesManager.optionalOfBooleanBuilder().bVal(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfBooleanDAO();
+    var clone = dao.selectOptionalOfBoolean(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertTrue(clone.getBVal().isPresent());
+
+    // delete element
+    sut.setBVal(Optional.empty());
+    assertFalse(sut.getBVal().isPresent());
+    dao.selectOptionalOfBoolean(sut.gemId).get();
+    assertFalse(clone.getBVal().isPresent());
+  }
+
 }
