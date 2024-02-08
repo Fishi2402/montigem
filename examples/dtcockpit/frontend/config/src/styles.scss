@@ -4,6 +4,10 @@
 
 @include montigem-theme();
 
+body {
+  background-color: rgba($acronio-blue-alternate-4, 0.2);
+}
+
 /*
 * {
   color: white;

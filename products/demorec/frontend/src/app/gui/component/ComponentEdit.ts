@@ -15,10 +15,10 @@ import {
   Input,
   Output,
   EventEmitter,
-  TemplateRef,
+  TemplateRef
 } from '@angular/core';
 
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 
 @Component({
   standalone:true,
@@ -30,7 +30,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export  class ComponentEdit extends ComponentEditComponent {
 
-
+  public constructor(route: ActivatedRoute, protected router: Router) {
+    super(route, router);
+    this.router.events.subscribe((event) => {
+      if(event instanceof NavigationEnd) {
+        this.componentRoutingId = +route.snapshot.paramMap.get("componentRoutingId");
+        this.ngOnInit()
+      }
+    })
+  }
 }
 
 

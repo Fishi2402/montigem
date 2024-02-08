@@ -15,7 +15,6 @@ import mc.fenix.input.GemCheckBoxInput;
 
 import gui.component.PhotoDisplay;
 import gui.component.PhotoDragNDrop;
-import gui.navigation.Navigation;
 
 component ComponentCreate(DemoRecComponent component, Event<DemoRecComponent> createComponent) {
   @GemCard(

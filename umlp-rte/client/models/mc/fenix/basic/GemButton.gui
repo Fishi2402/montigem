@@ -10,5 +10,10 @@ component GemButton(
   /** If true, the button cannot be clicked. */
   boolean disabled = false,
   /** Callback that is executed when a button is clicked. */
-  Event<Void> leftClick
+  Event<Void> leftClick,
+
+  /** Width of the button. */
+  String width = "100%",
+  /** Height of the button. */
+  String height = "100%"
 )

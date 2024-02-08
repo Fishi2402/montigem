@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.navigation;
+
+component GemNavItem(
+  String title,
+  String target,
+  Event<Void> leftClick
+)

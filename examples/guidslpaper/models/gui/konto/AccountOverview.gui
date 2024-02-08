@@ -24,9 +24,9 @@ page AccountOverview(List<Konto> accounts) {
 
     @GemCard(titleComponent =
       @Header(left = "Übersicht Konten", right = [
-        @GemButton(label = "Zahlungen erfassen"),
-        @GemButton(label = "Konto hinzufügen"),
-        @GemButton(label = "?")
+        @GemButton(width = "auto", label = "Zahlungen erfassen"),
+        @GemButton(width = "auto", label = "Konto hinzufügen"),
+        @GemButton(width = "auto", label = "?")
       ]),
       component = @GemTable(
         rows = accounts,

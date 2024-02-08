@@ -16,7 +16,7 @@ page SubComponentView(DemoRecComponent subComponent) {
   @GemColumn(
     components=[
       @GemText(value="xPos is "+ subComponent.xPos),
-      editSubcomponent@GemLink(url="override", text="Edit Subcomponent.")
+      @GemButton(label="Edit Subcomponent", leftClick=editSubcomponent)
     ]
   );
 }

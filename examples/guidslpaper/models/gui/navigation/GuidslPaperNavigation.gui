@@ -5,17 +5,17 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
-import mc.fenix.navigation.NavItem;
-import mc.fenix.navigation.NavList;
+import mc.fenix.navigation.GemNavItem;
+import mc.fenix.navigation.GemNavList;
 
 import gui.navigation.GuidslPaperNavHeader;
 
 // The parent component should be styled like `styles: [":host{ display: flex; flex-direction: row }"]`
 component GuidslPaperNavigation() {
-  @NavList(components = [
+  @GemNavList(components = [
     @GuidslPaperNavHeader(),
-    @NavItem(title = "Home", target = "/gui/Start"),
-    @NavItem(title = "Finanzen", target = "/gui/konto/AccountOverview"),
-    @NavItem(title = "Personen", target = "/gui/GuidslpaperMainPage")
+    @GemNavItem(title = "Home", target = "/gui/Start"),
+    @GemNavItem(title = "Finanzen", target = "/gui/konto/AccountOverview"),
+    @GemNavItem(title = "Personen", target = "/gui/person/PersonOverview")
   ]);
 }

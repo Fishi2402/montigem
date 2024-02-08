@@ -208,9 +208,10 @@ export class GemHeatmapChart extends GemHeatmapChartTOP {
    * @param value Number entered by the used
    */
   enter_num_seperations(value: string | number) {
-    if (value < this.min_num_seperations) { this.num_seperations = this.min_num_seperations; }
-    else if (value > this.max_num_seperations) { this.num_seperations = this.max_num_seperations; }
-    else { this.num_seperations = +value; }
+    if(typeof value === "number") {
+      if (value < this.min_num_seperations) { this.num_seperations = this.min_num_seperations; }
+      else if (value > this.max_num_seperations) { this.num_seperations = this.max_num_seperations; }
+    } else { this.num_seperations = +value; }
     if (this.data) this.computed_data = this.rearrange_array(this.data.entries);
   }
 
@@ -219,7 +220,9 @@ export class GemHeatmapChart extends GemHeatmapChartTOP {
    * @param value Number entered by the used
    */
   enter_num_loop_factor(value: string | number) {
-    if (value < 2) this.loop_factor = 2;
+    if(typeof value === "number") {
+      if (value < 2) this.loop_factor = 2;
+    }
     else this.loop_factor = +value;
     if (this.data) this.computed_data = this.rearrange_array(this.data.entries);
   }

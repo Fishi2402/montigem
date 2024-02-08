@@ -11,6 +11,10 @@ public class ClientCommandManager extends CommandManager {
 
   public ClientCommandManager(ClientCommandCommunication commandCommunication){
     this.commandCommunication = commandCommunication.onCommandReceived(cmd -> cmd.doRun());
+    this.initCommunication();
+  }
+
+  public void initCommunication() {
     Result<Long> initResult = commandCommunication.init();
     if (initResult.wasSuccessful()) {
       participantId = initResult.getValue();

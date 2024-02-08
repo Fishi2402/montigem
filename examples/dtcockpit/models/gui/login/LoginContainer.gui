@@ -18,7 +18,7 @@ component LoginContainer(GUIViewElement component) {
         @GemRow(width = "150px", component = @GemImage(source = "assets/images/dt.png")),
         component,
         @GemRow(width = "150px", component =
-          @GemImage(source = "assets/images/rwth_se_bild_weiss_rgb.png")
+          @GemImage(source = "assets/images/rwth_se_bild_rgb.png")
         )
       ])
     )

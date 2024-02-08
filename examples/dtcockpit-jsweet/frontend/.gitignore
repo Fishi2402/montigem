@@ -42,3 +42,4 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+/jsweet_extension/umlp/jsweet/extension/domainAdapters/DTCockpitImportAdapter.class

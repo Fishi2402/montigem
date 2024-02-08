@@ -1,14 +1,19 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { ActivatedRoute, Router, Scroll } from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router, Scroll} from "@angular/router";
 import { filter } from 'rxjs/operators';
 import { NavItem as NavItemTOP } from "./nav-item/nav-item.component-gen";
 
 @Component({
-  selector: "nav-item",
+  selector: "gem-nav-item",
   templateUrl: "./nav-item.component.html",
-  styleUrls: ["./nav-item.component.scss"]
+  styles: [`
+    :host {
+      width: 100%;
+      display: flex;
+    }
+  `]
 })
-export class NavItem extends NavItemTOP {
+export class GemNavItem extends NavItemTOP {
 
   public isActive: boolean = false;
 
@@ -19,8 +24,11 @@ export class NavItem extends NavItemTOP {
   ngOnInit() {
     this.router.events.pipe(
       filter(event => event instanceof Scroll)
-    ).subscribe(event => {
-      this.isActive = (event as Scroll).routerEvent.urlAfterRedirects === this.target;
+    ).subscribe(event  => {
+      if((event as Scroll).routerEvent instanceof NavigationEnd) {
+        this.isActive = ( (event as Scroll).routerEvent as NavigationEnd).urlAfterRedirects === this.target;
+      }
+
     });
   }
 

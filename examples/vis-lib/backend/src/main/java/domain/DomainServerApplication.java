@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package domain;
 
-import de.se_rwth.commons.logging.Log;
-import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -10,7 +8,6 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -34,30 +31,36 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
   public void createDummyData() {
     Address a;
     a = addAddress("Berlin", "Gitschiner Str.", 9);
-    Person alice = addPerson("Alice", LocalDate.of(1990, 1, 12), a);
+    Person alice = addPerson("Alice", LocalDate.of(1990, 1, 12), "A big fan of model-driven software engineering,", a);
     a = addAddress("Springfield", "Maple Aven.", 3);
-    Person olivia = addPerson("Olivia", LocalDate.of(1991, 5, 6), a);
+    Person olivia = addPerson("Olivia", LocalDate.of(1991, 5, 6), "A big fan of model-driven software engineering" + " and test-driven development", a);
     a = addAddress("Manchester", "Oak Str.", 29);
-    Person emma = addPerson("Emma", LocalDate.of(1990, 4, 10), a);
+    Person emma = addPerson("Emma", LocalDate.of(1990, 4, 10), "A big fan of model-driven software engineering," +
+    " generative approaches and domain-specific languages", a);
     a = addAddress("Vancouver", "Pine Rd.", 15);
-    Person isabella = addPerson("Isabella", LocalDate.of(1991, 3, 3), a);
+    Person isabella = addPerson("Isabella", LocalDate.of(1991, 3, 3), "A big fan of model-driven software engineering," +
+    " generative approaches, domain-specific languages" + " and test-driven development", a);
     a = addAddress("Varna", "Apple Str.", 15);
-    Person michelle = addPerson("Michelle", LocalDate.of(1992, 2, 9), a);
+    Person michelle = addPerson("Michelle", LocalDate.of(1992, 2, 9), "A big fan of model-driven software engineering" + " and domain-specific languages", a);
     a = addAddress("Sofia", "Bulgaria Ul.", 1);
-    Person john = addPerson("John", LocalDate.of(1991, 10, 1), a);
+    Person john = addPerson("John", LocalDate.of(1991, 10, 1), "A big fan of model-driven software engineering", a);
     a = addAddress("Plovdiv", "April Str.", 1);
-    Person boris = addPerson("Boris", LocalDate.of(1992, 11, 3), a);
+    Person boris = addPerson("Boris", LocalDate.of(1992, 11, 3), "A big fan of model-driven software engineering" +  " and test-driven development", a);
     a = addAddress("München", "Lichtenfelser Str.", 18);
-    Person bob = addPerson("Bob", LocalDate.of(1994, 3, 10), a);
+    Person bob = addPerson("Bob", LocalDate.of(1994, 3, 10), "A big fan of model-driven software engineering and domain-specific languages", a);
     a = addAddress("New York", "Springbrook Rd.", 18);
-    Person charles = addPerson("Charles", LocalDate.of(1995, 8, 3), a);
+    Person charles = addPerson("Charles", LocalDate.of(1995, 8, 3), "A big fan of test-driven development", a);
     a = addAddress("Burgas", "Aleksander Str.", 54);
-    Person thomas = addPerson("Thomas", LocalDate.of(1996, 8, 3), a);
+    Person thomas = addPerson("Thomas", LocalDate.of(1996, 8, 3), "A big fan of generative approaches, domain-specific languages" +
+    " and test-driven development", a);
     a = addAddress("Istanbul", "Malazgirt Cd.", 18);
-    Person mert = addPerson("Mert", LocalDate.of(2000, 10, 9), a);
+    Person mert = addPerson("Mert", LocalDate.of(2000, 10, 9), "A big fan of model-driven software engineering," +
+    " generative approaches, domain-specific languages," +
+    " and test-driven development", a);
     a = addAddress("Aachen", "Ahornstraße", 55);
-    Person nico = addPerson("Nico", LocalDate.of(2001, 11, 1), a);
-    Person helen = addPerson("Helen", LocalDate.of(2002, 10, 10), a);
+    Person nico = addPerson("Nico", LocalDate.of(2001, 11, 1), "A big fan of model-driven software engineering," +
+    " generative approaches and domain-specific languages", a);
+    Person helen = addPerson("Helen", LocalDate.of(2002, 10, 10), "A big fan of model-driven software engineering", a);
 
     alice.addFriends(bob);
     alice.addFriends(nico);
@@ -198,11 +201,12 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
         .get();
   }
 
-  protected Person addPerson(String name, LocalDate birthday, Address address) {
+  protected Person addPerson(String name, LocalDate birthday, String aboutMe, Address address) {
     return DomainManager.personBuilder()
         .name(name)
         .birthday(birthday)
         .address(address)
+        .aboutMe(aboutMe)
         .build()
         .get();
   }
@@ -214,6 +218,8 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
         .price(price)
         .build()
         .get();
+  protected Person addPerson(String name, LocalDate birthday, Address address) {
+    return addPerson(name, birthday, "", address);
   }
 
 }

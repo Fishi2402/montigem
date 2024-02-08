@@ -2,12 +2,19 @@
 package attributes;
 
 import attributes.test_infrastructure.AttributesDBTestSetup;
+import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class DbTypesTest extends AttributesDBTestSetup {
   public DbTypesTest() {
     super(0);
@@ -122,6 +129,165 @@ public class DbTypesTest extends AttributesDBTestSetup {
     assertEquals(1, sut.getStringsList().size());
     clone = dao.selectListOfStrings(sut.gemId).get();
     assertEquals(1, clone.getStringsList().size());
+  }
+
+  @Test
+  public void testOptionalOfStringIsWritten() {
+    Optional<String> value = Optional.of("A");
+    var sut = AttributesManager.optionalOfStringBuilder().str(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfStringDAO();
+    var clone = dao.selectOptionalOfString(sut.gemId).get();
+    assertNotSame(sut, clone);
+
+    assertTrue(clone.getStr().isPresent());
+    assertEquals("A", clone.getStr().get());
+  }
+
+  @Test
+  public void testSetToOptionalOfString() {
+    var sut = AttributesManager.optionalOfStringBuilder().build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfStringDAO();
+    var clone = dao.selectOptionalOfString(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertFalse(clone.getStr().isPresent());
+
+    sut.setStr(Optional.of("A"));
+    clone = dao.selectOptionalOfString(sut.gemId).get();
+    assertTrue(sut.getStr().isPresent());
+    assertTrue(clone.getStr().isPresent());
+  }
+
+  @Test
+  public void testDeleteInOptionalOfString() {
+    Optional<String> value = Optional.of("A");
+    var sut = AttributesManager.optionalOfStringBuilder().str(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfStringDAO();
+    var clone = dao.selectOptionalOfString(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertTrue(clone.getStr().isPresent());
+
+    sut.setStr(Optional.empty());
+    clone = dao.selectOptionalOfString(sut.gemId).get();
+    assertFalse(sut.getStr().isPresent());
+    assertFalse(clone.getStr().isPresent());
+  }
+
+  @Test
+  public void testListOfDatesIsWritten() {
+    List<LocalDate> values = Lists.newArrayList();
+    values.add(LocalDate.now());
+    values.add(LocalDate.of(2000, 1, 1));
+    var sut = AttributesManager.listOfTimeBuilder().dates(values).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getListOfTimeDAO();
+    var clone = dao.selectListOfTime(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertEquals(2, clone.getDatesList().size());
+  }
+
+  @Test
+  public void testAddToListOfDates() {
+    List<LocalDate> values = Lists.newArrayList();
+    values.add(LocalDate.now());
+    values.add(LocalDate.of(2000, 1, 1));
+    var sut = AttributesManager.listOfTimeBuilder().dates(values).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getListOfTimeDAO();
+    var clone = dao.selectListOfTime(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertNotSame(sut, clone);
+    assertEquals(2, clone.getDatesList().size());
+
+    // add element at the end
+    sut.addDates(2, LocalDate.of(2000,2,2));
+    assertEquals(3, sut.getDatesList().size());
+    clone = dao.selectListOfTime(sut.gemId).get();
+    assertEquals(3, clone.getDatesList().size());
+
+    // add element in the middle
+    sut.addDates(1, LocalDate.of(2000, 3, 3));
+    assertEquals(4, sut.getDatesList().size());
+    clone = dao.selectListOfTime(sut.gemId).get();
+    assertEquals(4, clone.getDatesList().size());
+  }
+
+  @Test
+  public void testDeleteInListOfDates() {
+    List<LocalDate> values = List.of(LocalDate.now(), LocalDate.of(2000, 1, 1), LocalDate.of(2000, 2, 2));
+    var sut = AttributesManager.listOfTimeBuilder().dates(values).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getListOfTimeDAO();
+    var clone = dao.selectListOfTime(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertEquals(3, clone.getDatesList().size());
+
+    // delete at the beginning
+    sut.removeDates(0);
+    assertEquals(2, sut.getDatesList().size());
+    clone = dao.selectListOfTime(sut.gemId).get();
+    assertEquals(2, clone.getDatesList().size());
+
+    // delete at the end
+    sut.removeDates(1);
+    assertEquals(1, sut.getDatesList().size());
+    clone = dao.selectListOfTime(sut.gemId).get();
+    assertEquals(1, clone.getDatesList().size());
+  }
+
+  @Test
+  public void testOptionalOfTimeIsWritten() {
+    Optional<LocalDate> value = Optional.of(LocalDate.now());
+    var sut = AttributesManager.optionalOfTimeBuilder().date(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfTimeDAO();
+    var clone = dao.selectOptionalOfTime(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertTrue(clone.getDate().isPresent());
+  }
+
+  @Test
+  public void testSetToOptionalOfTime() {
+    var sut = AttributesManager.optionalOfTimeBuilder().build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfTimeDAO();
+    var clone = dao.selectOptionalOfTime(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertFalse(clone.getDate().isPresent());
+
+    // set element
+    sut.setDate(Optional.of(LocalDate.now()));
+    assertTrue(sut.getDate().isPresent());
+    clone = dao.selectOptionalOfTime(sut.gemId).get();
+    assertTrue(clone.getDate().isPresent());
+  }
+
+  @Test
+  public void testDeleteInOptionalOfTime() {
+    Optional<LocalDate> value = Optional.of(LocalDate.now());
+    var sut = AttributesManager.optionalOfTimeBuilder().date(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfTimeDAO();
+    var clone = dao.selectOptionalOfTime(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertTrue(clone.getDate().isPresent());
+
+    // delete element
+    sut.setDate(Optional.empty());
+    assertFalse(sut.getDate().isPresent());
+    clone = dao.selectOptionalOfTime(sut.gemId).get();
+    assertFalse(clone.getDate().isPresent());
   }
 
 }
