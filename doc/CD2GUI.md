@@ -40,6 +40,7 @@ CD2GUI uses the following Stereotypes
 - `invisible` - used for a class, enum or attribute. An invisible Class doesn't get pages generated and an Enum/ Attribute won't show on other pages
 - `hidden_in_details` - used for a class, enum or attribute. A Class doesn't get the details page generated and an Enum/ Attribute won't show on details pages
 - `hidden_in_overview` - used for a class, enum or attribute. A Class doesn't get the overview page generated and an Enum/ Attribute won't show on overview pages
+- `key_attribute` - used for an attribute. Displays this attribute fist on overview Pages/ at all if there are too many attributes in a class.
 
 ## Using GuiVariability to adapt a generated GUI Model
 
