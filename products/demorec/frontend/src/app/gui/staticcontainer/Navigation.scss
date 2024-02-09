@@ -1,17 +1,16 @@
 
-:host ::ng-deep a {
-  text-decoration: none;
+gem-link {
+  width: 100%;
+  padding: 10px 20px;
+  background-color: silver;
+  color: black;
+  font-weight: bold;
+  text-align: center;
 }
 
 :host ::ng-deep a {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: silver;
-  color: #333;
-  border: 1px solid #ccc;
-  text-align: center;
-  text-transform: uppercase;
-  font-weight: bold;
+  text-decoration: none;
+  color: inherit;
 }
 
 :host ::ng-deep a:hover {
