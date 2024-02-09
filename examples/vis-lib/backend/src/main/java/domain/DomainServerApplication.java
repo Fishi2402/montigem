@@ -218,6 +218,8 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
         .price(price)
         .build()
         .get();
+  }
+
   protected Person addPerson(String name, LocalDate birthday, Address address) {
     return addPerson(name, birthday, "", address);
   }
