@@ -1,0 +1,11 @@
+package gui.staticcontainer;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+
+component StatTableRow(GUIViewElement left, GUIViewElement right) {
+  @GemRow(components = [
+    @GemColumn(width = "70%", components = [left]),
+    @GemColumn(width = "30%", components = [right])
+  ]);
+}
