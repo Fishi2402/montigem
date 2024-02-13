@@ -9,6 +9,7 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.class2mc.OOClass2MCResolver;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -20,12 +21,16 @@ import de.monticore.guidsl._parser.GUIDSLParser;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
+import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
+import de.monticore.guidsl._symboltable.RoleSymbolDeSer;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.ocl._parser.OCLParser;
 import de.monticore.ocl.util.SymbolTableUtil;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonBoolean;
 import de.monticore.symboltable.serialization.json.JsonElement;
@@ -40,6 +45,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
+import umlp._symboltable.FieldSymbolDeSer4GUI;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
@@ -761,8 +767,8 @@ public class UMLPTool extends UMLPToolTOP {
     return f.getName().endsWith(".ocl");
   }
 
-  // TODO MB
-  protected IGUIDSLArtifactScope createSymbolTable(
+  // TODO MB, AGe
+  public static IGUIDSLArtifactScope createSymbolTable(
       ASTGUICompilationUnit ast, Optional<Path> modelFilePathOpt, MCPath modelPath) {
     GUIDSLTool tool = new GUIDSLTool();
     tool.defaultImportTrafo(ast);
@@ -770,7 +776,31 @@ public class UMLPTool extends UMLPToolTOP {
     if (modelFilePathOpt.isPresent()) {
       tool.registerLoadedFile(modelFilePathOpt.get().toString());
     }
-    return tool.createSymbolTable(ast, modelPath);
+    return createSymbolTable(tool, ast, modelPath);
+  }
+
+  public static IGUIDSLArtifactScope createSymbolTable(GUIDSLTool tool, ASTGUICompilationUnit node, MCPath modelPath) {
+    initGUIGlobalScope(modelPath);
+    IGUIDSLArtifactScope as = tool.createSymbolTableP1(node);
+    tool.createSymbolTableP2(node);
+    tool.createSymbolTableP3(node);
+    return as;
+  }
+
+  public static void initGUIGlobalScope(MCPath modelPath) {
+    BasicSymbolsMill.initializePrimitives();
+    IGUIDSLGlobalScope gs = GUIDSLMill.globalScope();
+    gs.setSymbolPath(modelPath);
+    gs.addAdaptedTypeSymbolResolver(new OOClass2MCResolver());
+    gs.addAdaptedOOTypeSymbolResolver(new OOClass2MCResolver());
+    gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol",
+        new OOTypeSymbolDeSer());
+    gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+        new FieldSymbolDeSer4GUI());
+    gs.putSymbolDeSer("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+        new de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer());
+    gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol",
+        new RoleSymbolDeSer());
   }
 
   protected void runDefaultCoCos(ASTGUICompilationUnit ast) {

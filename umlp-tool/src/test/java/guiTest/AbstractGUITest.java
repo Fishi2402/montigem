@@ -1,19 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package guiTest;
 
-import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl.GUIDSLTool;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._parser.GUIDSLParser;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.io.paths.MCPath;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.se_rwth.commons.logging.Log;
-import umlp.UMLPMill;
-import umlp._symboltable.IUMLPArtifactScope;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.jupiter.api.BeforeEach;
+import umlp.UMLPTool;
 import umlp.generator.AbstractDecorator;
 import umlptest.AbstractUMLPTest;
 
@@ -21,6 +18,14 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 public abstract class AbstractGUITest extends AbstractUMLPTest {
+
+  @BeforeEach
+  public void guiSetup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+    GUIDSLTool tool = new GUIDSLTool();
+    tool.resetGSAndMill();
+  }
 
   protected static GlobalExtensionManagement createGlex() {
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
@@ -48,17 +53,6 @@ public abstract class AbstractGUITest extends AbstractUMLPTest {
     }
     // should never be reached (unless failquick is off)
     return null;
-  }
-
-  protected IGUIDSLArtifactScope createSymTab(
-      ASTGUICompilationUnit ast, Optional<Path> modelFilePathOpt, MCPath modelPath) {
-    GUIDSLTool tool = new GUIDSLTool();
-    tool.defaultImportTrafo(ast);
-    tool.resetGSAndMill();
-    if (modelFilePathOpt.isPresent()) {
-      tool.registerLoadedFile(modelFilePathOpt.get().toString());
-    }
-    return tool.createSymbolTable(ast, modelPath);
   }
 
   protected String removeSpaces(String st) {
