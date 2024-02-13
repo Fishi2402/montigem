@@ -41,6 +41,6 @@ component NavContainer(
       ],
       footer = @GemNavItem(title = "This is an always visible footer for this navlist")
     ),
-    mainCol@GemColumn(components = content)
+    mainCol@GemRow(components = content)
   ]);
 }
