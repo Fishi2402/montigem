@@ -9,7 +9,7 @@ export abstract class Request<T> extends Command<T> {
    *
    * @return {boolean}
    */
-  public isRequest(): boolean {
+  public override isRequest(): boolean {
     return true;
   }
 }
