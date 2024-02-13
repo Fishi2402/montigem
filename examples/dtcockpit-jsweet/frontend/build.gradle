@@ -9,7 +9,7 @@ buildscript {
     classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
       transitive = true
     }
-    classpath group: 'umlp', name: 'umlp-frontend-rte-java'
+    classpath group: 'umlp', name: 'umlp-jsweet'
   }
 }
 
@@ -20,6 +20,10 @@ plugins {
   id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT" apply(false)
 }
 
+repositories {
+  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+}
 
 configurations {
   guiDefaultTypes
@@ -38,6 +42,10 @@ dependencies {
   testImplementation "de.monticore.lang:guidsl:${project.properties['mc_version']}"
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+
+  implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
+  implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
+  implementation project(':umlp-rte:umlp-jsweet')
 }
 
 task generateNPMAuth(type: NPMAuthCreate){
@@ -46,7 +54,7 @@ task generateNPMAuth(type: NPMAuthCreate){
 
 // Add Frontend-Config Files from UMLP-Tool Resources.
 task frontendSetup(type: FrontendSetup){
-  dependsOn(generateNPMAuth, tasks.getByPath(":umlp-rte:umlp-frontend-rte:packLib"))
+  dependsOn(generateNPMAuth)
   input = file("config/")   // Can be used to add or replace files
   output = layout.buildDir.dir("frontendGen/")
 }
@@ -60,7 +68,7 @@ node {
 
   // Version of node to download and install (only used if download is true)
   // It will be unpacked in the workDir
-  version = "18.10.0"
+  version = "${node_version}"
 
   // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
   // according the proxy configuration defined for Gradle
@@ -148,7 +156,7 @@ jsweetDomain {
       '**/dtcockpit/DtcockpitDummyProvider.java',
       '**/dtcockpit/DtcockpitTestContext.java',
   ]
-  extraSystemPath = project.file('.gradle/nodejs/node-v18.10.0-win-x64')
+  extraSystemPath = project.file(".gradle/nodejs/node-v${node_version}-win-x64")
 }
 
 task translateJava2TSDomain(type: org.jsweet.gradle.JSweetTranspileTask) {
@@ -214,15 +222,10 @@ task translateTypeScript() {
   dependsOn(translateJava2TSDomain, translateJava2TSGUI)
 }
 
-task installLocalRTE(type: NpmTask) {
-  dependsOn(npmInstall, tasks.getByPath(":umlp-rte:umlp-frontend-rte:packLib"))
-  args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]
-}
-
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npmInstall, translateTypeScript, installLocalRTE
+    npmInstall, translateTypeScript
 ]
 
 task buildApp(type: NpxTask) {

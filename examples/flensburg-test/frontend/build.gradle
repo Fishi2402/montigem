@@ -1,21 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-buildscript {
-  repositories {
-    mavenCentral()
-    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-  }
-  dependencies {
-    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
-      transitive = true
-    }
-    classpath group: 'umlp', name: 'umlp-frontend-rte-java'
-    // classpath project(":umlp-rte:umlp-frontend-rte-java")
-  }
-}
-
 plugins {
-  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT"
   id "com.github.node-gradle.node" version "5.0.0"
   id 'de.rwth.se.umlp-tool'
 }
@@ -51,7 +35,7 @@ node {
 
   // Version of node to download and install (only used if download is true)
   // It will be unpacked in the workDir
-  version = "18.10.0"
+  version = "${node_version}"
 
   // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
   // according the proxy configuration defined for Gradle
@@ -59,30 +43,6 @@ node {
   // (in the .npmrc file for instance)
   nodeProxySettings = ProxySettings.OFF
 }
-
-// ------------------------ jsweet start ------------------------
-// also uses buildscript and one plugin
-
-jsweet {
-  autoPropagateAsyncAwaits = true
-  verbose = true
-  encoding = 'UTF-8'
-  sourceMap = true
-  tsOnly = true
-  tsOut = project.file('target/generated-sources/ts')
-  candiesJsOut = project.file('target/candies')
-  targetVersion = 'ES6'
-  includes = ['**/flensburg/**/*.java']
-  module = 'commonjs'
-  workingDir = project.file('target/.jsweet')
-  excludeTranspilation = [
-      // '**/*DeSer*.java',
-      'flensburg/*DAO.java',
-      'flensburg/*DbObserver.java'
-  ]
-}
-
-// ------------------------ jsweet end ------------------------
 
 // TODO AGe: don't know if that is needed
 // TODO CD2GUI
@@ -175,5 +135,3 @@ task runApp(type: NpxTask) {
   inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json")
   outputs.upToDateWhen { true }
 }
-
-clean.dependsOn(jsweetClean)

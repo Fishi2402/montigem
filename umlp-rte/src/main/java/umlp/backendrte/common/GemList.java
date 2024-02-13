@@ -2,7 +2,6 @@
 package umlp.backendrte.common;
 
 import de.se_rwth.commons.logging.Log;
-import jsweet.lang.Replace;
 
 import java.util.AbstractList;
 import java.util.ArrayList;

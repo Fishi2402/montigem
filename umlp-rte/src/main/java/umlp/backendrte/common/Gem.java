@@ -4,8 +4,6 @@ package umlp.backendrte.common;
 // RTE
 
 import de.se_rwth.commons.logging.Log;
-import jsweet.lang.Async;
-import jsweet.lang.Replace;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -14,7 +12,7 @@ import java.util.function.Supplier;
 //only to try it out and might change
 
 // kann man dies machen?: Gem<E> extends E
-// weil dies m.W. nicht der Fall ist, dass ist es wharscheinlich doch notwendig 
+// weil dies m.W. nicht der Fall ist, dass ist es wharscheinlich doch notwendig
 // bei den aufrufenden Stellen Gem<E> Funktionalität reingeneriert werden
 // -> this might be realized using the realthis pattern?
 //    however, this assumes that E is written accordingly...
@@ -88,7 +86,7 @@ public class Gem<E extends GemIdentifiable> implements GemIdentifiable {
   }
 
   /**********************************************************/
-  /* The following functions resemble 
+  /* The following functions resemble
      an Optional with their 6 functions, aber können nicht von Optiona<E> erben
      weil Java das nicht hergibt.
     */
