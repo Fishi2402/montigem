@@ -450,7 +450,7 @@ public class DbTypesTest extends AttributesDBTestSetup {
     // delete element
     sut.setBVal(Optional.empty());
     assertFalse(sut.getBVal().isPresent());
-    dao.selectOptionalOfBoolean(sut.gemId).get();
+    clone = dao.selectOptionalOfBoolean(sut.gemId).get();
     assertFalse(clone.getBVal().isPresent());
   }
 
