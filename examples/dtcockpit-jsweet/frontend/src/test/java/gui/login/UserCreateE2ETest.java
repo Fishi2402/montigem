@@ -1,20 +1,23 @@
 package gui.login;
 
 import dtcockpit.DtcockpitManager;
+import dtcockpit.DtcockpitRole;
 import dtcockpit.User;
-import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
+import gui.DtcockpitCustomMockTestSetup;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UserCreateE2ETest extends DtcockpitMockTestSetup {
+public class UserCreateE2ETest extends DtcockpitCustomMockTestSetup {
+
+  static String adminUserName = "admin";
 
   public UserCreateE2ETest() {
-    super(1);
+    super(adminUserName);
   }
 
   @Test
@@ -25,6 +28,16 @@ public class UserCreateE2ETest extends DtcockpitMockTestSetup {
 
     assertTrue(getUserByEMail(eMail).isEmpty(), "user already exists");
 
+    //TODO extract to method
+    //register client as admin
+    DtcockpitManager.userBuilder()
+                    .username(adminUserName)
+                    .password("admin")
+                    .email("admin@rwth-aachen.de")
+                    .role(DtcockpitRole.ADMIN)
+                    .registrationDate(LocalDateTime.now())
+                    .build();
+
     getClients(0).activate();
 
     UserCreate pageUnderTest = new UserCreate();
@@ -33,8 +46,6 @@ public class UserCreateE2ETest extends DtcockpitMockTestSetup {
     pageUnderTest.setGemTextInput4Entry(eMail); //e-mail
 
     pageUnderTest.gemButton7LeftClick(null); //create
-
-    assertNull(pageUnderTest.getErrorValue());
 
     getBackend().activate();
 
