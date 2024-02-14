@@ -18,8 +18,6 @@ repositories {
     maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
 }
 
-
-
 dependencies {
     // Enable for implementing a new Adapter
     implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"

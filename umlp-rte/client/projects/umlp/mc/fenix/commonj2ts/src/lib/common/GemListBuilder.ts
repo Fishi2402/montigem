@@ -32,7 +32,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
    *
    * @return {Optional}
    */
-  public async build(): Promise<GemList<E>> {
+  public override async build(): Promise<GemList<E>> {
     await this.finalizeBuilderElemStorage();
     if (this.buildFinished) {
       return Promise.resolve((v => {
@@ -55,7 +55,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
    *
    * @return {boolean}
    */
-  public isBuildFinished(): boolean {
+  public override isBuildFinished(): boolean {
     return this.buildFinished;
   }
 
@@ -63,7 +63,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
    *
    * @return {number}
    */
-  public size(): number {
+  public override size(): number {
     if (this.buildFinished) {
       return super.size();
     } else {
@@ -80,7 +80,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
    * @param {number} idx
    * @return {}
    */
-  public async get(idx: number): Promise<E> {
+  public override async get(idx: number): Promise<E> {
     await this.finalizeBuilderElemStorage();
     if (this.buildFinished) {
       return await super.get(idx);
@@ -98,7 +98,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
    * @param {number} idx
    * @param {} elem
    */
-  public async add(idxOrElem: any, elem?: E): Promise<boolean> {
+  public override async add(idxOrElem: any, elem?: E): Promise<boolean> {
     await this.finalizeBuilderElemStorage();
     if (this.buildFinished) {
       return await super.add(idxOrElem, elem);
@@ -117,7 +117,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
    * @param {number} idx
    * @param {number} gemID
    */
-  public async _internal_set(idx: number, gemID: number) {
+  public override async _internal_set(idx: number, gemID: number) {
     await this.finalizeBuilderElemStorage();
     if (this.buildFinished) {
       await super._internal_set(idx, gemID);
@@ -132,7 +132,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
    * @param {number} idx
    * @param {number[]} additions
    */
-  public async _internal_add(idx: number, additions: IUMLPList<number>) {
+  public override async _internal_add(idx: number, additions: IUMLPList<number>) {
     await this.finalizeBuilderElemStorage();
     if (this.buildFinished) {
       await super._internal_add(idx, additions);
@@ -151,7 +151,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
    *
    * @param {number[]} idxs
    */
-  public async _internal_remove(idxs: IUMLPList<number> | Array<number>) {
+  public override async _internal_remove(idxs: IUMLPList<number> | Array<number>) {
     await this.finalizeBuilderElemStorage();
     if (this.buildFinished) {
       await super._internal_remove(idxs);
@@ -172,7 +172,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     }
   }
 
-  public getIDs$int$int(startIdx: number, endIdx: number): IUMLPList<number> {
+  public override getIDs$int$int(startIdx: number, endIdx: number): IUMLPList<number> {
     if (this.buildFinished) {
       return super.getIDs$int$int(startIdx, endIdx);
     } else {
@@ -199,7 +199,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
    * @param {number} endIdx
    * @return {number[]}
    */
-  public getIDs(startIdx?: any, endIdx?: any): IUMLPList<number> {
+  public override getIDs(startIdx?: any, endIdx?: any): IUMLPList<number> {
     if (((typeof startIdx === 'number') || startIdx === null) && ((typeof endIdx === 'number') || endIdx === null)) {
       return <any>this.getIDs$int$int(startIdx, endIdx);
     } else if (startIdx === undefined && endIdx === undefined) {
@@ -207,7 +207,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     } else throw new Error('invalid overload');
   }
 
-  public getIDs$(): IUMLPList<number> {
+  public override getIDs$(): IUMLPList<number> {
     if (this.buildFinished) {
       return super.getIDs$();
     } else {

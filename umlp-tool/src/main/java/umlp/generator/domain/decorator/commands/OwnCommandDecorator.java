@@ -41,6 +41,8 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
 
   public static final String COMMAND = "command";
 
+  public static final String SINGLETON = "singleton";
+
   protected Set<String> supportedDeSers;
 
   public OwnCommandDecorator(GlobalExtensionManagement glex, Set<String> supportedDeSers) {
@@ -54,26 +56,30 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
-        .forEach(c -> c.getCDMethodList()
-            .stream()
-            .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
-            .filter(m -> TagLookUp.isCommand(m.getSymbol()))
-            .forEach(m -> {
+        .filter(c -> GenService.hasStereotype(c.getModifier(), SINGLETON))
+        .filter(c -> TagLookUp.isSingleton(c.getSymbol()))
+        .forEach(c -> c.getCDMethodList().stream()
+           //   .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
+           .filter(m -> TagLookUp.isCommand(m.getSymbol()))
+           .forEach(m -> {
               astcdPackage.addCDElement(withOrigin(createCommandClass(origCD, m)));
               astcdPackage.addCDElement(withOrigin(createCommandDeSer(origCD, m)));
-            }));
-
+           }
+        )
+    );
 
     origCD.getCDDefinition().getCDInterfacesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
-        .forEach(c -> c.getCDMethodList()
-            .stream()
-            .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
-            .filter(m -> TagLookUp.isCommand(m.getSymbol()))
-            .forEach(m -> {
-              astcdPackage.addCDElement(withOrigin(createCommandClass(origCD, m)));
-              astcdPackage.addCDElement(withOrigin(createCommandDeSer(origCD, m)));
-            }));
+        .filter(c -> GenService.hasStereotype(c.getModifier(), SINGLETON))
+        .forEach(c -> c.getCDMethodList().stream()
+           // .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
+          .filter(m -> TagLookUp.isCommand(m.getSymbol()))
+          .forEach(m -> {
+            astcdPackage.addCDElement(withOrigin(createCommandClass(origCD, m)));
+            astcdPackage.addCDElement(withOrigin(createCommandDeSer(origCD, m)));
+          }
+        )
+    );
 
   }
 
