@@ -1,12 +1,15 @@
 package gui.login;
 
 import dtcockpit.DtcockpitManager;
+import dtcockpit.DtcockpitRole;
 import dtcockpit.User;
 import dtcockpit.UserBuilder;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ResetPasswordE2ETest extends DtcockpitMockTestSetup {
 
@@ -26,7 +29,9 @@ class ResetPasswordE2ETest extends DtcockpitMockTestSetup {
         .userBuilder()
         .username(userName)
         .password(oldPassword)
-        .email(eMail);
+        .email(eMail)
+        .registrationDate(LocalDateTime.now())
+        .role(DtcockpitRole.USER);
     long gemId = userBuilder.getGemId();
     userBuilder.build();
 
