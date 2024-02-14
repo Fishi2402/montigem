@@ -47,4 +47,34 @@ class ResetPasswordE2ETest extends DtcockpitMockTestSetup {
     User user = DtcockpitManager.getUserSure(gemId);
     assertEquals(newPassword, user.getPassword());
   }
+
+  @Test
+  public void testAbort() {
+    String userName = "max";
+    String oldPassword = "foo";
+    String newPassword = "bar";
+    String eMail = "max@rwth-aachen.de";
+
+    UserBuilder userBuilder = DtcockpitManager
+        .userBuilder()
+        .username(userName)
+        .password(oldPassword)
+        .email(eMail)
+        .registrationDate(LocalDateTime.now())
+        .role(DtcockpitRole.USER);
+    long gemId = userBuilder.getGemId();
+    userBuilder.build();
+
+    getClients(0).activate();
+
+    ResetPassword pageUnderTest = new ResetPassword(null, null);
+    pageUnderTest.setGemTextInput2Entry(eMail); //email
+    pageUnderTest.setGemTextInput3Entry(newPassword); //password
+    pageUnderTest.gemButton5LeftClick(null); //abort reset
+
+    getBackend().activate();
+
+    User user = DtcockpitManager.getUserSure(gemId);
+    assertEquals(oldPassword, user.getPassword());
+  }
 }
