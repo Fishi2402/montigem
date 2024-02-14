@@ -1,16 +1,12 @@
 package gui.login;
 
-import dtcockpit.DtcockpitManager;
 import dtcockpit.DtcockpitRole;
 import dtcockpit.User;
 import umlp.backendrte.common.GemList;
 import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.regex.Pattern;
 
 @Component(
     // TODO Pfade
@@ -29,7 +25,7 @@ public class UserCreate extends UserCreateTOP {
       return;
     }
     String errorMessage = this.validateUser();
-    if (errorMessage == null) {
+    if (errorMessage == null || errorMessage.isBlank()) {
       //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
       super.newUser.registrationDate(LocalDateTime.now());
       super.newUser.role(DtcockpitRole.USER);
