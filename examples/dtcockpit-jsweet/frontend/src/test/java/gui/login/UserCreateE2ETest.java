@@ -51,6 +51,32 @@ public class UserCreateE2ETest extends DtcockpitMockTestSetup {
     assertEquals(eMail, user.getEmail());
   }
 
+  @Test
+  public void testAbort() {
+    String userName = "Max";
+    String password = "password";
+    String eMail = "max@rwth-aachen.de";
+
+    assertTrue(getUserByEMail(eMail).isEmpty(), "user already exists");
+
+    //register client as admin
+    registerAdmin(adminUserName);
+
+    getClients(0).activate();
+
+    UserCreate pageUnderTest = new UserCreate();
+    pageUnderTest.setGemTextInput2Entry(userName); //username
+    pageUnderTest.setGemTextInput3Entry(password); //password
+    pageUnderTest.setGemTextInput4Entry(eMail); //e-mail
+
+    pageUnderTest.gemButton6LeftClick(null); //abort
+
+    getBackend().activate();
+
+    var optUser = getUserByEMail(eMail);
+    assertTrue(optUser.isEmpty(), "user has been created");
+  }
+
   private Optional<User> getUserByEMail(String eMail) {
     return DtcockpitManager
         .getUserList()
