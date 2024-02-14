@@ -13,8 +13,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ResetPasswordE2ETest extends DtcockpitMockTestSetup {
 
+  //be careful when the test case creates users
+  ResetPassword pageUnderTest;
+
   public ResetPasswordE2ETest() {
     super(1);
+  }
+
+  @Override
+  public void _init() {
+    super._init();
+    pageUnderTest = new ResetPassword(null, null);
   }
 
   @Test
@@ -37,7 +46,7 @@ class ResetPasswordE2ETest extends DtcockpitMockTestSetup {
 
     getClients(0).activate();
 
-    ResetPassword pageUnderTest = new ResetPassword(null, null);
+    pageUnderTest.init(); //fetch new user-list
     pageUnderTest.setGemTextInput2Entry(eMail); //email
     pageUnderTest.setGemTextInput3Entry(newPassword); //password
     pageUnderTest.gemButton6LeftClick(null); //reset pw
@@ -67,7 +76,7 @@ class ResetPasswordE2ETest extends DtcockpitMockTestSetup {
 
     getClients(0).activate();
 
-    ResetPassword pageUnderTest = new ResetPassword(null, null);
+    pageUnderTest.init();
     pageUnderTest.setGemTextInput2Entry(eMail); //email
     pageUnderTest.setGemTextInput3Entry(newPassword); //password
     pageUnderTest.gemButton5LeftClick(null); //abort reset
@@ -79,9 +88,12 @@ class ResetPasswordE2ETest extends DtcockpitMockTestSetup {
   }
 
   @Test
-  public void testLabels() {
-    ResetPassword pageUnderTest = new ResetPassword(null, null);
+  public void testTitle() {
+    assertEquals("Reset password", pageUnderTest.getGemCard0Title());
+  }
 
+  @Test
+  public void testLabels() {
     assertEquals("Cancel", pageUnderTest.getGemButton5Label());
     assertEquals("Reset password", pageUnderTest.getGemButton6Label());
   }
