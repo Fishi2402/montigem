@@ -1,6 +1,7 @@
 package gui.login;
 
 import dtcockpit.DtcockpitManager;
+import dtcockpit.DtcockpitRole;
 import dtcockpit.User;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,7 @@ public class UserCreateE2ETest extends DtcockpitMockTestSetup {
     assertEquals(userName, user.getUsername());
     assertEquals(password, user.getPassword());
     assertEquals(eMail, user.getEmail());
+    assertEquals(DtcockpitRole.USER, user.getRole());
   }
 
   @Test
