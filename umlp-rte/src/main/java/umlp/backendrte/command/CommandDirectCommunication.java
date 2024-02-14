@@ -2,7 +2,6 @@
 package umlp.backendrte.command;
 
 import de.se_rwth.commons.logging.Log;
-import umlp.backendrte.common.LoadingState;
 import umlp.backendrte.common.Result;
 import umlp.backendrte.util.LogUtil;
 import umlp.backendrte.util.TestContext;
@@ -22,9 +21,15 @@ public class CommandDirectCommunication implements ClientCommandCommunication,
   protected TestContext serverContext;
   // Wegen beidseitiger navigation muss dieser per setter gesetzt werden
   protected TestContext clientContext;
+  protected String participantUserName;
 
   public CommandDirectCommunication(TestContext backendContext) {
+    this(backendContext, "");
+  }
+
+  public CommandDirectCommunication(TestContext backendContext, String participantUserName) {
     this.serverContext = backendContext;
+    this.participantUserName = participantUserName;
   }
 
   public void setClientContext(TestContext clientContext) {
@@ -67,6 +72,7 @@ public class CommandDirectCommunication implements ClientCommandCommunication,
 
   @Override
   public Result<Long> init() {
-    return Result.ok(serverContext.getCommandManager()._register(new Participant(this)));
+    return Result.ok(serverContext.getCommandManager()
+                                  ._register(new Participant(this, participantUserName)));
   }
 }
