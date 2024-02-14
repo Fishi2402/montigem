@@ -77,4 +77,12 @@ class ResetPasswordE2ETest extends DtcockpitMockTestSetup {
     User user = DtcockpitManager.getUserSure(gemId);
     assertEquals(oldPassword, user.getPassword());
   }
+
+  @Test
+  public void testLabels() {
+    ResetPassword pageUnderTest = new ResetPassword(null, null);
+
+    assertEquals("Cancel", pageUnderTest.getGemButton5Label());
+    assertEquals("Reset password", pageUnderTest.getGemButton6Label());
+  }
 }
