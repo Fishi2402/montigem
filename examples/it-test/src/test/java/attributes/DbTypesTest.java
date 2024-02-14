@@ -3,9 +3,13 @@ package attributes;
 
 import attributes.test_infrastructure.AttributesDBTestSetup;
 import com.google.common.collect.Lists;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +19,25 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("OptionalGetWithoutIsPresent")
-public class DbTypesTest extends AttributesDBTestSetup {
-  public DbTypesTest() {
-    super(0);
+public abstract class DbTypesTest extends AttributesDBTestSetup {
+
+  @DisplayName("Neo4J-DbTypes")
+  public static class
+  Neo4JTestSuite extends DbTypesTest {
+    Neo4JTestSuite() {
+      super("NEO4J");
+    }
+  }
+
+  @DisplayName("SQL-DbTypes")
+  public static class SQLTestSuite extends DbTypesTest {
+    SQLTestSuite() {
+      super("SQL");
+    }
+  }
+
+  public DbTypesTest(String dbConnectionType) {
+    super(0, dbConnectionType);
   }
 
   @Test
@@ -454,4 +474,21 @@ public class DbTypesTest extends AttributesDBTestSetup {
     assertFalse(clone.getBVal().isPresent());
   }
 
+  @Test
+  public void testMinimalJavaTimeDb(){
+    MinimalJavaTime sut = AttributesManager.minimalJavaTimeBuilder()
+        .bar_local_date(LocalDate.now())
+        .bar_local_time(LocalTime.now())
+        .bar_local_date_time(LocalDateTime.now())
+        .build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getMinimalJavaTimeDAO();
+    var clone = dao.selectMinimalJavaTime(sut.gemId).get();
+    assertNotSame(sut, clone);
+
+    assertEquals(sut.getBar_local_time().truncatedTo(ChronoUnit.MILLIS), clone.getBar_local_time().truncatedTo(ChronoUnit.MILLIS));
+    assertEquals(sut.getBar_local_date_time().truncatedTo(ChronoUnit.MILLIS), clone.getBar_local_date_time().truncatedTo(ChronoUnit.MILLIS));
+    assertEquals(sut.getBar_local_date(), clone.getBar_local_date());
+  }
 }
