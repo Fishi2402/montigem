@@ -54,19 +54,27 @@ public class TestSetupDecorator extends AbstractDecorator {
                                                            false,
                                                            "protected List<String> clientNames;");
 
+    String customTemplatePath = "umlp.test_infrastructure.mockTestSetup.";
+
     // Constructor
-    String template = "umlp.common.BasicConstructor";
-    //TODO do not use basic constructor
-    getCD4C().addConstructor(res, template, res.getName(), List.of(numberOfClientsArg));
-    getCD4C().addConstructor(res, template, res.getName(), List.of(clientNamesArg));
+    String commonConstructorTemplate = "umlp.common.BasicConstructor";
     getCD4C().addConstructor(res,
-                             template,
+                             commonConstructorTemplate, res.getName(), List.of(numberOfClientsArg));
+    getCD4C().addConstructor(res,
+                             commonConstructorTemplate,
                              res.getName(),
                              List.of(numberOfClientsArg, clientNamesArg));
+    getCD4C().addConstructor(res,
+                             customTemplatePath + "NamesConstructor",
+                             res.getName(),
+                             clientNamesArg);
 
     // Methods
-    getCD4C().addMethod(res, "umlp.test_infrastructure.mockTestSetup.GetClientName", name);
-    getCD4C().addMethod(res, "umlp.test_infrastructure.mockTestSetup.Init", name);
+    getCD4C().addMethod(res, customTemplatePath + "GetClientName", name);
+    getCD4C().addMethod(res, customTemplatePath + "Init", name);
+    //TODO is there a better way to assure, the concept of roles exists?
+    if (name.equals("Dtcockpit"))
+      getCD4C().addMethod(res, customTemplatePath + "RegisterAdmin", name);
 
     addImports(origCD, res);
     return res;

@@ -1,12 +1,10 @@
 package gui.login;
 
 import dtcockpit.DtcockpitManager;
-import dtcockpit.DtcockpitRole;
 import dtcockpit.User;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +16,7 @@ public class UserCreateE2ETest extends DtcockpitMockTestSetup {
   static String adminUserName = "admin";
 
   public UserCreateE2ETest() {
-    super(1, List.of(adminUserName));
+    super(List.of(adminUserName));
   }
 
   @Test
@@ -29,15 +27,8 @@ public class UserCreateE2ETest extends DtcockpitMockTestSetup {
 
     assertTrue(getUserByEMail(eMail).isEmpty(), "user already exists");
 
-    //TODO extract to method
     //register client as admin
-    DtcockpitManager.userBuilder()
-                    .username(adminUserName)
-                    .password("admin")
-                    .email("admin@rwth-aachen.de")
-                    .role(DtcockpitRole.ADMIN)
-                    .registrationDate(LocalDateTime.now())
-                    .build();
+    registerAdmin(adminUserName);
 
     getClients(0).activate();
 
