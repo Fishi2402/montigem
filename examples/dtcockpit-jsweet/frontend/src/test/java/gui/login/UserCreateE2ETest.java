@@ -7,6 +7,7 @@ import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,7 +18,7 @@ public class UserCreateE2ETest extends DtcockpitMockTestSetup {
   static String adminUserName = "admin";
 
   public UserCreateE2ETest() {
-    super(1, new String[]{adminUserName});
+    super(1, List.of(adminUserName));
   }
 
   @Test

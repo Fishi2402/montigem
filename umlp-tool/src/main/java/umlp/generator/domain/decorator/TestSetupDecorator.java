@@ -52,10 +52,11 @@ public class TestSetupDecorator extends AbstractDecorator {
     ASTCDAttribute clientNamesArg = getCD4C().addAttribute(res,
                                                            true,
                                                            false,
-                                                           "protected String[] clientNames;");
+                                                           "protected List<String> clientNames;");
 
     // Constructor
     String template = "umlp.common.BasicConstructor";
+    //TODO do not use basic constructor
     getCD4C().addConstructor(res, template, res.getName(), List.of(numberOfClientsArg));
     getCD4C().addConstructor(res, template, res.getName(), List.of(clientNamesArg));
     getCD4C().addConstructor(res,
