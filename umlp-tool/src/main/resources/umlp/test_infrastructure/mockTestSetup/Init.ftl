@@ -9,7 +9,8 @@ backend = ${cdName}TestContext.fromCurrentContext();
 for(int i = 0; i < getNumberOfClients(); i++){
   ${cdName}TestContext.clear();
   ${cdName}Manager.initMe(new ${cdName}ManagerClientImpl());
-  CommandDirectCommunication communication = new CommandDirectCommunication(backend);
+  String userName = getClientName(i).orElse("");
+  CommandDirectCommunication communication = new CommandDirectCommunication(backend, userName);
   TestClientCommandManager clientCommandManager = new TestClientCommandManager(communication);
   CommandManager.initMe(clientCommandManager);
   var client = ${cdName}TestContext.fromCurrentContext();

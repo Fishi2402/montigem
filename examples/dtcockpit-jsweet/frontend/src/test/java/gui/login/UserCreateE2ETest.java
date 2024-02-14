@@ -3,7 +3,7 @@ package gui.login;
 import dtcockpit.DtcockpitManager;
 import dtcockpit.DtcockpitRole;
 import dtcockpit.User;
-import gui.DtcockpitCustomMockTestSetup;
+import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -12,12 +12,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UserCreateE2ETest extends DtcockpitCustomMockTestSetup {
+public class UserCreateE2ETest extends DtcockpitMockTestSetup {
 
   static String adminUserName = "admin";
 
   public UserCreateE2ETest() {
-    super(adminUserName);
+    super(1, new String[]{adminUserName});
   }
 
   @Test

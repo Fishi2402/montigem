@@ -49,11 +49,22 @@ public class TestSetupDecorator extends AbstractDecorator {
     ASTCDAttribute clientsAttr = getCD4C().addAttribute(res, true, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
     glex.replaceTemplate("cd2java.Value", clientsAttr, new StringHookPoint(" = new ArrayList<>();"));
     ASTCDAttribute numberOfClientsArg = getCD4C().addAttribute(res, true, false, "protected int numberOfClients;");
+    ASTCDAttribute clientNamesArg = getCD4C().addAttribute(res,
+                                                           true,
+                                                           false,
+                                                           "protected String[] clientNames;");
 
     // Constructor
-    getCD4C().addConstructor(res, "umlp.common.BasicConstructor", res.getName(), List.of(numberOfClientsArg));
+    String template = "umlp.common.BasicConstructor";
+    getCD4C().addConstructor(res, template, res.getName(), List.of(numberOfClientsArg));
+    getCD4C().addConstructor(res, template, res.getName(), List.of(clientNamesArg));
+    getCD4C().addConstructor(res,
+                             template,
+                             res.getName(),
+                             List.of(numberOfClientsArg, clientNamesArg));
 
     // Methods
+    getCD4C().addMethod(res, "umlp.test_infrastructure.mockTestSetup.GetClientName", name);
     getCD4C().addMethod(res, "umlp.test_infrastructure.mockTestSetup.Init", name);
 
     addImports(origCD, res);
