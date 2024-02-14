@@ -18,13 +18,19 @@ page Create(Person person, Address address) {
     col1 = bday@GemTextInput(labelText = "Birthday", entry = person.birthday, inputType = "date"),
     col2 = name@GemTextInput(labelText = "Name", entry = person.name),
     col3 = @GemRow(hAlign = "space-between", vAlign = "bottom", components = [
-      @GemColumn(width = "48%", components = [
+      @GemColumn(width = "33%", components = [
+        employed@GemCheckBoxInput(
+          labelText = "Employed",
+          checked = p.employed
+        );
+      ]),
+      @GemColumn(width = "33%", components = [
         street@GemTextInput(labelText = "Street", entry = address.street)
       ]),
-      @GemColumn(width = "48%", components = [
+      @GemColumn(width = "33%", components = [
         house@GemTextInput(labelText = "House", entry = address.house, inputType = "number")
       ])
     ])
   );
-  @GemButton(label = "Create person", leftClick = create);
+  @GemButton(label = "Create person", leftClick = create(person));
 }

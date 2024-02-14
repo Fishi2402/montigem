@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package guiTest.generator.gui.genjava.prettyprinter;
 
+import com.google.common.collect.Iterables;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
@@ -115,6 +116,37 @@ public class CommonExpressionsConversionPrinterTest extends AbstractGUITest {
     assertAll(
         () -> assertEquals(expectation1, result1),
         () -> assertEquals(expectation2, result2)
+    );
+  }
+
+  @Test
+  public void testGetterConversion3() {
+    ASTGUIComponentDeclaration componentDecl;
+    GUIComponentStat stat = GUIComponentStat.getInstance();
+
+    List<ASTGUIComponent> components;
+
+    CommonExpressionsConversionPrinter printer = new CommonExpressionsConversionPrinter(
+        new IndentPrinter(), true,
+        x -> ExpressionConversion.getInstance().attr2Getter(x),
+        x -> ExpressionConversion.getInstance().attr2Getter(x));
+
+    componentDecl = processGUIModel(
+        "gui/person/Create.gui",
+        "src/test/resources/gui"
+    );
+
+    components = stat.getComponents(componentDecl);
+
+    // GemButton
+    ASTGUIComponent button = Iterables.getLast(components);
+    // GemButton#leftClick
+    String expectation1 = removeSpaces("this.create(this.getPerson())");
+    String result1 = removeSpaces(printer.prettyprint(
+        button.getGUINamedArgs().getGUINamedArg(1).getGUIArgValue()));
+
+    assertAll(
+        () -> assertEquals(expectation1, result1)
     );
   }
 
