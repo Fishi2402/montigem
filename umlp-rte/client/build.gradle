@@ -63,7 +63,7 @@ def libs = [
     "navigation",
     "table",
     "theme",
-    "network"
+    "networkgraph"
 ]
 
 def buildTaskPrefix = "build_"
