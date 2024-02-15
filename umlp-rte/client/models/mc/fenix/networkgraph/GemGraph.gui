@@ -10,6 +10,7 @@ import mc.fenix.networkgraph.NetworkGraphTypes.GraphEdge;
 component GemGraph(
   List<GraphNode> nodes, // TODO define these types somewhere
   List<GraphEdge> edges,
+  String minHeight="50vH",
   boolean showFilterGroup=true,
   boolean showSearchNode=true,
   boolean showControlButtons=true,

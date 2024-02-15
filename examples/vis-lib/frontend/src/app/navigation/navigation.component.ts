@@ -49,7 +49,7 @@ export class Navigation {
     { url: '/example_charts/GemSunburstChartExample', title: 'SunburstChart' },
     { url: '/example_charts/GemVennDiagramExample', title: 'VennDiagram' },
     { url: '/example_charts/GemGraphChartExample', title: 'NetworkChart' },
-    { url: '/gui/NetworkChartExample/1', title: 'NewNetworkChart'}
+    { url: '/example_network/NetworkChartExample/', title: 'NewNetworkChart'}
   ];
 
 }

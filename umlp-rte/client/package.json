@@ -41,6 +41,8 @@
     "graphology-layout-forceatlas2": "^0.10.1",
     "graphology-layout-noverlap": "^0.4.2",
     "graphology-metrics": "^2.2.0",
+    "primeng": "^17.0.7",
+    "primeicons": "^6.0.1",
     "lodash.clonedeepwith": "^4.5.0",
     "canvas": "^2.11.2",
     "dom-to-image": "^2.6.0",

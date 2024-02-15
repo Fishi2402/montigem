@@ -14,7 +14,11 @@ import {
 import {CommonModule} from "@angular/common";
 import {SerializedGraph} from "graphology-types";
 import {CustomMetricsGenerator, EdgeAttributes, GraphEdge, GraphNode, NodeAttributes} from "./types/graph.types";
-import {ComplexGraphLayoutConfiguration, InitialGraphLayoutConfiguration} from "./types/graph-layout.types";
+import {
+  ComplexGraphLayoutConfiguration,
+  ComplexGraphLayouts,
+  InitialGraphLayoutConfiguration, InitialGraphLayouts
+} from "./types/graph-layout.types";
 import {GraphSettings} from "./types/graph-settings.types";
 import {AutoUnsubscribe} from "../shared/decorators/auto-unsubscribe.decorator";
 import {CameraState} from "sigma/types";
@@ -33,6 +37,7 @@ import {NodeProcessorService} from "./graph-processing/node-processor.service";
 import {GraphEvent, MouseEvent, TouchEvent} from "./types/graph-events.types";
 import Sigma from "sigma/sigma";
 import Graph from "graphology";
+import {TooltipOptions} from "primeng/api";
 
 /**
  * `NetworkGraphComponent` is the core component that serves as the container for the entire graph rendering, user
@@ -59,8 +64,8 @@ import Graph from "graphology";
  * @see {@link GraphBasisComponent} for common graph-related functionalities.
  */
 @Component({
-    selector: "network-graph",
-    standalone: true,
+    selector: "gem-graph",
+    /*standalone: true,
     imports: [
         CommonModule,
     ],
@@ -75,16 +80,20 @@ import Graph from "graphology";
         GraphLayoutService,
         GraphMetricsService,
         GraphSettingsService,
-    ],
+    ],*/
     templateUrl: "./graph.component.html",
     styleUrls: ["./graph.component.scss"],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @AutoUnsubscribe()
-export class GraphComponent extends GraphBasisComponent implements OnChanges {
+export class GemGraphComponent extends GraphBasisComponent implements OnChanges {
     // ========================================================================================
     // Input Properties
     // ========================================================================================
+
+    /** MinHeight of Component, so that it is always rendered. */
+    @Input() minHeight: string = "50vh";
+
     /** Flag to toggle the visibility of the SearchNodeComponent. */
     @Input() showSearchNode: boolean = true;
 
@@ -118,11 +127,20 @@ export class GraphComponent extends GraphBasisComponent implements OnChanges {
     /** Array of edges to be displayed in the graph. */
     @Input() edges?: GraphEdge[];
 
+    // TODO make Layouts configurable in GUIDSL Model/ in GUI component itself
     /** Initial layout configuration for displaying the graph. */
-    @Input() initialLayout?: InitialGraphLayoutConfiguration | null;
+    @Input() initialLayout?: InitialGraphLayoutConfiguration | null = {mode: InitialGraphLayouts.RANDOM};
 
     /** Complex layout configuration for displaying the graph. */
-    @Input() complexLayout?: ComplexGraphLayoutConfiguration | null;
+    @Input() complexLayout?: ComplexGraphLayoutConfiguration | null = {
+      mode: ComplexGraphLayouts.FORCE,
+      maxIterations: 100,
+      parameters: {
+        settings: {
+          gravity: 1,
+          slowDown: 1.2
+        }
+      }};
 
     /** Array of additional control buttons to be displayed. */
     @Input() cbExtendButtons?: ControlButton[];
@@ -137,7 +155,7 @@ export class GraphComponent extends GraphBasisComponent implements OnChanges {
     @Input() cbSpeedDialConfig?: SpeedDialConfig;
 
     /** Configuration options for tooltips. */
-    /*@Input() tooltipOptions?: TooltipOptions = {showDelay: 1000};*/
+    @Input() tooltipOptions?: TooltipOptions = {showDelay: 100};
 
     // ========================================================================================
     // Output Events - Graph Interaction Events
