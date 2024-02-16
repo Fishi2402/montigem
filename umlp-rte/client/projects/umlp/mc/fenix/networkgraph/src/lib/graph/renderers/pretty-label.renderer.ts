@@ -12,7 +12,7 @@ import { Settings } from "sigma/settings";
  * @param {NodeAttributes} data - Data for the node.
  * @param {GraphSettings} settings - Graph settings.
  */
-export default function prettyLabelRenderer(
+export function prettyLabelRenderer(
   context: CanvasRenderingContext2D,
   data: NodeAttributes,
   settings: GraphSettings

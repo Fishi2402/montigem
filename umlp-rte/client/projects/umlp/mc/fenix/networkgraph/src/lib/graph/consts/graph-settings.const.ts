@@ -1,11 +1,11 @@
 import { DEFAULT_EDGE_PROGRAM_CLASSES, DEFAULT_NODE_PROGRAM_CLASSES, DEFAULT_SETTINGS } from "sigma/settings";
 import { GraphSettings } from "../types/graph-settings.types";
-import { default as getNodeImageProgram } from "sigma/rendering/webgl/programs/node.image";
-import { default as drawLabel } from "sigma/rendering/canvas/label";
-import { default as drawHover }from "sigma/rendering/canvas/hover";
+import getNodeImageProgram from "sigma/rendering/webgl/programs/node.image";
+import drawLabel from "sigma/rendering/canvas/label";
+import drawHover from "sigma/rendering/canvas/hover";
 import { prettyLabelHoverRenderer } from "../renderers/pretty-label-hover.renderer";
-import { default as prettyLabelRenderer } from "../renderers/pretty-label.renderer";
-import { default as EdgeLineProgram } from "sigma/rendering/webgl/programs/edge.line";
+import { prettyLabelRenderer } from "../renderers/pretty-label.renderer";
+import EdgeLineProgram from "sigma/rendering/webgl/programs/edge.line";
 
 /**
  * Function to construct and return new default graph settings object. The use of a function rather than one `settings
