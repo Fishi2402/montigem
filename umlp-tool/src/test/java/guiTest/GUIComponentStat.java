@@ -6,11 +6,13 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
+import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class GUIComponentStat implements GUIDSLVisitor2 {
 
@@ -68,6 +70,15 @@ public class GUIComponentStat implements GUIDSLVisitor2 {
   @Override
   public void visit(ASTGUIIterate node) {
     iterates.add(node);
+  }
+
+  public ASTGUIComponent getById(List<ASTGUIComponent> components, String id) {
+    for (ASTGUIComponent c : components) {
+      if (c.isPresentId() && c.getId().getName().equals(id)) {
+        return c;
+      }
+    }
+    return null;
   }
 
 }

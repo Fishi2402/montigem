@@ -4,7 +4,6 @@ package guiTest.generator.gui.genjava.prettyprinter;
 import com.google.common.collect.Iterables;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.class2mc.OOClass2MCResolver;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
@@ -13,7 +12,6 @@ import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.io.paths.MCPath;
 import de.monticore.prettyprint.IndentPrinter;
-import de.se_rwth.commons.logging.Log;
 import guiTest.AbstractGUITest;
 import guiTest.GUIComponentStat;
 import org.junit.jupiter.api.Test;
@@ -25,8 +23,6 @@ import umlp.generator.gui.genjava.prettyprinter.CommonExpressionsConversionPrint
 import umlp.generator.gui.genjava.prettyprinter.ExpressionConversion;
 
 import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
@@ -58,32 +54,32 @@ public class CommonExpressionsConversionPrinterTest extends AbstractGUITest {
 
     // there is only one guard in Overview.gui
     ASTGUIGuard guard = guards.get(0);
-    String expectation1 = removeSpaces("this.getP().getAddress().getStreet() != \"Ahornstrasse\"");
+    String expect1 = removeSpaces("this.getP().getAddress().getStreet() != \"Ahornstrasse\"");
     String result1 = removeSpaces(printer.prettyprint(guard.getCondition()));
 
     // there is only one iterate in Overview.gui
     ASTGUIIterate iterate = iterates.get(0);
     ASTGUIShortIterateControl control = ((ASTGUIShortIterateControl) iterate.getIterateControl());
-    String expectation2 = removeSpaces("this.getPersons()");
+    String expect2 = removeSpaces("this.getPersons()");
     String result2 = removeSpaces(printer.prettyprint(control.getIterable()));
 
     // component with id gemText5
     ASTGUIComponent gemText5 = components.get(4);
-    String expectation3 = removeSpaces("this.getP().getName()");
+    String expect3 = removeSpaces("this.getP().getName()");
     String result3 = removeSpaces(printer.prettyprint(
         gemText5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
     // GemText component showing address in form: "<street> <house>"
     ASTGUIComponent address = components.get(5);
-    String expectation4 = removeSpaces("this.getP().getAddress().getStreet() + \" \" + this.getP().getAddress().getHouse()");
+    String expect4 = removeSpaces("this.getP().getAddress().getStreet() + \" \" + this.getP().getAddress().getHouse()");
     String result4 = removeSpaces(printer.prettyprint(
         address.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
     assertAll(
-        () -> assertEquals(expectation1, result1),
-        () -> assertEquals(expectation2, result2),
-        () -> assertEquals(expectation3, result3),
-        () -> assertEquals(expectation4, result4)
+        () -> assertEquals(expect1, result1),
+        () -> assertEquals(expect2, result2),
+        () -> assertEquals(expect3, result3),
+        () -> assertEquals(expect4, result4)
     );
   }
 
@@ -109,18 +105,18 @@ public class CommonExpressionsConversionPrinterTest extends AbstractGUITest {
     // the only component in GemCheckboxInputExample.gui
     ASTGUIComponent checkbox = components.get(0);
     // GemCheckBoxInput#labelText
-    String expectation1 = removeSpaces("this.getP().getName() + \" is employed\"");
+    String expect1 = removeSpaces("this.getP().getName() + \" is employed\"");
     String result1 = removeSpaces(printer.prettyprint(
         checkbox.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
     // GemCheckBoxInput#checked
-    String expectation2 = removeSpaces("this.getP().isEmployed()");
+    String expect2 = removeSpaces("this.getP().isEmployed()");
     String result2 = removeSpaces(printer.prettyprint(
         checkbox.getGUINamedArgs().getGUINamedArg(1).getGUIArgValue()));
 
     assertAll(
-        () -> assertEquals(expectation1, result1),
-        () -> assertEquals(expectation2, result2)
+        () -> assertEquals(expect1, result1),
+        () -> assertEquals(expect2, result2)
     );
   }
 
@@ -146,12 +142,74 @@ public class CommonExpressionsConversionPrinterTest extends AbstractGUITest {
     // GemButton
     ASTGUIComponent button = Iterables.getLast(components);
     // GemButton#leftClick
-    String expectation1 = removeSpaces("this.create(this.getPerson())");
+    String expect1 = removeSpaces("this.create(this.getPerson())");
     String result1 = removeSpaces(printer.prettyprint(
         button.getGUINamedArgs().getGUINamedArg(1).getGUIArgValue()));
 
     assertAll(
-        () -> assertEquals(expectation1, result1)
+        () -> assertEquals(expect1, result1)
+    );
+  }
+
+  @Test
+  public void testGetterConversion4() {
+    ASTGUIComponentDeclaration componentDecl;
+    GUIComponentStat stat = GUIComponentStat.getInstance();
+
+    List<ASTGUIComponent> components;
+
+    CommonExpressionsConversionPrinter printer = new CommonExpressionsConversionPrinter(
+        new IndentPrinter(), true,
+        x -> ExpressionConversion.getInstance().attr2Getter(x),
+        x -> ExpressionConversion.getInstance().attr2Getter(x));
+
+    componentDecl = processGUIModel(
+        "gui/complex/Expressions.gui",
+        "src/test/resources/gui"
+    );
+
+    components = stat.getComponents(componentDecl);
+
+    ASTGUIComponent call = stat.getById(components, "call");
+    ASTGUIComponent ternary = stat.getById(components, "ternary");
+    ASTGUIComponent fieldCall1 = stat.getById(components, "fieldCall1");
+    ASTGUIComponent fieldCall2 = stat.getById(components, "fieldCall2");
+    ASTGUIComponent fieldCall3 = stat.getById(components, "fieldCall3");
+    ASTGUIComponent fieldCall4 = stat.getById(components, "fieldCall4");
+
+    String expect1 = removeSpaces("this.getAge()");
+    String result1 = removeSpaces(printer.prettyprint(
+        call.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect2 = removeSpaces("this.getP().getFriends().size() > 0"
+        + " ? this.getP().getFriends().get(this.getP().getFriends().size() - 1).getAge()"
+        + " : \"no friends\"");
+    String result2 = removeSpaces(printer.prettyprint(
+        ternary.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect3 = removeSpaces("this.getP().getAge()");
+    String result3 = removeSpaces(printer.prettyprint(
+        fieldCall1.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect4 = removeSpaces("this.getP().getFriends().get(0).getAge()");
+    String result4 = removeSpaces(printer.prettyprint(
+        fieldCall2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect5 = removeSpaces("this.getP().get(0).getAge()");
+    String result5 = removeSpaces(printer.prettyprint(
+        fieldCall3.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect6 = removeSpaces("this.getP().eat()");
+    String result6 = removeSpaces(printer.prettyprint(
+        fieldCall4.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    assertAll(
+        () -> assertEquals(expect1, result1),
+        () -> assertEquals(expect2, result2),
+        () -> assertEquals(expect3, result3),
+        () -> assertEquals(expect4, result4),
+        () -> assertEquals(expect5, result5),
+        () -> assertEquals(expect6, result6)
     );
   }
 

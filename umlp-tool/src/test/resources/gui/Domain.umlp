@@ -5,6 +5,8 @@ umlp Domain {
     java.time.LocalDate birthday;
     String name;
     boolean employed;
+    / int getAge();
+    void eat();
   }
 
   class Address {
