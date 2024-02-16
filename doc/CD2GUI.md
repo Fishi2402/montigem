@@ -31,15 +31,16 @@ Plugin providing Guidsl2 models to create and manage instances of a provided CD4
 - Be sure to add the the genGUI2 to the npm prerequisites and change the `@src/*` to also include `../umlp/fe2/*`
 - Add cd2gui to the routing pages `{ path:"cd2gui", loadChildren:() => import('../../build/umlp/fe2/cd2gui/models/ModelsGemRouting').then(m=>m.routes)}`
 - Add a link to the CD2GUI Dashboard (`cd2gui/models/CD2GUIDashboard`) or navigate there manually
-- Note: when turning cd2gui on and off make sure to disable any caching for the first run. Also remove all references in handwritten parts when turning cd2gui off.
+- Note: when turning cd2gui on and off make sure to disable any caching for the first run. Also remove all references in handwritten parts (e.g. routing to generated pages) when turning cd2gui off.
 
 ## Stereotypes
 
 CD2GUI uses the following Stereotypes
 
-- invisible - used for a class, enum or attribute. An invisible Class doesn't get pages generated and an Enum/ Attribute won't show on other pages
-- hidden_in_details - used for a class, enum or attribute. A Class doesn't get the details page generated and an Enum/ Attribute won't show on details pages
-- hidden_in_overview - used for a class, enum or attribute. A Class doesn't get the overview page generated and an Enum/ Attribute won't show on overview pages
+- `invisible` - used for a class, enum or attribute. An invisible Class doesn't get pages generated and an Enum/ Attribute won't show on other pages
+- `hidden_in_details` - used for a class, enum or attribute. A Class doesn't get the details page generated and an Enum/ Attribute won't show on details pages
+- `hidden_in_overview` - used for a class, enum or attribute. A Class doesn't get the overview page generated and an Enum/ Attribute won't show on overview pages
+- `key_attribute` - used for an attribute. Displays this attribute fist on overview Pages/ at all if there are too many attributes in a class.
 
 ## Using GuiVariability to adapt a generated GUI Model
 

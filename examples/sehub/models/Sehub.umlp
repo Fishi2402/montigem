@@ -117,7 +117,7 @@ classdiagram Sehub {
   association boardMapping [1] BoardMapper -> (bingoBoardEntry) BingoEntry [1];
 
   <<singleton>> class App {
-    <<command>> void sendIssueMail(User email, Issue subject, String message, List<String> forwards);
+    void sendIssueMail(User email, Issue subject, String message, List<String> forwards);
   }
 
 }

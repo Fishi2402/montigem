@@ -50,6 +50,12 @@ public class TagRelated {
         if (node.getModifier().isPresentStereotype() && node.getModifier().getStereotype().contains("singleton")) {
           ASTTag astTag = TagsMill.simpleTagBuilder().setName("singleton").build();
           UMLPTagger.getInstance().addTag((ASTCDType) node, tagUnit, astTag);
+          node.getCDMethodList().forEach(m -> {
+            ASTTag astTagCommand = TagsMill.simpleTagBuilder().setName("command").build();
+            // Problem: CDMethodSignature => Sehub.clazz.methodname
+            // OOSymbols/Method => clazz.methodname
+            __addTag(m.getSymbol(), tagUnit, astTagCommand);
+          });
         }
         if (node.getModifier().isDerived()) {
           ASTTag astTag = TagsMill.simpleTagBuilder().setName("derived").build();
@@ -57,6 +63,7 @@ public class TagRelated {
         }
       }
     });
+    /*
     traverser.add4CD4CodeBasis(new CD4CodeBasisVisitor2() {
       @Override
       public void visit(ASTCDMethod node) {
@@ -67,7 +74,7 @@ public class TagRelated {
           __addTag(node.getSymbol(), tagUnit, astTag);
         }
       }
-    });
+    });*/
     ast.accept(traverser);
 
     String s = UMLPToolOptions.SYMTAB.getValue(cmd);

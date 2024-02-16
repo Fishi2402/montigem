@@ -6,6 +6,9 @@
       "@umlp/common": [
         "../dist/umlp/mc/fenix/common"
       ],
+      "@umlp/commonj2ts": [
+        "../dist/umlp/mc/fenix/commonj2ts"
+      ],
       "@umlp/arrange": [
         "../dist/umlp/mc/fenix/arrange"
       ],

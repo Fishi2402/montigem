@@ -11,11 +11,13 @@ import gui.staticcontainer.NavContainer;
 
 page AllPacksOverview(List<BatteryPack> allPacks) {
   @NavContainer(
-    content=[
-     @GemColumn(
-        colGap="5px",
+    content = [
+      @GemColumn(
+        rowGap = "15px",
         components = [
           @iterate(BatteryPack pack : allPacks) {
+            @BatteryPackOverview(pack=pack);
+            // TODO: delete
             @BatteryPackOverview(pack=pack);
           }
       ])

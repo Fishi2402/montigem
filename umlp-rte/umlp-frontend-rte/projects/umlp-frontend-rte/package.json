@@ -1,7 +1,0 @@
-{
-  "name": "umlp-frontend-rte",
-  "version": "7.6.0-SNAPSHOT",
-  "dependencies": {
-    "tslib": "^2.3.0"
-  }
-}
