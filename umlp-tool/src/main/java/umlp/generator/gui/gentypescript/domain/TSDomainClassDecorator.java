@@ -257,8 +257,4 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     return "umlp.gui2ts.domain.TSEquals";
   }
 
-  protected void createExeceuteCommandMethod(ASTCDClass domainClass, ASTCDClass clazz, ASTCDMethod command) {
-   // getCD4C().addMethod(clazz, "umlp.domain.ExecuteCommand", command.getName());
-  }
-
 }
