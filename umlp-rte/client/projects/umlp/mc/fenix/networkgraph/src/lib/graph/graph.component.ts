@@ -13,7 +13,7 @@ import {
 } from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {SerializedGraph} from "graphology-types";
-import {CustomMetricsGenerator, EdgeAttributes, GraphEdge, GraphNode, NodeAttributes} from "./types/graph.types";
+import {/*CustomMetricsGenerator,*/ EdgeAttributes, GraphEdge, GraphNode, NodeAttributes} from "./types/graph.types";
 import {
   ComplexGraphLayoutConfiguration,
   ComplexGraphLayouts,
@@ -110,7 +110,7 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
     @Input() metricKeys: string[] = this.graphManager.graphMetrics.getAllInformationMetricKeys();
 
     /** Custom function for generating metrics, if provided. */
-    @Input() customMetricsGenerator?: CustomMetricsGenerator;
+    /*@Input() customMetricsGenerator?: CustomMetricsGenerator;*/
 
     /** Serialized representation of the graph to be displayed. */
     @Input() serializedGraph?: SerializedGraph<NodeAttributes, EdgeAttributes>;
@@ -417,10 +417,10 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
             this.graphManager.updateLayoutConfiguration(this.complexLayout || null);
             shouldRefresh = true;
         }
-        if (this.hasChanged(changes, "customMetricsGenerator") && this.customMetricsGenerator) {
+        /*if (this.hasChanged(changes, "customMetricsGenerator") && this.customMetricsGenerator) {
             // No need to refresh here
             this.graphManager.setGenerateMetrics(() => this.customMetricsGenerator!(this));
-        }
+        }*/
 
         if (shouldRefresh) this.graphManager.reload();
     }

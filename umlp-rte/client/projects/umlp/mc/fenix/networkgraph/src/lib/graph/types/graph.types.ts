@@ -1,7 +1,6 @@
 import { Attributes } from "graphology-types";
 import { Color } from "../../shared/utils/color.util";
 import { EdgeDisplayData, NodeDisplayData, PartialButFor } from "sigma/types";
-import { GemGraphComponent } from "../graph.component";
 import { AnimateOptions } from "sigma/utils/animate";
 
 /** Represents a value that can be a number, string, or boolean */
@@ -13,7 +12,7 @@ export type MetricInformation = {
 };
 
 /** Function type to generate custom metrics, receives the NetworkGraphComponent as an argument */
-export type CustomMetricsGenerator = (component: GemGraphComponent) => MetricInformation;
+/*export type CustomMetricsGenerator = (component: GemGraphComponent) => MetricInformation;*/
 
 /** Function type to generate metrics */
 export type GenerateMetricsFunction = () => MetricInformation;
