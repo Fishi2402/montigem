@@ -37,9 +37,9 @@ public class ExpressionConversion {
     node.accept(traverser);
 
     if (SymTypeRelations.isBoolean(type4Ast.getTypeOfExpression(node))) {
-      return "this.is" + StringTransformations.capitalize(node.getName()) + "()";
+      return "is" + StringTransformations.capitalize(node.getName()) + "()";
     }
-    return "this.get" + StringTransformations.capitalize(node.getName()) + "()";
+    return "get" + StringTransformations.capitalize(node.getName()) + "()";
   }
 
   public String attr2Getter(ASTNameExpression node, Collection<String> ignore) {

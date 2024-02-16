@@ -1,23 +1,36 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPrettyPrinter;
+import de.monticore.guidsl._symboltable.IGUIDSLScope;
+import de.monticore.guidsl._visitor.GUIDSLTraverser;
+import de.monticore.guidsl.types.check.util.GUIDSLTypeTraverserFactory;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.Type4Ast;
+import de.se_rwth.commons.StringTransformations;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class NameExpressionConverter extends ExpressionsBasisPrettyPrinter {
 
   protected final Function<ASTNameExpression, String> conversion;
+  protected final List<ASTExpression> ignore;
 
   public NameExpressionConverter(
       IndentPrinter printer,
       boolean printComments,
-      Function<ASTNameExpression, String> conversion
+      Function<ASTNameExpression, String> conversion,
+      List<ASTExpression>ignore
   ) {
     super(printer, printComments);
     this.conversion = conversion;
+    this.ignore = ignore;
   }
 
   @Override
@@ -26,12 +39,16 @@ public class NameExpressionConverter extends ExpressionsBasisPrettyPrinter {
       CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
 
-    getPrinter().print(conversion.apply(node) + " ");
+    if (ignore.contains(node)) {
+      getPrinter().print("this." + node.getName() + " ");
+    }
+    else {
+      getPrinter().print("this." + conversion.apply(node) + " ");
+    }
 
     if (this.isPrintComments()) {
       CommentPrettyPrinter.printPostComments(node, getPrinter());
     }
   }
-
 
 }

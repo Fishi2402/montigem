@@ -4,6 +4,7 @@ package guiTest.generator.gui.genjava.prettyprinter;
 import com.google.common.collect.Iterables;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.class2mc.OOClass2MCResolver;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
@@ -12,6 +13,7 @@ import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.io.paths.MCPath;
 import de.monticore.prettyprint.IndentPrinter;
+import de.se_rwth.commons.logging.Log;
 import guiTest.AbstractGUITest;
 import guiTest.GUIComponentStat;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,9 @@ import umlp._symboltable.UMLPSymbols2Json;
 import umlp.generator.gui.genjava.prettyprinter.CommonExpressionsConversionPrinter;
 import umlp.generator.gui.genjava.prettyprinter.ExpressionConversion;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
@@ -177,6 +182,10 @@ public class CommonExpressionsConversionPrinterTest extends AbstractGUITest {
     importedSymbolPath = new MCPath();
     importedSymbolPath.addEntry(Paths.get(symFolder));
     importedSymbolPath.addEntry(Paths.get(symbolPath));
+    String[] guidslTypesJarPath = System.getProperty("guidsl-default-types").split(File.pathSeparator);
+    for (String path : guidslTypesJarPath) {
+      importedSymbolPath.addEntry(Paths.get(path));
+    }
     UMLPTool.createSymbolTable(
         guiAst,
         Optional.of(Paths.get("src/test/resources/" + modelPath)),

@@ -22,7 +22,7 @@ page Create(Person person, Address address) {
         employed@GemCheckBoxInput(
           labelText = "Employed",
           checked = p.employed
-        );
+        )
       ]),
       @GemColumn(width = "33%", components = [
         street@GemTextInput(labelText = "Street", entry = address.street)
