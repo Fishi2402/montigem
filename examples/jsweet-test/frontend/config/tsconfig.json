@@ -1,0 +1,49 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "noImplicitOverride": false,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": false,
+    "noStrictGenericChecks": true,
+    "ignoreDeprecations": "5.0",
+    "strictNullChecks": false,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "useDefineForClassFields": false,
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
+    "paths": {
+      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*"],
+      "@angular/*": ["node_modules/@angular/*"],
+      "@umlp/arrange": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/arrange/src"],
+      "@umlp/basic": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/basic/src"],
+      "@umlp/charts": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/charts/src"],
+      "@umlp/common": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/common/src"],
+      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/commonj2ts/src"],
+      "@umlp/input": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/input/src"],
+      "@umlp/navigation": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/navigation/src"],
+      "@umlp/table": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/table/src"],
+      "@umlp/*": ["node_modules/@umlp/*"],
+      "tslib": ["node_modules/tslib"]
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}

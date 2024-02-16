@@ -9,7 +9,8 @@ try{
   for(${typeName} o : objectsToInsert) {
     ${statement}.clearParameters();
     ${statement}.setLong(1, o.getGemId());
-    <#list attributes as attr><#assign index = attr?index+2>
+    <#assign index = 1>
+    <#list attributes as attr><#assign index = index+1>
         ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", false)};
     </#list>
     <#list optionalAttributes as attr><#assign index = index+1>

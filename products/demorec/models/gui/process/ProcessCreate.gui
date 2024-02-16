@@ -83,6 +83,6 @@ page ProcessCreate(Process p, BatteryPack pack, BatteryPackType type) {
       );
     }
   },
-  @GemButton(label = "Save Process.", leftClick = sendEverything)
+  @GemButton(label = "Start Process", leftClick = sendEverything)
   ]);
 }

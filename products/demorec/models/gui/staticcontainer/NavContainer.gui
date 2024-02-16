@@ -10,7 +10,7 @@ import gui.staticcontainer.Footer;
 component NavContainer(
   List<GUIViewElement> content
 ) {
-  @GemColumn(components = [
+  @GemColumn(rowGap = "5px", components = [
     @Navigation(),
     mainCol@GemColumn(components = content),
     @Footer()

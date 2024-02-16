@@ -5,8 +5,8 @@ classdiagram Dtcockpit {
 
   <<singleton>>
   class App{
-    <<command>> void sendMail(User email, String subject, String message, List<String> forwards);
-    <<command>> void startMontiVerseLitePipeline();
+    void sendMail(User email, String subject, String message, List<String> forwards);
+    void startMontiVerseLitePipeline();
   }
 
   // Singleton-Type used instead of stereotypes/annotations

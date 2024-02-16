@@ -6,7 +6,7 @@ ${cd4c.method("protected abstract Optional<${command}> fromJsonObject(JsonObject
 ${cd4c.method("protected Optional<${command}> fromJsonObject(JsonObject jsonObject)")}
   return Optional.of(new ${command}(
     jsonObject.getMember("gemId").getAsJsonNumber().getNumberAsLong(),
-<#if isOptional>Optional.ofNullable(</#if>
+<#if isOptional>jsonObject.hasMember("${attrName}")? Optional.of(</#if>
 <#if useDeSer>
     ${objectMapperName}.<${type}>deserialize(jsonObject.getMember("${attrName}").isJsonString() ? '"' + jsonObject.getMember("${attrName}").getAsJsonString().getValue() + '"' : jsonObject.getMember("${attrName}").toString(), "${type}").orElse(null)
 <#else>
@@ -16,6 +16,6 @@ ${cd4c.method("protected Optional<${command}> fromJsonObject(JsonObject jsonObje
     jsonObject.getMember("${attrName}").${json}
     </#if>
 </#if>
-<#if isOptional>)</#if>
+<#if isOptional>): Optional.empty()</#if>
   ));
 </#if>
