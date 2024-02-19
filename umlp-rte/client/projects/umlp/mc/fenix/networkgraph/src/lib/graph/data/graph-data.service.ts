@@ -293,7 +293,7 @@ export class GraphDataService<N extends NodeAttributes, E extends EdgeAttributes
    */
   public set selectedEdge(value: string | null) {
     const shouldForceEdgeLabels: boolean = this.graphSettings.getSetting("forceEdgeLabels");
-    if (!this.graphSettings.getSetting("enableEdgeClickEvents")) {
+    if (!this.graphSettings.getSetting("enableEdgeEvents")) {
       // Hide label of previously selected edge (only if forceLabels is disabled)
       if (!shouldForceEdgeLabels && this.graph?.hasEdge(this._selectedEdge())) {
         this.graph?.setEdgeAttribute(this._selectedEdge(), "forceLabel", false);
@@ -432,7 +432,7 @@ export class GraphDataService<N extends NodeAttributes, E extends EdgeAttributes
    * @param {string | null} value - The key of the edge to hover, or null to un-hover the current edge.
    */
   public set hoveredEdge(value: string | null) {
-    if (!this.graphSettings.getSetting("enableEdgeHoverEvents")) {
+    if (!this.graphSettings.getSetting("enableEdgeEvents")) {
       this._hoveredEdge.set(null);
     } else if (value !== this.hoveredEdge && this.edgeIsVisible(value)) {
       this._hoveredEdge.set(value);

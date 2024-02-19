@@ -585,8 +585,7 @@ export class GraphManagerService<
   private subscribeToGraphEvents(): void {
     const isNodeHoverEnabled: boolean = this.graphSettings.getSetting("enableNodeHoverEvents");
     const isNodeClickEnabled: boolean = this.graphSettings.getSetting("enableNodeClickEvents");
-    const isEdgeHoverEnabled: boolean = this.graphSettings.getSetting("enableEdgeHoverEvents") !== false;
-    const isEdgeClickEnabled: boolean = this.graphSettings.getSetting("enableEdgeClickEvents");
+    const isEdgeEnabled: boolean = this.graphSettings.getSetting("enableEdgeEvents");
     // Triggered when the mouse enters a node. Used to set the hovered node.
     this.renderer?.on("enterNode", (event: SigmaNodeEventPayload) => {
       if (isNodeHoverEnabled) this.setHoveredNode(event.node);
@@ -599,12 +598,12 @@ export class GraphManagerService<
 
     // Triggered when the mouse enters an edge. Used to set the hovered edge.
     this.renderer?.on("enterEdge", (event: SigmaEdgeEventPayload): void => {
-      if (isEdgeHoverEnabled) this.setHoveredEdge(event.edge);
+      if (isEdgeEnabled) this.setHoveredEdge(event.edge);
     });
 
     // Triggered when the mouse leaves an edge. Used to clear the hovered edge.
     this.renderer?.on("leaveEdge", (): void => {
-      if (isEdgeHoverEnabled) this.setHoveredEdge(null);
+      if (isEdgeEnabled) this.setHoveredEdge(null);
     });
 
     // Triggered when a node is clicked. Used to set the selected node.
@@ -614,7 +613,7 @@ export class GraphManagerService<
 
     // Triggered when an edge is clicked. Used to set the selected edge.
     this.renderer?.on("clickEdge", (event: SigmaEdgeEventPayload): void => {
-      if (isEdgeClickEnabled) this.setSelectedEdge(event.edge);
+      if (isEdgeEnabled) this.setSelectedEdge(event.edge);
     });
 
     // Triggered when clicking on an empty area in the graph. Used to reset selection.

@@ -1,11 +1,11 @@
-import { DEFAULT_EDGE_PROGRAM_CLASSES, DEFAULT_NODE_PROGRAM_CLASSES, DEFAULT_SETTINGS } from "sigma/settings";
+import {DEFAULT_EDGE_PROGRAM_CLASSES, DEFAULT_NODE_PROGRAM_CLASSES, DEFAULT_SETTINGS, Settings} from "sigma/settings";
 import { GraphSettings } from "../types/graph-settings.types";
-import getNodeImageProgram from "sigma/rendering/webgl/programs/node.image";
-import drawLabel from "sigma/rendering/canvas/label";
-import drawHover from "sigma/rendering/canvas/hover";
+import { NodeCircleProgram } from "sigma/rendering"; // getNodeImageProgram from "sigma/rendering/webgl/programs/node.image";
 import { prettyLabelHoverRenderer } from "../renderers/pretty-label-hover.renderer";
 import { prettyLabelRenderer } from "../renderers/pretty-label.renderer";
-import EdgeLineProgram from "sigma/rendering/webgl/programs/edge.line";
+import EdgeLineProgram from "sigma/rendering/programs/edge-line";
+import {NodeLabelDrawingFunction} from "sigma/rendering/node-labels";
+import {NodeHoverDrawingFunction} from "sigma/rendering/node-hover";
 
 /**
  * Function to construct and return new default graph settings object. The use of a function rather than one `settings
@@ -43,11 +43,11 @@ export function getDefaultGraphSettings(): GraphSettings {
     graphType: "mixed",
     unknownGroupName: "unknown",
     defaultEdgeType: "",
-    labelRenderer: prettyLabelRenderer as typeof drawLabel,
-    hoverRenderer: prettyLabelHoverRenderer as typeof drawHover,
+    defaultDrawNodeLabel: prettyLabelRenderer as NodeLabelDrawingFunction,
+    defaultDrawNodeHover: prettyLabelHoverRenderer as NodeHoverDrawingFunction,
     nodeProgramClasses: {
       ...DEFAULT_NODE_PROGRAM_CLASSES,
-      image: getNodeImageProgram(),
+      image: NodeCircleProgram,
     },
     edgeProgramClasses: {
       ...DEFAULT_EDGE_PROGRAM_CLASSES,

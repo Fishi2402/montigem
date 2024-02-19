@@ -26,7 +26,6 @@
     "@upe/logger": "^2.0.3",
     "angular-plotly.js": "^4.0.4",
     "angular2-text-mask": "9.0.0",
-    "canvas": "^2.11.2",
     "chart.js": "^3.0.0",
     "d3": "7.8.2",
     "dom-to-image": "^2.6.0",

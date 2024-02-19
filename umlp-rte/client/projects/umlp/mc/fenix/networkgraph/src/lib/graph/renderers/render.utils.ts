@@ -2,7 +2,6 @@ import { NodeAttributes } from "../types/graph.types";
 import { GraphSettings } from "../types/graph-settings.types";
 import { PartialButFor } from "sigma/types";
 import { TextObject } from "../types/custom-renderer.types";
-import { TextMetrics } from "canvas";
 import { ColorUtil, HEX } from "../../shared/utils/color.util";
 import { Settings } from "sigma/settings";
 
@@ -56,7 +55,7 @@ export function drawRoundedRect(
 export function measureTextDimensions(context: CanvasRenderingContext2D, textObject: TextObject): void {
   context.textBaseline = textObject.baseLine;
   context.font = `${textObject.weight} ${textObject.fontSize}px ${textObject.font}`;
-  const metrics: TextMetrics = context.measureText(textObject.content);
+  const metrics = context.measureText(textObject.content);
   textObject.height = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
   textObject.width = metrics.width;
 }
