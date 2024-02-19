@@ -4,4 +4,4 @@ package util;
 
 import Domain.Person;
 
-component P(Person p, boolean b)
+component P(Person p, boolean b, String s)

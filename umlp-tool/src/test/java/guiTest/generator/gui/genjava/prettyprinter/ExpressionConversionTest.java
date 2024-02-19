@@ -1,5 +1,6 @@
 package guiTest.generator.gui.genjava.prettyprinter;
 
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
@@ -119,4 +120,118 @@ public class ExpressionConversionTest extends DomainGUITest {
         () -> assertEquals(expect5, result5)
     );
   }
+
+  @Test
+  public void testAttr2GetterFieldExp1() {
+    ASTGUIComponentDeclaration componentDecl;
+    GUIComponentStat stat = GUIComponentStat.getInstance();
+    ExpressionConversion conv = ExpressionConversion.getInstance();
+
+    List<ASTGUIComponent> components;
+
+    componentDecl = processGUIModel("gui/complex/ExpressionConversion.gui", "src/test/resources/gui");
+
+    components = stat.getComponents(componentDecl);
+
+    ASTGUIComponent comp1 = components.get(5);
+    ASTGUIComponent comp2 = components.get(6);
+
+    String expect1 = removeSpaces("getName()");
+    String result1 = removeSpaces(conv.attr2Getter((ASTFieldAccessExpression)
+        comp1.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+
+    String expect2 = removeSpaces("isEmployed()");
+    String result2 = removeSpaces(conv.attr2Getter((ASTFieldAccessExpression)
+        comp2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+
+    assertAll(
+        () -> assertEquals(expect1, result1),
+        () -> assertEquals(expect2, result2)
+    );
+  }
+
+  @Test
+  public void testAttr2SetterNameExp1() {
+    ASTGUIComponentDeclaration componentDecl;
+    GUIComponentStat stat = GUIComponentStat.getInstance();
+    ExpressionConversion conv = ExpressionConversion.getInstance();
+
+    List<ASTGUIComponent> components;
+
+    componentDecl = processGUIModel("gui/complex/ExpressionConversion.gui", "src/test/resources/gui");
+
+    components = stat.getComponents(componentDecl);
+
+    ASTGUIComponent comp1 = components.get(0);
+    ASTGUIComponent comp2 = components.get(1);
+    ASTGUIComponent comp3 = components.get(2);
+    ASTGUIComponent comp4 = components.get(3);
+    ASTGUIComponent comp5 = components.get(4);
+
+    String expect1 = removeSpaces("setPerson()");
+    String result1 = removeSpaces(conv.attr2Setter((ASTNameExpression)
+        comp1.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+
+    String expect2 = removeSpaces("set$per$son()");
+    String result2 = removeSpaces(conv.attr2Setter((ASTNameExpression)
+        comp2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+
+    String expect3 = removeSpaces("set_per_son()");
+    String result3 = removeSpaces(conv.attr2Setter((ASTNameExpression)
+        comp3.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+
+    String expect4 = removeSpaces("setTest1()");
+    String result4 = removeSpaces(conv.attr2Setter((ASTNameExpression)
+        comp4.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+
+    String expect5 = removeSpaces("setTest2()");
+    String result5 = removeSpaces(conv.attr2Setter((ASTNameExpression)
+        comp5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+    assertAll(
+        () -> assertEquals(expect1, result1),
+        () -> assertEquals(expect2, result2),
+        () -> assertEquals(expect3, result3),
+        () -> assertEquals(expect4, result4),
+        () -> assertEquals(expect5, result5)
+    );
+  }
+
+  @Test
+  public void testAttr2SetterFieldExp1() {
+    ASTGUIComponentDeclaration componentDecl;
+    GUIComponentStat stat = GUIComponentStat.getInstance();
+    ExpressionConversion conv = ExpressionConversion.getInstance();
+
+    List<ASTGUIComponent> components;
+
+    componentDecl = processGUIModel("gui/complex/ExpressionConversion.gui", "src/test/resources/gui");
+
+    components = stat.getComponents(componentDecl);
+
+    ASTGUIComponent comp1 = components.get(5);
+    ASTGUIComponent comp2 = components.get(6);
+
+    String expect1 = removeSpaces("setName()");
+    String result1 = removeSpaces(conv.attr2Setter((ASTFieldAccessExpression)
+        comp1.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+
+    String expect2 = removeSpaces("setEmployed()");
+    String result2 = removeSpaces(conv.attr2Setter((ASTFieldAccessExpression)
+        comp2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+
+    assertAll(
+        () -> assertEquals(expect1, result1),
+        () -> assertEquals(expect2, result2)
+    );
+  }
+
 }

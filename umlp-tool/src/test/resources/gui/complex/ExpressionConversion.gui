@@ -18,4 +18,6 @@ page ExpressionConversion(
   @P(p = _per_son);
   @P(b = test1);
   @P(b = test2);
+  @P(s = person.name);
+  @P(b = $per$son.employed);
 }
