@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserCreateE2ETest extends DtcockpitMockTestSetup {
@@ -22,6 +23,8 @@ public class UserCreateE2ETest extends DtcockpitMockTestSetup {
 
   @Test
   public void testCreate() {
+    MailServiceMock.init();
+
     String userName = "Max";
     String password = "password";
     String eMail = "max@rwth-aachen.de";
@@ -51,6 +54,8 @@ public class UserCreateE2ETest extends DtcockpitMockTestSetup {
     assertEquals(password, user.getPassword());
     assertEquals(eMail, user.getEmail());
     assertEquals(DtcockpitRole.USER, user.getRole());
+
+    assertFalse(MailServiceMock.getInstance().getMails().isEmpty());
   }
 
   @Test
