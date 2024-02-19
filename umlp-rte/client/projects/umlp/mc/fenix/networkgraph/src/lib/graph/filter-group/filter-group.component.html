@@ -1,0 +1,40 @@
+<p-multiSelect
+  (onChange)="selectGroup($event)"
+  [(ngModel)]="selectedGroups"
+  [maxSelectedLabels]="0"
+  [options]="processedGroups"
+  appendTo="body"
+  optionLabel="groupKey"
+  optionValue="groupKey"
+  panelStyleClass="filer-group-panel"
+  placeholder="No groups selected"
+  selectedItemsLabel="{0} groups selected"
+  styleClass="filter-group-input">
+  <!-- Custom Item -->
+  <ng-template let-item pTemplate="item">
+    <div *ngIf="item" class="group-item">
+      <!-- Add a colored dot for for the group -->
+      <span [style.background]="item.groupColor" class="color-dot"></span>
+      <div class="main-wrapper">
+        <!-- Actual Group Test -->
+        <div class="group-information-wrapper">
+          <!-- Label -->
+          <span class="group-label">{{ item.groupKey | capitalizeFirstLetter }}</span>
+          <!-- Item Count -->
+          <span>({{ item.count }})</span>
+        </div>
+        <!-- Add a bar that visually shows the number of items in the group -->
+        <div [style.width.%]="item.width" class="counter-bar-wrapper">
+          <div class="base-count-bar"></div>
+          <div class="selected-count-bar"></div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <!-- Custom Footer to show the total number of distinct categories -->
+  <ng-template pTemplate="footer">
+    <div class="footer">
+      <span class="footer-text">Total Categories: {{ processedGroups?.length }}</span>
+    </div>
+  </ng-template>
+</p-multiSelect>

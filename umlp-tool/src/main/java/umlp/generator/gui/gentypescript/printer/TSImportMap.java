@@ -10,6 +10,7 @@ public enum TSImportMap {
   NAVIGATION("mc.fenix.navigation", "@umlp/navigation"),
   INPUT("mc.fenix.input", "@umlp/input"),
   TABLE("mc.fenix.table", "@umlp/table"),
+  NETWORKGRAPH("mc.fenix.networkgraph", "@umlp/networkgraph"),
   ARRANGE_DEPRECATED("arrange", "@umlp/arrange"),
   BASIC_DEPRECATED("basic", "@umlp/basic"),
   CHARTS_DEPRECATED("charts", "@umlp/charts"),

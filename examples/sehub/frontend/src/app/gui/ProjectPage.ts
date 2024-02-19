@@ -1,17 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {GemTreeviewEntry} from '@umlp/basic';
-import {GemNetworkData, GemNetworkEdge, GemNetworkNode} from '@umlp/charts';
 import {ProjectPageComponent,config} from '@src/gui/ProjectPageComponent';
 import {Artifact} from '@src/sehub/Artifact';
 import {Directory} from '@src/sehub/Directory';
 import { SehubSecurityManager } from "../sehub/SehubSecurityManager";
 import {Component} from '@angular/core';
 
-import { GemgraphModule } from '@umlp/charts';
+import { GraphNode, GraphEdge } from '@umlp/networkgraph';
 @Component({
   standalone:true,
-  imports:[...config.imports,GemgraphModule],
+  imports:[...config.imports],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
@@ -29,11 +28,20 @@ export class ProjectPage extends ProjectPageComponent {
     super.ngOnInit();
   }
 
-  public getGemNetworkGraph1Data(): GemNetworkData  {
+  public override getGemGraph1Edges() : GraphEdge[] {
+    return this.calculateNetwork().edges
+  }
+
+
+  public override getGemGraph1Nodes(): GraphNode[] {
+    return this.calculateNetwork().nodes
+  }
+
+  public calculateNetwork(): {nodes: GraphNode[], edges:GraphEdge[]}  {
     if(!(this.project)) {
       return null;
     }
-    const networkData = new GemNetworkData();
+    const networkData = {nodes : [], edges : []}
 
     const artifacts : Artifact[] = this.getAllArtifactsFromDir(this.project, []);
 
@@ -48,22 +56,22 @@ export class ProjectPage extends ProjectPageComponent {
   }
 
 
-  private getEdgesFromArtifacts(artifacts:Artifact[]) : GemNetworkEdge[] {
-    let edges : GemNetworkEdge[] = [];
+  private getEdgesFromArtifacts(artifacts:Artifact[]) : GraphEdge[] {
+    let edges : GraphEdge[] = [];
     artifacts.filter(a => a instanceof Directory).forEach((dir : Directory) => {
       dir.getContains().forEach(a => edges.push(this.createEdge(dir.getFullName(), a.getFullName())))
     })
     return edges;
   }
 
-  private createEdge(start : string, end: string): GemNetworkEdge {
-    const edge = new GemNetworkEdge();
-    edge.from = start;
-    edge.to = end;
-    return edge;
+  private createEdge(start : string, end: string): GraphEdge {
+    return {
+      from: start,
+      to: end
+    }
   }
 
-  private getNodesFromArtifacts(artifacts:Artifact[]): GemNetworkNode[] {
+  private getNodesFromArtifacts(artifacts:Artifact[]): GraphNode[] {
     return artifacts.map(a => this.getNodeFromArtifact(a));
   }
 
@@ -75,14 +83,13 @@ export class ProjectPage extends ProjectPageComponent {
     return artifacts;
   }
 
-  private getNodeFromArtifact(art : Artifact): GemNetworkNode {
-    let node : GemNetworkNode = new GemNetworkNode();
-    node.id = art.getFullName()
-    node.color = (art instanceof Directory)? "#a9dcd8" : "#c2f8cd";
-    node.mass = 50;
-    node.label = art.getName()
-
-    return node;
+  private getNodeFromArtifact(art : Artifact): GraphNode {
+    return {
+      id : art.getFullName(),
+      color : (art instanceof Directory)? "#a9dcd8" : "#c2f8cd",
+      mass : 50,
+      label : art.getName()
+    }
   }
 
   public getFilesItems(): Array<GemTreeviewEntry> {
