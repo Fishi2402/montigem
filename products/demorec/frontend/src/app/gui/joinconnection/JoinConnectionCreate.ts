@@ -34,6 +34,7 @@ const newOption: Option = { value: "NEW", display: "NEW" };
 })
 export class JoinConnectionCreate extends JoinConnectionCreateComponent {
 
+  superComponentsOptions: Option[] =  []
   componentOptions : Option[] = [newOption]
   joinConnectionTypeOptions : Option[] = []
 
@@ -57,13 +58,16 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
       const components = componentList;
       components.loadAll().then(() => {
         console.debug(components)
+        this.superComponentsOptions = []
         this.componentOptions = [newOption]
         for (const component of components) {
           console.debug("Refill Join Connection Options")
           let value = component.getGemId() + "";
           this.componentOptions.push({value: value, display: component.getName()+" "+value});
+          this.superComponentsOptions.push({value: value, display: component.getName()+" "+value});
         }
         this.componentOptions = this.componentOptions.slice();
+        this.superComponentsOptions = this.superComponentsOptions.slice();
       });
     });
   }
@@ -83,7 +87,7 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
 
   // Select Super component
   public override getSelectSuperComponentOptions (): Array<Option> {
-    return this.componentOptions;
+    return this.superComponentsOptions;
   }
 
   public override getSelectSuperComponentEntry (): string {
