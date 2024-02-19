@@ -27,6 +27,9 @@
       "@umlp/theme": [
         "../dist/umlp/mc/fenix/theme"
       ],
+      "@umlp/networkgraph": [
+        "../dist/umlp/mc/fenix/networkgraph"
+      ]
     },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",

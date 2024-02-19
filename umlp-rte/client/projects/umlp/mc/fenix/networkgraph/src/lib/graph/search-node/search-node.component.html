@@ -1,0 +1,56 @@
+<!-- Template for the Label-Wrapper -->
+<ng-template #labelWrapperTemplate let-item>
+  <div class="label-wrapper">
+    <!-- Label -->
+    <span class="node-label">{{ item.searchLabel }}</span>
+    <!-- Formatted node key -->
+    <span class="node-key">{{ item.nodeKey | nodeKeyFormatter }}</span>
+  </div>
+</ng-template>
+
+<!-- Actual Dropdown to search for a node -->
+<p-dropdown
+  (onChange)="nodeSelected($event)"
+  (onShow)="updateSearchNodes()"
+  [ngModel]="graphManager.graphData.selectedNode"
+  [filter]="true"
+  [options]="visibleSearchNodes"
+  [showClear]="true"
+  [virtualScrollItemSize]="38"
+  [virtualScrollOptions]="{
+    trackBy: trackByFn,
+    autoSize: true
+  }"
+  [virtualScroll]="true"
+  appendTo="body"
+  filterBy="searchLabel,nodeKey,group"
+  optionLabel="searchLabel"
+  optionValue="nodeKey"
+  panelStyleClass="search-node-panel"
+  placeholder="Search in nodes..."
+  styleClass="search-node-input">
+  <!-- Template for the selected item -->
+  <ng-template let-selectedItem pTemplate="selectedItem">
+    <div *ngIf="selectedItem" class="wrapper">
+      <!-- Show the Label-Wrapper -->
+      <ng-container *ngTemplateOutlet="labelWrapperTemplate; context: { $implicit: selectedItem }"></ng-container>
+    </div>
+  </ng-template>
+
+  <!-- Template for the items in the dropdown -->
+  <ng-template let-item pTemplate="item">
+    <div *ngIf="item" class="wrapper">
+      <!-- Show the Label -->
+      <ng-container *ngTemplateOutlet="labelWrapperTemplate; context: { $implicit: item }"></ng-container>
+      <!-- Show the group in the proper group color -->
+      <span [style]="{ color: item.groupColor }" class="group">{{ item.group }}</span>
+    </div>
+  </ng-template>
+  <!-- Template for the footer -->
+  <ng-template pTemplate="footer">
+    <div class="footer">
+      <!-- Show the total nodes -->
+      <span class="footer-text">Total Nodes: {{ searchNodes.length }}</span>
+    </div>
+  </ng-template>
+</p-dropdown>
