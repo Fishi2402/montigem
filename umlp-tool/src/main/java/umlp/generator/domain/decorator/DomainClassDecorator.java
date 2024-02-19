@@ -2,10 +2,13 @@
 
 package umlp.generator.domain.decorator;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -19,9 +22,12 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
@@ -30,6 +36,10 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
+import umlp.generator.domain.decorator.commands.OwnCommands;
+import umlp.generator.util.PathUtil;
+import umlp.generator.util.TagLookUp;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +49,7 @@ import java.util.stream.Collectors;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
-public class DomainClassDecorator extends DomainTypeDecorator {
+public class DomainClassDecorator extends DomainTypeDecorator implements OwnCommands {
 
   // TODO: add/remove methods for lists of basic types, e.g. List<String>
 
@@ -165,9 +175,14 @@ public class DomainClassDecorator extends DomainTypeDecorator {
     // Methods for class assocs
     createGetterSetterForAssocs(domainClass, clazz, attributes.attrAssocs, false);
 
+    if (TagLookUp.isSingleton(domainClass)) {
+      domainClass.getCDMethodList().forEach(m -> createExeceuteCommandMethod(domainClass, clazz, m));
+    }
+
     // Imports
     addImports(domainClass, clazz);
     addExtendedImport(origCD, clazz);
+    addImportsForCommands(domainClass, clazz);
     return clazz;
   }
 
@@ -292,6 +307,45 @@ public class DomainClassDecorator extends DomainTypeDecorator {
 
   protected String getEqualsTemplate() {
     return "umlp.domain.Equals";
+  }
+
+  protected void createExeceuteCommandMethod(ASTCDClass domainClass, ASTCDClass clazz, ASTCDMethod command) {
+    List<ASTCDParameter> adjustedParameters = Lists.newArrayList();
+    command.getCDParameterList().forEach(p -> adjustedParameters.add(getAdjustedMethodParameter(p)));
+    String params = Joiners.COMMA.join(adjustedParameters.stream().map(p ->
+            UMLPMill.prettyPrint(p.getMCType(), false) + " " + p.getName()).collect(Collectors.toList()));
+    String call = Joiners.COMMA.join(adjustedParameters.stream().map(p -> p.getName()).collect(Collectors.toList()));
+    String returnType = buildReturnType(command, clazz);
+    String asType = returnType.contains("<")? returnType.substring(0, returnType.indexOf("<")): returnType;
+    getCD4C().addMethod(clazz, getExecuteCommandTemplate(), StringTransformations.capitalize(command.getName()),
+        params, returnType, call, asType);
+  }
+
+  protected void addImportsForCommands(ASTCDClass domainType, ASTCDType cdType) {
+    if (TagLookUp.isSingleton(domainType) && !domainType.getCDMethodList().isEmpty()) {
+      getCD4C().addImport(cdType, PathUtil.getBackendRTECommandPath("CommandManager"));
+      domainType.getCDMethodList().forEach(m -> getCD4C().addImport(cdType,
+          getPackageName(UMLPSymbolTables.getDiagramFor(domainType), "commands.") +
+          StringTransformations.capitalize(m.getName())));
+    }
+  }
+
+  protected String getExecuteCommandTemplate() {
+    return "umlp.domain.ExecuteCommand";
+  }
+
+  protected ASTCDParameter getAdjustedMethodParameter(ASTCDParameter param) {
+    ASTCDParameter adjustedParam = param.deepClone();
+    if (isGem(param.getSymbol().getType())) {
+      adjustedParam.setName(param.getName() + "GemId");
+      adjustedParam.setMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder()
+                                  .setPrimitive(ASTConstantsMCBasicTypes.LONG).build());
+    }
+    if (isGemList(param.getSymbol().getType())) {
+      adjustedParam.setName(param.getName() + "GemId");
+      adjustedParam.setMCType(MCTypeFacade.getInstance().createListTypeOf("Long"));
+    }
+    return adjustedParam;
   }
 
   /**
