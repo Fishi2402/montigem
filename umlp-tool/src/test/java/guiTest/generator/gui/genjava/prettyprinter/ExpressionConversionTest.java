@@ -1,0 +1,59 @@
+package guiTest.generator.gui.genjava.prettyprinter;
+
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
+import de.monticore.guidsl._parser.GUIDSLParser;
+import guiTest.AbstractGUITest;
+import guiTest.GUIComponentStat;
+import org.junit.jupiter.api.Test;
+import umlp.generator.gui.genjava.prettyprinter.ExpressionConversion;
+
+import java.io.IOException;
+import java.util.List;
+
+import static guiTest.TestUtils.removeSpaces;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class ExpressionConversionTest extends DomainGUITest {
+
+  @Test
+  public void testAttr2Getter() {
+    ASTGUIComponentDeclaration componentDecl;
+    GUIComponentStat stat = GUIComponentStat.getInstance();
+    ExpressionConversion conv = ExpressionConversion.getInstance();
+
+    List<ASTGUIComponent> components;
+
+    componentDecl = processGUIModel("gui/complex/ExpressionConversion.gui", "src/test/resources/gui");
+
+    components = stat.getComponents(componentDecl);
+
+    ASTGUIComponent comp1 = components.get(0);
+    ASTGUIComponent comp2 = components.get(1);
+    ASTGUIComponent comp3 = components.get(2);
+
+    String expect1 = removeSpaces("getPerson()");
+    String result1 = removeSpaces(conv.attr2Getter((ASTNameExpression)
+        comp1.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+
+    String expect2 = removeSpaces("get$per$son()");
+    String result2 = removeSpaces(conv.attr2Getter((ASTNameExpression)
+        comp2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+
+    String expect3 = removeSpaces("get_per_son()");
+    String result3 = removeSpaces(conv.attr2Getter((ASTNameExpression)
+        comp3.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+    assertAll(
+        () -> assertEquals(expect1, result1),
+        () -> assertEquals(expect2, result2),
+        () -> assertEquals(expect3, result3)
+    );
+  }
+
+}

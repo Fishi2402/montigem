@@ -7,7 +7,7 @@ import Domain.Person;
 import mc.fenix.basic.GemButton;
 import mc.fenix.basic.GemText;
 
-page Expressions(List<Person> persons) {
+page CommonExpressionsConversionPrinter(List<Person> persons) {
   @iterate(Person p : persons) {
     call@GemText(value = getAge());
     ternary@GemText(value = p.friends.size() > 0 ? p.friends.get(p.friends.size() - 1).getAge() : "no friends");

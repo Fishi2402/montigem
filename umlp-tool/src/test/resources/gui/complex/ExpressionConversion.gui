@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package complex;
+
+import Domain.Person;
+
+import util.P;
+
+page ExpressionConversion(Person person, Person $per$son, Person _per_son) {
+  @P(p = person);
+  @P(p = $per$son);
+  @P(p = _per_son);
+}

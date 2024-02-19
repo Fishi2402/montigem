@@ -55,8 +55,4 @@ public abstract class AbstractGUITest extends AbstractUMLPTest {
     return null;
   }
 
-  protected String removeSpaces(String st) {
-    return st.replaceAll("\\s+","");
-  }
-
 }

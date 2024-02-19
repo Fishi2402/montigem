@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package util;
+
+import Domain.Person;
+
+component P(Person p)

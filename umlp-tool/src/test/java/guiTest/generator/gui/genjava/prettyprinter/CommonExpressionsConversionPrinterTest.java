@@ -27,10 +27,11 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
+import static guiTest.TestUtils.removeSpaces;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CommonExpressionsConversionPrinterTest extends AbstractGUITest {
+public class CommonExpressionsConversionPrinterTest extends DomainGUITest {
 
   @Test
   public void testGetterConversion1() {
@@ -164,7 +165,7 @@ public class CommonExpressionsConversionPrinterTest extends AbstractGUITest {
         x -> ExpressionConversion.getInstance().attr2Getter(x));
 
     componentDecl = processGUIModel(
-        "gui/complex/Expressions.gui",
+        "gui/complex/CommonExpressionsConversionPrinter.gui",
         "src/test/resources/gui"
     );
 
@@ -211,45 +212,6 @@ public class CommonExpressionsConversionPrinterTest extends AbstractGUITest {
         () -> assertEquals(expect5, result5),
         () -> assertEquals(expect6, result6)
     );
-  }
-
-  protected ASTGUIComponentDeclaration processGUIModel(
-      String modelPath,
-      String symbolPath
-  ) {
-    UMLPMill.reset();
-    UMLPMill.globalScope().clear();
-    UMLPMill.init();
-    BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
-
-    String symFolder = BUILD_FOLDER + "/guitests";
-    String domainSymFile = symFolder + "/Domain.umlpsym";
-    ASTCDCompilationUnit ast = parse("gui/Domain.umlp");
-    runAfterParseTrafo(ast);
-    IUMLPArtifactScope as = createSymTab(ast);
-    runDefaultTrafos(ast);
-    recreateSymbolTable(ast);
-
-    UMLPSymbols2Json s2j = new UMLPSymbols2Json();
-    s2j.store(as, domainSymFile);
-
-    ASTGUICompilationUnit guiAst;
-    MCPath importedSymbolPath;
-
-    guiAst = parseGUI(modelPath);
-    importedSymbolPath = new MCPath();
-    importedSymbolPath.addEntry(Paths.get(symFolder));
-    importedSymbolPath.addEntry(Paths.get(symbolPath));
-    String[] guidslTypesJarPath = System.getProperty("guidsl-default-types").split(File.pathSeparator);
-    for (String path : guidslTypesJarPath) {
-      importedSymbolPath.addEntry(Paths.get(path));
-    }
-    UMLPTool.createSymbolTable(
-        guiAst,
-        Optional.of(Paths.get("src/test/resources/" + modelPath)),
-        importedSymbolPath
-    );
-    return guiAst.getGUIComponentDeclaration();
   }
 
 }
