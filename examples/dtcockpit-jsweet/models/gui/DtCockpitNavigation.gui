@@ -15,29 +15,33 @@ import mc.fenix.navigation.GemNavList;
 // We have to pass the list of projects as an argument, as only pages are able to observe
 component DtCockpitNavigation(String username, List<Project> projects) {
 @GemColumn(height="auto", components = [
-  @GemNavList(width = "40ch", height = "100vh",
-        components = [
-          @DtNavHeader(),
-          @GemNavItem(title = "Home", target = "/gui/Start"),
-          @iterate(Project g : projects) {
-            @guard(g.name == "MontiVerse") {
-              montiVerseName@GemNavItem(title = "MontiVerse Lite", target = "/gui/montiverse/OverviewPage");
-            }
-          },
-          // @GemNavItem(title = "Projects", target = "/gui/DtcockpitMainPage"),
-          @GemNavItem(title = "TV", target = "/gui/tv/Dashboard"),
-          @iterate(Group g : groups) {
-            grouptNav@GemNavItem(title = g.name, target = "/gui/pipelines/PipelineGroupStats/" + g.name);
-          },
-          projectList@GemNavList(
-            header = @GemNavItem(title = "Git PipelineStats"),
-            components = [
-              @iterate(Project p : projects) {
-                projectNav@GemNavItem(title = p.name, target = "/gui/pipelines/PipelineStats/" + p.name);
-              }
-          ])
-        ],
-        footer = @GemNavItem(title = "This is an always visible footer for this navlist")
-      )
+  @guard(username != null){
+    @GemRow(height="auto",components = [
+      @GemNavItem(title = username + " > Logout", leftClick = logout)
+    ]);
+  },
+  @GemRow(height="auto",components = [
+    @GemNavItem(title = "Home" , target = "/gui/Start")
+  ]),
+  @GemRow(height="auto",components = [
+    @GemNavItem(title = "Projects" , target = "/gui/DtcockpitMainPage")
+  ]),
+
+  @GemRow(height="auto",components = [
+    @GemNavList( components = [
+      @iterate(Project p : projects) {
+        @GemRow(height="auto",components = [
+          @GemNavItem(title = p.name , target = "/gui/project/" + p.name + "/show")
+        ]);
+      },
+      @GemRow(height="auto",components = [
+        @GemNavItem(title = "TestProject" , target = "/gui/project/testproject/show")
+      ])
+    ]
+  )]),
+
+  @GemRow(height="auto",components = [
+    @GemNavItem(title = "Settings" , target = "/gui/settings")
+  ])
 ]);
 }
