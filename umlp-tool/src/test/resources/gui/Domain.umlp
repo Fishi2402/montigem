@@ -5,6 +5,7 @@ umlp Domain {
     java.time.LocalDate birthday;
     String name;
     boolean employed;
+    MaritalStatus status;
     / int getAge();
     void eat();
   }
@@ -12,6 +13,13 @@ umlp Domain {
   class Address {
     String street;
     int house;
+  }
+
+  +enum MaritalStatus {
+    MARRIED,
+    SINGLE,
+    DIVORCED,
+    WIDOWED;
   }
 
   association home [1] Person -> (address) Address [0..1];

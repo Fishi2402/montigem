@@ -1,14 +1,16 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
-import de.monticore.guidsl._visitor.GUIDSLTraverser;
-import de.monticore.guidsl.types.check.util.GUIDSLTypeTraverserFactory;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
-import de.monticore.types3.Type4Ast;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
@@ -32,11 +34,9 @@ public class ExpressionConversion {
     if (isEnum(node)) {
       return node.getName();
     }
-    Type4Ast type4Ast = new Type4Ast();
-    GUIDSLTraverser traverser = GUIDSLTypeTraverserFactory.getInstance().createTraverserForOO(type4Ast);
-    node.accept(traverser);
+    SymTypeExpression ste = GUIGeneratorUtil.getInstance().getType(node);
 
-    if (SymTypeRelations.isBoolean(type4Ast.getTypeOfExpression(node))) {
+    if (SymTypeRelations.isBoolean(ste)) {
       return "is" + StringTransformations.capitalize(node.getName()) + "()";
     }
     return "get" + StringTransformations.capitalize(node.getName()) + "()";
@@ -53,11 +53,9 @@ public class ExpressionConversion {
     if (isEnum(node)) {
       return node.getName();
     }
-    Type4Ast type4Ast = new Type4Ast();
-    GUIDSLTraverser traverser = GUIDSLTypeTraverserFactory.getInstance().createTraverserForOO(type4Ast);
-    node.accept(traverser);
+    SymTypeExpression ste = GUIGeneratorUtil.getInstance().getType(node);
 
-    if (SymTypeRelations.isBoolean(type4Ast.getTypeOfExpression(node))) {
+    if (SymTypeRelations.isBoolean(ste)) {
       return "is" + StringTransformations.capitalize(node.getName()) + "()";
     }
     return "get" + StringTransformations.capitalize(node.getName()) + "()";
@@ -72,22 +70,35 @@ public class ExpressionConversion {
   }
 
   protected boolean isEnum(ASTNameExpression node) {
-    return isEnumType(node.getName(), (IGUIDSLScope) node.getEnclosingScope());
+    if (node.getEnclosingScope() instanceof IGUIDSLScope) {
+      Optional<OOTypeSymbol> sym = ((IGUIDSLScope) node.getEnclosingScope())
+          .resolveOOType(node.getName());
+      return sym.isPresent() && sym.get().isIsEnum();
+    } else {
+      Log.error("0x0000C Attempted to resolve type of '"
+          + GUIGeneratorUtil.getInstance().print(node) + "' outside of GUI model context,"
+          + " but expression conversion is restricted to GUI models.");
+      return false;
+    }
   }
 
   protected boolean isEnum(ASTFieldAccessExpression node) {
-    return isEnumType(
-        GUIGeneratorUtil.getInstance().print(node.getExpression()),
-        (IGUIDSLScope) node.getEnclosingScope()
-    );
-  }
-
-  private boolean isEnumType(String type, IGUIDSLScope enclosingScope) {
-    if (enclosingScope == null) {
+    SymTypeExpression ste = GUIGeneratorUtil.getInstance().getType(node);
+    if (ste.hasTypeInfo()) {
+      if (ste.getTypeInfo() instanceof TypeSymbolSurrogate
+          && ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate() instanceof OOTypeSymbol) {
+        OOTypeSymbol sym = (OOTypeSymbol) ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate();
+        return sym.isIsEnum();
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      Log.error("0x0000B Symbol of expression "
+          + GUIGeneratorUtil.getInstance().print(node) + " could not be resolved.");
       return false;
     }
-    Optional<OOTypeSymbol> ooTypeSymbol = enclosingScope.resolveOOType(type);
-    return ooTypeSymbol.isPresent() && ooTypeSymbol.get().isIsEnum();
   }
 
 }

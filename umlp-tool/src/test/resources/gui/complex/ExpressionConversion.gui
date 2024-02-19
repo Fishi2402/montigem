@@ -3,6 +3,7 @@
 package complex;
 
 import Domain.Person;
+import Domain.MaritalStatus;
 
 import util.P;
 
@@ -20,4 +21,5 @@ page ExpressionConversion(
   @P(b = test2);
   @P(s = person.name);
   @P(b = $per$son.employed);
+  @P(m = MaritalStatus.MARRIED);
 }

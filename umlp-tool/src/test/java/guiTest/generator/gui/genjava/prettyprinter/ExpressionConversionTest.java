@@ -34,6 +34,7 @@ public class ExpressionConversionTest extends DomainGUITest {
     ASTGUIComponent comp3 = components.get(2);
     ASTGUIComponent comp4 = components.get(3);
     ASTGUIComponent comp5 = components.get(4);
+    ASTGUIComponent comp6 = components.get(7);
 
     String expect1 = removeSpaces("getPerson()");
     String result1 = removeSpaces(conv.attr2Getter((ASTNameExpression)
@@ -59,12 +60,19 @@ public class ExpressionConversionTest extends DomainGUITest {
     String result5 = removeSpaces(conv.attr2Getter((ASTNameExpression)
         comp5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
     ));
+
+    String expect6 = removeSpaces("MaritalStatus");
+    String result6 = removeSpaces(conv.attr2Getter((ASTNameExpression)
+        ((ASTFieldAccessExpression) comp6.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()
+            .getExpression()).getExpression()
+    ));
     assertAll(
         () -> assertEquals(expect1, result1),
         () -> assertEquals(expect2, result2),
         () -> assertEquals(expect3, result3),
         () -> assertEquals(expect4, result4),
-        () -> assertEquals(expect5, result5)
+        () -> assertEquals(expect5, result5),
+        () -> assertEquals(expect6, result6)
     );
   }
 
@@ -85,6 +93,7 @@ public class ExpressionConversionTest extends DomainGUITest {
     ASTGUIComponent comp3 = components.get(2);
     ASTGUIComponent comp4 = components.get(3);
     ASTGUIComponent comp5 = components.get(4);
+    ASTGUIComponent comp6 = components.get(7);
 
     Collection<String> ignore = List.of("person", "$per$son", "_per_son", "test1", "test2");
 
@@ -112,12 +121,19 @@ public class ExpressionConversionTest extends DomainGUITest {
     String result5 = removeSpaces(conv.attr2Getter((ASTNameExpression)
         comp5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression(), ignore
     ));
+
+    String expect6 = removeSpaces("MaritalStatus");
+    String result6 = removeSpaces(conv.attr2Getter((ASTNameExpression)
+        ((ASTFieldAccessExpression) comp6.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()
+            .getExpression()).getExpression(), ignore
+    ));
     assertAll(
         () -> assertEquals(expect1, result1),
         () -> assertEquals(expect2, result2),
         () -> assertEquals(expect3, result3),
         () -> assertEquals(expect4, result4),
-        () -> assertEquals(expect5, result5)
+        () -> assertEquals(expect5, result5),
+        () -> assertEquals(expect6, result6)
     );
   }
 
@@ -135,6 +151,7 @@ public class ExpressionConversionTest extends DomainGUITest {
 
     ASTGUIComponent comp1 = components.get(5);
     ASTGUIComponent comp2 = components.get(6);
+    ASTGUIComponent comp3 = components.get(7);
 
     String expect1 = removeSpaces("getName()");
     String result1 = removeSpaces(conv.attr2Getter((ASTFieldAccessExpression)
@@ -146,9 +163,15 @@ public class ExpressionConversionTest extends DomainGUITest {
         comp2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
     ));
 
+    String expect3 = removeSpaces("MARRIED");
+    String result3 = removeSpaces(conv.attr2Getter((ASTFieldAccessExpression)
+        comp3.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+
     assertAll(
         () -> assertEquals(expect1, result1),
-        () -> assertEquals(expect2, result2)
+        () -> assertEquals(expect2, result2),
+        () -> assertEquals(expect3, result3)
     );
   }
 
