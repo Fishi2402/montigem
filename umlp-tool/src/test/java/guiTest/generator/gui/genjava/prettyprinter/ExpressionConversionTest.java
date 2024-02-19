@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ExpressionConversionTest extends DomainGUITest {
 
   @Test
-  public void testAttr2Getter() {
+  public void testAttr2GetterNameExp() {
     ASTGUIComponentDeclaration componentDecl;
     GUIComponentStat stat = GUIComponentStat.getInstance();
     ExpressionConversion conv = ExpressionConversion.getInstance();
@@ -34,6 +34,8 @@ public class ExpressionConversionTest extends DomainGUITest {
     ASTGUIComponent comp1 = components.get(0);
     ASTGUIComponent comp2 = components.get(1);
     ASTGUIComponent comp3 = components.get(2);
+    ASTGUIComponent comp4 = components.get(3);
+    ASTGUIComponent comp5 = components.get(4);
 
     String expect1 = removeSpaces("getPerson()");
     String result1 = removeSpaces(conv.attr2Getter((ASTNameExpression)
@@ -49,10 +51,22 @@ public class ExpressionConversionTest extends DomainGUITest {
     String result3 = removeSpaces(conv.attr2Getter((ASTNameExpression)
         comp3.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
     ));
+
+    String expect4 = removeSpaces("isTest1()");
+    String result4 = removeSpaces(conv.attr2Getter((ASTNameExpression)
+        comp4.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
+
+    String expect5 = removeSpaces("isTest2()");
+    String result5 = removeSpaces(conv.attr2Getter((ASTNameExpression)
+        comp5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+    ));
     assertAll(
         () -> assertEquals(expect1, result1),
         () -> assertEquals(expect2, result2),
-        () -> assertEquals(expect3, result3)
+        () -> assertEquals(expect3, result3),
+        () -> assertEquals(expect4, result4),
+        () -> assertEquals(expect5, result5)
     );
   }
 

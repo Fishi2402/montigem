@@ -6,8 +6,16 @@ import Domain.Person;
 
 import util.P;
 
-page ExpressionConversion(Person person, Person $per$son, Person _per_son) {
+page ExpressionConversion(
+  Person person,
+  Person $per$son,
+  Person _per_son,
+  boolean test1,
+  Boolean test2
+) {
   @P(p = person);
   @P(p = $per$son);
   @P(p = _per_son);
+  @P(b = test1);
+  @P(b = test2);
 }

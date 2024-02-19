@@ -4,4 +4,4 @@ package util;
 
 import Domain.Person;
 
-component P(Person p)
+component P(Person p, boolean b)
