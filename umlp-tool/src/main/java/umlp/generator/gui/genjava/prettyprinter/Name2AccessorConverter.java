@@ -6,17 +6,18 @@ import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPr
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
 public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
 
-  protected final List<ASTExpression> ignore;
+  protected final Collection<ASTExpression> ignore;
 
   public Name2AccessorConverter(
       IndentPrinter printer,
       boolean printComments,
-      List<ASTExpression> ignore
+      Collection<ASTExpression> ignore
   ) {
     super(printer, printComments);
     this.ignore = ignore;

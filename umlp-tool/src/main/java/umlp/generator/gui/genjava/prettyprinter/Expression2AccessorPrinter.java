@@ -7,13 +7,15 @@ import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class CommonExpressionsConversionPrinter extends GUIDSLFullPrettyPrinter {
+public class Expression2AccessorPrinter extends GUIDSLFullPrettyPrinter {
 
   protected final boolean printComments;
 
-  public CommonExpressionsConversionPrinter(
+  public Expression2AccessorPrinter(
       IndentPrinter printer,
       boolean printComments
   ) {
@@ -21,8 +23,11 @@ public class CommonExpressionsConversionPrinter extends GUIDSLFullPrettyPrinter 
     this.printComments = printComments;
   }
 
-  public void asAccessorConverter() {
-    List<ASTExpression> ignore = new ArrayList<>();
+  @Override
+  protected void initializeTraverser(boolean printComments) {
+    super.initializeTraverser(printComments);
+
+    Set<ASTExpression> ignore = new HashSet<>();
     // customized printer
     CommonExpressionsPrettyPrinter commonExpressions = new FieldAccess2AccessorConverter(
         getPrinter(), printComments, ignore

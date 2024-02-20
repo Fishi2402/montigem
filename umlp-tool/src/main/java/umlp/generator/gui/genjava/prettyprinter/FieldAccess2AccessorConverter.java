@@ -7,17 +7,18 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
 public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinter {
 
-  protected final List<ASTExpression> ignore;
+  protected final Collection<ASTExpression> ignore;
 
   public FieldAccess2AccessorConverter(
       IndentPrinter printer,
       boolean printComments,
-      List<ASTExpression> ignore
+      Collection<ASTExpression> ignore
   ) {
     super(printer, printComments);
     this.ignore = ignore;
