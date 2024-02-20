@@ -6,7 +6,6 @@ import java.util.List;
 
 public class DtcockpitMockTestSetup extends DtcockpitMockTestSetupTOP {
 
-  //TODO build would be to prefer instead of overriding every constructor?
   public DtcockpitMockTestSetup(int numberOfClients) {
     super(numberOfClients);
   }
