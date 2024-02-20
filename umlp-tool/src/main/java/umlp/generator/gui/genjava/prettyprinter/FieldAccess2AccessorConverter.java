@@ -12,17 +12,14 @@ import java.util.function.Function;
 
 public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinter {
 
-  protected final Function<ASTFieldAccessExpression, String> conversion;
   protected final List<ASTExpression> ignore;
 
   public FieldAccess2AccessorConverter(
       IndentPrinter printer,
       boolean printComments,
-      Function<ASTFieldAccessExpression, String> conversion,
       List<ASTExpression> ignore
   ) {
     super(printer, printComments);
-    this.conversion = conversion;
     this.ignore = ignore;
   }
 
@@ -46,7 +43,7 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
       getPrinter().print(node.getName() + " ");
     }
     else {
-      getPrinter().print(conversion.apply(node) + " ");
+      getPrinter().print(ExpressionConversion.getInstance().attr2Getter(node) + " ");
     }
 
     if (this.isPrintComments()) {

@@ -11,17 +11,14 @@ import java.util.function.Function;
 
 public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
 
-  protected final Function<ASTNameExpression, String> conversion;
   protected final List<ASTExpression> ignore;
 
   public Name2AccessorConverter(
       IndentPrinter printer,
       boolean printComments,
-      Function<ASTNameExpression, String> conversion,
       List<ASTExpression> ignore
   ) {
     super(printer, printComments);
-    this.conversion = conversion;
     this.ignore = ignore;
   }
 
@@ -35,7 +32,7 @@ public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
       getPrinter().print("this." + node.getName() + " ");
     }
     else {
-      getPrinter().print("this." + conversion.apply(node) + " ");
+      getPrinter().print("this." + ExpressionConversion.getInstance().attr2Getter(node) + " ");
     }
 
     if (this.isPrintComments()) {

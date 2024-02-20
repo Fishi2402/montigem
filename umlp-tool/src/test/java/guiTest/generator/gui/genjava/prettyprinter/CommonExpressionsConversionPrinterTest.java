@@ -11,7 +11,6 @@ import de.monticore.prettyprint.IndentPrinter;
 import guiTest.GUIComponentStat;
 import org.junit.jupiter.api.Test;
 import umlp.generator.gui.genjava.prettyprinter.CommonExpressionsConversionPrinter;
-import umlp.generator.gui.genjava.prettyprinter.ExpressionConversion;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CommonExpressionsConversionPrinterTest extends DomainGUITest {
 
   @Test
-  public void testGetterConversion1() {
+  public void testAccessorConversion1() {
     ASTGUIComponentDeclaration componentDecl;
     GUIComponentStat stat = GUIComponentStat.getInstance();
 
@@ -73,7 +72,7 @@ public class CommonExpressionsConversionPrinterTest extends DomainGUITest {
   }
 
   @Test
-  public void testGetterConversion2() {
+  public void testAccessorConversion2() {
     ASTGUIComponentDeclaration componentDecl;
     GUIComponentStat stat = GUIComponentStat.getInstance();
 
@@ -110,7 +109,7 @@ public class CommonExpressionsConversionPrinterTest extends DomainGUITest {
   }
 
   @Test
-  public void testGetterConversion3() {
+  public void testAccessorConversion3() {
     ASTGUIComponentDeclaration componentDecl;
     GUIComponentStat stat = GUIComponentStat.getInstance();
 
@@ -141,7 +140,7 @@ public class CommonExpressionsConversionPrinterTest extends DomainGUITest {
   }
 
   @Test
-  public void testGetterConversion4() {
+  public void testAccessorConversion4() {
     ASTGUIComponentDeclaration componentDecl;
     GUIComponentStat stat = GUIComponentStat.getInstance();
 
