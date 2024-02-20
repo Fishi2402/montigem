@@ -1,17 +1,15 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
-import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsFullPrettyPrinter;
+import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
-import de.monticore.literals.mccommonliterals._prettyprint.MCCommonLiteralsFullPrettyPrinter;
 import de.monticore.literals.mccommonliterals._prettyprint.MCCommonLiteralsPrettyPrinter;
 import de.monticore.literals.mcliteralsbasis._prettyprint.MCLiteralsBasisPrettyPrinter;
 import de.monticore.mcbasics._prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import umlp._prettyprint.UMLPFullPrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,24 +18,23 @@ import java.util.function.Function;
 public class CommonExpressionsConversionPrinter extends GUIDSLFullPrettyPrinter {
 
   protected final List<ASTExpression> ignore = new ArrayList<>();
+  protected final boolean printComments;
 
   public CommonExpressionsConversionPrinter(
       IndentPrinter printer,
-      boolean printComments,
-      Function<ASTNameExpression, String> nameConversion,
-      Function<ASTFieldAccessExpression, String> fieldAccessConversion
+      boolean printComments
   ) {
     super(printer, printComments);
-    this.initializeTraverser(printComments, nameConversion, fieldAccessConversion);
+    this.printComments = printComments;
   }
 
-  protected void initializeTraverser(
-      boolean printComments,
-      Function<ASTNameExpression, String> nameConversion,
-      Function<ASTFieldAccessExpression, String> fieldAccessConversion
-  ) {
+  public void asAccessorConverter() {
+    final ExpressionConversion conv = ExpressionConversion.getInstance();
+    Function<ASTNameExpression, String> nameConversion = x -> conv.attr2Getter(x);
+    Function<ASTFieldAccessExpression, String> fieldAccessConversion = x -> conv.attr2Getter(x);
+
     // customized printer
-    FieldAccessNameConverter commonExpressions = new FieldAccessNameConverter(
+    CommonExpressionsPrettyPrinter commonExpressions = new FieldAccess2AccessorConverter(
         getPrinter(), printComments, fieldAccessConversion, ignore
     );
     getTraverser().setCommonExpressionsHandler(commonExpressions);
@@ -45,7 +42,7 @@ public class CommonExpressionsConversionPrinter extends GUIDSLFullPrettyPrinter 
     getTraverser().add4CommonExpressions(commonExpressions);
 
     // customized printer
-    ExpressionsBasisPrettyPrinter expressionsBasis = new NameExpressionConverter(
+    ExpressionsBasisPrettyPrinter expressionsBasis = new Name2AccessorConverter(
         getPrinter(), printComments, nameConversion, ignore
     );
     getTraverser().setExpressionsBasisHandler(expressionsBasis);

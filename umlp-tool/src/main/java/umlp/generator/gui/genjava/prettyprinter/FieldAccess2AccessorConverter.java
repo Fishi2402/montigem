@@ -10,12 +10,12 @@ import de.monticore.prettyprint.IndentPrinter;
 import java.util.List;
 import java.util.function.Function;
 
-public class FieldAccessNameConverter extends CommonExpressionsPrettyPrinter {
+public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinter {
 
   protected final Function<ASTFieldAccessExpression, String> conversion;
   protected final List<ASTExpression> ignore;
 
-  public FieldAccessNameConverter(
+  public FieldAccess2AccessorConverter(
       IndentPrinter printer,
       boolean printComments,
       Function<ASTFieldAccessExpression, String> conversion,
@@ -27,17 +27,9 @@ public class FieldAccessNameConverter extends CommonExpressionsPrettyPrinter {
   }
 
   public void handle(ASTCallExpression node) {
-    if (this.isPrintComments()) {
-      CommentPrettyPrinter.printPreComments(node, getPrinter());
-    }
     // ignore field and name expressions that are direct children of ASTCallExpression
     ignore.add(node.getExpression());
-
-    node.getExpression().accept(getTraverser());
-    node.getArguments().accept(getTraverser());
-    if (this.isPrintComments()) {
-      CommentPrettyPrinter.printPostComments(node, getPrinter());
-    }
+    super.handle(node);
   }
 
   @Override

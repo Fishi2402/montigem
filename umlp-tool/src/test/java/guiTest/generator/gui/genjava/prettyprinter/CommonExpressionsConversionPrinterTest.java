@@ -2,30 +2,18 @@
 package guiTest.generator.gui.genjava.prettyprinter;
 
 import com.google.common.collect.Iterables;
-import de.monticore.cd._symboltable.BuiltInTypes;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
-import de.monticore.io.paths.MCPath;
 import de.monticore.prettyprint.IndentPrinter;
-import guiTest.AbstractGUITest;
 import guiTest.GUIComponentStat;
 import org.junit.jupiter.api.Test;
-import umlp.UMLPMill;
-import umlp.UMLPTool;
-import umlp._symboltable.IUMLPArtifactScope;
-import umlp._symboltable.UMLPSymbols2Json;
 import umlp.generator.gui.genjava.prettyprinter.CommonExpressionsConversionPrinter;
 import umlp.generator.gui.genjava.prettyprinter.ExpressionConversion;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 import static guiTest.TestUtils.removeSpaces;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -43,9 +31,9 @@ public class CommonExpressionsConversionPrinterTest extends DomainGUITest {
     List<ASTGUIIterate> iterates;
 
     CommonExpressionsConversionPrinter printer = new CommonExpressionsConversionPrinter(
-        new IndentPrinter(), true,
-        x -> ExpressionConversion.getInstance().attr2Getter(x),
-        x -> ExpressionConversion.getInstance().attr2Getter(x));
+        new IndentPrinter(), true
+    );
+    printer.asAccessorConverter();
 
     componentDecl = processGUIModel("gui/person/Overview.gui", "src/test/resources/gui");
 
@@ -92,9 +80,9 @@ public class CommonExpressionsConversionPrinterTest extends DomainGUITest {
     List<ASTGUIComponent> components;
 
     CommonExpressionsConversionPrinter printer = new CommonExpressionsConversionPrinter(
-        new IndentPrinter(), true,
-        x -> ExpressionConversion.getInstance().attr2Getter(x),
-        x -> ExpressionConversion.getInstance().attr2Getter(x));
+        new IndentPrinter(), true
+    );
+    printer.asAccessorConverter();
 
     componentDecl = processGUIModel(
         "gui/example_input/GemCheckboxInputExample.gui",
@@ -129,9 +117,9 @@ public class CommonExpressionsConversionPrinterTest extends DomainGUITest {
     List<ASTGUIComponent> components;
 
     CommonExpressionsConversionPrinter printer = new CommonExpressionsConversionPrinter(
-        new IndentPrinter(), true,
-        x -> ExpressionConversion.getInstance().attr2Getter(x),
-        x -> ExpressionConversion.getInstance().attr2Getter(x));
+        new IndentPrinter(), true
+    );
+    printer.asAccessorConverter();
 
     componentDecl = processGUIModel(
         "gui/person/Create.gui",
@@ -160,9 +148,9 @@ public class CommonExpressionsConversionPrinterTest extends DomainGUITest {
     List<ASTGUIComponent> components;
 
     CommonExpressionsConversionPrinter printer = new CommonExpressionsConversionPrinter(
-        new IndentPrinter(), true,
-        x -> ExpressionConversion.getInstance().attr2Getter(x),
-        x -> ExpressionConversion.getInstance().attr2Getter(x));
+        new IndentPrinter(), true
+    );
+    printer.asAccessorConverter();
 
     componentDecl = processGUIModel(
         "gui/complex/CommonExpressionsConversionPrinter.gui",

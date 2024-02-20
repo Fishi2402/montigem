@@ -9,12 +9,12 @@ import de.monticore.prettyprint.IndentPrinter;
 import java.util.List;
 import java.util.function.Function;
 
-public class NameExpressionConverter extends ExpressionsBasisPrettyPrinter {
+public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
 
   protected final Function<ASTNameExpression, String> conversion;
   protected final List<ASTExpression> ignore;
 
-  public NameExpressionConverter(
+  public Name2AccessorConverter(
       IndentPrinter printer,
       boolean printComments,
       Function<ASTNameExpression, String> conversion,
