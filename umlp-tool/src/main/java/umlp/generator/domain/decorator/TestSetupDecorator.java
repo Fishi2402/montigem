@@ -72,9 +72,6 @@ public class TestSetupDecorator extends AbstractDecorator {
     // Methods
     getCD4C().addMethod(res, customTemplatePath + "GetClientName", name);
     getCD4C().addMethod(res, customTemplatePath + "Init", name);
-    //TODO is there a better way to assure, the concept of roles exists?
-    if (name.equals("Dtcockpit"))
-      getCD4C().addMethod(res, customTemplatePath + "RegisterAdmin", name);
 
     addImports(origCD, res);
     return res;
