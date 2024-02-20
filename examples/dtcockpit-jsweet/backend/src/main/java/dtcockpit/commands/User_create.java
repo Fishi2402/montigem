@@ -38,9 +38,8 @@ public class User_create extends User_createTOP {
   @BackendOnly(BackendOnlyModes.STATUS_OK)
   public StatusResult sendMail() {
     Log.trace("Sending Email to " + user.getEmail(), LogUtil.getLoggerName());
-    MailService mailsender = new MailService();
     try {
-      mailsender.sendRegistrationMail(user.getEmail(), user.getUsername());
+      MailService.getInstance().sendRegistrationMail(user.getEmail(), user.getUsername());
     }
     catch (MessagingException error) {
       Log.error(error.toString());

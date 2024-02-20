@@ -14,6 +14,7 @@ import java.util.function.Function;
 import static umlp.backendrte.service.websocket.WebSocketConfig.UMLP_DOMAINNAME_ENV;
 
 public class MailService {
+  protected static MailService instance = new MailService();
 
   public static final String SENDER = System.getenv().getOrDefault("mailAbsender", "noreply@dtcockpit.se.rwth-aachen.de");
   public static final String IDENTIFIER = "Dtcockpit";
@@ -28,11 +29,15 @@ public class MailService {
 
   protected final Properties properties = new Properties();
 
-  public MailService() {
+  protected MailService() {
     addToProperties("mail.smtp.host", "smarthost-tls.rwth-aachen.de");
     addToProperties("mail.smtp.port", 25);
     addToProperties("mail.smtp.auto", "false");
     addToProperties("mail.transport.protocol", "smtp");
+  }
+
+  public static MailService getInstance() {
+    return instance;
   }
 
   public boolean sendRegistrationMail(String email, String userName) throws MessagingException {
