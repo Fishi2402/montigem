@@ -6,21 +6,13 @@ import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPr
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Expression2AccessorPrinter extends GUIDSLFullPrettyPrinter {
 
-  protected final boolean printComments;
-
-  public Expression2AccessorPrinter(
-      IndentPrinter printer,
-      boolean printComments
-  ) {
+  public Expression2AccessorPrinter(IndentPrinter printer, boolean printComments) {
     super(printer, printComments);
-    this.printComments = printComments;
   }
 
   @Override
