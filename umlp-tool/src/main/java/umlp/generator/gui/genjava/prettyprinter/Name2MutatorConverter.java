@@ -5,8 +5,11 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.Collection;
+
+import static umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter.MUTATOR_PARAM;
 
 public class Name2MutatorConverter extends Name2AccessorConverter {
 
@@ -33,17 +36,21 @@ public class Name2MutatorConverter extends Name2AccessorConverter {
     }
     else {
       if (lastFieldAccess.getValue()) {
-        getPrinter().print("this." + ExpressionConversion.getInstance().attr2Setter(node) + " ");
+        getPrinter().print("this." + attr2Setter(node) + " ");
         lastFieldAccess.setValue(false);
       }
       else {
-        getPrinter().print("this." + ExpressionConversion.getInstance().attr2Getter(node) + " ");
+        getPrinter().print("this." + attr2Getter(node) + " ");
       }
     }
 
     if (this.isPrintComments()) {
       CommentPrettyPrinter.printPostComments(node, getPrinter());
     }
+  }
+
+  public String attr2Setter(ASTNameExpression node) {
+    return "set" + StringTransformations.capitalize(node.getName()) + "(" + MUTATOR_PARAM + ")";
   }
 
 }

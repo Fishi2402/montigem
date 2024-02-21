@@ -2,7 +2,6 @@
 package gradle.common;
 
 import gradle.MockFileChange;
-import gradle.common.IncGenData;
 import org.gradle.work.ChangeType;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +17,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static umlptest.AbstractUMLPTest.BUILD_FOLDER;
+import static umlp.AbstractUMLPTest.BUILD_FOLDER;
 
 public class IncGenDataTest {
   protected IncGenData lastRun;

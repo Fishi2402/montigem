@@ -6,6 +6,13 @@ import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressions
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types3.SymTypeRelations;
+import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
 import java.util.List;
@@ -45,13 +52,44 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
       getPrinter().print(node.getName() + " ");
     }
     else {
-      getPrinter().print(ExpressionConversion.getInstance().attr2Getter(node) + " ");
+      getPrinter().print(attr2Getter(node) + " ");
     }
 
     if (this.isPrintComments()) {
       CommentPrettyPrinter.printPostComments(node, getPrinter());
     }
 
+  }
+
+  protected String attr2Getter(ASTFieldAccessExpression node) {
+    if (isEnum(node)) {
+      return node.getName();
+    }
+    SymTypeExpression ste = GUIGeneratorUtil.getInstance().getType(node);
+
+    if (SymTypeRelations.isBoolean(ste)) {
+      return "is" + StringTransformations.capitalize(node.getName()) + "()";
+    }
+    return "get" + StringTransformations.capitalize(node.getName()) + "()";
+  }
+
+  protected boolean isEnum(ASTFieldAccessExpression node) {
+    SymTypeExpression ste = GUIGeneratorUtil.getInstance().getType(node);
+    if (ste.hasTypeInfo()) {
+      if (ste.getTypeInfo() instanceof TypeSymbolSurrogate
+          && ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate() instanceof OOTypeSymbol) {
+        OOTypeSymbol sym = (OOTypeSymbol) ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate();
+        return sym.isIsEnum();
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      Log.error("0x0000B Symbol of expression "
+          + GUIGeneratorUtil.getInstance().print(node) + " could not be resolved.");
+      return false;
+    }
   }
 
 

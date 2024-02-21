@@ -25,10 +25,13 @@ import de.monticore.expressions.commonexpressions._ast.ASTPlusPrefixExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
+
+import static umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter.MUTATOR_PARAM;
 
 public class FieldAccess2MutatorConverter extends FieldAccess2AccessorConverter {
   protected SharedBoolean lastFieldAccess;
@@ -61,16 +64,20 @@ public class FieldAccess2MutatorConverter extends FieldAccess2AccessorConverter 
     }
     else {
       if (printSetter) {
-        getPrinter().print(ExpressionConversion.getInstance().attr2Setter(node) + " ");
+        getPrinter().print(attr2Setter(node) + " ");
       }
       else {
-        getPrinter().print(ExpressionConversion.getInstance().attr2Getter(node) + " ");
+        getPrinter().print(attr2Getter(node) + " ");
       }
     }
 
     if (this.isPrintComments()) {
       CommentPrettyPrinter.printPostComments(node, getPrinter());
     }
+  }
+
+  protected String attr2Setter(ASTFieldAccessExpression node) {
+    return "set" + StringTransformations.capitalize(node.getName()) + "(" + MUTATOR_PARAM + ")";
   }
 
   @Override
