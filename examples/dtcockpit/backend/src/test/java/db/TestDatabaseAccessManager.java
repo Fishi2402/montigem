@@ -26,7 +26,7 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager4SQL {
   protected void _setup() {
     try {
       // postgres db
-      connection = DriverManager.getConnection("jdbc:postgresql://postgresql:5432/"+
+      connection = DriverManager.getConnection("jdbc:postgresql://postgres:5432/"+
           System.getenv("POSTGRES_DB")+"?user=" +  System.getenv("user") + "&password="+
           System.getenv("pass"));
     } catch (SQLException e) {
