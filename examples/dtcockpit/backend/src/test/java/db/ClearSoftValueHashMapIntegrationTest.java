@@ -61,7 +61,9 @@ public class ClearSoftValueHashMapIntegrationTest extends DtcockpitDBTestSetup {
 
     backend.activate();
   }
+
   @Test
+  @Tag("SlowTest")
   public void testHashmap() {
     Room room0 = DtcockpitManagerImpl.roomBuilderFromId(0)
         .roomNumber(0).humidity(2.0)
