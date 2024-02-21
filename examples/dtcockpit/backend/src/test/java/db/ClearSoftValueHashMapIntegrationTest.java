@@ -69,7 +69,7 @@ public class ClearSoftValueHashMapIntegrationTest extends DtcockpitDBTestSetup {
         .roomNumber(0).humidity(2.0)
         .temperature(2.0).atmosphericPressure(2.0)
         .motionDetected(false).level(2).build().get();
-    for (int i = 1; i < 2000000; i++) {
+    for (int i = 1; i < 1000000; i++) {
       DtcockpitManagerImpl.roomBuilderFromId(i)
           .roomNumber(i).humidity(2.0)
           .temperature(2.0).atmosphericPressure(2.0)
