@@ -1,6 +1,7 @@
 package dtcockpit.test_infrastructure;
 
 import dtcockpit.DtcockpitManager;
+import dtcockpit.DtcockpitTestContext;
 
 import java.util.List;
 
@@ -26,5 +27,18 @@ public class DtcockpitDBTestSetup extends DtcockpitDBTestSetupTOP {
         .role(dtcockpit.DtcockpitRole.ADMIN)
         .registrationDate(java.time.LocalDateTime.now())
         .build();
+  }
+
+  // TODO: integrate into standard test setup
+  @Override
+  public void _init() throws Exception {
+    super._init();
+
+    DtcockpitManager be = getBackend().getManager();
+    be._addObserver(new EnsureCorrectManagerDtcockpit(be));
+
+    for (DtcockpitTestContext client : getClientsList()) {
+      client.getManager()._addObserver(new EnsureCorrectManagerDtcockpit(client.getManager()));
+    }
   }
 }
