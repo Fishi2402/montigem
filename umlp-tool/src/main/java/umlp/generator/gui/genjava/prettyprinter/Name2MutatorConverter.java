@@ -1,11 +1,13 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
 
@@ -51,6 +53,20 @@ public class Name2MutatorConverter extends Name2AccessorConverter {
 
   public String attr2Setter(ASTNameExpression node) {
     return "set" + StringTransformations.capitalize(node.getName()) + "(" + MUTATOR_PARAM + ")";
+  }
+
+  @Override
+  public void handle(ASTLiteralExpression node) {
+    errorIfExpressionIsFirst(node);
+    super.handle(node);
+  }
+
+  protected void errorIfExpressionIsFirst(ASTExpression node) {
+    if (lastFieldAccess.getValue()) {
+      Log.error("0x0000E Expected NameExpression but got '"
+          + GUIGeneratorUtil.getInstance().print(node)
+          + "'. " + this.getClass().getSimpleName() + " cannot produce setter.");
+    }
   }
 
 }

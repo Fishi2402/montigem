@@ -139,7 +139,7 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
         + "'. FieldAccess2MutatorConverter cannot produce setter."
     );
     printer.prettyprint(button);
-    String result1 = removeSpaces(Log.getFindings().get(0).getMsg());
+    String result1 = removeSpaces(Log.getFindings().get(1).getMsg());
     Log.clearFindings();
 
     assertAll(

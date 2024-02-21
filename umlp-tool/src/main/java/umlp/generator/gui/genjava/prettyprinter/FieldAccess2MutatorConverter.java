@@ -210,7 +210,7 @@ public class FieldAccess2MutatorConverter extends FieldAccess2AccessorConverter 
     if (lastFieldAccess.getValue()) {
       Log.error("0x0000D Expected FieldAccessExpression but got '"
           + GUIGeneratorUtil.getInstance().print(node)
-          + "'. FieldAccess2MutatorConverter cannot produce setter.");
+          + "'. " + this.getClass().getSimpleName() + " cannot produce setter.");
     }
   }
 
