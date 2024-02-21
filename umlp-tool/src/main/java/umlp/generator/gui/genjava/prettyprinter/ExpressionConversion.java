@@ -1,10 +1,8 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
@@ -15,6 +13,8 @@ import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
 import java.util.Optional;
+
+import static umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter.MUTATOR_PARAM;
 
 public class ExpressionConversion {
 
@@ -62,11 +62,11 @@ public class ExpressionConversion {
   }
 
   public String attr2Setter(ASTNameExpression node) {
-    return "set" + StringTransformations.capitalize(node.getName()) + "()";
+    return "set" + StringTransformations.capitalize(node.getName()) + "(" + MUTATOR_PARAM + ")";
   }
 
   public String attr2Setter(ASTFieldAccessExpression node) {
-    return "set" + StringTransformations.capitalize(node.getName()) + "()";
+    return "set" + StringTransformations.capitalize(node.getName()) + "(" + MUTATOR_PARAM + ")";
   }
 
   protected boolean isEnum(ASTNameExpression node) {
@@ -74,7 +74,8 @@ public class ExpressionConversion {
       Optional<OOTypeSymbol> sym = ((IGUIDSLScope) node.getEnclosingScope())
           .resolveOOType(node.getName());
       return sym.isPresent() && sym.get().isIsEnum();
-    } else {
+    }
+    else {
       Log.error("0x0000C Attempted to resolve type of '"
           + GUIGeneratorUtil.getInstance().print(node) + "' outside of GUI model context,"
           + " but expression conversion is restricted to GUI models.");

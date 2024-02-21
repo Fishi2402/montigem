@@ -24,6 +24,7 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
     this.ignore = ignore;
   }
 
+  @Override
   public void handle(ASTCallExpression node) {
     // ignore field and name expressions that are direct children of ASTCallExpression
     ignore.add(node.getExpression());

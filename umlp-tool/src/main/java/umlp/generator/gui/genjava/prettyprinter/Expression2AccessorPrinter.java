@@ -1,5 +1,6 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPrettyPrinter;
@@ -11,16 +12,23 @@ import java.util.Set;
 
 public class Expression2AccessorPrinter extends GUIDSLFullPrettyPrinter {
 
+  protected Set<ASTExpression> ignore;
+  protected final boolean printComments;
+
   public Expression2AccessorPrinter(IndentPrinter printer, boolean printComments) {
     super(printer, printComments);
+    this.printComments = printComments;
   }
 
   @Override
   protected void initializeTraverser(boolean printComments) {
     super.initializeTraverser(printComments);
+    resetPrinter();
+  }
 
-    Set<ASTExpression> ignore = new HashSet<>();
+  protected void resetPrinter() {
     // customized printer
+    ignore = new HashSet<>();
     CommonExpressionsPrettyPrinter commonExpressions = new FieldAccess2AccessorConverter(
         getPrinter(), printComments, ignore
     );
@@ -37,4 +45,9 @@ public class Expression2AccessorPrinter extends GUIDSLFullPrettyPrinter {
     getTraverser().add4ExpressionsBasis(expressionsBasis);
   }
 
+  @Override
+  public String prettyprint(ASTNode node) {
+    resetPrinter();
+    return super.prettyprint(node);
+  }
 }
