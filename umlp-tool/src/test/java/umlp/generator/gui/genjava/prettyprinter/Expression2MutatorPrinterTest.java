@@ -11,6 +11,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIComponentStat;
 import org.junit.jupiter.api.Test;
+import umlp.generator.gui.DomainGUITest;
 
 import java.util.List;
 

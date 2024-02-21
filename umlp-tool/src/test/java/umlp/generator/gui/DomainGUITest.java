@@ -1,4 +1,4 @@
-package umlp.generator.gui.genjava.prettyprinter;
+package umlp.generator.gui;
 
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;

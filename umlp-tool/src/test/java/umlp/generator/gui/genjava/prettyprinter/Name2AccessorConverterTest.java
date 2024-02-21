@@ -7,6 +7,7 @@ import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.prettyprint.IndentPrinter;
 import org.junit.jupiter.api.Test;
 import umlp.generator.gui.GUIComponentStat;
+import umlp.generator.gui.DomainGUITest;
 
 import java.util.Collection;
 import java.util.HashSet;
