@@ -8,15 +8,15 @@ import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.prettyprint.IndentPrinter;
-import umlp.generator.gui.GUIComponentStat;
 import org.junit.jupiter.api.Test;
 import umlp.generator.gui.DomainGUITest;
+import umlp.generator.gui.GUIComponentStat;
 
 import java.util.List;
 
-import static umlp.generator.gui.TestUtils.removeSpaces;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static umlp.generator.gui.TestUtils.removeSpaces;
 
 public class Expression2AccessorPrinterTest extends DomainGUITest {
 
@@ -152,6 +152,7 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     ASTGUIComponent fieldCall2 = stat.getById(components, "fieldCall2");
     ASTGUIComponent fieldCall3 = stat.getById(components, "fieldCall3");
     ASTGUIComponent fieldCall4 = stat.getById(components, "fieldCall4");
+    ASTGUIComponent literal = stat.getById(components, "literal");
 
     String expect1 = removeSpaces("this.getAge()");
     String result1 = removeSpaces(printer.prettyprint(
@@ -179,13 +180,18 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     String result6 = removeSpaces(printer.prettyprint(
         fieldCall4.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
+    String expect7 = removeSpaces("\"bob\"");
+    String result7 = removeSpaces(printer.prettyprint(
+        literal.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
     assertAll(
         () -> assertEquals(expect1, result1),
         () -> assertEquals(expect2, result2),
         () -> assertEquals(expect3, result3),
         () -> assertEquals(expect4, result4),
         () -> assertEquals(expect5, result5),
-        () -> assertEquals(expect6, result6)
+        () -> assertEquals(expect6, result6),
+        () -> assertEquals(expect7, result7)
     );
   }
 

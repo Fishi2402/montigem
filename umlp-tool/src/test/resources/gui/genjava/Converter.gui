@@ -22,4 +22,5 @@ page Converter(
   @P(s = person.name);
   @P(b = $per$son.employed);
   @P(m = MaritalStatus.MARRIED);
+  @P(b = true);
 }

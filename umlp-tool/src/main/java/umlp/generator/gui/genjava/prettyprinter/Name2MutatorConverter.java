@@ -63,7 +63,7 @@ public class Name2MutatorConverter extends Name2AccessorConverter {
 
   protected void errorIfExpressionIsFirst(ASTExpression node) {
     if (lastFieldAccess.getValue()) {
-      Log.error("0x0000E Expected NameExpression but got '"
+      Log.error("0x0000D Expected NameExpression but got '"
           + GUIGeneratorUtil.getInstance().print(node)
           + "'. " + this.getClass().getSimpleName() + " cannot produce setter.");
     }

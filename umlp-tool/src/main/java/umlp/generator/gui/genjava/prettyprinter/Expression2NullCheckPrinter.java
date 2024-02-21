@@ -36,7 +36,7 @@ public class Expression2NullCheckPrinter implements ExpressionsBasisVisitor2, Co
   }
 
   public String prettyprint(ASTNode node) {
-    sb = new StringBuilder("true");
+    sb = new StringBuilder("false");
     printer.clearBuffer();
     getTraverser().clearTraversedElements();
     node.accept(getTraverser());

@@ -16,4 +16,5 @@ page Prettyprinter(List<Person> persons) {
   }
   fieldCall3@GemText(value = p.get(0).getAge());
   fieldCall4@GemButton(leftClick = p.eat());
+  literal@GemText(value = "bob");
 }

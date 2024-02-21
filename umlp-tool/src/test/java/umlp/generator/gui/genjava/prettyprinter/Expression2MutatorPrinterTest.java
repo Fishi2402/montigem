@@ -9,15 +9,15 @@ import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
-import umlp.generator.gui.GUIComponentStat;
 import org.junit.jupiter.api.Test;
 import umlp.generator.gui.DomainGUITest;
+import umlp.generator.gui.GUIComponentStat;
 
 import java.util.List;
 
-import static umlp.generator.gui.TestUtils.removeSpaces;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static umlp.generator.gui.TestUtils.removeSpaces;
 
 public class Expression2MutatorPrinterTest extends DomainGUITest {
 
@@ -170,6 +170,7 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     ASTGUIComponent fieldCall2 = stat.getById(components, "fieldCall2");
     ASTGUIComponent fieldCall3 = stat.getById(components, "fieldCall3");
     ASTGUIComponent fieldCall4 = stat.getById(components, "fieldCall4");
+    ASTGUIComponent literal = stat.getById(components, "literal");
 
     String expect1 = removeSpaces("0x0000D Expected FieldAccessExpression but got '"
         + "getAge()"
@@ -219,13 +220,22 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     String result6 = removeSpaces(Log.getFindings().get(0).getMsg());
     Log.clearFindings();
 
+    String expect7 = removeSpaces("0x0000D Expected NameExpression but got '"
+        + "\"bob\""
+        + "'. Name2MutatorConverter cannot produce setter."
+    );
+    printer.prettyprint(literal);
+    String result7 = removeSpaces(Log.getFindings().get(0).getMsg());
+    Log.clearFindings();
+
     assertAll(
         () -> assertEquals(expect1, result1),
         () -> assertEquals(expect2, result2),
         () -> assertEquals(expect3, result3),
         () -> assertEquals(expect4, result4),
         () -> assertEquals(expect5, result5),
-        () -> assertEquals(expect6, result6)
+        () -> assertEquals(expect6, result6),
+        () -> assertEquals(expect7, result7)
     );
   }
 

@@ -8,15 +8,15 @@ import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.prettyprint.IndentPrinter;
-import umlp.generator.gui.GUIComponentStat;
 import org.junit.jupiter.api.Test;
 import umlp.generator.gui.DomainGUITest;
+import umlp.generator.gui.GUIComponentStat;
 
 import java.util.List;
 
-import static umlp.generator.gui.TestUtils.removeSpaces;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static umlp.generator.gui.TestUtils.removeSpaces;
 
 public class Expression2NullCheckPrinterTest extends DomainGUITest {
 
@@ -39,24 +39,24 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
 
     // there is only one guard in Overview.gui
     ASTGUIGuard guard = guards.get(0);
-    String expect1 = removeSpaces("true || this.getP() == null || this.getP().getAddress() == null");
+    String expect1 = removeSpaces("false || this.getP() == null || this.getP().getAddress() == null");
     String result1 = removeSpaces(printer.prettyprint(guard.getCondition()));
 
     // there is only one iterate in Overview.gui
     ASTGUIIterate iterate = iterates.get(0);
     ASTGUIShortIterateControl control = ((ASTGUIShortIterateControl) iterate.getIterateControl());
-    String expect2 = removeSpaces("true");
+    String expect2 = removeSpaces("false");
     String result2 = removeSpaces(printer.prettyprint(control.getIterable()));
 
     // component with id gemText5
     ASTGUIComponent gemText5 = components.get(4);
-    String expect3 = removeSpaces("true || this.getP() == null");
+    String expect3 = removeSpaces("false || this.getP() == null");
     String result3 = removeSpaces(printer.prettyprint(
         gemText5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
     // GemText component showing address in form: "<street> <house>"
     ASTGUIComponent address = components.get(5);
-    String expect4 = removeSpaces("true"
+    String expect4 = removeSpaces("false"
         + " || this.getP() == null || this.getP().getAddress() == null"
         + " || this.getP() == null || this.getP().getAddress() == null");
     String result4 = removeSpaces(printer.prettyprint(
@@ -89,12 +89,12 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
     // the only component in GemCheckboxInputExample.gui
     ASTGUIComponent checkbox = components.get(0);
     // GemCheckBoxInput#labelText
-    String expect1 = removeSpaces("true || this.getP() == null");
+    String expect1 = removeSpaces("false || this.getP() == null");
     String result1 = removeSpaces(printer.prettyprint(
         checkbox.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
     // GemCheckBoxInput#checked
-    String expect2 = removeSpaces("true || this.getP() == null");
+    String expect2 = removeSpaces("false || this.getP() == null");
     String result2 = removeSpaces(printer.prettyprint(
         checkbox.getGUINamedArgs().getGUINamedArg(1).getGUIArgValue()));
 
@@ -123,7 +123,7 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
     // GemButton
     ASTGUIComponent button = Iterables.getLast(components);
     // GemButton#leftClick
-    String expect1 = removeSpaces("true");
+    String expect1 = removeSpaces("false");
     String result1 = removeSpaces(printer.prettyprint(
         button.getGUINamedArgs().getGUINamedArg(1).getGUIArgValue()));
 
@@ -139,7 +139,7 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
 
     List<ASTGUIComponent> components;
 
-    Expression2NullCheckPrinter printer = new Expression2NullCheckPrinter(new IndentPrinter(), true);
+    Expression2NullCheckPrinter printer = new Expression2NullCheckPrinter(new IndentPrinter(), false);
 
     componentDecl = processGUIModel(
         "gui/genjava/Prettyprinter.gui",
@@ -154,12 +154,13 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
     ASTGUIComponent fieldCall2 = stat.getById(components, "fieldCall2");
     ASTGUIComponent fieldCall3 = stat.getById(components, "fieldCall3");
     ASTGUIComponent fieldCall4 = stat.getById(components, "fieldCall4");
+    ASTGUIComponent literal = stat.getById(components, "literal");
 
-    String expect1 = removeSpaces("true");
+    String expect1 = removeSpaces("false");
     String result1 = removeSpaces(printer.prettyprint(
         call.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect2 = removeSpaces("true"
+    String expect2 = removeSpaces("false"
         + " || this.getP() == null || this.getP().getFriends() == null"
         + " || this.getP() == null || this.getP().getFriends() == null"
         + " || this.getP() == null || this.getP().getFriends() == null"
@@ -167,28 +168,32 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
     String result2 = removeSpaces(printer.prettyprint(
         ternary.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect3 = removeSpaces("true"
+    String expect3 = removeSpaces("false"
         + " || this.getP() == null");
     String result3 = removeSpaces(printer.prettyprint(
         fieldCall1.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect4 = removeSpaces("true"
+    String expect4 = removeSpaces("false"
         + " || this.getP() == null"
         + " || this.getP().getFriends() == null"
         + " || this.getP().getFriends().get(0) == null");
     String result4 = removeSpaces(printer.prettyprint(
         fieldCall2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect5 = removeSpaces("true"
+    String expect5 = removeSpaces("false"
         + " || this.getP() == null"
         + " || this.getP().get(0) == null");
     String result5 = removeSpaces(printer.prettyprint(
         fieldCall3.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect6 = removeSpaces("true"
+    String expect6 = removeSpaces("false"
         + " || this.getP() == null");
     String result6 = removeSpaces(printer.prettyprint(
         fieldCall4.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect7 = removeSpaces("false");
+    String result7 = removeSpaces(printer.prettyprint(
+        literal.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
     assertAll(
         () -> assertEquals(expect1, result1),
@@ -196,7 +201,8 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
         () -> assertEquals(expect3, result3),
         () -> assertEquals(expect4, result4),
         () -> assertEquals(expect5, result5),
-        () -> assertEquals(expect6, result6)
+        () -> assertEquals(expect6, result6),
+        () -> assertEquals(expect7, result7)
     );
   }
 

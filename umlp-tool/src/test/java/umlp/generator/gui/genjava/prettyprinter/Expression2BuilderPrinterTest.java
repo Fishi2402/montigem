@@ -10,8 +10,8 @@ import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
-import umlp.generator.gui.GUIComponentStat;
 import umlp.generator.gui.DomainGUITest;
+import umlp.generator.gui.GUIComponentStat;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class Expression2BuilderPrinterTest extends DomainGUITest {
     // there is only one iterate in Overview.gui
     ASTGUIIterate iterate = iterates.get(0);
     ASTGUIShortIterateControl control = ((ASTGUIShortIterateControl) iterate.getIterateControl());
-    String expect2 = removeSpaces("0x0000E Expected NameExpression but got '"
+    String expect2 = removeSpaces("0x0000D Expected FieldAccessExpression but got '"
         + "persons"
         + "'. Name2BuilderConverter cannot produce setter."
     );
@@ -175,6 +175,7 @@ public class Expression2BuilderPrinterTest extends DomainGUITest {
     ASTGUIComponent fieldCall2 = stat.getById(components, "fieldCall2");
     ASTGUIComponent fieldCall3 = stat.getById(components, "fieldCall3");
     ASTGUIComponent fieldCall4 = stat.getById(components, "fieldCall4");
+    ASTGUIComponent literal = stat.getById(components, "literal");
 
     String expect1 = removeSpaces("0x0000D Expected FieldAccessExpression but got '"
         + "getAge()"
@@ -224,13 +225,22 @@ public class Expression2BuilderPrinterTest extends DomainGUITest {
     String result6 = removeSpaces(Log.getFindings().get(0).getMsg());
     Log.clearFindings();
 
+    String expect7 = removeSpaces("0x0000D Expected FieldAccessExpression but got '"
+        + "\"bob\""
+        + "'. Name2BuilderConverter cannot produce setter."
+    );
+    printer.prettyprint(literal);
+    String result7 = removeSpaces(Log.getFindings().get(0).getMsg());
+    Log.clearFindings();
+
     assertAll(
         () -> assertEquals(expect1, result1),
         () -> assertEquals(expect2, result2),
         () -> assertEquals(expect3, result3),
         () -> assertEquals(expect4, result4),
         () -> assertEquals(expect5, result5),
-        () -> assertEquals(expect6, result6)
+        () -> assertEquals(expect6, result6),
+        () -> assertEquals(expect7, result7)
     );
   }
 

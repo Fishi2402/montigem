@@ -5,8 +5,8 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.prettyprint.IndentPrinter;
 import org.junit.jupiter.api.Test;
-import umlp.generator.gui.GUIComponentStat;
 import umlp.generator.gui.DomainGUITest;
+import umlp.generator.gui.GUIComponentStat;
 
 import java.util.HashSet;
 import java.util.List;
@@ -61,6 +61,7 @@ public class Name2MutatorConverterTest extends DomainGUITest {
     String result5 = removeSpaces(conv.attr2Setter((ASTNameExpression)
         comp5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
     ));
+
     assertAll(
         () -> assertEquals(expect1, result1),
         () -> assertEquals(expect2, result2),
