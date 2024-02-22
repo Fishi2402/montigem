@@ -13,6 +13,12 @@ import { Component, Input, HostBinding } from '@angular/core';
 })
 export class BalanceBox extends BalanceBoxComponent {
 
+  private formatter = new Intl.NumberFormat('de-DE', {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 2
+  });
+
   @Input()
   public override color: string = "blue";
 
@@ -24,5 +30,9 @@ export class BalanceBox extends BalanceBoxComponent {
   @HostBinding("class.blue-box")
   public get blue() {
     return this.color === "blue";
+  }
+
+  public getGemText1Value(): string {
+    return this.formatter.format(this.getValue() / 100);
   }
 }

@@ -4,6 +4,8 @@ package umlp.backendrte.test_infrastructure;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.Optional;
+
 public interface TestSetup<TestContextType> {
   /**
    * Do not override!
@@ -26,6 +28,8 @@ public interface TestSetup<TestContextType> {
   default void _cleanup() throws Exception { }
 
   int getNumberOfClients();
+
+  Optional<String> getClientName(int index);
 
   TestContextType getBackend();
   TestContextType getClients(int i);

@@ -266,4 +266,11 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     return "umlp.gui2ts.domain.TSEquals";
   }
 
+  @Override
+  protected void createExeceuteCommandMethod(ASTCDClass domainClass, ASTCDClass clazz, ASTCDMethod command) {}
+
+  @Override
+  protected void addImportsForCommands(ASTCDClass domainType, ASTCDType cdType) {}
+
+
 }

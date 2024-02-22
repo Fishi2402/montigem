@@ -6,7 +6,7 @@ import Sehub.Directory;
 
 import mc.fenix.table.GemTable;
 import mc.fenix.table.TableTypes.TableColumn;
-import mc.fenix.charts.GemNetworkGraph;
+import mc.fenix.networkgraph.GemGraph;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.basic.GemTreeview;
 
@@ -16,9 +16,9 @@ page ProjectPage(Directory project) {
     title = "Files",
     component = files@GemTreeview(items = null, allExpanded = false)
   );
-  @GemNetworkGraph(
-    data = null,
-    improvedLayout = false
+  @GemGraph(
+    nodes = null,
+    edges = null
   );
 
 }

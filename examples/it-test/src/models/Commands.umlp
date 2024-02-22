@@ -14,16 +14,17 @@ umlp Commands {
     MAIL_GESENDET;
   }
 
+  <<singleton>>
   class App {
-    <<command>> void sendEmail(User user, String text, Optional<String> subject, List<String> forwards);
-    <<command>> List<User> getCDTypeList();
-    <<command>> User getCDType(long userId);
-    <<command>> Optional<User> getOptionalType(long userId);
-    <<command>> int getBoxingType();
-    <<command>> String getJavaType();
-    <<command>> ActivationStatus getEnumType();
-    <<command>> Set<String> getNotListGenericType();
-    <<command>> List<Integer> getJavaTypeList();
+    void sendEmail(User user, String text, Optional<String> subject, List<String> forwards);
+    List<User> getCDTypeList();
+    User getCDType(long userId);
+    Optional<User> getOptionalType(long userId);
+    int getBoxingType();
+    String getJavaType();
+    ActivationStatus getEnumType();
+    Set<String> getNotListGenericType();
+    List<Integer> getJavaTypeList();
   }
 
 }

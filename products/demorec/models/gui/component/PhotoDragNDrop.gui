@@ -1,9 +1,14 @@
 package gui.component;
 
 import DemoRec.DemoRecComponent;
+import mc.fenix.arrange.GemRow;
 
 import mc.fenix.basic.GemButton;
 
 component PhotoDragNDrop(DemoRecComponent attachedComponent) {
-  upload@GemButton(label = "Upload Files.", leftClick = uploadAllFiles);
+  @GemRow(components= [
+    upload@GemButton(label = "Upload Files", leftClick = uploadAllFiles),
+    cancel@GemButton(label = "Cancel Upload", leftClick = cancelUpload)
+  ]);
+
 }

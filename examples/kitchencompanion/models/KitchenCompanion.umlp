@@ -5,7 +5,7 @@ classdiagram KitchenCompanion {
 
   <<singleton>>
   class App{
-    //<<command>> void sendMail(User email, String subject, String message, List<String> forwards);
+    //void sendMail(User email, String subject, String message, List<String> forwards);
   }
 
   association [1] App -> User [*];

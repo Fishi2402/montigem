@@ -77,7 +77,7 @@ public class BlobEndpoint {
           }
           return ResponseEntity.ok(null);
         } else { // Avoid name clashes by postfixing current time to the fileName
-          String namePostFix = "_"+ java.time.LocalDateTime.now().toString();
+          String namePostFix = "_"+ java.time.LocalDateTime.now();
           image = Paths.get(pathOnFS+namePostFix).toFile();
           photoLocation += namePostFix;
         }

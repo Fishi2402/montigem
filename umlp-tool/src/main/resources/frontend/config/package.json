@@ -24,6 +24,7 @@
     "@umlp/basic": "^7.6.0",
     "@umlp/charts": "^7.6.0",
     "@umlp/common": "^7.6.0",
+    "@umlp/commonj2ts": "^7.6.0",
     "@umlp/input": "^7.6.0",
     "@umlp/navigation": "^7.6.0",
     "@umlp/table": "^7.6.0",

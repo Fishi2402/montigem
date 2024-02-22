@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.backendrte.common;
 
-import jsweet.lang.Erased;
 import umlp.backendrte.command.DeSer;
 
 import java.io.ByteArrayInputStream;

@@ -11,26 +11,13 @@ import mc.fenix.basic.GemButton;
 import gui.pack.PackTypeOverview;
 import gui.component.PhotoDisplay;
 import gui.component.ComponentTreeView;
+import gui.staticcontainer.StatTable;
+import gui.staticcontainer.StatTableRow;
 
 component BatteryPackOverview(BatteryPack pack) {
   @GemRow(
-    colGap="5px",
-    wrap="nowrap",
+    colGap = "5px",
     components = [
-      @GemColumn(
-        width="30%",
-        components=[
-          @GemText(value=pack.name),
-          @GemText(value="Health (%) "+pack.health),
-          @GemText(value="Charge (%) "+pack.stateOfCharge)
-        ]
-      ),
-      @GemColumn(
-        width="10%",
-        components=[
-          editPack@GemButton(label = "Edit Pack", leftClick = editPack)
-        ]
-      ),
       @GemColumn(
         width="20%",
         components=[
@@ -38,16 +25,29 @@ component BatteryPackOverview(BatteryPack pack) {
         ]
       ),
       @GemColumn(
-        width="20%",
+        width="30%",
+        rowGap = "15px",
+        components=[
+          editPack@GemButton(width = "auto", label = "Edit Pack", leftClick = editPack),
+          @GemText(value=pack.name),
+          @StatTable(rows = [
+            @StatTableRow(left = @GemText(value = "Health (%)"), right = @GemText(value = pack.health)),
+            @StatTableRow(left = @GemText(value = "Charge (%)"), right = @GemText(value = pack.stateOfCharge))
+          ])
+        ]
+      ),
+      @GemColumn(
         components=[
           @PackTypeOverview(type=pack.type)
         ]
-      ),
+      )
+      /*
       @GemColumn(
         width="20%",
         components=[
           tree@ComponentTreeView(component=pack)
         ]
       )
+      /**/
   ]);
 }

@@ -27,7 +27,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
-  styleUrls: config.styleUrls
+  styleUrls: ["./PhotoDragNDrop.scss"]
 })
 export class PhotoDragNDrop extends PhotoDragNDropComponent {
 
@@ -80,6 +80,10 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
         this.uploadFile(f, path)
       }
     )
+  }
+
+  public override cancelUpload (event: any): void {
+    this.files = []
   }
 
   public  getAttachedComponent (): DemoRecComponent {
