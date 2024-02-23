@@ -1,0 +1,31 @@
+<!-- Information Button using PrimeNG -->
+<p-button
+  (click)="toggleOverlayPanel(overlayPanel, $event)"
+  [tooltipOptions]="tooltipOptions"
+  aria-label="Show Information"
+  icon="pi pi-info"
+  pTooltip="Show Information"
+  styleClass="p-button-rounded">
+</p-button>
+
+<!-- Dynamic Panel using PrimeNG Dialog -->
+<p-overlayPanel #overlayPanel (onShow)="updateMetricInformation()" appendTo="body" styleClass="metricsOverlayPanel">
+  <ng-container *ngIf="metricInformation | objectKeys as metricKeys">
+    <table *ngIf="metricKeys.length" class="metrics-table">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let key of metricKeys; trackBy: trackByIndex">
+          <td>{{ key }}</td>
+          <td>{{ metricInformation[key] | formatValue }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="!metricKeys.length">No metrics to show.</div>
+  </ng-container>
+</p-overlayPanel>

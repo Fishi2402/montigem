@@ -1,0 +1,37 @@
+<div [attr.layout]="layout" class="control-buttons-wrapper">
+  <!-- Draw the buttons horizontally or vertically using flexbox and simple buttons -->
+  <ng-container *ngIf="isVerticalOrHorizontalLayout">
+    <ng-container *ngFor="let button of controlButtons; trackBy: trackByIdx">
+      <p-button
+        (click)="handleButtonClick(button)"
+        [icon]="button.icon"
+        [pTooltip]="button.tooltip"
+        [tooltipOptions]="button.tooltipOptions"
+        styleClass="p-button-rounded p-button-raised">
+      </p-button>
+    </ng-container>
+  </ng-container>
+
+  <!-- Use a Speed-Dial to show all buttons -->
+  <ng-container *ngIf="isSpeedDialLayout">
+    <p-speedDial
+      (click)="handleClick()"
+      [buttonClassName]="speedDialConfig?.buttonClassName"
+      [className]="speedDialConfig?.className"
+      [direction]="speedDialConfig?.direction"
+      [hideIcon]="speedDialConfig?.hideIcon"
+      [hideOnClickOutside]="speedDialConfig?.hideOnClickOutside ?? false"
+      [maskClassName]="speedDialConfig?.maskClassName"
+      [mask]="speedDialConfig?.mask ?? false"
+      [model]="speedDialItems"
+      [ngClass]="'controlButtonsSpeedDial'"
+      [radius]="computedRadius"
+      [rotateAnimation]="speedDialConfig?.rotateAnimation ?? true"
+      [showIcon]="speedDialConfig?.showIcon"
+      [transitionDelay]="speedDialConfig?.transitionDelay ?? 30"
+      [type]="speedDialConfig?.type"
+      [visible]="speedDialConfig?.visible ?? false"
+      ariaLabel="Open the Network Control Buttons">
+    </p-speedDial>
+  </ng-container>
+</div>

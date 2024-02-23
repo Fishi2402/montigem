@@ -27,8 +27,9 @@ page Start(List<Process> allProcesses) {
                  components= [
                    @GemColumn(
                      width="20%",
+                     rowGap= "15px",
                      components= [
-                       editProcessButton@GemButton(label="Edit Process", leftClick=editProcess(p), disabled=false),
+                       editProcessButton@GemButton(label="Continue Process", leftClick=editProcess(p), disabled=false),
                        @GemText(value="Deconstruction started on: "+p.startedAt)
                      ]),
                    @BatteryPackOverview(pack=p.deconstructionOf)

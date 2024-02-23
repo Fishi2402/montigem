@@ -20,8 +20,10 @@ public abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
   protected List<IDOrBuilder<E>> builderElemStorage = new ArrayList<>();
 
   public GemListBuilder(List<Long> initialIds) {
-    for(long gemID : initialIds) {
-      this.builderElemStorage.add(new IDOrBuilder(gemID));
+    if (initialIds != null) {
+      for (long gemID : initialIds) {
+        this.builderElemStorage.add(new IDOrBuilder(gemID));
+      }
     }
   }
 

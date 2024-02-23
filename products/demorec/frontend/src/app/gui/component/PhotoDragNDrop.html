@@ -7,13 +7,32 @@
 >
   <p>Drag and drop files here, or click to select files</p>
   <input type="file" (change)="onFileSelected($event)" multiple />
+  <div *ngIf="files.length === 0">
+    <div>No files to upload</div>
+  </div>
+
   <div *ngFor="let file of files">
     {{ file.name }}
   </div>
-  <gem-button class="upload"
-              [label] = 'getUploadLabel()'
-              (leftClick) = 'uploadLeftClick.bind(this)($event)'
+  <gem-row class="gemRow0"
+           [components] = '[uploadTPL, cancelTPL, ]'
   >
-  </gem-button>
+  </gem-row>
+
+  <ng-template #uploadTPL>
+    <gem-button class="upload"
+                [label] = 'getUploadLabel()'
+                (leftClick) = 'uploadLeftClick.bind(this)($event)'
+    >
+    </gem-button>
+  </ng-template>
+
+  <ng-template #cancelTPL>
+    <gem-button class="cancel"
+                [label] = 'getCancelLabel()'
+                (leftClick) = 'cancelLeftClick.bind(this)($event)'
+    >
+    </gem-button>
+  </ng-template>
 
 </div>

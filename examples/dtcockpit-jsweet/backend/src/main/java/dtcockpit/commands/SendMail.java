@@ -28,9 +28,8 @@ public class SendMail extends SendMailTOP {
     }
 
     Log.trace("Sending Email to " + user.get().getEmail(), LogUtil.getLoggerName());
-    MailService mailsender = new MailService();
     try {
-      mailsender.sendMail(message, user.get().getEmail(), subject);
+      MailService.getInstance().sendMail(message, user.get().getEmail(), subject);
     }
     catch (MessagingException error) {
       Log.error(error.toString());
