@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.charts;
 import java.util.List;
+import java.util.Optional;
 
 classdiagram GemBarChartTypes {
 
