@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.pipelines;
 
-import def.js.JSON;
 import dtcockpit.Project;
 import mc.fenix.charts.GemBarChartData;
 import mc.fenix.charts.GemBarChartEntry;
@@ -74,7 +73,7 @@ public class PipelineStats extends PipelineStatsTOP {
     List<GemBarChartEntry> barChartEntries = new ArrayList<>();
     entries.forEach((label, data) -> barChartEntries.add(new GemBarChartEntry(label, null, data, label.equals("Successful") ? "#57ab27" : "#cc071e", null)));
     GemBarChartData data = new GemBarChartData(barChartEntries, labels);
-    String newHash = JSON.stringify(data);
+    String newHash = data.toString();
     if (!Objects.equals(projectDataCheck.hash, newHash)) {
       projectDataCheck.hash = newHash;
       projectDataCheck.value = data;

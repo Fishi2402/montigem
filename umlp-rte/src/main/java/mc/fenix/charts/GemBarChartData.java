@@ -28,4 +28,9 @@ public class GemBarChartData {
   public void setLabels(List<String> labels) {
     this.labels = labels;
   }
+
+  @Override
+  public String toString() {
+    return "GemBarChartData{" + "entries=" + entries + ", labels=" + labels + '}';
+  }
 }

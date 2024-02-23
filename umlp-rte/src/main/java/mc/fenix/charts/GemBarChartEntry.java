@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class GemBarChartEntry {
+
+  //TODO use optionals in attributes and setters
   private String label;
   private String stack;
   private List<Integer> data;
@@ -60,5 +62,12 @@ public class GemBarChartEntry {
 
   public void setHoverBackgroundColor(String hoverBackgroundColor) {
     this.hoverBackgroundColor = hoverBackgroundColor;
+  }
+
+  @Override
+  public String toString() {
+    return "GemBarChartEntry{" + "label='" + label + '\'' + ", stack='" + stack + '\'' + ", data=" +
+           data + ", backgroundColor='" + backgroundColor + '\'' + ", hoverBackgroundColor='" +
+           hoverBackgroundColor + '\'' + '}';
   }
 }
