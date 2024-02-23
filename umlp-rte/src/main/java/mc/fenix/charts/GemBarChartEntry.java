@@ -6,22 +6,38 @@ import java.util.Optional;
 public class GemBarChartEntry {
 
   //TODO use optionals in attributes and setters
-  private String label;
-  private String stack;
+  private Optional<String> label;
+  private Optional<String> stack;
   private List<Integer> data;
-  private String backgroundColor;
-  private String hoverBackgroundColor;
+  private Optional<String> backgroundColor;
+  private Optional<String> hoverBackgroundColor;
 
-  public GemBarChartEntry(String label,
-                          String stack,
+  public GemBarChartEntry(Optional<String> label,
+                          Optional<String> stack,
                           List<Integer> data,
-                          String backgroundColor,
-                          String hoverBackgroundColor) {
+                          Optional<String> backgroundColor,
+                          Optional<String> hoverBackgroundColor) {
     this.label = label;
     this.stack = stack;
     this.data = data;
     this.backgroundColor = backgroundColor;
     this.hoverBackgroundColor = hoverBackgroundColor;
+  }
+
+  public Optional<String> getLabel() {
+    return label;
+  }
+
+  public void setLabel(Optional<String> label) {
+    this.label = label;
+  }
+
+  public Optional<String> getStack() {
+    return stack;
+  }
+
+  public void setStack(Optional<String> stack) {
+    this.stack = stack;
   }
 
   public List<Integer> getData() {
@@ -32,35 +48,19 @@ public class GemBarChartEntry {
     this.data = data;
   }
 
-  public Optional<String> getLabel() {
-    return Optional.ofNullable(label);
-  }
-
-  public void setLabel(String label) {
-    this.label = label;
-  }
-
-  public Optional<String> getStack() {
-    return Optional.ofNullable(stack);
-  }
-
-  public void setStack(String stack) {
-    this.stack = stack;
-  }
-
   public Optional<String> getBackgroundColor() {
-    return Optional.ofNullable(backgroundColor);
+    return backgroundColor;
   }
 
-  public void setBackgroundColor(String backgroundColor) {
+  public void setBackgroundColor(Optional<String> backgroundColor) {
     this.backgroundColor = backgroundColor;
   }
 
   public Optional<String> getHoverBackgroundColor() {
-    return Optional.ofNullable(hoverBackgroundColor);
+    return hoverBackgroundColor;
   }
 
-  public void setHoverBackgroundColor(String hoverBackgroundColor) {
+  public void setHoverBackgroundColor(Optional<String> hoverBackgroundColor) {
     this.hoverBackgroundColor = hoverBackgroundColor;
   }
 

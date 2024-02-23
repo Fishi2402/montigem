@@ -15,14 +15,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class PipelineStats extends PipelineStatsTOP {
 
-  private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.GERMAN);
-
-  private int maxValue = 0;
+  private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance(DateFormat.DEFAULT,
+                                                                           Locale.GERMAN);
   private final ProjectDataCheck projectDataCheck = new ProjectDataCheck();
+  private int maxValue = 0;
 
   public PipelineStats(Project p) {
     super(p);
@@ -67,11 +68,19 @@ public class PipelineStats extends PipelineStatsTOP {
       if (getBarChartForPipelineRunsStacked()) {
         this.maxValue = Math.max(currentMaxValue, successful.get(i) + unsuccessful.get(i) + 5);
       } else {
-        this.maxValue = Math.max(currentMaxValue, Math.max(successful.get(i), unsuccessful.get(i)) + 5);
+        this.maxValue = Math.max(currentMaxValue,
+                                 Math.max(successful.get(i), unsuccessful.get(i)) + 5);
       }
     }
     List<GemBarChartEntry> barChartEntries = new ArrayList<>();
-    entries.forEach((label, data) -> barChartEntries.add(new GemBarChartEntry(label, null, data, label.equals("Successful") ? "#57ab27" : "#cc071e", null)));
+    entries.forEach((label, data) -> barChartEntries.add(new GemBarChartEntry(Optional.of(label),
+                                                                              Optional.empty(),
+                                                                              data,
+                                                                              Optional.of(label.equals(
+                                                                                  "Successful") ?
+                                                                                              "#57ab27" :
+                                                                                              "#cc071e"),
+                                                                              Optional.empty())));
     GemBarChartData data = new GemBarChartData(barChartEntries, labels);
     String newHash = data.toString();
     if (!Objects.equals(projectDataCheck.hash, newHash)) {
@@ -94,6 +103,7 @@ public class PipelineStats extends PipelineStatsTOP {
   // TODO Other methods
 
   private static class ProjectDataCheck {
+
     GemBarChartData value;
     String hash;
     boolean calculating;
