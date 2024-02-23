@@ -6,6 +6,7 @@ import flensburg.infrastructure.FlensburgManagerClientImplBuilder;
 import hardy.flensburg.Address;
 import hardy.flensburg.Car;
 import hardy.flensburg.CarBuilder;
+import hardy.flensburg.FlensburgDAOFactory;
 import hardy.flensburg.FlensburgManager;
 import hardy.flensburg.FlensburgMock;
 import hardy.flensburg.FlensburgTestContext;
@@ -15,7 +16,6 @@ import hardy.flensburg.requests.GetFreeGemIdRequest;
 import hardy.flensburg.test_infrastructure.FlensburgDBTestSetup;
 import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandDirectCommunication;
@@ -43,7 +43,6 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
     }
   }
 
-  @Disabled("TODO: monticore#3807")
   class PersonSyncDBTest extends FlensburgDBTestSetup implements PersonSyncTest {
     public PersonSyncDBTest() {
       super(2);
