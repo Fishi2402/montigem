@@ -42,7 +42,7 @@ public class ElemGemList extends GemList<Elem> {
   }
 
   @Override
-  public boolean deepEquals(List<Elem> o) {
+  public boolean TESTING_deepEquals(List<Elem> o) {
     return this == o;
   }
 }
