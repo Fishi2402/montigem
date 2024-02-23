@@ -3,6 +3,7 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -97,7 +98,11 @@ public class ManagerImplDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
       if (!isSingleton) {
-        getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName);
+        List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainClass).stream()
+            .filter(GenService::isBidirectional)
+            .filter(Predicate.not(GenService::isSymbolDerived))
+            .collect(Collectors.toList());
+        getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName, assocs);
         getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete",origCD.getCDDefinition().getName(), name, managerName);
       }
     }
