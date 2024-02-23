@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -79,6 +78,11 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
     assertNotSame(addr, addrServer);
     assertNotEquals(startGemId, addrServer.getGemId());
     assertEquals("Flensburg", addrServer.getCity());
+
+    if(hasDatabase()){
+      assertTrue(p1001Server.TESTING_deepEquals(FlensburgDAOFactory.getPersonDAO().selectPerson(p1001Server.getGemId()).get()));
+      assertTrue(addrServer.TESTING_deepEquals(FlensburgDAOFactory.getAddressDAO().selectAddress(addrServer.getGemId()).get()));
+    }
   }
 
   @Test
@@ -136,6 +140,11 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
       assertNotNull(c_i_server);
       assertNotSame(c_i, c_i_server);
       assertEquals(c_i.getGemId(), c_i_server.getGemId());
+
+      if(hasDatabase()){
+        assertTrue(p1001Server.TESTING_deepEquals(FlensburgDAOFactory.getPersonDAO().selectPerson(p1001Server.getGemId()).get()));
+        assertTrue(c_i_server.TESTING_deepEquals(FlensburgDAOFactory.getCarDAO().selectCar(c_i_server.getGemId()).get()));
+      }
     }
   }
 
@@ -171,6 +180,11 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
       assertNotNull(c_i_server);
       assertNotSame(c_i, c_i_server);
       assertEquals(c_i.getGemId(), c_i_server.getGemId());
+
+      if(hasDatabase()){
+        assertTrue(p1001Server.TESTING_deepEquals(FlensburgDAOFactory.getPersonDAO().selectPerson(p1001Server.getGemId()).get()));
+        assertTrue(c_i_server.TESTING_deepEquals(FlensburgDAOFactory.getCarDAO().selectCar(c_i_server.getGemId()).get()));
+      }
     }
   }
 
@@ -352,6 +366,10 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
     Person p1001Server = FlensburgManager.getPersonSure(startGemId);
     assertNotSame(p1001, p1001Server);
     assertEquals(1, p1001Server.sizeOwnss());
+
+    if(hasDatabase()){
+      assertTrue(p1001Server.TESTING_deepEquals(FlensburgDAOFactory.getPersonDAO().selectPerson(p1001Server.getGemId()).get()));
+    }
   }
 
   @Test
