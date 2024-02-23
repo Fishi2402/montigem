@@ -17,7 +17,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.umlmodifier._ast.ASTModifier;
-import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.methods.AssocAccessorDecorator;
@@ -204,6 +203,24 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
         getAttributesForFields(domainType),
         getAttributesForAssociations(domainType, isInterface, cd)
     );
+  }
+
+  public void addDeepEqualsMethod(ASTCDType domainType, ASTCDType targetType) {
+    List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainType);
+    List<ASTCDAssocSide> listAssocs = assocs.stream().filter(a -> a.getSymbol().getCardinality().isAtLeastOne() || a.getSymbol().getCardinality().isMult()).collect(Collectors.toList());
+    List<ASTCDAssocSide> gemAssocs = assocs.stream().filter(a -> !listAssocs.contains(a)).collect(Collectors.toList());
+    ASTCDMethodSignature m = getCD4C().addMethod(targetType, getDeepEqualsTemplate(), domainType.getName(), gemAssocs, listAssocs);
+    markDeepEqualsBackendOnly(targetType, m);
+  }
+
+  protected void markDeepEqualsBackendOnly(ASTCDType targetType, ASTCDMethodSignature m) {
+    glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint("@BackendOnly(BackendOnlyModes.THROW_ERROR)"));
+    getCD4C().addImport(targetType, "umlp.jsweet.extension.annotation.BackendOnly");
+    getCD4C().addImport(targetType, "umlp.jsweet.extension.annotation.BackendOnlyModes");
+  }
+
+  protected String getDeepEqualsTemplate(){
+    return "umlp.domain.DeepEquals";
   }
 
   protected static class AttributesTuple {

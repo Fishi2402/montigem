@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.DomainClassDecorator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DomainClassDecoratorTest extends DecoratorTest {
 
@@ -26,7 +28,7 @@ public class DomainClassDecoratorTest extends DecoratorTest {
 
         // check no of methods and attributes
         () -> assertEquals(5, clazz.getCDAttributeList().size(), "number of attributes"),
-        () -> assertEquals(29, clazz.getCDMethodList().size(), "number of methods"),
+        () -> assertEquals(30, clazz.getCDMethodList().size(), "number of methods"),
 
         // check attributes
         () -> existsAttribute(clazz, "gemId"),
