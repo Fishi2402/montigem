@@ -58,6 +58,7 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
 
     // Add method signatures for all Methods in Interface
     addMethodSignatures(domainInterface, cdInterface);
+    addDeepEqualsMethod(domainInterface, cdInterface);
 
     // Imports
     addImports(domainInterface, cdInterface);
@@ -69,5 +70,9 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
     List<ASTCDMethod> methods = domainInterface.getCDMethodList();
     methods.forEach(m -> m.getModifier().setAbstract(true));
     cdInterface.addAllCDMembers(methods);
+  }
+
+  protected String getDeepEqualsTemplate(){
+    return "umlp.domain.InterfaceDeepEquals";
   }
 }

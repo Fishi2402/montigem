@@ -244,4 +244,6 @@ public abstract class GemList<E extends GemIdentifiable>
   public int indexOfId(long gemId) {
     return ids.indexOf(gemId);
   }
+
+  public abstract boolean TESTING_deepEquals(List<E> o);
 }
