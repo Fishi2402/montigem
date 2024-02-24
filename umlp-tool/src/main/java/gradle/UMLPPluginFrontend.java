@@ -178,10 +178,17 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
     if (local) {
       Project umlpRteClientProject = project.findProject(":umlp-rte:client");
-      SerializeGUISymbolsTask createGuiSymbols = (SerializeGUISymbolsTask) umlpRteClientProject.getTasks().getByName("createGuiSymbols");
-      SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks().getByName("createCDSymbols");
-      guiGenTask.get().dependsOn(createGuiSymbols, createCDSymbols);
-      guiGenTask.get().getSymbolDir().from(createGuiSymbols.getOutput(), createCDSymbols.getOutput());
+      boolean createGuiSymbolsPresent = !umlpRteClientProject.getTasksByName("createGuiSymbols", false).isEmpty();
+      boolean createCDSymbolsPresent = !umlpRteClientProject.getTasksByName("createCDSymbols", false).isEmpty();
+      if (createCDSymbolsPresent && createGuiSymbolsPresent) {
+        SerializeGUISymbolsTask createGuiSymbols = (SerializeGUISymbolsTask) umlpRteClientProject.getTasks()
+            .getByName("createGuiSymbols");
+        SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks()
+            .getByName("createCDSymbols");
+        guiGenTask.get().dependsOn(createGuiSymbols, createCDSymbols);
+        guiGenTask.get().getSymbolDir()
+            .from(createGuiSymbols.getOutput(), createCDSymbols.getOutput());
+      }
     }
     else {
       Configuration guiLib = project.getConfigurations().create("guiLib");

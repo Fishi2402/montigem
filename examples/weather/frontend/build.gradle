@@ -8,10 +8,6 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend"
 }
 
-dependencies {
-  guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-}
-
 node {
   // Whether to download and install a specific Node.js version or not
   // If false, it will use the globally installed Node.js
@@ -43,14 +39,6 @@ nodeSetup.dependsOn(frontendSetup)
 }*/
 
 genGUI {
-  dependsOn(
-      tasks.getByPath(":umlp-rte:client:createGuiSymbols"),
-      tasks.getByPath(":umlp-rte:client:createCDSymbols")
-  )
-  symbolDir = files(
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output,
-  )
   domainModels = ["Weather"]
   guiCreateModels = ["gui.ForecastCreate"]
 
