@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package security;
+package dtcockpit.commands;
 
 import dtcockpit.DtcockpitManager;
 import dtcockpit.User;
@@ -7,12 +7,8 @@ import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.Participant;
 import umlp.backendrte.command.SimpleResult;
 import umlp.backendrte.common.LoadingState;
-import umlp.backendrte.request.Request;
 
-public class GetCurrentUserRequest extends Request<Long> {
-  protected GetCurrentUserRequest() {
-    super("security.GetCurrentUserRequest");
-  }
+public class GetCurrentUserRequest extends GetCurrentUserRequestTOP {
 
   @Override
   public SimpleResult<Long> doAction() {
@@ -27,8 +23,4 @@ public class GetCurrentUserRequest extends Request<Long> {
     return new SimpleResult<>(getId(), LoadingState.FAILED_TO_LOAD, "java.lang.Long");
   }
 
-  @Override
-  public boolean checkAccessPolicy() {
-    return true;
-  }
 }

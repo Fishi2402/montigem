@@ -4,7 +4,7 @@ import { OverviewPageComponent, config } from '@src/gui/montiverse/OverviewPageC
 import { Project } from '@src/dtcockpit/Project';
 import { Option } from '@umlp/input';
 import { CommandManager } from '@umlp/common';
-import { StartMontiVerseLitePipeline } from '../../command/StartMontiVerseLitePipeline';
+import { StartMontiVerseLitePipeline } from '@src/dtcockpit/commands/StartMontiVerseLitePipeline';
 
 import {
   Component

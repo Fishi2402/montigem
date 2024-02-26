@@ -51,6 +51,11 @@ public class TSCommandDecorator extends CommandDecorator {
     addedDeSers.addAll(setDecorator.getAddedDeSers());
     Log.info("After decorator: SetDecorator", TSCommandDecorator.class.getName());
 
+    TSOwnCommandDecorator cmdDecorator = new TSOwnCommandDecorator(glex, supportedDeSers);
+    cmdDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(cmdDecorator.getAddedDeSers());
+    Log.info("After decorator: TSOwnCommandDecorator", CommandDecorator.class.getName());
+
     CalculateDecorator calculateDecorator = new TSCalculateDecorator(glex, supportedDeSers);
     calculateDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(calculateDecorator.getAddedDeSers());

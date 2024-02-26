@@ -56,27 +56,26 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
         .filter(c -> TagLookUp.isSingleton(c.getSymbol()))
         .forEach(c -> c.getCDMethodList().stream()
                           //   .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
-                          .filter(m -> TagLookUp.isCommand(m.getSymbol()))
-                          .forEach(m -> {
-                                astcdPackage.addCDElement(withOrigin(createCommandClass(origCD, m)));
-                                astcdPackage.addCDElement(withOrigin(createCommandDeSer(origCD, m)));
-                              }
-                          )
-        );
+          .filter(m -> TagLookUp.isCommand(m.getSymbol()))
+          .forEach(m -> {
+             astcdPackage.addCDElement(withOrigin(createCommandClass(origCD, m)));
+             astcdPackage.addCDElement(withOrigin(createCommandDeSer(origCD, m)));
+          }
+        )
+    );
 
     origCD.getCDDefinition().getCDInterfacesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
         .filter(c -> GenService.hasStereotype(c.getModifier(), SINGLETON))
         .forEach(c -> c.getCDMethodList().stream()
-                          // .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
-                          .filter(m -> TagLookUp.isCommand(m.getSymbol()))
-                          .forEach(m -> {
-                                astcdPackage.addCDElement(withOrigin(createCommandClass(origCD, m)));
-                                astcdPackage.addCDElement(withOrigin(createCommandDeSer(origCD, m)));
-                              }
-                          )
-        );
-
+        // .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
+          .filter(m -> TagLookUp.isCommand(m.getSymbol()))
+          .forEach(m -> {
+            astcdPackage.addCDElement(withOrigin(createCommandClass(origCD, m)));
+            astcdPackage.addCDElement(withOrigin(createCommandDeSer(origCD, m)));
+          }
+        )
+    );
   }
 
   protected ASTCDClass createCommandClass(ASTCDCompilationUnit origCD, ASTCDMethod meth) {
@@ -134,7 +133,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
   }
 
   protected void addImports(ASTCDClass ast) {
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
     getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
@@ -217,9 +216,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     boolean useDeSer = true;
     boolean jsonEmpty = true;
 
-    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
-    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
+    addDeSerImports(ast);
 
     for (ASTCDParameter p : meth.getCDParameterList()) {
       SymTypeExpression type = p.getSymbol().getType();
@@ -244,7 +241,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
           baseClassDecorator, typeName);
 
       if (GenService.isList(type)) {
-        getCD4C().addMethod(ast, "umlp.commands.deser.OwnCommand_FromJsonObjectParametersList", p.getName());
+        getCD4C().addMethod(ast, getOwnCommand_FromJsonObjectParametersListTemplate(), p.getName());
         getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonElement");
       }
     }
@@ -264,6 +261,12 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
 
     addedDeSers.add(ast);
     return ast;
+  }
+
+  protected void addDeSerImports(ASTCDClass ast) {
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
+    getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
   }
 
   protected void addDeSerJavaImport(ASTCDClass ast, String typeName) {
@@ -286,6 +289,10 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
 
   protected String getOwnCommand_FromJsonObjectTemplate() {
     return "umlp.commands.deser.OwnCommand_FromJsonObject";
+  }
+
+  protected String getOwnCommand_FromJsonObjectParametersListTemplate() {
+    return "umlp.commands.deser.OwnCommand_FromJsonObjectParametersList";
   }
 
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD,
