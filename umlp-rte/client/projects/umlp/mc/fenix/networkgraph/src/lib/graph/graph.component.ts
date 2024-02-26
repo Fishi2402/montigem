@@ -133,7 +133,7 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
 
     /** Complex layout configuration for displaying the graph. */
     @Input() complexLayout?: ComplexGraphLayoutConfiguration | null = {
-      mode: ComplexGraphLayouts.FORCE,
+      mode: ComplexGraphLayouts.FORCEATLAS2,
       maxIterations: 100,
       parameters: {
         settings: {

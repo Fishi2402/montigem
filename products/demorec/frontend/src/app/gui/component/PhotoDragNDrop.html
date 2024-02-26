@@ -7,6 +7,9 @@
 >
   <p>Drag and drop files here, or click to select files</p>
   <input type="file" (change)="onFileSelected($event)" multiple />
+  <div *ngIf="uploadFailureMessage">
+    <div style="color: red;">{{errorMessage}}</div>
+  </div>
   <div *ngIf="files.length === 0">
     <div>No files to upload</div>
   </div>
