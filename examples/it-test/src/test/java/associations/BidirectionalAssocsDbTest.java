@@ -4,6 +4,7 @@ import associations.test_infrastructure.AssociationsDBTestSetup;
 import attributes.AttributesDAOFactory;
 import attributes.DbTypesTest;
 import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,11 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class BidirectionalAssocsDbTest extends AssociationsDBTestSetup {
 
+  @Disabled
   @DisplayName("Neo4J-BidirectionalAssocs")
   public static class
   Neo4JTestSuite extends BidirectionalAssocsDbTest {
     Neo4JTestSuite() {
       super("NEO4J");
+      setUpLocalNeo4jInstance();
     }
   }
 

@@ -74,7 +74,6 @@ public class AssociationsDBTestSetup extends associations.test_infrastructure.As
     }
   }
 
-  @BeforeAll
   public static void setUpLocalNeo4jInstance() {
     if (managementService != null) {
       managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);

@@ -74,7 +74,6 @@ public class AttributesDBTestSetup extends attributes.test_infrastructure.Attrib
     }
   }
 
-  @BeforeAll
   public static void setUpLocalNeo4jInstance() {
     if (managementService != null) {
       managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);

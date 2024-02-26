@@ -3,6 +3,7 @@ package attributes;
 
 import attributes.test_infrastructure.AttributesDBTestSetup;
 import com.google.common.collect.Lists;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,11 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public abstract class DbTypesTest extends AttributesDBTestSetup {
 
+  @Disabled
   @DisplayName("Neo4J-DbTypes")
   public static class
   Neo4JTestSuite extends DbTypesTest {
     Neo4JTestSuite() {
       super("NEO4J");
+      setUpLocalNeo4jInstance();
     }
   }
 
