@@ -4,7 +4,7 @@ import {BuchungTOP} from '@src/guidslpaper/BuchungTOP';
 
 export class Buchung extends BuchungTOP {
 
-  public getLfdeNummer(): String {
+  public getLfdeNummer(): string {
     return this.getBuchungsdatum().toString();
   }
 
