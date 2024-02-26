@@ -5,7 +5,7 @@ import mc.fenix.arrange.GemColumn;
 
 component StatTableRow(GUIViewElement left, GUIViewElement right) {
   @GemRow(components = [
-    @GemColumn(width = "70%", components = [left]),
-    @GemColumn(width = "30%", components = [right])
+    @GemColumn(width = "15ch", components = [left]),
+    @GemColumn(width = "fit-content", components = [right])
   ]);
 }

@@ -16,22 +16,12 @@ buildscript {
 plugins {
   id 'java'
   id "com.github.node-gradle.node" version "5.0.0"
-  id 'de.rwth.se.umlp-tool'
+//  id 'de.rwth.se.umlp-tool'
   id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT" apply(false)
-}
-
-repositories {
-  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-}
-
-configurations {
-  guiDefaultTypes
+  id 'de.rwth.se.umlp-tool-frontend'
 }
 
 dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-
   implementation project(":examples:dtcockpit-jsweet:backend")
 
   implementation group: "de.monticore.lang", name: 'guidsl', version: "7.6.0-SNAPSHOT"
@@ -42,190 +32,52 @@ dependencies {
   testImplementation "de.monticore.lang:guidsl:${project.properties['mc_version']}"
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
-
-  implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
-  implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
-  implementation project(':umlp-rte:umlp-jsweet')
-}
-
-task generateNPMAuth(type: NPMAuthCreate){
-  npmrcFile = file("config/.npmrc")
-}
-
-// Add Frontend-Config Files from UMLP-Tool Resources.
-task frontendSetup(type: FrontendSetup){
-  dependsOn(generateNPMAuth)
-  input = file("config/")   // Can be used to add or replace files
-  output = layout.buildDir.dir("frontendGen/")
 }
 
 node {
-  // Whether to download and install a specific Node.js version or not
-  // If false, it will use the globally installed Node.js
-  // If true, it will download node using above parameters
-  // Note that npm is bundled with Node.js
   download = true
-
-  // Version of node to download and install (only used if download is true)
-  // It will be unpacked in the workDir
   version = "${node_version}"
-
-  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
-  // according the proxy configuration defined for Gradle
-  // Disable this option if you want to configure the proxy for npm or yarn on your own
-  // (in the .npmrc file for instance)
   nodeProxySettings = ProxySettings.OFF
-
-  // The Node.js project directory location
-  // This is where the package.json file and node_modules directory are located
-  // By default it is at the root of the current project
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
 nodeSetup.dependsOn(frontendSetup)
 
-task genSymbols(type: UMLPSymbolsTask) {
-  dependsOn(frontendSetup)
-  input = file("../models/Dtcockpit.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
-  outputDir = file("${project.buildDir}/symbols")
-}
-
-task genGUI(type: UMLPGuiGenTask) {
-  dependsOn(genSymbols, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
-  input = file("../models")
-  outputDir = frontendSetup.getOutput().dir("build/appgui")
-  hwcDir = file("src/main/java")
-  modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(
-      genSymbols.symbolOutDir,
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      configurations.guiDefaultTypes.files
-  )
+genGUI {
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate"]
-  guiGenTSFuncionality = false
-  guiGenJsweet = true
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
-}
-compileJava.dependsOn(genGUI)
-
-task ensureNodeInit {
-  project.file("build/jsweet/.node-init").mkdirs()
 }
 
-org.jsweet.gradle.JSweetPluginExtension jsweetDomainConf = project.getExtensions().create("jsweetDomain", org.jsweet.gradle.JSweetPluginExtension.class)
-jsweetDomain {
-  autoPropagateAsyncAwaits = true
-  verbose = true
-  encoding = 'UTF-8'
-  sourceMap = true
-  tsOnly = true
-  tsOut = project.file('build/frontendGen/build/appdomain/')
-  candiesJsOut = project.file('build/jsweet/candies')
-  workingDir = project.file('build/jsweet')
-  targetVersion = 'ES6'
-  includes = [
-      '**/dtcockpit/**/*.java',
+translateJava2TSDomain {
+  domainModel = 'Dtcockpit'
+  additionalIncludes = [
       '**/security/*.java'
   ]
-  excludes = [
-      '**/dtcockpit/DtcockpitManagerImpl.java',
-      '**/dtcockpit/DtcockpitMock.java',
-      '**/dtcockpit/DtcockpitMockTestSetup.java',
-      '**/dtcockpit/DtcockpitDummyProvider.java',
-      '**/dtcockpit/DtcockpitTestContext.java',
-      '**/dtcockpit/test_infrastructure/**',
-      '**/dtcockpit/DtcockpitServerApplication*.java',
-      '**/dtcockpit/DtcockpitShellAPIApplication.java',
-      '**/dtcockpit/shellapi/**',
+  additionalExcludes = [
       '**/security/CustomUserDetailsService.java',
       '**/security/MailService.java',
       '**/security/WebSecurityConfig.java',
   ]
-  module =  'commonjs'
-  excludeTranspilation = [
-      '**/dtcockpit/*DAO.java',
-      '**/dtcockpit/*DbObserver.java',
-      '**/dtcockpit/DtcockpitManagerImpl.java',
-      '**/dtcockpit/DtcockpitMock.java',
-      '**/dtcockpit/DtcockpitMockTestSetup.java',
-      '**/dtcockpit/DtcockpitDummyProvider.java',
-      '**/dtcockpit/DtcockpitTestContext.java',
-  ]
-  extraSystemPath = project.file(".gradle/nodejs/node-v${node_version}-win-x64")
-}
-
-task translateJava2TSDomain(type: org.jsweet.gradle.JSweetTranspileTask) {
-  setGroup("generate");
-  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, npmInstall, ensureNodeInit);
-  setConfiguration(jsweetDomainConf);
-  setSources(sourceSets.main.java);
-  setClasspath(configurations.runtimeClasspath);
-}
-
-sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui', 'src/main/java']
-
-org.jsweet.gradle.JSweetPluginExtension jsweetGUIConf = project.getExtensions().create("jsweetGUI", org.jsweet.gradle.JSweetPluginExtension.class)
-jsweetGUI {
-  autoPropagateAsyncAwaits = true
   verbose = true
-  encoding = 'UTF-8'
-  sourceMap = true
-  tsOnly = true
-  tsOut = project.file('build/frontendGen/build/appgui/')
-  candiesJsOut = project.file('build/jsweet/candies')
-  workingDir = project.file('build/jsweet')
-  targetVersion = 'ES6'
-  includes = [
-      '**/dtcockpit/**/*.java',
-      '**/security/*.java',
-      '**/gui/**/*.java'
-  ]
-  module = 'commonjs'
-  excludes = [
-      '**/dtcockpit/DtcockpitManagerImpl.java',
-      '**/dtcockpit/DtcockpitMock.java',
-      '**/dtcockpit/DtcockpitMockTestSetup.java',
-      '**/dtcockpit/DtcockpitDummyProvider.java',
-      '**/dtcockpit/DtcockpitTestContext.java',
-      '**/dtcockpit/test_infrastructure/**',
-      '**/dtcockpit/DtcockpitServerApplication*.java',
-      '**/dtcockpit/DtcockpitShellAPIApplication.java',
-      '**/dtcockpit/shellapi/**',
-      '**/security/CustomUserDetailsService.java',
-      '**/security/MailService.java',
-      '**/security/WebSecurityConfig.java',
-  ]
-  excludeTranspilation = [
-      '**/dtcockpit/**/*.java',
-      '**/security/*.java',
-  ]
 }
 
-//compileJava {
-//  enabled = false
-//}
+sourceSets.main.java.srcDirs += ['src/main/java', 'build/umlp_frontend/intermediate/appgui']
 
-task translateJava2TSGUI(type: org.jsweet.gradle.JSweetTranspileTask) {
-  setGroup("generate");
-  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, frontendSetup, genGUI, npmInstall, ensureNodeInit);
-  setConfiguration(jsweetGUIConf);
-  setSources(sourceSets.main.java);
-  setClasspath(configurations.runtimeClasspath);
+translateJava2TSGUI {
+  domainModel = 'Dtcockpit'
+  additionalIncludes = [
+      '**/security/*.java'
+  ]
+  additionalExcludeTranspilation = [
+      '**/security/*.java'
+  ]
+  verbose = true
 }
 
-task translateTypeScript() {
-  dependsOn(translateJava2TSDomain, translateJava2TSGUI)
-}
-
+nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npmInstall, translateTypeScript
+    npmInstall, generate
 ]
 
 task buildApp(type: NpxTask) {

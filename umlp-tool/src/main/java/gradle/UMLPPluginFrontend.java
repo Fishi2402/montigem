@@ -2,20 +2,25 @@
 package gradle;
 
 import gradle.specific.FrontendSetup;
-import gradle.specific.NPMAuthCreate;
-import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
+import gradle.specific.UMLPJava2TypeScriptTask;
+import gradle.specific.UMLPSymbolsTask;
+import gradle.specific.serialize.SerializeCDSymbolsTask;
+import gradle.specific.serialize.SerializeGUISymbolsTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
-import org.gradle.jvm.tasks.Jar;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /***
@@ -26,7 +31,10 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
   static final String UMLP_FRONTEND_SETUP_TASK_NAME = "frontendSetup";
   static final String UMLP_FRONTEND_DOMAIN_TASK_NAME = "genDomain";
+  static final String UMLP_FRONTEND_DOMAIN_J2TS_TASK_NAME = "translateJava2TSDomain";
   static final String UMLP_FRONTEND_GUI_TASK_NAME = "genGUI";
+  static final String UMLP_FRONTEND_GUI_J2TS_TASK_NAME = "translateJava2TSGUI";
+  private static final String CREATE_DOMAIN_SYMBOLS_TASK_NAME = "createDomainSymbols";
   static final String UMLP_GROUP_NAME = "umlp";
 
   @Override
@@ -34,73 +42,77 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     project.getPluginManager().apply(UMLPPluginBase.class);
     project.getPluginManager().apply("base");
 
-    // Add Configuration for TypeSymbols.
-    Configuration guiTypes = project.getConfigurations().create("guiTypes");
-    // TODO: Dependency als default hinzufügen: "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+    boolean j2ts = getBooleanProjectProperty(project, "j2ts");
+    boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
+
+    // Create Dependencies
+    addProjectDependencies(project, j2ts, local);
 
     //Create Tasks
     TaskProvider<FrontendSetup> frontendSetupTask = createFrontendSetupTask(project);
-    TaskProvider<UMLPFrontendTask> frontendDomainTask = createFrontendDomainTask(project);
-    TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project,guiTypes, frontendDomainTask);
 
+    TaskProvider<UMLPFrontendTask> frontendDomainTask = j2ts ? null : createFrontendDomainTask(project);
+    TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask = j2ts ? createFrontendDomainJ2TSTask(project, local) : null;
+
+    TaskProvider<UMLPSymbolsTask> domainSymbolGenTask = createDomainSymbolGen(project, frontendSetupTask);
+    TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, j2ts, local, domainSymbolGenTask);
+    TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask = j2ts ? createFrontendGUIJ2TSTask(project, frontendDomainJ2TSTask, frontendGuiTask) : null;
 
     // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
     // and Hot-Reload aborts
-    TaskProvider<?> syncDomainTask = project.getTasks().register("SYNC_" + UMLP_FRONTEND_DOMAIN_TASK_NAME, Sync.class, syncTask -> {
-      syncTask.from(frontendDomainTask.get().getOutputDir());
-      syncTask.into(Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(), "build", "appdomain").toFile());
-      syncTask.dependsOn(frontendGuiTask,frontendDomainTask,frontendSetupTask); // I want that the sync tasks runs after all generate tasks
-    });
-    TaskProvider<?> syncGuiTask = project.getTasks().register("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class, syncTask -> {
-      syncTask.from(frontendGuiTask.get().getOutputDir());
-      syncTask.into(Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(), "build", "appgui").toFile());
-      syncTask.dependsOn(frontendGuiTask,frontendDomainTask,syncDomainTask,frontendSetupTask); // I want that the sync tasks runs after all generate tasks
-    });
+    TaskProvider<?> syncDomainTask = createSyncDomainTask(project, j2ts, frontendDomainJ2TSTask,
+        frontendGUIJ2TSTask, frontendSetupTask, frontendDomainTask, frontendGuiTask);
+    TaskProvider<?> syncGuiTask = createSyncGuiTask(project, frontendSetupTask, j2ts, frontendGUIJ2TSTask,
+        frontendDomainJ2TSTask, syncDomainTask, frontendGuiTask, frontendDomainTask);
 
 
     // Lifecycle task "generate"
-    Task generateTask = project.getTasks().create("generate");
-    generateTask.dependsOn(frontendGuiTask,syncDomainTask,syncGuiTask);
+    Task generateTask = createGenerateTask(project, j2ts, frontendGUIJ2TSTask, syncDomainTask,
+        syncGuiTask, frontendGuiTask);
 
     // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
-    Task continuousTask = project.getTasks().create("continuous");
-    continuousTask.dependsOn(generateTask);
-  }
+    createContinuousTask(project, generateTask);
 
-  private TaskProvider<UMLPGuiGenTask> createFrontendGuiTask(final Project project, final Configuration guiTypes, TaskProvider<UMLPFrontendTask> frontendDomainTask) {
-    return project.getTasks().register(UMLP_FRONTEND_GUI_TASK_NAME, UMLPGuiGenTask.class, umlpTask -> {
-      umlpTask.setGroup(UMLP_GROUP_NAME);
+    // Other dependencies
+    if (j2ts) {
+      project.getTasks().getByName("compileJava").dependsOn(frontendGuiTask.get());
+    }
 
-      umlpTask.getInput().from(Path.of(project.getProjectDir().getAbsolutePath(), "..", "models"));
-      umlpTask.getModelDir().set(Path.of(project.getProjectDir().getAbsolutePath(), "..", "models").toFile());
-
-      umlpTask.getSymbolDir().from(guiTypes);
-      umlpTask.getSymbolDir().from(frontendDomainTask.get().getSymbolOutDir());
-
-      setIfPathExists(x -> umlpTask.getHwcDir().set(x), Path.of(
-          project.getProjectDir().getAbsolutePath(), "src", "app"));
-
-      // It is important that the directory-depth of the intermediate-output is the the same as the final location (after sync!)
-      // Because the frontend uses relative paths to include HWC Code
-      umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "umlp_frontend", "intermediate", "appgui").toFile());
-      umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui").toFile());
-    });
+    // Source Sets
+    addSourceSets(project, j2ts);
   }
 
   protected TaskProvider<UMLPFrontendTask> createFrontendDomainTask(final Project project) {
     return project.getTasks().register(UMLP_FRONTEND_DOMAIN_TASK_NAME, UMLPFrontendTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
 
-      umlpTask.getInput().from(Path.of(project.getProjectDir().getAbsolutePath(), "..", "models"));
+      umlpTask.getInput().from(getModelsPath(project));
 
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
           project.getProjectDir().getAbsolutePath(), "src", "app"));
 
       // It is important that the directory-depth of the intermediate-output is the the same as the final location (after sync!)
       // Because the frontend uses relative paths to include HWC Code
-      umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "umlp_frontend", "intermediate","appdomain").toFile());
-      umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain").toFile());
+      umlpTask.getOutputDir().set(getAppDomainPath(project).toFile());
     });
+  }
+
+  protected TaskProvider<UMLPJava2TypeScriptTask> createFrontendDomainJ2TSTask(final Project project,
+      boolean local) {
+    TaskProvider<UMLPJava2TypeScriptTask> j2tsTask = project.getTasks()
+        .register(UMLP_FRONTEND_DOMAIN_J2TS_TASK_NAME, UMLPJava2TypeScriptTask.class, umlpTask -> {
+          umlpTask.setGroup(UMLP_GROUP_NAME);
+          umlpTask.getOutputDir().set(
+              getAppDomainPath(project).toFile());
+          umlpTask.getGui().set(false);
+          umlpTask.getDomain().set(true);
+        });
+
+    if (local) {
+      j2tsTask.get().dependsOn(project.findProject(":umlp-rte").getTasks().getByName("jar"));
+    }
+
+    return j2tsTask;
   }
 
   private TaskProvider<FrontendSetup> createFrontendSetupTask(final Project project) {
@@ -115,10 +127,223 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
   }
 
+  private TaskProvider<UMLPSymbolsTask> createDomainSymbolGen(Project project,
+      TaskProvider<FrontendSetup> frontendSetupTask) {
+    return project.getTasks().register(CREATE_DOMAIN_SYMBOLS_TASK_NAME, UMLPSymbolsTask.class, umlpTask -> {
+      umlpTask.setGroup(UMLP_GROUP_NAME);
+      umlpTask.dependsOn(frontendSetupTask.get());
+      umlpTask.getInput().from(getModelsPath(project));
+      umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain").toFile());
+      umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain").toFile());
+    });
+  }
+
+  private TaskProvider<UMLPGuiGenTask> createFrontendGuiTask(final Project project,
+      boolean j2ts, boolean local, TaskProvider<UMLPSymbolsTask> domainSymbolGenTask) {
+
+    // Add Configuration for TypeSymbols.
+    Configuration guiTypes = project.getConfigurations().create("guiTypes");
+    project.getDependencies().add("guiTypes",
+        "de.monticore.lang:guidsl:" + project.getProperties().get("mc_version") + ":default-types");
+
+    TaskProvider<UMLPGuiGenTask> guiGenTask = project.getTasks()
+        .register(UMLP_FRONTEND_GUI_TASK_NAME, UMLPGuiGenTask.class, umlpTask -> {
+          umlpTask.setGroup(UMLP_GROUP_NAME);
+
+          umlpTask.getInput().from(getModelsPath(project));
+          umlpTask.getModelDir().set(getModelsPath(project).toFile());
+
+          umlpTask.getSymbolDir().from(guiTypes);
+          umlpTask.getSymbolDir().from(domainSymbolGenTask.get().getSymbolOutDir());
+
+          if (j2ts) {
+            setIfPathExists(x -> umlpTask.getHwcDir().set(x), Path.of(
+                project.getProjectDir().getAbsolutePath(), "src", "main", "java"));
+            umlpTask.getGuiGenTSFuncionality().set(false);
+            umlpTask.getGuiGenJsweet().set(true);
+          }
+          else {
+            setIfPathExists(x -> umlpTask.getHwcDir().set(x), Path.of(
+                project.getProjectDir().getAbsolutePath(), "src", "app"));
+          }
+
+          // It is important that the directory-depth of the intermediate-output is the the same as the final location (after sync!)
+          // Because the frontend uses relative paths to include HWC Code
+          umlpTask.getOutputDir().set(getAppGuiPath(project).toFile());
+          umlpTask.getSymbolOutDir()
+              .set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui").toFile());
+
+          umlpTask.getGuiGenJsweet().set(j2ts);
+        });
+
+    if (local) {
+      Project umlpRteClientProject = project.findProject(":umlp-rte:client");
+      boolean createGuiSymbolsPresent = !umlpRteClientProject.getTasksByName("createGuiSymbols", false).isEmpty();
+      boolean createCDSymbolsPresent = !umlpRteClientProject.getTasksByName("createCDSymbols", false).isEmpty();
+      if (createCDSymbolsPresent && createGuiSymbolsPresent) {
+        SerializeGUISymbolsTask createGuiSymbols = (SerializeGUISymbolsTask) umlpRteClientProject.getTasks()
+            .getByName("createGuiSymbols");
+        SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks()
+            .getByName("createCDSymbols");
+        guiGenTask.get().dependsOn(createGuiSymbols, createCDSymbols);
+        guiGenTask.get().getSymbolDir()
+            .from(createGuiSymbols.getOutput(), createCDSymbols.getOutput());
+      }
+    }
+    else {
+      Configuration guiLib = project.getConfigurations().create("guiLib");
+      project.getDependencies().add("guiLib",
+          "umlp.umlp-rte:client:" + project.getProperties().get("mc_version"));
+      guiGenTask.get().getSymbolDir().from(guiLib.getFiles());
+    }
+
+    return guiGenTask;
+  }
+
+  protected TaskProvider<UMLPJava2TypeScriptTask> createFrontendGUIJ2TSTask(final Project project,
+      TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask,
+      TaskProvider<UMLPGuiGenTask> frontendGuiTask) {
+    return project.getTasks()
+        .register(UMLP_FRONTEND_GUI_J2TS_TASK_NAME, UMLPJava2TypeScriptTask.class, umlpTask -> {
+          umlpTask.setGroup(UMLP_GROUP_NAME);
+          umlpTask.getOutputDir().set(getAppGuiPath(project).toFile());
+          umlpTask.getGui().set(true);
+          umlpTask.getDomain().set(false);
+
+          umlpTask.dependsOn(frontendGuiTask.get(), frontendDomainJ2TSTask.get());
+        });
+  }
+
+  @NotNull
+  private static TaskProvider<Sync> createSyncDomainTask(Project project, boolean j2ts,
+      TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask,
+      TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask,
+      TaskProvider<FrontendSetup> frontendSetupTask,
+      TaskProvider<UMLPFrontendTask> frontendDomainTask,
+      TaskProvider<UMLPGuiGenTask> frontendGuiTask) {
+    return project.getTasks()
+        .register("SYNC_" + UMLP_FRONTEND_DOMAIN_TASK_NAME, Sync.class, syncTask -> {
+          if (j2ts) {
+            syncTask.from(frontendDomainJ2TSTask.get().getOutputDir());
+            syncTask.dependsOn(frontendGUIJ2TSTask, frontendDomainJ2TSTask,
+                frontendSetupTask); // I want that the sync tasks runs after all generate tasks
+          }
+          else {
+            syncTask.from(frontendDomainTask.get().getOutputDir());
+            syncTask.dependsOn(frontendGuiTask, frontendDomainTask,
+                frontendSetupTask); // I want that the sync tasks runs after all generate tasks
+          }
+          syncTask.into(
+              Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(),
+                  "build", "appdomain").toFile());
+        });
+  }
+
+  @NotNull
+  private static TaskProvider<Sync> createSyncGuiTask(Project project,
+      TaskProvider<FrontendSetup> frontendSetupTask, boolean j2ts,
+      TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask,
+      TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask, TaskProvider<?> syncDomainTask,
+      TaskProvider<UMLPGuiGenTask> frontendGuiTask,
+      TaskProvider<UMLPFrontendTask> frontendDomainTask) {
+    return project.getTasks()
+        .register("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class, syncTask -> {
+          syncTask.into(
+              Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(),
+                  "build", "appgui").toFile());
+          if (j2ts) {
+            syncTask.from(frontendGUIJ2TSTask.get().getOutputDir());
+            syncTask.dependsOn(frontendGUIJ2TSTask, frontendDomainJ2TSTask, syncDomainTask,
+                frontendSetupTask); // I want that the sync tasks runs after all generate tasks
+          }
+          else {
+            syncTask.from(frontendGuiTask.get().getOutputDir());
+            syncTask.dependsOn(frontendGuiTask, frontendDomainTask, syncDomainTask,
+                frontendSetupTask); // I want that the sync tasks runs after all generate tasks
+          }
+        });
+  }
+
+  private static void createContinuousTask(Project project, Task generateTask) {
+    Task continuousTask = project.getTasks().create("continuous");
+    continuousTask.dependsOn(generateTask);
+  }
+
+  @NotNull
+  private static Task createGenerateTask(Project project, boolean j2ts,
+      TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask, TaskProvider<?> syncDomainTask,
+      TaskProvider<?> syncGuiTask, TaskProvider<UMLPGuiGenTask> frontendGuiTask) {
+    Task generateTask = project.getTasks().create("generate");
+    if (j2ts) {
+      generateTask.dependsOn(frontendGUIJ2TSTask, syncDomainTask, syncGuiTask);
+    } else {
+      generateTask.dependsOn(frontendGuiTask, syncDomainTask, syncGuiTask);
+    }
+    return generateTask;
+  }
+
+  private static void addSourceSets(Project project, boolean j2ts) {
+    if (j2ts) {
+      SourceSetContainer sourceSets = (SourceSetContainer) project.getProperties().get("sourceSets");
+      SourceSet main = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+      main.getJava().srcDir(getAppGuiPath(project).toFile());
+    }
+  }
+
+  private static void addProjectDependencies(Project project, boolean j2ts, boolean local) {
+    if (j2ts) {
+      project.getRepositories().maven(repo -> {
+        repo.setUrl("https://repository.jsweet.org/artifactory/libs-snapshot-local");
+      });
+      project.getRepositories().maven(repo -> {
+        repo.setUrl("https://repository.jsweet.org/artifactory/libs-release-local");
+      });
+      project.getDependencies().add("implementation", "org.jsweet:jsweet-core:6.3.0");
+      project.getDependencies().add("implementation", "de.rwth.se.umlp.jsweet:jsweet-transpiler:3.2.0-UMLP-SNAPSHOT");
+      if (local) {
+        project.getDependencies().add("implementation", project.findProject(":umlp-rte:umlp-jsweet"));
+      } else {
+        project.getDependencies().add("implementation",
+            "umlp.umlp-rte:umlp-jsweet:" + project.getProperties().get("version"));
+      }
+    }
+  }
+
+  @NotNull
+  private static Path getModelsPath(Project project) {
+    return Path.of(project.getProjectDir().getAbsolutePath(), "..", "models");
+  }
+
+  @NotNull
+  private static Path getAppGuiPath(Project project) {
+    return Path.of(project.getBuildDir().getAbsolutePath(), "umlp_frontend", "intermediate",
+        "appgui");
+  }
+
+  @NotNull
+  private static Path getAppDomainPath(Project project) {
+    return Path.of(project.getBuildDir().getAbsolutePath(), "umlp_frontend", "intermediate",
+        "appdomain");
+  }
+
   private void setIfPathExists(Consumer<File> add, Path path) {
     File f = path.toFile();
     if (f.exists()) {
       add.accept(f);
     }
+  }
+
+  private Optional<String> getProjectProperty(Project project, String propertyName) {
+    Object projectProperty = project.findProperty(propertyName);
+    if (projectProperty == null) {
+      return Optional.empty();
+    } else {
+      return Optional.of(projectProperty.toString());
+    }
+  }
+
+  @NotNull
+  private Boolean getBooleanProjectProperty(Project project, String propertyName) {
+    return getProjectProperty(project, propertyName).map(Boolean::parseBoolean).orElse(false);
   }
 }

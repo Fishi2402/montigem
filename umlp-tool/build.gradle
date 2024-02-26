@@ -37,6 +37,9 @@ dependencies {
 
   implementation group: "org.yaml", name: "snakeyaml", version: "$snake_yaml_version"
 
+  implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
+  implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
+
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
@@ -55,6 +58,8 @@ test {
 
 group = 'umlp'
 repositories {
+  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
   if (("true").equals(getProperty('useLocalRepo'))) {
     mavenLocal()
   }

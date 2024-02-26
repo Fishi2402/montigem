@@ -72,18 +72,24 @@ task genDomain(type: UMLPFrontendTask) {
   dependsOn(frontendSetup)
   input = file("../models/Sehub.umlp")
   outputDir = frontendSetup.getOutput().dir("build/appdomain")
-  symbolOutDir = file("${project.buildDir}/symbols")
   hwcDir = file("src/app/")
 }
 
+task genDomainSymbols(type: UMLPSymbolsTask) {
+  dependsOn(frontendSetup)
+  input = layout.projectDirectory.dir("../models")
+  symbolOutDir = file("${project.buildDir}/symbols")
+  outputDir = file("${project.buildDir}/symbols")
+}
+
 task genGUI(type: UMLPGuiGenTask) {
-  dependsOn(genDomain, guiVariability)
+  dependsOn(genDomain, guiVariability, genDomainSymbols)
   input = file(guiVariability.getOutputDir().dir("gui"))
   outputDir = frontendSetup.getOutput().dir("build/appgui")
   hwcDir = file("src/app/")
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = files(
-      genDomain.symbolOutDir,
+      genDomainSymbols.symbolOutDir,
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
       configurations.guiDefaultTypes.files
   )

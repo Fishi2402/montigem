@@ -15,8 +15,9 @@ page SubComponentView(DemoRecComponent subComponent) {
 
   @GemColumn(
     components=[
-      @GemText(value="xPos is "+ subComponent.xPos),
-      @GemButton(label="Edit Subcomponent", leftClick=editSubcomponent)
+      @GemRow(components = [
+        @GemButton(label="Edit Subcomponent "+subComponent.name, leftClick=editSubcomponent)
+      ])
     ]
   );
 }

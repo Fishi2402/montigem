@@ -12,26 +12,17 @@ import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cdinterfaceandenum._visitor.CDInterfaceAndEnumVisitor2;
-import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
-import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
 
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
+import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 
 @SuppressWarnings("unused") // used in ftl
 public class TSTopDecorator extends TopDecorator {
 
   public TSTopDecorator(MCPath hwPath) {
     super(hwPath);
-  }
-
-  // TODO AGe: do not check yet
-  @Override
-  protected void checkNeedsHandwrittenClass(boolean existsHw, ASTCDClass cdClass) {
   }
 
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compUnit) {
@@ -47,11 +38,13 @@ public class TSTopDecorator extends TopDecorator {
     traverser.add4CDInterfaceAndEnum(nameVisitor);
     compUnit.accept(traverser);
 
-    //
-
     for (ASTCDClass cdClass : compUnit.getCDDefinition().getCDClassesList()) {
-      if (!GUIGeneratorUtil.getInstance().isComponent(cdClass) && GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdClass, compUnit))) {
-        if (importHW) {
+      boolean existsHw = GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdClass, compUnit));
+      if (!existsHw) {
+        checkNeedsHandwrittenClass(cdClass);
+      }
+      if (existsHw && !GUIGeneratorUtil.getInstance().isComponent(cdClass)) {
+        if (importHW && !GUIGeneratorUtil.getInstance().isCommand(cdClass)) {
           CD4C.getInstance().addImport(cdClass, GUIGeneratorUtil.getInstance().getPackageName(compUnit) + "." + cdClass.getName());
         }
         applyTopMechanism(cdClass);
@@ -82,6 +75,13 @@ public class TSTopDecorator extends TopDecorator {
     return compUnit;
   }
 
+  protected void checkNeedsHandwrittenClass(ASTCDClass cdClass) {
+    super.checkNeedsHandwrittenClass(false, cdClass);
+  }
+
+  @Override
+  protected void checkNeedsHandwrittenClass(boolean existsHw, ASTCDClass cdClass) {
+  }
 
   // TODO: TopDecorator.DetermineNameVisitor has a protected constructor >.<
   protected class DetermineNameVisitor implements CDBasisVisitor2, CDInterfaceAndEnumVisitor2 {
