@@ -2,6 +2,7 @@
 package gui.pipelines;
 
 import dtcockpit.Project;
+import jsweet.lang.Replace;
 import mc.fenix.charts.GemBarChartData;
 import mc.fenix.charts.GemBarChartEntry;
 import umlp.jsweet.extension.annotation.Component;
@@ -20,8 +21,6 @@ import java.util.Optional;
 @Component
 public class PipelineStats extends PipelineStatsTOP {
 
-  private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance(DateFormat.DEFAULT,
-                                                                           Locale.GERMAN);
   private final ProjectDataCheck projectDataCheck = new ProjectDataCheck();
   private int maxValue = 0;
 
@@ -91,8 +90,9 @@ public class PipelineStats extends PipelineStatsTOP {
     return projectDataCheck.value;
   }
 
+  @Replace("return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;")
   String formatDate(LocalDate date) {
-    return DATE_FORMAT.format(Date.valueOf(date));
+    return DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.GERMAN).format(Date.valueOf(date));
   }
 
   @Override
