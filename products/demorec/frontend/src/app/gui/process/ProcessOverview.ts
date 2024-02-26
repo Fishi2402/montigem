@@ -50,6 +50,10 @@ export  class ProcessOverview extends ProcessOverviewComponent {
   public override getSensorValuesValue (step: ProcessStep): string {
     return  step.getMeasured().length+" Values";
   }
+
+  public override getEditStepUrl(step: ProcessStep): string {
+    return "gui/step/ProcessStepCreate/"+step.getGemId();
+  }
 }
 
 
