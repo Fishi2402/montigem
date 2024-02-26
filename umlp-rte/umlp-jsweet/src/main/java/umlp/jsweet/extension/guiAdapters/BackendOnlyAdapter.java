@@ -3,7 +3,10 @@ package umlp.jsweet.extension.guiAdapters;
 
 import de.se_rwth.commons.logging.Log;
 import org.jsweet.transpiler.Java2TypeScriptTranslator;
+import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
+import org.jsweet.transpiler.model.CompilationUnitElement;
+import org.jsweet.transpiler.model.ImportElement;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -36,6 +39,26 @@ public class BackendOnlyAdapter extends PrinterAdapter {
     } else {
       return super.substituteMethodBody(parentTypeElement, method);
     }
+  }
+
+  @Override
+  public String needsImport(ImportElement importElement, String qualifiedName) {
+    ExecutableElement executableElement = getParentElement(ExecutableElement.class);
+    if (executableElement != null && executableElement.getKind().name().equals("METHOD") && isBackendOnly(executableElement)) {
+      return null;
+    }
+    return super.needsImport(importElement, qualifiedName);
+  }
+
+  @Override
+  public ModuleImportDescriptor getModuleImportDescriptor(
+      CompilationUnitElement currentCompilationUnit, String importedName,
+      TypeElement importedClass) {
+    ExecutableElement executableElement = getParentElement(ExecutableElement.class);
+    if (executableElement != null && executableElement.getKind().name().equals("METHOD") && isBackendOnly(executableElement)) {
+      return null;
+    }
+    return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
   }
 
   @Override

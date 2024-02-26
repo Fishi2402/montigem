@@ -110,6 +110,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
     if (local) {
       j2tsTask.get().dependsOn(project.findProject(":umlp-rte").getTasks().getByName("jar"));
+      j2tsTask.get().dependsOn(project.findProject(":umlp-rte:umlp-jsweet").getTasks().getByName("jar"));
     }
 
     return j2tsTask;
