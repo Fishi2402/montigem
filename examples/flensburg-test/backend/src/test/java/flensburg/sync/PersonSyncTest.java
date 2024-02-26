@@ -12,7 +12,7 @@ import hardy.flensburg.FlensburgMock;
 import hardy.flensburg.FlensburgTestContext;
 import hardy.flensburg.Person;
 import hardy.flensburg.PersonBuilder;
-import hardy.flensburg.requests.GetFreeGemIdRequest;
+import hardy.flensburg.commands.GetFreeGemIdRequest;
 import hardy.flensburg.test_infrastructure.FlensburgDBTestSetup;
 import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import org.junit.jupiter.api.BeforeEach;

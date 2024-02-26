@@ -53,10 +53,10 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
         .filter(c -> GenService.hasStereotype(c.getModifier(), SINGLETON))
-        .filter(c -> TagLookUp.isSingleton(c.getSymbol()))
+       // .filter(c -> TagLookUp.isSingleton(c.getSymbol())) // Doesn't work properly anymore
         .forEach(c -> c.getCDMethodList().stream()
                           //   .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
-        //  .filter(m -> TagLookUp.isCommand(m.getSymbol()))
+        //  .filter(m -> TagLookUp.isCommand(m.getSymbol())) // Doesn't work properly anymore
           .forEach(m -> {
              astcdPackage.addCDElement(withOrigin(createCommandClass(origCD, m)));
              astcdPackage.addCDElement(withOrigin(createCommandDeSer(origCD, m)));

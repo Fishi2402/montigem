@@ -2,7 +2,7 @@
 ${tc.signature("commandList", "className", "baseName")}
 ${cd4c.constructor("public ${className}()")}
   // Standard
-  deSerMap.put("${baseName}.requests.GetFreeGemIdRequest", new ${baseName}.requests.GetFreeGemIdRequestDeSer());
+  deSerMap.put("${baseName}.commands.GetFreeGemIdRequest", new ${baseName}.commands.GetFreeGemIdRequestDeSer());
 
   // Generated
 <#list commandList as command>

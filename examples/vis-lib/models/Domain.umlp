@@ -13,8 +13,29 @@ classdiagram Domain {
     int house;
   }
 
+  <<singleton>>
+  class App{
+    void sendMail(Person email, String subject, String message, List<String> forwards);
+    void startMontiVerseLitePipeline();
+        long getCurrentUserRequest();
+            List<Person> getCDTypeList();
+            Person getCDType(long userId);
+            Optional<Person> getOptionalType(long userId);
+            int getBoxingType();
+            String getJavaType();
+            ActivationStatus getEnumType();
+            Set<String> getNotListGenericType();
+            List<Integer> getJavaTypeList();
+  }
 
   association home [1] Person -> (address) Address [0..1];
 
   association friends [*] Person -> (friends) Person [*];
+
+    enum ActivationStatus {
+      AKTIVIERT,
+      MAIL_NICHT_GESENDET,
+      MAIL_FEHLERHAFT,
+      MAIL_GESENDET;
+    }
 }

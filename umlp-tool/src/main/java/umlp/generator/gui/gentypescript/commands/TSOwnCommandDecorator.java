@@ -85,7 +85,7 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
     });
 
     getCD4C().addMethod(ast, getCheckAccessPolicyTemplate(), domainParameters);
-
+    addedDeSers.add(ast);
     return ast;
   }
 
