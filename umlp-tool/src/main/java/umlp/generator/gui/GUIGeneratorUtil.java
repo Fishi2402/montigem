@@ -3,10 +3,13 @@ package umlp.generator.gui;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
+import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code._prettyprint.CD4CodePrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
@@ -64,6 +67,7 @@ public class GUIGeneratorUtil {
   protected final String TPL_INTERN = "TPL_INTERN";
   protected final String TPL_SUFFIX = "TPL";
   protected GUIDSLFullPrettyPrinter printer;
+  protected static CD4CodeFullPrettyPrinter cdPrinter;
   // Fully qualified Name of the classdiagram, e.g. "hardy.Flensburg"
   private List<String> DOMAIN_MODELS;
   // Fully qualified Name of a gui model, e.g. "stanley.PersonCreate"
@@ -71,6 +75,7 @@ public class GUIGeneratorUtil {
 
   private GUIGeneratorUtil() {
     printer = new GUIDSLFullPrettyPrinter(new IndentPrinter());
+    cdPrinter = new CD4CodeFullPrettyPrinter(new IndentPrinter());
   }
 
   public static GUIGeneratorUtil getInstance() {
@@ -95,6 +100,12 @@ public class GUIGeneratorUtil {
 
   public boolean isComponent(ASTCDClass clazz) {
     return clazz.getName().endsWith(GUIAbstractDecorator.COMPONENT_SUFFIX);
+  }
+
+  public boolean isCommand(ASTCDClass clazz) {
+    return !clazz.getSuperclassList().isEmpty()
+               && (cdPrinter.prettyprint(clazz.getSuperclassList().get(0)).startsWith("Command")
+        || cdPrinter.prettyprint(clazz.getSuperclassList().get(0)).startsWith("Request"));
   }
 
   public String getOriginalName(ASTCDClass clazz) {
@@ -616,6 +627,14 @@ public class GUIGeneratorUtil {
     Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
         arg.getEnclosingScope(), comp.getNameSymbol().getFullName(), arg.getName());
     return paramSym.isPresent() && hasGetter(paramSym.get().getType()) && paramSym.get().isIsReference();
+  }
+
+  public boolean isNameExpression(ASTExpression expression) {
+    return expression instanceof ASTNameExpression;
+  }
+
+  public String getNameOfNameExpression(ASTExpression expression) {
+    return isNameExpression(expression)? ((ASTNameExpression)expression).getName() : "";
   }
 
   public boolean isViewElementsCollection(ASTGUIComponent comp, ASTGUINamedArg arg) {

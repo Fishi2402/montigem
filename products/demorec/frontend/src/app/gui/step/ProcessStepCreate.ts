@@ -250,6 +250,9 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   }
 
   public override getPassedTimeValue (): string {
+    if(this.passedSeconds > 1) {
+      return String(this.passedSeconds.toFixed(0))
+    }
     return String(this.passedSeconds);
   }
 

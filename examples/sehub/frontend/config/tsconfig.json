@@ -10,6 +10,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": false,
     "noStrictGenericChecks": true,
+    "ignoreDeprecations": "5.0",
     "strictNullChecks": false,
     "sourceMap": true,
     "declaration": false,
@@ -19,6 +20,7 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
+    "allowSyntheticDefaultImports": true,
     "useDefineForClassFields": false,
     "lib": [
       "ES2022",
@@ -34,6 +36,7 @@
       "@umlp/input": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/input/src"],
       "@umlp/navigation": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/navigation/src"],
       "@umlp/table": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/table/src"],
+      "@umlp/networkgraph": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/networkgraph/src"],
       "@umlp/*": ["node_modules/@umlp/*"],
       "tslib": ["node_modules/tslib"]
     }

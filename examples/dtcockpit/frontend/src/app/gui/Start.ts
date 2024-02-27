@@ -4,7 +4,7 @@ import {StartComponent,config} from '@src/gui/StartComponent';
 import {Component} from '@angular/core';
 import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
 import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
-import {GetCurrentUserRequest} from "../security/GetCurrentUserRequest";
+import {GetCurrentUserRequest} from '@src/dtcockpit/commands/GetCurrentUserRequest';
 import {CommandManager} from '@umlp/common';
 import {ActivatedRoute, Router} from '@angular/router';
 
@@ -37,6 +37,7 @@ export  class Start extends StartComponent {
       if(sr.isSuccessful()){
         console.log("GemId of current user is", sr.get());
         DtcockpitManager.getUserSure(sr.get()).then(usr => {
+          console.log("Username: " + usr.getUsername());
           DtcockpitSecurityManager.signIn(usr);
           console.log("User login complete.");
         });

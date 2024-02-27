@@ -1,3 +1,23 @@
 # Set the default behavior, in case people don't have core.autocrlf set.
 * text=auto eol=lf
 *.mp4 filter=lfs diff=lfs merge=lfs -text
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.bmp binary
+*.tif binary
+*.tiff binary
+*.eps binary
+*.pdf binary
+*.doc binary
+*.docx binary
+*.ppt binary
+*.pptx binary
+*.xls binary
+*.xlsx binary
+*.zip binary
+*.gz binary
+*.tar binary
+*.rar binary

@@ -33,9 +33,9 @@ export class Navigation {
     { url: '/example_arrange/GemRowExample', title: 'Row' },
     { url: '/example_arrange/GemRowExample2', title: 'Row2' },
     { url: '/example_input/GemTextInputExample', title: 'TextInput' },
+    { url: '/example_input/GemTextareaInputExample', title: 'TextareaInput' },
     /*
     { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
-    { url: '/example_input/GemTextareaInputExample', title: 'TextareaInput' }
     { url: '/example_input/GemCheckBoxInputExample', title: 'CheckBoxInput' },
     { url: '/example_input/GemRadioInputExample', title: 'RadioInput' },
     */
@@ -49,7 +49,7 @@ export class Navigation {
     { url: '/example_charts/GemSunburstChartExample', title: 'SunburstChart' },
     { url: '/example_charts/GemVennDiagramExample', title: 'VennDiagram' },
     { url: '/example_charts/GemGraphChartExample', title: 'NetworkChart' },
-    { url: '/gui/NetworkChartExample/1', title: 'NewNetworkChart'}
+    { url: '/example_network/NetworkChartExample/', title: 'NewNetworkChart'}
   ];
 
 }

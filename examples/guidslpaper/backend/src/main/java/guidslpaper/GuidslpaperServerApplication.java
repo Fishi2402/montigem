@@ -50,7 +50,8 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
       Log.println("_NOT_ Creating New Dummy Data. Data is already present.");
     }
 
-    createDummyData();
+    createDummyAccounts();
+    createDummyPersons();
 
     try {
       Server webServer = Server.createWebServer("-web", "-webAllowOthers").start();
@@ -63,7 +64,7 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
 
   }
 
-  public void createDummyData() {
+  public void createDummyAccounts() {
     Konto k;
     k = GuidslpaperManager.kontoBuilder()
         .name("Haushaltskonto")
@@ -132,6 +133,79 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
         .kontotyp(Optional.of("Sonderfonds"))
         .istPlanKonto(false)
         .budgetRahmenCent(4450L)
+        .build()
+        .get();
+  }
+
+  public void createDummyPersons() {
+    Person p;
+    p = GuidslpaperManager.personBuilder()
+        .personalnummer(Optional.of("1234561"))
+        .kuerzel("MUSMI")
+        .nachname("Musterfrau")
+        .vorname("Mia")
+        .beschBeginn(Optional.of(LocalDate.of(2018, 1,1)))
+        .beschEnde(Optional.of(LocalDate.of(2023, 12,31)))
+        .build()
+        .get();
+
+    p = GuidslpaperManager.personBuilder()
+        .personalnummer(Optional.of("1234"))
+        .kuerzel("MUSMA")
+        .nachname("Mustermann")
+        .vorname("Max")
+        .beschBeginn(Optional.of(LocalDate.of(2017, 5,15)))
+        .beschEnde(Optional.of(LocalDate.of(2024, 12,31)))
+        .build()
+        .get();
+
+    p = GuidslpaperManager.personBuilder()
+        .personalnummer(Optional.of("1234"))
+        .kuerzel("ENTOH")
+        .nachname("Entgeltgruppe")
+        .vorname("Ohne")
+        .beschBeginn(Optional.of(LocalDate.of(2017, 5,15)))
+        .beschEnde(Optional.of(LocalDate.of(2024, 12,31)))
+        .build()
+        .get();
+
+    p = GuidslpaperManager.personBuilder()
+        .personalnummer(Optional.of("62345"))
+        .kuerzel("MUSMO")
+        .nachname("Musterperson")
+        .vorname("Mo")
+        .beschBeginn(Optional.of(LocalDate.of(2018, 1,1)))
+        .beschEnde(Optional.of(LocalDate.of(2025, 12,31)))
+        .build()
+        .get();
+
+    p = GuidslpaperManager.personBuilder()
+        .personalnummer(Optional.of("6382457"))
+        .kuerzel("SCHPA")
+        .nachname("Schmitz")
+        .vorname("Paul")
+        .beschBeginn(Optional.of(LocalDate.of(2017, 1,1)))
+        .beschEnde(Optional.of(LocalDate.of(2023, 12,31)))
+        .build()
+        .get();
+
+    p = GuidslpaperManager.personBuilder()
+        .personalnummer(Optional.of("1234562"))
+        .kuerzel("HAAFI")
+        .nachname("Haas")
+        .vorname("Finn")
+        .beschBeginn(Optional.empty())
+        .beschEnde(Optional.empty())
+        .build()
+        .get();
+
+    p = GuidslpaperManager.personBuilder()
+        .personalnummer(Optional.of("12346"))
+        .kuerzel("BARFO")
+        .nachname("Bar")
+        .vorname("Foo")
+        .beschBeginn(Optional.empty())
+        .beschEnde(Optional.empty())
         .build()
         .get();
   }

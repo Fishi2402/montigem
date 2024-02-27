@@ -49,12 +49,29 @@ public class TestSetupDecorator extends AbstractDecorator {
     ASTCDAttribute clientsAttr = getCD4C().addAttribute(res, true, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
     glex.replaceTemplate("cd2java.Value", clientsAttr, new StringHookPoint(" = new ArrayList<>();"));
     ASTCDAttribute numberOfClientsArg = getCD4C().addAttribute(res, true, false, "protected int numberOfClients;");
+    ASTCDAttribute clientNamesArg = getCD4C().addAttribute(res,
+                                                           true,
+                                                           false,
+                                                           "protected List<String> clientNames;");
+
+    String commonCustomTemplatePath = "umlp.test_infrastructure.";
 
     // Constructor
-    getCD4C().addConstructor(res, "umlp.common.BasicConstructor", res.getName(), List.of(numberOfClientsArg));
+    String commonConstructorTemplate = "umlp.common.BasicConstructor";
+    getCD4C().addConstructor(res,
+                             commonConstructorTemplate, res.getName(), List.of(numberOfClientsArg));
+    getCD4C().addConstructor(res,
+                             commonConstructorTemplate,
+                             res.getName(),
+                             List.of(numberOfClientsArg, clientNamesArg));
+    getCD4C().addConstructor(res, commonCustomTemplatePath + "NamesConstructor",
+                             res.getName(),
+                             clientNamesArg);
 
     // Methods
-    getCD4C().addMethod(res, "umlp.test_infrastructure.mockTestSetup.Init", name);
+    getCD4C().addMethod(res, commonCustomTemplatePath + "GetClientName", name);
+    getCD4C().addMethod(res, commonCustomTemplatePath + "mockTestSetup.Init", name);
+    getCD4C().addMethod(res, commonCustomTemplatePath + "mockTestSetup.HasDatabase", name);
 
     addImports(origCD, res);
     return res;
@@ -74,17 +91,37 @@ public class TestSetupDecorator extends AbstractDecorator {
     ASTCDAttribute clientsAttr = getCD4C().addAttribute(res, true, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
     glex.replaceTemplate("cd2java.Value", clientsAttr, new StringHookPoint(" = new ArrayList<>();"));
     ASTCDAttribute numberOfClientsArg = getCD4C().addAttribute(res, true, false, "protected int numberOfClients;");
+    ASTCDAttribute clientNamesArg = getCD4C().addAttribute(res,
+                                                           true,
+                                                           false,
+                                                           "protected List<String> clientNames;");
+
+    String commonCustomTemplatePath = "umlp.test_infrastructure.";
 
     // Constructor
-    getCD4C().addConstructor(res, "umlp.common.BasicConstructor", res.getName(), List.of(numberOfClientsArg));
+    String commonConstructorTemplate = "umlp.common.BasicConstructor";
+    getCD4C().addConstructor(res,
+                             commonConstructorTemplate,
+                             res.getName(),
+                             List.of(numberOfClientsArg));
+    getCD4C().addConstructor(res,
+                             commonConstructorTemplate,
+                             res.getName(),
+                             List.of(numberOfClientsArg, clientNamesArg));
+    getCD4C().addConstructor(res,
+                             commonCustomTemplatePath + "NamesConstructor",
+                             res.getName(),
+                             clientNamesArg);
 
     // Methods
+    getCD4C().addMethod(res, commonCustomTemplatePath + "GetClientName", name);
     if(isNeo4jGen) {
       getCD4C().addMethod(res, "umlp.test_infrastructure.dbTestSetup.InitNeo4j", name);
     } else {
       getCD4C().addMethod(res, "umlp.test_infrastructure.dbTestSetup.Init", name);
     }
     getCD4C().addMethod(res, "umlp.test_infrastructure.dbTestSetup.Cleanup", name);
+    getCD4C().addMethod(res, "umlp.test_infrastructure.dbTestSetup.HasDatabase", name);
 
     addImports(origCD, res);
     return res;

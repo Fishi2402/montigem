@@ -5,11 +5,6 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend"
 }
 
-dependencies {
-  // Types which are used in genGUI-Task
-  guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-}
-
 node {
   // Whether to download and install a specific Node.js version or not
   // If false, it will use the globally installed Node.js
@@ -19,7 +14,7 @@ node {
 
   // Version of node to download and install (only used if download is true)
   // It will be unpacked in the workDir
-  version = "18.10.0"
+  version = "${node_version}"
 
   // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
   // according the proxy configuration defined for Gradle
@@ -32,16 +27,9 @@ node {
   // By default it is at the root of the current project
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
+nodeSetup.dependsOn(frontendSetup)
 
 genGUI {
-  dependsOn(
-      tasks.getByPath(":umlp-rte:client:createGuiSymbols"),
-      tasks.getByPath(":umlp-rte:client:createCDSymbols")
-  )
-  symbolDir = files(
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output,
-  )
   domainModels = ["Guidslpaper"]
   guiCreateModels = ["gui.login.UserCreate", "gui.person.PersonCreate", "gui.konto.KontoCreate"]
 

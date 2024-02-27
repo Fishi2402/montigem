@@ -1,11 +1,9 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-<nav class="gem-nav-menu collapsible-6">
+<nav class="gem-nav-list">
   <ng-container *ngTemplateOutlet="header"></ng-container>
-  <div [className]="'nav-list-components'">
-    <ng-container *ngFor="let c of components">
-      <ng-container *ngTemplateOutlet="c"></ng-container>
-    </ng-container>
-  </div>
+  <ng-container *ngFor="let c of components">
+    <ng-container *ngTemplateOutlet="c"></ng-container>
+  </ng-container>
   <ng-container *ngTemplateOutlet="footer"></ng-container>
 </nav>

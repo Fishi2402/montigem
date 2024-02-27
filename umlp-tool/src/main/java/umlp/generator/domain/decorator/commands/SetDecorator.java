@@ -243,7 +243,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
     boolean useDeSer = supportedDeSers.contains(typeName);
     boolean makeAbstract = jsonStr.equals("") && !useDeSer;
     getCD4C().addMethod(ast, getSet_FromJsonObjectTemplate(), cmdName, name, typeName, isOptional, isCDEnum, jsonStr, useDeSer, baseClassDecorator, makeAbstract);
-    getCD4C().addMethod(ast, getSet_BuildJsonTemplate(), cmdName, name, typeName, isCDEnum, GenService.getGetterName(name, type), useDeSer, baseClassDecorator, makeAbstract);
+    getCD4C().addMethod(ast, getSet_BuildJsonTemplate(), cmdName, name, typeName, isCDEnum, GenService.getGetterName(name, type), useDeSer, baseClassDecorator, makeAbstract, isOptional);
 
     addDeSerImport(ast, origCD, useDeSer, isCDEnum, baseClassDecorator, typeName, cmdName);
 

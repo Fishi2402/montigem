@@ -7,15 +7,21 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.basic.GemText;
 
 import gui.pack.BatteryPackOverview;
-import gui.navigation.Navigation;
+import gui.staticcontainer.NavContainer;
 
 page AllPacksOverview(List<BatteryPack> allPacks) {
-  @Navigation();
-  @GemColumn(
-    colGap="5px",
-    components = [
-      @iterate(BatteryPack pack : allPacks) {
-        @BatteryPackOverview(pack=pack);
-      }
-  ]);
+  @NavContainer(
+    content = [
+      @GemColumn(
+        rowGap = "15px",
+        components = [
+          @iterate(BatteryPack pack : allPacks) {
+            @BatteryPackOverview(pack=pack);
+            // TODO: delete
+            @BatteryPackOverview(pack=pack);
+          }
+      ])
+    ]
+  );
+
 }

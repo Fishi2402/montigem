@@ -8,14 +8,15 @@ import mc.fenix.arrange.GemColumn;
 
 import gui.component.PhotoDragNDrop;
 import gui.component.PhotoDisplay;
-import gui.navigation.Navigation;
+import gui.staticcontainer.NavContainer;
 
 import DemoRec.BatteryPack;
 import DemoRec.Process;
 import DemoRec.BatteryPackType;
 
 page ProcessCreate(Process p, BatteryPack pack, BatteryPackType type) {
-  @Navigation();
+  @NavContainer(
+    content=[
   @GemCard(
     title = "Process",
     component = @GemColumn(
@@ -33,7 +34,7 @@ page ProcessCreate(Process p, BatteryPack pack, BatteryPackType type) {
         )
       ]
     )
-  );
+  ),
   guardBPack@guard(true) {
     @GemCard(
       title = "Battery Pack",
@@ -81,6 +82,7 @@ page ProcessCreate(Process p, BatteryPack pack, BatteryPackType type) {
         )
       );
     }
-  }
-  @GemButton(label = "Save Process.", leftClick = sendEverything);
+  },
+  @GemButton(label = "Start Process", leftClick = sendEverything)
+  ]);
 }

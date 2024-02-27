@@ -6,9 +6,6 @@ plugins {
 }
 
 dependencies {
-  // Types which are used in genGUI-Task
-  guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-
   umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
 }
 
@@ -21,7 +18,7 @@ node {
 
   // Version of node to download and install (only used if download is true)
   // It will be unpacked in the workDir
-  version = "18.10.0"
+  version = "${node_version}"
 
   // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
   // according the proxy configuration defined for Gradle
@@ -36,10 +33,6 @@ node {
 }
 
 genGUI {
-  dependsOn(tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
-  symbolDir = files(
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-  )
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 

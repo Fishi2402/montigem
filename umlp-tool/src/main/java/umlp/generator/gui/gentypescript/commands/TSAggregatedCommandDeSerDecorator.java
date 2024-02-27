@@ -6,9 +6,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.commands.AggregatedCommandDeSerDecorator;
-import umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator;
+import umlp.generator.domain.decorator.commands.GetFreeGemIdRequestDecorator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 
 import java.util.List;
@@ -46,7 +45,7 @@ public class TSAggregatedCommandDeSerDecorator extends AggregatedCommandDeSerDec
 
   protected void addCommandImports(ASTCDClass ast, List<String> commandList) {
     getCD4C().addImport(ast, this.astcdPackage + "."
-        + REQUESTS_PACKAGE + "." + GetFreeGemIdRequestDecorator.CLASS_NAME + "DeSer");
+        + COMMAND_PACKAGE + "." + GetFreeGemIdRequestDecorator.CLASS_NAME + "DeSer");
     for (String command : commandList) {
       getCD4C().addImport(ast, command + "DeSer");
     }

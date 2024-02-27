@@ -22,7 +22,7 @@ import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerClientImplDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
-import umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator;
+import umlp.generator.domain.decorator.commands.GetFreeGemIdRequestDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 
@@ -247,7 +247,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ListResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("StatusResult"));
-    getCD4C().addImport(clazz, Joiners.DOT.join(getPackageName(origCD, REQUESTS_PACKAGE), GetFreeGemIdRequestDecorator.CLASS_NAME));
+    getCD4C().addImport(clazz, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), GetFreeGemIdRequestDecorator.CLASS_NAME));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemListBuilder"));

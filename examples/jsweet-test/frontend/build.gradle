@@ -9,196 +9,60 @@ buildscript {
     classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
       transitive = true
     }
-    classpath group: 'umlp', name: 'umlp-frontend-rte-java'
+    classpath group: 'umlp', name: 'umlp-jsweet'
   }
 }
 
 plugins {
   id 'java'
   id "com.github.node-gradle.node" version "5.0.0"
-  id 'de.rwth.se.umlp-tool'
+//  id 'de.rwth.se.umlp-tool'
   id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT" apply(false)
-}
-
-compileJava {
-  enabled = true
-}
-
-configurations {
-  guiDefaultTypes
+  id 'de.rwth.se.umlp-tool-frontend'
 }
 
 dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-
   implementation project(":examples:jsweet-test:backend")
 
   implementation group: "de.monticore.lang", name: 'guidsl', version: "7.6.0-SNAPSHOT"
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 }
 
-task generateNPMAuth(type: NPMAuthCreate){
-  npmrcFile = file("config/.npmrc")
-}
-
-// Add Frontend-Config Files from UMLP-Tool Resources.
-task frontendSetup(type: FrontendSetup){
-  dependsOn(generateNPMAuth, tasks.getByPath(":umlp-rte:umlp-frontend-rte:packLib"))
-  input = file("config/")   // Can be used to add or replace files
-  output = layout.buildDir.dir("frontendGen/")
-}
-
 node {
-  // Whether to download and install a specific Node.js version or not
-  // If false, it will use the globally installed Node.js
-  // If true, it will download node using above parameters
-  // Note that npm is bundled with Node.js
   download = true
-
-  // Version of node to download and install (only used if download is true)
-  // It will be unpacked in the workDir
-  version = "18.10.0"
-
-  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
-  // according the proxy configuration defined for Gradle
-  // Disable this option if you want to configure the proxy for npm or yarn on your own
-  // (in the .npmrc file for instance)
+  version = "${node_version}"
   nodeProxySettings = ProxySettings.OFF
-
-  // The Node.js project directory location
-  // This is where the package.json file and node_modules directory are located
-  // By default it is at the root of the current project
   nodeProjectDir = file("${buildDir}/frontendGen")
+}
+nodeSetup.dependsOn(frontendSetup)
+
+genGUI {
+  domainModels = ["Jsweettest"]
+}
+
+compileJava.dependsOn(genGUI)
+
+translateJava2TSDomain {
+  domainModel = 'Jsweettest'
+  verbose = true
+  additionalExcludes = [
+      '**/jsweettest/JsweettestServerApplicationTOP.java',
+  ]
+}
+
+sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui', 'src/main/java']
+
+translateJava2TSGUI {
+  dependsOn(compileJava)
+  domainModel = 'Jsweettest'
+  verbose = true
 }
 
 nodeSetup.dependsOn(frontendSetup)
-
-task genSymbols(type: UMLPSymbolsTask) {
-  dependsOn(frontendSetup)
-  input = file("../models/Jsweettest.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
-  outputDir = file("${project.buildDir}/symbols")
-}
-
-task genGUI(type: UMLPGuiGenTask) {
-  dependsOn(genSymbols, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
-  input = file("../models")
-  outputDir = frontendSetup.getOutput().dir("build/appgui")
-  hwcDir = file("src/app")
-  modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(
-      genSymbols.symbolOutDir,
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      configurations.guiDefaultTypes.files
-  )
-  domainModels = ["Jsweettest"]
-  guiGenTSFuncionality = false
-  guiGenJsweet = true
-}
-compileJava.dependsOn(genGUI)
-
-task ensureNodeInit {
-  project.file("build/jsweet/.node-init").mkdirs()
-}
-
-org.jsweet.gradle.JSweetPluginExtension jsweetDomainConf = project.getExtensions().create("jsweetDomain", org.jsweet.gradle.JSweetPluginExtension.class)
-jsweetDomain {
-  autoPropagateAsyncAwaits = true
-  verbose = true
-  encoding = 'UTF-8'
-  sourceMap = true
-  tsOnly = true
-  tsOut = project.file('build/frontendGen/build/appdomain/')
-  candiesJsOut = project.file('build/jsweet/candies')
-  workingDir = project.file('build/jsweet')
-  targetVersion = 'ES6'
-  includes = ['**/jsweettest/**/*.java']
-  excludes = [
-      '**/jsweettest/JsweettestManagerImpl.java',
-      '**/jsweettest/JsweettestMock.java',
-      '**/jsweettest/JsweettestMockTestSetup.java',
-      '**/jsweettest/JsweettestDummyProvider.java',
-      '**/jsweettest/JsweettestTestContext.java',
-      '**/jsweettest/test_infrastructure/**',
-      '**/jsweettest/JsweettestServerApplication*.java',
-      '**/jsweettest/JsweettestShellAPIApplication.java',
-      '**/jsweettest/shellapi/**',
-      '**/jsweettest/JsweettestDAOFactory.java',
-  ]
-  module = 'commonjs'
-  excludeTranspilation = [
-      '**/jsweettest/*DAO.java',
-      '**/jsweettest/*DAONeo4J.java',
-      '**/jsweettest/*DbObserver.java',
-      '**/jsweettest/JsweettestManagerImpl.java',
-      '**/jsweettest/JsweettestMock.java',
-      '**/jsweettest/JsweettestMockTestSetup.java',
-      '**/jsweettest/JsweettestDummyProvider.java',
-      '**/jsweettest/JsweettestTestContext.java'
-  ]
-  extraSystemPath = project.file('.gradle/nodejs/node-v18.10.0-win-x64')
-}
-
-task translateJava2TSDomain(type: org.jsweet.gradle.JSweetTranspileTask) {
-  setGroup("generate");
-  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME);
-  setConfiguration(jsweetDomainConf);
-  setSources(sourceSets.main.java);
-  setClasspath(configurations.runtimeClasspath);
-}
-
-sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui', 'src/app']
-
-org.jsweet.gradle.JSweetPluginExtension jsweetGUIConf = project.getExtensions().create("jsweetGUI", org.jsweet.gradle.JSweetPluginExtension.class)
-jsweetGUI {
-  autoPropagateAsyncAwaits = true
-  verbose = true
-  encoding = 'UTF-8'
-  sourceMap = true
-  tsOnly = true
-  tsOut = project.file('build/frontendGen/build/appgui/')
-  candiesJsOut = project.file('build/jsweet/candies')
-  workingDir = project.file('build/jsweet')
-  targetVersion = 'ES6'
-  includes = ['**/jsweettest/**/*.java', '**/gui/**/*.java']
-  module = 'commonjs'
-  excludes = [
-      '**/jsweettest/JsweettestManagerImpl.java',
-      '**/jsweettest/JsweettestMock.java',
-      '**/jsweettest/JsweettestMockTestSetup.java',
-      '**/jsweettest/JsweettestDummyProvider.java',
-      '**/jsweettest/JsweettestTestContext.java',
-      '**/jsweettest/test_infrastructure/**',
-      '**/jsweettest/JsweettestServerApplication*.java',
-      '**/jsweettest/JsweettestShellAPIApplication.java',
-      '**/jsweettest/shellapi/**',
-  ]
-  excludeTranspilation = [
-      '**/jsweettest/**/*.java'
-  ]
-}
-
-task translateJava2TSGUI(type: org.jsweet.gradle.JSweetTranspileTask) {
-  setGroup("generate");
-  dependsOn(JavaPlugin.COMPILE_JAVA_TASK_NAME, frontendSetup, genGUI, npmInstall, ensureNodeInit);
-  setConfiguration(jsweetGUIConf);
-  setSources(sourceSets.main.java);
-  setClasspath(configurations.runtimeClasspath);
-}
-
-task translateTypeScript() {
-  dependsOn(translateJava2TSDomain, translateJava2TSGUI)
-}
-
-task installLocalRTE(type: NpmTask) {
-  dependsOn(npmInstall)
-  args = ["install", "../../../../../umlp-rte/umlp-frontend-rte/dist/umlp-frontend-rte/umlp-frontend-rte-7.6.0-SNAPSHOT.tgz"]
-}
-
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    installLocalRTE, translateTypeScript
+    npmInstall, generate
 ]
 
 task buildApp(type: NpxTask) {

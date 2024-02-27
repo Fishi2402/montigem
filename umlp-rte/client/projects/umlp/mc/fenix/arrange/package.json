@@ -1,11 +1,11 @@
 {
   "publishConfig": {"@monticore:registry": "https://nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/"},
   "peerDependencies": {
-    "@angular/common": "^15.1.0",
-    "@angular/core": "^15.1.0"
+    "@angular/common": "^17.0.7",
+    "@angular/core": "^17.0.7"
   },
   "name": "@umlp/arrange",
-  "version": "7.6.1",
+  "version": "7.6.3",
   "sideEffects": false,
   "dependencies": {"tslib": "^2.3.0"}
 }

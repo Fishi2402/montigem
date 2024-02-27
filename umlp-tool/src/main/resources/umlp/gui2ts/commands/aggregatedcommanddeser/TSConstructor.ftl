@@ -4,7 +4,7 @@ ${cd4c.constructor("public constructor()")}
 public constructor() {
   super();
   // Standard
-  this.deSerMap.set("${baseName}.requests.GetFreeGemIdRequest", new GetFreeGemIdRequestDeSer());
+  this.deSerMap.set("${baseName}.commands.GetFreeGemIdRequest", new GetFreeGemIdRequestDeSer());
 
   // Generated
 <#list commandList as command>

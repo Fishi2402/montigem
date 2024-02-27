@@ -16,16 +16,20 @@ import mc.fenix.input.GemTextInput;
 import gui.component.PhotoDisplay;
 import gui.component.PhotoDragNDrop;
 import gui.component.SubComponentView;
-import gui.navigation.Navigation;
+import gui.staticcontainer.NavContainer;
+import gui.staticcontainer.StatTable;
+import gui.staticcontainer.StatTableRow;
 
 page ComponentEdit(DemoRecComponent component) {
-  @Navigation();
+
+  @NavContainer(
+      content=[
   @GemCard(
-    title = "Edit the component.",
+    title = "Edit component",
     component = @GemColumn(
         wrap="nowrap",
         components=[
-          @GemTextInput(labelText = "Component Name", inputType = "string", entry = component.name),
+          @GemTextInput(labelText = "Component Name", inputType = "string", entry = component.name, disabled=true),
           @GemTextInput(labelText = "Unique ID", inputType = "string", entry = component.uniqueId),
           @GemTextInput(labelText = "OE-Number", inputType = "string", entry = component.oENumber),
           @GemTextInput(labelText = "Component Manufacturer", inputType = "string", entry = component.manufacturer),
@@ -42,9 +46,9 @@ page ComponentEdit(DemoRecComponent component) {
           @PhotoDisplay(component=component),
           photoDragAndDrop@PhotoDragNDrop(attachedComponent = component)
       ])
-  );
+  ),
   @GemCard(
-    title = "Subparts of the component.",
+    title = "Subparts of component",
     component =
       @GemColumn(
         components=[
@@ -52,16 +56,17 @@ page ComponentEdit(DemoRecComponent component) {
             @GemRow(
               wrap="nowrap",
               components=[
-                @GemText(value="Type of Connection: "),
-                @GemText(value=conn.joinConnectionType)
+                @StatTable(width="100%", rows = [
+                  @StatTableRow(left = @GemText(value = "Type of Connection"), right = @GemText(value = conn.joinConnectionType)),
+                  @StatTableRow(left = @GemText(value = "State of Connection"), right = @GemText(value = conn.state))
+                ])
             ]);
-            @GemText(value="State of Connection: "+conn.state);
             @iterate(DemoRecComponent subComponent : conn.connects) {
               @SubComponentView(subComponent=subComponent);
             }
-          },
-          buildConnection@GemButton(label = "Create new Connection.", leftClick = createNewConnection, disabled=true)
+          }/*,
+          buildConnection@GemButton(label = "Create new Connection.", leftClick = createNewConnection, disabled=true)/**/
         ]
       )
-  );
+  )]);
 }

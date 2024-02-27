@@ -1,0 +1,22 @@
+package gui.staticcontainer;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemLink;
+
+component Navigation() {
+  @GemRow(
+    colGap="1px",
+    components=[
+      @GemLink(url="gui/Start", text="Processes"),
+      @GemLink(url="gui/process/ProcessCreate", text="Start new Process"),
+      @GemLink(url="gui/pack/AllPacksOverview", text="Battery Packs"),
+      @GemLink(url="gui/endeffector/EndEffectorOverview", text="End Effectors"),
+      @GemLink(url="gui/dimension/DimensionOverview", text="Dimensions")
+    ]
+  );
+
+
+}

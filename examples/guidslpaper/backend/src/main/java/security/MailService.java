@@ -13,7 +13,7 @@ import static umlp.backendrte.service.websocket.WebSocketConfig.UMLP_DOMAINNAME_
 public class MailService {
 
   public static final String SENDER = System.getenv().getOrDefault("mailAbsender", "noreply@guidslpaper.se.rwth-aachen.de");
-  public static final String IDENTIFIER = "Guidslpaper";
+  public static final String IDENTIFIER = "uidslpaper";
   protected static final String MAIL_PASSWORD = System.getenv().getOrDefault("mailPassword", "");
   public static final String DEFAULT_URL = "https://guidslpaper.demos.se.rwth-aachen.de/";
 

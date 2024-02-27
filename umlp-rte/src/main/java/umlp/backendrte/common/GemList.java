@@ -2,7 +2,6 @@
 package umlp.backendrte.common;
 
 import de.se_rwth.commons.logging.Log;
-import jsweet.lang.Replace;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -245,4 +244,6 @@ public abstract class GemList<E extends GemIdentifiable>
   public int indexOfId(long gemId) {
     return ids.indexOf(gemId);
   }
+
+  public abstract boolean TESTING_deepEquals(List<E> o);
 }
