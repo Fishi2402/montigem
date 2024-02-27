@@ -42,31 +42,6 @@ public class BackendOnlyAdapter extends PrinterAdapter {
   }
 
   @Override
-  public String needsImport(ImportElement importElement, String qualifiedName) {
-    ExecutableElement executableElement = getParentElement(ExecutableElement.class);
-    if (executableElement != null && executableElement.getKind().name().equals("METHOD") && isBackendOnly(executableElement)) {
-      return null;
-    }
-    return super.needsImport(importElement, qualifiedName);
-  }
-
-  @Override
-  public ModuleImportDescriptor getModuleImportDescriptor(
-      CompilationUnitElement currentCompilationUnit, String importedName,
-      TypeElement importedClass) {
-    try {
-      ExecutableElement executableElement = getParentElement(ExecutableElement.class);
-      if (executableElement != null && executableElement.getKind().name().equals("METHOD")
-          && isBackendOnly(executableElement)) {
-        return null;
-      }
-    } catch (NullPointerException e) {
-    } finally {
-      return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
-    }
-  }
-
-  @Override
   public Java2TypeScriptTranslator getPrinter() {
     if (super.getPrinter() instanceof Java2TypeScriptTranslator) {
       return (Java2TypeScriptTranslator) super.getPrinter();
