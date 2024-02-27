@@ -32,11 +32,15 @@ public class ObserverDecorator extends AbstractDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
+    origCD.getCDDefinition().getCDClassesList().stream().filter(this::shouldCreateObserver)
         .forEach(c -> astcdPackage.addCDElement(withOrigin(createInterface(c))));
 
-    origCD.getCDDefinition().getCDInterfacesList().stream().filter(c -> !c.getModifier().isDerived())
+    origCD.getCDDefinition().getCDInterfacesList().stream().filter(this::shouldCreateObserver)
         .forEach(c -> astcdPackage.addCDElement(withOrigin(createInterface(c))));
+  }
+
+  public boolean shouldCreateObserver(ASTCDType c) {
+    return !c.getModifier().isDerived();
   }
 
   protected ASTCDInterface createInterface(ASTCDType domainClass) {
