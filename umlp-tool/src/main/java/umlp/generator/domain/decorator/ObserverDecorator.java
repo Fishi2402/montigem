@@ -11,7 +11,6 @@ import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
@@ -29,7 +28,7 @@ public class ObserverDecorator extends AbstractDecorator {
 
   public static final String SUFFIX = "Observer";
 
-  private Collection<GenerationDetails> createdNotificationMethods = List.of();
+  private Collection<ObserverGenerationDetails> createdNotificationMethods = List.of();
 
   public ObserverDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -61,12 +60,12 @@ public class ObserverDecorator extends AbstractDecorator {
       ast.setCDExtendUsage(getExtendUsageFacade()
           .createCDExtendUsage(superTypes.stream().map(a -> a.print() + SUFFIX).toArray(String[]::new)));
     }
-    GenerationDetails generationDetails = new GenerationDetails(domainClass,
-                                                                new ArrayList<>(),
-                                                                new ArrayList<>());
+    ObserverGenerationDetails generationDetails = new ObserverGenerationDetails(domainClass,
+                                                                                new ArrayList<>(),
+                                                                                new ArrayList<>());
     var mem = new Object() {
       void add(ASTCDMethodSignature signature) {
-        generationDetails.notifyMethodSignatures.add(signature);
+        generationDetails.notifyMethodSignatures().add(signature);
       }
     };
 
@@ -113,29 +112,24 @@ public class ObserverDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.observer.NotifyBuild", className);
     getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyBuild", className);
 
-    generationDetails.importStatements.add(getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope")));
+    generationDetails.importStatements().add(getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope")));
     addImportForImportedObservers(domainClass, ast, generationDetails);
     super.addImports(domainClass, ast);
 
     return ast;
   }
 
-  private void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType, GenerationDetails generationDetails) {
+  private void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType, ObserverGenerationDetails generationDetails) {
     CDTypeSymbol symbol = domainClass.getSymbol();
     if (symbol.isPresentSuperClass()) {
       SymTypeExpression superclass = symbol.getSuperClass();
       ASTCDCompilationUnit scCD = UMLPSymbolTables.getDiagramFor((ASTCDType) superclass.getTypeInfo().getAstNode());
-      generationDetails.importStatements.add(getCD4C().addImport(observerType, getPackageName(scCD, DEFAULT_PACKAGE) + "." + superclass.print() + "Observer"));
+      generationDetails.importStatements().add(getCD4C().addImport(observerType, getPackageName(scCD, DEFAULT_PACKAGE) + "." + superclass.print() + "Observer"));
     }
   }
 
-  public Collection<GenerationDetails> getGenerationDetails() {
+  public Collection<ObserverGenerationDetails> getGenerationDetails() {
     return createdNotificationMethods;
   }
 
-  public record GenerationDetails(ASTCDType domainClass,
-                                  Collection<ASTCDMethodSignature> notifyMethodSignatures,
-                                  Collection<ASTMCImportStatement> importStatements) {
-
-  }
 }

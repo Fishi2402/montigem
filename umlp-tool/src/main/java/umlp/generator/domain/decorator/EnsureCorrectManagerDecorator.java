@@ -47,7 +47,7 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
 
   }
 
-  private ASTCDClass createEnsureCorrectManager(ASTCDCompilationUnit origCD, ObserverDecorator.GenerationDetails generationDetails) {
+  private ASTCDClass createEnsureCorrectManager(ASTCDCompilationUnit origCD, ObserverGenerationDetails generationDetails) {
     String cdName = origCD.getCDDefinition().getName();
     String domainClassName = generationDetails.domainClass().getName();
 
@@ -85,7 +85,7 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
     return res;
   }
 
-  private void addImports(ASTCDCompilationUnit origCD, ASTCDType type, ObserverDecorator.GenerationDetails generationDetails) {
+  private void addImports(ASTCDCompilationUnit origCD, ASTCDType type, ObserverGenerationDetails generationDetails) {
     CD4C cd4C = getCD4C();
     Joiner dot = Joiners.DOT;
     String defaultPackage = getPackageName(origCD, DEFAULT_PACKAGE);
