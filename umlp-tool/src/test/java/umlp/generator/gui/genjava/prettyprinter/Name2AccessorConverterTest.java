@@ -30,7 +30,10 @@ public class Name2AccessorConverterTest extends DomainGUITest {
         new IndentPrinter(), true, new HashSet<>()
     );
 
-    componentDecl = processGUIModel("gui/genjava/Converter.gui", "src/test/resources/gui");
+    componentDecl = processGUIModel(
+        "gui/genjava/Converter.gui",
+        "src/test/resources/gui"
+    ).getGUIComponentDeclaration();
 
     components = stat.getComponents(componentDecl);
 
@@ -91,7 +94,10 @@ public class Name2AccessorConverterTest extends DomainGUITest {
 
     List<ASTGUIComponent> components;
 
-    componentDecl = processGUIModel("gui/genjava/Converter.gui", "src/test/resources/gui");
+    componentDecl = processGUIModel(
+        "gui/genjava/Converter.gui",
+        "src/test/resources/gui"
+    ).getGUIComponentDeclaration();
 
     components = stat.getComponents(componentDecl);
 

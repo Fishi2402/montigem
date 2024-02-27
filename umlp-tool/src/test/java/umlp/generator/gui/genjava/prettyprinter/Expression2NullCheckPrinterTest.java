@@ -31,7 +31,10 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
 
     Expression2NullCheckPrinter printer = new Expression2NullCheckPrinter(new IndentPrinter(), true);
 
-    componentDecl = processGUIModel("gui/person/Overview.gui", "src/test/resources/gui");
+    componentDecl = processGUIModel(
+        "gui/person/Overview.gui",
+        "src/test/resources/gui"
+    ).getGUIComponentDeclaration();
 
     components = stat.getComponents(componentDecl);
     guards = stat.getGuards(componentDecl);
@@ -82,7 +85,7 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
     componentDecl = processGUIModel(
         "gui/example_input/GemCheckboxInputExample.gui",
         "src/test/resources/gui"
-    );
+    ).getGUIComponentDeclaration();
 
     components = stat.getComponents(componentDecl);
 
@@ -116,7 +119,7 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
     componentDecl = processGUIModel(
         "gui/person/Create.gui",
         "src/test/resources/gui"
-    );
+    ).getGUIComponentDeclaration();
 
     components = stat.getComponents(componentDecl);
 
@@ -144,17 +147,17 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
     componentDecl = processGUIModel(
         "gui/genjava/Prettyprinter.gui",
         "src/test/resources/gui"
-    );
+    ).getGUIComponentDeclaration();
 
     components = stat.getComponents(componentDecl);
 
-    ASTGUIComponent call = stat.getById(components, "call");
-    ASTGUIComponent ternary = stat.getById(components, "ternary");
-    ASTGUIComponent fieldCall1 = stat.getById(components, "fieldCall1");
-    ASTGUIComponent fieldCall2 = stat.getById(components, "fieldCall2");
-    ASTGUIComponent fieldCall3 = stat.getById(components, "fieldCall3");
-    ASTGUIComponent fieldCall4 = stat.getById(components, "fieldCall4");
-    ASTGUIComponent literal = stat.getById(components, "literal");
+    ASTGUIComponent call = stat.getCompById(components, "call");
+    ASTGUIComponent ternary = stat.getCompById(components, "ternary");
+    ASTGUIComponent fieldCall1 = stat.getCompById(components, "fieldCall1");
+    ASTGUIComponent fieldCall2 = stat.getCompById(components, "fieldCall2");
+    ASTGUIComponent fieldCall3 = stat.getCompById(components, "fieldCall3");
+    ASTGUIComponent fieldCall4 = stat.getCompById(components, "fieldCall4");
+    ASTGUIComponent literal = stat.getCompById(components, "literal");
 
     String expect1 = removeSpaces("false");
     String result1 = removeSpaces(printer.prettyprint(

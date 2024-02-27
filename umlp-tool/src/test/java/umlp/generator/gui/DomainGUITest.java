@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class DomainGUITest extends AbstractGUITest {
 
-  protected ASTGUIComponentDeclaration processGUIModel(
+  protected ASTGUICompilationUnit processGUIModel(
       String modelPath,
       String symbolPath
   ) {
@@ -53,6 +53,6 @@ public class DomainGUITest extends AbstractGUITest {
         Optional.of(Paths.get("src/test/resources/" + modelPath)),
         importedSymbolPath
     );
-    return guiAst.getGUIComponentDeclaration();
+    return guiAst;
   }
 }

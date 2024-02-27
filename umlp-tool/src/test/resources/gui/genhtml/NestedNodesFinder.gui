@@ -1,0 +1,53 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package genhtml;
+
+import util.V;
+
+page NestedNodesFinder(List<String> ls, GUIViewElement comp) {
+  a@V();
+  comp;
+  b@iterate(String s1 : ls) {
+    c@V(gve = comp);
+    d@guard(true) {
+      e@iterate(String s2 : ls) {
+        f@V();
+        g@guard(false) {
+          h@V(gve = i@V(), lgve = [j@V(), k@V()]);
+        }
+        else {
+          l@V();
+        }
+        m@V();
+      }
+      n@V();
+      ;
+    }
+  }
+  o@V(lgve = [
+    p@V(),
+    q@guard(1 > 2) {
+      z@guard(false) {
+      }
+      aa@iterate(String s1 : ls) {
+      }
+      y@guard(true) {
+        r@V();
+      }
+    }
+    else {
+      s@V(gve = t@iterate(String s1 : ls) {
+        u@iterate(String s2 : ls) {
+          ;
+          v@V();
+        }
+      });
+    },
+    ab@iterate(String s1 : ls) {
+      ac@guard(true) {
+      }
+    }
+  ]);
+  ;
+  w@V(lgve = [comp, comp, x@V()]);
+}

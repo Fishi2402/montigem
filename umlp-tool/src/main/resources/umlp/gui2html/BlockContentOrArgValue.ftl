@@ -1,15 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-<#-- Generates a html file from the given model -->
 ${tc.signature("args")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 
 <#if ast.isPresentExpression()>
-  <#if genHelper.isNameExpression(ast.getExpression())>
-    ${tc.includeArgs("umlp.gui2html.Expression", ast.getExpression(), [genHelper.getNameOfNameExpression(ast.getExpression())])}
-  <#else>
-  <#-- TODO AGe -->
-  aaa  ${genHelper.print(ast.getExpression())}   zzz
-  </#if>
+  <ng-container *ngTemplateOutlet="${genHelper.print(ast.getExpression())}"></ng-container>
+  ${tc.includeArgs("umlp.gui2html.Expression", ast.getExpression(), [genHelper.getNameOfNameExpression(ast.getExpression())])}
 <#elseif ast.isPresentGUIComponent()>
   ${tc.includeArgs("umlp.gui2html.Component", ast.getGUIComponent(), [args])}
 <#elseif ast.isPresentGUIGuard()>

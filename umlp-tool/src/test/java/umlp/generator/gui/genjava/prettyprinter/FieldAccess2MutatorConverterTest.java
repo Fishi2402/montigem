@@ -27,7 +27,10 @@ public class FieldAccess2MutatorConverterTest extends DomainGUITest {
 
     List<ASTGUIComponent> components;
 
-    componentDecl = processGUIModel("gui/genjava/Converter.gui", "src/test/resources/gui");
+    componentDecl = processGUIModel(
+        "gui/genjava/Converter.gui",
+        "src/test/resources/gui"
+    ).getGUIComponentDeclaration();
 
     components = stat.getComponents(componentDecl);
 

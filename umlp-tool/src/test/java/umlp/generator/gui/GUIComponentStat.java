@@ -70,8 +70,26 @@ public class GUIComponentStat implements GUIDSLVisitor2 {
     iterates.add(node);
   }
 
-  public ASTGUIComponent getById(List<ASTGUIComponent> components, String id) {
+  public ASTGUIComponent getCompById(List<ASTGUIComponent> components, String id) {
     for (ASTGUIComponent c : components) {
+      if (c.isPresentId() && c.getId().getName().equals(id)) {
+        return c;
+      }
+    }
+    return null;
+  }
+
+  public ASTGUIIterate getIterById(List<ASTGUIIterate> iterates, String id) {
+    for (ASTGUIIterate c : iterates) {
+      if (c.isPresentId() && c.getId().getName().equals(id)) {
+        return c;
+      }
+    }
+    return null;
+  }
+
+  public ASTGUIGuard getGuardById(List<ASTGUIGuard> guards, String id) {
+    for (ASTGUIGuard c : guards) {
       if (c.isPresentId() && c.getId().getName().equals(id)) {
         return c;
       }
