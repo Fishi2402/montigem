@@ -141,7 +141,7 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
 
       DemoRecManager.dimensionBuilder().name("Torque").unit("Nm").build().get();
 
-      openWebServer();
+      //openWebServer();
     }
   }
 
