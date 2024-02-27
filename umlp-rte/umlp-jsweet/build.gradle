@@ -22,6 +22,7 @@ dependencies {
     // Enable for implementing a new Adapter
     implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
     implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
+    implementation group: 'com.kohlschutter.jdk.compiler', name: 'standalone-jdk11', version: '1.0.0'
 
     implementation group: 'com.google.guava', name: 'guava', version: guava_version
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version

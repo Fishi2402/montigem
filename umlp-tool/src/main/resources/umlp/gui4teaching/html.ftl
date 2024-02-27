@@ -285,7 +285,7 @@
       //   data: { name: Bob, age: 12 }
       // }
       const freeGemId = {
-        "commandType": "${ast.getCDDefinition().getName()?lower_case}.requests.GetFreeGemIdRequest"
+        "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands.GetFreeGemIdRequest"
       }
       obj["gemId"] = convert((await sendCommand(freeGemId))["value"], "Number");
       const command = {

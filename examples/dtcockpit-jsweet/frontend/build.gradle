@@ -33,6 +33,8 @@ genGUI {
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate"]
 }
 
+compileJava.dependsOn(genGUI)
+
 translateJava2TSDomain {
   domainModel = 'Dtcockpit'
   additionalIncludes = [
@@ -47,6 +49,7 @@ translateJava2TSDomain {
 }
 
 translateJava2TSGUI {
+  dependsOn(compileJava)
   domainModel = 'Dtcockpit'
   additionalIncludes = [
       '**/security/*.java'

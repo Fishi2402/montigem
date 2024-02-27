@@ -6,6 +6,8 @@ import de.monticore.cd4codebasis._visitor.CD4CodeBasisVisitor2;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._tagging.CDBasisTagger;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
@@ -49,7 +51,7 @@ public class TagRelated {
       public void visit(ASTCDClass node) {
         if (node.getModifier().isPresentStereotype() && node.getModifier().getStereotype().contains("singleton")) {
           ASTTag astTag = TagsMill.simpleTagBuilder().setName("singleton").build();
-          UMLPTagger.getInstance().addTag((ASTCDType) node, tagUnit, astTag);
+          __addTag(node.getSymbol(), tagUnit, astTag);
           node.getCDMethodList().forEach(m -> {
             ASTTag astTagCommand = TagsMill.simpleTagBuilder().setName("command").build();
             // Problem: CDMethodSignature => Sehub.clazz.methodname
@@ -59,7 +61,7 @@ public class TagRelated {
         }
         if (node.getModifier().isDerived()) {
           ASTTag astTag = TagsMill.simpleTagBuilder().setName("derived").build();
-          UMLPTagger.getInstance().addTag((ASTCDType) node, tagUnit, astTag);
+          __addTag(node.getSymbol(), tagUnit, astTag);
         }
       }
     });

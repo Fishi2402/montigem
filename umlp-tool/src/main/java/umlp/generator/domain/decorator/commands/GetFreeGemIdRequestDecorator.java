@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.domain.decorator.requests;
+package umlp.generator.domain.decorator.commands;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -24,7 +24,7 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, REQUESTS_PACKAGE);
+    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     astcdPackage.addCDElement(withOrigin(createClass(origCD, astcdPackage.getName())));
     astcdPackage.addCDElement(withOrigin(createDeSer(origCD, astcdPackage.getName())));
 
@@ -58,11 +58,11 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
   }
 
   protected String getDoRunTemplate() {
-    return "umlp.requests.getfreegemid.DoRun";
+    return "umlp.commands.getfreegemid.DoRun";
   }
 
   protected String getConstructorTemplate() {
-    return "umlp.requests.getfreegemid.Constructor";
+    return "umlp.commands.getfreegemid.Constructor";
   }
 
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, String packageName) {
@@ -85,6 +85,6 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
   }
 
   protected String getFromJsonObjectTemplate() {
-    return "umlp.requests.getfreegemid.FromJsonObject";
+    return "umlp.commands.getfreegemid.FromJsonObject";
   }
 }
