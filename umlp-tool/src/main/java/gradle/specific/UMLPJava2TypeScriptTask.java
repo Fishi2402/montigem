@@ -107,7 +107,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
   public void run(InputChanges inputChanges) {
     init();
 
-    File baseDirectory = this.getProject().getProjectDir();
+    File baseDirectory = new File(this.getProject().getProjectDir(), "jsweet");
     JSweetFactory factory = new JSweetFactory();
     File buildDir = this.getProject().getBuildDir();
     File workingDir = new File(buildDir, "jsweet");

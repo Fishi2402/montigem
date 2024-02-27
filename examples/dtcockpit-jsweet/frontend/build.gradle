@@ -28,14 +28,17 @@ node {
 }
 nodeSetup.dependsOn(frontendSetup)
 
+task ensureNodeInit {
+  project.file("build/jsweet/.node-init").mkdirs()
+}
+
 genGUI {
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate"]
 }
 
-compileJava.dependsOn(genGUI)
-
 translateJava2TSDomain {
+  dependsOn(ensureNodeInit)
   domainModel = 'Dtcockpit'
   additionalIncludes = [
       '**/security/*.java'
@@ -49,7 +52,6 @@ translateJava2TSDomain {
 }
 
 translateJava2TSGUI {
-  dependsOn(compileJava)
   domainModel = 'Dtcockpit'
   additionalIncludes = [
       '**/security/*.java'
