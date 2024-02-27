@@ -1,7 +1,7 @@
 import { Injectable, NgZone, OnDestroy } from "@angular/core";
 import Graph from "graphology";
 import { AnimateZoomOptions, EdgeAttributes, NodeAttributes } from "../types/graph.types";
-import Sigma from "sigma/sigma";
+import { Sigma } from "sigma";
 import { GraphSettingsService } from "../services/graph-settings.service";
 import { Attributes } from "graphology-types";
 import { CameraState } from "sigma/types";

@@ -14,7 +14,8 @@ import {
 import { downloadChartAsPNG } from "./export/graph.exporter";
 import { Utils } from "../shared/utils/utils";
 import { Observable, Subscriber, switchMap } from "rxjs";
-import Sigma, { SigmaEvents } from "sigma/sigma";
+import { Sigma } from "sigma";
+import { SigmaEvents } from "sigma/sigma";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { GraphManagerService } from "./data/graph-manager.service";
 import { MouseCaptorEvents } from "sigma/core/captors/mouse";
