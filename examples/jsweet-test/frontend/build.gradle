@@ -45,11 +45,15 @@ compileJava.dependsOn(genGUI)
 translateJava2TSDomain {
   domainModel = 'Jsweettest'
   verbose = true
+  additionalExcludes = [
+      '**/jsweettest/JsweettestServerApplicationTOP.java',
+  ]
 }
 
 sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui', 'src/main/java']
 
 translateJava2TSGUI {
+  dependsOn(compileJava)
   domainModel = 'Jsweettest'
   verbose = true
 }
