@@ -29,8 +29,6 @@ translateJava2TSDomain {
   verbose = true
 }
 
-sourceSets.main.java.srcDirs += ['src/main/java', 'build/umlp_frontend/intermediate/appgui']
-
 translateJava2TSGUI {
   domainModel = 'Jsweettest'
   verbose = true

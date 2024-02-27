@@ -54,11 +54,16 @@ public class BackendOnlyAdapter extends PrinterAdapter {
   public ModuleImportDescriptor getModuleImportDescriptor(
       CompilationUnitElement currentCompilationUnit, String importedName,
       TypeElement importedClass) {
-    ExecutableElement executableElement = getParentElement(ExecutableElement.class);
-    if (executableElement != null && executableElement.getKind().name().equals("METHOD") && isBackendOnly(executableElement)) {
-      return null;
+    try {
+      ExecutableElement executableElement = getParentElement(ExecutableElement.class);
+      if (executableElement != null && executableElement.getKind().name().equals("METHOD")
+          && isBackendOnly(executableElement)) {
+        return null;
+      }
+    } catch (NullPointerException e) {
+    } finally {
+      return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
     }
-    return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
   }
 
   @Override
