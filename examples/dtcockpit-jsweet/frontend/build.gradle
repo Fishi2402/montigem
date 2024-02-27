@@ -47,6 +47,8 @@ genGUI {
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate"]
 }
 
+compileJava.dependsOn(genGUI)
+
 translateJava2TSDomain {
   domainModel = 'Dtcockpit'
   additionalIncludes = [
@@ -63,6 +65,7 @@ translateJava2TSDomain {
 sourceSets.main.java.srcDirs += ['src/main/java', 'build/umlp_frontend/intermediate/appgui']
 
 translateJava2TSGUI {
+  dependsOn(compileJava)
   domainModel = 'Dtcockpit'
   additionalIncludes = [
       '**/security/*.java'

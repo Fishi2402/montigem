@@ -40,12 +40,14 @@ genGUI {
   domainModels = ["Jsweettest"]
 }
 
+compileJava.dependsOn(genGUI)
+
 translateJava2TSDomain {
   domainModel = 'Jsweettest'
   verbose = true
 }
 
-sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui', 'src/app']
+sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui', 'src/main/java']
 
 translateJava2TSGUI {
   domainModel = 'Jsweettest'
