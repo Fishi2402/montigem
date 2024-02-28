@@ -1,0 +1,13 @@
+umlp UMLPAssocQualifierNoAttr {
+  class A {
+    C a;
+  }
+
+  class B {
+    boolean isTrue;
+  }
+
+  class C;
+
+  association A [[noMatchingAttr]] -> B [*];
+}

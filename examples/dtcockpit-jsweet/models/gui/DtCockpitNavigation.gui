@@ -29,9 +29,6 @@ component DtCockpitNavigation(String username, List<Project> projects) {
 
   @GemRow(height="auto",components = [
     @GemNavList( components = [
-     @GemRow(height="auto",components = [
-            @GemNavItem(title = "1111" , target = "/gui/project/111/show")
-          ]),
       @iterate(Project p : projects) {
         @GemRow(height="auto",components = [
           @GemNavItem(title = p.name , target = "/gui/project/" + p.name + "/show")
