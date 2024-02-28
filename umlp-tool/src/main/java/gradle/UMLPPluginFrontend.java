@@ -110,6 +110,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
     if (local) {
       j2tsTask.get().dependsOn(project.findProject(":umlp-rte").getTasks().getByName("jar"));
+      j2tsTask.get().dependsOn(project.findProject(":umlp-rte:umlp-jsweet").getTasks().getByName("jar"));
     }
 
     return j2tsTask;
@@ -206,7 +207,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     return project.getTasks()
         .register(UMLP_FRONTEND_GUI_J2TS_TASK_NAME, UMLPJava2TypeScriptTask.class, umlpTask -> {
           umlpTask.setGroup(UMLP_GROUP_NAME);
-          umlpTask.getOutputDir().set(getAppGuiPath(project).toFile());
+          umlpTask.getOutputDir().set(getAppGuiJ2TSPath(project).toFile());
           umlpTask.getGui().set(true);
           umlpTask.getDomain().set(false);
 
@@ -252,6 +253,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
               Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(),
                   "build", "appgui").toFile());
           if (j2ts) {
+            syncTask.from(frontendGuiTask.get().getOutputDir());
             syncTask.from(frontendGUIJ2TSTask.get().getOutputDir());
             syncTask.dependsOn(frontendGUIJ2TSTask, frontendDomainJ2TSTask, syncDomainTask,
                 frontendSetupTask); // I want that the sync tasks runs after all generate tasks
@@ -318,6 +320,12 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   private static Path getAppGuiPath(Project project) {
     return Path.of(project.getBuildDir().getAbsolutePath(), "umlp_frontend", "intermediate",
         "appgui");
+  }
+
+  @NotNull
+  private static Path getAppGuiJ2TSPath(Project project) {
+    return Path.of(project.getBuildDir().getAbsolutePath(), "umlp_frontend", "intermediate",
+        "appguiJ2TS");
   }
 
   @NotNull

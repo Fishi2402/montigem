@@ -44,7 +44,7 @@ public class BlobEndpoint {
     Optional<DemoRecComponent> component = resolveDemoRecComponent(path);
 
     if(component.isEmpty()) {
-      return ResponseEntity.badRequest().body("File name must end with valid Gem Id of component.");
+      return ResponseEntity.badRequest().body("Please save the component before uploading a file.");
     }
 
     try {
@@ -62,6 +62,7 @@ public class BlobEndpoint {
         givenPath= givenPath+"/";
       }
       String photoLocation = givenPath+file.getOriginalFilename();
+      photoLocation = photoLocation.replaceAll("[^\\w.-]", "_");
       String pathOnFS = DemoRecServerApplication.blobStorageLocation + photoLocation;
 
       File image = Paths.get(pathOnFS).toFile();
@@ -75,7 +76,7 @@ public class BlobEndpoint {
             Log.info("Adding '"+photoLocation+"' to "+component.get().getGemId(), this.getClass().getName());
             component.get().addPhotoLocations(component.get().sizePhotoLocations(), photoLocation);
           }
-          return ResponseEntity.ok(null);
+          return ResponseEntity.status(400).body("File "+path+" was already uploaded.");
         } else { // Avoid name clashes by postfixing current time to the fileName
           String namePostFix = "_"+ java.time.LocalDateTime.now();
           image = Paths.get(pathOnFS+namePostFix).toFile();
@@ -99,7 +100,7 @@ public class BlobEndpoint {
     } catch (IOException e) {
       // Handle exceptions (e.g., IOException) and return an error response
       Log.warn("Failed to upload the file because of exception: ", e);
-      return ResponseEntity.status(500).body("Failed to upload the file");
+      return ResponseEntity.status(500).body("Internal Server Error: Failed to upload " +path);
     }
   }
 

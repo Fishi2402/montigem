@@ -11,5 +11,6 @@
       "**.PipelineInformationExtractor.init()",
       "**.PipelineInformationExtractor.extractPipelineDataOf(..)"
     ]
-  }
+  },
+  "domainName": "Dtcockpit"
 }

@@ -12,7 +12,7 @@ classdiagram Dtcockpit {
 
   // Singleton-Type used instead of stereotypes/annotations
   <<singleton>>
-  class DoesNotRequireLogin { }
+  class DoesNotRequireLogin {}
 
   association [1] App -> User [*];
   association [1] App -> Room [*];

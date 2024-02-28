@@ -1,4 +1,4 @@
-import Sigma from "sigma";
+import { Sigma } from "sigma";
 import { Coordinates, PlainObject } from "sigma/types";
 import { ExportUtils } from "../../shared/utils/export.utils";
 import { Settings } from "sigma/settings";
