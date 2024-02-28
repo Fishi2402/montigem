@@ -84,11 +84,12 @@ public class TagRelated {
     ast.accept(traverser);
 
     String s = UMLPToolOptions.SYMTAB.getValue(cmd);
-    if (s != null) {
+    if (s != null && !s.isEmpty()) {
       // store tag file to passed file
+      String pn = Names.getPathFromPackage(symbolTable.getPackageName());
       Path tagPath = Paths.get(
-          s + File.separator
-              + Names.getPathFromPackage(symbolTable.getPackageName())
+          s + (pn.isEmpty() ? "" : (File.separator
+              + Names.getPathFromPackage(symbolTable.getPackageName())))
               + File.separator
               + symbolTable.getName()
               + ".tags");
