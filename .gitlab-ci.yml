@@ -187,6 +187,15 @@ trigger-doppelkopf:
   only:
     - dev
 
+trigger-dtmm:
+  stage: testDeployed
+  allow_failure: false # Failure is not an option
+  trigger:
+    project: monticore/umlp-anwendungen/dtmm
+    branch: main
+  only:
+    - dev
+
 
 checkMDLinks:
   stage: check

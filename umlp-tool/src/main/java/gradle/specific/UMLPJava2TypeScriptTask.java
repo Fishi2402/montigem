@@ -260,7 +260,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
   }
 
   private String generatePattern(String pattern) {
-    return String.format(pattern, StringTransformations.uncapitalize(getDomainModel().get()),
+    return String.format(pattern, getDomainModel().get().toLowerCase(),
         getDomainModel().get());
   }
 
