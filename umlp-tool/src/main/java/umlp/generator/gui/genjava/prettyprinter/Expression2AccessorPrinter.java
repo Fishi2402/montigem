@@ -1,36 +1,32 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPrettyPrinter;
-import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
-public class Expression2AccessorPrinter extends GUIDSLFullPrettyPrinter {
+public class Expression2AccessorPrinter extends ExpressionPrinter {
 
-  protected Set<ASTExpression> ignore;
-  protected final boolean printComments;
-
-  public Expression2AccessorPrinter(IndentPrinter printer, boolean printComments) {
+  public Expression2AccessorPrinter(
+      IndentPrinter printer, boolean printComments
+  ) {
     super(printer, printComments);
-    this.printComments = printComments;
+  }
+
+  public Expression2AccessorPrinter(
+      IndentPrinter printer, boolean printComments, Collection<ASTExpression> ignore
+  ) {
+    super(printer, printComments, ignore);
   }
 
   @Override
-  protected void initializeTraverser(boolean printComments) {
-    super.initializeTraverser(printComments);
-    resetPrinter();
-  }
-
   protected void resetPrinter() {
     // customized printer
-    ignore = new HashSet<>();
+    super.resetPrinter();
     CommonExpressionsPrettyPrinter commonExpressions = new FieldAccess2AccessorConverter(
-        getPrinter(), printComments, ignore
+        getPrinter(), printComments, allIgnore
     );
     getTraverser().setCommonExpressionsHandler(commonExpressions);
     getTraverser().getCommonExpressionsVisitorList().clear();
@@ -38,16 +34,11 @@ public class Expression2AccessorPrinter extends GUIDSLFullPrettyPrinter {
 
     // customized printer
     ExpressionsBasisPrettyPrinter expressionsBasis = new Name2AccessorConverter(
-        getPrinter(), printComments, ignore
+        getPrinter(), printComments, allIgnore
     );
     getTraverser().setExpressionsBasisHandler(expressionsBasis);
     getTraverser().getExpressionsBasisVisitorList().clear();
     getTraverser().add4ExpressionsBasis(expressionsBasis);
   }
 
-  @Override
-  public String prettyprint(ASTNode node) {
-    resetPrinter();
-    return super.prettyprint(node);
-  }
 }

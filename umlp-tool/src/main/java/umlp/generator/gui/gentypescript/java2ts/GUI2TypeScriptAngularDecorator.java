@@ -125,7 +125,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         scssPaths.add(hwScssPath.get());
       }
 
-      String selector = GUIGeneratorUtil.getInstance().getComponentNameFromCamelCaseName(originalName);
+      String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
 
       glex.replaceTemplate(
           GUI2ComponentTemplates.ANNOTATIONS,

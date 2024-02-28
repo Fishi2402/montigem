@@ -11,7 +11,7 @@ import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
 
-import static umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter.MUTATOR_PARAM;
+import static umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter.SETTER_PARAM;
 
 public class Name2MutatorConverter extends Name2AccessorConverter {
 
@@ -52,7 +52,7 @@ public class Name2MutatorConverter extends Name2AccessorConverter {
   }
 
   public String attr2Setter(ASTNameExpression node) {
-    return "set" + StringTransformations.capitalize(node.getName()) + "(" + MUTATOR_PARAM + ")";
+    return "set" + StringTransformations.capitalize(node.getName()) + "(" + SETTER_PARAM + ")";
   }
 
   @Override

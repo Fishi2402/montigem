@@ -10,17 +10,38 @@ import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIDSLNode;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
+import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 
-public class NestedNodesFinder implements GUIDSLVisitor2 {
+/**
+ * Stores information on nested nodes for HTML generator.
+ * The nested nodes in GUI model must be flattened using ng-template node. Example:
+ * {@code
+ * ```gui
+ * @GemRow(components = [foo@GemText()]);
+ * ```
+ * ```html
+ * <gem-row "components"=[foo]>
+ * <gem-row>
+ * <ng-template #foo>
+ *   <gem-text>
+ *   </gem-text>
+ * </ng-template>
+ * ```
+ * }
+ */
+public class HTMLHelper implements GUIDSLVisitor2 {
 
   protected GUIDSLTraverser traverser;
 
@@ -32,18 +53,55 @@ public class NestedNodesFinder implements GUIDSLVisitor2 {
   protected Optional<ASTGUIIterate> currentIterate = Optional.empty();
   protected Set<ASTGUIDSLNode> currentBlocks = new HashSet<>();
 
-  public NestedNodesFinder() {
+  public HTMLHelper(ASTGUICompilationUnit ast) {
     traverser = GUIDSLMill.traverser();
     traverser.add4GUIDSL(this);
+    ast.accept(getTraverser());
   }
 
   public GUIDSLTraverser getTraverser() {
     return traverser;
   }
 
-  public Map<ASTGUIBlock, Set<ASTGUIBlockContent>> getNgTemplates(ASTGUICompilationUnit ast) {
-    ast.accept(getTraverser());
+  public Map<ASTGUIBlock, Set<ASTGUIBlockContent>> getNgTemplates() {
     return ngTemplates;
+  }
+
+  public boolean isNgTemplate(ASTGUIComponent node) {
+    for (Set<ASTGUIBlockContent> sc : ngTemplates.values()) {
+      for (ASTGUIBlockContent c : sc) {
+        if (c.isPresentGUIComponent() && c.getGUIComponent().equals(node)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean isNgTemplate(ASTGUIGuard node) {
+    for (Set<ASTGUIBlockContent> sc : ngTemplates.values()) {
+      for (ASTGUIBlockContent c : sc) {
+        if (c.isPresentGUIGuard() && c.getGUIGuard().equals(node)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean isNgTemplate(ASTGUIIterate node) {
+    for (Set<ASTGUIBlockContent> sc : ngTemplates.values()) {
+      for (ASTGUIBlockContent c : sc) {
+        if (c.isPresentGUIIterate() && c.getGUIIterate().equals(node)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public List<VariableSymbol> getIterateArgs(IGUIDSLScope scope) {
+    return new ArrayList<>();
   }
 
   @Override

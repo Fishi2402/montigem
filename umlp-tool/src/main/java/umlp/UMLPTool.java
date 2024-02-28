@@ -15,8 +15,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl.GUIDSLTool;
-import de.monticore.guidsl._ast.ASTGUIBlock;
-import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._cocos.GUIDSLCoCos;
 import de.monticore.guidsl._parser.GUIDSLParser;
@@ -63,7 +61,6 @@ import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
-import umlp.generator.gui.genhtml.NestedNodesFinder;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.config.ModuleRoutingInfo;
@@ -87,7 +84,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -586,7 +582,6 @@ public class UMLPTool extends UMLPToolTOP {
           genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
           genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
           genSetup.getGlex().setGlobalValue("UMLPGeneratorConfig", UMLPGeneratorConfig.getInstance().initFromCmd(cmd));
-          GUIGeneratorUtil.getInstance().pr
 
           GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, viewComponents);
           String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);

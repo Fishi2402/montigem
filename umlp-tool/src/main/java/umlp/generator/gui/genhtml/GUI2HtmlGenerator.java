@@ -28,8 +28,7 @@ public class GUI2HtmlGenerator {
     TemplateController tc = setup.getNewTemplateController(configTemplate);
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
 
-    NestedNodesFinder finder = new NestedNodesFinder();
-    setup.getGlex().setGlobalValue("ngTemplates", finder.getNgTemplates(ast));
+    setup.getGlex().setGlobalValue("htmlHelper",  new HTMLHelper(ast));
 
     // translate the GUI-AST into HTML
     hpp.processValue(tc, ast,

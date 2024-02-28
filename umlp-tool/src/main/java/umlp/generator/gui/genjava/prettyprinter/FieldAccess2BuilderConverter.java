@@ -6,7 +6,7 @@ import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.Collection;
 
-import static umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter.MUTATOR_PARAM;
+import static umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter.SETTER_PARAM;
 
 public class FieldAccess2BuilderConverter extends FieldAccess2MutatorConverter {
 
@@ -21,7 +21,7 @@ public class FieldAccess2BuilderConverter extends FieldAccess2MutatorConverter {
 
   @Override
   protected String attr2Setter(ASTFieldAccessExpression node) {
-    return node.getName() + "(" + MUTATOR_PARAM + ")";
+    return node.getName() + "(" + SETTER_PARAM + ")";
   }
 
 }

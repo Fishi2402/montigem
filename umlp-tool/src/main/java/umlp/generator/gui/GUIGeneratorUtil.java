@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
+import com.google.common.base.CaseFormat;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -30,7 +31,10 @@ import de.monticore.io.paths.MCPath;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symboltable.IGlobalScope;
+import de.monticore.symboltable.IScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
@@ -39,7 +43,6 @@ import de.monticore.types3.Type4Ast;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
@@ -566,10 +569,13 @@ public class GUIGeneratorUtil {
     return argSymbol.isPresent() && argSymbol.get().isIsReference();
   }
 
+  public boolean isEventArgument(ASTGUINamedArg arg) {
+    return arg.isPresentNameSymbol() && isEventArgument(arg.getNameSymbol());
+  }
+
+  @Deprecated
   public boolean isEventArgument(ASTGUIComponent guiComponent, ASTGUINamedArg arg) {
-    Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
-        arg.getEnclosingScope(), guiComponent.getNameSymbol().getFullName(), arg.getName());
-    return paramSym.isPresent() && isEventArgument(paramSym.get());
+    return isEventArgument(arg);
   }
 
   public boolean isEventArgument(GUIParamSymbol paramSym) {
@@ -691,45 +697,8 @@ public class GUIGeneratorUtil {
     return internName.replace(TPL_INTERN, "");
   }
 
-  public String getComponentNameFromCamelCaseName(String camelCaseName) {
-    return String.join("-", splitCamelCase(camelCaseName)).toLowerCase();
-  }
-
-  public String[] splitCamelCase(String str) {
-    if (str == null) {
-      return null;
-    }
-    else if (str.length() == 0) {
-      return ArrayUtils.EMPTY_STRING_ARRAY;
-    }
-    else {
-      char[] c = str.toCharArray();
-      List<String> list = new ArrayList();
-      int tokenStart = 0;
-      int currentType = Character.getType(c[tokenStart]);
-
-      for (int pos = tokenStart + 1; pos < c.length; ++pos) {
-        int type = Character.getType(c[pos]);
-        if (type != currentType) {
-          if (type == 2 && currentType == 1) {
-            int newTokenStart = pos - 1;
-            if (newTokenStart != tokenStart) {
-              list.add(new String(c, tokenStart, newTokenStart - tokenStart));
-              tokenStart = newTokenStart;
-            }
-          }
-          else {
-            list.add(new String(c, tokenStart, pos - tokenStart));
-            tokenStart = pos;
-          }
-
-          currentType = type;
-        }
-      }
-
-      list.add(new String(c, tokenStart, c.length - tokenStart));
-      return list.toArray(new String[list.size()]);
-    }
+  public String pascal2KebabCase(String pascalCaseName) {
+    return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, pascalCaseName);
   }
 
   public String getModuleName(String qualifiedModulName) {
@@ -999,4 +968,65 @@ public class GUIGeneratorUtil {
     return type4Ast.getTypeOfExpression(node);
   }
 
+  /**
+   * Search from bottom to top in a scope tree for an IGUIDSLScope instance.
+   * @param scope Scope from which the search starts.
+   * @return Optional.empty() if no IGUIDSLScope instance could be found, otherwise optional of the
+   * first encountered IGUIDSLScope instance.
+   */
+  public Optional<IGUIDSLScope> findClosestGUIDSLScope(IScope scope) {
+    if (scope instanceof IGUIDSLScope) {
+      return Optional.of((IGUIDSLScope) scope);
+    }
+    if (scope instanceof IGlobalScope) {
+      return Optional.empty();
+    }
+    return findClosestGUIDSLScope(scope.getEnclosingScope());
+  }
+
+  /**
+   * Search from bottom to top in a scope tree for a VariableSymbol instance representing an
+   * iteration item.
+   * @param name Name of the variable (iteration item).
+   * @param scope Scope from which the search starts.
+   * @return Optional.empty() if no iteration item with given name was found, otherwise optional of
+   * VariableSymbol instance representing the iteration item.
+   */
+  public Optional<VariableSymbol> findIterationItemSymbols(String name, IScope scope) {
+    Optional<IGUIDSLScope> guiScope = findClosestGUIDSLScope(scope);
+    if (guiScope.isPresent()) {
+      Optional<VariableSymbol> vs = guiScope.get().resolveVariable(name);
+      if (vs.isPresent() && vs.get().getEnclosingScope().getAstNode() instanceof ASTGUIIterate) {
+        return vs;
+      }
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Search from bottom to top in a scope tree for all VariableSymbol instances representing
+   * iteration items.
+   * @param scope Scope from which the search starts.
+   * @return List of VariableSymbol instances representing the iteration items.
+   */
+  public List<VariableSymbol> findIterationItemSymbols(IScope scope) {
+    List<VariableSymbol> symbols = new ArrayList<>();
+    Optional<IGUIDSLScope> guiScope = findClosestGUIDSLScope(scope);
+    if (guiScope.isEmpty()) {
+      return symbols;
+    }
+    return findIterationItemSymbols(guiScope.get(), symbols);
+  }
+
+  protected List<VariableSymbol> findIterationItemSymbols(
+      IGUIDSLScope scope, List<VariableSymbol> symbols
+  ) {
+    if (scope instanceof IGlobalScope) {
+      return symbols;
+    }
+    if (scope.getAstNode() instanceof ASTGUIIterate) {
+      symbols.addAll(scope.getLocalVariableSymbols());
+    }
+    return findIterationItemSymbols(scope.getEnclosingScope(), symbols);
+  }
 }

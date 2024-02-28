@@ -1,25 +1,30 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
 import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsPrettyPrinter;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
-public class Expression2MutatorPrinter extends Expression2AccessorPrinter {
+import java.util.Collection;
 
-  public static final String MUTATOR_PARAM = "val";
-  protected SharedBoolean lastFieldAccess;
+public class Expression2MutatorPrinter extends Expression2SetterPrinter {
 
   public Expression2MutatorPrinter(IndentPrinter printer, boolean printComments) {
     super(printer, printComments);
   }
 
+  public Expression2MutatorPrinter(
+      IndentPrinter printer, boolean printComments, Collection<ASTExpression> ignore
+  ) {
+    super(printer, printComments, ignore);
+ }
+
   @Override
   protected void resetPrinter() {
     super.resetPrinter();
     // customized printer
-    lastFieldAccess = new SharedBoolean(true);
     CommonExpressionsPrettyPrinter commonExpressions = new FieldAccess2MutatorConverter(
-        getPrinter(), printComments, ignore, lastFieldAccess
+        getPrinter(), printComments, allIgnore, lastFieldAccess
     );
     getTraverser().setCommonExpressionsHandler(commonExpressions);
     getTraverser().getCommonExpressionsVisitorList().clear();
@@ -27,7 +32,7 @@ public class Expression2MutatorPrinter extends Expression2AccessorPrinter {
 
     // customized printer
     ExpressionsBasisPrettyPrinter expressionsBasis = new Name2MutatorConverter(
-        getPrinter(), printComments, ignore, lastFieldAccess
+        getPrinter(), printComments, allIgnore, lastFieldAccess
     );
     getTraverser().setExpressionsBasisHandler(expressionsBasis);
     getTraverser().getExpressionsBasisVisitorList().clear();

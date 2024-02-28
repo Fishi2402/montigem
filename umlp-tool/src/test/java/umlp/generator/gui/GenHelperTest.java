@@ -1,4 +1,4 @@
-package umlp.generator.gui.genhtml;
+package umlp.generator.gui;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.guidsl._ast.ASTGUIBlock;
@@ -10,8 +10,7 @@ import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
-import umlp.generator.gui.DomainGUITest;
-import umlp.generator.gui.GUIComponentStat;
+import umlp.generator.gui.genhtml.HTMLHelper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class NestedNodesFinderTest extends DomainGUITest {
+public class GenHelperTest extends DomainGUITest {
 
   @Test
   public void testGetNgTemplates() {
@@ -37,16 +36,16 @@ public class NestedNodesFinderTest extends DomainGUITest {
 
     Map<ASTGUIBlock, Set<ASTGUIBlockContent>> tpls;
 
-    ast = processGUIModel("gui/genhtml/NestedNodesFinder.gui", "src/test/resources/gui");
+    ast = processGUIModel("gui/genhtml/HTMLHelper.gui", "src/test/resources/gui");
     ASTGUIComponentDeclaration decl = ast.getGUIComponentDeclaration();
 
-    NestedNodesFinder finder = new NestedNodesFinder();
+    HTMLHelper finder = new HTMLHelper(ast);
 
     components = stat.getComponents(decl);
     guards = stat.getGuards(decl);
     iterates = stat.getIterates(decl);
 
-    tpls = finder.getNgTemplates(ast);
+    tpls = finder.getNgTemplates();
 
     ASTGUIComponent a = stat.getCompById(components, "a");
     ASTGUIIterate b = stat.getIterById(iterates, "b");

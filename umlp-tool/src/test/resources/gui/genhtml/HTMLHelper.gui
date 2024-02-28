@@ -4,7 +4,7 @@ package genhtml;
 
 import util.V;
 
-page NestedNodesFinder(List<String> ls, GUIViewElement comp) {
+page HTMLHelper(List<String> ls, GUIViewElement comp) {
   a@V();
   comp;
   b@iterate(String s1 : ls) {
