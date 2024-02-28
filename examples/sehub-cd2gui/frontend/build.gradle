@@ -8,7 +8,7 @@ plugins {
   id 'de.rwth.se.umlp-tool'
 }
 
-def useCD2GUI = true
+def useCD2GUI = false
 
 configurations {
   guiDefaultTypes
