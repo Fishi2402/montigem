@@ -1,0 +1,14 @@
+umlp UMLPAssocQualifierComplexAttrType {
+  class A {
+    C a;
+  }
+
+  class B {
+    boolean isTrue;
+  }
+
+  class C;
+
+  association A [[isTrue]] -> B [*];
+  association B [[a]] -> A [*];
+}

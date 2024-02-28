@@ -107,10 +107,10 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
   public void run(InputChanges inputChanges) {
     init();
 
-    File baseDirectory = this.getProject().getProjectDir();
+    File baseDirectory = new File(this.getProject().getProjectDir(), "jsweet");
     JSweetFactory factory = new JSweetFactory();
     File buildDir = this.getProject().getBuildDir();
-    File workingDir = new File(buildDir, "jsweet");
+    File workingDir = new File(buildDir, "jsweetWorkingDir");
     File candiesJsOut = new File(workingDir, "candies");
 
     // Get the sourceSets for this gradle plugin
@@ -125,7 +125,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
     }
     File nodeInit = new File(workingDir, ".node-init");
     if (!nodeInit.exists()) {
-      nodeInit.mkdir();
+      nodeInit.mkdirs();
     }
 
     syncClasspath();
@@ -166,19 +166,20 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
   }
 
   private static final String PATTERN_DOMAIN_MODEL = "**/%s/**/*.java";
-  private static final String PATTERN_MANAGER_IMPL = "**/%s/%sManagerImpl.java";
-  private static final String PATTERN_MOCK = "**/%s/%sMock.java";
-  private static final String PATTERN_MOCK_TEST_SETUP = "**/%s/%sMockTestSetup.java";
-  private static final String PATTERN_DUMMY_PROVIDER = "**/%s/%sDummyProvider.java";
-  private static final String PATTERN_TEST_CONTEXT = "**/%s/%sTestContext.java";
-  private static final String PATTERN_SERVER_APPLICATION = "**/%s/%sServerApplication.java";
-  private static final String PATTERN_SHELL_API_APPLICATION = "**/%s/%sShellAPIApplication.java";
-  private static final String PATTERN_DAO_FACTORY = "**/%s/%sDAOFactory.java";
+  private static final String PATTERN_MANAGER_IMPL = "**/%s/%sManagerImpl*.java";
+  private static final String PATTERN_MOCK = "**/%s/%sMock*.java";
+  private static final String PATTERN_MOCK_TEST_SETUP = "**/%s/%sMockTestSetup*.java";
+  private static final String PATTERN_DUMMY_PROVIDER = "**/%s/%sDummyProvider*.java";
+  private static final String PATTERN_TEST_CONTEXT = "**/%s/%sTestContext*.java";
+  private static final String PATTERN_SERVER_APPLICATION = "**/%s/%sServerApplication*.java";
+  private static final String PATTERN_SHELL_API_APPLICATION = "**/%s/%sShellAPIApplication*.java";
+  private static final String PATTERN_DAO_FACTORY = "**/%s/%sDAOFactory*.java";
   private static final String PATTERN_TEST_INFRASTRUCTURE = "**/%s/test_infrastructure/**";
   private static final String PATTERN_SHELLAPI = "**/%s/shellapi/**";
   private static final String PATTERN_DAO = "**/%s/*DAO.java";
-  private static final String PATTERN_DAO_NEO4J = "**/%s/*DAONeo4J.java";
-  private static final String PATTERN_DB_OBSERVER = "**/%s/*DbObserver.java";
+  private static final String PATTERN_DAO_INTERFACE = "**/%s/*DAOInterface*.java";
+  private static final String PATTERN_DAO_NEO4J = "**/%s/*DAONeo4J*.java";
+  private static final String PATTERN_DB_OBSERVER = "**/%s/*DbObserver*.java";
   private static final String PATTERN_DOMAIN = "**/%s/**/*.java";
   private static final String PATTERN_GUI = "**/gui/**/*.java";
 
@@ -210,7 +211,10 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
           generatePattern(PATTERN_TEST_CONTEXT),
           generatePattern(PATTERN_SERVER_APPLICATION),
           generatePattern(PATTERN_SHELL_API_APPLICATION),
-          generatePattern(PATTERN_DAO_FACTORY),
+//          generatePattern(PATTERN_DAO),
+//          generatePattern(PATTERN_DAO_NEO4J),
+//          generatePattern(PATTERN_DAO_INTERFACE),
+//          generatePattern(PATTERN_DAO_FACTORY),
           generatePattern(PATTERN_TEST_INFRASTRUCTURE),
           generatePattern(PATTERN_SHELLAPI)
       ));
@@ -240,6 +244,8 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
             generatePattern(PATTERN_TEST_CONTEXT),
             generatePattern(PATTERN_DAO),
             generatePattern(PATTERN_DAO_NEO4J),
+            generatePattern(PATTERN_DAO_INTERFACE),
+            generatePattern(PATTERN_DAO_FACTORY),
             generatePattern(PATTERN_DB_OBSERVER)
         ));
       }
@@ -254,7 +260,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
   }
 
   private String generatePattern(String pattern) {
-    return String.format(pattern, StringTransformations.uncapitalize(getDomainModel().get()),
+    return String.format(pattern, getDomainModel().get().toLowerCase(),
         getDomainModel().get());
   }
 

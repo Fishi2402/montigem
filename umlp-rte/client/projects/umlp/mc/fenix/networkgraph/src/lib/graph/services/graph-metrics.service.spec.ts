@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { SigmaGraphService } from "../data/sigma-graph.service";
-import Sigma from "sigma/sigma";
+import { Sigma } from "sigma";
 import Graph from "graphology";
 import { GraphSettingsService } from "./graph-settings.service";
 import { GraphMetricsService } from "./graph-metrics.service";

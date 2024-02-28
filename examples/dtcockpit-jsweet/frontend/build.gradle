@@ -1,30 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
-buildscript {
-  repositories {
-    mavenCentral()
-    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-  }
-  dependencies {
-    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
-      transitive = true
-    }
-    classpath group: 'umlp', name: 'umlp-jsweet'
-  }
-}
+
 
 plugins {
   id 'java'
   id "com.github.node-gradle.node" version "5.0.0"
-//  id 'de.rwth.se.umlp-tool'
-  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT" apply(false)
   id 'de.rwth.se.umlp-tool-frontend'
 }
 
 dependencies {
   implementation project(":examples:dtcockpit-jsweet:backend")
 
-  implementation group: "de.monticore.lang", name: 'guidsl', version: "7.6.0-SNAPSHOT"
+  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 
   implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
@@ -47,8 +33,6 @@ genGUI {
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate"]
 }
 
-compileJava.dependsOn(genGUI)
-
 translateJava2TSDomain {
   domainModel = 'Dtcockpit'
   additionalIncludes = [
@@ -62,10 +46,7 @@ translateJava2TSDomain {
   verbose = true
 }
 
-sourceSets.main.java.srcDirs += ['src/main/java', 'build/umlp_frontend/intermediate/appgui']
-
 translateJava2TSGUI {
-  dependsOn(compileJava)
   domainModel = 'Dtcockpit'
   additionalIncludes = [
       '**/security/*.java'

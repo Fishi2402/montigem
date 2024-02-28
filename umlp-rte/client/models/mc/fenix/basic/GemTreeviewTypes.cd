@@ -14,8 +14,10 @@ classdiagram GemTreeviewTypes {
   public class GemTreeviewEntry {
     /** Whether the tree node is expanded or not. */
     boolean expanded;
-    /** The name of the entry. */
+    /** The displayed name of the entry. */
     String name;
+    /** The internal representation of the entry, e.g. for use in the leftClick event */
+    String value;
     /** The children of the node. */
     List<GemTreeviewEntry> children;
   }

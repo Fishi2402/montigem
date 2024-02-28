@@ -65,7 +65,7 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
 
-  implementation "umlp:frontend-rte:$mc_version:cd2java"
+  implementation project(':umlp-rte')
 }
 
 generateUmlpBackend {

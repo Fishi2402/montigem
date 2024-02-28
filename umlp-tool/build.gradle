@@ -30,9 +30,9 @@ dependencies {
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'cdmerge'
   implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version
   implementation group: 'de.monticore.lang', name: 'cd2gui', version: mc_version
-  implementation group: 'de.monticore.lang', name: 'cd4analysis-tagging', version: mc_version,  classifier: 'tagging'
+  implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version,  classifier: 'tagging'
   implementation "de.monticore.language-server:monticore-language-server-runtime:$mclsg_version"
-  implementation "de.monticore.lang:cd4analysis-language-server:$mc_version"
+  implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'language-server'
   implementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
 
   implementation group: "org.yaml", name: "snakeyaml", version: "$snake_yaml_version"
@@ -58,8 +58,6 @@ test {
 
 group = 'umlp'
 repositories {
-  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
   if (("true").equals(getProperty('useLocalRepo'))) {
     mavenLocal()
   }
@@ -72,6 +70,8 @@ repositories {
   if(shouldBuildIntelliJPlugin) {
     maven { url 'https://www.jitpack.io' }
   }
+  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
 }
 
 // configure non-standard source sets

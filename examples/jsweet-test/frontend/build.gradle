@@ -1,30 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
-buildscript {
-  repositories {
-    mavenCentral()
-    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
-    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-  }
-  dependencies {
-    classpath('de.rwth.se.umlp.jsweet:jsweet-gradle-plugin:3.2.0-UMLP-SNAPSHOT') {
-      transitive = true
-    }
-    classpath group: 'umlp', name: 'umlp-jsweet'
-  }
-}
-
 plugins {
   id 'java'
   id "com.github.node-gradle.node" version "5.0.0"
-//  id 'de.rwth.se.umlp-tool'
-  id "de.rwth.se.umlp.jsweet.jsweet-gradle-plugin" version "3.2.0-UMLP-SNAPSHOT" apply(false)
   id 'de.rwth.se.umlp-tool-frontend'
 }
 
 dependencies {
   implementation project(":examples:jsweet-test:backend")
 
-  implementation group: "de.monticore.lang", name: 'guidsl', version: "7.6.0-SNAPSHOT"
+  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 }
 
@@ -40,20 +24,12 @@ genGUI {
   domainModels = ["Jsweettest"]
 }
 
-compileJava.dependsOn(genGUI)
-
 translateJava2TSDomain {
   domainModel = 'Jsweettest'
   verbose = true
-  additionalExcludes = [
-      '**/jsweettest/JsweettestServerApplicationTOP.java',
-  ]
 }
 
-sourceSets.main.java.srcDirs += ['build/frontendGen/build/appgui', 'src/main/java']
-
 translateJava2TSGUI {
-  dependsOn(compileJava)
   domainModel = 'Jsweettest'
   verbose = true
 }

@@ -42,3 +42,4 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+/jsweet/jsweet_extension/umlp/jsweet/extension/domainAdapters/JsweettestImportAdapter.class
