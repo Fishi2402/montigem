@@ -24,12 +24,7 @@ genGUI {
   domainModels = ["Jsweettest"]
 }
 
-task ensureNodeInit {
-  project.file("build/jsweet/.node-init").mkdirs()
-}
-
 translateJava2TSDomain {
-  dependsOn(ensureNodeInit)
   domainModel = 'Jsweettest'
   verbose = true
 }

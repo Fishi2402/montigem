@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "umlp"
-description = "UMLP FRONTEND RTE JAVA"
+description = "UMLP Jsweet Adapters"
 
 repositories {
     maven {

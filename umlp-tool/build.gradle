@@ -58,8 +58,6 @@ test {
 
 group = 'umlp'
 repositories {
-  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
   if (("true").equals(getProperty('useLocalRepo'))) {
     mavenLocal()
   }
@@ -72,6 +70,8 @@ repositories {
   if(shouldBuildIntelliJPlugin) {
     maven { url 'https://www.jitpack.io' }
   }
+  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
 }
 
 // configure non-standard source sets

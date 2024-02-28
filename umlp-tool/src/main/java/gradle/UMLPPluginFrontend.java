@@ -36,6 +36,8 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   static final String UMLP_FRONTEND_GUI_J2TS_TASK_NAME = "translateJava2TSGUI";
   private static final String CREATE_DOMAIN_SYMBOLS_TASK_NAME = "createDomainSymbols";
   static final String UMLP_GROUP_NAME = "umlp";
+  private static final String GUI_TYPES_NAME = "guiTypes";
+  private static final String GUI_LIB_NAME = "guiLib";
 
   @Override
   public void apply(Project project) {
@@ -143,9 +145,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       boolean j2ts, boolean local, TaskProvider<UMLPSymbolsTask> domainSymbolGenTask) {
 
     // Add Configuration for TypeSymbols.
-    Configuration guiTypes = project.getConfigurations().create("guiTypes");
-    project.getDependencies().add("guiTypes",
-        "de.monticore.lang:guidsl:" + project.getProperties().get("mc_version") + ":default-types");
+    Configuration guiTypes = project.getConfigurations().getByName(GUI_TYPES_NAME);
 
     TaskProvider<UMLPGuiGenTask> guiGenTask = project.getTasks()
         .register(UMLP_FRONTEND_GUI_TASK_NAME, UMLPGuiGenTask.class, umlpTask -> {
@@ -192,9 +192,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       }
     }
     else {
-      Configuration guiLib = project.getConfigurations().create("guiLib");
-      project.getDependencies().add("guiLib",
-          "umlp.umlp-rte:client:" + project.getProperties().get("mc_version"));
+      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
       guiGenTask.get().getSymbolDir().from(guiLib.getFiles());
     }
 
@@ -292,7 +290,22 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     }
   }
 
-  private static void addProjectDependencies(Project project, boolean j2ts, boolean local) {
+  private void addProjectDependencies(Project project, boolean j2ts, boolean local) {
+    // repositories
+    project.getRepositories().maven(repo -> {
+      String mavenUser = getStringProjectProperty(project, "mavenUser", "");
+      String mavenPassword = getStringProjectProperty(project, "mavenPassword", "");
+      String repoURL = getStringProjectProperty(project, "repo", "");
+      repo.getCredentials().setUsername(mavenUser);
+      repo.getCredentials().setPassword(mavenPassword);
+      repo.setUrl(repoURL);
+    });
+    project.getRepositories().mavenCentral();
+    if (getBooleanProjectProperty(project, "useLocalRepo")) {
+      project.getRepositories().mavenLocal();
+    }
+
+    // JSweet
     if (j2ts) {
       project.getRepositories().maven(repo -> {
         repo.setUrl("https://repository.jsweet.org/artifactory/libs-snapshot-local");
@@ -306,8 +319,19 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
         project.getDependencies().add("implementation", project.findProject(":umlp-rte:umlp-jsweet"));
       } else {
         project.getDependencies().add("implementation",
-            "umlp.umlp-rte:umlp-jsweet:" + project.getProperties().get("version"));
+            "umlp:umlp-jsweet:" + getStringProjectProperty(project, "version", ""));
       }
+    }
+
+    // Configurations
+    project.getConfigurations().create(GUI_TYPES_NAME);
+    project.getDependencies().add(GUI_TYPES_NAME,
+        "de.monticore.lang:guidsl:" + getStringProjectProperty(project, "mc_version", "") + ":default-types");
+
+    if (!local) {
+      project.getConfigurations().create(GUI_LIB_NAME);
+      project.getDependencies().add(GUI_LIB_NAME,
+          "umlp.umlp-rte:client:" + getStringProjectProperty(project, "mc_version", ""));
     }
   }
 
@@ -341,7 +365,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     }
   }
 
-  private Optional<String> getProjectProperty(Project project, String propertyName) {
+  private static Optional<String> getProjectProperty(Project project, String propertyName) {
     Object projectProperty = project.findProperty(propertyName);
     if (projectProperty == null) {
       return Optional.empty();
@@ -350,8 +374,12 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     }
   }
 
+  private static String getStringProjectProperty(Project project, String propertyName, String defaultValue) {
+    return getProjectProperty(project, propertyName).orElse(defaultValue);
+  }
+
   @NotNull
-  private Boolean getBooleanProjectProperty(Project project, String propertyName) {
+  private static Boolean getBooleanProjectProperty(Project project, String propertyName) {
     return getProjectProperty(project, propertyName).map(Boolean::parseBoolean).orElse(false);
   }
 }

@@ -110,7 +110,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
     File baseDirectory = new File(this.getProject().getProjectDir(), "jsweet");
     JSweetFactory factory = new JSweetFactory();
     File buildDir = this.getProject().getBuildDir();
-    File workingDir = new File(buildDir, "jsweet");
+    File workingDir = new File(buildDir, "jsweetWorkingDir");
     File candiesJsOut = new File(workingDir, "candies");
 
     // Get the sourceSets for this gradle plugin
@@ -125,7 +125,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
     }
     File nodeInit = new File(workingDir, ".node-init");
     if (!nodeInit.exists()) {
-      nodeInit.mkdir();
+      nodeInit.mkdirs();
     }
 
     syncClasspath();
