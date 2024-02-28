@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.genjava.prettyprinter;
 
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;

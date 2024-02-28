@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.genhtml;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
