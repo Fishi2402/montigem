@@ -3,7 +3,7 @@ import { GraphSettings } from "../types/graph-settings.types";
 import { NodeCircleProgram } from "sigma/rendering"; // getNodeImageProgram from "sigma/rendering/webgl/programs/node.image";
 import { prettyLabelHoverRenderer } from "../renderers/pretty-label-hover.renderer";
 import { prettyLabelRenderer } from "../renderers/pretty-label.renderer";
-import EdgeLineProgram from "sigma/rendering/programs/edge-line";
+//import EdgeLineProgram from "sigma/rendering/programs/edge-line";
 import {NodeLabelDrawingFunction} from "sigma/rendering/node-labels";
 import {NodeHoverDrawingFunction} from "sigma/rendering/node-hover";
 
@@ -50,8 +50,8 @@ export function getDefaultGraphSettings(): GraphSettings {
       image: NodeCircleProgram,
     },
     edgeProgramClasses: {
-      ...DEFAULT_EDGE_PROGRAM_CLASSES,
-      fastLine: EdgeLineProgram,
+      ...DEFAULT_EDGE_PROGRAM_CLASSES
+      // This line led to runtime issues in sigma Version 3.0.0-beta.6: fastLine: EdgeLineProgram,
     },
     highlightNeighboursOnNodeHover: true,
     draggableNodes: true,
