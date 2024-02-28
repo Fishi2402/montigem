@@ -134,8 +134,8 @@ umlp FunctionStructure {
     über den Qualifikator. Das heißt also, dass ein Channel
     von verschiedenen Funktionen verschieden benannt sein kann.
   */
-  association [*] Function [[String]] -> (in) Channel [1];
-  association [*] Function [[String]] -> (out) Channel [1];
+  association [*] Function [String] -> (in) Channel [1];
+  association [*] Function [String] -> (out) Channel [1];
 
 
   /*
