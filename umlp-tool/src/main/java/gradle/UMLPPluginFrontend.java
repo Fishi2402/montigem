@@ -96,6 +96,10 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       // It is important that the directory-depth of the intermediate-output is the the same as the final location (after sync!)
       // Because the frontend uses relative paths to include HWC Code
       umlpTask.getOutputDir().set(getAppDomainPath(project).toFile());
+
+      // Always create symbols & tag files
+      umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain").toFile());
+
     });
   }
 

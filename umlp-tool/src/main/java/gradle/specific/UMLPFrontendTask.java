@@ -49,6 +49,11 @@ public abstract class UMLPFrontendTask extends UMLPSingleFilev2Task {
 
     result.add("-" + UMLPToolOptions.FOR_CLIENT.getCMD());
 
+    if (this.getSymbolOutDir().isPresent()) {
+      result.add("-s");
+      result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
+    }
+
     System.out.println("Model path is " + this.getModelDir().getFiles());
     if(!this.getModelDir().isEmpty()) {
       for (File file : this.getModelDir()) {
