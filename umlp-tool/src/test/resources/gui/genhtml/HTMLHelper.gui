@@ -12,7 +12,7 @@ page HTMLHelper(List<String> ls, GUIViewElement comp) {
     d@guard(true) {
       e@iterate(String s2 : ls) {
         f@V();
-        g@guard(false) {
+        g@guard(s1.equals(s2)) {
           h@V(gve = i@V(), lgve = [j@V(), k@V()]);
         }
         else {
@@ -44,7 +44,7 @@ page HTMLHelper(List<String> ls, GUIViewElement comp) {
       });
     },
     ab@iterate(String s1 : ls) {
-      ac@guard(true) {
+      ac@guard(!s1.equals(ls.get(0))) {
       }
     }
   ]);

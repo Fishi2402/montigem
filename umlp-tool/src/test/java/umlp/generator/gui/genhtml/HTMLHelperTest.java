@@ -1,4 +1,4 @@
-package umlp.generator.gui;
+package umlp.generator.gui.genhtml;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.guidsl._ast.ASTGUIBlock;
@@ -10,7 +10,8 @@ import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
-import umlp.generator.gui.genhtml.HTMLHelper;
+import umlp.generator.gui.DomainGUITest;
+import umlp.generator.gui.GUIComponentStat;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GenHelperTest extends DomainGUITest {
+public class HTMLHelperTest extends DomainGUITest {
 
   @Test
   public void testGetNgTemplates() {

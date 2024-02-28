@@ -27,6 +27,7 @@ import java.util.Stack;
 /**
  * Stores information on nested nodes for HTML generator.
  * The nested nodes in GUI model must be flattened using ng-template node. Example:
+ * <pre>
  * {@code
  * ```gui
  * @GemRow(components = [foo@GemText()]);
@@ -40,6 +41,7 @@ import java.util.Stack;
  * </ng-template>
  * ```
  * }
+ * </pre>
  */
 public class HTMLHelper implements GUIDSLVisitor2 {
 

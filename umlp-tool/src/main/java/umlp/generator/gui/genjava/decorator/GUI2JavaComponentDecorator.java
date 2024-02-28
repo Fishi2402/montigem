@@ -28,6 +28,7 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
+import umlp.generator.gui.genjava.prettyprinter.IgnoreExpressionsFinder;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2BuilderPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter;
@@ -39,9 +40,7 @@ import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -194,7 +193,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
         List<String> initValues = new ArrayList<>();
         for (ASTGUIArgValue av : valueList) {
-          initValues.add(guiDSLPrinter.prettyprint(av.getExpression()));
+          initValues.add(util.print(av.getExpression()));
         }
         TemplateHookPoint hp = new TemplateHookPoint(
             getInitListsTemplate(), attr.getName(), setterName, isPrimitive, initValues, iterItemArgs
@@ -225,8 +224,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           new IndentPrinter(), false, ignoreOnPrint
       );
 
-      String nullCheck = nullCheckPrinter.prettyprint(namedArg);
-      String getterValue = getterPrinter.prettyprint(namedArg);
+      String nullCheck = nullCheckPrinter.prettyprint(namedArg.getGUIArgValue());
+      String getterValue = getterPrinter.prettyprint(namedArg.getGUIArgValue());
 
       Function<String, String> conversion = getConversion(decoratedClass,
           paramSTE, namedArg.getGUIArgValue().getExpression(), true);
@@ -240,7 +239,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       addGetComponentMethod(decoratedClass, getterName, paramType,
           getterValue, iterItemArgs, nullCheck);
       if (paramSym.get().isIsReference()) {
-        String setterValue = setterPrinter.prettyprint(namedArg);
+        String setterValue = setterPrinter.prettyprint(namedArg.getGUIArgValue());
         List<String> setterArgs = new ArrayList<>();
         // TODO AGe: clean up
         String argValueHolder = Expression2SetterPrinter.SETTER_PARAM;

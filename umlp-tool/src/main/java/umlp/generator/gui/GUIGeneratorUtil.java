@@ -17,7 +17,6 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
-import de.monticore.guidsl._ast.ASTGUIRangeIterateControl;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
@@ -46,7 +45,8 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
-import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
+import umlp.generator.gui.genjava.prettyprinter.IgnoreExpressionsFinder;
+import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
@@ -57,6 +57,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -66,10 +67,11 @@ import java.util.stream.Collectors;
 public class GUIGeneratorUtil {
 
   public static final String SYNCHRONIZED_SUFFIX = "_synchronized";
+  public static final String NG_TEMPLATE_SUFFIX = "Tpl";
+  public static final String NG_TEMPLATE_ELSE_BLOCK_SUFFIX = "Tpl";
+  public static final String HTML_ITERATE_INDEX_PREFIX = "c";
 
   protected static GUIGeneratorUtil instance;
-  protected final String TPL_INTERN = "TPL_INTERN";
-  protected final String TPL_SUFFIX = "TPL";
   protected GUIDSLFullPrettyPrinter printer;
   // Fully qualified Name of the classdiagram, e.g. "hardy.Flensburg"
   private List<String> DOMAIN_MODELS;
@@ -119,7 +121,7 @@ public class GUIGeneratorUtil {
   }
 
   /**
-   * Check whewther an handwritten version of this generated file already exists and shall be integrated
+   * Check whether a handwritten version of this generated file already exists and shall be integrated
    * (e.g. to apply TOP mechanism)
    */
   public boolean existsHandwrittenFile(MCPath targetPath, String hwFile) {
@@ -395,37 +397,35 @@ public class GUIGeneratorUtil {
     return Optional.empty();
   }
 
-  public String gui2cdAttrName(String domainParamName) {
-    return getHTMLName(domainParamName);
-  }
-
   public String gui2cdAttrName(String componentId, String argName) {
-    return getHTMLName(componentId + StringTransformations.capitalize(argName));
+    return componentId + StringTransformations.capitalize(argName);
   }
 
   public String gui2cdAttrGetterName(String domainParamName) {
-    return getHTMLName("get" + StringTransformations.capitalize(domainParamName));
+    return "get" + StringTransformations.capitalize(domainParamName);
   }
 
   public String gui2cdAttrSetterName(String domainParamName) {
-    return getHTMLName("set" + StringTransformations.capitalize(domainParamName));
+    return "set" + StringTransformations.capitalize(domainParamName);
   }
 
   public String gui2cdAttrBuilderSetterName(String domainParamName) {
-    return getHTMLName(domainParamName);
+    return domainParamName;
   }
 
   public String gui2cdAttrGetterName(String componentId, String argName) {
-    return getHTMLName("get"
+    return "get"
         + StringTransformations.capitalize(componentId)
-        + StringTransformations.capitalize(argName));
+        + StringTransformations.capitalize(argName);
   }
 
   public String gui2cdAttrGetterNameTS(String componentId, ASTGUINamedArg namedArg) {
-    return getHTMLName("get"
+    return "get"
         + StringTransformations.capitalize(componentId)
-        + StringTransformations.capitalize(namedArg.getName())) +
-        (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg) ? "" : SYNCHRONIZED_SUFFIX);
+        + StringTransformations.capitalize(namedArg.getName())
+        + (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg)
+        ? ""
+        : SYNCHRONIZED_SUFFIX);
   }
 
   public boolean isList(ASTGUINamedArg namedArg) {
@@ -445,28 +445,19 @@ public class GUIGeneratorUtil {
   }
 
   public String gui2cdAttrSetterName(String componentId, String argName) {
-    return getHTMLName("set"
+    return "set"
         + StringTransformations.capitalize(componentId)
-        + StringTransformations.capitalize(argName));
+        + StringTransformations.capitalize(argName);
   }
 
   public String gui2cdEventCallName(ASTGUIComponent guiComponent, String eventName) {
-    // TODO AGe: connected to GUI2HtmlTrafo problem
-    //  setting the name in trafo makes derivation of method names incorrect
-    return getHTMLName(StringTransformations.uncapitalize(
-        getComponentActualName(guiComponent.getId().getName())
-    ) + StringTransformations.capitalize(eventName));
+    return StringTransformations.uncapitalize(guiComponent.getId().getName())
+        + StringTransformations.capitalize(eventName);
   }
 
-  public String getIteratorItemName(ASTGUIIterate iterate) {
-    return getHTMLName("i" + iterate.getId().getName());
-  }
-
-  // TODO AGe: remove when problem with RangeControl is resolved
   public String getShortIteratorItemName(ASTGUIIterate iterate) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
-      return getHTMLName(
-          ((ASTGUIShortIterateControl) iterate.getIterateControl()).getItem().getName());
+      return ((ASTGUIShortIterateControl) iterate.getIterateControl()).getItem().getName();
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
         + " was not processed: range iterate control not supported yet");
@@ -474,44 +465,28 @@ public class GUIGeneratorUtil {
   }
 
   public String getIteratorCounterName(ASTGUIIterate iterate) {
-    return getHTMLName("c" + iterate.getId().getName());
+    return HTML_ITERATE_INDEX_PREFIX + iterate.getId().getName();
   }
 
-  // TODO AGe: remove when problem with RangeControl is resolved
-  public String getShortIteratorIterable(ASTGUIIterate iterate, List<String> ignore) {
+  public String getShortIteratorIterable(ASTGUIIterate iterate) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
+      IgnoreExpressionsFinder finder = new IgnoreExpressionsFinder();
+      Collection<ASTExpression> ignoreOnPrint = finder.getIgnore(iterate);
+
+      Expression2NullCheckAccessorPrinter printer = new Expression2NullCheckAccessorPrinter(
+          new IndentPrinter(), true, ignoreOnPrint
+      );
       ASTGUIShortIterateControl ic = ((ASTGUIShortIterateControl) iterate.getIterateControl());
-      GUIIterableReplaceVisitor visitor = new GUIIterableReplaceVisitor();
-      visitor.setIgnore(ignore);
-      visitor.transform(ic);
-      String expressionWithNullChecks = replaceDots(print(visitor.getGetterExpression()));
+
+      String expressionWithNullChecks = printer.prettyprint(ic.getIterable());
       if (!UMLPGeneratorConfig.getInstance().isGenerateTypescript()) {
         expressionWithNullChecks = expressionWithNullChecks.replace("()", SYNCHRONIZED_SUFFIX + "()");
       }
-      return getHTMLName(expressionWithNullChecks);
+      return expressionWithNullChecks;
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
         + " was not processed: range iterate control not supported yet");
     return "";
-  }
-
-  public String getIteratorIterable(ASTGUIIterate iterate) {
-    if (iterate.getIterateControl() instanceof ASTGUIRangeIterateControl) {
-      ASTGUIRangeIterateControl control = (ASTGUIRangeIterateControl) iterate.getIterateControl();
-      IterableExtractVisitor visitor = IterableExtractVisitor.getInstance();
-      control.getEnd().accept(visitor.getTraverser());
-      Optional<ASTExpression> res = visitor.getOut();
-      if (res.isPresent()) {
-        return getHTMLName(print(res.get()));
-      }
-    }
-    Log.error("0x00003 iterate construct " + iterate.getId().getName()
-        + " was not processed: no range iterate control found");
-    return "";
-  }
-
-  public String getHTMLName(String name) {
-    return name.replaceAll(TPL_INTERN, "").replaceAll(TPL_SUFFIX, "");
   }
 
   public String gui2tsGeneralImport(String forComponent, String postfix) {
@@ -633,7 +608,7 @@ public class GUIGeneratorUtil {
   }
 
   public String getNameOfNameExpression(ASTExpression expression) {
-    return isNameExpression(expression)? ((ASTNameExpression)expression).getName() : "";
+    return isNameExpression(expression) ? ((ASTNameExpression) expression).getName() : "";
   }
 
   public boolean isViewElementsCollection(ASTGUIComponent comp, ASTGUINamedArg arg) {
@@ -679,22 +654,6 @@ public class GUIGeneratorUtil {
       return TypeScriptTypes.FLOAT_BOXED.getMCType();
     }
     return type;
-  }
-
-  public boolean isNgTemplate(String compName) {
-    return compName.endsWith(TPL_INTERN);
-  }
-
-  public String getNgTemplateName(String name) {
-    return name + TPL_INTERN;
-  }
-
-  public String getNgTemplateActualName(String internName) {
-    return getComponentActualName(internName) + TPL_SUFFIX;
-  }
-
-  public String getComponentActualName(String internName) {
-    return internName.replace(TPL_INTERN, "");
   }
 
   public String pascal2KebabCase(String pascalCaseName) {
@@ -787,19 +746,15 @@ public class GUIGeneratorUtil {
       return node.getGUIIterate().getId().getName();
     }
     if (node.isPresentExpression()) {
-      String value = print(node);
-      if (node.getEnclosingScope().resolveGUIParam(value).isPresent()) {
-        return print(node);
-      }
-      return print(node) + TPL_SUFFIX;
+      return print(node);
     }
     if (node.isPresentGUIList()) {
-      String res = "[";
+      StringBuilder res = new StringBuilder("[");
       for (ASTGUIArgValue v : node.getGUIList().getGUIArgValueList()) {
-        res += gui2htmlArgValue(v) + ", ";
+        res.append(gui2htmlArgValue(v)).append(", ");
       }
-      res += "]";
-      return res;
+      res.append("]");
+      return res.toString();
     }
     Log.error("0x00005 corrupt ASTGUIArgValue node " + node
         + ": missing actual value");
@@ -968,8 +923,17 @@ public class GUIGeneratorUtil {
     return type4Ast.getTypeOfExpression(node);
   }
 
+  public String getNgTemplateName(String name) {
+    return name + NG_TEMPLATE_SUFFIX;
+  }
+
+  public String getNgTemplateElseBlockName(String name) {
+    return name + NG_TEMPLATE_ELSE_BLOCK_SUFFIX;
+  }
+
   /**
    * Search from bottom to top in a scope tree for an IGUIDSLScope instance.
+   *
    * @param scope Scope from which the search starts.
    * @return Optional.empty() if no IGUIDSLScope instance could be found, otherwise optional of the
    * first encountered IGUIDSLScope instance.
@@ -987,7 +951,8 @@ public class GUIGeneratorUtil {
   /**
    * Search from bottom to top in a scope tree for a VariableSymbol instance representing an
    * iteration item.
-   * @param name Name of the variable (iteration item).
+   *
+   * @param name  Name of the variable (iteration item).
    * @param scope Scope from which the search starts.
    * @return Optional.empty() if no iteration item with given name was found, otherwise optional of
    * VariableSymbol instance representing the iteration item.
@@ -1006,6 +971,7 @@ public class GUIGeneratorUtil {
   /**
    * Search from bottom to top in a scope tree for all VariableSymbol instances representing
    * iteration items.
+   *
    * @param scope Scope from which the search starts.
    * @return List of VariableSymbol instances representing the iteration items.
    */
