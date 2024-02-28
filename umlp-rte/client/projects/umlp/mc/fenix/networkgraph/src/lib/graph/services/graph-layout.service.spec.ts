@@ -3,7 +3,7 @@ import { GraphLayoutService } from "./graph-layout.service";
 import { SigmaGraphService } from "../data/sigma-graph.service";
 import { COMPLEX_LAYOUT_MAPPING, INITIAL_LAYOUT_MAPPING } from "../consts/graph.const";
 import { ComplexGraphLayouts, InitialGraphLayouts } from "../types/graph-layout.types";
-import Sigma from "sigma/sigma";
+import { Sigma } from "sigma";
 import Graph from "graphology";
 import { GraphSettingsService } from "./graph-settings.service";
 

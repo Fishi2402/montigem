@@ -35,7 +35,7 @@ import {GroupMappingService} from "./graph-processing/group-mapping.service";
 import {EdgeProcessorService} from "./graph-processing/edge-processor.service";
 import {NodeProcessorService} from "./graph-processing/node-processor.service";
 import {GraphEvent, MouseEvent, TouchEvent} from "./types/graph-events.types";
-import Sigma from "sigma/sigma";
+import { Sigma } from "sigma";
 import Graph from "graphology";
 import {TooltipOptions} from "primeng/api";
 

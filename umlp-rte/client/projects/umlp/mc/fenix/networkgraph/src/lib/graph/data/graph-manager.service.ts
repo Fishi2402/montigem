@@ -11,7 +11,8 @@ import {
 import { Attributes, GraphType, SerializedGraph } from "graphology-types";
 import { GraphDataService } from "./graph-data.service";
 import { Observable, Subject } from "rxjs";
-import Sigma, { SigmaEdgeEventPayload, SigmaNodeEventPayload } from "sigma/sigma";
+import { Sigma } from "sigma"
+import { SigmaEdgeEventPayload, SigmaNodeEventPayload } from "sigma/sigma";
 import Graph from "graphology";
 import { CameraState, Coordinates, MouseCoords, NodeDisplayData } from "sigma/types";
 import { ComplexGraphLayoutConfiguration, InitialGraphLayoutConfiguration } from "../types/graph-layout.types";
