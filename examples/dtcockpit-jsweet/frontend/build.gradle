@@ -10,7 +10,7 @@ plugins {
 dependencies {
   implementation project(":examples:dtcockpit-jsweet:backend")
 
-  implementation group: "de.monticore.lang", name: 'guidsl', version: "7.6.0-SNAPSHOT"
+  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 
   implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
