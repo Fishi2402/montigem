@@ -108,8 +108,10 @@ public class ValidatorDecorator extends AbstractDecorator {
             .setModifier(PUBLIC.build())
             .setName(className + SUFFIX)
             .addAllCDMembers(methods)
-            .addCDMember(getCD4C().addMethod(domainClass, getValidateTemplate(), className, methods.stream().map(ASTCDMethodSignature::getName).collect(Collectors.toList())))
             .build();
+
+    getCD4C().addMethod(validatorClass, getValidateTemplate(), className, methods.stream().map(ASTCDMethodSignature::getName).collect(Collectors.toList()));
+
     addImports(validatorClass);
     return validatorClass;
   }
