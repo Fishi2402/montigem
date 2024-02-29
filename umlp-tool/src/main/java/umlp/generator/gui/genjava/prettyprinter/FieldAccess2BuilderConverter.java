@@ -11,10 +11,8 @@ import static umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter.
 public class FieldAccess2BuilderConverter extends FieldAccess2MutatorConverter {
 
   public FieldAccess2BuilderConverter(
-      IndentPrinter printer,
-      boolean printComments,
-      Collection<ASTExpression> ignore,
-      SharedBoolean lastFieldAccess
+      IndentPrinter printer, boolean printComments,
+      Collection<ASTExpression> ignore, SharedBoolean lastFieldAccess
   ) {
     super(printer, printComments, ignore, lastFieldAccess);
   }

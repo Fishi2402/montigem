@@ -18,12 +18,11 @@ public class Name2MutatorConverter extends Name2AccessorConverter {
   protected SharedBoolean lastFieldAccess;
 
   public Name2MutatorConverter(
-      IndentPrinter printer,
-      boolean printComments,
-      Collection<ASTExpression> ignore,
+      IndentPrinter printer, boolean printComments,
+      Collection<ASTExpression> ignore, Collection<ASTExpression> nonClassMembers,
       SharedBoolean lastFieldAccess
   ) {
-    super(printer, printComments, ignore);
+    super(printer, printComments, ignore, nonClassMembers);
     this.lastFieldAccess = lastFieldAccess;
   }
 
@@ -33,16 +32,19 @@ public class Name2MutatorConverter extends Name2AccessorConverter {
       CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
 
+    if (!nonClassMembers.contains(node)) {
+      getPrinter().print("this.");
+    }
     if (ignore.contains(node)) {
-      getPrinter().print("this." + node.getName() + " ");
+      getPrinter().print(node.getName() + " ");
     }
     else {
       if (lastFieldAccess.getValue()) {
-        getPrinter().print("this." + attr2Setter(node) + " ");
+        getPrinter().print(attr2Setter(node) + " ");
         lastFieldAccess.setValue(false);
       }
       else {
-        getPrinter().print("this." + attr2Getter(node) + " ");
+        getPrinter().print(attr2Getter(node) + " ");
       }
     }
 
@@ -58,7 +60,6 @@ public class Name2MutatorConverter extends Name2AccessorConverter {
   @Override
   public void handle(ASTLiteralExpression node) {
     errorIfExpressionIsFirst(node);
-    super.handle(node);
   }
 
   protected void errorIfExpressionIsFirst(ASTExpression node) {

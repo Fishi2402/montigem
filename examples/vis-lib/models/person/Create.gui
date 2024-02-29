@@ -10,6 +10,7 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemCheckBoxInput;
 
 import person.Row;
 
@@ -21,7 +22,7 @@ page Create(Person person, Address address) {
       @GemColumn(width = "33%", components = [
         employed@GemCheckBoxInput(
           labelText = "Employed",
-          checked = p.employed
+          checked = person.employed
         )
       ]),
       @GemColumn(width = "33%", components = [

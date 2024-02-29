@@ -14,10 +14,11 @@ public class Expression2MutatorPrinter extends Expression2SetterPrinter {
   }
 
   public Expression2MutatorPrinter(
-      IndentPrinter printer, boolean printComments, Collection<ASTExpression> ignore
+      IndentPrinter printer, boolean printComments,
+      Collection<ASTExpression> ignore, Collection<ASTExpression> nonClassMembers
   ) {
-    super(printer, printComments, ignore);
- }
+    super(printer, printComments, ignore, nonClassMembers);
+  }
 
   @Override
   protected void resetPrinter() {
@@ -32,7 +33,7 @@ public class Expression2MutatorPrinter extends Expression2SetterPrinter {
 
     // customized printer
     ExpressionsBasisPrettyPrinter expressionsBasis = new Name2MutatorConverter(
-        getPrinter(), printComments, allIgnore, lastFieldAccess
+        getPrinter(), printComments, allIgnore, nonClassMembers, lastFieldAccess
     );
     getTraverser().setExpressionsBasisHandler(expressionsBasis);
     getTraverser().getExpressionsBasisVisitorList().clear();

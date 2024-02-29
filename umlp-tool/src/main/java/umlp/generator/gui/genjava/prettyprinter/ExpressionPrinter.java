@@ -12,18 +12,21 @@ public abstract class ExpressionPrinter extends GUIDSLFullPrettyPrinter {
 
   protected Collection<ASTExpression> allIgnore;
   protected final Collection<ASTExpression> ignore;
+  protected final Collection<ASTExpression> nonClassMembers;
   protected final boolean printComments;
 
   public ExpressionPrinter(IndentPrinter printer, boolean printComments) {
-    this(printer, printComments, new HashSet<>());
+    this(printer, printComments, new HashSet<>(), new HashSet<>());
   }
 
   public ExpressionPrinter(
-      IndentPrinter printer, boolean printComments, Collection<ASTExpression> ignore
+      IndentPrinter printer, boolean printComments,
+      Collection<ASTExpression> ignore, Collection<ASTExpression> nonClassMembers
   ) {
     super(printer, printComments);
     this.printComments = printComments;
     this.ignore = ignore;
+    this.nonClassMembers = nonClassMembers;
   }
 
   @Override

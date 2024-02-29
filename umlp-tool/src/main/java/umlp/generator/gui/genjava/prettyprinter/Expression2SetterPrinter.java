@@ -15,9 +15,10 @@ public abstract class Expression2SetterPrinter extends ExpressionPrinter {
   }
 
   public Expression2SetterPrinter(
-      IndentPrinter printer, boolean printComments, Collection<ASTExpression> ignore
+      IndentPrinter printer, boolean printComments,
+      Collection<ASTExpression> ignore, Collection<ASTExpression> nonClassMembers
   ) {
-    super(printer, printComments, ignore);
+    super(printer, printComments, ignore, nonClassMembers);
   }
 
   @Override

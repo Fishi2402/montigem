@@ -14,24 +14,18 @@ import java.util.HashSet;
 
 public class Expression2NullCheckPrinter implements ExpressionsBasisVisitor2, CommonExpressionsVisitor2 {
 
-  protected IndentPrinter printer;
-  protected boolean printComments;
+  protected Expression2AccessorPrinter printer;
   protected GUIDSLTraverser traverser;
-  protected final Collection<ASTExpression> ignore;
 
   protected StringBuilder sb;
 
-  public Expression2NullCheckPrinter(IndentPrinter printer, boolean printComments) {
-    this(printer, printComments, new HashSet<>());
-  }
-
-  public Expression2NullCheckPrinter(IndentPrinter printer, boolean printComments, Collection<ASTExpression> ignore) {
+  public Expression2NullCheckPrinter(
+      Expression2AccessorPrinter printer
+  ) {
     traverser = GUIDSLMill.traverser();
     traverser.add4ExpressionsBasis(this);
     traverser.add4CommonExpressions(this);
     this.printer = printer;
-    this.printComments = printComments;
-    this.ignore = ignore;
   }
 
   public GUIDSLTraverser getTraverser() {
@@ -40,17 +34,14 @@ public class Expression2NullCheckPrinter implements ExpressionsBasisVisitor2, Co
 
   @Override
   public void endVisit(ASTFieldAccessExpression node) {
-    Expression2AccessorPrinter e2a = new Expression2AccessorPrinter(printer, printComments, ignore);
-    String check = e2a.prettyprint(node.getExpression()) + " == null";
-    sb.append(" || " + check);
+    String check = printer.prettyprint(node.getExpression()) + " == null";
+    sb.append(" || ").append(check);
   }
 
   public String prettyprint(ASTNode node) {
     sb = new StringBuilder("false");
-    printer.clearBuffer();
     getTraverser().clearTraversedElements();
     node.accept(getTraverser());
-    printer.stripTrailing();
     return sb.toString();
   }
 

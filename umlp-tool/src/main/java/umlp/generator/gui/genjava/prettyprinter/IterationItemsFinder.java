@@ -14,9 +14,10 @@ import java.util.HashSet;
 import java.util.Optional;
 
 /**
- * Find expressions that in the context of GUI generator must be ignored when printing expressions
- * as getters, setters, etc. For example, iteration items declared in iterate statement are local
- * to HTML context, meaning that those are referenced as raw variables and do not have getters.
+ * Find iteration items. The items in the context of GUI generator must be ignored when printing
+ * expressions as getters, setters, etc. For example, iteration items declared in iterate statement
+ * are local to HTML context, meaning that those are referenced as raw variables and do not have
+ * getters.
  * <pre>
  * {@code
  * ```gui
@@ -40,14 +41,14 @@ import java.util.Optional;
  * }
  * </pre>
  */
-public class IgnoreExpressionsFinder implements ExpressionsBasisVisitor2 {
+public class IterationItemsFinder implements ExpressionsBasisVisitor2 {
 
   protected ExpressionsBasisTraverser traverser;
 
   protected Collection<ASTExpression> ignore;
   protected final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
-  public IgnoreExpressionsFinder() {
+  public IterationItemsFinder() {
     traverser = GUIDSLMill.traverser();
     traverser.add4ExpressionsBasis(this);
   }
@@ -59,7 +60,7 @@ public class IgnoreExpressionsFinder implements ExpressionsBasisVisitor2 {
    * @return A collection of expressions that must be ignored when printing expressions to use
    * accessors and mutators instead of direct attribute access.
    */
-  public Collection<ASTExpression> getIgnore(ASTNode tree) {
+  public Collection<ASTExpression> getItems(ASTNode tree) {
     ignore = new HashSet<>();
     tree.accept(traverser);
     return ignore;

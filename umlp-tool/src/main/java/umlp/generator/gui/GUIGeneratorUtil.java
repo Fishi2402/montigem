@@ -5,7 +5,6 @@ import com.google.common.base.CaseFormat;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
-import de.monticore.cd4code._prettyprint.CD4CodePrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -48,7 +47,7 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
-import umlp.generator.gui.genjava.prettyprinter.IgnoreExpressionsFinder;
+import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
@@ -480,11 +479,11 @@ public class GUIGeneratorUtil {
 
   public String getShortIteratorIterable(ASTGUIIterate iterate) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
-      IgnoreExpressionsFinder finder = new IgnoreExpressionsFinder();
-      Collection<ASTExpression> ignoreOnPrint = finder.getIgnore(iterate);
+      IterationItemsFinder finder = new IterationItemsFinder();
+      Collection<ASTExpression> iterationItems = finder.getItems(iterate);
 
       Expression2NullCheckAccessorPrinter printer = new Expression2NullCheckAccessorPrinter(
-          new IndentPrinter(), true, ignoreOnPrint
+          new IndentPrinter(), true, iterationItems, iterationItems
       );
       ASTGUIShortIterateControl ic = ((ASTGUIShortIterateControl) iterate.getIterateControl());
 

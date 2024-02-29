@@ -19,14 +19,15 @@ import java.util.Optional;
 public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
 
   protected final Collection<ASTExpression> ignore;
+  protected final Collection<ASTExpression> nonClassMembers;
 
   public Name2AccessorConverter(
-      IndentPrinter printer,
-      boolean printComments,
-      Collection<ASTExpression> ignore
+      IndentPrinter printer, boolean printComments,
+      Collection<ASTExpression> ignore, Collection<ASTExpression> nonClassMembers
   ) {
     super(printer, printComments);
     this.ignore = ignore;
+    this.nonClassMembers = nonClassMembers;
   }
 
   @Override
@@ -35,11 +36,14 @@ public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
       CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
 
+    if (!nonClassMembers.contains(node)) {
+      getPrinter().print("this.");
+    }
     if (ignore.contains(node)) {
-      getPrinter().print("this." + node.getName() + " ");
+      getPrinter().print(node.getName() + " ");
     }
     else {
-      getPrinter().print("this." + attr2Getter(node) + " ");
+      getPrinter().print(attr2Getter(node) + " ");
     }
 
     if (this.isPrintComments()) {
@@ -57,13 +61,6 @@ public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
       return "is" + StringTransformations.capitalize(node.getName()) + "()";
     }
     return "get" + StringTransformations.capitalize(node.getName()) + "()";
-  }
-
-  protected String attr2Getter(ASTNameExpression node, Collection<String> ignore) {
-    if (ignore.contains(node.getName())) {
-      return node.getName();
-    }
-    return attr2Getter(node);
   }
 
   protected boolean isEnum(ASTNameExpression node) {

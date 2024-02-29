@@ -21,8 +21,7 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
   protected final Collection<ASTExpression> ignore;
 
   public FieldAccess2AccessorConverter(
-      IndentPrinter printer,
-      boolean printComments,
+      IndentPrinter printer, boolean printComments,
       Collection<ASTExpression> ignore
   ) {
     super(printer, printComments);

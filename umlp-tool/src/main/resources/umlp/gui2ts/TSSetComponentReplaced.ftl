@@ -7,5 +7,5 @@ ${cd4c.method("public void ${methodName}(${args})")}
   }
 </#if>
 <#if attr != "null">
-    ${attr}(${argValueHolder});
+    ${attr};
 </#if>

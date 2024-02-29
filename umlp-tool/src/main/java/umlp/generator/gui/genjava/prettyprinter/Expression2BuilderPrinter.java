@@ -14,9 +14,10 @@ public class Expression2BuilderPrinter extends Expression2SetterPrinter {
   }
 
   public Expression2BuilderPrinter(
-      IndentPrinter printer, boolean printComments, Collection<ASTExpression> ignore
+      IndentPrinter printer, boolean printComments,
+      Collection<ASTExpression> ignore, Collection<ASTExpression> nonClassMembers
   ) {
-    super(printer, printComments, ignore);
+    super(printer, printComments, ignore, nonClassMembers);
   }
 
   @Override
@@ -32,8 +33,8 @@ public class Expression2BuilderPrinter extends Expression2SetterPrinter {
 
     // customized printer
     ExpressionsBasisPrettyPrinter expressionsBasis = new Name2BuilderConverter(
-        getPrinter(), printComments, allIgnore, lastFieldAccess
-    );
+        getPrinter(), printComments, allIgnore, nonClassMembers, lastFieldAccess
+        );
     getTraverser().setExpressionsBasisHandler(expressionsBasis);
     getTraverser().getExpressionsBasisVisitorList().clear();
     getTraverser().add4ExpressionsBasis(expressionsBasis);

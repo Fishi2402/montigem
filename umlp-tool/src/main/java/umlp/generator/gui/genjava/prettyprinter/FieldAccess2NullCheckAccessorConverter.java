@@ -10,8 +10,7 @@ import java.util.Collection;
 public class FieldAccess2NullCheckAccessorConverter extends FieldAccess2AccessorConverter {
 
   public FieldAccess2NullCheckAccessorConverter(
-      IndentPrinter printer,
-      boolean printComments,
+      IndentPrinter printer, boolean printComments,
       Collection<ASTExpression> ignore
   ) {
     super(printer, printComments, ignore);

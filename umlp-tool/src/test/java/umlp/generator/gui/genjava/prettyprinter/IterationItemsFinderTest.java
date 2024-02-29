@@ -20,14 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class IgnoreExpressionsFinderTest extends DomainGUITest {
+public class IterationItemsFinderTest extends DomainGUITest {
 
   @Test
   public void testGetIgnore() {
     ASTGUIComponentDeclaration decl;
     GUIComponentStat stat = GUIComponentStat.getInstance();
 
-    IgnoreExpressionsFinder finder = new IgnoreExpressionsFinder();
+    IterationItemsFinder finder = new IterationItemsFinder();
 
     List<ASTGUIComponent> components;
     List<ASTGUIGuard> guards;
@@ -74,9 +74,9 @@ public class IgnoreExpressionsFinderTest extends DomainGUITest {
 
     List<Executable> assertions = new ArrayList<>();
 
-    Collection<ASTExpression> result1 = finder.getIgnore(w);
-    Collection<ASTExpression> result2 = finder.getIgnore(ac);
-    Collection<ASTExpression> result3 = finder.getIgnore(g);
+    Collection<ASTExpression> result1 = finder.getItems(w);
+    Collection<ASTExpression> result2 = finder.getItems(ac);
+    Collection<ASTExpression> result3 = finder.getItems(g);
 
     assertions.add(() -> assertEquals(0, result1.size()));
     assertions.add(() -> assertEquals(1, result2.size()));

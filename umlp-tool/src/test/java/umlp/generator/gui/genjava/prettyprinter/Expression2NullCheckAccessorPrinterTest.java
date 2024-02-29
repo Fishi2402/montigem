@@ -2,6 +2,7 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
 import com.google.common.collect.Iterables;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIGuard;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIComponentStat;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -195,6 +197,61 @@ public class Expression2NullCheckAccessorPrinterTest extends DomainGUITest {
         () -> assertEquals(expect5, result5),
         () -> assertEquals(expect6, result6),
         () -> assertEquals(expect7, result7)
+    );
+  }
+
+  @Test
+  public void testAccessorConversion5() {
+    ASTGUIComponentDeclaration componentDecl;
+    GUIComponentStat stat = GUIComponentStat.getInstance();
+
+    List<ASTGUIComponent> components;
+    List<ASTGUIGuard> guards;
+    List<ASTGUIIterate> iterates;
+
+    componentDecl = processGUIModel(
+        "gui/person/Overview.gui",
+        "src/test/resources/gui"
+    ).getGUIComponentDeclaration();
+
+    IterationItemsFinder finder = new IterationItemsFinder();
+    Collection<ASTExpression> iterationItems = finder.getItems(componentDecl);
+    Expression2NullCheckAccessorPrinter printer = new Expression2NullCheckAccessorPrinter(
+        new IndentPrinter(), true, iterationItems, iterationItems
+    );
+
+    components = stat.getComponents(componentDecl);
+    guards = stat.getGuards(componentDecl);
+    iterates = stat.getIterates(componentDecl);
+
+    // there is only one guard in Overview.gui
+    ASTGUIGuard guard = guards.get(0);
+    String expect1 = removeSpaces("p?.getAddress()?.getStreet() != \"Ahornstrasse\"");
+    String result1 = removeSpaces(printer.prettyprint(guard.getCondition()));
+
+    // there is only one iterate in Overview.gui
+    ASTGUIIterate iterate = iterates.get(0);
+    ASTGUIShortIterateControl control = ((ASTGUIShortIterateControl) iterate.getIterateControl());
+    String expect2 = removeSpaces("this.getPersons()");
+    String result2 = removeSpaces(printer.prettyprint(control.getIterable()));
+
+    // component with id gemText5
+    ASTGUIComponent gemText5 = components.get(4);
+    String expect3 = removeSpaces("p?.getName()");
+    String result3 = removeSpaces(printer.prettyprint(
+        gemText5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    // GemText component showing address in form: "<street> <house>"
+    ASTGUIComponent address = components.get(5);
+    String expect4 = removeSpaces("p?.getAddress()?.getStreet() + \" \" + p?.getAddress()?.getHouse()");
+    String result4 = removeSpaces(printer.prettyprint(
+        address.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    assertAll(
+        () -> assertEquals(expect1, result1),
+        () -> assertEquals(expect2, result2),
+        () -> assertEquals(expect3, result3),
+        () -> assertEquals(expect4, result4)
     );
   }
 

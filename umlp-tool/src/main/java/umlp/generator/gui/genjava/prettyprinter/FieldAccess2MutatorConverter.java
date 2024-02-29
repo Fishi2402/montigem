@@ -37,10 +37,8 @@ public class FieldAccess2MutatorConverter extends FieldAccess2AccessorConverter 
   protected SharedBoolean lastFieldAccess;
 
   public FieldAccess2MutatorConverter(
-      IndentPrinter printer,
-      boolean printComments,
-      Collection<ASTExpression> ignore,
-      SharedBoolean lastFieldAccess
+      IndentPrinter printer, boolean printComments,
+      Collection<ASTExpression> ignore, SharedBoolean lastFieldAccess
   ) {
     super(printer, printComments, ignore);
     this.lastFieldAccess = lastFieldAccess;

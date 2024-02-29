@@ -14,12 +14,11 @@ public class Name2BuilderConverter extends Name2AccessorConverter {
   protected SharedBoolean lastFieldAccess;
 
   public Name2BuilderConverter(
-      IndentPrinter printer,
-      boolean printComments,
-      Collection<ASTExpression> ignore,
+      IndentPrinter printer, boolean printComments,
+      Collection<ASTExpression> ignore, Collection<ASTExpression> nonClassMembers,
       SharedBoolean lastFieldAccess
   ) {
-    super(printer, printComments, ignore);
+    super(printer, printComments, ignore, nonClassMembers);
     this.lastFieldAccess = lastFieldAccess;
   }
 
@@ -36,7 +35,6 @@ public class Name2BuilderConverter extends Name2AccessorConverter {
   @Override
   public void handle(ASTLiteralExpression node) {
     errorIfExpressionIsFirst(node);
-    super.handle(node);
   }
 
   protected void errorIfExpressionIsFirst(ASTExpression node) {

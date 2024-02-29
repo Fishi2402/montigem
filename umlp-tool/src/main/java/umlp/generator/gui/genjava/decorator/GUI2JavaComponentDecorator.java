@@ -28,13 +28,12 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
-import umlp.generator.gui.genjava.prettyprinter.IgnoreExpressionsFinder;
+import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2BuilderPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
-import umlp.generator.gui.genjava.prettyprinter.ExpressionPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.PathUtil;
 
@@ -185,7 +184,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         addGetComponentMethod(decoratedClass, getterName, paramType,
             "this." + attr.getName(), iterItemArgs, "");
         List<String> setterArgs = new ArrayList<>();
-        String argValueHolder = "value";
+        String argValueHolder = Expression2SetterPrinter.SETTER_PARAM;
         setterArgs.add(paramType + " " + argValueHolder);
         setterArgs.addAll(iterItemArgs);
         addSetComponentMethod(getSetterTemplate(), decoratedClass, setterName, paramType,
@@ -202,27 +201,25 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       }
     }
     else {
-      IgnoreExpressionsFinder finder = new IgnoreExpressionsFinder();
-      Collection<ASTExpression> ignoreOnPrint = finder.getIgnore(guiAst);
+      IterationItemsFinder finder = new IterationItemsFinder();
+      Collection<ASTExpression> iterateItems = finder.getItems(guiAst);
 
       // replace field access with getters
-      ExpressionPrinter getterPrinter = new Expression2AccessorPrinter(
-          new IndentPrinter(), false, ignoreOnPrint
+      Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+          new IndentPrinter(), false, iterateItems, iterateItems
       );
       Expression2SetterPrinter setterPrinter;
 
       if (util.isCreateClass(guiAst)) {
         setterPrinter = new Expression2BuilderPrinter(
-            new IndentPrinter(), false, ignoreOnPrint
+            new IndentPrinter(), false, iterateItems, iterateItems
         );
       } else {
         setterPrinter = new Expression2MutatorPrinter(
-            new IndentPrinter(), false, ignoreOnPrint
+            new IndentPrinter(), false, iterateItems, iterateItems
         );
       }
-      Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(
-          new IndentPrinter(), false, ignoreOnPrint
-      );
+      Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
 
       String nullCheck = nullCheckPrinter.prettyprint(namedArg.getGUIArgValue());
       String getterValue = getterPrinter.prettyprint(namedArg.getGUIArgValue());

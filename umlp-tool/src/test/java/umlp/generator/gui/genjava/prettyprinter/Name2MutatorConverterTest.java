@@ -23,7 +23,9 @@ public class Name2MutatorConverterTest extends DomainGUITest {
     ASTGUIComponentDeclaration componentDecl;
     GUIComponentStat stat = GUIComponentStat.getInstance();
     Name2MutatorConverter conv = new Name2MutatorConverter(
-        new IndentPrinter(), true, new HashSet<>(), new SharedBoolean(true)
+        new IndentPrinter(), true,
+        new HashSet<>(), new HashSet<>(),
+        new SharedBoolean(true)
     );
 
     List<ASTGUIComponent> components;

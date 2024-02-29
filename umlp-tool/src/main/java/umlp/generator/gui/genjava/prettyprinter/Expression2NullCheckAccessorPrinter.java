@@ -16,9 +16,10 @@ public class Expression2NullCheckAccessorPrinter extends ExpressionPrinter {
   }
 
   public Expression2NullCheckAccessorPrinter(
-      IndentPrinter printer, boolean printComments, Collection<ASTExpression> ignore
+      IndentPrinter printer, boolean printComments,
+      Collection<ASTExpression> ignore, Collection<ASTExpression> nonClassMembers
   ) {
-    super(printer, printComments, ignore);
+    super(printer, printComments, ignore, nonClassMembers);
   }
 
   @Override
@@ -34,7 +35,7 @@ public class Expression2NullCheckAccessorPrinter extends ExpressionPrinter {
 
     // customized printer
     ExpressionsBasisPrettyPrinter expressionsBasis = new Name2AccessorConverter(
-        getPrinter(), printComments, allIgnore
+        getPrinter(), printComments, allIgnore, nonClassMembers
     );
     getTraverser().setExpressionsBasisHandler(expressionsBasis);
     getTraverser().getExpressionsBasisVisitorList().clear();

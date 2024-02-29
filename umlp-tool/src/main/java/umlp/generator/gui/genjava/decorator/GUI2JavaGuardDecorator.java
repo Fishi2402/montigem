@@ -10,8 +10,7 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckPrinter;
-import umlp.generator.gui.genjava.prettyprinter.ExpressionPrinter;
-import umlp.generator.gui.genjava.prettyprinter.IgnoreExpressionsFinder;
+import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,17 +27,15 @@ public class GUI2JavaGuardDecorator extends GUIAbstractDecorator {
   }
 
   public void transform(ASTCDClass decoratedClass, ASTGUIGuard guard) {
-    IgnoreExpressionsFinder finder = new IgnoreExpressionsFinder();
-    Collection<ASTExpression> ignoreOnPrint = finder.getIgnore(guiAst);
+    IterationItemsFinder finder = new IterationItemsFinder();
+    Collection<ASTExpression> ignoreOnPrint = finder.getItems(guiAst);
 
     // replace field access with getters
-    ExpressionPrinter getterPrinter = new Expression2AccessorPrinter(
-        new IndentPrinter(), false, ignoreOnPrint
+    Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+        new IndentPrinter(), false, ignoreOnPrint, ignoreOnPrint
     );
 
-    Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(
-        new IndentPrinter(), false, ignoreOnPrint
-    );
+    Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
 
     String nullCheck = nullCheckPrinter.prettyprint(guard.getCondition());
     String getterValue = getterPrinter.prettyprint(guard.getCondition());

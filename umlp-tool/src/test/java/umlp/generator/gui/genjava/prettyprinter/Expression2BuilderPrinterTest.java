@@ -2,6 +2,7 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
 import com.google.common.collect.Iterables;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIGuard;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIComponentStat;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -244,6 +246,75 @@ public class Expression2BuilderPrinterTest extends DomainGUITest {
         () -> assertEquals(expect5, result5),
         () -> assertEquals(expect6, result6),
         () -> assertEquals(expect7, result7)
+    );
+  }
+
+  @Test
+  public void testBuilderConversion5() {
+    ASTGUIComponentDeclaration componentDecl;
+    GUIComponentStat stat = GUIComponentStat.getInstance();
+
+    List<ASTGUIComponent> components;
+    List<ASTGUIGuard> guards;
+    List<ASTGUIIterate> iterates;
+
+    componentDecl = processGUIModel(
+        "gui/person/Overview.gui",
+        "src/test/resources/gui"
+    ).getGUIComponentDeclaration();
+
+    IterationItemsFinder finder = new IterationItemsFinder();
+    Collection<ASTExpression> iterationItems = finder.getItems(componentDecl);
+    Expression2BuilderPrinter printer = new Expression2BuilderPrinter(
+        new IndentPrinter(), true, iterationItems, iterationItems
+    );
+
+    components = stat.getComponents(componentDecl);
+    guards = stat.getGuards(componentDecl);
+    iterates = stat.getIterates(componentDecl);
+
+    // there is only one guard in Overview.gui
+    ASTGUIGuard guard = guards.get(0);
+    String expect1 = removeSpaces("0x0000D Expected FieldAccessExpression but got '"
+        + "p.address.street != \"Ahornstrasse\""
+        + "'. FieldAccess2BuilderConverter cannot produce setter."
+    );
+    printer.prettyprint(guard.getCondition());
+    String result1 = removeSpaces(Log.getFindings().get(0).getMsg());
+    Log.clearFindings();
+
+    // there is only one iterate in Overview.gui
+    ASTGUIIterate iterate = iterates.get(0);
+    ASTGUIShortIterateControl control = ((ASTGUIShortIterateControl) iterate.getIterateControl());
+    String expect2 = removeSpaces("0x0000D Expected FieldAccessExpression but got '"
+        + "persons"
+        + "'. Name2BuilderConverter cannot produce setter."
+    );
+    printer.prettyprint(control.getIterable());
+    String result2 = removeSpaces(Log.getFindings().get(0).getMsg());
+    Log.clearFindings();
+
+    // component with id gemText5
+    ASTGUIComponent gemText5 = components.get(4);
+    String expect3 = removeSpaces("p.name(val)");
+    String result3 = removeSpaces(printer.prettyprint(
+        gemText5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    // GemText component showing address in form: "<street> <house>"
+    ASTGUIComponent address = components.get(5);
+    String expect4 = removeSpaces("0x0000D Expected FieldAccessExpression but got '"
+        + "p.address.street + \" \" + p.address.house"
+        + "'. FieldAccess2BuilderConverter cannot produce setter."
+    );
+    printer.prettyprint(address);
+    String result4 = removeSpaces(Log.getFindings().get(0).getMsg());
+    Log.clearFindings();
+
+    assertAll(
+        () -> assertEquals(expect1, result1),
+        () -> assertEquals(expect2, result2),
+        () -> assertEquals(expect3, result3),
+        () -> assertEquals(expect4, result4)
     );
   }
 
