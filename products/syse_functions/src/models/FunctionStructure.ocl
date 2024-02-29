@@ -93,10 +93,9 @@ ocl FunctionStructure {
   /*
     The types of a Channel and its stream must match
   */
-  context Channel c, FunctionStream s inv StreamTypeConsistency:
-    s == c.stream implies:
-      s.category == c.category;
-
+  context Channel c inv StreamTypeConsistency:
+    c.functionstream.isPresent() implies
+      (c.category == c.functionstream.category);
 
   /* ---------------------------------------------------------
    * Monitoring Teil
@@ -113,36 +112,23 @@ ocl FunctionStructure {
   /*
     All observed values must be contained in the observed stream
   */
-  context Stream s, Observation o, Value v inv ObservationOnlyOnStream:
-    s == o.stream && v isin observation.value implies:
-      v isin s.value;
+  context Observation o inv ObservationOnlyOnStream:
+    o.stream.isPresent() implies
+	  (forall v in o.value :
+        v isin o.stream.value);
 
   /*
     The types of an observation and the observed stream must match
   */
-  context FunctionStream s, Observation o inv ObservationTypeConsistency:
-    s == o.stream implies:
-      s.category == o.category;
+  context Observation o inv ObservationTypeConsistency:
+    o.stream.isPresent() implies
+      (o.stream.category == o.category);
 
   /*
     The types of a stream and its values must match
   */
-  context FunctionStream s, Value v inv ValueTypeConsistency:
-    v isin s.value implies:
-      s.category == v.category;
+  context Value v inv ValueTypeConsistency:
+    v.stream.isPresent() implies
+      (v.stream.category == v.category);
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
