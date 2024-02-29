@@ -3,13 +3,17 @@ package umlp.generator.validator.ocl.associationTree;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.ocl.ocl._ast.ASTOCLInvariant;
 import de.monticore.ocl.ocl._ast.ASTOCLParamDeclaration;
+import de.monticore.ocl.setexpressions._ast.ASTSetComprehension;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import org.gradle.internal.Pair;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class OCLInvariantTree {
 
@@ -62,6 +66,10 @@ public class OCLInvariantTree {
       }
     }
     return Optional.empty();
+  }
+
+  public Set<ASTSetComprehension> findSetComprehensions() {
+    return getBranchRootNodes().stream().map(n -> n.findSetComprehensions(new HashSet<>())).flatMap(Set::stream).collect(Collectors.toSet());
   }
 
   public List<OCLInvariantTreeNode> getBranchesRelatedToDomainClass(ASTCDType domainClass) {

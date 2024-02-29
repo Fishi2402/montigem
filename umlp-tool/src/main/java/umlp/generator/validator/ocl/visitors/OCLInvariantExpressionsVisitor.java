@@ -17,11 +17,11 @@ import de.monticore.ocl.ocl._ast.ASTOCLParamDeclarationBuilder;
 import de.monticore.ocl.ocl._visitor.OCLVisitor2;
 import de.monticore.ocl.oclexpressions._ast.ASTInDeclaration;
 import de.monticore.ocl.oclexpressions._ast.ASTInDeclarationVariable;
-import de.monticore.ocl.oclexpressions._ast.ASTLetinExpression;
 import de.monticore.ocl.oclexpressions._ast.ASTOCLVariableDeclaration;
 import de.monticore.ocl.oclexpressions._visitor.OCLExpressionsVisitor2;
 import de.monticore.ocl.setexpressions._ast.ASTGeneratorDeclaration;
 import de.monticore.ocl.setexpressions._ast.ASTSetComprehension;
+import de.monticore.ocl.setexpressions._ast.ASTSetComprehensionItem;
 import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
 import de.monticore.ocl.types.check.types3wrapper.TypeCheck3AsOCLDeriver;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
@@ -45,6 +45,8 @@ public class OCLInvariantExpressionsVisitor implements OCLVisitor2, CommonExpres
   private final List<OCLInvariantTree> oCLInvariantTrees;
   private boolean isFirstFieldAccessExpression = true;
 
+  private boolean isInOrVarDeclaration = false;
+
   public OCLInvariantExpressionsVisitor(ASTCDCompilationUnit origCD) {
     this.origCD = origCD;
     oCLInvariantTrees = new ArrayList<>();
@@ -67,7 +69,7 @@ public class OCLInvariantExpressionsVisitor implements OCLVisitor2, CommonExpres
 
   @Override
   public void visit(ASTFieldAccessExpression node) {
-    if(isFirstFieldAccessExpression) {
+    if(isFirstFieldAccessExpression && !(node.getExpression() instanceof ASTSetComprehension) && !(node.getEnclosingScope() instanceof ASTSetComprehension)) {
       isFirstFieldAccessExpression = false;
       backTraceFieldAccessExpressionForAssociationTree(node, findBasicSymbolsScope(node.getEnclosingScope())).ifPresent(currentOCLInvariantTree::addNode);
     }
@@ -97,40 +99,60 @@ public class OCLInvariantExpressionsVisitor implements OCLVisitor2, CommonExpres
   }
 
   @Override
-  public void visit(ASTLetinExpression node) {
+  public void visit(ASTOCLVariableDeclaration node) {
     isFirstFieldAccessExpression = false;
-    for(ASTOCLVariableDeclaration dec : node.getOCLVariableDeclarationList()) {
-      calculateAssociationTreeForOCLVariableDeclaration(dec);
-    }
+    isInOrVarDeclaration = true;
+    calculateAssociationTreeForOCLVariableDeclaration(node);
+  }
+
+  @Override
+  public void endVisit(ASTOCLVariableDeclaration node) {
+    isFirstFieldAccessExpression = true;
+    isInOrVarDeclaration = false;
   }
 
   @Override
   public void visit(ASTInDeclaration node) {
     isFirstFieldAccessExpression = false;
+    isInOrVarDeclaration = true;
     calculateOCLInvariantTreeNodesForInDeclarations(node);
   }
 
   @Override
   public void endVisit(ASTInDeclaration node) {
     isFirstFieldAccessExpression = true;
+    isInOrVarDeclaration = false;
   }
 
   @Override
   public void visit(ASTSetComprehension node) {
-
-  }
-
-  @Override
-  public void visit(ASTGeneratorDeclaration node) {
-    isFirstFieldAccessExpression = false;
-    if(node.getExpression() instanceof ASTFieldAccessExpression) {
-      ASTFieldAccessExpression expression = (ASTFieldAccessExpression) node.getExpression();
-      backTraceFieldAccessExpressionForAssociationTree(expression, true, node.getEnclosingScope()).ifPresent(currentOCLInvariantTree::addNode);
-    } else {
-      Optional<OCLInvariantTreeNode> nodeInTree = currentOCLInvariantTree.findNode(node.getName(), findBasicSymbolsScope(node.getEnclosingScope()));
-      if(!nodeInTree.isPresent()) {
-        OCLInvariantTreeNode newNode = new OCLInvariantTreeNode(node.getName());
-        currentOCLInvariantTree.addNode(newNode);
+    if(!isInOrVarDeclaration) {
+      Optional<ASTGeneratorDeclaration> generatorDeclaration = findGeneratorDeclarationForSetComprehension(node);
+      if (generatorDeclaration.isPresent() && generatorDeclaration.get().getExpression() instanceof ASTFieldAccessExpression) {
+        ASTFieldAccessExpression expression = (ASTFieldAccessExpression) generatorDeclaration.get().getExpression();
+        backTraceFieldAccessExpressionForAssociationTree(expression, true, node.getEnclosingScope()).ifPresent(n -> {
+          OCLInvariantTreeNode deepestNode = n.findDeepestNodeForCallBranch();
+          ASTOCLParamDeclaration declaration = new ASTOCLParamDeclarationBuilder()
+              .setName(generatorDeclaration.get().getName())
+              .setMCType(deepestNode.getAssociation().get().getRight().getMCQualifiedType())
+              .setExpression(node)
+              .build();
+          declaration.setEnclosingScope(node.getEnclosingScope());
+          deepestNode.addChild(new OCLInvariantTreeNode(declaration));
+          currentOCLInvariantTree.addNode(n);
+        });
+      } else if (generatorDeclaration.isPresent() && generatorDeclaration.get().getExpression() instanceof ASTNameExpression) {
+        ASTNameExpression expression = (ASTNameExpression) generatorDeclaration.get().getExpression();
+        Optional<OCLInvariantTreeNode> nodeInTree = currentOCLInvariantTree.findNode(expression.getName(), findBasicSymbolsScope(node.getEnclosingScope()));
+        if (nodeInTree.isPresent()) {
+          ASTOCLParamDeclaration declaration = new ASTOCLParamDeclarationBuilder()
+              .setName(generatorDeclaration.get().getName())
+              .setMCType(nodeInTree.get().getParameterDeclaration().get().getMCType())
+              .setExpression(node)
+              .build();
+          declaration.setEnclosingScope(node.getEnclosingScope());
+          nodeInTree.get().addChild(new OCLInvariantTreeNode(declaration));
+        }
       }
     }
   }
@@ -283,6 +305,32 @@ public class OCLInvariantExpressionsVisitor implements OCLVisitor2, CommonExpres
         declarations.forEach(dec -> node.get().addChild(new OCLInvariantTreeNode(dec)));
         currentOCLInvariantTree.addNode(node.get());
       }
+    } else if (expression instanceof ASTSetComprehension) {
+      ASTSetComprehension setComprehension = (ASTSetComprehension) expression;
+      Optional<ASTGeneratorDeclaration> generatorDeclaration = findGeneratorDeclarationForSetComprehension(setComprehension);
+      if(generatorDeclaration.isPresent()) {
+        ASTGeneratorDeclaration genDec = generatorDeclaration.get();
+        if(genDec.getExpression() instanceof ASTFieldAccessExpression) {
+          List<String> call = getCallFromExpression((ASTFieldAccessExpression) genDec.getExpression());
+          Optional<OCLInvariantTreeNode> node = backTraceFieldAccessExpressionForAssociationTree((ASTFieldAccessExpression) genDec.getExpression(), true, findBasicSymbolsScope(genDec.getEnclosingScope()));
+          if(node.isPresent()) {
+            node.get().findDeepestNodeForCall(call).ifPresent(n -> {
+              declarations.forEach(dec -> {
+                dec.setExpression(expression);
+                n.addChild(new OCLInvariantTreeNode(dec));
+              });
+            });
+            currentOCLInvariantTree.addNode(node.get());
+          }
+        } else if(genDec.getExpression() instanceof ASTNameExpression) {
+          String name = ((ASTNameExpression) genDec.getExpression()).getName();
+          Optional<OCLInvariantTreeNode> node = currentOCLInvariantTree.findNode(name, findBasicSymbolsScope(genDec.getEnclosingScope()));
+          if(node.isPresent()) {
+            declarations.forEach(dec -> node.get().addChild(new OCLInvariantTreeNode(dec)));
+            currentOCLInvariantTree.addNode(node.get());
+          }
+        }
+      }
     }
   }
 
@@ -318,6 +366,18 @@ public class OCLInvariantExpressionsVisitor implements OCLVisitor2, CommonExpres
           .setPartsList(Collections.singletonList(type))
           .build())
       .build();
+  }
+
+  private Optional<ASTGeneratorDeclaration> findGeneratorDeclarationForSetComprehension(ASTSetComprehension setComprehension) {
+    if(setComprehension.getLeft().isPresentGeneratorDeclaration()) {
+      return Optional.of(setComprehension.getLeft().getGeneratorDeclaration());
+    }
+    for(ASTSetComprehensionItem item : setComprehension.getSetComprehensionItemList()) {
+      if(item.isPresentGeneratorDeclaration()) {
+        return Optional.of(item.getGeneratorDeclaration());
+      }
+    }
+    return Optional.empty();
   }
 
   public List<OCLInvariantTree> getAssociationTrees() {

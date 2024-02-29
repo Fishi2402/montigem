@@ -3,6 +3,7 @@ package umlp.generator.validator.ocl.associationTree;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.ocl.ocl._ast.ASTOCLParamDeclaration;
+import de.monticore.ocl.setexpressions._ast.ASTSetComprehension;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -254,6 +255,16 @@ public class OCLInvariantTreeNode {
       return Optional.of(clone);
     }
     return Optional.empty();
+  }
+
+  protected Set<ASTSetComprehension> findSetComprehensions(Set<ASTSetComprehension> setComprehensions) {
+    if(this.hasParameterDeclaration() && this.parameterDeclaration.isPresentExpression() && this.parameterDeclaration.getExpression() instanceof ASTSetComprehension) {
+      setComprehensions.add((ASTSetComprehension) this.parameterDeclaration.getExpression());
+    }
+    for(OCLInvariantTreeNode child : this.children) {
+      setComprehensions.addAll(child.findSetComprehensions(setComprehensions));
+    }
+    return setComprehensions;
   }
 
   protected void mergeNode(OCLInvariantTreeNode other) {

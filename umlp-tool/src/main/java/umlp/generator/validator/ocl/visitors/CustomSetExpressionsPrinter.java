@@ -10,10 +10,12 @@ import de.monticore.types.check.ISynthesize;
 import de.se_rwth.commons.StringTransformations;
 
 public class CustomSetExpressionsPrinter extends SetExpressionsPrinter {
+
+  private boolean inCall;
+
   public CustomSetExpressionsPrinter(IndentPrinter printer, VariableNaming naming, IDerive deriver, ISynthesize syntheziser) {
     super(printer, naming, deriver, syntheziser);
   }
-
 
   @Override
   public void handle(ASTSetComprehension node) {
@@ -56,16 +58,21 @@ public class CustomSetExpressionsPrinter extends SetExpressionsPrinter {
       getPrinter().println("}");
       getPrinter().unindent();
     }
-
-    getPrinter().print(StringTransformations.uncapitalize(getNaming().getName(node).substring(1)));
-    getPrinter().print(".addAll(");
-    getPrinter().print(getNaming().getName(node));
-    getPrinter().println(");");
+    if(inCall) {
+      getPrinter().print(StringTransformations.uncapitalize(getNaming().getName(node).substring(1)));
+      getPrinter().print(".addAll(");
+      getPrinter().print(getNaming().getName(node));
+      getPrinter().println(");");
+    }
 
     getPrinter().print("return ");
     getPrinter().print(getNaming().getName(node));
     getPrinter().println(";");
 
     printExpressionEndLambda();
+  }
+
+  public void setInCall(boolean inCall) {
+    this.inCall = inCall;
   }
 }
