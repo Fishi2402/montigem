@@ -3,7 +3,7 @@
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign htmlHelper = glex.getGlobalVar("htmlHelper")>
 <#assign isNgTemplate = htmlHelper.isNgTemplate(ast)>
-<#assign extraArgs = genHelper.getIterateItems(ast)>
+<#assign extraArgs = genHelper.findIterationItemSymbols(ast.getEnclosingScope())>
 <#assign tplName = genHelper.getNgTemplateName(ast.getId().getName())>
 
 <#assign itemName = genHelper.getShortIteratorItemName(ast)>

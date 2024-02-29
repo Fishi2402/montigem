@@ -45,8 +45,8 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
-import umlp.generator.gui.genjava.prettyprinter.IgnoreExpressionsFinder;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
+import umlp.generator.gui.genjava.prettyprinter.IgnoreExpressionsFinder;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
@@ -990,9 +990,18 @@ public class GUIGeneratorUtil {
     if (scope instanceof IGlobalScope) {
       return symbols;
     }
-    if (scope.getAstNode() instanceof ASTGUIIterate) {
-      symbols.addAll(scope.getLocalVariableSymbols());
+    ASTNode node = scope.getAstNode();
+    if (node instanceof ASTGUIIterate) {
+      for (VariableSymbol vs : scope.getLocalVariableSymbols()) {
+        if (((ASTGUIIterate) node).getIterateControl() instanceof ASTGUIShortIterateControl
+            && ((ASTGUIShortIterateControl) ((ASTGUIIterate) node).getIterateControl()).getItem()
+            .equals(vs.getAstNode())
+        ) {
+          symbols.add(vs);
+        }
+      }
     }
     return findIterationItemSymbols(scope.getEnclosingScope(), symbols);
   }
+
 }

@@ -3,7 +3,7 @@
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign htmlHelper = glex.getGlobalVar("htmlHelper")>
 <#assign isNgTemplate = htmlHelper.isNgTemplate(ast)>
-<#assign extraArgs = genHelper.getIterateItems(ast)>
+<#assign extraArgs = genHelper.findIterationItemSymbols(ast.getEnclosingScope())>
 <#assign tplName = genHelper.getNgTemplateName(ast.getId().getName())>
 
 <#assign thenStatement = ast.getThenStatement().getGUIBlockContentList()>
@@ -12,7 +12,7 @@
 <#if isNgTemplate>
   <ng-template #${tplName}>
 </#if>
-<ng-template [ngIf]='${genHelper.gui2cdAttrGetterName(ast.getId().getName(), "condition")}(<#list extraArgs as arg> ${arg}<#sep>, </#list>)'
+<ng-template [ngIf]='${genHelper.gui2cdAttrGetterName(ast.getId().getName(), "condition")}(<#list extraArgs as arg> ${arg.getName()}<#sep>, </#list>)'
   <#if ast.isPresentElseStatement()>[ngIfElse]='${elseTpl}'</#if>
 >
   <#list thenStatement as content>
