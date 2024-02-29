@@ -62,6 +62,21 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
     }
   }
 
+  private static boolean canBeResolved(String packageName, String typeName) {
+    try {
+      Class.forName(Joiners.DOT.join(packageName, typeName));
+      return true;
+    } catch (ClassNotFoundException e) {
+      if (packageName.equals("java.lang")) {
+        //primitive types can't be caught with that method
+        for (Class<?> primitive : PRIMITIVES) {
+          if (primitive.getName().equals(typeName)) return true;
+        }
+      }
+      return false;
+    }
+  }
+
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     this.generationSummaries = new ArrayList<>();
@@ -96,7 +111,6 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
     CD4C cd4C = getCD4C();
     Joiner dot = Joiners.DOT;
     String defaultPackage = getPackageName(origCD, DEFAULT_PACKAGE);
-
 
 
     //attributes
@@ -141,16 +155,10 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
           if (importStatement.getQName().endsWith(typeName)) continue importParams;
         }
 
-        //ignore everything that can already be resolved by java.lang
-        try {
-          Class.forName("java.lang." + typeName);
-          continue;
-        } catch (ClassNotFoundException ignored) {
-          //primitive types can't be caught with that method
-          for (Class<?> primitive : PRIMITIVES) {
-            if (primitive.getName().equals(typeName)) continue importParams;
-          }
-        }
+        //TODO would be better to check against the imports made by the import template
+        //TODO would be even better to only import stuff from the default package
+        //ignore everything that can already be resolved by java.lang or java.util
+        if (canBeResolved("java.lang", typeName) || canBeResolved("java.util", typeName)) continue;
 
         cd4C.addImport(res, dot.join(defaultPackage, typeName));
       }
