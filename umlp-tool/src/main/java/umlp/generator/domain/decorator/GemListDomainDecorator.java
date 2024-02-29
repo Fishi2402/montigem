@@ -2,11 +2,13 @@
 package umlp.generator.domain.decorator;/* (c) https://github.com/MontiCore/monticore */
 
 import com.google.common.collect.Lists;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -63,8 +65,16 @@ public class GemListDomainDecorator extends AbstractDecorator {
 
     // methods
     getCD4C().addMethod(ast, getLoadObjectsTemplate(), sourceName, getCorrectManager(domainClass));
+    ASTCDMethodSignature m = getCD4C().addMethod(ast, getDeepEqualsTemplate(), sourceName);
+    markDeepEqualsBackendOnly(ast, m);
 
     return ast;
+  }
+
+  protected void markDeepEqualsBackendOnly(ASTCDType targetType, ASTCDMethodSignature m) {
+    glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint("@BackendOnly(BackendOnlyModes.THROW_ERROR)"));
+    getCD4C().addImport(targetType, "umlp.jsweet.extension.annotation.BackendOnly");
+    getCD4C().addImport(targetType, "umlp.jsweet.extension.annotation.BackendOnlyModes");
   }
 
   protected String getConstructorDefaultTemplate() {
@@ -77,6 +87,10 @@ public class GemListDomainDecorator extends AbstractDecorator {
 
   protected String getLoadObjectsTemplate() {
     return "umlp.gemlist.LoadObjects";
+  }
+
+  protected String getDeepEqualsTemplate(){
+    return "umlp.gemlist.DeepEquals";
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, String domainName, ASTCDClass ast) {

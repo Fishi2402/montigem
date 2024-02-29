@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { SigmaGraphService } from "./sigma-graph.service";
 import { GraphSettingsService } from "../services/graph-settings.service";
 import Graph from "graphology";
-import Sigma from "sigma/sigma";
+import { Sigma } from "sigma";
 import { EdgeAttributes, NodeAttributes } from "../types/graph.types";
 import { Attributes, SerializedGraph } from "graphology-types";
 

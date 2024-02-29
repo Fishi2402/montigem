@@ -133,9 +133,12 @@ umlp FunctionStructure {
     Der Name ausgehend von der Funktion wird definiert
     über den Qualifikator. Das heißt also, dass ein Channel
     von verschiedenen Funktionen verschieden benannt sein kann.
+
+    Die Rollennamen auf der Funktionsseite werden in OCL Invarianten genutzt, da sonst der implizite
+    Rollenname nicht eindeutig ist.
   */
-  association [*] Function [[String]] -> (in) Channel [1];
-  association [*] Function [[String]] -> (out) Channel [1];
+  association [*] Function [String] (parentIn) -> (in) Channel [1];
+  association [*] Function [String] (parentOut) -> (out) Channel [1];
 
 
   /*
@@ -160,7 +163,7 @@ umlp FunctionStructure {
        strukturell passend ueber Kanaele verbunden
      --> dies wird per OCL constraints präzisiert
   */
-  composition [1] Function (owner) -> (subFunction) Function [*];
+  composition [0..1] Function (owner) -> (subFunction) Function [*];
 
 // MH: wohl veraltet
 //  /*

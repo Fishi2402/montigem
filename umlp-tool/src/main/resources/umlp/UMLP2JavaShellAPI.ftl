@@ -11,7 +11,7 @@ ${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator
 <#assign beDecorator = tc.instantiate("umlp.generator.domain.decorator.BEDecorator", [glex, hwPath])>
 ${beDecorator.setSpring(true)}
 <#assign commandDecorator = tc.instantiate("umlp.generator.domain.decorator.commands.CommandDecorator", [glex])>
-<#assign requestDecorator = tc.instantiate("umlp.generator.domain.decorator.requests.GetFreeGemIdRequestDecorator", [glex])>
+<#assign requestDecorator = tc.instantiate("umlp.generator.domain.decorator.commands.GetFreeGemIdRequestDecorator", [glex])>
 <#assign topDecorator = tc.instantiate("de.monticore.cd.codegen.TopDecorator", [hwPath])>
 
 ${includeArgs("umlp.generator.hook.BeforeTransform", decoratedAST, glex, hwPath, cdGenerator, schemaGenerator, beDecorator, commandDecorator, requestDecorator, topDecorator)}

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.guiAdapters;
 
-import com.sun.source.tree.Tree;
+import standalone.com.sun.source.tree.Tree;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.jsweet.JSweetConfig;

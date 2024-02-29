@@ -30,12 +30,15 @@ dependencies {
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'cdmerge'
   implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version
   implementation group: 'de.monticore.lang', name: 'cd2gui', version: mc_version
-  implementation group: 'de.monticore.lang', name: 'cd4analysis-tagging', version: mc_version,  classifier: 'tagging'
+  implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version,  classifier: 'tagging'
   implementation "de.monticore.language-server:monticore-language-server-runtime:$mclsg_version"
-  implementation "de.monticore.lang:cd4analysis-language-server:$mc_version"
+  implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'language-server'
   implementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
 
   implementation group: "org.yaml", name: "snakeyaml", version: "$snake_yaml_version"
+
+  implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
+  implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
@@ -67,6 +70,8 @@ repositories {
   if(shouldBuildIntelliJPlugin) {
     maven { url 'https://www.jitpack.io' }
   }
+  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
 }
 
 // configure non-standard source sets

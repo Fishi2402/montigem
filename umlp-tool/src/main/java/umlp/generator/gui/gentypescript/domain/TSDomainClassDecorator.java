@@ -272,5 +272,13 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
   @Override
   protected void addImportsForCommands(ASTCDClass domainType, ASTCDType cdType) {}
 
+  @Override
+  protected String getDeepEqualsTemplate() {
+    return "umlp.gui2ts.domain.TSDeepEquals";
+  }
 
+  @Override
+  protected void markDeepEqualsBackendOnly(ASTCDType targetType, ASTCDMethodSignature m) {
+    // Ignore
+  }
 }

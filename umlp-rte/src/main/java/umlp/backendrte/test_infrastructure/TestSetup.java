@@ -33,4 +33,6 @@ public interface TestSetup<TestContextType> {
 
   TestContextType getBackend();
   TestContextType getClients(int i);
+
+  boolean hasDatabase();
 }

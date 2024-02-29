@@ -11,5 +11,5 @@ ${signature("statement","attr","columnName")}
     ${includeArgs("umlp.dao.get."+tmplName, statement, columnName)}
   </#if>
 <#else>
-  ${statement}.get${type}(${columnName})
+  ${statement}.getObject(${columnName}, ${type}.class)
 </#if>

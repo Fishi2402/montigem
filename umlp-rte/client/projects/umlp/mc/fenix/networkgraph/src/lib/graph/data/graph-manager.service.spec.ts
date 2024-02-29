@@ -8,7 +8,7 @@ import { GraphMetricsService } from "../services/graph-metrics.service";
 import { GraphSettingsService } from "../services/graph-settings.service";
 import { ElementRef } from "@angular/core";
 import Graph from "graphology";
-import Sigma from "sigma/sigma";
+import { Sigma } from "sigma";
 import { MouseCoords } from "sigma/types";
 
 jest.mock("./graph-data.service");
