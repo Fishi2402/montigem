@@ -3,9 +3,14 @@ package attributes;
 
 import attributes.test_infrastructure.AttributesDBTestSetup;
 import com.google.common.collect.Lists;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +20,27 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("OptionalGetWithoutIsPresent")
-public class DbTypesTest extends AttributesDBTestSetup {
-  public DbTypesTest() {
-    super(0);
+public abstract class DbTypesTest extends AttributesDBTestSetup {
+
+  @Disabled
+  @DisplayName("Neo4J-DbTypes")
+  public static class
+  Neo4JTestSuite extends DbTypesTest {
+    Neo4JTestSuite() {
+      super("NEO4J");
+      setUpLocalNeo4jInstance();
+    }
+  }
+
+  @DisplayName("SQL-DbTypes")
+  public static class SQLTestSuite extends DbTypesTest {
+    SQLTestSuite() {
+      super("SQL");
+    }
+  }
+
+  public DbTypesTest(String dbConnectionType) {
+    super(0, dbConnectionType);
   }
 
   @Test
@@ -74,6 +97,58 @@ public class DbTypesTest extends AttributesDBTestSetup {
     assertEquals(3, sut.getIntsList().size());
     clone = dao.selectListOfPrimitives(sut.gemId).get();
     assertEquals(3, clone.getIntsList().size());
+  }
+
+  @Test
+  public void testOptionalOfprimitivesIsWritten() {
+    Optional<Integer> value = Optional.of(-1);
+    var sut = AttributesManager.optionalOfPrimitivesBuilder().iVal(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfPrimitivesDAO();
+    var clone = dao.selectOptionalOfPrimitives(sut.gemId).get();
+    assertNotSame(sut, clone);
+
+    assertTrue(clone.getIVal().isPresent());
+    assertEquals(-1, clone.getIVal().get());
+  }
+
+  @Test
+  public void testSetToOptionalOfPrimitive() {
+    var sut = AttributesManager.optionalOfPrimitivesBuilder().build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfPrimitivesDAO();
+    var clone = dao.selectOptionalOfPrimitives(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertFalse(clone.getIVal().isPresent());
+
+    // set element
+    sut.setIVal(Optional.of(-2));
+    assertTrue(sut.getIVal().isPresent());
+
+    clone = dao.selectOptionalOfPrimitives(sut.gemId).get();
+    assertTrue(clone.getIVal().isPresent());
+    assertEquals(-2, clone.getIVal().get());
+  }
+
+  @Test
+  public void testDeleteInOptionalOfPrimitives() {
+    Optional<Integer> value = Optional.of(-3);
+    var sut = AttributesManager.optionalOfPrimitivesBuilder().iVal(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfPrimitivesDAO();
+    var clone = dao.selectOptionalOfPrimitives(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertTrue(clone.getIVal().isPresent());
+
+    // delete element
+    sut.setIVal(Optional.empty());
+    clone = dao.selectOptionalOfPrimitives(sut.gemId).get();
+
+    assertFalse(sut.getIVal().isPresent());
+    assertFalse(clone.getIVal().isPresent());
   }
 
   @Test
@@ -290,4 +365,133 @@ public class DbTypesTest extends AttributesDBTestSetup {
     assertFalse(clone.getDate().isPresent());
   }
 
+  @Test
+  public void testListOfBooleansIsWritten() {
+    List<Boolean> values = List.of(true, false, true);
+    var sut = AttributesManager.listOfBooleansBuilder().bVals(values).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getListOfBooleansDAO();
+    var clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertEquals(values, clone.getBValsList());
+  }
+
+  @Test
+  public void testAddToListOfBooleans() {
+    List<Boolean> values = List.of(true, false, true);
+    var sut = AttributesManager.listOfBooleansBuilder().bVals(values).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getListOfBooleansDAO();
+    var clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertEquals(3, clone.getBValsList().size());
+
+    // add element at the end
+    sut.addBVals(3, false);
+    assertEquals(4, sut.getBValsList().size());
+    clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertEquals(4, clone.getBValsList().size());
+
+    // add element in the middle
+    sut.addBVals(1, true);
+    assertEquals(5, sut.getBValsList().size());
+    assertEquals(true, sut.getBVals(1));
+    clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertEquals(5, clone.getBValsList().size());
+    assertEquals(true, clone.getBVals(1));
+  }
+
+  @Test
+  public void testDeleteInListOfBooleans() {
+    List<Boolean> values = List.of(true, false, true);
+    var sut = AttributesManager.listOfBooleansBuilder().bVals(values).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getListOfBooleansDAO();
+    var clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertEquals(3, clone.getBValsList().size());
+
+    // delete at the beginning
+    sut.removeBVals(0);
+    assertEquals(2, sut.getBValsList().size());
+    clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertEquals(2, clone.getBValsList().size());
+
+    // delete at the end
+    sut.removeBVals(1);
+    assertEquals(1, sut.getBValsList().size());
+    clone = dao.selectListOfBooleans(sut.gemId).get();
+    assertEquals(1, clone.getBValsList().size());
+  }
+
+  @Test
+  public void testOptionalOfBooleanIsWritten() {
+    Optional<Boolean> value = Optional.of(true);
+    var sut = AttributesManager.optionalOfBooleanBuilder().bVal(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfBooleanDAO();
+    var clone = dao.selectOptionalOfBoolean(sut.gemId).get();
+    assertNotSame(sut, clone);
+
+    assertTrue(clone.getBVal().isPresent());
+    assertEquals(true, clone.getBVal().get());
+  }
+
+  @Test
+  public void testSetToOptionalOfBoolean() {
+    var sut = AttributesManager.optionalOfBooleanBuilder().build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfBooleanDAO();
+    var clone = dao.selectOptionalOfBoolean(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertFalse(clone.getBVal().isPresent());
+
+    // set element
+    sut.setBVal(Optional.of(true));
+    assertTrue(sut.getBVal().isPresent());
+    clone = dao.selectOptionalOfBoolean(sut.gemId).get();
+    assertTrue(clone.getBVal().isPresent());
+    assertEquals(true, clone.getBVal().get());
+  }
+
+  @Test
+  public void testDeleteInOptionalOfBoolean() {
+    Optional<Boolean> value = Optional.of(true);
+    var sut = AttributesManager.optionalOfBooleanBuilder().bVal(value).build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getOptionalOfBooleanDAO();
+    var clone = dao.selectOptionalOfBoolean(sut.gemId).get();
+    assertNotSame(sut, clone);
+    assertTrue(clone.getBVal().isPresent());
+
+    // delete element
+    sut.setBVal(Optional.empty());
+    assertFalse(sut.getBVal().isPresent());
+    clone = dao.selectOptionalOfBoolean(sut.gemId).get();
+    assertFalse(clone.getBVal().isPresent());
+  }
+
+  @Test
+  public void testMinimalJavaTimeDb(){
+    MinimalJavaTime sut = AttributesManager.minimalJavaTimeBuilder()
+        .bar_local_date(LocalDate.now())
+        .bar_local_time(LocalTime.now())
+        .bar_local_date_time(LocalDateTime.now())
+        .build().get();
+
+    // db
+    var dao = AttributesDAOFactory.getMinimalJavaTimeDAO();
+    var clone = dao.selectMinimalJavaTime(sut.gemId).get();
+    assertNotSame(sut, clone);
+
+    assertEquals(sut.getBar_local_time().truncatedTo(ChronoUnit.MILLIS), clone.getBar_local_time().truncatedTo(ChronoUnit.MILLIS));
+    assertEquals(sut.getBar_local_date_time().truncatedTo(ChronoUnit.MILLIS), clone.getBar_local_date_time().truncatedTo(ChronoUnit.MILLIS));
+    assertEquals(sut.getBar_local_date(), clone.getBar_local_date());
+  }
 }
