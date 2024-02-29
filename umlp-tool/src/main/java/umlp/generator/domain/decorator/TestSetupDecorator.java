@@ -22,12 +22,17 @@ public class TestSetupDecorator extends AbstractDecorator {
   public static final String DB_TEST_SETUP = "DBTestSetup";
 
   private boolean isNeo4jGen;
-  protected final ObserverDecorator observerDecorator;
+  private final ObserverDecorator observerDecorator;
+  private final DiagramObserverDecorator diagramObserverDecorator;
 
-  public TestSetupDecorator(GlobalExtensionManagement glex, boolean isNeo4jGen, ObserverDecorator observerDecorator) {
+  public TestSetupDecorator(GlobalExtensionManagement glex,
+                            boolean isNeo4jGen,
+                            ObserverDecorator observerDecorator,
+                            DiagramObserverDecorator diagramObserverDecorator) {
     super(glex);
     this.isNeo4jGen = isNeo4jGen;
     this.observerDecorator = observerDecorator;
+    this.diagramObserverDecorator = diagramObserverDecorator;
   }
 
   @Override
@@ -37,6 +42,8 @@ public class TestSetupDecorator extends AbstractDecorator {
     EnsureCorrectManager4Decorator ensureCorrectManager4Decorator = new EnsureCorrectManager4Decorator(glex,
                                                                                                        observerDecorator);
     ensureCorrectManager4Decorator.transform(origCD, decoratedCD);
+
+
 
     aPackage.addCDElement(withOrigin(createMockTestSetup(origCD)));
     aPackage.addCDElement(withOrigin(createDbTestSetup(origCD)));

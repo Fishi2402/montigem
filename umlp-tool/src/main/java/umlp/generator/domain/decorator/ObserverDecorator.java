@@ -29,12 +29,12 @@ import static umlp.generator.domain.decorator.GenService.createType;
 public class ObserverDecorator extends AbstractDecorator {
 
   public static final String SUFFIX = "Observer";
-  private static final String NOTIFY_ADD_TEMPLATE = "umlp.observer.NotifyAdd";
-  private static final String MAYBE_NOTIFY_ADD_TEMPLATE = "umlp.observer.MaybeNotifyAdd";
-  private static final String NOTIFY_REMOVE_TEMPLATE = "umlp.observer.NotifyRemove";
-  private static final String MAYBE_NOTIFY_REMOVE_TEMPLATE = "umlp.observer.MaybeNotifyRemove";
-  private static final String NOTIFY_TEMPLATE = "umlp.observer.Notify";
-  private static final String MAYBE_NOTIFY_TEMPLATE = "umlp.observer.MaybeNotify";
+  public static final String NOTIFY_ADD_TEMPLATE = "umlp.observer.NotifyAdd";
+  public static final String MAYBE_NOTIFY_ADD_TEMPLATE = "umlp.observer.MaybeNotifyAdd";
+  public static final String NOTIFY_REMOVE_TEMPLATE = "umlp.observer.NotifyRemove";
+  public static final String MAYBE_NOTIFY_REMOVE_TEMPLATE = "umlp.observer.MaybeNotifyRemove";
+  public static final String NOTIFY_TEMPLATE = "umlp.observer.Notify";
+  public static final String MAYBE_NOTIFY_TEMPLATE = "umlp.observer.MaybeNotify";
 
   private Collection<GenerationSummary> generationDetails = List.of();
 

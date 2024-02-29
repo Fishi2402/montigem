@@ -2,7 +2,7 @@ package umlp.generator.domain.decorator;
 
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 
-public class GeneratedMethodSignature {
+public final class GeneratedMethodSignature {
 
   private final String template;
   private final ASTCDMethodSignature signature;

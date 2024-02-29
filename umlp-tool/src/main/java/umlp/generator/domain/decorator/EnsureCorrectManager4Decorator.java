@@ -17,6 +17,8 @@ import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -34,6 +36,7 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
   public static final String EMPTY_BODY_TEMPLATE = "cd2java.EmptyBody";
 
   private final ObserverDecorator observerDecorator;
+  private Collection<GenerationSummary> generationSummaries = List.of();
 
   public EnsureCorrectManager4Decorator(GlobalExtensionManagement glex,
                                         ObserverDecorator observerDecorator) {
@@ -50,6 +53,7 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    this.generationSummaries = new ArrayList<>();
     ASTCDPackage aPackage = getPackage(origCD, decoratedCD, PACKAGE);
     observerDecorator
         .getGenerationSummaries()
@@ -60,9 +64,10 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
   }
 
   private ASTCDClass createEnsureCorrectManager(ASTCDCompilationUnit origCD,
-                                                ObserverDecorator.GenerationSummary generationSummary) {
+                                                ObserverDecorator.GenerationSummary observerGenerationSummary) {
     String cdName = origCD.getCDDefinition().getName();
-    String domainClassName = generationSummary.domainClass().getName();
+    ASTCDType domainClass = observerGenerationSummary.domainClass();
+    String domainClassName = domainClass.getName();
 
     ASTCDInterfaceUsage cdInterfaceUsage = getInterfaceUsageFacade().createCDInterfaceUsage(
         domainClassName + ObserverDecorator.SUFFIX);
@@ -72,6 +77,9 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
         .setCDInterfaceUsage(cdInterfaceUsage)
         .setName(String.format(NAME_FORMAT, domainClassName))
         .build();
+
+    GenerationSummary generationSummary = new GenerationSummary(domainClass);
+    generationSummaries.add(generationSummary);
 
     CD4C cd4C = getCD4C();
 
@@ -89,14 +97,14 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
     //methods
     cd4C.addMethod(res, CUSTOM_TEMPLATE_PATH + "CheckManager", cdName);
     //override listener methods to call checkManager()
-    for (GeneratedMethodSignature gms : generationSummary.notifyMethodSignatures()) {
+    for (GeneratedMethodSignature gms : observerGenerationSummary.notifyMethodSignatures()) {
       ASTCDMethodSignature overriddenMethod = gms.signature().deepClone();
       makePublic(overriddenMethod);
       getGlex().replaceTemplate(EMPTY_BODY_TEMPLATE, overriddenMethod, DELEGATION_HOOKPOINT);
       res.addCDMember(overriddenMethod);
     }
 
-    addImports(origCD, res, generationSummary);
+    addImports(origCD, res, observerGenerationSummary);
 
     return res;
   }
@@ -111,6 +119,23 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
     cd4C.addImport(type, dot.join(defaultPackage, "*"));
     for (ASTMCImportStatement importStatement : generationSummary.importStatements()) {
       cd4C.addImport(type, importStatement.getQName());
+    }
+  }
+
+  public Collection<GenerationSummary> getGenerationSummaries() {
+    return generationSummaries;
+  }
+
+  public static final class GenerationSummary {
+
+    private final ASTCDType domainClass;
+
+    public GenerationSummary(ASTCDType domainClass) {
+      this.domainClass = domainClass;
+    }
+
+    public ASTCDType domainClass() {
+      return domainClass;
     }
   }
 }
