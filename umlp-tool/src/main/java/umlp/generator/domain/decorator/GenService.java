@@ -454,7 +454,7 @@ public class GenService {
     if (TypeCheck.isShort(type)) {
       return "Short";
     } else if (TypeCheck.isInt(type)) {
-      return "Int";
+      return "Integer";
     } else if (TypeCheck.isLong(type)) {
       return "Long";
     } else if (TypeCheck.isFloat(type)) {
