@@ -3,6 +3,7 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -28,6 +29,12 @@ import static umlp.generator.domain.decorator.GenService.createType;
 public class ObserverDecorator extends AbstractDecorator {
 
   public static final String SUFFIX = "Observer";
+  private static final String NOTIFY_ADD_TEMPLATE = "umlp.observer.NotifyAdd";
+  private static final String MAYBE_NOTIFY_ADD_TEMPLATE = "umlp.observer.MaybeNotifyAdd";
+  private static final String NOTIFY_REMOVE_TEMPLATE = "umlp.observer.NotifyRemove";
+  private static final String MAYBE_NOTIFY_REMOVE_TEMPLATE = "umlp.observer.MaybeNotifyRemove";
+  private static final String NOTIFY_TEMPLATE = "umlp.observer.Notify";
+  private static final String MAYBE_NOTIFY_TEMPLATE = "umlp.observer.MaybeNotify";
 
   private Collection<GenerationSummary> generationDetails = List.of();
 
@@ -66,26 +73,48 @@ public class ObserverDecorator extends AbstractDecorator {
                                                                 new ArrayList<>());
     this.generationDetails.add(generationSummary);
     var mem = new Object() {
-      void add(ASTCDMethodSignature signature) {
-        generationSummary.notifyMethodSignatures().add(signature);
+      void add(ASTCDMethodSignature signature, String template) {
+        generationSummary.notifyMethodSignatures().add(new GeneratedMethodSignature(template, signature));
       }
     };
+
+    CD4C cd4C = getCD4C();
 
     // Add Notify for attributes
     domainClass.getCDAttributeList().stream()
         .filter(a -> !a.getModifier().isDerived())
         .forEach(a -> {
+          String attributeName = a.getName();
           if (GenService.isList(a)) {
             String innerType = GenService.getInnerType(a.getMCType());
-            mem.add(getCD4C().addMethod(ast, "umlp.observer.NotifyAdd", a.getName(), className, innerType));
-            mem.add(getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyAdd", a.getName(), className, innerType));
-            mem.add(getCD4C().addMethod(ast, "umlp.observer.NotifyRemove", a.getName(), className, innerType));
-            mem.add(getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyRemove", a.getName(), className, innerType));
+            mem.add(cd4C.addMethod(ast, NOTIFY_ADD_TEMPLATE, attributeName, className, innerType),
+                    NOTIFY_ADD_TEMPLATE);
+            mem.add(cd4C.addMethod(ast,
+                                   MAYBE_NOTIFY_ADD_TEMPLATE,
+                                   attributeName,
+                                   className,
+                                   innerType), MAYBE_NOTIFY_ADD_TEMPLATE);
+            mem.add(cd4C.addMethod(ast,
+                                   NOTIFY_REMOVE_TEMPLATE,
+                                   attributeName,
+                                   className,
+                                   innerType), NOTIFY_REMOVE_TEMPLATE);
+            mem.add(cd4C.addMethod(ast,
+                                   MAYBE_NOTIFY_REMOVE_TEMPLATE,
+                                   attributeName,
+                                   className,
+                                   innerType), MAYBE_NOTIFY_REMOVE_TEMPLATE);
           }
 
           String fullType = getCDPrinter().prettyprint(createType(a));
-          mem.add(getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, fullType, false));
-          mem.add(getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, fullType, false));
+          mem.add(cd4C.addMethod(ast, NOTIFY_TEMPLATE, attributeName, className, fullType, false),
+                  NOTIFY_TEMPLATE);
+          mem.add(cd4C.addMethod(ast,
+                                 MAYBE_NOTIFY_TEMPLATE,
+                                 attributeName,
+                                 className,
+                                 fullType,
+                                 false), MAYBE_NOTIFY_TEMPLATE);
         });
 
     // Add Notify for list associations
@@ -93,12 +122,18 @@ public class ObserverDecorator extends AbstractDecorator {
         .filter(Predicate.not(GenService::isSymbolDerived))
         .filter(GenService::isList)
         .forEach(a -> {
-          mem.add(getCD4C().addMethod(ast, "umlp.observer.NotifyAdd", a.getName(), className, "long"));
-          mem.add(getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyAdd", a.getName(), className, "long"));
-          mem.add(getCD4C().addMethod(ast, "umlp.observer.NotifyRemove", a.getName(), className, "long"));
-          mem.add(getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyRemove", a.getName(), className, "long"));
-          mem.add(getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, "long", true));
-          mem.add(getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, "long", true));
+          mem.add(cd4C.addMethod(ast, NOTIFY_ADD_TEMPLATE, a.getName(), className, "long"),
+                  NOTIFY_ADD_TEMPLATE);
+          mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_ADD_TEMPLATE, a.getName(), className, "long"),
+                  MAYBE_NOTIFY_ADD_TEMPLATE);
+          mem.add(cd4C.addMethod(ast, NOTIFY_REMOVE_TEMPLATE, a.getName(), className, "long"),
+                  NOTIFY_REMOVE_TEMPLATE);
+          mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_REMOVE_TEMPLATE, a.getName(), className, "long"),
+                  MAYBE_NOTIFY_REMOVE_TEMPLATE);
+          mem.add(cd4C.addMethod(ast, NOTIFY_TEMPLATE, a.getName(), className, "long", true),
+                  NOTIFY_TEMPLATE);
+          mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_TEMPLATE, a.getName(), className, "long", true),
+                  MAYBE_NOTIFY_TEMPLATE);
         });
 
     // Add Notify for associations
@@ -106,16 +141,18 @@ public class ObserverDecorator extends AbstractDecorator {
         .filter(Predicate.not(GenService::isSymbolDerived))
         .filter(Predicate.not(GenService::isList))
         .forEach(a -> {
-          mem.add(getCD4C().addMethod(ast, "umlp.observer.Notify", a.getName(), className, "long", false));
-          mem.add(getCD4C().addMethod(ast, "umlp.observer.MaybeNotify", a.getName(), className, "long", false));
+          mem.add(cd4C.addMethod(ast, NOTIFY_TEMPLATE, a.getName(), className, "long", false),
+                  NOTIFY_TEMPLATE);
+          mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_TEMPLATE, a.getName(), className, "long", false),
+                  MAYBE_NOTIFY_TEMPLATE);
         });
 
-    getCD4C().addMethod(ast, "umlp.observer.GetScope");
-    getCD4C().addMethod(ast, "umlp.observer.NotifyBuild", className);
-    getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyBuild", className);
+    cd4C.addMethod(ast, "umlp.observer.GetScope");
+    cd4C.addMethod(ast, "umlp.observer.NotifyBuild", className);
+    cd4C.addMethod(ast, "umlp.observer.MaybeNotifyBuild", className);
 
     generationSummary
-        .importStatements().add(getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope")));
+        .importStatements().add(cd4C.addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope")));
     addImportForImportedObservers(domainClass, ast, generationSummary);
     super.addImports(domainClass, ast);
 
@@ -140,11 +177,11 @@ public class ObserverDecorator extends AbstractDecorator {
   public static final class GenerationSummary {
 
     private final ASTCDType domainClass;
-    private final Collection<ASTCDMethodSignature> notifyMethodSignatures;
+    private final Collection<GeneratedMethodSignature> notifyMethodSignatures;
     private final Collection<ASTMCImportStatement> importStatements;
 
     public GenerationSummary(ASTCDType domainClass,
-                             Collection<ASTCDMethodSignature> notifyMethodSignatures,
+                             Collection<GeneratedMethodSignature> notifyMethodSignatures,
                              Collection<ASTMCImportStatement> importStatements) {
       this.domainClass = domainClass;
       this.notifyMethodSignatures = notifyMethodSignatures;
@@ -155,7 +192,7 @@ public class ObserverDecorator extends AbstractDecorator {
       return domainClass;
     }
 
-    public Collection<ASTCDMethodSignature> notifyMethodSignatures() {
+    public Collection<GeneratedMethodSignature> notifyMethodSignatures() {
       return notifyMethodSignatures;
     }
 

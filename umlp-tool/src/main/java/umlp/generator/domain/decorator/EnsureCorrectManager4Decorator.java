@@ -89,8 +89,8 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
     //methods
     cd4C.addMethod(res, CUSTOM_TEMPLATE_PATH + "CheckManager", cdName);
     //override listener methods to call checkManager()
-    for (ASTCDMethodSignature signature : generationSummary.notifyMethodSignatures()) {
-      ASTCDMethodSignature overriddenMethod = signature.deepClone();
+    for (GeneratedMethodSignature gms : generationSummary.notifyMethodSignatures()) {
+      ASTCDMethodSignature overriddenMethod = gms.signature().deepClone();
       makePublic(overriddenMethod);
       getGlex().replaceTemplate(EMPTY_BODY_TEMPLATE, overriddenMethod, DELEGATION_HOOKPOINT);
       res.addCDMember(overriddenMethod);
