@@ -1,5 +1,6 @@
 package umlp.generator.domain.decorator;
 
+import com.google.common.base.Joiner;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -13,6 +14,8 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
@@ -27,6 +30,8 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
   public static final String PACKAGE = TestSetupDecorator.PACK_TEST_INFRASTRUCTURE;
   public static final String NAME_FORMAT = "EnsureCorrectManager%s";
   public static final String EMPTY_BODY_TEMPLATE = "cd2java.EmptyBody";
+  public static final String CUSTOM_TEMPLATE_PATH =
+      "umlp.test_infrastructure" + ".ensurecorrectmanager.";
   public static final StringHookPoint RETURN_NOTIFICATION_SCOPE_MINIMAL_HOOK_POINT =
       new StringHookPoint(
       "return NotificationScope.MINIMAL;");
@@ -104,24 +109,31 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
 
         ASTCDMethodSignature overriddenMethod = gms.signature().deepClone();
         makePublic(overriddenMethod);
-        //TODO use custom empty body template
-        //TODO write template for template hook-point
+        //TODO works with empty body?
         String observableParamName = overriddenMethod.getCDParameter(0).getName();
         getGlex().replaceTemplate(EMPTY_BODY_TEMPLATE,
                                   overriddenMethod,
-                                  new StringHookPoint("//TODO"));
+                                  new TemplateHookPoint(CUSTOM_TEMPLATE_PATH + "NotifyAddBody",
+                                                        attributeName,
+                                                        observableParamName));
         res.addCDMember(overriddenMethod);
 
         break; //there is only one notify add method per domain class
       }
     }
-    //TODO constructor (takes only manager)(custom template)
+    //constructor
+    cd4C.addConstructor(res,
+                        CUSTOM_TEMPLATE_PATH + "Constructor",
+                        cdName,
+                        res.getName(),
+                        attributes);
 
     //overwrite getScope method
     for (GeneratedMethodSignature gms : diagramGenerationSummary.otherMethodSignatures()) {
       if (!gms.template().equals(DiagramObserverDecorator.GET_SCOPE_GLOBAL_TEMPLATE)) continue;
 
       ASTCDMethodSignature overriddenMethod = gms.signature().deepClone();
+      makePublic(overriddenMethod);
       getGlex().replaceTemplate(EMPTY_BODY_TEMPLATE,
                                 overriddenMethod,
                                 RETURN_NOTIFICATION_SCOPE_MINIMAL_HOOK_POINT);
@@ -130,7 +142,13 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
       break; //there is only one getScope method
     }
 
-    //TODO imports: NotificationScope and default-package.*
+    //imports
+    Joiner dot = Joiners.DOT;
+    String defaultPackage = getPackageName(origCD, DEFAULT_PACKAGE);
+    cd4C.addImport(res, dot.join(defaultPackage, "*"));
+    for (ASTMCImportStatement importStatement : diagramGenerationSummary.importStatements()) {
+      cd4C.addImport(res, importStatement.getQName());
+    }
 
     return res;
   }

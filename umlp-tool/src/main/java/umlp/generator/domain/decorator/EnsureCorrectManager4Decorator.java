@@ -29,7 +29,7 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
   public static final String PACKAGE = TestSetupDecorator.PACK_TEST_INFRASTRUCTURE;
   public static final String NAME_FORMAT = "EnsureCorrectManager4%s";
   public static final String CUSTOM_TEMPLATE_PATH = "umlp.test_infrastructure" +
-                                                    ".ensurecorrectmanager.";
+                                                    ".ensurecorrectmanager4.";
   public static final TemplateHookPoint DELEGATION_HOOKPOINT = new TemplateHookPoint(
       CUSTOM_TEMPLATE_PATH + "CallCheckManagerBody");
   public static final String BASIC_CONSTRUCTOR_TEMPLATE = "umlp.common.BasicConstructor";
