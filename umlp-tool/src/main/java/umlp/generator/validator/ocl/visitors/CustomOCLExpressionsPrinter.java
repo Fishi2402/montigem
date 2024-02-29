@@ -118,7 +118,20 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
           firstVisitedInCallLevel.put(call, currentForallLevel);
         }
         boolean newLevel = firstVisitedInCallLevel.computeIfAbsent(call, k -> -1) == currentForallLevel;
-        String decType = dec.getMCType().printType();
+        String decType = "";
+        if(dec.isPresentMCType()) {
+          decType = dec.getMCType().printType();
+        } else {
+          Optional<OCLInvariantTreeNode> decNode = oCLInvariantTree.findMatchingBranch(inCall, node.getEnclosingScope());
+          if(decNode.isPresent()) {
+            OCLInvariantTreeNode deepestNode = decNode.get().findDeepestNodeForCallBranch();
+            if(deepestNode.hasAssociation()) {
+              decType = deepestNode.getAssociation().get().getRight().getMCQualifiedType().printType();
+            } else {
+              decType = deepestNode.getParameterDeclaration().get().getMCType().printType();
+            }
+          }
+        }
         for (ASTInDeclarationVariable var : dec.getInDeclarationVariableList()) {
           if (newLevel) {
             this.getPrinter().println(getValidationResultListDeclaration(decType, getVRCallForCallBranch(oCLInvariantTree, treeNode.get(), currentForallLevel)));

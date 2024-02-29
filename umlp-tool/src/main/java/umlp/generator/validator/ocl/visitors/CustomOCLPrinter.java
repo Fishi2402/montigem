@@ -41,7 +41,7 @@ public class CustomOCLPrinter extends OCLPrinter {
       setComprehensionContext.put(setComprehension, "setComprehension" + setComprehensionContext.size());
     }
     String type = dec.getMCType().printType();
-    String name = StringTransformations.uncapitalize(dec.getMCType().printType().substring(0,1));
+    String name = dec.getName();
     this.getPrinter().indent();
     this.getPrinter().print(type);
     this.getPrinter().print("ValidationResult ");
@@ -81,7 +81,7 @@ public class CustomOCLPrinter extends OCLPrinter {
     if(treeNode.isPresent()) {
       Set<String> finishingCalls = treeNode.get().getFinishingCalls(true, "value");
       for (String call : finishingCalls) {
-        this.getPrinter().print(call);
+        this.getPrinter().println(call);
       }
     }
     this.getPrinter().print("return ");
