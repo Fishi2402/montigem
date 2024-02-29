@@ -130,7 +130,11 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
       importParams:
       for (ASTCDParameter parameter : overriddenMethod.getCDParameterList()) {
         String typeName = parameter.getMCType().printType();
-        if (typeName.indexOf('.') > -1) continue; //filter out already qualified types
+
+        //cut off generic part
+        if (typeName.contains("<")) typeName = typeName.substring(0, typeName.indexOf('<'));
+
+        if (typeName.contains(".")) continue; //filter out already qualified types
 
         //ignore everything that is already imported
         for (ASTMCImportStatement importStatement : cd4C.getImportList(res)) {
