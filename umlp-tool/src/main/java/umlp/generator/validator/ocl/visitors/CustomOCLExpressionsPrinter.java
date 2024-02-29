@@ -11,7 +11,6 @@ import de.monticore.ocl.codegen.visitors.EndingBracketPrinter;
 import de.monticore.ocl.codegen.visitors.OCLExpressionsPrinter;
 import de.monticore.ocl.ocl.OCLMill;
 import de.monticore.ocl.ocl._ast.ASTOCLInvariant;
-import de.monticore.ocl.ocl._visitor.OCLVisitor2;
 import de.monticore.ocl.oclexpressions._ast.ASTForallExpression;
 import de.monticore.ocl.oclexpressions._ast.ASTInDeclaration;
 import de.monticore.ocl.oclexpressions._ast.ASTInDeclarationVariable;
@@ -47,7 +46,7 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
   private final OCLInvariantTree oCLInvariantTree;
   private final Map<String, Integer> firstVisitedInCallLevel = new LinkedHashMap<>();
   private int setComprehensionCounter = 0;
-  private final Map<ASTSetComprehension, Integer> setComprehensionContext = new HashMap<>();
+  private final Map<ASTSetComprehension, Integer> setComprehensionContext = new LinkedHashMap<>();
   private final Map<String, String> setComprehensionVariablesInScope = new LinkedHashMap<>();
   private final List<String> inDecSetCompNames = new ArrayList<>();
 
