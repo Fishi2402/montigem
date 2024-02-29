@@ -1,0 +1,125 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+ocl FunctionStructure {
+
+  /*
+    
+    Channel setzen voraus, dass sie durch 
+	einen eindeutigen Atomaren Outport aufgespannt werden. 
+	Hierbei werden zwischen Owner und Subfunktionen out mit out bzw. in mit in verbunden,
+	während auf gleicher Hierarchieebene Outports mit Inports verbunden werden.
+    Dafür gelten folgende Constraints:
+  */
+  
+  /*
+    In each component structure, the feed for an input is either the output
+	of a sister-component or the input of its owning component:
+  */
+  context Function f inv ValidChannelStructureInDecomposition:
+    forall c in f.subFunction.in.values() :
+	  c isin f.in.values() ^
+	  c isin f.subFunction.out.values();
+
+  /*
+    In each component structure, an output can provide the feed for
+	the input of a sister-component or the output of its owning component:
+  */
+  context Function f inv ValidChannelStructureOutDecomposition:
+    forall c in f.subFunction.out.values() :
+	  c isin f.out.values() ||
+	  c isin f.subFunction.in.values();
+
+  /*
+    Each atomic component knows each of its outgoing Channels by exactly one identifier
+  */
+  context Function f inv AtomicOutPortUniqueId:
+    f.subfunction.isEmpty() implies
+      (forall c1 in f.out.values(), a in f.out.keys(), b in f.out.keys() :
+          f.out.get(a) == c1 && f.out.get(b) == c1 implies (a == b));
+
+  /*
+    Each Channel without an atomic outPort has an inport with no parent component
+  */
+  context Channel c inv UniqueAtomicOutPort:
+    c.ownerOut.isEmpty() implies
+      (exists Function f1 in c.ownerIn : 
+	    f1.owner.isEmpty() &&
+		(forall f2 in c.ownerIn :
+		  f1.owner.isEmpty() implies (f1 == f2));
+   		  
+		
+  /*
+    if a Channel has an atomic outPort, it has exactly 1.
+  */
+  context Channel c inv UniqueAtomicOutPort:
+    !c.ownerOut.isEmpty() implies
+      (exists Function f1 in c.ownerOut : 
+	    f1.subFunction.isEmpty() && 
+	    (forall f2 in c.ownerIn :
+	      f1.owner.isEmpty() implies (f1 == f2)));
+
+  <--------------------------------------------------------------------------->
+
+  /*
+    Funktionen können nur miteinander versteckt werden, wenn die Signaturen
+    zueinander passen. Dafür müssen Ströme und Kanäle die gleiche Kategorie haben.
+
+    Dafür gelten folgende Constaints:
+  */
+
+  /*
+    The types of a Channel and its stream must match
+  */
+  context Channel c, FunctionStream s inv StreamTypeConsistency:
+    s == c.stream implies:
+      s.category == c.category;
+
+
+  /* ---------------------------------------------------------
+   * Monitoring Teil
+   * --------------------------------------------------------- */
+
+  /*
+    Beobachtungen auf Strömen enthalten nur die eine Teilmenge von Werten,
+    welche tatsächlich auch dem Strom gehören. Diese sind auch alle vom
+    gleichen Typen.
+
+    Dafür gelten folgende Constaints:
+  */
+
+  /*
+    All observed values must be contained in the observed stream
+  */
+  context Stream s, Observation o, Value v inv ObservationOnlyOnStream:
+    s == o.stream && v isin observation.value implies:
+      v isin s.value;
+
+  /*
+    The types of an observation and the observed stream must match
+  */
+  context FunctionStream s, Observation o inv ObservationTypeConsistency:
+    s == o.stream implies:
+      s.category == o.category;
+
+  /*
+    The types of a stream and its values must match
+  */
+  context FunctionStream s, Value v inv ValueTypeConsistency:
+    v isin s.value implies:
+      s.category == v.category;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
