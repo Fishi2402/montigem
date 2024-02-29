@@ -109,7 +109,6 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
 
         ASTCDMethodSignature overriddenMethod = gms.signature().deepClone();
         makePublic(overriddenMethod);
-        //TODO works with empty body?
         String observableParamName = overriddenMethod.getCDParameter(0).getName();
         getGlex().replaceTemplate(EMPTY_BODY_TEMPLATE,
                                   overriddenMethod,
