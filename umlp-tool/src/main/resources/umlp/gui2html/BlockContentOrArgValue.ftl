@@ -1,7 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 
-<#assign genHelper = glex.getGlobalVar("genHelper")>
-
 <#if ast.isPresentExpression()>
   ${tc.include("umlp.gui2html.Expression", ast.getExpression())}
 <#elseif ast.isPresentGUIComponent()>

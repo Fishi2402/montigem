@@ -16,6 +16,7 @@ import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -67,45 +68,11 @@ public class HTMLHelper implements GUIDSLVisitor2 {
     return traverser;
   }
 
-  public Map<ASTGUIBlock, Set<ASTGUIBlockContent>> getNgTemplates() {
-    return ngTemplates;
-  }
-
-  public boolean isNgTemplate(ASTGUIComponent node) {
-    for (Set<ASTGUIBlockContent> sc : ngTemplates.values()) {
-      for (ASTGUIBlockContent c : sc) {
-        if (c.isPresentGUIComponent() && c.getGUIComponent().equals(node)) {
-          return true;
-        }
-      }
+  public Set<ASTGUIBlockContent> getNgTemplates(ASTGUIBlock node) {
+    if (ngTemplates.containsKey(node)) {
+      return ngTemplates.get(node);
     }
-    return false;
-  }
-
-  public boolean isNgTemplate(ASTGUIGuard node) {
-    for (Set<ASTGUIBlockContent> sc : ngTemplates.values()) {
-      for (ASTGUIBlockContent c : sc) {
-        if (c.isPresentGUIGuard() && c.getGUIGuard().equals(node)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  public boolean isNgTemplate(ASTGUIIterate node) {
-    for (Set<ASTGUIBlockContent> sc : ngTemplates.values()) {
-      for (ASTGUIBlockContent c : sc) {
-        if (c.isPresentGUIIterate() && c.getGUIIterate().equals(node)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  public List<VariableSymbol> getIterateArgs(IGUIDSLScope scope) {
-    return new ArrayList<>();
+    return Collections.emptySet();
   }
 
   @Override

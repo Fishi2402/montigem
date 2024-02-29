@@ -30,16 +30,11 @@ public class HTMLHelperTest extends DomainGUITest {
   @Test
   public void testHTMLHelper() {
     ASTGUICompilationUnit ast;
-    Map<ASTGUIBlock, Set<ASTGUIBlockContent>> tpls;
 
     ast = processGUIModel("gui/util/E.gui", "src/test/resources/gui");
-    HTMLHelper finder = new HTMLHelper(ast);
-    tpls = finder.getNgTemplates();
+    new HTMLHelper(ast);
 
-    assertAll(
-        () -> assertNoErrors(),
-        () -> assertTrue(tpls.isEmpty())
-    );
+    assertNoErrors();
   }
 
   @Test
@@ -51,8 +46,6 @@ public class HTMLHelperTest extends DomainGUITest {
     List<ASTGUIGuard> guards;
     List<ASTGUIIterate> iterates;
 
-    Map<ASTGUIBlock, Set<ASTGUIBlockContent>> tpls;
-
     ast = processGUIModel("gui/genhtml/HTMLHelper.gui", "src/test/resources/gui");
     ASTGUIComponentDeclaration decl = ast.getGUIComponentDeclaration();
 
@@ -61,8 +54,6 @@ public class HTMLHelperTest extends DomainGUITest {
     components = stat.getComponents(decl);
     guards = stat.getGuards(decl);
     iterates = stat.getIterates(decl);
-
-    tpls = finder.getNgTemplates();
 
     ASTGUIComponent a = stat.getCompById(components, "a");
     ASTGUIIterate b = stat.getIterById(iterates, "b");
@@ -105,7 +96,7 @@ public class HTMLHelperTest extends DomainGUITest {
     Set<ASTGUIIterate> iter1 = new HashSet<>();
     Set<ASTExpression> exp1 = new HashSet<>();
 
-    result = tpls.get(decl.getGUIBlock());
+    result = finder.getNgTemplates(decl.getGUIBlock());
 
     for (ASTGUIBlockContent content : result) {
       if (content.isPresentGUIComponent()) {
@@ -137,7 +128,7 @@ public class HTMLHelperTest extends DomainGUITest {
 
     // iterate block b
 
-    assertions.add(() -> assertFalse(tpls.containsKey(b.getGUIBlock())));
+    assertions.add(() -> assertTrue(finder.getNgTemplates(b.getGUIBlock()).isEmpty()));
 
     // iterate block e
 
@@ -146,7 +137,7 @@ public class HTMLHelperTest extends DomainGUITest {
     Set<ASTGUIIterate> iter3 = new HashSet<>();
     Set<ASTExpression> exp3 = new HashSet<>();
 
-    result = tpls.get(e.getGUIBlock());
+    result = finder.getNgTemplates(e.getGUIBlock());
 
     for (ASTGUIBlockContent content : result) {
       if (content.isPresentGUIComponent()) {
@@ -174,19 +165,19 @@ public class HTMLHelperTest extends DomainGUITest {
 
     // iterate block t
 
-    assertions.add(() -> assertFalse(tpls.containsKey(t.getGUIBlock())));
+    assertions.add(() -> assertTrue(finder.getNgTemplates(t.getGUIBlock()).isEmpty()));
 
     // iterate block u
 
-    assertions.add(() -> assertFalse(tpls.containsKey(u.getGUIBlock())));
+    assertions.add(() -> assertTrue(finder.getNgTemplates(u.getGUIBlock()).isEmpty()));
 
     // iterate block aa
 
-    assertions.add(() -> assertFalse(tpls.containsKey(aa.getGUIBlock())));
+    assertions.add(() -> assertTrue(finder.getNgTemplates(aa.getGUIBlock()).isEmpty()));
 
     // iterate block ab
 
-    assertions.add(() -> assertFalse(tpls.containsKey(ab.getGUIBlock())));
+    assertions.add(() -> assertTrue(finder.getNgTemplates(ab.getGUIBlock()).isEmpty()));
 
     assertAll(assertions);
   }

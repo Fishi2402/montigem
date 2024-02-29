@@ -1,17 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 
 <#assign genHelper = glex.getGlobalVar("genHelper")>
-<#assign htmlHelper = glex.getGlobalVar("htmlHelper")>
-<#assign isNgTemplate = htmlHelper.isNgTemplate(ast)>
 <#assign extraArgs = genHelper.findIterationItemSymbols(ast.getEnclosingScope())>
-<#assign tplName = genHelper.getNgTemplateName(ast.getId().getName())>
-
 <#assign tag = genHelper.pascal2KebabCase(ast.getName())>
 
-<#if isNgTemplate>
-  <ng-template #${tplName}>
-</#if>
-<${tag} class="${ast.getId().getName()}"
+<${tag} class='${ast.getId().getName()}'
   <#list ast.getGUINamedArgs().getGUINamedArgList() as namedArg>
     <#if genHelper.isEventArgument(namedArg)>
       (${namedArg.getName()}) = '${genHelper.gui2cdEventCallName(ast, namedArg.getName())}.bind(this)($event<#list extraArgs as arg>, ${arg.getName()}</#list>)'
@@ -33,6 +26,3 @@
   </#list>
 >
 </${tag}>
-<#if isNgTemplate>
-  </ng-template>
-</#if>

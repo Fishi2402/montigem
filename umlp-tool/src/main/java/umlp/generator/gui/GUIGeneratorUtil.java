@@ -12,12 +12,15 @@ import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._ast.ASTGUIAdapt;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
+import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
+import de.monticore.guidsl._ast.ASTGUIRemove;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
@@ -69,7 +72,7 @@ public class GUIGeneratorUtil {
 
   public static final String SYNCHRONIZED_SUFFIX = "_synchronized";
   public static final String NG_TEMPLATE_SUFFIX = "Tpl";
-  public static final String NG_TEMPLATE_ELSE_BLOCK_SUFFIX = "Tpl";
+  public static final String NG_TEMPLATE_ELSE_BLOCK_SUFFIX = "Else";
   public static final String HTML_ITERATE_INDEX_PREFIX = "c";
 
   protected static GUIGeneratorUtil instance;
@@ -474,7 +477,7 @@ public class GUIGeneratorUtil {
   }
 
   public String getIteratorCounterName(ASTGUIIterate iterate) {
-    return HTML_ITERATE_INDEX_PREFIX + iterate.getId().getName();
+    return HTML_ITERATE_INDEX_PREFIX + StringTransformations.capitalize(iterate.getId().getName());
   }
 
   public String getShortIteratorIterable(ASTGUIIterate iterate) {
@@ -746,13 +749,13 @@ public class GUIGeneratorUtil {
 
   public String gui2htmlArgValue(ASTGUIArgValue node) {
     if (node.isPresentGUIComponent()) {
-      return node.getGUIComponent().getId().getName();
+      return getNgTemplateName(node.getGUIComponent().getId().getName());
     }
     if (node.isPresentGUIGuard()) {
-      return node.getGUIGuard().getId().getName();
+      return getNgTemplateName(node.getGUIGuard().getId().getName());
     }
     if (node.isPresentGUIIterate()) {
-      return node.getGUIIterate().getId().getName();
+      return getNgTemplateName(node.getGUIIterate().getId().getName());
     }
     if (node.isPresentExpression()) {
       return print(node);
@@ -930,6 +933,40 @@ public class GUIGeneratorUtil {
     node.accept(traverser);
 
     return type4Ast.getTypeOfExpression(node);
+  }
+
+  public String getNgTemplateName(ASTGUIBlockContent node) {
+    String name;
+    if (node.isPresentGUIComponent()) {
+      name = node.getGUIComponent().getId().getName();
+    }
+    else if (node.isPresentGUIGuard()) {
+      name = node.getGUIGuard().getId().getName();
+    }
+    else if (node.isPresentGUIIterate()) {
+      name = node.getGUIIterate().getId().getName();
+    }
+    else {
+      String received = "Unknown";
+      if (node.isPresentExpression()) {
+        received = ASTExpression.class.getSimpleName();
+      }
+      if (node.isPresentGUIAdapt()) {
+        received = ASTGUIAdapt.class.getSimpleName();
+      }
+      if (node.isPresentGUIRemove()) {
+        received = ASTGUIRemove.class.getSimpleName();
+      }
+      if (node.isPresentSemicolon()) {
+        received = "Semicolon";
+      }
+      Log.error("0x0000F Unable to transform ASTGUIBlockContent to an ng-template name."
+          + "Expected template to contain an ASTGUIComponent, ASTGUIGuard or ASTGUIIterate,"
+          + " but got " + received + "."
+      );
+      return null;
+    }
+    return getNgTemplateName(name);
   }
 
   public String getNgTemplateName(String name) {
