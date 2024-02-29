@@ -50,7 +50,7 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
   private final Map<String, String> setComprehensionVariablesInScope = new LinkedHashMap<>();
   private final List<String> inDecSetCompNames = new ArrayList<>();
 
-  public CustomOCLExpressionsPrinter(IndentPrinter printer, VariableNaming naming, IDerive deriver, ISynthesize syntheziser, OCLInvariantTree oCLInvariantTree, Map<ASTSetComprehension, String> setComprehensionContext) {
+  public CustomOCLExpressionsPrinter(IndentPrinter printer, VariableNaming naming, IDerive deriver, ISynthesize syntheziser, OCLInvariantTree oCLInvariantTree) {
     super(printer, naming, deriver, syntheziser);
     this.oCLInvariantTree = oCLInvariantTree;
     oCLInvariantTree.findSetComprehensions().forEach(setComprehension -> this.setComprehensionContext.put(setComprehension, setComprehensionCounter++));
