@@ -72,8 +72,8 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
                                                 DiagramObserverDecorator.GenerationSummary diagramGenerationSummary) {
 
     String cdName = origCD.getCDDefinition().getName();
-    ASTCDInterfaceUsage cdInterfaceUsage = getInterfaceUsageFacade().createCDInterfaceUsage(
-        cdName + DiagramObserverDecorator.SUFFIX);
+    String observerInterfaceName = cdName + DiagramObserverDecorator.SUFFIX;
+    ASTCDInterfaceUsage cdInterfaceUsage = getInterfaceUsageFacade().createCDInterfaceUsage(observerInterfaceName);
     ASTCDClass res = UMLPMill
         .cDClassBuilder()
         .setModifier(CDModifier.PUBLIC.build())
@@ -82,6 +82,8 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
         .build();
 
     CD4C cd4C = getCD4C();
+    Joiner dot = Joiners.DOT;
+    String defaultPackage = getPackageName(origCD, DEFAULT_PACKAGE);
 
     //ensureCorrectManager4 attributes
     List<ASTCDAttribute> attributes = new ArrayList<>();
@@ -119,6 +121,9 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
 
         break; //there is only one notify add method per domain class
       }
+
+      //import for changed type
+      cd4C.addImport(res, dot.join(defaultPackage, domainClass.getName()));
     }
     //constructor
     cd4C.addConstructor(res,
@@ -142,9 +147,8 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
     }
 
     //imports
-    Joiner dot = Joiners.DOT;
-    String defaultPackage = getPackageName(origCD, DEFAULT_PACKAGE);
-    cd4C.addImport(res, dot.join(defaultPackage, "*"));
+    cd4C.addImport(res, dot.join(defaultPackage, observerInterfaceName));
+    cd4C.addImport(res, dot.join(defaultPackage, cdName + ManagerDecorator.SUFFIX));
     for (ASTMCImportStatement importStatement : diagramGenerationSummary.importStatements()) {
       cd4C.addImport(res, importStatement.getQName());
     }

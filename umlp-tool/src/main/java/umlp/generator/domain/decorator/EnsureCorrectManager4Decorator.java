@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -28,12 +29,22 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
   //same package as normal test infrastructure
   public static final String PACKAGE = TestSetupDecorator.PACK_TEST_INFRASTRUCTURE;
   public static final String NAME_FORMAT = "EnsureCorrectManager4%s";
-  public static final String CUSTOM_TEMPLATE_PATH = "umlp.test_infrastructure" +
-                                                    ".ensurecorrectmanager4.";
+  public static final String CUSTOM_TEMPLATE_PATH =
+      "umlp.test_infrastructure" + ".ensurecorrectmanager4.";
   public static final TemplateHookPoint DELEGATION_HOOKPOINT = new TemplateHookPoint(
       CUSTOM_TEMPLATE_PATH + "CallCheckManagerBody");
   public static final String BASIC_CONSTRUCTOR_TEMPLATE = "umlp.common.BasicConstructor";
   public static final String EMPTY_BODY_TEMPLATE = "cd2java.EmptyBody";
+  private static final Class<?>[] PRIMITIVES = {
+      byte.class,
+      short.class,
+      int.class,
+      long.class,
+      float.class,
+      double.class,
+      char.class,
+      boolean.class
+  };
 
   private final ObserverDecorator observerDecorator;
   private Collection<GenerationSummary> generationSummaries = List.of();
@@ -69,8 +80,9 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
     ASTCDType domainClass = observerGenerationSummary.domainClass();
     String domainClassName = domainClass.getName();
 
+    String observerInterfaceName = domainClassName + ObserverDecorator.SUFFIX;
     ASTCDInterfaceUsage cdInterfaceUsage = getInterfaceUsageFacade().createCDInterfaceUsage(
-        domainClassName + ObserverDecorator.SUFFIX);
+        observerInterfaceName);
     ASTCDClass res = UMLPMill
         .cDClassBuilder()
         .setModifier(PUBLIC.build())
@@ -82,17 +94,28 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
     generationSummaries.add(generationSummary);
 
     CD4C cd4C = getCD4C();
+    Joiner dot = Joiners.DOT;
+    String defaultPackage = getPackageName(origCD, DEFAULT_PACKAGE);
+
+
 
     //attributes
     String managerClassName = cdName + ManagerDecorator.SUFFIX;
     ASTCDAttribute managerAttr = cd4C.addAttribute(res,
-                                                   true,
+                                                   false,
                                                    false,
                                                    "protected final " + managerClassName +
                                                    " manager");
 
     //constructor
     cd4C.addConstructor(res, BASIC_CONSTRUCTOR_TEMPLATE, res.getName(), List.of(managerAttr));
+
+    //imports
+    cd4C.addImport(res, dot.join(defaultPackage, managerClassName));
+    cd4C.addImport(res, dot.join(defaultPackage, observerInterfaceName));
+    for (ASTMCImportStatement importStatement : observerGenerationSummary.importStatements()) {
+      cd4C.addImport(res, importStatement.getQName());
+    }
 
     //methods
     cd4C.addMethod(res, CUSTOM_TEMPLATE_PATH + "CheckManager", cdName);
@@ -102,24 +125,34 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
       makePublic(overriddenMethod);
       getGlex().replaceTemplate(EMPTY_BODY_TEMPLATE, overriddenMethod, DELEGATION_HOOKPOINT);
       res.addCDMember(overriddenMethod);
-    }
 
-    addImports(origCD, res, observerGenerationSummary);
+      //method parameter imports
+      importParams:
+      for (ASTCDParameter parameter : overriddenMethod.getCDParameterList()) {
+        String typeName = parameter.getMCType().printType();
+        if (typeName.indexOf('.') > -1) continue; //filter out already qualified types
+
+        //ignore everything that is already imported
+        for (ASTMCImportStatement importStatement : cd4C.getImportList(res)) {
+          if (importStatement.getQName().endsWith(typeName)) continue importParams;
+        }
+
+        //ignore everything that can already be resolved by java.lang
+        try {
+          Class.forName("java.lang." + typeName);
+          continue;
+        } catch (ClassNotFoundException ignored) {
+          //primitive types can't be caught with that method
+          for (Class<?> primitive : PRIMITIVES) {
+            if (primitive.getName().equals(typeName)) continue importParams;
+          }
+        }
+
+        cd4C.addImport(res, dot.join(defaultPackage, typeName));
+      }
+    }
 
     return res;
-  }
-
-  private void addImports(ASTCDCompilationUnit origCD,
-                          ASTCDType type,
-                          ObserverDecorator.GenerationSummary generationSummary) {
-    CD4C cd4C = getCD4C();
-    Joiner dot = Joiners.DOT;
-    String defaultPackage = getPackageName(origCD, DEFAULT_PACKAGE);
-
-    cd4C.addImport(type, dot.join(defaultPackage, "*"));
-    for (ASTMCImportStatement importStatement : generationSummary.importStatements()) {
-      cd4C.addImport(type, importStatement.getQName());
-    }
   }
 
   public Collection<GenerationSummary> getGenerationSummaries() {
