@@ -6,6 +6,8 @@ import de.monticore.cd4codebasis._visitor.CD4CodeBasisVisitor2;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._tagging.CDBasisTagger;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
@@ -43,20 +45,31 @@ public class TagRelated {
   public static void doStoreTagStereos(ASTCDCompilationUnit ast, UMLPTool tool, IUMLPArtifactScope symbolTable, CommandLine cmd) {
     // Extract singleton stereotypes and store them ina
     ASTTagUnit tagUnit = TagRepository.loadTempTagModel(ast.getCDDefinition().getName()).get();
+    boolean[] hasTags = new boolean[1];
     UMLPTraverser traverser = UMLPMill.traverser();
     traverser.add4CDBasis(new CDBasisVisitor2() {
       @Override
       public void visit(ASTCDClass node) {
         if (node.getModifier().isPresentStereotype() && node.getModifier().getStereotype().contains("singleton")) {
           ASTTag astTag = TagsMill.simpleTagBuilder().setName("singleton").build();
-          UMLPTagger.getInstance().addTag((ASTCDType) node, tagUnit, astTag);
+          hasTags[0] = true;
+          __addTag(node.getSymbol(), tagUnit, astTag);
+          node.getCDMethodList().forEach(m -> {
+            ASTTag astTagCommand = TagsMill.simpleTagBuilder().setName("command").build();
+            // Problem: CDMethodSignature => Sehub.clazz.methodname
+            // OOSymbols/Method => clazz.methodname
+            __addTag(m.getSymbol(), tagUnit, astTagCommand);
+            hasTags[0] = true;
+          });
         }
         if (node.getModifier().isDerived()) {
           ASTTag astTag = TagsMill.simpleTagBuilder().setName("derived").build();
-          UMLPTagger.getInstance().addTag((ASTCDType) node, tagUnit, astTag);
+          hasTags[0] = true;
+          __addTag(node.getSymbol(), tagUnit, astTag);
         }
       }
     });
+    /*
     traverser.add4CD4CodeBasis(new CD4CodeBasisVisitor2() {
       @Override
       public void visit(ASTCDMethod node) {
@@ -67,15 +80,16 @@ public class TagRelated {
           __addTag(node.getSymbol(), tagUnit, astTag);
         }
       }
-    });
+    });*/
     ast.accept(traverser);
 
     String s = UMLPToolOptions.SYMTAB.getValue(cmd);
-    if (s != null) {
+    if (s != null && !s.isEmpty()) {
       // store tag file to passed file
+      String pn = Names.getPathFromPackage(symbolTable.getPackageName());
       Path tagPath = Paths.get(
-          s + File.separator
-              + Names.getPathFromPackage(symbolTable.getPackageName())
+          s + (pn.isEmpty() ? "" : (File.separator
+              + Names.getPathFromPackage(symbolTable.getPackageName())))
               + File.separator
               + symbolTable.getName()
               + ".tags");
@@ -88,6 +102,8 @@ public class TagRelated {
       } catch (IOException ignored) {}
     } else {
       System.out.println(TagsMill.prettyPrint(tagUnit, true));
+      if (hasTags[0])
+        Log.error("symboltable option is required to store tag information");
     }
   }
 

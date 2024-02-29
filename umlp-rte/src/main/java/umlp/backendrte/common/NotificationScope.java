@@ -4,9 +4,9 @@ package umlp.backendrte.common;
 // RTE-P
 
 public enum NotificationScope {
-  MINIMAL(0), // Events mit minimalem Einfluss, z.B. um bei bidirektionalen Assoziationen Ping Pong zu verhindern
-  LOCAL(3), // Events mit lokalem Einfluss, also dieser Server/Client, z.B. setAge ausgelöst von einem Command
-  GLOBAL(4), // Events mit Einfluss auf alle Clients und den Server, wie z.B. setAge ausgelöst von einer GUI
+  MINIMAL(0), // Events with minimal impact, for example to prevent ping pong in bidirectional associations.
+  LOCAL(3), // Events with local impact, meaning this server/client, for example setAge triggered by a command.
+  GLOBAL(4), // Events with impact on all clients and the server, such as setAge triggered by a GUI.
   ALL(5);
 
   private final int level;

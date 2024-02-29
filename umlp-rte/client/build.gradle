@@ -58,10 +58,12 @@ def libs = [
     "basic",
     "charts",
     "common",
+    "commonj2ts",
     "input",
     "navigation",
     "table",
     "theme",
+    "networkgraph"
 ]
 
 def buildTaskPrefix = "build_"
@@ -162,6 +164,7 @@ abstract class IncrementalReverseTask extends DefaultTask {
         "basic",
         "charts",
         "common",
+        "commonj2ts",
         "table",
         "input",
         "arrange",

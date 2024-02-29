@@ -33,6 +33,7 @@ import umlp._prettyprint.UMLPFullPrettyPrinter;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypePrimitive.box;
@@ -342,6 +343,33 @@ public class GenService {
     return "java.lang.Object";
   }
 
+  public static Optional<ASTMCType> getInnerTypeOfGenerics(ASTMCType mcType) {
+    if (!isList(mcType) && !isOptional(mcType)) {
+      return Optional.empty();
+    }
+
+    if (mcType instanceof ASTMCBasicGenericType) {
+      ASTMCBasicGenericType genType = (ASTMCBasicGenericType) mcType;
+      return Optional.of(genType.getMCTypeArgument(0).getMCTypeOpt().get());
+    }
+
+    if (mcType instanceof ASTMCListType) {
+      ASTMCListType lt = (ASTMCListType) mcType;
+      if (!lt.getMCTypeArgumentList().isEmpty()) {
+        return Optional.of(lt.getMCTypeArgumentList().get(0).getMCTypeOpt().get());
+      }
+    }
+
+    if (mcType instanceof ASTMCOptionalType) {
+      ASTMCOptionalType ot = (ASTMCOptionalType) mcType;
+      if (!ot.getMCTypeArgumentList().isEmpty()) {
+        return Optional.of(ot.getMCTypeArgumentList().get(0).getMCTypeOpt().get());
+      }
+    }
+
+    return Optional.empty();
+  }
+
   /***************************************************************************/
   /* TODO: Nach TypeCheck verschieben?                                       */
 
@@ -364,6 +392,14 @@ public class GenService {
   public static boolean isSet(SymTypeExpression type) {
     if (type instanceof SymTypeOfGenerics) {
       return ((SymTypeOfGenerics) type).getBaseName().equals("Set");
+    }
+    return false;
+  }
+
+  public static boolean isCollection(SymTypeExpression type) {
+    if (type instanceof SymTypeOfGenerics) {
+      return type.getTypeInfo().getInterfaceList().stream().filter(
+          i -> i.getTypeInfo().getName().equals("Collection")).findAny().isPresent();
     }
     return false;
   }

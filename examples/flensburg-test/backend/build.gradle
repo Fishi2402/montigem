@@ -27,7 +27,7 @@ configurations {
 }
 
 dependencies {
-  implementation group: "de.monticore.lang", name: 'guidsl', version: "7.6.0-SNAPSHOT"
+  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
@@ -64,7 +64,7 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
 
-  implementation "umlp:frontend-rte:$mc_version:cd2java"
+  implementation project(':umlp-rte')
 }
 
 generateUmlpBackend {

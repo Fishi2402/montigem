@@ -244,6 +244,10 @@ public abstract class CommonUMLPTask extends DefaultTask {
     if (getDebug().get()){
       // In debug mode, run code directly. Otherwise, breakpoints etc. do not work
       // TODO: debug = true => module jar is not on classpath!
+      if(!getModules().isEmpty()) {
+        throw new IllegalStateException("Currently the debug flag and using modules is mutually exclusive.");
+      }
+
       UMLPAction.run(args.toArray(new String[0]));
     } else {
       // In normal mode, run in a workQue. This ensures isolation & parallelization

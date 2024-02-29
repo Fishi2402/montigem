@@ -15,6 +15,10 @@ pluginManagement {
     // for the native image example
     maven { url "https://repo.spring.io/snapshot" }
     maven { url "https://repo.spring.io/milestone" }
+
+    // TODO: Publish jsweet dependency in nexus, so that this is _not_ required!!!!!
+    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
+    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
   }
 }
 
@@ -33,12 +37,7 @@ include ":experiments:module-system:module-definition"
 include ":experiments:module-system:routes-usage"
 
 include ":examples"
-include ':examples:cars'
-include ':examples:filesystem'
-include ':examples:mediahub'
-include ':examples:restaurant'
 include ':examples:selib'
-include ':examples:university'
 include ':examples:stat'
 include ':examples:artifacts-test'
 include ':examples:artifacts-java'

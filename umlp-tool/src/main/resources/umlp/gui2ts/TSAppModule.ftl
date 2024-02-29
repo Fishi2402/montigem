@@ -17,7 +17,7 @@ import { routes } from '${pathHWRoutes}';
 import { routes } from './AppGemRouting';
 </#if>
 import { AppComponent } from '@src/app.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
 declarations: [
@@ -30,7 +30,7 @@ imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
     CommonModule,
-
+    BrowserAnimationsModule,
 
 <#if existedModuleConfig >
   ... config.imports

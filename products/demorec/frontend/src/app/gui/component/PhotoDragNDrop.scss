@@ -4,3 +4,7 @@
   padding: 20px;
   text-align: center;
 }
+
+:host ::ng-deep .cancel > button.gem-button {
+  background-color: red;
+}

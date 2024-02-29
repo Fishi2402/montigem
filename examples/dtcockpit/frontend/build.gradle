@@ -6,9 +6,6 @@ plugins {
 }
 
 dependencies {
-  // Types which are used in genGUI-Task
-  guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-
   umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
 }
 
@@ -36,10 +33,6 @@ node {
 }
 
 genGUI {
-  dependsOn(tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
-  symbolDir = files(
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-  )
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
