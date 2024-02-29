@@ -78,4 +78,8 @@ public class DiagramObserverDecorator extends AbstractDecorator {
 
     return ast;
   }
+
+  public static class GenerationSummary {
+
+  }
 }
