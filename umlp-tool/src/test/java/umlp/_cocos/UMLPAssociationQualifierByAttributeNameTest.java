@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlptest._cocos;
+package umlp._cocos;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.se_rwth.commons.logging.Log;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import umlp._cocos.UMLPAssociationQualifierByAttributeName;
 import umlp._cocos.UMLPCheckDiagramName;
 import umlp._cocos.UMLPCoCoChecker;
-import umlptest.AbstractUMLPTest;
+import umlp.AbstractUMLPTest;
 
 public class UMLPAssociationQualifierByAttributeNameTest extends AbstractUMLPTest {
 

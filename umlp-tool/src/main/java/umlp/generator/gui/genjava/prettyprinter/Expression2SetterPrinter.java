@@ -21,12 +21,6 @@ public abstract class Expression2SetterPrinter extends ExpressionPrinter {
   }
 
   @Override
-  protected void initializeTraverser(boolean printComments) {
-    super.initializeTraverser(printComments);
-    resetPrinter();
-  }
-
-  @Override
   protected void resetPrinter() {
     super.resetPrinter();
     lastFieldAccess = new SharedBoolean(true);

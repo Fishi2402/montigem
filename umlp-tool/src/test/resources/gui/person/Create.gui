@@ -10,6 +10,7 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemCheckBoxInput;
 
 import person.Row;
 

@@ -15,8 +15,6 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
 
 public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinter {
 
@@ -75,21 +73,14 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
 
   protected boolean isEnum(ASTFieldAccessExpression node) {
     SymTypeExpression ste = GUIGeneratorUtil.getInstance().getType(node);
-    if (ste.hasTypeInfo()) {
-      if (ste.getTypeInfo() instanceof TypeSymbolSurrogate
-          && ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate() instanceof OOTypeSymbol) {
-        OOTypeSymbol sym = (OOTypeSymbol) ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate();
-        return sym.isIsEnum();
-      }
-      else {
-        return false;
-      }
+
+    if (ste.hasTypeInfo()
+        && ste.getTypeInfo() instanceof TypeSymbolSurrogate
+        && ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate() instanceof OOTypeSymbol) {
+      OOTypeSymbol sym = (OOTypeSymbol) ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate();
+      return sym.isIsEnum();
     }
-    else {
-      Log.error("0x0000B Symbol of expression "
-          + GUIGeneratorUtil.getInstance().print(node) + " could not be resolved.");
-      return false;
-    }
+    return false;
   }
 
 

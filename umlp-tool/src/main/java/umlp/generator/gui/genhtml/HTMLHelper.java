@@ -58,7 +58,9 @@ public class HTMLHelper implements GUIDSLVisitor2 {
   public HTMLHelper(ASTGUICompilationUnit ast) {
     traverser = GUIDSLMill.traverser();
     traverser.add4GUIDSL(this);
-    ast.accept(getTraverser());
+    if (ast.getGUIComponentDeclaration().isPresentGUIBlock()) {
+      ast.accept(getTraverser());
+    }
   }
 
   public GUIDSLTraverser getTraverser() {

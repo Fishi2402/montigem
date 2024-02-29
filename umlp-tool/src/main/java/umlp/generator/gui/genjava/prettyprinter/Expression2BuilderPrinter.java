@@ -9,8 +9,6 @@ import java.util.Collection;
 
 public class Expression2BuilderPrinter extends Expression2SetterPrinter {
 
-  protected SharedBoolean lastFieldAccess;
-
   public Expression2BuilderPrinter(IndentPrinter printer, boolean printComments) {
     super(printer, printComments);
   }
@@ -24,7 +22,6 @@ public class Expression2BuilderPrinter extends Expression2SetterPrinter {
   @Override
   protected void resetPrinter() {
     super.resetPrinter();
-
     // customized printer
     CommonExpressionsPrettyPrinter commonExpressions = new FieldAccess2BuilderConverter(
         getPrinter(), printComments, allIgnore, lastFieldAccess

@@ -28,6 +28,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class HTMLHelperTest extends DomainGUITest {
 
   @Test
+  public void testHTMLHelper() {
+    ASTGUICompilationUnit ast;
+    Map<ASTGUIBlock, Set<ASTGUIBlockContent>> tpls;
+
+    ast = processGUIModel("gui/util/E.gui", "src/test/resources/gui");
+    HTMLHelper finder = new HTMLHelper(ast);
+    tpls = finder.getNgTemplates();
+
+    assertAll(
+        () -> assertNoErrors(),
+        () -> assertTrue(tpls.isEmpty())
+    );
+  }
+
+  @Test
   public void testGetNgTemplates() {
     ASTGUICompilationUnit ast;
     GUIComponentStat stat = GUIComponentStat.getInstance();
