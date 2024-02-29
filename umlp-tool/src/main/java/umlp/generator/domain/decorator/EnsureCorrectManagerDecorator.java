@@ -1,15 +1,35 @@
 package umlp.generator.domain.decorator;
 
+import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDInterfaceUsage;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class EnsureCorrectManagerDecorator extends AbstractDecorator {
 
   //same package as normal test infrastructure
   public static final String PACKAGE = TestSetupDecorator.PACK_TEST_INFRASTRUCTURE;
+  public static final String NAME_FORMAT = "EnsureCorrectManager%s";
+  public static final String EMPTY_BODY_TEMPLATE = "cd2java.EmptyBody";
+  public static final StringHookPoint RETURN_NOTIFICATION_SCOPE_MINIMAL_HOOK_POINT =
+      new StringHookPoint(
+      "return NotificationScope.MINIMAL;");
 
   private final DiagramObserverDecorator diagramObserverDecorator;
   private final EnsureCorrectManager4Decorator ensureCorrectManager4Decorator;
@@ -20,6 +40,17 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
     super(glex);
     this.diagramObserverDecorator = diagramObserverDecorator;
     this.ensureCorrectManager4Decorator = ensureCorrectManager4Decorator;
+  }
+
+  private static void makePublic(ASTCDMethodSignature signature) {
+    if (signature instanceof ASTCDMethod) {
+      ASTCDMethod method = (ASTCDMethod) signature;
+      method.setModifier(PUBLIC.build());
+    }
+  }
+
+  static String getAttributeName(String attributeType) {
+    return Character.toLowerCase(attributeType.charAt(0)) + attributeType.substring(1);
   }
 
   @Override
@@ -35,6 +66,72 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
   private ASTCDClass createEnsureCorrectManager(ASTCDCompilationUnit origCD,
                                                 DiagramObserverDecorator.GenerationSummary diagramGenerationSummary) {
 
-    return null; //TODO
+    String cdName = origCD.getCDDefinition().getName();
+    ASTCDInterfaceUsage cdInterfaceUsage = getInterfaceUsageFacade().createCDInterfaceUsage(
+        cdName + DiagramObserverDecorator.SUFFIX);
+    ASTCDClass res = UMLPMill
+        .cDClassBuilder()
+        .setModifier(CDModifier.PUBLIC.build())
+        .setCDInterfaceUsage(cdInterfaceUsage)
+        .setName(String.format(NAME_FORMAT, cdName))
+        .build();
+
+    CD4C cd4C = getCD4C();
+
+    //ensureCorrectManager4 attributes
+    List<ASTCDAttribute> attributes = new ArrayList<>();
+    for (EnsureCorrectManager4Decorator.GenerationSummary ecm4GenerationSummary :
+        ensureCorrectManager4Decorator.getGenerationSummaries()) {
+      //attribute
+      ASTCDClass generatedClass = ecm4GenerationSummary.generatedClass();
+      String attributeType = generatedClass.getName();
+      String attributeName = getAttributeName(attributeType);
+      ASTCDAttribute attribute = cd4C.addAttribute(res,
+                                                   false,
+                                                   false,
+                                                   "protected final " + attributeType + " " +
+                                                   attributeName);
+      attributes.add(attribute);
+
+      //override notifyAdd method
+      ASTCDType domainClass = ecm4GenerationSummary.domainClass();
+      for (var notifyMethodSignature : diagramGenerationSummary.notifyMethodSignatures()) {
+        //find the notifyAdd method for the attribute type
+        if (notifyMethodSignature.changedType() != domainClass) continue;
+
+        GeneratedMethodSignature gms = notifyMethodSignature.generatedMethodSignature();
+        if (!gms.template().equals(DiagramObserverDecorator.NOTIFY_ADD_TEMPLATE)) continue;
+
+        ASTCDMethodSignature overriddenMethod = gms.signature().deepClone();
+        makePublic(overriddenMethod);
+        //TODO use custom empty body template
+        //TODO write template for template hook-point
+        String observableParamName = overriddenMethod.getCDParameter(0).getName();
+        getGlex().replaceTemplate(EMPTY_BODY_TEMPLATE,
+                                  overriddenMethod,
+                                  new StringHookPoint("//TODO"));
+        res.addCDMember(overriddenMethod);
+
+        break; //there is only one notify add method per domain class
+      }
+    }
+    //TODO constructor (takes only manager)(custom template)
+
+    //overwrite getScope method
+    for (GeneratedMethodSignature gms : diagramGenerationSummary.otherMethodSignatures()) {
+      if (!gms.template().equals(DiagramObserverDecorator.GET_SCOPE_GLOBAL_TEMPLATE)) continue;
+
+      ASTCDMethodSignature overriddenMethod = gms.signature().deepClone();
+      getGlex().replaceTemplate(EMPTY_BODY_TEMPLATE,
+                                overriddenMethod,
+                                RETURN_NOTIFICATION_SCOPE_MINIMAL_HOOK_POINT);
+      res.addCDMember(overriddenMethod);
+
+      break; //there is only one getScope method
+    }
+
+    //TODO imports: NotificationScope and default-package.*
+
+    return res;
   }
 }

@@ -78,7 +78,7 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
         .setName(String.format(NAME_FORMAT, domainClassName))
         .build();
 
-    GenerationSummary generationSummary = new GenerationSummary(domainClass);
+    GenerationSummary generationSummary = new GenerationSummary(domainClass, res);
     generationSummaries.add(generationSummary);
 
     CD4C cd4C = getCD4C();
@@ -129,13 +129,19 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
   public static final class GenerationSummary {
 
     private final ASTCDType domainClass;
+    private final ASTCDClass generatedClass;
 
-    public GenerationSummary(ASTCDType domainClass) {
+    public GenerationSummary(ASTCDType domainClass, ASTCDClass generatedClass) {
       this.domainClass = domainClass;
+      this.generatedClass = generatedClass;
     }
 
     public ASTCDType domainClass() {
       return domainClass;
+    }
+
+    public ASTCDClass generatedClass() {
+      return generatedClass;
     }
   }
 }

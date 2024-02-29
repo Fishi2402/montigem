@@ -39,11 +39,17 @@ public class TestSetupDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage aPackage = getPackage(origCD, decoratedCD, PACK_TEST_INFRASTRUCTURE);
 
-    EnsureCorrectManager4Decorator ensureCorrectManager4Decorator = new EnsureCorrectManager4Decorator(glex,
-                                                                                                       observerDecorator);
+    EnsureCorrectManager4Decorator ensureCorrectManager4Decorator =
+        new EnsureCorrectManager4Decorator(
+        glex,
+        observerDecorator);
     ensureCorrectManager4Decorator.transform(origCD, decoratedCD);
 
-
+    EnsureCorrectManagerDecorator ensureCorrectManagerDecorator = new EnsureCorrectManagerDecorator(
+        glex,
+        diagramObserverDecorator,
+        ensureCorrectManager4Decorator);
+    ensureCorrectManagerDecorator.transform(origCD, decoratedCD);
 
     aPackage.addCDElement(withOrigin(createMockTestSetup(origCD)));
     aPackage.addCDElement(withOrigin(createDbTestSetup(origCD)));

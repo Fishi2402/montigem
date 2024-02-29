@@ -56,8 +56,10 @@ public class DiagramObserverDecorator extends AbstractDecorator {
                                                                 new ArrayList<>());
     this.generationSummary = Optional.of(generationSummary);
     var mem = new Object() {
-      void add(ASTCDMethodSignature signature, String template) {
-        generationSummary.notifyMethodSignatures().add(new GeneratedMethodSignature(template, signature));
+      void add(ASTCDMethodSignature signature, String template, ASTCDClass changedType) {
+        generationSummary
+            .notifyMethodSignatures()
+            .add(new NotifyMethod(changedType, new GeneratedMethodSignature(template, signature)));
       }
     };
 
@@ -69,10 +71,10 @@ public class DiagramObserverDecorator extends AbstractDecorator {
             .filter(c -> !c.getModifier().isAbstract())
             .forEach(c -> {
               String cName = c.getName();
-              mem.add(cd4C.addMethod(ast, NOTIFY_ADD_TEMPLATE, cName), NOTIFY_ADD_TEMPLATE);
-              mem.add(cd4C.addMethod(ast, NOTIFY_DELETE_TEMPLATE, cName), NOTIFY_DELETE_TEMPLATE);
-              mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_ADD_TEMPLATE, cName), MAYBE_NOTIFY_ADD_TEMPLATE);
-              mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_DELETE_TEMPLATE, cName), MAYBE_NOTIFY_DELETE_TEMPLATE);
+              mem.add(cd4C.addMethod(ast, NOTIFY_ADD_TEMPLATE, cName), NOTIFY_ADD_TEMPLATE, c);
+              mem.add(cd4C.addMethod(ast, NOTIFY_DELETE_TEMPLATE, cName), NOTIFY_DELETE_TEMPLATE, c);
+              mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_ADD_TEMPLATE, cName), MAYBE_NOTIFY_ADD_TEMPLATE, c);
+              mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_DELETE_TEMPLATE, cName), MAYBE_NOTIFY_DELETE_TEMPLATE, c);
             });
 
     generationSummary
@@ -115,13 +117,13 @@ public class DiagramObserverDecorator extends AbstractDecorator {
     return generationSummary;
   }
 
-  public static class GenerationSummary {
+  public static final class GenerationSummary {
 
-    private final Collection<GeneratedMethodSignature> notifyMethodSignatures;
+    private final Collection<NotifyMethod> notifyMethodSignatures;
     private final Collection<GeneratedMethodSignature> otherMethodSignatures;
     private final Collection<ASTMCImportStatement> importStatements;
 
-    public GenerationSummary(Collection<GeneratedMethodSignature> notifyMethodSignatures,
+    public GenerationSummary(Collection<NotifyMethod> notifyMethodSignatures,
                              Collection<GeneratedMethodSignature> otherMethodSignatures,
                              Collection<ASTMCImportStatement> importStatements) {
       this.notifyMethodSignatures = notifyMethodSignatures;
@@ -129,7 +131,7 @@ public class DiagramObserverDecorator extends AbstractDecorator {
       this.importStatements = importStatements;
     }
 
-    public Collection<GeneratedMethodSignature> notifyMethodSignatures() {
+    public Collection<NotifyMethod> notifyMethodSignatures() {
       return notifyMethodSignatures;
     }
 
@@ -139,6 +141,25 @@ public class DiagramObserverDecorator extends AbstractDecorator {
 
     public Collection<ASTMCImportStatement> importStatements() {
       return importStatements;
+    }
+  }
+
+  public static final class NotifyMethod {
+
+    private final ASTCDClass changedType;
+    private final GeneratedMethodSignature generatedMethodSignature;
+
+    public NotifyMethod(ASTCDClass changedType, GeneratedMethodSignature generatedMethodSignature) {
+      this.changedType = changedType;
+      this.generatedMethodSignature = generatedMethodSignature;
+    }
+
+    public ASTCDClass changedType() {
+      return changedType;
+    }
+
+    public GeneratedMethodSignature generatedMethodSignature() {
+      return generatedMethodSignature;
     }
   }
 }
