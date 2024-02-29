@@ -11,6 +11,7 @@ import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
@@ -28,7 +29,7 @@ public class ObserverDecorator extends AbstractDecorator {
 
   public static final String SUFFIX = "Observer";
 
-  private Collection<ObserverGenerationDetails> createdNotificationMethods = List.of();
+  private Collection<GenerationSummary> generationDetails = List.of();
 
   public ObserverDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -36,7 +37,7 @@ public class ObserverDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-    this.createdNotificationMethods = new ArrayList<>();
+    this.generationDetails = new ArrayList<>();
 
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream().filter(ObserverDecorator::shouldCreateObserver)
@@ -60,12 +61,13 @@ public class ObserverDecorator extends AbstractDecorator {
       ast.setCDExtendUsage(getExtendUsageFacade()
           .createCDExtendUsage(superTypes.stream().map(a -> a.print() + SUFFIX).toArray(String[]::new)));
     }
-    ObserverGenerationDetails generationDetails = new ObserverGenerationDetails(domainClass,
-                                                                                new ArrayList<>(),
-                                                                                new ArrayList<>());
+    GenerationSummary generationSummary = new GenerationSummary(domainClass,
+                                                                new ArrayList<>(),
+                                                                new ArrayList<>());
+    this.generationDetails.add(generationSummary);
     var mem = new Object() {
       void add(ASTCDMethodSignature signature) {
-        generationDetails.notifyMethodSignatures().add(signature);
+        generationSummary.notifyMethodSignatures().add(signature);
       }
     };
 
@@ -112,24 +114,53 @@ public class ObserverDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, "umlp.observer.NotifyBuild", className);
     getCD4C().addMethod(ast, "umlp.observer.MaybeNotifyBuild", className);
 
-    generationDetails.importStatements().add(getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope")));
-    addImportForImportedObservers(domainClass, ast, generationDetails);
+    generationSummary
+        .importStatements().add(getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope")));
+    addImportForImportedObservers(domainClass, ast, generationSummary);
     super.addImports(domainClass, ast);
 
     return ast;
   }
 
-  private void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType, ObserverGenerationDetails generationDetails) {
+  private void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType, GenerationSummary generationSummary) {
     CDTypeSymbol symbol = domainClass.getSymbol();
     if (symbol.isPresentSuperClass()) {
       SymTypeExpression superclass = symbol.getSuperClass();
       ASTCDCompilationUnit scCD = UMLPSymbolTables.getDiagramFor((ASTCDType) superclass.getTypeInfo().getAstNode());
-      generationDetails.importStatements().add(getCD4C().addImport(observerType, getPackageName(scCD, DEFAULT_PACKAGE) + "." + superclass.print() + "Observer"));
+      generationSummary
+          .importStatements().add(getCD4C().addImport(observerType, getPackageName(scCD, DEFAULT_PACKAGE) + "." + superclass.print() + "Observer"));
     }
   }
 
-  public Collection<ObserverGenerationDetails> getGenerationDetails() {
-    return createdNotificationMethods;
+  public Collection<GenerationSummary> getGenerationSummaries() {
+    return generationDetails;
   }
 
+  //compiler can't work with records
+  public static final class GenerationSummary {
+
+    private final ASTCDType domainClass;
+    private final Collection<ASTCDMethodSignature> notifyMethodSignatures;
+    private final Collection<ASTMCImportStatement> importStatements;
+
+    public GenerationSummary(ASTCDType domainClass,
+                             Collection<ASTCDMethodSignature> notifyMethodSignatures,
+                             Collection<ASTMCImportStatement> importStatements) {
+      this.domainClass = domainClass;
+      this.notifyMethodSignatures = notifyMethodSignatures;
+      this.importStatements = importStatements;
+    }
+
+    public ASTCDType domainClass() {
+      return domainClass;
+    }
+
+    public Collection<ASTCDMethodSignature> notifyMethodSignatures() {
+      return notifyMethodSignatures;
+    }
+
+    public Collection<ASTMCImportStatement> importStatements() {
+      return importStatements;
+    }
+  }
 }
