@@ -88,6 +88,61 @@ public class TypesSyncTest extends AttributesMockTestSetup {
   }
 
   @Test
+  public void testOptionalOfPrimitivesIsWritten() {
+    // client
+    getClients(0).activate();
+    Optional<Integer> value = Optional.of(-1);
+    var sut = AttributesManager.optionalOfPrimitivesBuilder().iVal(value).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getOptionalOfPrimitivesSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertTrue(sutServer.getIVal().isPresent());
+    assertEquals(-1, sutServer.getIVal().get());
+  }
+
+  @Test
+  public void testSetToOptionalOfPrimitive() {
+    // client
+    getClients(0).activate();
+    var sut = AttributesManager.optionalOfPrimitivesBuilder().build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getOptionalOfPrimitivesSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertFalse(sutServer.getIVal().isPresent());
+
+    // client: set element
+    getClients(0).activate();
+    sut.setIVal(Optional.of(-2));
+    assertTrue(sut.getIVal().isPresent());
+    assertTrue(sutServer.getIVal().isPresent());
+    assertEquals(-2, sutServer.getIVal().get());
+  }
+
+  @Test
+  public void testDeleteInOptionalOfPrimitives() {
+    // client
+    getClients(0).activate();
+    Optional<Integer> value = Optional.of(-3);
+    var sut = AttributesManager.optionalOfPrimitivesBuilder().iVal(value).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getOptionalOfPrimitivesSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertTrue(sutServer.getIVal().isPresent());
+
+    // client: delete element
+    getClients(0).activate();
+    sut.setIVal(Optional.empty());
+    assertFalse(sut.getIVal().isPresent());
+    assertFalse(sutServer.getIVal().isPresent());
+  }
+
+  @Test
   public void testListOfStringsIsWritten() {
     // client
     getClients(0).activate();
@@ -329,6 +384,128 @@ public class TypesSyncTest extends AttributesMockTestSetup {
     sut.setDate(Optional.empty());
     assertFalse(sut.getDate().isPresent());
     assertFalse(sutServer.getDate().isPresent());
+  }
+
+  @Test
+  public void testListOfBooleansIsWritten() {
+    // client
+    getClients(0).activate();
+    List<Boolean> values = List.of(true, false, true);
+    var sut = AttributesManager.listOfBooleansBuilder().bVals(values).build().get();
+
+    // check in backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getListOfBooleansSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertEquals(values, sutServer.getBValsList());
+  }
+
+  @Test
+  public void testAddToListOfBooleans() {
+    // client
+    getClients(0).activate();
+    List<Boolean> values = List.of(true, false, true);
+    var sut = AttributesManager.listOfBooleansBuilder().bVals(values).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getListOfBooleansSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertEquals(3, sutServer.getBValsList().size());
+
+    // client: add element at the end
+    getClients(0).activate();
+
+    sut.addBVals(3, false);
+    assertEquals(4, sut.getBValsList().size());
+    assertEquals(4, sutServer.getBValsList().size());
+
+    // add element in the middle
+    sut.addBVals(1, true);
+    assertEquals(5, sut.getBValsList().size());
+    assertEquals(true, sut.getBVals(1));
+    assertEquals(5, sutServer.getBValsList().size());
+    assertEquals(true, sutServer.getBVals(1));
+  }
+
+  @Test
+  public void testDeleteInListOfBooleans() {
+    // client
+    getClients(0).activate();
+    List<Boolean> values = List.of(true, false, true);
+    var sut = AttributesManager.listOfBooleansBuilder().bVals(values).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getListOfBooleansSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertEquals(3, sutServer.getBValsList().size());
+
+    // client: delete at the beginning
+    getClients(0).activate();
+    sut.removeBVals(0);
+    assertEquals(2, sut.getBValsList().size());
+    assertEquals(2, sutServer.getBValsList().size());
+
+    // delete at the end
+    sut.removeBVals(1);
+    assertEquals(1, sut.getBValsList().size());
+    assertEquals(1, sutServer.getBValsList().size());
+  }
+
+  @Test
+  public void testOptionalOfBooleanIsWritten() {
+    // client
+    getClients(0).activate();
+    Optional<Boolean> value = Optional.of(true);
+    var sut = AttributesManager.optionalOfBooleanBuilder().bVal(value).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getOptionalOfBooleanSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertTrue(sutServer.getBVal().isPresent());
+    assertEquals(true, sutServer.getBVal().get());
+  }
+
+  @Test
+  public void testSetToOptionalOfBoolean() {
+    // client
+    getClients(0).activate();
+    var sut = AttributesManager.optionalOfBooleanBuilder().build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getOptionalOfBooleanSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertFalse(sutServer.getBVal().isPresent());
+
+    // client: set element
+    getClients(0).activate();
+    sut.setBVal(Optional.of(true));
+    assertTrue(sut.getBVal().isPresent());
+    assertTrue(sutServer.getBVal().isPresent());
+    assertEquals(true, sutServer.getBVal().get());
+  }
+
+  @Test
+  public void testDeleteInOptionalOfBoolean() {
+    // client
+    getClients(0).activate();
+    Optional<Boolean> value = Optional.of(true);
+    var sut = AttributesManager.optionalOfBooleanBuilder().bVal(value).build().get();
+
+    // backend
+    getBackend().activate();
+    var sutServer = AttributesManager.getOptionalOfBooleanSure(sut.gemId);
+    assertNotSame(sut, sutServer);
+    assertTrue(sutServer.getBVal().isPresent());
+
+    // client: delete element
+    getClients(0).activate();
+    sut.setBVal(Optional.empty());
+    assertFalse(sut.getBVal().isPresent());
+    assertFalse(sutServer.getBVal().isPresent());
   }
 
 }

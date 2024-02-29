@@ -27,7 +27,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
-  styleUrls: config.styleUrls
+  styleUrls: ["./PhotoDragNDrop.scss"]
 })
 export class PhotoDragNDrop extends PhotoDragNDropComponent {
 
@@ -39,6 +39,8 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
   public attachedComponent: DemoRecComponent;
 
   files: File[] = [];
+  uploadFailureMessage : boolean = false;
+  errorMessage : string = "";
 
   onFileDropped(event: any): void {
     const files = event.dataTransfer.files;
@@ -68,18 +70,31 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
     const headers = new HttpHeaders({
       'PATH': path,
     });
-
-    this.http.post(`/umlp/api/blob`, formData, { headers }).subscribe();
+    console.debug("Trying to sending image "+ file.name+ " to server.")
+    this.http.post(`/umlp/api/blob`, formData, { headers }).subscribe(
+        (response) => {
+          const index = this.files.indexOf(file)
+          this.files = this.files.splice(index, 1)
+        },
+        (error) => {
+          this.uploadFailureMessage = true
+          this.errorMessage = error.error
+        });
   }
 
   public override uploadAllFiles (event: any): void {
-    let size = this.getAttachedComponent().getPhotoLocations().length
-    this.files.forEach(f =>
+    this.uploadFailureMessage = false;
+    const files = Array.from(this.files)
+    files.forEach(f =>
       {
         const path = this.getAttachedComponent().getName().replace(" ","_")+"_"+this.getAttachedComponent().getGemId()
         this.uploadFile(f, path)
       }
     )
+  }
+
+  public override cancelUpload (event: any): void {
+    this.files = []
   }
 
   public  getAttachedComponent (): DemoRecComponent {

@@ -7,8 +7,12 @@ import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandObjectMapper;
+import umlp.backendrte.command.ListResult;
+import umlp.backendrte.command.SimpleResult;
+import umlp.backendrte.command.StatusResult;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,6 +57,26 @@ public class OwnCommandsTest {
     assertNotNull(clonedResult);
     assertTrue(clonedResult.get().asStatusResult().isSuccessful());
     assertEquals(user.getGemId(), clonedResult.get().asStatusResult().getCommandId());
+  }
+
+  @Test
+  public void testAppExecuteCommand() {
+    CommandsMock.init();
+    var user = CommandsManager.userBuilder().name("Testname").email("a@b.com").build().get();
+    StatusResult result1 = App.executeSendEmail(user.getGemId(), "my message", Optional.of("my subject"), new ArrayList<>());
+    assertTrue(result1.isSuccessful());
+
+    SimpleResult<User> result2 = App.executeGetCDType(user.getGemId());
+    assertTrue(result2.isSuccessful());
+    assertEquals(result2.get().getGemId(), user.getGemId());
+    assertEquals(result2.get().getName(), user.getName());
+    assertEquals(result2.get().getEmail(), user.getEmail());
+
+    ListResult<User, List<User>> result3 = App.executeGetCDTypeList();
+    assertTrue(result3.isSuccessful());
+    assertEquals(1, result3.get().size());
+    assertEquals("Testname", result3.get().get(0).getName());
+    assertEquals("a@b.com", result3.get().get(0).getEmail());
   }
 
 }

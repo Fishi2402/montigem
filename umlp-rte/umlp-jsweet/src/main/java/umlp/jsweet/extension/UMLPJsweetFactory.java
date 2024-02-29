@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension;
 
-import com.sun.source.tree.CompilationUnitTree;
+import standalone.com.sun.source.tree.CompilationUnitTree;
 import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.JSweetFactory;
 import org.jsweet.transpiler.Java2TypeScriptTranslator;

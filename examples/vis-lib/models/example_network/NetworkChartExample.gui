@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_network;
+
+import mc.fenix.networkgraph.GemGraph;
+
+page NetworkChartExample() {
+
+  personGraph@GemGraph(
+    edges=null,
+    nodes=null,
+    showFilterGroup=true,
+    showSearchNode=true,
+    showControlButtons=true,
+    showInformation=true
+  );
+}

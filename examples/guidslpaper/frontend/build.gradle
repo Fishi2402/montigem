@@ -5,11 +5,6 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend"
 }
 
-dependencies {
-  // Types which are used in genGUI-Task
-  guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-}
-
 node {
   // Whether to download and install a specific Node.js version or not
   // If false, it will use the globally installed Node.js
@@ -35,14 +30,6 @@ node {
 nodeSetup.dependsOn(frontendSetup)
 
 genGUI {
-  dependsOn(
-      tasks.getByPath(":umlp-rte:client:createGuiSymbols"),
-      tasks.getByPath(":umlp-rte:client:createCDSymbols")
-  )
-  symbolDir = files(
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output,
-  )
   domainModels = ["Guidslpaper"]
   guiCreateModels = ["gui.login.UserCreate", "gui.person.PersonCreate", "gui.konto.KontoCreate"]
 

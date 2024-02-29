@@ -1,0 +1,56 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.time.LocalDate;
+
+/**
+  Version of FunctionStructure.umlp where the qualifier from Function to Channels is emulated
+  via the Port class. Handwritten qualified accessors to the channels are added to class Function.
+  TODO: Document differences to FunctionStructure.umlp
+ */
+umlp FunctionStructure4Fenix {
+    class Function {
+      String name;
+    }
+
+    class Channel;
+
+    class Port {
+      String name;
+    }
+
+    association [*] Port -> Channel [1];
+    association [*] Function (parentIn) -> (in) Port [*];
+    association [*] Function (parentOut) -> (out) Port [*];
+    association [*] Channel -> Category [1];
+    composition [0..1] Function (owner) -> (subFunction) Function [*];
+
+    class FunctionStream;
+
+    association [*] FunctionStream -> Category [1];
+    association [0..1] Channel <-> FunctionStream [0..1];
+    composition [0..1] Function -> (state) FunctionStream [0..1];
+
+    class Category {
+      -> Kind [0..1];
+      -> Type [1];
+    }
+
+    class Kind;
+
+    class Type {
+      String mctype;
+    }
+
+    class Observation {
+      LocalDate start;
+      LocalDate end;
+    }
+
+    association [*] Observation <-> FunctionStream [1];
+    association [*] Observation -> Category [1];
+
+    class Value;
+
+    association [0..1] FunctionStream -> Value [*] {ordered};
+    association [*] Observation -> Value [*] {ordered};
+}

@@ -62,6 +62,15 @@ build:
 
 slowtest:
   stage: check
+  tags: 
+    - node2-docker-postgres
+  services:
+    - postgres:12.2-alpine
+  variables:
+    POSTGRES_DB:  $POSTGRES_DB
+    POSTGRES_USER:  $user
+    POSTGRES_PASSWORD:  $pass
+    POSTGRES_HOST_AUTH_METHOD: trust
   dependencies:
     - build
   rules:
@@ -183,6 +192,15 @@ trigger-doppelkopf:
   allow_failure: false # Failure is not an option
   trigger:
     project: monticore/umlp-anwendungen/doppelkopf
+    branch: main
+  only:
+    - dev
+
+trigger-dtmm:
+  stage: testDeployed
+  allow_failure: false # Failure is not an option
+  trigger:
+    project: monticore/umlp-anwendungen/dtmm
     branch: main
   only:
     - dev

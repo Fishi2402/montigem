@@ -465,9 +465,8 @@ public class UMLPTool extends UMLPToolTOP {
         }
 
         // Also store singleton-stereo information
-        if (SYMTAB.isSelected(cmd)) {
-          TagRelated.doStoreTagStereos(ast, this, symbolTable, cmd);
-        }
+        TagRelated.doStoreTagStereos(ast, this, symbolTable, cmd);
+
 
         ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
         GeneratorSetup genSetup = new GeneratorSetup();

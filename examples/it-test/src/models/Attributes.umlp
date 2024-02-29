@@ -88,6 +88,10 @@ umlp Attributes {
     List<int> ints;
   }
 
+  class OptionalOfPrimitives{
+    Optional<int> iVal;
+  }
+
   class ListOfStrings{
     List<String> strings;
   }
@@ -102,5 +106,13 @@ umlp Attributes {
 
   class OptionalOfTime{
     Optional<LocalDate> date;
+  }
+
+  class OptionalOfBoolean{
+    Optional<boolean> bVal;
+  }
+
+  class ListOfBooleans{
+    List<boolean> bVals;
   }
 }

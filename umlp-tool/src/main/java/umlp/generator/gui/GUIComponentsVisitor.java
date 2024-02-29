@@ -14,6 +14,7 @@ import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

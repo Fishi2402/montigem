@@ -40,4 +40,9 @@ public class ElemGemList extends GemList<Elem> {
   protected void _internal_removeAndSync(Set<Integer> idxs) {
     this.server.removeIdxs(idxs);
   }
+
+  @Override
+  public boolean TESTING_deepEquals(List<Elem> o) {
+    return this == o;
+  }
 }

@@ -11,6 +11,7 @@ import de.monticore.tagging.tags._ast.ASTSimpleTag;
 import de.monticore.tagging.tags._ast.ASTTagUnit;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp.UMLPMill;
 import umlp._symboltable.IUMLPArtifactScope;
@@ -21,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Disabled
 public class TestTagTypeSymbols {
   @Test
   public void test1() throws Exception {

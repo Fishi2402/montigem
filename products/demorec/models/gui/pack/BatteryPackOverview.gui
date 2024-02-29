@@ -26,18 +26,17 @@ component BatteryPackOverview(BatteryPack pack) {
       ),
       @GemColumn(
         width="30%",
-        rowGap = "5px",
+        rowGap = "15px",
         components=[
+          editPack@GemButton(width = "auto", label = "Edit Pack", leftClick = editPack),
           @GemText(value=pack.name),
           @StatTable(rows = [
             @StatTableRow(left = @GemText(value = "Health (%)"), right = @GemText(value = pack.health)),
             @StatTableRow(left = @GemText(value = "Charge (%)"), right = @GemText(value = pack.stateOfCharge))
-          ]),
-          editPack@GemButton(width = "auto", label = "Edit Pack", leftClick = editPack)
+          ])
         ]
       ),
       @GemColumn(
-        width="20%",
         components=[
           @PackTypeOverview(type=pack.type)
         ]

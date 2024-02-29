@@ -4,5 +4,5 @@ ${signature("statement","index","type","columnName", "isOptional")}
   <#assign tmplName=type?replace(".", "_") >
   ${includeArgs("umlp.dao.set."+tmplName, statement, columnName, index, isOptional)}
 <#else>
-  ${statement}.set${type}(${index}, ${columnName}<#if isOptional>.orElse(null)</#if>)
+  ${statement}.setObject(${index}, ${columnName}<#if isOptional>.orElse(null)</#if>);
 </#if>

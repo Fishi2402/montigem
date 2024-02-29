@@ -22,7 +22,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   imports:[...config.imports],
   selector: config.selector,
   templateUrl: config.templateUrl,
-  styles: config.styles,
+  styles: [":host{ display: flex; flex-direction: row }"],
   styleUrls: config.styleUrls
 })
 export  class PhotoDisplay extends PhotoDisplayComponent {
