@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { CreateComponent,config } from '@src/person/CreateComponent';
+import { CreateComponent, config } from '@src/person/CreateComponent';
 import { Component } from '@angular/core';
 import { DomainManager } from '@src/domain/DomainManager';
 @Component({
-  standalone:true,
-  imports:[...config.imports],
+  standalone: true,
+  imports: [...config.imports],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styleUrls: config.styleUrls
@@ -16,15 +16,17 @@ export class Create extends CreateComponent {
     return this.getPerson()?.getBirthday()?.toDateString();
   }
 
-  public override create(): void {
-    const addr = this.address.build();
-    this.person.address(addr).build();
-    DomainManager.addressBuilder().then(b => {
-      this.address = b;
-    });
-    DomainManager.personBuilder().then(b => {
-      this.person = b;
-    });
+  public override create(): (arg: any) => void {
+    return () => {
+      const addr = this.address.build();
+      this.person.address(addr).build();
+      DomainManager.addressBuilder().then(b => {
+        this.address = b;
+      });
+      DomainManager.personBuilder().then(b => {
+        this.person = b;
+      });
+    }
   }
 
 }

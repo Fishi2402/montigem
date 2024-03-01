@@ -239,15 +239,15 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         String setterValue = setterPrinter.prettyprint(namedArg.getGUIArgValue());
         List<String> setterArgs = new ArrayList<>();
         // TODO AGe: clean up
-        String argValueHolder = Expression2SetterPrinter.SETTER_PARAM;
-        setterArgs.add(paramType + " " + argValueHolder);
+        String valueConversion = Expression2SetterPrinter.SETTER_PARAM + "4Conv";
+        setterArgs.add(paramType + " " + valueConversion);
         setterArgs.addAll(iterItemArgs);
         conversion = getConversion(
             decoratedClass, paramSTE, namedArg.getGUIArgValue().getExpression(), false
         );
-        argValueHolder = conversion.apply(argValueHolder);
+        valueConversion = "var " + Expression2SetterPrinter.SETTER_PARAM + " = " + conversion.apply(valueConversion);
         addSetComponentMethod(getSetterReplacedTemplate(), decoratedClass, setterName, paramType,
-            setterValue, setterArgs, argValueHolder, nullCheck);
+            setterValue, setterArgs, valueConversion, nullCheck);
       }
     }
   }
