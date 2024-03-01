@@ -2,11 +2,7 @@
 package umlp._cocos;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
-import umlp._cocos.UMLPAssociationQualifierByAttributeName;
-import umlp._cocos.UMLPCheckDiagramName;
-import umlp._cocos.UMLPCoCoChecker;
 import umlp.AbstractUMLPTest;
 
 public class UMLPAssociationQualifierByAttributeNameTest extends AbstractUMLPTest {
@@ -23,7 +19,7 @@ public class UMLPAssociationQualifierByAttributeNameTest extends AbstractUMLPTes
     assertNoErrors();
   }
 
-@Test
+  @Test
   public void testInvalidQAttrType() {
     UMLPCoCoChecker checker = new UMLPCoCoChecker();
     checker.addCoCo(new UMLPAssociationQualifierByAttributeName());

@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIComponentStat;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
