@@ -41,6 +41,7 @@ umlp FunctionStructure4Fenix {
     composition [0..1] Function -> (state) FunctionStream [0..1];
 
     class Category {
+      Optional<Boolean> continuous; // a false value stands for a discrete category
       -> Kind [0..1];
       -> Type [1];
     }
@@ -50,7 +51,7 @@ umlp FunctionStructure4Fenix {
      Also the attribute `specifier` is added as a flexible mechanism to distinguish different finer
      kinds, without having to add additional subclasses.
      As an example, a channel might expect a fluid, but can only handle water and not oil.
-     The kind would then be moddeled as `water:Material { specifier = "water" }`.
+     The kind would then be modeled as `water:Material { specifier = "water" }`.
      If a channel can process all fluids, the corresponding kind would be
      `fluid:Fluid { specifier = empty }`.
     */
