@@ -83,13 +83,13 @@ public class Expression2NullCheckAccessorPrinterTest extends DomainGUITest {
     Expression2NullCheckAccessorPrinter printer = new Expression2NullCheckAccessorPrinter(new IndentPrinter(), true);
 
     componentDecl = processGUIModel(
-        "gui/example_input/GemCheckboxInputExample.gui",
+        "gui/example_input/GemCheckBoxInputExample.gui",
         "src/test/resources/gui"
     ).getGUIComponentDeclaration();
 
     components = stat.getComponents(componentDecl);
 
-    // the only component in GemCheckboxInputExample.gui
+    // the only component in GemCheckBoxInputExample.gui
     ASTGUIComponent checkbox = components.get(0);
     // GemCheckBoxInput#labelText
     String expect1 = removeSpaces("this.getP()?.getName() + \" is employed\"");

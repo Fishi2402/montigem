@@ -104,7 +104,7 @@ public class Expression2BuilderPrinterTest extends DomainGUITest {
 
     components = stat.getComponents(componentDecl);
 
-    // the only component in GemCheckboxInputExample.gui
+    // the only component in GemCheckBoxInputExample.gui
     ASTGUIComponent checkbox = components.get(0);
     // GemCheckBoxInput#labelText
     String expect1 = removeSpaces("0x0000D Expected FieldAccessExpression but got '"
