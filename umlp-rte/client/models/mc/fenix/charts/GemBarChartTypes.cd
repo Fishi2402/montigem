@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.charts;
 import java.util.List;
+import java.util.Optional;
 
 classdiagram GemBarChartTypes {
 
@@ -10,11 +11,11 @@ classdiagram GemBarChartTypes {
   }
 
   public class GemBarChartEntry {
-    String label;
-    String stack;
+    Optional<String> label;
+    Optional<String> stack;
     List<Integer> data;
-    String backgroundColor;
-    String hoverBackgroundColor;
+    Optional<String> backgroundColor;
+    Optional<String> hoverBackgroundColor;
   }
 
 }

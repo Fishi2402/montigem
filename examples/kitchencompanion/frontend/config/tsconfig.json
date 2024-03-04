@@ -32,6 +32,7 @@
       "@umlp/basic": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/basic/src"],
       "@umlp/charts": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/charts/src"],
       "@umlp/common": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/common/src"],
+      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/commonj2ts/src"],
       "@umlp/input": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/input/src"],
       "@umlp/navigation": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/navigation/src"],
       "@umlp/table": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/table/src"],

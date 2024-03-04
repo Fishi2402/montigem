@@ -13,7 +13,12 @@
   "compilerOptions": {
     "target": "es2022",
     "useDefineForClassFields": false,
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@umlp/commonj2ts": [
+        "../build/dist/umlp/mc/fenix/commonj2ts"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
