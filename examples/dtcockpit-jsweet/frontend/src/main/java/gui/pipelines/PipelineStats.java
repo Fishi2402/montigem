@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.pipelines;
 
+import dtcockpit.PipelineStatistic;
 import dtcockpit.Project;
 import jsweet.lang.Replace;
 import mc.fenix.charts.GemBarChartData;
@@ -15,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -47,7 +47,7 @@ public class PipelineStats extends PipelineStatsTOP {
     entries.put("Successful", successful);
     entries.put("Unsuccessful", unsuccessful);
 
-    project.getPStatistics().forEach(stat -> {
+    for (PipelineStatistic stat : project.getPStatistics()) {
       String label = formatDate(stat.getTime());
       int index = labels.indexOf(label);
       if (index == -1) {
@@ -61,7 +61,7 @@ public class PipelineStats extends PipelineStatsTOP {
       } else {
         unsuccessful.set(index, unsuccessful.get(index) + 1);
       }
-    });
+    }
     for (int i = 0; i < successful.size(); i++) {
       Integer currentMaxValue = getBarChartForPipelineRunsMaxValue();
       if (getBarChartForPipelineRunsStacked()) {
@@ -72,22 +72,26 @@ public class PipelineStats extends PipelineStatsTOP {
       }
     }
     List<GemBarChartEntry> barChartEntries = new ArrayList<>();
-    entries.forEach((label, data) -> barChartEntries.add(new GemBarChartEntry(Optional.of(label),
-                                                                              Optional.empty(),
-                                                                              data,
-                                                                              Optional.of(label.equals(
-                                                                                  "Successful") ?
-                                                                                              "#57ab27" :
-                                                                                              "#cc071e"),
-                                                                              Optional.empty())));
+    for (Map.Entry<String, List<Integer>> entry : entries.entrySet()) {
+      String label = entry.getKey();
+      List<Integer> value = entry.getValue();
+      barChartEntries.add(new GemBarChartEntry(Optional.of(label),
+          Optional.empty(),
+          value,
+          Optional.of(label.equals(
+              "Successful") ?
+              "#57ab27" :
+              "#cc071e"),
+          Optional.empty()));
+    }
     GemBarChartData data = new GemBarChartData(barChartEntries, labels);
     String newHash = data.toString();
-    if (!Objects.equals(projectDataCheck.hash, newHash)) {
-      projectDataCheck.hash = newHash;
-      projectDataCheck.value = data;
+    if (projectDataCheck.getHash() == null || projectDataCheck.getHash().equals(newHash)) {
+      projectDataCheck.setHash(newHash);
+      projectDataCheck.setValue(data);
     }
 
-    return projectDataCheck.value;
+    return projectDataCheck.getValue();
   }
 
   @Replace("return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;")
@@ -101,11 +105,4 @@ public class PipelineStats extends PipelineStatsTOP {
   }
 
   // TODO Other methods
-
-  private static class ProjectDataCheck {
-
-    GemBarChartData value;
-    String hash;
-    boolean calculating;
-  }
 }
