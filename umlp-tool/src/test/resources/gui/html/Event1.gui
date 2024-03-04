@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package html;
+
+import Domain.Person;
+import Domain.MaritalStatus;
+
+import util.E;
+
+page Event1(
+  Event<Void> lClick
+) {
+  @E(e = lClick);
+  /*
+    <e (e)="getLClick().emit($event)">
+  */
+}

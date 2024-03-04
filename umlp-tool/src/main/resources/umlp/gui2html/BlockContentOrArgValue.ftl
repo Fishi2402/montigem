@@ -1,20 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-<#-- Generates a html file from the given model -->
-${tc.signature("args")}
-<#assign genHelper = glex.getGlobalVar("genHelper")>
 
 <#if ast.isPresentExpression()>
-  <#if genHelper.isNameExpression(ast.getExpression())>
-    ${tc.includeArgs("umlp.gui2html.Expression", ast.getExpression(), [genHelper.getNameOfNameExpression(ast.getExpression())])}
-  <#else>
-  <#-- TODO AGe -->
-  aaa  ${genHelper.print(ast.getExpression())}   zzz
-  </#if>
+  ${tc.include("umlp.gui2html.Expression", ast.getExpression())}
 <#elseif ast.isPresentGUIComponent()>
-  ${tc.includeArgs("umlp.gui2html.Component", ast.getGUIComponent(), [args])}
+  ${tc.include("umlp.gui2html.Component", ast.getGUIComponent())}
 <#elseif ast.isPresentGUIGuard()>
-  ${tc.includeArgs("umlp.gui2html.Guard", ast.getGUIGuard(), [args])}
+  ${tc.include("umlp.gui2html.Guard", ast.getGUIGuard())}
 <#elseif ast.isPresentGUIIterate()>
-  ${tc.includeArgs("umlp.gui2html.Iterate", ast.getGUIIterate(), [args])}
+  ${tc.include("umlp.gui2html.Iterate", ast.getGUIIterate())}
 </#if>
 

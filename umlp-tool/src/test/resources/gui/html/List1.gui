@@ -1,0 +1,138 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package html;
+
+import Domain.Person;
+import Domain.MaritalStatus;
+
+import util.L;
+
+page List1(
+  List<GUIViewElement> v,
+  List<String> s,
+  List<Event<Void>> e,
+  List<Person> p,
+  List<MaritalStatus> m,
+  List<List<GUIViewElement>> lv,
+  List u,
+  Person p1,
+  Event<Void> lClick
+) {
+  thing@L(v = [foo@L(), v.get(0)]);
+  /*
+    <l [v]='[fooTpl, v.get(0)]'></l>
+    <ng-template #fooTpl>
+      <l class="foo" #foo></l>
+    </ng-template>
+
+    // must be in Java
+    getThingV1() {
+      return getV().get(0);
+    }
+  */
+  @L(v = v);
+  /*
+    <l [v]='getV()'></l>
+  */
+  @L(s = ["a", p1.name]);
+  /*
+    <l [s]='["a", getP1().getName()]'></l>
+  */
+  @L(e = [lClick, e.get(0)]);
+  /*
+    <l [e]='[lClick, getE().get(0)]'></l>
+
+    // ts must have:
+    @Input()
+    protected _e: List<EventEmitter<void>> = [];
+
+    public getE() {
+      return _e;
+    }
+  */
+  // assuming Person has a constructor (to be cleared up)
+  @L(p = [p.get(0), Person(LocalDate.now(), "bob"/*, ...*/)]);
+  /*
+    <l [p]='[getP().get(0), Manager.personBuilder().birthday(LocalDate.now()).name("bob")/*...*/.build()]'></l>
+
+    // ts must have:
+    protected Manager = Manager;
+  */
+  @L(m = [p.get(0).status, MaritalStatus.MARRIED]);
+  /*
+    <l [m]='[getP().get(0).getStatus(), MaritalStatus.MARRIED]')></l>
+
+    // ts must have:
+    protected MaritalStatus = MaritalStatus;
+  */
+  @L(u = u);
+  /*
+    <l [u]='getU()'></l>
+  */
+  @L(u = lv);
+  /*
+    <l [u]='getLv()'></l>
+  */
+  @L(u = [[[1]]]);
+  /*
+    <l [u]='[[[1]]]'></l>
+  */
+  @L(lv = [[bar@L()], v]);
+  /*
+    <l [lv]='[[barTpl], getV()]'></l>
+    <ng-template #barTpl>
+      <l /*...*/></l>
+    </ng-template>
+  */
+  elem@L(ls = [["b"], s.subList(2, 3)]);
+  /*
+    <l [ls]='getElemLs()'></l>
+
+    // TS/Java
+
+    _ls: {
+      val: List<List<String>>,
+      hash: String
+    };
+
+    init() {
+      this._ls = {
+        val: [],
+        hash: null
+      };
+    }
+
+    getElemLs() {
+      if (getS() == null) {
+        return null;
+      }
+      let res = [["b"], getS().subList(2, 3)];
+      // hash calc based on value, e.g. JSON.stringify
+      const resHash = hash(res);
+      if (resHash !== this._ls.hash) {
+        this._ls.hash = resHash;
+        this._ls.val = res;
+      }
+      return this._ls.val;
+    }
+  */
+  baz@L(le = [[lClick], e]);
+  /*
+    <l [le]='getBazLE()'></l>
+
+    // Java/TS?:
+    _bazLe = List.of(List.of(lClick), getE());
+
+    getBazLe() {
+      return this._bazLe;
+    }
+  */
+  @L(lp = [[Person()], p.friends]);
+  /*
+    <l [lp]='[[Manager.personBuilder()/*....*/], getP().getFriends()]'></l>
+  */
+  @L(lm = [[MaritalStatus.SINGLE], [p.status]]);
+  /*
+    <l [lm]='[[MaritalStatus.SINGLE], [getP().getStatus()]]'></l>
+  */
+}

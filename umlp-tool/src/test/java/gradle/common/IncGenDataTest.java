@@ -2,7 +2,6 @@
 package gradle.common;
 
 import gradle.MockFileChange;
-import gradle.common.IncGenData;
 import org.gradle.work.ChangeType;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +17,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static umlp.AbstractUMLPTest.BUILD_FOLDER;
 
 public class IncGenDataTest {
   protected IncGenData lastRun;
@@ -28,8 +28,8 @@ public class IncGenDataTest {
   protected File inputF = new File("models/InputFile.umlp").getCanonicalFile();
   protected File hwcF = new File("hwc/de/HWCFile.java").getCanonicalFile();
 
-  protected File out1F = new File("target/generated-sources/Output1.java").getCanonicalFile();
-  protected File out2F = new File("target/generated-sources/Output2.java").getCanonicalFile();
+  protected File out1F = new File(BUILD_FOLDER + "/generated-sources/Output1.java").getCanonicalFile();
+  protected File out2F = new File(BUILD_FOLDER + "/generated-sources/Output2.java").getCanonicalFile();
   protected File otherF = new File("something.txt").getCanonicalFile();
 
 

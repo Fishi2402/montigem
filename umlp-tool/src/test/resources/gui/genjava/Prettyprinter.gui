@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package genjava;
+
+import Domain.Person;
+import Domain.MaritalStatus;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+
+page Prettyprinter(List<Person> persons) {
+  @iterate(Person p : persons) {
+    call@GemText(value = getAge());
+    ternary@GemText(value = p.friends.size() > 0 ? p.friends.get(p.friends.size() - 1).getAge() : "no friends");
+    fieldCall1@GemText(leftClick = p.getAge());
+    fieldCall2@GemButton(leftClick = p.friends.get(0).getAge());
+  }
+  fieldCall3@GemText(value = persons.get(0).getAge());
+  fieldCall4@GemButton(leftClick = persons.get(0).eat());
+  literal@GemText(value = "bob");
+  fieldCall5@GemText(value = persons.get(0).status);
+  fieldCall6@GemText(value = MaritalStatus.MARRIED);
+}
