@@ -83,7 +83,7 @@ test {
 
 // configure non-standard source sets
 sourceSets {
-  main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
+  main.java.srcDirs += ["$buildDir/generated-sources/monticore/sourcecode"]
 
   grammars {
     resources {
@@ -98,7 +98,6 @@ java {
 }
 
 description = 'UML/P Language and Tool'
-buildDir = file("$projectDir/target")
 
 task generateUMLP(type: MCTask) {
   grammar = file "$grammarDir/UMLP.mc4"

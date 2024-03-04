@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractUMLPTest {
 
-  public static final String BUILD_FOLDER = "target";
+  public static final String BUILD_FOLDER = "build";
 
   @BeforeEach
   public void setup() {
