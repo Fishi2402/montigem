@@ -3,14 +3,10 @@ package umlp.generator.gui.genjava.prettyprinter;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
-import de.monticore.prettyprint.IndentPrinter;
-
-import java.util.Collection;
-import java.util.HashSet;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 public class Expression2NullCheckPrinter implements ExpressionsBasisVisitor2, CommonExpressionsVisitor2 {
 
@@ -34,8 +30,10 @@ public class Expression2NullCheckPrinter implements ExpressionsBasisVisitor2, Co
 
   @Override
   public void endVisit(ASTFieldAccessExpression node) {
-    String check = printer.prettyprint(node.getExpression()) + " == null";
-    sb.append(" || ").append(check);
+    if (!GUIGeneratorUtil.getInstance().isEnumMember(node)) {
+      String check = printer.prettyprint(node.getExpression()) + " == null";
+      sb.append(" || ").append(check);
+    }
   }
 
   public String prettyprint(ASTNode node) {

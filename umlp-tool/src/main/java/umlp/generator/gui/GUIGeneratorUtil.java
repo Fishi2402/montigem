@@ -7,6 +7,7 @@ import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
@@ -34,8 +35,11 @@ import de.monticore.io.paths.MCPath;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.IGlobalScope;
 import de.monticore.symboltable.IScope;
 import de.monticore.types.check.SymTypeExpression;
@@ -114,7 +118,7 @@ public class GUIGeneratorUtil {
 
   public boolean isCommand(ASTCDClass clazz) {
     return !clazz.getSuperclassList().isEmpty()
-               && (cdPrinter.prettyprint(clazz.getSuperclassList().get(0)).startsWith("Command")
+        && (cdPrinter.prettyprint(clazz.getSuperclassList().get(0)).startsWith("Command")
         || cdPrinter.prettyprint(clazz.getSuperclassList().get(0)).startsWith("Request"));
   }
 
@@ -210,6 +214,11 @@ public class GUIGeneratorUtil {
     return false;
   }
 
+  public boolean isEnum(String name, IOOSymbolsScope scope) {
+    Optional<OOTypeSymbol> sym = scope.resolveOOType(name);
+    return sym.isPresent() && sym.get().isIsEnum();
+  }
+
   public final boolean isEnumType(SymTypeExpression type) {
     Optional<TypeSymbol> symb = type.getTypeInfo().getEnclosingScope().resolveType(type.getTypeInfo().getName());
     if (symb.isPresent()) {
@@ -218,6 +227,31 @@ public class GUIGeneratorUtil {
       }
     }
     return false;
+  }
+
+  public boolean isEnumMember(ASTFieldAccessExpression node) {
+    GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
+    SymTypeExpression ste = util.getType(node);
+    boolean res = false;
+
+    if (ste.hasTypeInfo()
+        && ste.getTypeInfo() instanceof TypeSymbolSurrogate
+        && ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate() instanceof OOTypeSymbol) {
+      OOTypeSymbol sym = (OOTypeSymbol) ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate();
+      res = sym.isIsEnum();
+    }
+    if (node.getEnclosingScope() instanceof IOOSymbolsScope) {
+      IOOSymbolsScope scope = (IOOSymbolsScope) node.getEnclosingScope();
+      res = res && util.isEnum(util.print(node.getExpression()), scope);
+    }
+    else {
+      Log.error("0x0000C Attempted to resolve type of '"
+          + util.print(node) + "' from outside of an OOSymbolsScope,"
+          + " but expression conversion is restricted to OOSymbols context.");
+      return false;
+    }
+
+    return res;
   }
 
   public final boolean isDomainEnumType(SymTypeExpression type) {

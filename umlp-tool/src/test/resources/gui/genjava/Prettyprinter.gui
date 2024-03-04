@@ -3,6 +3,7 @@
 package genjava;
 
 import Domain.Person;
+import Domain.MaritalStatus;
 
 import mc.fenix.basic.GemButton;
 import mc.fenix.basic.GemText;
@@ -14,7 +15,9 @@ page Prettyprinter(List<Person> persons) {
     fieldCall1@GemText(leftClick = p.getAge());
     fieldCall2@GemButton(leftClick = p.friends.get(0).getAge());
   }
-  fieldCall3@GemText(value = p.get(0).getAge());
-  fieldCall4@GemButton(leftClick = p.eat());
+  fieldCall3@GemText(value = persons.get(0).getAge());
+  fieldCall4@GemButton(leftClick = persons.get(0).eat());
   literal@GemText(value = "bob");
+  fieldCall5@GemText(value = persons.get(0).status);
+  fieldCall6@GemText(value = MaritalStatus.MARRIED);
 }

@@ -3,10 +3,9 @@ package umlp.generator.gui.genjava.prettyprinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPrettyPrinter;
-import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
@@ -14,7 +13,6 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
 
@@ -36,7 +34,7 @@ public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
       CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
 
-    if (!nonClassMembers.contains(node)) {
+    if (!nonClassMembers.contains(node) && !isEnum(node)) {
       getPrinter().print("this.");
     }
     if (ignore.contains(node)) {
@@ -64,15 +62,14 @@ public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
   }
 
   protected boolean isEnum(ASTNameExpression node) {
-    if (node.getEnclosingScope() instanceof IGUIDSLScope) {
-      Optional<OOTypeSymbol> sym = ((IGUIDSLScope) node.getEnclosingScope())
-          .resolveOOType(node.getName());
-      return sym.isPresent() && sym.get().isIsEnum();
+    if (node.getEnclosingScope() instanceof IOOSymbolsScope) {
+      IOOSymbolsScope scope = (IOOSymbolsScope) node.getEnclosingScope();
+      return GUIGeneratorUtil.getInstance().isEnum(node.getName(), scope);
     }
     else {
       Log.error("0x0000C Attempted to resolve type of '"
-          + GUIGeneratorUtil.getInstance().print(node) + "' outside of GUI model context,"
-          + " but expression conversion is restricted to GUI models.");
+          + GUIGeneratorUtil.getInstance().print(node) + "' from outside of an OOSymbolsScope,"
+          + " but expression conversion is restricted to OOSymbols context.");
       return false;
     }
   }

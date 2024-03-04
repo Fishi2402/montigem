@@ -7,6 +7,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
@@ -59,7 +60,7 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
   }
 
   protected String attr2Getter(ASTFieldAccessExpression node) {
-    if (isEnum(node)) {
+    if (GUIGeneratorUtil.getInstance().isEnumMember(node)) {
       return node.getName();
     }
     SymTypeExpression ste = GUIGeneratorUtil.getInstance().getType(node);
@@ -69,18 +70,5 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
     }
     return "get" + StringTransformations.capitalize(node.getName()) + "()";
   }
-
-  protected boolean isEnum(ASTFieldAccessExpression node) {
-    SymTypeExpression ste = GUIGeneratorUtil.getInstance().getType(node);
-
-    if (ste.hasTypeInfo()
-        && ste.getTypeInfo() instanceof TypeSymbolSurrogate
-        && ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate() instanceof OOTypeSymbol) {
-      OOTypeSymbol sym = (OOTypeSymbol) ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate();
-      return sym.isIsEnum();
-    }
-    return false;
-  }
-
 
 }

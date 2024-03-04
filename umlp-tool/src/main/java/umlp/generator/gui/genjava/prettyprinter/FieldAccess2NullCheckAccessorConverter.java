@@ -4,6 +4,7 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
 
@@ -24,7 +25,10 @@ public class FieldAccess2NullCheckAccessorConverter extends FieldAccess2Accessor
     node.getExpression().accept(getTraverser());
 
     getPrinter().stripTrailing();
-    getPrinter().print("?.");
+    if (!GUIGeneratorUtil.getInstance().isEnumMember(node)) {
+      getPrinter().print("?");
+    }
+    getPrinter().print(".");
 
     if (ignore.contains(node)) {
       getPrinter().print(node.getName() + " ");

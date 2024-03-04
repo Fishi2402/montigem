@@ -175,6 +175,8 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     ASTGUIComponent fieldCall2 = stat.getCompById(components, "fieldCall2");
     ASTGUIComponent fieldCall3 = stat.getCompById(components, "fieldCall3");
     ASTGUIComponent fieldCall4 = stat.getCompById(components, "fieldCall4");
+    ASTGUIComponent fieldCall5 = stat.getCompById(components, "fieldCall5");
+    ASTGUIComponent fieldCall6 = stat.getCompById(components, "fieldCall6");
     ASTGUIComponent literal = stat.getCompById(components, "literal");
 
     String expect1 = removeSpaces("0x0000D Expected FieldAccessExpression but got '"
@@ -210,7 +212,7 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     Log.clearFindings();
 
     String expect5 = removeSpaces("0x0000D Expected FieldAccessExpression but got '"
-        + "p.get(0).getAge()"
+        + "persons.get(0).getAge()"
         + "'. FieldAccess2MutatorConverter cannot produce setter."
     );
     printer.prettyprint(fieldCall3);
@@ -218,7 +220,7 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     Log.clearFindings();
 
     String expect6 = removeSpaces("0x0000D Expected FieldAccessExpression but got '"
-        + "p.eat()"
+        + "persons.get(0).eat()"
         + "'. FieldAccess2MutatorConverter cannot produce setter."
     );
     printer.prettyprint(fieldCall4);
@@ -233,6 +235,16 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     String result7 = removeSpaces(Log.getFindings().get(0).getMsg());
     Log.clearFindings();
 
+    String expect8 = removeSpaces("this.getPersons().get(0).setStatus(val)");
+    String result8 = removeSpaces(printer.prettyprint(
+        fieldCall5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect9 = removeSpaces("0x0000B Expected a mutable value, but got "
+        + "MaritalStatus.MARRIED");
+    printer.prettyprint(fieldCall6);
+    String result9 = removeSpaces(Log.getFindings().get(0).getMsg());
+    Log.clearFindings();
+
     assertAll(
         () -> assertEquals(expect1, result1),
         () -> assertEquals(expect2, result2),
@@ -240,7 +252,9 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
         () -> assertEquals(expect4, result4),
         () -> assertEquals(expect5, result5),
         () -> assertEquals(expect6, result6),
-        () -> assertEquals(expect7, result7)
+        () -> assertEquals(expect7, result7),
+        () -> assertEquals(expect8, result8),
+        () -> assertEquals(expect9, result9)
     );
   }
 

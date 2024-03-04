@@ -60,6 +60,7 @@ public class Name2MutatorConverter extends Name2AccessorConverter {
   @Override
   public void handle(ASTLiteralExpression node) {
     errorIfExpressionIsFirst(node);
+    super.handle(node);
   }
 
   protected void errorIfExpressionIsFirst(ASTExpression node) {

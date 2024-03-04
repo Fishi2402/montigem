@@ -57,6 +57,10 @@ public class FieldAccess2MutatorConverter extends FieldAccess2AccessorConverter 
     getPrinter().stripTrailing();
     getPrinter().print(".");
 
+    if (GUIGeneratorUtil.getInstance().isEnumMember(node)) {
+      Log.error("0x0000B Expected a mutable value, but got "
+          + GUIGeneratorUtil.getInstance().print(node));
+    }
     if (ignore.contains(node)) {
       getPrinter().print(node.getName() + " ");
     }

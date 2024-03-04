@@ -171,6 +171,8 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
     ASTGUIComponent fieldCall2 = stat.getCompById(components, "fieldCall2");
     ASTGUIComponent fieldCall3 = stat.getCompById(components, "fieldCall3");
     ASTGUIComponent fieldCall4 = stat.getCompById(components, "fieldCall4");
+    ASTGUIComponent fieldCall5 = stat.getCompById(components, "fieldCall5");
+    ASTGUIComponent fieldCall6 = stat.getCompById(components, "fieldCall6");
     ASTGUIComponent literal = stat.getCompById(components, "literal");
 
     String expect1 = removeSpaces("false");
@@ -198,19 +200,30 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
         fieldCall2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
     String expect5 = removeSpaces("false"
-        + " || this.getP() == null"
-        + " || this.getP().get(0) == null");
+        + " || this.getPersons() == null"
+        + " || this.getPersons().get(0) == null");
     String result5 = removeSpaces(printer.prettyprint(
         fieldCall3.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
     String expect6 = removeSpaces("false"
-        + " || this.getP() == null");
+        + " || this.getPersons() == null"
+        + " || this.getPersons().get(0) == null");
     String result6 = removeSpaces(printer.prettyprint(
         fieldCall4.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
     String expect7 = removeSpaces("false");
     String result7 = removeSpaces(printer.prettyprint(
         literal.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect8 = removeSpaces("false" +
+        " || this.getPersons() == null " +
+        " || this.getPersons().get(0) == null");
+    String result8 = removeSpaces(printer.prettyprint(
+        fieldCall5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect9 = removeSpaces("false");
+    String result9 = removeSpaces(printer.prettyprint(
+        fieldCall6.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
     assertAll(
         () -> assertEquals(expect1, result1),
@@ -219,7 +232,9 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
         () -> assertEquals(expect4, result4),
         () -> assertEquals(expect5, result5),
         () -> assertEquals(expect6, result6),
-        () -> assertEquals(expect7, result7)
+        () -> assertEquals(expect7, result7),
+        () -> assertEquals(expect8, result8),
+        () -> assertEquals(expect9, result9)
     );
   }
 
