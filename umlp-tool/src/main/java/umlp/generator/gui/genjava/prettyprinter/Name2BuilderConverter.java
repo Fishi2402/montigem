@@ -34,7 +34,10 @@ public class Name2BuilderConverter extends Name2AccessorConverter {
 
   @Override
   public void handle(ASTLiteralExpression node) {
-    errorIfExpressionIsFirst(node);
+    // TODO: always throw an error
+    if (!GUIGeneratorUtil.getInstance().print(node).equals("null")) {
+      errorIfExpressionIsFirst(node);
+    }
     super.handle(node);
   }
 
