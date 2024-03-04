@@ -37,6 +37,7 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.monticore.tagging.tags.TagsMill;
+import de.monticore.types.check.SymTypeExpressionDeSer;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -47,6 +48,8 @@ import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.FieldSymbolDeSer4GUI;
 import umlp._symboltable.IUMLPArtifactScope;
+import umlp._symboltable.SymTypeExpressionDeSer4GUI;
+import umlp._symboltable.SymTypeOfGenericsDeSer4GUI;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.AbstractDecorator;
@@ -777,6 +780,7 @@ public class UMLPTool extends UMLPToolTOP {
     gs.setSymbolPath(modelPath);
     gs.addAdaptedTypeSymbolResolver(new OOClass2MCResolver());
     gs.addAdaptedOOTypeSymbolResolver(new OOClass2MCResolver());
+    SymTypeExpressionDeSer.setInstance(SymTypeExpressionDeSer4GUI.getInstance());
     gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol",
         new OOTypeSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
