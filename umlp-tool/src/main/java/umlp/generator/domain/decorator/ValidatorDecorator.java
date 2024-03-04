@@ -100,23 +100,19 @@ public class ValidatorDecorator extends AbstractDecorator {
   }
 
   protected ASTCDElement createValidatorClassForDomainClass(ASTCDType domainClass) {
-    String className = domainClass.getName();
-
-    List<ASTCDMethodSignature> methods = validateOCLRules(domainClass);
-
     ASTCDClass validatorClass = UMLPMill.cDClassBuilder()
-            .setModifier(PUBLIC.build())
-            .setName(className + SUFFIX)
-            .addAllCDMembers(methods)
-            .build();
+        .setModifier(PUBLIC.build())
+        .setName(domainClass.getName() + SUFFIX)
+        .build();
 
-    getCD4C().addMethod(validatorClass, getValidateTemplate(), className, methods.stream().map(ASTCDMethodSignature::getName).collect(Collectors.toList()));
+    List<ASTCDMethodSignature> methods = validateOCLRules(domainClass, validatorClass);
+    getCD4C().addMethod(validatorClass, getValidateTemplate(), domainClass.getName(), methods.stream().map(ASTCDMethodSignature::getName).collect(Collectors.toList()));
 
     addImports(validatorClass);
     return validatorClass;
   }
 
-  protected List<ASTCDMethodSignature> validateOCLRules(ASTCDType domainClass) {
+  protected List<ASTCDMethodSignature> validateOCLRules(ASTCDType domainClass, ASTCDType validatorClass) {
     List<ASTCDMethodSignature> oclRules = new ArrayList<>();
     for(ASTOCLInvariant invariant : collectInvariantsForType(domainClass.getName())) {
       OCLInvariantTree oCLInvariantTree = this.oclInvariantTrees.stream().filter(a -> a.getInvariant().equals(invariant)).findFirst().get();
@@ -124,19 +120,19 @@ public class ValidatorDecorator extends AbstractDecorator {
       // The use with multiple invariant context declarations requires additional implementation. This is not supported yet.
       ASTOCLParamDeclaration dec = invariant.getOCLContextDefinitionList().get(0).getOCLParamDeclaration();
 
-      oclRules.add(getCD4C().addMethod(domainClass, getValidateRuleTemplate(), domainClass.getName(), invariant.getName(), dec.getMCType().printType(), dec.getName(), body));
+      oclRules.add(getCD4C().addMethod(validatorClass, getValidateRuleTemplate(), domainClass.getName(), invariant.getName(), dec.getMCType().printType(), dec.getName(), body));
     }
 
     // The following only works if for an object of type Object and an association OtherObject -> Object the call object.getOtherObject() is possible
-    /*for(ASTOCLInvariant invariant : getAnyRelevantInvariant(domainClass)) {
+    for(ASTOCLInvariant invariant : getAnyRelevantInvariant(domainClass)) {
       String oclRuleName = invariant.getName();
       OCLInvariantTree OCLInvariantTree = this.oclInvariantTrees.stream().filter(a -> a.getInvariant().equals(invariant)).findFirst().get();
 
       Pair<OCLInvariantTree, OCLInvariantTree> splitAssociationTrees = OCLInvariantTree.splitTreeByDomainClass(domainClass);
       OCLInvariantTree leftTree = splitAssociationTrees.getLeft();
       String code = new AssociationTreePrettyPrinterTraverser(leftTree, new BackwardsAssociationTreePrettyPrinter()).prettyPrint().get(0);
-      oclRules.add(getCD4C().addMethod(domainClass, getValidateAssociatedRuleTemplate(), oclRuleName, domainClass.getName(), code));
-    }*/
+      oclRules.add(getCD4C().addMethod(validatorClass, getValidateAssociatedRuleTemplate(), oclRuleName, domainClass.getName(), code));
+    }
 
     return oclRules;
   }
