@@ -54,7 +54,7 @@ public class BackwardsAssociationTreePrettyPrinter implements AssociationTreePre
       forwardPrinter.indent();
       forwardPrinter.print(type);
       forwardPrinter.print("ValidationResult ");
-      forwardPrinter.print(declaration.getName());
+      forwardPrinter.print(StringTransformations.uncapitalize(type));
       forwardPrinter.print("ValidationResult = ");
       forwardPrinter.print(type);
       forwardPrinter.print("Validator.validate");
@@ -81,7 +81,7 @@ public class BackwardsAssociationTreePrettyPrinter implements AssociationTreePre
   @Override
   public void visit(OCLInvariantTreeNode node) {
     if(node.getTreeLevel() == 0) {
-      lastValidationResult = node.getParameterDeclaration().get().getName() + "ValidationResult";
+      lastValidationResult = StringTransformations.uncapitalize(node.getParameterDeclaration().get().getMCType().printType()) + "ValidationResult";
       previousValidationResultForTreeLevel.put(0, lastValidationResult);
       firstAssociationTreeLevelForContextDefinition = node.getLevelOfFirstAssociation();
     }
