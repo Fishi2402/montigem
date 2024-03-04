@@ -52,6 +52,7 @@ import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.gui.GUIComponentsVisitor;
+import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
@@ -460,9 +461,8 @@ public class UMLPTool extends UMLPToolTOP {
         }
 
         // Also store singleton-stereo information
-        if (SYMTAB.isSelected(cmd)) {
-          TagRelated.doStoreTagStereos(ast, this, symbolTable, cmd);
-        }
+        TagRelated.doStoreTagStereos(ast, this, symbolTable, cmd);
+
 
         ///////////////////////// LANGUAGE BACKEND  //////////////////////////////
         GeneratorSetup genSetup = new GeneratorSetup();
@@ -774,7 +774,7 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   protected void runDefaultCoCos(ASTGUICompilationUnit ast) {
-    GUIDSLCoCos checker = new GUIDSLCoCos();
+    GUIDSLCoCos checker = new GUIDSLCoCosForUMLP();
     checker.createChecker().checkAll(ast);
   }
 }

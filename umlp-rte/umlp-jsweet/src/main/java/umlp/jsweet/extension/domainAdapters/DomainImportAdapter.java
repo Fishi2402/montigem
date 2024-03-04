@@ -24,6 +24,7 @@ public abstract class DomainImportAdapter extends PrinterAdapter {
     this.setDomainName();
   }
 
+  // Overrides the needsImport method of PrinterAdapter to customize the required imports for domain names.
   @Override
   public String needsImport(ImportElement importElement, String qualifiedName) {
     if (importElement.getImportedType() != null && startsWithDomainName(qualifiedName)) {
@@ -32,6 +33,7 @@ public abstract class DomainImportAdapter extends PrinterAdapter {
     return super.needsImport(importElement, qualifiedName);
   }
 
+  // Retrieves the module import descriptor. It provides information about modules that need to be imported for domain names.
   @Override
   public ModuleImportDescriptor getModuleImportDescriptor(
       CompilationUnitElement currentCompilationUnit, String importedName,
@@ -48,6 +50,7 @@ public abstract class DomainImportAdapter extends PrinterAdapter {
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
   }
 
+  // Checks if the fully qualified name (fqn) starts with one of the domain names.
   private boolean startsWithDomainName(String fqn) {
     return domainNames.contains(FluentIterable.from(Splitters.DOT.split(fqn)).first().get());
   }
@@ -57,11 +60,13 @@ public abstract class DomainImportAdapter extends PrinterAdapter {
     return DOMAIN_LOCATION + "/" + loc;
   }
 
+  // Allows adding domain names to the domainNames set.
   protected final void addDomainName(String... domainName) {
     for (String s : domainName) {
       this.domainNames.add(s);
     }
   }
 
+  // Abstract method to set the domain name. This method must be implemented by all subclasses of DomainImportAdapter.
   protected abstract void setDomainName();
 }

@@ -3,7 +3,10 @@ package umlp.jsweet.extension.guiAdapters;
 
 import de.se_rwth.commons.logging.Log;
 import org.jsweet.transpiler.Java2TypeScriptTranslator;
+import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
+import org.jsweet.transpiler.model.CompilationUnitElement;
+import org.jsweet.transpiler.model.ImportElement;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;

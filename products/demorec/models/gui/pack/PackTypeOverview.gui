@@ -10,18 +10,11 @@ import gui.staticcontainer.StatTable;
 import gui.staticcontainer.StatTableRow;
 
 component PackTypeOverview(BatteryPackType type) {
-
-  @GemColumn(
-    rowGap="1px",
-    wrap="nowrap",
-    components=[
-      @StatTable(width="100%", rows = [
-        @StatTableRow(left = @GemText(value = "Car "), right = @GemText(value=type.carModel+" ("+type.carYear+") "+type.carBrand)),
-        @StatTableRow(left = @GemText(value = "Voltage (V)"), right = @GemText(value = type.voltage)),
-        @StatTableRow(left = @GemText(value = "Capacity (kWh)"), right = @GemText(value = type.capacity)),
-        @StatTableRow(left = @GemText(value = "BMS located at "), right = @GemText(value = type.bmsLocation)),
-        @StatTableRow(left = @GemText(value = "VIN"), right = @GemText(value = type.vin))
-      ])
-    ]
-  );
+  @StatTable(rows = [
+    @StatTableRow(left = @GemText(value = "Car "), right = @GemText(value=type.carModel+" ("+type.carYear+") "+type.carBrand)),
+    @StatTableRow(left = @GemText(value = "Voltage (V)"), right = @GemText(value = type.voltage)),
+    @StatTableRow(left = @GemText(value = "Capacity (kWh)"), right = @GemText(value = type.capacity)),
+    @StatTableRow(left = @GemText(value = "BMS located at "), right = @GemText(value = type.bmsLocation)),
+    @StatTableRow(left = @GemText(value = "VIN"), right = @GemText(value = type.vin))
+  ]);
 }

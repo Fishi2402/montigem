@@ -303,6 +303,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     }
 
     getCD4C().addMethod(clazz, getEqualsTemplate(), primitives, objects, primitiveBooleans, wrappedBooleans, domainClass.getName());
+    addDeepEqualsMethod(domainClass, clazz);
   }
 
   protected String getEqualsTemplate() {

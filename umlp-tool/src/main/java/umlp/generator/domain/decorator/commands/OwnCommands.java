@@ -3,6 +3,7 @@ package umlp.generator.domain.decorator.commands;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
@@ -17,6 +18,7 @@ import static de.monticore.types.check.SymTypePrimitive.box;
 public interface OwnCommands {
 
   String COMMAND = "command";
+  String REQUEST = "request";
   String STATUS_RESULT = "StatusResult";
   String SIMPLE_RESULT = "SimpleResult";
   String LIST_RESULT = "ListResult";
@@ -29,6 +31,7 @@ public interface OwnCommands {
     }
     else if (retType.isPresentMCType()) {
       ASTMCType mcType = retType.getMCType();
+
       if (GenService.isList(mcType)) {
         return buildListResult(GenService.getInnerType(mcType), ast);
       }
@@ -41,7 +44,7 @@ public interface OwnCommands {
   }
 
   default String buildExtendedCommandType(String typeParam) {
-    return new StringBuilder(StringTransformations.capitalize(COMMAND)).append("<")
+    return new StringBuilder(StringTransformations.capitalize(REQUEST)).append("<")
                .append(box(typeParam)).append(">").toString();
   }
 

@@ -15,7 +15,7 @@ import java.util.function.Function;
 /**
  * This adapter is responsible to correctly map Elements from the MontiCore world to correct
  *  TS implementaitons.
- * This is done mainly forde.monticore.symboltable.serialization.json.* and de.se_rwth.commons.logging.Log
+ * This is done mainly for de.monticore.symboltable.serialization.json.* and de.se_rwth.commons.logging.Log
  */
 public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
 

@@ -16,6 +16,7 @@ import umlp.generator.domain.decorator.commands.DerivedClassCommandDecorator;
 import umlp.generator.domain.decorator.commands.GetDecorator;
 import umlp.generator.domain.decorator.commands.GetFilteredDecorator;
 import umlp.generator.domain.decorator.commands.ManagerSubscriptionDecorator;
+import umlp.generator.domain.decorator.commands.OwnCommandDecorator;
 import umlp.generator.domain.decorator.commands.RemoveDecorator;
 import umlp.generator.domain.decorator.commands.SetDecorator;
 
@@ -50,6 +51,11 @@ public class TSCommandDecorator extends CommandDecorator {
     setDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(setDecorator.getAddedDeSers());
     Log.info("After decorator: SetDecorator", TSCommandDecorator.class.getName());
+
+    OwnCommandDecorator cmdDecorator = new TSOwnCommandDecorator(glex, supportedDeSers);
+    cmdDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(cmdDecorator.getAddedDeSers());
+    Log.info("After decorator: TSOwnCommandDecorator", CommandDecorator.class.getName());
 
     CalculateDecorator calculateDecorator = new TSCalculateDecorator(glex, supportedDeSers);
     calculateDecorator.transform(cdAST, decoratedAST);
