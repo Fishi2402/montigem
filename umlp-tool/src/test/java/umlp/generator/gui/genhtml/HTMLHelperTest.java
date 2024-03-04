@@ -85,6 +85,9 @@ public class HTMLHelperTest extends DomainGUITest {
     ASTGUIIterate aa = stat.getIterById(iterates, "aa");
     ASTGUIIterate ab = stat.getIterById(iterates, "ab");
     ASTGUIGuard ac = stat.getGuardById(guards, "ac");
+    ASTGUIIterate ad = stat.getIterById(iterates, "ad");
+    ASTGUIComponent ae = stat.getCompById(components, "ae");
+    ASTGUIIterate af = stat.getIterById(iterates, "af");
 
     Set<ASTGUIBlockContent> result;
 
@@ -179,6 +182,41 @@ public class HTMLHelperTest extends DomainGUITest {
     // iterate block ab
 
     assertions.add(() -> assertTrue(finder.getNgTemplates(ab.getGUIBlock()).isEmpty()));
+
+    // iterate block ad
+
+    Set<ASTGUIComponent> comp4 = new HashSet<>();
+    Set<ASTGUIGuard> guard4 = new HashSet<>();
+    Set<ASTGUIIterate> iter4 = new HashSet<>();
+    Set<ASTExpression> exp4 = new HashSet<>();
+
+    result = finder.getNgTemplates(ad.getGUIBlock());
+
+    for (ASTGUIBlockContent content : result) {
+      if (content.isPresentGUIComponent()) {
+        comp4.add(content.getGUIComponent());
+      }
+      if (content.isPresentGUIGuard()) {
+        guard4.add(content.getGUIGuard());
+      }
+      if (content.isPresentGUIIterate()) {
+        iter4.add(content.getGUIIterate());
+      }
+      if (content.isPresentExpression()) {
+        exp4.add(content.getExpression());
+      }
+    }
+
+    assertions.add(() -> assertEquals(0, comp4.size()));
+    assertions.add(() -> assertEquals(0, guard4.size()));
+    assertions.add(() -> assertEquals(1, iter4.size()));
+    assertions.add(() -> assertEquals(0, exp4.size()));
+
+    assertions.add(() -> assertTrue(iter4.contains(af)));
+
+    // iterate block af
+
+    assertions.add(() -> assertTrue(finder.getNgTemplates(af.getGUIBlock()).isEmpty()));
 
     assertAll(assertions);
   }

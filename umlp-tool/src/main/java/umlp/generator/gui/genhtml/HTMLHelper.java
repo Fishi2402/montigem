@@ -142,13 +142,13 @@ public class HTMLHelper implements GUIDSLVisitor2 {
   public void endVisit(ASTGUIIterate node) {
     holderStack.pop();
     if (currentIterate.isPresent() && currentIterate.get().equals(node)) {
-      if (currentComp.isPresent() && !currentBlocks.contains(node)) {
-        ASTGUIBlockContent content = GUIDSLMill.gUIBlockContentBuilder()
-            .setGUIIterate(node)
-            .build();
-        addNgTemplate(content);
-      }
       currentIterate = Optional.empty();
+    }
+    if (currentComp.isPresent() && !currentBlocks.contains(node)) {
+      ASTGUIBlockContent content = GUIDSLMill.gUIBlockContentBuilder()
+          .setGUIIterate(node)
+          .build();
+      addNgTemplate(content);
     }
     removeIterateBlocks(node);
   }
