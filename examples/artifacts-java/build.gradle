@@ -12,7 +12,7 @@ generateUmlpBackend {
 
 dependencies {
   implementation project(":examples:artifacts-test")
-  implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
+  implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: neo4j_jdbc_version
   testImplementation "org.neo4j:neo4j:4.4.10"
   implementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
   implementation "com.github.javaparser:javaparser-symbol-solver-core:3.25.1"

@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package types;
 
+import associations.BidirectionalAssocsDbTest;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import types.test_infrastructure.TypesDBTestSetup;
 
@@ -10,15 +13,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TypesInDatabaseTest extends TypesDBTestSetup {
-  public TypesInDatabaseTest() {
-    super(0);
+public abstract class TypesInDatabaseTest extends TypesDBTestSetup {
+
+  @Disabled("The current Neo4J JDBC Driver does not support ResultSet.getObject(x, Float.class)")
+  @DisplayName("Neo4J-TypesInDB")
+  public static class
+  Neo4JTestSuite extends TypesInDatabaseTest {
+    Neo4JTestSuite() {
+      super("NEO4J");
+      setUpLocalNeo4jInstance();
+    }
+  }
+
+  @DisplayName("SQL-TypesInDB")
+  public static class SQLTestSuite extends TypesInDatabaseTest {
+    SQLTestSuite() {
+      super("SQL");
+    }
+  }
+
+  public TypesInDatabaseTest(String dbType) {
+    super(0, dbType);
   }
 
   @Test
   public void testFloatTypesAreWrittenToDB(){
     FloatingPoints fp = TypesManager.floatingPointsBuilder().d1(2d).d2(3d).f1(4f).f2(5f).build().get();
-    FloatingPointsDAO dao = new FloatingPointsDAO();
+    var dao = TypesDAOFactory.getFloatingPointsDAO();
 
     Optional<FloatingPoints> fpCopyOpt = dao.selectFloatingPoints(fp.gemId);
 

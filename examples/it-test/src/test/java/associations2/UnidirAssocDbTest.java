@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package associations2;
 
+import associations.BidirectionalAssocsDbTest;
 import associations2.test_infrastructure.Associations2DBTestSetup;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -9,9 +11,26 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UnidirAssocDbTest extends Associations2DBTestSetup {
-  public UnidirAssocDbTest() {
-    super(1);
+public abstract class UnidirAssocDbTest extends Associations2DBTestSetup {
+
+  public UnidirAssocDbTest(String dbConnectionType) {
+    super(1, dbConnectionType);
+  }
+
+  @DisplayName("Neo4J-UnidirectionalAssocs")
+  public static class
+  Neo4JTestSuite extends UnidirAssocDbTest {
+    Neo4JTestSuite() {
+      super("NEO4J");
+      setUpLocalNeo4jInstance();
+    }
+  }
+
+  @DisplayName("SQL-UnidirectionalAssocs")
+  public static class SQLTestSuite extends UnidirAssocDbTest {
+    SQLTestSuite() {
+      super("SQL");
+    }
   }
 
   @Test
@@ -22,7 +41,7 @@ public class UnidirAssocDbTest extends Associations2DBTestSetup {
     var eleftToRight = Associations2Manager.eleftToRightBuilder().fleftToRight(fleftToRight).build().get();
     assertEquals(fleftToRight.gemId, eleftToRight.getFleftToRight().gemId);
 
-    EleftToRightDAO dao = new EleftToRightDAO();
+    var dao = Associations2DAOFactory.getEleftToRightDAO();
     var clone = dao.selectEleftToRight(eleftToRight.gemId).get();
 
     assertEquals(eleftToRight.gemId, clone.gemId);
@@ -40,7 +59,7 @@ public class UnidirAssocDbTest extends Associations2DBTestSetup {
 
     assertEquals(rhs.gemId, lhs.getFleftToRight().gemId);
 
-    EleftToRightDAO dao = new EleftToRightDAO();
+    var dao = Associations2DAOFactory.getEleftToRightDAO();
     var clone = dao.selectEleftToRight(lhs.gemId).get();
 
     assertEquals(lhs.gemId, clone.gemId);
@@ -58,7 +77,7 @@ public class UnidirAssocDbTest extends Associations2DBTestSetup {
     assertTrue(rhs.containsDleftToRight(lhs1));
     assertTrue(rhs.containsDleftToRight(lhs2));
 
-    CleftToRightDAO dao = new CleftToRightDAO();
+    var dao = Associations2DAOFactory.getCleftToRightDAO();
     var clone = dao.selectCleftToRight(rhs.gemId).get();
 
     assertEquals(rhs.gemId, clone.gemId);
@@ -78,7 +97,7 @@ public class UnidirAssocDbTest extends Associations2DBTestSetup {
     assertTrue(rhs.containsDleftToRight(lhs1));
     assertTrue(rhs.containsDleftToRight(lhs2));
 
-    CleftToRightDAO dao = new CleftToRightDAO();
+    var dao = Associations2DAOFactory.getCleftToRightDAO();
     var clone = dao.selectCleftToRight(rhs.gemId).get();
 
     assertEquals(rhs.gemId, clone.gemId);

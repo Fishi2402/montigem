@@ -42,7 +42,6 @@ public class AssociationsDBTestSetup extends associations.test_infrastructure.As
       super._init();
     } else {
       AssociationsTestContext.clear();
-      AssociationsManagerImpl.init();
 
       DatabaseAccessManager4Neo4j.initBoltLocalhost(port, "neo4j", "");
       AssociationsManagerImpl.initNeo4J();
@@ -79,7 +78,7 @@ public class AssociationsDBTestSetup extends associations.test_infrastructure.As
       managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);
       return;
     }
-    managementService = new DatabaseManagementServiceBuilder(Paths.get("build", "temporaryNeo4jDB"))
+    managementService = new DatabaseManagementServiceBuilder(Paths.get("build", "associationDbTest"))
         .setConfig(BoltConnector.enabled, true)
         .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", port)).build();
     registerShutdownHook(managementService);
