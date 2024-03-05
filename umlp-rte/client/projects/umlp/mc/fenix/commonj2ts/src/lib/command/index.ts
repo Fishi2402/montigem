@@ -19,3 +19,4 @@ export * from "./CommandManager";
 export * from "./DomainTypeFilter";
 export * from "./ListResult";
 export * from "./CommandObjectMapper";
+export * from "./ValidationResult";
