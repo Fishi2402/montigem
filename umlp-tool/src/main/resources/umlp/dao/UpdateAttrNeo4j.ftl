@@ -8,7 +8,7 @@ ${cd4c.method("public void update${attributeName?cap_first}(long gemId, ${attrib
     <#assign statement="update"+attributeName?cap_first+"Statement">
     ${statement}.clearParameters();
     ${statement}.setLong(1, gemId);
-    ${includeArgs("umlp.dao.Set", statement, 2, dbType, attributeName, isOptional)};
+    ${includeArgs("umlp.dao.Set", statement, 2, dbType, attributeName, isOptional,"_Neo4j")};
     ${statement}.executeUpdate();
 
   } catch (SQLException e){

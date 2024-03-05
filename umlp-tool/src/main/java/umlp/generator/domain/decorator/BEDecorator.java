@@ -78,7 +78,7 @@ public class BEDecorator extends AbstractDecorator {
 
     DAONeo4jDecorator daoNeo4jDecorator = new DAONeo4jDecorator(glex);
     daoNeo4jDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: DAODecorator", BEDecorator.class.getName());
+    Log.info("After decorator: DAONeo4jDecorator", BEDecorator.class.getName());
 
     // Generate DeSer
     DeSerDecorator deSerDecorator = new DeSerDecorator(glex, hwPath, supportedDesers);

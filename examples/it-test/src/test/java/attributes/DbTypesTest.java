@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public abstract class DbTypesTest extends AttributesDBTestSetup {
 
-  @Disabled
   @DisplayName("Neo4J-DbTypes")
   public static class
   Neo4JTestSuite extends DbTypesTest {

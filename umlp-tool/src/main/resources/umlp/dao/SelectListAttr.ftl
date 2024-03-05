@@ -11,7 +11,7 @@ ${cd4c.method("public List<${innerType}> select${attrName}(long gemId)")}
   List<${innerType}> res = new ArrayList<>();
     ResultSet rs = select${attrName}Statement.executeQuery();
     while(rs.next()){
-      res.add(${includeArgs("umlp.dao.Get", "rs", attr, 1)});
+      res.add(${includeArgs("umlp.dao.Get", "rs", attr, 1,"")});
     }
     return res;
     } catch (SQLException e) {

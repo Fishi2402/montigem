@@ -400,7 +400,7 @@ public class DAODecorator extends AbstractDecorator {
     attributes.forEach(e -> attributeMap.put(e,
         SQLSchemaGenerator.convertAttributeName(e.getName(), SQLSchemaGenerator.AttributeType.QUOTED)));
     getCD4C().addMethod(daoClass, "umlp.dao.Unpack", domainClass.getName(), cdName, attributeMap,
-        optMap, listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap, assocToCorrectDAOFactoryMap);
+        optMap, listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap, assocToCorrectDAOFactoryMap,"");
   }
 
   protected void insertMethods(ASTCDClass daoClass, ASTCDClass domainClass,
@@ -417,9 +417,9 @@ public class DAODecorator extends AbstractDecorator {
         , domainClass.getName(), attributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)).collect(Collectors.toList()),
         optionalAttributes.stream().map(a -> SQLSchemaGenerator.convertAttributeName(a.getName(), SQLSchemaGenerator.AttributeType.ESCAPED_QUOTED)).collect(Collectors.toList()));
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
-        optionalAttributes, listAttributes, listAssociationMap, gemAssociationMap, assocToSourceDefinitionCD);
+        optionalAttributes, listAttributes, listAssociationMap, gemAssociationMap, assocToSourceDefinitionCD, "");
     getCD4C().addMethod(daoClass, "umlp.dao.BulkInsert", domainClass.getName(), cdName, attributes,
-        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap,"");
     getCD4C().addMethod(daoClass, "umlp.dao.AddManyAssociationsToBatch", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap, assocToSourceDefinitionCD);
     getCD4C().addMethod(daoClass, "umlp.dao.ExecuteAssocBatches", domainClass.getName(), cdName, attributes,

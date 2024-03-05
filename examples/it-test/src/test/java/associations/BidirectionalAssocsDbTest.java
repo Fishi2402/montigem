@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class BidirectionalAssocsDbTest extends AssociationsDBTestSetup {
 
-  @Disabled
   @DisplayName("Neo4J-BidirectionalAssocs")
   public static class
   Neo4JTestSuite extends BidirectionalAssocsDbTest {
