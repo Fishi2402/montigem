@@ -53,12 +53,12 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     //Create Tasks
     TaskProvider<FrontendSetup> frontendSetupTask = createFrontendSetupTask(project);
 
-    TaskProvider<UMLPFrontendTask> frontendDomainTask = j2ts ? null : createFrontendDomainTask(project);
-    TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask = j2ts ? createFrontendDomainJ2TSTask(project, local) : null;
+    TaskProvider<UMLPFrontendTask> frontendDomainTask = createFrontendDomainTask(project);
+    TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask = createFrontendDomainJ2TSTask(project, local);
 
     TaskProvider<UMLPSymbolsTask> domainSymbolGenTask = createDomainSymbolGen(project, frontendSetupTask);
     TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, j2ts, local, domainSymbolGenTask);
-    TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask = j2ts ? createFrontendGUIJ2TSTask(project, frontendDomainJ2TSTask, frontendGuiTask) : null;
+    TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask = createFrontendGUIJ2TSTask(project, frontendDomainJ2TSTask, frontendGuiTask);
 
     // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
     // and Hot-Reload aborts
