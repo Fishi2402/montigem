@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle.specific;
 
+import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.ArrayUtils;
@@ -26,6 +27,7 @@ import org.jsweet.transpiler.SourceFile;
 import org.jsweet.transpiler.util.ConsoleTranspilationHandler;
 import org.jsweet.transpiler.util.ErrorCountTranspilationHandler;
 import org.jsweet.transpiler.util.ProcessUtil;
+import umlp.generator.gui.JSweetConfigGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -111,6 +113,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
     JSweetFactory factory = new JSweetFactory();
     File buildDir = this.getProject().getBuildDir();
     File workingDir = new File(buildDir, "jsweetWorkingDir");
+    File jsweetDir = new File(buildDir, "jsweet");
     File candiesJsOut = new File(workingDir, "candies");
 
     // Get the sourceSets for this gradle plugin
@@ -153,6 +156,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
         new ConsoleTranspilationHandler());
     try {
       transpiler.transpile(transpilationHandler, excludedSources, sourceFiles);
+      generateJSweetConfig(jsweetDir);
     }
     catch (IOException e) {
       throw new RuntimeException(e);
@@ -370,5 +374,18 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
       }
     }
     return sources;
+  }
+
+  /**
+   * Generates configuration files required for the JSweet transpilation.
+   *
+   * @param targetDir The target directory the config files are generated to.
+   */
+  protected void generateJSweetConfig(File targetDir) {
+    GeneratorSetup gs = new GeneratorSetup();
+    gs.setOutputDirectory(targetDir);
+    JSweetConfigGenerator generator = new JSweetConfigGenerator(gs);
+    generator.generate(getDomainModel().get());
+
   }
 }
