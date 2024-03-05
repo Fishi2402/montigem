@@ -44,7 +44,6 @@ public class OCLInvariantExpressionsVisitor implements OCLVisitor2, CommonExpres
   private final ASTCDCompilationUnit origCD;
   private final List<OCLInvariantTree> oCLInvariantTrees;
   private boolean isFirstFieldAccessExpression = true;
-
   private boolean isInOrVarDeclaration = false;
 
   public OCLInvariantExpressionsVisitor(ASTCDCompilationUnit origCD) {
@@ -248,11 +247,21 @@ public class OCLInvariantExpressionsVisitor implements OCLVisitor2, CommonExpres
 
   private void calculateOCLInvariantTreeNodesForInDeclarations(ASTInDeclaration inDeclaration) {
     List<ASTOCLParamDeclaration> variableDeclarations = new ArrayList<>();
+    if(inDeclaration.getInDeclarationVariableList().isEmpty()) {
+      throw new RuntimeException("In declaration " + inDeclaration + " has no variables.");
+    }
     for (ASTInDeclarationVariable v : inDeclaration.getInDeclarationVariableList()) {
       if(currentOCLInvariantTree.findNode(v.getName(), v.getEnclosingScope()).isPresent()) {
         throw new RuntimeException("Variable " + v.getName() + " declared multiple times in the OCL rule " + currentOCLInvariantTree.getInvariant().getName() + ".");
       }
       ASTMCType type = getTypeForInDeclaration(inDeclaration);
+      if(type.printType().startsWith("List<")) {
+        type = new ASTMCQualifiedTypeBuilder()
+            .setMCQualifiedName(new ASTMCQualifiedNameBuilder()
+                .setPartsList(Collections.singletonList(type.printType().substring(5, type.printType().length() - 1)))
+                .build())
+            .build();
+      }
       ASTOCLParamDeclaration declaration = new ASTOCLParamDeclarationBuilder()
             .setName(v.getName())
             .setMCType(type)
@@ -260,11 +269,7 @@ public class OCLInvariantExpressionsVisitor implements OCLVisitor2, CommonExpres
       declaration.setEnclosingScope(v.getEnclosingScope());
       variableDeclarations.add(declaration);
     }
-    if (!inDeclaration.isPresentExpression()) {
-      for(ASTOCLParamDeclaration variableDeclaration : variableDeclarations) {
-        currentOCLInvariantTree.addNode(new OCLInvariantTreeNode(variableDeclaration));
-      }
-    } else {
+    if (inDeclaration.isPresentExpression()) {
       addTreeNodeForExpressionAndDeclaration(inDeclaration.getExpression(), variableDeclarations, false);
     }
   }
@@ -338,8 +343,10 @@ public class OCLInvariantExpressionsVisitor implements OCLVisitor2, CommonExpres
     ASTMCType type;
     if (inDeclaration.isPresentMCType()) {
       type = inDeclaration.getMCType();
-    } else {
+    } else if(inDeclaration.isPresentExpression()){
       type = getTypeForExpression(inDeclaration.getExpression());
+    } else {
+      throw new RuntimeException("In declaration " + inDeclaration + " has no type or expression.");
     }
     return type;
   }
